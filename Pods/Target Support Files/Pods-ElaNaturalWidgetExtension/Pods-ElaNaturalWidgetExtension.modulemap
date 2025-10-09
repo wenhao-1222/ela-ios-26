@@ -1,0 +1,6 @@
+framework module Pods_ElaNaturalWidgetExtension {
+  umbrella header "Pods-ElaNaturalWidgetExtension-umbrella.h"
+
+  export *
+  module * { export * }
+}

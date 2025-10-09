@@ -1,0 +1,276 @@
+PODS:
+  - Alamofire (4.9.1)
+  - AlipaySDK-iOS (15.8.16)
+  - AliPlayerSDK_iOS (7.5.0):
+    - AliPlayerSDK_iOS/AliPlayerSDK (= 7.5.0)
+  - AliPlayerSDK_iOS/AliPlayerSDK (7.5.0)
+  - AliyunOSSiOS (2.10.21)
+  - CHIPageControl (0.2):
+    - CHIPageControl/Aji (= 0.2)
+    - CHIPageControl/Aleppo (= 0.2)
+    - CHIPageControl/Chimayo (= 0.2)
+    - CHIPageControl/Fresno (= 0.2)
+    - CHIPageControl/Jalapeno (= 0.2)
+    - CHIPageControl/Jaloro (= 0.2)
+    - CHIPageControl/Paprika (= 0.2)
+    - CHIPageControl/Puya (= 0.2)
+  - CHIPageControl/Aji (0.2)
+  - CHIPageControl/Aleppo (0.2)
+  - CHIPageControl/Chimayo (0.2)
+  - CHIPageControl/Fresno (0.2)
+  - CHIPageControl/Jalapeno (0.2)
+  - CHIPageControl/Jaloro (0.2)
+  - CHIPageControl/Paprika (0.2)
+  - CHIPageControl/Puya (0.2)
+  - CryptoSwift (1.8.2)
+  - DeviceKit (5.4.0)
+  - DGCharts (5.1.0):
+    - DGCharts/Core (= 5.1.0)
+  - DGCharts/Core (5.1.0)
+  - FLAnimatedImage (1.0.17)
+  - IQKeyboardManagerSwift (6.3.0)
+  - JCore (4.6.2)
+  - JPush (5.3.0):
+    - JCore (>= 2.0.0)
+  - Kingfisher (7.12.0)
+  - KJTouchIdManager (1.0.2)
+  - Masonry (1.1.0)
+  - MBProgressHUD (1.2.0)
+  - MCToast (0.2.0)
+  - MJRefresh (3.7.9)
+  - ReachabilitySwift (5.2.3)
+  - RITLKit (2.0.5):
+    - Masonry
+    - RITLKit/Category (= 2.0.5)
+    - RITLKit/ImagePicker (= 2.0.5)
+    - RITLKit/ScrollPageController (= 2.0.5)
+    - RITLKit/Utility (= 2.0.5)
+    - RITLKit/View (= 2.0.5)
+    - RITLKit/Web (= 2.0.5)
+    - RITLViewFrame
+  - RITLKit/Category (2.0.5):
+    - Masonry
+    - RITLKit/Utility
+    - RITLViewFrame
+  - RITLKit/ImagePicker (2.0.5):
+    - Masonry
+    - RITLViewFrame
+  - RITLKit/ScrollPageController (2.0.5):
+    - Masonry
+    - RITLKit/Category
+    - RITLKit/ScrollPageController/LLSegmentBar (= 2.0.5)
+    - RITLKit/Utility
+    - RITLViewFrame
+  - RITLKit/ScrollPageController/LLSegmentBar (2.0.5):
+    - Masonry
+    - RITLKit/Category
+    - RITLKit/Utility
+    - RITLViewFrame
+  - RITLKit/Utility (2.0.5):
+    - Masonry
+    - RITLKit/Utility/DownLoader (= 2.0.5)
+    - RITLKit/Utility/Filter (= 2.0.5)
+    - RITLKit/Utility/Reachability (= 2.0.5)
+    - RITLViewFrame
+  - RITLKit/Utility/DownLoader (2.0.5):
+    - Masonry
+    - RITLViewFrame
+  - RITLKit/Utility/Filter (2.0.5):
+    - Masonry
+    - RITLViewFrame
+  - RITLKit/Utility/Reachability (2.0.5):
+    - Masonry
+    - RITLViewFrame
+  - RITLKit/View (2.0.5):
+    - Masonry
+    - RITLKit/Category
+    - RITLKit/Utility
+    - RITLViewFrame
+  - RITLKit/Web (2.0.5):
+    - Masonry
+    - RITLKit/Category
+    - RITLKit/Utility
+    - RITLViewFrame
+  - RITLPhotos (2.3.4):
+    - Masonry
+    - RITLKit
+    - RITLPhotos/Protocol (= 2.3.4)
+    - RITLPhotos/RITLCollectionModule (= 2.3.4)
+    - RITLPhotos/RITLConfig (= 2.3.4)
+    - RITLPhotos/RITLData (= 2.3.4)
+    - RITLPhotos/RITLGroupModule (= 2.3.4)
+    - RITLPhotos/RITLHoriScrollModule (= 2.3.4)
+    - RITLPhotos/RITLPhotosCategory (= 2.3.4)
+    - RITLPhotos/RITLPhotosController (= 2.3.4)
+    - RITLPhotos/RITLPhotoStore (= 2.3.4)
+    - RITLPhotos/RITLViews (= 2.3.4)
+  - RITLPhotos/Protocol (2.3.4):
+    - Masonry
+    - RITLKit
+  - RITLPhotos/RITLCollectionModule (2.3.4):
+    - Masonry
+    - RITLKit
+    - RITLPhotos/RITLConfig
+    - RITLPhotos/RITLData
+    - RITLPhotos/RITLHoriScrollModule
+    - RITLPhotos/RITLPhotosCategory
+    - RITLPhotos/RITLPhotoStore
+    - RITLPhotos/RITLViews
+  - RITLPhotos/RITLConfig (2.3.4):
+    - Masonry
+    - RITLKit
+  - RITLPhotos/RITLData (2.3.4):
+    - Masonry
+    - RITLKit
+    - RITLPhotos/Protocol
+    - RITLPhotos/RITLPhotosCategory
+  - RITLPhotos/RITLGroupModule (2.3.4):
+    - Masonry
+    - RITLKit
+    - RITLPhotos/RITLCollectionModule
+    - RITLPhotos/RITLPhotosCategory
+    - RITLPhotos/RITLPhotoStore
+  - RITLPhotos/RITLHoriScrollModule (2.3.4):
+    - Masonry
+    - RITLKit
+    - RITLPhotos/RITLConfig
+    - RITLPhotos/RITLData
+    - RITLPhotos/RITLPhotosCategory
+    - RITLPhotos/RITLViews
+  - RITLPhotos/RITLPhotosCategory (2.3.4):
+    - Masonry
+    - RITLKit
+  - RITLPhotos/RITLPhotosController (2.3.4):
+    - Masonry
+    - RITLKit
+    - RITLPhotos/Protocol
+    - RITLPhotos/RITLCollectionModule
+    - RITLPhotos/RITLConfig
+    - RITLPhotos/RITLData
+    - RITLPhotos/RITLGroupModule
+  - RITLPhotos/RITLPhotoStore (2.3.4):
+    - Masonry
+    - RITLKit
+    - RITLPhotos/RITLPhotosCategory
+  - RITLPhotos/RITLViews (2.3.4):
+    - Masonry
+    - RITLKit
+    - RITLPhotos/RITLPhotosCategory
+  - RITLViewFrame (0.0.1)
+  - SDWebImage (5.19.2):
+    - SDWebImage/Core (= 5.19.2)
+  - SDWebImage/Core (5.19.2)
+  - SDWebImageFLPlugin (0.6.0):
+    - FLAnimatedImage (>= 1.0.11)
+    - SDWebImage/Core (~> 5.10)
+  - SkeletonView (1.30.4)
+  - SnapKit (5.7.1)
+  - SQLite.swift (0.15.3):
+    - SQLite.swift/standard (= 0.15.3)
+  - SQLite.swift/standard (0.15.3)
+  - UMAPM (1.9.1)
+  - UMCommon (7.4.7):
+    - UMDevice
+  - UMDevice (3.4.0)
+  - WechatOpenSDK-XCFramework (2.0.4)
+
+DEPENDENCIES:
+  - Alamofire (= 4.9.1)
+  - AlipaySDK-iOS
+  - AliPlayerSDK_iOS
+  - AliyunOSSiOS
+  - CHIPageControl
+  - CryptoSwift
+  - DeviceKit
+  - DGCharts
+  - IQKeyboardManagerSwift (= 6.3.0)
+  - JPush
+  - Kingfisher
+  - KJTouchIdManager
+  - Masonry
+  - MBProgressHUD
+  - MCToast (= 0.2.0)
+  - MJRefresh
+  - ReachabilitySwift
+  - RITLKit
+  - RITLPhotos
+  - SDWebImage
+  - SDWebImageFLPlugin
+  - SkeletonView
+  - SnapKit
+  - SQLite.swift
+  - UMAPM
+  - UMCommon
+  - UMDevice
+  - WechatOpenSDK-XCFramework
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Alamofire
+    - AlipaySDK-iOS
+    - AliPlayerSDK_iOS
+    - AliyunOSSiOS
+    - CHIPageControl
+    - CryptoSwift
+    - DeviceKit
+    - DGCharts
+    - FLAnimatedImage
+    - IQKeyboardManagerSwift
+    - JCore
+    - JPush
+    - Kingfisher
+    - KJTouchIdManager
+    - Masonry
+    - MBProgressHUD
+    - MCToast
+    - MJRefresh
+    - ReachabilitySwift
+    - RITLKit
+    - RITLPhotos
+    - RITLViewFrame
+    - SDWebImage
+    - SDWebImageFLPlugin
+    - SkeletonView
+    - SnapKit
+    - SQLite.swift
+    - UMAPM
+    - UMCommon
+    - UMDevice
+    - WechatOpenSDK-XCFramework
+
+SPEC CHECKSUMS:
+  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  AlipaySDK-iOS: 5e6011fbd546e7db6b43c1f527d164ee63f3d7cb
+  AliPlayerSDK_iOS: c57aad82dce4ec773862c9714183f3e9e5c202c5
+  AliyunOSSiOS: 1f091b3aeec9f7a5fd722cb511704116f2ca468d
+  CHIPageControl: a787bf7205c9b7e7fbfc412be36c5e8636b68f86
+  CryptoSwift: c63a805d8bb5e5538e88af4e44bb537776af11ea
+  DeviceKit: bd34bb1766d926c3cc5a5f6e3e9a6dd10148b805
+  DGCharts: 1c6daf585b6cfc78807af44ea690d357c410627f
+  FLAnimatedImage: bbf914596368867157cc71b38a8ec834b3eeb32b
+  IQKeyboardManagerSwift: a8228c257614af98743b4cd8584637025f36358f
+  JCore: 024c73b04e110b496e93d8c127ea9cd1ed934e4c
+  JPush: b71f497a3c1b825c7843fd97f290b05d5cd75f2e
+  Kingfisher: 53a10ea35051a436b5fb626ca2dd8f3144d755e9
+  KJTouchIdManager: ce7a975516550f08b04123e99d4c9a2a12f4123a
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
+  MCToast: 7a3671e677e4ea5e910c73b891166393c58f4e4c
+  MJRefresh: ff9e531227924c84ce459338414550a05d2aea78
+  ReachabilitySwift: 7f151ff156cea1481a8411701195ac6a984f4979
+  RITLKit: a7274cc67ca5ad6e1b1907bb3bf801e16e1e5b60
+  RITLPhotos: 49d5b33e23a7c3cd8bb334e7d17f664194edc558
+  RITLViewFrame: 4e38e6333e6b4691c1980c3fcda9ff4d08f0d2c8
+  SDWebImage: dfe95b2466a9823cf9f0c6d01217c06550d7b29a
+  SDWebImageFLPlugin: 72efd2cfbf565bc438421abb426f4bcf7b670754
+  SkeletonView: 5a050f6411e697abd4cda0a8d767013399dccd69
+  SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
+  SQLite.swift: 8d054987f02728cc912b0eb5a9659650573a65a2
+  UMAPM: dad298c296209d65da542f19ba701dfffc902139
+  UMCommon: 8b4cd0423297c39bca6eea1ec896558b40e5bcf7
+  UMDevice: dcdf7ec167387837559d149fbc7d793d984faf82
+  WechatOpenSDK-XCFramework: 36fb2bea0754266c17184adf4963d7e6ff98b69f
+
+PODFILE CHECKSUM: 3fa9f2b27e90e455eb702d3253722667b38c9821
+
+COCOAPODS: 1.15.2

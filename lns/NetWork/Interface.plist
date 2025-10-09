@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>url_cs</key>
+	<string>https://testapi.leungnutritionsciences.cn:8443/</string>
+	<key>url_develop</key>
+	<string>http://192.168.1.121:8080/</string>
+	<key>url_annotation</key>
+	<string>0  release      1  develop            2 cs   (接口对应)</string>
+	<key>url_release</key>
+	<string>https://api.leungnutritionsciences.cn:8443/</string>
+	<key>server_type</key>
+	<integer>2</integer>
+</dict>
+</plist>
