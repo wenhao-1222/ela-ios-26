@@ -16,7 +16,7 @@ class WHTabBarVC: UITabBarController {
     lazy var coverWhiteView: UIView = {
         let vi = UIView()
         vi.backgroundColor = .clear // 玻璃必须透明
-        vi.isUserInteractionEnabled = true
+        vi.isUserInteractionEnabled = false
         return vi
     }()
 
@@ -120,7 +120,20 @@ class WHTabBarVC: UITabBarController {
         tabbar.centerClick()
         applyCurrentAppearance()
     }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
 
+        guard let customBar = tabBar as? WHTabBar else { return }
+        let bounds = customBar.bounds
+
+        if tabbar.frame != bounds { tabbar.frame = bounds }
+        if coverWhiteView.frame != bounds { coverWhiteView.frame = bounds }
+
+        coverWhiteView.layer.cornerRadius = customBar.layer.cornerRadius
+        coverWhiteView.layer.masksToBounds = false
+
+        customBar.tabbar = tabbar
+    }
     @objc private func showGuideTotalIfNeeded() {
         let vc = GuideTotalVC()
         vc.finishBlock = { [weak self] in self?.removeGuideTotalVC() }
@@ -142,16 +155,22 @@ class WHTabBarVC: UITabBarController {
     }
 
     private func createMainTabBarView() {
-        let tabBarRect = tabBar.bounds
-        whTabBar.frame = tabBarRect
+//        let tabBarRect = tabBar.bounds
+//        whTabBar.frame = tabBarRect
+        whTabBar.frame = tabBar.bounds
         whTabBar.backgroundColor = .clear
 //        setValue(whTabBar, forKeyPath: "tabBar")
+        whTabBar.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
+        setValue(whTabBar, forKey: "tabBar")
+        
         tabbar = LLMyTabbar()
-        tabbar.frame = CGRect(x: tabBar.bounds.minX,
-                              y: tabBar.bounds.minY,
-                              width: tabBar.bounds.width,
-                              height: tabBar.bounds.height)
+//        tabbar.frame = CGRect(x: tabBar.bounds.minX,
+//                              y: tabBar.bounds.minY,
+//                              width: tabBar.bounds.width,
+//                              height: tabBar.bounds.height)
+        tabbar.frame = tabBar.bounds
+                tabbar.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         tabbar.delegate = self
         tabbar.backgroundColor = .clear
 
@@ -159,7 +178,11 @@ class WHTabBarVC: UITabBarController {
         whTabBar.tabbar = tabbar
 
         whTabBar.insertSubview(coverWhiteView, belowSubview: tabbar)
-        coverWhiteView.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: WHUtils().getTabbarHeight())
+//        coverWhiteView.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: WHUtils().getTabbarHeight())
+        coverWhiteView.frame = tabBar.bounds
+                coverWhiteView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                coverWhiteView.layer.masksToBounds = false
+                coverWhiteView.addShadow(opacity: 0.05, offset: CGSize(width: 0, height: -5))
     }
 
     func childAllChildViewControllers() {
