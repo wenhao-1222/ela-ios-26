@@ -145,7 +145,7 @@ class WHTabBarVC: UITabBarController {
         let tabBarRect = tabBar.bounds
         whTabBar.frame = tabBarRect
         whTabBar.backgroundColor = .clear
-        setValue(whTabBar, forKeyPath: "tabBar")
+//        setValue(whTabBar, forKeyPath: "tabBar")
 
         tabbar = LLMyTabbar()
         tabbar.frame = CGRect(x: tabBar.bounds.minX,
@@ -192,6 +192,8 @@ class WHTabBarVC: UITabBarController {
         let NAVC = LLNaviViewController(rootViewController: viewController)
         addChild(NAVC)
         tabbar.addTabBarButtonWithItem(item: viewController.tabBarItem)
+        // 禁用系统 TabBarItem 的交互，避免出现“双层” TabBar
+//       viewController.tabBarItem.isEnabled = false
     }
 }
 
