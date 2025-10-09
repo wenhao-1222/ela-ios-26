@@ -183,19 +183,21 @@ class WHTabBarVC: UITabBarController {
 //                              width: tabBar.bounds.width,
 //                              height: tabBar.bounds.height)
         tabbar.frame = tabBar.bounds
-                tabbar.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         tabbar.delegate = self
         tabbar.backgroundColor = .clear
+        if #available(iOS 26.0, *) {
+            
+        }else{
+            whTabBar.addSubview(tabbar)
+            whTabBar.tabbar = tabbar
 
-//        whTabBar.addSubview(tabbar)
-//        whTabBar.tabbar = tabbar
-
-        whTabBar.insertSubview(coverWhiteView, belowSubview: tabbar)
-//        coverWhiteView.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: WHUtils().getTabbarHeight())
-        coverWhiteView.frame = tabBar.bounds
-        coverWhiteView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        coverWhiteView.layer.masksToBounds = false
-        coverWhiteView.addShadow(opacity: 0.05, offset: CGSize(width: 0, height: -5))
+            whTabBar.insertSubview(coverWhiteView, belowSubview: tabbar)
+    //        coverWhiteView.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: WHUtils().getTabbarHeight())
+            coverWhiteView.frame = tabBar.bounds
+            coverWhiteView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            coverWhiteView.layer.masksToBounds = false
+            coverWhiteView.addShadow(opacity: 0.05, offset: CGSize(width: 0, height: -5))
+        }
     }
     private func observeMineTabNotifications() {
         NotificationCenter.default.addObserver(self,
@@ -225,7 +227,7 @@ class WHTabBarVC: UITabBarController {
         mineRedDotView.layer.cornerRadius = redDotSize / 2
 
         let mineOriginX = CGFloat(Constants.mineTabIndex) * itemWidth
-        let centerX = mineOriginX + itemWidth * 0.5 + kFitWidth(12)
+        let centerX = mineOriginX + itemWidth * 0.5 //+ kFitWidth(12)
         let centerY = kFitWidth(3) + redDotSize * 0.5
         mineRedDotView.center = CGPoint(x: centerX, y: centerY)
 
