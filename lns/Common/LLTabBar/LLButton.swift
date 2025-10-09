@@ -25,7 +25,8 @@ class LLButton: UIButton {
         // ✅ 居中对齐用 equalTo，避免跑偏；并减小底部内边距
         conentLab.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(kFitWidth(-4))
+//            make.bottom.equalToSuperview().offset(kFitWidth(-4))
+            make.top.equalTo(imageView!.snp.bottom).offset(kFitWidth(4))
         }
         redView.snp.makeConstraints { make in
             make.width.height.equalTo(kFitWidth(5))

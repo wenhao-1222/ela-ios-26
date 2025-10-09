@@ -8,11 +8,22 @@ import UIKit
 import Foundation
 
 class WHTabBarVC: UITabBarController {
-
+    private enum Constants {
+           static let mineTabIndex = 3
+       }
     var tabbar = LLMyTabbar()
     var whTabBar = WHTabBar()
     private var guideVC: GuideTotalVC?
+    private lazy var mineRedDotView: UIView = {
+            let view = UIView()
+            view.backgroundColor = .systemRed
+            view.layer.cornerRadius = kFitWidth(2.5)
+            view.clipsToBounds = true
+            view.isHidden = true
+            return view
+        }()
 
+        private var didInitializeMineRedDotState = false
     lazy var coverWhiteView: UIView = {
         let vi = UIView()
         vi.backgroundColor = .clear // 玻璃必须透明
@@ -104,13 +115,15 @@ class WHTabBarVC: UITabBarController {
             }
         }
     }
-
+    deinit {
+            NotificationCenter.default.removeObserver(self)
+        }
     override func viewDidLoad() {
         super.viewDidLoad()
 
         createMainTabBarView()
         childAllChildViewControllers()
-
+        observeMineTabNotifications()
         tabbar.seletedButton = tabbar.btnArr[1]
         tabbar.seletedButton.isSelected = true
 
@@ -133,6 +146,7 @@ class WHTabBarVC: UITabBarController {
         coverWhiteView.layer.masksToBounds = false
 
         customBar.tabbar = tabbar
+        attachMineRedDotIfNeeded(in: customBar)
     }
     @objc private func showGuideTotalIfNeeded() {
         let vc = GuideTotalVC()
@@ -163,7 +177,6 @@ class WHTabBarVC: UITabBarController {
         whTabBar.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
         setValue(whTabBar, forKey: "tabBar")
-        
         tabbar = LLMyTabbar()
 //        tabbar.frame = CGRect(x: tabBar.bounds.minX,
 //                              y: tabBar.bounds.minY,
@@ -174,17 +187,77 @@ class WHTabBarVC: UITabBarController {
         tabbar.delegate = self
         tabbar.backgroundColor = .clear
 
-        whTabBar.addSubview(tabbar)
-        whTabBar.tabbar = tabbar
+//        whTabBar.addSubview(tabbar)
+//        whTabBar.tabbar = tabbar
 
         whTabBar.insertSubview(coverWhiteView, belowSubview: tabbar)
 //        coverWhiteView.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: WHUtils().getTabbarHeight())
         coverWhiteView.frame = tabBar.bounds
-                coverWhiteView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-                coverWhiteView.layer.masksToBounds = false
-                coverWhiteView.addShadow(opacity: 0.05, offset: CGSize(width: 0, height: -5))
+        coverWhiteView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        coverWhiteView.layer.masksToBounds = false
+        coverWhiteView.addShadow(opacity: 0.05, offset: CGSize(width: 0, height: -5))
+    }
+    private func observeMineTabNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(mineServiceMsgNotification),
+                                               name: NSNotification.Name(rawValue: "serviceMsgUnRead"),
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(mineServiceMsgReadNotification),
+                                               name: NSNotification.Name(rawValue: "serviceMsgRead"),
+                                               object: nil)
     }
 
+    private func attachMineRedDotIfNeeded(in bar: WHTabBar) {
+        guard let items = bar.items, items.count > Constants.mineTabIndex else { return }
+
+        if mineRedDotView.superview !== bar {
+            mineRedDotView.removeFromSuperview()
+            bar.addSubview(mineRedDotView)
+        }
+
+        let itemCount = CGFloat(items.count)
+        guard itemCount > 0 else { return }
+
+        let itemWidth = bar.bounds.width / itemCount
+        let redDotSize = kFitWidth(5)
+        mineRedDotView.bounds = CGRect(x: 0, y: 0, width: redDotSize, height: redDotSize)
+        mineRedDotView.layer.cornerRadius = redDotSize / 2
+
+        let mineOriginX = CGFloat(Constants.mineTabIndex) * itemWidth
+        let centerX = mineOriginX + itemWidth * 0.5 + kFitWidth(12)
+        let centerY = kFitWidth(3) + redDotSize * 0.5
+        mineRedDotView.center = CGPoint(x: centerX, y: centerY)
+
+        if didInitializeMineRedDotState == false {
+            didInitializeMineRedDotState = true
+            updateMineRedDotInitialState()
+        }
+    }
+
+    private func updateMineRedDotInitialState() {
+        if UserInfoModel.shared.msgUnRead {
+            setMineRedDotHidden(false)
+        } else {
+            mineServiceMsgReadNotification()
+        }
+        tabbar.mineServiceMsgReadNotification()
+    }
+
+    private func setMineRedDotHidden(_ hidden: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.mineRedDotView.isHidden = hidden
+        }
+    }
+
+    @objc private func mineServiceMsgNotification() {
+        setMineRedDotHidden(false)
+    }
+
+    @objc private func mineServiceMsgReadNotification() {
+        let shouldHide = UserInfoModel.shared.settingNewFuncRead && UserInfoModel.shared.newsListHasUnRead == false
+        setMineRedDotHidden(shouldHide)
+    }
     func childAllChildViewControllers() {
         let mainVc = OverViewVC()
         let journalVc = JournalVC()
