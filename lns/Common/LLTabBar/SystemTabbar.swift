@@ -10,12 +10,15 @@ import UIKit
 class SystemTabbar: UITabBarController {
 
     private weak var myTabItem: UITabBarItem?
+    let generator = UIImpactFeedbackGenerator(style: .soft)
     private var shouldShowDotAfterLayout = false
     private var pendingDotDiameter: CGFloat = 5
     private var pendingDotOffset: UIOffset = .init(horizontal: 10, vertical: -6)
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        delegate = self
+        generator.prepare()
         initConfig()
         initVc()
     }
@@ -240,4 +243,12 @@ class SystemTabbar: UITabBarController {
         tabBar.layer.sublayers?.removeAll(where: { $0.name == layerName })
     }
 
+}
+// MARK: - UITabBarControllerDelegate
+extension SystemTabbar:UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        generator.impactOccurred(intensity: 0.8)
+        generator.prepare()
+        return true
+    }
 }

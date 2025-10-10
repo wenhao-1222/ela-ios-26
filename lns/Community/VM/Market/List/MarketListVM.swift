@@ -9,7 +9,7 @@ import MJRefresh
 
 class MarketListVM : UIView{
     
-    let selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()
+    let selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()//-WHUtils().getTabbarHeight()
     
     var controller = WHBaseViewVC()
     
@@ -45,7 +45,8 @@ class MarketListVM : UIView{
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         
-        let vi = JournalCollectionView.init(frame: CGRect.init(x: kFitWidth(9), y: 0, width: SCREEN_WIDHT-kFitWidth(29), height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()), collectionViewLayout: layout)
+        let vi = JournalCollectionView.init(frame: CGRect.init(x: kFitWidth(9), y: 0, width: SCREEN_WIDHT-kFitWidth(29), height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()), collectionViewLayout: layout)
+//        let vi = JournalCollectionView.init(frame: CGRect.init(x: kFitWidth(9), y: 0, width: SCREEN_WIDHT-kFitWidth(29), height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()), collectionViewLayout: layout)
         
         vi.collectionViewLayout = layout
         vi.backgroundColor = .white
@@ -53,6 +54,8 @@ class MarketListVM : UIView{
         
         vi.register(MarketListGridCell.classForCoder(), forCellWithReuseIdentifier: "MarketListGridCell")
         vi.register(MarketListHeroCell.classForCoder(), forCellWithReuseIdentifier: "MarketListHeroCell")
+        
+        vi.contentInsetAdjustmentBehavior = .never
         
         return vi
     }()

@@ -131,7 +131,7 @@ extension ForumVC{
     func initUI(){
         view.addSubview(naviView)
         view.addSubview(scrollViewBase)
-        scrollViewBase.frame = CGRect.init(x: 0, y: naviView.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-naviView.frame.maxY-getTabbarHeight())
+        scrollViewBase.frame = CGRect.init(x: 0, y: naviView.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-naviView.frame.maxY)
         scrollViewBase.backgroundColor = .clear
         scrollViewBase.delegate = self
         scrollViewBase.showsVerticalScrollIndicator = false

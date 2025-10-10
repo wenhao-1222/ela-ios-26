@@ -9,7 +9,7 @@ import MJRefresh
 
 class ForumListVM : UIView{
     
-    let selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()
+    let selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()//-WHUtils().getTabbarHeight()
     var centerY = kFitWidth(0)
     var controller = WHBaseViewVC()
     var dataSourceArray:[ForumModel] = [ForumModel]()
