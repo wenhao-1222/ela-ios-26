@@ -170,7 +170,7 @@ extension UserInfoModel{
     func updateMsg(dict:NSDictionary){
         DLLog(message: "UserInfoModel：\(dict)")
         self.birthDay = dict["birthday"]as? String ?? ""
-        self.gender = "\(dict["gender"]as? Int ?? 0)"
+        self.gender = dict.stringValueForKey(key: "gender")//"\(dict["gender"]as? Int ?? 0)"
         self.headimgurl = dict["headimgurl"]as? String ?? ""
         self.id = dict["id"]as? String ?? ""
         self.registDate = dict.stringValueForKey(key: "ctime")
@@ -195,7 +195,6 @@ extension UserInfoModel{
         
         self.isBindWeChat = dict["wxconnected"]as? String ?? "" == "true" ? true : false
         self.isBindAppId = dict["appleconnected"]as? String ?? "" == "true" ? true : false
-        
        
         self.setMobMsg(dict: dict)
         
