@@ -45,8 +45,15 @@ class SystemTabbar: UITabBarController {
         let resizable = baseImage.resizableImage(withCapInsets: UIEdgeInsets(top: 21, left: 30, bottom: 21, right: 30), resizingMode: .stretch)
         appearance.selectionIndicatorImage = resizable
 
-        appearance.stackedLayoutAppearance.selected.iconColor = .white
-        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.white]
+//        appearance.stackedLayoutAppearance.selected.iconColor = .white
+//        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.white]
+        let themeColor = UIColor.THEME
+                appearance.stackedLayoutAppearance.selected.iconColor = themeColor
+                appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: themeColor]
+                appearance.inlineLayoutAppearance.selected.iconColor = themeColor
+                appearance.inlineLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: themeColor]
+                appearance.compactInlineLayoutAppearance.selected.iconColor = themeColor
+                appearance.compactInlineLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: themeColor]
         appearance.stackedLayoutAppearance.normal.iconColor = .label
         appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.label]
 
@@ -56,6 +63,7 @@ class SystemTabbar: UITabBarController {
         }
         UITabBar.appearance().itemPositioning = .automatic
         UITabBar.appearance().itemSpacing = 8
+        UITabBar.appearance().tintColor = themeColor
     }
 
     func initVc() {
@@ -69,22 +77,22 @@ class SystemTabbar: UITabBarController {
         let vc1 = mainVc
         vc1.tabBarItem = UITabBarItem(title: "概览",
                                       image: UIImage(named: "tabbar_main_normal")!,
-                                      selectedImage: UIImage(named: "tabbar_main_selected")!)
+                                      selectedImage: UIImage(named: "tabbar_main_selected")?.withRenderingMode(.alwaysOriginal))
 
         let vc2 = journalVc
         vc2.tabBarItem = UITabBarItem(title: "日志",
                                       image: UIImage(named: "tabbar_logs_normal")!,
-                                      selectedImage: UIImage(named: "tabbar_logs_selected")!)
+                                      selectedImage: UIImage(named: "tabbar_logs_selected")?.withRenderingMode(.alwaysOriginal))
 
         let vc3 = forumVc
         vc3.tabBarItem = UITabBarItem(title: "干货",
                                       image: UIImage(named: "tabbar_forum_normal")!,
-                                      selectedImage: UIImage(named: "tabbar_forum_selected")!)
+                                      selectedImage: UIImage(named: "tabbar_forum_selected")?.withRenderingMode(.alwaysOriginal))
 
         let vc4 = mineVc
         vc4.tabBarItem = UITabBarItem(title: "我的",
                                       image: UIImage(named: "tabbar_mine_normal")!,
-                                      selectedImage: UIImage(named: "tabbar_mine_selected")!)
+                                      selectedImage: UIImage(named: "tabbar_mine_selected")?.withRenderingMode(.alwaysOriginal))
 
         self.myTabItem = vc4.tabBarItem
         self.viewControllers = [vc1, vc2, vc3, vc4].map { UINavigationController(rootViewController: $0) }
@@ -146,8 +154,13 @@ class SystemTabbar: UITabBarController {
         dot.name = "customDotLayer"
         dot.fillColor = UIColor.systemRed.cgColor
         let r = diameter / 2.0
-        let center = CGPoint(x: button.bounds.width - r + offset.horizontal,
-                             y: r + offset.vertical)
+//        let center = CGPoint(x: button.bounds.width - r + offset.horizontal,
+//                             y: r + offset.vertical)
+        let x = button.bounds.width - r + offset.horizontal
+        let y = r + offset.vertical
+        let clampedX = min(max(x, r), button.bounds.width - r)
+        let clampedY = min(max(y, r), button.bounds.height - r)
+        let center = CGPoint(x: clampedX, y: clampedY)
         dot.path = UIBezierPath(arcCenter: center, radius: r, startAngle: 0, endAngle: .pi * 2, clockwise: true).cgPath
         button.layer.addSublayer(dot)
         return true
