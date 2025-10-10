@@ -929,6 +929,7 @@
 		EC9726202C5C882B00F244A2 /* WinnerStreakVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC97261F2C5C882B00F244A2 /* WinnerStreakVM.swift */; };
 		EC9726222C5CA0BB00F244A2 /* WinnerStreakAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9726212C5CA0BB00F244A2 /* WinnerStreakAlertVM.swift */; };
 		EC976F962E977ED500D964E2 /* LiquidGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC976F952E977ED400D964E2 /* LiquidGlassView.swift */; };
+		EC9B8B792E98D4BA00FACE39 /* SystemTabbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9B8B782E98D4B900FACE39 /* SystemTabbar.swift */; };
 		ECA1E2EC2C007B7E00C31B77 /* AESEncyptUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA1E2EB2C007B7E00C31B77 /* AESEncyptUtil.swift */; };
 		ECA1E2EE2C00818B00C31B77 /* Character+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA1E2ED2C00818B00C31B77 /* Character+Exs.swift */; };
 		ECA1E2F02C0081F700C31B77 /* Data+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA1E2EF2C0081F700C31B77 /* Data+Exs.swift */; };
@@ -2194,6 +2195,7 @@
 		EC97261F2C5C882B00F244A2 /* WinnerStreakVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinnerStreakVM.swift; sourceTree = "<group>"; };
 		EC9726212C5CA0BB00F244A2 /* WinnerStreakAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WinnerStreakAlertVM.swift; sourceTree = "<group>"; };
 		EC976F952E977ED400D964E2 /* LiquidGlassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassView.swift; sourceTree = "<group>"; };
+		EC9B8B782E98D4B900FACE39 /* SystemTabbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemTabbar.swift; sourceTree = "<group>"; };
 		ECA1E2EB2C007B7E00C31B77 /* AESEncyptUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AESEncyptUtil.swift; sourceTree = "<group>"; };
 		ECA1E2ED2C00818B00C31B77 /* Character+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+Exs.swift"; sourceTree = "<group>"; };
 		ECA1E2EF2C0081F700C31B77 /* Data+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Exs.swift"; sourceTree = "<group>"; };
@@ -4562,6 +4564,7 @@
 				ECD0FE902BABD25B001232C9 /* LLMyTabbar.swift */,
 				ECD0FE922BABD25B001232C9 /* LLTabBarViewController.swift */,
 				ECD627262BC50CBA00CE819F /* WHTabBarVC.swift */,
+				EC9B8B782E98D4B900FACE39 /* SystemTabbar.swift */,
 				A732697F2D953F5E00F2A87D /* iPadTabBarVC.swift */,
 			);
 			path = LLTabBar;
@@ -5309,9 +5312,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -5346,9 +5353,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6109,6 +6120,7 @@
 				A75039FD2CF0555000C2B2B3 /* SportCatogaryModel.swift in Sources */,
 				EC14405C2C3E649100566E9F /* JournalShareTopVM.swift in Sources */,
 				A74187332D79657B006C8858 /* AITypeVM.swift in Sources */,
+				EC9B8B792E98D4BA00FACE39 /* SystemTabbar.swift in Sources */,
 				A7A083CC2D87C3CD008B8A3E /* FoodsMergeAddVm.swift in Sources */,
 				EC8FF3DA2C9049FA003A7E0B /* NaturalStatDateCustomBottomView.swift in Sources */,
 				EC24EB572BB2CA44002F21DF /* QuestionnaireSurveyBodyFatDataVM.swift in Sources */,

@@ -74,7 +74,7 @@ class OverViewVC : WHBaseViewVC {
     }
     lazy var scrollView : UIScrollView = {
         let vi = UIScrollView()
-        vi.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getTabbarHeight())
+        vi.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
 //        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")
 //        vi.backgroundColor = .COLOR_BG_F5
         vi.backgroundColor = .clear
@@ -248,7 +248,7 @@ extension OverViewVC{
         
         [topMsgVm, sportVm, dataLineChartView, weightLineChartView].forEach { setupExclusiveTouch(in: $0) }
         
-        scrollView.contentSize = CGSize.init(width: 0, height: self.dataLineChartView.frame.maxY + kFitWidth(32))
+        scrollView.contentSize = CGSize.init(width: 0, height: self.dataLineChartView.frame.maxY + kFitWidth(32) + getTabbarHeight())
         
         DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate

@@ -90,7 +90,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                     if isIpad(){
                         rootVc = MainTabBarController()
                     }else{
-                        rootVc = WHTabBarVC()
+//                        rootVc = WHTabBarVC()
+                        rootVc = SystemTabbar()
                     }
                     
                     WidgetUtils().saveUserInfo(uId: "\(uId)", uToken: "\(token)")
