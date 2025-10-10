@@ -11,7 +11,7 @@ class SystemTabbar: UITabBarController {
 
     private weak var myTabItem: UITabBarItem?
     private var shouldShowDotAfterLayout = false
-    private var pendingDotDiameter: CGFloat = 6
+    private var pendingDotDiameter: CGFloat = 5
     private var pendingDotOffset: UIOffset = .init(horizontal: 10, vertical: -6)
 
     override func viewDidLoad() {
@@ -24,8 +24,12 @@ class SystemTabbar: UITabBarController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if shouldShowDotAfterLayout, let my = myTabItem {
-            _ = showDot(on: my, diameter: pendingDotDiameter, offset: pendingDotOffset)
-            shouldShowDotAfterLayout = false
+            let didShow = showDot(on: my, diameter: pendingDotDiameter, offset: pendingDotOffset)
+            if didShow {
+                shouldShowDotAfterLayout = false
+            }
+//            _ = showDot(on: my, diameter: pendingDotDiameter, offset: pendingDotOffset)
+//            shouldShowDotAfterLayout = false
         }
     }
 
@@ -94,9 +98,11 @@ class SystemTabbar: UITabBarController {
                                       image: UIImage(named: "tabbar_mine_normal")!,
                                       selectedImage: UIImage(named: "tabbar_mine_selected")?.withRenderingMode(.alwaysOriginal))
 
-        self.myTabItem = vc4.tabBarItem
-        self.viewControllers = [vc1, vc2, vc3, vc4].map { UINavigationController(rootViewController: $0) }
+//        self.viewControllers = [vc1, vc2, vc3, vc4].map { UINavigationController(rootViewController: $0) }
+        let navs = [vc1, vc2, vc3, vc4].map { UINavigationController(rootViewController: $0) }
+        self.viewControllers = navs
         self.selectedIndex = 1
+        self.myTabItem = navs[3].tabBarItem
 
         // ❗️不要在这里直接 showDot；先记住需求，等布局后再执行
         scheduleShowDot(for: vc4.tabBarItem, diameter: kFitWidth(3))
@@ -127,50 +133,111 @@ class SystemTabbar: UITabBarController {
     private func tabBarButtons() -> [UIControl] {
         tabBar.layoutIfNeeded()
 
-        // 1) 常规路径：UIControl 过滤
-        var controls = tabBar.subviews.compactMap { $0 as? UIControl }
-        if controls.isEmpty {
-            // 2) 兜底：按类名匹配 UITabBarButton
-            if let cls = NSClassFromString("UITabBarButton") {
-                controls = tabBar.subviews.filter { $0.isKind(of: cls) }.compactMap { $0 as? UIControl }
+        func allSubviews(_ v: UIView) -> [UIView] { v.subviews + v.subviews.flatMap { allSubviews($0) } }
+
+        let all = allSubviews(tabBar)
+        // 只要同时包含 UIImageView + UILabel 的 UIControl，或者类名包含 TabBarButton
+        let buttons = all.compactMap { $0 as? UIControl }.filter { control in
+            let name = String(describing: type(of: control))
+            let looksLike = control.subviews.contains { $0 is UIImageView } &&
+                            control.subviews.contains { $0 is UILabel } &&
+                            control.bounds.width > 10 && control.bounds.height > 10
+            return name.contains("TabBarButton") || looksLike
+        }
+
+        return buttons.sorted { $0.frame.midX < $1.frame.midX }
+    }
+
+    private func tabBarButton(for item: UITabBarItem) -> UIControl? {
+        tabBar.layoutIfNeeded()
+
+        func associatedItem(for control: UIControl) -> UITabBarItem? {
+            let selectors = [Selector(("tabBarItem")), Selector(("item"))]
+            for selector in selectors where control.responds(to: selector) {
+                if let unmanaged = control.perform(selector) {
+                    let value = unmanaged.takeUnretainedValue()
+                    if let item = value as? UITabBarItem {
+                        return item
+                    }
+                }
+            }
+            return nil
+        }
+
+        func findButton(in view: UIView) -> UIControl? {
+            for subview in view.subviews {
+                if let control = subview as? UIControl,
+                   let linkedItem = associatedItem(for: control),
+                   linkedItem === item {
+                    return control
+                }
+
+                if let found = findButton(in: subview) {
+                    return found
+                }
+            }
+            return nil
+        }
+
+        if let directMatch = findButton(in: tabBar) {
+            return directMatch
+        }
+
+        if let items = tabBar.items,
+           let idx = items.firstIndex(of: item) {
+            let buttons = tabBarButtons()
+            if idx < buttons.count {
+                return buttons[idx]
             }
         }
-        return controls.sorted { $0.frame.minX < $1.frame.minX }
+
+        return nil
     }
 
     @discardableResult
-    func showDot(on item: UITabBarItem, diameter: CGFloat = 6, offset: UIOffset = .init(horizontal: 10, vertical: -6)) -> Bool {
+    func showDot(on item: UITabBarItem,
+                 diameter: CGFloat = 6,
+                 offset: UIOffset = .init(horizontal: 12, vertical: -10)) -> Bool {
         guard let items = tabBar.items,
-              let idx = items.firstIndex(of: item) else { return false }
+              let idx = items.firstIndex(of: item),
+              items.count > 0 else { return false }
 
-        let buttons = tabBarButtons()
-        guard idx < buttons.count else { return false }
-        let button = buttons[idx]
+        // 先清理旧的
+        let layerName = "customDotLayer_\(idx)"
+        tabBar.layer.sublayers?.removeAll(where: { $0.name == layerName })
 
-        // 先移除旧的
-        button.layer.sublayers?.removeAll(where: { $0.name == "customDotLayer" })
+        tabBar.layoutIfNeeded()
 
+        // 按“栏位几何”计算该项的中心点（不再找 UITabBarButton）
+        let count = CGFloat(items.count)
+        let segmentWidth = tabBar.bounds.width / max(count, 1)
+        let midX = segmentWidth * (CGFloat(idx) + 0.5)
+        // 纵向：靠近图标上缘。这里用一个经验值：tabBar.bounds.height 的上半部
+        let baseY = tabBar.bounds.height * 0.28
+
+        // 应用外部偏移（可调）
+        let x = midX //+ offset.horizontal
+        let y = max(min(baseY + offset.vertical, tabBar.bounds.height - diameter/2), diameter/2)
+
+        // 画圆点到 tabBar.layer（不是按钮的 layer）
         let dot = CAShapeLayer()
-        dot.name = "customDotLayer"
+        dot.name = layerName
         dot.fillColor = UIColor.systemRed.cgColor
         let r = diameter / 2.0
-//        let center = CGPoint(x: button.bounds.width - r + offset.horizontal,
-//                             y: r + offset.vertical)
-        let x = button.bounds.width - r + offset.horizontal
-        let y = r + offset.vertical
-        let clampedX = min(max(x, r), button.bounds.width - r)
-        let clampedY = min(max(y, r), button.bounds.height - r)
-        let center = CGPoint(x: clampedX, y: clampedY)
-        dot.path = UIBezierPath(arcCenter: center, radius: r, startAngle: 0, endAngle: .pi * 2, clockwise: true).cgPath
-        button.layer.addSublayer(dot)
+        dot.path = UIBezierPath(arcCenter: CGPoint(x: x, y: y),
+                                radius: r,
+                                startAngle: 0,
+                                endAngle: .pi * 2,
+                                clockwise: true).cgPath
+        tabBar.layer.addSublayer(dot)
         return true
     }
 
     func hideDot(on item: UITabBarItem) {
         guard let items = tabBar.items,
               let idx = items.firstIndex(of: item) else { return }
-        let buttons = tabBarButtons()
-        guard idx < buttons.count else { return }
-        buttons[idx].layer.sublayers?.removeAll(where: { $0.name == "customDotLayer" })
+        let layerName = "customDotLayer_\(idx)"
+        tabBar.layer.sublayers?.removeAll(where: { $0.name == layerName })
     }
+
 }

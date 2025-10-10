@@ -73,6 +73,8 @@
 		<string>D-DIN-PRO-900-Heavy.otf</string>
 		<string>D-DIN-PRO-400-Regular.otf</string>
 	</array>
+    <key>UILaunchStoryboardName</key>
+    <string>ElaLaunch</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
