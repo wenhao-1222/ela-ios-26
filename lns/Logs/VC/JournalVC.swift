@@ -297,11 +297,13 @@ class JournalVC: WHBaseViewVC {
     }()
     let collectView : JournalCollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight())
+        layout.itemSize = CGSize(width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight())
+//        layout.itemSize = CGSize(width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight())
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
-        let vi = JournalCollectionView.init(frame: CGRect.init(x: 0, y:WHUtils().getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()), collectionViewLayout: layout)
+        let vi = JournalCollectionView.init(frame: CGRect.init(x: 0, y:WHUtils().getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()), collectionViewLayout: layout)
+//        let vi = JournalCollectionView.init(frame: CGRect.init(x: 0, y:WHUtils().getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()), collectionViewLayout: layout)
         
         vi.collectionViewLayout = layout
         vi.isPagingEnabled = true

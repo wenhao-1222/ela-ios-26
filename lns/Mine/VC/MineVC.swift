@@ -141,7 +141,7 @@ class MineVC : WHBaseViewVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.frameChangeBlock = {()in
-            self.scrollViewBase.contentSize = CGSize.init(width: 0, height: self.funcBottomVm.frame.maxY)
+            self.scrollViewBase.contentSize = CGSize.init(width: 0, height: self.funcBottomVm.frame.maxY+self.getTabbarHeight())
         }
         return vm
     }()
@@ -204,14 +204,15 @@ extension MineVC{
     func initUI(){
         view.addSubview(scrollViewBase)
         scrollViewBase.backgroundColor = .COLOR_BG_F2
-        scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getTabbarHeight())
+        scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+//        scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getTabbarHeight())
         scrollViewBase.addSubview(personalTopVm)
         scrollViewBase.addSubview(funcTopVm)
         scrollViewBase.addSubview(settingVm)
         scrollViewBase.addSubview(funcBottomVm)
         [personalTopVm, funcTopVm, settingVm, funcBottomVm].forEach { setupExclusiveTouch(in: $0) }
 
-        scrollViewBase.contentSize = CGSize.init(width: 0, height: self.funcBottomVm.frame.maxY)
+        scrollViewBase.contentSize = CGSize.init(width: 0, height: self.funcBottomVm.frame.maxY+getTabbarHeight())
     }
 }
 

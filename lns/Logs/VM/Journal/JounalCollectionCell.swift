@@ -159,7 +159,8 @@ class JounalCollectionCell: UICollectionViewCell {
         return vm
     }()
     lazy var tableView: UITableView = {
-        let vi = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()), style: .grouped)
+        let vi = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()), style: .grouped)
+//        let vi = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()), style: .grouped)
         vi.backgroundColor = .clear//WHColor_16(colorStr: "FAFAFA")
         vi.delegate = self
         vi.dataSource = self
