@@ -101,8 +101,9 @@ class SystemTabbar: UITabBarController {
                                       image: UIImage(named: "tabbar_mine_normal")!,
                                       selectedImage: UIImage(named: "tabbar_mine_selected")?.withRenderingMode(.alwaysOriginal))
 
-//        self.viewControllers = [vc1, vc2, vc3, vc4].map { UINavigationController(rootViewController: $0) }
-        let navs = [vc1, vc2, vc3, vc4].map { UINavigationController(rootViewController: $0) }
+//        let navs = [vc1, vc2, vc3, vc4].map { UINavigationController(rootViewController: $0) }
+        let navs = [vc1, vc2, vc3, vc4].map { LLNaviViewController(rootViewController: $0) }
+        
         self.viewControllers = navs
         self.selectedIndex = 1
         self.myTabItem = navs[3].tabBarItem
