@@ -50,8 +50,15 @@ target 'lns' do
 
 post_install do |installer|
    
-   installer.pods_project.build_configurations.each do |config|
-    config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+   #installer.pods_project.build_configurations.each do |config|
+    #config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+# 允许 Pods 在模拟器环境下同时为 Intel 与 Apple Silicon 芯片编译。
+  # 之前直接排除了 arm64 架构，会导致在 Apple Silicon 模拟器上构建时找不到
+  # 像 Alamofire、CryptoSwift 等 Pod 生成的模块，从而出现
+  # “Unable to find module dependency” 的错误。
+  # 将该设置清空即可让 Xcode 根据当前环境生成所需架构的切片。
+  installer.pods_project.build_configurations.each do |config|
+    config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = ""
     config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
     # Allow running on both Intel and Apple Silicon simulators
     # config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = ""

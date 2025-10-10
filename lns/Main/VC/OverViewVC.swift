@@ -10,7 +10,7 @@ import Foundation
 import MCToast
 import IQKeyboardManagerSwift
 import CryptoKit
-import UMCommon
+//import UMCommon
 import HealthKit
 
 class OverViewVC : WHBaseViewVC {
@@ -157,7 +157,7 @@ class OverViewVC : WHBaseViewVC {
     lazy var saveNutrationAlertVm : MainSaveNutrationAlertVM = {
         let vm = MainSaveNutrationAlertVM.init(frame: .zero)
         vm.saveBlock = {()in
-            MobClick.event("createNutrition")
+//            MobClick.event("createNutrition")
             self.sendSaveNutrationRequest()
         }
         return vm

@@ -18,9 +18,10 @@ final class LiquidGlassView: UIView {
         super.init(frame: frame)
         isUserInteractionEnabled = false
         clipsToBounds = true
+        self.backgroundColor = .clear
 
         addSubview(blurView)
-
+        blurView.backgroundColor = .clear
         // 柔和的移动高光，模拟“液态”质感（很轻量，如不需要可整段注释）
         highlightLayer.startPoint = CGPoint(x: 0, y: 0)
         highlightLayer.endPoint = CGPoint(x: 1, y: 1)
