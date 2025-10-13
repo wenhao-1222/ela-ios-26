@@ -14,6 +14,13 @@ class SystemTabbar: UITabBarController {
     private var shouldShowDotAfterLayout = false
     private var pendingDotDiameter: CGFloat = 5
     private var pendingDotOffset: UIOffset = .init(horizontal: 10, vertical: -6)
+    /// 导航控制器在交互返回期间打开此开关
+    var suppressTabBarDuringInteractivePop: Bool = false
+
+    /// 记录最后一次“正确”的 tabBar frame（非抑制状态下）
+    private var lastStableTabBarFrame: CGRect = .zero
+
+    private var cachedHeight: CGFloat { max(1, tabBar.bounds.height) }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,18 +29,54 @@ class SystemTabbar: UITabBarController {
         initConfig()
         initVc()
     }
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+
+        guard suppressTabBarDuringInteractivePop else { return }
+
+        // 强制抑制：把 TabBar 移出屏外并隐藏（即便系统刚把它设回可见，这里同帧再次压下去）
+        tabBar.isHidden = true
+        tabBar.alpha = 0
+        tabBar.transform = CGAffineTransform(translationX: 0, y: cachedHeight)
+        if let custom = tabBar as? WHTabBar {
+            custom.tabbar.isHidden = true
+            custom.tabbar.alpha = 0
+            custom.tabbar.transform = CGAffineTransform(translationX: 0, y: cachedHeight)
+        }
+        tabBar.superview?.clipsToBounds = true
+    }
 
     // ✅ 布局完成后再挂小红点（首次或旋转后都会走到这里）
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if shouldShowDotAfterLayout, let my = myTabItem {
-            let didShow = showDot(on: my, diameter: pendingDotDiameter, offset: pendingDotOffset)
-            if didShow {
-                shouldShowDotAfterLayout = false
+
+        if suppressTabBarDuringInteractivePop {
+            // 帧级抑制：把 TabBar 隐藏并移出屏外（即便 UIKit/FD 刚把它设回可见，这里同帧压下去）
+            tabBar.isHidden = true
+            tabBar.alpha = 0
+            tabBar.transform = CGAffineTransform(translationX: 0, y: cachedHeight)
+            if let custom = tabBar as? WHTabBar {
+                custom.tabbar.isHidden = true
+                custom.tabbar.alpha = 0
+                custom.tabbar.transform = CGAffineTransform(translationX: 0, y: cachedHeight)
             }
-//            _ = showDot(on: my, diameter: pendingDotDiameter, offset: pendingDotOffset)
-//            shouldShowDotAfterLayout = false
+        } else {
+            // 记录稳定 frame，用于之后强制复位
+            if tabBar.transform == .identity && !tabBar.isHidden && tabBar.alpha > 0.99 {
+                lastStableTabBarFrame = tabBar.frame
+            }
         }
+    }
+    /// 供外部（导航控制器）在显示前后强制复位
+    func restoreStableFrameIfNeeded() {
+        guard lastStableTabBarFrame != .zero else { return }
+        tabBar.transform = .identity
+        tabBar.frame = lastStableTabBarFrame
+        if let custom = tabBar as? WHTabBar { custom.tabbar.transform = .identity }
+        tabBar.setNeedsLayout()
+        tabBar.layoutIfNeeded()
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
     }
 
     func initConfig() {
