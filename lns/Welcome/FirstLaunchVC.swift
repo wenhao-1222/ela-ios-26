@@ -90,12 +90,12 @@ class FirstLaunchVC: WHBaseViewVC {
 
     lazy var firstLogoImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "main_top_logo_cj")
+        img.setImgLocal(imgName: "main_top_logo_launch")
         return img
     }()
     lazy var secondLogoImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "main_top_logo_cj")
+        img.setImgLocal(imgName: "main_top_logo_launch")
         img.alpha = 0
         return img
     }()

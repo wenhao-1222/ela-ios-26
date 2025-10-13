@@ -16,6 +16,8 @@ class SystemTabbar: UITabBarController {
     private var pendingDotOffset: UIOffset = .init(horizontal: 10, vertical: -6)
     /// 导航控制器在交互返回期间打开此开关
     var suppressTabBarDuringInteractivePop: Bool = false
+    private var didInitializeMineRedDotState = false
+    private var guideVC: GuideTotalVC?
 
     /// 记录最后一次“正确”的 tabBar frame（非抑制状态下）
     private var lastStableTabBarFrame: CGRect = .zero
@@ -28,6 +30,15 @@ class SystemTabbar: UITabBarController {
         generator.prepare()
         initConfig()
         initVc()
+        observeMineTabNotifications()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(gotoLogsNotification),
+                                               name: NSNotification.Name(rawValue: "activePlan"),
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(showGuideTotalIfNeeded),
+                                               name: NOTIFI_NAME_GUIDE,
+                                               object: nil)
     }
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
@@ -65,6 +76,16 @@ class SystemTabbar: UITabBarController {
             if tabBar.transform == .identity && !tabBar.isHidden && tabBar.alpha > 0.99 {
                 lastStableTabBarFrame = tabBar.frame
             }
+        }
+        if shouldShowDotAfterLayout, let item = mineTabBarItem {
+            if showDot(on: item, diameter: pendingDotDiameter, offset: pendingDotOffset) {
+                shouldShowDotAfterLayout = false
+            }
+        }
+
+        if didInitializeMineRedDotState == false {
+            didInitializeMineRedDotState = true
+            updateMineRedDotInitialState()
         }
     }
     /// 供外部（导航控制器）在显示前后强制复位
@@ -152,7 +173,16 @@ class SystemTabbar: UITabBarController {
         self.myTabItem = navs[3].tabBarItem
 
         // ❗️不要在这里直接 showDot；先记住需求，等布局后再执行
-        scheduleShowDot(for: vc4.tabBarItem, diameter: kFitWidth(3))
+//        scheduleShowDot(for: vc4.tabBarItem, diameter: kFitWidth(3))
+        if UserInfoModel.shared.msgUnRead {
+            scheduleShowDot(for: vc4.tabBarItem, diameter: kFitWidth(3))
+        }
+    }
+
+    private var mineTabBarItem: UITabBarItem? {
+        if let item = myTabItem { return item }
+        guard let vcs = viewControllers, vcs.count > 3 else { return nil }
+        return vcs[3].tabBarItem
     }
 
     // MARK: - Badge（系统原生）
@@ -294,5 +324,74 @@ extension SystemTabbar:UITabBarControllerDelegate {
         generator.impactOccurred(intensity: 0.8)
         generator.prepare()
         return true
+    }
+}
+extension SystemTabbar{
+    private func observeMineTabNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(mineServiceMsgNotification),
+                                               name: NSNotification.Name(rawValue: "serviceMsgUnRead"),
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(mineServiceMsgReadNotification),
+                                               name: NSNotification.Name(rawValue: "serviceMsgRead"),
+                                               object: nil)
+    }
+
+    private func updateMineRedDotInitialState() {
+        if UserInfoModel.shared.msgUnRead {
+            setMineRedDotHidden(false)
+        } else {
+            mineServiceMsgReadNotification()
+        }
+    }
+
+    private func setMineRedDotHidden(_ hidden: Bool) {
+        guard let item = mineTabBarItem else { return }
+        if hidden {
+            shouldShowDotAfterLayout = false
+            hideDot(on: item)
+        } else {
+            let diameter = kFitWidth(3)
+            let offset = UIOffset(horizontal: 10, vertical: -6)
+            pendingDotDiameter = diameter
+            pendingDotOffset = offset
+            if showDot(on: item, diameter: diameter, offset: offset) == false {
+                scheduleShowDot(for: item, diameter: diameter, offset: offset)
+            }
+        }
+    }
+
+    @objc private func mineServiceMsgNotification() {
+        setMineRedDotHidden(false)
+    }
+
+    @objc private func mineServiceMsgReadNotification() {
+        let shouldHide = UserInfoModel.shared.settingNewFuncRead && UserInfoModel.shared.newsListHasUnRead == false
+        setMineRedDotHidden(shouldHide)
+    }
+
+    @objc private func showGuideTotalIfNeeded() {
+        let vc = GuideTotalVC()
+        vc.finishBlock = { [weak self] in self?.removeGuideTotalVC() }
+        guideVC = vc
+        addChild(vc)
+        view.addSubview(vc.view)
+        vc.view.frame = view.bounds
+    }
+
+    private func removeGuideTotalVC() {
+        guard let vc = guideVC else { return }
+        UIView.animate(withDuration: 0.3, animations: { vc.view.alpha = 0 }) { _ in
+            vc.willMove(toParent: nil)
+            vc.view.removeFromSuperview()
+            vc.removeFromParent()
+            self.guideVC = nil
+        }
+        UserDefaults.standard.setValue("1", forKey: guide_total)
+    }
+
+    @objc private func gotoLogsNotification() {
+        selectedIndex = 1
     }
 }

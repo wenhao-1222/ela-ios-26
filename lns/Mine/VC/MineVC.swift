@@ -11,6 +11,9 @@ import MCToast
 import AliyunPlayer
 
 class MineVC : WHBaseViewVC {
+    
+    var bottomGap = kFitWidth(0)
+    
     override func viewWillAppear(_ animated: Bool) {
         self.personalTopVm.updateUI()
         sendUserCenterRequest()
@@ -21,6 +24,10 @@ class MineVC : WHBaseViewVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if #available(iOS 26.0, *) {
+            bottomGap = kFitWidth(20)
+        }
+        
         
         initUI()
         sendServiceWelcomeRequest()
@@ -141,7 +148,7 @@ class MineVC : WHBaseViewVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.frameChangeBlock = {()in
-            self.scrollViewBase.contentSize = CGSize.init(width: 0, height: self.funcBottomVm.frame.maxY+self.getTabbarHeight())
+            self.scrollViewBase.contentSize = CGSize.init(width: 0, height: self.funcBottomVm.frame.maxY+self.getTabbarHeight()+self.bottomGap)
         }
         return vm
     }()
@@ -212,7 +219,7 @@ extension MineVC{
         scrollViewBase.addSubview(funcBottomVm)
         [personalTopVm, funcTopVm, settingVm, funcBottomVm].forEach { setupExclusiveTouch(in: $0) }
 
-        scrollViewBase.contentSize = CGSize.init(width: 0, height: self.funcBottomVm.frame.maxY+getTabbarHeight())
+        scrollViewBase.contentSize = CGSize.init(width: 0, height: self.funcBottomVm.frame.maxY+getTabbarHeight()+self.bottomGap)
     }
 }
 
