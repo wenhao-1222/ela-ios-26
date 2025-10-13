@@ -809,6 +809,7 @@
 		EC5D4F812C21524300F376A4 /* TutorialUpdateAttr.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5D4F802C21524300F376A4 /* TutorialUpdateAttr.swift */; };
 		EC5E12602C801C6700F5828A /* NSDictionary+Widget+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D03822C6F201700F33137 /* NSDictionary+Widget+Exs.swift */; };
 		EC6048B22BEB48CB004E9578 /* PlanListActiveCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */; };
+		EC67033D2E9C8FE200C0FDFE /* SystemNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */; };
 		EC6978DF2BABBD81000B933A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6978DE2BABBD81000B933A /* AppDelegate.swift */; };
 		EC6978E32BABBD81000B933A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6978E22BABBD81000B933A /* ViewController.swift */; };
 		EC6978E62BABBD81000B933A /* Base in Resources */ = {isa = PBXBuildFile; fileRef = EC6978E52BABBD81000B933A /* Base */; };
@@ -2076,6 +2077,7 @@
 		EC5C81772C5A1A49000EC4BC /* GoalSetSpecPercentNaturalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSetSpecPercentNaturalVM.swift; sourceTree = "<group>"; };
 		EC5D4F802C21524300F376A4 /* TutorialUpdateAttr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialUpdateAttr.swift; sourceTree = "<group>"; };
 		EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanListActiveCellVM.swift; sourceTree = "<group>"; };
+		EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemNavigationController.swift; sourceTree = "<group>"; };
 		EC6978DB2BABBD81000B933A /* lns.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lns.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC6978DE2BABBD81000B933A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EC6978E22BABBD81000B933A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -4565,6 +4567,7 @@
 				ECD0FE922BABD25B001232C9 /* LLTabBarViewController.swift */,
 				ECD627262BC50CBA00CE819F /* WHTabBarVC.swift */,
 				EC9B8B782E98D4B900FACE39 /* SystemTabbar.swift */,
+				EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */,
 				A732697F2D953F5E00F2A87D /* iPadTabBarVC.swift */,
 			);
 			path = LLTabBar;
@@ -6027,6 +6030,7 @@
 				EC20451E2C51E96F00C5F813 /* MealsCaloriesDetailVM.swift in Sources */,
 				ECD0FF0B2BABD25B001232C9 /* NSData+UTF8.m in Sources */,
 				ECD0FF142BABD25B001232C9 /* UILabel+Exs.swift in Sources */,
+				EC67033D2E9C8FE200C0FDFE /* SystemNavigationController.swift in Sources */,
 				A7B676E12E28E90900E2CF1E /* CoursePayOrderPayBottomVM.swift in Sources */,
 				ECB3E0402BD2359700CFDDFD /* DataDetailShareLineView.m in Sources */,
 				A76BE7CB2CF415380058F459 /* SportHistoryTableViewCell.swift in Sources */,
