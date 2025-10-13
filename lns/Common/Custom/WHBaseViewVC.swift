@@ -180,8 +180,13 @@ class WHBaseViewVC: ViewController {
             let newRootVC = MainTabBarController()
             appDelegate.switchRootViewController(to: newRootVC)
         }else{
-            let newRootVC = WHTabBarVC()
-            appDelegate.switchRootViewController(to: newRootVC)
+//            var newRootVC = WHTabBarVC()
+//            appDelegate.switchRootViewController(to: newRootVC)
+            if #available(iOS 26.0, *) {
+                appDelegate.switchRootViewController(to: SystemTabbar())
+            }else{
+                appDelegate.switchRootViewController(to: WHTabBarVC())
+            }
         }
     }
     func changeRootVcToLogin() {
