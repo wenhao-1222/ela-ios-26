@@ -297,8 +297,8 @@ class JournalVC: WHBaseViewVC {
     }()
     let collectView : JournalCollectionView = {
         let layout = UICollectionViewFlowLayout()
-//        layout.itemSize = CGSize(width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight())
-        layout.itemSize = CGSize(width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight())
+        layout.itemSize = CGSize(width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight())
+//        layout.itemSize = CGSize(width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight())
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
@@ -842,7 +842,13 @@ extension JournalVC{
                 self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
             })
         }else{
-            self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
+            if #available(iOS 26.0, *) {
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+                    self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
+                })
+            }else{
+                self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
+            }
         }
         
 //        collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
