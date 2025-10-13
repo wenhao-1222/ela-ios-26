@@ -9,7 +9,7 @@ import MJRefresh
 
 class MarketListVM : UIView{
     
-    let selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()//-WHUtils().getTabbarHeight()
+    var selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()
     
     var controller = WHBaseViewVC()
     
@@ -22,6 +22,9 @@ class MarketListVM : UIView{
         fatalError("init(coder:) has not been implemented")
     }
     override init(frame: CGRect) {
+        if #available(iOS 26.0, *) {
+            selfHeight = SCREEN_HEIGHT//-WHUtils().getNavigationBarHeight()
+        }
         super.init(frame: CGRect.init(x: SCREEN_WIDHT*2, y: 0, width: SCREEN_WIDHT, height: selfHeight))
         self.backgroundColor = .clear
         initUI()
@@ -96,6 +99,7 @@ extension MarketListVM:UICollectionViewDelegate,UICollectionViewDataSource,UICol
         vc.listModel = model
         self.controller.navigationController?.pushViewController(vc, animated: true)
     }
+    
 }
 
 extension MarketListVM{

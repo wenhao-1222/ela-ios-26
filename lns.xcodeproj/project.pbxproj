@@ -810,6 +810,7 @@
 		EC5E12602C801C6700F5828A /* NSDictionary+Widget+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D03822C6F201700F33137 /* NSDictionary+Widget+Exs.swift */; };
 		EC6048B22BEB48CB004E9578 /* PlanListActiveCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */; };
 		EC67033D2E9C8FE200C0FDFE /* SystemNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */; };
+		EC67033F2E9CF3EA00C0FDFE /* ForumNaviTypeLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */; };
 		EC6978DF2BABBD81000B933A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6978DE2BABBD81000B933A /* AppDelegate.swift */; };
 		EC6978E32BABBD81000B933A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6978E22BABBD81000B933A /* ViewController.swift */; };
 		EC6978E62BABBD81000B933A /* Base in Resources */ = {isa = PBXBuildFile; fileRef = EC6978E52BABBD81000B933A /* Base */; };
@@ -2078,6 +2079,7 @@
 		EC5D4F802C21524300F376A4 /* TutorialUpdateAttr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialUpdateAttr.swift; sourceTree = "<group>"; };
 		EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanListActiveCellVM.swift; sourceTree = "<group>"; };
 		EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemNavigationController.swift; sourceTree = "<group>"; };
+		EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumNaviTypeLiquidVM.swift; sourceTree = "<group>"; };
 		EC6978DB2BABBD81000B933A /* lns.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lns.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC6978DE2BABBD81000B933A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EC6978E22BABBD81000B933A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -3396,6 +3398,7 @@
 				A71D4CD02D411CCF000399A4 /* ForumListFooterVM.swift */,
 				A71A52DB2CD89C81009FDAF9 /* ForumNaviVM.swift */,
 				A78FE2072CD4755B00661F7D /* ForumNaviTypeVM.swift */,
+				EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */,
 				A78FE20B2CD47E2500661F7D /* ForumNoticeVM.swift */,
 				A76F50CC2D5C31ED001B67CB /* ForumNoticeItemVM.swift */,
 				A78FE20D2CD482FB00661F7D /* ForumListTableViewCell.swift */,
@@ -6447,6 +6450,7 @@
 				A7B676DA2E28E12A00E2CF1E /* CoursePayOrderPayTypeVM.swift in Sources */,
 				ECD0FEF72BABD25B001232C9 /* YYTextLine.m in Sources */,
 				EC24EB4C2BB2B364002F21DF /* QuestionnaireSurveyLoseFatVM.swift in Sources */,
+				EC67033F2E9CF3EA00C0FDFE /* ForumNaviTypeLiquidVM.swift in Sources */,
 				EC781CD82BBAA47000752C95 /* QuestionnairePlanDailyFoodsSqtyVM.swift in Sources */,
 				EC38DE9E2BEF66CB008E7FCE /* MaterialItemVM.swift in Sources */,
 				ECC050612C65B1F10029A47F /* LogsSQLiteUploadManager.swift in Sources */,

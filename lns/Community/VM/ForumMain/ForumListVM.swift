@@ -9,7 +9,7 @@ import MJRefresh
 
 class ForumListVM : UIView{
     
-    let selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()//-WHUtils().getTabbarHeight()
+    var selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()
     var centerY = kFitWidth(0)
     var controller = WHBaseViewVC()
     var dataSourceArray:[ForumModel] = [ForumModel]()
@@ -41,12 +41,17 @@ class ForumListVM : UIView{
     var isRefreshHead = false
 //    static var requestPageNum = 1
     
+    var scrollOffBlock:((CGFloat)->())?
+    
     var noticeDispatchGroup = DispatchGroup()
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     override init(frame: CGRect) {
+        if #available(iOS 26.0, *) {
+            selfHeight = SCREEN_HEIGHT//-WHUtils().getNavigationBarHeight()
+        }
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: selfHeight))
         self.backgroundColor = .clear
         
@@ -558,6 +563,8 @@ extension ForumListVM:UITableViewDelegate,UITableViewDataSource{
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
 //        scrollView.zf_scrollViewDidScroll()
         self.isScrolling = true
+        let offsetY = scrollView.contentOffset.y
+        self.scrollOffBlock?(offsetY)
     }
 //    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
 //        scrollView.zf_scrollViewWillBeginDragging()

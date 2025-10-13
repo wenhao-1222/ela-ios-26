@@ -47,7 +47,12 @@ extension ForumNoticeVM{
         }
         
         selfHeight = kFitWidth(24) + CGFloat(dataArray.count) * kFitWidth(40)
-        bgView.frame = CGRect.init(x: kFitWidth(12), y: kFitWidth(12), width: SCREEN_WIDHT-kFitWidth(24), height: selfHeight-kFitWidth(24))
+        var originY = kFitWidth(0)
+        if #available(iOS 26.0, *) {
+            originY = WHUtils().getNavigationBarHeight()
+            selfHeight = selfHeight + WHUtils().getNavigationBarHeight()
+        }
+        bgView.frame = CGRect.init(x: kFitWidth(12), y: kFitWidth(12)+originY, width: SCREEN_WIDHT-kFitWidth(24), height: selfHeight-kFitWidth(24))
         
         for i in 0..<dataArray.count{
             let vm = ForumNoticeItemVM.init(frame: CGRect.init(x: 0, y: kFitWidth(40)*CGFloat(i), width: 0, height: 0))

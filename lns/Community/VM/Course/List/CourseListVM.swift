@@ -10,7 +10,7 @@ import MJRefresh
 
 class CourseListVM : UIView{
     
-    let selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()//-WHUtils().getTabbarHeight()
+    var selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()
     var centerY = kFitWidth(0)
     var controller = WHBaseViewVC()
     
@@ -19,10 +19,15 @@ class CourseListVM : UIView{
     
     var tutorialVcs:[ForumTutorialVC] = [ForumTutorialVC]()
     
+    var scrollOffBlock:((CGFloat)->())?
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     override init(frame: CGRect) {
+        if #available(iOS 26.0, *) {
+            selfHeight = SCREEN_HEIGHT//-WHUtils().getNavigationBarHeight()
+        }
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
 //        super.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight(), width: SCREEN_WIDHT, height: selfHeight))
         self.backgroundColor = .clear
@@ -39,7 +44,7 @@ class CourseListVM : UIView{
         vi.showsVerticalScrollIndicator = false
         vi.backgroundColor = .COLOR_BG_F5
         vi.register(CourseListVMTableViewCell.classForCoder(), forCellReuseIdentifier: "CourseListVMTableViewCell")
-        
+        vi.contentInsetAdjustmentBehavior = .never
         if #available(iOS 15.0, *) {
             vi.sectionHeaderTopPadding = 0
         }
@@ -110,13 +115,41 @@ extension CourseListVM:UITableViewDelegate,UITableViewDataSource{
         return UITableView.automaticDimension
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 0{
+            if #available(iOS 26.0, *) {
+                return kFitWidth(20) + WHUtils().getNavigationBarHeight()
+            }
+        }
         return kFitWidth(20)
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(20)))
+        var h = kFitWidth(20)
+        if section == 0{
+            if #available(iOS 26.0, *) {
+                h = kFitWidth(20) + WHUtils().getNavigationBarHeight()
+            }
+        }
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: h))
         vi.backgroundColor = .clear
         
         return vi
+    }
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if #available(iOS 26.0, *) {
+            return WHUtils().getTabbarHeight() + kFitWidth(20)
+        }
+        return 0
+    }
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if #available(iOS 26.0, *) {
+            let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(20)+WHUtils().getTabbarHeight()))
+            return vi
+        }
+        return nil
+    }
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        self.scrollOffBlock?(offsetY)
     }
 }
 

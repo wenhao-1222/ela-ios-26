@@ -19,36 +19,8 @@ class ForumVC : WHBaseViewVC {
         self.navigationController?.fd_interactivePopDisabled = false
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         
-//        self.forumListVm.autoLoadData()
-//        self.forumListVm.controlView.isHidden = false
-        
-//        if self.naviView.selectType == "right"{
-//                ZFPlayerModel.shared.playerManager.play()
-//                ZFPlayerModel.shared.player.addPlayerViewToCell()
-//        }
-        
-//        UIView.performWithoutAnimation {
-////            self.tutorialListVm.tableView.beginUpdates()
-//            self.tutorialListVm.tableView.reloadData()
-////            self.tutorialListVm.tableView.endUpdates()
-//            self.tutorialListVm.tableView.layoutIfNeeded()
-//        }
-//        self.tutorialListVm.tableView.performBatchUpdates {
-//            self.tutorialListVm.tableView.reloadData()
-//        }
-        
         sendForumMsgNuberRequest()
-        
-//        if ZFPlayerModel.shared.playerManager.playState == .playStatePlayStopped{
-//            ZFPlayerModel.shared.addToTableView(tableView: self.forumListVm.tableView, tag: playerViewTag)
-//            ZFPlayerModel.shared.player.controlView = self.forumListVm.controlView
-//            self.forumListVm.zfplayerBlock()
-//        }
-        
         ForumPublishManager.shared.checkForumUploadStatus()
-    }
-    override func viewDidDisappear(_ animated: Bool) {
-//        self.forumListVm.controlView.isHidden = true
     }
     
     override func viewDidLoad() {
@@ -80,19 +52,38 @@ class ForumVC : WHBaseViewVC {
         }
         return vi
     }()
-//    lazy var tutorialListVm: TutorialListVM = {
-//        let vm = TutorialListVM.init(frame: .zero)
-//        vm.controller = self
-//        return vm
-//    }()
+    lazy var naviLiquidView: ForumNaviTypeLiquidVM = {
+        let vi = ForumNaviTypeLiquidVM.init(frame: .zero)
+        vi.publishButton.addTarget(self, action: #selector(publishAction), for: .touchUpInside)
+        vi.statTypeBlock = {(type)in
+            if type == .forum{
+                self.scrollViewBase.setContentOffset(CGPoint.init(x: SCREEN_WIDHT, y: 0), animated: true)
+                self.naviLiquidView.publishButton.isHidden = !UserInfoModel.shared.isAllowedPosterForum
+            }else if type == .market{
+                self.scrollViewBase.setContentOffset(CGPoint.init(x: SCREEN_WIDHT*2, y: 0), animated: true)
+                self.naviLiquidView.publishButton.isHidden = true
+            }else{
+                self.scrollViewBase.setContentOffset(CGPoint.init(x: 0, y: 0), animated: true)
+                self.naviLiquidView.publishButton.isHidden = true
+            }
+        }
+        return vi
+    }()
+    
     lazy var forumListVm: ForumListVM = {
         let vm = ForumListVM.init(frame: .zero)
         vm.controller = self
+        vm.scrollOffBlock = {(offsetY)in
+            self.naviLiquidView.updateAlpha(offsetY: offsetY)
+        }
         return vm
     }()
     lazy var tutorialListVm: CourseListVM = {
         let vm = CourseListVM.init(frame: .zero)
         vm.controller = self
+        vm.scrollOffBlock = {(offsetY)in
+            self.naviLiquidView.updateAlpha(offsetY: offsetY)
+        }
         return vm
     }()
     lazy var marketListVm: MarketListVM = {
@@ -105,33 +96,36 @@ class ForumVC : WHBaseViewVC {
 
 extension ForumVC{
     @objc func publishAction() {
-        
-//        ZFPlayerModel.shared.playerManager.pause()
-//        if ForumPublishManager.shared.cTime == ""{
-            DLLog(message: "新建帖子")
-            let localForumId = "\(UserInfoModel.shared.phone)\(Date().todaySeconds)"
-            UserDefaults.set(value: localForumId, forKey: .forumLocalId)
-            let cTime = localForumId.mc_cutToSuffix(from: UserInfoModel.shared.phone.count)
-            ForumPublishManager.shared.forumLocalId = localForumId
-            ForumPublishManager.shared.cTime = cTime
-            ForumPublishSqlite.getInstance().insertDataUseSql(cTime: cTime)
-//        }else{
-//            DLLog(message: "有本地草稿")
-//        }
+    
+        DLLog(message: "新建帖子")
+        let localForumId = "\(UserInfoModel.shared.phone)\(Date().todaySeconds)"
+        UserDefaults.set(value: localForumId, forKey: .forumLocalId)
+        let cTime = localForumId.mc_cutToSuffix(from: UserInfoModel.shared.phone.count)
+        ForumPublishManager.shared.forumLocalId = localForumId
+        ForumPublishManager.shared.cTime = cTime
+        ForumPublishSqlite.getInstance().insertDataUseSql(cTime: cTime)
+    
         let vc = ForumPublishVC()
 //        let vc = PlayerTestVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     @objc func showForumPublishButton() {
         naviView.publishButton.isHidden = !UserInfoModel.shared.isAllowedPosterForum
+        naviLiquidView.publishButton.isHidden = !UserInfoModel.shared.isAllowedPosterForum
     }
 }
 
 extension ForumVC{
     func initUI(){
-        view.addSubview(naviView)
         view.addSubview(scrollViewBase)
-        scrollViewBase.frame = CGRect.init(x: 0, y: naviView.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-naviView.frame.maxY)
+        if #available(iOS 26.0, *) {
+            view.addSubview(naviLiquidView)
+            scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+        }else{
+            view.addSubview(naviView)
+            scrollViewBase.frame = CGRect.init(x: 0, y: naviView.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-naviView.frame.maxY)
+        }
+        
         scrollViewBase.backgroundColor = .clear
         scrollViewBase.delegate = self
         scrollViewBase.showsVerticalScrollIndicator = false
@@ -164,18 +158,29 @@ extension ForumVC:UIScrollViewDelegate{
             (currentPage == 2 && self.naviView.selectType == .market){
             return
         }
+        if (currentPage == 0 && self.naviLiquidView.selectType == .course) ||
+        (currentPage == 1 && self.naviLiquidView.selectType == .forum) ||
+            (currentPage == 2 && self.naviLiquidView.selectType == .market){
+            return
+        }
         if currentPage == 1{
             self.naviView.selectType = .forum
             self.naviView.publishButton.isHidden = !UserInfoModel.shared.isAllowedPosterForum
+            self.naviLiquidView.selectType = .forum
+            self.naviLiquidView.publishButton.isHidden = !UserInfoModel.shared.isAllowedPosterForum
         }else{
             self.naviView.publishButton.isHidden = true
+            self.naviLiquidView.publishButton.isHidden = true
             if currentPage == 0{
                 self.naviView.selectType = .course
+                self.naviLiquidView.selectType = .course
             }else{
                 self.naviView.selectType = .market
+                self.naviLiquidView.selectType = .course
             }
         }
         self.naviView.updateButtonStatus()
+        naviLiquidView.updateButtonStatus()
     }
 }
 
