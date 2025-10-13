@@ -11,6 +11,8 @@ class JournalNaturalDetailCell: UITableViewCell {
     var detalBlock:(()->())?
     var detalOldBlock:(()->())?
     
+    var bottomGap = kFitWidth(0)
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -19,6 +21,10 @@ class JournalNaturalDetailCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.backgroundColor = .clear
         self.selectionStyle = .none
+        
+        if #available(iOS 26.0, *) {
+            bottomGap = WHUtils().getTabbarHeight()
+        }
         initUI()
     }
     lazy var detailButton: UIButton = {
@@ -111,7 +117,7 @@ extension JournalNaturalDetailCell{
             make.width.equalTo(kFitWidth(200))
             make.height.equalTo(kFitWidth(40))
             make.centerX.lessThanOrEqualToSuperview()
-            make.bottom.equalTo(kFitWidth(-30))
+            make.bottom.equalTo(kFitWidth(-30)-self.bottomGap)
         }
         detailNewIcon.snp.makeConstraints { make in
             make.right.equalTo(detailButton).offset(kFitWidth(3))

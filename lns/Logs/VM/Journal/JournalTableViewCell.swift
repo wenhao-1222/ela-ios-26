@@ -126,6 +126,7 @@ class JournalTableViewCell: UITableViewCell {
         table.register(PlanCreateFoodsTableViewCell.classForCoder(), forCellReuseIdentifier: "PlanCreateFoodsTableViewCell")
         table.delegate = self
         table.dataSource = self
+        table.isScrollEnabled = false
         table.backgroundColor = .COLOR_BG_WHITE
         
 //        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeGesture(gesture:)))

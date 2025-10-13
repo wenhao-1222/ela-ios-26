@@ -77,7 +77,42 @@ class JournalVC: WHBaseViewVC {
         
 //        self.winnerPopView.closeSelfAction()
     }
-    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        let navigationHeight = WHUtils().getNavigationBarHeight()
+        let navigationOriginY = max(0, navigationHeight - naviVm.selfHeight)
+
+        if naviVm.frame.origin.y != navigationOriginY || naviVm.frame.width != view.bounds.width {
+            naviVm.frame = CGRect(x: 0,
+                                  y: navigationOriginY,
+                                  width: view.bounds.width,
+                                  height: naviVm.selfHeight)
+        }
+
+        if naviEditStatusVm.frame.origin.y != navigationOriginY || naviEditStatusVm.frame.width != view.bounds.width {
+            naviEditStatusVm.frame = CGRect(x: 0,
+                                            y: navigationOriginY,
+                                            width: view.bounds.width,
+                                            height: naviEditStatusVm.selfHeight)
+        }
+
+        let collectionHeight = max(0, view.bounds.height - navigationHeight)
+        if collectView.frame.origin.y != navigationHeight || collectView.frame.size != CGSize(width: view.bounds.width, height: collectionHeight) {
+            collectView.frame = CGRect(x: 0,
+                                       y: navigationHeight,
+                                       width: view.bounds.width,
+                                       height: collectionHeight)
+        }
+
+        if let layout = collectView.collectionViewLayout as? UICollectionViewFlowLayout {
+            let itemSize = CGSize(width: view.bounds.width, height: collectionHeight)
+            if layout.itemSize != itemSize {
+                layout.itemSize = itemSize
+                layout.invalidateLayout()
+            }
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -310,6 +345,9 @@ class JournalVC: WHBaseViewVC {
         vi.backgroundColor = .clear
 //        vi.dataSource = self
         vi.showsHorizontalScrollIndicator = false
+        if #available(iOS 11.0, *) {
+            vi.contentInsetAdjustmentBehavior = .never
+        }
         vi.register(JounalCollectionCell.classForCoder(), forCellWithReuseIdentifier: "JounalCollectionCell")
         
         return vi
