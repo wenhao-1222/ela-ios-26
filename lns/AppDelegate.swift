@@ -39,16 +39,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 //        UserDefaults.standard.setValue("a77b4ec731a777de447a40739af8b961", forKey: userId)
 //        UserInfoModel.shared.uId = "a77b4ec731a777de447a40739af8b961"
 //        UserInfoModel.shared.token = "BlN6cZ7MJcazmC04"
-        if window == nil {
-            let launchWindow = UIWindow(frame: UIScreen.main.bounds)
-            launchWindow.backgroundColor = .THEME
-            launchWindow.makeKeyAndVisible()
-            window = launchWindow
-        } else {
-            window?.backgroundColor = .THEME
-            window?.makeKeyAndVisible()
-        }
-        
+//        if window == nil {
+//            let launchWindow = UIWindow(frame: UIScreen.main.bounds)
+//            launchWindow.backgroundColor = .THEME
+//            launchWindow.makeKeyAndVisible()
+//            window = launchWindow
+//        } else {
+//            window?.backgroundColor = .THEME
+//            window?.makeKeyAndVisible()
+//        }
+        let launchWindow = window ?? UIWindow(frame: UIScreen.main.bounds)
+        launchWindow.backgroundColor = .THEME
+        window = launchWindow
         MCToastConfig.shared.text.maxWidth = kFitWidth(343)//SCREEN_WIDHT-kFitWidth(82)-kFitWidth(72)
 //        MCToastConfig.shared.text.textColor
 //        UNUserNotificationCenter.current().delegate = self
@@ -64,9 +66,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         let isLaunchWelcome = UserDefaults.standard.value(forKey: isLaunchWelcome)as? String ?? ""
         
         EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW, scenarioType: .launch_App, text: "")
+        let rootViewController: UIViewController
         if isLaunchWelcome == "" && token == ""{
 //            self.window?.rootViewController = WelcomeLaunchVC()
-            self.window?.rootViewController = FirstLaunchVC()
+//            self.window?.rootViewController = FirstLaunchVC()
+            rootViewController = FirstLaunchVC()
         }else{
             let elaLchVc = ElaLaunchVC()
             
@@ -110,9 +114,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                     elaLchVc?.removeFromParent()
                 }
             }
-            self.window?.rootViewController = elaLchVc
+//            self.window?.rootViewController = elaLchVc
+            rootViewController = elaLchVc
         }
-        
+        window?.rootViewController = rootViewController
+        window?.makeKeyAndVisible()
         sendSmsDataRequest()
         
 //        initKTVHTTPCache()
