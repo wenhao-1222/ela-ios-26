@@ -89,6 +89,10 @@ class OverViewVC : WHBaseViewVC {
         let vm = OverViewLogoVM.init(frame: .zero)
         return vm
     }()
+    lazy var naviVm: OverViewLogoLiquidVM = {
+        let vm = OverViewLogoLiquidVM.init(frame: .zero)
+        return vm
+    }()
     lazy var topBgImgView : UIImageView = {
         let img = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(276)+getTopSafeAreaHeight()))
         img.setImgLocal(imgName: "main_top_bg_cj")
@@ -236,8 +240,12 @@ extension OverViewVC{
         
         view.addSubview(topBgImgView)
         view.addSubview(scrollView)
-        view.addSubview(logoVm)
         
+        if #available(iOS 26.0, *) {
+            view.addSubview(naviVm)
+        }else{
+            view.addSubview(logoVm)
+        }
 //        scrollView.addSubview(topBgImgView)
         scrollView.addSubview(topMsgVm)
 //        scrollView.addSubview(logoImgView)
@@ -259,17 +267,13 @@ extension OverViewVC{
 
 extension OverViewVC:UIScrollViewDelegate{
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        if scrollView.contentOffset.y < 0{
-//            scrollView.contentOffset.y = 0
-//        }
-//        self.logoVm.updateAlpha(offsetY: scrollView.contentOffset.y)
-        
         let offsetY = scrollView.contentOffset.y
         
         if offsetY < 0 {
             // keep logo and background fixed
             topBgImgView.frame.origin.y = 0
             logoVm.frame.origin.y = 0
+            naviVm.frame.origin.y = 0
             topBgImgView.setNeedsDisplay()
             topBgImgView.layoutIfNeeded()
         } else {
@@ -278,6 +282,7 @@ extension OverViewVC:UIScrollViewDelegate{
         }
         
         self.logoVm.updateAlpha(offsetY: max(0, offsetY))
+        self.naviVm.updateAlpha(offsetY: max(0, offsetY))
     }
 }
 

@@ -811,6 +811,7 @@
 		EC6048B22BEB48CB004E9578 /* PlanListActiveCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */; };
 		EC67033D2E9C8FE200C0FDFE /* SystemNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */; };
 		EC67033F2E9CF3EA00C0FDFE /* ForumNaviTypeLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */; };
+		EC6703422E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */; };
 		EC6978DF2BABBD81000B933A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6978DE2BABBD81000B933A /* AppDelegate.swift */; };
 		EC6978E32BABBD81000B933A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6978E22BABBD81000B933A /* ViewController.swift */; };
 		EC6978E62BABBD81000B933A /* Base in Resources */ = {isa = PBXBuildFile; fileRef = EC6978E52BABBD81000B933A /* Base */; };
@@ -2080,6 +2081,7 @@
 		EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanListActiveCellVM.swift; sourceTree = "<group>"; };
 		EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemNavigationController.swift; sourceTree = "<group>"; };
 		EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumNaviTypeLiquidVM.swift; sourceTree = "<group>"; };
+		EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverViewLogoLiquidVM.swift; sourceTree = "<group>"; };
 		EC6978DB2BABBD81000B933A /* lns.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lns.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC6978DE2BABBD81000B933A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EC6978E22BABBD81000B933A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -3164,6 +3166,7 @@
 			isa = PBXGroup;
 			children = (
 				A75012A22DE98355009BCA7E /* OverViewLogoVM.swift */,
+				EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */,
 			);
 			path = OverView;
 			sourceTree = "<group>";
@@ -6192,6 +6195,7 @@
 				EC81531C2BE87BAD00879233 /* LogsSQLiteManager.swift in Sources */,
 				ECBF8C1A2BC231B70095C4B0 /* UIFont+Exs.swift in Sources */,
 				ECB848412BF30B4500B554B9 /* SettingBottomVM.swift in Sources */,
+				EC6703422E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift in Sources */,
 				EC6E7D092C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift in Sources */,
 				A7137ABB2DAE00A700DD2D0D /* CourseDetailVC.swift in Sources */,
 				A78FE20C2CD47E2C00661F7D /* ForumNoticeVM.swift in Sources */,
