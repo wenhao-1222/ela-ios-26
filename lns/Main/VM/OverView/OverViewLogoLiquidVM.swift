@@ -5,146 +5,163 @@
 //  Created by Elavatine on 2025/5/30.
 //
 
+import UIKit
 
 class OverViewLogoLiquidVM: UIView {
-    
-    let selfHeight = kFitWidth(38)+statusBarHeight+kFitWidth(4)
-    var number = 0
-    
+
+    // 高度与你现有一致
+    let selfHeight = kFitWidth(38) + statusBarHeight + kFitWidth(4)
+
     var planTapBlock:(()->())?
     var editBlock:(()->())?
-    
-    let logoImg = UIImage(named: "main_top_logo_cj")
-    let imgWidth = kFitWidth(139)
-    let imgHeight = kFitWidth(25)
-    
-    override init(frame:CGRect){
-        super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-//        self.backgroundColor = UIColor(white: 1, alpha: 0)
-        
-        self.backgroundColor = .clear
-        self.isUserInteractionEnabled = true
-        
-        initUI()
-    }
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    // 毛玻璃（玻璃质感）背景
+
+    private let logoImg = UIImage(named: "main_top_logo_cj")
+    private let imgWidth  = kFitWidth(139)
+    private let imgHeight = kFitWidth(25)
+
+    // ① 毛玻璃（系统材质，深浅色自适应）
     private lazy var blurView: UIVisualEffectView = {
-        // 使用系统材质，透明柔和，适配深浅色
-        let effect = UIBlurEffect(style: .systemUltraThinMaterial)
-        let view = UIVisualEffectView(effect: effect)
-        view.clipsToBounds = true
-        view.alpha = 0//0.95
-        view.backgroundColor = .clear
-        return view
+        let v = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterial))
+        v.clipsToBounds = true
+        v.alpha = 0            // 初始透明，随滚动出现
+        v.backgroundColor = .clear
+        return v
     }()
+
+    // ② 液态玻璃的纵向渐变叠加层（不是 mask，而是内容层）
     private let gradientLayer: CAGradientLayer = {
-        let layer = CAGradientLayer()
-        layer.startPoint = CGPoint(x: 0.5, y: 0)
-        layer.endPoint = CGPoint(x: 0.5, y: 1)
-        layer.locations = [0, 1]
-        return layer
+        let g = CAGradientLayer()
+        g.startPoint = CGPoint(x: 0.5, y: 0.0)
+        g.endPoint   = CGPoint(x: 0.5, y: 1.0)
+        // 颜色会在 updateGradientColors() 中按明暗模式更新
+        g.locations = [0.0, 0.55, 1.0]
+        g.opacity   = 0       // 跟随滚动显现
+        return g
     }()
-//    lazy var bgView: UIView = {
-//        let vi = UIView()
-//        vi.backgroundColor = .COLOR_BG_WHITE
-//        vi.alpha = 0
-//        vi.isUserInteractionEnabled = true
-//        return vi
-//    }()
+
+    // ③ 边缘渐隐遮罩：让背景没有边界感（四向都柔和消失）
+    private let edgeFadeMask = CAGradientLayer()
+
+    // ④ 顶部微高光，增加“玻璃”质感
+    private let shineLayer: CAGradientLayer = {
+        let s = CAGradientLayer()
+        s.startPoint = CGPoint(x: 0.5, y: 0.0)
+        s.endPoint   = CGPoint(x: 0.5, y: 1.0)
+        s.locations  = [0, 0.15]
+        s.opacity    = 0      // 随滚动显现
+        return s
+    }()
+
+    // 你的 Logo
     lazy var logoImgView: UIImageView = {
-        let img = UIImageView(frame: CGRect(x: kFitWidth(32), y: self.selfHeight-kFitWidth(25)-kFitWidth(10), width: kFitWidth(139), height: kFitWidth(25)))
+        let img = UIImageView(frame: CGRect(x: kFitWidth(32),
+                                            y: self.selfHeight - kFitWidth(25) - kFitWidth(10),
+                                            width: imgWidth, height: imgHeight))
         img.image = logoImg?.withRenderingMode(.alwaysTemplate)
         img.tintColor = .white
         img.contentMode = .scaleAspectFit
         return img
     }()
-}
 
-extension OverViewLogoLiquidVM{
-    func updateAlpha(offsetY:CGFloat) {
-        var percent = offsetY / selfHeight
-        percent = min(max(percent, 0), 0.8)
-
-        blurView.alpha = percent
-
-        let value = pow(percent, 3)
-//        backgroundColor = UIColor(white: 1, alpha: value)
-        gradientLayer.opacity = Float(value)
-        let start = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
-        let end = WHColorWithAlpha(colorStr: "007AFF", alpha: 1)
-        
-        DLLog(message: "updateAlphaj:\(offsetY)")
-        if offsetY >= kFitWidth(30){
-            logoImgView.frame = CGRect(x: SCREEN_WIDHT*0.5-kFitWidth(139)*0.5, y: self.selfHeight-kFitWidth(25)-kFitWidth(10), width: kFitWidth(139), height: kFitWidth(25))
-            logoImgView.tintColor = blendColor(from: start, to: end, progress: 1)
-        }else{
-            logoImgView.frame = CGRect(x: kFitWidth(32), y: self.selfHeight-kFitWidth(25)-kFitWidth(10), width: kFitWidth(139), height: kFitWidth(25))
-            logoImgView.tintColor = blendColor(from: start, to: end, progress: 0)
-        }
-
-//        let start = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
-//        let end = WHColorWithAlpha(colorStr: "007AFF", alpha: 1)
-//        logoImgView.tintColor = blendColor(from: start, to: end, progress: value)
-//        
-//        percent = min(percent, 0.4)
-//        percent = 1 - percent
-//        logoImgView.frame = CGRect.init(x: kFitWidth(32), y: self.selfHeight-kFitWidth(25)-kFitWidth(10), width: imgWidth*percent, height: imgHeight*percent)
+    override init(frame: CGRect) {
+        super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
+        backgroundColor = .clear
+        isUserInteractionEnabled = true
+        initUI()
     }
-}
-private func blendColor(from: UIColor, to: UIColor, progress: CGFloat) -> UIColor {
-    let ratio = min(max(progress, 0), 1)
-    var fr: CGFloat = 0, fg: CGFloat = 0, fb: CGFloat = 0, fa: CGFloat = 0
-    var tr: CGFloat = 0, tg: CGFloat = 0, tb: CGFloat = 0, ta: CGFloat = 0
-    from.getRed(&fr, green: &fg, blue: &fb, alpha: &fa)
-    to.getRed(&tr, green: &tg, blue: &tb, alpha: &ta)
-    return UIColor(red: fr + (tr - fr) * ratio,
-                   green: fg + (tg - fg) * ratio,
-                   blue: fb + (tb - fb) * ratio,
-                   alpha: fa + (ta - fa) * ratio)
-}
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
-extension OverViewLogoLiquidVM{
-    func initUI() {
+    private func initUI() {
         addSubview(blurView)
         addSubview(logoImgView)
-        
-        blurView.snp.makeConstraints { make in
-            make.left.top.width.height.equalToSuperview()
-        }
+
+        blurView.snp.makeConstraints { $0.edges.equalToSuperview() }
+
+        // 把渐变与高光加到 blur 的内容层里（这样会跟随材质混合）
+        blurView.contentView.layer.addSublayer(gradientLayer)
+        blurView.contentView.layer.addSublayer(shineLayer)
+
+        // 配置渐变与遮罩
         configureGradientBackground()
-//        bgView.addShadow(opacity: 0.05)
+        configureEdgeFadeMask()
     }
-}
-private extension OverViewLogoLiquidVM {
-    func configureGradientBackground() {
+
+    private func configureGradientBackground() {
         updateGradientColors()
         gradientLayer.frame = bounds
-        blurView.contentView.layer.insertSublayer(gradientLayer, at: 0)
-        gradientLayer.opacity = 0
+        shineLayer.frame    = CGRect(x: 0, y: 0, width: bounds.width, height: bounds.height)
+
+        // 顶部微高光（白 → 透明），提升“玻璃光晕”感
+        let whiteTop = UIColor.white.withAlphaComponent(0.25).cgColor
+        let white0   = UIColor.white.withAlphaComponent(0.0).cgColor
+        shineLayer.colors = [whiteTop, white0]
     }
 
-    func updateGradientColors() {
-        let lightTop = WHColorWithAlpha(colorStr: "F7F8FF", alpha: 0.92)
-        let lightBottom = WHColorWithAlpha(colorStr: "D0E2FF", alpha: 0.82)
-        var topColor = lightTop
-        var bottomColor = lightBottom
-        if #available(iOS 13.0, *) {
-            if traitCollection.userInterfaceStyle == .dark {
-                topColor = UIColor(red: 34/255.0, green: 34/255.0, blue: 38/255.0, alpha: 0.9)
-                bottomColor = UIColor(red: 20/255.0, green: 22/255.0, blue: 30/255.0, alpha: 0.78)
-            }
+    private func configureEdgeFadeMask() {
+        // 四向渐隐：中间不透明，四周渐变为 0，达到“无边界”视觉
+        edgeFadeMask.frame = bounds
+        edgeFadeMask.type = .radial
+        // 中心黑色=可见，边缘透明=不可见（mask 使用 alpha）
+        edgeFadeMask.colors = [
+            UIColor.black.withAlphaComponent(1).cgColor,
+            UIColor.black.withAlphaComponent(1).cgColor,
+            UIColor.black.withAlphaComponent(0).cgColor
+        ]
+        edgeFadeMask.locations = [0.0, 0.85, 1.0]
+        edgeFadeMask.startPoint = CGPoint(x: 0.5, y: 0.1)
+        edgeFadeMask.endPoint   = CGPoint(x: 0.5, y: 1.0)
+        layer.mask = edgeFadeMask
+    }
+
+    // 深浅色自适应的液态渐变（顶部偏蓝、底部透明，像图三那种“消失感”）
+    private func updateGradientColors() {
+        let lightTop = UIColor(red: 120/255.0, green: 170/255.0, blue: 255/255.0, alpha: 0.28) // 淡蓝
+        let lightMid = UIColor(red:  90/255.0, green: 140/255.0, blue: 255/255.0, alpha: 0.16)
+        let lightEnd = UIColor.clear
+
+        var top = lightTop, mid = lightMid, end = lightEnd
+
+        if #available(iOS 13.0, *), traitCollection.userInterfaceStyle == .dark {
+            top = UIColor(red: 60/255.0, green: 90/255.0, blue: 160/255.0, alpha: 0.30)
+            mid = UIColor(red: 45/255.0, green: 70/255.0, blue: 150/255.0, alpha: 0.18)
+            end = UIColor.clear
         }
-        gradientLayer.colors = [topColor.cgColor, bottomColor.cgColor]
-    }
-}
 
-extension OverViewLogoLiquidVM {
+        gradientLayer.colors = [top.cgColor, mid.cgColor, end.cgColor]
+    }
+
+    // 对外：滚动时调用，让导航从“透明”到“液态玻璃”
+    func updateAlpha(offsetY: CGFloat) {
+        let h = max(selfHeight, 1)
+        let raw = min(max(offsetY / h, 0), 1)           // 0~1
+        // 用缓动让出现更柔和
+        let progress = pow(raw, 3)                      // ease-in
+
+        blurView.alpha         = progress               // 毛玻璃出现
+        gradientLayer.opacity  = Float(progress)        // 渐变出现
+        shineLayer.opacity     = Float(progress * 0.7)  // 高光略弱
+
+        // Logo 位置与颜色过渡
+        let start = UIColor.white
+        let end   = WHColorWithAlpha(colorStr: "007AFF", alpha: 1)
+        logoImgView.tintColor = blendColor(from: start, to: end, progress: raw >= 0.3 ? 1 : 0)
+
+        if offsetY >= kFitWidth(30) {
+            logoImgView.frame = CGRect(x: SCREEN_WIDHT*0.5 - imgWidth*0.5,
+                                       y: self.selfHeight - kFitWidth(25) - kFitWidth(10),
+                                       width: imgWidth, height: imgHeight)
+        } else {
+            logoImgView.frame = CGRect(x: kFitWidth(32),
+                                       y: self.selfHeight - kFitWidth(25) - kFitWidth(10),
+                                       width: imgWidth, height: imgHeight)
+        }
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
         gradientLayer.frame = blurView.bounds
+        shineLayer.frame    = blurView.bounds
+        edgeFadeMask.frame  = bounds
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -154,4 +171,17 @@ extension OverViewLogoLiquidVM {
             updateGradientColors()
         }
     }
+}
+
+// 颜色插值（保留你原逻辑）
+private func blendColor(from: UIColor, to: UIColor, progress: CGFloat) -> UIColor {
+    let t = min(max(progress, 0), 1)
+    var fr: CGFloat = 0, fg: CGFloat = 0, fb: CGFloat = 0, fa: CGFloat = 0
+    var tr: CGFloat = 0, tg: CGFloat = 0, tb: CGFloat = 0, ta: CGFloat = 0
+    from.getRed(&fr, green: &fg, blue: &fb, alpha: &fa)
+    to.getRed(&tr, green: &tg, blue: &tb, alpha: &ta)
+    return UIColor(red: fr + (tr - fr) * t,
+                   green: fg + (tg - fg) * t,
+                   blue:  fb + (tb - fb) * t,
+                   alpha: fa + (ta - fa) * t)
 }

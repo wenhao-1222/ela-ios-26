@@ -33,6 +33,10 @@ class FirstLaunchVC: WHBaseViewVC {
     public var generator = UIImpactFeedbackGenerator(style: .light)
     public var generatorMedium = UIImpactFeedbackGenerator(style: .medium)
     
+    
+    let damping = 0.8
+    let velocity = 0.2
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         showAnimation()
@@ -190,7 +194,12 @@ extension FirstLaunchVC{
                                 make.left.equalTo(kFitWidth(54))
                                 make.right.equalTo(kFitWidth(-54))
                             }
-                            UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
+                            UIView.animate(withDuration: 0.35,
+                                           delay: 0.15,
+                                           usingSpringWithDamping: 0.85,//self.damping,
+                                           initialSpringVelocity: 0,//self.velocity,
+                                           options: .curveEaseInOut,
+                                           animations: {
                                 self.view.layoutIfNeeded()
                             }){ _ in
                                 self.generator.impactOccurred(intensity: 0.99)
@@ -201,7 +210,12 @@ extension FirstLaunchVC{
                                     make.left.equalTo(kFitWidth(54))
                                     make.right.equalTo(kFitWidth(-54))
                                 }
-                                UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
+                                
+                                UIView.animate(withDuration: 0.1,
+                                               delay: 0,
+                                               usingSpringWithDamping: self.damping,
+                                               initialSpringVelocity: self.velocity,
+                                               options: .curveEaseOut, animations: {
                                     self.view.layoutIfNeeded()
                                 }){ _ in
                                     self.generator.impactOccurred(intensity: 0.85)
@@ -211,7 +225,12 @@ extension FirstLaunchVC{
                                         make.left.equalTo(kFitWidth(54))
                                         make.right.equalTo(kFitWidth(-54))
                                     }
-                                    UIView.animate(withDuration: 0.05, delay: 0, options: .curveEaseInOut, animations: {
+                                    UIView.animate(withDuration: 0.05,
+                                                   delay: 0,
+                                                   usingSpringWithDamping: self.damping,
+                                                   initialSpringVelocity: self.velocity*0.5,
+                                                   options: .curveEaseInOut,
+                                                   animations: {
                                         self.view.layoutIfNeeded()
                                     }){ _ in
                                         self.generator.impactOccurred(intensity: 0.5)
@@ -221,7 +240,12 @@ extension FirstLaunchVC{
                                             make.left.equalTo(kFitWidth(54))
                                             make.right.equalTo(kFitWidth(-54))
                                         }
-                                        UIView.animate(withDuration: 0.03, delay: 0, options: .curveEaseInOut, animations: {
+                                        UIView.animate(withDuration: 0.03,
+                                                       delay: 0,
+                                                       usingSpringWithDamping: self.damping,
+                                                       initialSpringVelocity: self.velocity,
+                                                       options: .curveEaseInOut,
+                                                       animations: {
                                             self.view.layoutIfNeeded()
                                         }){ _ in
                                             self.generator.impactOccurred(intensity: 0.2)
