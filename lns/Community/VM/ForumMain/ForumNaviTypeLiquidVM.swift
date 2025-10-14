@@ -6,12 +6,6 @@
 //
 
 
-//import UIKit
-//import SnapKit
-//import MCToast
-//import Photos
-//import MobileCoreServices
-
 // MARK: - 导航视图：使用 UISegmentedControl + 毛玻璃背景
 class ForumNaviTypeLiquidVM: UIView {
     
@@ -23,23 +17,57 @@ class ForumNaviTypeLiquidVM: UIView {
     private let selfHeight = WHUtils().getNavigationBarHeight()
     private let btnWidth = kFitWidth(60)
     
-    // 毛玻璃（玻璃质感）背景
+    // ------- 可按需调整的外观参数 -------
+    private let tintLightHex = "EFEFEF"     // 浅色模式主色（品牌蓝）
+    private let tintDarkHex  = "1E5EFF"     // 深色模式主色（略调暗）
+    private let topAlpha: CGFloat    = 0.9 // 顶部透明度
+    private let bottomAlpha: CGFloat = 0 // 底部透明度
+    private let featherHeight: CGFloat = WHUtils().getNavigationBarHeight()// 底部羽化高度（px），越大越柔
+
+    // 毛玻璃层：常显
     private lazy var blurView: UIVisualEffectView = {
-        // 使用系统材质，透明柔和，适配深浅色
-        let effect = UIBlurEffect(style: .systemUltraThinMaterial)
-        let view = UIVisualEffectView(effect: effect)
-        view.clipsToBounds = true
-        view.alpha = 0//0.95
-        view.backgroundColor = .clear
-        return view
-    }()
-    
-    // 顶部发丝分割线（更贴近系统导航栏质感）
-    private lazy var topSeparator: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor.separator.withAlphaComponent(0.4)
+        let effect: UIBlurEffect
+//        if #available(iOS 13.0, *) {
+//            effect = traitCollection.userInterfaceStyle == .dark
+//            ? UIBlurEffect(style: .systemChromeMaterialDark)
+//            : UIBlurEffect(style: .systemChromeMaterial)
+//        } else {
+            effect = UIBlurEffect(style: .systemChromeMaterial)
+//        }
+        let v = UIVisualEffectView(effect: effect)
+        v.clipsToBounds = true
+        v.alpha = 1
+        v.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         return v
     }()
+
+    // 渐变着色层（在毛玻璃上叠一层颜色从上到下逐渐变淡）
+    private let gradientLayer: CAGradientLayer = {
+        let g = CAGradientLayer()
+        g.startPoint = CGPoint(x: 0.5, y: 0.0)
+        g.endPoint   = CGPoint(x: 0.5, y: 1.0)
+        // 三段更自然：顶 -> 过渡 -> 底
+        g.locations  = [0.0, 0.42, 1.0]
+        g.opacity    = 0.66
+        return g
+    }()
+
+    // 顶部轻微高光（提升玻璃质感，可按需调低/去掉）
+    private let shineLayer: CAGradientLayer = {
+        let s = CAGradientLayer()
+        s.startPoint = CGPoint(x: 0.5, y: 0.0)
+        s.endPoint   = CGPoint(x: 0.5, y: 1.0)
+        s.locations  = [0, 0.15]
+        s.opacity    = 0.22
+        s.colors = [
+            UIColor.white.withAlphaComponent(0.22).cgColor,
+            UIColor.white.withAlphaComponent(0.0).cgColor
+        ]
+        return s
+    }()
+
+    // 底部羽化遮罩：让底缘在最后 featherHeight 内渐隐为 0，衔接更柔
+    private let bottomFeatherMask = CAGradientLayer()
     
     // 分段选择器：课程 / 发现 / 商品
     private lazy var segment: UISegmentedControl = {
@@ -87,20 +115,60 @@ class ForumNaviTypeLiquidVM: UIView {
     // MARK: UI
     private func initUI() {
         addSubview(blurView)
-        addSubview(topSeparator)
+//        blurView.translatesAutoresizingMaskIntoConstraints = false
+
         addSubview(segment)
         addSubview(publishButton)
         setConstraints()
         updateButtonStatus() // 同步初始选中态
+        // 渐变与高光叠到毛玻璃之上
+        blurView.contentView.layer.addSublayer(gradientLayer)
+        blurView.contentView.layer.addSublayer(shineLayer)
+
+        // 设置固定外观
+        applyFixedTint()
+
+        // 配置底部羽化遮罩
+        configureBottomFeatherMask()
     }
-    
-    private func setConstraints() {
-        blurView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+    /// 根据深/浅色模式套用主色，并设置自上而下 0.8→0.02 的透明度
+    private func applyFixedTint() {
+        let baseTint: UIColor
+        if #available(iOS 13.0, *), traitCollection.userInterfaceStyle == .dark {
+            baseTint = WHColor_16(colorStr: tintDarkHex)
+        } else {
+            baseTint = WHColor_16(colorStr: tintLightHex)
         }
-        topSeparator.snp.makeConstraints { make in
-            make.top.left.right.equalToSuperview()
-            make.height.equalTo(0.5)
+        let aTop = max(0, min(1, topAlpha))
+        let aBot = max(0, min(1, bottomAlpha))
+        let aMid = (aTop + aBot) * 0.5
+
+        gradientLayer.colors = [
+            baseTint.withAlphaComponent(aTop).cgColor,
+            baseTint.withAlphaComponent(aMid).cgColor,
+            baseTint.withAlphaComponent(aBot).cgColor
+        ]
+    }
+
+    /// 底部竖向羽化遮罩：中上部完全可见，最后 featherHeight 区间渐隐为 0
+    private func configureBottomFeatherMask() {
+        bottomFeatherMask.startPoint = CGPoint(x: 0.5, y: 0.0)
+        bottomFeatherMask.endPoint   = CGPoint(x: 0.5, y: 1.0)
+        // mask 使用 alpha：白(1)=可见，黑(0)=不可见
+        bottomFeatherMask.colors = [
+            UIColor.white.cgColor,                       // 全可见
+            UIColor.white.cgColor,                       // 全可见
+            UIColor.black.withAlphaComponent(0).cgColor  // 渐隐到 0
+        ]
+        blurView.layer.mask = bottomFeatherMask
+    }
+    private func setConstraints() {
+//        blurView.snp.makeConstraints { make in
+//            make.edges.equalToSuperview()
+//        }
+        blurView.snp.makeConstraints { make in
+            make.left.top.right.equalToSuperview()
+            make.bottom.equalTo(kFitWidth(26))
         }
         // segment 居中，靠近底部（与原先按钮位置一致）
         segment.snp.makeConstraints { make in
@@ -164,4 +232,17 @@ extension ForumNaviTypeLiquidVM{
         percent = min(max(percent, 0), 0.9)
         blurView.alpha = percent
     }
+    // MARK: - Layout
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer.frame = blurView.bounds
+        shineLayer.frame    = blurView.bounds
+
+        // 根据当前高度计算羽化分界位置
+        bottomFeatherMask.frame = blurView.bounds
+        let h = bounds.height
+        let fadeStart = max(0, min(1, (h - featherHeight) / max(h, 1))) // 渐隐起点的比例
+        bottomFeatherMask.locations = [0.0, NSNumber(value: Double(fadeStart)), 1.0]
+    }
 }
+

@@ -54,11 +54,11 @@ class OverViewVC : WHBaseViewVC {
         IQKeyboardManager.shared.enable = true
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        // 同步一次初始可见度，避免初始透明
-        naviVm.updateAlpha(offsetY: max(0, scrollView.contentOffset.y))
-    }
+//    override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        // 同步一次初始可见度，避免初始透明
+//        naviVm.updateAlpha(offsetY: max(0, scrollView.contentOffset.y))
+//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

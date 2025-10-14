@@ -176,7 +176,7 @@ extension ForumVC:UIScrollViewDelegate{
                 self.naviLiquidView.selectType = .course
             }else{
                 self.naviView.selectType = .market
-                self.naviLiquidView.selectType = .course
+                self.naviLiquidView.selectType = .market
             }
         }
         self.naviView.updateButtonStatus()
