@@ -30,7 +30,8 @@ class FirstLaunchVC: WHBaseViewVC {
     
     var firstLabelTopConstraint: Constraint?
     var firstLabelTwoTopConstraint: Constraint?
-    public var generator = UIImpactFeedbackGenerator(style: .rigid)
+    public var generator = UIImpactFeedbackGenerator(style: .light)
+    public var generatorMedium = UIImpactFeedbackGenerator(style: .medium)
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -132,6 +133,7 @@ class FirstLaunchVC: WHBaseViewVC {
 extension FirstLaunchVC{
     @objc func showAnimation() {
         generator.prepare()
+        generatorMedium.prepare()
         firstLabelTwoTopConstraint?.update(offset: 0)
         firstLabelTwo.alpha = 0
         firstLabelOne.snp.remakeConstraints { make in
@@ -154,28 +156,29 @@ extension FirstLaunchVC{
         self.firstLabelOne.alpha = 0
         self.firstLogoImgView.alpha = 0
         UIView.animate(withDuration: 0.6, delay: 0, options: .curveEaseOut, animations: {
-            self.generator.impactOccurred(intensity: 1)
+//            self.generator.impactOccurred(intensity: 1)
+            self.generatorMedium.impactOccurred(intensity: 1)
             self.firstLabelOne.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
             self.firstLogoImgView.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
             self.firstLabelOne.alpha = 1
             self.firstLogoImgView.alpha = 1
         }) { _ in
-            self.generator.impactOccurred(intensity: 0.9)
+            self.generator.impactOccurred(intensity: 0.8)
             UIView.animate(withDuration: 0.1, animations: {
                 self.firstLabelOne.transform = CGAffineTransform(scaleX: 0.98, y: 0.98)
                 self.firstLogoImgView.transform = CGAffineTransform(scaleX: 0.98, y: 0.98)
             }) { _ in
-                self.generator.impactOccurred(intensity: 0.8)
+                self.generator.impactOccurred(intensity: 0.65)
                 UIView.animate(withDuration: 0.1, animations: {
                     self.firstLabelOne.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
                     self.firstLogoImgView.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
                 }) { _ in
-                    self.generator.impactOccurred(intensity: 0.8)
+                    self.generator.impactOccurred(intensity: 0.5)
                     UIView.animate(withDuration: 0.1, animations: {
                         self.firstLabelOne.transform = CGAffineTransform(scaleX: 0.99, y: 0.99)
                         self.firstLogoImgView.transform = CGAffineTransform(scaleX: 0.99, y: 0.99)
                     }) { _ in
-                        self.generator.impactOccurred(intensity: 0.8)
+                        self.generator.impactOccurred(intensity: 0.2)
                         UIView.animate(withDuration: 0.1, animations: {
                             self.firstLabelOne.transform = .identity
                             self.firstLogoImgView.transform = .identity
@@ -188,72 +191,51 @@ extension FirstLaunchVC{
                                 make.right.equalTo(kFitWidth(-54))
                             }
                             UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut, animations: {
-                                self.generator.impactOccurred(intensity: 0.99)
                                 self.view.layoutIfNeeded()
                             }){ _ in
+                                self.generator.impactOccurred(intensity: 0.99)
                                 // 先将文本移动到顶部位置
                                 self.firstLabelOne.snp.remakeConstraints { make in
-                                    self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)+kFitWidth(2)).constraint
+                                    self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)+kFitWidth(1.3)).constraint
                                     make.centerX.equalToSuperview()
                                     make.left.equalTo(kFitWidth(54))
                                     make.right.equalTo(kFitWidth(-54))
                                 }
                                 UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
-                                    self.generator.impactOccurred(intensity: 0.99)
                                     self.view.layoutIfNeeded()
                                 }){ _ in
+                                    self.generator.impactOccurred(intensity: 0.85)
                                     self.firstLabelOne.snp.remakeConstraints { make in
-                                        self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)-kFitWidth(1)).constraint
+                                        self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)-kFitWidth(0.6)).constraint
                                         make.centerX.equalToSuperview()
                                         make.left.equalTo(kFitWidth(54))
                                         make.right.equalTo(kFitWidth(-54))
                                     }
                                     UIView.animate(withDuration: 0.05, delay: 0, options: .curveEaseInOut, animations: {
-                                        self.generator.impactOccurred(intensity: 0.8)
                                         self.view.layoutIfNeeded()
                                     }){ _ in
+                                        self.generator.impactOccurred(intensity: 0.5)
                                         self.firstLabelOne.snp.remakeConstraints { make in
-                                            self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)).constraint
+                                            self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)+kFitWidth(0.3)).constraint
                                             make.centerX.equalToSuperview()
                                             make.left.equalTo(kFitWidth(54))
                                             make.right.equalTo(kFitWidth(-54))
                                         }
-                                        UIView.animate(withDuration: 0.02, delay: 0, options: .curveEaseInOut, animations: {
-                                            self.generator.impactOccurred(intensity: 0.8)
+                                        UIView.animate(withDuration: 0.03, delay: 0, options: .curveEaseInOut, animations: {
                                             self.view.layoutIfNeeded()
                                         }){ _ in
-                                            UIView.animate(withDuration: 0.6, delay: 0.75, options: .curveEaseInOut, animations: {
-                                                // 位移
-                                                self.firstLabelTwoTopConstraint?.update(offset: kFitWidth(20))
+                                            self.generator.impactOccurred(intensity: 0.2)
+                                            self.firstLabelOne.snp.remakeConstraints { make in
+                                                self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)).constraint
+                                                make.centerX.equalToSuperview()
+                                                make.left.equalTo(kFitWidth(54))
+                                                make.right.equalTo(kFitWidth(-54))
+                                            }
+                                            UIView.animate(withDuration: 0.01, delay: 0, options: .curveEaseInOut, animations: {
                                                 self.view.layoutIfNeeded()
-                                                // 文字渐变（A->B 交叉淡化）
-//                                                self.firstLabelOne.transform = CGAffineTransform(scaleX: 5, y: 3)
-//                                                self.firstLogoImgView.transform = CGAffineTransform(scaleX: 5, y: 3)
-                                                // 让文字向上放大、logo 向下放大，避免重合
-                                                let labelTransform = CGAffineTransform(scaleX: 5, y: 5)
-                                                    .translatedBy(x: 0, y: -self.firstLabelOne.bounds.height*0.5)
-                                                let logoTransform = CGAffineTransform(scaleX: 5, y: 5)
-                                                    .translatedBy(x: 0, y: self.firstLogoImgView.bounds.height*0.5)
-                                                self.firstLabelOne.transform = labelTransform
-                                                self.firstLogoImgView.transform = logoTransform
-                                                self.firstLabelOne.alpha = 0
-                                                self.firstLabelTwo.alpha = 1
-                                                // logo 淡出
-                                                self.firstLogoImgView.alpha = 0
-                                            }, completion: { _ in
-                                                self.firstLogoImgView.isHidden = true
-                                                self.firstLabelOne.isHidden = true
-                                                
-                                                //1、缩小动画
-//                                                DispatchQueue.main.asyncAfter(deadline: .now()+0.75, execute: {
-//                                                    let finalFrame = CGRect(origin: self.bgImgView.center, size: .zero)
-//                                                    self.animateBgImgView(to: finalFrame)
-//                                                })
-                                                //2、背景矩阵方块显示
-//                                                self.revealBackgroundWithTiles()
-                                                //3、背景淡化
-                                                self.animateBgImgViewEaseIn()
-                                            })
+                                            }){ _ in
+                                                self.animateLableTwo()
+                                            }
                                         }
                                     }
                                 }
@@ -263,6 +245,40 @@ extension FirstLaunchVC{
                 }
             }
         }
+    }
+    func animateLableTwo() {
+        UIView.animate(withDuration: 0.6, delay: 0.75, options: .curveEaseInOut, animations: {
+            // 位移
+            self.firstLabelTwoTopConstraint?.update(offset: kFitWidth(20))
+            self.view.layoutIfNeeded()
+            // 文字渐变（A->B 交叉淡化）
+//                                                self.firstLabelOne.transform = CGAffineTransform(scaleX: 5, y: 3)
+//                                                self.firstLogoImgView.transform = CGAffineTransform(scaleX: 5, y: 3)
+            // 让文字向上放大、logo 向下放大，避免重合
+            let labelTransform = CGAffineTransform(scaleX: 5, y: 5)
+                .translatedBy(x: 0, y: -self.firstLabelOne.bounds.height*0.5)
+            let logoTransform = CGAffineTransform(scaleX: 5, y: 5)
+                .translatedBy(x: 0, y: self.firstLogoImgView.bounds.height*0.5)
+            self.firstLabelOne.transform = labelTransform
+            self.firstLogoImgView.transform = logoTransform
+            self.firstLabelOne.alpha = 0
+            self.firstLabelTwo.alpha = 1
+            // logo 淡出
+            self.firstLogoImgView.alpha = 0
+        }, completion: { _ in
+            self.firstLogoImgView.isHidden = true
+            self.firstLabelOne.isHidden = true
+            
+            //1、缩小动画
+//                                                DispatchQueue.main.asyncAfter(deadline: .now()+0.75, execute: {
+//                                                    let finalFrame = CGRect(origin: self.bgImgView.center, size: .zero)
+//                                                    self.animateBgImgView(to: finalFrame)
+//                                                })
+            //2、背景矩阵方块显示
+//                                                self.revealBackgroundWithTiles()
+            //3、背景淡化
+            self.animateBgImgViewEaseIn()
+        })
     }
     //淡入淡出
     private func animateBgImgViewEaseIn(){

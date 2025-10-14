@@ -40,6 +40,13 @@ class OverViewLogoLiquidVM: UIView {
         view.backgroundColor = .clear
         return view
     }()
+    private let gradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1)
+        layer.locations = [0, 1]
+        return layer
+    }()
 //    lazy var bgView: UIView = {
 //        let vi = UIView()
 //        vi.backgroundColor = .COLOR_BG_WHITE
@@ -64,7 +71,8 @@ extension OverViewLogoLiquidVM{
         blurView.alpha = percent
 
         let value = pow(percent, 3)
-        backgroundColor = UIColor(white: 1, alpha: value)
+//        backgroundColor = UIColor(white: 1, alpha: value)
+        gradientLayer.opacity = Float(value)
         let start = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         let end = WHColorWithAlpha(colorStr: "007AFF", alpha: 1)
         
@@ -106,6 +114,44 @@ extension OverViewLogoLiquidVM{
         blurView.snp.makeConstraints { make in
             make.left.top.width.height.equalToSuperview()
         }
+        configureGradientBackground()
 //        bgView.addShadow(opacity: 0.05)
+    }
+}
+private extension OverViewLogoLiquidVM {
+    func configureGradientBackground() {
+        updateGradientColors()
+        gradientLayer.frame = bounds
+        blurView.contentView.layer.insertSublayer(gradientLayer, at: 0)
+        gradientLayer.opacity = 0
+    }
+
+    func updateGradientColors() {
+        let lightTop = WHColorWithAlpha(colorStr: "F7F8FF", alpha: 0.92)
+        let lightBottom = WHColorWithAlpha(colorStr: "D0E2FF", alpha: 0.82)
+        var topColor = lightTop
+        var bottomColor = lightBottom
+        if #available(iOS 13.0, *) {
+            if traitCollection.userInterfaceStyle == .dark {
+                topColor = UIColor(red: 34/255.0, green: 34/255.0, blue: 38/255.0, alpha: 0.9)
+                bottomColor = UIColor(red: 20/255.0, green: 22/255.0, blue: 30/255.0, alpha: 0.78)
+            }
+        }
+        gradientLayer.colors = [topColor.cgColor, bottomColor.cgColor]
+    }
+}
+
+extension OverViewLogoLiquidVM {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer.frame = blurView.bounds
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 13.0, *),
+           previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            updateGradientColors()
+        }
     }
 }
