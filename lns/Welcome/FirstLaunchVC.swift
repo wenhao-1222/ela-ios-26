@@ -159,6 +159,11 @@ extension FirstLaunchVC{
         self.firstLogoImgView.transform = CGAffineTransform(scaleX: 0, y: 0)
         self.firstLabelOne.alpha = 0
         self.firstLogoImgView.alpha = 0
+        let appearTiming = UISpringTimingParameters(mass: 0.9,
+                                                    stiffness: 210,
+                                                    damping: 18,
+                                                    initialVelocity: CGVector(dx: 0, dy: 9))
+        let appearAnimator = UIViewPropertyAnimator(duration: 0, timingParameters: appearTiming)
         UIView.animate(withDuration: 0.6, delay: 0, options: .curveEaseOut, animations: {
 //            self.generator.impactOccurred(intensity: 1)
             self.generatorMedium.impactOccurred(intensity: 1)
@@ -189,23 +194,24 @@ extension FirstLaunchVC{
                         }) { _ in
                             // 先将文本移动到顶部位置
                             self.firstLabelOne.snp.remakeConstraints { make in
-                                self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)-kFitWidth(4)).constraint
+                                self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)-kFitWidth(8)).constraint
                                 make.centerX.equalToSuperview()
                                 make.left.equalTo(kFitWidth(54))
                                 make.right.equalTo(kFitWidth(-54))
                             }
                             UIView.animate(withDuration: 0.35,
-                                           delay: 0.15,
-                                           usingSpringWithDamping: 0.85,//self.damping,
-                                           initialSpringVelocity: 0,//self.velocity,
+                                           delay: 0.1,
+                                           usingSpringWithDamping: self.damping,
+                                           initialSpringVelocity: 1,
                                            options: .curveEaseInOut,
                                            animations: {
                                 self.view.layoutIfNeeded()
-                            }){ _ in
+                            })
+                            { _ in
                                 self.generator.impactOccurred(intensity: 0.99)
                                 // 先将文本移动到顶部位置
                                 self.firstLabelOne.snp.remakeConstraints { make in
-                                    self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)+kFitWidth(1.3)).constraint
+                                    self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)+kFitWidth(5.3)).constraint
                                     make.centerX.equalToSuperview()
                                     make.left.equalTo(kFitWidth(54))
                                     make.right.equalTo(kFitWidth(-54))
@@ -217,10 +223,11 @@ extension FirstLaunchVC{
                                                initialSpringVelocity: self.velocity,
                                                options: .curveEaseOut, animations: {
                                     self.view.layoutIfNeeded()
-                                }){ _ in
+                                })
+                                { _ in
                                     self.generator.impactOccurred(intensity: 0.85)
                                     self.firstLabelOne.snp.remakeConstraints { make in
-                                        self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)-kFitWidth(0.6)).constraint
+                                        self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)-kFitWidth(2.6)).constraint
                                         make.centerX.equalToSuperview()
                                         make.left.equalTo(kFitWidth(54))
                                         make.right.equalTo(kFitWidth(-54))
@@ -264,6 +271,41 @@ extension FirstLaunchVC{
                                     }
                                 }
                             }
+                            
+                            
+                            
+//                            appearAnimator.addAnimations {
+//                                self.generator.impactOccurred(intensity: 0.7)
+//
+//                                self.view.layoutIfNeeded()
+//                                self.firstLabelOne.snp.remakeConstraints { make in
+//                                    self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)).constraint
+//                                    make.centerX.equalToSuperview()
+//                                    make.left.equalTo(kFitWidth(54))
+//                                    make.right.equalTo(kFitWidth(-54))
+//                                }
+//
+//                                let settleTiming = UISpringTimingParameters(mass: 1.05,
+//                                                                            stiffness: 165,
+//                                                                            damping: 13.5,
+//                                                                            initialVelocity: CGVector(dx: 0, dy: -12))
+//                                let settleAnimator = UIViewPropertyAnimator(duration: 0, timingParameters: settleTiming)
+//                                settleAnimator.addAnimations {
+//                                    self.view.layoutIfNeeded()
+//                                    self.firstLabelOne.transform = .identity
+//                                    self.firstLogoImgView.transform = .identity
+//                                }
+//                                settleAnimator.addCompletion { position in
+//                                    guard position == .end else { return }
+//                                    self.generator.impactOccurred(intensity: 0.35)
+//                                    self.animateLableTwo()
+//                                }
+//                                self.generator.impactOccurred(intensity: 0.55)
+//                                settleAnimator.startAnimation()
+//                            }
+//
+//                            self.generatorMedium.impactOccurred(intensity: 1)
+//                            appearAnimator.startAnimation()
                         }
                     }
                 }
