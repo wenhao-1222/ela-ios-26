@@ -76,8 +76,13 @@ class JournalSettingVC: WHBaseViewVC {
         vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
         vm.detailLabel.text = ""
         vm.arrowImgView.isHidden = true
-        vm.switchButton.isHidden = false
-        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.hiddenMeaTimeStatus)
+//        vm.switchButton.isHidden = false
+//        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.hiddenMeaTimeStatus)
+        vm.switchBtn.isHidden = false
+        vm.switchBtn.setOn(UserInfoModel.shared.hiddenMeaTimeStatus, animated: false)
+        vm.switchBlock = {(isSelect)in
+            self.sendSaveLogsTimeRequest(statu: isSelect)
+        }
         vm.tapBlock = {()in
             
         }
@@ -92,8 +97,13 @@ class JournalSettingVC: WHBaseViewVC {
         vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
         vm.detailLabel.text = ""
         vm.arrowImgView.isHidden = true
-        vm.switchButton.isHidden = false
-        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.showRemainCalories)
+//        vm.switchButton.isHidden = false
+//        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.showRemainCalories)
+        vm.switchBtn.isHidden = false
+        vm.switchBtn.setOn(UserInfoModel.shared.showRemainCalories, animated: false)
+        vm.switchBlock = {(isSelect)in
+            self.sendNatGoalStyleRequest(statu: isSelect)
+        }
         vm.tapBlock = {()in
             
         }
@@ -108,8 +118,13 @@ class JournalSettingVC: WHBaseViewVC {
         vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
         vm.detailLabel.text = ""
         vm.arrowImgView.isHidden = true
-        vm.switchButton.isHidden = false
-        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.show_water_status)
+//        vm.switchButton.isHidden = false
+//        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.show_water_status)
+        vm.switchBtn.isHidden = false
+        vm.switchBtn.setOn(UserInfoModel.shared.show_water_status, animated: false)
+        vm.switchBlock = {(isSelect)in
+            self.sendWaterConfigRequest(statu: isSelect)
+        }
         vm.tapBlock = {()in
             
         }
@@ -124,8 +139,13 @@ class JournalSettingVC: WHBaseViewVC {
         vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
         vm.detailLabel.text = ""
         vm.arrowImgView.isHidden = true
-        vm.switchButton.isHidden = false
-        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.show_next_advice)
+//        vm.switchButton.isHidden = false
+//        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.show_next_advice)
+        vm.switchBtn.isHidden = false
+        vm.switchBtn.setOn(UserInfoModel.shared.show_next_advice, animated: false)
+        vm.switchBlock = {(isSelect)in
+            self.sendNextMealAdviceConfigRequest(statu: isSelect)
+        }
         vm.tapBlock = {()in
             
         }
@@ -224,9 +244,13 @@ class JournalSettingVC: WHBaseViewVC {
         vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
         vm.detailLabel.text = ""
         vm.arrowImgView.isHidden = true
-        vm.switchButton.isHidden = false
-//        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.statSportDataFromHealth == "2" ? true : false)
-        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.statSportDataToTarget == "1" ? true : false)
+//        vm.switchButton.isHidden = false
+//        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.statSportDataToTarget == "1" ? true : false)
+        vm.switchBtn.isHidden = false
+        vm.switchBtn.setOn(UserInfoModel.shared.statSportDataToTarget == "1" ? true : false, animated: false)
+        vm.switchBlock = {(isSelect)in
+            self.sendSportCaloriesUpdateRequest(statu: isSelect)
+        }
         vm.tapBlock = {()in
             
         }

@@ -206,6 +206,7 @@ extension FirstLaunchVC{
                                            options: .curveEaseInOut,
                                            animations: {
                                 self.view.layoutIfNeeded()
+//                                self.firstLabelTopConstraint?.update(offset: kFitWidth(152)-kFitWidth(8))
                             })
                             { _ in
                                 self.generator.impactOccurred(intensity: 0.99)
@@ -271,41 +272,6 @@ extension FirstLaunchVC{
                                     }
                                 }
                             }
-                            
-                            
-                            
-//                            appearAnimator.addAnimations {
-//                                self.generator.impactOccurred(intensity: 0.7)
-//
-//                                self.view.layoutIfNeeded()
-//                                self.firstLabelOne.snp.remakeConstraints { make in
-//                                    self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)).constraint
-//                                    make.centerX.equalToSuperview()
-//                                    make.left.equalTo(kFitWidth(54))
-//                                    make.right.equalTo(kFitWidth(-54))
-//                                }
-//
-//                                let settleTiming = UISpringTimingParameters(mass: 1.05,
-//                                                                            stiffness: 165,
-//                                                                            damping: 13.5,
-//                                                                            initialVelocity: CGVector(dx: 0, dy: -12))
-//                                let settleAnimator = UIViewPropertyAnimator(duration: 0, timingParameters: settleTiming)
-//                                settleAnimator.addAnimations {
-//                                    self.view.layoutIfNeeded()
-//                                    self.firstLabelOne.transform = .identity
-//                                    self.firstLogoImgView.transform = .identity
-//                                }
-//                                settleAnimator.addCompletion { position in
-//                                    guard position == .end else { return }
-//                                    self.generator.impactOccurred(intensity: 0.35)
-//                                    self.animateLableTwo()
-//                                }
-//                                self.generator.impactOccurred(intensity: 0.55)
-//                                settleAnimator.startAnimation()
-//                            }
-//
-//                            self.generatorMedium.impactOccurred(intensity: 1)
-//                            appearAnimator.startAnimation()
                         }
                     }
                 }

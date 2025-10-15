@@ -18,11 +18,11 @@ class ForumNaviTypeLiquidVM: UIView {
     private let btnWidth = kFitWidth(60)
     
     // ------- 可按需调整的外观参数 -------
-    private let tintLightHex = "EFEFEF"     // 浅色模式主色（品牌蓝）
+    private let tintLightHex = "FFFFFF"     // 浅色模式主色（品牌蓝）
     private let tintDarkHex  = "1E5EFF"     // 深色模式主色（略调暗）
-    private let topAlpha: CGFloat    = 0.9 // 顶部透明度
+    private let topAlpha: CGFloat    = 0.5 // 顶部透明度
     private let bottomAlpha: CGFloat = 0 // 底部透明度
-    private let featherHeight: CGFloat = WHUtils().getNavigationBarHeight()// 底部羽化高度（px），越大越柔
+    private let featherHeight: CGFloat = 0//WHUtils().getNavigationBarHeight()// 底部羽化高度（px），越大越柔
 
     // 毛玻璃层：常显
     private lazy var blurView: UIVisualEffectView = {
@@ -145,7 +145,7 @@ class ForumNaviTypeLiquidVM: UIView {
 
         gradientLayer.colors = [
             baseTint.withAlphaComponent(aTop).cgColor,
-            baseTint.withAlphaComponent(aMid).cgColor,
+//            baseTint.withAlphaComponent(aMid).cgColor,
             baseTint.withAlphaComponent(aBot).cgColor
         ]
     }
@@ -156,9 +156,9 @@ class ForumNaviTypeLiquidVM: UIView {
         bottomFeatherMask.endPoint   = CGPoint(x: 0.5, y: 1.0)
         // mask 使用 alpha：白(1)=可见，黑(0)=不可见
         bottomFeatherMask.colors = [
-            UIColor.white.cgColor,                       // 全可见
-            UIColor.white.cgColor,                       // 全可见
-            UIColor.black.withAlphaComponent(0).cgColor  // 渐隐到 0
+            UIColor.white.withAlphaComponent(0.5).cgColor,                       // 全可见
+            UIColor.white.withAlphaComponent(0).cgColor,                       // 全可见
+//            UIColor.black.withAlphaComponent(0).cgColor  // 渐隐到 0
         ]
         blurView.layer.mask = bottomFeatherMask
     }

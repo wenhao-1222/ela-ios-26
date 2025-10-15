@@ -35,37 +35,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         DLLog(message: "application  -----   didFinishLaunchingWithOptions")
-//        UserDefaults.standard.setValue("BlN6cZ7MJcazmC04", forKey: token)
-//        UserDefaults.standard.setValue("a77b4ec731a777de447a40739af8b961", forKey: userId)
-//        UserInfoModel.shared.uId = "a77b4ec731a777de447a40739af8b961"
-//        UserInfoModel.shared.token = "BlN6cZ7MJcazmC04"
-//        if window == nil {
-//            let launchWindow = UIWindow(frame: UIScreen.main.bounds)
-//            launchWindow.backgroundColor = .THEME
-//            launchWindow.makeKeyAndVisible()
-//            window = launchWindow
-//        } else {
-//            window?.backgroundColor = .THEME
-//            window?.makeKeyAndVisible()
-//        }
-        let launchWindow = window ?? UIWindow(frame: UIScreen.main.bounds)
-        launchWindow.backgroundColor = .THEME
-        window = launchWindow
+//        UserDefaults.standard.setValue("gpojo0SfiW35DzUf", forKey: token)
+//        UserDefaults.standard.setValue("7cf40e2cfca9d39185ada073a14f555f", forKey: userId)
+//        UserInfoModel.shared.uId = "7cf40e2cfca9d39185ada073a14f555f"
+//        UserInfoModel.shared.token = "gpojo0SfiW35DzUf"
+        if window == nil {
+            let launchWindow = UIWindow(frame: UIScreen.main.bounds)
+            launchWindow.backgroundColor = .THEME
+            launchWindow.makeKeyAndVisible()
+            window = launchWindow
+        } else {
+            window?.backgroundColor = .THEME
+            window?.makeKeyAndVisible()
+        }
+//        let launchWindow = window ?? UIWindow(frame: UIScreen.main.bounds)
+//        launchWindow.backgroundColor = .THEME
+//        launchWindow.isOpaque = true
+//        window = launchWindow
+//        window?.backgroundColor = .THEME
+//        window?.isOpaque = true
+//        window?.rootViewController = FirstLaunchVC()
+//        window?.makeKeyAndVisible()
         MCToastConfig.shared.text.maxWidth = kFitWidth(343)//SCREEN_WIDHT-kFitWidth(82)-kFitWidth(72)
-//        MCToastConfig.shared.text.textColor
-//        UNUserNotificationCenter.current().delegate = self
         
-        var launchInt = UserDefaults.standard.value(forKey: launchNum) as? Int ?? 0
-        launchInt = launchInt + 1 
-        UserDefaults.standard.setValue(launchInt, forKey: launchNum)
         let token = UserDefaults.standard.value(forKey: token) as? String ?? ""
-        
-//        UserInfoModel.shared.widgetNewFuncRead = (UserDefaults.standard.value(forKey: "widgetNewFuncRead")as? String ?? "").count > 0 ? true : false
-        UserInfoModel.shared.settingNewFuncRead = (UserDefaults.standard.value(forKey: "settingNewFuncRead")as? String ?? "").count > 0 ? true : false
-        UserInfoModel.shared.widgetNewFuncRead = true
         let isLaunchWelcome = UserDefaults.standard.value(forKey: isLaunchWelcome)as? String ?? ""
-        
-        EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW, scenarioType: .launch_App, text: "")
         let rootViewController: UIViewController
         if isLaunchWelcome == "" && token == ""{
 //            self.window?.rootViewController = WelcomeLaunchVC()
@@ -118,9 +112,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
             rootViewController = elaLchVc
         }
         window?.rootViewController = rootViewController
-        window?.makeKeyAndVisible()
+        
+        UserInfoModel.shared.settingNewFuncRead = (UserDefaults.standard.value(forKey: "settingNewFuncRead")as? String ?? "").count > 0 ? true : false
+        UserInfoModel.shared.widgetNewFuncRead = true
+        
+        EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW, scenarioType: .launch_App, text: "")
         sendSmsDataRequest()
         
+        var launchInt = UserDefaults.standard.value(forKey: launchNum) as? Int ?? 0
+        launchInt = launchInt + 1
+        UserDefaults.standard.setValue(launchInt, forKey: launchNum)
 //        initKTVHTTPCache()
         initWxApi()
 //        initBuyly()

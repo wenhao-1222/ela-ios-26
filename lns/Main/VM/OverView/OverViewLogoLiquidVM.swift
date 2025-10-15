@@ -18,11 +18,11 @@ final class OverViewLogoLiquidVM: UIView {
     let selfHeight = kFitWidth(38) + statusBarHeight + kFitWidth(4)
 
     // ------- 可按需调整的外观参数 -------
-    private let tintLightHex = "FFFFFFAA"     // 浅色模式主色（品牌蓝）
+    private let tintLightHex = "FFFFFF"     // 浅色模式主色（品牌蓝）
     private let tintDarkHex  = "1E5EFF"     // 深色模式主色（略调暗）
-    private let topAlpha: CGFloat    = 0.2 // 顶部透明度
+    private let topAlpha: CGFloat    = 0.5 // 顶部透明度
     private let bottomAlpha: CGFloat = 0 // 底部透明度
-    private let featherHeight: CGFloat = kFitWidth(38) + statusBarHeight + kFitWidth(4)//kFitWidth(24) // 底部羽化高度（px），越大越柔
+    private let featherHeight: CGFloat = 0//kFitWidth(38) + statusBarHeight + kFitWidth(4)//kFitWidth(24) // 底部羽化高度（px），越大越柔
 
     // Logo（按你原尺寸/位置）
     private let logoImg  = UIImage(named: "main_top_logo_cj")
@@ -32,17 +32,17 @@ final class OverViewLogoLiquidVM: UIView {
     // 毛玻璃层：常显
     private lazy var blurView: UIVisualEffectView = {
         let effect: UIBlurEffect
-            if #available(iOS 13.0, *) {
-                effect = traitCollection.userInterfaceStyle == .dark
-                ? UIBlurEffect(style: .systemChromeMaterialDark)
-                : UIBlurEffect(style: .systemChromeMaterial)
-            } else {
-                effect = UIBlurEffect(style: .light)
-            }
-            let v = UIVisualEffectView(effect: effect)
-            v.clipsToBounds = true
-            v.alpha = 1.0
-        v.backgroundColor = .THEME
+//            if #available(iOS 13.0, *) {
+//                effect = traitCollection.userInterfaceStyle == .dark
+//                ? UIBlurEffect(style: .systemChromeMaterialDark)
+//                : UIBlurEffect(style: .systemChromeMaterial)
+//            } else {
+                effect = UIBlurEffect(style: .extraLight)
+//                }
+        let v = UIVisualEffectView(effect: effect)
+        v.clipsToBounds = true
+        v.alpha = 0.5
+//        v.backgroundColor = .THEME
         return v
     }()
 
@@ -65,7 +65,7 @@ final class OverViewLogoLiquidVM: UIView {
         s.locations  = [0, 0.15]
         s.opacity    = 0.22
         s.colors = [
-            UIColor.white.withAlphaComponent(0.22).cgColor,
+            UIColor.white.withAlphaComponent(0.5).cgColor,
             UIColor.white.withAlphaComponent(0.0).cgColor
         ]
         return s
@@ -135,7 +135,7 @@ final class OverViewLogoLiquidVM: UIView {
 
         gradientLayer.colors = [
             baseTint.withAlphaComponent(aTop).cgColor,
-            baseTint.withAlphaComponent(aMid).cgColor,
+//            baseTint.withAlphaComponent(aMid).cgColor,
             baseTint.withAlphaComponent(aBot).cgColor
         ]
     }
@@ -146,10 +146,14 @@ final class OverViewLogoLiquidVM: UIView {
         bottomFeatherMask.endPoint   = CGPoint(x: 0.5, y: 1.0)
         // mask 使用 alpha：白(1)=可见，黑(0)=不可见
         bottomFeatherMask.colors = [
-            UIColor.white.cgColor,                       // 全可见
-            UIColor.white.cgColor,                       // 全可见
-            UIColor.black.withAlphaComponent(0).cgColor  // 渐隐到 0
+            UIColor.white.withAlphaComponent(0.5).cgColor,
+            UIColor.white.withAlphaComponent(0).cgColor,
         ]
+//        bottomFeatherMask.colors = [
+//            UIColor.white.cgColor,                       // 全可见
+//            UIColor.white.cgColor,                       // 全可见
+//            UIColor.black.withAlphaComponent(0).cgColor  // 渐隐到 0
+//        ]
         blurView.layer.mask = bottomFeatherMask
     }
     func updateAlpha(offsetY:CGFloat) {

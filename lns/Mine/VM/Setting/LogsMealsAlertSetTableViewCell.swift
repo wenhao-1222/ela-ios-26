@@ -52,11 +52,18 @@ class LogsMealsAlertSetTableViewCell: FeedBackTableViewCell {
         
         return lab
     }()
-    lazy var switchButton: SwitchButton = {
-        let btn = SwitchButton.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(16)-SwitchButton().selfWidth, y: (selfHeight-SwitchButton().selfHeight)*0.5, width: 0, height: 0))
-        btn.tapBlock = {(isSelect)in
-            self.switchBtnAction()
-        }
+//    lazy var switchButton: SwitchButton = {
+//        let btn = SwitchButton.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(16)-SwitchButton().selfWidth, y: (selfHeight-SwitchButton().selfHeight)*0.5, width: 0, height: 0))
+//        btn.tapBlock = {(isSelect)in
+//            self.switchBtnAction()
+//        }
+//        return btn
+//    }()
+    lazy var switchBtn: UISwitch = {
+        let btn = UISwitch()
+//        btn.isHidden = true
+        btn.onTintColor = .THEME
+        btn.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
         return btn
     }()
     lazy var remarkLabel: UILabel = {
@@ -69,11 +76,15 @@ class LogsMealsAlertSetTableViewCell: FeedBackTableViewCell {
 }
 
 extension LogsMealsAlertSetTableViewCell{
-    @objc func switchBtnAction() {
-        if self.switchBlock != nil{
-            self.switchBlock!(!self.switchButton.isSelect)
-        }
+//    @objc func switchBtnAction() {
+//        if self.switchBlock != nil{
+//            self.switchBlock!(!self.switchButton.isSelect)
+//        }
 //        self.switchButton.setSelectStatus(status: !self.switchButton.isSelect)
+//    }
+    @objc private func switchChanged(_ sender: UISwitch) {
+        print("isOn =", sender.isOn)
+        self.switchBlock?(sender.isOn)
     }
 }
 
@@ -87,9 +98,11 @@ extension LogsMealsAlertSetTableViewCell{
 //        remarkLabel.text = dict.stringValueForKey(key: "remark")
         
         if dict.stringValueForKey(key: "status") == "0"{
-            switchButton.setSelectStatus(status: false)
+//            switchButton.setSelectStatus(status: false)
+            switchBtn.setOn(false, animated: false)
         }else{
-            switchButton.setSelectStatus(status: true)
+//            switchButton.setSelectStatus(status: true)
+            switchBtn.setOn(true, animated: false)
         }
         
 //        let rotationString = dict.stringValueForKey(key: "rotation")
@@ -150,7 +163,8 @@ extension LogsMealsAlertSetTableViewCell{
         whiteView.addSubview(mealIndexLabel)
         whiteView.addSubview(mealTimeLabel)
         whiteView.addSubview(weekDaysLabel)
-        whiteView.addSubview(switchButton)
+//        whiteView.addSubview(switchButton)
+        whiteView.addSubview(switchBtn)
         whiteView.addSubview(remarkLabel)
         
         setConstrait()
@@ -180,11 +194,15 @@ extension LogsMealsAlertSetTableViewCell{
             make.top.equalTo(weekDaysLabel.snp.bottom).offset(kFitWidth(10))
             make.bottom.equalTo(kFitWidth(-8))
         }
-        switchButton.snp.makeConstraints { make in
+//        switchButton.snp.makeConstraints { make in
+//            make.right.equalTo(kFitWidth(-16))
+//            make.centerY.lessThanOrEqualToSuperview()
+//            make.width.equalTo(switchButton.selfWidth)
+//            make.height.equalTo(switchButton.selfHeight)
+//        }
+        switchBtn.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-16))
             make.centerY.lessThanOrEqualToSuperview()
-            make.width.equalTo(switchButton.selfWidth)
-            make.height.equalTo(switchButton.selfHeight)
         }
     }
 }

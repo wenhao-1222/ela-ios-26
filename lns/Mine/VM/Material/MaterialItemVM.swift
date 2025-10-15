@@ -13,6 +13,7 @@ class MaterialItemVM: UIButton {
     let selfHeight = kFitWidth(56)
     
     var tapBlock:(()->())?
+    var switchBlock:((Bool)->())?
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
@@ -91,6 +92,16 @@ class MaterialItemVM: UIButton {
         
         return btn
     }()
+    lazy var switchBtn: UISwitch = {
+        let btn = UISwitch()//.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(16)-kFitWidth(48),
+//                                                   y: (selfHeight-kFitWidth(28))*0.5,
+//                                                   width: kFitWidth(48),
+//                                                   height: kFitWidth(28)))
+        btn.isHidden = true
+        btn.onTintColor = .THEME
+        btn.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
+        return btn
+    }()
 }
 
 extension MaterialItemVM{
@@ -99,6 +110,10 @@ extension MaterialItemVM{
         if self.tapBlock != nil{
             self.tapBlock!()
         }
+    }
+    @objc private func switchChanged(_ sender: UISwitch) {
+        print("isOn =", sender.isOn)
+        self.switchBlock?(sender.isOn)
     }
 }
 
@@ -112,6 +127,7 @@ extension MaterialItemVM{
         addSubview(detailLabel)
         addSubview(redView)
         addSubview(switchButton)
+        addSubview(switchBtn)
         
         setConstrait()
     }
@@ -142,6 +158,10 @@ extension MaterialItemVM{
         }
         detailLabel.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-40))
+            make.centerY.lessThanOrEqualToSuperview()
+        }
+        switchBtn.snp.makeConstraints { make in
+            make.right.equalTo(kFitWidth(-16))
             make.centerY.lessThanOrEqualToSuperview()
         }
     }

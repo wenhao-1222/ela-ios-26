@@ -123,7 +123,6 @@ extension LogsMealsAlertSetVC:UITableViewDelegate,UITableViewDataSource{
         let dict = self.dataSourceArray[indexPath.row]as? NSDictionary ?? [:]
         cell?.updateUI(dict: dict)
         
-        
         cell?.switchBlock = {(status)in
             self.mealsIndex = indexPath.row
 //            self.switchBtnAction(status: status)
