@@ -33,11 +33,18 @@ class LogsMealsAlertSetFootVM: UIView {
         return lab
     }()
     
-    lazy var switchButton: SwitchButton = {
-        let btn = SwitchButton.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(28)-SwitchButton().selfWidth, y: (selfHeight-SwitchButton().selfHeight)*0.5, width: 0, height: 0))
-        btn.tapBlock = {(isSelect)in
-            self.switchBtnAction()
-        }
+//    lazy var switchButton: SwitchButton = {
+//        let btn = SwitchButton.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(28)-SwitchButton().selfWidth, y: (selfHeight-SwitchButton().selfHeight)*0.5, width: 0, height: 0))
+//        btn.tapBlock = {(isSelect)in
+//            self.switchBtnAction()
+//        }
+//        return btn
+//    }()
+    lazy var switchBtn: UISwitch = {
+        let btn = UISwitch()
+
+        btn.onTintColor = .THEME
+        btn.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
         return btn
     }()
 }
@@ -45,30 +52,31 @@ class LogsMealsAlertSetFootVM: UIView {
 extension LogsMealsAlertSetFootVM{
     func updateUI(mandatory:String) {
         if mandatory == "1"{
-            switchButton.setSelectStatus(status: true)
+//            switchButton.setSelectStatus(status: true)
+            switchBtn.setOn(true, animated: false)
             leftTitleLabel.text = "强制提醒（已开启：无论用餐与否，都提醒）"
         }else{
-            switchButton.setSelectStatus(status: false)
+//            switchButton.setSelectStatus(status: false)
+            switchBtn.setOn(false, animated: false)
             leftTitleLabel.text = "强制提醒（已关闭：若已用餐，则不提醒）"
         }
     }
     @objc func switchBtnAction() {
-        if self.switchBlock != nil{
-            self.switchBlock!(!self.switchButton.isSelect)
-        }
-//        self.switchButton.setSelectStatus(status: !self.switchButton.isSelect)
-//        if self.switchButton.isSelect{
-//            leftTitleLabel.text = "强制提醒（开启：无论用餐与否，都提醒）"
-//        }else{
-//            leftTitleLabel.text = "强制提醒（关闭：若已用餐，则不提醒）"
+//        if self.switchBlock != nil{
+//            self.switchBlock!(!self.switchButton.isSelect)
 //        }
+    }
+    @objc private func switchChanged(_ sender: UISwitch) {
+        print("isOn =", sender.isOn)
+        self.switchBlock?(sender.isOn)
     }
 }
 
 extension LogsMealsAlertSetFootVM{
     func initUI() {
         addSubview(leftTitleLabel)
-        addSubview(switchButton)
+//        addSubview(switchButton)
+        addSubview(switchBtn)
         
         setConstrait()
     }
@@ -76,7 +84,11 @@ extension LogsMealsAlertSetFootVM{
         leftTitleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(28))
             make.centerY.lessThanOrEqualToSuperview()
-            make.right.equalTo(switchButton.snp.left).offset(kFitWidth(-4))
+            make.right.equalTo(switchBtn.snp.left).offset(kFitWidth(-4))
+        }
+        switchBtn.snp.makeConstraints { make in
+            make.right.equalTo(kFitWidth(-28))
+            make.centerY.lessThanOrEqualToSuperview()
         }
     }
 }
