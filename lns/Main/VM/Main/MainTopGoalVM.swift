@@ -19,6 +19,7 @@ class MainTopGoalVM: UIView {
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: kFitWidth(135), height: selfHeight))
         self.backgroundColor = .clear
         self.isUserInteractionEnabled = true
+        self.layer.cornerRadius = kFitWidth(4)
         self.clipsToBounds = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(editActtion))
