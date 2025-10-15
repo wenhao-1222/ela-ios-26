@@ -17,63 +17,23 @@ final class OverViewLogoLiquidVM: UIView {
     // 高度保持和原工程一致
     let selfHeight = kFitWidth(38) + statusBarHeight + kFitWidth(4)
 
-    // ------- 可按需调整的外观参数 -------
-    private let tintLightHex = "FFFFFF"     // 浅色模式主色（品牌蓝）
-    private let tintDarkHex  = "1E5EFF"     // 深色模式主色（略调暗）
-    private let topAlpha: CGFloat    = 0.5 // 顶部透明度
-    private let bottomAlpha: CGFloat = 0 // 底部透明度
-    private let featherHeight: CGFloat = 0//kFitWidth(38) + statusBarHeight + kFitWidth(4)//kFitWidth(24) // 底部羽化高度（px），越大越柔
-
     // Logo（按你原尺寸/位置）
     private let logoImg  = UIImage(named: "main_top_logo_cj")
     private let imgWidth = kFitWidth(139)
     private let imgHeight = kFitWidth(25)
-
-    // 毛玻璃层：常显
+    
+    // 毛玻璃层（背景层，放在最底）
     private lazy var blurView: UIVisualEffectView = {
         let effect: UIBlurEffect
-//            if #available(iOS 13.0, *) {
-//                effect = traitCollection.userInterfaceStyle == .dark
-//                ? UIBlurEffect(style: .systemChromeMaterialDark)
-//                : UIBlurEffect(style: .systemChromeMaterial)
-//            } else {
-                effect = UIBlurEffect(style: .extraLight)
-//                }
+        effect = UIBlurEffect(style: .systemChromeMaterial)
         let v = UIVisualEffectView(effect: effect)
-        v.clipsToBounds = true
-        v.alpha = 0.5
-//        v.backgroundColor = .THEME
+//        v.clipsToBounds = true
+        v.alpha = 0          // 模糊层总体不透明度 7%
+        v.backgroundColor = .clear
         return v
     }()
-
-    // 渐变着色层（在毛玻璃上叠一层颜色从上到下逐渐变淡）
-    private let gradientLayer: CAGradientLayer = {
-        let g = CAGradientLayer()
-        g.startPoint = CGPoint(x: 0.5, y: 0.0)
-        g.endPoint   = CGPoint(x: 0.5, y: 1.0)
-        // 三段更自然：顶 -> 过渡 -> 底
-        g.locations  = [0.0, 0.62, 1.0]
-        g.opacity    = 1.0
-        return g
-    }()
-
-    // 顶部轻微高光（提升玻璃质感，可按需调低/去掉）
-    private let shineLayer: CAGradientLayer = {
-        let s = CAGradientLayer()
-        s.startPoint = CGPoint(x: 0.5, y: 0.0)
-        s.endPoint   = CGPoint(x: 0.5, y: 1.0)
-        s.locations  = [0, 0.15]
-        s.opacity    = 0.22
-        s.colors = [
-            UIColor.white.withAlphaComponent(0.5).cgColor,
-            UIColor.white.withAlphaComponent(0.0).cgColor
-        ]
-        return s
-    }()
-
-    // 底部羽化遮罩：让底缘在最后 featherHeight 内渐隐为 0，衔接更柔
     private let bottomFeatherMask = CAGradientLayer()
-
+    
     // Logo 视图
     private(set) lazy var logoImgView: UIImageView = {
         let img = UIImageView(frame: CGRect(
@@ -103,97 +63,93 @@ final class OverViewLogoLiquidVM: UIView {
         addSubview(logoImgView)
 
         blurView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            blurView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            blurView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            blurView.topAnchor.constraint(equalTo: topAnchor),
-            blurView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-
-        // 渐变与高光叠到毛玻璃之上
-        blurView.contentView.layer.addSublayer(gradientLayer)
-        blurView.contentView.layer.addSublayer(shineLayer)
-
-        // 设置固定外观
-        applyFixedTint()
-
+        
+        blurView.snp.makeConstraints { make in
+            make.left.top.right.equalToSuperview()
+            make.bottom.equalTo(kFitWidth(54))
+        }
         // 配置底部羽化遮罩
         configureBottomFeatherMask()
-    }
-
-    /// 根据深/浅色模式套用主色，并设置自上而下 0.8→0.02 的透明度
-    private func applyFixedTint() {
-        let baseTint: UIColor
-        if #available(iOS 13.0, *), traitCollection.userInterfaceStyle == .dark {
-            baseTint = WHColor_16(colorStr: tintDarkHex)
-        } else {
-            baseTint = WHColor_16(colorStr: tintLightHex)
-        }
-        let aTop = max(0, min(1, topAlpha))
-        let aBot = max(0, min(1, bottomAlpha))
-        let aMid = (aTop + aBot) * 0.5
-
-        gradientLayer.colors = [
-            baseTint.withAlphaComponent(aTop).cgColor,
-//            baseTint.withAlphaComponent(aMid).cgColor,
-            baseTint.withAlphaComponent(aBot).cgColor
-        ]
     }
 
     /// 底部竖向羽化遮罩：中上部完全可见，最后 featherHeight 区间渐隐为 0
     private func configureBottomFeatherMask() {
         bottomFeatherMask.startPoint = CGPoint(x: 0.5, y: 0.0)
         bottomFeatherMask.endPoint   = CGPoint(x: 0.5, y: 1.0)
-        // mask 使用 alpha：白(1)=可见，黑(0)=不可见
-        bottomFeatherMask.colors = [
-            UIColor.white.withAlphaComponent(0.5).cgColor,
-            UIColor.white.withAlphaComponent(0).cgColor,
-        ]
-//        bottomFeatherMask.colors = [
-//            UIColor.white.cgColor,                       // 全可见
-//            UIColor.white.cgColor,                       // 全可见
-//            UIColor.black.withAlphaComponent(0).cgColor  // 渐隐到 0
-//        ]
+        applySoftMask(to: bottomFeatherMask, topHold: 0.15, steps: 18, strength: 1)
+        // 想更轻一点（整体弱化）：strength 设小些，比如 0.75
+        // 想过渡更丝滑：steps 设 8 或 10（注意性能影响非常小）
+
         blurView.layer.mask = bottomFeatherMask
     }
     func updateAlpha(offsetY:CGFloat) {
-//        var percent = offsetY / selfHeight
-//        percent = min(max(percent, 0), 1)
-//        let value = pow(percent, 3)
-//        backgroundColor = UIColor(white: 1, alpha: value)
-
-//        let start = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
-//        let end = WHColorWithAlpha(colorStr: "007AFF", alpha: 1)
-        
         if offsetY >= kFitWidth(30){
+            blurView.alpha = min(0.85,(offsetY*0.01)/(selfHeight*0.01))
             let imgWidth = imgWidth*0.85
             let imgHeight = imgHeight*0.85
             logoImgView.tintColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 1)//blendColor(from: start, to: end, progress: 1)
             logoImgView.frame = CGRect.init(x: SCREEN_WIDHT*0.5-imgWidth*0.5, y: self.selfHeight-imgHeight-kFitWidth(10), width: imgWidth, height: imgHeight)
         }else{
+            blurView.alpha = 0
             logoImgView.tintColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)//blendColor(from: start, to: end, progress: 0)
             logoImgView.frame = CGRect.init(x: kFitWidth(32), y: self.selfHeight-imgHeight-kFitWidth(10), width: imgWidth, height: imgHeight)
         }
     }
+    /// 生成一组柔和的梯度遮罩（上强下弱）
+    /// - Parameters:
+    ///   - topHold: 顶部保持强模糊的占比 [0,1]
+    ///   - steps: 过渡分段数（越大越平滑，建议 4~8）
+    ///   - strength: 整体“雾量”，1.0=原强度，0.6=更轻
+    func applySoftMask(to layer: CAGradientLayer,
+                       topHold: CGFloat = 0.25,
+                       steps: Int = 6,
+                       strength: CGFloat = 1.0)
+    {
+        func easeInOut(_ t: CGFloat) -> CGFloat {
+            // 经典 cubic ease-in-out
+            return t < 0.5 ? 4*t*t*t : 1 - pow(-2*t + 2, 3)/2
+        }
+
+        // 组装 locations：前面 0 和 topHold 做 plateau，其后做等距细分
+        var locs: [CGFloat] = [0.0, max(0.0, min(1.0, topHold))]
+        for i in 1...steps {
+            let p = CGFloat(i) / CGFloat(steps)           // 0→1
+            let y = topHold + (1 - topHold) * p           // topHold→1
+            locs.append(y)
+        }
+
+        // 组装 colors：alpha 从 1.0（顶部）按 S 曲线缓慢降到 0
+        var cols: [CGColor] = []
+        for (idx, l) in locs.enumerated() {
+            let t: CGFloat
+            if l <= topHold {
+                t = 0                                     // plateau 区全强
+            } else {
+                let local = (l - topHold) / (1 - topHold) // 归一化到 0~1
+                t = easeInOut(local)
+            }
+            let a = max(0, min(1, (1 - t) * strength))    // 由强(1)到弱(0)
+            cols.append(UIColor.black.withAlphaComponent(a).cgColor)
+            
+            // 小技巧：在 topHold 位置再插一个相同 alpha，做更稳的台阶
+            if idx == 1 {
+                cols.append(UIColor.black.withAlphaComponent(a).cgColor)
+            }
+        }
+
+        // locations 也要对应重复一个（与上面对齐）
+        locs.insert(locs[1], at: 2)
+
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint   = CGPoint(x: 0.5, y: 1.0)
+        layer.locations  = locs.map { NSNumber(value: Double($0)) }
+        layer.colors     = cols
+    }
+
     // MARK: - Layout
     override func layoutSubviews() {
         super.layoutSubviews()
-        gradientLayer.frame = blurView.bounds
-        shineLayer.frame    = blurView.bounds
-
-        // 根据当前高度计算羽化分界位置
         bottomFeatherMask.frame = blurView.bounds
-        let h = bounds.height
-        let fadeStart = max(0, min(1, (h - featherHeight) / max(h, 1))) // 渐隐起点的比例
-        bottomFeatherMask.locations = [0.0, NSNumber(value: Double(fadeStart)), 1.0]
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if #available(iOS 13.0, *),
-           previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
-            applyFixedTint()
-        }
     }
 }
 

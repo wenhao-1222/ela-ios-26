@@ -737,6 +737,8 @@
 		EC38DE9B2BEF661D008E7FCE /* MaterialVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC38DE9A2BEF661D008E7FCE /* MaterialVC.swift */; };
 		EC38DE9E2BEF66CB008E7FCE /* MaterialItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC38DE9D2BEF66CB008E7FCE /* MaterialItemVM.swift */; };
 		EC38DEA02BEF7503008E7FCE /* MaterialSexAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC38DE9F2BEF7503008E7FCE /* MaterialSexAlertVM.swift */; };
+		EC3975A82E9F7765008BE34E /* SelectedGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3975A72E9F7763008BE34E /* SelectedGlassView.swift */; };
+		EC3975AB2E9F78BA008BE34E /* LiquidSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3975AA2E9F78B9008BE34E /* LiquidSegmentedControl.swift */; };
 		EC3A050E2C199E2100E46713 /* QuestionnaireFoodsTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3A050D2C199E2100E46713 /* QuestionnaireFoodsTipsAlertVM.swift */; };
 		EC3A9CA62BB50EB800C6E442 /* QuestionnaireProgressVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3A9CA52BB50EB800C6E442 /* QuestionnaireProgressVM.swift */; };
 		EC3A9CA82BB5117F00C6E442 /* QuestionnaireSexVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3A9CA72BB5117F00C6E442 /* QuestionnaireSexVM.swift */; };
@@ -2004,6 +2006,8 @@
 		EC38DE9A2BEF661D008E7FCE /* MaterialVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialVC.swift; sourceTree = "<group>"; };
 		EC38DE9D2BEF66CB008E7FCE /* MaterialItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialItemVM.swift; sourceTree = "<group>"; };
 		EC38DE9F2BEF7503008E7FCE /* MaterialSexAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaterialSexAlertVM.swift; sourceTree = "<group>"; };
+		EC3975A72E9F7763008BE34E /* SelectedGlassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedGlassView.swift; sourceTree = "<group>"; };
+		EC3975AA2E9F78B9008BE34E /* LiquidSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidSegmentedControl.swift; sourceTree = "<group>"; };
 		EC3A04F62C19915800E46713 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		EC3A04F82C19915800E46713 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		EC3A050D2C199E2100E46713 /* QuestionnaireFoodsTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireFoodsTipsAlertVM.swift; sourceTree = "<group>"; };
@@ -3402,6 +3406,8 @@
 				A71A52DB2CD89C81009FDAF9 /* ForumNaviVM.swift */,
 				A78FE2072CD4755B00661F7D /* ForumNaviTypeVM.swift */,
 				EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */,
+				EC3975AA2E9F78B9008BE34E /* LiquidSegmentedControl.swift */,
+				EC3975A72E9F7763008BE34E /* SelectedGlassView.swift */,
 				A78FE20B2CD47E2500661F7D /* ForumNoticeVM.swift */,
 				A76F50CC2D5C31ED001B67CB /* ForumNoticeItemVM.swift */,
 				A78FE20D2CD482FB00661F7D /* ForumListTableViewCell.swift */,
@@ -5995,6 +6001,7 @@
 				ECB3E0852BD77AEF00CFDDFD /* FoodsDetailCaloriVM.swift in Sources */,
 				EC1EFB9C2BD203830021822F /* BalloonMarker.swift in Sources */,
 				A729C7532D2E58500067BB97 /* ForumCommentNewsModel.swift in Sources */,
+				EC3975AB2E9F78BA008BE34E /* LiquidSegmentedControl.swift in Sources */,
 				EC87A44B2C8EBB7A00BAB8CE /* NaturalUtil.swift in Sources */,
 				A7B676D82E28C4E600E2CF1E /* CoursePayOrderCouponVM.swift in Sources */,
 				A7202AFB2DD7260000CEA8D1 /* JournalReportWeekCalendarMonthVM.swift in Sources */,
@@ -6417,6 +6424,7 @@
 				A755902B2CC7841800642659 /* GoalSetCircleTemplateAlertVM.swift in Sources */,
 				A7278F5B2D229BD70071549D /* ForumOfficialVideoVM.swift in Sources */,
 				EC1EB5292BFAEE5000537F0B /* FoodsCreateSpecVM.swift in Sources */,
+				EC3975A82E9F7765008BE34E /* SelectedGlassView.swift in Sources */,
 				ECD0FF342BABE030001232C9 /* MainVC.swift in Sources */,
 				A71C54912E6ADB6B00FB797D /* WidgetTestVC.swift in Sources */,
 				EC962D8C2BF454EF002A12C5 /* BodyDataSQLiteManager.swift in Sources */,

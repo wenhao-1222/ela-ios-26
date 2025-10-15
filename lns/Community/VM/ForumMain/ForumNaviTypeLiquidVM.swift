@@ -17,56 +17,16 @@ class ForumNaviTypeLiquidVM: UIView {
     private let selfHeight = WHUtils().getNavigationBarHeight()
     private let btnWidth = kFitWidth(60)
     
-    // ------- 可按需调整的外观参数 -------
-    private let tintLightHex = "FFFFFF"     // 浅色模式主色（品牌蓝）
-    private let tintDarkHex  = "1E5EFF"     // 深色模式主色（略调暗）
-    private let topAlpha: CGFloat    = 0.5 // 顶部透明度
-    private let bottomAlpha: CGFloat = 0 // 底部透明度
-    private let featherHeight: CGFloat = 0//WHUtils().getNavigationBarHeight()// 底部羽化高度（px），越大越柔
-
-    // 毛玻璃层：常显
+    // 毛玻璃层（背景层，放在最底）
     private lazy var blurView: UIVisualEffectView = {
         let effect: UIBlurEffect
-//        if #available(iOS 13.0, *) {
-//            effect = traitCollection.userInterfaceStyle == .dark
-//            ? UIBlurEffect(style: .systemChromeMaterialDark)
-//            : UIBlurEffect(style: .systemChromeMaterial)
-//        } else {
-            effect = UIBlurEffect(style: .systemChromeMaterial)
-//        }
+        effect = UIBlurEffect(style: .systemChromeMaterial)
         let v = UIVisualEffectView(effect: effect)
-        v.clipsToBounds = true
-        v.alpha = 1
-        v.backgroundColor = UIColor.white.withAlphaComponent(0.8)
+//        v.clipsToBounds = true
+        v.alpha = 0.15          // 模糊层总体不透明度 7%
+        v.backgroundColor = .clear
         return v
     }()
-
-    // 渐变着色层（在毛玻璃上叠一层颜色从上到下逐渐变淡）
-    private let gradientLayer: CAGradientLayer = {
-        let g = CAGradientLayer()
-        g.startPoint = CGPoint(x: 0.5, y: 0.0)
-        g.endPoint   = CGPoint(x: 0.5, y: 1.0)
-        // 三段更自然：顶 -> 过渡 -> 底
-        g.locations  = [0.0, 0.42, 1.0]
-        g.opacity    = 0.66
-        return g
-    }()
-
-    // 顶部轻微高光（提升玻璃质感，可按需调低/去掉）
-    private let shineLayer: CAGradientLayer = {
-        let s = CAGradientLayer()
-        s.startPoint = CGPoint(x: 0.5, y: 0.0)
-        s.endPoint   = CGPoint(x: 0.5, y: 1.0)
-        s.locations  = [0, 0.15]
-        s.opacity    = 0.22
-        s.colors = [
-            UIColor.white.withAlphaComponent(0.22).cgColor,
-            UIColor.white.withAlphaComponent(0.0).cgColor
-        ]
-        return s
-    }()
-
-    // 底部羽化遮罩：让底缘在最后 featherHeight 内渐隐为 0，衔接更柔
     private let bottomFeatherMask = CAGradientLayer()
     
     // 分段选择器：课程 / 发现 / 商品
@@ -76,14 +36,14 @@ class ForumNaviTypeLiquidVM: UIView {
         // 初始选中「发现」
         seg.selectedSegmentIndex = 1
         if #available(iOS 13.0, *) {
-            seg.selectedSegmentTintColor = UIColor.COLOR_TEXT_TITLE_0f1214_20 // 让选中更贴近玻璃感（可按需改）
+            seg.selectedSegmentTintColor = UIColor.white.withAlphaComponent(0.6) // 让选中更贴近玻璃感（可按需改）
             // 普通/选中态颜色
             seg.setTitleTextAttributes([
-                .font: UIFont.systemFont(ofSize: 18, weight: .bold),
-                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50
+                .font: UIFont.systemFont(ofSize: 16, weight: .semibold),
+                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_30
             ], for: .normal)
             seg.setTitleTextAttributes([
-                .font: UIFont.systemFont(ofSize: 18, weight: .bold),
+                .font: UIFont.systemFont(ofSize: 16, weight: .semibold),
                 .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214
             ], for: .selected)
             // 背景透明，融入毛玻璃
@@ -109,70 +69,94 @@ class ForumNaviTypeLiquidVM: UIView {
         // 背景透明以凸显毛玻璃
         backgroundColor = .clear
         initUI()
-        configureGlassAppearanceIfNeeded()
     }
     
     // MARK: UI
     private func initUI() {
         addSubview(blurView)
-//        blurView.translatesAutoresizingMaskIntoConstraints = false
+        blurView.translatesAutoresizingMaskIntoConstraints = false
 
         addSubview(segment)
         addSubview(publishButton)
         setConstraints()
         updateButtonStatus() // 同步初始选中态
-        // 渐变与高光叠到毛玻璃之上
-        blurView.contentView.layer.addSublayer(gradientLayer)
-        blurView.contentView.layer.addSublayer(shineLayer)
-
-        // 设置固定外观
-        applyFixedTint()
-
         // 配置底部羽化遮罩
         configureBottomFeatherMask()
     }
-    /// 根据深/浅色模式套用主色，并设置自上而下 0.8→0.02 的透明度
-    private func applyFixedTint() {
-        let baseTint: UIColor
-        if #available(iOS 13.0, *), traitCollection.userInterfaceStyle == .dark {
-            baseTint = WHColor_16(colorStr: tintDarkHex)
-        } else {
-            baseTint = WHColor_16(colorStr: tintLightHex)
-        }
-        let aTop = max(0, min(1, topAlpha))
-        let aBot = max(0, min(1, bottomAlpha))
-        let aMid = (aTop + aBot) * 0.5
-
-        gradientLayer.colors = [
-            baseTint.withAlphaComponent(aTop).cgColor,
-//            baseTint.withAlphaComponent(aMid).cgColor,
-            baseTint.withAlphaComponent(aBot).cgColor
-        ]
-    }
-
-    /// 底部竖向羽化遮罩：中上部完全可见，最后 featherHeight 区间渐隐为 0
+    
     private func configureBottomFeatherMask() {
         bottomFeatherMask.startPoint = CGPoint(x: 0.5, y: 0.0)
         bottomFeatherMask.endPoint   = CGPoint(x: 0.5, y: 1.0)
-        // mask 使用 alpha：白(1)=可见，黑(0)=不可见
-        bottomFeatherMask.colors = [
-            UIColor.white.withAlphaComponent(0.5).cgColor,                       // 全可见
-            UIColor.white.withAlphaComponent(0).cgColor,                       // 全可见
-//            UIColor.black.withAlphaComponent(0).cgColor  // 渐隐到 0
-        ]
+        
+        applySoftMask(to: bottomFeatherMask, topHold: 0.15, steps: 18, strength: 1)
+        // 想更轻一点（整体弱化）：strength 设小些，比如 0.75
+        // 想过渡更丝滑：steps 设 8 或 10（注意性能影响非常小）
+
         blurView.layer.mask = bottomFeatherMask
     }
+    /// 生成一组柔和的梯度遮罩（上强下弱）
+    /// - Parameters:
+    ///   - topHold: 顶部保持强模糊的占比 [0,1]
+    ///   - steps: 过渡分段数（越大越平滑，建议 4~8）
+    ///   - strength: 整体“雾量”，1.0=原强度，0.6=更轻
+    func applySoftMask(to layer: CAGradientLayer,
+                       topHold: CGFloat = 0.25,
+                       steps: Int = 6,
+                       strength: CGFloat = 1.0)
+    {
+        func easeInOut(_ t: CGFloat) -> CGFloat {
+            // 经典 cubic ease-in-out
+            return t < 0.5 ? 4*t*t*t : 1 - pow(-2*t + 2, 3)/2
+        }
+
+        // 组装 locations：前面 0 和 topHold 做 plateau，其后做等距细分
+        var locs: [CGFloat] = [0.0, max(0.0, min(1.0, topHold))]
+        for i in 1...steps {
+            let p = CGFloat(i) / CGFloat(steps)           // 0→1
+            let y = topHold + (1 - topHold) * p           // topHold→1
+            locs.append(y)
+        }
+
+        // 组装 colors：alpha 从 1.0（顶部）按 S 曲线缓慢降到 0
+        var cols: [CGColor] = []
+        for (idx, l) in locs.enumerated() {
+            let t: CGFloat
+            if l <= topHold {
+                t = 0                                     // plateau 区全强
+            } else {
+                let local = (l - topHold) / (1 - topHold) // 归一化到 0~1
+                t = easeInOut(local)
+            }
+            let a = max(0, min(1, (1 - t) * strength))    // 由强(1)到弱(0)
+            cols.append(UIColor.black.withAlphaComponent(a).cgColor)
+            
+            // 小技巧：在 topHold 位置再插一个相同 alpha，做更稳的台阶
+            if idx == 1 {
+                cols.append(UIColor.black.withAlphaComponent(a).cgColor)
+            }
+        }
+
+        // locations 也要对应重复一个（与上面对齐）
+        locs.insert(locs[1], at: 2)
+
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint   = CGPoint(x: 0.5, y: 1.0)
+        layer.locations  = locs.map { NSNumber(value: Double($0)) }
+        layer.colors     = cols
+    }
+
     private func setConstraints() {
 //        blurView.snp.makeConstraints { make in
 //            make.edges.equalToSuperview()
 //        }
         blurView.snp.makeConstraints { make in
             make.left.top.right.equalToSuperview()
-            make.bottom.equalTo(kFitWidth(26))
+            make.bottom.equalTo(kFitWidth(54))
         }
         // segment 居中，靠近底部（与原先按钮位置一致）
         segment.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
+//            make.centerX.equalToSuperview()
+            make.left.equalTo(kFitWidth(16))
             make.bottom.equalToSuperview().offset(-kFitWidth(8))
             make.width.greaterThanOrEqualTo(btnWidth * 3 + kFitWidth(32)) // 3段 + 内间距
             make.height.equalTo(kFitWidth(32))
@@ -181,19 +165,6 @@ class ForumNaviTypeLiquidVM: UIView {
             make.right.equalToSuperview().offset(-kFitWidth(16))
             make.centerY.equalTo(segment.snp.centerY)
             make.width.height.equalTo(kFitWidth(24))
-        }
-    }
-    
-    // MARK: 玻璃质感：在自定义导航容器上模拟系统导航栏的毛玻璃效果
-    private func configureGlassAppearanceIfNeeded() {
-        // 已在 blurView 中使用系统材质；如需更强调度，可叠加轻微半透色
-        if #available(iOS 13.0, *) {
-            // 在毛玻璃上叠一层极浅的背景色，效果更接近导航栏
-            let overlay = UIView()
-            overlay.backgroundColor = UIColor.systemBackground.withAlphaComponent(0)
-            overlay.isUserInteractionEnabled = false
-            blurView.contentView.addSubview(overlay)
-            overlay.snp.makeConstraints { $0.edges.equalToSuperview() }
         }
     }
 }
@@ -219,9 +190,9 @@ extension ForumNaviTypeLiquidVM {
     /// 兼容原有代码：更新选中态（现仅同步 segment 选中项）
     func updateButtonStatus() {
         switch selectType {
-        case .course: segment.selectedSegmentIndex = 0
-        case .forum:  segment.selectedSegmentIndex = 1
-        case .market: segment.selectedSegmentIndex = 2
+            case .course: segment.selectedSegmentIndex = 0
+            case .forum:  segment.selectedSegmentIndex = 1
+            case .market: segment.selectedSegmentIndex = 2
         }
     }
 }
@@ -235,14 +206,8 @@ extension ForumNaviTypeLiquidVM{
     // MARK: - Layout
     override func layoutSubviews() {
         super.layoutSubviews()
-        gradientLayer.frame = blurView.bounds
-        shineLayer.frame    = blurView.bounds
-
-        // 根据当前高度计算羽化分界位置
+//        // 根据当前高度计算羽化分界位置
         bottomFeatherMask.frame = blurView.bounds
-        let h = bounds.height
-        let fadeStart = max(0, min(1, (h - featherHeight) / max(h, 1))) // 渐隐起点的比例
-        bottomFeatherMask.locations = [0.0, NSNumber(value: Double(fadeStart)), 1.0]
     }
 }
 
