@@ -22,6 +22,30 @@ final class OverViewLogoLiquidVM: UIView {
     private let imgWidth = kFitWidth(139)
     private let imgHeight = kFitWidth(25)
     
+    
+    private lazy var logoLeftFrame: CGRect = {
+        CGRect(
+            x: kFitWidth(32),
+            y: selfHeight - imgHeight - kFitWidth(10),
+            width: imgWidth,
+            height: imgHeight
+        )
+    }()
+
+    private lazy var logoCenteredFrame: CGRect = {
+        let targetWidth = imgWidth * 0.85
+        let targetHeight = imgHeight * 0.85
+        return CGRect(
+            x: SCREEN_WIDHT * 0.5 - targetWidth * 0.5,
+            y: selfHeight - targetHeight - kFitWidth(10),
+            width: targetWidth,
+            height: targetHeight
+        )
+    }()
+
+    private var isLogoCentered = false
+    private var logoTransitionAnimator: UIViewPropertyAnimator?
+    private var logoSnapshotView: UIView?
     // 毛玻璃层（背景层，放在最底）
     private lazy var blurView: UIVisualEffectView = {
         let effect: UIBlurEffect
@@ -36,12 +60,7 @@ final class OverViewLogoLiquidVM: UIView {
     
     // Logo 视图
     private(set) lazy var logoImgView: UIImageView = {
-        let img = UIImageView(frame: CGRect(
-            x: kFitWidth(32),
-            y: self.selfHeight - kFitWidth(25) - kFitWidth(10),
-            width: imgWidth,
-            height: imgHeight
-        ))
+        let img = UIImageView(frame: logoLeftFrame)
         img.image = logoImg?.withRenderingMode(.alwaysTemplate)
         img.tintColor = .white
         img.contentMode = .scaleAspectFit
@@ -82,18 +101,96 @@ final class OverViewLogoLiquidVM: UIView {
 
         blurView.layer.mask = bottomFeatherMask
     }
-    func updateAlpha(offsetY:CGFloat) {
-        if offsetY >= kFitWidth(30){
-            blurView.alpha = min(0.85,(offsetY*0.01)/(selfHeight*0.01))
-            let imgWidth = imgWidth*0.85
-            let imgHeight = imgHeight*0.85
-            logoImgView.tintColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 1)//blendColor(from: start, to: end, progress: 1)
-            logoImgView.frame = CGRect.init(x: SCREEN_WIDHT*0.5-imgWidth*0.5, y: self.selfHeight-imgHeight-kFitWidth(10), width: imgWidth, height: imgHeight)
-        }else{
+    func updateAlpha(offsetY: CGFloat) {
+        let threshold = kFitWidth(30)
+        let shouldCenter = offsetY >= threshold
+
+        if shouldCenter {
+            let progressDenominator = max(selfHeight - threshold, 1)
+            let progress = min(max((offsetY - threshold) / progressDenominator, 0), 1)
+            blurView.alpha = min(0.85, progress * 0.85)
+        } else {
             blurView.alpha = 0
-            logoImgView.tintColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)//blendColor(from: start, to: end, progress: 0)
-            logoImgView.frame = CGRect.init(x: kFitWidth(32), y: self.selfHeight-imgHeight-kFitWidth(10), width: imgWidth, height: imgHeight)
         }
+        
+        if shouldCenter != isLogoCentered {
+            applyLogoState(centered: shouldCenter, animated: true)
+            isLogoCentered = shouldCenter
+        } else if logoTransitionAnimator == nil {
+            applyLogoState(centered: shouldCenter, animated: false)
+        }
+    }
+
+    private func applyLogoState(centered: Bool, animated: Bool) {
+        let targetFrame = centered ? logoCenteredFrame : logoLeftFrame
+        let targetTint = centered
+            ? WHColorWithAlpha(colorStr: "007AFF", alpha: 1)
+            : WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+
+        if animated {
+            runLogoTransition(to: targetFrame, tintColor: targetTint)
+        } else {
+            cancelLogoAnimation()
+            logoImgView.frame = targetFrame
+            logoImgView.tintColor = targetTint
+            logoImgView.alpha = 1
+        }
+    }
+
+    private func runLogoTransition(to frame: CGRect, tintColor: UIColor) {
+        cancelLogoAnimation()
+
+        let snapshot = logoImgView.snapshotView(afterScreenUpdates: false)
+        if let snapshot = snapshot {
+            snapshot.frame = logoImgView.frame
+            addSubview(snapshot)
+        }
+
+        logoSnapshotView = snapshot
+
+        UIView.performWithoutAnimation {
+            self.logoImgView.tintColor = tintColor
+            self.logoImgView.alpha = 0
+        }
+
+        let animator = UIViewPropertyAnimator(duration: 0.25, curve: .easeInOut) {
+            snapshot?.alpha = 0
+            self.logoImgView.alpha = 1
+            self.logoImgView.frame = frame
+        }
+
+        animator.addCompletion { position in
+            if position != .end {
+                self.logoImgView.frame = frame
+                self.logoImgView.alpha = 1
+            }
+
+            if let snapshot = snapshot, self.logoSnapshotView === snapshot {
+                snapshot.removeFromSuperview()
+                self.logoSnapshotView = nil
+            }
+
+            if self.logoTransitionAnimator === animator {
+                self.logoTransitionAnimator = nil
+            }
+        }
+
+        animator.startAnimation()
+        logoTransitionAnimator = animator
+    }
+
+    private func cancelLogoAnimation() {
+        if let animator = logoTransitionAnimator {
+            animator.stopAnimation(true)
+            logoTransitionAnimator = nil
+        }
+
+        if let snapshot = logoSnapshotView {
+            snapshot.removeFromSuperview()
+            logoSnapshotView = nil
+        }
+
+        logoImgView.alpha = 1
     }
     /// 生成一组柔和的梯度遮罩（上强下弱）
     /// - Parameters:
