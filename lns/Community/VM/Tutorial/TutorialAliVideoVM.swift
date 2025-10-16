@@ -251,6 +251,7 @@ extension TutorialAliVideoVM{
 //            self?.coverView.isHidden = !showCover
         }
         controlView?.heightChanged = {(contentHeight)in
+            self.videoHeight = contentHeight
             self.model.contentHeight = contentHeight
             DispatchQueue.main.async {
                 self.heightChanged?(contentHeight)
