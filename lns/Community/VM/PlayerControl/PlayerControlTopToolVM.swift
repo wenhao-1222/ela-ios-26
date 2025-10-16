@@ -74,20 +74,23 @@ extension PlayerControlTopToolVM{
         if let animator = topToolAnimator, animator.isRunning {
             animator.pauseAnimation()
             if let present = self.layer.presentation() {
-                self.transform = CATransform3DGetAffineTransform(present.transform)
+//                self.transform = CATransform3DGetAffineTransform(present.transform)
+                self.alpha = CGFloat(present.opacity)
             }
             animator.stopAnimation(true)
         }
         
         guard hidden != isToolHidden else { return }
         isToolHidden = hidden
-        let h = self.bounds.height
+//        let h = self.bounds.height
+        self.isUserInteractionEnabled = !hidden
         let animator = UIViewPropertyAnimator(duration: 0.25, curve: .easeInOut) {
-            if hidden {
-                self.transform = CGAffineTransform(translationX: 0, y: -h)
-            } else {
-                self.transform = .identity
-            }
+//            if hidden {
+//                self.transform = CGAffineTransform(translationX: 0, y: -h)
+//            } else {
+//                self.transform = .identity
+//            }
+            self.alpha = hidden ? 0 : 1
         }
         animator.addCompletion { _ in
             self.topToolAnimator = nil
@@ -120,6 +123,7 @@ extension PlayerControlTopToolVM{
     }
     func updateFrame(isFull:Bool) {
         if isFull{
+            self.backButton.alpha = 0
             self.frame = CGRect(x: 0, y: 0, width: SCREEN_HEIGHT, height: selfHeight - topSafe)
 //            self.frame = CGRect(x: 0, y: 0, width: SCREEN_HEIGHT, height: selfHeight - WHUtils().getTopSafeAreaHeight())
             backButton.snp.remakeConstraints { make in
@@ -133,6 +137,7 @@ extension PlayerControlTopToolVM{
                 make.width.height.equalTo(kFitWidth(44))
             }
         }else{
+            self.backButton.alpha = 1
             self.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight)
             backButton.snp.remakeConstraints { make in
                 make.left.equalTo(leftGap)

@@ -57,7 +57,7 @@ class PlayerControlBottomToolVM: GradientView {
         s.minimumTrackTintColor = .THEME
         s.maximumTrackTintColor = UIColor.white.withAlphaComponent(0.3)
         
-        let image = UIImage(systemName: "circle.fill")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        let image = UIImage(systemName: "circle.fill")?.withTintColor(.THEME, renderingMode: .alwaysOriginal)
 
         s.setThumbImage(image, for: .normal)
         s.addTarget(self, action: #selector(sliderValueChangingAction(_:)), for: .valueChanged)
@@ -148,19 +148,22 @@ extension PlayerControlBottomToolVM{
         if let animator = bottomToolAnimator, animator.isRunning {
             animator.pauseAnimation()
             if let present = self.layer.presentation(){
-                self.transform = CATransform3DGetAffineTransform(present.transform)
+//                self.transform = CATransform3DGetAffineTransform(present.transform)
+                self.alpha = CGFloat(present.opacity)
             }
             animator.stopAnimation(true)
         }
         guard hidden != isToolHidden else { return }
         isToolHidden = hidden
-        let h = self.bounds.height
+//        let h = self.bounds.height
+        self.isUserInteractionEnabled = !hidden
         let animator = UIViewPropertyAnimator(duration: 0.25, curve: .easeInOut){
-            if hidden {
-                self.transform = CGAffineTransform(translationX: 0, y: h)
-            }else{
-                self.transform = .identity
-            }
+//            if hidden {
+//                self.transform = CGAffineTransform(translationX: 0, y: h)
+//            }else{
+//                self.transform = .identity
+//            }
+            self.alpha = hidden ? 0 : 1
         }
         animator.addCompletion{ _ in
             self.bottomToolAnimator = nil
@@ -198,10 +201,10 @@ extension PlayerControlBottomToolVM{
         if isFull{
             self.originalFrame = self.frame
             self.fullScreenButton.setImage(UIImage.init(named: "tutorial_mini_screen_icon"), for: .normal)
-            self.frame = CGRect(x: 0, y: SCREEN_WIDHT - selfHeight - WHUtils().getBottomSafeAreaHeight(), width: SCREEN_HEIGHT, height: selfHeight+WHUtils().getBottomSafeAreaHeight())
+            self.frame = CGRect(x: 0, y: SCREEN_WIDHT - selfHeight - WHUtils().getTabbarHeight(), width: SCREEN_HEIGHT, height: selfHeight+WHUtils().getTabbarHeight())
             currentTimeLabel.snp.remakeConstraints { make in
                 make.left.equalTo(leftGap+WHUtils().getTopSafeAreaHeight())
-                make.top.equalTo(kFitWidth(18))
+                make.top.equalTo(kFitWidth(8))
             }
             fullScreenButton.snp.remakeConstraints { make in
                 make.right.equalTo(-leftGap-bottomSafe)

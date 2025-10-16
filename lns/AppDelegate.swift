@@ -39,15 +39,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 //        UserDefaults.standard.setValue("7cf40e2cfca9d39185ada073a14f555f", forKey: userId)
 //        UserInfoModel.shared.uId = "7cf40e2cfca9d39185ada073a14f555f"
 //        UserInfoModel.shared.token = "gpojo0SfiW35DzUf"
-        if window == nil {
-            let launchWindow = UIWindow(frame: UIScreen.main.bounds)
-            launchWindow.backgroundColor = .THEME
-            launchWindow.makeKeyAndVisible()
-            window = launchWindow
+        let launchWindow: UIWindow
+        if let existingWindow = window {
+            launchWindow = existingWindow
+//            window = launchWindow
         } else {
-            window?.backgroundColor = .THEME
-            window?.makeKeyAndVisible()
+            launchWindow = UIWindow(frame: UIScreen.main.bounds)
         }
+        window = launchWindow
+        launchWindow.backgroundColor = .THEME
 //        let launchWindow = window ?? UIWindow(frame: UIScreen.main.bounds)
 //        launchWindow.backgroundColor = .THEME
 //        launchWindow.isOpaque = true
@@ -112,6 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
             rootViewController = elaLchVc
         }
         window?.rootViewController = rootViewController
+        launchWindow.makeKeyAndVisible()
         
         UserInfoModel.shared.settingNewFuncRead = (UserDefaults.standard.value(forKey: "settingNewFuncRead")as? String ?? "").count > 0 ? true : false
         UserInfoModel.shared.widgetNewFuncRead = true

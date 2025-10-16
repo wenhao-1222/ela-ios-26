@@ -73,27 +73,7 @@ class TutorialAliVideoVM: UIView {
 extension TutorialAliVideoVM{
     func updateUI(model:ForumTutorialModel) {
         self.model = model
-//        initVideo()
-//        let serialQueue = DispatchQueue(label: "com.tutorials.video")
-//        serialQueue.async {
-//            DSImageUploader().dealImgUrlSignForOss(urlStr: model.videoUrl) { urlStr in
-//                if let url = URL(string: urlStr){
-//                    let videoSize = ForumTutorialModel().dealCellHeight(videoUrl: url)
-//                    if videoSize.width > 0 || videoSize.height > 0 {
-//                        self.model.contentHeight = videoSize.height
-//                        self.model.contentWidth = videoSize.width
-//                        self.videoHeight = videoSize.height
-//                    }
-//                }
-//            }
-//        }
-//        serialQueue.async {
-//            DispatchQueue.main.async(execute: {
-//                if self.heightChanged != nil{
-//                    self.heightChanged!(self.model.contentHeight)
-//                }
-//            })
-//        }
+        
         self.controlView?.tutorialId = self.model.id
         self.controlView?.bottomToolVm.resetRate()
         if !model.videoVID.isEmpty && model.videoVID.count > 4{
@@ -104,16 +84,9 @@ extension TutorialAliVideoVM{
                 source.securityToken = UserInfoModel.shared.ossSecurityToken
                 source.accessKeyId = UserInfoModel.shared.ossAccessKeyId
                 source.accessKeySecret = UserInfoModel.shared.ossAccessKeySecret
-                 
-//                self.mAliPlayer?.delegate = self
+                
                 self.mAliPlayer?.setStsSource(source)
                 self.mAliPlayer?.prepare()
-                
-//                self.sizeAliPlayer = AliPlayer()
-//                self.sizeAliPlayer?.isAutoPlay = true
-//                self.sizeAliPlayer?.delegate = self
-//                self.sizeAliPlayer?.setStsSource(source)
-//                self.sizeAliPlayer?.prepare()
             }
         } else {
             DispatchQueue.global().async {
@@ -276,10 +249,12 @@ extension TutorialAliVideoVM{
         controlView?.fullTapBlock = {(isFullScreen)in
             if isFullScreen{
                 self.fullChangeBlock?(true)
+                self.progressBackgroundView.alpha = 0
+                self.progressView.alpha = 0
                 self.originalFrame = self.frame
                 self.frame = CGRect.init(x: 0, y: 0, width: SCREEN_HEIGHT, height: SCREEN_WIDHT)
                 self.controlView?.frame = self.bounds
-                UserConfigModel.shared.userInterfaceOrientation = .landscapeLeft
+                UserConfigModel.shared.userInterfaceOrientation = .landscapeRight
                 UserConfigModel.shared.allowedOrientations = .landscape
                 if #available(iOS 16.0, *) {
                     self.controller.setNeedsUpdateOfSupportedInterfaceOrientations()
@@ -289,6 +264,8 @@ extension TutorialAliVideoVM{
             }else{
                 self.fullChangeBlock?(false)
                 self.frame = self.originalFrame
+                self.progressBackgroundView.alpha = 1
+                self.progressView.alpha = 1
                 self.controlView?.frame = self.bounds
                 UserConfigModel.shared.userInterfaceOrientation = .portrait
                 UserConfigModel.shared.allowedOrientations = .portrait

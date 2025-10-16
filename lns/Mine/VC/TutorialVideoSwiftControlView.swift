@@ -158,19 +158,21 @@ class TutorialVideoSwiftControlView: UIView {
         if self.isFullScreen{
             self.frame = CGRect.init(x: 0, y: 0, width: SCREEN_HEIGHT, height: SCREEN_WIDHT)
             self.centerToolVm.frame = CGRect.init(x: 0, y: 0, width: SCREEN_HEIGHT, height: SCREEN_WIDHT)
-            if self.isToolHidden{
-                self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: SCREEN_WIDHT+self.bottomToolVm.selfHeight*0.5)
-            }else{
-                self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: SCREEN_WIDHT-self.bottomToolVm.selfHeight*0.5)
-            }
+//            if self.isToolHidden{
+//                self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: SCREEN_WIDHT+self.bottomToolVm.selfHeight*0.5)
+//            }else{
+//                self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: SCREEN_WIDHT-self.bottomToolVm.selfHeight*0.5)
+//            }
+            self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: SCREEN_WIDHT-self.bottomToolVm.selfHeight*0.5)
         }else{
             self.frame = CGRect.init(x: oldFrame.origin.x, y: oldFrame.origin.y, width: oldFrame.size.width, height: self.videoHeight)
             self.centerToolVm.frame = CGRect.init(x: 0, y: 0, width: self.bounds.width, height: self.videoHeight)
-            if self.isToolHidden{
-                self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: self.videoHeight+self.bottomToolVm.selfHeight*0.5)
-            }else{
-                self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: self.videoHeight-self.bottomToolVm.selfHeight*0.5)
-            }
+//            if self.isToolHidden{
+//                self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: self.videoHeight+self.bottomToolVm.selfHeight*0.5)
+//            }else{
+//                self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: self.videoHeight-self.bottomToolVm.selfHeight*0.5)
+//            }
+            self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: self.videoHeight-self.bottomToolVm.selfHeight*0.5)
         }
     }
 

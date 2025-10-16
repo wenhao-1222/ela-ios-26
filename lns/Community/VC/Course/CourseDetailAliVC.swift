@@ -423,8 +423,8 @@ extension CourseDetailAliVC{
         self.currentVideoIndex = self.currentVideoIndex + 1
         self.updatePlayModel()
         if wasLandscape {
-                    UIDevice.current.setValue(NSNumber(value: UserConfigModel.shared.userInterfaceOrientation.rawValue), forKey: "orientation")
-                }
+            UIDevice.current.setValue(NSNumber(value: UserConfigModel.shared.userInterfaceOrientation.rawValue), forKey: "orientation")
+        }
 //        self.tableView.scrollToRow(at: IndexPath(row: self.currentVideoIndex, section: 0), at: .middle, animated: true)
     }
     func playLastVideo() {
@@ -451,26 +451,6 @@ extension CourseDetailAliVC{
             self.videoAliVm.updateUI(model: self.tutorialModel)
             self.videoAliVm.play()
             self.savePlayHistoryToLocal()
-        
-//            let oldIndexPath = IndexPath(row: self.oldIndex, section: 0)
-//            let newIndexPath = IndexPath(row: self.currentVideoIndex, section: 0)
-//
-//            // 更新 oldIndex 对应的 cell 状态（如果在屏幕内）
-//            if let oldCell = self.tableView.cellForRow(at: oldIndexPath) as? CoursePlayingItemCell {
-//                oldCell.updateSelectStatus(model: self.dataSourceArray[self.oldIndex], isPlaying: false)
-//            } else {
-//                // 不在屏幕上，reload 它
-//                self.tableView.reloadRows(at: [oldIndexPath], with: .none)
-//            }
-//
-//            // 更新 currentVideoIndex 对应的 cell 状态（如果在屏幕内）
-//            if let newCell = self.tableView.cellForRow(at: newIndexPath) as? CoursePlayingItemCell {
-//                newCell.updateSelectStatus(model: self.dataSourceArray[self.currentVideoIndex], isPlaying: true)
-//            } else {
-//                // 不在屏幕上，reload 它
-//                self.tableView.reloadRows(at: [newIndexPath], with: .none)
-//            }
-            // Reload to refresh progress for all videos
             self.tableView.reloadData()
         })
     }
