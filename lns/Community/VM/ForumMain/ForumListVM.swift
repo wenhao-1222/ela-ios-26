@@ -605,6 +605,8 @@ extension ForumListVM:ZFTableViewCellDelegate{
 extension ForumListVM{
     func sendNoticeListRequest() {
         WHNetworkUtil.shareManager().POST(urlString: URL_community_forum_notice_list, parameters: nil) { responseObject in
+            
+        DispatchQueue.global(qos: .userInitiated).async(execute: {
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendNoticeListRequest:\(dataArr)")
@@ -631,6 +633,8 @@ extension ForumListVM{
                     self.noticeDispatchGroup.leave()
                 })
             }
+        })
+            
         }
     }
     func sendDataListRequest() {

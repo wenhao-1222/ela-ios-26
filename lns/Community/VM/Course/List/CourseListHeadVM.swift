@@ -159,7 +159,12 @@ extension CourseListHeadVM{
             make.left.equalTo(numberBgView.snp.right).offset(kFitWidth(10))
             make.top.height.equalTo(numberBgView)
         }
-        numerLabel.text = "\(dict.stringValueForKey(key: "tutorialCount"))节"
+        
+        if dict.stringValueForKey(key: "totalVideoDuration").count > 0 {
+            numerLabel.text = "\(dict.stringValueForKey(key: "totalVideoDuration"))"
+        }else{
+            numerLabel.text = "\(dict.stringValueForKey(key: "tutorialCount"))节"
+        }
         
         typeIconImg.setImgUrl(urlString: dict.stringValueForKey(key: "iconOssUrl"))
         typeLabel.text = dict.stringValueForKey(key: "briefingText")

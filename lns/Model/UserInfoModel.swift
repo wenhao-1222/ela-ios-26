@@ -89,7 +89,7 @@ class UserInfoModel {
     var weightUnitName = "kg"
     var weightCoefficient = 1.0  //单位kg 转换成 当前单位 时候的系数    斤  为 2  ，磅为 2.2046226
     
-    var hiddenMeaTimeStatus = false
+    var hiddenMeaTimeStatus = true
     var mealsTimeAlertDict = NSDictionary()
     
     var showRemainCalories = false///日志页，是否显示剩余摄入  默认false

@@ -72,7 +72,7 @@ class JournalSettingVC: WHBaseViewVC {
 //    }()
     lazy var hiddenLogsTimeVm : MaterialItemVM = {
         let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.resetLogsMealsVm.frame.maxY, width: 0, height: 0))
-        vm.leftLabel.text = "隐藏进餐时间"
+        vm.leftLabel.text = "记录进餐时间"
         vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
         vm.detailLabel.text = ""
         vm.arrowImgView.isHidden = true

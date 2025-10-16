@@ -423,7 +423,8 @@ extension CourseDetailAliVC{
         self.currentVideoIndex = self.currentVideoIndex + 1
         self.updatePlayModel()
         if wasLandscape {
-            UIDevice.current.setValue(NSNumber(value: UserConfigModel.shared.userInterfaceOrientation.rawValue), forKey: "orientation")
+//            UIDevice.current.setValue(NSNumber(value: UserConfigModel.shared.userInterfaceOrientation.rawValue), forKey: "orientation")
+            self.applyStoredOrientationIfNeeded()
         }
 //        self.tableView.scrollToRow(at: IndexPath(row: self.currentVideoIndex, section: 0), at: .middle, animated: true)
     }
@@ -437,9 +438,34 @@ extension CourseDetailAliVC{
         self.currentVideoIndex = self.currentVideoIndex - 1
         self.updatePlayModel()
         if wasLandscape {
-                    UIDevice.current.setValue(NSNumber(value: UserConfigModel.shared.userInterfaceOrientation.rawValue), forKey: "orientation")
-                }
+//                    UIDevice.current.setValue(NSNumber(value: UserConfigModel.shared.userInterfaceOrientation.rawValue), forKey: "orientation")
+            self.applyStoredOrientationIfNeeded()
+        }
 //        self.tableView.scrollToRow(at: IndexPath(row: self.currentVideoIndex, section: 0), at: .middle, animated: true)
+    }
+    private func applyStoredOrientationIfNeeded() {
+        let targetOrientation = UserConfigModel.shared.userInterfaceOrientation
+        if #available(iOS 13.0, *) {
+            if let currentOrientation = view.window?.windowScene?.interfaceOrientation,
+               orientationsMatch(currentOrientation, target: targetOrientation) {
+                return
+            }
+        } else {
+            let currentOrientation = UIApplication.shared.statusBarOrientation
+            if orientationsMatch(currentOrientation, target: targetOrientation) {
+                return
+            }
+        }
+        UIDevice.current.setValue(NSNumber(value: targetOrientation.rawValue), forKey: "orientation")
+    }
+
+    private func orientationsMatch(_ orientation: UIInterfaceOrientation,
+                                   target: UIInterfaceOrientation) -> Bool {
+        if orientation == target { return true }
+        if orientation == .unknown || target == .unknown { return false }
+        if orientation.isLandscape && target.isLandscape { return true }
+        if orientation.isPortrait && target.isPortrait { return true }
+        return false
     }
     func updatePlayModel() {
         self.tableView.scrollToRow(at: IndexPath(row: self.currentVideoIndex, section: 0), at: .middle, animated: true)

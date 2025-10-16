@@ -7,7 +7,7 @@
 
 class PlayerSlider: UISlider {
     /// 负值表示向外扩；建议至少 44pt 的可点尺寸
-        var hitTestEdgeInsets = UIEdgeInsets(top: -12, left: -32, bottom: -12, right: -32)
+        var hitTestEdgeInsets = UIEdgeInsets(top: -12, left: -102, bottom: -12, right: -102)
 
     override func trackRect(forBounds bounds: CGRect) -> CGRect {
         var rect = super.trackRect(forBounds: bounds)

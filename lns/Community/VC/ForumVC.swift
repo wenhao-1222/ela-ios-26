@@ -13,12 +13,18 @@ class ForumVC : WHBaseViewVC {
     
     override func viewWillAppear(_ animated: Bool) {
         self.forumListVm.autoLoadData()
+//        DispatchQueue.main.async {
+//            self.forumListVm.autoLoadData()
+//        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = false
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
-        
+//        DispatchQueue.main.async {
+//            self.forumListVm.autoLoadData()
+//        }
+
         sendForumMsgNuberRequest()
         ForumPublishManager.shared.checkForumUploadStatus()
     }

@@ -39,6 +39,9 @@ class PlayerControlBottomToolVM: GradientView {
         self.isUserInteractionEnabled = true
         originalFrame = self.frame
         initUI()
+        
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
+        self.addGestureRecognizer(tap)
     }
 
     required init?(coder: NSCoder) {
@@ -228,6 +231,9 @@ extension PlayerControlBottomToolVM{
                 make.height.equalTo(kFitWidth(44))
             }
         }
+    }
+    @objc func nothingToDo() {
+        
     }
 }
 
