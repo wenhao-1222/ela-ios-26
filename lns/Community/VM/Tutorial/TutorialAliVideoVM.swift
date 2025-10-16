@@ -31,6 +31,9 @@ class TutorialAliVideoVM: UIView {
     private var originalFrame: CGRect = .zero
     private var hasStartedPlaying = false
     
+    private var needsReplayAfterForeground = false
+    private var pendingReplayPosition: Int64 = 0
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -44,6 +47,14 @@ class TutorialAliVideoVM: UIView {
         originalFrame = self.frame
         
         initUI()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleAppDidEnterBackground),
+                                               name: UIApplication.didEnterBackgroundNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleAppDidBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
     }
     lazy var videoImageView: UIImageView = {
         let img = UIImageView()
@@ -121,56 +132,59 @@ extension TutorialAliVideoVM{
             make.width.equalTo(0)
         }
         self.layoutIfNeeded()
-//        if let _ = URL(string: model.videoUrl){
-        if !model.videoVID.isEmpty && model.videoVID.count > 4{
-//            let progress = CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id)
-////            self.mAliPlayer?.stop()
-////            let source = AVPVidStsSource()
-////            source.region = "cn-shanghai"
-////            source.vid = model.videoVID
-////            source.securityToken = UserInfoModel.shared.ossSecurityToken
-////            source.accessKeyId = UserInfoModel.shared.ossAccessKeyId
-////            source.accessKeySecret = UserInfoModel.shared.ossAccessKeySecret
-////            self.mAliPlayer?.setStsSource(source)
-////            self.mAliPlayer?.prepare()
-//            if progress > 0 {
-//                self.mAliPlayer?.seek(toTime: Int64(progress * 1000), seekMode: AVP_SEEKMODE_ACCURATE)
-//            }
-//            self.mAliPlayer?.start()
-            self.sendTutorialClickRequest()
-        }else if let _ = URL(string: model.videoUrl){
-                    
-            let progress = CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id)
-            self.mAliPlayer?.stop()
-            DSImageUploader().dealImgUrlSignForOss(urlStr: model.videoUrl) { urlStr in
-                DLLog(message: "dealImgUrlSignForOss:\(urlStr)")
-                if let _ = URL(string: urlStr) {
-                    let urlSource = AVPUrlSource().url(with:urlStr)
-                    self.mAliPlayer?.setUrlSource(urlSource)
-                    self.mAliPlayer?.prepare()
-                    self.mediaLoader.load(urlStr, duration: 3*1000)
-                    
-                    if progress > 0 {
-                        self.mAliPlayer?.seek(toTime: Int64(progress * 1000), seekMode: AVP_SEEKMODE_ACCURATE)
-                    }
-                    self.mAliPlayer?.start()
-                }
-            }
-            self.sendTutorialClickRequest()
-        }else{
-            if let detailUrl = modelDetail.videoUrl {
-                let progress = CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id)
-                self.mAliPlayer?.stop()
-                let urlSource = AVPUrlSource().url(with:detailUrl.absoluteString)
-                self.mAliPlayer?.setUrlSource(urlSource)
-                self.mAliPlayer?.prepare()
-                self.mediaLoader.load(detailUrl.absoluteString, duration: 3*1000)
-                if progress > 0 {
-                    self.mAliPlayer?.seek(toTime: Int64(progress * 1000), seekMode: AVP_SEEKMODE_ACCURATE)
-                }
-                self.mAliPlayer?.start()
-            }
+        ensureValidOssParams { [weak self] in
+            self?.startPlayback(resumePosition: nil, shouldQueryProgress: true, triggerStatistic: true)
         }
+////        if let _ = URL(string: model.videoUrl){
+//        if !model.videoVID.isEmpty && model.videoVID.count > 4{
+////            let progress = CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id)
+//////            self.mAliPlayer?.stop()
+//////            let source = AVPVidStsSource()
+//////            source.region = "cn-shanghai"
+//////            source.vid = model.videoVID
+//////            source.securityToken = UserInfoModel.shared.ossSecurityToken
+//////            source.accessKeyId = UserInfoModel.shared.ossAccessKeyId
+//////            source.accessKeySecret = UserInfoModel.shared.ossAccessKeySecret
+//////            self.mAliPlayer?.setStsSource(source)
+//////            self.mAliPlayer?.prepare()
+////            if progress > 0 {
+////                self.mAliPlayer?.seek(toTime: Int64(progress * 1000), seekMode: AVP_SEEKMODE_ACCURATE)
+////            }
+////            self.mAliPlayer?.start()
+//            self.sendTutorialClickRequest()
+//        }else if let _ = URL(string: model.videoUrl){
+//                    
+//            let progress = CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id)
+//            self.mAliPlayer?.stop()
+//            DSImageUploader().dealImgUrlSignForOss(urlStr: model.videoUrl) { urlStr in
+//                DLLog(message: "dealImgUrlSignForOss:\(urlStr)")
+//                if let _ = URL(string: urlStr) {
+//                    let urlSource = AVPUrlSource().url(with:urlStr)
+//                    self.mAliPlayer?.setUrlSource(urlSource)
+//                    self.mAliPlayer?.prepare()
+//                    self.mediaLoader.load(urlStr, duration: 3*1000)
+//                    
+//                    if progress > 0 {
+//                        self.mAliPlayer?.seek(toTime: Int64(progress * 1000), seekMode: AVP_SEEKMODE_ACCURATE)
+//                    }
+//                    self.mAliPlayer?.start()
+//                }
+//            }
+//            self.sendTutorialClickRequest()
+//        }else{
+//            if let detailUrl = modelDetail.videoUrl {
+//                let progress = CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id)
+//                self.mAliPlayer?.stop()
+//                let urlSource = AVPUrlSource().url(with:detailUrl.absoluteString)
+//                self.mAliPlayer?.setUrlSource(urlSource)
+//                self.mAliPlayer?.prepare()
+//                self.mediaLoader.load(detailUrl.absoluteString, duration: 3*1000)
+//                if progress > 0 {
+//                    self.mAliPlayer?.seek(toTime: Int64(progress * 1000), seekMode: AVP_SEEKMODE_ACCURATE)
+//                }
+//                self.mAliPlayer?.start()
+//            }
+//        }
     }
     @objc func playAction() {
         self.coverView.isHidden = true
@@ -356,6 +370,9 @@ extension TutorialAliVideoVM{
     /// Stop and release the AliPlayer instance
     func releasePlayer() {
         saveCurrentProgress()
+        needsReplayAfterForeground = false
+        pendingReplayPosition = 0
+        hasStartedPlaying = false
         mAliPlayer?.stop()
         mAliPlayer?.destroy()
         mAliPlayer = nil
@@ -375,27 +392,130 @@ extension TutorialAliVideoVM:AliMediaLoaderStatusDelegate{
         DLLog(message: "预加载----完成：\(url ?? "")")
     }
 }
-//
-//extension TutorialAliVideoVM: AVPDelegate {
-//    func onVideoSizeChanged(_ player: AliPlayer!, width: Int32, height: Int32, rotation: Int32) {
-//        DispatchQueue.main.async {
-//            let imgWidth = SCREEN_WIDHT
-//            let w = CGFloat(width)
-//            let h = CGFloat(height)
-//            if w < imgWidth {
-//                self.model.contentWidth = w
-//                self.model.contentHeight = h
-//                self.videoHeight = h
-//            } else {
-//                let videoHeight = imgWidth * h / w
-//                self.model.contentWidth = imgWidth
-//                self.model.contentHeight = videoHeight
-//                self.videoHeight = videoHeight
-//            }
-//            self.heightChanged?(self.model.contentHeight)
-////            player.stop()
-////            player.destroy()
-////            self.sizeAliPlayer = nil
-//        }
-//    }
-//}
+
+extension TutorialAliVideoVM {
+    func ensureValidOssParams(completion: @escaping () -> Void) {
+        if UserInfoModel.shared.ossParamIsValid() {
+            DispatchQueue.main.async {
+                completion()
+            }
+            return
+        }
+        DSImageUploader().sendOssStsRequest { _ in
+            DispatchQueue.main.async {
+                completion()
+            }
+        }
+    }
+
+    func startPlayback(resumePosition: Int64?, shouldQueryProgress: Bool, triggerStatistic: Bool) {
+        guard mAliPlayer != nil else { return }
+        if !model.videoVID.isEmpty && model.videoVID.count > 4 {
+            startVidPlayback(resumePosition: resumePosition, triggerStatistic: triggerStatistic)
+        } else if let _ = URL(string: model.videoUrl) {
+            startOssUrlPlayback(resumePosition: resumePosition, shouldQueryProgress: shouldQueryProgress, triggerStatistic: triggerStatistic)
+        } else if let detailUrl = modelDetail.videoUrl {
+            startDetailUrlPlayback(detailUrl: detailUrl, resumePosition: resumePosition, shouldQueryProgress: shouldQueryProgress)
+        }
+    }
+
+    func startVidPlayback(resumePosition: Int64?, triggerStatistic: Bool) {
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            guard let player = self.mAliPlayer else { return }
+            player.stop()
+            let source = AVPVidStsSource()
+            source.region = "cn-shanghai"
+            source.vid = self.model.videoVID
+            source.securityToken = UserInfoModel.shared.ossSecurityToken
+            source.accessKeyId = UserInfoModel.shared.ossAccessKeyId
+            source.accessKeySecret = UserInfoModel.shared.ossAccessKeySecret
+            player.setStsSource(source)
+            player.prepare()
+            if let resumePosition, resumePosition > 0 {
+                player.seek(toTime: resumePosition, seekMode: AVP_SEEKMODE_ACCURATE)
+            }
+            player.start()
+            if triggerStatistic {
+                DispatchQueue.main.async {
+                    self.sendTutorialClickRequest()
+                }
+            }
+        }
+    }
+
+    func startOssUrlPlayback(resumePosition: Int64?, shouldQueryProgress: Bool, triggerStatistic: Bool) {
+        let storedProgress: Double = shouldQueryProgress ? CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id) : 0
+        let resumeMs: Int64
+        if let resumePosition, resumePosition > 0 {
+            resumeMs = resumePosition
+        } else if storedProgress > 0 {
+            resumeMs = Int64(storedProgress * 1000)
+        } else {
+            resumeMs = 0
+        }
+        mAliPlayer?.stop()
+        DSImageUploader().dealImgUrlSignForOss(urlStr: model.videoUrl) { [weak self] urlStr in
+            guard let self = self else { return }
+            guard let player = self.mAliPlayer else { return }
+            DLLog(message: "dealImgUrlSignForOss:\(urlStr)")
+            if let _ = URL(string: urlStr) {
+                let urlSource = AVPUrlSource().url(with: urlStr)
+                player.setUrlSource(urlSource)
+                player.prepare()
+                self.mediaLoader.load(urlStr, duration: 3*1000)
+                if resumeMs > 0 {
+                    player.seek(toTime: resumeMs, seekMode: AVP_SEEKMODE_ACCURATE)
+                }
+                player.start()
+                if triggerStatistic {
+                    self.sendTutorialClickRequest()
+                }
+            }
+        }
+    }
+
+    func startDetailUrlPlayback(detailUrl: URL, resumePosition: Int64?, shouldQueryProgress: Bool) {
+        let storedProgress: Double = shouldQueryProgress ? CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id) : 0
+        let resumeMs: Int64
+        if let resumePosition, resumePosition > 0 {
+            resumeMs = resumePosition
+        } else if storedProgress > 0 {
+            resumeMs = Int64(storedProgress * 1000)
+        } else {
+            resumeMs = 0
+        }
+        mAliPlayer?.stop()
+        let urlSource = AVPUrlSource().url(with: detailUrl.absoluteString)
+        mAliPlayer?.setUrlSource(urlSource)
+        mAliPlayer?.prepare()
+        mediaLoader.load(detailUrl.absoluteString, duration: 3*1000)
+        if resumeMs > 0 {
+            mAliPlayer?.seek(toTime: resumeMs, seekMode: AVP_SEEKMODE_ACCURATE)
+        }
+        mAliPlayer?.start()
+    }
+
+    @objc private func handleAppDidEnterBackground() {
+        guard hasStartedPlaying else { return }
+        pendingReplayPosition = mAliPlayer?.currentPosition ?? 0
+        needsReplayAfterForeground = true
+        saveCurrentProgress()
+    }
+
+    @objc private func handleAppDidBecomeActive() {
+        guard hasStartedPlaying, needsReplayAfterForeground else { return }
+        needsReplayAfterForeground = false
+        let resumeMs = pendingReplayPosition
+        pendingReplayPosition = 0
+        guard mAliPlayer != nil else { return }
+        ensureValidOssParams { [weak self] in
+            guard let self = self else { return }
+            if resumeMs > 0 {
+                self.startPlayback(resumePosition: resumeMs, shouldQueryProgress: false, triggerStatistic: false)
+            } else {
+                self.startPlayback(resumePosition: nil, shouldQueryProgress: false, triggerStatistic: false)
+            }
+        }
+    }
+}
