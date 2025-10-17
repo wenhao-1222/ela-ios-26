@@ -243,14 +243,29 @@ private extension SystemNavigationController {
     func animateReveal(_ tabBar: UITabBar, duration: TimeInterval) {
         let w = tabBar.bounds.width
         setTabBarOffset(tabBar, offsetX: -w)
-        UIView.animate(withDuration: max(0.15, duration), delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
+        UIView.animate(withDuration: max(0.18, duration), delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
             self.setTabBarOffset(tabBar, offsetX: 0)
         }
     }
 
     func finishReveal(_ tabBar: UITabBar, duration: TimeInterval) {
-        UIView.animate(withDuration: max(0.12, duration * 0.55), delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
-            self.setTabBarOffset(tabBar, offsetX: 0)
+//        UIView.animate(withDuration: max(0.12, duration * 0.45), delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
+//            self.setTabBarOffset(tabBar, offsetX: 0)
+//        }
+        UIView.animate(withDuration: 0.12, delay: 0, options: [.curveEaseOut,.beginFromCurrentState]) {
+            tabBar.transform = CGAffineTransform(translationX: 10, y: 0)
+        }completion: { _ in
+            UIView.animate(withDuration: 0.08, delay: 0, options: [.curveEaseOut]) {
+                tabBar.transform = CGAffineTransform(translationX: -4.6, y: 0)
+            }completion: { _ in
+                UIView.animate(withDuration: 0.05, delay: 0, options: [.curveEaseOut]) {
+                    tabBar.transform = CGAffineTransform(translationX: 1.8, y: 0)
+                }completion: { _ in
+                    UIView.animate(withDuration: 0.02, delay: 0, options: [.curveEaseOut]) {
+                        tabBar.transform = .identity
+                    }
+                }
+            }
         }
     }
 }
