@@ -194,80 +194,78 @@ extension FirstLaunchVC{
                         }) { _ in
                             // 先将文本移动到顶部位置
                             self.firstLabelOne.snp.remakeConstraints { make in
-                                self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)-kFitWidth(8)).constraint
+                                self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)-kFitWidth(12)).constraint
                                 make.centerX.equalToSuperview()
                                 make.left.equalTo(kFitWidth(54))
                                 make.right.equalTo(kFitWidth(-54))
                             }
-                            UIView.animate(withDuration: 0.35,
-                                           delay: 0.1,
-                                           usingSpringWithDamping: self.damping,
-                                           initialSpringVelocity: 1,
-                                           options: .curveEaseInOut,
-                                           animations: {
-                                self.view.layoutIfNeeded()
-//                                self.firstLabelTopConstraint?.update(offset: kFitWidth(152)-kFitWidth(8))
-                            })
-                            { _ in
+                            UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
                                 self.generator.impactOccurred(intensity: 0.99)
+                                self.view.layoutIfNeeded()
+                            }){ _ in
                                 // 先将文本移动到顶部位置
                                 self.firstLabelOne.snp.remakeConstraints { make in
-                                    self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)+kFitWidth(5.3)).constraint
+                                    self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)+kFitWidth(2)).constraint
                                     make.centerX.equalToSuperview()
                                     make.left.equalTo(kFitWidth(54))
                                     make.right.equalTo(kFitWidth(-54))
                                 }
-                                
-                                UIView.animate(withDuration: 0.1,
-                                               delay: 0,
-                                               usingSpringWithDamping: self.damping,
-                                               initialSpringVelocity: self.velocity,
-                                               options: .curveEaseOut, animations: {
+                                UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
+                                    self.generator.impactOccurred(intensity: 0.99)
                                     self.view.layoutIfNeeded()
-                                })
-                                { _ in
-                                    self.generator.impactOccurred(intensity: 0.85)
+                                }){ _ in
                                     self.firstLabelOne.snp.remakeConstraints { make in
-                                        self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)-kFitWidth(2.6)).constraint
+                                        self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)-kFitWidth(1)).constraint
                                         make.centerX.equalToSuperview()
                                         make.left.equalTo(kFitWidth(54))
                                         make.right.equalTo(kFitWidth(-54))
                                     }
-                                    UIView.animate(withDuration: 0.05,
-                                                   delay: 0,
-                                                   usingSpringWithDamping: self.damping,
-                                                   initialSpringVelocity: self.velocity*0.5,
-                                                   options: .curveEaseInOut,
-                                                   animations: {
+                                    UIView.animate(withDuration: 0.05, delay: 0, options: .curveEaseInOut, animations: {
+                                        self.generator.impactOccurred(intensity: 0.8)
                                         self.view.layoutIfNeeded()
                                     }){ _ in
-                                        self.generator.impactOccurred(intensity: 0.5)
                                         self.firstLabelOne.snp.remakeConstraints { make in
-                                            self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)+kFitWidth(0.3)).constraint
+                                            self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)).constraint
                                             make.centerX.equalToSuperview()
                                             make.left.equalTo(kFitWidth(54))
                                             make.right.equalTo(kFitWidth(-54))
                                         }
-                                        UIView.animate(withDuration: 0.03,
-                                                       delay: 0,
-                                                       usingSpringWithDamping: self.damping,
-                                                       initialSpringVelocity: self.velocity,
-                                                       options: .curveEaseInOut,
-                                                       animations: {
+                                        UIView.animate(withDuration: 0.02, delay: 0, options: .curveEaseInOut, animations: {
+                                            self.generator.impactOccurred(intensity: 0.8)
                                             self.view.layoutIfNeeded()
                                         }){ _ in
-                                            self.generator.impactOccurred(intensity: 0.2)
-                                            self.firstLabelOne.snp.remakeConstraints { make in
-                                                self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)).constraint
-                                                make.centerX.equalToSuperview()
-                                                make.left.equalTo(kFitWidth(54))
-                                                make.right.equalTo(kFitWidth(-54))
-                                            }
-                                            UIView.animate(withDuration: 0.01, delay: 0, options: .curveEaseInOut, animations: {
+                                            UIView.animate(withDuration: 0.6, delay: 0.75, options: .curveEaseInOut, animations: {
+                                                // 位移
+                                                self.firstLabelTwoTopConstraint?.update(offset: kFitWidth(20))
                                                 self.view.layoutIfNeeded()
-                                            }){ _ in
-                                                self.animateLableTwo()
-                                            }
+                                                // 文字渐变（A->B 交叉淡化）
+//                                                self.firstLabelOne.transform = CGAffineTransform(scaleX: 5, y: 3)
+//                                                self.firstLogoImgView.transform = CGAffineTransform(scaleX: 5, y: 3)
+                                                // 让文字向上放大、logo 向下放大，避免重合
+                                                let labelTransform = CGAffineTransform(scaleX: 5, y: 5)
+                                                    .translatedBy(x: 0, y: -self.firstLabelOne.bounds.height*0.5)
+                                                let logoTransform = CGAffineTransform(scaleX: 5, y: 5)
+                                                    .translatedBy(x: 0, y: self.firstLogoImgView.bounds.height*0.5)
+                                                self.firstLabelOne.transform = labelTransform
+                                                self.firstLogoImgView.transform = logoTransform
+                                                self.firstLabelOne.alpha = 0
+                                                self.firstLabelTwo.alpha = 1
+                                                // logo 淡出
+                                                self.firstLogoImgView.alpha = 0
+                                            }, completion: { _ in
+                                                self.firstLogoImgView.isHidden = true
+                                                self.firstLabelOne.isHidden = true
+                                                
+                                                //1、缩小动画
+//                                                DispatchQueue.main.asyncAfter(deadline: .now()+0.75, execute: {
+//                                                    let finalFrame = CGRect(origin: self.bgImgView.center, size: .zero)
+//                                                    self.animateBgImgView(to: finalFrame)
+//                                                })
+                                                //2、背景矩阵方块显示
+//                                                self.revealBackgroundWithTiles()
+                                                //3、背景淡化
+                                                self.animateBgImgViewEaseIn()
+                                            })
                                         }
                                     }
                                 }
