@@ -19,6 +19,8 @@ class MineVC : WHBaseViewVC {
         sendUserCenterRequest()
         getUserConfigRequest()
         sendForumMsgNuberRequest()
+        
+        settingVm.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
     

@@ -19,6 +19,7 @@ class CourseDetailAliVC : WHBaseViewVC{
     
     var selfIsShow = false
     var isFirst = true
+    private var pendingPlayWorkItem: DispatchWorkItem?
     
     override var prefersStatusBarHidden: Bool{
         return UserConfigModel.shared.allowedOrientations != .portrait
@@ -26,11 +27,37 @@ class CourseDetailAliVC : WHBaseViewVC{
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-//        let current = self.videoVm.player.currentTime
-//        let total = self.videoVm.player.totalTime
-////        CourseProgressSQLiteManager.getInstance().updateProgress(tutorialId: self.tutorialModel.id, courseId: self.tutorialModel.courseId, progress: current, duration: total)
-//        CourseProgressSQLiteManager.getInstance().updateProgress(tutorialId: self.tutorialModel.id, courseId: self.tutorialModel.courseId, progress: current, duration: total)
+        pendingPlayWorkItem?.cancel()
+        pendingPlayWorkItem = nil
+
+        // ✅ 交给转场协调器判断交互式返回是否最终完成
+        if let coordinator = transitionCoordinator {
+            // 手势开始：做“软取消”（不destroy，只停止预加载/阻断后续start）
+            videoAliVm.prepareForPossibleDismissal()
+
+            coordinator.animate(alongsideTransition: nil) { [weak self] context in
+                guard let self = self else { return }
+                if context.isCancelled {
+                    // 手势被取消：恢复可播放状态
+                    self.videoAliVm.resumeAfterCancellation()
+                } else {
+                    // 转场完成：此时才真正销毁播放器
+                    self.videoAliVm.releasePlayer()
+                }
+            }
+        } else {
+            // 非交互式，或没有协调器：仅在确实要离开时销毁
+            if self.isMovingFromParent || self.isBeingDismissed {
+                videoAliVm.releasePlayer()
+            }
+        }
+
+        // （你原来的注释/代码保留）
+        // let current = self.videoVm.player.currentTime
+        // let total = self.videoVm.player.totalTime
+        // CourseProgressSQLiteManager.getInstance().updateProgress(...)
     }
+
     override func viewDidDisappear(_ animated: Bool) {
 //        self.videoVm.player.stop()
 //        self.videoVm.player.currentPlayerManager.stop?()
@@ -73,9 +100,14 @@ class CourseDetailAliVC : WHBaseViewVC{
 //        self.videoVm.updateUI(model: self.tutorialModel)
         self.videoAliVm.updateUI(model: self.tutorialModel)
         
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-            self.videoAliVm.play()
-        })
+//        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+//            self.videoAliVm.play()
+//        })
+        let playWorkItem = DispatchWorkItem { [weak self] in
+            self?.videoAliVm.play()
+        }
+        pendingPlayWorkItem = playWorkItem
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: playWorkItem)
         
         savePlayHistoryToLocal()
     }

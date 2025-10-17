@@ -82,10 +82,12 @@ class CourseListVC: WHBaseViewVC {
     lazy var listHeadVm: CourseListHeadVM = {
         let coverInfoDict = self.headMsgDict["coverInfo"]as? NSDictionary ?? [:]
         var vmHeight = kFitHeight(30)
-        if coverInfoDict.doubleValueForKey(key: "height") > 0 && coverInfoDict.doubleValueForKey(key: "width") > 0{
-            let coverHeight = coverInfoDict.doubleValueForKey(key: "height")/coverInfoDict.doubleValueForKey(key: "width") * SCREEN_WIDHT
-            vmHeight += coverHeight
-        }
+        let coverHeight = 770.0/750.0 * SCREEN_WIDHT
+        vmHeight += coverHeight
+//        if coverInfoDict.doubleValueForKey(key: "height") > 0 && coverInfoDict.doubleValueForKey(key: "width") > 0{
+//            let coverHeight = coverInfoDict.doubleValueForKey(key: "height")/coverInfoDict.doubleValueForKey(key: "width") * SCREEN_WIDHT
+//            vmHeight += coverHeight
+//        }
         let vm = CourseListHeadVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: vmHeight))
         
         vm.videoPlayBlock = {[weak self] in
@@ -302,9 +304,9 @@ extension CourseListVC{
         navigationView.addShadow(opacity: 0.08)
         navigationView.clipsToBounds = false
         view.insertSubview(tableView, belowSubview: navigationView)
-        listHeadVm.updateUI(dict: self.headMsgDict)
-        
-//        view.addSubview(lastMsgVm)
+//        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
+            self.listHeadVm.updateUI(dict: self.headMsgDict)
+//        })
         
         view.insertSubview(firstPlayTipsAlertVm, at: 999)
         
@@ -522,7 +524,9 @@ extension CourseListVC{
                     }
                 }
             }
-            self.listHeadVm.updateUI(dict: self.headMsgDict)
+//            DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
+//                self.listHeadVm.updateUI(dict: self.headMsgDict)
+//            })
             
             self.sendDataListReqeust()
         }

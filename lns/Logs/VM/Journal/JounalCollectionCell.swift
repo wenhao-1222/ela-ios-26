@@ -159,7 +159,12 @@ class JounalCollectionCell: UICollectionViewCell {
         return vm
     }()
     lazy var tableView: UITableView = {
-        let vi = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()), style: .grouped)
+        var tableFrame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight())
+        if #available(iOS 26.0, *) {
+            tableFrame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight())
+        }
+        let vi = UITableView.init(frame: tableFrame, style: .grouped)
+//        let vi = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()), style: .grouped)
 //        let vi = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()), style: .grouped)
         vi.backgroundColor = .clear//WHColor_16(colorStr: "FAFAFA")
         vi.delegate = self
@@ -364,11 +369,17 @@ extension JounalCollectionCell{
     }
 
     private func updateTableViewFrame() {
-        let headerHeight = editHeadView.frame.maxY
+        var headerHeight = editHeadView.frame.maxY
+        var bottomHeight = kFitWidth(0)
+        if #available(iOS 26.0, *) {
+            
+        }else{
+            bottomHeight = WHUtils().getTabbarHeight()
+        }
         tableView.frame = CGRect(x: 0,
                                  y: headerHeight,
                                  width: contentView.bounds.width,
-                                 height: contentView.bounds.height - headerHeight)
+                                 height: contentView.bounds.height - headerHeight - bottomHeight)
         addFirstFoodsAlertVm.frame.origin.y = goalVm.frame.maxY - kFitWidth(20) - WHUtils().getNavigationBarHeight()
     }
     
@@ -683,13 +694,9 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
            let minY = goalVm.frame.maxY
            let headerHeight = editSelectAllVm.frame.height
            if offsetY > 0 {
-               // Move the select all view and table view upward along with the scroll
                editSelectAllVm.frame.origin.y = minY - offsetY
-//               tableView.frame.origin.y = minY + headerHeight - offsetY
            } else {
-               // Reset positions when scrolled back to top
                editSelectAllVm.frame.origin.y = minY
-//               tableView.frame.origin.y = minY + headerHeight
            }
        }
         
