@@ -425,6 +425,7 @@ extension CourseDetailAliVC{
         if wasLandscape {
 //            UIDevice.current.setValue(NSNumber(value: UserConfigModel.shared.userInterfaceOrientation.rawValue), forKey: "orientation")
             self.applyStoredOrientationIfNeeded()
+            self.videoAliVm.frame = CGRect.init(x: 0, y: 0, width: SCREEN_HEIGHT, height: SCREEN_WIDHT)
         }
 //        self.tableView.scrollToRow(at: IndexPath(row: self.currentVideoIndex, section: 0), at: .middle, animated: true)
     }

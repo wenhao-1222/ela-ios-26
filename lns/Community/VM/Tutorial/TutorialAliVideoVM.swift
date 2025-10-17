@@ -135,56 +135,6 @@ extension TutorialAliVideoVM{
         ensureValidOssParams { [weak self] in
             self?.startPlayback(resumePosition: nil, shouldQueryProgress: true, triggerStatistic: true)
         }
-////        if let _ = URL(string: model.videoUrl){
-//        if !model.videoVID.isEmpty && model.videoVID.count > 4{
-////            let progress = CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id)
-//////            self.mAliPlayer?.stop()
-//////            let source = AVPVidStsSource()
-//////            source.region = "cn-shanghai"
-//////            source.vid = model.videoVID
-//////            source.securityToken = UserInfoModel.shared.ossSecurityToken
-//////            source.accessKeyId = UserInfoModel.shared.ossAccessKeyId
-//////            source.accessKeySecret = UserInfoModel.shared.ossAccessKeySecret
-//////            self.mAliPlayer?.setStsSource(source)
-//////            self.mAliPlayer?.prepare()
-////            if progress > 0 {
-////                self.mAliPlayer?.seek(toTime: Int64(progress * 1000), seekMode: AVP_SEEKMODE_ACCURATE)
-////            }
-////            self.mAliPlayer?.start()
-//            self.sendTutorialClickRequest()
-//        }else if let _ = URL(string: model.videoUrl){
-//                    
-//            let progress = CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id)
-//            self.mAliPlayer?.stop()
-//            DSImageUploader().dealImgUrlSignForOss(urlStr: model.videoUrl) { urlStr in
-//                DLLog(message: "dealImgUrlSignForOss:\(urlStr)")
-//                if let _ = URL(string: urlStr) {
-//                    let urlSource = AVPUrlSource().url(with:urlStr)
-//                    self.mAliPlayer?.setUrlSource(urlSource)
-//                    self.mAliPlayer?.prepare()
-//                    self.mediaLoader.load(urlStr, duration: 3*1000)
-//                    
-//                    if progress > 0 {
-//                        self.mAliPlayer?.seek(toTime: Int64(progress * 1000), seekMode: AVP_SEEKMODE_ACCURATE)
-//                    }
-//                    self.mAliPlayer?.start()
-//                }
-//            }
-//            self.sendTutorialClickRequest()
-//        }else{
-//            if let detailUrl = modelDetail.videoUrl {
-//                let progress = CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id)
-//                self.mAliPlayer?.stop()
-//                let urlSource = AVPUrlSource().url(with:detailUrl.absoluteString)
-//                self.mAliPlayer?.setUrlSource(urlSource)
-//                self.mAliPlayer?.prepare()
-//                self.mediaLoader.load(detailUrl.absoluteString, duration: 3*1000)
-//                if progress > 0 {
-//                    self.mAliPlayer?.seek(toTime: Int64(progress * 1000), seekMode: AVP_SEEKMODE_ACCURATE)
-//                }
-//                self.mAliPlayer?.start()
-//            }
-//        }
     }
     @objc func playAction() {
         self.coverView.isHidden = true
