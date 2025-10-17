@@ -202,6 +202,20 @@ extension ForumNaviTypeLiquidVM{
         var percent = (offsetY * 3) / selfHeight
         percent = min(max(percent, 0), 0.9)
         blurView.alpha = percent
+        
+        if offsetY > kFitWidth(44){
+            if segment.backgroundColor == UIColor.COLOR_TEXT_TITLE_0f1214_06{
+                UIView.animate(withDuration: 0.15, animations: {
+                    self.segment.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_25
+                })
+            }
+        }else{
+            if segment.backgroundColor == UIColor.COLOR_TEXT_TITLE_0f1214_25{
+                UIView.animate(withDuration: 0.15, animations: {
+                    self.segment.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_06
+                })
+            }
+        }
     }
     // MARK: - Layout
     override func layoutSubviews() {

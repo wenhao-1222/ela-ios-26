@@ -22,7 +22,6 @@ final class OverViewLogoLiquidVM: UIView {
     private let imgWidth = kFitWidth(139)
     private let imgHeight = kFitWidth(25)
     
-    
     private lazy var logoLeftFrame: CGRect = {
         CGRect(
             x: kFitWidth(32),
@@ -33,8 +32,8 @@ final class OverViewLogoLiquidVM: UIView {
     }()
 
     private lazy var logoCenteredFrame: CGRect = {
-        let targetWidth = imgWidth * 0.85
-        let targetHeight = imgHeight * 0.85
+        let targetWidth = imgWidth * 0.7
+        let targetHeight = imgHeight * 0.7
         return CGRect(
             x: SCREEN_WIDHT * 0.5 - targetWidth * 0.5,
             y: selfHeight - targetHeight - kFitWidth(10),
@@ -66,6 +65,14 @@ final class OverViewLogoLiquidVM: UIView {
         img.contentMode = .scaleAspectFit
         return img
     }()
+    private(set) lazy var logoCenterImgView: UIImageView = {
+        let img = UIImageView(frame: logoCenteredFrame)
+        img.image = logoImg?.withRenderingMode(.alwaysTemplate)
+        img.tintColor = .THEME
+        img.alpha = 0
+        img.contentMode = .scaleAspectFit
+        return img
+    }()
 
     // MARK: - Init
     override init(frame: CGRect) {
@@ -80,6 +87,7 @@ final class OverViewLogoLiquidVM: UIView {
     private func setupUI() {
         addSubview(blurView)
         addSubview(logoImgView)
+        addSubview(logoCenterImgView)
 
         blurView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -122,19 +130,30 @@ final class OverViewLogoLiquidVM: UIView {
     }
 
     private func applyLogoState(centered: Bool, animated: Bool) {
-        let targetFrame = centered ? logoCenteredFrame : logoLeftFrame
-        let targetTint = centered
-            ? WHColorWithAlpha(colorStr: "007AFF", alpha: 1)
-            : WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
-
-        if animated {
-            runLogoTransition(to: targetFrame, tintColor: targetTint)
-        } else {
-            cancelLogoAnimation()
-            logoImgView.frame = targetFrame
-            logoImgView.tintColor = targetTint
-            logoImgView.alpha = 1
+        if centered {
+            UIView.animate(withDuration: 0.25) {
+                self.logoCenterImgView.alpha = 1
+                self.logoImgView.alpha = 0
+            }
+        }else{
+            UIView.animate(withDuration: 0.25) {
+                self.logoCenterImgView.alpha = 0
+                self.logoImgView.alpha = 1
+            }
         }
+//        let targetFrame = centered ? logoCenteredFrame : logoLeftFrame
+//        let targetTint = centered
+//            ? WHColorWithAlpha(colorStr: "007AFF", alpha: 1)
+//            : WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+//
+//        if animated {
+//            runLogoTransition(to: targetFrame, tintColor: targetTint)
+//        } else {
+//            cancelLogoAnimation()
+//            logoImgView.frame = targetFrame
+//            logoImgView.tintColor = targetTint
+//            logoImgView.alpha = 1
+//        }
     }
 
     private func runLogoTransition(to frame: CGRect, tintColor: UIColor) {
