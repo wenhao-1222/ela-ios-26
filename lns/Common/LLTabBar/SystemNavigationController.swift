@@ -243,13 +243,13 @@ private extension SystemNavigationController {
     func animateReveal(_ tabBar: UITabBar, duration: TimeInterval) {
         let w = tabBar.bounds.width
         setTabBarOffset(tabBar, offsetX: -w)
-        UIView.animate(withDuration: max(0.18, duration), delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
+        UIView.animate(withDuration: max(0.15, duration), delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
             self.setTabBarOffset(tabBar, offsetX: 0)
         }
     }
 
     func finishReveal(_ tabBar: UITabBar, duration: TimeInterval) {
-        UIView.animate(withDuration: max(0.12, duration * 0.45), delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
+        UIView.animate(withDuration: max(0.12, duration * 0.55), delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
             self.setTabBarOffset(tabBar, offsetX: 0)
         }
     }
