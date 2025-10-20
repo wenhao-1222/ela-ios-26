@@ -33,7 +33,8 @@ class ForumNaviTypeVM : UIView{
         initUI()
     }
     lazy var leftTitleButton: UIButton = {
-        let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5-btnWidth*1.5, y: selfHeight-kFitWidth(44), width: btnWidth, height: kFitWidth(44)))
+        let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5-btnWidth, y: selfHeight-kFitWidth(44), width: btnWidth, height: kFitWidth(44)))
+//        let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5-btnWidth*1.5, y: selfHeight-kFitWidth(44), width: btnWidth, height: kFitWidth(44)))
         btn.setTitle("课程", for: .normal)
         btn.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
         btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .selected)
@@ -45,7 +46,8 @@ class ForumNaviTypeVM : UIView{
         return btn
     }()
     lazy var rightTitleButton: UIButton = {
-        let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5-btnWidth*0.5, y: selfHeight-kFitWidth(44), width: btnWidth, height: kFitWidth(44)))
+        let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5, y: selfHeight-kFitWidth(44), width: btnWidth, height: kFitWidth(44)))
+//        let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5-btnWidth*0.5, y: selfHeight-kFitWidth(44), width: btnWidth, height: kFitWidth(44)))
         btn.setTitle("发现", for: .normal)
         btn.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
         btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .selected)
@@ -144,7 +146,7 @@ extension ForumNaviTypeVM{
     func initUI() {
         addSubview(leftTitleButton)
         addSubview(rightTitleButton)
-        addSubview(marketTitleButton)
+//        addSubview(marketTitleButton)
         addSubview(selectBottomLineView)
         addSubview(publishButton)
         

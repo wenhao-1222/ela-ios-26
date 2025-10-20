@@ -101,6 +101,12 @@ class CourseListVC: WHBaseViewVC {
                 let playURLT = URL(string: signUrl)
                 guard let playURL = playURLT else { return }
                 DispatchQueue.main.async {
+                    do {
+                        try AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
+                        try AVAudioSession.sharedInstance().setActive(true)
+                    } catch {
+                        DLLog(message: "设置音频会话失败: \(error.localizedDescription)")
+                    }
                     let player = AVPlayer(url: playURL)
                     let playerVC = AVPlayerViewController()
                     playerVC.player = player
@@ -510,8 +516,8 @@ extension CourseListVC{
                 self.showPayView()
 //                self.lastMsgVm.isHidden = true
             }else{
+                self.buyBottomView.isHidden = true
                 if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
-                    self.buyBottomView.isHidden = true
                     self.view.addSubview(self.lastMsgVm)
                 }else{
                     if self.headMsgDict.stringValueForKey(key: "bindingDeviceId").count > 0 {

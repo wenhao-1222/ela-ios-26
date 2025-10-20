@@ -1105,6 +1105,7 @@
 		ECD6272D2BC5417F00CE819F /* MainCircleVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD6272C2BC5417F00CE819F /* MainCircleVM.swift */; };
 		ECD89EF42BDF90C000EF89A6 /* LogsNaviEditVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD89EF32BDF90C000EF89A6 /* LogsNaviEditVM.swift */; };
 		ECD89EF62BDF9B3800EF89A6 /* JournalShareVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD89EF52BDF9B3800EF89A6 /* JournalShareVC.swift */; };
+		ECDB375C2EA5E04C002C6190 /* CourseAliPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDB375B2EA5E04C002C6190 /* CourseAliPlayerViewController.swift */; };
 		ECDCE6262C606E95000350C8 /* GoalSetWeeksAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDCE6252C606E95000350C8 /* GoalSetWeeksAlertVM.swift */; };
 		ECDCE6282C606F35000350C8 /* GoalSetWeeksAlertTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDCE6272C606F35000350C8 /* GoalSetWeeksAlertTopVM.swift */; };
 		ECDCE62A2C60B60B000350C8 /* NutritionDefaultModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDCE6292C60B60B000350C8 /* NutritionDefaultModel.swift */; };
@@ -2405,6 +2406,7 @@
 		ECD6272C2BC5417F00CE819F /* MainCircleVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCircleVM.swift; sourceTree = "<group>"; };
 		ECD89EF32BDF90C000EF89A6 /* LogsNaviEditVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsNaviEditVM.swift; sourceTree = "<group>"; };
 		ECD89EF52BDF9B3800EF89A6 /* JournalShareVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalShareVC.swift; sourceTree = "<group>"; };
+		ECDB375B2EA5E04C002C6190 /* CourseAliPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseAliPlayerViewController.swift; sourceTree = "<group>"; };
 		ECDCE6252C606E95000350C8 /* GoalSetWeeksAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSetWeeksAlertVM.swift; sourceTree = "<group>"; };
 		ECDCE6272C606F35000350C8 /* GoalSetWeeksAlertTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSetWeeksAlertTopVM.swift; sourceTree = "<group>"; };
 		ECDCE6292C60B60B000350C8 /* NutritionDefaultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionDefaultModel.swift; sourceTree = "<group>"; };
@@ -3680,6 +3682,7 @@
 				A7B676CF2E28BD7800E2CF1E /* CoursePayOrderVC.swift */,
 				A7BAAC132E2F56F1002CE2D1 /* CoursePayResultVC.swift */,
 				A7B676CD2E28946E00E2CF1E /* FullscreenPlayerViewController.swift */,
+				ECDB375B2EA5E04C002C6190 /* CourseAliPlayerViewController.swift */,
 				A7B676D52E28C20B00E2CF1E /* CoursePlayerViewController.swift */,
 				A7BAAC1B2E2F6E59002CE2D1 /* CourseOrderListVC.swift */,
 				A7BAAC242E30A75F002CE2D1 /* CourseOrderPayAlertVC.swift */,
@@ -6182,6 +6185,7 @@
 				EC5328462BF60D7000C39C6A /* CancelAccountVC.swift in Sources */,
 				ECFACE8B2BC7EA5F003CDA3A /* PlanListSearchVC.swift in Sources */,
 				EC5C816B2C5A0286000EC4BC /* GoalSetVC.swift in Sources */,
+				ECDB375C2EA5E04C002C6190 /* CourseAliPlayerViewController.swift in Sources */,
 				A7CEA5EE2D1A51F1009DDEB5 /* TutorialDataListVM.swift in Sources */,
 				EC4DE2E52BCF57F70090A7BD /* PlanDetailsShareVM.swift in Sources */,
 				EC6D20ED2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift in Sources */,

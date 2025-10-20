@@ -18,6 +18,8 @@ class CourseListFirstPlayAlertVM: UIView {
     var controller = WHBaseViewVC()
     
     var confirmBlock:(()->())?
+    private var countdownTimer: Timer?
+    private var countdownRemaining: Int = 0
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -126,6 +128,8 @@ extension CourseListFirstPlayAlertVM{
         self.bgView.isUserInteractionEnabled = false
         UserInfoModel.shared.showNotifiAuthoriAlertVM = false
         
+        startConfirmCountdown()
+
         UIView.animate(withDuration: 0.45,
                        delay: 0.02,
                        usingSpringWithDamping: 0.88,
@@ -150,6 +154,11 @@ extension CourseListFirstPlayAlertVM{
 //        }
     }
     @objc func hiddenView() {
+        countdownTimer?.invalidate()
+        countdownTimer = nil
+        confirmButton.isEnabled = true
+        confirmButton.isUserInteractionEnabled = true
+        confirmButton.setTitle("确认播放", for: .normal)
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut){
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5)
             self.bgView.alpha = 0
@@ -218,3 +227,37 @@ extension CourseListFirstPlayAlertVM{
     }
 }
 
+extension CourseListFirstPlayAlertVM{
+    private func startConfirmCountdown() {
+        countdownTimer?.invalidate()
+        countdownRemaining = 3
+        updateConfirmButtonTitle()
+        confirmButton.isEnabled = false
+        confirmButton.isUserInteractionEnabled = false
+
+        countdownTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self] timer in
+            guard let self = self else {
+                timer.invalidate()
+                return
+            }
+            self.countdownRemaining -= 1
+            if self.countdownRemaining <= 0 {
+                timer.invalidate()
+                self.countdownTimer = nil
+                self.confirmButton.isEnabled = true
+                self.confirmButton.isUserInteractionEnabled = true
+                self.confirmButton.setTitle("确认播放", for: .normal)
+            } else {
+                self.updateConfirmButtonTitle()
+            }
+        })
+        if let countdownTimer {
+            RunLoop.main.add(countdownTimer, forMode: .common)
+        }
+    }
+
+    private func updateConfirmButtonTitle() {
+        confirmButton.setTitle("确认播放(\(countdownRemaining)s)", for: .normal)
+    }
+
+}

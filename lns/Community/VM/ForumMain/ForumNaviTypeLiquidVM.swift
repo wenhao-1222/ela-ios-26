@@ -31,7 +31,8 @@ class ForumNaviTypeLiquidVM: UIView {
     
     // 分段选择器：课程 / 发现 / 商品
     private lazy var segment: UISegmentedControl = {
-        let items = ["课程", "发现", "商品"]
+        let items = ["课程", "发现"]
+//        let items = ["课程", "发现", "商品"]
         let seg = UISegmentedControl(items: items)
         // 初始选中「发现」
         seg.selectedSegmentIndex = 1
@@ -206,11 +207,11 @@ extension ForumNaviTypeLiquidVM{
         if offsetY > kFitWidth(44){
             if segment.backgroundColor == UIColor.COLOR_TEXT_TITLE_0f1214_06{
                 UIView.animate(withDuration: 0.15, animations: {
-                    self.segment.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_25
+                    self.segment.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_30
                 })
             }
         }else{
-            if segment.backgroundColor == UIColor.COLOR_TEXT_TITLE_0f1214_25{
+            if segment.backgroundColor == UIColor.COLOR_TEXT_TITLE_0f1214_30{
                 UIView.animate(withDuration: 0.15, animations: {
                     self.segment.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_06
                 })

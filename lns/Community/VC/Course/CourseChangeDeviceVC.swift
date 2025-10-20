@@ -218,6 +218,8 @@ extension CourseChangeDeviceVC{
                      "code":"\(verifyCode)"]
         WHNetworkUtil.shareManager().POST(urlString: URL_forum_order_rebind_device, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
 //            DLLog(message: "\(responseObject)")
+            
+            NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_COURSE_STATUS, object: nil)
             self.disableTimer()
             self.backTapAction()
         }

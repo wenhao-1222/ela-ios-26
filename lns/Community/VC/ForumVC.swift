@@ -139,11 +139,11 @@ extension ForumVC{
         
 //        scrollViewBase.addSubview(tutorialListVm)
         self.scrollViewBase.addSubview(self.forumListVm)
-        self.scrollViewBase.addSubview(self.marketListVm)
+//        self.scrollViewBase.addSubview(self.marketListVm)
         DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
             self.scrollViewBase.addSubview(self.tutorialListVm)
             self.scrollViewBase.isPagingEnabled = true
-            self.scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*3, height: 0)
+            self.scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*2, height: 0)
             self.scrollViewBase.setContentOffset(CGPointMake(SCREEN_WIDHT, 0), animated: false)
         })
     }
