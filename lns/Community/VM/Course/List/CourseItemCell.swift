@@ -71,7 +71,7 @@ class CourseItemCell: UITableViewCell {
     
     lazy var videoDurationLabel: UILabel = {
         let label = UILabel()
-        label.backgroundColor = .COLOR_GRAY_BLACK_25
+        label.backgroundColor = .clear//.COLOR_GRAY_BLACK_25
         label.textColor = .white
         label.font = .systemFont(ofSize: 12)
         label.textAlignment = .center
@@ -198,12 +198,17 @@ extension CourseItemCell{
         lockCoverView.isHidden = false
     }
     func unlockUI() {
-        UIView.animate(withDuration: 0.25, delay: 0) {
-            self.lockCoverView.alpha = 0
-        }completion: { _ in
-            self.lockCoverView.isHidden = true
-        }
-        
+//        bgView.bringSubviewToFront(coverImgView)
+        coverImgView.bringSubviewToFront(videoPlayImgView)
+        coverImgView.bringSubviewToFront(progressBgView)
+        coverImgView.bringSubviewToFront(videoDurationLabel)
+        lockCoverView.isHidden = false
+        lockedBgView.isHidden = true
+//        UIView.animate(withDuration: 0.25, delay: 0) {
+//            self.lockCoverView.alpha = 0
+//        }completion: { _ in
+//            self.lockCoverView.isHidden = true
+//        }
     }
 }
 
@@ -213,15 +218,16 @@ extension CourseItemCell{
         contentView.isSkeletonable = true
         contentView.addSubview(bgView)
         bgView.addSubview(coverImgView)
-        bgView.addSubview(lockCoverView)
-        lockCoverView.addSubview(lockedBgView)
-        lockedBgView.addSubview(lockedImgView)
         
         coverImgView.addSubview(videoPlayImgView)
         
         coverImgView.addSubview(videoDurationLabel)
 //        coverImgView.addSubview(progressLabel)
         coverImgView.addSubview(progressBgView)
+        
+        coverImgView.addSubview(lockCoverView)
+        lockCoverView.addSubview(lockedBgView)
+        lockedBgView.addSubview(lockedImgView)
         progressBgView.addSubview(progressView)
         bgView.addSubview(titleLab)
         bgView.addSubview(detailLab)

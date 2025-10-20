@@ -31,9 +31,15 @@ class CoursePlayingItemCell: UITableViewCell {
         
         return img
     }()
+    lazy var coverView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = true
+        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_35
+        return vi
+    }()
     lazy var videoDurationLabel: UILabel = {
         let lab = UILabel()
-        lab.backgroundColor = .COLOR_GRAY_BLACK_25
+        lab.backgroundColor = .clear//.COLOR_GRAY_BLACK_25
         lab.textColor = .white
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.textAlignment = .center
@@ -98,10 +104,12 @@ extension CoursePlayingItemCell{
                 }
             }
             if isPlaying{
+                coverView.backgroundColor = .clear
                 let attr = WHUtils().createAttributedStringWithImage(image: UIImage(named: "course_video_playing_icon")!, text: "\(model.title) ")
                 courseTitleLabel.attributedText = attr
                 courseTitleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
             }else{
+                coverView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_35
                 courseTitleLabel.text = model.title
                 courseTitleLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
             }
@@ -141,6 +149,7 @@ extension CoursePlayingItemCell{
     func initUI() {
         contentView.addSubview(imgView)
         contentView.addSubview(courseTitleLabel)
+        imgView.addSubview(coverView)
         imgView.addSubview(videoDurationLabel)
         imgView.addSubview(progressBottomView)
         progressBottomView.addSubview(progressView)
@@ -162,6 +171,9 @@ extension CoursePlayingItemCell{
             make.height.equalTo(kFitWidth(60))
             make.bottom.equalToSuperview()
 //            make.bottom.lessThanOrEqualToSuperview()
+        }
+        coverView.snp.makeConstraints { make in
+            make.left.top.width.height.equalToSuperview()
         }
         progressBottomView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(9))
