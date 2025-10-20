@@ -26,6 +26,9 @@ class TutorialVideoSwiftControlView: UIView {
     private var isAdjustingBrightness = false
     private var isVerticalPan = false
     private var hasDeterminedPanDirection = false
+    private var isAwaitingSeekCompletion = false
+    private var pendingSeekValue: Float?
+    private var pendingSeekPosition: Double?
     
     var fullTapBlock:((Bool)->())?
     var backTapBlock:(()->())?
@@ -98,11 +101,16 @@ class TutorialVideoSwiftControlView: UIView {
             guard let self = self, let player = self.player else { return }
             let duration = player.duration
             let target = Int64(Float(duration) * value)
+            self.pendingSeekValue = value
+            self.pendingSeekPosition = Double(target)
+            self.isAwaitingSeekCompletion = true
+            self.bottomToolVm.updateSeekPreview(value: value, total: Double(duration))
             player.seek(toTime: target, seekMode: AVP_SEEKMODE_ACCURATE)
             self.scheduleHideTool()
         }
         vm.sliderTouchDownBlock = { [weak self] in
             self?.hideToolWorkItem?.cancel()
+            self?.isAwaitingSeekCompletion = true
         }
         vm.sliderTouchUpBlock = { [weak self] in
             self?.scheduleHideTool()
@@ -239,6 +247,21 @@ class TutorialVideoSwiftControlView: UIView {
             let duration = player.duration
             if duration > 0 {
                 let position = player.currentPosition
+                if let targetValue = self.pendingSeekValue, let targetPosition = self.pendingSeekPosition {
+                    let currentPosition = Double(position)
+                    let tolerance: Double = 2000 // 2 seconds tolerance in milliseconds
+                    if self.isAwaitingSeekCompletion || abs(currentPosition - targetPosition) > tolerance {
+                        self.bottomToolVm.updateSeekPreview(value: targetValue, total: Double(duration))
+                        return
+                    } else {
+                        self.pendingSeekValue = nil
+                        self.pendingSeekPosition = nil
+                        self.isAwaitingSeekCompletion = false
+                    }
+                }
+                if self.pendingSeekValue == nil {
+                    self.isAwaitingSeekCompletion = false
+                }
                 self.bottomToolVm.updateProgress(current: Double(position), total: Double(duration))
             }
         }
@@ -374,6 +397,7 @@ extension TutorialVideoSwiftControlView: AVPDelegate {
 //            }
             break
         case AVPEventSeekEnd:
+            self.isAwaitingSeekCompletion = false
             self.player?.start()
         case AVPEventFirstRenderedStart:
             isPlaying = true

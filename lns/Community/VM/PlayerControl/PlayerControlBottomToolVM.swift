@@ -176,6 +176,13 @@ extension PlayerControlBottomToolVM{
             currentTimeLabel.text = "\(formatTime(current))/\(formatTime(total))"
         }
     }
+    func updateSeekPreview(value: Float, total: Double) {
+        guard total > 0 else { return }
+        totalDuration = total
+        slider.value = value
+        let current = Double(value) * total
+        currentTimeLabel.text = "\(formatTime(current))/\(formatTime(total))"
+    }
 
     func updateFullScreen(isFull: Bool){
 //        let title = isFull ? "Exit" : "Full"
