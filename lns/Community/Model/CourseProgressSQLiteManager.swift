@@ -86,7 +86,7 @@ class CourseProgressSQLiteManager {
     func queryProgress(tutorialId: String) -> Double {
         do {
             if let rows = try db?.prepare("SELECT * FROM course_progress WHERE tutorialId == '\(tutorialId)' AND uid == '\(UserInfoModel.shared.uId)'"){
-//                DLLog(message: "---- \(rows)")
+                DLLog(message: "---- \(rows)")
                 for row in rows{
                     return (row[3]as? String ?? "0").doubleValue
                 }

@@ -315,11 +315,9 @@ class CourseDetailAliVC : WHBaseViewVC{
         
         vm.nextVm.tapBlock = {()in
             self.playNextVideo()
-            DLLog(message: "下一个视频")
         }
         vm.lastVm.tapBlock = {()in
             self.playLastVideo()
-            DLLog(message: "上一个视频")
         }
         return vm
     }()
@@ -504,6 +502,7 @@ extension CourseDetailAliVC{
     }
     func updatePlayModel() {
         self.tableView.scrollToRow(at: IndexPath(row: self.currentVideoIndex, section: 0), at: .middle, animated: true)
+        self.savePlayHistoryToLocal()
         self.tutorialModel = self.dataSourceArray[self.currentVideoIndex]
         self.detailVm.updateUI(model: self.tutorialModel)
         self.menuVm.updateUI(model: self.tutorialModel)
@@ -511,7 +510,6 @@ extension CourseDetailAliVC{
         DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
             self.videoAliVm.updateUI(model: self.tutorialModel)
             self.videoAliVm.play()
-            self.savePlayHistoryToLocal()
             self.tableView.reloadData()
         })
     }

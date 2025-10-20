@@ -161,6 +161,7 @@ extension CoursePlayingItemCell{
             make.width.equalTo(kFitWidth(110))
             make.height.equalTo(kFitWidth(60))
             make.bottom.equalToSuperview()
+//            make.bottom.lessThanOrEqualToSuperview()
         }
         progressBottomView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(9))
