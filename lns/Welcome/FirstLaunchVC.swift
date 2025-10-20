@@ -195,7 +195,8 @@ extension FirstLaunchVC{
                             self.firstLogoImgView.transform = .identity
                         }) { _ in
                             // 原来你在多段动画最后做交叉淡化的地方，改成：
-                            self.moveTitleToTopWithBounce()
+//                            self.moveTitleToTopWithBounce()
+                            self.moveTitleToTopWithBounceOther()
 
 //                            // 先将文本移动到顶部位置
 //                            self.firstLabelOne.snp.remakeConstraints { make in
@@ -319,10 +320,11 @@ extension FirstLaunchVC{
         // 目标 top，保持你原先的数值
         let targetTop = kFitWidth(152)
 
-        // 先把当前布局固定住，作为 spring 的初始状态
+        // 先把当前布局固定住，作为弹跳动画的初始状态
         self.view.layoutIfNeeded()
 
-        // 一次性把标题约束改到最终位置（不做多次微调）
+//         一次性把标题约束改到最终位置（不做多次微调）
+        //将标题约束改到目标位置，后续用轻微的 offset 来实现 3 次回弹
         self.firstLabelOne.snp.remakeConstraints { make in
             self.firstLabelTopConstraint = make.top.equalTo(targetTop).constraint
             make.centerX.equalToSuperview()
@@ -335,7 +337,7 @@ extension FirstLaunchVC{
             mass: 0.9,              // 与你前面出现动画的设定保持一致
             stiffness: 220,         // 刚度：越大回到终点越快
             damping: 16,            // 阻尼：稍小于临界阻尼会产生一到两次回弹
-            initialVelocity: CGVector(dx: 0, dy: 0.9) // 初速度，正值代表向下
+            initialVelocity: CGVector(dx: 0, dy: 1.2) // 初速度，正值代表向下
         )
         let animator = UIViewPropertyAnimator(duration: 0.8, timingParameters: spring)
 
@@ -360,6 +362,71 @@ extension FirstLaunchVC{
         }
 
         animator.startAnimation()
+    }
+    private func moveTitleToTopWithBounceOther() {
+        // 目标 top，保持你原先的数值
+        let targetTop = kFitWidth(152)
+        let firstOvershoot = targetTop - kFitWidth(8)
+        let secondOvershoot = targetTop + kFitWidth(4)
+        let thirdOvershoot = targetTop - kFitWidth(2)
+        generator.prepare()
+        generatorMedium.prepare()
+
+        // 先把当前布局固定住，作为弹跳动画的初始状态
+        self.view.layoutIfNeeded()
+
+//         一次性把标题约束改到最终位置（不做多次微调）
+        //将标题约束改到目标位置，后续用轻微的 offset 来实现 3 次回弹
+        self.firstLabelOne.snp.remakeConstraints { make in
+            self.firstLabelTopConstraint = make.top.equalTo(targetTop).constraint
+            make.centerX.equalToSuperview()
+            make.left.equalTo(kFitWidth(54))
+            make.right.equalTo(kFitWidth(-54))
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.35, execute: {
+            self.generatorMedium.impactOccurred(intensity: 0.8)
+        })
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.6, execute: {
+            self.generator.impactOccurred(intensity: 0.6)
+        })
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.8, execute: {
+            self.generator.impactOccurred(intensity: 0.4)
+        })
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.9, execute: {
+            self.generator.impactOccurred(intensity: 0.2)
+        })
+        UIView.animateKeyframes(withDuration: 0.9, delay: 0, options: [.calculationModeCubic], animations: {
+            // 第一次回弹：略微超过目标位置
+            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.35) {
+                self.firstLabelTopConstraint?.update(offset: firstOvershoot)
+                self.view.layoutIfNeeded()
+//                self.generatorMedium.impactOccurred(intensity: 0.8)
+            }
+
+            // 第二次回弹：向下轻触
+            UIView.addKeyframe(withRelativeStartTime: 0.35, relativeDuration: 0.25) {
+                self.firstLabelTopConstraint?.update(offset: secondOvershoot)
+                self.view.layoutIfNeeded()
+//                self.generator.impactOccurred(intensity: 0.6)
+            }
+
+            // 第三次回弹：最终收敛前的微调
+            UIView.addKeyframe(withRelativeStartTime: 0.6, relativeDuration: 0.2) {
+                self.firstLabelTopConstraint?.update(offset: thirdOvershoot)
+                self.view.layoutIfNeeded()
+//                self.generator.impactOccurred(intensity: 0.4)
+            }
+
+            // 收尾：稳定在最终位置
+            UIView.addKeyframe(withRelativeStartTime: 0.8, relativeDuration: 0.1) {
+                self.firstLabelTopConstraint?.update(offset: targetTop)
+                self.view.layoutIfNeeded()
+            }
+        }, completion: { _ in
+            // 完成位移动画后，进入下一幕（文案与 logo 的交叉淡化）
+            self.crossfadeToSecondCopy()
+        })
     }
 
     private func crossfadeToSecondCopy() {
