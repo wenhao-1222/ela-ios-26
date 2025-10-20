@@ -172,6 +172,7 @@ class CourseDetailAliVC : WHBaseViewVC{
                 self.view.bringSubviewToFront(self.videoAliVm)
                 self.detailVm.isHidden = true
                 self.menuVm.isHidden = true
+                self.videoAliVm.mAliPlayer?.scalingMode = AVP_SCALINGMODE_SCALEASPECTFIT
             }else{
                 UIView.animate(withDuration: 0.3) {
                     self.coverBlackView.alpha = 0
@@ -183,6 +184,7 @@ class CourseDetailAliVC : WHBaseViewVC{
 //            if isFull == false{
                 self.detailVm.isHidden = false
                 self.menuVm.isHidden = false
+                self.videoAliVm.mAliPlayer?.scalingMode = AVP_SCALINGMODE_SCALEASPECTFILL
                 self.layoutPortrait(videoHeight: self.videoAliVm.videoHeight)
 //                vm.frame = CGRect(x: 0, y: statusBarHeight, width: SCREEN_WIDHT, height: self.videoAliVm.videoHeight)
 //                self.detailVm.frame = CGRect(x: 0, y: vm.frame.maxY, width: SCREEN_WIDHT, height: self.detailVm.selfHeight)

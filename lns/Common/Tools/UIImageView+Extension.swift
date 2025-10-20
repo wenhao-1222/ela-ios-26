@@ -12,7 +12,8 @@ import Kingfisher
 extension UIImageView{
     public func setImgUrl(urlString:String,placeHolder:UIImage?=nil,needTransiton:Bool?=true){
 //        DLLog(message: "图片加载地址：\(urlString)")
-        ImageCache.default.retrieveImage(forKey: urlString) { result in
+        ImageCache.default.retrieveImage(forKey: urlString) {[weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let value):
                 // 获取到缓存图片
@@ -23,15 +24,27 @@ extension UIImageView{
                         self.image = image
                     }
                 }else{
-                    self.loadImg(urlString: urlString, placeHolder: placeHolder,needTransiton: needTransiton, completeHandler: {
-                        
-                    })
+//                    self.loadImg(urlString: urlString, placeHolder: placeHolder,needTransiton: needTransiton, completeHandler: {
+//                        
+//                    })
+                    DispatchQueue.main.async {
+                        self.loadImg(urlString: urlString,
+                                     placeHolder: placeHolder,
+                                     needTransiton: needTransiton,
+                                     completeHandler: {})
+                    }
                 }
             case .failure(let error):
                 DLLog(message: "setImgUrl(urlString:\(error)  --- \(urlString)")
-                self.loadImg(urlString: urlString, placeHolder: placeHolder,needTransiton: needTransiton, completeHandler: {
-                    
-                })
+//                self.loadImg(urlString: urlString, placeHolder: placeHolder,needTransiton: needTransiton, completeHandler: {
+//                    
+//                })
+                DispatchQueue.main.async {
+                    self.loadImg(urlString: urlString,
+                                 placeHolder: placeHolder,
+                                 needTransiton: needTransiton,
+                                 completeHandler: {})
+                }
                 break
             }
         }
@@ -50,8 +63,16 @@ extension UIImageView{
         }
         
         DLLog(message: "setImgUrl(urlString:加载图片  \(urlString)")
+        let setImageOnMain: (_ task: @escaping () -> Void) -> Void = { task in
+            if Thread.isMainThread {
+                task()
+            } else {
+                DispatchQueue.main.async { task() }
+            }
+        }
         if urlString.contains("aliyuncs.com"){
-            DSImageUploader().dealImgUrlSignForOss(urlStr: urlString) { str in
+            DSImageUploader().dealImgUrlSignForOss(urlStr: urlString) { [weak self] str in
+                guard let self = self else { return }
                 signUrl = str
                 guard let resourceUrl = URL(string: signUrl) else{
                     return
@@ -61,15 +82,22 @@ extension UIImageView{
                 DLLog(message: "图片加载地址 私有桶链接：\(signUrl)")
 //                guard let imgUrl = URL(string: signUrl) else { return }
 //                self.kf.setImage(with: resource, placeholder: placeHolder, options: optionsInfo)
-                self.kf.setImage(with: resource, placeholder: placeHolder, options: optionsInfo) { _ in
-                    completeHandler()
+//                self.kf.setImage(with: resource, placeholder: placeHolder, options: optionsInfo) { _ in
+//                    completeHandler()
+//                }
+                setImageOnMain {
+                    self.kf.setImage(with: resource, placeholder: placeHolder, options: optionsInfo) { _ in
+                        completeHandler()
+                    }
                 }
             }
         }else{
             guard let imgUrl = URL(string: signUrl) else { return }
 //            self.kf.setImage(with: imgUrl, placeholder: nil, options: optionsInfo)
-            self.kf.setImage(with: imgUrl, placeholder: nil, options: optionsInfo) { _ in
-                completeHandler()
+            setImageOnMain {
+                self.kf.setImage(with: imgUrl, placeholder: nil, options: optionsInfo) { _ in
+                    completeHandler()
+                }
             }
         }
     }
