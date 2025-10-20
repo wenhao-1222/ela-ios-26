@@ -194,23 +194,23 @@ extension FirstLaunchVC{
                         }) { _ in
                             // 先将文本移动到顶部位置
                             self.firstLabelOne.snp.remakeConstraints { make in
-                                self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)-kFitWidth(12)).constraint
+                                self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)-kFitWidth(8)).constraint
                                 make.centerX.equalToSuperview()
                                 make.left.equalTo(kFitWidth(54))
                                 make.right.equalTo(kFitWidth(-54))
                             }
-                            UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
+                            UIView.animate(withDuration: 0.24, delay: 0.2, options: .curveEaseInOut, animations: {
                                 self.generator.impactOccurred(intensity: 0.99)
                                 self.view.layoutIfNeeded()
                             }){ _ in
                                 // 先将文本移动到顶部位置
                                 self.firstLabelOne.snp.remakeConstraints { make in
-                                    self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)+kFitWidth(2)).constraint
+                                    self.firstLabelTopConstraint = make.top.equalTo(kFitWidth(152)+kFitWidth(3)).constraint
                                     make.centerX.equalToSuperview()
                                     make.left.equalTo(kFitWidth(54))
                                     make.right.equalTo(kFitWidth(-54))
                                 }
-                                UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
+                                UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseOut, animations: {
                                     self.generator.impactOccurred(intensity: 0.99)
                                     self.view.layoutIfNeeded()
                                 }){ _ in
