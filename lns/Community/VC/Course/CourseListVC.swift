@@ -236,9 +236,12 @@ extension CourseListVC{
                             if self.isFromOrderList{
                                 self.backTapAction()
                             }else{
-                                let vc = CourseOrderListVC()
-                                //                    vc.orderId = self.headMsgDict.stringValueForKey(key: "orderId")
-                                self.navigationController?.pushViewController(vc, animated: true)
+                                let v = CourseChangeDeviceVC()
+                                v.orderId = self.headMsgDict.stringValueForKey(key: "orderId")
+                                self.navigationController?.pushViewController(v, animated: true)
+//                                let vc = CourseOrderListVC()
+//                                //                    vc.orderId = self.headMsgDict.stringValueForKey(key: "orderId")
+//                                self.navigationController?.pushViewController(vc, animated: true)
                             }
                         }, viewController: self)
                     }else{//没有换绑次数，执行购买逻辑
