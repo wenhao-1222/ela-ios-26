@@ -35,6 +35,7 @@ class TutorialAliVideoVM: UIView {
     private var needsReplayAfterForeground = false
     private var pendingReplayPosition: Int64 = 0
     private var playbackRequestToken = UUID()
+    private var isSwitchingVideo = false
 
     // ===== 新增：串行队列与处置标记，保证所有 AliPlayer 调用在同一线程 =====
     private let playerQueue = DispatchQueue(label: "com.elavatine.aliplayer.queue")
@@ -322,7 +323,8 @@ extension TutorialAliVideoVM{
                 self.layoutIfNeeded()
             }
             let now = Date().timeIntervalSince1970
-            if now - self.lastSaveTime > 1 && time >= 5 {
+//            if now - self.lastSaveTime > 1 && time >= 5 {
+            if !self.isSwitchingVideo && now - self.lastSaveTime > 1 && time >= 5 {
                 self.lastSaveTime = now
                 CourseProgressSQLiteManager.getInstance().updateProgress(tutorialId: self.model.id, courseId: self.model.courseId, progress: time, duration: duration)
             }
@@ -356,8 +358,40 @@ extension TutorialAliVideoVM{
             
         }
     }
+    
+    func prepareForVideoSwitch() {
+        markSwitchingVideo()
+        saveCurrentProgress()
+    }
 }
 private extension TutorialAliVideoVM {
+    func finishVideoSwitchIfNeeded() {
+    if Thread.isMainThread {
+        isSwitchingVideo = false
+        lastSaveTime = 0
+    } else {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.isSwitchingVideo = false
+            self.lastSaveTime = 0
+        }
+    }
+}
+
+func markSwitchingVideo() {
+    if Thread.isMainThread {
+        isSwitchingVideo = true
+    } else {
+        DispatchQueue.main.async { [weak self] in
+            self?.isSwitchingVideo = true
+        }
+    }
+    DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+        guard let self = self, self.isSwitchingVideo else { return }
+        self.isSwitchingVideo = false
+        self.lastSaveTime = 0
+    }
+}
     func saveCurrentProgress() {
         playerQueue.sync { [weak self] in
             guard let self = self, let player = self.mAliPlayer else { return }
@@ -517,6 +551,7 @@ extension TutorialAliVideoVM {
             }
             guard self.playbackRequestToken == requestToken, !self.isDisposed else { return }
             player.start()
+            self.finishVideoSwitchIfNeeded()
             if triggerStatistic {
                 DispatchQueue.main.async {
                     if self.playbackRequestToken == requestToken, !self.isDisposed{
@@ -565,6 +600,7 @@ extension TutorialAliVideoVM {
                 }
                 guard self.playbackRequestToken == requestToken, !self.isDisposed else { return }
                 player.start()
+                self.finishVideoSwitchIfNeeded()
                 if triggerStatistic {
                     guard self.playbackRequestToken == requestToken, !self.isDisposed else { return }
                     DispatchQueue.main.async { [weak self] in
@@ -606,6 +642,7 @@ extension TutorialAliVideoVM {
             
             guard self.playbackRequestToken == requestToken, !self.isDisposed else { return }
             player.start()
+            self.finishVideoSwitchIfNeeded()
         }
     }
 

@@ -449,6 +449,7 @@ extension CourseDetailAliVC{
         if self.currentVideoIndex >= self.dataSourceArray.count - 1{
             return
         }
+        videoAliVm.prepareForVideoSwitch()
         let wasLandscape = UserConfigModel.shared.allowedOrientations != .portrait
         self.isFirst = false
         self.oldIndex = self.currentVideoIndex
@@ -465,6 +466,7 @@ extension CourseDetailAliVC{
         if self.currentVideoIndex <= 0{
             return
         }
+        videoAliVm.prepareForVideoSwitch()
         let wasLandscape = UserConfigModel.shared.allowedOrientations != .portrait
         self.isFirst = false
         self.oldIndex = self.currentVideoIndex
@@ -560,6 +562,7 @@ extension CourseDetailAliVC:UITableViewDelegate,UITableViewDataSource{
             return
         }
         
+        videoAliVm.prepareForVideoSwitch()
         self.oldIndex = self.currentVideoIndex
         
         self.currentVideoIndex = indexPath.row
