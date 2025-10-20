@@ -182,8 +182,18 @@ extension CourseListFirstPlayAlertVM{
         self.hiddenView()
     }
     @objc func confirmAction() {
-        self.confirmBlock?()
-        self.hiddenView()
+//        self.confirmBlock?()
+//        self.hiddenView()
+        let action = self.confirmBlock
+        if Thread.isMainThread {
+            action?()
+            self.hiddenView()
+        } else {
+            DispatchQueue.main.async {
+                action?()
+                self.hiddenView()
+            }
+        }
     }
 }
 

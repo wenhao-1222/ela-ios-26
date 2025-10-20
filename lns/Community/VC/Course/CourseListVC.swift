@@ -284,18 +284,25 @@ extension CourseListVC{
             let dict = tutorials[tapIndexPath.row] as? NSDictionary ?? [:]
             
 //            let vc = CourseDetailVC()
-            let vc = CourseDetailAliVC()
-            for i in 0..<self.menuDataArray.count{
-                let model = self.menuDataArray[i]
-                if model.title == dict.stringValueForKey(key: "title"){
-                    vc.tutorialModel = model
-                    vc.currentVideoIndex = i
-                    vc.videoIndexFromList = i
-                    break
+            let handleResponse = {
+                let vc = CourseDetailAliVC()
+                for i in 0..<self.menuDataArray.count{
+                    let model = self.menuDataArray[i]
+                    if model.title == dict.stringValueForKey(key: "title"){
+                        vc.tutorialModel = model
+                        vc.currentVideoIndex = i
+                        vc.videoIndexFromList = i
+                        break
+                    }
                 }
+                vc.dataSourceArray = self.menuDataArray
+                self.navigationController?.pushViewController(vc, animated: true)
             }
-            vc.dataSourceArray = self.menuDataArray
-            self.navigationController?.pushViewController(vc, animated: true)
+            if Thread.isMainThread {
+                handleResponse()
+            } else {
+                DispatchQueue.main.async(execute: handleResponse)
+            }
         }
     }
 }
@@ -486,11 +493,23 @@ extension CourseListVC{
         let param = ["id":parentDict.stringValueForKey(key: "id"),
                      "orderId":headMsgDict.stringValueForKey(key: "orderId")]
         WHNetworkUtil.shareManager().POST(urlString: URL_forum_order_bind_device, parameters: param as [String:AnyObject],isNeedToast: true
-                                          ,vc: self) { responseObject in
-            let dict = NSMutableDictionary(dictionary: self.headMsgDict)
-            dict.setValue("1", forKey: "isBinding")
-            self.headMsgDict = dict
-            self.playVideo()
+                                          ,vc: self) { [weak self]responseObject in
+//            let dict = NSMutableDictionary(dictionary: self.headMsgDict)
+//            dict.setValue("1", forKey: "isBinding")
+//            self.headMsgDict = dict
+//            self.playVideo()
+            guard let self = self else { return }
+            let handleResponse = {
+                let dict = NSMutableDictionary(dictionary: self.headMsgDict)
+                dict.setValue("1", forKey: "isBinding")
+                self.headMsgDict = dict
+                self.playVideo()
+            }
+            if Thread.isMainThread {
+                handleResponse()
+            } else {
+                DispatchQueue.main.async(execute: handleResponse)
+            }
         }
     }
     func sendTutorialListReqeust() {

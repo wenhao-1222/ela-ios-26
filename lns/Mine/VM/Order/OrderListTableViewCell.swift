@@ -77,6 +77,7 @@ class OrderListTableViewCell: UITableViewCell {
         let lab = LineHeightLabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .regular)
+        lab.lineBreakMode = .byTruncatingTail
 //        lab.isHidden = true
         return lab
     }()

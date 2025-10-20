@@ -43,7 +43,16 @@ class TutorialAliVideoVM: UIView {
     // 在类里加一个状态位（和现有状态位放一起即可）
     private var isSuspended = false
     // =====================================================================
-
+    private func setPlayerViewOnMainThread(player: AliPlayer, view: UIView?) {
+        let updateBlock = {
+            player.playerView = view
+        }
+        if Thread.isMainThread {
+            updateBlock()
+        } else {
+            DispatchQueue.main.async(execute: updateBlock)
+        }
+    }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -212,9 +221,14 @@ extension TutorialAliVideoVM{
     func initUI() {
         // 放到串行队列设置，避免与销毁并发
         playerQueue.sync {
-            mAliPlayer?.playerView = self
-            mAliPlayer?.scalingMode = AVP_SCALINGMODE_SCALEASPECTFILL
-            mAliPlayer?.setTraceID(UserInfoModel.shared.uId)
+//            mAliPlayer?.playerView = self
+//            mAliPlayer?.scalingMode = AVP_SCALINGMODE_SCALEASPECTFILL
+//            mAliPlayer?.setTraceID(UserInfoModel.shared.uId)
+            if let player = mAliPlayer {
+                setPlayerViewOnMainThread(player: player, view: self)
+                player.scalingMode = AVP_SCALINGMODE_SCALEASPECTFILL
+                player.setTraceID(UserInfoModel.shared.uId)
+            }
         }
 //        mAliPlayer?.delegate = self
 //        let cacheConfig = AVPCacheConfig()
@@ -443,10 +457,16 @@ extension TutorialAliVideoVM{
             needsReplayAfterForeground = false
             pendingReplayPosition = 0
             hasStartedPlaying = false
-            mAliPlayer?.stop()
+//            mAliPlayer?.stop()
+            
+            guard let player = mAliPlayer else { return }
+            player.stop()
 //        mAliPlayer?.setPlayerView(nil)
-            mAliPlayer?.delegate = nil
-            mAliPlayer?.playerView = nil
+//            mAliPlayer?.delegate = nil
+//            mAliPlayer?.playerView = nil
+            
+            player.delegate = nil
+            setPlayerViewOnMainThread(player: player, view: nil)
 //            mAliPlayer?.destroy()
             mAliPlayer = nil
         }

@@ -133,15 +133,9 @@ extension PlayerControlBottomToolVM{
             make.height.equalTo(kFitWidth(32))
         }
         slider.snp.makeConstraints { make in
-//            make.left.equalTo(kFitWidth(16))
-//            make.right.equalTo(rateButton.snp.left).offset(kFitWidth(-16))
             make.left.equalTo(currentTimeLabel)
             make.right.equalTo(fullScreenButton)
-            make.top.equalTo(kFitWidth(45))
-//            make.centerY.lessThanOrEqualTo(self.snp.bottom)
-//            make.centerY.equalTo(fullScreenButton)
-//            make.top.equalTo(kFitWidth(64))
-            
+            make.top.equalTo(kFitWidth(38))
         }
     }
 }
