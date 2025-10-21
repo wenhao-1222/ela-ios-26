@@ -195,8 +195,8 @@ extension FirstLaunchVC{
                             self.firstLogoImgView.transform = .identity
                         }) { _ in
                             // 原来你在多段动画最后做交叉淡化的地方，改成：
-//                            self.moveTitleToTopWithBounce()
-                            self.moveTitleToTopWithBounceOther()
+                            self.moveTitleToTopWithBounce()
+//                            self.moveTitleToTopWithBounceOther()
 
 //                            // 先将文本移动到顶部位置
 //                            self.firstLabelOne.snp.remakeConstraints { make in
@@ -334,9 +334,9 @@ extension FirstLaunchVC{
 
         // 使用真实弹簧曲线，阻尼 < 1 才会自然回弹
         let spring = UISpringTimingParameters(
-            mass: 0.9,              // 与你前面出现动画的设定保持一致
-            stiffness: 220,         // 刚度：越大回到终点越快
-            damping: 16,            // 阻尼：稍小于临界阻尼会产生一到两次回弹
+            mass: 1.0,              // 与你前面出现动画的设定保持一致
+            stiffness: 230,         // 刚度：越大回到终点越快
+            damping: 14,            // 阻尼：稍小于临界阻尼会产生一到两次回弹
             initialVelocity: CGVector(dx: 0, dy: 1.2) // 初速度，正值代表向下
         )
         let animator = UIViewPropertyAnimator(duration: 0.8, timingParameters: spring)
@@ -347,14 +347,14 @@ extension FirstLaunchVC{
         }
 
         // 在首次接近终点时给一点触感（用延时比而不是绝对时间，跟随曲线进度）
-        animator.addAnimations({
-            self.generator.impactOccurred(intensity: 1.0)
-        }, delayFactor: 0.25)
-
-        // 回弹后再轻一点
-        animator.addAnimations({
-            self.generator.impactOccurred(intensity: 0.5)
-        }, delayFactor: 0.55)
+//        animator.addAnimations({
+//            self.generator.impactOccurred(intensity: 1.0)
+//        }, delayFactor: 0.25)
+//
+//        // 回弹后再轻一点
+//        animator.addAnimations({
+//            self.generator.impactOccurred(intensity: 0.5)
+//        }, delayFactor: 0.55)
 
         animator.addCompletion { _ in
             // 完成位移动画后，进入下一幕（文案与 logo 的交叉淡化）
@@ -362,6 +362,21 @@ extension FirstLaunchVC{
         }
 
         animator.startAnimation()
+        generator.prepare()
+        generatorMedium.prepare()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+            self.generatorMedium.impactOccurred(intensity: 0.8)
+        })
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+            self.generator.impactOccurred(intensity: 0.6)
+        })
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.4, execute: {
+            self.generator.impactOccurred(intensity: 0.4)
+        })
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+            self.generator.impactOccurred(intensity: 0.2)
+        })
     }
     private func moveTitleToTopWithBounceOther() {
         // 目标 top，保持你原先的数值
