@@ -233,6 +233,7 @@ extension OrderListTableViewCell {
                 }
             } else if dict.stringValueForKey(key: "status") == "3" { // 已支付
                 subTitleLab.isHidden = true
+                moneyLabel.isHidden = false
                 orderTimeLabel.isHidden = false
                 updateDevice(phoneName: dict.stringValueForKey(key: "phoneName"))
                 if dict.doubleValueForKey(key: "rebindingQuota") > 0 && dict.stringValueForKey(key: "phoneName").count > 0 {
