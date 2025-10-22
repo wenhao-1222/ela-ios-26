@@ -37,7 +37,7 @@ class ElaLaunchVC: WHBaseViewVC {
 //            self.tapButton.alpha = 1
 //        }
         DLLog(message: "ElaLaunchVC start：\(Date().currentSeconds)   - \(Date().timeStampMill)")
-        DispatchQueue.main.asyncAfter(deadline: .now()+3.2, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
 //            DispatchQueue.main.asyncAfter(deadline: .now()+3.6, execute: {
             DLLog(message: "ElaLaunchVC end:\(Date().currentSeconds)   - \(Date().timeStampMill)")
             self.lchBlock?()

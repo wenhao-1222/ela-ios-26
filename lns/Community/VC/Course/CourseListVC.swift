@@ -21,6 +21,8 @@ class CourseListVC: WHBaseViewVC {
     var isLoadingData = true
     var isPaid = false
     var isFromOrderList = false
+    var hasPdf = false
+    var pdfDict = NSDictionary()
     var courseId = ""
     var tapIndexPath = IndexPath()
     
@@ -145,6 +147,7 @@ class CourseListVC: WHBaseViewVC {
 //        vi.backgroundColor = WHColor_16(colorStr: "044EF4")
         vi.register(CourseTiTleCell.classForCoder(), forCellReuseIdentifier: "CourseTiTleCell")
         vi.register(CourseItemCell.classForCoder(), forCellReuseIdentifier: "CourseItemCell")
+        vi.register(CoursePDFCell.classForCoder(), forCellReuseIdentifier: "CoursePDFCell")
         vi.contentInsetAdjustmentBehavior = .never
         if #available(iOS 15.0, *) {
             vi.sectionHeaderTopPadding = .zero
@@ -232,7 +235,7 @@ extension CourseListVC{
             if self.headMsgDict.stringValueForKey(key: "bindingDeviceId").count > 0 {//已绑定
                 if self.headMsgDict.stringValueForKey(key: "isBinding") == "0"{//不是绑定的本设备
                     if self.headMsgDict.doubleValueForKey(key: "rebindingQuota") > 0{//有换绑次数，执行换绑逻辑
-                        self.presentAlertVc(confirmBtn: "换绑", message: "课程仅允许更换一次设备", title: "课程是否更换设备", cancelBtn: "取消", handler: { action in
+                        self.presentAlertVc(confirmBtn: "换绑", message: "课程仅允许更换一次设备", title: "当前设备尚未绑定此课程", cancelBtn: "取消", handler: { action in
                             if self.isFromOrderList{
                                 self.backTapAction()
                             }else{
@@ -367,15 +370,22 @@ extension CourseListVC{
 
 extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
+        if hasPdf{
+            return self.dataSourceArray.count + 2
+        }
         return self.dataSourceArray.count + 1
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return 1
         }else{
-            let dict = self.dataSourceArray[section-1]as? NSDictionary ?? [:]
-            let tutorials = dict["tutorials"]as? NSArray ?? []
-            return tutorials.count
+            if hasPdf && section == self.dataSourceArray.count + 1{
+                return 1
+            }else{
+                let dict = self.dataSourceArray[section-1]as? NSDictionary ?? [:]
+                let tutorials = dict["tutorials"]as? NSArray ?? []
+                return tutorials.count
+            }
         }
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -386,36 +396,51 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
             
             return cell ?? CourseTiTleCell()
         }else{
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CourseItemCell") as? CourseItemCell
-            
-            let dataDict = self.dataSourceArray[indexPath.section-1]as? NSDictionary ?? [:]
-            let tutorials = dataDict["tutorials"]as? NSArray ?? []
-            let dict = tutorials[indexPath.row] as? NSDictionary ?? [:]
-            
-//            if isLoadingData{
-//                cell?.showAnimatedSkeleton()
-//            }else{
-                cell?.updateUI(dict: dict)
-                if self.isPaid == false{
-                    cell?.lockedUI()
-                }else{
-                    cell?.unlockUI()
-                }
-//            }
-            
-            return cell ?? CourseItemCell()
+            if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "CoursePDFCell") as? CoursePDFCell
+                cell?.updateUI(dict: self.pdfDict)
+                return cell ?? CoursePDFCell()
+            }else{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "CourseItemCell") as? CourseItemCell
+                
+                let dataDict = self.dataSourceArray[indexPath.section-1]as? NSDictionary ?? [:]
+                let tutorials = dataDict["tutorials"]as? NSArray ?? []
+                let dict = tutorials[indexPath.row] as? NSDictionary ?? [:]
+                
+    //            if isLoadingData{
+    //                cell?.showAnimatedSkeleton()
+    //            }else{
+                    cell?.updateUI(dict: dict)
+                    if self.isPaid == false{
+                        cell?.lockedUI()
+                    }else{
+                        cell?.unlockUI()
+                    }
+    //            }
+                
+                return cell ?? CourseItemCell()
+            }
         }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0 {
             return UITableView.automaticDimension
         }else{
-            return isLoadingData ? kFitWidth(160) : UITableView.automaticDimension
+            if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
+                return kFitWidth(63)
+            }else{
+                return isLoadingData ? kFitWidth(160) : UITableView.automaticDimension
+            }
         }
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        self.view.bringSubviewToFront(self.firstPlayTipsAlertVm)
 //        firstPlayTipsAlertVm.showView()
+        
+        if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
+            DLLog(message: "点击了下载PDF")
+            return
+        }
         self.tapIndexPath = indexPath
         if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
             
@@ -433,14 +458,30 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
         if section == 0 {
             return listHeadVm
         }else{
-            let dataDict = self.dataSourceArray[section-1]as? NSDictionary ?? [:]
-            if dataDict.stringValueForKey(key: "title").count > 0 {
-                let vm = CourseItemHeadVM.init(frame: .zero)
-                vm.titleLab.text = "\(dataDict.stringValueForKey(key: "sn")).\(dataDict.stringValueForKey(key: "title"))"
-                vm.backgroundColor = .COLOR_BG_F5
-                return vm
+            if hasPdf{
+                if section == self.dataSourceArray.count + 1{
+                    return nil
+                }else{
+                    let dataDict = self.dataSourceArray[section-1]as? NSDictionary ?? [:]
+                    if dataDict.stringValueForKey(key: "title").count > 0 {
+                        let vm = CourseItemHeadVM.init(frame: .zero)
+                        vm.titleLab.text = "\(dataDict.stringValueForKey(key: "sn")).\(dataDict.stringValueForKey(key: "title"))"
+                        vm.backgroundColor = .COLOR_BG_F5
+                        return vm
+                    }else{
+                        return nil
+                    }
+                }
             }else{
-                return nil
+                let dataDict = self.dataSourceArray[section-1]as? NSDictionary ?? [:]
+                if dataDict.stringValueForKey(key: "title").count > 0 {
+                    let vm = CourseItemHeadVM.init(frame: .zero)
+                    vm.titleLab.text = "\(dataDict.stringValueForKey(key: "sn")).\(dataDict.stringValueForKey(key: "title"))"
+                    vm.backgroundColor = .COLOR_BG_F5
+                    return vm
+                }else{
+                    return nil
+                }
             }
         }
     }
@@ -448,12 +489,26 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
         if section == 0 {
             return listHeadVm.selfHeight
         }else{
-            let dataDict = self.dataSourceArray[section-1]as? NSDictionary ?? [:]
-            if dataDict.stringValueForKey(key: "title").count > 0 {
-                let vm = CourseItemHeadVM.init(frame: .zero)
-                return vm.selfHeight
+            if hasPdf{
+                if section == self.dataSourceArray.count + 1{
+                    return 0
+                }else{
+                    let dataDict = self.dataSourceArray[section-1]as? NSDictionary ?? [:]
+                    if dataDict.stringValueForKey(key: "title").count > 0 {
+                        let vm = CourseItemHeadVM.init(frame: .zero)
+                        return vm.selfHeight
+                    }else{
+                        return 0
+                    }
+                }
             }else{
-                return 0
+                let dataDict = self.dataSourceArray[section-1]as? NSDictionary ?? [:]
+                if dataDict.stringValueForKey(key: "title").count > 0 {
+                    let vm = CourseItemHeadVM.init(frame: .zero)
+                    return vm.selfHeight
+                }else{
+                    return 0
+                }
             }
         }
     }
@@ -461,23 +516,56 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
         if section == 0 {
             return nil
         }else{
-            if section == self.dataSourceArray.count && self.hasHistory {
-                let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.lastMsgVm.selfHeight))
-                vi.backgroundColor = .clear
-                return vi
+            if hasPdf{
+                if section == self.dataSourceArray.count + 1{
+                    if self.hasHistory {
+                        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.lastMsgVm.selfHeight))
+                        vi.backgroundColor = .clear
+                        return vi
+                    }else{
+                        return nil
+                    }
+                }else{
+//                    if section == self.dataSourceArray.count && self.hasHistory {
+//                        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.lastMsgVm.selfHeight))
+//                        vi.backgroundColor = .clear
+//                        return vi
+//                    }else{
+                        return nil
+//                    }
+                }
             }else{
-                return nil
+                if section == self.dataSourceArray.count && self.hasHistory {
+                    let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.lastMsgVm.selfHeight))
+                    vi.backgroundColor = .clear
+                    return vi
+                }else{
+                    return nil
+                }
             }
+            
         }
     }
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == 0 {
             return 0
         }else{
-            if section == self.dataSourceArray.count && self.hasHistory{
-                return self.lastMsgVm.selfHeight
+            if hasPdf{
+                if section == self.dataSourceArray.count + 1{
+                    return self.lastMsgVm.selfHeight
+                }else{
+//                    if section == self.dataSourceArray.count && self.hasHistory{
+//                        return self.lastMsgVm.selfHeight
+//                    }else{
+                        return 0
+//                    }
+                }
             }else{
-                return 0
+                if section == self.dataSourceArray.count && self.hasHistory{
+                    return self.lastMsgVm.selfHeight
+                }else{
+                    return 0
+                }
             }
         }
     }
@@ -552,6 +640,14 @@ extension CourseListVC{
                     }
                 }
             }
+            
+            let materialDict = self.headMsgDict["material"]as? NSDictionary ?? [:]
+            let pdfArr = materialDict["pdf"]as? NSArray ?? []
+            if pdfArr.count > 0 {
+                self.pdfDict = pdfArr[0]as? NSDictionary ?? [:]
+                self.hasPdf = true
+            }
+            
             DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
                 self.listHeadVm.updateUI(dict: self.headMsgDict)
             })

@@ -1115,6 +1115,7 @@
 		ECDED1982C451AB800F9B0AD /* CodeAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDED1972C451AB800F9B0AD /* CodeAlertVM.swift */; };
 		ECDF3F9A2C35229E005F7D7D /* ChineseTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDF3F992C35229E005F7D7D /* ChineseTextField.swift */; };
 		ECE399982EA8675E005718C5 /* CoursePayTipsPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */; };
+		ECE3999A2EA87AA7005718C5 /* CoursePDFCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE399992EA87A9E005718C5 /* CoursePDFCell.swift */; };
 		ECF0BFD32BFC3C6400E5F6F0 /* InviteRewardsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD22BFC3C6400E5F6F0 /* InviteRewardsVC.swift */; };
 		ECF0BFD62BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD52BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift */; };
 		ECF0BFD82BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD72BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift */; };
@@ -2418,6 +2419,7 @@
 		ECDED1972C451AB800F9B0AD /* CodeAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeAlertVM.swift; sourceTree = "<group>"; };
 		ECDF3F992C35229E005F7D7D /* ChineseTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseTextField.swift; sourceTree = "<group>"; };
 		ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePayTipsPopupView.swift; sourceTree = "<group>"; };
+		ECE399992EA87A9E005718C5 /* CoursePDFCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePDFCell.swift; sourceTree = "<group>"; };
 		ECF0BFD22BFC3C6400E5F6F0 /* InviteRewardsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsVC.swift; sourceTree = "<group>"; };
 		ECF0BFD52BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsTopVM.swift; sourceTree = "<group>"; };
 		ECF0BFD72BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsCodeVM.swift; sourceTree = "<group>"; };
@@ -3573,6 +3575,7 @@
 				A7BD60662DACF7C3002FE250 /* CourseItemHeadVM.swift */,
 				A73348A72DACE82200AD747A /* CourseTiTleCell.swift */,
 				A73348AB2DACEF8700AD747A /* CourseItemCell.swift */,
+				ECE399992EA87A9E005718C5 /* CoursePDFCell.swift */,
 				A7EC16BB2DAE545B001845CD /* CoursePlayingItemCell.swift */,
 				A7F34D932DAF838400DA1A63 /* CourseLastMsgVM.swift */,
 				A775EA382E2643FC001DE90A /* CourseListVMTableViewCell.swift */,
@@ -6265,6 +6268,7 @@
 				A77F4FA92D7597C50064F43A /* TouchGenerator.swift in Sources */,
 				A71A538B2CD9EF70009FDAF9 /* ZFLandScapeControlView.m in Sources */,
 				A71A538C2CD9EF70009FDAF9 /* UIViewController+ZFPlayerRotation.m in Sources */,
+				ECE3999A2EA87AA7005718C5 /* CoursePDFCell.swift in Sources */,
 				A71A538D2CD9EF70009FDAF9 /* ZFPlayerController.m in Sources */,
 				A71A538E2CD9EF70009FDAF9 /* ZFNetworkSpeedMonitor.m in Sources */,
 				A71A538F2CD9EF70009FDAF9 /* UIView+ZFFrame.m in Sources */,

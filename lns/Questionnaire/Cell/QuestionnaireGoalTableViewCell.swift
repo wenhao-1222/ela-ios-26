@@ -9,6 +9,8 @@ import Foundation
 
 class QuestionnaireGoalTableViewCell: FeedBackTableViewCell {
     
+    private var generator = UIImpactFeedbackGenerator(style: .rigid)
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -17,6 +19,7 @@ class QuestionnaireGoalTableViewCell: FeedBackTableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.backgroundColor = .clear
         self.selectionStyle = .none
+        generator.prepare()
         initUI()
     }
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
@@ -147,7 +150,8 @@ extension QuestionnaireGoalTableViewCell{
         UIView.animate(withDuration: 0.1) {
             self.transform = CGAffineTransform(scaleX: scale, y: scale)
         }
-//        triggerImpact(feedbackGenerator, intensity: feedbackWeight)
+        self.generator.impactOccurred()
+        generator.prepare()
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -155,10 +159,6 @@ extension QuestionnaireGoalTableViewCell{
         UIView.animate(withDuration: 0.1) {
             self.transform = .identity
         }
-//        if let touch = touches.first, self.bounds.contains(touch.location(in: self)) {
-////            UIImpactFeedbackGenerator(style: .medium).impactOccurred(intensity: 0.9)
-//            triggerImpact(UIImpactFeedbackGenerator(style: .medium), intensity: 0.9)
-//        }
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -167,10 +167,4 @@ extension QuestionnaireGoalTableViewCell{
             self.transform = .identity
         }
     }
-//    private func triggerImpact(_ generator: UIImpactFeedbackGenerator, intensity: CGFloat) {
-//        let now = Date().timeIntervalSince1970
-//        guard now - lastFeedbackTime > minimumFeedbackInterval else { return }
-//        generator.impactOccurred(intensity: intensity)
-//        lastFeedbackTime = now
-//    }
 }
