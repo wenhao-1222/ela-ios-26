@@ -20,7 +20,22 @@ enum IMAGE_TYPE {
     case suggestion
     case other
 }
+enum AliYunDownloadError: LocalizedError {
+    case invalidURL
+    case unsupportedURL
+    case missingBucketOrObject
 
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "无效的下载链接"
+        case .unsupportedURL:
+            return "暂不支持的下载地址"
+        case .missingBucketOrObject:
+            return "缺少下载文件信息"
+        }
+    }
+}
 typealias StringBoolCallback = (_ text:String, _ value:Bool) -> Void
 
 typealias UploadCallback = (_ percen:String) -> Void
@@ -387,6 +402,97 @@ extension DSImageUploader {
             let task = ossClient.presignConstrainURL(withBucketName: bucketName, withObjectKey: objectKey, withExpirationInterval: 60*60)//30分钟
             DLLog(message: "OSS预签名： 前 \(urlStr)   -    后：\(task.result as? String ?? "签名失败")")
             completion(task.result as? String ?? urlStr)
+        }
+    }
+    func downloadOSSFile(urlStr: String,
+                         destinationURL: URL,
+                         progress: ((Float) -> Void)? = nil,
+                         completion: @escaping (Result<URL, Error>) -> Void) {
+        guard let url = URL(string: urlStr) else {
+            DispatchQueue.main.async {
+                completion(.failure(AliYunDownloadError.invalidURL))
+            }
+            return
+        }
+
+        guard let host = url.host, host.contains(".oss-") else {
+            DispatchQueue.main.async {
+                completion(.failure(AliYunDownloadError.unsupportedURL))
+            }
+            return
+        }
+
+        let directoryURL = destinationURL.deletingLastPathComponent()
+        do {
+            try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                try FileManager.default.removeItem(at: destinationURL)
+            }
+        } catch {
+            DispatchQueue.main.async {
+                completion(.failure(error))
+            }
+            return
+        }
+
+        let bucketName = host.components(separatedBy: ".").first ?? ""
+        var objectKey = url.path
+        if objectKey.hasPrefix("/") {
+            objectKey.removeFirst()
+        }
+        objectKey = objectKey.removingPercentEncoding ?? objectKey
+
+        guard !bucketName.isEmpty, !objectKey.isEmpty else {
+            DispatchQueue.main.async {
+                completion(.failure(AliYunDownloadError.missingBucketOrObject))
+            }
+            return
+        }
+
+        let disGroup = DispatchGroup()
+        if !UserInfoModel.shared.ossParamIsValid() {
+            disGroup.enter()
+            sendOssStsRequest { _ in
+                disGroup.leave()
+            }
+        }
+
+        disGroup.notify(queue: .global(qos: .userInitiated)) {
+            let config = OSSClientConfiguration()
+            config.maxRetryCount = 2
+            config.timeoutIntervalForRequest = 15
+            config.timeoutIntervalForResource = 300
+
+            let credentialProvider = OSSStsTokenCredentialProvider(accessKeyId: UserInfoModel.shared.ossAccessKeyId,
+                                                                   secretKeyId: UserInfoModel.shared.ossAccessKeySecret,
+                                                                   securityToken: UserInfoModel.shared.ossSecurityToken)
+            let client = OSSClient(endpoint: UserInfoModel.shared.ossEndpoint,
+                                   credentialProvider: credentialProvider,
+                                   clientConfiguration: config)
+
+            let request = OSSGetObjectRequest()
+            request.bucketName = bucketName
+            request.objectKey = objectKey
+            request.downloadToFileURL = destinationURL
+            request.downloadProgress = { _, totalByteSent, totalByteExpectedToSend in
+                guard totalByteExpectedToSend > 0 else { return }
+                let progressValue = Float(totalByteSent) / Float(totalByteExpectedToSend)
+                DispatchQueue.main.async {
+                    progress?(progressValue)
+                }
+            }
+
+            let task = client.getObject(request)
+            task.continue({ task -> Any? in
+                DispatchQueue.main.async {
+                    if let error = task.error {
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(destinationURL))
+                    }
+                }
+                return nil
+            }).waitUntilFinished()
         }
     }
 }

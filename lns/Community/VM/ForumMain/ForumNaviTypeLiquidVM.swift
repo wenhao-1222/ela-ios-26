@@ -36,6 +36,9 @@ class ForumNaviTypeLiquidVM: UIView {
         let seg = UISegmentedControl(items: items)
         // 初始选中「发现」
         seg.selectedSegmentIndex = 1
+        seg.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_03
+        seg.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_03.cgColor
+        seg.layer.borderWidth = kFitWidth(2)
         if #available(iOS 13.0, *) {
             seg.selectedSegmentTintColor = UIColor.white.withAlphaComponent(0.6) // 让选中更贴近玻璃感（可按需改）
             // 普通/选中态颜色
@@ -47,13 +50,11 @@ class ForumNaviTypeLiquidVM: UIView {
                 .font: UIFont.systemFont(ofSize: 16, weight: .semibold),
                 .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214
             ], for: .selected)
-            // 背景透明，融入毛玻璃
-            seg.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_06
         }
         seg.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
         return seg
     }()
-    
+
     // 保留原有发布按钮逻辑
     lazy var publishButton: UIButton = {
         let btn = UIButton(type: .custom)

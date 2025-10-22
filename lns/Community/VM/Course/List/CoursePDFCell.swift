@@ -35,6 +35,16 @@ class CoursePDFCell: UITableViewCell {
         
         return img
     }()
+    lazy var loadingIndicator: UIActivityIndicatorView = {
+        let indicator: UIActivityIndicatorView
+        if #available(iOS 13.0, *) {
+            indicator = UIActivityIndicatorView(style: .medium)
+        } else {
+            indicator = UIActivityIndicatorView(style: .gray)
+        }
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
     lazy var cellTitleLab: UILabel = {
         let lab = UILabel()
         lab.text = "下载训练计划"
@@ -56,6 +66,16 @@ extension CoursePDFCell{
         cellTitleLab.text = dict.stringValueForKey(key: "title")
 //        cellDetalLab.text = dict.stringValueForKey(key: "subtitle")
     }
+    func setLoading(_ loading: Bool) {
+        if loading {
+            loadingIndicator.startAnimating()
+        } else {
+            loadingIndicator.stopAnimating()
+        }
+        downLoadImgView.isHidden = loading
+        contentView.alpha = loading ? 0.6 : 1
+        isUserInteractionEnabled = !loading
+    }
 }
 
 extension CoursePDFCell{
@@ -65,6 +85,7 @@ extension CoursePDFCell{
         bgView.addSubview(cellTitleLab)
 //        bgView.addSubview(cellDetalLab)
         
+        bgView.addSubview(loadingIndicator)
         setConstrait()
     }
     func setConstrait() {
@@ -86,6 +107,10 @@ extension CoursePDFCell{
             make.centerY.lessThanOrEqualToSuperview()
             make.left.equalTo(kFitWidth(44))
             make.height.equalTo(kFitWidth(21))
+            make.right.equalTo(kFitWidth(-20))
+        }
+        loadingIndicator.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
             make.right.equalTo(kFitWidth(-20))
         }
 //        cellDetalLab.snp.makeConstraints { make in
@@ -123,6 +148,10 @@ extension CoursePDFCell{
         UIView.animate(withDuration: 0.1) {
             self.transform = .identity
         }
+    }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        setLoading(false)
     }
 //    private func triggerImpact(_ generator: UIImpactFeedbackGenerator, intensity: CGFloat) {
 //        let now = Date().timeIntervalSince1970

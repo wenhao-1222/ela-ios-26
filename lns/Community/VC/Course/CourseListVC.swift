@@ -25,8 +25,11 @@ class CourseListVC: WHBaseViewVC {
     var pdfDict = NSDictionary()
     var courseId = ""
     var tapIndexPath = IndexPath()
+    var pdfLocalURL: URL?
+    var isDownloadingPdf = false
     
     var isCNMainLand = true
+    var documentInteractionController: UIDocumentInteractionController?
     
     let backImg = UIImage(named: "back_arrow")//UIImage(named: "back_arrow_white_shadow")
     let shareImg = UIImage(named: "tutorial_share_icon")
@@ -399,6 +402,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
             if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "CoursePDFCell") as? CoursePDFCell
                 cell?.updateUI(dict: self.pdfDict)
+                cell?.setLoading(isDownloadingPdf)
                 return cell ?? CoursePDFCell()
             }else{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "CourseItemCell") as? CourseItemCell
@@ -439,6 +443,44 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
         
         if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
             DLLog(message: "点击了下载PDF")
+            guard isDownloadingPdf == false else { return }
+            let urlString = self.pdfDict.stringValueForKey(key: "url")
+            guard urlString.count > 0 else {
+                MCToast.mc_failure("暂无可下载的PDF")
+                return
+            }
+
+            guard let destinationURL = pdfDestinationURL(from: urlString) else {
+                MCToast.mc_failure("无法创建文件路径")
+                return
+            }
+
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                self.pdfLocalURL = destinationURL
+                presentPDF(at: destinationURL)
+                return
+            }
+
+            if let cell = tableView.cellForRow(at: indexPath) as? CoursePDFCell {
+                cell.setLoading(true)
+            }
+            isDownloadingPdf = true
+            DSImageUploader().downloadOSSFile(urlStr: urlString, destinationURL: destinationURL, progress: nil) { [weak self] result in
+                guard let self = self else { return }
+                self.isDownloadingPdf = false
+                if let cell = self.tableView.cellForRow(at: indexPath) as? CoursePDFCell {
+                    cell.setLoading(false)
+                }
+                switch result {
+                case .success(let fileURL):
+                    self.pdfLocalURL = fileURL
+                    MCToast.mc_success("下载完成")
+                    self.presentPDF(at: fileURL)
+                case .failure(let error):
+                    let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+                    MCToast.mc_failure(message)
+                }
+            }
             return
         }
         self.tapIndexPath = indexPath
@@ -552,7 +594,11 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
         }else{
             if hasPdf{
                 if section == self.dataSourceArray.count + 1{
-                    return self.lastMsgVm.selfHeight
+                    if self.hasHistory {
+                        return self.lastMsgVm.selfHeight
+                    }else{
+                        return 0
+                    }
                 }else{
 //                    if section == self.dataSourceArray.count && self.hasHistory{
 //                        return self.lastMsgVm.selfHeight
@@ -687,6 +733,62 @@ extension CourseListVC{
             DispatchQueue.main.async {
                 self.lastMsgVm.showView(parentId: self.parentDict.stringValueForKey(key: "id"))
             }
+        }
+    }
+}
+extension CourseListVC {
+    func pdfDestinationURL(from urlString: String) -> URL? {
+        guard let baseDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            return nil
+        }
+        let folderURL = baseDirectory.appendingPathComponent("CoursePDFs", isDirectory: true)
+        var fileName = URL(string: urlString)?.lastPathComponent ?? ""
+        if fileName.isEmpty {
+            fileName = (urlString as NSString).lastPathComponent
+        }
+        if let queryRange = fileName.range(of: "?") {
+            fileName = String(fileName[..<queryRange.lowerBound])
+        }
+        if fileName.isEmpty {
+            fileName = pdfDict.stringValueForKey(key: "title")
+        }
+        if fileName.isEmpty {
+            fileName = UUID().uuidString
+        }
+        if !fileName.lowercased().hasSuffix(".pdf") {
+            fileName += ".pdf"
+        }
+        let invalidSet = CharacterSet(charactersIn: ":/\\?%*|\"<>")
+        let sanitized = fileName.components(separatedBy: invalidSet).filter { !$0.isEmpty }.joined(separator: "_")
+        return folderURL.appendingPathComponent(sanitized.isEmpty ? UUID().uuidString + ".pdf" : sanitized)
+    }
+
+    func presentPDF(at url: URL) {
+        let controller = UIDocumentInteractionController(url: url)
+        controller.delegate = self
+        controller.uti = "com.adobe.pdf"
+        documentInteractionController = controller
+        if controller.presentPreview(animated: true) == false {
+            let presented = controller.presentOpenInMenu(from: self.view.bounds, in: self.view, animated: true)
+            if presented == false {
+                MCToast.mc_failure("暂无可用的PDF查看应用")
+            }
+        }
+    }
+}
+
+extension CourseListVC: UIDocumentInteractionControllerDelegate {
+    func documentInteractionControllerViewControllerForPreview(_ controller: UIDocumentInteractionController) -> UIViewController {
+        return self
+    }
+
+    func documentInteractionControllerViewForPreview(_ controller: UIDocumentInteractionController) -> UIView? {
+        return self.view
+    }
+
+    func documentInteractionControllerDidEndPreview(_ controller: UIDocumentInteractionController) {
+        if controller == documentInteractionController {
+            documentInteractionController = nil
         }
     }
 }
