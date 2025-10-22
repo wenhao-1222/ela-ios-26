@@ -668,6 +668,7 @@
 		A7FB331C2DC9E52B00751B64 /* JournalShareFooterVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB331B2DC9E52300751B64 /* JournalShareFooterVM.swift */; };
 		A7FB331E2DC9F47A00751B64 /* JournalShareVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB331D2DC9F47500751B64 /* JournalShareVM.swift */; };
 		A7FBA0CB2E3C5A8400EAEC68 /* ScreenShieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FBA0CA2E3C5A8300EAEC68 /* ScreenShieldView.swift */; };
+		EC000E6A2EA78F6000E2C60A /* CoursePayPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC000E692EA78F5900E2C60A /* CoursePayPopupView.swift */; };
 		EC0623E42C478D18008230BA /* JournalBottomFuncAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0623E32C478D18008230BA /* JournalBottomFuncAlertVM.swift */; };
 		EC0623E62C47B7C0008230BA /* JournalFuncAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0623E52C47B7C0008230BA /* JournalFuncAlertVM.swift */; };
 		EC094FCC2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC094FCB2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift */; };
@@ -1113,6 +1114,7 @@
 		ECDED1962C450CEA00F9B0AD /* LoginPhoneTypeAlertItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDED1952C450CEA00F9B0AD /* LoginPhoneTypeAlertItemVM.swift */; };
 		ECDED1982C451AB800F9B0AD /* CodeAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDED1972C451AB800F9B0AD /* CodeAlertVM.swift */; };
 		ECDF3F9A2C35229E005F7D7D /* ChineseTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDF3F992C35229E005F7D7D /* ChineseTextField.swift */; };
+		ECE399982EA8675E005718C5 /* CoursePayTipsPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */; };
 		ECF0BFD32BFC3C6400E5F6F0 /* InviteRewardsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD22BFC3C6400E5F6F0 /* InviteRewardsVC.swift */; };
 		ECF0BFD62BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD52BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift */; };
 		ECF0BFD82BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD72BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift */; };
@@ -1934,6 +1936,7 @@
 		DB3B3C07E8D8819AF777A82A /* Pods-ElaNaturalWidgetCaloriesFourMealsExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalWidgetCaloriesFourMealsExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaNaturalWidgetCaloriesFourMealsExtension/Pods-ElaNaturalWidgetCaloriesFourMealsExtension.release.xcconfig"; sourceTree = "<group>"; };
 		DD8104AF7D11321922808F22 /* Pods-ElaNaturalFiveMealsWidgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalFiveMealsWidgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-ElaNaturalFiveMealsWidgetExtension/Pods-ElaNaturalFiveMealsWidgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		E4FBFB54E8CC7241D44272E4 /* Pods_ElaWeekCaloriesWidgetExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ElaWeekCaloriesWidgetExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC000E692EA78F5900E2C60A /* CoursePayPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePayPopupView.swift; sourceTree = "<group>"; };
 		EC0623E32C478D18008230BA /* JournalBottomFuncAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalBottomFuncAlertVM.swift; sourceTree = "<group>"; };
 		EC0623E52C47B7C0008230BA /* JournalFuncAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalFuncAlertVM.swift; sourceTree = "<group>"; };
 		EC094FCB2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSaveNutrationAlertVM.swift; sourceTree = "<group>"; };
@@ -2414,6 +2417,7 @@
 		ECDED1952C450CEA00F9B0AD /* LoginPhoneTypeAlertItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPhoneTypeAlertItemVM.swift; sourceTree = "<group>"; };
 		ECDED1972C451AB800F9B0AD /* CodeAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeAlertVM.swift; sourceTree = "<group>"; };
 		ECDF3F992C35229E005F7D7D /* ChineseTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseTextField.swift; sourceTree = "<group>"; };
+		ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePayTipsPopupView.swift; sourceTree = "<group>"; };
 		ECF0BFD22BFC3C6400E5F6F0 /* InviteRewardsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsVC.swift; sourceTree = "<group>"; };
 		ECF0BFD52BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsTopVM.swift; sourceTree = "<group>"; };
 		ECF0BFD72BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsCodeVM.swift; sourceTree = "<group>"; };
@@ -3553,6 +3557,8 @@
 				A7BAAC152E2F5737002CE2D1 /* CoursePayResultTopVM.swift */,
 				A7BAAC172E2F59C6002CE2D1 /* CoursePayResultItemVM.swift */,
 				A7BAAC192E2F5E62002CE2D1 /* CoursePayResultBottomVM.swift */,
+				EC000E692EA78F5900E2C60A /* CoursePayPopupView.swift */,
+				ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */,
 			);
 			path = Order;
 			sourceTree = "<group>";
@@ -6294,6 +6300,7 @@
 				A77F96352D0C091F0084D4FB /* LXReorderableCollectionViewFlowLayout.m in Sources */,
 				EC87EEFD2BB3EACE00350EB0 /* QuestionnaireSurveyFoodsListVC.swift in Sources */,
 				A75039F62CF04DC400C2B2B3 /* SportVC.swift in Sources */,
+				EC000E6A2EA78F6000E2C60A /* CoursePayPopupView.swift in Sources */,
 				A7EDC0F32D140B870012D3FF /* ForumOfficialTextCell.swift in Sources */,
 				ECF0BFE22BFC9D6800E5F6F0 /* WithDrawWechatVM.swift in Sources */,
 				A7C72B482E0BBBD6001EA74D /* WaterTableViewCell.swift in Sources */,
@@ -6504,6 +6511,7 @@
 				EC5E12602C801C6700F5828A /* NSDictionary+Widget+Exs.swift in Sources */,
 				EC16B4C52C6374B500DEDD25 /* WHLoadingView.swift in Sources */,
 				A7103E5D2CD0B1B800249E3B /* QuestionPartNewVC.swift in Sources */,
+				ECE399982EA8675E005718C5 /* CoursePayTipsPopupView.swift in Sources */,
 				ECBA93502C93EDDE00117888 /* NaturalStatCalendarCollectionCellItemLeftVM.swift in Sources */,
 				EC9321B62C50E83700FDBBE2 /* AutoSizingTextView.swift in Sources */,
 				EC5328482BF60E3E00C39C6A /* CancelAccountItemVM.swift in Sources */,

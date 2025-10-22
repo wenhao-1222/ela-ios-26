@@ -9,6 +9,8 @@
 class CoursePayOrderPayDesVM : UIView{
     
     var controller = WHBaseViewVC()
+    
+    var tipsTapBlock:(()->())?
         
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -40,6 +42,22 @@ class CoursePayOrderPayDesVM : UIView{
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         
         return lab
+    }()
+    lazy var iconImgView: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "tips_gray_icon_w")
+        img.isUserInteractionEnabled = true
+        
+        return img
+    }()
+    lazy var iconTapView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = true
+        vi.backgroundColor = .clear
+        
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(tipsTapAction))
+        vi.addGestureRecognizer(tap)
+        return vi
     }()
     lazy var protocalLabel: YYLabel = {
         let lab = YYLabel()
@@ -81,10 +99,18 @@ class CoursePayOrderPayDesVM : UIView{
 }
 
 extension CoursePayOrderPayDesVM{
+    @objc func tipsTapAction() {
+        self.tipsTapBlock?()
+    }
+}
+
+extension CoursePayOrderPayDesVM{
     func initUI() {
         addSubview(topWhiteView)
         topWhiteView.addSubview(logoIconImgView)
         topWhiteView.addSubview(desLabel)
+        topWhiteView.addSubview(iconImgView)
+        topWhiteView.addSubview(iconTapView)
         
         addSubview(protocalLabel)
         setConstrait()
@@ -102,7 +128,17 @@ extension CoursePayOrderPayDesVM{
         desLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.top.equalTo(kFitWidth(34))
-            make.right.equalTo(kFitWidth(-16))
+            make.right.equalTo(kFitWidth(-50))
+//            make.right.equalTo(kFitWidth(-16))
+        }
+        iconImgView.snp.makeConstraints { make in
+            make.right.equalTo(kFitWidth(-18))
+            make.width.height.equalTo(kFitWidth(16))
+            make.centerY.lessThanOrEqualTo(desLabel)
+        }
+        iconTapView.snp.makeConstraints { make in
+            make.center.lessThanOrEqualTo(iconImgView)
+            make.width.height.equalTo(kFitWidth(50))
         }
         protocalLabel.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()

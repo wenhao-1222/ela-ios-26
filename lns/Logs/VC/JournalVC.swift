@@ -881,19 +881,19 @@ extension JournalVC{
         
         collectView.delegate = self
         collectView.dataSource = self
-        if isIpad(){
+//        if isIpad(){
             DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
                 self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
             })
-        }else{
-            if #available(iOS 26.0, *) {
-                DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
-                    self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
-                })
-            }else{
-                self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
-            }
-        }
+//        }else{
+//            if #available(iOS 26.0, *) {
+//                DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+//                    self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
+//                })
+//            }else{
+//                self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
+//            }
+//        }
         
 //        collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
         

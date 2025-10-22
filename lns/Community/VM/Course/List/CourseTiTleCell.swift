@@ -55,7 +55,7 @@ class CourseTiTleCell: UITableViewCell {
     lazy var priceLabel: UILabel = {
         let lab = UILabel()
         lab.textColor = .THEME
-        lab.font = .systemFont(ofSize: 19, weight: .semibold)
+        lab.font = .systemFont(ofSize: 14, weight: .semibold)
         lab.isHidden = true
         
         return lab
@@ -122,7 +122,7 @@ extension CourseTiTleCell{
             make.centerY.lessThanOrEqualTo(titleLab)
         }
         priceLab.snp.makeConstraints { make in
-            make.right.equalTo(priceLabel.snp.left).offset(kFitWidth(-7))
+            make.right.equalTo(priceLabel.snp.left).offset(kFitWidth(-3))
             make.centerY.lessThanOrEqualTo(priceLabel)
         }
 //        lineView.snp.makeConstraints { make in

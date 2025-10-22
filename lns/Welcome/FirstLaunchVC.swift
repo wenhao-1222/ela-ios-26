@@ -335,7 +335,7 @@ extension FirstLaunchVC{
         // 使用真实弹簧曲线，阻尼 < 1 才会自然回弹
         let spring = UISpringTimingParameters(
             mass: 1.0,              // 与你前面出现动画的设定保持一致
-            stiffness: 230,         // 刚度：越大回到终点越快
+            stiffness: 210,         // 刚度：越大回到终点越快
             damping: 14,            // 阻尼：稍小于临界阻尼会产生一到两次回弹
             initialVelocity: CGVector(dx: 0, dy: 1.2) // 初速度，正值代表向下
         )

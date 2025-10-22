@@ -232,7 +232,7 @@ extension CourseListVC{
             if self.headMsgDict.stringValueForKey(key: "bindingDeviceId").count > 0 {//已绑定
                 if self.headMsgDict.stringValueForKey(key: "isBinding") == "0"{//不是绑定的本设备
                     if self.headMsgDict.doubleValueForKey(key: "rebindingQuota") > 0{//有换绑次数，执行换绑逻辑
-                        self.presentAlertVc(confirmBtn: "换绑", message: "", title: "当前设备未绑定课程播放", cancelBtn: "取消", handler: { action in
+                        self.presentAlertVc(confirmBtn: "换绑", message: "课程仅允许更换一次设备", title: "课程是否更换设备", cancelBtn: "取消", handler: { action in
                             if self.isFromOrderList{
                                 self.backTapAction()
                             }else{
@@ -542,7 +542,7 @@ extension CourseListVC{
                 if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
                     self.view.addSubview(self.lastMsgVm)
                 }else{
-                    if self.headMsgDict.stringValueForKey(key: "bindingDeviceId").count > 0 {
+                    if self.headMsgDict.doubleValueForKey(key: "price") > 0 && self.headMsgDict.stringValueForKey(key: "bindingDeviceId").count > 0 {
                         self.showPayView()
                         self.isPaid = false
 //                        self.lastMsgVm.isHidden = true
@@ -552,9 +552,9 @@ extension CourseListVC{
                     }
                 }
             }
-//            DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
-//                self.listHeadVm.updateUI(dict: self.headMsgDict)
-//            })
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+                self.listHeadVm.updateUI(dict: self.headMsgDict)
+            })
             
             self.sendDataListReqeust()
         }

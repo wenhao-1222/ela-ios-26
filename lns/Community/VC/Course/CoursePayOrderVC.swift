@@ -58,6 +58,10 @@ class CoursePayOrderVC: WHBaseViewVC {
         let bottomHeight = getBottomSafeAreaHeight() > 0 ? (kFitWidth(55)+getBottomSafeAreaHeight()) : kFitWidth(66)
         let vm = CoursePayOrderPayDesVM.init(frame: CGRect.init(x: 0, y: self.payTypeVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.payTypeVm.frame.maxY-bottomHeight))
         vm.controller = self
+        vm.tipsTapBlock = {()in
+//            PopupView().present(in: self.view)
+            self.tipsPopupView.showSelf()
+        }
         
         return vm
     }()
@@ -75,6 +79,11 @@ class CoursePayOrderVC: WHBaseViewVC {
         
         return vm
     }()
+    lazy var tipsPopupView: CoursePayTipsPopupView = {
+        let vi = CoursePayTipsPopupView.init(frame: .zero)
+        
+        return vi
+    }()
 }
 
 extension CoursePayOrderVC{
@@ -87,6 +96,8 @@ extension CoursePayOrderVC{
         view.addSubview(payTypeVm)
         view.addSubview(desVm)
         view.addSubview(bottomVm)
+        
+        view.addSubview(tipsPopupView)
     }
 }
 
@@ -125,6 +136,7 @@ extension CoursePayOrderVC{
         if payDict.stringValueForKey(key: "discountAmount").count > 0{
             payAmount = payDict.stringValueForKey(key: "payAmount")
             param = ["id":parentId,
+                     "bizType":"1",
                      "payAmount":payDict.stringValueForKey(key: "payAmount"),
                      "discountAmount":payDict.stringValueForKey(key: "discountAmount"),
                      "couponCode":couponCode,
@@ -172,6 +184,7 @@ extension CoursePayOrderVC{
         if payDict.stringValueForKey(key: "discountAmount").count > 0{
             payAmount = payDict.stringValueForKey(key: "payAmount")
             param = ["id":parentId,
+                     "bizType":"1",
                      "payAmount":payDict.stringValueForKey(key: "payAmount"),
                      "discountAmount":payDict.stringValueForKey(key: "discountAmount"),
                      "couponCode":couponCode,
