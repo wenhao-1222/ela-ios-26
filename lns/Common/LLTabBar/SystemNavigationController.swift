@@ -5,17 +5,13 @@
 //  Created by LNS2 on 2025/10/13.
 //
 
+// SystemNavigationController.swift —— TabBar 垂直动画（非交互：自下而上；交互：立即复原，取消则下沉隐藏）
 import UIKit
 import ObjectiveC
 
 final class SystemNavigationController: UINavigationController, UIGestureRecognizerDelegate, UINavigationControllerDelegate {
 
-    // MARK: - State
-    private var cachedTabBarHeight: CGFloat = 0
-    private var displayLink: CADisplayLink?
-    private weak var drivingGesture: UIPanGestureRecognizer?
-
-    // hidesBottomBarWhenPushed 临时修改记录
+    // 记录临时改动的 hidesBottomBarWhenPushed（用于“欺骗系统”，防止系统把 TabBar 拉入系统层动画）
     private struct AssocKey { static var origHidesKey: UInt8 = 0 }
     private func setOriginalHides(_ value: Bool, for vc: UIViewController) {
         objc_setAssociatedObject(vc, &AssocKey.origHidesKey, NSNumber(value: value), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
@@ -34,260 +30,266 @@ final class SystemNavigationController: UINavigationController, UIGestureRecogni
         navigationBar.isHidden = true
         navigationBar.tintColor = .label
         navigationBar.titleTextAttributes = [.foregroundColor: UIColor.label]
-        hookPopGestures()
     }
 
-    // MARK: - Push（mainVc -> nextVc / nextVc -> nextVcB）
+    // 只在本导航的根页显示 TabBar（你已限制四个根页，这里按“根页”判断是否显示）
+    private func isRootOfThisNav(_ vc: UIViewController?) -> Bool {
+        guard let vc = vc else { return false }
+        return vc === viewControllers.first
+    }
+
+    // MARK: - Push（mainVc -> nextVc / 更深 push）
     override func pushViewController(_ viewController: UIViewController, animated: Bool) {
-        let willHide = !viewControllers.isEmpty
-        if willHide { viewController.hidesBottomBarWhenPushed = true }
+        if viewControllers.count > 0 { viewController.hidesBottomBarWhenPushed = true }
 
-        guard animated, let tbc = tabBarController else {
+        guard animated, let tabBar = tabBarController?.tabBar else {
             super.pushViewController(viewController, animated: animated)
             return
         }
 
-        let tabBar = tbc.tabBar
-        let width = tabBar.bounds.width
-        let pushingFromRootToFirst = (viewControllers.count == 1) // 只有从根 push 第一个二级，才做“从 0 到 -width”的动画
-
-        // 如果不是从根 push 第一个二级（比如 nextVc -> nextVcB），避免露头：直接保持在 -width，无动画
+        let pushingFromRootToFirst = (viewControllers.count == 1)
         if !pushingFromRootToFirst {
-            setTabBarOffset(tabBar, offsetX: -width)
-            tabBar.isHidden = true      // 新增：彻底避免露头
+            // 更深层 push：保持到底部以下并隐藏，杜绝露头
+            setTabBarHiddenBottom(tabBar)
             super.pushViewController(viewController, animated: animated)
             return
         }
 
-        // 从根 -> 第一个二级：做一次向左滑出动画
-        tabBar.isHidden = false
-        tabBar.alpha = 1
-        setTabBarOffset(tabBar, offsetX: 0)
-
+        // 根 -> 第一个二级：从 0 动画到 +h（向下消失）
+        unhideTabBarAtOffsetY(tabBar, offsetY: 0)
         super.pushViewController(viewController, animated: animated)
-
         if let coordinator = transitionCoordinator {
+            let h = tabBar.bounds.height
             coordinator.animate(alongsideTransition: { _ in
-                self.setTabBarOffset(tabBar, offsetX: -width)
+                self.setTabBarOffsetY(tabBar, offsetY: h)
             }, completion: { [weak self] context in
                 guard let self = self else { return }
                 if context.isCancelled {
-                    self.setTabBarOffset(tabBar, offsetX: 0)
+                    self.setTabBarOffsetY(tabBar, offsetY: 0)
                 } else {
-                    (self.tabBarController as? SystemTabbar)?.restoreStableFrameIfNeeded()
+                    self.setTabBarHiddenBottom(tabBar)
                 }
             })
         }
     }
 
-    // MARK: - UINavigationControllerDelegate（pop：nextVc -> mainVc）
+    // MARK: - Pop（nextVc -> 根页）：非交互=自下而上；交互=立即复原，取消则下沉隐藏
     func navigationController(_ navigationController: UINavigationController,
                               willShow viewController: UIViewController,
                               animated: Bool) {
-        guard let tbc = tabBarController else { return }
-        let tabBar = tbc.tabBar
-        cachedTabBarHeight = max(1, tabBar.bounds.height)
-
-        let toNeedsHide = shouldHideTabBar(for: viewController)
-        if toNeedsHide{
-            tabBar.isHidden = true
-//            setTabBarOffset(tabBar, offsetX: -tabBar.bounds.width)
-            return
-        }
-        guard animated, let coordinator = transitionCoordinator else {
-            // 非动画：直接对齐目标态
-            if toNeedsHide {
-//                setTabBarOffset(tabBar, offsetX: -tabBar.bounds.width)
-                // 目标不是根页：任何情况下都保持在左侧，不做 reveal
-                tabBar.isHidden = true
-                setTabBarOffset(tabBar, offsetX: -tabBar.bounds.width)
-                
-                return
-            } else {
-                setTabBarOffset(tabBar, offsetX: 0)
-                (tbc as? SystemTabbar)?.restoreStableFrameIfNeeded()
-            }
-            return
-        }
-
+        guard let tabBar = tabBarController?.tabBar else { return }
+        let willShowRoot = isRootOfThisNav(viewController)
         let toVC = viewController
 
-        // 为避免系统把 tabbar 拉入过渡：若最终需要显示，临时置 true
-        if !toNeedsHide {
-            // 下面才是“目标是根页”的逻辑（允许显示 TabBar）
+        // 需要显示时，“欺骗系统”，避免系统把 TabBar 拉进过渡
+        if willShowRoot {
             if originalHides(for: toVC) == nil { setOriginalHides(toVC.hidesBottomBarWhenPushed, for: toVC) }
             toVC.hidesBottomBarWhenPushed = true
-        }else{
-            tabBar.isHidden = false
+        }
+
+        guard animated, let coordinator = transitionCoordinator else {
+            // 非动画：直接对齐目标态
+            if willShowRoot {
+                // 起始放到底部以下，随后立即不带动画复原到位，避免“先上挪再回”的错觉
+                prepareTabBarStartAtBottom(tabBar)
+                snapRevealToIdentity(tabBar) // 直接就位（无动画）
+                (tabBarController as? SystemTabbar)?.restoreStableFrameIfNeeded()
+            } else {
+                setTabBarHiddenBottom(tabBar)
+            }
+            if let orig = self.originalHides(for: toVC) { toVC.hidesBottomBarWhenPushed = orig; self.clearOriginalHides(for: toVC) }
+            return
         }
 
         if coordinator.isInteractive {
-            // ===== 交互式返回：tabbar 与 mainVc 同步位移 =====
-            tabBar.isHidden = false
-            prepareTabBarForInteractiveReveal(tabBar)
-            beginDrivingWithGesture()
+            // ✅ 交互返回：不跟随手势进度。判断到是回根页，就“立即”完整复原到位；若取消，则再整段下沉隐藏。
+            if willShowRoot {
+                prepareTabBarStartAtBottom(tabBar)
+                animateReveal(tabBar, duration: 0.22)
 
-            coordinator.notifyWhenInteractionChanges { [weak self] context in
-                guard let self = self,
-                      let tabBar = self.tabBarController?.tabBar else { return }
-                if context.isCancelled {
-                    // 取消：滑回左侧
-                    self.endDrivingWithGesture()
-                    self.setTabBarOffset(tabBar, offsetX: -tabBar.bounds.width)
+                coordinator.notifyWhenInteractionChanges { [weak self] context in
+                    guard let self = self, let tabBar = self.tabBarController?.tabBar else { return }
+                    if context.isCancelled {
+                        // 取消：执行整段隐藏动画回到底部
+                        self.animateHideToBottom(tabBar, duration: 0.20)
+                    }
+                }
+
+                coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+                    guard let self = self else { return }
                     if let orig = self.originalHides(for: toVC) {
                         toVC.hidesBottomBarWhenPushed = orig
                         self.clearOriginalHides(for: toVC)
+                    } else {
+                        toVC.hidesBottomBarWhenPushed = false
                     }
+                    (self.tabBarController as? SystemTabbar)?.restoreStableFrameIfNeeded()
                 }
-                // 注意：不在“将完成”这里停驱动，避免空档；交给下面 alongsideTransition 开始时再停。
-            }
-
-            coordinator.animate(alongsideTransition: { [weak self] _ in
-                guard let self = self,
-                      let tabBar = self.tabBarController?.tabBar else { return }
-                // 过渡收尾动画启动的同一帧：停止 displayLink，并从当前位移无缝补到 0
-                self.endDrivingWithGesture()
-                self.finishReveal(tabBar, duration: coordinator.isAnimated ? coordinator.transitionDuration : 0.2)
-            }, completion: { [weak self] _ in
-                guard let self = self else { return }
-                if let orig = self.originalHides(for: toVC) {
-                    toVC.hidesBottomBarWhenPushed = orig
-                    self.clearOriginalHides(for: toVC)
-                } else {
-                    toVC.hidesBottomBarWhenPushed = false
-                }
-                (self.tabBarController as? SystemTabbar)?.restoreStableFrameIfNeeded()
-            })
-        } else {
-            // ===== 非交互返回：从左侧入场 =====
-            tabBar.isHidden = true
-            prepareTabBarForInteractiveReveal(tabBar)
-            animateReveal(tabBar, duration: coordinator.transitionDuration)
-            if let orig = self.originalHides(for: toVC) {
-                toVC.hidesBottomBarWhenPushed = orig
-                self.clearOriginalHides(for: toVC)
             } else {
-                toVC.hidesBottomBarWhenPushed = false
+                // 目标不是根页：保持隐藏到底部
+                setTabBarHiddenBottom(tabBar)
+                coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+                    guard let self = self else { return }
+                    if let orig = self.originalHides(for: toVC) { toVC.hidesBottomBarWhenPushed = orig; self.clearOriginalHides(for: toVC) }
+                }
             }
-            DispatchQueue.main.async { (self.tabBarController as? SystemTabbar)?.restoreStableFrameIfNeeded() }
+        } else {
+            // ✅ 非交互返回：自下而上滑入（一次性）
+            if willShowRoot {
+                prepareTabBarStartAtBottom(tabBar)
+                animateReveal(tabBar, duration: coordinator.transitionDuration)
+                coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+                    guard let self = self else { return }
+                    if let orig = self.originalHides(for: toVC) {
+                        toVC.hidesBottomBarWhenPushed = orig
+                        self.clearOriginalHides(for: toVC)
+                    } else {
+                        toVC.hidesBottomBarWhenPushed = false
+                    }
+                    (self.tabBarController as? SystemTabbar)?.restoreStableFrameIfNeeded()
+                }
+            } else {
+                setTabBarHiddenBottom(tabBar)
+                coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+                    guard let self = self else { return }
+                    if let orig = self.originalHides(for: toVC) { toVC.hidesBottomBarWhenPushed = orig; self.clearOriginalHides(for: toVC) }
+                }
+            }
         }
     }
 
     func navigationController(_ navigationController: UINavigationController,
                               didShow viewController: UIViewController, animated: Bool) {
-        endDrivingWithGesture()
+        // 兜底：根页可见，其它隐藏到底部
         if let tabBar = tabBarController?.tabBar {
-            if shouldHideTabBar(for: viewController) {
-                setTabBarOffset(tabBar, offsetX: -tabBar.bounds.width)
-                tabBar.isHidden = true
+            if isRootOfThisNav(viewController) {
+                snapRevealToIdentity(tabBar)
             } else {
-                tabBar.isHidden = false
-                setTabBarOffset(tabBar, offsetX: 0)
+                setTabBarHiddenBottom(tabBar)
             }
         }
         (tabBarController as? SystemTabbar)?.restoreStableFrameIfNeeded()
     }
 
     // MARK: - UIGestureRecognizerDelegate
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        return viewControllers.count > 1
-    }
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool { viewControllers.count > 1 }
 }
 
-// MARK: - Driving helpers（与 mainVc 相同偏移）
+// MARK: - TabBar 垂直显隐工具
 private extension SystemNavigationController {
 
-    func prepareTabBarForInteractiveReveal(_ tabBar: UITabBar) {
+    /// 保证 tabBar 的 frame.y 紧贴父视图底部（在做任何 transform 前调用）
+    func anchorTabBarToBottom(_ tabBar: UITabBar) {
+        guard let container = tabBar.superview else { return }
+        // 关闭隐式动画，避免视觉跳动
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+
+        // 先清 transform 才能得到真实高度
+        let oldTransform = tabBar.transform
+        tabBar.transform = .identity
+        container.layoutIfNeeded()
+
+        // 以“父视图高度 - 当前tabBar高度”为准锚到底部
+        var f = tabBar.frame
+        let containerH = container.bounds.height
+        f.origin.y = containerH - f.size.height
+        tabBar.frame = f
+
+        // 自定义 WHTabBar 时，内部 tabbar 也要清 transform，保持一致
+        if let custom = tabBar as? WHTabBar {
+            custom.tabbar.transform = .identity
+            custom.setNeedsLayout()
+            custom.layoutIfNeeded()
+        }
+
+        // 还原 transform（外面会再设置到目标偏移）
+        tabBar.transform = oldTransform
+
+        CATransaction.commit()
+    }
+
+    @inline(__always)
+    func setTabBarOffsetY(_ tabBar: UITabBar, offsetY: CGFloat) {
+        tabBar.transform = CGAffineTransform(translationX: 0, y: offsetY)
+        if let custom = tabBar as? WHTabBar {
+            custom.tabbar.transform = tabBar.transform
+        }
+    }
+
+    /// 起始：把 TabBar 放到底部以下（+h），不触发隐式动画
+    func prepareTabBarStartAtBottom(_ tabBar: UITabBar) {
+        let h = tabBar.bounds.height
+        anchorTabBarToBottom(tabBar) // ✅ 先锚到底部
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
         tabBar.isHidden = false
         tabBar.alpha = 1
-        let w = tabBar.bounds.width
-        setTabBarOffset(tabBar, offsetX: -w)
+        setTabBarOffsetY(tabBar, offsetY: h) // 直接落在 +h 起点
+        CATransaction.commit()
+        if let custom = tabBar as? WHTabBar { custom.tabbar.isHidden = false; custom.tabbar.alpha = 1 }
     }
 
-    func beginDrivingWithGesture() {
-        if let fdPan = value(forKey: "fd_fullscreenPopGestureRecognizer") as? UIPanGestureRecognizer {
-            drivingGesture = fdPan
-        } else {
-            drivingGesture = interactivePopGestureRecognizer as? UIPanGestureRecognizer
-        }
-        guard displayLink == nil else { return }
-        let link = CADisplayLink(target: self, selector: #selector(onTick))
-        link.add(to: .main, forMode: .common)
-        displayLink = link
+    /// 无动画地就位（identity）
+    func snapRevealToIdentity(_ tabBar: UITabBar) {
+        anchorTabBarToBottom(tabBar) // ✅ 先锚到底部
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        tabBar.isHidden = false
+        tabBar.alpha = 1
+        setTabBarOffsetY(tabBar, offsetY: 0)
+        CATransaction.commit()
+        if let custom = tabBar as? WHTabBar { custom.tabbar.isHidden = false; custom.tabbar.alpha = 1 }
     }
 
-    func endDrivingWithGesture() {
-        displayLink?.invalidate()
-        displayLink = nil
-        drivingGesture = nil
-    }
-
-    @objc
-    func onTick() {
-        guard let gesture = drivingGesture,
-              let container = view,
-              let tabBar = tabBarController?.tabBar else { return }
-        let tx = gesture.translation(in: container).x
-        let w = tabBar.bounds.width
-        let offset = max(-w, min(0, -w + tx))
-        setTabBarOffset(tabBar, offsetX: offset)
-    }
-
-    func setTabBarOffset(_ tabBar: UITabBar, offsetX: CGFloat) {
-        tabBar.transform = CGAffineTransform(translationX: offsetX, y: 0)
-        if let custom = tabBar as? WHTabBar {
-            custom.tabbar.transform = CGAffineTransform(translationX: offsetX, y: 0)
-        }
-    }
-
+    /// 完整的上滑显示动画（+h → 0）
     func animateReveal(_ tabBar: UITabBar, duration: TimeInterval) {
-        let w = tabBar.bounds.width
-        setTabBarOffset(tabBar, offsetX: -w)
-        UIView.animate(withDuration: max(0.18, duration), delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
-            self.setTabBarOffset(tabBar, offsetX: 0)
+        anchorTabBarToBottom(tabBar) // ✅ 动画前先锚定，起点就不会“抖”
+        let d = max(0.18, duration)
+        UIView.animate(withDuration: d,
+                       delay: 0,
+                       options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction]) {
+            self.setTabBarOffsetY(tabBar, offsetY: 0)
         }
     }
 
-    func finishReveal(_ tabBar: UITabBar, duration: TimeInterval) {
-//        UIView.animate(withDuration: max(0.12, duration * 0.45), delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
-//            self.setTabBarOffset(tabBar, offsetX: 0)
-//        }
-        UIView.animate(withDuration: 0.12, delay: 0, options: [.curveEaseOut,.beginFromCurrentState]) {
-            tabBar.transform = CGAffineTransform(translationX: 10, y: 0)
-        }completion: { _ in
-            UIView.animate(withDuration: 0.08, delay: 0, options: [.curveEaseOut]) {
-                tabBar.transform = CGAffineTransform(translationX: -4.6, y: 0)
-            }completion: { _ in
-                UIView.animate(withDuration: 0.05, delay: 0, options: [.curveEaseOut]) {
-                    tabBar.transform = CGAffineTransform(translationX: 1.8, y: 0)
-                }completion: { _ in
-                    UIView.animate(withDuration: 0.02, delay: 0, options: [.curveEaseOut]) {
-                        tabBar.transform = .identity
-                    }
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Utilities
-private extension SystemNavigationController {
-    func shouldHideTabBar(for viewController: UIViewController?) -> Bool {
-//        guard let vc = viewController else { return false }
-//        if vc == viewControllers.first { return false }
-//        return vc.hidesBottomBarWhenPushed
-        guard let vc = viewController else { return true } // 没有目标就隐藏
-                // 只有当“目标 vc 是当前导航栈的第一个 vc”时才显示 TabBar
-        return vc !== viewControllers.first
-    }
-
-    func hookPopGestures() {
-        // 仅作为早期触发点；真正驾驶在 willShow 阶段
-        interactivePopGestureRecognizer?.addTarget(self, action: #selector(dummyPopGesture(_:)))
-        if let fdPan = value(forKey: "fd_fullscreenPopGestureRecognizer") as? UIPanGestureRecognizer {
-            fdPan.addTarget(self, action: #selector(dummyPopGesture(_:)))
+    /// 完整的下沉隐藏动画（0 → +h），结束后标记隐藏
+    func animateHideToBottom(_ tabBar: UITabBar, duration: TimeInterval) {
+        anchorTabBarToBottom(tabBar) // ✅ 以正确基线下沉
+        let h = tabBar.bounds.height
+        UIView.animate(withDuration: max(0.18, duration),
+                       delay: 0,
+                       options: [.curveEaseIn, .beginFromCurrentState, .allowUserInteraction]) {
+            self.setTabBarOffsetY(tabBar, offsetY: h)
+        } completion: { _ in
+            tabBar.isHidden = true
+            tabBar.alpha = 0
+            if let custom = tabBar as? WHTabBar { custom.tabbar.isHidden = true; custom.tabbar.alpha = 0 }
         }
     }
 
-    @objc func dummyPopGesture(_ gr: UIPanGestureRecognizer) { /* no-op */ }
+    /// 立即隐藏到底部（无动画）
+    func setTabBarHiddenBottom(_ tabBar: UITabBar) {
+        anchorTabBarToBottom(tabBar) // ✅ 先锚再隐藏
+        let h = tabBar.bounds.height
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        tabBar.isHidden = true
+        tabBar.alpha = 0
+        setTabBarOffsetY(tabBar, offsetY: h)
+        CATransaction.commit()
+        if let custom = tabBar as? WHTabBar { custom.tabbar.isHidden = true; custom.tabbar.alpha = 0 }
+    }
+
+    /// 起始可见并设置到指定偏移（目前仅 push 动画用得到）
+    func unhideTabBarAtOffsetY(_ tabBar: UITabBar, offsetY: CGFloat) {
+        anchorTabBarToBottom(tabBar) // ✅ 在设偏移前锚一次
+        tabBar.isHidden = false
+        tabBar.alpha = 1
+        setTabBarOffsetY(tabBar, offsetY: offsetY)
+        if let custom = tabBar as? WHTabBar {
+            custom.tabbar.isHidden = false
+            custom.tabbar.alpha = 1
+        }
+    }
 }
