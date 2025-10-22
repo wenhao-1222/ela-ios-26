@@ -742,7 +742,11 @@ extension CourseListVC {
             return nil
         }
         let folderURL = baseDirectory.appendingPathComponent("CoursePDFs", isDirectory: true)
-        var fileName = URL(string: urlString)?.lastPathComponent ?? ""
+//        var fileName = URL(string: urlString)?.lastPathComponent ?? ""
+        var fileName = headMsgDict.stringValueForKey(key: "detailTitle")
+        if fileName.isEmpty {
+            fileName = URL(string: urlString)?.lastPathComponent ?? ""
+        }
         if fileName.isEmpty {
             fileName = (urlString as NSString).lastPathComponent
         }
