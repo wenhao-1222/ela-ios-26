@@ -108,6 +108,25 @@ class ForumListVM : UIView{
             vi.sectionHeaderTopPadding = 0
 //            UITableView.appearance().isPrefetchingEnabled = false
         }
+//        if #available(iOS 26.0, *) {
+//            vi.mj_header?.ignoredScrollViewContentInsetTop = WHUtils().getNavigationBarHeight()
+//        }
+        if #available(iOS 26.0, *) {
+            let navigationHeight = WHUtils().getNavigationBarHeight()
+            var inset = vi.contentInset
+            if inset.top < navigationHeight {
+                inset.top = navigationHeight
+            }
+            vi.contentInset = inset
+            var indicatorInset = vi.scrollIndicatorInsets
+            if indicatorInset.top < navigationHeight {
+                indicatorInset.top = navigationHeight
+            }
+            vi.scrollIndicatorInsets = indicatorInset
+            if vi.contentOffset.y == 0 {
+                vi.setContentOffset(CGPoint(x: 0, y: -navigationHeight), animated: false)
+            }
+        }
         vi.reloadCompletion = {()in
 //            self.tableView.zf_filterShouldPlayCellWhileScrolling()
         }
