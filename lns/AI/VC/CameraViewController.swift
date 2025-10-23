@@ -706,7 +706,7 @@ extension CameraViewController {
                 let code = obj["code"] as? Int ?? -1
                 if code == 200 {
                     self.dealNetResutl(responseObject: obj)
-                } else {
+                }else {
                     self.captureResultVm.hiddenView()
                     self.naviVm.refreshShowStatus(isShow: true)
                     self.typeVm.refreshShowStatus(isShow: true)
@@ -727,6 +727,17 @@ extension CameraViewController {
         if code == 404{
             MCToast.mc_text("今日识别次数已用完，请明天再来\n（识图功能测试期间，每天可使用 10 次）")
             return
+        }
+        if code == 503{//AI识别功能维护中
+            ConstantModel.shared.ai_identify_image_status = false
+            self.presentAlertVc(confirmBtn: "确定",
+                                message: "",
+                                title: "\(responseObject["message"] as? String ?? "AI识别升级维护中，请稍后重试")",
+                                cancelBtn: nil,
+                                handler: { action in
+                self.stopCapture()
+                self.backTapAction()
+            }, viewController: self)
         }
         if code == 400 {
             self.captureResultVm.rippleView.stopAnimation()

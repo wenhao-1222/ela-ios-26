@@ -317,6 +317,10 @@ extension FoodsListNewVC{
         self.historyFoodsVm.tableView.reloadData()
     }
     @objc func aiPhotoAction() {
+        if ConstantModel.shared.ai_identify_image_status == false{
+            MCToast.mc_text("AI识别升级维护中，请稍后重试")
+            return
+        }
         self.naviVm.textField.resignFirstResponder()
         let vc = CameraViewController()
         vc.sourceType = self.sourceType

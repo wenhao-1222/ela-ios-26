@@ -27,14 +27,16 @@ class ConstantModel {
     var forum_report_type_dict = NSDictionary()
     ///日志--注释  标签
     var diet_log_note_label_array = NSArray()
+    ///AI识别--功能是否能用
+    var ai_identify_image_status = true
     
     func dealDataSource(dict:NSDictionary) {
         DLLog(message: "常量数据：\(dict)")
+        self.ai_identify_image_status = dict.stringValueForKey(key: "ai_identify_image_status") == "1"
         self.cc_label_array = dict["cc_label"]as? NSArray ?? []
         self.fitness_label_array = dict["fitness_label"]as? NSArray ?? []
         self.food_unit_array = dict["food_unit"]as? NSArray ?? []
         self.diet_log_note_label_array = dict["diet_log_note_label"]as? NSArray ?? []
-        
         
         self.forum_report_type_dict = dict["forum_report_type"]as? NSDictionary ?? [:]
         
