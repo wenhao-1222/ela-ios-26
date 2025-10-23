@@ -99,127 +99,169 @@ extension FoodsCreateItemVM{
 }
 
 extension FoodsCreateItemVM:UITextFieldDelegate{
+//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+//        var textString = (textField.text ?? "")
+//        if string == ""{
+//            if self.numberChangeBlock != nil{
+//                if textString.count > 0 {
+//                    self.numberChangeBlock!("\(textString.mc_clipFromPrefix(to: textString.count-1))".replacingOccurrences(of: ",", with: "."))
+//                }else{
+//                    self.numberChangeBlock!("")
+//                }
+//            }
+//            return true
+//        }
+//        // 检查输入的字符是否是数字
+//        let allowedCharacters = CharacterSet(charactersIn: ".,0123456789")
+//        let characterSet = CharacterSet(charactersIn: string)
+//        if allowedCharacters.isSuperset(of: characterSet) == false{
+//            self.textField.text = ""
+//            self.numberChangeBlock!("")
+//            return false
+//        }
+//        
+//        if range.length > 0 || (range.location == 0 && range.length == 0){
+//            let firstStr = textString.mc_clipFromPrefix(to: range.location)
+//            let endStr = textString.mc_cutToSuffix(from: range.location+range.length)
+////            textField.text = "\(firstStr)\(string)\(endStr)"
+//            
+//            if range.location == 0{
+//                if string == "0"{
+//                    if textString == ""{
+//                        textField.text = "0"
+//                    }else{
+//                        textField.text = "\(endStr)"
+//                    }
+////                    textField.text = "\(endStr)"
+//                }else if string == "." || string == ","{
+//                    textField.text = "0.\(endStr)"
+//                }else{
+//                    let numStr = "\(firstStr)\(string)\(endStr)"
+//                    let numFloat = numStr.floatValue
+//                    
+//                    if numFloat > 999.9{
+//                        return false
+//                    }
+//                    
+//                    textField.text = "\(firstStr)\(string)\(endStr)"
+//                }
+//            }else{
+//                let numStr = "\(firstStr)\(string)\(endStr)"
+//                let numFloat = numStr.floatValue
+//                
+//                if numFloat > 999.9{
+//                    return false
+//                }
+//                textField.text = "\(firstStr)\(string)\(endStr)"
+//            }
+//            if self.numberChangeBlock != nil{
+//                self.numberChangeBlock!("\(textField.text ?? "")".replacingOccurrences(of: ",", with: "."))
+//            }
+//            return false
+//        }
+//        if string == "0" && textString == "0"{
+//            return false
+//        }
+//        if (string == "." && textString.contains(".")) || (string == "," && textString.contains(",")){
+//            return false
+//        }
+//        if (string == "." || string == ",") && textString == ""{
+////            textField.text = "0."
+//            return false
+//        }
+//        if textString.contains("."){
+//            let arr = textString.components(separatedBy: ".")
+//            if arr.count > 1{
+//                let decimalString = arr[1]
+//                if decimalString.count >= 1 {
+//                    return false
+//                }
+//                if self.numberChangeBlock != nil{
+//                    self.numberChangeBlock!("\(textField.text ?? "")\(string)".replacingOccurrences(of: ",", with: "."))
+//                }
+//                return true
+//            }
+//        }else if textString.contains(","){
+//            let arr = textString.components(separatedBy: ",")
+//            if arr.count > 1{
+//                let decimalString = arr[1]
+//                if decimalString.count >= 1 {
+//                    return false
+//                }
+//                if self.numberChangeBlock != nil{
+//                    self.numberChangeBlock!("\(textField.text ?? "")\(string)".replacingOccurrences(of: ",", with: "."))
+//                }
+//                return true
+//            }
+//        }
+//        
+//        if textField.text?.count ?? 0 >= maxLength {
+//            return false
+//        }
+//        
+//        if textString == "0"{
+//            if string == "." || string == ","{
+//                return true
+//            }
+//            textField.text = "\(string)"
+//            if self.numberChangeBlock != nil{
+//                self.numberChangeBlock!("\(string)".replacingOccurrences(of: ",", with: "."))
+//            }
+//            return false
+//        }
+//        let numStr = "\(textField.text ?? "")\(string)"
+//        let numFloat = numStr.floatValue
+//        
+//        if numFloat > 999.9{
+//            return false
+//        }
+//        
+//        if self.numberChangeBlock != nil{
+//            self.numberChangeBlock!("\(textField.text ?? "")\(string)".replacingOccurrences(of: ",", with: "."))
+//        }
+//        
+//        return true
+//    }
+    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        var textString = (textField.text ?? "")
-        if string == ""{
-            if self.numberChangeBlock != nil{
-                if textString.count > 0 {
-                    self.numberChangeBlock!("\(textString.mc_clipFromPrefix(to: textString.count-1))".replacingOccurrences(of: ",", with: "."))
-                }else{
-                    self.numberChangeBlock!("")
-                }
-            }
+        let currentText = textField.text ?? ""
+
+        guard let textRange = Range(range, in: currentText) else {
+            return false
+        }
+        if string.isEmpty {
+            let updatedText = currentText.replacingCharacters(in: textRange, with: "")
+            numberChangeBlock?(updatedText.replacingOccurrences(of: ",", with: "."))
             return true
         }
-        // 检查输入的字符是否是数字
-        let allowedCharacters = CharacterSet(charactersIn: ".,0123456789")
-        let characterSet = CharacterSet(charactersIn: string)
-        if allowedCharacters.isSuperset(of: characterSet) == false{
-            self.textField.text = ""
-            self.numberChangeBlock!("")
+        let allowedCharacters = CharacterSet(charactersIn: "0123456789.,")
+        if string.rangeOfCharacter(from: allowedCharacters.inverted) != nil {
             return false
         }
-        
-        if range.length > 0 || (range.location == 0 && range.length == 0){
-            let firstStr = textString.mc_clipFromPrefix(to: range.location)
-            let endStr = textString.mc_cutToSuffix(from: range.location+range.length)
-//            textField.text = "\(firstStr)\(string)\(endStr)"
-            
-            if range.location == 0{
-                if string == "0"{
-                    if textString == ""{
-                        textField.text = "0"
-                    }else{
-                        textField.text = "\(endStr)"
-                    }
-//                    textField.text = "\(endStr)"
-                }else if string == "." || string == ","{
-                    textField.text = "0.\(endStr)"
-                }else{
-                    let numStr = "\(firstStr)\(string)\(endStr)"
-                    let numFloat = numStr.floatValue
-                    
-                    if numFloat > 999.9{
-                        return false
-                    }
-                    
-                    textField.text = "\(firstStr)\(string)\(endStr)"
-                }
-            }else{
-                let numStr = "\(firstStr)\(string)\(endStr)"
-                let numFloat = numStr.floatValue
-                
-                if numFloat > 999.9{
-                    return false
-                }
-                textField.text = "\(firstStr)\(string)\(endStr)"
-            }
-            if self.numberChangeBlock != nil{
-                self.numberChangeBlock!("\(textField.text ?? "")".replacingOccurrences(of: ",", with: "."))
-            }
+        let prospectiveText = currentText.replacingCharacters(in: textRange, with: string)
+
+        if prospectiveText.first == "." || prospectiveText.first == "," {
             return false
         }
-        if string == "0" && textString == "0"{
+        let separatorCount = prospectiveText.filter { $0 == "." || $0 == "," }.count
+        if separatorCount > 1 {
             return false
         }
-        if (string == "." && textString.contains(".")) || (string == "," && textString.contains(",")){
-            return false
-        }
-        if (string == "." || string == ",") && textString == ""{
-//            textField.text = "0."
-            return false
-        }
-        if textString.contains("."){
-            let arr = textString.components(separatedBy: ".")
-            if arr.count > 1{
-                let decimalString = arr[1]
-                if decimalString.count >= 1 {
-                    return false
-                }
-                if self.numberChangeBlock != nil{
-                    self.numberChangeBlock!("\(textField.text ?? "")\(string)".replacingOccurrences(of: ",", with: "."))
-                }
-                return true
-            }
-        }else if textString.contains(","){
-            let arr = textString.components(separatedBy: ",")
-            if arr.count > 1{
-                let decimalString = arr[1]
-                if decimalString.count >= 1 {
-                    return false
-                }
-                if self.numberChangeBlock != nil{
-                    self.numberChangeBlock!("\(textField.text ?? "")\(string)".replacingOccurrences(of: ",", with: "."))
-                }
-                return true
+        if let separatorIndex = prospectiveText.firstIndex(where: { $0 == "." || $0 == "," }) {
+            let decimalPart = prospectiveText[prospectiveText.index(after: separatorIndex)...]
+            if decimalPart.count > 1 {
+                return false
             }
         }
-        
-        if textField.text?.count ?? 0 >= maxLength {
+        let integerPart = prospectiveText.split(omittingEmptySubsequences: false, whereSeparator: { $0 == "." || $0 == "," }).first.map(String.init) ?? ""
+        if maxLength > 0 && integerPart.count > maxLength {
             return false
         }
-        
-        if textString == "0"{
-            if string == "." || string == ","{
-                return true
-            }
-            textField.text = "\(string)"
-            if self.numberChangeBlock != nil{
-                self.numberChangeBlock!("\(string)".replacingOccurrences(of: ",", with: "."))
-            }
+        let normalizedText = prospectiveText.replacingOccurrences(of: ",", with: ".")
+        if let value = Float(normalizedText), value > 999.9 {
             return false
         }
-        let numStr = "\(textField.text ?? "")\(string)"
-        let numFloat = numStr.floatValue
-        
-        if numFloat > 999.9{
-            return false
-        }
-        
-        if self.numberChangeBlock != nil{
-            self.numberChangeBlock!("\(textField.text ?? "")\(string)".replacingOccurrences(of: ",", with: "."))
-        }
-        
+        numberChangeBlock?(normalizedText)
         return true
     }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

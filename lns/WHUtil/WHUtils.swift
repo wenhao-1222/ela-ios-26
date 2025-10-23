@@ -19,7 +19,7 @@ class WHUtils: NSObject {
         }
         return str
     }
-    
+    //强制显示一位小数
     static func convertStringToStringOneDigitForce(_ str: String) -> String? {
         if let doubleValue = Double(str) {
             let numberFormatter = NumberFormatter()
@@ -29,7 +29,7 @@ class WHUtils: NSObject {
         }
         return str
     }
-    
+    //有小数就显示一位，没有小数就不强制显示一位小数
     static func convertStringToStringOneDigit(_ str: String) -> String? {
         if let doubleValue = Double(str) {
             let numberFormatter = NumberFormatter()
