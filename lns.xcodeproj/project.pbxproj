@@ -670,6 +670,8 @@
 		A7FBA0CB2E3C5A8400EAEC68 /* ScreenShieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FBA0CA2E3C5A8300EAEC68 /* ScreenShieldView.swift */; };
 		EC000E6A2EA78F6000E2C60A /* CoursePayPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC000E692EA78F5900E2C60A /* CoursePayPopupView.swift */; };
 		EC029B8F2EAA188700834AD5 /* LiquidGlassShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B8E2EAA188600834AD5 /* LiquidGlassShadow.swift */; };
+		EC029B912EAA2F3A00834AD5 /* GradientGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B902EAA2F3A00834AD5 /* GradientGlassView.swift */; };
+		EC029B932EAA324E00834AD5 /* SegmentedLiquidDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B922EAA324E00834AD5 /* SegmentedLiquidDecorator.swift */; };
 		EC0623E42C478D18008230BA /* JournalBottomFuncAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0623E32C478D18008230BA /* JournalBottomFuncAlertVM.swift */; };
 		EC0623E62C47B7C0008230BA /* JournalFuncAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0623E52C47B7C0008230BA /* JournalFuncAlertVM.swift */; };
 		EC094FCC2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC094FCB2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift */; };
@@ -1938,6 +1940,8 @@
 		E4FBFB54E8CC7241D44272E4 /* Pods_ElaWeekCaloriesWidgetExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ElaWeekCaloriesWidgetExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC000E692EA78F5900E2C60A /* CoursePayPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePayPopupView.swift; sourceTree = "<group>"; };
 		EC029B8E2EAA188600834AD5 /* LiquidGlassShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassShadow.swift; sourceTree = "<group>"; };
+		EC029B902EAA2F3A00834AD5 /* GradientGlassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientGlassView.swift; sourceTree = "<group>"; };
+		EC029B922EAA324E00834AD5 /* SegmentedLiquidDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedLiquidDecorator.swift; sourceTree = "<group>"; };
 		EC0623E32C478D18008230BA /* JournalBottomFuncAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalBottomFuncAlertVM.swift; sourceTree = "<group>"; };
 		EC0623E52C47B7C0008230BA /* JournalFuncAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalFuncAlertVM.swift; sourceTree = "<group>"; };
 		EC094FCB2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSaveNutrationAlertVM.swift; sourceTree = "<group>"; };
@@ -3412,6 +3416,8 @@
 				A71A52DB2CD89C81009FDAF9 /* ForumNaviVM.swift */,
 				A78FE2072CD4755B00661F7D /* ForumNaviTypeVM.swift */,
 				EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */,
+				EC029B902EAA2F3A00834AD5 /* GradientGlassView.swift */,
+				EC029B922EAA324E00834AD5 /* SegmentedLiquidDecorator.swift */,
 				EC029B8E2EAA188600834AD5 /* LiquidGlassShadow.swift */,
 				A78FE20B2CD47E2500661F7D /* ForumNoticeVM.swift */,
 				A76F50CC2D5C31ED001B67CB /* ForumNoticeItemVM.swift */,
@@ -6180,6 +6186,7 @@
 				ECC24F912C4A16610012D0FD /* CreateMealsVC.swift in Sources */,
 				ECB3E07F2BD66AEC00CFDDFD /* LogsRemarkAlertVM.swift in Sources */,
 				A73348AA2DACED7400AD747A /* GradientView.swift in Sources */,
+				EC029B912EAA2F3A00834AD5 /* GradientGlassView.swift in Sources */,
 				A7454B302E73B6C30064076C /* AddressDataLoader.swift in Sources */,
 				A798F5352CA10ECB00B8327E /* SwitchButton.swift in Sources */,
 				A72F037B2DF8171500823ED3 /* GuideChatBoxVM.swift in Sources */,
@@ -6537,6 +6544,7 @@
 				EC25980C2C36458F00F300AB /* FoodsListNewVC.swift in Sources */,
 				A7C72B4C2E0BCE2F001EA74D /* PlanGetVC.swift in Sources */,
 				EC1EB52F2BFB449A00537F0B /* MyFoodsListVC.swift in Sources */,
+				EC029B932EAA324E00834AD5 /* SegmentedLiquidDecorator.swift in Sources */,
 				EC24EB4F2BB2B643002F21DF /* QuestionnaireSurveyTopVM.swift in Sources */,
 				ECB3E08B2BD7B96300CFDDFD /* DataDetailImgShowVM.swift in Sources */,
 				A74DEA792D649138000D7323 /* VideoEditVC.swift in Sources */,

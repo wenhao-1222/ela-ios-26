@@ -16,7 +16,8 @@ class ForumNaviTypeLiquidVM: UIView {
     // MARK: Private UI
     private let selfHeight = WHUtils().getNavigationBarHeight()
     private let btnWidth = kFitWidth(60)
-    
+    let glass = GradientGlassView()
+    private var segmentDecorator: SegmentedLiquidDecorator?
     // 毛玻璃层（背景层，放在最底）
     private lazy var blurView: UIVisualEffectView = {
         let effect: UIBlurEffect
@@ -36,7 +37,7 @@ class ForumNaviTypeLiquidVM: UIView {
         let seg = UISegmentedControl(items: items)
         // 初始选中「发现」
         seg.selectedSegmentIndex = 1
-        seg.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_30
+        seg.backgroundColor = UIColor.clear
         seg.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_03.cgColor
         seg.layer.borderWidth = kFitWidth(2)
         if #available(iOS 13.0, *) {
@@ -75,26 +76,40 @@ class ForumNaviTypeLiquidVM: UIView {
     
     // MARK: UI
     private func initUI() {
-        addSubview(blurView)
-        blurView.translatesAutoresizingMaskIntoConstraints = false
+//        addSubview(blurView)
+//        blurView.translatesAutoresizingMaskIntoConstraints = false
+        glass.translatesAutoresizingMaskIntoConstraints = false
+        glass.topOpacity = 1.0
+        glass.bottomOpacity = 0.0
+        addSubview(glass)
 
         addSubview(segment)
         addSubview(publishButton)
         setConstraints()
         updateButtonStatus() // 同步初始选中态
+        // 让分段控件更“立体”
+        segment.layer.cornerRadius = kFitWidth(16)
+        segment.layer.cornerRadius = kFitWidth(16)
+        if #available(iOS 13.0, *) { segment.layer.cornerCurve = .continuous }
+        segment.layer.masksToBounds = false
+        segment.layer.shadowOpacity = 0    // 关键：关闭外部阴影
+        segment.layer.shadowPath = nil
+
+        self.segmentDecorator = SegmentedLiquidDecorator(target: segment)
+//        self.segmentDecorator.back
         // 配置底部羽化遮罩
-        configureBottomFeatherMask()
+//        configureBottomFeatherMask()
     }
     
     private func configureBottomFeatherMask() {
         bottomFeatherMask.startPoint = CGPoint(x: 0.5, y: 0.0)
         bottomFeatherMask.endPoint   = CGPoint(x: 0.5, y: 1.0)
         
-        applySoftMask(to: bottomFeatherMask, topHold: 0.15, steps: 18, strength: 1)
+//        applySoftMask(to: bottomFeatherMask, topHold: 0.15, steps: 18, strength: 1)
         // 想更轻一点（整体弱化）：strength 设小些，比如 0.75
         // 想过渡更丝滑：steps 设 8 或 10（注意性能影响非常小）
 
-        blurView.layer.mask = bottomFeatherMask
+//        blurView.layer.mask = bottomFeatherMask
     }
     /// 生成一组柔和的梯度遮罩（上强下弱）
     /// - Parameters:
@@ -151,9 +166,13 @@ class ForumNaviTypeLiquidVM: UIView {
 //        blurView.snp.makeConstraints { make in
 //            make.edges.equalToSuperview()
 //        }
-        blurView.snp.makeConstraints { make in
+//        blurView.snp.makeConstraints { make in
+//            make.left.top.right.equalToSuperview()
+//            make.bottom.equalTo(kFitWidth(54))
+//        }
+        glass.snp.makeConstraints { make in
             make.left.top.right.equalToSuperview()
-            make.bottom.equalTo(kFitWidth(54))
+            make.bottom.equalTo(kFitWidth(94))
         }
         // segment 居中，靠近底部（与原先按钮位置一致）
         segment.snp.makeConstraints { make in
@@ -224,6 +243,7 @@ extension ForumNaviTypeLiquidVM{
         super.layoutSubviews()
 //        // 根据当前高度计算羽化分界位置
         bottomFeatherMask.frame = blurView.bounds
+        segmentDecorator?.relayout() // 跟随尺寸变化刷新遮罩/高光位置
     }
 }
 
