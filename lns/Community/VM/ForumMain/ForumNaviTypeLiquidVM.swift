@@ -20,7 +20,7 @@ class ForumNaviTypeLiquidVM: UIView {
     // 毛玻璃层（背景层，放在最底）
     private lazy var blurView: UIVisualEffectView = {
         let effect: UIBlurEffect
-        effect = UIBlurEffect(style: .systemChromeMaterial)
+        effect = UIBlurEffect(style: .systemThinMaterialDark)
         let v = UIVisualEffectView(effect: effect)
 //        v.clipsToBounds = true
         v.alpha = 0.15          // 模糊层总体不透明度 7%
@@ -36,7 +36,7 @@ class ForumNaviTypeLiquidVM: UIView {
         let seg = UISegmentedControl(items: items)
         // 初始选中「发现」
         seg.selectedSegmentIndex = 1
-        seg.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_03
+        seg.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_30
         seg.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_03.cgColor
         seg.layer.borderWidth = kFitWidth(2)
         if #available(iOS 13.0, *) {
@@ -208,7 +208,7 @@ extension ForumNaviTypeLiquidVM{
         if offsetY > kFitWidth(44){
             if segment.backgroundColor == UIColor.COLOR_TEXT_TITLE_0f1214_06{
                 UIView.animate(withDuration: 0.15, animations: {
-                    self.segment.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_30
+                    self.segment.backgroundColor = UIColor.white.withAlphaComponent(0.8)//UIColor.COLOR_TEXT_TITLE_0f1214_30
                 })
             }
         }else{

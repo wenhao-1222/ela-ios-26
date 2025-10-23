@@ -45,6 +45,7 @@ class ForumVC : WHBaseViewVC {
 //        vi.publishButton.isHidden = true
         vi.publishButton.addTarget(self, action: #selector(publishAction), for: .touchUpInside)
         vi.statTypeBlock = {(type)in
+            self.naviLiquidView.selectType = type
             if type == .forum{
                 self.scrollViewBase.setContentOffset(CGPoint.init(x: SCREEN_WIDHT, y: 0), animated: true)
                 self.naviView.publishButton.isHidden = !UserInfoModel.shared.isAllowedPosterForum
@@ -62,6 +63,7 @@ class ForumVC : WHBaseViewVC {
         let vi = ForumNaviTypeLiquidVM.init(frame: .zero)
         vi.publishButton.addTarget(self, action: #selector(publishAction), for: .touchUpInside)
         vi.statTypeBlock = {(type)in
+            self.naviView.selectType = type
             if type == .forum{
                 self.scrollViewBase.setContentOffset(CGPoint.init(x: SCREEN_WIDHT, y: 0), animated: true)
                 self.naviLiquidView.publishButton.isHidden = !UserInfoModel.shared.isAllowedPosterForum
@@ -159,16 +161,20 @@ extension ForumVC:UIScrollViewDelegate{
 //        updateNaviStatus(currentPage: currentPage)
     }
     func updateNaviStatus(currentPage:Int) {
-        if (currentPage == 0 && self.naviView.selectType == .course) ||
-        (currentPage == 1 && self.naviView.selectType == .forum) ||
-            (currentPage == 2 && self.naviView.selectType == .market){
-            return
+        if #available(iOS 26.0, *) {
+            if (currentPage == 0 && self.naviLiquidView.selectType == .course) ||
+            (currentPage == 1 && self.naviLiquidView.selectType == .forum) ||
+                (currentPage == 2 && self.naviLiquidView.selectType == .market){
+                return
+            }
+        }else{
+            if (currentPage == 0 && self.naviView.selectType == .course) ||
+            (currentPage == 1 && self.naviView.selectType == .forum) ||
+                (currentPage == 2 && self.naviView.selectType == .market){
+                return
+            }
         }
-        if (currentPage == 0 && self.naviLiquidView.selectType == .course) ||
-        (currentPage == 1 && self.naviLiquidView.selectType == .forum) ||
-            (currentPage == 2 && self.naviLiquidView.selectType == .market){
-            return
-        }
+        
         if currentPage == 1{
             self.naviView.selectType = .forum
             self.naviView.publishButton.isHidden = !UserInfoModel.shared.isAllowedPosterForum

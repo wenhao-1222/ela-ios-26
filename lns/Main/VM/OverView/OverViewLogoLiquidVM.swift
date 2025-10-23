@@ -132,12 +132,17 @@ final class OverViewLogoLiquidVM: UIView {
     private func applyLogoState(centered: Bool, animated: Bool) {
         if centered {
             UIView.animate(withDuration: 0.25) {
-                self.logoCenterImgView.alpha = 1
                 self.logoImgView.alpha = 0
+            }
+            UIView.animate(withDuration: 0.25, delay: 0.1) {
+                self.logoCenterImgView.alpha = 1
             }
         }else{
             UIView.animate(withDuration: 0.25) {
                 self.logoCenterImgView.alpha = 0
+            }
+            
+            UIView.animate(withDuration: 0.25, delay: 0.1) {
                 self.logoImgView.alpha = 1
             }
         }
