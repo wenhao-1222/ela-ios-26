@@ -20,6 +20,15 @@ class WHUtils: NSObject {
         return str
     }
     
+    static func convertStringToStringOneDigitForce(_ str: String) -> String? {
+        if let doubleValue = Double(str) {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.minimumFractionDigits = 1
+            numberFormatter.maximumFractionDigits = 1
+            return numberFormatter.string(from: NSNumber(value: doubleValue))
+        }
+        return str
+    }
     
     static func convertStringToStringOneDigit(_ str: String) -> String? {
         if let doubleValue = Double(str) {

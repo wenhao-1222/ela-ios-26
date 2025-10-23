@@ -79,7 +79,8 @@ extension CourseTiTleCell{
         if dict.doubleValueForKey(key: "price") > 0 && isPaid == false && UserInfoModel.shared.abTestModel.tutorial_briefing_price_hidden == .B{
             priceLab.isHidden = false
             priceLabel.isHidden = false
-            priceLabel.text = WHUtils.convertStringToString("\(dict.doubleValueForKey(key: "price"))")
+            
+            priceLabel.text = WHUtils.convertStringToStringOneDigitForce("\(dict.doubleValueForKey(key: "price"))")
             
             titleLab.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(16))
