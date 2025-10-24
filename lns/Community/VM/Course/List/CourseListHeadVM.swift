@@ -145,6 +145,8 @@ extension CourseListHeadVM{
             let finalHeight = kFitHeight(30) + coverHeight
             if finalHeight != self.selfHeight {
                 self.selfHeight = finalHeight
+                
+                DLLog(message: "CourseListHeadVM heightChangeBlock:\(finalHeight)")
                 self.heightChangeBlock?()
             }
         }

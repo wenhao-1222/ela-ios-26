@@ -33,9 +33,10 @@ class WelcomeVC: WHBaseViewVC {
     }
     lazy var bgImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "question_bg")
+        img.setImgLocal(imgName: "launch_bg_img")
+//        img.setImgLocal(imgName: "question_bg")
         img.isUserInteractionEnabled = true
-//        img.contentMode = .scaleAspectFit
+//        img.contentMode = .scaleAspectFit launch_bg_img
         
         return img
     }()
