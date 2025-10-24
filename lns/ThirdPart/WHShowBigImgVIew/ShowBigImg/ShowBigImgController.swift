@@ -124,7 +124,7 @@ public class ShowBigImgController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .clear//.white
+        self.view.backgroundColor = .black//.white
         self.layoutViews()
         self.saveBtn.addTarget(self, action: #selector(saveBtnClick), for: .touchUpInside)
 //        let tap = UITapGestureRecognizer.init(target: self, action: #selector(backTapAction))
@@ -269,8 +269,9 @@ public class ShowBigImgController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.isHidden = false
-        self.navigationController?.navigationBar.tintColor = .COLOR_HIGHTLIGHT_GRAY
+//        self.navigationController?.navigationBar.isHidden = false
+//        self.navigationController?.navigationBar.tintColor = .COLOR_HIGHTLIGHT_GRAY
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
         self.showView.transformAnimation()
     }
     
