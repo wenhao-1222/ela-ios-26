@@ -186,7 +186,7 @@ extension ServiceInputVM{
         }
     }
 
-    private func toggleAttachPanel(show: Bool) {
+    public func toggleAttachPanel(show: Bool) {
         guard panelShown != show else { return }
         panelShown = show
 
@@ -311,8 +311,6 @@ extension ServiceInputVM:UITextViewDelegate{
         if text == "\n"{
             if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).count > 0 {
                 self.textSendBlock?()
-                self.textView.text = ""             // 清空输入
-                self.resetInputHeightToInitial()    // ← 复位高度
 //                self.textView.resignFirstResponder()
             }
             return false

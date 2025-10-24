@@ -132,6 +132,9 @@ class ServiceContactVC: WHBaseViewVC {
         vi.backgroundColor = .clear
         vi.isHidden = true
         
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenInputViewImg))
+        vi.addGestureRecognizer(tap)
+        
         if #available(iOS 15.0, *) {
             vi.sectionHeaderTopPadding = 0
         }
@@ -141,6 +144,10 @@ class ServiceContactVC: WHBaseViewVC {
 }
 
 extension ServiceContactVC{
+    @objc func hiddenInputViewImg() {
+        self.msgInputView.textView.resignFirstResponder()
+        self.msgInputView.toggleAttachPanel(show: false)
+    }
     @objc func choiceImgAction() {
         self.view.becomeFirstResponder()
         if self.relatedOrderId.count > 0{
@@ -497,6 +504,7 @@ extension ServiceContactVC{
             self.dealDataSource()
             
             self.msgInputView.textView.text = ""
+            self.msgInputView.resetInputHeightToInitial()    // ← 复位高度
         }
     }
     func sendOssStsRequest() {
