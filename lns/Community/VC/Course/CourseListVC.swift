@@ -754,7 +754,7 @@ extension CourseListVC {
         }
         let folderURL = baseDirectory.appendingPathComponent("CoursePDFs", isDirectory: true)
 //        var fileName = URL(string: urlString)?.lastPathComponent ?? ""
-        var fileName = headMsgDict.stringValueForKey(key: "detailTitle")
+        var fileName = "ELAVATINE\(headMsgDict.stringValueForKey(key: "detailTitle"))"
         if fileName.isEmpty {
             fileName = URL(string: urlString)?.lastPathComponent ?? ""
         }
