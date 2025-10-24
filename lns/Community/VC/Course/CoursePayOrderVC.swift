@@ -236,7 +236,9 @@ extension CoursePayOrderVC{
                     NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_COURSE_STATUS, object: nil)
                     let vc = CoursePayResultVC()
                     vc.msgDict = self.msgDict
-                    vc.orderDict = dataObj
+                    let obj = NSMutableDictionary(dictionary: dataObj)
+                    obj.setValue(self.orderId, forKey: "id")
+                    vc.orderDict = obj
                     self.navigationController?.pushViewController(vc, animated: true)
                 }else{
                     let vc = CourseOrderListVC()

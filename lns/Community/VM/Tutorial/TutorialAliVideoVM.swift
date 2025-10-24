@@ -77,7 +77,7 @@ class TutorialAliVideoVM: UIView {
     }
     lazy var videoImageView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "forum_tutorial_default_cover")
+//        img.setImgLocal(imgName: "forum_tutorial_default_cover")
         img.contentMode = .scaleAspectFill
         img.backgroundColor = .black
         return img

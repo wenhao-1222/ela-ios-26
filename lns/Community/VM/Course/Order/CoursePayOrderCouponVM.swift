@@ -71,7 +71,7 @@ class CoursePayOrderCouponVM : UIView{
     }()
     lazy var couponApplyButton: UIButton = {
         let btn = UIButton()
-        btn.setTitle("应用", for: .normal)
+        btn.setTitle("使用", for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 13, weight: .regular)
@@ -168,7 +168,7 @@ extension CoursePayOrderCouponVM{
     }
     func showCouponMsg(dict:NSDictionary) {
         codeInputText.resignFirstResponder()
-        couponLabel.text = "¥ \(WHUtils.convertStringToString("\(dict.doubleValueForKey(key: "discountAmount"))") ?? "")"
+        couponLabel.text = "- ¥ \(WHUtils.convertStringToString("\(dict.doubleValueForKey(key: "discountAmount"))") ?? "")"
         UIView.animate(withDuration: 0.25, delay: 0,options: .curveLinear) {
             self.noCouponView.alpha = 0
             self.couponInputView.alpha = 0

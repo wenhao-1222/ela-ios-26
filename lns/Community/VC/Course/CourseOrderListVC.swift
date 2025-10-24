@@ -218,7 +218,7 @@ extension CourseOrderListVC: UITableViewDelegate, UITableViewDataSource {
 //            vc.orderModel = MallDetailModel().dealDataForOrderList(dict: dict)
 //            self.navigationController?.pushViewController(vc, animated: true)
         }else{
-            if dict.stringValueForKey(key: "status") == "3" {
+//            if dict.stringValueForKey(key: "status") == "3" {
                 let courseDict = NSMutableDictionary(dictionary: dict)
                 courseDict.setValue(dict.stringValueForKey(key: "tutorialId"), forKey: "id")
                 let vc = CourseListVC()
@@ -226,7 +226,7 @@ extension CourseOrderListVC: UITableViewDelegate, UITableViewDataSource {
                 vc.headMsgDict = courseDict
                 vc.isFromOrderList = true
                 self.navigationController?.pushViewController(vc, animated: true)
-            }
+//            }
         }
     }
 
@@ -257,7 +257,7 @@ extension CourseOrderListVC {
 
     func initSkeletonData() {
         dataSourceArray.removeAllObjects()
-        for _ in 0..<5 { dataSourceArray.add([:]) }
+        for _ in 0..<5 { dataSourceArray.add(["bizType":"1"]) }
         tableView.reloadData()
 
     }

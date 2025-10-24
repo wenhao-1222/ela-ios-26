@@ -107,6 +107,7 @@ extension ForumNewsListVC:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         DLLog(message: "ForumNewsListVC numberOfRowsInSection:\(dataSourceArray.count)")
         noDataView.isHidden = dataSourceArray.count > 0 ? true : false
+        
         return self.dataSourceArray.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -265,6 +266,7 @@ extension ForumNewsListVC{
             if dataArray.count < self.pageSize {
                 self.tableView.mj_footer!.endRefreshingWithNoMoreData()
             }
+
             if self.pageNum == 1{
                 self.dataSourceArray.removeAll()
                 self.isDisplayArray.removeAll()
@@ -388,7 +390,10 @@ extension ForumNewsListVC{
 //        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
             self.isLoadingData = false
             self.isLoadingMoreData = false
-            
+        if self.dataSourceArray.count == 0{
+            self.tableView.mj_footer?.isHidden = true
+        }
+        
             self.tableView.reloadData()
 //        })
     }

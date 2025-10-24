@@ -92,7 +92,7 @@ class OrderListTableViewCell: UITableViewCell {
 
     lazy var moneyLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.isHidden = true
+//        lab.isHidden = true
         return lab
     }()
 
@@ -172,7 +172,7 @@ extension OrderListTableViewCell{
 // MARK: - Public
 extension OrderListTableViewCell {
     func updateUI(dict: NSDictionary) {
-        moneyLabel.isHidden = true
+//        moneyLabel.isHidden = true
         
         if dict.stringValueForKey(key: "title").isEmpty {
             imgView.image = nil
@@ -200,6 +200,7 @@ extension OrderListTableViewCell {
             
             return
         }
+//        moneyLabel.isHidden = true
         if dict.stringValueForKey(key: "title").count > 0 {
             let coverInfo = dict["coverInfo"] as? NSDictionary ?? [:]
             imgView.setImgUrl(urlString: coverInfo.stringValueForKey(key: "orderListImageOssUrl"))
@@ -299,7 +300,7 @@ extension OrderListTableViewCell {
         priceAttrPrice.yy_color = .COLOR_TEXT_TITLE_0f1214
         priceAttrPrice.yy_font  = .systemFont(ofSize: 16, weight: .semibold)
         priceAttrUnit.append(priceAttrPrice)
-        if dict.doubleValueForKey(key: "discountAmount") > 0 {
+        if dict.doubleValueForKey(key: "discountAmount") > 0 && dict.stringValueForKey(key: "status") == "1"{
             let priceAttrDiscount = NSMutableAttributedString(string: "已优惠¥\(dict.stringValueForKey(key: "discountAmount"))")
             priceAttrDiscount.yy_color = .THEME
             priceAttrDiscount.yy_font  = .systemFont(ofSize: 11, weight: .regular)
@@ -417,8 +418,9 @@ extension OrderListTableViewCell {
         }
         moneyLabel.snp.makeConstraints { make in
             make.left.equalTo(titleLab)
-            make.top.equalTo(subTitleLab.snp.bottom).offset(kFitWidth(6))
+            make.top.equalTo(orderTimeLabel.snp.bottom).offset(kFitWidth(6))
             make.right.equalTo(kFitWidth(-16))
+            make.height.equalTo(kFitWidth(18))
         }
         bindDeviceLabel.snp.makeConstraints { make in
             make.left.right.equalTo(titleLab)

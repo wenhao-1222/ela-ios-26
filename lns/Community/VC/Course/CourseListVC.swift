@@ -440,6 +440,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        self.view.bringSubviewToFront(self.firstPlayTipsAlertVm)
 //        firstPlayTipsAlertVm.showView()
+        self.tapIndexPath = indexPath
         if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
             
         }else{
@@ -493,7 +494,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
             }
             return
         }
-        self.tapIndexPath = indexPath
+//        self.tapIndexPath = indexPath
         if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
             
         }else{

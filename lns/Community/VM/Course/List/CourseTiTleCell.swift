@@ -84,7 +84,7 @@ extension CourseTiTleCell{
             
             titleLab.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(16))
-                make.top.equalToSuperview()
+                make.top.equalTo(kFitWidth(17))
                 make.right.equalTo(priceLab.snp.left).offset(kFitWidth(-16))
             }
         }
@@ -108,7 +108,7 @@ extension CourseTiTleCell{
         }
         titleLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
-            make.top.equalToSuperview()
+            make.top.equalTo(kFitWidth(17))
             make.right.equalTo(kFitWidth(-100))
 //            make.right.equalTo(kFitWidth(-16))
         }
