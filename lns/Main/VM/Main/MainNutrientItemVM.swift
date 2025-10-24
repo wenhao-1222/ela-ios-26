@@ -80,7 +80,11 @@ class MainNutrientItemVM: UIView {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
-        lab.text = "0/0g"
+//        lab.text = "0/0g"
+        
+        lab.text = nil
+        lab.isHidden = true
+        lab.alpha = 0
         
         return lab
     }()
@@ -89,7 +93,11 @@ class MainNutrientItemVM: UIView {
         lab.textColor = normalColor
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
-        lab.text = "剩余0g"
+//        lab.text = "剩余0g"
+        
+        lab.text = nil
+        lab.isHidden = true
+        lab.alpha = 0
         
         return lab
     }()
@@ -123,6 +131,7 @@ extension MainNutrientItemVM{
         attr.append(totalAttrt)
         
         numberLabel.attributedText = attr
+        revealNumberInfoIfNeeded()
         
         overflowImgView.isHidden = true
         if remainNum < 0 {
@@ -151,6 +160,7 @@ extension MainNutrientItemVM{
         
         progressView.backgroundColor = progressColor
         progressView.frame = CGRect.init(x: 0, y: 0, width: progressWidth, height: kFitWidth(6))
+        revealNumberInfoIfNeeded()
     }
 }
 extension MainNutrientItemVM{
@@ -191,6 +201,17 @@ extension MainNutrientItemVM{
             make.left.right.equalTo(numberLabel)
             make.top.equalTo(numberLabel.snp.bottom).offset(kFitWidth(6))
 //            make.top.equalTo(kFitWidth(26))
+        }
+    }
+    private func revealNumberInfoIfNeeded() {
+        guard numberLabel.isHidden else { return }
+
+        numberLabel.isHidden = false
+        numberTipsLabel.isHidden = false
+
+        UIView.animate(withDuration: 0.2) {
+            self.numberLabel.alpha = 1
+            self.numberTipsLabel.alpha = 1
         }
     }
     func setConstraitForLogsShare() {

@@ -87,11 +87,14 @@ class LogsNaturalGoalCircleVM: UIView {
     }()
     lazy var totalNumberLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "/0"
+//        lab.text = "/0"
+        lab.text = nil
         lab.font = UIFont().DDInFontRegular(fontSize: 12)
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.textAlignment = .center
         lab.adjustsFontSizeToFitWidth = true
+//        lab.isHidden = true
+//        lab.alpha = 0
         
         return lab
     }()
@@ -274,6 +277,20 @@ extension LogsNaturalGoalCircleVM{
         shapeLayerFillShadow.fillColor = nil // 无填充色
         shapeLayerFillShadow.lineWidth = kFitWidth(6) // 线宽
         shapeLayerFillShadow.lineDashPattern = [4,4]
+    }
+    
+    func updateTotalNumber(text: String) {
+        if text == "/0g" {return}
+        guard totalNumberLabel.text != text || totalNumberLabel.isHidden else { return }
+        DLLog(message: "updateTotalNumber:\(totalNumberLabel.text ?? "") --- \(text)")
+        totalNumberLabel.text = text
+
+//        if totalNumberLabel.isHidden {
+//            totalNumberLabel.isHidden = false
+//            UIView.animate(withDuration: 0.2) {
+//                self.totalNumberLabel.alpha = 1
+//            }
+//        }
     }
     func setData(currentNumber:Int,totalNumber:Int) {
         self.currentNum = currentNumber

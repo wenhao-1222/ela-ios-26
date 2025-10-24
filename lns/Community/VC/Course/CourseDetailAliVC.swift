@@ -509,11 +509,16 @@ extension CourseDetailAliVC{
         self.detailVm.updateUI(model: self.tutorialModel)
         self.menuVm.updateUI(model: self.tutorialModel)
         
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+        DispatchQueue.main.async {
             self.videoAliVm.updateUI(model: self.tutorialModel)
             self.videoAliVm.play()
             self.tableView.reloadData()
-        })
+        }
+//        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+//            self.videoAliVm.updateUI(model: self.tutorialModel)
+//            self.videoAliVm.play()
+//            self.tableView.reloadData()
+//        })
     }
     func savePlayHistoryToLocal() {
         let currentDict = NSMutableDictionary()

@@ -43,7 +43,7 @@ final class SegmentedLiquidDecorator {
         baseFill.startPoint = CGPoint(x: 0.5, y: 0.0)
         baseFill.endPoint   = CGPoint(x: 0.5, y: 1.0)
         baseFill.colors = [
-            UIColor.white.withAlphaComponent(0.65).cgColor,
+            UIColor.white.withAlphaComponent(0.35).cgColor,
             UIColor.white.withAlphaComponent(0.08).cgColor
         ]
         baseFill.locations = [0, 1]

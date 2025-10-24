@@ -176,8 +176,8 @@ class CourseListVC: WHBaseViewVC {
             }else{
                 if self.headMsgDict.doubleValueForKey(key: "price") > 0{
                     self.buyButtonTouchUpInside()
+                    return
                 }
-                return
             }
             
             let vc = CourseDetailAliVC()

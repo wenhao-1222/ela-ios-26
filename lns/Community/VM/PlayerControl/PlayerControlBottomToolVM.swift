@@ -40,14 +40,20 @@ class PlayerControlBottomToolVM: GradientView {
         originalFrame = self.frame
         initUI()
         
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
-        self.addGestureRecognizer(tap)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    lazy var bottomView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = .clear
+        vi.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
+        vi.addGestureRecognizer(tap)
+        return vi
+    }()
     lazy var currentTimeLabel: UILabel = {
         let lab = UILabel()
         lab.textColor = .white
@@ -97,6 +103,7 @@ class PlayerControlBottomToolVM: GradientView {
 
 extension PlayerControlBottomToolVM{
     func initUI(){
+        addSubview(bottomView)
         addSubview(currentTimeLabel)
 //        addSubview(totalTimeLabel)
         addSubview(slider)
@@ -108,6 +115,10 @@ extension PlayerControlBottomToolVM{
     }
 
     func setConstraint(){
+        bottomView.snp.makeConstraints { make in
+            make.left.right.bottom.equalToSuperview()
+            make.top.equalTo(currentTimeLabel)
+        }
         currentTimeLabel.snp.makeConstraints { make in
             make.left.equalTo(leftGap)
             make.top.equalTo(kFitWidth(18))
