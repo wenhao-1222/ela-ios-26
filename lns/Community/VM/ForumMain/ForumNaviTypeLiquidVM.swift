@@ -14,7 +14,7 @@ class ForumNaviTypeLiquidVM: UIView {
     var statTypeBlock: ((FORUM_TYPE_ENUM) -> ())?
     
     // MARK: Private UI
-    private let selfHeight = WHUtils().getNavigationBarHeight()
+    private let selfHeight = WHUtils().getNavigationBarHeight()+kFitWidth(20)
     private let btnWidth = kFitWidth(60)
     let glass = GradientGlassView()
     private var segmentDecorator: SegmentedLiquidDecorator?
@@ -88,8 +88,7 @@ class ForumNaviTypeLiquidVM: UIView {
         setConstraints()
         updateButtonStatus() // 同步初始选中态
         // 让分段控件更“立体”
-        segment.layer.cornerRadius = kFitWidth(16)
-        segment.layer.cornerRadius = kFitWidth(16)
+        segment.layer.cornerRadius = kFitWidth(20)
         if #available(iOS 13.0, *) { segment.layer.cornerCurve = .continuous }
         segment.layer.masksToBounds = false
         segment.layer.shadowOpacity = 0    // 关键：关闭外部阴影
@@ -177,10 +176,11 @@ class ForumNaviTypeLiquidVM: UIView {
         // segment 居中，靠近底部（与原先按钮位置一致）
         segment.snp.makeConstraints { make in
 //            make.centerX.equalToSuperview()
-            make.left.equalTo(kFitWidth(16))
+//            make.left.equalTo(kFitWidth(16))
+            make.left.equalTo(kFitWidth(18))
             make.bottom.equalToSuperview().offset(-kFitWidth(8))
             make.width.greaterThanOrEqualTo(btnWidth * 3 + kFitWidth(32)) // 3段 + 内间距
-            make.height.equalTo(kFitWidth(32))
+            make.height.equalTo(kFitWidth(40))
         }
         publishButton.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-kFitWidth(16))

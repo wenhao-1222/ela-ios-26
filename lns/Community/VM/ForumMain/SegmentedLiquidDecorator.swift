@@ -20,7 +20,6 @@ final class SegmentedLiquidDecorator {
     private let selectedShimmer = CAGradientLayer()
     private let baseFill = CAGradientLayer()
 
-
     init(target: UISegmentedControl) {
         self.target = target
         guard let view = target as UIView? else { return }
@@ -37,14 +36,15 @@ final class SegmentedLiquidDecorator {
         container.addSublayer(innerShadow)
         container.addSublayer(outerStroke)
         container.addSublayer(innerStroke)
+        
         container.addSublayer(noiseLayer)
 //        container.addSublayer(selectedShimmer)
         // 基底：上稍亮、下稍暗，白感更自然
         baseFill.startPoint = CGPoint(x: 0.5, y: 0.0)
         baseFill.endPoint   = CGPoint(x: 0.5, y: 1.0)
         baseFill.colors = [
-            UIColor.white.withAlphaComponent(0.85).cgColor,
-            UIColor.white.withAlphaComponent(0.12).cgColor
+            UIColor.white.withAlphaComponent(0.65).cgColor,
+            UIColor.white.withAlphaComponent(0.08).cgColor
         ]
         baseFill.locations = [0, 1]
         // 顶部高光
@@ -64,20 +64,20 @@ final class SegmentedLiquidDecorator {
 //        innerShadow.shadowOffset = CGSize(width: 0, height: 1.5)
         innerShadow.shadowOpacity = 1
 //        innerShadow.shadowRadius = 3
-        innerShadow.shadowColor = UIColor.black.withAlphaComponent(0.25).cgColor // 原 0.35
+        innerShadow.shadowColor = UIColor.black.withAlphaComponent(0.2).cgColor // 原 0.35
         innerShadow.shadowRadius = 2.0  // 原 3
-        innerShadow.shadowOffset = CGSize(width: 0, height: 1.0) // 原 1.5
+        innerShadow.shadowOffset = CGSize(width: 0, height: 0.3) // 原 1.5
 
         outerStroke.fillColor = UIColor.clear.cgColor
-        outerStroke.strokeColor = UIColor.white.withAlphaComponent(0.28).cgColor
+        outerStroke.strokeColor = UIColor.clear.cgColor//UIColor.white.withAlphaComponent(0.28).cgColor
         outerStroke.lineWidth = 1
 
         innerStroke.fillColor = UIColor.clear.cgColor
-        innerStroke.strokeColor = UIColor.white.withAlphaComponent(0.7).cgColor
+        innerStroke.strokeColor = UIColor.clear.cgColor//UIColor.white.withAlphaComponent(0.7).cgColor
         innerStroke.lineWidth = 1
 
         noiseLayer.compositingFilter = "softLightBlendMode"
-        noiseLayer.opacity = 0.05
+        noiseLayer.opacity = 0.02
         noiseLayer.contents = Self.makeNoiseImage().cgImage
         noiseLayer.contentsGravity = .resizeAspectFill
 

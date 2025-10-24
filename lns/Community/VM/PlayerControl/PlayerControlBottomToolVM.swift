@@ -242,6 +242,7 @@ extension PlayerControlBottomToolVM{
     @objc private func sliderValueChangingAction(_ sender: UISlider){
         let value = Double(sender.value) * totalDuration
         currentTimeLabel.text = "\(formatTime(value))/\(formatTime(totalDuration))"//formatTime(value)
+        sliderValueChanged?(sender.value)
     }
 
     @objc private func sliderTouchDown(){
@@ -250,7 +251,8 @@ extension PlayerControlBottomToolVM{
 
     @objc private func sliderTouchUp(_ sender: UISlider){
         sliderValueChanged?(sender.value)
-        sliderTouchDownBlock?()
+//        sliderTouchDownBlock?()
+        sliderTouchUpBlock?()
     }
 
     @objc private func rateButtonTapped(){

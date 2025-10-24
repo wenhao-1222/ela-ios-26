@@ -440,6 +440,16 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        self.view.bringSubviewToFront(self.firstPlayTipsAlertVm)
 //        firstPlayTipsAlertVm.showView()
+        if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
+            
+        }else{
+            if self.headMsgDict.doubleValueForKey(key: "price") == 0{
+
+            }else{
+                self.buyButtonTouchUpInside()
+                return
+            }
+        }
         
         if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
             DLLog(message: "点击了下载PDF")
@@ -560,7 +570,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
         }else{
             if hasPdf{
                 if section == self.dataSourceArray.count + 1{
-                    if self.hasHistory {
+                    if self.hasHistory || self.isPaid == false{
                         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.lastMsgVm.selfHeight))
                         vi.backgroundColor = .clear
                         return vi
@@ -577,7 +587,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
 //                    }
                 }
             }else{
-                if section == self.dataSourceArray.count && self.hasHistory {
+                if section == self.dataSourceArray.count && (self.hasHistory  || self.isPaid == false) {
                     let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.lastMsgVm.selfHeight))
                     vi.backgroundColor = .clear
                     return vi
@@ -594,7 +604,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
         }else{
             if hasPdf{
                 if section == self.dataSourceArray.count + 1{
-                    if self.hasHistory {
+                    if self.hasHistory || self.isPaid == false{
                         return self.lastMsgVm.selfHeight
                     }else{
                         return 0
@@ -607,7 +617,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
 //                    }
                 }
             }else{
-                if section == self.dataSourceArray.count && self.hasHistory{
+                if section == self.dataSourceArray.count && (self.hasHistory  || self.isPaid == false){
                     return self.lastMsgVm.selfHeight
                 }else{
                     return 0

@@ -36,7 +36,7 @@ class CoursePayOrderPayDesVM : UIView{
     }()
     lazy var desLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.text = "收入全部用于产品研发与维护，为提供更佳的用户体验。"
+        lab.text = "课程收入全部用于产品研发与维护"
         lab.numberOfLines = 0
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 13, weight: .regular)

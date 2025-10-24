@@ -29,6 +29,11 @@ class TutorialVideoSwiftControlView: UIView {
     private var isAwaitingSeekCompletion = false
     private var pendingSeekValue: Float?
     private var pendingSeekPosition: Double?
+    private var needsAdditionalSeek = false
+    private var isSliderTracking = false
+    private var shouldResumeAfterSeek = false
+    private var lastExecutedSeekPosition: Double?
+    private let seekRequestTolerance: Double = 200
     
     var fullTapBlock:((Bool)->())?
     var backTapBlock:(()->())?
@@ -98,22 +103,64 @@ class TutorialVideoSwiftControlView: UIView {
             self?.scheduleHideTool()
         }
         vm.sliderValueChanged = { [weak self] value in
-            guard let self = self, let player = self.player else { return }
-            let duration = player.duration
-            let target = Int64(Float(duration) * value)
-            self.pendingSeekValue = value
-            self.pendingSeekPosition = Double(target)
-            self.isAwaitingSeekCompletion = true
-            self.bottomToolVm.updateSeekPreview(value: value, total: Double(duration))
-            player.seek(toTime: target, seekMode: AVP_SEEKMODE_ACCURATE)
+//            guard let self = self, let player = self.player else { return }
+            guard let self = self else { return }
             self.scheduleHideTool()
+            guard let player = self.player else { return }
+            let duration = player.duration
+//            let target = Int64(Float(duration) * value)
+            guard duration > 0 else { return }
+
+            let targetPosition = Double(Float(duration) * value)
+            self.pendingSeekValue = value
+//            self.pendingSeekPosition = Double(target)
+//            self.isAwaitingSeekCompletion = true
+            self.pendingSeekPosition = targetPosition
+            self.bottomToolVm.updateSeekPreview(value: value, total: Double(duration))
+//            player.seek(toTime: target, seekMode: AVP_SEEKMODE_ACCURATE)
+//            self.scheduleHideTool()
+            
+            if self.isAwaitingSeekCompletion {
+                if let lastPosition = self.lastExecutedSeekPosition,
+                   abs(targetPosition - lastPosition) <= self.seekRequestTolerance {
+                    self.needsAdditionalSeek = false
+                } else {
+                    self.needsAdditionalSeek = true
+                }
+                return
+            }
+
+            self.seekToPendingPosition()
         }
         vm.sliderTouchDownBlock = { [weak self] in
-            self?.hideToolWorkItem?.cancel()
-            self?.isAwaitingSeekCompletion = true
+//            self?.hideToolWorkItem?.cancel()
+//            self?.isAwaitingSeekCompletion = true
+            guard let self = self else { return }
+            self.hideToolWorkItem?.cancel()
+            self.needsAdditionalSeek = false
+            self.isSliderTracking = true
+            self.shouldResumeAfterSeek = self.isPlaying
+            if let player = self.player {
+                self.lastExecutedSeekPosition = Double(player.currentPosition)
+            } else {
+                self.lastExecutedSeekPosition = nil
+            }
         }
         vm.sliderTouchUpBlock = { [weak self] in
-            self?.scheduleHideTool()
+//            self?.scheduleHideTool()
+            guard let self = self else { return }
+            self.isSliderTracking = false
+            if !self.isAwaitingSeekCompletion {
+                if self.pendingSeekPosition == nil {
+                    if self.shouldResumeAfterSeek {
+                        self.player?.start()
+                        self.shouldResumeAfterSeek = false
+                    }
+                } else {
+                    self.seekToPendingPosition()
+                }
+            }
+            self.scheduleHideTool()
         }
         return vm
     }()
@@ -284,6 +331,27 @@ class TutorialVideoSwiftControlView: UIView {
             scheduleHideTool()
         }
     }
+    private func seekToPendingPosition() {
+        guard let player = player,
+              let pendingSeekPosition = pendingSeekPosition else {
+            needsAdditionalSeek = false
+            return
+        }
+
+        let duration = Double(player.duration)
+        guard duration > 0 else { return }
+
+        let clampedPosition = max(0, min(pendingSeekPosition, duration))
+        self.pendingSeekValue = Float(clampedPosition / duration)
+        self.pendingSeekPosition = clampedPosition
+
+        needsAdditionalSeek = false
+        isAwaitingSeekCompletion = true
+        lastExecutedSeekPosition = clampedPosition
+        player.seek(toTime: Int64(clampedPosition.rounded()), seekMode: AVP_SEEKMODE_ACCURATE)
+    }
+
+
 
     private func scheduleHideTool() {
         hideToolWorkItem?.cancel()
@@ -398,7 +466,17 @@ extension TutorialVideoSwiftControlView: AVPDelegate {
             break
         case AVPEventSeekEnd:
             self.isAwaitingSeekCompletion = false
-            self.player?.start()
+//            self.player?.start()
+            if self.needsAdditionalSeek {
+                self.seekToPendingPosition()
+            } else {
+                if !self.isSliderTracking {
+                    if self.shouldResumeAfterSeek {
+                        self.player?.start()
+                        self.shouldResumeAfterSeek = false
+                    }
+                }
+            }
         case AVPEventFirstRenderedStart:
             isPlaying = true
             centerToolVm.playButton.isSelected = true

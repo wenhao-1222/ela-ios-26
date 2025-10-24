@@ -37,8 +37,8 @@ class LoginAlertVm: UIView {
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
-//        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenSelf))
-//        v.addGestureRecognizer(tap)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenLoginView))
+        v.addGestureRecognizer(tap)
         return v
     }()
     lazy var whiteView : UIView = {
@@ -47,6 +47,8 @@ class LoginAlertVm: UIView {
         vi.clipsToBounds = true
         vi.backgroundColor = .white
         vi.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(nothingTodoAction))
+        vi.addGestureRecognizer(tap)
         
         // 创建下拉手势识别器
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
@@ -182,6 +184,9 @@ extension LoginAlertVm{
              self.phoneLoginBlock!()
          }
      }
+    @objc func nothingTodoAction() {
+        
+    }
      @objc func showLoginView() {
          self.isHidden = false
          

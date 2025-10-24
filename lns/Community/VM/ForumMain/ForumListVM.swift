@@ -112,7 +112,7 @@ class ForumListVM : UIView{
 //            vi.mj_header?.ignoredScrollViewContentInsetTop = WHUtils().getNavigationBarHeight()
 //        }
         if #available(iOS 26.0, *) {
-            let navigationHeight = WHUtils().getNavigationBarHeight()
+            let navigationHeight = WHUtils().getNavigationBarHeight() + kFitWidth(20)
             var inset = vi.contentInset
             if inset.top < navigationHeight {
                 inset.top = navigationHeight

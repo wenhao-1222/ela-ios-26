@@ -92,8 +92,18 @@ class ServiceContactVC: WHBaseViewVC {
     }()
     lazy var msgInputView: ServiceInputVM = {
         let vi = ServiceInputVM.init(frame: .zero)
+        
+        if self.relatedOrderId.count > 0{
+            vi.cameraButton.isHidden = false
+        }
         vi.imgChoiceBlock = {()in
             self.choiceImgAction()
+        }
+        vi.chooseAlbumBlock = { [weak self] in
+            self?.choiceAlbumAction()
+        }
+        vi.chooseCameraBlock = { [weak self] in
+            self?.choiceVideoAction()
         }
         vi.textSendBlock = {()in
             self.sendSuggestionTextRequest()

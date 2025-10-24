@@ -27,7 +27,7 @@ class CoursePayTipsPopupView: UIView {
     }
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .clear
+        vi.backgroundColor = UIColor.black.withAlphaComponent(0.2)
         vi.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenSelf))

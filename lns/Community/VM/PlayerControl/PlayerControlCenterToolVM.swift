@@ -51,8 +51,8 @@ class PlayerControlCenterToolVM: GradientView {
     }()
     lazy var playButton: UIButton = {
         let btn = UIButton()
-        btn.setImage(UIImage(named: "video_play_icon"), for: .normal)
-        btn.setImage(UIImage(named: "video_pause_icon"), for: .selected)
+        btn.setImage(UIImage(named: "video_play_icon_1"), for: .normal)
+        btn.setImage(UIImage(named: "video_pause_icon_1"), for: .selected)
         
         return btn
     }()
@@ -123,8 +123,8 @@ extension PlayerControlCenterToolVM{
             btnGap = kFitWidth(6)
             self.originalFrame = self.frame
             self.frame = CGRect(x: 0, y: 0, width: SCREEN_HEIGHT, height: SCREEN_WIDHT)
-            playButton.setImage(UIImage.init(named: "video_play_icon_landscap"), for: .normal)
-            playButton.setImage(UIImage.init(named: "video_pause_icon_landscap"), for: .selected)
+            playButton.setImage(UIImage.init(named: "video_play_icon_landscap_1"), for: .normal)
+            playButton.setImage(UIImage.init(named: "video_pause_icon_landscap_1"), for: .selected)
             playButton.snp.remakeConstraints { make in
                 make.center.lessThanOrEqualToSuperview()
                 make.width.height.equalTo(playBtnWidth)
@@ -146,8 +146,8 @@ extension PlayerControlCenterToolVM{
             btnGap = kFitWidth(4)
 //            self.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
             self.frame = originalFrame
-            playButton.setImage(UIImage(named: "video_play_icon"), for: .normal)
-            playButton.setImage(UIImage(named: "video_pause_icon"), for: .selected)
+            playButton.setImage(UIImage(named: "video_play_icon_1"), for: .normal)
+            playButton.setImage(UIImage(named: "video_pause_icon_1"), for: .selected)
             playButton.snp.makeConstraints { make in
                 make.center.lessThanOrEqualToSuperview()
                 make.width.height.equalTo(kFitWidth(54))

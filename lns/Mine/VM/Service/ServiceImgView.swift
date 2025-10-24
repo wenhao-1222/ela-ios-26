@@ -30,7 +30,7 @@ class ServiceImgView: UIView {
         let img = UIButton()
         img.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(7), width: kFitWidth(108), height: kFitWidth(108))
 //        img.backgroundColor = .clear
-        img.setImage(UIImage(named: "service_add_bg"), for: .normal)
+        img.setImage(UIImage(named: "service_img_add_icon"), for: .normal)
         img.setBackgroundImage(createImageWithColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.02)), for: .highlighted)
         img.layer.cornerRadius = kFitWidth(8)
         img.clipsToBounds = true
