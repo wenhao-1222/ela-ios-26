@@ -398,14 +398,15 @@ extension ForumCommentListHeadVM{
         }
         timeLabel.snp.remakeConstraints { make in
             make.left.equalTo(commentLabel)
-            make.bottom.equalTo(kFitWidth(-2))
+//            make.bottom.equalTo(kFitWidth(-2))
+            make.top.equalTo(commentLabel.snp.bottom).offset(kFitWidth(5))
 //            make.bottom.equalTo(authorLikeLabel.snp.top).offset(kFitWidth(-6))
         }
-        commentLabel.snp.remakeConstraints { make in
-            make.left.equalTo(kFitWidth(64))
-            make.top.equalTo(kFitWidth(36))
-            make.width.equalTo(kFitWidth(220))
-        }
+//        commentLabel.snp.remakeConstraints { make in
+//            make.left.equalTo(kFitWidth(64))
+//            make.top.equalTo(kFitWidth(36))
+//            make.width.equalTo(kFitWidth(220))
+//        }
     }
 }
 
