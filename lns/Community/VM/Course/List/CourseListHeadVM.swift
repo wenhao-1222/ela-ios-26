@@ -138,17 +138,36 @@ extension CourseListHeadVM{
         let coverInfo = dict["coverInfo"] as? NSDictionary ?? [:]
 //        let oldHeight = self.selfHeight
 //        var finalHeight = kFitHeight(30)
-        self.imgView.setImgUrlWithComplete(urlString: coverInfo.stringValueForKey(key: "imageOssUrl")) {
-            let imgW = self.imgView.image?.size.width ?? 1
-            let imgH = self.imgView.image?.size.height ?? 0
-            let coverHeight = imgH / imgW * SCREEN_WIDHT
-            let finalHeight = kFitHeight(30) + coverHeight
-            if finalHeight != self.selfHeight {
-                self.selfHeight = finalHeight
-                
-                DLLog(message: "CourseListHeadVM heightChangeBlock:\(finalHeight)")
-                self.heightChangeBlock?()
+        self.imgView.setImgUrlWithComplete(urlString: coverInfo.stringValueForKey(key: "imageOssUrl")) {[weak self] in
+//            let imgW = self.imgView.image?.size.width ?? 1
+//            let imgH = self.imgView.image?.size.height ?? 0
+//            if imgH < 10{
+//                return
+//            }
+//            let coverHeight = imgH / imgW * SCREEN_WIDHT
+//            let finalHeight = kFitHeight(30) + coverHeight
+//            if finalHeight != self.selfHeight {
+//                self.selfHeight = finalHeight
+//                
+//                DLLog(message: "CourseListHeadVM heightChangeBlock:\(finalHeight)")
+//                self.heightChangeBlock?()
+//            }
+            guard let self = self else { return }
+            guard let image = self.imgView.image,
+                  image.size.width > 0,
+                  image.size.height > 0 else {
+                return
             }
+
+            let coverHeight = image.size.height / image.size.width * SCREEN_WIDHT
+            let finalHeight = kFitHeight(30) + coverHeight
+
+            guard abs(finalHeight - self.selfHeight) > 0.5 else { return }
+
+            self.selfHeight = finalHeight
+
+            DLLog(message: "CourseListHeadVM heightChangeBlock:\(finalHeight)")
+            self.heightChangeBlock?()
         }
         
         numberIconImg.isHidden = false

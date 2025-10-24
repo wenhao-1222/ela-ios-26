@@ -140,6 +140,10 @@ class TutorialVideoSwiftControlView: UIView {
             self.needsAdditionalSeek = false
             self.isSliderTracking = true
             self.shouldResumeAfterSeek = self.isPlaying
+            
+            if self.isPlaying {
+                self.player?.pause()
+            }
             if let player = self.player {
                 self.lastExecutedSeekPosition = Double(player.currentPosition)
             } else {
