@@ -56,10 +56,9 @@ class CourseListVC: WHBaseViewVC {
         
         initUI()
         AliPlayerGlobalSettings.setFairPlayCertID("7069e758e56e40eabdab57683b5d815f")
-        if UserConfigModel.shared.splashId.count > 0 {
-//            self.courseId = UserConfigModel.shared.splashId
-            self.parentDict = ["id":UserConfigModel.shared.splashId]
-            UserConfigModel.shared.splashId = ""
+        if UserConfigModel.shared.splashTutoId.count > 0 {
+            self.parentDict = ["id":UserConfigModel.shared.splashTutoId]
+            UserConfigModel.shared.splashTutoId = ""
         }
         sendTutorialListReqeust()
         

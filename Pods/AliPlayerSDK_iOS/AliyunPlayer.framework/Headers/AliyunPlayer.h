@@ -20,6 +20,7 @@
 #import <AliyunPlayer/AVPPreloadConfig.h>
 #import <AliyunPlayer/AVPDef.h>
 #import <AliyunPlayer/AVPDelegate.h>
+#import <AliyunPlayer/AVPDrmDelegate.h>
 #import <AliyunPlayer/AliPlayerPictureInPictureDelegate.h>
 #import <AliyunPlayer/AVPFilterConfig.h>
 #import <AliyunPlayer/AVPLiveTimeShift.h>

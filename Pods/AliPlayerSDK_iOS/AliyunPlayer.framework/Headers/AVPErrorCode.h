@@ -359,6 +359,18 @@ typedef enum AVPErrorCode: NSUInteger {
     /****@brief  Not found key info in meta or key info is invalid to decrypt, if you have multiple license accounts, please make sure integrate the correct license.*/
     ERROR_FORMAT_INVALID_TBDRM_HLS_KEY                        = 0x200A0004,
 
+    /**@brief 未知直播错误。*/
+    /****@brief  An unknown live error has occurred.*/
+    ERROR_LIVE_UNKNOWN                                        = 0x200B0000,
+    /**@brief 直播流已断开。*/
+    /****@brief  Live stream is stopped.*/
+    ERROR_LIVE_STREAM_STOPPED                                 = 0x200B0001,
+    
+    ERROR_DRM_UNKNOWN                                         = 0x200C0000,
+    ERROR_DRM_KEY_RESPONSE_INVALID                            = 0x200C0005,
+    ERROR_DRM_CERT_RESPONSE_INVALID                           = 0x200C0009,
+    ERROR_DRM_INVALID_API_USAGE                               = 0x200C000A,
+
     /**@brief 未知错误。*/
     /****@brief  .*/
     ERROR_PLAYER_UNKNOWN                                      = 0x30000000 - 1,

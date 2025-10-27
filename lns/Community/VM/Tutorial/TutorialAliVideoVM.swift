@@ -177,7 +177,7 @@ extension TutorialAliVideoVM{
         }
         
         let config = AVPPreloadConfig()
-        config.preloadDuration = 10000
+        config?.preloadDuration = 10000
         
         AliPlayerGlobalSettings.enableLocalCache(true)
         self.mediaLoader = AliMediaLoader.shareInstance()

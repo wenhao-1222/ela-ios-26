@@ -53,6 +53,7 @@ class UserConfigModel {
     var canPushForumDetail = true
     
     var splashId = ""
+    var splashTutoId = ""
 }
 
 

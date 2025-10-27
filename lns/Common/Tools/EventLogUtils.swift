@@ -76,7 +76,6 @@ class EventLogUtils {
 //            UserInfoModel.shared.event_log_session_id = ""
         }
         
-        
         DLLog(message: "sendEventLogRequest:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_event_log, parameters: param as [String : AnyObject]) { responseObject in
             

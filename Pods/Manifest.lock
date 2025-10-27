@@ -1,9 +1,9 @@
 PODS:
   - Alamofire (4.9.1)
   - AlipaySDK-iOS (15.8.16)
-  - AliPlayerSDK_iOS (7.5.0):
-    - AliPlayerSDK_iOS/AliPlayerSDK (= 7.5.0)
-  - AliPlayerSDK_iOS/AliPlayerSDK (7.5.0)
+  - AliPlayerSDK_iOS (7.8.0):
+    - AliPlayerSDK_iOS/AliPlayerSDK (= 7.8.0)
+  - AliPlayerSDK_iOS/AliPlayerSDK (7.8.0)
   - AliyunOSSiOS (2.10.21)
   - CHIPageControl (0.2):
     - CHIPageControl/Aji (= 0.2)
@@ -177,7 +177,7 @@ PODS:
 DEPENDENCIES:
   - Alamofire (= 4.9.1)
   - AlipaySDK-iOS
-  - AliPlayerSDK_iOS
+  - AliPlayerSDK_iOS (= 7.8.0)
   - AliyunOSSiOS
   - CHIPageControl
   - CryptoSwift
@@ -241,7 +241,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
   AlipaySDK-iOS: 5e6011fbd546e7db6b43c1f527d164ee63f3d7cb
-  AliPlayerSDK_iOS: c57aad82dce4ec773862c9714183f3e9e5c202c5
+  AliPlayerSDK_iOS: a3a726a58e8399db9a9a9265620cad197422f617
   AliyunOSSiOS: 1f091b3aeec9f7a5fd722cb511704116f2ca468d
   CHIPageControl: a787bf7205c9b7e7fbfc412be36c5e8636b68f86
   CryptoSwift: c63a805d8bb5e5538e88af4e44bb537776af11ea
@@ -271,6 +271,6 @@ SPEC CHECKSUMS:
   UMDevice: dcdf7ec167387837559d149fbc7d793d984faf82
   WechatOpenSDK-XCFramework: 36fb2bea0754266c17184adf4963d7e6ff98b69f
 
-PODFILE CHECKSUM: 5801fdf47ae16cad6c34907927ab2bbf62834620
+PODFILE CHECKSUM: f2b9459b5f6ec0e01a0ffde462f03499faa2e2a6
 
 COCOAPODS: 1.15.2

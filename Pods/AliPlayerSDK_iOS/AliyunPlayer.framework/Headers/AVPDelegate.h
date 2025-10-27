@@ -181,6 +181,22 @@
  */
 - (void)onSubTrackReady:(AliPlayer*)player info:(NSArray<AVPTrackInfo*>*)info;
 
+
+/**
+ @brief 获取网络质量信息回调
+ @param player 播放器player指针
+ @param stat 网络质量信息
+ @see AVPNetworkStat
+
+ */
+/****
+ @brief Network stat information callback.
+ @param player Player pointer.
+ @param stat Network stat information.
+ @see AVPNetworkStat
+ */
+- (void)onNetworkStat: (AliPlayer*)player stat:(AVPNetworkStat*) stat;
+
 /**
  @brief 选择希望播放的流
  @param player 播放器player指针

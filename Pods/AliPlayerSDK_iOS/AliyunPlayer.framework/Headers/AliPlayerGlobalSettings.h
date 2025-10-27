@@ -86,6 +86,18 @@ OBJC_EXPORT
  */
 + (void)enableHWAduioTempo:(bool)enable;
 
+/**
+@brief 开启关闭解码插件.
+@param target  如果为空，则都不生效
+@param valid  true: 开启; false: 关闭
+*/
+/****
+@brief disable/enable codec plugin
+@param target  if empty , ignore it.
+@param valid  true: enable; false: disable
+*/
++ (void)enableCodecPlugin:(NSString *)target valid:(BOOL)valid;
+
 
 /**
  @brief 强制音频渲染器采用指定的格式进行渲染，如果设定的格式设备不支持，则无效，无效值将被忽略，使用默认值；pcm回调数据的格式和此设置关联,如果修改，请在同一个线程操作,默认关闭

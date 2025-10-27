@@ -44,7 +44,7 @@ target 'lns' do
 #pod 'JKSwiftExtension'
     pod 'JPush'
     #pod 'SideMenu'
-    pod 'AliPlayerSDK_iOS'
+    pod 'AliPlayerSDK_iOS', '7.8.0'
     #pod 'KTVHTTPCache'
  #pod 'ScreenshotPreventing',         '~> 1.4.0'   # UIKit 版
 

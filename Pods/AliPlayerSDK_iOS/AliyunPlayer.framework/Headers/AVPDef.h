@@ -422,6 +422,128 @@ OBJC_EXPORT
 @end
 
 
+/***
+@brief AVPNetworkLevel 网络质量级别枚举
+ */
+/***
+@brief AVPNetworkLevel represents network quality levels.
+*/
+typedef enum AVPNetworkLevel: NSInteger {
+    /***
+    @brief 网络状态未知。
+     */
+    /***
+    @brief The network status is unknown.
+    */
+    AVPNetwork_UNKNOWN = -1,
+    
+    /**
+     @brief 网络质量非常优秀。
+     */
+    /****
+     @brief The network quality is excellent.
+     */
+    AVPNetwork_EXCELLENT = 0,
+    
+    /**
+     @brief 网络质量良好。
+     */
+    /****
+     @brief The network quality is good.
+     */
+    AVPNetwork_GOOD = 1,
+    
+    
+    /**
+     @brief 网络质量较差。
+     */
+    /****
+     @brief The network quality is poor.
+     */
+    AVPNetwork_POOR = 2,
+    
+    /**
+     @brief 网络质量很差。
+     */
+    /****
+     @brief The network quality is bad.
+     */
+    AVPNetwork_BAD = 3,
+    
+    /**
+     @brief 网络质量非常差。
+     */
+    /****
+     @brief The network quality is very bad.
+     */
+    AVPNetwork_VERY_BAD = 4,
+    
+    /**
+     @brief 网络已断开连接。
+     */
+    /****
+     @brief The network is disconnected.
+     */
+    AVPNetwork_DISCONNECTED = 5,
+} AVPNetworkLevel;
+
+/**
+@brief 网络统计信息类，用于收集和表示播放器应用的网络状况。
+*/
+/***
+@brief AVPNetworkStat represents network statistics for the player.
+It is used to collect and describe network-related metrics.
+*/
+OBJC_EXPORT
+@interface AVPNetworkStat : NSObject
+
+/**
+@brief 视频下载速度，单位 Kbps。默认值为 0.0。
+*/
+/***
+@brief Video download speed in kilobits per second (Kbps). Default is 0.0.
+*/
+@property (nonatomic, assign) double videoDownloadSpeedKbps;
+
+/**
+@brief 音频下载速度，单位 Kbps。默认值为 0.0。
+*/
+/***
+@brief Audio download speed in kilobits per second (Kbps). Default is 0.0.
+*/
+@property (nonatomic, assign) double audioDownloadSpeedKbps;
+
+/**
+@brief 往返时延（RTT），单位毫秒（ms）。表示从客户端到服务器再返回所需的时间。默认值为 0。
+*/
+/***
+@brief Round-trip time (RTT) in milliseconds (ms).
+Indicates the time for a packet to travel from client to server and back.
+Default is 0.
+*/
+@property (nonatomic, assign) int64_t rttMs;
+
+/**
+@brief 丢包率（百分比），范围 0 ~ 100%。较高的丢包率可能意味着网络质量差。默认值为 0。
+*/
+/***
+@brief Packet loss rate as a percentage, ranging from 0 to 100%.
+A higher packet loss rate may indicate poor network quality. Default is 0.
+*/
+@property (nonatomic, assign) int64_t packetLossRatePercentage;
+
+/**
+@brief 当前网络质量级别，使用 AVPNetworkLevel 表示。默认值为 AVPNetwork_UNKNOWN。
+*/
+/***
+@brief The current network quality level, represented by AVPNetworkLevel.
+Default is AVPNetwork_UNKNOWN.
+*/
+@property (nonatomic, assign) AVPNetworkLevel level;
+
+@end
+
+
 /**
  @brief AVPTimeShiftModel直播时移描述
  */
@@ -534,10 +656,12 @@ typedef enum _GlobalOption: NSUInteger {
     DISABLE_CAPTURE_SCALE = 8,
     
     ALLOW_BOUNDS_CHANGE_ANIMATION = 10, // iOS only
+    AV3A_DECODE_MODEL_PATH = 11,
 //    ENABLE_DECODER_REUSE_CROSS_INSTANCE = 12, //android only
 //    DECODER_POOL_CAPACITY_CROSS_INSTANCE = 13, //android only
     RENDER_IGNORE_DAR_SCALE = 14, //iOS only
     MAX_ERROR_FRAMES_HARDWARE_DECODE = 15,
+    ALLOW_AUDIOUNIT = 16, //iOS only
     DISABLE_CATCHUP_IN_LOWLATENCY_AUDIOQUEUE = 17, //iOS only
 } GlobalOption;
 
@@ -552,6 +676,9 @@ typedef enum _PlayerOption: NSUInteger {
     ALLOW_DECODE_BACKGROUND = 1,
     ALLOW_PRE_RENDER = 2,
     PLAYED_DURATION_INCLUDE_SPEED = 3,
+    // it works only if ALLOW_PRE_RENDER is true
+    PRE_RENDER_MAX_BUFFER_MS = 5,
+    LINE_FALLBACK_URL = 6,
 } PlayerOption;
 
 typedef enum _AVPScene {

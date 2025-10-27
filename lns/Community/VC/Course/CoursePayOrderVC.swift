@@ -118,7 +118,12 @@ extension CoursePayOrderVC{
             
             EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
                                                 scenarioType: .launch_view,
-                                                text: "教程支付页【\(self.msgDict.stringValueForKey(key: "title"))】:\(self.msgDict.stringValueForKey(key: "id")) couponCode : \(self.couponVm.codeInputText.text ?? "")")
+                                                text: "\(UserConfigModel.shared.splashId)")
+//            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
+//                                                scenarioType: .launch_view,
+//                                                text: "教程支付页【\(self.msgDict.stringValueForKey(key: "title"))】:\(self.msgDict.stringValueForKey(key: "id")) couponCode : \(self.couponVm.codeInputText.text ?? "")")
+            
+            
         }
     }
     
@@ -155,10 +160,13 @@ extension CoursePayOrderVC{
                                                 scenarioType: .course_create_order,
                                                 text: "订单编号：\(dataObj.stringValueForKey(key: "orderId")) 支付宝支付")
             
+//            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
+//                                                scenarioType: .launch_view,
+//                                                text: "教程支付页【\(self.msgDict.stringValueForKey(key: "title"))】:\(self.msgDict.stringValueForKey(key: "id"))  订单编号：\(dataObj.stringValueForKey(key: "orderId")) 支付方式 : 支付宝")
+            
             EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
                                                 scenarioType: .launch_view,
-                                                text: "教程支付页【\(self.msgDict.stringValueForKey(key: "title"))】:\(self.msgDict.stringValueForKey(key: "id"))  订单编号：\(dataObj.stringValueForKey(key: "orderId")) 支付方式 : 支付宝")
-            
+                                                text: "\(UserConfigModel.shared.splashId)")
             if payAmount.floatValue == 0 {
                 self.sendOrderStatusQueryRequest()
             }else{
@@ -200,9 +208,13 @@ extension CoursePayOrderVC{
             EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
                                                 scenarioType: .course_create_order,
                                                 text: "订单编号：\(dataObj.stringValueForKey(key: "orderId"))  微信支付")
+//            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
+//                                                scenarioType: .launch_view,
+//                                                text: "教程支付页【\(self.msgDict.stringValueForKey(key: "title"))】:\(self.msgDict.stringValueForKey(key: "id"))  订单编号：\(dataObj.stringValueForKey(key: "orderId"))  支付方式 : 微信")
+            
             EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
                                                 scenarioType: .launch_view,
-                                                text: "教程支付页【\(self.msgDict.stringValueForKey(key: "title"))】:\(self.msgDict.stringValueForKey(key: "id"))  订单编号：\(dataObj.stringValueForKey(key: "orderId"))  支付方式 : 微信")
+                                                text: "\(UserConfigModel.shared.splashId)")
             self.orderId = dataObj.stringValueForKey(key: "orderId")
             if payAmount.floatValue == 0 {
                 self.sendOrderStatusQueryRequest()

@@ -123,7 +123,6 @@ extension CourseOrderListVC {
             self.navigationController?.pushViewController(v, animated: true)
         }
     }
-
 }
 
 // MARK: - UITableView

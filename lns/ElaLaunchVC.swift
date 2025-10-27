@@ -181,9 +181,11 @@ extension ElaLaunchVC{
                             self.tapButton.alpha = 1
                         }
                         let params = adDict?["params"]as? NSDictionary ?? [:]
+                        let id = adDict?.stringValueForKey(key: "id")
+//                        let id = params.stringValueForKey(key: "id")
                         EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
                                                             scenarioType: .launch_view,
-                                                            text: "\(params.stringValueForKey(key: "id"))")
+                                                            text: "\(id ?? params.stringValueForKey(key: "id"))")
                         return
                     }
                 }
@@ -211,7 +213,8 @@ extension ElaLaunchVC{
         let params = adDict?["params"]as? NSDictionary ?? [:]
         guard let target = params["ios_target_page"] as? String,
               target.count > 0 else { return }
-        UserConfigModel.shared.splashId = params.stringValueForKey(key: "id")
+        UserConfigModel.shared.splashId = adDict?.stringValueForKey(key: "id") ?? params.stringValueForKey(key: "id")
+        UserConfigModel.shared.splashTutoId = params.stringValueForKey(key: "id")
         if let block = lchBlock {
             lchBlock = nil
             block()
@@ -232,7 +235,7 @@ extension ElaLaunchVC{
         UserInfoModel.shared.event_log_session_id = Date().todaySeconds
         EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
                                             scenarioType: .launch_view,
-                                            text: "教程:\(UserConfigModel.shared.splashId)")
+                                            text: "\(UserConfigModel.shared.splashId)")
         let topVC = UIApplication.topViewController()
         if let nav = topVC?.navigationController {
             nav.pushViewController(vc, animated: true)

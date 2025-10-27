@@ -15,6 +15,7 @@
 #import "AVPSource.h"
 #import <Foundation/Foundation.h>
 
+@protocol AVPDrmDelegate;
 @protocol CicadaAudioSessionDelegate;
 @protocol CicadaRenderDelegate;
 @protocol CicadaRenderingDelegate;
@@ -937,6 +938,15 @@ __attribute__((deprecated("This method is deprecated")));
  @brief Set the render callback.
 */
 @property(nonatomic, weak) id<CicadaRenderingDelegate> renderingDelegate;
+
+/**
+ @brief 设置DRM回调，目前只支持Fairplay。
+ */
+/****
+ @brief Set the DRM callback, support Fairplay only.
+*/
+@property(nonatomic, weak) id<AVPDrmDelegate> drmDelegate;
+
 /**
  @brief 设置埋点事件回调。
  */
