@@ -123,16 +123,6 @@ class CourseDetailAliVC : WHBaseViewVC{
         vm.controlView?.topToolVm.shareButton.isHidden = true
         vm.heightChanged = { [weak self] videoHeight in
             guard let self = self else { return }
-//            self.detailVm.isHidden = false
-//            self.menuVm.isHidden = false
-//            vm.frame = CGRect(x: 0, y: statusBarHeight, width: SCREEN_WIDHT, height: videoHeight)
-//            self.detailVm.frame = CGRect(x: 0, y: vm.frame.maxY, width: SCREEN_WIDHT, height: self.detailVm.selfHeight)
-//            self.menuVm.frame = CGRect(x: kFitWidth(16), y: self.detailVm.frame.maxY, width: SCREEN_WIDHT - kFitWidth(32), height: self.menuVm.selfHeight)
-//            self.tableView.frame = CGRect(x: 0, y: self.menuVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT - self.menuVm.frame.maxY)
-//            if self.videoIndexFromList > 0 {
-//                DLLog(message: "这里需要滚动到相应 Cell")
-//                DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
-//                    if self.videoIndexFromList > self.dataSourceArray.count - 1 {
             if UserConfigModel.shared.allowedOrientations != .portrait {
                 self.detailVm.isHidden = true
                 self.menuVm.isHidden = true
@@ -140,10 +130,6 @@ class CourseDetailAliVC : WHBaseViewVC{
             } else {
                 self.detailVm.isHidden = false
                 self.menuVm.isHidden = false
-//                vm.frame = CGRect(x: 0, y: statusBarHeight, width: SCREEN_WIDHT, height: videoHeight)
-//                self.detailVm.frame = CGRect(x: 0, y: vm.frame.maxY, width: SCREEN_WIDHT, height: self.detailVm.selfHeight)
-//                self.menuVm.frame = CGRect(x: kFitWidth(16), y: self.detailVm.frame.maxY, width: SCREEN_WIDHT - kFitWidth(32), height: self.menuVm.selfHeight)
-//                self.tableView.frame = CGRect(x: 0, y: self.menuVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT - self.menuVm.frame.maxY)
                 self.layoutPortrait(videoHeight: videoHeight)
                 if self.videoIndexFromList > 0 {
                     DLLog(message: "这里需要滚动到相应 Cell")
@@ -153,10 +139,7 @@ class CourseDetailAliVC : WHBaseViewVC{
                         }
                         self.tableView.scrollToRow(at: IndexPath(row: self.videoIndexFromList, section: 0), at: .middle, animated: false)
                         self.videoIndexFromList = -1
-//                        return
                     }
-//                    self.tableView.scrollToRow(at: IndexPath(row: self.videoIndexFromList, section: 0), at: .middle, animated: false)
-//                    self.videoIndexFromList = -1
                 }
             }
         }
@@ -186,10 +169,7 @@ class CourseDetailAliVC : WHBaseViewVC{
                 self.menuVm.isHidden = false
                 self.videoAliVm.mAliPlayer?.scalingMode = AVP_SCALINGMODE_SCALEASPECTFILL
                 self.layoutPortrait(videoHeight: self.videoAliVm.videoHeight)
-//                vm.frame = CGRect(x: 0, y: statusBarHeight, width: SCREEN_WIDHT, height: self.videoAliVm.videoHeight)
-//                self.detailVm.frame = CGRect(x: 0, y: vm.frame.maxY, width: SCREEN_WIDHT, height: self.detailVm.selfHeight)
-//                self.menuVm.frame = CGRect(x: kFitWidth(16), y: self.detailVm.frame.maxY, width: SCREEN_WIDHT - kFitWidth(32), height: self.menuVm.selfHeight)
-//                self.tableView.frame = CGRect(x: 0, y: self.menuVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT - self.menuVm.frame.maxY)
+                
                 if self.videoIndexFromList > 0 {
                     DLLog(message: "这里需要滚动到相应 Cell")
                     DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
@@ -204,102 +184,8 @@ class CourseDetailAliVC : WHBaseViewVC{
         }
         return vm
     }()
-//    lazy var videoVm: TutorialVideoVM = {
-//        let vm = TutorialVideoVM.init(frame: .zero)
-//        vm.controller = self
-//        
-//        vm.shareBlock = {()in
-//            self.shareAlertVm.showViewForTutorial(tutorialMo: self.tutorialModel)
-//        }
-//        vm.playBlock = {()in
-////            self.backArrowButton.isHidden = true
-//            self.videoVm.play()
-//        }
-//        vm.heightChanged = {(videoHeight)in
-//            self.detailVm.isHidden = false
-//            self.menuVm.isHidden = false
-//            self.videoVm.frame = CGRect.init(x: 0, y: statusBarHeight, width: SCREEN_WIDHT, height: videoHeight)
-//            self.detailVm.frame = CGRect.init(x: 0, y: self.videoVm.frame.maxY, width: SCREEN_WIDHT, height: self.detailVm.selfHeight)
-//            self.menuVm.frame = CGRect.init(x: kFitWidth(16), y: self.detailVm.frame.maxY, width: SCREEN_WIDHT-kFitWidth(32), height: self.menuVm.selfHeight)
-//            self.tableView.frame = CGRect.init(x: 0, y: self.menuVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.menuVm.frame.maxY)
-//            
-//            if self.videoIndexFromList > 0{
-//                DLLog(message: "这里需要滚动到相应 Cell")
-//                DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
-//                    if self.videoIndexFromList > self.dataSourceArray.count - 1{
-//                        return
-//                    }
-////                    if self.videoIndexFromList < self.dataSourceArray.count - 1{
-////                        self.videoIndexFromList += 1
-////                    }
-//                    self.tableView.scrollToRow(at: IndexPath(row: self.videoIndexFromList, section: 0), at: .middle, animated: false)
-//                    self.videoIndexFromList = -1
-//                })
-//            }
-////            self.tableView.frame = CGRect.init(x: 0, y: self.videoVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.videoVm.frame.maxY)
-//        }
-//        vm.controlView.shareBtnClickCallback = {(isPortrait)in
-//            if isPortrait{
-//                DLLog(message: "竖屏 --- 分享")
-//                self.shareAlertVm.showViewForTutorial(tutorialMo: self.tutorialModel)
-//            }else{
-////                let appDelegate = UIApplication.shared.delegate as! AppDelegate
-////                appDelegate.getKeyWindow().addSubview(self.shareAlertLandscapeVm)
-////                self.shareAlertLandscapeVm.showViewForTutorial(tutorialMo: self.tutorialModel)
-////                DLLog(message: "横屏 --- 分享")
-//            }
-//        }
-//        vm.player.orientationWillChange = {player,isFullScreen in
-//            if isFullScreen{
-//                self.coverBlackView.isHidden = false
-////
-////                // 获取当前横屏控制器
-////                if let fullVC = self.presentedViewController {
-////                    // 取出真正的视频 view
-////                    let videoView = player.currentPlayerManager.view   // ZFPlayerView, 非 Optional
-////                    // 1️⃣ 把 videoView 从原父视图移除
-////                    let originalFrame = videoView.frame
-////                    videoView.removeFromSuperview()
-////
-////                    // 2️⃣ 用 ScreenShieldView 包裹
-////                    let shield = ScreenShieldView(content: videoView)
-////                    shield.frame = originalFrame
-////                    fullVC.view.addSubview(shield)
-////
-////                    // 3️⃣ 更新 reference
-////                    self.fullScreenShield = shield
-////                }
-//            } else {
-////                player.orientationObserver.fullScreenContainerView = self.secureWrap
-////                self.fullScreenShield?.removeFromSuperview()
-////                self.fullScreenShield = nil
-//            }
-//            self.setNeedsStatusBarAppearanceUpdate()
-//            if #available(iOS 16.0, *) {
-////                self.setNeedsUpdateOfSupportedInterfaceOrientations()
-//            } else {
-//                // Fallback on earlier versions
-//                UIViewController.attemptRotationToDeviceOrientation()
-//            }
-//            
-//        }
-//        vm.player.playerPlayFailed = { asset,error in
-//            self.backArrowButton.isHidden = true
-//        }
-//        vm.player.forceDeviceOrientation = true
-//        return vm
-//    }()
     lazy var detailVm: TutorialContentVM = {
         let vm = TutorialContentVM.init(frame: CGRect.init(x: 0, y: self.videoAliVm.frame.maxY, width: 0, height: 0))
-//        vm.isHidden = true
-        
-//        vm.updateUI(model: self.tutorialModel)
-//        vm.heightChangeBlock = {()in
-//            self.detailVm.frame = CGRect.init(x: 0, y: self.videoAliVm.frame.maxY, width: SCREEN_WIDHT, height: self.detailVm.selfHeight)
-//            self.menuVm.frame = CGRect.init(x: kFitWidth(16), y: self.detailVm.frame.maxY, width: SCREEN_WIDHT-kFitWidth(32), height: self.menuVm.selfHeight)
-//            self.tableView.frame = CGRect.init(x: 0, y: self.menuVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.menuVm.frame.maxY)
-//            
-//        }
         vm.heightChangeBlock = { [weak self] in
             guard let self = self else { return }
             self.layoutPortrait(videoHeight: self.videoAliVm.frame.height)
@@ -349,33 +235,15 @@ class CourseDetailAliVC : WHBaseViewVC{
 
 extension CourseDetailAliVC{
     func initUI() {
-//        secureWrap = ScreenShieldView(content: videoVm)
         view.addSubview(tableView)
         view.addSubview(videoAliVm)
         view.bringSubviewToFront(videoAliVm)
-//        view.addSubview(detailVm)
-//        view.addSubview(menuVm)
-//        view.addSubview(tableView)
-//        view.addSubview(backArrowButton)
-//        backArrowButton.backImgView.setImgLocal(imgName: "back_arrow_white_icon_max")
-//        backArrowButton.backImgView.snp.remakeConstraints { make in
-//            make.center.lessThanOrEqualToSuperview()
-//            make.width.height.equalTo(kFitWidth(32))
-//        }
         view.backgroundColor = .white//WHColor_16(colorStr: "1C1C1C")
         
         view.insertSubview(detailVm, belowSubview: videoAliVm)
         view.insertSubview(menuVm, belowSubview: videoAliVm)
         
         view.addSubview(coverBlackView)
-        
-//        secureWrap.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            secureWrap.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-//            secureWrap.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-//            secureWrap.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-//            secureWrap.heightAnchor.constraint(equalToConstant: videoVm.selfHeight) // 或用 videoVM.selfHeight
-//        ])
         
         DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate

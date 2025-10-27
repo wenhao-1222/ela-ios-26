@@ -11,6 +11,8 @@ class CourseOrderListVC: WHBaseViewVC {
 
     var status = "" // 1 待支付   3 已支付
     var dataSourceArray = NSMutableArray()
+    // 保存为属性，避免被释放
+    private let bottomCardTransition = BottomCardTransitioningDelegate()
     
     func removeParentNaviVc() {
         if let nav = navigationController {
@@ -97,6 +99,31 @@ extension CourseOrderListVC {
         NotificationCenter.default.removeObserver(self)
         sendOrderListRequest()
     }
+    func showPay(dict:NSDictionary) {
+        // 1) 以安全区为准重新算高度
+        let bottomInset = view.safeAreaInsets.bottom
+        let cardHeight = kFitWidth(360) - kFitWidth(129) + bottomInset + kFitHeight(43)+kFitWidth(129)
+        
+        let vc = CourseOrderPayAlertVC()
+        vc.msgDict = dict
+        vc.modalPresentationStyle = .custom
+        bottomCardTransition.cardHeight = cardHeight  // 用你已有的高度
+        vc.transitioningDelegate = bottomCardTransition
+
+        // 背景透明仍由你控制
+        vc.view.backgroundColor = .clear
+        // 移除所有 sheetPresentationController 的设置（detents / grabber 等）
+
+        self.present(vc, animated: true)
+
+        vc.paySuccessBlock = { dic in
+            let v = CoursePayResultVC()
+            v.msgDict = dict
+            v.orderDict = dic
+            self.navigationController?.pushViewController(v, animated: true)
+        }
+    }
+
 }
 
 // MARK: - UITableView
@@ -114,24 +141,26 @@ extension CourseOrderListVC: UITableViewDelegate, UITableViewDataSource {
             cell.timeOutBlock = { [weak self] in self?.sendOrderListRequest() }
             cell.payBlock = { [weak self] in
                 guard let self else { return }
-                let vc = CourseOrderPayAlertVC()
-                vc.msgDict = dict
-                
-                if UIDevice.current.userInterfaceIdiom == .pad {
-                    self.navigationController?.pushViewController(vc, animated: true)
-                } else {
-                    // iPhone：保持你原有的视觉（透明背景 + 自定义底部弹出）
-                    vc.modalPresentationStyle = .pageSheet
-                    vc.modalTransitionStyle = .crossDissolve
-                    self.present(vc, animated: true)
-                }
-            
-                vc.paySuccessBlock = { dic in
-                    let v = CoursePayResultVC()
-                    v.msgDict = dict
-                    v.orderDict = dic
-                    self.navigationController?.pushViewController(v, animated: true)
-                }
+                self.showPay(dict: dict)
+//                let vc = CourseOrderPayAlertVC()
+//                vc.msgDict = dict
+//                
+//                if UIDevice.current.userInterfaceIdiom == .pad {
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                } else {
+//                    // iPhone：保持你原有的视觉（透明背景 + 自定义底部弹出）
+//                    vc.modalPresentationStyle = .overFullScreen
+//                    vc.modalTransitionStyle = .crossDissolve
+//                    vc.isModalInPresentation = true
+//                    self.present(vc, animated: true)
+//                }
+//            
+//                vc.paySuccessBlock = { dic in
+//                    let v = CoursePayResultVC()
+//                    v.msgDict = dict
+//                    v.orderDict = dic
+//                    self.navigationController?.pushViewController(v, animated: true)
+//                }
             }
             cell.closeBlock = { [weak self] in
                 self?.sendCloseOrderRequest(dict: dict, indexPath: indexPath, bizType: "1")

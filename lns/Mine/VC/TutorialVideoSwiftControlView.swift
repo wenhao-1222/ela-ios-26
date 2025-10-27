@@ -44,6 +44,7 @@ class TutorialVideoSwiftControlView: UIView {
     var playbackCompleted: (() -> Void)?
     var toolVisibilityChanged: ((Bool) -> Void)?
     var heightChanged:((CGFloat)->())?
+    var playbackErrorOccurred: ((AVPErrorModel?) -> Void)?
 
     init(player: AliPlayer?,frame:CGRect) {
         self.player = player
@@ -449,6 +450,7 @@ class TutorialVideoSwiftControlView: UIView {
 extension TutorialVideoSwiftControlView: AVPDelegate {
     func onError(_ player: AliPlayer!, errorModel: AVPErrorModel!) {
         DLLog(message: "AliPlayer error \(errorModel?.code) \(errorModel?.message ?? "")")
+        playbackErrorOccurred?(errorModel)
         if let message = errorModel?.message, message.contains("ServiceUnavailable") {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.player?.prepare()

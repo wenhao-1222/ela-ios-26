@@ -813,6 +813,9 @@
 		EC5D4F812C21524300F376A4 /* TutorialUpdateAttr.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5D4F802C21524300F376A4 /* TutorialUpdateAttr.swift */; };
 		EC5E12602C801C6700F5828A /* NSDictionary+Widget+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D03822C6F201700F33137 /* NSDictionary+Widget+Exs.swift */; };
 		EC6048B22BEB48CB004E9578 /* PlanListActiveCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */; };
+		EC6240802EAF16DF009ADEFD /* BottomCardPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC62407F2EAF16DE009ADEFD /* BottomCardPresentationController.swift */; };
+		EC6240822EAF16EB009ADEFD /* BottomCardAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6240812EAF16EA009ADEFD /* BottomCardAnimator.swift */; };
+		EC6240842EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6240832EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift */; };
 		EC67033D2E9C8FE200C0FDFE /* SystemNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */; };
 		EC67033F2E9CF3EA00C0FDFE /* ForumNaviTypeLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */; };
 		EC6703422E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */; };
@@ -2090,6 +2093,9 @@
 		EC5C81772C5A1A49000EC4BC /* GoalSetSpecPercentNaturalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSetSpecPercentNaturalVM.swift; sourceTree = "<group>"; };
 		EC5D4F802C21524300F376A4 /* TutorialUpdateAttr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialUpdateAttr.swift; sourceTree = "<group>"; };
 		EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanListActiveCellVM.swift; sourceTree = "<group>"; };
+		EC62407F2EAF16DE009ADEFD /* BottomCardPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardPresentationController.swift; sourceTree = "<group>"; };
+		EC6240812EAF16EA009ADEFD /* BottomCardAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardAnimator.swift; sourceTree = "<group>"; };
+		EC6240832EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardTransitioningDelegate.swift; sourceTree = "<group>"; };
 		EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemNavigationController.swift; sourceTree = "<group>"; };
 		EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumNaviTypeLiquidVM.swift; sourceTree = "<group>"; };
 		EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverViewLogoLiquidVM.swift; sourceTree = "<group>"; };
@@ -4897,6 +4903,9 @@
 		ECD0FF2D2BABE004001232C9 /* VC */ = {
 			isa = PBXGroup;
 			children = (
+				EC62407F2EAF16DE009ADEFD /* BottomCardPresentationController.swift */,
+				EC6240812EAF16EA009ADEFD /* BottomCardAnimator.swift */,
+				EC6240832EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift */,
 				A70A1F7B2E6EA2DF00B506DC /* Mall */,
 				A7E272592DA8E639006AF4CF /* Course */,
 				ECD0FF372BABE043001232C9 /* ForumVC.swift */,
@@ -5829,6 +5838,7 @@
 				EC1440592C3E55D100566E9F /* JournalShareNewVC.swift in Sources */,
 				ECD0FEF52BABD25B001232C9 /* YYTextKeyboardManager.m in Sources */,
 				EC9726152C5B588A00F244A2 /* GoalSetWeeksCenterVM.swift in Sources */,
+				EC6240802EAF16DF009ADEFD /* BottomCardPresentationController.swift in Sources */,
 				A7CEA6032D1BA6E1009DDEB5 /* TutorialVideoLandScapeControlView.m in Sources */,
 				A72401432E55ADE6005DB615 /* PersonalBottomFuncVM.swift in Sources */,
 				A7BD60672DACF7C7002FE250 /* CourseItemHeadVM.swift in Sources */,
@@ -6329,6 +6339,7 @@
 				EC781CD22BBA917D00752C95 /* QuestionnairePlanFoodsTypeVM.swift in Sources */,
 				ECAD70192BB6A1F700D8E3E5 /* QuestionnaireDaylyMealsVM.swift in Sources */,
 				EC781CCE2BBA442400752C95 /* QuestionnairePlanFoodsSearchVM.swift in Sources */,
+				EC6240842EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift in Sources */,
 				A755ED6B2DF6D8A900005C3A /* GuideFirstWeightLineChartVM.swift in Sources */,
 				A7F3DB712E8664BE00E9B7ED /* MallOrderAfterSaleSubmitImgsCell.swift in Sources */,
 				A744266A2CDB5A7F000D7E2B /* UnicodeScalar.swift in Sources */,
@@ -6510,6 +6521,7 @@
 				EC3A9CB32BB540BB00C6E442 /* QuestionnaireHeightVM.swift in Sources */,
 				ECF745E12BDA60A70076DDB9 /* NaturalCaloriMealsVM.swift in Sources */,
 				A762B9752D19371B003E8B22 /* ForumTutorialModel.swift in Sources */,
+				EC6240822EAF16EB009ADEFD /* BottomCardAnimator.swift in Sources */,
 				A718AF962E7D397C00710C20 /* ReasonInputCell.swift in Sources */,
 				A7C72B462E0B92B2001EA74D /* LineHeightLabel.swift in Sources */,
 				A7A78D6F2D9BD86100DDB1E6 /* FileCacheManager.swift in Sources */,

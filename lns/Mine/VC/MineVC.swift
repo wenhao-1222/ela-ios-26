@@ -30,7 +30,6 @@ class MineVC : WHBaseViewVC {
             bottomGap = kFitWidth(20)
         }
         
-        
         initUI()
         sendServiceWelcomeRequest()
         NotificationCenter.default.addObserver(self, selector: #selector(createPlan), name: NSNotification.Name(rawValue: "fullPlanSaveForMine"), object: nil)

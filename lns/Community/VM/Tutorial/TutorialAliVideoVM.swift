@@ -36,7 +36,7 @@ class TutorialAliVideoVM: UIView {
     private var pendingReplayPosition: Int64 = 0
     private var playbackRequestToken = UUID()
     private var isSwitchingVideo = false
-
+    
     // ===== 新增：串行队列与处置标记，保证所有 AliPlayer 调用在同一线程 =====
     private let playerQueue = DispatchQueue(label: "com.elavatine.aliplayer.queue")
     private var isDisposed = false
@@ -143,10 +143,8 @@ extension TutorialAliVideoVM{
 //        self.videoImageView.image = self.modelDetail.coverImg
     }
     func play() {
-//        hasStartedPlaying = false
-////        self.videoImageView.isHidden = false
-//        self.coverView.isHidden = false
         hasStartedPlaying = true
+        
         self.videoImageView.isHidden = true
         self.coverView.isHidden = true
         progressView.snp.updateConstraints { make in
@@ -157,56 +155,6 @@ extension TutorialAliVideoVM{
             guard let self = self, !self.isDisposed else { return }
             self.startPlayback(resumePosition: nil, shouldQueryProgress: true, triggerStatistic: true)
         }
-////        if let _ = URL(string: model.videoUrl){
-//        if !model.videoVID.isEmpty && model.videoVID.count > 4{
-////            let progress = CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id)
-//////            self.mAliPlayer?.stop()
-//////            let source = AVPVidStsSource()
-//////            source.region = "cn-shanghai"
-//////            source.vid = model.videoVID
-//////            source.securityToken = UserInfoModel.shared.ossSecurityToken
-//////            source.accessKeyId = UserInfoModel.shared.ossAccessKeyId
-//////            source.accessKeySecret = UserInfoModel.shared.ossAccessKeySecret
-//////            self.mAliPlayer?.setStsSource(source)
-//////            self.mAliPlayer?.prepare()
-////            if progress > 0 {
-////                self.mAliPlayer?.seek(toTime: Int64(progress * 1000), seekMode: AVP_SEEKMODE_ACCURATE)
-////            }
-////            self.mAliPlayer?.start()
-//            self.sendTutorialClickRequest()
-//        }else if let _ = URL(string: model.videoUrl){
-//
-//            let progress = CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id)
-//            self.mAliPlayer?.stop()
-//            DSImageUploader().dealImgUrlSignForOss(urlStr: model.videoUrl) { urlStr in
-//                DLLog(message: "dealImgUrlSignForOss:\(urlStr)")
-//                if let _ = URL(string: urlStr) {
-//                    let urlSource = AVPUrlSource().url(with:urlStr)
-//                    self.mAliPlayer?.setUrlSource(urlSource)
-//                    self.mAliPlayer?.prepare()
-//                    self.mediaLoader.load(urlStr, duration: 3*1000)
-//
-//                    if progress > 0 {
-//                        self.mAliPlayer?.seek(toTime: Int64(progress * 1000), seekMode: AVP_SEEKMODE_ACCURATE)
-//                    }
-//                    self.mAliPlayer?.start()
-//                }
-//            }
-//            self.sendTutorialClickRequest()
-//        }else{
-//            if let detailUrl = modelDetail.videoUrl {
-//                let progress = CourseProgressSQLiteManager.getInstance().queryProgress(tutorialId: model.id)
-//                self.mAliPlayer?.stop()
-//                let urlSource = AVPUrlSource().url(with:detailUrl.absoluteString)
-//                self.mAliPlayer?.setUrlSource(urlSource)
-//                self.mAliPlayer?.prepare()
-//                self.mediaLoader.load(detailUrl.absoluteString, duration: 3*1000)
-//                if progress > 0 {
-//                    self.mAliPlayer?.seek(toTime: Int64(progress * 1000), seekMode: AVP_SEEKMODE_ACCURATE)
-//                }
-//                self.mAliPlayer?.start()
-//            }
-//        }
     }
     @objc func playAction() {
         self.coverView.isHidden = true
@@ -221,25 +169,15 @@ extension TutorialAliVideoVM{
     func initUI() {
         // 放到串行队列设置，避免与销毁并发
         playerQueue.sync {
-//            mAliPlayer?.playerView = self
-//            mAliPlayer?.scalingMode = AVP_SCALINGMODE_SCALEASPECTFILL
-//            mAliPlayer?.setTraceID(UserInfoModel.shared.uId)
             if let player = mAliPlayer {
                 setPlayerViewOnMainThread(player: player, view: self)
                 player.scalingMode = AVP_SCALINGMODE_SCALEASPECTFILL
                 player.setTraceID(UserInfoModel.shared.uId)
             }
         }
-//        mAliPlayer?.delegate = self
-//        let cacheConfig = AVPCacheConfig()
-//        cacheConfig.enable = true
-//        cacheConfig.maxDuration = 10
-//        cacheConfig.path = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first
-//        mAliPlayer?.setCacheConfig(cacheConfig)
         
         let config = AVPPreloadConfig()
         config.preloadDuration = 10000
-//        mAliPlayer?.setsec
         
         AliPlayerGlobalSettings.enableLocalCache(true)
         self.mediaLoader = AliMediaLoader.shareInstance()
@@ -278,9 +216,9 @@ extension TutorialAliVideoVM{
             if playing {
                 self?.hasStartedPlaying = true
             }
-            let showCover = !playing && !(self?.hasStartedPlaying ?? false)
-//            self?.videoImageView.isHidden = !showCover
-//            self?.coverView.isHidden = !showCover
+        }
+        controlView?.playbackErrorOccurred = { [weak self] errorModel in
+//            self?.handlePlaybackError(errorModel)
         }
         controlView?.heightChanged = {(contentHeight)in
             self.videoHeight = contentHeight
@@ -378,6 +316,7 @@ extension TutorialAliVideoVM{
         saveCurrentProgress()
     }
 }
+
 private extension TutorialAliVideoVM {
     func finishVideoSwitchIfNeeded() {
     if Thread.isMainThread {

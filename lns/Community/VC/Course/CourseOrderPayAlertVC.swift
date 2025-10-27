@@ -32,7 +32,21 @@ class CourseOrderPayAlertVC: WHBaseViewVC {
 //        topGap = SCREEN_HEIGHT - bgViewHeight
         showWhiteView()
    }
-    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        // 1) 以安全区为准重新算高度
+        let bottomInset = view.safeAreaInsets.bottom
+        let cardHeight = kFitWidth(360) - kFitWidth(129) + bottomInset + payTypeVm.selfHeight
+        bgViewHeight = cardHeight
+
+        // 2) 紧贴底部摆放（不要再 +16）
+        whiteView.frame = CGRect(x: 0,
+                                 y: view.bounds.height - cardHeight,
+                                 width: view.bounds.width,
+                                 height: cardHeight)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .clear // 注意此处！清除背景！
@@ -128,43 +142,65 @@ class CourseOrderPayAlertVC: WHBaseViewVC {
 extension CourseOrderPayAlertVC{
     func showWhiteView() {
         whiteView.transform = CGAffineTransform(translationX: 0, y: whiteView.bounds.height)
-        UIView.animate(withDuration: 0.45,
-                       delay: 0.02,
-                       usingSpringWithDamping: 0.88,
-                       initialSpringVelocity: 0.1,
-                       options: .curveEaseInOut) {
-//            self.whiteView.transform = .identity
-            self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
-        }completion: { _ in
-//            self.whiteView.transform = .identity
-        }
-        UIView.animate(withDuration: 0.25, delay: 0.4, options: .curveEaseInOut) {
-            self.whiteView.transform = .identity
-        }
-    }
-    @objc func hiddenSelf() {
-        UIView.animate(withDuration: 0.25,
-                       delay: 0,
-                       options: .curveEaseIn) {
-//            self.whiteView.transform = CGAffineTransform(translationX: 0, y: self.whiteView.bounds.height)
-            self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: self.bgViewHeight+kFitWidth(16))
-        } completion: { _ in
-//            self.dismiss(animated: true)
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.05, execute: {
-//            self.dismiss(animated: true)
-//            self.backTapAction()
-            if (self.navigationController != nil) {
-                self.navigationController?.popViewController(animated: true)
-            }else{
-                self.dismiss(animated: true) {
-                }
+            UIView.animate(withDuration: 0.45,
+                           delay: 0.02,
+                           usingSpringWithDamping: 0.88,
+                           initialSpringVelocity: 0.1,
+                           options: .curveEaseInOut) {
+                self.whiteView.transform = .identity
             }
-        })
-//        UIView.animate(withDuration: 0.25, delay: 0,options: .curveLinear) {
-//            self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: self.bgViewHeight+kFitWidth(16))
+//        whiteView.transform = CGAffineTransform(translationX: 0, y: whiteView.bounds.height)
+//        UIView.animate(withDuration: 0.45,
+//                       delay: 0.02,
+//                       usingSpringWithDamping: 0.88,
+//                       initialSpringVelocity: 0.1,
+//                       options: .curveEaseInOut) {
+////            self.whiteView.transform = .identity
+//            self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
+//        }completion: { _ in
+////            self.whiteView.transform = .identity
+//        }
+//        UIView.animate(withDuration: 0.25, delay: 0.4, options: .curveEaseInOut) {
+//            self.whiteView.transform = .identity
 //        }
     }
+    @objc func hiddenSelf() {
+        
+//        UIView.animate(withDuration: 0.25, animations: {
+//            self.whiteView.transform = CGAffineTransform(translationX: 0, y: self.whiteView.bounds.height)
+//        }) { _ in
+            // 关闭
+            if let nav = self.navigationController {
+                nav.popViewController(animated: true)
+            } else {
+                self.dismiss(animated: true)
+            }
+//        }
+    }
+//
+//    @objc func hiddenSelf() {
+//        UIView.animate(withDuration: 0.25,
+//                       delay: 0,
+//                       options: .curveEaseIn) {
+////            self.whiteView.transform = CGAffineTransform(translationX: 0, y: self.whiteView.bounds.height)
+//            self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: self.bgViewHeight+kFitWidth(16))
+//        } completion: { _ in
+////            self.dismiss(animated: true)
+//        }
+//        DispatchQueue.main.asyncAfter(deadline: .now()+0.05, execute: {
+////            self.dismiss(animated: true)
+////            self.backTapAction()
+//            if (self.navigationController != nil) {
+//                self.navigationController?.popViewController(animated: true)
+//            }else{
+//                self.dismiss(animated: true) {
+//                }
+//            }
+//        })
+////        UIView.animate(withDuration: 0.25, delay: 0,options: .curveLinear) {
+////            self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: self.bgViewHeight+kFitWidth(16))
+////        }
+//    }
 }
 
 extension CourseOrderPayAlertVC{
