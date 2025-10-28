@@ -22,10 +22,14 @@ enum SCENARIO_TYPE {
     case launch_view
     ///教程下单
     case course_create_order
+    ///教程详情页
+    case course_detail
     ///商品列表页
     case mall_list
     ///商品详情页
     case mall_detail
+    ///商品下单
+    case mall_create_order
 }
 
 class EventLogModel: NSObject {
@@ -99,6 +103,11 @@ class EventLogUtils {
             return "商品详情页"
         case .launch_App:
             return "启动页"
+        case .course_detail:
+            return "教程详情页"
+            
+        case .mall_create_order:
+            return "商品下单"
         }
     }
 }

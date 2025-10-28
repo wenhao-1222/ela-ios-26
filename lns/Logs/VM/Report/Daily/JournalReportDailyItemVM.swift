@@ -17,6 +17,7 @@ class JournalReportDailyItemVM: UIView {
         self.isUserInteractionEnabled = true
         
         initUI()
+        showSkeletonAnimation()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -45,6 +46,19 @@ class JournalReportDailyItemVM: UIView {
 }
 
 extension JournalReportDailyItemVM{
+    func showSkeletonAnimation() {
+        detailLab.text = nil
+        imgView.image = nil
+        // 需要骨架的子视图：显示骨架（从左向右 Shimmer + 渐入）
+        let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                                 highlightColorLight: .COLOR_GRAY_E2,
+                                 cornerRadius: kFitWidth(4),
+                                 shimmerWidth: 0.22,
+                                 shimmerDuration: 1.15)
+        imgView.showSkeleton(cfg)
+        detailLab.showSkeleton(cfg)
+        typeLabel.showSkeleton(cfg)
+    }
     func updateUI(dict:NSDictionary,index:Int,totalNum:Int) {
         detailLab.text = dict.stringValueForKey(key: "text")
         if dict.stringValueForKey(key: "type") == "CHO" {
@@ -59,6 +73,8 @@ extension JournalReportDailyItemVM{
         }
         
         updateFrame(index: index, totalNum: totalNum)
+        // 3) 最后统一把骨架优雅淡出 + 内容淡入
+        [detailLab,typeLabel, imgView].forEach { $0.hideSkeletonWithCrossfade() }
     }
     func updateFrame(index:Int,totalNum:Int) {
         let whiteWidth = SCREEN_WIDHT-kFitWidth(32)

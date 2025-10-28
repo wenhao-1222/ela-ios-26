@@ -36,7 +36,7 @@ class CoursePayOrderCouponVM : UIView{
     }()
     lazy var addCouponLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "添加优惠码"
+        lab.text = "添加兑换码"
         lab.textColor = .THEME
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
@@ -108,7 +108,7 @@ class CoursePayOrderCouponVM : UIView{
     }()
     lazy var couponLab: UILabel = {
         let lab = UILabel()
-        lab.text = "已优惠："
+        lab.text = "已抵扣："
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .semibold)
         

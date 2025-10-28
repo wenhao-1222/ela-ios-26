@@ -155,7 +155,7 @@ extension PersonalTopVM{
         self.nameLabel.text = "\(UserInfoModel.shared.nickname)"
         self.idLabel.text = "ID：\(UserInfoModel.shared.id)"
         
-        self.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
+//        self.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
         self.avatarStatusLabel.isHidden = UserInfoModel.shared.avatarStatus == .pass
     }
 }

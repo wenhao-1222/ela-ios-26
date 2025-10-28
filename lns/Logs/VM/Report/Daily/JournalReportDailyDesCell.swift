@@ -17,8 +17,8 @@ class JournalReportDailyDesCell: UITableViewCell {
         self.backgroundColor = .clear
         self.selectionStyle = .none
         self.clipsToBounds = true
-        self.isSkeletonable = true
-        contentView.isSkeletonable = true
+//        self.isSkeletonable = true
+//        contentView.isSkeletonable = true
         initUI()
     }
     lazy var bgView: UIView = {
@@ -41,8 +41,8 @@ class JournalReportDailyDesCell: UITableViewCell {
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping
-        lab.isSkeletonable = true
-        lab.updateAnimatedSkeleton(usingColor: .blue)
+//        lab.isSkeletonable = true
+//        lab.updateAnimatedSkeleton(usingColor: .blue)
         
         return lab
     }()
@@ -52,7 +52,7 @@ extension JournalReportDailyDesCell{
     func updateUI(dict:NSDictionary,gapsArray:NSArray,adviceDict:NSDictionary)  {
         let string = dict.stringValueForKey(key: "text")
         if string.count > 0 {
-            hideSkeleton()
+//            hideSkeleton()
             detailLab.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
                 make.left.equalTo(kFitWidth(31))
@@ -70,7 +70,8 @@ extension JournalReportDailyDesCell{
             }
             let attr = string.attributedText(text: string, keywords: keyWords as! [String], font: .systemFont(ofSize: 14, weight: .semibold),color: .COLOR_TEXT_TITLE_0f1214)
             detailLab.attributedText = attr
-            
+            // 3) 最后统一把骨架优雅淡出 + 内容淡入
+            [detailLab].forEach { $0.hideSkeletonWithCrossfade() }
             if gapsArray.count == 0 || adviceDict.stringValueForKey(key: "text").count == 0 {
                 bgView.layer.cornerRadius = kFitWidth(12)
                 bgView.clipsToBounds = true
@@ -81,9 +82,16 @@ extension JournalReportDailyDesCell{
                 make.top.equalTo(kFitWidth(0))
                 make.left.equalTo(kFitWidth(31))
                 make.right.equalTo(kFitWidth(-31))
-                make.height.equalTo(kFitWidth(0))
+                make.height.equalTo(kFitWidth(54))
                 make.bottom.equalTo(kFitWidth(-20))
             }
+            let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                                     highlightColorLight: .COLOR_GRAY_E2,
+                                     cornerRadius: kFitWidth(4),
+                                     shimmerWidth: 0.22,
+                                     shimmerDuration: 1.15)
+            
+            detailLab.showSkeleton(cfg)
         }
     }
 }

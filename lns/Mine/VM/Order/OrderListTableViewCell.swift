@@ -301,7 +301,7 @@ extension OrderListTableViewCell {
         priceAttrPrice.yy_font  = .systemFont(ofSize: 16, weight: .semibold)
         priceAttrUnit.append(priceAttrPrice)
         if dict.doubleValueForKey(key: "discountAmount") > 0 && dict.stringValueForKey(key: "status") == "1"{
-            let priceAttrDiscount = NSMutableAttributedString(string: "已优惠¥\(dict.stringValueForKey(key: "discountAmount"))")
+            let priceAttrDiscount = NSMutableAttributedString(string: "已抵扣¥\(dict.stringValueForKey(key: "discountAmount"))")
             priceAttrDiscount.yy_color = .THEME
             priceAttrDiscount.yy_font  = .systemFont(ofSize: 11, weight: .regular)
             priceAttrUnit.append(priceAttrDiscount)

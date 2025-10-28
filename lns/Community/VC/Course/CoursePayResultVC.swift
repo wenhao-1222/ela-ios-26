@@ -66,14 +66,14 @@ class CoursePayResultVC: WHBaseViewVC {
         if self.orderDict.doubleValueForKey(key: "payChannel") > 0 {
             vm.rightDetailLab.text = self.orderDict.stringValueForKey(key: "payChannel")
         }else{
-            vm.rightDetailLab.text = "优惠码"
+            vm.rightDetailLab.text = "兑换码"
         }
         
         return vm
     }()
     lazy var orderCouponItemVm: CoursePayResultItemVM = {
         let vm = CoursePayResultItemVM.init(frame: CGRect.init(x:0, y: self.orderPayTypeItemVm.frame.maxY, width: 0, height: 0))
-        vm.leftTitleLab.text = "优惠券"
+        vm.leftTitleLab.text = "抵扣金额"
         vm.rightDetailLab.textColor = .THEME
         return vm
     }()

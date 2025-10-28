@@ -10,7 +10,7 @@ import UIKit
 
 class TutorialAliVideoVM: UIView {
     
-    var selfHeight = kFitWidth(211)
+    var selfHeight = kFitWidth(231)
     var controller = WHBaseViewVC()
     var mAliPlayer: AliPlayer? = AliPlayer()
     var mediaLoader = AliMediaLoader()
@@ -27,7 +27,7 @@ class TutorialAliVideoVM: UIView {
     var nextVideoBlock:(()->())?
     var fullChangeBlock:((Bool)->())?
     
-    var videoHeight = CGFloat(211)
+    var videoHeight = CGFloat(231)
     private var lastSaveTime: TimeInterval = 0
     private var originalFrame: CGRect = .zero
     private var hasStartedPlaying = false
@@ -173,6 +173,7 @@ extension TutorialAliVideoVM{
                 setPlayerViewOnMainThread(player: player, view: self)
                 player.scalingMode = AVP_SCALINGMODE_SCALEASPECTFILL
                 player.setTraceID(UserInfoModel.shared.uId)
+                player.enableHardwareDecoder = false
             }
         }
         
@@ -183,10 +184,9 @@ extension TutorialAliVideoVM{
         self.mediaLoader = AliMediaLoader.shareInstance()
         self.mediaLoader.setAliMediaLoaderStatusDelegate(self)
         
-        
-        playerQueue.sync {
-            mAliPlayer?.enableHardwareDecoder = false
-        }
+//        playerQueue.sync {
+//            mAliPlayer?.enableHardwareDecoder = false
+//        }
         
         addSubview(videoImageView)
         addSubview(coverView)
@@ -493,14 +493,20 @@ extension TutorialAliVideoVM {
             guard let self = self else { return }
             guard self.playbackRequestToken == requestToken, !self.isDisposed else { return }
             guard let player = self.mAliPlayer else { return }
-            guard self.playbackRequestToken == requestToken else { return }
+
             player.stop()
             let source = AVPVidStsSource()
             source.region = "cn-shanghai"
             source.vid = self.model.videoVID
+            
             source.securityToken = UserInfoModel.shared.ossSecurityToken
             source.accessKeyId = UserInfoModel.shared.ossAccessKeyId
             source.accessKeySecret = UserInfoModel.shared.ossAccessKeySecret
+            
+//            source.vid = "6b357371ef3c45f4a06e2536fd534380"//self.model.videoVID
+//            source.securityToken = "CAIS2wJ1q6Ft5B2yfSjIr5rbfMjHnZ4T+YSmZ0eIsDYAXetH2ZyTszz2IHlKdHBuCeoWs/QylWxU5vobloltTtpfTEmBc5I179FK/12jOJOQ5pen5OEfmcC9FXSPBkYDIRJ0qb6rIunGc9KBNnrm9EYqs5aYGBymW1u6S+7r7bdsctUQWCShcDNCH604DwB+qcgcRxCzXLTXRXyMuGfLC1dysQdRkH527b/FoveR8R3Dllb3uIR3zsbTWsH9N5I1YMsiCIzphrItJvT7vXQOu0QQxsBfl7dZ/DrLhNaZDmRK7g+OW+iuqYQxfFYnNvJqRv4Z/aSgxaEhoIvak4XpwFNBMORSFj7YQI2wcgMR1VMcg7zTHJSM2BSlurjnXvGdOFO99tOSGa1gz3sw+NIB6A2tO9ArENXT3HrgTEndpYar3l9YP5RbgdumA6RERTytB4H9+0J+nvdS6DuuaXZ+tRqAAUlOo8YTuGjq/SHWU1lhUnhrr1WmL7Q4JcqNkI0nor4vHlIkO3jG1TzPYZjzGnQkR1y4Of/Ud1gqAStiIrziOae8qDM5bsYkfuvjgtUCrjTXnHkEEko/DOSRhBEJXyWjXt3egXlFL2ztl0WZTHDyMC/hT8rvtbTZhJQL+oRrDSVjIAA="//UserInfoModel.shared.ossSecurityToken
+//            source.accessKeyId = "STS.NYn7rspA2NFMea9T6UQdk6Y8Q"//UserInfoModel.shared.ossAccessKeyId
+//            source.accessKeySecret = "CSbxW8J9Tce4THpnXMpeE5SW55YgUZmotShbsynGGbRQ"//UserInfoModel.shared.ossAccessKeySecret
             guard self.playbackRequestToken == requestToken, !self.isDisposed else { return }
             player.setStsSource(source)
             player.prepare()
@@ -508,14 +514,11 @@ extension TutorialAliVideoVM {
                 guard self.playbackRequestToken == requestToken, !self.isDisposed else { return }
                 player.seek(toTime: resumePosition, seekMode: AVP_SEEKMODE_ACCURATE)
             }
-            guard self.playbackRequestToken == requestToken, !self.isDisposed else { return }
+//            guard self.playbackRequestToken == requestToken, !self.isDisposed else { return }
             player.start()
             self.finishVideoSwitchIfNeeded()
             if triggerStatistic {
                 DispatchQueue.main.async {
-                    if self.playbackRequestToken == requestToken, !self.isDisposed{
-                        
-                    } else { return }
                     self.sendTutorialClickRequest()
                 }
             }

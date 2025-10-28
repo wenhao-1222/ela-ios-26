@@ -17,8 +17,8 @@ class JournalReportDailyDetailCell: UITableViewCell {
         self.backgroundColor = .clear
         self.selectionStyle = .none
         self.clipsToBounds = true
-        isSkeletonable = true
-        contentView.isSkeletonable = true
+//        isSkeletonable = true
+//        contentView.isSkeletonable = true
         
         initUI()
     }
@@ -34,7 +34,7 @@ class JournalReportDailyDetailCell: UITableViewCell {
         vi.backgroundColor = .COLOR_BG_F5
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
-        vi.isSkeletonable = true
+//        vi.isSkeletonable = true
         
         return vi
     }()
@@ -52,9 +52,35 @@ class JournalReportDailyDetailCell: UITableViewCell {
 extension JournalReportDailyDetailCell{
     func updateUI(dict:NSDictionary)  {
         if dict.stringValueForKey(key: "text").count > 0 {
-            self.hideSkeleton()
-            let attr = NSMutableAttributedString(string: dict.stringValueForKey(key: "text"))
-            detailLab.setLineHeight(attr: attr,lineHeight: kFitWidth(21))
+//            self.hideSkeleton()
+            detailLab.snp.remakeConstraints { make in
+                make.top.equalTo(kFitWidth(16))
+                make.left.equalTo(kFitWidth(46))
+                make.right.equalTo(kFitWidth(-46))
+                make.height.equalTo(kFitWidth(64))
+                make.bottom.equalTo(kFitWidth(-32))
+            }
+            let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                                     highlightColorLight: .COLOR_GRAY_E2,
+                                     cornerRadius: kFitWidth(4),
+                                     shimmerWidth: 0.22,
+                                     shimmerDuration: 1.15)
+            
+            detailLab.showSkeleton(cfg)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.05, execute: {
+                let attr = NSMutableAttributedString(string: dict.stringValueForKey(key: "text"))
+                self.detailLab.setLineHeight(attr: attr,lineHeight: kFitWidth(21))
+                
+                self.detailLab.snp.remakeConstraints { make in
+                    make.top.equalTo(kFitWidth(16))
+                    make.left.equalTo(kFitWidth(46))
+                    make.right.equalTo(kFitWidth(-46))
+                    make.bottom.equalTo(kFitWidth(-32))
+                }
+                // 3) 最后统一把骨架优雅淡出 + 内容淡入
+                [self.detailLab].forEach { $0.hideSkeletonWithCrossfade() }
+            })
         }
     }
 }

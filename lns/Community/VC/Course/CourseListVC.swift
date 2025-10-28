@@ -55,12 +55,16 @@ class CourseListVC: WHBaseViewVC {
         }
         
         initUI()
-        AliPlayerGlobalSettings.setFairPlayCertID("7069e758e56e40eabdab57683b5d815f")
+        AliPlayerGlobalSettings.setFairPlayCertID("7069e758e56e40eabdab57683b5d815f")//ba4f8af33d404796ab9496c624e76d09
+        //7069e758e56e40eabdab57683b5d815f   自己的
         if UserConfigModel.shared.splashTutoId.count > 0 {
             self.parentDict = ["id":UserConfigModel.shared.splashTutoId]
             UserConfigModel.shared.splashTutoId = ""
         }
         sendTutorialListReqeust()
+        EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
+                                            scenarioType: .course_detail,
+                                            text: "\(self.parentDict.stringValueForKey(key: "id"))")
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshStatus), name: NOTIFI_NAME_REFRESH_COURSE_STATUS, object: nil)
 //        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
@@ -440,71 +444,72 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
 //        self.view.bringSubviewToFront(self.firstPlayTipsAlertVm)
 //        firstPlayTipsAlertVm.showView()
         self.tapIndexPath = indexPath
-        if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
-            
-        }else{
-            if self.headMsgDict.doubleValueForKey(key: "price") == 0{
-
-            }else{
-                self.buyButtonTouchUpInside()
-                return
-            }
-        }
-        
-        if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
-            DLLog(message: "点击了下载PDF")
-            guard isDownloadingPdf == false else { return }
-            let urlString = self.pdfDict.stringValueForKey(key: "url")
-            guard urlString.count > 0 else {
-                MCToast.mc_failure("暂无可下载的PDF")
-                return
-            }
-
-            guard let destinationURL = pdfDestinationURL(from: urlString) else {
-                MCToast.mc_failure("无法创建文件路径")
-                return
-            }
-
-            if FileManager.default.fileExists(atPath: destinationURL.path) {
-                self.pdfLocalURL = destinationURL
-                presentPDF(at: destinationURL)
-                return
-            }
-
-            if let cell = tableView.cellForRow(at: indexPath) as? CoursePDFCell {
-                cell.setLoading(true)
-            }
-            isDownloadingPdf = true
-            DSImageUploader().downloadOSSFile(urlStr: urlString, destinationURL: destinationURL, progress: nil) { [weak self] result in
-                guard let self = self else { return }
-                self.isDownloadingPdf = false
-                if let cell = self.tableView.cellForRow(at: indexPath) as? CoursePDFCell {
-                    cell.setLoading(false)
-                }
-                switch result {
-                case .success(let fileURL):
-                    self.pdfLocalURL = fileURL
-                    MCToast.mc_success("下载完成")
-                    self.presentPDF(at: fileURL)
-                case .failure(let error):
-                    let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-                    MCToast.mc_failure(message)
-                }
-            }
-            return
-        }
-//        self.tapIndexPath = indexPath
-        if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
-            
-        }else{
-            if self.headMsgDict.doubleValueForKey(key: "price") == 0{
-                self.playVideo()
-            }else{
-                self.buyButtonTouchUpInside()
-            }
-            return
-        }
         self.playVideo()
+//        if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
+//            
+//        }else{
+//            if self.headMsgDict.doubleValueForKey(key: "price") == 0{
+//
+//            }else{
+//                self.buyButtonTouchUpInside()
+//                return
+//            }
+//        }
+//        
+//        if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
+//            DLLog(message: "点击了下载PDF")
+//            guard isDownloadingPdf == false else { return }
+//            let urlString = self.pdfDict.stringValueForKey(key: "url")
+//            guard urlString.count > 0 else {
+//                MCToast.mc_failure("暂无可下载的PDF")
+//                return
+//            }
+//
+//            guard let destinationURL = pdfDestinationURL(from: urlString) else {
+//                MCToast.mc_failure("无法创建文件路径")
+//                return
+//            }
+//
+//            if FileManager.default.fileExists(atPath: destinationURL.path) {
+//                self.pdfLocalURL = destinationURL
+//                presentPDF(at: destinationURL)
+//                return
+//            }
+//
+//            if let cell = tableView.cellForRow(at: indexPath) as? CoursePDFCell {
+//                cell.setLoading(true)
+//            }
+//            isDownloadingPdf = true
+//            DSImageUploader().downloadOSSFile(urlStr: urlString, destinationURL: destinationURL, progress: nil) { [weak self] result in
+//                guard let self = self else { return }
+//                self.isDownloadingPdf = false
+//                if let cell = self.tableView.cellForRow(at: indexPath) as? CoursePDFCell {
+//                    cell.setLoading(false)
+//                }
+//                switch result {
+//                case .success(let fileURL):
+//                    self.pdfLocalURL = fileURL
+//                    MCToast.mc_success("下载完成")
+//                    self.presentPDF(at: fileURL)
+//                case .failure(let error):
+//                    let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+//                    MCToast.mc_failure(message)
+//                }
+//            }
+//            return
+//        }
+////        self.tapIndexPath = indexPath
+//        if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
+//            
+//        }else{
+//            if self.headMsgDict.doubleValueForKey(key: "price") == 0{
+//                self.playVideo()
+//            }else{
+//                self.buyButtonTouchUpInside()
+//            }
+//            return
+//        }
+//        self.playVideo()
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 0 {

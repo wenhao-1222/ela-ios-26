@@ -114,6 +114,13 @@ extension PlayerControlBottomToolVM{
         setConstraint()
     }
 
+    func applyLayoutFrame(_ frame: CGRect, bottomSafeArea: CGFloat, isFullScreen: Bool) {
+        bottomSafe = bottomSafeArea
+        if !isFullScreen {
+            originalFrame = frame
+        }
+        self.frame = frame
+    }
     func setConstraint(){
         bottomView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()

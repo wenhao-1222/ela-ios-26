@@ -478,7 +478,10 @@ extension ForumListVM:UITableViewDelegate,UITableViewDataSource{
                     self.tableView.endUpdates()
                 }
             }
-            cell?.updateUI(model: model)
+//            DispatchQueue.main.async {
+                cell?.updateUI(model: model)
+//            }
+            
             if model.coverType == .VIDEO && model.covers.count > 0{
                 cell?.videoUrlStr = model.covers[0]as? String ?? ""
             }

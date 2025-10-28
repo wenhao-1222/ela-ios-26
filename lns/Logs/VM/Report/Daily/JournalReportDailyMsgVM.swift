@@ -5,7 +5,7 @@
 //  Created by Elavatine on 2025/5/12.
 //
 
-import SkeletonView
+//import SkeletonView
 
 class JournalReportDailyMsgVM: UIView {
     
@@ -222,7 +222,7 @@ extension JournalReportDailyMsgVM{
         
         addSubview(nodataVm)
         
-        initSkeleton()
+//        initSkeleton()
     }
     
     func initSkeleton() {
@@ -302,10 +302,10 @@ extension JournalReportDailyMsgVM{
 //                self.rankingButton.isHidden = false
                 self.scrollView.addSubview(self.rankingButton)
                 self.reportMsgDict = dataObj
-//                DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-                    self.tableView.hideSkeleton()
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+//                    self.tableView.hideSkeleton()
                     self.tableView.reloadData()
-//                })
+                })
             }
         }
     }

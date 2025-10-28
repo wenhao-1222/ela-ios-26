@@ -11,6 +11,7 @@ import AliyunPlayer
 class TutorialVideoSwiftControlView: UIView {
     weak var player: AliPlayer?
     var videoHeight = kFitWidth(200)
+    var loadNum = 1
     var tutorialId = ""
     private var isPlaying = false
     private var isFullScreen = false
@@ -213,8 +214,39 @@ class TutorialVideoSwiftControlView: UIView {
         volumeBrightnessView.frame = CGRect(x: 0, y: top > 20 ? top + 10 : 30, width: 170, height: 35)
         volumeBrightnessView.center.x = bounds.width / 2
         doubleRateLabel.frame = CGRect(x: (bounds.width - 120) / 2, y: 40, width: 120, height: 26)
+//        let oldFrame = frame
+//        var safeBottom: CGFloat
+//        if #available(iOS 11.0, *) {
+//            safeBottom = max(safeAreaInsets.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0)
+//        } else {
+//            safeBottom = 0
+//        }
+//
+//        DLLog(message: "layoutSubviews loadNum:\(loadNum)  --  \(safeBottom)")
+//        if isFullScreen {
+//            frame = CGRect(x: 0, y: 0, width: SCREEN_HEIGHT, height: SCREEN_WIDHT)
+//        } else {
+//            if loadNum > 4{
+//                safeBottom = 0
+//            }
+//            loadNum += 1
+//            frame = CGRect(x: oldFrame.origin.x, y: oldFrame.origin.y, width: oldFrame.size.width, height: videoHeight)
+//        }
+//
+//        centerToolVm.frame = bounds
+//
+//        let bottomHeight = bottomToolVm.selfHeight + safeBottom
+//        let bottomOriginY = bounds.height - bottomHeight
+//        let bottomFrame = CGRect(x: 0,
+//                                 y: max(0, bottomOriginY),
+//                                 width: bounds.width,
+//                                 height: bottomHeight)
+//        DLLog(message: "layoutSubviews loadNum:\(loadNum)  --  \(bottomFrame)")
+//        bottomToolVm.applyLayoutFrame(bottomFrame, bottomSafeArea: safeBottom, isFullScreen: isFullScreen)
+        
         
         let oldFrame = self.frame
+        let safeBottom = max(safeAreaInsets.bottom, UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0)
         if self.isFullScreen{
             self.frame = CGRect.init(x: 0, y: 0, width: SCREEN_HEIGHT, height: SCREEN_WIDHT)
             self.centerToolVm.frame = CGRect.init(x: 0, y: 0, width: SCREEN_HEIGHT, height: SCREEN_WIDHT)
@@ -224,6 +256,9 @@ class TutorialVideoSwiftControlView: UIView {
 //                self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: SCREEN_WIDHT-self.bottomToolVm.selfHeight*0.5)
 //            }
             self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: SCREEN_WIDHT-self.bottomToolVm.selfHeight*0.5)
+//            let bottomY = SCREEN_WIDHT - safeBottom - self.bottomToolVm.selfHeight * 0.5
+//            self.bottomToolVm.center = CGPoint.init(x: self.bounds.width * 0.5,
+//                                                                y: max(self.bottomToolVm.selfHeight * 0.5, bottomY))
         }else{
             self.frame = CGRect.init(x: oldFrame.origin.x, y: oldFrame.origin.y, width: oldFrame.size.width, height: self.videoHeight)
             self.centerToolVm.frame = CGRect.init(x: 0, y: 0, width: self.bounds.width, height: self.videoHeight)
@@ -232,7 +267,19 @@ class TutorialVideoSwiftControlView: UIView {
 //            }else{
 //                self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: self.videoHeight-self.bottomToolVm.selfHeight*0.5)
 //            }
-            self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: self.videoHeight-self.bottomToolVm.selfHeight*0.5)
+            if loadNum > 4{
+                UIView.animate(withDuration: 0.25) {
+                    self.bottomToolVm.center = CGPoint.init(x: self.bounds.width*0.5, y: self.videoHeight-self.bottomToolVm.selfHeight*0.5)
+                }
+            }else{
+                let currentHeight = self.bounds.height
+                let bottomY = currentHeight - safeBottom - self.bottomToolVm.selfHeight * 0.5
+//                UIView.animate(withDuration: 0.55) {
+                    self.bottomToolVm.center = CGPoint.init(x: self.bounds.width * 0.5,
+                                                                        y: max(self.bottomToolVm.selfHeight * 0.5, bottomY))
+//                }
+            }
+            loadNum += 1
         }
     }
 
@@ -318,7 +365,6 @@ class TutorialVideoSwiftControlView: UIView {
             }
         }
     }
-    
     
     @objc private func handleTap() {
         toggleTool()
@@ -521,11 +567,10 @@ extension TutorialVideoSwiftControlView: AVPDelegate {
             self.videoHeight = CGFloat(CGFloat(height)/CGFloat(width))*SCREEN_WIDHT
             self.heightChanged?(self.videoHeight)
             
-            DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.25, execute: {
                 self.setNeedsLayout()
                 self.layoutSubviews()
             })
-            
         }
     }
     func onCurrentPositionUpdate(_ player: AliPlayer!, position: Int64) {

@@ -1019,9 +1019,9 @@ extension ForumOfficialDetailVC{
             DSImageUploader().dealImgUrlSignForOss(urlStr: videoUrl.absoluteString, completion: { str in
                 DLLog(message: "视频播放URL:\(str)")
                 if let strURL = URL(string: str){
-//                    DispatchQueue.global(qos: .userInteractive).async {
+                    DispatchQueue.global(qos: .userInteractive).async {
                         ZFPlayerModel.shared.player.assetURL = strURL
-//                    }
+                    }
                 }
             })
 //            ZFPlayerModel.shared.player.playerPrepareToPlay = {(asset ,assertUrl)in
@@ -1030,6 +1030,7 @@ extension ForumOfficialDetailVC{
 //                    ZFPlayerModel.shared.playerManager.play()
 //                }
 //            }
+            
             ZFPlayerModel.shared.player.playerPlayTimeChanged = {asset,current,total in
                 if current > 0.05{
                     self.videoVm.videoImageView.isHidden = true

@@ -17,8 +17,8 @@ class JournalReportDailyGoalCell: UITableViewCell {
         self.backgroundColor = .clear
         self.selectionStyle = .none
         self.clipsToBounds = true
-        isSkeletonable = true
-        contentView.isSkeletonable = true
+//        isSkeletonable = true
+//        contentView.isSkeletonable = true
         
         initUI()
     }
@@ -58,9 +58,9 @@ class JournalReportDailyGoalCell: UITableViewCell {
         lab.font = .systemFont(ofSize: 16, weight: .semibold)
 //        lab.numberOfLines = 2
 //        lab.lineBreakMode = .byWordWrapping
-        lab.isSkeletonable = true
+//        lab.isSkeletonable = true
         lab.adjustsFontSizeToFitWidth = true
-        lab.updateSkeleton(usingColor: .red)
+//        lab.updateSkeleton(usingColor: .red)
         
         return lab
     }()
@@ -77,12 +77,25 @@ extension JournalReportDailyGoalCell{
     func updateUI(dict:NSDictionary) {
         let string = dict.stringValueForKey(key: "text")
         if string.count > 0 {
-            hideSkeleton()
+//            hideSkeleton()
             titleLab.isHidden = false
             
             let keyWords = dict["keywords"]as? NSArray ?? []
             
             contentLab.attributedText = string.attributedText(text: string, keywords: keyWords as! [String], font: UIFont().DDInFontSemiBold(fontSize: 28),color: .white)
+            // 3) 最后统一把骨架优雅淡出 + 内容淡入
+            [titleLab, contentLab].forEach { $0.hideSkeletonWithCrossfade() }
+        }else{
+            titleLab.text = nil
+            // 需要骨架的子视图：显示骨架（从左向右 Shimmer + 渐入）
+            let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                                     highlightColorLight: .COLOR_GRAY_E2,
+                                     cornerRadius: kFitWidth(4),
+                                     shimmerWidth: 0.22,
+                                     shimmerDuration: 1.15)
+            
+            titleLab.showSkeleton(cfg)
+            contentLab.showSkeleton(cfg)
         }
     }
     func refreshLabelFrame(isAchieved:Bool) {

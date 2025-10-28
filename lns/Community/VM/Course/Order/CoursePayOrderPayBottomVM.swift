@@ -86,7 +86,7 @@ extension CoursePayOrderPayBottomVM{
         discountMoneyLabel.isHidden = false
         discountMoneyLabel.textInsets = UIEdgeInsets(top: kFitWidth(6), left: kFitWidth(6), bottom: kFitWidth(6), right: kFitWidth(6))
         payMoneyLabel.text = "¥ \(WHUtils.convertStringToString("\(dict.doubleValueForKey(key: "payAmount"))") ?? "")"
-        discountMoneyLabel.text = "已优惠¥\(WHUtils.convertStringToString("\(dict.doubleValueForKey(key: "discountAmount"))") ?? "")  "
+        discountMoneyLabel.text = "已抵扣¥\(WHUtils.convertStringToString("\(dict.doubleValueForKey(key: "discountAmount"))") ?? "")  "
     }
 }
 

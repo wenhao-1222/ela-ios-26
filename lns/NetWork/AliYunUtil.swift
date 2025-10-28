@@ -391,17 +391,31 @@ extension DSImageUploader {
             let ossProvider = OSSStsTokenCredentialProvider.init(accessKeyId: UserInfoModel.shared.ossAccessKeyId,
                                                                  secretKeyId: UserInfoModel.shared.ossAccessKeySecret,
                                                                  securityToken: UserInfoModel.shared.ossSecurityToken)
-            let ossClient = OSSClient.init(endpoint: UserInfoModel.shared.ossEndpoint,
-                                           credentialProvider: ossProvider,
-                                           clientConfiguration: config)
+//            let ossClient = OSSClient.init(endpoint: UserInfoModel.shared.ossEndpoint,
+//                                           credentialProvider: ossProvider,
+//                                           clientConfiguration: config)
             
             let urlParams = urlStr.components(separatedBy: "\(UserInfoModel.shared.ossEndpoint.components(separatedBy:CharacterSet.init(charactersIn:"//")).last ?? "")/")
             let objectKey = "\(urlParams.last ?? "")"
-            let URL_Type       = WHGetInterface_javaWithType()
+//            let URL_Type       = WHGetInterface_javaWithType()
+            DispatchQueue.global(qos: .userInitiated).async {
+           let ossClient = OSSClient.init(endpoint: UserInfoModel.shared.ossEndpoint,
+                                          credentialProvider: ossProvider,
+                                          clientConfiguration: config)
+
+//           let URL_Type       = WHGetInterface_javaWithType()
 //            DLLog(message: "OSS预签名 bucketName ：\(bucketName)    objectKey:\(objectKey)")
+//            let task = ossClient.presignConstrainURL(withBucketName: bucketName, withObjectKey: objectKey, withExpirationInterval: 60*60)//30分钟
+//            DLLog(message: "OSS预签名： 前 \(urlStr)   -    后：\(task.result as? String ?? "签名失败")")
+//            completion(task.result as? String ?? urlStr)
             let task = ossClient.presignConstrainURL(withBucketName: bucketName, withObjectKey: objectKey, withExpirationInterval: 60*60)//30分钟
-            DLLog(message: "OSS预签名： 前 \(urlStr)   -    后：\(task.result as? String ?? "签名失败")")
-            completion(task.result as? String ?? urlStr)
+                            let result = task.result as? String ?? urlStr
+                            DLLog(message: "OSS预签名： 前 \(urlStr)   -    后：\(result)")
+
+                            DispatchQueue.main.async {
+                                completion(result)
+                            }
+                        }
         }
     }
     func downloadOSSFile(urlStr: String,

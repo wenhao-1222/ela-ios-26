@@ -113,6 +113,9 @@ class MallOrderCreateVC: WHBaseViewVC {
 //                            "tradeState":"SUCCESS"]
 //            vc.number = self.number
 //            self.navigationController?.pushViewController(vc, animated: true)
+            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
+                                                scenarioType: .mall_create_order,
+                                                text: "\(self.detailModel.id)")
             if self.payTypeVm.payType == .wechat{
                 self.sendOrderPayWeChatRequest()
             }else{

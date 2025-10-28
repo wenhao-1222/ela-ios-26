@@ -68,9 +68,10 @@ extension JournalReportDailyNaturalCell{
             titleLab.text = "今日你比原计划"
             for i in 0..<dataArr.count{
                 let vm = JournalReportDailyItemVM.init(frame: CGRect.init(x: 0, y: kFitWidth(72), width: 0, height: 0))
+                
+                bgView.addSubview(vm)
                 let dict = dataArr[i]as? NSDictionary ?? [:]
                 vm.updateUI(dict: dict,index: i,totalNum: dataArr.count)
-                bgView.addSubview(vm)
             }
         }
     }
