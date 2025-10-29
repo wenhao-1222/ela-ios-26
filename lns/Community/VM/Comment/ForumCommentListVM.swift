@@ -335,7 +335,7 @@ extension ForumCommentListVM{
         // 占位 5 条，每条包含一个空回复用于显示骨架
         dataSourceArray.removeAll()
         sectionHeaders.removeAll()
-        for _ in 0..<2 {
+        for _ in 0..<5 {
             let listModel = ForumCommentListModel()
             listModel.replyModels = [ForumCommentReplyModel()]
             dataSourceArray.append(listModel)
@@ -365,9 +365,7 @@ extension ForumCommentListVM:UITableViewDelegate,UITableViewDataSource{
         let model = dataSourceArray[indexPath.section]
         let models = model.replyModels
         let replyMo = models[indexPath.row]
-        DispatchQueue.main.async {
-            cell?.updateUI(model: replyMo)
-        }
+        cell?.updateUI(model: replyMo)
 
         if self.isFromNewsVC && self.replyId.count > 0  && isHightlghted == false && newsReplyIds.count > 0 {
             if let lastReplyId = newsReplyIds.last , lastReplyId == replyMo.id{
@@ -410,24 +408,33 @@ extension ForumCommentListVM:UITableViewDelegate,UITableViewDataSource{
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        if isShowSkeleton { return nil } // 骨架时不渲染 header，避免空白/横线
         let model = dataSourceArray[section]
-        
+
+//        if let cache = sectionHeaders[section],
+//           cache.modelId == model.commentModel.id {
+////            cache.view.updateUI(model: model.commentModel)
+//            return cache.view
+//        }
         let vm: ForumCommentListHeadVM
         if let cache = sectionHeaders[section] {
             vm = cache
             vm.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: model.commentModel.contentHeight)
-            DispatchQueue.main.async {
-                vm.updateUI(model: model.commentModel)
-            }
+            vm.updateUI(model: model.commentModel)
         } else {
             vm = ForumCommentListHeadVM(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: model.commentModel.contentHeight))
-            DispatchQueue.main.async {
-                vm.updateUI(model: model.commentModel)
-            }
+            vm.updateUI(model: model.commentModel)
             sectionHeaders[section] = vm
         }
 
         vm.lineView.isHidden = (section == 0)
+//        let vm = ForumCommentListHeadVM(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: model.commentModel.contentHeight))
+//        vm.updateUI(model: model.commentModel)
+//        if section == 0 { vm.lineView.isHidden = true }
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now()+2) {
+//            self.sectionHeaders[section] = (model.commentModel.id,vm)
+//        }
 
         if self.isFromNewsVC && isHightlghted == false && newsCommentId.count > 0 && commentId.count > 0 {
             if newsCommentId == model.commentModel.id && section == 0{
