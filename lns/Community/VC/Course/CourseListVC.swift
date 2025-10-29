@@ -449,6 +449,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
 //        firstPlayTipsAlertVm.showView()
         self.tapIndexPath = indexPath
 //        self.playVideo()
+        
         if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
             
         }else{
@@ -514,6 +515,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
             return
         }
         self.playVideo()
+         
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 0 {

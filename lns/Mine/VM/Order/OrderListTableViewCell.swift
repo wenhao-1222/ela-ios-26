@@ -257,13 +257,12 @@ extension OrderListTableViewCell {
                 }
             } else if dict.stringValueForKey(key: "status") == "2" { // 已取消
                 moneyLabel.isHidden = false
-                timeoutButton.isHidden = false
                 lineView.snp.remakeConstraints { make in
                     make.left.equalTo(kFitWidth(16))
                     make.right.equalTo(kFitWidth(-16))
                     make.top.equalTo(imgView.snp.bottom).offset(kFitWidth(16))
                     make.height.equalTo(kFitWidth(1))
-                    make.bottom.equalTo(kFitWidth(-50))
+                    make.bottom.equalToSuperview()
                 }
             }
             

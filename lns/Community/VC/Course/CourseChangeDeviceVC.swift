@@ -78,6 +78,13 @@ class CourseChangeDeviceVC: WHBaseViewVC {
         
         return vi
     }()
+    lazy var tipsLabbb: UILabel = {
+        let lab = UILabel()
+        lab.text = "课程仅可更换一次设备"
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.font = .systemFont(ofSize: 14, weight: .regular)
+        return lab
+    }()
     lazy var changeButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("确认更换", for: .normal)
@@ -150,6 +157,7 @@ extension CourseChangeDeviceVC{
         view.addSubview(phoneLabe)
         view.addSubview(getCodeBtn)
         view.addSubview(verifyCodeView)
+        view.addSubview(tipsLabbb)
         view.addSubview(changeButton)
         view.addSubview(cancelButton)
         
@@ -187,6 +195,10 @@ extension CourseChangeDeviceVC{
             make.right.equalTo(kFitWidth(-20))
             make.top.equalTo(kFitWidth(320)+getNavigationBarHeight())
             make.height.equalTo(kFitWidth(44))
+        }
+        tipsLabbb.snp.makeConstraints { make in
+            make.bottom.equalTo(changeButton.snp.top).offset(kFitWidth(-30))
+            make.centerX.lessThanOrEqualToSuperview()
         }
         cancelButton.snp.makeConstraints { make in
             make.height.equalTo(changeButton)

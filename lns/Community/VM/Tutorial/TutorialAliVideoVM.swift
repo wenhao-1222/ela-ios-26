@@ -38,11 +38,16 @@ class TutorialAliVideoVM: UIView {
     private var isSwitchingVideo = false
     
     // ===== 新增：串行队列与处置标记，保证所有 AliPlayer 调用在同一线程 =====
+    // MARK-[1] 新增：串行队列与处置标记（所有 AliPlayer 相关操作都走该队列）
     private let playerQueue = DispatchQueue(label: "com.elavatine.aliplayer.queue")
     private var isDisposed = false
     // 在类里加一个状态位（和现有状态位放一起即可）
     private var isSuspended = false
-    // =====================================================================
+    // MARK-[1] 新增：防止重复进入销毁流程
+    private var isDisposing = false
+
+    // MARK-[2] 抽成方法：确保在主线程设置/解绑渲染视图
+    
     private func setPlayerViewOnMainThread(player: AliPlayer, view: UIView?) {
         let updateBlock = {
             player.playerView = view
@@ -57,9 +62,20 @@ class TutorialAliVideoVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     deinit {
-            NotificationCenter.default.removeObserver(self)
+        // MARK-[3] 新增：对象销毁前做一次安全清理，保证 SDK 内部线程正确退出
+        cancelAndReleaseSynchronously()
+        NotificationCenter.default.removeObserver(self)
+    }
+    // MARK-[4] 新增：当视图将离开窗口（例如手势返回或pop）时也做清理
+    override func willMove(toWindow newWindow: UIWindow?) {
+        super.willMove(toWindow: newWindow)
+        if newWindow == nil { cancelAndReleaseSynchronously() }
     }
     override init(frame: CGRect) {
+        if isIpad(){
+            selfHeight = SCREEN_WIDHT * 231.0 / 375.0
+            videoHeight = SCREEN_WIDHT * 231.0 / 375.0
+        }
         super.init(frame: CGRect.init(x: 0, y: statusBarHeight, width: SCREEN_WIDHT, height: selfHeight))
         self.backgroundColor = .black
         self.clipsToBounds = true
@@ -151,6 +167,7 @@ extension TutorialAliVideoVM{
             make.width.equalTo(0)
         }
         self.layoutIfNeeded()
+        // MARK-[6] 确保参数后再开始，但若已退出（isDisposed）则短路
         ensureValidOssParams { [weak self] in
             guard let self = self, !self.isDisposed else { return }
             self.startPlayback(resumePosition: nil, shouldQueryProgress: true, triggerStatistic: true)
@@ -168,6 +185,7 @@ extension TutorialAliVideoVM{
 extension TutorialAliVideoVM{
     func initUI() {
         // 放到串行队列设置，避免与销毁并发
+        // MARK-[7] 所有对播放器属性的写入放到串行队列
         playerQueue.sync {
             if let player = mAliPlayer {
                 setPlayerViewOnMainThread(player: player, view: self)
@@ -217,9 +235,6 @@ extension TutorialAliVideoVM{
                 self?.hasStartedPlaying = true
             }
         }
-        controlView?.playbackErrorOccurred = { [weak self] errorModel in
-//            self?.handlePlaybackError(errorModel)
-        }
         controlView?.heightChanged = {(contentHeight)in
             self.videoHeight = contentHeight
             self.model.contentHeight = contentHeight
@@ -262,7 +277,7 @@ extension TutorialAliVideoVM{
             }
         }
         controlView?.positionDidUpdate = { [weak self] time, duration in
-            guard let self = self else { return }
+            guard let self = self, !self.isDisposed else { return }
             if time > 0.05 {
                 self.videoImageView.isHidden = true
                 self.coverView.isHidden = true
@@ -287,10 +302,11 @@ extension TutorialAliVideoVM{
             CourseProgressSQLiteManager.getInstance().updateProgress(tutorialId: self.model.id, courseId: self.model.courseId, progress: 0, duration: duration)
             self.controlView?.showControls()
         }
-        controlView?.backTapBlock = {()in
+        controlView?.backTapBlock = {[weak self] in
 //            self.backTapAction()
+            guard let self = self else { return }
             self.saveCurrentProgress()
-            self.cancelAndReleaseSynchronously()
+            self.cancelAndReleaseSynchronously()   // MARK-[9] 先安全销毁，再返回
             self.controller.backTapAction()
         }
         controlView?.shareBlock = {()in
@@ -383,33 +399,131 @@ extension TutorialAliVideoVM{
     }
 
     // 新增：安全同步销毁，防止并发崩溃
+    // MARK-[10] 统一的安全销毁流程（只做一次；销毁前先解绑回调与渲染视图；调用 destroyAsync）
+//    private func cancelAndReleaseSynchronously() {
+//        // 避免重复进入
+//        if isDisposed { return }
+//        isDisposed = true
+//        isSuspended = true
+//        playbackRequestToken = UUID()
+//        if let preloadURL = currentPreloadURL {
+//            mediaLoader.pause(preloadURL)
+//            mediaLoader.cancel(preloadURL)
+//        }
+//        currentPreloadURL = nil
+//        mediaLoader.setAliMediaLoaderStatusDelegate(nil)
+//        // 2) 控制视图与播放器解绑，避免再有用户触发
+//        DispatchQueue.main.async { [weak self] in
+//            self?.controlView?.removeFromSuperview()    // MARK-[11]
+//            self?.controlView = nil
+//        }
+//        // 3) 取出 player 并与属性断开引用（保证后续路径取不到）
+//        var playerToDestroy: AliPlayer?
+//        playerQueue.sync { [weak self] in
+//            guard let self = self else { return }
+//            needsReplayAfterForeground = false
+//            pendingReplayPosition = 0
+//            hasStartedPlaying = false
+//            playerToDestroy = self.mAliPlayer
+//            self.mAliPlayer = nil
+//        }
+//        guard let player = playerToDestroy else { return }
+//        // 4) 串行队列内 stop（可选，destroy 也会内部 stop）
+//        playerQueue.sync { player.stop() }              // MARK-[12]
+//        
+//        // 5) 主线程解绑回调与视图，再做一次且仅一次销毁
+//        DispatchQueue.main.async {
+//            player.delegate = nil                       // MARK-[13]
+//            player.playerView = nil                     // MARK-[13]
+//            player.destroyAsync()                       // MARK-[14] 关键：不要 reset + destroy；只用 destroyAsync（或 destroy 二选一）
+//        }
+////        playerQueue.sync {
+////            needsReplayAfterForeground = false
+////            pendingReplayPosition = 0
+////            hasStartedPlaying = false
+//////            mAliPlayer?.stop()
+////            
+////            guard let player = mAliPlayer else { return }
+////            player.stop()
+//////        mAliPlayer?.setPlayerView(nil)
+//////            mAliPlayer?.delegate = nil
+//////            mAliPlayer?.playerView = nil
+////            
+////            player.delegate = nil
+////            setPlayerViewOnMainThread(player: player, view: nil)
+//////            mAliPlayer?.destroy()
+////            mAliPlayer = nil
+////        }
+//    }
+    // MARK-[4] 统一安全销毁（仅此一处调用，其他地方不要重复 stop/reset/destroy 的组合）
     private func cancelAndReleaseSynchronously() {
-        isDisposed = true
+        // 4.1 避免重复进入
+        if isDisposed || isDisposing { return }
+        isDisposing = true
+        isSuspended = true
         playbackRequestToken = UUID()
+
+        // 4.2 停止在途预加载并解绑 Loader 代理
         if let preloadURL = currentPreloadURL {
             mediaLoader.pause(preloadURL)
             mediaLoader.cancel(preloadURL)
         }
         currentPreloadURL = nil
         mediaLoader.setAliMediaLoaderStatusDelegate(nil)
-        playerQueue.sync {
-            needsReplayAfterForeground = false
-            pendingReplayPosition = 0
-            hasStartedPlaying = false
-//            mAliPlayer?.stop()
-            
-            guard let player = mAliPlayer else { return }
-            player.stop()
-//        mAliPlayer?.setPlayerView(nil)
-//            mAliPlayer?.delegate = nil
-//            mAliPlayer?.playerView = nil
-            
-            player.delegate = nil
-            setPlayerViewOnMainThread(player: player, view: nil)
-//            mAliPlayer?.destroy()
-            mAliPlayer = nil
+
+        // 4.3 清空控制视图回调并移除，避免再产生对 player 的操作
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            // MARK-[4.A] 断开所有闭包，防止回调在销毁后进入
+            self.controlView?.playStatusChanged = nil
+            self.controlView?.playbackErrorOccurred = nil
+            self.controlView?.heightChanged = nil
+            self.controlView?.toolVisibilityChanged = nil
+            self.controlView?.fullTapBlock = nil
+            self.controlView?.positionDidUpdate = nil
+            self.controlView?.playbackCompleted = nil
+            self.controlView?.backTapBlock = nil
+            self.controlView?.shareBlock = nil
+            self.controlView?.nextVideoBlock = nil
+            self.controlView?.removeFromSuperview()
+            self.controlView = nil
         }
+
+        // 4.4 冲刷串行队列，取出 player 并把引用清空
+        var playerToDestroy: AliPlayer?
+        playerQueue.sync { [weak self] in
+            guard let self = self else { return }
+            self.needsReplayAfterForeground = false
+            self.pendingReplayPosition = 0
+            self.hasStartedPlaying = false
+            playerToDestroy = self.mAliPlayer         // 取本地变量，避免后续再被并发访问
+            self.mAliPlayer = nil                     // 与属性断开引用
+        }
+
+        // 若没有播放器可销毁，收尾并返回
+        guard let player = playerToDestroy else {
+            isDisposed = true
+            isDisposing = false
+            return
+        }
+
+        // 4.5 解绑 UI/回调（主线程），然后做“同步销毁”
+        let unbindUI = {
+            // MARK-[4.B] 必须在主线程解绑
+            player.delegate = nil
+            player.playerView = nil
+        }
+        if Thread.isMainThread { unbindUI() } else { DispatchQueue.main.sync(execute: unbindUI) }
+
+        // 4.6 停止并同步销毁（关键步骤）
+        // MARK-[4.C] 不要 reset；只需 stop（可选）+ destroy（二选一：destroy 或 destroyAsync，这里选同步 destroy 更稳）
+        player.stop()
+        player.destroy()          // 同步等待内部线程退出；如果你更在意 UI 卡顿，可以改成 destroyAsync()
+
+        isDisposed = true
+        isDisposing = false
     }
+
     // 手势开始：软取消（不destroy）
     func prepareForPossibleDismissal() {
         // 阻断后续 startPlayback 路径
@@ -440,7 +554,6 @@ extension TutorialAliVideoVM:AliMediaLoaderStatusDelegate{
     }
     func onErrorV2(_ url: String!, errorModel: AVPErrorModel!) {
         DLLog(message: "预加载----失败：\(url ?? "")")
-        DLLog(message: "预加载----失败：\(errorModel)")
         if url == currentPreloadURL {
             currentPreloadURL = nil
         }

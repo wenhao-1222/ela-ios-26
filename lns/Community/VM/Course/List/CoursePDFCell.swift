@@ -72,7 +72,7 @@ extension CoursePDFCell{
         } else {
             loadingIndicator.stopAnimating()
         }
-        downLoadImgView.isHidden = loading
+//        downLoadImgView.isHidden = loading
         contentView.alpha = loading ? 0.6 : 1
         isUserInteractionEnabled = !loading
     }
