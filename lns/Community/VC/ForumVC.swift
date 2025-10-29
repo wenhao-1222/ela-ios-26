@@ -35,6 +35,7 @@ class ForumVC : WHBaseViewVC {
         initUI()
         sendOssStsRequest()
         sendReportTypeRequest()
+        
 //        let fpsLabel = FPSLabel.init(frame: CGRect.init(x: 50, y: 50, width: 100, height: 30))
 //        view.addSubview(fpsLabel)
         NotificationCenter.default.addObserver(self, selector: #selector(showForumPublishButton), name: NSNotification.Name(rawValue: "hasAllowedPosterForum"), object: nil)

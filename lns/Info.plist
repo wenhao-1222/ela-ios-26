@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AlivcLicenseKey_SEA</key>
+	<string>QPdsfTUeSkZam2Ry945d541f816654d03954421be55bf16f1</string>
+	<key>AlivcLicenseFile_SEA</key>
+	<string>SEAlicense.crt</string>
 	<key>AlivcLicenseFile</key>
 	<string>license.crt</string>
 	<key>AlivcLicenseKey</key>
@@ -73,8 +77,8 @@
 		<string>D-DIN-PRO-900-Heavy.otf</string>
 		<string>D-DIN-PRO-400-Regular.otf</string>
 	</array>
-    <key>UILaunchStoryboardName</key>
-    <string>ElaLaunch</string>
+	<key>UILaunchStoryboardName</key>
+	<string>ElaLaunch</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

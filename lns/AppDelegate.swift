@@ -12,6 +12,7 @@ import CryptoKit
 import UMCommon
 import UserNotifications
 import Kingfisher
+import AliyunPlayer
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate{
@@ -128,6 +129,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 //        initBuyly()
         initIQKeyBoard()
         initUMCommon()
+        initAliYunVideoPlayerConfig()
 //        initJpush(launchOptions: launchOptions)
         setupJpushIfAuthorized(launchOptions)
         UserInfoModel.shared.dealDataSourceArray()
@@ -353,6 +355,20 @@ extension AppDelegate{
 //        }
 //        
 //    }
+    func initAliYunVideoPlayerConfig() {
+        // 假设从本地缓存/服务端拿到 accountEnv，也可传 nil 走兜底
+        let env = RegionSelector.decideEnv(accountEnv: nil, playbackBaseURL: nil)
+
+        if env == .sea {
+//          AlivcBase.EnvironmentManager.globalEnvironment = ENV_SEA
+            AlivcBase.environmentManager.setGlobalEnvironment(AlivcGlobalEnv.SEA)
+        } else {
+//          AlivcBase.EnvironmentManager.globalEnvironment = ENV_DEFAULT // 不再用已弃用的 ENV_CN
+            AlivcBase.environmentManager.setGlobalEnvironment(AlivcGlobalEnv.DEFAULT)
+        }
+
+        AliPrivateService.initLicense() // 5.4.7.1+ 必须在建播放器前调用
+    }
     func initIQKeyBoard(){
         IQKeyboardManager.shared.enable = true
         IQKeyboardManager.shared.enableAutoToolbar = false

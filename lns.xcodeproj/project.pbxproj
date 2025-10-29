@@ -860,6 +860,8 @@
 		EC79A7922BD12F7E00D72FDF /* DataDetailSharePopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC79A7912BD12F7E00D72FDF /* DataDetailSharePopView.swift */; };
 		EC81531A2BE86CDC00879233 /* WHTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8153192BE86CDC00879233 /* WHTabBar.swift */; };
 		EC81531C2BE87BAD00879233 /* LogsSQLiteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC81531B2BE87BAD00879233 /* LogsSQLiteManager.swift */; };
+		EC82CAAA2EB1B521001AEE79 /* SEAlicense.crt in Resources */ = {isa = PBXBuildFile; fileRef = EC82CAA92EB1B520001AEE79 /* SEAlicense.crt */; };
+		EC82CAAC2EB1B5DC001AEE79 /* RegionSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC82CAAB2EB1B5DB001AEE79 /* RegionSelector.swift */; };
 		EC85AFF62C6DD0BE006F788D /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC85AFF52C6DD0BE006F788D /* CircleView.swift */; };
 		EC85AFF72C6DD111006F788D /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC85AFF52C6DD0BE006F788D /* CircleView.swift */; };
 		EC85AFFD2C6DED2C006F788D /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC85AFFC2C6DED2C006F788D /* ProgressView.swift */; };
@@ -2144,6 +2146,8 @@
 		EC79A7912BD12F7E00D72FDF /* DataDetailSharePopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailSharePopView.swift; sourceTree = "<group>"; };
 		EC8153192BE86CDC00879233 /* WHTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHTabBar.swift; sourceTree = "<group>"; };
 		EC81531B2BE87BAD00879233 /* LogsSQLiteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsSQLiteManager.swift; sourceTree = "<group>"; };
+		EC82CAA92EB1B520001AEE79 /* SEAlicense.crt */ = {isa = PBXFileReference; lastKnownFileType = text; path = SEAlicense.crt; sourceTree = "<group>"; };
+		EC82CAAB2EB1B5DB001AEE79 /* RegionSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionSelector.swift; sourceTree = "<group>"; };
 		EC85AFF52C6DD0BE006F788D /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
 		EC85AFFC2C6DED2C006F788D /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		EC87A4462C8E897600BAB8CE /* NaturalPerVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalPerVM.swift; sourceTree = "<group>"; };
@@ -4190,6 +4194,8 @@
 			isa = PBXGroup;
 			children = (
 				A71C547D2E6A782300FB797D /* license.crt */,
+				EC82CAA92EB1B520001AEE79 /* SEAlicense.crt */,
+				EC82CAAB2EB1B5DB001AEE79 /* RegionSelector.swift */,
 				A7454B2D2E73B6AE0064076C /* pca-code.json */,
 				ECD0FE7E2BABD0A9001232C9 /* lns.entitlements */,
 				EC6978DE2BABBD81000B933A /* AppDelegate.swift */,
@@ -5287,6 +5293,7 @@
 				A71C547E2E6A782300FB797D /* license.crt in Resources */,
 				A735A7C32D5DE3F5006CE140 /* jf_loading@2x.png in Resources */,
 				A735A7C42D5DE3F5006CE140 /* success@2x.png in Resources */,
+				EC82CAAA2EB1B521001AEE79 /* SEAlicense.crt in Resources */,
 				ECBF8C152BC230A30095C4B0 /* D-DIN-PRO-600-SemiBold.otf in Resources */,
 				ECBF8C172BC230A30095C4B0 /* D-DIN-PRO-800-ExtraBold.otf in Resources */,
 				A71A539F2CD9EF70009FDAF9 /* ZFPlayer.bundle in Resources */,
@@ -5351,9 +5358,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -5388,9 +5399,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -5881,6 +5896,7 @@
 				ECB3E03D2BD2353700CFDDFD /* DataDetailShareLineChartView.swift in Sources */,
 				EC1EB52B2BFAF85C00537F0B /* FoodsCreateSpecAlertVM.swift in Sources */,
 				ECF854622C1837D700B9C7E7 /* MainDataLineChartYXaisView.swift in Sources */,
+				EC82CAAC2EB1B5DC001AEE79 /* RegionSelector.swift in Sources */,
 				EC8D21102C64C4D300E68B59 /* JounalCollectionCell.swift in Sources */,
 				EC4DE2D02BCE50780090A7BD /* PlanLeadIntoDetailsMsgAlertVM.swift in Sources */,
 				EC26E62D2BBD01B8001E4381 /* LoginCodeVerifyVM.swift in Sources */,

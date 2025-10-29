@@ -37,9 +37,18 @@
     if (self.userInteractionEnabled == NO || self.hidden == YES || self.alpha <= 0.01) return nil;
     // Determine if the touch point is out of reach
     if (![self pointInside:point withEvent:event]) return nil;
-    NSInteger count = self.subviews.count;
-    for (NSInteger i = count - 1; i >= 0; i--) {
-        UIView *childView = self.subviews[i];
+//    NSInteger count = self.subviews.count;
+//    for (NSInteger i = count - 1; i >= 0; i--) {
+//        UIView *childView = self.subviews[i];
+    // Copy the subviews so that we keep a strong snapshot while iterating.
+    // During fast reuse scenarios (e.g. scrolling list cells hosting ZFPlayerView),
+    // the underlying player view hierarchy can be torn down on another run loop
+    // iteration, leading to EXC_BAD_ACCESS when messaging a recycled pointer.
+    NSArray<UIView *> *subviews = [self.subviews copy];
+    for (UIView *childView in [subviews reverseObjectEnumerator]) {
+        if (![childView isKindOfClass:[UIView class]]) {
+            continue;
+        }
         CGPoint childPoint = [self convertPoint:point toView:childView];
         UIView *fitView = [childView hitTest:childPoint withEvent:event];
         if (fitView) {

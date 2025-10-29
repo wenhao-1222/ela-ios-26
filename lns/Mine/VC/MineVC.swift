@@ -33,12 +33,12 @@ class MineVC : WHBaseViewVC {
         initUI()
         sendServiceWelcomeRequest()
         NotificationCenter.default.addObserver(self, selector: #selector(createPlan), name: NSNotification.Name(rawValue: "fullPlanSaveForMine"), object: nil)
-        AliPlayerGlobalSettings.setFairPlayCertID("7069e758e56e40eabdab57683b5d815f")
-        
+//        AliPlayerGlobalSettings.setFairPlayCertID("7069e758e56e40eabdab57683b5d815f")
+//        
 //        AlivcBase.environmentManager.setGlobalEnvironment(AlivcGlobalEnv.SEA)
 //        AliPrivateService.initLicense()
-        AliPlayer.setEnableLog(true)
-        AliPlayer.setLogCallbackInfo(LOG_LEVEL_TRACE, callbackBlock: nil)
+//        AliPlayer.setEnableLog(true)
+//        AliPlayer.setLogCallbackInfo(LOG_LEVEL_TRACE, callbackBlock: nil)
     }
 //    lazy var topVm: MineTopVM = {
 //        let vm = MineTopVM.init(frame: .zero)

@@ -44,6 +44,10 @@ class CourseListVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        AlivcBase.environmentManager.setGlobalEnvironment(AlivcGlobalEnv.SEA)
+//        AliPrivateService.initLicense()
+//        AliPlayer.setEnableLog(true)
+//        AliPlayer.setLogCallbackInfo(LOG_LEVEL_TRACE, callbackBlock: nil)
         NetworkCountryDetector.isChinaMainlandByPublicIP { isCN in
             if isCN == true{
                 DLLog(message: "中国大陆")
@@ -444,72 +448,72 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
 //        self.view.bringSubviewToFront(self.firstPlayTipsAlertVm)
 //        firstPlayTipsAlertVm.showView()
         self.tapIndexPath = indexPath
-        self.playVideo()
-//        if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
-//            
-//        }else{
-//            if self.headMsgDict.doubleValueForKey(key: "price") == 0{
-//
-//            }else{
-//                self.buyButtonTouchUpInside()
-//                return
-//            }
-//        }
-//        
-//        if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
-//            DLLog(message: "点击了下载PDF")
-//            guard isDownloadingPdf == false else { return }
-//            let urlString = self.pdfDict.stringValueForKey(key: "url")
-//            guard urlString.count > 0 else {
-//                MCToast.mc_failure("暂无可下载的PDF")
-//                return
-//            }
-//
-//            guard let destinationURL = pdfDestinationURL(from: urlString) else {
-//                MCToast.mc_failure("无法创建文件路径")
-//                return
-//            }
-//
-//            if FileManager.default.fileExists(atPath: destinationURL.path) {
-//                self.pdfLocalURL = destinationURL
-//                presentPDF(at: destinationURL)
-//                return
-//            }
-//
-//            if let cell = tableView.cellForRow(at: indexPath) as? CoursePDFCell {
-//                cell.setLoading(true)
-//            }
-//            isDownloadingPdf = true
-//            DSImageUploader().downloadOSSFile(urlStr: urlString, destinationURL: destinationURL, progress: nil) { [weak self] result in
-//                guard let self = self else { return }
-//                self.isDownloadingPdf = false
-//                if let cell = self.tableView.cellForRow(at: indexPath) as? CoursePDFCell {
-//                    cell.setLoading(false)
-//                }
-//                switch result {
-//                case .success(let fileURL):
-//                    self.pdfLocalURL = fileURL
-//                    MCToast.mc_success("下载完成")
-//                    self.presentPDF(at: fileURL)
-//                case .failure(let error):
-//                    let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-//                    MCToast.mc_failure(message)
-//                }
-//            }
-//            return
-//        }
-////        self.tapIndexPath = indexPath
-//        if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
-//            
-//        }else{
-//            if self.headMsgDict.doubleValueForKey(key: "price") == 0{
-//                self.playVideo()
-//            }else{
-//                self.buyButtonTouchUpInside()
-//            }
-//            return
-//        }
 //        self.playVideo()
+        if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
+            
+        }else{
+            if self.headMsgDict.doubleValueForKey(key: "price") == 0{
+
+            }else{
+                self.buyButtonTouchUpInside()
+                return
+            }
+        }
+        
+        if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
+            DLLog(message: "点击了下载PDF")
+            guard isDownloadingPdf == false else { return }
+            let urlString = self.pdfDict.stringValueForKey(key: "url")
+            guard urlString.count > 0 else {
+                MCToast.mc_failure("暂无可下载的PDF")
+                return
+            }
+
+            guard let destinationURL = pdfDestinationURL(from: urlString) else {
+                MCToast.mc_failure("无法创建文件路径")
+                return
+            }
+
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                self.pdfLocalURL = destinationURL
+                presentPDF(at: destinationURL)
+                return
+            }
+
+            if let cell = tableView.cellForRow(at: indexPath) as? CoursePDFCell {
+                cell.setLoading(true)
+            }
+            isDownloadingPdf = true
+            DSImageUploader().downloadOSSFile(urlStr: urlString, destinationURL: destinationURL, progress: nil) { [weak self] result in
+                guard let self = self else { return }
+                self.isDownloadingPdf = false
+                if let cell = self.tableView.cellForRow(at: indexPath) as? CoursePDFCell {
+                    cell.setLoading(false)
+                }
+                switch result {
+                case .success(let fileURL):
+                    self.pdfLocalURL = fileURL
+                    MCToast.mc_success("下载完成")
+                    self.presentPDF(at: fileURL)
+                case .failure(let error):
+                    let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+                    MCToast.mc_failure(message)
+                }
+            }
+            return
+        }
+//        self.tapIndexPath = indexPath
+        if self.headMsgDict.stringValueForKey(key: "isBinding") == "1"{
+            
+        }else{
+            if self.headMsgDict.doubleValueForKey(key: "price") == 0{
+                self.playVideo()
+            }else{
+                self.buyButtonTouchUpInside()
+            }
+            return
+        }
+        self.playVideo()
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == 0 {
