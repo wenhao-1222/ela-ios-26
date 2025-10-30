@@ -294,7 +294,7 @@ extension CourseListVC{
     }
     
     func playVideo() {
-        if tapIndexPath.section > 0 && !isLoadingData{
+        if tapIndexPath.section > 0 && !isLoadingData && self.dataSourceArray.count > tapIndexPath.section - 1{
             let dataDict = self.dataSourceArray[tapIndexPath.section-1]as? NSDictionary ?? [:]
             let tutorials = dataDict["tutorials"]as? NSArray ?? []
             let dict = tutorials[tapIndexPath.row] as? NSDictionary ?? [:]
@@ -462,45 +462,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
         }
         
         if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
-            DLLog(message: "点击了下载PDF")
-            guard isDownloadingPdf == false else { return }
-            let urlString = self.pdfDict.stringValueForKey(key: "url")
-            guard urlString.count > 0 else {
-                MCToast.mc_failure("暂无可下载的PDF")
-                return
-            }
-
-            guard let destinationURL = pdfDestinationURL(from: urlString) else {
-                MCToast.mc_failure("无法创建文件路径")
-                return
-            }
-
-            if FileManager.default.fileExists(atPath: destinationURL.path) {
-                self.pdfLocalURL = destinationURL
-                presentPDF(at: destinationURL)
-                return
-            }
-
-            if let cell = tableView.cellForRow(at: indexPath) as? CoursePDFCell {
-                cell.setLoading(true)
-            }
-            isDownloadingPdf = true
-            DSImageUploader().downloadOSSFile(urlStr: urlString, destinationURL: destinationURL, progress: nil) { [weak self] result in
-                guard let self = self else { return }
-                self.isDownloadingPdf = false
-                if let cell = self.tableView.cellForRow(at: indexPath) as? CoursePDFCell {
-                    cell.setLoading(false)
-                }
-                switch result {
-                case .success(let fileURL):
-                    self.pdfLocalURL = fileURL
-                    MCToast.mc_success("下载完成")
-                    self.presentPDF(at: fileURL)
-                case .failure(let error):
-                    let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-                    MCToast.mc_failure(message)
-                }
-            }
+            self.downLoadPdf(indexPath: indexPath)
             return
         }
 //        self.tapIndexPath = indexPath
@@ -661,7 +623,11 @@ extension CourseListVC{
                 let dict = NSMutableDictionary(dictionary: self.headMsgDict)
                 dict.setValue("1", forKey: "isBinding")
                 self.headMsgDict = dict
-                self.playVideo()
+                if self.hasPdf && self.tapIndexPath.section == self.dataSourceArray.count + 1{
+                    self.downLoadPdf(indexPath: self.tapIndexPath)
+                }else{
+                    self.playVideo()
+                }
             }
             if Thread.isMainThread {
                 handleResponse()
@@ -758,6 +724,47 @@ extension CourseListVC{
     }
 }
 extension CourseListVC {
+    func downLoadPdf(indexPath:IndexPath) {
+        DLLog(message: "点击了下载PDF")
+        guard isDownloadingPdf == false else { return }
+        let urlString = self.pdfDict.stringValueForKey(key: "url")
+        guard urlString.count > 0 else {
+            MCToast.mc_failure("暂无可下载的PDF")
+            return
+        }
+
+        guard let destinationURL = pdfDestinationURL(from: urlString) else {
+            MCToast.mc_failure("无法创建文件路径")
+            return
+        }
+
+        if FileManager.default.fileExists(atPath: destinationURL.path) {
+            self.pdfLocalURL = destinationURL
+            presentPDF(at: destinationURL)
+            return
+        }
+
+        if let cell = tableView.cellForRow(at: indexPath) as? CoursePDFCell {
+            cell.setLoading(true)
+        }
+        isDownloadingPdf = true
+        DSImageUploader().downloadOSSFile(urlStr: urlString, destinationURL: destinationURL, progress: nil) { [weak self] result in
+            guard let self = self else { return }
+            self.isDownloadingPdf = false
+            if let cell = self.tableView.cellForRow(at: indexPath) as? CoursePDFCell {
+                cell.setLoading(false)
+            }
+            switch result {
+            case .success(let fileURL):
+                self.pdfLocalURL = fileURL
+                MCToast.mc_success("下载完成")
+                self.presentPDF(at: fileURL)
+            case .failure(let error):
+                let message = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+                MCToast.mc_failure(message)
+            }
+        }
+    }
     func pdfDestinationURL(from urlString: String) -> URL? {
         guard let baseDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             return nil

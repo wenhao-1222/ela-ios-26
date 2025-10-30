@@ -4,13 +4,14 @@
 //
 //  Created by Elavatine on 2024/11/6.
 //
+import UIKit
+import Foundation
+import MCToast
 
 enum SHARE_TYPE {
-    case forum//分享帖子
-    case tutorial//分享教程
+    case forum   // 分享帖子
+    case tutorial// 分享教程
 }
-
-import MCToast
 
 class ForumShareVM: UIView {
     
@@ -26,125 +27,130 @@ class ForumShareVM: UIView {
     var deleteForumBlock:(()->())?
     
     override init(frame:CGRect){
-        super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         self.isUserInteractionEnabled = true
         self.alpha = 0
         self.isHidden = true
         initUI()
         
-        
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenView))
-        self.addGestureRecognizer(tap)
+        // [修改] 仅在背景层（self）加一个 tap；不取消子视图触摸；并用 delegate 过滤 whiteView 内部触点，避免拦截按钮
+        let bgTap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
+        bgTap.cancelsTouchesInView = false // [修改] 关键：不取消按钮的 touches（否则 .touchUpInside 触发不了）
+        bgTap.delegate = self             // [修改] 用于过滤 whiteView 内部区域
+        self.addGestureRecognizer(bgTap)
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     lazy var whiteView : UIView = {
-        let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
+        let vi = UIView(frame: CGRect(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
         vi.backgroundColor = .white
         vi.alpha = 0
         
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingAction))
-        vi.addGestureRecognizer(tap)
+        // [修改] 移除 whiteView 自身的 tap（它会“吃掉”子视图按钮的触摸）
+        // let tap = UITapGestureRecognizer(target: self, action: #selector(nothingAction))
+        // tap.cancelsTouchesInView = false
+        // vi.addGestureRecognizer(tap)
         
         return vi
     }()
+    
+    // MARK: - Share Buttons
     lazy var wechatButton : PlanShareButton = {
-        let btn = PlanShareButton.init(frame: CGRect.init(x: kFitWidth(27), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
+        let btn = PlanShareButton(frame: CGRect(x: kFitWidth(27), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
         btn.imgView.setImgLocal(imgName: "forum_share_wechat_icon")
         btn.contenLab.text = "微信"
         btn.contenLab.textColor = .COLOR_GRAY_BLACK_45
         btn.labelColor = .COLOR_GRAY_BLACK_45
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
-        btn.tapBlock = {()in
+        btn.tapBlock = { [weak self] in
+            guard let self else { return }
             self.shareToSession()
             self.wechatButton.contenLab.textColor = .COLOR_GRAY_BLACK_45
         }
         return btn
     }()
     lazy var circleButton : PlanShareButton = {
-        let btn = PlanShareButton.init(frame: CGRect.init(x: kFitWidth(115), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
-//        let btn = PlanShareButton.init(frame: CGRect.init(x: kFitWidth(159), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
+        let btn = PlanShareButton(frame: CGRect(x: kFitWidth(115), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
         btn.imgView.setImgLocal(imgName: "forum_share_circle_icon")
         btn.contenLab.text = "朋友圈"
         btn.contenLab.textColor = .COLOR_GRAY_BLACK_45
         btn.labelColor = .COLOR_GRAY_BLACK_45
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
-        btn.tapBlock = {()in
+        btn.tapBlock = { [weak self] in
+            guard let self else { return }
             self.shareToTimeLine()
             self.circleButton.contenLab.textColor = .COLOR_GRAY_BLACK_45
         }
-        
         return btn
     }()
     lazy var copyButton : PlanShareButton = {
-        let btn = PlanShareButton.init(frame: CGRect.init(x: kFitWidth(203), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
-//        let btn = PlanShareButton.init(frame: CGRect.init(x: kFitWidth(290), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
+        let btn = PlanShareButton(frame: CGRect(x: kFitWidth(203), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
         btn.imgView.setImgLocal(imgName: "forum_share_copy_icon")
         btn.contenLab.text = "复制链接"
         btn.contenLab.textColor = .COLOR_GRAY_BLACK_45
         btn.labelColor = .COLOR_GRAY_BLACK_45
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
-        btn.tapBlock = {()in
+        btn.tapBlock = { [weak self] in
+            guard let self else { return }
             self.copyLinkAction()
             self.copyButton.contenLab.textColor = .COLOR_GRAY_BLACK_45
         }
         return btn
     }()
     lazy var reportButton : PlanShareButton = {
-        let btn = PlanShareButton.init(frame: CGRect.init(x: kFitWidth(291), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
+        let btn = PlanShareButton(frame: CGRect(x: kFitWidth(291), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
         btn.imgView.setImgLocal(imgName: "forum_share_report_icon")
         btn.contenLab.text = "举报"
         btn.contenLab.textColor = .COLOR_GRAY_BLACK_45
         btn.labelColor = .COLOR_GRAY_BLACK_45
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
-        btn.tapBlock = {()in
+        btn.tapBlock = { [weak self] in
+            guard let self else { return }
             self.reportAction()
             self.reportButton.contenLab.textColor = .COLOR_GRAY_BLACK_45
         }
         return btn
     }()
     lazy var deleteButton : PlanShareButton = {
-        let btn = PlanShareButton.init(frame: CGRect.init(x: kFitWidth(291), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
-//        btn.imgView.setImgLocal(imgName: "forum_share_delete_icon")
+        let btn = PlanShareButton(frame: CGRect(x: kFitWidth(291), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
         btn.contenLab.text = "删除"
-//        btn.imgView.frame =  CGRect.init(x: kFitWidth(13), y: kFitWidth(3), width: kFitWidth(34), height: kFitWidth(34))
         btn.imgView.image = UIImage(systemName: "trash.fill")
         btn.imgView.tintColor = .systemRed
         btn.isHidden = true
         btn.contenLab.textColor = .COLOR_GRAY_BLACK_45
         btn.labelColor = .COLOR_GRAY_BLACK_45
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
-        btn.tapBlock = {()in
+        btn.tapBlock = { [weak self] in
+            guard let self else { return }
             self.deleteAction()
             self.deleteButton.contenLab.textColor = .COLOR_GRAY_BLACK_45
         }
         return btn
     }()
     lazy var lineGapView: UIView = {
-        let vi = UIView.init(frame: CGRect.init(x: 0, y: kFitWidth(92), width: SCREEN_WIDHT, height: kFitWidth(8)))
+        let vi = UIView(frame: CGRect(x: 0, y: kFitWidth(92), width: SCREEN_WIDHT, height: kFitWidth(8)))
         vi.backgroundColor = .COLOR_LIGHT_GREY
         return vi
     }()
     lazy var cancelButton: UIButton = {
-        let btn = UIButton.init(frame: CGRect.init(x: 0, y: kFitWidth(100), width: SCREEN_WIDHT, height: kFitWidth(40)))
+        let btn = UIButton(frame: CGRect(x: 0, y: kFitWidth(100), width: SCREEN_WIDHT, height: kFitWidth(40)))
         btn.setBackgroundImage(createImageWithColor(color: .white), for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_LINE_GREY), for: .highlighted)
         btn.setTitle("取消", for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
-        
         btn.addTarget(self, action: #selector(hiddenView), for: .touchUpInside)
-        
         return btn
     }()
 }
 
+// MARK: - Share Actions
 extension ForumShareVM{
     @objc func shareToSession(){
         let message = WXMediaMessage()
@@ -207,7 +213,6 @@ extension ForumShareVM{
             }else{
                 message.description = "\(model.content)"
             }
-            
             obj.webpageUrl = model.webLink
         }
             
@@ -220,6 +225,7 @@ extension ForumShareVM{
         if self.tutorialModel.id.count > 0 {
             sendShareTutorialRequest(channelType: "2")
         }else{
+            // NOTE: 这里你原逻辑是 "1"，如果朋友圈应该是 "2"，可按后端约定调整
             sendShareRequest(channelType: "1")
         }
         self.hiddenView()
@@ -236,28 +242,23 @@ extension ForumShareVM{
         }else{
             sendShareRequest(channelType: "1")
         }
-//        MCToast.mc_success("链接已复制！")
         MBProgressHUD.xy_show("链接已复制！")
         self.hiddenView()
     }
     func reportAction() {
-        if self.reportForumBlock != nil{
-            self.reportForumBlock!()
-        }
+        reportForumBlock?()
         self.hiddenView()
     }
     func deleteAction() {
-        if self.deleteForumBlock != nil{
-            self.deleteForumBlock!()
-        }
+        deleteForumBlock?()
         self.hiddenView()
     }
 }
 
+// MARK: - Show / Hide
 extension ForumShareVM{
-    @objc func nothingAction(){
-        
-    }
+    @objc func nothingAction(){ /* 保留空实现 */ }
+    
     func showView(model:ForumModel) {
         self.shareType = .forum
         self.isHidden = false
@@ -268,51 +269,48 @@ extension ForumShareVM{
             reportButton.isHidden = true
         }
         // 保证在当前屏幕尺寸下展示
-               let bounds = appDelegate.getKeyWindow().bounds
-               self.frame = bounds
-               whiteView.frame = CGRect(x: 0, y: bounds.height, width: bounds.width, height: whiteViewHeight)
+        let bounds = appDelegate.getKeyWindow().bounds
+        self.frame = bounds
+        whiteView.frame = CGRect(x: 0, y: bounds.height, width: bounds.width, height: whiteViewHeight)
 
-        lineGapView.frame = CGRect.init(x: 0, y: kFitWidth(92), width: bounds.width, height: kFitWidth(8))
-        cancelButton.frame =  CGRect.init(x: 0, y: kFitWidth(100), width: bounds.width, height: kFitWidth(40))
-        // 先拼出要下载的图片 URL
-            var thumbImgUrl = model.headImgUrl
-            if model.covers.count > 0 {
-                if model.coverType == .IMAGE {
-                    thumbImgUrl = model.covers[0] as? String ?? ""
-                } else {
-                    thumbImgUrl = model.coverThumbImgUrl
-                }
+        lineGapView.frame = CGRect(x: 0, y: kFitWidth(92), width: bounds.width, height: kFitWidth(8))
+        cancelButton.frame = CGRect(x: 0, y: kFitWidth(100), width: bounds.width, height: kFitWidth(40))
+        
+        // 拼出要下载的图片 URL
+        var thumbImgUrl = model.headImgUrl
+        if model.covers.count > 0 {
+            if model.coverType == .IMAGE {
+                thumbImgUrl = model.covers[0] as? String ?? ""
+            } else {
+                thumbImgUrl = model.coverThumbImgUrl
             }
+        }
 
-            // 如果有有效的 URL，就去下载原图，下载完成后立即压缩到 ≤256KB
-            if let imgUrl = URL(string: thumbImgUrl), thumbImgUrl.count > 0 {
-                DSImageUploader().dealImgUrlSignForOss(urlStr: thumbImgUrl) { _ in
-                    WHUtils().downloadImage(from: imgUrl) { img in
-                        guard let originalImage = img else { return }
-                        
-                        // 尝试压缩到 ≤256 KB
-                        if let compressedData = originalImage.compressed(toMaxKB: 256),
-                           let compressedImage = UIImage(data: compressedData) {
-                            self.thumbImg = compressedImage
-                            let sizeKB = Double(compressedData.count) / 1024.0
-                            DLLog(message: "下载后并压缩到 ≤256KB，最终大小约为 \(String(format: "%.1f", sizeKB))kb")
-//                            print("下载后并压缩到 ≤256KB，最终大小约为 \(String(format: "%.1f", sizeKB)"KB))
-                        } else {
-                            // 如果压缩失败，就直接用原图（可能超限）
-                            self.thumbImg = originalImage
-                            print("下载完成，但压缩失败，thumbImg 保持原图")
-                        }
+        // 下载并尽量压缩到 ≤256KB
+        if let imgUrl = URL(string: thumbImgUrl), thumbImgUrl.count > 0 {
+            DSImageUploader().dealImgUrlSignForOss(urlStr: thumbImgUrl) { _ in
+                WHUtils().downloadImage(from: imgUrl) { img in
+                    guard let originalImage = img else { return }
+                    if let compressedData = originalImage.compressed(toMaxKB: 256),
+                       let compressedImage = UIImage(data: compressedData) {
+                        self.thumbImg = compressedImage
+                        let sizeKB = Double(compressedData.count) / 1024.0
+                        DLLog(message: "下载后并压缩到 ≤256KB，最终大小约为 \(String(format: "%.1f", sizeKB))kb")
+                    } else {
+                        self.thumbImg = originalImage
+                        print("下载完成，但压缩失败，thumbImg 保持原图")
                     }
                 }
             }
+        }
 
-            // 动画展示弹窗
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear) {
-                self.alpha = 1
-                self.whiteView.alpha = 1
-                self.whiteView.center = CGPoint(x: SCREEN_WIDHT * 0.5,
-                                                y: (SCREEN_HEIGHT - self.whiteViewHeight * 0.5 + kFitWidth(16)))
-            }
+        // 动画展示弹窗
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear) {
+            self.alpha = 1
+            self.whiteView.alpha = 1
+            self.whiteView.center = CGPoint(x: bounds.width * 0.5,
+                                            y: (bounds.height - self.whiteViewHeight * 0.5 + kFitWidth(16)))
+        }
     }
     
     func showViewForTutorial(tutorialMo:ForumTutorialModel) {
@@ -326,55 +324,49 @@ extension ForumShareVM{
         let bounds = appDelegate.getKeyWindow().bounds
         self.frame = bounds
         whiteView.frame = CGRect(x: 0, y: bounds.height, width: bounds.width, height: whiteViewHeight)
-        lineGapView.frame = CGRect.init(x: 0, y: kFitWidth(92), width: bounds.width, height: kFitWidth(8))
-        cancelButton.frame =  CGRect.init(x: 0, y: kFitWidth(100), width: bounds.width, height: kFitWidth(40))
+        lineGapView.frame = CGRect(x: 0, y: kFitWidth(92), width: bounds.width, height: kFitWidth(8))
+        cancelButton.frame = CGRect(x: 0, y: kFitWidth(100), width: bounds.width, height: kFitWidth(40))
         let buttonY = copyButton.center.y
         
-        let copyButtonCenter = copyButton.center
         if WXApi.isWXAppInstalled(){
             wechatButton.isHidden = false
             circleButton.isHidden = false
-//            wechatButton.center = CGPoint.init(x: SCREEN_WIDHT*0.25, y: copyButtonCenter.y)
-//            circleButton.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: copyButtonCenter.y)
-//            copyButton.center = CGPoint.init(x: SCREEN_WIDHT*0.75, y: copyButtonCenter.y)
-            
             wechatButton.center = CGPoint(x: bounds.width*0.25, y: buttonY)
-                        circleButton.center = CGPoint(x: bounds.width*0.5, y: buttonY)
-                        copyButton.center = CGPoint(x: bounds.width*0.75, y: buttonY)
+            circleButton.center = CGPoint(x: bounds.width*0.5,  y: buttonY)
+            copyButton.center   = CGPoint(x: bounds.width*0.75, y: buttonY)
         }else{
             wechatButton.isHidden = true
             circleButton.isHidden = true
-//            copyButton.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: copyButtonCenter.y)
             copyButton.center = CGPoint(x: bounds.width*0.5, y: buttonY)
         }
         
-        
-        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear) {
             self.alpha = 1
             self.whiteView.alpha = 1
-//            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: (SCREEN_HEIGHT-self.whiteViewHeight*0.5+kFitWidth(16)))
             self.whiteView.center = CGPoint(x: bounds.width*0.5,
-                                                        y: (bounds.height-self.whiteViewHeight*0.5+kFitWidth(16)))
+                                            y: (bounds.height - self.whiteViewHeight*0.5 + kFitWidth(16)))
         }
     }
+    
     @objc func hiddenView() {
         let bounds = appDelegate.getKeyWindow().bounds
-        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear) {
             self.alpha = 0
             self.whiteView.alpha = 0.7
-//            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
             self.whiteView.center = CGPoint(x: bounds.width*0.5,
-                                                        y: bounds.height*1.5+kFitWidth(16))
-        }completion: { t in
+                                            y: bounds.height*1.5 + kFitWidth(16))
+        } completion: { _ in
             self.isHidden = true
         }
     }
+    
     func updateForShare() {
-        circleButton.frame = CGRect.init(x: kFitWidth(159), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60))
-        copyButton.frame = CGRect.init(x: kFitWidth(290), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60))
+        circleButton.frame = CGRect(x: kFitWidth(159), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60))
+        copyButton.frame   = CGRect(x: kFitWidth(290), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60))
         reportButton.isHidden = true
     }
 }
+
 extension ForumShareVM{
     func initUI() {
         addSubview(whiteView)
@@ -383,13 +375,12 @@ extension ForumShareVM{
         whiteView.addSubview(copyButton)
         whiteView.addSubview(reportButton)
         whiteView.addSubview(deleteButton)
-        
         whiteView.addSubview(lineGapView)
         whiteView.addSubview(cancelButton)
     }
-    
 }
 
+// MARK: - Network
 extension ForumShareVM{
     func sendShareRequest(channelType:String) {
         let param = ["id":"\(model.id)",
@@ -406,5 +397,16 @@ extension ForumShareVM{
         WHNetworkUtil.shareManager().POST(urlString: URL_tutorial_share, parameters: param as [String:AnyObject]) { responseObject in
             DLLog(message: "sendShareTutorialRequest:\(responseObject)")
         }
+    }
+}
+
+// MARK: - 关键：只让背景 tap 生效，whiteView 内部交给按钮
+extension ForumShareVM: UIGestureRecognizerDelegate {
+    // [修改] 过滤：如果触点在 whiteView 内，就让按钮去处理；还要避免拦截 UIControl（按钮等）
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        let p = touch.location(in: whiteView)
+        if whiteView.bounds.contains(p) { return false } // whiteView 内部不处理背景 tap
+        if touch.view is UIControl { return false }      // 避免拦截按钮
+        return true
     }
 }

@@ -8,7 +8,8 @@
 import Foundation
 
 
-class PlanShareButton : UIButton{
+/// MARK: - 统一封装的可点击分享按钮
+class PlanShareButton : UIButton {
     
     var tapBlock:(()->())?
     
@@ -19,107 +20,76 @@ class PlanShareButton : UIButton{
     private let minimumFeedbackInterval: TimeInterval = 0.1
     
     override init(frame: CGRect) {
-       super.init(frame: frame)
-       setupButton()
-   }
+        super.init(frame: frame)
+        setupButton() // [修改] 在 setup 里统一 addTarget，确保所有 init 路径都生效
+    }
 
-   required init?(coder aDecoder: NSCoder) {
-       super.init(coder: aDecoder)
-       setupButton()
-   }
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setupButton() // [修改]
+    }
     
     lazy var imgView : UIImageView = {
-        let img = UIImageView.init(frame: CGRect.init(x: kFitWidth(10), y: 0, width: kFitWidth(40), height: kFitWidth(40)))
-        img.isUserInteractionEnabled = true
-        
+        let img = UIImageView(frame: CGRect(x: kFitWidth(10), y: 0, width: kFitWidth(40), height: kFitWidth(40)))
+        img.isUserInteractionEnabled = false // [修改] 子视图不参与交互，避免抢事件
         return img
     }()
     lazy var contenLab : UILabel = {
-        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(-10), y: kFitWidth(48), width: kFitWidth(80), height: kFitWidth(14)))
+        let lab = UILabel(frame: CGRect(x: kFitWidth(-10), y: kFitWidth(48), width: kFitWidth(80), height: kFitWidth(14)))
         lab.textColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.65)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.textAlignment = .center
-        lab.isUserInteractionEnabled = true
+        lab.isUserInteractionEnabled = false // [修改]
         lab.adjustsFontSizeToFitWidth = true
         return lab
     }()
     lazy var coverVi : UIView = {
-        let vi = UIView.init(frame: CGRect.init(x: kFitWidth(9), y: 0, width: kFitWidth(40), height: kFitWidth(40)))
+        let vi = UIView(frame: CGRect(x: kFitWidth(9), y: 0, width: kFitWidth(40), height: kFitWidth(40)))
         vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.04)
         vi.isHidden = true
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
+        vi.isUserInteractionEnabled = false // [修改]
         return vi
     }()
 
-    func updateImgFrame() {
-        
+    func updateImgFrame() { }
+
+    private func setupButton() {
+        addSubview(imgView)
+        addSubview(contenLab)
+        addSubview(coverVi)
+
+        // [修改] 使用 UIButton 标准点击事件，避免手势/坐标系带来的歧义
+        addTarget(self, action: #selector(tapAction), for: .touchUpInside)
     }
-   private func setupButton() {
-       // 设置按钮的其他属性，如颜色、字体等
-       
-       addSubview(imgView)
-       addSubview(contenLab)
-       addSubview(coverVi)
-       
-//       let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))
-//       self.addGestureRecognizer(tap)
-   }
     
     @objc func tapAction() {
-        if self.tapBlock != nil{
-            self.tapBlock!()
-        }
+        tapBlock?()
         contenLab.textColor = labelColor
         coverVi.isHidden = true
+        
+        // [可选] 点击成功时再给一次更强的触感反馈
+        triggerImpact(UIImpactFeedbackGenerator(style: .medium), intensity: 0.9)
     }
-//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        TouchGenerator.shared.touchGenerator()
-//        contenLab.textColor = .COLOR_HIGHTLIGHT_GRAY
-//        coverVi.isHidden = false
-//    }
-//    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        contenLab.textColor = labelColor
-//        coverVi.isHidden = true
-//    }
-//    override var isHighlighted: Bool {
-//       didSet {
-//           if isHighlighted {
-//               // 当按钮被高亮时，更改按钮的状态，如颜色等
-//               contenLab.textColor = .COLOR_HIGHTLIGHT_GRAY
-//               coverVi.isHidden = false
-//           } else {
-//               // 当按钮高亮状态结束时，恢复按钮的原始状态
-//               contenLab.textColor = labelColor
-//               coverVi.isHidden = true
-//           }
-//       }
-//   }
-    
 }
 
-
-extension PlanShareButton{
+// MARK: - 触摸动效与触感
+extension PlanShareButton {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         let scale: CGFloat = 0.95
         UIView.animate(withDuration: 0.1) {
             self.transform = CGAffineTransform(scaleX: scale, y: scale)
         }
-//        showPressRippleEffect()
-//        feedbackGenerator.impactOccurred(intensity: feedbackWeight)
         triggerImpact(feedbackGenerator, intensity: feedbackWeight)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
+        // [保留] 只负责视觉还原；不在这里手动调用 tapAction（由 .touchUpInside 统一触发）
         UIView.animate(withDuration: 0.1) {
             self.transform = .identity
-        }
-        if let touch = touches.first, self.bounds.contains(touch.location(in: self)) {
-//            UIImpactFeedbackGenerator(style: .medium).impactOccurred(intensity: 0.9)
-            triggerImpact(UIImpactFeedbackGenerator(style: .medium), intensity: 0.9)
-            tapAction()
         }
     }
 
@@ -166,11 +136,12 @@ extension PlanShareButton{
         rippleLayer.add(group, forKey: "ripple")
         CATransaction.commit()
     }
+    
     private func triggerImpact(_ generator: UIImpactFeedbackGenerator, intensity: CGFloat) {
         let now = Date().timeIntervalSince1970
-        guard now - lastFeedbackTime > minimumFeedbackInterval else { return }
+        // 防抖，避免同一帧多次触发
+        if now - lastFeedbackTime <= minimumFeedbackInterval { return }
         generator.impactOccurred(intensity: intensity)
         lastFeedbackTime = now
     }
 }
-
