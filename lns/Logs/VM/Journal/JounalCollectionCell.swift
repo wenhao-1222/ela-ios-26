@@ -654,7 +654,7 @@ extension JounalCollectionCell{
     }
     private func checkPushAuthAfterSecondMeal() {
         let key = UserDefaults.AccountKeys.push_authori_second_foods.rawValue
-        if UserDefaults.standard.string(forKey: key) == "14" { return }
+        if UserDefaults.standard.string(forKey: key) == "1" { return }
 
         var count = 0
         for item in mealsArray {

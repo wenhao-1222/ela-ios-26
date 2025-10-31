@@ -145,14 +145,7 @@ extension NotifiAuthoriAlertVM{
         }
         UIView.animate(withDuration: 0.25, delay: 0.4, options: .curveEaseInOut) {
             self.whiteView.transform = .identity
-//            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: (SCREEN_HEIGHT-self.whiteViewHeight*0.5+kFitWidth(16)))
         }
-        
-//        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-//            self.alpha = 1
-//            self.whiteView.alpha = 1
-//            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: (SCREEN_HEIGHT-self.whiteViewHeight*0.5+kFitWidth(16)))
-//        }
     }
     @objc func hiddenView() {
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {

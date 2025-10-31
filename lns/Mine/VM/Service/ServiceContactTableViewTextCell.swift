@@ -17,6 +17,14 @@ class ServiceContactTableViewTextCell: UITableViewCell {
     var imgTapBlock:((UIImage?)->())?
     var viewModules:[HeroBrowserViewModule] = []
     
+    private var avatarRequestID = UUID()
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        headImgView.kf.cancelDownloadTask()
+        headImgView.image = nil
+        avatarRequestID = UUID()
+    }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -113,10 +121,14 @@ extension ServiceContactTableViewTextCell{
                 labelWidth = kFitWidth(260)
             }
         }
+        headImgView.kf.cancelDownloadTask()
         headImgView.image = nil
-        
-        if dict.stringValueForKey(key: "createdby") != "admin"{
-            headImgView.setImgUrl(urlString: UserInfoModel.shared.headimgurl)
+        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
+        configureAvatar(isAdmin: isAdmin)
+
+        if !isAdmin{
+//        if dict.stringValueForKey(key: "createdby") != "admin"{
+//            headImgView.setImgUrl(urlString: UserInfoModel.shared.headimgurl)
             headImgView.snp.remakeConstraints { make in
                 make.right.equalTo(kFitWidth(-10))
                 make.top.equalTo(kFitWidth(5))
@@ -139,7 +151,7 @@ extension ServiceContactTableViewTextCell{
             msgLabel.textAlignment = .right
             msgRectView.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
         }else{
-            headImgView.setImgLocal(imgName: "avatar_default")
+//            headImgView.setImgLocal(imgName: "avatar_default")
             headImgView.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(10))
                 make.top.equalTo(kFitWidth(5))
@@ -173,8 +185,17 @@ extension ServiceContactTableViewTextCell{
         let imagesArr = WHUtils.getArrayFromJSONString(jsonString: imagesStr)
         let imgBottomGap = -imgHeight+kFitWidth(41)-kFitWidth(10)
         
+        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
+
+        configureAvatar(isAdmin: isAdmin)
+
         headImgView.snp.remakeConstraints { make in
-            make.right.equalTo(kFitWidth(-10))
+//            make.right.equalTo(kFitWidth(-10))
+            if isAdmin {
+                make.left.equalTo(kFitWidth(10))
+            } else {
+                make.right.equalTo(kFitWidth(-10))
+            }
             make.top.equalTo(kFitWidth(5))
             make.width.height.equalTo(kFitWidth(36))
             make.bottom.equalTo(imgBottomGap)
@@ -204,14 +225,16 @@ extension ServiceContactTableViewTextCell{
                     
                     imgView.frame = imgRect
                     DLLog(message: "index:\(index)--imgView---\(imgView.frame.origin.y)")
-                    if dict.stringValueForKey(key: "createdby") != "admin"{
-                        headImgView.setImgUrl(urlString: UserInfoModel.shared.headimgurl)
-//                        headImgView.snp.remakeConstraints { make in
-//                            make.right.equalTo(kFitWidth(-10))
-//                            make.top.equalTo(kFitWidth(5))
-//                            make.width.height.equalTo(kFitWidth(36))
-//                            make.bottom.equalTo(imgBottomGap)
-//                        }
+//                    if dict.stringValueForKey(key: "createdby") != "admin"{
+//                        headImgView.setImgUrl(urlString: UserInfoModel.shared.headimgurl)
+////                        headImgView.snp.remakeConstraints { make in
+////                            make.right.equalTo(kFitWidth(-10))
+////                            make.top.equalTo(kFitWidth(5))
+////                            make.width.height.equalTo(kFitWidth(36))
+////                            make.bottom.equalTo(imgBottomGap)
+////                        }
+                        
+                    if !isAdmin{
                         imgView.snp.remakeConstraints { make in
                             make.right.equalTo(kFitWidth(-60))
                             make.top.equalTo(kFitWidth(10))
@@ -219,13 +242,13 @@ extension ServiceContactTableViewTextCell{
                             make.height.equalTo(imgHeight)
                         }
                     }else{
-                        headImgView.setImgLocal(imgName: "avatar_default")
-//                        headImgView.snp.remakeConstraints { make in
-//                            make.left.equalTo(kFitWidth(10))
-//                            make.top.equalTo(kFitWidth(5))
-//                            make.width.height.equalTo(kFitWidth(36))
-//                            make.bottom.equalTo(imgBottomGap)
-//                        }
+//                        headImgView.setImgLocal(imgName: "avatar_default")
+////                        headImgView.snp.remakeConstraints { make in
+////                            make.left.equalTo(kFitWidth(10))
+////                            make.top.equalTo(kFitWidth(5))
+////                            make.width.height.equalTo(kFitWidth(36))
+////                            make.bottom.equalTo(imgBottomGap)
+////                        }
                         imgView.snp.remakeConstraints { make in
                             make.left.equalTo(kFitWidth(60))
                             make.top.equalTo(kFitWidth(5))
@@ -263,6 +286,67 @@ extension ServiceContactTableViewTextCell{
             make.top.equalTo(msgLabel).offset(kFitWidth(-4))
             make.bottom.equalTo(msgLabel).offset(kFitWidth(4))
             make.left.equalTo(msgLabel).offset(kFitWidth(-4))
+        }
+    }
+}
+
+private extension ServiceContactTableViewTextCell {
+    func configureAvatar(isAdmin: Bool) {
+        avatarRequestID = UUID()
+        let requestID = avatarRequestID
+
+        headImgView.kf.cancelDownloadTask()
+
+        guard !isAdmin else {
+            headImgView.image = UIImage(named: "avatar_default")
+            return
+        }
+
+        let placeholder = UIImage(named: "avatar_default")
+        let avatarUrl = UserInfoModel.shared.headimgurl
+
+        guard !avatarUrl.isEmpty else {
+            headImgView.image = placeholder
+            return
+        }
+
+        let setImage: (URL) -> Void = { [weak self] url in
+            guard let self = self else { return }
+            self.headImgView.kf.setImage(
+                with: url,
+                placeholder: placeholder,
+                options: [.keepCurrentImageWhileLoading, .transition(.fade(0.2))]
+            ) { [weak self] result in
+                guard let self = self, self.avatarRequestID == requestID else { return }
+                if case .failure = result {
+                    self.headImgView.image = placeholder
+                }
+            }
+        }
+
+        if avatarUrl.contains("aliyuncs.com") {
+            DSImageUploader().dealImgUrlSignForOss(urlStr: avatarUrl) { [weak self] signedUrl in
+                guard let self = self, self.avatarRequestID == requestID else { return }
+                guard let resourceUrl = URL(string: signedUrl) else {
+                    self.headImgView.image = placeholder
+                    return
+                }
+                let resource = KF.ImageResource(downloadURL: resourceUrl, cacheKey: avatarUrl)
+                self.headImgView.kf.setImage(
+                    with: resource,
+                    placeholder: placeholder,
+                    options: [.keepCurrentImageWhileLoading, .transition(.fade(0.2))]
+                ) { [weak self] result in
+                    guard let self = self, self.avatarRequestID == requestID else { return }
+                    if case .failure = result {
+                        self.headImgView.image = placeholder
+                    }
+                }
+            }
+        } else if let url = URL(string: avatarUrl) {
+            setImage(url)
+        } else {
+            headImgView.image = placeholder
         }
     }
 }
