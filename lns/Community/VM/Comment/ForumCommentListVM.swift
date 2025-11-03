@@ -539,7 +539,6 @@ extension ForumCommentListVM{
         DLLog(message: "sendCommentListRequest:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_community_comment_list, parameters: param as [String: AnyObject]) { responseObject in
             self.isLoadinData = false
-            self.isShowSkeleton = false
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendCommentListRequest:\(dataArray)")
@@ -552,6 +551,7 @@ extension ForumCommentListVM{
             }
 
 //            DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
+            self.isShowSkeleton = false
                 self.dealDataSource(dataArray: dataArray)
 //            })
             

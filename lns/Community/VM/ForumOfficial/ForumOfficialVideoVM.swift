@@ -65,17 +65,22 @@ extension ForumOfficialVideoVM{
     func updateUIForForumDetail(model:ForumModel) {
         self.modelDetail = model
         self.videoImageView.image = self.modelDetail.coverImg
-        var videoSizeResult = CGSize(width: 0, height: 0)
+//        var videoSizeResult = CGSize(width: 0, height: 0)
         if modelDetail.videoUrl != nil{
-            DSImageUploader().dealImgUrlSignForOss(urlStr: modelDetail.videoUrl!.absoluteString) { signUrlString in
-                guard let signUrl = URL(string: signUrlString) else { return  }
-                VideoUtils.getVideoSizeAsync(url: signUrl) { videoSize in
+            DSImageUploader().dealImgUrlSignForOss(urlStr: modelDetail.videoUrl!.absoluteString) { [weak self] signUrlString in
+//                guard let signUrl = URL(string: signUrlString) else { return  }
+//                VideoUtils.getVideoSizeAsync(url: signUrl) { videoSize in
+                guard let self = self else { return }
+                guard let signUrl = URL(string: signUrlString) else { return }
+                VideoUtils.getVideoSizeAsync(url: signUrl) { [weak self] videoSize in
+                    guard let self = self else { return }
                     let imgWidth = SCREEN_WIDHT
                     
                     if videoSize.width <= 0{
                         return
                     }
                     
+                    let videoSizeResult: CGSize
                     if videoSize.height > videoSize.width{
                         videoSizeResult = CGSize(width: imgWidth, height: imgWidth)
                     }else{
@@ -90,10 +95,10 @@ extension ForumOfficialVideoVM{
                         make.width.equalTo(videoSizeResult.width)
                         make.height.equalTo(videoSizeResult.height)
                     }
-                    
-                    if self.heightChanged != nil{
-                        self.heightChanged!(videoSizeResult.height)
-                    }
+                    self.heightChanged?(videoSizeResult.height)
+//                    if self.heightChanged != nil{
+//                        self.heightChanged!(videoSizeResult.height)
+//                    }
                 }
             }
         }

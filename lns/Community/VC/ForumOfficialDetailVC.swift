@@ -1016,13 +1016,17 @@ extension ForumOfficialDetailVC{
             ZFPlayerModel.shared.player.controlView = self.controlView
 //            ZFPlayerModel.shared.player.assetURL = videoUrl
             ZFPlayerModel.shared.player.customAudioSession = true
-            DSImageUploader().dealImgUrlSignForOss(urlStr: videoUrl.absoluteString, completion: { str in
+            DSImageUploader().dealImgUrlSignForOss(urlStr: videoUrl.absoluteString, completion: { [weak self]str in
                 DLLog(message: "视频播放URL:\(str)")
-                if let strURL = URL(string: str){
-                    DispatchQueue.global(qos: .userInteractive).async {
-                        ZFPlayerModel.shared.player.assetURL = strURL
-                    }
+                guard let strURL = URL(string: str) else { return }
+                DispatchQueue.main.async {
+                    ZFPlayerModel.shared.player.assetURL = strURL
                 }
+//                if let strURL = URL(string: str){
+//                    DispatchQueue.global(qos: .userInteractive).async {
+//                        ZFPlayerModel.shared.player.assetURL = strURL
+//                    }
+//                }
             })
 //            ZFPlayerModel.shared.player.playerPrepareToPlay = {(asset ,assertUrl)in
 ////                ZFPlayerModel.shared.playerManager.player.automaticallyWaitsToMinimizeStalling = false
@@ -1031,43 +1035,90 @@ extension ForumOfficialDetailVC{
 //                }
 //            }
             
-            ZFPlayerModel.shared.player.playerPlayTimeChanged = {asset,current,total in
-                if current > 0.05{
-                    self.videoVm.videoImageView.isHidden = true
-                    self.controlView.hiddenCoverImgView()
-                    UIView.animate(withDuration: 0.1) {
-                        ZFPlayerModel.shared.player.currentPlayerManager.view.alpha = 1
+            ZFPlayerModel.shared.player.playerPlayTimeChanged = {[weak self] asset,current,total in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    if current > 0.05{
+                        self.videoVm.videoImageView.isHidden = true
+                        self.controlView.hiddenCoverImgView()
+                        UIView.animate(withDuration: 0.1) {
+                            ZFPlayerModel.shared.player.currentPlayerManager.view.alpha = 1
+                        }
+                    }
+                }
+//                if current > 0.05{
+//                    self.videoVm.videoImageView.isHidden = true
+//                    self.controlView.hiddenCoverImgView()
+//                    UIView.animate(withDuration: 0.1) {
+//                        ZFPlayerModel.shared.player.currentPlayerManager.view.alpha = 1
+//                    }
+//                }
+            }
+            ZFPlayerModel.shared.player.orientationWillChange = { [weak self] player,isFullScreen in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    if isFullScreen{
+                        self.coverBlackView.isHidden = false
+                    }
+                    self.setNeedsStatusBarAppearanceUpdate()
+                    if #available(iOS 16.0, *) {
+        //                self.setNeedsUpdateOfSupportedInterfaceOrientations()
+                    } else {
+                        // Fallback on earlier versions
+                        UIViewController.attemptRotationToDeviceOrientation()
                     }
                 }
             }
-            ZFPlayerModel.shared.player.orientationWillChange = {player,isFullScreen in
-                if isFullScreen{
-                    self.coverBlackView.isHidden = false
-                }
-                self.setNeedsStatusBarAppearanceUpdate()
-                if #available(iOS 16.0, *) {
-    //                self.setNeedsUpdateOfSupportedInterfaceOrientations()
-                } else {
-                    // Fallback on earlier versions
-                    UIViewController.attemptRotationToDeviceOrientation()
-                }
-            }
-            ZFPlayerModel.shared.player.playerDidToEnd = {(asset)in
-                DLLog(message: "playerDidToEnd:")
-    //            self.playerManager?.seek(toTime: 0)
-//                ZFPlayerModel.shared.playerManager.replay()
-                ZFPlayerModel.shared.playerManager.seek(toTime: 0)
-            }
-            ZFPlayerModel.shared.player.playerPlayStateChanged = { asset, state in
-//                DLLog(message: "playerPlayStateChanged : \(state)")
-                if state == .playStatePaused{
-                    self.controlView.showWithAnimatedForPlayEnd()
-                    self.controlView.cancelAutoFadeOutControlView()
-                }else{
-                    self.isManualPause = false
-                    self.controlView.autoFadeOutControlView()
+//            ZFPlayerModel.shared.player.orientationWillChange = {player,isFullScreen in
+//                if isFullScreen{
+//                    self.coverBlackView.isHidden = false
+//                }
+//                self.setNeedsStatusBarAppearanceUpdate()
+//                if #available(iOS 16.0, *) {
+//    //                self.setNeedsUpdateOfSupportedInterfaceOrientations()
+//                } else {
+//                    // Fallback on earlier versions
+//                    UIViewController.attemptRotationToDeviceOrientation()
+//                }
+//            }
+            ZFPlayerModel.shared.player.playerDidToEnd = { [weak self] asset in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    DLLog(message: "playerDidToEnd:")
+        //            self.playerManager?.seek(toTime: 0)
+    //                ZFPlayerModel.shared.playerManager.replay()
+                    ZFPlayerModel.shared.playerManager.seek(toTime: 0)
                 }
             }
+//            ZFPlayerModel.shared.player.playerDidToEnd = {(asset)in
+//                DLLog(message: "playerDidToEnd:")
+//    //            self.playerManager?.seek(toTime: 0)
+////                ZFPlayerModel.shared.playerManager.replay()
+//                ZFPlayerModel.shared.playerManager.seek(toTime: 0)
+//            }
+            ZFPlayerModel.shared.player.playerPlayStateChanged = { [weak self] asset, state in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+    //                DLLog(message: "playerPlayStateChanged : \(state)")
+                    if state == .playStatePaused{
+                        self.controlView.showWithAnimatedForPlayEnd()
+                        self.controlView.cancelAutoFadeOutControlView()
+                    }else{
+                        self.isManualPause = false
+                        self.controlView.autoFadeOutControlView()
+                    }
+                }
+            }
+//            ZFPlayerModel.shared.player.playerPlayStateChanged = { asset, state in
+////                DLLog(message: "playerPlayStateChanged : \(state)")
+//                if state == .playStatePaused{
+//                    self.controlView.showWithAnimatedForPlayEnd()
+//                    self.controlView.cancelAutoFadeOutControlView()
+//                }else{
+//                    self.isManualPause = false
+//                    self.controlView.autoFadeOutControlView()
+//                }
+//            }
         }
     }
 }

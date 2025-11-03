@@ -61,7 +61,7 @@ extension ForumOfficialTextCell{
         // 计算文本高度
         let fixedWidth = kFitWidth(343)
         let newSize = detailLab.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
-        detailLab.snp.makeConstraints { make in
+        detailLab.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
             make.top.equalTo(kFitWidth(10))
@@ -87,7 +87,7 @@ extension ForumOfficialTextCell{
         let newSize = detailLab.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
         
         DLLog(message: "updateContentText:\(newSize)")
-        detailLab.snp.makeConstraints { make in
+        detailLab.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
             make.top.equalTo(kFitWidth(0))
