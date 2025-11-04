@@ -25,6 +25,7 @@ class JournalVC: WHBaseViewVC {
     var isEdit = false
     
     var logsGuideStep = 0
+    private var needsInitialScrollToToday = true
     
 //    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
 //        self.naviVm.bgView.addShadow(opacity: 0.05)
@@ -112,6 +113,7 @@ class JournalVC: WHBaseViewVC {
                 layout.invalidateLayout()
             }
         }
+        applyInitialContentOffsetIfNeeded()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -476,17 +478,41 @@ class JournalVC: WHBaseViewVC {
 }
 
 extension JournalVC{
+    private func applyInitialContentOffsetIfNeeded() {
+        guard needsInitialScrollToToday else { return }
+        guard todayIndex >= 0, todayIndex < daySourceArray.count else { return }
+        scrollToTodayWithoutAnimation(reloadData: false)
+    }
+
+    private func scrollToTodayWithoutAnimation(reloadData: Bool) {
+        guard todayIndex >= 0, todayIndex < daySourceArray.count else { return }
+        needsInitialScrollToToday = false
+        UIView.performWithoutAnimation {
+            if reloadData {
+                self.collectView.reloadData()
+            }
+            self.collectView.layoutIfNeeded()
+            if self.collectView.numberOfItems(inSection: 0) > self.todayIndex {
+                self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
+            }
+        }
+        self.selecteIndex = self.todayIndex
+        if let today = self.daySourceArray[self.todayIndex] as? String {
+            self.queryDay = today
+        }
+    }
     @objc func judegeToDay() {
         if toDayDate != Date().nextDay(days: 0) {
             queryDay = Date().nextDay(days: 0)
             refreshDataSource()
 //            self.collectView.reloadData()
-            UIView.performWithoutAnimation {
-                self.collectView.reloadData()
-                self.collectView.layoutIfNeeded()
-                self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
-//                self.collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
-            }
+//            UIView.performWithoutAnimation {
+//                self.collectView.reloadData()
+//                self.collectView.layoutIfNeeded()
+//                self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
+////                self.collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
+//            }
+            scrollToTodayWithoutAnimation(reloadData: true)
             self.toDayDate = Date().nextDay(days: 0)
 //            self.collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
             
@@ -514,6 +540,7 @@ extension JournalVC{
         }
         
         daySourceArray = arr
+        needsInitialScrollToToday = true
 //        for i in 0..<self.daySourceArray.count{
 //            self.collectView.register(JounalCollectionCell.classForCoder(), forCellWithReuseIdentifier: "JounalCollectionCell")
 ////            self.collectView.register(JounalCollectionCell.classForCoder(), forCellWithReuseIdentifier: "JounalCollectionCell\(i)")
@@ -622,22 +649,24 @@ extension JournalVC{
         if toDayDate != Date().nextDay(days: 0){
             refreshDataSource()
 //            self.collectView.reloadData()
-            UIView.performWithoutAnimation {
-                self.collectView.reloadData()
-                self.collectView.layoutIfNeeded()
-                self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
-//                self.collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
-            }
+//            UIView.performWithoutAnimation {
+//                self.collectView.reloadData()
+//                self.collectView.layoutIfNeeded()
+//                self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
+////                self.collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
+//            }
+            scrollToTodayWithoutAnimation(reloadData: true)
             self.toDayDate = Date().nextDay(days: 0)
 //            self.collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
         }else{
             self.selecteIndex = self.todayIndex
-            UIView.performWithoutAnimation {
-                self.collectView.reloadData()
-                self.collectView.layoutIfNeeded()
-                self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
-//                self.collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
-            }
+            scrollToTodayWithoutAnimation(reloadData: true)
+//            UIView.performWithoutAnimation {
+//                self.collectView.reloadData()
+//                self.collectView.layoutIfNeeded()
+//                self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
+////                self.collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
+//            }
 //            self.collectView.reloadData()
 //            self.collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
         }
@@ -881,6 +910,7 @@ extension JournalVC{
         
         collectView.delegate = self
         collectView.dataSource = self
+        /*
 //        if isIpad(){
             DispatchQueue.main.asyncAfter(deadline: .now()+0.7, execute: {
                 self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
@@ -896,7 +926,7 @@ extension JournalVC{
 //        }
         
 //        collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
-        
+        */
         DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.getKeyWindow().addSubview(self.bottomFuncVm)

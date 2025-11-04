@@ -41,13 +41,28 @@ class JournalCollectionView : UICollectionView{
         return false
     }
     func setContentOffsetPage(index:Int,animated:Bool,direction:UICollectionView.ScrollPosition) {
-        if isIpad(){
-//            let layoutAttr = self.collectionViewLayout.layoutAttributesForItem(at: IndexPath.init(row: index, section: 0))
-//            self.setContentOffset(layoutAttr?.frame.origin ?? CGPoint.init(x: 0, y: 0), animated: animated)
-            let offsetX = CGFloat(index) * bounds.width
-            setContentOffset(CGPoint(x: offsetX, y: contentOffset.y), animated: animated)
-        }else{
-            self.scrollToItem(at: IndexPath.init(row: index, section: 0), at: direction, animated: animated)
+//        if isIpad(){
+//            //            let layoutAttr = self.collectionViewLayout.layoutAttributesForItem(at: IndexPath.init(row: index, section: 0))
+//            //            self.setContentOffset(layoutAttr?.frame.origin ?? CGPoint.init(x: 0, y: 0), animated: animated)
+//            let offsetX = CGFloat(index) * bounds.width
+//            setContentOffset(CGPoint(x: offsetX, y: contentOffset.y), animated: animated)
+//        }else{
+////            self.scrollToItem(at: IndexPath.init(row: index, section: 0), at: direction, animated: animated)
+//        }
+//
+        guard bounds.width > 0 else {
+            DispatchQueue.main.async { [weak self] in
+                self?.setContentOffsetPage(index: index, animated: animated, direction: direction)
+            }
+            return
         }
+        
+        let totalItems = dataSource?.collectionView(self, numberOfItemsInSection: 0) ?? 0
+        guard totalItems > 0 else { return }
+        
+        let clampedIndex = max(0, min(index, totalItems - 1))
+        let offsetX = CGFloat(clampedIndex) * bounds.width
+        setContentOffset(CGPoint(x: offsetX, y: contentOffset.y), animated: animated)
+    
     }
 }

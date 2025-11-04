@@ -6898,7 +6898,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 138;
+				CURRENT_PROJECT_VERSION = 139;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -6924,7 +6924,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3.9;
+				MARKETING_VERSION = 2.4.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -7005,7 +7005,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 138;
+				CURRENT_PROJECT_VERSION = 139;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -7030,7 +7030,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.3.9;
+				MARKETING_VERSION = 2.4.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
