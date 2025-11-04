@@ -706,7 +706,8 @@ extension ForumListTableViewCell{
             make.bottom.equalTo(kFitWidth(-16))
         }
         shareBtn.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(6))
+//            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(6))
+            make.top.equalTo(imgView)
             make.right.equalToSuperview()
             make.width.equalTo(kFitWidth(64))
             make.height.equalTo(kFitWidth(28))

@@ -163,7 +163,16 @@ class WHNetworkUtil: SessionManager {
      vc   视图控制器
      success  成功回调
      */
-    func POST(urlString : String, parameters : [String : AnyObject]?,isNeedToast:Bool? = false, vc:UIViewController? = nil,timeOut:TimeInterval? = 10.0,taskId:String="",success : @escaping (_ responseObject : [String : AnyObject]) -> (), failure: ((Bool) -> Void)? = nil) -> () {
+//    func POST(urlString : String, parameters : [String : AnyObject]?,isNeedToast:Bool? = false, vc:UIViewController? = nil,timeOut:TimeInterval? = 10.0,taskId:String="",success : @escaping (_ responseObject : [String : AnyObject]) -> (), failure: ((Bool) -> Void)? = nil) -> () {
+    func POST(urlString : String,
+                  parameters : [String : AnyObject]?,
+                  isNeedToast:Bool? = false,
+                  vc:UIViewController? = nil,
+                  timeOut:TimeInterval? = 10.0,
+                  taskId:String="",
+                  requestConfig: ((DataRequest) -> Void)? = nil,
+                  success : @escaping (_ responseObject : [String : AnyObject]) -> (),
+                  failure: ((Bool) -> Void)? = nil) -> () {
         // 后台队列，避免阻塞主线程
         DLLog(message: "----------  uid   token  ----------------------")
         DLLog(message: "\(UserInfoModel.shared.uId)")
@@ -228,7 +237,10 @@ class WHNetworkUtil: SessionManager {
                 manager.session.configuration.timeoutIntervalForRequest = timeOut ?? 10.0
     //            WHNetworkUtil.shareManager().dataRequest =
                 DLLog(message: "\(urlString)入参:\(paraDict)")
-                manager.request(urlString, method: .post, parameters: paraDict, encoding: JSONEncoding.default,headers: header).responseJSON { (response) in
+//                manager.request(urlString, method: .post, parameters: paraDict, encoding: JSONEncoding.default,headers: header).responseJSON { (response) in
+            let dataRequest = manager.request(urlString, method: .post, parameters: paraDict, encoding: JSONEncoding.default,headers: header)
+                            requestConfig?(dataRequest)
+                            dataRequest.responseJSON { (response) in
                     DLLog(message: "\(urlString) \n \(response)")
                     let appDelegate = UIApplication.shared.delegate as! AppDelegate
                     let currentVc = appDelegate.getKeyWindow().rootViewController
@@ -348,40 +360,51 @@ class WHNetworkUtil: SessionManager {
                         break
                     case .failure:
                         MCToast.mc_remove()
-//                        if urlString == URL_community_forum_notice_list || urlString == URL_community_comment_list_push || urlString ==  URL_forum_add {
-//                            DispatchQueue.main.async {
-//                                success(["code":"404"]as [String : AnyObject])
-//                            }
-//                            return
-//                        }
-//                        DLLog(message: "\(urlString) response: \(response)")
-//                        if urlString == URL_foods_list && UserInfoModel.shared.currentVcName == "FoodsListNewVC"{
-//                            MCToast.mc_failure("网络异常，请稍后重试",respond: .allow)
-//                        }else if urlString == URL_question_survey_part_save && UserInfoModel.shared.uId.count < 3{
-//                            DispatchQueue.main.async {
-//                                success(["code":"404"]as [String : AnyObject])
-//                            }
-//                        }else if urlString == URL_foods_ai_identify{
-//                            DispatchQueue.main.async {
-//                                success(["code":"404"]as [String : AnyObject])
-//                            }
-//                        }else{
-                            // 新增：自动延迟重试！！
-                            DLLog(message: "[NetworkMonitor] 请求失败，准备加入pending - \(urlString)")
-                           let allowRetry = NetworkMonitor.shared.shouldAllowRetry(for: urlString)
+//                        // 新增：自动延迟重试！！
+//                        DLLog(message: "[NetworkMonitor] 请求失败，准备加入pending - \(urlString)")
+//                       let allowRetry = NetworkMonitor.shared.shouldAllowRetry(for: urlString)
+//
+//                       if allowRetry {
+//                           DLLog(message: "[NetworkMonitor] 请求失败，允许重试，加入pending - \(urlString)")
+//                           NetworkMonitor.shared.retryLater({
+//                               self.POST(urlString: urlString, parameters: parameters, isNeedToast: isNeedToast, vc: vc, timeOut: timeOut, taskId: taskId, success: success, failure: failure)
+//                           }, retryCount: 0)
+//                       } else {
+//                           DLLog(message: "[NetworkMonitor] 请求失败，但禁止重试，直接回调失败 - \(urlString)")
+//                           DispatchQueue.main.async {
+//                               failure?(true)
+//                           }
+//                       }
+                        var isCancelled: Bool = true
+                        if let afError = response.error as? AFError {
+//                            isCancelled = afError.iscancel
+                        } else {
+                            let nsError = response.error as NSError?
+                            isCancelled = nsError?.code == NSURLErrorCancelled
+                        }
+                        if isCancelled {
+                            DLLog(message: "[NetworkMonitor] 请求已取消 - \(urlString)")
+                            DispatchQueue.main.async {
+                                failure?(false)
+                            }
+                            break
+                        }
 
-                           if allowRetry {
-                               DLLog(message: "[NetworkMonitor] 请求失败，允许重试，加入pending - \(urlString)")
-                               NetworkMonitor.shared.retryLater({
-                                   self.POST(urlString: urlString, parameters: parameters, isNeedToast: isNeedToast, vc: vc, timeOut: timeOut, taskId: taskId, success: success, failure: failure)
-                               }, retryCount: 0)
-                           } else {
-                               DLLog(message: "[NetworkMonitor] 请求失败，但禁止重试，直接回调失败 - \(urlString)")
-                               DispatchQueue.main.async {
-                                   failure?(true)
-                               }
-                           }
-//                        }
+                        // 新增：自动延迟重试！！
+                        DLLog(message: "[NetworkMonitor] 请求失败，准备加入pending - \(urlString)")
+                        let allowRetry = NetworkMonitor.shared.shouldAllowRetry(for: urlString)
+
+                        if allowRetry {
+                            DLLog(message: "[NetworkMonitor] 请求失败，允许重试，加入pending - \(urlString)")
+                            NetworkMonitor.shared.retryLater({
+                                self.POST(urlString: urlString, parameters: parameters, isNeedToast: isNeedToast, vc: vc, timeOut: timeOut, taskId: taskId, requestConfig: requestConfig, success: success, failure: failure)
+                            }, retryCount: 0)
+                        } else {
+                            DLLog(message: "[NetworkMonitor] 请求失败，但禁止重试，直接回调失败 - \(urlString)")
+                            DispatchQueue.main.async {
+                                failure?(true)
+                            }
+                        }
                         break
                     }
                 }

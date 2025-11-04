@@ -359,7 +359,10 @@ extension ForumDetailVC{
         scrollViewBase.contentInsetAdjustmentBehavior = .never
         
         scrollViewBase.mj_footer = MJRefreshBackNormalFooter.init(refreshingBlock: {
-            self.commentListVm.loadMoreAction()
+//            self.commentListVm.loadMoreAction()
+            if self.commentListVm.isShowSkeleton == false{
+                self.commentListVm.loadMoreAction()
+            }
         })
         
         view.addSubview(bottomFuncVm)
@@ -377,7 +380,9 @@ extension ForumDetailVC{
             commentListVm.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: (SCREEN_HEIGHT-naviVm.selfHeight-bottomFuncVm.selfHeight)*1.5)
             scrollViewBase.contentSize = CGSize.init(width: 0, height: commentListVm.frame.maxY)
             self.scrollViewBase.mj_footer = MJRefreshBackNormalFooter.init(refreshingBlock: {
-                self.commentListVm.loadMoreAction()
+                if self.commentListVm.isShowSkeleton == false{
+                    self.commentListVm.loadMoreAction()
+                }
             })
         }
         

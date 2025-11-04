@@ -108,7 +108,7 @@ class ForumCommentReplyListCell: UITableViewCell {
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
         btn.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
         btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .highlighted)
-//        btn.alpha = 0
+        btn.alpha = 0
         
         btn.addTarget(self, action: #selector(thumbAction), for: .touchUpInside)
         
@@ -167,19 +167,20 @@ extension ForumCommentReplyListCell{
            imgView.image = nil
            imgView.isHidden = true
 //           timeLabel.alpha = 0
-           thumbsUpButton.imageView?.image = nil
+           thumbsUpButton.alpha = 0
+//           thumbsUpButton.imageView?.image = nil
 
            let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
                                     highlightColorLight: .COLOR_GRAY_E2,
                                     cornerRadius: kFitWidth(4),
                                     shimmerWidth: 0.22,
                                     shimmerDuration: 1.15)
-           [headImgView, nameLabel, commentLabel, timeLabel,thumbsUpButton].forEach { $0.showSkeleton(cfg) }
+           [headImgView, nameLabel, commentLabel, timeLabel].forEach { $0.showSkeleton(cfg) }
            return
        }
         refreshConstrait()
 //        timeLabel.alpha = 0
-       [headImgView, nameLabel, commentLabel, timeLabel,thumbsUpButton].forEach { $0.hideSkeletonWithCrossfade() }
+       [headImgView, nameLabel, commentLabel, timeLabel].forEach { $0.hideSkeletonWithCrossfade() }
         
         
         thumbTapView.isHidden = false
@@ -265,6 +266,9 @@ extension ForumCommentReplyListCell{
     }
     //点赞按钮
     func updateThumbButton(model:ForumCommentReplyModel) {
+        UIView.animate(withDuration: 0.15) {
+            self.thumbsUpButton.alpha = 1
+        }
         if model.upvoteCount.intValue > 0 {
             thumbsUpButton.setTitle("\(model.upvoteCount)", for: .normal)
         }else{

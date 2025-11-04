@@ -14,7 +14,7 @@ enum SCENARIO_TYPE {
     case report_daily
     ///周报
     case report_weekly
-    ///启动页
+    ///启动页  冷启动
     case launch_App
     ///引导页
     case guide_view
@@ -69,7 +69,12 @@ class EventLogUtils {
                 //如果没有sessionid,
                 //则代表用户不是点击开屏页的广告进来的
                 //或者已经完成了支付流程
-                return
+                param = ["eventName":model.eventName,
+//                         "sessionId":UserInfoModel.shared.event_log_session_id,
+                         "params":["scenario":model.scenario,
+                                   "text":model.text,
+                                   "result":model.result]] as [String : Any]
+//                return
             }
         }else if scenarioType == .course_create_order && UserInfoModel.shared.event_log_session_id.count > 0{
             param = ["eventName":model.eventName,

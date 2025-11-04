@@ -43,6 +43,11 @@ class ForumOfficialDetailVC: WHBaseViewVC {
     var isCommentScroll = false
     
     var isManualPause = false
+    var isDisaper = false
+    
+    private let videoLoadTimeout: TimeInterval = 10
+    private var videoLoadTimeoutTask: DispatchWorkItem?
+    private var isVideoLoading = false
     
     override func viewWillAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(endFullAction), name: NSNotification.Name(rawValue: "tutorialEnterFullScreen"), object: nil)
@@ -75,6 +80,8 @@ class ForumOfficialDetailVC: WHBaseViewVC {
     override func viewDidDisappear(_ animated: Bool) {
         IQKeyboardManager.shared.enable = true
         
+        cancelVideoLoadingMonitor()
+        self.isDisaper = true
         if self.model.contentType == .VIDEO{
             if self.isMovingFromParent{
                 self.controlView.isHidden = true
@@ -845,8 +852,11 @@ extension ForumOfficialDetailVC:UIScrollViewDelegate{
 //            DLLog(message: "contentSizeHeight:\(contentSizeHeight)    ---  scrollView.contentOffset.y:  \(scrollView.contentOffset.y)")
 //            DLLog(message: "scrollViewDidScroll:\(abs(scrollView.contentOffset.y - contentSizeHeight + kFitWidth(150)))")
             if abs(scrollView.contentOffset.y - contentSizeHeight + kFitWidth(150)) <= kFitWidth(100){
-                self.isLoadMoreComment = true
-                self.commentListVm.loadMoreAction()
+//                self.commentListVm.loadMoreAction()
+                if self.commentListVm.isShowSkeleton == false{
+                    self.isLoadMoreComment = true
+                    self.commentListVm.loadMoreAction()
+                }
             }
         }
 //        DLLog(message: "scrollViewBase.contentOffset.y:\(scrollViewBase.contentOffset.y)")
@@ -942,7 +952,10 @@ extension ForumOfficialDetailVC{
 //                self.commentListVm.loadMoreAction()
 //            })
             let footer = ForumLoadingFooter.init(refreshingBlock: {
-                self.commentListVm.loadMoreAction()
+                if self.commentListVm.isShowSkeleton == false{
+                    self.commentListVm.loadMoreAction()
+                }
+//                self.commentListVm.loadMoreAction()
             })
             self.scrollViewBase.mj_footer = footer
         }
@@ -1006,6 +1019,10 @@ extension ForumOfficialDetailVC{
         ZFPlayerModel.shared.player.forceDeviceOrientation = true
     }
     func initPlayer() {
+        if self.isDisaper{
+            return
+        }
+        
         if let videoUrl = self.model.videoUrl{
             ZFPlayerModel.shared.addToForumDetail(containerView: self.videoVm)
             ZFPlayerModel.shared.playerManager.scalingMode = .aspectFit
@@ -1016,14 +1033,23 @@ extension ForumOfficialDetailVC{
             ZFPlayerModel.shared.player.controlView = self.controlView
 //            ZFPlayerModel.shared.player.assetURL = videoUrl
             ZFPlayerModel.shared.player.customAudioSession = true
+            startVideoLoadingMonitor()
             DSImageUploader().dealImgUrlSignForOss(urlStr: videoUrl.absoluteString, completion: { [weak self]str in
                 DLLog(message: "视频播放URL:\(str)")
-                guard let strURL = URL(string: str) else { return }
-                DispatchQueue.main.async {
-                    ZFPlayerModel.shared.player.assetURL = strURL
+                guard let self = self else { return }
+                guard let strURL = URL(string: str) else {
+                    DispatchQueue.main.async {
+                        self.handleVideoLoadFailure()
+                    }
+                    return
                 }
+                self.prepareVideoAsset(with: strURL)
+//                guard let strURL = URL(string: str) else { return }
+//                DispatchQueue.main.async {
+//                    ZFPlayerModel.shared.player.assetURL = strURL
+//                }
 //                if let strURL = URL(string: str){
-//                    DispatchQueue.global(qos: .userInteractive).async {
+//                    DispatchQueue.global(qos: .userInitiated).async {
 //                        ZFPlayerModel.shared.player.assetURL = strURL
 //                    }
 //                }
@@ -1039,6 +1065,7 @@ extension ForumOfficialDetailVC{
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     if current > 0.05{
+                        self.videoLoadSucceeded()
                         self.videoVm.videoImageView.isHidden = true
                         self.controlView.hiddenCoverImgView()
                         UIView.animate(withDuration: 0.1) {
@@ -1100,15 +1127,35 @@ extension ForumOfficialDetailVC{
                 guard let self = self else { return }
                 DispatchQueue.main.async {
     //                DLLog(message: "playerPlayStateChanged : \(state)")
-                    if state == .playStatePaused{
-                        self.controlView.showWithAnimatedForPlayEnd()
-                        self.controlView.cancelAutoFadeOutControlView()
-                    }else{
-                        self.isManualPause = false
-                        self.controlView.autoFadeOutControlView()
-                    }
+//                    if state == .playStatePaused{
+//                        self.controlView.showWithAnimatedForPlayEnd()
+//                        self.controlView.cancelAutoFadeOutControlView()
+//                    }else{
+//                        self.isManualPause = false
+//                        self.controlView.autoFadeOutControlView()
+//                    }
+                    switch state {
+                        case .playStatePaused:
+                            self.controlView.showWithAnimatedForPlayEnd()
+                            self.controlView.cancelAutoFadeOutControlView()
+                        case .playStatePlaying:
+                            self.videoLoadSucceeded()
+                            self.isManualPause = false
+                            self.controlView.autoFadeOutControlView()
+                        case .playStatePlayFailed:
+                            self.handleVideoLoadFailure()
+                        default:
+                            self.isManualPause = false
+                            self.controlView.autoFadeOutControlView()
+                        }
                 }
             }
+            ZFPlayerModel.shared.player.playerPlayFailed = { [weak self] asset, error in
+               guard let self = self else { return }
+               DispatchQueue.main.async {
+                   self.handleVideoLoadFailure()
+               }
+           }
 //            ZFPlayerModel.shared.player.playerPlayStateChanged = { asset, state in
 ////                DLLog(message: "playerPlayStateChanged : \(state)")
 //                if state == .playStatePaused{
@@ -1415,6 +1462,65 @@ extension ForumOfficialDetailVC{
         WHNetworkUtil.shareManager().POST(urlString: URL_forum_delete, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
             self.deleteBlock?(self.model)
             self.backTapAction()
+        }
+    }
+}
+
+extension ForumOfficialDetailVC{
+    private func prepareVideoAsset(with url: URL) {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            let asset = AVURLAsset(url: url)
+            let keys = ["playable"]
+            asset.loadValuesAsynchronously(forKeys: keys) {
+                var error: NSError?
+                let status = asset.statusOfValue(forKey: "playable", error: &error)
+                DispatchQueue.main.async {
+                    switch status {
+                    case .loaded:
+                        ZFPlayerModel.shared.player.assetURL = url
+                    case .failed, .cancelled:
+                        self.handleVideoLoadFailure()
+                    default:
+                        if let err = error {
+                            DLLog(message: "Video asset load failed: \(err.localizedDescription)")
+                        }
+                        self.handleVideoLoadFailure()
+                    }
+                }
+            }
+        }
+    }
+
+    private func startVideoLoadingMonitor() {
+        videoLoadTimeoutTask?.cancel()
+        isVideoLoading = true
+        let task = DispatchWorkItem { [weak self] in
+            self?.handleVideoLoadFailure()
+        }
+        videoLoadTimeoutTask = task
+        DispatchQueue.main.asyncAfter(deadline: .now() + videoLoadTimeout, execute: task)
+    }
+
+    private func cancelVideoLoadingMonitor() {
+        videoLoadTimeoutTask?.cancel()
+        videoLoadTimeoutTask = nil
+        isVideoLoading = false
+    }
+
+    private func videoLoadSucceeded() {
+        guard isVideoLoading else { return }
+        cancelVideoLoadingMonitor()
+    }
+
+    private func handleVideoLoadFailure() {
+        guard isVideoLoading else { return }
+        cancelVideoLoadingMonitor()
+        ZFPlayerModel.shared.playerManager.stop()
+        ZFPlayerModel.shared.player.currentPlayerManager.view.alpha = 0
+        videoVm.videoImageView.isHidden = false
+        if viewIfLoaded?.window != nil {
+            JFPopupView.popup.toast(hit: "视频加载失败，请稍后重试")
         }
     }
 }

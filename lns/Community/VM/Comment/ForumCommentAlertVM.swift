@@ -8,6 +8,7 @@
 
 import Foundation
 import MCToast
+import SnapKit
 
 class ForumCommentAlertVM: UIView {
     
@@ -19,6 +20,13 @@ class ForumCommentAlertVM: UIView {
     var maxLength = 400
     var contentWhiteHeight = kFitWidth(120) + kFitWidth(16)
     
+    // MARK: - 动态高度相关
+    private let minTextViewHeight: CGFloat = kFitWidth(48)      // 与你原来固定的高度一致
+    private var maxTextViewHeight: CGFloat = 0                  // 运行时计算（比如 5 行）
+    private var bgHeightConstraint: Constraint?                 // 持有 bgView 的高度约束
+    private var baseWhiteHeightWithoutInput: CGFloat = 0        // whiteView 除去输入框之外的固定高度
+    private var currentKeyboardFrame: CGRect = .zero            // 记录键盘位置，便于实时贴边
+
     var commonImgUrl = ""
     
     var commonBlock:(()->())?
@@ -40,6 +48,14 @@ class ForumCommentAlertVM: UIView {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         initUI()
+        // 在 init(frame:) 的 initUI() 调用后追加：
+        baseWhiteHeightWithoutInput = contentWhiteHeight - minTextViewHeight
+        let lineHeight = textView.font?.lineHeight ?? 18
+        let maxLines: CGFloat = 5 // 你希望的最大行数（可改）
+        maxTextViewHeight = ceil(lineHeight * maxLines)
+            + textView.textContainerInset.top
+            + textView.textContainerInset.bottom
+
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -74,6 +90,7 @@ class ForumCommentAlertVM: UIView {
         text.textColor = .COLOR_GRAY_BLACK_85
         text.backgroundColor = .clear
         text.delegate = self
+        text.isScrollEnabled = false
 //        text.returnKeyType = .next
         text.textContentType = nil
         
@@ -305,27 +322,43 @@ extension ForumCommentAlertVM {
         setConstrait()
     }
     func setConstrait() {
+//        bgView.snp.makeConstraints { make in
+//            make.left.top.equalTo(kFitWidth(16))
+//            make.right.equalTo(kFitWidth(-16))
+////            make.centerY.lessThanOrEqualToSuperview()
+////            make.width.equalTo(kFitWidth(275))
+//            make.height.equalTo(kFitWidth(48))
+//        }
         bgView.snp.makeConstraints { make in
             make.left.top.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
-//            make.centerY.lessThanOrEqualToSuperview()
-//            make.width.equalTo(kFitWidth(275))
-            make.height.equalTo(kFitWidth(48))
+            bgHeightConstraint = make.height.equalTo(minTextViewHeight).constraint
         }
         textView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(12))
             make.right.equalTo(kFitWidth(-12))
-            make.top.height.equalToSuperview()
+            make.top.bottom.equalToSuperview()
         }
+
+//        textView.snp.makeConstraints { make in
+//            make.left.equalTo(kFitWidth(12))
+//            make.right.equalTo(kFitWidth(-12))
+//            make.top.height.equalToSuperview()
+//        }
         placeholderLabel.snp.makeConstraints { make in
             make.left.equalTo(textView).offset(kFitWidth(4))
             make.top.equalTo(textView).offset(kFitWidth(8))
             make.right.equalTo(kFitWidth(-28))
         }
+//        limitCountLabel.snp.makeConstraints { make in
+//            make.right.equalTo(kFitWidth(-16))
+//            make.top.equalTo(kFitWidth(171))
+//        }
         limitCountLabel.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-16))
-            make.top.equalTo(kFitWidth(171))
+            make.top.equalTo(bgView.snp.bottom).offset(kFitWidth(8))
         }
+
         imgIconImageView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
 //            make.top.equalTo(bgView.snp.bottom).offset(kFitWidth(18))
@@ -370,6 +403,7 @@ extension ForumCommentAlertVM{
     @objc func showView() {
         self.isHidden = false
         self.whiteView.alpha = 1
+        self.clearMSg()
 //        self.alpha = 1
         
         self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
@@ -442,21 +476,43 @@ extension ForumCommentAlertVM{
 }
 
 extension ForumCommentAlertVM{
+//    @objc func keyboardWillShow(notification: NSNotification) {
+//        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+//            UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
+//                self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: keyboardSize.origin.y-(self.contentWhiteHeight - kFitWidth(32))*0.5)
+//            }
+//        }
+//    }
+//     
+//    @objc func keyboardWillHide(notification: NSNotification) {
+//        UIView.animate(withDuration: 0.7, delay: 0,options: .curveLinear) {
+//            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT-(self.contentWhiteHeight - kFitWidth(32))*0.5)
+//        }completion: { t in
+////            self.hiddenView()
+//        }
+//    }
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-                self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: keyboardSize.origin.y-(self.contentWhiteHeight - kFitWidth(32))*0.5)
+            currentKeyboardFrame = keyboardSize // 记录
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear) {
+                self.whiteView.center = CGPoint(
+                    x: SCREEN_WIDHT*0.5,
+                    y: keyboardSize.origin.y - (self.contentWhiteHeight - kFitWidth(32))*0.5
+                )
             }
         }
     }
-     
+
     @objc func keyboardWillHide(notification: NSNotification) {
-        UIView.animate(withDuration: 0.7, delay: 0,options: .curveLinear) {
-            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT-(self.contentWhiteHeight - kFitWidth(32))*0.5)
-        }completion: { t in
-//            self.hiddenView()
+        currentKeyboardFrame = .zero
+        UIView.animate(withDuration: 0.7, delay: 0, options: .curveLinear) {
+            self.whiteView.center = CGPoint(
+                x: SCREEN_WIDHT*0.5,
+                y: SCREEN_HEIGHT - (self.contentWhiteHeight - kFitWidth(32))*0.5
+            )
         }
     }
+
 }
 
 extension ForumCommentAlertVM : UITextViewDelegate {
@@ -483,6 +539,8 @@ extension ForumCommentAlertVM : UITextViewDelegate {
         }
 //        self.limitCountLabel.text =  "\(textView.text.count)/\(limitCount)"
         updateCountLabel(num: "\(textView.text.count)")
+        recalcInputHeight()
+
     }
 
     public func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
@@ -535,6 +593,52 @@ extension ForumCommentAlertVM{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             UserInfoModel.shared.updateOssParams(dict: WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? ""))
             self.takePicture()
+        }
+    }
+}
+
+extension ForumCommentAlertVM{
+    private func recalcInputHeight(animated: Bool = true) {
+        // 计算 textView 需要的高度（先拿到一个可靠的宽度）
+        let availableWidth: CGFloat = {
+            if textView.bounds.width > 0 { return textView.bounds.width }
+            // 初次计算时 bounds.width 可能为 0，给个合理的兜底宽度
+            return SCREEN_WIDHT - kFitWidth(16) - kFitWidth(16) - kFitWidth(12) - kFitWidth(12)
+        }()
+
+        var targetHeight = textView.sizeThatFits(CGSize(width: availableWidth,
+                                                        height: .greatestFiniteMagnitude)).height
+        targetHeight = max(minTextViewHeight, min(targetHeight, maxTextViewHeight))
+
+        // 1) 更新输入容器 bgView 的高度
+        bgHeightConstraint?.update(offset: targetHeight)
+
+        // 2) 同步 whiteView 的总高度（固定部分 + 输入框的当前高度）
+        let newTotalHeight = baseWhiteHeightWithoutInput + targetHeight
+        contentWhiteHeight = newTotalHeight
+
+        // 你当前 whiteView 用 frame 布局，这里直接改 frame 即可
+        var f = whiteView.frame
+        f.size.height = newTotalHeight
+        whiteView.frame = f
+
+        // 3) 到达上限时，允许 UITextView 内部滚动
+        textView.isScrollEnabled = (abs(targetHeight - maxTextViewHeight) < 0.5)
+
+        // 4) 如果键盘已弹出，让白底面板继续紧贴键盘
+        if currentKeyboardFrame != .zero {
+            whiteView.center = CGPoint(
+                x: SCREEN_WIDHT * 0.5,
+                y: currentKeyboardFrame.origin.y - (newTotalHeight - kFitWidth(32)) * 0.5
+            )
+        }
+
+        if animated {
+            UIView.animate(withDuration: 0.05) {
+                self.layoutIfNeeded()
+            }
+        } else {
+            self.layoutIfNeeded()
         }
     }
 }

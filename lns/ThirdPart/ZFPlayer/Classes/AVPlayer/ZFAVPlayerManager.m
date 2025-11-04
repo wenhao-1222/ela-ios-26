@@ -253,6 +253,7 @@ static NSString *const kPresentationSize         = @"presentationSize";
     return 0;
 }
 - (void)initializePlayer {
+    
     _asset = [AVURLAsset URLAssetWithURL:self.assetURL options:self.requestHeader];
     _playerItem = [AVPlayerItem playerItemWithAsset:_asset];
     _player = [AVPlayer playerWithPlayerItem:_playerItem];
@@ -270,6 +271,31 @@ static NSString *const kPresentationSize         = @"presentationSize";
         _player.automaticallyWaitsToMinimizeStalling = NO;
     }
     [self itemObserving];
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        self->_asset = [AVURLAsset URLAssetWithURL:self.assetURL options:self.requestHeader];
+//        self->_playerItem = [AVPlayerItem playerItemWithAsset:self->_asset];
+//        self->_player = [AVPlayer playerWithPlayerItem:self->_playerItem];
+//        [self enableAudioTracks:YES inPlayerItem:self->_playerItem];
+//        dispatch_async(dispatch_get_main_queue(), ^{
+////            [self.player replaceCurrentItemWithPlayerItem:item];
+//            ZFPlayerPresentView *presentView = (ZFPlayerPresentView *)self.view;
+//            presentView.player = self->_player;
+//            presentView.backgroundColor = [UIColor clearColor];
+//            self.scalingMode = self->_scalingMode;
+//            if (@available(iOS 9.0, *)) {
+//                self->_playerItem.canUseNetworkResourcesForLiveStreamingWhilePaused = NO;
+//            }
+//            if (@available(iOS 10.0, *)) {
+//                self->_playerItem.preferredForwardBufferDuration = 10;
+//                self->_player.automaticallyWaitsToMinimizeStalling = NO;
+//            }
+//            [self itemObserving];
+//        });
+//    });
+
+    
+    
+    
 //    [self changeBackgroundColorOfSubviews:presentView toColor:[UIColor greenColor]];
 //    [self changeBackgroundColorOfSubviews:presentView toColor:[UIColor colorWithWhite:1.0 alpha:0.02]];
 }

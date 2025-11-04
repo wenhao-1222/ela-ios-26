@@ -238,7 +238,7 @@ extension ForumCommentListHeadVM{
         }
         bgView.snp.remakeConstraints { make in
             make.left.right.top.bottom.equalToSuperview()
-            make.height.equalTo(model.contentHeight)
+//            make.height.equalTo(model.contentHeight)
         }
         UIView.animate(withDuration: 0.15) {
             self.thumbsUpButton.alpha = 1
@@ -321,6 +321,9 @@ extension ForumCommentListHeadVM{
         thumbsUpButton.imagePosition(style: .top, spacing: kFitWidth(3))
     }
     func setConstrait() {
+        bgView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         headImgView.snp.makeConstraints { make in
             make.left.top.equalTo(kFitWidth(16))
             make.width.height.equalTo(kFitWidth(36))

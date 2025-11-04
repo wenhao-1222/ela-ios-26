@@ -882,7 +882,7 @@ extension JournalVC{
         collectView.delegate = self
         collectView.dataSource = self
 //        if isIpad(){
-            DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.7, execute: {
                 self.collectView.setContentOffsetPage(index: self.todayIndex, animated: false, direction: .right)
             })
 //        }else{

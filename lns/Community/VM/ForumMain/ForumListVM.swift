@@ -21,6 +21,7 @@ class ForumListVM : UIView{
     var pageSize = 10
     var lastRequestIndex = 0
     var isFirstLoad = true
+    var loadedData = false//是否加载过数据
     
     var impressionArray:[String] = [String]()
     var urls = NSMutableArray()
@@ -535,6 +536,9 @@ extension ForumListVM:UITableViewDelegate,UITableViewDataSource{
 //        return tableView.estimatedRowHeight
 //    }
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if self.loadedData == false{
+            return
+        }
         if indexPath.row != lastRequestIndex {//}&& (indexPath.row == self.dataSourceArrayTemp.count - 7){
             if (self.pageNum == 1 && (indexPath.row == self.dataSourceArrayTemp.count - 2)) || (indexPath.row == self.dataSourceArrayTemp.count - 5){
                 lastRequestIndex = indexPath.row
@@ -662,9 +666,11 @@ extension ForumListVM{
     func sendDataListRequest() {
         let param = ["page":"\(pageNum)",
                      "pageSize":"\(pageSize)"]
+        JFPopupView.popup.toast(hit: "加载更多帖子--\(pageNum)")
         DLLog(message: "sendDataListRequest : --- param --- \(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_community_forum_list, parameters: param as [String:AnyObject]) { responseObject in
             DispatchQueue.global(qos: .userInitiated).async(execute: {
+                self.loadedData = true
                 let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
                 let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
                 DLLog(message: "sendDataListRequest:\(dataArr)")
@@ -685,7 +691,6 @@ extension ForumListVM{
                 }
                 serialQueue.async {
                     if self.pageNum == 1{
-                        
                         for i in 0..<dataArrayT.count{
                             let tMo = dataArrayT[i]
                             if self.dataSourceArray.count > i{

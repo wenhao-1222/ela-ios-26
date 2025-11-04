@@ -47,7 +47,6 @@ class ForumCommentListVM: UIView {
 
     var loadMoreDataBlock:((Bool)->())?
     var loadMoreReply = false
-
     ///站内信跳转进来的时候，查询评论列表，需要传参
     var commentId = ""
     ///站内信跳转进来的时候，查询评论列表，需要传参
@@ -231,7 +230,7 @@ extension ForumCommentListVM{
 
     func loadMoreAction(){
         if self.isShowSkeleton {
-            self.loadMoreDataBlock?(true)
+//            self.loadMoreDataBlock?(true)
             return
         }
         if self.hasMoreData && self.isLoadinData == false{
@@ -389,6 +388,7 @@ extension ForumCommentListVM:UITableViewDelegate,UITableViewDataSource{
             self.sendThumbsUpReplyRequest(reModel: models[indexPath.row])
         }
         cell?.tapBlock = {()in
+            if self.isShowSkeleton { return }
             if self.tapReplyBlock != nil{
                 self.replyIndexPath = indexPath
                 let models = model.replyModels
