@@ -74,6 +74,9 @@ class ForumVC : WHBaseViewVC {
             }else{
                 self.scrollViewBase.setContentOffset(CGPoint.init(x: 0, y: 0), animated: true)
                 self.naviLiquidView.publishButton.isHidden = true
+                EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
+                                                    scenarioType: .course_list,
+                                                    text: "")
             }
         }
         return vi
@@ -187,6 +190,9 @@ extension ForumVC:UIScrollViewDelegate{
             if currentPage == 0{
                 self.naviView.selectType = .course
                 self.naviLiquidView.selectType = .course
+                EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
+                                                    scenarioType: .course_list,
+                                                    text: "")
             }else{
                 self.naviView.selectType = .market
                 self.naviLiquidView.selectType = .market

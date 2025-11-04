@@ -80,6 +80,10 @@ class CoursePayOrderPayDesVM : UIView{
             highlight.setColor(.THEME)
             highlight.tapAction = { [weak self] _, _, _, _ in
                 print("点击了《xxx服务协议》")
+                EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
+                                                    scenarioType: .course_create_order_protocal,
+                                                    text: "")
+
                 let vc = WHCommonH5VC()
                 vc.urlString = URL_turorial_purchase_agreement as NSString
                 if self?.controller.navigationController != nil {

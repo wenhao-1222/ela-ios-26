@@ -26,7 +26,9 @@ class CoursePayOrderVC: WHBaseViewVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
+                                            scenarioType: .course_create_order_page_view,
+                                            text: "\(parentId)")
         initUI()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(alipayResult(notify: )), name: NSNotification.Name(rawValue: "alipayResult"), object: nil)
@@ -70,6 +72,9 @@ class CoursePayOrderVC: WHBaseViewVC {
         vm.updateMoney(money: self.msgDict.stringValueForKey(key: "price"))
         
         vm.payBlocK = {()in
+            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
+                                                scenarioType: .course_create_order,
+                                                text: self.parentId)
             if self.payTypeVm.payType == .wechat{
                 self.sendTutorialWechatRequest()
             }else{
@@ -115,15 +120,6 @@ extension CoursePayOrderVC{
             self.payDict = dataDict
             self.couponVm.showCouponMsg(dict: self.payDict)
             self.bottomVm.updateDiscountMonet(dict: self.payDict)
-            
-            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
-                                                scenarioType: .launch_view,
-                                                text: "\(UserConfigModel.shared.splashId)")
-//            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
-//                                                scenarioType: .launch_view,
-//                                                text: "教程支付页【\(self.msgDict.stringValueForKey(key: "title"))】:\(self.msgDict.stringValueForKey(key: "id")) couponCode : \(self.couponVm.codeInputText.text ?? "")")
-            
-            
         }
     }
     
@@ -156,17 +152,6 @@ extension CoursePayOrderVC{
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             self.orderId = dataObj.stringValueForKey(key: "orderId")
             
-            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
-                                                scenarioType: .course_create_order,
-                                                text: "订单编号：\(dataObj.stringValueForKey(key: "orderId")) 支付宝支付")
-            
-//            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
-//                                                scenarioType: .launch_view,
-//                                                text: "教程支付页【\(self.msgDict.stringValueForKey(key: "title"))】:\(self.msgDict.stringValueForKey(key: "id"))  订单编号：\(dataObj.stringValueForKey(key: "orderId")) 支付方式 : 支付宝")
-            
-            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
-                                                scenarioType: .launch_view,
-                                                text: "\(UserConfigModel.shared.splashId)")
             if payAmount.floatValue == 0 {
                 self.sendOrderStatusQueryRequest()
             }else{
@@ -205,16 +190,7 @@ extension CoursePayOrderVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendTutorialWechatRequest:\(dataString ?? "")")
-            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
-                                                scenarioType: .course_create_order,
-                                                text: "订单编号：\(dataObj.stringValueForKey(key: "orderId"))  微信支付")
-//            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
-//                                                scenarioType: .launch_view,
-//                                                text: "教程支付页【\(self.msgDict.stringValueForKey(key: "title"))】:\(self.msgDict.stringValueForKey(key: "id"))  订单编号：\(dataObj.stringValueForKey(key: "orderId"))  支付方式 : 微信")
             
-            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
-                                                scenarioType: .launch_view,
-                                                text: "\(UserConfigModel.shared.splashId)")
             self.orderId = dataObj.stringValueForKey(key: "orderId")
             if payAmount.floatValue == 0 {
                 self.sendOrderStatusQueryRequest()

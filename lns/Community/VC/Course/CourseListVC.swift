@@ -34,12 +34,22 @@ class CourseListVC: WHBaseViewVC {
     let backImg = UIImage(named: "back_arrow")//UIImage(named: "back_arrow_white_shadow")
     let shareImg = UIImage(named: "tutorial_share_icon")
     var tableViewBackColor = "044EF4"
+    private var stayReportStartDate: Date?
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        stayReportStartDate = Date()
         if self.menuDataArray.count > 0 {
             lastMsgVm.showView(parentId: self.parentDict.stringValueForKey(key: "id"))
         }
     }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        reportStayDurationIfNeeded()
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,7 +118,9 @@ class CourseListVC: WHBaseViewVC {
             let coverInfoDict = self.headMsgDict["coverInfo"] as? NSDictionary ?? [:]
             let urlStr = coverInfoDict.stringValueForKey(key: "videoOssUrl")
             guard urlStr.count > 0 else { return }
-
+            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
+                                                scenarioType: .course_detail_video_desc,
+                                                text: "\(self.headMsgDict.stringValueForKey(key: "id"))")
             DSImageUploader().dealImgUrlSignForOss(urlStr: urlStr) { signUrl in
                 let playURLT = URL(string: signUrl)
                 guard let playURL = playURLT else { return }
@@ -651,9 +663,9 @@ extension CourseListVC{
             let coverInfoDict = self.headMsgDict["coverInfo"]as? NSDictionary ?? [:]
             self.tableViewBackColor = coverInfoDict["rgb"]as? String ?? "0f1214"
             self.tableView.backgroundColor = WHColor_16(colorStr: self.tableViewBackColor)
-            EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
-                                                scenarioType: .launch_view,
-                                                text: "教程详情页【\(self.headMsgDict.stringValueForKey(key: "title"))】:\(self.headMsgDict.stringValueForKey(key: "id"))   isPaid:\(self.headMsgDict.stringValueForKey(key: "isPaid")) price:\(self.headMsgDict.stringValueForKey(key: "price"))")
+//            EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
+//                                                scenarioType: .launch_view,
+//                                                text: "\(self.headMsgDict.stringValueForKey(key: "id"))")
             
             if self.isPaid == false{
                 self.showPayView()
@@ -721,6 +733,21 @@ extension CourseListVC{
                 self.lastMsgVm.showView(parentId: self.parentDict.stringValueForKey(key: "id"))
             }
         }
+    }
+    private func reportStayDurationIfNeeded() {
+        guard let startDate = stayReportStartDate else { return }
+        stayReportStartDate = nil
+
+        let duration = Date().timeIntervalSince(startDate)
+        let staySeconds = Int(duration)
+        guard staySeconds > 0 else { return }
+
+        let courseId = self.parentDict.stringValueForKey(key: "id")
+        let text = ["id":"\(courseId)",
+                    "duration":"\(staySeconds)"]//"\(courseId)_stay_seconds_\(staySeconds)"
+        EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
+                                            scenarioType: .course_detail_duration,
+                                            text: WHUtils.getJSONStringFromDictionary(dictionary: text as NSDictionary))
     }
 }
 extension CourseListVC {

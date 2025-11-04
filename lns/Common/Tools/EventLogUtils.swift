@@ -20,10 +20,20 @@ enum SCENARIO_TYPE {
     case guide_view
     ///开屏页
     case launch_view
+    ///教程下单  页面
+    case course_create_order_page_view
     ///教程下单
     case course_create_order
+    ///教程下单页面  购买协议
+    case course_create_order_protocal
     ///教程详情页
     case course_detail
+    ///教程详情页停留时间
+    case course_detail_duration
+    ///教程详情页  视频介绍
+    case course_detail_video_desc
+    ///教程列表
+    case course_list
     ///商品列表页
     case mall_list
     ///商品详情页
@@ -47,6 +57,11 @@ class EventLogUtils {
         model.text = text ?? ""
         model.result = result ? "SUCCESS" : "FAILED"
         
+        //显示了教程一级列表的时候，将开屏页点击的sessionId置空
+        if scenarioType == .course_list{
+            UserInfoModel.shared.event_log_session_id = ""
+        }
+        
         switch eventName{
         case .PAGE_VIEW:
             model.eventName = "PAGE_VIEW"
@@ -57,7 +72,7 @@ class EventLogUtils {
                      "params":["scenario":model.scenario,
                                "text":model.text,
                                "result":model.result]] as [String : Any]
-        if scenarioType == .launch_view{
+        if scenarioType == .course_detail || scenarioType == .course_create_order || scenarioType == .course_detail_duration || scenarioType == .course_create_order_page_view{
             //统计开屏页的点击，如果有sessionid，则统计
             if UserInfoModel.shared.event_log_session_id.count > 0 {
                 param = ["eventName":model.eventName,
@@ -99,6 +114,10 @@ class EventLogUtils {
             return "开屏页"
         case .course_create_order:
             return "教程下单"
+        case .course_create_order_page_view:
+            return "教程确认订单页"
+        case .course_create_order_protocal:
+            return "教程购买协议"
         case .mall_list:
             return "商品列表页"
         case .mall_detail:
@@ -107,9 +126,16 @@ class EventLogUtils {
             return "启动页"
         case .course_detail:
             return "教程详情页"
+        case .course_detail_video_desc:
+            return "教程详情页视频介绍"
             
+            
+        case .course_detail_duration:
+            return "教程详情页停留时间"
         case .mall_create_order:
             return "商品下单"
+        case .course_list:
+            return "教程一级菜单列表"
         }
     }
 }
