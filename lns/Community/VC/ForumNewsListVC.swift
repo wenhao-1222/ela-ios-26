@@ -128,6 +128,8 @@ extension ForumNewsListVC:UITableViewDelegate,UITableViewDataSource{
                 replyModel.parentId = model.replyId
                 replyModel.commentId = model.commentId
                 replyModel.postId = model.postId
+                replyModel.nickName = model.fromNickname
+                replyModel.id = model.id
                 self.commomAlertVm.reModel = replyModel
                 self.commomAlertVm.showView()
             }

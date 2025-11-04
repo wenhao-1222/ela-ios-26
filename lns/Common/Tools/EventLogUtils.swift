@@ -66,11 +66,8 @@ class EventLogUtils {
                                    "text":model.text,
                                    "result":model.result]] as [String : Any]
             }else{
-                //如果没有sessionid,
-                //则代表用户不是点击开屏页的广告进来的
-                //或者已经完成了支付流程
+                //如果没有sessionid
                 param = ["eventName":model.eventName,
-//                         "sessionId":UserInfoModel.shared.event_log_session_id,
                          "params":["scenario":model.scenario,
                                    "text":model.text,
                                    "result":model.result]] as [String : Any]

@@ -48,8 +48,8 @@ class ForumNewsListCell: UITableViewCell {
     }()
     lazy var titleLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
-        lab.font = .systemFont(ofSize: 10, weight: .regular)
+        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.font = .systemFont(ofSize: 12, weight: .regular)
 //        lab.isSkeletonable = true
         
         return lab
@@ -176,6 +176,7 @@ extension ForumNewsListCell{
             nickNameLabel.text = nil
             titleLab.text = nil
             contenLabel.text = nil
+            parentContenLabel.text = nil
             
             // 需要骨架的子视图：显示骨架（从左向右 Shimmer + 渐入）
             let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
@@ -193,6 +194,7 @@ extension ForumNewsListCell{
         updateConstrait()
         contenLabel.numberOfLines = 3
         lineView.isHidden = false
+        titleLab.text = ""
         likeButton.setTitle("赞", for: .normal)
         likeButton.setImage(UIImage(named: "forum_thumbs_up_normal_min"), for: .normal)
         
@@ -282,7 +284,7 @@ extension ForumNewsListCell{
             make.left.equalTo(nickNameLabel)
             make.top.equalTo(nickNameLabel.snp.bottom).offset(kFitWidth(8))
         }
-        contenLabel.snp.makeConstraints { make in
+        contenLabel.snp.remakeConstraints { make in
             make.left.equalTo(nickNameLabel)
             make.right.equalTo(nickNameLabel)
 //            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(8))
@@ -316,7 +318,7 @@ extension ForumNewsListCell{
             make.left.equalTo(nickNameLabel)
             make.top.equalTo(nickNameLabel.snp.bottom).offset(kFitWidth(8))
         }
-        contenLabel.snp.makeConstraints { make in
+        contenLabel.snp.remakeConstraints { make in
             make.left.equalTo(nickNameLabel)
             make.right.equalTo(nickNameLabel)
 //            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(8))
@@ -470,3 +472,4 @@ extension ForumNewsListCell{
         }
     }
 }
+

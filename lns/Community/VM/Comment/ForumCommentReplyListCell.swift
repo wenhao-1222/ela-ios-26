@@ -187,8 +187,16 @@ extension ForumCommentReplyListCell{
 //        thumbsUpButton.setImage(UIImage(named: "forum_thumbs_up_normal"), for: .normal)
         
         headImgView.kf.cancelDownloadTask()
-        headImgView.image = nil
-        headImgView.setImgUrl(urlString: model.headImgUrl)
+//        headImgView.image = nil
+//        headImgView.setImgUrl(urlString: model.headImgUrl)
+        let headImgUrl = model.headImgUrl
+        let cachedHeadImage = ImageCache.default.retrieveImageInMemoryCache(forKey: headImgUrl)
+        if let cachedHeadImage = cachedHeadImage {
+            headImgView.image = cachedHeadImage
+        }
+        
+        let shouldTransition = cachedHeadImage == nil
+        headImgView.setImgUrl(urlString: headImgUrl, needTransiton: shouldTransition)
         nameLabel.text = model.nickName
         timeLabel.text = "\(model.timeForShow) \(model.addressIp)  回复"
         

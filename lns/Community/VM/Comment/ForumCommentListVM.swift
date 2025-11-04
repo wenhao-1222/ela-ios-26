@@ -380,10 +380,12 @@ extension ForumCommentListVM:UITableViewDelegate,UITableViewDataSource{
         }
 
         cell?.longPressBlock = {()in
+            if self.isShowSkeleton { return }
             self.replyIndexPath = indexPath
             self.longPressForReplyAction(model: models[indexPath.row])
         }
         cell?.thumbBlock = {()in
+            if self.isShowSkeleton { return }
             self.replyIndexPath = indexPath
             self.sendThumbsUpReplyRequest(reModel: models[indexPath.row])
         }

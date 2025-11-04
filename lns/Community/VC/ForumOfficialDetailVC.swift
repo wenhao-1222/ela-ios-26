@@ -1020,6 +1020,7 @@ extension ForumOfficialDetailVC{
     }
     func initPlayer() {
         if self.isDisaper{
+            self.cancelVideoLoadingMonitor()
             return
         }
         
@@ -1476,6 +1477,11 @@ extension ForumOfficialDetailVC{
                 var error: NSError?
                 let status = asset.statusOfValue(forKey: "playable", error: &error)
                 DispatchQueue.main.async {
+                    guard self.isDisaper == false else {
+                        self.cancelVideoLoadingMonitor()
+                        ZFPlayerModel.shared.playerManager.stop()
+                        return
+                    }
                     switch status {
                     case .loaded:
                         ZFPlayerModel.shared.player.assetURL = url

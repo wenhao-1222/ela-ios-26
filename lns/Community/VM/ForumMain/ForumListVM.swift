@@ -666,7 +666,7 @@ extension ForumListVM{
     func sendDataListRequest() {
         let param = ["page":"\(pageNum)",
                      "pageSize":"\(pageSize)"]
-        JFPopupView.popup.toast(hit: "加载更多帖子--\(pageNum)")
+//        JFPopupView.popup.toast(hit: "加载更多帖子--\(pageNum)")
         DLLog(message: "sendDataListRequest : --- param --- \(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_community_forum_list, parameters: param as [String:AnyObject]) { responseObject in
             DispatchQueue.global(qos: .userInitiated).async(execute: {
