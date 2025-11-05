@@ -52,6 +52,24 @@ class ForumListTableViewCell: UITableViewCell {
         super.layoutSubviews()
         contentView.layoutIfNeeded()
     }
+    override func systemLayoutSizeFitting(_ targetSize: CGSize,
+                                          withHorizontalFittingPriority h: UILayoutPriority,
+                                          verticalFittingPriority v: UILayoutPriority) -> CGSize {
+        // 先设置正确的 pmLW（去掉左右各 16 的内边距）
+        let w = max(0, targetSize.width - kFitWidth(32))
+        if titleLabel.preferredMaxLayoutWidth != w {
+            titleLabel.preferredMaxLayoutWidth = w
+        }
+        // 让内容基于新的 pmLW 先排一次版，再把尺寸交给系统
+        contentView.setNeedsLayout()
+        contentView.layoutIfNeeded()
+        return super.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: h, verticalFittingPriority: v)
+    }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        titleLabel.preferredMaxLayoutWidth = UIScreen.main.bounds.width - kFitWidth(32)
+    }
+
     lazy var bgView: UIView = {
         let vi = UIView()
         vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")//.white
@@ -317,6 +335,8 @@ extension ForumListTableViewCell{
         authorLabel.text = forumModel.createBy
         timeLabel.text = forumModel.showTime
         titleLabel.text = forumModel.title
+        titleLabel.preferredMaxLayoutWidth = UIScreen.main.bounds.width - kFitWidth(32)
+
         verifyImgView.isHidden = !(forumModel.keyUser == .pass)
         isTopImgView.isHidden = !(forumModel.isTop == .pass)
         
@@ -657,7 +677,8 @@ extension ForumListTableViewCell{
         contentView.addSubview(commentBtn)
         contentView.addSubview(shareBtn)
         setConstrait()
-        
+        titleLabel.setContentHuggingPriority(.required, for: .vertical)
+
     }
     func setConstrait() {
         bgView.snp.makeConstraints { make in
