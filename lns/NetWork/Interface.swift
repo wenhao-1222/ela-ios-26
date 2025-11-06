@@ -306,6 +306,10 @@ public let URL_mall_list               = URL_Type + "forum/mall/spu/list"
 public let URL_mall_sku_default         = URL_Type + "forum/mall/sku/default"
 //切换SKU
 public let URL_mall_sku_select         = URL_Type + "forum/mall/sku/select"
+///订阅提醒
+public let URL_mall_sku_subscribe         = URL_Type + "forum/mall/sku/alert_subscribe"
+///取消订阅提醒
+public let URL_mall_sku_subscribe_cancel   = URL_Type + "forum/mall/sku/alert_unsubscribe"
 
 //MARK: 地址
 ///地址--列表

@@ -209,7 +209,7 @@ class MallDetailModel: NSObject {
         case .sale_normal:
             return "立即购买"
         case .sale_no_stoke:
-            return "到货提醒"
+            return "到货通知"
         case .sale_no_stoke_subscribe:
             return "已设置到货提醒"
         }

@@ -50,7 +50,7 @@ extension MallDetailImageCell{
             self.imgView.snp.remakeConstraints { make in
                 make.left.right.top.equalToSuperview()
                 make.height.equalTo(finalHeight)
-                make.bottom.equalToSuperview()
+                make.bottom.equalToSuperview().priority(.low)
             }
             if let tableView = self.superview as? UITableView {
                 UIView.performWithoutAnimation {

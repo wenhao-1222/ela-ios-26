@@ -138,9 +138,13 @@ class MallDetailVC: WHBaseViewVC {
 //        btn.backgroundColor = .THEME
         btn.setTitle("立即购买", for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+        btn.titleLabel?.numberOfLines = 2
+        btn.titleLabel?.lineBreakMode = .byWordWrapping
+        btn.titleLabel?.textAlignment = .center
         btn.setTitleColor(.COLOR_BG_WHITE, for: .normal)
         btn.layer.cornerRadius = kFitWidth(24)
         btn.clipsToBounds = true
+        btn.alpha = 0
         
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_C4C4C4), for: .disabled)
@@ -199,14 +203,18 @@ extension MallDetailVC{
             DLLog(message: "预售--无库存")
         case .sale_remind:
             DLLog(message: "开售提醒")
+            self.sendSubsribeRequest(bizType: "2")
         case .sale_remind_subscribe:
             DLLog(message: "开售提醒--已订阅通知")
+            self.sendSubsribeCancelRequest(bizType: "2")
         case .sale_normal:
             self.specAlertVm.showSelf()
         case .sale_no_stoke:
             DLLog(message: "商品--无库存")
+            self.sendSubsribeRequest(bizType: "1")
         case .sale_no_stoke_subscribe:
             DLLog(message: "商品--已订阅到货通知")
+            self.sendSubsribeCancelRequest(bizType: "1")
         }
     }
     
@@ -444,12 +452,22 @@ extension MallDetailVC{
         case .sale_pre_no_stoke :
             buyButton.isEnabled = false
         case .sale_pre:
-            buyButton.setTitle("\(detailModel.buyButtonText) \n \(detailModel.deliveryNotice)", for: .normal)
+            let attr = NSMutableAttributedString(string: detailModel.buyButtonText)
+            let timeAttr = NSMutableAttributedString(string: "\n \(detailModel.deliveryNotice)")
+            attr.yy_font = .systemFont(ofSize: 16, weight: .regular)
+            timeAttr.yy_font = .systemFont(ofSize: 12, weight: .regular)
+            attr.append(timeAttr)
+            buyButton.setAttributedTitle(attr, for: .normal)
+//            buyButton.titleLabel?.attributedText = attr
+//            buyButton.setTitle("\(detailModel.buyButtonText) \n \(detailModel.deliveryNotice)", for: .normal)
         case .sale_remind, .sale_normal,.sale_no_stoke:
             break
         case .sale_no_stoke_subscribe,.sale_remind_subscribe:
             buyButton.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_C4C4C4), for: .normal)
         }
+        UIView.animate(withDuration: 0.15, animations: {
+            self.buyButton.alpha = 1
+        })
     }
 }
 
@@ -483,6 +501,44 @@ extension MallDetailVC{
             self.updateUI()
         }
     }
+    func sendSubsribeRequest(bizType:String) {
+        let param = ["id": self.detailModel.id,
+                    "bizType": bizType]
+        DLLog(message: "sendSelectSKURequest 参数:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_mall_sku_subscribe, parameters: param as [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendSubsribeRequest:\(dataObj)")
+            
+            if bizType == "1"{
+                self.detailModel.buyButtonStatus = .sale_no_stoke_subscribe
+                self.detailModel.buyButtonText = "已设置到货通知"
+            }else if bizType == "2"{
+                self.detailModel.buyButtonStatus = .sale_remind_subscribe
+                self.detailModel.buyButtonText = "已设置开售提醒"
+            }
+            self.updateButtonStatus()
+        }
+    }
+    func sendSubsribeCancelRequest(bizType:String) {
+        let param = ["id": self.detailModel.id,
+                    "bizType": bizType]
+        DLLog(message: "sendSubsribeCancelRequest 参数:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_mall_sku_subscribe_cancel, parameters: param as [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendSubsribeRequest:\(dataObj)")
+            if bizType == "1"{
+                self.detailModel.buyButtonStatus = .sale_no_stoke
+                self.detailModel.buyButtonText = "到货提醒"
+            }else if bizType == "2"{
+                self.detailModel.buyButtonStatus = .sale_remind
+                self.detailModel.buyButtonText = "开售提醒"
+            }
+            self.updateButtonStatus()
+        }
+    }
+    
 }
 // 在 MallDetailVC 里
 extension MallDetailVC {

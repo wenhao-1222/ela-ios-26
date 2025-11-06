@@ -210,7 +210,7 @@ extension MallOrderCreateVC{
 // MARK: - Network
 extension MallOrderCreateVC {
     func sendGetDefaultRequest() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_user_address_getDefault, parameters: nil) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_address_getDefault, parameters: nil,isNeedToast: true,vc: self) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "") //as? NSDictionary ?? [:]
             DLLog(message: "sendGetDefaultRequest:\(dataDict)")
@@ -233,7 +233,7 @@ extension MallOrderCreateVC {
                      "quantity":"\(self.number)",
                      "addressId":self.addressModel.id]
         DLLog(message: "sendOrderPriceRequest:\(param)")
-        WHNetworkUtil.shareManager().POST(urlString: URL_tutorial_coupon_apply, parameters: param as [String : AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_tutorial_coupon_apply, parameters: param as [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "") //as? NSDictionary ?? [:]
             DLLog(message: "sendOrderPriceRequest:\(dataDict)")
