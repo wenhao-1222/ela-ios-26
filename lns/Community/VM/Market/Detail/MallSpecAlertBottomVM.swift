@@ -63,7 +63,7 @@ class MallSpecAlertBottomVM : UIView{
     }()
     lazy var buyButton: UIButton = {
         let btn = UIButton()
-        btn.setTitle("继续", for: .normal)
+        btn.setTitle("购买", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.backgroundColor = .THEME
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)

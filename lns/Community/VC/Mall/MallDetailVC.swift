@@ -135,12 +135,15 @@ class MallDetailVC: WHBaseViewVC {
         }
         
         btn.enablePressEffect()
-        btn.backgroundColor = .THEME
+//        btn.backgroundColor = .THEME
         btn.setTitle("立即购买", for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
         btn.setTitleColor(.COLOR_BG_WHITE, for: .normal)
         btn.layer.cornerRadius = kFitWidth(24)
         btn.clipsToBounds = true
+        
+        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
+        btn.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_C4C4C4), for: .disabled)
         
         btn.addTarget(self, action: #selector(buyAction), for: .touchUpInside)
         
@@ -188,8 +191,25 @@ class MallDetailVC: WHBaseViewVC {
 //MARK: 点击事件
 extension MallDetailVC{
     @objc func buyAction() {
-        self.specAlertVm.showSelf()
+        switch self.detailModel.buyButtonStatus{
+        case .sale_pre:
+            DLLog(message: "预售提醒")
+            self.specAlertVm.showSelf()
+        case .sale_pre_no_stoke:
+            DLLog(message: "预售--无库存")
+        case .sale_remind:
+            DLLog(message: "开售提醒")
+        case .sale_remind_subscribe:
+            DLLog(message: "开售提醒--已订阅通知")
+        case .sale_normal:
+            self.specAlertVm.showSelf()
+        case .sale_no_stoke:
+            DLLog(message: "商品--无库存")
+        case .sale_no_stoke_subscribe:
+            DLLog(message: "商品--已订阅到货通知")
+        }
     }
+    
     @objc func comfirmBuyAction() {
         let totalSpecs = self.specAlertVm.groups.count
         let selectedSpecs = self.specAlertVm.selectedPairs.count
@@ -332,6 +352,7 @@ extension MallDetailVC{
         if self.detailModel.image_order == ""{
             self.detailModel.image_order = self.listModel.imgUrlSmall
         }
+        self.updateButtonStatus()
         self.specAlertVm.updateGoodsMsg(model: self.detailModel, imgUrl: self.detailModel.image_order)
 //        self.bannerImgVm.updateUI(dataArray: self.detailModel.image_arr_banner as NSArray)
         if self.detailModel.image_arr_banner != bannerImagesCache {
@@ -413,6 +434,21 @@ extension MallDetailVC{
             if !indexPaths.isEmpty {
                 self.tableView.reloadRows(at: indexPaths, with: .none)
             }
+        }
+    }
+    
+    func updateButtonStatus() {
+        buyButton.setTitle(self.detailModel.buyButtonText, for: .normal)
+        buyButton.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
+        switch self.detailModel.buyButtonStatus{
+        case .sale_pre_no_stoke :
+            buyButton.isEnabled = false
+        case .sale_pre:
+            buyButton.setTitle("\(detailModel.buyButtonText) \n \(detailModel.deliveryNotice)", for: .normal)
+        case .sale_remind, .sale_normal,.sale_no_stoke:
+            break
+        case .sale_no_stoke_subscribe,.sale_remind_subscribe:
+            buyButton.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_C4C4C4), for: .normal)
         }
     }
 }
