@@ -181,23 +181,6 @@ class OverViewVC : WHBaseViewVC {
 
 extension OverViewVC{
     @objc func refreshTodayNutrition(notify:Notification) {
-//        let nutritionDict = notify.object as? NSDictionary ?? [:]
-//        self.topMsgVm.updateUI(dict: nutritionDict)
-        
-//        DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
-//            let logsModel = LogsSQLiteManager.getInstance().getLogsByDate(sDate: Date().todayDate)!
-//            let sportDict = SportDataSQLiteManager.getInstance().querySportsData(sDate: Date().todayDate)
-//            DLLog(message: "SportDataSQLiteManager:\(sportDict)")
-//
-//            let dict = NSMutableDictionary(dictionary: logsModel.modelToDict())
-//            if UserInfoModel.shared.statSportDataToTarget == "1"{
-//                dict.setValue("\(sportDict.stringValueForKey(key: "sportCalories"))", forKey: "sportCalories")
-//            }else{
-//                dict.setValue("", forKey: "sportCalories")
-//            }
-//            self.topMsgVm.updateUI(dict: dict)
-//        })
-        
         DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
             self.getNutritionDataRequest()
         })

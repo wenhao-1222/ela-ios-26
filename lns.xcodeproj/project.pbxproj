@@ -6910,11 +6910,12 @@
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "申请保存图片到相册，方便以后使用";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App需要读取相册权限";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = ElaLaunch.storyboard;
+				INFOPLIST_KEY_UILaunchStoryboardName = ElaLaunch;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -7016,11 +7017,12 @@
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "申请保存图片到相册，方便以后使用";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App需要读取相册权限";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = ElaLaunch.storyboard;
+				INFOPLIST_KEY_UILaunchStoryboardName = ElaLaunch;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

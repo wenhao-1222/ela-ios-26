@@ -43,7 +43,7 @@ class UserConfigModel {
     var userInterfaceOrientation : UIInterfaceOrientation = .portrait
     
     //是否支持深色模式  info.plist  User Interface Style
-    var overrideUserInterfaceStyle = UIUserInterfaceStyle.light
+    var overrideUserInterfaceStyle = UIUserInterfaceStyle.unspecified
     
     var isMuted = true
     
