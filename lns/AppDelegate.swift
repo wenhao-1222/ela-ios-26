@@ -60,6 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         MCToastConfig.shared.text.maxWidth = kFitWidth(343)//SCREEN_WIDHT-kFitWidth(82)-kFitWidth(72)
         
         let token = UserDefaults.standard.value(forKey: token) as? String ?? ""
+        let uId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
         let isLaunchWelcome = UserDefaults.standard.value(forKey: isLaunchWelcome)as? String ?? ""
         let rootViewController: UIViewController
         if isLaunchWelcome == "" && token == ""{
@@ -73,8 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                 guard let self = self, let window = self.window else { return }
                 let rootVc: UIViewController
                 
-                if token.count > 1 {
-                    let uId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
+                if token.count > 1 && uId.count > 1{
                     let phone = UserDefaults.standard.value(forKey: userPhone) as? String ?? ""
                     UserInfoModel.shared.uId = uId
                     UserInfoModel.shared.token = token
@@ -697,6 +697,7 @@ extension AppDelegate{
 //MARK: 自定义方法
 extension AppDelegate{
     func switchRootViewController(to newRootVC: UIViewController) {
+        UserInfoModel.shared.noUidResponseNum = 0
         let transtition = CATransition()
         transtition.duration = 0.3
         transtition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)

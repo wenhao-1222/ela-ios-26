@@ -47,6 +47,7 @@ class UserInfoModel {
     var currentVc = ViewController()
     var postNum = 3
     var failToastNum = 0
+    var noUidResponseNum = 0// 返回501 的次数
     
     var uId = ""
     var registDate = Date().nextDay(days: 0)

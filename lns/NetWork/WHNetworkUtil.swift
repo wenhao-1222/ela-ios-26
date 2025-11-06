@@ -175,8 +175,8 @@ class WHNetworkUtil: SessionManager {
                   failure: ((Bool) -> Void)? = nil) -> () {
         // 后台队列，避免阻塞主线程
         DLLog(message: "----------  uid   token  ----------------------")
-        DLLog(message: "\(UserInfoModel.shared.uId)")
-        DLLog(message: "\(UserInfoModel.shared.token)")
+        DLLog(message: "---- uId:\(UserInfoModel.shared.uId)")
+        DLLog(message: "---- token:\(UserInfoModel.shared.token)")
         NetworkMonitor.shared.addRequest {
             if UserInfoModel.shared.uId.count < 4 || UserInfoModel.shared.token.count < 4{
                 let uId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
@@ -264,6 +264,10 @@ class WHNetworkUtil: SessionManager {
                             }
                             let code = value["code"]as? Int ?? -1
                             
+                            if code == 501{
+                                UserInfoModel.shared.noUidResponseNum += 1
+                            }
+                            
                             if (code == 200) {
                                 if urlString != URL_goal_week_save || urlString != URL_dietplan_del{
                                     MCToast.mc_remove()
@@ -277,7 +281,7 @@ class WHNetworkUtil: SessionManager {
                                     let result = NSMutableDictionary(dictionary: value)
                                     success(result as! [String : AnyObject])
                                 }
-                            }else if (code == 401) {//401 token失效，501 uid无效(
+                            }else if (code == 401 || (code == 501 && UserInfoModel.shared.noUidResponseNum > 10)) {//401 token失效，501 uid无效(
                                 MCToast.mc_remove()
                                 LogsMealsAlertSetManage().removeAllNotifi()
                                 
@@ -294,14 +298,6 @@ class WHNetworkUtil: SessionManager {
                                 UserInfoModel.shared.logoutClearMsg()
                                 
                                 DispatchQueue.main.async {
-                                    
-//                                    MCToast.mc_text("\(value["message"] as? String ?? "账号登录过期，请重新登录！")")
-//                                    DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
-//                                        WHBaseViewVC().changeRootVcToWelcome()
-//                                    })
-                                    
-//                                    var hasTap = false
-                                    
                                     let errorTitle = "\(value["message"] as? String ?? "账号登录过期，请重新登录！")"
                                     let alertVc = UIAlertController(title: "\(errorTitle)", message: "", preferredStyle: .alert)
                                     let cancelAction = UIAlertAction(title: "确定", style: .default) { action in
