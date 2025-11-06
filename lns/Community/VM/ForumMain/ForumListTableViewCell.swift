@@ -732,7 +732,7 @@ extension ForumListTableViewCell{
             make.right.equalToSuperview()
             make.width.equalTo(kFitWidth(64))
             make.height.equalTo(kFitWidth(28))
-            make.bottom.equalTo(kFitWidth(-6))
+            make.bottom.equalTo(kFitWidth(-6))//.priority(.low)
         }
         commentBtn.snp.makeConstraints { make in
             make.right.equalTo(shareBtn.snp.left).offset(kFitWidth(-8))

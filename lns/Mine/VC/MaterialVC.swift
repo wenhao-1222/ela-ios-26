@@ -165,7 +165,7 @@ class MaterialVC: WHBaseViewVC {
 extension MaterialVC{
     func initUI()  {
         initNavi(titleStr: "编辑资料")
-        view.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "FAFAFA")
         
         view.addSubview(avatarVm)
         view.addSubview(idVm)
