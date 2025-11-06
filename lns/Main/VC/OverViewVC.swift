@@ -72,6 +72,13 @@ class OverViewVC : WHBaseViewVC {
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshTodayNutrition(notify:)), name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: nil)
     }
+    override func traitCollectionDidChange(_ previous: UITraitCollection?) {
+        super.traitCollectionDidChange(previous)
+        guard traitCollection.hasDifferentColorAppearance(comparedTo: previous) else { return }
+        // 重新取图/颜色并赋值
+        topBgImgView.image = UIImage(named: "main_top_bg_cj")
+    }
+
     lazy var scrollView : UIScrollView = {
         let vi = UIScrollView()
         vi.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)

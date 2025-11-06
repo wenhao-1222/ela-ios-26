@@ -58,11 +58,11 @@ class WHBaseViewVC: ViewController {
         
         self.view.isUserInteractionEnabled = true
         
-//        if #available(iOS 13.0, *) {
-//            self.overrideUserInterfaceStyle = .light
-//        } else {
-//            // Fallback on earlier versions
-//        }
+        if #available(iOS 13.0, *) {
+            self.overrideUserInterfaceStyle = .dark
+        } else {
+            // Fallback on earlier versions
+        }
         
         MobClick.setAutoPageEnabled(true)
 //        UserInfoModel.shared.currentVc = self
