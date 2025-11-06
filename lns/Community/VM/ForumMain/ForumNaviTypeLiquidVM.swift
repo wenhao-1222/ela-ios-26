@@ -36,7 +36,7 @@ class ForumNaviTypeLiquidVM: UIView {
 //        let items = ["课程", "发现", "商品"]
         let seg = UISegmentedControl(items: items)
         // 初始选中「发现」
-        seg.selectedSegmentIndex = 1
+//        seg.selectedSegmentIndex = 1
         seg.backgroundColor = UIColor.clear
         seg.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_03.cgColor
         seg.layer.borderWidth = kFitWidth(2)

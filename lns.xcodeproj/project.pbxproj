@@ -490,7 +490,6 @@
 		A78FE2102CD49A4E00661F7D /* ForumDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A78FE20F2CD49A4A00661F7D /* ForumDetailVC.swift */; };
 		A78FE2122CD49D7600661F7D /* ForumModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A78FE2112CD49D7300661F7D /* ForumModel.swift */; };
 		A790DD092E7169490036D5B5 /* SpecAnchorPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A790DD082E7169470036D5B5 /* SpecAnchorPopup.swift */; };
-		A7927AF02CCB35E900A8D0A2 /* WelcomeLaunchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7927AEF2CCB35E200A8D0A2 /* WelcomeLaunchVC.swift */; };
 		A7927AF22CCB3BC100A8D0A2 /* WelcomeLaunchItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7927AF12CCB3BBC00A8D0A2 /* WelcomeLaunchItemVM.swift */; };
 		A7927AF42CCB803500A8D0A2 /* QuestionnaireNewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7927AF32CCB803100A8D0A2 /* QuestionnaireNewVC.swift */; };
 		A7942C4C2DCDEC0700C4816D /* JournalReportVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7942C4B2DCDEC0200C4816D /* JournalReportVC.swift */; };
@@ -1750,7 +1749,6 @@
 		A78FE20F2CD49A4A00661F7D /* ForumDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumDetailVC.swift; sourceTree = "<group>"; };
 		A78FE2112CD49D7300661F7D /* ForumModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumModel.swift; sourceTree = "<group>"; };
 		A790DD082E7169470036D5B5 /* SpecAnchorPopup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecAnchorPopup.swift; sourceTree = "<group>"; };
-		A7927AEF2CCB35E200A8D0A2 /* WelcomeLaunchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeLaunchVC.swift; sourceTree = "<group>"; };
 		A7927AF12CCB3BBC00A8D0A2 /* WelcomeLaunchItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeLaunchItemVM.swift; sourceTree = "<group>"; };
 		A7927AF32CCB803100A8D0A2 /* QuestionnaireNewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireNewVC.swift; sourceTree = "<group>"; };
 		A7942C4B2DCDEC0200C4816D /* JournalReportVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportVC.swift; sourceTree = "<group>"; };
@@ -4418,7 +4416,6 @@
 			children = (
 				ECADF2AE2BB4334B004B2C4B /* VM */,
 				ECADF2AC2BB4320B004B2C4B /* WelcomeVC.swift */,
-				A7927AEF2CCB35E200A8D0A2 /* WelcomeLaunchVC.swift */,
 				A7E6C5652E604B24001145DB /* FirstLaunchVC.swift */,
 				ECADF2B12BB44164004B2C4B /* NeedBuildPlanVC.swift */,
 			);
@@ -5938,7 +5935,6 @@
 				A714DDC92DC2258E00745F84 /* JournalShareMsgNaturalVM.swift in Sources */,
 				ECB3E0772BD63BCF00CFDDFD /* LogsMealsNaturalMsgVM.swift in Sources */,
 				EC85AFFD2C6DED2C006F788D /* ProgressView.swift in Sources */,
-				A7927AF02CCB35E900A8D0A2 /* WelcomeLaunchVC.swift in Sources */,
 				EC4DE2B82BCCF2930090A7BD /* PlanCreateGoalNaturalVM.swift in Sources */,
 				EC97261C2C5B75A900F244A2 /* GoalSetWeeksSegmentVM.swift in Sources */,
 				EC24EB3D2BB25D27002F21DF /* QuestionnaireSurveyMsgWeightVM.swift in Sources */,
@@ -6898,7 +6894,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 139;
+				CURRENT_PROJECT_VERSION = 140;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -6924,7 +6920,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.0;
+				MARKETING_VERSION = 2.4.1;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -7005,7 +7001,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 139;
+				CURRENT_PROJECT_VERSION = 140;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -7030,7 +7026,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.0;
+				MARKETING_VERSION = 2.4.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
