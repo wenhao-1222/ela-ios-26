@@ -79,7 +79,7 @@ class JournalSettingVC: WHBaseViewVC {
 //        vm.switchButton.isHidden = false
 //        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.hiddenMeaTimeStatus)
         vm.switchBtn.isHidden = false
-        vm.switchBtn.setOn(UserInfoModel.shared.hiddenMeaTimeStatus, animated: false)
+        vm.switchBtn.setOn(!UserInfoModel.shared.hiddenMeaTimeStatus, animated: false)
         vm.switchBlock = {(isSelect)in
             self.sendSaveLogsTimeRequest(statu: isSelect)
         }
@@ -505,7 +505,7 @@ extension JournalSettingVC{
 //    }
     @objc func sendSaveLogsTimeRequest(statu:Bool) {
 //        MCToast.mc_loading()
-        let param = ["meal_time_status":"\(statu ? 0 : 1)"]
+        let param = ["meal_time_status":"\(statu ? 1 : 0)"]
         WHNetworkUtil.shareManager().POST(urlString: URL_config_set, parameters: param as [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
             DLLog(message: "\(responseObject)")
            
