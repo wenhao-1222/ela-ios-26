@@ -53,7 +53,7 @@ class WHBaseViewVC: ViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.white
+        self.view.backgroundColor = UIColor.COLOR_BG_WHITE
         self.navigationController?.setNavigationBarHidden(true, animated: true)
         
         self.view.isUserInteractionEnabled = true
@@ -65,9 +65,6 @@ class WHBaseViewVC: ViewController {
 //        }
         
         MobClick.setAutoPageEnabled(true)
-//        UserInfoModel.shared.currentVc = self
-//        self.navigationController?.fd_interactivePopDisabled = true
-        
     }
     
      override func viewWillLayoutSubviews() {
