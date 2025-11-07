@@ -47,7 +47,7 @@ extension MainDataLineChartLegentView{
             circleView.layer.cornerRadius = kFitWidth(5)
             
             let label = UILabel()
-            label.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+            label.textColor = .COLOR_TEXT_TITLE_0f1214_50
             label.font = .systemFont(ofSize: 12, weight: .regular)
             label.text = labels[i]
             addSubview(label)

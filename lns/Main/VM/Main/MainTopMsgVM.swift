@@ -30,7 +30,7 @@ class MainTopMsgVM: UIView {
     }
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(26), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(270)))
-        vi.backgroundColor = .white//UIColor(white: 0.1, alpha: 0.95)//.white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//UIColor(white: 0.1, alpha: 0.95)//.white
         vi.layer.cornerRadius = kFitWidth(12)
         vi.isUserInteractionEnabled = true
         
@@ -111,7 +111,7 @@ class MainTopMsgVM: UIView {
         btn.setTitle("饮食计划", for: .normal)
 //        btn.enablePressEffectNoneFeedback()
 //        btn.setTitleColor(.THEME, for: .normal)
-        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_60, for: .normal)
 //        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_TEXT_TITLE_0f1214_03), for: .highlighted)

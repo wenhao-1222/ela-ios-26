@@ -18,7 +18,7 @@ class MainDataLineChartYXaisView: UIView {
     
     override init(frame:CGRect){
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         self.selfHeight = frame.size.height
         
@@ -44,7 +44,7 @@ extension MainDataLineChartYXaisView{
         let index = (maxYXAisValue - value)/yXaisValueGap
         
         let label = UILabel.init(frame: CGRect.init(x: 0, y: labelGap*CGFloat(index)-kFitWidth(7), width: kFitWidth(38), height: kFitWidth(14)))
-        label.textColor = .COLOR_GRAY_BLACK_65
+        label.textColor = .COLOR_TEXT_TITLE_0f1214_60
         label.font = .systemFont(ofSize: 12, weight: .regular)
         label.text = "\(value)"
         label.textAlignment = .right

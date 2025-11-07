@@ -22,10 +22,24 @@ extension UIColor {
     public static let COLOR_TEXT_TITLE_0f1214_35        = UIColor(named: "color_text_0f1214_35")!
     public static let COLOR_TEXT_TITLE_0f1214_60        = UIColor(named: "color_text_0f1214_60")!
     
+    public static let COLOR_TEXT_WHITE                       = UIColor(named: "color_text_white")!
+    
+    
     public static let COLOR_BG_WHITE                    = UIColor(named: "color_bg_white")!
     public static let COLOR_BG_BLACK                    = UIColor(named: "color_bg_black")!
     public static let COLOR_BG_F5                       = UIColor(named: "color_bg_f5")!
     public static let COLOR_BG_F2                       = UIColor(named: "color_bg_f2")!
+    
+    
+    
+    public static let COLOR_BG_THEME                    = UIColor(named: "color_bg_theme")!
+    public static let COLOR_CARD_BG_WHITE               = UIColor(named: "color_card_bg_ff")!
+    
+    
+    
+    public static let COLOR_TEXT_MAIN_NATURAL           = UIColor(named: "color_text_main_natural")
+    public static let COLOR_TEXT_MAIN_NATURAL_OVER      = UIColor(named: "color_text_main_natural_over")
+    public static let COLOR_TEXT_MAIN_CALORIES          = UIColor(named: "color_text_main_calories")!
     
     
 }

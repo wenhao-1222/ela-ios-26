@@ -42,7 +42,7 @@ class MainTopGoalVM: UIView {
 //    }()
     lazy var themeBgView : UIButton = {
         let btn = UIButton()
-        btn.backgroundColor = .THEME//.WIDGET_COLOR_GRAY_BLACK_04
+        btn.backgroundColor = .COLOR_BG_THEME
         btn.clipsToBounds = true
         btn.layer.cornerRadius = kFitWidth(4)
         btn.isUserInteractionEnabled = true
@@ -53,7 +53,7 @@ class MainTopGoalVM: UIView {
     }()
     lazy var leftLab : UILabel = {
         let lab = UILabel()
-        lab.textColor = .white
+        lab.textColor = .COLOR_TEXT_WHITE
         lab.text = "目标"
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
@@ -61,7 +61,7 @@ class MainTopGoalVM: UIView {
     }()
     lazy var numberLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .THEME
+        lab.textColor = .COLOR_TEXT_WHITE
         lab.font = UIFont().DDInFontSemiBold(fontSize: 18)
 //        lab.font = UIFont().DDInFontMedium(fontSize: 16)
         lab.text = "-"
@@ -71,7 +71,7 @@ class MainTopGoalVM: UIView {
     }()
     lazy var rightLab : UILabel = {
         let lab = UILabel()
-        lab.textColor = .THEME
+        lab.textColor = .COLOR_TEXT_WHITE
         lab.text = "千卡"
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
@@ -118,8 +118,8 @@ extension MainTopGoalVM{
     func updateContent(targetNum:String,sportNum:String) {
         if sportNum.floatValue > 0 && UserInfoModel.shared.statSportDataToTarget == "1"{
             leftLab.isHidden = true
-            themeBgView.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_04
-            rightLab.textColor = .COLOR_GRAY_BLACK_85
+            themeBgView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05//.WIDGET_COLOR_GRAY_BLACK_04
+            rightLab.textColor = .COLOR_TEXT_TITLE_0f1214_60
             editImgView.setImgLocal(imgName: "main_edit_icon_theme")
 //            editImgView.setImgLocal(imgName: "main_pencil_icon")//main_edit_icon_theme
             numberLabel.textColor = .THEME

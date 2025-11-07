@@ -280,14 +280,16 @@
             NSString *valueString = [NSString stringWithFormat:@"%@",[self.dataSourceArray objectAtIndex:i]];
             CGFloat dataWidth = [[NSString stringWithFormat:@"%@", valueString] sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:12 weight:UIFontWeightRegular],NSForegroundColorAttributeName:[UIColor whiteColor]}].width;
             
-            [valueString drawInRect:CGRectMake(originX-dataWidth*0.5, originY, dataWidth, 20) withAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:12 weight:UIFontWeightRegular],NSForegroundColorAttributeName:COLOR_RGBA(0, 0, 0, 0.65)}];
+            [valueString drawInRect:CGRectMake(originX-dataWidth*0.5, originY, dataWidth, 20) withAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:12 weight:UIFontWeightRegular],NSForegroundColorAttributeName:[UIColor colorNamed:@"color_text_0f1214_60"]}];
+//            [valueString drawInRect:CGRectMake(originX-dataWidth*0.5, originY, dataWidth, 20) withAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:12 weight:UIFontWeightRegular],NSForegroundColorAttributeName:COLOR_RGBA(0, 0, 0, 0.65)}];
+            
             [xLabelCenter addObject:@(originX)];
         }
     }else if (self.dataSourceArray.count == 1){
         NSString *valueString = [NSString stringWithFormat:@"%@",[self.dataSourceArray objectAtIndex:0]];
         CGFloat dataWidth = [[NSString stringWithFormat:@"%@", valueString] sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:12 weight:UIFontWeightRegular],NSForegroundColorAttributeName:[UIColor whiteColor]}].width;
         
-        [valueString drawInRect:CGRectMake(self.frame.size.width*0.5-dataWidth*0.5, originY, dataWidth, 20) withAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:12 weight:UIFontWeightRegular],NSForegroundColorAttributeName:COLOR_RGBA(0, 0, 0, 0.65)}];
+        [valueString drawInRect:CGRectMake(self.frame.size.width*0.5-dataWidth*0.5, originY, dataWidth, 20) withAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:12 weight:UIFontWeightRegular],NSForegroundColorAttributeName:[UIColor colorNamed:@"color_text_0f1214_60"]}];
         [xLabelCenter addObject:@(self.frame.size.width*0.5-dataWidth*0.5+10)];
     }
 }
