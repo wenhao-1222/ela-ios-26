@@ -528,7 +528,7 @@ extension ForumPublishManager{
             publishModel.videoDuration = ForumPublishSqlite.getInstance().queryVideoDuration(ctime: publishModel.ctime).intValue
             param.setValue("2", forKey: "contentType")
             param.setValue([publishModel.videoUrl], forKey: "cover")
-            //"http://ela-test.oss-cn-shenzhen.aliyuncs.com/forum/post/material/forum_70422192326ec8ded4ab3074582fdcfd202503312775.png",
+            
             let coverInfo = ["ossUrl":publishModel.videoCoverUrl,//1124  632
                              "videoDuration":publishModel.videoDuration,
                              "coverWidth":String(format: "%.0f", publshMsgDict.doubleValueForKey(key: "videoCoverImgW")),
@@ -567,7 +567,11 @@ extension ForumPublishManager{
                 DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
                     self.checkForumUploadStatus()
                 })
+            }else if code == 422{
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "uploadForumThread422"), object: responseObject)
+                ForumPublishSqlite.getInstance().updateSingleData(columnName: "isUpload", data: "422",cTime: self.publshMsgDict.stringValueForKey(key: "ctime"))
             }else{
+                
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "uploadForumThreadFailed"), object: responseObject)
             }
         }

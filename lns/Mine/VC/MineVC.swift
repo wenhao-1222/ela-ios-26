@@ -33,36 +33,7 @@ class MineVC : WHBaseViewVC {
         initUI()
         sendServiceWelcomeRequest()
         NotificationCenter.default.addObserver(self, selector: #selector(createPlan), name: NSNotification.Name(rawValue: "fullPlanSaveForMine"), object: nil)
-//        AliPlayerGlobalSettings.setFairPlayCertID("7069e758e56e40eabdab57683b5d815f")
-//        
-//        AlivcBase.environmentManager.setGlobalEnvironment(AlivcGlobalEnv.SEA)
-//        AliPrivateService.initLicense()
-//        AliPlayer.setEnableLog(true)
-//        AliPlayer.setLogCallbackInfo(LOG_LEVEL_TRACE, callbackBlock: nil)
     }
-//    lazy var topVm: MineTopVM = {
-//        let vm = MineTopVM.init(frame: .zero)
-//        vm.editBlock = {()in
-//            self.navigationController?.pushViewController(MaterialVC(), animated: true)
-//        }
-//        vm.settinBlock = {()in
-//            let vc = SettingVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        }
-//        vm.planListVm.tapBlock = {()in
-//            let vc = PlanListVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        }
-//        vm.createPlanVm.tapBlock = {()in
-//            let vc = PlanCreateVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-//            vc.createBlock = {()in
-//                let vc = PlanListVC()
-//                self.navigationController?.pushViewController(vc, animated: true)
-//            }
-//        }
-//        return vm
-//    }()
     //MARK: 头像+我的目标、数据统计、食物/食谱、轻断食
     lazy var personalTopVm: PersonalTopVM = {
         let vm = PersonalTopVM.init(frame: .zero)
@@ -153,51 +124,6 @@ class MineVC : WHBaseViewVC {
         }
         return vm
     }()
-//    lazy var funcVm: MineFuncVM = {
-//        let vm = MineFuncVM.init(frame: CGRect.init(x: 0, y: self.personalTopVm.frame.maxY-kFitWidth(16), width: 0, height: 0))
-//        vm.bodyDataVm.tapBlock = {()in
-//            let vc = BodyDataDetailVC()
-//            vc.dataType = .weight
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        }
-//        vm.naturalStatVm.tapBlock = {()in
-//            let vc = NaturalStatVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        }
-//        vm.goalVm.tapBlock = {()in
-//            let vc = GoalSetVC()
-////            let vc = VdoTestVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        }
-//        vm.serviceVm.tapBlock = {()in
-//            let vc = ServiceContactVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        }
-//        vm.foodsVm.tapBlock = {()in
-//            let vc = MyFoodsListVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        }
-//        vm.tutorialsVm.tapBlock = {()in
-//            let vc = TutorialsListVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        }
-//        vm.inviteVm.tapBlock = {()in
-//            let vc = InviteRewardsVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        }
-//        vm.forumMsgVm.tapBlock =  {()in
-//            let vc = ForumNewsListVC()
-////            let vc = ArticlesVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        }
-//        vm.courseOrderListVm.tapBlock = {()in
-//            let vc = CourseOrderListVC()
-////            let vc = AliPlayerTest()
-////            let vc = ArticlesVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        }
-//        return vm
-//    }()
 }
 
 extension MineVC{

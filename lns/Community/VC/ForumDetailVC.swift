@@ -817,20 +817,23 @@ extension ForumDetailVC{
                      "content":"\(self.commomAlertVm.textView.text ?? "")",
                      "image":imgString]
         WHNetworkUtil.shareManager().POST(urlString: URL_community_comment_add, parameters: param as [String: AnyObject],isNeedToast: true,vc: self) { responseObject in
-            DLLog(message: "sendCommentRequest:\(responseObject)")
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            DLLog(message: "sendCommentRequest:\(dataString ?? "")")
-            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendCommentRequest:\(dataObj)")
-            
-            self.bottomFuncVm.textField.textField.text = ""
-            self.commomAlertVm.clearMSg()
-            let coModel = ForumCommentModel().dealData(dict: dataObj)
-            self.commentListVm.addComment(coModel: coModel)
-            self.scrollViewBase.setContentOffset(CGPoint.init(x: 0, y: self.commentListVm.frame.minY), animated: true)
-            self.model.commentCount = "\(self.model.commentCount.intValue + 1)"
-            self.model.totalCommentCount = "\(self.model.totalCommentCount.intValue + 1)"
-            self.commentListVm.commentCountLabel.text = "共 \(self.model.totalCommentCount) 条评论"
+            let code = responseObject["code"]as? Int ?? -1
+            if (code == 200) {
+                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+                let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+                DLLog(message: "sendCommentRequest:\(dataObj)")
+                
+                self.bottomFuncVm.textField.textField.text = ""
+                self.commomAlertVm.clearMSg()
+                let coModel = ForumCommentModel().dealData(dict: dataObj)
+                self.commentListVm.addComment(coModel: coModel)
+                self.scrollViewBase.setContentOffset(CGPoint.init(x: 0, y: self.commentListVm.frame.minY), animated: true)
+                self.model.commentCount = "\(self.model.commentCount.intValue + 1)"
+                self.model.totalCommentCount = "\(self.model.totalCommentCount.intValue + 1)"
+                self.commentListVm.commentCountLabel.text = "共 \(self.model.totalCommentCount) 条评论"
+            }else{
+                MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试")
+            }
         }
     }
     func sendCommentReplyRequest(commentId:String) {
@@ -841,18 +844,20 @@ extension ForumDetailVC{
                      "content":"\(self.commomAlertVm.textView.text ?? "")",
                      "image":imgString]
         WHNetworkUtil.shareManager().POST(urlString: URL_community_reply_add, parameters: param as [String: AnyObject],isNeedToast: true,vc: self) { responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendCommentReplyRequest:\(dataObj)")
-            
-            self.bottomFuncVm.textField.textField.text = ""
-//            self.commomAlertVm.textView.text = ""
-//            self.commomAlertVm.commonImgUrl = ""
-//            self.commomAlertVm.showImgView(isShow: false)
-            self.commomAlertVm.clearMSg()
-            
-            let reModel = ForumCommentReplyModel().dealData(dict: dataObj)
-            self.commentListVm.addReply(reModel: reModel)
+            let code = responseObject["code"]as? Int ?? -1
+            if (code == 200) {
+                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+                let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+                DLLog(message: "sendCommentReplyRequest:\(dataObj)")
+                
+                self.bottomFuncVm.textField.textField.text = ""
+                self.commomAlertVm.clearMSg()
+                
+                let reModel = ForumCommentReplyModel().dealData(dict: dataObj)
+                self.commentListVm.addReply(reModel: reModel)
+            }else{
+                MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试")
+            }
         }
     }
     func sendCommentReplyRequest(commentId:String,parentId:String) {
@@ -865,19 +870,20 @@ extension ForumDetailVC{
                      "image":imgString]
         DLLog(message: "sendCommentReplyRequest:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_community_reply_add, parameters: param as [String: AnyObject],isNeedToast: true,vc: self) { responseObject in
-            DLLog(message: "sendForumDetailRequest:\(responseObject)")
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendForumDetailRequest:\(dataObj)")
-            
-            self.bottomFuncVm.textField.textField.text = ""
-//            self.commomAlertVm.textView.text = ""
-//            self.commomAlertVm.commonImgUrl = ""
-//            self.commomAlertVm.showImgView(isShow: false)
-            self.commomAlertVm.clearMSg()
-            
-            let reModel = ForumCommentReplyModel().dealData(dict: dataObj)
-            self.commentListVm.addReply(reModel: reModel)
+            let code = responseObject["code"]as? Int ?? -1
+            if (code == 200) {
+                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+                let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+                DLLog(message: "sendForumDetailRequest:\(dataObj)")
+                
+                self.bottomFuncVm.textField.textField.text = ""
+                self.commomAlertVm.clearMSg()
+                
+                let reModel = ForumCommentReplyModel().dealData(dict: dataObj)
+                self.commentListVm.addReply(reModel: reModel)
+            }else{
+                MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试")
+            }
         }
     }
     func sendReportCommentReqeust(bizType:String,id:String,reason:String) {

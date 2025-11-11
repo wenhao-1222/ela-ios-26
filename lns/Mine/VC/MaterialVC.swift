@@ -26,18 +26,12 @@ class MaterialVC: WHBaseViewVC {
     var materialType = MATERIAL_TYPE.avatar
     
     override func viewWillAppear(_ animated: Bool) {
+     
         IQKeyboardManager.shared.enable = false
         IQKeyboardManager.shared.enableAutoToolbar = false
 //        self.nameAlertVm.startCountdown()
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
-    
-//    override func viewWillDisappear(_ animated: Bool) {
-//        IQKeyboardManager.shared.enable = true
-//        IQKeyboardManager.shared.enableAutoToolbar = true
-//        self.nameAlertVm.disableTimer()
-//        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
-//    }
     override func viewDidDisappear(_ animated: Bool) {
         IQKeyboardManager.shared.enable = true
 //        IQKeyboardManager.shared.enableAutoToolbar = true
@@ -202,7 +196,15 @@ extension MaterialVC{
         
        WHNetworkUtil.shareManager().POST(urlString: URL_User_Material_Update, parameters: param as [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
             DLLog(message: "\(responseObject)")
-           self.updateUI()
+//           self.updateUI()
+           
+           let code = responseObject["code"]as? Int ?? -1
+           if (code == 200) {
+               self.updateUI()
+           }else{
+//               self.avatarVm.headImgView.setImgUrl(urlString: "\(UserInfoModel.shared.headimgurl)")
+               MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试")
+           }
         }
     }
     @objc func sendSaveMaterialRequest() {
@@ -221,7 +223,14 @@ extension MaterialVC{
         
        WHNetworkUtil.shareManager().POST(urlString: URL_User_Material_Update, parameters: param as [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
             DLLog(message: "\(responseObject)")
-           self.updateUI()
+           
+           let code = responseObject["code"]as? Int ?? -1
+           if (code == 200) {
+               self.updateUI()
+           }else{
+               self.nickNameVm.detailLabel.text = "\(UserInfoModel.shared.nickname)"
+               MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试")
+           }
         }
     }
     
@@ -300,10 +309,7 @@ extension MaterialVC:UIImagePickerControllerDelegate,UINavigationControllerDeleg
         MCToast.mc_loading()
         let image = (info[UIImagePickerController.InfoKey.editedImage] as? UIImage)!
         let img = self.fixOrientation(image)
-        
-//        let imageData = img.pngData()
         let imageData = WH_DESUtils.compressImage(toData: img)
-//        let imageData = image.jpegData(compressionQuality: 1.0)
         
         DSImageUploader().uploadImage(imageData: imageData!, imgType: .avatar) { text, value in
             DLLog(message: "\(text)")

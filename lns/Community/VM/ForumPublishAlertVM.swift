@@ -5,6 +5,8 @@
 //  Created by Elavatine on 2025/2/25.
 //
 
+import MCToast
+
 class ForumPublishAlertVM: UIView {
     
     var selfHeight = kFitWidth(64)
@@ -26,6 +28,7 @@ class ForumPublishAlertVM: UIView {
         NotificationCenter.default.addObserver(self, selector: #selector(publishSuccess), name: NSNotification.Name(rawValue: "uploadForumThreadFinished"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(publishFailed(obj:)), name: NSNotification.Name(rawValue: "uploadForumThreadFailed"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(compressFailed(obj:)), name: NSNotification.Name(rawValue: "compressVideoError"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(compressFailed422(obj:)), name: NSNotification.Name(rawValue: "uploadForumThread422"), object: nil)
 //
 //        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "compressVideoError"), object: ["code":"400",
 //                                                                                                            "message":"未找到视频资源"])
@@ -148,8 +151,18 @@ extension ForumPublishAlertVM{
                 self.hiddenView()
             })
         }
-        
     }
+    @objc func compressFailed422(obj:Notification) {
+        let failObj = obj.object as? NSDictionary ?? [:]
+        DispatchQueue.main.async {
+            self.detailLabel.text = "\(failObj["message"] as? String ?? "视频资源获取异常")"
+            DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
+                MCToast.mc_text(failObj["message"]as? String ?? "网络异常，请稍后重试")
+                self.hiddenView()
+            })
+        }
+    }
+    
     func updateUI() {
         DispatchQueue.main.async {
             if ForumPublishManager.shared.coverImg != nil{
