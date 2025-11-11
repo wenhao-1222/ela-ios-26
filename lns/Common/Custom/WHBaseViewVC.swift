@@ -661,12 +661,12 @@ extension WHBaseViewVC{
         
         if isWhite ?? false {
             backArrowImg.image = UIImage.init(named: "back_arrow_white_icon")
-            titleLabel.textColor = .white
+            titleLabel.textColor = .COLOR_TEXT_WHITE
             backArrowButton.backImgView.setImgLocal(imgName: "back_arrow_white_icon")
             naviTitleLabel.textColor = .white
         }else{
             backArrowImg.image = UIImage.init(named: "back_arrow")
-            titleLabel.textColor = WHColor_16(colorStr: "222222")
+            titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "222222")
         }
     }
     

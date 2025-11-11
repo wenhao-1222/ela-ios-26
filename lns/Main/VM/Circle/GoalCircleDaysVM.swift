@@ -25,7 +25,7 @@ class GoalCircleDaysVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         touchWhiteViewCenterX = daysGap*CGFloat(daysNumber)-circelWidth*0.5
@@ -42,9 +42,9 @@ class GoalCircleDaysVM: UIView {
         
         return img
     }()
-    lazy var titleLabel : YYLabel = {
-        let lab = YYLabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+    lazy var titleLabel : UILabel = {
+        let lab = UILabel()
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         return lab
     }()
@@ -53,7 +53,7 @@ class GoalCircleDaysVM: UIView {
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(bgViewTapGesture(tapSender: )))
         vi.addGestureRecognizer(tap)
@@ -72,7 +72,6 @@ class GoalCircleDaysVM: UIView {
         let vi = UIView.init(frame: CGRect.init(x: touchWhiteViewCenterX-circelWidth*0.5, y: kFitWidth(2), width: kFitWidth(20), height: kFitWidth(20)))
         vi.layer.cornerRadius = kFitWidth(10)
         vi.isUserInteractionEnabled = true
-//        vi.clipsToBounds = true
         vi.backgroundColor = WHColor_16(colorStr: "F3F3F3")
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture: )))
@@ -188,25 +187,48 @@ extension GoalCircleDaysVM{
             self.daysChangeBlock!(self.daysNumber)
         }
     }
+//    func updateDayNumberLabel() {
+//        let stringOne = NSMutableAttributedString.init(string: "循环周期 ")
+//        let stringTwo = NSMutableAttributedString.init(string: "\(daysNumber)")
+//        let stringThree = NSMutableAttributedString.init(string: " 天")
+//        
+//        stringTwo.yy_color = .THEME
+//        stringTwo.yy_font = .systemFont(ofSize: 14, weight: .regular)
+//        
+//        stringOne.yy_color = .COLOR_TEXT_TITLE_0f1214
+//        stringOne.yy_font = .systemFont(ofSize: 14, weight: .regular)
+//        
+//        stringThree.yy_color = .COLOR_TEXT_TITLE_0f1214
+//        stringThree.yy_font = .systemFont(ofSize: 14, weight: .regular)
+//        
+//        stringOne.append(stringTwo)
+//        stringOne.append(stringThree)
+//        
+//        titleLabel.attributedText = stringOne
+//    }
     func updateDayNumberLabel() {
-        let stringOne = NSMutableAttributedString.init(string: "循环周期 ")
-        let stringTwo = NSMutableAttributedString.init(string: "\(daysNumber)")
-        let stringThree = NSMutableAttributedString.init(string: " 天")
-        
-        stringTwo.yy_color = .THEME
-        stringTwo.yy_font = .systemFont(ofSize: 14, weight: .regular)
-        
-        stringOne.yy_color = .COLOR_GRAY_BLACK_65
-        stringOne.yy_font = .systemFont(ofSize: 14, weight: .regular)
-        
-        stringThree.yy_color = .COLOR_GRAY_BLACK_65
-        stringThree.yy_font = .systemFont(ofSize: 14, weight: .regular)
-        
-        stringOne.append(stringTwo)
-        stringOne.append(stringThree)
-        
-        titleLabel.attributedText = stringOne
+        let titleColor = UIColor.COLOR_TEXT_TITLE_0f1214   // 资产里 Any/Dark
+        let themeColor = UIColor.THEME
+
+        let a = NSMutableAttributedString(
+            string: "循环周期 ",
+            attributes: [.foregroundColor: titleColor,
+                         .font: UIFont.systemFont(ofSize: 14, weight: .regular)]
+        )
+        a.append(NSAttributedString(
+            string: "\(daysNumber)",
+            attributes: [.foregroundColor: themeColor,
+                         .font: UIFont.systemFont(ofSize: 14, weight: .regular)]
+        ))
+        a.append(NSAttributedString(
+            string: " 天",
+            attributes: [.foregroundColor: titleColor,
+                         .font: UIFont.systemFont(ofSize: 14, weight: .regular)]
+        ))
+
+        titleLabel.attributedText = a
     }
+
 }
 
 extension GoalCircleDaysVM{
@@ -218,7 +240,7 @@ extension GoalCircleDaysVM{
         for i in 0..<5{
             let vi = UIView.init(frame: CGRect.init(x: daysGap*CGFloat(i+1)-circelWidth*0.5, y: kFitWidth(8), width: circelWidth, height: circelWidth))
             vi.clipsToBounds = true
-            vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.15)
+            vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_20//WHColorWithAlpha(colorStr: "000000", alpha: 0.15)
             vi.layer.cornerRadius = kFitWidth(4)
             progressBgView.addSubview(vi)
         }

@@ -16,7 +16,7 @@ class GoalSetCaloriesVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -30,7 +30,7 @@ class GoalSetCaloriesVM: UIView {
         lab.delegate = self
         lab.keyboardType = .numberPad
         lab.font = .systemFont(ofSize: 20, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.textContentType = nil
         lab.isEnabled = false
         return lab
@@ -38,7 +38,7 @@ class GoalSetCaloriesVM: UIView {
     lazy var unitLabel: UILabel = {
         let lab = UILabel()
         lab.text = "卡路里（千卡）"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_35//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         
         return lab
@@ -55,7 +55,7 @@ class GoalSetCaloriesVM: UIView {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "F0F0F0")
         return vi
     }()
 }
@@ -64,7 +64,7 @@ extension GoalSetCaloriesVM{
     func changeType(type:String) {
         if type == "g"{
             self.numberLabel.isEnabled = false
-            self.numberLabel.textColor = .COLOR_GRAY_BLACK_65
+            self.numberLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
             self.numberTapView.isUserInteractionEnabled = false
         }else{
             self.numberLabel.isEnabled = true

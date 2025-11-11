@@ -23,7 +23,7 @@ class NaturalStatCalendarCollectionCellItemVM: UIView {
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: frame.width, height: frame.height))
         selfHeight = frame.height
         selfWidth = frame.width
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .clear
         self.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))

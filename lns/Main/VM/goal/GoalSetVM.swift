@@ -19,7 +19,7 @@ class GoalSetVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: kFitWidth(16), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         self.layer.cornerRadius = kFitWidth(12)
         self.clipsToBounds = true
@@ -99,7 +99,7 @@ class GoalSetVM: UIView {
         let btn = UIButton()
         btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(442), width: SCREEN_WIDHT-kFitWidth(32)-kFitWidth(32), height: kFitWidth(48))
         btn.setTitle("保存目标", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME, for: .highlighted)
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT), for: .disabled)

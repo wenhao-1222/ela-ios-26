@@ -28,7 +28,7 @@ class NaturalStatCalendarCollectionCellItemProgressVM: UIView {
     }
     lazy var progressBottomView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         vi.layer.cornerRadius = kFitWidth(2)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
@@ -45,7 +45,7 @@ class NaturalStatCalendarCollectionCellItemProgressVM: UIView {
     }()
     lazy var numberLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_35
         lab.font = .systemFont(ofSize: 8, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.isUserInteractionEnabled = true
@@ -56,7 +56,7 @@ class NaturalStatCalendarCollectionCellItemProgressVM: UIView {
         let img = UIImageView()
         img.layer.cornerRadius = kFitWidth(2)
         img.clipsToBounds = true
-        img.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        img.backgroundColor = .COLOR_TEXT_TITLE_0f1214_35//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         img.setImgLocal(imgName: "main_nutrient_span_img_2")
         img.contentMode = .center
         img.isUserInteractionEnabled = true

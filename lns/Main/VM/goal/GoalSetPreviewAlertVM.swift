@@ -41,7 +41,7 @@ class GoalSetPreviewAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
         v.addGestureRecognizer(tap)
@@ -50,7 +50,7 @@ class GoalSetPreviewAlertVM: UIView {
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(12))
         
@@ -73,7 +73,7 @@ class GoalSetPreviewAlertVM: UIView {
         let btn = UIButton()
 //        btn.frame = CGRect.init(x: kFitWidth(16), y: self.centerVm.frame.maxY + kFitWidth(40), width: kFitWidth(288), height: kFitWidth(48))
         btn.setTitle("保存目标", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME, for: .highlighted)
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT), for: .disabled)
@@ -207,12 +207,12 @@ extension GoalSetPreviewAlertVM{
         }
         for i in 0..<itemVmArray.count{
             let vm = itemVmArray[i]
-            var dict = goalArray[(i+today)%goalArray.count] as? NSDictionary ?? [:]
+            let dict = goalArray[(i+today)%goalArray.count] as? NSDictionary ?? [:]
             
             if (((i+today)/goalArray.count) % 2) == 0{
                 vm.updateBgColor(color: WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1))
             }else{
-                vm.updateBgColor(color: .COLOR_TEXT_TITLE_0f1214_03)
+                vm.updateBgColor(color: .clear)
             }
             vm.updateUI(dict: dict,
                         caloriesden: "\(caloriesMax)",
@@ -321,7 +321,7 @@ extension GoalSetPreviewAlertVM{
                         self.whiteViewHeight = originY + self.itemVmHeight + WHUtils().getBottomSafeAreaHeight() + kFitWidth(12) + kFitWidth(60)
 //                        self.whiteViewOriginY = SCREEN_HEIGHT - self.whiteViewHeight
                         self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: self.whiteViewHeight)
-                        self.whiteView.backgroundColor = .white
+                        self.whiteView.backgroundColor = .COLOR_BG_WHITE
                         self.whiteView.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(12))
                     })
                 }

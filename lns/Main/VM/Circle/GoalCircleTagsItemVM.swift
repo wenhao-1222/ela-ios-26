@@ -23,7 +23,7 @@ class GoalCircleTagsItemVM: UIView {
     override init(frame:CGRect){
         selfWidth = (SCREEN_WIDHT-kFitWidth(34) - kFitWidth(10) * CGFloat(4))*0.2
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: selfWidth, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
 //        self.clipsToBounds = true
         
@@ -64,7 +64,7 @@ extension GoalCircleTagsItemVM{
         
         if self.isSelect{
             bgView.backgroundColor = .THEME
-            contentLabel.textColor = .white
+            contentLabel.textColor = .COLOR_TEXT_WHITE
         }else{
             bgView.backgroundColor = .COLOR_BG_F5
             contentLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50

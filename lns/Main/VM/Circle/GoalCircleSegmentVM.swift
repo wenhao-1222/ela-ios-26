@@ -30,7 +30,7 @@ class GoalCircleSegmentVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: kFitWidth(13.5), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(27), height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_F5
         self.isUserInteractionEnabled = true
         self.layer.cornerRadius = kFitWidth(8)
         self.clipsToBounds = true
@@ -38,8 +38,6 @@ class GoalCircleSegmentVM: UIView {
         self.layer.borderWidth = lineWidth
         selfWidth = SCREEN_WIDHT-kFitWidth(27)
         initUI()
-//        addSubview(todayLabel)
-//        todayLabel.addClipCorner(corners: [.topLeft,.topRight,.bottomRight], radius: kFitWidth(8))
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -133,10 +131,11 @@ extension GoalCircleSegmentVM{
             button.frame = CGRect.init(x: btnWidth*CGFloat(i), y: 0, width: btnWidth, height: kFitWidth(50))
             button.setTitle("\(weekDays[i]as? String ?? "")", for: .normal)
             button.setTitleColor(.THEME, for: .normal)
-            button.setTitleColor(.white, for: .selected)
+            button.setTitleColor(.COLOR_TEXT_WHITE, for: .selected)
             button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
             button.setBackgroundImage(createImageWithColor(color: .THEME), for: .selected)
-            button.setBackgroundImage(createImageWithColor(color: .white), for: .normal)
+//            button.setBackgroundImage(createImageWithColor(color: .COLOR_BG_WHITE), for: .normal)
+            button.setBackgroundImage(UIImage(named: "button_bg_white"), for: .normal)
             button.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .highlighted)
             button.clipsToBounds = true
             button.tag = 1070 + i

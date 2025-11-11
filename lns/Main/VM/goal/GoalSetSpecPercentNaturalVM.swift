@@ -14,7 +14,7 @@ class GoalSetSpecPercentNaturalVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(56), height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -32,7 +32,7 @@ class GoalSetSpecPercentNaturalVM: UIView {
     }()
     lazy var carboNumLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_35//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.text = "0g"
         
@@ -48,7 +48,7 @@ class GoalSetSpecPercentNaturalVM: UIView {
     }()
     lazy var proteinNumLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_35//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.text = "0g"
         
@@ -64,7 +64,7 @@ class GoalSetSpecPercentNaturalVM: UIView {
     }()
     lazy var fatNumLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_35//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.text = "0g"
         

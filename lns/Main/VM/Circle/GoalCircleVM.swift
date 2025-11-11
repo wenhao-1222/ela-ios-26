@@ -58,14 +58,14 @@ class GoalCircleVM: UIView {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(200)))
         vi.isUserInteractionEnabled = true
         
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         return vi
     }()
     lazy var titleLab: UILabel = {
         let lab = UILabel()
         lab.text = "创建自己的目标"
         lab.font = .systemFont(ofSize: 16, weight: .bold)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         
         return lab
     }()
@@ -74,7 +74,7 @@ class GoalCircleVM: UIView {
         let lab = UILabel()
         lab.text = "选择日期并调整数值"
         lab.font = .systemFont(ofSize: 12, weight: .medium)
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
 //        lab.isHidden = true
         
         return lab
@@ -187,7 +187,6 @@ class GoalCircleVM: UIView {
             }
             if self.goalsDataArray.count > self.currentIndex {
                 let dict = NSMutableDictionary(dictionary: self.goalsDataArray[self.currentIndex] as? NSDictionary ?? [:])
-//                dict.setValue(tag, forKey: "cc_label")
                 dict.setValue(tag, forKey: "carbLabel")
                 self.goalsDataArray.replaceObject(at: self.currentIndex, with: dict)
             }

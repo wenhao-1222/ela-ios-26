@@ -174,7 +174,7 @@ class GoalSetCircleVC: WHBaseViewVC {
     }()
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: self.customCircleVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.customCircleVm.frame.maxY))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -185,7 +185,8 @@ class GoalSetCircleVC: WHBaseViewVC {
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT, for: .highlighted)
-        btn.setBackgroundImage(createImageWithColor(color: .white), for: .normal)
+//        btn.setBackgroundImage(createImageWithColor(color: .white), for: .normal)
+        btn.setBackgroundImage(UIImage(named: "button_bg_white"), for: .normal)
 //        btn.setBackgroundImage(createImageWithColor(color: .WIDGET_COLOR_GRAY_BLACK_06), for: .highlighted)
         btn.layer.cornerRadius = kFitWidth(4)
         btn.clipsToBounds = true
@@ -491,7 +492,7 @@ extension GoalSetCircleVC{
 extension GoalSetCircleVC{
     func initUI() {
         initNavi(titleStr: "设定目标")
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = .COLOR_BG_WHITE
         self.navigationView.backgroundColor = .clear
         self.backArrowButton.tapBlock = {()in
             self.backAction()

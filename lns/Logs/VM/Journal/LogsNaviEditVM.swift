@@ -37,7 +37,7 @@ class LogsNaviEditVM: UIView {
         let btn = FeedBackTapButton()
         btn.addPressEffect()
         btn.setTitle("完成", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_TEXT_85_LIGHT, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         
@@ -49,13 +49,13 @@ class LogsNaviEditVM: UIView {
         let lab = UILabel()
         lab.text = "编辑日志"
         lab.font = .systemFont(ofSize: 18, weight: .medium)
-        lab.textColor = WHColor_16(colorStr: "222222")
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "222222")
         return lab
     }()
     lazy var delButton: FeedBackButton = {
         let btn = FeedBackButton()
         btn.setTitle("删除", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_TEXT_85_LIGHT, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         

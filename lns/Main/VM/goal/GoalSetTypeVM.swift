@@ -17,7 +17,7 @@ class GoalSetTypeVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: (SCREEN_WIDHT-kFitWidth(32)-kFitWidth(124))*0.5, y: frame.origin.y, width: kFitWidth(124), height: selfHeight))
-        self.backgroundColor = WHColor_16(colorStr: "EFEFEF")
+        self.backgroundColor = .COLOR_BG_EF//WHColor_16(colorStr: "EFEFEF")
         self.isUserInteractionEnabled = true
         self.layer.cornerRadius = kFitWidth(8)
         self.clipsToBounds = true
@@ -34,9 +34,9 @@ class GoalSetTypeVM: UIView {
         btn.setTitle("克", for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.setBackgroundImage(createImageWithColor(color: .clear), for: .normal)
-        btn.setBackgroundImage(createImageWithColor(color: .white), for: .selected)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.45), for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .selected)
+        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BG_WHITE), for: .selected)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_35, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .selected)
         btn.setBackgroundImage(createImageWithColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.1)), for: .highlighted)
         btn.layer.cornerRadius = kFitWidth(4)
         btn.clipsToBounds = true
@@ -53,9 +53,9 @@ class GoalSetTypeVM: UIView {
         btn.setTitle("%", for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.setBackgroundImage(createImageWithColor(color: .clear), for: .normal)
-        btn.setBackgroundImage(createImageWithColor(color: .white), for: .selected)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.45), for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .selected)
+        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BG_WHITE), for: .selected)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_35, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .selected)
         btn.setBackgroundImage(createImageWithColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.1)), for: .highlighted)
         btn.layer.cornerRadius = kFitWidth(4)
         btn.clipsToBounds = true
