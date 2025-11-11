@@ -14,7 +14,7 @@ class QuestionResultBaseVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .COLOR_GRAY_FA
+        self.backgroundColor = .COLOR_BG_F5
         self.isUserInteractionEnabled = true
         self.selfHeight = SCREEN_HEIGHT-frame.origin.y
         
@@ -25,7 +25,7 @@ class QuestionResultBaseVM: UIView {
     }
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 20, weight: .medium)
         lab.text = "结合您的代谢和活动量，\n您维持现体重所需的大致热量为："
         lab.numberOfLines = 2
@@ -36,7 +36,7 @@ class QuestionResultBaseVM: UIView {
     }()
     lazy var caloriesBgView : UIView  = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.layer.cornerRadius = kFitWidth(32)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
@@ -69,7 +69,7 @@ class QuestionResultBaseVM: UIView {
     lazy var caloriesUnitLabel: UILabel = {
         let lab = UILabel()
         lab.text = "千卡"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
@@ -79,7 +79,7 @@ class QuestionResultBaseVM: UIView {
 //        lab.text = "我们运用 Katch-McArdle 公式计算出了您的瘦体重质量、基础代谢率和每日总消耗热量。这个预估值已包括了您日常活动和运动的热量消耗，因此无需额外记录运动量。"
         lab.text = "我们运用 Katch-McArdle 公式计算出了您的瘦体重质量、基础代谢率和每日总消耗热量。这个预估值已包括了您日常活动和运动的热量消耗，因此无需额外记录运动量。如果您觉得该数值过高或过低，可以点击并手动调整。"
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         return lab

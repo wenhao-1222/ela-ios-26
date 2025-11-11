@@ -36,7 +36,7 @@ class QuestionnairePreVC: WHBaseViewVC {
     lazy var titlLab : UILabel = {
         let lab = UILabel()
         lab.text = "Hi，\(UserInfoModel.shared.nickname)"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.textAlignment = .center
@@ -48,7 +48,7 @@ class QuestionnairePreVC: WHBaseViewVC {
 //        lab.text = "通过填写由职业运动员和健身教练共同设计的调查问卷，我们将根据您的目标，生活及饮食习惯为您量身定制一个适合您的饮食计划。"
 //        lab.text = "通过填写由运动员和营养师联合设计的问卷，我们将根据您的目标和日常习惯为您量身定制一个营养参考值。"
         lab.text = "填写由运动员和营养师联合设计的问卷，我们将为您量身定制一个营养目标。"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
@@ -93,8 +93,8 @@ extension QuestionnairePreVC{
     func initUI() {
         initNavi(titleStr: "")
         
-        navigationView.backgroundColor = WHColor_16(colorStr: "F6F6F6")
-        view.backgroundColor = WHColor_16(colorStr: "F6F6F6")
+        navigationView.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "F6F6F6")
+        view.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "F6F6F6")
         
         view.addSubview(imgView)
         view.addSubview(titlLab)

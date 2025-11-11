@@ -22,12 +22,19 @@ extension UIColor {
     public static let COLOR_TEXT_TITLE_0f1214_35        = UIColor(named: "color_text_0f1214_35")!
     public static let COLOR_TEXT_TITLE_0f1214_60        = UIColor(named: "color_text_0f1214_60")!
     
-    public static let COLOR_TEXT_WHITE                       = UIColor(named: "color_text_white")!
-    
+    public static let COLOR_TEXT_WHITE                  = UIColor(named: "color_text_white")!
+    public static let COLOR_WHITE_65                    = UIColor(named: "color_white_65")!
+    public static let COLOR_WHITE_04                    = UIColor(named: "color_white_04")!
     
     public static let COLOR_BG_WHITE                    = UIColor(named: "color_bg_white")!
+    
     public static let COLOR_BG_BLACK                    = UIColor(named: "color_bg_black")!
     public static let COLOR_BG_BLACK_06                 = UIColor(named: "color_black_06")!
+    public static let COLOR_BG_BLACK_04                 = UIColor(named: "color_black_04")!
+    public static let COLOR_BG_BLACK_04_GOAL_BG         = UIColor(named: "color_black_04_goal_bg")!
+    public static let COLOR_BG_BLACK_045                = UIColor(named: "color_black_045")!
+    
+    
     public static let COLOR_ALERT_BG_BLACK              = UIColor(named: "color_alert_bg_black")!
     
     public static let COLOR_BG_F5                       = UIColor(named: "color_bg_f5")!

@@ -35,7 +35,7 @@ class QuestionnaireEventsTableViewCell: FeedBackTableViewCell {
     }
     lazy var bottomView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.clipsToBounds = true
         vi.layer.cornerRadius = kFitWidth(36)
         vi.isUserInteractionEnabled = true
@@ -44,14 +44,14 @@ class QuestionnaireEventsTableViewCell: FeedBackTableViewCell {
     }()
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab
     }()
     lazy var contentLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
         lab.textAlignment = .center
@@ -67,15 +67,14 @@ extension QuestionnaireEventsTableViewCell{
         
         if isSelected{
             UIView.animate(withDuration: 0.3, delay: 0, animations: {
-                self.titleLabel.textColor = .white
+                self.titleLabel.textColor = .COLOR_TEXT_WHITE
                 self.contentLabel.textColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.65)
                 self.bottomView.backgroundColor = .THEME
             })
-            
         }else{
-            titleLabel.textColor = .COLOR_GRAY_BLACK_85
-            contentLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
-            bottomView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+            titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+            contentLabel.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+            bottomView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         }
     }
 }
@@ -113,7 +112,6 @@ extension QuestionnaireEventsTableViewCell{
         UIView.animate(withDuration: 0.1) {
             self.transform = CGAffineTransform(scaleX: scale, y: scale)
         }
-//        triggerImpact(feedbackGenerator, intensity: feedbackWeight)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -121,10 +119,6 @@ extension QuestionnaireEventsTableViewCell{
         UIView.animate(withDuration: 0.1) {
             self.transform = .identity
         }
-//        if let touch = touches.first, self.bounds.contains(touch.location(in: self)) {
-////            UIImpactFeedbackGenerator(style: .medium).impactOccurred(intensity: 0.9)
-//            triggerImpact(UIImpactFeedbackGenerator(style: .medium), intensity: 0.9)
-//        }
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -133,10 +127,4 @@ extension QuestionnaireEventsTableViewCell{
             self.transform = .identity
         }
     }
-//    private func triggerImpact(_ generator: UIImpactFeedbackGenerator, intensity: CGFloat) {
-//        let now = Date().timeIntervalSince1970
-//        guard now - lastFeedbackTime > minimumFeedbackInterval else { return }
-//        generator.impactOccurred(intensity: intensity)
-//        lastFeedbackTime = now
-//    }
 }
