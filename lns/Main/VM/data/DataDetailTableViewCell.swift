@@ -23,38 +23,16 @@ class DataDetailTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .clear
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUIFrame), name: NSNotification.Name(rawValue: "updateBodyDataSetting"), object: nil)
         
         initUI()
     }
-//    override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-//        // 允许 scrollView 与 tableView 同时识别
-//        return true
-//    }
-//
-//    override func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOf otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-//        // 如果是 tableView 的左滑手势（用于显示删除），优先让它识别
-//        if let other = otherGestureRecognizer as? UISwipeGestureRecognizer,
-//           other.direction == .left {
-//            return true
-//        }
-//        return false
-//    }
-////
-//    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-//        // 判断滑动方向，只有水平滑动时 scrollView 才响应
-//        if gestureRecognizer == contentScrollView.panGestureRecognizer {
-//            let velocity = contentScrollView.panGestureRecognizer.velocity(in: contentScrollView)
-//            return abs(velocity.x) > abs(velocity.y)
-//        }
-//        return true
-//    }
     lazy var timeLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: 0, y: kFitWidth(4), width: kFitWidth(94), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.textAlignment = .center
         lab.adjustsFontSizeToFitWidth = true
@@ -65,7 +43,7 @@ class DataDetailTableViewCell: UITableViewCell {
     
     lazy var contentScrollView: UIScrollView = {
         let scro = UIScrollView(frame: CGRect.init(x: kFitWidth(90), y: 0, width: SCREEN_WIDHT-kFitWidth(147), height: kFitWidth(44)))
-        scro.backgroundColor = .white
+        scro.backgroundColor = .COLOR_BG_WHITE
         scro.isUserInteractionEnabled = true
         scro.bounces = false
         scro.delegate = self
@@ -80,7 +58,7 @@ class DataDetailTableViewCell: UITableViewCell {
     lazy var weightLabel : UILabel = {
 //        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(94), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(4), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.backgroundColor = .clear
@@ -90,7 +68,7 @@ class DataDetailTableViewCell: UITableViewCell {
     lazy var yaoLabel : UILabel = {
 //        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(150), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(60), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.backgroundColor = .clear
@@ -100,7 +78,7 @@ class DataDetailTableViewCell: UITableViewCell {
     lazy var tunLabel : UILabel = {
 //        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(206), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(116), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.backgroundColor = .clear
@@ -110,7 +88,7 @@ class DataDetailTableViewCell: UITableViewCell {
     lazy var armLabel : UILabel = {
 //        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(262), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(172), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.backgroundColor = .clear
@@ -120,7 +98,7 @@ class DataDetailTableViewCell: UITableViewCell {
     lazy var shoulderLabel : UILabel = {
 //        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(262), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(228), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.backgroundColor = .clear
@@ -131,7 +109,7 @@ class DataDetailTableViewCell: UITableViewCell {
     lazy var bustLabel : UILabel = {
 //        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(262), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(284), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.backgroundColor = .clear
@@ -142,7 +120,7 @@ class DataDetailTableViewCell: UITableViewCell {
     lazy var thighLabel : UILabel = {
 //        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(262), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(340), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.backgroundColor = .clear
@@ -153,7 +131,7 @@ class DataDetailTableViewCell: UITableViewCell {
     lazy var calfLabel : UILabel = {
 //        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(262), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(396), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.backgroundColor = .clear
@@ -164,7 +142,7 @@ class DataDetailTableViewCell: UITableViewCell {
     lazy var bfpLabel : UILabel = {
 //        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(262), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(452), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.backgroundColor = .clear

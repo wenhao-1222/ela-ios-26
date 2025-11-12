@@ -119,7 +119,7 @@ class BodyDataDetailVC : WHBaseViewVC {
     }()
     lazy var lineWhiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: self.topVm.frame.maxY, width: SCREEN_WIDHT, height: kFitWidth(205)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -434,7 +434,7 @@ extension BodyDataDetailVC{
         xAxis.drawGridLinesEnabled = false
 //        xAxis.drawAxisLineEnabled = false
         xAxis.labelFont = .systemFont(ofSize: 12, weight: .regular)
-        xAxis.labelTextColor = .COLOR_GRAY_BLACK_65
+        xAxis.labelTextColor = .COLOR_TEXT_TITLE_0f1214_60
 //        lineChartView.setVisibleXRangeMaximum(5)
         
         lineChartView.scaleXEnabled = false

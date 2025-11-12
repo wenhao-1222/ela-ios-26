@@ -17,7 +17,7 @@ class DataDetailTableHeadVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUI), name: NSNotification.Name(rawValue: "updateBodyDataSetting"), object: nil)
@@ -29,12 +29,12 @@ class DataDetailTableHeadVM: UIView {
     }
     lazy var topGapView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(8)))
-        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         return vi
     }()
     lazy var timeLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: 0, y: kFitWidth(4), width: kFitWidth(94), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.text = "时间"
@@ -55,7 +55,7 @@ class DataDetailTableHeadVM: UIView {
     }()
     lazy var weightLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(4), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.text = "体重"
@@ -65,7 +65,7 @@ class DataDetailTableHeadVM: UIView {
     }()
     lazy var yaoLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(60), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.text = "腰围"
@@ -75,7 +75,7 @@ class DataDetailTableHeadVM: UIView {
     }()
     lazy var tunLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(116), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.text = "臀围"
@@ -85,7 +85,7 @@ class DataDetailTableHeadVM: UIView {
     }()
     lazy var armLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(172), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.text = "手臂"
@@ -96,7 +96,7 @@ class DataDetailTableHeadVM: UIView {
     
     lazy var shoulderLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(228), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.text = "肩宽"
@@ -106,7 +106,7 @@ class DataDetailTableHeadVM: UIView {
     }()
     lazy var bustLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(284), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.text = "胸围"
@@ -116,7 +116,7 @@ class DataDetailTableHeadVM: UIView {
     }()
     lazy var thighLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(340), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.text = "大腿围"
@@ -126,7 +126,7 @@ class DataDetailTableHeadVM: UIView {
     }()
     lazy var calfLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(396), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.text = "小腿围"
@@ -136,7 +136,7 @@ class DataDetailTableHeadVM: UIView {
     }()
     lazy var bfpLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(452), y: kFitWidth(4), width: kFitWidth(56), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.text = "体脂率"
@@ -146,7 +146,7 @@ class DataDetailTableHeadVM: UIView {
     }()
     lazy var photoLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: self.contentScrollView.frame.maxX, y: kFitWidth(4), width: kFitWidth(57), height: kFitWidth(40)))
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.text = "照片"
@@ -157,7 +157,7 @@ class DataDetailTableHeadVM: UIView {
     
     lazy var lineView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: kFitWidth(43), width: SCREEN_WIDHT, height: kFitWidth(1)))
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "F0F0F0")
         return vi
     }()
 }

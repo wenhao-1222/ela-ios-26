@@ -40,7 +40,7 @@ class DataDetailTimeTypeFilterAlertVM: UIView {
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+        vi.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         return vi
@@ -65,7 +65,7 @@ extension DataDetailTimeTypeFilterAlertVM{
     func setSelectStatus(daysIndex:Int) {
         for vm in vmDataArray{
             vm.selectImgView.isHidden = true
-            vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+            vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
         let vm = vmDataArray[daysIndex]
         vm.selectImgView.isHidden = false
@@ -82,7 +82,7 @@ extension DataDetailTimeTypeFilterAlertVM{
     func setSelectIndex(index:Int) {
         for vm in vmDataArray{
             vm.selectImgView.isHidden = true
-            vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+            vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
         selectIndex = index
         let vm = vmDataArray[index]
@@ -119,7 +119,7 @@ extension DataDetailTimeTypeFilterAlertVM{
                 vm.titleLabel.textColor = .THEME
             }else{
                 vm.selectImgView.isHidden = true
-                vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+                vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
             }
             whiteView.addSubview(vm)
 //            vm.tag = 1050 + i

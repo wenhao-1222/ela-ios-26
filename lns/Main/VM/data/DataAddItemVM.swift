@@ -18,7 +18,7 @@ class DataAddItemVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -43,14 +43,12 @@ class DataAddItemVM: UIView {
     lazy var textField : NumericTextField = {
         let text = NumericTextField()
         text.placeholder = "选填"
-//        text.placeholder = "请输入数值"
         text.font = .systemFont(ofSize: 14, weight: .medium)
         text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.keyboardType = .decimalPad
         text.textAlignment = .right
         text.delegate = self
         text.textContentType = nil
-//        text.clearButtonMode = .whileEditing
         
         return text
     }()
@@ -66,7 +64,7 @@ class DataAddItemVM: UIView {
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()

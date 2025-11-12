@@ -32,10 +32,7 @@ class SportHistoryVC: WHBaseViewVC {
     override func viewDidDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self)
     }
-//    override func viewWillDisappear(_ animated: Bool) {
-//        NotificationCenter.default.removeObserver(self)
-//    }
-//    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -46,7 +43,7 @@ class SportHistoryVC: WHBaseViewVC {
     lazy var timeButton : GJVerButton = {
         let btn = GJVerButton.init(frame: CGRect.init(x: kFitWidth(80), y: statusBarHeight, width: kFitWidth(215), height: kFitWidth(44)))
         
-        btn.setTitleColor(WHColor_16(colorStr: "222222"), for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         
@@ -75,7 +72,7 @@ class SportHistoryVC: WHBaseViewVC {
         let table = UITableView.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight()), style: .plain)
         table.delegate = self
         table.dataSource = self
-        table.backgroundColor = .white
+        table.backgroundColor = .COLOR_BG_WHITE
         table.register(SportHistoryTableViewCell.classForCoder(), forCellReuseIdentifier: "SportHistoryTableViewCell")
         table.separatorStyle = .none
         
@@ -152,7 +149,7 @@ extension SportHistoryVC{
 
 extension SportHistoryVC{
     func initUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .COLOR_BG_WHITE
         view.addSubview(backArrowButton)
         view.addSubview(timeButton)
         view.addSubview(tableView)

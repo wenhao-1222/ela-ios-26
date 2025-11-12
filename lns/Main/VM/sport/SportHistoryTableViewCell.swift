@@ -39,7 +39,7 @@ class SportHistoryTableViewCell: FeedBackTableViewCell {
     lazy var caloriesLabel: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 14, weight: .bold)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.adjustsFontSizeToFitWidth = true
         return lab
     }()
@@ -52,19 +52,19 @@ class SportHistoryTableViewCell: FeedBackTableViewCell {
     lazy var timeLabel: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 14, weight: .bold)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         return lab
     }()
     lazy var nameLabel: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 12, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         return lab
     }()
     lazy var sourceLabel: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 12, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping
         return lab

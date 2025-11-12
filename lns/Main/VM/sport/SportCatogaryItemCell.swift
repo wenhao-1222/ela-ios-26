@@ -33,7 +33,7 @@ class SportCatogaryItemCell: UITableViewCell {
     }()
     lazy var nameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .bold)
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping
@@ -43,13 +43,13 @@ class SportCatogaryItemCell: UITableViewCell {
     }()
     lazy var metsLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         return lab
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        vi.backgroundColor = .COLOR_BG_BLACK_06//.WIDGET_COLOR_GRAY_BLACK_06
         return vi
     }()
 }

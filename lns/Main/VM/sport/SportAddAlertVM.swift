@@ -40,7 +40,7 @@ class SportAddAlertVM: UIView {
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(10))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
         vi.addGestureRecognizer(tap)
@@ -60,7 +60,7 @@ class SportAddAlertVM: UIView {
     lazy var titleLab: UILabel = {
         let lab = UILabel()
         lab.text = "添加运动"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         return lab
     }()
@@ -74,25 +74,25 @@ class SportAddAlertVM: UIView {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
         return vi
     }()
     lazy var nameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .bold)
         lab.adjustsFontSizeToFitWidth = true
         return lab
     }()
     lazy var metsLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         return lab
     }()
     lazy var caloriesLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .bold)
         return lab
     }()

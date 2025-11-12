@@ -65,7 +65,7 @@ class GoalSetCircleTemplateAlertVM: UIView {
     }()
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.text = "碳循环“高-中-低”"
         return lab

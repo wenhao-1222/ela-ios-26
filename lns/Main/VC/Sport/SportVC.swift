@@ -33,12 +33,6 @@ class SportVC: WHBaseViewVC {
         
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
-//    override func viewWillDisappear(_ animated: Bool) {
-//        IQKeyboardManager.shared.enable = true
-//        
-//        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
-//    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -53,7 +47,8 @@ class SportVC: WHBaseViewVC {
     lazy var timeButton : GJVerButton = {
         let btn = GJVerButton.init(frame: CGRect.init(x: kFitWidth(80), y: statusBarHeight, width: kFitWidth(215), height: kFitWidth(44)))
         
-        btn.setTitleColor(WHColor_16(colorStr: "222222"), for: .normal)
+//        btn.setTitleColor(WHColor_16(colorStr: "222222"), for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
 //        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .bold)
         btn.enablePressEffect()
@@ -222,7 +217,7 @@ extension SportVC{
 
 extension SportVC{
     func initUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .COLOR_BG_WHITE
         view.addSubview(backArrowButton)
         view.addSubview(timeButton)
         view.addSubview(addButton)

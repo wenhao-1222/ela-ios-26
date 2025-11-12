@@ -25,6 +25,7 @@ class SportHistorySynSettingVM: UIView {
     lazy var detailLabel: UILabel = {
         let lab = UILabel()
         lab.text = "运动消耗是否计入营养目标？"
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
         

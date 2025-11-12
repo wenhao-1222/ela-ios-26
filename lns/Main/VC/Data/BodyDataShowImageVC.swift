@@ -41,8 +41,9 @@ class BodyDataShowImageVC: WHBaseViewVC {
 
 extension BodyDataShowImageVC{
     func initUI() {
-        initNavi(titleStr: "",naviBgColor: WHColorWithAlpha(colorStr: "000000", alpha: 0.45),isWhite: true)
+        initNavi(titleStr: "",naviBgColor: .COLOR_BG_BLACK_045,isWhite: true)
         
+        backArrowButton.backImgView.setImgLocal(imgName: "back_arrow_white_icon_light")
         view.backgroundColor = .black
         
         view.addSubview(collectView)

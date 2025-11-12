@@ -11,14 +11,6 @@ import UIKit
 class DataDetailTypeFilterAlertVM: UIView {
     
     var choiceBlock:((NSDictionary)->())?
-//    let dataArray = [["type":DATA_TYPE.weight,"name":"体重"],
-//                     ["type":DATA_TYPE.waistline,"name":"腰围"],
-//                     ["type":DATA_TYPE.hips,"name":"臀围"],
-//                     ["type":DATA_TYPE.arm,"name":"臂围"],
-//                     ["type":DATA_TYPE.shoulder,"name":"肩宽"],
-//                     ["type":DATA_TYPE.bust,"name":"胸围"],
-//                     ["type":DATA_TYPE.thigh,"name":"大腿围"],
-//                     ["type":DATA_TYPE.calf,"name":"小腿围"]]
     var dataArrayForShow = NSMutableArray(array: [["type":DATA_TYPE.weight,"name":"体重"],
                                                   ["type":DATA_TYPE.waistline,"name":"腰围"],
                                                   ["type":DATA_TYPE.hips,"name":"臀围"],
@@ -47,7 +39,7 @@ class DataDetailTypeFilterAlertVM: UIView {
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+        vi.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         return vi
@@ -72,7 +64,7 @@ extension DataDetailTypeFilterAlertVM{
     func setSelectStatus(daysIndex:Int) {
         for vm in vmDataArray{
             vm.selectImgView.isHidden = true
-            vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+            vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
         let vm = vmDataArray[daysIndex]
         vm.selectImgView.isHidden = false
@@ -90,7 +82,7 @@ extension DataDetailTypeFilterAlertVM{
     func setSelectIndex(index:Int) {
         for vm in vmDataArray{
             vm.selectImgView.isHidden = true
-            vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+            vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
         self.selectDataType = .waistline
         let vm = vmDataArray[index]
@@ -98,7 +90,6 @@ extension DataDetailTypeFilterAlertVM{
         vm.titleLabel.textColor = .THEME
     }
 }
-
 
 extension DataDetailTypeFilterAlertVM{
     func initUI()  {
@@ -121,7 +112,7 @@ extension DataDetailTypeFilterAlertVM{
                 vm.titleLabel.textColor = .THEME
             }else{
                 vm.selectImgView.isHidden = true
-                vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+                vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
             }
             whiteView.addSubview(vm)
 //            vm.tag = 1050 + i

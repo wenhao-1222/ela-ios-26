@@ -28,7 +28,7 @@ class SportAddAlertItemVM: UIView {
         let text = UITextField()
         text.placeholder = "0.0"
         text.keyboardType = .decimalPad
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 24, weight: .bold)
         text.textAlignment = .right
         text.delegate = self
@@ -38,13 +38,13 @@ class SportAddAlertItemVM: UIView {
     }()
     lazy var nameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .bold)
         return lab
     }()
     lazy var unitLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .bold)
         return lab
     }()

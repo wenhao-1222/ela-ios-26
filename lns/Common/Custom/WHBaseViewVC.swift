@@ -102,7 +102,7 @@ class WHBaseViewVC: ViewController {
     
     func initNavigationView(){
        self.view.addSubview(navigationView)
-        navigationView.backgroundColor = UIColor.white
+        navigationView.backgroundColor = UIColor.COLOR_BG_WHITE
        navigationView.snp.makeConstraints { (frame) in
            frame.width.equalTo(SCREEN_WIDHT)
            frame.height.equalTo(getNavigationBarHeight())
@@ -585,7 +585,7 @@ extension WHBaseViewVC{
 }
 
 extension WHBaseViewVC{
-    func initNavi(titleStr:String,naviBgColor:UIColor? = .white,isWhite:Bool? = false){
+    func initNavi(titleStr:String,naviBgColor:UIColor? = .COLOR_BG_WHITE,isWhite:Bool? = false){
         let naviView = UIView()
         view.addSubview(naviView)
         naviView.backgroundColor = naviBgColor
@@ -649,7 +649,7 @@ extension WHBaseViewVC{
             backArrowImg.image = UIImage.init(named: "back_arrow_white_icon")
             titleLabel.textColor = .COLOR_TEXT_WHITE
             backArrowButton.backImgView.setImgLocal(imgName: "back_arrow_white_icon")
-            naviTitleLabel.textColor = .white
+            naviTitleLabel.textColor = .COLOR_TEXT_WHITE
         }else{
             backArrowImg.image = UIImage.init(named: "back_arrow")
             titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "222222")

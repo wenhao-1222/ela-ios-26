@@ -40,11 +40,6 @@ class DataAddVC : WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let cTime = isUpdate ? msgDict.stringValueForKey(key: "ctime") : self.dateFilterAlertVm.dateStringYear
-//        if !self.isUpdate && !BodyDataSQLiteManager.getInstance().queryTable(sDate: Date().todayDate){
-//            BodyDataSQLiteManager.getInstance().insertDataUseSql(cTime: Date().todayDate, imgurl: "", hipsData: "", weightData: "", waistlineData: "", armcircumferenceData: "", shoulderData: "", bustData: "", thighData: "", calfData: "", images: "", upload: false)
-//        }
-        
         initUI()
         if !isUpdate {
             loadDataForSelectedDate()
@@ -82,20 +77,9 @@ class DataAddVC : WHBaseViewVC {
         }
         return vm
     }()
-//    lazy var imgVm : DataAddItemImageVM = {
-//        let vm = DataAddItemImageVM.init(frame: CGRect.init(x: 0, y: self.topFilterVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
-//        vm.leftTitleLabel.text = "照片"
-//        vm.imgTapBlock = {()in
-//            self.takePickture()
-//        }
-//        vm.clearImgBlock = {()in
-//            self.imgUrlString = ""
-//        }
-//        return vm
-//    }()
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -209,7 +193,7 @@ class DataAddVC : WHBaseViewVC {
     }()
     lazy var saveBottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getBottomSafeAreaHeight()-kFitWidth(102), width: SCREEN_WIDHT, height: kFitWidth(96)))
-        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -234,7 +218,7 @@ class DataAddVC : WHBaseViewVC {
     lazy var tipsLabel: UILabel = {
         let lab = UILabel()
         lab.text = "- 以上数据均可选填 -"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         return lab
     }()
@@ -408,7 +392,7 @@ extension DataAddVC{
     func initUI() {
         initNavi(titleStr: "编辑数据")
 //        initNavi(titleStr: "添加数据")
-        view.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         self.navigationView.addSubview(customButton)
         
         view.addSubview(topFilterVm)
