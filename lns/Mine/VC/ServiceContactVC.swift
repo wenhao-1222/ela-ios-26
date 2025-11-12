@@ -473,12 +473,16 @@ extension ServiceContactVC{
             
         WHNetworkUtil.shareManager().POST(urlString: URL_Uer_sugestion, parameters: param as [String:AnyObject]) { responseObject in
             DLLog(message: "\(responseObject)")
-            let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
-                        "ctime":"\(Date().currentSeconds)",
-                        "images":"\(self.getJSONStringFromArray(array: [imgUrlString]))"]
-            self.dataSourceArray.add(dict)
-            self.dealDataSource()
-            
+            let code = responseObject["code"]as? Int ?? -1
+            if (code == 200) {
+                let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
+                            "ctime":"\(Date().currentSeconds)",
+                            "images":"\(self.getJSONStringFromArray(array: [imgUrlString]))"]
+                self.dataSourceArray.add(dict)
+                self.dealDataSource()
+            }else{
+                MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试")
+            }
         }
     }
     func sendSuggestionTextRequest() {
@@ -497,14 +501,19 @@ extension ServiceContactVC{
         }
         WHNetworkUtil.shareManager().POST(urlString: URL_Uer_sugestion, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
             DLLog(message: "\(responseObject)")
-            let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
-                        "ctime":"\(Date().currentSeconds)",
-                        "suggestion":"\(self.msgInputView.textView.text.disable_emoji(text: self.msgInputView.textView.text! as NSString))"]
-            self.dataSourceArray.add(dict)
-            self.dealDataSource()
-            
-            self.msgInputView.textView.text = ""
-            self.msgInputView.resetInputHeightToInitial()    // ← 复位高度
+            let code = responseObject["code"]as? Int ?? -1
+            if (code == 200) {
+                let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
+                            "ctime":"\(Date().currentSeconds)",
+                            "suggestion":"\(self.msgInputView.textView.text.disable_emoji(text: self.msgInputView.textView.text! as NSString))"]
+                self.dataSourceArray.add(dict)
+                self.dealDataSource()
+                
+                self.msgInputView.textView.text = ""
+                self.msgInputView.resetInputHeightToInitial()    // ← 复位高度
+            }else{
+                MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试",offset:SCREEN_HEIGHT*0.6)
+            }
         }
     }
     func sendOssStsRequest() {
