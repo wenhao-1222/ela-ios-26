@@ -17,7 +17,7 @@ class NaturalStatNaviTimeVM: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
 //        self.isHidden = true
         
@@ -25,7 +25,7 @@ class NaturalStatNaviTimeVM: UIView {
     }
     lazy var timeLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         

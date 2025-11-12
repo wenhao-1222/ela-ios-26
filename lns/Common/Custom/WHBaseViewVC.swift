@@ -82,29 +82,15 @@ class WHBaseViewVC: ViewController {
          }
         
     }
-//    override var shouldAutorotate: Bool{
-//        return false
-//    }
-//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-//        return .portrait
-//    }
     lazy var scrollViewBase : UIScrollView = {
         let vi = UIScrollView()
         vi.frame = CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight())
-        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "FAFAFA")
         vi.showsVerticalScrollIndicator = false
         vi.contentInsetAdjustmentBehavior = .never
         
         return vi
     }()
-//    lazy var backArrowButton : GJVerButton = {
-//        let btn = GJVerButton()
-//        btn.setImage(UIImage(named: "back_arrow"), for: .normal)
-//        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
-//        btn.setImage(UIImage(named: "back_arrow_highlight"), for: .highlighted)
-//        btn.addTarget(self, action: #selector(backTapAction), for: .touchUpInside)
-//        return btn
-//    }()
     
     lazy var backArrowButton: NaviBackButton = {
         let btn = NaviBackButton.init(frame: CGRect.init(x: 0, y: statusBarHeight, width: kFitWidth(44), height: kFitWidth(44)))

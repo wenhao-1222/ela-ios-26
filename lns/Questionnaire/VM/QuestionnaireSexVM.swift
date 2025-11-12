@@ -81,34 +81,6 @@ class QuestionnaireSexVM: UIView {
         
         return lab
     }()
-    
-//    lazy var sexManButton : GJVerButton = {
-//        let btn = GJVerButton()
-//        btn.setTitle("男", for: .normal)
-//        btn.setImage(UIImage.init(named: "sex_icon_man_normal"), for: .normal)
-//        btn.setTitleColor(.white, for: .normal)
-//        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-//        btn.back
-//        btn.backgroundColor = .COLOR_GRAY_BLACK_85
-//        btn.layer.cornerRadius = kFitWidth(8)
-//        btn.clipsToBounds = true
-//        btn.addTarget(self, action: #selector(femanTapAction), for: .touchUpInside)
-//        
-//        return btn
-//    }()
-//    lazy var sexFeManButton : GJVerButton = {
-//        let btn = GJVerButton()
-//        btn.setTitle("女", for: .normal)
-//        btn.setImage(UIImage.init(named: "sex_icon_feman_normal"), for: .normal)
-//        btn.setTitleColor(.white, for: .normal)
-//        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-//        btn.backgroundColor = .COLOR_GRAY_BLACK_85
-//        btn.layer.cornerRadius = kFitWidth(8)
-//        btn.clipsToBounds = true
-//        btn.addTarget(self, action: #selector(femanTapAction), for: .touchUpInside)
-//        
-//        return btn
-//    }()
 }
 
 extension QuestionnaireSexVM{
@@ -140,7 +112,7 @@ extension QuestionnaireSexVM{
         sexManIcon.setImgLocal(imgName: "sex_icon_man_normal")//
         sexManLabel.textColor = WHColor_16(colorStr: "595959")
         
-        sexFeManButton.backgroundColor = WHColor_16(colorStr: "FE5A7D")
+        sexFeManButton.backgroundColor = UIColor(named: "color_sex_femal")!//WHColor_16(colorStr: "FE5A7D")
         sexFeManIcon.setImgLocal(imgName: "sex_icon_feman")//sex_icon_feman_normal
         sexFeManLabel.textColor = .COLOR_TEXT_WHITE
         

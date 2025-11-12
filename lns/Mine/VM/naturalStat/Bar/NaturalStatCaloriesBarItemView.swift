@@ -34,7 +34,7 @@ class NaturalStatCaloriesBarItemView: UIView {
     }()
     lazy var numberLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 10, weight: .medium)
         lab.textAlignment = .center
         lab.isHidden = true

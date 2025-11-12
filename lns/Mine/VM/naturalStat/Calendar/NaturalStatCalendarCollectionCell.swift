@@ -47,6 +47,7 @@ class NaturalStatCalendarCollectionCell: UICollectionViewCell {
         scro.backgroundColor = .clear
         scro.layer.cornerRadius = kFitWidth(12)
 //        scro.bounces = false
+//        scro.backgroundColor = .COLOR_BG_WHITE
         scro.delegate = self
         
         return scro
@@ -138,8 +139,6 @@ extension NaturalStatCalendarCollectionCell{
         }
         vmDataArray.removeAll()
         
-//
-        
         for i in 0..<self.dataSourceArray.count {
             let dayDict = self.dataSourceArray[i] as? NSDictionary ?? [:]
             let weekDay = Date().getWeekdayIndex(from: dayDict.stringValueForKey(key: "sdate"))
@@ -175,39 +174,6 @@ extension NaturalStatCalendarCollectionCell{
             self.scrollView.addSubview(vmLeft)
         }
             
-//            serialQueue.async {
-//                DispatchQueue.main.sync(execute: {
-//                    let vm = NaturalStatCalendarCollectionCellItemVM.init(frame: CGRect.init(x: originX, y: originY, width: self.itemVmWidth, height: self.itemVmHeight))
-//                    vm.updateUI(dict: dayDict,yearMonth: self.yearMonthString)
-//                    self.scrollView.addSubview(vm)
-//                    vm.tapBlock = {()in
-//                        self.selectVm.changeSelectStatus(isSelect: false)
-//                        if self.tapIndex == i {
-//                            self.markView.isHidden = true
-//                            self.tapIndex = -1
-//                        }else{
-//                            self.selectVm = vm
-//                            self.selectVm.changeSelectStatus(isSelect: true)
-//                            self.tapIndex = i
-//                            self.itemTapAction(originX: vm.frame.minX, originY: vm.frame.minY, dict: dayDict)
-//                        }
-//                    }
-//                    
-//                    if i % 7 == 0 {
-//                        if i > 0 {
-//                            let vi = UIView.init(frame: CGRect.init(x: 0, y: originY-kFitWidth(1), width: SCREEN_WIDHT, height: kFitWidth(1)))
-//                            vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
-////                            self.scrollView.insertSubview(vi, aboveSubview: vm)
-//                            self.scrollView.addSubview(vi)
-//                            DispatchQueue.main.asyncAfter(deadline: .now()+0.25, execute: {
-//                                self.scrollView.bringSubviewToFront(vi)
-//                            })
-//                        }
-//                        let vm = NaturalStatCalendarCollectionCellItemLeftVM.init(frame: CGRect.init(x: 0, y: originY, width: 0, height: 0))
-//                        self.scrollView.addSubview(vm)
-//                    }
-//                })
-//            }
         }
         
         if Date().currentMonth == yearMonthString{

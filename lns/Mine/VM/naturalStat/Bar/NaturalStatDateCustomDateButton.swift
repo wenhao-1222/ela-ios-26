@@ -17,7 +17,7 @@ class NaturalStatDateCustomDateButton : UIButton{
         super.init(frame: frame)
         
         self.backgroundColor = .clear
-         self.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+         self.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
          self.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
          self.clipsToBounds = true
          
@@ -61,7 +61,7 @@ class NaturalStatDateCustomDateButton : UIButton{
     }()
     lazy var topTipsLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .white
+        lab.textColor = .COLOR_TEXT_WHITE
         lab.font = .systemFont(ofSize: 8, weight: .medium)
         lab.isHidden = true
         lab.isUserInteractionEnabled = false
@@ -80,7 +80,7 @@ extension NaturalStatDateCustomDateButton{
             bgView.isHidden = false
             lightBgView.isHidden = false
             topTipsLabel.isHidden = false
-            self.setTitleColor(.white, for: .normal)
+            self.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
             if isStartTime == true{
                 lightBgView.addClipCorner(corners: [.topLeft,.bottomLeft], radius: kFitWidth(8))
                 self.addClipCorner(corners: [.topLeft,.bottomLeft], radius: kFitWidth(8))
@@ -94,7 +94,7 @@ extension NaturalStatDateCustomDateButton{
             self.backgroundColor = .clear
             bgView.isHidden = true
             lightBgView.isHidden = true
-            self.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+            self.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         }
     }
     func setBetweenStatus(){

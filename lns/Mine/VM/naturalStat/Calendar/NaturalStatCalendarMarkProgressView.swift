@@ -22,21 +22,21 @@ class NaturalStatCalendarMarkProgressView: UIView {
     }
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         
         return lab
     }()
     lazy var numberLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .bold)
         
         return lab
     }()
     lazy var totalLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         
         return lab
@@ -44,7 +44,7 @@ class NaturalStatCalendarMarkProgressView: UIView {
     
     lazy var progressBottomView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         vi.layer.cornerRadius = kFitWidth(3)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
@@ -63,7 +63,7 @@ class NaturalStatCalendarMarkProgressView: UIView {
         let img = UIImageView()
         img.layer.cornerRadius = kFitWidth(3)
         img.clipsToBounds = true
-        img.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        img.backgroundColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         img.setImgLocal(imgName: "main_nutrient_span_img_2")
         img.contentMode = .scaleToFill
         img.isUserInteractionEnabled = true

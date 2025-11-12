@@ -56,7 +56,7 @@ class NaturalStatDateCustomAlertVM: UIView {
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: whiteViewOrigin , width: SCREEN_WIDHT, height: SCREEN_HEIGHT - whiteViewOrigin - WHUtils().getBottomSafeAreaHeight()-kFitWidth(56)))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+        vi.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
@@ -69,7 +69,7 @@ class NaturalStatDateCustomAlertVM: UIView {
     lazy var bottomWhiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: self.whiteView.frame.minY + kFitWidth(50), width: SCREEN_WIDHT, height: self.whiteView.frame.height-kFitWidth(50)))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+        vi.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         return vi
@@ -326,7 +326,7 @@ extension NaturalStatDateCustomAlertVM:UITableViewDelegate,UITableViewDataSource
             make.left.equalTo(kFitWidth(16))
             make.top.equalTo(kFitWidth(24))
         }
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         let dict = dataSourceArray[section]as? NSDictionary ?? [:]
         lab.text = dict.stringValueForKey(key: "month")

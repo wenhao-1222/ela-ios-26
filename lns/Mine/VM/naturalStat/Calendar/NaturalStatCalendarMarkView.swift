@@ -26,13 +26,13 @@ class NaturalStatCalendarMarkView: UIView {
     }
     lazy var arcView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(220), y: kFitWidth(32), width: kFitWidth(16), height: kFitWidth(16)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(1)
         return vi
     }()
     lazy var coverGrayView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: kFitWidth(52), height: kFitWidth(44)))
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -45,7 +45,7 @@ class NaturalStatCalendarMarkView: UIView {
     }()
     lazy var bgWhiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: kFitWidth(0), width: kFitWidth(280), height: kFitWidth(122)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(8)
         
         return vi
@@ -62,7 +62,7 @@ class NaturalStatCalendarMarkView: UIView {
     }()
     lazy var currentNumberLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         lab.textAlignment = .center
         lab.adjustsFontSizeToFitWidth = true
@@ -71,7 +71,7 @@ class NaturalStatCalendarMarkView: UIView {
     }()
     lazy var totalNumberLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.textAlignment = .center
         lab.adjustsFontSizeToFitWidth = true

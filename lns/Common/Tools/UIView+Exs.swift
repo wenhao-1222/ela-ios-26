@@ -32,7 +32,8 @@ extension UIView {
         UIGraphicsEndImageContext()
         return image!
     }
-    func addShadow(color: UIColor = .COLOR_BG_BLACK, opacity: Float = 0.2, radius: CGFloat = 10, offset: CGSize = CGSize(width: 0, height: 5)) {
+//    func addShadow(color: UIColor = .COLOR_BG_BLACK, opacity: Float = 0.2, radius: CGFloat = 10, offset: CGSize = CGSize(width: 0, height: 5)) {
+    func addShadow(color: UIColor = .black, opacity: Float = 0.2, radius: CGFloat = 10, offset: CGSize = CGSize(width: 0, height: 5)) {
         layer.shadowColor = color.cgColor
         layer.shadowOpacity = opacity
         layer.shadowRadius = radius

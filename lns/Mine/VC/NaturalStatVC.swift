@@ -42,21 +42,11 @@ class NaturalStatVC: WHBaseViewVC {
             self.naviView.changeStatType(type: type)
             self.statCalendarVm.monthPickerView.hiddenSelf()
             if type == "right"{
-//                UIView.animate(withDuration: 0.3) {
-//                    let statBarVmCenter = self.statBarVm.center
-//                    self.statBarVm.center = CGPoint.init(x: -SCREEN_WIDHT*0.5, y: statBarVmCenter.y)
-//                    self.statCalendarVm.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: statBarVmCenter.y)
-//                }
                 self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: true)
                 self.navigationController?.fd_interactivePopDisabled = true
                 self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
                 self.naviView.layer.shadowOpacity = 0
             }else{
-//                UIView.animate(withDuration: 0.3) {
-//                    let statBarVmCenter = self.statBarVm.center
-//                    self.statBarVm.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: statBarVmCenter.y)
-//                    self.statCalendarVm.center = CGPoint.init(x: SCREEN_WIDHT*1.5, y: statBarVmCenter.y)
-//                }
                 self.scrollViewBase.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
                 self.navigationController?.fd_interactivePopDisabled = false
                 self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true

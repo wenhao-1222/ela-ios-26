@@ -24,7 +24,7 @@ class NaturalStatCaloriesBarChartXAxisView: UIView {
     }
     lazy var xAxisLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .center
         lab.adjustsFontSizeToFitWidth = true

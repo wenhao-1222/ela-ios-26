@@ -110,7 +110,7 @@ class QuestionnairePlanFoodsTypeItemVM: UIView {
     var tapBlock:(()->())?
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: kFitWidth(200), height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))
@@ -123,14 +123,14 @@ class QuestionnairePlanFoodsTypeItemVM: UIView {
     }
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()

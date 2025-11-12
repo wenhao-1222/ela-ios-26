@@ -23,7 +23,7 @@ class NaturalStatNaviVM: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         initUI()
     }
@@ -39,8 +39,8 @@ class NaturalStatNaviVM: UIView {
     lazy var leftTitleButton: UIButton = {
         let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5-kFitWidth(60), y: selfHeight-kFitWidth(44), width: kFitWidth(60), height: kFitWidth(44)))
         btn.setTitle("统计", for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.45), for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.85), for: .selected)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .selected)
         btn.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
         btn.isSelected = true
         
@@ -51,8 +51,10 @@ class NaturalStatNaviVM: UIView {
     lazy var rightTitleButton: UIButton = {
         let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5, y: selfHeight-kFitWidth(44), width: kFitWidth(60), height: kFitWidth(44)))
         btn.setTitle("日历", for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.45), for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.85), for: .selected)
+//        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.45), for: .normal)
+//        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.85), for: .selected)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .selected)
         btn.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
         
         btn.addTarget(self, action: #selector(rightTapAction), for: .touchUpInside)
@@ -69,7 +71,7 @@ class NaturalStatNaviVM: UIView {
     lazy var bodyTypeButton : GJVerButton = {
         let btn = GJVerButton.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(88), y: selfHeight-kFitWidth(44), width: kFitWidth(88), height: kFitWidth(44)))
         btn.setTitle("近一周", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_TEXT_85_LIGHT, for: .highlighted)
         btn.setImage(UIImage(named: "create_plan_arrow_down"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .bold)
@@ -83,7 +85,7 @@ class NaturalStatNaviVM: UIView {
         let btn = GJVerButton.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(98), y: selfHeight-kFitWidth(44), width: kFitWidth(98), height: kFitWidth(44)))
         let yearMonth = Date().currenYearMonthM
         btn.setTitle("\(yearMonth[0]as? String ?? "")年\(yearMonth[1]as? String ?? "")月", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_TEXT_85_LIGHT, for: .highlighted)
         btn.setImage(UIImage(named: "create_plan_arrow_down"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .bold)
