@@ -478,7 +478,6 @@ extension ServiceContactVC{
                         "images":"\(self.getJSONStringFromArray(array: [imgUrlString]))"]
             self.dataSourceArray.add(dict)
             self.dealDataSource()
-            
         }
     }
     func sendSuggestionTextRequest() {

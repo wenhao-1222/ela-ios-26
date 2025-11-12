@@ -525,7 +525,7 @@ extension SurveyVC{
 }
 extension SurveyVC{
     func initUI(){
-        view.backgroundColor = .COLOR_GRAY_FA
+        view.backgroundColor = .COLOR_BG_F5
         
         view.clipsToBounds = true
         view.addSubview(progressVm)
@@ -611,11 +611,6 @@ extension SurveyVC{
                     UserInfoModel.shared.birthDay = "\(QuestinonaireMsgModel.shared.birthDay)-01-01"
                     UserInfoModel.shared.gender = "\(QuestinonaireMsgModel.shared.sex)"
                     self.sendSaveMaterialRequest()
-//                    if BodyDataSQLiteManager.getInstance().queryTable(sDate: Date().nextDay(days: 0)){
-//                        BodyDataSQLiteManager.getInstance().updateSingleData(columnName: "weight", data: "\(QuestinonaireMsgModel.shared.weight)", cTime: Date().nextDay(days: 0))
-//                    }else{
-//                        BodyDataSQLiteManager.getInstance().updateData(cTime: Date().nextDay(days: 0), imgurl: "", hipsData: "", weightData: "\(QuestinonaireMsgModel.shared.weight)", waistlineData: "", shoulderData: "", bustData: "", thighData: "", calfData: "", bfpData: "", images: "[[],[],[]]", armcircumferenceData: "")
-//                    }
                     
                     self.navigationController?.popToRootViewController(animated: true)
                     if UserInfoModel.shared.isFromSetting == true{
