@@ -21,7 +21,7 @@ class LoginPhoneButton: UIView {
         self.isUserInteractionEnabled = true
         self.layer.cornerRadius = kFitWidth(8)
         self.clipsToBounds = true
-        self.layer.borderColor = UIColor.black.cgColor
+        self.layer.borderColor = UIColor.COLOR_BG_BLACK.cgColor
         self.layer.borderWidth = kFitWidth(1)
         
         initUI()
@@ -40,13 +40,13 @@ class LoginPhoneButton: UIView {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 16, weight: .semibold)
         lab.text = "+86"
-        lab.textColor = WHColor_16(colorStr: "262626")
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "262626")
 //        lab.adjustsFontSizeToFitWidth = true
         return lab
     }()
     lazy var downArrowImg : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "login_arrow_down_icon")
+        img.setImgLocal(imgName: "create_plan_arrow_down")
 //        img.isHidden = true
         
         return img

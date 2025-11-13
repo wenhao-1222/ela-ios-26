@@ -18,7 +18,7 @@ class FoodsCreateCaloriVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -33,7 +33,7 @@ class FoodsCreateCaloriVM: UIView {
         lab.delegate = self
         lab.keyboardType = .numberPad
         lab.font = .systemFont(ofSize: 20, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.textContentType = nil
 //        lab.isEnabled = false
         
@@ -53,16 +53,9 @@ class FoodsCreateCaloriVM: UIView {
         let lab = UILabel()
         lab.text = "热量（千卡）"
         lab.font = .systemFont(ofSize: 12, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         return lab
     }()
-//    lazy var kjLabel: UILabel = {
-//        let lab = UILabel()
-//        lab.font = .systemFont(ofSize: 16, weight: .medium)
-//        lab.textColor = .COLOR_GRAY_BLACK_45
-//        
-//        return lab
-//    }()
     lazy var changeUnitButton: UIButton = {
 //        let btn = GJVerButton.init(frame: CGRect.init(x: 0, y: 0, width: kFitWidth(120), height: selfHeight-WHUtils().getBottomSafeAreaHeight()))
         let btn = UIButton()
@@ -85,7 +78,7 @@ class FoodsCreateCaloriVM: UIView {
     lazy var kjUnitLabel: UILabel = {
         let lab = UILabel()
         lab.text = "千焦"
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         return lab
     }()

@@ -27,6 +27,18 @@ class GoalSetTypeVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.unitGButton.setBackgroundImage(createImageWithColor(color: .COLOR_BG_WHITE), for: .selected)
+               self.unitPerButton.setBackgroundImage(createImageWithColor(color: .COLOR_BG_WHITE), for: .selected)
+           }
+       }
+   }
     lazy var unitGButton : FeedBackTapButton = {
         let btn = FeedBackTapButton()
         btn.generatorWeight = 0.9

@@ -39,6 +39,7 @@ extension UIColor {
     public static let COLOR_ALERT_BG_BLACK              = UIColor(named: "color_alert_bg_black")!
     
     public static let COLOR_BG_F5                       = UIColor(named: "color_bg_f5")!
+    public static let COLOR_BG_F5_SEGMENT               = UIColor(named: "color_bg_f5_segment")!
     public static let COLOR_BG_F2                       = UIColor(named: "color_bg_f2")!
     public static let COLOR_BG_EF                       = UIColor(named: "color_bg_ef")!
     public static let COLOR_BG_FA                       = UIColor(named: "color_bg_fa")!
@@ -55,6 +56,8 @@ extension UIColor {
     public static let COLOR_TEXT_MAIN_NATURAL_OVER      = UIColor(named: "color_text_main_natural_over")
     public static let COLOR_TEXT_MAIN_CALORIES          = UIColor(named: "color_text_main_calories")!
     
+    
+    public static let COLOR_LINE_F0                       = UIColor(named: "color_line_f0")!
     
 }
 

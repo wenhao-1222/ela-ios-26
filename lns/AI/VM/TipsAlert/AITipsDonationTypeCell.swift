@@ -22,7 +22,7 @@ class AITipsDonationTypeCell: UITableViewCell {
     lazy var titleLab: UILabel = {
         let lab = UILabel()
         lab.text = "捐款方式：微信公众号搜索“Elavatine”-点击右下角“捐赠”"
-        lab.textColor = .black
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         return lab
     }()

@@ -37,11 +37,10 @@ class GoalCircleTagsItemVM: UIView {
     }
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_BG_F5_SEGMENT
         vi.layer.cornerRadius = kFitWidth(14)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        
         
         return vi
     }()
@@ -66,7 +65,7 @@ extension GoalCircleTagsItemVM{
             bgView.backgroundColor = .THEME
             contentLabel.textColor = .COLOR_TEXT_WHITE
         }else{
-            bgView.backgroundColor = .COLOR_BG_F5
+            bgView.backgroundColor = .COLOR_BG_F5_SEGMENT
             contentLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
         }
     }
@@ -97,17 +96,6 @@ extension GoalCircleTagsItemVM{
     }
 }
 extension GoalCircleTagsItemVM{
-//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-////        bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
-//        TouchGenerator.shared.touchGenerator()
-//    }
-//    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        bgView.backgroundColor = .white
-//    }
-//    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        bgView.backgroundColor = .white
-//    }
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         let scale: CGFloat = 0.98

@@ -14,7 +14,7 @@ class FoodsMergeListNameVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_GRAY_F7F8FA
+        self.backgroundColor = .COLOR_BG_FA//.COLOR_GRAY_F7F8FA
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -24,7 +24,7 @@ class FoodsMergeListNameVM: UIView {
     }
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         
         return vi
     }()
@@ -32,16 +32,16 @@ class FoodsMergeListNameVM: UIView {
         let lab = UILabel()
         lab.text = "食材列表"
         lab.font = .systemFont(ofSize: 14, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         return lab
     }()
     lazy var addFoodsButton: GJVerButtonNoneFeedBack = {
         let btn = GJVerButtonNoneFeedBack()
         btn.setTitle("添加食材", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .regular)
         btn.setImage(UIImage.init(named: "foods_merge_add_icon_white"), for: .normal)
-        btn.layer.borderColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.3).cgColor
+        btn.layer.borderColor = UIColor.COLOR_BG_BLACK_045.cgColor
         btn.layer.borderWidth = kFitWidth(1)
         btn.layer.cornerRadius = kFitWidth(12)
         btn.clipsToBounds = true

@@ -281,7 +281,7 @@ extension AIResultVC{
 //        view.addSubview(backArrowButton)
         initNavi(titleStr: "")
         self.navigationView.backgroundColor = .clear
-        
+        self.view.backgroundColor = .COLOR_BG_WHITE
         self.backArrowButton.tapBlock = {()in
 //            self.presentAlertVc(confirmBtn: "返回", message: "", title: "返回后不会保存当前页面信息", cancelBtn: "取消", handler: { action in
                 if let viewControllers = self.navigationController?.viewControllers{

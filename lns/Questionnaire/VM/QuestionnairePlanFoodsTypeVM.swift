@@ -71,15 +71,15 @@ extension QuestionnairePlanFoodsTypeVM{
     }
     func setNormal() {
         itemOneVm.selectImgView.isHidden = true
-        itemOneVm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+        itemOneVm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         itemTwoVm.selectImgView.isHidden = true
-        itemTwoVm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+        itemTwoVm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         itemThreeVm.selectImgView.isHidden = true
-        itemThreeVm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+        itemThreeVm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         itemFourVm.selectImgView.isHidden = true
-        itemFourVm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+        itemFourVm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         itemFiveVm.selectImgView.isHidden = true
-        itemFiveVm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+        itemFiveVm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
     }
     func setSelecteIndex(index:Int) {
         setNormal()

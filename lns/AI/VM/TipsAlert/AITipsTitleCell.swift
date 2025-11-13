@@ -21,7 +21,7 @@ class AITipsTitleCell: UITableViewCell {
     }
     lazy var titleLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = .black
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab

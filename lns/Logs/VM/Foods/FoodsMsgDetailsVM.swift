@@ -44,7 +44,7 @@ class FoodsMsgDetailsVM: UIView {
     }
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: 0, width: whiteWidth, height: kFitWidth(193)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.isUserInteractionEnabled = true
         
@@ -52,7 +52,7 @@ class FoodsMsgDetailsVM: UIView {
     }()
     lazy var caloriLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.textAlignment = .center
         lab.text = "0"
         
@@ -60,7 +60,7 @@ class FoodsMsgDetailsVM: UIView {
     }()
     lazy var caloriLab : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.text = "热量"
         lab.textAlignment = .center
@@ -69,7 +69,7 @@ class FoodsMsgDetailsVM: UIView {
     }()
     lazy var carboLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.textAlignment = .center
         lab.text = "0"
         
@@ -77,7 +77,7 @@ class FoodsMsgDetailsVM: UIView {
     }()
     lazy var carboLab : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.text = "碳水"
         lab.textAlignment = .center
@@ -86,7 +86,7 @@ class FoodsMsgDetailsVM: UIView {
     }()
     lazy var proteinLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.textAlignment = .center
         lab.text = "0"
         
@@ -94,7 +94,7 @@ class FoodsMsgDetailsVM: UIView {
     }()
     lazy var proteinLab : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.text = "蛋白质"
         lab.textAlignment = .center
@@ -103,7 +103,7 @@ class FoodsMsgDetailsVM: UIView {
     }()
     lazy var fatLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.textAlignment = .center
         lab.text = "0"
         
@@ -111,7 +111,7 @@ class FoodsMsgDetailsVM: UIView {
     }()
     lazy var fatLab : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.text = "脂肪"
         lab.textAlignment = .center
@@ -121,7 +121,7 @@ class FoodsMsgDetailsVM: UIView {
     lazy var unitLab : UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 14, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.text = "单位"
         
         return lab
@@ -129,7 +129,7 @@ class FoodsMsgDetailsVM: UIView {
     lazy var unitButton: GJVerButton = {
         let btn = GJVerButton()
         btn.setTitle("\(specName)", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.setImage(UIImage(named: "create_plan_arrow_down"), for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
@@ -150,14 +150,14 @@ class FoodsMsgDetailsVM: UIView {
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         
         return vi
     }()
     lazy var weightLab: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 14, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.text = "数量"
         
         return lab
@@ -175,7 +175,7 @@ class FoodsMsgDetailsVM: UIView {
     lazy var textField: NumericTextField = {
         let text = NumericTextField()
         text.keyboardType = .decimalPad
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 16, weight: .medium)
         text.delegate = self
         text.textContentType = nil

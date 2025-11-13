@@ -222,7 +222,7 @@ class PropotionResultVC: WHBaseViewVC {
     }()
     lazy var btnBgView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-kFitWidth(60)-getBottomSafeAreaHeight(), width: SCREEN_WIDHT, height: kFitWidth(60)+getBottomSafeAreaHeight()))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()

@@ -52,14 +52,14 @@ class LoginCodeVerifyVM: UIView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.text = "请输入验证码"
-        lab.textColor = WHColor_16(colorStr: "262626")
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "262626")
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         
         return lab
     }()
     lazy var tipsLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
         return lab
@@ -67,10 +67,10 @@ class LoginCodeVerifyVM: UIView {
     lazy var getCodeBtn : UIButton = {
         let btn = UIButton()
         btn.setTitle("重新发送", for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.25), for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_20, for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.2)), for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
-        btn.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        btn.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         btn.layer.cornerRadius = kFitWidth(12)
         btn.clipsToBounds = true
         

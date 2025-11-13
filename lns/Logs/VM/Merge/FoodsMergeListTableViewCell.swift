@@ -18,7 +18,7 @@ class FoodsMergeListTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .COLOR_GRAY_F7F8FA
+        self.backgroundColor = .COLOR_BG_FA//.COLOR_GRAY_F7F8FA
         self.selectionStyle = .none
         self.layer.cornerRadius = kFitWidth(12)
         self.clipsToBounds = true
@@ -69,7 +69,7 @@ class FoodsMergeListTableViewCell: UITableViewCell {
     }()
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_GRAY_F7F8FA
+        vi.backgroundColor = .COLOR_BG_FA//.COLOR_GRAY_F7F8FA
         vi.isUserInteractionEnabled = true
         // 创建下拉手势识别器
 //        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
@@ -79,14 +79,14 @@ class FoodsMergeListTableViewCell: UITableViewCell {
     }()
     lazy var nameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         
         return lab
     }()
     lazy var weightLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .right
         lab.adjustsFontSizeToFitWidth = true
@@ -95,7 +95,7 @@ class FoodsMergeListTableViewCell: UITableViewCell {
     }()
     lazy var naturalLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.numberOfLines = 2
         lab.adjustsFontSizeToFitWidth = true

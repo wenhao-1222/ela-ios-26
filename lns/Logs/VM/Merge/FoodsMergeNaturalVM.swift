@@ -22,9 +22,25 @@ class FoodsMergeNaturalVM: UIView {
     var naturalShapeLayerBottom = CAShapeLayer()
     var naturalPathBottom = UIBezierPath()
     
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               if previousTraitCollection?.userInterfaceStyle == .dark{
+                   self.naturalShapeLayerBottom.strokeColor = WHColorWithAlpha(colorStr: "1F2329", alpha: 0.3).cgColor
+               }else{
+                   self.naturalShapeLayerBottom.strokeColor = WHColor_16(colorStr: "F7F9FC").cgColor
+               }
+           }
+       }
+   }
+
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -106,24 +122,40 @@ extension FoodsMergeNaturalVM{
         naturalShapeLayerBottom.path = naturalPathBottom.cgPath
     }
     func setCaloriesNumber(calories:String) {
-        let titAttr = NSMutableAttributedString(string: "卡路里\n")
-        titAttr.yy_font = .systemFont(ofSize: 11, weight: .regular)
-        titAttr.yy_color = .COLOR_GRAY_BLACK_45
-        
-        let centerAtter = NSMutableAttributedString(string: "\(calories)\n")
-        centerAtter.yy_font = .systemFont(ofSize: 18, weight: .semibold)
-        centerAtter.yy_color = .COLOR_GRAY_BLACK_85
-        
-        let unitAttr = NSMutableAttributedString(string: "千卡")
-        unitAttr.yy_font = .systemFont(ofSize: 11, weight: .regular)
-        unitAttr.yy_color = .COLOR_GRAY_BLACK_45
-        
-        titAttr.append(centerAtter)
-        titAttr.append(unitAttr)
-        
-        titAttr.yy_alignment = .center
-        pieChartView.centerAttributedText = titAttr
-
+//        let titAttr = NSMutableAttributedString(string: "卡路里\n")
+//        titAttr.yy_font = .systemFont(ofSize: 11, weight: .regular)
+//        titAttr.yy_color = .COLOR_GRAY_BLACK_45
+//        
+//        let centerAtter = NSMutableAttributedString(string: "\(calories)\n")
+//        centerAtter.yy_font = .systemFont(ofSize: 18, weight: .semibold)
+//        centerAtter.yy_color = .COLOR_GRAY_BLACK_85
+//        
+//        let unitAttr = NSMutableAttributedString(string: "千卡")
+//        unitAttr.yy_font = .systemFont(ofSize: 11, weight: .regular)
+//        unitAttr.yy_color = .COLOR_GRAY_BLACK_45
+//        
+//        titAttr.append(centerAtter)
+//        titAttr.append(unitAttr)
+//        
+//        titAttr.yy_alignment = .center
+//        pieChartView.centerAttributedText = titAttr
+        let a = NSMutableAttributedString(
+            string: "卡路里\n",
+            attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                         .font: UIFont.systemFont(ofSize: 11, weight: .regular)]
+        )
+        a.append(NSAttributedString(
+            string: "\(calories)\n",
+            attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+                         .font: UIFont.systemFont(ofSize: 18, weight: .semibold)]
+        ))
+        a.append(NSAttributedString(
+            string: "千卡",
+            attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                         .font: UIFont.systemFont(ofSize: 11, weight: .regular)]
+        ))
+        a.yy_alignment = .center
+        pieChartView.centerAttributedText = a
 //        pieChartView.setNeedsDisplay()
     }
 }

@@ -18,7 +18,7 @@ class AITipsAlertVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+        self.backgroundColor = .COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 0)
         self.isUserInteractionEnabled = true
         self.clipsToBounds = false
         self.isHidden = true
@@ -35,7 +35,7 @@ class AITipsAlertVM: UIView {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: kFitWidth(67) + SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         // 创建下拉手势识别器
@@ -49,7 +49,7 @@ class AITipsAlertVM: UIView {
     lazy var titleLab: UILabel = {
         let lab = UILabel()
         lab.text = "AI识别"
-        lab.textColor = .black
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 17, weight: .semibold)
         
         return lab
@@ -75,7 +75,7 @@ class AITipsAlertVM: UIView {
 //        vi.bounces = false
         vi.showsVerticalScrollIndicator = false
         vi.rowHeight = UITableView.automaticDimension
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.register(AITipsTitleCell.classForCoder(), forCellReuseIdentifier: "AITipsTitleCell")
         vi.register(AITipsContentCell.classForCoder(), forCellReuseIdentifier: "AITipsContentCell")
         vi.register(AITipsDonationCell.classForCoder(), forCellReuseIdentifier: "AITipsDonationCell")

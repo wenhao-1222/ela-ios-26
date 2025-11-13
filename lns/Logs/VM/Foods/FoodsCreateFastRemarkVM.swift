@@ -14,7 +14,7 @@ class FoodsCreateFastRemarkVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         
@@ -33,12 +33,12 @@ class FoodsCreateFastRemarkVM: UIView {
         let lab = UILabel()
         lab.text = "备注"
         lab.font = .systemFont(ofSize: 12, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         return lab
     }()
     lazy var textBgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_LIGHT_GREY
+        vi.backgroundColor = .COLOR_BG_F5
         vi.layer.cornerRadius = kFitWidth(4)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
@@ -48,7 +48,7 @@ class FoodsCreateFastRemarkVM: UIView {
     lazy var textField: ChineseTextField = {
         let text = ChineseTextField()
         text.placeholder = "简单描述本次添加的食物（可选）"
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 14, weight: .regular)
         text.delegate = self
         text.returnKeyType = .done

@@ -27,7 +27,7 @@ class FoodsDetailCaloriVM: UIView {
     }
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: 0, width: whiteWidth, height: kFitWidth(188)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.isUserInteractionEnabled = true
         
@@ -36,7 +36,7 @@ class FoodsDetailCaloriVM: UIView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.text = "热量来源"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab

@@ -15,7 +15,7 @@ class FoodsCreateNameVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -30,7 +30,7 @@ class FoodsCreateNameVM: UIView {
     }
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.text = "食物名称"
         
@@ -39,7 +39,7 @@ class FoodsCreateNameVM: UIView {
     lazy var textField : ChineseTextField = {
         let text = ChineseTextField()
         
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 16, weight: .medium)
         text.delegate = self
         text.returnKeyType = .done
@@ -51,7 +51,7 @@ class FoodsCreateNameVM: UIView {
     
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         return vi
     }()
 }
@@ -94,13 +94,18 @@ extension FoodsCreateNameVM{
         attachment.bounds = CGRect(x: 0, y: (UIFont.systemFont(ofSize: 16, weight: .regular).capHeight - image.size.height).rounded() / 2, width: image.size.width, height: image.size.height)
         let attachmentString = NSMutableAttributedString(attachment: attachment)
      
-        let string = NSMutableAttributedString(string: text)
-        string.yy_font = .systemFont(ofSize: 16, weight: .regular)
-        string.yy_color = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
-        attachmentString.append(string)
+//        let string = NSMutableAttributedString(string: text)
+//        string.yy_font = .systemFont(ofSize: 16, weight: .regular)
+//        string.yy_color = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+//        attachmentString.append(string)
         
-//        string.insert(attachmentString, at: 0)
-     
+        let a = NSMutableAttributedString(
+            string: text,
+            attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_25,
+                         .font: UIFont.systemFont(ofSize: 16, weight: .regular)]
+        )
+        attachmentString.append(a)
+        
         return attachmentString
     }
 }

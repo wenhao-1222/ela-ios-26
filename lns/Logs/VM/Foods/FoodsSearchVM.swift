@@ -25,7 +25,7 @@ class FoodsSearchVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: statusBarHeight, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -44,7 +44,7 @@ class FoodsSearchVM: UIView {
     }()
     lazy var searchBgView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(45), y: kFitWidth(4), width: kFitWidth(314), height: kFitWidth(36)))
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_BLACK_04
         vi.layer.cornerRadius = kFitWidth(18)
         vi.clipsToBounds = true
         return vi
@@ -59,7 +59,7 @@ class FoodsSearchVM: UIView {
     lazy var textField : ChineseTextField = {
         let text = ChineseTextField.init(frame: CGRect.init(x: kFitWidth(36), y: 0, width: kFitWidth(260), height: kFitWidth(36)))
         text.placeholder = "请输入想要搜索的食物"
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 14, weight: .regular)
         text.clearButtonMode = .whileEditing
         text.textContentType = nil
@@ -84,10 +84,10 @@ extension FoodsSearchVM{
         if isGuide{
             self.backgroundColor = .clear
             self.textField.becomeFirstResponder()
-            self.searchBgView.backgroundColor = .white
+            self.searchBgView.backgroundColor = .COLOR_BG_WHITE
             self.backArrowButton.isUserInteractionEnabled = false
         }else{
-            self.backgroundColor = .white
+            self.backgroundColor = .COLOR_BG_WHITE
             self.searchBgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
             self.backArrowButton.isUserInteractionEnabled = true
         }

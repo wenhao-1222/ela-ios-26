@@ -33,11 +33,6 @@ class FoodsCreateFastVC: WHBaseViewVC {
         IQKeyboardManager.shared.enable = true
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
-//    override func viewWillDisappear(_ animated: Bool) {
-//        IQKeyboardManager.shared.enable = true
-//        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
-////        self.remarkVm.textField.disableTimer()
-//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +43,7 @@ class FoodsCreateFastVC: WHBaseViewVC {
     }
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         

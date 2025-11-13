@@ -16,7 +16,7 @@ class FoodsCreateSpecAlertVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+        self.backgroundColor = .COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         self.isUserInteractionEnabled = true
         self.alpha = 0
         self.isHidden = true
@@ -35,7 +35,7 @@ class FoodsCreateSpecAlertVM: UIView {
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.alpha = 0
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
@@ -63,21 +63,21 @@ class FoodsCreateSpecAlertVM: UIView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.text = "选择单位"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()
     
     lazy var pickerView: UIPickerView = {
         let picker = UIPickerView()
-        picker.backgroundColor = .white
+        picker.backgroundColor = .COLOR_BG_WHITE
         picker.delegate = self
         picker.dataSource = self
         

@@ -29,14 +29,14 @@ class LogsRemarkVM: UIView {
     }
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(8), y: 0, width: SCREEN_WIDHT-kFitWidth(16), height: selfHeight))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.isUserInteractionEnabled = true
         return vi
     }()
     lazy var leftTitleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         lab.text = "注释"
         
@@ -51,7 +51,7 @@ class LogsRemarkVM: UIView {
     lazy var placeHoldLabel : UILabel = {
         let lab = UILabel()
         lab.text = "这里输入您的注释说明"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
         
@@ -78,7 +78,7 @@ extension LogsRemarkVM{
     func updateContent(text:String) {
         if text.count > 0 {
             self.placeHoldLabel.text = text
-            self.placeHoldLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.85)
+            self.placeHoldLabel.textColor = .COLOR_TEXT_TITLE_0f1214_60//WHColorWithAlpha(colorStr: "000000", alpha: 0.85)
             penIcon.isHidden = true
             placeHoldLabel.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(64))
@@ -87,7 +87,7 @@ extension LogsRemarkVM{
             }
         }else{
             self.placeHoldLabel.text = "这里输入您的注释说明"
-            self.placeHoldLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+            self.placeHoldLabel.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
             penIcon.isHidden = false
             placeHoldLabel.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(84))

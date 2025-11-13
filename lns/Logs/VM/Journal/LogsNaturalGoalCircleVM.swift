@@ -253,7 +253,7 @@ extension LogsNaturalGoalCircleVM{
         self.layer.addSublayer(shapeLayerFill)
         self.layer.addSublayer(shapeLayerFillShadow)
         
-        naturalShapeLayerBottom.strokeColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06).cgColor // 弧线颜色
+        naturalShapeLayerBottom.strokeColor = UIColor.COLOR_BG_BLACK_06.cgColor // 弧线颜色
         naturalShapeLayerBottom.fillColor = nil // 无填充色
         naturalShapeLayerBottom.lineWidth = kFitWidth(4) // 线宽
         

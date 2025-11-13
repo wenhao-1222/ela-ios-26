@@ -19,7 +19,7 @@ class PropotionResultCaloriVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -33,7 +33,7 @@ class PropotionResultCaloriVM: UIView {
         lab.delegate = self
         lab.keyboardType = .numberPad
         lab.font = .systemFont(ofSize: 20, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.textContentType = nil
         
         return lab

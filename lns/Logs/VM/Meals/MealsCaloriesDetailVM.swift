@@ -15,7 +15,7 @@ class MealsCaloriesDetailVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -27,14 +27,14 @@ class MealsCaloriesDetailVM: UIView {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(12), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(190)))
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
-        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         return vi
     }()
     lazy var caloriesNumLabel: UICountingLabel = {
         let lab = UICountingLabel()
         lab.text = "-"
         lab.format = "%d"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
 //        lab.font = .systemFont(ofSize: 18, weight: .medium)
         lab.font = UIFont().DDInFontMedium(fontSize: 16)
 
@@ -43,7 +43,7 @@ class MealsCaloriesDetailVM: UIView {
     lazy var caloriesUnitLabel: UILabel = {
         let lab = UILabel()
         lab.text = "千卡"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .bold)
 
         return lab
@@ -55,16 +55,16 @@ class MealsCaloriesDetailVM: UIView {
     lazy var foodsListLabel: UILabel = {
         let lab = UILabel()
         lab.text = "食物列表"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.15)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_20//WHColorWithAlpha(colorStr: "000000", alpha: 0.15)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.textAlignment = .center
-        lab.backgroundColor = .white
+        lab.backgroundColor = .COLOR_BG_WHITE
         
         return lab
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()

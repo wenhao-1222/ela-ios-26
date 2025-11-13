@@ -18,7 +18,7 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -33,19 +33,19 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
 //                self.bottomView.backgroundColor = .white
 //            })
         }else{
-            self.bottomView.backgroundColor = .white
+            self.bottomView.backgroundColor = .COLOR_BG_WHITE
         }
     }
     lazy var bottomView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white//WHColor_16(colorStr: "F5F5F5")
+        vi.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "F5F5F5")
         vi.isUserInteractionEnabled = true
         
         return vi
     }()
     lazy var foodsNameLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab
@@ -59,7 +59,7 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
     lazy var numberLabel : UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 12, weight: .regular)
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         
         return lab
     }()
@@ -91,7 +91,7 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         return vi
     }()
 }
@@ -167,7 +167,7 @@ extension FoodsListAddTableViewCell{
         [foodsNameLabel, numberLabel].forEach { $0.hideSkeletonWithCrossfade() }
 
         updateConstrait()
-        foodsNameLabel.textColor = .COLOR_GRAY_BLACK_85
+        foodsNameLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         if dict["verified"]as? String ?? "\(dict["verified"]as? Int ?? 0)" == "1"{
             foodsNameLabel.attributedText = createAttributedStringWithImage(image: verifyImgView.image!, text: dict["fname"]as? String ?? "",keywords: keywords)
         }else{
@@ -227,23 +227,41 @@ extension FoodsListAddTableViewCell{
         if nameString.contains(keywords){
             let range = nameString.range(of: keywords)
 //            DLLog(message: "boldKeywords:\(range):\(nameString)  --  \(keywords)")
-            let firstStr = NSMutableAttributedString(string: nameString.substring(with: NSRange(location: 0, length: range.location)))
-            let secondStr = NSMutableAttributedString(string: nameString.substring(from: range.location+range.length))
+//            let firstStr = NSMutableAttributedString(string: nameString.substring(with: NSRange(location: 0, length: range.location)))
+//            let secondStr = NSMutableAttributedString(string: nameString.substring(from: range.location+range.length))
+//            
+//            firstStr.yy_color = .COLOR_GRAY_BLACK_85
+//            secondStr.yy_color = .COLOR_GRAY_BLACK_85
+//            let boldAttr = NSMutableAttributedString(string: keywords)
+////            boldAttr.yy_font = .systemFont(ofSize: 16, weight: .heavy)
+//            boldAttr.yy_color = .THEME
+//            
+//            
+//            firstStr.append(boldAttr)
+//            firstStr.append(secondStr)
             
-            firstStr.yy_color = .COLOR_GRAY_BLACK_85
-            secondStr.yy_color = .COLOR_GRAY_BLACK_85
-            let boldAttr = NSMutableAttributedString(string: keywords)
-//            boldAttr.yy_font = .systemFont(ofSize: 16, weight: .heavy)
-            boldAttr.yy_color = .THEME
+            let a = NSMutableAttributedString(
+                string: nameString.substring(with: NSRange(location: 0, length: range.location)),
+                attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214]
+            )
+            a.append(NSMutableAttributedString(
+                string: keywords,
+                attributes: [.foregroundColor: UIColor.THEME]
+            ))
+            a.append(NSMutableAttributedString(
+                string: nameString.substring(from: range.location+range.length),
+                attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214]
+            ))
             
-            
-            firstStr.append(boldAttr)
-            firstStr.append(secondStr)
-            return firstStr
+            return a
         }else{
-            let attr = NSMutableAttributedString(string: nameString as String)
-            attr.yy_color = .COLOR_GRAY_BLACK_85
-            return attr
+//            let attr = NSMutableAttributedString(string: nameString as String)
+//            attr.yy_color = .COLOR_GRAY_BLACK_85
+            let a = NSMutableAttributedString(
+                string: nameString as String,
+                attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214]
+            )
+            return a
         }
     }
     
@@ -253,15 +271,21 @@ extension FoodsListAddTableViewCell{
         attachment.bounds = CGRect(x: 0, y: (UIFont.systemFont(ofSize: 16, weight: .medium).capHeight - image.size.height).rounded() / 2, width: image.size.width, height: image.size.height)
         let attachmentString = NSAttributedString(attachment: attachment)
         
-        var string = NSMutableAttributedString(string: text)
-        string.yy_color = .COLOR_GRAY_BLACK_85
-        if keywords?.count ?? 0 > 0 {
-            string = NSMutableAttributedString(attributedString: self.boldKeywords(nameString: string.string as NSString,keywords:keywords ?? ""))
-        }
+//        var string = NSMutableAttributedString(string: text)
+//        string.yy_color = .COLOR_TEXT_TITLE_0f1214
+//        if keywords?.count ?? 0 > 0 {
+//            string = NSMutableAttributedString(attributedString: self.boldKeywords(nameString: string.string as NSString,keywords:keywords ?? ""))
+//        }
+//        
+//        string.append(attachmentString)
         
-        string.append(attachmentString)
-//        foodsNameLabel.attributedText = string
-        return string
+        let a = NSMutableAttributedString(
+            string: text,
+            attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214]
+        )
+        a.append(attachmentString)
+        
+        return a
     }
     func createAttributedString(text: String,keywords:String? = "") -> NSAttributedString {
         var string = NSMutableAttributedString(string: text)

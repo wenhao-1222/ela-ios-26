@@ -23,7 +23,7 @@ class AITipsContentCell: UITableViewCell {
     }
     lazy var contentLab: YYLabel = {
         let lab = YYLabel()
-        lab.textColor = .black
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
@@ -45,10 +45,10 @@ class AITipsContentCell: UITableViewCell {
 extension AITipsContentCell{
     func updateUI() {
         let attrStrign = "1. 请确保食物在框内，并保持正上方拍摄。\n2. 任何AI识别都无法代替人工计算，建议精准度要求高的用户用食物称手动记录（"
-        let attr = NSMutableAttributedString(string: attrStrign)
+        let attr = NSMutableAttributedString(string: attrStrign,attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214])
         let tipsAttr = NSMutableAttributedString(string: "AI识别的限制")
-        let tipsString = NSMutableAttributedString(string: "）\n")
-        let tipsString2 = NSMutableAttributedString(string: "3. AI识别功能为测试版，高负载时可能会影响体验质量，敬请谅解。")
+        let tipsString = NSMutableAttributedString(string: "）\n",attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214])
+        let tipsString2 = NSMutableAttributedString(string: "3. AI识别功能为测试版，高负载时可能会影响体验质量，敬请谅解。",attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214])
         
         tipsAttr.yy_color = .THEME
         tipsAttr.yy_setTextHighlight(NSRange(location: 0, length: tipsAttr.string.count), color: .THEME, backgroundColor: .clear) { vi, attr, range, rect in
