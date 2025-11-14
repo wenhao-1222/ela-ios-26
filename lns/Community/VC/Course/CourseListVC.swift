@@ -381,10 +381,23 @@ extension CourseListVC{
     func changeNaviAlpha(offsetY:CGFloat) {
         var percent = (offsetY - self.listHeadVm.selfHeight + getNavigationBarHeight()*2) / getNavigationBarHeight()
         percent = min(max(percent, 0), 1)
-
-        navigationView.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: percent)
+        
+        navigationView.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: percent)
+        navigationView.alpha = percent
         let colorValue = 1 - percent
-        let arrowColor = UIColor(red: colorValue, green: colorValue, blue: colorValue, alpha: 1)
+        var arrowColor = UIColor(red: colorValue,
+                                 green: colorValue,
+                                 blue: colorValue,
+                                 alpha: 1)
+        
+//        if traitCollection.userInterfaceStyle == .dark{
+//            if percent > 1 {
+//                arrowColor = UIColor(white: percent, alpha: 1)
+//            }else{
+//                arrowColor = UIColor(red: 0, green: 0, blue: 0, alpha: percent)
+//            }
+//        }
+        
         self.backArrowButton.backImgView.image = backImg?.WHImageWithTintColor(color: arrowColor)
         self.shareButton.setImage(shareImg?.WHImageWithTintColor(color: arrowColor), for: .normal)
     }

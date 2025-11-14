@@ -53,7 +53,7 @@ class JournalTableViewCell: UITableViewCell {
     }()
     lazy var selecImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "logs_edit_normal")
+        img.setImgLocal(imgName: "logs_edit_all_normal")
         img.isUserInteractionEnabled = true
         img.isHidden = true
         
@@ -158,7 +158,7 @@ extension JournalTableViewCell{
         
         selecImgView.setCheckState(isSelect,
                                   checkedImageName: "logs_edit_selected",
-                                  uncheckedImageName: "logs_edit_normal")
+                                  uncheckedImageName: "logs_edit_all_normal")
         if self.selectBlock != nil{
             self.selectBlock!(self.isSelect)
         }
@@ -284,7 +284,7 @@ extension JournalTableViewCell{
         
         selecImgView.setCheckState(isSelect,
                                   checkedImageName: "logs_edit_selected",
-                                  uncheckedImageName: "logs_edit_normal")
+                                  uncheckedImageName: "logs_edit_all_normal")
     }
     func updateMealsTime(mealsDict:NSDictionary,mealsIndex:Int) {
         if UserInfoModel.shared.hiddenMeaTimeStatus{

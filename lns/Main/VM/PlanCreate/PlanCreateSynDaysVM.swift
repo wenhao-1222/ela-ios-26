@@ -19,7 +19,7 @@ class PlanCreateSynDaysVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: frame)
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+        self.backgroundColor = .COLOR_BG_F5//WHColorWithAlpha(colorStr: "000000", alpha: 0)
         self.isUserInteractionEnabled = true
         self.clipsToBounds = false
         self.isHidden = true
@@ -118,14 +118,14 @@ extension PlanCreateSynDaysVM{
         bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        bgView.backgroundColor = .COLOR_BG_F5//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
     }
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        bgView.backgroundColor = .COLOR_BG_F5//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
     }
    @objc func tapAction() {
        playClickAnimation()
-       bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+       bgView.backgroundColor = .COLOR_BG_F5//.COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
        
        isSelect = !isSelect
        if isSelect == true{

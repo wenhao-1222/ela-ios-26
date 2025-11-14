@@ -27,6 +27,17 @@ class LogsNaviVM: UIView {
         
         initUI()
     }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+       override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+           super.traitCollectionDidChange(previousTraitCollection)
+           if #available(iOS 13.0, *),
+              previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+              !isHidden {
+               UIView.animate(withDuration: 0.2) {
+                   self.fitnessLabel.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214.cgColor
+               }
+           }
+       }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

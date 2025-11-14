@@ -48,21 +48,21 @@ class JournalShareMsgNaturalItemVM: UIView {
     
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.textColor = WHColor_16(colorStr: "0f1214")//.COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 11, weight: .regular)
         
         return lab
     }()
     lazy var currentNumberLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.textColor = WHColor_16(colorStr: "0f1214")//.COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 11, weight: .regular)
         
         return lab
     }()
     lazy var totalNumberLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.textColor = WHColor_16(colorStr: "0f1214")//.COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 11, weight: .regular)
         
         return lab

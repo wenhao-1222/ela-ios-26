@@ -40,7 +40,7 @@ class ForumNoticeItemVM : UIView{
     lazy var titleLab: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 14, weight: .bold)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.isUserInteractionEnabled = true
         lab.numberOfLines = 2
         

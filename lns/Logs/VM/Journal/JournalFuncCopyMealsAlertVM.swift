@@ -40,7 +40,7 @@ class JournalFuncCopyMealsAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenSelf))
         v.addGestureRecognizer(tap)
@@ -49,7 +49,7 @@ class JournalFuncCopyMealsAlertVM: UIView {
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(10))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
         vi.addGestureRecognizer(tap)
@@ -60,7 +60,7 @@ class JournalFuncCopyMealsAlertVM: UIView {
     lazy var cancelBtn: UIButton = {
         let btn = UIButton()
         btn.setImage(UIImage(named: "date_fliter_cancel_img"), for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.4), for: .highlighted)
+        btn.setTitleColor(.COLOR_BG_BLACK_40, for: .highlighted)
         
         btn.addTarget(self, action: #selector(hiddenSelf), for: .touchUpInside)
         
@@ -69,21 +69,21 @@ class JournalFuncCopyMealsAlertVM: UIView {
     lazy var titleLab: UILabel = {
         let lab = UILabel()
         lab.text = "复制所选食物到某餐"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         return lab
     }()
     lazy var confirmBtn: UIButton = {
         let btn = UIButton()
         btn.setImage(UIImage(named: "date_fliter_confirm_img"), for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.4), for: .highlighted)
+        btn.setTitleColor(.COLOR_BG_BLACK_40, for: .highlighted)
         
         btn.addTarget(self, action: #selector(confirmCopyAction), for: .touchUpInside)
         return btn
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
         return vi
     }()
     lazy var pickerView: UIPickerView = {

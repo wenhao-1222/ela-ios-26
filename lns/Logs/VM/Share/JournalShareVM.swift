@@ -15,7 +15,7 @@ class JournalShareVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .THEME
+        self.backgroundColor = .THEME//UIColor(named: "color_bg_theme_share")//.THEME
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -52,6 +52,7 @@ class JournalShareVM: UIView {
     }()
     lazy var msgVm: JournalShareMsgVM = {
         let vm = JournalShareMsgVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
+//        vm.bgWhiteView.backgroundColor = .white
 //        let vm = JournalShareMsgVM.init(frame: CGRect.init(x: 0, y: self.receiptVm.frame.minY+kFitWidth(13), width: 0, height: 0))
 //        vm.caloriesVm.updateUI(dict: self.detailsDict)
 //        vm.naturalVm.updateUI(dict: self.detailsDict)
@@ -69,11 +70,6 @@ class JournalShareVM: UIView {
         vi.addSubview(dashVm)
         return vi
     }()
-//    lazy var footView: JournalShareFooterVM = {
-//        let emptyFootHeight = self.mealsArray.count > 0 ? kFitWidth(42) : (self.tableView.frame.height - dashVm.frame.maxY)
-//        let vm = JournalShareFooterVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: emptyFootHeight))
-//        return vm
-//    }()
     lazy var tableView: ForumCommentListTableView = {
         let originY = self.receiptVm.frame.minY+kFitWidth(13)
         let vi = ForumCommentListTableView.init(frame: CGRect.init(x: 0, y: originY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-originY-kFitWidth(30)), style: .grouped)
@@ -133,13 +129,14 @@ extension JournalShareVM:UITableViewDelegate,UITableViewDataSource{
             vi.backgroundColor = .clear
             
             let whiteView = UIView.init(frame: CGRect.init(x: kFitWidth(42), y: 0, width: SCREEN_WIDHT-kFitWidth(84), height: kFitWidth(34)))
-            whiteView.backgroundColor = .white
+            whiteView.backgroundColor = UIColor(named: "color_share_msg_bg")
             vi.addSubview(whiteView)
             
             let dict = mealsArray[section-1] as? NSDictionary ?? [:]
             let label = UILabel.init(frame: CGRect.init(x: kFitWidth(20), y: 0, width: kFitWidth(200), height: kFitHeight(34)))
             label.text = dict.stringValueForKey(key: "mealName")
-            label.textColor = .COLOR_TEXT_TITLE_0f1214
+//            label.textColor = .COLOR_TEXT_TITLE_0f1214
+            label.textColor = WHColor_16(colorStr: "0f1214")
             label.font = .systemFont(ofSize: 14, weight: .semibold)
             whiteView.addSubview(label)
             
@@ -164,7 +161,7 @@ extension JournalShareVM:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if section == mealsArray.count{
             let emptyFootHeight = kFitWidth(42)//self.mealsArray.count > 0 ? kFitWidth(42) : (self.tableView.frame.height - dashVm.frame.maxY)
-            let footView = JournalShareFooterVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: emptyFootHeight))
+            let footView = JournalShareSaveFooterVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: emptyFootHeight))
             return footView
         }
         return nil

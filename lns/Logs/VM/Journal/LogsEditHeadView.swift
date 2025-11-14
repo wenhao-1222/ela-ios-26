@@ -35,7 +35,7 @@ class LogsEditHeadView: UIView {
     lazy var choiceBtn : GJVerButton = {
         let btn = GJVerButton()
         btn.setTitle("全选", for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.45), for: .normal)
+        btn.setTitleColor(.COLOR_BG_BLACK_045, for: .normal)
         btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.25), for: .highlighted)
 //        btn.imagePosition(style: .left, spacing: kFitWidth(4))
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)

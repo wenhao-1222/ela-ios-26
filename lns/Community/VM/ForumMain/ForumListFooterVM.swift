@@ -16,20 +16,20 @@ class ForumListFooterVM : UIView{
     }
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         initUI()
     }
     lazy var topLineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         vi.isHidden = true
         return vi
     }()
     lazy var contentLabel: UILabel = {
         let lab = UILabel()
         lab.text = "- 已全部加载完 -"
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.textAlignment = .center
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.isHidden = true

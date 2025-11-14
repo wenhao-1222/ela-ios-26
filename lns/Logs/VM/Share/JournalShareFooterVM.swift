@@ -30,6 +30,24 @@ class JournalShareFooterVM: UIView {
         
         initUI()
     }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+      override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+          super.traitCollectionDidChange(previousTraitCollection)
+          if #available(iOS 13.0, *),
+             previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+             !isHidden {
+              
+              UIView.animate(withDuration: 0.2) {
+//                  if previousTraitCollection?.userInterfaceStyle == .dark{
+                      self.lineLayer.strokeColor = UIColor(named: "color_bg_theme_share")?.cgColor // 弧线颜色
+                      self.lineLayer.fillColor = UIColor(named: "color_bg_theme_share")?.cgColor // 填充色
+//                  }else{
+//                      self.lineLayer.strokeColor = UIColor.THEME.cgColor // 弧线颜色
+//                      self.lineLayer.fillColor = UIColor.THEME.cgColor // 填充色
+//                  }
+              }
+          }
+      }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -38,7 +56,7 @@ class JournalShareFooterVM: UIView {
     }
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(42), y: 0, width: SCREEN_WIDHT-kFitWidth(84), height: selfHeight))
-        vi.backgroundColor = .white
+        vi.backgroundColor = UIColor(named: "color_share_msg_bg")
         vi.clipsToBounds = true
         
         return vi
@@ -52,12 +70,16 @@ extension JournalShareFooterVM{
         whiteView.layer.addSublayer(lineLayer)
         
         lineLayer.allowsEdgeAntialiasing = true
-        lineLayer.strokeColor = UIColor.THEME.cgColor // 弧线颜色
-        lineLayer.fillColor = UIColor.THEME.cgColor // 填充色
+//                lineLayer.strokeColor = UIColor.THEME.cgColor // 弧线颜色
+//                lineLayer.fillColor = UIColor.THEME.cgColor // 填充色
+        
         lineLayer.lineWidth = kFitWidth(0.5) // 线宽
     }
     func initLayer() {
         DLLog(message: "JournalShareFooterVM  initLayer")
+        
+        lineLayer.strokeColor = UIColor(named: "color_bg_theme_share")?.cgColor // 弧线颜色
+        lineLayer.fillColor = UIColor(named: "color_bg_theme_share")?.cgColor // 填充色
         linePath = UIBezierPath()
         linePath.move(to: CGPoint.init(x: 0, y: selfHeight-circleRadius))
         linePath.addArc(withCenter: CGPoint.init(x: 0, y: selfHeight), radius: circleRadius, startAngle: -Double.pi*0.5, endAngle: 0, clockwise: true)

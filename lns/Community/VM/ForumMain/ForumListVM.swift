@@ -54,7 +54,7 @@ class ForumListVM : UIView{
             selfHeight = SCREEN_HEIGHT//-WHUtils().getNavigationBarHeight()
         }
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .clear
+        self.backgroundColor = .COLOR_BG_WHITE
         
         self.noticeDispatchGroup = DispatchGroup()
         
@@ -84,7 +84,7 @@ class ForumListVM : UIView{
         vi.separatorStyle = .none
         vi.showsVerticalScrollIndicator = false
         vi.rowHeight = UITableView.automaticDimension
-        vi.backgroundColor = .white//WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         vi.register(ForumListTableViewCell.classForCoder(), forCellReuseIdentifier: "ForumListTableViewCell")
         vi.mj_header = CustomRefreshHeader.init(refreshingBlock: {
             // 如果当前有正在播放，则停止并清除 IndexPath
@@ -404,7 +404,7 @@ extension ForumListVM:UITableViewDelegate,UITableViewDataSource{
 //        ZFPlayerModel.shared.addToTableView(tableView: self.tableView, tag: playerViewTag)
 //        ZFPlayerModel.shared.player.controlView = self.controlView
 //        zfplayerBlock()
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         addSubview(tableView)
         
         addSubview(publishAlertVm)
@@ -458,16 +458,6 @@ extension ForumListVM:UITableViewDelegate,UITableViewDataSource{
             if cell == nil{
                 cell = ForumListTableViewCell.init(style: .default, reuseIdentifier: "ForumListTableViewCell")
             }
-//            cell?.updateUI(model: model)
-//            if UserConfigModel.shared.isMuted{
-//                cell?.mutedImgView.setImgLocal(imgName: "forum_player_mute_yes_icon")
-//            }else{
-//                cell?.mutedImgView.setImgLocal(imgName: "forum_player_mute_no_icon")
-//            }
-//            
-//            if model.coverType == .VIDEO && model.covers.count > 0{
-//                cell?.videoUrlStr = model.covers[0]as? String ?? ""
-//            }
             cell?.imgLoadBlock = {(imgSize)in
                 model.imgIsLoaded = true
                 model.coverImgHeight = imgSize.height

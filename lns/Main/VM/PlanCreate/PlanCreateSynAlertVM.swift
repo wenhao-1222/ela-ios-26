@@ -74,7 +74,7 @@ class PlanCreateSynAlertVM: UIView {
         let btn = GJVerButton()
         btn.setTitle("全选", for: .normal)
         btn.imagePosition(style: .left, spacing: kFitWidth(2))
-        btn.setImage(UIImage(named: "logs_edit_normal"), for: .normal)
+        btn.setImage(UIImage(named: "logs_edit_all_normal"), for: .normal)
         btn.setImage(UIImage(named: "logs_edit_selected"), for: .selected)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.45), for: .normal)

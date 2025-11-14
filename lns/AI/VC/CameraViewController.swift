@@ -187,21 +187,21 @@ class CameraViewController: WHBaseViewVC {
                                width: kFitWidth(300),
                                height: kFitWidth(300) * 1.4)
         }
-        let dataObj = ["balance":"98",
-                       "calories":"315",
-                       "carbohydrate":"68",
-                       "contentType":"2",
-                       "energyUnit":"KJ",
-                       "fat":"1",
-                       "fname":"枸杞",
-                       "measurementNum":"100",
-                       "measurementUnit":"g",
-                       "protein":"12.8"]
-        let vc = AIResultVC()
-        vc.msgDict = dataObj as NSDictionary
-        vc.isFromPlan = self.isFromPlan
-        vc.sourceType = self.sourceType
-        self.navigationController?.pushViewController(vc, animated: true)
+//        let dataObj = ["balance":"98",
+//                       "calories":"315",
+//                       "carbohydrate":"68",
+//                       "contentType":"2",
+//                       "energyUnit":"KJ",
+//                       "fat":"1",
+//                       "fname":"枸杞",
+//                       "measurementNum":"100",
+//                       "measurementUnit":"g",
+//                       "protein":"12.8"]
+//        let vc = PropotionResultVC()
+//        vc.msgDict = dataObj as NSDictionary
+//        vc.isFromPlan = self.isFromPlan
+//        vc.sourceType = self.sourceType
+//        self.navigationController?.pushViewController(vc, animated: true)
         
         setupNotifications()
         initUI()

@@ -1131,6 +1131,7 @@
 		ECF0BFE22BFC9D6800E5F6F0 /* WithDrawWechatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFE12BFC9D6800E5F6F0 /* WithDrawWechatVM.swift */; };
 		ECF0BFE42BFCA29D00E5F6F0 /* WithDrawMoneyVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFE32BFCA29D00E5F6F0 /* WithDrawMoneyVM.swift */; };
 		ECF124422C087CE300BD8D1C /* NumericTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF124412C087CE300BD8D1C /* NumericTextField.swift */; };
+		ECF194202EC6F33E00049DB0 /* JournalShareSaveFooterVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1941F2EC6F33E00049DB0 /* JournalShareSaveFooterVM.swift */; };
 		ECF1D3252C3D172A002A3B55 /* ElaLaunch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECF1D3242C3D172A002A3B55 /* ElaLaunch.storyboard */; };
 		ECF581E02C329A9900FE0937 /* GuideMainNaturalGoalAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF581DF2C329A9900FE0937 /* GuideMainNaturalGoalAlertVM.swift */; };
 		ECF581E22C32A54C00FE0937 /* GuideJournalGotPlanAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF581E12C32A54C00FE0937 /* GuideJournalGotPlanAlertVM.swift */; };
@@ -2440,6 +2441,7 @@
 		ECF0BFE12BFC9D6800E5F6F0 /* WithDrawWechatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithDrawWechatVM.swift; sourceTree = "<group>"; };
 		ECF0BFE32BFCA29D00E5F6F0 /* WithDrawMoneyVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithDrawMoneyVM.swift; sourceTree = "<group>"; };
 		ECF124412C087CE300BD8D1C /* NumericTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericTextField.swift; sourceTree = "<group>"; };
+		ECF1941F2EC6F33E00049DB0 /* JournalShareSaveFooterVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalShareSaveFooterVM.swift; sourceTree = "<group>"; };
 		ECF1D3242C3D172A002A3B55 /* ElaLaunch.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ElaLaunch.storyboard; sourceTree = "<group>"; };
 		ECF581DF2C329A9900FE0937 /* GuideMainNaturalGoalAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideMainNaturalGoalAlertVM.swift; sourceTree = "<group>"; };
 		ECF581E12C32A54C00FE0937 /* GuideJournalGotPlanAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideJournalGotPlanAlertVM.swift; sourceTree = "<group>"; };
@@ -3314,6 +3316,7 @@
 				A7FB33172DC9D51100751B64 /* JournalShareMsgDashVM.swift */,
 				A7FB33192DC9DD7700751B64 /* JournalShareTableViewCell.swift */,
 				A7FB331B2DC9E52300751B64 /* JournalShareFooterVM.swift */,
+				ECF1941F2EC6F33E00049DB0 /* JournalShareSaveFooterVM.swift */,
 				A7FB331D2DC9F47500751B64 /* JournalShareVM.swift */,
 			);
 			path = Share;
@@ -5874,6 +5877,7 @@
 				EC9321AC2C50C43800FDBBE2 /* MealsNaviEditButton.swift in Sources */,
 				EC4DE2912BC9386B0090A7BD /* PlanCreateDaysVM.swift in Sources */,
 				A7B23E952DD49DA5000B2B85 /* JournalReportWeekNaturalItemVM.swift in Sources */,
+				ECF194202EC6F33E00049DB0 /* JournalShareSaveFooterVM.swift in Sources */,
 				A73208012DFBD39E000A807D /* JournalReportWeightCell.swift in Sources */,
 				A7A5888D2E8A2548002FB662 /* NetworkCountryDetector.swift in Sources */,
 				EC4DE32B2BD0F18F0090A7BD /* DataDetailTableViewCell.swift in Sources */,

@@ -23,7 +23,7 @@ class CourseItemCell: UITableViewCell {
     
     lazy var bgView: GradientView = {
         let view = GradientView()
-        view.backgroundColor = .white
+        view.backgroundColor = .COLOR_BG_WHITE
         view.layer.cornerRadius = kFitWidth(13)
         view.clipsToBounds = true
         
@@ -55,7 +55,7 @@ class CourseItemCell: UITableViewCell {
     }()
     lazy var lockCoverView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.3)
+        vi.backgroundColor = .COLOR_BG_BLACK_30//WHColorWithAlpha(colorStr: "000000", alpha: 0.3)
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
         vi.isHidden = true
@@ -72,7 +72,7 @@ class CourseItemCell: UITableViewCell {
     lazy var videoDurationLabel: UILabel = {
         let label = UILabel()
         label.backgroundColor = .clear//.COLOR_GRAY_BLACK_25
-        label.textColor = .white
+        label.textColor = .COLOR_TEXT_WHITE
         label.font = .systemFont(ofSize: 12)
         label.textAlignment = .center
         label.layer.cornerRadius = kFitWidth(6)

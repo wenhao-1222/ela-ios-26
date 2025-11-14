@@ -41,7 +41,7 @@ class ForumListTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -72,7 +72,7 @@ class ForumListTableViewCell: UITableViewCell {
 
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")//.white
+        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")//.white
         vi.isUserInteractionEnabled = true
         vi.clipsToBounds = true
         
@@ -88,7 +88,7 @@ class ForumListTableViewCell: UITableViewCell {
     }()
     lazy var authorLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .bold)
         
         return lab
@@ -108,14 +108,14 @@ class ForumListTableViewCell: UITableViewCell {
     }()
     lazy var timeLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         
         return lab
     }()
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .bold)
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
@@ -150,7 +150,7 @@ class ForumListTableViewCell: UITableViewCell {
     }()
     lazy var videoDurationLabel: UILabel = {
         let lab = UILabel()
-        lab.backgroundColor = .COLOR_GRAY_BLACK_25
+        lab.backgroundColor = .COLOR_TEXT_TITLE_0f1214_25
         lab.textColor = .white
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.textAlignment = .center
@@ -182,7 +182,7 @@ class ForumListTableViewCell: UITableViewCell {
     //浏览量
     lazy var pageViewNumLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.isHidden = true
         return lab
@@ -464,7 +464,7 @@ extension ForumListTableViewCell{
             likeBtn.contentLab.textColor = WHColor_16(colorStr: "F5BA18")
             likeBtn.contentLab.font = .systemFont(ofSize: 14, weight: .medium)
         }else{
-            likeBtn.contentLab.textColor = .COLOR_GRAY_BLACK_45
+            likeBtn.contentLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
             likeBtn.iconImgView.setImgLocal(imgName: "forum_thumbs_up_normal")
             if model.upvoteCount.intValue > 0 {
                 likeBtn.contentLab.text = "\(model.upvoteCount)"
