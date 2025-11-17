@@ -29,7 +29,7 @@ class ForumCommentFuncAlertVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+        self.backgroundColor = .COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 0)
         self.isUserInteractionEnabled = true
         self.clipsToBounds = false
         self.isHidden = true
@@ -48,7 +48,7 @@ class ForumCommentFuncAlertVM: UIView {
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
-        vi.backgroundColor = WHColor_16(colorStr: "EFEFEF")
+        vi.backgroundColor = .COLOR_BG_EF//WHColor_16(colorStr: "EFEFEF")
         vi.isUserInteractionEnabled = true
         
         // 创建下拉手势识别器
@@ -79,7 +79,9 @@ class ForumCommentFuncAlertVM: UIView {
     //回复
     lazy var replayItemVm: ForumCommentFuncAlertItemVM = {
         let vm = ForumCommentFuncAlertItemVM.init(frame: CGRect.init(x: 0, y: kFitWidth(44), width: 0, height: 0))
-        vm.iconImgView.setImgLocal(imgName: "forum_commone_icon")
+
+        vm.iconImgView.image = UIImage(named: "forum_commone_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
+//        vm.iconImgView.setImgLocal(imgName: "forum_commone_icon")
         vm.titleLabel.text = "回复"
         vm.tapBlock = {()in
             self.replyAction()
@@ -89,9 +91,9 @@ class ForumCommentFuncAlertVM: UIView {
     //评论 置顶
     lazy var setTopItemVm: ForumCommentFuncAlertItemVM = {
         let vm = ForumCommentFuncAlertItemVM.init(frame: CGRect.init(x: 0, y: self.replayItemVm.frame.maxY, width: 0, height: 0))
-//        vm.iconImgView.setImgLocal(imgName: "comment_func_copy_icon")
-        vm.iconImgView.image = UIImage(named: "forum_set_top_icon")?.WHImageWithTintColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.55))
-//        vm.iconImgView.image = UIImage(systemName: "arrow.up.square")//?.WHImageWithTintColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.55))
+//        vm.iconImgView.image = UIImage(named: "forum_set_top_icon")?.WHImageWithTintColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.55))
+        
+        vm.iconImgView.image = UIImage(named: "forum_set_top_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         vm.titleLabel.text = "置顶"
         vm.whiteView.layer.cornerRadius = 0
         vm.tapBlock = {()in
@@ -103,7 +105,8 @@ class ForumCommentFuncAlertVM: UIView {
     lazy var copyItemVm: ForumCommentFuncAlertItemVM = {
         let vm = ForumCommentFuncAlertItemVM.init(frame: CGRect.init(x: 0, y: self.setTopItemVm.frame.maxY, width: 0, height: 0))
 //        vm.iconImgView.setImgLocal(imgName: "comment_func_copy_icon")
-        vm.iconImgView.image = UIImage(named: "comment_func_copy_icon")?.WHImageWithTintColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.55))
+        vm.iconImgView.image = UIImage(named: "comment_func_copy_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
+//        vm.iconImgView.image = UIImage(named: "comment_func_copy_icon")?.WHImageWithTintColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.55))
         vm.titleLabel.text = "复制"
         vm.tapBlock = {()in
             self.copyAction()
@@ -113,7 +116,8 @@ class ForumCommentFuncAlertVM: UIView {
     //举报
     lazy var reportItemVm: ForumCommentFuncAlertItemVM = {
         let vm = ForumCommentFuncAlertItemVM.init(frame: CGRect.init(x: 0, y: self.copyItemVm.frame.maxY + kFitWidth(8), width: 0, height: 0))
-        vm.iconImgView.setImgLocal(imgName: "comment_func_report_icon")
+//        vm.iconImgView.setImgLocal(imgName: "comment_func_report_icon")
+        vm.iconImgView.image = UIImage(named: "comment_func_report_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         vm.titleLabel.text = "举报"
         vm.tapBlock = {()in
             self.reportAction()
@@ -208,15 +212,16 @@ extension ForumCommentFuncAlertVM{
         self.isHidden = false
 //        judgeSelf()
         checkFuncItem()
+        self.backgroundColor = .COLOR_BG_BLACK.withAlphaComponent(0.01)
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.whiteViewOriginY+self.whiteViewHeight*0.5)
-            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+            self.backgroundColor = .COLOR_BG_BLACK.withAlphaComponent(0.25)//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         }
    }
    @objc func hiddenView() {
        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
-           self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+           self.backgroundColor = .COLOR_BG_BLACK.withAlphaComponent(0)//WHColorWithAlpha(colorStr: "000000", alpha: 0)
        }completion: { t in
            self.isHidden = true
        }

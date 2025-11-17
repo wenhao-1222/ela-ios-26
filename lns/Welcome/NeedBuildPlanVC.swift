@@ -29,7 +29,7 @@ class NeedBuildPlanVC: WHBaseViewVC {
     lazy var topTitleLabel : UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.textColor = .black
+        lab.textColor = .COLOR_BG_BLACK
         lab.text = "设定您的营养目标"
         
         return lab
@@ -96,14 +96,18 @@ class NeedBuildPlanVC: WHBaseViewVC {
     }()
     lazy var bottomView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         vi.isUserInteractionEnabled = true
         
         return vi
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "D9D9D9")
+        if traitCollection.userInterfaceStyle == .dark{
+            vi.backgroundColor = .COLOR_LINE_F0
+        }else{
+            vi.backgroundColor = WHColor_16(colorStr: "D9D9D9")
+        }
         
         return vi
     }()
@@ -212,7 +216,7 @@ extension NeedBuildPlanVC{
 }
 extension NeedBuildPlanVC{
     func initUI(){
-        view.backgroundColor = WHColor_16(colorStr: "F6F6F6")
+        view.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "F6F6F6")
         
         view.addSubview(topTitleLabel)
         view.addSubview(tipsButton)

@@ -25,7 +25,7 @@ class PublishImagesCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -34,7 +34,7 @@ class PublishImagesCell: UITableViewCell {
         let img = UIButton()
         img.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(10), width: imgWidth, height: imgWidth)
         img.setImage(UIImage(named: "service_add_bg"), for: .normal)
-        img.setBackgroundImage(createImageWithColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.08)), for: .highlighted)
+        img.setBackgroundImage(createImageWithColor(color: .COLOR_BG_BLACK.withAlphaComponent(0.08)), for: .highlighted)
         img.layer.cornerRadius = kFitWidth(8)
         img.clipsToBounds = true
         img.addTarget(self, action: #selector(addAction), for: .touchUpInside)

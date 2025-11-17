@@ -19,7 +19,7 @@ class ForumCommentVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-selfHeight, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -34,7 +34,7 @@ class ForumCommentVM: UIView {
 //        vi.layer.cornerRadius = kFitWidth(16)
 //        vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingAction))
         vi.addGestureRecognizer(tap)
@@ -53,8 +53,8 @@ class ForumCommentVM: UIView {
         btn.setImage(UIImage(named: "forum_thumbs_up_normal"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
         btn.titleLabel?.adjustsFontSizeToFitWidth = true
-        btn.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .highlighted)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .highlighted)
         
         btn.addTarget(self, action: #selector(thumbTapAction), for: .touchUpInside)
         
@@ -67,8 +67,8 @@ class ForumCommentVM: UIView {
         btn.setImage(UIImage(named: "forum_comment_icon_max"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
         btn.titleLabel?.adjustsFontSizeToFitWidth = true
-        btn.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .highlighted)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .highlighted)
         
         btn.addTarget(self, action: #selector(commentTapAction), for: .touchUpInside)
         
@@ -148,16 +148,11 @@ extension ForumCommentVM{
     func setConstrait()  {
         lineView.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
-//            make.top.equalTo(kFitWidth(0))
-            make.height.equalTo(kFitWidth(1))
-//            make.centerX.lessThanOrEqualToSuperview()
-//            make.width.equalTo(SCREEN_WIDHT)
-        }
+            make.height.equalTo(kFitWidth(1))        }
         commonButton.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-8))
             make.width.equalTo(kFitWidth(70))
             make.height.equalTo(kFitWidth(54))
-//            make.centerY.lessThanOrEqualTo(pageViewNumLabel)
             make.top.equalTo(kFitWidth(1))
         }
         thumbsUpButton.snp.makeConstraints { make in

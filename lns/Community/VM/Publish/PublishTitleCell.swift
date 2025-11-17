@@ -16,7 +16,7 @@ class PublishTitleCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -24,11 +24,12 @@ class PublishTitleCell: UITableViewCell {
     lazy var remarkTextField: UITextView = {
         let text = UITextView()
         
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 18, weight: .medium)
         text.delegate = self
         text.returnKeyType = .done
         text.textContentType = nil
+        text.backgroundColor = .clear
         text.translatesAutoresizingMaskIntoConstraints = false
         text.isScrollEnabled = false
         text.textContainer.lineBreakMode = .byWordWrapping
@@ -41,13 +42,13 @@ class PublishTitleCell: UITableViewCell {
     lazy var placeHoldLabel: UILabel = {
         let lab = UILabel()//.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(14), width: kFitWidth(200), height: kFitWidth(20)))
         lab.text = "添加标题"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = .COLOR_BG_BLACK_30//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         return lab
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        vi.backgroundColor = .COLOR_BG_BLACK_06
         return vi
     }()
 }

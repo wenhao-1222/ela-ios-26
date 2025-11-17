@@ -23,15 +23,15 @@ class PublishPollItemCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
     }
     lazy var snLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
-        lab.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
+        lab.backgroundColor = .COLOR_BG_BLACK_06
         lab.layer.cornerRadius = kFitWidth(4)
         lab.clipsToBounds = true
         lab.font = .systemFont(ofSize: 12, weight: .regular)
@@ -48,8 +48,8 @@ class PublishPollItemCell: UITableViewCell {
         img.isHidden = true
         img.contentMode = .scaleAspectFit
         img.isUserInteractionEnabled = true
-        img.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
-        img.image = UIImage(named: "forum_add_image_icon")
+        img.backgroundColor = .COLOR_BG_BLACK_06
+        img.image = UIImage(named: "forum_add_image_icon")?.withTintColor(.COLOR_BG_BLACK_06)
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(imgTapAction))
         img.addGestureRecognizer(tap)
@@ -59,10 +59,11 @@ class PublishPollItemCell: UITableViewCell {
     lazy var pollTitleText: UITextView = {
         let text = UITextView()
         
-        text.textColor = .COLOR_GRAY_BLACK_65
+        text.textColor = .COLOR_TEXT_TITLE_0f1214_60
         text.font = .systemFont(ofSize: 16, weight: .medium)
         text.delegate = self
         text.returnKeyType = .done
+        text.backgroundColor = .clear
         text.textContentType = nil
         text.translatesAutoresizingMaskIntoConstraints = false
         text.isScrollEnabled = false
@@ -73,13 +74,13 @@ class PublishPollItemCell: UITableViewCell {
     lazy var placeHoldLabel: UILabel = {
         let lab = UILabel()//.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(14), width: kFitWidth(200), height: kFitWidth(20)))
         lab.text = "添加标题(必填)"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = .COLOR_BG_BLACK.withAlphaComponent(0.25)//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         return lab
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_LIGHT_GREY
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
 }

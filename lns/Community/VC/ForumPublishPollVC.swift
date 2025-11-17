@@ -74,7 +74,7 @@ class ForumPublishPollVC: WHBaseViewVC {
     lazy var leftLabel: UILabel = {
         let lab = UILabel()
         lab.text = "图文投票"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -94,7 +94,7 @@ class ForumPublishPollVC: WHBaseViewVC {
     lazy var multipleLabel: UILabel = {
         let lab = UILabel()
         lab.text = "允许多选"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -143,7 +143,7 @@ class ForumPublishPollVC: WHBaseViewVC {
         vi.dragDelegate = self
         vi.dropDelegate = self
         vi.separatorStyle = .none
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isEditing = true
         vi.dragInteractionEnabled = true
         vi.register(PublishPollItemCell.classForCoder(), forCellReuseIdentifier: "PublishPollItemCell")
@@ -444,6 +444,7 @@ extension ForumPublishPollVC:UITableViewDelegate,UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if pollDataArray.count < 20 {
+            foodView.backgroundColor = .COLOR_BG_WHITE
             return foodView
         }else{
             return nil

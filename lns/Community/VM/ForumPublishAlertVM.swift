@@ -40,7 +40,7 @@ class ForumPublishAlertVM: UIView {
         vi.layer.cornerRadius = kFitWidth(16)
 //                vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         
 //        let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingAction))
 //        vi.addGestureRecognizer(tap)
@@ -57,7 +57,7 @@ class ForumPublishAlertVM: UIView {
     }()
     lazy var imgCoverView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_GRAY_BLACK_65
+        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_60
         
         return vi
     }()
@@ -65,7 +65,7 @@ class ForumPublishAlertVM: UIView {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
-        lab.textColor = .white
+        lab.textColor = .COLOR_BG_WHITE
         lab.textAlignment = .center
         lab.adjustsFontSizeToFitWidth = true
 //        lab.text = "4%"
@@ -74,14 +74,14 @@ class ForumPublishAlertVM: UIView {
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
         lab.text = "发帖测试标题急急急服务i哦额叫哦发i哦忘记哦if额我i额外"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         return lab
     }()
     lazy var detailLabel: UILabel = {
         let lab = UILabel()
         lab.text = "正在上传中"
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         return lab
     }()

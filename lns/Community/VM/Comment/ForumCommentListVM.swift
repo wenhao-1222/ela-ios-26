@@ -56,7 +56,7 @@ class ForumCommentListVM: UIView {
 
     override init(frame:CGRect){
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
 
         initUI()
@@ -72,7 +72,7 @@ class ForumCommentListVM: UIView {
     }()
     lazy var commentCountLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.text = "评论"
         return lab
@@ -86,7 +86,7 @@ class ForumCommentListVM: UIView {
         vi.sectionFooterHeight = 0
         vi.showsVerticalScrollIndicator = false
         vi.showsHorizontalScrollIndicator = false
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.register(ForumCommentReplyListCell.classForCoder(), forCellReuseIdentifier: "ForumCommentReplyListCell")
 //        vi.register(ForumCommentSkeletonCell.self, forCellReuseIdentifier: "ForumCommentSkeletonCell")
         if #available(iOS 15.0, *) { vi.sectionHeaderTopPadding = 0 }

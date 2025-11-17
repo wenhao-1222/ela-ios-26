@@ -27,7 +27,7 @@ class ForumCommentReplyListCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -70,7 +70,7 @@ class ForumCommentReplyListCell: UITableViewCell {
     }()
     lazy var nameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.isUserInteractionEnabled = true
         
@@ -106,8 +106,8 @@ class ForumCommentReplyListCell: UITableViewCell {
 //        btn.setTitle("点赞", for: .normal)
         btn.setImage(UIImage(named: "forum_thumbs_up_normal"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .highlighted)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .highlighted)
         btn.alpha = 0
         
         btn.addTarget(self, action: #selector(thumbAction), for: .touchUpInside)
@@ -126,7 +126,7 @@ class ForumCommentReplyListCell: UITableViewCell {
     }()
     lazy var commentLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.lineBreakMode = .byWordWrapping
         lab.numberOfLines = 0
@@ -147,7 +147,7 @@ class ForumCommentReplyListCell: UITableViewCell {
     }()
     lazy var timeLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.isUserInteractionEnabled = true
         
@@ -245,7 +245,7 @@ extension ForumCommentReplyListCell{
     func udpateContent(model:ForumCommentReplyModel) {
         var attr = NSMutableAttributedString(string: "回复")
         let nameAttr = NSMutableAttributedString(string: " \(model.nickNameTo)")
-        nameAttr.yy_color = .COLOR_GRAY_BLACK_45
+        nameAttr.yy_color = .COLOR_TEXT_TITLE_0f1214_50
         attr.append(nameAttr)
         
         var sclaString = ":"
@@ -288,7 +288,7 @@ extension ForumCommentReplyListCell{
             thumbsUpButton.setTitleColor(WHColor_16(colorStr: "F5BA18"), for: .normal)
         }else{
             thumbsUpButton.setImage(UIImage(named: "forum_thumbs_up_normal"), for: .normal)
-            thumbsUpButton.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
+            thumbsUpButton.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         }
         thumbsUpButton.imagePosition(style: .top, spacing: kFitWidth(3))
     }
@@ -344,7 +344,7 @@ extension ForumCommentReplyListCell{
     ///站内信点帖子详情，查看评论/回复的时候，将评论/回复高亮显示一下
     func showSelectAction() {
 //        self.isSelectCell = true
-        bgView.backgroundColor = WHColor_16(colorStr: "EFEFEF")
+        bgView.backgroundColor = .COLOR_BG_EF//WHColor_16(colorStr: "EFEFEF")
         DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
             if self.isTap == false{
                 self.bgView.backgroundColor = .clear
@@ -446,7 +446,7 @@ extension ForumCommentReplyListCell{
 
 extension ForumCommentReplyListCell{
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        bgContentView.backgroundColor = WHColor_16(colorStr: "EFEFEF")
+        bgContentView.backgroundColor = .COLOR_BG_EF//WHColor_16(colorStr: "EFEFEF")
         isTap = true
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

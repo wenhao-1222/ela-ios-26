@@ -70,7 +70,7 @@ class ForumPublishVC: WHBaseViewVC {
         vi.delegate = self
         vi.dataSource = self
         vi.separatorStyle = .none
-        vi.backgroundColor = .white//WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         vi.register(PublishVideoCell.classForCoder(), forCellReuseIdentifier: "PublishVideoCell")
         vi.register(PublishImagesCellCollection.classForCoder(), forCellReuseIdentifier: "PublishImagesCellCollection")
         vi.register(PublishTitleCell.classForCoder(), forCellReuseIdentifier: "PublishTitleCell")

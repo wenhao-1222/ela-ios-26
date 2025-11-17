@@ -108,7 +108,7 @@ class ForumDetailVC: WHBaseViewVC {
         let vm = ForumCommentListVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: commenListHeight))
         vm.model = self.model
         vm.controller = self
-        vm.backgroundColor = .white
+        vm.backgroundColor = .COLOR_BG_WHITE
         if self.commentId.count > 0 || self.replyId.count > 0{
             vm.isFromNewsVC = true
             vm.commentId = self.commentId
@@ -273,8 +273,8 @@ class ForumDetailVC: WHBaseViewVC {
     lazy var loadAllLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(120)))
         lab.text = "- 已全部加载完 -"
-        lab.textColor = .COLOR_GRAY_BLACK_45
-        lab.backgroundColor = .white
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.backgroundColor = .COLOR_BG_WHITE
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.textAlignment = .center
         
@@ -299,9 +299,8 @@ extension ForumDetailVC{
             bottomFuncVm.thumbsUpButton.setTitleColor(WHColor_16(colorStr: "F5BA18"), for: .normal)
         }else{
             bottomFuncVm.thumbsUpButton.setImage(UIImage(named: "forum_thumbs_up_normal"), for: .normal)
-            bottomFuncVm.thumbsUpButton.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
+            bottomFuncVm.thumbsUpButton.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         }
-//        bottomFuncVm.thumbsUpButton.imagePosition(style: .top, spacing: kFitWidth(3))
     }
     func updateCommentCount() {
         if model.totalCommentCount.count > 0 && model.totalCommentCount.intValue > 0{
@@ -309,7 +308,6 @@ extension ForumDetailVC{
         }else{
             bottomFuncVm.commonButton.setTitle("评论", for: .normal)
         }
-//        bottomFuncVm.commonButton.imagePosition(style: .top, spacing: kFitWidth(3))
     }
     func showCommentAlertVm(coModel:ForumCommentModel,reModle:ForumCommentReplyModel) {
         self.commomAlertVm.model = coModel
@@ -331,7 +329,7 @@ extension ForumDetailVC{
 extension ForumDetailVC{
     func initUI() {
         view.addSubview(naviVm)
-        view.backgroundColor = .white
+        view.backgroundColor = .COLOR_BG_WHITE
         let configuration = WKWebViewConfiguration()
         
         configuration.allowsInlineMediaPlayback = true
@@ -344,13 +342,13 @@ extension ForumDetailVC{
         
         wkWebView = WKWebView.init(frame: .zero, configuration: configuration)
         wkWebView.scrollView.bounces = false
-        wkWebView.backgroundColor = .white
+        wkWebView.backgroundColor = .COLOR_BG_WHITE
         view.addSubview(scrollViewBase)
         scrollViewBase.frame = CGRect.init(x: 0, y: naviVm.frame.maxY+kFitWidth(4), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-naviVm.selfHeight-bottomFuncVm.selfHeight-kFitWidth(4))
         scrollViewBase.delegate = self
         scrollViewBase.addSubview(wkWebView)
 //        scrollViewBase.bounces = false
-        scrollViewBase.backgroundColor = .white
+        scrollViewBase.backgroundColor = .COLOR_BG_WHITE
         if #available(iOS 17.4, *) {
             scrollViewBase.bouncesVertically = true
         } else {
@@ -393,8 +391,8 @@ extension ForumDetailVC{
         wkWebView.scrollView.contentInsetAdjustmentBehavior = .never
         wkWebView.navigationDelegate = self
         wkWebView.uiDelegate = self
-        wkWebView.backgroundColor = .white//WHColorWithAlpha(colorStr: "1E1E1E", alpha: 1)//WHColor_16(colorStr: "F6F6F6")
-        wkWebView.scrollView.backgroundColor = .white//WHColorWithAlpha(colorStr: "1E1E1E", alpha: 1)
+        wkWebView.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "1E1E1E", alpha: 1)//WHColor_16(colorStr: "F6F6F6")
+        wkWebView.scrollView.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "1E1E1E", alpha: 1)
         wkWebView.isOpaque = false
         wkWebView.scrollView.bounces = false
         wkWebView.scrollView.isScrollEnabled = false
@@ -447,9 +445,48 @@ extension ForumDetailVC{
         guard let webView = wkWebView else {
             return
         }
+        configureWebViewAppearance()
         webView.loadHTMLString(model.content, baseURL: nil)
     }
-    
+    func configureWebViewAppearance() {
+        guard let webView = wkWebView else { return }
+
+        let css = """
+        body {
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #000000 !important;
+                color: #FFFFFF !important;
+            }
+            * {
+                color: #FFFFFF !important;
+                background-color: transparent !important;
+            }
+            a {
+                color: #4DA3FF !important;
+            }
+        }
+        """
+
+        let js = """
+        var style = document.createElement('style');
+        style.innerHTML = `\(css)`;
+        document.head.appendChild(style);
+        """
+
+        let userScript = WKUserScript(source: js, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+        webView.configuration.userContentController.addUserScript(userScript)
+
+        if #available(iOS 13.0, *) {
+            webView.overrideUserInterfaceStyle = .unspecified  // 自动跟随系统
+        }
+    }
+
+
     func longPressHandle(vm: HeroBrowserViewModuleBaseProtocol) {
         PHPhotoLibrary.requestAuthorization { (status) in
             if status == PHAuthorizationStatus.authorized || status == PHAuthorizationStatus.notDetermined {

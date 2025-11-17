@@ -27,7 +27,7 @@ class ForumCommentFuncAlertItemVM: UIView {
     lazy var bgWhiteView: UIView = {
         let vi = UIView()
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isHidden = true
         vi.clipsToBounds = true
         
@@ -36,7 +36,7 @@ class ForumCommentFuncAlertItemVM: UIView {
     lazy var whiteView: UIView = {
         let vi = UIView()
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
         return vi
@@ -49,7 +49,7 @@ class ForumCommentFuncAlertItemVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.isUserInteractionEnabled = true
         
@@ -59,19 +59,16 @@ class ForumCommentFuncAlertItemVM: UIView {
 
 extension ForumCommentFuncAlertItemVM{
     @objc func tapAction() {
-        whiteView.backgroundColor = .white
-        bgWhiteView.backgroundColor = .white
+        whiteView.backgroundColor = .COLOR_BG_WHITE
+        bgWhiteView.backgroundColor = .COLOR_BG_WHITE
         if self.tapBlock != nil{
             self.tapBlock!()
         }
     }
     
     func addCorners(corners:UIRectCorner) {
-//        bgWhiteView.isHidden = false
-//        bgWhiteView.addClipCorner(corners: corners, radius: kFitWidth(8))
-//        bgWhiteView.backgroundColor = .white
         bgWhiteView.isHidden = false
-        bgWhiteView.backgroundColor = .white
+        bgWhiteView.backgroundColor = .COLOR_BG_WHITE
         if corners.contains(.topLeft){
             bgWhiteView.snp.remakeConstraints { make in
                 make.width.equalTo(kFitWidth(343))
@@ -119,15 +116,15 @@ extension ForumCommentFuncAlertItemVM{
 
 extension ForumCommentFuncAlertItemVM{
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        whiteView.backgroundColor = .COLOR_LIGHT_GREY
-        bgWhiteView.backgroundColor = .COLOR_LIGHT_GREY
+        whiteView.backgroundColor = .COLOR_BG_F5//.COLOR_LIGHT_GREY
+        bgWhiteView.backgroundColor = .COLOR_BG_F5
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        whiteView.backgroundColor = .white
-        bgWhiteView.backgroundColor = .white
+        whiteView.backgroundColor = .COLOR_BG_WHITE
+        bgWhiteView.backgroundColor = .COLOR_BG_WHITE
     }
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        whiteView.backgroundColor = .white
-        bgWhiteView.backgroundColor = .white
+        whiteView.backgroundColor = .COLOR_BG_WHITE
+        bgWhiteView.backgroundColor = .COLOR_BG_WHITE
     }
 }

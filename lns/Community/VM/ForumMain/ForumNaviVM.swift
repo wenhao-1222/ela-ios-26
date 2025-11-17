@@ -17,7 +17,7 @@ class ForumNaviVM : UIView{
     }
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         initUI()
     }
@@ -36,7 +36,7 @@ class ForumNaviVM : UIView{
     
     lazy var authorLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .bold)
         
         return lab
@@ -49,15 +49,16 @@ class ForumNaviVM : UIView{
     }()
     lazy var timeLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         
         return lab
     }()
     lazy var shareButton: UIButton = {
         let btn = UIButton()
-        btn.setImage(UIImage(named: "forum_share_black_icon"), for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+//        btn.setImage(UIImage(named: "forum_share_black_icon"), for: .normal)
+        btn.setImage(UIImage(named: "forum_share_icon"), for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME, for: .highlighted)
         
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_TEXT_85_LIGHT, for: .highlighted)

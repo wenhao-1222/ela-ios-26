@@ -16,7 +16,7 @@ class PublishPollTitleNameVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -32,7 +32,7 @@ class PublishPollTitleNameVM: UIView {
     lazy var textField : ChineseTextField = {
         let text = ChineseTextField()
         
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 16, weight: .medium)
         text.delegate = self
         text.returnKeyType = .done
@@ -44,7 +44,7 @@ class PublishPollTitleNameVM: UIView {
     
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         return vi
     }()
 }
@@ -55,7 +55,7 @@ extension PublishPollTitleNameVM{
         addSubview(lineView)
         
         // 使用方法
-        let image = UIImage(named: "logs_pen_icon")!
+        let image = UIImage(named: "logs_pen_icon")!.withTintColor(.COLOR_BG_BLACK.withAlphaComponent(0.25))
         let attributedString = createAttributedStringWithImage(image: image, text: "投票标题")
         textField.attributedPlaceholder = attributedString
         
@@ -84,7 +84,7 @@ extension PublishPollTitleNameVM{
      
         let string = NSMutableAttributedString(string: text)
         string.yy_font = .systemFont(ofSize: 16, weight: .regular)
-        string.yy_color = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        string.yy_color = .COLOR_BG_BLACK.withAlphaComponent(0.25)//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         attachmentString.append(string)
         
 //        string.insert(attachmentString, at: 0)

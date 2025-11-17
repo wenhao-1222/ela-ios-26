@@ -36,7 +36,7 @@ class ForumCommentAlertVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.35)
+        self.backgroundColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.35)//WHColorWithAlpha(colorStr: "000000", alpha: 0.35)
         self.isUserInteractionEnabled = true
 //        self.alpha = 1.0
         self.isHidden = true
@@ -65,7 +65,7 @@ class ForumCommentAlertVM: UIView {
 //        let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-contentWhiteHeight, width: SCREEN_WIDHT, height: contentWhiteHeight))
         //SCREEN_HEIGHT-(self.contentWhiteHeight - kFitWidth(32))*0.5
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
@@ -87,7 +87,7 @@ class ForumCommentAlertVM: UIView {
     lazy var textView : UITextView = {
         let text = UITextView()
         text.font = .systemFont(ofSize: 16, weight: .regular)
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.backgroundColor = .clear
         text.delegate = self
         text.isScrollEnabled = false
@@ -107,7 +107,7 @@ class ForumCommentAlertVM: UIView {
     
     lazy var placeholderLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.25)//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.text = "说点什么"
         return lab
@@ -406,7 +406,7 @@ extension ForumCommentAlertVM{
         self.clearMSg()
 //        self.alpha = 1
         
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+        self.backgroundColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.02)//.COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 0)
         //是回复别人的评论
         if self.model.id.count > 0 {
             placeholderLabel.text = "@\(self.model.nickName)"
@@ -419,7 +419,7 @@ extension ForumCommentAlertVM{
         self.textView.becomeFirstResponder()
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
 //            self.alpha = 1
-            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.35)
+            self.backgroundColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.25)//WHColorWithAlpha(colorStr: "000000", alpha: 0.35)
         }
     }
     @objc func hiddenView() {

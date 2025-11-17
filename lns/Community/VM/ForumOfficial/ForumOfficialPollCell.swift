@@ -18,7 +18,7 @@ class ForumOfficialPollCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -29,13 +29,13 @@ class ForumOfficialPollCell: UITableViewCell {
         vi.layer.cornerRadius = kFitWidth(5)
         vi.clipsToBounds = true
         vi.layer.borderWidth = kFitWidth(1)
-        vi.layer.borderColor = UIColor.COLOR_GRAY_BLACK_25.cgColor
+        vi.layer.borderColor = UIColor.COLOR_BG_BLACK_30.cgColor
         
         return vi
     }()
     lazy var detailLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
@@ -49,7 +49,7 @@ class ForumOfficialPollCell: UITableViewCell {
     }()
     lazy var numberLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
@@ -119,9 +119,9 @@ extension ForumOfficialPollCell{
             make.width.equalTo(0)
         }
         progressView.isHidden = true
-        bottomView.layer.borderColor = UIColor.COLOR_GRAY_BLACK_25.cgColor
-        numberLabel.textColor = .COLOR_GRAY_BLACK_45
-        detailLab.textColor = .COLOR_GRAY_BLACK_65
+        bottomView.layer.borderColor = UIColor.COLOR_BG_BLACK_30.cgColor
+        numberLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        detailLab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         for i in 0..<model.statistics.count{
             let dict = model.statistics[i]as? NSDictionary ?? [:]
             if dict.stringValueForKey(key: "content") == detailLab.text{
@@ -165,8 +165,8 @@ extension ForumOfficialPollCell{
             bottomView.layer.borderColor = UIColor.THEME.cgColor
             detailLab.textColor = .THEME
         }else{
-            bottomView.layer.borderColor = UIColor.COLOR_GRAY_BLACK_25.cgColor
-            detailLab.textColor = .COLOR_GRAY_BLACK_65
+            bottomView.layer.borderColor = UIColor.COLOR_BG_BLACK_30.cgColor
+            detailLab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         }
     }
 }
