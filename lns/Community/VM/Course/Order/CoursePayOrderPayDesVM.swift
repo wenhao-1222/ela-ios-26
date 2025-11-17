@@ -67,7 +67,7 @@ class CoursePayOrderPayDesVM : UIView{
         let highlightText = "《课程购买协议》"
         let attributedString = NSMutableAttributedString(string: fullText)
 //        attributedString.yy_font = UIFont.systemFont(ofSize: 16)
-        attributedString.yy_color = UIColor.black
+        attributedString.yy_color = UIColor.COLOR_TEXT_TITLE_0f1214
 
         if let range = fullText.range(of: highlightText) {
             let nsRange = NSRange(range, in: fullText)

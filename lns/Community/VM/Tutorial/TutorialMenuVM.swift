@@ -19,7 +19,7 @@ class TutorialMenuVM: UIView {
     }
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: kFitWidth(16), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
-        self.backgroundColor = .white//WHColor_16(colorStr: "2C2C2C")
+        self.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "2C2C2C")
         self.layer.cornerRadius = kFitWidth(12)
 //        self.clipsToBounds = true
         self.isUserInteractionEnabled = true
@@ -62,7 +62,7 @@ class TutorialMenuVM: UIView {
     }()
     lazy var lineBottomView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F5F6F8")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F5F6F8")
         
         return vi
     }()

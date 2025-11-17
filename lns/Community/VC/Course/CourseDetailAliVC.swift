@@ -238,7 +238,7 @@ extension CourseDetailAliVC{
         view.addSubview(tableView)
         view.addSubview(videoAliVm)
         view.bringSubviewToFront(videoAliVm)
-        view.backgroundColor = .white//WHColor_16(colorStr: "1C1C1C")
+        view.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "1C1C1C")
         
         view.insertSubview(detailVm, belowSubview: videoAliVm)
         view.insertSubview(menuVm, belowSubview: videoAliVm)
@@ -372,21 +372,16 @@ extension CourseDetailAliVC{
     }
     func updatePlayModel() {
         self.tableView.scrollToRow(at: IndexPath(row: self.currentVideoIndex, section: 0), at: .middle, animated: true)
-        self.savePlayHistoryToLocal()
         self.tutorialModel = self.dataSourceArray[self.currentVideoIndex]
         self.detailVm.updateUI(model: self.tutorialModel)
         self.menuVm.updateUI(model: self.tutorialModel)
+        self.savePlayHistoryToLocal()
         
         DispatchQueue.main.async {
             self.videoAliVm.updateUI(model: self.tutorialModel)
             self.videoAliVm.play()
             self.tableView.reloadData()
         }
-//        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-//            self.videoAliVm.updateUI(model: self.tutorialModel)
-//            self.videoAliVm.play()
-//            self.tableView.reloadData()
-//        })
     }
     func savePlayHistoryToLocal() {
         let currentDict = NSMutableDictionary()

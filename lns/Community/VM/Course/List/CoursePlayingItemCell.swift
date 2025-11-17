@@ -17,7 +17,7 @@ class CoursePlayingItemCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         
         initUI()

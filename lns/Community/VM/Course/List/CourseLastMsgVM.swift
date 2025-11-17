@@ -31,7 +31,7 @@ class CourseLastMsgVM : UIView{
     }
     lazy var whiteBgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.isUserInteractionEnabled = true
         
@@ -68,7 +68,7 @@ class CourseLastMsgVM : UIView{
         lab.clipsToBounds = true
         lab.textAlignment = .center
         lab.text = "上次观看"
-        lab.textColor = .white
+        lab.textColor = .COLOR_TEXT_WHITE
         lab.font = .systemFont(ofSize: 9, weight: .medium)
         
         return lab
@@ -99,7 +99,7 @@ class CourseLastMsgVM : UIView{
     }()
     lazy var progressBgView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_GRAY_C4C4C4
+        vi.backgroundColor = .COLOR_BG_F5
         vi.layer.cornerRadius = kFitWidth(1)
         vi.clipsToBounds = true
         vi.isHidden = true
