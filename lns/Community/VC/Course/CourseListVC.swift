@@ -51,6 +51,13 @@ class CourseListVC: WHBaseViewVC {
     }
     
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 12.0, *),
+           previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            changeNaviAlpha(offsetY: tableView.contentOffset.y)
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -348,7 +355,7 @@ extension CourseListVC{
 //        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
             self.listHeadVm.updateUI(dict: self.headMsgDict)
 //        })
-        
+        changeNaviAlpha(offsetY: 0)
         view.insertSubview(firstPlayTipsAlertVm, at: 999)
         
         initSkeletonData()
@@ -382,13 +389,17 @@ extension CourseListVC{
         var percent = (offsetY - self.listHeadVm.selfHeight + getNavigationBarHeight()*2) / getNavigationBarHeight()
         percent = min(max(percent, 0), 1)
         
-        navigationView.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: percent)
-        navigationView.alpha = percent
-        let colorValue = 1 - percent
-        var arrowColor = UIColor(red: colorValue,
-                                 green: colorValue,
-                                 blue: colorValue,
-                                 alpha: 1)
+//        UIView.animate(withDuration: 0.15) {
+//            self.navigationView.backgroundColor = .COLOR_BG_WHITE
+//        }
+//        navigationView.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: percent)
+//        navigationView.alpha = percent
+        DLLog(message: "changeNaviAlpha:  \(percent)")
+//        let colorValue = 1 - percent
+//        var arrowColor = UIColor(red: colorValue,
+//                                 green: colorValue,
+//                                 blue: colorValue,
+//                                 alpha: 1)
         
 //        if traitCollection.userInterfaceStyle == .dark{
 //            if percent > 1 {
@@ -398,8 +409,43 @@ extension CourseListVC{
 //            }
 //        }
         
+//        var arrowColor = UIColor.white //= traitCollection.userInterfaceStyle == .dark ? .white : .black
+//        
+//        if percent > 0.1 {
+//            if traitCollection.userInterfaceStyle == .dark{
+//                arrowColor = .white
+//            }else{
+//                arrowColor = .black
+//            }
+//        }else{
+//            if traitCollection.userInterfaceStyle == .dark{
+//                arrowColor = .black
+//            }else{
+//                arrowColor = .white
+//            }
+//        }
+        navigationView.backgroundColor = UIColor.COLOR_BG_WHITE.withAlphaComponent(percent)//currentNavigationBackgroundColor(alpha: percent)
+       let arrowColor: UIColor
+       if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+           arrowColor = .white
+       } else {
+           let colorValue = 1 - percent
+           arrowColor = UIColor(red: colorValue, green: colorValue, blue: colorValue, alpha: 1)
+       }
+
         self.backArrowButton.backImgView.image = backImg?.WHImageWithTintColor(color: arrowColor)
         self.shareButton.setImage(shareImg?.WHImageWithTintColor(color: arrowColor), for: .normal)
+    }
+    
+    private func currentNavigationBackgroundColor(alpha: CGFloat) -> UIColor {
+        let baseColor: UIColor
+//        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+//            baseColor = .COLOR_BG_BLACK
+//        } else {
+            baseColor = .COLOR_BG_WHITE
+//        }
+
+        return baseColor.withAlphaComponent(alpha)
     }
 }
 
