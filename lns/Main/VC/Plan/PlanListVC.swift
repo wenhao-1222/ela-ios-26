@@ -157,7 +157,7 @@ extension PlanListVC{
 }
 extension PlanListVC{
     func initUI() {
-        view.backgroundColor = WHColor_16(colorStr: "F5F5F5")
+        view.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "F5F5F5")
         view.addSubview(topVm)
         view.addSubview(tableView)
         tableView.addSubview(noDataView)

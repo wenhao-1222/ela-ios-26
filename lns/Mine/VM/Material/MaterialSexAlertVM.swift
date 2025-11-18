@@ -14,28 +14,57 @@ class MaterialSexAlertVM: FeedBackView {
     var sex = "男"
     var confirmBlock:((String)->())?
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+        self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         self.isUserInteractionEnabled = true
-        self.alpha = 0
+//        self.alpha = 0
         self.isHidden = true
         
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenView))
-        self.addGestureRecognizer(tap)
+//        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenView))
+//        self.addGestureRecognizer(tap)
         
         initUI()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    private lazy var bgView: UIView = {
+        let v = UIView(frame: bounds)
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.alpha = 0
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
+        v.addGestureRecognizer(tap)
+        return v
+    }()
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-kFitWidth(260)-WHUtils().getBottomSafeAreaHeight(), width: SCREEN_WIDHT, height: kFitWidth(260)+WHUtils().getBottomSafeAreaHeight()+kFitWidth(16)))
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
-        vi.alpha = 0
+        vi.backgroundColor = .COLOR_BG_WHITE
+//        vi.alpha = 0
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
         vi.addGestureRecognizer(tap)
@@ -62,20 +91,20 @@ class MaterialSexAlertVM: FeedBackView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.text = "选择性别"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()
     lazy var pickerView: UIPickerView = {
         let picker = UIPickerView()
-        picker.backgroundColor = .white
+        picker.backgroundColor = .COLOR_BG_WHITE
         picker.delegate = self
         picker.dataSource = self
         
@@ -85,6 +114,7 @@ class MaterialSexAlertVM: FeedBackView {
 
 extension MaterialSexAlertVM{
     func initUI() {
+        addSubview(bgView)
         addSubview(whiteView)
         whiteView.addSubview(closeButton)
         whiteView.addSubview(titleLabel)
@@ -123,23 +153,29 @@ extension MaterialSexAlertVM{
     }
 }
 
-
 extension MaterialSexAlertVM{
     @objc func showView() {
         self.isHidden = false
         let whiteViewFrame = self.whiteView.frame
+        bgView.alpha = 0
+        bgView.isUserInteractionEnabled = false
         UIView.animate(withDuration: 0.25, delay: 0,options: .curveLinear) {
-            self.alpha = 1
-            self.whiteView.alpha = 1
+//            self.alpha = 1
+//            self.whiteView.alpha = 1
             self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT-whiteViewFrame.height+kFitWidth(16), width: SCREEN_WIDHT, height: whiteViewFrame.height)
+            self.bgView.alpha = self.targetDimAlpha//0.25
+        } completion: { _ in
+            self.bgView.isUserInteractionEnabled = true
+            
         }
     }
     @objc func hiddenView() {
         let whiteViewFrame = self.whiteView.frame
         UIView.animate(withDuration: 0.25, delay: 0,options: .curveLinear) {
-            self.alpha = 0
+//            self.alpha = 0
             self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewFrame.height)
-            self.whiteView.alpha = 0
+//            self.whiteView.alpha = 0
+            self.bgView.alpha = 0
         }completion: { t in
             self.isHidden = true
         }

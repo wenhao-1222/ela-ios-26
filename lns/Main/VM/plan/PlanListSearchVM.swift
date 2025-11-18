@@ -30,7 +30,7 @@ class PlanListSearchVM: UIView {
     }
     lazy var seachBgView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(18)
         vi.clipsToBounds = true
@@ -50,7 +50,7 @@ class PlanListSearchVM: UIView {
     lazy var textField: ChineseTextField = {
         let text = ChineseTextField()
         text.placeholder = "搜索饮食计划"
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 14, weight: .regular)
         text.returnKeyType = .search
         text.delegate = self

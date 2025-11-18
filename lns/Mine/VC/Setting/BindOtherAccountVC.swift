@@ -28,7 +28,8 @@ class BindOtherAccountVC : WHBaseViewVC {
     lazy var appidVm: BindOtherAccountItemVM = {
         let vm = BindOtherAccountItemVM.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight()+kFitWidth(8), width: 0, height: 0))
 //        vm.frame = CGRect.init(x: 0, y: self.wechatVm.frame.maxY, width: SCREEN_WIDHT, height: MineFuncItemVM().selfHeight)
-        vm.leftIconImgView.setImgLocal(imgName: "login_apple_icon")
+//        vm.leftIconImgView.setImgLocal(imgName: "login_apple_icon")
+        vm.leftIconImgView.image = UIImage(named: "login_apple_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         vm.titleLab.text = "Apple ID"
         vm.tapBlock = {()in
             if UserInfoModel.shared.isBindAppId{
@@ -88,7 +89,7 @@ extension BindOtherAccountVC{
     func initUI() {
         initNavi(titleStr: "关联第三方账号")
         
-        view.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         view.addSubview(wechatVm)
         view.addSubview(appidVm)
         upateBindStatus()

@@ -34,7 +34,7 @@ class LoginPhoneTypeAlertItemVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
         
@@ -42,7 +42,7 @@ class LoginPhoneTypeAlertItemVM: UIView {
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()

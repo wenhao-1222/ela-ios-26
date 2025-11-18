@@ -79,7 +79,7 @@ class PlanCreateFoodsTableViewCell: UITableViewCell {
     }()
     lazy var arrowImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "plan_arrow_gray")
+        img.setImgLocal(imgName: "plan_arrow_gray")//plan_detail_arrow_icon_right
         img.isUserInteractionEnabled = true
         return img
     }()

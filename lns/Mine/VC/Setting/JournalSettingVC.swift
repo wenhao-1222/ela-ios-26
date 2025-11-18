@@ -28,7 +28,7 @@ class JournalSettingVC: WHBaseViewVC {
     lazy var logsTitleLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(12), y: 0, width: kFitWidth(200), height: kFitWidth(44)))
         lab.text = "日志"
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -54,22 +54,6 @@ class JournalSettingVC: WHBaseViewVC {
         }
         return vm
     }()
-//    lazy var hiddenQuestionnaireVm : MaterialItemVM = {
-//        let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.resetLogsMealsVm.frame.maxY, width: 0, height: 0))
-//        vm.leftLabel.text = "隐藏获取计划功能"
-//        vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
-//        vm.detailLabel.text = ""
-//        vm.arrowImgView.isHidden = true
-//        vm.switchButton.isHidden = false
-//        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.hidden_survery_button_status)
-//        vm.tapBlock = {()in
-//            
-//        }
-//        vm.switchButton.tapBlock = {(isSelect)in
-//            self.sendSaveSurveryStatusRequest(statu: isSelect)
-//        }
-//        return vm
-//    }()
     lazy var hiddenLogsTimeVm : MaterialItemVM = {
         let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.resetLogsMealsVm.frame.maxY, width: 0, height: 0))
         vm.leftLabel.text = "记录进餐时间"
@@ -162,29 +146,14 @@ class JournalSettingVC: WHBaseViewVC {
 //        vm.isHidden = true
         vm.tapBlock = {()in
             let vc = LogsMealsAlertSetVC()
-//            self.present(vc, animated: true)
             self.navigationController?.pushViewController(vc, animated: true)
         }
         return vm
     }()
-    
-//    lazy var waterAlertVm : MaterialItemVM = {
-//        let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.mealsAlertSetVm.frame.maxY, width: 0, height: 0))
-//        vm.leftLabel.text = "喝水提醒"
-//        vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
-//        vm.detailLabel.text = ""
-//        vm.tapBlock = {()in
-//            let vc = WaterAlertSetVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-////            self.present(vc, animated: true)
-//        }
-//        return vm
-//    }()
-
     lazy var bodydataTitleLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(12), y: self.mealsAlertSetVm.frame.maxY, width: kFitWidth(200), height: kFitWidth(44)))
         lab.text = "身体数据"
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -205,7 +174,7 @@ class JournalSettingVC: WHBaseViewVC {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(12), y: self.resetWeightUnitVm.frame.maxY, width: kFitWidth(200), height: kFitWidth(44)))
         lab.text = "运动记录"
 //        lab.text = "苹果“健康”APP"
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -380,10 +349,10 @@ extension JournalSettingVC{
 extension JournalSettingVC{
     func initUI() {
         initNavi(titleStr: "个性化设置")
-        view.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         
         view.addSubview(scrollViewBase)
-        scrollViewBase.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        scrollViewBase.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         scrollViewBase.frame = CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight())
         
         scrollViewBase.addSubview(logsTitleLabel)

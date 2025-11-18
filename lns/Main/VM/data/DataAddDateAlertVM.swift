@@ -23,7 +23,7 @@ class DataAddDateAlertVM: UIView {
     /// 蒙层目标透明度：浅色 0.15，深色 0.85
     private var targetDimAlpha: CGFloat {
         if #available(iOS 13.0, *) {
-            return traitCollection.userInterfaceStyle == .dark ? 0.85 : 0.25
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
         } else {
             // iOS 13 以下没有深色模式，按浅色处理
             return 0.25

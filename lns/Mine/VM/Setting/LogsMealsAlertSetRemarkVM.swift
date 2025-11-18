@@ -33,7 +33,7 @@ class LogsMealsAlertSetRemarkVM: UIView {
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingAction))
         vi.addGestureRecognizer(tap)
@@ -42,23 +42,22 @@ class LogsMealsAlertSetRemarkVM: UIView {
     }()
     lazy var penIcon : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "logs_pen_icon")
+//        img.setImgLocal(imgName: "logs_pen_icon")
+        img.image = UIImage(named: "logs_pen_icon")?.withTintColor(.COLOR_BG_BLACK_045)
         img.isUserInteractionEnabled = true
         return img
     }()
     lazy var placeHoldLabel : UILabel = {
         let lab = UILabel()
         lab.text = "这里输入您的备注"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
     }()
     lazy var textView : UITextView = {
         let vi = UITextView.init(frame: CGRect.init(x: kFitWidth(16), y: selfHeight*0.5-kFitWidth(16), width: SCREEN_WIDHT-kFitWidth(64), height: kFitWidth(32)))
-//        let vi = UITextView.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(8), width: SCREEN_WIDHT-kFitWidth(64), height: kFitWidth(40)))
-//        let vi = UITextView()
-        vi.textColor = .COLOR_GRAY_BLACK_85
+        vi.textColor = .COLOR_TEXT_TITLE_0f1214
         vi.font = .systemFont(ofSize: 14, weight: .regular)
         vi.delegate = self
         vi.backgroundColor = .clear
@@ -101,10 +100,8 @@ extension LogsMealsAlertSetRemarkVM{
             
             if string.count == 0 {
                 self.penIcon.isHidden = false
-//                self.placeHoldLabel.isHidden = false
             }else{
                 self.penIcon.isHidden = true
-//                self.placeHoldLabel.isHidden = true
             }
         }
     }
@@ -126,37 +123,17 @@ extension LogsMealsAlertSetRemarkVM{
     func setConstrait() {
         penIcon.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
-//            make.top.equalTo(kFitWidth(20))
             make.centerY.lessThanOrEqualToSuperview()
             make.width.height.equalTo(kFitWidth(16))
         }
         placeHoldLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(36))
-//            make.centerY.lessThanOrEqualTo(penIcon)
             make.centerY.lessThanOrEqualToSuperview()
         }
-//        textView.snp.makeConstraints { make in
-//            make.left.equalTo(penIcon)
-//            make.centerY.lessThanOrEqualTo(penIcon)
-//        }
-//        textView.snp.makeConstraints { make in
-//            make.left.equalTo(penIcon)
-//            make.top.equalTo(placeHoldLabel).offset(kFitWidth(-6))
-//            make.right.equalTo(kFitWidth(-56))
-//            make.bottom.equalTo(kFitWidth(-100))
-//        }
     }
 }
 
 extension LogsMealsAlertSetRemarkVM:UITextViewDelegate{
-    func textViewDidBeginEditing(_ textView: UITextView) {
-//        self.textView.snp.remakeConstraints { make in
-//            make.left.equalTo(penIcon)
-//            make.top.equalTo(placeHoldLabel).offset(kFitWidth(-6))
-//            make.right.equalTo(kFitWidth(-56))
-//            make.bottom.equalTo(kFitWidth(-400))
-//        }
-    }
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == ""{
             if textView.text.count == 1 {
@@ -167,7 +144,6 @@ extension LogsMealsAlertSetRemarkVM:UITextViewDelegate{
             return true
         }
         if text == "\n"{
-//            textView.text = "\(textView.text ?? "")\n"
             self.textView.resignFirstResponder()
             return false
         }
@@ -187,12 +163,6 @@ extension LogsMealsAlertSetRemarkVM:UITextViewDelegate{
         return true
     }
     func textViewDidEndEditing(_ textView: UITextView) {
-//        self.textView.snp.remakeConstraints { make in
-//            make.left.equalTo(penIcon)
-//            make.top.equalTo(placeHoldLabel).offset(kFitWidth(-6))
-//            make.right.equalTo(kFitWidth(-56))
-//            make.bottom.equalTo(kFitWidth(-100))
-//        }
         if self.remarkBlock != nil{
             self.remarkBlock!(self.textView.text)
         }

@@ -24,7 +24,7 @@ class UpdatePhoneVC: WHBaseViewVC {
     lazy var tipsLabel: UILabel = {
         let lab = UILabel()
         lab.text = "我们要对您绑定的手机号进行验证"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -32,7 +32,7 @@ class UpdatePhoneVC: WHBaseViewVC {
     lazy var phoneLabel: UILabel = {
         let lab = UILabel()
         lab.text = "\(UserInfoModel.shared.phone.mc_clipFromPrefix(to: 3)) **** \(UserInfoModel.shared.phone.mc_cutToSuffix(from: 7))"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -41,7 +41,7 @@ class UpdatePhoneVC: WHBaseViewVC {
         let vi = MHVerifyCodeView.init()
         vi.spacing = kFitWidth(24)
         vi.verifyCount = 4
-        vi.bgColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.bgColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.borderColor = .clear
         vi.setCompleteHandler { verifyCode in
             DLLog(message: "\(verifyCode)")
@@ -86,26 +86,6 @@ class UpdatePhoneVC: WHBaseViewVC {
 }
 
 extension UpdatePhoneVC{
-//    func initTimer() {
-//        self.codeTimer.schedule(deadline: .now(), repeating: .milliseconds(1000))
-//        self.codeTimer.setEventHandler {
-//            self.getCodeTime = self.getCodeTime - 1
-//            
-//            if self.getCodeTime < 0{
-//                self.codeTimer.suspend()
-//                self.getCodeTime = 60
-//                DispatchQueue.main.async {
-//                    self.getCodeBtn.isEnabled = true
-//                    self.getCodeBtn.setTitle("重新发送", for: .normal)
-//                }
-//            }else{
-//                DispatchQueue.main.async {
-//                    self.getCodeBtn.isEnabled = false
-//                    self.getCodeBtn.setTitle("重新发送 \(self.getCodeTime)s", for: .normal)
-//                }
-//            }
-//        }
-//    }
     func startCountdown() {
         //一般倒计时是操作UI，使用主队列
         self.getCodeTime = 59
@@ -138,7 +118,7 @@ extension UpdatePhoneVC{
 extension UpdatePhoneVC{
     func initUI() {
         initNavi(titleStr: "绑定手机号")
-        view.backgroundColor = .white
+        view.backgroundColor = .COLOR_BG_WHITE
         
         view.addSubview(tipsLabel)
         view.addSubview(phoneLabel)

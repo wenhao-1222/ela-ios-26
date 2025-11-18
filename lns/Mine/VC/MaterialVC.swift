@@ -32,16 +32,8 @@ class MaterialVC: WHBaseViewVC {
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
     
-//    override func viewWillDisappear(_ animated: Bool) {
-//        IQKeyboardManager.shared.enable = true
-//        IQKeyboardManager.shared.enableAutoToolbar = true
-//        self.nameAlertVm.disableTimer()
-//        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
-//    }
     override func viewDidDisappear(_ animated: Bool) {
         IQKeyboardManager.shared.enable = true
-//        IQKeyboardManager.shared.enableAutoToolbar = true
-//        self.nameAlertVm.disableTimer()
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
     override func viewDidLoad() {
@@ -68,7 +60,7 @@ class MaterialVC: WHBaseViewVC {
         let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.avatarVm.frame.maxY, width: 0, height: 0))
         vm.leftLabel.text = "ID"
         vm.arrowImgView.isHidden = true
-        vm.detailLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        vm.detailLabel.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         vm.isUserInteractionEnabled = false
         vm.detailLabel.text = "\(UserInfoModel.shared.id)"
         
@@ -111,7 +103,7 @@ class MaterialVC: WHBaseViewVC {
         let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.birthDayVm.frame.maxY, width: 0, height: 0))
         vm.leftLabel.text = "年龄"
         vm.arrowImgView.isHidden = true
-        vm.detailLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        vm.detailLabel.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         vm.isUserInteractionEnabled = false
         vm.isHidden = true
         
@@ -165,7 +157,7 @@ class MaterialVC: WHBaseViewVC {
 extension MaterialVC{
     func initUI()  {
         initNavi(titleStr: "编辑资料")
-        view.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         
         view.addSubview(avatarVm)
         view.addSubview(idVm)

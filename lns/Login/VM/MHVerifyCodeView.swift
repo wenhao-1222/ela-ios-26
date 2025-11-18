@@ -5,13 +5,13 @@ class VerifyCodeSingleView: UILabel{
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.layer.borderColor = UIColor.COLOR_GRAY_BLACK_85.cgColor
+        self.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214.cgColor
         self.layer.borderWidth = kFitWidth(1)
         self.layer.cornerRadius = kFitWidth(8)
         self.clipsToBounds = true
         self.textAlignment = .center
         self.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        self.textColor = .COLOR_GRAY_BLACK_85
+        self.textColor = .COLOR_TEXT_TITLE_0f1214
     }
     
     required init?(coder: NSCoder) {

@@ -28,14 +28,14 @@ class UpdatePhoneNewVC: WHBaseViewVC {
     
     lazy var phoneVm : LoginPhoneButton = {
         let vm = LoginPhoneButton.init(frame: CGRect.init(x: kFitWidth(24), y: kFitWidth(40)+getNavigationBarHeight(), width: 0, height: 0))
-        vm.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vm.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vm.layer.borderColor = UIColor.clear.cgColor
         vm.controller = self
         return vm
     }()
     lazy var verifyCodeVm : BindPhoneVerifyCodeButton = {
         let vm = BindPhoneVerifyCodeButton.init(frame: CGRect.init(x: kFitWidth(24), y: kFitWidth(108)+getNavigationBarHeight(), width: 0, height: 0))
-        vm.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vm.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vm.layer.borderColor = UIColor.clear.cgColor
         vm.judgeVerifyCodeBlock = {(code)in
             self.verifyCode = code
@@ -152,6 +152,7 @@ extension UpdatePhoneNewVC{
 extension UpdatePhoneNewVC{
     func initUI() {
         initNavi(titleStr: "绑定新手机号")
+        view.backgroundColor = .COLOR_BG_WHITE
         
         view.addSubview(phoneVm)
         view.addSubview(verifyCodeVm)

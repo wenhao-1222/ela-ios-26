@@ -45,7 +45,7 @@ class JournalTableViewCell: UITableViewCell {
     
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(10), y: kFitWidth(12), width: SCREEN_WIDHT-kFitWidth(20), height: kFitWidth(70)))
-        vi.backgroundColor = .COLOR_BG_WHITE//UIColor(named: "color_bg_f5")
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//UIColor(named: "color_bg_f5")
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(12)
         

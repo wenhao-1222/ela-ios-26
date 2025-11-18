@@ -14,7 +14,7 @@ class SettingTopVM: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -30,7 +30,7 @@ class SettingTopVM: UIView {
     }()
     lazy var currentVersionLabel :UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         
         let currentVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
         lab.text = "当前版本：\(currentVersion)"
@@ -40,7 +40,7 @@ class SettingTopVM: UIView {
     }()
     lazy var tipsLab :UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
 //        lab.text = "Copyright © Elavatine All Rights reserved."
         lab.text = "Copyright © 2024 深圳力冠实业 版权所有"
         lab.font = .systemFont(ofSize: 12, weight: .regular)

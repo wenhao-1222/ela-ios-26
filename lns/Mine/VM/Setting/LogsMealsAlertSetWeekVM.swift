@@ -42,7 +42,7 @@ extension LogsMealsAlertSetWeekVM{
         if btnSender.isSelected == true{
             btnSender.layer.borderColor = UIColor.THEME.cgColor
         }else{
-            btnSender.layer.borderColor = UIColor.COLOR_GRAY_BLACK_25.cgColor
+            btnSender.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_25.cgColor
         }
         
         if self.btnTapBlock != nil{
@@ -57,10 +57,10 @@ extension LogsMealsAlertSetWeekVM{
             let btn = FeedBackButton()
             btn.frame = CGRect.init(x: leftGap + (btnWidth + btnGap) * CGFloat(i), y: (selfHeight-btnWidth)*0.5, width: btnWidth, height: btnWidth)
             btn.setTitle("\(weekDayTitleArray[i])", for: .normal)
-            btn.setTitleColor(.COLOR_GRAY_BLACK_25, for: .normal)
+            btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_25, for: .normal)
             btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
             btn.setTitleColor(.white, for: .selected)
-            btn.layer.borderColor = UIColor.COLOR_GRAY_BLACK_25.cgColor
+            btn.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_25.cgColor
             btn.layer.borderWidth = kFitWidth(1)
             btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .selected)
             btn.layer.cornerRadius = btnWidth*0.5
