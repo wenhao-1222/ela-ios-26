@@ -26,7 +26,7 @@ class NaturalStatCalendarMarkView: UIView {
     }
     lazy var arcView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(220), y: kFitWidth(32), width: kFitWidth(16), height: kFitWidth(16)))
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(1)
         return vi
     }()

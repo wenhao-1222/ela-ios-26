@@ -15,6 +15,7 @@ import UIKit
 
 
 extension UIView {
+    
     /**
      * 将一个UIView视图转为图片
      */

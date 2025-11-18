@@ -40,7 +40,7 @@ class GoalCircleSegmentVM: UIView {
    }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: kFitWidth(13.5), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(27), height: selfHeight))
-        self.backgroundColor = .COLOR_BG_F5
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         self.layer.cornerRadius = kFitWidth(8)
         self.clipsToBounds = true

@@ -43,7 +43,7 @@ class FoodsCreateSpecVM: UIView {
         text.text = "100"
         text.textColor = .THEME
         text.font = .systemFont(ofSize: 14, weight: .medium)
-        text.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "F0F0F0")
+        text.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         text.layer.cornerRadius = kFitWidth(4)
         text.clipsToBounds = true
         text.textAlignment = .center

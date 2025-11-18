@@ -17,14 +17,14 @@ class NaturalStatCalendarHeadView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(48)))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .clear
         self.isUserInteractionEnabled = true
         
         initUI()
     }
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_10//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
         
         return vi
     }()

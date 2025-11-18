@@ -20,7 +20,7 @@ class GoalSetWeeksAlertVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = .COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 0)
+        self.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 0)
         self.isUserInteractionEnabled = true
         self.isHidden = true
         
@@ -40,7 +40,7 @@ class GoalSetWeeksAlertVM: UIView {
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.clipsToBounds = true
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(12))
         
@@ -54,9 +54,6 @@ class GoalSetWeeksAlertVM: UIView {
         vm.cancelBlock = {()in
             self.hiddenView()
         }
-//        vm.confirmBlock = {()in
-//            self.submitAction()
-//        }
         vm.typeVm.typeChangeBlock = {(type)in
             self.caloriesVm.changeType(type: type)
             self.showSelf()

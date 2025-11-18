@@ -25,7 +25,7 @@ class LogsMealsAlertSetTableViewCell: FeedBackTableViewCell {
     
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true

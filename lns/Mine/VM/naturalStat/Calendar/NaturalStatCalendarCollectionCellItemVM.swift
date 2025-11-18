@@ -15,16 +15,6 @@ class NaturalStatCalendarCollectionCellItemVM: UIView {
     var isSelect = false
     var tapBlock:(()->())?
     
-    override func traitCollectionDidChange(_ previous: UITraitCollection?) {
-        super.traitCollectionDidChange(previous)
-        guard traitCollection.hasDifferentColorAppearance(comparedTo: previous) else { return }
-        
-        if traitCollection.userInterfaceStyle == .dark {
-            
-        }else{
-            
-        }
-    }
     
     required init?(coder: NSCoder) {
         fatalError("required init?(coder: NSCoder) failed")

@@ -34,7 +34,7 @@ class OrderListTableViewCell: UITableViewCell {
     // MARK: - UI
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
@@ -98,7 +98,7 @@ class OrderListTableViewCell: UITableViewCell {
 
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
 

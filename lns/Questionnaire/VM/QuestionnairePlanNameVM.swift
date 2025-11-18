@@ -16,7 +16,7 @@ class QuestionnairePlanNameVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -30,13 +30,13 @@ class QuestionnairePlanNameVM: UIView {
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         return vi
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.text = "您的计划名称是？"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         
         return lab
@@ -55,11 +55,11 @@ class QuestionnairePlanNameVM: UIView {
     lazy var nameTextField : ChineseTextField = {
         let text = ChineseTextField()
         text.layer.cornerRadius = kFitWidth(8)
-        text.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        text.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         text.placeholder = "请输入计划名称"
         text.textAlignment = .center
         text.font = .systemFont(ofSize: 20, weight: .medium)
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.delegate = self
         text.returnKeyType = .done
         text.textContentType = nil
@@ -163,27 +163,6 @@ extension QuestionnairePlanNameVM{
                                                 width: confirmBtnFrame.width,
                                                 height: confirmBtnFrame.height)
         }
-        
-//        titleLabel.snp.remakeConstraints { make in
-//            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(160)+topGap)
-//            make.centerX.lessThanOrEqualToSuperview()
-//        }
-//        tipsButton.snp.remakeConstraints { make in
-//            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(208)+topGap)
-//            make.centerX.lessThanOrEqualToSuperview()
-//        }
-//        nameTextField.snp.remakeConstraints { make in
-//            make.width.equalTo(kFitWidth(343))
-//            make.centerX.lessThanOrEqualToSuperview()
-//            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(286)+topGap)
-//            make.height.equalTo(kFitWidth(72))
-//        }
-//        confirmBtn.snp.remakeConstraints { make in
-//            make.centerX.lessThanOrEqualToSuperview()
-//            make.top.equalTo(kFitWidth(398)+WHUtils().getNavigationBarHeight()+topGap)
-//            make.width.equalTo(kFitWidth(200))
-//            make.height.equalTo(kFitWidth(48))
-//        }
     }
 }
 
@@ -220,17 +199,10 @@ extension QuestionnairePlanNameVM{
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             self.refreshUI(isShowKeyboard: true)
-           
-//            UIView.animate(withDuration: 0.7, delay: 0,options: .curveLinear) {
-//                self.bottomView.frame = CGRect.init(x:0, y: -keyboardSize.height+SCREEN_HEIGHT-(kFitWidth(450)+WHUtils().getNavigationBarHeight()), width: SCREEN_HEIGHT, height:SCREEN_HEIGHT)
-//            }
         }
     }
      
     @objc func keyboardWillHide(notification: NSNotification) {
-//        UIView.animate(withDuration: 0.7, delay: 0,options: .curveLinear) {
-//            self.bottomView.frame = CGRect.init(x:0, y: 0, width: SCREEN_HEIGHT, height:SCREEN_HEIGHT)
-//        }
         self.refreshUI(isShowKeyboard: false)
     }
 }

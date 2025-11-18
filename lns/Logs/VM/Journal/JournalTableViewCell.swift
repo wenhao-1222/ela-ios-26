@@ -127,11 +127,7 @@ class JournalTableViewCell: UITableViewCell {
         table.delegate = self
         table.dataSource = self
         table.isScrollEnabled = false
-        table.backgroundColor = .COLOR_BG_WHITE
-        
-//        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeGesture(gesture:)))
-//        swipeGesture.direction = .left
-//        table.addGestureRecognizer(swipeGesture)
+        table.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return table
     }()

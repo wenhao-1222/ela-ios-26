@@ -33,7 +33,7 @@ class FitnessStatVM: UIView {
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(8), y: kFitWidth(8), width: SCREEN_WIDHT-kFitWidth(16), height: whiteViewHeight))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
 //        vi.clipsToBounds = true
         
@@ -97,7 +97,7 @@ class FitnessStatVM: UIView {
     }()
     lazy var fitnessTagLab: UILabel = {
         let lab = UILabel()
-        lab.backgroundColor = .COLOR_BG_WHITE
+        lab.backgroundColor = .COLOR_CARD_BG_WHITE
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.text = "部位"
         lab.textAlignment = .center

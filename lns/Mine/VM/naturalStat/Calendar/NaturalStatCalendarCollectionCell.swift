@@ -49,6 +49,7 @@ class NaturalStatCalendarCollectionCell: UICollectionViewCell {
 //        scro.bounces = false
 //        scro.backgroundColor = .COLOR_BG_WHITE
         scro.delegate = self
+//        scro.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return scro
     }()
@@ -163,7 +164,7 @@ extension NaturalStatCalendarCollectionCell{
             if i % 7 == 0 {
                 if i > 0 {
                     let vi = UIView(frame: CGRect(x: 0, y: originY-kFitWidth(1), width: SCREEN_WIDHT, height: kFitWidth(1)))
-                    vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+                    vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
                     self.scrollView.addSubview(vi)
                     DispatchQueue.main.asyncAfter(deadline: .now()+0.25) {
                         self.scrollView.bringSubviewToFront(vi)

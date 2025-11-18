@@ -28,6 +28,7 @@ class QuestionnairePlanFoodsTypeVM: UIView {
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
         vi.alpha = 0
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()
@@ -110,7 +111,7 @@ class QuestionnairePlanFoodsTypeItemVM: UIView {
     var tapBlock:(()->())?
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: kFitWidth(200), height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))

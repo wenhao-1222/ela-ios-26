@@ -12,7 +12,7 @@ class QuestionnairePlanFoodsTypeAlertVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.0)
+        self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0.0)
         self.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenSelf))

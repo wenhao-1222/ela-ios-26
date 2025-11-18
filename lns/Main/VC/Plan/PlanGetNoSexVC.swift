@@ -29,10 +29,7 @@ class PlanGetNoSexVC: WHBaseViewVC {
         
         
     }
-//    public override func viewDidDisappear(_ animated: Bool) {
-//        self.navigationController?.fd_interactivePopDisabled = true
-//        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-//    }
+    
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = true
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
@@ -471,7 +468,7 @@ extension PlanGetNoSexVC{
 }
 extension PlanGetNoSexVC{
     func initUI(){
-        view.backgroundColor = .COLOR_GRAY_FA
+        view.backgroundColor = .COLOR_BG_WHITE
         
         view.clipsToBounds = true
         view.addSubview(progressVm)

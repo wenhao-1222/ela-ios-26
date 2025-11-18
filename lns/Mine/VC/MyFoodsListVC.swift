@@ -87,7 +87,7 @@ class MyFoodsListVC: WHBaseViewVC {
     lazy var tableView: UITableView = {
         let table = UITableView.init(frame: CGRect.init(x: 0, y: self.typeVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getBottomSafeAreaHeight()-kFitWidth(60)-self.typeVm.frame.maxY), style: .plain)
         table.separatorStyle = .none
-        table.backgroundColor = .white
+        table.backgroundColor = .COLOR_BG_WHITE
         table.delegate = self
         table.dataSource = self
         table.register(FoodsListAddTableViewCell.classForCoder(), forCellReuseIdentifier: "FoodsListAddTableViewCell")

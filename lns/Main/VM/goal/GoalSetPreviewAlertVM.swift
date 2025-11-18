@@ -19,6 +19,22 @@ class GoalSetPreviewAlertVM: UIView {
     var timeDataSourceArray = NSMutableArray()
     var itemVmArray:[NaturalStatCalendarCollectionCellItemVM] = [NaturalStatCalendarCollectionCellItemVM]()
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.15
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0)
@@ -41,7 +57,7 @@ class GoalSetPreviewAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = .COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
         v.addGestureRecognizer(tap)
@@ -50,7 +66,7 @@ class GoalSetPreviewAlertVM: UIView {
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.clipsToBounds = true
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(12))
         
@@ -104,7 +120,7 @@ extension GoalSetPreviewAlertVM{
                        initialSpringVelocity: 0.1,
                        options: [.curveEaseOut, .allowUserInteraction]) {
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.whiteViewOriginY+self.whiteViewHeight*0.5-kFitWidth(2))
-            self.bgView.alpha = 0.25
+            self.bgView.alpha = self.targetDimAlpha//0.25
         }completion: { t in
             self.bgView.isUserInteractionEnabled = true
             UIView.animate(withDuration: 0.15, delay: 0,options: .curveEaseInOut) {
@@ -312,16 +328,14 @@ extension GoalSetPreviewAlertVM{
                     firstWeekDay = weekDay - 1
                 }
                 
-//                originX = kFitWidth(11)+self.getButtonOriginX(weekDay: weekDay)
                 originX = kFitWidth(11)+self.itemVmWidth*CGFloat(weekDay-1)
                 originY = (kFitWidth(76) + kFitWidth(16))*CGFloat((i+firstWeekDay)/7) + kFitWidth(48)
                 
                 if i == self.timeDataSourceArray.count - 1{
                     DispatchQueue.main.async(execute: {
                         self.whiteViewHeight = originY + self.itemVmHeight + WHUtils().getBottomSafeAreaHeight() + kFitWidth(12) + kFitWidth(60)
-//                        self.whiteViewOriginY = SCREEN_HEIGHT - self.whiteViewHeight
                         self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: self.whiteViewHeight)
-                        self.whiteView.backgroundColor = .COLOR_BG_WHITE
+                        self.whiteView.backgroundColor = .COLOR_CARD_BG_WHITE
                         self.whiteView.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(12))
                     })
                 }
@@ -337,7 +351,7 @@ extension GoalSetPreviewAlertVM{
                     if i % 7 == 0 {
                         if i > 0 {
                             let vi = UIView.init(frame: CGRect.init(x: 0, y: CGFloat((i+firstWeekDay)/7)*kFitWidth(91)+kFitWidth(48), width: SCREEN_WIDHT, height: kFitWidth(1)))
-                            vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+                            vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
                             self.whiteView.addSubview(vi)
                         }
                         let leftVm = NaturalStatCalendarCollectionCellItemLeftVM.init(frame: CGRect.init(x: 0, y: originY, width: 0, height: 0))

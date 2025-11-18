@@ -174,7 +174,7 @@ class GoalSetCircleVC: WHBaseViewVC {
     }()
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: self.customCircleVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.customCircleVm.frame.maxY))
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -493,7 +493,7 @@ extension GoalSetCircleVC{
     func initUI() {
         initNavi(titleStr: "设定目标")
         self.view.backgroundColor = .COLOR_BG_WHITE
-        self.navigationView.backgroundColor = .clear
+        self.navigationView.backgroundColor = .COLOR_CARD_BG_WHITE
         self.backArrowButton.tapBlock = {()in
             self.backAction()
         }

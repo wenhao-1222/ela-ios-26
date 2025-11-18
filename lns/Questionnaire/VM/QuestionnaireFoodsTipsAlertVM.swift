@@ -33,7 +33,7 @@ class QuestionnaireFoodsTipsAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
         v.addGestureRecognizer(tap)
@@ -43,7 +43,7 @@ class QuestionnaireFoodsTipsAlertVM: UIView {
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
@@ -53,7 +53,7 @@ class QuestionnaireFoodsTipsAlertVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.text = "为什么找不到我想要的食物？"
@@ -68,7 +68,7 @@ class QuestionnaireFoodsTipsAlertVM: UIView {
         let attr = NSMutableAttributedString(string: "为了确保准确性，我们筛选掉了不符合计划的食物。")
         
         attr.yy_font = .systemFont(ofSize: 14, weight: .regular)
-        attr.yy_color = .COLOR_GRAY_BLACK_65
+        attr.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         label.attributedText = attr
         
         return label
@@ -81,9 +81,9 @@ class QuestionnaireFoodsTipsAlertVM: UIView {
         let att = NSMutableAttributedString(string: "激活计划后前往日志添加。")
         
         attr.yy_font = .systemFont(ofSize: 14, weight: .regular)
-        attr.yy_color = .COLOR_GRAY_BLACK_65
+        attr.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         att.yy_font = .systemFont(ofSize: 14, weight: .medium)
-        att.yy_color = .COLOR_GRAY_BLACK_85
+        att.yy_color = .COLOR_TEXT_TITLE_0f1214
         
         attr.append(att)
         label.attributedText = attr
@@ -92,7 +92,7 @@ class QuestionnaireFoodsTipsAlertVM: UIView {
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_LINE_F0//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         
         return vi
     }()

@@ -27,20 +27,20 @@ class QuestionnairePlanFoodsAlertTableViewCell: UITableViewCell {
         if highlighted {
             self.bottomView.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT
         }else{
-            self.bottomView.backgroundColor = WHColor_16(colorStr: "F5F5F5")
+            self.bottomView.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "F5F5F5")
         }
     }
     lazy var bottomView : UIView = {
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds  = true
-        vi.backgroundColor = WHColor_16(colorStr: "F5F5F5")
+        vi.backgroundColor = .COLOR_BG_F5//.COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "F5F5F5")
         vi.isUserInteractionEnabled = true
         return vi
     }()
     lazy var foodsNameLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         
@@ -55,13 +55,14 @@ class QuestionnairePlanFoodsAlertTableViewCell: UITableViewCell {
     lazy var numberLabel : UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 12, weight: .regular)
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         
         return lab
     }()
     lazy var selectedImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "question_foods_normal_icon")
+//        img.setImgLocal(imgName: "question_foods_normal_icon")
+        img.image = UIImage(named: "question_foods_normal_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
         img.isUserInteractionEnabled = true
         
         return img
@@ -85,7 +86,8 @@ extension QuestionnairePlanFoodsAlertTableViewCell{
         }else{
             verifyImgView.isHidden = true
         }
-        selectedImgView.setImgLocal(imgName: "question_foods_normal_icon")
+//        selectedImgView.setImgLocal(imgName: "question_foods_normal_icon")
+        selectedImgView.image = UIImage(named: "question_foods_normal_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
         for i in 0..<selecFoodsArray.count{
             let foodsDict = selecFoodsArray[i]as? NSDictionary ?? [:]
             if foodsDict.stringValueForKey(key: "fid") == dict.stringValueForKey(key: "fid"){

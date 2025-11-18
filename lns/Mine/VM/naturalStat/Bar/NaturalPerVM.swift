@@ -25,7 +25,7 @@ class NaturalPerVM: UIView {
     }
     lazy var whiteBgView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(8), y: kFitWidth(8), width: whiteWidth, height: kFitWidth(106)))
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(12)
         

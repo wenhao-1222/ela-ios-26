@@ -46,7 +46,7 @@ class QuestionnairePlanFoodsAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
 //        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
 //        v.addGestureRecognizer(tap)
@@ -66,7 +66,7 @@ class QuestionnairePlanFoodsAlertVM: UIView {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vi.isUserInteractionEnabled = true
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(16)
         
 //        let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
@@ -112,14 +112,15 @@ class QuestionnairePlanFoodsAlertVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 20, weight: .medium)
         
         return lab
     }()
     lazy var arrowImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "question_alert_arrow_down_icon")
+//        img.setImgLocal(imgName: "question_alert_arrow_down_icon")
+        img.image = UIImage(named: "question_alert_arrow_down_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         img.isUserInteractionEnabled = true
         return img
     }()

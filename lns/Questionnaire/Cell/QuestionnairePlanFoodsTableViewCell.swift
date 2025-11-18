@@ -32,46 +32,21 @@ class QuestionnairePlanFoodsTableViewCell: UITableViewCell {
 //    }
     lazy var bottomView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.clipsToBounds = true
         vi.layer.cornerRadius = kFitWidth(8)
         vi.isUserInteractionEnabled = true
-        vi.layer.borderColor = WHColor_16(colorStr: "F0F0F0").cgColor
+        vi.layer.borderColor = UIColor.COLOR_LINE_F0.cgColor//WHColor_16(colorStr: "F0F0F0").cgColor
         vi.layer.borderWidth = kFitWidth(1)
         
         return vi
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         return lab
     }()
-//    lazy var addBtn : UIButton = {
-//        let btn = UIButton()
-//        btn.setTitle("添加食物", for: .normal)
-//        btn.setTitleColor(.THEME, for: .normal)
-//        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
-//        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
-//        
-//        return btn
-//    }()
-//    lazy var arrowImgView : UIImageView = {
-//        let img = UIImageView()
-//        img.setImgLocal(imgName: "question_arrow_right_theme")
-//        
-//        return img
-//    }()
-//    lazy var addTapView : UIView = {
-//        let vi = UIView()
-//        vi.backgroundColor = .clear
-//        vi.isUserInteractionEnabled = true
-//        
-//        let tap = UITapGestureRecognizer.init(target: self, action: #selector(addAction))
-//        vi.addGestureRecognizer(tap)
-//        
-//        return vi
-//    }()
     
     lazy var addFoodsButton : GJVerButton = {
         let btn = GJVerButton()
@@ -88,7 +63,7 @@ class QuestionnairePlanFoodsTableViewCell: UITableViewCell {
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()
@@ -96,7 +71,7 @@ class QuestionnairePlanFoodsTableViewCell: UITableViewCell {
         let lab = UILabel()
         lab.numberOfLines = 0
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         
         return lab
     }()
@@ -161,9 +136,6 @@ extension QuestionnairePlanFoodsTableViewCell{
     func initUI() {
         contentView.addSubview(bottomView)
         bottomView.addSubview(titleLabel)
-//        bottomView.addSubview(addBtn)
-//        bottomView.addSubview(arrowImgView)
-//        bottomView.addSubview(addTapView)
         bottomView.addSubview(addFoodsButton)
         
         bottomView.addSubview(lineView)
@@ -183,20 +155,6 @@ extension QuestionnairePlanFoodsTableViewCell{
             make.top.equalTo(kFitWidth(20))
             make.height.equalTo(kFitWidth(16))
         }
-//        arrowImgView.snp.makeConstraints { make in
-//            make.right.equalTo(kFitWidth(-16))
-//            make.centerY.lessThanOrEqualTo(titleLabel)
-//            make.width.height.equalTo(kFitWidth(16))
-//        }
-//        addBtn.snp.makeConstraints { make in
-//            make.right.equalTo(kFitWidth(-36))
-//            make.centerY.lessThanOrEqualTo(titleLabel)
-//        }
-//        addTapView.snp.makeConstraints { make in
-//            make.top.right.equalToSuperview()
-//            make.height.equalTo(kFitWidth(40))
-//            make.left.equalTo(addBtn)
-//        }
         addFoodsButton.snp.makeConstraints { make in
             make.top.right.equalToSuperview()
             make.height.equalTo(kFitWidth(40))

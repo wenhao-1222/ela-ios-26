@@ -51,7 +51,7 @@ class GoalSetSpecPercentVM: UIView {
     }()
     lazy var bottomLineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         return vi
     }()
     lazy var tipsOneLabel: UILabel = {

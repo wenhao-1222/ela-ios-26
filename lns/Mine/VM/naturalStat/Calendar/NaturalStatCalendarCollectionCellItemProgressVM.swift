@@ -56,7 +56,7 @@ class NaturalStatCalendarCollectionCellItemProgressVM: UIView {
         let img = UIImageView()
         img.layer.cornerRadius = kFitWidth(2)
         img.clipsToBounds = true
-        img.backgroundColor = .COLOR_TEXT_TITLE_0f1214_35//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        img.backgroundColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         img.setImgLocal(imgName: "main_nutrient_span_img_2")
         img.contentMode = .center
         img.isUserInteractionEnabled = true

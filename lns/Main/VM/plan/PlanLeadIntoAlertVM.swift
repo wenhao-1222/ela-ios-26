@@ -36,7 +36,7 @@ class PlanLeadIntoAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenAlertVm))
         v.addGestureRecognizer(tap)
@@ -47,7 +47,7 @@ class PlanLeadIntoAlertVM: UIView {
         let vi = UIView.init(frame: self.whiteViewFrame)
         vi.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*0.5)
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         
@@ -58,7 +58,7 @@ class PlanLeadIntoAlertVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.9)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColorWithAlpha(colorStr: "000000", alpha: 0.9)
         lab.font = .systemFont(ofSize: 18, weight: .semibold)
         lab.text = "导入计划"
         
@@ -66,7 +66,7 @@ class PlanLeadIntoAlertVM: UIView {
     }()
     lazy var tipsLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.6)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60//WHColorWithAlpha(colorStr: "000000", alpha: 0.6)
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.text = "输入分享码即可导入计划"
         
@@ -74,11 +74,11 @@ class PlanLeadIntoAlertVM: UIView {
     }()
     lazy var textField: UITextField = {
         let text = UITextField()
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 16, weight: .regular)
         text.textAlignment = .center
         text.delegate = self
-        text.backgroundColor = WHColor_16(colorStr: "F3F3F3")
+        text.backgroundColor = .colorBgF2//WHColor_16(colorStr: "F3F3F3")
         text.layer.cornerRadius = kFitWidth(6)
         text.clipsToBounds = true
         text.placeholder = "输入五位数分享码"

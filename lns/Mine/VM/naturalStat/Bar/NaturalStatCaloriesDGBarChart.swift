@@ -32,7 +32,7 @@ class NaturalStatCaloriesDGBarChart: UIView {
     lazy var whiteBgView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(8), y: 0, width: whiteViewWidth, height: selfHeight))
         vi.layer.cornerRadius = kFitWidth(12)
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi

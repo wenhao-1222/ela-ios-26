@@ -15,31 +15,28 @@ class PlanDetailFoodsTableViewCell: FeedBackTableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         initUI()
     }
     
     lazy var nameLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-//        lab.numberOfLines = 2
-//        lab.lineBreakMode = .byWordWrapping
-//        lab.adjustsFontSizeToFitWidth = true
         
         return lab
     }()
     lazy var detailLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()
@@ -55,13 +52,10 @@ class PlanDetailFoodsTableViewCell: FeedBackTableViewCell {
 extension PlanDetailFoodsTableViewCell{
     func updateUI(dict:NSDictionary) {
         nameLabel.text = dict["fname"]as? String ?? ""
-//        detailLabel.text = "\(Int(dict["weight"]as? Double ?? 0.0))克，\(dict["calories"]as? Int ?? 0)千卡"
         
         if dict["fname"]as? String ?? "" == "快速添加"{
             detailLabel.text = "\(WHUtils.convertStringToStringNoDigit(dict.stringValueForKey(key: "calories")) ?? "0")千卡"
-//            if dict.stringValueForKey(key: "remark").count > 0{
-//                nameLabel.text = "\(dict.stringValueForKey(key: "fname"))(\(dict.stringValueForKey(key: "remark")))"
-//            }
+            
             if dict.stringValueForKey(key: "ctype") == "3"{
                 nameLabel.text = "\(dict.stringValueForKey(key: "remark"))"
             }else if dict.stringValueForKey(key: "remark").count > 0 {

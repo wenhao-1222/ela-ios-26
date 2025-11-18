@@ -28,10 +28,6 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
         
         if highlighted {
             self.bottomView.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT
-            
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-//                self.bottomView.backgroundColor = .white
-//            })
         }else{
             self.bottomView.backgroundColor = .COLOR_BG_WHITE
         }
@@ -226,19 +222,6 @@ extension FoodsListAddTableViewCell{
     func boldKeywords(nameString:NSString,keywords:String) -> NSAttributedString{
         if nameString.contains(keywords){
             let range = nameString.range(of: keywords)
-//            DLLog(message: "boldKeywords:\(range):\(nameString)  --  \(keywords)")
-//            let firstStr = NSMutableAttributedString(string: nameString.substring(with: NSRange(location: 0, length: range.location)))
-//            let secondStr = NSMutableAttributedString(string: nameString.substring(from: range.location+range.length))
-//            
-//            firstStr.yy_color = .COLOR_GRAY_BLACK_85
-//            secondStr.yy_color = .COLOR_GRAY_BLACK_85
-//            let boldAttr = NSMutableAttributedString(string: keywords)
-////            boldAttr.yy_font = .systemFont(ofSize: 16, weight: .heavy)
-//            boldAttr.yy_color = .THEME
-//            
-//            
-//            firstStr.append(boldAttr)
-//            firstStr.append(secondStr)
             
             let a = NSMutableAttributedString(
                 string: nameString.substring(with: NSRange(location: 0, length: range.location)),
@@ -255,8 +238,6 @@ extension FoodsListAddTableViewCell{
             
             return a
         }else{
-//            let attr = NSMutableAttributedString(string: nameString as String)
-//            attr.yy_color = .COLOR_GRAY_BLACK_85
             let a = NSMutableAttributedString(
                 string: nameString as String,
                 attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214]
@@ -270,14 +251,6 @@ extension FoodsListAddTableViewCell{
         attachment.image = image
         attachment.bounds = CGRect(x: 0, y: (UIFont.systemFont(ofSize: 16, weight: .medium).capHeight - image.size.height).rounded() / 2, width: image.size.width, height: image.size.height)
         let attachmentString = NSAttributedString(attachment: attachment)
-        
-//        var string = NSMutableAttributedString(string: text)
-//        string.yy_color = .COLOR_TEXT_TITLE_0f1214
-//        if keywords?.count ?? 0 > 0 {
-//            string = NSMutableAttributedString(attributedString: self.boldKeywords(nameString: string.string as NSString,keywords:keywords ?? ""))
-//        }
-//        
-//        string.append(attachmentString)
         
         let a = NSMutableAttributedString(
             string: text,
@@ -303,9 +276,8 @@ extension FoodsListAddTableViewCell{
         contentView.addSubview(bottomView)
         bottomView.addSubview(foodsNameLabel)
         bottomView.addSubview(aiLabel)
-//        bottomView.addSubview(verifyImgView)
+
         bottomView.addSubview(numberLabel)
-//        bottomView.addSubview(addImgButton)
         bottomView.addSubview(addButtonVm)
         bottomView.addSubview(lineView)
         
@@ -318,7 +290,6 @@ extension FoodsListAddTableViewCell{
         foodsNameLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.top.equalTo(kFitWidth(18))
-//            make.right.equalTo(kFitWidth(-50))
             make.width.equalTo(kFitWidth(300))
             make.height.equalTo(kFitWidth(18))
         }
@@ -328,22 +299,12 @@ extension FoodsListAddTableViewCell{
             make.width.equalTo(kFitWidth(18))
             make.height.equalTo(kFitWidth(13))
         }
-//        verifyImgView.snp.makeConstraints { make in
-//            make.left.equalTo(foodsNameLabel.snp.right).offset(kFitWidth(1))
-//            make.centerY.lessThanOrEqualTo(foodsNameLabel)
-//            make.width.height.equalTo(kFitWidth(16))
-//        }
         numberLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.top.equalTo(kFitWidth(42))
             make.width.equalTo(kFitWidth(180))
             make.height.equalTo(kFitWidth(18))
         }
-//        addImgButton.snp.makeConstraints { make in
-//            make.right.equalTo(kFitWidth(-20))
-//            make.centerY.lessThanOrEqualToSuperview()
-//            make.width.height.equalTo(kFitWidth(36))
-//        }
         lineView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
             make.bottom.equalToSuperview()
