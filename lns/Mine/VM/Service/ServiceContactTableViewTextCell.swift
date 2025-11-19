@@ -45,7 +45,7 @@ class ServiceContactTableViewTextCell: UITableViewCell {
     }()
     lazy var msgLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
@@ -69,7 +69,7 @@ class ServiceContactTableViewTextCell: UITableViewCell {
     }()
     lazy var msgRectView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(4)
         vi.clipsToBounds = true
         
@@ -127,21 +127,11 @@ extension ServiceContactTableViewTextCell{
         configureAvatar(isAdmin: isAdmin)
 
         if !isAdmin{
-//        if dict.stringValueForKey(key: "createdby") != "admin"{
-//            headImgView.setImgUrl(urlString: UserInfoModel.shared.headimgurl)
             headImgView.snp.remakeConstraints { make in
                 make.right.equalTo(kFitWidth(-10))
                 make.top.equalTo(kFitWidth(5))
                 make.width.height.equalTo(kFitWidth(36))
-//                make.bottom.equalTo(imgBottomGap)
             }
-//            msgLabel.snp.remakeConstraints { make in
-//                make.right.equalTo(kFitWidth(-60))
-//                make.top.equalTo(kFitWidth(10))
-////                make.left.equalTo(SCREEN_WIDHT-labelWidth-kFitWidth(65))
-//                make.height.equalTo(labelHeight)
-//                make.width.equalTo(labelWidth)
-//            }
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
                 make.right.equalTo(kFitWidth(-60))
@@ -151,20 +141,11 @@ extension ServiceContactTableViewTextCell{
             msgLabel.textAlignment = .right
             msgRectView.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
         }else{
-//            headImgView.setImgLocal(imgName: "avatar_default")
             headImgView.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(10))
                 make.top.equalTo(kFitWidth(5))
                 make.width.height.equalTo(kFitWidth(36))
-//                make.bottom.equalTo(imgBottomGap)
             }
-//            msgLabel.snp.remakeConstraints { make in
-//                make.left.equalTo(kFitWidth(60))
-//                make.top.equalTo(kFitWidth(10))
-////                make.right.equalTo(-(SCREEN_WIDHT-labelWidth-kFitWidth(65)))
-//                make.height.equalTo(labelHeight)
-//                make.width.equalTo(labelWidth)
-//            }
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
                 make.left.equalTo(kFitWidth(60))
@@ -172,7 +153,7 @@ extension ServiceContactTableViewTextCell{
                 make.width.equalTo(labelWidth)
             }
             msgLabel.textAlignment = .left
-            msgRectView.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.55)
+            msgRectView.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.55)//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.55)
         }
         
         let attr = NSMutableAttributedString(string: msgString)
