@@ -33,9 +33,6 @@ class QuestionCustomVC : WHBaseViewVC {
             sendGetGoalRequest()
         }
         
-//        let panGes = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(popGestureAction(gesture: )))
-//        panGes.edges = .left
-//        view.addGestureRecognizer(panGes)
         if !disableSwipeBack {
             let panGes = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(popGestureAction(gesture: )))
             panGes.edges = .left
@@ -108,7 +105,7 @@ class QuestionCustomVC : WHBaseViewVC {
     }()
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(28), y: kFitWidth(160)+statusBarHeight, width: SCREEN_WIDHT-kFitWidth(56), height: kFitWidth(414)))
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -373,7 +370,7 @@ extension QuestionCustomVC{
 
 extension QuestionCustomVC{
     func initUI() {
-        view.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         view.addSubview(titleLabel)
         view.addSubview(tipsButton)
         view.addSubview(whiteView)

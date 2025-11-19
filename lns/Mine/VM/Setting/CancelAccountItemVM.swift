@@ -37,7 +37,7 @@ class CancelAccountItemVM: UIView {
     }()
     lazy var contenLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -68,7 +68,7 @@ extension CancelAccountItemVM{
 extension CancelAccountItemVM{
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         TouchGenerator.shared.touchGenerator()
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        self.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.backgroundColor = .clear

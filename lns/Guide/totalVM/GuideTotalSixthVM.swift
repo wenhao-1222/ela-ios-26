@@ -15,7 +15,7 @@ class GuideTotalSixthVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT*5, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         self.clipsToBounds = true
         

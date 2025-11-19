@@ -26,22 +26,22 @@ class SettingBottomVM: UIView {
     lazy var cancelAccountButton: FeedBackButton = {
         let btn = FeedBackButton()
         btn.setTitle("注销账号", for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.45), for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.25), for: .highlighted)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_25, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
         
         return btn
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
+        vi.backgroundColor = .COLOR_LINE_F0//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         return vi
     }()
     lazy var loginOutButton: FeedBackButton = {
         let btn = FeedBackButton()
         btn.setTitle("退出登录", for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.45), for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.25), for: .highlighted)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_25, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
         
         return btn

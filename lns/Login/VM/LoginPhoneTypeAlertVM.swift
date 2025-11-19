@@ -58,7 +58,7 @@ extension LoginPhoneTypeAlertVM{
     func setSelectStatus(daysIndex:Int) {
         for vm in vmDataArray{
 //            vm.selectImgView.isHidden = true
-            vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+            vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
         
         let vm = vmDataArray[daysIndex]

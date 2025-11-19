@@ -65,11 +65,6 @@ class GuideTotalVC: WHBaseViewVC {
         vm.nextBlock = { [weak self] in
             self?.animateTransition(to: 3)
         }
-//        vm.nextBlock = {()in
-//            DLLog(message: "下一步   4")
-//            self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT*3, y: 0), animated: true)
-//            self.progressVm.setStep(step: 4)
-//        }
         return vm
     }()
     lazy var fourthVm: GuideTotalFourVM = {

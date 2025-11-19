@@ -67,7 +67,7 @@ class CancelAccountCodeVC: WHBaseViewVC {
         let vi = MHVerifyCodeView.init()
         vi.spacing = kFitWidth(24)
         vi.verifyCount = 4
-        vi.bgColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.bgColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.borderColor = .clear
         vi.setCompleteHandler { verifyCode in
             DLLog(message: "\(verifyCode)")

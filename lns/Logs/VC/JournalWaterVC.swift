@@ -21,10 +21,6 @@ class JournalWaterVC: WHBaseViewVC {
     let whiteViewHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()
     var waterHistoryNumArray:[String] = [String]()
     
-//    override func viewWillAppear(_ animated: Bool) {
-//        self.numberTextField.becomeFirstResponder()
-//    }
-//
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.numberTextField.becomeFirstResponder()
@@ -32,7 +28,7 @@ class JournalWaterVC: WHBaseViewVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        DLLog(message: "sDate:\(sDate)")
+
         initUI()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -42,13 +38,13 @@ class JournalWaterVC: WHBaseViewVC {
     }
     lazy var topShadowView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         
         return vi
     }()
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight()))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -104,7 +100,8 @@ class JournalWaterVC: WHBaseViewVC {
     }()
     lazy var historyNumButtonOne: FeedBackButton = {
         let btn = FeedBackButton()
-        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BG_F5), for: .normal)
+        btn.backgroundColor = .COLOR_LINE_F0
+//        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BG_F5), for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_TEXT_TITLE_0f1214_20), for: .highlighted)
         btn.layer.cornerRadius = kFitWidth(13)
         btn.clipsToBounds = true
@@ -117,7 +114,8 @@ class JournalWaterVC: WHBaseViewVC {
     }()
     lazy var historyNumButtonTwo: FeedBackButton = {
         let btn = FeedBackButton()
-        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BG_F5), for: .normal)
+        btn.backgroundColor = .COLOR_LINE_F0
+//        btn.setBackgroundImage(createImageWithColor(color: .COLOR_LINE_F0), for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_TEXT_TITLE_0f1214_20), for: .highlighted)
         btn.layer.cornerRadius = kFitWidth(13)
         btn.clipsToBounds = true
@@ -129,7 +127,8 @@ class JournalWaterVC: WHBaseViewVC {
     }()
     lazy var historyNumButtonThree: FeedBackButton = {
         let btn = FeedBackButton()
-        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BG_F5), for: .normal)
+        btn.backgroundColor = .COLOR_LINE_F0
+//        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BG_F5), for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_TEXT_TITLE_0f1214_20), for: .highlighted)
         btn.layer.cornerRadius = kFitWidth(13)
         btn.clipsToBounds = true

@@ -43,8 +43,10 @@ extension UIColor {
     
     public static let COLOR_BG_F5                       = UIColor(named: "color_bg_f5")!
     public static let COLOR_BG_F5_SEGMENT               = UIColor(named: "color_bg_f5_segment")!
+    public static let COLOR_BG_F5_FITNESS               = UIColor(named: "color_bg_f5_fitness_bg")!
     public static let COLOR_BG_F2                       = UIColor(named: "color_bg_f2")!
     public static let COLOR_BG_EF                       = UIColor(named: "color_bg_ef")!
+    public static let COLOR_BG_E8                       = UIColor(named: "color_bg_e8")!
     public static let COLOR_BG_FA                       = UIColor(named: "color_bg_fa")!
     
     

@@ -53,7 +53,7 @@ class JournalFitnessTypeAlertVM: UIView {
     private lazy var whiteView: UIView = {
         // 先用默认高度创建，后面 dealData() 会重算高度并设置 frame
         let vi = UIView(frame: CGRect(x: 0, y: SCREEN_HEIGHT - whiteViewHeight, width: SCREEN_WIDHT, height: whiteViewHeight))
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = whiteViewTopRadius
         if #available(iOS 13.0, *) { vi.layer.cornerCurve = .continuous }
         vi.layer.masksToBounds = true
@@ -96,7 +96,7 @@ class JournalFitnessTypeAlertVM: UIView {
 
     private lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
 
@@ -367,7 +367,6 @@ extension JournalFitnessTypeAlertVM {
         for vm in vmArray {
             vm.setSelectStatus(select: selectFitnessType.contains(vm.days))
             vm.setEnableStatus(isEnable: hasRest ? false : true)
-            
         }
     }
 }

@@ -26,7 +26,6 @@ class WHCommonH5VC: WHBaseViewVC {
         initUI()
         prepareWebView()
         openInteractivePopGesture()
-//        NotificationCenter.default.addObserver(self, selector: #selector(backTapAction), name: NSNotification.Name(rawValue: "authenSuccess"), object: nil)
     }
 }
 
@@ -34,24 +33,44 @@ extension WHCommonH5VC{
     func prepareWebView(){
         let url = URL(string: urlString as String)
         let request = URLRequest(url: url!)
+        configureWebViewAppearance()
         wkWebView.load(request)
-//
-        
-//        if let fileURL = Bundle.main.url(forResource: "index", withExtension: "html") {
-//            wkWebView.loadFileURL(fileURL, allowingReadAccessTo: fileURL.deletingLastPathComponent())
-//        } else {
-//            print("HTML file not found")
-//        }
-        
-//        var filePath = Bundle.main.path(forResource: "index", ofType: "html")
-//        filePath = "file://\(filePath ?? "")"
-//        let pathUrl = URL(string: filePath!)
-//        wkWebView.load(URLRequest.init(url: pathUrl!))
-        
-        
-//        let fullPath = Bundle.main.url(forResource: "index", withExtension: "html", subdirectory: "")
-//        let baseUrl = (fullPath?.deletingLastPathComponent())!
-//        self.wkWebView.loadFileURL(fullPath!, allowingReadAccessTo: baseUrl)
+    }
+    
+    func configureWebViewAppearance() {
+        let css = """
+        body {
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #000000 !important;
+                color: #FFFFFF !important;
+            }
+            * {
+                color: #FFFFFF !important;
+                background-color: transparent !important;
+            }
+            a {
+                color: #4DA3FF !important;
+            }
+        }
+        """
+
+        let js = """
+        var style = document.createElement('style');
+        style.innerHTML = `\(css)`;
+        document.head.appendChild(style);
+        """
+
+        let userScript = WKUserScript(source: js, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
+        wkWebView.configuration.userContentController.addUserScript(userScript)
+
+        if #available(iOS 13.0, *) {
+            wkWebView.overrideUserInterfaceStyle = .unspecified  // 自动跟随系统
+        }
     }
     
     func initUI(){
@@ -71,8 +90,9 @@ extension WHCommonH5VC{
         
         wkWebView.navigationDelegate = self
         wkWebView.uiDelegate = self
-        wkWebView.backgroundColor = WHColor_16(colorStr: "F6F6F6")
+        wkWebView.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "F6F6F6")
         wkWebView.scrollView.bounces = false
+        wkWebView.scrollView.backgroundColor = .COLOR_BG_WHITE
         wkWebView.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
         wkWebView.addObserver(self, forKeyPath: canGoBackKeyPath, options: .new, context: nil)
         
@@ -89,7 +109,7 @@ extension WHCommonH5VC{
     func initNaviH5(){
         let naviView = UIView()
         view.addSubview(naviView)
-        naviView.backgroundColor = .white//WHColor_16(colorStr: "F6F6F6")
+        naviView.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "F6F6F6")
         naviView.isUserInteractionEnabled = true
         naviView.snp.makeConstraints { (frame) in
             frame.width.equalToSuperview()

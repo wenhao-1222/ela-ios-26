@@ -29,7 +29,7 @@ class LoginCodeVerifyVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         self.alpha = 0
         
@@ -41,7 +41,8 @@ class LoginCodeVerifyVM: UIView {
     }
     lazy var closeImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "login_close_img")
+//        img.setImgLocal(imgName: "login_close_img")
+        img.image = UIImage(named: "login_close_img")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         img.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenSelfAction))
