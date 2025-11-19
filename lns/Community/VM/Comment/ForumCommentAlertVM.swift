@@ -34,15 +34,30 @@ class ForumCommentAlertVM: UIView {
     
     var brower = HeroBrowser()//HeroBrowser(viewModules: list, index: 0, heroImageView: self.commomImageView)
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.15
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgWholeView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.35)//WHColorWithAlpha(colorStr: "000000", alpha: 0.35)
+        self.backgroundColor = .clear//UIColor.COLOR_ALERT_BG_BLACK//.withAlphaComponent(0.35)//WHColorWithAlpha(colorStr: "000000", alpha: 0.35)
         self.isUserInteractionEnabled = true
-//        self.alpha = 1.0
+//        self.alpha = 0
         self.isHidden = true
         
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenView))
-        self.addGestureRecognizer(tap)
+//        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenView))
+//        self.addGestureRecognizer(tap)
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -60,12 +75,22 @@ class ForumCommentAlertVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    private lazy var bgWholeView: UIView = {
+        let v = UIView(frame: bounds)
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.alpha = 0
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
+        v.addGestureRecognizer(tap)
+        return v
+    }()
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: contentWhiteHeight))
 //        let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-contentWhiteHeight, width: SCREEN_WIDHT, height: contentWhiteHeight))
         //SCREEN_HEIGHT-(self.contentWhiteHeight - kFitWidth(32))*0.5
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
@@ -77,7 +102,7 @@ class ForumCommentAlertVM: UIView {
     }()
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        vi.backgroundColor = .COLOR_BG_F5
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(4)
         vi.clipsToBounds = true
@@ -91,23 +116,14 @@ class ForumCommentAlertVM: UIView {
         text.backgroundColor = .clear
         text.delegate = self
         text.isScrollEnabled = false
-//        text.returnKeyType = .next
         text.textContentType = nil
-        
-        // 创建一个自定义的按钮用作return按钮
-//        let doneButton = UIButton(type: .system)
-//        doneButton.setTitle("换行", for: .normal)
-//        doneButton.frame = CGRect(x: 0, y: 0, width: 100, height: 30)
-////        doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
-//        
-//        text.inputAccessoryView = doneButton
         
         return text
     }()
     
     lazy var placeholderLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.25)//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.text = "说点什么"
         return lab
@@ -128,7 +144,7 @@ class ForumCommentAlertVM: UIView {
     lazy var commomImageView: UIImageView = {
         let img = UIImageView()
         img.contentMode = .scaleAspectFit
-        img.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        img.backgroundColor = .COLOR_BG_BLACK_06
         img.isHidden = true
         img.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(takePicktureAction))
@@ -151,7 +167,6 @@ class ForumCommentAlertVM: UIView {
         btn.setTitle("发送", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-//        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME), for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(18)
         btn.clipsToBounds = true
@@ -309,6 +324,7 @@ extension ForumCommentAlertVM:UIImagePickerControllerDelegate,UINavigationContro
 
 extension ForumCommentAlertVM {
     func initUI() {
+        addSubview(bgWholeView)
         addSubview(whiteView)
         whiteView.addSubview(bgView)
         bgView.addSubview(textView)
@@ -404,9 +420,10 @@ extension ForumCommentAlertVM{
         self.isHidden = false
         self.whiteView.alpha = 1
         self.clearMSg()
+        self.bgWholeView.alpha = 0
 //        self.alpha = 1
         
-        self.backgroundColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.02)//.COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 0)
+//        self.backgroundColor = UIColor.COLOR_ALERT_BG_BLACK.withAlphaComponent(0.02)//.COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 0)
         //是回复别人的评论
         if self.model.id.count > 0 {
             placeholderLabel.text = "@\(self.model.nickName)"
@@ -418,8 +435,8 @@ extension ForumCommentAlertVM{
         
         self.textView.becomeFirstResponder()
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-//            self.alpha = 1
-            self.backgroundColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.25)//WHColorWithAlpha(colorStr: "000000", alpha: 0.35)
+            self.bgWholeView.alpha = self.targetDimAlpha
+//            self.backgroundColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.25)//WHColorWithAlpha(colorStr: "000000", alpha: 0.35)
         }
     }
     @objc func hiddenView() {
@@ -430,9 +447,9 @@ extension ForumCommentAlertVM{
         }
         
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-//            self.alpha = 0.3
             self.whiteView.alpha = 0
-            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+            self.bgWholeView.alpha = 0
+//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
         }completion: { t in
             self.isHidden = true
         }

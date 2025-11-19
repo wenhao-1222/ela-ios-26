@@ -40,7 +40,7 @@ class ForumNewsListCell: UITableViewCell {
     }()
     lazy var nickNameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .semibold)
 //        lab.isSkeletonable = true
         
@@ -48,7 +48,7 @@ class ForumNewsListCell: UITableViewCell {
     }()
     lazy var titleLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .regular)
 //        lab.isSkeletonable = true
         
@@ -56,7 +56,7 @@ class ForumNewsListCell: UITableViewCell {
     }()
     lazy var timeLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .regular)
 
         return lab
@@ -74,7 +74,7 @@ class ForumNewsListCell: UITableViewCell {
     lazy var contenLabel: UILabel = {
         let lab = UILabel()
         lab.numberOfLines = 2
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.lineBreakMode = .byTruncatingTail
         lab.font = .systemFont(ofSize: 14, weight: .regular)
 //        lab.isSkeletonable = true
@@ -100,7 +100,7 @@ class ForumNewsListCell: UITableViewCell {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        vi.backgroundColor = .COLOR_BG_BLACK_06
         vi.layer.cornerRadius = kFitWidth(2)
         vi.clipsToBounds = true
         vi.isHidden = true
@@ -110,7 +110,7 @@ class ForumNewsListCell: UITableViewCell {
     lazy var parentContenLabel: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         
         return lab
     }()
@@ -118,36 +118,36 @@ class ForumNewsListCell: UITableViewCell {
         let lab = UILabel()
         lab.text = "[图片]"
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.isHidden = true
         
         return lab
     }()
     lazy var bottomLineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        vi.backgroundColor = .COLOR_BG_BLACK_06
         return vi
     }()
     lazy var likeButton: GJVerButton = {
         let btn = GJVerButton()
-        btn.setTitleColor(.COLOR_GRAY_BLACK_65, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_60, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .regular)
-        btn.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        btn.backgroundColor = .COLOR_BG_BLACK_06
         btn.layer.cornerRadius = kFitWidth(13)
         btn.clipsToBounds = true
-        btn.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_BLACK_25), for: .highlighted)
+        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BG_BLACK_30), for: .highlighted)
         
         btn.addTarget(self, action: #selector(likeBtnAction), for: .touchUpInside)
         return btn
     }()
     lazy var replyButton: GJVerButton = {
         let btn = GJVerButton()
-        btn.setTitleColor(.COLOR_GRAY_BLACK_65, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_60, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .regular)
-        btn.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        btn.backgroundColor = .COLOR_BG_BLACK_06
         btn.layer.cornerRadius = kFitWidth(13)
         btn.clipsToBounds = true
-        btn.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_BLACK_25), for: .highlighted)
+        btn.setBackgroundImage(createImageWithColor(color: .COLOR_TEXT_TITLE_0f1214_30), for: .highlighted)
         
         btn.addTarget(self, action: #selector(replyBtnAction), for: .touchUpInside)
         
@@ -206,9 +206,9 @@ extension ForumNewsListCell{
         contenLabel.text = model.content
         
         if model.isDelete {
-            contenLabel.textColor = .COLOR_GRAY_BLACK_45
+            contenLabel.textColor = .COLOR_TEXT_TITLE_0f1214_60
         }else{
-            contenLabel.textColor = .COLOR_GRAY_BLACK_85
+            contenLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
         
         if model.type == .report{
@@ -225,11 +225,6 @@ extension ForumNewsListCell{
         if model.postCoverUrl.count > 0 {
             forumImgView.isHidden = false
             forumImgView.setImgUrl(urlString: model.postCoverUrl)
-//            if model.contentType == .VIDEO{
-//                forumImgView.image = model.coverImg
-//            }else{
-//                forumImgView.setImgUrl(urlString: model.postCoverUrl)
-//            }
         }else{
             forumImgView.isHidden = true
         }
@@ -287,7 +282,6 @@ extension ForumNewsListCell{
         contenLabel.snp.remakeConstraints { make in
             make.left.equalTo(nickNameLabel)
             make.right.equalTo(nickNameLabel)
-//            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(8))
             make.top.equalTo(kFitWidth(64))
             make.bottom.equalTo(kFitWidth(-10))
         }
@@ -308,12 +302,6 @@ extension ForumNewsListCell{
         contenLabel.numberOfLines = 0
         nickNameLabel.text = model.fromNickname//model.title
         timeLabel.text = "\(model.title)  \(model.timeForShow)"
-//        if model.parentImageUrl.count > 0 {
-//            let conString = WHUtils().truncatedText(model.parentContentShow, toWidth: kFitWidth(200), font: .systemFont(ofSize: 14, weight: .regular))
-//            parentContenLabel.text = "\(conString)[图片]"
-//        }else{
-//            parentContenLabel.text = "\(model.parentContentShow)"
-//        }
         timeLabel.snp.remakeConstraints { make in
             make.left.equalTo(nickNameLabel)
             make.top.equalTo(nickNameLabel.snp.bottom).offset(kFitWidth(8))
@@ -321,7 +309,6 @@ extension ForumNewsListCell{
         contenLabel.snp.remakeConstraints { make in
             make.left.equalTo(nickNameLabel)
             make.right.equalTo(nickNameLabel)
-//            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(8))
             make.top.equalTo(kFitWidth(64))
             make.bottom.equalTo(kFitWidth(-40))
         }
@@ -331,7 +318,7 @@ extension ForumNewsListCell{
             make.width.equalTo(kFitWidth(4))
             make.height.equalTo(kFitWidth(16))
         }
-//        forumImgView.isHidden = true
+
         likeButton.isHidden = true
         replyButton.isHidden = true
         contentImgLabel.isHidden = true
@@ -343,7 +330,7 @@ extension ForumNewsListCell{
             likeButton.setTitleColor(WHColorWithAlpha(colorStr: "F5BA18", alpha: 0.45), for: .highlighted)
         }else{
             likeButton.setImage(UIImage(named: "forum_thumbs_up_normal_min"), for: .normal)
-            likeButton.setTitleColor(.COLOR_GRAY_BLACK_65, for: .normal)
+            likeButton.setTitleColor(.COLOR_TEXT_TITLE_0f1214_60, for: .normal)
         }
         likeButton.imagePosition(style: .left, spacing: kFitWidth(3))
     }
