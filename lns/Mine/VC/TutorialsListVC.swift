@@ -33,6 +33,7 @@ class TutorialsListVC: WHBaseViewVC {
         let vi = UITableView.init(frame: CGRect.init(x: 0, y: self.getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.getNavigationBarHeight()), style: .plain)
         vi.delegate = self
         vi.dataSource = self
+//        vi.backgroundColor = .COLOR_LINE_F0
         vi.separatorStyle = .none
         vi.backgroundColor = .clear
         vi.register(TutorialTableViewCell.classForCoder(), forCellReuseIdentifier: "TutorialTableViewCell")
@@ -79,8 +80,8 @@ extension TutorialsListVC{
     func initUI() {
         initNavi(titleStr: "Elavatine 使用教程")
         
-        view.backgroundColor = WHColor_16(colorStr: "FAFAFA")
-        self.navigationView.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
+        self.navigationView.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         
         view.addSubview(tableView)
         view.addSubview(alertVm)

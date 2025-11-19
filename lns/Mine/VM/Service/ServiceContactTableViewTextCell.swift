@@ -190,6 +190,7 @@ extension ServiceContactTableViewTextCell{
                 guard let resourceUrl = URL(string: signUrl) else{
                     return
                 }
+//                HeroBrowserLocalImageViewModule(image: <#T##UIImage#>)
                 self.viewModules.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl))
                 let resource = KF.ImageResource(downloadURL: resourceUrl, cacheKey: imagesArr[0] as? String ?? "")
                 self.imgView.kf.setImage(with: resource,options: [.transition(.fade(0.2))]) { [self] result in

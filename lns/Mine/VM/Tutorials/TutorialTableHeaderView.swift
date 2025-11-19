@@ -20,7 +20,7 @@ class TutorialTableHeaderView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        self.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         self.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))
@@ -31,13 +31,13 @@ class TutorialTableHeaderView: UIView {
     lazy var bottomView: UIView = {
         let vi = UIView()
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white//WHColorWithAlpha(colorStr: "007AFF", alpha: 0.6)
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColorWithAlpha(colorStr: "007AFF", alpha: 0.6)
         return vi
     }()
     lazy var numberLabel: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 16, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         
         return lab
     }()
@@ -46,13 +46,14 @@ class TutorialTableHeaderView: UIView {
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping
         lab.font = .systemFont(ofSize: 16, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         
         return lab
     }()
     lazy var arrowImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "tutorial_arrow_down")
+//        img.setImgLocal(imgName: "tutorial_arrow_down")
+        img.image = UIImage(named: "tutorial_arrow_down")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_60)
         img.isUserInteractionEnabled = true
         
         return img
@@ -65,14 +66,14 @@ extension TutorialTableHeaderView{
         self.bottomView.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.bottomView.backgroundColor = .white//WHColorWithAlpha(colorStr: "007AFF", alpha: 0.6)
+        self.bottomView.backgroundColor = .COLOR_CARD_BG_WHITE//WHColorWithAlpha(colorStr: "007AFF", alpha: 0.6)
     }
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.bottomView.backgroundColor = .white//WHColorWithAlpha(colorStr: "007AFF", alpha: 0.6)
+        self.bottomView.backgroundColor = .COLOR_CARD_BG_WHITE//WHColorWithAlpha(colorStr: "007AFF", alpha: 0.6)
     }
 
    @objc func tapAction() {
-       self.bottomView.backgroundColor = .white// WHColorWithAlpha(colorStr: "007AFF", alpha: 0.6)
+       self.bottomView.backgroundColor = .COLOR_CARD_BG_WHITE// WHColorWithAlpha(colorStr: "007AFF", alpha: 0.6)
         if self.tapBlock != nil{
             self.isFold = !self.isFold
             self.tapBlock!()
@@ -105,9 +106,11 @@ extension TutorialTableHeaderView{
     }
     func updateFoldStatus() {
         if self.isFold == true{
-            arrowImgView.setImgLocal(imgName: "tutorial_arrow_down")
+//            arrowImgView.setImgLocal(imgName: "tutorial_arrow_down")
+            arrowImgView.image = UIImage(named: "tutorial_arrow_down")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_60)
         }else{
-            arrowImgView.setImgLocal(imgName: "tutorial_arrow_up")
+//            arrowImgView.setImgLocal(imgName: "tutorial_arrow_up")
+            arrowImgView.image = UIImage(named: "tutorial_arrow_up")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_60)
         }
     }
 }

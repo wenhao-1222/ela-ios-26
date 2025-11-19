@@ -146,7 +146,7 @@ class TutorialAttr {
         
         titleAttr.yy_lineSpacing = lineSpacing
         
-        step1 = createAttributedStringWithImage(image: UIImage.init(named: "tutorials_plan_list_icon")!, text: "步骤 1：在计划列表点击刚刚保存的计划（如果没有自动转跳到计划列表，请点击日志右上角")
+        step1 = createAttributedStringWithImage(image: UIImage.init(named: "tutorials_plan_list_icon")!.withTintColor(.COLOR_TEXT_TITLE_0f1214), text: "步骤 1：在计划列表点击刚刚保存的计划（如果没有自动转跳到计划列表，请点击日志右上角")
         step1.yy_minimumLineHeight = lineHeight
         step2.yy_minimumLineHeight = lineHeight
         step3.yy_minimumLineHeight = lineHeight

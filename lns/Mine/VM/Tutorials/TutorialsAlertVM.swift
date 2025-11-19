@@ -18,6 +18,21 @@ class TutorialsAlertVM: UIView {
     let whiteViewOriginY = WHUtils().getNavigationBarHeight()
     let whiteViewHeight = SCREEN_HEIGHT - WHUtils().getNavigationBarHeight()
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.15
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "", alpha: 1)
@@ -38,7 +53,7 @@ class TutorialsAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenLoginView))
         v.addGestureRecognizer(tap)
@@ -47,7 +62,7 @@ class TutorialsAlertVM: UIView {
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()))
 //        let vi = UIView.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(8))
         
@@ -106,7 +121,7 @@ extension TutorialsAlertVM{
                        options: [.curveEaseOut, .allowUserInteraction]) {
 //            self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: WHUtils().getNavigationBarHeight()+(SCREEN_HEIGHT-WHUtils().getTabbarHeight())*0.5-kFitWidth(2))
-            self.bgView.alpha = 0.25
+            self.bgView.alpha = self.targetDimAlpha//0.25
         } completion: { _ in
             self.bgView.isUserInteractionEnabled = true
             
@@ -139,9 +154,6 @@ extension TutorialsAlertVM{
             switch gesture.state {
             case .changed:
                 let translation = gesture.translation(in: view)
-//                DLLog(message: "translation.y:\(translation.y)")
-//                DLLog(message: "view.frame.minY:\(view.frame.minY)")
-//                DLLog(message: "self.whiteViewOriginY:\(self.whiteViewOriginY)")
                 if translation.y < 0 && self.whiteView.frame.minY <= self.whiteViewOriginY{
                     return
                 }
