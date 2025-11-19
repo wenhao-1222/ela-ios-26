@@ -87,7 +87,7 @@ class PlanListVC: WHBaseViewVC {
     }()
     lazy var tableView : UITableView = {
         let vi = UITableView.init(frame: CGRect.init(x: 0, y: self.topVm.frame.maxY+kFitWidth(8), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.topVm.frame.maxY), style: .plain)
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.register(PlanListTableViewCell.classForCoder(), forCellReuseIdentifier: "PlanListTableViewCell")
         vi.delegate = self
         vi.dataSource = self

@@ -24,7 +24,7 @@ class PlanCreateDaysVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         touchWhiteViewCenterX = daysGap*CGFloat(daysNumber)-circelWidth*0.5
@@ -36,13 +36,14 @@ class PlanCreateDaysVM: UIView {
     }
     lazy var iconImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "create_plan_weeks_icon")
+//        img.setImgLocal(imgName: "create_plan_weeks_icon")
+        img.image = UIImage(named: "create_plan_weeks_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_60)
         
         return img
     }()
     lazy var titleLabel : YYLabel = {
         let lab = YYLabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         return lab
     }()
@@ -51,7 +52,7 @@ class PlanCreateDaysVM: UIView {
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(bgViewTapGesture(tapSender: )))
         vi.addGestureRecognizer(tap)
@@ -191,22 +192,32 @@ extension PlanCreateDaysVM{
         }
     }
     func updateDayNumberLabel() {
-        var stringOne = NSMutableAttributedString.init(string: "计划周期 ")
-        var stringTwo = NSMutableAttributedString.init(string: "\(daysNumber)")
-        var stringThree = NSMutableAttributedString.init(string: " 天")
+//        let stringOne = NSMutableAttributedString.init(string: "计划周期 ")
+//        let stringTwo = NSMutableAttributedString.init(string: "\(daysNumber)")
+//        let stringThree = NSMutableAttributedString.init(string: " 天")
+//        
+//        stringTwo.yy_color = .THEME
+//        stringTwo.yy_font = .systemFont(ofSize: 14, weight: .regular)
+//        
+//        stringOne.yy_color = .COLOR_TEXT_TITLE_0f1214
+//        stringOne.yy_font = .systemFont(ofSize: 14, weight: .regular)
+//        
+//        stringThree.yy_color = .COLOR_TEXT_TITLE_0f1214
+//        stringThree.yy_font = .systemFont(ofSize: 14, weight: .regular)
+//        
+//        stringOne.append(stringTwo)
+//        stringOne.append(stringThree)
         
-        stringTwo.yy_color = .THEME
-        stringTwo.yy_font = .systemFont(ofSize: 14, weight: .regular)
         
-        stringOne.yy_color = .COLOR_GRAY_BLACK_65
-        stringOne.yy_font = .systemFont(ofSize: 14, weight: .regular)
-        
-        stringThree.yy_color = .COLOR_GRAY_BLACK_65
-        stringThree.yy_font = .systemFont(ofSize: 14, weight: .regular)
-        
-        stringOne.append(stringTwo)
-        stringOne.append(stringThree)
-        
+        let stringOne = NSMutableAttributedString(string: "计划周期 ",
+                                                  attributes: [.foregroundColor : UIColor.COLOR_TEXT_TITLE_0f1214,
+                                                               .font: UIFont.systemFont(ofSize: 14, weight: .regular)])
+        stringOne.append(NSMutableAttributedString(string: "\(daysNumber)",
+                                                   attributes: [.foregroundColor: UIColor.THEME,
+                                                                .font : UIFont.systemFont(ofSize: 14, weight: .regular)]))
+        stringOne.append(NSMutableAttributedString(string: " 天",
+                                                   attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+                                                                .font : UIFont.systemFont(ofSize: 14, weight: .regular)]))
         titleLabel.attributedText = stringOne
     }
 }
@@ -220,7 +231,7 @@ extension PlanCreateDaysVM{
         for i in 0..<6{
             let vi = UIView.init(frame: CGRect.init(x: daysGap*CGFloat(i+1)-circelWidth*0.5, y: kFitWidth(8), width: circelWidth, height: circelWidth))
             vi.clipsToBounds = true
-            vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.15)
+            vi.backgroundColor = .COLOR_BG_BLACK_15//WHColorWithAlpha(colorStr: "000000", alpha: 0.15)
             vi.layer.cornerRadius = kFitWidth(4)
             progressBgView.addSubview(vi)
         }

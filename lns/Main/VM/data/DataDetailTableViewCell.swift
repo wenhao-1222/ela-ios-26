@@ -23,7 +23,7 @@ class DataDetailTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.selectionStyle = .none
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshUIFrame), name: NSNotification.Name(rawValue: "updateBodyDataSetting"), object: nil)
@@ -43,7 +43,7 @@ class DataDetailTableViewCell: UITableViewCell {
     
     lazy var contentScrollView: UIScrollView = {
         let scro = UIScrollView(frame: CGRect.init(x: kFitWidth(90), y: 0, width: SCREEN_WIDHT-kFitWidth(147), height: kFitWidth(44)))
-        scro.backgroundColor = .COLOR_BG_WHITE
+        scro.backgroundColor = .COLOR_CARD_BG_WHITE
         scro.isUserInteractionEnabled = true
         scro.bounces = false
         scro.delegate = self

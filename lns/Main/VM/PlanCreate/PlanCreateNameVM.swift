@@ -39,7 +39,7 @@ class PlanCreateNameVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.text = "计划名称"
         
@@ -47,7 +47,7 @@ class PlanCreateNameVM: UIView {
     }()
     lazy var textBgView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
@@ -58,7 +58,7 @@ class PlanCreateNameVM: UIView {
         let text = UITextField()
         text.placeholder = "计划名称15字以内"
         text.font = .systemFont(ofSize: 16, weight: .regular)
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.delegate = self
         text.returnKeyType = .done
         text.textContentType = nil

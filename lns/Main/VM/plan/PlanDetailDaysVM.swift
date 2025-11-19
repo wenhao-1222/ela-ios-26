@@ -17,7 +17,7 @@ class PlanDetailDaysVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -27,7 +27,7 @@ class PlanDetailDaysVM: UIView {
     }
     lazy var lastButton : GJVerButton = {
         let btn = GJVerButton()
-        btn.setImage(UIImage(named: "back_arrow"), for: .normal)
+        btn.setImage(UIImage(named: "back_arrow")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.isHidden = true
         
@@ -44,8 +44,8 @@ class PlanDetailDaysVM: UIView {
     }()
     lazy var nextButton : GJVerButton = {
         let btn = GJVerButton()
-//        btn.setImage(UIImage(named: "plan_detail_arrow_blace_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
-        btn.setImage(UIImage(named: "plan_arrow_gray"), for: .normal)
+        btn.setImage(UIImage(named: "plan_detail_arrow_blace_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
+//        btn.setImage(UIImage(named: "plan_arrow_gray"), for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         
         btn.addTarget(self, action: #selector(nextAction), for: .touchUpInside)

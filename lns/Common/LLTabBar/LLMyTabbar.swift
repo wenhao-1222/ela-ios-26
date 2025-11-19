@@ -25,7 +25,7 @@ class LLMyTabbar: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         NotificationCenter.default.addObserver(self, selector: #selector(gotoMainNotification), name: NSNotification.Name(rawValue: "gotoMain"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(gotoLogsNotification), name: NSNotification.Name(rawValue: "activePlan"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(gotoLogsNotification), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
@@ -40,12 +40,8 @@ class LLMyTabbar: UIView {
     
     @objc func gotoMainNotification(){
         DLLog(message: "跳转到首页")
-//        if ( delegate?.responds(to: Selector(("tabbarDidSelectedButtomFromto"))) != nil )  {
-//            delegate?.tabbarDidSelectedButtomFromto(tabbar: self, from: seletedButton.tag, to: 0)
-//        }
         seletedButton.isSelected = false
         seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214
-//        sender.isSelected = true
         seletedButton = btnArr[0]
         seletedButton.isSelected = true
         seletedButton.conentLab.textColor = .THEME
@@ -53,13 +49,9 @@ class LLMyTabbar: UIView {
     
     @objc func gotoLogsNotification(){
         DLLog(message: "跳转到日志")
-//        if ( delegate?.responds(to: Selector(("tabbarDidSelectedButtomFromto"))) != nil )  {
-//            delegate?.tabbarDidSelectedButtomFromto(tabbar: self, from: seletedButton.tag, to: 1)
-//        }
         
         seletedButton.isSelected = false
         seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214
-//        sender.isSelected = true
         seletedButton = btnArr[1]
         seletedButton.isSelected = true
         seletedButton.conentLab.textColor = .THEME
@@ -84,9 +76,6 @@ class LLMyTabbar: UIView {
         button.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         button.setTitleColor(.THEME, for: UIControl.State.selected)
         
-//            button.setTitleColor(.COLOR_TEXT_TITLE_0f1214_30, for: .normal)
-//            button.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .selected)
-//        button.setTitle(item.title, for: .normal)
         button.conentLab.text = item.title
         button.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214
         button.setImage(item.image, for: .normal)
@@ -96,10 +85,6 @@ class LLMyTabbar: UIView {
         button.addTarget(self, action:#selector(buttonClick(_:)), for: .touchUpInside)
         button.addTarget(self, action: #selector(handlePressDragEnter), for: .touchDown)
   
-//        if self.subviews.count == 1 {
-//            self.buttonClick(button)
-//        }
-        
         btnArr.append(button)
     }
     
@@ -129,7 +114,6 @@ class LLMyTabbar: UIView {
             delegate?.tabbarDidSelectedButtomFromto(tabbar: self, from: seletedButton.tag, to: 1)
         }
 
-//        seletedButton.isSelected = false
         seletedButton = btnArr[1]
         seletedButton.isSelected = true
         seletedButton.conentLab.textColor = .THEME
@@ -144,21 +128,13 @@ class LLMyTabbar: UIView {
             let width:CGFloat = CGFloat(self.frame.size.width)/CGFloat(Int(self.subviews.count))
             let X:CGFloat = CGFloat(index * number)
             
-//            if index == 1 {
-//                button.frame = CGRect(x: X,y: 0,width: width,height: kFitWidth(70))
-//                button.imageView?.frame = CGRect.init(x: 0, y: 0, width: kFitWidth(58), height: kFitWidth(58))
-//                button.imageView?.contentMode = .top
-//                button.imageView?.clipsToBounds = false
-//                centerButton = button
-//            }else{
-                button.frame = CGRect(x: X,y: kFitWidth(0),width: width,height: kFitWidth(48))
-                button.imageView?.frame = CGRect.init(x: 0, y: kFitWidth(4), width: kFitWidth(24), height: kFitWidth(24))
-                button.imageView?.contentMode = .top
-                button.imageView?.clipsToBounds = false
-            
-                button.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
-                button.setTitleColor(.THEME, for: .selected)
-//            }
+            button.frame = CGRect(x: X,y: kFitWidth(0),width: width,height: kFitWidth(48))
+            button.imageView?.frame = CGRect.init(x: 0, y: kFitWidth(4), width: kFitWidth(24), height: kFitWidth(24))
+            button.imageView?.contentMode = .top
+            button.imageView?.clipsToBounds = false
+        
+            button.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+            button.setTitleColor(.THEME, for: .selected)
             
             button.tag = index
             index = index + 1
@@ -172,7 +148,6 @@ class LLMyTabbar: UIView {
     }
     
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-//        DLLog(message: "point(inside:\(point.x),\(point.y)")
         for vi in self.subviews{
             let tp = vi.convert(point, from: self)
             if CGRectContainsPoint(vi.bounds, tp){
@@ -181,50 +156,4 @@ class LLMyTabbar: UIView {
         }
         return false
     }
-    
-//    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//        var view = super.hitTest(point, with: event)
-//        if view == nil{
-//            for vi in self.subviews{
-//                let tp = vi.convert(point, from: self)
-//                if CGRectContainsPoint(centerButton.bounds, tp){
-//                    view = centerButton
-//                }
-//            }
-//        }
-//        return view
-//    }
-
-    
-//    func getCurrentController() -> UIViewController? {
-//           guard let window = UIApplication.shared.windows.first else {
-//               return nil
-//           }
-//           var tempView: UIView?
-//           for subview in window.subviews.reversed() {
-//               if subview.classForCoder.description() == "UILayoutContainerView" {
-//                   tempView = subview
-//                   break
-//               }
-//           }
-//
-//           if tempView == nil {
-//               tempView = window.subviews.last
-//           }
-//
-//           var nextResponder = tempView?.next
-//           var next: Bool {
-//               return !(nextResponder is UIViewController) || nextResponder is UINavigationController || nextResponder is UITabBarController
-//           }
-//
-//           while next{
-//               tempView = tempView?.subviews.first
-//               if tempView == nil {
-//                   return nil
-//               }
-//               nextResponder = tempView!.next
-//           }
-//           return nextResponder as? UIViewController
-//       }
-    
 }

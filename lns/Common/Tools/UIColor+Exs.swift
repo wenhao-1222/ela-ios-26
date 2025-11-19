@@ -32,6 +32,8 @@ extension UIColor {
     public static let COLOR_BG_BLACK                    = UIColor(named: "color_bg_black")!
     public static let COLOR_BG_BLACK_06                 = UIColor(named: "color_black_06")!
     public static let COLOR_BG_BLACK_04                 = UIColor(named: "color_black_04")!
+    public static let COLOR_BG_BLACK_15                 = UIColor(named: "color_black_15")!
+    
     public static let COLOR_BG_BLACK_04_GOAL_BG         = UIColor(named: "color_black_04_goal_bg")!
     public static let COLOR_BG_BLACK_045                = UIColor(named: "color_black_045")!
     public static let COLOR_BG_BLACK_40                 = UIColor(named: "color_black_40")!

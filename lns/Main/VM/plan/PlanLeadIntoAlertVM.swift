@@ -17,6 +17,26 @@ class PlanLeadIntoAlertVM: UIView {
     
     var leadBlock:(()->())?
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0)
@@ -126,7 +146,7 @@ extension PlanLeadIntoAlertVM{
         self.textField.becomeFirstResponder()
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut){
             self.whiteView.alpha = 1
-            self.bgView.alpha = 0.25
+            self.bgView.alpha = self.targetDimAlpha
 //            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         }completion: { _ in
             self.bgView.isUserInteractionEnabled = true

@@ -20,7 +20,7 @@ class PlanListSearchVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -113,13 +113,13 @@ class PlanListSearchVM: UIView {
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "F5F5F5")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F5F5F5")
         
         return vi
     }()
     lazy var lineViewTwo : UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "F5F5F5")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F5F5F5")
         
         return vi
     }()

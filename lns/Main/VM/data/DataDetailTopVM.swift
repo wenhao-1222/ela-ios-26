@@ -19,7 +19,7 @@ class DataDetailTopVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -29,7 +29,7 @@ class DataDetailTopVM: UIView {
     }
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         return vi
     }()
     lazy var bodyTypeButton : GJVerButton = {

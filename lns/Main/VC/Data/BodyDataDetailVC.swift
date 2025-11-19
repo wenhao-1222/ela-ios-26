@@ -119,7 +119,7 @@ class BodyDataDetailVC : WHBaseViewVC {
     }()
     lazy var lineWhiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: self.topVm.frame.maxY, width: SCREEN_WIDHT, height: kFitWidth(205)))
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -361,12 +361,11 @@ extension BodyDataDetailVC{
 extension BodyDataDetailVC{
     func initUI() {
         initNavi(titleStr: "身体数据")
-//        self.backArrowButton.tapBlock = {()in
-//            self.backTapActi()
-//        }
         
         self.navigationView.addSubview(shareButton)
         
+        view.backgroundColor = .COLOR_BG_FA
+        self.navigationView.backgroundColor = .COLOR_CARD_BG_WHITE
         view.addSubview(topVm)
         view.addSubview(lineWhiteView)
         

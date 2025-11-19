@@ -49,8 +49,6 @@ class DataAddVC : WHBaseViewVC {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: NSNotification.Name(rawValue: "updateBodyDataSetting"), object: nil)
-        
-        
     }
     lazy var customButton : FeedBackButton = {
         let button = FeedBackButton()
@@ -79,7 +77,7 @@ class DataAddVC : WHBaseViewVC {
     }()
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .clear//WHColor_16(colorStr: "FAFAFA")
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -168,7 +166,7 @@ class DataAddVC : WHBaseViewVC {
     }()
     lazy var clearWhiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: self.biweiVm.frame.maxY, width: SCREEN_WIDHT, height: kFitWidth(50)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.isHidden = true
         return vi
@@ -193,7 +191,7 @@ class DataAddVC : WHBaseViewVC {
     }()
     lazy var saveBottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getBottomSafeAreaHeight()-kFitWidth(102), width: SCREEN_WIDHT, height: kFitWidth(96)))
-        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .clear//WHColor_16(colorStr: "FAFAFA")
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -394,12 +392,13 @@ extension DataAddVC{
 //        initNavi(titleStr: "添加数据")
         view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         self.navigationView.addSubview(customButton)
+        self.navigationView.backgroundColor = .COLOR_CARD_BG_WHITE
         
         view.addSubview(topFilterVm)
         
-        let scrollViewHeight = SCREEN_HEIGHT-self.bottomView.frame.minY
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: saveBottomView.frame.minY)
         scrollViewBase.bounces = false
+        scrollViewBase.backgroundColor = .clear
         
         view.insertSubview(bottomView, belowSubview: self.navigationView)
         bottomView.addSubview(scrollViewBase)

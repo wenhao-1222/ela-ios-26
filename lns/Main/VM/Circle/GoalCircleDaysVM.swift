@@ -38,7 +38,8 @@ class GoalCircleDaysVM: UIView {
     lazy var iconImgView : UIImageView = {
         let img = UIImageView()
 //        img.setImgLocal(imgName: "create_plan_weeks_icon")
-        img.setImgLocal(imgName: "circle_days_icon")
+//        img.setImgLocal(imgName: "circle_days_icon")
+        img.image = UIImage(named: "circle_days_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_60)
         
         return img
     }()

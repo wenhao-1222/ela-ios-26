@@ -30,18 +30,14 @@ class PlanCreateTableViewCell: UITableViewCell {
     
     lazy var bottomView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
-//        vi.clipsToBounds = true
-//        vi.layer.cornerRadius = kFitWidth(8)
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
-//        vi.layer.borderColor = WHColor_16(colorStr: "F0F0F0").cgColor
-//        vi.layer.borderWidth = kFitWidth(1)
         
         return vi
     }()
     lazy var mealsLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab
@@ -60,7 +56,7 @@ class PlanCreateTableViewCell: UITableViewCell {
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()
@@ -68,7 +64,7 @@ class PlanCreateTableViewCell: UITableViewCell {
         let lab = UILabel()
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.text = "请添加食物"
         
@@ -80,13 +76,13 @@ class PlanCreateTableViewCell: UITableViewCell {
         table.register(PlanCreateFoodsTableViewCell.classForCoder(), forCellReuseIdentifier: "PlanCreateFoodsTableViewCell")
         table.delegate = self
         table.dataSource = self
-        
+        table.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return table
     }()
     lazy var naturalMsgLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
         lab.isHidden = true
@@ -96,7 +92,7 @@ class PlanCreateTableViewCell: UITableViewCell {
     
     lazy var caloriesMsgLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.isHidden = true
         
@@ -155,14 +151,9 @@ extension PlanCreateTableViewCell{
             self.caloriesMsgLabel.isHidden = false
             self.tableView.frame = CGRect.init(x: 0, y: kFitWidth(62), width: SCREEN_WIDHT, height: CGFloat(self.foodsArray.count)*kFitWidth(55)+kFitWidth(20))
             self.tableView.reloadData()
-//            self.bottomView.snp.remakeConstraints { make in
-//                make.left.top.width.equalToSuperview()
-//                make.bottom.equalTo(kFitWidth(-8))
-//            }
             lineView.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(16))
                 make.right.equalTo(kFitWidth(-14))
-//                make.top.equalTo(kFitWidth(56))
                 make.bottom.equalTo(naturalMsgLabel.snp.top).offset(kFitWidth(-10))
                 make.height.equalTo(kFitWidth(1))
             }
@@ -189,12 +180,10 @@ extension PlanCreateTableViewCell{
             
             for i in 0..<self.foodsArray.count{
                 let dict = self.foodsArray[i]as? NSDictionary ?? [:]
-   //                if dict.stringValueForKey(key: "state") == "1"{
-                    caloriTotal = caloriTotal + dict.doubleValueForKey(key: "calories")
-                    carboTotal = carboTotal + dict.doubleValueForKey(key: "carbohydrate")
-                    proteinTotal = proteinTotal + dict.doubleValueForKey(key: "protein")
-                    fatTotal = fatTotal + dict.doubleValueForKey(key: "fat")
-   //                }
+                caloriTotal = caloriTotal + dict.doubleValueForKey(key: "calories")
+                carboTotal = carboTotal + dict.doubleValueForKey(key: "carbohydrate")
+                proteinTotal = proteinTotal + dict.doubleValueForKey(key: "protein")
+                fatTotal = fatTotal + dict.doubleValueForKey(key: "fat")
             }
             DispatchQueue.main.async {
                 DLLog(message: "proteinTotal:\(proteinTotal)")
@@ -202,10 +191,6 @@ extension PlanCreateTableViewCell{
                                             "\(String(format: "%.0f", proteinTotal.rounded()))g 蛋白质," +
                                             "\(String(format: "%.0f", fatTotal.rounded()))g 脂肪"
                 self.caloriesMsgLabel.text = "\(String(format: "%.0f", caloriTotal.rounded()))千卡"
-//                self.naturalVm.caloriLabel.text = "\(String(format: "%.0f", caloriTotal.rounded()))"
-//                self.naturalVm.carboLabel.text = "\(String(format: "%.0f", carboTotal.rounded()))"
-//                self.naturalVm.proteinLabel.text = "\(String(format: "%.0f", proteinTotal.rounded()))"
-//                self.naturalVm.fatLabel.text = "\(String(format: "%.0f", fatTotal.rounded()))"
             }
         }
     }
@@ -220,7 +205,6 @@ extension PlanCreateTableViewCell{
             lineView.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(16))
                 make.right.equalTo(kFitWidth(-14))
-//                make.top.equalTo(kFitWidth(56))
                 make.bottom.equalTo(naturalMsgLabel.snp.top).offset(kFitWidth(-10))
                 make.height.equalTo(kFitWidth(1))
             }
@@ -239,8 +223,6 @@ extension PlanCreateTableViewCell{
     }
     //修改了食物的规格、数量等信息
     func updateFoodsSpec(dict:NSDictionary) {
-//        self.foodsArray.replaceObject(at: indexPath.row, with: dict)
-//        self.tableView.reloadData()
         var hasFoods = false
         for i in 0..<self.foodsArray.count{
             let dictT = self.foodsArray[i]as? NSDictionary ?? [:]
