@@ -24,9 +24,9 @@ class FitnessTipsVC: WHBaseViewVC {
         view.backgroundColor = .clear // 注意此处！清除背景！
         
         initUI()
-        if UIDevice.current.userInterfaceIdiom == .pad {
+//        if UIDevice.current.userInterfaceIdiom == .pad {
             view.backgroundColor = .COLOR_BG_WHITE
-        }
+//        }
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenSelf))
         tap.delegate = self
         view.addGestureRecognizer(tap)
@@ -34,7 +34,7 @@ class FitnessTipsVC: WHBaseViewVC {
     // 白色卡片区域
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: kFitWidth(129)+SCREEN_HEIGHT, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-kFitWidth(129)+kFitWidth(16)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
@@ -56,9 +56,8 @@ class FitnessTipsVC: WHBaseViewVC {
     lazy var buttonBgView: UIView = {
         let vi = UIView()
 //        let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-kFitWidth(129)-bgViewHeight, width: SCREEN_WIDHT, height: bgViewHeight))
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
-        
         
         return vi
     }()
@@ -95,11 +94,6 @@ extension FitnessTipsVC{
                 self.whiteView.frame = CGRect.init(x: 0, y: toGap, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-toGap+kFitWidth(16))
             }
         }
-        
-//        UIView.animate(withDuration: 0.25, delay: 0,options: .curveEaseInOut) {
-//            self.whiteView.frame = CGRect.init(x: 0, y: toGap, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-toGap+kFitWidth(16))
-////            self.whiteView.frame = CGRect.init(x: 0, y: kFitWidth(129), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-kFitWidth(129)+kFitWidth(16))
-//        }
     }
     @objc func hiddenSelf() {
         DispatchQueue.main.asyncAfter(deadline: .now()+0.01, execute: {

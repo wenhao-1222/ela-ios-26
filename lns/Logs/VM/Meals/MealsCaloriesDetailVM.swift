@@ -27,7 +27,7 @@ class MealsCaloriesDetailVM: UIView {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(12), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(190)))
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
-        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_F5_SEGMENT//WHColor_16(colorStr: "FAFAFA")
         return vi
     }()
     lazy var caloriesNumLabel: UICountingLabel = {

@@ -43,7 +43,7 @@ class FoodsCreateFastVC: WHBaseViewVC {
     }
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         

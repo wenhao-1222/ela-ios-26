@@ -102,7 +102,7 @@ class WHBaseViewVC: ViewController {
     
     func initNavigationView(){
        self.view.addSubview(navigationView)
-        navigationView.backgroundColor = UIColor.COLOR_BG_WHITE
+        navigationView.backgroundColor = UIColor.COLOR_CARD_BG_WHITE
        navigationView.snp.makeConstraints { (frame) in
            frame.width.equalTo(SCREEN_WIDHT)
            frame.height.equalTo(getNavigationBarHeight())
@@ -585,7 +585,7 @@ extension WHBaseViewVC{
 }
 
 extension WHBaseViewVC{
-    func initNavi(titleStr:String,naviBgColor:UIColor? = .COLOR_BG_WHITE,isWhite:Bool? = false){
+    func initNavi(titleStr:String,naviBgColor:UIColor? = .COLOR_CARD_BG_WHITE,isWhite:Bool? = false){
         let naviView = UIView()
         view.addSubview(naviView)
         naviView.backgroundColor = naviBgColor

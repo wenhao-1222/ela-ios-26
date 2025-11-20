@@ -25,7 +25,7 @@ class FoodsSearchVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: statusBarHeight, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -81,14 +81,14 @@ extension FoodsSearchVM{
         self.textField.resignFirstResponder()
     }
     func updateUIForGuide(isGuide:Bool) {
+//        self.searchBgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         if isGuide{
-            self.backgroundColor = .clear
+//            self.backgroundColor = .COLOR_CARD_BG_WHITE
             self.textField.becomeFirstResponder()
-            self.searchBgView.backgroundColor = .COLOR_BG_WHITE
+//            self.searchBgView.backgroundColor = .COLOR_BG_WHITE
             self.backArrowButton.isUserInteractionEnabled = false
         }else{
-            self.backgroundColor = .COLOR_BG_WHITE
-            self.searchBgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+//            self.backgroundColor = .COLOR_CARD_BG_WHITE
             self.backArrowButton.isUserInteractionEnabled = true
         }
     }

@@ -54,7 +54,7 @@ class FoodsMergeListTableViewCell: UITableViewCell {
         btn.setTitle("编辑", for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
         btn.setTitleColor(.white, for: .normal)
-        btn.backgroundColor = .COLOR_GRAY_C4C4C4
+        btn.backgroundColor = .COLOR_BG_BLACK_65//.COLOR_GRAY_C4C4C4
         
         return btn
     }()
@@ -69,7 +69,7 @@ class FoodsMergeListTableViewCell: UITableViewCell {
     }()
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_FA//.COLOR_GRAY_F7F8FA
+        vi.backgroundColor = .COLOR_BG_F5_FITNESS//.COLOR_GRAY_F7F8FA
         vi.isUserInteractionEnabled = true
         // 创建下拉手势识别器
 //        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))

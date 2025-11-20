@@ -33,7 +33,8 @@ class PlanCreateNameVM: UIView {
     
     lazy var iconImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "create_plan_name_icon")
+//        img.setImgLocal(imgName: "create_plan_name_icon")
+        img.image = UIImage(named: "create_plan_name_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
         
         return img
     }()

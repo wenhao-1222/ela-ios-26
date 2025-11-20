@@ -12,7 +12,7 @@ class FoodsMergeNaturalItemVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: kFitWidth(170), height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()

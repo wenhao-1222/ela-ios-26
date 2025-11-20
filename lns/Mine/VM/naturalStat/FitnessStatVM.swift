@@ -50,7 +50,8 @@ class FitnessStatVM: UIView {
     }()
     lazy var tipsButton: UIButton = {
         let btn = UIButton()
-        btn.setImage(UIImage(named: "fitness_tips_icon"), for: .normal)
+        btn.setImage(UIImage(named: "fitness_tips_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
+        
         
         return btn
     }()

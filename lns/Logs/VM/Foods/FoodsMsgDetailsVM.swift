@@ -308,7 +308,7 @@ extension FoodsMsgDetailsVM{
         addSubview(textField)
         
         addSubview(whiteView)
-        whiteView.addShadow()
+//        whiteView.addShadow()
         
         whiteView.addSubview(caloriLab)
         whiteView.addSubview(caloriLabel)

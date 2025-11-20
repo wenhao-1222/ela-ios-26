@@ -197,7 +197,7 @@ class CameraViewController: WHBaseViewVC {
 //                       "measurementNum":"100",
 //                       "measurementUnit":"g",
 //                       "protein":"12.8"]
-//        let vc = PropotionResultVC()
+//        let vc = AIResultVC()
 //        vc.msgDict = dataObj as NSDictionary
 //        vc.isFromPlan = self.isFromPlan
 //        vc.sourceType = self.sourceType

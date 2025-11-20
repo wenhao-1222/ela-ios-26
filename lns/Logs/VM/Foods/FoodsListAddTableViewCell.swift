@@ -18,7 +18,7 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -29,12 +29,12 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
         if highlighted {
             self.bottomView.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT
         }else{
-            self.bottomView.backgroundColor = .COLOR_BG_WHITE
+            self.bottomView.backgroundColor = .COLOR_CARD_BG_WHITE
         }
     }
     lazy var bottomView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "F5F5F5")
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "F5F5F5")
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -252,10 +252,13 @@ extension FoodsListAddTableViewCell{
         attachment.bounds = CGRect(x: 0, y: (UIFont.systemFont(ofSize: 16, weight: .medium).capHeight - image.size.height).rounded() / 2, width: image.size.width, height: image.size.height)
         let attachmentString = NSAttributedString(attachment: attachment)
         
-        let a = NSMutableAttributedString(
+        var a = NSMutableAttributedString(
             string: text,
             attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214]
         )
+        if keywords?.count ?? 0 > 0 {
+            a = NSMutableAttributedString(attributedString: self.boldKeywords(nameString: a.string as NSString,keywords:keywords ?? ""))
+        }
         a.append(attachmentString)
         
         return a

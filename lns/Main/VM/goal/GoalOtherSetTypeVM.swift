@@ -26,7 +26,7 @@ class GoalOtherSetTypeVM: UIView {
     }
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
@@ -75,9 +75,6 @@ extension GoalOtherSetTypeVM{
     func setConstrait() {
         let btnWidth = (SCREEN_WIDHT-kFitWidth(32))*0.5
         whiteView.snp.makeConstraints { make in
-//            make.left.equalTo(kFitWidth(16))
-//            make.top.bottom.equalToSuperview()
-//            make.right.equalTo(kFitWidth(-16))
             make.center.lessThanOrEqualToSuperview()
             make.width.equalTo((SCREEN_WIDHT-kFitWidth(32)))
             make.height.equalTo(selfHeight)
@@ -95,6 +92,5 @@ extension GoalOtherSetTypeVM{
             make.height.equalTo(kFitWidth(55))
             make.width.equalTo(kFitWidth(0.5))
         }
-        
     }
 }

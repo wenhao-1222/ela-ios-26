@@ -29,7 +29,8 @@ class MealsNameVM: UIView {
     }
     lazy var iconImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "logs_pen_icon")
+//        img.setImgLocal(imgName: "logs_pen_icon")
+        img.image = UIImage(named: "logs_pen_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         return img
     }()
     lazy var titleLab: UILabel = {

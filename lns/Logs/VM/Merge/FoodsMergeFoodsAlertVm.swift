@@ -54,7 +54,7 @@ class FoodsMergeFoodsAlertVm: UIView {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: kFitWidth(67) + SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         // 创建下拉手势识别器
@@ -69,7 +69,7 @@ class FoodsMergeFoodsAlertVm: UIView {
     }()
     lazy var nameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 17, weight: .semibold)
         
         return lab
@@ -77,6 +77,7 @@ class FoodsMergeFoodsAlertVm: UIView {
     lazy var closeImgView : UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "date_fliter_cancel_img")
+        img.image = UIImage(named: "date_fliter_cancel_img")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_60)
         img.isUserInteractionEnabled = true
         
         return img
@@ -93,7 +94,7 @@ class FoodsMergeFoodsAlertVm: UIView {
     }()
     lazy var naturalBottomView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_GRAY_F7F8FA
+        vi.backgroundColor = .COLOR_BG_F5_FITNESS//.COLOR_GRAY_F7F8FA
         vi.layer.cornerRadius = kFitWidth(13)
         vi.isUserInteractionEnabled = true
         vi.clipsToBounds = true
@@ -109,7 +110,7 @@ class FoodsMergeFoodsAlertVm: UIView {
     lazy var caloriesNumLabel: UILabel = {
         let lab = UILabel()
         lab.text = "0"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 20, weight: .semibold)
         
         return lab
@@ -118,7 +119,7 @@ class FoodsMergeFoodsAlertVm: UIView {
         let lab = UILabel()
         lab.text = "千卡"
         lab.font = .systemFont(ofSize: 11, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         return lab
     }()
     lazy var carboItemVm: NaturalItemVM = {
@@ -158,7 +159,7 @@ class FoodsMergeFoodsAlertVm: UIView {
     }()
     lazy var buttonBottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: self.whiteViewHeight-kFitWidth(70)-WHUtils().getBottomSafeAreaHeight(), width: SCREEN_WIDHT, height: kFitWidth(70)+WHUtils().getBottomSafeAreaHeight()))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()

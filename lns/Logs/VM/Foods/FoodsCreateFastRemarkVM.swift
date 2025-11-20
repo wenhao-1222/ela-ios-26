@@ -14,7 +14,7 @@ class FoodsCreateFastRemarkVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         

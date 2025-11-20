@@ -421,6 +421,7 @@ extension FoodsListNewVC{
 extension FoodsListNewVC{
     func initUI() {
 //        view.addSubview(naviVm)
+        view.backgroundColor = .COLOR_CARD_BG_WHITE
         view.insertSubview(naviVm, at: 100)
         view.insertSubview(topTypeVM, belowSubview: naviVm)
         view.insertSubview(createVm, belowSubview: naviVm)

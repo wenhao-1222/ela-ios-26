@@ -35,7 +35,7 @@ class FoodsMergeAlertSpecVM: UIView {
     lazy var numberLab: UILabel = {
         let lab = UILabel()
         lab.text = "数量"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         
         return lab
@@ -44,7 +44,7 @@ class FoodsMergeAlertSpecVM: UIView {
         let text = NumericTextField()
         text.placeholder = "100"
         text.text = "100"
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 14, weight: .medium)
         text.backgroundColor = .clear
         text.keyboardType = .decimalPad
@@ -65,12 +65,12 @@ class FoodsMergeAlertSpecVM: UIView {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.1)
+        vi.backgroundColor = .COLOR_LINE_F0//WHColorWithAlpha(colorStr: "000000", alpha: 0.1)
         return vi
     }()
     lazy var specLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.textAlignment = .right
         lab.adjustsFontSizeToFitWidth = true
@@ -79,6 +79,7 @@ class FoodsMergeAlertSpecVM: UIView {
     lazy var specImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "foods_merge_arrow_icon")
+        img.image = UIImage(named: "foods_merge_arrow_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         img.isUserInteractionEnabled = true
         
         return img
@@ -95,7 +96,7 @@ class FoodsMergeAlertSpecVM: UIView {
     }()
     lazy var bottomLineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.1)
+        vi.backgroundColor = .COLOR_LINE_F0//WHColorWithAlpha(colorStr: "000000", alpha: 0.1)
         return vi
     }()
 }

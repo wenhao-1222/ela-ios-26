@@ -49,7 +49,7 @@ class FoodsMergeVC: WHBaseViewVC {
     }
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -103,7 +103,7 @@ class FoodsMergeVC: WHBaseViewVC {
         let vi = ForumCommentListTableView.init(frame: CGRect.init(x: kFitWidth(16), y: self.nameTipsVm.frame.maxY, width: SCREEN_WIDHT-kFitWidth(32), height: SCREEN_HEIGHT-getNavigationBarHeight()), style: .grouped)
         vi.delegate = self
         vi.dataSource = self
-        vi.backgroundColor = .clear
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.separatorStyle = .none
         vi.bounces = false
 //        vi.separatorColor = .clear
@@ -260,7 +260,7 @@ extension FoodsMergeVC{
         bottomView.addSubview(scrollViewBase)
         view.addSubview(bottomFuncVm)
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-bottomFuncVm.selfHeight)
-        scrollViewBase.backgroundColor = .COLOR_BG_WHITE
+        scrollViewBase.backgroundColor = .COLOR_CARD_BG_WHITE
         scrollViewBase.addSubview(foodsNameVm)
         scrollViewBase.addSubview(specVm)
         scrollViewBase.addSubview(naturalMsgVm)

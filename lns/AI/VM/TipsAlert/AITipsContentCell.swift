@@ -10,6 +10,16 @@ class AITipsContentCell: UITableViewCell {
     
     var aiTipsBlock:(()->())?
     
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           self.updateUI()
+       }
+   }
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }

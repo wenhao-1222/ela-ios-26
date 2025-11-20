@@ -20,6 +20,27 @@ class JournalFuncCopyMealsAlertVM: UIView {
     var copyBlock:(()->())?
     var updateBlock:(()->())?
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0.2)
@@ -40,7 +61,7 @@ class JournalFuncCopyMealsAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = .COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenSelf))
         v.addGestureRecognizer(tap)
@@ -49,7 +70,7 @@ class JournalFuncCopyMealsAlertVM: UIView {
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(10))
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
         vi.addGestureRecognizer(tap)
@@ -119,22 +140,13 @@ extension JournalFuncCopyMealsAlertVM{
                        initialSpringVelocity: 0.1,
                        options: [.curveEaseOut, .allowUserInteraction]) {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
-            self.bgView.alpha = 0.25
+            self.bgView.alpha = self.targetDimAlpha//0.25
         } completion: { _ in
             self.bgView.isUserInteractionEnabled = true
-            
         }
         UIView.animate(withDuration: 0.25, delay: 0.4, options: .curveEaseInOut) {
             self.whiteView.transform = .identity
         }
-        
-//        UIView.animate(withDuration: 0.25,delay: 0,options: .curveLinear) {
-//            self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT-self.whiteViewHeight, width: SCREEN_WIDHT, height: self.whiteViewHeight)
-//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.2)
-//        } completion: { t in
-////            self.alpha = 1
-//        }
-
     }
     @objc func hiddenSelf() {
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
@@ -143,14 +155,6 @@ extension JournalFuncCopyMealsAlertVM{
         } completion: { _ in
             self.isHidden = true
         }
-//        UIView.animate(withDuration: 0.25,delay: 0,options: .curveLinear) {
-//            self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: self.whiteViewHeight)
-//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
-//        } completion: { t in
-////            self.alpha = 0
-//            self.isHidden = true
-//            self.backgroundColor = .clear
-//        }
     }
     func refreshPicker(selectIndex:Int) {
         pickerView.selectRow(0, inComponent: 1, animated: false)

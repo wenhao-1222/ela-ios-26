@@ -135,9 +135,9 @@ extension FoodsDetailCaloriVM{
         self.proteinVm.numberLabel.textColor = .COLOR_PROTEIN
         self.fatsVm.numberLabel.textColor = .COLOR_FAT
         
-        self.carboVm.percentLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
-        self.proteinVm.percentLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
-        self.fatsVm.percentLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        self.carboVm.percentLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        self.proteinVm.percentLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        self.fatsVm.percentLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         
         self.titleLabel.text = ""
         
@@ -162,7 +162,7 @@ extension FoodsDetailCaloriVM{
 extension FoodsDetailCaloriVM{
     func initUI() {
         addSubview(whiteView)
-        whiteView.addShadow()
+//        whiteView.addShadow()
         whiteView.addSubview(titleLabel)
         whiteView.addSubview(carboVm)
         whiteView.addSubview(proteinVm)

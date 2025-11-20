@@ -71,7 +71,7 @@ class SportHistoryTableViewCell: FeedBackTableViewCell {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
 }

@@ -191,7 +191,7 @@ class DataAddVC : WHBaseViewVC {
     }()
     lazy var saveBottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getBottomSafeAreaHeight()-kFitWidth(102), width: SCREEN_WIDHT, height: kFitWidth(96)))
-        vi.backgroundColor = .clear//WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         vi.isUserInteractionEnabled = true
         return vi
     }()

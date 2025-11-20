@@ -40,7 +40,7 @@ class FoodsListAddVM: UIView {
         btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(109), height: kFitWidth(86))
 //        btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.setTitle("创建食物", for: .normal)
-        btn.backgroundColor = .COLOR_BG_WHITE
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.setImage(UIImage(named: "foods_create_icon_normal"), for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
@@ -59,7 +59,7 @@ class FoodsListAddVM: UIView {
         btn.frame = CGRect.init(x: kFitWidth(133), y: kFitWidth(17), width: kFitWidth(109), height: kFitWidth(86))
 //        btn.frame = CGRect.init(x: kFitWidth(191), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.setTitle("快速添加", for: .normal)
-        btn.backgroundColor = .COLOR_BG_WHITE
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.setImage(UIImage(named: "foods_create_icon_soon"), for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
@@ -78,7 +78,7 @@ class FoodsListAddVM: UIView {
         btn.frame = CGRect.init(x: kFitWidth(250), y: kFitWidth(17), width: kFitWidth(109), height: kFitWidth(86))
 //        btn.frame = CGRect.init(x: kFitWidth(191), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.setTitle("AI识别", for: .normal)
-        btn.backgroundColor = .COLOR_BG_WHITE
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.setImage(UIImage(named: "foods_ai_icon"), for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
@@ -108,7 +108,7 @@ class FoodsListAddVM: UIView {
         btn.frame = CGRect.init(x: kFitWidth(250), y: kFitWidth(17), width: kFitWidth(109), height: kFitWidth(86))
 //        btn.frame = CGRect.init(x: kFitWidth(191), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.setTitle("融合食物", for: .normal)
-        btn.backgroundColor = .COLOR_BG_WHITE
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.isHidden = true
         btn.enablePressEffect()
         btn.setImage(UIImage(named: "foods_merge_icon"), for: .normal)
@@ -135,7 +135,7 @@ class FoodsListAddVM: UIView {
 //        btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(86))
         btn.setTitle("创建食谱", for: .normal)
-        btn.backgroundColor = .COLOR_BG_WHITE
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.enablePressEffect()
         btn.setImage(UIImage(named: "meals_create_icon"), for: .normal)
         btn.setTitleColor(WHColor_16(colorStr: "2BA471"), for: .normal)

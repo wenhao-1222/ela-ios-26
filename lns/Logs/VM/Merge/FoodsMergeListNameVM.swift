@@ -24,7 +24,7 @@ class FoodsMergeListNameVM: UIView {
     }
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()
@@ -41,7 +41,7 @@ class FoodsMergeListNameVM: UIView {
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .regular)
         btn.setImage(UIImage.init(named: "foods_merge_add_icon_white"), for: .normal)
-        btn.layer.borderColor = UIColor.COLOR_BG_BLACK_045.cgColor
+        btn.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.cgColor
         btn.layer.borderWidth = kFitWidth(1)
         btn.layer.cornerRadius = kFitWidth(12)
         btn.clipsToBounds = true
