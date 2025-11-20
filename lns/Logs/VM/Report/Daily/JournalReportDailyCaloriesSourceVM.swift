@@ -25,7 +25,7 @@ class JournalReportDailyCaloriesSourceVM: UIView {
     }
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
         

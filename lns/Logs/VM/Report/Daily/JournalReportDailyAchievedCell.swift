@@ -22,7 +22,7 @@ class JournalReportDailyAchievedCell: UITableViewCell {
     }
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
         return vi
@@ -57,17 +57,18 @@ class JournalReportDailyAchievedCell: UITableViewCell {
 
 extension JournalReportDailyAchievedCell{
     func updateUI(dict:NSDictionary) {
+        self.hideSkeleton()
         let streakDict = dict["streak"]as? NSDictionary ?? [:]
         let defeatedDict = dict["defeated"]as? NSDictionary ?? [:]
         
-        var streakAttr = NSMutableAttributedString(string: streakDict.stringValueForKey(key: "text"))
-        var streakAttr1 = NSMutableAttributedString(string: "天")
+        let streakAttr = NSMutableAttributedString(string: streakDict.stringValueForKey(key: "text"))
+        let streakAttr1 = NSMutableAttributedString(string: "天")
         streakAttr.yy_font = UIFont().DDInFontBold(fontSize: 28)
         streakAttr.append(streakAttr1)
         daysLabel.attributedText = streakAttr
         
-        var defeatAttr = NSMutableAttributedString(string: defeatedDict.stringValueForKey(key: "text"))
-        var defeatAttr1 = NSMutableAttributedString(string: "%用户")
+        let defeatAttr = NSMutableAttributedString(string: defeatedDict.stringValueForKey(key: "text"))
+        let defeatAttr1 = NSMutableAttributedString(string: "%用户")
         defeatAttr.yy_font = UIFont().DDInFontBold(fontSize: 28)
         defeatAttr.append(defeatAttr1)
         percentLabel.attributedText = defeatAttr

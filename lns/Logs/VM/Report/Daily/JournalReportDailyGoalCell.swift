@@ -66,7 +66,7 @@ class JournalReportDailyGoalCell: UITableViewCell {
     }()
     lazy var whiteVi: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         
         return vi

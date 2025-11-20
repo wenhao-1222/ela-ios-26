@@ -23,6 +23,7 @@ class ReportNoDataVM: UIView {
     lazy var whiteCoverView: GradientView = {
         let vi = GradientView()
         vi.addGradientBackground(startColor: UIColor.init(white: 1, alpha: 0.4), endColor: UIColor.init(white: 1, alpha: 1))
+//        vi.addGradientBackground(startColor: .colorWhite45, endColor: .COLOR_CARD_BG_WHITE)
         vi.isHidden = true
         vi.alpha = 0
         return vi
