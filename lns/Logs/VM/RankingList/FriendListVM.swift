@@ -19,7 +19,7 @@ class FriendListVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: frame)
-        self.backgroundColor = .COLOR_BG_F5
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -30,7 +30,7 @@ class FriendListVM: UIView {
     }
     lazy var tableView: UITableView = {
         let table = UITableView(frame: CGRect.init(x: 0, y: tableViewOriginY, width: SCREEN_WIDHT, height: self.frame.size.height-tableViewOriginY), style: .plain)
-        table.backgroundColor = .COLOR_BG_WHITE//.COLOR_BG_F5
+        table.backgroundColor = .COLOR_CARD_BG_WHITE//.COLOR_BG_F5
         table.separatorStyle = .none
         table.delegate = self
         table.dataSource = self
@@ -41,7 +41,7 @@ class FriendListVM: UIView {
     }()
     lazy var titleView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: tableViewOriginY))
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -65,7 +65,7 @@ class FriendListVM: UIView {
     lazy var noResultLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: 0, y: -1, width: SCREEN_WIDHT, height: kFitWidth(75)))
         lab.text = "该ID不存在"
-        lab.backgroundColor = .COLOR_BG_WHITE
+        lab.backgroundColor = .COLOR_CARD_BG_WHITE
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 17, weight: .regular)
         lab.textAlignment = .center
@@ -110,11 +110,11 @@ extension FriendListVM{
             if self.isFriendList{
                 self.tableView.frame = CGRect.init(x: 0, y: self.tableViewOriginY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-originY-self.tableViewOriginY)
                 self.titleView.alpha = 1
-                self.tableView.backgroundColor = .COLOR_BG_WHITE
+                self.tableView.backgroundColor = .COLOR_CARD_BG_WHITE
             }else{
                 self.tableView.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-originY)
                 self.titleView.alpha = 0
-                self.tableView.backgroundColor = .COLOR_BG_F5
+                self.tableView.backgroundColor = .COLOR_BG_F5_SEGMENT
             }
         }
     }

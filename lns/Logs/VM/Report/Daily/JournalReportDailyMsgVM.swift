@@ -15,9 +15,22 @@ class JournalReportDailyMsgVM: UIView {
     
     var offsetChangeBlock:((CGFloat)->())?
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        if traitCollection.userInterfaceStyle == .dark{
+            self.backgroundColor = .COLOR_BG_WHITE
+        }else{
+            self.backgroundColor = .COLOR_BG_F5
+        }
+    }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .COLOR_BG_WHITE
+        
+        if traitCollection.userInterfaceStyle == .dark{
+            self.backgroundColor = .COLOR_BG_WHITE
+        }else{
+            self.backgroundColor = .COLOR_BG_F5
+        }
         self.isUserInteractionEnabled = true
         selfHeight = SCREEN_HEIGHT-frame.origin.y
         
@@ -40,14 +53,10 @@ class JournalReportDailyMsgVM: UIView {
     }()
     lazy var tableView: ForumCommentListTableView = {
         let vi = ForumCommentListTableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight), style: .plain)
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .clear
         vi.delegate = self
         vi.dataSource = self
-//        vi.bounces = false
-//        vi.isScrollEnabled = false
         vi.separatorStyle = .none
-//        vi.sectionFooterHeight = 0
-//        vi.sectionFooterHeight = UITableView.automaticDimension
         vi.register(JournalReportDailyGoalCell.classForCoder(), forCellReuseIdentifier: "JournalReportDailyGoalCell")
         vi.register(JournalReportDailyDesCell.classForCoder(), forCellReuseIdentifier: "JournalReportDailyDesCell")
         vi.register(JournalReportDailyNaturalCell.classForCoder(), forCellReuseIdentifier: "JournalReportDailyNaturalCell")
@@ -141,7 +150,7 @@ extension JournalReportDailyMsgVM:UITableViewDelegate,UITableViewDataSource{
             }else if indexPath.row == 1{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "JournalReportDailyDesCell") as? JournalReportDailyDesCell
                 let dict = self.reportMsgDict["desc"]as? NSDictionary ?? [:]
-                cell?.updateUI(dict: dict,gapsArray: self.reportMsgDict["gaps"]as? NSArray ?? [],adviceDict: self.reportMsgDict["advice"]as? NSDictionary ?? [:])
+                cell?.updateUI(dict: dict,gapsArray: self.reportMsgDict["gaps"]as? NSArray ?? [],adviceDict: self.reportMsgDict["advice"]as? NSDictionary ?? [:],isAchieved: self.reportMsgDict.stringValueForKey(key: "achieved") == "yes")
 
                 return cell ?? JournalReportDailyDesCell()
             }else if indexPath.row == 2{
@@ -285,9 +294,9 @@ extension JournalReportDailyMsgVM{
 //                self.rankingButton.isHidden = false
                 self.scrollView.addSubview(self.rankingButton)
                 self.reportMsgDict = dataObj
-                DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+//                DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
                     self.tableView.reloadData()
-                })
+//                })
             }
         }
     }

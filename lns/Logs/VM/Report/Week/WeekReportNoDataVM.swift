@@ -69,12 +69,6 @@ class WeekReportNoDataVM: UIView {
 extension WeekReportNoDataVM{
     func showView() {
         self.isHidden = false
-//        self.whiteCoverView.isHidden = false
-//        self.blurEffectView.isHidden = false
-//        UIView.animate(withDuration: 0.2, animations: {
-//            self.whiteCoverView.isHidden = false
-//            self.blurEffectView.isHidden = false
-//        })
     }
     @objc func recordAction() {
         self.recordBlock?()

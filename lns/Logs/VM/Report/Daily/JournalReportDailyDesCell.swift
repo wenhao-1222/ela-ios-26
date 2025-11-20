@@ -49,10 +49,9 @@ class JournalReportDailyDesCell: UITableViewCell {
 }
 
 extension JournalReportDailyDesCell{
-    func updateUI(dict:NSDictionary,gapsArray:NSArray,adviceDict:NSDictionary)  {
+    func updateUI(dict:NSDictionary,gapsArray:NSArray,adviceDict:NSDictionary,isAchieved:Bool)  {
         let string = dict.stringValueForKey(key: "text")
         if string.count > 0 {
-//            hideSkeleton()
             detailLab.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
                 make.left.equalTo(kFitWidth(31))
@@ -78,20 +77,31 @@ extension JournalReportDailyDesCell{
             }
         }else{
             detailLab.text = ""
-            detailLab.snp.remakeConstraints { make in
-                make.top.equalTo(kFitWidth(0))
-                make.left.equalTo(kFitWidth(31))
-                make.right.equalTo(kFitWidth(-31))
-                make.height.equalTo(kFitWidth(54))
-                make.bottom.equalTo(kFitWidth(-20))
+            if isAchieved{
+                detailLab.snp.remakeConstraints { make in
+                    make.top.equalTo(kFitWidth(0))
+                    make.left.equalTo(kFitWidth(31))
+                    make.right.equalTo(kFitWidth(-31))
+                    make.height.equalTo(kFitWidth(0))
+                    make.bottom.equalTo(kFitWidth(0))
+                }
+                [detailLab].forEach { $0.hideSkeletonWithCrossfade() }
+            }else{
+                detailLab.snp.remakeConstraints { make in
+                    make.top.equalTo(kFitWidth(0))
+                    make.left.equalTo(kFitWidth(31))
+                    make.right.equalTo(kFitWidth(-31))
+                    make.height.equalTo(kFitWidth(54))
+                    make.bottom.equalTo(kFitWidth(-20))
+                }
+                let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                                         highlightColorLight: .COLOR_GRAY_E2,
+                                         cornerRadius: kFitWidth(4),
+                                         shimmerWidth: 0.22,
+                                         shimmerDuration: 1.15)
+                
+                detailLab.showSkeleton(cfg)
             }
-            let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
-                                     highlightColorLight: .COLOR_GRAY_E2,
-                                     cornerRadius: kFitWidth(4),
-                                     shimmerWidth: 0.22,
-                                     shimmerDuration: 1.15)
-            
-            detailLab.showSkeleton(cfg)
         }
     }
 }

@@ -32,7 +32,7 @@ class JournalReportWeekTopCell: UITableViewCell {
     }()
     lazy var titleLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = .white
+        lab.textColor = .COLOR_TEXT_WHITE
 //        lab.text = "每周营养分析"
         lab.font = .systemFont(ofSize: 18, weight: .semibold)
         
@@ -40,7 +40,7 @@ class JournalReportWeekTopCell: UITableViewCell {
     }()
     lazy var contentLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = .white
+        lab.textColor = .COLOR_TEXT_WHITE
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.isSkeletonable = true
         
@@ -48,7 +48,7 @@ class JournalReportWeekTopCell: UITableViewCell {
     }()
     lazy var whiteVi: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         
         return vi

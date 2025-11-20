@@ -13,7 +13,6 @@ class ReportNoDataVM: UIView {
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: frame.size.height))
         self.backgroundColor = .clear
         self.isUserInteractionEnabled = true
-//        self.alpha = 0
         
         initUI()
     }
@@ -22,20 +21,32 @@ class ReportNoDataVM: UIView {
     }
     lazy var whiteCoverView: GradientView = {
         let vi = GradientView()
-        vi.addGradientBackground(startColor: UIColor.init(white: 1, alpha: 0.4), endColor: UIColor.init(white: 1, alpha: 1))
-//        vi.addGradientBackground(startColor: .colorWhite45, endColor: .COLOR_CARD_BG_WHITE)
+        
+        if traitCollection.userInterfaceStyle == .dark{
+            vi.addGradientBackground(startColor: .COLOR_WHITE_75, endColor: .COLOR_CARD_BG_WHITE)
+        }else{
+            vi.addGradientBackground(startColor: UIColor.init(white: 1, alpha: 0.4), endColor: UIColor.init(white: 1, alpha: 1))
+        }
+        
         vi.isHidden = true
         vi.alpha = 0
         return vi
     }()
     lazy var blurEffect: UIBlurEffect = {
-        let vi = UIBlurEffect(style:.extraLight)
+        var vi = UIBlurEffect(style:.extraLight)
+        
+        if traitCollection.userInterfaceStyle == .dark{
+            vi = UIBlurEffect(style:.dark)
+        }
         
         return vi
     }()
     lazy var blurEffectView: UIVisualEffectView = {
         let vi = UIVisualEffectView(effect: blurEffect)
         vi.alpha = 0.35//0.73
+        if traitCollection.userInterfaceStyle == .dark{
+            vi.alpha = 0.55
+        }
 //        vi.isHidden = true
         return vi
     }()
