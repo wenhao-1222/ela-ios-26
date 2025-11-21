@@ -12,10 +12,23 @@ import WebKit
 class InviteRewardsRuleAlertVM: UIView {
     
     let lineGap = kFitWidth(6)
-    
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       self.bgView.alpha = self.targetDimAlpha
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "", alpha: 1)
+        self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "", alpha: 1)
         self.isUserInteractionEnabled = true
         self.clipsToBounds = false
         self.isHidden = true
@@ -31,9 +44,18 @@ class InviteRewardsRuleAlertVM: UIView {
     override func draw(_ rect: CGRect) {
         scrollView.contentSize = CGSize.init(width: 0, height: tipsLabel.frame.maxY+kFitWidth(20))
     }
+    
+    private lazy var bgView: UIView = {
+        let v = UIView(frame: bounds)
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.alpha = 0
+        
+        return v
+    }()
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(whiteViewTapAction))
@@ -61,7 +83,7 @@ class InviteRewardsRuleAlertVM: UIView {
         let lab = UILabel()
         lab.text = "邀请奖励规则"
         lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         
         return lab
     }()
@@ -102,7 +124,7 @@ class InviteRewardsRuleAlertVM: UIView {
     lazy var contentLabelOne: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         
@@ -121,7 +143,7 @@ class InviteRewardsRuleAlertVM: UIView {
     lazy var contentLabelTwo: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         
@@ -148,16 +170,16 @@ class InviteRewardsRuleAlertVM: UIView {
         let attr3 = NSMutableAttributedString.init(attributedString: ("· 当您邀请的用户成功通过邀请码邀请他人加入并使用我们的服务时，您也将获得奖励。").mc_setLineSpace(lineSpace: lineGap))
         
         attr.yy_font = .systemFont(ofSize: 14, weight: .medium)
-        attr.yy_color = .COLOR_GRAY_BLACK_85
+        attr.yy_color = .COLOR_TEXT_TITLE_0f1214
         
         attr1.yy_font = .systemFont(ofSize: 14, weight: .regular)
-        attr1.yy_color = .COLOR_GRAY_BLACK_65
+        attr1.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         
         attr2.yy_font = .systemFont(ofSize: 14, weight: .medium)
-        attr2.yy_color = .COLOR_GRAY_BLACK_85
+        attr2.yy_color = .COLOR_TEXT_TITLE_0f1214
         
         attr3.yy_font = .systemFont(ofSize: 14, weight: .regular)
-        attr3.yy_color = .COLOR_GRAY_BLACK_65
+        attr3.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         
         attr.append(attr1)
         attr.append(attr2)
@@ -178,7 +200,7 @@ class InviteRewardsRuleAlertVM: UIView {
     lazy var contentLabelFour: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         
@@ -197,7 +219,7 @@ class InviteRewardsRuleAlertVM: UIView {
     lazy var contentLabelFive: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         
@@ -209,7 +231,7 @@ class InviteRewardsRuleAlertVM: UIView {
     lazy var tipsLabel: UILabel = {
         let lab = UILabel()
         lab.text = "以上是邀请奖励活动方案的详细内容\n感谢您的支持和参与！"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping
         lab.textAlignment = .center
@@ -221,15 +243,18 @@ class InviteRewardsRuleAlertVM: UIView {
 extension InviteRewardsRuleAlertVM{
     @objc func showLoginView() {
         self.isHidden = false
+        self.bgView.alpha = 0
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
+            self.bgView.alpha = self.targetDimAlpha
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: WHUtils().getNavigationBarHeight()+(SCREEN_HEIGHT-WHUtils().getTabbarHeight())*0.5)
-            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+//            self.backgroundColor = .COLOR_TEXT_TITLE_0f1214_60//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         }
    }
    @objc func hiddenLoginView() {
        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5)
-           self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+//           self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+           self.bgView.alpha = 0
        }completion: { t in
            self.isHidden = true
        }
@@ -241,6 +266,7 @@ extension InviteRewardsRuleAlertVM{
 
 extension InviteRewardsRuleAlertVM{
     func initUI() {
+        addSubview(bgView)
         addSubview(whiteView)
         whiteView.addSubview(topLineView)
         whiteView.addSubview(titleLabel)
@@ -248,18 +274,6 @@ extension InviteRewardsRuleAlertVM{
         whiteView.addSubview(gotItButton)
         whiteView.addSubview(topTapView)
         whiteView.addSubview(wkWebView)
-        
-//        scrollView.addSubview(titleOneVm)
-//        scrollView.addSubview(contentLabelOne)
-//        scrollView.addSubview(titleTwoVm)
-//        scrollView.addSubview(contentLabelTwo)
-//        scrollView.addSubview(titleThreeVm)
-//        scrollView.addSubview(contentLabelThree)
-//        scrollView.addSubview(titleFourVm)
-//        scrollView.addSubview(contentLabelFour)
-//        scrollView.addSubview(titleFiveVm)
-//        scrollView.addSubview(contentLabelFive)
-//        scrollView.addSubview(tipsLabel)
         
         whiteView.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(16))
         setConstrait()
@@ -288,51 +302,5 @@ extension InviteRewardsRuleAlertVM{
             make.width.equalTo(kFitWidth(343))
             make.height.equalTo(kFitWidth(48))
         }
-//        titleOneVm.snp.makeConstraints { make in
-//            make.left.top.equalToSuperview()
-//            make.height.equalTo(titleOneVm.selfHeight)
-//        }
-//        contentLabelOne.snp.makeConstraints { make in
-//            make.left.equalTo(kFitWidth(16))
-//            make.top.equalTo(titleOneVm.snp.bottom).offset(kFitWidth(10))
-//            make.width.equalTo(kFitWidth(343))
-//        }
-//        titleTwoVm.snp.makeConstraints { make in
-//            make.left.height.equalTo(titleOneVm)
-//            make.top.equalTo(contentLabelOne.snp.bottom).offset(kFitWidth(20))
-//        }
-//        contentLabelTwo.snp.makeConstraints { make in
-//            make.left.right.equalTo(contentLabelOne)
-//            make.top.equalTo(titleTwoVm.snp.bottom).offset(kFitWidth(10))
-//        }
-//        titleThreeVm.snp.makeConstraints { make in
-//            make.left.height.equalTo(titleOneVm)
-//            make.top.equalTo(contentLabelTwo.snp.bottom).offset(kFitWidth(20))
-//        }
-//        contentLabelThree.snp.makeConstraints { make in
-//            make.right.equalTo(contentLabelOne)
-//            make.left.equalTo(kFitWidth(28))
-//            make.top.equalTo(titleThreeVm.snp.bottom).offset(kFitWidth(10))
-//        }
-//        titleFourVm.snp.makeConstraints { make in
-//            make.left.height.equalTo(titleOneVm)
-//            make.top.equalTo(contentLabelThree.snp.bottom).offset(kFitWidth(20))
-//        }
-//        contentLabelFour.snp.makeConstraints { make in
-//            make.left.right.equalTo(contentLabelOne)
-//            make.top.equalTo(titleFourVm.snp.bottom).offset(kFitWidth(10))
-//        }
-//        titleFiveVm.snp.makeConstraints { make in
-//            make.left.height.equalTo(titleOneVm)
-//            make.top.equalTo(contentLabelFour.snp.bottom).offset(kFitWidth(20))
-//        }
-//        contentLabelFive.snp.makeConstraints { make in
-//            make.left.right.equalTo(contentLabelOne)
-//            make.top.equalTo(titleFiveVm.snp.bottom).offset(kFitWidth(10))
-//        }
-//        tipsLabel.snp.makeConstraints { make in
-//            make.centerX.lessThanOrEqualToSuperview()
-//            make.top.equalTo(contentLabelFive.snp.bottom).offset(kFitWidth(40))
-//        }
     }
 }

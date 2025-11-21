@@ -12,7 +12,7 @@ import AliyunPlayer
 
 class MineVC : WHBaseViewVC {
     
-    var bottomGap = kFitWidth(0)
+    var bottomGap = kFitWidth(20)
     
     override func viewWillAppear(_ animated: Bool) {
         self.personalTopVm.updateUI()

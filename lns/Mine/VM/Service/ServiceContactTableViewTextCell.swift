@@ -244,15 +244,18 @@ extension ServiceContactTableViewTextCell{
     }
     @objc func imgTapAction(){
         guard let vc = UIApplication.topViewController() else { return }
-        vc.hero.browserPhoto(viewModules: viewModules, initIndex: 0) {
-            [
-                .pageControlType(.pageControl),
-                .heroView(self.imgView)
-            ]
+        if let img = self.imgView.image {
+            vc.hero.browserPhoto(viewModules: [HeroBrowserLocalImageViewModule(image: self.imgView.image!)], initIndex: 0) {
+                [
+                    .pageControlType(.pageControl),
+                    .heroView(self.imgView)
+                ]
+            }
+        }else{
+            if self.imgTapBlock != nil{
+                self.imgTapBlock!(self.imgView.image ?? nil)
+            }
         }
-//        if self.imgTapBlock != nil{
-//            self.imgTapBlock!(self.imgView.image ?? nil)
-//        }
     }
 }
 extension ServiceContactTableViewTextCell{

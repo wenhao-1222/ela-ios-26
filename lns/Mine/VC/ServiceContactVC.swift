@@ -80,7 +80,7 @@ class ServiceContactVC: WHBaseViewVC {
     
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        vi.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.isUserInteractionEnabled = false
         
         return vi
