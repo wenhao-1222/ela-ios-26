@@ -54,7 +54,7 @@ class ForumListVM : UIView{
             selfHeight = SCREEN_HEIGHT//-WHUtils().getNavigationBarHeight()
         }
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         
         self.noticeDispatchGroup = DispatchGroup()
         
@@ -84,7 +84,7 @@ class ForumListVM : UIView{
         vi.separatorStyle = .none
         vi.showsVerticalScrollIndicator = false
         vi.rowHeight = UITableView.automaticDimension
-        vi.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         vi.register(ForumListTableViewCell.classForCoder(), forCellReuseIdentifier: "ForumListTableViewCell")
         vi.mj_header = CustomRefreshHeader.init(refreshingBlock: {
             // 如果当前有正在播放，则停止并清除 IndexPath

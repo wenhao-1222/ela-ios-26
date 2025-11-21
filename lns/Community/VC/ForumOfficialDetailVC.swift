@@ -158,7 +158,7 @@ class ForumOfficialDetailVC: WHBaseViewVC {
         let vm = ForumCommentListTableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight()-kFitWidth(56)-WHUtils().getBottomSafeAreaHeight()), style: .plain)
         vm.delegate = self
         vm.dataSource = self
-        vm.backgroundColor = .COLOR_BG_WHITE
+        vm.backgroundColor = .COLOR_CARD_BG_WHITE
         vm.separatorStyle = .none
         vm.bounces = false
         vm.register(ForumOfficialTextCell.classForCoder(), forCellReuseIdentifier: "ForumOfficialTextCell")
@@ -317,7 +317,7 @@ class ForumOfficialDetailVC: WHBaseViewVC {
         let vm = ForumCommentListVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: commenListHeight))
         vm.model = self.model
         vm.controller = self
-        vm.backgroundColor = .COLOR_BG_WHITE
+        vm.backgroundColor = .COLOR_CARD_BG_WHITE
         if self.commentId.count > 0 || self.replyId.count > 0{
             vm.isFromNewsVC = true
             vm.commentId = self.commentId
@@ -922,9 +922,9 @@ extension ForumOfficialDetailVC{
         view.addSubview(scrollViewBase)
         naviVm.updateUI(model: self.model)
         
-        view.backgroundColor = .COLOR_BG_WHITE
+        view.backgroundColor = .COLOR_CARD_BG_WHITE
         scrollViewBase.delegate = self
-        scrollViewBase.backgroundColor = .COLOR_BG_WHITE
+        scrollViewBase.backgroundColor = .COLOR_CARD_BG_WHITE
         if #available(iOS 17.4, *) {
             scrollViewBase.bouncesVertically = true
         }

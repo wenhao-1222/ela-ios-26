@@ -27,9 +27,30 @@ class ForumCommentFuncAlertVM: UIView {
     var reportReplyBlock:((ForumCommentReplyModel)->())?
     var setTopBlock:((ForumCommentModel)->())?
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = .COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 0)
+        self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0)
         self.isUserInteractionEnabled = true
         self.clipsToBounds = false
         self.isHidden = true
@@ -44,11 +65,20 @@ class ForumCommentFuncAlertVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private lazy var bgView: UIView = {
+        let v = UIView(frame: bounds)
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.alpha = 0
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
+        v.addGestureRecognizer(tap)
+        return v
+    }()
     lazy var whiteView : UIView = {
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
-        vi.backgroundColor = .COLOR_BG_EF//WHColor_16(colorStr: "EFEFEF")
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "EFEFEF")
         vi.isUserInteractionEnabled = true
         
         // 创建下拉手势识别器
@@ -212,16 +242,19 @@ extension ForumCommentFuncAlertVM{
         self.isHidden = false
 //        judgeSelf()
         checkFuncItem()
-        self.backgroundColor = .COLOR_BG_BLACK.withAlphaComponent(0.01)
+        self.bgView.alpha = 0
+//        self.backgroundColor = .COLOR_BG_BLACK.withAlphaComponent(0.01)
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.whiteViewOriginY+self.whiteViewHeight*0.5)
-            self.backgroundColor = .COLOR_BG_BLACK.withAlphaComponent(0.25)//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+            self.bgView.alpha = self.targetDimAlpha
+//            self.backgroundColor = .COLOR_BG_BLACK.withAlphaComponent(0.25)//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         }
    }
    @objc func hiddenView() {
        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
-           self.backgroundColor = .COLOR_BG_BLACK.withAlphaComponent(0)//WHColorWithAlpha(colorStr: "000000", alpha: 0)
+           self.bgView.alpha = 0
+//           self.backgroundColor = .COLOR_BG_BLACK.withAlphaComponent(0)//WHColorWithAlpha(colorStr: "000000", alpha: 0)
        }completion: { t in
            self.isHidden = true
        }
@@ -346,6 +379,7 @@ extension ForumCommentFuncAlertVM{
 }
 extension ForumCommentFuncAlertVM{
     func initUI(){
+        addSubview(bgView)
         addSubview(topCloseTapView)
         addSubview(whiteView)
         

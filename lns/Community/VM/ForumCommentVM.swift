@@ -19,7 +19,7 @@ class ForumCommentVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-selfHeight, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -34,7 +34,7 @@ class ForumCommentVM: UIView {
 //        vi.layer.cornerRadius = kFitWidth(16)
 //        vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingAction))
         vi.addGestureRecognizer(tap)
@@ -76,7 +76,7 @@ class ForumCommentVM: UIView {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
 }

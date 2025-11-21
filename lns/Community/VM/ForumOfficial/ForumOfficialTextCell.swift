@@ -41,19 +41,13 @@ class ForumOfficialTextCell: UITableViewCell {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .medium)
         lab.textContainer.lineFragmentPadding = 0
-//        lab.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
-//        lab.numberOfLines = 0
-//        lab.lineBreakMode = .byWordWrapping
         return lab
     }()
 }
 
 extension ForumOfficialTextCell{
     func updateContent(text:String) {
-//        detailLabel.text = text
-//        detailLabel.font = .systemFont(ofSize: 18, weight: .medium)
-        
         detailLab.text = text
         detailLab.textColor = .COLOR_TEXT_TITLE_0f1214
         detailLab.font = .systemFont(ofSize: 18, weight: .medium)
@@ -83,7 +77,6 @@ extension ForumOfficialTextCell{
         
         detailLab.attributedText = attr
         detailLab.textColor = .COLOR_TEXT_TITLE_0f1214
-//        detailLab.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
         detailLab.font = .systemFont(ofSize: 16, weight: .regular)
         let newSize = detailLab.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
         
@@ -97,10 +90,6 @@ extension ForumOfficialTextCell{
         }
     }
     func updateTimeAndLocation(time:String,location:String) {
-//        detailLabel.text = "\(time)  发布于 \(location)"
-//        detailLabel.textColor = .COLOR_GRAY_BLACK_45
-//        detailLabel.font = .systemFont(ofSize: 12, weight: .regular)
-        
         detailLab.text = "\(time)  发布于 \(location)"
         detailLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         detailLab.font = .systemFont(ofSize: 12, weight: .regular)
@@ -110,7 +99,6 @@ extension ForumOfficialTextCell{
         }
         detailLab.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(16))
-//            make.right.equalTo(kFitWidth(-16))
             make.top.equalTo(kFitWidth(4))
             make.height.equalTo(kFitWidth(30))
             make.bottom.equalTo(kFitWidth(-8))
@@ -119,25 +107,11 @@ extension ForumOfficialTextCell{
 }
 extension ForumOfficialTextCell{
     func initUI() {
-//        contentView.addSubview(detailLabel)
         contentView.addSubview(detailLab)
-//        detailLabel.snp.makeConstraints { make in
-//            make.left.equalTo(kFitWidth(16))
-//            make.right.equalTo(kFitWidth(-16))
-//            make.top.equalTo(kFitWidth(0))
-//            make.bottom.equalTo(kFitWidth(0))
-//        }
         detailLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(15))
             make.right.equalTo(kFitWidth(-15))
             make.top.equalTo(kFitWidth(0))
-//            make.bottom.equalTo(kFitWidth(-2))
         }
-//        detailLab.snp.makeConstraints { make in
-//            make.left.equalTo(kFitWidth(16))
-//            make.right.equalTo(kFitWidth(-16))
-//            make.top.equalTo(kFitWidth(10))
-//            make.bottom.equalTo(kFitWidth(-10))
-//        }
     }
 }

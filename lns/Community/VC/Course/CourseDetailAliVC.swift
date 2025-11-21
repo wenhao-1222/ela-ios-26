@@ -238,7 +238,7 @@ extension CourseDetailAliVC{
         view.addSubview(tableView)
         view.addSubview(videoAliVm)
         view.bringSubviewToFront(videoAliVm)
-        view.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "1C1C1C")
+        view.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "1C1C1C")
         
         view.insertSubview(detailVm, belowSubview: videoAliVm)
         view.insertSubview(menuVm, belowSubview: videoAliVm)

@@ -56,7 +56,7 @@ class ForumCommentListVM: UIView {
 
     override init(frame:CGRect){
         super.init(frame: frame)
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
 
         initUI()
@@ -67,7 +67,7 @@ class ForumCommentListVM: UIView {
 
     lazy var topLineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
     lazy var commentCountLabel: UILabel = {
@@ -86,7 +86,7 @@ class ForumCommentListVM: UIView {
         vi.sectionFooterHeight = 0
         vi.showsVerticalScrollIndicator = false
         vi.showsHorizontalScrollIndicator = false
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.register(ForumCommentReplyListCell.classForCoder(), forCellReuseIdentifier: "ForumCommentReplyListCell")
 //        vi.register(ForumCommentSkeletonCell.self, forCellReuseIdentifier: "ForumCommentSkeletonCell")
         if #available(iOS 15.0, *) { vi.sectionHeaderTopPadding = 0 }
@@ -412,12 +412,7 @@ extension ForumCommentListVM:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 //        if isShowSkeleton { return nil } // 骨架时不渲染 header，避免空白/横线
         let model = dataSourceArray[section]
-
-//        if let cache = sectionHeaders[section],
-//           cache.modelId == model.commentModel.id {
-////            cache.view.updateUI(model: model.commentModel)
-//            return cache.view
-//        }
+        
         let vm: ForumCommentListHeadVM
         if let cache = sectionHeaders[section] {
             vm = cache
@@ -430,14 +425,7 @@ extension ForumCommentListVM:UITableViewDelegate,UITableViewDataSource{
         }
 
         vm.lineView.isHidden = (section == 0)
-//        let vm = ForumCommentListHeadVM(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: model.commentModel.contentHeight))
-//        vm.updateUI(model: model.commentModel)
-//        if section == 0 { vm.lineView.isHidden = true }
-//
-//        DispatchQueue.main.asyncAfter(deadline: .now()+2) {
-//            self.sectionHeaders[section] = (model.commentModel.id,vm)
-//        }
-
+        
         if self.isFromNewsVC && isHightlghted == false && newsCommentId.count > 0 && commentId.count > 0 {
             if newsCommentId == model.commentModel.id && section == 0{
                 self.isHightlghted = true

@@ -237,7 +237,7 @@ class CourseListVC: WHBaseViewVC {
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
-        btn.setTitleColor(.COLOR_BG_WHITE, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         
 //        btn.addTarget(self, action: #selector(buyButtonTouchDown), for: .touchDown)

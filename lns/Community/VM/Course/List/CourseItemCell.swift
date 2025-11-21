@@ -23,7 +23,7 @@ class CourseItemCell: UITableViewCell {
     
     lazy var bgView: GradientView = {
         let view = GradientView()
-        view.backgroundColor = .COLOR_BG_WHITE
+        view.backgroundColor = .COLOR_CARD_BG_WHITE
         view.layer.cornerRadius = kFitWidth(13)
         view.clipsToBounds = true
         

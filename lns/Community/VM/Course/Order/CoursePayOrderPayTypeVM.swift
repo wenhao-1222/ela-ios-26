@@ -23,7 +23,7 @@ class CoursePayOrderPayTypeVM : UIView{
     override init(frame: CGRect) {
         selfHeight = WXApi.isWXAppInstalled() ? (kFitHeight(43)+kFitWidth(129)) : (kFitHeight(43)+kFitWidth(57)+kFitWidth(15))
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -47,12 +47,12 @@ class CoursePayOrderPayTypeVM : UIView{
     }()
     lazy var lineView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: kFitWidth(43), width: SCREEN_WIDHT, height: kFitWidth(1)))
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
     lazy var bottomLineView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: self.selfHeight-kFitWidth(1), width: SCREEN_WIDHT, height: kFitWidth(1)))
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
     lazy var wechatItemVm: CoursePayOrderPayTypeItemVM = {

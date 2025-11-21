@@ -29,7 +29,7 @@ class ForumNaviTypeVM : UIView{
     }
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         initUI()
     }
     lazy var leftTitleButton: UIButton = {

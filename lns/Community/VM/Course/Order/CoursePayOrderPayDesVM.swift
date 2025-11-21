@@ -24,7 +24,7 @@ class CoursePayOrderPayDesVM : UIView{
     }
     lazy var topWhiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()
@@ -45,7 +45,8 @@ class CoursePayOrderPayDesVM : UIView{
     }()
     lazy var iconImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "tips_gray_icon_w")
+//        img.setImgLocal(imgName: "tips_gray_icon_w")
+        img.image = UIImage(named: "tips_gray_icon_w")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_60)
         img.isUserInteractionEnabled = true
         
         return img
