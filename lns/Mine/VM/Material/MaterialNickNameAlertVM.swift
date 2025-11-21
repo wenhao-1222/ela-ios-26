@@ -30,11 +30,6 @@ class MaterialNickNameAlertVM: UIView {
        if #available(iOS 13.0, *),
           previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
           !isHidden {
-           if traitCollection.userInterfaceStyle == .dark{
-               self.whiteView.backgroundColor = WHColor_16(colorStr: "222222")
-           }else{
-               self.whiteView.backgroundColor = .white
-           }
            UIView.animate(withDuration: 0.2) {
                self.bgView.alpha = self.targetDimAlpha
            }
@@ -71,12 +66,7 @@ class MaterialNickNameAlertVM: UIView {
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(64)))
         vi.isUserInteractionEnabled = true
-        if traitCollection.userInterfaceStyle == .dark{
-            vi.backgroundColor = WHColor_16(colorStr: "222222")
-        }else{
-            vi.backgroundColor = .white
-        }
-        
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
         vi.addGestureRecognizer(tap)
         

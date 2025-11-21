@@ -63,7 +63,7 @@ class MaterialSexAlertVM: FeedBackView {
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
 //        vi.alpha = 0
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
@@ -104,7 +104,7 @@ class MaterialSexAlertVM: FeedBackView {
     }()
     lazy var pickerView: UIPickerView = {
         let picker = UIPickerView()
-        picker.backgroundColor = .COLOR_BG_WHITE
+        picker.backgroundColor = .COLOR_CARD_BG_WHITE
         picker.delegate = self
         picker.dataSource = self
         

@@ -39,13 +39,7 @@ class ForumCommentFuncAlertVM: UIView {
     // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
        super.traitCollectionDidChange(previousTraitCollection)
-       if #available(iOS 13.0, *),
-          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
-          !isHidden {
-           UIView.animate(withDuration: 0.2) {
-               self.bgView.alpha = self.targetDimAlpha
-           }
-       }
+        self.bgView.alpha = self.targetDimAlpha
    }
     
     override init(frame:CGRect){
@@ -340,10 +334,10 @@ extension ForumCommentFuncAlertVM{
         whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight)
         if self.commentModel.isTop == .pass{
             setTopItemVm.titleLabel.text = "取消置顶"
-            setTopItemVm.iconImgView.image = UIImage(named: "forum_set_top_cancel_icon")?.WHImageWithTintColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.55))
+            setTopItemVm.iconImgView.image = UIImage(named: "forum_set_top_cancel_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         }else{
             setTopItemVm.titleLabel.text = "置顶"
-            setTopItemVm.iconImgView.image = UIImage(named: "forum_set_top_icon")?.WHImageWithTintColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.55))
+            setTopItemVm.iconImgView.image = UIImage(named: "forum_set_top_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         }
     }
     @objc func nothingToDo() {

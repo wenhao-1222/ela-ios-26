@@ -469,7 +469,7 @@ class ForumOfficialDetailVC: WHBaseViewVC {
     }()
     lazy var coverBlackView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: -SCREEN_WIDHT*2, y: -SCREEN_HEIGHT*2, width: SCREEN_WIDHT*5, height: SCREEN_HEIGHT*5))
-        vi.backgroundColor = .COLOR_BG_BLACK
+        vi.backgroundColor = .black
         vi.isHidden = true
         
         return vi

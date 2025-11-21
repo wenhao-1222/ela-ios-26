@@ -18,7 +18,7 @@ class PlanShareButton : UIButton {
     private let feedbackWeight: CGFloat = 0.6
     private var lastFeedbackTime: TimeInterval = 0
     private let minimumFeedbackInterval: TimeInterval = 0.1
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupButton() // [修改] 在 setup 里统一 addTarget，确保所有 init 路径都生效
