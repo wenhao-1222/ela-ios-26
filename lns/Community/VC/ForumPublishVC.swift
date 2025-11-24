@@ -764,6 +764,9 @@ extension ForumPublishVC{
         view.addSubview(previewButton)
         view.addSubview(saveButton)
         
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
+        
         if #available(iOS 17.4, *) {
             tableView.bouncesVertically = true
         }

@@ -355,7 +355,8 @@ extension ForumDetailVC{
             // Fallback on earlier versions
         }
         scrollViewBase.contentInsetAdjustmentBehavior = .never
-        
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
         scrollViewBase.mj_footer = MJRefreshBackNormalFooter.init(refreshingBlock: {
 //            self.commentListVm.loadMoreAction()
             if self.commentListVm.isShowSkeleton == false{

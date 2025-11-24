@@ -85,6 +85,8 @@ extension TutorialsListVC{
         
         view.addSubview(tableView)
         view.addSubview(alertVm)
+        self.tableView.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
     func initHeadView()  {
         for i in 0..<dataSourceArray.count{

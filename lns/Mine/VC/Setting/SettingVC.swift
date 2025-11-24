@@ -165,6 +165,8 @@ extension SettingVC{
         scrollViewBase.addSubview(registerProtocalVm)
         scrollViewBase.addSubview(privaceVm)
         scrollViewBase.addSubview(bottomVm)
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         
         scrollViewBase.contentSize = CGSize.init(width: 0, height: bottomVm.frame.maxY+getBottomSafeAreaHeight())
     }

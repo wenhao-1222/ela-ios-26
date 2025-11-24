@@ -245,6 +245,9 @@ extension CourseDetailAliVC{
         
         view.addSubview(coverBlackView)
         
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
+        
         DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.getKeyWindow().addSubview(self.shareAlertVm)

@@ -165,6 +165,8 @@ extension MaterialVC{
         view.addSubview(sexVm)
         view.addSubview(birthDayVm)
         self.view.addSubview(self.ageVm)
+//        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         
         //优化页面加载速度
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {

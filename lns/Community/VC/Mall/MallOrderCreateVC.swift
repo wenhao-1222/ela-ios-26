@@ -204,6 +204,8 @@ extension MallOrderCreateVC{
         view.addSubview(bottomVm)
         tableView.frame = CGRect.init(x: 0, y: self.getNavigationBarHeight()+kFitWidth(1), width: SCREEN_WIDHT, height: self.bottomVm.frame.minY-(self.getNavigationBarHeight()+kFitWidth(1)))
 //        view.addSubview(addressAlertVm)
+        
+        view.layoutIfNeeded()
     }
 }
 

@@ -279,6 +279,9 @@ extension CourseOrderListVC {
         view.addSubview(tableView)
         view.addSubview(nodataVm)
         nodataVm.frame = CGRect(x: 0, y: getNavigationBarHeight() + kFitWidth(185), width: SCREEN_WIDHT, height: kFitWidth(50))
+        
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
 
         initSkeletonData()
     }

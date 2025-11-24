@@ -229,7 +229,8 @@ extension SportVC{
         view.addSubview(addAlertVm)
         view.addSubview(tipsAlertVm)
         setTime(time: dateFilterAlertVm.weekDay)
-        
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
         
         backArrowButton.tapBlock = {()in
             if self.isCanAdd {

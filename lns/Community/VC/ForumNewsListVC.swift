@@ -90,6 +90,9 @@ extension ForumNewsListVC{
         view.addSubview(self.commomAlertVm)
         
         tableView.isUserInteractionEnabled = true
+        
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
         initSkeletonData()
     }
     func initSkeletonData() {

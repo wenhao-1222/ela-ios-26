@@ -418,7 +418,8 @@ extension DataAddVC{
         saveBottomView.addSubview(tipsLabel)
         
         scrollViewBase.contentSize = CGSize.init(width: 0, height: clearWhiteView.frame.maxY)
-        
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
         view.addSubview(dateFilterAlertVm)
         
         topFilterVm.setTime(time: dateFilterAlertVm.weekDay)

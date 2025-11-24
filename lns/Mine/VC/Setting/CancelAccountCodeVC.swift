@@ -156,6 +156,8 @@ extension CancelAccountCodeVC{
         view.addSubview(cancelButton)
         
         setConstrait()
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
     func setConstrait() {
         tipsLab.snp.makeConstraints { make in

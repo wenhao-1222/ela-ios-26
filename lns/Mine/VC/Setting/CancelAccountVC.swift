@@ -202,6 +202,8 @@ extension CancelAccountVC{
         setConstrait()
         
         initReasonViews()
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
     func setConstrait(){
         lineView.snp.makeConstraints { make in

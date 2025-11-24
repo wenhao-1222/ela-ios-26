@@ -66,6 +66,8 @@ extension FriendListVC{
         view.addSubview(searchVm)
         view.addSubview(idVm)
         view.addSubview(friendListSearchVm)
+        
+        view.layoutIfNeeded()
     }
     private func removeParallaxOverlay() {
         if let navView = self.navigationController?.view {

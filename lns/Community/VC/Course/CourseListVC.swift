@@ -359,6 +359,8 @@ extension CourseListVC{
         view.insertSubview(firstPlayTipsAlertVm, at: 999)
         
         initSkeletonData()
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
         
         shareButton.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-12))

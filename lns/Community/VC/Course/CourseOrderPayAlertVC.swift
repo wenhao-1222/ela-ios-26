@@ -228,6 +228,9 @@ extension CourseOrderPayAlertVC{
         whiteView.addSubview(desVm)
         whiteView.addSubview(bottomVm)
         
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
+        
         setConstraints()
         
         desVm.refreshFrame()

@@ -161,7 +161,8 @@ extension SportHistoryVC{
         view.addSubview(addAlertVm)
         view.addSubview(updateHealthDataAlertVm)
         view.addSubview(exampleAlertVm)
-        
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
         setTime(time: dateFilterAlertVm.weekDay)
         
         if isCanAdd{

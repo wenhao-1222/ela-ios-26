@@ -109,6 +109,8 @@ extension CoursePayOrderVC{
         view.addSubview(bottomVm)
         
         view.addSubview(tipsPopupView)
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
     }
 }
 

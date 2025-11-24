@@ -931,6 +931,12 @@ extension ForumOfficialDetailVC{
         scrollViewBase.contentInsetAdjustmentBehavior = .never
         scrollViewBase.frame = CGRect.init(x: 0, y: getNavigationBarHeight()+kFitWidth(4), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-naviVm.selfHeight-bottomFuncVm.selfHeight-kFitWidth(5))
         addSubviews()
+        
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
+        commentListVm.layoutIfNeeded()
+        videoVm.layoutIfNeeded()
+        videoVm.controlView.layoutIfNeeded()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.getKeyWindow().addSubview(self.shareAlertVm)
     }

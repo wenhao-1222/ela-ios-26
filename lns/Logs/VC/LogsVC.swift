@@ -91,6 +91,9 @@ extension LogsVC{
         view.addSubview(remarkVm)
         view.addSubview(detailButton)
         
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
+        
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.getKeyWindow().addSubview(dateFilterAlertVm)
         appDelegate.getKeyWindow().addSubview(remarkAlertVm)

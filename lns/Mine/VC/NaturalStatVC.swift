@@ -154,6 +154,9 @@ extension NaturalStatVC{
         
         view.addSubview(timeTypeAlertVm)
         self.naviView.addShadow(opacity: 0.05)
+        
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
     }
     func changeQueryType(duration:CGFloat=0.3) {
         self.startDate = self.timeTypeAlertVm.startDate

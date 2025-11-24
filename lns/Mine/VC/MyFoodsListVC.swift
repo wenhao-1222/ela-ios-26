@@ -163,6 +163,8 @@ extension MyFoodsListVC{
         view.addSubview(tableView)
         view.addSubview(mealsVm)
         view.addSubview(createButton)
+        self.tableView.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         
         tableView.addSubview(noDataView)
         noDataView.center = CGPoint.init(x: self.tableView.frame.width * 0.5, y: self.tableView.frame.height * 0.5)

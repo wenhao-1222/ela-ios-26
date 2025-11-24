@@ -93,6 +93,8 @@ extension BindOtherAccountVC{
         view.addSubview(wechatVm)
         view.addSubview(appidVm)
         upateBindStatus()
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
     func upateBindStatus() {
         if UserInfoModel.shared.isBindWeChat {

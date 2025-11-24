@@ -388,6 +388,8 @@ extension JournalSettingVC{
         
         scrollViewBase.contentSize = CGSize.init(width: 0, height: hiddenStatSportDataVm.frame.maxY + kFitWidth(20))
         
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
 //        updateAuthoriStatus()
     }
 //    func updateAuthoriStatus() {

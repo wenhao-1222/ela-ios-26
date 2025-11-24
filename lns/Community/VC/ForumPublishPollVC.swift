@@ -336,6 +336,8 @@ extension ForumPublishPollVC{
         
         view.addSubview(saveButton)
         
+        view.layoutIfNeeded()
+        
 //        registCellIdentifier()
         setConstarit()
         

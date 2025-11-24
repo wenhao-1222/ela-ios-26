@@ -350,6 +350,8 @@ extension ServiceContactVC{
         view.insertSubview(bottomView, belowSubview: self.navigationView)
         view.addSubview(tableView)
         view.addSubview(msgInputView)
+//        self.tableView.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
 }
 

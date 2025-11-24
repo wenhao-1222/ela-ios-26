@@ -70,6 +70,8 @@ extension TutorialsVC{
         setConstrait()
         
         view.addSubview(alertVm)
+        self.tableView.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
     func setConstrait() {
         lineView.snp.makeConstraints { make in

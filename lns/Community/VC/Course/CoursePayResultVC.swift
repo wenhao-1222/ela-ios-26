@@ -147,6 +147,8 @@ extension CoursePayResultVC{
         view.addSubview(grayBgView)
         view.addSubview(bottomVm)
         
+        view.layoutIfNeeded()
+        
         setConstrait()
         updateUI()
     }

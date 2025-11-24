@@ -158,6 +158,8 @@ extension UpdatePhoneNewVC{
         view.addSubview(verifyCodeVm)
         
         view.addSubview(bindButton)
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
     
 }

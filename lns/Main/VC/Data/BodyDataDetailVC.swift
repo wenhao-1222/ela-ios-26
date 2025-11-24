@@ -378,7 +378,8 @@ extension BodyDataDetailVC{
         
         view.addSubview(typeFilterAlertVm)
         view.addSubview(timeTypeAlertVm)
-        
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
         if self.dataType == .waistline{
             typeFilterAlertVm.setSelectIndex(index: 1)
         }
