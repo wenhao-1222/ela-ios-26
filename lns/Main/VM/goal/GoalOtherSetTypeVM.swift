@@ -38,7 +38,7 @@ class GoalOtherSetTypeVM: UIView {
         btn.setTitle("智能生成目标", for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT, for: .highlighted)
-        btn.setImage(UIImage(named: "goal_zhineng_icon"), for: .normal)
+        btn.setImage(UIImage(named: "goal_zhineng_icon")?.withTintColor(.THEME), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 13, weight: .regular)
         
         return btn
@@ -48,7 +48,7 @@ class GoalOtherSetTypeVM: UIView {
         btn.setTitle("碳循环/欺骗日", for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT, for: .highlighted)
-        btn.setImage(UIImage(named: "goal_circle_icon"), for: .normal)
+        btn.setImage(UIImage(named: "goal_circle_icon")?.withTintColor(.THEME), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 13, weight: .regular)
         
         return btn

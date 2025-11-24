@@ -97,7 +97,7 @@ class JournalReportWeekMsgVM: UIView {
     lazy var nodataVm: WeekReportNoDataVM = {
         let vm = WeekReportNoDataVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
         vm.isHidden = true
-        vm.backgroundColor = .white
+        vm.backgroundColor = .COLOR_BG_WHITE
         return vm
     }()
 }

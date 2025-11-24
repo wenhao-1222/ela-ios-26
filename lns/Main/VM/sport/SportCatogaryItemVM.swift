@@ -28,7 +28,7 @@ class SportCatogaryItemVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: kFitWidth(100), y: WHUtils().getNavigationBarHeight()+kFitWidth(56), width: selfWidth, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "F5F5F5")
+        self.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "F5F5F5")
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -41,7 +41,7 @@ class SportCatogaryItemVM: UIView {
         let table = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: selfWidth, height: selfHeight), style: .plain)
         table.delegate = self
         table.dataSource = self
-        table.backgroundColor = .COLOR_BG_WHITE
+        table.backgroundColor = .COLOR_CARD_BG_WHITE
 //        table.bounces = false
         table.register(SportCatogaryItemCell.classForCoder(), forCellReuseIdentifier: "SportCatogaryItemCell")
         table.separatorStyle = .none

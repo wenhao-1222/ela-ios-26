@@ -260,7 +260,7 @@ extension JournalFitnessTypeAlertVM {
         lineView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(kFitWidth(55))
-            make.height.equalTo(kFitWidth(5))
+            make.height.equalTo(kFitWidth(1))
         }
     }
 

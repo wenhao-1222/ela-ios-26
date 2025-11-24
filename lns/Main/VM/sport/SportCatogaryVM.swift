@@ -17,6 +17,7 @@ class SportCatogaryVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight(), width: selfWidth, height: selfHeight))
+//        self.backgroundColor = .COLOR_BG_WHITE
         self.backgroundColor = UIColor(named: "color_card_bg_sport_category")//WHColor_16(colorStr: "F5F5F5")
         self.isUserInteractionEnabled = true
         

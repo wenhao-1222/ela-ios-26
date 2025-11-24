@@ -64,14 +64,8 @@
         if videos.count > 0 {
             let videoDict = videos[0]as? NSDictionary ?? [:]
             let ossUrl = videoDict.stringValueForKey(key: "ossUrl")
-//            if ossUrl.contains("ela-test-private") || ossUrl.contains("ela-prod-private"){
-//                DSImageUploader().dealImgUrlSignForOss(urlStr: ossUrl) { str in
-//                    DLLog(message: "视频加载地址 私有桶链接：\(str)")
-//                    model.videoUrl = str
-//                }
-//            }else{
+            
             model.videoVID = videoDict.stringValueForKey(key: "vid")
-//            model.videoVID = "60993ea3817971f080065017e1e90102"
             model.videoUrl = ossUrl.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
             if videoDict.stringValueForKey(key: "videoDuration").count > 0 {
                 model.videoDuration = videoDict.stringValueForKey(key: "videoDuration").intValue/1000
@@ -88,8 +82,6 @@
                     model.videoDurationShow = model.videoDurationShow + "\(second)"
                 }
             }
-            
-//            }
         }
         return model
     }

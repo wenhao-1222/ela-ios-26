@@ -75,6 +75,8 @@ extension SportCatogaryTableViewCell{
         bgView.addSubview(leftLineView)
         
         setConstrait()
+//        leftLineView.addClipCorner(corners: [.topRight,.bottomRight], radius: kFitWidth(2))
+//        leftLineView.backgroundColor = .THEME
     }
     func setConstrait() {
         bgView.snp.makeConstraints { make in
@@ -85,7 +87,8 @@ extension SportCatogaryTableViewCell{
             make.width.equalTo(kFitWidth(84))
         }
         leftLineView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(-2))
+//            make.left.equalTo(kFitWidth(-2))
+            make.left.equalTo(kFitWidth(2))
             make.centerY.lessThanOrEqualToSuperview()
             make.width.equalTo(kFitWidth(6))
             make.height.equalTo(kFitWidth(20))

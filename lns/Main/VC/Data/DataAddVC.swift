@@ -190,7 +190,7 @@ class DataAddVC : WHBaseViewVC {
         return vi
     }()
     lazy var saveBottomView: UIView = {
-        let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getBottomSafeAreaHeight()-kFitWidth(102), width: SCREEN_WIDHT, height: kFitWidth(96)))
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getBottomSafeAreaHeight()-kFitWidth(102), width: SCREEN_WIDHT, height: getBottomSafeAreaHeight()+kFitWidth(102)))
         vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         vi.isUserInteractionEnabled = true
         return vi
@@ -198,7 +198,7 @@ class DataAddVC : WHBaseViewVC {
     lazy var saveButton : UIButton = {
 //        let btn = UIButton.init(frame: CGRect.init(x: kFitWidth(20), y: self.calfVm.frame.maxY+kFitWidth(40), width: kFitWidth(335), height: kFitWidth(56)))
 //        let btn = UIButton.init(frame: CGRect.init(x: kFitWidth(20), y: SCREEN_HEIGHT-getBottomSafeAreaHeight()-kFitWidth(102), width: kFitWidth(335), height: kFitWidth(56)))
-        let btn = UIButton.init(frame: CGRect.init(x: kFitWidth(20), y: kFitWidth(0), width: SCREEN_WIDHT-kFitWidth(40), height: kFitWidth(56)))
+        let btn = UIButton.init(frame: CGRect.init(x: kFitWidth(20), y: kFitWidth(10), width: SCREEN_WIDHT-kFitWidth(40), height: kFitWidth(56)))
         btn.setTitle("保存", for: .normal)
         btn.setTitleColor(.white, for: .normal)
 //        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME), for: .highlighted)
@@ -842,7 +842,7 @@ extension DataAddVC{
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.bottomView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*0.5)
 //            self.scrollViewBase.contentOffset = CGPoint.init(x: 0, y: 0)
-            self.saveBottomView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT-self.getBottomSafeAreaHeight()-kFitWidth(102), width: SCREEN_WIDHT, height: kFitWidth(96))
+            self.saveBottomView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT-self.getBottomSafeAreaHeight()-kFitWidth(102), width: SCREEN_WIDHT, height: self.getBottomSafeAreaHeight()+kFitWidth(102))
         }
         self.scrollViewBase.setContentOffset(CGPoint.init(x: 0, y: 0), animated: true)
         self.scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.saveBottomView.frame.minY)

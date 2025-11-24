@@ -35,7 +35,7 @@ class BIndPhoneTopVM: UIView {
     lazy var tipsLabel : UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 12, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         lab.text = "绑定的手机号可以用来登录，若账号丢失或出现异常可通过绑定手机号找回"

@@ -55,31 +55,6 @@ class ForumNaviTypeLiquidVM: UIView {
         seg.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
         return seg
     }()
-    // 分段选择器：课程 / 发现 / 商品
-    private lazy var segmentT: UISegmentedControl = {
-        let items = ["课程", "发现"]
-//        let items = ["课程", "发现", "商品"]
-        let seg = UISegmentedControl(items: items)
-        // 初始选中「发现」
-//        seg.selectedSegmentIndex = 1
-        seg.backgroundColor = UIColor.clear
-        seg.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_03.cgColor
-        seg.layer.borderWidth = kFitWidth(2)
-        if #available(iOS 13.0, *) {
-            seg.selectedSegmentTintColor = UIColor.white.withAlphaComponent(0.6) // 让选中更贴近玻璃感（可按需改）
-            // 普通/选中态颜色
-            seg.setTitleTextAttributes([
-                .font: UIFont.systemFont(ofSize: 16, weight: .semibold),
-                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_30
-            ], for: .normal)
-            seg.setTitleTextAttributes([
-                .font: UIFont.systemFont(ofSize: 16, weight: .semibold),
-                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214
-            ], for: .selected)
-        }
-//        seg.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
-        return seg
-    }()
     // 保留原有发布按钮逻辑
     lazy var publishButton: UIButton = {
         let btn = UIButton(type: .custom)
@@ -112,7 +87,6 @@ class ForumNaviTypeLiquidVM: UIView {
         addSubview(glass)
 
         addSubview(segment)
-//        addSubview(segmentT)
         addSubview(publishButton)
         setConstraints()
         updateButtonStatus() // 同步初始选中态
@@ -211,12 +185,6 @@ class ForumNaviTypeLiquidVM: UIView {
             make.width.greaterThanOrEqualTo(btnWidth * 3 + kFitWidth(32)) // 3段 + 内间距
             make.height.equalTo(kFitWidth(40))
         }
-//        segmentT.snp.makeConstraints { make in
-//            make.right.equalTo(kFitWidth(-18))
-//            make.bottom.equalToSuperview().offset(-kFitWidth(8))
-//            make.width.greaterThanOrEqualTo(btnWidth * 3 + kFitWidth(32)) // 3段 + 内间距
-//            make.height.equalTo(kFitWidth(40))
-//        }
         publishButton.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-kFitWidth(16))
             make.centerY.equalTo(segment.snp.centerY)

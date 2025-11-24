@@ -325,7 +325,7 @@ extension JournalShareMsgCaloriesVM{
         caloriesGrayLayer.lineWidth = lineWidth // 线宽
         caloriesGrayLayer.frame = bounds//CGRect.init(x: circleCenter.x-arcRadius-lineWidth*0.5, y: topGap-lineWidth*0.5, width: arcRadius*2+lineWidth, height: arcRadius+lineWidth)
         
-        gradientLayer.colors = [WHColor_16(colorStr: "00EEFF").cgColor,WHColor_16(colorStr: "007AFF").cgColor]
+        gradientLayer.colors = [WHColor_16(colorStr: "00EEFF").cgColor,UIColor.THEME.cgColor]
         gradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
         gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
         gradientLayer.mask = caloriesGrayLayer

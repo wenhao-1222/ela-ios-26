@@ -32,7 +32,7 @@ class FriendListSearchVM: UIView {
     }
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.layer.cornerRadius = kFitWidth(18)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true

@@ -48,7 +48,7 @@ class NeedBuildPlanVC: WHBaseViewVC {
         let btn = FeedBackButton()
         btn.layer.cornerRadius = kFitWidth(36)
         btn.clipsToBounds = true
-        btn.backgroundColor = WHColor_16(colorStr: "007AFF")
+        btn.backgroundColor = .THEME//WHColor_16(colorStr: "007AFF")
 //        btn.setTitle("需要营养目标以及饮食计划", for: .normal)
 //        btn.setTitle("• 智能推荐", for: .normal)
         btn.setTitle("智能推荐", for: .normal)
@@ -66,7 +66,7 @@ class NeedBuildPlanVC: WHBaseViewVC {
         let btn = FeedBackButton()
         btn.layer.cornerRadius = kFitWidth(36)
         btn.clipsToBounds = true
-        btn.backgroundColor = WHColor_16(colorStr: "007AFF")
+        btn.backgroundColor = .THEME//WHColor_16(colorStr: "007AFF")
         btn.setTitle("手动输入", for: .normal)
 //        btn.setTitle("需要营养目标，不需要饮食计划", for: .normal)
         btn.setTitleColor(WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.85), for: .highlighted)
@@ -82,7 +82,7 @@ class NeedBuildPlanVC: WHBaseViewVC {
         btn.layer.cornerRadius = kFitWidth(36)
         btn.clipsToBounds = true
         btn.isHidden = true
-        btn.backgroundColor = WHColor_16(colorStr: "007AFF")
+        btn.backgroundColor = .THEME//WHColor_16(colorStr: "007AFF")
         btn.setTitle("否，我需要营养目标", for: .normal)
 //        btn.setTitle("自己制定营养目标", for: .normal)
         btn.setTitleColor(WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.85), for: .highlighted)
@@ -114,7 +114,7 @@ class NeedBuildPlanVC: WHBaseViewVC {
     lazy var loginBtn : FeedBackButton = {
         let btn = FeedBackButton()
         btn.setTitle("登录", for: .normal)
-        btn.setTitleColor(WHColor_16(colorStr: "007AFF"), for: .normal)
+        btn.setTitleColor(.THEME, for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
         
