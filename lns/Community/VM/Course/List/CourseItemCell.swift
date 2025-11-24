@@ -8,6 +8,16 @@ import UIKit
 
 class CourseItemCell: UITableViewCell {
     
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        if traitCollection.userInterfaceStyle == .dark{
+            lockCoverView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.75)
+        }else{
+            lockCoverView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.3)
+        }
+    }
+    
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .COLOR_BG_F5
@@ -55,7 +65,12 @@ class CourseItemCell: UITableViewCell {
     }()
     lazy var lockCoverView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_BLACK_30//WHColorWithAlpha(colorStr: "000000", alpha: 0.3)
+        if traitCollection.userInterfaceStyle == .dark{
+            vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.75)
+        }else{
+            vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.3)
+        }
+        
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
         vi.isHidden = true

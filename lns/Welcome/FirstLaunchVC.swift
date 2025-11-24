@@ -120,11 +120,11 @@ class FirstLaunchVC: WHBaseViewVC {
     }()
     lazy var confirmButton: UIButton = {
         let btn = UIButton()
-        btn.backgroundColor = .COLOR_BG_WHITE
+        btn.backgroundColor = .white
         btn.layer.cornerRadius = kFitWidth(27)
         btn.clipsToBounds = true
         btn.setTitle("我准备好了", for: .normal)
-        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        btn.setTitleColor(WHColor_16(colorStr: "0F1214"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         btn.alpha = 0
         

@@ -11,6 +11,14 @@ class CoursePlayingItemCell: UITableViewCell {
     
     var imgLoadBlock:(()->())?
     
+//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+//        if traitCollection.userInterfaceStyle == .dark{
+//            coverView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.75)
+//        }else{
+//            coverView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.3)
+//        }
+//    }
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -34,7 +42,12 @@ class CoursePlayingItemCell: UITableViewCell {
     lazy var coverView: UIView = {
         let vi = UIView()
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_35
+//        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_35
+        if traitCollection.userInterfaceStyle == .dark{
+            vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.75)
+        }else{
+            vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.3)
+        }
         return vi
     }()
     lazy var videoDurationLabel: UILabel = {
@@ -104,12 +117,22 @@ extension CoursePlayingItemCell{
                 }
             }
             if isPlaying{
-                coverView.backgroundColor = .clear
+//                coverView.backgroundColor = .clear
+                if traitCollection.userInterfaceStyle == .dark{
+                    coverView.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.12)
+                }else{
+                    coverView.backgroundColor = .clear
+                }
                 let attr = WHUtils().createAttributedStringWithImage(image: UIImage(named: "course_video_playing_icon")!, text: "\(model.title) ")
                 courseTitleLabel.attributedText = attr
                 courseTitleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
             }else{
-                coverView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_35
+//                coverView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_35
+                if traitCollection.userInterfaceStyle == .dark{
+                    coverView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.75)
+                }else{
+                    coverView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.3)
+                }
                 courseTitleLabel.text = model.title
                 courseTitleLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
             }

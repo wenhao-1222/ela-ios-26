@@ -82,6 +82,8 @@ extension QuestionnaireSurveyFoodsListVC{
         view.addSubview(tableView)
         
         setConstrait()
+        self.tableView.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
     func setConstrait(){
         submitBtn.snp.makeConstraints { make in

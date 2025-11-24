@@ -89,7 +89,7 @@ class FoodsMergeVC: WHBaseViewVC {
         return vm
     }()
     lazy var naturalMsgVm : FoodsMergeNaturalVM = {
-        let vm = FoodsMergeNaturalVM.init(frame: CGRect.init(x: 0, y: self.specVm.frame.maxY, width: 0, height: 0))
+        let vm = FoodsMergeNaturalVM.init(frame: CGRect.init(x: 0, y: self.specVm.frame.maxY-kFitWidth(0.5), width: 0, height: 0))
         return vm
     }()
     lazy var nameTipsVm: FoodsMergeListNameVM = {

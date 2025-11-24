@@ -25,16 +25,12 @@ class FoodsMergeNaturalVM: UIView {
     // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
        super.traitCollectionDidChange(previousTraitCollection)
-       if #available(iOS 13.0, *),
-          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
-          !isHidden {
-           UIView.animate(withDuration: 0.2) {
-               if previousTraitCollection?.userInterfaceStyle == .dark{
-                   self.naturalShapeLayerBottom.strokeColor = WHColorWithAlpha(colorStr: "1F2329", alpha: 0.3).cgColor
-               }else{
-                   self.naturalShapeLayerBottom.strokeColor = WHColor_16(colorStr: "F7F9FC").cgColor
-               }
-           }
+       if traitCollection.userInterfaceStyle == .dark{
+//           self.naturalShapeLayerBottom.strokeColor = WHColorWithAlpha(colorStr: "1F2329", alpha: 0.3).cgColor
+           self.naturalShapeLayerBottom.strokeColor = WHColorWithAlpha(colorStr: "D2D3D4", alpha: 0.06).cgColor
+       }else{
+           self.naturalShapeLayerBottom.strokeColor = WHColor_16(colorStr: "F7F9FC").cgColor
+//           self.naturalShapeLayerBottom.strokeColor = WHColor_16(colorStr: "F7F9FC").cgColor
        }
    }
 
@@ -96,7 +92,12 @@ extension FoodsMergeNaturalVM{
         setDataSource(array: [0,0,0])
         setCaloriesNumber(calories: "0")
         
-        naturalShapeLayerBottom.strokeColor = WHColor_16(colorStr: "F7F9FC").cgColor
+        if traitCollection.userInterfaceStyle == .dark{
+            naturalShapeLayerBottom.strokeColor = WHColorWithAlpha(colorStr: "D2D3D4", alpha: 0.06).cgColor
+        }else{
+            naturalShapeLayerBottom.strokeColor = WHColor_16(colorStr: "F7F9FC").cgColor
+        }
+        
         naturalShapeLayerBottom.fillColor = nil // 无填充色
         naturalShapeLayerBottom.lineWidth = kFitWidth(25) // 线宽
     }
@@ -122,23 +123,6 @@ extension FoodsMergeNaturalVM{
         naturalShapeLayerBottom.path = naturalPathBottom.cgPath
     }
     func setCaloriesNumber(calories:String) {
-//        let titAttr = NSMutableAttributedString(string: "卡路里\n")
-//        titAttr.yy_font = .systemFont(ofSize: 11, weight: .regular)
-//        titAttr.yy_color = .COLOR_GRAY_BLACK_45
-//        
-//        let centerAtter = NSMutableAttributedString(string: "\(calories)\n")
-//        centerAtter.yy_font = .systemFont(ofSize: 18, weight: .semibold)
-//        centerAtter.yy_color = .COLOR_GRAY_BLACK_85
-//        
-//        let unitAttr = NSMutableAttributedString(string: "千卡")
-//        unitAttr.yy_font = .systemFont(ofSize: 11, weight: .regular)
-//        unitAttr.yy_color = .COLOR_GRAY_BLACK_45
-//        
-//        titAttr.append(centerAtter)
-//        titAttr.append(unitAttr)
-//        
-//        titAttr.yy_alignment = .center
-//        pieChartView.centerAttributedText = titAttr
         let a = NSMutableAttributedString(
             string: "卡路里\n",
             attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,

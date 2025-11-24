@@ -96,15 +96,21 @@ extension CourseTiTleCell{
         titleLab.text = dict.stringValueForKey(key: "detailTitle")
         
         let highlight = dict["highlight"]as? NSDictionary ?? [:]
-        if highlight.stringValueForKey(key: "title").count > 0{
+//        if highlight.stringValueForKey(key: "title").count > 0{
+        let highlightContents = highlight["content"] as? [String] ?? []
+        let highlightTitle = highlight.stringValueForKey(key: "title")
+
+        if !highlightContents.isEmpty {
             detailLab.text = ""
             detailLab.isHidden = true
-            highLightLab.text = highlight.stringValueForKey(key: "title")
-            
-            if let highlights = highlight["content"] as? [String] {
-                updateHighlightList(items: highlights)
-            }
+//            highLightLab.text = highlight.stringValueForKey(key: "title")
+//            
+//            if let highlights = highlight["content"] as? [String] {
+//                updateHighlightList(items: highlights)
+//            }
+            highLightLab.text = highlightTitle.count > 0 ? highlightTitle : "课程亮点"
 
+            updateHighlightList(items: highlightContents)
         }else{
             detailLab.text = dict.stringValueForKey(key: "detailSubtitle")
             detailLab.isHidden = false

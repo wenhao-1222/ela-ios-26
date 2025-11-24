@@ -137,7 +137,7 @@ class InviteCodeAlertVM: UIView {
     lazy var cancelButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("取消", for: .normal)
-        btn.backgroundColor = .white
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.setTitleColor(.THEME, for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)

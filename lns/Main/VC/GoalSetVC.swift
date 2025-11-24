@@ -13,6 +13,16 @@ class GoalSetVC: WHBaseViewVC {
     
     var dataArray = NSMutableArray()
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // 禁用页面展开动画 —— SettingVC 专属方式
+        DispatchQueue.main.async {
+            if let transitionView = self.view.superview,
+               NSStringFromClass(type(of: transitionView)).contains("UITransitionView") {
+                transitionView.layer.removeAllAnimations()
+            }
+        }
+    }
     override func viewWillAppear(_ animated: Bool) {
         IQKeyboardManager.shared.enable = false
         IQKeyboardManager.shared.enableAutoToolbar = false
@@ -117,6 +127,8 @@ extension GoalSetVC{
         scrollViewBase.addSubview(bottomTypeVm)
         scrollViewBase.contentSize = CGSize.init(width: 0, height: self.bottomTypeVm.frame.maxY + kFitWidth(40))
 //        view.addSubview(setWeekDayGoalButton)
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         
 //        setConstrait()
     }

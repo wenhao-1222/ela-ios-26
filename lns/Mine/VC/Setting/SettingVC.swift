@@ -13,12 +13,23 @@ class SettingVC: WHBaseViewVC {
     var versionMsgDict = NSDictionary()
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         bindPhoneVm.detailLabel.text = "\(UserInfoModel.shared.phoneStar)"
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
         
         personalSettingVm.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // 禁用页面展开动画 —— SettingVC 专属方式
+        DispatchQueue.main.async {
+            if let transitionView = self.view.superview,
+               NSStringFromClass(type(of: transitionView)).contains("UITransitionView") {
+                transitionView.layer.removeAllAnimations()
+            }
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         

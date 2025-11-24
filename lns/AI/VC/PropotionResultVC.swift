@@ -437,6 +437,8 @@ extension PropotionResultVC{
         
         scrollViewBase.contentSize = CGSize.init(width: 0, height: self.naturalVm.frame.maxY)
         
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         bottomView.addSubview(btnBgView)
         btnBgView.addSubview(saveButton)
         btnBgView.addShadow(opacity: 0.08,offset: CGSize.init(width: 0, height: -3))

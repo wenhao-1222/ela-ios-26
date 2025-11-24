@@ -15,7 +15,7 @@ class NotRegistTipsVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        self.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         self.alpha = 0
         self.isUserInteractionEnabled = true
         
@@ -30,7 +30,7 @@ class NotRegistTipsVM: UIView {
         lab.textAlignment = .center
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         
         return lab
@@ -39,7 +39,7 @@ class NotRegistTipsVM: UIView {
         let lab = UILabel()
         lab.text = "请设置营养目标后再尝试登录"
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         
         return lab
     }()

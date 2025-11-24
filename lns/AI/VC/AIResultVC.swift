@@ -313,6 +313,8 @@ extension AIResultVC{
         view.addSubview(specAlertVm)
         
         setConstrait()
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         specVm.specName = "份"
         specVm.updateButton()
         

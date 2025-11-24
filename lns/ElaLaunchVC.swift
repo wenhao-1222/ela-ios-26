@@ -100,7 +100,8 @@ extension ElaLaunchVC{
         view.addSubview(logoLabel)
         view.addSubview(peacockImgView)
         view.addSubview(tapButton)
-        
+
+        self.view.layoutIfNeeded()
 //        let tap = UITapGestureRecognizer(target: self, action: #selector(adTap))
 //        peacockImgView.addGestureRecognizer(tap)
 

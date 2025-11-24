@@ -13,11 +13,11 @@ class GuideTotalVC: WHBaseViewVC {
     /// Current displayed page index
     private var currentIndex: Int = 0
     
-    override func viewDidAppear(_ animated: Bool) {
-//        firstVm.chart.startGradientAnimation()
-//        super.viewDidAppear(animated)
-//        firstVm.startChartAnimation()
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+////        firstVm.chart.startGradientAnimation()
+////        super.viewDidAppear(animated)
+////        firstVm.startChartAnimation()
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -226,6 +226,8 @@ extension GuideTotalVC{
         scrollViewBase.addSubview(sevenVm)
         
         scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*7, height: 0)
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
 }
 

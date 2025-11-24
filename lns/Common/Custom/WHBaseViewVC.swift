@@ -32,7 +32,31 @@ class WHBaseViewVC: ViewController {
     override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         return UserConfigModel.shared.userInterfaceOrientation
     }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        DispatchQueue.main.async {
+            if let transitionView = self.view.superview,
+               NSStringFromClass(type(of: transitionView)).contains("UITransitionView") {
+                transitionView.layer.removeAllAnimations()
+            }
+        }
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // 禁用页面展开动画 —— SettingVC 专属方式
+        DispatchQueue.main.async {
+            if let transitionView = self.view.superview,
+               NSStringFromClass(type(of: transitionView)).contains("UITransitionView") {
+                transitionView.layer.removeAllAnimations()
+            }
+        }
+    }
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // （关键）提前布局，阻止 push 完成后的 subviews 展开动画
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         self.navigationController?.navigationBar.isHidden = true
         UserInfoModel.shared.currentVc = self
         openInteractivePopGesture()
@@ -49,13 +73,15 @@ class WHBaseViewVC: ViewController {
 //        MobClick.endLogPageView(self.ClassName)
 //        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view.backgroundColor = UIColor.COLOR_BG_WHITE
         self.navigationController?.setNavigationBarHidden(true, animated: true)
-        
+        self.navigationController?.navigationItem.largeTitleDisplayMode = .never
+        self.navigationController?.navigationBar.prefersLargeTitles = false
+
         self.view.isUserInteractionEnabled = true
         
 //        if #available(iOS 13.0, *) {

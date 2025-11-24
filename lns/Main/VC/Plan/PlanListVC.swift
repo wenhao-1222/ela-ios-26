@@ -164,7 +164,8 @@ extension PlanListVC{
         
         view.addSubview(leadPlanAlertVm)
         view.addSubview(nameAlertVm)
-        
+        self.tableView.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         initSkeletonData()
     }
     func initSkeletonData() {

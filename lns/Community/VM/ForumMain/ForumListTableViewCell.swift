@@ -102,6 +102,7 @@ class ForumListTableViewCell: UITableViewCell {
     lazy var isTopImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "forum_top_icon")
+        img.contentMode = .scaleAspectFit
         img.isHidden = true
         
         return img

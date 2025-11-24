@@ -70,7 +70,7 @@ extension BindOtherAccountItemVM{
         bgView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        bgView.backgroundColor = .COLOR_BG_WHITE
+        bgView.backgroundColor = .COLOR_CARD_BG_WHITE
     }
     override var isHighlighted: Bool {
        didSet {
@@ -79,7 +79,7 @@ extension BindOtherAccountItemVM{
                bgView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
            } else {
                // 当按钮高亮状态结束时，恢复按钮的原始状态
-               bgView.backgroundColor = .COLOR_BG_WHITE
+               bgView.backgroundColor = .COLOR_CARD_BG_WHITE
            }
        }
    }
@@ -88,7 +88,7 @@ extension BindOtherAccountItemVM{
          if self.tapBlock != nil{
              self.tapBlock!()
          }
-        bgView.backgroundColor = .COLOR_BG_WHITE
+        bgView.backgroundColor = .COLOR_CARD_BG_WHITE
      }
 }
 
