@@ -17,6 +17,11 @@ class JournalSettingVC: WHBaseViewVC {
     let weightType = HKObjectType.quantityType(forIdentifier: .bodyMass)
     let activeEnergyBurnedType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        appearanceModeVm.detailLabel.text = appearanceDetailText(style: UserConfigModel.shared.overrideUserInterfaceStyle)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -25,8 +30,27 @@ class JournalSettingVC: WHBaseViewVC {
         UserDefaults.standard.set("1", forKey: "settingNewFuncRead")
         UserInfoModel.shared.settingNewFuncRead = true
     }
-    lazy var logsTitleLabel: UILabel = {
+    lazy var appearanceTitleLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(12), y: 0, width: kFitWidth(200), height: kFitWidth(44)))
+        lab.text = "外观与显示"
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
+        lab.font = .systemFont(ofSize: 16, weight: .regular)
+
+        return lab
+    }()
+    lazy var appearanceModeVm : MaterialItemVM = {
+        let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.appearanceTitleLabel.frame.maxY, width: 0, height: 0))
+        vm.leftLabel.text = "深色模式"
+        vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        vm.detailLabel.text = appearanceDetailText(style: UserConfigModel.shared.overrideUserInterfaceStyle)
+        vm.tapBlock = { [weak self] in
+            self?.showAppearanceOptions()
+        }
+        return vm
+    }()
+    lazy var logsTitleLabel: UILabel = {
+//        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(12), y: 0, width: kFitWidth(200), height: kFitWidth(44)))
+        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(12), y: self.appearanceModeVm.frame.maxY + kFitWidth(8), width: kFitWidth(200), height: kFitWidth(44)))
         lab.text = "日志"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 16, weight: .regular)
@@ -303,6 +327,40 @@ class JournalSettingVC: WHBaseViewVC {
     }()
 }
 extension JournalSettingVC{
+    private func appearanceDetailText(style: UIUserInterfaceStyle) -> String {
+       switch style {
+       case .light:
+           return "浅色"
+       case .dark:
+           return "深色"
+       default:
+           return "跟随系统"
+       }
+   }
+   private func showAppearanceOptions() {
+       let alertVc = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+       if let popover = alertVc.popoverPresentationController {
+           popover.sourceView = appearanceModeVm
+           popover.sourceRect = appearanceModeVm.bounds
+           popover.permittedArrowDirections = [.up]
+       }
+       let options: [(String, UIUserInterfaceStyle)] = [("跟随系统", .unspecified), ("浅色", .light), ("深色", .dark)]
+       options.forEach { title, style in
+           let action = UIAlertAction(title: title, style: .default) { [weak self] _ in
+               self?.applyInterfaceStyle(style)
+           }
+           alertVc.addAction(action)
+       }
+       let cancelAction = UIAlertAction(title: "取消", style: .cancel)
+       alertVc.addAction(cancelAction)
+       present(alertVc, animated: true)
+   }
+   private func applyInterfaceStyle(_ style: UIUserInterfaceStyle) {
+       UserConfigModel.shared.overrideUserInterfaceStyle = style
+       UserDefaults.set(value: "\(style.rawValue)", forKey: .appearanceStyle)
+       appearanceModeVm.detailLabel.text = appearanceDetailText(style: style)
+       UIApplication.shared.applyInterfaceStyle(style)
+   }
     func clearLogsAction() {
         let alertVc = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         if let popover = alertVc.popoverPresentationController {
@@ -355,6 +413,8 @@ extension JournalSettingVC{
         scrollViewBase.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         scrollViewBase.frame = CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight())
         
+        scrollViewBase.addSubview(appearanceTitleLabel)
+       scrollViewBase.addSubview(appearanceModeVm)
         scrollViewBase.addSubview(logsTitleLabel)
         scrollViewBase.addSubview(resetLogsMealsVm)
 //        scrollViewBase.addSubview(hiddenQuestionnaireVm)

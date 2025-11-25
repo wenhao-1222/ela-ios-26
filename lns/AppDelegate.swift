@@ -47,9 +47,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         } else {
             launchWindow = UIWindow(frame: UIScreen.main.bounds)
         }
-        
+        UserConfigModel.shared.overrideUserInterfaceStyle = UserDefaults.getAppearanceStyle()
+        launchWindow.overrideUserInterfaceStyle = UserConfigModel.shared.overrideUserInterfaceStyle
         window = launchWindow
         launchWindow.backgroundColor = .THEME
+        UIApplication.shared.applyInterfaceStyle(UserConfigModel.shared.overrideUserInterfaceStyle)
 //        let launchWindow = window ?? UIWindow(frame: UIScreen.main.bounds)
 //        launchWindow.backgroundColor = .THEME
 //        launchWindow.isOpaque = true

@@ -29,6 +29,7 @@ public extension UserDefaults {
         case isShowLogsTime
         case isShowLogsRemainCalories
         case weightUnit
+        case appearanceStyle
         case todayGoal
         case sportData
         case forumListData
@@ -275,6 +276,10 @@ extension UserDefaults {
         }
         
         return true
+    }
+    static public func getAppearanceStyle() -> UIUserInterfaceStyle {
+        let rawValue = Int(self.getString(forKey: .appearanceStyle) ?? "") ?? UIUserInterfaceStyle.unspecified.rawValue
+        return UIUserInterfaceStyle(rawValue: rawValue) ?? .unspecified
     }
     static public func initWeightUnit(){
         let num = self.getString(forKey: .weightUnit) ?? ""
