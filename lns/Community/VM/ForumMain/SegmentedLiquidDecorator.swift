@@ -27,7 +27,8 @@ final class SegmentedLiquidDecorator {
         // --- 新增：先把容器挂上去，并开启裁剪 ---
         view.layer.addSublayer(container)
         container.masksToBounds = true
-        container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1).cgColor
+        container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.6).cgColor // 让选中更贴近玻璃感（可按需改）
+            // UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1).cgColor
         container.shadowOpacity = 0
 
         // 以下这些“装饰层”全部加到 container，而不是直接加到 view.layer
@@ -43,17 +44,17 @@ final class SegmentedLiquidDecorator {
         baseFill.startPoint = CGPoint(x: 0.5, y: 0.0)
         baseFill.endPoint   = CGPoint(x: 0.5, y: 1.0)
         baseFill.colors = [
-            UIColor.COLOR_BG_WHITE.withAlphaComponent(0.35).cgColor,
-            UIColor.COLOR_BG_WHITE.withAlphaComponent(0.08).cgColor
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor,
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.08).cgColor
         ]
         baseFill.locations = [0, 1]
         // 顶部高光
         gloss.startPoint = CGPoint(x: 0.5, y: 0.0)
         gloss.endPoint   = CGPoint(x: 0.5, y: 1.0)
         gloss.colors = [
-            UIColor.COLOR_BG_WHITE.withAlphaComponent(0.45).cgColor,
-            UIColor.COLOR_BG_WHITE.withAlphaComponent(0.06).cgColor,
-            UIColor.COLOR_BG_WHITE.withAlphaComponent(0.0).cgColor
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45).cgColor,
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06).cgColor,
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.0).cgColor
         ]
         gloss.locations = [0, 0.15, 0.45]
 
@@ -87,13 +88,13 @@ final class SegmentedLiquidDecorator {
         
         container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1).cgColor
         baseFill.colors = [
-            UIColor.COLOR_BG_WHITE.withAlphaComponent(0.35).cgColor,
-            UIColor.COLOR_BG_WHITE.withAlphaComponent(0.08).cgColor
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor,
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.08).cgColor
         ]
         gloss.colors = [
-            UIColor.COLOR_BG_WHITE.withAlphaComponent(0.45).cgColor,
-            UIColor.COLOR_BG_WHITE.withAlphaComponent(0.06).cgColor,
-            UIColor.COLOR_BG_WHITE.withAlphaComponent(0.0).cgColor
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45).cgColor,
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06).cgColor,
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.0).cgColor
         ]
         innerShadow.shadowColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.2).cgColor // 原 0.35
     }

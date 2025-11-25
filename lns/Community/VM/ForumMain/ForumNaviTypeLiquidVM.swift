@@ -41,7 +41,9 @@ class ForumNaviTypeLiquidVM: UIView {
         seg.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_03.cgColor
         seg.layer.borderWidth = kFitWidth(2)
         if #available(iOS 13.0, *) {
-            seg.selectedSegmentTintColor = UIColor.white.withAlphaComponent(0.6) // 让选中更贴近玻璃感（可按需改）
+//            seg.selectedSegmentTintColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.6) // 让选中更贴近玻璃感（可按需改）
+            seg.selectedSegmentTintColor = UIColor(named: "color_bg_white_lequid_seg")!//UIColor.white.withAlphaComponent(0.6) // 让选中更贴近玻璃感（可按需改）
+//            seg.setBackgroundImage(createImageWithColor(color: UIColor(named: "color_bg_white_lequid_seg")!), for: .selected, barMetrics: .compact)
             // 普通/选中态颜色
             seg.setTitleTextAttributes([
                 .font: UIFont.systemFont(ofSize: 16, weight: .semibold),
