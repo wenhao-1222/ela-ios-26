@@ -98,31 +98,108 @@ final class SegmentedLiquidDecorator {
 //        ]
 //        innerShadow.shadowColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.2).cgColor // 原 0.35
 //    }
+//    func changeStyle() {
+//        // 深色模式下增强边界
+//        if UITraitCollection.current.userInterfaceStyle == .dark {
+//            container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor
+//            outerStroke.strokeColor = UIColor.white.withAlphaComponent(0.05).cgColor
+//            innerStroke.strokeColor = UIColor.white.withAlphaComponent(0.15).cgColor
+//            innerShadow.shadowColor = UIColor.black.withAlphaComponent(0.25).cgColor
+//            baseFill.colors = [
+//                UIColor.white.withAlphaComponent(0.1).cgColor,
+//                UIColor.white.withAlphaComponent(0.03).cgColor
+//            ]
+//        } else {
+//            // 保持你原来的浅色风格
+//            container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1).cgColor
+//            baseFill.colors = [
+//                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor,
+//                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.08).cgColor
+//            ]
+//            gloss.colors = [
+//                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45).cgColor,
+//                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06).cgColor,
+//                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.0).cgColor
+//            ]
+//            innerShadow.shadowColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.2).cgColor // 原 0.35
+//        }
+//    }
     func changeStyle() {
-        // 深色模式下增强边界
-        if UITraitCollection.current.userInterfaceStyle == .dark {
-            container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor
-            outerStroke.strokeColor = UIColor.white.withAlphaComponent(0.25).cgColor
-            innerStroke.strokeColor = UIColor.white.withAlphaComponent(0.35).cgColor
-            innerShadow.shadowColor = UIColor.black.withAlphaComponent(0.45).cgColor
-            baseFill.colors = [
-                UIColor.white.withAlphaComponent(0.30).cgColor,
-                UIColor.white.withAlphaComponent(0.05).cgColor
-            ]
-        } else {
-            // 保持你原来的浅色风格
-            container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1).cgColor
-            baseFill.colors = [
-                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor,
-                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.08).cgColor
-            ]
-            gloss.colors = [
-                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45).cgColor,
-                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06).cgColor,
-                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.0).cgColor
-            ]
-            innerShadow.shadowColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.2).cgColor // 原 0.35
-        }
+        let isDark = UITraitCollection.current.userInterfaceStyle == .dark
+        
+        // 动态背景色（你的色值）
+        container.backgroundColor = UIColor { trait in
+            if trait.userInterfaceStyle == .dark {
+                return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35)
+            } else {
+                return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1)
+            }
+        }.cgColor
+        
+        // 动态 baseFill（你的色值）
+        baseFill.colors = [
+            UIColor { trait in
+                if trait.userInterfaceStyle == .dark {
+                    return UIColor.white.withAlphaComponent(0.1)
+                } else {
+                    return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35)
+                }
+            }.cgColor,
+            UIColor { trait in
+                if trait.userInterfaceStyle == .dark {
+                    return UIColor.white.withAlphaComponent(0.03)
+                } else {
+                    return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.08)
+                }
+            }.cgColor
+        ]
+        
+        // 动态 gloss（你的色值）
+        gloss.colors = [
+            UIColor { trait in
+                if trait.userInterfaceStyle == .dark {
+                    // 深色模式你没有提供 gloss 值，我保持浅色逻辑不变
+                    return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45)
+                } else {
+                    return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45)
+                }
+            }.cgColor,
+            UIColor { trait in
+                if trait.userInterfaceStyle == .dark {
+                    return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06)
+                } else {
+                    return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06)
+                }
+            }.cgColor,
+            UIColor.clear.cgColor
+        ]
+        
+        // outerStroke（你的色值）
+        outerStroke.strokeColor = UIColor { trait in
+            if trait.userInterfaceStyle == .dark {
+                return UIColor.white.withAlphaComponent(0.05)
+            } else {
+                return UIColor.clear   // 你原代码
+            }
+        }.cgColor
+        
+        // innerStroke（你的色值）
+        innerStroke.strokeColor = UIColor { trait in
+            if trait.userInterfaceStyle == .dark {
+                return UIColor.white.withAlphaComponent(0.15)
+            } else {
+                return UIColor.clear   // 你原代码
+            }
+        }.cgColor
+        
+        // 内阴影（你的色值）
+        innerShadow.shadowColor = UIColor { trait in
+            if trait.userInterfaceStyle == .dark {
+                return UIColor.black.withAlphaComponent(0.25)
+            } else {
+                return UIColor.COLOR_BG_BLACK.withAlphaComponent(0.2)
+            }
+        }.cgColor
     }
 
     func relayout() {
