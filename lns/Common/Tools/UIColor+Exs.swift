@@ -82,7 +82,7 @@ extension UIColor {
     //按钮高亮状态  背景色   normal时为主题色
     public static let COLOR_BUTTON_HIGHLIGHT_BG_THEME   = WHColor_16(colorStr: "409BFF")
     //按钮禁用状态   背景色  normal时为主题色
-    public static let COLOR_BUTTON_DISABLE_BG_THEME   = WHColor_16(colorStr: "8DC3FF")
+    public static let COLOR_BUTTON_DISABLE_BG_THEME   = UIColor(named: "color_button_disable_bg")!//WHColor_16(colorStr: "8DC3FF")
     //按钮高亮状态  背景色   normal时为主题色的浅色
     public static let COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT   = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.3)
     

@@ -217,7 +217,7 @@ extension SportVC{
 
 extension SportVC{
     func initUI() {
-        view.backgroundColor = .COLOR_CARD_BG_WHITE
+        view.backgroundColor = .COLOR_BG_WHITE
         view.addSubview(backArrowButton)
         view.addSubview(timeButton)
         view.addSubview(addButton)

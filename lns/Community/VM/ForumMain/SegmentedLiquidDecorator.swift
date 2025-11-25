@@ -84,19 +84,45 @@ final class SegmentedLiquidDecorator {
         target.addTarget(self, action: #selector(onValueChanged), for: .valueChanged)
     }
     
+//    func changeStyle() {
+//        
+//        container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1).cgColor
+//        baseFill.colors = [
+//            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor,
+//            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.08).cgColor
+//        ]
+//        gloss.colors = [
+//            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45).cgColor,
+//            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06).cgColor,
+//            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.0).cgColor
+//        ]
+//        innerShadow.shadowColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.2).cgColor // 原 0.35
+//    }
     func changeStyle() {
-        
-        container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1).cgColor
-        baseFill.colors = [
-            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor,
-            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.08).cgColor
-        ]
-        gloss.colors = [
-            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45).cgColor,
-            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06).cgColor,
-            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.0).cgColor
-        ]
-        innerShadow.shadowColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.2).cgColor // 原 0.35
+        // 深色模式下增强边界
+        if UITraitCollection.current.userInterfaceStyle == .dark {
+            container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor
+            outerStroke.strokeColor = UIColor.white.withAlphaComponent(0.25).cgColor
+            innerStroke.strokeColor = UIColor.white.withAlphaComponent(0.35).cgColor
+            innerShadow.shadowColor = UIColor.black.withAlphaComponent(0.45).cgColor
+            baseFill.colors = [
+                UIColor.white.withAlphaComponent(0.30).cgColor,
+                UIColor.white.withAlphaComponent(0.05).cgColor
+            ]
+        } else {
+            // 保持你原来的浅色风格
+            container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1).cgColor
+            baseFill.colors = [
+                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor,
+                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.08).cgColor
+            ]
+            gloss.colors = [
+                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45).cgColor,
+                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06).cgColor,
+                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.0).cgColor
+            ]
+            innerShadow.shadowColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.2).cgColor // 原 0.35
+        }
     }
 
     func relayout() {

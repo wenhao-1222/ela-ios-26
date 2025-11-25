@@ -83,7 +83,7 @@ class CourseListHeadVM : UIView{
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(3)
         vi.clipsToBounds = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "626B82", alpha: 0.1)
+        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_10//WHColorWithAlpha(colorStr: "626B82", alpha: 0.1)
         
         return vi
     }()

@@ -41,7 +41,7 @@ class FoodsListAddVM: UIView {
 //        btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.setTitle("创建食物", for: .normal)
         btn.backgroundColor = .COLOR_CARD_BG_WHITE
-        btn.setImage(UIImage(named: "foods_create_icon_normal"), for: .normal)
+        btn.setImage(UIImage(named: "foods_create_icon_normal")?.withTintColor(.THEME), for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(8)
@@ -60,7 +60,7 @@ class FoodsListAddVM: UIView {
 //        btn.frame = CGRect.init(x: kFitWidth(191), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.setTitle("快速添加", for: .normal)
         btn.backgroundColor = .COLOR_CARD_BG_WHITE
-        btn.setImage(UIImage(named: "foods_create_icon_soon"), for: .normal)
+        btn.setImage(UIImage(named: "foods_create_icon_soon")?.withTintColor(.THEME), for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(8)
@@ -79,7 +79,7 @@ class FoodsListAddVM: UIView {
 //        btn.frame = CGRect.init(x: kFitWidth(191), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.setTitle("AI识别", for: .normal)
         btn.backgroundColor = .COLOR_CARD_BG_WHITE
-        btn.setImage(UIImage(named: "foods_ai_icon"), for: .normal)
+        btn.setImage(UIImage(named: "foods_ai_icon")?.withTintColor(.THEME), for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(8)
@@ -111,7 +111,7 @@ class FoodsListAddVM: UIView {
         btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.isHidden = true
         btn.enablePressEffect()
-        btn.setImage(UIImage(named: "foods_merge_icon"), for: .normal)
+        btn.setImage(UIImage(named: "foods_merge_icon")?.withTintColor(.THEME), for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(8)
@@ -137,7 +137,7 @@ class FoodsListAddVM: UIView {
         btn.setTitle("创建食谱", for: .normal)
         btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.enablePressEffect()
-        btn.setImage(UIImage(named: "meals_create_icon"), for: .normal)
+        btn.setImage(UIImage(named: "meals_create_icon")?.withTintColor(.THEME), for: .normal)
         btn.setTitleColor(WHColor_16(colorStr: "2BA471"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(8)

@@ -63,10 +63,16 @@ extension FoodsCreateNameVM{
         addSubview(lineView)
         
         // 使用方法
-        let image = UIImage(named: "logs_pen_icon")!
-        let attributedString = createAttributedStringWithImage(image: image, text: "如：水果沙拉，健身餐")
-        textField.attributedPlaceholder = attributedString
+//        let image = UIImage(named: "logs_pen_icon")!
+//        let attributedString = createAttributedStringWithImage(image: image, text: "如：水果沙拉，健身餐")
+//        textField.attributedPlaceholder = attributedString
         
+        let a = NSMutableAttributedString(
+            string: "如：水果沙拉，健身餐",
+            attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_25,
+                         .font: UIFont.systemFont(ofSize: 16, weight: .regular)]
+        )
+        textField.attributedPlaceholder = a
         setConstrait()
     }
     func setConstrait() {

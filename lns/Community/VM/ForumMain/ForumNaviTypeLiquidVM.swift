@@ -38,8 +38,8 @@ class ForumNaviTypeLiquidVM: UIView {
         // 初始选中「发现」
 //        seg.selectedSegmentIndex = 1
         seg.backgroundColor = UIColor.clear
-        seg.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_03.cgColor
-        seg.layer.borderWidth = kFitWidth(2)
+//        seg.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_03.cgColor
+//        seg.layer.borderWidth = kFitWidth(2)
         if #available(iOS 13.0, *) {
 //            seg.selectedSegmentTintColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.6) // 让选中更贴近玻璃感（可按需改）
             seg.selectedSegmentTintColor = UIColor(named: "color_bg_white_lequid_seg")!//UIColor.white.withAlphaComponent(0.6) // 让选中更贴近玻璃感（可按需改）
