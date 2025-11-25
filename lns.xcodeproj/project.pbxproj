@@ -705,6 +705,7 @@
 		EC24EB592BB2CBEB002F21DF /* QuestionnaireSurveyBodyFatImageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC24EB582BB2CBEB002F21DF /* QuestionnaireSurveyBodyFatImageVM.swift */; };
 		EC25980C2C36458F00F300AB /* FoodsListNewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC25980B2C36458F00F300AB /* FoodsListNewVC.swift */; };
 		EC25C8322ED54C2C00BF2D1F /* UIApplication+Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC25C8312ED54C2400BF2D1F /* UIApplication+Appearance.swift */; };
+		EC25C8342ED560CC00BF2D1F /* SkeletonListLoadingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC25C8332ED560CB00BF2D1F /* SkeletonListLoadingManager.swift */; };
 		EC26E6272BBCF3A5001E4381 /* LNSLoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC26E6262BBCF3A5001E4381 /* LNSLoginVC.swift */; };
 		EC26E6292BBCF40D001E4381 /* LoginPhoneButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC26E6282BBCF40D001E4381 /* LoginPhoneButton.swift */; };
 		EC26E62B2BBD0176001E4381 /* MHVerifyCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC26E62A2BBD0176001E4381 /* MHVerifyCodeView.swift */; };
@@ -1987,6 +1988,7 @@
 		EC24EB582BB2CBEB002F21DF /* QuestionnaireSurveyBodyFatImageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireSurveyBodyFatImageVM.swift; sourceTree = "<group>"; };
 		EC25980B2C36458F00F300AB /* FoodsListNewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsListNewVC.swift; sourceTree = "<group>"; };
 		EC25C8312ED54C2400BF2D1F /* UIApplication+Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Appearance.swift"; sourceTree = "<group>"; };
+		EC25C8332ED560CB00BF2D1F /* SkeletonListLoadingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonListLoadingManager.swift; sourceTree = "<group>"; };
 		EC26E6262BBCF3A5001E4381 /* LNSLoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LNSLoginVC.swift; sourceTree = "<group>"; };
 		EC26E6282BBCF40D001E4381 /* LoginPhoneButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPhoneButton.swift; sourceTree = "<group>"; };
 		EC26E62A2BBD0176001E4381 /* MHVerifyCodeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MHVerifyCodeView.swift; sourceTree = "<group>"; };
@@ -4208,6 +4210,7 @@
 				EC87EEFE2BB3EC7400350EB0 /* SearchVM.swift */,
 				A733236C2D93E6A30065BF0A /* NotificationNames.swift */,
 				A70A2FC62DCAED4D00F1E630 /* ElaLaunchVC.swift */,
+				EC25C8332ED560CB00BF2D1F /* SkeletonListLoadingManager.swift */,
 				ECD0FE6D2BABC59E001232C9 /* PrefixHeader.pch */,
 				ECD0FE762BABCA04001232C9 /* lns-Bridging-Header.h */,
 				ECF581DE2C329A8200FE0937 /* Guide */,
@@ -6469,6 +6472,7 @@
 				ECD0FF342BABE030001232C9 /* MainVC.swift in Sources */,
 				A71C54912E6ADB6B00FB797D /* WidgetTestVC.swift in Sources */,
 				EC962D8C2BF454EF002A12C5 /* BodyDataSQLiteManager.swift in Sources */,
+				EC25C8342ED560CC00BF2D1F /* SkeletonListLoadingManager.swift in Sources */,
 				A7BD40BF2E8113FD009DE692 /* MallOrderAfterSaleSubmitTopCell.swift in Sources */,
 				A71A52DC2CD89C84009FDAF9 /* ForumNaviVM.swift in Sources */,
 				EC8FF3F22C92D9CE003A7E0B /* NaturalStatCalendarCollectionCell.swift in Sources */,

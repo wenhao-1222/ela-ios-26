@@ -48,6 +48,17 @@ class TableViewNoDataVM: UIView {
 }
 
 extension TableViewNoDataVM{
+    func fadeIn() {
+        self.alpha = 0
+        self.isHidden = false
+        UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut]) {
+            self.alpha = 1
+        }
+    }
+
+}
+
+extension TableViewNoDataVM{
     func initUI() {
         addSubview(noDataLabel)
         addSubview(tipsLabel)

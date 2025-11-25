@@ -164,6 +164,7 @@ extension MyFoodsListVC{
         view.addSubview(mealsVm)
         view.addSubview(createButton)
         self.tableView.layoutIfNeeded()
+        self.noDataView.layoutIfNeeded()
         self.view.layoutIfNeeded()
         
         tableView.addSubview(noDataView)

@@ -65,3 +65,20 @@ extension UITableView {
         return snapshotImage
     }
 }
+
+extension UITableView {
+
+    /// 一句调用：tableView.finishLoading(...)
+    func finishLoading<T: UITableViewCell>(
+        list: NSArray,
+        noDataView: UIView,
+        animationCells: T.Type
+    ) {
+        SkeletonListLoadingManager.finishLoading(
+            tableView: self,
+            list: list,
+            noDataView: noDataView,
+            animationCellType: animationCells
+        )
+    }
+}
