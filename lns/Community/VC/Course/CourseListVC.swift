@@ -164,7 +164,7 @@ class CourseListVC: WHBaseViewVC {
         vi.dataSource = self
         vi.estimatedRowHeight = kFitWidth(140)
 //        vi.backgroundColor = WHColor_16(colorStr: "044EF4")
-        vi.register(CourseTiTleCell.classForCoder(), forCellReuseIdentifier: "CourseTiTleCell")
+        vi.register(CourseTitleCell.classForCoder(), forCellReuseIdentifier: "CourseTitleCell")
         vi.register(CourseItemCell.classForCoder(), forCellReuseIdentifier: "CourseItemCell")
         vi.register(CoursePDFCell.classForCoder(), forCellReuseIdentifier: "CoursePDFCell")
         vi.contentInsetAdjustmentBehavior = .never
@@ -431,11 +431,11 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CourseTiTleCell") as? CourseTiTleCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CourseTitleCell") as? CourseTitleCell
             
             cell?.updateUI(dict: self.headMsgDict,isPaid: self.isPaid)
             
-            return cell ?? CourseTiTleCell()
+            return cell ?? CourseTitleCell()
         }else{
             if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "CoursePDFCell") as? CoursePDFCell
