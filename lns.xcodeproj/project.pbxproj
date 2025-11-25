@@ -704,6 +704,7 @@
 		EC24EB572BB2CA44002F21DF /* QuestionnaireSurveyBodyFatDataVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC24EB562BB2CA44002F21DF /* QuestionnaireSurveyBodyFatDataVM.swift */; };
 		EC24EB592BB2CBEB002F21DF /* QuestionnaireSurveyBodyFatImageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC24EB582BB2CBEB002F21DF /* QuestionnaireSurveyBodyFatImageVM.swift */; };
 		EC25980C2C36458F00F300AB /* FoodsListNewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC25980B2C36458F00F300AB /* FoodsListNewVC.swift */; };
+		EC25C8322ED54C2C00BF2D1F /* UIApplication+Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC25C8312ED54C2400BF2D1F /* UIApplication+Appearance.swift */; };
 		EC26E6272BBCF3A5001E4381 /* LNSLoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC26E6262BBCF3A5001E4381 /* LNSLoginVC.swift */; };
 		EC26E6292BBCF40D001E4381 /* LoginPhoneButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC26E6282BBCF40D001E4381 /* LoginPhoneButton.swift */; };
 		EC26E62B2BBD0176001E4381 /* MHVerifyCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC26E62A2BBD0176001E4381 /* MHVerifyCodeView.swift */; };
@@ -1985,6 +1986,7 @@
 		EC24EB562BB2CA44002F21DF /* QuestionnaireSurveyBodyFatDataVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireSurveyBodyFatDataVM.swift; sourceTree = "<group>"; };
 		EC24EB582BB2CBEB002F21DF /* QuestionnaireSurveyBodyFatImageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireSurveyBodyFatImageVM.swift; sourceTree = "<group>"; };
 		EC25980B2C36458F00F300AB /* FoodsListNewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsListNewVC.swift; sourceTree = "<group>"; };
+		EC25C8312ED54C2400BF2D1F /* UIApplication+Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Appearance.swift"; sourceTree = "<group>"; };
 		EC26E6262BBCF3A5001E4381 /* LNSLoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LNSLoginVC.swift; sourceTree = "<group>"; };
 		EC26E6282BBCF40D001E4381 /* LoginPhoneButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPhoneButton.swift; sourceTree = "<group>"; };
 		EC26E62A2BBD0176001E4381 /* MHVerifyCodeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MHVerifyCodeView.swift; sourceTree = "<group>"; };
@@ -4200,6 +4202,7 @@
 				A7454B2D2E73B6AE0064076C /* pca-code.json */,
 				ECD0FE7E2BABD0A9001232C9 /* lns.entitlements */,
 				EC6978DE2BABBD81000B933A /* AppDelegate.swift */,
+				EC25C8312ED54C2400BF2D1F /* UIApplication+Appearance.swift */,
 				A732697D2D9531D100F2A87D /* CompactWindow.swift */,
 				EC6978E22BABBD81000B933A /* ViewController.swift */,
 				EC87EEFE2BB3EC7400350EB0 /* SearchVM.swift */,
@@ -6161,6 +6164,7 @@
 				A7881EA52CBF8687008F4390 /* ShowBigImgBackView.swift in Sources */,
 				A7881EA62CBF8687008F4390 /* ShowBigImgController.swift in Sources */,
 				A7881EA72CBF8687008F4390 /* MBP_Extension.swift in Sources */,
+				EC25C8322ED54C2C00BF2D1F /* UIApplication+Appearance.swift in Sources */,
 				A755ED632DF6AAB400005C3A /* InfiniteImageScroller.swift in Sources */,
 				A7092D192E4F1A35005A2087 /* FeedBackTapButton.swift in Sources */,
 				A7881EA82CBF8687008F4390 /* CollectionViewCell.swift in Sources */,

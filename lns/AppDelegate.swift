@@ -47,6 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         } else {
             launchWindow = UIWindow(frame: UIScreen.main.bounds)
         }
+        
         window = launchWindow
         launchWindow.backgroundColor = .THEME
 //        let launchWindow = window ?? UIWindow(frame: UIScreen.main.bounds)
