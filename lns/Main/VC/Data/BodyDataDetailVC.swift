@@ -133,6 +133,7 @@ class BodyDataDetailVC : WHBaseViewVC {
     }()
     lazy var tableView: UITableView = {
         let table = UITableView.init(frame: CGRect.init(x: 0, y: self.headView.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.headView.frame.maxY), style: .plain)
+        table.backgroundColor = .COLOR_CARD_BG_WHITE
         table.delegate = self
         table.dataSource = self
         table.register(DataDetailTableViewCell.classForCoder(), forCellReuseIdentifier: "DataDetailTableViewCell")

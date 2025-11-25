@@ -5,8 +5,12 @@
 //  Created by Elavatine on 2025/4/14.
 //
 
-
 class CourseTiTleCell: UITableViewCell {
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        bgView.addGradientBackground(startColor: UIColor(named: "color_bg_f5_course_list_start")!,
+                                     endColor: UIColor(named: "color_bg_f5_course_list_end")!)
+    }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -14,7 +18,7 @@ class CourseTiTleCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .COLOR_BG_F5
+        self.backgroundColor = .clear
         self.selectionStyle = .none
         
         initUI()
@@ -96,24 +100,28 @@ extension CourseTiTleCell{
         titleLab.text = dict.stringValueForKey(key: "detailTitle")
         
         let highlight = dict["highlight"]as? NSDictionary ?? [:]
-//        if highlight.stringValueForKey(key: "title").count > 0{
         let highlightContents = highlight["content"] as? [String] ?? []
         let highlightTitle = highlight.stringValueForKey(key: "title")
 
         if !highlightContents.isEmpty {
             detailLab.text = ""
             detailLab.isHidden = true
-//            highLightLab.text = highlight.stringValueForKey(key: "title")
-//            
-//            if let highlights = highlight["content"] as? [String] {
-//                updateHighlightList(items: highlights)
-//            }
+            detailLab.snp.remakeConstraints { make in
+                make.height.equalTo(0)
+            }
+            
             highLightLab.text = highlightTitle.count > 0 ? highlightTitle : "课程亮点"
 
             updateHighlightList(items: highlightContents)
         }else{
             detailLab.text = dict.stringValueForKey(key: "detailSubtitle")
             detailLab.isHidden = false
+            detailLab.snp.remakeConstraints { make in
+                make.left.equalTo(kFitWidth(16))
+                make.right.equalTo(kFitWidth(-16))
+                make.bottom.equalTo(kFitWidth(-4))
+                make.top.equalTo(dottedLineView.snp.bottom).offset(kFitWidth(12))
+            }
             highLightLab.text = ""
         }
         
@@ -169,6 +177,9 @@ extension CourseTiTleCell{
         contentView.addSubview(highLightLab)
         contentView.addSubview(highlightStackView)
         setConstrait()
+        
+        bgView.addGradientBackground(startColor: UIColor(named: "color_bg_f5_course_list_start")!,
+                                     endColor: UIColor(named: "color_bg_f5_course_list_end")!)
     }
     func setConstrait() {
         bgView.snp.makeConstraints { make in

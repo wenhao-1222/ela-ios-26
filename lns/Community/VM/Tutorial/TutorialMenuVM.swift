@@ -62,7 +62,7 @@ class TutorialMenuVM: UIView {
     }()
     lazy var lineBottomView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F5F6F8")
+        vi.backgroundColor = .COLOR_LINE_F0_30//WHColor_16(colorStr: "F5F6F8")
         
         return vi
     }()

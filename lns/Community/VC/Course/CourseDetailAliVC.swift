@@ -257,8 +257,8 @@ extension CourseDetailAliVC{
     
     func initSkeleton() {
         view.isSkeletonable = true
-        self.detailVm.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .COLOR_LIGHT_GREY), animation: nil)
-        self.menuVm.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .COLOR_LIGHT_GREY), animation: nil)
+        self.detailVm.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .COLOR_BG_F5), animation: nil)
+//        self.menuVm.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .COLOR_BG_F5), animation: nil)
 //        self.tableView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .COLOR_LIGHT_GREY), animation: nil)
     }
     fileprivate func layoutPortrait(videoHeight: CGFloat) {

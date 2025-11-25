@@ -20,6 +20,8 @@ enum SCENARIO_TYPE {
     case guide_view
     ///开屏页
     case launch_view
+    ///教程列表页面--点击立即购买  2025年11月25日14:19
+    case course_list_buy_action
     ///教程下单  页面
     case course_create_order_page_view
     ///教程下单
@@ -114,6 +116,8 @@ class EventLogUtils {
             return "开屏页"
         case .course_create_order:
             return "教程下单"
+        case .course_list_buy_action:
+            return "教程详情页开始课程"
         case .course_create_order_page_view:
             return "教程确认订单页"
         case .course_create_order_protocal:
@@ -128,8 +132,6 @@ class EventLogUtils {
             return "教程详情页"
         case .course_detail_video_desc:
             return "教程详情页视频介绍"
-            
-            
         case .course_detail_duration:
             return "教程详情页停留时间"
         case .mall_create_order:

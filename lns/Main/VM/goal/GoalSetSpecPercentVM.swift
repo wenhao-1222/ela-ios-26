@@ -26,7 +26,7 @@ class GoalSetSpecPercentVM: UIView {
     var dataIsChanged = false
     
     override init(frame:CGRect){
-        super.init(frame: CGRect.init(x: kFitWidth(0), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(56), height: selfHeight))
+        super.init(frame: CGRect.init(x: kFitWidth(12), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(56), height: selfHeight))
         self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         

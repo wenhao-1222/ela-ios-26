@@ -15,7 +15,7 @@ class JournalShareVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .THEME//UIColor(named: "color_bg_theme_share")//.THEME
+        self.backgroundColor = UIColor(named: "color_bg_theme_share")//.THEME
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -52,14 +52,10 @@ class JournalShareVM: UIView {
     }()
     lazy var msgVm: JournalShareMsgVM = {
         let vm = JournalShareMsgVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
-//        vm.bgWhiteView.backgroundColor = .white
-//        let vm = JournalShareMsgVM.init(frame: CGRect.init(x: 0, y: self.receiptVm.frame.minY+kFitWidth(13), width: 0, height: 0))
-//        vm.caloriesVm.updateUI(dict: self.detailsDict)
-//        vm.naturalVm.updateUI(dict: self.detailsDict)
+        
         return vm
     }()
     lazy var dashVm: JournalShareMsgDashVM = {
-//        let vm = JournalShareMsgDashVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
         let vm = JournalShareMsgDashVM.init(frame: CGRect.init(x: 0, y: self.msgVm.frame.maxY, width: 0, height: 0))
         return vm
     }()

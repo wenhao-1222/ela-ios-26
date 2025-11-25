@@ -13,6 +13,16 @@ class JournalShareSaveFooterVM: UIView {
     var linePath = UIBezierPath()
     var circleRadius = kFitWidth(4.5)
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        if traitCollection.userInterfaceStyle == .dark{
+            lineLayer.strokeColor = UIColor.COLOR_BG_WHITE.cgColor // 弧线颜色
+            lineLayer.fillColor = UIColor.COLOR_BG_WHITE.cgColor // 填充色
+        }else{
+            lineLayer.strokeColor = UIColor.THEME.cgColor // 弧线颜色
+            lineLayer.fillColor = UIColor.THEME.cgColor // 填充色
+        }
+    }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: frame.size.height))
         self.backgroundColor = .clear
@@ -51,8 +61,14 @@ extension JournalShareSaveFooterVM{
         whiteView.layer.addSublayer(lineLayer)
         
         lineLayer.allowsEdgeAntialiasing = true
-                lineLayer.strokeColor = UIColor.THEME.cgColor // 弧线颜色
-                lineLayer.fillColor = UIColor.THEME.cgColor // 填充色
+        
+        if traitCollection.userInterfaceStyle == .dark{
+            lineLayer.strokeColor = UIColor.COLOR_BG_WHITE.cgColor // 弧线颜色
+            lineLayer.fillColor = UIColor.COLOR_BG_WHITE.cgColor // 填充色
+        }else{
+            lineLayer.strokeColor = UIColor.THEME.cgColor // 弧线颜色
+            lineLayer.fillColor = UIColor.THEME.cgColor // 填充色
+        }
         
         lineLayer.lineWidth = kFitWidth(0.5) // 线宽
     }

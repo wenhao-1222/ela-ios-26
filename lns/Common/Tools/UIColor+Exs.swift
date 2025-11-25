@@ -65,6 +65,7 @@ extension UIColor {
     
     
     public static let COLOR_LINE_F0                       = UIColor(named: "color_line_f0")!
+    public static let COLOR_LINE_F0_30                    = UIColor(named: "color_line_f0_30")!
     
 }
 

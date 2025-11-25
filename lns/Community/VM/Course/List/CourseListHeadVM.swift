@@ -70,7 +70,7 @@ class CourseListHeadVM : UIView{
     }()
     lazy var bottomWhiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = UIColor(named: "color_bg_f5_course_list_start")!//.COLOR_BG_F5
         vi.isUserInteractionEnabled = true
 //        vi.isSkeletonable = true
         vi.layer.cornerRadius = kFitWidth(13)
