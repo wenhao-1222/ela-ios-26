@@ -85,7 +85,6 @@ class AppearanceOptionsAlertVM: UIView {
                 UIUserInterfaceStyle.light,
                 UIUserInterfaceStyle.dark]
     }()
-    
 }
 
 extension AppearanceOptionsAlertVM{

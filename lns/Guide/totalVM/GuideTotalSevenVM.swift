@@ -316,14 +316,23 @@ extension GuideTotalSevenVM {
 
         dashLineLayer.path = path.cgPath
         
-        let currentStart = CGPoint(x: todayEatLabel.frame.minX-kFitWidth(3),
-                            y: todayEatLabel.frame.minY+kFitWidth(10))
-        let currentEnd = CGPoint(x: caloriesCircleVm.frame.maxX-kFitWidth(12) ,
-                          y: todayEatLabel.frame.maxY + kFitWidth(4))
+//        let currentStart = CGPoint(x: todayEatLabel.frame.minX-kFitWidth(3),
+//                            y: todayEatLabel.frame.minY+kFitWidth(10))
+//        let currentEnd = CGPoint(x: caloriesCircleVm.frame.maxX-kFitWidth(12) ,
+//                          y: todayEatLabel.frame.maxY + kFitWidth(4))
         
+        let currentStart = CGPoint(x: kFitWidth(120),
+                            y: kFitWidth(63))
+        let currentEnd = CGPoint(x: caloriesCircleVm.frame.maxX-kFitWidth(12) ,
+                          y: kFitWidth(81))
         let controlPoint1 = CGPoint.init(x: currentEnd.x + (currentStart.x - currentEnd.x)*0.6,
                                          y: currentEnd.y + kFitWidth(3))
-        
+//        todayEatLabel.snp.makeConstraints { make in
+//            make.left.equalTo(kFitWidth(123))
+//            make.top.equalTo(kFitWidth(53))
+//            make.width.equalTo(kFitWidth(78))
+//            make.height.equalTo(kFitWidth(25))
+//        }
         let currentPath = UIBezierPath()
         currentPath.move(to: currentStart)
         currentPath.addQuadCurve(to: currentEnd, controlPoint: controlPoint1)
@@ -337,10 +346,14 @@ extension GuideTotalSevenVM {
         currentArrowPath.close()
         currentArrowLayer.path = currentArrowPath.cgPath
         
-        let goalStart = CGPoint(x: goalLabel.frame.minX-kFitWidth(3),
-                                y: goalLabel.frame.midY)
+//        let goalStart = CGPoint(x: goalLabel.frame.minX-kFitWidth(3),
+//                                y: goalLabel.frame.midY)
+//        let goalEnd = CGPoint(x: caloriesCircleVm.frame.maxX-kFitWidth(12) ,
+//                              y: goalLabel.frame.minY + kFitWidth(5))
+        let goalStart = CGPoint(x: kFitWidth(120),
+                                y: kFitWidth(112))
         let goalEnd = CGPoint(x: caloriesCircleVm.frame.maxX-kFitWidth(12) ,
-                              y: goalLabel.frame.minY + kFitWidth(5))
+                              y: kFitWidth(104))
         
         let goalPath = UIBezierPath()
         goalPath.move(to: goalStart)
