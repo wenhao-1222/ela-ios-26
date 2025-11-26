@@ -15,6 +15,28 @@ class NotifiAuthoriAlertVM: UIView {
     var controller = WHBaseViewVC()
     var acceptBlock:(()->())?
     
+    
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
@@ -93,7 +115,7 @@ class NotifiAuthoriAlertVM: UIView {
     lazy var negativeButton: FeedBackButton = {
         let btn = FeedBackButton()
         btn.setTitle("不", for: .normal)
-        btn.backgroundColor = .white
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
         btn.layer.cornerRadius = kFitWidth(22)
@@ -138,7 +160,7 @@ extension NotifiAuthoriAlertVM{
                        options: [.curveEaseOut, .allowUserInteraction]) {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
 //            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: (SCREEN_HEIGHT-self.whiteViewHeight*0.5+kFitWidth(14)))
-            self.bgView.alpha = 0.25
+            self.bgView.alpha = self.targetDimAlpha//0.25
         } completion: { _ in
             self.bgView.isUserInteractionEnabled = true
             
@@ -150,18 +172,10 @@ extension NotifiAuthoriAlertVM{
     @objc func hiddenView() {
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: self.whiteViewHeight)
-//            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
             self.bgView.alpha = 0
         } completion: { _ in
             self.isHidden = true
         }
-//        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-//            self.alpha = 0
-//            self.whiteView.alpha = 0.7
-//            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
-//        }completion: { t in
-//            self.isHidden = true
-//        }
     }
     
     
