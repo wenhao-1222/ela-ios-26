@@ -1,0 +1,17 @@
+# Xcode user data (should always be ignored)
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+
+# Xcode workspace user data
+*.xcworkspace/xcuserdata/
+
+# Derived data (build products)
+DerivedData/
+
+# User-specific settings
+*.moved-aside
+*.xcuserstate
+
+# macOS system files
+.DS_Store
