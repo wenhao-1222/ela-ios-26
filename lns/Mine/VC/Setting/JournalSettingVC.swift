@@ -43,8 +43,9 @@ class JournalSettingVC: WHBaseViewVC {
         vm.leftLabel.text = "深色模式"
         vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
         vm.detailLabel.text = appearanceDetailText(style: UserConfigModel.shared.overrideUserInterfaceStyle)
-        vm.tapBlock = { [weak self] in
-            self?.showAppearanceOptions()
+        vm.tapBlock = {() in
+//            self?.showAppearanceOptions()
+            self.appearanceAlert.showSelf()
         }
         return vm
     }()
@@ -325,6 +326,23 @@ class JournalSettingVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var appearanceAlert: AppearanceOptionsAlertVM = {
+        let vm = AppearanceOptionsAlertVM.init(frame: .zero)
+        vm.confirmBlock = {[weak self] (type)in
+            DLLog(message: "AppearanceOptionsAlertVM:\(type)")
+            if type == 2{
+//                UserConfigModel.shared.overrideUserInterfaceStyle = .light
+                self?.applyInterfaceStyle(.light)
+            }else if type == 3{
+//                UserConfigModel.shared.overrideUserInterfaceStyle = .dark
+                self?.applyInterfaceStyle(.dark)
+            }else {
+//                UserConfigModel.shared.overrideUserInterfaceStyle = .unspecified
+                self?.applyInterfaceStyle(.unspecified)
+            }
+        }
+        return vm
+    }()
 }
 extension JournalSettingVC{
     private func appearanceDetailText(style: UIUserInterfaceStyle) -> String {
@@ -432,6 +450,7 @@ extension JournalSettingVC{
         
         view.addSubview(mealsAlertVm)
         view.addSubview(weightUnitAlertVM)
+        view.addSubview(appearanceAlert)
         scrollViewBase.contentSize = CGSize.init(width: 0, height: hiddenStatSportDataVm.frame.maxY + kFitWidth(20))
         
         guard HKHealthStore.isHealthDataAvailable() else {

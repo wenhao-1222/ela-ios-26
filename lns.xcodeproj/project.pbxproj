@@ -834,6 +834,7 @@
 		EC6D03852C6F483E00F33137 /* WidgetMsgModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D03842C6F483E00F33137 /* WidgetMsgModel.swift */; };
 		EC6D20ED2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D20EC2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift */; };
 		EC6E7D092C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E7D082C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift */; };
+		EC747D8B2ED69A1600F8D3D2 /* AppearanceOptionsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */; };
 		EC75B41E2C61F07300EA510D /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC75B41D2C61F07300EA510D /* HealthKitManager.swift */; };
 		EC768B4C2C8A4EE8006B98E5 /* ElaNaturalFiveMealsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC768B4B2C8A4EE8006B98E5 /* ElaNaturalFiveMealsWidget.swift */; };
 		EC768B4E2C8A4F13006B98E5 /* ElaNaturalFourMealsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC768B4D2C8A4F13006B98E5 /* ElaNaturalFourMealsWidget.swift */; };
@@ -2122,6 +2123,7 @@
 		EC6D03842C6F483E00F33137 /* WidgetMsgModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetMsgModel.swift; sourceTree = "<group>"; };
 		EC6D20EC2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideFoodsListAlertVM.swift; sourceTree = "<group>"; };
 		EC6E7D082C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewQuestionnaireNoSexVC.swift; sourceTree = "<group>"; };
+		EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceOptionsAlertVM.swift; sourceTree = "<group>"; };
 		EC75B41D2C61F07300EA510D /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		EC768B4B2C8A4EE8006B98E5 /* ElaNaturalFiveMealsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalFiveMealsWidget.swift; sourceTree = "<group>"; };
 		EC768B4D2C8A4F13006B98E5 /* ElaNaturalFourMealsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalFourMealsWidget.swift; sourceTree = "<group>"; };
@@ -4455,6 +4457,7 @@
 				A798F5342CA10ECB00B8327E /* SwitchButton.swift */,
 				A798F5382CA1316C00B8327E /* LogsMealsSetAlertVM.swift */,
 				A75F431E2CA7A65F0062E7B2 /* BodyDataWeightUnitSetAlertVM.swift */,
+				EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */,
 				A7D3B2182CBE50A30016B2B5 /* LogsMealsAlertSetTableViewCell.swift */,
 				A7881ECD2CC23010008F4390 /* LogsMealsAlertSetFootVM.swift */,
 				A7D3B21A2CBE5CF50016B2B5 /* LogsMealsAlertSetPopVM.swift */,
@@ -6284,6 +6287,7 @@
 				A735A7772D5DDA7C006CE140 /* HeroBrowser.swift in Sources */,
 				A735A7782D5DDA7C006CE140 /* HeroBrowserNetworkImageViewModule.swift in Sources */,
 				A735A7932D5DDC15006CE140 /* HeroNetworkImageProvider.swift in Sources */,
+				EC747D8B2ED69A1600F8D3D2 /* AppearanceOptionsAlertVM.swift in Sources */,
 				A735A7792D5DDA7C006CE140 /* HeroBrowserNetworkImageCell.swift in Sources */,
 				A735A77A2D5DDA7C006CE140 /* HeroBrowserVideoViewModule.swift in Sources */,
 				A7BAAC212E2F9053002CE2D1 /* CourseOrderListTypeVM.swift in Sources */,
