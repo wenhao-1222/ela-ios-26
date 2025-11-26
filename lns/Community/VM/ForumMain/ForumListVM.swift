@@ -86,6 +86,7 @@ class ForumListVM : UIView{
         vi.rowHeight = UITableView.automaticDimension
         vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         vi.register(ForumListTableViewCell.classForCoder(), forCellReuseIdentifier: "ForumListTableViewCell")
+
         vi.mj_header = CustomRefreshHeader.init(refreshingBlock: {
             // 如果当前有正在播放，则停止并清除 IndexPath
 //            ZFPlayerModel.shared.playerManager.pause()
@@ -105,29 +106,37 @@ class ForumListVM : UIView{
 //        vi.mj_footer = MJRefreshBackNormalFooter.init(refreshingBlock: {
 //
 //        })
+
         if #available(iOS 15.0, *) {
             vi.sectionHeaderTopPadding = 0
 //            UITableView.appearance().isPrefetchingEnabled = false
         }
-//        if #available(iOS 26.0, *) {
-//            vi.mj_header?.ignoredScrollViewContentInsetTop = WHUtils().getNavigationBarHeight()
-//        }
         if #available(iOS 26.0, *) {
-            let navigationHeight = WHUtils().getNavigationBarHeight() + kFitWidth(20)
-            var inset = vi.contentInset
-            if inset.top < navigationHeight {
-                inset.top = navigationHeight
-            }
-            vi.contentInset = inset
-            var indicatorInset = vi.scrollIndicatorInsets
-            if indicatorInset.top < navigationHeight {
-                indicatorInset.top = navigationHeight
-            }
-            vi.scrollIndicatorInsets = indicatorInset
-            if vi.contentOffset.y == 0 {
-                vi.setContentOffset(CGPoint(x: 0, y: -navigationHeight), animated: false)
-            }
+            let topBlank = WHUtils().getNavigationBarHeight() + kFitWidth(20)
+            let header = UIView(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: topBlank))
+            header.backgroundColor = .clear
+            vi.tableHeaderView = header
+    //        vi.contentInset.top = topBlank
+            vi.verticalScrollIndicatorInsets.top = topBlank
+            vi.mj_header?.ignoredScrollViewContentInsetTop = -topBlank//WHUtils().getNavigationBarHeight()
         }
+        
+//        if #available(iOS 26.0, *) {
+//            let navigationHeight = WHUtils().getNavigationBarHeight() + kFitWidth(20)
+//            var inset = vi.contentInset
+//            if inset.top < navigationHeight {
+//                inset.top = navigationHeight
+//            }
+//            vi.contentInset = inset
+//            var indicatorInset = vi.scrollIndicatorInsets
+//            if indicatorInset.top < navigationHeight {
+//                indicatorInset.top = navigationHeight
+//            }
+//            vi.scrollIndicatorInsets = indicatorInset
+//            if vi.contentOffset.y == 0 {
+//                vi.setContentOffset(CGPoint(x: 0, y: -navigationHeight), animated: false)
+//            }
+//        }
         vi.reloadCompletion = {()in
 //            self.tableView.zf_filterShouldPlayCellWhileScrolling()
         }
@@ -180,6 +189,11 @@ extension ForumListVM{
         if isFirstLoad {
             isFirstLoad = false
             self.tableView.mj_header?.beginRefreshingWithoutAnimation()
+//            if #available(iOS 26.0, *) {
+//                self.tableView.mj_header?.beginRefreshing()
+//            } else {
+//                self.tableView.mj_header?.beginRefreshingWithoutAnimation()
+//            }
         }
     }
     func showSelf() {

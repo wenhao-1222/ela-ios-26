@@ -40,7 +40,7 @@ class JournalSettingVC: WHBaseViewVC {
     }()
     lazy var appearanceModeVm : MaterialItemVM = {
         let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.appearanceTitleLabel.frame.maxY, width: 0, height: 0))
-        vm.leftLabel.text = "深色模式"
+        vm.leftLabel.text = "外观"
         vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
         vm.detailLabel.text = appearanceDetailText(style: UserConfigModel.shared.overrideUserInterfaceStyle)
         vm.tapBlock = {() in
