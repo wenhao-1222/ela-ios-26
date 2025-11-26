@@ -56,7 +56,7 @@ class AppearanceOptionsAlertVM: UIView {
     }()
     lazy var titleLab: UILabel = {
         let lab = UILabel()
-        lab.text = "请选择深色模式"
+        lab.text = "请选择外观"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         return lab
