@@ -17,9 +17,25 @@ class AIFailAlertVM: UIView {
     var retryBlock:(()->())?
     var hiddenBlock:(()->())?
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+        self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0)
         self.isUserInteractionEnabled = true
         self.clipsToBounds = false
         self.isHidden = true
@@ -35,18 +51,21 @@ class AIFailAlertVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private lazy var bgView: UIView = {
+        let v = UIView(frame: bounds)
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.alpha = 0
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
+        v.addGestureRecognizer(tap)
+        return v
+    }()
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: kFitWidth(67) + SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
-        
-        // 创建下拉手势识别器
-//        let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
-//        
-//        // 将手势识别器添加到view
-//        vi.addGestureRecognizer(panGestureRecognizer)
         
         let tap = UITapGestureRecognizer.init(target: self, action:#selector(nothingToDo))
         vi.addGestureRecognizer(tap)
@@ -61,7 +80,7 @@ class AIFailAlertVM: UIView {
     }()
     lazy var failTitleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .medium)
         lab.text = "识别失败"
         return lab
@@ -70,14 +89,14 @@ class AIFailAlertVM: UIView {
         let lab = UILabel()
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
     }()
     lazy var failContentLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.text = "图片中不存在可使用的食物"
         lab.numberOfLines = 0
@@ -87,20 +106,20 @@ class AIFailAlertVM: UIView {
     }()
     lazy var bottomFuncVm: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: whiteViewHeight-kFitWidth(55)-WHUtils().getBottomSafeAreaHeight()-kFitWidth(16), width: SCREEN_WIDHT, height: kFitWidth(55)+WHUtils().getBottomSafeAreaHeight()))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi
     }()
     lazy var cancelBtn: UIButton = {
         let btn = UIButton()
-        btn.layer.borderColor = UIColor.COLOR_GRAY_BLACK_85.cgColor
+        btn.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214.cgColor
         btn.layer.borderWidth = kFitWidth(1)
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
         btn.setTitle("取消", for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         
         btn.addTarget(self, action: #selector(cancelAction), for: .touchUpInside)
         return btn
@@ -135,16 +154,20 @@ extension AIFailAlertVM{
     }
     @objc func showView() {
         self.isHidden = false
+        self.bgView.alpha = 0
+
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.whiteViewOriginY+self.whiteViewHeight*0.5)
-            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+            self.bgView.alpha = self.targetDimAlpha
+//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         }
    }
    @objc func hiddenView() {
        self.hiddenBlock?()
        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
-           self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+//           self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+           self.bgView.alpha = 0
        }completion: { t in
            self.isHidden = true
        }
@@ -186,6 +209,7 @@ extension AIFailAlertVM{
 }
 extension AIFailAlertVM{
     func initUI() {
+        addSubview(bgView)
         addSubview(whiteView)
         whiteView.addSubview(failImgView)
         whiteView.addSubview(failTitleLabel)

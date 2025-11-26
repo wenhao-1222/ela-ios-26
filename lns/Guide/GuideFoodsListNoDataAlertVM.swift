@@ -52,7 +52,7 @@ class GuideFoodsListNoDataAlertVM: UIView {
 //        btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
         btn.setTitle("创建食物", for: .normal)
-        btn.backgroundColor = .white
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.setImage(UIImage(named: "foods_create_icon_normal"), for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
@@ -70,7 +70,7 @@ class GuideFoodsListNoDataAlertVM: UIView {
         let lab = UILabel()
         lab.text = "如果未找到所需食物，可通过“创建食物”功能自行添加。"
         lab.font = .systemFont(ofSize: 14)
-        lab.textColor = .white
+        lab.textColor = .COLOR_CARD_BG_WHITE
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         
@@ -79,7 +79,7 @@ class GuideFoodsListNoDataAlertVM: UIView {
     lazy var bottomeTipsLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-WHUtils().getTabbarHeight()-kFitWidth(40), width: SCREEN_WIDHT, height: kFitWidth(20)))
         lab.text = "点击任意位置可关闭"
-        lab.textColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.5)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.5)
         lab.font = .systemFont(ofSize: 10)
         lab.textAlignment = .center
     
@@ -173,13 +173,13 @@ extension GuideFoodsListNoDataAlertVM{
         self.layer.addSublayer(lineLayer)
         self.layer.addSublayer(lineLayerTrangle)
         
-        lineLayer.strokeColor = UIColor.white.cgColor
+        lineLayer.strokeColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
         lineLayer.fillColor = nil
         lineLayer.lineWidth = kFitWidth(1) // 线宽
         lineLayer.lineDashPattern = [5,2]
         
-        lineLayerTrangle.strokeColor = UIColor.white.cgColor
-        lineLayerTrangle.fillColor = UIColor.white.cgColor
+        lineLayerTrangle.strokeColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
+        lineLayerTrangle.fillColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
         lineLayerTrangle.lineWidth = kFitWidth(0.2) // 线宽
     }
     

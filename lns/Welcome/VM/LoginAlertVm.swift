@@ -17,6 +17,23 @@ class LoginAlertVm: UIView {
     var appleLoginBlock:(()->())?
     var phoneLoginBlock:(()->())?
     
+    
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0)
@@ -35,7 +52,7 @@ class LoginAlertVm: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = .COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenLoginView))
         v.addGestureRecognizer(tap)
@@ -45,7 +62,7 @@ class LoginAlertVm: UIView {
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(nothingTodoAction))
         vi.addGestureRecognizer(tap)
@@ -203,7 +220,7 @@ extension LoginAlertVm{
                         initialSpringVelocity: 0.1,
                         options: [.curveEaseOut, .allowUserInteraction]) {
              self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
-             self.bgView.alpha = 0.25
+             self.bgView.alpha = self.targetDimAlpha//0.25
          } completion: { _ in
              self.bgView.isUserInteractionEnabled = true
              
@@ -217,6 +234,9 @@ extension LoginAlertVm{
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: self.whiteViewHeight)
             self.bgView.alpha = 0
         } completion: { _ in
+            self.whiteView.transform = .identity
+            self.layoutWhiteViewFrame()  // 重新设置 frame.y = SCREEN_HEIGHT - whiteViewHeight
+            self.whiteViewOriginY = self.whiteView.frame.minY  // 同步 originY
             self.isHidden = true
         }
    }
