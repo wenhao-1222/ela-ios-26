@@ -35,7 +35,7 @@ class ForumListButton : UIView{
     lazy var contentLab: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 12, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.adjustsFontSizeToFitWidth = true
         
         return lab

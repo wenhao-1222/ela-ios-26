@@ -34,7 +34,6 @@ class LogsNaturalGoalCircleVM: UIView {
     private var arcPathFill = UIBezierPath()
     private var arcPathFillShadow = UIBezierPath()
     
-    
     var percentSport = 0.0
     var sportPath = UIBezierPath()
     let sportLayer = CAShapeLayer()
@@ -111,6 +110,7 @@ class LogsNaturalGoalCircleVM: UIView {
 
 extension LogsNaturalGoalCircleVM{
     override func draw(_ rect: CGRect) {
+        naturalShapeLayerBottom.strokeColor = UIColor.COLOR_BG_BLACK_06.cgColor // 弧线颜色
         drawCircleByPath()
     }
     //MARK: 纯路径绘制圆环
@@ -253,7 +253,7 @@ extension LogsNaturalGoalCircleVM{
         self.layer.addSublayer(shapeLayerFill)
         self.layer.addSublayer(shapeLayerFillShadow)
         
-        naturalShapeLayerBottom.strokeColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06).cgColor // 弧线颜色
+        naturalShapeLayerBottom.strokeColor = UIColor.COLOR_BG_BLACK_06.cgColor // 弧线颜色
         naturalShapeLayerBottom.fillColor = nil // 无填充色
         naturalShapeLayerBottom.lineWidth = kFitWidth(4) // 线宽
         
@@ -280,17 +280,12 @@ extension LogsNaturalGoalCircleVM{
     }
     
     func updateTotalNumber(text: String) {
-        if text == "/0g" {return}
+//        if text == "/0g" {
+//            return
+//        }
         guard totalNumberLabel.text != text || totalNumberLabel.isHidden else { return }
         DLLog(message: "updateTotalNumber:\(totalNumberLabel.text ?? "") --- \(text)")
         totalNumberLabel.text = text
-
-//        if totalNumberLabel.isHidden {
-//            totalNumberLabel.isHidden = false
-//            UIView.animate(withDuration: 0.2) {
-//                self.totalNumberLabel.alpha = 1
-//            }
-//        }
     }
     func setData(currentNumber:Int,totalNumber:Int) {
         self.currentNum = currentNumber

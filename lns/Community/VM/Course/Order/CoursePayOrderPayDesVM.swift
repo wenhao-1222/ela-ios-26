@@ -24,7 +24,7 @@ class CoursePayOrderPayDesVM : UIView{
     }
     lazy var topWhiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()
@@ -45,7 +45,8 @@ class CoursePayOrderPayDesVM : UIView{
     }()
     lazy var iconImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "tips_gray_icon_w")
+//        img.setImgLocal(imgName: "tips_gray_icon_w")
+        img.image = UIImage(named: "tips_gray_icon_w")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_60)
         img.isUserInteractionEnabled = true
         
         return img
@@ -67,7 +68,7 @@ class CoursePayOrderPayDesVM : UIView{
         let highlightText = "《课程购买协议》"
         let attributedString = NSMutableAttributedString(string: fullText)
 //        attributedString.yy_font = UIFont.systemFont(ofSize: 16)
-        attributedString.yy_color = UIColor.black
+        attributedString.yy_color = UIColor.COLOR_TEXT_TITLE_0f1214
 
         if let range = fullText.range(of: highlightText) {
             let nsRange = NSRange(range, in: fullText)

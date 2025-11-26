@@ -158,7 +158,7 @@ class ForumOfficialDetailVC: WHBaseViewVC {
         let vm = ForumCommentListTableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight()-kFitWidth(56)-WHUtils().getBottomSafeAreaHeight()), style: .plain)
         vm.delegate = self
         vm.dataSource = self
-        vm.backgroundColor = .white
+        vm.backgroundColor = .COLOR_CARD_BG_WHITE
         vm.separatorStyle = .none
         vm.bounces = false
         vm.register(ForumOfficialTextCell.classForCoder(), forCellReuseIdentifier: "ForumOfficialTextCell")
@@ -317,7 +317,7 @@ class ForumOfficialDetailVC: WHBaseViewVC {
         let vm = ForumCommentListVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: commenListHeight))
         vm.model = self.model
         vm.controller = self
-        vm.backgroundColor = .white
+        vm.backgroundColor = .COLOR_CARD_BG_WHITE
         if self.commentId.count > 0 || self.replyId.count > 0{
             vm.isFromNewsVC = true
             vm.commentId = self.commentId
@@ -459,11 +459,11 @@ class ForumOfficialDetailVC: WHBaseViewVC {
         let lab = UILabel.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(80)))
         lab.text = ""
         lab.backgroundColor = .clear//WHColor_ARC()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.textAlignment = .center
-        lab.layer.borderColor = UIColor.white.cgColor
-        lab.layer.borderWidth = kFitWidth(2)
+//        lab.layer.borderColor = UIColor.COLOR_BG_WHITE.cgColor
+//        lab.layer.borderWidth = kFitWidth(2)
         
         return lab
     }()
@@ -490,7 +490,7 @@ extension ForumOfficialDetailVC{
             bottomFuncVm.thumbsUpButton.setTitleColor(WHColor_16(colorStr: "F5BA18"), for: .normal)
         }else{
             bottomFuncVm.thumbsUpButton.setImage(UIImage(named: "forum_thumbs_up_max"), for: .normal)
-            bottomFuncVm.thumbsUpButton.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
+            bottomFuncVm.thumbsUpButton.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         }
     }
     func updateCommentCount() {
@@ -684,7 +684,7 @@ extension ForumOfficialDetailVC:UITableViewDataSource,UITableViewDelegate{
             }
             self.tableViewisLoad = true
             DLLog(message: "tableViewisLoad:\(tableViewisLoad)")
-            return cell ?? PublishPollItemCell()
+            return cell ?? ForumOfficialPollCell()
         }
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -922,15 +922,21 @@ extension ForumOfficialDetailVC{
         view.addSubview(scrollViewBase)
         naviVm.updateUI(model: self.model)
         
-        view.backgroundColor = .white
+        view.backgroundColor = .COLOR_CARD_BG_WHITE
         scrollViewBase.delegate = self
-        scrollViewBase.backgroundColor = .white
+        scrollViewBase.backgroundColor = .COLOR_CARD_BG_WHITE
         if #available(iOS 17.4, *) {
             scrollViewBase.bouncesVertically = true
         }
         scrollViewBase.contentInsetAdjustmentBehavior = .never
         scrollViewBase.frame = CGRect.init(x: 0, y: getNavigationBarHeight()+kFitWidth(4), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-naviVm.selfHeight-bottomFuncVm.selfHeight-kFitWidth(5))
         addSubviews()
+        
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
+        commentListVm.layoutIfNeeded()
+        videoVm.layoutIfNeeded()
+        videoVm.controlView.layoutIfNeeded()
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.getKeyWindow().addSubview(self.shareAlertVm)
     }

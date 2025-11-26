@@ -30,7 +30,7 @@ class QuestionnairePlanFoodsSearchVM: UIView {
     }
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.layer.cornerRadius = kFitWidth(24)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
@@ -38,7 +38,8 @@ class QuestionnairePlanFoodsSearchVM: UIView {
     }()
     lazy var searchImgView : FeedBackUIImageView = {
         let img = FeedBackUIImageView()
-        img.setImgLocal(imgName: "seach_icon")
+//        img.setImgLocal(imgName: "seach_icon")
+        img.image = UIImage(named: "seach_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         img.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(searchTapAction))
@@ -50,7 +51,7 @@ class QuestionnairePlanFoodsSearchVM: UIView {
         let text = ChineseTextField()
         text.placeholder = "请输入想要搜索的食物"
         text.font = .systemFont(ofSize: 14, weight: .regular)
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.returnKeyType = .search
         text.delegate = self
         text.textContentType = nil

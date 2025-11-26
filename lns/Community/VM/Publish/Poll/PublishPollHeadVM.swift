@@ -13,7 +13,7 @@ class PublishPollHeadVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -25,13 +25,13 @@ class PublishPollHeadVM: UIView {
     lazy var numberLabel: UILabel = {
         let lab = UILabel()
         lab.text = "最多可选择"
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         return lab
     }()
     lazy var numberButton: GJVerButton = {
         let btn = GJVerButton()
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
         
         return btn
@@ -39,7 +39,7 @@ class PublishPollHeadVM: UIView {
     lazy var unitLabel: UILabel = {
         let lab = UILabel()
         lab.text = "项"
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         return lab
     }()

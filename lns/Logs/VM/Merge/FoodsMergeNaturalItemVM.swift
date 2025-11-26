@@ -12,7 +12,7 @@ class FoodsMergeNaturalItemVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: kFitWidth(170), height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -29,13 +29,13 @@ class FoodsMergeNaturalItemVM: UIView {
     }()
     lazy var itemTitleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         return lab
     }()
     lazy var weightLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.text = "0g"
         return lab

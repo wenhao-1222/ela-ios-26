@@ -24,18 +24,18 @@ class JournalShareTableViewCell: UITableViewCell {
     }
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = UIColor(named: "color_share_msg_bg")
         
         return vi
     }()
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = UIColor(named: "color_share_msg_bg")
         return vi
     }()
     lazy var foodsNameLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.textColor = WHColorWithAlpha(colorStr: "0f1214", alpha: 0.5)//.COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping
@@ -45,7 +45,7 @@ class JournalShareTableViewCell: UITableViewCell {
     
     lazy var qtyLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.textColor = WHColorWithAlpha(colorStr: "0f1214", alpha: 0.5)//.COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
         lab.textAlignment = .right

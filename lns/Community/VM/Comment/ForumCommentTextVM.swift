@@ -14,7 +14,7 @@ class ForumCommentTextVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: frame)
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.05)
+        self.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.05)
         self.isUserInteractionEnabled = true
         self.layer.cornerRadius = kFitWidth(18)
         self.clipsToBounds = true
@@ -38,7 +38,7 @@ class ForumCommentTextVM: UIView {
     lazy var placeHolderLabel: UILabel = {
         let lab = UILabel()
         lab.text = "说点什么..."
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.isUserInteractionEnabled = true
         
@@ -46,19 +46,6 @@ class ForumCommentTextVM: UIView {
     }()
     lazy var textField: UITextField = {
         let text = UITextField()
-        
-//        let image = UIImage(named: "logs_pen_icon")!
-//        let attachment = NSTextAttachment()
-//        attachment.image = image
-//        attachment.bounds = CGRect(x: 0, y: (UIFont.systemFont(ofSize: 16, weight: .medium).capHeight - image.size.height).rounded() / 2, width: image.size.width, height: image.size.height)
-//        let attachmentString = NSMutableAttributedString(attachment: attachment)
-//        
-//        let string = NSMutableAttributedString(string: "说点什么...")
-//        string.yy_color = .COLOR_GRAY_BLACK_45
-//        string.yy_font = .systemFont(ofSize: 14, weight: .medium)
-//        attachmentString.append(string)
-//        text.attributedPlaceholder = attachmentString
-        
         return text
     }()
 }
@@ -81,9 +68,17 @@ extension ForumCommentTextVM{
         attachment.bounds = CGRect(x: 0, y: (UIFont.systemFont(ofSize: 16, weight: .medium).capHeight - image.size.height).rounded() / 2, width: image.size.width, height: image.size.height)
         let attachmentString = NSMutableAttributedString(attachment: attachment)
         
-        let string = NSMutableAttributedString(string: placeString)
-        string.yy_color = .COLOR_GRAY_BLACK_45
-        string.yy_font = .systemFont(ofSize: 14, weight: .medium)
+//        let string = NSMutableAttributedString(string: placeString)
+//        string.yy_color = .COLOR_TEXT_TITLE_0f1214_50
+//        string.yy_font = .systemFont(ofSize: 14, weight: .medium)
+        
+//        let string = NSMutableAttributedString(string: placeString, attributes: [.foregroundColor:.COLOR_TEXT_TITLE_0f1214_50,
+//             .font:.systemFont(ofSize: 14, weight: .medium)])
+        let string = NSMutableAttributedString(
+            string: placeString,
+            attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                         .font: UIFont.systemFont(ofSize: 14, weight: .medium)]
+        )
         attachmentString.append(string)
         textField.attributedPlaceholder = attachmentString
     }

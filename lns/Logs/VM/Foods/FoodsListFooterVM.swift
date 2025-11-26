@@ -14,7 +14,7 @@ class FoodsListFooterVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -25,7 +25,7 @@ class FoodsListFooterVM: UIView {
     lazy var contentLabel: UILabel = {
         let lab = UILabel()
         lab.text = "- 已加载全部数据 -"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         return lab
     }()

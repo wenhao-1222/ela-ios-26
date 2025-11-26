@@ -29,15 +29,15 @@ class ForumNaviTypeVM : UIView{
     }
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         initUI()
     }
     lazy var leftTitleButton: UIButton = {
         let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5-btnWidth, y: selfHeight-kFitWidth(44), width: btnWidth, height: kFitWidth(44)))
 //        let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5-btnWidth*1.5, y: selfHeight-kFitWidth(44), width: btnWidth, height: kFitWidth(44)))
         btn.setTitle("课程", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .selected)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_60, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .selected)
         btn.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
         btn.isSelected = false
         
@@ -49,8 +49,10 @@ class ForumNaviTypeVM : UIView{
         let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5, y: selfHeight-kFitWidth(44), width: btnWidth, height: kFitWidth(44)))
 //        let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5-btnWidth*0.5, y: selfHeight-kFitWidth(44), width: btnWidth, height: kFitWidth(44)))
         btn.setTitle("发现", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .selected)
+//        btn.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
+//        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .selected)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_60, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .selected)
         btn.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
         btn.isSelected = true
         
@@ -60,8 +62,10 @@ class ForumNaviTypeVM : UIView{
     lazy var marketTitleButton: UIButton = {
         let btn = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5+btnWidth*0.5, y: selfHeight-kFitWidth(44), width: btnWidth, height: kFitWidth(44)))
         btn.setTitle("商品", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .selected)
+//        btn.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
+//        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .selected)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_60, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .selected)
         btn.titleLabel?.font = .systemFont(ofSize: 18, weight: .bold)
 //        btn.isSelected = true
         

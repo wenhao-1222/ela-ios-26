@@ -19,7 +19,7 @@ class PersonalTopFuncItemVM: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         self.clipsToBounds = true
         
@@ -74,7 +74,8 @@ class PersonalTopFuncItemVM: UIView {
     }()
     lazy var arrowImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "mine_func_arrow_icon")
+//        img.setImgLocal(imgName: "mine_func_arrow_icon")
+        img.setImgLocal(imgName: "plan_arrow_gray")
         img.isUserInteractionEnabled = true
         
         return img
@@ -158,7 +159,7 @@ extension PersonalTopFuncItemVM{
 //        UIView.animate(withDuration: 0.1) {
 //            self.transform = .identity
 //        }
-        changeBgColor(color: .COLOR_BG_WHITE)
+        changeBgColor(color: .COLOR_CARD_BG_WHITE)
         if let touch = touches.first, self.bounds.contains(touch.location(in: self)) {
 //            triggerImpact(UIImpactFeedbackGenerator(style: .medium), intensity: 0.9)
             tapAction()
@@ -167,7 +168,7 @@ extension PersonalTopFuncItemVM{
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
-        changeBgColor(color: .COLOR_BG_WHITE)
+        changeBgColor(color: .COLOR_CARD_BG_WHITE)
 //        UIView.animate(withDuration: 0.1) {
 //            self.transform = .identity
 //        }

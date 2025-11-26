@@ -21,14 +21,8 @@ class CancelAccountVC: WHBaseViewVC {
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
     
-//    override func viewWillDisappear(_ animated: Bool) {
-//        IQKeyboardManager.shared.enable = true
-////        IQKeyboardManager.shared.enableAutoToolbar = true
-//        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
-//    }
     override func viewDidDisappear(_ animated: Bool) {
         IQKeyboardManager.shared.enable = true
-//        IQKeyboardManager.shared.enableAutoToolbar = true
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
     
@@ -46,14 +40,14 @@ class CancelAccountVC: WHBaseViewVC {
     }()
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
+        vi.backgroundColor = .COLOR_LINE_F0//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         return vi
     }()
     lazy var tipsIcon: UIImageView = {
@@ -64,7 +58,7 @@ class CancelAccountVC: WHBaseViewVC {
     lazy var tipsLabel : UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 16, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.text = "请选择注销账号原因："
         
         return lab
@@ -72,7 +66,7 @@ class CancelAccountVC: WHBaseViewVC {
     lazy var remarkTitleLabel : UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 16, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.text = "问题描述："
         
         return lab
@@ -208,6 +202,8 @@ extension CancelAccountVC{
         setConstrait()
         
         initReasonViews()
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
     func setConstrait(){
         lineView.snp.makeConstraints { make in

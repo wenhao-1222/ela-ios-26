@@ -47,7 +47,7 @@ class LNSLoginVC : WHBaseViewVC {
         let lab = UILabel()
         lab.text = "注册并登录"
         lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.textColor = WHColor_16(colorStr: "262626")
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "262626")
         
         return lab
     }()
@@ -59,8 +59,6 @@ class LNSLoginVC : WHBaseViewVC {
     lazy var getCodeBtn : UIButton = {
         let btn = UIButton()
         btn.setTitle("获取验证码", for: .normal)
-//        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
-//        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME), for: .highlighted)
         btn.backgroundColor = .THEME
         btn.setTitleColor(.white, for: .normal)
         btn.layer.cornerRadius = kFitWidth(8)
@@ -74,17 +72,17 @@ class LNSLoginVC : WHBaseViewVC {
     }()
     lazy var orLeftLine : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         return vi
     }()
     lazy var orRightLine : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         return vi
     }()
     lazy var orLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.text = "或者"
         
@@ -95,10 +93,10 @@ class LNSLoginVC : WHBaseViewVC {
         btn.setTitle("使用微信账户继续登录", for: .normal)
         btn.setImage(UIImage.init(named: "login_wechat_icon"), for: .normal)
         btn.addShadow()
-        btn.backgroundColor = .white
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.layer.cornerRadius = kFitWidth(8)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         
         btn.addTarget(self, action: #selector(wechatLoginAction), for: .touchUpInside)
         if WXApi.isWXAppInstalled() == false{
@@ -109,12 +107,12 @@ class LNSLoginVC : WHBaseViewVC {
     lazy var appleLoginBtn : GJVerButton = {
         let btn = GJVerButton()
         btn.setTitle("使用 Apple 账户继续登录", for: .normal)
-        btn.setImage(UIImage.init(named: "login_apple_icon"), for: .normal)
+        btn.setImage(UIImage.init(named: "login_apple_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
         btn.addShadow()
-        btn.backgroundColor = .white
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.layer.cornerRadius = kFitWidth(8)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         
         btn.addTarget(self, action: #selector(appleLoginAction), for: .touchUpInside)
         
@@ -124,7 +122,7 @@ class LNSLoginVC : WHBaseViewVC {
         let lab = UILabel()
         lab.text = "未经你的同意，我们绝不会公开任何信息"
         lab.font = .systemFont(ofSize: 12, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         
         return lab
     }()

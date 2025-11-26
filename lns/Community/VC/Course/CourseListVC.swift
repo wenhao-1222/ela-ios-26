@@ -51,13 +51,16 @@ class CourseListVC: WHBaseViewVC {
     }
     
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 12.0, *),
+           previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            changeNaviAlpha(offsetY: tableView.contentOffset.y)
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        AlivcBase.environmentManager.setGlobalEnvironment(AlivcGlobalEnv.SEA)
-//        AliPrivateService.initLicense()
-//        AliPlayer.setEnableLog(true)
-//        AliPlayer.setLogCallbackInfo(LOG_LEVEL_TRACE, callbackBlock: nil)
         NetworkCountryDetector.isChinaMainlandByPublicIP { isCN in
             if isCN == true{
                 DLLog(message: "中国大陆")
@@ -81,9 +84,6 @@ class CourseListVC: WHBaseViewVC {
                                             text: "\(self.parentDict.stringValueForKey(key: "id"))")
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshStatus), name: NOTIFI_NAME_REFRESH_COURSE_STATUS, object: nil)
-//        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
-//            self.sendDataListReqeust()
-//        })
         
         if let nav = navigationController {
             var controllers = nav.viewControllers
@@ -106,10 +106,7 @@ class CourseListVC: WHBaseViewVC {
         var vmHeight = kFitHeight(30)
         let coverHeight = 770.0/750.0 * SCREEN_WIDHT
         vmHeight += coverHeight
-//        if coverInfoDict.doubleValueForKey(key: "height") > 0 && coverInfoDict.doubleValueForKey(key: "width") > 0{
-//            let coverHeight = coverInfoDict.doubleValueForKey(key: "height")/coverInfoDict.doubleValueForKey(key: "width") * SCREEN_WIDHT
-//            vmHeight += coverHeight
-//        }
+        
         let vm = CourseListHeadVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: vmHeight))
         
         vm.videoPlayBlock = {[weak self] in
@@ -167,7 +164,7 @@ class CourseListVC: WHBaseViewVC {
         vi.dataSource = self
         vi.estimatedRowHeight = kFitWidth(140)
 //        vi.backgroundColor = WHColor_16(colorStr: "044EF4")
-        vi.register(CourseTiTleCell.classForCoder(), forCellReuseIdentifier: "CourseTiTleCell")
+        vi.register(CourseTitleCell.classForCoder(), forCellReuseIdentifier: "CourseTitleCell")
         vi.register(CourseItemCell.classForCoder(), forCellReuseIdentifier: "CourseItemCell")
         vi.register(CoursePDFCell.classForCoder(), forCellReuseIdentifier: "CoursePDFCell")
         vi.contentInsetAdjustmentBehavior = .never
@@ -226,11 +223,12 @@ class CourseListVC: WHBaseViewVC {
     }()
     lazy var buyButton: UIButton = {
         let btn = UIButton()
-        btn.setTitle("开始课程", for: .normal)
+        btn.setTitle("立即购买", for: .normal)
+//        btn.setTitle("开始课程", for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
-        btn.setTitleColor(.COLOR_BG_WHITE, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         
 //        btn.addTarget(self, action: #selector(buyButtonTouchDown), for: .touchDown)
@@ -252,7 +250,7 @@ class CourseListVC: WHBaseViewVC {
 }
 
 extension CourseListVC{
-    @objc func buyButtonTouchUpInside() {
+    @objc func buyButtonTouchUpInside(isTapCell:Bool=false) {
         if self.headMsgDict.stringValueForKey(key: "isPaid") == "1"{//已购买
             if self.headMsgDict.stringValueForKey(key: "bindingDeviceId").count > 0 {//已绑定
                 if self.headMsgDict.stringValueForKey(key: "isBinding") == "0"{//不是绑定的本设备
@@ -264,12 +262,12 @@ extension CourseListVC{
                                 let v = CourseChangeDeviceVC()
                                 v.orderId = self.headMsgDict.stringValueForKey(key: "orderId")
                                 self.navigationController?.pushViewController(v, animated: true)
-//                                let vc = CourseOrderListVC()
-//                                //                    vc.orderId = self.headMsgDict.stringValueForKey(key: "orderId")
-//                                self.navigationController?.pushViewController(vc, animated: true)
                             }
                         }, viewController: self)
                     }else{//没有换绑次数，执行购买逻辑
+                        EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
+                                                            scenarioType: .course_list_buy_action,
+                                                            text: "\(self.parentDict.stringValueForKey(key: "id"))")
                         let vc = CoursePayOrderVC()
                         vc.msgDict = self.headMsgDict
                         vc.parentId = self.parentDict.stringValueForKey(key: "id")
@@ -287,7 +285,10 @@ extension CourseListVC{
                 firstPlayTipsAlertVm.showView()
                 self.lastMsgVm.closeAction()
             }
-        }else{//未购买
+        }else if isTapCell == false{//未购买 ，而且不是点击的课程列表 （2025年11月25日13:56:10）
+            EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
+                                                scenarioType: .course_list_buy_action,
+                                                text: "\(self.parentDict.stringValueForKey(key: "id"))")
             let vc = CoursePayOrderVC()
             vc.msgDict = self.headMsgDict
             vc.parentId = self.parentDict.stringValueForKey(key: "id")
@@ -348,10 +349,12 @@ extension CourseListVC{
 //        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
             self.listHeadVm.updateUI(dict: self.headMsgDict)
 //        })
-        
+        changeNaviAlpha(offsetY: 0)
         view.insertSubview(firstPlayTipsAlertVm, at: 999)
         
         initSkeletonData()
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
         
         shareButton.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-12))
@@ -381,12 +384,28 @@ extension CourseListVC{
     func changeNaviAlpha(offsetY:CGFloat) {
         var percent = (offsetY - self.listHeadVm.selfHeight + getNavigationBarHeight()*2) / getNavigationBarHeight()
         percent = min(max(percent, 0), 1)
+        navigationView.backgroundColor = UIColor.COLOR_BG_WHITE.withAlphaComponent(percent)//currentNavigationBackgroundColor(alpha: percent)
+       let arrowColor: UIColor
+       if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+           arrowColor = .white
+       } else {
+           let colorValue = 1 - percent
+           arrowColor = UIColor(red: colorValue, green: colorValue, blue: colorValue, alpha: 1)
+       }
 
-        navigationView.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: percent)
-        let colorValue = 1 - percent
-        let arrowColor = UIColor(red: colorValue, green: colorValue, blue: colorValue, alpha: 1)
         self.backArrowButton.backImgView.image = backImg?.WHImageWithTintColor(color: arrowColor)
         self.shareButton.setImage(shareImg?.WHImageWithTintColor(color: arrowColor), for: .normal)
+    }
+    
+    private func currentNavigationBackgroundColor(alpha: CGFloat) -> UIColor {
+        let baseColor: UIColor
+//        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+//            baseColor = .COLOR_BG_BLACK
+//        } else {
+            baseColor = .COLOR_BG_WHITE
+//        }
+
+        return baseColor.withAlphaComponent(alpha)
     }
 }
 
@@ -412,11 +431,11 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "CourseTiTleCell") as? CourseTiTleCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "CourseTitleCell") as? CourseTitleCell
             
             cell?.updateUI(dict: self.headMsgDict,isPaid: self.isPaid)
             
-            return cell ?? CourseTiTleCell()
+            return cell ?? CourseTitleCell()
         }else{
             if hasPdf && indexPath.section == self.dataSourceArray.count + 1{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "CoursePDFCell") as? CoursePDFCell
@@ -468,7 +487,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
             if self.headMsgDict.doubleValueForKey(key: "price") == 0{
 
             }else{
-                self.buyButtonTouchUpInside()
+                self.buyButtonTouchUpInside(isTapCell: true)
                 return
             }
         }
@@ -484,7 +503,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
             if self.headMsgDict.doubleValueForKey(key: "price") == 0{
                 self.playVideo()
             }else{
-                self.buyButtonTouchUpInside()
+                self.buyButtonTouchUpInside(isTapCell: true)
             }
             return
         }

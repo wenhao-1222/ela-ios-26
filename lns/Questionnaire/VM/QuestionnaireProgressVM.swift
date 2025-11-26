@@ -55,20 +55,20 @@ class QuestionnaireProgressVM: UIView {
     }()
     lazy var bottomView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.clipsToBounds = true
         
         return vi
     }()
     lazy var progressView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.85)
+        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214//WHColorWithAlpha(colorStr: "000000", alpha: 0.85)
         
         return vi
     }()
     lazy var progressLabel : YYLabel = {
         let lab = YYLabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.85)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColorWithAlpha(colorStr: "000000", alpha: 0.85)
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         
         let step = NSMutableAttributedString.init(string: "1")
@@ -85,14 +85,25 @@ class QuestionnaireProgressVM: UIView {
 
 extension QuestionnaireProgressVM{
     func setProgressStep(step:Int){
-        let stepString = NSMutableAttributedString.init(string: "\(step-self.startStep)")
-        let totalStep = NSMutableAttributedString.init(string: "/\(self.totalStep-self.startStep)")
-        stepString.yy_font = .systemFont(ofSize: 20, weight: .medium)
+//        let stepString = NSMutableAttributedString.init(string: "\(step-self.startStep)")
+//        let totalStep = NSMutableAttributedString.init(string: "/\(self.totalStep-self.startStep)")
+//        stepString.yy_font = .systemFont(ofSize: 20, weight: .medium)
         
-        stepString.append(totalStep)
-        progressLabel.attributedText = stepString
+//        stepString.append(totalStep)
+//        progressLabel.attributedText = stepString
         
-//        progressWidthPerStep = kFitWidth(255)/CGFloat(self.totalStep)
+        let a = NSMutableAttributedString(
+            string: "\(step-self.startStep)",
+            attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+                         .font: UIFont.systemFont(ofSize: 20, weight: .medium)]
+        )
+        a.append(NSAttributedString(
+            string: "/\(self.totalStep-self.startStep)",
+            attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+                         .font: UIFont.systemFont(ofSize: 12, weight: .medium)]
+        ))
+        
+        progressLabel.attributedText = a
         progressWidthPerStep = progressWidth/CGFloat(self.totalStep)
         
         self.layoutIfNeeded()

@@ -33,11 +33,6 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        if foodsDetailDict.doubleValueForKey(key: "qty") > 0{
-//            self.specNum = foodsDetailDict.stringValueForKey(key: "qty")
-//            self.specName = foodsDetailDict["spec"]as? String ?? "g"
-//        }
-        
         initUI()
         sendFoodsDetailRequest()
     }
@@ -55,12 +50,9 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
     }()
     lazy var foodsNameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
-//        lab.minimumScaleFactor = 0.5
-//        lab.numberOfLines = 2
-//        lab.lineBreakMode = .byWordWrapping
         if self.foodsDetailDict["verified"]as? String ?? "\(self.foodsDetailDict["verified"]as? Int ?? 0)" == "1"{
             let img = UIImage(named: "question_foods_verify_icon")
             lab.attributedText = createAttributedStringWithImage(image: img!, text: "\(foodsDetailDict["fname"]as? String ?? "")")
@@ -245,16 +237,29 @@ extension FoodsMsgDetailsVC{
             break
         }
     }
-    func createAttributedStringWithImage(image: UIImage, text: String) -> NSAttributedString {
+//    func createAttributedStringWithImage(image: UIImage, text: String) -> NSAttributedString {
+//        let attachment = NSTextAttachment()
+//        attachment.image = image
+//        attachment.bounds = CGRect(x: 0, y: (UIFont.systemFont(ofSize: 16, weight: .medium).capHeight - image.size.height).rounded() / 2, width: image.size.width, height: image.size.height)
+//        let attachmentString = NSAttributedString(attachment: attachment)
+//        
+//        let string = NSMutableAttributedString(string: text)
+//        string.append(attachmentString)
+//        
+//        return string
+//    }
+    func createAttributedStringWithImage(image: UIImage, text: String,keywords:String? = "") -> NSAttributedString {
         let attachment = NSTextAttachment()
         attachment.image = image
         attachment.bounds = CGRect(x: 0, y: (UIFont.systemFont(ofSize: 16, weight: .medium).capHeight - image.size.height).rounded() / 2, width: image.size.width, height: image.size.height)
         let attachmentString = NSAttributedString(attachment: attachment)
+        let a = NSMutableAttributedString(
+            string: text,
+            attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214]
+        )
+        a.append(attachmentString)
         
-        let string = NSMutableAttributedString(string: text)
-        string.append(attachmentString)
-        
-        return string
+        return a
     }
     @objc func deleteAction() {
         self.presentAlertVc(confirmBtn: "删除", message: "是否删除食物“\(foodsDetailDict["fname"]as? String ?? "")”", title: "温馨提示", cancelBtn: "取消", handler: { action in
@@ -269,7 +274,7 @@ extension FoodsMsgDetailsVC{
         self.navigationView.backgroundColor = .clear
         self.navigationView.addSubview(deleteButton)
         
-        view.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         view.addSubview(foodsNameLabel)
 //        view.addSubview(foodsVerifyImgView)
         view.addSubview(topVm)

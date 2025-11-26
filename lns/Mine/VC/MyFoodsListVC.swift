@@ -87,7 +87,7 @@ class MyFoodsListVC: WHBaseViewVC {
     lazy var tableView: UITableView = {
         let table = UITableView.init(frame: CGRect.init(x: 0, y: self.typeVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getBottomSafeAreaHeight()-kFitWidth(60)-self.typeVm.frame.maxY), style: .plain)
         table.separatorStyle = .none
-        table.backgroundColor = .white
+        table.backgroundColor = .COLOR_CARD_BG_WHITE
         table.delegate = self
         table.dataSource = self
         table.register(FoodsListAddTableViewCell.classForCoder(), forCellReuseIdentifier: "FoodsListAddTableViewCell")
@@ -157,11 +157,15 @@ extension MyFoodsListVC{
     func initUI() {
         initNavi(titleStr: "我的食物")
         
+        view.backgroundColor = .COLOR_CARD_BG_WHITE
         view.addSubview(searchVm)
         view.addSubview(typeVm)
         view.addSubview(tableView)
         view.addSubview(mealsVm)
         view.addSubview(createButton)
+        self.tableView.layoutIfNeeded()
+        self.noDataView.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         
         tableView.addSubview(noDataView)
         noDataView.center = CGPoint.init(x: self.tableView.frame.width * 0.5, y: self.tableView.frame.height * 0.5)

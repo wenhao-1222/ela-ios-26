@@ -26,8 +26,8 @@ class GoalSetSpecPercentVM: UIView {
     var dataIsChanged = false
     
     override init(frame:CGRect){
-        super.init(frame: CGRect.init(x: kFitWidth(0), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(56), height: selfHeight))
-        self.backgroundColor = .white
+        super.init(frame: CGRect.init(x: kFitWidth(12), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(56), height: selfHeight))
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -51,13 +51,13 @@ class GoalSetSpecPercentVM: UIView {
     }()
     lazy var bottomLineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         return vi
     }()
     lazy var tipsOneLabel: UILabel = {
         let lab = UILabel()
         lab.text = "总计 %"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .bold)
         
         return lab
@@ -65,14 +65,14 @@ class GoalSetSpecPercentVM: UIView {
     lazy var tipsTwoLabel: UILabel = {
         let lab = UILabel()
         lab.text = "营养素必须等于 100%"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         
         return lab
     }()
     lazy var totalPercentLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_35//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 14, weight: .bold)
         lab.text = "100%"
         return lab
@@ -132,7 +132,7 @@ extension GoalSetSpecPercentVM{
         }else if totalPercent > 100 {
             totalPercentLabel.textColor = .systemRed
         }else{
-            totalPercentLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+            totalPercentLabel.textColor = .COLOR_TEXT_TITLE_0f1214_35//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         }
     }
     func updateNumber() {
@@ -273,7 +273,7 @@ extension GoalSetSpecPercentVM:UIPickerViewDelegate,UIPickerViewDataSource{
         DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
             let label = self.pickerView.view(forRow: row, forComponent: component) as? UILabel
             if label != nil{
-                label?.textColor = .COLOR_GRAY_BLACK_85//.THEME
+                label?.textColor = .COLOR_TEXT_TITLE_0f1214_60
             }
         })
     }

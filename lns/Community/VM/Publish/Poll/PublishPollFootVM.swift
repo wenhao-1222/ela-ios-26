@@ -14,7 +14,7 @@ class PublishPollFootVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))
@@ -35,13 +35,13 @@ class PublishPollFootVM: UIView {
     }()
     lazy var numberLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.isUserInteractionEnabled = true
         
         let attr = NSMutableAttributedString(string: "添加选项")
         let attr2 = NSMutableAttributedString(string: "（最多20项）")
-        attr2.yy_color = .COLOR_GRAY_BLACK_45
+        attr2.yy_color = .COLOR_TEXT_TITLE_0f1214_50
         attr2.yy_font = .systemFont(ofSize: 12, weight: .regular)
         attr.append(attr2)
         lab.attributedText = attr
@@ -81,12 +81,12 @@ extension PublishPollFootVM{
 
 extension PublishPollFootVM{
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        self.backgroundColor = .COLOR_BG_BLACK_06
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
     }
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
     }
 }

@@ -24,7 +24,7 @@ class JournalShareMsgVM: UIView {
     }
     lazy var bgWhiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = UIColor(named: "color_share_msg_bg")//.white
         vi.isUserInteractionEnabled = true
         
         return vi

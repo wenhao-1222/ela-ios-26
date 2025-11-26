@@ -15,15 +15,31 @@ class MaterialNickNameAlertVM: UIView {
     var confirmBlock:((String)->())?
     var timer: Timer?
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+        self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         self.isUserInteractionEnabled = true
-        self.alpha = 0
         self.isHidden = true
-        
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenView))
-        self.addGestureRecognizer(tap)
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -38,20 +54,27 @@ class MaterialNickNameAlertVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    private lazy var bgView: UIView = {
+        let v = UIView(frame: bounds)
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.alpha = 0
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
+        v.addGestureRecognizer(tap)
+        return v
+    }()
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(64)))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
-        vi.alpha = 0
-        
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
         vi.addGestureRecognizer(tap)
         
         return vi
     }()
-    lazy var bgView: UIView = {
+    lazy var textBgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F5F5F5")
+        vi.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "F5F5F5")
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(4)
         vi.clipsToBounds = true
@@ -62,7 +85,7 @@ class MaterialNickNameAlertVM: UIView {
         let text = UITextField()
         text.placeholder = "请输入用户名"
         text.font = .systemFont(ofSize: 16, weight: .regular)
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.delegate = self
         text.returnKeyType = .done
         text.textContentType = nil
@@ -72,7 +95,7 @@ class MaterialNickNameAlertVM: UIView {
     lazy var confirmButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("确定", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
 //        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME), for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
@@ -88,15 +111,16 @@ class MaterialNickNameAlertVM: UIView {
 
 extension MaterialNickNameAlertVM {
     func initUI() {
+        addSubview(bgView)
         addSubview(whiteView)
-        whiteView.addSubview(bgView)
-        bgView.addSubview(textField)
+        whiteView.addSubview(textBgView)
+        textBgView.addSubview(textField)
         whiteView.addSubview(confirmButton)
         
         setConstrait()
     }
     func setConstrait() {
-        bgView.snp.makeConstraints { make in
+        textBgView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.centerY.lessThanOrEqualToSuperview()
             make.width.equalTo(kFitWidth(275))
@@ -120,19 +144,24 @@ extension MaterialNickNameAlertVM {
 extension MaterialNickNameAlertVM{
     @objc func showView() {
         self.isHidden = false
+        bgView.alpha = 0
+        bgView.isUserInteractionEnabled = false
         self.textField.text = ""
         self.textField.becomeFirstResponder()
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-            self.alpha = 1
-            self.whiteView.alpha = 1
+            self.bgView.alpha = self.targetDimAlpha//0.25
+        } completion: { _ in
+            self.bgView.isUserInteractionEnabled = true
+            
         }
     }
     @objc func hiddenView() {
         self.textField.resignFirstResponder()
         self.disableTimer()
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-            self.alpha = 0
-            self.whiteView.alpha = 0
+//            self.alpha = 0
+//            self.whiteView.alpha = 0
+            self.bgView.alpha = 0
         }completion: { t in
             self.isHidden = true
         }

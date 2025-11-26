@@ -10,6 +10,26 @@ class CoursePayTipsPopupView: UIView {
     let selfWidth = kFitWidth(284)
     let selfHeight = kFitWidth(365)
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgWholeView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -18,17 +38,28 @@ class CoursePayTipsPopupView: UIView {
 //        super.init(frame: CGRect.init(x: SCREEN_WIDHT*0.5-selfWidth*0.5, y: SCREEN_HEIGHT*0.5-selfHeight*0.5-kFitWidth(80), width: selfWidth, height: selfHeight))
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear
-        self.alpha = 0
+        self.isHidden = true
+//        self.alpha = 0
 //        self.layer.cornerRadius = kFitWidth(40)
 //        self.clipsToBounds = true
         self.isUserInteractionEnabled = true
         
         initUI()
     }
+    
+    private lazy var bgWholeView: UIView = {
+        let v = UIView(frame: bounds)
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.alpha = 0
+        
+        return v
+    }()
     lazy var bgView: UIView = {
         let vi = UIView()
         vi.backgroundColor = UIColor.black.withAlphaComponent(0.2)
         vi.isUserInteractionEnabled = true
+        vi.alpha = 0
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenSelf))
         vi.addGestureRecognizer(tap)
@@ -36,7 +67,12 @@ class CoursePayTipsPopupView: UIView {
         return vi
     }()
     lazy var blurEffect: UIBlurEffect = {
-        let vi = UIBlurEffect(style:.systemThinMaterialLight)//systemChromeMaterialLight
+        var vi = UIBlurEffect(style:.systemThinMaterialLight)//systemChromeMaterialLight
+        
+        if traitCollection.userInterfaceStyle == .dark{
+            vi = UIBlurEffect(style:.systemThinMaterialDark)
+        }
+        
         return vi
     }()
     lazy var blurEffectView: UIVisualEffectView = {
@@ -110,7 +146,10 @@ class CoursePayTipsPopupView: UIView {
 
 extension CoursePayTipsPopupView{
     func showSelf() {
+        self.isHidden = false
         UIView.animate(withDuration: 0.25) {
+//            self.bgWholeView.alpha = self.targetDimAlpha
+            self.bgView.alpha = 1
             self.alpha = 1
         }
     }
@@ -118,12 +157,17 @@ extension CoursePayTipsPopupView{
     @objc func hiddenSelf() {
         UIView.animate(withDuration: 0.25) {
             self.alpha = 0
+//            self.bgWholeView.alpha = 0
+            self.bgView.alpha = 0
+        }completion: { _ in
+            self.isHidden = true
         }
     }
 }
 
 extension CoursePayTipsPopupView{
     func initUI() {
+//        addSubview(bgWholeView)
         addSubview(bgView)
         addSubview(blurEffectView)
         addSubview(elaIconImgView)

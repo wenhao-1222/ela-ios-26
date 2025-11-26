@@ -16,7 +16,7 @@ class PlanDetailTopVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -55,7 +55,7 @@ class PlanDetailTopVM: UIView {
         let lab = UICountingLabel()
         lab.text = "0"
         lab.format = "%.0f"
-        lab.textColor = WHColor_16(colorStr: "222222")
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "222222")
         lab.font = .systemFont(ofSize: 20, weight: .medium)
         
         return lab
@@ -64,7 +64,7 @@ class PlanDetailTopVM: UIView {
         let lab = UILabel()
         lab.text = "碳水"
         lab.textAlignment = .center
-        lab.backgroundColor = WHColorWithAlpha(colorStr: "7137BF", alpha: 0.15)
+        lab.backgroundColor = .COLOR_CARBOHYDRATE.withAlphaComponent(0.15)//WHColorWithAlpha(colorStr: "7137BF", alpha: 0.15)
         lab.textColor = .COLOR_CARBOHYDRATE
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.layer.cornerRadius = kFitWidth(10)
@@ -77,7 +77,7 @@ class PlanDetailTopVM: UIView {
         let lab = UICountingLabel()
         lab.text = "0"
         lab.format = "%.0f"
-        lab.textColor = WHColor_16(colorStr: "222222")
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "222222")
         lab.font = .systemFont(ofSize: 20, weight: .medium)
         
         return lab
@@ -86,7 +86,7 @@ class PlanDetailTopVM: UIView {
         let lab = UILabel()
         lab.text = "蛋白质"
         lab.textAlignment = .center
-        lab.backgroundColor = WHColorWithAlpha(colorStr: "F5BA18", alpha: 0.15)
+        lab.backgroundColor = .COLOR_PROTEIN.withAlphaComponent(0.15)//WHColorWithAlpha(colorStr: "F5BA18", alpha: 0.15)
         lab.textColor = .COLOR_PROTEIN
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.layer.cornerRadius = kFitWidth(10)
@@ -99,7 +99,7 @@ class PlanDetailTopVM: UIView {
         let lab = UICountingLabel()
         lab.text = "0"
         lab.format = "%.0f"
-        lab.textColor = WHColor_16(colorStr: "222222")
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "222222")
         lab.font = .systemFont(ofSize: 20, weight: .medium)
         
         return lab
@@ -108,7 +108,7 @@ class PlanDetailTopVM: UIView {
         let lab = UILabel()
         lab.text = "脂肪"
         lab.textAlignment = .center
-        lab.backgroundColor = WHColorWithAlpha(colorStr: "E37318", alpha: 0.15)
+        lab.backgroundColor = .COLOR_FAT.withAlphaComponent(0.15)//WHColorWithAlpha(colorStr: "E37318", alpha: 0.15)
         lab.textColor = .COLOR_FAT
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.layer.cornerRadius = kFitWidth(10)
@@ -121,28 +121,10 @@ class PlanDetailTopVM: UIView {
 
 extension PlanDetailTopVM{
     func updateUI(dict:NSDictionary) {
-        
-//        var caloriTarget = Float(dict.stringValueForKey(key: "calories")) ?? 0
-//        var carboTarget = Float(dict.stringValueForKey(key: "carbohydrate")) ?? 0
-//        var proteinTarget = Float(dict.stringValueForKey(key: "protein")) ?? 0
-//        var fatTarget = Float(dict.stringValueForKey(key: "fat")) ?? 0
-//
-//        caloriTarget = (String(format: "%.0f", caloriTarget)).floatValue
-//        carboTarget = (String(format: "%.0f", carboTarget)).floatValue
-//        proteinTarget = (String(format: "%.0f", proteinTarget)).floatValue
-//        fatTarget = (String(format: "%.0f", fatTarget)).floatValue
-//
-//        caloriTotalLabel.count(from: 0, to: CGFloat(caloriTarget), withDuration: 0.7)
-//        carboNumberLabel.count(from: 0, to: CGFloat(carboTarget), withDuration: 0.7)
-//        proteinNumberLabel.count(from: 0, to: CGFloat(proteinTarget), withDuration: 0.7)
-//        fatNumberLabel.count(from: 0, to: CGFloat(fatTarget), withDuration: 0.7)
-        
         caloriTotalLabel.count(from: 0, to: CGFloat(Int(dict.doubleValueForKey(key: "calories").rounded())), withDuration: 0.7)
         carboNumberLabel.count(from: 0, to: CGFloat(Int(dict.doubleValueForKey(key: "carbohydrate").rounded())), withDuration: 0.7)
         proteinNumberLabel.count(from: 0, to: CGFloat(Int(dict.doubleValueForKey(key: "protein").rounded())), withDuration: 0.7)
         fatNumberLabel.count(from: 0, to: CGFloat(Int(dict.doubleValueForKey(key: "fat").rounded())), withDuration: 0.7)
-//        proteinNumberLabel.count(from: 0, to: CGFloat(dict["protein"]as? Double ?? 0), withDuration: 0.7)
-//        fatNumberLabel.count(from: 0, to: CGFloat(dict["fat"]as? Double ?? 0), withDuration: 0.7)
     }
     func updateNumber(dict:NSDictionary) {
         caloriTotalLabel.text = "\(Int(dict.doubleValueForKey(key: "calories").rounded()))"

@@ -13,11 +13,11 @@ class GuideTotalVC: WHBaseViewVC {
     /// Current displayed page index
     private var currentIndex: Int = 0
     
-    override func viewDidAppear(_ animated: Bool) {
-//        firstVm.chart.startGradientAnimation()
-//        super.viewDidAppear(animated)
-//        firstVm.startChartAnimation()
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+////        firstVm.chart.startGradientAnimation()
+////        super.viewDidAppear(animated)
+////        firstVm.startChartAnimation()
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,11 +65,6 @@ class GuideTotalVC: WHBaseViewVC {
         vm.nextBlock = { [weak self] in
             self?.animateTransition(to: 3)
         }
-//        vm.nextBlock = {()in
-//            DLLog(message: "下一步   4")
-//            self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT*3, y: 0), animated: true)
-//            self.progressVm.setStep(step: 4)
-//        }
         return vm
     }()
     lazy var fourthVm: GuideTotalFourVM = {
@@ -231,6 +226,8 @@ extension GuideTotalVC{
         scrollViewBase.addSubview(sevenVm)
         
         scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*7, height: 0)
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
 }
 

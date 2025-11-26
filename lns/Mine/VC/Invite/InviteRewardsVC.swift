@@ -48,7 +48,7 @@ extension InviteRewardsVC{
     func initUI() {
         initNavi(titleStr: "邀请奖励")
         
-        view.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         view.addSubview(topVm)
         view.addSubview(inviteCodeVm)
         view.addSubview(ruleVm)

@@ -14,7 +14,16 @@ class NaturalStatFavoriteFoodsItemVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("required init?(coder: NSCoder) failed")
     }
-    
+    override func traitCollectionDidChange(_ previous: UITraitCollection?) {
+        super.traitCollectionDidChange(previous)
+        guard traitCollection.hasDifferentColorAppearance(comparedTo: previous) else { return }
+        
+        if traitCollection.userInterfaceStyle == .dark {
+            self.backgroundColor = .clear
+        }else{
+            self.backgroundColor = .white
+        }
+    }
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
         self.backgroundColor = .white
@@ -46,20 +55,20 @@ class NaturalStatFavoriteFoodsItemVM: UIView {
         lab.font = .systemFont(ofSize: 12, weight: .bold)
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         
         return lab
     }()
     lazy var numberLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         
         return lab
     }()
     lazy var weightLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         
         return lab
@@ -107,12 +116,6 @@ extension NaturalStatFavoriteFoodsItemVM{
         setConstrait()
     }
     func setConstrait() {
-//        bgView.snp.makeConstraints { make in
-//            make.left.equalTo(kFitWidth(12))
-//            make.right.equalTo(kFitWidth(-12))
-//            make.height.equalTo(kFitWidth(32))
-//            make.top.equalTo(kFitWidth(4))
-//        }
         indexBottomImgView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(10))
             make.top.equalTo(kFitWidth(15))

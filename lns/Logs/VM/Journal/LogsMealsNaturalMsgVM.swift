@@ -137,7 +137,7 @@ class LogsMealsNaturalMsgVM: UIView {
     }()
     lazy var bottTipsLabel : UILabel = {
         let lab = UILabel()
-        lab.backgroundColor = .COLOR_BG_WHITE
+        lab.backgroundColor = .COLOR_CARD_BG_WHITE
         lab.text = "食物列表"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 11, weight: .regular)

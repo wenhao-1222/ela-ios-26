@@ -36,10 +36,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         DLLog(message: "application  -----   didFinishLaunchingWithOptions")
-//        UserDefaults.standard.setValue("gpojo0SfiW35DzUf", forKey: token)
-//        UserDefaults.standard.setValue("7cf40e2cfca9d39185ada073a14f555f", forKey: userId)
-//        UserInfoModel.shared.uId = "7cf40e2cfca9d39185ada073a14f555f"
-//        UserInfoModel.shared.token = "gpojo0SfiW35DzUf"
+//        UserDefaults.standard.setValue("FqdWPiTaIJesWRzM", forKey: token)
+//        UserDefaults.standard.setValue("8ed11e5c5b40e13a8dbed606618dbb38", forKey: userId)
+//        UserInfoModel.shared.uId = "8ed11e5c5b40e13a8dbed606618dbb38"
+//        UserInfoModel.shared.token = "FqdWPiTaIJesWRzM"
         let launchWindow: UIWindow
         if let existingWindow = window {
             launchWindow = existingWindow
@@ -47,8 +47,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         } else {
             launchWindow = UIWindow(frame: UIScreen.main.bounds)
         }
+        UserConfigModel.shared.overrideUserInterfaceStyle = UserDefaults.getAppearanceStyle()
+        launchWindow.overrideUserInterfaceStyle = UserConfigModel.shared.overrideUserInterfaceStyle
         window = launchWindow
         launchWindow.backgroundColor = .THEME
+        UIApplication.shared.applyInterfaceStyle(UserConfigModel.shared.overrideUserInterfaceStyle)
 //        let launchWindow = window ?? UIWindow(frame: UIScreen.main.bounds)
 //        launchWindow.backgroundColor = .THEME
 //        launchWindow.isOpaque = true

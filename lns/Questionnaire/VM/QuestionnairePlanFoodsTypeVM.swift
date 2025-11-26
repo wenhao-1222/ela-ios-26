@@ -28,6 +28,7 @@ class QuestionnairePlanFoodsTypeVM: UIView {
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
         vi.alpha = 0
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()
@@ -71,15 +72,15 @@ extension QuestionnairePlanFoodsTypeVM{
     }
     func setNormal() {
         itemOneVm.selectImgView.isHidden = true
-        itemOneVm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+        itemOneVm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         itemTwoVm.selectImgView.isHidden = true
-        itemTwoVm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+        itemTwoVm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         itemThreeVm.selectImgView.isHidden = true
-        itemThreeVm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+        itemThreeVm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         itemFourVm.selectImgView.isHidden = true
-        itemFourVm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+        itemFourVm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         itemFiveVm.selectImgView.isHidden = true
-        itemFiveVm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+        itemFiveVm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
     }
     func setSelecteIndex(index:Int) {
         setNormal()
@@ -110,7 +111,7 @@ class QuestionnairePlanFoodsTypeItemVM: UIView {
     var tapBlock:(()->())?
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: kFitWidth(200), height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))
@@ -123,14 +124,14 @@ class QuestionnairePlanFoodsTypeItemVM: UIView {
     }
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()

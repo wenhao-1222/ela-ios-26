@@ -28,7 +28,7 @@ class NaturalStatCPFDGBarLegendView: UIView {
     }()
     lazy var carboLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.text = "碳水"
         return lab
@@ -42,7 +42,7 @@ class NaturalStatCPFDGBarLegendView: UIView {
     }()
     lazy var proteinLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.text = "蛋白质"
         return lab
@@ -56,7 +56,7 @@ class NaturalStatCPFDGBarLegendView: UIView {
     }()
     lazy var fatLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.text = "脂肪"
         return lab

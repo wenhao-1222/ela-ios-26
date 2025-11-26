@@ -26,7 +26,7 @@ class NaturalStatCPFBarMarkView: UIView {
     }
     lazy var bgView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: kFitWidth(86), height: kFitWidth(86)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(4)
         return vi
     }()
@@ -34,7 +34,7 @@ class NaturalStatCPFBarMarkView: UIView {
         let lab = UILabel.init(frame: CGRect.init(x: 0, y: kFitWidth(8), width: kFitWidth(80), height: kFitWidth(12)))
         lab.textAlignment = .center
         lab.font = .systemFont(ofSize: 10, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.adjustsFontSizeToFitWidth = true
 //        lab.backgroundColor = WHColor_ARC()
         
@@ -51,7 +51,7 @@ class NaturalStatCPFBarMarkView: UIView {
     lazy var carboNumberLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(26), width: kFitWidth(60), height: kFitWidth(12)))
         lab.font = .systemFont(ofSize: 12, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.adjustsFontSizeToFitWidth = true
         
         return lab
@@ -67,7 +67,7 @@ class NaturalStatCPFBarMarkView: UIView {
     lazy var proteinNumberLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(46), width: kFitWidth(60), height: kFitWidth(12)))
         lab.font = .systemFont(ofSize: 12, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.adjustsFontSizeToFitWidth = true
         
         return lab
@@ -83,7 +83,7 @@ class NaturalStatCPFBarMarkView: UIView {
     lazy var fatNumberLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(66), width: kFitWidth(60), height: kFitWidth(12)))
         lab.font = .systemFont(ofSize: 12, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.adjustsFontSizeToFitWidth = true
         
         return lab

@@ -17,7 +17,7 @@ class PlanDetailDaysVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -27,7 +27,7 @@ class PlanDetailDaysVM: UIView {
     }
     lazy var lastButton : GJVerButton = {
         let btn = GJVerButton()
-        btn.setImage(UIImage(named: "back_arrow"), for: .normal)
+        btn.setImage(UIImage(named: "back_arrow")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.isHidden = true
         
@@ -37,14 +37,15 @@ class PlanDetailDaysVM: UIView {
     }()
     lazy var dayLabel : YYLabel = {
         let lab = YYLabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         
         return lab
     }()
     lazy var nextButton : GJVerButton = {
         let btn = GJVerButton()
-        btn.setImage(UIImage(named: "plan_detail_arrow_blace_icon"), for: .normal)
+        btn.setImage(UIImage(named: "plan_detail_arrow_blace_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
+//        btn.setImage(UIImage(named: "plan_arrow_gray"), for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         
         btn.addTarget(self, action: #selector(nextAction), for: .touchUpInside)
@@ -52,7 +53,7 @@ class PlanDetailDaysVM: UIView {
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()
@@ -73,10 +74,7 @@ extension PlanDetailDaysVM{
     @objc func nextAction() {
         nextButton.isEnabled = false
         lastButton.isEnabled = false
-//        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-//            self.nextButton.isEnabled = true
-//            self.lastButton.isEnabled = true
-//        })
+        
         if self.nextBlock != nil{
             self.nextBlock!()
         }
@@ -89,18 +87,27 @@ extension PlanDetailDaysVM{
 
 extension PlanDetailDaysVM{
     func updateUI(currentIndex:Int,totalDay:Int) {
-        let currentDay = NSMutableAttributedString.init(string: "\(currentIndex+1)")
-        let totalDayString = NSMutableAttributedString.init(string: "/\(totalDay)天")
+//        let currentDay = NSMutableAttributedString.init(string: "\(currentIndex+1)")
+//        let totalDayString = NSMutableAttributedString.init(string: "/\(totalDay)天")
+//        
+//        currentDay.yy_font = .systemFont(ofSize: 24, weight: .medium)
+//        currentDay.yy_color = .COLOR_TEXT_TITLE_0f1214
+//        
+//        totalDayString.yy_font = .systemFont(ofSize: 14, weight: .medium)
+//        totalDayString.yy_color = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+//        
+//        currentDay.append(totalDayString)
+//        dayLabel.attributedText = currentDay
         
-        currentDay.yy_font = .systemFont(ofSize: 24, weight: .medium)
-        currentDay.yy_color = .COLOR_GRAY_BLACK_85
         
-        totalDayString.yy_font = .systemFont(ofSize: 14, weight: .medium)
-        totalDayString.yy_color = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        let currentDay = NSMutableAttributedString(string: "\(currentIndex+1)",
+                                                   attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
+                                                                .font : UIFont.systemFont(ofSize: 24, weight: .medium)])
+        currentDay.append(NSMutableAttributedString(string: "/\(totalDay)天",
+                                             attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                                                          .font:UIFont.systemFont(ofSize: 14, weight: .medium)]))
         
-        currentDay.append(totalDayString)
         dayLabel.attributedText = currentDay
-        
         self.lastButton.isHidden = currentIndex == 0 ? true : false
         self.nextButton.isHidden = (currentIndex == totalDay - 1) ? true : false
     }

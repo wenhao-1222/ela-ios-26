@@ -19,7 +19,7 @@ class CoursePayOrderCouponVM : UIView{
     }
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -123,7 +123,7 @@ class CoursePayOrderCouponVM : UIView{
     }()
     lazy var couponDeleteButton: UIButton = {
         let btn = UIButton()
-        btn.setImage(UIImage(named: "course_coupon_delete_icon"), for: .normal)
+        btn.setImage(UIImage(named: "course_coupon_delete_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
 //        btn.addTarget(self, action: #selector(deleteTapAction), for: .touchUpInside)
         
         return btn

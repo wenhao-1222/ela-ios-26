@@ -118,7 +118,7 @@ class NaturalStatCalendarMarkCirCleView : UIView{
         }
         
         bottomShapeLayer.path = bottomArcPath.cgPath
-        bottomShapeLayer.strokeColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06).cgColor // 弧线颜色
+        bottomShapeLayer.strokeColor = UIColor.COLOR_BG_BLACK_06.cgColor//WHColorWithAlpha(colorStr: "000000", alpha: 0.06).cgColor // 弧线颜色
         bottomShapeLayer.fillColor = nil // 无填充色
         bottomShapeLayer.lineWidth = circelWidth // 线宽
         

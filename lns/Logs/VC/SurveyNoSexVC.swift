@@ -460,7 +460,7 @@ extension SurveyNoSexVC{
 }
 extension SurveyNoSexVC{
     func initUI(){
-        view.backgroundColor = .COLOR_GRAY_FA
+        view.backgroundColor = .COLOR_BG_F5
         
         view.clipsToBounds = true
         view.addSubview(progressVm)

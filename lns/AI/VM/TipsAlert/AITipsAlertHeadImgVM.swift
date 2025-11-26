@@ -12,7 +12,7 @@ class AITipsAlertHeadImgVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -28,7 +28,7 @@ class AITipsAlertHeadImgVM: UIView {
     lazy var rightLabel: UILabel = {
         let lab = UILabel()
         lab.text = "正确"
-        lab.textColor = .black
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .semibold)
         
         return lab
@@ -55,7 +55,7 @@ class AITipsAlertHeadImgVM: UIView {
     lazy var errorLabel: UILabel = {
         let lab = UILabel()
         lab.text = "错误"
-        lab.textColor = .black
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .semibold)
         
         return lab

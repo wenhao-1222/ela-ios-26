@@ -26,7 +26,7 @@ class CancelAccountHelpVM: UIView {
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
         lab.text = "您是否需要："
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab

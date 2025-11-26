@@ -21,7 +21,7 @@ class FoodsCreateSpecVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -32,7 +32,7 @@ class FoodsCreateSpecVM: UIView {
     lazy var leftTitleLab: UILabel = {
         let lab = UILabel()
         lab.text = "营养素信息"
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
@@ -43,7 +43,7 @@ class FoodsCreateSpecVM: UIView {
         text.text = "100"
         text.textColor = .THEME
         text.font = .systemFont(ofSize: 14, weight: .medium)
-        text.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        text.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         text.layer.cornerRadius = kFitWidth(4)
         text.clipsToBounds = true
         text.textAlignment = .center
@@ -66,7 +66,7 @@ class FoodsCreateSpecVM: UIView {
     lazy var numerLeftLab: UILabel = {
         let lab = UILabel()
         lab.text = "每"
-        lab.textColor = WHColor_16(colorStr: "8C8C8C")
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60//WHColor_16(colorStr: "8C8C8C")
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
@@ -74,7 +74,7 @@ class FoodsCreateSpecVM: UIView {
     lazy var specButton: GJVerButton = {
         let btn = GJVerButton()
         btn.setTitle("\(specName)", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.setImage(UIImage(named: "create_plan_arrow_down"), for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)

@@ -24,12 +24,26 @@ class JournalFitnessTypeAlertVM: UIView {
     var vmArray: [PlanCreateSynDaysVM] = []
     var fitnessArray: [String] = []
     var selectFitnessType: [String] = []
-
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.15
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     // MARK: - UI
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenSelf))
         v.addGestureRecognizer(tap)
@@ -39,7 +53,7 @@ class JournalFitnessTypeAlertVM: UIView {
     private lazy var whiteView: UIView = {
         // 先用默认高度创建，后面 dealData() 会重算高度并设置 frame
         let vi = UIView(frame: CGRect(x: 0, y: SCREEN_HEIGHT - whiteViewHeight, width: SCREEN_WIDHT, height: whiteViewHeight))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = whiteViewTopRadius
         if #available(iOS 13.0, *) { vi.layer.cornerCurve = .continuous }
         vi.layer.masksToBounds = true
@@ -66,7 +80,7 @@ class JournalFitnessTypeAlertVM: UIView {
     private lazy var titleLab: UILabel = {
         let lab = UILabel()
         lab.text = "力量训练标签"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.textAlignment = .center
         return lab
@@ -82,7 +96,7 @@ class JournalFitnessTypeAlertVM: UIView {
 
     private lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
 
@@ -128,7 +142,7 @@ extension JournalFitnessTypeAlertVM {
                        initialSpringVelocity: 0.1,
                        options: [.curveEaseOut, .allowUserInteraction]) {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
-            self.bgView.alpha = 0.25
+            self.bgView.alpha = self.targetDimAlpha
         } completion: { _ in
             self.bgView.isUserInteractionEnabled = true
             
@@ -176,7 +190,7 @@ extension JournalFitnessTypeAlertVM {
 
             // 同步调低蒙层
             let progress = min(1, max(0, newTy / whiteViewHeight))
-            bgView.alpha = 0.15 * (1 - progress)
+            bgView.alpha = self.targetDimAlpha * (1 - progress)
 
         case .ended, .cancelled, .failed:
             let ty = whiteView.transform.ty
@@ -190,7 +204,7 @@ extension JournalFitnessTypeAlertVM {
                 // 回弹
                 UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut) {
                     self.whiteView.transform = .identity
-                    self.bgView.alpha = 0.15
+                    self.bgView.alpha = self.targetDimAlpha
                 }
             }
         default:
@@ -246,7 +260,7 @@ extension JournalFitnessTypeAlertVM {
         lineView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(kFitWidth(55))
-            make.height.equalTo(kFitWidth(5))
+            make.height.equalTo(kFitWidth(1))
         }
     }
 
@@ -353,7 +367,6 @@ extension JournalFitnessTypeAlertVM {
         for vm in vmArray {
             vm.setSelectStatus(select: selectFitnessType.contains(vm.days))
             vm.setEnableStatus(isEnable: hasRest ? false : true)
-            
         }
     }
 }

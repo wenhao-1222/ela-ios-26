@@ -19,7 +19,7 @@ class DataDetailTopVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -29,14 +29,14 @@ class DataDetailTopVM: UIView {
     }
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         return vi
     }()
     lazy var bodyTypeButton : GJVerButton = {
         let btn = GJVerButton.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(16), width: btnWidth, height: kFitWidth(40)))
         btn.setTitle("体重", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
-        btn.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        btn.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         btn.layer.cornerRadius = kFitWidth(8)
         btn.clipsToBounds = true
         btn.setImage(UIImage(named: "create_plan_arrow_down"), for: .normal)
@@ -51,8 +51,8 @@ class DataDetailTopVM: UIView {
     lazy var timeButton : GJVerButton = {
         let btn = GJVerButton.init(frame: CGRect.init(x: self.bodyTypeButton.frame.maxX+kFitWidth(16), y: kFitWidth(16), width: btnWidth, height: kFitWidth(40)))
         btn.setTitle("3个月", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
-        btn.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        btn.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         btn.layer.cornerRadius = kFitWidth(8)
         btn.clipsToBounds = true
         btn.setImage(UIImage(named: "create_plan_arrow_down"), for: .normal)
@@ -67,8 +67,8 @@ class DataDetailTopVM: UIView {
     lazy var addButton : GJVerButton = {
         let btn = GJVerButton.init(frame: CGRect.init(x: self.timeButton.frame.maxX+kFitWidth(16), y: kFitWidth(16), width: btnWidth, height: kFitWidth(40)))
         btn.setTitle("添加数据", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
-        btn.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        btn.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         btn.layer.cornerRadius = kFitWidth(8)
         btn.clipsToBounds = true
         btn.setImage(UIImage(named: "data_add_icon_black"), for: .normal)
@@ -82,7 +82,7 @@ class DataDetailTopVM: UIView {
     lazy var startNumberLabel : UILabel = {
         let lab = UILabel()
         lab.text = "0kg"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         
         return lab
@@ -90,7 +90,7 @@ class DataDetailTopVM: UIView {
     lazy var startNumberLab : UILabel = {
         let lab = UILabel()
         lab.text = "开始"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
         return lab
@@ -98,7 +98,7 @@ class DataDetailTopVM: UIView {
     lazy var endNumberLabel : UILabel = {
         let lab = UILabel()
         lab.text = "0kg"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         
         return lab
@@ -106,7 +106,7 @@ class DataDetailTopVM: UIView {
     lazy var endNumberLab : UILabel = {
         let lab = UILabel()
         lab.text = "当前"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
         return lab
@@ -115,7 +115,7 @@ class DataDetailTopVM: UIView {
     lazy var changeNumberButton : GJVerButton = {
         let btn = GJVerButton()
         btn.setTitle("0kg", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.setImage(UIImage(named: "data_desc_icon"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.imagePosition(style: .left, spacing: kFitWidth(4))
@@ -125,7 +125,7 @@ class DataDetailTopVM: UIView {
     lazy var changeNumberLab : UILabel = {
         let lab = UILabel()
         lab.text = "变动"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
         return lab
@@ -133,7 +133,7 @@ class DataDetailTopVM: UIView {
     
     lazy var bottomGapView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         
         return vi
     }()

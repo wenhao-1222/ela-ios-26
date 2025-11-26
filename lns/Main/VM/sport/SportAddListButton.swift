@@ -27,7 +27,7 @@ class SportAddListButton: FeedBackView {
     }
     lazy var contentLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .bold)
         lab.text = "已添加"
         return lab

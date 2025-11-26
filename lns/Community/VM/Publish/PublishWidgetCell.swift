@@ -25,7 +25,7 @@ class PublishWidgetCell: UITableViewCell {
     lazy var pollButton: GJVerButton = {
         let btn = GJVerButton()
         btn.setTitle("投票", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_65, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_60, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_TEXT_85_LIGHT, for: .highlighted)
         btn.setTitleColor(.THEME, for: .selected)
         btn.setImage(UIImage(named: "forum_poll_icon"), for: .normal)

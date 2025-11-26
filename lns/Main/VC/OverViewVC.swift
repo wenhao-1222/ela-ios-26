@@ -72,6 +72,13 @@ class OverViewVC : WHBaseViewVC {
         
         NotificationCenter.default.addObserver(self, selector: #selector(refreshTodayNutrition(notify:)), name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: nil)
     }
+    override func traitCollectionDidChange(_ previous: UITraitCollection?) {
+        super.traitCollectionDidChange(previous)
+        guard traitCollection.hasDifferentColorAppearance(comparedTo: previous) else { return }
+        // 重新取图/颜色并赋值
+        topBgImgView.image = UIImage(named: "main_top_bg_cj")
+    }
+
     lazy var scrollView : UIScrollView = {
         let vi = UIScrollView()
         vi.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
@@ -181,23 +188,6 @@ class OverViewVC : WHBaseViewVC {
 
 extension OverViewVC{
     @objc func refreshTodayNutrition(notify:Notification) {
-//        let nutritionDict = notify.object as? NSDictionary ?? [:]
-//        self.topMsgVm.updateUI(dict: nutritionDict)
-        
-//        DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
-//            let logsModel = LogsSQLiteManager.getInstance().getLogsByDate(sDate: Date().todayDate)!
-//            let sportDict = SportDataSQLiteManager.getInstance().querySportsData(sDate: Date().todayDate)
-//            DLLog(message: "SportDataSQLiteManager:\(sportDict)")
-//
-//            let dict = NSMutableDictionary(dictionary: logsModel.modelToDict())
-//            if UserInfoModel.shared.statSportDataToTarget == "1"{
-//                dict.setValue("\(sportDict.stringValueForKey(key: "sportCalories"))", forKey: "sportCalories")
-//            }else{
-//                dict.setValue("", forKey: "sportCalories")
-//            }
-//            self.topMsgVm.updateUI(dict: dict)
-//        })
-        
         DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
             self.getNutritionDataRequest()
         })

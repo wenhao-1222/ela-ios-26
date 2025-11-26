@@ -238,12 +238,15 @@ extension CourseDetailAliVC{
         view.addSubview(tableView)
         view.addSubview(videoAliVm)
         view.bringSubviewToFront(videoAliVm)
-        view.backgroundColor = .white//WHColor_16(colorStr: "1C1C1C")
+        view.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "1C1C1C")
         
         view.insertSubview(detailVm, belowSubview: videoAliVm)
         view.insertSubview(menuVm, belowSubview: videoAliVm)
         
         view.addSubview(coverBlackView)
+        
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
         
         DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -254,8 +257,8 @@ extension CourseDetailAliVC{
     
     func initSkeleton() {
         view.isSkeletonable = true
-        self.detailVm.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .COLOR_LIGHT_GREY), animation: nil)
-        self.menuVm.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .COLOR_LIGHT_GREY), animation: nil)
+        self.detailVm.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .COLOR_BG_F5), animation: nil)
+//        self.menuVm.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .COLOR_BG_F5), animation: nil)
 //        self.tableView.showAnimatedGradientSkeleton(usingGradient: .init(baseColor: .COLOR_LIGHT_GREY), animation: nil)
     }
     fileprivate func layoutPortrait(videoHeight: CGFloat) {
@@ -372,21 +375,16 @@ extension CourseDetailAliVC{
     }
     func updatePlayModel() {
         self.tableView.scrollToRow(at: IndexPath(row: self.currentVideoIndex, section: 0), at: .middle, animated: true)
-        self.savePlayHistoryToLocal()
         self.tutorialModel = self.dataSourceArray[self.currentVideoIndex]
         self.detailVm.updateUI(model: self.tutorialModel)
         self.menuVm.updateUI(model: self.tutorialModel)
+        self.savePlayHistoryToLocal()
         
         DispatchQueue.main.async {
             self.videoAliVm.updateUI(model: self.tutorialModel)
             self.videoAliVm.play()
             self.tableView.reloadData()
         }
-//        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-//            self.videoAliVm.updateUI(model: self.tutorialModel)
-//            self.videoAliVm.play()
-//            self.tableView.reloadData()
-//        })
     }
     func savePlayHistoryToLocal() {
         let currentDict = NSMutableDictionary()

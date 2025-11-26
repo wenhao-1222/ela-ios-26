@@ -22,7 +22,7 @@ class FoodsListAddVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        self.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -40,15 +40,15 @@ class FoodsListAddVM: UIView {
         btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(109), height: kFitWidth(86))
 //        btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.setTitle("创建食物", for: .normal)
-        btn.backgroundColor = .white
-        btn.setImage(UIImage(named: "foods_create_icon_normal"), for: .normal)
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
+        btn.setImage(UIImage(named: "foods_create_icon_normal")?.withTintColor(.THEME), for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(8)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_GRAY, for: .highlighted)
         btn.clipsToBounds = true
         btn.enablePressEffect()
-        btn.layer.borderColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06).cgColor
+        btn.layer.borderColor = UIColor.COLOR_BG_BLACK_06.cgColor
         btn.layer.borderWidth = kFitWidth(1)
         btn.imagePosition(style: .top, spacing: kFitWidth(5))
         
@@ -59,15 +59,15 @@ class FoodsListAddVM: UIView {
         btn.frame = CGRect.init(x: kFitWidth(133), y: kFitWidth(17), width: kFitWidth(109), height: kFitWidth(86))
 //        btn.frame = CGRect.init(x: kFitWidth(191), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.setTitle("快速添加", for: .normal)
-        btn.backgroundColor = .white
-        btn.setImage(UIImage(named: "foods_create_icon_soon"), for: .normal)
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
+        btn.setImage(UIImage(named: "foods_create_icon_soon")?.withTintColor(.THEME), for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(8)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_GRAY, for: .highlighted)
         btn.clipsToBounds = true
         btn.enablePressEffect()
-        btn.layer.borderColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06).cgColor
+        btn.layer.borderColor = UIColor.COLOR_BG_BLACK_06.cgColor
         btn.layer.borderWidth = kFitWidth(1)
         btn.imagePosition(style: .top, spacing: kFitWidth(5))
         
@@ -78,15 +78,15 @@ class FoodsListAddVM: UIView {
         btn.frame = CGRect.init(x: kFitWidth(250), y: kFitWidth(17), width: kFitWidth(109), height: kFitWidth(86))
 //        btn.frame = CGRect.init(x: kFitWidth(191), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.setTitle("AI识别", for: .normal)
-        btn.backgroundColor = .white
-        btn.setImage(UIImage(named: "foods_ai_icon"), for: .normal)
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
+        btn.setImage(UIImage(named: "foods_ai_icon")?.withTintColor(.THEME), for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(8)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_GRAY, for: .highlighted)
         btn.clipsToBounds = true
         btn.enablePressEffect()
-        btn.layer.borderColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06).cgColor
+        btn.layer.borderColor = UIColor.COLOR_BG_BLACK_06.cgColor
         btn.layer.borderWidth = kFitWidth(1)
         btn.imagePosition(style: .top, spacing: kFitWidth(5))
         
@@ -108,16 +108,16 @@ class FoodsListAddVM: UIView {
         btn.frame = CGRect.init(x: kFitWidth(250), y: kFitWidth(17), width: kFitWidth(109), height: kFitWidth(86))
 //        btn.frame = CGRect.init(x: kFitWidth(191), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.setTitle("融合食物", for: .normal)
-        btn.backgroundColor = .white
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.isHidden = true
         btn.enablePressEffect()
-        btn.setImage(UIImage(named: "foods_merge_icon"), for: .normal)
+        btn.setImage(UIImage(named: "foods_merge_icon")?.withTintColor(.THEME), for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(8)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_GRAY, for: .highlighted)
         btn.clipsToBounds = true
-        btn.layer.borderColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06).cgColor
+        btn.layer.borderColor = UIColor.COLOR_BG_BLACK_06.cgColor
         btn.layer.borderWidth = kFitWidth(1)
         btn.imagePosition(style: .top, spacing: kFitWidth(5))
         
@@ -130,25 +130,20 @@ class FoodsListAddVM: UIView {
         
         return img
     }()
-//    lazy var mergeFoodsNewVm: FoodsNewFuncVM = {
-//        let vm = FoodsNewFuncVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
-//        
-//        return vm
-//    }()
     lazy var createMealsButton: GJVerButtonNoneFeedBack = {
         let btn = GJVerButtonNoneFeedBack()
 //        btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(86))
         btn.setTitle("创建食谱", for: .normal)
-        btn.backgroundColor = .white
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.enablePressEffect()
-        btn.setImage(UIImage(named: "meals_create_icon"), for: .normal)
+        btn.setImage(UIImage(named: "meals_create_icon")?.withTintColor(.THEME), for: .normal)
         btn.setTitleColor(WHColor_16(colorStr: "2BA471"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(8)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_GRAY, for: .highlighted)
         btn.clipsToBounds = true
-        btn.layer.borderColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06).cgColor
+        btn.layer.borderColor = UIColor.COLOR_BG_BLACK_06.cgColor
         btn.layer.borderWidth = kFitWidth(1)
         btn.imagePosition(style: .top, spacing: kFitWidth(5))
         btn.isHidden = true

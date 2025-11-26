@@ -27,7 +27,7 @@ class FoodsListAllListVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         selfHeight = SCREEN_HEIGHT-frame.origin.y
         initUI()
@@ -39,7 +39,7 @@ class FoodsListAllListVM: UIView {
     lazy var tableView: UITableView = {
         let table = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.selfHeight), style: .plain)
         table.separatorStyle = .none
-        table.backgroundColor = .white
+        table.backgroundColor = .COLOR_CARD_BG_WHITE
         table.delegate = self
         table.dataSource = self
         table.sectionHeaderHeight = CGFloat.leastNormalMagnitude
@@ -149,14 +149,14 @@ extension FoodsListAllListVM:UITableViewDelegate,UITableViewDataSource{
             return nil
         }
         let headView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(55)))
-        headView.backgroundColor = .white
+        headView.backgroundColor = .COLOR_BG_WHITE
         
         let grayView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(55)))
         headView.addSubview(grayView)
-        grayView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        grayView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         
         let label = UILabel.init(frame: CGRect.init(x: kFitWidth(16), y: 0, width: kFitWidth(200), height: kFitWidth(55)))
-        label.textColor = .COLOR_GRAY_BLACK_85
+        label.textColor = .COLOR_TEXT_TITLE_0f1214
         label.font = .systemFont(ofSize: 16, weight: .medium)
         
         let dict = self.foodsArray[section]as? NSDictionary ?? [:]

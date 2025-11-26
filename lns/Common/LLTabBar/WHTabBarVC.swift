@@ -16,7 +16,7 @@ class WHTabBarVC : UITabBarController{
     
     lazy var coverWhiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -141,18 +141,18 @@ class WHTabBarVC : UITabBarController{
         let tabBarRect = self.tabBar.bounds
 //        self.tabBar.isHidden = true
         whTabBar.frame = tabBarRect
-        whTabBar.backgroundColor = .COLOR_BG_WHITE
+        whTabBar.backgroundColor = .COLOR_CARD_BG_WHITE
         self.setValue(whTabBar, forKeyPath: "tabBar")
         
         tabbar =  LLMyTabbar.init()
         tabbar.frame = CGRect.init(x: self.tabBar.bounds.minX, y: self.tabBar.bounds.minY, width: self.tabBar.bounds.width, height: self.tabBar.bounds.height)
 //        tabbar.frame = CGRect.init(x: self.tabBar.bounds.minX, y: self.tabBar.bounds.minY-kFitWidth(22), width: self.tabBar.bounds.width, height: self.tabBar.bounds.height+kFitWidth(22))
         tabbar.delegate = self
-        tabbar.backgroundColor = .COLOR_BG_WHITE
+        tabbar.backgroundColor = .COLOR_CARD_BG_WHITE
 //        tabbar.addShadow(opacity: 0.05)
         self.whTabBar.addSubview(tabbar)
         self.whTabBar.tabbar = tabbar
-        self.whTabBar.tabbar.backgroundColor = .COLOR_BG_WHITE
+        self.whTabBar.tabbar.backgroundColor = .COLOR_CARD_BG_WHITE
         
         self.whTabBar.insertSubview(coverWhiteView, belowSubview: tabbar)
         coverWhiteView.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: WHUtils().getTabbarHeight())

@@ -18,6 +18,13 @@ class GoalSetCircleVC: WHBaseViewVC {
     
     var dataChange = false
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+//        if traitCollection.userInterfaceStyle == .dark{
+            previewButton.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214.cgColor
+        nextBtn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
+//        }
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = true
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
@@ -174,22 +181,23 @@ class GoalSetCircleVC: WHBaseViewVC {
     }()
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: self.customCircleVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.customCircleVm.frame.maxY))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()
     lazy var previewButton: UIButton = {
         let btn = UIButton()
-        
+        btn.backgroundColor = .clear
         btn.setTitle("预览目标", for: .normal)
-        btn.setTitleColor(.THEME, for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT, for: .highlighted)
-        btn.setBackgroundImage(createImageWithColor(color: .white), for: .normal)
+//        btn.setBackgroundImage(createImageWithColor(color: .white), for: .normal)
+//        btn.setBackgroundImage(UIImage(named: "button_bg_white"), for: .normal)
 //        btn.setBackgroundImage(createImageWithColor(color: .WIDGET_COLOR_GRAY_BLACK_06), for: .highlighted)
-        btn.layer.cornerRadius = kFitWidth(4)
+        btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
-        btn.layer.borderColor = UIColor.THEME.cgColor
+        btn.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214.cgColor
         btn.layer.borderWidth = kFitWidth(1)
         
         btn.addTarget(self, action: #selector(previewAction), for: .touchUpInside)
@@ -202,11 +210,11 @@ class GoalSetCircleVC: WHBaseViewVC {
 //        btn.frame = CGRect.init(x: kFitWidth(16), y: self.centerVm.frame.maxY + kFitWidth(40), width: kFitWidth(288), height: kFitWidth(48))
         btn.setTitle("保存目标", for: .normal)
         btn.setTitleColor(.white, for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME, for: .highlighted)
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT), for: .disabled)
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-        btn.layer.cornerRadius = kFitWidth(4)
+        btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
         
         btn.addTarget(self, action: #selector(saveAction), for: .touchUpInside)
@@ -491,8 +499,8 @@ extension GoalSetCircleVC{
 extension GoalSetCircleVC{
     func initUI() {
         initNavi(titleStr: "设定目标")
-        self.view.backgroundColor = .white
-        self.navigationView.backgroundColor = .clear
+        self.view.backgroundColor = .COLOR_BG_WHITE
+        self.navigationView.backgroundColor = .COLOR_CARD_BG_WHITE
         self.backArrowButton.tapBlock = {()in
             self.backAction()
         }
@@ -538,15 +546,15 @@ extension GoalSetCircleVC{
 //        }
         previewButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
-            make.width.equalTo(kFitWidth(88))
-            make.height.equalTo(kFitWidth(48))
+            make.width.equalTo(kFitWidth(120))
+            make.height.equalTo(kFitWidth(44))
             make.bottom.equalTo(-getBottomSafeAreaHeight()-kFitWidth(10))
         }
         nextBtn.snp.makeConstraints { make in
 //            make.left.equalTo(kFitWidth(16))
-            make.left.equalTo(previewButton.snp.right).offset(kFitWidth(16))
+            make.left.equalTo(previewButton.snp.right).offset(kFitWidth(12))
             make.right.equalTo(kFitWidth(-16))
-            make.height.equalTo(kFitWidth(48))
+            make.height.equalTo(kFitWidth(44))
             make.bottom.equalTo(-getBottomSafeAreaHeight()-kFitWidth(10))
         }
     }

@@ -199,6 +199,8 @@ extension MallOrderAfterSaleVC{
         view.backgroundColor = .COLOR_BG_F2
         view.addSubview(tableView)
         view.addSubview(bottomVm)
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
     }
     func judgeButtonStatus() {
 //        if self.returnType > 0 && self.returnReason.trimmingCharacters(in: .whitespacesAndNewlines).count > 0{

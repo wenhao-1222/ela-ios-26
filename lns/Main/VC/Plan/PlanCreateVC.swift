@@ -22,6 +22,15 @@ class PlanCreateVC : WHBaseViewVC {
     
     var createBlock:(()->())?
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        if traitCollection.userInterfaceStyle == .dark{
+            view.backgroundColor = .COLOR_BG_WHITE
+        }else{
+            view.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        }
+        self.daysVm.updateDaysNumber(daysNumber: self.daysNumber)
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
     }
@@ -70,7 +79,7 @@ class PlanCreateVC : WHBaseViewVC {
     lazy var tableView: UITableView = {
         let vi = UITableView.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-kFitWidth(72)-getBottomSafeAreaHeight()-getNavigationBarHeight()), style: .plain)
 //        vi.tableHeaderView = headView
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .clear//WHColor_16(colorStr: "F0F0F0")
         vi.separatorStyle = .none
         vi.separatorInset = .zero
         vi.register(PlanCreateTableViewCell.classForCoder(), forCellReuseIdentifier: "PlanCreateTableViewCell")
@@ -132,23 +141,10 @@ class PlanCreateVC : WHBaseViewVC {
     lazy var headView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: PlanCreateNameVM().selfHeight+PlanCreateDaysVM().selfHeight+PlanCreateGoalNaturalVM().selfHeight+PlanCreateFilterVM().selfHeight+kFitWidth(26)))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         
         return vi
     }()
-//    lazy var choiceFoodsAlertVm : PlanCreateFoodsAlertVM = {
-//        let vm = PlanCreateFoodsAlertVM.init(frame: .zero)
-//        vm.controller = self
-//        vm.submitBlock = {()in
-//            self.dealFoodsMsg()
-//            self.refreshNaturalMsg()
-////            self.tableView.reloadData()
-//        }
-////        vm.changeFoodsBlock = {(dict)in
-//        
-////        }
-//        return vm
-//    }()
     lazy var choiceDaysAlertVm : PlanCreateFoodsDaysAlertVM = {
         let vm = PlanCreateFoodsDaysAlertVM.init(frame: .zero)
         vm.isHidden = true
@@ -506,6 +502,11 @@ extension PlanCreateVC{
         }
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(customBackTapAction))
         self.backView.addGestureRecognizer(tap)
+        if traitCollection.userInterfaceStyle == .dark{
+            view.backgroundColor = .COLOR_BG_WHITE
+        }else{
+            view.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        }
         
         view.addSubview(tableView)
         view.addSubview(filterTopVm)

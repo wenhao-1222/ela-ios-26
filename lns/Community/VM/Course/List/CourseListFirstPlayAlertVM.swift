@@ -40,7 +40,7 @@ class CourseListFirstPlayAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: CGRect.init(x: 0, y: -SCREEN_HEIGHT, width: SCREEN_WIDHT, height: SCREEN_HEIGHT*2))
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
 //        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
 //        v.addGestureRecognizer(tap)
@@ -51,7 +51,7 @@ class CourseListFirstPlayAlertVM: UIView {
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
 //        vi.alpha = 0
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingAction))
@@ -84,7 +84,7 @@ class CourseListFirstPlayAlertVM: UIView {
     }()
     lazy var buttonBgView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: kFitWidth(145), width: SCREEN_WIDHT, height: whiteViewHeight-kFitWidth(145)))
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi

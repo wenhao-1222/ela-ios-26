@@ -32,29 +32,7 @@ class FoodsListNewVC: WHBaseViewVC {
         }
 
         self.openInteractivePopGesture()
-//        let showNum = UserDefaults.standard.value(forKey: guide_foods_list_search) as? String ?? ""
-//        if Date().judgeMin(firstTime: UserInfoModel.shared.registDate, secondTime: "2024-12-12",formatter: "yyyy-MM-dd"){
-//            guideAlertVm.isHidden = true
-            naviVm.updateUIForGuide(isGuide: false)
-//        }else{
-//            if showNum == ""{
-//                lastShowNum = "1"
-//                view.insertSubview(guideAlertVm, belowSubview: naviVm)
-//                naviVm.updateUIForGuide(isGuide: true)
-//                self.enableInteractivePopGesture()
-//            }else if showNum == "1"{
-//                if lastShowNum == "1"{
-//                    view.bringSubviewToFront(guideAlertVm)
-//                }else{
-//                    view.insertSubview(guideAlertVm, aboveSubview: naviVm)
-//                }
-//                naviVm.updateUIForGuide(isGuide: false)
-//                self.enableInteractivePopGesture()
-//            }else{
-//                guideAlertVm.isHidden = true
-//                naviVm.updateUIForGuide(isGuide: false)
-//            }
-//        }
+        naviVm.updateUIForGuide(isGuide: false)
         
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
@@ -243,21 +221,6 @@ class FoodsListNewVC: WHBaseViewVC {
         }
         return vm
     }()
-//    lazy var guideAlertVm: GuideFoodsListAlertVM = {
-//        let vm = GuideFoodsListAlertVM.init(frame: .zero)
-//        vm.hiddenBlock = {()in
-//            self.naviVm.updateUIForGuide(isGuide: false)
-//            self.naviVm.textField.resignFirstResponder()
-//            self.view.becomeFirstResponder()
-//            self.openInteractivePopGesture()
-////            self.hiddenGuideAlertVm()
-//        }
-//        vm.searchTapBlock = {()in
-////            self.naviVm.textField.becomeFirstResponder()
-//        }
-//        vm.createFoodsButton.addTarget(self, action: #selector(createFoodsActino), for: .touchUpInside)
-//        return vm
-//    }()
     lazy var noFoodsCreateAlertVm: GuideFoodsListNoDataAlertVM = {
         let vm = GuideFoodsListNoDataAlertVM.init(frame: .zero)
         vm.createFoodsButton.addTarget(self, action: #selector(createFoodsActino), for: .touchUpInside)
@@ -458,6 +421,7 @@ extension FoodsListNewVC{
 extension FoodsListNewVC{
     func initUI() {
 //        view.addSubview(naviVm)
+        view.backgroundColor = .COLOR_CARD_BG_WHITE
         view.insertSubview(naviVm, at: 100)
         view.insertSubview(topTypeVM, belowSubview: naviVm)
         view.insertSubview(createVm, belowSubview: naviVm)

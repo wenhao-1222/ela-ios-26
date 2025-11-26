@@ -17,7 +17,8 @@ class SportCatogaryVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight(), width: selfWidth, height: selfHeight))
-        self.backgroundColor = WHColor_16(colorStr: "F5F5F5")
+//        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = UIColor(named: "color_card_bg_sport_category")//WHColor_16(colorStr: "F5F5F5")
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -71,36 +72,6 @@ extension SportCatogaryVM:UITableViewDelegate,UITableViewDataSource{
             let model = self.dataSourceArray[indexPath.row]
             self.tapBlock!(model)
         }
-//        if indexPath.row == selectIndex { return }
-//
-//            let previousIndex = selectIndex
-//            selectIndex = indexPath.row
-//
-//            let previousIndexPath = IndexPath(row: previousIndex, section: 0)
-//            let currentIndexPath = indexPath
-//
-//            if let preCell = tableView.cellForRow(at: previousIndexPath) as? SportCatogaryTableViewCell {
-//                UIView.transition(with: preCell.contentView, duration: 0.1, options: .transitionCrossDissolve, animations: {
-////                    preCell.setSelect(isSelect: false)
-//                    self.tableView.reloadRows(at: [IndexPath(row: previousIndex, section: 0)], with: .fade)
-//                })
-//            } else {
-//                tableView.reloadRows(at: [previousIndexPath], with: .none)
-//            }
-//
-//            if let curCell = tableView.cellForRow(at: currentIndexPath) as? SportCatogaryTableViewCell {
-//                UIView.transition(with: curCell.contentView, duration: 0.1, options: .transitionCrossDissolve, animations: {
-////                    curCell.setSelect(isSelect: true)
-//                    self.tableView.reloadRows(at: [IndexPath(row: self.selectIndex, section: 0)], with: .fade)
-//                })
-//            } else {
-//                tableView.reloadRows(at: [currentIndexPath], with: .none)
-//            }
-//
-//            if let block = tapBlock {
-//                let model = dataSourceArray[indexPath.row]
-//                block(model)
-//            }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return kFitWidth(48)

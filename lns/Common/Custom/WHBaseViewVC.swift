@@ -32,7 +32,31 @@ class WHBaseViewVC: ViewController {
     override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation{
         return UserConfigModel.shared.userInterfaceOrientation
     }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        DispatchQueue.main.async {
+            if let transitionView = self.view.superview,
+               NSStringFromClass(type(of: transitionView)).contains("UITransitionView") {
+                transitionView.layer.removeAllAnimations()
+            }
+        }
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // 禁用页面展开动画 —— SettingVC 专属方式
+        DispatchQueue.main.async {
+            if let transitionView = self.view.superview,
+               NSStringFromClass(type(of: transitionView)).contains("UITransitionView") {
+                transitionView.layer.removeAllAnimations()
+            }
+        }
+    }
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        // （关键）提前布局，阻止 push 完成后的 subviews 展开动画
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         self.navigationController?.navigationBar.isHidden = true
         UserInfoModel.shared.currentVc = self
         openInteractivePopGesture()
@@ -49,25 +73,24 @@ class WHBaseViewVC: ViewController {
 //        MobClick.endLogPageView(self.ClassName)
 //        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = UIColor.white
+        self.view.backgroundColor = UIColor.COLOR_BG_WHITE
         self.navigationController?.setNavigationBarHidden(true, animated: true)
-        
+        self.navigationController?.navigationItem.largeTitleDisplayMode = .never
+        self.navigationController?.navigationBar.prefersLargeTitles = false
+
         self.view.isUserInteractionEnabled = true
         
-        if #available(iOS 13.0, *) {
-            self.overrideUserInterfaceStyle = .light
-        } else {
-            // Fallback on earlier versions
-        }
+//        if #available(iOS 13.0, *) {
+//            self.overrideUserInterfaceStyle = .unspecified
+//        } else {
+//            // Fallback on earlier versions
+//        }
         
         MobClick.setAutoPageEnabled(true)
-//        UserInfoModel.shared.currentVc = self
-//        self.navigationController?.fd_interactivePopDisabled = true
-        
     }
     
      override func viewWillLayoutSubviews() {
@@ -85,29 +108,15 @@ class WHBaseViewVC: ViewController {
          }
         
     }
-//    override var shouldAutorotate: Bool{
-//        return false
-//    }
-//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-//        return .portrait
-//    }
     lazy var scrollViewBase : UIScrollView = {
         let vi = UIScrollView()
         vi.frame = CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight())
-        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         vi.showsVerticalScrollIndicator = false
         vi.contentInsetAdjustmentBehavior = .never
         
         return vi
     }()
-//    lazy var backArrowButton : GJVerButton = {
-//        let btn = GJVerButton()
-//        btn.setImage(UIImage(named: "back_arrow"), for: .normal)
-//        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
-//        btn.setImage(UIImage(named: "back_arrow_highlight"), for: .highlighted)
-//        btn.addTarget(self, action: #selector(backTapAction), for: .touchUpInside)
-//        return btn
-//    }()
     
     lazy var backArrowButton: NaviBackButton = {
         let btn = NaviBackButton.init(frame: CGRect.init(x: 0, y: statusBarHeight, width: kFitWidth(44), height: kFitWidth(44)))
@@ -119,7 +128,7 @@ class WHBaseViewVC: ViewController {
     
     func initNavigationView(){
        self.view.addSubview(navigationView)
-        navigationView.backgroundColor = UIColor.white
+        navigationView.backgroundColor = UIColor.COLOR_CARD_BG_WHITE
        navigationView.snp.makeConstraints { (frame) in
            frame.width.equalTo(SCREEN_WIDHT)
            frame.height.equalTo(getNavigationBarHeight())
@@ -602,7 +611,7 @@ extension WHBaseViewVC{
 }
 
 extension WHBaseViewVC{
-    func initNavi(titleStr:String,naviBgColor:UIColor? = .white,isWhite:Bool? = false){
+    func initNavi(titleStr:String,naviBgColor:UIColor? = .COLOR_CARD_BG_WHITE,isWhite:Bool? = false){
         let naviView = UIView()
         view.addSubview(naviView)
         naviView.backgroundColor = naviBgColor
@@ -664,12 +673,12 @@ extension WHBaseViewVC{
         
         if isWhite ?? false {
             backArrowImg.image = UIImage.init(named: "back_arrow_white_icon")
-            titleLabel.textColor = .white
+            titleLabel.textColor = .COLOR_TEXT_WHITE
             backArrowButton.backImgView.setImgLocal(imgName: "back_arrow_white_icon")
-            naviTitleLabel.textColor = .white
+            naviTitleLabel.textColor = .COLOR_TEXT_WHITE
         }else{
             backArrowImg.image = UIImage.init(named: "back_arrow")
-            titleLabel.textColor = WHColor_16(colorStr: "222222")
+            titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "222222")
         }
     }
     

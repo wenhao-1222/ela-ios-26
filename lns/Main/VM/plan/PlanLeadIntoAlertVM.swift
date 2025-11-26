@@ -17,6 +17,26 @@ class PlanLeadIntoAlertVM: UIView {
     
     var leadBlock:(()->())?
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0)
@@ -36,7 +56,7 @@ class PlanLeadIntoAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenAlertVm))
         v.addGestureRecognizer(tap)
@@ -47,7 +67,7 @@ class PlanLeadIntoAlertVM: UIView {
         let vi = UIView.init(frame: self.whiteViewFrame)
         vi.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*0.5)
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         
@@ -58,7 +78,7 @@ class PlanLeadIntoAlertVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.9)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColorWithAlpha(colorStr: "000000", alpha: 0.9)
         lab.font = .systemFont(ofSize: 18, weight: .semibold)
         lab.text = "导入计划"
         
@@ -66,7 +86,7 @@ class PlanLeadIntoAlertVM: UIView {
     }()
     lazy var tipsLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.6)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60//WHColorWithAlpha(colorStr: "000000", alpha: 0.6)
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.text = "输入分享码即可导入计划"
         
@@ -74,11 +94,11 @@ class PlanLeadIntoAlertVM: UIView {
     }()
     lazy var textField: UITextField = {
         let text = UITextField()
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 16, weight: .regular)
         text.textAlignment = .center
         text.delegate = self
-        text.backgroundColor = WHColor_16(colorStr: "F3F3F3")
+        text.backgroundColor = .colorBgF2//WHColor_16(colorStr: "F3F3F3")
         text.layer.cornerRadius = kFitWidth(6)
         text.clipsToBounds = true
         text.placeholder = "输入五位数分享码"
@@ -126,7 +146,7 @@ extension PlanLeadIntoAlertVM{
         self.textField.becomeFirstResponder()
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut){
             self.whiteView.alpha = 1
-            self.bgView.alpha = 0.25
+            self.bgView.alpha = self.targetDimAlpha
 //            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         }completion: { _ in
             self.bgView.isUserInteractionEnabled = true

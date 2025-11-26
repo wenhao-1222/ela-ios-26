@@ -22,7 +22,7 @@ class QuestionnaireBodyFatManVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .COLOR_GRAY_FA
+        self.backgroundColor = .COLOR_BG_F5
         self.isUserInteractionEnabled = true
         self.selfHeight = SCREEN_HEIGHT-frame.origin.y
         self.clipsToBounds = true
@@ -57,7 +57,7 @@ class QuestionnaireBodyFatManVM: UIView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.text = "选择您现在的体脂肪"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         
         return lab

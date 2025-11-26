@@ -19,7 +19,7 @@ class MineFoodsTypeVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -31,9 +31,9 @@ class MineFoodsTypeVM: UIView {
         let btn = FeedBackButton()
         btn.frame = CGRect.init(x: kFitWidth(4), y: 0, width: kFitWidth(88), height: selfHeight)
         btn.setTitle("我的食物", for: .normal)
-        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_TEXT_85_LIGHT, for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .highlighted)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .selected)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .highlighted)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .selected)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         
         btn.addTarget(self, action: #selector(myFoodsTapAction), for: .touchUpInside)
@@ -43,9 +43,9 @@ class MineFoodsTypeVM: UIView {
         let btn = FeedBackButton()
         btn.frame = CGRect.init(x: kFitWidth(92), y: 0, width: kFitWidth(128), height: selfHeight)
         btn.setTitle("我的食谱/餐食", for: .normal)
-        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_TEXT_85_LIGHT, for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .highlighted)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .selected)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .highlighted)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .selected)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         
         btn.addTarget(self, action: #selector(myMealsTapAction), for: .touchUpInside)

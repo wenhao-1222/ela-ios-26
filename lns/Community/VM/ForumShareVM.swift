@@ -25,12 +25,28 @@ class ForumShareVM: UIView {
     
     var reportForumBlock:(()->())?
     var deleteForumBlock:(()->())?
-    
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       UIView.animate(withDuration: 0.2) {
+           self.bgView.alpha = self.targetDimAlpha
+           self.cancelButton.setBackgroundImage(createImageWithColor(color: .COLOR_CARD_BG_WHITE), for: .normal)
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+        self.backgroundColor = .clear//.COLOR_BG_BLACK.withAlphaComponent(0.65)//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         self.isUserInteractionEnabled = true
-        self.alpha = 0
+//        self.alpha = 0
         self.isHidden = true
         initUI()
         
@@ -44,18 +60,22 @@ class ForumShareVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private lazy var bgView: UIView = {
+        let v = UIView(frame: bounds)
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.alpha = 0
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
+        v.addGestureRecognizer(tap)
+        return v
+    }()
     lazy var whiteView : UIView = {
         let vi = UIView(frame: CGRect(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.alpha = 0
-        
-        // [修改] 移除 whiteView 自身的 tap（它会“吃掉”子视图按钮的触摸）
-        // let tap = UITapGestureRecognizer(target: self, action: #selector(nothingAction))
-        // tap.cancelsTouchesInView = false
-        // vi.addGestureRecognizer(tap)
         
         return vi
     }()
@@ -65,13 +85,13 @@ class ForumShareVM: UIView {
         let btn = PlanShareButton(frame: CGRect(x: kFitWidth(27), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
         btn.imgView.setImgLocal(imgName: "forum_share_wechat_icon")
         btn.contenLab.text = "微信"
-        btn.contenLab.textColor = .COLOR_GRAY_BLACK_45
-        btn.labelColor = .COLOR_GRAY_BLACK_45
+        btn.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        btn.labelColor = .COLOR_TEXT_TITLE_0f1214_50
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
         btn.tapBlock = { [weak self] in
             guard let self else { return }
             self.shareToSession()
-            self.wechatButton.contenLab.textColor = .COLOR_GRAY_BLACK_45
+            self.wechatButton.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         }
         return btn
     }()
@@ -79,13 +99,13 @@ class ForumShareVM: UIView {
         let btn = PlanShareButton(frame: CGRect(x: kFitWidth(115), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
         btn.imgView.setImgLocal(imgName: "forum_share_circle_icon")
         btn.contenLab.text = "朋友圈"
-        btn.contenLab.textColor = .COLOR_GRAY_BLACK_45
-        btn.labelColor = .COLOR_GRAY_BLACK_45
+        btn.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        btn.labelColor = .COLOR_TEXT_TITLE_0f1214_50
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
         btn.tapBlock = { [weak self] in
             guard let self else { return }
             self.shareToTimeLine()
-            self.circleButton.contenLab.textColor = .COLOR_GRAY_BLACK_45
+            self.circleButton.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         }
         return btn
     }()
@@ -93,13 +113,13 @@ class ForumShareVM: UIView {
         let btn = PlanShareButton(frame: CGRect(x: kFitWidth(203), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
         btn.imgView.setImgLocal(imgName: "forum_share_copy_icon")
         btn.contenLab.text = "复制链接"
-        btn.contenLab.textColor = .COLOR_GRAY_BLACK_45
-        btn.labelColor = .COLOR_GRAY_BLACK_45
+        btn.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        btn.labelColor = .COLOR_TEXT_TITLE_0f1214_50
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
         btn.tapBlock = { [weak self] in
             guard let self else { return }
             self.copyLinkAction()
-            self.copyButton.contenLab.textColor = .COLOR_GRAY_BLACK_45
+            self.copyButton.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         }
         return btn
     }()
@@ -107,13 +127,13 @@ class ForumShareVM: UIView {
         let btn = PlanShareButton(frame: CGRect(x: kFitWidth(291), y: kFitWidth(20), width: kFitWidth(58), height: kFitWidth(60)))
         btn.imgView.setImgLocal(imgName: "forum_share_report_icon")
         btn.contenLab.text = "举报"
-        btn.contenLab.textColor = .COLOR_GRAY_BLACK_45
-        btn.labelColor = .COLOR_GRAY_BLACK_45
+        btn.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        btn.labelColor = .COLOR_TEXT_TITLE_0f1214_50
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
         btn.tapBlock = { [weak self] in
             guard let self else { return }
             self.reportAction()
-            self.reportButton.contenLab.textColor = .COLOR_GRAY_BLACK_45
+            self.reportButton.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         }
         return btn
     }()
@@ -123,28 +143,28 @@ class ForumShareVM: UIView {
         btn.imgView.image = UIImage(systemName: "trash.fill")
         btn.imgView.tintColor = .systemRed
         btn.isHidden = true
-        btn.contenLab.textColor = .COLOR_GRAY_BLACK_45
-        btn.labelColor = .COLOR_GRAY_BLACK_45
+        btn.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        btn.labelColor = .COLOR_TEXT_TITLE_0f1214_50
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
         btn.tapBlock = { [weak self] in
             guard let self else { return }
             self.deleteAction()
-            self.deleteButton.contenLab.textColor = .COLOR_GRAY_BLACK_45
+            self.deleteButton.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         }
         return btn
     }()
     lazy var lineGapView: UIView = {
         let vi = UIView(frame: CGRect(x: 0, y: kFitWidth(92), width: SCREEN_WIDHT, height: kFitWidth(8)))
-        vi.backgroundColor = .COLOR_LIGHT_GREY
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
     lazy var cancelButton: UIButton = {
         let btn = UIButton(frame: CGRect(x: 0, y: kFitWidth(100), width: SCREEN_WIDHT, height: kFitWidth(40)))
-        btn.setBackgroundImage(createImageWithColor(color: .white), for: .normal)
-        btn.setBackgroundImage(createImageWithColor(color: .COLOR_LINE_GREY), for: .highlighted)
+        btn.setBackgroundImage(createImageWithColor(color: .COLOR_CARD_BG_WHITE), for: .normal)
+        btn.setBackgroundImage(createImageWithColor(color: .COLOR_LINE_F0), for: .highlighted)
         btn.setTitle("取消", for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.addTarget(self, action: #selector(hiddenView), for: .touchUpInside)
         return btn
     }()
@@ -304,9 +324,11 @@ extension ForumShareVM{
             }
         }
 
+        self.bgView.alpha = 0
         // 动画展示弹窗
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear) {
-            self.alpha = 1
+//            self.alpha = 1
+            self.bgView.alpha = self.targetDimAlpha
             self.whiteView.alpha = 1
             self.whiteView.center = CGPoint(x: bounds.width * 0.5,
                                             y: (bounds.height - self.whiteViewHeight * 0.5 + kFitWidth(16)))
@@ -340,8 +362,10 @@ extension ForumShareVM{
             copyButton.center = CGPoint(x: bounds.width*0.5, y: buttonY)
         }
         
+        self.bgView.alpha = 0
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear) {
-            self.alpha = 1
+//            self.alpha = 1
+            self.bgView.alpha = self.targetDimAlpha
             self.whiteView.alpha = 1
             self.whiteView.center = CGPoint(x: bounds.width*0.5,
                                             y: (bounds.height - self.whiteViewHeight*0.5 + kFitWidth(16)))
@@ -351,7 +375,8 @@ extension ForumShareVM{
     @objc func hiddenView() {
         let bounds = appDelegate.getKeyWindow().bounds
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveLinear) {
-            self.alpha = 0
+//            self.alpha = 0
+            self.bgView.alpha = 0
             self.whiteView.alpha = 0.7
             self.whiteView.center = CGPoint(x: bounds.width*0.5,
                                             y: bounds.height*1.5 + kFitWidth(16))
@@ -369,6 +394,7 @@ extension ForumShareVM{
 
 extension ForumShareVM{
     func initUI() {
+        addSubview(bgView)
         addSubview(whiteView)
         whiteView.addSubview(wechatButton)
         whiteView.addSubview(circleButton)

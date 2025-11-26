@@ -32,7 +32,7 @@ class AILimitationTipsAlertVm: UIView {
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
@@ -42,7 +42,7 @@ class AILimitationTipsAlertVm: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.text = "AI识别限制说明"
@@ -57,7 +57,7 @@ class AILimitationTipsAlertVm: UIView {
         lab.lineBreakMode = .byWordWrapping
         
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         return lab
     }()
     lazy var contentLabel2: UILabel = {
@@ -67,12 +67,12 @@ class AILimitationTipsAlertVm: UIView {
         lab.lineBreakMode = .byWordWrapping
         
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         return lab
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_LINE_F0//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         
         return vi
     }()

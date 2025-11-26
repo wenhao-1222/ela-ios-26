@@ -38,10 +38,12 @@ class ForumNaviTypeLiquidVM: UIView {
         // 初始选中「发现」
 //        seg.selectedSegmentIndex = 1
         seg.backgroundColor = UIColor.clear
-        seg.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_03.cgColor
-        seg.layer.borderWidth = kFitWidth(2)
+//        seg.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_03.cgColor
+//        seg.layer.borderWidth = kFitWidth(2)
         if #available(iOS 13.0, *) {
-            seg.selectedSegmentTintColor = UIColor.white.withAlphaComponent(0.6) // 让选中更贴近玻璃感（可按需改）
+//            seg.selectedSegmentTintColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.6) // 让选中更贴近玻璃感（可按需改）
+            seg.selectedSegmentTintColor = UIColor(named: "color_bg_white_lequid_seg")!//UIColor.white.withAlphaComponent(0.6) // 让选中更贴近玻璃感（可按需改）
+//            seg.setBackgroundImage(createImageWithColor(color: UIColor(named: "color_bg_white_lequid_seg")!), for: .selected, barMetrics: .compact)
             // 普通/选中态颜色
             seg.setTitleTextAttributes([
                 .font: UIFont.systemFont(ofSize: 16, weight: .semibold),
@@ -55,7 +57,6 @@ class ForumNaviTypeLiquidVM: UIView {
         seg.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
         return seg
     }()
-
     // 保留原有发布按钮逻辑
     lazy var publishButton: UIButton = {
         let btn = UIButton(type: .custom)
@@ -63,6 +64,10 @@ class ForumNaviTypeLiquidVM: UIView {
         btn.isHidden = !UserInfoModel.shared.isAllowedPosterForum
         return btn
     }()
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        self.segmentDecorator?.changeStyle()
+    }
     
     // MARK: Init
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }

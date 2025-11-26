@@ -29,7 +29,7 @@ class NeedBuildPlanVC: WHBaseViewVC {
     lazy var topTitleLabel : UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.textColor = .black
+        lab.textColor = .COLOR_BG_BLACK
         lab.text = "设定您的营养目标"
         
         return lab
@@ -48,7 +48,7 @@ class NeedBuildPlanVC: WHBaseViewVC {
         let btn = FeedBackButton()
         btn.layer.cornerRadius = kFitWidth(36)
         btn.clipsToBounds = true
-        btn.backgroundColor = WHColor_16(colorStr: "007AFF")
+        btn.backgroundColor = .THEME//WHColor_16(colorStr: "007AFF")
 //        btn.setTitle("需要营养目标以及饮食计划", for: .normal)
 //        btn.setTitle("• 智能推荐", for: .normal)
         btn.setTitle("智能推荐", for: .normal)
@@ -66,7 +66,7 @@ class NeedBuildPlanVC: WHBaseViewVC {
         let btn = FeedBackButton()
         btn.layer.cornerRadius = kFitWidth(36)
         btn.clipsToBounds = true
-        btn.backgroundColor = WHColor_16(colorStr: "007AFF")
+        btn.backgroundColor = .THEME//WHColor_16(colorStr: "007AFF")
         btn.setTitle("手动输入", for: .normal)
 //        btn.setTitle("需要营养目标，不需要饮食计划", for: .normal)
         btn.setTitleColor(WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.85), for: .highlighted)
@@ -82,7 +82,7 @@ class NeedBuildPlanVC: WHBaseViewVC {
         btn.layer.cornerRadius = kFitWidth(36)
         btn.clipsToBounds = true
         btn.isHidden = true
-        btn.backgroundColor = WHColor_16(colorStr: "007AFF")
+        btn.backgroundColor = .THEME//WHColor_16(colorStr: "007AFF")
         btn.setTitle("否，我需要营养目标", for: .normal)
 //        btn.setTitle("自己制定营养目标", for: .normal)
         btn.setTitleColor(WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.85), for: .highlighted)
@@ -96,21 +96,25 @@ class NeedBuildPlanVC: WHBaseViewVC {
     }()
     lazy var bottomView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         vi.isUserInteractionEnabled = true
         
         return vi
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "D9D9D9")
+        if traitCollection.userInterfaceStyle == .dark{
+            vi.backgroundColor = .COLOR_LINE_F0
+        }else{
+            vi.backgroundColor = WHColor_16(colorStr: "D9D9D9")
+        }
         
         return vi
     }()
     lazy var loginBtn : FeedBackButton = {
         let btn = FeedBackButton()
         btn.setTitle("登录", for: .normal)
-        btn.setTitleColor(WHColor_16(colorStr: "007AFF"), for: .normal)
+        btn.setTitleColor(.THEME, for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
         
@@ -212,7 +216,7 @@ extension NeedBuildPlanVC{
 }
 extension NeedBuildPlanVC{
     func initUI(){
-        view.backgroundColor = WHColor_16(colorStr: "F6F6F6")
+        view.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "F6F6F6")
         
         view.addSubview(topTitleLabel)
         view.addSubview(tipsButton)

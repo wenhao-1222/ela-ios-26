@@ -296,6 +296,8 @@ extension MallOrderDetailVC{
         }
         
         view.addSubview(tableView)
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
     }
     func updateNaviTitle() {
         if orderDict.stringValueForKey(key: "status") == "1"{

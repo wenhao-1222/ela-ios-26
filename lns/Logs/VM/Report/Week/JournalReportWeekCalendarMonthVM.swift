@@ -13,7 +13,7 @@ class JournalReportWeekCalendarMonthVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: selfWidth, height: selfHeight))
-        self.backgroundColor = .COLOR_GRAY_FA
+        self.backgroundColor = .COLOR_BG_FA
         self.isUserInteractionEnabled = true
         self.layer.cornerRadius = kFitWidth(8)
         self.clipsToBounds = true

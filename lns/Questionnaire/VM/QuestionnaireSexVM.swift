@@ -26,14 +26,14 @@ class QuestionnaireSexVM: UIView {
     lazy var sexLabel: UILabel = {
         let lab = UILabel()
         lab.text = "您的性别是？"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         
         return lab
     }()
     lazy var sexManButton: FeedBackButton = {
         let btn = FeedBackButton()
-        btn.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        btn.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         btn.layer.cornerRadius = kFitWidth(40)
         btn.clipsToBounds = true
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT), for: .highlighted)
@@ -58,7 +58,7 @@ class QuestionnaireSexVM: UIView {
     }()
     lazy var sexFeManButton: FeedBackButton = {
         let btn = FeedBackButton()
-        btn.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        btn.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         btn.layer.cornerRadius = kFitWidth(40)
         btn.clipsToBounds = true
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT), for: .highlighted)
@@ -81,34 +81,6 @@ class QuestionnaireSexVM: UIView {
         
         return lab
     }()
-    
-//    lazy var sexManButton : GJVerButton = {
-//        let btn = GJVerButton()
-//        btn.setTitle("男", for: .normal)
-//        btn.setImage(UIImage.init(named: "sex_icon_man_normal"), for: .normal)
-//        btn.setTitleColor(.white, for: .normal)
-//        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-//        btn.back
-//        btn.backgroundColor = .COLOR_GRAY_BLACK_85
-//        btn.layer.cornerRadius = kFitWidth(8)
-//        btn.clipsToBounds = true
-//        btn.addTarget(self, action: #selector(femanTapAction), for: .touchUpInside)
-//        
-//        return btn
-//    }()
-//    lazy var sexFeManButton : GJVerButton = {
-//        let btn = GJVerButton()
-//        btn.setTitle("女", for: .normal)
-//        btn.setImage(UIImage.init(named: "sex_icon_feman_normal"), for: .normal)
-//        btn.setTitleColor(.white, for: .normal)
-//        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-//        btn.backgroundColor = .COLOR_GRAY_BLACK_85
-//        btn.layer.cornerRadius = kFitWidth(8)
-//        btn.clipsToBounds = true
-//        btn.addTarget(self, action: #selector(femanTapAction), for: .touchUpInside)
-//        
-//        return btn
-//    }()
 }
 
 extension QuestionnaireSexVM{
@@ -120,9 +92,9 @@ extension QuestionnaireSexVM{
         
         sexManButton.backgroundColor = .THEME
         sexManIcon.setImgLocal(imgName: "sex_icon_man")//sex_icon_man_normal
-        sexManLabel.textColor = .white
+        sexManLabel.textColor = .COLOR_TEXT_WHITE
         
-        sexFeManButton.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        sexFeManButton.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         sexFeManIcon.setImgLocal(imgName: "sex_icon_feman_normal")//sex_icon_feman_normal
         sexFeManLabel.textColor = WHColor_16(colorStr: "595959")
         
@@ -136,13 +108,13 @@ extension QuestionnaireSexVM{
         }
         QuestinonaireMsgModel.shared.sex = "2"
         
-        sexManButton.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        sexManButton.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         sexManIcon.setImgLocal(imgName: "sex_icon_man_normal")//
         sexManLabel.textColor = WHColor_16(colorStr: "595959")
         
-        sexFeManButton.backgroundColor = WHColor_16(colorStr: "FE5A7D")
+        sexFeManButton.backgroundColor = UIColor(named: "color_sex_femal")!//WHColor_16(colorStr: "FE5A7D")
         sexFeManIcon.setImgLocal(imgName: "sex_icon_feman")//sex_icon_feman_normal
-        sexFeManLabel.textColor = .white
+        sexFeManLabel.textColor = .COLOR_TEXT_WHITE
         
         if self.femanTapBlock != nil{
             self.femanTapBlock!()

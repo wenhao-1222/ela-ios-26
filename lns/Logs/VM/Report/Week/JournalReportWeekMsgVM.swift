@@ -69,7 +69,7 @@ class JournalReportWeekMsgVM: UIView {
     }()
     lazy var bottomWhiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: selfHeight-bottomWidthHeight, width: SCREEN_WIDHT, height: bottomWidthHeight))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.isHidden = true
         
@@ -79,7 +79,7 @@ class JournalReportWeekMsgVM: UIView {
         let originY = WHUtils().getBottomSafeAreaHeight() > 0 ? kFitWidth(11) : kFitWidth(5)
         let btn = UIButton.init(frame: CGRect.init(x: kFitWidth(85), y: originY, width: SCREEN_WIDHT-kFitWidth(170), height: kFitWidth(44)))
         btn.setTitle("保存图片", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
 //        btn.backgroundColor = .THEME
@@ -97,7 +97,7 @@ class JournalReportWeekMsgVM: UIView {
     lazy var nodataVm: WeekReportNoDataVM = {
         let vm = WeekReportNoDataVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
         vm.isHidden = true
-        vm.backgroundColor = .white
+        vm.backgroundColor = .COLOR_BG_WHITE
         return vm
     }()
 }
@@ -219,7 +219,7 @@ extension JournalReportWeekMsgVM:UITableViewDelegate,UITableViewDataSource{
                 let footV = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(20)))
                 footV.backgroundColor = .clear
                 let vi = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: 0, width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(20)))
-                vi.backgroundColor = .white
+                vi.backgroundColor = .COLOR_CARD_BG_WHITE
                 vi.addClipCorner(corners: [.bottomLeft,.bottomRight], radius: kFitWidth(12))
                 
                 footV.addSubview(vi)

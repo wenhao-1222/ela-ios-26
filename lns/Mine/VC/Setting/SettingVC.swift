@@ -13,12 +13,23 @@ class SettingVC: WHBaseViewVC {
     var versionMsgDict = NSDictionary()
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         bindPhoneVm.detailLabel.text = "\(UserInfoModel.shared.phoneStar)"
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
         
         personalSettingVm.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // 禁用页面展开动画 —— SettingVC 专属方式
+        DispatchQueue.main.async {
+            if let transitionView = self.view.superview,
+               NSStringFromClass(type(of: transitionView)).contains("UITransitionView") {
+                transitionView.layer.removeAllAnimations()
+            }
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -139,7 +150,7 @@ extension SettingVC{
 extension SettingVC{
     func initUI() {
         initNavi(titleStr: "系统设置")
-        view.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         
         view.addSubview(scrollViewBase)
         scrollViewBase.frame = CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight())
@@ -154,6 +165,8 @@ extension SettingVC{
         scrollViewBase.addSubview(registerProtocalVm)
         scrollViewBase.addSubview(privaceVm)
         scrollViewBase.addSubview(bottomVm)
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         
         scrollViewBase.contentSize = CGSize.init(width: 0, height: bottomVm.frame.maxY+getBottomSafeAreaHeight())
     }

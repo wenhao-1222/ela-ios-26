@@ -43,7 +43,7 @@ class DataDetailTypeSettingAlertVM: UIView {
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         return vi
@@ -91,7 +91,7 @@ extension DataDetailTypeSettingAlertVM{
 //            }
         }else{
             vm.selectImgView.isHidden = true
-            vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+            vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
         
         if daysIndex == 0{
@@ -110,7 +110,7 @@ extension DataDetailTypeSettingAlertVM{
     func setSelectIndex(index:Int) {
         for vm in vmDataArray{
             vm.selectImgView.isHidden = true
-            vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+            vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
         
         let vm = vmDataArray[index]
@@ -118,7 +118,6 @@ extension DataDetailTypeSettingAlertVM{
         vm.titleLabel.textColor = .THEME
     }
 }
-
 
 extension DataDetailTypeSettingAlertVM{
     func initUI()  {
@@ -139,7 +138,7 @@ extension DataDetailTypeSettingAlertVM{
 //                vm.titleLabel.textColor = .THEME
 //            }else{
                 vm.selectImgView.isHidden = true
-                vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+                vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
 //            }
             whiteView.addSubview(vm)
 //            vm.tag = 1150 + i
@@ -183,7 +182,7 @@ class DataDetailTypeSettingAlertItemVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: kFitWidth(120), height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))
@@ -196,14 +195,14 @@ class DataDetailTypeSettingAlertItemVM: UIView {
     }
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()

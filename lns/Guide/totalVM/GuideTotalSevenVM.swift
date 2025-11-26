@@ -58,7 +58,7 @@ class GuideTotalSevenVM: UIView {
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(18)
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         return vi
     }()
     lazy var imgView: UIImageView = {

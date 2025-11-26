@@ -24,7 +24,7 @@ class JournalReportWeightCell: UITableViewCell {
     }
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isSkeletonable = true
         
         return vi

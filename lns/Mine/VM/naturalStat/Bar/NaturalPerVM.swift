@@ -25,7 +25,7 @@ class NaturalPerVM: UIView {
     }
     lazy var whiteBgView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(8), y: kFitWidth(8), width: whiteWidth, height: kFitWidth(106)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(12)
         
@@ -34,24 +34,35 @@ class NaturalPerVM: UIView {
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
         
-        var attr = NSMutableAttributedString(string: "均值")
-        let detailAttr = NSMutableAttributedString(string: "(每日)")
+//        var attr = NSMutableAttributedString(string: "均值")
+//        let detailAttr = NSMutableAttributedString(string: "(每日)")
+//        
+//        attr.yy_font = .systemFont(ofSize: 18, weight: .bold)
+//        attr.yy_color = .COLOR_GRAY_BLACK_85
+//        
+//        detailAttr.yy_font = .systemFont(ofSize: 12, weight: .medium)
+//        detailAttr.yy_color = .COLOR_GRAY_BLACK_45
+//
+//        attr.append(detailAttr)
         
-        attr.yy_font = .systemFont(ofSize: 18, weight: .bold)
-        attr.yy_color = .COLOR_GRAY_BLACK_85
+        let a = NSMutableAttributedString(
+            string: "均值",
+            attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+                         .font: UIFont.systemFont(ofSize: 18, weight: .bold)]
+        )
+        a.append(NSAttributedString(
+            string: "(每日)",
+            attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                         .font: UIFont.systemFont(ofSize: 12, weight: .medium)]
+        ))
         
-        detailAttr.yy_font = .systemFont(ofSize: 12, weight: .medium)
-        detailAttr.yy_color = .COLOR_GRAY_BLACK_45
-
-        attr.append(detailAttr)
-        
-        lab.attributedText = attr
+        lab.attributedText = a
         
         return lab
     }()
     lazy var caloriesNumLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.textAlignment = .center
@@ -60,7 +71,7 @@ class NaturalPerVM: UIView {
     }()
     lazy var caloriesNumLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.text = "热量(千卡)"
@@ -70,7 +81,7 @@ class NaturalPerVM: UIView {
     }()
     lazy var carboNumLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.textAlignment = .center
@@ -79,7 +90,7 @@ class NaturalPerVM: UIView {
     }()
     lazy var carboNumLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.text = "碳水(g)"
@@ -89,7 +100,7 @@ class NaturalPerVM: UIView {
     }()
     lazy var proteinNumLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.textAlignment = .center
@@ -98,7 +109,7 @@ class NaturalPerVM: UIView {
     }()
     lazy var proteinNumLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.text = "蛋白质(g)"
@@ -108,7 +119,7 @@ class NaturalPerVM: UIView {
     }()
     lazy var fatNumLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.textAlignment = .center
@@ -117,7 +128,7 @@ class NaturalPerVM: UIView {
     }()
     lazy var fatNumLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.text = "脂肪(g)"

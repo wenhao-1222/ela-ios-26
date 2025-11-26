@@ -29,7 +29,7 @@ class BindOtherAccountItemVM: UIButton {
     lazy var bgView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()
@@ -41,7 +41,7 @@ class BindOtherAccountItemVM: UIButton {
     }()
     lazy var titleLab : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.isUserInteractionEnabled = true
         
@@ -49,7 +49,7 @@ class BindOtherAccountItemVM: UIButton {
     }()
     lazy var detailLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.isUserInteractionEnabled = true
         
@@ -58,7 +58,7 @@ class BindOtherAccountItemVM: UIButton {
     lazy var arrowImgView: UIImageView = {
         let img = UIImageView()
         img.isUserInteractionEnabled = true
-        img.setImgLocal(imgName: "mine_func_arrow")
+        img.setImgLocal(imgName: "plan_arrow_gray")
         
         return img
     }()
@@ -67,19 +67,19 @@ class BindOtherAccountItemVM: UIButton {
 extension BindOtherAccountItemVM{
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         TouchGenerator.shared.touchGenerator()
-        bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
+        bgView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        bgView.backgroundColor = .white
+        bgView.backgroundColor = .COLOR_CARD_BG_WHITE
     }
     override var isHighlighted: Bool {
        didSet {
            if isHighlighted {
                // 当按钮被高亮时，更改按钮的状态，如颜色等
-               bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
+               bgView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
            } else {
                // 当按钮高亮状态结束时，恢复按钮的原始状态
-               bgView.backgroundColor = .white
+               bgView.backgroundColor = .COLOR_CARD_BG_WHITE
            }
        }
    }
@@ -88,7 +88,7 @@ extension BindOtherAccountItemVM{
          if self.tapBlock != nil{
              self.tapBlock!()
          }
-        bgView.backgroundColor = .white
+        bgView.backgroundColor = .COLOR_CARD_BG_WHITE
      }
 }
 

@@ -13,8 +13,8 @@ class MainNutrientItemVM: UIView {
     var selfWidth = (SCREEN_WIDHT-kFitWidth(32)-kFitWidth(55))/3//kFitWidth(96)
     
     var progressColor = UIColor()
-    private let normalColor = WHColor_16(colorStr: "008858")
-    private let overflowColor = WHColor_16(colorStr: "D54941")
+    private let normalColor = UIColor.COLOR_TEXT_MAIN_NATURAL//WHColor_16(colorStr: "008858")
+    private let overflowColor = UIColor.COLOR_TEXT_MAIN_NATURAL_OVER//WHColor_16(colorStr: "D54941")
     
     var editBlock:(()->())?
     
@@ -125,9 +125,9 @@ extension MainNutrientItemVM{
         let totalAttrt = NSMutableAttributedString(string: "/\(totalInt)g")
         
         attr.yy_font = .systemFont(ofSize: 12, weight: .medium)
-        attr.yy_color = .COLOR_GRAY_BLACK_65
+        attr.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         totalAttrt.yy_font = .systemFont(ofSize: 12, weight: .regular)
-        totalAttrt.yy_color = .COLOR_GRAY_BLACK_65
+        totalAttrt.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         attr.append(totalAttrt)
         
         numberLabel.attributedText = attr

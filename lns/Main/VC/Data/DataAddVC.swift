@@ -40,11 +40,6 @@ class DataAddVC : WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let cTime = isUpdate ? msgDict.stringValueForKey(key: "ctime") : self.dateFilterAlertVm.dateStringYear
-//        if !self.isUpdate && !BodyDataSQLiteManager.getInstance().queryTable(sDate: Date().todayDate){
-//            BodyDataSQLiteManager.getInstance().insertDataUseSql(cTime: Date().todayDate, imgurl: "", hipsData: "", weightData: "", waistlineData: "", armcircumferenceData: "", shoulderData: "", bustData: "", thighData: "", calfData: "", images: "", upload: false)
-//        }
-        
         initUI()
         if !isUpdate {
             loadDataForSelectedDate()
@@ -54,8 +49,6 @@ class DataAddVC : WHBaseViewVC {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(updateUI), name: NSNotification.Name(rawValue: "updateBodyDataSetting"), object: nil)
-        
-        
     }
     lazy var customButton : FeedBackButton = {
         let button = FeedBackButton()
@@ -82,20 +75,9 @@ class DataAddVC : WHBaseViewVC {
         }
         return vm
     }()
-//    lazy var imgVm : DataAddItemImageVM = {
-//        let vm = DataAddItemImageVM.init(frame: CGRect.init(x: 0, y: self.topFilterVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
-//        vm.leftTitleLabel.text = "照片"
-//        vm.imgTapBlock = {()in
-//            self.takePickture()
-//        }
-//        vm.clearImgBlock = {()in
-//            self.imgUrlString = ""
-//        }
-//        return vm
-//    }()
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .clear//WHColor_16(colorStr: "FAFAFA")
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -184,7 +166,7 @@ class DataAddVC : WHBaseViewVC {
     }()
     lazy var clearWhiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: self.biweiVm.frame.maxY, width: SCREEN_WIDHT, height: kFitWidth(50)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.isHidden = true
         return vi
@@ -208,15 +190,15 @@ class DataAddVC : WHBaseViewVC {
         return vi
     }()
     lazy var saveBottomView: UIView = {
-        let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getBottomSafeAreaHeight()-kFitWidth(102), width: SCREEN_WIDHT, height: kFitWidth(96)))
-        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getBottomSafeAreaHeight()-kFitWidth(102), width: SCREEN_WIDHT, height: getBottomSafeAreaHeight()+kFitWidth(102)))
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         vi.isUserInteractionEnabled = true
         return vi
     }()
     lazy var saveButton : UIButton = {
 //        let btn = UIButton.init(frame: CGRect.init(x: kFitWidth(20), y: self.calfVm.frame.maxY+kFitWidth(40), width: kFitWidth(335), height: kFitWidth(56)))
 //        let btn = UIButton.init(frame: CGRect.init(x: kFitWidth(20), y: SCREEN_HEIGHT-getBottomSafeAreaHeight()-kFitWidth(102), width: kFitWidth(335), height: kFitWidth(56)))
-        let btn = UIButton.init(frame: CGRect.init(x: kFitWidth(20), y: kFitWidth(0), width: SCREEN_WIDHT-kFitWidth(40), height: kFitWidth(56)))
+        let btn = UIButton.init(frame: CGRect.init(x: kFitWidth(20), y: kFitWidth(10), width: SCREEN_WIDHT-kFitWidth(40), height: kFitWidth(56)))
         btn.setTitle("保存", for: .normal)
         btn.setTitleColor(.white, for: .normal)
 //        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME), for: .highlighted)
@@ -234,7 +216,7 @@ class DataAddVC : WHBaseViewVC {
     lazy var tipsLabel: UILabel = {
         let lab = UILabel()
         lab.text = "- 以上数据均可选填 -"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         return lab
     }()
@@ -408,14 +390,15 @@ extension DataAddVC{
     func initUI() {
         initNavi(titleStr: "编辑数据")
 //        initNavi(titleStr: "添加数据")
-        view.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         self.navigationView.addSubview(customButton)
+        self.navigationView.backgroundColor = .COLOR_CARD_BG_WHITE
         
         view.addSubview(topFilterVm)
         
-        let scrollViewHeight = SCREEN_HEIGHT-self.bottomView.frame.minY
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: saveBottomView.frame.minY)
         scrollViewBase.bounces = false
+        scrollViewBase.backgroundColor = .clear
         
         view.insertSubview(bottomView, belowSubview: self.navigationView)
         bottomView.addSubview(scrollViewBase)
@@ -435,7 +418,8 @@ extension DataAddVC{
         saveBottomView.addSubview(tipsLabel)
         
         scrollViewBase.contentSize = CGSize.init(width: 0, height: clearWhiteView.frame.maxY)
-        
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
         view.addSubview(dateFilterAlertVm)
         
         topFilterVm.setTime(time: dateFilterAlertVm.weekDay)
@@ -859,7 +843,7 @@ extension DataAddVC{
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.bottomView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*0.5)
 //            self.scrollViewBase.contentOffset = CGPoint.init(x: 0, y: 0)
-            self.saveBottomView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT-self.getBottomSafeAreaHeight()-kFitWidth(102), width: SCREEN_WIDHT, height: kFitWidth(96))
+            self.saveBottomView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT-self.getBottomSafeAreaHeight()-kFitWidth(102), width: SCREEN_WIDHT, height: self.getBottomSafeAreaHeight()+kFitWidth(102))
         }
         self.scrollViewBase.setContentOffset(CGPoint.init(x: 0, y: 0), animated: true)
         self.scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.saveBottomView.frame.minY)

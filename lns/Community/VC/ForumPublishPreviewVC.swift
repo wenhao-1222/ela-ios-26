@@ -305,6 +305,9 @@ extension ForumPublishPreviewVC{
     func initUI() {
         view.addSubview(naviVm)
         view.addSubview(scrollViewBase)
+        
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
         scrollViewBase.frame = CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-naviVm.selfHeight-bottomFuncVm.selfHeight)
         
         group = DispatchGroup()

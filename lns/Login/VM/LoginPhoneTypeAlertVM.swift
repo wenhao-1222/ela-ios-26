@@ -32,7 +32,7 @@ class LoginPhoneTypeAlertVM: UIView {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vi.isUserInteractionEnabled = true
 //        vi.clipsToBounds = true
-        vi.backgroundColor = .white//WHColorWithAlpha(colorStr: "000000", alpha: 0.2)
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColorWithAlpha(colorStr: "000000", alpha: 0.2)
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         return vi
@@ -58,7 +58,7 @@ extension LoginPhoneTypeAlertVM{
     func setSelectStatus(daysIndex:Int) {
         for vm in vmDataArray{
 //            vm.selectImgView.isHidden = true
-            vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+            vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
         
         let vm = vmDataArray[daysIndex]
@@ -102,7 +102,7 @@ extension LoginPhoneTypeAlertVM{
                 vm.titleLabel.textColor = .THEME
             }else{
 //                vm.selectImgView.isHidden = true
-                vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+                vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
             }
             
             if dataArray.count > 5 {

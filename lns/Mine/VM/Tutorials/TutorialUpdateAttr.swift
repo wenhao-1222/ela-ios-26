@@ -72,11 +72,11 @@ extension TutorialAttr{
         step3.yy_minimumLineHeight = lineHeight
         step4.yy_lineSpacing = kFitWidth(4)
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step2)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step3)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step4)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step3)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step4)
         
         titleAttr.append(step1)
         titleAttr.append(step2)
@@ -100,16 +100,16 @@ extension TutorialAttr{
         let step5 = NSMutableAttributedString(string: "如需要复制当日饮食到其他日期")
         let step6 = NSMutableAttributedString(string: "：点击同步用餐，并勾选需要粘贴的日期并点击确认同步")
         
-        step2 = createAttributedStringWithImage(image: UIImage(named: "tutorials_down_arrow_icon")!, text: "步骤 2：通过滑动或点击进度条选择该计划的时长，并通过\n点击")
+        step2 = createAttributedStringWithImage(image: UIImage(named: "tutorials_down_arrow_icon")!.withTintColor(.COLOR_TEXT_TITLE_0f1214), text: "步骤 2：通过滑动或点击进度条选择该计划的时长，并通过\n点击")
         step3 = createAttributedStringWithImage(image: UIImage(named: "tutorials_add_icon")!, text: "选择需要编辑的日期\n步骤3：通过点击")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step3)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step4)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step5)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step6)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step3)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step4)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step5)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step6)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step1.yy_minimumLineHeight = lineHeight
@@ -135,7 +135,7 @@ extension TutorialAttr{
     }
     func getTutorial_1_2_2(){
         let titleAttr = NSMutableAttributedString(string: " 分享计划给其他用户\n")
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
         titleAttr.yy_lineSpacing = lineSpacing
         
         tutorial_array_1.add(["attr":titleAttr,
@@ -147,8 +147,8 @@ extension TutorialAttr{
         let titleAttr = NSMutableAttributedString(string: "1.3 接收计划用户的操作\n")
         let step1 = NSMutableAttributedString(string: "自动接收计划：将分享码复制在剪切板，进入 Elavatine 软件后将自动唤醒弹窗，点击确认导入该计划即可")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step1)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step1.yy_minimumLineHeight = lineHeight
@@ -171,14 +171,14 @@ extension TutorialAttr{
         let step6 = NSMutableAttributedString(string: "如需更换目标")
         let step7 = NSMutableAttributedString(string: "：直接重复步骤1，2，3即可，或参照（2.2）")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step2)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step3)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step4)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step5)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step6)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step7)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step3)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step4)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step5)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step6)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step7)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step1.yy_minimumLineHeight = lineHeight
@@ -212,11 +212,11 @@ extension TutorialAttr{
         let step2 = NSMutableAttributedString(string: "\n步骤 2：填写自己的营养目标并点击保存\n")
         let step3 = NSMutableAttributedString(string: "如需更换目标：直接重复步骤1，2即可，或参照（2.1）")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
         step1 = createAttributedStringWithImage(image: UIImage(named: "tutorials_edit_icon")!, text: "步骤 1：在“首页”点击左上角的")
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_regular, attr: step2)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step3)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step3)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step1.yy_minimumLineHeight = lineHeight
@@ -246,7 +246,7 @@ extension TutorialAttr{
         
         titleAttr.yy_lineSpacing = lineSpacing
         
-        step1 = createAttributedStringWithImage(image: UIImage.init(named: "tutorials_plan_list_icon")!, text: "步骤 1：在计划列表点击刚刚保存的计划（如果没有自动转跳到计划列表，请点击日志右上角")
+        step1 = createAttributedStringWithImage(image: UIImage.init(named: "tutorials_plan_list_icon")!.withTintColor(.COLOR_TEXT_TITLE_0f1214), text: "步骤 1：在计划列表点击刚刚保存的计划（如果没有自动转跳到计划列表，请点击日志右上角")
         step1.yy_minimumLineHeight = lineHeight
         step2.yy_minimumLineHeight = lineHeight
         step3.yy_minimumLineHeight = lineHeight
@@ -254,12 +254,12 @@ extension TutorialAttr{
         step5.yy_minimumLineHeight = lineHeight
         
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step3)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step4)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step5)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step3)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step4)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step5)
         
         titleAttr.append(step1)
         titleAttr.append(step2)
@@ -281,9 +281,9 @@ extension TutorialAttr{
         let step1 = NSMutableAttributedString(string: "查看计划")
         let step2 = NSMutableAttributedString(string: "：点击激活后计划会从当日开始显示在日志列表中，可通过前后翻页查看前一天/后一天的饮食计划")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step1.yy_minimumLineHeight = lineHeight
@@ -307,8 +307,8 @@ extension TutorialAttr{
         
         step2 = createAttributedStringWithImage(image: UIImage.init(named: "tutorials_eat_icon")!, text: "：食用完该食物之后点击列表右边的")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
         
         step1.yy_minimumLineHeight = lineHeight
         step2.yy_minimumLineHeight = lineHeight
@@ -327,10 +327,10 @@ extension TutorialAttr{
         
         step2 = createAttributedStringWithImage(image: UIImage.init(named: "tutorials_add_icon")!, text: "：如某餐吃了计划以外的食物，或根据营养目标自行添加食物的用户，可通过点击该餐右上角的")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step3)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step3)
         
         step1.yy_minimumLineHeight = lineHeight
         step2.yy_minimumLineHeight = lineHeight
@@ -353,8 +353,8 @@ extension TutorialAttr{
         
 //        step2 = createAttributedStringWithImage(image: UIImage.init(named: "tutorials_eat_icon")!, text: "：食用完该食物之后点击列表右边的")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
         
         step1.yy_minimumLineHeight = lineHeight
         step2.yy_minimumLineHeight = lineHeight
@@ -377,9 +377,9 @@ extension TutorialAttr{
         
         step2 = createAttributedStringWithImage(image: UIImage.init(named: "tutorials_eat_icon")!, text: "：如果实际吃的食物比计划安排的多/少，可在点击完")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step3)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step3)
         
         step1.yy_minimumLineHeight = lineHeight
         step2.yy_minimumLineHeight = lineHeight
@@ -399,8 +399,8 @@ extension TutorialAttr{
         
 //        step2 = createAttributedStringWithImage(image: UIImage.init(named: "tutorials_eat_icon")!, text: "：食用完该食物之后点击列表右边的")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
         
         step1.yy_minimumLineHeight = lineHeight
         step2.yy_minimumLineHeight = lineHeight
@@ -417,9 +417,9 @@ extension TutorialAttr{
         let step1 = NSMutableAttributedString(string: "如果数据库中没有您想要的食物")
         let step2 = NSMutableAttributedString(string: "，可以在搜索页点击左上角的“创建食物”，填写食物名字，单位，营养成分，（系统会自动为您计算出该食物的卡路里，也可以手动填写）并点击保存。随后在食物搜索页，我的食物栏目下点击该食物添加即可")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step1.yy_minimumLineHeight = lineHeight
@@ -444,11 +444,11 @@ extension TutorialAttr{
         let step3 = NSMutableAttributedString(string: "快速添加")
         let step4 = NSMutableAttributedString(string: "”，填写该食物的营养成分（系统会自动为您计算出该食物的卡路里，若只知道卡路里，不知道营养素，可只手动填写卡路里）并点击添加即可")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step3)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step4)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step3)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step4)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step1.yy_minimumLineHeight = lineHeight
@@ -480,12 +480,12 @@ extension TutorialAttr{
         
         step4 = createAttributedStringWithImage(image: UIImage(named: "tutorials_setting_icon")!, text:"：在“我的”页面点击右上角的" )
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step3)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step4)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step5)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step3)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step4)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step5)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step1.yy_minimumLineHeight = lineHeight
@@ -518,13 +518,13 @@ extension TutorialAttr{
         
         step2 = createAttributedStringWithImage(image: UIImage(named: "tutorials_share_icon_theme")!, text: "”\n步骤 2：点击需要分享的计划进入计划详情\n步骤3：点击右上角的")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step3)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step4)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step5)
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_11_medium, attr: step6)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step3)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step4)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step5)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_11_medium, attr: step6)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step1.yy_minimumLineHeight = lineHeight
@@ -559,9 +559,9 @@ extension TutorialAttr{
         
         step4 = createAttributedStringWithImage(image: UIImage(named: "tutorials_share_icon")!, text:"在日志内需要分享饮食的日期点击右上角的" )
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step4)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step5)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step4)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step5)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step4.yy_minimumLineHeight = lineHeight
@@ -577,7 +577,7 @@ extension TutorialAttr{
     }
     func getTutorial_8_2(){
         let titleAttr = NSMutableAttributedString(string: "如何接收别人分享的计划\n")
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
         titleAttr.yy_lineSpacing = lineSpacing
         
         tutorial_array_8.add(["attr":titleAttr,
@@ -591,8 +591,8 @@ extension TutorialAttr{
         let step1 = NSMutableAttributedString(string: "步骤 1：在“首页”体重数据栏/体重维度栏旁边的“+”进入添加数据页面\n步骤 2：填写任意数据或上传图片并点击保存\n每天每种数据只能记录一次，如重复上传将以最后一个数据为准")
         
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step1)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step1.yy_minimumLineHeight = lineHeight
@@ -611,8 +611,8 @@ extension TutorialAttr{
         let step1 = NSMutableAttributedString(string: "在“首页”点击体重数据栏/体重维度栏\n您可以通过对比身体状况、数据变化以及历史饮食日志，调整并优化计划，以找到最适合的饮食方案")
         
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step1)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step1.yy_minimumLineHeight = lineHeight
@@ -630,12 +630,12 @@ extension TutorialAttr{
         let step4 = NSMutableAttributedString(string: "4.选择“Elavatine”，左后滑动选择小组件样式\n")
         let step5 = NSMutableAttributedString(string: "5.点击“添加小组件按钮”即可")
         
-        setAttr(color: .COLOR_GRAY_BLACK_85, font: font_13_medium, attr: titleAttr)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step1)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step2)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step3)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step4)
-        setAttr(color: .COLOR_GRAY_BLACK_65, font: font_11_regular, attr: step5)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214, font: font_13_medium, attr: titleAttr)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step1)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step2)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step3)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step4)
+        setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_regular, attr: step5)
         
         titleAttr.yy_lineSpacing = lineSpacing
         step1.yy_minimumLineHeight = lineHeight

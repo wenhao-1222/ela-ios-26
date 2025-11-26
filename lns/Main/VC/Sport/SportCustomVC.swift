@@ -36,7 +36,7 @@ class SportCustomVC: WHBaseViewVC {
     lazy var nameLab: UILabel = {
         let lab = UILabel()
         lab.text = "运动名称"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .bold)
         
         return lab
@@ -45,7 +45,7 @@ class SportCustomVC: WHBaseViewVC {
         let text = UITextField()
         text.placeholder = "请输入"
         text.text = self.model.name
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 16, weight: .bold)
         text.textAlignment = .right
         text.delegate = self
@@ -54,7 +54,7 @@ class SportCustomVC: WHBaseViewVC {
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()
@@ -117,6 +117,7 @@ extension SportCustomVC{
     func initUI() {
         initNavi(titleStr: "自定义运动")
         self.navigationView.addSubview(confirmButton)
+        view.backgroundColor = .COLOR_BG_WHITE
         
         view.addSubview(nameLab)
         view.addSubview(nameTextField)

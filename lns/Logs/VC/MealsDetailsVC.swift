@@ -73,13 +73,13 @@ class MealsDetailsVC : WHBaseViewVC{
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.topImgView.selfHeight+self.nameVm.selfHeight))
 //        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.topImgView.selfHeight+self.nameVm.selfHeight+self.caloriesVm.selfHeight))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         
         return vi
     }()
     lazy var tableView: UITableView = {
         let vi = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getBottomSafeAreaHeight()-kFitWidth(56)), style: .grouped)
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.separatorStyle = .none
         vi.separatorInset = .zero
         vi.bounces = false
@@ -571,16 +571,13 @@ extension MealsDetailsVC{
         view.addSubview(tableView)
         
         initNavi(titleStr: "食谱/餐食",isWhite: true)
-        self.backArrowButton.setImgName(imgName: "back_arrow_white_icon")
+//        self.backArrowButton.setImgName(imgName: "back_arrow_white_icon")
+        self.backArrowButton.setImgName(imgName: "back_arrow_white_icon_light")
         self.navigationView.backgroundColor = WHColorWithAlpha(colorStr: "001833", alpha: 0.04)
         self.navigationView.addSubview(editVm)
         
         headView.addSubview(self.topImgView)
         headView.addSubview(self.nameVm)
-//        headView.addSubview(self.caloriesVm)
-//        tableView.tableHeaderView = headView
-//        tableView.tableFooterView = footView
-        
         view.addSubview(addButton)
         view.addSubview(eatButton)
         view.addSubview(remarkAlertVm)

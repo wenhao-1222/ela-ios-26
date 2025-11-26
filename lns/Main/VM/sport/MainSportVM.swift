@@ -27,7 +27,7 @@ class MainSportVM: UIView {
     
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(0), width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.isUserInteractionEnabled = true
         
@@ -40,7 +40,7 @@ class MainSportVM: UIView {
         let lab = UILabel()
         lab.text = "运动消耗"
         lab.font = .systemFont(ofSize: 18, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         
         return lab
     }()

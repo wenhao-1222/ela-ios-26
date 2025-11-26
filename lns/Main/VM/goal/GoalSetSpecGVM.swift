@@ -22,7 +22,7 @@ class GoalSetSpecGVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: kFitWidth(0), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()

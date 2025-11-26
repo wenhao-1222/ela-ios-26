@@ -66,7 +66,7 @@ class MineFuncItemVM: UIButton {
     lazy var arrowImgView: UIImageView = {
         let img = UIImageView()
         img.isUserInteractionEnabled = true
-        img.setImgLocal(imgName: "mine_func_arrow")
+        img.setImgLocal(imgName: "plan_arrow_gray")
         
         return img
     }()

@@ -47,7 +47,7 @@ class NaturalStatTimeFilterAlertVM: UIView {
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         return vi
@@ -123,7 +123,7 @@ extension NaturalStatTimeFilterAlertVM{
     func selectType(daysIndex:Int) {
         for vm in vmDataArray{
             vm.selectImgView.isHidden = true
-            vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+            vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
         let vm = vmDataArray[daysIndex]
         vm.selectImgView.isHidden = false
@@ -164,7 +164,7 @@ extension NaturalStatTimeFilterAlertVM{
                 vm.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(8))
             }else{
                 vm.selectImgView.isHidden = true
-                vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+                vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
                 if i == typeArray.count-1{
                     vm.addClipCorner(corners: [.bottomLeft,.bottomRight], radius: kFitWidth(8))
                 }

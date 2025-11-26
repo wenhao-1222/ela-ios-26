@@ -130,28 +130,6 @@ class PropotionResultVC: WHBaseViewVC {
         }
         return vm
     }()
-//    lazy var caloriVm : FoodsCreateCaloriVM = {
-//        let vm = FoodsCreateCaloriVM.init(frame: CGRect.init(x: 0, y: self.specVm.frame.maxY, width: 0, height: 0))
-////        vm.numberLabel.isEnabled = false
-//        vm.numberChangeBlock = {(number)in
-//            if number.count > 0 {
-//                self.saveButton.isEnabled = true
-//                self.calculateNaturalMsg(caloriesNum: number)
-//            }else{
-//                self.saveButton.isEnabled = false
-//                self.calculateNaturalMsg(caloriesNum: number)
-//                if self.carNumber == 0 && self.proteinNumber == 0 && self.fatNumber == 0{
-//                    self.caloriVm.numberLabel.text = ""
-//                    return
-//                }
-//                self.saveButton.isEnabled = true
-//            }
-//        }
-//        vm.unitChangeBlock = {()in
-//            self.calculateNaturalMsg()
-//        }
-//        return vm
-//    }()
     lazy var carboVm : FoodsCreateItemVM = {
         let vm = FoodsCreateItemVM.init(frame: CGRect.init(x: 0, y: self.caloriVm.frame.maxY, width: 0, height: 0))
         vm.titleLabel.text = "碳水"
@@ -210,19 +188,13 @@ class PropotionResultVC: WHBaseViewVC {
             }else{
                 self.naturalVm.inputNumer = Double(self.naturalVm.defaultNumer)
             }
-//            if self.specVm.numberTextField.text?.count ?? 0 > 0 {
-//                self.calculateNaturalMsg(specNum: self.specVm.numberTextField.text)
-//            }else{
-//                self.calculateNaturalMsg(specNum: self.specVm.numberTextField.placeholder)
-//            }
             self.calculateNaturalMsg()
-//            self.calculateNaturalMsgChangeQty()
         }
         return vm
     }()
     lazy var btnBgView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-kFitWidth(60)-getBottomSafeAreaHeight(), width: SCREEN_WIDHT, height: kFitWidth(60)+getBottomSafeAreaHeight()))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -465,6 +437,8 @@ extension PropotionResultVC{
         
         scrollViewBase.contentSize = CGSize.init(width: 0, height: self.naturalVm.frame.maxY)
         
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         bottomView.addSubview(btnBgView)
         btnBgView.addSubview(saveButton)
         btnBgView.addShadow(opacity: 0.08,offset: CGSize.init(width: 0, height: -3))

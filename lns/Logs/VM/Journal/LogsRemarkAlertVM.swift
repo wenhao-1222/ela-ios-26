@@ -30,11 +30,36 @@ class LogsRemarkAlertVM: UIView {
     var rowItems:[TagRowView] = [TagRowView]()
     var selectModels:[TAG_MODEL] = [TAG_MODEL]()
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           if traitCollection.userInterfaceStyle == .dark{
+               self.whiteView.backgroundColor = WHColor_16(colorStr: "222222")
+           }else{
+               self.whiteView.backgroundColor = .white
+           }
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         self.isUserInteractionEnabled = true
-        self.alpha = 0
+//        self.alpha = 0
         self.isHidden = true
         
         initUI()
@@ -45,13 +70,23 @@ class LogsRemarkAlertVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    private lazy var bgView: UIView = {
+        let v = UIView(frame: bounds)
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.alpha = 0
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
+        v.addGestureRecognizer(tap)
+        return v
+    }()
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight()+SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
-        vi.alpha = 0
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
+//        vi.alpha = 0
         
         // 创建下拉手势识别器
         let panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(gesture:)))
@@ -74,7 +109,7 @@ class LogsRemarkAlertVM: UIView {
     
     lazy var arrowButton : UIButton = {
         let btn = UIButton()
-        btn.setImage(UIImage(named: "logs_remark_arrow_down"), for: .normal)
+        btn.setImage(UIImage(named: "logs_remark_arrow_down")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         
 //        btn.addTarget(self, action: #selector(hiddenView), for: .touchUpInside)
@@ -93,7 +128,7 @@ class LogsRemarkAlertVM: UIView {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_LINE_F0
         
         return vi
     }()
@@ -107,14 +142,14 @@ class LogsRemarkAlertVM: UIView {
     lazy var placeHoldLabel : UILabel = {
         let lab = UILabel()
         lab.text = "这里输入您的注释说明"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
     }()
     lazy var textView : UITextView = {
         let vi = UITextView.init(frame: CGRect.init(x: kFitWidth(18), y: kFitWidth(22), width: kFitWidth(200), height: kFitWidth(180)))
-        vi.textColor = .COLOR_GRAY_BLACK_85
+        vi.textColor = .COLOR_TEXT_TITLE_0f1214
         vi.font = .systemFont(ofSize: 14, weight: .regular)
         vi.delegate = self
         vi.backgroundColor = .clear
@@ -136,6 +171,8 @@ class LogsRemarkAlertVM: UIView {
 extension LogsRemarkAlertVM{
     func showView() {
         self.isHidden = false
+        self.bgView.alpha = 0
+        bgView.isUserInteractionEnabled = false
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow), name: UIResponder.keyboardDidShowNotification, object: nil)
         
         self.textView.becomeFirstResponder()
@@ -145,38 +182,27 @@ extension LogsRemarkAlertVM{
                        usingSpringWithDamping: 0.88,
                        initialSpringVelocity: 0.1,
                        options: [.curveEaseOut, .allowUserInteraction]) {
-            self.alpha = 1
-            self.whiteView.alpha = 1
+//            self.alpha = 1
+//            self.whiteView.alpha = 1
+            self.bgView.alpha = self.targetDimAlpha//0.25
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.whiteViewHeight*0.5+self.topGap-kFitWidth(2))
         }
         UIView.animate(withDuration: 0.25, delay: 0.4, options: .curveEaseInOut) {
-//            self.whiteView.transform = .identity
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.whiteViewHeight*0.5+self.topGap)
+        } completion: { _ in
+            self.bgView.isUserInteractionEnabled = true
         }
-        
-//        UIView.animate(withDuration: 0.2, delay: 0,options: .curveLinear) {
-//            self.alpha = 1
-//            self.whiteView.alpha = 1
-//            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.whiteViewHeight*0.5+self.topGap)
-//        }completion: { t in
-////            self.textView.becomeFirstResponder()
-//        }
     }
     @objc func hiddenView() {
         self.whiteView.becomeFirstResponder()
         self.textView.resignFirstResponder()
         
-        DLLog(message: "selectModels:\(selectModels)")
-//        selectModels.forEach {
-//            DLLog(message: "\($0.name) -- \($0.value)")
-//            DLLog(message: "\($0.name) -- \($0.valueArr)")
-//        }
-        
         self.hideBlock?(self.selectModels,self.textView.text)
         NotificationCenter.default.removeObserver(self)
         UIView.animate(withDuration: 0.2, delay: 0,options: .curveLinear) {
-            self.alpha = 0
-            self.whiteView.alpha = 0.3
+//            self.alpha = 0
+//            self.whiteView.alpha = 0.3
+            self.bgView.alpha = 0
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
         }completion: { t in
             self.isHidden = true
@@ -282,6 +308,7 @@ extension LogsRemarkAlertVM{
 
 extension LogsRemarkAlertVM{
     func initUI() {
+        addSubview(bgView)
         addSubview(whiteView)
         whiteView.addSubview(leftTitleLabel)
         whiteView.addSubview(arrowButton)

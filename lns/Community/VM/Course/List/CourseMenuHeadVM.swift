@@ -101,7 +101,7 @@ class CourseMenuHeadVM : UIView{
     }()
     lazy var typeLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColor_16(colorStr: "007AFF")
+        lab.textColor = .THEME//WHColor_16(colorStr: "007AFF")
         lab.font = .systemFont(ofSize: 11, weight: .medium)
         
         return lab

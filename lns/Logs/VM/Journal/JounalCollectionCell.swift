@@ -401,7 +401,7 @@ extension JounalCollectionCell{
         goalVm.winnerPopView.closeSelfAction()
     }
     func reloadTableView() {
-        self.editSelectAllVm.selecImgView.setImgLocal(imgName: "logs_edit_normal")
+        self.editSelectAllVm.selecImgView.setImgLocal(imgName: "logs_edit_all_normal")
         self.goalVm.winnerPopView.closeSelfAction()
         if self.isEdit{
             self.goalVm.winnerVm.isHidden = true
@@ -433,7 +433,7 @@ extension JounalCollectionCell{
         
         self.isEdit = isEdit
         self.queryDay = date
-        self.editSelectAllVm.selecImgView.setImgLocal(imgName: "logs_edit_normal")
+        self.editSelectAllVm.selecImgView.setImgLocal(imgName: "logs_edit_all_normal")
 //        if self.isEdit{
 //            self.editSelectAllVm.isHidden = false
 //            self.editHeadView.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.editSelectAllVm.frame.maxY)
@@ -986,7 +986,7 @@ extension JounalCollectionCell{
         }
         saveDataToSqlDB()
         self.isEdit = false
-        self.editSelectAllVm.selecImgView.setImgLocal(imgName: "logs_edit_normal")
+        self.editSelectAllVm.selecImgView.setImgLocal(imgName: "logs_edit_all_normal")
         self.editSelectAllVm.isHidden = true
         self.editHeadView.frame = self.goalVm.frame
         

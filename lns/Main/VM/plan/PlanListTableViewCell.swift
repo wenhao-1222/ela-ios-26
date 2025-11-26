@@ -15,15 +15,14 @@ class PlanListTableViewCell: FeedBackTableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.selectionStyle = .none
-        
         
         initUI()
     }
     lazy var nameLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         lab.numberOfLines = 1
 
@@ -45,7 +44,7 @@ class PlanListTableViewCell: FeedBackTableViewCell {
     }()
     lazy var planDaysLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.numberOfLines = 1
         
@@ -53,7 +52,7 @@ class PlanListTableViewCell: FeedBackTableViewCell {
     }()
     lazy var timeLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
         return lab
@@ -67,7 +66,7 @@ class PlanListTableViewCell: FeedBackTableViewCell {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         return vi
     }()
 }

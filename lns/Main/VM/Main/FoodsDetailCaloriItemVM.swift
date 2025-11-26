@@ -28,7 +28,7 @@ class FoodsDetailCaloriItemVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.textAlignment = .center
@@ -37,7 +37,7 @@ class FoodsDetailCaloriItemVM: UIView {
     }()
     lazy var numberLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
         lab.textAlignment = .center
@@ -47,7 +47,7 @@ class FoodsDetailCaloriItemVM: UIView {
     }()
     lazy var percentLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.85)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60//WHColorWithAlpha(colorStr: "000000", alpha: 0.85)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
         lab.textAlignment = .center

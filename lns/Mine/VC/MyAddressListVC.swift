@@ -116,6 +116,8 @@ extension MyAddressListVC{
         
         view.addSubview(bottomVm)
 
+        self.view.layoutIfNeeded()
+
     }
     func initData() {
         let model = AddressModel()

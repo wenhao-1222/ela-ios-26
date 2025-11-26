@@ -14,7 +14,7 @@ class PublishImagesVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: selfWidth, height: selfWidth))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         self.layer.cornerRadius = kFitWidth(8)
         self.clipsToBounds = true
@@ -43,7 +43,7 @@ class PublishImagesVM: UIView {
     }()
     lazy var coverView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_GRAY_BLACK_65
+        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_50
         
         return vi
     }()

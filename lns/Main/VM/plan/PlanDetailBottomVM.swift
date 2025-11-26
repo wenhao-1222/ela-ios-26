@@ -18,7 +18,7 @@ class PlanDetailBottomVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-selfHeight, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         self.addShadow()
@@ -29,7 +29,7 @@ class PlanDetailBottomVM: UIView {
     }
     lazy var bottomView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         return vi
     }()
     lazy var activeButton : FeedBackButton = {
@@ -59,14 +59,14 @@ class PlanDetailBottomVM: UIView {
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F5F5F5")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F5F5F5")
         
         return vi
     }()
     lazy var saveButton: FeedBackButton = {
         let btn = FeedBackButton()
         btn.setTitle("保存", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
 //        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME), for: .highlighted)
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
@@ -115,7 +115,7 @@ extension PlanDetailBottomVM{
         if isUpdate{
             self.bottomView.backgroundColor = .THEME
         }else{
-            self.bottomView.backgroundColor = .white
+            self.bottomView.backgroundColor = .COLOR_CARD_BG_WHITE
         }
     }
     func setConstrait() {

@@ -9,7 +9,7 @@ final class KeywordHighlightLabel: UILabel {
 
     var config = HighlightConfig(
         font: .systemFont(ofSize: 16, weight: .semibold),
-        textColor: .black,
+        textColor: .COLOR_BG_BLACK,
         underlineColor: .THEME,
         underlineThickness: kFitWidth(4)
     )
@@ -31,7 +31,7 @@ final class KeywordHighlightLabel: UILabel {
         para.lineSpacing = lineSpacing
 
         let baseFont = self.font ?? UIFont.systemFont(ofSize: 14)
-        let baseColor = self.textColor ?? .black
+        let baseColor = self.textColor ?? .COLOR_BG_BLACK
 
         let attr = NSMutableAttributedString(string: text, attributes: [
             .font: baseFont,
@@ -153,65 +153,6 @@ final class KeywordHighlightLabel: UILabel {
         ctx.restoreGState()
         super.drawText(in: padded)
     }
-
-
-//    override func draw(_ rect: CGRect) {
-//        guard let attrText = attributedText,
-//              let ctx = UIGraphicsGetCurrentContext() else {
-//            super.draw(rect)
-//            return
-//        }
-//
-//        let paddedRect = rect.inset(by: textInsets)
-//        let container = NSTextContainer(size: paddedRect.size)
-//        container.maximumNumberOfLines = numberOfLines
-//        container.lineFragmentPadding = 0
-//
-//        let lm = NSLayoutManager()
-//        let ts = NSTextStorage(attributedString: attrText)
-//        ts.addLayoutManager(lm)
-//        lm.addTextContainer(container)
-//        lm.ensureLayout(for: container)
-//
-//        ctx.saveGState()
-//        ctx.translateBy(x: paddedRect.minX, y: paddedRect.minY)
-//        ctx.setStrokeColor(config.underlineColor.cgColor)
-//        ctx.setLineWidth(config.underlineThickness)
-//
-//        let ctFont = CTFontCreateWithName(config.font.fontName as CFString, config.font.pointSize, nil)
-//        let ascent = CTFontGetAscent(ctFont)
-//        let descent = CTFontGetDescent(ctFont)
-//        let extraGap: CGFloat = config.underlineThickness*0.75
-//
-//        for kw in keywordRanges {
-//            lm.enumerateEnclosingRects(
-//                forGlyphRange: kw,
-////                withinSelectedGlyphRange: kw,
-//                withinSelectedGlyphRange: NSRange(location: NSNotFound, length: 0),
-//                in: container
-//            ) { rect, _ in
-//                // 获取该区域内的字符 range
-//                let glyphRange = lm.glyphRange(forBoundingRect: rect, in: container)
-//                
-//                // 获取字符对应的字形
-//                let boundingRect = lm.boundingRect(forGlyphRange: glyphRange, in: container)
-//                
-//                // 如果该区域的宽度为 0 或无实际字符宽度，则跳过
-//                guard boundingRect.width > 0.1 else {
-//                    return
-//                }
-//                let baselineY = rect.origin.y + CGFloat(ascent)
-//                let underlineY = baselineY + CGFloat(descent) + extraGap
-//
-//                ctx.move(to: CGPoint(x: rect.minX, y: underlineY))
-//                ctx.addLine(to: CGPoint(x: rect.maxX, y: underlineY))
-//                ctx.strokePath()
-//            }
-//        }
-//
-//        ctx.restoreGState()
-//        super.drawText(in: rect.inset(by: textInsets)) // 字盖在线上
-//    }
 
     override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
         let insetBounds = bounds.inset(by: textInsets)

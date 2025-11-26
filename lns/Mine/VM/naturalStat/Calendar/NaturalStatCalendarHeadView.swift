@@ -17,14 +17,14 @@ class NaturalStatCalendarHeadView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(48)))
-        self.backgroundColor = .white
+        self.backgroundColor = .clear
         self.isUserInteractionEnabled = true
         
         initUI()
     }
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
         
         return vi
     }()
@@ -47,7 +47,7 @@ extension NaturalStatCalendarHeadView{
         for i in 0..<weekDaysArray.count{
             let label = UILabel.init(frame: CGRect.init(x: kFitWidth(11)+itemWidth*CGFloat(i), y: 0, width: itemWidth, height: kFitWidth(48)))
             label.text = weekDaysArray[i]as? String ?? ""
-            label.textColor = .COLOR_GRAY_BLACK_65
+            label.textColor = .COLOR_TEXT_TITLE_0f1214_60
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 14, weight: .medium)
             addSubview(label)
@@ -68,7 +68,7 @@ extension NaturalStatCalendarHeadView{
         for i in 0..<arr.count{
             let label = UILabel.init(frame: CGRect.init(x: kFitWidth(11)+itemWidth*CGFloat(i), y: 0, width: itemWidth, height: kFitWidth(48)))
             label.text = arr[i]
-            label.textColor = .COLOR_GRAY_BLACK_65
+            label.textColor = .COLOR_TEXT_TITLE_0f1214_60
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 14, weight: .medium)
             addSubview(label)

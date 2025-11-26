@@ -85,5 +85,8 @@ extension MallOrderAfterSaleSubmitVC{
         view.backgroundColor = .COLOR_BG_F2
         view.addSubview(tableView)
         view.addSubview(bottomVm)
+        
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
     }
 }

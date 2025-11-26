@@ -21,7 +21,7 @@ class GoalSetCircleDaysVM: UIView {
     var edgePanChangeX = kFitWidth(0)
     
     var daysChangeBlock:((Int)->())?
-    
+
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
         self.backgroundColor = .white
@@ -36,13 +36,14 @@ class GoalSetCircleDaysVM: UIView {
     }
     lazy var iconImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "create_plan_weeks_icon")
+//        img.setImgLocal(imgName: "create_plan_weeks_icon")
+        img.image = UIImage(named: "create_plan_weeks_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_60)
         
         return img
     }()
     lazy var titleLabel : YYLabel = {
         let lab = YYLabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         return lab
     }()
@@ -190,10 +191,10 @@ extension GoalSetCircleDaysVM{
         stringTwo.yy_color = .THEME
         stringTwo.yy_font = .systemFont(ofSize: 14, weight: .regular)
         
-        stringOne.yy_color = .COLOR_GRAY_BLACK_65
+        stringOne.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         stringOne.yy_font = .systemFont(ofSize: 14, weight: .regular)
         
-        stringThree.yy_color = .COLOR_GRAY_BLACK_65
+        stringThree.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         stringThree.yy_font = .systemFont(ofSize: 14, weight: .regular)
         
         stringOne.append(stringTwo)

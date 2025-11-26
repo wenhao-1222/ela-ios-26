@@ -21,7 +21,7 @@ class PublishVideoCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -51,7 +51,7 @@ class PublishVideoCell: UITableViewCell {
         let btn = UIButton()
         btn.setTitle("选封面", for: .normal)
         btn.setTitleColor(.white, for: .normal)
-        btn.backgroundColor = .COLOR_GRAY_BLACK_65
+        btn.backgroundColor = .COLOR_TEXT_TITLE_0f1214_60
         btn.layer.cornerRadius = kFitWidth(12)
         btn.clipsToBounds = true
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
@@ -62,9 +62,9 @@ class PublishVideoCell: UITableViewCell {
     }()
     lazy var timeLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.95)
+        lab.textColor = .COLOR_TEXT_WHITE.withAlphaComponent(0.95)//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.95)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
-        lab.backgroundColor = .COLOR_GRAY_BLACK_25
+        lab.backgroundColor = .COLOR_TEXT_TITLE_0f1214_25
         lab.layer.cornerRadius = kFitWidth(4)
         lab.clipsToBounds = true
         lab.textAlignment = .center

@@ -15,7 +15,7 @@ class SynMyFoodsVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -26,7 +26,7 @@ class SynMyFoodsVM: UIView {
     lazy var titleLab: UILabel = {
         let lab = UILabel()
         lab.text = "保存到我的食物"
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         return lab
     }()

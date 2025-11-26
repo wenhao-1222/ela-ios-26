@@ -49,7 +49,7 @@ class FoodsMergeVC: WHBaseViewVC {
     }
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -89,7 +89,7 @@ class FoodsMergeVC: WHBaseViewVC {
         return vm
     }()
     lazy var naturalMsgVm : FoodsMergeNaturalVM = {
-        let vm = FoodsMergeNaturalVM.init(frame: CGRect.init(x: 0, y: self.specVm.frame.maxY, width: 0, height: 0))
+        let vm = FoodsMergeNaturalVM.init(frame: CGRect.init(x: 0, y: self.specVm.frame.maxY-kFitWidth(0.5), width: 0, height: 0))
         return vm
     }()
     lazy var nameTipsVm: FoodsMergeListNameVM = {
@@ -103,7 +103,7 @@ class FoodsMergeVC: WHBaseViewVC {
         let vi = ForumCommentListTableView.init(frame: CGRect.init(x: kFitWidth(16), y: self.nameTipsVm.frame.maxY, width: SCREEN_WIDHT-kFitWidth(32), height: SCREEN_HEIGHT-getNavigationBarHeight()), style: .grouped)
         vi.delegate = self
         vi.dataSource = self
-        vi.backgroundColor = .clear
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.separatorStyle = .none
         vi.bounces = false
 //        vi.separatorColor = .clear
@@ -124,7 +124,7 @@ class FoodsMergeVC: WHBaseViewVC {
                 let firstCell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0))as? FoodsMergeListTableViewCell
                 let firstOriginY = firstCell?.frame.minY
                 
-                self.tableView.frame = CGRect.init(x: kFitWidth(16), y: self.nameTipsVm.frame.maxY-(firstOriginY ?? 0), width: SCREEN_WIDHT-kFitWidth(32), height: self.tableViewHeight)
+                self.tableView.frame = CGRect.init(x: kFitWidth(16), y: self.nameTipsVm.frame.maxY-1-(firstOriginY ?? 0), width: SCREEN_WIDHT-kFitWidth(32), height: self.tableViewHeight)
                 self.addVm.frame = CGRect.init(x: 0, y: self.tableView.frame.maxY, width: SCREEN_WIDHT, height: self.addVm.selfHeight)
                 self.noDataView.center = self.addVm.center
                 self.scrollViewBase.contentSize = CGSize.init(width: 0, height: self.addVm.frame.maxY)
@@ -260,7 +260,7 @@ extension FoodsMergeVC{
         bottomView.addSubview(scrollViewBase)
         view.addSubview(bottomFuncVm)
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-bottomFuncVm.selfHeight)
-        scrollViewBase.backgroundColor = .white
+        scrollViewBase.backgroundColor = .COLOR_CARD_BG_WHITE
         scrollViewBase.addSubview(foodsNameVm)
         scrollViewBase.addSubview(specVm)
         scrollViewBase.addSubview(naturalMsgVm)

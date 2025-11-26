@@ -25,7 +25,7 @@ class NaturalStatCaloriesBarChartYAxisView: UIView {
     
     lazy var firstLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .right
         lab.adjustsFontSizeToFitWidth = true
@@ -34,7 +34,7 @@ class NaturalStatCaloriesBarChartYAxisView: UIView {
     }()
     lazy var secondLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .right
         lab.adjustsFontSizeToFitWidth = true
@@ -43,7 +43,7 @@ class NaturalStatCaloriesBarChartYAxisView: UIView {
     }()
     lazy var thirdLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .right
         lab.adjustsFontSizeToFitWidth = true
@@ -52,7 +52,7 @@ class NaturalStatCaloriesBarChartYAxisView: UIView {
     }()
     lazy var fourthLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .right
         lab.adjustsFontSizeToFitWidth = true
@@ -61,7 +61,7 @@ class NaturalStatCaloriesBarChartYAxisView: UIView {
     }()
     lazy var fifthLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.textAlignment = .right
         lab.adjustsFontSizeToFitWidth = true
@@ -71,27 +71,27 @@ class NaturalStatCaloriesBarChartYAxisView: UIView {
     }()
     lazy var lineOneView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
         return vi
     }()
     lazy var lineTwoView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
         return vi
     }()
     lazy var lineThreeView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
         return vi
     }()
     lazy var lineFourView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
         return vi
     }()
     lazy var lineFiveView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
         return vi
     }()
 }

@@ -33,7 +33,7 @@ class DataMainLineExtendView: UIView {
             drawLine(context: context,
                      startPoint: CGPoint(x: 0, y: originY),
                      endPoint: CGPoint(x: frame.size.width, y: originY),
-                     lineColor: UIColor.black.withAlphaComponent(0.15),
+                     lineColor: .COLOR_TEXT_TITLE_0f1214_20,
                      lineWidth: 1)
         }
     }

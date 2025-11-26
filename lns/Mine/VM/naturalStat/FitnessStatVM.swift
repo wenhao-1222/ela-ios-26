@@ -33,7 +33,7 @@ class FitnessStatVM: UIView {
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(8), y: kFitWidth(8), width: SCREEN_WIDHT-kFitWidth(16), height: whiteViewHeight))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
 //        vi.clipsToBounds = true
         
@@ -42,7 +42,7 @@ class FitnessStatVM: UIView {
     }()
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .bold)
         lab.text = "力量训练"
         
@@ -50,7 +50,8 @@ class FitnessStatVM: UIView {
     }()
     lazy var tipsButton: UIButton = {
         let btn = UIButton()
-        btn.setImage(UIImage(named: "fitness_tips_icon"), for: .normal)
+        btn.setImage(UIImage(named: "fitness_tips_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
+        
         
         return btn
     }()
@@ -97,7 +98,7 @@ class FitnessStatVM: UIView {
     }()
     lazy var fitnessTagLab: UILabel = {
         let lab = UILabel()
-        lab.backgroundColor = .COLOR_BG_WHITE
+        lab.backgroundColor = .COLOR_CARD_BG_WHITE
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.text = "部位"
         lab.textAlignment = .center

@@ -29,7 +29,7 @@ class FoodsListMyListVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         selfHeight = SCREEN_HEIGHT-frame.origin.y
         
@@ -44,7 +44,7 @@ class FoodsListMyListVM: UIView {
     lazy var tableView: UITableView = {
         let table = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.selfHeight), style: .plain)
         table.separatorStyle = .none
-        table.backgroundColor = .white
+        table.backgroundColor = .COLOR_CARD_BG_WHITE
         table.delegate = self
         table.dataSource = self
         table.register(FoodsListAddTableViewCell.classForCoder(), forCellReuseIdentifier: "FoodsListAddTableViewCell")

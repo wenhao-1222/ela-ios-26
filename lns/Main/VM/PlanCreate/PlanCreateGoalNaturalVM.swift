@@ -15,7 +15,7 @@ class PlanCreateGoalNaturalVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -25,17 +25,17 @@ class PlanCreateGoalNaturalVM: UIView {
     }
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.text = "营养目标"
         lab.textAlignment = .center
-        lab.backgroundColor = .white
+        lab.backgroundColor = .COLOR_BG_WHITE
         
         return lab
     }()
     lazy var leftLineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()
@@ -44,7 +44,7 @@ class PlanCreateGoalNaturalVM: UIView {
         lab.text = "0"
         lab.format = "%d"
         lab.font = .systemFont(ofSize: 16, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.textAlignment = .center
         lab.adjustsFontSizeToFitWidth = true
         
@@ -53,7 +53,7 @@ class PlanCreateGoalNaturalVM: UIView {
     lazy var caloriTipsLabel : UILabel = {
         let lab = UILabel()
         lab.text = "热量 (千卡)"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
         return lab
@@ -64,7 +64,7 @@ class PlanCreateGoalNaturalVM: UIView {
         lab.text = "0"
         lab.format = "%.1f"
         lab.textAlignment = .center
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab
@@ -74,7 +74,7 @@ class PlanCreateGoalNaturalVM: UIView {
         lab.text = "碳水（克）"
         lab.textAlignment = .center
 //        lab.backgroundColor = WHColorWithAlpha(colorStr: "7137BF", alpha: 0.15)
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
         return lab
@@ -85,7 +85,7 @@ class PlanCreateGoalNaturalVM: UIView {
         lab.text = "0"
         lab.format = "%.1f"
         lab.textAlignment = .center
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab
@@ -95,7 +95,7 @@ class PlanCreateGoalNaturalVM: UIView {
         lab.text = "蛋白质（克）"
         lab.textAlignment = .center
 //        lab.backgroundColor = WHColorWithAlpha(colorStr: "F5BA18", alpha: 0.15)
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
         return lab
@@ -106,7 +106,7 @@ class PlanCreateGoalNaturalVM: UIView {
         lab.text = "0"
         lab.format = "%.1f"
         lab.textAlignment = .center
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab
@@ -116,7 +116,7 @@ class PlanCreateGoalNaturalVM: UIView {
         lab.text = "脂肪（克）"
         lab.textAlignment = .center
 //        lab.backgroundColor = WHColorWithAlpha(colorStr: "E37318", alpha: 0.15)
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
         return lab

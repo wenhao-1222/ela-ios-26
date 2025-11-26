@@ -24,15 +24,15 @@ class ServiceTextView : UIView{
     lazy var textView: UITextView = {
         let text = UITextView.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(343), height: kFitWidth(150)))
         text.delegate = self
-        text.textColor = .COLOR_GRAY_BLACK_85
-        text.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
+        text.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
         text.font = .systemFont(ofSize: 16, weight: .regular)
         text.returnKeyType = .done
         return text
     }()
     lazy var placeholderLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.text = "输入您遇到的问题"
         return lab
@@ -69,9 +69,9 @@ extension ServiceTextView{
         let totalAttr = NSMutableAttributedString(string: "/\(limitCount)")
         
         numAttr.yy_font = .systemFont(ofSize: 14, weight: .regular)
-        numAttr.yy_color = .COLOR_GRAY_BLACK_85
+        numAttr.yy_color = .COLOR_TEXT_TITLE_0f1214
         totalAttr.yy_font = .systemFont(ofSize: 12, weight: .regular)
-        totalAttr.yy_color = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        totalAttr.yy_color = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         numAttr.append(totalAttr)
         limitCountLabel.attributedText = numAttr
         

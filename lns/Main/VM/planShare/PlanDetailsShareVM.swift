@@ -15,7 +15,7 @@ class PlanDetailsShareVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: kFitWidth(320), height: SCREEN_HEIGHT))
-        self.backgroundColor = .white
+        self.backgroundColor = .white//WHColor_16(colorStr: "007AFF")//.white
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -32,6 +32,11 @@ class PlanDetailsShareVM: UIView {
         let vi = UIView()
         vi.backgroundColor = .white
         
+        return vi
+    }()
+    lazy var topBgView: UIView = {
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: kFitWidth(320), height: kFitWidth(50)))
+        vi.backgroundColor = WHColor_16(colorStr: "007AFF")
         return vi
     }()
     lazy var bottomTipsLabel : UILabel = {
@@ -77,6 +82,7 @@ extension PlanDetailsShareVM{
 
 extension PlanDetailsShareVM{
     func initUI() {
+        addSubview(topBgView)
         addSubview(topVm)
         addSubview(whiteView)
         addSubview(shareCodeLabel)

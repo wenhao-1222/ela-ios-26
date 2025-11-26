@@ -70,7 +70,7 @@ class CourseListHeadVM : UIView{
     }()
     lazy var bottomWhiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = UIColor(named: "color_bg_f5_course_list_start")!//.COLOR_BG_F5
         vi.isUserInteractionEnabled = true
 //        vi.isSkeletonable = true
         vi.layer.cornerRadius = kFitWidth(13)
@@ -83,7 +83,7 @@ class CourseListHeadVM : UIView{
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(3)
         vi.clipsToBounds = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "626B82", alpha: 0.1)
+        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_10//WHColorWithAlpha(colorStr: "626B82", alpha: 0.1)
         
         return vi
     }()
@@ -119,7 +119,7 @@ class CourseListHeadVM : UIView{
     }()
     lazy var typeLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColor_16(colorStr: "007AFF")
+        lab.textColor = .THEME//WHColor_16(colorStr: "007AFF")
         lab.font = .systemFont(ofSize: 11, weight: .medium)
         
         return lab

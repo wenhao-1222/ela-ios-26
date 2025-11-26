@@ -32,6 +32,11 @@ class PlanDetailVC: WHBaseViewVC {
     var isEdit = false
     var nameChangeBlock:((String)->())?
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        dayTopVm.updateUI(currentIndex: self.daysIndex, totalDay: currentDayDict["totaldays"]as? Int ?? 0)
+        dayVm.updateUI(currentIndex: self.daysIndex, totalDay: currentDayDict["totaldays"]as? Int ?? 0)
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         IQKeyboardManager.shared.enable = true
@@ -233,6 +238,7 @@ class PlanDetailVC: WHBaseViewVC {
 
 extension PlanDetailVC{
     func initUI() {
+        view.backgroundColor = .COLOR_CARD_BG_WHITE
         view.addSubview(naviVm)
         view.addSubview(scrollViewBase)
         view.addSubview(dayTopVm)

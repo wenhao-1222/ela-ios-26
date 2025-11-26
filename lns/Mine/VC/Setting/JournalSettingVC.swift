@@ -17,6 +17,11 @@ class JournalSettingVC: WHBaseViewVC {
     let weightType = HKObjectType.quantityType(forIdentifier: .bodyMass)
     let activeEnergyBurnedType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        appearanceModeVm.detailLabel.text = appearanceDetailText(style: UserConfigModel.shared.overrideUserInterfaceStyle)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -25,10 +30,30 @@ class JournalSettingVC: WHBaseViewVC {
         UserDefaults.standard.set("1", forKey: "settingNewFuncRead")
         UserInfoModel.shared.settingNewFuncRead = true
     }
-    lazy var logsTitleLabel: UILabel = {
+    lazy var appearanceTitleLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(12), y: 0, width: kFitWidth(200), height: kFitWidth(44)))
+        lab.text = "外观与显示"
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
+        lab.font = .systemFont(ofSize: 16, weight: .regular)
+
+        return lab
+    }()
+    lazy var appearanceModeVm : MaterialItemVM = {
+        let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.appearanceTitleLabel.frame.maxY, width: 0, height: 0))
+        vm.leftLabel.text = "深色模式"
+        vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        vm.detailLabel.text = appearanceDetailText(style: UserConfigModel.shared.overrideUserInterfaceStyle)
+        vm.tapBlock = {() in
+//            self?.showAppearanceOptions()
+            self.appearanceAlert.showSelf()
+        }
+        return vm
+    }()
+    lazy var logsTitleLabel: UILabel = {
+//        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(12), y: 0, width: kFitWidth(200), height: kFitWidth(44)))
+        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(12), y: self.appearanceModeVm.frame.maxY + kFitWidth(8), width: kFitWidth(200), height: kFitWidth(44)))
         lab.text = "日志"
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -54,22 +79,6 @@ class JournalSettingVC: WHBaseViewVC {
         }
         return vm
     }()
-//    lazy var hiddenQuestionnaireVm : MaterialItemVM = {
-//        let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.resetLogsMealsVm.frame.maxY, width: 0, height: 0))
-//        vm.leftLabel.text = "隐藏获取计划功能"
-//        vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
-//        vm.detailLabel.text = ""
-//        vm.arrowImgView.isHidden = true
-//        vm.switchButton.isHidden = false
-//        vm.switchButton.setSelectStatus(status: UserInfoModel.shared.hidden_survery_button_status)
-//        vm.tapBlock = {()in
-//            
-//        }
-//        vm.switchButton.tapBlock = {(isSelect)in
-//            self.sendSaveSurveryStatusRequest(statu: isSelect)
-//        }
-//        return vm
-//    }()
     lazy var hiddenLogsTimeVm : MaterialItemVM = {
         let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.resetLogsMealsVm.frame.maxY, width: 0, height: 0))
         vm.leftLabel.text = "记录进餐时间"
@@ -162,29 +171,14 @@ class JournalSettingVC: WHBaseViewVC {
 //        vm.isHidden = true
         vm.tapBlock = {()in
             let vc = LogsMealsAlertSetVC()
-//            self.present(vc, animated: true)
             self.navigationController?.pushViewController(vc, animated: true)
         }
         return vm
     }()
-    
-//    lazy var waterAlertVm : MaterialItemVM = {
-//        let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.mealsAlertSetVm.frame.maxY, width: 0, height: 0))
-//        vm.leftLabel.text = "喝水提醒"
-//        vm.leftLabel.font = .systemFont(ofSize: 16, weight: .medium)
-//        vm.detailLabel.text = ""
-//        vm.tapBlock = {()in
-//            let vc = WaterAlertSetVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-////            self.present(vc, animated: true)
-//        }
-//        return vm
-//    }()
-
     lazy var bodydataTitleLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(12), y: self.mealsAlertSetVm.frame.maxY, width: kFitWidth(200), height: kFitWidth(44)))
         lab.text = "身体数据"
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -205,7 +199,7 @@ class JournalSettingVC: WHBaseViewVC {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(12), y: self.resetWeightUnitVm.frame.maxY, width: kFitWidth(200), height: kFitWidth(44)))
         lab.text = "运动记录"
 //        lab.text = "苹果“健康”APP"
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -332,8 +326,59 @@ class JournalSettingVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var appearanceAlert: AppearanceOptionsAlertVM = {
+        let vm = AppearanceOptionsAlertVM.init(frame: .zero)
+        vm.confirmBlock = {[weak self] (type)in
+            DLLog(message: "AppearanceOptionsAlertVM:\(type)")
+            if type == 2{
+//                UserConfigModel.shared.overrideUserInterfaceStyle = .light
+                self?.applyInterfaceStyle(.light)
+            }else if type == 3{
+//                UserConfigModel.shared.overrideUserInterfaceStyle = .dark
+                self?.applyInterfaceStyle(.dark)
+            }else {
+//                UserConfigModel.shared.overrideUserInterfaceStyle = .unspecified
+                self?.applyInterfaceStyle(.unspecified)
+            }
+        }
+        return vm
+    }()
 }
 extension JournalSettingVC{
+    private func appearanceDetailText(style: UIUserInterfaceStyle) -> String {
+       switch style {
+       case .light:
+           return "浅色"
+       case .dark:
+           return "深色"
+       default:
+           return "跟随系统"
+       }
+   }
+   private func showAppearanceOptions() {
+       let alertVc = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+       if let popover = alertVc.popoverPresentationController {
+           popover.sourceView = appearanceModeVm
+           popover.sourceRect = appearanceModeVm.bounds
+           popover.permittedArrowDirections = [.up]
+       }
+       let options: [(String, UIUserInterfaceStyle)] = [("跟随系统", .unspecified), ("浅色", .light), ("深色", .dark)]
+       options.forEach { title, style in
+           let action = UIAlertAction(title: title, style: .default) { [weak self] _ in
+               self?.applyInterfaceStyle(style)
+           }
+           alertVc.addAction(action)
+       }
+       let cancelAction = UIAlertAction(title: "取消", style: .cancel)
+       alertVc.addAction(cancelAction)
+       present(alertVc, animated: true)
+   }
+   private func applyInterfaceStyle(_ style: UIUserInterfaceStyle) {
+       UserConfigModel.shared.overrideUserInterfaceStyle = style
+       UserDefaults.set(value: "\(style.rawValue)", forKey: .appearanceStyle)
+       appearanceModeVm.detailLabel.text = appearanceDetailText(style: style)
+       UIApplication.shared.applyInterfaceStyle(style)
+   }
     func clearLogsAction() {
         let alertVc = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         if let popover = alertVc.popoverPresentationController {
@@ -380,12 +425,14 @@ extension JournalSettingVC{
 extension JournalSettingVC{
     func initUI() {
         initNavi(titleStr: "个性化设置")
-        view.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         
         view.addSubview(scrollViewBase)
-        scrollViewBase.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        scrollViewBase.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         scrollViewBase.frame = CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight())
         
+        scrollViewBase.addSubview(appearanceTitleLabel)
+       scrollViewBase.addSubview(appearanceModeVm)
         scrollViewBase.addSubview(logsTitleLabel)
         scrollViewBase.addSubview(resetLogsMealsVm)
 //        scrollViewBase.addSubview(hiddenQuestionnaireVm)
@@ -403,6 +450,7 @@ extension JournalSettingVC{
         
         view.addSubview(mealsAlertVm)
         view.addSubview(weightUnitAlertVM)
+        view.addSubview(appearanceAlert)
         scrollViewBase.contentSize = CGSize.init(width: 0, height: hiddenStatSportDataVm.frame.maxY + kFitWidth(20))
         
         guard HKHealthStore.isHealthDataAvailable() else {
@@ -419,6 +467,8 @@ extension JournalSettingVC{
         
         scrollViewBase.contentSize = CGSize.init(width: 0, height: hiddenStatSportDataVm.frame.maxY + kFitWidth(20))
         
+        self.scrollViewBase.layoutIfNeeded()
+        self.view.layoutIfNeeded()
 //        updateAuthoriStatus()
     }
 //    func updateAuthoriStatus() {

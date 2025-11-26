@@ -25,7 +25,7 @@ class LogsMealsAlertSetTableViewCell: FeedBackTableViewCell {
     
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
@@ -33,42 +33,34 @@ class LogsMealsAlertSetTableViewCell: FeedBackTableViewCell {
     }()
     lazy var mealIndexLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab
     }()
     lazy var mealTimeLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .medium)
         
         return lab
     }()
     lazy var weekDaysLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
     }()
-//    lazy var switchButton: SwitchButton = {
-//        let btn = SwitchButton.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(16)-SwitchButton().selfWidth, y: (selfHeight-SwitchButton().selfHeight)*0.5, width: 0, height: 0))
-//        btn.tapBlock = {(isSelect)in
-//            self.switchBtnAction()
-//        }
-//        return btn
-//    }()
     lazy var switchBtn: UISwitch = {
         let btn = UISwitch()
-//        btn.isHidden = true
         btn.onTintColor = .THEME
         btn.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
         return btn
     }()
     lazy var remarkLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
@@ -76,12 +68,6 @@ class LogsMealsAlertSetTableViewCell: FeedBackTableViewCell {
 }
 
 extension LogsMealsAlertSetTableViewCell{
-//    @objc func switchBtnAction() {
-//        if self.switchBlock != nil{
-//            self.switchBlock!(!self.switchButton.isSelect)
-//        }
-//        self.switchButton.setSelectStatus(status: !self.switchButton.isSelect)
-//    }
     @objc private func switchChanged(_ sender: UISwitch) {
         print("isOn =", sender.isOn)
         self.switchBlock?(sender.isOn)
@@ -95,18 +81,13 @@ extension LogsMealsAlertSetTableViewCell{
         let timeString = dict.stringValueForKey(key: "clock")
         
         mealTimeLabel.text = "\(timeString.mc_clipFromPrefix(to: 5))"
-//        remarkLabel.text = dict.stringValueForKey(key: "remark")
         
         if dict.stringValueForKey(key: "status") == "0"{
-//            switchButton.setSelectStatus(status: false)
             switchBtn.setOn(false, animated: false)
         }else{
-//            switchButton.setSelectStatus(status: true)
             switchBtn.setOn(true, animated: false)
         }
         
-//        let rotationString = dict.stringValueForKey(key: "rotation")
-//        let rotationArray = WHUtils.getArrayFromJSONString(jsonString: rotationString)
         let rotationArray = dict["rotation"]as? NSArray ?? []
         DLLog(message: "rotationArray:\(rotationArray)")
         
@@ -194,12 +175,6 @@ extension LogsMealsAlertSetTableViewCell{
             make.top.equalTo(weekDaysLabel.snp.bottom).offset(kFitWidth(10))
             make.bottom.equalTo(kFitWidth(-8))
         }
-//        switchButton.snp.makeConstraints { make in
-//            make.right.equalTo(kFitWidth(-16))
-//            make.centerY.lessThanOrEqualToSuperview()
-//            make.width.equalTo(switchButton.selfWidth)
-//            make.height.equalTo(switchButton.selfHeight)
-//        }
         switchBtn.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-16))
             make.centerY.lessThanOrEqualToSuperview()

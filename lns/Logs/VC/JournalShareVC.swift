@@ -153,13 +153,14 @@ extension JournalShareVC:UITableViewDelegate,UITableViewDataSource{
             vi.backgroundColor = .clear
             
             let whiteView = UIView.init(frame: CGRect.init(x: kFitWidth(42), y: 0, width: SCREEN_WIDHT-kFitWidth(84), height: kFitWidth(34)))
-            whiteView.backgroundColor = .white
+            whiteView.backgroundColor = UIColor(named: "color_share_msg_bg")
             vi.addSubview(whiteView)
             
             let dict = mealsArray[section-1] as? NSDictionary ?? [:]
             let label = UILabel.init(frame: CGRect.init(x: kFitWidth(20), y: 0, width: kFitWidth(200), height: kFitHeight(34)))
             label.text = dict.stringValueForKey(key: "mealName")
-            label.textColor = .COLOR_TEXT_TITLE_0f1214
+//            label.textColor = .COLOR_TEXT_TITLE_0f1214
+            label.textColor = WHColor_16(colorStr: "0f1214")
             label.font = .systemFont(ofSize: 14, weight: .semibold)
             whiteView.addSubview(label)
             
@@ -190,7 +191,7 @@ extension JournalShareVC:UITableViewDelegate,UITableViewDataSource{
 
 extension JournalShareVC{
     func initUI() {
-        view.backgroundColor = .THEME
+        view.backgroundColor = UIColor(named: "color_bg_theme_share")//.THEME
         view.addSubview(naviVm)
         view.addSubview(receiptVm)
         

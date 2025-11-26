@@ -36,14 +36,14 @@ class PublishPollMultipleAlertVM: UIView {
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+        vi.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         return vi
     }()
     lazy var scrollViewBase: UIScrollView = {
         let scro = UIScrollView(frame: CGRect.init(x: 0, y: 0, width: whiteViewWidth, height: kFitWidth(48)*5))
-        scro.backgroundColor = .white
+        scro.backgroundColor = .COLOR_BG_WHITE
         scro.showsVerticalScrollIndicator = true
         return scro
     }()
@@ -87,7 +87,7 @@ extension PublishPollMultipleAlertVM{
     func setSelectStatus(daysIndex:Int) {
         for vm in vmDataArray{
             vm.selectImgView.isHidden = true
-            vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+            vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
         let vm = vmDataArray[daysIndex]
         vm.selectImgView.isHidden = false
@@ -128,7 +128,7 @@ extension PublishPollMultipleAlertVM{
                 vm.titleLabel.textColor = .THEME
             }else{
                 vm.selectImgView.isHidden = true
-                vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+                vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
             }
             scrollViewBase.addSubview(vm)
             vmDataArray.append(vm)

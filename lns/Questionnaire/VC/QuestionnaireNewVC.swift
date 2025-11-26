@@ -34,15 +34,6 @@ class QuestionnaireNewVC: WHBaseViewVC {
         panGes.edges = .left
         view.addGestureRecognizer(panGes)
     }
-    
-//    lazy var progressPartVm : QuestionnaireProgressPartVM = {
-//        let vm = QuestionnaireProgressPartVM.init(frame: CGRect.init(x: 0, y: statusBarHeight, width: 0, height: 0))
-//        vm.backBlock = {()in
-//            self.step = self.step - 1
-//            self.scrollMsgVmLast()
-//        }
-//        return vm
-//    }()
     lazy var progressPartVm: QuestionnaireProgressVM = {
         let vm = QuestionnaireProgressVM.init(frame: CGRect.init(x: 0, y: statusBarHeight, width: 0, height: 0))
         vm.startStep = 0
@@ -52,6 +43,8 @@ class QuestionnaireNewVC: WHBaseViewVC {
         let step = NSMutableAttributedString.init(string: "1")
         let totalStep = NSMutableAttributedString.init(string: "/8")
         step.yy_font = .systemFont(ofSize: 20, weight: .medium)
+        step.yy_color = .COLOR_TEXT_TITLE_0f1214
+        totalStep.yy_color = .COLOR_TEXT_TITLE_0f1214
         
         step.append(totalStep)
         vm.progressLabel.font = .systemFont(ofSize: 14, weight: .medium)
@@ -392,7 +385,7 @@ extension QuestionnaireNewVC{
 
 extension QuestionnaireNewVC{
     func initUI() {
-        view.backgroundColor = .COLOR_GRAY_FA
+        view.backgroundColor = .COLOR_BG_WHITE
         
         view.clipsToBounds = true
         view.addSubview(progressPartVm)

@@ -20,6 +20,26 @@ class DataAddDateAlertVM: UIView {
     var whiteViewHeight = kFitWidth(100)
     var whiteViewOriginY = kFitWidth(200)
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0.15)
@@ -41,7 +61,7 @@ class DataAddDateAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
         v.addGestureRecognizer(tap)
@@ -53,8 +73,7 @@ class DataAddDateAlertVM: UIView {
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
-//        vi.alpha = 0
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
         vi.addGestureRecognizer(tap)
@@ -81,14 +100,14 @@ class DataAddDateAlertVM: UIView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.text = "更改日期"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()
@@ -157,7 +176,7 @@ extension DataAddDateAlertVM{
                        initialSpringVelocity: 0.1,
                        options: [.curveEaseOut, .allowUserInteraction]) {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
-            self.bgView.alpha = 0.25
+            self.bgView.alpha = self.targetDimAlpha//0.25
         } completion: { _ in
             self.bgView.isUserInteractionEnabled = true
             
@@ -165,16 +184,6 @@ extension DataAddDateAlertVM{
         UIView.animate(withDuration: 0.25, delay: 0.4, options: .curveEaseInOut) {
             self.whiteView.transform = .identity
         }
-        
-        
-//        UIView.animate(withDuration: 0.25,delay: 0,options: .curveEaseOut) {
-//            self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT-whiteViewFrame.height+kFitWidth(16)-kFitWidth(5), width: SCREEN_WIDHT, height: whiteViewFrame.height)
-//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.15)
-//        } completion: { t in
-//            UIView.animate(withDuration: 0.15,delay: 0,options: .curveEaseInOut) {
-//                self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT-whiteViewFrame.height+kFitWidth(16), width: SCREEN_WIDHT, height: whiteViewFrame.height)
-//            }
-//        }
     }
     @objc func hiddenView() {
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
@@ -183,26 +192,13 @@ extension DataAddDateAlertVM{
         } completion: { _ in
             self.isHidden = true
         }
-//        
-//        let whiteViewFrame = self.whiteView.frame
-//        UIView.animate(withDuration: 0.25, delay: 0,options: .curveLinear) {
-////            self.alpha = 0.7
-//            
-//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
-//            self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewFrame.height)
-////            self.whiteView.alpha = 0.7
-//        }completion: { t in
-//            self.isHidden = true
-////            self.alpha = 0
-////            self.whiteView.alpha = 0
-//        }
     }
     func showWhiteViewAnimate() {
         let targetY = SCREEN_HEIGHT-whiteViewHeight
         whiteViewOriginY = SCREEN_HEIGHT - whiteViewHeight
         UIView.animate(withDuration: 0.25,delay: 0,options: .curveEaseOut) {
             self.whiteView.frame = CGRect.init(x: 0, y: targetY+kFitWidth(-5), width: SCREEN_WIDHT, height: self.whiteViewHeight+kFitWidth(20))
-            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.15)
+            self.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.15)
         } completion: { t in
             UIView.animate(withDuration: 0.15,delay: 0,options: .curveEaseInOut) {
                 self.whiteView.frame = CGRect.init(x: 0, y: targetY, width: SCREEN_WIDHT, height: self.whiteViewHeight)

@@ -46,7 +46,7 @@ class QuestionnairePlanFoodsAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
 //        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
 //        v.addGestureRecognizer(tap)
@@ -66,7 +66,7 @@ class QuestionnairePlanFoodsAlertVM: UIView {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vi.isUserInteractionEnabled = true
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(16)
         
 //        let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
@@ -82,7 +82,8 @@ class QuestionnairePlanFoodsAlertVM: UIView {
     }()
     lazy var closeImgView : FeedBackUIImageView = {
         let img = FeedBackUIImageView()
-        img.setImgLocal(imgName: "question_alert_close_icon")
+//        img.setImgLocal(imgName: "question_alert_close_icon")
+        img.image = UIImage(named: "question_alert_close_icon")?.withTintColor(.COLOR_BG_BLACK)
         img.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenAlertVm))
@@ -112,14 +113,15 @@ class QuestionnairePlanFoodsAlertVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 20, weight: .medium)
         
         return lab
     }()
     lazy var arrowImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "question_alert_arrow_down_icon")
+//        img.setImgLocal(imgName: "question_alert_arrow_down_icon")
+        img.image = UIImage(named: "question_alert_arrow_down_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         img.isUserInteractionEnabled = true
         return img
     }()
@@ -162,6 +164,7 @@ class QuestionnairePlanFoodsAlertVM: UIView {
         vi.setImgLocal(imgName: "bottom_cover_img")
         vi.transform = CGAffineTransform(scaleX: -1, y: -1)
         vi.isHidden = true
+        vi.alpha = 0
         
         return vi
     }()
@@ -459,7 +462,12 @@ extension QuestionnairePlanFoodsAlertVM:UITableViewDelegate,UITableViewDataSourc
         self.searchVm.textField.resignFirstResponder()
     }
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        self.coverTopView.isHidden = false
+        if self.coverTopView.isHidden {
+            self.coverTopView.isHidden = false
+            UIView.animate(withDuration: 0.15, animations: {
+                self.coverTopView.alpha = 1
+            })
+        }
     }
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
@@ -467,9 +475,21 @@ extension QuestionnairePlanFoodsAlertVM:UITableViewDelegate,UITableViewDataSourc
             // 在这里进行相应的操作
             DLLog(message: "\(scrollView.contentOffset.y)")
             if scrollView.contentOffset.y > kFitWidth(40){
-                self.coverTopView.isHidden = false
+//                self.coverTopView.isHidden = false
+                if self.coverTopView.isHidden {
+                    self.coverTopView.isHidden = false
+                    UIView.animate(withDuration: 0.15, animations: {
+                        self.coverTopView.alpha = 1
+                    })
+                }
             }else{
-                self.coverTopView.isHidden = true
+                UIView.animate(withDuration: 0.15) {
+                    self.coverTopView.alpha = 0
+                } completion: { _ in
+                    self.coverTopView.isHidden = true
+                }
+
+//                self.coverTopView.isHidden = true
             }
         }
     }
@@ -477,9 +497,20 @@ extension QuestionnairePlanFoodsAlertVM:UITableViewDelegate,UITableViewDataSourc
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         DLLog(message: "\(scrollView.contentOffset.y)")
         if scrollView.contentOffset.y > kFitWidth(40){
-            self.coverTopView.isHidden = false
+//            self.coverTopView.isHidden = false
+            if self.coverTopView.isHidden {
+                self.coverTopView.isHidden = false
+                UIView.animate(withDuration: 0.15, animations: {
+                    self.coverTopView.alpha = 1
+                })
+            }
         }else{
-            self.coverTopView.isHidden = true
+//            self.coverTopView.isHidden = true
+            UIView.animate(withDuration: 0.15) {
+                self.coverTopView.alpha = 0
+            } completion: { _ in
+                self.coverTopView.isHidden = true
+            }
         }
     }
 }

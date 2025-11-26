@@ -21,7 +21,7 @@ class BindPhoneVerifyCodeButton: FeedBackView {
         self.isUserInteractionEnabled = true
         self.layer.cornerRadius = kFitWidth(8)
         self.clipsToBounds = true
-        self.layer.borderColor = UIColor.black.cgColor
+        self.layer.borderColor = UIColor.COLOR_BG_BLACK.cgColor
         self.layer.borderWidth = kFitWidth(1)
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))

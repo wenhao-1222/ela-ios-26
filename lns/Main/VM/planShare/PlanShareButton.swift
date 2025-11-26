@@ -13,12 +13,12 @@ class PlanShareButton : UIButton {
     
     var tapBlock:(()->())?
     
-    var labelColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.65)
+    var labelColor = UIColor.COLOR_TEXT_WHITE.withAlphaComponent(0.65)//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.65)
     private let feedbackGenerator = UIImpactFeedbackGenerator(style: .rigid)
     private let feedbackWeight: CGFloat = 0.6
     private var lastFeedbackTime: TimeInterval = 0
     private let minimumFeedbackInterval: TimeInterval = 0.1
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupButton() // [修改] 在 setup 里统一 addTarget，确保所有 init 路径都生效
@@ -36,7 +36,7 @@ class PlanShareButton : UIButton {
     }()
     lazy var contenLab : UILabel = {
         let lab = UILabel(frame: CGRect(x: kFitWidth(-10), y: kFitWidth(48), width: kFitWidth(80), height: kFitWidth(14)))
-        lab.textColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.65)
+        lab.textColor = .COLOR_TEXT_WHITE.withAlphaComponent(0.65)//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.65)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.textAlignment = .center
         lab.isUserInteractionEnabled = false // [修改]
@@ -45,7 +45,7 @@ class PlanShareButton : UIButton {
     }()
     lazy var coverVi : UIView = {
         let vi = UIView(frame: CGRect(x: kFitWidth(9), y: 0, width: kFitWidth(40), height: kFitWidth(40)))
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_WHITE.withAlphaComponent(0.04)//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.04)
         vi.isHidden = true
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true

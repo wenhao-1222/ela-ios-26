@@ -33,7 +33,7 @@ class GoalCircleTagsVM: UIView {
     lazy var scrollView: UIScrollView = {
         let scro = UIScrollView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
         scro.showsHorizontalScrollIndicator = false
-        scro.backgroundColor = .white
+        scro.backgroundColor = .COLOR_CARD_BG_WHITE
         return scro
     }()
 }

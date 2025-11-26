@@ -19,15 +19,34 @@ class SportAddAlertVM: UIView {
     var calories = Float(0)
     
     var isCustom = false
-    
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear
         self.isUserInteractionEnabled = true
         self.isHidden = true
         
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenSelf))
-        self.addGestureRecognizer(tap)
+//        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenSelf))
+//        self.addGestureRecognizer(tap)
                 
         initUI()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -37,10 +56,20 @@ class SportAddAlertVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    private lazy var bgView: UIView = {
+        let v = UIView(frame: bounds)
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.alpha = 0
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenSelf))
+        v.addGestureRecognizer(tap)
+        return v
+    }()
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(10))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
         vi.addGestureRecognizer(tap)
@@ -60,7 +89,7 @@ class SportAddAlertVM: UIView {
     lazy var titleLab: UILabel = {
         let lab = UILabel()
         lab.text = "添加运动"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         return lab
     }()
@@ -74,25 +103,25 @@ class SportAddAlertVM: UIView {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
         return vi
     }()
     lazy var nameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .bold)
         lab.adjustsFontSizeToFitWidth = true
         return lab
     }()
     lazy var metsLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         return lab
     }()
     lazy var caloriesLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .bold)
         return lab
     }()
@@ -173,11 +202,14 @@ extension SportAddAlertVM{
     func showSelf() {
         self.isHidden = false
         self.timeItemVm.numberText.becomeFirstResponder()
+        self.bgView.isUserInteractionEnabled = false
         UIView.animate(withDuration: 0.3,delay: 0,options: .curveLinear) {
 //            self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT-self.whiteViewHeight, width: SCREEN_WIDHT, height: self.whiteViewHeight)
-            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.2)
+//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.2)
+            self.bgView.alpha = self.targetDimAlpha
         } completion: { t in
 //            self.alpha = 1
+            self.bgView.isUserInteractionEnabled = true
         }
     }
     @objc func cancelAction() {
@@ -188,10 +220,11 @@ extension SportAddAlertVM{
         self.timeItemVm.numberText.resignFirstResponder()
         UIView.animate(withDuration: 0.3,delay: 0,options: .curveLinear) {
             self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: self.whiteViewHeight)
+            self.bgView.alpha = 0
         } completion: { t in
 //            self.alpha = 0
             self.isHidden = true
-            self.backgroundColor = .clear
+//            self.backgroundColor = .clear
         }
     }
     //MARK: 计算运动消耗  Calories Burned = Time(in minutes) × MET × Body Weight (kg) ÷ 200
@@ -245,6 +278,7 @@ extension SportAddAlertVM{
 
 extension SportAddAlertVM{
     func initUI() {
+        addSubview(bgView)
         addSubview(whiteView)
         whiteView.addShadow()
         

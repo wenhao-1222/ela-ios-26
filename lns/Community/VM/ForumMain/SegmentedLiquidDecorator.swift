@@ -27,7 +27,8 @@ final class SegmentedLiquidDecorator {
         // --- 新增：先把容器挂上去，并开启裁剪 ---
         view.layer.addSublayer(container)
         container.masksToBounds = true
-        container.backgroundColor = UIColor.white.withAlphaComponent(1).cgColor
+        container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.6).cgColor // 让选中更贴近玻璃感（可按需改）
+            // UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1).cgColor
         container.shadowOpacity = 0
 
         // 以下这些“装饰层”全部加到 container，而不是直接加到 view.layer
@@ -43,28 +44,26 @@ final class SegmentedLiquidDecorator {
         baseFill.startPoint = CGPoint(x: 0.5, y: 0.0)
         baseFill.endPoint   = CGPoint(x: 0.5, y: 1.0)
         baseFill.colors = [
-            UIColor.white.withAlphaComponent(0.35).cgColor,
-            UIColor.white.withAlphaComponent(0.08).cgColor
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor,
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.08).cgColor
         ]
         baseFill.locations = [0, 1]
         // 顶部高光
         gloss.startPoint = CGPoint(x: 0.5, y: 0.0)
         gloss.endPoint   = CGPoint(x: 0.5, y: 1.0)
         gloss.colors = [
-            UIColor.white.withAlphaComponent(0.45).cgColor,
-            UIColor.white.withAlphaComponent(0.06).cgColor,
-            UIColor.white.withAlphaComponent(0.0).cgColor
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45).cgColor,
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06).cgColor,
+            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.0).cgColor
         ]
         gloss.locations = [0, 0.15, 0.45]
 
         // **修复点**：内阴影不再用“巨大外框 + even-odd”
         innerShadow.fillRule = .nonZero
         innerShadow.fillColor = UIColor.clear.cgColor
-//        innerShadow.shadowColor = UIColor.black.withAlphaComponent(0.35).cgColor
-//        innerShadow.shadowOffset = CGSize(width: 0, height: 1.5)
         innerShadow.shadowOpacity = 1
 //        innerShadow.shadowRadius = 3
-        innerShadow.shadowColor = UIColor.black.withAlphaComponent(0.2).cgColor // 原 0.35
+        innerShadow.shadowColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.2).cgColor // 原 0.35
         innerShadow.shadowRadius = 2.0  // 原 3
         innerShadow.shadowOffset = CGSize(width: 0, height: 0.3) // 原 1.5
 
@@ -80,20 +79,127 @@ final class SegmentedLiquidDecorator {
         noiseLayer.opacity = 0.02
         noiseLayer.contents = Self.makeNoiseImage().cgImage
         noiseLayer.contentsGravity = .resizeAspectFill
-
-//        selectedShimmer.startPoint = CGPoint(x: 0, y: 0.5)
-//        selectedShimmer.endPoint   = CGPoint(x: 1, y: 0.5)
-//        selectedShimmer.colors = [
-//            UIColor.white.withAlphaComponent(0.0).cgColor,
-//            UIColor.white.withAlphaComponent(0.55).cgColor,
-//            UIColor.white.withAlphaComponent(0.0).cgColor
-//        ]
-//        selectedShimmer.locations = [0.35, 0.5, 0.65]
-//        selectedShimmer.compositingFilter = "screenBlendMode"
-//        selectedShimmer.opacity = 0.9
-
+        
         relayout()
         target.addTarget(self, action: #selector(onValueChanged), for: .valueChanged)
+    }
+    
+//    func changeStyle() {
+//        
+//        container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1).cgColor
+//        baseFill.colors = [
+//            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor,
+//            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.08).cgColor
+//        ]
+//        gloss.colors = [
+//            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45).cgColor,
+//            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06).cgColor,
+//            UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.0).cgColor
+//        ]
+//        innerShadow.shadowColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.2).cgColor // 原 0.35
+//    }
+//    func changeStyle() {
+//        // 深色模式下增强边界
+//        if UITraitCollection.current.userInterfaceStyle == .dark {
+//            container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor
+//            outerStroke.strokeColor = UIColor.white.withAlphaComponent(0.05).cgColor
+//            innerStroke.strokeColor = UIColor.white.withAlphaComponent(0.15).cgColor
+//            innerShadow.shadowColor = UIColor.black.withAlphaComponent(0.25).cgColor
+//            baseFill.colors = [
+//                UIColor.white.withAlphaComponent(0.1).cgColor,
+//                UIColor.white.withAlphaComponent(0.03).cgColor
+//            ]
+//        } else {
+//            // 保持你原来的浅色风格
+//            container.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1).cgColor
+//            baseFill.colors = [
+//                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35).cgColor,
+//                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.08).cgColor
+//            ]
+//            gloss.colors = [
+//                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45).cgColor,
+//                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06).cgColor,
+//                UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.0).cgColor
+//            ]
+//            innerShadow.shadowColor = UIColor.COLOR_BG_BLACK.withAlphaComponent(0.2).cgColor // 原 0.35
+//        }
+//    }
+    func changeStyle() {
+        let isDark = UITraitCollection.current.userInterfaceStyle == .dark
+        
+        // 动态背景色（你的色值）
+        container.backgroundColor = UIColor { trait in
+            if trait.userInterfaceStyle == .dark {
+                return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35)
+            } else {
+                return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1)
+            }
+        }.cgColor
+        
+        // 动态 baseFill（你的色值）
+        baseFill.colors = [
+            UIColor { trait in
+                if trait.userInterfaceStyle == .dark {
+                    return UIColor.white.withAlphaComponent(0.1)
+                } else {
+                    return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.35)
+                }
+            }.cgColor,
+            UIColor { trait in
+                if trait.userInterfaceStyle == .dark {
+                    return UIColor.white.withAlphaComponent(0.03)
+                } else {
+                    return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.08)
+                }
+            }.cgColor
+        ]
+        
+        // 动态 gloss（你的色值）
+        gloss.colors = [
+            UIColor { trait in
+                if trait.userInterfaceStyle == .dark {
+                    // 深色模式你没有提供 gloss 值，我保持浅色逻辑不变
+                    return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45)
+                } else {
+                    return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.45)
+                }
+            }.cgColor,
+            UIColor { trait in
+                if trait.userInterfaceStyle == .dark {
+                    return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06)
+                } else {
+                    return UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.06)
+                }
+            }.cgColor,
+            UIColor.clear.cgColor
+        ]
+        
+        // outerStroke（你的色值）
+        outerStroke.strokeColor = UIColor { trait in
+            if trait.userInterfaceStyle == .dark {
+                return UIColor.white.withAlphaComponent(0.05)
+            } else {
+                return UIColor.clear   // 你原代码
+            }
+        }.cgColor
+        
+        // innerStroke（你的色值）
+        innerStroke.strokeColor = UIColor { trait in
+            if trait.userInterfaceStyle == .dark {
+                return UIColor.white.withAlphaComponent(0.15)
+            } else {
+                return UIColor.clear   // 你原代码
+            }
+        }.cgColor
+        
+        // 内阴影（你的色值）
+        innerShadow.shadowColor = UIColor { trait in
+            if trait.userInterfaceStyle == .dark {
+                return UIColor.black.withAlphaComponent(0.25)
+            } else {
+                return UIColor.COLOR_BG_BLACK.withAlphaComponent(0.2)
+            }
+        }.cgColor
     }
 
     func relayout() {
@@ -103,11 +209,11 @@ final class SegmentedLiquidDecorator {
 
         CATransaction.begin()
         CATransaction.setDisableActions(true)
-        baseFill.frame = container.bounds
         // **容器层跟随并裁剪圆角**
         container.frame = bounds
         container.cornerRadius = radius
-
+        
+        baseFill.frame = container.bounds
         gloss.frame = container.bounds
         noiseLayer.frame = container.bounds
         outerStroke.frame = container.bounds
@@ -124,25 +230,6 @@ final class SegmentedLiquidDecorator {
         let innerPath = UIBezierPath(roundedRect: innerRect, cornerRadius: radius - inset).cgPath
         innerShadow.path = innerPath
         innerShadow.shadowPath = innerPath  // 关键：不再用“巨大外框”
-
-        // 选中段液态高光定位
-//        if view.numberOfSegments > 0 {
-//            let w = container.bounds.width / CGFloat(view.numberOfSegments)
-//            let x = CGFloat(view.selectedSegmentIndex) * w
-//            let segFrame = CGRect(x: x, y: 0, width: w, height: container.bounds.height)
-//            let pad = w * 0.08
-//            selectedShimmer.frame = segFrame.insetBy(dx: pad, dy: container.bounds.height * 0.25)
-//            selectedShimmer.cornerRadius = selectedShimmer.frame.height / 2
-//            selectedShimmer.masksToBounds = true
-//
-//            selectedShimmer.removeAllAnimations()
-//            let anim = CABasicAnimation(keyPath: "locations")
-//            anim.fromValue = [-0.2, 0.0, 0.2]
-//            anim.toValue   = [0.8, 1.0, 1.2]
-//            anim.duration = 2.6
-//            anim.repeatCount = .infinity
-//            selectedShimmer.add(anim, forKey: "liquid-shimmer")
-//        }
 
         CATransaction.commit()
 

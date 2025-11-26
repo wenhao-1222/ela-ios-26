@@ -21,7 +21,7 @@ public struct TagRowAppearance {
     /// 标签选中时的背景色
     public var chipSelectedBG: UIColor = UIColor.THEME
     /// 标签选中时的文字颜色
-    public var chipSelectedText: UIColor = UIColor.COLOR_BG_WHITE
+    public var chipSelectedText: UIColor = UIColor.white
     /// 标签默认（未选中）边框颜色
     public var chipBorderColor: UIColor = UIColor.clear
     /// 标签选中时的边框颜色

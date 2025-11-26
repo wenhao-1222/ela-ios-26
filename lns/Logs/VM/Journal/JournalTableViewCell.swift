@@ -45,7 +45,7 @@ class JournalTableViewCell: UITableViewCell {
     
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(10), y: kFitWidth(12), width: SCREEN_WIDHT-kFitWidth(20), height: kFitWidth(70)))
-        vi.backgroundColor = .COLOR_BG_WHITE//UIColor(named: "color_bg_f5")
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//UIColor(named: "color_bg_f5")
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(12)
         
@@ -53,7 +53,7 @@ class JournalTableViewCell: UITableViewCell {
     }()
     lazy var selecImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "logs_edit_normal")
+        img.setImgLocal(imgName: "logs_edit_all_normal")
         img.isUserInteractionEnabled = true
         img.isHidden = true
         
@@ -127,11 +127,7 @@ class JournalTableViewCell: UITableViewCell {
         table.delegate = self
         table.dataSource = self
         table.isScrollEnabled = false
-        table.backgroundColor = .COLOR_BG_WHITE
-        
-//        let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeGesture(gesture:)))
-//        swipeGesture.direction = .left
-//        table.addGestureRecognizer(swipeGesture)
+        table.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return table
     }()
@@ -158,7 +154,7 @@ extension JournalTableViewCell{
         
         selecImgView.setCheckState(isSelect,
                                   checkedImageName: "logs_edit_selected",
-                                  uncheckedImageName: "logs_edit_normal")
+                                  uncheckedImageName: "logs_edit_all_normal")
         if self.selectBlock != nil{
             self.selectBlock!(self.isSelect)
         }
@@ -284,7 +280,7 @@ extension JournalTableViewCell{
         
         selecImgView.setCheckState(isSelect,
                                   checkedImageName: "logs_edit_selected",
-                                  uncheckedImageName: "logs_edit_normal")
+                                  uncheckedImageName: "logs_edit_all_normal")
     }
     func updateMealsTime(mealsDict:NSDictionary,mealsIndex:Int) {
         if UserInfoModel.shared.hiddenMeaTimeStatus{

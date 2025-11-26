@@ -42,7 +42,7 @@ class FoodsCreateVC: WHBaseViewVC {
     }
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -269,6 +269,7 @@ extension FoodsCreateVC{
         initNavi(titleStr: "创建食物")
         
         view.insertSubview(bottomView, belowSubview: self.navigationView)
+        
         
         bottomView.addSubview(foodsNameVm)
         bottomView.addSubview(specVm)

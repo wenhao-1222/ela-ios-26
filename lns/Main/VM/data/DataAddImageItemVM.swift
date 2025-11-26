@@ -27,7 +27,7 @@ class DataAddImageItemVM: UIView {
     
     lazy var imageView : UIImageView = {
         let img = UIImageView()
-        img.backgroundColor = WHColor_16(colorStr: "F3F3F3")
+        img.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "F3F3F3")
         img.isUserInteractionEnabled = true
         img.layer.cornerRadius = kFitWidth(8)
         img.clipsToBounds = true
@@ -58,7 +58,7 @@ class DataAddImageItemVM: UIView {
     }()
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.textAlignment = .center
         

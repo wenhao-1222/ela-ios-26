@@ -32,14 +32,14 @@ class NaturalStatCaloriesDGBarChart: UIView {
     lazy var whiteBgView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(8), y: 0, width: whiteViewWidth, height: selfHeight))
         vi.layer.cornerRadius = kFitWidth(12)
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi
     }()
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .bold)
         lab.text = "卡路里"
         
@@ -47,7 +47,7 @@ class NaturalStatCaloriesDGBarChart: UIView {
     }()
     lazy var unitLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.text = "单位：千卡"
         
@@ -215,7 +215,7 @@ extension NaturalStatCaloriesDGBarChart{
         xAxis.drawGridLinesEnabled = false
         xAxis.drawAxisLineEnabled = false
         xAxis.labelFont = .systemFont(ofSize: 12, weight: .medium)
-        xAxis.labelTextColor = .COLOR_GRAY_BLACK_65
+        xAxis.labelTextColor = .COLOR_TEXT_TITLE_0f1214_60
         xAxis.labelCount = 7
     }
 }

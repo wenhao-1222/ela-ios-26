@@ -25,7 +25,7 @@ class CommentReportAlertVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+        self.backgroundColor = .COLOR_BG_BLACK.withAlphaComponent(0)//WHColorWithAlpha(colorStr: "000000", alpha: 0)
         self.isUserInteractionEnabled = true
         self.clipsToBounds = false
         self.isHidden = true
@@ -48,7 +48,7 @@ class CommentReportAlertVM: UIView {
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
-        vi.backgroundColor = WHColor_16(colorStr: "EFEFEF")
+        vi.backgroundColor = .COLOR_BG_EF//WHColor_16(colorStr: "EFEFEF")
         vi.isUserInteractionEnabled = true
         
         // 创建下拉手势识别器
@@ -63,7 +63,7 @@ class CommentReportAlertVM: UIView {
         let scro = UIScrollView()
         scro.layer.cornerRadius = kFitWidth(8)
         scro.clipsToBounds = true
-        scro.backgroundColor = .WIDGET_COLOR_GRAY_BLACK_06
+        scro.backgroundColor = .COLOR_BG_BLACK_06
         return scro
     }()
     lazy var topLineView : UIView = {
@@ -100,18 +100,18 @@ extension CommentReportAlertVM{
     @objc func showView() {
         self.isHidden = false
         for item in reportBtnArray{
-            item.itemLabel.textColor = .COLOR_GRAY_BLACK_65
+            item.itemLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
         }
         self.tapIndex = -1
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.whiteViewOriginY+self.whiteViewHeight*0.5)
-            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+            self.backgroundColor = .COLOR_BG_BLACK.withAlphaComponent(0.65)//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         }
    }
    @objc func hiddenView() {
        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
-           self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+           self.backgroundColor = .COLOR_BG_BLACK.withAlphaComponent(0)//WHColorWithAlpha(colorStr: "000000", alpha: 0)
        }completion: { t in
            self.isHidden = true
        }
@@ -173,7 +173,7 @@ extension CommentReportAlertVM{
     @objc func itemTapAction(index:Int) {
         for i in 0..<reportBtnArray.count{
             let item = reportBtnArray[i]
-            item.itemLabel.textColor = .COLOR_GRAY_BLACK_65
+            item.itemLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
             if i == index{
                 item.itemLabel.textColor = .THEME
             }
@@ -245,7 +245,7 @@ class CommentReportAlertItemVM: UIView {
     }
     lazy var itemLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab

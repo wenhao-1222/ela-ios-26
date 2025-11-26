@@ -119,7 +119,7 @@ class BodyDataDetailVC : WHBaseViewVC {
     }()
     lazy var lineWhiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: self.topVm.frame.maxY, width: SCREEN_WIDHT, height: kFitWidth(205)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -133,6 +133,7 @@ class BodyDataDetailVC : WHBaseViewVC {
     }()
     lazy var tableView: UITableView = {
         let table = UITableView.init(frame: CGRect.init(x: 0, y: self.headView.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.headView.frame.maxY), style: .plain)
+        table.backgroundColor = .COLOR_CARD_BG_WHITE
         table.delegate = self
         table.dataSource = self
         table.register(DataDetailTableViewCell.classForCoder(), forCellReuseIdentifier: "DataDetailTableViewCell")
@@ -361,12 +362,11 @@ extension BodyDataDetailVC{
 extension BodyDataDetailVC{
     func initUI() {
         initNavi(titleStr: "身体数据")
-//        self.backArrowButton.tapBlock = {()in
-//            self.backTapActi()
-//        }
         
         self.navigationView.addSubview(shareButton)
         
+        view.backgroundColor = .COLOR_BG_FA
+        self.navigationView.backgroundColor = .COLOR_CARD_BG_WHITE
         view.addSubview(topVm)
         view.addSubview(lineWhiteView)
         
@@ -379,7 +379,8 @@ extension BodyDataDetailVC{
         
         view.addSubview(typeFilterAlertVm)
         view.addSubview(timeTypeAlertVm)
-        
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
         if self.dataType == .waistline{
             typeFilterAlertVm.setSelectIndex(index: 1)
         }
@@ -434,7 +435,7 @@ extension BodyDataDetailVC{
         xAxis.drawGridLinesEnabled = false
 //        xAxis.drawAxisLineEnabled = false
         xAxis.labelFont = .systemFont(ofSize: 12, weight: .regular)
-        xAxis.labelTextColor = .COLOR_GRAY_BLACK_65
+        xAxis.labelTextColor = .COLOR_TEXT_TITLE_0f1214_60
 //        lineChartView.setVisibleXRangeMaximum(5)
         
         lineChartView.scaleXEnabled = false

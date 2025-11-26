@@ -18,7 +18,7 @@ class PlanCreateFilterVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        self.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -30,7 +30,7 @@ class PlanCreateFilterVM: UIView {
         let btn = GJVerButton()
         btn.setTitle("第\(daysNumber)天", for: .normal)
         btn.setImage(UIImage(named: "create_plan_arrow_down"), for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_TEXT_85_LIGHT, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         btn.imagePosition(style: .right, spacing: kFitWidth(20))
@@ -42,9 +42,9 @@ class PlanCreateFilterVM: UIView {
     lazy var synButton: FeedBackButton = {
         let btn = FeedBackButton()
         btn.setTitle("同步用餐", for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
-        btn.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        btn.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         btn.setBackgroundImage(createImageWithColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.1)), for: .highlighted)
         btn.layer.cornerRadius = kFitWidth(12)
         btn.clipsToBounds = true
@@ -86,7 +86,6 @@ extension PlanCreateFilterVM{
         
         timeButton.snp.makeConstraints { make in
             make.top.height.equalToSuperview()
-//            make.width.equalTo(kFitWidth(106))
             make.left.equalTo(kFitWidth(16))
         }
         synButton.snp.makeConstraints { make in

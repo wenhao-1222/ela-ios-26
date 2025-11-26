@@ -167,7 +167,7 @@ extension WHPieChartView{
         arcPath = UIBezierPath()
         arcPath.addArc(withCenter: CGPoint.init(x: centerX, y: centerY), radius: radius, startAngle: startAngle, endAngle: CGFloat(100 * Double.pi*2) + startAngle , clockwise: true)
         shapeLayer.path = arcPath.cgPath
-        shapeLayer.strokeColor = UIColor.white.cgColor// colors[i].cgColor // 弧线颜色
+        shapeLayer.strokeColor = UIColor.COLOR_CARD_BG_WHITE.cgColor// colors[i].cgColor // 弧线颜色
         shapeLayer.fillColor = nil // 无填充色
         shapeLayer.lineWidth = lineWidth // 线宽
         
@@ -267,7 +267,7 @@ extension WHPieChartView{
         let numberAttr = NSMutableAttributedString(string: "\(WHUtils.convertStringToString("\(model.weight)") ?? "0")g")
         
         titleAttr.yy_color = model.color
-        numberAttr.yy_color = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)//.COLOR_GRAY_BLACK_65
+        numberAttr.yy_color = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)//.COLOR_GRAY_BLACK_65
         
         titleAttr.append(numberAttr)
         

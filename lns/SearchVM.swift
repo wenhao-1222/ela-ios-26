@@ -25,6 +25,7 @@ class SearchVM: UIView {
         self.clipsToBounds = true
         
         initUI()
+        
     }
     
     required init?(coder: NSCoder) {

@@ -36,7 +36,7 @@ class SportCatogaryTableViewCell: FeedBackTableViewCell {
     }()
     lazy var nameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.lineBreakMode = .byWordWrapping
         lab.numberOfLines = 2
@@ -55,15 +55,12 @@ extension SportCatogaryTableViewCell{
         if isSelect{
             leftLineView.alpha = 0
             leftLineView.isHidden = false
-            bgView.backgroundColor = .white
-//            nameLabel.textColor = .COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT
+            bgView.backgroundColor = .COLOR_BG_WHITE
+
             UIView.transition(with: self.contentView, duration: 0.2, options: .transitionCrossDissolve, animations: {
                 self.nameLabel.textColor = .THEME
                 self.leftLineView.alpha = 1
             })
-//            leftLineView.isHidden = false
-//            bgView.backgroundColor = .white
-//            nameLabel.textColor = .THEME
         }else{
             leftLineView.isHidden = true
             bgView.backgroundColor = .clear
@@ -90,7 +87,8 @@ extension SportCatogaryTableViewCell{
             make.width.equalTo(kFitWidth(84))
         }
         leftLineView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(-2))
+//            make.left.equalTo(kFitWidth(-2))
+            make.left.equalTo(kFitWidth(2))
             make.centerY.lessThanOrEqualToSuperview()
             make.width.equalTo(kFitWidth(6))
             make.height.equalTo(kFitWidth(20))

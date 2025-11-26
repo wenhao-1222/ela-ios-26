@@ -47,7 +47,7 @@ class ForumNewsListVC: WHBaseViewVC {
         vi.isUserInteractionEnabled = true
         vi.showsVerticalScrollIndicator = false
 //        vi.rowHeight = UITableView.automaticDimension
-        vi.backgroundColor = .white//WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         vi.register(ForumNewsListCell.classForCoder(), forCellReuseIdentifier: "ForumNewsListCell")
         vi.mj_footer = MJRefreshBackNormalFooter.init(refreshingBlock: {
             if self.isLoadingMoreData {
@@ -90,6 +90,9 @@ extension ForumNewsListVC{
         view.addSubview(self.commomAlertVm)
         
         tableView.isUserInteractionEnabled = true
+        
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
         initSkeletonData()
     }
     func initSkeletonData() {

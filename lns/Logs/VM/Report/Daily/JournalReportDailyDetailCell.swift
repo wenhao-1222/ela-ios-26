@@ -24,14 +24,14 @@ class JournalReportDailyDetailCell: UITableViewCell {
     }
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
         return vi
     }()
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_BG_F5_SEGMENT
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
 //        vi.isSkeletonable = true

@@ -29,7 +29,7 @@ class FoodsListAddListVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         selfHeight = SCREEN_HEIGHT-frame.origin.y
         initUI()
@@ -52,24 +52,11 @@ class FoodsListAddListVM: UIView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(16), y: 0, width: kFitWidth(200), height: kFitWidth(44)))
         lab.text = "最近添加"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab
     }()
-//    lazy var sortBtn: UIButton = {
-//        let btn = UIButton()
-//        btn.setTitle("按时间", for: .normal)
-//        btn.setTitleColor(.THEME, for: .normal)
-//        btn.setBackgroundImage(createImageWithColor(color: WHColorWithAlpha(colorStr: "007AFF", alpha: 0.15)), for: .normal)
-//        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .highlighted)
-//        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
-//        btn.layer.cornerRadius = kFitWidth(12)
-//        btn.clipsToBounds = true
-//        btn.addTarget(self, action: #selector(sortBtnAction), for: .touchUpInside)
-//        
-//        return btn
-//    }()
     lazy var sortTypeButton: GJVerButton = {
         let btn = GJVerButton.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT*0.5, height: selfHeight-WHUtils().getBottomSafeAreaHeight()))
         btn.setTitle("最新", for: .normal)
@@ -86,7 +73,7 @@ class FoodsListAddListVM: UIView {
     lazy var tableView: UITableView = {
         let table = UITableView.init(frame: CGRect.init(x: 0, y: kFitWidth(44), width: SCREEN_WIDHT, height: selfHeight-kFitWidth(44)), style: .plain)
         table.separatorStyle = .none
-        table.backgroundColor = .white
+        table.backgroundColor = .COLOR_CARD_BG_WHITE
         table.delegate = self
         table.dataSource = self
         table.register(FoodsListAddTableViewCell.classForCoder(), forCellReuseIdentifier: "FoodsListAddTableViewCell")

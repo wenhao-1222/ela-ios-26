@@ -30,7 +30,7 @@ class JournalShareMsgNameVM: UIView {
     }()
     lazy var nameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.textColor = WHColor_16(colorStr: "0f1214")//.COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 15, weight: .semibold)
         
         return lab
@@ -38,7 +38,7 @@ class JournalShareMsgNameVM: UIView {
     lazy var descriptLabel: UILabel = {
         let lab = UILabel()
         lab.text = "给你分享了一个饮食日志"
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.textColor = WHColorWithAlpha(colorStr: "0f1214", alpha: 0.5)//.COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 11, weight: .regular)
         
         return lab
@@ -71,7 +71,7 @@ class JournalShareMsgNameVM: UIView {
     }()
     lazy var winnerDayLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_BG_WHITE
+        lab.textColor = .white
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
         return lab

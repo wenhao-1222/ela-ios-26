@@ -39,7 +39,7 @@ class FoodsDetailSpecAlertVM: UIView {
     }()
     lazy var scrollView: UIScrollView = {
         let scro = UIScrollView()
-        scro.backgroundColor = .white
+        scro.backgroundColor = .COLOR_BG_WHITE
         
         return scro
     }()
@@ -85,7 +85,7 @@ extension FoodsDetailSpecAlertVM{
         for i in 0..<vmDataArray.count{
             let vm = vmDataArray[i]as! QuestionnairePlanFoodsTypeItemVM
             vm.selectImgView.isHidden = true
-            vm.titleLabel.textColor = .COLOR_GRAY_BLACK_85
+            vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
             if i == index{
                 vm.selectImgView.isHidden = false
                 vm.titleLabel.textColor = .THEME

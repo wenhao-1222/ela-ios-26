@@ -22,7 +22,7 @@ class JournalReportDailyAchievedCell: UITableViewCell {
     }
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
         return vi
@@ -58,19 +58,34 @@ class JournalReportDailyAchievedCell: UITableViewCell {
 extension JournalReportDailyAchievedCell{
     func updateUI(dict:NSDictionary) {
         let streakDict = dict["streak"]as? NSDictionary ?? [:]
-        let defeatedDict = dict["defeated"]as? NSDictionary ?? [:]
-        
-        var streakAttr = NSMutableAttributedString(string: streakDict.stringValueForKey(key: "text"))
-        var streakAttr1 = NSMutableAttributedString(string: "天")
-        streakAttr.yy_font = UIFont().DDInFontBold(fontSize: 28)
-        streakAttr.append(streakAttr1)
-        daysLabel.attributedText = streakAttr
-        
-        var defeatAttr = NSMutableAttributedString(string: defeatedDict.stringValueForKey(key: "text"))
-        var defeatAttr1 = NSMutableAttributedString(string: "%用户")
-        defeatAttr.yy_font = UIFont().DDInFontBold(fontSize: 28)
-        defeatAttr.append(defeatAttr1)
-        percentLabel.attributedText = defeatAttr
+        if streakDict.stringValueForKey(key: "text").count > 0 {
+            let defeatedDict = dict["defeated"]as? NSDictionary ?? [:]
+            
+            let streakAttr = NSMutableAttributedString(string: streakDict.stringValueForKey(key: "text"))
+            let streakAttr1 = NSMutableAttributedString(string: "天")
+            streakAttr.yy_font = UIFont().DDInFontBold(fontSize: 28)
+            streakAttr.append(streakAttr1)
+            daysLabel.attributedText = streakAttr
+            
+            let defeatAttr = NSMutableAttributedString(string: defeatedDict.stringValueForKey(key: "text"))
+            let defeatAttr1 = NSMutableAttributedString(string: "%用户")
+            defeatAttr.yy_font = UIFont().DDInFontBold(fontSize: 28)
+            defeatAttr.append(defeatAttr1)
+            percentLabel.attributedText = defeatAttr
+            // 3) 最后统一把骨架优雅淡出 + 内容淡入
+//            [daysLabel, percentLabel].forEach { $0.hideSkeletonWithCrossfade() }
+        }else{
+//            daysLabel.text = nil
+//            // 需要骨架的子视图：显示骨架（从左向右 Shimmer + 渐入）
+//            let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+//                                     highlightColorLight: .COLOR_GRAY_E2,
+//                                     cornerRadius: kFitWidth(4),
+//                                     shimmerWidth: 0.22,
+//                                     shimmerDuration: 1.15)
+//            
+//            daysLabel.showSkeleton(cfg)
+//            percentLabel.showSkeleton(cfg)
+        }
     }
 }
 

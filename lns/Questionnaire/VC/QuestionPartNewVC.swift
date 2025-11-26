@@ -35,7 +35,7 @@ class QuestionPartNewVC : WHBaseViewVC {
         let lab = UILabel()
 //        lab.text = "卡路里和营养素目标"
         lab.text = "每日营养目标"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         if QuestinonaireMsgModel.shared.surveytype == "part" {
             lab.text = "您的营养目标"
@@ -56,7 +56,7 @@ class QuestionPartNewVC : WHBaseViewVC {
     }()
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: (SCREEN_WIDHT-kFitWidth(320))*0.5, y: kFitWidth(160)+statusBarHeight, width: kFitWidth(320), height: kFitWidth(414)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -64,7 +64,7 @@ class QuestionPartNewVC : WHBaseViewVC {
     lazy var labelOne : UILabel = {
         let lab = UILabel()
         lab.text = "-"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = UIFont().DDInFontMedium(fontSize: 28)
         
         return lab
@@ -72,7 +72,7 @@ class QuestionPartNewVC : WHBaseViewVC {
     lazy var labelTwo : UILabel = {
         let lab = UILabel()
         lab.text = "卡路里 (千卡)"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
@@ -87,9 +87,7 @@ class QuestionPartNewVC : WHBaseViewVC {
         let vm = QuestionCustomItemVM.init(frame: CGRect.init(x: 0, y: kFitWidth(114), width: kFitWidth(320), height: 0))
         vm.titleLabel.text = "碳水化合物"
         vm.textField.textContentType = nil
-//        if QuestinonaireMsgModel.shared.surveytype == "part" {
-//            vm.textField.isEnabled = false
-//        }
+        
         vm.numberChangeBlock = {(number)in
             self.carNumber = Int(number) ?? 0
             self.calculateNumber()
@@ -100,9 +98,7 @@ class QuestionPartNewVC : WHBaseViewVC {
         let vm = QuestionCustomItemVM.init(frame: CGRect.init(x: 0, y: kFitWidth(182), width: kFitWidth(320), height: 0))
         vm.titleLabel.text = "蛋白质"
         vm.textField.textContentType = nil
-//        if QuestinonaireMsgModel.shared.surveytype == "part" {
-//            vm.textField.isEnabled = false
-//        }
+        
         vm.numberChangeBlock = {(number)in
             self.proteinNumber = Int(number) ?? 0
             self.calculateNumber()
@@ -113,9 +109,7 @@ class QuestionPartNewVC : WHBaseViewVC {
         let vm = QuestionCustomItemVM.init(frame: CGRect.init(x: 0, y: kFitWidth(250), width: kFitWidth(320), height: 0))
         vm.titleLabel.text = "脂肪"
         vm.textField.textContentType = nil
-//        if QuestinonaireMsgModel.shared.surveytype == "part" {
-//            vm.textField.isEnabled = false
-//        }
+        
         vm.numberChangeBlock = {(number)in
             self.fatNumber = Int(number) ?? 0
             self.calculateNumber()
@@ -126,24 +120,14 @@ class QuestionPartNewVC : WHBaseViewVC {
         let btn = UIButton()
         btn.frame = CGRect.init(x: kFitWidth(20), y: kFitWidth(346), width: kFitWidth(281), height: kFitWidth(48))
         btn.setTitle("开始体验", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-//        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME, for: .highlighted)
-//        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT), for: .disabled)
-//        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
         btn.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT
         btn.layer.cornerRadius = kFitWidth(8)
         btn.clipsToBounds = true
         
-//        if QuestinonaireMsgModel.shared.surveytype == "part" {
-//            btn.isEnabled = false
-//            btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT), for: .disabled)
-//            btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-//        }else{
-            btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-//        }
+        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
         
-//        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT), for: .highlighted)
         btn.addTarget(self, action: #selector(nextAction), for: .touchUpInside)
         btn.enablePressEffect()
         
@@ -278,19 +262,19 @@ extension QuestionPartNewVC{
     func calculateNumber() {
         if self.carNumber == 0 && self.proteinNumber == 0 && self.fatNumber == 0{
             labelOne.text = "-"
-            labelOne.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+            labelOne.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
             return
         }
         //((protein + carbohydrate) * 4) + (fat * 9);
         let number = (proteinNumber + carNumber) * 4 + fatNumber * 9
         labelOne.text = "\(number)"
-        labelOne.textColor = .COLOR_GRAY_BLACK_85
+        labelOne.textColor = .COLOR_TEXT_TITLE_0f1214
     }
 }
 
 extension QuestionPartNewVC{
     func initUI() {
-        view.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
         view.addSubview(titleLabel)
         view.addSubview(tipsButton)
         view.addSubview(whiteView)
@@ -386,7 +370,7 @@ extension QuestionPartNewVC{
                 self.proteinVm.textField.text = QuestinonaireMsgModel.shared.proteinNumber
                 
                 self.labelOne.text = QuestinonaireMsgModel.shared.caloriesNumber
-                self.labelOne.textColor = .COLOR_GRAY_BLACK_85
+                self.labelOne.textColor = .COLOR_TEXT_TITLE_0f1214
             }
         }
     }

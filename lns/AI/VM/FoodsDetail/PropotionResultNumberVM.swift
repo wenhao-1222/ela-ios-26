@@ -28,7 +28,7 @@ class PropotionResultNumberVM: UIView {
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: kFitWidth(10), width: SCREEN_WIDHT, height: selfHeight-kFitWidth(10)))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()

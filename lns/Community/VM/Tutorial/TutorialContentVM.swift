@@ -17,13 +17,13 @@ class TutorialContentVM: UIView {
     }
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         
         initUI()
     }
     lazy var titleLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
@@ -32,7 +32,7 @@ class TutorialContentVM: UIView {
     }()
     lazy var contentLab: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping

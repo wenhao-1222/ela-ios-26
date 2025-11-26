@@ -20,6 +20,28 @@ class JournalCircleTemplateAlertVM: UIView {
     var sdate = Date().todayDate
     var itmeVmGap = kFitWidth(20)
     
+    
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear
@@ -41,7 +63,7 @@ class JournalCircleTemplateAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenSelf))
         v.addGestureRecognizer(tap)
@@ -51,7 +73,7 @@ class JournalCircleTemplateAlertVM: UIView {
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(10))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
         vi.addGestureRecognizer(tap)
@@ -72,7 +94,7 @@ class JournalCircleTemplateAlertVM: UIView {
         let lab = UILabel()
 //        lab.text = "请选择训练部位"
         lab.text = "切换碳循环模板"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         return lab
     }()
@@ -86,7 +108,7 @@ class JournalCircleTemplateAlertVM: UIView {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
     lazy var btnBgView: UIView = {
@@ -141,7 +163,7 @@ extension JournalCircleTemplateAlertVM{
                        initialSpringVelocity: 0.1,
                        options: [.curveEaseOut, .allowUserInteraction]) {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
-            self.bgView.alpha = 0.25
+            self.bgView.alpha = self.targetDimAlpha//0.25
         } completion: { _ in
             self.bgView.isUserInteractionEnabled = true
             
@@ -149,13 +171,6 @@ extension JournalCircleTemplateAlertVM{
         UIView.animate(withDuration: 0.25, delay: 0.4, options: .curveEaseInOut) {
             self.whiteView.transform = .identity
         }
-//        UIView.animate(withDuration: 0.15,delay: 0,options: .curveLinear) {
-//            self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT-self.whiteViewHeight, width: SCREEN_WIDHT, height: self.whiteViewHeight)
-//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
-//        } completion: { t in
-////            self.alpha = 1
-//        }
-
     }
     @objc func hiddenSelf() {
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
@@ -238,7 +253,7 @@ extension JournalCircleTemplateAlertVM{
         lineView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(kFitWidth(55))
-            make.height.equalTo(kFitWidth(5))
+            make.height.equalTo(kFitWidth(1))
         }
         btnBgView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
@@ -300,9 +315,10 @@ extension JournalCircleTemplateAlertVM{
         }
         
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
-        btn.setTitleColor(.white, for: .selected)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .selected)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .regular)
-        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BG_F5), for: .normal)
+        btn.backgroundColor = .COLOR_BG_F5
+//        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BG_F5), for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .selected)
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT), for: .highlighted)
         btn.layer.cornerRadius = kFitWidth(6)

@@ -15,7 +15,7 @@ class GoalSetTipsVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -25,12 +25,11 @@ class GoalSetTipsVM: UIView {
     }
     lazy var lineView: DottedLineView = {
         let vi = DottedLineView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+//        vi.backgroundColor = .COLOR_CARD_BG_CLEAR//WHColor_16(colorStr: "F0F0F0")
         return vi
     }()
     lazy var tipsOneLabel: UILabel = {
         let lab = UILabel()
-//        lab.text = "总计 %"
         lab.text = "卡路里"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .semibold)
@@ -39,7 +38,6 @@ class GoalSetTipsVM: UIView {
     }()
     lazy var tipsTwoLabel: UILabel = {
         let lab = UILabel()
-//        lab.text = "营养素必须等于 100%"
         lab.text = "按下方的克数值自动计算"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .regular)
@@ -50,7 +48,6 @@ class GoalSetTipsVM: UIView {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 20, weight: .medium)
-//        lab.text = "100%"
         lab.isUserInteractionEnabled = true
         
         

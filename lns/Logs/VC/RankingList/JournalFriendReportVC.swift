@@ -186,6 +186,9 @@ extension JournalFriendReportVC{
         view.insertSubview(tableView, belowSubview: self.navigationView)
         view.addSubview(nodataVm)
         
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
+        
         initSkeleton()
     }
     func initSkeleton() {

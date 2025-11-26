@@ -22,6 +22,9 @@ class TutorialTableViewCell: UITableViewCell {
     var imgTapBlock:((UIImageView)->())?
     var buttonTapBlock:((catalogue_type)->())?
     
+    
+    var viewModules:[HeroBrowserViewModule] = []
+    
     private var player: AVPlayer!
     private var playerLayer: AVPlayerLayer!
     
@@ -31,7 +34,7 @@ class TutorialTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -129,11 +132,16 @@ extension TutorialTableViewCell{
         var originX = kFitWidth(0)
         var originY = kFitWidth(0)
 
+//        viewModules.removeAll()
         for i in 0..<imgsArray.count{
             let imgName = imgsArray[i]as? String ?? ""
             let imgView = FeedBackUIImageView.init(frame: CGRect.init(x: originX, y: originY, width: imgWidth, height: imgHeight))
             imgView.setImgLocal(imgName: imgName)
             imgScrollView.addSubview(imgView)
+            
+//            if let img = UIImage(named: "imgName"){
+//                viewModules.append(HeroBrowserLocalImageViewModule(image: img))
+//            }
             
             imgView.isUserInteractionEnabled = true
             let tap = UITapGestureRecognizer.init(target: self, action: #selector(imgTapAction(sender: )))
@@ -142,7 +150,7 @@ extension TutorialTableViewCell{
             if stepsArray.count > 0{
                 let lab = UILabel.init(frame: CGRect.init(x: originX, y: originY+imgHeight, width: imgWidth, height: kFitWidth(23)))
                 lab.text = stepsArray[i]as? String ?? ""
-                lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+                lab.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
                 lab.font = .systemFont(ofSize: 11, weight: .regular)
                 lab.textAlignment = .center
                 imgScrollView.addSubview(lab)
@@ -193,8 +201,18 @@ extension TutorialTableViewCell{
     }
     @objc func imgTapAction(sender:UITapGestureRecognizer) {
         let imgView = sender.view as? UIImageView
-        if self.imgTapBlock != nil && imgView != nil{
-            self.imgTapBlock!(imgView!)
+        guard let vc = UIApplication.topViewController() else { return }
+        if let img = imgView?.image{
+            vc.hero.browserPhoto(viewModules: [HeroBrowserLocalImageViewModule(image: img)], initIndex: 0) {
+                [
+                    .pageControlType(.pageControl),
+                    .heroView(imgView)
+                ]
+            }
+        }else{
+            if self.imgTapBlock != nil && imgView != nil{
+                self.imgTapBlock!(imgView!)
+            }
         }
     }
     @objc func catalogueTypeTapAction() {

@@ -16,7 +16,7 @@ class PlanDetailDayMealsTitleVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        self.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -26,7 +26,7 @@ class PlanDetailDayMealsTitleVM: UIView {
     }
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab

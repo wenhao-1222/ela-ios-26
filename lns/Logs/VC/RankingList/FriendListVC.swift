@@ -26,7 +26,7 @@ class FriendListVC: WHBaseViewVC {
     }
     lazy var searchVm: FriendListSearchVM = {
         let vm = FriendListSearchVM.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight(), width: 0, height: 0))
-        vm.backgroundColor = .COLOR_BG_WHITE
+        vm.backgroundColor = .COLOR_CARD_BG_WHITE
         vm.searchBlock = {()in
             DLLog(message: "好友ID：\(self.searchVm.textField.text ?? "")")
             if self.searchVm.textField.text?.count ?? 0 > 0{
@@ -66,6 +66,8 @@ extension FriendListVC{
         view.addSubview(searchVm)
         view.addSubview(idVm)
         view.addSubview(friendListSearchVm)
+        
+        view.layoutIfNeeded()
     }
     private func removeParallaxOverlay() {
         if let navView = self.navigationController?.view {

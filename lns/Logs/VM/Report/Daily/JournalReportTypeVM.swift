@@ -16,7 +16,7 @@ class JournalReportTypeVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight(), width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -37,7 +37,7 @@ class JournalReportTypeVM: UIView {
     }
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.alpha = 0
         vi.isUserInteractionEnabled = true
         return vi

@@ -72,6 +72,12 @@ class CoursePayOrderVC: WHBaseViewVC {
         vm.updateMoney(money: self.msgDict.stringValueForKey(key: "price"))
         
         vm.payBlocK = {()in
+//            let vc = CoursePayResultVC()
+//            vc.msgDict = self.msgDict
+//            let obj = NSMutableDictionary(dictionary: dataObj)
+//            obj.setValue(self.orderId, forKey: "id")
+//            vc.orderDict = obj
+//            self.navigationController?.pushViewController(vc, animated: true)
             EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
                                                 scenarioType: .course_create_order,
                                                 text: self.parentId)
@@ -103,6 +109,8 @@ extension CoursePayOrderVC{
         view.addSubview(bottomVm)
         
         view.addSubview(tipsPopupView)
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
     }
 }
 

@@ -19,7 +19,7 @@ class InviteRewardsCodeVM: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         initUI()
     }
@@ -32,7 +32,7 @@ class InviteRewardsCodeVM: UIView {
     lazy var copyCodeButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("复制邀请码", for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.45), for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .regular)
         btn.addTarget(self, action: #selector(copyCodeAction), for: .touchUpInside)
@@ -81,14 +81,14 @@ extension InviteRewardsCodeVM{
         
         for i in 0..<shareCode.count{
             let lab = UILabel()
-            lab.backgroundColor = WHColor_16(colorStr: "F5F5F5")
+            lab.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "F5F5F5")
             lab.layer.borderColor = WHColor_16(colorStr: "D9D9D9").cgColor
             lab.layer.borderWidth = kFitWidth(1)
             lab.layer.cornerRadius = kFitWidth(4)
             lab.clipsToBounds = true
             lab.textAlignment = .center
             lab.font = .systemFont(ofSize: 20, weight: .medium)
-            lab.textColor = .COLOR_GRAY_BLACK_85
+            lab.textColor = .COLOR_TEXT_TITLE_0f1214
             lab.frame = CGRect.init(x: labelOriginX, y: labelOriginY, width: labelWidth, height: labelWidth)
             
             labelOriginX = labelOriginX + labelWidth + labelGap

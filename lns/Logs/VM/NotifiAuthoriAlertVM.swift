@@ -34,7 +34,7 @@ class NotifiAuthoriAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
 //        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenSelf))
 //        v.addGestureRecognizer(tap)
@@ -46,7 +46,7 @@ class NotifiAuthoriAlertVM: UIView {
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.alpha = 0
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingAction))
@@ -85,7 +85,7 @@ class NotifiAuthoriAlertVM: UIView {
     }()
     lazy var buttonBgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -99,7 +99,7 @@ class NotifiAuthoriAlertVM: UIView {
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
         btn.layer.borderWidth = kFitWidth(1)
-        btn.layer.borderColor = UIColor.COLOR_GRAY_808080.cgColor
+        btn.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214.cgColor
         
         btn.addTarget(self, action: #selector(cancelAction), for: .touchUpInside)
         
@@ -211,7 +211,7 @@ extension NotifiAuthoriAlertVM{
         layoutWhiteViewFrame()
         setConstrait()
         
-        buttonBgView.addShadow()
+//        buttonBgView.addShadow()
         
         // 初始位置放在最终停靠位置，实际展示用 transform 下移
         whiteView.transform = .identity

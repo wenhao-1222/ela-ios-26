@@ -55,7 +55,7 @@ class ForumCommentListHeadVM: UIView {
     }()
     lazy var nameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.isUserInteractionEnabled = true
 
@@ -88,8 +88,8 @@ class ForumCommentListHeadVM: UIView {
         btn.alpha = 0
         btn.setImage(UIImage(named: "forum_thumbs_up_normal"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .highlighted)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .highlighted)
         btn.addTarget(self, action: #selector(thumbAction), for: .touchUpInside)
         return btn
     }()
@@ -103,7 +103,7 @@ class ForumCommentListHeadVM: UIView {
     }()
     lazy var commentLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.lineBreakMode = .byWordWrapping
         lab.numberOfLines = 2
@@ -123,7 +123,7 @@ class ForumCommentListHeadVM: UIView {
     }()
     lazy var timeLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .medium)
         lab.isUserInteractionEnabled = true
 
@@ -133,7 +133,7 @@ class ForumCommentListHeadVM: UIView {
         let lab = UILabel()
         lab.text = "作者赞过"
         lab.isHidden = true
-        lab.textColor = .COLOR_GRAY_BLACK_45
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 10, weight: .regular)
         lab.textAlignment = .center
         lab.layer.cornerRadius = kFitWidth(10)
@@ -293,7 +293,7 @@ extension ForumCommentListHeadVM{
         }
     }
     func showSelectAction() {
-        highLightView.backgroundColor = WHColor_16(colorStr: "EFEFEF")
+        highLightView.backgroundColor = .COLOR_BG_EF//WHColor_16(colorStr: "EFEFEF")
         DispatchQueue.main.asyncAfter(deadline: .now()+3) {
             if self.isTap == false { self.highLightView.backgroundColor = .clear }
         }
@@ -415,7 +415,7 @@ extension ForumCommentListHeadVM{
 
 extension ForumCommentListHeadVM{
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        highLightView.backgroundColor = WHColor_16(colorStr: "EFEFEF")
+        highLightView.backgroundColor = .COLOR_BG_EF//WHColor_16(colorStr: "EFEFEF")
         isTap = true
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

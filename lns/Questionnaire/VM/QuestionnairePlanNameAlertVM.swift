@@ -33,7 +33,7 @@ class QuestionnairePlanNameAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
         v.addGestureRecognizer(tap)
@@ -43,7 +43,7 @@ class QuestionnairePlanNameAlertVM: UIView {
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
@@ -53,7 +53,7 @@ class QuestionnairePlanNameAlertVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.text = "如何查看并使用计划？"
@@ -67,7 +67,7 @@ class QuestionnairePlanNameAlertVM: UIView {
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true
-        label.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+        label.textColor = .COLOR_TEXT_TITLE_0f1214_60//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         
         return label
     }()
@@ -82,9 +82,9 @@ class QuestionnairePlanNameAlertVM: UIView {
         var tiAttr = NSMutableAttributedString(string: "1. 查看您的计划：")
         var contAttr = NSMutableAttributedString(string: "访问“我的计划”以浏览所有为您量身定制的饮食计划。")
         
-        tiAttr.yy_color = .COLOR_GRAY_BLACK_85
+        tiAttr.yy_color = .COLOR_TEXT_TITLE_0f1214
         tiAttr.yy_font = .systemFont(ofSize: 14, weight: .medium)
-        contAttr.yy_color = .COLOR_GRAY_BLACK_65
+        contAttr.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         contAttr.yy_font = .systemFont(ofSize: 14, weight: .regular)
         
         tiAttr.append(contAttr)
@@ -105,9 +105,9 @@ class QuestionnairePlanNameAlertVM: UIView {
         var tiAttr = NSMutableAttributedString(string: "2. 执行计划：")
         var contAttr = NSMutableAttributedString(string: "选中您想要开始的计划，并点击“激活计划”按钮，将该计划导入到您的饮食日志中，以便跟踪和管理您的饮食。")
         
-        tiAttr.yy_color = .COLOR_GRAY_BLACK_85
+        tiAttr.yy_color = .COLOR_TEXT_TITLE_0f1214
         tiAttr.yy_font = .systemFont(ofSize: 14, weight: .medium)
-        contAttr.yy_color = .COLOR_GRAY_BLACK_65
+        contAttr.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         contAttr.yy_font = .systemFont(ofSize: 14, weight: .regular)
         
         tiAttr.append(contAttr)
@@ -126,9 +126,9 @@ class QuestionnairePlanNameAlertVM: UIView {
         var tiAttr = NSMutableAttributedString(string: "3. 获取更多计划：")
         var contAttr = NSMutableAttributedString(string: "您可以在我的计划页面点击“获取计划”以生成更多的饮食计划，以便探索和尝试新的饮食建议。")
         
-        tiAttr.yy_color = .COLOR_GRAY_BLACK_85
+        tiAttr.yy_color = .COLOR_TEXT_TITLE_0f1214
         tiAttr.yy_font = .systemFont(ofSize: 14, weight: .medium)
-        contAttr.yy_color = .COLOR_GRAY_BLACK_65
+        contAttr.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         contAttr.yy_font = .systemFont(ofSize: 14, weight: .regular)
         
         tiAttr.append(contAttr)
@@ -146,9 +146,9 @@ class QuestionnairePlanNameAlertVM: UIView {
         var tiAttr = NSMutableAttributedString(string: "4. 自定义计划：")
         var contAttr = NSMutableAttributedString(string: "如果您希望创建一个完全符合个人口味和需求的计划，可以在“我的计划”下的“制作计划”选项中自定义并保存您的计划。")
         
-        tiAttr.yy_color = .COLOR_GRAY_BLACK_85
+        tiAttr.yy_color = .COLOR_TEXT_TITLE_0f1214
         tiAttr.yy_font = .systemFont(ofSize: 14, weight: .medium)
-        contAttr.yy_color = .COLOR_GRAY_BLACK_65
+        contAttr.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         contAttr.yy_font = .systemFont(ofSize: 14, weight: .regular)
         
         tiAttr.append(contAttr)
@@ -166,9 +166,9 @@ class QuestionnairePlanNameAlertVM: UIView {
         var tiAttr = NSMutableAttributedString(string: "5. 分享您的计划：")
         var contAttr = NSMutableAttributedString(string: "您可以通过在“日志”或计划详情页内点击“分享”按钮，将您的饮食计划分享给其他用户。")
         
-        tiAttr.yy_color = .COLOR_GRAY_BLACK_85
+        tiAttr.yy_color = .COLOR_TEXT_TITLE_0f1214
         tiAttr.yy_font = .systemFont(ofSize: 14, weight: .medium)
-        contAttr.yy_color = .COLOR_GRAY_BLACK_65
+        contAttr.yy_color = .COLOR_TEXT_TITLE_0f1214_60
         contAttr.yy_font = .systemFont(ofSize: 14, weight: .regular)
         
         tiAttr.append(contAttr)
@@ -177,7 +177,7 @@ class QuestionnairePlanNameAlertVM: UIView {
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_LINE_F0//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         
         return vi
     }()

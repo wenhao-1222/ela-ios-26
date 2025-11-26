@@ -17,7 +17,7 @@ class MealsRemarkTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -25,7 +25,7 @@ class MealsRemarkTableViewCell: UITableViewCell {
     lazy var remarkTextField: UITextView = {
         let text = UITextView()
         
-        text.textColor = .COLOR_GRAY_BLACK_65
+        text.textColor = .COLOR_TEXT_TITLE_0f1214_60
         text.font = .systemFont(ofSize: 14, weight: .regular)
         text.delegate = self
         text.returnKeyType = .done
@@ -42,7 +42,7 @@ class MealsRemarkTableViewCell: UITableViewCell {
     lazy var placeHoldLabel: UILabel = {
         let lab = UILabel()//.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(14), width: kFitWidth(200), height: kFitWidth(20)))
         lab.text = "这里输入食谱制作教程"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         return lab
     }()

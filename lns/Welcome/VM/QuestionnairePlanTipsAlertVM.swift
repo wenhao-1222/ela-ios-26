@@ -14,6 +14,27 @@ class QuestionnairePlanTipsAlertVM: UIView {
     
     var nextBlock:(()->())?
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.15
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.15
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
@@ -33,7 +54,7 @@ class QuestionnairePlanTipsAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
         v.addGestureRecognizer(tap)
@@ -43,7 +64,7 @@ class QuestionnairePlanTipsAlertVM: UIView {
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
@@ -53,7 +74,7 @@ class QuestionnairePlanTipsAlertVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
         lab.text = "我该如何选择？"
@@ -105,7 +126,7 @@ extension QuestionnairePlanTipsAlertVM{
         bgView.alpha = 0
         // 1) 蒙层先快后慢，140ms 淡到 0.45（与内容节奏不同步，减少“停顿感”）
         UIView.animate(withDuration: 0.14, delay: 0, options: .curveEaseOut) {
-            self.bgView.alpha = 0.15
+            self.bgView.alpha = self.targetDimAlpha//0.15
         }
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.whiteView.alpha = 1

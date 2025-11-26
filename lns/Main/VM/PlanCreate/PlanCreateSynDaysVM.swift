@@ -13,13 +13,13 @@ class PlanCreateSynDaysVM: UIView {
     var days = ""
     var isSelect = false
     
-    var selectContentColor = UIColor.COLOR_TEXT_TITLE_0f1214
+    var selectContentColor = UIColor.THEME
     var selectBgColor = UIColor.THEME
     var tapBlock:(()->())?
     
     override init(frame:CGRect){
         super.init(frame: frame)
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+        self.backgroundColor = .COLOR_BG_F5_FITNESS//WHColorWithAlpha(colorStr: "000000", alpha: 0)
         self.isUserInteractionEnabled = true
         self.clipsToBounds = false
         self.isHidden = true
@@ -36,7 +36,7 @@ class PlanCreateSynDaysVM: UIView {
     lazy var bgView : UIView = {
         let vi = UIView()
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_BG_F5_FITNESS
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
         vi.layer.borderColor = UIColor.clear.cgColor
@@ -115,17 +115,17 @@ extension PlanCreateSynDaysVM{
 extension PlanCreateSynDaysVM{
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         TouchGenerator.shared.touchGenerator()
-        bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        bgView.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        bgView.backgroundColor = .COLOR_BG_F5_FITNESS//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
     }
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        bgView.backgroundColor = .COLOR_BG_F5_FITNESS//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
     }
    @objc func tapAction() {
        playClickAnimation()
-       bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+       bgView.backgroundColor = .COLOR_BG_F5_FITNESS//.COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
        
        isSelect = !isSelect
        if isSelect == true{

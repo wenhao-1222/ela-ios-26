@@ -31,7 +31,7 @@ class TableViewNoDataVM: UIView {
     }()
     lazy var tipsLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         let attr = NSMutableAttributedString(string: "请点击")
@@ -45,6 +45,17 @@ class TableViewNoDataVM: UIView {
         
         return lab
     }()
+}
+
+extension TableViewNoDataVM{
+    func fadeIn() {
+        self.alpha = 0
+        self.isHidden = false
+        UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut]) {
+            self.alpha = 1
+        }
+    }
+
 }
 
 extension TableViewNoDataVM{

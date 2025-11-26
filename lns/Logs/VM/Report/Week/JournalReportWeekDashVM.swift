@@ -17,6 +17,11 @@ class JournalReportWeekDashVM: UIView {
     let dashLineLayer = CAShapeLayer()
     var dashLinePath = UIBezierPath()
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        self.drawLayer()
+    }
+    
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: kFitWidth(16), y: frame.origin.y, width: selfWidth, height: selfHeight))
         self.backgroundColor = .clear
@@ -38,12 +43,9 @@ extension JournalReportWeekDashVM{
         self.layer.addSublayer(dashLineLayer)
         
         lineLayer.allowsEdgeAntialiasing = true
-        lineLayer.strokeColor = UIColor.white.cgColor // 弧线颜色
-        lineLayer.fillColor = UIColor.white.cgColor // 填充色
         lineLayer.lineWidth = kFitWidth(0.5) // 线宽
         
         dashLineLayer.allowsEdgeAntialiasing = true
-        dashLineLayer.strokeColor = UIColor.COLOR_TEXT_TITLE_0f1214_20.cgColor // 弧线颜色
         dashLineLayer.fillColor = nil // 无填充色
         dashLineLayer.lineWidth = kFitWidth(1) // 线宽
         dashLineLayer.lineDashPhase = kFitWidth(0)
@@ -51,6 +53,9 @@ extension JournalReportWeekDashVM{
     }
     
     func drawLayer() {
+        lineLayer.strokeColor = UIColor.COLOR_CARD_BG_WHITE.cgColor // 弧线颜色
+        lineLayer.fillColor = UIColor.COLOR_CARD_BG_WHITE.cgColor // 填充色
+        dashLineLayer.strokeColor = UIColor.COLOR_TEXT_TITLE_0f1214_20.cgColor // 弧线颜色
         linePath = UIBezierPath()
         linePath.move(to: CGPoint.init(x: 0, y: 0))
         linePath.addLine(to: CGPoint.init(x: 0, y: selfHeight*0.5-circleRadius))

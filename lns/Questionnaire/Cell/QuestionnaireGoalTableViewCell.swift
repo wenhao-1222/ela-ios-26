@@ -28,12 +28,12 @@ class QuestionnaireGoalTableViewCell: FeedBackTableViewCell {
         if highlighted {
             self.bottomView.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT
         }else{
-            self.bottomView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+            self.bottomView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         }
     }
     lazy var bottomView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.clipsToBounds = true
         vi.layer.cornerRadius = kFitWidth(30)
         vi.isUserInteractionEnabled = true
@@ -42,14 +42,14 @@ class QuestionnaireGoalTableViewCell: FeedBackTableViewCell {
     }()
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 20, weight: .medium)
         
         return lab
     }()
     lazy var borderRectView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(30)
         vi.clipsToBounds = true
         vi.layer.borderWidth = kFitWidth(0.5)
@@ -71,6 +71,7 @@ class QuestionnaireGoalTableViewCell: FeedBackTableViewCell {
         lab.lineBreakMode = .byWordWrapping
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
+        lab.textColor = .colorText0F1214
         
         return lab
     }()

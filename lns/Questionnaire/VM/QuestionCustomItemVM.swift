@@ -19,7 +19,7 @@ class QuestionCustomItemVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: frame.size.width, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(textTapAction))
@@ -32,7 +32,7 @@ class QuestionCustomItemVM: UIView {
     }
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         
         return lab
@@ -42,7 +42,7 @@ class QuestionCustomItemVM: UIView {
         text.placeholder = "输入数值"
         text.keyboardType = .numberPad
         text.font = .systemFont(ofSize: 16, weight: .medium)
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.textAlignment = .right
         text.delegate = self
         text.textContentType = nil
@@ -51,26 +51,15 @@ class QuestionCustomItemVM: UIView {
     }()
     lazy var unitLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.text = "g"
         
         return lab
     }()
-//    lazy var textTapView: UIView = {
-//        let vi = UIView.init(frame: CGRect.init(x: kFitWidth(130), y: 0, width: kFitWidth(245), height: selfHeight))
-//        vi.isUserInteractionEnabled = true
-//        vi.backgroundColor = .clear
-//        
-//        let tap = UITapGestureRecognizer.init(target: self, action: #selector(textTapAction))
-//        vi.addGestureRecognizer(tap)
-//        
-//        return vi
-//    }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
-//        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_10
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()

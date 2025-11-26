@@ -16,9 +16,29 @@ class AITipsAlertVM: UIView {
     
     var aiTipsBlock:(()->())?
     
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+        self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0)
         self.isUserInteractionEnabled = true
         self.clipsToBounds = false
         self.isHidden = true
@@ -31,11 +51,20 @@ class AITipsAlertVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private lazy var bgView: UIView = {
+        let v = UIView(frame: bounds)
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.alpha = 0
+//        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
+//        v.addGestureRecognizer(tap)
+        return v
+    }()
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: kFitWidth(67) + SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         // 创建下拉手势识别器
@@ -49,7 +78,7 @@ class AITipsAlertVM: UIView {
     lazy var titleLab: UILabel = {
         let lab = UILabel()
         lab.text = "AI识别"
-        lab.textColor = .black
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 17, weight: .semibold)
         
         return lab
@@ -75,7 +104,7 @@ class AITipsAlertVM: UIView {
 //        vi.bounces = false
         vi.showsVerticalScrollIndicator = false
         vi.rowHeight = UITableView.automaticDimension
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.register(AITipsTitleCell.classForCoder(), forCellReuseIdentifier: "AITipsTitleCell")
         vi.register(AITipsContentCell.classForCoder(), forCellReuseIdentifier: "AITipsContentCell")
         vi.register(AITipsDonationCell.classForCoder(), forCellReuseIdentifier: "AITipsDonationCell")
@@ -123,9 +152,11 @@ extension AITipsAlertVM{
             tableView.setContentOffset(CGPoint.zero, animated: false)
         }
         self.isHidden = false
+        
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.whiteViewOriginY+self.whiteViewHeight*0.5)
-            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+            self.bgView.alpha = self.targetDimAlpha
         }
    }
    @objc func hiddenView() {
@@ -135,7 +166,8 @@ extension AITipsAlertVM{
        
        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
-           self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+//           self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+           self.bgView.alpha = 0
        }completion: { t in
            self.isHidden = true
        }
@@ -177,6 +209,7 @@ extension AITipsAlertVM{
 
 extension AITipsAlertVM{
     func initUI() {
+        addSubview(bgView)
         addSubview(whiteView)
         whiteView.addSubview(titleLab)
         whiteView.addSubview(closeImgView)

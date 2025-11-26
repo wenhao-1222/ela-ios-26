@@ -22,17 +22,56 @@ extension UIColor {
     public static let COLOR_TEXT_TITLE_0f1214_35        = UIColor(named: "color_text_0f1214_35")!
     public static let COLOR_TEXT_TITLE_0f1214_60        = UIColor(named: "color_text_0f1214_60")!
     
-    public static let COLOR_BG_WHITE                    = UIColor(named: "color_bg_white")!
-    public static let COLOR_BG_BLACK                    = UIColor(named: "color_bg_black")!
-    public static let COLOR_BG_F5                       = UIColor(named: "color_bg_f5")!
-    public static let COLOR_BG_F2                       = UIColor(named: "color_bg_f2")!
+    public static let COLOR_TEXT_WHITE                  = UIColor(named: "color_text_white")!
+    public static let COLOR_WHITE_04                    = UIColor(named: "color_white_04")!
+    public static let COLOR_WHITE_65                    = UIColor(named: "color_white_65")!
+    public static let COLOR_WHITE_75                    = UIColor(named: "color_white_75")!
     
+    public static let COLOR_BG_WHITE                    = UIColor(named: "color_bg_white")!
+    
+    public static let COLOR_BG_BLACK                    = UIColor(named: "color_bg_black")!
+    public static let COLOR_BG_BLACK_06                 = UIColor(named: "color_black_06")!
+    public static let COLOR_BG_BLACK_04                 = UIColor(named: "color_black_04")!
+    public static let COLOR_BG_BLACK_15                 = UIColor(named: "color_black_15")!
+    
+    public static let COLOR_BG_BLACK_04_GOAL_BG         = UIColor(named: "color_black_04_goal_bg")!
+    public static let COLOR_BG_BLACK_045                = UIColor(named: "color_black_045")!
+    public static let COLOR_BG_BLACK_40                 = UIColor(named: "color_black_40")!
+    public static let COLOR_BG_BLACK_30                 = UIColor(named: "color_black_30")!
+    public static let COLOR_BG_BLACK_65                 = UIColor(named: "color_black_65")!
+    
+    
+    public static let COLOR_ALERT_BG_BLACK              = UIColor(named: "color_alert_bg_black")!
+    
+    public static let COLOR_BG_F5                       = UIColor(named: "color_bg_f5")!
+    public static let COLOR_BG_F5_SEGMENT               = UIColor(named: "color_bg_f5_segment")!
+    public static let COLOR_BG_F5_FITNESS               = UIColor(named: "color_bg_f5_fitness_bg")!
+    public static let COLOR_BG_F2                       = UIColor(named: "color_bg_f2")!
+    public static let COLOR_BG_EF                       = UIColor(named: "color_bg_ef")!
+    public static let COLOR_BG_E8                       = UIColor(named: "color_bg_e8")!
+    public static let COLOR_BG_FA                       = UIColor(named: "color_bg_fa")!
+    
+    
+    
+    public static let COLOR_BG_THEME                    = UIColor(named: "color_bg_theme")!
+    public static let COLOR_CARD_BG_WHITE               = UIColor(named: "color_card_bg_ff")!
+    public static let COLOR_CARD_BG_CLEAR               = UIColor(named: "color_card_bg_clear")!
+    
+    
+    
+    public static let COLOR_TEXT_MAIN_NATURAL           = UIColor(named: "color_text_main_natural")
+    public static let COLOR_TEXT_MAIN_NATURAL_OVER      = UIColor(named: "color_text_main_natural_over")
+    public static let COLOR_TEXT_MAIN_CALORIES          = UIColor(named: "color_text_main_calories")!
+    
+    
+    public static let COLOR_LINE_F0                       = UIColor(named: "color_line_f0")!
+    public static let COLOR_LINE_F0_30                    = UIColor(named: "color_line_f0_30")!
     
 }
 
 extension UIColor {
     
-    public static let THEME                  = WHColor_16(colorStr: "007AFF")
+    public static let THEME                  = UIColor(named: "color_natural_calories")!//WHColor_16(colorStr: "007AFF")
     
     //按钮按压时
     public static let COLOR_HIGHTLIGHT_GRAY       = WHColorWithAlpha(colorStr: "8B8B8B", alpha: 0.85)
@@ -43,7 +82,7 @@ extension UIColor {
     //按钮高亮状态  背景色   normal时为主题色
     public static let COLOR_BUTTON_HIGHLIGHT_BG_THEME   = WHColor_16(colorStr: "409BFF")
     //按钮禁用状态   背景色  normal时为主题色
-    public static let COLOR_BUTTON_DISABLE_BG_THEME   = WHColor_16(colorStr: "8DC3FF")
+    public static let COLOR_BUTTON_DISABLE_BG_THEME   = UIColor(named: "color_button_disable_bg")!//WHColor_16(colorStr: "8DC3FF")
     //按钮高亮状态  背景色   normal时为主题色的浅色
     public static let COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT   = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.3)
     
@@ -52,17 +91,17 @@ extension UIColor {
     public static let COLOR_BUTTON_HIGHLIGHT_TEXT_85_LIGHT   = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
     
     //热量
-    public static let COLOR_CALORI     = WHColor_16(colorStr: "007AFF")
+    public static let COLOR_CALORI     = UIColor(named: "color_natural_calories")!//WHColor_16(colorStr: "007AFF")
     //碳水化合物
-    public static let COLOR_CARBOHYDRATE     = WHColor_16(colorStr: "7137BF")
+    public static let COLOR_CARBOHYDRATE     = UIColor(named: "color_natural_carbo")!//WHColor_16(colorStr: "7137BF")
     public static let COLOR_CARBOHYDRATE_20     = WHColorWithAlpha(colorStr: "7137BF", alpha: 0.2)
     public static let COLOR_CARBOHYDRATE_FILL    = WHColor_RGB(r: 62, g: 36, b: 101)
     //蛋白质
-    public static let COLOR_PROTEIN          = WHColor_16(colorStr: "F5BA18")
+    public static let COLOR_PROTEIN          = UIColor(named: "color_natural_protein")!//WHColor_16(colorStr: "F5BA18")
     public static let COLOR_PROTEIN_20     = WHColorWithAlpha(colorStr: "F5BA18", alpha: 0.2)
     public static let COLOR_PROTEIN_FILL          = WHColor_RGB(r: 135, g: 102, b: 13)
     //脂肪
-    public static let COLOR_FAT              = WHColor_16(colorStr: "E37318")
+    public static let COLOR_FAT              = UIColor(named: "color_natural_fat")!//WHColor_16(colorStr: "E37318")
     public static let COLOR_FAT_20     = WHColorWithAlpha(colorStr: "E37318", alpha: 0.2)
     public static let COLOR_FAT_FILL              = WHColor_RGB(r: 116, g: 66, b: 25)
     //运动

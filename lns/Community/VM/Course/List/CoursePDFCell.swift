@@ -10,7 +10,7 @@ class CoursePDFCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .COLOR_BG_F5
+        backgroundColor = .clear
         selectionStyle = .none
         initUI()
     }
@@ -23,7 +23,7 @@ class CoursePDFCell: UITableViewCell {
     
     lazy var bgView: GradientView = {
         let view = GradientView()
-        view.backgroundColor = .white
+        view.backgroundColor = .COLOR_CARD_BG_WHITE
         view.layer.cornerRadius = kFitWidth(13)
         view.clipsToBounds = true
         

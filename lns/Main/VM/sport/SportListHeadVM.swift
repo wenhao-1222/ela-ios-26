@@ -14,7 +14,7 @@ class SportListHeadVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: kFitWidth(100), y: WHUtils().getNavigationBarHeight(), width: kFitWidth(275), height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()

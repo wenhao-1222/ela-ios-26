@@ -21,7 +21,7 @@ class FriendListTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -77,7 +77,7 @@ class FriendListTableViewCell: UITableViewCell {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_20
+        vi.backgroundColor = .COLOR_LINE_F0
         vi.isHidden = true
         return vi
     }()

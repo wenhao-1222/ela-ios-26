@@ -12,7 +12,7 @@ class JournalBottomFuncAlertVM: UIView {
     
     var selfHeight = WHUtils().getTabbarHeight()+kFitWidth(20)
     
-    var bgColor = UIColor.white//WHColor_16(colorStr: "ABABAB")
+    var bgColor = UIColor.COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "ABABAB")
     
     var copyBlock:(()->())?
     var saveBlock:(()->())?
@@ -23,9 +23,6 @@ class JournalBottomFuncAlertVM: UIView {
         self.isUserInteractionEnabled = true
         self.addShadow()
         initUI()
-        
-//        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenView))
-//        self.addGestureRecognizer(tap)
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -34,9 +31,9 @@ class JournalBottomFuncAlertVM: UIView {
         let btn = GJVerButton.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT*0.5, height: selfHeight-WHUtils().getBottomSafeAreaHeight()))
         btn.setTitle("复制", for: .normal)
         btn.backgroundColor = bgColor
-        btn.setImage(UIImage(named: "logs_foods_copy_icon"), for: .normal)
+        btn.setImage(UIImage(named: "logs_foods_copy_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         
         btn.addTarget(self, action: #selector(copyAction), for: .touchUpInside)
@@ -45,7 +42,7 @@ class JournalBottomFuncAlertVM: UIView {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_LINE_F0//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
 //        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.2)
         return vi
     }()
@@ -53,9 +50,9 @@ class JournalBottomFuncAlertVM: UIView {
         let btn = GJVerButton.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT*0.5, height: selfHeight-WHUtils().getBottomSafeAreaHeight()))
         btn.setTitle("保存食谱", for: .normal)
         btn.backgroundColor = bgColor
-        btn.setImage(UIImage(named: "logs_foods_meals_create_icon"), for: .normal)
+        btn.setImage(UIImage(named: "logs_foods_meals_create_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         
         btn.addTarget(self, action: #selector(saveAction), for: .touchUpInside)

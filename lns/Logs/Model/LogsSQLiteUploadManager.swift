@@ -304,7 +304,13 @@ extension LogsSQLiteUploadManager{
         for i in 0..<meals.count{
             let foodsArray = meals[i]as? NSArray ?? []
             if foodsArray.count > 0 {
-                snArr.append(i+1)
+                for j in 0..<foodsArray.count{
+                    let foodsMsg = foodsArray[j]as? NSDictionary ?? [:]
+                    if foodsMsg.stringValueForKey(key: "state") == "1"{
+                        snArr.append(i+1)
+                        break
+                    }
+                }
             }
         }
         

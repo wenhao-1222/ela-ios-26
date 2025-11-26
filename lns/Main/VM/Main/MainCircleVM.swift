@@ -38,7 +38,7 @@ class MainCircleVM: UIView {
         lab.text = "-"
         lab.font = UIFont().DDInFontMedium(fontSize: 32)
         lab.adjustsFontSizeToFitWidth = true
-        lab.textColor = .THEME
+        lab.textColor = .COLOR_TEXT_MAIN_CALORIES
         lab.textAlignment = .center
         
         return lab
@@ -46,7 +46,7 @@ class MainCircleVM: UIView {
     lazy var tipsLabel : UILabel = {
         let lab = UILabel()
         lab.text = "剩余摄入 (千卡)"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.textAlignment = .center
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         

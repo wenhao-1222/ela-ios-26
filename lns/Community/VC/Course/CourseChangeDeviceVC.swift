@@ -161,6 +161,9 @@ extension CourseChangeDeviceVC{
         view.addSubview(changeButton)
         view.addSubview(cancelButton)
         
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
+        
         setConstrait()
     }
     func setConstrait() {

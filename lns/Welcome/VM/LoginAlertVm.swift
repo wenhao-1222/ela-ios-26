@@ -35,7 +35,7 @@ class LoginAlertVm: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenLoginView))
         v.addGestureRecognizer(tap)
@@ -45,7 +45,7 @@ class LoginAlertVm: UIView {
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(nothingTodoAction))
         vi.addGestureRecognizer(tap)
@@ -78,7 +78,7 @@ class LoginAlertVm: UIView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.text = "登录Elavatine"
-        lab.textColor = WHColor_16(colorStr: "262626")
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "262626")
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         
         return lab
@@ -87,7 +87,7 @@ class LoginAlertVm: UIView {
         let btn = GJVerButtonNoneFeedBack()
         btn.setTitle("使用微信账户登录", for: .normal)
         btn.setImage(UIImage.init(named: "login_alert_wechat_icon"), for: .normal)
-        btn.setTitleColor(.white, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         btn.backgroundColor = WHColor_16(colorStr: "1F9947")
 //        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
@@ -121,14 +121,15 @@ class LoginAlertVm: UIView {
     lazy var phoneButton : GJVerButtonNoneFeedBack = {
         let btn = GJVerButtonNoneFeedBack()
         btn.setTitle("使用手机号登录", for: .normal)
-        btn.setImage(UIImage.init(named: "login_alert_phone_icon"), for: .normal)
-        btn.setTitleColor(.COLOR_GRAY_BLACK_85, for: .normal)
+        btn.setImage(UIImage(named: "login_alert_phone_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
+//        btn.setImage(UIImage.init(named: "login_alert_phone_icon"), for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         btn.setBackgroundImage(createImageWithColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.1)), for: .highlighted)
         btn.backgroundColor = .clear
         btn.layer.cornerRadius = kFitWidth(8)
         btn.clipsToBounds = true
-        btn.layer.borderColor = UIColor.COLOR_GRAY_BLACK_85.cgColor
+        btn.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214.cgColor
         btn.layer.borderWidth = kFitWidth(1)
         btn.addTarget(self, action: #selector(phoneLoginAction), for: .touchUpInside)
         btn.enablePressEffect()
@@ -137,21 +138,21 @@ class LoginAlertVm: UIView {
     }()
     lazy var orLineLeft : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()
     lazy var orLabel : UILabel = {
         let lab = UILabel()
         lab.text = "或者"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_BG_BLACK.withAlphaComponent(0.45)//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
         return lab
     }()
     lazy var orLineRight : UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0//WHColor_16(colorStr: "F0F0F0")
         
         return vi
     }()
@@ -210,14 +211,6 @@ extension LoginAlertVm{
          UIView.animate(withDuration: 0.25, delay: 0.4, options: .curveEaseInOut) {
              self.whiteView.transform = .identity
          }
-//         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-////             self.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*0.5)
-////             self.whiteView.frame = CGRect.init(x: 0, y: self.whiteViewOriginY, width: SCREEN_WIDHT, height: self.whiteViewHeight)
-//             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.whiteViewOriginY+self.whiteViewHeight*0.5)
-//             self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
-//         }completion: { t in
-////             self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
-//         }
     }
     @objc func hiddenLoginView() {
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
@@ -226,12 +219,6 @@ extension LoginAlertVm{
         } completion: { _ in
             self.isHidden = true
         }
-//        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-//            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
-//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
-//        }completion: { t in
-//            self.isHidden = true
-//        }
    }
     @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {
         // 获取当前手势所在的view
@@ -291,11 +278,6 @@ extension LoginAlertVm{
         whiteView.layer.masksToBounds = true
     }
     func setConstrait() {
-//        whiteView.snp.makeConstraints { make in
-//            make.left.width.equalToSuperview()
-//            make.height.equalTo(whiteViewHeight)
-//            make.bottom.equalTo(kFitWidth(16)+SCREEN_HEIGHT)
-//        }
         topCloseTapView.snp.makeConstraints { make in
             make.left.top.width.equalToSuperview()
             make.height.equalTo(SCREEN_HEIGHT-whiteViewHeight+kFitWidth(40))

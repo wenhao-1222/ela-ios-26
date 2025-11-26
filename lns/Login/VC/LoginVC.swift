@@ -23,7 +23,8 @@ class LoginVC: WHBaseViewVC {
     }
     lazy var closeImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "login_close_img")
+//        img.setImgLocal(imgName: "login_close_img")
+        img.setImgLocal(imgName: "date_fliter_cancel_img")
         img.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(backTapAction))
@@ -33,7 +34,7 @@ class LoginVC: WHBaseViewVC {
     }()
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColor_16(colorStr: "262626")
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "262626")
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.text = "登录 elavatine"
         return lab

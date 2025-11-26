@@ -30,7 +30,7 @@ class MainWeightLineChartView: UIView {
     }
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(0), width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.isUserInteractionEnabled = true
         
@@ -43,7 +43,7 @@ class MainWeightLineChartView: UIView {
         let lab = UILabel()
         lab.text = "体重数据"
         lab.font = .systemFont(ofSize: 18, weight: .medium)
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         
         return lab
     }()

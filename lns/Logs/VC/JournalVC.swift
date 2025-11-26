@@ -186,9 +186,8 @@ class JournalVC: WHBaseViewVC {
     lazy var naviVm : LogsNaviVM = {
         let vm = LogsNaviVM.init(frame: .zero)
         vm.controller = self
-        vm.backgroundColor = UIColor(named: "color_bg_f5")
+        vm.backgroundColor = .COLOR_BG_F5//UIColor(named: "color_bg_f5")
         vm.choiceTimeBlock = {()in
-//            self.sendJpushTestRequest()
             UIApplication.shared.windows.first?.addSubview(self.dateFilterAlertVm)
             self.dateFilterAlertVm.showView()
         }
@@ -257,24 +256,8 @@ class JournalVC: WHBaseViewVC {
             self.collectView.layoutIfNeeded()
             
             let indexPath = IndexPath(row: self.selecteIndex, section: 0)
-//            if let cell = self.collectView.cellForItem(at: indexPath) as? JounalCollectionCell{
-//                cell.updateFitnessBlock = {(fitnessType)in
-//    //                if fitnessType == "[]"{
-//    //                    return
-//    //                }
-//                    if fitnessType.count > 0 {
-//                        self.naviVm.fitnessLabel.text = fitnessType.mc_clipFromPrefix(to: 1)
-//                    }else{
-//                        self.naviVm.fitnessLabel.text = "-"
-//                    }
-//                }
-//                cell.showFitnessAlertVm()
-//            }
             let cell = self.collectView.cellForItem(at: indexPath)as! JounalCollectionCell
             cell.updateFitnessBlock = {(fitnessType)in
-//                if fitnessType == "[]"{
-//                    return
-//                }
                 if fitnessType.count > 0 {
                     self.naviVm.fitnessLabel.text = fitnessType.mc_clipFromPrefix(to: 1)
                 }else{
@@ -283,41 +266,11 @@ class JournalVC: WHBaseViewVC {
             }
             cell.showFitnessAlertVm()
         }
-//        vm.fitnessBlock = { [weak self] in
-//            guard let self = self else { return }
-//
-//            self.collectView.layoutIfNeeded()
-//            let indexPath = IndexPath(row: self.selecteIndex, section: 0)
-//
-//            let handleCell: (JounalCollectionCell) -> Void = { cell in
-//                cell.updateFitnessBlock = { fitnessType in
-//                    self.naviVm.fitnessLabel.text =
-//                        fitnessType.count > 0 ? fitnessType.mc_clipFromPrefix(to: 1) : "-"
-//                }
-//                cell.showFitnessAlertVm()
-//            }
-//
-//            if let cell = self.collectView.cellForItem(at: indexPath) as? JounalCollectionCell {
-//                handleCell(cell)
-//            } else {
-//                // cell 不在可见区域或尚未创建，滚动并强制布局后再次获取
-////                self.collectView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-////                self.collectView.layoutIfNeeded()
-//                
-//                self.collectView.reloadData()
-//                self.collectView.layoutIfNeeded()
-//                self.collectView.setContentOffsetPage(index: indexPath.row, animated: false, direction: .right)
-//                if let cell = self.collectView.cellForItem(at: indexPath) as? JounalCollectionCell {
-//                    handleCell(cell)
-//                }
-//            }
-//        }
-
         return vm
     }()
     lazy var naviEditStatusVm : LogsNaviEditVM = {
         let vm = LogsNaviEditVM.init(frame: .zero)
-        vm.backgroundColor = UIColor(named: "color_bg_f5")
+        vm.backgroundColor = .COLOR_BG_F5//UIColor(named: "color_bg_f5")
         vm.doneBlock = {()in
             self.isEdit = false
             self.changeEditStatus()

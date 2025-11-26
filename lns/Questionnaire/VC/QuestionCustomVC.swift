@@ -33,9 +33,6 @@ class QuestionCustomVC : WHBaseViewVC {
             sendGetGoalRequest()
         }
         
-//        let panGes = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(popGestureAction(gesture: )))
-//        panGes.edges = .left
-//        view.addGestureRecognizer(panGes)
         if !disableSwipeBack {
             let panGes = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(popGestureAction(gesture: )))
             panGes.edges = .left
@@ -87,7 +84,7 @@ class QuestionCustomVC : WHBaseViewVC {
         let lab = UILabel()
 //        lab.text = "卡路里和营养素目标"
         lab.text = "每日营养目标"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         if QuestinonaireMsgModel.shared.surveytype == "part" {
             lab.text = "您的营养目标"
@@ -108,7 +105,7 @@ class QuestionCustomVC : WHBaseViewVC {
     }()
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(28), y: kFitWidth(160)+statusBarHeight, width: SCREEN_WIDHT-kFitWidth(56), height: kFitWidth(414)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -116,7 +113,7 @@ class QuestionCustomVC : WHBaseViewVC {
     lazy var labelOne : UILabel = {
         let lab = UILabel()
         lab.text = "-"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = UIFont().DDInFontMedium(fontSize: 28)
         
         return lab
@@ -124,7 +121,7 @@ class QuestionCustomVC : WHBaseViewVC {
     lazy var labelTwo : UILabel = {
         let lab = UILabel()
         lab.text = "卡路里 (千卡)"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
@@ -178,7 +175,7 @@ class QuestionCustomVC : WHBaseViewVC {
         let btn = UIButton.init(frame: CGRect.init(x: kFitWidth(20), y: kFitWidth(346), width: SCREEN_WIDHT-kFitWidth(96), height: kFitWidth(48)))
 //        btn.frame =
         btn.setTitle("开始体验", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME, for: .highlighted)
         btn.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT
@@ -361,19 +358,19 @@ extension QuestionCustomVC{
     func calculateNumber() {
         if self.carNumber == 0 && self.proteinNumber == 0 && self.fatNumber == 0{
             labelOne.text = "-"
-            labelOne.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+            labelOne.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
             return
         }
         //((protein + carbohydrate) * 4) + (fat * 9);
         let number = (proteinNumber + carNumber) * 4 + fatNumber * 9
         labelOne.text = "\(number)"
-        labelOne.textColor = .COLOR_GRAY_BLACK_85
+        labelOne.textColor = .COLOR_TEXT_TITLE_0f1214
     }
 }
 
 extension QuestionCustomVC{
     func initUI() {
-        view.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
         view.addSubview(titleLabel)
         view.addSubview(tipsButton)
         view.addSubview(whiteView)
@@ -386,7 +383,7 @@ extension QuestionCustomVC{
         
         whiteView.addSubview(nextBtn)
         
-        whiteView.addShadow()
+//        whiteView.addShadow()
         view.addSubview(backButton)
         view.addSubview(backHomeButton)
         view.addSubview(alertVm)
@@ -474,7 +471,7 @@ extension QuestionCustomVC{
                 self.proteinVm.textField.text = QuestinonaireMsgModel.shared.proteinNumber
                 
                 self.labelOne.text = QuestinonaireMsgModel.shared.caloriesNumber
-                self.labelOne.textColor = .COLOR_GRAY_BLACK_85
+                self.labelOne.textColor = .COLOR_TEXT_TITLE_0f1214
             }
         }
     }

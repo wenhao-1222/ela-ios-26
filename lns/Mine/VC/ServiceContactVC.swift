@@ -57,11 +57,6 @@ class ServiceContactVC: WHBaseViewVC {
         IQKeyboardManager.shared.enable = false
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
-    
-//    override func viewWillDisappear(_ animated: Bool) {
-//        IQKeyboardManager.shared.enable = true
-//        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
-//    }
     override func viewDidDisappear(_ animated: Bool) {
         IQKeyboardManager.shared.enable = true
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
@@ -85,7 +80,7 @@ class ServiceContactVC: WHBaseViewVC {
     
     lazy var bottomView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.isUserInteractionEnabled = false
         
         return vi
@@ -355,6 +350,8 @@ extension ServiceContactVC{
         view.insertSubview(bottomView, belowSubview: self.navigationView)
         view.addSubview(tableView)
         view.addSubview(msgInputView)
+//        self.tableView.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
 }
 
@@ -399,7 +396,7 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
         vi.backgroundColor = .clear
         
         let label = UILabel.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(30)))
-        label.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        label.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         label.font = .systemFont(ofSize: 12, weight: .regular)
         label.textAlignment = .center
         vi.addSubview(label)
@@ -473,6 +470,7 @@ extension ServiceContactVC{
             
         WHNetworkUtil.shareManager().POST(urlString: URL_Uer_sugestion, parameters: param as [String:AnyObject]) { responseObject in
             DLLog(message: "\(responseObject)")
+
             let code = responseObject["code"]as? Int ?? -1
             if (code == 200) {
                 let dict = ["createdby":"\(UserInfoModel.shared.nickname)",

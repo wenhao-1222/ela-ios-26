@@ -27,19 +27,27 @@ class GoalCircleSegmentVM: UIView {
     var selectBtn = UIButton()
     
     open weak var delegate: GoalCircleSegmentVMDelegate?
-    
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.layer.borderColor = UIColor(named: "color_text_main_line")!.cgColor
+           }
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: kFitWidth(13.5), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(27), height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         self.layer.cornerRadius = kFitWidth(8)
         self.clipsToBounds = true
-        self.layer.borderColor = UIColor.THEME.cgColor
+        self.layer.borderColor = UIColor(named: "color_text_main_line")!.cgColor
         self.layer.borderWidth = lineWidth
         selfWidth = SCREEN_WIDHT-kFitWidth(27)
         initUI()
-//        addSubview(todayLabel)
-//        todayLabel.addClipCorner(corners: [.topLeft,.topRight,.bottomRight], radius: kFitWidth(8))
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -132,11 +140,12 @@ extension GoalCircleSegmentVM{
             let button = FeedBackButton()
             button.frame = CGRect.init(x: btnWidth*CGFloat(i), y: 0, width: btnWidth, height: kFitWidth(50))
             button.setTitle("\(weekDays[i]as? String ?? "")", for: .normal)
-            button.setTitleColor(.THEME, for: .normal)
-            button.setTitleColor(.white, for: .selected)
+            button.setTitleColor(UIColor(named: "color_text_main_line")!, for: .normal)
+            button.setTitleColor(.COLOR_TEXT_WHITE, for: .selected)
             button.titleLabel?.font = .systemFont(ofSize: 14, weight: .bold)
             button.setBackgroundImage(createImageWithColor(color: .THEME), for: .selected)
-            button.setBackgroundImage(createImageWithColor(color: .white), for: .normal)
+//            button.setBackgroundImage(createImageWithColor(color: .COLOR_BG_WHITE), for: .normal)
+            button.setBackgroundImage(UIImage(named: "button_bg_white"), for: .normal)
             button.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .highlighted)
             button.clipsToBounds = true
             button.tag = 1070 + i
@@ -151,7 +160,7 @@ extension GoalCircleSegmentVM{
             
             if i > 0 {
                 let vi = UIView(frame: CGRect(x: kFitWidth(0), y: 0, width: lineWidth, height: kFitWidth(50)))
-                vi.backgroundColor = .THEME
+                vi.backgroundColor = UIColor(named: "color_text_main_line")!
                 button.addSubview(vi)
             }
         }

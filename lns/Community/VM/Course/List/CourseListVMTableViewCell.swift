@@ -27,7 +27,7 @@ class CourseListVMTableViewCell: UITableViewCell {
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()

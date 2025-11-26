@@ -32,7 +32,7 @@ class ServiceInputVM: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-selfHeight, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         initUI()
         
         IQKeyboardManager.shared.enable = false
@@ -43,14 +43,14 @@ class ServiceInputVM: UIView {
     
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(64)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         
         return vi
     }()
     lazy var textBgView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(12), y: kFitWidth(8), width: SCREEN_WIDHT-kFitWidth(54)-kFitWidth(22), height: kFitWidth(40)))
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         vi.layer.cornerRadius = kFitWidth(20)
         vi.clipsToBounds = true
         
@@ -63,20 +63,16 @@ class ServiceInputVM: UIView {
         text.backgroundColor = .clear
         text.delegate = self
         text.returnKeyType = .send
+        text.backgroundColor = .clear
         text.font = .systemFont(ofSize: 14, weight: .regular)
         text.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 6, right: 0)
         text.isScrollEnabled = false
         return text
     }()
     lazy var addBgView: UIButton = {
-//        let img = UIButton.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(12)-kFitWidth(48), y: kFitWidth(8), width: kFitWidth(27), height: kFitWidth(27)))
         let img = UIButton()
-        img.setImage(UIImage(named: "service_img_add_icon"), for: .normal)
-//        img.setBackgroundImage(createImageWithColor(color: WHColorWithAlpha(colorStr: "000000", alpha: 0.02)), for: .highlighted)
-//        img.layer.cornerRadius = kFitWidth(8)
-//        img.clipsToBounds = true
-        
-//        img.addTarget(self, action: #selector(imgTapAction), for: .touchUpInside)
+//        img.setImage(UIImage(named: "service_img_add_icon"), for: .normal)
+        img.setImage(UIImage(named: "service_img_add_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
         
         return img
     }()
@@ -93,7 +89,7 @@ class ServiceInputVM: UIView {
     lazy var timeLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: 0, y: kFitWidth(-15), width: SCREEN_WIDHT, height: kFitWidth(15)))
         lab.text = "客服工作时间：9:00 ~ 18:00（工作日）"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.2)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_20//WHColorWithAlpha(colorStr: "000000", alpha: 0.2)
         lab.backgroundColor = .white
         lab.font = .systemFont(ofSize: 8, weight: .regular)
         lab.textAlignment = .center
@@ -104,9 +100,11 @@ class ServiceInputVM: UIView {
     lazy var albumButton : PlanShareButton = {
         let btn = PlanShareButton.init(frame: CGRect.init(x: kFitWidth(27), y: kFitWidth(20), width: kFitWidth(62), height: kFitWidth(85)))
         btn.imgView.setImgLocal(imgName: "service_album_icon")
+//        btn.imgView.image = UIImage(named: "service_album_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
+        
         btn.contenLab.text = "照片"
-        btn.contenLab.textColor = .COLOR_GRAY_BLACK_45
-        btn.labelColor = .COLOR_GRAY_BLACK_45
+        btn.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        btn.labelColor = .COLOR_TEXT_TITLE_0f1214_50
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
         btn.tapBlock = {()in
             self.tapAlbum()
@@ -117,9 +115,10 @@ class ServiceInputVM: UIView {
     lazy var cameraButton : PlanShareButton = {
         let btn = PlanShareButton.init(frame: CGRect.init(x: kFitWidth(115), y: kFitWidth(20), width: kFitWidth(62), height: kFitWidth(85)))
         btn.imgView.setImgLocal(imgName: "service_camera_icon")
+//        btn.imgView.image = UIImage(named: "service_camera_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
         btn.contenLab.text = "视频"
-        btn.contenLab.textColor = .COLOR_GRAY_BLACK_45
-        btn.labelColor = .COLOR_GRAY_BLACK_45
+        btn.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        btn.labelColor = .COLOR_TEXT_TITLE_0f1214_50
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
         btn.isHidden = true
         btn.tapBlock = {()in
@@ -131,8 +130,8 @@ class ServiceInputVM: UIView {
     // 底部附件面板（相册/拍摄 + 关闭）
     private lazy var attachPanel: UIView = {
         let v = UIView()
-        v.backgroundColor = .white
-        v.layer.shadowColor = UIColor.black.cgColor
+        v.backgroundColor = .COLOR_CARD_BG_WHITE
+        v.layer.shadowColor = UIColor.COLOR_BG_BLACK.cgColor
 //        v.layer.shadowOpacity = 0.08
 //        v.layer.shadowRadius = 10
         v.layer.shadowOffset = CGSize(width: 0, height: -2)
@@ -152,7 +151,7 @@ class ServiceInputVM: UIView {
 
         // 轻微分割线
         let line = UIView(frame: CGRect(x: 0, y: 0, width: w, height: 0.5))
-        line.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
+        line.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         v.addSubview(line)
 
         return v
@@ -259,11 +258,6 @@ extension ServiceInputVM{
         whiteView.addSubview(attachPanel)
         whiteView.addSubview(timeLabel)
         
-//        textView.snp.makeConstraints { make in
-//            make.left.equalTo(kFitWidth(8))
-//            make.right.equalTo(kFitWidth(-8))
-//            make.centerY.lessThanOrEqualToSuperview()
-//        }
         addBgView.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-16))
             make.centerY.lessThanOrEqualTo(textView)
@@ -343,7 +337,10 @@ extension ServiceInputVM:UITextViewDelegate{
 
         // 只有高度变化才调整
         let oldH = textView.frame.height
-        guard abs(newH - oldH) > 0.5 else { return }
+        guard abs(newH - oldH) > 0.5 else {
+            textView.isScrollEnabled = (fitting > maxTextHeight)
+            return
+        }
 
         // 调整 textView、高度容器、输入条整体高度
         var tvF = textView.frame

@@ -12,7 +12,7 @@ class PersonalTopFuncVM: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: kFitWidth(16), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         self.layer.cornerRadius = kFitWidth(12)
         self.clipsToBounds = true

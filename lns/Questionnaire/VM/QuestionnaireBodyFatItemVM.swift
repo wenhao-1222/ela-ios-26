@@ -58,7 +58,7 @@ class QuestionnaireBodyFatItemVM: UIView {
     }()
     lazy var titleLab : UILabel = {
         let lab = UILabel()
-        lab.textColor = .white
+        lab.textColor = .COLOR_TEXT_WHITE
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.text = "体脂肪"
         
@@ -66,7 +66,7 @@ class QuestionnaireBodyFatItemVM: UIView {
     }()
     lazy var numberLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = .white
+        lab.textColor = .COLOR_TEXT_WHITE
         lab.font = .systemFont(ofSize: 20, weight: .medium)
 //        lab.text = "体脂肪"
         lab.textAlignment = .left

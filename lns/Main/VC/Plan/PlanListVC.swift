@@ -87,7 +87,7 @@ class PlanListVC: WHBaseViewVC {
     }()
     lazy var tableView : UITableView = {
         let vi = UITableView.init(frame: CGRect.init(x: 0, y: self.topVm.frame.maxY+kFitWidth(8), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.topVm.frame.maxY), style: .plain)
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.register(PlanListTableViewCell.classForCoder(), forCellReuseIdentifier: "PlanListTableViewCell")
         vi.delegate = self
         vi.dataSource = self
@@ -150,21 +150,34 @@ extension PlanListVC{
     @objc func refreshData() {
         self.activePlanData = NSDictionary()
         self.dataSourceArray.removeAllObjects()
-        self.tableView.reloadData()
+//        self.tableView.reloadData()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.tableView.reloadData()
+            self.showNoDataIfNeeded()
+        }
+
         self.sendPlanListRequest()
         self.sendGetActivePlanRequest()
+    }
+    func showNoDataIfNeeded() {
+        if self.dataSourceArray.count == 0 {
+            noDataView.fadeIn()
+        } else {
+            noDataView.isHidden = true
+        }
     }
 }
 extension PlanListVC{
     func initUI() {
-        view.backgroundColor = WHColor_16(colorStr: "F5F5F5")
+        view.backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "F5F5F5")
         view.addSubview(topVm)
         view.addSubview(tableView)
         tableView.addSubview(noDataView)
         
         view.addSubview(leadPlanAlertVm)
         view.addSubview(nameAlertVm)
-        
+        self.tableView.layoutIfNeeded()
+        self.view.layoutIfNeeded()
         initSkeletonData()
     }
     func initSkeletonData() {
@@ -182,6 +195,26 @@ extension PlanListVC{
 //            self.tableView.showAnimatedGradientSkeleton()
 //        })
     }
+    func performEndLoadingSequenceForNoData() {
+        // 1) 让 cell 执行 hideSkeletonWithCrossfade()
+        for cell in tableView.visibleCells {
+            if let c = cell as? PlanListTableViewCell {
+                [c.timeLabel, c.nameLabel, c.planDaysLabel].forEach {
+                    $0?.hideSkeletonWithCrossfade()
+                }
+            }
+        }
+        
+        // 2) 等 skeleton hide 动画结束，再显示 NoDataView
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            self.noDataView.fadeIn()
+            
+            //（可选）清空数据，避免后续误触
+            self.dataSourceArray.removeAllObjects()
+            self.tableView.reloadData()
+        }
+    }
+
 }
 
 extension PlanListVC:UITableViewDelegate,UITableViewDataSource{
@@ -190,9 +223,9 @@ extension PlanListVC:UITableViewDelegate,UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isFirstLoad == false{
-            noDataView.isHidden = self.dataSourceArray.count > 0 ? true : false
-        }
+//        if isFirstLoad == false{
+//            noDataView.isHidden = self.dataSourceArray.count > 0 ? true : false
+//        }
         return self.dataSourceArray.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -291,11 +324,17 @@ extension PlanListVC{
             }else{
                 self.dataSourceArray = NSMutableArray(array: dataArray)
             }
-            
-//            self.dataSourceArray.addObjects(from: dataArray as! [Any])
-            UIView.performWithoutAnimation {
-                self.tableView.reloadData()
-            }
+            // 让 Skeleton 完整播放 hide 动画，再刷新列表
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                self.tableView.reloadData()
+//                self.showNoDataIfNeeded()
+//            }
+            self.tableView.finishLoading(
+                list: self.dataSourceArray,
+                noDataView: self.noDataView,
+                animationCells: PlanListTableViewCell.self
+            )
+
         }
     }
     func sendGetActivePlanRequest() {
@@ -305,10 +344,17 @@ extension PlanListVC{
             self.isFirstLoad = false
             self.activePlanData = dataObj
             self.dataSourceArray.insert(dataObj, at: 0)
-//            self.headActiveVm.updateUI(dict: self.activePlanData)
-            UIView.performWithoutAnimation {
-                self.tableView.reloadData()
-            }
+            // 让 Skeleton 完整播放 hide 动画，再刷新列表
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                self.tableView.reloadData()
+//                self.showNoDataIfNeeded()
+//            }
+            self.tableView.finishLoading(
+                list: self.dataSourceArray,
+                noDataView: self.noDataView,
+                animationCells: PlanListTableViewCell.self
+            )
+
         }
     }
     func sendDelPlanRequest(planDictMsg:NSDictionary,success : @escaping () -> ()) {
@@ -338,10 +384,7 @@ extension PlanListVC{
             
             dict.setValue(self.planName, forKey: "pname")
             self.dataSourceArray.replaceObject(at: self.planIndex, with: dict)
-//            self.dataSourceArray.removeObject(at: indexPath.row)
-//            self.tableView.beginUpdates()
             self.tableView.reloadRows(at: [IndexPath(row: self.planIndex, section: 0)], with: .middle)
-//            self.tableView.endUpdates()
         }
     }
 }

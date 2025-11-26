@@ -355,6 +355,8 @@ extension MallDetailVC{
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.getKeyWindow().addSubview(specAlertVm)
+        tableView.layoutIfNeeded()
+        view.layoutIfNeeded()
     }
     func updateUI() {
         if self.detailModel.image_order == ""{

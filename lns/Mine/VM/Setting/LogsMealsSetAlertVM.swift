@@ -33,7 +33,7 @@ class LogsMealsSetAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenSelf))
         v.addGestureRecognizer(tap)
@@ -42,7 +42,7 @@ class LogsMealsSetAlertVM: UIView {
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(10))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingToDo))
         vi.addGestureRecognizer(tap)
@@ -53,7 +53,7 @@ class LogsMealsSetAlertVM: UIView {
     lazy var cancelBtn: FeedBackButton = {
         let btn = FeedBackButton()
         btn.setImage(UIImage(named: "date_fliter_cancel_img"), for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.4), for: .highlighted)
+        btn.setTitleColor(.COLOR_BG_BLACK_40, for: .highlighted)
         
         btn.addTarget(self, action: #selector(hiddenSelf), for: .touchUpInside)
         
@@ -62,21 +62,21 @@ class LogsMealsSetAlertVM: UIView {
     lazy var titleLab: UILabel = {
         let lab = UILabel()
         lab.text = "请选择每日饮食餐数"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         return lab
     }()
     lazy var confirmBtn: FeedBackButton = {
         let btn = FeedBackButton()
         btn.setImage(UIImage(named: "date_fliter_confirm_img"), for: .normal)
-        btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.4), for: .highlighted)
+        btn.setTitleColor(.COLOR_BG_BLACK_40, for: .highlighted)
         
         btn.addTarget(self, action: #selector(confirmAction), for: .touchUpInside)
         return btn
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        vi.backgroundColor = .COLOR_BG_BLACK_06
         return vi
     }()
     lazy var pickerView: UIPickerView = {
@@ -117,14 +117,6 @@ extension LogsMealsSetAlertVM{
         UIView.animate(withDuration: 0.25, delay: 0.4, options: .curveEaseInOut) {
             self.whiteView.transform = .identity
         }
-        
-//        UIView.animate(withDuration: 0.15,delay: 0,options: .curveLinear) {
-//            self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT-self.whiteViewHeight, width: SCREEN_WIDHT, height: self.whiteViewHeight)
-//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.2)
-//        } completion: { t in
-////            self.alpha = 1
-//        }
-
     }
     @objc func hiddenSelf() {
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
@@ -133,22 +125,13 @@ extension LogsMealsSetAlertVM{
         } completion: { _ in
             self.isHidden = true
         }
-//        UIView.animate(withDuration: 0.15,delay: 0,options: .curveLinear) {
-//            self.whiteView.frame = CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: self.whiteViewHeight)
-//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
-//        } completion: { t in
-////            self.alpha = 0
-//            self.isHidden = true
-//            self.backgroundColor = .clear
-//        }
     }
     
     @objc func confirmAction() {
         
         self.hiddenSelf()
         let selectIndex = self.pickerView.selectedRow(inComponent: 0)
-//        UserInfoModel.shared.mealsNumber = Int(mealsArray[selectIndex] as! String) ?? 6
-//        UserDefaults.set(value: "\(UserInfoModel.shared.mealsNumber)", forKey: .mealsNumber)
+        
         if self.confirmBlock != nil{
             self.confirmBlock!(Int(mealsArray[selectIndex] as! String) ?? 6)
         }

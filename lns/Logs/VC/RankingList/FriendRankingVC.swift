@@ -96,6 +96,9 @@ extension FriendRankingVC{
         scrollViewBase.delegate = self
         scrollViewBase.showsHorizontalScrollIndicator = false
         scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*2, height: 0)
+        
+        scrollViewBase.layoutIfNeeded()
+        view.layoutIfNeeded()
     }
 }
 

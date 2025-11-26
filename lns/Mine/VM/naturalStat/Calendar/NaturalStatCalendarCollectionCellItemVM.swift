@@ -15,6 +15,7 @@ class NaturalStatCalendarCollectionCellItemVM: UIView {
     var isSelect = false
     var tapBlock:(()->())?
     
+    
     required init?(coder: NSCoder) {
         fatalError("required init?(coder: NSCoder) failed")
     }
@@ -23,7 +24,7 @@ class NaturalStatCalendarCollectionCellItemVM: UIView {
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: frame.width, height: frame.height))
         selfHeight = frame.height
         selfWidth = frame.width
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .clear
         self.isUserInteractionEnabled = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))
@@ -78,7 +79,7 @@ class NaturalStatCalendarCollectionCellItemVM: UIView {
     }()
     lazy var coverView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.75)
+        vi.backgroundColor = .COLOR_WHITE_65//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.75)
         vi.isHidden = true
         vi.isUserInteractionEnabled = false
         
@@ -100,7 +101,6 @@ extension NaturalStatCalendarCollectionCellItemVM{
         let sdateArr = sdate.components(separatedBy: "-")
         daysLabel.text = "\((sdateArr[2]).intValue)"
         
-//        DLLog(message: "--- sdate --  \(sdate)")
         caloriesItemVm.udpateUI(number:dict.doubleValueForKey(key: "calories"),total:dict.doubleValueForKey(key: "caloriesden"))
         carboItemVm.udpateUI(number:dict.doubleValueForKey(key: "carbohydrate"),total:dict.doubleValueForKey(key: "carbohydrateden"))
         proteinItemVm.udpateUI(number:dict.doubleValueForKey(key: "protein"),total:dict.doubleValueForKey(key: "proteinden"))
@@ -143,11 +143,6 @@ extension NaturalStatCalendarCollectionCellItemVM{
         }
     }
     func updateUI(dict:NSDictionary,caloriesden:String,carbohydrateden:String,proteinden:String,fatden:String) {
-//        caloriesItemVm.resetColorForGoal()
-//        carboItemVm.resetColorForGoal()
-//        proteinItemVm.resetColorForGoal()
-//        fatItemVm.resetColorForGoal()
-        
         caloriesItemVm.progressBottomView.backgroundColor = .clear
         caloriesItemVm.progressView.backgroundColor = .THEME
         carboItemVm.progressBottomView.backgroundColor = .clear
@@ -213,7 +208,6 @@ extension NaturalStatCalendarCollectionCellItemVM{
         }
         fitnessLabel.snp.makeConstraints { make in
             make.top.equalTo(fatItemVm.snp.bottom).offset(kFitWidth(2))
-//            make.bottom.equalTo(kFitWidth(-8))
             make.left.equalTo(proteinItemVm).offset(kFitWidth(3))
             make.height.equalTo(kFitWidth(12))
         }

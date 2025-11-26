@@ -16,6 +16,17 @@ class NaturalStatFavoriteFoodsVM: UIView {
     
     var updateBlock:(()->())?
     
+    override func traitCollectionDidChange(_ previous: UITraitCollection?) {
+        super.traitCollectionDidChange(previous)
+        guard traitCollection.hasDifferentColorAppearance(comparedTo: previous) else { return }
+        
+        if traitCollection.userInterfaceStyle == .dark {
+            topGapView.backgroundColor = .COLOR_BG_WHITE
+        }else{
+            topGapView.backgroundColor = .COLOR_BG_F5
+        }
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("required init?(coder: NSCoder) failed")
     }
@@ -37,7 +48,7 @@ class NaturalStatFavoriteFoodsVM: UIView {
     }()
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .bold)
         let arr = Date().currenYearMonthM
         lab.text = "\(arr[1]as? String ?? "")月最爱食物"

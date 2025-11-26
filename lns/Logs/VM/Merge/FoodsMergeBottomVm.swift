@@ -13,7 +13,7 @@ class FoodsMergeBottomVm: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-selfHeight, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -27,7 +27,7 @@ class FoodsMergeBottomVm: UIView {
         let btn = GJVerButtonNoneFeedBack()
         btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(3.5), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(48))
         btn.setTitle("保存", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
         btn.layer.cornerRadius = kFitWidth(8)
         btn.clipsToBounds = true
         btn.isEnabled = false

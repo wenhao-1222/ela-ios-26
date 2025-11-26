@@ -57,7 +57,7 @@ class JournalShareMsgCaloriesVM: UIView {
     }()
     lazy var currentCaloriesLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.textColor = WHColor_16(colorStr: "0f1214")//.COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 11, weight: .medium)
         lab.text = "已摄入千卡"
         
@@ -79,7 +79,7 @@ class JournalShareMsgCaloriesVM: UIView {
     }()
     lazy var caloriesLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.textColor = WHColorWithAlpha(colorStr: "0f1214", alpha: 0.5)//.COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 11, weight: .regular)
         lab.text = "目标"
         
@@ -87,7 +87,7 @@ class JournalShareMsgCaloriesVM: UIView {
     }()
     lazy var caloriesLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.textColor = WHColor_16(colorStr: "0f1214")//.COLOR_TEXT_TITLE_0f1214
         lab.font = UIFont().DDInFontSemiBold(fontSize: 13)
         
         return lab
@@ -108,7 +108,7 @@ class JournalShareMsgCaloriesVM: UIView {
     }()
     lazy var caloriesRemainLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.textColor = WHColorWithAlpha(colorStr: "0f1214", alpha: 0.5)//.COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 11, weight: .regular)
         lab.text = "剩余"
         
@@ -116,7 +116,7 @@ class JournalShareMsgCaloriesVM: UIView {
     }()
     lazy var caloriesRemainLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.textColor = WHColor_16(colorStr: "0f1214")//.COLOR_TEXT_TITLE_0f1214
         lab.font = UIFont().DDInFontSemiBold(fontSize: 13)
         
         return lab
@@ -307,7 +307,8 @@ extension JournalShareMsgCaloriesVM{
         
         bottomGrayLayer.lineCap = .round
         bottomGrayLayer.allowsEdgeAntialiasing = true
-        bottomGrayLayer.strokeColor = UIColor.COLOR_TEXT_TITLE_0f1214_06.cgColor // 弧线颜色
+        bottomGrayLayer.strokeColor = WHColorWithAlpha(colorStr: "0f1214", alpha: 0.06).cgColor // 弧线颜色
+//        bottomGrayLayer.strokeColor = UIColor.COLOR_TEXT_TITLE_0f1214_06.cgColor // 弧线颜色
         bottomGrayLayer.fillColor = nil // 无填充色
         bottomGrayLayer.lineWidth = lineWidth // 线宽
         
@@ -324,7 +325,7 @@ extension JournalShareMsgCaloriesVM{
         caloriesGrayLayer.lineWidth = lineWidth // 线宽
         caloriesGrayLayer.frame = bounds//CGRect.init(x: circleCenter.x-arcRadius-lineWidth*0.5, y: topGap-lineWidth*0.5, width: arcRadius*2+lineWidth, height: arcRadius+lineWidth)
         
-        gradientLayer.colors = [WHColor_16(colorStr: "00EEFF").cgColor,WHColor_16(colorStr: "007AFF").cgColor]
+        gradientLayer.colors = [WHColor_16(colorStr: "00EEFF").cgColor,UIColor.THEME.cgColor]
         gradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
         gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
         gradientLayer.mask = caloriesGrayLayer

@@ -41,7 +41,7 @@ class NaturalStatTimeMonthFilterAlertVM: UIView {
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight() + kFitWidth(28), width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+        vi.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         return vi
@@ -49,7 +49,7 @@ class NaturalStatTimeMonthFilterAlertVM: UIView {
     lazy var bottomWhiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: self.whiteView.frame.minY + kFitWidth(50), width: SCREEN_WIDHT, height: self.whiteView.frame.height-kFitWidth(50)))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
+        vi.backgroundColor = .COLOR_BG_WHITE//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         return vi
@@ -189,6 +189,7 @@ extension NaturalStatTimeMonthFilterAlertVM:UIPickerViewDelegate,UIPickerViewDat
             let lab = UILabel.init(frame: CGRect.init(x: 0, y: 0, width: kFitWidth(160), height: kFitWidth(36)))
             lab.font = .systemFont(ofSize: 20, weight: .regular)
             lab.textAlignment = .right
+            lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
             lab.text =  "\(dateSourceYearArray[row]as? String ?? "")年"
             setUpPickerStyleRowStyle(row: row, component: component)
             
@@ -198,6 +199,7 @@ extension NaturalStatTimeMonthFilterAlertVM:UIPickerViewDelegate,UIPickerViewDat
             lab.text = "\(dateSourceMonthArray[row]as? String ?? "")月"
             lab.textAlignment = .left
             lab.adjustsFontSizeToFitWidth = true
+            lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
             lab.font = .systemFont(ofSize: 20, weight: .regular)
             setUpPickerStyleRowStyle(row: row, component: component)
             
@@ -208,7 +210,7 @@ extension NaturalStatTimeMonthFilterAlertVM:UIPickerViewDelegate,UIPickerViewDat
         DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
             let label = self.pickerView.view(forRow: row, forComponent: component) as? UILabel
             if label != nil{
-                label?.textColor = .COLOR_GRAY_BLACK_85
+                label?.textColor = .COLOR_TEXT_TITLE_0f1214
 //                label?.textColor = .THEME
             }
         })

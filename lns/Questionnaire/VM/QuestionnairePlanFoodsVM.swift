@@ -22,7 +22,7 @@ class QuestionnairePlanFoodsVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .COLOR_GRAY_FA
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         self.selfHeight = SCREEN_HEIGHT-frame.origin.y
         
@@ -34,7 +34,7 @@ class QuestionnairePlanFoodsVM: UIView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.text = "选择食物"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         
         return lab
@@ -55,7 +55,7 @@ class QuestionnairePlanFoodsVM: UIView {
 //        lab.text = "根据您的膳食习惯，在每个食物类别中选择\n1-7种食物，以满足您计划内的需求"
 //        lab.text = "请在每个类别中选择1-7种食物，以便我们\n根据您的喜好和需求定制饮食计划"
         lab.text = "为了确保准确性，我们筛选掉了不符合计划的食物\n如需添加更多，请在激活计划后前往日志添加"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.textAlignment = .center
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping
@@ -163,7 +163,7 @@ extension QuestionnairePlanFoodsVM:UITableViewDelegate,UITableViewDataSource{
         headView.backgroundColor = .clear
         
         let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(32), y: 0, width: kFitWidth(300), height: kFitWidth(40)))
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
         headView.addSubview(lab)

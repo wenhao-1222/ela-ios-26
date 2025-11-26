@@ -15,14 +15,14 @@ class NaturalStatDateCustomHeadView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(48)))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
     }
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
+        vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.08)
         
         return vi
     }()
@@ -45,7 +45,7 @@ extension NaturalStatDateCustomHeadView{
         for i in 0..<weekDaysArray.count{
             let label = UILabel.init(frame: CGRect.init(x: kFitWidth(19.5)+kFitWidth(48)*CGFloat(i), y: 0, width: kFitWidth(48), height: kFitWidth(48)))
             label.text = weekDaysArray[i]as? String ?? ""
-            label.textColor = .COLOR_GRAY_BLACK_65
+            label.textColor = .COLOR_TEXT_TITLE_0f1214_60
             label.textAlignment = .center
             label.font = .systemFont(ofSize: 14, weight: .medium)
             addSubview(label)

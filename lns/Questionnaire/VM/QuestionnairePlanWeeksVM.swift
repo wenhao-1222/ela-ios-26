@@ -17,7 +17,7 @@ class QuestionnairePlanWeeksVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .COLOR_GRAY_FA
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         self.selfHeight = SCREEN_HEIGHT-frame.origin.y
         
@@ -29,7 +29,7 @@ class QuestionnairePlanWeeksVM: UIView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.text = "您的预期计划时长是？"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         
         return lab
@@ -37,7 +37,7 @@ class QuestionnairePlanWeeksVM: UIView {
     lazy var tipsLabel : UILabel = {
         let lab = UILabel()
         lab.text = "根据用户所选目标显示时长建议"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab

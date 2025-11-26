@@ -15,7 +15,7 @@ class MealsNameVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         //监听textField内容改变通知
         NotificationCenter.default.addObserver(self,
@@ -29,13 +29,14 @@ class MealsNameVM: UIView {
     }
     lazy var iconImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "logs_pen_icon")
+//        img.setImgLocal(imgName: "logs_pen_icon")
+        img.image = UIImage(named: "logs_pen_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         return img
     }()
     lazy var titleLab: UILabel = {
         let lab = UILabel()
         lab.text = "食谱/餐食名称"
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         
         return lab
@@ -44,7 +45,7 @@ class MealsNameVM: UIView {
         let text = ChineseTextField()
         text.placeholder = "食谱/餐食名称15字以内"
         text.font = .systemFont(ofSize: 16, weight: .medium)
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.returnKeyType = .search
         text.delegate = self
         text.textContentType = nil
@@ -54,7 +55,7 @@ class MealsNameVM: UIView {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
+        vi.backgroundColor = .COLOR_LINE_F0//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         return vi
     }()
 }

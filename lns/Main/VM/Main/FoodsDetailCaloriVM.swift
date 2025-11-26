@@ -27,7 +27,7 @@ class FoodsDetailCaloriVM: UIView {
     }
     lazy var whiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: 0, width: whiteWidth, height: kFitWidth(188)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.isUserInteractionEnabled = true
         
@@ -36,7 +36,7 @@ class FoodsDetailCaloriVM: UIView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.text = "热量来源"
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
@@ -135,9 +135,9 @@ extension FoodsDetailCaloriVM{
         self.proteinVm.numberLabel.textColor = .COLOR_PROTEIN
         self.fatsVm.numberLabel.textColor = .COLOR_FAT
         
-        self.carboVm.percentLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
-        self.proteinVm.percentLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
-        self.fatsVm.percentLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        self.carboVm.percentLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        self.proteinVm.percentLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        self.fatsVm.percentLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         
         self.titleLabel.text = ""
         
@@ -162,7 +162,7 @@ extension FoodsDetailCaloriVM{
 extension FoodsDetailCaloriVM{
     func initUI() {
         addSubview(whiteView)
-        whiteView.addShadow()
+//        whiteView.addShadow()
         whiteView.addSubview(titleLabel)
         whiteView.addSubview(carboVm)
         whiteView.addSubview(proteinVm)

@@ -26,7 +26,7 @@ class GoalOtherSetTypeVM: UIView {
     }
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
@@ -38,7 +38,7 @@ class GoalOtherSetTypeVM: UIView {
         btn.setTitle("智能生成目标", for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT, for: .highlighted)
-        btn.setImage(UIImage(named: "goal_zhineng_icon"), for: .normal)
+        btn.setImage(UIImage(named: "goal_zhineng_icon")?.withTintColor(.THEME), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 13, weight: .regular)
         
         return btn
@@ -48,7 +48,7 @@ class GoalOtherSetTypeVM: UIView {
         btn.setTitle("碳循环/欺骗日", for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT, for: .highlighted)
-        btn.setImage(UIImage(named: "goal_circle_icon"), for: .normal)
+        btn.setImage(UIImage(named: "goal_circle_icon")?.withTintColor(.THEME), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 13, weight: .regular)
         
         return btn
@@ -75,9 +75,6 @@ extension GoalOtherSetTypeVM{
     func setConstrait() {
         let btnWidth = (SCREEN_WIDHT-kFitWidth(32))*0.5
         whiteView.snp.makeConstraints { make in
-//            make.left.equalTo(kFitWidth(16))
-//            make.top.bottom.equalToSuperview()
-//            make.right.equalTo(kFitWidth(-16))
             make.center.lessThanOrEqualToSuperview()
             make.width.equalTo((SCREEN_WIDHT-kFitWidth(32)))
             make.height.equalTo(selfHeight)
@@ -95,6 +92,5 @@ extension GoalOtherSetTypeVM{
             make.height.equalTo(kFitWidth(55))
             make.width.equalTo(kFitWidth(0.5))
         }
-        
     }
 }

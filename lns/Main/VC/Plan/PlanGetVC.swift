@@ -223,34 +223,6 @@ class PlanGetVC: WHBaseViewVC {
         
         return vm
     }()
-//    lazy var choiceVm: NewQuestionnaireTypeVM = {
-//        let vm = NewQuestionnaireTypeVM.init(frame: CGRect.init(x: 0, y: self.progressVm.frame.maxY, width: 0, height: 0))
-//        vm.backBlock = {()in
-//            self.surveytype = "full"
-//            QuestinonaireMsgModel.shared.surveytype = "full"
-//            self.choiceVm.isShow = false
-//        }
-//        vm.choiceBlock = {(isFull)in
-//            self.choiceVm.isShow = false
-//            if isFull{
-//                self.surveytype = "full"
-//                QuestinonaireMsgModel.shared.surveytype = "full"
-//                self.nextAction()
-//            }else{
-//                self.surveytype = "part"
-//                QuestinonaireMsgModel.shared.surveytype = "part"
-//                QuestinonaireMsgModel.shared.caloriesNumber = QuestinonaireMsgModel.shared.caloriesNumberFromServer
-//                let vc = QuestionCustomVC()
-//                
-//                vc.nextBtn.setTitle("激活目标", for: .normal)
-//                vc.backButton.isHidden = true
-//                vc.backHomeButton.isHidden = false
-//                vc.isLogin = true
-//                self.navigationController?.pushViewController(vc, animated: true)
-//            }
-//        }
-//        return vm
-//    }()
     lazy var katchAlertVm : QuestionnaireBodyFatAlertVM = {
         let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
         vm.titleLabel.text = "为什么选择Katch-McArdle公式?"
@@ -530,7 +502,7 @@ extension PlanGetVC{
 }
 extension PlanGetVC{
     func initUI(){
-        view.backgroundColor = .COLOR_GRAY_FA
+        view.backgroundColor = .COLOR_BG_WHITE
         
         view.clipsToBounds = true
         view.addSubview(progressVm)

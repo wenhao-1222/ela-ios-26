@@ -33,19 +33,28 @@ class LogsMealsAlertSetPopVM: FeedBackView {
    private let pickerKeyboardHeight = kFitWidth(100)
    /// 键盘显示状态标记
    private var keyboardShowing = false
-
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       self.bgView.alpha = self.targetDimAlpha
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         self.isUserInteractionEnabled = true
-//        self.alpha = 0
         self.isHidden = true
         
         initTimeArray()
         initUI()
-        
-//        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenView))
-//        self.addGestureRecognizer(tap)
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -57,7 +66,7 @@ class LogsMealsAlertSetPopVM: FeedBackView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
         v.addGestureRecognizer(tap)
@@ -68,7 +77,7 @@ class LogsMealsAlertSetPopVM: FeedBackView {
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
 //        vi.alpha = 0
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(nothingAction))
@@ -87,7 +96,7 @@ class LogsMealsAlertSetPopVM: FeedBackView {
     }()
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -102,7 +111,7 @@ class LogsMealsAlertSetPopVM: FeedBackView {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "F0F0F0")
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
     lazy var timePickerView: UIPickerView = {
@@ -121,14 +130,14 @@ class LogsMealsAlertSetPopVM: FeedBackView {
     }()
     lazy var repeatLab: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         lab.text = "重复"
         return lab
     }()
     lazy var repeatTimeLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.text = "周一 周二 周五 周日"
         return lab
@@ -137,7 +146,7 @@ class LogsMealsAlertSetPopVM: FeedBackView {
     lazy var arrowImgView : UIImageView = {
         let img = UIImageView()
         img.isUserInteractionEnabled = true
-        img.setImgLocal(imgName: "mine_func_arrow")
+        img.setImgLocal(imgName: "plan_arrow_gray")
         
         return img
     }()
@@ -249,7 +258,7 @@ extension LogsMealsAlertSetPopVM{
                        options: [.curveEaseOut, .allowUserInteraction]) {
 //            self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: (SCREEN_HEIGHT-self.whiteViewHeight*0.5+kFitWidth(16)-kFitWidth(2)))
-            self.bgView.alpha = 0.25
+            self.bgView.alpha = self.targetDimAlpha//0.25
         } completion: { _ in
             self.bgView.isUserInteractionEnabled = true
             

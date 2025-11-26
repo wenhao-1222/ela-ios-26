@@ -29,7 +29,8 @@ class GuideTotalProgressVM: UIView {
     }
     lazy var backImg: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "guide_back_button")
+//        img.setImgLocal(imgName: "guide_back_button")
+        img.image = UIImage(named: "guide_back_button")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         img.isUserInteractionEnabled = true
         
         return img

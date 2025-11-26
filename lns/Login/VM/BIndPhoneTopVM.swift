@@ -15,7 +15,7 @@ class BIndPhoneTopVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight(), width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -27,7 +27,7 @@ class BIndPhoneTopVM: UIView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.textColor = WHColor_16(colorStr: "242424")
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "242424")
         lab.text = "绑定手机号码"
         
         return lab
@@ -35,7 +35,7 @@ class BIndPhoneTopVM: UIView {
     lazy var tipsLabel : UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 12, weight: .regular)
-        lab.textColor = .COLOR_GRAY_BLACK_65
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         lab.text = "绑定的手机号可以用来登录，若账号丢失或出现异常可通过绑定手机号找回"

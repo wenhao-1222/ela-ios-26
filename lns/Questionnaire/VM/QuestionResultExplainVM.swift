@@ -14,7 +14,7 @@ class QuestionResultExplainVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .COLOR_GRAY_FA
+        self.backgroundColor = .COLOR_BG_F5
         self.isUserInteractionEnabled = true
         self.selfHeight = SCREEN_HEIGHT-frame.origin.y
         
@@ -28,7 +28,7 @@ class QuestionResultExplainVM: UIView {
         if isIpad(){
             lab.frame = CGRect.init(x: kFitWidth(24), y: kFitWidth(112), width: SCREEN_WIDHT-kFitWidth(48), height: kFitWidth(80))
         }
-        lab.textColor = .COLOR_GRAY_BLACK_85
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 22, weight: .medium)
         lab.text = "接下来我们将根据您的目标计算缺口/盈余，和营养素的配比。"
         lab.numberOfLines = 0

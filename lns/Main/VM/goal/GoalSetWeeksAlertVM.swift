@@ -17,18 +17,37 @@ class GoalSetWeeksAlertVM: UIView {
     var msgDict = NSDictionary()
     
     var hiddenBlock:(()->())?
-    
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        if #available(iOS 13.0, *) {
+            return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        } else {
+            // iOS 13 以下没有深色模式，按浅色处理
+            return 0.25
+        }
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+        self.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0)
         self.isUserInteractionEnabled = true
         self.isHidden = true
         
         initUI()
         whiteViewOriginY = SCREEN_HEIGHT - whiteViewHeight
         
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenView))
-        self.addGestureRecognizer(tap)
+//        let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenView))
+//        self.addGestureRecognizer(tap)
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -37,10 +56,19 @@ class GoalSetWeeksAlertVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private lazy var bgView: UIView = {
+        let v = UIView(frame: bounds)
+        v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.alpha = 0
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenView))
+        v.addGestureRecognizer(tap)
+        return v
+    }()
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT, width: SCREEN_WIDHT, height: whiteViewHeight))
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(12))
         
@@ -54,9 +82,6 @@ class GoalSetWeeksAlertVM: UIView {
         vm.cancelBlock = {()in
             self.hiddenView()
         }
-//        vm.confirmBlock = {()in
-//            self.submitAction()
-//        }
         vm.typeVm.typeChangeBlock = {(type)in
             self.caloriesVm.changeType(type: type)
             self.showSelf()
@@ -111,6 +136,8 @@ class GoalSetWeeksAlertVM: UIView {
 extension GoalSetWeeksAlertVM{
     @objc func showSelf() {
         self.isHidden = false
+//        bgView.alpha = 0
+        bgView.isUserInteractionEnabled = false
         
         if self.topVm.typeVm.type == "g"{
             whiteViewHeight = kFitWidth(288)+WHUtils().getBottomSafeAreaHeight()
@@ -121,8 +148,10 @@ extension GoalSetWeeksAlertVM{
         whiteViewOriginY = SCREEN_HEIGHT - whiteViewHeight
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.whiteViewOriginY+self.whiteViewHeight*0.5)
-            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+            self.bgView.alpha = self.targetDimAlpha//0.25
         }completion: { t in
+            self.bgView.isUserInteractionEnabled = true
 //             self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         }
     }
@@ -134,7 +163,8 @@ extension GoalSetWeeksAlertVM{
         
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
-            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+//            self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
+            self.bgView.alpha = 0
         }completion: { t in
             self.isHidden = true
         }
@@ -154,6 +184,7 @@ extension GoalSetWeeksAlertVM{
 
 extension GoalSetWeeksAlertVM{
     func initUI() {
+        addSubview(bgView)
         addSubview(whiteView)
         whiteView.addSubview(topVm)
         whiteView.addSubview(caloriesVm)

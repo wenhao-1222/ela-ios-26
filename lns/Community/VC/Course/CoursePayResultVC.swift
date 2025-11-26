@@ -134,6 +134,7 @@ extension CoursePayResultVC{
     func initUI() {
         initNavi(titleStr: "购买成功")
         
+        view.backgroundColor = .COLOR_BG_WHITE
         view.addSubview(topMsgVm)
         view.addSubview(orderNoItemVm)
         view.addSubview(orderTimeItemVm)
@@ -145,6 +146,8 @@ extension CoursePayResultVC{
         view.addSubview(priceLabel)
         view.addSubview(grayBgView)
         view.addSubview(bottomVm)
+        
+        view.layoutIfNeeded()
         
         setConstrait()
         updateUI()

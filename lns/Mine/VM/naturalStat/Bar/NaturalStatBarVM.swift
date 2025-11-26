@@ -28,7 +28,7 @@ class NaturalStatBarVM: UIView {
     lazy var scrollViewBase : UIScrollView = {
         let vi = UIScrollView()
         vi.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-controller.getNavigationBarHeight())
-        vi.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "FAFAFA")
         vi.showsVerticalScrollIndicator = false
         vi.contentInsetAdjustmentBehavior = .never
         
@@ -84,7 +84,7 @@ extension NaturalStatBarVM{
         addSubview(naviTimeVm)
         addSubview(scrollViewBase)
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight)
-        scrollViewBase.backgroundColor = WHColor_16(colorStr: "FAFAFA")
+        scrollViewBase.backgroundColor = .COLOR_BG_F5//WHColor_16(colorStr: "FAFAFA")
         
         scrollViewBase.addSubview(perDataVm)
         scrollViewBase.addSubview(dgBarChartView)

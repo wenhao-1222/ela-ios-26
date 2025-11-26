@@ -35,7 +35,7 @@ class PlanCreateFoodsTableViewCell: UITableViewCell {
     
     lazy var selecImgView : UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "logs_edit_normal")
+        img.setImgLocal(imgName: "logs_edit_all_normal")
         img.isUserInteractionEnabled = true
         img.isHidden = true
         
@@ -79,7 +79,7 @@ class PlanCreateFoodsTableViewCell: UITableViewCell {
     }()
     lazy var arrowImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "plan_arrow_gray")
+        img.setImgLocal(imgName: "plan_arrow_gray")//plan_detail_arrow_icon_right
         img.isUserInteractionEnabled = true
         return img
     }()
@@ -121,7 +121,7 @@ extension PlanCreateFoodsTableViewCell{
         
         selecImgView.setCheckState(isSelect,
                           checkedImageName: "logs_edit_selected",
-                          uncheckedImageName: "logs_edit_normal")
+                          uncheckedImageName: "logs_edit_all_normal")
 
         if self.selectTapBlock != nil{
             self.selectTapBlock!(self.isSelect)
@@ -182,7 +182,7 @@ extension PlanCreateFoodsTableViewCell{
         }
         selecImgView.setCheckState(isSelect,
                           checkedImageName: "logs_edit_selected",
-                          uncheckedImageName: "logs_edit_normal")
+                          uncheckedImageName: "logs_edit_all_normal")
         
         if dict["fname"]as? String ?? "" == "快速添加"{
             foodsWeightLabel.text = "\(String(format: "%.0f", dict.doubleValueForKey(key: "carbohydrate").rounded()))g 碳水，\(String(format: "%.0f", dict.doubleValueForKey(key: "protein").rounded()))g 蛋白质，\(String(format: "%.0f", dict.doubleValueForKey(key: "fat").rounded()))g 脂肪"
@@ -211,7 +211,7 @@ extension PlanCreateFoodsTableViewCell{
         
         selecImgView.setCheckState(isSelect,
                           checkedImageName: "logs_edit_selected",
-                          uncheckedImageName: "logs_edit_normal")
+                          uncheckedImageName: "logs_edit_all_normal")
         arrowImgView.setImgLocal(imgName: "plan_detail_arrow_icon_right")
         arrowImgView.isHidden = false
         foodsCaloriLabel.text = "\(String(format: "%.0f", dict.doubleValueForKey(key: "calories").rounded())) 千卡"
@@ -249,7 +249,7 @@ extension PlanCreateFoodsTableViewCell{
 //        }
     }
     func refresStateUI(state:String,isEdit:Bool) {
-        if state == "1" || state == "1.0"{
+        if state == "1" || state == "1.0" || state.floatValue == 1{
             arrowImgView.isHidden = false
             eatButton.isHidden = true
             eatTapView.isHidden = true

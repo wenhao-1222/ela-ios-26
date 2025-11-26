@@ -15,7 +15,7 @@ class FriendRankingWeekListVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         selfHeight = SCREEN_HEIGHT-frame.origin.y
         self.isUserInteractionEnabled = true
         
@@ -33,7 +33,7 @@ class FriendRankingWeekListVM: UIView {
         vi.delegate = self
         vi.dataSource = self
 //        vi.bounces = false
-        vi.backgroundColor = .COLOR_BG_WHITE//.COLOR_BG_F5
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//.COLOR_BG_F5
         vi.separatorStyle = .none
 //        vi.tableFooterView = footerVm
         vi.register(FriendRankingWeekTableViewCell.classForCoder(), forCellReuseIdentifier: "FriendRankingWeekTableViewCell")

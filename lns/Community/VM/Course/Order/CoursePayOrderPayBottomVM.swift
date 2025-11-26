@@ -18,7 +18,7 @@ class CoursePayOrderPayBottomVM : UIView{
     override init(frame: CGRect) {
         selfHeight = WHUtils().getBottomSafeAreaHeight() > 0 ? (WHUtils().getBottomSafeAreaHeight()+kFitWidth(55)) : kFitWidth(66)
         super.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-selfHeight, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()

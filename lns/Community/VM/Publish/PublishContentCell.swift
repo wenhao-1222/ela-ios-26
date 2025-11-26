@@ -20,7 +20,7 @@ class PublishContentCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -28,9 +28,10 @@ class PublishContentCell: UITableViewCell {
     lazy var remarkTextField: UITextView = {
         let text = UITextView()
         
-        text.textColor = .COLOR_GRAY_BLACK_85
+        text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 16, weight: .regular)
         text.delegate = self
+        text.backgroundColor = .clear
         text.returnKeyType = .done
         text.textContentType = nil
         text.translatesAutoresizingMaskIntoConstraints = false
@@ -45,7 +46,7 @@ class PublishContentCell: UITableViewCell {
     lazy var placeHoldLabel: UILabel = {
         let lab = UILabel()//.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(14), width: kFitWidth(200), height: kFitWidth(20)))
         lab.text = "添加正文"
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
+        lab.textColor = .COLOR_BG_BLACK_30//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         return lab
     }()

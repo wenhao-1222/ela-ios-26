@@ -32,13 +32,13 @@ class MaterialItemVM: UIButton {
     lazy var bgView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()
     lazy var leftLabel : UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColor_16(colorStr: "222222")
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "222222")
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
@@ -54,7 +54,8 @@ class MaterialItemVM: UIButton {
     lazy var arrowImgView : UIImageView = {
         let img = UIImageView()
         img.isUserInteractionEnabled = true
-        img.setImgLocal(imgName: "mine_func_arrow")
+//        img.setImgLocal(imgName: "mine_func_arrow")
+        img.setImgLocal(imgName: "plan_arrow_gray")
         
         return img
     }()
@@ -74,14 +75,14 @@ class MaterialItemVM: UIButton {
         lab.text = "审核中"
         lab.font = .systemFont(ofSize: 5, weight: .regular)
         lab.textAlignment = .center
-        lab.textColor = .white
+        lab.textColor = .COLOR_TEXT_WHITE
         lab.backgroundColor = UIColor(white: 0, alpha: 0.5)
         lab.isHidden = true
         return lab
     }()
     lazy var detailLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         
         return lab
@@ -93,10 +94,7 @@ class MaterialItemVM: UIButton {
         return btn
     }()
     lazy var switchBtn: UISwitch = {
-        let btn = UISwitch()//.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(16)-kFitWidth(48),
-//                                                   y: (selfHeight-kFitWidth(28))*0.5,
-//                                                   width: kFitWidth(48),
-//                                                   height: kFitWidth(28)))
+        let btn = UISwitch()
         btn.isHidden = true
         btn.onTintColor = .THEME
         btn.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
@@ -106,7 +104,7 @@ class MaterialItemVM: UIButton {
 
 extension MaterialItemVM{
     @objc func tapAction() {
-        bgView.backgroundColor = .white
+        bgView.backgroundColor = .COLOR_CARD_BG_WHITE
         if self.tapBlock != nil{
             self.tapBlock!()
         }
@@ -170,22 +168,22 @@ extension MaterialItemVM{
 extension MaterialItemVM{
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 //        TouchGenerator.shared.touchGenerator()
-        bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
+        bgView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        bgView.backgroundColor = .white
+        bgView.backgroundColor = .COLOR_CARD_BG_WHITE
     }
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        bgView.backgroundColor = .white
+        bgView.backgroundColor = .COLOR_CARD_BG_WHITE
     }
     override var isHighlighted: Bool {
        didSet {
            if isHighlighted {
                // 当按钮被高亮时，更改按钮的状态，如颜色等
-               bgView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
+               bgView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
            } else {
                // 当按钮高亮状态结束时，恢复按钮的原始状态
-               bgView.backgroundColor = .white
+               bgView.backgroundColor = .COLOR_CARD_BG_WHITE
            }
        }
    }
