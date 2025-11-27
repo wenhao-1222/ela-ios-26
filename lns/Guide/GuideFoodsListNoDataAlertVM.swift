@@ -21,6 +21,12 @@ class GuideFoodsListNoDataAlertVM: UIView {
     private let lineLayerTrangle = CAShapeLayer()
     private var linePathTrangle = UIBezierPath()
     
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       blurEffectView.effect = traitCollection.userInterfaceStyle == .dark ? UIBlurEffect(style:.systemMaterialDark) : UIBlurEffect(style:.extraLight)
+    }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
@@ -70,7 +76,7 @@ class GuideFoodsListNoDataAlertVM: UIView {
         let lab = UILabel()
         lab.text = "如果未找到所需食物，可通过“创建食物”功能自行添加。"
         lab.font = .systemFont(ofSize: 14)
-        lab.textColor = .COLOR_CARD_BG_WHITE
+        lab.textColor = .COLOR_TEXT_WHITE
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         
@@ -86,12 +92,12 @@ class GuideFoodsListNoDataAlertVM: UIView {
         return lab
     }()
     lazy var blurEffect: UIBlurEffect = {
-        let vi = UIBlurEffect(style:.extraLight)
+        let vi = traitCollection.userInterfaceStyle == .dark ? UIBlurEffect(style:.systemMaterialDark) : UIBlurEffect(style:.extraLight)
         return vi
     }()
     lazy var blurEffectView: UIVisualEffectView = {
         let vi = UIVisualEffectView(effect: blurEffect)
-        vi.alpha = 0.6//0.73
+        vi.alpha = traitCollection.userInterfaceStyle == .dark ? 0.88 : 0.6//0.6//0.73
         return vi
     }()
     /// 展示视图并带有淡入动画
@@ -173,13 +179,13 @@ extension GuideFoodsListNoDataAlertVM{
         self.layer.addSublayer(lineLayer)
         self.layer.addSublayer(lineLayerTrangle)
         
-        lineLayer.strokeColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
+        lineLayer.strokeColor = UIColor.COLOR_TEXT_WHITE.cgColor
         lineLayer.fillColor = nil
         lineLayer.lineWidth = kFitWidth(1) // 线宽
         lineLayer.lineDashPattern = [5,2]
         
-        lineLayerTrangle.strokeColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
-        lineLayerTrangle.fillColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
+        lineLayerTrangle.strokeColor = UIColor.COLOR_TEXT_WHITE.cgColor
+        lineLayerTrangle.fillColor = UIColor.COLOR_TEXT_WHITE.cgColor
         lineLayerTrangle.lineWidth = kFitWidth(0.2) // 线宽
     }
     

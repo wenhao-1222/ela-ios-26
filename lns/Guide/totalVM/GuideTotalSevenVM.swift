@@ -99,7 +99,7 @@ class GuideTotalSevenVM: UIView {
     }()
     lazy var goalLabel : UILabel = {
         let lab = UILabel()
-        lab.backgroundColor = .COLOR_GRAY_E8
+        lab.backgroundColor = .COLOR_BG_E8
         lab.layer.cornerRadius = kFitWidth(6)
         lab.clipsToBounds = true
         lab.text = "你刚刚设置的目标"

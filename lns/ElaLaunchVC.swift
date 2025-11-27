@@ -162,7 +162,14 @@ extension ElaLaunchVC{
             }
             if let dict = selectDict {
                 adDict = dict
-                var localPath = dict.stringValueForKey(key: "localPath")
+//                var localPath = dict.stringValueForKey(key: "localPath")
+                let useDarkImage = traitCollection.userInterfaceStyle == .dark
+                var localPath = useDarkImage ? dict.stringValueForKey(key: "localPathDark") : dict.stringValueForKey(key: "localPath")
+
+                if localPath.isEmpty {
+                    localPath = dict.stringValueForKey(key: "localPath")
+                }
+
                 if localPath.count > 0 {
                     // If absolute path not found, try relative path (cached file name)
                     if !FileManager.default.fileExists(atPath: localPath) {

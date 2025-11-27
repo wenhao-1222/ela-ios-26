@@ -666,7 +666,7 @@ extension AppDelegate{
                     if mDict.stringValueForKey(key: "materialType") == "1"{//只处理图片，不考虑视频
                         group.enter()
                         let urlString = dict.stringValueForKey(key: "ossUrl")
-                        DSImageUploader().dealImgUrlSignForOss(urlStr: urlString) { signStr in
+                        DSImageUploader().dealImgUrlSignForOss(urlStr: urlString) { signUrl in
                             if let url = URL(string: urlString) {
                                 let caches = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
                                 let dir = caches.appendingPathComponent("SplashAds")
@@ -677,6 +677,16 @@ extension AppDelegate{
                                     URLSession.shared.dataTask(with: url) { data, _, _ in
                                         if let data = data { try? data.write(to: fileURL) }
                                     }.resume()
+                                }
+                                let darkUrlString = url.deletingPathExtension().absoluteString + "_dark." + url.pathExtension
+                                if let darkUrl = URL(string: darkUrlString) {
+                                    let darkFileURL = dir.appendingPathComponent("\(darkUrl.deletingPathExtension().lastPathComponent).\(darkUrl.pathExtension)")
+                                    mDict.setValue(darkFileURL.path, forKey: "localPathDark")
+                                    if !FileManager.default.fileExists(atPath: darkFileURL.path) {
+                                        URLSession.shared.dataTask(with: darkUrl) { data, _, _ in
+                                            if let data = data { try? data.write(to: darkFileURL) }
+                                        }.resume()
+                                    }
                                 }
                             }
                             saveArr.add(mDict)

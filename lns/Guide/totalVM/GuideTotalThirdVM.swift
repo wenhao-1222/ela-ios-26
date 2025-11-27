@@ -57,7 +57,7 @@ class GuideTotalThirdVM: UIView {
     }()
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(11)
         vi.clipsToBounds = true
