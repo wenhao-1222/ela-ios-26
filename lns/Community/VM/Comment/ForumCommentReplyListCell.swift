@@ -73,6 +73,7 @@ class ForumCommentReplyListCell: UITableViewCell {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.isUserInteractionEnabled = true
+        lab.lineBreakMode = .byTruncatingMiddle
         
         return lab
     }()
@@ -390,7 +391,7 @@ extension ForumCommentReplyListCell{
         nameLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(100))
             make.top.equalTo(kFitWidth(16))
-            make.width.equalTo(kFitWidth(180))
+            make.width.equalTo(kFitWidth(170))
             make.height.equalTo(kFitWidth(18))
         }
         verifyImgView.snp.makeConstraints { make in
@@ -431,6 +432,7 @@ extension ForumCommentReplyListCell{
         nameLabel.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(100))
             make.top.equalTo(kFitWidth(16))
+            make.width.equalTo(kFitWidth(170))
         }
         commentLabel.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(100))

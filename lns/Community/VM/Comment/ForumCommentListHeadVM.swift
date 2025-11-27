@@ -58,6 +58,7 @@ class ForumCommentListHeadVM: UIView {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.isUserInteractionEnabled = true
+        lab.lineBreakMode = .byTruncatingMiddle
 
         return lab
     }()
@@ -393,6 +394,7 @@ extension ForumCommentListHeadVM{
         nameLabel.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(64))
             make.top.equalTo(kFitWidth(17))
+            make.width.equalTo(kFitWidth(200))
         }
         commentLabel.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(64))
