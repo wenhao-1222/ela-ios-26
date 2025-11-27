@@ -137,9 +137,9 @@ class FoodsListAddVM: UIView {
         btn.setTitle("创建食谱", for: .normal)
         btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.enablePressEffect()
-        btn.setImage(UIImage(named: "meals_create_icon")?.withTintColor(.THEME), for: .normal)
-        btn.setTitleColor(.THEME, for: .normal)
-//        btn.setTitleColor(WHColor_16(colorStr: "2BA471"), for: .normal)
+        btn.setImage(UIImage(named: "meals_create_icon")?.withTintColor(WHColor_16(colorStr: "2BA471")), for: .normal)
+//        btn.setTitleColor(.THEME, for: .normal)
+        btn.setTitleColor(WHColor_16(colorStr: "2BA471"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(8)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_GRAY, for: .highlighted)

@@ -190,10 +190,6 @@ extension ElaLaunchVC{
                         return
                     }
                 }
-//                let urlString = dict.stringValueForKey(key: "ossUrl")
-//                if urlString.count > 0 {
-//                    peacockImgView.setImgUrl(urlString: urlString)
-//                }
             }
         }
         

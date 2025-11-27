@@ -102,7 +102,8 @@ extension UIImageView{
         }
     }
     public func setImgLocal(imgName:String){
-        self.image = UIImage.init(named: imgName)
+//        self.image = UIImage.init(named: imgName)
+        self.image = UIImage(named: imgName)
     }
     
     public func setImgUrlWithComplete(urlString:String,
