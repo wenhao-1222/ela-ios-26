@@ -34,45 +34,96 @@ extension WHCommonH5VC{
         let url = URL(string: urlString as String)
         let request = URLRequest(url: url!)
         configureWebViewAppearance()
+//        wkWebView.alpha =
+        self.wkWebView.isHidden = true
         wkWebView.load(request)
     }
-    
     func configureWebViewAppearance() {
+
+        // --- 1. 移除 H5 中强制 light 的 meta 标签 ---
+        let removeMeta = """
+        var metas = document.querySelectorAll('meta[name="color-scheme"]');
+        metas.forEach(m => m.remove());
+        """
+        let removeMetaScript = WKUserScript(source: removeMeta,
+                                            injectionTime: .atDocumentStart,
+                                            forMainFrameOnly: true)
+        wkWebView.configuration.userContentController.addUserScript(removeMetaScript)
+
+        // --- 2. 注入深色模式 CSS ---
         let css = """
-        body {
-            background-color: #FFFFFF;
-            color: #000000;
+        html, body {
+            background-color: #FFFFFF !important;
+            color: #000000 !important;
         }
 
         @media (prefers-color-scheme: dark) {
-            body {
+
+            html, body {
                 background-color: #000000 !important;
                 color: #FFFFFF !important;
             }
+
             * {
-                color: #FFFFFF !important;
                 background-color: transparent !important;
+                color: #FFFFFF !important;
             }
+
+            div, span, p, td, th, section, article, li, ul, ol {
+                background: transparent !important;
+                color: #FFFFFF !important;
+            }
+
+            input, textarea, select {
+                background-color: #222222 !important;
+                color: #FFFFFF !important;
+                border-color: #444444 !important;
+            }
+
             a {
                 color: #4DA3FF !important;
+            }
+
+            img {
+                filter: brightness(0.85) contrast(1.1);
             }
         }
         """
 
         let js = """
         var style = document.createElement('style');
+        style.type = 'text/css';
         style.innerHTML = `\(css)`;
         document.head.appendChild(style);
         """
 
-        let userScript = WKUserScript(source: js, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
-        wkWebView.configuration.userContentController.addUserScript(userScript)
-
-        if #available(iOS 13.0, *) {
-            wkWebView.overrideUserInterfaceStyle = .unspecified  // 自动跟随系统
+        let cssScript = WKUserScript(source: js,
+                                     injectionTime: .atDocumentEnd,
+                                     forMainFrameOnly: true)
+        let earlyCSS = """
+        html, body {
+            background-color: #000000 !important;
         }
+        """
+
+        let earlyJS = """
+        var style = document.createElement('style');
+        style.innerHTML = `\(earlyCSS)`;
+        document.head.appendChild(style);
+        """
+
+        let earlyScript = WKUserScript(source: earlyJS,
+                                       injectionTime: .atDocumentStart,
+                                       forMainFrameOnly: true)
+
+        wkWebView.configuration.userContentController.addUserScript(earlyScript)
+
+        wkWebView.configuration.userContentController.addUserScript(cssScript)
+
+        // --- 3. 保持 WKWebView 跟随系统外观 ---
+        wkWebView.overrideUserInterfaceStyle = .unspecified
     }
-    
+
     func initUI(){
         
         initNaviH5()
@@ -244,6 +295,11 @@ extension WHCommonH5VC:WKNavigationDelegate,WKUIDelegate{
     // 页面加载完成之后调用
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!){
         DLLog(message: "页面加载完成...")
+//        UIView.animate(withDuration: 0.15, animations: {
+////            self.wkWebView.alpha = 1
+//        })
+        self.wkWebView.isHidden = false
+        
         /// 获取网页title
         h5TitleLabel.text = wkWebView.title
         
@@ -256,6 +312,23 @@ extension WHCommonH5VC:WKNavigationDelegate,WKUIDelegate{
         UIView.animate(withDuration: 0.5) {
             self.progressView.isHidden = true
         }
+        // ====== 覆盖 iframe 深色模式 ======
+        let iframeCSS = """
+        var iframes = document.getElementsByTagName('iframe');
+        for (var i = 0; i < iframes.length; i++) {
+            try {
+                let doc = iframes[i].contentDocument;
+                if (!doc) continue;
+                var style = doc.createElement('style');
+                style.innerHTML = `
+                    html, body { background-color: #000000 !important; color: #FFFFFF !important; }
+                    * { background-color: transparent !important; color: #FFFFFF !important; }
+                `;
+                doc.head.appendChild(style);
+            } catch(e) {}
+        }
+        """
+        webView.evaluateJavaScript(iframeCSS)
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {

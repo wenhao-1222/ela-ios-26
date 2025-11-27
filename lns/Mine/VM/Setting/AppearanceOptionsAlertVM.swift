@@ -59,6 +59,12 @@ class AppearanceOptionsAlertVM: UIView {
         
         return vi
     }()
+    lazy var bottomLineView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
+        vi.alpha = 0
+        return vi
+    }()
     
     lazy var cancelBtn: FeedBackButton = {
         let btn = FeedBackButton()
@@ -118,6 +124,7 @@ extension AppearanceOptionsAlertVM{
                        options: [.curveEaseOut, .allowUserInteraction]) {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
             self.bgView.alpha = self.targetDimAlpha//0.25
+            self.bottomLineView.alpha = 1
         } completion: { _ in
             self.bgView.isUserInteractionEnabled = true
             
@@ -130,6 +137,7 @@ extension AppearanceOptionsAlertVM{
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: self.whiteViewHeight)
             self.bgView.alpha = 0
+            self.bottomLineView.alpha = 0
         } completion: { _ in
             self.isHidden = true
         }
@@ -152,6 +160,7 @@ extension AppearanceOptionsAlertVM{
 extension AppearanceOptionsAlertVM{
     func initUI() {
         addSubview(bgView)
+        addSubview(bottomLineView)
         addSubview(whiteView)
         whiteView.addShadow()
         
@@ -192,6 +201,10 @@ extension AppearanceOptionsAlertVM{
             make.left.right.equalToSuperview()
             make.top.equalTo(kFitWidth(48))
             make.height.equalTo(kFitWidth(1))
+        }
+        bottomLineView.snp.makeConstraints { make in
+            make.left.bottom.right.equalToSuperview()
+            make.height.equalTo(kFitWidth(10))
         }
     }
     func setPickerViewInitStatus() {
