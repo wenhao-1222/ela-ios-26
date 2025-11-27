@@ -74,8 +74,14 @@ class CoursePayOrderVC: WHBaseViewVC {
         vm.payBlocK = {()in
 //            let vc = CoursePayResultVC()
 //            vc.msgDict = self.msgDict
-//            let obj = NSMutableDictionary(dictionary: dataObj)
-//            obj.setValue(self.orderId, forKey: "id")
+//            let obj = NSMutableDictionary(dictionary: ["payAmount":"0",
+//                                                       "orderId":"CO202511271425327357",
+//                                                       "payTime":"2025-11-27 14:25:32",
+//                                                       "ctime":"2025-11-27 14:25:32",
+//                                                       "discountAmount":"178.9",
+//                                                       "payChannel":"优惠码",
+//                                                       "tradeState":"SUCCESS"])
+//            obj.setValue("CO202511271425327357", forKey: "id")
 //            vc.orderDict = obj
 //            self.navigationController?.pushViewController(vc, animated: true)
             EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,

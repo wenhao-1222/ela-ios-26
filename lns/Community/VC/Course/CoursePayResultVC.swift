@@ -95,6 +95,11 @@ class CoursePayResultVC: WHBaseViewVC {
         lab.font = .systemFont(ofSize: 20, weight: .medium)
         return lab
     }()
+    lazy var whiteBgView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
+        return vi
+    }()
     lazy var grayBgView: UIView = {
         let vi = UIView()
         vi.backgroundColor = .COLOR_BG_F5
@@ -135,6 +140,8 @@ extension CoursePayResultVC{
         initNavi(titleStr: "购买成功")
         
         view.backgroundColor = .COLOR_BG_WHITE
+        
+        view.addSubview(whiteBgView)
         view.addSubview(topMsgVm)
         view.addSubview(orderNoItemVm)
         view.addSubview(orderTimeItemVm)
@@ -178,6 +185,11 @@ extension CoursePayResultVC{
         grayBgView.snp.makeConstraints { make in
             make.left.bottom.width.equalToSuperview()
             make.top.equalTo(priceLabel.snp.bottom).offset(kFitWidth(25))
+        }
+        whiteBgView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(topMsgVm)
+            make.bottom.equalTo(grayBgView.snp.top)
         }
     }
 }

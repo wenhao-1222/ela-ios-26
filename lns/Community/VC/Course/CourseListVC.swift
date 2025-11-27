@@ -251,6 +251,11 @@ class CourseListVC: WHBaseViewVC {
 
 extension CourseListVC{
     @objc func buyButtonTouchUpInside(isTapCell:Bool=false) {
+//        let vc = CoursePayOrderVC()
+//        vc.msgDict = self.headMsgDict
+//        vc.parentId = self.parentDict.stringValueForKey(key: "id")
+//        self.navigationController?.pushViewController(vc, animated: true)
+        
         if self.headMsgDict.stringValueForKey(key: "isPaid") == "1"{//已购买
             if self.headMsgDict.stringValueForKey(key: "bindingDeviceId").count > 0 {//已绑定
                 if self.headMsgDict.stringValueForKey(key: "isBinding") == "0"{//不是绑定的本设备
