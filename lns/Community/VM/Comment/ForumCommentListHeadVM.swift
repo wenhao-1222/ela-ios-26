@@ -65,6 +65,7 @@ class ForumCommentListHeadVM: UIView {
     lazy var verifyImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "forum_user_verify_icon")
+//        img.image = UIImage(named: "forum_user_verify_icon")?.withTintColor(.THEME)
         img.isHidden = true
         img.isUserInteractionEnabled = true
         return img
@@ -146,12 +147,14 @@ class ForumCommentListHeadVM: UIView {
         let lab = UILabel()
         lab.text = "置顶评论"
         lab.isHidden = true
-        lab.textColor = .THEME
         lab.font = .systemFont(ofSize: 10, weight: .regular)
         lab.textAlignment = .center
         lab.layer.cornerRadius = kFitWidth(10)
         lab.clipsToBounds = true
-        lab.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.3)
+        //        lab.textColor = UIColor(named: "color_natural_theme_white")//.THEME
+//        lab.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.3)
+        lab.textColor = .THEME
+        lab.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
         return lab
     }()
     lazy var lineView: UIView = {
@@ -270,7 +273,7 @@ extension ForumCommentListHeadVM{
             thumbsUpButton.setTitleColor(WHColor_16(colorStr: "F5BA18"), for: .normal)
         }else{
             thumbsUpButton.setImage(UIImage(named: "forum_thumbs_up_normal"), for: .normal)
-            thumbsUpButton.setTitleColor(.COLOR_GRAY_BLACK_45, for: .normal)
+            thumbsUpButton.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         }
         thumbsUpButton.imagePosition(style: .top, spacing: kFitWidth(3))
     }
@@ -336,12 +339,12 @@ extension ForumCommentListHeadVM{
             make.width.equalTo(kFitWidth(200))
         }
         verifyImgView.snp.makeConstraints { make in
-            make.left.equalTo(nameLabel.snp.right).offset(kFitWidth(4))
+            make.left.equalTo(nameLabel.snp.right).offset(kFitWidth(1))
             make.centerY.lessThanOrEqualTo(nameLabel)
             make.width.height.equalTo(kFitWidth(16))
         }
         authorLabel.snp.makeConstraints { make in
-            make.left.equalTo(verifyImgView.snp.right).offset(kFitWidth(4))
+            make.left.equalTo(verifyImgView.snp.right).offset(kFitWidth(3))
             make.centerY.lessThanOrEqualTo(nameLabel)
             make.width.equalTo(kFitWidth(36))
             make.height.equalTo(kFitWidth(20))
