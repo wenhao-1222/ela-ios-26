@@ -17,6 +17,21 @@ class AddFoodsAlertVM: UIView {
     private let lineLayerTrangle = CAShapeLayer()
     private var linePathTrangle = UIBezierPath()
     
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       blurEffectView.effect = traitCollection.userInterfaceStyle == .dark ? UIBlurEffect(style:.systemMaterialDark) : UIBlurEffect(style:.extraLight)
+       
+       lineLayer.strokeColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
+       lineLayerTrangle.strokeColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
+       lineLayerTrangle.fillColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
+//        if traitCollection.userInterfaceStyle == .dark{
+//            borderView.backgroundColor = .COLOR_BG_WHITE
+//        }else{
+//            borderView.backgroundColor = .COLOR_GRAY_BLACK_25
+//        }
+    }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
@@ -39,7 +54,7 @@ class AddFoodsAlertVM: UIView {
     lazy var tipsLabel: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 14)
-        lab.textColor = .white
+        lab.textColor = .COLOR_TEXT_WHITE
         lab.text = "点击“+”，记录吃进去的食物"
         
         return lab
@@ -48,7 +63,7 @@ class AddFoodsAlertVM: UIView {
         let vi = UIView()
         vi.layer.cornerRadius = kFitWidth(18)
         vi.clipsToBounds = true
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()
@@ -63,17 +78,21 @@ class AddFoodsAlertVM: UIView {
     }()
     lazy var borderView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_GRAY_BLACK_25
+//        if traitCollection.userInterfaceStyle == .dark{
+//            vi.backgroundColor = .COLOR_LINE_F0
+//        }else{
+            vi.backgroundColor = .COLOR_GRAY_BLACK_25
+//        }
+        
         return vi
     }()
     lazy var blurEffect: UIBlurEffect = {
-        let vi = UIBlurEffect(style:.extraLight)
+        let vi = traitCollection.userInterfaceStyle == .dark ? UIBlurEffect(style:.systemMaterialDark) : UIBlurEffect(style:.extraLight)
         return vi
     }()
     lazy var blurEffectView: UIVisualEffectView = {
         let vi = UIVisualEffectView(effect: blurEffect)
         vi.alpha = 0.6
-
         return vi
     }()
 }
@@ -87,6 +106,7 @@ extension AddFoodsAlertVM{
     }
     @objc func showView() {
         self.isHidden = false
+        
         UIView.animate(withDuration: 0.15, delay: 0,options: .curveLinear) {
             self.alpha = 1
         }
@@ -123,7 +143,7 @@ extension AddFoodsAlertVM{
         
         setConstrait()
         
-        borderView.addDashedBorder(borderColor: .white, dashPattern: [5,5])
+        borderView.addDashedBorder(borderColor: .COLOR_CARD_BG_WHITE, dashPattern: [5,5])
         
         initLayer()
     }
@@ -155,13 +175,13 @@ extension AddFoodsAlertVM{
         self.layer.addSublayer(lineLayer)
         self.layer.addSublayer(lineLayerTrangle)
         
-        lineLayer.strokeColor = UIColor.white.cgColor
+        lineLayer.strokeColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
         lineLayer.fillColor = nil
         lineLayer.lineWidth = kFitWidth(1) // 线宽
         lineLayer.lineDashPattern = [5,2]
         
-        lineLayerTrangle.strokeColor = UIColor.white.cgColor
-        lineLayerTrangle.fillColor = UIColor.white.cgColor
+        lineLayerTrangle.strokeColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
+        lineLayerTrangle.fillColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
         lineLayerTrangle.lineWidth = kFitWidth(0.2) // 线宽
     }
     func drawArrowDash() {

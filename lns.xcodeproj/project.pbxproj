@@ -756,6 +756,8 @@
 		EC3A9CBB2BB577E800C6E442 /* QuestionnaireBodyFatManVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3A9CBA2BB577E800C6E442 /* QuestionnaireBodyFatManVM.swift */; };
 		EC3A9CBD2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3A9CBC2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift */; };
 		EC44393D2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC44393C2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift */; };
+		EC498A6A2ED816B800BC7876 /* ColorWheelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC498A692ED816B700BC7876 /* ColorWheelView.swift */; };
+		EC498A6C2ED816CB00BC7876 /* ColorWheelVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC498A6B2ED816C800BC7876 /* ColorWheelVC.swift */; };
 		EC4DE2802BC8D0B30090A7BD /* PlanDetailTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE27F2BC8D0B30090A7BD /* PlanDetailTopVM.swift */; };
 		EC4DE2822BC8D80E0090A7BD /* PlanDetailDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE2812BC8D80E0090A7BD /* PlanDetailDaysVM.swift */; };
 		EC4DE2842BC8E4000090A7BD /* PlanDetailDayMealsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE2832BC8E4000090A7BD /* PlanDetailDayMealsVM.swift */; };
@@ -2041,6 +2043,8 @@
 		EC3A9CBC2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireBodyFatItemVM.swift; sourceTree = "<group>"; };
 		EC44393C2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalFuncCopyMealsAlertVM.swift; sourceTree = "<group>"; };
 		EC47FE352C3B8D87006CFA2A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		EC498A692ED816B700BC7876 /* ColorWheelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWheelView.swift; sourceTree = "<group>"; };
+		EC498A6B2ED816C800BC7876 /* ColorWheelVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWheelVC.swift; sourceTree = "<group>"; };
 		EC4DE27F2BC8D0B30090A7BD /* PlanDetailTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDetailTopVM.swift; sourceTree = "<group>"; };
 		EC4DE2812BC8D80E0090A7BD /* PlanDetailDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDetailDaysVM.swift; sourceTree = "<group>"; };
 		EC4DE2832BC8E4000090A7BD /* PlanDetailDayMealsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDetailDayMealsVM.swift; sourceTree = "<group>"; };
@@ -4208,6 +4212,8 @@
 				EC6978DE2BABBD81000B933A /* AppDelegate.swift */,
 				EC25C8312ED54C2400BF2D1F /* UIApplication+Appearance.swift */,
 				A732697D2D9531D100F2A87D /* CompactWindow.swift */,
+				EC498A692ED816B700BC7876 /* ColorWheelView.swift */,
+				EC498A6B2ED816C800BC7876 /* ColorWheelVC.swift */,
 				EC6978E22BABBD81000B933A /* ViewController.swift */,
 				EC87EEFE2BB3EC7400350EB0 /* SearchVM.swift */,
 				A733236C2D93E6A30065BF0A /* NotificationNames.swift */,
@@ -5751,6 +5757,7 @@
 				EC4DE2D62BCE70240090A7BD /* PlanShareAlertVM.swift in Sources */,
 				EC38DE912BEF1DE5008E7FCE /* InviteCodeAlertVM.swift in Sources */,
 				A77F962B2D0AAE3E0084D4FB /* PublishPollItemVM.swift in Sources */,
+				EC498A6A2ED816B800BC7876 /* ColorWheelView.swift in Sources */,
 				A71543032E08F69A0078A5AE /* FoodsListHeaderNoDataVM.swift in Sources */,
 				A72F5FEE2DB75D150098C782 /* LogsRemarkNewVM.swift in Sources */,
 				A74364CF2E409AB600102313 /* AliPlayerTest.swift in Sources */,
@@ -6174,6 +6181,7 @@
 				A755ED632DF6AAB400005C3A /* InfiniteImageScroller.swift in Sources */,
 				A7092D192E4F1A35005A2087 /* FeedBackTapButton.swift in Sources */,
 				A7881EA82CBF8687008F4390 /* CollectionViewCell.swift in Sources */,
+				EC498A6C2ED816CB00BC7876 /* ColorWheelVC.swift in Sources */,
 				A7881EA92CBF8687008F4390 /* CollectionPageFlowLayout.swift in Sources */,
 				A75F431F2CA7A66D0062E7B2 /* BodyDataWeightUnitSetAlertVM.swift in Sources */,
 				A7EDC0F52D141FA90012D3FF /* ForumPollTableHeadVM.swift in Sources */,

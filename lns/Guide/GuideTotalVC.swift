@@ -226,6 +226,7 @@ extension GuideTotalVC{
         scrollViewBase.addSubview(sevenVm)
         
         scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*7, height: 0)
+        scrollViewBase.backgroundColor = UIColor(named: "color_card_bg_f5_guide")
         self.scrollViewBase.layoutIfNeeded()
         self.view.layoutIfNeeded()
     }

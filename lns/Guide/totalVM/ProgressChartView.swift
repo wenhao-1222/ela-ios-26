@@ -50,6 +50,10 @@ class ProgressChartView: UIView {
        recordedLineGradientColors = [start, end]
        setNeedsDisplay()
    }
+    func setUnRecordedLineGradient(start: UIColor, end: UIColor) {
+        unrecordedLineGradientColors = [start, end]
+        setNeedsDisplay()
+    }
     private var gradientStartTime: CFTimeInterval = 0
     private var gradientDuration: CFTimeInterval = 1
 
@@ -357,8 +361,7 @@ class ProgressChartView: UIView {
         drawLinearGradient(
             in: ctx,
             rect: CGRect(x: 0, y: 0, width: w, height: h),
-            colors: [UIColor(red: 252/255, green: 142/255, blue: 83/255, alpha: 1).cgColor,
-                     UIColor(red: 251/255, green: 242/255, blue: 228/255, alpha: 1).cgColor],
+            colors: unrecordedLineGradientColors.map { $0.cgColor },
             progress: animationProgress
         )
         ctx.restoreGState()

@@ -34,9 +34,23 @@ class GuideTotalFirstVM: UIView {
     let chart = ProgressChartView()
 //    let chart = WeightChangeChartView()
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        if traitCollection.userInterfaceStyle == .dark{
+            chart.setRecordedLineGradient(start: WHColor_16(colorStr: "0066D5"),
+                                          end: WHColorWithAlpha(colorStr: "3686FF", alpha: 0))
+            chart.setUnRecordedLineGradient(start: WHColorWithAlpha(colorStr: "FF6900", alpha: 0.48),
+                                            end: WHColor_16(colorStr: "141416"))
+        }else{
+            chart.setRecordedLineGradient(start: UIColor(red: 155/255, green: 193/255, blue: 255/255, alpha: 1),
+                                          end: UIColor(red: 238/255, green: 247/255, blue: 255/255, alpha: 1))
+            chart.setUnRecordedLineGradient(start: UIColor(red: 252/255, green: 142/255, blue: 83/255, alpha: 1),
+                                            end: UIColor(red: 251/255, green: 242/255, blue: 228/255, alpha: 1))
+        }
+    }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_F5
+        self.backgroundColor = UIColor(named: "color_card_bg_f5_guide")//.COLOR_BG_F5
         self.isUserInteractionEnabled = true
         
         initUI()
@@ -173,8 +187,14 @@ extension GuideTotalFirstVM{
         addSubview(upLabel)
         
         chart.translatesAutoresizingMaskIntoConstraints = false
+        if traitCollection.userInterfaceStyle == .dark{
+            chart.setRecordedLineGradient(start: WHColor_16(colorStr: "0066D5"),
+                                          end: WHColorWithAlpha(colorStr: "3686FF", alpha: 0))
+            chart.setUnRecordedLineGradient(start: WHColorWithAlpha(colorStr: "FF6900", alpha: 0.48),
+                                            end: WHColor_16(colorStr: "141416"))
+        }
         addSubview(chart)
-        chart.backgroundColor = .COLOR_BG_F5
+        chart.backgroundColor = UIColor(named: "color_card_bg_f5_guide")//.COLOR_BG_F5
         
         addSubview(logoImgView)
         addSubview(tipsLabel1)

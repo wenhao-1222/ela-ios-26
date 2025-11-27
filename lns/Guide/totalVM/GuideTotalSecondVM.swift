@@ -21,7 +21,7 @@ class GuideTotalSecondVM: UIView {
 
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .white
+        self.backgroundColor = UIColor(named: "color_card_bg_f5_guide")//.white
         self.isUserInteractionEnabled = true
         self.clipsToBounds = true
         

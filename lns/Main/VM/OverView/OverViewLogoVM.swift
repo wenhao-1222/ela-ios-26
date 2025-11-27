@@ -54,7 +54,7 @@ extension OverViewLogoVM{
         bgView.alpha = percent
 
         let value = pow(percent, 3)
-        backgroundColor = UIColor(white: 1, alpha: value)
+        backgroundColor = .COLOR_BG_WHITE.withAlphaComponent(value)//UIColor(white: 1, alpha: value)
 
         let start = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 1)
         let end = WHColorWithAlpha(colorStr: "007AFF", alpha: 1)
