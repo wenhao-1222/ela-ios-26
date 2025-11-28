@@ -17,6 +17,7 @@ class ForumOfficialImgsVM: UIView {
     var tapBlock:((Int)->())?
     
     var list: [HeroBrowserViewModule] = []
+    private var signedModuleMap: [Int: HeroBrowserViewModule] = [:]
     var imgList:[UIImageView] = [UIImageView]()
     
     override init(frame:CGRect){
@@ -97,6 +98,7 @@ extension ForumOfficialImgsVM{
             make.height.equalTo(kFitWidth(6))
         }
         list.removeAll()
+        signedModuleMap.removeAll()
         imgList.removeAll()
         for i in 0..<self.remotePathGroup.count{
             let img = UIImageView()
@@ -115,10 +117,19 @@ extension ForumOfficialImgsVM{
             img.addGestureRecognizer(tap)
             
             imgList.append(img)
-            
-            DSImageUploader().dealImgUrlSignForOss(urlStr: "\(self.remotePathGroup[i]as? String ?? "")") { signUrl in
-                self.list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl))
+            let index = i
+            DSImageUploader().dealImgUrlSignForOss(urlStr: "\(self.remotePathGroup[index]as? String ?? "")") { [weak self] signUrl in
+                DispatchQueue.main.async {
+                    guard let self else { return }
+                    self.signedModuleMap[index] = HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl)
+                    self.list = self.signedModuleMap.keys.sorted().compactMap { self.signedModuleMap[$0] }
+                }
             }
+//            self.list.append(HeroBrowserLocalImageViewModule(image: img.image))
+            
+//            DSImageUploader().dealImgUrlSignForOss(urlStr: "\(self.remotePathGroup[i]as? String ?? "")") { signUrl in
+//                self.list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl))
+//            }
         }
         scrollView.contentSize = CGSize.init(width: SCREEN_WIDHT*CGFloat(self.remotePathGroup.count), height: 0)
     }
