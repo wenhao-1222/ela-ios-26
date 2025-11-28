@@ -117,7 +117,7 @@ extension SportCustomVC{
     func initUI() {
         initNavi(titleStr: "自定义运动")
         self.navigationView.addSubview(confirmButton)
-        view.backgroundColor = .COLOR_BG_WHITE
+        view.backgroundColor = .COLOR_CARD_BG_WHITE
         
         view.addSubview(nameLab)
         view.addSubview(nameTextField)

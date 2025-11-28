@@ -431,8 +431,13 @@ extension JournalSettingVC{
         scrollViewBase.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "FAFAFA")
         scrollViewBase.frame = CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight())
         
-        scrollViewBase.addSubview(appearanceTitleLabel)
-       scrollViewBase.addSubview(appearanceModeVm)
+        if !isIpad(){
+            scrollViewBase.addSubview(appearanceTitleLabel)
+           scrollViewBase.addSubview(appearanceModeVm)
+        }else{
+            logsTitleLabel.frame = CGRect.init(x: kFitWidth(12), y: 0, width: kFitWidth(200), height: kFitWidth(44))
+        }
+        
         scrollViewBase.addSubview(logsTitleLabel)
         scrollViewBase.addSubview(resetLogsMealsVm)
 //        scrollViewBase.addSubview(hiddenQuestionnaireVm)

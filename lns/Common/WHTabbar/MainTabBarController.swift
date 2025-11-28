@@ -40,32 +40,32 @@ class MainTabBarController: UITabBarController {
             )
         }
     }
-    
-//    func updateTabBarImages() {
-//        let tabBarItems = self.tabBar.items
-//        guard let items = tabBarItems else { return }
-//
-//        // 遍历每个 TabBar item 并更新图标
-//        for (index, button) in self.tabbar.btnArr.enumerated() {
-//            switch index {
-//            case 0:
-//                // 概览
-//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
-//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
-//            case 1:
-//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
-//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
-//            case 2:
-//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
-//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
-//            case 3:
-//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
-//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
-//            default:
-//                break
-//            }
-//        }
-//    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+
+       guard traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else { return }
+       updateTabBarImages()
+   }
+    private func updateTabBarImages() {
+            guard let items = tabBar.items, items.count >= 4 else { return }
+
+            let useDarkIcons = shouldUseDarkTabBarIcons()
+
+            items[0].image = UIImage(named: useDarkIcons ? "tabbar_main_normal_dark" : "tabbar_main_normal")?.withRenderingMode(.alwaysOriginal)
+            items[0].selectedImage = UIImage(named: useDarkIcons ? "tabbar_main_selected_dark" : "tabbar_main_selected")?.withRenderingMode(.alwaysOriginal)
+
+            items[1].image = UIImage(named: useDarkIcons ? "tabbar_logs_normal_dark" : "tabbar_logs_normal")?.withRenderingMode(.alwaysOriginal)
+            items[1].selectedImage = UIImage(named: useDarkIcons ? "tabbar_logs_selected_dark" : "tabbar_logs_selected")?.withRenderingMode(.alwaysOriginal)
+
+            items[2].image = UIImage(named: useDarkIcons ? "tabbar_forum_normal_dark" : "tabbar_forum_normal")?.withRenderingMode(.alwaysOriginal)
+            items[2].selectedImage = UIImage(named: useDarkIcons ? "tabbar_forum_selected_dark" : "tabbar_forum_selected")?.withRenderingMode(.alwaysOriginal)
+
+            items[3].image = UIImage(named: useDarkIcons ? "tabbar_mine_normal_dark" : "tabbar_mine_normal")?.withRenderingMode(.alwaysOriginal)
+            items[3].selectedImage = UIImage(named: useDarkIcons ? "tabbar_mine_selected_dark" : "tabbar_mine_selected")?.withRenderingMode(.alwaysOriginal)
+        }
+    private func shouldUseDarkTabBarIcons() -> Bool {
+           traitCollection.userInterfaceStyle == .dark && UserConfigModel.shared.overrideUserInterfaceStyle != .light
+       }
     // 添加 4 个示例页面
     private func setupViewControllers() {
         let vc1 = OverViewVC()//MainVC()
@@ -80,20 +80,22 @@ class MainTabBarController: UITabBarController {
         let vc4 = MineVC()
         vc4.tabBarItem = UITabBarItem(title: "我的", image: UIImage.init(named: "tabbar_mine_normal")!, tag: 3)
         
+        let useDarkIcons = shouldUseDarkTabBarIcons()
+        
         self.setUpChildViewController(viewController: vc1,
-                                      image: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_normal")!.withRenderingMode(.alwaysOriginal),
+                                      image: useDarkIcons ? UIImage(named: "tabbar_main_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_normal")!.withRenderingMode(.alwaysOriginal),
                                       selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_selected")!.withRenderingMode(.alwaysOriginal),
                                       title: "概览")
         self.setUpChildViewController(viewController: vc2,
-                                      image: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_normal")!.withRenderingMode(.alwaysOriginal),
+                                      image: useDarkIcons ? UIImage(named: "tabbar_logs_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_normal")!.withRenderingMode(.alwaysOriginal),
                                       selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_selected")!.withRenderingMode(.alwaysOriginal),
                                       title: "日志")
         self.setUpChildViewController(viewController: vc3,
-                                      image: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_normal")!.withRenderingMode(.alwaysOriginal),
+                                      image: useDarkIcons ? UIImage(named: "tabbar_forum_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_normal")!.withRenderingMode(.alwaysOriginal),
                                       selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_selected")!.withRenderingMode(.alwaysOriginal),
                                       title: "干货")
         self.setUpChildViewController(viewController: vc4,
-                                      image: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_normal")!.withRenderingMode(.alwaysOriginal),
+                                      image: useDarkIcons ? UIImage(named: "tabbar_mine_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_normal")!.withRenderingMode(.alwaysOriginal),
                                       selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_selected")!.withRenderingMode(.alwaysOriginal),
                                       title: "我的")
         

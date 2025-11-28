@@ -145,7 +145,6 @@
 		A73207FF2DFABA1A000A807D /* GuideFoodsListNoDataAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73207FE2DFABA14000A807D /* GuideFoodsListNoDataAlertVM.swift */; };
 		A73208012DFBD39E000A807D /* JournalReportWeightCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73208002DFBD397000A807D /* JournalReportWeightCell.swift */; };
 		A732697E2D9531D100F2A87D /* CompactWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A732697D2D9531D100F2A87D /* CompactWindow.swift */; };
-		A73269802D953F6500F2A87D /* iPadTabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A732697F2D953F5E00F2A87D /* iPadTabBarVC.swift */; };
 		A73269A92D9542EA00F2A87D /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73269A82D9542E900F2A87D /* MainTabBarController.swift */; };
 		A732FD772E44AF62007E6E20 /* TutorialVideoSwiftControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A732FD762E44AF60007E6E20 /* TutorialVideoSwiftControlView.swift */; };
 		A73323582D90E77D0065BF0A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A73323522D90E77D0065BF0A /* Assets.xcassets */; };
@@ -1409,7 +1408,6 @@
 		A73207FE2DFABA14000A807D /* GuideFoodsListNoDataAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideFoodsListNoDataAlertVM.swift; sourceTree = "<group>"; };
 		A73208002DFBD397000A807D /* JournalReportWeightCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportWeightCell.swift; sourceTree = "<group>"; };
 		A732697D2D9531D100F2A87D /* CompactWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactWindow.swift; sourceTree = "<group>"; };
-		A732697F2D953F5E00F2A87D /* iPadTabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iPadTabBarVC.swift; sourceTree = "<group>"; };
 		A73269A82D9542E900F2A87D /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		A732FD762E44AF60007E6E20 /* TutorialVideoSwiftControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialVideoSwiftControlView.swift; sourceTree = "<group>"; };
 		A73323522D90E77D0065BF0A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -4622,7 +4620,6 @@
 				ECD627262BC50CBA00CE819F /* WHTabBarVC.swift */,
 				EC9B8B782E98D4B900FACE39 /* SystemTabbar.swift */,
 				EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */,
-				A732697F2D953F5E00F2A87D /* iPadTabBarVC.swift */,
 			);
 			path = LLTabBar;
 			sourceTree = "<group>";
@@ -6170,7 +6167,6 @@
 				A714DDC72DC1F51200745F84 /* JournalShareMsgCaloriesVM.swift in Sources */,
 				A73269A92D9542EA00F2A87D /* MainTabBarController.swift in Sources */,
 				A78FE20A2CD47B7100661F7D /* ForumListVM.swift in Sources */,
-				A73269802D953F6500F2A87D /* iPadTabBarVC.swift in Sources */,
 				A7443DF52DD1E6EC0040FEFD /* JournalReportDailyDetailCell.swift in Sources */,
 				ECD627292BC52D7300CE819F /* MainTopVM.swift in Sources */,
 				EC781CD02BBA61F500752C95 /* QuestionnairePlanFoodsAlertTableViewCell.swift in Sources */,
