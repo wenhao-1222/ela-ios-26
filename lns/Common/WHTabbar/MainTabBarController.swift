@@ -12,6 +12,7 @@ class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.tabBar.backgroundColor = .COLOR_CARD_BG_WHITE
         setupViewControllers()
         setupForiPad()
         
@@ -39,6 +40,32 @@ class MainTabBarController: UITabBarController {
             )
         }
     }
+    
+//    func updateTabBarImages() {
+//        let tabBarItems = self.tabBar.items
+//        guard let items = tabBarItems else { return }
+//
+//        // 遍历每个 TabBar item 并更新图标
+//        for (index, button) in self.tabbar.btnArr.enumerated() {
+//            switch index {
+//            case 0:
+//                // 概览
+//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
+//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
+//            case 1:
+//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
+//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
+//            case 2:
+//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
+//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
+//            case 3:
+//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
+//                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
+//            default:
+//                break
+//            }
+//        }
+//    }
     // 添加 4 个示例页面
     private func setupViewControllers() {
         let vc1 = OverViewVC()//MainVC()
@@ -53,13 +80,25 @@ class MainTabBarController: UITabBarController {
         let vc4 = MineVC()
         vc4.tabBarItem = UITabBarItem(title: "我的", image: UIImage.init(named: "tabbar_mine_normal")!, tag: 3)
         
-        self.setUpChildViewController(viewController: vc1, image: UIImage.init(named: "tabbar_main_normal")!, selectImage: UIImage.init(named: "tabbar_main_selected")!, title: "概览")
-        self.setUpChildViewController(viewController: vc2, image: UIImage.init(named: "tabbar_logs_normal")!, selectImage: UIImage.init(named: "tabbar_logs_selected")!, title: "日志")
-        self.setUpChildViewController(viewController: vc3, image: UIImage.init(named: "tabbar_forum_normal")!, selectImage: UIImage.init(named: "tabbar_forum_selected")!, title: "干货")
-        self.setUpChildViewController(viewController: vc4, image: UIImage.init(named: "tabbar_mine_normal")!, selectImage: UIImage.init(named: "tabbar_mine_selected")!, title: "我的")
+        self.setUpChildViewController(viewController: vc1,
+                                      image: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_normal")!.withRenderingMode(.alwaysOriginal),
+                                      selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_selected")!.withRenderingMode(.alwaysOriginal),
+                                      title: "概览")
+        self.setUpChildViewController(viewController: vc2,
+                                      image: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_normal")!.withRenderingMode(.alwaysOriginal),
+                                      selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_selected")!.withRenderingMode(.alwaysOriginal),
+                                      title: "日志")
+        self.setUpChildViewController(viewController: vc3,
+                                      image: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_normal")!.withRenderingMode(.alwaysOriginal),
+                                      selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_selected")!.withRenderingMode(.alwaysOriginal),
+                                      title: "干货")
+        self.setUpChildViewController(viewController: vc4,
+                                      image: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_normal")!.withRenderingMode(.alwaysOriginal),
+                                      selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_selected")!.withRenderingMode(.alwaysOriginal),
+                                      title: "我的")
         
 //        UITabBar.appearance().barTintColor = .COLOR_GRAY_BLACK_85
-        UITabBar.appearance().tintColor = .COLOR_GRAY_BLACK_85
+        UITabBar.appearance().tintColor = .COLOR_TEXT_TITLE_0f1214
 //        UITabBar.appearance().unselectedItemTintColor = .COLOR_GRAY_BLACK_85
         viewControllers = [vc1, vc2, vc3, vc4].map { LLNaviViewController(rootViewController: $0) }
     }
@@ -68,10 +107,6 @@ class MainTabBarController: UITabBarController {
         viewController.tabBarItem.title = title
         viewController.tabBarItem.image = image
         viewController.tabBarItem.selectedImage = selectImage.withRenderingMode(.alwaysOriginal)
-//        viewController.tabBarItem
-//        let NAVC = LLNaviViewController.init(rootViewController: viewController)
-//        self.addChild(NAVC)
-//        tabbar.addTabBarButtonWithItem(item: viewController.tabBarItem)
     }
     
     // iPad 适配
