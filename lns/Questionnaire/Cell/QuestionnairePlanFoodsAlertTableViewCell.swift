@@ -62,7 +62,12 @@ class QuestionnairePlanFoodsAlertTableViewCell: UITableViewCell {
     lazy var selectedImgView : UIImageView = {
         let img = UIImageView()
 //        img.setImgLocal(imgName: "question_foods_normal_icon")
-        img.image = UIImage(named: "question_foods_normal_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
+        if traitCollection.userInterfaceStyle == .dark{
+            img.image = UIImage(named: "question_foods_normal_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
+        }else{
+            img.image = UIImage(named: "question_foods_normal_icon")
+        }
+        
         img.isUserInteractionEnabled = true
         
         return img
@@ -87,7 +92,12 @@ extension QuestionnairePlanFoodsAlertTableViewCell{
             verifyImgView.isHidden = true
         }
 //        selectedImgView.setImgLocal(imgName: "question_foods_normal_icon")
-        selectedImgView.image = UIImage(named: "question_foods_normal_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
+//        selectedImgView.image = UIImage(named: "question_foods_normal_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
+        if traitCollection.userInterfaceStyle == .dark{
+            selectedImgView.image = UIImage(named: "question_foods_normal_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
+        }else{
+            selectedImgView.image = UIImage(named: "question_foods_normal_icon")
+        }
         for i in 0..<selecFoodsArray.count{
             let foodsDict = selecFoodsArray[i]as? NSDictionary ?? [:]
             if foodsDict.stringValueForKey(key: "fid") == dict.stringValueForKey(key: "fid"){

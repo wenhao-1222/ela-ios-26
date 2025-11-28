@@ -274,7 +274,7 @@ extension FoodsMsgDetailsVC{
         self.navigationView.backgroundColor = .clear
         self.navigationView.addSubview(deleteButton)
         
-        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "FAFAFA")
         view.addSubview(foodsNameLabel)
 //        view.addSubview(foodsVerifyImgView)
         view.addSubview(topVm)

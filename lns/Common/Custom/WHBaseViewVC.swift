@@ -111,7 +111,7 @@ class WHBaseViewVC: ViewController {
     lazy var scrollViewBase : UIScrollView = {
         let vi = UIScrollView()
         vi.frame = CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight())
-        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "FAFAFA")
         vi.showsVerticalScrollIndicator = false
         vi.contentInsetAdjustmentBehavior = .never
         

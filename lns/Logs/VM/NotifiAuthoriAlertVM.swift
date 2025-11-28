@@ -130,7 +130,8 @@ class NotifiAuthoriAlertVM: UIView {
     lazy var acceptButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("好", for: .normal)
-        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
+        btn.backgroundColor = .THEME
+//        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
 //        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT), for: .highlighted)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)

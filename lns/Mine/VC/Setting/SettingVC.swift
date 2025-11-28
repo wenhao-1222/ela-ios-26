@@ -150,7 +150,7 @@ extension SettingVC{
 extension SettingVC{
     func initUI() {
         initNavi(titleStr: "系统设置")
-        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "FAFAFA")
         
         view.addSubview(scrollViewBase)
         scrollViewBase.frame = CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight())

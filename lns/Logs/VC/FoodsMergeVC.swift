@@ -57,8 +57,6 @@ class FoodsMergeVC: WHBaseViewVC {
     lazy var foodsNameVm : FoodsCreateNameVM = {
 //        let vm = FoodsCreateNameVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
         let vm = FoodsCreateNameVM.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight(), width: 0, height: 0))
-        
-//        titleLabel
         let attr = NSMutableAttributedString(string: "食物名称")
         let attr1 = NSMutableAttributedString(string: "*")
         attr1.yy_color = WHColor_16(colorStr: "FF3A3A")
@@ -66,7 +64,6 @@ class FoodsMergeVC: WHBaseViewVC {
         vm.titleLabel.attributedText = attr
         
         vm.numberChangeBlock = {(number)in
-//            
             let nameStr = number.replacingOccurrences(of: " ", with: "")
             if nameStr.count > 0 && self.foodsDataArray.count > 0{
                 self.bottomFuncVm.saveButton.isEnabled = true

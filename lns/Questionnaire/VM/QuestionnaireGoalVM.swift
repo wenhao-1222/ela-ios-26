@@ -18,7 +18,7 @@ class QuestionnaireGoalVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .COLOR_BG_F5
+        self.backgroundColor = .COLOR_BG_WHITE
         self.isUserInteractionEnabled = true
         self.selfHeight = SCREEN_HEIGHT-frame.origin.y
         

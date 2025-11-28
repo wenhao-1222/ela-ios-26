@@ -52,7 +52,8 @@ class FriendRankingDailyTableViewCell: UITableViewCell {
     }()
     lazy var editImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "friend_list_edit_icon")
+//        img.setImgLocal(imgName: "friend_list_edit_icon")
+        img.image = UIImage(named: "friend_list_edit_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_60)
         img.isUserInteractionEnabled = true
         img.isHidden = true
         

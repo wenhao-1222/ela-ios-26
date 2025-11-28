@@ -103,11 +103,7 @@ class NeedBuildPlanVC: WHBaseViewVC {
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        if traitCollection.userInterfaceStyle == .dark{
-            vi.backgroundColor = .COLOR_LINE_F0
-        }else{
-            vi.backgroundColor = WHColor_16(colorStr: "D9D9D9")
-        }
+        vi.backgroundColor = .COLOR_LINE_F0
         
         return vi
     }()

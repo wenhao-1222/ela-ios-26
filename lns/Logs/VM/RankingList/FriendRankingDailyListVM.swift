@@ -11,6 +11,7 @@ class FriendRankingDailyListVM: UIView {
     var dataSourceArray = NSMutableArray()
     var controller = WHBaseViewVC()
     private var currentPopup: ActionPopupController?
+    private var activeEditIndexPath: IndexPath?
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -56,6 +57,15 @@ extension FriendRankingDailyListVM:UITableViewDelegate,UITableViewDataSource{
         
         cell?.editBlock = { [weak self, weak cell] view in
             guard let self = self else { return }
+            if self.activeEditIndexPath == indexPath{
+                self.activeEditIndexPath = nil
+                return
+            }
+            if let popup = self.currentPopup {
+                popup.dismissPopup()
+                return
+            }
+            self.activeEditIndexPath = indexPath
             // Dismiss any existing popup to prevent multiple delete actions
             self.currentPopup?.dismissPopup()
             let container = self.controller.view
@@ -78,10 +88,6 @@ extension FriendRankingDailyListVM:UITableViewDelegate,UITableViewDataSource{
 //            ]
 //            let popup = ActionPopupController(anchor: tapLocation, in: self.controller.view, actions: actions)
             let popup = ActionPopupController(anchor: tapLocation, in: container!, actions: actions)
-//            popup.onDismiss {
-//                print("已关闭")
-//            }
-            
             popup.onDismiss { [weak self] in
                 print("已关闭")
                 self?.currentPopup = nil

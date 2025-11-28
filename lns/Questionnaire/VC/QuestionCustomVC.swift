@@ -370,7 +370,7 @@ extension QuestionCustomVC{
 
 extension QuestionCustomVC{
     func initUI() {
-        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "FAFAFA")
         view.addSubview(titleLabel)
         view.addSubview(tipsButton)
         view.addSubview(whiteView)

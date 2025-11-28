@@ -27,7 +27,7 @@ class ForumCommentFuncAlertItemVM: UIView {
     lazy var bgWhiteView: UIView = {
         let vi = UIView()
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = UIColor(named: "color_card_bg_f5_comment_func")
         vi.isHidden = true
         vi.clipsToBounds = true
         
@@ -36,7 +36,7 @@ class ForumCommentFuncAlertItemVM: UIView {
     lazy var whiteView: UIView = {
         let vi = UIView()
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = UIColor(named: "color_card_bg_f5_comment_func")
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
         return vi
@@ -59,8 +59,8 @@ class ForumCommentFuncAlertItemVM: UIView {
 
 extension ForumCommentFuncAlertItemVM{
     @objc func tapAction() {
-        whiteView.backgroundColor = .COLOR_BG_WHITE
-        bgWhiteView.backgroundColor = .COLOR_BG_WHITE
+        whiteView.backgroundColor = UIColor(named: "color_card_bg_f5_comment_func")
+        bgWhiteView.backgroundColor = UIColor(named: "color_card_bg_f5_comment_func")
         if self.tapBlock != nil{
             self.tapBlock!()
         }
@@ -68,7 +68,7 @@ extension ForumCommentFuncAlertItemVM{
     
     func addCorners(corners:UIRectCorner) {
         bgWhiteView.isHidden = false
-        bgWhiteView.backgroundColor = .COLOR_BG_WHITE
+        bgWhiteView.backgroundColor = UIColor(named: "color_card_bg_f5_comment_func")
         if corners.contains(.topLeft){
             bgWhiteView.snp.remakeConstraints { make in
                 make.width.equalTo(kFitWidth(343))
@@ -120,11 +120,11 @@ extension ForumCommentFuncAlertItemVM{
         bgWhiteView.backgroundColor = .COLOR_BG_F5
     }
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        whiteView.backgroundColor = .COLOR_BG_WHITE
-        bgWhiteView.backgroundColor = .COLOR_BG_WHITE
+        whiteView.backgroundColor = UIColor(named: "color_card_bg_f5_comment_func")
+        bgWhiteView.backgroundColor = UIColor(named: "color_card_bg_f5_comment_func")
     }
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        whiteView.backgroundColor = .COLOR_BG_WHITE
-        bgWhiteView.backgroundColor = .COLOR_BG_WHITE
+        whiteView.backgroundColor = UIColor(named: "color_card_bg_f5_comment_func")
+        bgWhiteView.backgroundColor = UIColor(named: "color_card_bg_f5_comment_func")
     }
 }

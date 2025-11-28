@@ -425,10 +425,10 @@ extension JournalSettingVC{
 extension JournalSettingVC{
     func initUI() {
         initNavi(titleStr: "个性化设置")
-        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "FAFAFA")
         
         view.addSubview(scrollViewBase)
-        scrollViewBase.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
+        scrollViewBase.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "FAFAFA")
         scrollViewBase.frame = CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight())
         
         scrollViewBase.addSubview(appearanceTitleLabel)

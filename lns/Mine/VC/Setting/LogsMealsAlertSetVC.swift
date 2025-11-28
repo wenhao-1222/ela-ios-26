@@ -61,7 +61,7 @@ class LogsMealsAlertSetVC: WHBaseViewVC {
         vi.delegate = self
         vi.dataSource = self
         vi.separatorStyle = .none
-        vi.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
+        vi.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "FAFAFA")
         vi.register(LogsMealsAlertSetTableViewCell.classForCoder(), forCellReuseIdentifier: "LogsMealsAlertSetTableViewCell")
         vi.tableFooterView = self.footVm
         
@@ -104,7 +104,7 @@ class LogsMealsAlertSetVC: WHBaseViewVC {
 extension LogsMealsAlertSetVC{
     func initUI() {
         initNavi(titleStr: "轻断食/用餐提醒")
-        view.backgroundColor = .COLOR_BG_FA//WHColor_16(colorStr: "FAFAFA")
+        view.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "FAFAFA")
         
         view.addSubview(permissionTipView)
         view.addSubview(tableView)

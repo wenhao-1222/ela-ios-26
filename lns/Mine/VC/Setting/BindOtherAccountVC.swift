@@ -99,7 +99,7 @@ extension BindOtherAccountVC{
     func upateBindStatus() {
         if UserInfoModel.shared.isBindWeChat {
             wechatVm.detailLabel.text = "已关联"
-            wechatVm.detailLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+            wechatVm.detailLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         }else{
             wechatVm.detailLabel.text = "未关联"
             wechatVm.detailLabel.textColor = .THEME
@@ -107,7 +107,7 @@ extension BindOtherAccountVC{
         
         if UserInfoModel.shared.isBindAppId {
             appidVm.detailLabel.text = "已关联"
-            appidVm.detailLabel.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+            appidVm.detailLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         }else{
             appidVm.detailLabel.text = "未关联"
             appidVm.detailLabel.textColor = .THEME

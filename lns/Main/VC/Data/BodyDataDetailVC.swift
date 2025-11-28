@@ -365,7 +365,7 @@ extension BodyDataDetailVC{
         
         self.navigationView.addSubview(shareButton)
         
-        view.backgroundColor = .COLOR_BG_FA
+        view.backgroundColor = .COLOR_BG_F2
         self.navigationView.backgroundColor = .COLOR_CARD_BG_WHITE
         view.addSubview(topVm)
         view.addSubview(lineWhiteView)
