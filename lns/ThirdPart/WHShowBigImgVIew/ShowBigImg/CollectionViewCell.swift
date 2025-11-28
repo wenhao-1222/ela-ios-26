@@ -246,11 +246,11 @@ extension CollectionViewCell: UIGestureRecognizerDelegate {
     }
     
     @objc func panRecognizerAction(pan:UIPanGestureRecognizer) {
-        self.tapMoveCallBack?(self.imgView)
-        
-        if self.isNavi{
-            return
-        }
+//        self.tapMoveCallBack?(self.imgView)
+//        
+//        if self.isNavi{
+//            return
+//        }
         guard let imageview = pan.view else {
             return
         }
@@ -303,9 +303,11 @@ extension CollectionViewCell: UIGestureRecognizerDelegate {
         if gestureRecognizer.isKind(of: UIPanGestureRecognizer.self) {
             let panGesture = gestureRecognizer as! UIPanGestureRecognizer
             let offset = panGesture.translation(in: panView)
-            if offset.x == 0 && offset.y != 0 {
-                return true
-            }
+//            if offset.x == 0 && offset.y != 0 {
+//                return true
+//            }
+            // 容忍轻微的水平滑动，保证下拉关闭在不同系统手势识别下都能生效
+            return abs(offset.y) > abs(offset.x)
         }
         
         return false
