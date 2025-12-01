@@ -690,6 +690,7 @@
 		EC1EB52F2BFB449A00537F0B /* MyFoodsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB52E2BFB449A00537F0B /* MyFoodsListVC.swift */; };
 		EC1EFB9C2BD203830021822F /* BalloonMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EFB9B2BD203830021822F /* BalloonMarker.swift */; };
 		EC20451E2C51E96F00C5F813 /* MealsCaloriesDetailVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC20451D2C51E96F00C5F813 /* MealsCaloriesDetailVM.swift */; };
+		EC23C7CE2EDD308B004C519D /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC23C7CC2EDD308A004C519D /* NotificationManager.swift */; };
 		EC24EB392BB25BDA002F21DF /* QuestionnaireSurveyMsgHeightVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC24EB382BB25BDA002F21DF /* QuestionnaireSurveyMsgHeightVM.swift */; };
 		EC24EB3B2BB25C58002F21DF /* QuestionnaireSurveyMsgVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC24EB3A2BB25C58002F21DF /* QuestionnaireSurveyMsgVM.swift */; };
 		EC24EB3D2BB25D27002F21DF /* QuestionnaireSurveyMsgWeightVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC24EB3C2BB25D27002F21DF /* QuestionnaireSurveyMsgWeightVM.swift */; };
@@ -1973,6 +1974,7 @@
 		EC1EB52E2BFB449A00537F0B /* MyFoodsListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyFoodsListVC.swift; sourceTree = "<group>"; };
 		EC1EFB9B2BD203830021822F /* BalloonMarker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalloonMarker.swift; sourceTree = "<group>"; };
 		EC20451D2C51E96F00C5F813 /* MealsCaloriesDetailVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealsCaloriesDetailVM.swift; sourceTree = "<group>"; };
+		EC23C7CC2EDD308A004C519D /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		EC24EB382BB25BDA002F21DF /* QuestionnaireSurveyMsgHeightVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireSurveyMsgHeightVM.swift; sourceTree = "<group>"; };
 		EC24EB3A2BB25C58002F21DF /* QuestionnaireSurveyMsgVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireSurveyMsgVM.swift; sourceTree = "<group>"; };
 		EC24EB3C2BB25D27002F21DF /* QuestionnaireSurveyMsgWeightVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireSurveyMsgWeightVM.swift; sourceTree = "<group>"; };
@@ -4600,6 +4602,8 @@
 				ECD0FE822BABD0E3001232C9 /* WH_DESUtils.m */,
 				EC0CB4492BAD650300A7EBD0 /* RSA.h */,
 				EC0CB44A2BAD650300A7EBD0 /* RSA.m */,
+				A7253B742DE0263D00D74533 /* EventLogUtils.swift */,
+				EC23C7CC2EDD308A004C519D /* NotificationManager.swift */,
 				ECD0FE832BABD0E3001232C9 /* WHNetworkUtil.swift */,
 				A7DE615D2DC0687200B76913 /* NetworkMonitor.swift */,
 				EC10D99F2BD21043002904DC /* AliYunUtil.swift */,
@@ -4737,7 +4741,6 @@
 				ECD0FED82BABD25B001232C9 /* String+Exs.swift */,
 				ECD0FED92BABD25B001232C9 /* UIColor+Exs.swift */,
 				ECD0FEDA2BABD25B001232C9 /* UIFont+Ext.swift */,
-				A7253B742DE0263D00D74533 /* EventLogUtils.swift */,
 				ECD0FEDB2BABD25B001232C9 /* UIImage+Exs.swift */,
 				A7B501702DE6ABBC0024C0CB /* UIButton+Exs.swift */,
 				ECD0FEDC2BABD25B001232C9 /* UIImageView+Extension.swift */,
@@ -5227,7 +5230,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 1530;
 				TargetAttributes = {
 					A7EDFB0B2CA3A69000282A6B = {
@@ -6043,6 +6046,7 @@
 				EC87EEFB2BB3E30300350EB0 /* QuestionnaireSurveyFoodsTableViewCell.swift in Sources */,
 				EC87EEF52BB3C72A00350EB0 /* QuestionDaylyMealsTableViewCell.swift in Sources */,
 				A7103E5B2CD0AE5800249E3B /* QuestionResultExplainVM.swift in Sources */,
+				EC23C7CE2EDD308B004C519D /* NotificationManager.swift in Sources */,
 				A71D33142E13A743008D27E4 /* JournalFitnessTypeAlertVM.swift in Sources */,
 				A71DA3482D10000500FCC6CA /* SportHealthDataUpdateAlertVM.swift in Sources */,
 				ECB3E0852BD77AEF00CFDDFD /* FoodsDetailCaloriVM.swift in Sources */,

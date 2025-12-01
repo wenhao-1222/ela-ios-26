@@ -42,6 +42,10 @@ enum SCENARIO_TYPE {
     case mall_detail
     ///商品下单
     case mall_create_order
+    ///轻断食提醒--展示
+    case logs_meals_alert_show
+    ///轻断食提醒--点击
+    case logs_meals_alert_click
 }
 
 class EventLogModel: NSObject {
@@ -138,6 +142,10 @@ class EventLogUtils {
             return "商品下单"
         case .course_list:
             return "教程一级菜单列表"
+        case .logs_meals_alert_show:
+            return "记录饮食提醒"
+        case .logs_meals_alert_click:
+            return "记录饮食提醒"
         }
     }
 }

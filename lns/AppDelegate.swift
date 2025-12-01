@@ -112,6 +112,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                     elaLchVc?.removeFromParent()
                 }
             }
+            
 //            self.window?.rootViewController = elaLchVc
             rootViewController = elaLchVc
         }
@@ -191,17 +192,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
     func applicationDidBecomeActive(_ application: UIApplication) {
         DLLog(message: "application  -----   DidBecomeActive")
         NotificationCenter.default.post(name: NOTIFI_NAME_DID_BECOME_ACTIVE, object: nil)
-//        recognitionPasteboard()
-//        if var clipboardString = UIPasteboard.general.string {
-//            clipboardString = clipboardString.disable_emoji(text: clipboardString as NSString)
-//            let shareCode = UserDefaults.standard.value(forKey: self_shareCode) as? String ?? ""
-//            if clipboardString.count == 5 && clipboardString != shareCode && UserInfoModel.shared.token.count > 0{
-//                self.sendPlanShareMsgRequest(psharecode: clipboardString)
-//            }
-//            print("Clipboard content: \(clipboardString)")
-//        } else {
-//            print("Clipboard is empty.")
-//        }
+        NotificationManager.shared.reportDeliveredMealNotificationsIfNeeded()
+
         JPUSHService.setBadge(0)
         setupJpushIfAuthorized()
         getHealthAppData()
@@ -315,6 +307,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         if info["action"] as? String == "water_reminder" {
             openWaterVC()
         }
+        let content = response.notification.request.content
+
+        // 判断是否是你的吃饭提醒（meal reminder）
+        if response.notification.request.identifier.hasPrefix("meal_reminder_") {
+            NotificationManager.shared.reportMealNotificationClick(content)
+        }
         completionHandler()
     }
 
@@ -339,25 +337,6 @@ extension AppDelegate{
     func initWxApi(){
         WXApi.registerApp("wx0991ecd2b540c7b8", universalLink: "https://api.leungnutritionsciences.cn/lns/")
     }
-    //bugly
-//    func initBuyly(){
-//        let config = BuglyConfig.init()
-//        config.reportLogLevel = .warn
-//        config.unexpectedTerminatingDetectionEnable = true
-//        config.blockMonitorEnable = true
-//        Bugly.start(withAppId: "2c4c55954c",config: config)
-//    }
-//    func initKTVHTTPCache() {
-//        do{
-//            try KTVHTTPCache.proxyStart()
-//            KTVHTTPCache.cacheSetMaxCacheLength(1024*1024*1024)//设置最大缓存1G
-//            KTVHTTPCache.logRecordLogEnable()
-//            KTVHTTPCache.logSetConsoleLogEnable(true)
-//        }catch{
-//            DLLog(message: "KTVHTTPCache 启动失败：\(error)")
-//        }
-//        
-//    }
     func initAliYunVideoPlayerConfig() {
         // 假设从本地缓存/服务端拿到 accountEnv，也可传 nil 走兜底
         let env = RegionSelector.decideEnv(accountEnv: nil, playbackBaseURL: nil)
@@ -484,9 +463,18 @@ extension AppDelegate:JPUSHRegisterDelegate{
         DLLog(message: "JPush:(jpushNotificationCenter didReceive) \(userInfo)")
        let target_page = userInfo["target_page"]as? String ?? ""
         DLLog(message: "JPush:   target_page  ---   \(target_page)")
-        DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
-            self.dealNotification(target_page: target_page)
-        })
+        if target_page.count > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
+                self.dealNotification(target_page: target_page)
+            })
+        }else{
+            let content = response.notification.request.content
+
+            // 判断是否是你的吃饭提醒（meal reminder）
+            if response.notification.request.identifier.hasPrefix("meal_reminder_") {
+                NotificationManager.shared.reportMealNotificationClick(content)
+            }
+        }
         
         if response.notification.request.trigger is UNPushNotificationTrigger{
             JPUSHService.handleRemoteNotification(userInfo)
@@ -503,6 +491,7 @@ extension AppDelegate:JPUSHRegisterDelegate{
     }
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         DLLog(message: "JPush:(didReceiveRemoteNotification) \(userInfo)")
+        NotificationManager.shared.reportDeliveredMealNotificationsIfNeeded()
         completionHandler(UIBackgroundFetchResult.newData)
     }
     func jpushNotificationCenter(_ center: UNUserNotificationCenter, openSettingsFor notification: UNNotification) {

@@ -61,23 +61,6 @@ extension String {
         return hexString
         
     }
-//    func attributedText(text: String, keywords: [String], font: UIFont, ignoreCase: Bool = true) -> NSAttributedString {
-//        let attributedString = NSMutableAttributedString(string: text)
-//        let baseText = ignoreCase ? text.lowercased() : text
-//        
-//        for keyword in keywords {
-//            let searchKeyword = ignoreCase ? keyword.lowercased() : keyword
-//            var searchRange = baseText.startIndex..<baseText.endIndex
-//
-//            while let range = baseText.range(of: searchKeyword, options: [], range: searchRange) {
-//                let nsRange = NSRange(range, in: text)
-//                attributedString.addAttribute(.font, value: font, range: nsRange)
-//                searchRange = range.upperBound..<baseText.endIndex
-//            }
-//        }
-//
-//        return attributedString
-//    }
     func attributedText(text: String, keywords: [String], font: UIFont,color:UIColor) -> NSAttributedString {
         let attributedString = NSMutableAttributedString(string: text)
         
@@ -520,5 +503,27 @@ extension String{
             print(error)
         }
         return ""
+    }
+}
+
+extension String {
+    func removingEmojiByRegex() -> String {
+        do {
+            let regex = try NSRegularExpression(
+                pattern: "[^\\u0020-\\u007E\\u00A0-\\u00BE\\u2E80-\\uA4CF\\uF900-\\uFAFF\\uFE30-\\uFE4F\\uFF00-\\uFFEF\\u0080-\\u009F\\u2000-\\u201f\r\n]",
+                options: .caseInsensitive
+            )
+            let nsString = self as NSString
+            let result = regex.stringByReplacingMatches(
+                in: self,
+                options: [],
+                range: NSMakeRange(0, nsString.length),
+                withTemplate: ""
+            )
+            return result
+        } catch {
+            print(error)
+            return self
+        }
     }
 }

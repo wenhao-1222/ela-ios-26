@@ -8,57 +8,47 @@
 import UserNotifications
 
 class LogsMealsAlertSetManage: NSObject {
-    
-    var lunchPlaceHoderArrays = ["📒 午餐记录仍为空白，填上后今日数据即可完整",
-                                 "🧩 午餐缺少，营养拼图留空格，补上吗？",
-                                 "📈 进度曲线停在午餐，补记一餐继续向上",
-                                 "🚀 午餐未填，今日目标还差最后一步",
-                                 "🏅 记录午餐可守住连续打卡，别让它断",
-                                 "🔄 午餐缺口未补，全日统计无法闭环",
-                                 "🔔 午餐数据缺失，提醒已启动—立即补记",
-                                 "🏃‍ 距日摄入目标仅差午餐一步，加油！",
-                                 "📊 午餐未录，今日报告暂缓生成",
-                                 "🔰 午餐还没登场，完成后即可查看全天概览",
-                                 "📌 午餐漏记会造成估算偏差，马上补上",
-                                 "✏️ 午餐记录留空，填完更好掌控饮食",
-                                 "📋 午餐尚未登记，今天清单待补齐",
-                                 "🔥 午餐缺席，进步条将中断—补上维持连贯",
-                                 "🌟 一餐之差，影响全天评估，记录午餐吧",
+    var lunchPlaceHoderArrays =  ["🗂️ 午餐空缺，数据完整度待提高",
                                  "🕒 午餐时间已过，记录一下防止遗忘",
-                                 "🛡️ 午餐未填，全天统计防护值下降",
-                                 "🌱 午餐数据待补，全日摄入才可靠",
-                                 "📍 午餐仍未记录，完成后才算达成日目标",
-                                 "🗂️ 午餐空缺，数据完整度待提高"]
-    var dinnerPlaceHoderArrays = ["🍽️ 晚餐记录为空，补上后锁定今日成果",
-                                 "🌙 晚餐缺失，夜间报告将留缺口，请补充",
-                                 "🔗 连续打卡待续，晚餐尚未记录",
-                                 "📈 今天曲线停在晚餐，再添一格即可封顶",
-                                 "🔔 晚餐未录，全天统计尚不完整",
-                                 "🚀 记录晚餐，立刻完成日目标收官",
-                                 "🏅 补记晚餐守住连续达标徽章",
-                                 "🧩 晚餐漏记，营养拼图将留空白",
-                                 "📊 晚餐数据缺口，今日汇总暂缓发布",
-                                 "🎯 晚餐未录，卡路里预算待校准",
-                                 "💡 记录晚餐即可生成完整日报",
-                                 "🌟 缺了晚餐，影响今日评分，补上吧",
-                                 "⏰ 晚餐时间已过，及时记录防遗忘",
-                                 "🛡️ 晚餐数据显示空白，完成后提升准确度",
-                                 "🔄 晚餐未填，明日建议将以缺口开场",
-                                 "📌 晚餐缺口会拉低今日完成度",
-                                 "🔥 只差晚餐，今日连胜可保",
-                                 "🗂️ 晚餐记录待补，一键保持数据连贯",
-                                 "🚧 晚餐未记，数据链待修复",
-                                 "📝 记录晚餐，给今日画上完整句号"]
-    
+                                 "🔔 午餐数据缺失，提醒已启动，立即补记",
+                                 "🕒 午餐刚过不久，此刻记录最清楚，顺手补一下省得晚上回想",
+                                 "🧩 午餐还没记录，营养拼图留空格，补上吗？",
+                                 "🔄 午餐缺口未补，全日统计无法闭环",
+                                 "📌 午餐漏记会造成计算偏差，马上补上",
+                                 "📈 进度曲线停在午餐，补记一餐继续向上",
+                                 "🌟 一餐之差，影响全天评估，去记录午餐吧",
+                                 "🔄 午餐留空，今天的摄入统计不完整，补记后结果更可靠",
+                                 "📊 午餐未填，全天的饮食情况会少一段，记录后更容易回顾",
+                                 "🕒 午餐时间已过，趁现在还记得，补记一下防止遗忘",
+                                 "🌱 午餐数据缺失，不容易判断今天吃得多还是少，记录一下方便自查",
+                                 "😯 午餐还空着呢，别忘了记录喔",
+                                 "💪🏼 你的午餐还没记录，坚持自律才能养成习惯",
+                                 "👊🏼 是时候记录午餐了"]
+    var dinnerPlaceHoderArrays = ["🧩 晚餐还没记录，不要让前面努力的成果白费",
+                                  "🕒 趁现在还记得，把这一餐补上，才不辜负前面花的时间",
+                                  "🏅 记录晚餐可守住连续打卡，别让它断",
+                                  "🛡️ 晚餐数据显示空白，完成后提升准确度",
+                                  "🗂️ 晚餐记录待补，记录保持数据连贯",
+                                  "📌 晚餐缺口会拉低今日完成度",
+                                  "🎯 晚餐未录，卡路里预算待校准",
+                                  "⏰ 晚餐时间已过，及时记录防遗忘",
+                                  "🌟 缺了晚餐，影响今日数据准确度，补上吧",
+                                  "🧩 晚餐漏记，营养拼图将留空白",
+                                  "📝 记录晚餐，给今日画上完整句号",
+                                  "🔥 晚餐还没记录，不要让一时的松懈影响你的自律",
+                                  "🔔 晚餐未记录，养成自律习惯就差一步",
+                                  "⚠️ 晚餐还没记录，现在不记更待何时？",
+                                  "🙏🏼 去记录晚餐吧，求求你了",
+                                  "🕒 到点记录晚餐了"]
     private let mealPrefix = "meal_reminder_"
     
     func removeAllNotifi() {
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-//        //移除所有本地已展示的通知
+        //        //移除所有本地已展示的通知
+//        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
         
         let ids = pendingMealIdentifiers()
-        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ids)
+//        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ids)
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ids)
     }
     
@@ -171,27 +161,11 @@ class LogsMealsAlertSetManage: NSObject {
         content.body = body
         content.sound = UNNotificationSound.default
         content.badge = ((content.badge?.intValue ?? 0) + 1) as NSNumber
-        
-//        DLLog(message: "--------------------   设置提醒   -----------------------")
-//        DLLog(message: "---------title:\(title)")
-//        DLLog(message: "---------body:\(body)")
-//        DLLog(message: "---------time:\(date)")
-//        DLLog(message: "--------------------------------------------------------")
-        // 定义触发的时间组合
-//        var matchingDate = DateComponents()
-//        matchingDate.day = day
-//        matchingDate.hour = hour//每天14点
-//        matchingDate.minute = minute//24分的时候
-//        matchingDate.weekday = 3//每周四
-        
         let components = Calendar.current.dateComponents([.year,.month,.day,.hour,.minute,.second], from: date)
         
         // 设置触发器
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
-//        let trigger = untrigger
-
-        // 创建请求
-//        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        
         let id = notificationIdentifier(day: day, sn: sn)
         let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
         // 添加请求
@@ -221,3 +195,46 @@ class LogsMealsAlertSetManage: NSObject {
         return ids
     }
 }
+
+
+//    var lunchPlaceHoderArrays = ["📒 午餐记录仍为空白，填上后今日数据即可完整",
+//                                 "🧩 午餐缺少，营养拼图留空格，补上吗？",
+//                                 "📈 进度曲线停在午餐，补记一餐继续向上",
+//                                 "🚀 午餐未填，今日目标还差最后一步",
+//                                 "🏅 记录午餐可守住连续打卡，别让它断",
+//                                 "🔄 午餐缺口未补，全日统计无法闭环",
+//                                 "🔔 午餐数据缺失，提醒已启动—立即补记",
+//                                 "🏃‍ 距日摄入目标仅差午餐一步，加油！",
+//                                 "📊 午餐未录，今日报告暂缓生成",
+//                                 "🔰 午餐还没登场，完成后即可查看全天概览",
+//                                 "📌 午餐漏记会造成估算偏差，马上补上",
+//                                 "✏️ 午餐记录留空，填完更好掌控饮食",
+//                                 "📋 午餐尚未登记，今天清单待补齐",
+//                                 "🔥 午餐缺席，进步条将中断—补上维持连贯",
+//                                 "🌟 一餐之差，影响全天评估，记录午餐吧",
+//                                 "🕒 午餐时间已过，记录一下防止遗忘",
+//                                 "🛡️ 午餐未填，全天统计防护值下降",
+//                                 "🌱 午餐数据待补，全日摄入才可靠",
+//                                 "📍 午餐仍未记录，完成后才算达成日目标",
+//                                 "🗂️ 午餐空缺，数据完整度待提高"]
+    
+//    var dinnerPlaceHoderArrays = ["🍽️ 晚餐记录为空，补上后锁定今日成果",
+//                                 "🌙 晚餐缺失，夜间报告将留缺口，请补充",
+//                                 "🔗 连续打卡待续，晚餐尚未记录",
+//                                 "📈 今天曲线停在晚餐，再添一格即可封顶",
+//                                 "🔔 晚餐未录，全天统计尚不完整",
+//                                 "🚀 记录晚餐，立刻完成日目标收官",
+//                                 "🏅 补记晚餐守住连续达标徽章",
+//                                 "🧩 晚餐漏记，营养拼图将留空白",
+//                                 "📊 晚餐数据缺口，今日汇总暂缓发布",
+//                                 "🎯 晚餐未录，卡路里预算待校准",
+//                                 "💡 记录晚餐即可生成完整日报",
+//                                 "🌟 缺了晚餐，影响今日评分，补上吧",
+//                                 "⏰ 晚餐时间已过，及时记录防遗忘",
+//                                 "🛡️ 晚餐数据显示空白，完成后提升准确度",
+//                                 "🔄 晚餐未填，明日建议将以缺口开场",
+//                                 "📌 晚餐缺口会拉低今日完成度",
+//                                 "🔥 只差晚餐，今日连胜可保",
+//                                 "🗂️ 晚餐记录待补，一键保持数据连贯",
+//                                 "🚧 晚餐未记，数据链待修复",
+//                                 "📝 记录晚餐，给今日画上完整句号"]
