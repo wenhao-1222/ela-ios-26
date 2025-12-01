@@ -13,8 +13,8 @@ class NotificationManager {
     private let mealPrefix = "meal_reminder_"
 
     /// 来自 LogsMealsAlertSetManage 的 placeholder 用餐提醒
-    private let lunchPlaceholders = LogsMealsAlertSetManage().lunchPlaceHoderArrays
-    private let dinnerPlaceholders = LogsMealsAlertSetManage().dinnerPlaceHoderArrays
+    private let lunchPlaceholders = ConstantModel.shared.lunchPlaceHoderArrays//LogsMealsAlertSetManage().lunchPlaceHoderArrays
+    private let dinnerPlaceholders = ConstantModel.shared.dinnerPlaceHoderArrays//LogsMealsAlertSetManage().dinnerPlaceHoderArrays
 
     /// App 回到前台 OR 启动时调用：上报通知栏中已展示但未处理的本地通知
     func reportDeliveredMealNotificationsIfNeeded() {

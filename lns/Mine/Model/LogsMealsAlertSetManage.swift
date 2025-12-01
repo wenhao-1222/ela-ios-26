@@ -8,38 +8,38 @@
 import UserNotifications
 
 class LogsMealsAlertSetManage: NSObject {
-    var lunchPlaceHoderArrays =  ["🗂️ 午餐空缺，数据完整度待提高",
-                                 "🕒 午餐时间已过，记录一下防止遗忘",
-                                 "🔔 午餐数据缺失，提醒已启动，立即补记",
-                                 "🕒 午餐刚过不久，此刻记录最清楚，顺手补一下省得晚上回想",
-                                 "🧩 午餐还没记录，营养拼图留空格，补上吗？",
-                                 "🔄 午餐缺口未补，全日统计无法闭环",
-                                 "📌 午餐漏记会造成计算偏差，马上补上",
-                                 "📈 进度曲线停在午餐，补记一餐继续向上",
-                                 "🌟 一餐之差，影响全天评估，去记录午餐吧",
-                                 "🔄 午餐留空，今天的摄入统计不完整，补记后结果更可靠",
-                                 "📊 午餐未填，全天的饮食情况会少一段，记录后更容易回顾",
-                                 "🕒 午餐时间已过，趁现在还记得，补记一下防止遗忘",
-                                 "🌱 午餐数据缺失，不容易判断今天吃得多还是少，记录一下方便自查",
-                                 "😯 午餐还空着呢，别忘了记录喔",
-                                 "💪🏼 你的午餐还没记录，坚持自律才能养成习惯",
-                                 "👊🏼 是时候记录午餐了"]
-    var dinnerPlaceHoderArrays = ["🧩 晚餐还没记录，不要让前面努力的成果白费",
-                                  "🕒 趁现在还记得，把这一餐补上，才不辜负前面花的时间",
-                                  "🏅 记录晚餐可守住连续打卡，别让它断",
-                                  "🛡️ 晚餐数据显示空白，完成后提升准确度",
-                                  "🗂️ 晚餐记录待补，记录保持数据连贯",
-                                  "📌 晚餐缺口会拉低今日完成度",
-                                  "🎯 晚餐未录，卡路里预算待校准",
-                                  "⏰ 晚餐时间已过，及时记录防遗忘",
-                                  "🌟 缺了晚餐，影响今日数据准确度，补上吧",
-                                  "🧩 晚餐漏记，营养拼图将留空白",
-                                  "📝 记录晚餐，给今日画上完整句号",
-                                  "🔥 晚餐还没记录，不要让一时的松懈影响你的自律",
-                                  "🔔 晚餐未记录，养成自律习惯就差一步",
-                                  "⚠️ 晚餐还没记录，现在不记更待何时？",
-                                  "🙏🏼 去记录晚餐吧，求求你了",
-                                  "🕒 到点记录晚餐了"]
+//    var lunchPlaceHoderArrays =  ["🗂️ 午餐空缺，数据完整度待提高",
+//                                 "🕒 午餐时间已过，记录一下防止遗忘",
+//                                 "🔔 午餐数据缺失，提醒已启动，立即补记",
+//                                 "🕒 午餐刚过不久，此刻记录最清楚，顺手补一下省得晚上回想",
+//                                 "🧩 午餐还没记录，营养拼图留空格，补上吗？",
+//                                 "🔄 午餐缺口未补，全日统计无法闭环",
+//                                 "📌 午餐漏记会造成计算偏差，马上补上",
+//                                 "📈 进度曲线停在午餐，补记一餐继续向上",
+//                                 "🌟 一餐之差，影响全天评估，去记录午餐吧",
+//                                 "🔄 午餐留空，今天的摄入统计不完整，补记后结果更可靠",
+//                                 "📊 午餐未填，全天的饮食情况会少一段，记录后更容易回顾",
+//                                 "🕒 午餐时间已过，趁现在还记得，补记一下防止遗忘",
+//                                 "🌱 午餐数据缺失，不容易判断今天吃得多还是少，记录一下方便自查",
+//                                 "😯 午餐还空着呢，别忘了记录喔",
+//                                 "💪🏼 你的午餐还没记录，坚持自律才能养成习惯",
+//                                 "👊🏼 是时候记录午餐了"]
+//    var dinnerPlaceHoderArrays = ["🧩 晚餐还没记录，不要让前面努力的成果白费",
+//                                  "🕒 趁现在还记得，把这一餐补上，才不辜负前面花的时间",
+//                                  "🏅 记录晚餐可守住连续打卡，别让它断",
+//                                  "🛡️ 晚餐数据显示空白，完成后提升准确度",
+//                                  "🗂️ 晚餐记录待补，记录保持数据连贯",
+//                                  "📌 晚餐缺口会拉低今日完成度",
+//                                  "🎯 晚餐未录，卡路里预算待校准",
+//                                  "⏰ 晚餐时间已过，及时记录防遗忘",
+//                                  "🌟 缺了晚餐，影响今日数据准确度，补上吧",
+//                                  "🧩 晚餐漏记，营养拼图将留空白",
+//                                  "📝 记录晚餐，给今日画上完整句号",
+//                                  "🔥 晚餐还没记录，不要让一时的松懈影响你的自律",
+//                                  "🔔 晚餐未记录，养成自律习惯就差一步",
+//                                  "⚠️ 晚餐还没记录，现在不记更待何时？",
+//                                  "🙏🏼 去记录晚餐吧，求求你了",
+//                                  "🕒 到点记录晚餐了"]
     private let mealPrefix = "meal_reminder_"
     
     func removeAllNotifi() {
@@ -112,11 +112,11 @@ class LogsMealsAlertSetManage: NSObject {
                 
                 if dict.stringValueForKey(key: "sn") == "2"{
                     if dict.stringValueForKey(key: "remark") == ""{
-                        remark = lunchPlaceHoderArrays.randomElement() ?? dict.stringValueForKey(key: "placeholder")
+                        remark = ConstantModel.shared.lunchPlaceHoderArrays.randomElement() ?? dict.stringValueForKey(key: "placeholder")
                     }
                 }else if dict.stringValueForKey(key: "sn") == "3"{
                     if dict.stringValueForKey(key: "remark") == ""{
-                        remark = dinnerPlaceHoderArrays.randomElement() ?? dict.stringValueForKey(key: "placeholder")
+                        remark = ConstantModel.shared.dinnerPlaceHoderArrays.randomElement() ?? dict.stringValueForKey(key: "placeholder")
                     }
                 }
                 
