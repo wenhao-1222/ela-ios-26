@@ -12,6 +12,7 @@ import UIKit
 extension UIColor {
     public static let COLOR_TEXT_TITLE_0f1214           = UIColor(named: "color_text_0f1214")!
     public static let COLOR_TEXT_TITLE_0f1214_50        = UIColor(named: "color_text_0f1214_50")!
+    public static let COLOR_TEXT_TITLE_0f1214_tabbar    = UIColor(named: "color_text_0f1214_tabbar")!
     public static let COLOR_TEXT_TITLE_0f1214_10        = UIColor(named: "color_text_0f1214_10")!
     public static let COLOR_TEXT_TITLE_0f1214_05        = UIColor(named: "color_text_0f1214_05")!
     public static let COLOR_TEXT_TITLE_0f1214_06        = UIColor(named: "color_text_0f1214_06")!

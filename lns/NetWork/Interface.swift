@@ -334,6 +334,9 @@ public let URL_event_log        = URL_Type + "tools/app/event/log"
 public let URL_jpush_test                   = URL_Type + "tools/jpush/test"
 //获取最新的APP版本信息
 public let URL_app_version      = URL_Type + "tools/app/version"
+///活动弹窗
+public let URL_activity_list      = URL_Type + "forum/popup/launch"
+
 
 public let URL_app_version_new      = URL_Type + "tools/app/ver_info"
 //注册协议

@@ -41,7 +41,7 @@ class LLMyTabbar: UIView {
     @objc func gotoMainNotification(){
         DLLog(message: "跳转到首页")
         seletedButton.isSelected = false
-        seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214
+        seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         seletedButton = btnArr[0]
         seletedButton.isSelected = true
         seletedButton.conentLab.textColor = .THEME
@@ -51,7 +51,7 @@ class LLMyTabbar: UIView {
         DLLog(message: "跳转到日志")
         
         seletedButton.isSelected = false
-        seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214
+        seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         seletedButton = btnArr[1]
         seletedButton.isSelected = true
         seletedButton.conentLab.textColor = .THEME
@@ -73,11 +73,11 @@ class LLMyTabbar: UIView {
         let button:LLButton = LLButton(type: .custom)
         self.addSubview(button)
         
-        button.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        button.setTitleColor(.COLOR_TEXT_TITLE_0f1214_60, for: .normal)
         button.setTitleColor(.THEME, for: UIControl.State.selected)
         
         button.conentLab.text = item.title
-        button.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214
+        button.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         button.setImage(item.image, for: .normal)
         button.setImage(item.selectedImage, for: .selected)
         
@@ -102,7 +102,7 @@ class LLMyTabbar: UIView {
         }
        
         seletedButton.isSelected = false
-       seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214
+       seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         sender.isSelected = true
         seletedButton = sender
        seletedButton.conentLab.textColor = .THEME
@@ -133,7 +133,7 @@ class LLMyTabbar: UIView {
             button.imageView?.contentMode = .top
             button.imageView?.clipsToBounds = false
         
-            button.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+            button.setTitleColor(.COLOR_TEXT_TITLE_0f1214_60, for: .normal)
             button.setTitleColor(.THEME, for: .selected)
             
             button.tag = index

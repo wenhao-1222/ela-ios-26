@@ -134,6 +134,7 @@ class JournalVC: WHBaseViewVC {
         sendHistoryFoodsListRequest()
         sendConstantRequest()
         sendNutritionsDefaultCircleRequest()
+        getActivityListRequest()
 
 //        BodyDataUploadManager().dealOldSqlData()
         
@@ -1032,6 +1033,13 @@ extension JournalVC{
                 UserInfoModel.shared.isAllowedPosterForum = false
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "hasAllowedPosterForum"), object: nil)
             }
+        }
+    }
+    func getActivityListRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_activity_list, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "getActivityListRequest:\(dataArray)")
         }
     }
     func sendOssStsRequest() {

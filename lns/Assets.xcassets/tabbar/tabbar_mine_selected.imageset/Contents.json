@@ -26,7 +26,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "容器 321@2x(2) 1.png",
+      "filename" : "appicon.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -42,7 +42,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "容器 321@3x(2) 1.png",
+      "filename" : "appicon 1.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

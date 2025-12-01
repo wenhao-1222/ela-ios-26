@@ -61,27 +61,15 @@ class WHTabBarVC : UITabBarController{
                 // 概览
                 button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
                 button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
-//
-//                item.image = traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_normal")?.withRenderingMode(.alwaysOriginal)
-//                item.selectedImage = traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_selected")?.withRenderingMode(.alwaysOriginal)
             case 1:
                 button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
                 button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
-                // 日志
-//                item.image = traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_normal")?.withRenderingMode(.alwaysOriginal)
-//                item.selectedImage = traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_selected")?.withRenderingMode(.alwaysOriginal)
             case 2:
                 button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
                 button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
-                // 资讯
-//                item.image = traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_normal")?.withRenderingMode(.alwaysOriginal)
-//                item.selectedImage = traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_selected")?.withRenderingMode(.alwaysOriginal)
             case 3:
                 button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
                 button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
-                // 我的
-//                item.image = traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_normal")?.withRenderingMode(.alwaysOriginal)
-//                item.selectedImage = traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_selected")?.withRenderingMode(.alwaysOriginal)
             default:
                 break
             }
@@ -125,13 +113,7 @@ class WHTabBarVC : UITabBarController{
             vc.view.removeFromSuperview()
             vc.removeFromParent()
             self.guideVC = nil
-//            UserDefaults.standard.setValue("1", forKey: guide_total)
         }
-
-//        vc.willMove(toParent: nil)
-//        vc.view.removeFromSuperview()
-//        vc.removeFromParent()
-//        guideVC = nil
         UserDefaults.standard.setValue("1", forKey: guide_total)
     }
     
