@@ -89,16 +89,24 @@ class SystemTabbar: UITabBarController {
         }
         let resizable = baseImage.resizableImage(withCapInsets: UIEdgeInsets(top: 21, left: 30, bottom: 21, right: 30), resizingMode: .stretch)
         appearance.selectionIndicatorImage = resizable
-
+        
         let themeColor = UIColor.THEME
+        let selectedAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: themeColor,
+            .font: UIFont.systemFont(ofSize: 12, weight: .bold)
+        ]
+
         appearance.stackedLayoutAppearance.selected.iconColor = themeColor
-        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: themeColor]
+        appearance.stackedLayoutAppearance.selected.titleTextAttributes = selectedAttributes//[.foregroundColor: themeColor]
         appearance.inlineLayoutAppearance.selected.iconColor = themeColor
-        appearance.inlineLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: themeColor]
+        appearance.inlineLayoutAppearance.selected.titleTextAttributes = selectedAttributes//[.foregroundColor: themeColor]
         appearance.compactInlineLayoutAppearance.selected.iconColor = themeColor
-        appearance.compactInlineLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: themeColor]
+        appearance.compactInlineLayoutAppearance.selected.titleTextAttributes = selectedAttributes//[.foregroundColor: themeColor]
         appearance.stackedLayoutAppearance.normal.iconColor = .label
-        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.label]
+//        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.label]
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_tabbar]
+        appearance.inlineLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_tabbar]
+        appearance.compactInlineLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_tabbar]
 
         UITabBar.appearance().standardAppearance = appearance
         if #available(iOS 15.0, *) {

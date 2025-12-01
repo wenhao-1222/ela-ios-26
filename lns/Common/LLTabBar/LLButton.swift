@@ -39,7 +39,7 @@ class LLButton: UIButton {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 12)
         lab.textAlignment = .center
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_tabbar
         return lab
     }()
 
@@ -55,6 +55,17 @@ class LLButton: UIButton {
     override var isHighlighted: Bool {
         set { /* 禁止高亮态变色 */ }
         get { return false }
+    }
+    
+    func setSelectStatus(isSelect:Bool) {
+        self.isSelected = isSelect
+        if isSelect{
+            self.conentLab.textColor = .THEME
+            self.conentLab.font = .systemFont(ofSize: 12, weight: .bold)
+        }else{
+            self.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_tabbar
+            self.conentLab.font = .systemFont(ofSize: 12)
+        }
     }
 
     // 图片区域

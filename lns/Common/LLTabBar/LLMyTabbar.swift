@@ -40,21 +40,25 @@ class LLMyTabbar: UIView {
     
     @objc func gotoMainNotification(){
         DLLog(message: "跳转到首页")
-        seletedButton.isSelected = false
-        seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_60
+//        seletedButton.isSelected = false
+//        seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_tabbar
+        seletedButton.setSelectStatus(isSelect: false)
         seletedButton = btnArr[0]
-        seletedButton.isSelected = true
-        seletedButton.conentLab.textColor = .THEME
+//        seletedButton.isSelected = true
+//        seletedButton.conentLab.textColor = .THEME
+        seletedButton.setSelectStatus(isSelect: true)
     }
     
     @objc func gotoLogsNotification(){
         DLLog(message: "跳转到日志")
         
-        seletedButton.isSelected = false
-        seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_60
+//        seletedButton.isSelected = false
+//        seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_tabbar
+        seletedButton.setSelectStatus(isSelect: false)
         seletedButton = btnArr[1]
-        seletedButton.isSelected = true
-        seletedButton.conentLab.textColor = .THEME
+//        seletedButton.isSelected = true
+//        seletedButton.conentLab.textColor = .THEME
+        seletedButton.setSelectStatus(isSelect: true)
     }
     @objc func mineServiceMsgNotification(){
         let btn = btnArr.last
@@ -73,11 +77,11 @@ class LLMyTabbar: UIView {
         let button:LLButton = LLButton(type: .custom)
         self.addSubview(button)
         
-        button.setTitleColor(.COLOR_TEXT_TITLE_0f1214_60, for: .normal)
+        button.setTitleColor(.COLOR_TEXT_TITLE_0f1214_tabbar, for: .normal)
         button.setTitleColor(.THEME, for: UIControl.State.selected)
         
         button.conentLab.text = item.title
-        button.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_60
+        button.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_tabbar
         button.setImage(item.image, for: .normal)
         button.setImage(item.selectedImage, for: .selected)
         
@@ -101,11 +105,13 @@ class LLMyTabbar: UIView {
             delegate?.tabbarDidSelectedButtomFromto(tabbar: self, from: seletedButton.tag, to: sender.tag)
         }
        
-        seletedButton.isSelected = false
-       seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_60
+//        seletedButton.isSelected = false
+//       seletedButton.conentLab.textColor = .COLOR_TEXT_TITLE_0f1214_tabbar
+       seletedButton.setSelectStatus(isSelect: false)
         sender.isSelected = true
         seletedButton = sender
-       seletedButton.conentLab.textColor = .THEME
+       seletedButton.setSelectStatus(isSelect: true)
+//       seletedButton.conentLab.textColor = .THEME
     }
     
     func centerClick() {
@@ -115,8 +121,9 @@ class LLMyTabbar: UIView {
         }
 
         seletedButton = btnArr[1]
-        seletedButton.isSelected = true
-        seletedButton.conentLab.textColor = .THEME
+        seletedButton.setSelectStatus(isSelect: true)
+//        seletedButton.isSelected = true
+//        seletedButton.conentLab.textColor = .THEME
     }
     
     override func layoutSubviews() {
@@ -133,7 +140,7 @@ class LLMyTabbar: UIView {
             button.imageView?.contentMode = .top
             button.imageView?.clipsToBounds = false
         
-            button.setTitleColor(.COLOR_TEXT_TITLE_0f1214_60, for: .normal)
+            button.setTitleColor(.COLOR_TEXT_TITLE_0f1214_tabbar, for: .normal)
             button.setTitleColor(.THEME, for: .selected)
             
             button.tag = index
@@ -141,8 +148,9 @@ class LLMyTabbar: UIView {
             
             if index == 0 {
                 seletedButton = button
-                seletedButton.isSelected = true
-                seletedButton.conentLab.textColor = .THEME
+                seletedButton.setSelectStatus(isSelect: true)
+//                seletedButton.isSelected = true
+//                seletedButton.conentLab.textColor = .THEME
             }
         }
     }

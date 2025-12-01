@@ -59,17 +59,17 @@ class WHTabBarVC : UITabBarController{
             switch index {
             case 0:
                 // 概览
-                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
-                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_main_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
+                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_normal_dark") : UIImage(named: "tabbar_main_normal"), for: .normal)
+                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_main_selected_dark") : UIImage(named: "tabbar_main_selected"), for: .selected)
             case 1:
-                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
-                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
+                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_normal_dark") : UIImage(named: "tabbar_logs_normal"), for: .normal)
+                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_selected_dark") : UIImage(named: "tabbar_logs_selected"), for: .selected)
             case 2:
-                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
-                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
+                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_normal_dark") : UIImage(named: "tabbar_forum_normal"), for: .normal)
+                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_selected_dark") : UIImage(named: "tabbar_forum_selected"), for: .selected)
             case 3:
-                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_normal_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_normal")?.withRenderingMode(.alwaysOriginal), for: .normal)
-                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_selected_dark")?.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_selected")?.withRenderingMode(.alwaysOriginal), for: .selected)
+                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_normal_dark") : UIImage(named: "tabbar_mine_normal"), for: .normal)
+                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_selected_dark") : UIImage(named: "tabbar_mine_selected"), for: .selected)
             default:
                 break
             }
@@ -83,6 +83,7 @@ class WHTabBarVC : UITabBarController{
         
         tabbar.seletedButton = tabbar.btnArr[1]
         tabbar.seletedButton.isSelected = true
+        tabbar.seletedButton.setSelectStatus(isSelect: true)
         
         NotificationCenter.default.addObserver(self, selector: #selector(gotoLogsNotification), name: NSNotification.Name(rawValue: "activePlan"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showGuideTotalIfNeeded), name: NOTIFI_NAME_GUIDE, object: nil)
