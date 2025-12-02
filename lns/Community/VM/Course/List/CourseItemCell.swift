@@ -11,7 +11,7 @@ class CourseItemCell: UITableViewCell {
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         if traitCollection.userInterfaceStyle == .dark{
-            lockCoverView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.75)
+            lockCoverView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         }else{
             lockCoverView.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.3)
         }
@@ -66,7 +66,7 @@ class CourseItemCell: UITableViewCell {
     lazy var lockCoverView: UIView = {
         let vi = UIView()
         if traitCollection.userInterfaceStyle == .dark{
-            vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.75)
+            vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         }else{
             vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.3)
         }

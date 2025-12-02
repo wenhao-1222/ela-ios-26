@@ -15,15 +15,20 @@ class ServiceContactTableViewTextCell: UITableViewCell {
     var imgGap = kFitWidth(6)
     
     var imgTapBlock:((UIImage?)->())?
+    var addressTapBlock:(()->())?
     var viewModules:[HeroBrowserViewModule] = []
     
     private var avatarRequestID = UUID()
+    private var addressTapGesture: UITapGestureRecognizer?
+    private var hasAddressLink = false
 
     override func prepareForReuse() {
         super.prepareForReuse()
         headImgView.kf.cancelDownloadTask()
         headImgView.image = nil
         avatarRequestID = UUID()
+        hasAddressLink = false
+        removeAddressTapGesture()
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -97,6 +102,9 @@ extension ServiceContactTableViewTextCell{
     }
     func updateTextContent(dict:NSDictionary) {
         let msgString = "\(dict.stringValueForKey(key: "suggestion"))"
+        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
+        let containsAddress = false//msgString.contains("收货地址")
+        hasAddressLink = isAdmin && containsAddress
         var textBottomGap = kFitWidth(-10)
         var labelWidth = WHUtils().getWidthOfString(string: msgString, font: UIFont.systemFont(ofSize: 14, weight: .regular), height: kFitWidth(14))
 //        var labelWidth = msgString.mc_getWidth(font: .systemFont(ofSize: 14, weight: .regular), height: kFitWidth(14))
@@ -123,7 +131,7 @@ extension ServiceContactTableViewTextCell{
         }
         headImgView.kf.cancelDownloadTask()
         headImgView.image = nil
-        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
+        
         configureAvatar(isAdmin: isAdmin)
 
         if !isAdmin{
@@ -159,7 +167,17 @@ extension ServiceContactTableViewTextCell{
         let attr = NSMutableAttributedString(string: msgString)
         attr.yy_minimumLineHeight = kFitWidth(18)
         attr.yy_lineSpacing = kFitWidth(2)
+        if containsAddress {
+            let range = (msgString as NSString).range(of: "收货地址")
+            attr.addAttribute(.foregroundColor, value: WHColor_16(colorStr: "007AFF"), range: range)
+        }
         msgLabel.attributedText = attr
+        msgLabel.isUserInteractionEnabled = hasAddressLink
+//        if hasAddressLink {
+//            addAddressTapGestureIfNeeded()
+//        }else{
+//            removeAddressTapGesture()
+//        }
     }
     func updateImgContent(dict:NSDictionary) {
         let imagesStr = dict.stringValueForKey(key: "images")
@@ -257,6 +275,25 @@ extension ServiceContactTableViewTextCell{
             }
         }
     }
+    @objc private func addressTapAction() {
+          guard hasAddressLink else { return }
+          addressTapBlock?()
+      }
+
+      private func addAddressTapGestureIfNeeded() {
+          if addressTapGesture == nil {
+              let tap = UITapGestureRecognizer(target: self, action: #selector(addressTapAction))
+              msgLabel.addGestureRecognizer(tap)
+              addressTapGesture = tap
+          }
+      }
+
+      private func removeAddressTapGesture() {
+          if let tap = addressTapGesture {
+              msgLabel.removeGestureRecognizer(tap)
+              addressTapGesture = nil
+          }
+      }
 }
 extension ServiceContactTableViewTextCell{
     func initUI() {

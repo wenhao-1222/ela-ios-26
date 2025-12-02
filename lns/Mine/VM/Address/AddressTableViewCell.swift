@@ -24,7 +24,7 @@ class AddressTableViewCell: UITableViewCell {
     }
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(13)
         vi.clipsToBounds = true
         
@@ -55,14 +55,14 @@ class AddressTableViewCell: UITableViewCell {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_LINE_F0
         
         return vi
     }()
     lazy var setDefaultButton: GJVerButtonNoneFeedBack = {
         let btn = GJVerButtonNoneFeedBack()
         btn.setTitle("默认收件地址", for: .normal)
-        btn.setImage(UIImage(named: "mall_address_normal_icon"), for: .normal)
+        btn.setImage(UIImage(named: "mall_address_normal_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 11, weight: .regular)
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         btn.imagePosition(style: .left, spacing: kFitWidth(3))
@@ -74,7 +74,7 @@ class AddressTableViewCell: UITableViewCell {
     lazy var editButton: GJVerButtonNoneFeedBack = {
         let btn = GJVerButtonNoneFeedBack()
         btn.setTitle("编辑", for: .normal)
-        btn.setImage(UIImage(named: "mall_address_edit_icon"), for: .normal)
+        btn.setImage(UIImage(named: "mall_address_edit_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 11, weight: .regular)
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         btn.imagePosition(style: .left, spacing: kFitWidth(3))
@@ -85,7 +85,7 @@ class AddressTableViewCell: UITableViewCell {
     lazy var deleteButton: GJVerButtonNoneFeedBack = {
         let btn = GJVerButtonNoneFeedBack()
         btn.setTitle("删除", for: .normal)
-        btn.setImage(UIImage(named: "mall_address_delete_icon"), for: .normal)
+        btn.setImage(UIImage(named: "mall_address_delete_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 11, weight: .regular)
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         btn.imagePosition(style: .left, spacing: kFitWidth(3))
@@ -134,7 +134,7 @@ extension AddressTableViewCell{
         if model.isDefault{
             setDefaultButton.setImage(UIImage(named: "mall_address_default_icon"), for: .normal)
         }else{
-            setDefaultButton.setImage(UIImage(named: "mall_address_normal_icon"), for: .normal)
+            setDefaultButton.setImage(UIImage(named: "mall_address_normal_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50), for: .normal)
         }
     }
 }

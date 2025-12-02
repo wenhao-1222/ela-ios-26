@@ -584,7 +584,10 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
                         vi.backgroundColor = .clear
                         return vi
                     }else{
-                        return nil
+                        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.lastMsgVm.selfHeight))
+                        vi.backgroundColor = .clear
+                        return vi
+//                        return nil
                     }
                 }else{
 //                    if section == self.dataSourceArray.count && self.hasHistory {
@@ -616,7 +619,7 @@ extension CourseListVC:UITableViewDelegate,UITableViewDataSource{
                     if self.hasHistory || self.isPaid == false{
                         return self.lastMsgVm.selfHeight
                     }else{
-                        return 0
+                        return self.lastMsgVm.selfHeight*0.5
                     }
                 }else{
 //                    if section == self.dataSourceArray.count && self.hasHistory{

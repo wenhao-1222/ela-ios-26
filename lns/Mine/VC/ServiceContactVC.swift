@@ -340,6 +340,15 @@ extension ServiceContactVC{
             print("Unable to start notifier")
         }
     }
+    func openAddressList() {
+       let vc = MyAddressListVC()
+//       vc.hidesBottomBarWhenPushed = true
+       self.navigationController?.pushViewController(vc, animated: true)
+        
+        vc.onSelectAddress = {(model)in
+            self.sendAddressMsgRequest(model: model)
+        }
+   }
 }
 
 extension ServiceContactVC{
@@ -386,6 +395,9 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
                     
                     self.navigationController?.pushViewController(showController, animated: true)
                 }
+            }
+            cell?.addressTapBlock = { [weak self] in
+                self?.openAddressList()
             }
             
             return cell ?? ServiceContactTableViewTextCell()
@@ -493,6 +505,33 @@ extension ServiceContactVC{
                      "contentType": "1"]
         if self.relatedOrderId.count > 0 {
             param = ["suggestion":self.msgInputView.textView.text.disable_emoji(text: self.msgInputView.textView.text! as NSString),
+                     "bizType":"2",
+                     "relatedOrderId":self.relatedOrderId,
+                     "contentType": "1"]
+        }
+        WHNetworkUtil.shareManager().POST(urlString: URL_Uer_sugestion, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
+            DLLog(message: "\(responseObject)")
+            let code = responseObject["code"]as? Int ?? -1
+            if (code == 200) {
+                let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
+                            "ctime":"\(Date().currentSeconds)",
+                            "suggestion":"\(self.msgInputView.textView.text.disable_emoji(text: self.msgInputView.textView.text! as NSString))"]
+                self.dataSourceArray.add(dict)
+                self.dealDataSource()
+                
+                self.msgInputView.textView.text = ""
+                self.msgInputView.resetInputHeightToInitial()    // ← 复位高度
+            }else{
+                MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试",offset:SCREEN_HEIGHT*0.6)
+            }
+        }
+    }
+    func sendAddressMsgRequest(model:AddressModel) {
+        let text = model.provinceName + model.cityName + model.areaName + model.detailAddress + "\n" + model.contactName + "  " + model.contactPhone
+        var param = ["suggestion":text,
+                     "contentType": "1"]
+        if self.relatedOrderId.count > 0 {
+            param = ["suggestion":text,
                      "bizType":"2",
                      "relatedOrderId":self.relatedOrderId,
                      "contentType": "1"]
