@@ -48,14 +48,16 @@ class ServiceContactTableViewTextCell: UITableViewCell {
         
         return img
     }()
-    lazy var msgLabel: UILabel = {
-        let lab = UILabel()
+    lazy var msgLabel: LineHeightLabel = {
+        let lab = LineHeightLabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
-//        lab.layer.cornerRadius = kFitWidth(12)
-//        lab.clipsToBounds = true
+        lab.layer.cornerRadius = kFitWidth(12)
+        lab.clipsToBounds = true
+        lab.textInsets = UIEdgeInsets(top: kFitWidth(6), left: kFitWidth(11), bottom: kFitWidth(10), right: kFitWidth(11))
+        lab.customLineHeight = lab.font.lineHeight * 1.2
         
         return lab
     }()
@@ -71,14 +73,14 @@ class ServiceContactTableViewTextCell: UITableViewCell {
     
         return img
     }()
-    lazy var msgRectView : UIView = {
-        let vi = UIView()
-        vi.backgroundColor = .COLOR_CARD_BG_WHITE
-        vi.layer.cornerRadius = kFitWidth(12)
-        vi.clipsToBounds = true
-        
-        return vi
-    }()
+//    lazy var msgRectView : UIView = {
+//        let vi = UIView()
+//        vi.backgroundColor = .COLOR_CARD_BG_WHITE
+//        vi.layer.cornerRadius = kFitWidth(12)
+//        vi.clipsToBounds = true
+//        
+//        return vi
+//    }()
 }
 
 extension ServiceContactTableViewTextCell{
@@ -86,12 +88,12 @@ extension ServiceContactTableViewTextCell{
         self.viewModules.removeAll()
         if dict.stringValueForKey(key: "suggestion").count > 0 {
             msgLabel.isHidden = false
-            msgRectView.isHidden = false
+//            msgRectView.isHidden = false
             imgView.isHidden = true
             self.updateTextContent(dict: dict)
         }else{
             msgLabel.isHidden = true
-            msgRectView.isHidden = true
+//            msgRectView.isHidden = true
             imgView.isHidden = false
             self.updateImgContent(dict: dict)
         }
@@ -105,8 +107,8 @@ extension ServiceContactTableViewTextCell{
         let containsAddress = false//msgString.contains("收货地址")
         hasAddressLink = isAdmin && containsAddress
         var textBottomGap = kFitWidth(-10)
+        let horizontalPadding = kFitWidth(11) * 2
         var labelWidth = WHUtils().getWidthOfString(string: msgString, font: UIFont.systemFont(ofSize: 14, weight: .regular), height: kFitWidth(14))
-//        var labelWidth = msgString.mc_getWidth(font: .systemFont(ofSize: 14, weight: .regular), height: kFitWidth(14))
         labelWidth = labelWidth + kFitWidth(6)
         if labelWidth > kFitWidth(260){
             labelWidth = kFitWidth(26)
@@ -134,41 +136,46 @@ extension ServiceContactTableViewTextCell{
         if !isAdmin{
             headImgView.snp.remakeConstraints { make in
                 make.right.equalTo(kFitWidth(-16))
-                make.top.equalTo(msgRectView)
+                make.top.equalTo(msgLabel)
                 make.width.height.equalTo(kFitWidth(38))
             }
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-                make.right.equalTo(kFitWidth(-73))
+//                make.right.equalTo(kFitWidth(-73))
+                make.right.equalTo(headImgView.snp.left).offset(-kFitWidth(19))
                 make.bottom.equalTo(textBottomGap)
-                make.width.equalTo(labelWidth)
+                make.width.equalTo(labelWidth + horizontalPadding)
             }
             msgLabel.textAlignment = .right
-            msgRectView.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
+            msgLabel.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
         }else{
             headImgView.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(16))
 //                make.top.equalTo(kFitWidth(5))
-                make.top.equalTo(msgRectView)
+                make.top.equalTo(msgLabel)
                 make.width.height.equalTo(kFitWidth(38))
             }
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-                make.left.equalTo(kFitWidth(73))
+//                make.left.equalTo(kFitWidth(73))
+                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(19))
                 make.bottom.equalTo(textBottomGap)
-                make.width.equalTo(labelWidth)
+                make.width.equalTo(labelWidth + horizontalPadding)
             }
             msgLabel.textAlignment = .left
-            msgRectView.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.55)//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.55)
+            msgLabel.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.55)//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.55)
         }
 //        
         let attr = NSMutableAttributedString(string: msgString)
-        attr.yy_minimumLineHeight = kFitWidth(18)
-        attr.yy_lineSpacing = kFitWidth(2)
-        if containsAddress {
-            let range = (msgString as NSString).range(of: "收货地址")
-            attr.addAttribute(.foregroundColor, value: WHColor_16(colorStr: "007AFF"), range: range)
-        }
+        let targetLineHeight = msgLabel.customLineHeight ?? msgLabel.font.lineHeight * 1.5
+        attr.yy_minimumLineHeight = targetLineHeight
+        attr.yy_lineSpacing = targetLineHeight - msgLabel.font.lineHeight
+//        attr.yy_minimumLineHeight = kFitWidth(18)
+//        attr.yy_lineSpacing = kFitWidth(2)
+//        if containsAddress {
+//            let range = (msgString as NSString).range(of: "收货地址")
+//            attr.addAttribute(.foregroundColor, value: WHColor_16(colorStr: "007AFF"), range: range)
+//        }
         msgLabel.attributedText = attr
 //        msgLabel.isUserInteractionEnabled = hasAddressLink
 //        if hasAddressLink {
@@ -275,17 +282,17 @@ extension ServiceContactTableViewTextCell{
 extension ServiceContactTableViewTextCell{
     func initUI() {
         contentView.addSubview(headImgView)
-        contentView.addSubview(msgRectView)
+//        contentView.addSubview(msgRectView)
         contentView.addSubview(msgLabel)
         contentView.addSubview(imgView)
         
-        msgRectView.snp.makeConstraints { make in
-            make.right.equalTo(msgLabel).offset(kFitWidth(11))
-//            make.top.bottom.equalTo(msgLabel)
-            make.top.equalTo(msgLabel).offset(kFitWidth(-6))
-            make.bottom.equalTo(msgLabel).offset(kFitWidth(10))
-            make.left.equalTo(msgLabel).offset(kFitWidth(-11))
-        }
+//        msgRectView.snp.makeConstraints { make in
+////            make.right.equalTo(msgLabel).offset(kFitWidth(11))
+////            make.top.bottom.equalTo(msgLabel)
+//            make.top.equalTo(msgLabel).offset(kFitWidth(-6))
+//            make.bottom.equalTo(msgLabel).offset(kFitWidth(10))
+//            make.left.equalTo(msgLabel).offset(kFitWidth(-11))
+//        }
     }
 }
 
