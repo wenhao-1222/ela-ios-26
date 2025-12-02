@@ -43,20 +43,19 @@ class ServiceContactTableViewTextCell: UITableViewCell {
     }
     lazy var headImgView: UIImageView = {
         let img = UIImageView()
-        img.layer.cornerRadius = kFitWidth(18)
+        img.layer.cornerRadius = kFitWidth(19)
         img.clipsToBounds = true
         
         return img
     }()
     lazy var msgLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
-        lab.font = .systemFont(ofSize: 14, weight: .regular)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
-//        lab.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.8)
-        lab.layer.cornerRadius = kFitWidth(4)
-        lab.clipsToBounds = true
+//        lab.layer.cornerRadius = kFitWidth(12)
+//        lab.clipsToBounds = true
         
         return lab
     }()
@@ -75,7 +74,7 @@ class ServiceContactTableViewTextCell: UITableViewCell {
     lazy var msgRectView : UIView = {
         let vi = UIView()
         vi.backgroundColor = .COLOR_CARD_BG_WHITE
-        vi.layer.cornerRadius = kFitWidth(4)
+        vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
         
         return vi
@@ -117,17 +116,15 @@ extension ServiceContactTableViewTextCell{
         }else{
             textBottomGap = kFitWidth(-26)
         }
-        var labelHeight = msgString.mc_getHeight(font: .systemFont(ofSize: 14, weight: .regular), width: labelWidth-kFitWidth(6))
-        
-        var imgBottomGap = kFitWidth(-10)
+        var labelHeight = msgString.mc_getHeight(font: msgLabel.font, width: labelWidth-kFitWidth(6))
         
         if labelHeight < kFitWidth(24){
             labelHeight = kFitWidth(24)
-        }else if labelHeight > kFitWidth(43){
-            imgBottomGap = -(labelHeight + kFitWidth(20) - kFitWidth(41))
-            if labelWidth < kFitWidth(200){
-                labelWidth = kFitWidth(260)
-            }
+        }else if labelHeight > kFitWidth(33){
+//            if labelWidth < kFitWidth(200){
+                labelWidth = kFitWidth(234)
+//                labelWidth = SCREEN_WIDHT - (kFitWidth(73) + kFitWidth(11)) * 2
+//            }
         }
         headImgView.kf.cancelDownloadTask()
         headImgView.image = nil
@@ -136,13 +133,13 @@ extension ServiceContactTableViewTextCell{
 
         if !isAdmin{
             headImgView.snp.remakeConstraints { make in
-                make.right.equalTo(kFitWidth(-10))
-                make.top.equalTo(kFitWidth(5))
-                make.width.height.equalTo(kFitWidth(36))
+                make.right.equalTo(kFitWidth(-16))
+                make.top.equalTo(msgRectView)
+                make.width.height.equalTo(kFitWidth(38))
             }
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-                make.right.equalTo(kFitWidth(-60))
+                make.right.equalTo(kFitWidth(-73))
                 make.bottom.equalTo(textBottomGap)
                 make.width.equalTo(labelWidth)
             }
@@ -150,20 +147,21 @@ extension ServiceContactTableViewTextCell{
             msgRectView.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
         }else{
             headImgView.snp.remakeConstraints { make in
-                make.left.equalTo(kFitWidth(10))
-                make.top.equalTo(kFitWidth(5))
-                make.width.height.equalTo(kFitWidth(36))
+                make.left.equalTo(kFitWidth(16))
+//                make.top.equalTo(kFitWidth(5))
+                make.top.equalTo(msgRectView)
+                make.width.height.equalTo(kFitWidth(38))
             }
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-                make.left.equalTo(kFitWidth(60))
+                make.left.equalTo(kFitWidth(73))
                 make.bottom.equalTo(textBottomGap)
                 make.width.equalTo(labelWidth)
             }
             msgLabel.textAlignment = .left
             msgRectView.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.55)//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.55)
         }
-        
+//        
         let attr = NSMutableAttributedString(string: msgString)
         attr.yy_minimumLineHeight = kFitWidth(18)
         attr.yy_lineSpacing = kFitWidth(2)
@@ -172,7 +170,7 @@ extension ServiceContactTableViewTextCell{
             attr.addAttribute(.foregroundColor, value: WHColor_16(colorStr: "007AFF"), range: range)
         }
         msgLabel.attributedText = attr
-        msgLabel.isUserInteractionEnabled = hasAddressLink
+//        msgLabel.isUserInteractionEnabled = hasAddressLink
 //        if hasAddressLink {
 //            addAddressTapGestureIfNeeded()
 //        }else{
@@ -189,7 +187,6 @@ extension ServiceContactTableViewTextCell{
         configureAvatar(isAdmin: isAdmin)
 
         headImgView.snp.remakeConstraints { make in
-//            make.right.equalTo(kFitWidth(-10))
             if isAdmin {
                 make.left.equalTo(kFitWidth(10))
             } else {
@@ -201,39 +198,26 @@ extension ServiceContactTableViewTextCell{
         }
         
         if imagesArr.count > 0 {
-//            imgView.setImgUrl(urlString: imagesArr[0] as? String ?? "")
-//            imgHeight = kFitWidth(241)
             guard let imgUrl = URL(string: imagesArr[0] as? String ?? "") else { return }
             DSImageUploader().dealImgUrlSignForOss(urlStr: imagesArr[0] as? String ?? "") { signUrl in
                 guard let resourceUrl = URL(string: signUrl) else{
                     return
                 }
-//                HeroBrowserLocalImageViewModule(image: <#T##UIImage#>)
+                
                 self.viewModules.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl))
                 let resource = KF.ImageResource(downloadURL: resourceUrl, cacheKey: imagesArr[0] as? String ?? "")
                 self.imgView.kf.setImage(with: resource,options: [.transition(.fade(0.2))]) { [self] result in
                     DLLog(message: "result:\(result)")
                     
                     var imgOriSize = imgView.image?.size
-    //                let imgOriginH = imgWidth * ((imgOriSize?.height ?? 0) / (imgOriSize?.width ?? 1))
+
                     var imgOriginW = imgHeight * ((imgOriSize?.width ?? 0) / (imgOriSize?.height ?? 1))
                     if imgOriginW > SCREEN_WIDHT - kFitWidth(120){
                         imgOriginW = SCREEN_WIDHT - kFitWidth(120)
-//                        imgHeight = imgOriginW * ((imgOriSize?.height ?? 0) / (imgOriSize?.width ?? 1))
                     }
                     let imgRect = CGRect.init(x: 0, y: 0, width: imgOriginW, height: imgHeight)
                     
                     imgView.frame = imgRect
-                    DLLog(message: "index:\(index)--imgView---\(imgView.frame.origin.y)")
-//                    if dict.stringValueForKey(key: "createdby") != "admin"{
-//                        headImgView.setImgUrl(urlString: UserInfoModel.shared.headimgurl)
-////                        headImgView.snp.remakeConstraints { make in
-////                            make.right.equalTo(kFitWidth(-10))
-////                            make.top.equalTo(kFitWidth(5))
-////                            make.width.height.equalTo(kFitWidth(36))
-////                            make.bottom.equalTo(imgBottomGap)
-////                        }
-                        
                     if !isAdmin{
                         imgView.snp.remakeConstraints { make in
                             make.right.equalTo(kFitWidth(-60))
@@ -242,13 +226,6 @@ extension ServiceContactTableViewTextCell{
                             make.height.equalTo(imgHeight)
                         }
                     }else{
-//                        headImgView.setImgLocal(imgName: "avatar_default")
-////                        headImgView.snp.remakeConstraints { make in
-////                            make.left.equalTo(kFitWidth(10))
-////                            make.top.equalTo(kFitWidth(5))
-////                            make.width.height.equalTo(kFitWidth(36))
-////                            make.bottom.equalTo(imgBottomGap)
-////                        }
                         imgView.snp.remakeConstraints { make in
                             make.left.equalTo(kFitWidth(60))
                             make.top.equalTo(kFitWidth(5))
@@ -303,11 +280,11 @@ extension ServiceContactTableViewTextCell{
         contentView.addSubview(imgView)
         
         msgRectView.snp.makeConstraints { make in
-            make.right.equalTo(msgLabel).offset(kFitWidth(4))
+            make.right.equalTo(msgLabel).offset(kFitWidth(11))
 //            make.top.bottom.equalTo(msgLabel)
-            make.top.equalTo(msgLabel).offset(kFitWidth(-4))
-            make.bottom.equalTo(msgLabel).offset(kFitWidth(4))
-            make.left.equalTo(msgLabel).offset(kFitWidth(-4))
+            make.top.equalTo(msgLabel).offset(kFitWidth(-6))
+            make.bottom.equalTo(msgLabel).offset(kFitWidth(10))
+            make.left.equalTo(msgLabel).offset(kFitWidth(-11))
         }
     }
 }

@@ -404,10 +404,10 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
         }
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(30)))
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(37)))
         vi.backgroundColor = .clear
         
-        let label = UILabel.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(30)))
+        let label = UILabel.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(37)))
         label.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         label.font = .systemFont(ofSize: 12, weight: .regular)
         label.textAlignment = .center
@@ -434,7 +434,7 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
         return kFitWidth(0)
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return kFitWidth(30)
+        return kFitWidth(37)
     }
 }
 
