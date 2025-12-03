@@ -670,6 +670,7 @@
 		EC029B8F2EAA188700834AD5 /* LiquidGlassShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B8E2EAA188600834AD5 /* LiquidGlassShadow.swift */; };
 		EC029B912EAA2F3A00834AD5 /* GradientGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B902EAA2F3A00834AD5 /* GradientGlassView.swift */; };
 		EC029B932EAA324E00834AD5 /* SegmentedLiquidDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B922EAA324E00834AD5 /* SegmentedLiquidDecorator.swift */; };
+		EC0518192EDFFBD4007747E0 /* ServiceContactTableViewImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0518182EDFFBD0007747E0 /* ServiceContactTableViewImageCell.swift */; };
 		EC0623E42C478D18008230BA /* JournalBottomFuncAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0623E32C478D18008230BA /* JournalBottomFuncAlertVM.swift */; };
 		EC0623E62C47B7C0008230BA /* JournalFuncAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0623E52C47B7C0008230BA /* JournalFuncAlertVM.swift */; };
 		EC094FCC2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC094FCB2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift */; };
@@ -1950,6 +1951,7 @@
 		EC029B8E2EAA188600834AD5 /* LiquidGlassShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassShadow.swift; sourceTree = "<group>"; };
 		EC029B902EAA2F3A00834AD5 /* GradientGlassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientGlassView.swift; sourceTree = "<group>"; };
 		EC029B922EAA324E00834AD5 /* SegmentedLiquidDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedLiquidDecorator.swift; sourceTree = "<group>"; };
+		EC0518182EDFFBD0007747E0 /* ServiceContactTableViewImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContactTableViewImageCell.swift; sourceTree = "<group>"; };
 		EC0623E32C478D18008230BA /* JournalBottomFuncAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalBottomFuncAlertVM.swift; sourceTree = "<group>"; };
 		EC0623E52C47B7C0008230BA /* JournalFuncAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalFuncAlertVM.swift; sourceTree = "<group>"; };
 		EC094FCB2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSaveNutrationAlertVM.swift; sourceTree = "<group>"; };
@@ -4533,6 +4535,7 @@
 				EC5328432BF5FFAB00C39C6A /* ServiewImageView.swift */,
 				ECC977B92C19C22600F7FAA6 /* ServiceInputVM.swift */,
 				ECC977BC2C19D55A00F7FAA6 /* ServiceContactTableViewTextCell.swift */,
+				EC0518182EDFFBD0007747E0 /* ServiceContactTableViewImageCell.swift */,
 				A773C22D2E84EB6600F1E3AA /* ServiceContactTableViewVideoCell.swift */,
 				A773C22F2E84EB7800F1E3AA /* ServiceVideoProgressRing.swift */,
 				ECC977BE2C19D5D400F7FAA6 /* ServiceContactTableViewImageViewCell.swift */,
@@ -6069,6 +6072,7 @@
 				A775EA272E17BDAF001DE90A /* WeightChangeChartView.swift in Sources */,
 				A76F50C72D5B13B2001B67CB /* SurveyVC.swift in Sources */,
 				EC87EEF32BB3BB9900350EB0 /* QuestionnaireSurveyMealsVM.swift in Sources */,
+				EC0518192EDFFBD4007747E0 /* ServiceContactTableViewImageCell.swift in Sources */,
 				A73348AC2DACEF8A00AD747A /* CourseItemCell.swift in Sources */,
 				A73207F92DF91DC2000A807D /* GuideSevenCircleVM.swift in Sources */,
 				EC4DE32F2BD104740090A7BD /* DataDetailTimeFilterAlertVM.swift in Sources */,

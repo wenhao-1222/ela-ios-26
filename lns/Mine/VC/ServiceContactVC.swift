@@ -122,6 +122,7 @@ class ServiceContactVC: WHBaseViewVC {
         vi.delegate = self
         vi.dataSource = self
         vi.register(ServiceContactTableViewTextCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewTextCell")
+        vi.register(ServiceContactTableViewImageCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewImageCell")
         vi.register(ServiceContactTableViewVideoCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewVideoCell")
         vi.separatorStyle = .none
         vi.backgroundColor = .clear
@@ -385,22 +386,36 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
             
             return cell ?? ServiceContactTableViewVideoCell()
         }else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewTextCell") as? ServiceContactTableViewTextCell
-            cell?.updateUI(dict: dict)
-            
-            cell?.imgTapBlock = {(image)in
-                self.msgInputView.textView.resignFirstResponder()
-                if image != nil{
-                    let showController = ShowBigImgController(imgs: [image!], img: image!,isNavi: true)
-                    
-                    self.navigationController?.pushViewController(showController, animated: true)
+            if dict.stringValueForKey(key: "suggestion").count > 0{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewTextCell") as? ServiceContactTableViewTextCell
+                cell?.updateUI(dict: dict)
+                
+                cell?.addressTapBlock = { [weak self] in
+                    self?.openAddressList()
                 }
+                
+                return cell ?? ServiceContactTableViewTextCell()
+            }else{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewImageCell") as? ServiceContactTableViewImageCell
+                cell?.updateUI(dict: dict)
+                
+                cell?.onImageLoaded = {()in
+//                    self.tableView.reloadRows(at: [indexPath], with: .none)
+                    self.tableView.beginUpdates()
+                    self.tableView.endUpdates()
+                }
+                
+                cell?.imgTapBlock = {(image)in
+                    self.msgInputView.textView.resignFirstResponder()
+                    if image != nil{
+                        let showController = ShowBigImgController(imgs: [image!], img: image!,isNavi: true)
+
+                        self.navigationController?.pushViewController(showController, animated: true)
+                    }
+                }
+                
+                return cell ?? ServiceContactTableViewImageCell()
             }
-            cell?.addressTapBlock = { [weak self] in
-                self?.openAddressList()
-            }
-            
-            return cell ?? ServiceContactTableViewTextCell()
         }
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -606,28 +621,8 @@ extension ServiceContactVC:RITLPhotosViewControllerDelegate{
     func photosViewController(_ viewController: UIViewController, assetIdentifiers identifiers: [String]) {
         self.saveAssetIds = identifiers
     }
-//    func photosViewController(_ viewController: UIViewController, thumbnailImages: [UIImage], infos: [[AnyHashable : Any]]) {
-////        self.photoAssets = thumbnailImages
-//    }
     func photosViewController(_ viewController: UIViewController, assets: [PHAsset]) {
         self.photoAssets = assets
-//        self.imagesForUpload.removeAll()
-//        UserConfigModel.shared.photsSelectCount = self.photoAssets.count
-//        if self.photoAssets.count > 0 {
-//            let firstAsset = self.photoAssets.first
-//            
-//            DLLog(message: "isVideo:\(firstAsset?.mediaType == .video)")
-//            UserConfigModel.shared.selectType = firstAsset?.mediaType == .video ? .VIDEO : .IMAGE
-//            self.contentType = firstAsset?.mediaType == .video ? .VIDEO : .IMAGE
-//            if UserConfigModel.shared.selectType == .VIDEO{
-//                let cell = self.tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? PublishImagesCellCollection
-//                cell?.updateImages(imgs: [])
-//            }
-//        }
-        
-//        self.tableView.beginUpdates()
-//        self.tableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
-//        self.tableView.endUpdates()
         DLLog(message: "VideoCompress: photosViewController")
         if self.photoAssets.count > 0 {
             ServiceContactVideoManager.shared.dealVideoAsset(asset: self.photoAssets[0],retry: 0) {videoUrl in
@@ -642,17 +637,6 @@ extension ServiceContactVC:RITLPhotosViewControllerDelegate{
                         
                         if VideoEditModel.shared.keyFramesLoad == true{
                             self.handleSelectedVideo(asset: asset, url)
-//                            let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
-//                                        "ctime":"\(Date().currentSeconds)",
-//                                        "contentType":"3",
-//                                        "material":[["coverImageOssUrl":"",
-//                                                     "localImg":VideoEditModel.shared.videoCoverImage,
-//                                                     "videoOssUrl":"",
-//                                                     "videoWidth":"\(VideoEditModel.shared.videoCoverImageSize?.width ?? 1280)",
-//                                                     "videoHeight":"\(VideoEditModel.shared.videoCoverImageSize?.height ?? 720)",
-//                                                     "videoDuration":""]]]
-//                            self.dataSourceArray.add(dict)
-//                            self.dealDataSource()
                         }
                     }
                     DispatchQueue.main.async {
@@ -671,27 +655,6 @@ extension ServiceContactVC:RITLPhotosViewControllerDelegate{
         }
     }
     private func playVideo(messageId: String, urlString: String?) {
-//        var url: URL?
-//        if let message = messageDictionary(for: messageId) {
-//            let remote = message.stringValueForKey(key: "videoOssUrl")
-//            if !remote.isEmpty, let remoteURL = URL(string: remote) {
-//                url = remoteURL
-//            } else {
-//                let localPath = message.stringValueForKey(key: "videoLocalPath")
-//                if !localPath.isEmpty {
-//                    url = URL(fileURLWithPath: localPath)
-//                }
-//            }
-//        }
-//        if url == nil, let urlString = urlString, !urlString.isEmpty {
-//            if urlString.hasPrefix("http") || urlString.hasPrefix("https") {
-//                url = URL(string: urlString)
-//            } else {
-//                url = URL(fileURLWithPath: urlString)
-//            }
-//        }
-//        guard let playURL = url else { return }
-//        
         if urlString?.count ?? 0 > 0 {
             DSImageUploader().dealImgUrlSignForOss(urlStr: urlString ?? "") { signUrl in
                 let playURLT = URL(string: signUrl)
@@ -720,7 +683,6 @@ extension ServiceContactVC{
                     return
                 }
                 guard let url = url else { return }
-//                self.prepareVideoForUpload(from: url)
             }
         }
     }
@@ -1030,16 +992,5 @@ extension ServiceContactVC: ServiceContactTableViewVideoCellDelegate {
         DSImageUploader().dealImgUrlSignForOss(urlStr: cell.videoURLString ?? "") { signUrl in
             self.playVideo(messageId: cell.messageId, urlString: cell.videoURLString)
         }
-        
-//        let messageId = cell.messageId
-//        guard !messageId.isEmpty else { return }
-//        guard let materialArray = messageDictionary(for: messageId)?["material"] as? NSArray,
-//              let info = materialArray.firstObject as? NSDictionary else { return }
-//        let videoURL = info.stringValueForKey(key: "videoOssUrl")
-//        if videoURL.count < 3 {
-//            MCToast.mc_text("视频正在上传，请稍后再试")
-//        } else {
-//            MCToast.mc_text("视频已上传，后续版本将支持播放")
-//        }
     }
 }

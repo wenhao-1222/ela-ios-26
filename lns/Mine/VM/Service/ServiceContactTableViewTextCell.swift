@@ -9,14 +9,7 @@ import Foundation
 import Kingfisher
 
 class ServiceContactTableViewTextCell: UITableViewCell {
-    
-    var imgWidth = kFitWidth(112)
-    var imgHeight = kFitWidth(241)
-    var imgGap = kFitWidth(6)
-    
-    var imgTapBlock:((UIImage?)->())?
     var addressTapBlock:(()->())?
-    var viewModules:[HeroBrowserViewModule] = []
     
     private var avatarRequestID = UUID()
     private var addressTapGesture: UITapGestureRecognizer?
@@ -24,8 +17,6 @@ class ServiceContactTableViewTextCell: UITableViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        headImgView.kf.cancelDownloadTask()
-        headImgView.image = nil
         avatarRequestID = UUID()
         hasAddressLink = false
         removeAddressTapGesture()
@@ -61,45 +52,13 @@ class ServiceContactTableViewTextCell: UITableViewCell {
         
         return lab
     }()
-    lazy var imgView: UIImageView = {
-        let img = UIImageView()
-        img.isUserInteractionEnabled = true
-        img.backgroundColor = .clear
-        img.contentMode = .scaleAspectFill
-        img.clipsToBounds = true
-        
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(imgTapAction))
-        img.addGestureRecognizer(tap)
-    
-        return img
-    }()
-//    lazy var msgRectView : UIView = {
-//        let vi = UIView()
-//        vi.backgroundColor = .COLOR_CARD_BG_WHITE
-//        vi.layer.cornerRadius = kFitWidth(12)
-//        vi.clipsToBounds = true
-//        
-//        return vi
-//    }()
 }
 
 extension ServiceContactTableViewTextCell{
     func updateUI(dict:NSDictionary) {
-        self.viewModules.removeAll()
-        if dict.stringValueForKey(key: "suggestion").count > 0 {
-            msgLabel.isHidden = false
-//            msgRectView.isHidden = false
-            imgView.isHidden = true
-            self.updateTextContent(dict: dict)
-        }else{
-            msgLabel.isHidden = true
-//            msgRectView.isHidden = true
-            imgView.isHidden = false
-            self.updateImgContent(dict: dict)
-        }
-        
-        self.setNeedsLayout()
-        self.layoutIfNeeded()
+        self.updateTextContent(dict: dict)
+//        setNeedsLayout()
+//        layoutIfNeeded()
     }
     func updateTextContent(dict:NSDictionary) {
 
@@ -118,7 +77,7 @@ extension ServiceContactTableViewTextCell{
         )
 
         // 限制最大/最小宽度
-        if labelWidth > kFitWidth(230) {
+        if labelWidth > kFitWidth(240) {
             labelWidth = kFitWidth(240)
         } else if labelWidth < kFitWidth(30) {
             labelWidth = kFitWidth(30)
@@ -147,8 +106,8 @@ extension ServiceContactTableViewTextCell{
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
                 make.right.equalTo(headImgView.snp.left).offset(-kFitWidth(11))
-                make.bottom.equalTo(textBottomGap)
-                make.width.equalTo(labelWidth) // ←★ 关键修改
+                make.bottom.equalTo(kFitWidth(-10))
+                make.width.equalTo(labelWidth)
             }
             msgLabel.textAlignment = .right
             msgLabel.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
@@ -183,174 +142,6 @@ extension ServiceContactTableViewTextCell{
         if hasAddressLink { addAddressTapGestureIfNeeded() }
         else { removeAddressTapGesture() }
     }
-//
-//    func updateTextContent(dict:NSDictionary) {
-//        let msgString = "\(dict.stringValueForKey(key: "suggestion"))"
-//        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
-//        let containsAddress = msgString.contains("收货地址")
-//        hasAddressLink = isAdmin && containsAddress
-//        var textBottomGap = kFitWidth(-10)
-//        let horizontalPadding = kFitWidth(11) * 2
-//        var labelWidth = WHUtils().getWidthOfString(string: msgString, font: UIFont.systemFont(ofSize: 14, weight: .regular), height: kFitWidth(14))
-//        labelWidth = labelWidth + kFitWidth(6)
-//        if labelWidth > kFitWidth(230){
-//            labelWidth = kFitWidth(26)
-//        }else if labelWidth < kFitWidth(30){
-//            labelWidth = kFitWidth(30)
-//            textBottomGap = kFitWidth(-26)
-//        }else{
-//            textBottomGap = kFitWidth(-26)
-//        }
-//        var labelHeight = msgString.mc_getHeight(font: msgLabel.font, width: labelWidth)
-//        
-//        if labelHeight < kFitWidth(24){
-//            labelHeight = kFitWidth(24)
-//        }else if labelHeight > kFitWidth(33){
-////            if labelWidth < kFitWidth(200){
-//                labelWidth = kFitWidth(234)
-////                labelWidth = SCREEN_WIDHT - (kFitWidth(73) + kFitWidth(11)) * 2
-////            }
-//        }else{
-//            
-//        }
-//        headImgView.kf.cancelDownloadTask()
-//        headImgView.image = nil
-//        
-//        configureAvatar(isAdmin: isAdmin)
-//
-//        if !isAdmin{
-//            headImgView.snp.remakeConstraints { make in
-//                make.right.equalTo(kFitWidth(-16))
-//                make.top.equalTo(msgLabel)
-//                make.width.height.equalTo(kFitWidth(38))
-//            }
-//            msgLabel.snp.remakeConstraints { make in
-//                make.top.equalTo(kFitWidth(10))
-////                make.right.equalTo(kFitWidth(-73))
-//                make.right.equalTo(headImgView.snp.left).offset(-kFitWidth(11))
-//                make.bottom.equalTo(textBottomGap)
-//                make.width.equalTo(labelWidth + horizontalPadding)
-//            }
-//            msgLabel.textAlignment = .right
-//            msgLabel.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
-//        }else{
-//            headImgView.snp.remakeConstraints { make in
-//                make.left.equalTo(kFitWidth(16))
-////                make.top.equalTo(kFitWidth(5))
-//                make.top.equalTo(msgLabel)
-//                make.width.height.equalTo(kFitWidth(38))
-//            }
-//            msgLabel.snp.remakeConstraints { make in
-//                make.top.equalTo(kFitWidth(10))
-////                make.left.equalTo(kFitWidth(73))
-//                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(11))
-//                make.bottom.equalTo(textBottomGap)
-//                make.width.equalTo(labelWidth + horizontalPadding)
-//            }
-//            msgLabel.textAlignment = .left
-//            msgLabel.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.55)//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.55)
-//        }
-////        
-//        let attr = NSMutableAttributedString(string: msgString)
-//        let targetLineHeight = msgLabel.customLineHeight ?? msgLabel.font.lineHeight * 1.5
-//        let paragraphStyle = NSMutableParagraphStyle()
-//        paragraphStyle.alignment = msgLabel.textAlignment
-//        paragraphStyle.lineBreakMode = msgLabel.lineBreakMode
-//        paragraphStyle.minimumLineHeight = targetLineHeight
-//        paragraphStyle.maximumLineHeight = targetLineHeight
-//        paragraphStyle.lineSpacing = targetLineHeight - msgLabel.font.lineHeight
-//        attr.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attr.length))
-//        attr.yy_minimumLineHeight = targetLineHeight
-//        attr.yy_lineSpacing = targetLineHeight - msgLabel.font.lineHeight
-////        attr.yy_minimumLineHeight = kFitWidth(18)
-////        attr.yy_lineSpacing = kFitWidth(2)
-//        if containsAddress {
-//            let range = (msgString as NSString).range(of: "收货地址")
-//            attr.addAttribute(.foregroundColor, value: WHColor_16(colorStr: "007AFF"), range: range)
-//        }
-//        msgLabel.attributedText = attr
-//        msgLabel.isUserInteractionEnabled = hasAddressLink
-//        if hasAddressLink {
-//            addAddressTapGestureIfNeeded()
-//        }else{
-//            removeAddressTapGesture()
-//        }
-//    }
-    func updateImgContent(dict:NSDictionary) {
-        let imagesStr = dict.stringValueForKey(key: "images")
-        let imagesArr = WHUtils.getArrayFromJSONString(jsonString: imagesStr)
-        let imgBottomGap = -imgHeight+kFitWidth(41)-kFitWidth(10)
-        
-        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
-
-        configureAvatar(isAdmin: isAdmin)
-
-        headImgView.snp.remakeConstraints { make in
-            if isAdmin {
-                make.left.equalTo(kFitWidth(10))
-            } else {
-                make.right.equalTo(kFitWidth(-10))
-            }
-            make.top.equalTo(kFitWidth(5))
-            make.width.height.equalTo(kFitWidth(36))
-            make.bottom.equalTo(imgBottomGap)
-        }
-        
-        if imagesArr.count > 0 {
-            guard let imgUrl = URL(string: imagesArr[0] as? String ?? "") else { return }
-            DSImageUploader().dealImgUrlSignForOss(urlStr: imagesArr[0] as? String ?? "") { signUrl in
-                guard let resourceUrl = URL(string: signUrl) else{
-                    return
-                }
-                
-                self.viewModules.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl))
-                let resource = KF.ImageResource(downloadURL: resourceUrl, cacheKey: imagesArr[0] as? String ?? "")
-                self.imgView.kf.setImage(with: resource,options: [.transition(.fade(0.2))]) { [self] result in
-                    DLLog(message: "result:\(result)")
-                    
-                    var imgOriSize = imgView.image?.size
-
-                    var imgOriginW = imgHeight * ((imgOriSize?.width ?? 0) / (imgOriSize?.height ?? 1))
-                    if imgOriginW > SCREEN_WIDHT - kFitWidth(120){
-                        imgOriginW = SCREEN_WIDHT - kFitWidth(120)
-                    }
-                    let imgRect = CGRect.init(x: 0, y: 0, width: imgOriginW, height: imgHeight)
-                    
-//                    imgView.frame = imgRect
-                    if !isAdmin{
-                        imgView.snp.remakeConstraints { make in
-                            make.right.equalTo(kFitWidth(-60))
-                            make.top.equalTo(kFitWidth(10))
-                            make.width.equalTo(imgOriginW)
-                            make.height.equalTo(imgHeight)
-                        }
-                    }else{
-                        imgView.snp.remakeConstraints { make in
-                            make.left.equalTo(kFitWidth(60))
-                            make.top.equalTo(kFitWidth(5))
-                            make.width.equalTo(imgOriginW)
-                            make.height.equalTo(imgHeight)
-                        }
-                    }
-                }
-            }
-        }
-    }
-    @objc func imgTapAction(){
-        guard let vc = UIApplication.topViewController() else { return }
-        if let img = self.imgView.image {
-            vc.hero.browserPhoto(viewModules: [HeroBrowserLocalImageViewModule(image: self.imgView.image!)], initIndex: 0) {
-                [
-                    .pageControlType(.pageControl),
-                    .heroView(self.imgView)
-                ]
-            }
-        }else{
-            if self.imgTapBlock != nil{
-                self.imgTapBlock!(self.imgView.image ?? nil)
-            }
-        }
-    }
     @objc private func addressTapAction() {
           guard hasAddressLink else { return }
           addressTapBlock?()
@@ -374,17 +165,7 @@ extension ServiceContactTableViewTextCell{
 extension ServiceContactTableViewTextCell{
     func initUI() {
         contentView.addSubview(headImgView)
-//        contentView.addSubview(msgRectView)
         contentView.addSubview(msgLabel)
-        contentView.addSubview(imgView)
-        
-//        msgRectView.snp.makeConstraints { make in
-////            make.right.equalTo(msgLabel).offset(kFitWidth(11))
-////            make.top.bottom.equalTo(msgLabel)
-//            make.top.equalTo(msgLabel).offset(kFitWidth(-6))
-//            make.bottom.equalTo(msgLabel).offset(kFitWidth(10))
-//            make.left.equalTo(msgLabel).offset(kFitWidth(-11))
-//        }
     }
 }
 
