@@ -102,38 +102,43 @@ extension ServiceContactTableViewTextCell{
         self.layoutIfNeeded()
     }
     func updateTextContent(dict:NSDictionary) {
+
         let msgString = "\(dict.stringValueForKey(key: "suggestion"))"
         let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
-        let containsAddress = false//msgString.contains("收货地址")
+        let containsAddress = msgString.contains("收货地址")
         hasAddressLink = isAdmin && containsAddress
+
         var textBottomGap = kFitWidth(-10)
-        let horizontalPadding = kFitWidth(11) * 2
-        var labelWidth = WHUtils().getWidthOfString(string: msgString, font: UIFont.systemFont(ofSize: 14, weight: .regular), height: kFitWidth(14))
-        labelWidth = labelWidth + kFitWidth(6)
-        if labelWidth > kFitWidth(260){
-            labelWidth = kFitWidth(26)
-        }else if labelWidth < kFitWidth(30){
+
+        // 计算文字宽度（不再额外加 6）
+        var labelWidth = WHUtils().getWidthOfString(
+            string: msgString,
+            font: UIFont.systemFont(ofSize: 14),
+            height: kFitWidth(14)
+        )
+
+        // 限制最大/最小宽度
+        if labelWidth > kFitWidth(230) {
+            labelWidth = kFitWidth(240)
+        } else if labelWidth < kFitWidth(30) {
             labelWidth = kFitWidth(30)
             textBottomGap = kFitWidth(-26)
-        }else{
+        } else {
             textBottomGap = kFitWidth(-26)
         }
-        var labelHeight = msgString.mc_getHeight(font: msgLabel.font, width: labelWidth-kFitWidth(6))
-        
-        if labelHeight < kFitWidth(24){
+
+        var labelHeight = msgString.mc_getHeight(font: msgLabel.font, width: labelWidth)
+
+        if labelHeight < kFitWidth(24) {
             labelHeight = kFitWidth(24)
-        }else if labelHeight > kFitWidth(33){
-//            if labelWidth < kFitWidth(200){
-                labelWidth = kFitWidth(234)
-//                labelWidth = SCREEN_WIDHT - (kFitWidth(73) + kFitWidth(11)) * 2
-//            }
         }
-        headImgView.kf.cancelDownloadTask()
-        headImgView.image = nil
-        
+
+        // 设置头像
         configureAvatar(isAdmin: isAdmin)
 
-        if !isAdmin{
+        // 头像 & 气泡布局
+        if !isAdmin {
+            // 右侧（用户）
             headImgView.snp.remakeConstraints { make in
                 make.right.equalTo(kFitWidth(-16))
                 make.top.equalTo(msgLabel)
@@ -141,49 +146,136 @@ extension ServiceContactTableViewTextCell{
             }
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-//                make.right.equalTo(kFitWidth(-73))
-                make.right.equalTo(headImgView.snp.left).offset(-kFitWidth(19))
+                make.right.equalTo(headImgView.snp.left).offset(-kFitWidth(11))
                 make.bottom.equalTo(textBottomGap)
-                make.width.equalTo(labelWidth + horizontalPadding)
+                make.width.equalTo(labelWidth) // ←★ 关键修改
             }
             msgLabel.textAlignment = .right
             msgLabel.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
-        }else{
+
+        } else {
+            // 左侧（管理员）
             headImgView.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(16))
-//                make.top.equalTo(kFitWidth(5))
                 make.top.equalTo(msgLabel)
                 make.width.height.equalTo(kFitWidth(38))
             }
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-//                make.left.equalTo(kFitWidth(73))
-                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(19))
+                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(11))
                 make.bottom.equalTo(textBottomGap)
-                make.width.equalTo(labelWidth + horizontalPadding)
+                make.width.equalTo(labelWidth) // ←★ 关键修改
             }
             msgLabel.textAlignment = .left
-            msgLabel.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.55)//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.55)
+            msgLabel.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.55)
         }
-//        
+
+        // 富文本（高亮“收货地址”）
         let attr = NSMutableAttributedString(string: msgString)
-        let targetLineHeight = msgLabel.customLineHeight ?? msgLabel.font.lineHeight * 1.5
-        attr.yy_minimumLineHeight = targetLineHeight
-        attr.yy_lineSpacing = targetLineHeight - msgLabel.font.lineHeight
-//        attr.yy_minimumLineHeight = kFitWidth(18)
-//        attr.yy_lineSpacing = kFitWidth(2)
+        if containsAddress {
+            let range = (msgString as NSString).range(of: "收货地址")
+            attr.addAttribute(.foregroundColor, value: WHColor_16(colorStr: "007AFF"), range: range)
+        }
+        msgLabel.attributedText = attr
+
+        // 点击事件
+        msgLabel.isUserInteractionEnabled = hasAddressLink
+        if hasAddressLink { addAddressTapGestureIfNeeded() }
+        else { removeAddressTapGesture() }
+    }
+//
+//    func updateTextContent(dict:NSDictionary) {
+//        let msgString = "\(dict.stringValueForKey(key: "suggestion"))"
+//        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
+//        let containsAddress = msgString.contains("收货地址")
+//        hasAddressLink = isAdmin && containsAddress
+//        var textBottomGap = kFitWidth(-10)
+//        let horizontalPadding = kFitWidth(11) * 2
+//        var labelWidth = WHUtils().getWidthOfString(string: msgString, font: UIFont.systemFont(ofSize: 14, weight: .regular), height: kFitWidth(14))
+//        labelWidth = labelWidth + kFitWidth(6)
+//        if labelWidth > kFitWidth(230){
+//            labelWidth = kFitWidth(26)
+//        }else if labelWidth < kFitWidth(30){
+//            labelWidth = kFitWidth(30)
+//            textBottomGap = kFitWidth(-26)
+//        }else{
+//            textBottomGap = kFitWidth(-26)
+//        }
+//        var labelHeight = msgString.mc_getHeight(font: msgLabel.font, width: labelWidth)
+//        
+//        if labelHeight < kFitWidth(24){
+//            labelHeight = kFitWidth(24)
+//        }else if labelHeight > kFitWidth(33){
+////            if labelWidth < kFitWidth(200){
+//                labelWidth = kFitWidth(234)
+////                labelWidth = SCREEN_WIDHT - (kFitWidth(73) + kFitWidth(11)) * 2
+////            }
+//        }else{
+//            
+//        }
+//        headImgView.kf.cancelDownloadTask()
+//        headImgView.image = nil
+//        
+//        configureAvatar(isAdmin: isAdmin)
+//
+//        if !isAdmin{
+//            headImgView.snp.remakeConstraints { make in
+//                make.right.equalTo(kFitWidth(-16))
+//                make.top.equalTo(msgLabel)
+//                make.width.height.equalTo(kFitWidth(38))
+//            }
+//            msgLabel.snp.remakeConstraints { make in
+//                make.top.equalTo(kFitWidth(10))
+////                make.right.equalTo(kFitWidth(-73))
+//                make.right.equalTo(headImgView.snp.left).offset(-kFitWidth(11))
+//                make.bottom.equalTo(textBottomGap)
+//                make.width.equalTo(labelWidth + horizontalPadding)
+//            }
+//            msgLabel.textAlignment = .right
+//            msgLabel.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
+//        }else{
+//            headImgView.snp.remakeConstraints { make in
+//                make.left.equalTo(kFitWidth(16))
+////                make.top.equalTo(kFitWidth(5))
+//                make.top.equalTo(msgLabel)
+//                make.width.height.equalTo(kFitWidth(38))
+//            }
+//            msgLabel.snp.remakeConstraints { make in
+//                make.top.equalTo(kFitWidth(10))
+////                make.left.equalTo(kFitWidth(73))
+//                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(11))
+//                make.bottom.equalTo(textBottomGap)
+//                make.width.equalTo(labelWidth + horizontalPadding)
+//            }
+//            msgLabel.textAlignment = .left
+//            msgLabel.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.55)//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.55)
+//        }
+////        
+//        let attr = NSMutableAttributedString(string: msgString)
+//        let targetLineHeight = msgLabel.customLineHeight ?? msgLabel.font.lineHeight * 1.5
+//        let paragraphStyle = NSMutableParagraphStyle()
+//        paragraphStyle.alignment = msgLabel.textAlignment
+//        paragraphStyle.lineBreakMode = msgLabel.lineBreakMode
+//        paragraphStyle.minimumLineHeight = targetLineHeight
+//        paragraphStyle.maximumLineHeight = targetLineHeight
+//        paragraphStyle.lineSpacing = targetLineHeight - msgLabel.font.lineHeight
+//        attr.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attr.length))
+//        attr.yy_minimumLineHeight = targetLineHeight
+//        attr.yy_lineSpacing = targetLineHeight - msgLabel.font.lineHeight
+////        attr.yy_minimumLineHeight = kFitWidth(18)
+////        attr.yy_lineSpacing = kFitWidth(2)
 //        if containsAddress {
 //            let range = (msgString as NSString).range(of: "收货地址")
 //            attr.addAttribute(.foregroundColor, value: WHColor_16(colorStr: "007AFF"), range: range)
 //        }
-        msgLabel.attributedText = attr
+//        msgLabel.attributedText = attr
 //        msgLabel.isUserInteractionEnabled = hasAddressLink
 //        if hasAddressLink {
 //            addAddressTapGestureIfNeeded()
 //        }else{
 //            removeAddressTapGesture()
 //        }
-    }
+//    }
     func updateImgContent(dict:NSDictionary) {
         let imagesStr = dict.stringValueForKey(key: "images")
         let imagesArr = WHUtils.getArrayFromJSONString(jsonString: imagesStr)
@@ -224,7 +316,7 @@ extension ServiceContactTableViewTextCell{
                     }
                     let imgRect = CGRect.init(x: 0, y: 0, width: imgOriginW, height: imgHeight)
                     
-                    imgView.frame = imgRect
+//                    imgView.frame = imgRect
                     if !isAdmin{
                         imgView.snp.remakeConstraints { make in
                             make.right.equalTo(kFitWidth(-60))
