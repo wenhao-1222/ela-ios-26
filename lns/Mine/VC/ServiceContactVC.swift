@@ -479,6 +479,7 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
         return kFitWidth(37)
     }
 }
+
 extension ServiceContactVC: UIScrollViewDelegate {
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
