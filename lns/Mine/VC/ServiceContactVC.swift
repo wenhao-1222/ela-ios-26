@@ -40,6 +40,9 @@ class ServiceContactVC: WHBaseViewVC {
                        "suggestion":"\(UserInfoModel.shared.serviceResponce)"]
     
     let reachability = try! Reachability()
+    /// 当前是否应该自动保持在底部（用户没有往上滑）
+    private var shouldKeepAtBottom = true
+    private var pendingImageIndexPaths = Set<IndexPath>()
     
     enum MediaPickerType {
         case image
@@ -256,8 +259,14 @@ extension ServiceContactVC{
 //        self.judgeFirstMsgForToday()
         self.tableView.reloadData()
 //        DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
-            self.scrollToBottom(animated: animated)
+//            self.scrollToBottom(animated: animated)
 //        })
+        // 有新数据进来，默认保持在底部
+        shouldKeepAtBottom = true
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.layoutIfNeeded()
+            self?.scrollToBottom(animated: animated)
+        }
     }
     
     //校验是不是用户发的第一条信息，如果是，则插入自动回复消息
@@ -399,10 +408,27 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewImageCell") as? ServiceContactTableViewImageCell
                 cell?.updateUI(dict: dict)
                 
-                cell?.onImageLoaded = {()in
+                cell?.onImageLoaded = {[weak self, weak cell] in
 //                    self.tableView.reloadRows(at: [indexPath], with: .none)
-                    self.tableView.beginUpdates()
-                    self.tableView.endUpdates()
+                    
+                    guard let self = self,
+                          let cell = cell,
+                          let indexPath = tableView.indexPath(for: cell) else { return }
+
+                    // 如果正在滚动，先记下来；不立刻刷新
+                    if self.tableView.isDragging || self.tableView.isDecelerating {
+                        self.pendingImageIndexPaths.insert(indexPath)
+                        return
+                    }
+                    // 不在滚动时，直接更新这一行高度
+                    self.updateRowHeightForImages(at: [indexPath])
+//
+//                    UIView.performWithoutAnimation {
+//                        self.tableView.beginUpdates()
+//                        self.tableView.endUpdates()
+//                    }
+//                    // 2. 如果原本就在底部，就保持在底部
+//                   self.scrollToBottomIfNeeded(animated: false)
                 }
                 
                 cell?.imgTapBlock = {(image)in
@@ -418,6 +444,7 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
             }
         }
     }
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(37)))
         vi.backgroundColor = .clear
@@ -452,6 +479,55 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
         return kFitWidth(37)
     }
 }
+extension ServiceContactVC: UIScrollViewDelegate {
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        // 用户开始手动滑动，认为 TA 想看历史，不再强制滚到底
+        shouldKeepAtBottom = false
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView,
+                                  willDecelerate decelerate: Bool) {
+        if !decelerate {
+            applyPendingImageHeightUpdates()
+            checkIfBackToBottom()
+        }
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        applyPendingImageHeightUpdates()
+        checkIfBackToBottom()
+    }
+
+    private func checkIfBackToBottom(threshold: CGFloat = 30) {
+        let offsetY = tableView.contentOffset.y
+        let maxOffsetY = max(tableView.contentSize.height - tableView.bounds.height, 0)
+        // 距离底部在阈值内，就认为回到底部了，重新开启自动滚动
+        shouldKeepAtBottom = maxOffsetY - offsetY <= threshold
+    }
+    private func applyPendingImageHeightUpdates() {
+        guard !pendingImageIndexPaths.isEmpty else { return }
+        let indexPaths = Array(pendingImageIndexPaths)
+        pendingImageIndexPaths.removeAll()
+        updateRowHeightForImages(at: indexPaths)
+    }
+    private func scrollToBottomIfNeeded(animated: Bool = true) {
+        guard shouldKeepAtBottom else { return }   // 不打扰正在看历史的用户
+        scrollToBottom(animated: animated)
+    }
+    private func updateRowHeightForImages(at indexPaths: [IndexPath]) {
+        guard !indexPaths.isEmpty else { return }
+
+        UIView.performWithoutAnimation {
+             tableView.beginUpdates()
+             tableView.endUpdates()
+        }
+
+        // 若你有“保持底部”的逻辑，可以顺便调用：
+        scrollToBottomIfNeeded(animated: false)
+    }
+}
+
 
 extension ServiceContactVC{
     func sendMsgListRequest() {

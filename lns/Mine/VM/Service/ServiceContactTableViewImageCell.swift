@@ -11,7 +11,6 @@ import Kingfisher
 
 class ServiceContactTableViewImageCell: UITableViewCell {
     
-    var imgWidth = kFitWidth(112)
     var imgHeight = kFitWidth(241)
     var imgGap = kFitWidth(6)
     
@@ -78,12 +77,12 @@ extension ServiceContactTableViewImageCell{
 
         headImgView.snp.remakeConstraints { make in
             if isAdmin {
-                make.left.equalTo(kFitWidth(10))
+                make.left.equalTo(kFitWidth(16))
             } else {
-                make.right.equalTo(kFitWidth(-10))
+                make.right.equalTo(kFitWidth(-16))
             }
             make.top.equalTo(kFitWidth(5))
-            make.width.height.equalTo(kFitWidth(36))
+            make.width.height.equalTo(kFitWidth(38))
         }
         
         if imagesArr.count > 0 {
@@ -101,14 +100,14 @@ extension ServiceContactTableViewImageCell{
                     let imgOriSize = imgView.image?.size
 
                     var imgOriginW = imgHeight * ((imgOriSize?.width ?? 0) / (imgOriSize?.height ?? 1))
-                    if imgOriginW > SCREEN_WIDHT - kFitWidth(120){
-                        imgOriginW = SCREEN_WIDHT - kFitWidth(120)
+                    if imgOriginW > kFitWidth(250){//SCREEN_WIDHT - kFitWidth(120){
+                        imgOriginW = kFitWidth(250)//SCREEN_WIDHT - kFitWidth(120)
                         imgHeight = imgOriginW * ((imgOriSize?.height ?? 0) / (imgOriSize?.width ?? 1))
                     }
                     DispatchQueue.main.async {
                         if !isAdmin{
                             self.imgView.snp.remakeConstraints { make in
-                                make.right.equalTo(kFitWidth(-60))
+                                make.right.equalTo(kFitWidth(-65))
                                 make.top.equalTo(kFitWidth(10))
                                 make.width.equalTo(imgOriginW)
                                 make.height.equalTo(self.imgHeight)
@@ -116,7 +115,7 @@ extension ServiceContactTableViewImageCell{
                             }
                         }else{
                             self.imgView.snp.remakeConstraints { make in
-                                make.left.equalTo(kFitWidth(60))
+                                make.left.equalTo(kFitWidth(65))
                                 make.top.equalTo(kFitWidth(5))
                                 make.width.equalTo(imgOriginW)
                                 make.height.equalTo(self.imgHeight)

@@ -75,23 +75,17 @@ extension ServiceContactTableViewTextCell{
             font: UIFont.systemFont(ofSize: 14),
             height: kFitWidth(14)
         )
-
+        labelWidth = labelWidth + kFitWidth(8)
         // 限制最大/最小宽度
-        if labelWidth > kFitWidth(240) {
-            labelWidth = kFitWidth(240)
+        if labelWidth > kFitWidth(250) {
+            labelWidth = kFitWidth(258)
         } else if labelWidth < kFitWidth(30) {
             labelWidth = kFitWidth(30)
             textBottomGap = kFitWidth(-26)
         } else {
             textBottomGap = kFitWidth(-26)
         }
-
-        var labelHeight = msgString.mc_getHeight(font: msgLabel.font, width: labelWidth)
-
-        if labelHeight < kFitWidth(24) {
-            labelHeight = kFitWidth(24)
-        }
-
+        
         // 设置头像
         configureAvatar(isAdmin: isAdmin)
 
@@ -105,7 +99,7 @@ extension ServiceContactTableViewTextCell{
             }
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-                make.right.equalTo(headImgView.snp.left).offset(-kFitWidth(11))
+                make.right.equalTo(kFitWidth(-65))
                 make.bottom.equalTo(kFitWidth(-10))
                 make.width.equalTo(labelWidth)
             }
@@ -121,7 +115,7 @@ extension ServiceContactTableViewTextCell{
             }
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(11))
+                make.left.equalTo(kFitWidth(65))
                 make.bottom.equalTo(textBottomGap)
                 make.width.equalTo(labelWidth) // ←★ 关键修改
             }
@@ -133,10 +127,11 @@ extension ServiceContactTableViewTextCell{
         let attr = NSMutableAttributedString(string: msgString)
         if containsAddress {
             let range = (msgString as NSString).range(of: "收货地址")
-            attr.addAttribute(.foregroundColor, value: WHColor_16(colorStr: "007AFF"), range: range)
+            attr.addAttribute(.foregroundColor, value: UIColor.THEME, range: range)
+            msgLabel.attributedText = attr
+        }else{
+            msgLabel.text = msgString
         }
-        msgLabel.attributedText = attr
-
         // 点击事件
         msgLabel.isUserInteractionEnabled = hasAddressLink
         if hasAddressLink { addAddressTapGestureIfNeeded() }
