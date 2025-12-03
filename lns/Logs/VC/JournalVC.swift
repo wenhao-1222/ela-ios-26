@@ -429,6 +429,17 @@ class JournalVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var activityAlertVm: ActivityAlertVM = {
+        let vm = ActivityAlertVM.init(frame: .zero)
+        vm.controller = self
+        vm.pushBlock = {(target)in
+            guard let vc = self.createVCObjectFromString(className: target) else {
+                return
+            }
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        return vm
+    }()
 }
 
 extension JournalVC{
@@ -888,6 +899,7 @@ extension JournalVC{
             appDelegate.getKeyWindow().addSubview(self.dateFilterAlertVm)
             appDelegate.getKeyWindow().addSubview(self.addFoodsAlertVm)
             appDelegate.getKeyWindow().addSubview(self.notifiAuthoriAlertVm)
+            appDelegate.getKeyWindow().addSubview(self.activityAlertVm)
         })
     }
 }
@@ -1040,6 +1052,11 @@ extension JournalVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "getActivityListRequest:\(dataArray)")
+            
+            if dataArray.count > 0 {
+                let dict = dataArray[0]as? NSDictionary ?? [:]
+                self.activityAlertVm.updateUI(dict: dict)
+            }
         }
     }
     func sendOssStsRequest() {

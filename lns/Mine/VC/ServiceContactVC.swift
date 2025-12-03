@@ -126,6 +126,7 @@ class ServiceContactVC: WHBaseViewVC {
         vi.dataSource = self
         vi.register(ServiceContactTableViewTextCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewTextCell")
         vi.register(ServiceContactTableViewImageCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewImageCell")
+        vi.register(ServiceContactTableViewActivityCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewActivityCell")
         vi.register(ServiceContactTableViewVideoCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewVideoCell")
         vi.separatorStyle = .none
         vi.backgroundColor = .clear
@@ -139,6 +140,14 @@ class ServiceContactVC: WHBaseViewVC {
         }
         
         return vi
+    }()
+    lazy var activityAlertVm: ActivityAlertVM = {
+        let vm = ActivityAlertVM.init(frame: .zero)
+        vm.controller = self
+        vm.pushBlock = {(target)in
+            
+        }
+        return vm
     }()
 }
 
@@ -370,6 +379,8 @@ extension ServiceContactVC{
         view.addSubview(tableView)
         view.addSubview(msgInputView)
 //        self.tableView.layoutIfNeeded()
+        
+        view.addSubview(activityAlertVm)
         self.view.layoutIfNeeded()
     }
 }
@@ -394,6 +405,37 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
             cell?.updateUI(dict: dict)
             
             return cell ?? ServiceContactTableViewVideoCell()
+        }else if dict.stringValueForKey(key: "contentType") == "4"{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewActivityCell") as? ServiceContactTableViewActivityCell
+
+            cell?.updateUI(dict: dict)
+            cell?.onImageLoaded = {[weak self, weak cell] in
+                guard let self = self,
+                      let cell = cell,
+                      let indexPath = tableView.indexPath(for: cell) else { return }
+
+                // 如果正在滚动，先记下来；不立刻刷新
+                if self.tableView.isDragging || self.tableView.isDecelerating {
+                    self.pendingImageIndexPaths.insert(indexPath)
+                    return
+                }
+                // 不在滚动时，直接更新这一行高度
+                self.updateRowHeightForImages(at: [indexPath])
+            }
+            cell?.imgTapBlock = {()in
+                let imagesStr = dict.stringValueForKey(key: "images")
+                let images = WHUtils.getArrayFromJSONString(jsonString: imagesStr)
+                var imgUrl = images[0]as? String ?? ""
+                if images.count > 1 {
+                    imgUrl = images[1]as? String ?? ""
+                }
+                let dict = ["image":[imgUrl],
+                            "button":[["text":"关闭",
+                                       "iosTargetPage":""]]]
+                self.activityAlertVm.updateUI(dict: dict as NSDictionary)
+            }
+            
+            return cell ?? ServiceContactTableViewActivityCell()
         }else {
             if dict.stringValueForKey(key: "suggestion").count > 0{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewTextCell") as? ServiceContactTableViewTextCell
@@ -409,8 +451,6 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
                 cell?.updateUI(dict: dict)
                 
                 cell?.onImageLoaded = {[weak self, weak cell] in
-//                    self.tableView.reloadRows(at: [indexPath], with: .none)
-                    
                     guard let self = self,
                           let cell = cell,
                           let indexPath = tableView.indexPath(for: cell) else { return }
@@ -422,13 +462,6 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
                     }
                     // 不在滚动时，直接更新这一行高度
                     self.updateRowHeightForImages(at: [indexPath])
-//
-//                    UIView.performWithoutAnimation {
-//                        self.tableView.beginUpdates()
-//                        self.tableView.endUpdates()
-//                    }
-//                    // 2. 如果原本就在底部，就保持在底部
-//                   self.scrollToBottomIfNeeded(animated: false)
                 }
                 
                 cell?.imgTapBlock = {(image)in

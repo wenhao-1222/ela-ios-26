@@ -671,6 +671,8 @@
 		EC029B912EAA2F3A00834AD5 /* GradientGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B902EAA2F3A00834AD5 /* GradientGlassView.swift */; };
 		EC029B932EAA324E00834AD5 /* SegmentedLiquidDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B922EAA324E00834AD5 /* SegmentedLiquidDecorator.swift */; };
 		EC0518192EDFFBD4007747E0 /* ServiceContactTableViewImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0518182EDFFBD0007747E0 /* ServiceContactTableViewImageCell.swift */; };
+		EC05181B2EE01DD1007747E0 /* ActivityAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC05181A2EE01DCB007747E0 /* ActivityAlertVM.swift */; };
+		EC05181D2EE02AA3007747E0 /* ServiceContactTableViewActivityCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC05181C2EE02AA3007747E0 /* ServiceContactTableViewActivityCell.swift */; };
 		EC0623E42C478D18008230BA /* JournalBottomFuncAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0623E32C478D18008230BA /* JournalBottomFuncAlertVM.swift */; };
 		EC0623E62C47B7C0008230BA /* JournalFuncAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0623E52C47B7C0008230BA /* JournalFuncAlertVM.swift */; };
 		EC094FCC2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC094FCB2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift */; };
@@ -1952,6 +1954,8 @@
 		EC029B902EAA2F3A00834AD5 /* GradientGlassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientGlassView.swift; sourceTree = "<group>"; };
 		EC029B922EAA324E00834AD5 /* SegmentedLiquidDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedLiquidDecorator.swift; sourceTree = "<group>"; };
 		EC0518182EDFFBD0007747E0 /* ServiceContactTableViewImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContactTableViewImageCell.swift; sourceTree = "<group>"; };
+		EC05181A2EE01DCB007747E0 /* ActivityAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityAlertVM.swift; sourceTree = "<group>"; };
+		EC05181C2EE02AA3007747E0 /* ServiceContactTableViewActivityCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContactTableViewActivityCell.swift; sourceTree = "<group>"; };
 		EC0623E32C478D18008230BA /* JournalBottomFuncAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalBottomFuncAlertVM.swift; sourceTree = "<group>"; };
 		EC0623E52C47B7C0008230BA /* JournalFuncAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalFuncAlertVM.swift; sourceTree = "<group>"; };
 		EC094FCB2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSaveNutrationAlertVM.swift; sourceTree = "<group>"; };
@@ -4536,6 +4540,7 @@
 				ECC977B92C19C22600F7FAA6 /* ServiceInputVM.swift */,
 				ECC977BC2C19D55A00F7FAA6 /* ServiceContactTableViewTextCell.swift */,
 				EC0518182EDFFBD0007747E0 /* ServiceContactTableViewImageCell.swift */,
+				EC05181C2EE02AA3007747E0 /* ServiceContactTableViewActivityCell.swift */,
 				A773C22D2E84EB6600F1E3AA /* ServiceContactTableViewVideoCell.swift */,
 				A773C22F2E84EB7800F1E3AA /* ServiceVideoProgressRing.swift */,
 				ECC977BE2C19D5D400F7FAA6 /* ServiceContactTableViewImageViewCell.swift */,
@@ -4899,6 +4904,7 @@
 				EC9726212C5CA0BB00F244A2 /* WinnerStreakAlertVM.swift */,
 				A73207FA2DF97BE1000A807D /* NotifiAuthoriAlertVM.swift */,
 				A73207FC2DFA6F7C000A807D /* GuideAddFirstFoodsAlertVM.swift */,
+				EC05181A2EE01DCB007747E0 /* ActivityAlertVM.swift */,
 			);
 			path = VM;
 			sourceTree = "<group>";
@@ -5583,6 +5589,7 @@
 				A754BD8D2DA7ADCB000ACC79 /* PlayerContainerView.swift in Sources */,
 				A73323612D9244AB0065BF0A /* FoodsNewFuncVM.swift in Sources */,
 				ECD0FEED2BABD25B001232C9 /* LLMyTabbar.swift in Sources */,
+				EC05181B2EE01DD1007747E0 /* ActivityAlertVM.swift in Sources */,
 				EC24EB3B2BB25C58002F21DF /* QuestionnaireSurveyMsgVM.swift in Sources */,
 				A70A2FD32DCAF89F00F1E630 /* FPSLabel.swift in Sources */,
 				A778EEE92D87D535002548D4 /* FoodsMergeBottomVm.swift in Sources */,
@@ -6245,6 +6252,7 @@
 				EC9048832BBBE02F00F62262 /* QuestionCustomVC.swift in Sources */,
 				ECB6AEBD2BC66DF800F03567 /* MainHeightVM.swift in Sources */,
 				A751E1FA2E701C8C00AAD4DD /* MallSpecAlertVM.swift in Sources */,
+				EC05181D2EE02AA3007747E0 /* ServiceContactTableViewActivityCell.swift in Sources */,
 				EC4DE3292BD0EF580090A7BD /* DataDetailTableHeadVM.swift in Sources */,
 				A7801D1F2DE455EC002251D1 /* TenSecondCacheLoader.swift in Sources */,
 				EC2AC88C2C42BD1000A6C083 /* UITextField+Exs.swift in Sources */,
