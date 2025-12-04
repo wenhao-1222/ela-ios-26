@@ -91,8 +91,6 @@ extension ServiceContactTableViewImageCell{
                 guard let resourceUrl = URL(string: signUrl) else{
                     return
                 }
-                
-//                self.viewModules.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl))
                 let resource = KF.ImageResource(downloadURL: resourceUrl, cacheKey: imagesArr[0] as? String ?? "")
                 self.imgView.kf.setImage(with: resource,options: [.transition(.fade(0.2))]) { [self] result in
                     DLLog(message: "result:\(result)")

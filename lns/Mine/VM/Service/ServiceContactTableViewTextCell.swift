@@ -47,7 +47,7 @@ class ServiceContactTableViewTextCell: UITableViewCell {
         lab.lineBreakMode = .byWordWrapping
         lab.layer.cornerRadius = kFitWidth(12)
         lab.clipsToBounds = true
-        lab.textInsets = UIEdgeInsets(top: kFitWidth(6), left: kFitWidth(11), bottom: kFitWidth(10), right: kFitWidth(11))
+        lab.textInsets = UIEdgeInsets(top: kFitWidth(6), left: kFitWidth(11), bottom: kFitWidth(6), right: kFitWidth(11))
         lab.customLineHeight = lab.font.lineHeight * 1.2
         
         return lab
@@ -93,7 +93,8 @@ extension ServiceContactTableViewTextCell{
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
                 // 气泡紧挨头像左侧，留一点间距
-                make.right.equalTo(headImgView.snp.left).offset(-kFitWidth(8))
+//                make.right.equalTo(headImgView.snp.left).offset(-kFitWidth(8))
+                make.right.equalTo(kFitWidth(-62))
                 make.bottom.equalTo(-kFitWidth(10))
                 // ⭐ 这里用 equalTo，而不是 lessThanOrEqualTo
                 make.width.equalTo(bubbleWidth)
@@ -111,7 +112,8 @@ extension ServiceContactTableViewTextCell{
 
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(8))
+//                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(8))
+                make.left.equalTo(kFitWidth(62))
                 make.bottom.equalTo(-kFitWidth(10))
                 make.width.equalTo(bubbleWidth)
             }
@@ -252,10 +254,10 @@ private extension ServiceContactTableViewTextCell {
         let fittingSize = msgLabel.sizeThatFits(maxSize)
 
         // fittingSize.width 本身不会超过 maxBubbleWidth，再保护一下
-        let width = min(fittingSize.width, maxBubbleWidth)
+        let width = min(fittingSize.width + kFitWidth(1), maxBubbleWidth)
 
         // 可选：给个最小宽度，防止“牛头”两个字太窄
-        let minBubbleWidth = kFitWidth(40)
+        let minBubbleWidth = msgLabel.text?.count ?? 0 > 1 ? kFitWidth(50) : kFitWidth(30)
         return max(minBubbleWidth, width)
     }
 }

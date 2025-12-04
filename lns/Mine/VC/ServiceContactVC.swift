@@ -131,6 +131,7 @@ class ServiceContactVC: WHBaseViewVC {
         vi.separatorStyle = .none
         vi.backgroundColor = .clear
         vi.isHidden = true
+        vi.rowHeight = UITableView.automaticDimension
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenInputViewImg))
         vi.addGestureRecognizer(tap)
@@ -246,7 +247,7 @@ extension ServiceContactVC{
                                     "msgList":NSArray(array: sectionMsgArray)] as [String : Any]
                         dataArr.add(dictT)
                         sectionMsgArray.removeAllObjects()
-                        sectionMsgArray.add(defaultDict)
+//                        sectionMsgArray.add(defaultDict)//只有所有消息的第一条才插入欢迎语 2025年12月04日13:39:20
                         sectionMsgArray.add(dict)
                         firstCtime = msgCtime
                     }else{
@@ -254,7 +255,7 @@ extension ServiceContactVC{
                                     "msgList":NSArray(array: sectionMsgArray)] as [String : Any]
                         dataArr.add(dictT1)
                         sectionMsgArray.removeAllObjects()
-                        sectionMsgArray.add(defaultDict)
+//                        sectionMsgArray.add(defaultDict) //只有所有消息的第一条才插入欢迎语 2025年12月04日13:39:20
                         sectionMsgArray.add(dict)
                         
                         let dictT = ["date":"\(msgCtime)",
@@ -267,9 +268,6 @@ extension ServiceContactVC{
         self.dataSourceArrayForShow = NSMutableArray(array: dataArr)
 //        self.judgeFirstMsgForToday()
         self.tableView.reloadData()
-//        DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
-//            self.scrollToBottom(animated: animated)
-//        })
         // 有新数据进来，默认保持在底部
         shouldKeepAtBottom = true
         DispatchQueue.main.async { [weak self] in
@@ -415,10 +413,10 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
                       let indexPath = tableView.indexPath(for: cell) else { return }
 
                 // 如果正在滚动，先记下来；不立刻刷新
-                if self.tableView.isDragging || self.tableView.isDecelerating {
-                    self.pendingImageIndexPaths.insert(indexPath)
-                    return
-                }
+//                if self.tableView.isDragging || self.tableView.isDecelerating {
+//                    self.pendingImageIndexPaths.insert(indexPath)
+//                    return
+//                }
                 // 不在滚动时，直接更新这一行高度
                 self.updateRowHeightForImages(at: [indexPath])
             }
@@ -456,10 +454,10 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
                           let indexPath = tableView.indexPath(for: cell) else { return }
 
                     // 如果正在滚动，先记下来；不立刻刷新
-                    if self.tableView.isDragging || self.tableView.isDecelerating {
-                        self.pendingImageIndexPaths.insert(indexPath)
-                        return
-                    }
+//                    if self.tableView.isDragging || self.tableView.isDecelerating {
+//                        self.pendingImageIndexPaths.insert(indexPath)
+//                        return
+//                    }
                     // 不在滚动时，直接更新这一行高度
                     self.updateRowHeightForImages(at: [indexPath])
                 }
@@ -478,6 +476,9 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
         }
     }
 
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(37)))
         vi.backgroundColor = .clear
@@ -552,10 +553,10 @@ extension ServiceContactVC: UIScrollViewDelegate {
     private func updateRowHeightForImages(at indexPaths: [IndexPath]) {
         guard !indexPaths.isEmpty else { return }
 
-        UIView.performWithoutAnimation {
+//        UIView.performWithoutAnimation {
              tableView.beginUpdates()
              tableView.endUpdates()
-        }
+//        }
 
         // 若你有“保持底部”的逻辑，可以顺便调用：
         scrollToBottomIfNeeded(animated: false)
@@ -653,10 +654,10 @@ extension ServiceContactVC{
     }
     func sendAddressMsgRequest(model:AddressModel) {
         let text = model.provinceName + model.cityName + model.areaName + model.detailAddress + "\n" + model.contactName + "  " + model.contactPhone
-        var param = ["suggestion":text,
+        var param = ["suggestion":text.removingEmojiByRegex(),
                      "contentType": "1"]
         if self.relatedOrderId.count > 0 {
-            param = ["suggestion":text,
+            param = ["suggestion":text.removingEmojiByRegex(),
                      "bizType":"2",
                      "relatedOrderId":self.relatedOrderId,
                      "contentType": "1"]
@@ -667,12 +668,9 @@ extension ServiceContactVC{
             if (code == 200) {
                 let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
                             "ctime":"\(Date().currentSeconds)",
-                            "suggestion":"\(self.msgInputView.textView.text.disable_emoji(text: self.msgInputView.textView.text! as NSString))"]
+                            "suggestion":"\(text.removingEmojiByRegex())"]
                 self.dataSourceArray.add(dict)
                 self.dealDataSource()
-                
-                self.msgInputView.textView.text = ""
-                self.msgInputView.resetInputHeightToInitial()    // ← 复位高度
             }else{
                 MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试",offset:SCREEN_HEIGHT*0.6)
             }

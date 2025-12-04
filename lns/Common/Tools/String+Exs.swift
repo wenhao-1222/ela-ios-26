@@ -507,6 +507,7 @@ extension String{
 }
 
 extension String {
+    ///去除emoji表情
     func removingEmojiByRegex() -> String {
         do {
             let regex = try NSRegularExpression(
