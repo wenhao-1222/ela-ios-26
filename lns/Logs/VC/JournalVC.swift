@@ -749,6 +749,22 @@ extension JournalVC{
         
         self.present(alertVc, animated: true)
     }
+    func dealActivityDataArray(dataArray:NSArray) {
+        if dataArray.count > 0 {
+            let popupIdArray = UserDefaults.getActivityPopupIdRecord()
+            
+            for i in 0..<dataArray.count{
+                let dict = dataArray[i]as? NSDictionary ?? [:]
+                if popupIdArray.contains(dict.stringValueForKey(key: "popupId")) {
+                    continue
+                }else{
+                    self.activityAlertVm.updateUI(dict: dict)
+                    UserDefaults.setActivityPopupIdRecord(popupId: dict.stringValueForKey(key: "popupId"))
+                    return
+                }
+            }
+        }
+    }
 }
 
 extension JournalVC{
@@ -1053,10 +1069,8 @@ extension JournalVC{
             let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "getActivityListRequest:\(dataArray)")
             
-            if dataArray.count > 0 {
-                let dict = dataArray[0]as? NSDictionary ?? [:]
-                self.activityAlertVm.updateUI(dict: dict)
-            }
+            self.dealActivityDataArray(dataArray: dataArray)
+            
         }
     }
     func sendOssStsRequest() {

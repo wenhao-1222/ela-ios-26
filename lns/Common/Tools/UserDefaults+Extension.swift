@@ -46,6 +46,7 @@ public extension UserDefaults {
         case jounal_meal_advice//日志-下一餐饮食建议
         case fitness_label_array//训练部位数据
         case splash_material_list //启动页广告物料列表
+        case activity_popupId //本地弹出过的活动id
     }
 }
 
@@ -422,6 +423,17 @@ extension UserDefaults {
     static func getSplashMaterials() -> NSArray {
         let json = UserDefaults.getString(forKey: .splash_material_list) ?? ""
         return WHUtils.getArrayFromJSONString(jsonString: json)
+    }
+    static func setActivityPopupIdRecord(popupId:String){//默认值：200 350 550
+        let dataArr = NSMutableArray(array: self.getArray(forKey: .activity_popupId) ?? [])
+        if dataArr.contains(popupId){
+            return
+        }
+        dataArr.add(popupId)
+        UserDefaults.standard.set(dataArr, forKey: "activity_popupId")
+    }
+    static func getActivityPopupIdRecord() -> [String]{
+        return self.getArray(forKey: .activity_popupId) as? [String] ?? []
     }
 }
 
