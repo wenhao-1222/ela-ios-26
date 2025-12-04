@@ -46,6 +46,7 @@ class LineHeightLabel: UILabel {
             }
         }
     }
+    
 
     // MARK: - 样式处理
 
@@ -121,7 +122,12 @@ class LineHeightLabel: UILabel {
     override func layoutSubviews() {
         super.layoutSubviews()
         preferredMaxLayoutWidth = bounds.width - textInsets.left - textInsets.right
+//        if bounds.width > 0 {
+//            preferredMaxLayoutWidth = bounds.width - textInsets.left - textInsets.right
+//        }
     }
+    
+    
 }
 
 /*

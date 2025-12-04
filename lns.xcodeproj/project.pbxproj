@@ -685,6 +685,7 @@
 		EC14405C2C3E649100566E9F /* JournalShareTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC14405B2C3E649100566E9F /* JournalShareTopVM.swift */; };
 		EC14405E2C3E669500566E9F /* JournalShareDetailsContentVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC14405D2C3E669500566E9F /* JournalShareDetailsContentVM.swift */; };
 		EC16B4C52C6374B500DEDD25 /* WHLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC16B4C42C6374B500DEDD25 /* WHLoadingView.swift */; };
+		EC1CFB542EE12A96003E42DD /* InsetLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1CFB532EE12A95003E42DD /* InsetLabel.swift */; };
 		EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */; };
 		EC1EB5252BF72E3000537F0B /* PlanCreateSynDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5242BF72E3000537F0B /* PlanCreateSynDaysVM.swift */; };
 		EC1EB5272BFAED5400537F0B /* FoodsEstablishVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5262BFAED5400537F0B /* FoodsEstablishVC.swift */; };
@@ -1972,6 +1973,7 @@
 		EC14405B2C3E649100566E9F /* JournalShareTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalShareTopVM.swift; sourceTree = "<group>"; };
 		EC14405D2C3E669500566E9F /* JournalShareDetailsContentVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalShareDetailsContentVM.swift; sourceTree = "<group>"; };
 		EC16B4C42C6374B500DEDD25 /* WHLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHLoadingView.swift; sourceTree = "<group>"; };
+		EC1CFB532EE12A95003E42DD /* InsetLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetLabel.swift; sourceTree = "<group>"; };
 		EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynAlertVM.swift; sourceTree = "<group>"; };
 		EC1EB5242BF72E3000537F0B /* PlanCreateSynDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynDaysVM.swift; sourceTree = "<group>"; };
 		EC1EB5262BFAED5400537F0B /* FoodsEstablishVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsEstablishVC.swift; sourceTree = "<group>"; };
@@ -4538,6 +4540,7 @@
 				EC5328412BF5EF0B00C39C6A /* ServiceImgView.swift */,
 				EC5328432BF5FFAB00C39C6A /* ServiewImageView.swift */,
 				ECC977B92C19C22600F7FAA6 /* ServiceInputVM.swift */,
+				EC1CFB532EE12A95003E42DD /* InsetLabel.swift */,
 				ECC977BC2C19D55A00F7FAA6 /* ServiceContactTableViewTextCell.swift */,
 				EC0518182EDFFBD0007747E0 /* ServiceContactTableViewImageCell.swift */,
 				EC05181C2EE02AA3007747E0 /* ServiceContactTableViewActivityCell.swift */,
@@ -5999,6 +6002,7 @@
 				A7BAE5DC2D7EBCBF000A690A /* SynMyFoodsVM.swift in Sources */,
 				ECA278B92BF4BA4F00AEED64 /* BindOtherAccountVC.swift in Sources */,
 				A78E67C92CB64C3600B4C443 /* BodyDataImageCollectionCell.swift in Sources */,
+				EC1CFB542EE12A96003E42DD /* InsetLabel.swift in Sources */,
 				ECA1E2EC2C007B7E00C31B77 /* AESEncyptUtil.swift in Sources */,
 				ECB6AEB92BC6620500F03567 /* MainNutrientItemVM.swift in Sources */,
 				EC38DEA02BEF7503008E7FCE /* MaterialSexAlertVM.swift in Sources */,

@@ -570,7 +570,7 @@ extension ServiceContactVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArray = self.getArrayFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendMsgListRequest:\(dataArray)")
-            
+            DLLog(message: "sendMsgListRequest: ---  end")
             self.dataSourceArray.removeAllObjects()
             self.dataSourceArray.addObjects(from: dataArray as! [Any])
             self.dealDataSource(animated: true)

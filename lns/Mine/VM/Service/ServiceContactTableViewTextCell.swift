@@ -14,7 +14,7 @@ class ServiceContactTableViewTextCell: UITableViewCell {
     private var avatarRequestID = UUID()
     private var addressTapGesture: UITapGestureRecognizer?
     private var hasAddressLink = false
-
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         avatarRequestID = UUID()
@@ -57,86 +57,74 @@ class ServiceContactTableViewTextCell: UITableViewCell {
 extension ServiceContactTableViewTextCell{
     func updateUI(dict:NSDictionary) {
         self.updateTextContent(dict: dict)
-//        setNeedsLayout()
-//        layoutIfNeeded()
+        setNeedsLayout()
+        layoutIfNeeded()
     }
     func updateTextContent(dict:NSDictionary) {
-
         let msgString = "\(dict.stringValueForKey(key: "suggestion"))"
         let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
         let containsAddress = msgString.contains("收货地址")
         hasAddressLink = isAdmin && containsAddress
 
-        var textBottomGap = kFitWidth(-10)
-
-        // 计算文字宽度（不再额外加 6）
-        var labelWidth = WHUtils().getWidthOfString(
-            string: msgString,
-            font: UIFont.systemFont(ofSize: 14),
-            height: kFitWidth(14)
-        )
-        labelWidth = labelWidth + kFitWidth(8)
-        // 限制最大/最小宽度
-        if labelWidth > kFitWidth(250) {
-            labelWidth = kFitWidth(258)
-        } else if labelWidth < kFitWidth(30) {
-            labelWidth = kFitWidth(30)
-            textBottomGap = kFitWidth(-26)
-        } else {
-            textBottomGap = kFitWidth(-26)
-        }
-        
-        // 设置头像
+        // 头像
         configureAvatar(isAdmin: isAdmin)
 
-        // 头像 & 气泡布局
-        if !isAdmin {
-            // 右侧（用户）
+        // 先设置文本（很重要）
+        if containsAddress {
+            let attr = NSMutableAttributedString(string: msgString)
+            let range = (msgString as NSString).range(of: "收货地址")
+            attr.addAttribute(.foregroundColor, value: UIColor.THEME, range: range)
+            msgLabel.attributedText = attr
+        } else {
+            msgLabel.text = msgString
+        }
+
+        let maxBubbleWidth = kFitWidth(250)
+        // ⭐ 关键：根据当前这条消息内容，算出“应该有多宽”的气泡
+        let bubbleWidth = bubbleWidthForCurrentMessage(maxBubbleWidth: maxBubbleWidth)
+
+        if !isAdmin {    // 右侧（用户）
             headImgView.snp.remakeConstraints { make in
-                make.right.equalTo(kFitWidth(-16))
+                make.right.equalTo(-kFitWidth(16))
                 make.top.equalTo(msgLabel)
                 make.width.height.equalTo(kFitWidth(38))
             }
+
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-                make.right.equalTo(kFitWidth(-65))
-                make.bottom.equalTo(kFitWidth(-10))
-                make.width.equalTo(labelWidth)
+                // 气泡紧挨头像左侧，留一点间距
+                make.right.equalTo(headImgView.snp.left).offset(-kFitWidth(8))
+                make.bottom.equalTo(-kFitWidth(10))
+                // ⭐ 这里用 equalTo，而不是 lessThanOrEqualTo
+                make.width.equalTo(bubbleWidth)
             }
-            msgLabel.textAlignment = .right
+
+            msgLabel.textAlignment = .left
             msgLabel.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
 
-        } else {
-            // 左侧（管理员）
+        } else {         // 左侧（管理员）
             headImgView.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(16))
                 make.top.equalTo(msgLabel)
                 make.width.height.equalTo(kFitWidth(38))
             }
+
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-                make.left.equalTo(kFitWidth(65))
-                make.bottom.equalTo(textBottomGap)
-                make.width.equalTo(labelWidth) // ←★ 关键修改
+                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(8))
+                make.bottom.equalTo(-kFitWidth(10))
+                make.width.equalTo(bubbleWidth)
             }
+
             msgLabel.textAlignment = .left
             msgLabel.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.55)
         }
 
-        // 富文本（高亮“收货地址”）
-        let attr = NSMutableAttributedString(string: msgString)
-        if containsAddress {
-            let range = (msgString as NSString).range(of: "收货地址")
-            attr.addAttribute(.foregroundColor, value: UIColor.THEME, range: range)
-            msgLabel.attributedText = attr
-        }else{
-            msgLabel.text = msgString
-        }
-        // 点击事件
         msgLabel.isUserInteractionEnabled = hasAddressLink
         if hasAddressLink { addAddressTapGestureIfNeeded() }
         else { removeAddressTapGesture() }
     }
+
     @objc private func addressTapAction() {
           guard hasAddressLink else { return }
           addressTapBlock?()
@@ -161,6 +149,12 @@ extension ServiceContactTableViewTextCell{
     func initUI() {
         contentView.addSubview(headImgView)
         contentView.addSubview(msgLabel)
+        // 只控制竖直方向，让高度跟内容走
+        msgLabel.setContentHuggingPriority(.required, for: .vertical)
+        msgLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        
+//        msgLabel.setContentHuggingPriority(.required, for: .horizontal)
+//        msgLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 }
 
@@ -222,5 +216,46 @@ private extension ServiceContactTableViewTextCell {
         } else {
             headImgView.image = placeholder
         }
+    }
+}
+//private extension ServiceContactTableViewTextCell {
+//    /// 计算「单行」文字所需宽度（最长不超过 maxContentWidth）
+//    func bubbleWidth(for text: String, font: UIFont, maxBubbleWidth: CGFloat) -> CGFloat {
+//        // 去掉气泡内边距之后，文字能用的最大宽度
+//        let contentMaxWidth = maxBubbleWidth - msgLabel.textInsets.left - msgLabel.textInsets.right
+//        let maxSize = CGSize(width: contentMaxWidth, height: CGFloat.greatestFiniteMagnitude)
+//        
+//        let attr = NSAttributedString(string: text, attributes: [.font: font])
+//        var rect = attr.boundingRect(
+//            with: maxSize,
+//            options: [.usesLineFragmentOrigin, .usesFontLeading],
+//            context: nil
+//        )
+//        
+//        // 向上取整，避免小数导致布局误差
+//        rect.size.width = ceil(rect.size.width)
+//        
+//        // 最终气泡宽度 = 文字宽度 + 内边距，且不超过 maxBubbleWidth
+//        let bubbleWidth = rect.size.width + msgLabel.textInsets.left + msgLabel.textInsets.right
+//        return min(bubbleWidth, maxBubbleWidth)
+//    }
+//}
+
+private extension ServiceContactTableViewTextCell {
+
+    /// 微信式：最大宽度 maxBubbleWidth，不够就按实际宽度来
+    func bubbleWidthForCurrentMessage(maxBubbleWidth: CGFloat) -> CGFloat {
+        // 允许的最大宽度（包含 textInsets）
+        let maxSize = CGSize(width: maxBubbleWidth, height: .greatestFiniteMagnitude)
+
+        // 会调用你重写过的 sizeThatFits，里面已经考虑了 textInsets / customLineHeight
+        let fittingSize = msgLabel.sizeThatFits(maxSize)
+
+        // fittingSize.width 本身不会超过 maxBubbleWidth，再保护一下
+        let width = min(fittingSize.width, maxBubbleWidth)
+
+        // 可选：给个最小宽度，防止“牛头”两个字太窄
+        let minBubbleWidth = kFitWidth(40)
+        return max(minBubbleWidth, width)
     }
 }
