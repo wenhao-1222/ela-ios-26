@@ -221,9 +221,9 @@ extension ServiceContactVC{
     func dealDataSource(animated:Bool?=true){
         let dataArr = NSMutableArray()
         if self.dataSourceArray.count == 0 {
-            let dict = ["date":"\(Date().todayDate)",
-                        "msgList":[defaultDict]] as [String : Any]
-            dataArr.add(dict)
+//            let dict = ["date":"\(Date().todayDate)",
+//                        "msgList":[defaultDict]] as [String : Any]
+//            dataArr.add(dict)//不要欢迎语
         }else{
             let firstMsgDict = self.dataSourceArray[0]as? NSDictionary ?? [:]
             var firstCtime = firstMsgDict["ctime"]as? String ?? "\(Date().todayDate)"
@@ -231,7 +231,7 @@ extension ServiceContactVC{
             firstCtime = Date().changeDateFormatter(dateString: firstCtime, formatter: "yyyy-MM-dd HH:mm:ss", targetFormatter: "yyyy-MM-dd")
             
             let sectionMsgArray = NSMutableArray()
-            sectionMsgArray.add(defaultDict)
+//            sectionMsgArray.add(defaultDict)//不要欢迎语
             for i in 0..<self.dataSourceArray.count{
                 let dict = self.dataSourceArray[i]as? NSDictionary ?? [:]
                 var msgCtime = dict["ctime"]as? String ?? "\(Date().todayDate)"
