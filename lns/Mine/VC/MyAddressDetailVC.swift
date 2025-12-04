@@ -163,6 +163,7 @@ extension MyAddressDetailVC {
     func initUI() {
         if isUpdate { initNavi(titleStr: "修改地址") }
         else { initNavi(titleStr: "添加新地址") }
+        self.navigationView.backgroundColor = .COLOR_CARD_BG_WHITE
         view.backgroundColor = .COLOR_BG_F2
         view.addSubview(tableView)
         view.addSubview(bottomVm)

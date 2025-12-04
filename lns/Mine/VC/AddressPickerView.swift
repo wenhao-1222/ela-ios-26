@@ -33,18 +33,10 @@ class AddressPickerView: FeedBackView {
 
     public init(defaultAddress: AddressModel? = nil) {
         self.defaultAddress = defaultAddress
-//        super.init(nibName: nil, bundle: nil)
-//        modalPresentationStyle = .overFullScreen
-//        modalTransitionStyle = .crossDissolve
+        
         super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.isHidden = true
         self.backgroundColor = .clear
-//    }
-//    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-
-//    public override func viewDidLoad() {
-//        super.viewDidLoad()
-//        view.backgroundColor = UIColor.black.withAlphaComponent(0.45)
         do {
             try AddressDataLoader.shared.loadIfNeeded()
             provinces = AddressDataLoader.shared.provinces
@@ -57,15 +49,26 @@ class AddressPickerView: FeedBackView {
         pickerView.selectRow(provinceIndex, inComponent: 0, animated: false)
         pickerView.selectRow(cityIndex, inComponent: 1, animated: false)
         pickerView.selectRow(areaIndex, inComponent: 2, animated: false)
-//        animateIn()
     }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
+    
     private func applyDefaultSelection() {
-//        if let def = defaultAddress,
-//           let pIdx = provinces.firstIndex(where: { $0.code == def.provinceCode }) {
-//            provinceIndex = pIdx
-//        }
         guard !provinces.isEmpty else { return }
 
         if let def = defaultAddress {
@@ -77,10 +80,6 @@ class AddressPickerView: FeedBackView {
             }
         }
         cities = provinces[provinceIndex].children ?? []
-//        if let def = defaultAddress,
-//           let cIdx = cities.firstIndex(where: { $0.code == def.cityCode }) {
-//            cityIndex = cIdx
-//        }
         if let def = defaultAddress {
             if let cIdx = cities.firstIndex(where: { $0.code == def.cityCode }),
                !def.cityCode.isEmpty {
@@ -90,10 +89,6 @@ class AddressPickerView: FeedBackView {
             }
         }
         areas = cities[safe: cityIndex]?.children ?? []
-//        if let def = defaultAddress,
-//           let aIdx = areas.firstIndex(where: { $0.code == def.areaCode }) {
-//            areaIndex = aIdx
-//        }
         if let def = defaultAddress {
             if let aIdx = areas.firstIndex(where: { $0.code == def.areaCode }),
                !def.areaCode.isEmpty {
@@ -106,29 +101,29 @@ class AddressPickerView: FeedBackView {
 
     private func buildUI() {
         addSubview(bgView)
-        bgView.backgroundColor = UIColor.black.withAlphaComponent(0.15)
+        bgView.backgroundColor = .COLOR_ALERT_BG_BLACK//UIColor.black.withAlphaComponent(0.15)
         bgView.alpha = 0
         bgView.frame = bounds
         let tap = UITapGestureRecognizer(target: self, action: #selector(cancelTapped))
         bgView.addGestureRecognizer(tap)
         
-        containerView.backgroundColor = .white
+        containerView.backgroundColor = .COLOR_CARD_BG_WHITE
         containerView.layer.cornerRadius = 16
         if #available(iOS 11.0, *) {
             containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         }
         containerView.layer.masksToBounds = true
-//        view.addSubview(containerView)
+
         addSubview(containerView)
 
         titleLabel.text = "所在地区"
         titleLabel.font = .boldSystemFont(ofSize: 18)
-        titleLabel.textColor = .black
+        titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
 
         closeButton.setTitle("✕", for: .normal)
         closeButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-        closeButton.tintColor = .darkGray
-//        closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
+        closeButton.tintColor = .COLOR_TEXT_TITLE_0f1214_60
+
         closeButton.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
 
         pickerView.dataSource = self
@@ -139,7 +134,7 @@ class AddressPickerView: FeedBackView {
         ["省份","城市","区县"].forEach {
             let l = UILabel()
             l.text = $0
-            l.textColor = UIColor.darkGray
+            l.textColor = .COLOR_TEXT_TITLE_0f1214_60//UIColor.darkGray
             l.font = .systemFont(ofSize: 14, weight: .medium)
             l.textAlignment = .center
             headerStack.addArrangedSubview(l)
@@ -165,8 +160,6 @@ class AddressPickerView: FeedBackView {
 
     private func layoutUI() {
         containerView.snp.makeConstraints { make in
-//            make.left.equalTo(16); make.right.equalTo(-16)
-//            make.centerY.equalToSuperview()
             make.left.right.bottom.equalToSuperview()
         }
         titleLabel.snp.makeConstraints { make in
@@ -191,7 +184,6 @@ class AddressPickerView: FeedBackView {
             make.top.equalTo(pickerView.snp.bottom).offset(12)
             make.left.equalTo(16); make.right.equalTo(-16)
             make.height.equalTo(44)
-//            make.bottom.equalTo(-16)
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-16)
         }
     }
@@ -211,8 +203,6 @@ class AddressPickerView: FeedBackView {
     public func hide(completion: (() -> Void)? = nil) {
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
             self.bgView.alpha = 0
-//            self.containerView.alpha = 0
-//            self.containerView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
             self.containerView.transform = CGAffineTransform(translationX: 0, y: SCREEN_HEIGHT)
         } completion: { _ in
             self.isHidden = true
@@ -223,34 +213,14 @@ class AddressPickerView: FeedBackView {
 
 
     private func animateIn() {
-//        containerView.transform = CGAffineTransform(translationX: 0, y: 40)
         bgView.alpha = 0
         containerView.alpha = 1
-//        let h = containerView.bounds.height
-//        containerView.transform = CGAffineTransform(translationX: 0, y: h)
-////        containerView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-//        UIView.animate(withDuration: 0.45,
-//                       delay: 0.02,
-//                       usingSpringWithDamping: 0.88,
-//                       initialSpringVelocity: 0.1,
-//                       options: [.curveEaseOut, .allowUserInteraction]) {
-//            self.bgView.alpha = 0.45
-//            self.containerView.alpha = 1
-//            self.containerView.transform = .identity
-//        }
-//        UIView.animate(withDuration: 0.22, delay: 0, options: [.curveEaseOut]) {
-//            self.containerView.transform = .identity
-//            self.containerView.alpha = 1
-//        }
-//        view.layoutIfNeeded()
-//        let h = containerView.bounds.height
-//        containerView.transform = CGAffineTransform(translationX: 0, y: h)
         UIView.animate(withDuration: 0.45,
                        delay: 0,
                        usingSpringWithDamping: 0.88,
                        initialSpringVelocity: 0.1,
                        options: [.curveEaseOut]) {
-            self.bgView.alpha = 1
+            self.bgView.alpha = self.targetDimAlpha
             self.containerView.transform = CGAffineTransform(translationX: 0, y: -2)
         } completion: { _ in
             UIView.animate(withDuration: 0.25) {
@@ -258,11 +228,7 @@ class AddressPickerView: FeedBackView {
             }
         }
     }
-
-//    @objc private func closeTapped() {
-//        dismiss(animated: true) { [weak self] in self?.onCancel?() }
-//    }
-
+    
     @objc private func confirmTapped() {
         let p = provinces[provinceIndex]
         let c = cities[safe: cityIndex]
@@ -271,7 +237,7 @@ class AddressPickerView: FeedBackView {
         model.provinceCode = p.code; model.provinceName = p.name
         model.cityCode = c?.code ?? ""; model.cityName = c?.name ?? ""
         model.areaCode = a?.code ?? ""; model.areaName = a?.name ?? ""
-//        dismiss(animated: true) { [weak self] in self?.onConfirm?(model) }
+
         hide { [weak self] in self?.onConfirm?(model) }
     }
 }
@@ -284,12 +250,6 @@ extension AddressPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
     public func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
         pickerView.bounds.width / 3.0
     }
-//    public func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat { 36 }
-//    public func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-//        switch component { case 0: return provinces[row].name
-//        case 1: return cities[safe: row]?.name
-//        default: return areas[safe: row]?.name }
-//    }
     // 调高行高，给两行留空间
     public func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
         return 52 // 你也可以用 48~60 之间按需调整

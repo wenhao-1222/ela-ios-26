@@ -67,8 +67,18 @@ class ServiceInputVM: UIView {
         text.font = .systemFont(ofSize: 14, weight: .regular)
         text.textContainerInset = UIEdgeInsets(top: 6, left: 0, bottom: 6, right: 0)
         text.isScrollEnabled = false
+        text.addSubview(placeholderLabel)
         
         return text
+    }()
+    private lazy var placeholderLabel: UILabel = {
+        let label = UILabel()
+        label.text = "请输入您的问题"
+        label.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.isUserInteractionEnabled = false
+
+        return label
     }()
     lazy var addBgView: UIButton = {
         let img = UIButton()
@@ -258,7 +268,9 @@ extension ServiceInputVM{
         whiteView.addSubview(imgTapView)
         whiteView.addSubview(attachPanel)
         whiteView.addSubview(timeLabel)
-        
+        layoutPlaceholder()
+        updatePlaceholderVisibility()
+        resetInputHeightToInitial()
         addBgView.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-16))
             make.centerY.lessThanOrEqualTo(textView)
@@ -336,6 +348,8 @@ extension ServiceInputVM:UITextViewDelegate{
         let fitting = textView.sizeThatFits(CGSize(width: textView.bounds.width, height: .greatestFiniteMagnitude)).height
         let newH = max(minTextHeight, min(maxTextHeight, fitting))
 
+        updatePlaceholderVisibility()
+
         // 只有高度变化才调整
         let oldH = textView.frame.height
         guard abs(newH - oldH) > 0.5 else {
@@ -391,6 +405,7 @@ extension ServiceInputVM {
             var bg = self.textBgView.frame
             bg.size.height = targetTextH + kFitWidth(8)
             self.textBgView.frame = bg
+            self.textBgView.layer.cornerRadius = bg.size.height*0.5
 
             // whiteView（输入条容器）高度回到 base
             let oldBarH = self.whiteView.frame.height
@@ -405,5 +420,29 @@ extension ServiceInputVM {
             selfF.size.height = baseBarH + WHUtils().getBottomSafeAreaHeight()
             self.frame = selfF
         }
+        updatePlaceholderVisibility()
+    }
+    func setPlaceholder(_ text: String) {
+        placeholderLabel.text = text
+        layoutPlaceholder()
+        updatePlaceholderVisibility()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layoutPlaceholder()
+    }
+
+    private func layoutPlaceholder() {
+        let inset = textView.textContainerInset
+        let originX = inset.left + kFitWidth(4)
+        placeholderLabel.frame = CGRect(x: originX,
+                                         y: inset.top,
+                                         width: textView.bounds.width - originX - inset.right,
+                                         height: lineH)
+    }
+
+    private func updatePlaceholderVisibility() {
+        placeholderLabel.isHidden = !(textView.text?.isEmpty ?? true)
     }
 }

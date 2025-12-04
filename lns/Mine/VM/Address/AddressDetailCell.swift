@@ -18,7 +18,7 @@ class AddressDetailCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .COLOR_CARD_BG_WHITE
         initUI()
         //监听textField内容改变通知
         NotificationCenter.default.addObserver(self,

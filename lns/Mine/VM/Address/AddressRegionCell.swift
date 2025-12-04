@@ -31,21 +31,21 @@ final class AddressRegionCell: UITableViewCell {
 
     private let chevronBtn: UIButton = {
         let b = UIButton()
-        b.setImage(UIImage(named: "mall_spec_arrow_down_icon"), for: .normal)
+        b.setImage(UIImage(named: "mall_spec_arrow_down_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
 
         return b
     }()
 
     private let lineView: UIView = {
         let v = UIView()
-        v.backgroundColor = .COLOR_BG_F5
+        v.backgroundColor = .COLOR_LINE_F0
         return v
     }()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .COLOR_CARD_BG_WHITE
         contentView.addSubview(leftTitleLabel)
         contentView.addSubview(valueLabel)
         contentView.addSubview(chevronBtn)

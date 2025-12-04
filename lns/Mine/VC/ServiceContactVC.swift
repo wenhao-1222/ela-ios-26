@@ -91,6 +91,7 @@ class ServiceContactVC: WHBaseViewVC {
     }()
     lazy var msgInputView: ServiceInputVM = {
         let vi = ServiceInputVM.init(frame: .zero)
+        vi.setPlaceholder("请输入你的问题或建议")
         
         if self.relatedOrderId.count > 0{
             vi.cameraButton.isHidden = false

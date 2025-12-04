@@ -27,6 +27,7 @@ final class AddressDetailTextViewCell: UITableViewCell, UITextViewDelegate {
         tv.textContainerInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         tv.isScrollEnabled = false
         tv.returnKeyType = .default
+        tv.backgroundColor = .COLOR_CARD_BG_WHITE
         return tv
     }()
 
@@ -40,7 +41,7 @@ final class AddressDetailTextViewCell: UITableViewCell, UITextViewDelegate {
 
     private let lineView: UIView = {
         let v = UIView()
-        v.backgroundColor = .COLOR_BG_F5
+        v.backgroundColor = .COLOR_LINE_F0
         return v
     }()
 
@@ -50,7 +51,7 @@ final class AddressDetailTextViewCell: UITableViewCell, UITextViewDelegate {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .COLOR_CARD_BG_WHITE
         contentView.addSubview(leftTitleLabel)
         contentView.addSubview(textView)
         contentView.addSubview(placeholder)
@@ -103,44 +104,22 @@ final class AddressDetailTextViewCell: UITableViewCell, UITextViewDelegate {
             tableView.endUpdates()
         }
     }
-//        limitToMaxLines(textView)
-//    }
-//
-//    func textView(_ textView: UITextView,
-//                  shouldChangeTextIn range: NSRange,
-//                  replacementText text: String) -> Bool {
-//        // 预测输入后高度
-//        let current = textView.text ?? ""
-//        guard let r = Range(range, in: current) else { return true }
-//        let newText = current.replacingCharacters(in: r, with: text)
-//
-//        // 允许删除
-//        if text.isEmpty { return true }
-//
-//        // 计算行数（根据容器宽度和字体）
-//        let numberOfLines = numberOfLinesFor(text: newText, in: textView)
-//        if numberOfLines > maxLines { return false }
-//        return true
-//    }
-
-//    private func numberOfLinesFor(text: String, in textView: UITextView) -> Int {
-//        let width = textView.bounds.width - textView.textContainerInset.left - textView.textContainerInset.right - 2
-//        let size = CGSize(width: max(10, width), height: .greatestFiniteMagnitude)
-//        let rect = (text as NSString).boundingRect(
-//            with: size,
-//            options: [.usesLineFragmentOrigin, .usesFontLeading],
-//            attributes: [.font: textView.font ?? .systemFont(ofSize: 14)],
-//            context: nil)
-//        let lineHeight = (textView.font ?? .systemFont(ofSize: 14)).lineHeight
-//        return Int(ceil(rect.height / lineHeight))
-//    }
-
-//    private func limitToMaxLines(_ textView: UITextView) {
-//        while numberOfLinesFor(text: textView.text, in: textView) > maxLines {
-//            textView.text = String(textView.text.dropLast())
-//        }
-//        onTextChanged?(textView.text)
-//    }
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if text.isEmpty { return true }
+        if text.isNineKeyBoard() {
+            return true
+        }else{
+            if text.hasEmoji(){
+                return false
+            }
+        }
+        return true
+    }
+    private func containsEmoji(_ text: String) -> Bool {
+        return text.unicodeScalars.contains { scalar in
+            scalar.properties.isEmojiPresentation || (scalar.properties.isEmoji && scalar.value > 0x238C)
+        }
+    }
     private func findTableView() -> UITableView? {
         var view = superview
         while view != nil {
