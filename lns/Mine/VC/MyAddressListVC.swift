@@ -15,6 +15,8 @@ class MyAddressListVC: WHBaseViewVC {
     var deleteAddressBlock:((String)->())?
     var updateAddressBlock:((AddressModel)->())?
     
+    var isFromService = false///是否从联系我们过来
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         sendAddressListRequest()
@@ -62,6 +64,7 @@ class MyAddressListVC: WHBaseViewVC {
 extension MyAddressListVC{
     @objc func addButtonAction(){
         let vc = MyAddressDetailVC()
+        vc.isFromService = self.isFromService
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

@@ -10,6 +10,7 @@ import UIKit
 class MyAddressDetailVC: WHBaseViewVC {
 
     var isUpdate = false
+    var isFromService = false///是否从联系我们过来
 
     // 选中的地址与详细地址缓存
     var addressModel = AddressModel()
@@ -180,10 +181,7 @@ extension MyAddressDetailVC {
     private func updateAddButtonState() {
         let hasName = !addressModel.contactName.isEmpty
         let phoneValid = judgePhoneNumber(phoneNum: addressModel.contactPhone)
-        let hasRegion = !addressModel.provinceName.isEmpty 
-//        let hasRegion = !addressModel.provinceCode.isEmpty &&
-//                        !addressModel.cityCode.isEmpty &&
-//                        !addressModel.areaCode.isEmpty
+        let hasRegion = !addressModel.provinceName.isEmpty
         let hasDetail = !addressModel.detailAddress.isEmpty
         bottomVm.addButton.isEnabled = hasName && phoneValid && hasRegion && hasDetail
     }
@@ -213,6 +211,16 @@ extension MyAddressDetailVC {
         WHNetworkUtil.shareManager().POST(urlString: URL_user_address_addOrUpdate, parameters: param as [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
             if self.isUpdate{
                 self.updateBlock?(self.addressModel)
+            }else if self.isFromService{
+                UserInfoModel.shared.addressModel = self.addressModel
+                NotificationCenter.default.post(name: NOTIFI_NAME_ADD_ADDRESS, object: nil)
+                if let nav = self.navigationController {
+                    var controllers = nav.viewControllers
+                    if let index = controllers.firstIndex(where: { $0 is MyAddressListVC }){
+                        controllers.remove(at: index)
+                        nav.viewControllers = controllers
+                    }
+                }
             }
             self.backTapAction()
         }

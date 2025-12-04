@@ -165,6 +165,8 @@ class UserInfoModel {
     var isAllowedPosterForum = false
     
     var abTestModel = ABTESTMODEL()
+    
+    var addressModel = AddressModel()
 }
 
 extension UserInfoModel{

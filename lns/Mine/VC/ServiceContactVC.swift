@@ -71,6 +71,7 @@ class ServiceContactVC: WHBaseViewVC {
         checkNetWork()
 //        sendOssStsRequest()
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "serviceMsgRead"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(addressNotifiAction(notify: )), name: NOTIFI_NAME_ADD_ADDRESS, object: nil)
         
         if let nav = navigationController {
             var controllers = nav.viewControllers
@@ -153,6 +154,9 @@ class ServiceContactVC: WHBaseViewVC {
 }
 
 extension ServiceContactVC{
+    @objc func addressNotifiAction(notify:Notification) {
+        self.sendAddressMsgRequest(model: UserInfoModel.shared.addressModel)
+    }
     @objc func hiddenInputViewImg() {
         self.msgInputView.textView.resignFirstResponder()
         self.msgInputView.toggleAttachPanel(show: false)
@@ -360,6 +364,7 @@ extension ServiceContactVC{
     func openAddressList() {
        let vc = MyAddressListVC()
 //       vc.hidesBottomBarWhenPushed = true
+        vc.isFromService = true
        self.navigationController?.pushViewController(vc, animated: true)
         
         vc.onSelectAddress = {(model)in
@@ -653,7 +658,7 @@ extension ServiceContactVC{
         }
     }
     func sendAddressMsgRequest(model:AddressModel) {
-        let text = model.provinceName + model.cityName + model.areaName + model.detailAddress + "\n" + model.contactName + "  " + model.contactPhone
+        let text = model.provinceName + model.cityName + model.areaName + model.detailAddress + "\n收件人：" + model.contactName + "\n联系电话：" + model.contactPhone
         var param = ["suggestion":text.removingEmojiByRegex(),
                      "contentType": "1"]
         if self.relatedOrderId.count > 0 {
