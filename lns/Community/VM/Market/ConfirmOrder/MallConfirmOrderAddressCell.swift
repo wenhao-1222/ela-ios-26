@@ -19,14 +19,13 @@ class MallConfirmOrderAddressCell: UITableViewCell {
     }
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()
     lazy var addressIcon: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "mall_order_address_icon")
-        
         
         return img
     }()
@@ -43,7 +42,7 @@ class MallConfirmOrderAddressCell: UITableViewCell {
     }()
     lazy var arrowImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "mine_func_arrow_icon")
+        img.setImgLocal(imgName: "plan_arrow_gray")
         img.isUserInteractionEnabled = true
         
         return img

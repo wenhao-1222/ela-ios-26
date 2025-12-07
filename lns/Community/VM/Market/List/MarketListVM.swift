@@ -52,7 +52,7 @@ class MarketListVM : UIView{
 //        let vi = JournalCollectionView.init(frame: CGRect.init(x: kFitWidth(9), y: 0, width: SCREEN_WIDHT-kFitWidth(29), height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()), collectionViewLayout: layout)
         
         vi.collectionViewLayout = layout
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.showsVerticalScrollIndicator = false
         
         vi.register(MarketListGridCell.classForCoder(), forCellWithReuseIdentifier: "MarketListGridCell")

@@ -93,7 +93,7 @@ class MallDetailVC: WHBaseViewVC {
         vi.dataSource = self
         vi.showsVerticalScrollIndicator = false
         vi.rowHeight = UITableView.automaticDimension
-        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.register(MallDetailTextCell.self, forCellReuseIdentifier: "MallDetailTextCell")
         vi.register(MallDetailImageCell.self, forCellReuseIdentifier: "MallDetailImageCell")
         vi.register(MallDetailSpecChangeCell.self, forCellReuseIdentifier: "MallDetailSpecChangeCell")
@@ -126,33 +126,38 @@ class MallDetailVC: WHBaseViewVC {
         }
         return vm
     }()
-    lazy var buyButton: UIButton = {
-        let btn = UIButton()
-        if self.getBottomSafeAreaHeight() > 0 {
-            btn.frame = CGRect.init(x: kFitWidth(22), y: SCREEN_HEIGHT - self.getBottomSafeAreaHeight() - kFitWidth(48), width: SCREEN_WIDHT-kFitWidth(44), height: kFitWidth(48))
-        }else{
-            btn.frame = CGRect.init(x: kFitWidth(22), y: SCREEN_HEIGHT - kFitWidth(10) - kFitWidth(48), width: SCREEN_WIDHT-kFitWidth(44), height: kFitWidth(48))
-        }
-        
-        btn.enablePressEffect()
-//        btn.backgroundColor = .THEME
-        btn.setTitle("立即购买", for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
-        btn.titleLabel?.numberOfLines = 2
-        btn.titleLabel?.lineBreakMode = .byWordWrapping
-        btn.titleLabel?.textAlignment = .center
-        btn.setTitleColor(.COLOR_BG_WHITE, for: .normal)
-        btn.layer.cornerRadius = kFitWidth(24)
-        btn.clipsToBounds = true
-        btn.alpha = 0
-        
-        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-        btn.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_C4C4C4), for: .disabled)
-        
-        btn.addTarget(self, action: #selector(buyAction), for: .touchUpInside)
-        
-        return btn
+    lazy var bottomFuncVm: MallDetailBottomFuncVM = {
+        let vm = MallDetailBottomFuncVM.init(frame: .zero)
+        vm.buyButton.addTarget(self, action: #selector(buyAction), for: .touchUpInside)
+        return vm
     }()
+//    lazy var buyButton: UIButton = {
+//        let btn = UIButton()
+//        if self.getBottomSafeAreaHeight() > 0 {
+//            btn.frame = CGRect.init(x: kFitWidth(22), y: SCREEN_HEIGHT - self.getBottomSafeAreaHeight() - kFitWidth(48), width: SCREEN_WIDHT-kFitWidth(44), height: kFitWidth(48))
+//        }else{
+//            btn.frame = CGRect.init(x: kFitWidth(22), y: SCREEN_HEIGHT - kFitWidth(10) - kFitWidth(48), width: SCREEN_WIDHT-kFitWidth(44), height: kFitWidth(48))
+//        }
+//        
+//        btn.enablePressEffect()
+////        btn.backgroundColor = .THEME
+//        btn.setTitle("立即购买", for: .normal)
+//        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
+//        btn.titleLabel?.numberOfLines = 2
+//        btn.titleLabel?.lineBreakMode = .byWordWrapping
+//        btn.titleLabel?.textAlignment = .center
+//        btn.setTitleColor(.COLOR_BG_WHITE, for: .normal)
+//        btn.layer.cornerRadius = kFitWidth(24)
+//        btn.clipsToBounds = true
+//        btn.alpha = 0
+//        
+//        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
+//        btn.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_C4C4C4), for: .disabled)
+//        
+//        btn.addTarget(self, action: #selector(buyAction), for: .touchUpInside)
+//        
+//        return btn
+//    }()
     lazy var specAlertVm: MallSpecAlertVM = {
         let vm = MallSpecAlertVM.init(frame: .zero)
         vm.selectSpecBlock = { [weak self] specId, specValueId,specValue in
@@ -350,7 +355,8 @@ extension MallDetailVC:UITableViewDelegate,UITableViewDataSource{
 extension MallDetailVC{
     func initUI() {
         view.addSubview(naviVm)
-        view.addSubview(buyButton)
+//        view.addSubview(buyButton)
+        view.addSubview(bottomFuncVm)
         view.insertSubview(tableView, belowSubview: naviVm)
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -448,28 +454,30 @@ extension MallDetailVC{
     }
     
     func updateButtonStatus() {
-        buyButton.setTitle(self.detailModel.buyButtonText, for: .normal)
-        buyButton.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-        switch self.detailModel.buyButtonStatus{
-        case .sale_pre_no_stoke :
-            buyButton.isEnabled = false
-        case .sale_pre:
-            let attr = NSMutableAttributedString(string: detailModel.buyButtonText)
-            let timeAttr = NSMutableAttributedString(string: "\n \(detailModel.deliveryNotice)")
-            attr.yy_font = .systemFont(ofSize: 16, weight: .regular)
-            timeAttr.yy_font = .systemFont(ofSize: 12, weight: .regular)
-            attr.append(timeAttr)
-            buyButton.setAttributedTitle(attr, for: .normal)
-//            buyButton.titleLabel?.attributedText = attr
-//            buyButton.setTitle("\(detailModel.buyButtonText) \n \(detailModel.deliveryNotice)", for: .normal)
-        case .sale_remind, .sale_normal,.sale_no_stoke:
-            break
-        case .sale_no_stoke_subscribe,.sale_remind_subscribe:
-            buyButton.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_C4C4C4), for: .normal)
-        }
-        UIView.animate(withDuration: 0.15, animations: {
-            self.buyButton.alpha = 1
-        })
+        self.bottomFuncVm.detailModel = self.detailModel
+        self.bottomFuncVm.updateButtonStatus()
+//        buyButton.setTitle(self.detailModel.buyButtonText, for: .normal)
+//        buyButton.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
+//        switch self.detailModel.buyButtonStatus{
+//        case .sale_pre_no_stoke :
+//            buyButton.isEnabled = false
+//        case .sale_pre:
+//            let attr = NSMutableAttributedString(string: detailModel.buyButtonText)
+//            let timeAttr = NSMutableAttributedString(string: "\n \(detailModel.deliveryNotice)")
+//            attr.yy_font = .systemFont(ofSize: 16, weight: .regular)
+//            timeAttr.yy_font = .systemFont(ofSize: 12, weight: .regular)
+//            attr.append(timeAttr)
+//            buyButton.setAttributedTitle(attr, for: .normal)
+////            buyButton.titleLabel?.attributedText = attr
+////            buyButton.setTitle("\(detailModel.buyButtonText) \n \(detailModel.deliveryNotice)", for: .normal)
+//        case .sale_remind, .sale_normal,.sale_no_stoke:
+//            break
+//        case .sale_no_stoke_subscribe,.sale_remind_subscribe:
+//            buyButton.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_C4C4C4), for: .normal)
+//        }
+//        UIView.animate(withDuration: 0.15, animations: {
+//            self.buyButton.alpha = 1
+//        })
     }
 }
 

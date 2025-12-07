@@ -15,6 +15,7 @@ class MallConfirmOrderMsgCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.selectionStyle = .none
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         initUI()
     }
     lazy var imgView : UIImageView = {

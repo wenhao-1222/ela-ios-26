@@ -58,7 +58,7 @@ class MallSpecAlertBottomVM : UIView{
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F2
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
     lazy var buyButton: UIButton = {

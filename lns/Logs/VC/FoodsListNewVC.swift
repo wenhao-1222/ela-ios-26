@@ -70,7 +70,7 @@ class FoodsListNewVC: WHBaseViewVC {
             if self.topTypeVM.foodsType == "all"{
                 self.isSearch = searchString?.count ?? 0 > 0 ? true : false
             }
-            self.showFoodsListVm(foodsType: "\(self.topTypeVM.foodsType)",keywords:"\(searchString ?? "")")
+            self.showFoodsListVm(foodsType: "\(self.topTypeVM.foodsType)",keywords:"\(self.naviVm.textField.text ?? "")")
             self.moveHistory(isTop: searchString?.count ?? 0 > 0 ? true : false)
         }
         vm.searchHistoryBlock = {()in
@@ -92,7 +92,7 @@ class FoodsListNewVC: WHBaseViewVC {
             
             let searchString = self.naviVm.textField.text?.replacingOccurrences(of: " ", with: "")
             self.isSearch = searchString?.count ?? 0 > 0 ? true : false
-            self.showFoodsListVm(foodsType: "all",keywords:searchString ?? "")
+            self.showFoodsListVm(foodsType: "all",keywords:self.naviVm.textField.text ?? "")
             self.moveHistory(isTop: searchString?.count ?? 0 > 0 ? true : false)
             self.createVm.refreshButton(type: .all, isFromMain: self.isFromMain)
             
@@ -102,7 +102,7 @@ class FoodsListNewVC: WHBaseViewVC {
             self.isSearch = true
 
             let searchString = self.naviVm.textField.text?.replacingOccurrences(of: " ", with: "")
-            self.showFoodsListVm(foodsType: "my",keywords:searchString ?? "")
+            self.showFoodsListVm(foodsType: "my",keywords:self.naviVm.textField.text ?? "")
             self.moveHistory(isTop: searchString?.count ?? 0 > 0 ? true : false)
             
             if self.sourceType == .merge{
@@ -120,7 +120,7 @@ class FoodsListNewVC: WHBaseViewVC {
             self.naviVm.textField.resignFirstResponder()
             self.isSearch = true
             let searchString = self.naviVm.textField.text?.replacingOccurrences(of: " ", with: "")
-            self.showFoodsListVm(foodsType: "meals",keywords:searchString ?? "")
+            self.showFoodsListVm(foodsType: "meals",keywords:self.naviVm.textField.text ?? "")
             self.moveHistory(isTop: searchString?.count ?? 0 > 0 ? true : false)
             self.createVm.refreshButton(type: .meal, isFromMain: self.isFromMain)
 //            self.createVm.refreshButtonStatus(isMeals: true)
@@ -389,33 +389,69 @@ extension FoodsListNewVC{
         }
         applyFadeTransition(from: currentView, to: targetView)
     }
-    
     private func applyFadeTransition(from current:UIView?, to target:UIView?) {
-        if current === target {
-            target?.isHidden = false
-            target?.alpha = 1.0
+        let views = [historyFoodsVm, allFoodsVm, myFoodsVm, mealsVm]
+
+        // 万一传进来是 nil，强制兜底：显示 historyFoodsVm
+        guard let target = target else {
+            views.forEach { view in
+                view.isHidden = true
+                view.alpha = 0
+            }
+            historyFoodsVm.isHidden = false
+            historyFoodsVm.alpha = 1
             return
         }
-        let views = [historyFoodsVm, allFoodsVm, myFoodsVm, mealsVm]
+
+        // 1. 先确定显隐：只有 target 显示，其它全部隐藏
         views.forEach { view in
             if view === target {
-                view.alpha = 0
                 view.isHidden = false
-                UIView.animate(withDuration: 0.25) {
-                    view.alpha = 1.0
-                }
-            } else if view === current {
-                UIView.animate(withDuration: 0.25, animations: {
-                    view.alpha = 0
-                }) { _ in
-                    view.isHidden = true
-                }
             } else {
                 view.isHidden = true
                 view.alpha = 0
             }
         }
+
+        // 2. 如果 target 本来就完全显示，就不重复动画
+        if target.alpha == 1.0 {
+            return
+        }
+
+        // 3. 做一个简单的淡入动画（只改 alpha，不在 completion 里做任何事）
+        target.alpha = 0
+        UIView.animate(withDuration: 0.25) {
+            target.alpha = 1.0
+        }
     }
+
+
+//    private func applyFadeTransition(from current:UIView?, to target:UIView?) {
+//        if current === target {
+//            target?.isHidden = false
+//            target?.alpha = 1.0
+//            return
+//        }
+//        let views = [historyFoodsVm, allFoodsVm, myFoodsVm, mealsVm]
+//        views.forEach { view in
+//            if view === target {
+//                view.alpha = 0
+//                view.isHidden = false
+//                UIView.animate(withDuration: 0.25) {
+//                    view.alpha = 1.0
+//                }
+//            } else if view === current {
+//                UIView.animate(withDuration: 0.25, animations: {
+//                    view.alpha = 0
+//                }) { _ in
+//                    view.isHidden = true
+//                }
+//            } else {
+//                view.isHidden = true
+//                view.alpha = 0
+//            }
+//        }
+//    }
 }
 
 extension FoodsListNewVC{
@@ -434,5 +470,16 @@ extension FoodsListNewVC{
         }
         let createBtnFrame = self.createVm.createFoodsButton.frame
         self.noFoodsCreateAlertVm.createFoodsButton.frame = CGRect.init(origin: CGPoint.init(x: createBtnFrame.origin.x, y: createBtnFrame.origin.y+self.createVm.frame.minY), size: createBtnFrame.size)
+        
+        // ⬇️⬇️ 明确初始状态：只显示 historyFoodsVm
+        historyFoodsVm.isHidden = false
+        historyFoodsVm.alpha = 1
+
+        allFoodsVm.isHidden = true
+        allFoodsVm.alpha = 0
+        myFoodsVm.isHidden = true
+        myFoodsVm.alpha = 0
+        mealsVm.isHidden = true
+        mealsVm.alpha = 0
     }
 }

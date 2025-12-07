@@ -60,7 +60,7 @@ class MallOrderCreateVC: WHBaseViewVC {
         vi.dataSource = self
         vi.showsVerticalScrollIndicator = false
         vi.rowHeight = UITableView.automaticDimension
-        vi.backgroundColor = .COLOR_BG_F2
+        vi.backgroundColor = .COLOR_BG_WHITE
         vi.contentInsetAdjustmentBehavior = .never
         vi.register(MallConfirmOrderMsgCell.classForCoder(), forCellReuseIdentifier: "MallConfirmOrderMsgCell")
         vi.register(MallConfirmOrderAddressCell.classForCoder(), forCellReuseIdentifier: "MallConfirmOrderAddressCell")

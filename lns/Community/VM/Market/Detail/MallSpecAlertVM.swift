@@ -19,7 +19,21 @@ class MallSpecAlertVM: UIView {
     var groups : [SpecGroup] = [SpecGroup]()
     var selectedPairs: [(groupId: String, itemId: String,itemName:String)] = []
     var selectSpecBlock: ((String, String,String) -> Void)?
-    
+    /// 蒙层目标透明度：浅色 0.15，深色 0.85
+    private var targetDimAlpha: CGFloat {
+        return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+    }
+    // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
+   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+       super.traitCollectionDidChange(previousTraitCollection)
+       if #available(iOS 13.0, *),
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
+          !isHidden {
+           UIView.animate(withDuration: 0.2) {
+               self.bgView.alpha = self.targetDimAlpha
+           }
+       }
+   }
     // MARK: - Life cycle
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -37,7 +51,7 @@ class MallSpecAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenSelf))
         v.addGestureRecognizer(tap)
@@ -46,7 +60,7 @@ class MallSpecAlertVM: UIView {
     
     private lazy var whiteView: UIView = {
         let vi = UIView(frame: CGRect(x: 0, y: SCREEN_HEIGHT - whiteViewHeight, width: SCREEN_WIDHT, height: whiteViewHeight))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = whiteViewTopRadius
         if #available(iOS 13.0, *) { vi.layer.cornerCurve = .continuous }
         vi.layer.masksToBounds = true
@@ -69,7 +83,7 @@ class MallSpecAlertVM: UIView {
     private lazy var scrollView: UIScrollView = {
         let sc = UIScrollView()
         sc.showsVerticalScrollIndicator = false
-        sc.backgroundColor = .white
+        sc.backgroundColor = .COLOR_CARD_BG_WHITE
         // 允许内部滚动时也触发下拉手势
 //        sc.panGestureRecognizer.addTarget(self, action: #selector(handlePanGesture(gesture:)))
 //        sc.panGestureRecognizer.cancelsTouchesInView = false
@@ -86,7 +100,7 @@ class MallSpecAlertVM: UIView {
     }()
     private lazy var cancelBtn: UIButton = {
         let btn = UIButton()
-        btn.setImage(UIImage(named: "date_fliter_cancel_img"), for: .normal)
+        btn.setImage(UIImage(named: "date_fliter_cancel_img")?.withTintColor(.COLOR_TEXT_TITLE_0f1214), for: .normal)
         btn.setTitleColor(WHColorWithAlpha(colorStr: "000000", alpha: 0.4), for: .highlighted)
         btn.addTarget(self, action: #selector(hiddenSelf), for: .touchUpInside)
         return btn
@@ -154,7 +168,7 @@ extension MallSpecAlertVM{
                        initialSpringVelocity: 0.1,
                        options: [.curveEaseOut, .allowUserInteraction]) {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
-            self.bgView.alpha = 0.25
+            self.bgView.alpha = self.targetDimAlpha//0.25
         } completion: { _ in
             self.bgView.isUserInteractionEnabled = true
             

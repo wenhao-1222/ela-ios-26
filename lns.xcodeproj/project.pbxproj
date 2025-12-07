@@ -686,6 +686,7 @@
 		EC14405E2C3E669500566E9F /* JournalShareDetailsContentVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC14405D2C3E669500566E9F /* JournalShareDetailsContentVM.swift */; };
 		EC16B4C52C6374B500DEDD25 /* WHLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC16B4C42C6374B500DEDD25 /* WHLoadingView.swift */; };
 		EC1CFB542EE12A96003E42DD /* InsetLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1CFB532EE12A95003E42DD /* InsetLabel.swift */; };
+		EC1CFB562EE18519003E42DD /* MallDetailBottomFuncVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */; };
 		EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */; };
 		EC1EB5252BF72E3000537F0B /* PlanCreateSynDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5242BF72E3000537F0B /* PlanCreateSynDaysVM.swift */; };
 		EC1EB5272BFAED5400537F0B /* FoodsEstablishVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5262BFAED5400537F0B /* FoodsEstablishVC.swift */; };
@@ -1974,6 +1975,7 @@
 		EC14405D2C3E669500566E9F /* JournalShareDetailsContentVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalShareDetailsContentVM.swift; sourceTree = "<group>"; };
 		EC16B4C42C6374B500DEDD25 /* WHLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHLoadingView.swift; sourceTree = "<group>"; };
 		EC1CFB532EE12A95003E42DD /* InsetLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetLabel.swift; sourceTree = "<group>"; };
+		EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallDetailBottomFuncVM.swift; sourceTree = "<group>"; };
 		EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynAlertVM.swift; sourceTree = "<group>"; };
 		EC1EB5242BF72E3000537F0B /* PlanCreateSynDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynDaysVM.swift; sourceTree = "<group>"; };
 		EC1EB5262BFAED5400537F0B /* FoodsEstablishVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsEstablishVC.swift; sourceTree = "<group>"; };
@@ -2650,6 +2652,7 @@
 			children = (
 				A70A1F832E6EB91F00B506DC /* MalDetailNaviView.swift */,
 				A70A1F852E6EBAEF00B506DC /* MallDetailBannerVM.swift */,
+				EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */,
 				A70A1F872E6ECC3100B506DC /* MallDetailTextCell.swift */,
 				A70A1F892E6ED75F00B506DC /* MallDetailSpecChangeCell.swift */,
 				A751E1F72E6FF20C00AAD4DD /* MallDetailSpecMainCell.swift */,
@@ -6457,6 +6460,7 @@
 				A744268E2CDB5A7F000D7E2B /* Connection.swift in Sources */,
 				A760ED462CF06B6100E786EE /* SportAddAlertVM.swift in Sources */,
 				A744268F2CDB5A7F000D7E2B /* Token.swift in Sources */,
+				EC1CFB562EE18519003E42DD /* MallDetailBottomFuncVM.swift in Sources */,
 				A74426902CDB5A7F000D7E2B /* DataUtil.swift in Sources */,
 				A71DA34A2D10202A00FCC6CA /* SportHealthDataExampleAlertVM.swift in Sources */,
 				A70BC55D2E276F9C005367A4 /* CourseListHeadVM.swift in Sources */,

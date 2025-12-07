@@ -34,7 +34,7 @@ class FoodsListAddListVM: UIView {
         selfHeight = SCREEN_HEIGHT-frame.origin.y
         initUI()
         
-//        DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
             self.historyFoodsArray = UserDefaults.getHistoryFoods()
             self.foodsArray = NSMutableArray(array: self.historyFoodsArray)
             self.sortDataArray()
@@ -44,7 +44,7 @@ class FoodsListAddListVM: UIView {
     //        if foodsArray.count == 0 {
             self.sendHistoryFoodsListRequest()
     //        }
-//        })
+        })
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

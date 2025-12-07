@@ -51,7 +51,7 @@ final class MallDetailSpecChangeCell: UITableViewCell, UICollectionViewDataSourc
     }
     
     private func setup() {
-        backgroundColor = .white
+        backgroundColor = .COLOR_CARD_BG_WHITE
         selectionStyle = .none
         
         contentView.addSubview(collectionView)

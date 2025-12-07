@@ -10,8 +10,8 @@ class MarketListHeroCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = .clear
-        self.contentView.backgroundColor = .clear
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
+        self.contentView.backgroundColor = .COLOR_CARD_BG_WHITE
         
         initUI()
     }

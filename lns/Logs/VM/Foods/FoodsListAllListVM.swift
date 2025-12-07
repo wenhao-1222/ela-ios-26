@@ -198,6 +198,7 @@ extension FoodsListAllListVM{
         UserInfoModel.shared.failToastNum = 0
         DLLog(message: "sendFoodsListRequest:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_foods_list, parameters: param as [String:AnyObject],isNeedToast: true,vc: self.controller) { responseObject in
+//        WHNetworkUtil.shareManager().POST(urlString: URL_foods_list, parameters: param as [String:AnyObject],isNeedToast: true,vc: self.controller) { responseObject in
 //            self.noDataView.noDataLabel.text = "- 暂无数据 -"
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArr = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
@@ -242,6 +243,11 @@ extension FoodsListAllListVM{
             }else{
                 self.tableView.tableFooterView = nil
             }
+        } failure: { [weak self] _ in
+            guard let self = self else { return }
+            self.fNameChanged = false
+            self.foodsArray.removeAllObjects()
+            self.tableView.reloadData()
         }
     }
 }

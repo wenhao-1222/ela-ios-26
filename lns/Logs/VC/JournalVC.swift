@@ -134,7 +134,7 @@ class JournalVC: WHBaseViewVC {
         sendHistoryFoodsListRequest()
         sendConstantRequest()
         sendNutritionsDefaultCircleRequest()
-        getActivityListRequest()
+//        getActivityListRequest()
 
 //        BodyDataUploadManager().dealOldSqlData()
         
