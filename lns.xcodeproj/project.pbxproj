@@ -686,7 +686,9 @@
 		EC14405E2C3E669500566E9F /* JournalShareDetailsContentVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC14405D2C3E669500566E9F /* JournalShareDetailsContentVM.swift */; };
 		EC16B4C52C6374B500DEDD25 /* WHLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC16B4C42C6374B500DEDD25 /* WHLoadingView.swift */; };
 		EC1B59DF2EE668A900FE3E9A /* ActivityAlertVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B59DE2EE668A800FE3E9A /* ActivityAlertVC.swift */; };
-		EC1CFB542EE12A96003E42DD /* InsetLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1CFB532EE12A95003E42DD /* InsetLabel.swift */; };
+		EC1B59E22EE6AC7D00FE3E9A /* ServiceTypeItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B59E12EE6AC7600FE3E9A /* ServiceTypeItemVM.swift */; };
+		EC1B59E42EE6BFEB00FE3E9A /* ServiceContactMarketVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B59E32EE6BFE700FE3E9A /* ServiceContactMarketVC.swift */; };
+		EC1B59E62EE6D34200FE3E9A /* ServiceFuncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B59E52EE6D33B00FE3E9A /* ServiceFuncButton.swift */; };
 		EC1CFB562EE18519003E42DD /* MallDetailBottomFuncVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */; };
 		EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */; };
 		EC1EB5252BF72E3000537F0B /* PlanCreateSynDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5242BF72E3000537F0B /* PlanCreateSynDaysVM.swift */; };
@@ -1976,7 +1978,9 @@
 		EC14405D2C3E669500566E9F /* JournalShareDetailsContentVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalShareDetailsContentVM.swift; sourceTree = "<group>"; };
 		EC16B4C42C6374B500DEDD25 /* WHLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHLoadingView.swift; sourceTree = "<group>"; };
 		EC1B59DE2EE668A800FE3E9A /* ActivityAlertVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityAlertVC.swift; sourceTree = "<group>"; };
-		EC1CFB532EE12A95003E42DD /* InsetLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetLabel.swift; sourceTree = "<group>"; };
+		EC1B59E12EE6AC7600FE3E9A /* ServiceTypeItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTypeItemVM.swift; sourceTree = "<group>"; };
+		EC1B59E32EE6BFE700FE3E9A /* ServiceContactMarketVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContactMarketVC.swift; sourceTree = "<group>"; };
+		EC1B59E52EE6D33B00FE3E9A /* ServiceFuncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceFuncButton.swift; sourceTree = "<group>"; };
 		EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallDetailBottomFuncVM.swift; sourceTree = "<group>"; };
 		EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynAlertVM.swift; sourceTree = "<group>"; };
 		EC1EB5242BF72E3000537F0B /* PlanCreateSynDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynDaysVM.swift; sourceTree = "<group>"; };
@@ -3906,6 +3910,16 @@
 			path = Journal;
 			sourceTree = "<group>";
 		};
+		EC1B59E02EE6ABC600FE3E9A /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				EC53283D2BF5E2D500C39C6A /* ServiceVC.swift */,
+				ECC977B72C19C1A500F7FAA6 /* ServiceContactVC.swift */,
+				EC1B59E32EE6BFE700FE3E9A /* ServiceContactMarketVC.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		EC24EB482BB278F8002F21DF /* ScrollRuler */ = {
 			isa = PBXGroup;
 			children = (
@@ -4545,13 +4559,14 @@
 				EC5328412BF5EF0B00C39C6A /* ServiceImgView.swift */,
 				EC5328432BF5FFAB00C39C6A /* ServiewImageView.swift */,
 				ECC977B92C19C22600F7FAA6 /* ServiceInputVM.swift */,
-				EC1CFB532EE12A95003E42DD /* InsetLabel.swift */,
+				EC1B59E52EE6D33B00FE3E9A /* ServiceFuncButton.swift */,
 				ECC977BC2C19D55A00F7FAA6 /* ServiceContactTableViewTextCell.swift */,
 				EC0518182EDFFBD0007747E0 /* ServiceContactTableViewImageCell.swift */,
 				EC05181C2EE02AA3007747E0 /* ServiceContactTableViewActivityCell.swift */,
 				A773C22D2E84EB6600F1E3AA /* ServiceContactTableViewVideoCell.swift */,
 				A773C22F2E84EB7800F1E3AA /* ServiceVideoProgressRing.swift */,
 				ECC977BE2C19D5D400F7FAA6 /* ServiceContactTableViewImageViewCell.swift */,
+				EC1B59E12EE6AC7600FE3E9A /* ServiceTypeItemVM.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -4967,6 +4982,7 @@
 		ECD0FF302BABE012001232C9 /* VC */ = {
 			isa = PBXGroup;
 			children = (
+				EC1B59E02EE6ABC600FE3E9A /* Service */,
 				ECF0BFD12BFC3C3800E5F6F0 /* Invite */,
 				ECB848442BF35C2C00B554B9 /* Setting */,
 				ECD0FF392BABE04B001232C9 /* MineVC.swift */,
@@ -4974,8 +4990,6 @@
 				A71C54922E6ADE1C00FB797D /* GlassToggleRow.swift */,
 				A72401372E559184005DB615 /* PersonalVC.swift */,
 				EC38DE9A2BEF661D008E7FCE /* MaterialVC.swift */,
-				EC53283D2BF5E2D500C39C6A /* ServiceVC.swift */,
-				ECC977B72C19C1A500F7FAA6 /* ServiceContactVC.swift */,
 				EC93FC982C0FF7E7007DBC39 /* TutorialsListVC.swift */,
 				ECD041A52C0F0C160073BFB8 /* TutorialsVC.swift */,
 				EC1EB52E2BFB449A00537F0B /* MyFoodsListVC.swift */,
@@ -5600,6 +5614,7 @@
 				ECD0FEED2BABD25B001232C9 /* LLMyTabbar.swift in Sources */,
 				EC05181B2EE01DD1007747E0 /* ActivityAlertVM.swift in Sources */,
 				EC24EB3B2BB25C58002F21DF /* QuestionnaireSurveyMsgVM.swift in Sources */,
+				EC1B59E22EE6AC7D00FE3E9A /* ServiceTypeItemVM.swift in Sources */,
 				A70A2FD32DCAF89F00F1E630 /* FPSLabel.swift in Sources */,
 				A778EEE92D87D535002548D4 /* FoodsMergeBottomVm.swift in Sources */,
 				ECD0FEF62BABD25B001232C9 /* YYTextLayout.m in Sources */,
@@ -6009,7 +6024,6 @@
 				A7BAE5DC2D7EBCBF000A690A /* SynMyFoodsVM.swift in Sources */,
 				ECA278B92BF4BA4F00AEED64 /* BindOtherAccountVC.swift in Sources */,
 				A78E67C92CB64C3600B4C443 /* BodyDataImageCollectionCell.swift in Sources */,
-				EC1CFB542EE12A96003E42DD /* InsetLabel.swift in Sources */,
 				ECA1E2EC2C007B7E00C31B77 /* AESEncyptUtil.swift in Sources */,
 				ECB6AEB92BC6620500F03567 /* MainNutrientItemVM.swift in Sources */,
 				EC38DEA02BEF7503008E7FCE /* MaterialSexAlertVM.swift in Sources */,
@@ -6145,6 +6159,7 @@
 				A7CEA60B2D1D3CAC009DDEB5 /* TutorialMenuItemVM.swift in Sources */,
 				A76BE7D12CF5AF4F0058F459 /* SportDataSQLiteManager.swift in Sources */,
 				A70A1F882E6ECC3900B506DC /* MallDetailTextCell.swift in Sources */,
+				EC1B59E42EE6BFEB00FE3E9A /* ServiceContactMarketVC.swift in Sources */,
 				EC8FF3EA2C92BCB8003A7E0B /* NaturalStatCPFDGBarLegendView.swift in Sources */,
 				EC4DE28F2BC931030090A7BD /* PlanCreateNameVM.swift in Sources */,
 				A798F5372CA1102E00B8327E /* JournalSettingVC.swift in Sources */,
@@ -6533,6 +6548,7 @@
 				A740EEEB2E72BBAE00B6ABAA /* AddressTableViewCell.swift in Sources */,
 				A755ED5F2DF691DE00005C3A /* GuideTotalProgressVM.swift in Sources */,
 				EC8FF3EC2C92C01D003A7E0B /* NaturalStatBarVM.swift in Sources */,
+				EC1B59E62EE6D34200FE3E9A /* ServiceFuncButton.swift in Sources */,
 				A7A3423F2DD5E6FD0093CAF7 /* JournalReportWeekAdviceCell.swift in Sources */,
 				A762B8582D19062C003E8B22 /* ForumTutorialVC.swift in Sources */,
 				ECD04BB12BEDF74F00B8069B /* JournalCollectionView.swift in Sources */,

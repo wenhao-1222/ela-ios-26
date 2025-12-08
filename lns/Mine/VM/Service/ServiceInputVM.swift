@@ -22,6 +22,7 @@ class ServiceInputVM: UIView {
     // 新增：对外回调
     var chooseAlbumBlock:(()->())?
     var chooseCameraBlock:(()->())?
+    var chooseOrderBlock:(()->())?
 
     private var panelShown = false
     private let panelHeight = kFitWidth(130)
@@ -108,10 +109,10 @@ class ServiceInputVM: UIView {
         
         return lab
     }()
-    lazy var albumButton : PlanShareButton = {
-        let btn = PlanShareButton.init(frame: CGRect.init(x: kFitWidth(27), y: kFitWidth(20), width: kFitWidth(62), height: kFitWidth(85)))
-        btn.imgView.setImgLocal(imgName: "service_album_icon")
-//        btn.imgView.image = UIImage(named: "service_album_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
+    lazy var albumButton : ServiceFuncButton = {
+        let btn = ServiceFuncButton.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(19), width: kFitWidth(65), height: kFitWidth(88)))
+//        btn.imgView.setImgLocal(imgName: "service_album_icon")
+        btn.imgView.image = UIImage(named: "service_album_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         
         btn.contenLab.text = "照片"
         btn.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
@@ -123,10 +124,10 @@ class ServiceInputVM: UIView {
         
         return btn
     }()
-    lazy var cameraButton : PlanShareButton = {
-        let btn = PlanShareButton.init(frame: CGRect.init(x: kFitWidth(115), y: kFitWidth(20), width: kFitWidth(62), height: kFitWidth(85)))
-        btn.imgView.setImgLocal(imgName: "service_camera_icon")
-//        btn.imgView.image = UIImage(named: "service_camera_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
+    lazy var cameraButton : ServiceFuncButton = {
+        let btn = ServiceFuncButton.init(frame: CGRect.init(x: kFitWidth(109), y: kFitWidth(19), width: kFitWidth(65), height: kFitWidth(88)))
+//        btn.imgView.setImgLocal(imgName: "service_camera_icon")
+        btn.imgView.image = UIImage(named: "service_camera_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         btn.contenLab.text = "视频"
         btn.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         btn.labelColor = .COLOR_TEXT_TITLE_0f1214_50
@@ -134,6 +135,21 @@ class ServiceInputVM: UIView {
         btn.isHidden = true
         btn.tapBlock = {()in
             self.tapCamera()
+        }
+        
+        return btn
+    }()
+    lazy var orderButton : ServiceFuncButton = {
+        let btn = ServiceFuncButton.init(frame: CGRect.init(x: kFitWidth(201), y: kFitWidth(19), width: kFitWidth(65), height: kFitWidth(88)))
+//        btn.imgView.setImgLocal(imgName: "service_order_icon")
+        btn.imgView.image = UIImage(named: "service_order_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
+        btn.contenLab.text = "订单"
+        btn.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        btn.labelColor = .COLOR_TEXT_TITLE_0f1214_50
+        btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
+        btn.isHidden = true
+        btn.tapBlock = {()in
+            self.tapOrder()
         }
         
         return btn
@@ -150,6 +166,7 @@ class ServiceInputVM: UIView {
 
         v.addSubview(cameraButton)
         v.addSubview(albumButton)
+        v.addSubview(orderButton)
 
         // 简单布局（不用 SnapKit 也行）
         let w = SCREEN_WIDHT
@@ -186,6 +203,10 @@ extension ServiceInputVM{
     @objc private func tapCamera() {
         hideAttachPanel()
         chooseCameraBlock?()
+    }
+    @objc private func tapOrder() {
+        hideAttachPanel()
+        chooseOrderBlock?()
     }
     private func setAddButton(rotated: Bool) {
         let angle: CGFloat = rotated ? (.pi / 4) : 0   // 45°

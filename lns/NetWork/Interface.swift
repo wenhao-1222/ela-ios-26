@@ -152,6 +152,8 @@ public let URL_Uer_Cancel_pre               = URL_Type + "users/account/delete_p
 public let URL_User_Service_config          = URL_Type + "tools/app/chat/welcome"
 //消息列表
 public let URL_User_Service_Msg_List        = URL_Type + "users/suggestion/list"
+///商品咨询   消息列表
+public let URL_User_Service_Market_List     = URL_Type + "forum/mall/goods/inquiry/list"
 //清除日志
 public let URL_clear_logs                   = URL_Type + "plans/log/clear"
 
