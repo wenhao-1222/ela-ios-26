@@ -134,7 +134,7 @@ class JournalVC: WHBaseViewVC {
         sendHistoryFoodsListRequest()
         sendConstantRequest()
         sendNutritionsDefaultCircleRequest()
-//        getActivityListRequest()
+        getActivityListRequest()
 
 //        BodyDataUploadManager().dealOldSqlData()
         
@@ -755,15 +755,29 @@ extension JournalVC{
             
             for i in 0..<dataArray.count{
                 let dict = dataArray[i]as? NSDictionary ?? [:]
-                if popupIdArray.contains(dict.stringValueForKey(key: "popupId")) {
-                    continue
-                }else{
-                    self.activityAlertVm.updateUI(dict: dict)
+//                if popupIdArray.contains(dict.stringValueForKey(key: "popupId")) {
+//                    continue
+//                }else{
+//                    self.activityAlertVm.updateUI(dict: dict)
+                    self.presentActivityAlert(dict: dict)
                     UserDefaults.setActivityPopupIdRecord(popupId: dict.stringValueForKey(key: "popupId"))
                     return
-                }
+//                }
             }
         }
+    }
+    func presentActivityAlert(dict: NSDictionary) {
+        let alertVC = ActivityAlertVC()
+        alertVC.modalPresentationStyle = .overFullScreen
+        alertVC.pushBlock = { [weak self] target in
+            guard let self = self,
+                  let vc = self.createVCObjectFromString(className: target) else {
+                return
+            }
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        alertVC.updateUI(dict: dict)
+        present(alertVC, animated: false)
     }
 }
 

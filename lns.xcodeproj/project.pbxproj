@@ -685,6 +685,7 @@
 		EC14405C2C3E649100566E9F /* JournalShareTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC14405B2C3E649100566E9F /* JournalShareTopVM.swift */; };
 		EC14405E2C3E669500566E9F /* JournalShareDetailsContentVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC14405D2C3E669500566E9F /* JournalShareDetailsContentVM.swift */; };
 		EC16B4C52C6374B500DEDD25 /* WHLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC16B4C42C6374B500DEDD25 /* WHLoadingView.swift */; };
+		EC1B59DF2EE668A900FE3E9A /* ActivityAlertVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B59DE2EE668A800FE3E9A /* ActivityAlertVC.swift */; };
 		EC1CFB542EE12A96003E42DD /* InsetLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1CFB532EE12A95003E42DD /* InsetLabel.swift */; };
 		EC1CFB562EE18519003E42DD /* MallDetailBottomFuncVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */; };
 		EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */; };
@@ -1974,6 +1975,7 @@
 		EC14405B2C3E649100566E9F /* JournalShareTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalShareTopVM.swift; sourceTree = "<group>"; };
 		EC14405D2C3E669500566E9F /* JournalShareDetailsContentVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalShareDetailsContentVM.swift; sourceTree = "<group>"; };
 		EC16B4C42C6374B500DEDD25 /* WHLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHLoadingView.swift; sourceTree = "<group>"; };
+		EC1B59DE2EE668A800FE3E9A /* ActivityAlertVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityAlertVC.swift; sourceTree = "<group>"; };
 		EC1CFB532EE12A95003E42DD /* InsetLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetLabel.swift; sourceTree = "<group>"; };
 		EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallDetailBottomFuncVM.swift; sourceTree = "<group>"; };
 		EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynAlertVM.swift; sourceTree = "<group>"; };
@@ -4892,6 +4894,7 @@
 				EC6C23192BFE0166001DFF97 /* QuestionnairePreVC.swift */,
 				A76F50C62D5B13AC001B67CB /* SurveyVC.swift */,
 				A76F50C82D5B3A68001B67CB /* SurveyNoSexVC.swift */,
+				EC1B59DE2EE668A800FE3E9A /* ActivityAlertVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -5627,6 +5630,7 @@
 				ECFACE822BC7C805003CDA3A /* PlanListVC.swift in Sources */,
 				EC9321AE2C50C80D00FDBBE2 /* MealsNameVM.swift in Sources */,
 				ECF0BFE02BFC9D0200E5F6F0 /* WithDrawVC.swift in Sources */,
+				EC1B59DF2EE668A900FE3E9A /* ActivityAlertVC.swift in Sources */,
 				A78B04962CB3D7D600426112 /* GoalSetCircleVM.swift in Sources */,
 				EC3A9CA62BB50EB800C6E442 /* QuestionnaireProgressVM.swift in Sources */,
 				ECA1E2EE2C00818B00C31B77 /* Character+Exs.swift in Sources */,
