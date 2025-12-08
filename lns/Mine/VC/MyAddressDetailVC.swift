@@ -123,7 +123,7 @@ extension MyAddressDetailVC: UITableViewDelegate, UITableViewDataSource {
         case .detail:
             let cell = tableView.dequeueReusableCell(withIdentifier: "AddressDetailTextViewCell") as? AddressDetailTextViewCell ?? AddressDetailTextViewCell()
 //            cell.update(text: detailAddressText)
-            cell.update(text: addressModel.detailAddressWhole)
+            cell.update(text: addressModel.detailAddress)
             cell.onTextChanged = { [weak self] text in
                 self?.detailAddressText = text
                 self?.addressModel.detailAddress = text
@@ -164,7 +164,7 @@ extension MyAddressDetailVC {
         if isUpdate { initNavi(titleStr: "修改地址") }
         else { initNavi(titleStr: "添加新地址") }
         self.navigationView.backgroundColor = .COLOR_CARD_BG_WHITE
-        view.backgroundColor = .COLOR_BG_F2
+        view.backgroundColor = .COLOR_CARD_BG_WHITE
         view.addSubview(tableView)
         view.addSubview(bottomVm)
         tableView.layoutIfNeeded()

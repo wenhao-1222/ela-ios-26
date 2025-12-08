@@ -583,6 +583,16 @@ extension ServiceContactVC: UIScrollViewDelegate {
 
 
 extension ServiceContactVC{
+    func sendAddressListRequest(){
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_address_list, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendAddressListRequest:\(dataArray)")
+            if dataArray.count > 0{
+                
+            }
+        }
+    }
     func sendMsgListRequest() {
         WHNetworkUtil.shareManager().POST(urlString: URL_User_Service_Msg_List, parameters: nil,isNeedToast: true,vc: self) { responseObject in
             DLLog(message: "\(responseObject)")

@@ -18,6 +18,7 @@ class AddressDetailCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         contentView.backgroundColor = .COLOR_CARD_BG_WHITE
         initUI()
         //监听textField内容改变通知
@@ -55,7 +56,7 @@ class AddressDetailCell: UITableViewCell {
     }()
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_LINE_F0
         
         return vi
     }()

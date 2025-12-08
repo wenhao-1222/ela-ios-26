@@ -51,6 +51,7 @@ final class AddressDetailTextViewCell: UITableViewCell, UITextViewDelegate {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         contentView.backgroundColor = .COLOR_CARD_BG_WHITE
         contentView.addSubview(leftTitleLabel)
         contentView.addSubview(textView)

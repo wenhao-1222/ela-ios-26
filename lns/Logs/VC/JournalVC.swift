@@ -755,14 +755,14 @@ extension JournalVC{
             
             for i in 0..<dataArray.count{
                 let dict = dataArray[i]as? NSDictionary ?? [:]
-//                if popupIdArray.contains(dict.stringValueForKey(key: "popupId")) {
-//                    continue
-//                }else{
+                if popupIdArray.contains(dict.stringValueForKey(key: "popupId")) {
+                    continue
+                }else{
 //                    self.activityAlertVm.updateUI(dict: dict)
                     self.presentActivityAlert(dict: dict)
                     UserDefaults.setActivityPopupIdRecord(popupId: dict.stringValueForKey(key: "popupId"))
                     return
-//                }
+                }
             }
         }
     }
