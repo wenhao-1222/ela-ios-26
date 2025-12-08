@@ -60,7 +60,7 @@ class ActivityAlertVC: UIViewController {
         super.viewDidLoad()
         modalPresentationStyle = .overFullScreen
         view.backgroundColor = .clear
-        initUI()
+//        initUI()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -83,8 +83,8 @@ class ActivityAlertVC: UIViewController {
         vi.backgroundColor = .clear
         vi.alpha = 0
 
-        let tap = UITapGestureRecognizer(target: self, action: #selector(nothingAction))
-        vi.addGestureRecognizer(tap)
+//        let tap = UITapGestureRecognizer(target: self, action: #selector(nothingAction))
+//        vi.addGestureRecognizer(tap)
 
         // MARK: - Drag & Pan (关键)
         let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
@@ -130,6 +130,7 @@ class ActivityAlertVC: UIViewController {
 // MARK: - Content Load
 extension ActivityAlertVC {
     func updateUI(dict:NSDictionary) {
+        initUI()
         let imgArr = dict["image"]as? NSArray ?? []
         if imgArr.count > 0 {
             self.dealButtonMsg(dict: dict)
@@ -232,10 +233,9 @@ extension ActivityAlertVC {
                 bgView.alpha = targetDimAlpha * (1 - progress)
 
                 // 下拉时：恢复到没有拉伸的状态（高度 & 约束）
-                updateWhiteViewHeight(extraStretch: 0)
+//                updateWhiteViewHeight(extraStretch: 0)
                 resetImageStretch()
                 view.layoutIfNeeded()
-
             } else {
                 // =========👇 往上拖：whiteView 从顶部“长高”，图片变窄变长，底部不动 =========
 
@@ -451,6 +451,4 @@ extension ActivityAlertVC {
             make.height.equalTo(kFitWidth(36))
         }
     }
-
-
 }
