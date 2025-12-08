@@ -436,7 +436,19 @@ extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
                 let dict = ["image":[imgUrl],
                             "button":[["text":"关闭",
                                        "iosTargetPage":""]]]
-                self.activityAlertVm.updateUI(dict: dict as NSDictionary)
+//                self.activityAlertVm.updateUI(dict: dict as NSDictionary)
+                
+                let alertVC = ActivityAlertVC()
+                alertVC.modalPresentationStyle = .overFullScreen
+                alertVC.pushBlock = { [weak self] target in
+                    guard let self = self,
+                          let vc = self.createVCObjectFromString(className: target) else {
+                        return
+                    }
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+                alertVC.updateUI(dict: dict as NSDictionary)
+                self.present(alertVC, animated: false)
             }
             
             return cell ?? ServiceContactTableViewActivityCell()

@@ -32,7 +32,7 @@ class TriangleView: UIView {
         }
         path.close()
 
-        UIColor.white.setFill()
+        UIColor.COLOR_CARD_BG_WHITE.setFill()
         path.fill()
     }
 }

@@ -39,7 +39,7 @@ class ActionPopupView: UIView {
         backgroundColor = .clear
         self.isUserInteractionEnabled = true
 
-        backgroundView.backgroundColor = .white
+        backgroundView.backgroundColor = .COLOR_CARD_BG_WHITE
         backgroundView.layer.cornerRadius = kFitWidth(8)
 //        backgroundView.clipsToBounds = true
 //        backgroundView.addShadow(radius: kFitWidth(8))
@@ -48,6 +48,7 @@ class ActionPopupView: UIView {
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         stackView.spacing = 1
+        stackView.backgroundColor = .COLOR_CARD_BG_WHITE
 
         backgroundView.addSubview(stackView)
         addSubview(backgroundView)
@@ -112,7 +113,7 @@ class ActionPopupView: UIView {
             let button = UIButton(type: .system)
             button.setTitle(title, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 12, weight: .regular)
-            button.backgroundColor = .white
+            button.backgroundColor = .COLOR_CARD_BG_WHITE
             button.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
             button.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
             button.tag = stackView.arrangedSubviews.count
