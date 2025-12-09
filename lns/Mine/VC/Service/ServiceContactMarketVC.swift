@@ -24,6 +24,7 @@ class ServiceContactMarketVC: WHBaseViewVC {
     var lastSendTest = ""
     var relatedOrderId = ""
     var bizType = "1" //  1  售前咨询  2 售后咨询
+    var detailModel = MallDetailModel()
     
     var pageNum = 1
     var pageSize = 10
@@ -67,6 +68,7 @@ class ServiceContactMarketVC: WHBaseViewVC {
         
         initUI()
         checkNetWork()
+        sendGoodsMsg()
 //        sendOssStsRequest()
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "serviceMsgRead"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(addressNotifiAction(notify: )), name: NOTIFI_NAME_ADD_ADDRESS, object: nil)
@@ -154,6 +156,14 @@ class ServiceContactMarketVC: WHBaseViewVC {
         }
         return vm
     }()
+}
+
+extension ServiceContactMarketVC{
+    func sendGoodsMsg() {
+        if self.detailModel.skuName.count > 0 {
+            self.sendGoodsDetailRequest()
+        }
+    }
 }
 
 extension ServiceContactMarketVC{
@@ -606,18 +616,7 @@ extension ServiceContactMarketVC: UIScrollViewDelegate {
     }
 }
 
-
 extension ServiceContactMarketVC{
-    func sendAddressListRequest(){
-        WHNetworkUtil.shareManager().POST(urlString: URL_user_address_list, parameters: nil) { responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendAddressListRequest:\(dataArray)")
-            if dataArray.count > 0{
-                
-            }
-        }
-    }
     func sendMsgListRequest() {
         let param = ["page":"\(pageNum)",
                      "pageSize":"\(pageSize)"]
@@ -628,7 +627,10 @@ extension ServiceContactMarketVC{
             DLLog(message: "sendMsgListRequest:\(dataArray)")
             DLLog(message: "sendMsgListRequest: ---  end")
             self.dataSourceArray.removeAllObjects()
-            self.dataSourceArray.addObjects(from: dataArray as! [Any])
+            if let array = dataArray as? [Any] {
+                let reversedArray = Array(array.reversed())
+                self.dataSourceArray.addObjects(from: reversedArray)
+            }
             self.dealDataSource(animated: true)
         }
     }
@@ -736,6 +738,28 @@ extension ServiceContactMarketVC{
         WHNetworkUtil.shareManager().GET(urlString: URL_OSS_sts) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             UserInfoModel.shared.updateOssParams(dict: self.getDictionaryFromJSONString(jsonString: dataString ?? ""))
+        }
+    }
+    func sendGoodsDetailRequest() {
+        var param = ["bizType":self.bizType,
+                     "goodsInfoCard": ["name":self.detailModel.skuName,
+                                       "subtitle":self.detailModel.subtitle,
+                                       "warrantyPolicyNotice":self.detailModel.warrantyPolicyNotice,
+                                       "images":self.detailModel.image_arr_banner]] as [String : Any]
+        
+        WHNetworkUtil.shareManager().POST(urlString: URL_Uer_service_sugestion, parameters: param as [String:AnyObject]) { responseObject in
+            DLLog(message: "\(responseObject)")
+
+            let code = responseObject["code"]as? Int ?? -1
+            if (code == 200) {
+//                let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
+//                            "ctime":"\(Date().currentSeconds)",
+//                            "images":"\(self.getJSONStringFromArray(array: [imgUrlString]))"]
+//                self.dataSourceArray.add(dict)
+//                self.dealDataSource()
+            }else{
+                MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试")
+            }
         }
     }
 }

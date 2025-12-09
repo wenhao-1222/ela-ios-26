@@ -12,6 +12,8 @@ class MallDetailBottomFuncVM : UIView{
     
     var detailModel = MallDetailModel()
     
+    var serviceBlock:(()->())?
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -44,6 +46,9 @@ class MallDetailBottomFuncVM : UIView{
         vi.isUserInteractionEnabled = true
         vi.backgroundColor = .clear
         
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(serviceTapAction))
+        vi.addGestureRecognizer(tap)
+        
         return vi
     }()
     lazy var buyButton: UIButton = {
@@ -69,6 +74,12 @@ class MallDetailBottomFuncVM : UIView{
         
         return btn
     }()
+}
+
+extension MallDetailBottomFuncVM{
+    @objc func serviceTapAction() {
+        self.serviceBlock?()
+    }
 }
 
 extension MallDetailBottomFuncVM{

@@ -129,35 +129,14 @@ class MallDetailVC: WHBaseViewVC {
     lazy var bottomFuncVm: MallDetailBottomFuncVM = {
         let vm = MallDetailBottomFuncVM.init(frame: .zero)
         vm.buyButton.addTarget(self, action: #selector(buyAction), for: .touchUpInside)
+        vm.serviceBlock = {() in
+            let vc = ServiceContactMarketVC()
+            vc.bizType = "1"
+            vc.detailModel = self.detailModel
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
         return vm
     }()
-//    lazy var buyButton: UIButton = {
-//        let btn = UIButton()
-//        if self.getBottomSafeAreaHeight() > 0 {
-//            btn.frame = CGRect.init(x: kFitWidth(22), y: SCREEN_HEIGHT - self.getBottomSafeAreaHeight() - kFitWidth(48), width: SCREEN_WIDHT-kFitWidth(44), height: kFitWidth(48))
-//        }else{
-//            btn.frame = CGRect.init(x: kFitWidth(22), y: SCREEN_HEIGHT - kFitWidth(10) - kFitWidth(48), width: SCREEN_WIDHT-kFitWidth(44), height: kFitWidth(48))
-//        }
-//        
-//        btn.enablePressEffect()
-////        btn.backgroundColor = .THEME
-//        btn.setTitle("立即购买", for: .normal)
-//        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
-//        btn.titleLabel?.numberOfLines = 2
-//        btn.titleLabel?.lineBreakMode = .byWordWrapping
-//        btn.titleLabel?.textAlignment = .center
-//        btn.setTitleColor(.COLOR_BG_WHITE, for: .normal)
-//        btn.layer.cornerRadius = kFitWidth(24)
-//        btn.clipsToBounds = true
-//        btn.alpha = 0
-//        
-//        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-//        btn.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_C4C4C4), for: .disabled)
-//        
-//        btn.addTarget(self, action: #selector(buyAction), for: .touchUpInside)
-//        
-//        return btn
-//    }()
     lazy var specAlertVm: MallSpecAlertVM = {
         let vm = MallSpecAlertVM.init(frame: .zero)
         vm.selectSpecBlock = { [weak self] specId, specValueId,specValue in
@@ -170,7 +149,7 @@ class MallDetailVC: WHBaseViewVC {
                 self.detailModel.selectedSpecList.append(["specId": specId,
                                                           "specValueId": specValueId,
                                                           "specValueName":specValue])
-            }//13360067244
+            }
             if specValueId.isEmpty {
                 if let index = self.detailModel.selectedSpecList.firstIndex(where: { $0["specId"] == specId }) {
                     self.detailModel.selectedSpecList.remove(at: index)
