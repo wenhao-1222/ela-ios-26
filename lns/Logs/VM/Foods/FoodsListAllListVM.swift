@@ -245,9 +245,14 @@ extension FoodsListAllListVM{
             }
         } failure: { [weak self] _ in
             guard let self = self else { return }
-            self.fNameChanged = false
-            self.foodsArray.removeAllObjects()
-            self.tableView.reloadData()
+            DispatchQueue.main.async {
+                self.fNameChanged = false
+                self.foodsArray.removeAllObjects()
+                self.tableView.reloadData()
+            }
+//            self.fNameChanged = false
+//            self.foodsArray.removeAllObjects()
+//            self.tableView.reloadData()
         }
     }
 }

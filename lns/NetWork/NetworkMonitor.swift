@@ -18,6 +18,7 @@ class NetworkMonitor {
         var request: () -> Void
         var allowRetry: Bool
         var timestamp: Date
+        var msgDict: [String: Any]
     }
 
     private var pendingRequests: [PendingRequest] = []
@@ -27,7 +28,7 @@ class NetworkMonitor {
     private let maxPendingTime: TimeInterval = 30.0 // 最多挂起30秒
 
     // 不允许自动重试的接口关键词
-    private let nonRetryRequestKeywords = ["支付"]//["login", "pay", "支付", "登录"]
+    private let nonRetryRequestKeywords = ["pay"]//["login", "pay", "支付", "登录"]
 
     private init() {
         reachabilityManager = NetworkReachabilityManager()
@@ -57,17 +58,17 @@ class NetworkMonitor {
         }
     }
 
-    func addRequest(_ request: @escaping () -> Void, allowRetry: Bool = true) {
+    func addRequest(_ request: @escaping () -> Void, allowRetry: Bool = true, msgDict: [String: Any] = [:]) {
         if isConnected || !allowRetry {
             request()
         } else {
             print("[NetworkMonitor] 无网络，挂起请求")
-            let pending = PendingRequest(retryCount: 0, request: request, allowRetry: allowRetry, timestamp: Date())
+            let pending = PendingRequest(retryCount: 0, request: request, allowRetry: allowRetry, timestamp: Date(), msgDict: msgDict)
             pendingRequests.append(pending)
         }
     }
 
-    func retryLater(_ request: @escaping () -> Void, retryCount: Int) {
+    func retryLater(_ request: @escaping () -> Void, retryCount: Int, msgDict: [String: Any] = [:]) {
         if retryCount < maxRetryCount {
             let delay = baseDelay * pow(2.0, Double(retryCount))
             print("[NetworkMonitor] 延迟 \(delay)s 后重试，第 \(retryCount + 1) 次")
@@ -76,11 +77,12 @@ class NetworkMonitor {
                 if self?.isConnected == true {
                     request()
                 } else {
-                    self?.retryLater(request, retryCount: retryCount + 1)
+                    self?.retryLater(request, retryCount: retryCount + 1,msgDict:msgDict)
                 }
             }
         } else {
             print("[NetworkMonitor] 超过最大重试次数，丢弃请求")
+            reportRequestEvent(reason: "max_retry_exceeded", info: msgDict, retryCount: retryCount)
         }
     }
 
@@ -98,6 +100,7 @@ class NetworkMonitor {
                 validRequests.append(pending)
             } else {
                 print("[NetworkMonitor] 请求挂起超过\(maxPendingTime)秒，丢弃！")
+                reportRequestEvent(reason: "pending_timeout  \(maxPendingTime)秒", info: pending.msgDict)
             }
         }
         
@@ -105,7 +108,7 @@ class NetworkMonitor {
 
         for item in validRequests {
             if item.allowRetry {
-                retryLater(item.request, retryCount: item.retryCount)
+                retryLater(item.request, retryCount: item.retryCount,msgDict: item.msgDict)
             }
         }
     }
@@ -117,5 +120,28 @@ class NetworkMonitor {
             }
         }
         return true
+    }
+    private func reportRequestEvent(reason: String, info: [String: Any], retryCount: Int? = nil) {
+        if info["url"]as? String ?? "" == URL_error_msg{
+            return
+        }
+        var msg = info
+        msg["reason"] = reason
+        if let retryCount = retryCount {
+            msg["retryCount"] = retryCount
+        }
+//        let param = ["message":"\(WHUtils.getJSONStringFromDictionary(dictionary: msg as NSDictionary))"]
+//        WHNetworkUtil.shareManager().POST(urlString: URL_error_msg, parameters: param as [String : AnyObject]) { responseObject in
+//            
+//        }
+//        
+        if let utilsClass = NSClassFromString("WHUtils") as? NSObject.Type {
+            let utils = utilsClass.init()
+            let selector = NSSelectorFromString("sendErrorMsgRequestWithMsgDict:")
+            if utils.responds(to: selector) {
+                _ = utils.perform(selector, with: msg as NSDictionary)
+            }
+        }
+//        WHUtils().sendErrorMsgRequest(msgDict: msg as NSDictionary)
     }
 }

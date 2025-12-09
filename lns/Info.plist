@@ -10,6 +10,8 @@
 	<string>QPdsfTUeSkZam2Ry945d541f816654d03954421be55bf16f1</string>
 	<key>AlivcLicenseKey_SEA</key>
 	<string>QPdsfTUeSkZam2Ry945d541f816654d03954421be55bf16f1</string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>zh_CN</string>

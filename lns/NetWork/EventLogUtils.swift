@@ -58,6 +58,11 @@ class EventLogModel: NSObject {
 
 class EventLogUtils {
     func sendEventLogRequest(eventName:EVENT_TYPE,scenarioType:SCENARIO_TYPE,text:String?,result:Bool=true){
+        if UserInfoModel.shared.uId.count > 1 && UserInfoModel.shared.token.count > 1{
+            
+        }else{
+            return
+        }
         let model = EventLogModel()
         model.scenario = getScenario(type: scenarioType)
         model.text = text ?? ""

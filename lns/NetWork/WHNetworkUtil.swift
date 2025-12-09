@@ -177,7 +177,14 @@ class WHNetworkUtil: SessionManager {
         DLLog(message: "----------  uid   token  ----------------------")
         DLLog(message: "---- uId:\(UserInfoModel.shared.uId)")
         DLLog(message: "---- token:\(UserInfoModel.shared.token)")
-        NetworkMonitor.shared.addRequest {
+        
+        let msgDictError: [String: Any] = [
+            "url": urlString,
+            "parameters": parameters ?? [:],
+            "taskId": taskId
+        ]
+
+        NetworkMonitor.shared.addRequest ({
             if UserInfoModel.shared.uId.count < 4 || UserInfoModel.shared.token.count < 4{
                 let uId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
                 let token = UserDefaults.standard.value(forKey: token) as? String ?? ""
@@ -194,12 +201,7 @@ class WHNetworkUtil: SessionManager {
                 
                 let currentVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
                 let buildVersion = Bundle.main.infoDictionary!["CFBundleVersion"] as! String
-//                let phoneName: String
-//                if #available(iOS 16.0, *) {
-//                    phoneName = "\(Device.current)"
-//                } else {
-//                    phoneName = UIDevice.current.name.isEmpty ? "\(Device.current)" : UIDevice.current.name
-//                }
+                
                 var paraDict:Parameters = ["phonetype":"iOS",
                                            "phonemodel":"\(Device.current)",
                                            "phoneName":"\(UIDevice.current.name)",
@@ -315,6 +317,17 @@ class WHNetworkUtil: SessionManager {
                                 }
                             }else{
                                 MCToast.mc_remove()
+                                if urlString != URL_sport_add || (value["message"] as? String ?? "").contains("存在"){
+                                    let msgDict: NSMutableDictionary = [
+                                        "stage": "response_error",
+                                        "code": code,
+                                        "url":urlString,
+                                        "message": value as Any,
+                                        "params": parameters ?? [:]
+                                    ]
+                                    WHUtils().sendErrorMsgRequest(msgDict: msgDict)
+                                }
+                                
                                 DispatchQueue.main.async {
                                     failure?(true)
                                 }
@@ -335,6 +348,13 @@ class WHNetworkUtil: SessionManager {
                         }else{
                             DLLog(message: "\(urlString) response: \(response)")
                             MCToast.mc_remove()
+                            let msgDict: NSMutableDictionary = [
+                                "stage": "response_error",
+                                "url":urlString,
+                                "message": response as Any,
+                                "params": parameters ?? [:]
+                            ]
+                            WHUtils().sendErrorMsgRequest(msgDict: msgDict)
                             if urlString == URL_community_forum_notice_list{
                                 DispatchQueue.main.async {
                                     success(["code":"404"]as [String : AnyObject])
@@ -396,9 +416,11 @@ class WHNetworkUtil: SessionManager {
 
                         if allowRetry {
                             DLLog(message: "[NetworkMonitor] 请求失败，允许重试，加入pending - \(urlString)")
+                            var retryMsgDict = msgDictError
+                            retryMsgDict["error"] = response.error?.localizedDescription ?? ""
                             NetworkMonitor.shared.retryLater({
                                 self.POST(urlString: urlString, parameters: parameters, isNeedToast: isNeedToast, vc: vc, timeOut: timeOut, taskId: taskId, requestConfig: requestConfig, success: success, failure: failure)
-                            }, retryCount: 0)
+                            }, retryCount: 0, msgDict: retryMsgDict)
                         } else {
                             DLLog(message: "[NetworkMonitor] 请求失败，但禁止重试，直接回调失败 - \(urlString)")
                             DispatchQueue.main.async {
@@ -409,7 +431,7 @@ class WHNetworkUtil: SessionManager {
                     }
                 }
             }
-        }
+        })
     }
 
     public func md5(strs:String) ->String!{

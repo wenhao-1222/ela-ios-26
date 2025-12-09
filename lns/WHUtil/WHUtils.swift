@@ -435,6 +435,9 @@ extension WHUtils{
     }
     
     func sendErrorMsgRequest(msgDict:NSDictionary){
+        if msgDict["url"]as? String ?? "" == URL_sport_add{
+            return
+        }
         let param = ["message":"\(WHUtils.getJSONStringFromDictionary(dictionary: msgDict as NSDictionary))"]
         WHNetworkUtil.shareManager().POST(urlString: URL_error_msg, parameters: param as [String : AnyObject]) { responseObject in
             

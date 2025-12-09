@@ -1134,6 +1134,7 @@
 		ECDF3F9A2C35229E005F7D7D /* ChineseTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDF3F992C35229E005F7D7D /* ChineseTextField.swift */; };
 		ECE399982EA8675E005718C5 /* CoursePayTipsPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */; };
 		ECE3999A2EA87AA7005718C5 /* CoursePDFCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE399992EA87A9E005718C5 /* CoursePDFCell.swift */; };
+		ECE3F9C82EE7BD710032E7C8 /* ServiceCameraCaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE3F9C72EE7BD700032E7C8 /* ServiceCameraCaptureViewController.swift */; };
 		ECF0BFD32BFC3C6400E5F6F0 /* InviteRewardsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD22BFC3C6400E5F6F0 /* InviteRewardsVC.swift */; };
 		ECF0BFD62BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD52BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift */; };
 		ECF0BFD82BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD72BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift */; };
@@ -2457,6 +2458,7 @@
 		ECDF3F992C35229E005F7D7D /* ChineseTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseTextField.swift; sourceTree = "<group>"; };
 		ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePayTipsPopupView.swift; sourceTree = "<group>"; };
 		ECE399992EA87A9E005718C5 /* CoursePDFCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePDFCell.swift; sourceTree = "<group>"; };
+		ECE3F9C72EE7BD700032E7C8 /* ServiceCameraCaptureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCameraCaptureViewController.swift; sourceTree = "<group>"; };
 		ECF0BFD22BFC3C6400E5F6F0 /* InviteRewardsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsVC.swift; sourceTree = "<group>"; };
 		ECF0BFD52BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsTopVM.swift; sourceTree = "<group>"; };
 		ECF0BFD72BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsCodeVM.swift; sourceTree = "<group>"; };
@@ -3916,6 +3918,7 @@
 				EC53283D2BF5E2D500C39C6A /* ServiceVC.swift */,
 				ECC977B72C19C1A500F7FAA6 /* ServiceContactVC.swift */,
 				EC1B59E32EE6BFE700FE3E9A /* ServiceContactMarketVC.swift */,
+				ECE3F9C72EE7BD700032E7C8 /* ServiceCameraCaptureViewController.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -5953,6 +5956,7 @@
 				EC4DE2D02BCE50780090A7BD /* PlanLeadIntoDetailsMsgAlertVM.swift in Sources */,
 				EC26E62D2BBD01B8001E4381 /* LoginCodeVerifyVM.swift in Sources */,
 				ECF0BFD32BFC3C6400E5F6F0 /* InviteRewardsVC.swift in Sources */,
+				ECE3F9C82EE7BD710032E7C8 /* ServiceCameraCaptureViewController.swift in Sources */,
 				ECD5493D2C770AB4009E7E6B /* Widget+Date+Exs.swift in Sources */,
 				ECD04BAD2BEDE20100B8069B /* JournalNewVC.swift in Sources */,
 				ECD0FF012BABD25B001232C9 /* UIPasteboard+YYText.m in Sources */,
@@ -6975,6 +6979,7 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "请求使用相机,进行拍照,以便上传个人信息";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "请求获取苹果健康-体能训练、水、营养元素及身体数据，同步更新到Elavatine";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "请求写入苹果健康-体能训练、水、营养元素及身体数据，Elavatine同步写入。";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "App需要麦克风权限";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "申请保存图片到相册，方便以后使用";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App需要读取相册权限";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -7082,6 +7087,7 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "请求使用相机,进行拍照,以便上传个人信息";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "请求获取苹果健康-体能训练、水、营养元素及身体数据，同步更新到Elavatine";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "请求写入苹果健康-体能训练、水、营养元素及身体数据，Elavatine同步写入。";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "App需要麦克风权限";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "申请保存图片到相册，方便以后使用";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App需要读取相册权限";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

@@ -23,6 +23,7 @@ class ServiceContactMarketVC: WHBaseViewVC {
     var imgUrl = ""
     var lastSendTest = ""
     var relatedOrderId = ""
+    var bizType = "1" //  1  售前咨询  2 售后咨询
     
     var pageNum = 1
     var pageSize = 10
@@ -39,9 +40,9 @@ class ServiceContactMarketVC: WHBaseViewVC {
     private var previousOnlyVideoSetting = false
     
     let defaultDict = ["createdby":"admin",
-                       "suggestion":"\(UserInfoModel.shared.serviceWelcome)"]
+                       "text":"\(UserInfoModel.shared.serviceWelcome)"]
     let responeDict = ["createdby":"admin",
-                       "suggestion":"\(UserInfoModel.shared.serviceResponce)"]
+                       "text":"\(UserInfoModel.shared.serviceResponce)"]
     
     let reachability = try! Reachability()
     /// 当前是否应该自动保持在底部（用户没有往上滑）
@@ -100,7 +101,8 @@ class ServiceContactMarketVC: WHBaseViewVC {
             self?.choiceImgAction()
         }
         vi.chooseCameraBlock = { [weak self] in
-            self?.choiceVideoAction()
+//            self?.choiceVideoAction()
+            self?.openShootCamera()
         }
         vi.chooseOrderBlock = {[weak self] in
             DLLog(message: "选择订单")
@@ -423,6 +425,15 @@ extension ServiceContactMarketVC:UITableViewDelegate,UITableViewDataSource{
             cell?.updateUI(dict: dict)
             
             return cell ?? ServiceContactTableViewVideoCell()
+        }else if dict.stringValueForKey(key: "contentType") == "1"{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewTextCell") as? ServiceContactTableViewTextCell
+            cell?.updateUIForMarket(dict: dict)
+            
+            cell?.addressTapBlock = { [weak self] in
+                self?.openAddressList()
+            }
+            
+            return cell ?? ServiceContactTableViewTextCell()
         }else if dict.stringValueForKey(key: "contentType") == "4"{
             let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewActivityCell") as? ServiceContactTableViewActivityCell
 
@@ -467,7 +478,7 @@ extension ServiceContactMarketVC:UITableViewDelegate,UITableViewDataSource{
             
             return cell ?? ServiceContactTableViewActivityCell()
         }else {
-            if dict.stringValueForKey(key: "suggestion").count > 0{
+            if dict.stringValueForKey(key: "text").count > 0{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewTextCell") as? ServiceContactTableViewTextCell
                 cell?.updateUI(dict: dict)
                 
@@ -645,12 +656,12 @@ extension ServiceContactMarketVC{
                      "contentType": "2"] as [String : Any]
         if self.relatedOrderId.count > 0 {
             param = ["images":[imgUrlString],
-                     "bizType":"2",
+                     "bizType":self.bizType,
                      "relatedOrderId":self.relatedOrderId,
                      "contentType": "2"] as [String : Any]
         }
             
-        WHNetworkUtil.shareManager().POST(urlString: URL_Uer_sugestion, parameters: param as [String:AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_Uer_service_sugestion, parameters: param as [String:AnyObject]) { responseObject in
             DLLog(message: "\(responseObject)")
 
             let code = responseObject["code"]as? Int ?? -1
@@ -671,21 +682,22 @@ extension ServiceContactMarketVC{
             return
         }
         self.lastSendTest = text
-        var param = ["suggestion":self.msgInputView.textView.text.disable_emoji(text: self.msgInputView.textView.text! as NSString),
+        var param = ["text":self.msgInputView.textView.text.disable_emoji(text: self.msgInputView.textView.text! as NSString),
                      "contentType": "1"]
         if self.relatedOrderId.count > 0 {
-            param = ["suggestion":self.msgInputView.textView.text.disable_emoji(text: self.msgInputView.textView.text! as NSString),
-                     "bizType":"2",
+            param = ["text":self.msgInputView.textView.text.disable_emoji(text: self.msgInputView.textView.text! as NSString),
+                     "bizType":self.bizType,
                      "relatedOrderId":self.relatedOrderId,
                      "contentType": "1"]
         }
-        WHNetworkUtil.shareManager().POST(urlString: URL_Uer_sugestion, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_Uer_service_sugestion, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
             DLLog(message: "\(responseObject)")
             let code = responseObject["code"]as? Int ?? -1
             if (code == 200) {
                 let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
                             "ctime":"\(Date().currentSeconds)",
-                            "suggestion":"\(self.msgInputView.textView.text.disable_emoji(text: self.msgInputView.textView.text! as NSString))"]
+                            "contentType":"1",
+                            "text":"\(self.msgInputView.textView.text.disable_emoji(text: self.msgInputView.textView.text! as NSString))"]
                 self.dataSourceArray.add(dict)
                 self.dealDataSource()
                 
@@ -698,21 +710,21 @@ extension ServiceContactMarketVC{
     }
     func sendAddressMsgRequest(model:AddressModel) {
         let text = model.provinceName + model.cityName + model.areaName + model.detailAddress + "\n收件人：" + model.contactName + "\n联系电话：" + model.contactPhone
-        var param = ["suggestion":text.removingEmojiByRegex(),
+        var param = ["text":text.removingEmojiByRegex(),
                      "contentType": "1"]
         if self.relatedOrderId.count > 0 {
-            param = ["suggestion":text.removingEmojiByRegex(),
-                     "bizType":"2",
+            param = ["text":text.removingEmojiByRegex(),
+                     "bizType":self.bizType,
                      "relatedOrderId":self.relatedOrderId,
                      "contentType": "1"]
         }
-        WHNetworkUtil.shareManager().POST(urlString: URL_Uer_sugestion, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_Uer_service_sugestion, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
             DLLog(message: "\(responseObject)")
             let code = responseObject["code"]as? Int ?? -1
             if (code == 200) {
                 let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
                             "ctime":"\(Date().currentSeconds)",
-                            "suggestion":"\(text.removingEmojiByRegex())"]
+                            "text":"\(text.removingEmojiByRegex())"]
                 self.dataSourceArray.add(dict)
                 self.dealDataSource()
             }else{
@@ -974,13 +986,13 @@ extension ServiceContactMarketVC {
         ]]
 
         let params: [String: Any] = [
-            "bizType":"2",
+            "bizType":self.bizType,
             "relatedOrderId":self.relatedOrderId,
             "contentType": "3",
             "material": payload
         ]
-        DLLog(message: "URL_Uer_sugestion:\(params)")
-        WHNetworkUtil.shareManager().POST(urlString: URL_Uer_sugestion,
+        DLLog(message: "URL_Uer_service_sugestion:\(params)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_Uer_service_sugestion,
                                            parameters: params as [String : AnyObject],
                                            isNeedToast: true,
                                            vc: self) { [weak self] _ in
@@ -1144,5 +1156,56 @@ extension ServiceContactMarketVC: ServiceContactTableViewVideoCellDelegate {
         DSImageUploader().dealImgUrlSignForOss(urlStr: cell.videoURLString ?? "") { signUrl in
             self.playVideo(messageId: cell.messageId, urlString: cell.videoURLString)
         }
+    }
+}
+// MARK: - 拍摄（点击拍照 / 长按拍视频）
+extension ServiceContactMarketVC: ServiceCameraCaptureViewControllerDelegate {
+    
+    /// 对外提供一个入口：比如在“拍摄”按钮里直接调用
+    func openShootCamera() {
+        msgInputView.textView.resignFirstResponder()
+        
+        let cameraVC = ServiceCameraCaptureViewController()
+        cameraVC.modalPresentationStyle = .fullScreen
+        cameraVC.delegate = self
+        present(cameraVC, animated: true, completion: nil)
+    }
+    
+    // MARK: - ServiceCameraCaptureViewControllerDelegate
+    
+    /// 拍到照片
+    func cameraCapture(_ controller: ServiceCameraCaptureViewController,
+                       didCapturePhoto image: UIImage) {
+        controller.dismiss(animated: true) { [weak self] in
+            self?.uploadImgData(image: image)
+        }
+    }
+    
+    /// 拍到视频
+    func cameraCapture(_ controller: ServiceCameraCaptureViewController,
+                       didCaptureVideoAt url: URL) {
+        controller.dismiss(animated: true) { [weak self] in
+            guard let self = self else { return }
+            self.videoUrl = url
+            
+            let asset = AVAsset(url: url)
+            DLLog(message: "VideoCapture: \(url)")
+            
+            // 和从相册选视频的逻辑保持一致：先抽关键帧，再走统一的上传流程
+            DLLog(message: "fetchFramesFromVideo:(keyFrames)--- startTime \(Date().currentSeconds)")
+            VideoUtils().getKeyFrameFromUrl(videoUrl: url) { _ in
+                DLLog(message: "fetchFramesFromVideo:(keyFrames)--- endTime \(Date().currentSeconds)")
+                DLLog(message: "fetchFramesFromVideo:(keyFrames)---\(VideoEditModel.shared.keyFrames.count)")
+                
+                if VideoEditModel.shared.keyFramesLoad == true {
+                    self.handleSelectedVideo(asset: asset, url)
+                }
+            }
+        }
+    }
+    
+    /// 取消
+    func cameraCaptureDidCancel(_ controller: ServiceCameraCaptureViewController) {
+        controller.dismiss(animated: true, completion: nil)
     }
 }

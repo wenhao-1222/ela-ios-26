@@ -60,8 +60,13 @@ extension ServiceContactTableViewTextCell{
         setNeedsLayout()
         layoutIfNeeded()
     }
-    func updateTextContent(dict:NSDictionary) {
-        let msgString = "\(dict.stringValueForKey(key: "suggestion"))"
+    func updateUIForMarket(dict:NSDictionary) {
+        self.updateTextContent(dict: dict,keyString: "text")
+        setNeedsLayout()
+        layoutIfNeeded()
+    }
+    func updateTextContent(dict:NSDictionary,keyString:String = "suggestion") {
+        let msgString = "\(dict.stringValueForKey(key: keyString))"
         let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
         let containsAddress = msgString.contains("收货地址")
         hasAddressLink = isAdmin && containsAddress
@@ -86,7 +91,8 @@ extension ServiceContactTableViewTextCell{
         if !isAdmin {    // 右侧（用户）
             headImgView.snp.remakeConstraints { make in
                 make.right.equalTo(-kFitWidth(16))
-                make.top.equalTo(msgLabel)
+//                make.top.equalTo(msgLabel)
+                make.top.equalTo(kFitWidth(10))
                 make.width.height.equalTo(kFitWidth(38))
             }
 
@@ -106,7 +112,8 @@ extension ServiceContactTableViewTextCell{
         } else {         // 左侧（管理员）
             headImgView.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(16))
-                make.top.equalTo(msgLabel)
+//                make.top.equalTo(msgLabel)
+                make.top.equalTo(kFitWidth(10))
                 make.width.height.equalTo(kFitWidth(38))
             }
 

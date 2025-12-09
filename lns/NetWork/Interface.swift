@@ -144,6 +144,7 @@ public let URL_User_logs_goal_update      = URL_Type + "plans/log/update_goal"
 
 //提交建议
 public let URL_Uer_sugestion                = URL_Type + "users/suggestion/save"
+
 //注销账号
 public let URL_Uer_Cancel                   = URL_Type + "users/account/delete"
 //注销账号--前置检查
@@ -152,6 +153,8 @@ public let URL_Uer_Cancel_pre               = URL_Type + "users/account/delete_p
 public let URL_User_Service_config          = URL_Type + "tools/app/chat/welcome"
 //消息列表
 public let URL_User_Service_Msg_List        = URL_Type + "users/suggestion/list"
+///商品咨询
+public let URL_Uer_service_sugestion        = URL_Type + "forum/mall/goods/inquiry/save"
 ///商品咨询   消息列表
 public let URL_User_Service_Market_List     = URL_Type + "forum/mall/goods/inquiry/list"
 //清除日志
