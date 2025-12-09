@@ -100,7 +100,8 @@ class ServiceContactVC: WHBaseViewVC {
             self.choiceImgAction()
         }
         vi.chooseAlbumBlock = { [weak self] in
-            self?.choiceAlbumAction()
+//            self?.choiceAlbumAction()
+            self?.choiceImgAction()
         }
         vi.chooseCameraBlock = { [weak self] in
             self?.choiceVideoAction()
@@ -384,10 +385,25 @@ extension ServiceContactVC{
         view.addSubview(msgInputView)
 //        self.tableView.layoutIfNeeded()
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenInputViewImg))
+        tap.cancelsTouchesInView = false
+        tap.delegate = self
+        view.addGestureRecognizer(tap)
+        
         view.addSubview(activityAlertVm)
         self.view.layoutIfNeeded()
     }
 }
+
+extension ServiceContactVC: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if touch.view?.isDescendant(of: msgInputView) == true {
+            return false
+        }
+        return true
+    }
+}
+
 
 extension ServiceContactVC:UITableViewDelegate,UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {

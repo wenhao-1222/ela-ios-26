@@ -53,14 +53,6 @@ class ServiceContactMarketVC: WHBaseViewVC {
         case video
     }
     
-//    enum VideoUploadState: String {
-//       case preparing
-//       case uploading
-//       case paused
-//       case completed
-//       case failed
-//   }
-    
     override func viewWillAppear(_ animated: Bool) {
         IQKeyboardManager.shared.enable = false
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
@@ -104,7 +96,8 @@ class ServiceContactMarketVC: WHBaseViewVC {
             self.choiceImgAction()
         }
         vi.chooseAlbumBlock = { [weak self] in
-            self?.choiceAlbumAction()
+//            self?.choiceAlbumAction()
+            self?.choiceImgAction()
         }
         vi.chooseCameraBlock = { [weak self] in
             self?.choiceVideoAction()
@@ -171,7 +164,7 @@ extension ServiceContactMarketVC{
     }
     @objc func choiceImgAction() {
         self.view.becomeFirstResponder()
-        if self.relatedOrderId.count > 0{
+//        if self.relatedOrderId.count > 0{
             let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
             alert.addAction(UIAlertAction(title: "发送照片", style: .default, handler: { [weak self] _ in
                 self?.choiceAlbumAction()
@@ -185,9 +178,9 @@ extension ServiceContactMarketVC{
                 pop.sourceRect = msgInputView.addBgView.bounds
             }
             present(alert, animated: true)
-        }else{
-            choiceAlbumAction()
-        }
+//        }else{
+//            choiceAlbumAction()
+//        }
     }
     func choiceAlbumAction() {
         // 创建一个PHPickerConfiguration对象
@@ -391,8 +384,22 @@ extension ServiceContactMarketVC{
         view.addSubview(msgInputView)
 //        self.tableView.layoutIfNeeded()
         
+        let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenInputViewImg))
+       tap.cancelsTouchesInView = false
+       tap.delegate = self
+       view.addGestureRecognizer(tap)
+        
         view.addSubview(activityAlertVm)
         self.view.layoutIfNeeded()
+    }
+}
+
+extension ServiceContactMarketVC: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if touch.view?.isDescendant(of: msgInputView) == true {
+            return false
+        }
+        return true
     }
 }
 

@@ -114,7 +114,7 @@ class ServiceInputVM: UIView {
 //        btn.imgView.setImgLocal(imgName: "service_album_icon")
         btn.imgView.image = UIImage(named: "service_album_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         
-        btn.contenLab.text = "照片"
+        btn.contenLab.text = "相册"
         btn.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         btn.labelColor = .COLOR_TEXT_TITLE_0f1214_50
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
@@ -128,7 +128,7 @@ class ServiceInputVM: UIView {
         let btn = ServiceFuncButton.init(frame: CGRect.init(x: kFitWidth(109), y: kFitWidth(19), width: kFitWidth(65), height: kFitWidth(88)))
 //        btn.imgView.setImgLocal(imgName: "service_camera_icon")
         btn.imgView.image = UIImage(named: "service_camera_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
-        btn.contenLab.text = "视频"
+        btn.contenLab.text = "拍摄"
         btn.contenLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         btn.labelColor = .COLOR_TEXT_TITLE_0f1214_50
         btn.contenLab.font = .systemFont(ofSize: 12, weight: .medium)
