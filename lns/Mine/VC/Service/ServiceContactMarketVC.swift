@@ -50,6 +50,7 @@ class ServiceContactMarketVC: WHBaseViewVC {
     /// 当前是否应该自动保持在底部（用户没有往上滑）
     private var shouldKeepAtBottom = true
     private var pendingImageIndexPaths = Set<IndexPath>()
+    private var hasCheckedLatestGoodsInfo = false
     
     enum MediaPickerType {
         case image
@@ -70,7 +71,7 @@ class ServiceContactMarketVC: WHBaseViewVC {
         
         initUI()
         checkNetWork()
-        sendGoodsMsg()
+//        sendGoodsMsg()
 //        sendOssStsRequest()
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "serviceMsgRead"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(addressNotifiAction(notify: )), name: NOTIFI_NAME_ADD_ADDRESS, object: nil)
@@ -683,6 +684,7 @@ extension ServiceContactMarketVC{
 //            self.dealDataSource(animated: true)
             self.removeDuplicateMessagesById()
             self.dealDataSource(animated: !isLoadMore, shouldScrollToBottom: !isLoadMore, previousContentHeight: previousContentHeight)
+            self.evaluateInitialGoodsMessageIfNeeded(isLoadMore: isLoadMore)
         }
     }
     private func removeDuplicateMessagesById() {
@@ -1397,5 +1399,39 @@ extension ServiceContactMarketVC: ServiceCameraCaptureViewControllerDelegate {
     /// 取消
     func cameraCaptureDidCancel(_ controller: ServiceCameraCaptureViewController) {
         controller.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension ServiceContactMarketVC {
+    private func evaluateInitialGoodsMessageIfNeeded(isLoadMore: Bool) {
+        guard !isLoadMore, !hasCheckedLatestGoodsInfo else { return }
+        hasCheckedLatestGoodsInfo = true
+
+        guard detailModel.skuName.count > 0 else { return }
+
+        if !isLatestGoodsMessageCurrentProduct() {
+            sendGoodsDetailRequest()
+        }
+    }
+
+    private func isLatestGoodsMessageCurrentProduct() -> Bool {
+        let currentSkuId = detailModel.spuId
+
+        guard dataSourceArray.count > 0 else { return false }
+
+        for index in stride(from: dataSourceArray.count - 1, through: 0, by: -1) {
+            guard let dict = dataSourceArray[index] as? NSDictionary else { continue }
+
+            if dict.stringValueForKey(key: "contentType") == "4" {
+                if !currentSkuId.isEmpty {
+                    return dict.stringValueForKey(key: "relatedSkuId") == currentSkuId
+                }
+
+                let goodsInfoCard = dict["goodsInfoCard"] as? NSDictionary ?? [:]
+                return goodsInfoCard.stringValueForKey(key: "name") == detailModel.skuName
+            }
+        }
+
+        return false
     }
 }
