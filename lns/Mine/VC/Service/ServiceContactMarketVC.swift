@@ -27,7 +27,7 @@ class ServiceContactMarketVC: WHBaseViewVC {
     var detailModel = MallDetailModel()
     
     var pageNum = 1
-    var pageSize = 2
+    var pageSize = 30
     private var isLoadingMore = false
     
     var photoAssets:[PHAsset] = [PHAsset]()
@@ -140,6 +140,7 @@ class ServiceContactMarketVC: WHBaseViewVC {
         vi.register(ServiceContactTableViewImageCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewImageCell")
         vi.register(ServiceContactTableViewActivityCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewActivityCell")
         vi.register(ServiceContactTableViewVideoCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewVideoCell")
+        vi.register(ServiceContactTableViewGoodsInfoCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewGoodsInfoCell")
         vi.separatorStyle = .none
         vi.backgroundColor = .clear
         vi.isHidden = true
@@ -466,48 +467,10 @@ extension ServiceContactMarketVC:UITableViewDelegate,UITableViewDataSource{
             
             return cell ?? ServiceContactTableViewTextCell()
         }else if dict.stringValueForKey(key: "contentType") == "4"{
-            let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewActivityCell") as? ServiceContactTableViewActivityCell
-
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewGoodsInfoCell") as? ServiceContactTableViewGoodsInfoCell
             cell?.updateUI(dict: dict)
-            cell?.onImageLoaded = {[weak self, weak cell] in
-                guard let self = self,
-                      let cell = cell,
-                      let indexPath = tableView.indexPath(for: cell) else { return }
-
-                // 如果正在滚动，先记下来；不立刻刷新
-//                if self.tableView.isDragging || self.tableView.isDecelerating {
-//                    self.pendingImageIndexPaths.insert(indexPath)
-//                    return
-//                }
-                // 不在滚动时，直接更新这一行高度
-                self.updateRowHeightForImages(at: [indexPath])
-            }
-            cell?.imgTapBlock = {()in
-                let imagesStr = dict.stringValueForKey(key: "images")
-                let images = WHUtils.getArrayFromJSONString(jsonString: imagesStr)
-                var imgUrl = images[0]as? String ?? ""
-                if images.count > 1 {
-                    imgUrl = images[1]as? String ?? ""
-                }
-                let dict = ["image":[imgUrl],
-                            "button":[["text":"关闭",
-                                       "iosTargetPage":""]]]
-//                self.activityAlertVm.updateUI(dict: dict as NSDictionary)
-                
-                let alertVC = ActivityAlertVC()
-                alertVC.modalPresentationStyle = .overFullScreen
-                alertVC.pushBlock = { [weak self] target in
-                    guard let self = self,
-                          let vc = self.createVCObjectFromString(className: target) else {
-                        return
-                    }
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-                alertVC.updateUI(dict: dict as NSDictionary)
-                self.present(alertVC, animated: false)
-            }
             
-            return cell ?? ServiceContactTableViewActivityCell()
+            return cell ?? ServiceContactTableViewGoodsInfoCell()
         }else {
             if dict.stringValueForKey(key: "text").count > 0{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewTextCell") as? ServiceContactTableViewTextCell

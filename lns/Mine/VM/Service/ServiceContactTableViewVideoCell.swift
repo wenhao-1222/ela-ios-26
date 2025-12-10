@@ -47,7 +47,7 @@ class ServiceContactTableViewVideoCell: UITableViewCell {
     
     lazy var headImgView: UIImageView = {
         let img = UIImageView()
-        img.layer.cornerRadius = kFitWidth(18)
+        img.layer.cornerRadius = kFitWidth(19)
         img.clipsToBounds = true
         
         return img
@@ -81,17 +81,17 @@ class ServiceContactTableViewVideoCell: UITableViewCell {
             updateAlignment(isOutgoing: true)
             headImgView.setImgUrl(urlString: UserInfoModel.shared.headimgurl)
             headImgView.snp.remakeConstraints { make in
-                make.right.equalTo(kFitWidth(-10))
+                make.right.equalTo(kFitWidth(-16))
                 make.top.equalTo(kFitWidth(5))
-                make.width.height.equalTo(kFitWidth(36))
+                make.width.height.equalTo(kFitWidth(38))
             }
         }else{
             updateAlignment(isOutgoing: false)
             headImgView.setImgLocal(imgName: "avatar_default")
             headImgView.snp.remakeConstraints { make in
-                make.left.equalTo(kFitWidth(10))
+                make.left.equalTo(kFitWidth(16))
                 make.top.equalTo(kFitWidth(5))
-                make.width.height.equalTo(kFitWidth(36))
+                make.width.height.equalTo(kFitWidth(38))
             }
         }
         let progressValue = CGFloat(dict.doubleValueForKey(key: "videoUploadProgress"))
@@ -174,8 +174,8 @@ class ServiceContactTableViewVideoCell: UITableViewCell {
             make.bottom.equalToSuperview().offset(-kFitWidth(6))
             widthConstraint = make.width.equalTo(0).constraint
             heightConstraint = make.height.equalTo(0).constraint
-            leadingConstraint = make.left.equalToSuperview().offset(kFitWidth(60)).constraint
-            trailingConstraint = make.right.equalToSuperview().offset(-kFitWidth(60)).constraint
+            leadingConstraint = make.left.equalToSuperview().offset(kFitWidth(62)).constraint
+            trailingConstraint = make.right.equalToSuperview().offset(-kFitWidth(62)).constraint
         }
         trailingConstraint?.deactivate()
 
