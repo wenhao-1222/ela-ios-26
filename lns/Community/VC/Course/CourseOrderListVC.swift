@@ -141,25 +141,6 @@ extension CourseOrderListVC: UITableViewDelegate, UITableViewDataSource {
             cell.payBlock = { [weak self] in
                 guard let self else { return }
                 self.showPay(dict: dict)
-//                let vc = CourseOrderPayAlertVC()
-//                vc.msgDict = dict
-//                
-//                if UIDevice.current.userInterfaceIdiom == .pad {
-//                    self.navigationController?.pushViewController(vc, animated: true)
-//                } else {
-//                    // iPhone：保持你原有的视觉（透明背景 + 自定义底部弹出）
-//                    vc.modalPresentationStyle = .overFullScreen
-//                    vc.modalTransitionStyle = .crossDissolve
-//                    vc.isModalInPresentation = true
-//                    self.present(vc, animated: true)
-//                }
-//            
-//                vc.paySuccessBlock = { dic in
-//                    let v = CoursePayResultVC()
-//                    v.msgDict = dict
-//                    v.orderDict = dic
-//                    self.navigationController?.pushViewController(v, animated: true)
-//                }
             }
             cell.closeBlock = { [weak self] in
                 self?.sendCloseOrderRequest(dict: dict, indexPath: indexPath, bizType: "1")

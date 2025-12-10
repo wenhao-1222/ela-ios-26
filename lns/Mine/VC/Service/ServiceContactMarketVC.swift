@@ -62,6 +62,7 @@ class ServiceContactMarketVC: WHBaseViewVC {
     }
     override func viewDidDisappear(_ animated: Bool) {
         IQKeyboardManager.shared.enable = true
+        self.hiddenInputViewImg()
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
     override func viewDidLoad() {
@@ -108,7 +109,8 @@ class ServiceContactMarketVC: WHBaseViewVC {
             self?.openShootCamera()
         }
         vi.chooseOrderBlock = {[weak self] in
-            DLLog(message: "选择订单")
+//            DLLog(message: "选择订单")
+            self?.orderListVm.showSelf()
         }
         vi.textSendBlock = {()in
             self.sendSuggestionTextRequest()
@@ -141,6 +143,7 @@ class ServiceContactMarketVC: WHBaseViewVC {
         vi.register(ServiceContactTableViewActivityCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewActivityCell")
         vi.register(ServiceContactTableViewVideoCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewVideoCell")
         vi.register(ServiceContactTableViewGoodsInfoCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewGoodsInfoCell")
+        vi.register(ServiceContactTableViewOrderInfoCell.classForCoder(), forCellReuseIdentifier: "ServiceContactTableViewOrderInfoCell")
         vi.separatorStyle = .none
         vi.backgroundColor = .clear
         vi.isHidden = true
@@ -161,6 +164,13 @@ class ServiceContactMarketVC: WHBaseViewVC {
         vm.controller = self
         vm.pushBlock = {(target)in
             
+        }
+        return vm
+    }()
+    lazy var orderListVm: ServiceOrderAlertVM = {
+        let vm = ServiceOrderAlertVM.init(frame: .zero)
+        vm.tapBlock = {(dict)in
+            self.sendOrderMsgRequest(dict: dict)
         }
         return vm
     }()
@@ -424,6 +434,7 @@ extension ServiceContactMarketVC{
        view.addGestureRecognizer(tap)
         
         view.addSubview(activityAlertVm)
+        view.addSubview(orderListVm)
         self.view.layoutIfNeeded()
     }
 }
@@ -491,6 +502,11 @@ extension ServiceContactMarketVC:UITableViewDelegate,UITableViewDataSource{
             }
             
             return cell ?? ServiceContactTableViewGoodsInfoCell()
+        }else if dict.stringValueForKey(key: "contentType") == "5"{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewOrderInfoCell") as? ServiceContactTableViewOrderInfoCell
+            cell?.updateUI(dict: dict)
+            
+            return cell ?? ServiceContactTableViewOrderInfoCell()
         }else {
             if dict.stringValueForKey(key: "text").count > 0{
                 let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewTextCell") as? ServiceContactTableViewTextCell
@@ -797,6 +813,50 @@ extension ServiceContactMarketVC{
                                        "subtitle":self.detailModel.subtitle,
                                        "warrantyPolicyNotice":self.detailModel.warrantyPolicyNotice,
                                        "images":self.detailModel.image_arr_banner]] as [String : Any]
+        
+        WHNetworkUtil.shareManager().POST(urlString: URL_Uer_service_sugestion, parameters: param as [String:AnyObject]) { responseObject in
+            DLLog(message: "\(responseObject)")
+
+            let code = responseObject["code"]as? Int ?? -1
+            if (code == 200) {
+//                let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
+//                            "ctime":"\(Date().currentSeconds)",
+//                            "images":"\(self.getJSONStringFromArray(array: [imgUrlString]))"]
+//                self.dataSourceArray.add(dict)
+//                self.dealDataSource()
+            }else{
+                MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试")
+            }
+        }
+    }
+    func sendOrderMsgRequest(dict:NSDictionary) {
+        var orderInfoCard = NSMutableDictionary()
+        if dict.stringValueForKey(key: "bizType") == "1"{//教程
+            let coverInfo = dict["coverInfo"]as? NSDictionary ?? [:]
+            orderInfoCard = ["orderId":dict.stringValueForKey(key: "id"),
+                             "tutorial":["id":dict.stringValueForKey(key: "tutorialId"),
+                                 "name":dict.stringValueForKey(key: "title"),
+                                 "subtitle":dict.stringValueForKey(key: "subtitle"),
+                                 "images":[coverInfo.stringValueForKey(key: "orderListImageOssUrl")]]]
+        }else {
+            let specList = dict["specValueList"]as? NSArray ?? []
+            var spec = ""
+            for i in 0..<specList.count{
+                let s = specList[i]as? String ?? ""
+                spec += s
+                if i < specList.count - 1{
+                    spec += " | "
+                }
+            }
+            
+            orderInfoCard = ["orderId":dict.stringValueForKey(key: "id"),
+                             "goodsList":[["name":dict.stringValueForKey(key: "skuName"),
+                                           "spec":spec,
+                                           "images":dict["image"]as? NSArray ?? []]]]
+        }
+        let param = ["bizType":"2",//订单，肯定是售后咨询了
+                     "relatedOrderId":dict.stringValueForKey(key: "id"),
+                     "orderInfoCard": orderInfoCard] as [String : Any]
         
         WHNetworkUtil.shareManager().POST(urlString: URL_Uer_service_sugestion, parameters: param as [String:AnyObject]) { responseObject in
             DLLog(message: "\(responseObject)")

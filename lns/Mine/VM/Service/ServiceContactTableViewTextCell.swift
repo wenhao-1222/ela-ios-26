@@ -85,7 +85,7 @@ extension ServiceContactTableViewTextCell{
         }
 
         let maxBubbleWidth = kFitWidth(250)
-        // ⭐ 关键：根据当前这条消息内容，算出“应该有多宽”的气泡 
+        // ⭐ 关键：根据当前这条消息内容，算出“应该有多宽”的气泡
         let bubbleWidth = bubbleWidthForCurrentMessage(maxBubbleWidth: maxBubbleWidth)
         let msgHeight = msgLabel.sizeThatFits(CGSize(width: bubbleWidth, height: .greatestFiniteMagnitude)).height
         let headHeight = kFitWidth(38)

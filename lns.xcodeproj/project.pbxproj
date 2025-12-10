@@ -955,6 +955,9 @@
 		EC976F962E977ED500D964E2 /* LiquidGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC976F952E977ED400D964E2 /* LiquidGlassView.swift */; };
 		EC9B8B792E98D4BA00FACE39 /* SystemTabbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9B8B782E98D4B900FACE39 /* SystemTabbar.swift */; };
 		EC9CB9322EE90E1600FBF915 /* ServiceContactTableViewGoodsInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9CB9312EE90E0D00FBF915 /* ServiceContactTableViewGoodsInfoCell.swift */; };
+		EC9CB9342EE94B0E00FBF915 /* ServiceOrderAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9CB9332EE94B0800FBF915 /* ServiceOrderAlertVM.swift */; };
+		EC9CB9362EE9554000FBF915 /* ServiceOrderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9CB9352EE9553600FBF915 /* ServiceOrderTableViewCell.swift */; };
+		EC9CB9382EE9699400FBF915 /* ServiceContactTableViewOrderInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9CB9372EE9699400FBF915 /* ServiceContactTableViewOrderInfoCell.swift */; };
 		ECA1E2EC2C007B7E00C31B77 /* AESEncyptUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA1E2EB2C007B7E00C31B77 /* AESEncyptUtil.swift */; };
 		ECA1E2EE2C00818B00C31B77 /* Character+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA1E2ED2C00818B00C31B77 /* Character+Exs.swift */; };
 		ECA1E2F02C0081F700C31B77 /* Data+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA1E2EF2C0081F700C31B77 /* Data+Exs.swift */; };
@@ -2250,6 +2253,9 @@
 		EC976F952E977ED400D964E2 /* LiquidGlassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassView.swift; sourceTree = "<group>"; };
 		EC9B8B782E98D4B900FACE39 /* SystemTabbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemTabbar.swift; sourceTree = "<group>"; };
 		EC9CB9312EE90E0D00FBF915 /* ServiceContactTableViewGoodsInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContactTableViewGoodsInfoCell.swift; sourceTree = "<group>"; };
+		EC9CB9332EE94B0800FBF915 /* ServiceOrderAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceOrderAlertVM.swift; sourceTree = "<group>"; };
+		EC9CB9352EE9553600FBF915 /* ServiceOrderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceOrderTableViewCell.swift; sourceTree = "<group>"; };
+		EC9CB9372EE9699400FBF915 /* ServiceContactTableViewOrderInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContactTableViewOrderInfoCell.swift; sourceTree = "<group>"; };
 		ECA1E2EB2C007B7E00C31B77 /* AESEncyptUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AESEncyptUtil.swift; sourceTree = "<group>"; };
 		ECA1E2ED2C00818B00C31B77 /* Character+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+Exs.swift"; sourceTree = "<group>"; };
 		ECA1E2EF2C0081F700C31B77 /* Data+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Exs.swift"; sourceTree = "<group>"; };
@@ -4568,8 +4574,11 @@
 				EC05181C2EE02AA3007747E0 /* ServiceContactTableViewActivityCell.swift */,
 				A773C22D2E84EB6600F1E3AA /* ServiceContactTableViewVideoCell.swift */,
 				EC9CB9312EE90E0D00FBF915 /* ServiceContactTableViewGoodsInfoCell.swift */,
+				EC9CB9372EE9699400FBF915 /* ServiceContactTableViewOrderInfoCell.swift */,
 				A773C22F2E84EB7800F1E3AA /* ServiceVideoProgressRing.swift */,
 				EC1B59E12EE6AC7600FE3E9A /* ServiceTypeItemVM.swift */,
+				EC9CB9332EE94B0800FBF915 /* ServiceOrderAlertVM.swift */,
+				EC9CB9352EE9553600FBF915 /* ServiceOrderTableViewCell.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -5644,6 +5653,7 @@
 				ECBA93582C94137E00117888 /* NaturalStatCalendarMarkCirCleFillView.swift in Sources */,
 				ECD0FE8A2BABD0E3001232C9 /* WH_DESUtils.m in Sources */,
 				ECD0FE8B2BABD0E3001232C9 /* WHNetworkUtil.swift in Sources */,
+				EC9CB9362EE9554000FBF915 /* ServiceOrderTableViewCell.swift in Sources */,
 				ECD0FEF12BABD25B001232C9 /* YYTextContainerView.m in Sources */,
 				ECFACE822BC7C805003CDA3A /* PlanListVC.swift in Sources */,
 				EC9321AE2C50C80D00FDBBE2 /* MealsNameVM.swift in Sources */,
@@ -6091,6 +6101,7 @@
 				ECB3E0852BD77AEF00CFDDFD /* FoodsDetailCaloriVM.swift in Sources */,
 				EC1EFB9C2BD203830021822F /* BalloonMarker.swift in Sources */,
 				A729C7532D2E58500067BB97 /* ForumCommentNewsModel.swift in Sources */,
+				EC9CB9342EE94B0E00FBF915 /* ServiceOrderAlertVM.swift in Sources */,
 				EC87A44B2C8EBB7A00BAB8CE /* NaturalUtil.swift in Sources */,
 				A7B676D82E28C4E600E2CF1E /* CoursePayOrderCouponVM.swift in Sources */,
 				A7202AFB2DD7260000CEA8D1 /* JournalReportWeekCalendarMonthVM.swift in Sources */,
@@ -6416,6 +6427,7 @@
 				A744266B2CDB5A7F000D7E2B /* ParseSettings.swift in Sources */,
 				A744266C2CDB5A7F000D7E2B /* CssSelector.swift in Sources */,
 				A7EDC0E72D13FE250012D3FF /* BannerVM.swift in Sources */,
+				EC9CB9382EE9699400FBF915 /* ServiceContactTableViewOrderInfoCell.swift in Sources */,
 				A7EDC0E82D13FE250012D3FF /* BannerCell.swift in Sources */,
 				A744266D2CDB5A7F000D7E2B /* CharacterReader.swift in Sources */,
 				A744266E2CDB5A7F000D7E2B /* Node.swift in Sources */,

@@ -1,7 +1,7 @@
 //
-//  ServiceContactTableViewGoodsInfoCell.swift
+//  ServiceContactTableViewOrderInfoCell.swift
 //  lns
-//
+//ServiceContactTableViewOrderInfoCell
 //  Created by LNS2 on 2025/12/10.
 //
 import Foundation
@@ -9,7 +9,7 @@ import Kingfisher
 import SnapKit
 
 
-class ServiceContactTableViewGoodsInfoCell: UITableViewCell {
+class ServiceContactTableViewOrderInfoCell: UITableViewCell {
     
     private var avatarRequestID = UUID()
     
@@ -84,7 +84,7 @@ class ServiceContactTableViewGoodsInfoCell: UITableViewCell {
         return lab
     }()
 
-    private lazy var goodsPolicyLabel: UILabel = {
+    private lazy var orderNoLabel: UILabel = {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 10, weight: .regular)
@@ -93,44 +93,57 @@ class ServiceContactTableViewGoodsInfoCell: UITableViewCell {
     }()
 }
 
-extension ServiceContactTableViewGoodsInfoCell{
+extension ServiceContactTableViewOrderInfoCell{
     func updateUI(dict:NSDictionary) {
-        let goodsInfo = dict["goodsInfoCard"] as? NSDictionary ?? [:]
+        let orderInfo = dict["orderInfoCard"] as? NSDictionary ?? [:]
         let isAdmin = dict.stringValueForKey(key: "createdby") == "admin" || dict.stringValueForKey(key: "createdBy") == "admin"
 
         configureAvatar(isAdmin: isAdmin)
         layoutForRole(isAdmin: isAdmin)
-
-        goodsNameLabel.text = goodsInfo.stringValueForKey(key: "name")
-
-        let subtitle = "营养补剂"//goodsInfo.stringValueForKey(key: "subtitle")
-        goodsSubtitleLabel.text = subtitle
-        goodsSubtitleLabel.isHidden = subtitle.isEmpty
-
-        let policy = "香港仓发货｜免运费（偏远地区除外）"//goodsInfo.stringValueForKey(key: "warrantyPolicyNotice")
-        goodsPolicyLabel.text = policy
-        goodsPolicyLabel.isHidden = policy.isEmpty
-
-        if let imagesArr = goodsInfo["images"] as? [String], let first = imagesArr.first {
-            loadGoodsImage(urlString: first)
-        }else if let imagesArr = goodsInfo["images"] as? NSArray, let first = imagesArr.firstObject as? String{
-            loadGoodsImage(urlString: first)
+        
+        let orderNo = "订单号 \(orderInfo.stringValueForKey(key: "orderId"))"
+        orderNoLabel.text = orderNo
+        orderNoLabel.isHidden = false
+        goodsNameLabel.text = ""
+        goodsSubtitleLabel.text = ""
+        
+        let goodsList = orderInfo["goodsList"]as? NSArray ?? []
+        
+        if goodsList.count > 0{
+            let goodsInfo = goodsList[0]as? NSDictionary ?? [:]
+            goodsNameLabel.text = goodsInfo.stringValueForKey(key: "name")
+            goodsSubtitleLabel.text = goodsInfo.stringValueForKey(key: "spec")
+            
+            if let imagesArr = goodsInfo["images"] as? [String], let first = imagesArr.first {
+                loadGoodsImage(urlString: first)
+            }else if let imagesArr = goodsInfo["images"] as? NSArray, let first = imagesArr.firstObject as? String{
+                loadGoodsImage(urlString: first)
+            }
+        }else{
+            let tutorialInfo = orderInfo["tutorial"]as? NSDictionary ?? [:]
+            goodsNameLabel.text = tutorialInfo.stringValueForKey(key: "name")
+            goodsSubtitleLabel.text = tutorialInfo.stringValueForKey(key: "subtitle")
+            if let imagesArr = tutorialInfo["images"] as? [String], let first = imagesArr.first {
+                loadGoodsImage(urlString: first)
+            }else if let imagesArr = tutorialInfo["images"] as? NSArray, let first = imagesArr.firstObject as? String{
+                loadGoodsImage(urlString: first)
+            }
         }
     }
 }
 
-private extension ServiceContactTableViewGoodsInfoCell {
+private extension ServiceContactTableViewOrderInfoCell {
     @objc func tapAction() {
         self.tapBlock?()
     }
 }
 
-private extension ServiceContactTableViewGoodsInfoCell {
+private extension ServiceContactTableViewOrderInfoCell {
     func initUI() {
         contentView.addSubview(headImgView)
         contentView.addSubview(whiteView)
         whiteView.addSubview(goodgBgView)
-        whiteView.addSubview(goodsPolicyLabel)
+        whiteView.addSubview(orderNoLabel)
         goodgBgView.addSubview(goodsImgView)
 
         let infoStack = UIStackView(arrangedSubviews: [goodsNameLabel, goodsSubtitleLabel])
@@ -140,7 +153,7 @@ private extension ServiceContactTableViewGoodsInfoCell {
         goodgBgView.addSubview(infoStack)
 
         goodgBgView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(UIEdgeInsets(top: kFitWidth(12), left: kFitWidth(12), bottom: kFitWidth(12), right: kFitWidth(12)))
+            make.edges.equalToSuperview().inset(UIEdgeInsets(top: kFitWidth(35), left: kFitWidth(12), bottom: kFitWidth(12), right: kFitWidth(12)))
         }
 
         goodsImgView.snp.makeConstraints { make in
@@ -148,12 +161,12 @@ private extension ServiceContactTableViewGoodsInfoCell {
             make.width.height.equalTo(kFitWidth(80))
             make.bottom.lessThanOrEqualToSuperview()
         }
-        goodsPolicyLabel.snp.makeConstraints { make in
+        orderNoLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(12))
             make.right.equalTo(kFitWidth(-12))
             make.height.equalTo(kFitWidth(15))
-            make.bottom.equalTo(kFitWidth(-10))
-            make.top.equalTo(kFitWidth(96))
+            make.top.equalTo(kFitWidth(10))
+//            make.top.equalTo(kFitWidth(96))
         }
 
         infoStack.snp.makeConstraints { make in
