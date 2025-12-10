@@ -94,7 +94,7 @@ class ServiceContactTableViewGoodsInfoCell: UITableViewCell {
 extension ServiceContactTableViewGoodsInfoCell{
     func updateUI(dict:NSDictionary) {
         let goodsInfo = dict["goodsInfoCard"] as? NSDictionary ?? [:]
-        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
+        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin" || dict.stringValueForKey(key: "createdBy") == "admin"
 
         configureAvatar(isAdmin: isAdmin)
         layoutForRole(isAdmin: isAdmin)

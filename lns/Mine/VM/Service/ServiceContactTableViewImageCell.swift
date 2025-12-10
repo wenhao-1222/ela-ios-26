@@ -71,7 +71,7 @@ extension ServiceContactTableViewImageCell{
         let imagesStr = dict.stringValueForKey(key: "images")
         let imagesArr = WHUtils.getArrayFromJSONString(jsonString: imagesStr)
         
-        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
+        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin" || dict.stringValueForKey(key: "createdBy") == "admin"
 
         configureAvatar(isAdmin: isAdmin)
 

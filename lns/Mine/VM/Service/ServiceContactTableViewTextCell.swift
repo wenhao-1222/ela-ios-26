@@ -67,7 +67,7 @@ extension ServiceContactTableViewTextCell{
     }
     func updateTextContent(dict:NSDictionary,keyString:String = "suggestion") {
         let msgString = "\(dict.stringValueForKey(key: keyString))"
-        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin"
+        let isAdmin = dict.stringValueForKey(key: "createdby") == "admin" || dict.stringValueForKey(key: "createdBy") == "admin"
         let containsAddress = msgString.contains("收货地址")
         hasAddressLink = isAdmin && containsAddress
 
@@ -85,15 +85,20 @@ extension ServiceContactTableViewTextCell{
         }
 
         let maxBubbleWidth = kFitWidth(250)
-        // ⭐ 关键：根据当前这条消息内容，算出“应该有多宽”的气泡
+        // ⭐ 关键：根据当前这条消息内容，算出“应该有多宽”的气泡 
         let bubbleWidth = bubbleWidthForCurrentMessage(maxBubbleWidth: maxBubbleWidth)
-
+        let msgHeight = msgLabel.sizeThatFits(CGSize(width: bubbleWidth, height: .greatestFiniteMagnitude)).height
+        let headHeight = kFitWidth(38)
+        let isMsgTallerThanHead = msgHeight > headHeight
         if !isAdmin {    // 右侧（用户）
             headImgView.snp.remakeConstraints { make in
                 make.right.equalTo(-kFitWidth(16))
 //                make.top.equalTo(msgLabel)
                 make.top.equalTo(kFitWidth(10))
                 make.width.height.equalTo(kFitWidth(38))
+                if !isMsgTallerThanHead {
+                    make.bottom.equalTo(-kFitWidth(10))
+                }
             }
 
             msgLabel.snp.remakeConstraints { make in
@@ -101,9 +106,12 @@ extension ServiceContactTableViewTextCell{
                 // 气泡紧挨头像左侧，留一点间距
 //                make.right.equalTo(headImgView.snp.left).offset(-kFitWidth(8))
                 make.right.equalTo(kFitWidth(-62))
-                make.bottom.equalTo(-kFitWidth(10))
+//                make.bottom.equalTo(-kFitWidth(10))
                 // ⭐ 这里用 equalTo，而不是 lessThanOrEqualTo
                 make.width.equalTo(bubbleWidth)
+                if isMsgTallerThanHead {
+                    make.bottom.equalTo(-kFitWidth(10))
+                }
             }
 
             msgLabel.textAlignment = .left
@@ -115,14 +123,20 @@ extension ServiceContactTableViewTextCell{
 //                make.top.equalTo(msgLabel)
                 make.top.equalTo(kFitWidth(10))
                 make.width.height.equalTo(kFitWidth(38))
+                if isMsgTallerThanHead {
+                    make.bottom.equalTo(-kFitWidth(10))
+                }
             }
 
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
 //                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(8))
                 make.left.equalTo(kFitWidth(62))
-                make.bottom.equalTo(-kFitWidth(10))
+//                make.bottom.equalTo(-kFitWidth(10))
                 make.width.equalTo(bubbleWidth)
+                if isMsgTallerThanHead {
+                    make.bottom.equalTo(-kFitWidth(10))
+                }
             }
 
             msgLabel.textAlignment = .left
@@ -161,9 +175,6 @@ extension ServiceContactTableViewTextCell{
         // 只控制竖直方向，让高度跟内容走
         msgLabel.setContentHuggingPriority(.required, for: .vertical)
         msgLabel.setContentCompressionResistancePriority(.required, for: .vertical)
-        
-//        msgLabel.setContentHuggingPriority(.required, for: .horizontal)
-//        msgLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 }
 
@@ -227,28 +238,6 @@ private extension ServiceContactTableViewTextCell {
         }
     }
 }
-//private extension ServiceContactTableViewTextCell {
-//    /// 计算「单行」文字所需宽度（最长不超过 maxContentWidth）
-//    func bubbleWidth(for text: String, font: UIFont, maxBubbleWidth: CGFloat) -> CGFloat {
-//        // 去掉气泡内边距之后，文字能用的最大宽度
-//        let contentMaxWidth = maxBubbleWidth - msgLabel.textInsets.left - msgLabel.textInsets.right
-//        let maxSize = CGSize(width: contentMaxWidth, height: CGFloat.greatestFiniteMagnitude)
-//        
-//        let attr = NSAttributedString(string: text, attributes: [.font: font])
-//        var rect = attr.boundingRect(
-//            with: maxSize,
-//            options: [.usesLineFragmentOrigin, .usesFontLeading],
-//            context: nil
-//        )
-//        
-//        // 向上取整，避免小数导致布局误差
-//        rect.size.width = ceil(rect.size.width)
-//        
-//        // 最终气泡宽度 = 文字宽度 + 内边距，且不超过 maxBubbleWidth
-//        let bubbleWidth = rect.size.width + msgLabel.textInsets.left + msgLabel.textInsets.right
-//        return min(bubbleWidth, maxBubbleWidth)
-//    }
-//}
 
 private extension ServiceContactTableViewTextCell {
 

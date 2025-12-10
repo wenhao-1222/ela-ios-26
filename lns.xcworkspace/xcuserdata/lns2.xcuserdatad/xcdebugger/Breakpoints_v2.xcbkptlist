@@ -20,52 +20,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "644EE59D-5C50-4299-95A7-D453E8CE709D"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "lns/Mine/VC/Service/ServiceContactMarketVC.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "801"
-            endingLineNumber = "801"
-            landmarkName = "sendGoodsDetailRequest()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "644EE59D-5C50-4299-95A7-D453E8CE709D - 9afc7afea32140a4"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "lns.ServiceContactMarketVC.sendGoodsDetailRequest() -&gt; ()"
-                  moduleName = "lns.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Service/ServiceContactMarketVC.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "801"
-                  endingLineNumber = "801">
-               </Location>
-               <Location
-                  uuid = "644EE59D-5C50-4299-95A7-D453E8CE709D - 894a8c504cc65bb8"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Dictionary&lt;Swift.String, Swift.AnyObject&gt;) -&gt; () in lns.ServiceContactMarketVC.sendGoodsDetailRequest() -&gt; ()"
-                  moduleName = "lns.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Service/ServiceContactMarketVC.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "801"
-                  endingLineNumber = "801">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "78603426-80DB-41A7-A811-54DFAB74F511"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"

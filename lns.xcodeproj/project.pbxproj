@@ -1031,7 +1031,6 @@
 		ECC977B82C19C1A500F7FAA6 /* ServiceContactVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC977B72C19C1A500F7FAA6 /* ServiceContactVC.swift */; };
 		ECC977BA2C19C22600F7FAA6 /* ServiceInputVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC977B92C19C22600F7FAA6 /* ServiceInputVM.swift */; };
 		ECC977BD2C19D55A00F7FAA6 /* ServiceContactTableViewTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC977BC2C19D55A00F7FAA6 /* ServiceContactTableViewTextCell.swift */; };
-		ECC977BF2C19D5D400F7FAA6 /* ServiceContactTableViewImageViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC977BE2C19D5D400F7FAA6 /* ServiceContactTableViewImageViewCell.swift */; };
 		ECCCA7CC2BEC945100696807 /* FoodsMsgVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCCA7CB2BEC945100696807 /* FoodsMsgVC.swift */; };
 		ECCCA7CE2BECB60700696807 /* NewQuestionnaireVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCCA7CD2BECB60700696807 /* NewQuestionnaireVC.swift */; };
 		ECCCA7D02BECB76A00696807 /* NewQuestionnaireTypeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCCA7CF2BECB76A00696807 /* NewQuestionnaireTypeVM.swift */; };
@@ -2329,7 +2328,6 @@
 		ECC977B72C19C1A500F7FAA6 /* ServiceContactVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContactVC.swift; sourceTree = "<group>"; };
 		ECC977B92C19C22600F7FAA6 /* ServiceInputVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceInputVM.swift; sourceTree = "<group>"; };
 		ECC977BC2C19D55A00F7FAA6 /* ServiceContactTableViewTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContactTableViewTextCell.swift; sourceTree = "<group>"; };
-		ECC977BE2C19D5D400F7FAA6 /* ServiceContactTableViewImageViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContactTableViewImageViewCell.swift; sourceTree = "<group>"; };
 		ECCCA7CB2BEC945100696807 /* FoodsMsgVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsMsgVC.swift; sourceTree = "<group>"; };
 		ECCCA7CD2BECB60700696807 /* NewQuestionnaireVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewQuestionnaireVC.swift; sourceTree = "<group>"; };
 		ECCCA7CF2BECB76A00696807 /* NewQuestionnaireTypeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewQuestionnaireTypeVM.swift; sourceTree = "<group>"; };
@@ -4571,7 +4569,6 @@
 				A773C22D2E84EB6600F1E3AA /* ServiceContactTableViewVideoCell.swift */,
 				EC9CB9312EE90E0D00FBF915 /* ServiceContactTableViewGoodsInfoCell.swift */,
 				A773C22F2E84EB7800F1E3AA /* ServiceVideoProgressRing.swift */,
-				ECC977BE2C19D5D400F7FAA6 /* ServiceContactTableViewImageViewCell.swift */,
 				EC1B59E12EE6AC7600FE3E9A /* ServiceTypeItemVM.swift */,
 			);
 			path = Service;
@@ -6210,7 +6207,6 @@
 				ECD6272D2BC5417F00CE819F /* MainCircleVM.swift in Sources */,
 				A7128EBC2DBB774D005CDAF4 /* PropotionResultNumberVM.swift in Sources */,
 				ECD0FF122BABD25B001232C9 /* UIImage+Exs.swift in Sources */,
-				ECC977BF2C19D5D400F7FAA6 /* ServiceContactTableViewImageViewCell.swift in Sources */,
 				EC4DE2E12BCE78D40090A7BD /* PlanShareMealsTitleVM.swift in Sources */,
 				A78FE2102CD49A4E00661F7D /* ForumDetailVC.swift in Sources */,
 				A714DDC72DC1F51200745F84 /* JournalShareMsgCaloriesVM.swift in Sources */,

@@ -77,7 +77,7 @@ class ServiceContactTableViewVideoCell: UITableViewCell {
             videoURLString = materialDict.stringValueForKey(key: "videoOssUrl")
         }
         
-        if dict.stringValueForKey(key: "createdby") != "admin"{
+        if dict.stringValueForKey(key: "createdby") != "admin" && dict.stringValueForKey(key: "createdBy") != "admin"{
             updateAlignment(isOutgoing: true)
             headImgView.setImgUrl(urlString: UserInfoModel.shared.headimgurl)
             headImgView.snp.remakeConstraints { make in
@@ -107,7 +107,7 @@ class ServiceContactTableViewVideoCell: UITableViewCell {
         messageId = dict.stringValueForKey(key: "messageId")
         self.videoURLString = videoURLString
 
-        let isOutgoing = dict.stringValueForKey(key: "createdby") != "admin"
+        let isOutgoing = dict.stringValueForKey(key: "createdby") != "admin" && dict.stringValueForKey(key: "createdBy") != "admin"
         updateAlignment(isOutgoing: isOutgoing)
         updateThumbnail(from: dict)
         updateDuration(from: dict)
