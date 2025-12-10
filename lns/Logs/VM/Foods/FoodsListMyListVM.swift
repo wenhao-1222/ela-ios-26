@@ -189,19 +189,23 @@ extension FoodsListMyListVM{
             initSkeletonData()
         }
         fNameChanged = false
-        WHNetworkUtil.shareManager().POST(urlString: URL_foods_list_my, parameters: param as [String:AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_foods_list_my, parameters: param as [String:AnyObject]) {[weak self] responseObject in
+            guard let self = self else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             
 //            UserDefaults.set(value: WHUtils.getJSONStringFromArray(array: dataArr), forKey: .myFoodsList)
-            self.tableView.hideSkeleton()
-            self.foodsArray = NSMutableArray.init(array: dataArr)
-            self.tableView.reloadData()
             
-            if self.foodsArray.count > 0{
-                self.tableView.tableFooterView = self.footerVm
-            }else{
-                self.tableView.tableFooterView = nil
+            DispatchQueue.main.async {
+                self.tableView.hideSkeleton()
+                self.foodsArray = NSMutableArray.init(array: dataArr)
+                self.tableView.reloadData()
+                
+                if self.foodsArray.count > 0{
+                    self.tableView.tableFooterView = self.footerVm
+                }else{
+                    self.tableView.tableFooterView = nil
+                }
             }
             
             if self.fname == ""{

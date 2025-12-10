@@ -33,20 +33,6 @@
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "644EE59D-5C50-4299-95A7-D453E8CE709D - 7000ff14d504abf3"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "lns.ServiceContactMarketVC.sendAddressMsgRequest(model: lns.AddressModel) -&gt; ()"
-                  moduleName = "lns.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Service/ServiceContactMarketVC.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "801"
-                  endingLineNumber = "801">
-               </Location>
-               <Location
                   uuid = "644EE59D-5C50-4299-95A7-D453E8CE709D - 9afc7afea32140a4"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
