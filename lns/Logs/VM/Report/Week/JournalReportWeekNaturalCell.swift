@@ -150,7 +150,6 @@ class JournalReportWeekNaturalCell: UITableViewCell {
 
 extension JournalReportWeekNaturalCell{
     func updateUI(dict:NSDictionary) {
-        
         let gapCalDict = dict["gapCal"]as? NSDictionary ?? [:]
         
         let calories = "\(gapCalDict.stringValueForKey(key: "sign"))\(gapCalDict.stringValueForKey(key: "gap"))"

@@ -27,7 +27,8 @@ class ServiceContactMarketVC: WHBaseViewVC {
     var detailModel = MallDetailModel()
     
     var pageNum = 1
-    var pageSize = 10
+    var pageSize = 2
+    private var isLoadingMore = false
     
     var photoAssets:[PHAsset] = [PHAsset]()
     var videoUrl : URL?
@@ -125,6 +126,11 @@ class ServiceContactMarketVC: WHBaseViewVC {
         }
         return vi
     }()
+    private lazy var refreshControl: UIRefreshControl = {
+        let control = UIRefreshControl()
+        control.addTarget(self, action: #selector(loadMoreMessages), for: .valueChanged)
+        return control
+    }()
     lazy var tableView: UITableView = {
         let vi = UITableView.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight()+kFitWidth(1), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight()-kFitWidth(64)-getBottomSafeAreaHeight()-kFitWidth(1)), style: .grouped)
         
@@ -139,6 +145,7 @@ class ServiceContactMarketVC: WHBaseViewVC {
         vi.isHidden = true
         vi.rowHeight = UITableView.automaticDimension
         
+        vi.refreshControl = refreshControl
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(hiddenInputViewImg))
         vi.addGestureRecognizer(tap)
         
@@ -232,6 +239,9 @@ extension ServiceContactMarketVC{
         self.present(vc, animated: true)
     }
     func dealDataSource(animated:Bool?=true){
+        dealDataSource(animated: animated, shouldScrollToBottom: true, previousContentHeight: nil)
+    }
+    func dealDataSource(animated:Bool?=true, shouldScrollToBottom: Bool = true, previousContentHeight: CGFloat?) {
         let dataArr = NSMutableArray()
         if self.dataSourceArray.count == 0 {
 //            let dict = ["date":"\(Date().todayDate)",
@@ -286,10 +296,21 @@ extension ServiceContactMarketVC{
 //        self.judgeFirstMsgForToday()
         self.tableView.reloadData()
         // 有新数据进来，默认保持在底部
-        shouldKeepAtBottom = true
+//        shouldKeepAtBottom = true
+        shouldKeepAtBottom = shouldScrollToBottom
         DispatchQueue.main.async { [weak self] in
-            self?.tableView.layoutIfNeeded()
-            self?.scrollToBottom(animated: animated)
+//            self?.tableView.layoutIfNeeded()
+//            self?.scrollToBottom(animated: animated)
+            guard let self else { return }
+            self.tableView.layoutIfNeeded()
+            if shouldScrollToBottom {
+                self.scrollToBottom(animated: animated)
+            } else if let previousContentHeight {
+                let newHeight = self.tableView.contentSize.height
+                let offsetIncrease = newHeight - previousContentHeight
+                let newOffset = CGPoint(x: self.tableView.contentOffset.x, y: self.tableView.contentOffset.y + offsetIncrease)
+                self.tableView.setContentOffset(newOffset, animated: false)
+            }
         }
     }
     
@@ -617,21 +638,58 @@ extension ServiceContactMarketVC: UIScrollViewDelegate {
 }
 
 extension ServiceContactMarketVC{
+    @objc private func loadMoreMessages() {
+        guard !isLoadingMore else {
+            refreshControl.endRefreshing()
+            return
+        }
+        isLoadingMore = true
+        pageNum += 1
+        sendMsgListRequest(isLoadMore: true)
+    }
+
     func sendMsgListRequest() {
+        sendMsgListRequest(isLoadMore: false)
+    }
+    func sendMsgListRequest(isLoadMore: Bool) {
+        if !isLoadMore {
+            pageNum = 1
+        }
+        let previousContentHeight = isLoadMore ? tableView.contentSize.height : nil
         let param = ["page":"\(pageNum)",
                      "pageSize":"\(pageSize)"]
         WHNetworkUtil.shareManager().POST(urlString: URL_User_Service_Market_List, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
             DLLog(message: "\(responseObject)")
+            self.refreshControl.endRefreshing()
+            self.isLoadingMore = false
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArray = self.getArrayFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendMsgListRequest:\(dataArray)")
             DLLog(message: "sendMsgListRequest: ---  end")
-            self.dataSourceArray.removeAllObjects()
+//            self.dataSourceArray.removeAllObjects()
+            if isLoadMore && (dataArray as? [Any])?.isEmpty == true {
+                self.pageNum = max(1, self.pageNum - 1)
+                MCToast.mc_text("暂无更多消息")
+                return
+            }
+
+            if !isLoadMore {
+                self.dataSourceArray.removeAllObjects()
+            }
+
             if let array = dataArray as? [Any] {
                 let reversedArray = Array(array.reversed())
-                self.dataSourceArray.addObjects(from: reversedArray)
+//                self.dataSourceArray.addObjects(from: reversedArray)
+                if isLoadMore {
+                    for element in reversedArray {
+                        self.dataSourceArray.insert(element, at: 0)
+                    }
+                } else {
+                    self.dataSourceArray.addObjects(from: reversedArray)
+                }
             }
-            self.dealDataSource(animated: true)
+//            self.dealDataSource(animated: true)
+            self.dealDataSource(animated: !isLoadMore, shouldScrollToBottom: !isLoadMore, previousContentHeight: previousContentHeight)
         }
     }
     
