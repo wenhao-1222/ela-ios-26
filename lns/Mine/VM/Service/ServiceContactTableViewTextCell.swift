@@ -140,7 +140,7 @@ extension ServiceContactTableViewTextCell{
             }
 
             msgLabel.textAlignment = .left
-            msgLabel.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.55)
+            msgLabel.backgroundColor = .COLOR_CARD_BG_WHITE
         }
 
         msgLabel.isUserInteractionEnabled = hasAddressLink

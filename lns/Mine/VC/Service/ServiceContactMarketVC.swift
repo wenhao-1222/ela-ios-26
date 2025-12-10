@@ -819,11 +819,20 @@ extension ServiceContactMarketVC{
 
             let code = responseObject["code"]as? Int ?? -1
             if (code == 200) {
-//                let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
-//                            "ctime":"\(Date().currentSeconds)",
-//                            "images":"\(self.getJSONStringFromArray(array: [imgUrlString]))"]
-//                self.dataSourceArray.add(dict)
-//                self.dealDataSource()
+                let goodsInfoCard = ["name": self.detailModel.skuName,
+                                     "subtitle": self.detailModel.subtitle,
+                                     "warrantyPolicyNotice": self.detailModel.warrantyPolicyNotice,
+                                     "images": self.detailModel.image_arr_banner] as [String : Any]
+                let dict = [
+                    "createdby": "\(UserInfoModel.shared.nickname)",
+                    "ctime": "\(Date().currentSeconds)",
+                    "contentType": "4",
+                    "bizType": self.bizType,
+                    "relatedSkuId": self.detailModel.spuId,
+                    "goodsInfoCard": goodsInfoCard
+                ] as [String : Any]
+
+                self.appendLocalMessageAndRefresh(dict as NSDictionary)
             }else{
                 MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试")
             }
@@ -854,6 +863,8 @@ extension ServiceContactMarketVC{
                                            "spec":spec,
                                            "images":dict["image"]as? NSArray ?? []]]]
         }
+        self.bizType = "2"
+        self.relatedOrderId = dict.stringValueForKey(key: "id")
         let param = ["bizType":"2",//订单，肯定是售后咨询了
                      "relatedOrderId":dict.stringValueForKey(key: "id"),
                      "orderInfoCard": orderInfoCard] as [String : Any]
@@ -863,15 +874,59 @@ extension ServiceContactMarketVC{
 
             let code = responseObject["code"]as? Int ?? -1
             if (code == 200) {
-//                let dict = ["createdby":"\(UserInfoModel.shared.nickname)",
-//                            "ctime":"\(Date().currentSeconds)",
-//                            "images":"\(self.getJSONStringFromArray(array: [imgUrlString]))"]
-//                self.dataSourceArray.add(dict)
-//                self.dealDataSource()
+                let dict = [
+                    "createdby": "\(UserInfoModel.shared.nickname)",
+                    "ctime": "\(Date().currentSeconds)",
+                    "contentType": "5",
+                    "bizType": "2",
+                    "relatedOrderId": param["relatedOrderId"] as? String ?? "",
+                    "orderInfoCard": orderInfoCard
+                ] as [String : Any]
+
+                self.appendLocalMessageAndRefresh(dict as NSDictionary)
             }else{
                 MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试")
             }
         }
+    }
+    private func appendLocalMessageAndRefresh(_ message: NSDictionary) {
+        dataSourceArray.add(message)
+
+        var msgCtime = message.stringValueForKey(key: "ctime")
+        msgCtime = msgCtime.replacingOccurrences(of: "T", with: " ")
+        msgCtime = Date().changeDateFormatter(dateString: msgCtime, formatter: "yyyy-MM-dd HH:mm:ss", targetFormatter: "yyyy-MM-dd")
+
+        let sectionIndex = dataSourceArrayForShow.count - 1
+        var needInsertSection = true
+        if let lastSection = dataSourceArrayForShow.lastObject as? NSDictionary {
+            let lastDate = lastSection.stringValueForKey(key: "date")
+            needInsertSection = lastDate != msgCtime
+        }
+
+        tableView.beginUpdates()
+        if needInsertSection {
+            let msgList = NSMutableArray(object: message)
+            let sectionDict: [String: Any] = [
+                "date": msgCtime,
+                "msgList": msgList
+            ]
+            dataSourceArrayForShow.add(sectionDict)
+            let newSection = dataSourceArrayForShow.count - 1
+            tableView.insertSections(IndexSet(integer: newSection), with: .none)
+            tableView.insertRows(at: [IndexPath(row: 0, section: newSection)], with: .none)
+        } else if let lastSection = dataSourceArrayForShow.lastObject as? NSDictionary {
+            let msgList = NSMutableArray(array: lastSection["msgList"] as? NSArray ?? [])
+            msgList.add(message)
+            let sectionDict = NSMutableDictionary(dictionary: lastSection)
+            sectionDict.setValue(msgList, forKey: "msgList")
+            dataSourceArrayForShow.replaceObject(at: sectionIndex, with: sectionDict)
+            let indexPath = IndexPath(row: msgList.count - 1, section: sectionIndex)
+            tableView.insertRows(at: [indexPath], with: .none)
+        }
+        tableView.endUpdates()
+
+        shouldKeepAtBottom = true
+        scrollToBottom(animated: true)
     }
 }
 

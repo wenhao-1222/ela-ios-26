@@ -62,7 +62,7 @@ class ServiceContactTableViewOrderInfoCell: UITableViewCell {
         let img = UIImageView()
         img.layer.cornerRadius = kFitWidth(10)
         img.clipsToBounds = true
-        img.contentMode = .scaleAspectFit
+        img.contentMode = .scaleAspectFill
         img.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
         
         return img
