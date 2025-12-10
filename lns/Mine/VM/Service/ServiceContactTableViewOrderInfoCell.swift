@@ -47,7 +47,6 @@ class ServiceContactTableViewOrderInfoCell: UITableViewCell {
         vi.isUserInteractionEnabled = true
         vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
-        
         let tap = UITapGestureRecognizer(target: self, action: #selector(tapAction))
         vi.addGestureRecognizer(tap)
         

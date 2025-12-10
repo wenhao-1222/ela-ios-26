@@ -507,6 +507,29 @@ extension ServiceContactMarketVC:UITableViewDelegate,UITableViewDataSource{
             let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewOrderInfoCell") as? ServiceContactTableViewOrderInfoCell
             cell?.updateUI(dict: dict)
             
+            cell?.tapBlock = {()in
+                let orderInfo = dict["orderInfoCard"] as? NSDictionary ?? [:]
+                let goodsList = orderInfo["goodsList"]as? NSArray ?? []
+                
+                if goodsList.count > 0{
+                    let goodsInfo = goodsList[0]as? NSDictionary ?? [:]
+                    let vc = MallOrderDetailVC()
+                    vc.orderDict = ["id":orderInfo.stringValueForKey(key: "orderId")]
+//                    vc.number = dict.stringValueForKey(key: "quantity").intValue
+//                    vc.orderModel = MallDetailModel().dealDataForOrderList(dict: dict)
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }else{
+                    let tutorialInfo = orderInfo["tutorial"]as? NSDictionary ?? [:]
+                    let courseDict = NSMutableDictionary(dictionary: dict)
+                    courseDict.setValue(tutorialInfo.stringValueForKey(key: "id"), forKey: "id")
+                    let vc = CourseListVC()
+                    vc.parentDict = courseDict
+                    vc.headMsgDict = courseDict
+                    vc.isFromOrderList = true
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+            
             return cell ?? ServiceContactTableViewOrderInfoCell()
         }else {
             if dict.stringValueForKey(key: "text").count > 0{
