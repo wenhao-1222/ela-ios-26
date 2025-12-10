@@ -13,6 +13,8 @@ class ServiceContactTableViewGoodsInfoCell: UITableViewCell {
     
     private var avatarRequestID = UUID()
     
+    var tapBlock:(()->())?
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         avatarRequestID = UUID()
@@ -29,6 +31,10 @@ class ServiceContactTableViewGoodsInfoCell: UITableViewCell {
         self.selectionStyle = .none
         
         initUI()
+        
+        self.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapAction))
+        self.addGestureRecognizer(tap)
     }
     lazy var headImgView: UIImageView = {
         let img = UIImageView()
@@ -95,11 +101,11 @@ extension ServiceContactTableViewGoodsInfoCell{
 
         goodsNameLabel.text = goodsInfo.stringValueForKey(key: "name")
 
-        let subtitle = goodsInfo.stringValueForKey(key: "subtitle")
+        let subtitle = "营养补剂"//goodsInfo.stringValueForKey(key: "subtitle")
         goodsSubtitleLabel.text = subtitle
         goodsSubtitleLabel.isHidden = subtitle.isEmpty
 
-        let policy = goodsInfo.stringValueForKey(key: "warrantyPolicyNotice")
+        let policy = "香港仓发货｜免运费（偏远地区除外）"//goodsInfo.stringValueForKey(key: "warrantyPolicyNotice")
         goodsPolicyLabel.text = policy
         goodsPolicyLabel.isHidden = policy.isEmpty
 
@@ -112,13 +118,20 @@ extension ServiceContactTableViewGoodsInfoCell{
 }
 
 private extension ServiceContactTableViewGoodsInfoCell {
+    @objc func tapAction() {
+        self.tapBlock?()
+    }
+}
+
+private extension ServiceContactTableViewGoodsInfoCell {
     func initUI() {
         contentView.addSubview(headImgView)
         contentView.addSubview(whiteView)
         whiteView.addSubview(goodgBgView)
+        whiteView.addSubview(goodsPolicyLabel)
         goodgBgView.addSubview(goodsImgView)
 
-        let infoStack = UIStackView(arrangedSubviews: [goodsNameLabel, goodsSubtitleLabel, goodsPolicyLabel])
+        let infoStack = UIStackView(arrangedSubviews: [goodsNameLabel, goodsSubtitleLabel])
         infoStack.axis = .vertical
         infoStack.spacing = kFitWidth(4)
         infoStack.alignment = .leading
@@ -132,6 +145,13 @@ private extension ServiceContactTableViewGoodsInfoCell {
             make.left.top.equalToSuperview()
             make.width.height.equalTo(kFitWidth(80))
             make.bottom.lessThanOrEqualToSuperview()
+        }
+        goodsPolicyLabel.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(12))
+            make.right.equalTo(kFitWidth(-12))
+            make.height.equalTo(kFitWidth(15))
+            make.bottom.equalTo(kFitWidth(-10))
+            make.top.equalTo(kFitWidth(96))
         }
 
         infoStack.snp.makeConstraints { make in
@@ -175,12 +195,13 @@ private extension ServiceContactTableViewGoodsInfoCell {
         whiteView.snp.remakeConstraints { make in
             make.top.equalTo(kFitWidth(10))
             make.bottom.equalTo(-kFitWidth(10))
+            make.width.equalTo(kFitWidth(256))
             if isAdmin {
                 make.left.equalTo(kFitWidth(62))
-                make.right.lessThanOrEqualToSuperview().offset(-kFitWidth(57))
+//                make.right.lessThanOrEqualToSuperview().offset(-kFitWidth(57))
             } else {
                 make.right.equalTo(kFitWidth(-62))
-                make.left.greaterThanOrEqualToSuperview().offset(kFitWidth(57))
+//                make.left.greaterThanOrEqualToSuperview().offset(kFitWidth(57))
             }
         }
     }

@@ -435,7 +435,10 @@ extension WHUtils{
     }
     
     func sendErrorMsgRequest(msgDict:NSDictionary){
-        if msgDict["url"]as? String ?? "" == URL_sport_add{
+        let urlStr = msgDict.stringValueForKey(key: "url")
+        //不需要上报错误的接口
+        let notReportUrl = [URL_sport_add,URL_dietplan_plan_active]
+        if notReportUrl.contains(urlStr){
             return
         }
         let param = ["message":"\(WHUtils.getJSONStringFromDictionary(dictionary: msgDict as NSDictionary))"]

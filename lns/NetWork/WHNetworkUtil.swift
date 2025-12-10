@@ -317,7 +317,8 @@ class WHNetworkUtil: SessionManager {
                                 }
                             }else{
                                 MCToast.mc_remove()
-                                if urlString != URL_sport_add || (value["message"] as? String ?? "").contains("存在"){
+                                if urlString != URL_sport_add || (value["message"] as? String ?? "").contains("存在")
+                                || urlString != URL_dietplan_plan_active{
                                     let msgDict: NSMutableDictionary = [
                                         "stage": "response_error",
                                         "code": code,

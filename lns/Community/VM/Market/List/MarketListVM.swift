@@ -116,34 +116,11 @@ extension MarketListVM{
         let param = ["page":"\(pageNum)",
                      "pageSize":"\(pageSize)"]
         
-//        WHNetworkUtil.shareManager().POST(urlString: URL_mall_list, parameters: param as [String:AnyObject]) { responseObject in
         WHNetworkUtil.shareManager().POST(urlString: URL_mall_list, parameters: param as [String:AnyObject]) { [weak self] responseObject in
             guard let self = self else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendMallListRequest:\(dataArr)")
-            
-//            self.collectView.mj_header?.endRefreshing()
-//            
-//            if dataArr.count < self.pageNum{
-//                self.collectView.mj_footer?.endRefreshingWithNoMoreData()
-//            }else{
-//                self.collectView.mj_footer?.endRefreshing()
-//            }
-//            if self.pageNum == 1{
-//                self.dataSourceArray.removeAll()
-//            }
-            
-//            for i in 0..<dataArr.count{
-//                let dict = dataArr[i]as? NSDictionary ?? [:]
-//                let model = MarketListModel().dealDictForModel(dict: dict)
-//                self.dataSourceArray.append(model)
-//            }
-//            
-//            self.collectView.reloadData()
-            
-            
-
               let isFirstPage = self.pageNum == 1
               var newModels: [MarketListModel] = []
             for i in 0..<dataArr.count{

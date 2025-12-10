@@ -470,6 +470,26 @@ extension ServiceContactMarketVC:UITableViewDelegate,UITableViewDataSource{
             let cell = tableView.dequeueReusableCell(withIdentifier: "ServiceContactTableViewGoodsInfoCell") as? ServiceContactTableViewGoodsInfoCell
             cell?.updateUI(dict: dict)
             
+            cell?.tapBlock = {()in
+                let spuId = dict.stringValueForKey(key: "relatedSkuId")
+                guard !spuId.isEmpty else { return }
+                
+                let goodsInfo = dict["goodsInfoCard"] as? NSDictionary ?? [:]
+
+                if let detailVC = self.navigationController?.viewControllers.first(where: { $0 is MallDetailVC }) as? MallDetailVC {
+                    detailVC.listModel.id = spuId
+                    detailVC.listModel.name = goodsInfo.stringValueForKey(key: "name")
+                    detailVC.detailModel = MallDetailModel()
+                    detailVC.sendDefaultSKURequest()
+                    self.navigationController?.popToViewController(detailVC, animated: true)
+                } else {
+                    let vc = MallDetailVC()
+                    vc.listModel.id = spuId
+                    vc.listModel.name = goodsInfo.stringValueForKey(key: "name")
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            }
+            
             return cell ?? ServiceContactTableViewGoodsInfoCell()
         }else {
             if dict.stringValueForKey(key: "text").count > 0{
@@ -489,12 +509,6 @@ extension ServiceContactMarketVC:UITableViewDelegate,UITableViewDataSource{
                     guard let self = self,
                           let cell = cell,
                           let indexPath = tableView.indexPath(for: cell) else { return }
-
-                    // 如果正在滚动，先记下来；不立刻刷新
-//                    if self.tableView.isDragging || self.tableView.isDecelerating {
-//                        self.pendingImageIndexPaths.insert(indexPath)
-//                        return
-//                    }
                     // 不在滚动时，直接更新这一行高度
                     self.updateRowHeightForImages(at: [indexPath])
                 }
@@ -512,7 +526,6 @@ extension ServiceContactMarketVC:UITableViewDelegate,UITableViewDataSource{
             }
         }
     }
-
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
@@ -652,10 +665,26 @@ extension ServiceContactMarketVC{
                 }
             }
 //            self.dealDataSource(animated: true)
+            self.removeDuplicateMessagesById()
             self.dealDataSource(animated: !isLoadMore, shouldScrollToBottom: !isLoadMore, previousContentHeight: previousContentHeight)
         }
     }
-    
+    private func removeDuplicateMessagesById() {
+       var seenIds = Set<String>()
+       let uniqueMessages = NSMutableArray()
+
+       for case let dict as NSDictionary in dataSourceArray {
+           let messageId = dict.stringValueForKey(key: "id")
+           if messageId.isEmpty || !seenIds.contains(messageId) {
+               uniqueMessages.add(dict)
+               if !messageId.isEmpty {
+                   seenIds.insert(messageId)
+               }
+           }
+       }
+
+       dataSourceArray = uniqueMessages
+   }
     func uploadImgData(image:UIImage) {
 //        let imageData = image.pngData()
         let imageData = WH_DESUtils.compressImage(toData: image)
@@ -762,7 +791,8 @@ extension ServiceContactMarketVC{
         }
     }
     func sendGoodsDetailRequest() {
-        var param = ["bizType":self.bizType,
+        let param = ["bizType":self.bizType,
+                     "relatedSkuId":self.detailModel.spuId,
                      "goodsInfoCard": ["name":self.detailModel.skuName,
                                        "subtitle":self.detailModel.subtitle,
                                        "warrantyPolicyNotice":self.detailModel.warrantyPolicyNotice,

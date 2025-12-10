@@ -197,7 +197,9 @@ extension FoodsListAllListVM{
         UserInfoModel.shared.postNum = 3
         UserInfoModel.shared.failToastNum = 0
         DLLog(message: "sendFoodsListRequest:\(param)")
-        WHNetworkUtil.shareManager().POST(urlString: URL_foods_list, parameters: param as [String:AnyObject],isNeedToast: true,vc: self.controller) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_foods_list, parameters: param as [String:AnyObject],isNeedToast: true,vc: self.controller) { [weak self] responseObject in
+                    guard let self = self else { return }
+//        WHNetworkUtil.shareManager().POST(urlString: URL_foods_list, parameters: param as [String:AnyObject],isNeedToast: true,vc: self.controller) { responseObject in
 //        WHNetworkUtil.shareManager().POST(urlString: URL_foods_list, parameters: param as [String:AnyObject],isNeedToast: true,vc: self.controller) { responseObject in
 //            self.noDataView.noDataLabel.text = "- 暂无数据 -"
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
@@ -210,38 +212,69 @@ extension FoodsListAllListVM{
             let moreArray = dataArr["more"]as? NSArray ?? []
             let aiArray = dataArr["ai"]as? NSArray ?? []
             
-            self.foodsArray.removeAllObjects()
-            if bestArray.count > 0 {
-                self.foodsArray.add(["title":"精准搜索",
-                                     "foodsArray":bestArray])
-            }
-            if moreArray.count > 0 {
-                self.foodsArray.add(["title":"更多食物",
-                                     "foodsArray":moreArray])
-            }
-            if aiArray.count > 0 {
-                let aiFoodsArr = NSMutableArray()
-                for i in 0..<aiArray.count{
-                    let aiFoods = NSMutableDictionary(dictionary: aiArray[i]as? NSDictionary ?? [:])
-                    aiFoods.setValue("1", forKey: "isAi")
-                    if aiFoods.stringValueForKey(key: "fname").count > 0 {
-                        aiFoodsArr.add(aiFoods)
+//            self.foodsArray.removeAllObjects()
+//            if bestArray.count > 0 {
+//                self.foodsArray.add(["title":"精准搜索",
+//                                     "foodsArray":bestArray])
+//            }
+//            if moreArray.count > 0 {
+//                self.foodsArray.add(["title":"更多食物",
+//                                     "foodsArray":moreArray])
+//            }
+//            if aiArray.count > 0 {
+//                let aiFoodsArr = NSMutableArray()
+//                for i in 0..<aiArray.count{
+//                    let aiFoods = NSMutableDictionary(dictionary: aiArray[i]as? NSDictionary ?? [:])
+//                    aiFoods.setValue("1", forKey: "isAi")
+//                    if aiFoods.stringValueForKey(key: "fname").count > 0 {
+//                        aiFoodsArr.add(aiFoods)
+            DispatchQueue.main.async {
+                self.foodsArray.removeAllObjects()
+                if bestArray.count > 0 {
+                    self.foodsArray.add(["title":"精准搜索",
+                                         "foodsArray":bestArray])
+                }
+                if moreArray.count > 0 {
+                    self.foodsArray.add(["title":"更多食物",
+                                         "foodsArray":moreArray])
+                }
+                if aiArray.count > 0 {
+                    let aiFoodsArr = NSMutableArray()
+                    for i in 0..<aiArray.count{
+                        let aiFoods = NSMutableDictionary(dictionary: aiArray[i]as? NSDictionary ?? [:])
+                        aiFoods.setValue("1", forKey: "isAi")
+                        if aiFoods.stringValueForKey(key: "fname").count > 0 {
+                            aiFoodsArr.add(aiFoods)
+                        }
+                    }
+                    if aiFoodsArr.count > 0 {
+                        self.foodsArray.add(["title":"AI搜索",
+                                             "foodsArray":aiFoodsArr])
                     }
                 }
-                if aiFoodsArr.count > 0 {
-                    self.foodsArray.add(["title":"AI搜索",
-                                         "foodsArray":aiFoodsArr])
+                self.tableView.reloadData()
+                if self.foodsArray.count > 0 {
+                    self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: false)
                 }
-            }
-            self.tableView.reloadData()
-            if self.foodsArray.count > 0 {
-                self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: false)
-            }
-            
-            if self.foodsArray.count > 0{
-                self.tableView.tableFooterView = self.footerVm
-            }else{
-                self.tableView.tableFooterView = nil
+
+                if self.foodsArray.count > 0{
+                    self.tableView.tableFooterView = self.footerVm
+                }else{
+                    self.tableView.tableFooterView = nil
+//                if aiFoodsArr.count > 0 {
+//                    self.foodsArray.add(["title":"AI搜索",
+//                                         "foodsArray":aiFoodsArr])
+                }
+//            }
+//            self.tableView.reloadData()
+//            if self.foodsArray.count > 0 {
+//                self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: false)
+//            }
+//            
+//            if self.foodsArray.count > 0{
+//                self.tableView.tableFooterView = self.footerVm
+//            }else{
+//                self.tableView.tableFooterView = nil
             }
         } failure: { [weak self] _ in
             guard let self = self else { return }

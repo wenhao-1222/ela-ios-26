@@ -473,9 +473,6 @@ extension MallDetailVC{
         }
     }
     func sendSelectSKURequest() {
-//        let param = ["spuId":self.listModel.id,
-//                     "specList":[["specId":self.detailModel.mainSpecModel.specId,
-//                                  "specValueId":self.detailModel.mainSpecValueModel.specValueId]]] as [String : AnyObject]
         let param: [String: AnyObject] = [
                     "spuId": self.listModel.id as AnyObject,
                     "specList": self.detailModel.selectedSpecList as AnyObject
