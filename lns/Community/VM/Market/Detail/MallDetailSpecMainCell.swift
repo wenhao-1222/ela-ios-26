@@ -20,8 +20,8 @@ class MallDetailSpecMainCell: UITableViewCell {
     }
 
     private func commonInit() {
-        backgroundColor = .COLOR_BG_WHITE
-        contentView.backgroundColor = .COLOR_BG_WHITE          // 整个 cell 白底
+        backgroundColor = .COLOR_CARD_BG_WHITE
+        contentView.backgroundColor = .COLOR_CARD_BG_WHITE          // 整个 cell 白底
         selectionStyle = .none
         initUI()
     }
@@ -29,7 +29,7 @@ class MallDetailSpecMainCell: UITableViewCell {
     private lazy var chipView: UIView = {
         let v = UIView()
         // 你有统一的灰色可替换；这里给个接近图示的灰
-        v.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
+        v.backgroundColor = .COLOR_BG_F5_SEGMENT//UIColor(white: 0.95, alpha: 1.0)
         v.layer.cornerRadius = kFitWidth(4)
         v.layer.masksToBounds = true
         // 让容器更愿意按内容“包裹”宽度
@@ -59,7 +59,8 @@ class MallDetailSpecMainCell: UITableViewCell {
     /// 箭头
     lazy var arrowImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "mall_spec_arrow_down_icon")
+//        img.setImgLocal(imgName: "mall_spec_arrow_down_icon")
+        img.image = UIImage(named: "mall_spec_arrow_down_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         img.isUserInteractionEnabled = true
         // 箭头应保持固有宽度，不被拉伸或压缩
         img.setContentHuggingPriority(.required, for: .horizontal)

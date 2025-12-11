@@ -537,10 +537,6 @@ extension MallDetailVC {
                                          inStock: mainSpecModel.specHasStock)
             mainOption.append(option)
         }
-//        var cfg = SpecAnchorPopup.Config()
-//        cfg.alignBubbleToLeft = true
-//        cfg.bubbleLeftMargin = kFitWidth(20)  // 需求#2
-//        cfg.arrowLeftInset = kFitWidth(20)    // 需求#1
         let popup = SpecAnchorPopup(options: mainOption) { [weak self] index, opt in
             guard let self = self else { return }
             // 选中后的业务逻辑（更新主规格、刷新 SKU 等）

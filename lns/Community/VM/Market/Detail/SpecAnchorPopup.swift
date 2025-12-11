@@ -26,9 +26,9 @@ final class SpecAnchorPopup: UIView {
         var rowSpacing: CGFloat = 6
         var rowInsets = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)
         var rowFont: UIFont = .systemFont(ofSize: 14)
-        var textColor: UIColor = .black
-        var disabledTextColor: UIColor = .lightGray
-        var bgColor: UIColor = .white
+        var textColor: UIColor = .COLOR_TEXT_TITLE_0f1214
+        var disabledTextColor: UIColor = .COLOR_LINE_F0
+        var bgColor: UIColor = .COLOR_CARD_BG_WHITE
         var arrowSize = CGSize(width: 16, height: kFitWidth(10)) // 底边=16，高=8
         var screenMargin: CGFloat = 12
         var shadowColor: UIColor = UIColor.black.withAlphaComponent(0.2)
