@@ -113,9 +113,9 @@ extension ServiceContactTableViewTextCell{
                     make.bottom.equalTo(-kFitWidth(10))
                 }
             }
-
+            msgLabel.textColor = .white
             msgLabel.textAlignment = .left
-            msgLabel.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
+            msgLabel.backgroundColor = .THEME//WHColorWithAlpha(colorStr: "007AFF", alpha: 0.1)
 
         } else {         // 左侧（管理员）
             headImgView.snp.remakeConstraints { make in
@@ -138,7 +138,7 @@ extension ServiceContactTableViewTextCell{
                     make.bottom.equalTo(-kFitWidth(10))
                 }
             }
-
+            msgLabel.textColor = .COLOR_TEXT_TITLE_0f1214
             msgLabel.textAlignment = .left
             msgLabel.backgroundColor = .COLOR_CARD_BG_WHITE
         }

@@ -16,6 +16,7 @@ enum IMAGE_TYPE {
     case common
     case forum_post
     case ai_photo
+    case pre_sale
     case after_sale
     case suggestion
     case other
@@ -104,6 +105,8 @@ extension DSImageUploader {
                     put.objectKey = "avatar/user_avatar_\(arcNum).\(imgSuffix ?? "png")"
                 case .forum_post:
                     put.objectKey = "forum/post/material/forum_\(UserInfoModel.shared.uId)\(day)\(arcNum).\(imgSuffix ?? "png")"
+                case .pre_sale:
+                    put.objectKey = "pre_sale/pre_sale_\(UserInfoModel.shared.uId)\(day)\(arcNum).\(imgSuffix ?? "png")"
                 case .after_sale:
                     put.objectKey = "after_sale/after_sale_\(UserInfoModel.shared.uId)\(day)\(arcNum).\(imgSuffix ?? "png")"
                 case .suggestion:
@@ -320,8 +323,10 @@ extension DSImageUploader {
                     put.objectKey = "avatar/user_avatar_\(arcNum).\(imgSuffix ?? "png")"
                 case .forum_post:
                     put.objectKey = "forum/post/material/forum_\(UserInfoModel.shared.uId)\(day)\(arcNum).\(imgSuffix ?? "png")"
+                case .pre_sale:
+                    put.objectKey = "pre_sale/pre_sale_\(UserInfoModel.shared.uId)\(day)\(arcNum).\(imgSuffix ?? "png")"
                 case .after_sale:
-                    put.objectKey = "after_sale/after_sale_\(UserInfoModel.shared.uId)\(day)\(arcNum).\(imgSuffix ?? "png")"
+                        put.objectKey = "after_sale/after_sale_\(UserInfoModel.shared.uId)\(day)\(arcNum).\(imgSuffix ?? "png")"
                 case .suggestion:
                     put.objectKey = "suggestion/suggestion_\(UserInfoModel.shared.uId)\(day)\(arcNum).\(imgSuffix ?? "png")"
                 case .other:
