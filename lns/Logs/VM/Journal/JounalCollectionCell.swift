@@ -456,7 +456,7 @@ extension JounalCollectionCell{
 //        self.dealData()
         updateTableViewFrame()
     }
-    func addFoods(foodsMsg:NSDictionary) {
+    func addFoods(foodsMsg:NSDictionary, shouldUpload: Bool = true) {
         if foodsMsg.doubleValueForKey(key: "caloriesNumber") >= 100000 || foodsMsg.doubleValueForKey(key: "calories") >= 100000 {
             return
         }
@@ -469,8 +469,12 @@ extension JounalCollectionCell{
         if foodsMsg.doubleValueForKey(key: "fatNumber") >= 100000 || foodsMsg.doubleValueForKey(key: "fat") >= 100000 {
             return
         }
-        LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
-        logsModel.isUpload = false
+//        LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
+//        logsModel.isUpload = false
+        if shouldUpload {
+            LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
+            logsModel.isUpload = false
+        }
         
         let foodsArray = NSMutableArray.init(array: mealsArray[self.selectMealsIndex] as? NSArray ?? [])
         if self.selectFoodsIndex == -1 {
@@ -643,14 +647,38 @@ extension JounalCollectionCell{
             }
             
             mealsArray.replaceObject(at: self.selectMealsIndex, with: foodsArray)
-            saveDataToSqlDB()
-            self.tableView.reloadData()
-            updateFirstFoodsAlert()
-            self.calculateNaturalNum()
-            self.checkPushAuthAfterSecondMeal()
+//            saveDataToSqlDB()
+//            self.tableView.reloadData()
+//            updateFirstFoodsAlert()
+//            self.calculateNaturalNum()
+//            self.checkPushAuthAfterSecondMeal()
+            if shouldUpload {
+                saveDataToSqlDB()
+                self.tableView.reloadData()
+                updateFirstFoodsAlert()
+                self.calculateNaturalNum()
+                self.checkPushAuthAfterSecondMeal()
+            }
         }else{
 //            self.addFoods(foodsMsg: foodsMsg)
         }
+    }
+    func addFoodsBatch(foodsArray:NSArray) {
+        if foodsArray.count == 0 { return }
+
+        LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
+        logsModel.isUpload = false
+
+        for i in 0..<foodsArray.count {
+            guard let foodsMsg = foodsArray[i] as? NSDictionary else { continue }
+            addFoods(foodsMsg: foodsMsg, shouldUpload: false)
+        }
+
+        saveDataToSqlDB()
+        self.tableView.reloadData()
+        updateFirstFoodsAlert()
+        self.calculateNaturalNum()
+        self.checkPushAuthAfterSecondMeal()
     }
     private func checkPushAuthAfterSecondMeal() {
         let key = UserDefaults.AccountKeys.push_authori_second_foods.rawValue

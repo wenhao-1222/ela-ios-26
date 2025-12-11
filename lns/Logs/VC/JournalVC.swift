@@ -643,22 +643,40 @@ extension JournalVC{
         cell?.reloadTableView()
     }
     @objc func addFoodsNotifi(notify:Notification) {
-        let foodsDict = notify.object ?? [:]
-        DLLog(message: "\(foodsDict)")
+//        let foodsDict = notify.object ?? [:]
+//        DLLog(message: "\(foodsDict)")
+        let foodsObj = notify.object ?? [:]
+        DLLog(message: "\(foodsObj)")
         DispatchQueue.main.asyncAfter(deadline: .now()+0.2) {
             self.collectView.layoutIfNeeded()
             
             var indexPath = IndexPath(row: self.selecteIndex, section: 0)
+//            if WidgetMsgModel.shared.mealsIndex > 0 {
+//                indexPath = IndexPath(row: self.todayIndex, section: 0)
+//                let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
+//                
+//                cell?.selectMealsIndex = WidgetMsgModel.shared.mealsIndex - 1
+//                cell?.selectFoodsIndex = -1
+//                cell?.addFoods(foodsMsg: foodsDict as! NSDictionary)
+//            }else{
+//                let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
+//                cell?.addFoods(foodsMsg: foodsDict as! NSDictionary)
+//            }
+            
             if WidgetMsgModel.shared.mealsIndex > 0 {
                 indexPath = IndexPath(row: self.todayIndex, section: 0)
-                let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
-                
-                cell?.selectMealsIndex = WidgetMsgModel.shared.mealsIndex - 1
-                cell?.selectFoodsIndex = -1
-                cell?.addFoods(foodsMsg: foodsDict as! NSDictionary)
-            }else{
-                let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
-                cell?.addFoods(foodsMsg: foodsDict as! NSDictionary)
+            }
+            guard let cell = self.collectView.cellForItem(at: indexPath) as? JounalCollectionCell else { return }
+
+            if WidgetMsgModel.shared.mealsIndex > 0 {
+                cell.selectMealsIndex = WidgetMsgModel.shared.mealsIndex - 1
+                cell.selectFoodsIndex = -1
+            }
+
+            if let foodsArray = foodsObj as? NSArray {
+                cell.addFoodsBatch(foodsArray: foodsArray)
+            }else if let foodsDict = foodsObj as? NSDictionary {
+                cell.addFoods(foodsMsg: foodsDict)
             }
         }
     }

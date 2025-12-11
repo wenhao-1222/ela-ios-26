@@ -179,6 +179,7 @@ extension MealsDetailsVC{
             ADD_FOODS_FOR_HEALTHKIT_NATURAL = foodsDataArray.count
         }
         
+        let foodsArrayForLogs = NSMutableArray()
         for i in 0..<foodsDataArray.count{
 //            dispathcGroup.enter()
             let foodsMsgDict = foodsDataArray[i]as? NSDictionary ?? [:]
@@ -188,7 +189,8 @@ extension MealsDetailsVC{
             
             if foodsMsgDict.stringValueForKey(key: "fname") == "快速添加"{
                 if self.sourceType == .logs{
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "fastAddFoods"), object: foodMsg)
+//                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "fastAddFoods"), object: foodMsg)
+                    foodsArrayForLogs.add(foodMsg)
                 }else if self.sourceType == .plan{
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "fastAddFoodsForPlan"), object: foodMsg)
                 }else if self.sourceType == .plan_update{
@@ -244,7 +246,8 @@ extension MealsDetailsVC{
 //            DispatchQueue.main.asyncAfter(deadline: .now()+0.05*Double(i), execute: {
 //                self.dispathcGroup.leave()
                 if self.sourceType == .logs{
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "foodsAddForLogs"), object: foodMsg)
+//                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "foodsAddForLogs"), object: foodMsg)
+                    foodsArrayForLogs.add(foodMsg)
                 }else if self.sourceType == .plan{
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "foodsAddForPlan"), object: foodMsg)
                 }else if self.sourceType == .plan_update{
@@ -255,6 +258,9 @@ extension MealsDetailsVC{
         }
 //        dispathcGroup.notify(queue: .main) {
             if self.sourceType == .logs{
+                if foodsArrayForLogs.count > 0 {
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "foodsAddForLogs"), object: foodsArrayForLogs)
+                }
                 MobClick.event("journalAddMeals")
                 self.navigationController?.popToRootViewController(animated: true)
             }else if self.sourceType == .plan{
