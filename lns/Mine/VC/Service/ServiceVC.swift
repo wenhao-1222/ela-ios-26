@@ -28,6 +28,7 @@ class ServiceVC: WHBaseViewVC {
         vm.detailLab.text = "商品咨询与售后"
         vm.tapBlock = {()in
             let vc = ServiceContactMarketVC()
+            vc.bizType = "2"
             self.navigationController?.pushViewController(vc, animated: true)
         }
         

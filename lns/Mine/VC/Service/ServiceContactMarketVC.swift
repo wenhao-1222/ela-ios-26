@@ -97,13 +97,21 @@ class ServiceContactMarketVC: WHBaseViewVC {
         vi.setPlaceholder("请输入你的问题或建议")
         
         vi.cameraButton.isHidden = false
-        vi.orderButton.isHidden = false
+        if bizType == "2" {//如果是从商品详情过来的，则不能发送视频和订单
+            vi.orderButton.isHidden = false
+        }
+        
         vi.imgChoiceBlock = {()in
             self.choiceImgAction()
         }
         vi.chooseAlbumBlock = { [weak self] in
-//            self?.choiceAlbumAction()
-            self?.choiceImgAction()
+            
+            
+            if self?.bizType == "2" {
+                self?.choiceImgAction()//售后可以选择视频
+            }else{
+                self?.choiceAlbumAction()//售前，只能发图片
+            }
         }
         vi.chooseCameraBlock = { [weak self] in
 //            self?.choiceVideoAction()
@@ -730,7 +738,7 @@ extension ServiceContactMarketVC{
 //        let imageData = image.pngData()
         let imageData = WH_DESUtils.compressImage(toData: image)
 //        MCToast.mc_loading()
-        let type = self.relatedOrderId.count > 0 ? IMAGE_TYPE.after_sale : IMAGE_TYPE.suggestion
+        let type = self.relatedOrderId.count > 0 ? IMAGE_TYPE.after_sale : IMAGE_TYPE.pre_sale
         DSImageUploader().uploadImage(imageData: imageData!, imgType: type) { text, value in
             DLLog(message: "\(text)")
             DLLog(message: "\(value)")
@@ -1383,6 +1391,7 @@ extension ServiceContactMarketVC: ServiceCameraCaptureViewControllerDelegate {
         let cameraVC = ServiceCameraCaptureViewController()
         cameraVC.modalPresentationStyle = .fullScreen
         cameraVC.delegate = self
+        cameraVC.isVideoCaptureEnabled = self.bizType == "2"
         present(cameraVC, animated: true, completion: nil)
     }
     

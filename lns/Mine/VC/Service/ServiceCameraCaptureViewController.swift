@@ -23,6 +23,8 @@ class ServiceCameraCaptureViewController: UIViewController {
     
     weak var delegate: ServiceCameraCaptureViewControllerDelegate?
     
+    /// 控制是否允许录制视频，默认开启
+    var isVideoCaptureEnabled: Bool = true
     // MARK: Capture
     
     private let captureSession = AVCaptureSession()
@@ -148,13 +150,22 @@ extension ServiceCameraCaptureViewController {
         
         // 手势：点击拍照 / 长按录制
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleCaptureTap))
-        let longPress = UILongPressGestureRecognizer(target: self,
-                                                     action: #selector(handleCaptureLongPress(_:)))
-        longPress.minimumPressDuration = 0.3
-        tap.require(toFail: longPress)
+//        let longPress = UILongPressGestureRecognizer(target: self,
+//                                                     action: #selector(handleCaptureLongPress(_:)))
+//        longPress.minimumPressDuration = 0.3
+//        tap.require(toFail: longPress)
+        
         
         captureButton.addGestureRecognizer(tap)
-        captureButton.addGestureRecognizer(longPress)
+//        captureButton.addGestureRecognizer(longPress)
+        
+        if isVideoCaptureEnabled {
+            let longPress = UILongPressGestureRecognizer(target: self,
+                                                         action: #selector(handleCaptureLongPress(_:)))
+            longPress.minimumPressDuration = 0.3
+            tap.require(toFail: longPress)
+            captureButton.addGestureRecognizer(longPress)
+        }
     }
     
     private func layoutCaptureButton() {
@@ -287,14 +298,26 @@ extension ServiceCameraCaptureViewController {
         }
         
         // 音频输入
-        if let audioDevice = AVCaptureDevice.default(for: .audio) {
-            do {
-                let audioInput = try AVCaptureDeviceInput(device: audioDevice)
-                if captureSession.canAddInput(audioInput) {
-                    captureSession.addInput(audioInput)
+//        if let audioDevice = AVCaptureDevice.default(for: .audio) {
+//            do {
+//                let audioInput = try AVCaptureDeviceInput(device: audioDevice)
+//                if captureSession.canAddInput(audioInput) {
+//                    captureSession.addInput(audioInput)
+//                }
+//            } catch {
+//                print("audio input error: \(error)")
+//            }
+//        }
+        if isVideoCaptureEnabled {
+            if let audioDevice = AVCaptureDevice.default(for: .audio) {
+                do {
+                    let audioInput = try AVCaptureDeviceInput(device: audioDevice)
+                    if captureSession.canAddInput(audioInput) {
+                        captureSession.addInput(audioInput)
+                    }
+                } catch {
+                    print("audio input error: \(error)")
                 }
-            } catch {
-                print("audio input error: \(error)")
             }
         }
         
@@ -302,7 +325,7 @@ extension ServiceCameraCaptureViewController {
         if captureSession.canAddOutput(photoOutput) {
             captureSession.addOutput(photoOutput)
         }
-        if captureSession.canAddOutput(movieOutput) {
+        if isVideoCaptureEnabled && captureSession.canAddOutput(movieOutput) {
             captureSession.addOutput(movieOutput)
         }
         
@@ -487,6 +510,7 @@ extension ServiceCameraCaptureViewController {
     
     /// 长按：开始 / 结束 录制
     @objc private func handleCaptureLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard isVideoCaptureEnabled else { return }
         switch gesture.state {
         case .began:
             startRecording()
@@ -506,6 +530,7 @@ extension ServiceCameraCaptureViewController {
     }
     
     private func startRecording() {
+        guard isVideoCaptureEnabled else { return }
         guard !movieOutput.isRecording else { return }
         
         movieOutput.maxRecordedDuration = CMTime(seconds: maxVideoDuration,
