@@ -132,10 +132,11 @@ class MallSpecAlertVM: UIView {
         self.buyNum = vm.number
         vm.numChangeBlock = {(isAdd)in
             if isAdd {
-                if self.buyNum < self.detailModel.maxPurchaseQuantity {
+                if self.buyNum < self.detailModel.maxPurchaseQuantity{
                     self.buyNum += 1
                 }else{
                     DLLog(message: "最大购买数量：\(self.detailModel.maxPurchaseQuantity)")
+                    
                     return
                 }
             }else{

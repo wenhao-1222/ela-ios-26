@@ -83,7 +83,7 @@ class CourseOrderPayAlertVC: WHBaseViewVC {
     lazy var whiteView: UIView = {
 //        let vi = UIView.init(frame: CGRect.init(x: 0, y: topGap+SCREEN_HEIGHT, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-topGap+kFitWidth(16)))
         let vi = UIView.init(frame: CGRect.init(x: 0, y: topGap, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-topGap+kFitWidth(16)))
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
