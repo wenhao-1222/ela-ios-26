@@ -159,7 +159,8 @@ extension FoodsCreateFastVC{
         }
         
         MobClick.event("createFoodsSoon")
-        let foodsDict = ["proteinNumber":"\(proteinNumber)",
+        let ctype = self.msgDict.stringValueForKey(key: "ctype").count > 0 ? self.msgDict.stringValueForKey(key: "ctype") : "2"
+        var foodsDict = ["proteinNumber":"\(proteinNumber)",
                          "carbohydrateNumber":"\(carNumber)",
                          "fatNumber":"\(fatNumber)",
                          "caloriesNumber":"\(calories)".replacingOccurrences(of: ",", with: "."),
@@ -168,8 +169,7 @@ extension FoodsCreateFastVC{
                           "fat":"\(fatNumber)",
                          "calories":"\(calories)".replacingOccurrences(of: ",", with: "."),
                          "state":"1",
-                         "ctype":self.msgDict.stringValueForKey(key: "ctype"),
-//                         "remark":"\((self.remarkVm.textField.text ?? "").disable)",
+                         "ctype":ctype,
                          "remark":"\((self.remarkVm.textField.text ?? "").disable_emoji(text: (self.remarkVm.textField.text ?? "")as NSString))",
                          "fname":"快速添加"]
         
@@ -185,6 +185,7 @@ extension FoodsCreateFastVC{
             }
         }else{
             if self.sourceType == .meals_create{
+                foodsDict.updateValue("2", forKey: "ctype")
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "foodsAddForMeals"), object: foodsDict)
                 if let viewControllers = navigationController?.viewControllers {
                     for vc in viewControllers{

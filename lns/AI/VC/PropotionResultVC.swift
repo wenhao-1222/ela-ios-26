@@ -704,22 +704,8 @@ extension PropotionResultVC{
                          "calories":"\(calories)".replacingOccurrences(of: ",", with: "."),
                          "state":"1",
                          "ctype":"3",
-//                         "remark":"\((self.remarkVm.textField.text ?? "").disable)",
                          "remark":"\((self.foodsNameVm.textField.text ?? "").disable_emoji(text: (self.foodsNameVm.textField.text ?? "")as NSString))",
                          "fname":"快速添加"]
-//        let foodsDict = ["proteinNumber":"\(proteinNumber)",
-//                         "carbohydrateNumber":"\(carNumber)",
-//                         "fatNumber":"\(fatNumber)",
-//                         "caloriesNumber":"\(calories)".replacingOccurrences(of: ",", with: "."),
-//                         "protein":"\(proteinNumber)",
-//                          "carbohydrate":"\(carNumber)",
-//                          "fat":"\(fatNumber)",
-//                         "calories":"\(calories)".replacingOccurrences(of: ",", with: "."),
-//                         "state":"1",
-//                         "ctype":"3",
-////                         "remark":"\((self.remarkVm.textField.text ?? "").disable)",
-//                         "remark":"\((self.foodsNameVm.textField.text ?? "").disable_emoji(text: (self.foodsNameVm.textField.text ?? "")as NSString))",
-//                         "fname":"快速添加"]
         switch self.sourceType {
         case .logs:
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "fastAddFoods"), object: foodsDict)

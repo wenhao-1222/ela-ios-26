@@ -48,7 +48,12 @@ class MarketListVM : UIView{
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         
-        let vi = JournalCollectionView.init(frame: CGRect.init(x: kFitWidth(9), y: 0, width: SCREEN_WIDHT-kFitWidth(29), height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()), collectionViewLayout: layout)
+        var viHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()
+        if #available(iOS 26.0, *) {
+            viHeight = SCREEN_HEIGHT
+        }
+        
+        let vi = JournalCollectionView.init(frame: CGRect.init(x: kFitWidth(9), y: 0, width: SCREEN_WIDHT-kFitWidth(29), height: viHeight), collectionViewLayout: layout)
 //        let vi = JournalCollectionView.init(frame: CGRect.init(x: kFitWidth(9), y: 0, width: SCREEN_WIDHT-kFitWidth(29), height: SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()-WHUtils().getTabbarHeight()), collectionViewLayout: layout)
         
         vi.collectionViewLayout = layout
@@ -112,10 +117,9 @@ extension MarketListVM{
 
 extension MarketListVM{
     func sendMallListRequest() {
-        
         let param = ["page":"\(pageNum)",
                      "pageSize":"\(pageSize)"]
-        
+        DLLog(message: "sendMallListRequest:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_mall_list, parameters: param as [String:AnyObject]) { [weak self] responseObject in
             guard let self = self else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")

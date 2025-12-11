@@ -70,7 +70,7 @@ class MallOrderCreateVC: WHBaseViewVC {
         
         footerView.backgroundColor = .COLOR_BG_F2
         footerView.addSubview(payTypeVm)
-        footerView.addSubview(desVm)
+//        footerView.addSubview(desVm)
         vi.tableFooterView = footerView
         
         if #available(iOS 15.0, *) { vi.sectionHeaderTopPadding = 0 }
@@ -86,7 +86,6 @@ class MallOrderCreateVC: WHBaseViewVC {
         let bottomHeight = getBottomSafeAreaHeight() > 0 ? (kFitWidth(55)+getBottomSafeAreaHeight()) : kFitWidth(66)
         let vm = CoursePayOrderPayDesVM.init(frame: CGRect.init(x: 0, y: self.payTypeVm.frame.maxY+kFitWidth(1), width: SCREEN_WIDHT, height: kFitWidth(179)))
         vm.backgroundColor = .COLOR_BG_F2
-//        let vm = CoursePayOrderPayDesVM.init(frame: CGRect.init(x: 0, y: self.payTypeVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.payTypeVm.frame.maxY-bottomHeight))
         vm.controller = self
         
         return vm
@@ -180,18 +179,6 @@ extension MallOrderCreateVC:UITableViewDelegate,UITableViewDataSource{
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
-//    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-//        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.payTypeVm.selfHeight+kFitWidth(0)))
-//        
-//        vi.backgroundColor = .COLOR_BG_F2
-//        vi.addSubview(payTypeVm)
-//        vi.addSubview(desVm)
-//        
-//        return vi
-//    }
-//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-//        return self.payTypeVm.selfHeight + kFitWidth(180)//+kFitWidth(8)
-//    }
 }
 
 extension MallOrderCreateVC{
@@ -200,10 +187,8 @@ extension MallOrderCreateVC{
         view.backgroundColor = .COLOR_BG_F2
         view.addSubview(tableView)
         
-//        view.addSubview(desVm)
         view.addSubview(bottomVm)
         tableView.frame = CGRect.init(x: 0, y: self.getNavigationBarHeight()+kFitWidth(1), width: SCREEN_WIDHT, height: self.bottomVm.frame.minY-(self.getNavigationBarHeight()+kFitWidth(1)))
-//        view.addSubview(addressAlertVm)
         
         view.layoutIfNeeded()
     }

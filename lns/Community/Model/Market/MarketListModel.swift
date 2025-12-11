@@ -40,17 +40,6 @@ class MarketListModel: NSObject {
         model.imgUrlLarge = dict.stringValueForKey(key: "largeImageUrl")
         model.imgUrlSmall = dict.stringValueForKey(key: "smallImageUrl")
         
-//        let imageArr = dict["image"]as? NSArray ?? []
-//        
-//        for i in 0..<imageArr.count{
-//            let dict = imageArr[i]as? NSDictionary ?? [:]
-//            if dict.stringValueForKey(key: "alias").lowercased() == "large"{
-//                model.imgUrlLarge = dict.stringValueForKey(key: "url")
-//            }else if dict.stringValueForKey(key: "alias").lowercased() == "small"{
-//                model.imgUrlSmall = dict.stringValueForKey(key: "url")
-//            }
-//        }
-        
         if model.isTop{
             model.imgUrlForListShow = model.imgUrlLarge
         }else{
