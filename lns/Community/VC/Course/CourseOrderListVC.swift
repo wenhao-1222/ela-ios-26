@@ -315,34 +315,50 @@ extension CourseOrderListVC {
     }
 
     func dealDataSource(dataArr: NSArray) {
-        self.dataSourceArray = NSMutableArray(array: dataArr)
-        if self.dataSourceArray.count > 0 {
-//            DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
-                self.tableView.isHidden = false
+//        self.dataSourceArray = NSMutableArray(array: dataArr)
+//        if self.dataSourceArray.count > 0 {
+//            self.tableView.isHidden = false
+        let actualData = NSMutableArray(array: dataArr)
+
+       if actualData.count > 0 {
+           // 1. 先根据接口返回的 bizType 构建一份骨架数据，确保商城订单也能先显示骨架，再渐隐渐现到真实内容
+           let skeletonData = NSMutableArray()
+           for case let dict as NSDictionary in dataArr {
+               skeletonData.add(["bizType": dict.stringValueForKey(key: "bizType")])
+           }
+           // 如果接口返回为空字符串等异常值，默认兜底到商城骨架，避免没有渐变动画
+           if skeletonData.count == 0 {
+               skeletonData.add(["bizType": "2"])
+           }
+
+           self.dataSourceArray = skeletonData
+           self.tableView.isHidden = false
             self.topTypeVm.isHidden = false
-//            })
-            UIView.animate(withDuration: 0.25, delay: 0,options: .curveEaseInOut) {
-                self.tableView.alpha = 1
-                self.topTypeVm.alpha = 1
-                self.nodataVm.alpha = 0
-            }completion: { _ in
-                self.nodataVm.isHidden = true
+//            UIView.animate(withDuration: 0.25, delay: 0,options: .curveEaseInOut) {
+//                self.tableView.alpha = 1
+//                self.topTypeVm.alpha = 1
+//                self.nodataVm.alpha = 0
+//            }completion: { _ in
+//                self.nodataVm.isHidden = true
                 self.tableView.reloadData()
+
+               // 2. 在下一帧切换到真实数据，cell 内部会使用 hideSkeletonWithCrossfade 实现淡入
+               DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                   self.dataSourceArray = actualData
+                   self.tableView.reloadData()
+
+                   UIView.animate(withDuration: 0.25, delay: 0,options: .curveEaseInOut) {
+                       self.tableView.alpha = 1
+                       self.topTypeVm.alpha = 1
+                       self.nodataVm.alpha = 0
+                   }completion: { _ in
+                       self.nodataVm.isHidden = true
+                   }
             }
-//            self.nodataVm.isHidden = true
-//            self.topTypeVm.isHidden = false
-//            self.tableView.reloadData()
         } else {
+            self.dataSourceArray = actualData
             self.nodataVm.alpha = 0
             self.nodataVm.isHidden = false
-            
-//            UIView.animate(withDuration: 0.25, delay: 0, animations: {
-//                if self.status.isEmpty {
-//                    self.tableView.isHidden = true
-//                    self.topTypeVm.isHidden = true
-//                }
-//                self.nodataVm.isHidden = false
-//            })
             UIView.animate(withDuration: 0.25, delay: 0,options: .curveEaseInOut) {
                 self.tableView.alpha = 0
                 if self.status.isEmpty{

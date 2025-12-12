@@ -357,6 +357,14 @@ extension FoodsListAddListVM:UITableViewDataSource,UITableViewDelegate{
         vc.sourceType = self.sourceType
         self.controller.navigationController?.pushViewController(vc, animated:true)
         
+        vc.deleteBlock = {()in
+            UserDefaults.delFoods(foodsDict: dict)
+            self.historyFoodsArray = UserDefaults.getHistoryFoods()
+            self.foodsArray.remove(dict)
+            self.foodsArraySortBySelectCount.remove(dict)
+            self.tableView.reloadData()
+        }
+        
         if self.sourceType == .main {
             vc.confirmButton.isHidden = true
         }

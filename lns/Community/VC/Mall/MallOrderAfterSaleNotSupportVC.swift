@@ -49,7 +49,10 @@ class MallOrderAfterSaleNotSupportVC: WHBaseViewVC {
         vm.payButton.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
         vm.payButton.isEnabled = true
         vm.payBlocK = {()in
-            let vc = ServiceContactVC()
+//            let vc = ServiceContactVC()
+            let vc = ServiceContactMarketVC()
+            vc.bizType = "2"
+            vc.orderMsgDict = self.orderDict
             vc.relatedOrderId = self.orderDict.stringValueForKey(key: "id")
             self.navigationController?.pushViewController(vc, animated: true)
         }

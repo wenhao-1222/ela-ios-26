@@ -24,7 +24,8 @@ class ServiceContactMarketVC: WHBaseViewVC {
     var lastSendTest = ""
     var relatedOrderId = ""
     var bizType = "1" //  1  售前咨询  2 售后咨询
-    var detailModel = MallDetailModel()
+    var detailModel = MallDetailModel()//商品详情Model
+    var orderMsgDict = NSDictionary()//订单信息
     
     var pageNum = 1
     var pageSize = 30
