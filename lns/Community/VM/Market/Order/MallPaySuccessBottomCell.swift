@@ -17,7 +17,7 @@ class MallPaySuccessBottomCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
@@ -54,7 +54,8 @@ class MallPaySuccessBottomCell: UITableViewCell {
     }()
     lazy var isFoldImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "mall_order_detail_arrow_down")
+//        img.setImgLocal(imgName: "mall_order_detail_arrow_down")
+        img.image = UIImage(named: "mall_order_detail_arrow_down")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
         img.isUserInteractionEnabled = true
         img.isHidden = true
         
@@ -100,10 +101,12 @@ extension MallPaySuccessBottomCell{
         ifFoldButton.isSelected = !isFold
         
         if isFold{
-            isFoldImgView.setImgLocal(imgName: "mall_order_detail_arrow_down")
+//            isFoldImgView.setImgLocal(imgName: "mall_order_detail_arrow_down")
+            isFoldImgView.image = UIImage(named: "mall_order_detail_arrow_down")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
             ifFoldButton.setTitle("查看全部订单信息", for: .normal)
         }else{
-            isFoldImgView.setImgLocal(imgName: "mall_order_detail_arrow_top")
+//            isFoldImgView.setImgLocal(imgName: "mall_order_detail_arrow_top")
+            isFoldImgView.image = UIImage(named: "mall_order_detail_arrow_top")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_50)
             ifFoldButton.setTitle("收起订单信息", for: .normal)
         }
     }

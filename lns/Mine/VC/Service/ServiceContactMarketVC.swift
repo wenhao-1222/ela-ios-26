@@ -52,6 +52,7 @@ class ServiceContactMarketVC: WHBaseViewVC {
     private var shouldKeepAtBottom = true
     private var pendingImageIndexPaths = Set<IndexPath>()
     private var hasCheckedLatestGoodsInfo = false
+    private var hasCheckedLatestOrderInfo = false
     
     enum MediaPickerType {
         case image
@@ -519,11 +520,8 @@ extension ServiceContactMarketVC:UITableViewDelegate,UITableViewDataSource{
                 let goodsList = orderInfo["goodsList"]as? NSArray ?? []
                 
                 if goodsList.count > 0{
-                    let goodsInfo = goodsList[0]as? NSDictionary ?? [:]
                     let vc = MallOrderDetailVC()
                     vc.orderDict = ["id":orderInfo.stringValueForKey(key: "orderId")]
-//                    vc.number = dict.stringValueForKey(key: "quantity").intValue
-//                    vc.orderModel = MallDetailModel().dealDataForOrderList(dict: dict)
                     self.navigationController?.pushViewController(vc, animated: true)
                 }else{
                     let tutorialInfo = orderInfo["tutorial"]as? NSDictionary ?? [:]
@@ -715,6 +713,7 @@ extension ServiceContactMarketVC{
             self.removeDuplicateMessagesById()
             self.dealDataSource(animated: !isLoadMore, shouldScrollToBottom: !isLoadMore, previousContentHeight: previousContentHeight)
             self.evaluateInitialGoodsMessageIfNeeded(isLoadMore: isLoadMore)
+            self.evaluateInitialOrderMessageIfNeeded(isLoadMore: isLoadMore)
         }
     }
     private func removeDuplicateMessagesById() {
@@ -1461,6 +1460,38 @@ extension ServiceContactMarketVC {
                 let goodsInfoCard = dict["goodsInfoCard"] as? NSDictionary ?? [:]
                 return goodsInfoCard.stringValueForKey(key: "name") == detailModel.skuName
             }
+        }
+
+        return false
+    }
+    
+    private func evaluateInitialOrderMessageIfNeeded(isLoadMore: Bool) {
+        guard !isLoadMore, !hasCheckedLatestOrderInfo else { return }
+        hasCheckedLatestOrderInfo = true
+
+        let currentOrderId = relatedOrderId.isEmpty ? orderMsgDict.stringValueForKey(key: "id") : relatedOrderId
+        guard !currentOrderId.isEmpty, orderMsgDict.count > 0 else { return }
+
+        if !isLatestOrderMessageCurrentOrder(currentOrderId) {
+            sendOrderMsgRequest(dict: orderMsgDict)
+        }
+    }
+
+    private func isLatestOrderMessageCurrentOrder(_ currentOrderId: String) -> Bool {
+        guard dataSourceArray.count > 0 else { return false }
+
+        for index in stride(from: dataSourceArray.count - 1, through: 0, by: -1) {
+            guard let dict = dataSourceArray[index] as? NSDictionary else { continue }
+
+            guard dict.stringValueForKey(key: "contentType") == "5" else { continue }
+
+            let relatedOrderId = dict.stringValueForKey(key: "relatedOrderId")
+            if !relatedOrderId.isEmpty {
+                return relatedOrderId == currentOrderId
+            }
+
+            let orderInfoCard = dict["orderInfoCard"] as? NSDictionary ?? [:]
+            return orderInfoCard.stringValueForKey(key: "orderId") == currentOrderId
         }
 
         return false

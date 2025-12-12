@@ -61,7 +61,8 @@ class MallOrderAfterSaleVC: WHBaseViewVC {
         let vm = MallPaySuccessBottomVM.init(frame: .zero)
         vm.payButton.setTitle("提交售后", for: .normal)
         vm.payButton.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_C4C4C4), for: .disabled)
-        vm.payButton.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
+//        vm.payButton.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
+        vm.payButton.backgroundColor = .THEME
         vm.payButton.isEnabled = false
         vm.payBlocK = {()in
             self.presentAlertVc(confirmBtn: "确定", message: "提交完成后，自动跳转订单列表查看状态", title: "是否提交售后", cancelBtn: "取消", handler: { action in
@@ -73,7 +74,6 @@ class MallOrderAfterSaleVC: WHBaseViewVC {
         return vm
     }()
 }
-
 
 extension MallOrderAfterSaleVC:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -196,6 +196,7 @@ extension MallOrderAfterSaleVC:RITLPhotosViewControllerDelegate{
 extension MallOrderAfterSaleVC{
     func initUI() {
         initNavi(titleStr: "售后服务")
+        
         view.backgroundColor = .COLOR_BG_F2
         view.addSubview(tableView)
         view.addSubview(bottomVm)

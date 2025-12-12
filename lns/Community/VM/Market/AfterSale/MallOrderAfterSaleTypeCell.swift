@@ -22,7 +22,7 @@ class MallOrderAfterSaleTypeCell: UITableViewCell {
     }
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()
@@ -40,9 +40,9 @@ class MallOrderAfterSaleTypeCell: UITableViewCell {
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_20, for: .disabled)
         btn.setTitleColor(.white, for: .selected)
-        btn.setBackgroundImage(createImageWithColor(color: .white), for: .normal)
+        btn.backgroundColor = .COLOR_BG_F5_FITNESS
+//        btn.setBackgroundImage(createImageWithColor(color: .white), for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .selected)
-        btn.setTitleColor(.white, for: .selected)
         btn.layer.cornerRadius = kFitWidth(18)
         btn.layer.borderWidth = kFitWidth(1)
         btn.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.cgColor
@@ -59,9 +59,9 @@ class MallOrderAfterSaleTypeCell: UITableViewCell {
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_20, for: .disabled)
         btn.setTitleColor(.white, for: .selected)
-        btn.setBackgroundImage(createImageWithColor(color: .white), for: .normal)
+        btn.backgroundColor = .COLOR_BG_F5_FITNESS
+//        btn.setBackgroundImage(createImageWithColor(color: .white), for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .selected)
-        btn.setTitleColor(.white, for: .selected)
         btn.layer.cornerRadius = kFitWidth(18)
         btn.layer.borderWidth = kFitWidth(1)
         btn.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.cgColor

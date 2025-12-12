@@ -7,7 +7,6 @@
 
 import MCToast
 
-
 class MallOrderDetailVC: WHBaseViewVC {
     
     var orderDict = NSDictionary()
@@ -32,7 +31,9 @@ class MallOrderDetailVC: WHBaseViewVC {
         super.viewDidLoad()
         
         initUI()
-        sendOrderDetailRequest()
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+            self.sendOrderDetailRequest()
+        })
     }
     
     lazy var tableView: UITableView = {
@@ -572,6 +573,7 @@ extension MallOrderDetailVC{
             DLLog(message: "sendOrderDetailRequest:\(dataDict)")
             
             self.orderDict = dataDict
+            self.orderModel = MallDetailModel().dealDataForOrderList(dict: dataDict)
             self.dealDataSource()
         }
     }

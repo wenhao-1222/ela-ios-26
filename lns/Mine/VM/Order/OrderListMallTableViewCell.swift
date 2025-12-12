@@ -138,7 +138,7 @@ class OrderListMallTableViewCell: UITableViewCell {
 
     lazy var lineView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .COLOR_LINE_F0
         return vi
     }()
 
@@ -187,7 +187,7 @@ class OrderListMallTableViewCell: UITableViewCell {
     
     lazy var saleAfterButton: UIButton = {
         let btn = UIButton()
-        btn.backgroundColor = .white
+        btn.backgroundColor = .COLOR_BG_F5_FITNESS
         btn.layer.borderColor = UIColor.clear.cgColor
         btn.layer.borderWidth = kFitWidth(1)
         btn.setTitle("售后", for: .normal)

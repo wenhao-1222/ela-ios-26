@@ -22,7 +22,7 @@ class MallOrderAfterSaleReasonCell: UITableViewCell {
     }
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()
@@ -37,7 +37,7 @@ class MallOrderAfterSaleReasonCell: UITableViewCell {
 
     private let containerView: UIView = {
         let v = UIView()
-        v.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        v.backgroundColor = .COLOR_BG_WHITE_95//UIColor(white: 0.95, alpha: 1)
         v.layer.cornerRadius = 12
         v.translatesAutoresizingMaskIntoConstraints = false
         return v

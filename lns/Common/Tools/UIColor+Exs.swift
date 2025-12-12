@@ -28,7 +28,11 @@ extension UIColor {
     public static let COLOR_WHITE_65                    = UIColor(named: "color_white_65")!
     public static let COLOR_WHITE_75                    = UIColor(named: "color_white_75")!
     
+    
+    
     public static let COLOR_BG_WHITE                    = UIColor(named: "color_bg_white")!
+    ///透明度为  1  的95 白色
+    public static let COLOR_BG_WHITE_95                 = UIColor(named: "color_bg_white_95")!
     
     public static let COLOR_BG_BLACK                    = UIColor(named: "color_bg_black")!
     public static let COLOR_BG_BLACK_06                 = UIColor(named: "color_black_06")!

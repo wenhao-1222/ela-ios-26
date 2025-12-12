@@ -34,14 +34,14 @@ class MallOrderAfterSaleImgsCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .white
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.selectionStyle = .none
         
         initUI()
     }
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
     }()
@@ -60,7 +60,7 @@ class MallOrderAfterSaleImgsCell: UITableViewCell {
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         let collectionView = UICollectionView.init(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .white//.WIDGET_COLOR_GRAY_BLACK_06
+        collectionView.backgroundColor = .clear//.WIDGET_COLOR_GRAY_BLACK_06
 //        collectionView.keyboardDismissMode = .onDrag
         collectionView.bounces = false
 //        collectionView.alwaysBounceVertical = false // 不允许上下弹跳

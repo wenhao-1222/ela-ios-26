@@ -17,12 +17,13 @@ class MallOrderAfterSaleMsgCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.selectionStyle = .none
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         
         initUI()
     }
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
         
@@ -229,7 +230,7 @@ extension MallOrderAfterSaleMsgCell{
 
 extension MallOrderAfterSaleMsgCell{
     func initUI() {
-        contentView.backgroundColor = .COLOR_BG_F2
+//        contentView.backgroundColor = .COLOR_BG_F2
         contentView.addSubview(bgView)
         bgView.addSubview(statusLabel)
         bgView.addSubview(statusTimeLabel)

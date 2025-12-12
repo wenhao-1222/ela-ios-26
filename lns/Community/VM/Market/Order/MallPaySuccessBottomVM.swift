@@ -19,14 +19,15 @@ class MallPaySuccessBottomVM : UIView{
     override init(frame: CGRect) {
         selfHeight = WHUtils().getBottomSafeAreaHeight() > 0 ? (WHUtils().getBottomSafeAreaHeight()+kFitWidth(55)) : kFitWidth(66)
         super.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-selfHeight, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
         
         initUI()
     }
     lazy var payButton: UIButton = {
         let btn = UIButton()
-        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
+        btn.backgroundColor = .THEME
+//        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
         btn.setTitle("查看订单", for: .normal)
