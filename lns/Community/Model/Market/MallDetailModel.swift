@@ -46,6 +46,8 @@ class MallDetailModel: NSObject {
     var isStartSaleAlertSubscribed = false
     ///购买按钮的状态
     var buyButtonStatus = BUY_BUTTON_STATUS.sale_normal
+    ///全球购 文案
+    var overseaShippingNotice = ""
     ///购买按钮的显示文案
     var buyButtonText = "立即购买"
     
@@ -96,6 +98,7 @@ class MallDetailModel: NSObject {
         model.isSaleRemind = dict.stringValueForKey(key: "isSaleRemind") == "1" ? true : false
         model.isRestockAlertSubscribed = dict.stringValueForKey(key: "isRestockAlertSubscribed") == "1" ? true : false
         model.isStartSaleAlertSubscribed = dict.stringValueForKey(key: "isStartSaleAlertSubscribed") == "1" ? true : false
+        model.overseaShippingNotice = dict.stringValueForKey(key: "overseaShippingNotice")
         
         let status = MallDetailModel().dealBuyButtonStatus(dict: dict)
         model.buyButtonStatus = status

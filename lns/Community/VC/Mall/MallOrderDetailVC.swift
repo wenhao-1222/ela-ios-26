@@ -31,9 +31,7 @@ class MallOrderDetailVC: WHBaseViewVC {
         super.viewDidLoad()
         
         initUI()
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
-            self.sendOrderDetailRequest()
-        })
+        self.sendOrderDetailRequest()
     }
     
     lazy var tableView: UITableView = {
@@ -294,6 +292,8 @@ extension MallOrderDetailVC{
             initNavi(titleStr: "已退款")
         }else if orderDict.stringValueForKey(key: "status") == "7"{
             initNavi(titleStr: "已换货")
+        }else{
+            initNavi(titleStr: "")
         }
         
         view.addSubview(tableView)
