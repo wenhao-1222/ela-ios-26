@@ -105,8 +105,6 @@ class ServiceContactMarketVC: WHBaseViewVC {
             self.choiceImgAction()
         }
         vi.chooseAlbumBlock = { [weak self] in
-            
-            
             if self?.bizType == "2" {
                 self?.choiceImgAction()//售后可以选择视频
             }else{

@@ -74,6 +74,8 @@ class ForumCommentReplyListCell: UITableViewCell {
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.isUserInteractionEnabled = true
         lab.lineBreakMode = .byTruncatingMiddle
+        lab.setContentCompressionResistancePriority(.required, for: .horizontal)
+        lab.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         
         return lab
     }()
@@ -182,7 +184,6 @@ extension ForumCommentReplyListCell{
         refreshConstrait()
 //        timeLabel.alpha = 0
        [headImgView, nameLabel, commentLabel, timeLabel].forEach { $0.hideSkeletonWithCrossfade() }
-        
         
         thumbTapView.isHidden = false
 //        thumbsUpButton.setImage(UIImage(named: "forum_thumbs_up_normal"), for: .normal)
@@ -299,6 +300,10 @@ extension ForumCommentReplyListCell{
         verifyImgView.isHidden = model.isKeyUser == .refuse
         
         if model.isKeyUser == .pass{
+            
+            verifyImgView.snp.updateConstraints { make in
+                make.width.height.equalTo(kFitWidth(16))
+            }
             authorLabel.snp.remakeConstraints { make in
                 make.left.equalTo(verifyImgView.snp.right).offset(kFitWidth(4))
                 make.centerY.lessThanOrEqualTo(nameLabel)
@@ -306,6 +311,10 @@ extension ForumCommentReplyListCell{
                 make.height.equalTo(kFitWidth(20))
             }
         }else{
+            
+            verifyImgView.snp.updateConstraints { make in
+                make.width.height.equalTo(0)
+            }
             authorLabel.snp.remakeConstraints { make in
                 make.left.equalTo(nameLabel.snp.right).offset(kFitWidth(4))
                 make.centerY.lessThanOrEqualTo(nameLabel)
@@ -391,7 +400,8 @@ extension ForumCommentReplyListCell{
         nameLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(100))
             make.top.equalTo(kFitWidth(16))
-            make.width.equalTo(kFitWidth(170))
+//            make.width.equalTo(kFitWidth(170))
+            make.right.lessThanOrEqualTo(thumbsUpButton.snp.left).offset(kFitWidth(-48))
             make.height.equalTo(kFitWidth(18))
         }
         verifyImgView.snp.makeConstraints { make in
@@ -432,7 +442,8 @@ extension ForumCommentReplyListCell{
         nameLabel.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(100))
             make.top.equalTo(kFitWidth(16))
-            make.width.equalTo(kFitWidth(170))
+//            make.width.equalTo(kFitWidth(170))
+            make.right.lessThanOrEqualTo(thumbsUpButton.snp.left).offset(kFitWidth(-48))
         }
         commentLabel.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(100))

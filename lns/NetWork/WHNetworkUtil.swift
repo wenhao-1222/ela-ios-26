@@ -319,13 +319,21 @@ class WHNetworkUtil: SessionManager {
                                 MCToast.mc_remove()
                                 if urlString != URL_sport_add || (value["message"] as? String ?? "").contains("存在")
                                 || urlString != URL_dietplan_plan_active{
-                                    let msgDict: NSMutableDictionary = [
+                                    var msgDict: NSMutableDictionary = [
                                         "stage": "response_error",
                                         "code": code,
                                         "url":urlString,
                                         "message": value as Any,
                                         "params": parameters ?? [:]
                                     ]
+                                    if urlString == URL_User_logs_update_details{
+                                        msgDict = [
+                                            "stage": "response_error",
+                                            "code": code,
+                                            "url":urlString,
+                                            "message": value as Any
+                                        ]
+                                    }
                                     WHUtils().sendErrorMsgRequest(msgDict: msgDict)
                                 }
                                 

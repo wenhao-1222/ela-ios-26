@@ -416,7 +416,6 @@ class WHUtils: NSObject {
 
 //MARK: 网络请求
 extension WHUtils{
-    
     //统计食物添加到日志的次数
     func sendAddFoodsForCountRequest(fids:NSArray) {
         let param = ["fids":fids]
@@ -441,7 +440,15 @@ extension WHUtils{
         if notReportUrl.contains(urlStr){
             return
         }
-        let param = ["message":"\(WHUtils.getJSONStringFromDictionary(dictionary: msgDict as NSDictionary))"]
+        let paDict = NSMutableDictionary(dictionary: msgDict)
+        if urlStr == URL_User_logs_update_details{
+            if msgDict.object(forKey: "params") != nil {
+                paDict.removeObject(forKey: "params")
+            }
+        }
+        
+        let param = ["message":"\(WHUtils.getJSONStringFromDictionary(dictionary: paDict as NSDictionary))"]
+        
         WHNetworkUtil.shareManager().POST(urlString: URL_error_msg, parameters: param as [String : AnyObject]) { responseObject in
             
         }
