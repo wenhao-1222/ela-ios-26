@@ -491,7 +491,7 @@ extension MallDetailVC{
         if self.detailModel.deliveryNotice.count > 0 {
             var bottomGap = kFitWidth(15)
             var textColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
-            if self.detailModel.overseaShippingNotice.count > 0 {
+            if self.detailModel.shippingNotice.count > 0 {
                 bottomGap = kFitWidth(4)
                 textColor = .COLOR_TEXT_TITLE_0f1214
             }
@@ -503,11 +503,11 @@ extension MallDetailVC{
                                                             font: .systemFont(ofSize: 11, weight: .regular),
                                                             bottomGap: bottomGap))
         }
-        if self.detailModel.overseaShippingNotice.count > 0 {
+        if self.detailModel.shippingNotice.count > 0 {
             textCellModels.append(MallCellModel().initModel(type: .text,
                                                             cellType: .popup,
                                                             topGap: kFitWidth(1),
-                                                            text: self.detailModel.overseaShippingNotice,
+                                                            text: self.detailModel.shippingNotice,
                                                             textColor: .COLOR_TEXT_TITLE_0f1214_50,
                                                             font: .systemFont(ofSize: 10, weight: .regular),
                                                             bottomGap: kFitWidth(15)))

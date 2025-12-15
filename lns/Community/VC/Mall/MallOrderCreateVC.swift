@@ -14,6 +14,8 @@ class MallOrderCreateVC: WHBaseViewVC {
     var detailModel = MallDetailModel()
     var addressModel = AddressModel()
     
+    var idMsgDict = NSDictionary()
+    
     var number = 1
     var specString = ""
     var shippingFee = ""
@@ -47,6 +49,9 @@ class MallOrderCreateVC: WHBaseViewVC {
         }
         DLLog(message: "-----------------------------")
         sendGetDefaultRequest()
+        if self.detailModel.isNeedLegalName{
+            sendIdCardMsgRequest()
+        }
         
         NotificationCenter.default.addObserver(self, selector: #selector(alipayResult(notify: )), name: NSNotification.Name(rawValue: "alipayResult"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(wechatPaySuccess(notify: )), name: NSNotification.Name(rawValue: "wechatSuccess"), object: nil)
@@ -136,7 +141,8 @@ class MallOrderCreateVC: WHBaseViewVC {
 
 extension MallOrderCreateVC:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        return self.detailModel.isNeedLegalName ? 4 : 3
+//        return 3
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0{
@@ -149,9 +155,19 @@ extension MallOrderCreateVC:UITableViewDelegate,UITableViewDataSource{
             cell?.updateAddress(model: self.addressModel)
             return cell ?? MallConfirmOrderMsgCell()
         }else{
-            let cell = tableView.dequeueReusableCell(withIdentifier: "MallConfirmOrderExpCell") as? MallConfirmOrderExpCell
-            cell?.updateExpress(shippingFee: self.shippingFee, isfreeShipping: self.freeShipping)
-            return cell ?? MallConfirmOrderExpCell()
+            if self.detailModel.isNeedLegalName && indexPath.row == 2{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "MallConfirmOrderAddressCell") as? MallConfirmOrderAddressCell
+                cell?.updateIdcMsg(authenDict: self.idMsgDict)
+                cell?.tapBlock = {()in
+                    let vc = OverSeaMsgVC()
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+                return cell ?? MallConfirmOrderMsgCell()
+            }else{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "MallConfirmOrderExpCell") as? MallConfirmOrderExpCell
+                cell?.updateExpress(shippingFee: self.shippingFee, isfreeShipping: self.freeShipping)
+                return cell ?? MallConfirmOrderExpCell()
+            }
         }
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -305,6 +321,16 @@ extension MallOrderCreateVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
             }
+        }
+    }
+    func sendIdCardMsgRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_forum_id_verify_msg, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendIdCardMsgRequest:\(dataObj)")
+            
+            self.idMsgDict = dataObj
+            self.tableView.reloadData()
         }
     }
 }

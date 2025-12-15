@@ -276,6 +276,10 @@ public let URL_forum_order_bind_device          = URL_Type + "forum/order/tutori
 ///换绑设备
 public let URL_forum_order_rebind_device          = URL_Type + "forum/order/tutorial/rebinding_device"
 
+///身份校验   两要素
+public let URL_forum_id_verify            = URL_Type + "users/id_2_meta_verify/verify"
+
+public let URL_forum_id_verify_msg        = URL_Type + "users/profile/get_legal_name"
 
 //MARK: 社区--教程
 //教程类目分类

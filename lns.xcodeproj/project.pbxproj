@@ -765,6 +765,7 @@
 		EC3A9CBD2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3A9CBC2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift */; };
 		EC44393D2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC44393C2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift */; };
 		EC4732D62EEFBDEC008F67F5 /* MallDetailImageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D52EEFBDEB008F67F5 /* MallDetailImageVM.swift */; };
+		EC4732D82EEFF05A008F67F5 /* OverSeaMsgVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */; };
 		EC498A6A2ED816B800BC7876 /* ColorWheelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC498A692ED816B700BC7876 /* ColorWheelView.swift */; };
 		EC498A6C2ED816CB00BC7876 /* ColorWheelVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC498A6B2ED816C800BC7876 /* ColorWheelVC.swift */; };
 		EC4DE2802BC8D0B30090A7BD /* PlanDetailTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE27F2BC8D0B30090A7BD /* PlanDetailTopVM.swift */; };
@@ -2064,6 +2065,7 @@
 		EC3A9CBC2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireBodyFatItemVM.swift; sourceTree = "<group>"; };
 		EC44393C2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalFuncCopyMealsAlertVM.swift; sourceTree = "<group>"; };
 		EC4732D52EEFBDEB008F67F5 /* MallDetailImageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallDetailImageVM.swift; sourceTree = "<group>"; };
+		EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverSeaMsgVC.swift; sourceTree = "<group>"; };
 		EC47FE352C3B8D87006CFA2A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		EC498A692ED816B700BC7876 /* ColorWheelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWheelView.swift; sourceTree = "<group>"; };
 		EC498A6B2ED816C800BC7876 /* ColorWheelVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWheelVC.swift; sourceTree = "<group>"; };
@@ -2601,6 +2603,7 @@
 				A718AF892E7D2A1000710C20 /* MallOrderAfterSaleVC.swift */,
 				A773C2352E852B7C00F1E3AA /* MallOrderAfterSaleNotSupportVC.swift */,
 				A7BD40BC2E8112DA009DE692 /* MallOrderAfterSaleSubmitVC.swift */,
+				EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */,
 			);
 			path = Mall;
 			sourceTree = "<group>";
@@ -6001,6 +6004,7 @@
 				A740EEF12E72C55500B6ABAA /* MyAddressDetailVC.swift in Sources */,
 				EC30F2B32C8701F900E7BD33 /* NaturalStatVC.swift in Sources */,
 				ECB6AEB52BC63DBB00F03567 /* MainTopGoalVM.swift in Sources */,
+				EC4732D82EEFF05A008F67F5 /* OverSeaMsgVC.swift in Sources */,
 				EC781CD42BBA99F400752C95 /* QuestionnairePlanFoodsTypeAlertVM.swift in Sources */,
 				A7927AF42CCB803500A8D0A2 /* QuestionnaireNewVC.swift in Sources */,
 				EC4E493B2BAD1322008295A2 /* UserInfoModel.swift in Sources */,

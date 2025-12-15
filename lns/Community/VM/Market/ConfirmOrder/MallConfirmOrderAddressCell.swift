@@ -8,6 +8,8 @@
 
 class MallConfirmOrderAddressCell: UITableViewCell {
     
+    var tapBlock:(()->())?
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -16,6 +18,9 @@ class MallConfirmOrderAddressCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.selectionStyle = .none
         initUI()
+        
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))
+        self.addGestureRecognizer(tap)
     }
     lazy var whiteView: UIView = {
         let vi = UIView()
@@ -51,6 +56,7 @@ class MallConfirmOrderAddressCell: UITableViewCell {
 
 extension MallConfirmOrderAddressCell{
     func updateAddress(model:AddressModel) {
+        addressIcon.setImgLocal(imgName: "mall_order_address_icon")
         if model.contactName.count > 0 {
             addressLabel.textColor = .COLOR_TEXT_TITLE_0f1214
             addressLabel.text = "\(model.contactName) \(model.detailAddressWhole)"
@@ -58,6 +64,23 @@ extension MallConfirmOrderAddressCell{
             addressLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
             addressLabel.text = "请添加收件地址"
         }
+    }
+    func updateIdcMsg(authenDict:NSDictionary) {
+        addressIcon.setImgLocal(imgName: "mall_order_idcard_icon")
+        
+        if authenDict.stringValueForKey(key: "legalName").count > 0{
+            addressLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+            addressLabel.text = authenDict.stringValueForKey(key: "legalName") + "  " + authenDict.stringValueForKey(key: "identifyNum")
+        }else{
+            addressLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
+            addressLabel.text = "请提交清关信息"
+        }
+    }
+}
+
+extension MallConfirmOrderAddressCell{
+    @objc func tapAction() {
+        self.tapBlock?()
     }
 }
 

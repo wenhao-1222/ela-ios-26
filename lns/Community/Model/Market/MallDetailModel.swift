@@ -28,7 +28,7 @@ enum BUY_BUTTON_STATUS {
 class MallDetailModel: NSObject {
     
     var id = ""
-    
+    ///⚠️前端用不上
     var sn = ""
     ///相当于商品名称
     var skuName = ""
@@ -46,8 +46,10 @@ class MallDetailModel: NSObject {
     var isStartSaleAlertSubscribed = false
     ///购买按钮的状态
     var buyButtonStatus = BUY_BUTTON_STATUS.sale_normal
-    ///全球购 文案
-    var overseaShippingNotice = ""
+    ///运费的文案
+    var shippingNotice = ""
+    ///是否需要清关
+    var isNeedLegalName = false
     ///购买按钮的显示文案
     var buyButtonText = "立即购买"
     
@@ -60,15 +62,15 @@ class MallDetailModel: NSObject {
     var image_order = ""
     
     var subtitle = ""
-    ///原价
+    ///原价 ⚠️前端用不上
     var price_original = ""
     ///售价
     var price_sale = ""
-    ///库存 真实
+    ///库存 真实 ⚠️前端用不上
     var stock_real = ""
     ///库存
     var stock_dummy = ""
-    ///上架状态  1 上架  0 下架
+    ///上架状态 ⚠️前端用不上  1 上架  0 下架  
     var status = ""
     ///物流预计：预计发货时间
     var deliveryNotice = ""
@@ -98,7 +100,10 @@ class MallDetailModel: NSObject {
         model.isSaleRemind = dict.stringValueForKey(key: "isSaleRemind") == "1" ? true : false
         model.isRestockAlertSubscribed = dict.stringValueForKey(key: "isRestockAlertSubscribed") == "1" ? true : false
         model.isStartSaleAlertSubscribed = dict.stringValueForKey(key: "isStartSaleAlertSubscribed") == "1" ? true : false
-        model.overseaShippingNotice = dict.stringValueForKey(key: "overseaShippingNotice")
+        model.isNeedLegalName = dict.stringValueForKey(key: "isNeedLegalName") == "1" ? true : false
+        
+        
+        model.shippingNotice = dict.stringValueForKey(key: "shippingNotice")
         
         let status = MallDetailModel().dealBuyButtonStatus(dict: dict)
         model.buyButtonStatus = status
