@@ -132,6 +132,8 @@ extension MallDetailBannerVM{
             
             imgList.append(img)
             
+//            HeroBrowserLocalImageViewModule(image: img.image)
+            
             DSImageUploader().dealImgUrlSignForOss(urlStr: "\(self.remotePathGroup[i]as? String ?? "")") { signUrl in
                 self.list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl))
             }

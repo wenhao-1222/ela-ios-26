@@ -6,6 +6,7 @@
 //
 
 import MCToast
+import Kingfisher
 
 enum CELL_TYPE {
     case text
@@ -54,6 +55,9 @@ class MallDetailVC: WHBaseViewVC {
 //    var detailImgVMList:[HeroBrowserViewModule] = []
     
     var textCellModels:[MallCellModel] = [MallCellModel]()
+    /// 详情图 ViewModel（顺序与 detailImage 一致）
+    private var detailImageVMs: [MallDetailImageVM] = []
+
     
     private var bannerImagesCache: [String] = []
     private var detailImagesCache: [String] = []
@@ -93,6 +97,8 @@ class MallDetailVC: WHBaseViewVC {
         vi.dataSource = self
         vi.showsVerticalScrollIndicator = false
         vi.rowHeight = UITableView.automaticDimension
+        vi.estimatedRowHeight = 300
+        vi.prefetchDataSource = self
         vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.register(MallDetailTextCell.self, forCellReuseIdentifier: "MallDetailTextCell")
         vi.register(MallDetailImageCell.self, forCellReuseIdentifier: "MallDetailImageCell")
@@ -262,12 +268,9 @@ extension MallDetailVC{
 
 extension MallDetailVC:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        var warrantyPolicyNoticeNum = self.detailModel.warrantyPolicyNotice.count > 0 ? 1 : 0
-//        if self.detailModel.mainSpecModel.isMainSpec{
-            return self.textCellModels.count + self.detailModel.image_arr_detail.count// + warrantyPolicyNoticeNum
-//        }else{
-//            return 4 + self.detailModel.image_arr_detail.count + warrantyPolicyNoticeNum
-//        }
+        return textCellModels.count + detailImageVMs.count
+
+//        return self.textCellModels.count + self.detailModel.image_arr_detail.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row < textCellModels.count{
@@ -309,13 +312,45 @@ extension MallDetailVC:UITableViewDelegate,UITableViewDataSource{
                 }
             }
         }else{
-            let imgCell = tableView.dequeueReusableCell(withIdentifier: "MallDetailImageCell")as? MallDetailImageCell
-            let index = indexPath.row - self.textCellModels.count
-            if self.detailModel.image_arr_detail.count > index{
-                let imgUrl = self.detailModel.image_arr_detail[index]
-                imgCell?.updateText(imgUrl: imgUrl)
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: MallDetailImageCell.reuseId,
+                for: indexPath
+            ) as! MallDetailImageCell
+
+            let imgIndex = indexPath.row - textCellModels.count
+            let vm = detailImageVMs[imgIndex]
+
+            cell.heightCalculated = { [weak self] vm in
+                guard let self = self else { return }
+                guard let index = self.detailImageVMs.firstIndex(where: { $0 === vm }) else { return }
+
+                let ip = IndexPath(row: index + self.textCellModels.count, section: 0)
+                self.tableView.reloadRows(at: [ip], with: .none)
             }
-            return imgCell ?? MallDetailImageCell()
+
+            cell.bind(vm: vm)
+            
+            return cell
+//            let imgCell = tableView.dequeueReusableCell(withIdentifier: "MallDetailImageCell")as? MallDetailImageCell
+//            let index = indexPath.row - self.textCellModels.count
+////            if self.detailModel.image_arr_detail.count > index{
+////                let imgUrl = self.detailModel.image_arr_detail[index]
+////                imgCell?.updateText(imgUrl: imgUrl)
+////            }
+//            let imgUrl = self.detailModel.image_arr_detail[index]
+//            let cachedHeight = detailImageHeightCache[imgUrl]
+//
+//            imgCell?.onHeightCalculated = { [weak self] url, height in
+//                guard let self = self else { return }
+//                if self.detailImageHeightCache[url] == nil {
+//                    self.detailImageHeightCache[url] = height
+//                    self.tableView.reloadRows(at: [indexPath], with: .none)
+//                }
+//            }
+//
+//            imgCell?.updateText(imgUrl: imgUrl, cachedHeight: cachedHeight)
+//            
+//            return imgCell ?? MallDetailImageCell()
         }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -331,6 +366,34 @@ extension MallDetailVC:UITableViewDelegate,UITableViewDataSource{
         return self.getBottomSafeAreaHeight() + kFitWidth(60)
     }
 }
+extension MallDetailVC: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView,
+                   prefetchRowsAt indexPaths: [IndexPath]) {
+
+        for ip in indexPaths {
+            let idx = ip.row - textCellModels.count
+            guard idx >= 0, idx < detailImageVMs.count else { continue }
+
+            let vm = detailImageVMs[idx]
+            guard vm.heroModule == nil, vm.isLoading == false else { continue }
+
+            vm.isLoading = true
+            KingfisherManager.shared.retrieveImage(with: URL(string: vm.url)!) { result in
+                vm.isLoading = false
+                if case let .success(res) = result {
+                    let img = res.image
+                    let h = img.size.height / img.size.width * SCREEN_WIDHT
+                    vm.height = h
+                    vm.heroModule = HeroBrowserNetworkImageViewModule(
+                        thumbailImgUrl: vm.url,
+                        originImgUrl: vm.url
+                    )
+                }
+            }
+        }
+    }
+}
+
 extension MallDetailVC{
     func initUI() {
         view.addSubview(naviVm)
@@ -343,10 +406,28 @@ extension MallDetailVC{
         tableView.layoutIfNeeded()
         view.layoutIfNeeded()
     }
+    private func buildDetailImageVMIfNeeded() {
+        guard detailImagesCache != detailModel.image_arr_detail else { return }
+
+        detailImagesCache = detailModel.image_arr_detail
+        detailImageVMs = detailModel.image_arr_detail.map {
+            MallDetailImageVM(url: $0)
+        }
+    }
+
     func updateUI() {
         if self.detailModel.image_order == ""{
             self.detailModel.image_order = self.listModel.imgUrlSmall
         }
+//        if detailImageVMs.isEmpty ||
+//           detailImagesCache != detailModel.image_arr_detail {
+//
+//            detailImagesCache = detailModel.image_arr_detail
+//            detailImageVMs = detailModel.image_arr_detail.map {
+//                MallDetailImageVM(url: $0)
+//            }
+//        }
+        buildDetailImageVMIfNeeded()
         self.updateButtonStatus()
         self.specAlertVm.updateGoodsMsg(model: self.detailModel, imgUrl: self.detailModel.image_order)
 //        self.bannerImgVm.updateUI(dataArray: self.detailModel.image_arr_banner as NSArray)
@@ -398,7 +479,7 @@ extension MallDetailVC{
                                                                 text: "",
                                                                 textColor: .THEME,
                                                                 font: .systemFont(ofSize: 11, weight: .regular)))
-            }else{
+            }else if self.detailModel.mainSpecModel.isUrl{
                 textCellModels.append(MallCellModel().initModel(type: .spec,
                                                                 cellType: .tap,
                                                                 topGap: kFitWidth(2),
@@ -450,28 +531,6 @@ extension MallDetailVC{
     func updateButtonStatus() {
         self.bottomFuncVm.detailModel = self.detailModel
         self.bottomFuncVm.updateButtonStatus()
-//        buyButton.setTitle(self.detailModel.buyButtonText, for: .normal)
-//        buyButton.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-//        switch self.detailModel.buyButtonStatus{
-//        case .sale_pre_no_stoke :
-//            buyButton.isEnabled = false
-//        case .sale_pre:
-//            let attr = NSMutableAttributedString(string: detailModel.buyButtonText)
-//            let timeAttr = NSMutableAttributedString(string: "\n \(detailModel.deliveryNotice)")
-//            attr.yy_font = .systemFont(ofSize: 16, weight: .regular)
-//            timeAttr.yy_font = .systemFont(ofSize: 12, weight: .regular)
-//            attr.append(timeAttr)
-//            buyButton.setAttributedTitle(attr, for: .normal)
-////            buyButton.titleLabel?.attributedText = attr
-////            buyButton.setTitle("\(detailModel.buyButtonText) \n \(detailModel.deliveryNotice)", for: .normal)
-//        case .sale_remind, .sale_normal,.sale_no_stoke:
-//            break
-//        case .sale_no_stoke_subscribe,.sale_remind_subscribe:
-//            buyButton.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_C4C4C4), for: .normal)
-//        }
-//        UIView.animate(withDuration: 0.15, animations: {
-//            self.buyButton.alpha = 1
-//        })
     }
 }
 

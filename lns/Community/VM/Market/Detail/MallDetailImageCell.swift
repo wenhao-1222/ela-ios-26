@@ -5,79 +5,123 @@
 //  Created by Elavatine on 2025/9/8.
 //
 
+final class MallDetailImageCell: UITableViewCell {
 
-class MallDetailImageCell: UITableViewCell {
-    
-    var viewModules:[HeroBrowserViewModule] = []
-    
-    private var currentImgUrl: String?
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
+    static let reuseId = "MallDetailImageCell"
+
+    private var vm: MallDetailImageVM?
+    private var taskUrl: String?
+
+    var heightCalculated: ((MallDetailImageVM) -> Void)?
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .COLOR_BG_WHITE
-        self.selectionStyle = .none
-        
+        selectionStyle = .none
+        backgroundColor = .COLOR_BG_WHITE
         initUI()
     }
-    lazy var imgView: UIImageView = {
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageViewEx.kf.cancelDownloadTask()
+        taskUrl = nil
+    }
+
+    private lazy var imageViewEx: UIImageView = {
         let img = UIImageView()
-        img.contentMode = .scaleToFill
+        img.contentMode = .scaleAspectFill
+        img.clipsToBounds = true
         img.backgroundColor = .COLOR_TEXT_TITLE_0f1214_03
         img.isUserInteractionEnabled = true
-        let tap = UITapGestureRecognizer(target: self, action: #selector(imgTapAction))
-        img.addGestureRecognizer(tap)
-
+        img.addGestureRecognizer(
+            UITapGestureRecognizer(target: self, action: #selector(imageTap))
+        )
         return img
     }()
 }
-extension MallDetailImageCell{
-    func updateText(imgUrl:String) {
-        if currentImgUrl == imgUrl { return }
-        currentImgUrl = imgUrl
-        self.viewModules.removeAll()
-        DSImageUploader().dealImgUrlSignForOss(urlStr: "\(imgUrl)") { signUrl in
-            self.viewModules.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl))
+
+// MARK: - Bind
+extension MallDetailImageCell {
+
+    func bind(vm: MallDetailImageVM) {
+        self.vm = vm
+        self.taskUrl = vm.url
+
+        // 1️⃣ 已有高度
+        if let h = vm.height {
+            applyHeight(h)
         }
-        
-        imgView.setImgUrlWithComplete(urlString: imgUrl) {
-            let imgW = self.imgView.image?.size.width ?? 1
-            let imgH = self.imgView.image?.size.height ?? 0
-            let finalHeight = imgH / imgW * SCREEN_WIDHT
-            self.imgView.snp.remakeConstraints { make in
-                make.left.right.top.equalToSuperview()
-                make.height.equalTo(finalHeight)
-                make.bottom.equalToSuperview().priority(.low)
-            }
-            if let tableView = self.superview as? UITableView {
-                UIView.performWithoutAnimation {
-                    tableView.beginUpdates()
-                    tableView.endUpdates()
-                    tableView.layoutIfNeeded()
-                }
-            }
+
+        // 2️⃣ 已加载过
+        if let _ = vm.heroModule {
+            imageViewEx.setImgUrl(urlString: vm.url)
+            return
+        }
+
+        guard vm.isLoading == false else { return }
+        vm.isLoading = true
+
+        imageViewEx.setImgUrlWithComplete(urlString: vm.url) { [weak self] in
+            guard let self = self,
+                  self.taskUrl == vm.url,
+                  let image = self.imageViewEx.image else { return }
+
+            let height = image.size.height / image.size.width * SCREEN_WIDHT
+            vm.height = height
+            vm.isLoading = false
+
+            self.applyHeight(height)
+
+            vm.heroModule = HeroBrowserNetworkImageViewModule(
+                thumbailImgUrl: vm.url,
+                originImgUrl: vm.url
+            )
+
+            self.heightCalculated?(vm)
         }
     }
-    @objc func imgTapAction() {
-        guard let vc = UIApplication.topViewController() else { return }
-        vc.hero.browserPhoto(viewModules: viewModules, initIndex: 0) {
-            [
-                .pageControlType(.pageControl),
-                .heroView(self.imgView)
-            ]
+
+    private func applyHeight(_ height: CGFloat) {
+        imageViewEx.snp.remakeConstraints {
+            $0.left.right.top.equalToSuperview()
+            $0.height.equalTo(height)
+            $0.bottom.equalToSuperview().priority(.low)
         }
     }
 }
 
-extension MallDetailImageCell{
-    func initUI() {
-        contentView.addSubview(imgView)
-        
-        imgView.snp.makeConstraints { make in
-            make.left.top.right.bottom.equalToSuperview()
+// MARK: - Action
+private extension MallDetailImageCell {
+
+    @objc func imageTap() {
+        guard let vm = vm,
+              let module = vm.heroModule,
+              let vc = UIApplication.topViewController() else { return }
+
+        vc.hero.browserPhoto(
+            viewModules: [module],
+            initIndex: 0
+        ) {
+            [.pageControlType(.pageControl),
+             .heroView(self.imageViewEx)]
         }
     }
 }
+
+// MARK: - UI
+private extension MallDetailImageCell {
+
+    func initUI() {
+        contentView.addSubview(imageViewEx)
+        imageViewEx.snp.makeConstraints {
+            $0.left.right.top.equalToSuperview()
+            $0.height.equalTo(1) // 占位高度，防止第一次 update 崩
+            $0.bottom.equalToSuperview().priority(.low)
+        }
+    }
+}
+

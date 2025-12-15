@@ -446,7 +446,6 @@ extension WHUtils{
                 paDict.removeObject(forKey: "params")
             }
         }
-        
         let param = ["message":"\(WHUtils.getJSONStringFromDictionary(dictionary: paDict as NSDictionary))"]
         
         WHNetworkUtil.shareManager().POST(urlString: URL_error_msg, parameters: param as [String : AnyObject]) { responseObject in
