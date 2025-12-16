@@ -257,6 +257,8 @@ extension PlanListVC:UITableViewDelegate,UITableViewDataSource{
         self.topVm.textField.resignFirstResponder()
     }
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        guard indexPath.row < self.dataSourceArray.count else { return false }
+
         let dict = self.dataSourceArray[indexPath.row]as? NSDictionary ?? [:]
         if dict.stringValueForKey(key: "pname").isEmpty {
             return false
@@ -264,6 +266,8 @@ extension PlanListVC:UITableViewDelegate,UITableViewDataSource{
         return true
     }
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard indexPath.row < self.dataSourceArray.count else { return nil }
+
         let dict = self.dataSourceArray[indexPath.row]as? NSDictionary ?? [:]
         if dict.stringValueForKey(key: "pname").isEmpty {
             return nil

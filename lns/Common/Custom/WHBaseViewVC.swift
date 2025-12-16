@@ -472,9 +472,13 @@ class WHBaseViewVC: ViewController {
             print("无法解析出JSONString")
             return ""
         }
-        let data : NSData! = try? JSONSerialization.data(withJSONObject: dictionary, options: []) as NSData?
-        let JSONString = NSString(data:data as Data,encoding: String.Encoding.utf8.rawValue)
-        return JSONString! as String
+//        let data : NSData! = try? JSONSerialization.data(withJSONObject: dictionary, options: []) as NSData?
+//        let JSONString = NSString(data:data as Data,encoding: String.Encoding.utf8.rawValue)
+//        return JSONString! as String
+        guard let data = try? JSONSerialization.data(withJSONObject: dictionary, options: []) else {
+            return ""
+        }
+        return String(data: data, encoding: .utf8) ?? ""
     }
 //    数组转换为JSONString
     func getJSONStringFromArray(array:NSArray) ->String{

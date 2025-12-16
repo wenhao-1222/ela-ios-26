@@ -102,9 +102,13 @@ class WHUtils: NSObject {
             print("无法解析出JSONString")
             return ""
         }
-        let data : NSData! = try? JSONSerialization.data(withJSONObject: dictionary, options: []) as NSData?
-        let JSONString = NSString(data:data as Data,encoding: String.Encoding.utf8.rawValue)
-        return JSONString! as String
+//        let data : NSData! = try? JSONSerialization.data(withJSONObject: dictionary, options: []) as NSData?
+//        let JSONString = NSString(data:data as Data,encoding: String.Encoding.utf8.rawValue)
+//        return JSONString! as String
+        guard let data = try? JSONSerialization.data(withJSONObject: dictionary, options: []) else {
+            return ""
+        }
+        return String(data: data, encoding: .utf8) ?? ""
     }
     //    数组转换为JSONString
     static func getJSONStringFromArray(array:NSArray) ->String{
@@ -446,8 +450,15 @@ extension WHUtils{
                 paDict.removeObject(forKey: "params")
             }
         }
-        let param = ["message":"\(WHUtils.getJSONStringFromDictionary(dictionary: paDict as NSDictionary))"]
-        
+//        let param = ["message":"\(WHUtils.getJSONStringFromDictionary(dictionary: paDict as NSDictionary))"]
+        let msgString = WHUtils.getJSONStringFromDictionary(dictionary: paDict as NSDictionary)
+        let uploadMsg: String
+        if msgString.count > 1000 {
+            uploadMsg = String(msgString.prefix(1000))
+        } else {
+            uploadMsg = msgString
+        }
+        let param = ["message": uploadMsg]
         WHNetworkUtil.shareManager().POST(urlString: URL_error_msg, parameters: param as [String : AnyObject]) { responseObject in
             
         }

@@ -462,15 +462,19 @@ class WHNetworkUtil: SessionManager {
 
 extension WHNetworkUtil{
     //    字典转换为JSONString
-    func getJSONStringFromDictionary(dictionary:NSDictionary) -> String {
-        if (!JSONSerialization.isValidJSONObject(dictionary)) {
-            DLLog(message: "无法解析出JSONString")
-            return ""
-        }
-        let data : NSData! = try? JSONSerialization.data(withJSONObject: dictionary, options: []) as NSData?
-        let JSONString = NSString(data:data as Data,encoding: String.Encoding.utf8.rawValue)
-        return JSONString! as String
-    }
+//    func getJSONStringFromDictionary(dictionary:NSDictionary) -> String {
+//        if (!JSONSerialization.isValidJSONObject(dictionary)) {
+//            DLLog(message: "无法解析出JSONString")
+//            return ""
+//        }
+////        let data : NSData! = try? JSONSerialization.data(withJSONObject: dictionary, options: []) as NSData?
+////        let JSONString = NSString(data:data as Data,encoding: String.Encoding.utf8.rawValue)
+////        return JSONString! as String
+//        guard let data = try? JSONSerialization.data(withJSONObject: dictionary, options: []) else {
+//            return ""
+//        }
+//        return String(data: data, encoding: .utf8) ?? ""
+//    }
     
     func getStrForSign(param:[String:String]) -> String{
         let paramTemp = Array(param.keys).sorted(by: <)
