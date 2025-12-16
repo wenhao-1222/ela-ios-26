@@ -468,6 +468,8 @@ extension PlanDetailVC{
         let param = ["cleartype":"today"]
         WHNetworkUtil.shareManager().POST(urlString: URL_clear_logs, parameters: param as [String: AnyObject],isNeedToast: true,vc: self) { responseObject in
 //            MCToast.mc_text("已重置日志列表数据",respond: .respond)
+            UserDefaults.set(value: [:], forKey: .jounal_meal_advice)
+//            NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_TODAY_JOUNAL, object: nil)
             HealthKitNaturnalManager().clearWaterDataFromToday { t in
                 
             }
