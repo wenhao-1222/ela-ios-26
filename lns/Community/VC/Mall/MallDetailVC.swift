@@ -81,6 +81,7 @@ class MallDetailVC: WHBaseViewVC {
     }
     lazy var naviVm: MalDetailNaviView = {
         let vm = MalDetailNaviView.init(frame: .zero)
+        vm.shareButton.isHidden = true
         vm.backBlock = {()in
             self.backTapAction()
         }
@@ -209,6 +210,34 @@ extension MallDetailVC{
     }
     
     @objc func comfirmBuyAction() {
+        switch self.detailModel.buyButtonStatus{
+        case .sale_pre:
+            DLLog(message: "预售提醒")
+            self.specAlertVm.showSelf()
+            return
+        case .sale_pre_no_stoke:
+            DLLog(message: "预售--无库存")
+            return
+        case .sale_remind:
+            DLLog(message: "开售提醒")
+            self.sendSubsribeRequest(bizType: "2")
+            return
+        case .sale_remind_subscribe:
+            DLLog(message: "开售提醒--已订阅通知")
+            self.sendSubsribeCancelRequest(bizType: "2")
+            return
+        case .sale_normal:
+            self.specAlertVm.showSelf()
+        case .sale_no_stoke:
+            DLLog(message: "商品--无库存")
+            self.sendSubsribeRequest(bizType: "1")
+            return
+        case .sale_no_stoke_subscribe:
+            DLLog(message: "商品--已订阅到货通知")
+            self.sendSubsribeCancelRequest(bizType: "1")
+            return
+        }
+        
         let totalSpecs = self.specAlertVm.groups.count
         let selectedSpecs = self.specAlertVm.selectedPairs.count
         if totalSpecs > 0 && selectedSpecs < totalSpecs {
@@ -521,16 +550,19 @@ extension MallDetailVC{
             textCellCountCache = self.textCellModels.count
             self.tableView.reloadData()
         } else {
-            let indexPaths = (0..<self.textCellModels.count).map { IndexPath(row: $0, section: 0) }
-            if !indexPaths.isEmpty {
-                self.tableView.reloadRows(at: indexPaths, with: .none)
-            }
+            self.tableView.reloadData()
+//            let indexPaths = (0..<self.textCellModels.count).map { IndexPath(row: $0, section: 0) }
+//            if !indexPaths.isEmpty {
+//                self.tableView.reloadRows(at: indexPaths, with: .none)
+//            }
         }
     }
     
     func updateButtonStatus() {
         self.bottomFuncVm.detailModel = self.detailModel
         self.bottomFuncVm.updateButtonStatus()
+        self.specAlertVm.detailModel = self.detailModel
+        self.specAlertVm.updateButtonStatus()
     }
 }
 

@@ -193,7 +193,30 @@ extension MallSpecAlertVM{
     }
 
     @objc func nothingToDo() { /* 吞点击 */ }
-    
+    func updateButtonStatus() {
+        bottomVm.buyButton.setTitle(self.detailModel.buyButtonText, for: .normal)
+        bottomVm.buyButton.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
+        switch self.detailModel.buyButtonStatus{
+        case .sale_pre_no_stoke :
+            bottomVm.buyButton.isEnabled = false
+        case .sale_pre:
+            let attr = NSMutableAttributedString(string: detailModel.buyButtonText)
+            let timeAttr = NSMutableAttributedString(string: "\n \(detailModel.deliveryNotice)")
+            attr.yy_font = .systemFont(ofSize: 16, weight: .regular)
+            timeAttr.yy_font = .systemFont(ofSize: 12, weight: .regular)
+            attr.append(timeAttr)
+            bottomVm.buyButton.setAttributedTitle(attr, for: .normal)
+//            buyButton.titleLabel?.attributedText = attr
+//            buyButton.setTitle("\(detailModel.buyButtonText) \n \(detailModel.deliveryNotice)", for: .normal)
+        case .sale_remind, .sale_normal,.sale_no_stoke:
+            break
+        case .sale_no_stoke_subscribe,.sale_remind_subscribe:
+            bottomVm.buyButton.setBackgroundImage(createImageWithColor(color: .COLOR_GRAY_C4C4C4), for: .normal)
+        }
+        UIView.animate(withDuration: 0.15, animations: {
+            self.bottomVm.buyButton.alpha = 1
+        })
+    }
     @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {
         guard gesture.view === whiteView else { return }
 //        guard gesture.view === whiteView || gesture.view === scrollView else { return }

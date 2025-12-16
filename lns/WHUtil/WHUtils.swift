@@ -436,7 +436,7 @@ extension WHUtils{
     func sendErrorMsgRequest(msgDict:NSDictionary){
         let urlStr = msgDict.stringValueForKey(key: "url")
         //不需要上报错误的接口
-        let notReportUrl = [URL_sport_add,URL_dietplan_plan_active]
+        let notReportUrl = [URL_sport_add,URL_dietplan_plan_active,URL_error_msg]
         if notReportUrl.contains(urlStr){
             return
         }

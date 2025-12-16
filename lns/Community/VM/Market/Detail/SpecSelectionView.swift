@@ -186,15 +186,19 @@ private final class TagCell: UICollectionViewCell {
 //        contentView.layer.borderColor = selected ? UIColor.THEME.cgColor
 //                                                 : UIColor.COLOR_BG_F2.cgColor
         if !enabled {
+//            label.textColor = selected ? .THEME : .COLOR_TEXT_TITLE_0f1214_25
+//            contentView.backgroundColor = selected ? .COLOR_BUTTON_HIGHLIGHT_BG_THEME_10 : UIColor.COLOR_BG_F2
+//            contentView.layer.borderColor = selected ? UIColor.THEME.cgColor : UIColor.COLOR_BG_F2.cgColor
+            
             label.textColor = .COLOR_TEXT_TITLE_0f1214_25
             contentView.backgroundColor = UIColor.COLOR_BG_F2
             contentView.layer.borderColor = UIColor.COLOR_BG_F2.cgColor
-            contentView.alpha = 0.5
+//            contentView.alpha = 0.5
         } else {
             label.textColor = selected ? .THEME : .COLOR_TEXT_TITLE_0f1214
             contentView.backgroundColor = selected ? .COLOR_BUTTON_HIGHLIGHT_BG_THEME_10 : UIColor.COLOR_BG_F2
             contentView.layer.borderColor = selected ? UIColor.THEME.cgColor : UIColor.COLOR_BG_F2.cgColor
-            contentView.alpha = 1
+//            contentView.alpha = 1
         }
     }
 }
@@ -323,7 +327,7 @@ private final class SpecGroupView: UIView, UICollectionViewDataSource, UICollect
                               contentInsets: config.contentInsets)
     }
     func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return group.items[indexPath.item].isEnabled
+        return true//group.items[indexPath.item].isEnabled
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = group.items[indexPath.item]
