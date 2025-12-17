@@ -89,7 +89,8 @@ class FirstLaunchVC: WHBaseViewVC {
         lab.font = .systemFont(ofSize: 24, weight: .semibold) // 目标样式
         lab.textColor = .white
         lab.textAlignment = .left
-        lab.numberOfLines = 0
+        lab.adjustsFontSizeToFitWidth = true
+        lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping
         lab.alpha = 0 // 初始隐藏
         return lab
@@ -616,7 +617,7 @@ extension FirstLaunchVC{
             self.firstLabelTwoTopConstraint = make.top.equalTo(self.firstLabelOne).offset(0).constraint
             make.centerX.equalToSuperview()
             make.left.equalTo(kFitWidth(54))
-            make.right.equalTo(kFitWidth(-54))
+            make.right.equalTo(kFitWidth(-16))
         }
         firstLogoImgView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()

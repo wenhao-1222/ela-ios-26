@@ -117,13 +117,16 @@ extension MallDetailBannerVM{
         for i in 0..<self.remotePathGroup.count{
             let img = UIImageView()
             scrollView.addSubview(img)
-            img.contentMode = .scaleAspectFit
+//            img.contentMode = .scaleAspectFit
+            img.contentMode = .scaleAspectFill
             img.isUserInteractionEnabled = true
             img.setImgUrl(urlString: self.remotePathGroup[i]as? String ?? "")
             
             img.snp.makeConstraints { make in
                 make.left.equalTo(SCREEN_WIDHT*CGFloat(i))
                 make.top.height.equalToSuperview()
+//                make.top.equalTo(WHUtils().getNavigationBarHeight())
+//                make.bottom.equalToSuperview()
                 make.width.equalTo(SCREEN_WIDHT)
             }
             img.tag = 3500 + i

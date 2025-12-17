@@ -5,8 +5,6 @@
 //  Created by Elavatine on 2025/9/8.
 //
 
-
-
 class MalDetailNaviView : UIView{
     
     let selfHeight = WHUtils().getTopSafeAreaHeight() + kFitWidth(35)+kFitWidth(13)*2
@@ -61,7 +59,8 @@ extension MalDetailNaviView{
         backButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.width.height.equalTo(kFitWidth(35))
-            make.top.equalTo(WHUtils().getTopSafeAreaHeight()+kFitWidth(13))
+            make.top.equalTo(kFitWidth(13)+statusBarHeight)
+//            make.top.equalTo(WHUtils().getTopSafeAreaHeight()+kFitWidth(13)+statusBarHeight)
         }
         shareButton.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-20))

@@ -440,6 +440,7 @@ extension PlanDetailVC{
         let param = ["pid":"\(self.planDictMsg["pid"]as? String ?? "")"]
         
         WHNetworkUtil.shareManager().POST(urlString: URL_dietplan_active, parameters: param as [String : AnyObject],isNeedToast: true,vc: self,timeOut: 30) { responseObject in
+            UserDefaults.set(value: [:], forKey: .jounal_meal_advice)
             MCToast.mc_text("“\(self.planDictMsg["pname"]as? String ?? "")”计划已激活",respond: .forbid)
             self.getUserConfigRequest()
             self.bottomVm.isHidden = true

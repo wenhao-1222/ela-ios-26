@@ -112,8 +112,9 @@ class MallDetailVC: WHBaseViewVC {
         return vi
     }()
     lazy var bannerImgVm: MallDetailBannerVM = {
-        let vm = MallDetailBannerVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: WHUtils().getTopSafeAreaHeight() + kFitWidth(456)))
+        let vm = MallDetailBannerVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height:kFitWidth(500)))
 //        vm.isAutoPlayEnabled = true
+//        let vm = MallDetailBannerVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: WHUtils().getTopSafeAreaHeight() + kFitWidth(456)))
         
         vm.tapBlock = {(imgIndex)in
             self.hero.browserPhoto(viewModules: self.bannerImgVm.list, initIndex: imgIndex) {
