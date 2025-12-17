@@ -7,6 +7,7 @@
 
 import MCToast
 import Kingfisher
+import UserNotifications
 
 enum CELL_TYPE {
     case text
@@ -325,7 +326,22 @@ extension MallDetailVC:UITableViewDelegate,UITableViewDataSource{
                         // 这里你可以把选中项传回业务层（例如给 VC 的属性、发通知、或更新下方价格等）
                         print("选中：index=\(newIndex), id=\(option.id)")
                         if self.detailModel.mainSpecModel.specValueList.count > newIndex{
-                            self.detailModel.mainSpecValueModel = self.detailModel.mainSpecModel.specValueList[newIndex]
+//                            self.detailModel.selectedSpecList[index] = ["specId": specId,
+//                                                                        "specValueId": specValueId,
+//                                                                        "specValueName":specValue]
+//                            self.detailModel.mainSpecValueModel = self.detailModel.mainSpecModel.specValueList[newIndex]
+                            let mainSpecValue = self.detailModel.mainSpecModel.specValueList[newIndex]
+                            self.detailModel.mainSpecValueModel = mainSpecValue
+                            self.detailModel.mainSpecValueIndex = newIndex
+                            if let idx = self.detailModel.selectedSpecList.firstIndex(where: { $0["specId"] == self.detailModel.mainSpecModel.specId }) {
+                                self.detailModel.selectedSpecList[idx] = ["specId": self.detailModel.mainSpecModel.specId,
+                                                                          "specValueId": mainSpecValue.specValueId,
+                                                                          "specValueName": mainSpecValue.specValue]
+                            } else {
+                                self.detailModel.selectedSpecList.append(["specId": self.detailModel.mainSpecModel.specId,
+                                                                          "specValueId": mainSpecValue.specValueId,
+                                                                          "specValueName": mainSpecValue.specValue])
+                            }
                             self.sendSelectSKURequest()
                         }
                     }
@@ -611,6 +627,7 @@ extension MallDetailVC{
                 self.detailModel.buyButtonText = "已设置开售提醒"
             }
             self.updateButtonStatus()
+            self.handlePushAuthorizationAfterSubscribe()
         }
     }
     func sendSubsribeCancelRequest(bizType:String) {
@@ -632,6 +649,43 @@ extension MallDetailVC{
         }
     }
     
+}
+// MARK: - Push Authorization
+private extension MallDetailVC {
+    func handlePushAuthorizationAfterSubscribe() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .authorized, .provisional:
+                return
+            case .ephemeral:
+                return
+            default:
+                DispatchQueue.main.async {
+                    self.requestPushPermissionIfNeeded()
+                }
+            }
+        }
+    }
+
+    func requestPushPermissionIfNeeded() {
+        let requestedKey = UserDefaults.AccountKeys.push_authori_mall_subscribe.rawValue
+        let hasRequested = UserDefaults.standard.bool(forKey: requestedKey)
+
+        if hasRequested {
+            self.presentAlertVc(confirmBtn: "设置",
+                                message: "通知权限已关闭，请前往系统设置开启，以便接收提醒。",
+                                title: "需要通知权限",
+                                cancelBtn: "取消",
+                                handler: { _ in
+                self.openUrl(urlString: UIApplication.openSettingsURLString)
+            }, viewController: self)
+            
+            return
+        }
+
+        UserDefaults.standard.setValue(true, forKey: requestedKey)
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in }
+    }
 }
 // 在 MallDetailVC 里
 extension MallDetailVC {

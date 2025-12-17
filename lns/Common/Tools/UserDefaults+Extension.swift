@@ -42,6 +42,7 @@ public extension UserDefaults {
         case water_history_array //最近添加过的饮水量  3个数据
         case water_alert_times //喝水提醒时间列表
         case push_authori_second_foods //已提示过第二餐推送权限
+        case push_authori_mall_subscribe //商城订阅推送是否请求过系统弹窗
         case isTapTodayNutrion //是否点击过今日营养分析按钮
         case jounal_meal_advice//日志-下一餐饮食建议
         case fitness_label_array//训练部位数据
