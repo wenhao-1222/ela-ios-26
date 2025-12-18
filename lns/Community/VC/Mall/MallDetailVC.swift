@@ -476,11 +476,13 @@ extension MallDetailVC{
         buildDetailImageVMIfNeeded()
         self.updateButtonStatus()
         self.specAlertVm.updateGoodsMsg(model: self.detailModel, imgUrl: self.detailModel.image_order)
-//        self.bannerImgVm.updateUI(dataArray: self.detailModel.image_arr_banner as NSArray)
-        if self.detailModel.image_arr_banner != bannerImagesCache {
-            self.bannerImgVm.updateUI(dataArray: self.detailModel.image_arr_banner as NSArray)
-            bannerImagesCache = self.detailModel.image_arr_banner
-        }
+        ///切换规格后，同步更新顶部的banner图
+        self.bannerImgVm.updateUI(dataArray: self.detailModel.image_arr_banner as NSArray)
+        ///切换规格后，不同步更新顶部的banner图    注释掉。2025年12月18日11:15:35
+//        if self.detailModel.image_arr_banner != bannerImagesCache {
+//            self.bannerImgVm.updateUI(dataArray: self.detailModel.image_arr_banner as NSArray)
+//            bannerImagesCache = self.detailModel.image_arr_banner
+//        }
         
         if self.detailModel.mainSpecModel.isMainSpec && self.detailModel.mainSpecModel.isUrl{
             self.options.removeAll()

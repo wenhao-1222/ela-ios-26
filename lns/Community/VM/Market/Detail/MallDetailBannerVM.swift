@@ -97,7 +97,7 @@ extension MallDetailBannerVM{
     }
     func updateUI(dataArray:NSArray){
         let newUrls = dataArray.compactMap { $0 as? String }
-        if newUrls == currentUrls { return }
+//        if newUrls == currentUrls { return } ///切换规格后，同步更新顶部的banner图  放开   2025年12月18日11:15:35
         currentUrls = newUrls
         self.remotePathGroup = dataArray
         for vi in scrollView.subviews{
@@ -114,7 +114,9 @@ extension MallDetailBannerVM{
         }
         list.removeAll()
         imgList.removeAll()
+        
         for i in 0..<self.remotePathGroup.count{
+            self.list.append(HeroBrowserViewModule(type: .networkImage))
             let img = UIImageView()
             scrollView.addSubview(img)
             img.contentMode = .scaleAspectFit
@@ -123,7 +125,8 @@ extension MallDetailBannerVM{
             img.setImgUrl(urlString: self.remotePathGroup[i]as? String ?? "")
             
             DSImageUploader().dealImgUrlSignForOss(urlStr: "\(self.remotePathGroup[i]as? String ?? "")") { signUrl in
-                self.list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl))
+//                self.list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl))
+                self.list[i] = HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl)
             }
             
             img.snp.makeConstraints { make in
