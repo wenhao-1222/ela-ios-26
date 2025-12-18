@@ -118,7 +118,7 @@ final class SpecAnchorPopup: UIView {
         b.titleLabel?.lineBreakMode = .byWordWrapping
         b.setTitle(title, for: .normal)
         b.setTitleColor(enabled ? config.textColor : config.disabledTextColor, for: .normal)
-        b.isEnabled = enabled
+//        b.isEnabled = enabled
         b.contentHorizontalAlignment = .left
         b.addTarget(self, action: #selector(onTapRow(_:)), for: .touchUpInside)
         return b
@@ -166,7 +166,7 @@ final class SpecAnchorPopup: UIView {
         let idx = sender.tag
         guard idx >= 0 && idx < options.count else { return }
         let option = options[idx]
-        guard option.inStock else { return }
+//        guard option.inStock else { return }
         onSelect(idx, option)
         dismiss()
     }

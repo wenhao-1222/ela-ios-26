@@ -117,10 +117,14 @@ extension MallDetailBannerVM{
         for i in 0..<self.remotePathGroup.count{
             let img = UIImageView()
             scrollView.addSubview(img)
-//            img.contentMode = .scaleAspectFit
-            img.contentMode = .scaleAspectFill
+            img.contentMode = .scaleAspectFit
+//            img.contentMode = .scaleAspectFill
             img.isUserInteractionEnabled = true
             img.setImgUrl(urlString: self.remotePathGroup[i]as? String ?? "")
+            
+            DSImageUploader().dealImgUrlSignForOss(urlStr: "\(self.remotePathGroup[i]as? String ?? "")") { signUrl in
+                self.list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl))
+            }
             
             img.snp.makeConstraints { make in
                 make.left.equalTo(SCREEN_WIDHT*CGFloat(i))
@@ -134,12 +138,6 @@ extension MallDetailBannerVM{
             img.addGestureRecognizer(tap)
             
             imgList.append(img)
-            
-//            HeroBrowserLocalImageViewModule(image: img.image)
-            
-            DSImageUploader().dealImgUrlSignForOss(urlStr: "\(self.remotePathGroup[i]as? String ?? "")") { signUrl in
-                self.list.append(HeroBrowserNetworkImageViewModule(thumbailImgUrl: signUrl, originImgUrl: signUrl))
-            }
         }
         scrollView.contentSize = CGSize.init(width: SCREEN_WIDHT*CGFloat(self.remotePathGroup.count), height: 0)
         scrollView.setContentOffset(CGPoint.zero, animated: false)
