@@ -195,7 +195,7 @@ extension FoodsMsgDetailsVM{
         
         let specDefault = WHUtils.getSpecDefaultFromFoods(foodsDict: foodsMsgDict)
         
-        var unitqty = Double(specDefault["specNum"]as? String ?? "\(specDefault["specNum"]as? Double ?? 0)") ?? 0
+        let unitqty = Double(specDefault["specNum"]as? String ?? "\(specDefault["specNum"]as? Double ?? 0)") ?? 0
         let calories = Double(self.foodsMsgDict["calories"]as? String ?? "\(self.foodsMsgDict["calories"]as? Double ?? 0)") ?? 0
         let carbohydrate = Double(self.foodsMsgDict["carbohydrate"]as? String ?? "\(self.foodsMsgDict["carbohydrate"]as? Double ?? 0)") ?? 0
         let protein = Double(self.foodsMsgDict["protein"]as? String ?? "\(self.foodsMsgDict["protein"]as? Double ?? 0)") ?? 0
@@ -268,27 +268,57 @@ extension FoodsMsgDetailsVM{
             }
             return
         }
-        calories = (self.specDict["specCalories"]as? Double ?? 0) * (Double(numString) ?? 0)
-        carbohydrate = (self.specDict["specCarbohydrate"]as? Double ?? 0) * (Double(numString) ?? 0)
-        protein = (self.specDict["specProtein"]as? Double ?? 0) * (Double(numString) ?? 0)
-        fat = (self.specDict["specFat"]as? Double ?? 0) * (Double(numString) ?? 0)
-//        DLLog(message: "specDict:\(specDict)")
+//        calories = (self.specDict["specCalories"]as? Double ?? 0) * (Double(numString) ?? 0)
+//        carbohydrate = (self.specDict["specCarbohydrate"]as? Double ?? 0) * (Double(numString) ?? 0)
+//        protein = (self.specDict["specProtein"]as? Double ?? 0) * (Double(numString) ?? 0)
+//        fat = (self.specDict["specFat"]as? Double ?? 0) * (Double(numString) ?? 0)
+////        DLLog(message: "specDict:\(specDict)")
+//        
+//        let carboOneDigit = WHUtils.convertStringToString(String(format: "%.1f", carbohydrate)) ?? "0"
+//        let proteinOneDigit = WHUtils.convertStringToString(String(format: "%.1f", protein)) ?? "0"
+//        let fatOneDigit = WHUtils.convertStringToString(String(format: "%.1f", fat)) ?? "0"
         
-        let carboOneDigit = WHUtils.convertStringToString(String(format: "%.1f", carbohydrate)) ?? "0"
-        let proteinOneDigit = WHUtils.convertStringToString(String(format: "%.1f", protein)) ?? "0"
-        let fatOneDigit = WHUtils.convertStringToString(String(format: "%.1f", fat)) ?? "0"
-        
+        let countDecimal = Decimal(string: numString) ?? 0
+        let specCaloriesDecimal = decimalValue(forSpecKey: "specCalories")
+        let specCarbohydrateDecimal = decimalValue(forSpecKey: "specCarbohydrate")
+        let specProteinDecimal = decimalValue(forSpecKey: "specProtein")
+        let specFatDecimal = decimalValue(forSpecKey: "specFat")
+
+        let caloriesDecimal = specCaloriesDecimal * countDecimal
+        let carbohydrateDecimal = specCarbohydrateDecimal * countDecimal
+        let proteinDecimal = specProteinDecimal * countDecimal
+        let fatDecimal = specFatDecimal * countDecimal
+
+        calories = NSDecimalNumber(decimal: caloriesDecimal).doubleValue
+        carbohydrate = NSDecimalNumber(decimal: carbohydrateDecimal).doubleValue
+        protein = NSDecimalNumber(decimal: proteinDecimal).doubleValue
+        fat = NSDecimalNumber(decimal: fatDecimal).doubleValue
+
+        let carboOneDigit = WHUtils.convertStringToStringOneDigitForce(NSDecimalNumber(decimal: carbohydrateDecimal).stringValue) ?? "0"
+        let proteinOneDigit = WHUtils.convertStringToStringOneDigitForce(NSDecimalNumber(decimal: proteinDecimal).stringValue) ?? "0"
+        let fatOneDigit = WHUtils.convertStringToStringOneDigitForce(NSDecimalNumber(decimal: fatDecimal).stringValue) ?? "0"
         setAttributeStringForLabel(numberString: "\(WHUtils.convertStringToStringNoDigit("\(calories.rounded())") ?? "0")", unitString: "千卡", label: caloriLabel)
         setAttributeStringForLabel(numberString: "\(carboOneDigit)", unitString: "g", label: carboLabel)
         setAttributeStringForLabel(numberString: "\(proteinOneDigit)", unitString: "g", label: proteinLabel)
         setAttributeStringForLabel(numberString: "\(fatOneDigit)", unitString: "g", label: fatLabel)
         
-        if self.changeBlock != nil{
-            let dict = ["carbohydrate":"\(WHUtils.convertStringToStringOneDigit("\(specCarbohydrate)") ?? "0")",
-                        "protein":"\(WHUtils.convertStringToStringOneDigit("\(specProtein)") ?? "0")",
-                        "fat":"\(WHUtils.convertStringToStringOneDigit("\(specFat)") ?? "0")"]
-            self.changeBlock!(dict as NSDictionary)
+//        if self.changeBlock != nil{
+//            let dict = ["carbohydrate":"\(WHUtils.convertStringToStringOneDigit("\(specCarbohydrate)") ?? "0")",
+//                        "protein":"\(WHUtils.convertStringToStringOneDigit("\(specProtein)") ?? "0")",
+//                        "fat":"\(WHUtils.convertStringToStringOneDigit("\(specFat)") ?? "0")"]
+//            self.changeBlock!(dict as NSDictionary)
+//        }
+    }
+    private func decimalValue(forSpecKey key: String) -> Decimal {
+        let value = specDict[key]
+        if let number = value as? NSNumber {
+            return number.decimalValue
         }
+        if let stringValue = value as? String {
+            let normalized = stringValue.replacingOccurrences(of: ",", with: ".")
+            return Decimal(string: normalized) ?? 0
+        }
+        return 0
     }
 }
 

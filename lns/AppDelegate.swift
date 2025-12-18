@@ -153,8 +153,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         if let remoteInfo = launchOptions?[.remoteNotification] as? [AnyHashable: Any] {
             let targetPage = remoteInfo["target_page"] as? String ?? ""
             if targetPage.count > 0 {
+                let spuId = remoteInfo["spu_id"]as? Int ?? 0
+                let spuName = remoteInfo["spu_name"]as? String ?? ""
                 DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-                    self.dealNotification(target_page: targetPage)
+                    self.dealNotification(target_page: targetPage,spuId: "\(spuId)",spuName: spuName)
                 }
             }
         }
@@ -464,8 +466,10 @@ extension AppDelegate:JPUSHRegisterDelegate{
        let target_page = userInfo["target_page"]as? String ?? ""
         DLLog(message: "JPush:   target_page  ---   \(target_page)")
         if target_page.count > 0 {
+            let spuId = userInfo["spu_id"]as? Int ?? 0
+            let spuName = userInfo["spu_name"]as? String ?? ""
             DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
-                self.dealNotification(target_page: target_page)
+                self.dealNotification(target_page: target_page,spuId: "\(spuId)",spuName: spuName)
             })
         }else{
             let content = response.notification.request.content
@@ -729,12 +733,12 @@ extension AppDelegate{
 
 //MARK: 点击通知的逻辑处理
 extension AppDelegate{
-    func dealNotification(target_page:String) {
+    func dealNotification(target_page:String,spuId:String="",spuName:String="") {
+        let currentVc = UIApplication.topViewController()
         //跳转到周报
         if target_page == "weekly_nutrition_report"{
             if UserInfoModel.shared.token.count > 0 {
 //                let currentVc = UserInfoModel.shared.currentVc//WHUtils().getCurrentController()
-                let currentVc = UIApplication.topViewController()
                 let vc = JournalReportVC()
 
                 let todayDate = Date().todayDate
@@ -750,6 +754,17 @@ extension AppDelegate{
                 }
                 vc.detailDict = dict
                 vc.currentIndex = 1
+                if currentVc?.navigationController != nil{
+                    currentVc?.navigationController?.pushViewController(vc, animated: true)
+                }else{
+                    currentVc?.present(vc, animated: true)
+                }
+            }
+        }else if target_page == "MallDetailVC"{
+            if UserInfoModel.shared.token.count > 0{
+                let vc = MallDetailVC()
+                vc.listModel.id = spuId
+                vc.listModel.name = spuName
                 if currentVc?.navigationController != nil{
                     currentVc?.navigationController?.pushViewController(vc, animated: true)
                 }else{

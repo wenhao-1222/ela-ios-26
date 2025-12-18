@@ -21,23 +21,42 @@ class WHUtils: NSObject {
     }
     //强制显示一位小数
     static func convertStringToStringOneDigitForce(_ str: String) -> String? {
-        if let doubleValue = Double(str) {
-            let numberFormatter = NumberFormatter()
-            numberFormatter.minimumFractionDigits = 1
-            numberFormatter.maximumFractionDigits = 1
-            return numberFormatter.string(from: NSNumber(value: doubleValue))
-        }
-        return str
+//        if let doubleValue = Double(str) {
+//            let numberFormatter = NumberFormatter()
+//            numberFormatter.minimumFractionDigits = 1
+//            numberFormatter.maximumFractionDigits = 1
+//            return numberFormatter.string(from: NSNumber(value: doubleValue))
+//        }
+//        return str
+        return roundString(str, minimumFractionDigits: 1, maximumFractionDigits: 1)
     }
     //有小数就显示一位，没有小数就不强制显示一位小数
+//    static func convertStringToStringOneDigit(_ str: String) -> String? {
+//        if let doubleValue = Double(str) {
+//            let numberFormatter = NumberFormatter()
+//            numberFormatter.minimumFractionDigits = 0
+//            numberFormatter.maximumFractionDigits = 1
+//            return numberFormatter.string(from: NSNumber(value: doubleValue))
+//        }
+//        return str
+//    }
+    //有小数就显示一位，没有小数就不强制显示一位小数
     static func convertStringToStringOneDigit(_ str: String) -> String? {
-        if let doubleValue = Double(str) {
-            let numberFormatter = NumberFormatter()
-            numberFormatter.minimumFractionDigits = 0
-            numberFormatter.maximumFractionDigits = 1
-            return numberFormatter.string(from: NSNumber(value: doubleValue))
-        }
-        return str
+        return roundString(str, minimumFractionDigits: 0, maximumFractionDigits: 1)
+    }
+
+    private static func roundString(_ str: String, minimumFractionDigits: Int, maximumFractionDigits: Int) -> String? {
+        let normalizedString = str.replacingOccurrences(of: ",", with: ".")
+        guard var decimalValue = Decimal(string: normalizedString) else { return str }
+
+        var rounded = Decimal()
+        NSDecimalRound(&rounded, &decimalValue, maximumFractionDigits, .plain)
+
+        let numberFormatter = NumberFormatter()
+        numberFormatter.locale = Locale(identifier: "en_US_POSIX")
+        numberFormatter.minimumFractionDigits = minimumFractionDigits
+        numberFormatter.maximumFractionDigits = maximumFractionDigits
+        return numberFormatter.string(from: rounded as NSDecimalNumber)
     }
     
     static func convertStringToStringThreeDigit(_ str: String) -> String? {
@@ -445,11 +464,11 @@ extension WHUtils{
             return
         }
         let paDict = NSMutableDictionary(dictionary: msgDict)
-        if urlStr == URL_User_logs_update_details{
-            if msgDict.object(forKey: "params") != nil {
-                paDict.removeObject(forKey: "params")
-            }
-        }
+//        if urlStr == URL_User_logs_update_details{
+//            if msgDict.object(forKey: "params") != nil {
+//                paDict.removeObject(forKey: "params")
+//            }
+//        }
 //        let param = ["message":"\(WHUtils.getJSONStringFromDictionary(dictionary: paDict as NSDictionary))"]
         let msgString = WHUtils.getJSONStringFromDictionary(dictionary: paDict as NSDictionary)
         let uploadMsg: String

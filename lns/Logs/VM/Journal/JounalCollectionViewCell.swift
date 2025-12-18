@@ -883,31 +883,6 @@ extension JounalCollectionViewCell{
 //            self.dealServerData(dict:responseObject["data"]as? NSDictionary ?? [:])
         }
     }
-//    func sendUpdateLogsRequest(meals:NSArray) {
-//        if logsModel.isUpload{
-//            return
-//        }
-//        let param = ["sdate":"\(self.currentDayMsg["sdate"]as? String ?? "\(self.queryDay)")",
-//                     "notes":"\(self.remarkAlertVm.textView.text ?? "")",
-//                     "totalProteins":"\(self.goalVm.proteinCircleVm.currentNum)",
-//                     "totalCarbohydrates":"\(self.goalVm.carboCircleVm.currentNum)",
-//                     "totalFats":"\(self.goalVm.fatCircleVm.currentNum)",
-//                     "totalCalories":"\(self.goalVm.caloriCircleVm.currentNum)",
-//                     "meals":"\(self.controller.getJSONStringFromArray(array: meals))"]
-//        
-//        WHNetworkUtil.shareManager().POST(urlString: URL_User_logs_update_details, parameters: param as [String : AnyObject]) { responseObject in
-//            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-//            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-//            
-//            LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: true)
-//            LogsSQLiteManager.getInstance().updateLogsEtime(sDate: self.queryDay, endTime: dataObj["etime"]as? String ?? "\(Date().currentSeconds)")
-//            self.logsModel.isUpload = true
-//            if self.isDelete == true{
-//                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "cancelEditStatus"), object: nil)
-//                self.isDelete = false
-//            }
-//        }
-//    }
     func sendUpdateNotesReqeust() {
         let param = ["sdate":"\(self.currentDayMsg["sdate"]as? String ?? "\(self.queryDay)")",
                      "notes":"\(self.remarkAlertVm.textView.text ?? "")"]
