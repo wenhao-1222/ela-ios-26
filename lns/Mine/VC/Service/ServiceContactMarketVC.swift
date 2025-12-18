@@ -842,7 +842,7 @@ extension ServiceContactMarketVC{
                      "relatedSkuId":self.detailModel.spuId,
                      "goodsInfoCard": ["name":self.detailModel.skuName,
                                        "subtitle":self.detailModel.subtitle,
-                                       "warrantyPolicyNotice":self.detailModel.warrantyPolicyNotice,
+                                       "shippingNotice":self.detailModel.shippingNotice,//warrantyPolicyNotice
                                        "images":self.detailModel.image_arr_banner]] as [String : Any]
         
         WHNetworkUtil.shareManager().POST(urlString: URL_Uer_service_sugestion, parameters: param as [String:AnyObject]) { responseObject in
@@ -852,7 +852,7 @@ extension ServiceContactMarketVC{
             if (code == 200) {
                 let goodsInfoCard = ["name": self.detailModel.skuName,
                                      "subtitle": self.detailModel.subtitle,
-                                     "warrantyPolicyNotice": self.detailModel.warrantyPolicyNotice,
+                                     "shippingNotice": self.detailModel.shippingNotice,
                                      "images": self.detailModel.image_arr_banner] as [String : Any]
                 let dict = [
                     "createdby": "\(UserInfoModel.shared.nickname)",

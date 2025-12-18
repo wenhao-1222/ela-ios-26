@@ -88,9 +88,9 @@ extension MallConfirmOrderAddressCell{
     func initUI() {
         contentView.backgroundColor = .COLOR_BG_F2
         contentView.addSubview(whiteView)
-        contentView.addSubview(addressIcon)
-        contentView.addSubview(addressLabel)
-        contentView.addSubview(arrowImgView)
+        whiteView.addSubview(addressIcon)
+        whiteView.addSubview(addressLabel)
+        whiteView.addSubview(arrowImgView)
         
         setConstrait()
     }
@@ -108,8 +108,9 @@ extension MallConfirmOrderAddressCell{
         }
         addressLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(47))
-            make.top.equalTo(kFitWidth(25))
-            make.bottom.equalTo(kFitWidth(-25))
+//            make.top.equalTo(kFitWidth(33))
+            make.top.equalTo(kFitWidth(15))
+            make.bottom.equalTo(kFitWidth(-15))
             make.right.equalTo(kFitWidth(-48))
         }
         arrowImgView.snp.makeConstraints { make in

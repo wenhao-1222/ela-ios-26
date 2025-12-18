@@ -103,11 +103,11 @@ extension ServiceContactTableViewGoodsInfoCell{
 
         goodsNameLabel.text = goodsInfo.stringValueForKey(key: "name")
 
-        let subtitle = "营养补剂"//goodsInfo.stringValueForKey(key: "subtitle")
+        let subtitle = goodsInfo.stringValueForKey(key: "subtitle")
         goodsSubtitleLabel.text = subtitle
         goodsSubtitleLabel.isHidden = subtitle.isEmpty
-
-        let policy = "香港仓发货｜免运费（偏远地区除外）"//goodsInfo.stringValueForKey(key: "warrantyPolicyNotice")
+           
+        let policy = goodsInfo.stringValueForKey(key: "shippingNotice")
         goodsPolicyLabel.text = policy
         goodsPolicyLabel.isHidden = policy.isEmpty
 

@@ -101,22 +101,15 @@ class MallOrderCreateVC: WHBaseViewVC {
         vm.updateMoney(money: "\(price)")
         
         vm.payBlocK = {()in
-//            let vc = MallPaySuccessVC()
-//            vc.model = self.detailModel
-//            vc.orderDict = ["ctime":"2025-09-16 15:27:45",
-//                            "orderId":"GO202509161527456955",
-//                            "address":"山西省太原市小店区不是说不去你那儿么就行吗",
-//                            "discountAmount":"0",
-//                            "expectedExpressStartTime":"2025-09-19前",
-//                            "shippingFee":"20",
-//                            "freeShipping":"1",
-//                            "totalAmount":"0",
-//                            "payAmount":"0.01",
-//                            "payChannel":"支付宝",
-//                            "payTime":"2025-09-16 15:28:09",
-//                            "tradeState":"SUCCESS"]
-//            vc.number = self.number
-//            self.navigationController?.pushViewController(vc, animated: true)
+            if self.addressModel.provinceName.count <= 0{
+                MCToast.mc_text("请选择收件地址")
+                return
+            }
+            if self.detailModel.isNeedLegalName && (self.idMsgDict.stringValueForKey(key: "legalName").count <= 0 || self.idMsgDict.stringValueForKey(key: "identifyNum").count <= 0){
+                MCToast.mc_text("请提交清关信息")
+                return
+            }
+            
             EventLogUtils().sendEventLogRequest(eventName: .CLICK_BUTTON,
                                                 scenarioType: .mall_create_order,
                                                 text: "\(self.detailModel.id)")
@@ -153,6 +146,28 @@ extension MallOrderCreateVC:UITableViewDelegate,UITableViewDataSource{
         }else if indexPath.row == 1{
             let cell = tableView.dequeueReusableCell(withIdentifier: "MallConfirmOrderAddressCell") as? MallConfirmOrderAddressCell
             cell?.updateAddress(model: self.addressModel)
+            cell?.tapBlock = {()in
+                let vc = MyAddressListVC()
+                vc.onSelectAddress = {(model)in
+                    self.addressModel = model
+                    self.sendOrderPriceRequest()
+                    self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+                }
+                vc.deleteAddressBlock = {(id)in
+                    if self.addressModel.id == id{
+                        self.addressModel = AddressModel()
+                        self.sendOrderPriceRequest()
+                        self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+                        self.sendGetDefaultRequest()
+                    }
+                }
+                vc.updateAddressBlock = {(model)in
+                    self.addressModel = model
+                    self.sendOrderPriceRequest()
+                    self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+                }
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
             return cell ?? MallConfirmOrderMsgCell()
         }else{
             if self.detailModel.isNeedLegalName && indexPath.row == 2{
@@ -161,6 +176,9 @@ extension MallOrderCreateVC:UITableViewDelegate,UITableViewDataSource{
                 cell?.tapBlock = {()in
                     let vc = OverSeaMsgVC()
                     self.navigationController?.pushViewController(vc, animated: true)
+                    vc.msgAuthendBlock = {()in
+                        self.sendIdCardMsgRequest()
+                    }
                 }
                 return cell ?? MallConfirmOrderMsgCell()
             }else{
@@ -170,31 +188,31 @@ extension MallOrderCreateVC:UITableViewDelegate,UITableViewDataSource{
             }
         }
     }
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 1{
-//            self.addressAlertVm.showSelf()
-            let vc = MyAddressListVC()
-            vc.onSelectAddress = {(model)in
-                self.addressModel = model
-                self.sendOrderPriceRequest()
-                self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
-            }
-            vc.deleteAddressBlock = {(id)in
-                if self.addressModel.id == id{
-                    self.addressModel = AddressModel()
-                    self.sendOrderPriceRequest()
-                    self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
-                    self.sendGetDefaultRequest()
-                }
-            }
-            vc.updateAddressBlock = {(model)in
-                self.addressModel = model
-                self.sendOrderPriceRequest()
-                self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
-            }
-            self.navigationController?.pushViewController(vc, animated: true)
-        }
-    }
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        if indexPath.row == 1{
+////            self.addressAlertVm.showSelf()
+//            let vc = MyAddressListVC()
+//            vc.onSelectAddress = {(model)in
+//                self.addressModel = model
+//                self.sendOrderPriceRequest()
+//                self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+//            }
+//            vc.deleteAddressBlock = {(id)in
+//                if self.addressModel.id == id{
+//                    self.addressModel = AddressModel()
+//                    self.sendOrderPriceRequest()
+//                    self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+//                    self.sendGetDefaultRequest()
+//                }
+//            }
+//            vc.updateAddressBlock = {(model)in
+//                self.addressModel = model
+//                self.sendOrderPriceRequest()
+//                self.tableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+//            }
+//            self.navigationController?.pushViewController(vc, animated: true)
+//        }
+//    }
 }
 
 extension MallOrderCreateVC{

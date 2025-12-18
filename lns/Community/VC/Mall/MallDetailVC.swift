@@ -229,7 +229,8 @@ extension MallDetailVC{
             self.sendSubsribeCancelRequest(bizType: "2")
             return
         case .sale_normal:
-            self.specAlertVm.showSelf()
+//            self.specAlertVm.showSelf()
+            break
         case .sale_no_stoke:
             DLLog(message: "商品--无库存")
             self.sendSubsribeRequest(bizType: "1")

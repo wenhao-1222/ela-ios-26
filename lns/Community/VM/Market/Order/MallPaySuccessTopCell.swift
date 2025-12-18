@@ -58,6 +58,7 @@ class MallPaySuccessTopCell: UITableViewCell {
         return vi
     }()
 }
+
 extension MallPaySuccessTopCell{
     func updateUI(model:MallDetailModel,number:Int) {
         imgView.setImgUrl(urlString: model.image_order)

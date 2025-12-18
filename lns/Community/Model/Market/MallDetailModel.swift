@@ -101,8 +101,6 @@ class MallDetailModel: NSObject {
         model.isRestockAlertSubscribed = dict.stringValueForKey(key: "isRestockAlertSubscribed") == "1" ? true : false
         model.isStartSaleAlertSubscribed = dict.stringValueForKey(key: "isStartSaleAlertSubscribed") == "1" ? true : false
         model.isNeedLegalName = dict.stringValueForKey(key: "isNeedLegalName") == "1" ? true : false
-        
-        
         model.shippingNotice = dict.stringValueForKey(key: "shippingNotice")
         
         let status = MallDetailModel().dealBuyButtonStatus(dict: dict)

@@ -178,6 +178,7 @@ extension CourseOrderListVC: UITableViewDelegate, UITableViewDataSource {
                 let vc = CourseOrderPayAlertVC()
                 vc.msgDict = dict
                 vc.bizType = "2"
+                vc.desVm.isHidden = true
                 
                 if UIDevice.current.userInterfaceIdiom == .pad {
                     self.navigationController?.pushViewController(vc, animated: true)

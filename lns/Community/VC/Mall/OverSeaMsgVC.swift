@@ -8,11 +8,14 @@ import UIKit
 import MCToast
 
 final class OverSeaMsgVC: WHBaseViewVC {
+    
+    public var msgAuthendBlock:(()->())?
 
     // MARK: - Config
     private let nameMaxLength = 50
     private let idMaxLength = 18
     private let middleDot = "·"
+    
 
     // MARK: - Life
     override func viewDidLoad() {
@@ -203,6 +206,8 @@ extension OverSeaMsgVC {
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendIdVerifyRequest:\(dataObj)")
             
+            self.msgAuthendBlock?()
+            self.backTapAction()
         }
     }
 }
