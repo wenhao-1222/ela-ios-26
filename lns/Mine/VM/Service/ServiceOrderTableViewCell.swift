@@ -105,8 +105,10 @@ extension ServiceOrderTableViewCell{
         }else{//商品订单
             goodsNameLabel.text = dict.stringValueForKey(key: "skuName")
             
-            let coverInfo = dict["image"] as? NSArray ?? []
-            imgUrl = coverInfo[0]as? String ?? ""
+            let coverInfo = dict["squareImage"] as? NSArray ?? []
+            if coverInfo.count > 0 {
+                imgUrl = coverInfo[0]as? String ?? ""
+            }
             
             let specList = dict["specValueList"]as? NSArray ?? []
             var spec = ""

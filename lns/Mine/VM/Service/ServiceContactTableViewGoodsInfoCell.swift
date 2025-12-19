@@ -143,9 +143,11 @@ private extension ServiceContactTableViewGoodsInfoCell {
             make.edges.equalToSuperview().inset(UIEdgeInsets(top: kFitWidth(12), left: kFitWidth(12), bottom: kFitWidth(12), right: kFitWidth(12)))
         }
 
+        let hei = kFitWidth(500) * kFitWidth(80) / SCREEN_WIDHT
         goodsImgView.snp.makeConstraints { make in
             make.left.top.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(80))
+            make.width.equalTo(kFitWidth(80))
+            make.height.equalTo(hei)
             make.bottom.lessThanOrEqualToSuperview()
         }
         goodsPolicyLabel.snp.makeConstraints { make in
@@ -153,7 +155,8 @@ private extension ServiceContactTableViewGoodsInfoCell {
             make.right.equalTo(kFitWidth(-12))
             make.height.equalTo(kFitWidth(15))
             make.bottom.equalTo(kFitWidth(-10))
-            make.top.equalTo(kFitWidth(96))
+//            make.top.equalTo(kFitWidth(96))
+            make.top.equalTo(hei+kFitWidth(12)+kFitWidth(4))
         }
 
         infoStack.snp.makeConstraints { make in

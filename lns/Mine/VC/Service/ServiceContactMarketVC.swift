@@ -892,7 +892,7 @@ extension ServiceContactMarketVC{
             orderInfoCard = ["orderId":dict.stringValueForKey(key: "id"),
                              "goodsList":[["name":dict.stringValueForKey(key: "skuName"),
                                            "spec":spec,
-                                           "images":dict["image"]as? NSArray ?? []]]]
+                                           "images":dict["squareImage"]as? NSArray ?? []]]]
         }
         self.bizType = "2"
         self.relatedOrderId = dict.stringValueForKey(key: "id")

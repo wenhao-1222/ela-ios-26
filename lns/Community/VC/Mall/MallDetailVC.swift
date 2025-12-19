@@ -327,10 +327,6 @@ extension MallDetailVC:UITableViewDelegate,UITableViewDataSource{
                         // 这里你可以把选中项传回业务层（例如给 VC 的属性、发通知、或更新下方价格等）
                         print("选中：index=\(newIndex), id=\(option.id)")
                         if self.detailModel.mainSpecModel.specValueList.count > newIndex{
-//                            self.detailModel.selectedSpecList[index] = ["specId": specId,
-//                                                                        "specValueId": specValueId,
-//                                                                        "specValueName":specValue]
-//                            self.detailModel.mainSpecValueModel = self.detailModel.mainSpecModel.specValueList[newIndex]
                             let mainSpecValue = self.detailModel.mainSpecModel.specValueList[newIndex]
                             self.detailModel.mainSpecValueModel = mainSpecValue
                             self.detailModel.mainSpecValueIndex = newIndex
@@ -463,9 +459,9 @@ extension MallDetailVC{
     }
 
     func updateUI() {
-        if self.detailModel.image_order == ""{
-            self.detailModel.image_order = self.listModel.imgUrlSmall
-        }
+//        if self.detailModel.image_order == ""{
+//            self.detailModel.image_order = self.listModel.imgUrlSmall
+//        }
 //        if detailImageVMs.isEmpty ||
 //           detailImagesCache != detailModel.image_arr_detail {
 //

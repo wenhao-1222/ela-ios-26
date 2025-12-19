@@ -76,7 +76,8 @@ class MallConfirmOrderMsgCell: UITableViewCell {
 
 extension MallConfirmOrderMsgCell{
     func updateUI(model:MallDetailModel,spec:String,number:Int) {
-        imgView.setImgUrl(urlString: model.image_order)
+        imgView.setImgUrl(urlString: model.image_order_create)
+//        imgView.setImgUrl(urlString: model.image_order)
         nameLabel.text = model.skuName
         specLabel.text = spec
         numberLabel.text = "数量：\(number)"

@@ -294,7 +294,7 @@ extension CourseOrderListVC {
 
     func sendOrderListRequest() {
         if status.isEmpty {
-            WHNetworkUtil.shareManager().POST(urlString: URL_forum_order_list, parameters: nil) { responseObject in
+            WHNetworkUtil.shareManager().POST(urlString: URL_forum_order_list, parameters: nil,isNeedToast: true,vc: self) { responseObject in
                 let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
                 let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
                 DLLog(message: "sendOrderListRequest:\(dataArr)")
@@ -304,7 +304,7 @@ extension CourseOrderListVC {
             }
         } else {
             let param = ["status": status]
-            WHNetworkUtil.shareManager().POST(urlString: URL_forum_order_list, parameters: param as [String : AnyObject]) { responseObject in
+            WHNetworkUtil.shareManager().POST(urlString: URL_forum_order_list, parameters: param as [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
                 let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
                 let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
                 DLLog(message: "sendOrderListRequest:\(dataArr)")

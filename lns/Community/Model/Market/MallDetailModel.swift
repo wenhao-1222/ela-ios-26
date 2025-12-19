@@ -58,8 +58,10 @@ class MallDetailModel: NSObject {
     var image_arr_banner : [String] = [String]()
     ///详情图
     var image_arr_detail : [String] = [String]()
-    ///订单的图片
+    ///订单的图片  用在选规格的弹窗，和订单列表
     var image_order = ""
+    ///创建订单页面用的图片
+    var image_order_create = ""
     
     var subtitle = ""
     ///原价 ⚠️前端用不上
@@ -119,12 +121,16 @@ class MallDetailModel: NSObject {
         model.deliveryNotice = dict.stringValueForKey(key: "deliveryNotice")
         model.warrantyPolicyNotice = dict.stringValueForKey(key: "warrantyPolicyNotice")
         model.maxPurchaseQuantity = Int(dict.doubleValueForKey(key: "maxPurchaseQuantity"))
-        
-        let orderList = dict["orderImage"]as? NSArray ?? []
+//        model.image_order = dict.stringValueForKey(key: "squareImage")
+//        model.image_order_create = dict.stringValueForKey(key: "rectangleImage")
+        let orderList = dict["squareImage"]as? NSArray ?? []
         if orderList.count > 0{
             model.image_order = orderList[0]as? String ?? ""
         }
-        
+        let orderListRect = dict["rectangleImage"]as? NSArray ?? []
+        if orderListRect.count > 0{
+            model.image_order_create = orderListRect[0]as? String ?? ""
+        }
         let specList = dict["specList"]as? NSArray ?? []
         
         for i in 0..<specList.count{
@@ -161,14 +167,13 @@ class MallDetailModel: NSObject {
         let model = MallDetailModel()
         
         model.id = dict.stringValueForKey(key: "id")
-        let imgList = dict["image"]as? NSArray ?? []
+        let imgList = dict["squareImage"]as? NSArray ?? []
         
         if imgList.count > 0 {
             model.image_order = imgList[0]as? String ?? ""
         }
         model.skuName = dict.stringValueForKey(key: "skuName")
         model.subtitle = dict.stringValueForKey(key: "subtitle")
-        
         
         return model
     }

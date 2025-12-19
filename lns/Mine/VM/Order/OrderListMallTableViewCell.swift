@@ -144,7 +144,8 @@ class OrderListMallTableViewCell: UITableViewCell {
 
     lazy var deleteIcon: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "course_order_delete_icon")
+//        img.setImgLocal(imgName: "course_order_delete_icon")
+        img.image = UIImage(named: "course_order_delete_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         img.isUserInteractionEnabled = true
         img.isHidden = true
         return img
@@ -253,8 +254,7 @@ extension OrderListMallTableViewCell {
         }
         saleAfterButton.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_30.cgColor
         saleAfterButton.setTitle("售后", for: .normal)
-//        if dict.stringValueForKey(key: "skuName").count > 0 {
-            let coverInfo = dict["image"] as? NSArray ?? []
+        let coverInfo = dict["squareImage"] as? NSArray ?? []
             if coverInfo.count > 0 {
                 imgView.setImgUrl(urlString: coverInfo[0]as? String ?? "")
             }else{
@@ -262,10 +262,6 @@ extension OrderListMallTableViewCell {
             }
             
             orderIdLabel.text = "订单号 \(dict.stringValueForKey(key: "id"))"
-//            titleLab.text = "\(dict.stringValueForKey(key: "skuName"))"
-//            let skuName = dict.stringValueForKey(key: "skuName")
-//            contentView.layoutIfNeeded()
-//            titleLab.text = formattedTitleText(skuName: skuName, dict: dict)
         
             let skuName = dict.stringValueForKey(key: "skuName")
             titleLab.text = skuName

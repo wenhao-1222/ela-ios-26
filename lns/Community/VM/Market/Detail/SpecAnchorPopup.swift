@@ -86,6 +86,7 @@ final class SpecAnchorPopup: UIView {
 
         // 内容
         stack.axis = .vertical
+        stack.backgroundColor = config.bgColor
         stack.spacing = config.rowSpacing
         bubble.addSubview(stack)
 
@@ -112,6 +113,7 @@ final class SpecAnchorPopup: UIView {
 
     private func makeRow(title: String, enabled: Bool) -> UIButton {
         let b = UIButton(type: .system)
+        b.backgroundColor = config.bgColor
         b.contentEdgeInsets = config.rowInsets
         b.titleLabel?.font = config.rowFont
         b.titleLabel?.numberOfLines = 0

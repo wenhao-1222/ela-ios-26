@@ -104,7 +104,8 @@ class OrderListTableViewCell: UITableViewCell {
 
     lazy var deleteIcon: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "course_order_delete_icon")
+//        img.setImgLocal(imgName: "course_order_delete_icon")
+        img.image = UIImage(named: "course_order_delete_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         img.isUserInteractionEnabled = true
         img.isHidden = true
         return img

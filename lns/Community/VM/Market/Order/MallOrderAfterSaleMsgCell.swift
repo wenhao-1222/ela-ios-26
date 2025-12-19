@@ -10,6 +10,21 @@ class MallOrderAfterSaleMsgCell: UITableViewCell {
     
     var viewModules:[HeroBrowserViewModule] = []
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        // 右侧内容区真实可用宽度（左起点 114，右边距 16）
+        let maxW = bgView.bounds.width - kFitWidth(114) - kFitWidth(16)
+
+        if maxW > 0 {
+            if saleReasonLabel.preferredMaxLayoutWidth != maxW {
+                saleReasonLabel.preferredMaxLayoutWidth = maxW
+                rejectReasonLabel.preferredMaxLayoutWidth = maxW
+            }
+        }
+    }
+
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -72,6 +87,15 @@ class MallOrderAfterSaleMsgCell: UITableViewCell {
         
         return lab
     }()
+    lazy var rejectReasonLab: UILabel = {
+        let lab = UILabel()
+        lab.text = "不符合原因"
+        lab.font = .systemFont(ofSize: 13, weight: .regular)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.isHidden = true
+        
+        return lab
+    }()
     lazy var saleImgsLab: UILabel = {
         let lab = UILabel()
         lab.text = "相关图片"
@@ -106,9 +130,20 @@ class MallOrderAfterSaleMsgCell: UITableViewCell {
         
         return lab
     }()
+    lazy var rejectReasonLabel: UILabel = {
+        let lab = UILabel()
+        lab.font = .systemFont(ofSize: 13, weight: .regular)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.textAlignment = .right
+        lab.numberOfLines = 0
+        lab.lineBreakMode = .byWordWrapping
+        lab.isHidden = true
+        
+        return lab
+    }()
     lazy var imgOne: UIImageView = {
         let img = UIImageView()
-        img.backgroundColor = .clear
+        img.backgroundColor = .COLOR_BG_FA
         img.layer.cornerRadius = kFitWidth(8)
         img.clipsToBounds = true
         img.isUserInteractionEnabled = true
@@ -121,7 +156,7 @@ class MallOrderAfterSaleMsgCell: UITableViewCell {
     }()
     lazy var imgTwo: UIImageView = {
         let img = UIImageView()
-        img.backgroundColor = .clear
+        img.backgroundColor = .COLOR_BG_FA
         img.layer.cornerRadius = kFitWidth(8)
         img.clipsToBounds = true
         img.isUserInteractionEnabled = true
@@ -133,7 +168,7 @@ class MallOrderAfterSaleMsgCell: UITableViewCell {
     }()
     lazy var imgThree: UIImageView = {
         let img = UIImageView()
-        img.backgroundColor = .clear
+        img.backgroundColor = .COLOR_BG_FA
         img.layer.cornerRadius = kFitWidth(8)
         img.clipsToBounds = true
         img.isUserInteractionEnabled = true
@@ -150,10 +185,20 @@ extension MallOrderAfterSaleMsgCell{
         statusTimeLabel.text = dict.stringValueForKey(key: "etime").replacingOccurrences(of: "T", with: " ")
         saleTypeLabel.text = dict.stringValueForKey(key: "afterSaleBizType") == "1" ? "退货退款" : "换货"
         saleReasonLabel.text = dict.stringValueForKey(key: "reason")
+//        saleReasonLabel.text = "君不见黄河之水天上来，奔流到海不复回。君不见高堂明镜悲白发朝如青丝暮成雪"
         saleTimeLabel.text = dict.stringValueForKey(key: "ctime").replacingOccurrences(of: "T", with: " ")
+        
+        
+        
+//        if dict.stringValueForKey(key: "rejectReason").count > 0 {
+//        }
         
         let imgUrls = dict["image"]as? NSArray ?? []
         updateImgs(imgUrls: imgUrls as? [String])
+//        let rejectReason = "君不见黄河之水天上来，奔流到海不复回。君不见高堂明镜悲白发朝如青丝暮成雪"
+        let rejectReason = dict.stringValueForKey(key: "rejectReason")
+        updateConstrait(rejectReason: rejectReason,imgUrlsCount: imgUrls.count)
+        rejectReasonLabel.text = rejectReason
         
         if dict.stringValueForKey(key: "afterSaleBizType") == "1"{
             if dict.stringValueForKey(key: "status") == "1"{
@@ -241,6 +286,8 @@ extension MallOrderAfterSaleMsgCell{
         bgView.addSubview(saleReasonLabel)
         bgView.addSubview(saleTimeLab)
         bgView.addSubview(saleTimeLabel)
+        bgView.addSubview(rejectReasonLab)
+        bgView.addSubview(rejectReasonLabel)
         bgView.addSubview(saleImgsLab)
         bgView.addSubview(imgOne)
         bgView.addSubview(imgTwo)
@@ -307,6 +354,99 @@ extension MallOrderAfterSaleMsgCell{
         imgThree.snp.makeConstraints { make in
             make.right.equalTo(imgTwo.snp.left).offset(kFitWidth(-12))
             make.width.height.top.equalTo(imgOne)
+        }
+    }
+    func updateConstrait(rejectReason:String,imgUrlsCount:Int) {
+        rejectReasonLab.isHidden = rejectReason.count > 0 ? false : true
+        rejectReasonLabel.isHidden = rejectReason.count > 0 ? false : true
+        
+        if rejectReason.count > 0 {//拒绝售后
+            saleReasonLab.snp.remakeConstraints { make in
+                make.left.equalTo(kFitWidth(16))
+                make.top.equalTo(saleTypeLab.snp.bottom).offset(kFitWidth(10))
+                make.height.equalTo(kFitWidth(20))
+            }
+            saleReasonLabel.snp.remakeConstraints { make in
+                make.right.equalTo(kFitWidth(-16))
+                make.left.equalTo(kFitWidth(114))
+                make.top.equalTo(kFitWidth(142))
+            }
+            saleTimeLab.snp.remakeConstraints { make in
+                make.left.equalTo(kFitWidth(16))
+                make.height.equalTo(kFitWidth(20))
+                make.top.equalTo(saleReasonLabel.snp.bottom).offset(kFitWidth(10))
+            }
+            
+            if imgUrlsCount > 0 {//有图片
+                saleImgsLab.isHidden = false
+                saleImgsLab.snp.remakeConstraints { make in
+                    make.left.equalTo(kFitWidth(16))
+                    make.height.equalTo(kFitWidth(20))
+                    make.top.equalTo(saleTimeLab.snp.bottom).offset(kFitWidth(10))
+                }
+                rejectReasonLab.snp.makeConstraints { make in
+                    make.left.equalTo(kFitWidth(16))
+                    make.top.equalTo(imgThree.snp.bottom).offset(kFitWidth(10))
+                }
+                rejectReasonLabel.snp.remakeConstraints { make in
+                    make.right.equalTo(kFitWidth(-16))
+                    make.left.equalTo(kFitWidth(114))
+                    make.top.equalTo(rejectReasonLab)
+                    make.bottom.equalTo(kFitWidth(-20))
+                }
+            }else{//没有图片
+                saleImgsLab.isHidden = true
+                saleImgsLab.snp.remakeConstraints { make in
+                    make.left.equalTo(kFitWidth(16))
+                    make.height.equalTo(kFitWidth(0))
+                    make.top.equalTo(saleTimeLab.snp.bottom).offset(kFitWidth(10))
+                }
+                rejectReasonLab.snp.makeConstraints { make in
+                    make.left.equalTo(kFitWidth(16))
+                    make.top.equalTo(saleTimeLab.snp.bottom).offset(kFitWidth(10))
+                }
+                rejectReasonLabel.snp.remakeConstraints { make in
+                    make.right.equalTo(kFitWidth(-16))
+                    make.left.equalTo(kFitWidth(114))
+                    make.top.equalTo(rejectReasonLab)
+                    make.bottom.equalTo(kFitWidth(-20))
+                }
+            }
+        }else{
+            saleReasonLab.snp.remakeConstraints { make in
+                make.left.equalTo(kFitWidth(16))
+                make.top.equalTo(saleTypeLab.snp.bottom).offset(kFitWidth(10))
+                make.height.equalTo(kFitWidth(20))
+            }
+            saleReasonLabel.snp.remakeConstraints { make in
+                make.right.equalTo(kFitWidth(-16))
+                make.left.equalTo(kFitWidth(114))
+                make.top.equalTo(kFitWidth(142))
+                make.bottom.equalTo(kFitWidth(-110))
+            }
+            saleTimeLab.snp.remakeConstraints { make in
+                make.bottom.equalTo(kFitWidth(-80))
+                make.left.equalTo(kFitWidth(16))
+                make.height.equalTo(kFitWidth(20))
+            }
+            saleTimeLabel.snp.remakeConstraints { make in
+                make.right.equalTo(kFitWidth(-16))
+                make.centerY.lessThanOrEqualTo(saleTimeLab)
+            }
+            rejectReasonLab.snp.remakeConstraints { make in
+                make.left.equalTo(kFitWidth(16))
+                make.top.equalTo(saleTimeLab.snp.bottom).offset(kFitWidth(10))
+            }
+            rejectReasonLabel.snp.remakeConstraints { make in
+                make.right.equalTo(kFitWidth(-16))
+                make.left.equalTo(kFitWidth(114))
+                make.top.equalTo(saleTimeLab.snp.bottom).offset(kFitWidth(10))
+            }
+            imgOne.snp.remakeConstraints { make in
+                make.right.equalTo(kFitWidth(-16))
+                make.top.equalTo(saleImgsLab)
+                make.width.height.equalTo(kFitWidth(50))
+            }
         }
     }
 }
