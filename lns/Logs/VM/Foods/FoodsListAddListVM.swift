@@ -403,6 +403,7 @@ extension FoodsListAddListVM{
         let param = ["fid":"\(dict.stringValueForKey(key: "fid"))"]
         WHNetworkUtil.shareManager().POST(urlString: URL_foods_history_del, parameters: param as [String:AnyObject]) { responseObject in
             UserDefaults.delFoods(foodsDict: dict)
+            
             self.historyFoodsArray = UserDefaults.getHistoryFoods()
             self.foodsArray.remove(dict)
             self.foodsArraySortBySelectCount.remove(dict)

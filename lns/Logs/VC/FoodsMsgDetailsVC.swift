@@ -286,9 +286,9 @@ extension FoodsMsgDetailsVC{
         topVm.calculateSpecWeight()
         specAlertVm.setDataArray(specArr: self.topVm.specArray)
         
-        if self.foodsDetailDict.stringValueForKey(key: "uid") != UserInfoModel.shared.uId{
-            deleteButton.isHidden = true
-        }
+//        if self.foodsDetailDict.stringValueForKey(key: "uid") != UserInfoModel.shared.uId{
+//            deleteButton.isHidden = true
+//        }
         
         setConstrait()
     }
@@ -325,6 +325,7 @@ extension FoodsMsgDetailsVC{
         
         WHNetworkUtil.shareManager().POST(urlString: URL_foods_delete, parameters: param as [String:AnyObject]) { responseObject in
             UserDefaults.delFoods(foodsDict: self.foodsDetailDict, forKey: .myFoodsList)
+            UserDefaults.delFoods(foodsDict: self.foodsDetailDict, forKey: .hidsoryFoodsAdd)
             
             if self.deleteBlock != nil{
                 self.deleteBlock!()
