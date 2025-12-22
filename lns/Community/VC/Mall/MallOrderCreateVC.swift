@@ -36,8 +36,6 @@ class MallOrderCreateVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        initUI()
-        self.sendOrderPriceRequest()
         DLLog(message: "-----------------------------")
         for i in 0..<detailModel.selectedSpecList.count{
             let d = detailModel.selectedSpecList[i]
@@ -48,6 +46,8 @@ class MallOrderCreateVC: WHBaseViewVC {
             }
         }
         DLLog(message: "-----------------------------")
+        initUI()
+        self.sendOrderPriceRequest()
         sendGetDefaultRequest()
         if self.detailModel.isNeedLegalName{
             sendIdCardMsgRequest()
