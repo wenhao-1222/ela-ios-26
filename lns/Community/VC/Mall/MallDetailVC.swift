@@ -694,7 +694,8 @@ extension MallDetailVC {
             let mainSpecModel = self.detailModel.mainSpecModel.specValueList[i]
             let option = SpecOption.init(id: mainSpecModel.specValueId,
                                          title: mainSpecModel.specValue,
-                                         inStock: mainSpecModel.specHasStock)
+                                         inStock: mainSpecModel.specHasStock,
+                                         isSelected: i == self.detailModel.mainSpecValueIndex)
             mainOption.append(option)
         }
         let popup = SpecAnchorPopup(options: mainOption) { [weak self] index, opt in

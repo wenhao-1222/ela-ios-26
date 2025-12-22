@@ -39,10 +39,26 @@ class MallPaySuccessTextCell: UITableViewCell {
 }
 
 extension MallPaySuccessTextCell{
-    func updateUI(leftTitle:String,detailString:String,textColor:UIColor = .COLOR_TEXT_TITLE_0f1214) {
+    func updateUI(leftTitle:String,detailString:String,textColor:UIColor = .COLOR_TEXT_TITLE_0f1214,isDeleLine:Bool) {
         leftTitleLabel.text = leftTitle
-        rightDetailLabel.text = detailString
+//        rightDetailLabel.text = detailString
         rightDetailLabel.textColor = textColor
+        
+        if isDeleLine {
+            let attr = NSAttributedString(
+                string: detailString,
+                attributes: [
+                    .foregroundColor: textColor,
+                    .font: rightDetailLabel.font as Any,
+                    .strikethroughStyle: NSUnderlineStyle.single.rawValue,
+                    .strikethroughColor: textColor
+                ]
+            )
+            rightDetailLabel.attributedText = attr
+        } else {
+            rightDetailLabel.attributedText = nil
+            rightDetailLabel.text = detailString
+        }
     }
 }
 

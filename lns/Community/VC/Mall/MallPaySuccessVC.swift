@@ -9,11 +9,13 @@ class cell_model: NSObject {
     
     var title        = ""
     var detailString = ""
+    var isDeleLine   = false
     var textColor    = UIColor.COLOR_TEXT_TITLE_0f1214
     
-    func initModel(title:String,detail:String,color:UIColor = .COLOR_TEXT_TITLE_0f1214) -> cell_model {
+    func initModel(title:String,detail:String,color:UIColor = .COLOR_TEXT_TITLE_0f1214,isDeleLine:Bool=false) -> cell_model {
         let model = cell_model()
         model.title = title
+        model.isDeleLine = isDeleLine
         model.detailString = detail
         model.textColor = color
         
@@ -29,27 +31,32 @@ class MallPaySuccessVC: WHBaseViewVC {
     var dataArray:[cell_model] = [cell_model]()
     
     func removeParentNaviVc() {
-        if let nav = navigationController {
-            var controllers = nav.viewControllers
-            if let index = controllers.firstIndex(where: { $0 is MallDetailVC }) {
-                controllers.remove(at: index)
-                nav.viewControllers = controllers
-            }
+//        if let nav = navigationController {
+//            var controllers = nav.viewControllers
+//            if let index = controllers.firstIndex(where: { $0 is MallDetailVC }) {
+//                controllers.remove(at: index)
+//                nav.viewControllers = controllers
+//            }
+//        }
+//        if let nav = navigationController {
+//            var controllers = nav.viewControllers
+//            if let index = controllers.firstIndex(where: { $0 is MallOrderCreateVC }) {
+//                controllers.remove(at: index)
+//                nav.viewControllers = controllers
+//            }
+//        }
+//        if let nav = navigationController {
+//            var controllers = nav.viewControllers
+//            if let index = controllers.firstIndex(where: { $0 is MallPaySuccessVC }) {
+//                controllers.remove(at: index)
+//                nav.viewControllers = controllers
+//            }
+//        }
+        guard let nav = navigationController else { return }
+        let controllers = nav.viewControllers.filter { controller in
+            !(controller is MallDetailVC) && !(controller is MallOrderCreateVC)
         }
-        if let nav = navigationController {
-            var controllers = nav.viewControllers
-            if let index = controllers.firstIndex(where: { $0 is MallOrderCreateVC }) {
-                controllers.remove(at: index)
-                nav.viewControllers = controllers
-            }
-        }
-        if let nav = navigationController {
-            var controllers = nav.viewControllers
-            if let index = controllers.firstIndex(where: { $0 is MallPaySuccessVC }) {
-                controllers.remove(at: index)
-                nav.viewControllers = controllers
-            }
-        }
+        nav.viewControllers = controllers
     }
     
     override func viewDidLoad() {
@@ -106,7 +113,8 @@ extension MallPaySuccessVC:UITableViewDelegate,UITableViewDataSource{
                 let model = dataArray[indexPath.row-1]
                 cell?.updateUI(leftTitle: model.title,
                                detailString: model.detailString,
-                               textColor: model.textColor)
+                               textColor: model.textColor,
+                               isDeleLine: model.isDeleLine)
                 
                 return cell ?? MallPaySuccessTextCell()
             }else{
@@ -153,18 +161,18 @@ extension MallPaySuccessVC{
             dataArray.append(cell_model().initModel(title: "付款方式", detail: orderDict.stringValueForKey(key: "payChannel")))
         }
         if self.orderDict.stringValueForKey(key: "totalAmount").count > 0 {
-            dataArray.append(cell_model().initModel(title: "商品总价", detail: "¥\(orderDict.stringValueForKey(key: "totalAmount"))"))
+            dataArray.append(cell_model().initModel(title: "商品总价", detail: "¥ \(orderDict.stringValueForKey(key: "totalAmount"))"))
         }
         if self.orderDict.stringValueForKey(key: "shippingFee").count > 0 {
             if self.orderDict.stringValueForKey(key: "freeShipping") == "1"{
-                dataArray.append(cell_model().initModel(title: "运费", detail: "包邮"))
+                dataArray.append(cell_model().initModel(title: "运费", detail: "¥ \(orderDict.stringValueForKey(key: "shippingFee"))",isDeleLine: true))
             }else{
-                dataArray.append(cell_model().initModel(title: "运费", detail: "¥\(orderDict.stringValueForKey(key: "shippingFee"))"))
+                dataArray.append(cell_model().initModel(title: "运费", detail: "¥ \(orderDict.stringValueForKey(key: "shippingFee"))"))
             }
         }
         if self.orderDict.stringValueForKey(key: "discountAmount").floatValue > 0 {
             dataArray.append(cell_model().initModel(title: "优惠金额",
-                                                    detail: "-¥\(orderDict.stringValueForKey(key: "discountAmount"))",
+                                                    detail: "-¥ \(orderDict.stringValueForKey(key: "discountAmount"))",
                                                     color: .THEME))
         }
         self.tableView.reloadData()

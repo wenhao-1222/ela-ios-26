@@ -165,7 +165,8 @@ extension MallOrderDetailVC:UITableViewDelegate,UITableViewDataSource{
                         let cell = tableView.dequeueReusableCell(withIdentifier: "MallPaySuccessTextCell")as? MallPaySuccessTextCell
                         cell?.updateUI(leftTitle: model.title,
                                        detailString: model.detailString,
-                                       textColor: model.textColor)
+                                       textColor: model.textColor,
+                                       isDeleLine: model.isDeleLine)
                         
                         return cell ?? MallPaySuccessTextCell()
                     }
@@ -206,7 +207,8 @@ extension MallOrderDetailVC:UITableViewDelegate,UITableViewDataSource{
                             let cell = tableView.dequeueReusableCell(withIdentifier: "MallPaySuccessTextCell")as? MallPaySuccessTextCell
                             cell?.updateUI(leftTitle: model.title,
                                            detailString: model.detailString,
-                                           textColor: model.textColor)
+                                           textColor: model.textColor,
+                                           isDeleLine: model.isDeleLine)
                             
                             return cell ?? MallPaySuccessTextCell()
                         }
@@ -360,18 +362,19 @@ extension MallOrderDetailVC{
             dataArray.append(cell_model().initModel(title: "付款方式", detail: orderDict.stringValueForKey(key: "payChannel")))
         }
         if self.orderDict.stringValueForKey(key: "totalAmount").count > 0 {
-            dataArray.append(cell_model().initModel(title: "商品总价", detail: "¥\(orderDict.stringValueForKey(key: "totalAmount"))"))
+            dataArray.append(cell_model().initModel(title: "商品总价", detail: "¥ \(orderDict.stringValueForKey(key: "totalAmount"))"))
         }
         if self.orderDict.stringValueForKey(key: "shippingFee").count > 0 {
             if self.orderDict.stringValueForKey(key: "freeShipping") == "1"{
-                dataArray.append(cell_model().initModel(title: "运费", detail: "包邮"))
+//                dataArray.append(cell_model().initModel(title: "运费", detail: "包邮"))
+                dataArray.append(cell_model().initModel(title: "运费", detail: "¥ \(orderDict.stringValueForKey(key: "shippingFee"))",isDeleLine: true))
             }else{
-                dataArray.append(cell_model().initModel(title: "运费", detail: "¥\(orderDict.stringValueForKey(key: "shippingFee"))"))
+                dataArray.append(cell_model().initModel(title: "运费", detail: "¥ \(orderDict.stringValueForKey(key: "shippingFee"))"))
             }
         }
         if self.orderDict.stringValueForKey(key: "discountAmount").floatValue > 0 {
             dataArray.append(cell_model().initModel(title: "优惠金额",
-                                                    detail: "-¥\(orderDict.stringValueForKey(key: "discountAmount"))",
+                                                    detail: "-¥ \(orderDict.stringValueForKey(key: "discountAmount"))",
                                                     color: .THEME))
         }
         

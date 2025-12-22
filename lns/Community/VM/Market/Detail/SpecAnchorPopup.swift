@@ -11,6 +11,7 @@ struct SpecOption {
     let id: String
     let title: String
     var inStock: Bool = true
+    var isSelected: Bool = false
 }
 
 
@@ -27,6 +28,7 @@ final class SpecAnchorPopup: UIView {
         var rowInsets = UIEdgeInsets(top: 10, left: 12, bottom: 10, right: 12)
         var rowFont: UIFont = .systemFont(ofSize: 14)
         var textColor: UIColor = .COLOR_TEXT_TITLE_0f1214
+        var selectedTextColor: UIColor = .THEME
         var disabledTextColor: UIColor = .COLOR_LINE_F0
         var bgColor: UIColor = .COLOR_CARD_BG_WHITE
         var arrowSize = CGSize(width: 16, height: kFitWidth(10)) // 底边=16，高=8
@@ -92,7 +94,7 @@ final class SpecAnchorPopup: UIView {
 
         // 分隔线 & 文本项
         for (idx, opt) in options.enumerated() {
-            let btn = makeRow(title: opt.title, enabled: opt.inStock)
+            let btn = makeRow(title: opt.title, enabled: opt.inStock, isSelected: opt.isSelected)
             btn.tag = idx
             if idx > 0 {
                 let line = UIView()
@@ -111,7 +113,7 @@ final class SpecAnchorPopup: UIView {
         layer.addSublayer(arrowLayer)
     }
 
-    private func makeRow(title: String, enabled: Bool) -> UIButton {
+    private func makeRow(title: String, enabled: Bool, isSelected: Bool) -> UIButton {
         let b = UIButton(type: .system)
         b.backgroundColor = config.bgColor
         b.contentEdgeInsets = config.rowInsets
@@ -119,7 +121,21 @@ final class SpecAnchorPopup: UIView {
         b.titleLabel?.numberOfLines = 0
         b.titleLabel?.lineBreakMode = .byWordWrapping
         b.setTitle(title, for: .normal)
-        b.setTitleColor(enabled ? config.textColor : config.disabledTextColor, for: .normal)
+//        b.setTitleColor(enabled ? config.textColor : config.disabledTextColor, for: .normal)
+        
+        if isSelected {
+            let selectedIcon = UIImage(named: "meals_eat_right_icon")?.withTintColor(config.selectedTextColor, renderingMode: .alwaysOriginal)
+            b.setImage(selectedIcon, for: .normal)
+            b.titleEdgeInsets = UIEdgeInsets(top: 0, left: kFitWidth(6), bottom: 0, right: 0)
+            b.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: kFitWidth(6))
+            b.setTitleColor(config.selectedTextColor, for: .normal)
+        } else {
+            b.setImage(nil, for: .normal)
+            b.titleEdgeInsets = .zero
+            b.imageEdgeInsets = .zero
+            b.setTitleColor(enabled ? config.textColor : config.disabledTextColor, for: .normal)
+        }
+
 //        b.isEnabled = enabled
         b.contentHorizontalAlignment = .left
         b.addTarget(self, action: #selector(onTapRow(_:)), for: .touchUpInside)
