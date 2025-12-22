@@ -91,6 +91,8 @@ class NotifiAuthoriAlertVM: UIView {
     lazy var imgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "notifi_tips_img")
+        img.layer.cornerRadius = kFitWidth(12)
+        img.clipsToBounds = true
         
         return img
     }()

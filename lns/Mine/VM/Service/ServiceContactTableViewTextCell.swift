@@ -96,9 +96,11 @@ extension ServiceContactTableViewTextCell{
 //                make.top.equalTo(msgLabel)
                 make.top.equalTo(kFitWidth(10))
                 make.width.height.equalTo(kFitWidth(38))
-                if !isMsgTallerThanHead {
-                    make.bottom.equalTo(-kFitWidth(10))
-                }
+                // 头像负责“至少撑到这里”
+//                make.bottom.equalToSuperview().inset(kFitWidth(10)).priority(.required)
+//                if !isMsgTallerThanHead {
+//                    make.bottom.equalTo(-kFitWidth(10))
+//                }
             }
 
             msgLabel.snp.remakeConstraints { make in
@@ -109,8 +111,12 @@ extension ServiceContactTableViewTextCell{
 //                make.bottom.equalTo(-kFitWidth(10))
                 // ⭐ 这里用 equalTo，而不是 lessThanOrEqualTo
                 make.width.equalTo(bubbleWidth)
+                // 气泡负责“如果内容更高，就撑到这里”
+//                make.bottom.equalToSuperview().inset(kFitWidth(10)).priority(.required)
                 if isMsgTallerThanHead {
                     make.bottom.equalTo(-kFitWidth(10))
+                }else{
+                    make.bottom.equalTo(-kFitWidth(20))
                 }
             }
             msgLabel.textColor = .white
@@ -123,9 +129,10 @@ extension ServiceContactTableViewTextCell{
 //                make.top.equalTo(msgLabel)
                 make.top.equalTo(kFitWidth(10))
                 make.width.height.equalTo(kFitWidth(38))
-                if isMsgTallerThanHead {
-                    make.bottom.equalTo(-kFitWidth(10))
-                }
+//                make.bottom.equalToSuperview().inset(kFitWidth(10)).priority(.required)
+//                if isMsgTallerThanHead {
+//                    make.bottom.equalTo(-kFitWidth(10))
+//                }
             }
 
             msgLabel.snp.remakeConstraints { make in
@@ -134,11 +141,17 @@ extension ServiceContactTableViewTextCell{
                 make.left.equalTo(kFitWidth(62))
 //                make.bottom.equalTo(-kFitWidth(10))
                 make.width.equalTo(bubbleWidth)
+//                make.bottom.equalToSuperview().inset(kFitWidth(10)).priority(.required)
                 if isMsgTallerThanHead {
                     make.bottom.equalTo(-kFitWidth(10))
+                }else{
+                    make.bottom.equalTo(-kFitWidth(20))
                 }
             }
-            msgLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+            if !containsAddress {
+                msgLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+            }
+            
             msgLabel.textAlignment = .left
             msgLabel.backgroundColor = .COLOR_CARD_BG_WHITE
         }

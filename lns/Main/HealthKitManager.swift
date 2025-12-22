@@ -153,11 +153,9 @@ class HealthKitManager: NSObject, ObservableObject {
                         DLLog(message: "HealthKitManager:\(time)  --   \(weight)")
                         
                         if weight.floatValue > 0 {
-//                            BodyDataSQLiteManager.getInstance().updateWeightDataFromHealthKit(cTime: time, weightData: weight)
-//                            BodyDataSQLiteManager.getInstance().updateUploadStatus(cTime: time, uploadStatus: false)
-//                            BodyDataUploadManager().sendWeightDataRequest(sDate: time, weightData: weight)
                             let info = BodyDataSQLiteManager.getInstance().queryWeightInfo(sDate: time)
-                            if info == nil || !(info!.isUpload && info!.weight == weight) {
+                            if info == nil || !info!.isUpload || info!.weight != weight {
+//                            if info == nil || !(info!.isUpload && info!.weight == weight) {
                                 BodyDataSQLiteManager.getInstance().updateWeightDataFromHealthKit(cTime: time, weightData: weight)
                                 BodyDataSQLiteManager.getInstance().updateUploadStatus(cTime: time, uploadStatus: false)
                                 BodyDataUploadManager().sendWeightDataRequest(sDate: time, weightData: weight)
