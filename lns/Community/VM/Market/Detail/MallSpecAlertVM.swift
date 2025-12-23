@@ -306,7 +306,7 @@ extension MallSpecAlertVM{
                 specItem.append(.init(id: specValueModel.specValueId,
                                       title: specValueModel.specValue,
                                       isEnabled: specValueModel.specHasStock))
-                if specValueModel.specSelectStatus && specValueModel.specHasStock {
+                if specValueModel.specSelectStatus {//}&& specValueModel.specHasStock {
                     selectedPairs.append((groupId: specModel.specId,
                                           itemId: specValueModel.specValueId,
                                           itemName:specValueModel.specValue))

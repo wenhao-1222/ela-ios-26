@@ -151,8 +151,6 @@ extension UserDefaults {
             foodsArray = NSMutableArray.init(array: getMyFoods())
         }
         
-//        let num = foodsArray.count >= 20 ? 20 : foodsArray.count
-        
         var hasFoods = false
 //        for i in 0..<num{
         for i in 0..<foodsArray.count{
