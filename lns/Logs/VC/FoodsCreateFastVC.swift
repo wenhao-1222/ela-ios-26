@@ -234,7 +234,7 @@ extension FoodsCreateFastVC{
         fatVm.textField.text = dict.stringValueForKey(key: "fat")
         remarkVm.textField.text = dict.stringValueForKey(key: "remark")
         
-        if msgDict.stringValueForKey(key: "ctype") == "3"{
+        if msgDict.stringValueForKey(key: "ctype") == "3"{//以“快速添加”的方式添加到日志/计划/食谱，但展示时不显示“快速添加”，百而直接显示放到remark的食物名称
             remarkVm.isHidden = true
             self.naviTitleLabel.text = msgDict.stringValueForKey(key: "remark")
         }
@@ -275,7 +275,7 @@ extension FoodsCreateFastVC{
         
         bottomView.addSubview(saveButton)
         
-        if msgDict.stringValueForKey(key: "ctype") == "3"{
+        if msgDict.stringValueForKey(key: "ctype") == "3"{//以“快速添加”的方式添加到日志/计划/食谱，但展示时不显示“快速添加”，百而直接显示放到remark的食物名称
             remarkVm.isHidden = true
             self.naviTitleLabel.text = msgDict.stringValueForKey(key: "remark")
         }

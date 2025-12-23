@@ -551,7 +551,7 @@ extension AIResultVC{
                           "fat":"\(fatNumber)",
                          "calories":"\(calories)".replacingOccurrences(of: ",", with: "."),
                          "state":"1",
-                         "ctype":"3",
+                         "ctype":"3",//以“快速添加”的方式添加到日志/计划/食谱，但展示时不显示“快速添加”，百而直接显示放到remark的食物名称
 //                         "remark":"\((self.remarkVm.textField.text ?? "").disable)",
                          "remark":"\((self.foodsNameVm.textField.text ?? "").disable_emoji(text: (self.foodsNameVm.textField.text ?? "")as NSString))",
                          "fname":"快速添加"]

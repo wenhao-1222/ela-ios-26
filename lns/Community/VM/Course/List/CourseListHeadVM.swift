@@ -124,6 +124,13 @@ class CourseListHeadVM : UIView{
         
         return lab
     }()
+    lazy var priceLabel: UILabel = {
+        let lab = UILabel()
+        lab.textColor = .THEME
+        lab.font = .systemFont(ofSize: 14, weight: .semibold)
+        
+        return lab
+    }()
 }
 
 extension CourseListHeadVM{
@@ -136,22 +143,9 @@ extension CourseListHeadVM{
     func updateUI(dict:NSDictionary) {
         self.headMsgDict = dict
         let coverInfo = dict["coverInfo"] as? NSDictionary ?? [:]
-//        let oldHeight = self.selfHeight
-//        var finalHeight = kFitHeight(30)
+        
         self.imgView.setImgUrlWithComplete(urlString: coverInfo.stringValueForKey(key: "imageOssUrl")) {[weak self] in
-//            let imgW = self.imgView.image?.size.width ?? 1
-//            let imgH = self.imgView.image?.size.height ?? 0
-//            if imgH < 10{
-//                return
-//            }
-//            let coverHeight = imgH / imgW * SCREEN_WIDHT
-//            let finalHeight = kFitHeight(30) + coverHeight
-//            if finalHeight != self.selfHeight {
-//                self.selfHeight = finalHeight
-//                
-//                DLLog(message: "CourseListHeadVM heightChangeBlock:\(finalHeight)")
-//                self.heightChangeBlock?()
-//            }
+            
             guard let self = self else { return }
             guard let image = self.imgView.image,
                   image.size.width > 0,
@@ -195,6 +189,42 @@ extension CourseListHeadVM{
         if dict.stringValueForKey(key: "briefingFontRgb").count > 0 {
             typeLabel.textColor = WHColorHex(dict.stringValueForKey(key: "briefingFontRgb"))
         }
+        
+        let highlight = dict["highlight"] as? NSDictionary ?? [:]
+        let promotionInfo = highlight["promotionInfo"] as? NSDictionary ?? [:]
+        if promotionInfo.stringValueForKey(key: "promotionText").count > 0 || promotionInfo.stringValueForKey(key: "promotionEndTime").count > 0{
+            let priceColor = promotionInfo.stringValueForKey(key: "promotionText").count > 0 ? WHColor_16(colorStr: "FF5C25") : UIColor.THEME
+            
+            let attr = NSMutableAttributedString(
+                string: "¥\(promotionInfo.stringValueForKey(key: "originalPrice")) ",
+                attributes: [
+                    .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                    .font: UIFont.systemFont(ofSize: 12, weight: .regular),
+                    .strikethroughStyle: NSUnderlineStyle.single.rawValue,
+                    .strikethroughColor: UIColor.COLOR_TEXT_TITLE_0f1214_50
+                ]
+            )
+            let attr2 = NSAttributedString(
+                string: " ¥",
+                attributes: [
+                    .foregroundColor: priceColor,
+                    .font: UIFont.systemFont(ofSize: 14, weight: .medium)
+                ]
+            )
+            let attrPrice = NSAttributedString(
+                string: dict.stringValueForKey(key: "price"),
+                attributes: [
+                    .foregroundColor: priceColor,
+                    .font: UIFont.systemFont(ofSize: 26, weight: .semibold)
+                ]
+            )
+            attr.append(attr2)
+            attr.append(attrPrice)
+            priceLabel.attributedText = attr
+        }else{
+            priceLabel.isHidden = true
+//            priceLabel.text = dict.stringValueForKey(key: "price")
+        }
     }
 }
 
@@ -233,6 +263,8 @@ extension CourseListHeadVM{
         bottomWhiteView.addSubview(typeBgView)
         typeBgView.addSubview(typeIconImg)
         typeBgView.addSubview(typeLabel)
+        
+        bottomWhiteView.addSubview(priceLabel)
         
         setConstrait()
     }
@@ -294,6 +326,10 @@ extension CourseListHeadVM{
             make.left.equalTo(kFitWidth(27))
             make.centerY.lessThanOrEqualToSuperview()
             make.right.equalTo(kFitWidth(-7))
+        }
+        priceLabel.snp.makeConstraints { make in
+            make.right.equalTo(kFitWidth(-16))
+            make.bottom.equalTo(typeBgView)
         }
     }
 }

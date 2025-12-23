@@ -262,6 +262,8 @@ extension MallSpecAlertVM{
     }
     func updateGoodsMsg(model:MallDetailModel,imgUrl:String) {
         self.detailModel = model
+        
+//        judgeButtonStatus(status: self.detailModel.buyButtonStatus)
         imgView.setImgUrl(urlString: imgUrl)
         deliveryLabel.text = model.deliveryNotice
         
@@ -275,6 +277,19 @@ extension MallSpecAlertVM{
         priceLabel.attributedText = attr
         
         updateSpecMsg(model: model)
+    }
+    func judgeButtonStatus(status:BUY_BUTTON_STATUS) {
+        self.bottomVm.numAddButton.isEnabled = false
+        self.bottomVm.numSubButton.isEnabled = false
+        switch status {
+        case .sale_pre,.sale_remind,.sale_remind_subscribe,.sale_no_stoke,.sale_no_stoke_subscribe:
+            break
+        case .sale_pre_no_stoke:
+            self.bottomVm.numSubButton.isEnabled = true
+        case .sale_normal:
+            self.bottomVm.numAddButton.isEnabled = true
+            self.bottomVm.numSubButton.isEnabled = true
+        }
     }
     func updateSpecMsg(model:MallDetailModel) {
         groups.removeAll()

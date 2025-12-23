@@ -27,6 +27,7 @@ enum BUY_BUTTON_STATUS {
 
 class MallDetailModel: NSObject {
     
+    ///skuId
     var id = ""
     ///⚠️前端用不上
     var sn = ""

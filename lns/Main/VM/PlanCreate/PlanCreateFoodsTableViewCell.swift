@@ -154,7 +154,7 @@ extension PlanCreateFoodsTableViewCell{
 //            if dict.stringValueForKey(key: "remark").count > 0{
 //                foodsNameLabel.text = "\(dict.stringValueForKey(key: "fname"))(\(dict.stringValueForKey(key: "remark")))"
 //            }
-            if dict.stringValueForKey(key: "ctype") == "3"{
+            if dict.stringValueForKey(key: "ctype") == "3"{//以“快速添加”的方式添加到日志/计划/食谱，但展示时不显示“快速添加”，百而直接显示放到remark的食物名称
                 foodsNameLabel.text = "\(dict.stringValueForKey(key: "remark"))"
             }else if dict.stringValueForKey(key: "remark").count > 0 {
                 foodsNameLabel.text = "\(dict.stringValueForKey(key: "fname"))(\(dict.stringValueForKey(key: "remark")))"
@@ -189,7 +189,7 @@ extension PlanCreateFoodsTableViewCell{
 //            if dict.stringValueForKey(key: "remark").count > 0 {
 //                foodsNameLabel.text = "\(dict.stringValueForKey(key: "fname"))(\(dict.stringValueForKey(key: "remark")))"
 //            }
-            if dict.stringValueForKey(key: "ctype") == "3"{
+            if dict.stringValueForKey(key: "ctype") == "3"{//以“快速添加”的方式添加到日志/计划/食谱，但展示时不显示“快速添加”，百而直接显示放到remark的食物名称
                 foodsNameLabel.text = "\(dict.stringValueForKey(key: "remark"))"
             }else if dict.stringValueForKey(key: "remark").count > 0 {
                 foodsNameLabel.text = "\(dict.stringValueForKey(key: "fname"))(\(dict.stringValueForKey(key: "remark")))"
@@ -221,7 +221,7 @@ extension PlanCreateFoodsTableViewCell{
         if dict["fname"]as? String ?? "" == "快速添加"{
 //            arrowImgView.isHidden = true
             foodsWeightLabel.text = "\(String(format: "%.0f", dict.doubleValueForKey(key: "carbohydrate").rounded()))g 碳水，\(String(format: "%.0f", dict.doubleValueForKey(key: "protein").rounded()))g 蛋白质，\(String(format: "%.0f", dict.doubleValueForKey(key: "fat").rounded()))g 脂肪"
-            if dict.stringValueForKey(key: "ctype") == "3"{
+            if dict.stringValueForKey(key: "ctype") == "3"{//以“快速添加”的方式添加到日志/计划/食谱，但展示时不显示“快速添加”，百而直接显示放到remark的食物名称
                 foodsNameLabel.text = "\(dict.stringValueForKey(key: "remark"))"
             }else if dict.stringValueForKey(key: "remark").count > 0 {
                 foodsNameLabel.text = "\(dict.stringValueForKey(key: "fname"))(\(dict.stringValueForKey(key: "remark")))"

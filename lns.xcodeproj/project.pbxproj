@@ -829,6 +829,8 @@
 		EC6240802EAF16DF009ADEFD /* BottomCardPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC62407F2EAF16DE009ADEFD /* BottomCardPresentationController.swift */; };
 		EC6240822EAF16EB009ADEFD /* BottomCardAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6240812EAF16EA009ADEFD /* BottomCardAnimator.swift */; };
 		EC6240842EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6240832EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift */; };
+		EC62536F2EFA3C5D003C076C /* PromotionTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC62536E2EFA3C5D003C076C /* PromotionTagView.swift */; };
+		EC6253712EFA3FF2003C076C /* PromotionDeadlineTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6253702EFA3FF2003C076C /* PromotionDeadlineTagView.swift */; };
 		EC67033D2E9C8FE200C0FDFE /* SystemNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */; };
 		EC67033F2E9CF3EA00C0FDFE /* ForumNaviTypeLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */; };
 		EC6703422E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */; };
@@ -2130,6 +2132,8 @@
 		EC62407F2EAF16DE009ADEFD /* BottomCardPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardPresentationController.swift; sourceTree = "<group>"; };
 		EC6240812EAF16EA009ADEFD /* BottomCardAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardAnimator.swift; sourceTree = "<group>"; };
 		EC6240832EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardTransitioningDelegate.swift; sourceTree = "<group>"; };
+		EC62536E2EFA3C5D003C076C /* PromotionTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionTagView.swift; sourceTree = "<group>"; };
+		EC6253702EFA3FF2003C076C /* PromotionDeadlineTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionDeadlineTagView.swift; sourceTree = "<group>"; };
 		EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemNavigationController.swift; sourceTree = "<group>"; };
 		EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumNaviTypeLiquidVM.swift; sourceTree = "<group>"; };
 		EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverViewLogoLiquidVM.swift; sourceTree = "<group>"; };
@@ -3629,6 +3633,8 @@
 				A7E272612DA8EA27006AF4CF /* CourseMenuHeadVM.swift */,
 				A7BD60662DACF7C3002FE250 /* CourseItemHeadVM.swift */,
 				A73348A72DACE82200AD747A /* CourseTiTleCell.swift */,
+				EC62536E2EFA3C5D003C076C /* PromotionTagView.swift */,
+				EC6253702EFA3FF2003C076C /* PromotionDeadlineTagView.swift */,
 				A73348AB2DACEF8700AD747A /* CourseItemCell.swift */,
 				ECE399992EA87A9E005718C5 /* CoursePDFCell.swift */,
 				A7EC16BB2DAE545B001845CD /* CoursePlayingItemCell.swift */,
@@ -6139,6 +6145,7 @@
 				A7092D132E4EE02D005A2087 /* ArticlesVC.swift in Sources */,
 				A751E1F62E6FD97C00AAD4DD /* SpecImageCell.swift in Sources */,
 				EC6D03852C6F483E00F33137 /* WidgetMsgModel.swift in Sources */,
+				EC6253712EFA3FF2003C076C /* PromotionDeadlineTagView.swift in Sources */,
 				EC3A9CB92BB5723000C6E442 /* QuestionnaireEventsTableViewCell.swift in Sources */,
 				A7202AFD2DD72DFD00CEA8D1 /* JournalReportWeekCalendarDayVM.swift in Sources */,
 				ECD0FE7D2BABCCD5001232C9 /* MacroDefine.swift in Sources */,
@@ -6288,6 +6295,7 @@
 				A72F037B2DF8171500823ED3 /* GuideChatBoxVM.swift in Sources */,
 				EC781CCC2BB954CD00752C95 /* QuestionnairePlanFoodsAlertVM.swift in Sources */,
 				EC380A292BB15E9800B0C58F /* QuestionnaireSurveyMsgSexVM.swift in Sources */,
+				EC62536F2EFA3C5D003C076C /* PromotionTagView.swift in Sources */,
 				ECD041AD2C0F1B720073BFB8 /* TutorialAttr.swift in Sources */,
 				A7A083C82D8413EE008B8A3E /* FoodsMergeListNameVM.swift in Sources */,
 				A773C2362E852B8100F1E3AA /* MallOrderAfterSaleNotSupportVC.swift in Sources */,

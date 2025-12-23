@@ -491,7 +491,7 @@ extension ServiceContactMarketVC:UITableViewDelegate,UITableViewDataSource{
             cell?.updateUI(dict: dict)
             
             cell?.tapBlock = {()in
-                let spuId = dict.stringValueForKey(key: "relatedSkuId")
+                let spuId = dict.stringValueForKey(key: "relatedSpuId")
                 guard !spuId.isEmpty else { return }
                 
                 let goodsInfo = dict["goodsInfoCard"] as? NSDictionary ?? [:]
@@ -839,7 +839,8 @@ extension ServiceContactMarketVC{
     }
     func sendGoodsDetailRequest() {
         let param = ["bizType":self.bizType,
-                     "relatedSkuId":self.detailModel.spuId,
+                     "relatedSpuId":self.detailModel.spuId,
+                     "relatedSkuId":self.detailModel.id,
                      "goodsInfoCard": ["name":self.detailModel.skuName,
                                        "subtitle":self.detailModel.subtitle,
                                        "shippingNotice":self.detailModel.shippingNotice,//warrantyPolicyNotice
@@ -859,7 +860,8 @@ extension ServiceContactMarketVC{
                     "ctime": "\(Date().currentSeconds)",
                     "contentType": "4",
                     "bizType": self.bizType,
-                    "relatedSkuId": self.detailModel.spuId,
+                    "relatedSpuId":self.detailModel.spuId,
+                    "relatedSkuId":self.detailModel.id,
                     "goodsInfoCard": goodsInfoCard
                 ] as [String : Any]
 
@@ -1445,7 +1447,7 @@ extension ServiceContactMarketVC {
     }
 
     private func isLatestGoodsMessageCurrentProduct() -> Bool {
-        let currentSkuId = detailModel.spuId
+        let currentSkuId = detailModel.id
 
         guard dataSourceArray.count > 0 else { return false }
 
