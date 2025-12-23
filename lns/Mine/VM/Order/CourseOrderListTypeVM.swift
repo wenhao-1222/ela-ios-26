@@ -72,7 +72,6 @@ class CourseOrderListTypeVM: UIView {
         vi.layer.cornerRadius = kFitWidth(2)
         vi.clipsToBounds = true
         
-        
         return vi
     }()
 }

@@ -55,6 +55,7 @@ extension UIColor {
     public static let COLOR_BG_EF                       = UIColor(named: "color_bg_ef")!
     public static let COLOR_BG_E8                       = UIColor(named: "color_bg_e8")!
     public static let COLOR_BG_FA                       = UIColor(named: "color_bg_fa")!
+    public static let COLOR_BG_C4                       = UIColor(named: "color_bg_c4")!
     
     
     

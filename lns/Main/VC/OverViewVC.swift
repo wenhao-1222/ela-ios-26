@@ -123,8 +123,16 @@ class OverViewVC : WHBaseViewVC {
         }
         return vm
     }()
+    lazy var habitVm: MainHabitVM = {
+        let vm = MainHabitVM.init(frame: CGRect.init(x: 0, y: self.topMsgVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
+        vm.tapBlock = {()in
+            let vc = HabitVC()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        return vm
+    }()
     lazy var sportVm: MainSportVM = {
-        let vm = MainSportVM.init(frame: CGRect.init(x: 0, y: self.topMsgVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
+        let vm = MainSportVM.init(frame: CGRect.init(x: 0, y: self.habitVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
         vm.tapBlock = {()in
             let vc = SportHistoryVC()
             vc.isCanAdd = true
@@ -240,7 +248,7 @@ extension OverViewVC{
 //        scrollView.addSubview(topBgImgView)
         scrollView.addSubview(topMsgVm)
 //        scrollView.addSubview(logoImgView)
-        
+        scrollView.addSubview(habitVm)
         scrollView.addSubview(sportVm)
         scrollView.addSubview(dataLineChartView)
         scrollView.addSubview(weightLineChartView)

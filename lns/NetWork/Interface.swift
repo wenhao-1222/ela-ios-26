@@ -332,6 +332,10 @@ public let URL_user_address_setDefault   = URL_Type + "users/address/setDefault"
 ///地址---获取默认地址
 public let URL_user_address_getDefault   = URL_Type + "users/address/getDefault"
 
+//MARK: 自律习惯养成
+public let URL_user_habit_dashboard      = URL_Type + "users/habit/dashboard"
+
+
 
 //开屏页信息
 public let URL_splash_ad                = URL_Type + "tools/app/splash_ad/list"

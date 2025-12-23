@@ -831,6 +831,14 @@
 		EC6240842EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6240832EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift */; };
 		EC62536F2EFA3C5D003C076C /* PromotionTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC62536E2EFA3C5D003C076C /* PromotionTagView.swift */; };
 		EC6253712EFA3FF2003C076C /* PromotionDeadlineTagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6253702EFA3FF2003C076C /* PromotionDeadlineTagView.swift */; };
+		EC6253742EFA6CAE003C076C /* MainHabitVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6253732EFA6CAA003C076C /* MainHabitVM.swift */; };
+		EC6253772EFA71E0003C076C /* HabitVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6253762EFA71DC003C076C /* HabitVC.swift */; };
+		EC6253792EFA72C0003C076C /* HabitTopTypeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6253782EFA72B8003C076C /* HabitTopTypeVM.swift */; };
+		EC62537B2EFA771E003C076C /* HabitTopMsgVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC62537A2EFA7710003C076C /* HabitTopMsgVM.swift */; };
+		EC62537D2EFA84F2003C076C /* HabitTodayGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC62537C2EFA84E9003C076C /* HabitTodayGoalVM.swift */; };
+		EC62537F2EFA85F0003C076C /* HabitItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC62537E2EFA85E9003C076C /* HabitItemVM.swift */; };
+		EC6253812EFA8A1C003C076C /* HabitItemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6253802EFA8A19003C076C /* HabitItemModel.swift */; };
+		EC6253832EFA8EE8003C076C /* HabitProgressVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6253822EFA8EE1003C076C /* HabitProgressVM.swift */; };
 		EC67033D2E9C8FE200C0FDFE /* SystemNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */; };
 		EC67033F2E9CF3EA00C0FDFE /* ForumNaviTypeLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */; };
 		EC6703422E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */; };
@@ -2134,6 +2142,14 @@
 		EC6240832EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardTransitioningDelegate.swift; sourceTree = "<group>"; };
 		EC62536E2EFA3C5D003C076C /* PromotionTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionTagView.swift; sourceTree = "<group>"; };
 		EC6253702EFA3FF2003C076C /* PromotionDeadlineTagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromotionDeadlineTagView.swift; sourceTree = "<group>"; };
+		EC6253732EFA6CAA003C076C /* MainHabitVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHabitVM.swift; sourceTree = "<group>"; };
+		EC6253762EFA71DC003C076C /* HabitVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitVC.swift; sourceTree = "<group>"; };
+		EC6253782EFA72B8003C076C /* HabitTopTypeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitTopTypeVM.swift; sourceTree = "<group>"; };
+		EC62537A2EFA7710003C076C /* HabitTopMsgVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitTopMsgVM.swift; sourceTree = "<group>"; };
+		EC62537C2EFA84E9003C076C /* HabitTodayGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitTodayGoalVM.swift; sourceTree = "<group>"; };
+		EC62537E2EFA85E9003C076C /* HabitItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitItemVM.swift; sourceTree = "<group>"; };
+		EC6253802EFA8A19003C076C /* HabitItemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitItemModel.swift; sourceTree = "<group>"; };
+		EC6253822EFA8EE1003C076C /* HabitProgressVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitProgressVM.swift; sourceTree = "<group>"; };
 		EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemNavigationController.swift; sourceTree = "<group>"; };
 		EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumNaviTypeLiquidVM.swift; sourceTree = "<group>"; };
 		EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverViewLogoLiquidVM.swift; sourceTree = "<group>"; };
@@ -4222,6 +4238,27 @@
 			path = goal;
 			sourceTree = "<group>";
 		};
+		EC6253722EFA6CA0003C076C /* habit */ = {
+			isa = PBXGroup;
+			children = (
+				EC6253732EFA6CAA003C076C /* MainHabitVM.swift */,
+				EC6253782EFA72B8003C076C /* HabitTopTypeVM.swift */,
+				EC6253822EFA8EE1003C076C /* HabitProgressVM.swift */,
+				EC62537A2EFA7710003C076C /* HabitTopMsgVM.swift */,
+				EC62537C2EFA84E9003C076C /* HabitTodayGoalVM.swift */,
+				EC62537E2EFA85E9003C076C /* HabitItemVM.swift */,
+			);
+			path = habit;
+			sourceTree = "<group>";
+		};
+		EC6253752EFA71D6003C076C /* Habit */ = {
+			isa = PBXGroup;
+			children = (
+				EC6253762EFA71DC003C076C /* HabitVC.swift */,
+			);
+			path = Habit;
+			sourceTree = "<group>";
+		};
 		EC6978D22BABBD81000B933A = {
 			isa = PBXGroup;
 			children = (
@@ -4876,6 +4913,7 @@
 		ECD0FF262BABDFE7001232C9 /* VC */ = {
 			isa = PBXGroup;
 			children = (
+				EC6253752EFA71D6003C076C /* Habit */,
 				A76BE7C72CF40DC30058F459 /* Sport */,
 				EC4DE2E62BCF740A0090A7BD /* Data */,
 				ECFACE802BC7C7FA003CDA3A /* Plan */,
@@ -4893,6 +4931,7 @@
 		ECD0FF272BABDFEB001232C9 /* VM */ = {
 			isa = PBXGroup;
 			children = (
+				EC6253722EFA6CA0003C076C /* habit */,
 				A79541E12E02523200E019C8 /* Circle */,
 				A75012A12DE98350009BCA7E /* OverView */,
 				A75039D12CF02E2600C2B2B3 /* sport */,
@@ -4964,6 +5003,7 @@
 				EC962D8B2BF454EF002A12C5 /* BodyDataSQLiteManager.swift */,
 				A707D2BF2CBBE7B2005BDC0E /* BodyDataSQLiteManagerOld.swift */,
 				ECC8DC062BFF1A5800C97240 /* BodyDataUploadManager.swift */,
+				EC6253802EFA8A19003C076C /* HabitItemModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -5601,6 +5641,7 @@
 				A740EEDF2E7277B100B6ABAA /* MallSpecAlertBottomVM.swift in Sources */,
 				A7881E9D2CBF8182008F4390 /* WHCollectionViewCell.swift in Sources */,
 				A7881E9E2CBF8182008F4390 /* WHShowBigImgBackView.swift in Sources */,
+				EC62537D2EFA84F2003C076C /* HabitTodayGoalVM.swift in Sources */,
 				A7454B322E73B6E60064076C /* AddressPickerView.swift in Sources */,
 				A74187482D7990AB006C8858 /* AITipsAlertConfirmBtn.swift in Sources */,
 				EC5328402BF5E69100C39C6A /* ServiceTextView.swift in Sources */,
@@ -5690,7 +5731,9 @@
 				A71D4CD12D411CD4000399A4 /* ForumListFooterVM.swift in Sources */,
 				A736262D2D003EC40038351C /* UTType+Exs.swift in Sources */,
 				A7EDC0E02D12A5000012D3FF /* PublishPollMultipleAlertVM.swift in Sources */,
+				EC6253792EFA72C0003C076C /* HabitTopTypeVM.swift in Sources */,
 				A7D3B21D2CBE60BD0016B2B5 /* LogsMealsAlertSetWeekVM.swift in Sources */,
+				EC62537F2EFA85F0003C076C /* HabitItemVM.swift in Sources */,
 				EC26E6332BBD2819001E4381 /* BindPhoneVerifyCodeButton.swift in Sources */,
 				EC4DE2E82BCF74E60090A7BD /* DataAddVC.swift in Sources */,
 				A768BD802D6C36DF00D18779 /* ForumPublishModel.swift in Sources */,
@@ -5784,6 +5827,7 @@
 				EC9048872BBBEB6400F62262 /* QuestionCustomTipsAlertVM.swift in Sources */,
 				A7BAAC142E2F56F6002CE2D1 /* CoursePayResultVC.swift in Sources */,
 				EC356CCD2C6C856E0023C0BA /* WidgetUtils.swift in Sources */,
+				EC6253832EFA8EE8003C076C /* HabitProgressVM.swift in Sources */,
 				A739FA2F2D3CD0260005A9D8 /* ForumOfficialImgsVM.swift in Sources */,
 				A77F96252D0AA7F70084D4FB /* ForumPollModel.swift in Sources */,
 				EC4DE28C2BC92CD50090A7BD /* PlanDetailBottomVM.swift in Sources */,
@@ -5949,6 +5993,7 @@
 				A733235F2D9100E20065BF0A /* UniversalTabBarController.swift in Sources */,
 				A7EDC0FB2D1510310012D3FF /* ForumPollResultModel.swift in Sources */,
 				A76253302E055C51005B44E0 /* LogsFitnessTypeAlertVM.swift in Sources */,
+				EC62537B2EFA771E003C076C /* HabitTopMsgVM.swift in Sources */,
 				A7EB33592CDC58F000103D4F /* WebViewJavascriptBridge_JS.m in Sources */,
 				A76F50992D59AC12001B67CB /* FMBlurable.swift in Sources */,
 				EC9321AC2C50C43800FDBBE2 /* MealsNaviEditButton.swift in Sources */,
@@ -6500,6 +6545,7 @@
 				A74426842CDB5A7F000D7E2B /* Tag.swift in Sources */,
 				A74426852CDB5A7F000D7E2B /* SimpleDictionary.swift in Sources */,
 				A74426862CDB5A7F000D7E2B /* TokenQueue.swift in Sources */,
+				EC6253772EFA71E0003C076C /* HabitVC.swift in Sources */,
 				A74426872CDB5A7F000D7E2B /* DataNode.swift in Sources */,
 				A74426882CDB5A7F000D7E2B /* Validate.swift in Sources */,
 				A74426892CDB5A7F000D7E2B /* HtmlTreeBuilder.swift in Sources */,
@@ -6507,6 +6553,7 @@
 				A7C72B4E2E0D29D7001EA74D /* SimpleAVPlayerView.swift in Sources */,
 				A744268B2CDB5A7F000D7E2B /* DocumentType.swift in Sources */,
 				A744268C2CDB5A7F000D7E2B /* Comment.swift in Sources */,
+				EC6253742EFA6CAE003C076C /* MainHabitVM.swift in Sources */,
 				A744268D2CDB5A7F000D7E2B /* StringUtil.swift in Sources */,
 				A744268E2CDB5A7F000D7E2B /* Connection.swift in Sources */,
 				A760ED462CF06B6100E786EE /* SportAddAlertVM.swift in Sources */,
@@ -6584,6 +6631,7 @@
 				A7A3423F2DD5E6FD0093CAF7 /* JournalReportWeekAdviceCell.swift in Sources */,
 				A762B8582D19062C003E8B22 /* ForumTutorialVC.swift in Sources */,
 				ECD04BB12BEDF74F00B8069B /* JournalCollectionView.swift in Sources */,
+				EC6253812EFA8A1C003C076C /* HabitItemModel.swift in Sources */,
 				EC87A4532C8EE6CD00BAB8CE /* NaturalStatTimeMonthFilterAlertVM.swift in Sources */,
 				EC3A9CAA2BB5171F00C6E442 /* QuestionnaireBirthdayVM.swift in Sources */,
 				ECD0FF032BABD25B001232C9 /* YYTextAsyncLayer.m in Sources */,
