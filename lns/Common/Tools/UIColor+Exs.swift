@@ -61,6 +61,7 @@ extension UIColor {
     
     public static let COLOR_BG_THEME                    = UIColor(named: "color_bg_theme")!
     public static let COLOR_CARD_BG_WHITE               = UIColor(named: "color_card_bg_ff")!
+    public static let COLOR_CARD_BG_WHITE_ALERT         = UIColor(named: "color_card_bg_alert")!
     public static let COLOR_CARD_BG_CLEAR               = UIColor(named: "color_card_bg_clear")!
     
     

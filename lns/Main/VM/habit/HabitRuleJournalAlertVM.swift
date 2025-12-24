@@ -21,12 +21,9 @@ class HabitRuleJournalAlertVM: UIView {
     // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        if #available(iOS 13.0, *),
-           previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
-           !isHidden {
-            UIView.animate(withDuration: 0.2) {
-                self.bgView.alpha = self.targetDimAlpha
-            }
+        setupWhiteViewBorder()
+        UIView.animate(withDuration: 0.2) {
+            self.bgView.alpha = self.targetDimAlpha
         }
     }
     
@@ -42,6 +39,12 @@ class HabitRuleJournalAlertVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateWhiteViewBorderFrame()
+    }
+
     // MARK: - UI
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
@@ -56,7 +59,8 @@ class HabitRuleJournalAlertVM: UIView {
     private lazy var whiteView: UIView = {
         // 先用默认高度创建，后面 dealData() 会重算高度并设置 frame
         let vi = UIView(frame: CGRect(x: 0, y: SCREEN_HEIGHT - whiteViewHeight, width: SCREEN_WIDHT, height: whiteViewHeight))
-        vi.backgroundColor = .COLOR_CARD_BG_WHITE
+//        vi.backgroundColor = .COLOR_CARD_BG_WHITE_ALERT
+        vi.backgroundColor = .clear
         vi.layer.cornerRadius = whiteViewTopRadius
         if #available(iOS 13.0, *) { vi.layer.cornerCurve = .continuous }
         vi.layer.masksToBounds = true
@@ -71,6 +75,30 @@ class HabitRuleJournalAlertVM: UIView {
         
         return vi
     }()
+    
+    private lazy var whiteBlurView: UIVisualEffectView = {
+        let effect = UIBlurEffect(style: .systemMaterial)
+        let view = UIVisualEffectView(effect: effect)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.isUserInteractionEnabled = false
+        view.contentView.backgroundColor = UIColor.COLOR_CARD_BG_WHITE_ALERT.withAlphaComponent(0.05)
+        return view
+    }()
+    private let whiteBorderGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1)
+        layer.locations = [0, 1]
+        return layer
+    }()
+    private let whiteBorderMaskLayer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        layer.fillColor = UIColor.clear.cgColor
+        layer.strokeColor = UIColor.black.cgColor
+        layer.lineWidth = 1
+        return layer
+    }()
+
     lazy var ruleLab: LineHeightLabel = {
         let lab = LineHeightLabel()
         lab.adjustsFontSizeToFitWidth = true
@@ -180,6 +208,11 @@ extension HabitRuleJournalAlertVM{
     func initUI() {
         addSubview(bgView)
         addSubview(whiteView)
+        
+        whiteView.addSubview(whiteBlurView)
+        whiteBlurView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         whiteView.addSubview(ruleLab)
         whiteView.addSubview(tipsLab)
         whiteView.addSubview(tipsLabel)
@@ -189,6 +222,7 @@ extension HabitRuleJournalAlertVM{
         whiteView.addSubview(confirmButton)
         
         setConstrait()
+        setupWhiteViewBorder()
     }
     func setConstrait() {
         ruleLab.snp.makeConstraints { make in
@@ -231,6 +265,29 @@ extension HabitRuleJournalAlertVM{
             make.height.equalTo(kFitWidth(44))
             make.bottom.equalTo(kFitWidth(-5)-WHUtils().getBottomSafeAreaHeight())
         }
+    }
+    private func setupWhiteViewBorder() {
+        //color_text_white_d234_50
+        if traitCollection.userInterfaceStyle == .dark{
+            whiteBorderGradientLayer.colors = [WHColorWithAlpha(colorStr: "D2D3D4", alpha: 0.5).cgColor,
+                                               WHColorWithAlpha(colorStr: "D2D3D4", alpha: 0).cgColor]
+        }else{
+            whiteBorderGradientLayer.colors = [WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.5).cgColor,
+                                               WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.5).cgColor]
+        }
+        
+        whiteBorderGradientLayer.mask = whiteBorderMaskLayer
+        whiteView.layer.addSublayer(whiteBorderGradientLayer)
+        updateWhiteViewBorderFrame()
+    }
+
+    private func updateWhiteViewBorderFrame() {
+        whiteBorderGradientLayer.frame = whiteView.bounds
+
+        let inset = whiteBorderMaskLayer.lineWidth / 2
+        let pathRect = whiteView.bounds.insetBy(dx: inset, dy: inset)
+        whiteBorderMaskLayer.path = UIBezierPath(roundedRect: pathRect,
+                                                 cornerRadius: whiteViewTopRadius - inset).cgPath
     }
 }
 
