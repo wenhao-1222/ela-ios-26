@@ -8,7 +8,7 @@
 
 class HabitProgressVM: UIView {
     
-    
+    var controller = WHBaseViewVC()
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -33,6 +33,19 @@ class HabitProgressVM: UIView {
     }()
     lazy var todayMsgVm: HabitTodayGoalVM = {
         let vm = HabitTodayGoalVM.init(frame: CGRect.init(x: 0, y: kFitWidth(170), width: 0, height: 0))
+        vm.journalMsgVm.showButton.addTarget(self, action: #selector(showJournalRuleAction), for: .touchUpInside)
+        return vm
+    }()
+    lazy var friendMsgVm: HabitFriendsGoalVM = {
+        let vm = HabitFriendsGoalVM.init(frame: CGRect.init(x: 0, y: self.todayMsgVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
+        vm.heightChangeBlock = {(height)in
+            self.scrollView.contentSize = CGSize.init(width: 0, height: self.friendMsgVm.frame.maxY+kFitWidth(20))
+        }
+        
+        return vm
+    }()
+    lazy var ruleJournalAlertVm: HabitRuleJournalAlertVM = {
+        let vm = HabitRuleJournalAlertVM.init(frame: .zero)
         return vm
     }()
 }
@@ -45,15 +58,24 @@ extension HabitProgressVM{
 }
 
 extension HabitProgressVM{
+    @objc func showJournalRuleAction(){
+        ruleJournalAlertVm.showSelf()
+    }
+}
+
+extension HabitProgressVM{
     func initUI() {
         addSubview(scrollView)
         scrollView.addSubview(topMsgVm)
         scrollView.addSubview(todayMsgVm)
+        scrollView.addSubview(friendMsgVm)
         
         scrollView.snp.makeConstraints { make in
             make.left.top.width.height.equalToSuperview()
         }
         
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.getKeyWindow().addSubview(ruleJournalAlertVm)
     }
 }
 

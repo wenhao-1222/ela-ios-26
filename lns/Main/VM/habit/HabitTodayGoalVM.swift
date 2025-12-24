@@ -9,6 +9,8 @@
 class HabitTodayGoalVM: UIView {
     
     let selfHeight = kFitWidth(305)
+    var timer: Timer?
+    var remainSeconds = 3
     
     var itemModels:[HabitItemModel] = [HabitItemModel]()
     let vmOriginY:[CGFloat] = [kFitWidth(65),kFitWidth(125),kFitWidth(185),kFitWidth(245)]
@@ -77,17 +79,22 @@ extension HabitTodayGoalVM{
     func updateUI(dict:NSDictionary) {
         itemModels = [HabitItemModel().createModel(vm: journalMsgVm,
                                                    isComplete: dict.stringValueForKey(key: "isLoggedFood") == "1",
-                                                   type: .log_food),
+                                                   type: .log_food,
+                                                   point: dict.stringValueForKey(key: "loggedFoodPoint")),
                       HabitItemModel().createModel(vm: proteinMsgVm,
                                                  isComplete: dict.stringValueForKey(key: "isProteinIntakeOnTarget") == "1",
-                                                   type: .protein_target),
+                                                   type: .protein_target,
+                                                   point: dict.stringValueForKey(key: "proteinIntakeOnTargetPoint")),
                       HabitItemModel().createModel(vm: bodyDataMsgVm,
                                                  isComplete: dict.stringValueForKey(key: "isLoggedBodyData") == "1",
-                                                   type: .log_bodydata),
+                                                   type: .log_bodydata,
+                                                   point: dict.stringValueForKey(key: "loggedBodyDataPoint")),
                       HabitItemModel().createModel(vm: fitnessMsgVm,
                                                  isComplete: dict.stringValueForKey(key: "isLoggedFitness") == "1",
-                                                   type: .log_fitness)]
-        
+                                                   type: .log_fitness,
+                                                   point: dict.stringValueForKey(key: "loggedFitnessPoint"))]
+        remainSeconds = dict.stringValueForKey(key: "etime").intValue
+        countDownAction()
         var tempModels = [HabitItemModel]()
         
         for i in 0..<itemModels.count{
@@ -107,7 +114,27 @@ extension HabitTodayGoalVM{
             let model = itemModels[i]
             let vmFrame = model.vm.frame
             model.vm.frame = CGRect.init(x: vmFrame.origin.x, y: vmOriginY[i], width: vmFrame.width, height: vmFrame.height)
-            model.vm.updateUI(isComplete: model.isComplete)
+            model.vm.updateUI(isComplete: model.isComplete,point: model.point)
+        }
+    }
+    private func updateRemainTimeLabel() {
+        if remainSeconds <= 0 {
+            remainTimeLabel.text = "剩余时间 00:00:00"
+            remainTimeLabel.isHidden = true
+            self.timer?.invalidate()
+            self.timer = nil
+            return
+        }
+        
+        let hours = remainSeconds / 3600
+        let minutes = (remainSeconds % 3600) / 60
+        let seconds = remainSeconds % 60
+        remainTimeLabel.text = String(format: "剩余时间 %02d:%02d:%02d", hours, minutes, seconds)
+        remainSeconds -= 1
+    }
+    func countDownAction() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            self.updateRemainTimeLabel()
         }
     }
 }

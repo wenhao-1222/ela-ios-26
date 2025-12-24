@@ -884,6 +884,8 @@
 		EC79A7922BD12F7E00D72FDF /* DataDetailSharePopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC79A7912BD12F7E00D72FDF /* DataDetailSharePopView.swift */; };
 		EC81531A2BE86CDC00879233 /* WHTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8153192BE86CDC00879233 /* WHTabBar.swift */; };
 		EC81531C2BE87BAD00879233 /* LogsSQLiteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC81531B2BE87BAD00879233 /* LogsSQLiteManager.swift */; };
+		EC8264E82EFB896A00965196 /* HabitRuleJournalAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8264E72EFB896000965196 /* HabitRuleJournalAlertVM.swift */; };
+		EC8264EA2EFBB76A00965196 /* HabitFriendsGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8264E92EFBB76500965196 /* HabitFriendsGoalVM.swift */; };
 		EC82CAAA2EB1B521001AEE79 /* SEAlicense.crt in Resources */ = {isa = PBXBuildFile; fileRef = EC82CAA92EB1B520001AEE79 /* SEAlicense.crt */; };
 		EC82CAAC2EB1B5DC001AEE79 /* RegionSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC82CAAB2EB1B5DB001AEE79 /* RegionSelector.swift */; };
 		EC85AFF62C6DD0BE006F788D /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC85AFF52C6DD0BE006F788D /* CircleView.swift */; };
@@ -2199,6 +2201,8 @@
 		EC79A7912BD12F7E00D72FDF /* DataDetailSharePopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailSharePopView.swift; sourceTree = "<group>"; };
 		EC8153192BE86CDC00879233 /* WHTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHTabBar.swift; sourceTree = "<group>"; };
 		EC81531B2BE87BAD00879233 /* LogsSQLiteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsSQLiteManager.swift; sourceTree = "<group>"; };
+		EC8264E72EFB896000965196 /* HabitRuleJournalAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleJournalAlertVM.swift; sourceTree = "<group>"; };
+		EC8264E92EFBB76500965196 /* HabitFriendsGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitFriendsGoalVM.swift; sourceTree = "<group>"; };
 		EC82CAA92EB1B520001AEE79 /* SEAlicense.crt */ = {isa = PBXFileReference; lastKnownFileType = text; path = SEAlicense.crt; sourceTree = "<group>"; };
 		EC82CAAB2EB1B5DB001AEE79 /* RegionSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionSelector.swift; sourceTree = "<group>"; };
 		EC85AFF52C6DD0BE006F788D /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
@@ -4247,6 +4251,8 @@
 				EC62537A2EFA7710003C076C /* HabitTopMsgVM.swift */,
 				EC62537C2EFA84E9003C076C /* HabitTodayGoalVM.swift */,
 				EC62537E2EFA85E9003C076C /* HabitItemVM.swift */,
+				EC8264E72EFB896000965196 /* HabitRuleJournalAlertVM.swift */,
+				EC8264E92EFBB76500965196 /* HabitFriendsGoalVM.swift */,
 			);
 			path = habit;
 			sourceTree = "<group>";
@@ -5755,6 +5761,7 @@
 				EC4DE2BE2BCD0D320090A7BD /* PlanCreateFoodsAlertVM.swift in Sources */,
 				EC97261A2C5B70BF00F244A2 /* GoalSetTipsVM.swift in Sources */,
 				A7BFEA352E5F086B00FD45A1 /* TagRowView.swift in Sources */,
+				EC8264EA2EFBB76A00965196 /* HabitFriendsGoalVM.swift in Sources */,
 				A77F96212D093AFF0084D4FB /* GuideCreateFoodsAlertVM.swift in Sources */,
 				ECB5AEF92BE0D6E20047762C /* LogsEditHeadView.swift in Sources */,
 				A739FA2B2D3C91AC0005A9D8 /* CustomRefreshHeader.swift in Sources */,
@@ -5919,6 +5926,7 @@
 				A7E6C5662E604B2E001145DB /* FirstLaunchVC.swift in Sources */,
 				A754BD8B2DA7ADB8000ACC79 /* ZFCustomResourceLoaderManager.swift in Sources */,
 				EC4DE2D42BCE565A0090A7BD /* PlanShareDetailsContentVM.swift in Sources */,
+				EC8264E82EFB896A00965196 /* HabitRuleJournalAlertVM.swift in Sources */,
 				A73348A82DACE82800AD747A /* CourseTiTleCell.swift in Sources */,
 				A70A1F8C2E6ED8E600B506DC /* MallDetailImageCell.swift in Sources */,
 				EC781CDA2BBAA7F500752C95 /* QuestionnairePlanNameVM.swift in Sources */,

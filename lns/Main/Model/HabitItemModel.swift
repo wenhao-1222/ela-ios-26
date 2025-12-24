@@ -35,7 +35,7 @@ class HabitItemModel: NSObject {
         let model = HabitItemModel()
         model.vm = vm
         model.isComplete = isComplete
-        model.point = point
+        model.point = point.isEmpty ? "1" : point
         model.type = type
         
         return model

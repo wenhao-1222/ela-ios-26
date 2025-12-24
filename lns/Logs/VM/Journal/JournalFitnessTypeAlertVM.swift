@@ -4,6 +4,7 @@
 //
 //  Created by Elavatine on 2025/7/1.
 //
+
 import UIKit
 
 class JournalFitnessTypeAlertVM: UIView {

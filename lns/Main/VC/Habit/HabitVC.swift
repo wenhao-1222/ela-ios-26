@@ -22,6 +22,7 @@ class HabitVC: WHBaseViewVC {
     }()
     lazy var progressVm: HabitProgressVM = {
         let vm = HabitProgressVM.init(frame: CGRect.init(x: 0, y: self.topTypeVm.frame.maxY, width: 0, height: 0))
+        vm.controller = self
         return vm
     }()
 }
