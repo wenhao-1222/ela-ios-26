@@ -39,7 +39,7 @@ class HabitProgressVM: UIView {
     lazy var friendMsgVm: HabitFriendsGoalVM = {
         let vm = HabitFriendsGoalVM.init(frame: CGRect.init(x: 0, y: self.todayMsgVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
         vm.heightChangeBlock = {(height)in
-            self.scrollView.contentSize = CGSize.init(width: 0, height: self.friendMsgVm.frame.maxY+kFitWidth(20))
+            self.scrollView.contentSize = CGSize.init(width: 0, height: self.todayMsgVm.frame.maxY+height+kFitWidth(20))
         }
         
         return vm
@@ -54,6 +54,7 @@ extension HabitProgressVM{
     func updateUI(dict:NSDictionary) {
         self.topMsgVm.numberLabel.text = dict.stringValueForKey(key: "pointBalance")
         self.todayMsgVm.updateUI(dict: dict)
+        self.friendMsgVm.updateUI(dict: dict)
     }
 }
 

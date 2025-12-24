@@ -61,7 +61,8 @@ class HabitRuleJournalAlertVM: UIView {
         let vi = UIView(frame: CGRect(x: 0, y: SCREEN_HEIGHT - whiteViewHeight, width: SCREEN_WIDHT, height: whiteViewHeight))
 //        vi.backgroundColor = .COLOR_CARD_BG_WHITE_ALERT
         vi.backgroundColor = .clear
-        vi.layer.cornerRadius = whiteViewTopRadius
+//        vi.layer.cornerRadius = whiteViewTopRadius
+        vi.addClipCorner(corners: [.topLeft,.topRight], radius: whiteViewTopRadius)
         if #available(iOS 13.0, *) { vi.layer.cornerCurve = .continuous }
         vi.layer.masksToBounds = true
         

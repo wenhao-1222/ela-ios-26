@@ -886,6 +886,8 @@
 		EC81531C2BE87BAD00879233 /* LogsSQLiteManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC81531B2BE87BAD00879233 /* LogsSQLiteManager.swift */; };
 		EC8264E82EFB896A00965196 /* HabitRuleJournalAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8264E72EFB896000965196 /* HabitRuleJournalAlertVM.swift */; };
 		EC8264EA2EFBB76A00965196 /* HabitFriendsGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8264E92EFBB76500965196 /* HabitFriendsGoalVM.swift */; };
+		EC8264EC2EFBDDCA00965196 /* HabitDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8264EB2EFBDDC700965196 /* HabitDetailVC.swift */; };
+		EC8264EE2EFBDED500965196 /* HabitDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8264ED2EFBDED000965196 /* HabitDetailTableViewCell.swift */; };
 		EC82CAAA2EB1B521001AEE79 /* SEAlicense.crt in Resources */ = {isa = PBXBuildFile; fileRef = EC82CAA92EB1B520001AEE79 /* SEAlicense.crt */; };
 		EC82CAAC2EB1B5DC001AEE79 /* RegionSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC82CAAB2EB1B5DB001AEE79 /* RegionSelector.swift */; };
 		EC85AFF62C6DD0BE006F788D /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC85AFF52C6DD0BE006F788D /* CircleView.swift */; };
@@ -2203,6 +2205,8 @@
 		EC81531B2BE87BAD00879233 /* LogsSQLiteManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsSQLiteManager.swift; sourceTree = "<group>"; };
 		EC8264E72EFB896000965196 /* HabitRuleJournalAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleJournalAlertVM.swift; sourceTree = "<group>"; };
 		EC8264E92EFBB76500965196 /* HabitFriendsGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitFriendsGoalVM.swift; sourceTree = "<group>"; };
+		EC8264EB2EFBDDC700965196 /* HabitDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailVC.swift; sourceTree = "<group>"; };
+		EC8264ED2EFBDED000965196 /* HabitDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailTableViewCell.swift; sourceTree = "<group>"; };
 		EC82CAA92EB1B520001AEE79 /* SEAlicense.crt */ = {isa = PBXFileReference; lastKnownFileType = text; path = SEAlicense.crt; sourceTree = "<group>"; };
 		EC82CAAB2EB1B5DB001AEE79 /* RegionSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionSelector.swift; sourceTree = "<group>"; };
 		EC85AFF52C6DD0BE006F788D /* CircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
@@ -4253,6 +4257,7 @@
 				EC62537E2EFA85E9003C076C /* HabitItemVM.swift */,
 				EC8264E72EFB896000965196 /* HabitRuleJournalAlertVM.swift */,
 				EC8264E92EFBB76500965196 /* HabitFriendsGoalVM.swift */,
+				EC8264ED2EFBDED000965196 /* HabitDetailTableViewCell.swift */,
 			);
 			path = habit;
 			sourceTree = "<group>";
@@ -4261,6 +4266,7 @@
 			isa = PBXGroup;
 			children = (
 				EC6253762EFA71DC003C076C /* HabitVC.swift */,
+				EC8264EB2EFBDDC700965196 /* HabitDetailVC.swift */,
 			);
 			path = Habit;
 			sourceTree = "<group>";
@@ -5715,6 +5721,7 @@
 				ECD0FE8B2BABD0E3001232C9 /* WHNetworkUtil.swift in Sources */,
 				EC9CB9362EE9554000FBF915 /* ServiceOrderTableViewCell.swift in Sources */,
 				ECD0FEF12BABD25B001232C9 /* YYTextContainerView.m in Sources */,
+				EC8264EC2EFBDDCA00965196 /* HabitDetailVC.swift in Sources */,
 				ECFACE822BC7C805003CDA3A /* PlanListVC.swift in Sources */,
 				EC9321AE2C50C80D00FDBBE2 /* MealsNameVM.swift in Sources */,
 				ECF0BFE02BFC9D0200E5F6F0 /* WithDrawVC.swift in Sources */,
@@ -5778,6 +5785,7 @@
 				ECF854642C183F8500B9C7E7 /* MainDataLineChartLegentView.swift in Sources */,
 				ECF745CF2BDA244F0076DDB9 /* FoodsListAddListVM.swift in Sources */,
 				A74F77B92CDE00D300DA136F /* ForumCommentVM.swift in Sources */,
+				EC8264EE2EFBDED500965196 /* HabitDetailTableViewCell.swift in Sources */,
 				A79541E02E011D5000E019C8 /* GoalSetCircleVC.swift in Sources */,
 				ECD0FF362BABE03A001232C9 /* LogsVC.swift in Sources */,
 				EC8FF3E22C917843003A7E0B /* NaturalBarMarkView.swift in Sources */,

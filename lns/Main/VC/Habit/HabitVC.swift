@@ -23,8 +23,18 @@ class HabitVC: WHBaseViewVC {
     lazy var progressVm: HabitProgressVM = {
         let vm = HabitProgressVM.init(frame: CGRect.init(x: 0, y: self.topTypeVm.frame.maxY, width: 0, height: 0))
         vm.controller = self
+        
+        vm.topMsgVm.changeButton.addTarget(self, action: #selector(pointDetailTapAction), for: .touchUpInside)
+        
         return vm
     }()
+}
+
+extension HabitVC{
+    @objc func pointDetailTapAction() {
+        let vc = HabitDetailVC()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 extension HabitVC{

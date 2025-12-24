@@ -334,7 +334,8 @@ public let URL_user_address_getDefault   = URL_Type + "users/address/getDefault"
 
 //MARK: 自律习惯养成
 public let URL_user_habit_dashboard      = URL_Type + "users/habit/dashboard"
-
+/// 自律习惯养成  积分明细
+public let URL_user_habit_list      = URL_Type + "users/habit/list"
 
 
 //开屏页信息
