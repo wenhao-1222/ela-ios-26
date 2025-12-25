@@ -729,6 +729,10 @@
 		EC30F2D52C89C38500E7BD33 /* ElaNaturalWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EC356CD42C6C99D00023C0BA /* ElaNaturalWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		EC30F35F2C8A42C400E7BD33 /* ElaNaturalWidgetCalories.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30F35E2C8A42C400E7BD33 /* ElaNaturalWidgetCalories.swift */; };
 		EC30F37D2C8A4B3700E7BD33 /* ElaNaturalWidgetCaloriesFourMeals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30F37C2C8A4B3700E7BD33 /* ElaNaturalWidgetCaloriesFourMeals.swift */; };
+		EC312A9C2EFCDD270026F005 /* HabitExchangeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC312A9B2EFCDD230026F005 /* HabitExchangeVC.swift */; };
+		EC312A9E2EFCE2AC0026F005 /* HabitExchangeMsgVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC312A9D2EFCE2A60026F005 /* HabitExchangeMsgVM.swift */; };
+		EC312AA02EFCE8780026F005 /* HabitExchangeAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC312A9F2EFCE8740026F005 /* HabitExchangeAlertVM.swift */; };
+		EC312AA22EFCE93E0026F005 /* AlertVMCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC312AA12EFCE9330026F005 /* AlertVMCommon.swift */; };
 		EC356CCD2C6C856E0023C0BA /* WidgetUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */; };
 		EC356CD52C6C99D00023C0BA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F62C19915800E46713 /* WidgetKit.framework */; };
 		EC356CD62C6C99D00023C0BA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F82C19915800E46713 /* SwiftUI.framework */; };
@@ -2042,6 +2046,10 @@
 		EC30F2B52C8702B300E7BD33 /* NaturalStatNaviVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatNaviVM.swift; sourceTree = "<group>"; };
 		EC30F35E2C8A42C400E7BD33 /* ElaNaturalWidgetCalories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetCalories.swift; sourceTree = "<group>"; };
 		EC30F37C2C8A4B3700E7BD33 /* ElaNaturalWidgetCaloriesFourMeals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetCaloriesFourMeals.swift; sourceTree = "<group>"; };
+		EC312A9B2EFCDD230026F005 /* HabitExchangeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeVC.swift; sourceTree = "<group>"; };
+		EC312A9D2EFCE2A60026F005 /* HabitExchangeMsgVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeMsgVM.swift; sourceTree = "<group>"; };
+		EC312A9F2EFCE8740026F005 /* HabitExchangeAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeAlertVM.swift; sourceTree = "<group>"; };
+		EC312AA12EFCE9330026F005 /* AlertVMCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertVMCommon.swift; sourceTree = "<group>"; };
 		EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetUtils.swift; sourceTree = "<group>"; };
 		EC356CD42C6C99D00023C0BA /* ElaNaturalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ElaNaturalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC356CD82C6C99D00023C0BA /* ElaNaturalWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetBundle.swift; sourceTree = "<group>"; };
@@ -4258,6 +4266,8 @@
 				EC8264E72EFB896000965196 /* HabitRuleJournalAlertVM.swift */,
 				EC8264E92EFBB76500965196 /* HabitFriendsGoalVM.swift */,
 				EC8264ED2EFBDED000965196 /* HabitDetailTableViewCell.swift */,
+				EC312A9D2EFCE2A60026F005 /* HabitExchangeMsgVM.swift */,
+				EC312A9F2EFCE8740026F005 /* HabitExchangeAlertVM.swift */,
 			);
 			path = habit;
 			sourceTree = "<group>";
@@ -4267,6 +4277,7 @@
 			children = (
 				EC6253762EFA71DC003C076C /* HabitVC.swift */,
 				EC8264EB2EFBDDC700965196 /* HabitDetailVC.swift */,
+				EC312A9B2EFCDD230026F005 /* HabitExchangeVC.swift */,
 			);
 			path = Habit;
 			sourceTree = "<group>";
@@ -4311,6 +4322,7 @@
 				A732697D2D9531D100F2A87D /* CompactWindow.swift */,
 				EC498A692ED816B700BC7876 /* ColorWheelView.swift */,
 				EC498A6B2ED816C800BC7876 /* ColorWheelVC.swift */,
+				EC312AA12EFCE9330026F005 /* AlertVMCommon.swift */,
 				EC6978E22BABBD81000B933A /* ViewController.swift */,
 				EC87EEFE2BB3EC7400350EB0 /* SearchVM.swift */,
 				A733236C2D93E6A30065BF0A /* NotificationNames.swift */,
@@ -5677,6 +5689,7 @@
 				EC4DE2D82BCE71780090A7BD /* PlanShareVC.swift in Sources */,
 				A7BFEA312E5ED0A500FD45A1 /* DataMainLineExtendView.swift in Sources */,
 				A729C7582D2FA6A60067BB97 /* ForumTimeUtils.swift in Sources */,
+				EC312AA22EFCE93E0026F005 /* AlertVMCommon.swift in Sources */,
 				EC93FC9B2C0FF839007DBC39 /* TutorialListTableViewCell.swift in Sources */,
 				A7FBA0CB2E3C5A8400EAEC68 /* ScreenShieldView.swift in Sources */,
 				A77F96312D0BFA5E0084D4FB /* PublishImageCollectionCell.swift in Sources */,
@@ -5830,6 +5843,7 @@
 				A7AC41E92E29E7060019C81E /* FitnessTipsVC.swift in Sources */,
 				A7BAE5EB2D815D7F000A690A /* AIResultStatusModel.swift in Sources */,
 				A7C72B4A2E0BCE0F001EA74D /* PlanGetNoSexVC.swift in Sources */,
+				EC312AA02EFCE8780026F005 /* HabitExchangeAlertVM.swift in Sources */,
 				A778EEED2D8824B1002548D4 /* FoodsMergeFoodsAlertVm.swift in Sources */,
 				A718AF902E7D2C2400710C20 /* MallOrderAfterSaleNotSupportCell.swift in Sources */,
 				ECD0FEF42BABD25B001232C9 /* YYTextInput.m in Sources */,
@@ -5995,6 +6009,7 @@
 				EC8FF3D82C904128003A7E0B /* NaturalStatDateCustomDateButton.swift in Sources */,
 				EC93FC992C0FF7E7007DBC39 /* TutorialsListVC.swift in Sources */,
 				EC925DDB2C7DC936009F1E72 /* ElaNaturalWidgetCaloriesCircleView.swift in Sources */,
+				EC312A9C2EFCDD270026F005 /* HabitExchangeVC.swift in Sources */,
 				ECD0FF162BABD25B001232C9 /* UIViewController+Exs.swift in Sources */,
 				ECBA935C2C942FA300117888 /* NaturalStatFavoriteFoodsVM.swift in Sources */,
 				EC9048892BBBF80C00F62262 /* LoginAlertVm.swift in Sources */,
@@ -6326,6 +6341,7 @@
 				A7BAAC1A2E2F5E67002CE2D1 /* CoursePayResultBottomVM.swift in Sources */,
 				EC87A4572C900A6300BAB8CE /* NaturalStatDateCustomAlertVM.swift in Sources */,
 				A72A27B52E794D8E00BAE1A6 /* MallPaySuccessTextCell.swift in Sources */,
+				EC312A9E2EFCE2AC0026F005 /* HabitExchangeMsgVM.swift in Sources */,
 				ECFAB0C92BD89EFF003AA249 /* FoodsDetailSpecAlertVM.swift in Sources */,
 				A7B23E8F2DD48C4C000B2B85 /* JournalReportWeekDashVM.swift in Sources */,
 				ECA278BB2BF4BA9900AEED64 /* BindOtherAccountItemVM.swift in Sources */,

@@ -24,7 +24,11 @@ class HabitVC: WHBaseViewVC {
         let vm = HabitProgressVM.init(frame: CGRect.init(x: 0, y: self.topTypeVm.frame.maxY, width: 0, height: 0))
         vm.controller = self
         
-        vm.topMsgVm.changeButton.addTarget(self, action: #selector(pointDetailTapAction), for: .touchUpInside)
+        vm.topMsgVm.numberTapBlock = {()in
+            self.pointDetailTapAction()
+        }
+        
+        vm.topMsgVm.changeButton.addTarget(self, action: #selector(pointExchangeTapAction), for: .touchUpInside)
         
         return vm
     }()
@@ -33,6 +37,11 @@ class HabitVC: WHBaseViewVC {
 extension HabitVC{
     @objc func pointDetailTapAction() {
         let vc = HabitDetailVC()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    @objc func pointExchangeTapAction() {
+        let vc = HabitExchangeVC()
+        vc.msgDict = self.dataObj
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

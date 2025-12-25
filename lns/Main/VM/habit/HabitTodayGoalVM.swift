@@ -93,7 +93,7 @@ extension HabitTodayGoalVM{
                                                  isComplete: dict.stringValueForKey(key: "isLoggedFitness") == "1",
                                                    type: .log_fitness,
                                                    point: dict.stringValueForKey(key: "loggedFitnessPoint"))]
-        remainSeconds = dict.stringValueForKey(key: "etime").intValue
+        remainSeconds = dict.stringValueForKey(key: "secondsToMidnight").intValue
         countDownAction()
         var tempModels = [HabitItemModel]()
         

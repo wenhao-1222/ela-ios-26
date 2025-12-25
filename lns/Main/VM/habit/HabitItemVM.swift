@@ -74,6 +74,7 @@ extension HabitItemVM{
         showButton.setTitle(isComplete ? "已达成" : "查看", for: .normal)
         showButton.setTitleColor(isComplete ? UIColor.COLOR_TEXT_WHITE : UIColor.white, for: .normal)
         leftIconImgView.alpha = isComplete ? 0.5 : 1
+        pointLabel.text = "+\(point)"
     }
 }
 

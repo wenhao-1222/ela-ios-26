@@ -23,6 +23,7 @@ class HabitDetailVC: WHBaseViewVC {
         
         vi.register(HabitDetailTableViewCell.classForCoder(), forCellReuseIdentifier: "HabitDetailTableViewCell")
         vi.separatorStyle = .none
+        
         vi.delegate = self
         vi.dataSource = self
         vi.bounces = false
@@ -73,7 +74,7 @@ extension HabitDetailVC:UITableViewDelegate,UITableViewDataSource{
         let headView = UIView(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(16)))
         headView.backgroundColor = .COLOR_BG_F2
         
-        let whiteView = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: 0, width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(16)))
+        let whiteView = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(-2), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(18)))
         whiteView.backgroundColor = .COLOR_CARD_BG_WHITE
         whiteView.addClipCorner(corners: [.bottomLeft,.bottomRight], radius: kFitWidth(12))
         

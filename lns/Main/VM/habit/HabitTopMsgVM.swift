@@ -9,6 +9,7 @@
 class HabitTopMsgVM: UIView {
     
     let selfHeight = kFitWidth(267)
+    var numberTapBlock:(()->())?
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         changeButton.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214.cgColor
@@ -49,6 +50,16 @@ class HabitTopMsgVM: UIView {
         img.setImgLocal(imgName: "course_right_arrow_icon")
         return img
     }()
+    lazy var numberTapView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = true
+        vi.backgroundColor = .clear
+        
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(numberTapAction))
+        vi.addGestureRecognizer(tap)
+        
+        return vi
+    }()
     lazy var changeButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("兑换", for: .normal)
@@ -64,11 +75,18 @@ class HabitTopMsgVM: UIView {
 }
 
 extension HabitTopMsgVM{
+    @objc func numberTapAction() {
+        self.numberTapBlock?()
+    }
+}
+
+extension HabitTopMsgVM{
     func initUI(){
         addSubview(bgImgView)
         addSubview(numberLabel)
         addSubview(numberDetailLab)
         addSubview(numerDetailArrowImg)
+        addSubview(numberTapView)
         addSubview(changeButton)
         
         setConstrait()
@@ -82,13 +100,19 @@ extension HabitTopMsgVM{
             make.top.equalTo(kFitWidth(54))
         }
         numberDetailLab.snp.makeConstraints { make in
-            make.left.equalTo(numberLabel.snp.right).offset(kFitWidth(2))
+            make.left.equalTo(numberLabel.snp.right).offset(kFitWidth(5))
             make.bottom.equalTo(numberLabel).offset(kFitWidth(-8))
         }
         numerDetailArrowImg.snp.makeConstraints { make in
             make.left.equalTo(numberDetailLab.snp.right)
             make.centerY.lessThanOrEqualTo(numberDetailLab)
             make.width.height.equalTo(kFitWidth(16))
+        }
+        numberTapView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.top.equalTo(numberLabel).offset(kFitWidth(10))
+            make.bottom.equalTo(numberLabel).offset(kFitWidth(10))
+            make.right.equalTo(numerDetailArrowImg).offset(kFitWidth(240))
         }
         changeButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(32))
