@@ -11,6 +11,7 @@ class HabitTodayGoalVM: UIView {
     let selfHeight = kFitWidth(305)
     var timer: Timer?
     var remainSeconds = 3
+    var tipsTapBlock:(()->())?
     
     var itemModels:[HabitItemModel] = [HabitItemModel]()
     let vmOriginY:[CGFloat] = [kFitWidth(65),kFitWidth(125),kFitWidth(185),kFitWidth(245)]
@@ -45,10 +46,26 @@ class HabitTodayGoalVM: UIView {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .regular)
+        lab.alpha = 0
         
         return lab
     }()
     
+    lazy var alertButton : UIButton = {
+        let btn = UIButton()
+        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
+        btn.setBackgroundImage(UIImage.init(named: "tips_gray_icon"), for: .normal)
+        btn.addTarget(self, action: #selector(tipsTapAction), for: .touchUpInside)
+        return btn
+    }()
+    lazy var alertTapView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = .clear
+        vi.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer.init(target: self, action: #selector(tipsTapAction))
+        vi.addGestureRecognizer(tap)
+        return vi
+    }()
     lazy var journalMsgVm: HabitItemVM = {
         let vm = HabitItemVM.init(frame: CGRect.init(x: 0, y: vmOriginY[0], width: 0, height: 0))
         vm.titleLabel.text = "记录当日完整饮食"
@@ -73,6 +90,15 @@ class HabitTodayGoalVM: UIView {
         vm.leftIconImgView.setImgLocal(imgName: "haibit_fitness_icon")
         return vm
     }()
+}
+
+extension HabitTodayGoalVM{
+    
+    @objc func tipsTapAction() {
+        if self.tipsTapBlock != nil{
+            self.tipsTapBlock!()
+        }
+    }
 }
 
 extension HabitTodayGoalVM{
@@ -114,13 +140,17 @@ extension HabitTodayGoalVM{
             let model = itemModels[i]
             let vmFrame = model.vm.frame
             model.vm.frame = CGRect.init(x: vmFrame.origin.x, y: vmOriginY[i], width: vmFrame.width, height: vmFrame.height)
-            model.vm.updateUI(isComplete: model.isComplete,point: model.point)
+            model.vm.updateUI(isComplete: model.isComplete,point: model.point,buttonText: model.buttonText)
         }
     }
     private func updateRemainTimeLabel() {
         if remainSeconds <= 0 {
             remainTimeLabel.text = "剩余时间 00:00:00"
-            remainTimeLabel.isHidden = true
+//            remainTimeLabel.isHidden = true
+            
+            UIView.animate(withDuration: 0.25) {
+                self.remainTimeLabel.alpha = 0
+            }
             self.timer?.invalidate()
             self.timer = nil
             return
@@ -131,6 +161,12 @@ extension HabitTodayGoalVM{
         let seconds = remainSeconds % 60
         remainTimeLabel.text = String(format: "剩余时间 %02d:%02d:%02d", hours, minutes, seconds)
         remainSeconds -= 1
+        
+        if self.remainTimeLabel.alpha < 1{
+            UIView.animate(withDuration: 0.5) {
+                self.remainTimeLabel.alpha = 1
+            }
+        }
     }
     func countDownAction() {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
@@ -144,6 +180,8 @@ extension HabitTodayGoalVM{
         addSubview(whiteView)
         whiteView.addSubview(titleLab)
         whiteView.addSubview(remainTimeLabel)
+        whiteView.addSubview(alertButton)
+        whiteView.addSubview(alertTapView)
         whiteView.addSubview(journalMsgVm)
         whiteView.addSubview(proteinMsgVm)
         whiteView.addSubview(bodyDataMsgVm)
@@ -159,6 +197,15 @@ extension HabitTodayGoalVM{
         remainTimeLabel.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-39))
             make.centerY.lessThanOrEqualTo(titleLab)
+        }
+        alertButton.snp.makeConstraints { make in
+            make.right.equalTo(kFitWidth(-16))
+            make.centerY.lessThanOrEqualTo(titleLab)
+            make.width.height.equalTo(kFitWidth(20))
+        }
+        alertTapView.snp.makeConstraints { make in
+            make.center.lessThanOrEqualTo(alertButton)
+            make.width.height.equalTo(kFitWidth(50))
         }
     }
 }

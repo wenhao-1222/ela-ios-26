@@ -58,8 +58,10 @@ extension HabitDetailTableViewCell{
         
         if dict.stringValueForKey(key: "changeValue").contains("-"){
             numberLab.text = "\(dict.stringValueForKey(key: "changeValue"))"
+            numberLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         }else{
             numberLab.text = "+\(dict.stringValueForKey(key: "changeValue"))"
+            numberLab.textColor = .THEME
         }
     }
 }

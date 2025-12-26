@@ -10,9 +10,12 @@ class HabitFriendsGoalVM: UIView {
     
     var selfHeight = kFitWidth(132)
     var heightChangeBlock:((CGFloat)->())?
+    var controller = WHBaseViewVC()
     
     var itemModels:[HabitItemModel] = [HabitItemModel]()
     let vmOriginY:[CGFloat] = [kFitWidth(16),kFitWidth(76),kFitWidth(136),kFitWidth(196)]
+    
+    var friendCount = 0
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
@@ -44,24 +47,58 @@ class HabitFriendsGoalVM: UIView {
         let vm = HabitItemVM.init(frame: CGRect.init(x: 0, y: vmOriginY[1], width: 0, height: 0))
         vm.titleLabel.text = "与好友一起达成蛋白质目标"
         vm.leftIconImgView.setImgLocal(imgName: "haibit_friend_protein_icon")
+        
+        vm.showButton.addTarget(self, action: #selector(firstFriendTapAction), for: .touchUpInside)
+        
         return vm
     }()
     lazy var proteinSecondVm: HabitItemVM = {
         let vm = HabitItemVM.init(frame: CGRect.init(x: 0, y: vmOriginY[2], width: 0, height: 0))
-        vm.titleLabel.text = "与好友一起达成蛋白质目标2"
+        vm.titleLabel.text = "与两位好友一起达成蛋白质目标"
         vm.leftIconImgView.setImgLocal(imgName: "haibit_friend_protein_icon")
         vm.isHidden = true
+        vm.showButton.addTarget(self, action: #selector(firstFriendTapAction), for: .touchUpInside)
         return vm
     }()
     lazy var proteinThirdVm: HabitItemVM = {
         let vm = HabitItemVM.init(frame: CGRect.init(x: 0, y: vmOriginY[3], width: 0, height: 0))
-        vm.titleLabel.text = "与好友一起达成蛋白质目标3"
+        vm.titleLabel.text = "与三位好友一起达成蛋白质目标"
         vm.leftIconImgView.setImgLocal(imgName: "haibit_friend_protein_icon")
+        vm.showButton.addTarget(self, action: #selector(firstFriendTapAction), for: .touchUpInside)
         vm.isHidden = true
         return vm
     }()
 }
 
+extension HabitFriendsGoalVM{
+    @objc func firstFriendTapAction() {
+        if friendCount > 0{
+            let vc = FriendRankingVC()
+            self.controller.navigationController?.pushViewController(vc, animated: true)
+        }else{
+            let vc = FriendListVC()
+            self.controller.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+//    @objc func secondFriendTapAction() {
+//        if friendCount > 1{
+//            let vc = FriendRankingVC()
+//            self.controller.navigationController?.pushViewController(vc, animated: true)
+//        }else{
+//            let vc = FriendListVC()
+//            self.controller.navigationController?.pushViewController(vc, animated: true)
+//        }
+//    }
+//    @objc func thirdFriendTapAction() {
+//        if friendCount > 2{
+//            let vc = FriendRankingVC()
+//            self.controller.navigationController?.pushViewController(vc, animated: true)
+//        }else{
+//            let vc = FriendListVC()
+//            self.controller.navigationController?.pushViewController(vc, animated: true)
+//        }
+//    }
+}
 
 extension HabitFriendsGoalVM{
     func updateUI(dict:NSDictionary) {
@@ -70,25 +107,33 @@ extension HabitFriendsGoalVM{
                                                        isComplete: dict.stringValueForKey(key: "isProteinIntakeOnTargetWithFriendFirstTime") == "1",
                                                        type: .protein_target_friend_first,
                                                        point: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimePoint")))
+        var buttenText = "添加好友"
+        friendCount = dict.stringValueForKey(key: "friendCount").intValue
+        buttenText = friendCount > 0 ? "好友摄入" : "添加好友"
         itemModels.append(HabitItemModel().createModel(vm: proteinFirstVm,
                                                        isComplete: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendCount").intValue > 0,
                                                        type: .protein_target_friend,
-                                                       point: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendPoint1")))
+                                                       point: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendPoint1"),
+                                                      buttonText: buttenText))
         proteinSecondVm.isHidden = true
         proteinThirdVm.isHidden = true
         if dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendCount").intValue >= 1{
             proteinSecondVm.isHidden = false
+//            buttenText = friendCount > 1 ? "好友摄入" : "添加好友"
             itemModels.append(HabitItemModel().createModel(vm: proteinSecondVm,
                                                            isComplete: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendCount").intValue > 1,
                                                              type: .protein_target_friend,
-                                                             point: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendPoint2")))
+                                                             point: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendPoint2"),
+                                                          buttonText: buttenText))
         }
         if dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendCount").intValue >= 2{
             proteinThirdVm.isHidden = false
+//            buttenText = friendCount > 2 ? "好友摄入" : "添加好友"
             itemModels.append(HabitItemModel().createModel(vm: proteinThirdVm,
                                                            isComplete: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendCount").intValue > 2,
                                                              type: .protein_target_friend,
-                                                             point: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendPoint3")))
+                                                             point: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendPoint3"),
+                                                           buttonText: buttenText))
         }
         
         var tempModels = [HabitItemModel]()
@@ -115,7 +160,7 @@ extension HabitFriendsGoalVM{
             let model = itemModels[i]
             let vmFrame = model.vm.frame
             model.vm.frame = CGRect.init(x: vmFrame.origin.x, y: vmOriginY[i], width: vmFrame.width, height: vmFrame.height)
-            model.vm.updateUI(isComplete: model.isComplete,point: model.point)
+            model.vm.updateUI(isComplete: model.isComplete,point: model.point,buttonText: model.buttonText)
         }
         self.setNeedsLayout()
         self.layoutIfNeeded()

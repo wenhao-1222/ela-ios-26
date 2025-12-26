@@ -34,6 +34,9 @@ class HabitProgressVM: UIView {
     lazy var todayMsgVm: HabitTodayGoalVM = {
         let vm = HabitTodayGoalVM.init(frame: CGRect.init(x: 0, y: kFitWidth(170), width: 0, height: 0))
         vm.journalMsgVm.showButton.addTarget(self, action: #selector(showJournalRuleAction), for: .touchUpInside)
+        vm.tipsTapBlock = {()in
+            self.ruleJournalAlertVm.showSelf()
+        }
         return vm
     }()
     lazy var friendMsgVm: HabitFriendsGoalVM = {

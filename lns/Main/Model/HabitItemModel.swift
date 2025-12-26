@@ -27,16 +27,18 @@ class HabitItemModel: NSObject {
     var iconImg : String = ""
     var title   : String = ""
     var point   : String = ""
+    var buttonText : String = "查看"
     var isComplete : Bool = false
     var type    : HABIT_TYPE = HABIT_TYPE.log_food
     var vm       = HabitItemVM()
     
-    func createModel(vm:HabitItemVM,isComplete:Bool,type:HABIT_TYPE,point:String="1") -> HabitItemModel {
+    func createModel(vm:HabitItemVM,isComplete:Bool,type:HABIT_TYPE,point:String="1",buttonText:String="查看") -> HabitItemModel {
         let model = HabitItemModel()
         model.vm = vm
         model.isComplete = isComplete
         model.point = point.isEmpty ? "1" : point
         model.type = type
+        model.buttonText = buttonText
         
         return model
     }
