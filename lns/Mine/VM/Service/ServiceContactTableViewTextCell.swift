@@ -93,26 +93,14 @@ extension ServiceContactTableViewTextCell{
         if !isAdmin {    // 右侧（用户）
             headImgView.snp.remakeConstraints { make in
                 make.right.equalTo(-kFitWidth(16))
-//                make.top.equalTo(msgLabel)
                 make.top.equalTo(kFitWidth(10))
                 make.width.height.equalTo(kFitWidth(38))
-                // 头像负责“至少撑到这里”
-//                make.bottom.equalToSuperview().inset(kFitWidth(10)).priority(.required)
-//                if !isMsgTallerThanHead {
-//                    make.bottom.equalTo(-kFitWidth(10))
-//                }
             }
 
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-                // 气泡紧挨头像左侧，留一点间距
-//                make.right.equalTo(headImgView.snp.left).offset(-kFitWidth(8))
                 make.right.equalTo(kFitWidth(-62))
-//                make.bottom.equalTo(-kFitWidth(10))
-                // ⭐ 这里用 equalTo，而不是 lessThanOrEqualTo
                 make.width.equalTo(bubbleWidth)
-                // 气泡负责“如果内容更高，就撑到这里”
-//                make.bottom.equalToSuperview().inset(kFitWidth(10)).priority(.required)
                 if isMsgTallerThanHead {
                     make.bottom.equalTo(-kFitWidth(10))
                 }else{
@@ -126,29 +114,26 @@ extension ServiceContactTableViewTextCell{
         } else {         // 左侧（管理员）
             headImgView.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(16))
-//                make.top.equalTo(msgLabel)
                 make.top.equalTo(kFitWidth(10))
                 make.width.height.equalTo(kFitWidth(38))
-//                make.bottom.equalToSuperview().inset(kFitWidth(10)).priority(.required)
-//                if isMsgTallerThanHead {
-//                    make.bottom.equalTo(-kFitWidth(10))
-//                }
             }
 
             msgLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(10))
-//                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(8))
                 make.left.equalTo(kFitWidth(62))
-//                make.bottom.equalTo(-kFitWidth(10))
                 make.width.equalTo(bubbleWidth)
-//                make.bottom.equalToSuperview().inset(kFitWidth(10)).priority(.required)
                 if isMsgTallerThanHead {
                     make.bottom.equalTo(-kFitWidth(10))
                 }else{
                     make.bottom.equalTo(-kFitWidth(20))
                 }
             }
-            if !containsAddress {
+            if containsAddress {
+                let attr = NSMutableAttributedString(string: msgString,attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214])
+                let range = (msgString as NSString).range(of: "收货地址")
+                attr.addAttribute(.foregroundColor, value: UIColor.THEME, range: range)
+                msgLabel.attributedText = attr
+            }else {
                 msgLabel.textColor = .COLOR_TEXT_TITLE_0f1214
             }
             

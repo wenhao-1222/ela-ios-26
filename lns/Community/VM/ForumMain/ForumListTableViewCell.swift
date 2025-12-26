@@ -579,18 +579,18 @@ extension ForumListTableViewCell{
             case .success(let value):
                 // 获取到缓存图片
                 if let image = value.image{
-                    DLLog(message: "setImgUrl(urlString:   找到了缓存的图片(\(model.title)）  \(image)")
+//                    DLLog(message: "setImgUrl(urlString:   找到了缓存的图片(\(model.title)）  \(image)")
                     DispatchQueue.main.async {
                         self.imgView.image = image
                         model.coverImg = image
                     }
                 }else{
                     self.imgView.image = nil
-                    DLLog(message: "setImgUrl(urlString:   找到了缓存的图片(\(model.title)） ----- nil")
+//                    DLLog(message: "setImgUrl(urlString:   找到了缓存的图片(\(model.title)） ----- nil")
                     self.loadImg(imgUrlString: imgUrlString, titleHeight: titleHeight, model: model)
                 }
             case .failure(let error):
-                DLLog(message: "setImgUrl(urlString: (\(model.title)） \(error)")
+//                DLLog(message: "setImgUrl(urlString: (\(model.title)） \(error)")
                 self.imgView.image = nil
                 self.loadImg(imgUrlString: imgUrlString, titleHeight: titleHeight, model: model)
                 break
@@ -598,7 +598,7 @@ extension ForumListTableViewCell{
         }
     }
     func loadImg(imgUrlString:String?,titleHeight:CGFloat,model:ForumModel) {
-        DLLog(message: "setImgUrl(urlString:   loadImg(imgUrlString (\(model.title)）")
+//        DLLog(message: "setImgUrl(urlString:   loadImg(imgUrlString (\(model.title)）")
         guard let urlString = imgUrlString else { return }
         
         self.imgView.image = createImageWithColor(color: .COLOR_LIGHT_GREY)
@@ -619,7 +619,7 @@ extension ForumListTableViewCell{
             
             self.imgView.kf.setImage(with: resource,placeholder: createImageWithColor(color: .COLOR_LIGHT_GREY),options: optionsInfo)
             { [self] result in
-                DLLog(message: "result:\(result)")
+//                DLLog(message: "result:\(result)")
                 let imgOriSize = imgView.image?.size
                 var imgOriginH = imgWidth * ((imgOriSize?.height ?? 0) / (imgOriSize?.width ?? 1))
                 

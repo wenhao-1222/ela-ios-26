@@ -203,7 +203,7 @@ class HabitExchangeAlertVM: UIView {
     lazy var needPointLab: UILabel = {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 13, weight: .regular)
+        lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.text = "需要积分"
         
         return lab
@@ -211,7 +211,7 @@ class HabitExchangeAlertVM: UIView {
     lazy var needPointLabel: UILabel = {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 13, weight: .regular)
+        lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.text = "900"
         
         return lab
@@ -219,7 +219,7 @@ class HabitExchangeAlertVM: UIView {
     lazy var pointLab: UILabel = {
         let lab = UILabel()
         lab.textColor = .THEME
-        lab.font = .systemFont(ofSize: 13, weight: .regular)
+        lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.text = "兑换后剩余"
         
         return lab
@@ -227,7 +227,7 @@ class HabitExchangeAlertVM: UIView {
     lazy var pointLabel: UILabel = {
         let lab = UILabel()
         lab.textColor = .THEME
-        lab.font = .systemFont(ofSize: 13, weight: .regular)
+        lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.text = "600"
         
         return lab

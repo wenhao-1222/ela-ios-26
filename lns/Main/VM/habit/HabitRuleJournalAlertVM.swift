@@ -78,7 +78,7 @@ class HabitRuleJournalAlertVM: UIView {
     }()
     
     private lazy var whiteBlurView: UIVisualEffectView = {
-        let effect = UIBlurEffect(style: .systemMaterial)
+        let effect = UIBlurEffect(style: .systemChromeMaterial)
         let view = UIVisualEffectView(effect: effect)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.isUserInteractionEnabled = false

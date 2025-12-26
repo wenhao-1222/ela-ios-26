@@ -18,7 +18,7 @@ extension UIImageView{
             case .success(let value):
                 // 获取到缓存图片
                 if let image = value.image{
-                    DLLog(message: "setImgUrl(urlString:   找到了缓存的图片  \(image)  --- \(urlString)")
+//                    DLLog(message: "setImgUrl(urlString:   找到了缓存的图片  \(image)  --- \(urlString)")
                     DispatchQueue.main.async {
     //                    imageView.image = image
                         self.image = image
@@ -114,7 +114,7 @@ extension UIImageView{
             case .success(let value):
                 // 获取到缓存图片
                 if let image = value.image{
-                    DLLog(message: "setImgUrl(urlString:   找到了缓存的图片  \(image)  --- \(urlString)")
+//                    DLLog(message: "setImgUrl(urlString:   找到了缓存的图片  \(image)  --- \(urlString)")
                     DispatchQueue.main.async {
     //                    imageView.image = image
                         self.image = image
@@ -126,7 +126,7 @@ extension UIImageView{
                     })
                 }
             case .failure(let error):
-                DLLog(message: "setImgUrl(urlString:\(error)  --- \(urlString)")
+//                DLLog(message: "setImgUrl(urlString:\(error)  --- \(urlString)")
                 self.loadImg(urlString: urlString, placeHolder: placeHolder, completeHandler: {
                     completeHandler()
                 })

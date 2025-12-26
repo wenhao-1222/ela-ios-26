@@ -177,9 +177,40 @@ class CourseTitleCell: UITableViewCell {
         let promotionInfo = highlight["promotionInfo"] as? NSDictionary ?? [:]
         if promotionInfo.stringValueForKey(key: "promotionText").count > 0 {
             promotionTagView.text = promotionInfo.stringValueForKey(key: "promotionText")
-        }else if promotionInfo.stringValueForKey(key: "promotionEndTime").count > 0 {
+        }
+        else if promotionInfo.stringValueForKey(key: "promotionEndTime").count > 0 {
             promotionDeadlineView.text = promotionInfo.stringValueForKey(key: "promotionEndTime")
-        }else{
+        }
+        else if promotionInfo.doubleValueForKey(key: "originalPrice") > 0 {
+            priceLabel.isHidden = false
+            let attr = NSMutableAttributedString(
+                string: "¥\(promotionInfo.stringValueForKey(key: "originalPrice")) ",
+                attributes: [
+                    .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                    .font: UIFont.systemFont(ofSize: 12, weight: .regular),
+                    .strikethroughStyle: NSUnderlineStyle.single.rawValue,
+                    .strikethroughColor: UIColor.COLOR_TEXT_TITLE_0f1214_50
+                ]
+            )
+            let attr2 = NSAttributedString(
+                string: " ¥",
+                attributes: [
+                    .foregroundColor: UIColor.THEME,
+                    .font: UIFont.systemFont(ofSize: 14, weight: .medium)
+                ]
+            )
+            let attrPrice = NSAttributedString(
+                string: dict.stringValueForKey(key: "price"),
+                attributes: [
+                    .foregroundColor: UIColor.THEME,
+                    .font: UIFont.systemFont(ofSize: 26, weight: .semibold)
+                ]
+            )
+            attr.append(attr2)
+            attr.append(attrPrice)
+            priceLabel.attributedText = attr
+        }
+        else if dict.doubleValueForKey(key: "price") > 0{
             priceLabel.isHidden = false
             let attr = NSMutableAttributedString(
                 string: "¥ ",
