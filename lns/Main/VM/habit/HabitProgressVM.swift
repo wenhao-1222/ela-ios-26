@@ -34,6 +34,9 @@ class HabitProgressVM: UIView {
     lazy var todayMsgVm: HabitTodayGoalVM = {
         let vm = HabitTodayGoalVM.init(frame: CGRect.init(x: 0, y: kFitWidth(170), width: 0, height: 0))
         vm.journalMsgVm.showButton.addTarget(self, action: #selector(showJournalRuleAction), for: .touchUpInside)
+        vm.proteinMsgVm.showButton.addTarget(self, action: #selector(showProteinRuleAction), for: .touchUpInside)
+        vm.bodyDataMsgVm.showButton.addTarget(self, action: #selector(showBodydataRuleAction), for: .touchUpInside)
+        vm.fitnessMsgVm.showButton.addTarget(self, action: #selector(showFitnessRuleAction), for: .touchUpInside)
         vm.tipsTapBlock = {()in
             self.habitRuleAlertVm.showSelf()
         }
@@ -55,7 +58,18 @@ class HabitProgressVM: UIView {
         let vm = HabitRuleJournalAlertVM.init(frame: .zero)
         return vm
     }()
-    
+    lazy var ruleProteinAlertVm: HabitRuleProteinAlertVM = {
+        let vm = HabitRuleProteinAlertVM.init(frame: .zero)
+        return vm
+    }()
+    lazy var ruleBodydataAlertVm: HabitRuleBodyDataAlertVM = {
+        let vm = HabitRuleBodyDataAlertVM.init(frame: .zero)
+        return vm
+    }()
+    lazy var ruleFitnessAlertVm: HabitRuleFitnessAlertVM = {
+        let vm = HabitRuleFitnessAlertVM.init(frame: .zero)
+        return vm
+    }()
 }
 
 extension HabitProgressVM{
@@ -70,6 +84,17 @@ extension HabitProgressVM{
     @objc func showJournalRuleAction(){
         ruleJournalAlertVm.showSelf()
     }
+    @objc func showProteinRuleAction(){
+        ruleProteinAlertVm.showSelf()
+    }
+    @objc func showBodydataRuleAction(){
+        ruleBodydataAlertVm.showSelf()
+    }
+    @objc func showFitnessRuleAction(){
+        ruleFitnessAlertVm.showSelf()
+    }
+    
+    
 }
 
 extension HabitProgressVM{
@@ -86,6 +111,9 @@ extension HabitProgressVM{
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.getKeyWindow().addSubview(habitRuleAlertVm)
         appDelegate.getKeyWindow().addSubview(ruleJournalAlertVm)
+        appDelegate.getKeyWindow().addSubview(ruleProteinAlertVm)
+        appDelegate.getKeyWindow().addSubview(ruleBodydataAlertVm)
+        appDelegate.getKeyWindow().addSubview(ruleFitnessAlertVm)
     }
 }
 

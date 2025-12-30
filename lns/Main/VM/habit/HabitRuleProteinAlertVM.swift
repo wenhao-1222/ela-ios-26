@@ -1,18 +1,17 @@
 //
-//  HabitRuleJournalAlertVM.swift
+//  HabitRuleProteinAlertVM.swift
 //  lns
-//  规则--饮食日志弹窗
-//  Created by LNS2 on 2025/12/24.
 //
-
+//  Created by LNS2 on 2025/12/30.
+//
 
 
 import UIKit
 
-class HabitRuleJournalAlertVM: UIView {
+class HabitRuleProteinAlertVM: UIView {
     
     // MARK: - Layout constants
-    var whiteViewHeight: CGFloat = kFitWidth(596) + WHUtils().getBottomSafeAreaHeight()
+    var whiteViewHeight: CGFloat = kFitWidth(616) + WHUtils().getBottomSafeAreaHeight()
     let whiteViewTopRadius: CGFloat = kFitWidth(50)
     
     /// 蒙层目标透明度：浅色 0.15，深色 0.85
@@ -103,11 +102,13 @@ class HabitRuleJournalAlertVM: UIView {
 
     lazy var ruleLab: LineHeightLabel = {
         let lab = LineHeightLabel()
+        lab.numberOfLines = 2
+        lab.lineBreakMode = .byWordWrapping
         lab.adjustsFontSizeToFitWidth = true
         let attr = NSMutableAttributedString(string: "规则：",
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .semibold)])
-        let attr1 = NSMutableAttributedString(string: "在当日结束前记录≥3种食物。",
+        let attr1 = NSMutableAttributedString(string: "在当日完整饮食记录后，摄入蛋白质≥蛋白质目标。",
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .regular)])
         
@@ -117,13 +118,14 @@ class HabitRuleJournalAlertVM: UIView {
         return lab
     }()
     lazy var dottlineView: DottedLineView = {
-        let vi = DottedLineView.init(frame: CGRect.init(x: kFitWidth(32), y: kFitWidth(82), width: SCREEN_WIDHT-kFitWidth(64), height: kFitHeight(1)))
+        let vi = DottedLineView.init(frame: CGRect.init(x: kFitWidth(32), y: kFitWidth(110), width: SCREEN_WIDHT-kFitWidth(64), height: kFitHeight(1)))
         return vi
     }()
     lazy var tipsLab: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.text = "数据完整是饮食复盘的必备要素"
+        lab.text = "无论增肌还是减脂\n摄入足够的蛋白质都十分关键"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.numberOfLines = 2
         lab.font = .systemFont(ofSize: 17, weight: .semibold)
         lab.adjustsFontSizeToFitWidth = true
         
@@ -131,11 +133,11 @@ class HabitRuleJournalAlertVM: UIView {
     }()
     lazy var tipsLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.text = "在确保饮食记录完整后，你可以结合身体状态与体重增减来调整摄入，实现更高效的减脂/增肌。"
+        lab.text = "生活中难免外食或聚餐，脂肪和碳水可能会临时上下浮动，而蛋白质需求相对稳定。\n生活中难免外食或聚餐，脂肪和碳水可能会临时上下浮动，而蛋白质需求相对稳定。"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
-        lab.numberOfLines = 2
+        lab.numberOfLines = 4
         lab.lineBreakMode = .byWordWrapping
         
         return lab
@@ -145,19 +147,6 @@ class HabitRuleJournalAlertVM: UIView {
         img.setImgLocal(imgName: "rule_journal_alert_img")
         
         return img
-    }()
-    lazy var tipsLabBottom: UILabel = {
-        let lab = UILabel()
-        lab.text = "记录缺失会影响数据准确性，并导致瓶颈时难以定位原因。"
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        lab.font = .systemFont(ofSize: 11, weight: .regular)
-        lab.adjustsFontSizeToFitWidth = true
-        return lab
-    }()
-    lazy var tipsLabBottomLine: UIView = {
-        let vi = UIView()
-        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_50
-        return vi
     }()
     lazy var confirmButton: UIButton = {
         let btn = UIButton()
@@ -175,7 +164,7 @@ class HabitRuleJournalAlertVM: UIView {
     }()
 }
 // MARK: - Public API
-extension HabitRuleJournalAlertVM {
+extension HabitRuleProteinAlertVM {
     func showSelf() {
         isHidden = false
 
@@ -210,7 +199,7 @@ extension HabitRuleJournalAlertVM {
     }
 }
 
-extension HabitRuleJournalAlertVM{
+extension HabitRuleProteinAlertVM{
     func initUI() {
         addSubview(bgView)
         addSubview(whiteView)
@@ -224,8 +213,6 @@ extension HabitRuleJournalAlertVM{
         whiteView.addSubview(tipsLab)
         whiteView.addSubview(tipsLabel)
         whiteView.addSubview(imgView)
-        whiteView.addSubview(tipsLabBottom)
-        whiteView.addSubview(tipsLabBottomLine)
         whiteView.addSubview(confirmButton)
         
         setConstrait()
@@ -236,36 +223,24 @@ extension HabitRuleJournalAlertVM{
             make.left.equalTo(kFitWidth(32))
             make.right.equalTo(kFitWidth(-32))
             make.top.equalTo(kFitWidth(30))
-            make.height.equalTo(kFitWidth(27.5))
+            make.height.equalTo(kFitWidth(55))
         }
         tipsLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(32))
             make.right.equalTo(kFitWidth(-30))
-//            make.top.equalTo(kFitWidth(77.5))
-            make.top.equalTo(kFitWidth(107))
-            make.height.equalTo(kFitWidth(27.5))
+            make.top.equalTo(kFitWidth(135))
+            make.height.equalTo(kFitWidth(52))
         }
         tipsLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(32))
             make.right.equalTo(kFitWidth(-32))
-            make.top.equalTo(kFitWidth(150))
+            make.top.equalTo(kFitWidth(202))
         }
         imgView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(32))
-//            make.right.equalTo(kFitWidth(-32))
-            make.top.equalTo(kFitWidth(214))
+            make.top.equalTo(kFitWidth(312))
             make.width.equalTo(kFitWidth(311))
             make.height.equalTo(kFitWidth(250))
-        }
-        tipsLabBottom.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(32))
-            make.top.equalTo(imgView.snp.bottom).offset(kFitWidth(23))
-//            make.right.equalTo(kFitWidth(-32))
-        }
-        tipsLabBottomLine.snp.makeConstraints { make in
-            make.left.right.equalTo(tipsLabBottom)
-            make.top.equalTo(tipsLabBottom.snp.bottom).offset(kFitWidth(2))
-            make.height.equalTo(kFitWidth(1))
         }
         confirmButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
@@ -299,7 +274,7 @@ extension HabitRuleJournalAlertVM{
     }
 }
 
-extension HabitRuleJournalAlertVM{
+extension HabitRuleProteinAlertVM{
     @objc func nothingToDo() { /* 吞点击 */ }
     
     @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {

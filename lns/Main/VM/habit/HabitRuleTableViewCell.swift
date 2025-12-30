@@ -42,9 +42,6 @@ class HabitRuleTableViewCell: FeedBackTableViewCell {
 
 extension HabitRuleTableViewCell{
     func updateUI(contentStr:String,isTitle:Bool = false,bottomGap:CGFloat) {
-//        titleLab.text = contentStr
-//        titleLab.customLineHeight = 1.5
-//        titleLab.setLineHeight(lineHeight: <#T##CGFloat#>)
         dottlView.isHidden = isTitle
         titleLab.textColor = isTitle ? .COLOR_TEXT_TITLE_0f1214 :
             .COLOR_TEXT_TITLE_0f1214_50
