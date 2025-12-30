@@ -57,7 +57,7 @@ class HabitItemVM: UIView {
         btn.layer.cornerRadius = kFitWidth(15)
         btn.clipsToBounds = true
         btn.setTitle("查看", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
         
         btn.enablePressEffect()
@@ -72,7 +72,7 @@ extension HabitItemVM{
         pointLabel.textColor = isComplete ? UIColor.COLOR_TEXT_TITLE_0f1214_50 : UIColor.COLOR_TEXT_TITLE_0f1214
         showButton.backgroundColor = isComplete ? UIColor.COLOR_BG_C4 : UIColor.THEME
         showButton.setTitle(isComplete ? "已达成" : buttonText, for: .normal)
-        showButton.setTitleColor(isComplete ? UIColor.COLOR_TEXT_WHITE : UIColor.white, for: .normal)
+//        showButton.setTitleColor(isComplete ? UIColor.COLOR_TEXT_WHITE : UIColor.white, for: .normal)
         leftIconImgView.alpha = isComplete ? 0.5 : 1
         pointLabel.text = "+\(point)"
     }

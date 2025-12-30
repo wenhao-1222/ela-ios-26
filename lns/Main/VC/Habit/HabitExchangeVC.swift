@@ -34,6 +34,9 @@ class HabitExchangeVC: WHBaseViewVC {
     lazy var exchangeAlertVm: HabitExchangeAlertVM = {
         let vm = HabitExchangeAlertVM.init(frame: .zero)
         vm.updateUI(dict: self.msgDict)
+        vm.exchangeBlock = {()in
+            self.sendHabitDonateRequest()
+        }
         return vm
     }()
 }
@@ -63,6 +66,16 @@ extension HabitExchangeVC{
             make.width.equalTo(kFitWidth(278))
             make.height.equalTo(kFitWidth(50))
             make.top.equalTo(getNavigationBarHeight()+kFitWidth(20))
+        }
+    }
+}
+
+
+extension HabitExchangeVC{
+    func sendHabitDonateRequest() {
+        let param = ["qty":"\(self.exchangeAlertVm.num)"]
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_donate, parameters: param as [String:AnyObject],isNeedToast: true,vc:self) { responseObject in
+            DLLog(message: responseObject)
         }
     }
 }

@@ -336,7 +336,8 @@ public let URL_user_address_getDefault   = URL_Type + "users/address/getDefault"
 public let URL_user_habit_dashboard      = URL_Type + "users/habit/dashboard"
 /// 自律习惯养成  积分明细
 public let URL_user_habit_list      = URL_Type + "users/habit/list"
-
+///  兑换餐食
+public let URL_user_habit_donate      = URL_Type + "users/habit/donate"
 
 //开屏页信息
 public let URL_splash_ad                = URL_Type + "tools/app/splash_ad/list"

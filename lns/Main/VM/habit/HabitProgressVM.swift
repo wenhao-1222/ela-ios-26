@@ -35,7 +35,7 @@ class HabitProgressVM: UIView {
         let vm = HabitTodayGoalVM.init(frame: CGRect.init(x: 0, y: kFitWidth(170), width: 0, height: 0))
         vm.journalMsgVm.showButton.addTarget(self, action: #selector(showJournalRuleAction), for: .touchUpInside)
         vm.tipsTapBlock = {()in
-            self.ruleJournalAlertVm.showSelf()
+            self.habitRuleAlertVm.showSelf()
         }
         return vm
     }()
@@ -47,10 +47,15 @@ class HabitProgressVM: UIView {
         
         return vm
     }()
+    lazy var habitRuleAlertVm: HabitRuleAlertVM = {
+        let vm = HabitRuleAlertVM.init(frame: .zero)
+        return vm
+    }()
     lazy var ruleJournalAlertVm: HabitRuleJournalAlertVM = {
         let vm = HabitRuleJournalAlertVM.init(frame: .zero)
         return vm
     }()
+    
 }
 
 extension HabitProgressVM{
@@ -79,6 +84,7 @@ extension HabitProgressVM{
         }
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.getKeyWindow().addSubview(habitRuleAlertVm)
         appDelegate.getKeyWindow().addSubview(ruleJournalAlertVm)
     }
 }

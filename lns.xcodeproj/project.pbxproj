@@ -830,6 +830,8 @@
 		EC5D4F812C21524300F376A4 /* TutorialUpdateAttr.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5D4F802C21524300F376A4 /* TutorialUpdateAttr.swift */; };
 		EC5E12602C801C6700F5828A /* NSDictionary+Widget+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D03822C6F201700F33137 /* NSDictionary+Widget+Exs.swift */; };
 		EC6048B22BEB48CB004E9578 /* PlanListActiveCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */; };
+		EC61ABC82F036788008FA297 /* HabitRuleAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABC72F036782008FA297 /* HabitRuleAlertVM.swift */; };
+		EC61ABCA2F036CB6008FA297 /* HabitRuleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABC92F036CAD008FA297 /* HabitRuleTableViewCell.swift */; };
 		EC6240802EAF16DF009ADEFD /* BottomCardPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC62407F2EAF16DE009ADEFD /* BottomCardPresentationController.swift */; };
 		EC6240822EAF16EB009ADEFD /* BottomCardAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6240812EAF16EA009ADEFD /* BottomCardAnimator.swift */; };
 		EC6240842EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6240832EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift */; };
@@ -2149,6 +2151,8 @@
 		EC5C81772C5A1A49000EC4BC /* GoalSetSpecPercentNaturalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSetSpecPercentNaturalVM.swift; sourceTree = "<group>"; };
 		EC5D4F802C21524300F376A4 /* TutorialUpdateAttr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialUpdateAttr.swift; sourceTree = "<group>"; };
 		EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanListActiveCellVM.swift; sourceTree = "<group>"; };
+		EC61ABC72F036782008FA297 /* HabitRuleAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleAlertVM.swift; sourceTree = "<group>"; };
+		EC61ABC92F036CAD008FA297 /* HabitRuleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewCell.swift; sourceTree = "<group>"; };
 		EC62407F2EAF16DE009ADEFD /* BottomCardPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardPresentationController.swift; sourceTree = "<group>"; };
 		EC6240812EAF16EA009ADEFD /* BottomCardAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardAnimator.swift; sourceTree = "<group>"; };
 		EC6240832EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardTransitioningDelegate.swift; sourceTree = "<group>"; };
@@ -4264,8 +4268,10 @@
 				EC62537C2EFA84E9003C076C /* HabitTodayGoalVM.swift */,
 				EC62537E2EFA85E9003C076C /* HabitItemVM.swift */,
 				EC8264E72EFB896000965196 /* HabitRuleJournalAlertVM.swift */,
+				EC61ABC72F036782008FA297 /* HabitRuleAlertVM.swift */,
 				EC8264E92EFBB76500965196 /* HabitFriendsGoalVM.swift */,
 				EC8264ED2EFBDED000965196 /* HabitDetailTableViewCell.swift */,
+				EC61ABC92F036CAD008FA297 /* HabitRuleTableViewCell.swift */,
 				EC312A9D2EFCE2A60026F005 /* HabitExchangeMsgVM.swift */,
 				EC312A9F2EFCE8740026F005 /* HabitExchangeAlertVM.swift */,
 			);
@@ -6575,6 +6581,7 @@
 				A7C72B582E1236F9001EA74D /* FriendRankingListTopVM.swift in Sources */,
 				A71D33162E14C9BE008D27E4 /* FitnessStatVM.swift in Sources */,
 				A74426842CDB5A7F000D7E2B /* Tag.swift in Sources */,
+				EC61ABCA2F036CB6008FA297 /* HabitRuleTableViewCell.swift in Sources */,
 				A74426852CDB5A7F000D7E2B /* SimpleDictionary.swift in Sources */,
 				A74426862CDB5A7F000D7E2B /* TokenQueue.swift in Sources */,
 				EC6253772EFA71E0003C076C /* HabitVC.swift in Sources */,
@@ -6721,6 +6728,7 @@
 				EC9726202C5C882B00F244A2 /* WinnerStreakVM.swift in Sources */,
 				A78D4E942E88FD5E007EF3FD /* ForumLoadingFooter.swift in Sources */,
 				ECA1E2F02C0081F700C31B77 /* Data+Exs.swift in Sources */,
+				EC61ABC82F036788008FA297 /* HabitRuleAlertVM.swift in Sources */,
 				ECBA935A2C94170C00117888 /* NaturalStatCalendarMarkProgressView.swift in Sources */,
 				A75039F82CF050A300C2B2B3 /* SportCatogaryVM.swift in Sources */,
 				A77F962F2D0BF9F50084D4FB /* PublishImagesCellCollection.swift in Sources */,
@@ -7074,7 +7082,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 147;
+				CURRENT_PROJECT_VERSION = 148;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -7102,7 +7110,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.7;
+				MARKETING_VERSION = 2.4.8;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -7183,7 +7191,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 147;
+				CURRENT_PROJECT_VERSION = 148;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -7210,7 +7218,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.7;
+				MARKETING_VERSION = 2.4.8;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
