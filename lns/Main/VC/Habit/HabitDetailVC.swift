@@ -33,7 +33,14 @@ class HabitDetailVC: WHBaseViewVC {
         
         return vi
     }()
-    
+    lazy var noDataView : TableViewNoDataVM = {
+        let vi = TableViewNoDataVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: 0))
+        vi.isHidden = true
+        vi.alpha = 0
+        vi.noDataLabel.text = "- 暂无明细 -"
+
+        return vi
+    }()
 }
 
 extension HabitDetailVC:UITableViewDelegate,UITableViewDataSource{
@@ -92,6 +99,9 @@ extension HabitDetailVC{
         initNavi(titleStr: "积分明细")
         view.backgroundColor = .COLOR_BG_F2
         view.addSubview(tableView)
+        view.addSubview(noDataView)
+        
+        noDataView.center = CGPointMake(SCREEN_WIDHT*0.5, SCREEN_HEIGHT*0.5)
     }
 }
 
@@ -103,7 +113,17 @@ extension HabitDetailVC{
             
             DLLog(message: "sendDetailRequest:\(dataArray)")
             self.dataSourceArray = dataArray
-            self.tableView.reloadData()
+            if self.dataSourceArray.count > 0 {
+                self.tableView.reloadData()
+            }else{
+                self.noDataView.isHidden = false
+                UIView.animate(withDuration: 0.25, delay: 0) {
+                    self.tableView.alpha = 0
+                    self.noDataView.alpha = 1
+                }completion: { t in
+                    self.tableView.isHidden = true
+                }
+            }
         }
     }
 }

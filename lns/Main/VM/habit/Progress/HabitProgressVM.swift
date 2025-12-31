@@ -11,7 +11,7 @@ class HabitProgressVM: UIView {
     var controller = WHBaseViewVC()
     
     override init(frame:CGRect){
-        super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
+        super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
         self.backgroundColor = .clear
         self.isUserInteractionEnabled = true
         

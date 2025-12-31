@@ -8,6 +8,7 @@
 class HabitVC: WHBaseViewVC {
     
     var dataObj = NSDictionary()
+    var isSetPopGesture = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,11 +18,14 @@ class HabitVC: WHBaseViewVC {
     }
     lazy var topTypeVm: HabitTopTypeVM = {
         let vm = HabitTopTypeVM.init(frame: .zero)
-        
+        vm.typeChangeBlock = {(pageIndex)in
+            self.scrollViewBase.setContentOffset(CGPoint.init(x: SCREEN_WIDHT*pageIndex, y: 0), animated: true)
+        }
         return vm
     }()
     lazy var progressVm: HabitProgressVM = {
         let vm = HabitProgressVM.init(frame: CGRect.init(x: 0, y: self.topTypeVm.frame.maxY, width: 0, height: 0))
+//        let vm = HabitProgressVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
         vm.controller = self
         vm.friendMsgVm.controller = self
         
@@ -31,6 +35,10 @@ class HabitVC: WHBaseViewVC {
         
         vm.topMsgVm.changeButton.addTarget(self, action: #selector(pointExchangeTapAction), for: .touchUpInside)
         
+        return vm
+    }()
+    lazy var rankListVm: HabitRankListVM = {
+        let vm = HabitRankListVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.topTypeVm.frame.maxY, width: 0, height: 0 ))
         return vm
     }()
 }
@@ -44,6 +52,10 @@ extension HabitVC{
         let vc = HabitExchangeVC()
         vc.msgDict = self.dataObj
         self.navigationController?.pushViewController(vc, animated: true)
+        vc.exchangeBlock = {()in
+            self.sendDataRequest()
+            self.rankListVm.sendDataRequest()
+        }
     }
 }
 
@@ -52,9 +64,38 @@ extension HabitVC{
         initNavi(titleStr: "自律习惯养成")
         self.navigationView.backgroundColor = .COLOR_BG_F2
         view.backgroundColor = .COLOR_BG_F2
-        view.addSubview(topTypeVm)
-        view.addSubview(progressVm)
         
+        view.addSubview(topTypeVm)
+        
+        view.addSubview(scrollViewBase)
+        scrollViewBase.frame = CGRect.init(x: 0, y: self.topTypeVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT - self.topTypeVm.frame.maxY)
+        scrollViewBase.addSubview(progressVm)
+        scrollViewBase.addSubview(rankListVm)
+        scrollViewBase.isPagingEnabled = true
+        scrollViewBase.delegate = self
+        scrollViewBase.bounces = false
+        scrollViewBase.showsHorizontalScrollIndicator = false
+        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*2, height: 0)
+    }
+}
+
+extension HabitVC:UIScrollViewDelegate{
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.x > SCREEN_WIDHT*0.5{
+            self.topTypeVm.changeType(isLeft: false)
+        }else{
+            self.topTypeVm.changeType(isLeft: true)
+        }
+        if scrollView.contentOffset.x > kFitWidth(20){
+            self.navigationController?.fd_interactivePopDisabled = true
+            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+        }else{
+            if let popGesture = self.navigationController?.fd_fullscreenPopGestureRecognizer {
+                scrollViewBase.panGestureRecognizer.require(toFail: popGesture)
+            }
+            self.navigationController?.fd_interactivePopDisabled = false
+            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        }
     }
 }
 

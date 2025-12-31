@@ -10,6 +10,8 @@ class HabitTopTypeVM: UIView {
     let selfHeight = kFitWidth(41)
     let buttonWidth = kFitWidth(105)
     
+    var typeChangeBlock:((CGFloat)->())?
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight(), width: SCREEN_WIDHT, height: selfHeight))
         self.backgroundColor = .clear
@@ -53,34 +55,33 @@ class HabitTopTypeVM: UIView {
 }
 
 extension HabitTopTypeVM{
-    @objc func leftTapAction() {
+    @objc private func leftTapAction() {
         if leftTitleBtn.isSelected{
             return
         }
-        leftTitleBtn.isSelected = true
-        rightTitleBtn.isSelected = false
-        
-        leftTitleBtn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
-        rightTitleBtn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
-        self.isUserInteractionEnabled = false
-        UIView.animate(withDuration: 0.25, delay: 0,options: .curveLinear) {
-            self.bottomLineView.center = CGPoint(x: SCREEN_WIDHT*0.5-kFitWidth(20)-self.buttonWidth*0.5, y: self.selfHeight-kFitWidth(2))
-        }completion: { _ in
-            self.isUserInteractionEnabled = true
-        }
+        self.typeChangeBlock?(0)
+        changeType(isLeft: true)
     }
-    @objc func rightTapAction() {
+    @objc private func rightTapAction() {
         if rightTitleBtn.isSelected{
             return
         }
-        rightTitleBtn.isSelected = true
-        leftTitleBtn.isSelected = false
+        self.typeChangeBlock?(1)
+        changeType(isLeft: false)
+    }
+    func changeType(isLeft:Bool=true) {
+        leftTitleBtn.isSelected = isLeft
+        rightTitleBtn.isSelected = !isLeft
         
-        rightTitleBtn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
-        leftTitleBtn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        leftTitleBtn.titleLabel?.font = isLeft ? .systemFont(ofSize: 14, weight: .medium) : .systemFont(ofSize: 14, weight: .regular)
+        rightTitleBtn.titleLabel?.font = isLeft ? .systemFont(ofSize: 14, weight: .regular) : .systemFont(ofSize: 14, weight: .medium)
         self.isUserInteractionEnabled = false
         UIView.animate(withDuration: 0.25, delay: 0,options: .curveLinear) {
-            self.bottomLineView.center = CGPoint(x: SCREEN_WIDHT*0.5+kFitWidth(20)+self.buttonWidth*0.5, y: self.selfHeight-kFitWidth(2))
+            if isLeft {
+                self.bottomLineView.center = CGPoint(x: SCREEN_WIDHT*0.5-kFitWidth(20)-self.buttonWidth*0.5, y: self.selfHeight-kFitWidth(2))
+            }else{
+                self.bottomLineView.center = CGPoint(x: SCREEN_WIDHT*0.5+kFitWidth(20)+self.buttonWidth*0.5, y: self.selfHeight-kFitWidth(2))
+            }
         }completion: { _ in
             self.isUserInteractionEnabled = true
         }

@@ -835,6 +835,11 @@
 		EC61ABCC2F037C09008FA297 /* HabitRuleProteinAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABCB2F037C02008FA297 /* HabitRuleProteinAlertVM.swift */; };
 		EC61ABCE2F037FDE008FA297 /* HabitRuleBodyDataAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABCD2F037FD7008FA297 /* HabitRuleBodyDataAlertVM.swift */; };
 		EC61ABD02F0380BC008FA297 /* HabitRuleFitnessAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABCF2F0380B7008FA297 /* HabitRuleFitnessAlertVM.swift */; };
+		EC61ABD22F03A482008FA297 /* HabitRankListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABD12F03A47B008FA297 /* HabitRankListVM.swift */; };
+		EC61ABD62F03A5F7008FA297 /* HabitRankListEmptyVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABD52F03A5F3008FA297 /* HabitRankListEmptyVM.swift */; };
+		EC61ABD82F03A615008FA297 /* HabitRankListHeadVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABD72F03A611008FA297 /* HabitRankListHeadVM.swift */; };
+		EC61ABDA2F03D129008FA297 /* HabitRankListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABD92F03D120008FA297 /* HabitRankListTableViewCell.swift */; };
+		EC61ABDC2F03D433008FA297 /* HabitRankTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABDB2F03D42F008FA297 /* HabitRankTableViewCell.swift */; };
 		EC6240802EAF16DF009ADEFD /* BottomCardPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC62407F2EAF16DE009ADEFD /* BottomCardPresentationController.swift */; };
 		EC6240822EAF16EB009ADEFD /* BottomCardAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6240812EAF16EA009ADEFD /* BottomCardAnimator.swift */; };
 		EC6240842EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6240832EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift */; };
@@ -2159,6 +2164,11 @@
 		EC61ABCB2F037C02008FA297 /* HabitRuleProteinAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleProteinAlertVM.swift; sourceTree = "<group>"; };
 		EC61ABCD2F037FD7008FA297 /* HabitRuleBodyDataAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleBodyDataAlertVM.swift; sourceTree = "<group>"; };
 		EC61ABCF2F0380B7008FA297 /* HabitRuleFitnessAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleFitnessAlertVM.swift; sourceTree = "<group>"; };
+		EC61ABD12F03A47B008FA297 /* HabitRankListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRankListVM.swift; sourceTree = "<group>"; };
+		EC61ABD52F03A5F3008FA297 /* HabitRankListEmptyVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRankListEmptyVM.swift; sourceTree = "<group>"; };
+		EC61ABD72F03A611008FA297 /* HabitRankListHeadVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRankListHeadVM.swift; sourceTree = "<group>"; };
+		EC61ABD92F03D120008FA297 /* HabitRankListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRankListTableViewCell.swift; sourceTree = "<group>"; };
+		EC61ABDB2F03D42F008FA297 /* HabitRankTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRankTableViewCell.swift; sourceTree = "<group>"; };
 		EC62407F2EAF16DE009ADEFD /* BottomCardPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardPresentationController.swift; sourceTree = "<group>"; };
 		EC6240812EAF16EA009ADEFD /* BottomCardAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardAnimator.swift; sourceTree = "<group>"; };
 		EC6240832EAF16F7009ADEFD /* BottomCardTransitioningDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomCardTransitioningDelegate.swift; sourceTree = "<group>"; };
@@ -4264,11 +4274,21 @@
 			path = goal;
 			sourceTree = "<group>";
 		};
-		EC6253722EFA6CA0003C076C /* habit */ = {
+		EC61ABD32F03A5A5008FA297 /* RankList */ = {
 			isa = PBXGroup;
 			children = (
-				EC6253732EFA6CAA003C076C /* MainHabitVM.swift */,
-				EC6253782EFA72B8003C076C /* HabitTopTypeVM.swift */,
+				EC61ABD12F03A47B008FA297 /* HabitRankListVM.swift */,
+				EC61ABD52F03A5F3008FA297 /* HabitRankListEmptyVM.swift */,
+				EC61ABD72F03A611008FA297 /* HabitRankListHeadVM.swift */,
+				EC61ABD92F03D120008FA297 /* HabitRankListTableViewCell.swift */,
+				EC61ABDB2F03D42F008FA297 /* HabitRankTableViewCell.swift */,
+			);
+			path = RankList;
+			sourceTree = "<group>";
+		};
+		EC61ABD42F03A5AD008FA297 /* Progress */ = {
+			isa = PBXGroup;
+			children = (
 				EC6253822EFA8EE1003C076C /* HabitProgressVM.swift */,
 				EC62537A2EFA7710003C076C /* HabitTopMsgVM.swift */,
 				EC62537C2EFA84E9003C076C /* HabitTodayGoalVM.swift */,
@@ -4283,6 +4303,17 @@
 				EC61ABC92F036CAD008FA297 /* HabitRuleTableViewCell.swift */,
 				EC312A9D2EFCE2A60026F005 /* HabitExchangeMsgVM.swift */,
 				EC312A9F2EFCE8740026F005 /* HabitExchangeAlertVM.swift */,
+			);
+			path = Progress;
+			sourceTree = "<group>";
+		};
+		EC6253722EFA6CA0003C076C /* habit */ = {
+			isa = PBXGroup;
+			children = (
+				EC6253732EFA6CAA003C076C /* MainHabitVM.swift */,
+				EC6253782EFA72B8003C076C /* HabitTopTypeVM.swift */,
+				EC61ABD42F03A5AD008FA297 /* Progress */,
+				EC61ABD32F03A5A5008FA297 /* RankList */,
 			);
 			path = habit;
 			sourceTree = "<group>";
@@ -5830,6 +5861,7 @@
 				ECAE25E22BF1DB3E007D4B57 /* FoodsMsgDetailsVC.swift in Sources */,
 				EC4DE32D2BD0F6020090A7BD /* DataDetailTypeFilterAlertVM.swift in Sources */,
 				ECFACE852BC7C83E003CDA3A /* PlanListSearchVM.swift in Sources */,
+				EC61ABDA2F03D129008FA297 /* HabitRankListTableViewCell.swift in Sources */,
 				ECD0FF002BABD25B001232C9 /* NSParagraphStyle+YYText.m in Sources */,
 				A729C7562D2E6A560067BB97 /* ForumNewsListCell.swift in Sources */,
 				A7202AF92DD7256F00CEA8D1 /* JournalReportWeekCalendarVM.swift in Sources */,
@@ -6128,6 +6160,7 @@
 				ECF0BFDE2BFC73E800E5F6F0 /* InviteRewardsRuleAlertTitleVm.swift in Sources */,
 				A798F5392CA1316C00B8327E /* LogsMealsSetAlertVM.swift in Sources */,
 				A70A1F862E6EBAF400B506DC /* MallDetailBannerVM.swift in Sources */,
+				EC61ABD82F03A615008FA297 /* HabitRankListHeadVM.swift in Sources */,
 				ECDCE62A2C60B60B000350C8 /* NutritionDefaultModel.swift in Sources */,
 				A7881ECE2CC23016008F4390 /* LogsMealsAlertSetFootVM.swift in Sources */,
 				A77F95CD2D0158E60084D4FB /* ForumPublishVC.swift in Sources */,
@@ -6137,8 +6170,10 @@
 				A77F96122D02F76A0084D4FB /* PublishWidgetCell.swift in Sources */,
 				A7C72B552E1223C7001EA74D /* FriendRankingVC.swift in Sources */,
 				A70A2FC72DCAED5400F1E630 /* ElaLaunchVC.swift in Sources */,
+				EC61ABD22F03A482008FA297 /* HabitRankListVM.swift in Sources */,
 				A7454B342E73B7070064076C /* AddressRegionCell.swift in Sources */,
 				EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */,
+				EC61ABDC2F03D433008FA297 /* HabitRankTableViewCell.swift in Sources */,
 				A73C77692E322BFF000E1FE1 /* CourseChangeDeviceVC.swift in Sources */,
 				A7B23E8B2DD47CD1000B2B85 /* JournalReportWeekMsgVM.swift in Sources */,
 				A7BAE5DC2D7EBCBF000A690A /* SynMyFoodsVM.swift in Sources */,
@@ -6428,6 +6463,7 @@
 				A77F95DD2D017D2E0084D4FB /* HGImagePickerController.swift in Sources */,
 				A70A1F902E6EDBE200B506DC /* CNIPGate.swift in Sources */,
 				A77F95DE2D017D2E0084D4FB /* HGImageCollectionViewCell.swift in Sources */,
+				EC61ABD62F03A5F7008FA297 /* HabitRankListEmptyVM.swift in Sources */,
 				A733236B2D9259F90065BF0A /* VideoViewController.swift in Sources */,
 				A74187402D798889006C8858 /* AITipsTitleCell.swift in Sources */,
 				A71C3A8F2CE199C5002D5ACE /* ForumCommentTextVM.swift in Sources */,

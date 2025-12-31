@@ -335,9 +335,11 @@ public let URL_user_address_getDefault   = URL_Type + "users/address/getDefault"
 //MARK: 自律习惯养成
 public let URL_user_habit_dashboard      = URL_Type + "users/habit/dashboard"
 /// 自律习惯养成  积分明细
-public let URL_user_habit_list      = URL_Type + "users/habit/list"
+public let URL_user_habit_list           = URL_Type + "users/habit/list"
+///排行榜
+public let URL_user_habit_leaderboard    = URL_Type + "users/habit/leaderboard"
 ///  兑换餐食
-public let URL_user_habit_donate      = URL_Type + "users/habit/donate"
+public let URL_user_habit_donate         = URL_Type + "users/habit/donate"
 
 //开屏页信息
 public let URL_splash_ad                = URL_Type + "tools/app/splash_ad/list"

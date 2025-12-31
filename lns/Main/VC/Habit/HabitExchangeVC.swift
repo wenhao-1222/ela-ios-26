@@ -5,11 +5,12 @@
 //  Created by LNS2 on 2025/12/25.
 //
 
+import MCToast
 
 class HabitExchangeVC: WHBaseViewVC {
     
     var msgDict = NSDictionary()
-    
+    var exchangeBlock:(()->())?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,12 +71,30 @@ extension HabitExchangeVC{
     }
 }
 
-
 extension HabitExchangeVC{
     func sendHabitDonateRequest() {
         let param = ["qty":"\(self.exchangeAlertVm.num)"]
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_donate, parameters: param as [String:AnyObject],isNeedToast: true,vc:self) { responseObject in
             DLLog(message: responseObject)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+                MCToast.mc_text("感谢您的爱心捐赠")
+            })
+            
+            self.exchangeBlock?()
+            self.sendDataRequest()
+        }
+    }
+    func sendDataRequest(){
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_dashboard, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            
+            DLLog(message: "sendDataRequest:\(dataDict)")
+            
+            self.msgDict = dataDict
+            self.topMsgVm.updateUI(dict: self.msgDict)
+            self.exchangeAlertVm.updateUI(dict: self.msgDict)
         }
     }
 }
