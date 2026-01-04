@@ -13,7 +13,7 @@ class HabitRankListVM: UIView {
     
     var dataSourceArray = NSArray()
     
-    private let leaderboardCacheKey = "HabitRankListVM.leaderboardCache"
+//    private let leaderboardCacheKey = "HabitRankListVM.leaderboardCache"
     private var isCurrentlyVisible = false
     
     override init(frame:CGRect){
@@ -59,12 +59,20 @@ extension HabitRankListVM{
 
 extension HabitRankListVM{
     private func loadCachedLeaderboard() {
-        guard let data = UserDefaults.standard.data(forKey: leaderboardCacheKey),
-              let cache = try? JSONSerialization.jsonObject(with: data) as? [NSDictionary] else {
+        let dataArray = UserDefaults.getHabitRankListVMDataArray()
+        if dataArray.count > 0 {
+            
+        }else{
+            sendDataRequest()
             return
         }
+//        guard let data = UserDefaults.standard.data(forKey: leaderboardCacheKey),
+//              let cache = try? JSONSerialization.jsonObject(with: data) as? [NSDictionary] else {
+//            sendDataRequest()
+//            return
+//        }
 
-        dataSourceArray = cache as NSArray
+        dataSourceArray = dataArray//cache as NSArray
         
         if dataSourceArray.count == 0 {
             sendDataRequest()
@@ -77,15 +85,15 @@ extension HabitRankListVM{
               let data = try? JSONSerialization.data(withJSONObject: leaderboard, options: []) else {
             return
         }
-        UserDefaults.standard.setValue(data, forKey: leaderboardCacheKey)
+        
+//        UserDefaults.standard.setValue(data, forKey: leaderboardCacheKey)
+        UserDefaults.setHabitRankListVMDataArray(leaderboard)
     }
 
     func updateVisibility(isVisible: Bool) {
         if isVisible && !isCurrentlyVisible {
             isCurrentlyVisible = true
             sendDataRequest(animateSelfChange: true)
-        } else if !isVisible {
-            isCurrentlyVisible = false
         }
     }
 }
@@ -108,7 +116,7 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
             avatar: dict.stringValueForKey(key: "headimgurl"),
             name: dict.stringValueForKey(key: "nickname"),
             fireCount: dict.stringValueForKey(key: "donateCount").intValue,
-            score: dict.stringValueForKey(key: "pointBalance")
+            score: dict.stringValueForKey(key: "rankPointBalance")
         )
         return cell
     }
@@ -128,23 +136,34 @@ extension HabitRankListVM{
     func sendDataRequest(animateSelfChange: Bool = false){
         let previousSelfIndex = animateSelfChange ? indexOfCurrentUser(in: dataSourceArray) : nil
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             
-            DLLog(message: "sendDataRequest:\(dataDict)")
-            
-            self.dataSourceArray = dataDict["leaderboard"]as? NSArray ?? []
-            self.cacheLeaderboard(self.dataSourceArray)
-            let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
-            
-            self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
-                            runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
-                            thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"))
-            
-            if animateSelfChange {
-                let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
-                self.animateSelfRankChange(from: previousSelfIndex, to: newIndex)
+            let code = responseObject["code"]as? Int ?? -1
+            if code == 200 {
+                
+                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+                let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+                
+                DLLog(message: "sendDataRequest:\(dataDict)")
+                
+                self.dataSourceArray = dataDict["leaderboard"]as? NSArray ?? []
+                self.cacheLeaderboard(self.dataSourceArray)
+                let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
+                
+                self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
+                                runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
+                                thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
+                                     secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
+                
+                if animateSelfChange {
+                    let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
+    //                self.animateSelfRankChange(from: 2, to: 0)
+                    self.animateSelfRankChange(from: previousSelfIndex, to: newIndex)
+                }else{
+                    self.tableView.reloadData()
+                }
             }else{
+                self.dataSourceArray = NSArray()
+                self.cacheLeaderboard(self.dataSourceArray)
                 self.tableView.reloadData()
             }
         }
@@ -196,8 +215,8 @@ extension HabitRankListVM{
             guard let cell = self.tableView.cellForRow(at: targetIndexPath) else { return }
             let offset = CGFloat(oldIndex - newIndex) * kFitWidth(70)
             cell.contentView.transform = CGAffineTransform(translationX: 0, y: offset)
-            UIView.animate(withDuration: 0.35,
-                           delay: 0,
+            UIView.animate(withDuration: 0.75,
+                           delay: 0.15,
                            usingSpringWithDamping: 0.75,
                            initialSpringVelocity: 0.6,
                            options: [.curveEaseInOut]) {

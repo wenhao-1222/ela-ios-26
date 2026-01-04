@@ -48,6 +48,7 @@ public extension UserDefaults {
         case fitness_label_array//训练部位数据
         case splash_material_list //启动页广告物料列表
         case activity_popupId //本地弹出过的活动id
+        case habitRankListVM_leaderboardCache
     }
 }
 
@@ -434,5 +435,15 @@ extension UserDefaults {
     static func getActivityPopupIdRecord() -> [String]{
         return self.getArray(forKey: .activity_popupId) as? [String] ?? []
     }
+    static func setHabitRankListVMDataArray(_ array: NSArray){
+        let json = WHUtils.getJSONStringFromArray(array: array)
+        UserDefaults.set(value: json, forKey: .habitRankListVM_leaderboardCache)
+    }
+
+    static func getHabitRankListVMDataArray() -> NSArray {
+        let json = UserDefaults.getString(forKey: .habitRankListVM_leaderboardCache) ?? ""
+        return WHUtils.getArrayFromJSONString(jsonString: json)
+    }
+    
 }
 

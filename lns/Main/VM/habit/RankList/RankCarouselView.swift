@@ -126,8 +126,17 @@ public final class RankCarouselView: UIView, UICollectionViewDataSource, UIColle
             ghost.bounds = CGRect(origin: .zero, size: layout.itemSize)
 
             let startX = bounds.maxX + layout.itemSize.width * 0.55
-            let centerY = bounds.midY
-            ghost.center = CGPoint(x: startX, y: centerY)
+//            let centerY = bounds.midY
+//            ghost.center = CGPoint(x: startX, y: centerY)
+            // 保持入场高度与列表当前中心一致
+            let targetCenter: CGPoint
+            if let attrs = layout.layoutAttributesForItem(at: IndexPath(item: target, section: 0)) {
+                targetCenter = collectionView.convert(attrs.center, to: self)
+            } else {
+                targetCenter = CGPoint(x: bounds.midX, y: bounds.midY)
+            }
+
+            ghost.center = CGPoint(x: startX, y: targetCenter.y)
             addSubview(ghost)
             promoteGhostView = ghost
 
@@ -148,7 +157,8 @@ public final class RankCarouselView: UIView, UICollectionViewDataSource, UIColle
             UIView.animate(withDuration: 0.42,
                            delay: 0.02,
                            options: [.curveEaseInOut, .beginFromCurrentState]) {
-                ghost.center = CGPoint(x: self.bounds.midX, y: centerY)
+//                ghost.center = CGPoint(x: self.bounds.midX, y: centerY)
+                ghost.center = CGPoint(x: self.bounds.midX, y: targetCenter.y)
                 self.collectionView.setContentOffset(CGPoint(x: self.offsetX(for: target), y: 0), animated: false)
                 self.applyTransforms()
             } completion: { _ in

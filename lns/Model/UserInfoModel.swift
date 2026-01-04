@@ -331,6 +331,8 @@ extension UserInfoModel{
         self.isBindWeChat = false
         self.isBindAppId = false
         UserDefaults.set(value: [:], forKey: .jounal_meal_advice)
+        
+        UserDefaults.setHabitRankListVMDataArray([])
     }
     
     func updateOssParams(dict:NSDictionary) {
