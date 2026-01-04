@@ -465,19 +465,13 @@ extension WHUtils{
             return
         }
         let paDict = NSMutableDictionary(dictionary: msgDict)
-//        if urlStr == URL_User_logs_update_details{
-//            if msgDict.object(forKey: "params") != nil {
-//                paDict.removeObject(forKey: "params")
-//            }
-//        }
-//        let param = ["message":"\(WHUtils.getJSONStringFromDictionary(dictionary: paDict as NSDictionary))"]
         let msgString = WHUtils.getJSONStringFromDictionary(dictionary: paDict as NSDictionary)
         let uploadMsg: String
-        if msgString.count > 1000 {
-            uploadMsg = String(msgString.prefix(1000))
-        } else {
+//        if msgString.count > 10000000 {
+//            uploadMsg = String(msgString.prefix(1000))
+//        } else {
             uploadMsg = msgString
-        }
+//        }
         let param = ["message": uploadMsg]
         WHNetworkUtil.shareManager().POST(urlString: URL_error_msg, parameters: param as [String : AnyObject]) { responseObject in
             

@@ -73,6 +73,8 @@ final class RankBadgeCell: UICollectionViewCell {
         badgeImageView.layer.transform = CATransform3DIdentity
         lockOverlay.transform = .identity
         lockOverlay.alpha = 0
+        badgeImageView.isHidden = false
+        lockOverlay.isHidden = false
     }
 
     func configure(tier: RankTier) {
@@ -91,6 +93,8 @@ final class RankBadgeCell: UICollectionViewCell {
             badgeImageView.image = tier.image ?? EffectsFactory.placeholderBadge(size: 260)
             lockOverlay.alpha = 0.0
         }
+        badgeImageView.isHidden = false
+        lockOverlay.isHidden = false
     }
     // MARK: - Presentation
 
@@ -143,6 +147,9 @@ final class RankBadgeCell: UICollectionViewCell {
 
         playWarningMarks()
         playSadWobble()
+        // 崩碎后只保留碎片
+        badgeImageView.isHidden = true
+        lockOverlay.isHidden = true
 
         // 先短暂停一下再碎（更像视频节奏）
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.14) {
@@ -161,6 +168,8 @@ final class RankBadgeCell: UICollectionViewCell {
 
     func playDemoteArriveSad() {
         cleanupEffects()
+        badgeImageView.isHidden = false
+        lockOverlay.isHidden = false
         badgeImageView.alpha = 0
         badgeImageView.transform = CGAffineTransform(translationX: 0, y: 10).scaledBy(x: 0.98, y: 0.98)
         UIView.animate(withDuration: 0.30, delay: 0.02, options: [.curveEaseOut]) {
@@ -174,6 +183,9 @@ final class RankBadgeCell: UICollectionViewCell {
     private func shatterBadgeImageToFloor(duration: TimeInterval) {
         guard let image = badgeImageView.image else { return }
 
+        // 崩碎后碎片变灰
+        let grayImage = EffectsFactory.grayLockedImage(from: image)
+
         badgeImageView.alpha = 0.0
         lockOverlay.alpha = 0.0
 
@@ -182,33 +194,41 @@ final class RankBadgeCell: UICollectionViewCell {
 
         // ✅ grid 越大碎片越细：10 很接近“碎一地”
         let shards = EffectsFactory.makeGemImageShards(
-            image: image,
+            image: grayImage,
             in: badgeRect,
-            grid: 10,
+            grid: 1,
             contentScale: UIScreen.main.scale
         )
         shardLayers = shards
         shards.forEach { contentView.layer.addSublayer($0) }
 
         // 地面基准（不要同一水平线：做随机堆叠）
-        let floorBaseY = contentView.bounds.maxY - (contentView.bounds.height * 0.12)
+//        let floorBaseY = contentView.bounds.maxY - (contentView.bounds.height * 0.12)
+        let maxSpreadX = contentView.bounds.width * 0.95
+        let maxDrop = max(contentView.bounds.height * 0.75, 140)
 
         for (i, shard) in shards.enumerated() {
             let start = shard.position
 
-            // 横向散开
-            let dx = CGFloat.random(in: -92...92)
-            // 纵向下坠距离
-            let dy = CGFloat.random(in: 120...240)
+//            // 横向散开
+//            let dx = CGFloat.random(in: -92...92)
+//            // 纵向下坠距离
+//            let dy = CGFloat.random(in: 120...240)
+            let dx = CGFloat.random(in: -maxSpreadX...maxSpreadX) * 0.35
+            let dy = CGFloat.random(in: 120...maxDrop)
 
             // 每片落地高度不一致，形成“堆”
-            let floorJitter = CGFloat.random(in: -12...22)
-            let rollDown = min(16, abs(dx) * 0.06)
-            let targetFloorY = floorBaseY + floorJitter + rollDown
+//            let floorJitter = CGFloat.random(in: -12...22)
+//            let rollDown = min(16, abs(dx) * 0.06)
+//            let targetFloorY = floorBaseY + floorJitter + rollDown
+            // 不同碎片停在不同高度，形成“散落”效果
+            let extraDepth = CGFloat.random(in: -66...100)
 
             let finalX = start.x + dx
-            let rawFinalY = min(targetFloorY, start.y + dy)
-            let clampedFinalY = min(rawFinalY, contentView.bounds.maxY - 6)
+//            let rawFinalY = min(targetFloorY, start.y + dy)
+//            let clampedFinalY = min(rawFinalY, contentView.bounds.maxY - 6)
+            let rawFinalY = start.y + dy + extraDepth
+            let clampedFinalY = min(max(rawFinalY, contentView.bounds.minY + 40), contentView.bounds.maxY - 8)
 
             // 轻微反弹
             let bounce = CGFloat.random(in: 10...24)
