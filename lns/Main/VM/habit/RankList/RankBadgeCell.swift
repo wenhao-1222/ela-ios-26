@@ -93,8 +93,13 @@ final class RankBadgeCell: UICollectionViewCell {
             badgeImageView.image = tier.image ?? EffectsFactory.placeholderBadge(size: 260)
             lockOverlay.alpha = 0.0
         }
-        badgeImageView.isHidden = false
-        lockOverlay.isHidden = false
+        if shardLayers.isEmpty {
+            badgeImageView.isHidden = false
+            lockOverlay.isHidden = false
+        }
+
+//        badgeImageView.isHidden = false
+//        lockOverlay.isHidden = false
     }
     // MARK: - Presentation
 
@@ -155,8 +160,8 @@ final class RankBadgeCell: UICollectionViewCell {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.14) {
             let dur: TimeInterval = 0.78
             self.shatterBadgeImageToFloor(duration: dur)
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + dur) {
+            let maxStagger = Double(max(self.shardLayers.count - 1, 0)) * 0.002
+            DispatchQueue.main.asyncAfter(deadline: .now() + dur + maxStagger - 0.06) {
                 completion()
             }
         }
@@ -196,7 +201,7 @@ final class RankBadgeCell: UICollectionViewCell {
         let shards = EffectsFactory.makeGemImageShards(
             image: grayImage,
             in: badgeRect,
-            grid: 1,
+            grid: 6,
             contentScale: UIScreen.main.scale
         )
         shardLayers = shards
@@ -276,15 +281,32 @@ final class RankBadgeCell: UICollectionViewCell {
             group.animations = [positionAnim, rotateAnim, scaleAnim]
             group.duration = duration
             group.beginTime = CACurrentMediaTime() + Double(i) * 0.002
-            group.isRemovedOnCompletion = true
-            shard.add(group, forKey: "gemShatterToFloor")
+            group.fillMode = .forwards
+            group.isRemovedOnCompletion = false
 
-            // ✅ 关键：动画完把 model layer 固定在最终位置（碎一地停住）
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.002 + duration) {
+            CATransaction.begin()
+            CATransaction.setCompletionBlock {
+                // 动画结束瞬间：把 model layer 固定到终点，并且不允许隐式动画
+                CATransaction.begin()
+                CATransaction.setDisableActions(true)
                 shard.position = p3
                 shard.setAffineTransform(CGAffineTransform(rotationAngle: rot2).scaledBy(x: 0.98, y: 0.98))
-                shard.removeAllAnimations()
+                CATransaction.commit()
+
+                shard.removeAnimation(forKey: "gemShatterToFloor")
             }
+            shard.add(group, forKey: "gemShatterToFloor")
+            CATransaction.commit()
+
+//            group.isRemovedOnCompletion = true
+//            shard.add(group, forKey: "gemShatterToFloor")
+//
+//            // ✅ 关键：动画完把 model layer 固定在最终位置（碎一地停住）
+//            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.002 + duration) {
+//                shard.position = p3
+//                shard.setAffineTransform(CGAffineTransform(rotationAngle: rot2).scaledBy(x: 0.98, y: 0.98))
+//                shard.removeAllAnimations()
+//            }
         }
     }
 

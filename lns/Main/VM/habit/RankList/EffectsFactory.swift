@@ -83,9 +83,32 @@ enum EffectsFactory {
                                    contentScale: CGFloat) -> [CALayer] {
         guard let cg = image.cgImage else { return [] }
 
-        let n = max(6, min(grid, 12))
-        let rows = n
-        let cols = n
+//        let n = max(6, min(grid, 12))
+//        let rows = n
+//        let cols = n
+        // grid 代表“想要的碎片数量级”，在此基础上求一个接近的 rows/cols 组合
+        let targetPieces = max(2, min(grid, 64))
+        let searchUpperBound = max(3, Int(ceil(sqrt(Double(targetPieces)))) + 3)
+
+        var bestRows = 2
+        var bestCols = 2
+        var bestDiff = Int.max
+
+        for rows in 2...searchUpperBound {
+            for cols in 2...searchUpperBound {
+                let count = rows * cols
+                let diff = abs(count - targetPieces)
+
+                if diff < bestDiff || (diff == bestDiff && count < bestRows * bestCols) {
+                    bestDiff = diff
+                    bestRows = rows
+                    bestCols = cols
+                }
+            }
+        }
+
+        let rows = bestRows
+        let cols = bestCols
 
         var shards: [CALayer] = []
         shards.reserveCapacity(rows * cols)

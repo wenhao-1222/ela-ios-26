@@ -467,11 +467,11 @@ extension WHUtils{
         let paDict = NSMutableDictionary(dictionary: msgDict)
         let msgString = WHUtils.getJSONStringFromDictionary(dictionary: paDict as NSDictionary)
         let uploadMsg: String
-//        if msgString.count > 10000000 {
-//            uploadMsg = String(msgString.prefix(1000))
-//        } else {
+        if msgString.count > 10000000 {
+            uploadMsg = String(msgString.prefix(1000))
+        } else {
             uploadMsg = msgString
-//        }
+        }
         let param = ["message": uploadMsg]
         WHNetworkUtil.shareManager().POST(urlString: URL_error_msg, parameters: param as [String : AnyObject]) { responseObject in
             
