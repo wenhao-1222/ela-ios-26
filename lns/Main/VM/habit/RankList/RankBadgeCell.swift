@@ -113,7 +113,7 @@ final class RankBadgeCell: UICollectionViewCell {
 
         // 蓝色轮廓 + 星星
         playGlowOutline(color: UIColor(red: 0.58, green: 0.90, blue: 0.96, alpha: 1.0))
-        playSparkles(color: UIColor(red: 0.58, green: 0.90, blue: 0.96, alpha: 1.0))
+//        playSparkles(color: UIColor(red: 0.58, green: 0.90, blue: 0.96, alpha: 1.0))
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.24) {
             self.lockOverlay.alpha = 0.0
