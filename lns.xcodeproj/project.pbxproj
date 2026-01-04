@@ -988,6 +988,12 @@
 		EC9CB9342EE94B0E00FBF915 /* ServiceOrderAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9CB9332EE94B0800FBF915 /* ServiceOrderAlertVM.swift */; };
 		EC9CB9362EE9554000FBF915 /* ServiceOrderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9CB9352EE9553600FBF915 /* ServiceOrderTableViewCell.swift */; };
 		EC9CB9382EE9699400FBF915 /* ServiceContactTableViewOrderInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9CB9372EE9699400FBF915 /* ServiceContactTableViewOrderInfoCell.swift */; };
+		EC9E63242F0A09B700FF6929 /* RankTier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9E63232F0A09B700FF6929 /* RankTier.swift */; };
+		EC9E63262F0A09C400FF6929 /* EffectsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9E63252F0A09C300FF6929 /* EffectsFactory.swift */; };
+		EC9E63282F0A09D400FF6929 /* RankBadgeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9E63272F0A09D400FF6929 /* RankBadgeCell.swift */; };
+		EC9E632A2F0A09EC00FF6929 /* RankCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9E63292F0A09EB00FF6929 /* RankCarouselView.swift */; };
+		EC9E632C2F0A09FD00FF6929 /* RankResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9E632B2F0A09FC00FF6929 /* RankResultViewController.swift */; };
+		EC9E632E2F0A0A0B00FF6929 /* DemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9E632D2F0A0A0A00FF6929 /* DemoViewController.swift */; };
 		ECA1E2EC2C007B7E00C31B77 /* AESEncyptUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA1E2EB2C007B7E00C31B77 /* AESEncyptUtil.swift */; };
 		ECA1E2EE2C00818B00C31B77 /* Character+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA1E2ED2C00818B00C31B77 /* Character+Exs.swift */; };
 		ECA1E2F02C0081F700C31B77 /* Data+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA1E2EF2C0081F700C31B77 /* Data+Exs.swift */; };
@@ -2316,6 +2322,12 @@
 		EC9CB9332EE94B0800FBF915 /* ServiceOrderAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceOrderAlertVM.swift; sourceTree = "<group>"; };
 		EC9CB9352EE9553600FBF915 /* ServiceOrderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceOrderTableViewCell.swift; sourceTree = "<group>"; };
 		EC9CB9372EE9699400FBF915 /* ServiceContactTableViewOrderInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContactTableViewOrderInfoCell.swift; sourceTree = "<group>"; };
+		EC9E63232F0A09B700FF6929 /* RankTier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankTier.swift; sourceTree = "<group>"; };
+		EC9E63252F0A09C300FF6929 /* EffectsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectsFactory.swift; sourceTree = "<group>"; };
+		EC9E63272F0A09D400FF6929 /* RankBadgeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankBadgeCell.swift; sourceTree = "<group>"; };
+		EC9E63292F0A09EB00FF6929 /* RankCarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankCarouselView.swift; sourceTree = "<group>"; };
+		EC9E632B2F0A09FC00FF6929 /* RankResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankResultViewController.swift; sourceTree = "<group>"; };
+		EC9E632D2F0A0A0A00FF6929 /* DemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoViewController.swift; sourceTree = "<group>"; };
 		ECA1E2EB2C007B7E00C31B77 /* AESEncyptUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AESEncyptUtil.swift; sourceTree = "<group>"; };
 		ECA1E2ED2C00818B00C31B77 /* Character+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+Exs.swift"; sourceTree = "<group>"; };
 		ECA1E2EF2C0081F700C31B77 /* Data+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Exs.swift"; sourceTree = "<group>"; };
@@ -4282,6 +4294,10 @@
 				EC61ABD72F03A611008FA297 /* HabitRankListHeadVM.swift */,
 				EC61ABD92F03D120008FA297 /* HabitRankListTableViewCell.swift */,
 				EC61ABDB2F03D42F008FA297 /* HabitRankTableViewCell.swift */,
+				EC9E63232F0A09B700FF6929 /* RankTier.swift */,
+				EC9E63252F0A09C300FF6929 /* EffectsFactory.swift */,
+				EC9E63272F0A09D400FF6929 /* RankBadgeCell.swift */,
+				EC9E63292F0A09EB00FF6929 /* RankCarouselView.swift */,
 			);
 			path = RankList;
 			sourceTree = "<group>";
@@ -4324,6 +4340,8 @@
 				EC6253762EFA71DC003C076C /* HabitVC.swift */,
 				EC8264EB2EFBDDC700965196 /* HabitDetailVC.swift */,
 				EC312A9B2EFCDD230026F005 /* HabitExchangeVC.swift */,
+				EC9E632B2F0A09FC00FF6929 /* RankResultViewController.swift */,
+				EC9E632D2F0A0A0A00FF6929 /* DemoViewController.swift */,
 			);
 			path = Habit;
 			sourceTree = "<group>";
@@ -5816,6 +5834,7 @@
 				A7278F5D2D23BB170071549D /* ZoomAnimator.swift in Sources */,
 				A7C390E72D533E3E009FF223 /* ForumListButton.swift in Sources */,
 				ECD0FEFA2BABD25B001232C9 /* YYTextArchiver.m in Sources */,
+				EC9E632C2F0A09FD00FF6929 /* RankResultViewController.swift in Sources */,
 				ECD0FF102BABD25B001232C9 /* UIColor+Exs.swift in Sources */,
 				ECD0FF112BABD25B001232C9 /* UIFont+Ext.swift in Sources */,
 				ECD0FE892BABD0E3001232C9 /* Interface.swift in Sources */,
@@ -6003,6 +6022,7 @@
 				EC094FCC2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift in Sources */,
 				A74187462D798D9B006C8858 /* AITipsDonationTypeCell.swift in Sources */,
 				EC4DE2F32BCFC1CE0090A7BD /* BodyDataDetailVC.swift in Sources */,
+				EC9E632A2F0A09EC00FF6929 /* RankCarouselView.swift in Sources */,
 				EC26E6312BBD26CE001E4381 /* BIndPhoneTopVM.swift in Sources */,
 				ECB3E0872BD77B5100CFDDFD /* FoodsDetailCaloriItemVM.swift in Sources */,
 				ECF745D32BDA2C680076DDB9 /* FoodsListFooterVM.swift in Sources */,
@@ -6018,6 +6038,7 @@
 				A74187372D797174006C8858 /* AIBottomFuncVM.swift in Sources */,
 				EC4DE2DD2BCE77100090A7BD /* PlanShareMealsMsgVM.swift in Sources */,
 				ECD0FF0F2BABD25B001232C9 /* String+Exs.swift in Sources */,
+				EC9E63242F0A09B700FF6929 /* RankTier.swift in Sources */,
 				A7BAAC182E2F59CA002CE2D1 /* CoursePayResultItemVM.swift in Sources */,
 				A7AC41EB2E29F8AA0019C81E /* BViewController.swift in Sources */,
 				A7CEA6002D1AA55D009DDEB5 /* TutorialVideoRateView.m in Sources */,
@@ -6179,6 +6200,7 @@
 				A7BAE5DC2D7EBCBF000A690A /* SynMyFoodsVM.swift in Sources */,
 				ECA278B92BF4BA4F00AEED64 /* BindOtherAccountVC.swift in Sources */,
 				A78E67C92CB64C3600B4C443 /* BodyDataImageCollectionCell.swift in Sources */,
+				EC9E632E2F0A0A0B00FF6929 /* DemoViewController.swift in Sources */,
 				ECA1E2EC2C007B7E00C31B77 /* AESEncyptUtil.swift in Sources */,
 				ECB6AEB92BC6620500F03567 /* MainNutrientItemVM.swift in Sources */,
 				EC38DEA02BEF7503008E7FCE /* MaterialSexAlertVM.swift in Sources */,
@@ -6227,6 +6249,7 @@
 				EC925DA72C7DB2B4009F1E72 /* Widget+Color+Exs.swift in Sources */,
 				A762B9732D19351B003E8B22 /* TutorialVideoVM.swift in Sources */,
 				EC26E6272BBCF3A5001E4381 /* LNSLoginVC.swift in Sources */,
+				EC9E63282F0A09D400FF6929 /* RankBadgeCell.swift in Sources */,
 				ECFACE8D2BC7EACD003CDA3A /* PlanSearchVM.swift in Sources */,
 				A74426A92CDB5A9F000D7E2B /* ForumHtmlParse.swift in Sources */,
 				A755ED692DF6CAA200005C3A /* GuideTotalFourVM.swift in Sources */,
@@ -6735,6 +6758,7 @@
 				EC44393D2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift in Sources */,
 				A71C54852E6AC75E00FB797D /* MarketListGridCell.swift in Sources */,
 				EC81531A2BE86CDC00879233 /* WHTabBar.swift in Sources */,
+				EC9E63262F0A09C400FF6929 /* EffectsFactory.swift in Sources */,
 				EC4DE2F12BCF91EB0090A7BD /* DataAddDateAlertVM.swift in Sources */,
 				A79A4FF92D65DCF0002B8EB4 /* Croper+API.swift in Sources */,
 				A775EA2D2E1B66B8001DE90A /* JournalFriendReportVC.swift in Sources */,

@@ -49,13 +49,15 @@ extension HabitVC{
         self.navigationController?.pushViewController(vc, animated: true)
     }
     @objc func pointExchangeTapAction() {
-        let vc = HabitExchangeVC()
-        vc.msgDict = self.dataObj
+        let vc = DemoViewController()
         self.navigationController?.pushViewController(vc, animated: true)
-        vc.exchangeBlock = {()in
-            self.sendDataRequest()
-            self.rankListVm.sendDataRequest()
-        }
+//        let vc = HabitExchangeVC()
+//        vc.msgDict = self.dataObj
+//        self.navigationController?.pushViewController(vc, animated: true)
+//        vc.exchangeBlock = {()in
+//            self.sendDataRequest()
+//            self.rankListVm.sendDataRequest()
+//        }
     }
 }
 
