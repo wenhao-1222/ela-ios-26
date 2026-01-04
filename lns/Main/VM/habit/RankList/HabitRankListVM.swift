@@ -13,6 +13,9 @@ class HabitRankListVM: UIView {
     
     var dataSourceArray = NSArray()
     
+    private let leaderboardCacheKey = "HabitRankListVM.leaderboardCache"
+    private var isCurrentlyVisible = false
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
         self.backgroundColor = .clear
@@ -21,7 +24,8 @@ class HabitRankListVM: UIView {
         selfHeight = SCREEN_HEIGHT-frame.origin.y
         
         initUI()
-        sendDataRequest()
+        loadCachedLeaderboard()
+        
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -53,6 +57,38 @@ extension HabitRankListVM{
     }
 }
 
+extension HabitRankListVM{
+    private func loadCachedLeaderboard() {
+        guard let data = UserDefaults.standard.data(forKey: leaderboardCacheKey),
+              let cache = try? JSONSerialization.jsonObject(with: data) as? [NSDictionary] else {
+            return
+        }
+
+        dataSourceArray = cache as NSArray
+        
+        if dataSourceArray.count == 0 {
+            sendDataRequest()
+        }
+//        tableView.reloadData()
+    }
+
+    private func cacheLeaderboard(_ leaderboard: NSArray) {
+        guard JSONSerialization.isValidJSONObject(leaderboard),
+              let data = try? JSONSerialization.data(withJSONObject: leaderboard, options: []) else {
+            return
+        }
+        UserDefaults.standard.setValue(data, forKey: leaderboardCacheKey)
+    }
+
+    func updateVisibility(isVisible: Bool) {
+        if isVisible && !isCurrentlyVisible {
+            isCurrentlyVisible = true
+            sendDataRequest(animateSelfChange: true)
+        } else if !isVisible {
+            isCurrentlyVisible = false
+        }
+    }
+}
 extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         emptyVm.isHidden = dataSourceArray.count > 0
@@ -89,7 +125,8 @@ extension HabitRankListVM{
 }
 
 extension HabitRankListVM{
-    func sendDataRequest(){
+    func sendDataRequest(animateSelfChange: Bool = false){
+        let previousSelfIndex = animateSelfChange ? indexOfCurrentUser(in: dataSourceArray) : nil
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
@@ -97,13 +134,75 @@ extension HabitRankListVM{
             DLLog(message: "sendDataRequest:\(dataDict)")
             
             self.dataSourceArray = dataDict["leaderboard"]as? NSArray ?? []
+            self.cacheLeaderboard(self.dataSourceArray)
             let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
             
             self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
                             runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
                             thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"))
             
-            self.tableView.reloadData()
+            if animateSelfChange {
+                let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
+                self.animateSelfRankChange(from: previousSelfIndex, to: newIndex)
+            }else{
+                self.tableView.reloadData()
+            }
+        }
+    }
+}
+extension HabitRankListVM{
+    private func indexOfCurrentUser(in leaderboard: NSArray) -> Int? {
+        let uid = UserDefaults.standard.value(forKey: userId) as? String ?? ""
+        guard !uid.isEmpty else { return nil }
+
+        for (index, element) in leaderboard.enumerated() {
+            guard let dict = element as? NSDictionary else { continue }
+            let elementId = extractUserId(from: dict)
+            if !elementId.isEmpty && elementId == uid {
+                return index
+            }
+        }
+
+        return nil
+    }
+
+    private func extractUserId(from dict: NSDictionary) -> String {
+        if let uid = dict["uid"] as? String, !uid.isEmpty {
+            return uid
+        }
+        if let uid = dict["userId"] as? String, !uid.isEmpty {
+            return uid
+        }
+        if let uid = dict["user_id"] as? String, !uid.isEmpty {
+            return uid
+        }
+        if let uid = dict["id"] as? String, !uid.isEmpty {
+            return uid
+        }
+
+        return dict.stringValueForKey(key: "uid")
+    }
+
+    private func animateSelfRankChange(from oldIndex: Int?, to newIndex: Int?) {
+        guard let oldIndex, let newIndex, oldIndex != newIndex else { return }
+
+        DispatchQueue.main.async {
+            let targetIndexPath = IndexPath(row: newIndex, section: 0)
+            if self.tableView.cellForRow(at: targetIndexPath) == nil {
+                self.tableView.scrollToRow(at: targetIndexPath, at: .middle, animated: false)
+                self.tableView.layoutIfNeeded()
+            }
+
+            guard let cell = self.tableView.cellForRow(at: targetIndexPath) else { return }
+            let offset = CGFloat(oldIndex - newIndex) * kFitWidth(70)
+            cell.contentView.transform = CGAffineTransform(translationX: 0, y: offset)
+            UIView.animate(withDuration: 0.35,
+                           delay: 0,
+                           usingSpringWithDamping: 0.75,
+                           initialSpringVelocity: 0.6,
+                           options: [.curveEaseInOut]) {
+                cell.contentView.transform = .identity
+            }
         }
     }
 }

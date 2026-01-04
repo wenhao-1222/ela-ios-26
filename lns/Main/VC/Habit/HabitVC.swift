@@ -83,11 +83,27 @@ extension HabitVC{
 
 extension HabitVC:UIScrollViewDelegate{
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.x > SCREEN_WIDHT*0.5{
-            self.topTypeVm.changeType(isLeft: false)
-        }else{
-            self.topTypeVm.changeType(isLeft: true)
-        }
+//        if scrollView.contentOffset.x > SCREEN_WIDHT*0.5{
+//            self.topTypeVm.changeType(isLeft: false)
+//        }else{
+//            self.topTypeVm.changeType(isLeft: true)
+//        }
+        
+        adjustPageState(for: scrollView)
+    }
+
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        adjustPageState(for: scrollView)
+    }
+}
+
+extension HabitVC{
+    private func adjustPageState(for scrollView: UIScrollView) {
+        let isShowingRank = scrollView.contentOffset.x > SCREEN_WIDHT * 0.5
+
+        topTypeVm.changeType(isLeft: !isShowingRank)
+        rankListVm.updateVisibility(isVisible: isShowingRank)
+
         if scrollView.contentOffset.x > kFitWidth(20){
             self.navigationController?.fd_interactivePopDisabled = true
             self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false

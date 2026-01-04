@@ -138,10 +138,11 @@ public final class RankCarouselView: UIView, UICollectionViewDataSource, UIColle
             // 翻转 3 次（6π），从入场开始执行
             let flip = CABasicAnimation(keyPath: "transform.rotation.y")
             flip.fromValue = 0
-            flip.toValue = Double.pi * 6.0
-            flip.duration = 0.62
+            flip.toValue = Double.pi * 4.0//Double.pi * 6.0
+            flip.duration = 0.92//0.62
             flip.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-            ghost.layer.add(flip, forKey: "ghostFlip3")
+//            ghost.layer.add(flip, forKey: "ghostFlip3")
+            ghost.layer.add(flip, forKey: "ghostFlip2")
 
             // 同时滑动列表 + ghost 滑入中心
             UIView.animate(withDuration: 0.42,
@@ -256,25 +257,18 @@ public final class RankCarouselView: UIView, UICollectionViewDataSource, UIColle
     }
 
     private func applyTransforms() {
-        let centerX = collectionView.bounds.midX + collectionView.contentOffset.x
+        let focusedIndex = nearestIndex(forOffsetX: collectionView.contentOffset.x)
         for c in collectionView.visibleCells {
-            guard let cell = c as? RankBadgeCell else { continue }
+            guard let cell = c as? RankBadgeCell, let ip = collectionView.indexPath(for: cell) else { continue }
+            let isCurrent = ip.item == focusedIndex
+            let scale: CGFloat = isCurrent ? 1.0 : 0.5
+            let alpha: CGFloat = isCurrent ? 1.0 : 0.7
 
-            let d = abs(cell.center.x - centerX)
-            let maxD = collectionView.bounds.width * 0.60
-            let t = min(1, d / maxD)
-
-            let scale = 1.0 - 0.22 * t
-            let baseAlpha = 1.0 - 0.55 * t
-            let y = 10 * t
-
-            if let ip = collectionView.indexPath(for: cell), ip.item == suppressIndex {
-                cell.contentView.alpha = 0.0
+            if ip.item == suppressIndex {
+                cell.applySuppressedState()
             } else {
-                cell.contentView.alpha = baseAlpha
+                cell.applyBadgeScale(scale, alpha: alpha)
             }
-
-            cell.contentView.transform = CGAffineTransform(translationX: 0, y: y).scaledBy(x: scale, y: scale)
         }
     }
 }

@@ -71,6 +71,7 @@ final class RankBadgeCell: UICollectionViewCell {
         badgeImageView.alpha = 1
         badgeImageView.transform = .identity
         badgeImageView.layer.transform = CATransform3DIdentity
+        lockOverlay.transform = .identity
         lockOverlay.alpha = 0
     }
 
@@ -90,6 +91,19 @@ final class RankBadgeCell: UICollectionViewCell {
             badgeImageView.image = tier.image ?? EffectsFactory.placeholderBadge(size: 260)
             lockOverlay.alpha = 0.0
         }
+    }
+    // MARK: - Presentation
+
+    func applyBadgeScale(_ scale: CGFloat, alpha: CGFloat) {
+        contentView.alpha = 1.0
+        let t = CGAffineTransform(scaleX: scale, y: scale)
+        badgeImageView.transform = t
+        badgeImageView.alpha = alpha
+        lockOverlay.transform = t
+    }
+
+    func applySuppressedState() {
+        contentView.alpha = 0.0
     }
 
     // MARK: - ✅ 晋升：落位后做“解锁+庆祝”（翻转在 carousel overlay 里做）
