@@ -73,7 +73,8 @@ extension HabitRankListVM{
 //            return
 //        }
 
-        dataSourceArray = dataArray//cache as NSArray
+//        dataSourceArray = dataArray//cache as NSArray
+        dataSourceArray = prepareLeaderboardData(from: dataArray)//cache as NSArray
         displayedDataArray = dataSourceArray
         
         if dataSourceArray.count == 0 {
@@ -119,7 +120,8 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
         let dict = displayedDataArray[indexPath.row] as? NSDictionary ?? [:]
         
         cell.configure(
-            rank: dict.stringValueForKey(key: "sn"),
+//            rank: dict.stringValueForKey(key: "sn"),
+            rank: "\(indexPath.row + 1)",
             avatar: dict.stringValueForKey(key: "headimgurl"),
             name: dict.stringValueForKey(key: "nickname"),
             fireCount: dict.stringValueForKey(key: "donateCount").intValue,
@@ -151,7 +153,8 @@ extension HabitRankListVM{
                 
                 DLLog(message: "sendDataRequest:\(dataDict)")
                 
-                self.dataSourceArray = dataDict["leaderboard"]as? NSArray ?? []
+//                self.dataSourceArray = dataDict["leaderboard"]as? NSArray ?? []
+                self.dataSourceArray = self.prepareLeaderboardData(from: dataDict["leaderboard"]as? NSArray ?? [])
                 self.cacheLeaderboard(self.dataSourceArray)
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
                 
@@ -298,5 +301,30 @@ extension HabitRankListVM{
 //                    self.animateSelfRankChange(from: oldIndex, to: newIndex)
             })
         }
+    }
+}
+
+extension HabitRankListVM{
+    private func prepareLeaderboardData(from array: NSArray) -> NSArray {
+        var entries = array.compactMap { $0 as? NSDictionary }
+        var placeholderIndex = 1
+
+        while entries.count < 20 {
+            let randomScore = Int.random(in: 1...6)
+            let placeholder: NSDictionary = [
+                "headimgurl": "",
+                "nickname": "Tester \(placeholderIndex)",
+                "donateCount": 0,
+                "rankPointBalance": "\(randomScore)"
+            ]
+            entries.append(placeholder)
+            placeholderIndex += 1
+        }
+
+        let sortedEntries = entries.sorted {
+            $0.stringValueForKey(key: "rankPointBalance").intValue > $1.stringValueForKey(key: "rankPointBalance").intValue
+        }
+
+        return Array(sortedEntries.prefix(20)) as NSArray
     }
 }
