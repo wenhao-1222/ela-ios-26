@@ -50,7 +50,30 @@ class HabitRankListHeadVM: UIView {
         
         return lab
     }()
-    
+    lazy var rankImgView: UIImageView = {
+        let vi = UIImageView()
+        vi.setImgLocal(imgName: "rank_1")
+        
+        return vi
+    }()
+    lazy var rankImgViewDefault_one: UIImageView = {
+        let vi = UIImageView()
+        vi.setImgLocal(imgName: "rank_unlock")
+        
+        return vi
+    }()
+    lazy var rankImgViewDefault_two: UIImageView = {
+        let vi = UIImageView()
+        vi.setImgLocal(imgName: "rank_unlock")
+        
+        return vi
+    }()
+    lazy var rankImgViewDefault_three: UIImageView = {
+        let vi = UIImageView()
+        vi.setImgLocal(imgName: "rank_unlock")
+        
+        return vi
+    }()
     lazy var bottomWhiteView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: selfHeight-kFitWidth(25), width: SCREEN_WIDHT, height: kFitWidth(50)))
         vi.backgroundColor = .COLOR_CARD_BG_WHITE
@@ -62,7 +85,7 @@ class HabitRankListHeadVM: UIView {
 }
 
 extension HabitRankListHeadVM{
-    func updateUI(champion:String,runnerUp:String,thirdPlace:String,secondsToWeekEnd:Int) {
+    func updateUI(champion:String,runnerUp:String,thirdPlace:String,secondsToWeekEnd:Int,tier:Int) {
         degreeLabel.text = "青铜"
 
         let attr = NSMutableAttributedString(string: "周结算奖励：冠军 ", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50])
@@ -79,6 +102,11 @@ extension HabitRankListHeadVM{
         if remainSeconds > 0 && timer == nil{
             countDownAction()
         }
+        
+        rankImgView.setImgLocal(imgName: "rank_\(tier)")
+        rankImgViewDefault_one.isHidden = tier == 9
+        rankImgViewDefault_two.isHidden = tier >= 8
+        rankImgViewDefault_three.isHidden = tier >= 7
     }
     private func updateRemainTimeLabel() {
         if remainSeconds <= 0 {
@@ -124,11 +152,15 @@ extension HabitRankListHeadVM{
         addSubview(timeCountLabel)
         addSubview(timeImgView)
         addSubview(pointLabel)
+        addSubview(rankImgView)
+        addSubview(rankImgViewDefault_one)
+        addSubview(rankImgViewDefault_two)
+        addSubview(rankImgViewDefault_three)
         
         addSubview(bottomWhiteView)
         
         setConstrait()
-        updateUI(champion: "3", runnerUp: "2", thirdPlace: "1", secondsToWeekEnd: -1)
+        updateUI(champion: "3", runnerUp: "2", thirdPlace: "1", secondsToWeekEnd: -1,tier:1)
     }
     func setConstrait() {
         degreeLabel.snp.makeConstraints { make in
@@ -149,6 +181,26 @@ extension HabitRankListHeadVM{
             make.right.equalTo(kFitWidth(-20))
             make.top.equalTo(kFitWidth(49))
             make.height.equalTo(kFitWidth(20))
+        }
+        rankImgView.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.width.height.equalTo(kFitWidth(90))
+            make.top.equalTo(kFitWidth(81))
+        }
+        rankImgViewDefault_one.snp.makeConstraints { make in
+            make.bottom.equalTo(rankImgView)
+            make.width.height.equalTo(kFitWidth(70))
+            make.left.equalTo(rankImgView.snp.right).offset(kFitWidth(17))
+        }
+        rankImgViewDefault_two.snp.makeConstraints { make in
+            make.bottom.equalTo(rankImgView)
+            make.width.height.equalTo(kFitWidth(70))
+            make.left.equalTo(rankImgViewDefault_one.snp.right).offset(kFitWidth(12))
+        }
+        rankImgViewDefault_three.snp.makeConstraints { make in
+            make.bottom.equalTo(rankImgView)
+            make.width.height.equalTo(kFitWidth(70))
+            make.left.equalTo(rankImgViewDefault_two.snp.right).offset(kFitWidth(12))
         }
     }
 }

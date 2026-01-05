@@ -25,7 +25,7 @@ class HabitRankListVM: UIView {
         
         initUI()
         loadCachedLeaderboard()
-        
+        sendDataRequestForHeadMsg()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -152,7 +152,8 @@ extension HabitRankListVM{
                 self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
                                 runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
                                 thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
-                                     secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
+                                 secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue,
+                                     tier:dataDict.stringValueForKey(key: "tier").intValue)
                 
                 if animateSelfChange {
                     let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
@@ -165,6 +166,24 @@ extension HabitRankListVM{
                 self.dataSourceArray = NSArray()
                 self.cacheLeaderboard(self.dataSourceArray)
                 self.tableView.reloadData()
+            }
+        }
+    }
+    func sendDataRequestForHeadMsg(){
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
+            let code = responseObject["code"]as? Int ?? -1
+            if code == 200 {
+                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+                let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+                DLLog(message: "sendDataRequest:\(dataDict)")
+                
+                let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
+                
+                self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
+                                runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
+                                thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
+                                 secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue,
+                                     tier:dataDict.stringValueForKey(key: "tier").intValue)
             }
         }
     }
