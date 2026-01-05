@@ -31,6 +31,7 @@ class HabitItemVM: UIView {
         lab.isUserInteractionEnabled = true
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
+        lab.adjustsFontSizeToFitWidth = true
         
         return lab
     }()

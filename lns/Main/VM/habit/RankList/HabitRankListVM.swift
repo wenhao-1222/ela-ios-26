@@ -12,6 +12,7 @@ class HabitRankListVM: UIView {
     var controller = WHBaseViewVC()
     
     var dataSourceArray = NSArray()
+    private var displayedDataArray = NSArray()
     
 //    private let leaderboardCacheKey = "HabitRankListVM.leaderboardCache"
     private var isCurrentlyVisible = false
@@ -73,6 +74,7 @@ extension HabitRankListVM{
 //        }
 
         dataSourceArray = dataArray//cache as NSArray
+        displayedDataArray = dataSourceArray
         
         if dataSourceArray.count == 0 {
             sendDataRequest()
@@ -99,9 +101,13 @@ extension HabitRankListVM{
 }
 extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        emptyVm.isHidden = dataSourceArray.count > 0
-        headVm.isHidden = dataSourceArray.count == 0
-        return dataSourceArray.count
+//        emptyVm.isHidden = dataSourceArray.count > 0
+//        headVm.isHidden = dataSourceArray.count == 0
+//        return dataSourceArray.count
+        
+        emptyVm.isHidden = displayedDataArray.count > 0
+        headVm.isHidden = displayedDataArray.count == 0
+        return displayedDataArray.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
@@ -109,7 +115,8 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
                 for: indexPath
             ) as! HabitRankTableViewCell
 
-        let dict = dataSourceArray[indexPath.row] as? NSDictionary ?? [:]
+//        let dict = dataSourceArray[indexPath.row] as? NSDictionary ?? [:]
+        let dict = displayedDataArray[indexPath.row] as? NSDictionary ?? [:]
         
         cell.configure(
             rank: dict.stringValueForKey(key: "sn"),
@@ -139,7 +146,6 @@ extension HabitRankListVM{
             
             let code = responseObject["code"]as? Int ?? -1
             if code == 200 {
-                
                 let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
                 let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
                 
@@ -154,17 +160,26 @@ extension HabitRankListVM{
                                 thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
                                  secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue,
                                      tier:dataDict.stringValueForKey(key: "tier").intValue)
-                
+                let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
+                self.displayedDataArray = self.initialDisplayArray(
+                    for: self.dataSourceArray,
+                    previousIndex: previousSelfIndex,
+                    newIndex: newIndex,
+                    shouldAnimate: animateSelfChange
+                )
+                self.tableView.reloadData()
                 if animateSelfChange {
-                    let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
-    //                self.animateSelfRankChange(from: 2, to: 0)
-                    self.animateSelfRankChange(from: previousSelfIndex, to: newIndex)
-                }else{
-                    self.tableView.reloadData()
+                    self.performSelfRankMove(from: previousSelfIndex, to: newIndex)
+//                    let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
+//    //                self.animateSelfRankChange(from: 2, to: 0)
+//                    self.animateSelfRankChange(from: previousSelfIndex, to: newIndex)
+//                }else{
+//                    self.tableView.reloadData()
                 }
             }else{
                 self.dataSourceArray = NSArray()
                 self.cacheLeaderboard(self.dataSourceArray)
+                self.displayedDataArray = self.dataSourceArray
                 self.tableView.reloadData()
             }
         }
@@ -241,6 +256,47 @@ extension HabitRankListVM{
                            options: [.curveEaseInOut]) {
                 cell.contentView.transform = .identity
             }
+        }
+    }
+    private func initialDisplayArray(for leaderboard: NSArray, previousIndex: Int?, newIndex: Int?, shouldAnimate: Bool) -> NSArray {
+        guard shouldAnimate,
+              let previousIndex,
+              let newIndex,
+              previousIndex != newIndex,
+              leaderboard.count > 0,
+              let mutable = leaderboard.mutableCopy() as? NSMutableArray,
+              newIndex < mutable.count else {
+            return leaderboard
+        }
+
+        let selfEntry = mutable.object(at: newIndex)
+        mutable.removeObject(at: newIndex)
+        let targetIndex = max(0, min(previousIndex, mutable.count))
+        mutable.insert(selfEntry, at: targetIndex)
+
+        return mutable
+    }
+
+    private func performSelfRankMove(from oldIndex: Int?, to newIndex: Int?) {
+        guard let oldIndex, let newIndex, oldIndex != newIndex else { return }
+
+        DispatchQueue.main.async {
+            guard oldIndex < self.displayedDataArray.count,
+                  newIndex < self.dataSourceArray.count else {
+                self.displayedDataArray = self.dataSourceArray
+                self.tableView.reloadData()
+                return
+            }
+
+            let fromIndexPath = IndexPath(row: oldIndex, section: 0)
+            let toIndexPath = IndexPath(row: newIndex, section: 0)
+
+            self.tableView.performBatchUpdates({
+                self.displayedDataArray = self.dataSourceArray
+                self.tableView.moveRow(at: fromIndexPath, to: toIndexPath)
+            }, completion: { _ in
+//                    self.animateSelfRankChange(from: oldIndex, to: newIndex)
+            })
         }
     }
 }
