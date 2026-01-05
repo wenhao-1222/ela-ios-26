@@ -255,19 +255,30 @@ extension HabitRankListHeadVM {
         snapshot.contentMode = .scaleAspectFit
         snapshot.frame = rankImgView.convert(rankImgView.bounds, to: window)
         overlay.addSubview(snapshot)
+        let demoVC = DemoViewController()
+       demoVC.configure(currentIndex: currentTierIndex, unlockedMaxIndex: unlockedTierIndex)
+       let preparedTargetFrame = targetBadgeFrame(in: window, using: demoVC)
 
         UIView.animate(withDuration: 0.2,
                        delay: 0,
                        options: [.curveEaseInOut]) {
             overlay.backgroundColor = UIColor.black.withAlphaComponent(0.15)
+//            snapshot.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+//            snapshot.center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
+        if let targetFrame = preparedTargetFrame {
+            snapshot.frame = targetFrame
+        } else {
             snapshot.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
             snapshot.center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
+        }
         } completion: { _ in
             self.presentDemoPage(using: snapshot,
                                  overlay: overlay,
                                  mode: mode,
                                  fromIndex: fromIndex,
-                                 toIndex: toIndex)
+                                 toIndex: toIndex,
+                                 demoVC: demoVC,
+                                 preparedTargetFrame: preparedTargetFrame)
         }
     }
 
@@ -275,9 +286,9 @@ extension HabitRankListHeadVM {
                                  overlay: UIView,
                                  mode: RankResultViewController.Mode,
                                  fromIndex: Int,
-                                 toIndex: Int) {
-        let demoVC = DemoViewController()
-        demoVC.configure(currentIndex: currentTierIndex, unlockedMaxIndex: unlockedTierIndex)
+                                 toIndex: Int,
+                                  demoVC: DemoViewController,
+                                  preparedTargetFrame: CGRect?) {
         demoVC.modalPresentationStyle = .fullScreen
 
         let hostVC = WHTool.shared.getCurrentViewController()
@@ -291,21 +302,41 @@ extension HabitRankListHeadVM {
                 return
             }
 
-            if let targetFrame = demoVC.badgeFrame(in: demoVC.view) {
-                let targetInWindow = demoVC.view.convert(targetFrame, to: window)
-                UIView.animate(withDuration: 0.32,
-                               delay: 0,
-                               options: [.curveEaseInOut]) {
-                    snapshot.transform = .identity
-                    snapshot.frame = targetInWindow
-                    overlay.backgroundColor = .clear
-                } completion: { _ in
-                    overlay.removeFromSuperview()
-                    snapshot.removeFromSuperview()
-                    demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
-                    self.isAnimatingToDemo = false
-                }
-            } else {
+//            if let targetFrame = demoVC.badgeFrame(in: demoVC.view) {
+//                let targetInWindow = demoVC.view.convert(targetFrame, to: window)
+//                UIView.animate(withDuration: 0.32,
+//                               delay: 0,
+//                               options: [.curveEaseInOut]) {
+//                    snapshot.transform = .identity
+//                    snapshot.frame = targetInWindow
+//                    overlay.backgroundColor = .clear
+//                } completion: { _ in
+//                    overlay.removeFromSuperview()
+//                    snapshot.removeFromSuperview()
+//                    demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
+//                    self.isAnimatingToDemo = false
+//                }
+//            } else {
+            let targetInWindow = preparedTargetFrame ?? {
+                guard let targetFrame = demoVC.badgeFrame(in: demoVC.view) else { return nil }
+                return demoVC.view.convert(targetFrame, to: window)
+            }()
+
+            guard let finalFrame = targetInWindow else {
+                overlay.removeFromSuperview()
+                snapshot.removeFromSuperview()
+                demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
+                self.isAnimatingToDemo = false
+                return
+            }
+
+            UIView.animate(withDuration: 0.32,
+                           delay: 0,
+                           options: [.curveEaseInOut]) {
+                snapshot.transform = .identity
+                snapshot.frame = finalFrame
+                overlay.backgroundColor = .clear
+            } completion: { _ in
                 overlay.removeFromSuperview()
                 snapshot.removeFromSuperview()
                 demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
@@ -313,4 +344,11 @@ extension HabitRankListHeadVM {
             }
         }
     }
+    private func targetBadgeFrame(in window: UIWindow, using demoVC: DemoViewController) -> CGRect? {
+       demoVC.loadViewIfNeeded()
+       demoVC.view.frame = window.bounds
+       demoVC.view.layoutIfNeeded()
+       guard let targetFrame = demoVC.badgeFrame(in: demoVC.view) else { return nil }
+       return demoVC.view.convert(targetFrame, to: window)
+   }
 }

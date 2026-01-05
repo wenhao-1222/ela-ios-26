@@ -169,10 +169,14 @@ class HabitRankTableViewCell: UITableViewCell {
 //        rankLabel.text = "\(rank)"
         let rankInt = rank.intValue
         rankLabel.text = "\(rankInt)"
-        avatarImageView.setImgUrl(urlString: avatar)
+        if avatar.count > 0 {
+            avatarImageView.setImgUrl(urlString: avatar)
+        }else{
+            avatarImageView.image = nil
+        }
+        
         nameLabel.text = name
         scoreLabel.text = "\(score)"
-        
         
         fireIcon.isHidden = fireCount ?? 0 > 0 ? false : true
         fireLabel.isHidden = fireCount ?? 0 > 0 ? false : true

@@ -58,10 +58,13 @@ public final class RankResultViewController: UIViewController {
         NSLayoutConstraint.activate([
             carousel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             carousel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            carousel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
-            carousel.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.34),
+//            carousel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
+//            carousel.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.34),
+            carousel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 76),
+            carousel.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.4),
 
-            titleLabel.topAnchor.constraint(equalTo: carousel.bottomAnchor, constant: 20),
+//            titleLabel.topAnchor.constraint(equalTo: carousel.bottomAnchor, constant: 20),
+            titleLabel.topAnchor.constraint(equalTo: carousel.bottomAnchor, constant: 28),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
 

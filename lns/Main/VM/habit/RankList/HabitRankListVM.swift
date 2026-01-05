@@ -32,13 +32,18 @@ class HabitRankListVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     lazy var tableView: UITableView = {
-        let vi = UITableView(frame: CGRect.init(x: 0, y: self.headVm.frame.maxY, width: SCREEN_WIDHT, height: selfHeight-self.headVm.selfHeight), style: .plain)
-        vi.backgroundColor = .COLOR_CARD_BG_WHITE
+        let vi = UITableView(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight), style: .plain)
+//        let vi = UITableView(frame: CGRect.init(x: 0, y: self.headVm.frame.maxY, width: SCREEN_WIDHT, height: selfHeight-self.headVm.selfHeight), style: .plain)
+        vi.backgroundColor = .COLOR_BG_F2
 //        vi.tableHeaderView = headVm
         vi.delegate = self
         vi.dataSource = self
         vi.separatorStyle = .none
         vi.clipsToBounds = true
+        vi.contentInsetAdjustmentBehavior = .never
+        if #available(iOS 15.0, *) {
+            vi.sectionHeaderTopPadding = 0
+        }
         vi.register(HabitRankTableViewCell.classForCoder(), forCellReuseIdentifier: HabitRankTableViewCell.identifier)
         
         return vi
@@ -102,6 +107,15 @@ extension HabitRankListVM{
     }
 }
 extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return headVm.selfHeight
+    }
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return headVm
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //        emptyVm.isHidden = dataSourceArray.count > 0
 //        headVm.isHidden = dataSourceArray.count == 0
@@ -139,7 +153,7 @@ extension HabitRankListVM{
     func initUI() {
         addSubview(tableView)
         addSubview(headVm)
-        tableView.addSubview(emptyVm)
+//        tableView.addSubview(emptyVm)
         
     }
 }
@@ -336,7 +350,7 @@ extension HabitRankListVM{
         var placeholderIndex = 1
 
         while entries.count < 20 {
-            let randomScore = Int.random(in: 2...8)
+            let randomScore = Int.random(in: 2...20)
             let placeholder: NSDictionary = [
                 "headimgurl": "",
                 "nickname": "Tester \(placeholderIndex)",
@@ -366,23 +380,37 @@ extension HabitRankListVM {
             let cell = tableView.cellForRow(at: fromIndexPath),
             let container = tableView.superview
         else { return }
-
         let snapshot = safeSnapshot(of: cell)
         snapshot.frame = tableView.convert(cell.frame, to: container)
         snapshot.layer.shadowColor = UIColor.black.cgColor
         snapshot.layer.shadowOpacity = 0.25
         snapshot.layer.shadowRadius = 8
         snapshot.layer.cornerRadius = 12
+        
+//        let containerFrame = container.frame
+//        let containerReal = UIView.init(frame: container.frame)
+//        containerReal.clipsToBounds = true
+//        addSubview(containerReal)
+//        insertSubview(containerReal, belowSubview: self.tableView)
+//        containerReal.frame = CGRect.init(x: 0, y: self.headVm.selfHeight, width: SCREEN_WIDHT, height: containerFrame.size.height)
+//        let snapshotFrame = snapshot.frame
+//        snapshot.frame = CGRect.init(x: 0, y: snapshotFrame.origin.y-self.headVm.selfHeight, width: snapshotFrame.size.width, height: snapshotFrame.size.height)
 
+//        containerReal.addSubview(snapshot)
         container.addSubview(snapshot)
         cell.isHidden = true
 
         let targetRect = tableView.rectForRow(at: toIndexPath)
-        let targetFrame = tableView.convert(targetRect, to: container)
+        var targetFrame = tableView.convert(targetRect, to: container)
+        
+        if targetFrame.origin.y < self.headVm.selfHeight{
+            let targetFrameT = targetFrame
+            targetFrame = CGRect.init(x: 0, y: self.headVm.selfHeight, width: targetFrameT.size.width, height: targetFrameT.size.height)
+        }
 
         UIView.animate(withDuration: 0.8, delay: 0, options: [.curveEaseInOut]) {
             snapshot.frame = targetFrame
-            self.tableView.scrollRectToVisible(targetRect, animated: true)
+            self.tableView.scrollRectToVisible(targetRect, animated: false)
         } completion: { _ in
 
             cell.isHidden = false
@@ -401,6 +429,7 @@ extension HabitRankListVM {
                 } completion: { _ in
                     self.tableView.scrollToRow(at: toIndexPath, at: .middle, animated: true)
                     self.tableView.reloadData()
+//                    containerReal.removeFromSuperview()
                 }
             }
         }
