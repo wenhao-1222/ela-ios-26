@@ -32,18 +32,19 @@ class HabitRankListVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     lazy var tableView: UITableView = {
-        let vi = UITableView(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight), style: .plain)
+        let vi = UITableView(frame: CGRect.init(x: 0, y: self.headVm.frame.maxY, width: SCREEN_WIDHT, height: selfHeight-self.headVm.selfHeight), style: .plain)
         vi.backgroundColor = .COLOR_CARD_BG_WHITE
-        vi.tableHeaderView = headVm
+//        vi.tableHeaderView = headVm
         vi.delegate = self
         vi.dataSource = self
         vi.separatorStyle = .none
+        vi.clipsToBounds = true
         vi.register(HabitRankTableViewCell.classForCoder(), forCellReuseIdentifier: HabitRankTableViewCell.identifier)
         
         return vi
     }()
     lazy var emptyVm: HabitRankListEmptyVM = {
-        let vm = HabitRankListEmptyVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
+        let vm = HabitRankListEmptyVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight-self.headVm.selfHeight))
         return vm
     }()
     lazy var headVm: HabitRankListHeadVM = {
@@ -137,7 +138,9 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
 extension HabitRankListVM{
     func initUI() {
         addSubview(tableView)
+        addSubview(headVm)
         tableView.addSubview(emptyVm)
+        
     }
 }
 
@@ -170,6 +173,7 @@ extension HabitRankListVM{
                     newIndex: newIndex,
                     shouldAnimate: animateSelfChange
                 )
+//                self.displayedDataArray = self.dataSourceArray
                 self.tableView.reloadData()
                 if animateSelfChange {
                     self.performSelfRankMove(from: previousSelfIndex, to: newIndex)
@@ -284,23 +288,45 @@ extension HabitRankListVM{
         guard let oldIndex, let newIndex, oldIndex != newIndex else { return }
 
         DispatchQueue.main.async {
-            guard oldIndex < self.displayedDataArray.count,
-                  newIndex < self.dataSourceArray.count else {
-                self.displayedDataArray = self.dataSourceArray
-                self.tableView.reloadData()
-                return
-            }
-
             let fromIndexPath = IndexPath(row: oldIndex, section: 0)
-            let toIndexPath = IndexPath(row: newIndex, section: 0)
 
-            self.tableView.performBatchUpdates({
-                self.displayedDataArray = self.dataSourceArray
-                self.tableView.moveRow(at: fromIndexPath, to: toIndexPath)
-            }, completion: { _ in
-//                    self.animateSelfRankChange(from: oldIndex, to: newIndex)
-            })
+            self.tableView.reloadData()
+            self.tableView.layoutIfNeeded()
+            self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: false)
+            self.tableView.layoutIfNeeded()
+
+            self.animateHighlightMove(from: oldIndex, to: newIndex)
         }
+//        guard let oldIndex, let newIndex, oldIndex != newIndex else { return }
+//
+//        DispatchQueue.main.async {
+//            guard oldIndex < self.displayedDataArray.count,
+//                  newIndex < self.dataSourceArray.count else {
+//                self.displayedDataArray = self.dataSourceArray
+//                self.tableView.reloadData()
+//                return
+//            }
+//
+//            let fromIndexPath = IndexPath(row: oldIndex, section: 0)
+//            let toIndexPath = IndexPath(row: newIndex, section: 0)
+//
+////            self.tableView.performBatchUpdates({
+////                self.displayedDataArray = self.dataSourceArray
+////                self.tableView.moveRow(at: fromIndexPath, to: toIndexPath)
+////            }, completion: { _ in
+//////                    self.animateSelfRankChange(from: oldIndex, to: newIndex)
+////            })
+//            self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: true)
+//
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+//                self.tableView.performBatchUpdates({
+//                    self.displayedDataArray = self.dataSourceArray
+//                    self.tableView.moveRow(at: fromIndexPath, to: toIndexPath)
+//                }, completion: { _ in
+//                    self.tableView.scrollToRow(at: toIndexPath, at: .middle, animated: true)
+//                })
+//            }
+//        }
     }
 }
 
@@ -310,7 +336,7 @@ extension HabitRankListVM{
         var placeholderIndex = 1
 
         while entries.count < 20 {
-            let randomScore = Int.random(in: 1...6)
+            let randomScore = Int.random(in: 2...8)
             let placeholder: NSDictionary = [
                 "headimgurl": "",
                 "nickname": "Tester \(placeholderIndex)",
@@ -327,4 +353,71 @@ extension HabitRankListVM{
 
         return Array(sortedEntries.prefix(20)) as NSArray
     }
+}
+extension HabitRankListVM {
+
+    /// ⭐️ 核心动画：高亮 + 跟随滚动移动
+    private func animateHighlightMove(from oldIndex: Int, to newIndex: Int) {
+
+        let fromIndexPath = IndexPath(row: oldIndex, section: 0)
+        let toIndexPath   = IndexPath(row: newIndex, section: 0)
+
+        guard
+            let cell = tableView.cellForRow(at: fromIndexPath),
+            let container = tableView.superview
+        else { return }
+
+        let snapshot = safeSnapshot(of: cell)
+        snapshot.frame = tableView.convert(cell.frame, to: container)
+        snapshot.layer.shadowColor = UIColor.black.cgColor
+        snapshot.layer.shadowOpacity = 0.25
+        snapshot.layer.shadowRadius = 8
+        snapshot.layer.cornerRadius = 12
+
+        container.addSubview(snapshot)
+        cell.isHidden = true
+
+        let targetRect = tableView.rectForRow(at: toIndexPath)
+        let targetFrame = tableView.convert(targetRect, to: container)
+
+        UIView.animate(withDuration: 0.8, delay: 0, options: [.curveEaseInOut]) {
+            snapshot.frame = targetFrame
+            self.tableView.scrollRectToVisible(targetRect, animated: true)
+        } completion: { _ in
+
+            cell.isHidden = false
+            snapshot.removeFromSuperview()
+
+            // 数据一次性归位
+            let item = self.displayedDataArray.object(at: oldIndex)
+            let mutable = self.displayedDataArray.mutableCopy() as! NSMutableArray
+            mutable.removeObject(at: oldIndex)
+            mutable.insert(item, at: newIndex)
+            self.displayedDataArray = mutable
+
+            UIView.performWithoutAnimation {
+                self.tableView.performBatchUpdates {
+                    self.tableView.moveRow(at: fromIndexPath, to: toIndexPath)
+                } completion: { _ in
+                    self.tableView.scrollToRow(at: toIndexPath, at: .middle, animated: true)
+                    self.tableView.reloadData()
+                }
+            }
+        }
+    }
+
+    private func safeSnapshot(of view: UIView) -> UIView {
+
+        if let snapshot = view.snapshotView(afterScreenUpdates: true) {
+            return snapshot
+        }
+
+        let renderer = UIGraphicsImageRenderer(size: view.bounds.size)
+        let image = renderer.image { ctx in
+            view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
+        }
+
+        return UIImageView(image: image)
+    }
+
 }

@@ -166,7 +166,9 @@ class HabitRankTableViewCell: UITableViewCell {
         fireCount: Int?,
         score: String
     ) {
-        rankLabel.text = "\(rank)"
+//        rankLabel.text = "\(rank)"
+        let rankInt = rank.intValue
+        rankLabel.text = "\(rankInt)"
         avatarImageView.setImgUrl(urlString: avatar)
         nameLabel.text = name
         scoreLabel.text = "\(score)"
@@ -179,14 +181,33 @@ class HabitRankTableViewCell: UITableViewCell {
         }else{
             fireLabel.text = ""
         }
-        degreeImgView.isHidden = rank.intValue > 3
-        rankLabel.isHidden = rank.intValue <= 3
-        if rank == "1"{
+        
+        switch rankInt {
+        case 1:
+            degreeImgView.isHidden = false
+            rankLabel.isHidden = true
             degreeImgView.setImgLocal(imgName: "habit_ranklist_one")
-        }else if rank == "2"{
+        case 2:
+            degreeImgView.isHidden = false
+            rankLabel.isHidden = true
             degreeImgView.setImgLocal(imgName: "habit_ranklist_two")
-        }else if rank == "3"{
+        case 3:
+            degreeImgView.isHidden = false
+            rankLabel.isHidden = true
             degreeImgView.setImgLocal(imgName: "habit_ranklist_three")
+        default:
+            degreeImgView.isHidden = true
+            rankLabel.isHidden = false
+            degreeImgView.image = nil
         }
+//        degreeImgView.isHidden = rank.intValue > 3
+//        rankLabel.isHidden = rank.intValue <= 3
+//        if rank == "1"{
+//            degreeImgView.setImgLocal(imgName: "habit_ranklist_one")
+//        }else if rank == "2"{
+//            degreeImgView.setImgLocal(imgName: "habit_ranklist_two")
+//        }else if rank == "3"{
+//            degreeImgView.setImgLocal(imgName: "habit_ranklist_three")
+//        }
     }
 }
