@@ -61,6 +61,20 @@ final class DemoViewController: UIViewController {
         resultVC.play(mode: .promote, fromIndex: currentIndex, toIndex: currentIndex)
     }
 
+    func configure(currentIndex: Int, unlockedMaxIndex: Int) {
+        self.currentIndex = currentIndex
+        self.unlockedMaxIndex = unlockedMaxIndex
+    }
+
+    func badgeFrame(in coordinateView: UIView) -> CGRect? {
+        guard isViewLoaded else { return nil }
+        return resultVC.badgeFrame(in: coordinateView)
+    }
+
+    func play(mode: RankResultViewController.Mode, fromIndex: Int, toIndex: Int) {
+        loadViewIfNeeded()
+        resultVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
+    }
     @objc private func onPromote() {
         let from = currentIndex
         let to = min(currentIndex + 1, tiers.count - 1)

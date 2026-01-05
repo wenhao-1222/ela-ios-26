@@ -245,6 +245,13 @@ public final class RankCarouselView: UIView, UICollectionViewDataSource, UIColle
         currentIndex = nearestIndex(forOffsetX: scrollView.contentOffset.x)
         onIndexChanged?(currentIndex)
     }
+    public func centerBadgeFrame(in coordinateView: UIView) -> CGRect {
+        layoutIfNeeded()
+        let size = layout.itemSize
+        let origin = CGPoint(x: bounds.midX - size.width / 2, y: bounds.midY - size.height / 2)
+        let frame = CGRect(origin: origin, size: size)
+        return convert(frame, to: coordinateView)
+    }
 
     // MARK: - Helpers
 

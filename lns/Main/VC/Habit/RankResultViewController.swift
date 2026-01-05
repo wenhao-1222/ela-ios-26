@@ -73,6 +73,12 @@ public final class RankResultViewController: UIViewController {
 
         carousel.snap(to: currentIndex, animated: false)
     }
+    
+    public func badgeFrame(in coordinateView: UIView) -> CGRect {
+        view.layoutIfNeeded()
+        return carousel.centerBadgeFrame(in: coordinateView)
+    }
+
 
     public func play(mode: Mode, fromIndex: Int, toIndex: Int) {
         titleLabel.alpha = 0
