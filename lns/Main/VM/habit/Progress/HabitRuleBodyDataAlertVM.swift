@@ -109,7 +109,7 @@ class HabitRuleBodyDataAlertVM: UIView {
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .semibold)])
         let attr1 = NSMutableAttributedString(string: "当日提交体重、身体围度、照片等任意数据（或通过其他App导入）",
-                                             attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                                             attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .regular)])
         
         attr.append(attr1)

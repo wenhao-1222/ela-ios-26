@@ -109,7 +109,7 @@ class HabitRuleFitnessAlertVM: UIView {
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .semibold)])
         let attr1 = NSMutableAttributedString(string: "在日志页右上角“力量训练标签”，记录训练部位或休息日。",
-                                             attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                                             attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .regular)])
         
         attr.append(attr1)

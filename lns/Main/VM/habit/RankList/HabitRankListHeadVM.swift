@@ -15,6 +15,7 @@ class HabitRankListHeadVM: UIView {
     private var nextModeIsPromote: Bool = true
     private let rankTiers: [RankTier] = RankTier.defaultNine()
     private var isAnimatingToDemo: Bool = false
+    private var isAnimatingBackFromDemo: Bool = false
     
     
     override init(frame:CGRect){
@@ -256,8 +257,10 @@ extension HabitRankListHeadVM {
         snapshot.frame = rankImgView.convert(rankImgView.bounds, to: window)
         overlay.addSubview(snapshot)
         let demoVC = DemoViewController()
-       demoVC.configure(currentIndex: currentTierIndex, unlockedMaxIndex: unlockedTierIndex)
-       let preparedTargetFrame = targetBadgeFrame(in: window, using: demoVC)
+//       demoVC.configure(currentIndex: currentTierIndex, unlockedMaxIndex: unlockedTierIndex)
+//       let preparedTargetFrame = targetBadgeFrame(in: window, using: demoVC)
+        demoVC.configure(currentIndex: currentTierIndex, unlockedMaxIndex: unlockedTierIndex)
+        let preparedTargetFrame = targetBadgeFrame(in: window, using: demoVC)
 
         UIView.animate(withDuration: 0.2,
                        delay: 0,
@@ -265,12 +268,18 @@ extension HabitRankListHeadVM {
             overlay.backgroundColor = UIColor.black.withAlphaComponent(0.15)
 //            snapshot.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
 //            snapshot.center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
-        if let targetFrame = preparedTargetFrame {
-            snapshot.frame = targetFrame
-        } else {
-            snapshot.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
-            snapshot.center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
-        }
+//        if let targetFrame = preparedTargetFrame {
+//            snapshot.frame = targetFrame
+//        } else {
+//            snapshot.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+//            snapshot.center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
+//        }
+            if let targetFrame = preparedTargetFrame {
+                            snapshot.frame = targetFrame
+                        } else {
+                            snapshot.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+                            snapshot.center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
+                        }
         } completion: { _ in
             self.presentDemoPage(using: snapshot,
                                  overlay: overlay,
@@ -290,6 +299,10 @@ extension HabitRankListHeadVM {
                                   demoVC: DemoViewController,
                                   preparedTargetFrame: CGRect?) {
         demoVC.modalPresentationStyle = .fullScreen
+        demoVC.onRequestDismiss = { [weak self, weak demoVC] badgeFrame, badgeImage in
+            guard let self, let demoVC else { return }
+            self.animateBackToRank(from: badgeFrame, badgeImage: badgeImage, demoVC: demoVC)
+        }
 
         let hostVC = WHTool.shared.getCurrentViewController()
         hostVC.present(demoVC, animated: false) {
@@ -325,6 +338,36 @@ extension HabitRankListHeadVM {
                 snapshot.removeFromSuperview()
                 demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
                 self.isAnimatingToDemo = false
+            }
+        }
+    }
+    private func animateBackToRank(from badgeFrame: CGRect, badgeImage: UIImage?, demoVC: DemoViewController) {
+        guard !isAnimatingBackFromDemo else { return }
+        guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.keyWindow else {
+            demoVC.dismiss(animated: true)
+            return
+        }
+        isAnimatingBackFromDemo = true
+
+        let overlay = UIView(frame: window.bounds)
+        overlay.backgroundColor = UIColor.black.withAlphaComponent(0.0)
+        window.addSubview(overlay)
+
+        let snapshot = UIImageView(image: badgeImage ?? rankImgView.image)
+        snapshot.contentMode = .scaleAspectFit
+        snapshot.frame = badgeFrame
+        overlay.addSubview(snapshot)
+
+        demoVC.dismiss(animated: false) {
+            let targetFrame = self.rankImgView.convert(self.rankImgView.bounds, to: window)
+            UIView.animate(withDuration: 0.32,
+                           delay: 0,
+                           options: [.curveEaseInOut]) {
+                overlay.backgroundColor = UIColor.black.withAlphaComponent(0.08)
+                snapshot.frame = targetFrame
+            } completion: { _ in
+                overlay.removeFromSuperview()
+                self.isAnimatingBackFromDemo = false
             }
         }
     }

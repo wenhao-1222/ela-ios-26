@@ -153,8 +153,8 @@ final class RankBadgeCell: UICollectionViewCell {
         playWarningMarks()
         playSadWobble()
         // 崩碎后只保留碎片
-        badgeImageView.isHidden = true
-        lockOverlay.isHidden = true
+//        badgeImageView.isHidden = true
+//        lockOverlay.isHidden = true
 
         // 先短暂停一下再碎（更像视频节奏）
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.14) {
@@ -191,8 +191,11 @@ final class RankBadgeCell: UICollectionViewCell {
         // 崩碎后碎片变灰
         let grayImage = EffectsFactory.grayLockedImage(from: image)
 
-        badgeImageView.alpha = 0.0
-        lockOverlay.alpha = 0.0
+//        badgeImageView.alpha = 0.0
+//        lockOverlay.alpha = 0.0
+        badgeImageView.alpha = 1.0
+        lockOverlay.alpha = 1.0
+
 
         contentView.layoutIfNeeded()
         let badgeRect = badgeImageView.convert(badgeImageView.bounds, to: contentView)
@@ -206,11 +209,18 @@ final class RankBadgeCell: UICollectionViewCell {
         )
         shardLayers = shards
         shards.forEach { contentView.layer.addSublayer($0) }
-
+        // 起始保持完整徽章视觉，碎片在“碎裂”瞬间才出现
+        shards.forEach { $0.opacity = 0.0 }
+        UIView.animate(withDuration: 0.12) {
+            self.badgeImageView.alpha = 0.0
+            self.lockOverlay.alpha = 0.0
+            shards.forEach { $0.opacity = 1.0 }
+        }
         // 地面基准（不要同一水平线：做随机堆叠）
 //        let floorBaseY = contentView.bounds.maxY - (contentView.bounds.height * 0.12)
         let maxSpreadX = contentView.bounds.width * 0.95
         let maxDrop = max(contentView.bounds.height * 0.75, 140)
+        let totalShatterDuration = duration + Double(max(shards.count - 1, 0)) * 0.002
 
         for (i, shard) in shards.enumerated() {
             let start = shard.position
@@ -307,6 +317,10 @@ final class RankBadgeCell: UICollectionViewCell {
 //                shard.setAffineTransform(CGAffineTransform(rotationAngle: rot2).scaledBy(x: 0.98, y: 0.98))
 //                shard.removeAllAnimations()
 //            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + totalShatterDuration) { [weak self] in
+            self?.badgeImageView.isHidden = true
+            self?.lockOverlay.isHidden = true
         }
     }
 
