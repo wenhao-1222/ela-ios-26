@@ -54,6 +54,7 @@ public final class RankCarouselView: UIView, UICollectionViewDataSource, UIColle
         collectionView.decelerationRate = .fast
         collectionView.dataSource = self
         collectionView.delegate = self
+        collectionView.isUserInteractionEnabled = false
         collectionView.register(RankBadgeCell.self, forCellWithReuseIdentifier: "RankBadgeCell")
 
         addSubview(collectionView)
@@ -75,7 +76,7 @@ public final class RankCarouselView: UIView, UICollectionViewDataSource, UIColle
         let insetX = (bounds.width - itemW) / 2
         let insetY = max(0, (bounds.height - itemW) / 2)
         collectionView.contentInset = UIEdgeInsets(top: insetY, left: insetX, bottom: insetY, right: insetX)
-        let expectedOffsetX = offsetX(for: currentIndex)
+//        let expectedOffsetX = offsetX(for: currentIndex)
 //        if abs(collectionView.contentOffset.x - expectedOffsetX) > 0.5 {
 //            collectionView.setContentOffset(CGPoint(x: expectedOffsetX, y: 0), animated: false)
 //        }
@@ -88,7 +89,8 @@ public final class RankCarouselView: UIView, UICollectionViewDataSource, UIColle
         guard !tiers.isEmpty else { return }
         let clamped = max(0, min(index, tiers.count - 1))
         currentIndex = clamped
-        collectionView.setContentOffset(CGPoint(x: offsetX(for: clamped), y: 0), animated: animated)
+        let offsetF = collectionView.contentOffset
+        collectionView.setContentOffset(CGPoint(x: offsetX(for: clamped), y: offsetF.y), animated: animated)
         applyTransforms()
         onIndexChanged?(currentIndex)
     }
@@ -97,20 +99,22 @@ public final class RankCarouselView: UIView, UICollectionViewDataSource, UIColle
         guard !tiers.isEmpty else { return }
         if isTransitioning { return }
         isTransitioning = true
-        collectionView.isUserInteractionEnabled = false
+//        collectionView.isUserInteractionEnabled = false
 
         let target = max(0, min(index, tiers.count - 1))
 
         func finish() {
             self.isTransitioning = false
-            self.collectionView.isUserInteractionEnabled = true
+//            self.collectionView.isUserInteractionEnabled = true
         }
 
         func slide(to target: Int, completion: @escaping () -> Void) {
+            
+            let offsetF = collectionView.contentOffset
             UIView.animate(withDuration: 0.42,
                            delay: 0.02,
                            options: [.curveEaseInOut, .beginFromCurrentState]) {
-                self.collectionView.setContentOffset(CGPoint(x: self.offsetX(for: target), y: 0), animated: false)
+                self.collectionView.setContentOffset(CGPoint(x: self.offsetX(for: target), y: offsetF.y), animated: false)
                 self.applyTransforms()
             } completion: { _ in
                 completion()
@@ -156,13 +160,14 @@ public final class RankCarouselView: UIView, UICollectionViewDataSource, UIColle
 //            ghost.layer.add(flip, forKey: "ghostFlip3")
             ghost.layer.add(flip, forKey: "ghostFlip2")
 
+            let offsetF = self.collectionView.contentOffset
             // 同时滑动列表 + ghost 滑入中心
             UIView.animate(withDuration: 0.42,
                            delay: 0.02,
                            options: [.curveEaseInOut, .beginFromCurrentState]) {
 //                ghost.center = CGPoint(x: self.bounds.midX, y: centerY)
                 ghost.center = CGPoint(x: self.bounds.midX, y: targetCenter.y)
-                self.collectionView.setContentOffset(CGPoint(x: self.offsetX(for: target), y: 0), animated: false)
+                self.collectionView.setContentOffset(CGPoint(x: self.offsetX(for: target), y: offsetF.y), animated: false)
                 self.applyTransforms()
             } completion: { _ in
                 self.currentIndex = target
