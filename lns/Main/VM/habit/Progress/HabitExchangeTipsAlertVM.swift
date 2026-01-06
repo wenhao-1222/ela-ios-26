@@ -7,12 +7,16 @@
 
 
 import UIKit
+import SnapKit
 
 class HabitExchangeTipsAlertVM: UIView {
     
     // MARK: - Layout constants
     var whiteViewHeight: CGFloat = kFitWidth(650) //+ WHUtils().getBottomSafeAreaHeight()
     let whiteViewTopRadius: CGFloat = kFitWidth(50)
+    private var topImgTopConstraint: Constraint?
+    private var topImgHeightConstraint: Constraint?
+    private var originalTopImageHeight: CGFloat = 0
     
     /// 蒙层目标透明度：浅色 0.15，深色 0.85
     private var targetDimAlpha: CGFloat {
@@ -79,14 +83,17 @@ class HabitExchangeTipsAlertVM: UIView {
     lazy var scrollView: UIScrollView = {
         let scro = UIScrollView()
         scro.backgroundColor = .black
-        scro.bounces = false
+//        scro.bounces = false
+        scro.alwaysBounceVertical = true
         scro.contentInsetAdjustmentBehavior = .never
+        scro.delegate = self
         
         return scro
     }()
     lazy var topImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "habit_exchange_tips_bg")
+//        img.contentMode = .scaleAspectFit
         
         return img
     }()
@@ -227,8 +234,11 @@ extension HabitExchangeTipsAlertVM{
             make.left.top.width.height.equalToSuperview()
         }
         topImgView.snp.makeConstraints { make in
-            make.left.top.width.equalToSuperview()
-//            make.height.equalTo(kFitWidth(300))
+//            make.left.top.width.equalToSuperview()
+            make.left.equalToSuperview()
+            topImgTopConstraint = make.top.equalToSuperview().constraint
+            make.width.equalToSuperview()
+            topImgHeightConstraint = make.height.equalTo(kFitWidth(300)).constraint
         }
         elaImgView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(29))
@@ -311,6 +321,26 @@ extension HabitExchangeTipsAlertVM{
             }
         default:
             break
+        }
+    }
+}
+
+extension HabitExchangeTipsAlertVM: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView === self.scrollView else { return }
+
+        if originalTopImageHeight == 0 {
+            originalTopImageHeight = topImgView.frame.height
+//            topImgHeightConstraint?.update(offset: originalTopImageHeight)
+        }
+
+        let offsetY = scrollView.contentOffset.y
+        if offsetY < 0 {
+            topImgTopConstraint?.update(offset: offsetY)
+//            topImgHeightConstraint?.update(offset: originalTopImageHeight - offsetY)
+        } else {
+            topImgTopConstraint?.update(offset: 0)
+//            topImgHeightConstraint?.update(offset: originalTopImageHeight)
         }
     }
 }
