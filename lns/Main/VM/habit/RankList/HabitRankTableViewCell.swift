@@ -120,8 +120,8 @@ class HabitRankTableViewCell: UITableViewCell {
         fireLabel.setContentHuggingPriority(.required, for: .horizontal)
 
         bgView.snp.makeConstraints { make in
-            make.left.top.width.equalToSuperview()
-            make.bottom.equalTo(kFitWidth(-25))
+            make.left.top.width.bottom.equalToSuperview()
+//            make.bottom.equalTo(kFitWidth(-25))
         }
         degreeImgView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))

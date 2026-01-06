@@ -14,6 +14,9 @@ class HabitRankListVM: UIView {
     var dataSourceArray = NSArray()
     private var displayedDataArray = NSArray()
     
+    var promotionLine = 12
+    var relegationLine = 16
+    
 //    private let leaderboardCacheKey = "HabitRankListVM.leaderboardCache"
     private var isCurrentlyVisible = false
     
@@ -32,9 +35,9 @@ class HabitRankListVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     lazy var tableView: UITableView = {
-        let vi = UITableView(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight), style: .plain)
-//        let vi = UITableView(frame: CGRect.init(x: 0, y: self.headVm.frame.maxY, width: SCREEN_WIDHT, height: selfHeight-self.headVm.selfHeight), style: .plain)
-        vi.backgroundColor = .COLOR_BG_F2
+//        let vi = UITableView(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight), style: .plain)
+        let vi = UITableView(frame: CGRect.init(x: 0, y: self.headVm.frame.maxY, width: SCREEN_WIDHT, height: selfHeight-self.headVm.selfHeight), style: .grouped)
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//.COLOR_BG_F2
 //        vi.tableHeaderView = headVm
         vi.delegate = self
         vi.dataSource = self
@@ -54,6 +57,16 @@ class HabitRankListVM: UIView {
     }()
     lazy var headVm: HabitRankListHeadVM = {
         let vm = HabitRankListHeadVM.init(frame: .zero)
+        return vm
+    }()
+    lazy var upDegreeeVm: HabitRankListSectionVM = {
+        let vm = HabitRankListSectionVM.init(frame: .zero)
+        vm.updateUI(isUp: true)
+        return vm
+    }()
+    lazy var downDegreeeVm: HabitRankListSectionVM = {
+        let vm = HabitRankListSectionVM.init(frame: .zero)
+        vm.updateUI(isUp: false)
         return vm
     }()
 }
@@ -108,13 +121,23 @@ extension HabitRankListVM{
 }
 extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return displayedDataArray.count
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return headVm.selfHeight
+        if section == promotionLine{
+            return upDegreeeVm.selfHeight
+        }else if section == relegationLine - 1{
+            return downDegreeeVm.selfHeight
+        }
+        return section > 0 ? kFitWidth(25) : 0
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return headVm
+        if section == promotionLine{
+            return upDegreeeVm
+        }else if section == relegationLine - 1{
+            return downDegreeeVm
+        }
+        return nil
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //        emptyVm.isHidden = dataSourceArray.count > 0
@@ -123,7 +146,7 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
         
         emptyVm.isHidden = displayedDataArray.count > 0
         headVm.isHidden = displayedDataArray.count == 0
-        return displayedDataArray.count
+        return 1//displayedDataArray.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
@@ -132,11 +155,11 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
             ) as! HabitRankTableViewCell
 
 //        let dict = dataSourceArray[indexPath.row] as? NSDictionary ?? [:]
-        let dict = displayedDataArray[indexPath.row] as? NSDictionary ?? [:]
+        let dict = displayedDataArray[indexPath.section] as? NSDictionary ?? [:]
         
         cell.configure(
 //            rank: dict.stringValueForKey(key: "sn"),
-            rank: "\(indexPath.row + 1)",
+            rank: "\(indexPath.section + 1)",
             avatar: dict.stringValueForKey(key: "headimgurl"),
             name: dict.stringValueForKey(key: "nickname"),
             fireCount: dict.stringValueForKey(key: "donateCount").intValue,
@@ -145,7 +168,7 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return kFitWidth(70)
+        return kFitWidth(45)
     }
 }
 
@@ -174,7 +197,8 @@ extension HabitRankListVM{
                 self.dataSourceArray = self.prepareLeaderboardData(from: dataDict["leaderboard"]as? NSArray ?? [])
                 self.cacheLeaderboard(self.dataSourceArray)
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
-                
+                self.promotionLine = dataDict.stringValueForKey(key: "promotionLine").intValue
+                self.relegationLine = dataDict.stringValueForKey(key: "relegationLine").intValue
                 self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
                                 runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
                                 thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
@@ -261,7 +285,7 @@ extension HabitRankListVM{
         guard let oldIndex, let newIndex, oldIndex != newIndex else { return }
 
         DispatchQueue.main.async {
-            let targetIndexPath = IndexPath(row: newIndex, section: 0)
+            let targetIndexPath = IndexPath(row: 0, section: newIndex)
             if self.tableView.cellForRow(at: targetIndexPath) == nil {
                 self.tableView.scrollToRow(at: targetIndexPath, at: .middle, animated: false)
                 self.tableView.layoutIfNeeded()
@@ -302,7 +326,7 @@ extension HabitRankListVM{
         guard let oldIndex, let newIndex, oldIndex != newIndex else { return }
 
         DispatchQueue.main.async {
-            let fromIndexPath = IndexPath(row: oldIndex, section: 0)
+            let fromIndexPath = IndexPath(row: 0, section: oldIndex)
 
             self.tableView.reloadData()
             self.tableView.layoutIfNeeded()
@@ -311,36 +335,6 @@ extension HabitRankListVM{
 
             self.animateHighlightMove(from: oldIndex, to: newIndex)
         }
-//        guard let oldIndex, let newIndex, oldIndex != newIndex else { return }
-//
-//        DispatchQueue.main.async {
-//            guard oldIndex < self.displayedDataArray.count,
-//                  newIndex < self.dataSourceArray.count else {
-//                self.displayedDataArray = self.dataSourceArray
-//                self.tableView.reloadData()
-//                return
-//            }
-//
-//            let fromIndexPath = IndexPath(row: oldIndex, section: 0)
-//            let toIndexPath = IndexPath(row: newIndex, section: 0)
-//
-////            self.tableView.performBatchUpdates({
-////                self.displayedDataArray = self.dataSourceArray
-////                self.tableView.moveRow(at: fromIndexPath, to: toIndexPath)
-////            }, completion: { _ in
-//////                    self.animateSelfRankChange(from: oldIndex, to: newIndex)
-////            })
-//            self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: true)
-//
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-//                self.tableView.performBatchUpdates({
-//                    self.displayedDataArray = self.dataSourceArray
-//                    self.tableView.moveRow(at: fromIndexPath, to: toIndexPath)
-//                }, completion: { _ in
-//                    self.tableView.scrollToRow(at: toIndexPath, at: .middle, animated: true)
-//                })
-//            }
-//        }
     }
 }
 
@@ -373,8 +367,8 @@ extension HabitRankListVM {
     /// ⭐️ 核心动画：高亮 + 跟随滚动移动
     private func animateHighlightMove(from oldIndex: Int, to newIndex: Int) {
 
-        let fromIndexPath = IndexPath(row: oldIndex, section: 0)
-        let toIndexPath   = IndexPath(row: newIndex, section: 0)
+        let fromIndexPath = IndexPath(row: 0, section: oldIndex)
+        let toIndexPath   = IndexPath(row: 0, section: newIndex)
 
         guard
             let cell = tableView.cellForRow(at: fromIndexPath),
@@ -425,7 +419,8 @@ extension HabitRankListVM {
 
             UIView.performWithoutAnimation {
                 self.tableView.performBatchUpdates {
-                    self.tableView.moveRow(at: fromIndexPath, to: toIndexPath)
+//                    self.tableView.moveRow(at: fromIndexPath, to: toIndexPath)
+                    self.tableView.moveSection(oldIndex, toSection: newIndex)
                 } completion: { _ in
                     self.tableView.scrollToRow(at: toIndexPath, at: .middle, animated: true)
                     self.tableView.reloadData()

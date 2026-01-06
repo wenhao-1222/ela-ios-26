@@ -816,6 +816,7 @@
 		EC52848D2F0CA6C1006C81CE /* HabitExchangeTipsMsgVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC52848C2F0CA6BB006C81CE /* HabitExchangeTipsMsgVM.swift */; };
 		EC52848F2F0CB305006C81CE /* HabitExchangeTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC52848E2F0CB300006C81CE /* HabitExchangeTipsAlertVM.swift */; };
 		EC5284912F0CD055006C81CE /* HabitExchangeTipsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5284902F0CD03F006C81CE /* HabitExchangeTipsTableViewCell.swift */; };
+		EC5284932F0D05A0006C81CE /* HabitRankListSectionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5284922F0D0597006C81CE /* HabitRankListSectionVM.swift */; };
 		EC53283E2BF5E2D500C39C6A /* ServiceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC53283D2BF5E2D500C39C6A /* ServiceVC.swift */; };
 		EC5328402BF5E69100C39C6A /* ServiceTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC53283F2BF5E69100C39C6A /* ServiceTextView.swift */; };
 		EC5328422BF5EF0B00C39C6A /* ServiceImgView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5328412BF5EF0B00C39C6A /* ServiceImgView.swift */; };
@@ -2155,6 +2156,7 @@
 		EC52848C2F0CA6BB006C81CE /* HabitExchangeTipsMsgVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeTipsMsgVM.swift; sourceTree = "<group>"; };
 		EC52848E2F0CB300006C81CE /* HabitExchangeTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeTipsAlertVM.swift; sourceTree = "<group>"; };
 		EC5284902F0CD03F006C81CE /* HabitExchangeTipsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeTipsTableViewCell.swift; sourceTree = "<group>"; };
+		EC5284922F0D0597006C81CE /* HabitRankListSectionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRankListSectionVM.swift; sourceTree = "<group>"; };
 		EC53283D2BF5E2D500C39C6A /* ServiceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceVC.swift; sourceTree = "<group>"; };
 		EC53283F2BF5E69100C39C6A /* ServiceTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTextView.swift; sourceTree = "<group>"; };
 		EC5328412BF5EF0B00C39C6A /* ServiceImgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceImgView.swift; sourceTree = "<group>"; };
@@ -4298,6 +4300,7 @@
 				EC61ABD12F03A47B008FA297 /* HabitRankListVM.swift */,
 				EC61ABD52F03A5F3008FA297 /* HabitRankListEmptyVM.swift */,
 				EC61ABD72F03A611008FA297 /* HabitRankListHeadVM.swift */,
+				EC5284922F0D0597006C81CE /* HabitRankListSectionVM.swift */,
 				EC61ABD92F03D120008FA297 /* HabitRankListTableViewCell.swift */,
 				EC61ABDB2F03D42F008FA297 /* HabitRankTableViewCell.swift */,
 				EC9E63232F0A09B700FF6929 /* RankTier.swift */,
@@ -6779,6 +6782,7 @@
 				A79A4FFC2D65DCF0002B8EB4 /* Croper.swift in Sources */,
 				A73323662D92585F0065BF0A /* VdoTestVC.swift in Sources */,
 				A79A4FFD2D65DCF0002B8EB4 /* Croper+Calculation.swift in Sources */,
+				EC5284932F0D05A0006C81CE /* HabitRankListSectionVM.swift in Sources */,
 				A79A4FFE2D65DCF0002B8EB4 /* Croper+Func.swift in Sources */,
 				A79A4FFF2D65DCF0002B8EB4 /* Croper+Crop.swift in Sources */,
 				EC5328442BF5FFAB00C39C6A /* ServiewImageView.swift in Sources */,
