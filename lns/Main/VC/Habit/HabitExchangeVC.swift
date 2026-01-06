@@ -31,13 +31,23 @@ class HabitExchangeVC: WHBaseViewVC {
         
         return vm
     }()
-    
+    lazy var tipsMsgVm: HabitExchangeTipsMsgVM = {
+        let vm = HabitExchangeTipsMsgVM.init(frame: CGRect.init(x: 0, y: self.topMsgVm.frame.maxY + kFitWidth(12), width: 0, height: 0))
+        vm.tapBlock = {()in
+            self.tipsAlertVM.showSelf()
+        }
+        return vm
+    }()
     lazy var exchangeAlertVm: HabitExchangeAlertVM = {
         let vm = HabitExchangeAlertVM.init(frame: .zero)
         vm.updateUI(dict: self.msgDict)
         vm.exchangeBlock = {()in
             self.sendHabitDonateRequest()
         }
+        return vm
+    }()
+    lazy var tipsAlertVM: HabitExchangeTipsAlertVM = {
+        let vm = HabitExchangeTipsAlertVM.init(frame: .zero)
         return vm
     }()
 }
@@ -56,8 +66,9 @@ extension HabitExchangeVC{
         
         view.addSubview(elaIconImgView)
         view.addSubview(topMsgVm)
-        
+        view.addSubview(tipsMsgVm)
         view.addSubview(exchangeAlertVm)
+        view.addSubview(tipsAlertVM)
         
         setConstrait()
     }

@@ -813,6 +813,9 @@
 		EC4DE32F2BD104740090A7BD /* DataDetailTimeFilterAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE32E2BD104740090A7BD /* DataDetailTimeFilterAlertVM.swift */; };
 		EC4E493B2BAD1322008295A2 /* UserInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E493A2BAD1322008295A2 /* UserInfoModel.swift */; };
 		EC4E493D2BAD35D5008295A2 /* UIDevice+iPhoneModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E493C2BAD35D5008295A2 /* UIDevice+iPhoneModel.swift */; };
+		EC52848D2F0CA6C1006C81CE /* HabitExchangeTipsMsgVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC52848C2F0CA6BB006C81CE /* HabitExchangeTipsMsgVM.swift */; };
+		EC52848F2F0CB305006C81CE /* HabitExchangeTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC52848E2F0CB300006C81CE /* HabitExchangeTipsAlertVM.swift */; };
+		EC5284912F0CD055006C81CE /* HabitExchangeTipsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5284902F0CD03F006C81CE /* HabitExchangeTipsTableViewCell.swift */; };
 		EC53283E2BF5E2D500C39C6A /* ServiceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC53283D2BF5E2D500C39C6A /* ServiceVC.swift */; };
 		EC5328402BF5E69100C39C6A /* ServiceTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC53283F2BF5E69100C39C6A /* ServiceTextView.swift */; };
 		EC5328422BF5EF0B00C39C6A /* ServiceImgView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5328412BF5EF0B00C39C6A /* ServiceImgView.swift */; };
@@ -2149,6 +2152,9 @@
 		EC4DE32E2BD104740090A7BD /* DataDetailTimeFilterAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailTimeFilterAlertVM.swift; sourceTree = "<group>"; };
 		EC4E493A2BAD1322008295A2 /* UserInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoModel.swift; sourceTree = "<group>"; };
 		EC4E493C2BAD35D5008295A2 /* UIDevice+iPhoneModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+iPhoneModel.swift"; sourceTree = "<group>"; };
+		EC52848C2F0CA6BB006C81CE /* HabitExchangeTipsMsgVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeTipsMsgVM.swift; sourceTree = "<group>"; };
+		EC52848E2F0CB300006C81CE /* HabitExchangeTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeTipsAlertVM.swift; sourceTree = "<group>"; };
+		EC5284902F0CD03F006C81CE /* HabitExchangeTipsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeTipsTableViewCell.swift; sourceTree = "<group>"; };
 		EC53283D2BF5E2D500C39C6A /* ServiceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceVC.swift; sourceTree = "<group>"; };
 		EC53283F2BF5E69100C39C6A /* ServiceTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceTextView.swift; sourceTree = "<group>"; };
 		EC5328412BF5EF0B00C39C6A /* ServiceImgView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceImgView.swift; sourceTree = "<group>"; };
@@ -4318,7 +4324,10 @@
 				EC8264ED2EFBDED000965196 /* HabitDetailTableViewCell.swift */,
 				EC61ABC92F036CAD008FA297 /* HabitRuleTableViewCell.swift */,
 				EC312A9D2EFCE2A60026F005 /* HabitExchangeMsgVM.swift */,
+				EC52848C2F0CA6BB006C81CE /* HabitExchangeTipsMsgVM.swift */,
 				EC312A9F2EFCE8740026F005 /* HabitExchangeAlertVM.swift */,
+				EC52848E2F0CB300006C81CE /* HabitExchangeTipsAlertVM.swift */,
+				EC5284902F0CD03F006C81CE /* HabitExchangeTipsTableViewCell.swift */,
 			);
 			path = Progress;
 			sourceTree = "<group>";
@@ -5886,6 +5895,7 @@
 				A7202AF92DD7256F00CEA8D1 /* JournalReportWeekCalendarVM.swift in Sources */,
 				A7443DEF2DD1D3B20040FEFD /* JournalReportDailyDesCell.swift in Sources */,
 				EC3A9CA82BB5117F00C6E442 /* QuestionnaireSexVM.swift in Sources */,
+				EC52848F2F0CB305006C81CE /* HabitExchangeTipsAlertVM.swift in Sources */,
 				EC87EEFF2BB3EC7400350EB0 /* SearchVM.swift in Sources */,
 				EC8FF3DE2C9143B0003A7E0B /* NaturalStatCaloriesDGBarChart.swift in Sources */,
 				A75012A92DEFE16A009BCA7E /* GuideTotalVC.swift in Sources */,
@@ -6099,6 +6109,7 @@
 				EC9321AC2C50C43800FDBBE2 /* MealsNaviEditButton.swift in Sources */,
 				EC4DE2912BC9386B0090A7BD /* PlanCreateDaysVM.swift in Sources */,
 				A7B23E952DD49DA5000B2B85 /* JournalReportWeekNaturalItemVM.swift in Sources */,
+				EC52848D2F0CA6C1006C81CE /* HabitExchangeTipsMsgVM.swift in Sources */,
 				ECF194202EC6F33E00049DB0 /* JournalShareSaveFooterVM.swift in Sources */,
 				A73208012DFBD39E000A807D /* JournalReportWeightCell.swift in Sources */,
 				A7A5888D2E8A2548002FB662 /* NetworkCountryDetector.swift in Sources */,
@@ -6146,6 +6157,7 @@
 				ECD0FF232BABDC07001232C9 /* LocalAuthenUtil.swift in Sources */,
 				A7EDC0F72D1420740012D3FF /* ForumOfficialPollCell.swift in Sources */,
 				A736262B2CFEED080038351C /* GoalPreviewCalendarCollectionCell.swift in Sources */,
+				EC5284912F0CD055006C81CE /* HabitExchangeTipsTableViewCell.swift in Sources */,
 				A7927AF22CCB3BC100A8D0A2 /* WelcomeLaunchItemVM.swift in Sources */,
 				A751E1FE2E70303900AAD4DD /* LeftAlignedFlowLayout.swift in Sources */,
 				ECF745D12BDA25960076DDB9 /* FoodsListAddTableViewCell.swift in Sources */,

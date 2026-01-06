@@ -228,11 +228,11 @@ extension HabitRankListHeadVM {
         let fromIndex: Int
 
         if mode == .promote {
-            fromIndex = currentTierIndex
-            toIndex = min(rankTiers.count - 1, currentTierIndex + 1)
+            fromIndex = currentTierIndex - 1
+            toIndex = min(rankTiers.count - 1, currentTierIndex)
         } else {
-            fromIndex = currentTierIndex
-            toIndex = max(0, currentTierIndex - 1)
+            fromIndex = currentTierIndex  - 1
+            toIndex = max(0, currentTierIndex)
         }
 
         guard fromIndex != toIndex else { return }
@@ -301,22 +301,6 @@ extension HabitRankListHeadVM {
                 self.isAnimatingToDemo = false
                 return
             }
-
-//            if let targetFrame = demoVC.badgeFrame(in: demoVC.view) {
-//                let targetInWindow = demoVC.view.convert(targetFrame, to: window)
-//                UIView.animate(withDuration: 0.32,
-//                               delay: 0,
-//                               options: [.curveEaseInOut]) {
-//                    snapshot.transform = .identity
-//                    snapshot.frame = targetInWindow
-//                    overlay.backgroundColor = .clear
-//                } completion: { _ in
-//                    overlay.removeFromSuperview()
-//                    snapshot.removeFromSuperview()
-//                    demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
-//                    self.isAnimatingToDemo = false
-//                }
-//            } else {
             let targetInWindow = preparedTargetFrame ?? {
                 guard let targetFrame = demoVC.badgeFrame(in: demoVC.view) else { return nil }
                 return demoVC.view.convert(targetFrame, to: window)

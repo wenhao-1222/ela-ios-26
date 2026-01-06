@@ -9,7 +9,7 @@ import UIKit
 
 class DottedLineView: UIView {
     
-    
+    var lineColor = UIColor.COLOR_TEXT_TITLE_0f1214_20
     
     // 初始化
     override init(frame: CGRect) {
@@ -35,7 +35,7 @@ class DottedLineView: UIView {
         let shapeLayer = CAShapeLayer()
         
         // 设置线的颜色
-        shapeLayer.strokeColor = UIColor.COLOR_TEXT_TITLE_0f1214_20.cgColor
+        shapeLayer.strokeColor = lineColor.cgColor
         
         // 设置线宽
         shapeLayer.lineWidth = kFitWidth(1)

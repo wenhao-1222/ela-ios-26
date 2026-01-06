@@ -144,8 +144,8 @@ final class KeywordHighlightLabel: UILabel {
                 let baselineY  = seg.lineY + CGFloat(ascent)
                 let underlineY = baselineY + CGFloat(descent) + extraGap
 
-                ctx.move(to: CGPoint(x: seg.startX, y: underlineY))
-                ctx.addLine(to: CGPoint(x: seg.endX,   y: underlineY))
+                ctx.move(to: CGPoint(x: seg.startX, y: underlineY-kFitWidth(3)))
+                ctx.addLine(to: CGPoint(x: seg.endX,   y: underlineY-kFitWidth(3)))
                 ctx.strokePath()
             }
         }

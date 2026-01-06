@@ -75,12 +75,15 @@ public final class RankCarouselView: UIView, UICollectionViewDataSource, UIColle
         let insetX = (bounds.width - itemW) / 2
         let insetY = max(0, (bounds.height - itemW) / 2)
         collectionView.contentInset = UIEdgeInsets(top: insetY, left: insetX, bottom: insetY, right: insetX)
+        let expectedOffsetX = offsetX(for: currentIndex)
+//        if abs(collectionView.contentOffset.x - expectedOffsetX) > 0.5 {
+//            collectionView.setContentOffset(CGPoint(x: expectedOffsetX, y: 0), animated: false)
+//        }
 
         applyTransforms()
     }
 
     // MARK: - Public
-
     public func snap(to index: Int, animated: Bool) {
         guard !tiers.isEmpty else { return }
         let clamped = max(0, min(index, tiers.count - 1))
