@@ -158,7 +158,6 @@ class HabitRankTableViewCell: UITableViewCell {
     }
 
     // MARK: - Config
-
     func configure(
         rank: String,
         avatar: String,
