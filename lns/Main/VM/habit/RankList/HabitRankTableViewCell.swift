@@ -98,6 +98,11 @@ class HabitRankTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        avatarImageView.kf.cancelDownloadTask()
+        avatarImageView.image = nil
+    }
 
     // MARK: - Setup
 
@@ -163,13 +168,17 @@ class HabitRankTableViewCell: UITableViewCell {
         avatar: String,
         name: String,
         fireCount: Int?,
-        score: String
+        score: String,
+        needAvatarTransition: Bool = true
     ) {
 //        rankLabel.text = "\(rank)"
         let rankInt = rank.intValue
         rankLabel.text = "\(rankInt)"
+//        let avatarPlaceholder = createImageWithColor(color: .COLOR_BG_F5)//UIImage(named: "control_widget_icon")
+//        avatarImageView.image = avatarPlaceholder
         if avatar.count > 0 {
             avatarImageView.setImgUrl(urlString: avatar)
+//            avatarImageView.setImgUrl(urlString: avatar, placeHolder: avatarPlaceholder)
         }else{
             avatarImageView.setImgLocal(imgName: "control_widget_icon")
         }
@@ -203,14 +212,13 @@ class HabitRankTableViewCell: UITableViewCell {
             rankLabel.isHidden = false
             degreeImgView.image = nil
         }
-//        degreeImgView.isHidden = rank.intValue > 3
-//        rankLabel.isHidden = rank.intValue <= 3
-//        if rank == "1"{
-//            degreeImgView.setImgLocal(imgName: "habit_ranklist_one")
-//        }else if rank == "2"{
-//            degreeImgView.setImgLocal(imgName: "habit_ranklist_two")
-//        }else if rank == "3"{
-//            degreeImgView.setImgLocal(imgName: "habit_ranklist_three")
-//        }
     }
+    func currentAvatarImage() -> UIImage? {
+        return avatarImageView.image
+    }
+
+    func applyAvatarImage(_ image: UIImage?) {
+        avatarImageView.image = image
+    }
+
 }

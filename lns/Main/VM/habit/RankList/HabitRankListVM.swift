@@ -312,29 +312,6 @@ extension HabitRankListVM{
 
         return dict.stringValueForKey(key: "uid")
     }
-
-    private func animateSelfRankChange(from oldIndex: Int?, to newIndex: Int?) {
-        guard let oldIndex, let newIndex, oldIndex != newIndex else { return }
-
-        DispatchQueue.main.async {
-            let targetIndexPath = IndexPath(row: 0, section: newIndex)
-            if self.tableView.cellForRow(at: targetIndexPath) == nil {
-                self.tableView.scrollToRow(at: targetIndexPath, at: .middle, animated: false)
-                self.tableView.layoutIfNeeded()
-            }
-
-            guard let cell = self.tableView.cellForRow(at: targetIndexPath) else { return }
-            let offset = CGFloat(oldIndex - newIndex) * kFitWidth(70)
-            cell.contentView.transform = CGAffineTransform(translationX: 0, y: offset)
-            UIView.animate(withDuration: 0.75,
-                           delay: 0.15,
-                           usingSpringWithDamping: 0.75,
-                           initialSpringVelocity: 0.6,
-                           options: [.curveEaseInOut]) {
-                cell.contentView.transform = .identity
-            }
-        }
-    }
     private func initialDisplayArray(for leaderboard: NSArray, previousIndex: Int?, newIndex: Int?, shouldAnimate: Bool) -> NSArray {
         guard shouldAnimate,
               let previousIndex,
@@ -353,24 +330,6 @@ extension HabitRankListVM{
 
         return mutable
     }
-
-//    private func performSelfRankMove(from oldIndex: Int?, to newIndex: Int?) {
-//        DLLog(message: "移动前后Index: \(oldIndex ?? -1) -- \(newIndex ?? -1)")
-//        guard let oldIndex  else { return }
-//        DispatchQueue.main.async {
-//            let fromIndexPath = IndexPath(row: 0, section: oldIndex)
-//
-//            self.tableView.reloadData()
-//            self.tableView.layoutIfNeeded()
-//            self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: false)
-//            self.tableView.layoutIfNeeded()
-//        }
-//        guard let newIndex, oldIndex != newIndex else { return }
-//
-//        DispatchQueue.main.async {
-//            self.animateHighlightMove(from: oldIndex, to: newIndex)
-//        }
-//    }
     private func performSelfRankMove(from oldIndex: Int?, to newIndex: Int?) {
         DLLog(message: "移动前后Index: \(oldIndex ?? -1) -- \(newIndex ?? -1)")
         guard let oldIndex  else { return }
@@ -401,7 +360,7 @@ extension HabitRankListVM{
         var placeholderIndex = 1
 
         while entries.count < 20 {
-            let randomScore = Int.random(in: 3...40)
+            let randomScore = Int.random(in: 3...18)
             let placeholder: NSDictionary = [
                 "headimgurl": "",
                 "nickname": "Tester \(placeholderIndex)",
@@ -420,62 +379,6 @@ extension HabitRankListVM{
     }
 }
 extension HabitRankListVM {
-    /// ⭐️ 核心动画：高亮 + 跟随滚动移动
-//    private func animateHighlightMove(from oldIndex: Int, to newIndex: Int) {
-//
-//        let fromIndexPath = IndexPath(row: 0, section: oldIndex)
-//        let toIndexPath   = IndexPath(row: 0, section: newIndex)
-//        
-//        DLLog(message: "移动前后Index: \(oldIndex)  ---  \(newIndex)")
-//
-//        guard
-//            let cell = tableView.cellForRow(at: fromIndexPath),
-//            let container = tableView.superview
-//        else { return }
-//        let snapshot = safeSnapshot(of: cell)
-//        snapshot.frame = tableView.convert(cell.frame, to: container)
-//        snapshot.layer.shadowColor = UIColor.black.cgColor
-//        snapshot.layer.shadowOpacity = 0.25
-//        snapshot.layer.shadowRadius = 8
-//        snapshot.layer.cornerRadius = 12
-//        container.addSubview(snapshot)
-//        cell.isHidden = true
-//
-//        let targetRect = tableView.rectForRow(at: toIndexPath)
-//        var targetFrame = tableView.convert(targetRect, to: container)
-//        
-//        if targetFrame.origin.y < self.headVm.selfHeight{
-//            let targetFrameT = targetFrame
-//            targetFrame = CGRect.init(x: 0, y: self.headVm.selfHeight, width: targetFrameT.size.width, height: targetFrameT.size.height)
-//        }
-//
-//        UIView.animate(withDuration: 0.8, delay: 0, options: [.curveEaseInOut]) {
-//            snapshot.frame = targetFrame
-//            self.tableView.scrollRectToVisible(targetRect, animated: false)
-//        } completion: { _ in
-//
-//            cell.isHidden = false
-//            snapshot.removeFromSuperview()
-//
-//            // 数据一次性归位
-//            let item = self.displayedDataArray.object(at: oldIndex)
-//            let mutable = self.displayedDataArray.mutableCopy() as! NSMutableArray
-//            mutable.removeObject(at: oldIndex)
-//            mutable.insert(item, at: newIndex)
-//            self.displayedDataArray = mutable
-//
-//            UIView.performWithoutAnimation {
-//                self.tableView.performBatchUpdates {
-////                    self.tableView.moveRow(at: fromIndexPath, to: toIndexPath)
-//                    self.tableView.moveSection(oldIndex, toSection: newIndex)
-//                } completion: { _ in
-//                    self.tableView.scrollToRow(at: toIndexPath, at: .middle, animated: true)
-//                    self.tableView.reloadData()
-////                    containerReal.removeFromSuperview()
-//                }
-//            }
-//        }
-//    }
     /// ⭐️ 三段式（不贴边、不回头）：Lift → Move+Scroll → Drop
     private func animateHighlightMove3Stage(from oldIndex: Int,
                                             to newIndex: Int,
@@ -503,7 +406,13 @@ extension HabitRankListVM {
         container.addSubview(overlay)
 
         // ✅ 高亮卡片（外扩上下 extraVertical）
-        let highlightView = makeHighlightSnapshotView(from: fromCell, extraVertical: extraVertical)
+//        let highlightView = makeHighlightSnapshotView(from: fromCell, extraVertical: extraVertical)
+        let highlightView: UIView
+        if let habitCell = fromCell as? HabitRankTableViewCell {
+            highlightView = makeHighlightMirrorCellView(from: oldIndex, fromCell: habitCell, extraVertical: extraVertical)
+        } else {
+            highlightView = makeHighlightSnapshotView(from: fromCell, extraVertical: extraVertical)
+        }
 
         let startOffset = tableView.contentOffset
         let startCellFrameInOverlay = tableView.convert(fromCell.frame, to: overlay)
@@ -599,253 +508,6 @@ extension HabitRankListVM {
             moveAnimator.startAnimation()
         }
     }
-
-    /// ⭐️ 三段式拖拽特效：靠边 → 自动滚动 → 落位
-    private func animateHighlightMove3Stagettt(from oldIndex: Int, to newIndex: Int, extraVertical: CGFloat = 20) {
-
-        let fromIndexPath = IndexPath(row: 0, section: oldIndex)
-        let toIndexPath   = IndexPath(row: 0, section: newIndex)
-
-        guard
-            oldIndex != newIndex,
-            displayedDataArray.count > 0,
-            oldIndex >= 0, oldIndex < displayedDataArray.count,
-            newIndex >= 0, newIndex < displayedDataArray.count,
-            let fromCell = tableView.cellForRow(at: fromIndexPath),
-            let container = tableView.superview
-        else { return }
-
-        tableView.layoutIfNeeded()
-
-        // ✅ overlay：裁剪区域 = tableView 的可视区域
-        let overlay = UIView(frame: tableView.frame)
-        overlay.backgroundColor = .clear
-        overlay.isUserInteractionEnabled = false
-        overlay.clipsToBounds = true
-        container.addSubview(overlay)
-
-        // ✅ 高亮卡片（上下各+extraVertical，不拉伸原 snapshot）
-        let highlightView = makeHighlightSnapshotView(from: fromCell, extraVertical: extraVertical)
-
-        let startOffset = tableView.contentOffset
-        let startCellFrameInOverlay = tableView.convert(fromCell.frame, to: overlay)
-        var startFrame = startCellFrameInOverlay.insetBy(dx: 0, dy: -extraVertical)
-        startFrame = clamp(frame: startFrame, inside: overlay.bounds, margin: 2)
-
-        highlightView.frame = startFrame
-        overlay.addSubview(highlightView)
-
-        // 隐藏源 cell（注意你 cellForRow 已要做 isHidden=false 的复位，见后文）
-        fromCell.isHidden = true
-
-        // 目标 rect（content 坐标）
-        let targetRectInContent = tableView.rectForRow(at: toIndexPath)
-
-        // 计算最终滚动到哪（让目标尽量在 middle）
-        let endOffset = endContentOffsetToShow(rect: targetRectInContent, position: .middle)
-
-        // 目标 frame（overlay 坐标）= contentRect - endOffset
-        var endFrame = targetRectInContent.offsetBy(dx: -endOffset.x, dy: -endOffset.y)
-        endFrame = endFrame.insetBy(dx: 0, dy: -extraVertical)
-        endFrame.size.width = startFrame.size.width
-        endFrame.origin.x = startFrame.origin.x
-        endFrame = clamp(frame: endFrame, inside: overlay.bounds, margin: 2)
-
-        // 段1：靠边位置
-        let movingUp = newIndex < oldIndex
-        let edgePadding: CGFloat = 10
-        var edgeFrame = startFrame
-        edgeFrame.origin.y = movingUp ? edgePadding : (overlay.bounds.height - startFrame.height - edgePadding)
-        edgeFrame = clamp(frame: edgeFrame, inside: overlay.bounds, margin: 2)
-
-        // 段2：给一个中间 offset，让滚动更“拖拽感”
-        let midOffsetY = startOffset.y + (endOffset.y - startOffset.y) * 0.65
-        let midOffset = CGPoint(x: startOffset.x, y: midOffsetY)
-
-        // 时长：根据滚动距离动态调整（越远段2越长）
-        let distance = abs(endOffset.y - startOffset.y)
-        let stage1: TimeInterval = 0.22
-        let stage3: TimeInterval = 0.26
-        let stage2: TimeInterval = (distance < 30) ? 0.12 : min(max(distance / 900.0, 0.40), 0.95)
-        let total = stage1 + stage2 + stage3
-        let stage2a = stage2 * 0.55
-        let stage2b = stage2 - stage2a
-
-        // 动画期间禁用交互，避免用户滚动打断
-        tableView.isUserInteractionEnabled = false
-        tableView.isScrollEnabled = false
-
-        UIView.animateKeyframes(withDuration: total,
-                                delay: 0,
-                                options: [.calculationModeCubic, .beginFromCurrentState, .allowUserInteraction]) {
-
-            // 1) Lift + 靠边
-            UIView.addKeyframe(withRelativeStartTime: 0,
-                               relativeDuration: stage1 / total) {
-                highlightView.frame = edgeFrame
-                highlightView.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
-            }
-
-            // 2a) 自动滚动到中间 offset（卡片贴边轻微“顶住”感）
-            UIView.addKeyframe(withRelativeStartTime: stage1 / total,
-                               relativeDuration: stage2a / total) {
-                self.tableView.contentOffset = midOffset
-                highlightView.frame = edgeFrame.offsetBy(dx: 0, dy: movingUp ? 2 : -2)
-            }
-
-            // 2b) 继续滚到最终 offset（卡片回到贴边基准位）
-            UIView.addKeyframe(withRelativeStartTime: (stage1 + stage2a) / total,
-                               relativeDuration: stage2b / total) {
-                self.tableView.contentOffset = endOffset
-                highlightView.frame = edgeFrame
-            }
-
-            // 3) Drop 落位
-            UIView.addKeyframe(withRelativeStartTime: (stage1 + stage2) / total,
-                               relativeDuration: stage3 / total) {
-                highlightView.frame = endFrame
-                highlightView.transform = .identity
-            }
-
-        } completion: { _ in
-
-            // ✅ 动画结束后：更新数据 + moveSection + 刷新 rank
-            let item = self.displayedDataArray.object(at: oldIndex)
-            let mutable = self.displayedDataArray.mutableCopy() as! NSMutableArray
-            mutable.removeObject(at: oldIndex)
-            mutable.insert(item, at: newIndex)
-            self.displayedDataArray = mutable
-
-            UIView.performWithoutAnimation {
-                self.tableView.performBatchUpdates({
-                    self.tableView.moveSection(oldIndex, toSection: newIndex)
-                }, completion: { _ in
-
-                    // 固定最终滚动位置，避免 batchUpdates 后 contentOffset 抖动
-                    self.tableView.setContentOffset(endOffset, animated: false)
-
-                    // 只刷新受影响区间即可（比 reloadData 更稳更轻）
-                    let lo = min(oldIndex, newIndex)
-                    let hi = max(oldIndex, newIndex)
-                    self.tableView.reloadSections(IndexSet(integersIn: lo...hi), with: .none)
-
-                    // 还原
-                    fromCell.isHidden = false
-                    overlay.removeFromSuperview()
-
-                    self.tableView.isScrollEnabled = true
-                    self.tableView.isUserInteractionEnabled = true
-                })
-            }
-        }
-    }
-
-    private func animateHighlightMove(from oldIndex: Int, to newIndex: Int) {
-
-        let fromIndexPath = IndexPath(row: 0, section: oldIndex)
-        let toIndexPath   = IndexPath(row: 0, section: newIndex)
-
-        DLLog(message: "移动前后Index: \(oldIndex)  ---  \(newIndex)")
-
-        guard
-            let fromCell = tableView.cellForRow(at: fromIndexPath),
-            let container = tableView.superview
-        else { return }
-
-        // 确保 rectForRow / cell.frame 都是最新的
-        tableView.layoutIfNeeded()
-
-        // ✅ overlay：完全覆盖 tableView 可视区域，并裁剪
-        let overlay = UIView(frame: tableView.frame)
-        overlay.backgroundColor = .clear
-        overlay.isUserInteractionEnabled = false
-        overlay.clipsToBounds = true
-        container.addSubview(overlay)
-
-        // ✅ snapshot 放进 overlay，这样永远不会超出 tableView 显示区域
-        let snapshot = safeSnapshot(of: fromCell)
-        snapshot.layer.shadowColor = UIColor.black.cgColor
-        snapshot.layer.shadowOpacity = 0.25
-        snapshot.layer.shadowRadius = 8
-        snapshot.layer.cornerRadius = 12
-        snapshot.layer.masksToBounds = false
-
-        let startOffset = tableView.contentOffset
-        // fromCell.frame 是 content 坐标，转成 overlay(可视坐标)
-        let startFrameInOverlay = tableView.convert(fromCell.frame, to: overlay)
-        snapshot.frame = startFrameInOverlay
-        overlay.addSubview(snapshot)
-
-        // 隐藏源 cell（注意：cellForRowAt 已经做了复位防复用）
-        fromCell.isHidden = true
-
-        // 目标 rect（content 坐标）
-        let targetRectInContent = tableView.rectForRow(at: toIndexPath)
-
-        // ✅ 计算动画结束时 tableView 应该滚到哪（建议：让目标行尽量靠近 middle）
-        let endOffset = self.endContentOffsetToShow(rect: targetRectInContent, position: .middle)
-
-        // ✅ 动画结束时 snapshot 的位置（overlay 可视坐标）= contentRect - endOffset
-        var endFrameInOverlay = targetRectInContent.offsetBy(dx: -endOffset.x, dy: -endOffset.y)
-
-        // 保持和原 cell 宽高一致（防止 grouped/Inset 变化导致跳动）
-        endFrameInOverlay.size = startFrameInOverlay.size
-        endFrameInOverlay.origin.x = startFrameInOverlay.origin.x
-
-        // ✅ 再做一次 clamp，保证 snapshot “完全在 overlay 内部”
-        endFrameInOverlay = clamp(frame: endFrameInOverlay, inside: overlay.bounds)
-
-        // 为了更像拖拽：轻微放大 + 回弹
-        snapshot.transform = .identity
-
-        // 你可以调这个时长和阻尼
-        let duration: TimeInterval = 0.85
-
-        // 禁止用户在动画期间手动滚动打断
-        tableView.isUserInteractionEnabled = false
-        tableView.isScrollEnabled = false
-
-        let animator = UIViewPropertyAnimator(duration: duration, curve: .easeInOut) {
-            snapshot.frame = endFrameInOverlay
-            snapshot.transform = CGAffineTransform(scaleX: 1.03, y: 1.03)
-            self.tableView.contentOffset = endOffset   // ✅ 同步滚动动画
-        }
-
-        animator.addCompletion { _ in
-
-            // 回到正常大小
-            UIView.animate(withDuration: 0.12) {
-                snapshot.transform = .identity
-            } completion: { _ in
-
-                fromCell.isHidden = false
-                overlay.removeFromSuperview()
-
-                // 数据一次性归位（沿用你原来的逻辑）
-                let item = self.displayedDataArray.object(at: oldIndex)
-                let mutable = self.displayedDataArray.mutableCopy() as! NSMutableArray
-                mutable.removeObject(at: oldIndex)
-                mutable.insert(item, at: newIndex)
-                self.displayedDataArray = mutable
-
-                UIView.performWithoutAnimation {
-                    self.tableView.performBatchUpdates({
-                        self.tableView.moveSection(oldIndex, toSection: newIndex)
-                    }, completion: { _ in
-                        // 保持最终位置稳定（避免 moveSection 后轻微偏移）
-                        self.tableView.setContentOffset(endOffset, animated: false)
-                        self.tableView.reloadData()
-
-                        self.tableView.isScrollEnabled = true
-                        self.tableView.isUserInteractionEnabled = true
-                    })
-                }
-            }
-        }
-
-        animator.startAnimation()
-    }
-
     private func safeSnapshot(of view: UIView) -> UIView {
 
         if let snapshot = view.snapshotView(afterScreenUpdates: true) {
@@ -903,6 +565,52 @@ extension HabitRankListVM{
 
         return f
     }
+    private func makeHighlightMirrorCellView(from index: Int,
+                                             fromCell: HabitRankTableViewCell,
+                                             extraVertical: CGFloat) -> UIView {
+
+        let dict = displayedDataArray[index] as? NSDictionary ?? [:]
+        let avatarURL = dict.stringValueForKey(key: "headimgurl")
+
+        let mirror = HabitRankTableViewCell(style: .default, reuseIdentifier: nil)
+        mirror.frame = fromCell.bounds
+
+        mirror.configure(
+            rank: "\(index + 1)",
+            avatar: avatarURL, // ✅ 用正确URL
+            name: dict.stringValueForKey(key: "nickname"),
+            fireCount: dict.stringValueForKey(key: "donateCount").intValue,
+            score: dict.stringValueForKey(key: "rankPointBalance"),
+            needAvatarTransition: false // ✅ 高亮不fade，像拖拽
+        )
+
+        mirror.layoutIfNeeded()
+
+        // 包装成上下+20的高亮卡片（你之前那套）
+        let inner = UIView(frame: CGRect(x: 0, y: 0,
+                                         width: mirror.bounds.width,
+                                         height: mirror.bounds.height + extraVertical * 2))
+        inner.backgroundColor = .COLOR_CARD_BG_WHITE
+        inner.layer.cornerRadius = 12
+        inner.clipsToBounds = true
+
+        mirror.frame = CGRect(x: 0, y: extraVertical,
+                              width: mirror.bounds.width,
+                              height: mirror.bounds.height)
+        inner.addSubview(mirror)
+
+        let outer = UIView(frame: inner.bounds)
+        outer.backgroundColor = .clear
+        outer.layer.shadowColor = UIColor.black.cgColor
+        outer.layer.shadowOpacity = 0.22
+        outer.layer.shadowRadius = 10
+        outer.layer.shadowOffset = CGSize(width: 0, height: 6)
+        outer.layer.cornerRadius = 12
+        outer.addSubview(inner)
+
+        return outer
+    }
+
     /// ✅ 高亮卡片：上下各+extraVertical，不拉伸 snapshot
     private func makeHighlightSnapshotView(from cell: UITableViewCell, extraVertical: CGFloat) -> UIView {
 
