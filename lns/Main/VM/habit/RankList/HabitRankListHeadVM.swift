@@ -327,7 +327,7 @@ extension HabitRankListHeadVM {
                 return
             }
 
-            UIView.animate(withDuration: 0.32,
+            UIView.animate(withDuration: 0.15,
                            delay: 0,
                            options: [.curveEaseInOut]) {
                 snapshot.transform = .identity

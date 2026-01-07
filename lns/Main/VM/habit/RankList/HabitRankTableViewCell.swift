@@ -172,7 +172,7 @@ class HabitRankTableViewCell: UITableViewCell {
         if avatar.count > 0 {
             avatarImageView.setImgUrl(urlString: avatar)
         }else{
-            avatarImageView.image = nil
+            avatarImageView.setImgLocal(imgName: "control_widget_icon")
         }
         
         nameLabel.text = name
