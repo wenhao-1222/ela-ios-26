@@ -63,9 +63,13 @@ public final class RankResultViewController: UIViewController {
     }
 
     public func currentBadgeImage() -> UIImage? {
-           guard tiers.indices.contains(currentIndex) else { return nil }
-           return tiers[currentIndex].image
-       }
+       guard tiers.indices.contains(currentIndex) else { return nil }
+       return tiers[currentIndex].image
+   }
+    public func updateCurrentIndex(currentIndex:Int){
+        carousel.unlockedMaxIndex = max(carousel.unlockedMaxIndex, currentIndex)
+        carousel.snap(to: currentIndex, animated: false)
+    }
 
     public func play(mode: Mode, fromIndex: Int, toIndex: Int) {
         titleLabel.alpha = 0

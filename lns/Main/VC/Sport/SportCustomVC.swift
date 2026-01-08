@@ -166,7 +166,7 @@ extension SportCustomVC{
         let param = ["name":"\(name)",
                      "duration":"\(duration)".replacingOccurrences(of: ",", with: "."),
                      "calories":"\(calories)".replacingOccurrences(of: ",", with: ".")]
-        WHNetworkUtil.shareManager().POST(urlString: URL_sport_catogary_add, parameters: param as [String : AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_sport_catogary_add, parameters: param as [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
             DLLog(message: "sendSportAddRequest:\(responseObject)")
             
             self.backTapAction()

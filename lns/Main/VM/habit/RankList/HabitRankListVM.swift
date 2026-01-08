@@ -270,7 +270,7 @@ extension HabitRankListVM{
                 let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
                 DLLog(message: "sendDataRequest:\(dataDict)")
                 UserDefaults.setTierData(tier: dataDict.stringValueForKey(key: "tier"), isRefresh: false)
-                self.currentTierIndex = 3//dataDict.stringValueForKey(key: "tier").intValue
+                self.currentTierIndex = 2//dataDict.stringValueForKey(key: "tier").intValue
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
                 
                 self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
@@ -282,6 +282,7 @@ extension HabitRankListVM{
         }
     }
 }
+
 extension HabitRankListVM{
     private func indexOfCurrentUser(in leaderboard: NSArray) -> Int? {
         let uid = UserDefaults.standard.value(forKey: userId) as? String ?? ""
@@ -694,7 +695,7 @@ extension HabitRankListVM {
                              fromIndex: fromIndex - 1,
                              toIndex: currentTierIndex - 1)
         UserDefaults.setTierData(tier: "\(currentTierIndex)", isRefresh: true)
-        self.headVm.updateDegree(tier: currentTierIndex)
+//        self.headVm.updateDegree(tier: currentTierIndex)
     }
 
     private func playTransitionToDemo(mode: RankResultViewController.Mode, fromIndex: Int, toIndex: Int) {
@@ -720,14 +721,7 @@ extension HabitRankListVM {
                        delay: 0,
                        options: [.curveEaseInOut]) {
             overlay.backgroundColor = UIColor.black.withAlphaComponent(0.15)
-//            snapshot.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
-//            snapshot.center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
-//        if let targetFrame = preparedTargetFrame {
-//            snapshot.frame = targetFrame
-//        } else {
-//            snapshot.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
-//            snapshot.center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
-//        }
+            
             if let targetFrame = preparedTargetFrame {
                             snapshot.frame = targetFrame
                         } else {
@@ -765,6 +759,7 @@ extension HabitRankListVM {
                 overlay.removeFromSuperview()
                 snapshot.removeFromSuperview()
                 demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
+                self.headVm.updateDegree(tier: self.currentTierIndex)
                 self.isAnimatingToDemo = false
                 return
             }
@@ -777,20 +772,24 @@ extension HabitRankListVM {
                 overlay.removeFromSuperview()
                 snapshot.removeFromSuperview()
                 demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
+                self.headVm.updateDegree(tier: self.currentTierIndex)
                 self.isAnimatingToDemo = false
                 return
             }
-
+            
+            demoVC.updateCurrentIndex(currentIndex: fromIndex)
             UIView.animate(withDuration: 0.15,
                            delay: 0,
                            options: [.curveEaseInOut]) {
                 snapshot.transform = .identity
                 snapshot.frame = finalFrame
                 overlay.backgroundColor = .clear
+//                demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
             } completion: { _ in
                 overlay.removeFromSuperview()
                 snapshot.removeFromSuperview()
                 demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
+                self.headVm.updateDegree(tier: self.currentTierIndex)
                 self.isAnimatingToDemo = false
             }
         }
@@ -827,10 +826,25 @@ extension HabitRankListVM {
         }
     }
     private func targetBadgeFrame(in window: UIWindow, using demoVC: DemoViewController) -> CGRect? {
-       demoVC.loadViewIfNeeded()
-       demoVC.view.frame = window.bounds
-       demoVC.view.layoutIfNeeded()
-       guard let targetFrame = demoVC.badgeFrame(in: demoVC.view) else { return nil }
-       return demoVC.view.convert(targetFrame, to: window)
+//       demoVC.loadViewIfNeeded()
+//       demoVC.view.frame = window.bounds
+//       demoVC.view.layoutIfNeeded()
+//       guard let targetFrame = demoVC.badgeFrame(in: demoVC.view) else { return nil }
+//       return demoVC.view.convert(targetFrame, to: window)
+        demoVC.loadViewIfNeeded()
+        demoVC.view.frame = window.bounds
+        demoVC.view.isHidden = true
+        window.addSubview(demoVC.view)
+        demoVC.view.setNeedsLayout()
+        demoVC.view.layoutIfNeeded()
+        guard let targetFrame = demoVC.badgeFrame(in: demoVC.view) else {
+            demoVC.view.removeFromSuperview()
+            demoVC.view.isHidden = false
+            return nil
+        }
+        let convertedFrame = demoVC.view.convert(targetFrame, to: window)
+        demoVC.view.removeFromSuperview()
+        demoVC.view.isHidden = false
+        return convertedFrame
    }
 }

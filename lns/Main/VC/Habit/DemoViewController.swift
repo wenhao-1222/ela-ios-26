@@ -21,7 +21,8 @@ final class DemoViewController: UIViewController,RankResultViewControllerDelegat
         super.viewDidLoad()
         title = "段位动画 Demo"
         view.backgroundColor = .white
-
+        let fromIndex: Int = UserDefaults().getTierData().intValue
+        currentIndex = fromIndex - 1 > 0 ? fromIndex - 1 : 0
         resultVC = RankResultViewController(tiers: tiers, currentIndex: currentIndex, unlockedMaxIndex: unlockedMaxIndex)
         resultVC.delegate = self
         addChild(resultVC)
@@ -71,19 +72,22 @@ final class DemoViewController: UIViewController,RankResultViewControllerDelegat
         ])
 
         // 初始展示
-        resultVC.play(mode: .promote, fromIndex: currentIndex, toIndex: currentIndex)
+//        resultVC.play(mode: .promote, fromIndex: currentIndex, toIndex: currentIndex)
     }
 
     func configure(currentIndex: Int, unlockedMaxIndex: Int) {
         self.currentIndex = currentIndex
         self.unlockedMaxIndex = unlockedMaxIndex
+//        resultVC.play(mode: .promote, fromIndex: currentIndex, toIndex: unlockedMaxIndex)
     }
 
     func badgeFrame(in coordinateView: UIView) -> CGRect? {
         guard isViewLoaded else { return nil }
         return resultVC.badgeFrame(in: coordinateView)
     }
-
+    public func updateCurrentIndex(currentIndex:Int){
+        resultVC.updateCurrentIndex(currentIndex: currentIndex)
+    }
     func play(mode: RankResultViewController.Mode, fromIndex: Int, toIndex: Int) {
         loadViewIfNeeded()
         resultVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)

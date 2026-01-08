@@ -116,15 +116,16 @@ extension HabitRankListHeadVM{
         let fromIndex: Int = UserDefaults().getTierData().intValue
         
         DLLog(message: "updateDegree:\(tier)")
-        guard fromIndex != tier,
-        fromIndex > 0 else { return }
         DLLog(message: "updateDegree: ---  \(tier)")
-        rankImgView.setImgLocal(imgName: "rank_\(tier)")
-        currentTierIndex = max(0, min(rankTiers.count - 1, tier - 1))
+        rankImgView.setImgLocal(imgName: "rank_\(fromIndex)")
+        currentTierIndex = max(0, min(rankTiers.count - 1, fromIndex - 1))
         unlockedTierIndex = max(unlockedTierIndex, currentTierIndex)
-        rankImgViewDefault_one.isHidden = tier == 9
-        rankImgViewDefault_two.isHidden = tier >= 8
-        rankImgViewDefault_three.isHidden = tier >= 7
+        rankImgViewDefault_one.isHidden = fromIndex == 9
+        rankImgViewDefault_two.isHidden = fromIndex >= 8
+        rankImgViewDefault_three.isHidden = fromIndex >= 7
+//        if fromIndex == tier{
+//            
+//        }
     }
     private func updateRemainTimeLabel() {
         if remainSeconds <= 0 {
