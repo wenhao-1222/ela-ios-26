@@ -93,7 +93,7 @@ class HabitRankListHeadVM: UIView {
 }
 
 extension HabitRankListHeadVM{
-    func updateUI(champion:String,runnerUp:String,thirdPlace:String,secondsToWeekEnd:Int,tier:Int) {
+    func updateUI(champion:String,runnerUp:String,thirdPlace:String,secondsToWeekEnd:Int) {
         degreeLabel.text = "青铜"
 
         let attr = NSMutableAttributedString(string: "周结算奖励：冠军 ", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50])
@@ -110,7 +110,15 @@ extension HabitRankListHeadVM{
         if remainSeconds > 0 && timer == nil{
             countDownAction()
         }
+    }
+    
+    func updateDegree(tier:Int) {
+        let fromIndex: Int = UserDefaults().getTierData().intValue
         
+        DLLog(message: "updateDegree:\(tier)")
+        guard fromIndex != tier,
+        fromIndex > 0 else { return }
+        DLLog(message: "updateDegree: ---  \(tier)")
         rankImgView.setImgLocal(imgName: "rank_\(tier)")
         currentTierIndex = max(0, min(rankTiers.count - 1, tier - 1))
         unlockedTierIndex = max(unlockedTierIndex, currentTierIndex)
@@ -170,7 +178,7 @@ extension HabitRankListHeadVM{
         addSubview(bottomWhiteView)
         
         setConstrait()
-        updateUI(champion: "3", runnerUp: "2", thirdPlace: "1", secondsToWeekEnd: -1,tier:1)
+        updateUI(champion: "3", runnerUp: "2", thirdPlace: "1", secondsToWeekEnd: -1)
         addGestureRecognizer()
     }
     func setConstrait() {
@@ -215,8 +223,8 @@ extension HabitRankListHeadVM{
         }
     }
     private func addGestureRecognizer() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(onTapRank))
-        rankImgView.addGestureRecognizer(tap)
+//        let tap = UITapGestureRecognizer(target: self, action: #selector(onTapRank))
+//        rankImgView.addGestureRecognizer(tap)
     }
 }
 // MARK: - Animation bridge

@@ -20,6 +20,13 @@ class HabitRankListVM: UIView {
 //    private let leaderboardCacheKey = "HabitRankListVM.leaderboardCache"
     private var isCurrentlyVisible = false
     
+    //段位变化动画  需要
+    private var currentTierIndex: Int = 0
+    private var unlockedTierIndex: Int = 0
+    private let rankTiers: [RankTier] = RankTier.defaultNine()
+    private var isAnimatingToDemo: Bool = false
+    private var isAnimatingBackFromDemo: Bool = false
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
         self.backgroundColor = .clear
@@ -221,17 +228,10 @@ extension HabitRankListVM{
                 self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
                                 runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
                                 thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
-                                 secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue,
-                                     tier:dataDict.stringValueForKey(key: "tier").intValue)
-                var newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
+                                 secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
+                self.headVm.updateDegree(tier: self.currentTierIndex)
                 
-//                if previousSelfIndex != nil  {
-//                    if previousSelfIndex! + 8 > 20{
-//                        newIndex = previousSelfIndex! - 8
-//                    }else{
-//                        newIndex = previousSelfIndex! + 8
-//                    }
-//                }
+                let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
                 
                 self.displayedDataArray = self.initialDisplayArray(
                     for: self.dataSourceArray,
@@ -242,6 +242,7 @@ extension HabitRankListVM{
 //                self.displayedDataArray = self.dataSourceArray
                 self.tableView.reloadData()
                 if animateSelfChange {
+                    self.onTapRank()
                     self.promotionLine = dataDict.stringValueForKey(key: "promotionLine").intValue
                     self.relegationLine = dataDict.stringValueForKey(key: "relegationLine").intValue
                     self.performSelfRankMove(from: previousSelfIndex, to: newIndex)
@@ -268,14 +269,15 @@ extension HabitRankListVM{
                 let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
                 let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
                 DLLog(message: "sendDataRequest:\(dataDict)")
-                
+                UserDefaults.setTierData(tier: dataDict.stringValueForKey(key: "tier"), isRefresh: false)
+                self.currentTierIndex = 3//dataDict.stringValueForKey(key: "tier").intValue
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
                 
                 self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
                                 runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
                                 thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
-                                 secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue,
-                                     tier:dataDict.stringValueForKey(key: "tier").intValue)
+                                 secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
+                self.headVm.updateDegree(tier: self.currentTierIndex)
             }
         }
     }
@@ -347,10 +349,13 @@ extension HabitRankListVM{
             self.tableView.layoutIfNeeded()
         }
         guard let newIndex, oldIndex != newIndex else { return }
-        DispatchQueue.main.async {
-            // ✅ 调用三段式动画
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
             self.animateHighlightMove3Stage(from: oldIndex, to: newIndex, extraVertical: 20)
-        }
+        })
+//        DispatchQueue.main.async {
+//            // ✅ 调用三段式动画
+//            self.animateHighlightMove3Stage(from: oldIndex, to: newIndex, extraVertical: 20)
+//        }
     }
 }
 
@@ -360,7 +365,7 @@ extension HabitRankListVM{
         var placeholderIndex = 1
 
         while entries.count < 20 {
-            let randomScore = Int.random(in: 3...18)
+            let randomScore = Int.random(in: 1...20)
             let placeholder: NSDictionary = [
                 "headimgurl": "",
                 "nickname": "Tester \(placeholderIndex)",
@@ -378,6 +383,7 @@ extension HabitRankListVM{
         return Array(sortedEntries.prefix(20)) as NSArray
     }
 }
+
 extension HabitRankListVM {
     /// ⭐️ 三段式（不贴边、不回头）：Lift → Move+Scroll → Drop
     private func animateHighlightMove3Stage(from oldIndex: Int,
@@ -671,4 +677,160 @@ extension HabitRankListVM{
         return CGPoint(x: tableView.contentOffset.x, y: desiredY)
     }
 
+}
+
+// MARK: - 段位变化动画
+extension HabitRankListVM {
+    @objc private func onTapRank() {
+        guard !isAnimatingToDemo else { return }
+        let fromIndex: Int = UserDefaults().getTierData().intValue
+        
+        guard fromIndex != currentTierIndex,
+        fromIndex > 0 else { return }
+        
+        let mode: RankResultViewController.Mode = fromIndex < currentTierIndex ? .promote : .demote
+        unlockedTierIndex = currentTierIndex//max(unlockedTierIndex, currentTierIndex)
+        playTransitionToDemo(mode: mode,
+                             fromIndex: fromIndex - 1,
+                             toIndex: currentTierIndex - 1)
+        UserDefaults.setTierData(tier: "\(currentTierIndex)", isRefresh: true)
+        self.headVm.updateDegree(tier: currentTierIndex)
+    }
+
+    private func playTransitionToDemo(mode: RankResultViewController.Mode, fromIndex: Int, toIndex: Int) {
+        guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.keyWindow else { return }
+        isAnimatingToDemo = true
+
+        let overlay = UIView(frame: window.bounds)
+        overlay.backgroundColor = UIColor.black.withAlphaComponent(0.0)
+        window.addSubview(overlay)
+
+        let snapshot = UIImageView(image: self.headVm.rankImgView.image)
+        snapshot.contentMode = .scaleAspectFit
+        snapshot.frame = self.headVm.rankImgView.convert(self.headVm.rankImgView.bounds, to: window)
+        overlay.addSubview(snapshot)
+        self.headVm.rankImgView.isHidden = true
+        let demoVC = DemoViewController()
+       demoVC.configure(currentIndex: fromIndex, unlockedMaxIndex: toIndex)
+//       let preparedTargetFrame = targetBadgeFrame(in: window, using: demoVC)
+//        demoVC.configure(currentIndex: currentTierIndex, unlockedMaxIndex: unlockedTierIndex)
+        let preparedTargetFrame = targetBadgeFrame(in: window, using: demoVC)
+
+        UIView.animate(withDuration: 0.2,
+                       delay: 0,
+                       options: [.curveEaseInOut]) {
+            overlay.backgroundColor = UIColor.black.withAlphaComponent(0.15)
+//            snapshot.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+//            snapshot.center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
+//        if let targetFrame = preparedTargetFrame {
+//            snapshot.frame = targetFrame
+//        } else {
+//            snapshot.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+//            snapshot.center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
+//        }
+            if let targetFrame = preparedTargetFrame {
+                            snapshot.frame = targetFrame
+                        } else {
+                            snapshot.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+                            snapshot.center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
+                        }
+        } completion: { _ in
+            self.presentDemoPage(using: snapshot,
+                                 overlay: overlay,
+                                 mode: mode,
+                                 fromIndex: fromIndex,
+                                 toIndex: toIndex,
+                                 demoVC: demoVC,
+                                 preparedTargetFrame: preparedTargetFrame)
+        }
+    }
+
+    private func presentDemoPage(using snapshot: UIImageView,
+                                 overlay: UIView,
+                                 mode: RankResultViewController.Mode,
+                                 fromIndex: Int,
+                                 toIndex: Int,
+                                  demoVC: DemoViewController,
+                                  preparedTargetFrame: CGRect?) {
+        demoVC.modalPresentationStyle = .fullScreen
+        demoVC.onRequestDismiss = { [weak self, weak demoVC] badgeFrame, badgeImage in
+            guard let self, let demoVC else { return }
+            self.animateBackToRank(from: badgeFrame, badgeImage: badgeImage, demoVC: demoVC)
+        }
+
+        let hostVC = WHTool.shared.getCurrentViewController()
+        hostVC.present(demoVC, animated: false) {
+            demoVC.view.layoutIfNeeded()
+            guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.keyWindow else {
+                overlay.removeFromSuperview()
+                snapshot.removeFromSuperview()
+                demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
+                self.isAnimatingToDemo = false
+                return
+            }
+            let targetInWindow = preparedTargetFrame ?? {
+                guard let targetFrame = demoVC.badgeFrame(in: demoVC.view) else { return nil }
+                return demoVC.view.convert(targetFrame, to: window)
+            }()
+
+            guard let finalFrame = targetInWindow else {
+                overlay.removeFromSuperview()
+                snapshot.removeFromSuperview()
+                demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
+                self.isAnimatingToDemo = false
+                return
+            }
+
+            UIView.animate(withDuration: 0.15,
+                           delay: 0,
+                           options: [.curveEaseInOut]) {
+                snapshot.transform = .identity
+                snapshot.frame = finalFrame
+                overlay.backgroundColor = .clear
+            } completion: { _ in
+                overlay.removeFromSuperview()
+                snapshot.removeFromSuperview()
+                demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
+                self.isAnimatingToDemo = false
+            }
+        }
+    }
+    private func animateBackToRank(from badgeFrame: CGRect, badgeImage: UIImage?, demoVC: DemoViewController) {
+        guard !isAnimatingBackFromDemo else { return }
+        guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.keyWindow else {
+            demoVC.dismiss(animated: true)
+            return
+        }
+        isAnimatingBackFromDemo = true
+
+        let overlay = UIView(frame: window.bounds)
+        overlay.backgroundColor = UIColor.black.withAlphaComponent(0.0)
+        window.addSubview(overlay)
+
+        let snapshot = UIImageView(image: badgeImage ?? self.headVm.rankImgView.image)
+        snapshot.contentMode = .scaleAspectFit
+        snapshot.frame = badgeFrame
+        overlay.addSubview(snapshot)
+
+        demoVC.dismiss(animated: false) {
+            let targetFrame = self.headVm.rankImgView.convert(self.headVm.rankImgView.bounds, to: window)
+            UIView.animate(withDuration: 0.32,
+                           delay: 0,
+                           options: [.curveEaseInOut]) {
+                overlay.backgroundColor = UIColor.black.withAlphaComponent(0.08)
+                snapshot.frame = targetFrame
+            } completion: { _ in
+                overlay.removeFromSuperview()
+                self.headVm.rankImgView.isHidden = false
+                self.isAnimatingBackFromDemo = false
+            }
+        }
+    }
+    private func targetBadgeFrame(in window: UIWindow, using demoVC: DemoViewController) -> CGRect? {
+       demoVC.loadViewIfNeeded()
+       demoVC.view.frame = window.bounds
+       demoVC.view.layoutIfNeeded()
+       guard let targetFrame = demoVC.badgeFrame(in: demoVC.view) else { return nil }
+       return demoVC.view.convert(targetFrame, to: window)
+   }
 }

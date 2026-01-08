@@ -33,15 +33,6 @@ enum RegionSelector {
     }
     return .sea
   }
-
-//  private static func currentMCCs() -> [String] {
-//    let info = CTTelephonyNetworkInfo()
-////    let carriers = info.serviceSubscriberCellularProviders?.values ?? []
-//      let carriers = Array((info.serviceSubscriberCellularProviders ?? [:]).values) // [CTCarrier]
-//      let mccs = carriers.compactMap { $0.mobileCountryCode }
-//    return mccs//carriers.compactMap { $0.mobileCountryCode } // 460/454/455/466/505...
-//  }
-
     private static func currentMCCs() -> [String] {
         let info = CTTelephonyNetworkInfo()
 

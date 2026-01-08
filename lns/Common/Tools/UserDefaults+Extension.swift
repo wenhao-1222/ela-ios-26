@@ -48,7 +48,8 @@ public extension UserDefaults {
         case fitness_label_array//训练部位数据
         case splash_material_list //启动页广告物料列表
         case activity_popupId //本地弹出过的活动id
-        case habitRankListVM_leaderboardCache
+        case habitRankListVM_leaderboardCache//自律习惯养成--排行榜数据
+        case tier
     }
 }
 
@@ -412,6 +413,22 @@ extension UserDefaults {
     }
     static func removeAllBodyDataLoadFlag(uid:String){
         UserDefaults.standard.removeObject(forKey: "\(uid)_isLoadAllBodyData")
+    }
+    static func setTierData(tier:String,isRefresh:Bool){
+        if isRefresh{//段位动画变化之后更新段位
+            UserDefaults.set(value: tier, forKey: .tier)
+        }else{//段位更新前
+            //如果本地有段位，则不管
+            if UserDefaults().getTierData().intValue > 0{
+                
+            }else{//本地没有保存段位，则保存最新的段位到本地
+                UserDefaults.set(value: tier, forKey: .tier)
+            }
+        }
+    }
+    func getTierData() -> String{
+        let tier = UserDefaults.getString(forKey: .tier) ?? ""
+        return tier
     }
     
     // MARK: - Splash Material
