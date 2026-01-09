@@ -423,8 +423,14 @@ final class RankBadgeCell: UICollectionViewCell {
 
     private func playConfetti(accent: UIColor) {
         let emitter = CAEmitterLayer()
-        emitter.emitterPosition = CGPoint(x: contentView.bounds.midX, y: contentView.bounds.minY + 10)
-        emitter.emitterShape = .line
+        //顶部喷射
+//        emitter.emitterPosition = CGPoint(x: contentView.bounds.midX, y: contentView.bounds.minY + 10)
+        //改成底部喷射
+        let badgeFrame = badgeImageView.frame
+        emitter.emitterPosition = CGPoint(x: badgeFrame.midX, y: badgeFrame.maxY - 6)
+        //e.emissionRange 控制扇形范围（角度越大越散）
+        emitter.emitterShape = .cuboid
+        //emitter.emitterSize 控制发射宽度（越大越“横向铺开”）。
         emitter.emitterSize = CGSize(width: contentView.bounds.width * 0.9, height: 1)
         emitter.renderMode = .additive
 
@@ -438,21 +444,26 @@ final class RankBadgeCell: UICollectionViewCell {
 
         func cell(_ c: UIColor) -> CAEmitterCell {
             let e = CAEmitterCell()
-            e.birthRate = 18
+            e.birthRate = 14//粒子数量   数值越大，粒子越多
             e.lifetime = 1.05
             e.lifetimeRange = 0.22
-            e.velocity = 280
-            e.velocityRange = 120
-            e.emissionLongitude = .pi
+            e.velocity = 520//基础速度
+            e.velocityRange = 220//速度随机范围
+            e.yAcceleration = 500//向下的重力，越大下落越快
+            //向下喷射
+//            e.emissionLongitude = .pi
+            //改成向上喷射
+            e.emissionLongitude = -.pi/2
             e.emissionRange = .pi / 4
             e.spin = 5
             e.spinRange = 6
-            e.scale = 0.055
-            e.scaleRange = 0.03
             e.alphaSpeed = -0.9
-            e.yAcceleration = 520
+            //----------   以下三个参数  修改粒子大小
+            e.scale = 0.21//0.055
+            e.scaleRange = 0.08//0.03
+            e.contents = EffectsFactory.confettiSquare(size: 28).cgImage//EffectsFactory.confettiSquare(size: 22).cgImage
+            //----------
             e.color = c.cgColor
-            e.contents = EffectsFactory.confettiSquare(size: 22).cgImage
             return e
         }
 
@@ -460,7 +471,8 @@ final class RankBadgeCell: UICollectionViewCell {
         contentView.layer.addSublayer(emitter)
         confettiEmitter = emitter
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) { emitter.birthRate = 0 }
+        //0.18秒后，烟花粒子消失
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.88) { emitter.birthRate = 0 }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) { emitter.removeFromSuperlayer() }
     }
 
