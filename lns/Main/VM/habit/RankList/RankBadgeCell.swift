@@ -116,7 +116,6 @@ final class RankBadgeCell: UICollectionViewCell {
     }
 
     // MARK: - ✅ 晋升：落位后做“解锁+庆祝”（翻转在 carousel overlay 里做）
-
     func playPromoteUnlockAfterEntrance() {
         guard let tier else { return }
 
@@ -444,6 +443,8 @@ final class RankBadgeCell: UICollectionViewCell {
 
         func cell(_ c: UIColor) -> CAEmitterCell {
             let e = CAEmitterCell()
+            let tilt = CGFloat.random(in: -0.55...0.55)
+            let spinBase = CGFloat.random(in: 4.0...8.0)
             e.birthRate = 14//粒子数量   数值越大，粒子越多
             e.lifetime = 1.05
             e.lifetimeRange = 0.22
@@ -455,12 +456,15 @@ final class RankBadgeCell: UICollectionViewCell {
             //改成向上喷射
             e.emissionLongitude = -.pi/2
             e.emissionRange = .pi / 4
-            e.spin = 5
-            e.spinRange = 6
+//            e.spin = 5
+//            e.spinRange = 6
+            e.emissionLatitude = tilt
+            e.spin = spinBase
+            e.spinRange = spinBase * 1.4
             e.alphaSpeed = -0.9
             //----------   以下三个参数  修改粒子大小
-            e.scale = 0.21//0.055
-            e.scaleRange = 0.08//0.03
+            e.scale = 0.24//0.055
+            e.scaleRange = 0.03//0.03
             e.contents = EffectsFactory.confettiSquare(size: 28).cgImage//EffectsFactory.confettiSquare(size: 22).cgImage
             //----------
             e.color = c.cgColor

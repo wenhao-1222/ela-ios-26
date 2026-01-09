@@ -270,7 +270,7 @@ extension HabitRankListVM{
                 let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
                 DLLog(message: "sendDataRequest:\(dataDict)")
                 UserDefaults.setTierData(tier: dataDict.stringValueForKey(key: "tier"), isRefresh: false)
-                self.currentTierIndex = 9//dataDict.stringValueForKey(key: "tier").intValue
+                self.currentTierIndex = 5//dataDict.stringValueForKey(key: "tier").intValue
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
                 
                 self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
