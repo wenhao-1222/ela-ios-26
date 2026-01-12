@@ -81,8 +81,8 @@ class MineVC : WHBaseViewVC {
 //            let vc = WidgetTestVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
-        vm.settingVm.tapBlock = {()in
-            let vc = JournalSettingVC()
+        vm.honorVm.tapBlock = {()in
+            let vc = HonorVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         return vm

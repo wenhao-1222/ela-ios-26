@@ -21,6 +21,10 @@ final class RankBadgeCell: UICollectionViewCell {
     private var glowLayer: CALayer?
     private var warningMarks: CAShapeLayer?
 
+    private var hapticLink: CADisplayLink?
+    private var pendingHapticTimes: [CFTimeInterval] = []
+
+    private var countNum = 5
     // ✅ 宝石碎片 layers（固定在地上直到 cell 移出/复用）
     private var shardLayers: [CALayer] = []
 
@@ -419,14 +423,266 @@ final class RankBadgeCell: UICollectionViewCell {
             self?.sparkleLayers.removeAll()
         }
     }
+//    private func playConfetti(accent: UIColor) {
+//
+//        confettiEmitter?.removeFromSuperlayer()
+//        confettiEmitter = nil
+//
+//        // ====== 参数：连炸 ======
+//        let booms = 5
+//
+//        /// “快结束”的提前量：越小=越贴近结束才喷；越大=更早喷
+//        /// 建议 0.20~0.35 之间微调
+//        let lead: CFTimeInterval = 0.25
+//
+//
+//        let onTime: CFTimeInterval = 0.05
+//        let particleLife: CFTimeInterval = 1.35
+//        
+//        /// 每次（除了第一次）都在上次快结束时喷：step = particleLife - lead
+//        let step: CFTimeInterval = max(0.05, particleLife - lead)
+//        /// 5 次井喷的起始时间点
+//        let boomStarts: [CFTimeInterval] = (0..<booms).map { CFTimeInterval($0) * step }
+//
+//        // ====== 爆点：徽章正中偏下（固定同一点）======
+//        contentView.layoutIfNeeded()
+//        let badgeFrame = badgeImageView.frame
+//        let origin = CGPoint(
+//            x: badgeFrame.midX,
+//            y: badgeFrame.midY + badgeFrame.height * 0.18
+//        )
+//
+//        let emitter = CAEmitterLayer()
+//        emitter.emitterPosition = origin
+//        emitter.emitterShape = .point
+//        emitter.emitterMode = .outline
+//        emitter.renderMode = .additive
+//        emitter.beginTime = CACurrentMediaTime()
+//        emitter.birthRate = 0
+//
+//        let dotCG = makeFireworkDotImage(size: 18).cgImage
+//        let streakCG = makeFireworkStreakImage(size: CGSize(width: 18, height: 6)).cgImage
+//
+//        let colors: [UIColor] = [
+//            UIColor(red: 0.15, green: 0.75, blue: 1.0, alpha: 1),
+//            UIColor(red: 0.98, green: 0.78, blue: 0.22, alpha: 1),
+//            UIColor(red: 0.98, green: 0.38, blue: 0.63, alpha: 1),
+//            UIColor(red: 0.70, green: 0.42, blue: 0.98, alpha: 1),
+//            UIColor(red: 0.35, green: 0.95, blue: 0.62, alpha: 1),
+//            accent
+//        ]
+//
+//        // ✅ 向上喷更集中：扇形越小越“柱状向上”
+//        let upwardCone: CGFloat = .pi / 1.8   // 更集中一些；想更集中改 .pi/6.8
+//
+//        // ✅ 为了“随机左右扰动”，我们做三种 xAcceleration：左/中/右
+//        let xAccels: [(x: CGFloat, weight: Float)] = [
+//            (x: -120, weight: 0.28),
+//            (x:    0, weight: 0.44),
+//            (x:  120, weight: 0.28),
+//        ]
+//        
+//
+//        // MARK: - 火花点（主）
+//        func dotCell(color: UIColor, xAccel: CGFloat, weight: Float) -> CAEmitterCell {
+//            let c = CAEmitterCell()
+//            c.contents = dotCG
+//            c.color = color.cgColor
+//
+//            c.birthRate = 80//620 * weight
+//            c.lifetime = Float(particleLife)
+//            c.lifetimeRange = 0.25
+//
+//            c.emissionLongitude = -.pi / 2
+//            c.emissionRange = upwardCone
+//
+//            // ✅ 喷更高
+//            c.velocity = 620
+//            c.velocityRange = 240
+//            c.yAcceleration = 1050
+//
+//            // ✅ 轻微左右漂移（用多 cell 混合实现“随机”）
+//            c.xAcceleration = xAccel
+//
+//            c.spin = 2.6
+//            c.spinRange = 6.0
+//
+//            c.scale = 0.24//0.16
+//            c.scaleRange = 0.10
+//            c.alphaSpeed = -1.10
+//            return c
+//        }
+//
+//        // MARK: - 短光条（辅助：更像“炸开的火花束”）
+//        func streakCell(color: UIColor, xAccel: CGFloat, weight: Float) -> CAEmitterCell {
+//            let c = CAEmitterCell()
+//            c.contents = streakCG
+//            c.color = color.withAlphaComponent(0.95).cgColor
+//
+//            c.birthRate = 80//320 * weight
+//            c.lifetime = Float(particleLife * 0.95)
+//            c.lifetimeRange = 0.18
+//
+//            c.emissionLongitude = -.pi / 2
+//            c.emissionRange = upwardCone
+//
+//            c.velocity = 720
+//            c.velocityRange = 260
+//            c.yAcceleration = 1120
+//
+//            c.xAcceleration = xAccel
+//
+//            c.spin = 6.0
+//            c.spinRange = 10.0
+//
+//            c.scale = 0.22
+//            c.scaleRange = 0.14
+//            c.alphaSpeed = -1.25
+//            return c
+//        }
+//
+//        var cells: [CAEmitterCell] = []
+//        for col in colors {
+//            for xa in xAccels {
+//                cells.append(dotCell(color: col, xAccel: xa.x, weight: xa.weight))
+//                cells.append(streakCell(color: col, xAccel: xa.x, weight: xa.weight))
+//            }
+//        }
+//        emitter.emitterCells = cells
+//
+//        contentView.layer.addSublayer(emitter)
+//        confettiEmitter = emitter
+//
+//        // ====== 4~5 次 boom 脉冲（birthRate 开关）======
+//        let total: CFTimeInterval = (boomStarts.last ?? 0) + onTime + 0.06
+//
+//        var times: [NSNumber] = [0.0]
+//        var values: [NSNumber] = [0.0]
+//
+//        for tOn in boomStarts {
+//            let tOff = tOn + onTime
+//
+//            times.append(NSNumber(value: tOn / total))
+//            values.append(1.0)
+//
+//            times.append(NSNumber(value: tOff / total))
+//            values.append(0.0)
+//        }
+//
+//        let pulse = CAKeyframeAnimation(keyPath: "birthRate")
+//        pulse.values = values
+//        pulse.keyTimes = times
+//        pulse.duration = total
+//        pulse.timingFunctions = Array(repeating: CAMediaTimingFunction(name: .linear),
+//                                      count: max(values.count - 1, 1))
+//        pulse.isRemovedOnCompletion = true
+//        emitter.add(pulse, forKey: "fireworkBoomPulse")
+//
+//        // ====== 触感：每一次 boom 都震一下 ======
+////        let h = UIImpactFeedbackGenerator(style: .rigid)
+////        h.prepare()
+////        for tOn in boomStarts {
+////            DispatchQueue.main.asyncAfter(deadline: .now() + tOn) {
+////                h.impactOccurred(intensity: 1.0)
+////                h.prepare()
+////            }
+////        }
+//        scheduleBoomHaptics(boomStarts: boomStarts)
+//
+//
+//        // 收尾移除
+//        DispatchQueue.main.asyncAfter(deadline: .now() + total + particleLife + 0.2) { [weak self] in
+//            self?.confettiEmitter?.removeFromSuperlayer()
+//            self?.confettiEmitter = nil
+//        }
+//    }
+//
+//    // MARK: - 烟花素材（亮点 & 光条）
+//    private func makeFireworkDotImage(size: CGFloat) -> UIImage {
+//        let r = UIGraphicsImageRenderer(size: CGSize(width: size, height: size))
+//        return r.image { ctx in
+//            let rect = CGRect(x: 0, y: 0, width: size, height: size)
+//            ctx.cgContext.setFillColor(UIColor.white.withAlphaComponent(0.12).cgColor)
+//            ctx.cgContext.fillEllipse(in: rect)
+//
+//            let inner = rect.insetBy(dx: size * 0.30, dy: size * 0.30)
+//            ctx.cgContext.setFillColor(UIColor.white.withAlphaComponent(0.98).cgColor)
+//            ctx.cgContext.fillEllipse(in: inner)
+//        }
+//    }
+//
+//    private func makeFireworkStreakImage(size: CGSize) -> UIImage {
+//        let r = UIGraphicsImageRenderer(size: size)
+//        return r.image { ctx in
+//            let rect = CGRect(origin: .zero, size: size)
+//            let path = UIBezierPath(roundedRect: rect, cornerRadius: rect.height * 0.5)
+//            ctx.cgContext.setFillColor(UIColor.white.withAlphaComponent(0.95).cgColor)
+//            ctx.cgContext.addPath(path.cgPath)
+//            ctx.cgContext.fillPath()
+//
+//            ctx.cgContext.setFillColor(UIColor.white.withAlphaComponent(0.25).cgColor)
+//            ctx.cgContext.fill(CGRect(x: rect.minX + rect.width * 0.15,
+//                                      y: rect.minY,
+//                                      width: rect.width * 0.12,
+//                                      height: rect.height))
+//        }
+//    }
+//    private func scheduleBoomHaptics(boomStarts: [CFTimeInterval]) {
+//        // 清理旧的
+//        hapticLink?.invalidate()
+//        hapticLink = nil
+//        pendingHapticTimes.removeAll()
+//
+//        // ✅ 用 CoreAnimation 时间基准对齐
+//        let start = CACurrentMediaTime()
+//
+//        // ✅ 触感提前一点点（抵消系统触感延迟）
+//        let early: CFTimeInterval = 0.05
+//
+//        // 目标触发时刻（绝对时间）
+//        pendingHapticTimes = boomStarts
+//            .map { start + $0 - early }
+//            .sorted()
+//
+//        let generator = UIImpactFeedbackGenerator(style: .rigid)
+//        generator.prepare()
+//
+//        let link = CADisplayLink(target: BlockTarget { [weak self] in
+//            guard let self else { return }
+//            let now = CACurrentMediaTime()
+//
+//            // 可能一帧跨过多个点：用 while 连续触发
+//            while let t = self.pendingHapticTimes.first, now >= t {
+//                self.pendingHapticTimes.removeFirst()
+//                generator.impactOccurred(intensity: 1.0)
+//                generator.prepare()
+//            }
+//
+//            if self.pendingHapticTimes.isEmpty {
+//                self.hapticLink?.invalidate()
+//                self.hapticLink = nil
+//            }
+//        }, selector: #selector(BlockTarget.tick))
+//
+//        link.add(to: .main, forMode: .common)
+//        hapticLink = link
+//    }
+//
+//    /// 小工具：用 block 驱动 CADisplayLink
+//    private final class BlockTarget: NSObject {
+//        private let block: () -> Void
+//        init(_ block: @escaping () -> Void) { self.block = block }
+//        @objc func tick() { block() }
+//    }
 
+//MARK: 之前的烟花动画
     private func playConfetti(accent: UIColor) {
         let emitter = CAEmitterLayer()
         //顶部喷射
 //        emitter.emitterPosition = CGPoint(x: contentView.bounds.midX, y: contentView.bounds.minY + 10)
         //改成底部喷射
         let badgeFrame = badgeImageView.frame
-        emitter.emitterPosition = CGPoint(x: badgeFrame.midX, y: badgeFrame.maxY - 6)
+        emitter.emitterPosition = CGPoint(x: badgeFrame.midX, y: badgeFrame.midY + badgeFrame.height*0.25)
         //e.emissionRange 控制扇形范围（角度越大越散）
         emitter.emitterShape = .cuboid
         //emitter.emitterSize 控制发射宽度（越大越“横向铺开”）。
@@ -444,12 +700,12 @@ final class RankBadgeCell: UICollectionViewCell {
         func cell(_ c: UIColor) -> CAEmitterCell {
             let e = CAEmitterCell()
             let tilt = CGFloat.random(in: -0.55...0.55)
-            let spinBase = CGFloat.random(in: 4.0...8.0)
-            e.birthRate = 14//粒子数量   数值越大，粒子越多
+            let spinBase = CGFloat.random(in: -8.0...8.0)
+            e.birthRate = 4//粒子数量   数值越大，粒子越多
             e.lifetime = 1.05
             e.lifetimeRange = 0.22
-            e.velocity = 520//基础速度
-            e.velocityRange = 220//速度随机范围
+            e.velocity = 420//基础速度
+            e.velocityRange = 120//速度随机范围
             e.yAcceleration = 500//向下的重力，越大下落越快
             //向下喷射
 //            e.emissionLongitude = .pi
@@ -458,9 +714,9 @@ final class RankBadgeCell: UICollectionViewCell {
             e.emissionRange = .pi / 4
 //            e.spin = 5
 //            e.spinRange = 6
-            e.emissionLatitude = tilt
+//            e.emissionLatitude = tilt
             e.spin = spinBase
-            e.spinRange = spinBase * 1.4
+            e.spinRange = abs(spinBase) * 0.8//spinBase * 1.4
             e.alphaSpeed = -0.9
             //----------   以下三个参数  修改粒子大小
             e.scale = 0.24//0.055
@@ -476,8 +732,18 @@ final class RankBadgeCell: UICollectionViewCell {
         confettiEmitter = emitter
 
         //0.18秒后，烟花粒子消失
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.88) { emitter.birthRate = 0 }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) { emitter.removeFromSuperlayer() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.88) {
+            emitter.birthRate = 0
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) {
+            emitter.removeFromSuperlayer()
+            self.countNum -= 1
+            if self.countNum > 0 {
+                self.playConfetti(accent: accent)
+            }else{
+                self.countNum = 5
+            }
+        }
     }
 
     private func playWarningMarks() {
@@ -534,5 +800,9 @@ final class RankBadgeCell: UICollectionViewCell {
 
         shardLayers.forEach { $0.removeFromSuperlayer() }
         shardLayers.removeAll()
+        hapticLink?.invalidate()
+        hapticLink = nil
+        pendingHapticTimes.removeAll()
+
     }
 }

@@ -8,7 +8,7 @@
 
 class PersonalTopFuncVM: UIView {
     
-    let selfHeight = kFitWidth(50)*3
+    let selfHeight = kFitWidth(50)*4
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: kFitWidth(16), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
@@ -41,10 +41,10 @@ class PersonalTopFuncVM: UIView {
         vm.iconImgView.setImgLocal(imgName: "mine_func_order_list")
         return vm
     }()
-    lazy var settingVm: PersonalTopFuncItemVM = {
+    lazy var honorVm: PersonalTopFuncItemVM = {
         let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.orderVm.frame.maxY, width: 0, height: 0))
-        vm.titleLab.text = "个性化"
-        vm.iconImgView.setImgLocal(imgName: "mine_func_personal_setting")
+        vm.titleLab.text = "我的荣誉"
+        vm.iconImgView.setImgLocal(imgName: "mine_func_honor")
         vm.lineView.isHidden =  true
         return vm
     }()
@@ -55,6 +55,6 @@ extension PersonalTopFuncVM{
         addSubview(planVm)
         addSubview(bodyDataVm)
         addSubview(orderVm)
-//        addSubview(settingVm)
+        addSubview(honorVm)
     }
 }

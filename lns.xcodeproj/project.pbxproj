@@ -1043,6 +1043,15 @@
 		ECB6AEBD2BC66DF800F03567 /* MainHeightVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB6AEBC2BC66DF800F03567 /* MainHeightVM.swift */; };
 		ECB7C29E2C37A076000E83C2 /* FoodsListMyListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB7C29D2C37A076000E83C2 /* FoodsListMyListVM.swift */; };
 		ECB7C2A02C37A5BB000E83C2 /* FoodsAddIconVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB7C29F2C37A5BB000E83C2 /* FoodsAddIconVM.swift */; };
+		ECB80C4D2F148EA400F429DB /* HonorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C4C2F148EA100F429DB /* HonorVC.swift */; };
+		ECB80C502F148EEA00F429DB /* HonorTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C4F2F148EE500F429DB /* HonorTopVM.swift */; };
+		ECB80C522F1493CB00F429DB /* HonorTypeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C512F1493C900F429DB /* HonorTypeVM.swift */; };
+		ECB80C542F149C3B00F429DB /* HonorIconVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C532F149C3500F429DB /* HonorIconVM.swift */; };
+		ECB80C562F149E1700F429DB /* HonorIconCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C552F149E1300F429DB /* HonorIconCell.swift */; };
+		ECB80C582F14BF9500F429DB /* HonorDonationVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C572F14BF8F00F429DB /* HonorDonationVM.swift */; };
+		ECB80C5A2F14C02000F429DB /* FireworkParticlesBurst.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C592F14C02000F429DB /* FireworkParticlesBurst.swift */; };
+		ECB80C5C2F14C4B200F429DB /* HonorDonationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C5B2F14C4AD00F429DB /* HonorDonationCell.swift */; };
+		ECB80C5E2F14C68500F429DB /* HonorDonationMsgVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C5D2F14C68000F429DB /* HonorDonationMsgVM.swift */; };
 		ECB8483B2BF305A700B554B9 /* SettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8483A2BF305A700B554B9 /* SettingVC.swift */; };
 		ECB8483F2BF305F400B554B9 /* SettingTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8483E2BF305F400B554B9 /* SettingTopVM.swift */; };
 		ECB848412BF30B4500B554B9 /* SettingBottomVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB848402BF30B4500B554B9 /* SettingBottomVM.swift */; };
@@ -2383,6 +2392,15 @@
 		ECB6AEBC2BC66DF800F03567 /* MainHeightVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHeightVM.swift; sourceTree = "<group>"; };
 		ECB7C29D2C37A076000E83C2 /* FoodsListMyListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsListMyListVM.swift; sourceTree = "<group>"; };
 		ECB7C29F2C37A5BB000E83C2 /* FoodsAddIconVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsAddIconVM.swift; sourceTree = "<group>"; };
+		ECB80C4C2F148EA100F429DB /* HonorVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorVC.swift; sourceTree = "<group>"; };
+		ECB80C4F2F148EE500F429DB /* HonorTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorTopVM.swift; sourceTree = "<group>"; };
+		ECB80C512F1493C900F429DB /* HonorTypeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorTypeVM.swift; sourceTree = "<group>"; };
+		ECB80C532F149C3500F429DB /* HonorIconVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorIconVM.swift; sourceTree = "<group>"; };
+		ECB80C552F149E1300F429DB /* HonorIconCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorIconCell.swift; sourceTree = "<group>"; };
+		ECB80C572F14BF8F00F429DB /* HonorDonationVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorDonationVM.swift; sourceTree = "<group>"; };
+		ECB80C592F14C02000F429DB /* FireworkParticlesBurst.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireworkParticlesBurst.swift; sourceTree = "<group>"; };
+		ECB80C5B2F14C4AD00F429DB /* HonorDonationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorDonationCell.swift; sourceTree = "<group>"; };
+		ECB80C5D2F14C68000F429DB /* HonorDonationMsgVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorDonationMsgVM.swift; sourceTree = "<group>"; };
 		ECB8483A2BF305A700B554B9 /* SettingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingVC.swift; sourceTree = "<group>"; };
 		ECB8483E2BF305F400B554B9 /* SettingTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTopVM.swift; sourceTree = "<group>"; };
 		ECB848402BF30B4500B554B9 /* SettingBottomVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingBottomVM.swift; sourceTree = "<group>"; };
@@ -4637,6 +4655,29 @@
 			path = VM;
 			sourceTree = "<group>";
 		};
+		ECB80C4B2F148E9D00F429DB /* Honor */ = {
+			isa = PBXGroup;
+			children = (
+				ECB80C592F14C02000F429DB /* FireworkParticlesBurst.swift */,
+				ECB80C4C2F148EA100F429DB /* HonorVC.swift */,
+			);
+			path = Honor;
+			sourceTree = "<group>";
+		};
+		ECB80C4E2F148EE100F429DB /* Honor */ = {
+			isa = PBXGroup;
+			children = (
+				ECB80C4F2F148EE500F429DB /* HonorTopVM.swift */,
+				ECB80C512F1493C900F429DB /* HonorTypeVM.swift */,
+				ECB80C532F149C3500F429DB /* HonorIconVM.swift */,
+				ECB80C552F149E1300F429DB /* HonorIconCell.swift */,
+				ECB80C572F14BF8F00F429DB /* HonorDonationVM.swift */,
+				ECB80C5B2F14C4AD00F429DB /* HonorDonationCell.swift */,
+				ECB80C5D2F14C68000F429DB /* HonorDonationMsgVM.swift */,
+			);
+			path = Honor;
+			sourceTree = "<group>";
+		};
 		ECB8483C2BF305D800B554B9 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
@@ -5146,6 +5187,7 @@
 		ECD0FF302BABE012001232C9 /* VC */ = {
 			isa = PBXGroup;
 			children = (
+				ECB80C4B2F148E9D00F429DB /* Honor */,
 				EC1B59E02EE6ABC600FE3E9A /* Service */,
 				ECF0BFD12BFC3C3800E5F6F0 /* Invite */,
 				ECB848442BF35C2C00B554B9 /* Setting */,
@@ -5177,6 +5219,7 @@
 		ECD0FF312BABE015001232C9 /* VM */ = {
 			isa = PBXGroup;
 			children = (
+				ECB80C4E2F148EE100F429DB /* Honor */,
 				A740EEE92E72BB9800B6ABAA /* Address */,
 				A72401392E5595CB005DB615 /* Personal */,
 				A7BAAC1D2E2F8C28002CE2D1 /* Order */,
@@ -5994,6 +6037,7 @@
 				A7A801242D57098700520A83 /* UIVisualEffectView+Exs.swift in Sources */,
 				A7C72B622E125988001EA74D /* FriendListVM.swift in Sources */,
 				ECC977B82C19C1A500F7FAA6 /* ServiceContactVC.swift in Sources */,
+				ECB80C5A2F14C02000F429DB /* FireworkParticlesBurst.swift in Sources */,
 				A75039FA2CF051C800C2B2B3 /* SportCatogaryTableViewCell.swift in Sources */,
 				ECD0FEF32BABD25B001232C9 /* YYTextEffectWindow.m in Sources */,
 				EC61ABCE2F037FDE008FA297 /* HabitRuleBodyDataAlertVM.swift in Sources */,
@@ -6058,6 +6102,7 @@
 				EC4DE2C02BCD18630090A7BD /* PlanCreateFoodsDaysAlertVM.swift in Sources */,
 				A7BAAC232E30A727002CE2D1 /* CourseOrderListPayAlertVM.swift in Sources */,
 				ECC8DC072BFF1A5800C97240 /* BodyDataUploadManager.swift in Sources */,
+				ECB80C5C2F14C4B200F429DB /* HonorDonationCell.swift in Sources */,
 				EC9048812BBBDC0E00F62262 /* QuestionnaireProgressPartVM.swift in Sources */,
 				A740EEF32E72C63700B6ABAA /* AddressDetailCell.swift in Sources */,
 				ECDCE6262C606E95000350C8 /* GoalSetWeeksAlertVM.swift in Sources */,
@@ -6073,6 +6118,7 @@
 				ECD0FF092BABD25B001232C9 /* GNUnits.m in Sources */,
 				EC97261E2C5B8FF900F244A2 /* GoalSetWeeksNaturalItemVM.swift in Sources */,
 				ECD0FF022BABD25B001232C9 /* UIView+YYText.m in Sources */,
+				ECB80C502F148EEA00F429DB /* HonorTopVM.swift in Sources */,
 				EC380A2F2BB178DB00B0C58F /* QuestionnaireSurveyMsgBirthdayVM.swift in Sources */,
 				A795CA852CE330A60090D89C /* ForumCommentListCellHead.swift in Sources */,
 				EC1440592C3E55D100566E9F /* JournalShareNewVC.swift in Sources */,
@@ -6297,6 +6343,7 @@
 				A79A4F8A2D65B4D2002B8EB4 /* VideoEditBottomVM.swift in Sources */,
 				EC24EB592BB2CBEB002F21DF /* QuestionnaireSurveyBodyFatImageVM.swift in Sources */,
 				A775EA272E17BDAF001DE90A /* WeightChangeChartView.swift in Sources */,
+				ECB80C522F1493CB00F429DB /* HonorTypeVM.swift in Sources */,
 				A76F50C72D5B13B2001B67CB /* SurveyVC.swift in Sources */,
 				EC9CB9322EE90E1600FBF915 /* ServiceContactTableViewGoodsInfoCell.swift in Sources */,
 				EC87EEF32BB3BB9900350EB0 /* QuestionnaireSurveyMealsVM.swift in Sources */,
@@ -6348,15 +6395,18 @@
 				EC1EB5272BFAED5400537F0B /* FoodsEstablishVC.swift in Sources */,
 				EC6978E32BABBD81000B933A /* ViewController.swift in Sources */,
 				ECD0FEEB2BABD25B001232C9 /* LLButton.swift in Sources */,
+				ECB80C582F14BF9500F429DB /* HonorDonationVM.swift in Sources */,
 				A7817EF62DC1EE0B003169EF /* JournalShareMsgNameVM.swift in Sources */,
 				EC24EB512BB2BC95002F21DF /* QuestionLoseFatTableViewCell.swift in Sources */,
 				A78FE2082CD4756200661F7D /* ForumNaviTypeVM.swift in Sources */,
+				ECB80C5E2F14C68500F429DB /* HonorDonationMsgVM.swift in Sources */,
 				ECDED1982C451AB800F9B0AD /* CodeAlertVM.swift in Sources */,
 				EC9048852BBBE51F00F62262 /* QuestionCustomItemVM.swift in Sources */,
 				A7CEA60B2D1D3CAC009DDEB5 /* TutorialMenuItemVM.swift in Sources */,
 				A76BE7D12CF5AF4F0058F459 /* SportDataSQLiteManager.swift in Sources */,
 				A70A1F882E6ECC3900B506DC /* MallDetailTextCell.swift in Sources */,
 				EC1B59E42EE6BFEB00FE3E9A /* ServiceContactMarketVC.swift in Sources */,
+				ECB80C542F149C3B00F429DB /* HonorIconVM.swift in Sources */,
 				EC8FF3EA2C92BCB8003A7E0B /* NaturalStatCPFDGBarLegendView.swift in Sources */,
 				EC4DE28F2BC931030090A7BD /* PlanCreateNameVM.swift in Sources */,
 				A798F5372CA1102E00B8327E /* JournalSettingVC.swift in Sources */,
@@ -6710,6 +6760,7 @@
 				A744269F2CDB5A7F000D7E2B /* BooleanAttribute.swift in Sources */,
 				A74426A02CDB5A7F000D7E2B /* ParseError.swift in Sources */,
 				A74426A12CDB5A7F000D7E2B /* Collector.swift in Sources */,
+				ECB80C4D2F148EA400F429DB /* HonorVC.swift in Sources */,
 				A74426A22CDB5A7F000D7E2B /* Tokeniser.swift in Sources */,
 				A74426A32CDB5A7F000D7E2B /* UnfairLock.swift in Sources */,
 				ECD0FF0A2BABD25B001232C9 /* GTMBase64.m in Sources */,
@@ -6740,6 +6791,7 @@
 				ECB8483F2BF305F400B554B9 /* SettingTopVM.swift in Sources */,
 				A707D2C02CBBE7B7005BDC0E /* BodyDataSQLiteManagerOld.swift in Sources */,
 				A76BE7CF2CF41B6D0058F459 /* SportCustomVC.swift in Sources */,
+				ECB80C562F149E1700F429DB /* HonorIconCell.swift in Sources */,
 				ECB5AEF72BE0B84A0047762C /* CalFillCircleView.swift in Sources */,
 				A7454B3A2E740F530064076C /* MallOrderAddressAlertVM.swift in Sources */,
 				EC4DE2DB2BCE72390090A7BD /* PlanShareTopVM.swift in Sources */,
