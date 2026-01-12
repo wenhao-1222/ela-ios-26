@@ -152,13 +152,47 @@ extension HonorDonationVM: UICollectionViewDelegate, UICollectionViewDataSource 
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let dict = NSDictionary()
-        let previewView = HonorDonationPreviewView(dict: dict)
+//        let previewView = HonorDonationPreviewView(dict: dict)
         guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.keyWindow else {
             return
         }
+        guard let cell = collectionView.cellForItem(at: indexPath) as? HonorDonationCell else {
+               return
+           }
+           let originFrame = cell.msgContainerFrame(in: window)
+           let previewView = HonorDonationPreviewView(
+               dict: dict,
+               originFrame: originFrame,
+               originFrameProvider: { [weak collectionView, weak window] in
+                   guard let window = window else { return nil }
+                   guard let cell = collectionView?.cellForItem(at: indexPath) as? HonorDonationCell else {
+                       return nil
+                   }
+                   return cell.msgContainerFrame(in: window)
+               }
+           )
         window.addSubview(previewView)
         previewView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+        window.layoutIfNeeded()
+        previewView.layoutIfNeeded()
+        let targetFrame = previewView.msgContainerFrame(in: window)
+        let snapshot = cell.msgContainerSnapshot() ?? UIView()
+        snapshot.frame = originFrame
+        window.addSubview(snapshot)
+        previewView.prepareForPresentation()
+        UIView.animate(
+            withDuration: 0.35,
+            delay: 0,
+            usingSpringWithDamping: 0.88,
+            initialSpringVelocity: 0.2,
+            options: [.curveEaseInOut]
+        ) {
+            snapshot.frame = targetFrame
+            previewView.finishPresentation()
+        } completion: { _ in
+            snapshot.removeFromSuperview()
         }
     }
 }

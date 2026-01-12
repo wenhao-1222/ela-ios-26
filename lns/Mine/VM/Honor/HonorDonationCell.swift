@@ -107,4 +107,11 @@ class HonorDonationCell: UICollectionViewCell {
         )
         msgVm.transform = CGAffineTransform(scaleX: scale, y: scale)
     }
+    func msgContainerFrame(in view: UIView) -> CGRect {
+        return msgContainer.convert(msgContainer.bounds, to: view)
+    }
+
+    func msgContainerSnapshot() -> UIView? {
+        return msgContainer.snapshotView(afterScreenUpdates: false)
+    }
 }

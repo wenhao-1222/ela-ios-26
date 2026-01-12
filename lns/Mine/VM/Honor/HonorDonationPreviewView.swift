@@ -16,14 +16,23 @@ class HonorDonationPreviewView: UIView {
     private let closeButton = UIButton(type: .system)
     private let saveButton = UIButton(type: .system)
     private let dataDict: NSDictionary
+    private let originFrame: CGRect
+    private let originFrameProvider: (() -> CGRect?)?
+    private var isAnimating = false
     
     private lazy var msgVm: HonorDonationMsgVM = {
         let vm = HonorDonationMsgVM(frame: CGRect(origin: .zero, size: msgBaseSize))
         return vm
     }()
     
-    init(dict: NSDictionary) {
+    init(
+            dict: NSDictionary,
+            originFrame: CGRect,
+            originFrameProvider: (() -> CGRect?)? = nil
+        ) {
         self.dataDict = dict
+        self.originFrame = originFrame
+        self.originFrameProvider = originFrameProvider
         super.init(frame: .zero)
         setupUI()
         updateContent()
@@ -121,9 +130,53 @@ class HonorDonationPreviewView: UIView {
         
         msgVm.transform = CGAffineTransform(scaleX: scale, y: scale)
     }
+    func msgContainerFrame(in view: UIView) -> CGRect {
+        return msgContainer.convert(msgContainer.bounds, to: view)
+    }
+
+    func prepareForPresentation() {
+        setMessageHidden(true)
+        setChromeAlpha(0)
+    }
     
+    func finishPresentation() {
+        setMessageHidden(false)
+        setChromeAlpha(1)
+    }
+    
+    private func setChromeAlpha(_ alpha: CGFloat) {
+        buttonStack.alpha = alpha
+        backgroundColor = UIColor.COLOR_BG_F2.withAlphaComponent(alpha)
+    }
+
+    private func setMessageHidden(_ hidden: Bool) {
+        msgContainer.alpha = hidden ? 0 : 1
+    }
     @objc private func closeAction() {
-        removeFromSuperview()
+//        removeFromSuperview()
+        guard !isAnimating else { return }
+        guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.keyWindow else {
+            removeFromSuperview()
+            return
+        }
+        let targetFrame = originFrameProvider?() ?? originFrame
+        let snapshot = msgContainer.snapshotView(afterScreenUpdates: true) ?? UIView()
+        snapshot.frame = msgContainer.convert(msgContainer.bounds, to: window)
+        window.addSubview(snapshot)
+        isAnimating = true
+        setMessageHidden(true)
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0,
+            options: [.curveEaseInOut]
+        ) {
+            snapshot.frame = targetFrame
+            self.setChromeAlpha(0)
+        } completion: { _ in
+            snapshot.removeFromSuperview()
+            self.isAnimating = false
+            self.removeFromSuperview()
+        }
     }
     
     @objc private func saveAction() {
