@@ -1052,6 +1052,7 @@
 		ECB80C5A2F14C02000F429DB /* FireworkParticlesBurst.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C592F14C02000F429DB /* FireworkParticlesBurst.swift */; };
 		ECB80C5C2F14C4B200F429DB /* HonorDonationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C5B2F14C4AD00F429DB /* HonorDonationCell.swift */; };
 		ECB80C5E2F14C68500F429DB /* HonorDonationMsgVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C5D2F14C68000F429DB /* HonorDonationMsgVM.swift */; };
+		ECB80C622F14DE4300F429DB /* HonorDonationPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB80C612F14DE4200F429DB /* HonorDonationPreviewView.swift */; };
 		ECB8483B2BF305A700B554B9 /* SettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8483A2BF305A700B554B9 /* SettingVC.swift */; };
 		ECB8483F2BF305F400B554B9 /* SettingTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB8483E2BF305F400B554B9 /* SettingTopVM.swift */; };
 		ECB848412BF30B4500B554B9 /* SettingBottomVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB848402BF30B4500B554B9 /* SettingBottomVM.swift */; };
@@ -2401,6 +2402,7 @@
 		ECB80C592F14C02000F429DB /* FireworkParticlesBurst.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireworkParticlesBurst.swift; sourceTree = "<group>"; };
 		ECB80C5B2F14C4AD00F429DB /* HonorDonationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorDonationCell.swift; sourceTree = "<group>"; };
 		ECB80C5D2F14C68000F429DB /* HonorDonationMsgVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorDonationMsgVM.swift; sourceTree = "<group>"; };
+		ECB80C612F14DE4200F429DB /* HonorDonationPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorDonationPreviewView.swift; sourceTree = "<group>"; };
 		ECB8483A2BF305A700B554B9 /* SettingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingVC.swift; sourceTree = "<group>"; };
 		ECB8483E2BF305F400B554B9 /* SettingTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTopVM.swift; sourceTree = "<group>"; };
 		ECB848402BF30B4500B554B9 /* SettingBottomVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingBottomVM.swift; sourceTree = "<group>"; };
@@ -4674,6 +4676,7 @@
 				ECB80C572F14BF8F00F429DB /* HonorDonationVM.swift */,
 				ECB80C5B2F14C4AD00F429DB /* HonorDonationCell.swift */,
 				ECB80C5D2F14C68000F429DB /* HonorDonationMsgVM.swift */,
+				ECB80C612F14DE4200F429DB /* HonorDonationPreviewView.swift */,
 			);
 			path = Honor;
 			sourceTree = "<group>";
@@ -5765,6 +5768,7 @@
 				A735A7BC2D5DE3F5006CE140 /* JFToastQueueTask.swift in Sources */,
 				A735A7BD2D5DE3F5006CE140 /* JFAlertView+PopupView.swift in Sources */,
 				A755ED652DF6AAD000005C3A /* GuideTotalSecondNewVM.swift in Sources */,
+				ECB80C622F14DE4300F429DB /* HonorDonationPreviewView.swift in Sources */,
 				A7F3DB752E867ECB00E9B7ED /* RoundedShadowImageView.swift in Sources */,
 				A735A7BE2D5DE3F5006CE140 /* UIViewContoller+JFPopup.swift in Sources */,
 				A735A7BF2D5DE3F5006CE140 /* UIView+JFPopup.swift in Sources */,

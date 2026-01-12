@@ -150,4 +150,15 @@ extension HonorDonationVM: UICollectionViewDelegate, UICollectionViewDataSource 
         
         return cell
     }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let dict = NSDictionary()
+        let previewView = HonorDonationPreviewView(dict: dict)
+        guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.keyWindow else {
+            return
+        }
+        window.addSubview(previewView)
+        previewView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
 }
