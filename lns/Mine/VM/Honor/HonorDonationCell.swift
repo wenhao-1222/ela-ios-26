@@ -10,6 +10,10 @@ class HonorDonationCell: UICollectionViewCell {
     
     static let identifier = "HonorDonationCell"
     
+    private let msgBaseSize = CGSize(width: kFitWidth(375), height: kFitWidth(812))
+    private let msgDisplaySize = CGSize(width: kFitWidth(42), height: kFitWidth(90))
+    private let msgContainer = UIView()
+    
     private let bgView = UIView()
     private let bottomRectImageView = UIImageView()
     private let percentLabel = UILabel()
@@ -26,14 +30,17 @@ class HonorDonationCell: UICollectionViewCell {
     }
     
     lazy var msgVm: HonorDonationMsgVM = {
-        let vm = HonorDonationMsgVM(frame: CGRect.init(x: 0, y: 0, width: kFitWidth(42), height: kFitWidth(90)))
+//        let vm = HonorDonationMsgVM(frame: CGRect.init(x: 0, y: 0, width: kFitWidth(42), height: kFitWidth(90)))
+        let vm = HonorDonationMsgVM(frame: CGRect(origin: .zero, size: msgBaseSize))
         return vm
     }()
     
     private func setupUI() {
         contentView.addSubview(bgView)
         bgView.addSubview(bottomRectImageView)
-        bgView.addSubview(msgVm)
+//        bgView.addSubview(msgVm)
+        bgView.addSubview(msgContainer)
+        msgContainer.addSubview(msgVm)
         bgView.addSubview(percentLabel)
         bgView.addSubview(titleLabel)
         bgView.addSubview(dateLabel)
@@ -51,11 +58,13 @@ class HonorDonationCell: UICollectionViewCell {
             make.height.equalTo(kFitWidth(47.5))
         }
         percentLabel.snp.makeConstraints { make in
-            make.center.equalTo(msgVm)
+//            make.center.equalTo(msgVm)
+            make.center.equalTo(msgContainer)
         }
 
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(msgVm.snp.bottom).offset(kFitWidth(8))
+//            make.top.equalTo(msgVm.snp.bottom).offset(kFitWidth(8))
+            make.top.equalTo(msgContainer.snp.bottom).offset(kFitWidth(8))
             make.centerX.equalToSuperview()
         }
 
@@ -78,12 +87,24 @@ class HonorDonationCell: UICollectionViewCell {
         titleLabel.text = "2026.01.12"//model.title
         msgVm.updateUI(dict: dict)
         
-        
-        msgVm.snp.remakeConstraints { make in
+        msgContainer.snp.remakeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
             make.top.equalToSuperview()
-            make.width.equalTo(kFitWidth(42))
-            make.height.equalTo(kFitWidth(90))
+//            make.width.equalTo(kFitWidth(42))
+//            make.height.equalTo(kFitWidth(90))
+            make.width.equalTo(msgDisplaySize.width)
+            make.height.equalTo(msgDisplaySize.height)
         }
+        msgVm.snp.remakeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(msgBaseSize.width)
+            make.height.equalTo(msgBaseSize.height)
+        }
+        
+        let scale = min(
+            msgDisplaySize.width / msgBaseSize.width,
+            msgDisplaySize.height / msgBaseSize.height
+        )
+        msgVm.transform = CGAffineTransform(scaleX: scale, y: scale)
     }
 }
