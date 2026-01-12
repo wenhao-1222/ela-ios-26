@@ -21,6 +21,7 @@ class HonorDonationVM: UIView {
         self.isUserInteractionEnabled = true
         
         initUI()
+        sendDataRequest()
     }
     
     required init?(coder: NSCoder) {
@@ -193,6 +194,16 @@ extension HonorDonationVM: UICollectionViewDelegate, UICollectionViewDataSource 
             previewView.finishPresentation()
         } completion: { _ in
             snapshot.removeFromSuperview()
+        }
+    }
+}
+
+extension HonorDonationVM{
+    func sendDataRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_achievement_donationCertificate, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendDataRequest:\(dataDict)")
         }
     }
 }

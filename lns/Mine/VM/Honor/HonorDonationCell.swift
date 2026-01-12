@@ -20,6 +20,14 @@ class HonorDonationCell: UICollectionViewCell {
     private let titleLabel = UILabel()
     private let dateLabel = UILabel()
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        if previousTraitCollection?.userInterfaceStyle == .dark{
+            msgContainer.layer.borderColor = WHColor_16(colorStr: "D2D3D4").cgColor
+        }else{
+            msgContainer.layer.borderColor = UIColor.black.cgColor
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -30,20 +38,28 @@ class HonorDonationCell: UICollectionViewCell {
     }
     
     lazy var msgVm: HonorDonationMsgVM = {
-//        let vm = HonorDonationMsgVM(frame: CGRect.init(x: 0, y: 0, width: kFitWidth(42), height: kFitWidth(90)))
         let vm = HonorDonationMsgVM(frame: CGRect(origin: .zero, size: msgBaseSize))
+        
         return vm
     }()
     
     private func setupUI() {
         contentView.addSubview(bgView)
         bgView.addSubview(bottomRectImageView)
-//        bgView.addSubview(msgVm)
         bgView.addSubview(msgContainer)
         msgContainer.addSubview(msgVm)
         bgView.addSubview(percentLabel)
         bgView.addSubview(titleLabel)
         bgView.addSubview(dateLabel)
+        
+        msgContainer.layer.cornerRadius = kFitWidth(4)
+        msgContainer.clipsToBounds = true
+        msgContainer.layer.borderWidth = kFitWidth(1)
+        if traitCollection.userInterfaceStyle == .dark{
+            msgContainer.layer.borderColor = WHColor_16(colorStr: "D2D3D4").cgColor
+        }else{
+            msgContainer.layer.borderColor = UIColor.black.cgColor
+        }
         
         bottomRectImageView.setImgLocal(imgName: "donation_cell_bottom")
         

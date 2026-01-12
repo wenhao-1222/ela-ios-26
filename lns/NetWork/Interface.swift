@@ -341,6 +341,11 @@ public let URL_user_habit_leaderboard    = URL_Type + "users/habit/leaderboard"
 ///  兑换餐食
 public let URL_user_habit_donate         = URL_Type + "users/habit/donate"
 
+///我的荣誉--徽章墙
+public let URL_user_achievement_badgeWall = URL_Type + "users/achievement/badgeWall"
+///我的荣誉--捐赠证书
+public let URL_user_achievement_donationCertificate = URL_Type + "users/achievement/donationCertificate"
+
 //开屏页信息
 public let URL_splash_ad                = URL_Type + "tools/app/splash_ad/list"
 //上报异常信息

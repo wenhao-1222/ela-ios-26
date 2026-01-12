@@ -23,6 +23,10 @@ class HonorVC: WHBaseViewVC {
     }()
     lazy var iconMsgVm: HonorIconVM = {
         let vm = HonorIconVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.scrollViewBase.frame.height))
+        vm.dataBlock = {(dict)in
+            self.topMsgVm.updateUI(iconNum: dict.stringValueForKey(key: "badgeCount"),
+                                   donateNum: dict.stringValueForKey(key: "donationCertificateCount"))
+        }
         
         return vm
     }()

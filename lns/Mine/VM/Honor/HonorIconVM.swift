@@ -20,6 +20,8 @@ class HonorIconVM: UIView {
     
     var selfHeight = kFitWidth(100)
     
+    var dataBlock:((NSDictionary)->())?
+    
     private var dataSource: [HonorIconModel] = []
     
     override init(frame: CGRect) {
@@ -29,6 +31,7 @@ class HonorIconVM: UIView {
         self.isUserInteractionEnabled = true
         
         initUI()
+        sendDataRequest()
     }
     
     required init?(coder: NSCoder) {
@@ -73,8 +76,10 @@ extension HonorIconVM{
             make.left.right.equalToSuperview()
         }
         
-        setupCollection()
-        mockData()
+        collectionView.delegate = self
+        collectionView.dataSource = self
+//        setupCollection()
+//        mockData()
     }
     func setConstrait() {
         bgWhiteView.snp.makeConstraints { make in
@@ -182,5 +187,31 @@ extension HonorIconVM: UICollectionViewDelegate, UICollectionViewDataSource {
         
         cell.config(model: dataSource[indexPath.item])
         return cell
+    }
+}
+
+extension HonorIconVM{
+    func sendDataRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_achievement_badgeWall, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            let dataArray = dataDict["badgeList"]as? NSArray ?? []
+            DLLog(message: "sendDataRequest:\(dataArray)")
+            
+            self.dealDataSource(dataArray: dataArray)
+            self.dataBlock?(dataDict)
+        }
+    }
+    
+    func dealDataSource(dataArray:NSArray) {
+        for i in 0..<dataArray.count{
+            let dataDict = dataArray[i]as? NSDictionary ?? [:]
+            dataSource.append(HonorIconModel(iconName: dataDict.stringValueForKey(key: "badgeIconUrl"),
+                                             percentText: "",
+                                             title: dataDict.stringValueForKey(key: "badgeName"),
+                                             dateText: dataDict.stringValueForKey(key: "ctime"),
+                                             isAchieved: dataDict.stringValueForKey(key: "earned") == "1"))
+        }
+        self.collectionView.reloadData()
     }
 }

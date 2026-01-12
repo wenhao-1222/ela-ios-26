@@ -48,7 +48,7 @@ class HonorDonationPreviewView: UIView {
     }
     
     private func setupUI() {
-        backgroundColor = .COLOR_BG_F2
+        backgroundColor = WHColor_16(colorStr: "F2F2F2")//.COLOR_BG_F2
         
         addSubview(msgContainer)
         msgContainer.addSubview(msgVm)
@@ -60,11 +60,12 @@ class HonorDonationPreviewView: UIView {
         
         closeButton.setTitle("关闭", for: .normal)
         closeButton.titleLabel?.font = .systemFont(ofSize: kFitWidth(16), weight: .medium)
-        closeButton.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
-        closeButton.backgroundColor = .COLOR_BG_WHITE
+        closeButton.setTitleColor(WHColor_16(colorStr: "0f1214"), for: .normal)
+//        closeButton.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        closeButton.backgroundColor = .white//.COLOR_BG_WHITE
         closeButton.layer.cornerRadius = kFitWidth(24)
         closeButton.layer.borderWidth = kFitWidth(1)
-        closeButton.layer.borderColor = UIColor.COLOR_LINE_F0.cgColor
+        closeButton.layer.borderColor = WHColor_16(colorStr: "F0F0F0").cgColor//UIColor.COLOR_LINE_F0.cgColor
         closeButton.addTarget(self, action: #selector(closeAction), for: .touchUpInside)
         
         saveButton.setTitle("保存到手机", for: .normal)
@@ -146,7 +147,7 @@ class HonorDonationPreviewView: UIView {
     
     private func setChromeAlpha(_ alpha: CGFloat) {
         buttonStack.alpha = alpha
-        backgroundColor = UIColor.COLOR_BG_F2.withAlphaComponent(alpha)
+        backgroundColor = WHColorWithAlpha(colorStr: "F2F2F2", alpha: alpha)//UIColor.COLOR_BG_F2.withAlphaComponent(alpha)
     }
 
     private func setMessageHidden(_ hidden: Bool) {
