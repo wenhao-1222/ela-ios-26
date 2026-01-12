@@ -62,10 +62,10 @@ class HonorDonationMsgVM: UIView {
 
 extension HonorDonationMsgVM{
     func updateUI(dict:NSDictionary) {
-        headImgView.setImgUrl(urlString: UserInfoModel.shared.headimgurl)
-        nickNameLabel.text = UserInfoModel.shared.nickname
-        certNoLabel.text = "证书编号：292-042-32KDLLSF"
-        certDateLabel.text = "颁发日期：2026.01.12"
+        headImgView.setImgUrl(urlString: dict.stringValueForKey(key: "headimgurl"))
+        nickNameLabel.text = dict.stringValueForKey(key: "nickname")
+        certNoLabel.text = "证书编号：\(dict.stringValueForKey(key: "certificateNo"))"
+        certDateLabel.text = "颁发日期：\(dict.stringValueForKey(key: "ctime"))"
     }
 }
 

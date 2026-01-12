@@ -12,7 +12,7 @@ class HonorDonationVM: UIView {
     
     var selfHeight = kFitWidth(100)
     
-    private var dataSource: [HonorIconModel] = []
+    private var dataSource = NSArray()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -136,7 +136,7 @@ extension HonorDonationVM{
 extension HonorDonationVM: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 8//dataSource.count
+        return dataSource.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -147,7 +147,8 @@ extension HonorDonationVM: UICollectionViewDelegate, UICollectionViewDataSource 
             for: indexPath
         ) as! HonorDonationCell
         
-        cell.config(dict: [:])
+        let dict = self.dataSource[indexPath.row]as? NSDictionary ?? [:]
+        cell.config(dict: dict)
         
         return cell
     }
@@ -204,6 +205,9 @@ extension HonorDonationVM{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendDataRequest:\(dataDict)")
+            
+            self.dataSource = dataDict["donationCertificateList"]as? NSArray ?? []
+            self.collectionView.reloadData()
         }
     }
 }

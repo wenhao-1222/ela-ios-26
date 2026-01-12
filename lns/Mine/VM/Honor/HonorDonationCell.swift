@@ -100,14 +100,13 @@ class HonorDonationCell: UICollectionViewCell {
     }
     
     func config(dict:NSDictionary) {
-        titleLabel.text = "2026.01.12"//model.title
+        titleLabel.text = dict.stringValueForKey(key: "ctime")
+        dateLabel.text = "捐赠 \(dict.stringValueForKey(key: "qty")) 餐"
         msgVm.updateUI(dict: dict)
         
         msgContainer.snp.remakeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
             make.top.equalToSuperview()
-//            make.width.equalTo(kFitWidth(42))
-//            make.height.equalTo(kFitWidth(90))
             make.width.equalTo(msgDisplaySize.width)
             make.height.equalTo(msgDisplaySize.height)
         }
