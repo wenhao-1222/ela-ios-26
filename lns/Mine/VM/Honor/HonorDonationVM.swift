@@ -153,7 +153,7 @@ extension HonorDonationVM: UICollectionViewDelegate, UICollectionViewDataSource 
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let dict = NSDictionary()
+        let dict = self.dataSource[indexPath.row]as? NSDictionary ?? [:]
 //        let previewView = HonorDonationPreviewView(dict: dict)
         guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.keyWindow else {
             return
