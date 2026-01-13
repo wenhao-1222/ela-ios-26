@@ -52,6 +52,7 @@ class HonorDonationVM: UIView {
         collectionView.showsVerticalScrollIndicator = false
         collectionView.register(HonorDonationCell.self,
                                 forCellWithReuseIdentifier: HonorDonationCell.identifier)
+        collectionView.register(HonorDonationEmptyCell.self, forCellWithReuseIdentifier: HonorDonationEmptyCell.identifier)
         return collectionView
     }()
 }
@@ -136,23 +137,34 @@ extension HonorDonationVM{
 extension HonorDonationVM: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return dataSource.count
+        return dataSource.count == 0 ? 1 : dataSource.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: HonorDonationCell.identifier,
-            for: indexPath
-        ) as! HonorDonationCell
-        
-        let dict = self.dataSource[indexPath.row]as? NSDictionary ?? [:]
-        cell.config(dict: dict)
-        
-        return cell
+        if dataSource.count == 0 {
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: HonorDonationEmptyCell.identifier,
+                for: indexPath
+            ) as! HonorDonationEmptyCell
+            
+            return cell
+        }else{
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: HonorDonationCell.identifier,
+                for: indexPath
+            ) as! HonorDonationCell
+            
+            let dict = self.dataSource[indexPath.row]as? NSDictionary ?? [:]
+            cell.config(dict: dict)
+            
+            return cell
+        }
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if dataSource.count == 0 {
+            return
+        }
         let dict = self.dataSource[indexPath.row]as? NSDictionary ?? [:]
 //        let previewView = HonorDonationPreviewView(dict: dict)
         guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.keyWindow else {

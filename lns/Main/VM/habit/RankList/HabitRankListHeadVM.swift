@@ -123,9 +123,6 @@ extension HabitRankListHeadVM{
         rankImgViewDefault_one.isHidden = fromIndex == 9
         rankImgViewDefault_two.isHidden = fromIndex >= 8
         rankImgViewDefault_three.isHidden = fromIndex >= 7
-//        if fromIndex == tier{
-//            
-//        }
     }
     private func updateRemainTimeLabel() {
         if remainSeconds <= 0 {

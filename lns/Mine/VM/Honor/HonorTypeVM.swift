@@ -14,6 +14,8 @@ class HonorTypeVM: UIView {
     let fontSelect = UIFont.systemFont(ofSize: 16, weight: .medium)
     let fontNormal = UIFont.systemFont(ofSize: 16, weight: .regular)
     
+    var tapBlock:((CGFloat)->())?
+    
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
         self.backgroundColor = .clear
@@ -42,6 +44,8 @@ class HonorTypeVM: UIView {
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         btn.isSelected = true
         
+        btn.addTarget(self, action: #selector(leftTapAction), for: .touchUpInside)
+        
         return btn
     }()
     lazy var donateButton: UIButton = {
@@ -51,6 +55,7 @@ class HonorTypeVM: UIView {
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .selected)
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         
+        btn.addTarget(self, action: #selector(rightTapAction), for: .touchUpInside)
         return btn
     }()
     lazy var lineView: UIView = {
@@ -60,6 +65,33 @@ class HonorTypeVM: UIView {
         
         return vi
     }()
+}
+
+extension HonorTypeVM{
+    @objc func leftTapAction() {
+        if iconButton.isSelected{
+            return
+        }
+        iconButton.isSelected = true
+        donateButton.isSelected = false
+        self.tapBlock?(0)
+        let lineCenter = self.lineView.center
+        UIView.animate(withDuration: 0.25) {
+            self.lineView.center = CGPoint(x: self.iconButton.center.x, y: lineCenter.y)
+        }
+    }
+    @objc func rightTapAction() {
+        if donateButton.isSelected{
+            return
+        }
+        iconButton.isSelected = false
+        donateButton.isSelected = true
+        self.tapBlock?(1)
+        let lineCenter = self.lineView.center
+        UIView.animate(withDuration: 0.25) {
+            self.lineView.center = CGPoint(x: self.donateButton.center.x, y: lineCenter.y)
+        }
+    }
 }
 
 extension HonorTypeVM{

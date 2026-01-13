@@ -930,6 +930,7 @@
 		EC87EEFD2BB3EACE00350EB0 /* QuestionnaireSurveyFoodsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC87EEFC2BB3EACE00350EB0 /* QuestionnaireSurveyFoodsListVC.swift */; };
 		EC87EEFF2BB3EC7400350EB0 /* SearchVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC87EEFE2BB3EC7400350EB0 /* SearchVM.swift */; };
 		EC87EF012BB3ECED00350EB0 /* FoodsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC87EF002BB3ECED00350EB0 /* FoodsTableViewCell.swift */; };
+		EC8835CC2F15ECC20088C275 /* HonorDonationEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8835CB2F15ECB20088C275 /* HonorDonationEmptyCell.swift */; };
 		EC8D210C2C64704000E68B59 /* GuideSetWeekGoalAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210B2C64704000E68B59 /* GuideSetWeekGoalAlertVM.swift */; };
 		EC8D210E2C64C42000E68B59 /* JournalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210D2C64C42000E68B59 /* JournalVC.swift */; };
 		EC8D21102C64C4D300E68B59 /* JounalCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210F2C64C4D300E68B59 /* JounalCollectionCell.swift */; };
@@ -2281,6 +2282,7 @@
 		EC87EEFC2BB3EACE00350EB0 /* QuestionnaireSurveyFoodsListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireSurveyFoodsListVC.swift; sourceTree = "<group>"; };
 		EC87EEFE2BB3EC7400350EB0 /* SearchVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchVM.swift; sourceTree = "<group>"; };
 		EC87EF002BB3ECED00350EB0 /* FoodsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsTableViewCell.swift; sourceTree = "<group>"; };
+		EC8835CB2F15ECB20088C275 /* HonorDonationEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorDonationEmptyCell.swift; sourceTree = "<group>"; };
 		EC8D210B2C64704000E68B59 /* GuideSetWeekGoalAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideSetWeekGoalAlertVM.swift; sourceTree = "<group>"; };
 		EC8D210D2C64C42000E68B59 /* JournalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalVC.swift; sourceTree = "<group>"; };
 		EC8D210F2C64C4D300E68B59 /* JounalCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JounalCollectionCell.swift; sourceTree = "<group>"; };
@@ -4480,6 +4482,34 @@
 			path = WHTabbar;
 			sourceTree = "<group>";
 		};
+		EC8835CA2F15E3220088C275 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				ECD0FF392BABE04B001232C9 /* MineVC.swift */,
+				A71C54902E6ADB6400FB797D /* WidgetTestVC.swift */,
+				A71C54922E6ADE1C00FB797D /* GlassToggleRow.swift */,
+				A72401372E559184005DB615 /* PersonalVC.swift */,
+				EC38DE9A2BEF661D008E7FCE /* MaterialVC.swift */,
+				EC93FC982C0FF7E7007DBC39 /* TutorialsListVC.swift */,
+				ECD041A52C0F0C160073BFB8 /* TutorialsVC.swift */,
+				EC1EB52E2BFB449A00537F0B /* MyFoodsListVC.swift */,
+				A740EEE72E72BB4000B6ABAA /* MyAddressListVC.swift */,
+				A740EEF02E72C54F00B6ABAA /* MyAddressDetailVC.swift */,
+				A7454B312E73B6E50064076C /* AddressPickerView.swift */,
+				EC30F2B22C8701F900E7BD33 /* NaturalStatVC.swift */,
+				A73323652D9258530065BF0A /* VdoTestVC.swift */,
+				A74364CE2E409AB100102313 /* AliPlayerTest.swift */,
+				A732FD762E44AF60007E6E20 /* TutorialVideoSwiftControlView.swift */,
+				A733236A2D9259F80065BF0A /* VideoViewController.swift */,
+				A7AC41E82E29E7020019C81E /* FitnessTipsVC.swift */,
+				A7AC41EA2E29F8AA0019C81E /* BViewController.swift */,
+				A7092D122E4EE02C005A2087 /* ArticlesVC.swift */,
+				A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */,
+				A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
 		EC8FF3ED2C92C2C7003A7E0B /* Bar */ = {
 			isa = PBXGroup;
 			children = (
@@ -4675,6 +4705,7 @@
 				ECB80C552F149E1300F429DB /* HonorIconCell.swift */,
 				ECB80C572F14BF8F00F429DB /* HonorDonationVM.swift */,
 				ECB80C5B2F14C4AD00F429DB /* HonorDonationCell.swift */,
+				EC8835CB2F15ECB20088C275 /* HonorDonationEmptyCell.swift */,
 				ECB80C5D2F14C68000F429DB /* HonorDonationMsgVM.swift */,
 				ECB80C612F14DE4200F429DB /* HonorDonationPreviewView.swift */,
 			);
@@ -5191,30 +5222,10 @@
 			isa = PBXGroup;
 			children = (
 				ECB80C4B2F148E9D00F429DB /* Honor */,
+				EC8835CA2F15E3220088C275 /* Other */,
 				EC1B59E02EE6ABC600FE3E9A /* Service */,
 				ECF0BFD12BFC3C3800E5F6F0 /* Invite */,
 				ECB848442BF35C2C00B554B9 /* Setting */,
-				ECD0FF392BABE04B001232C9 /* MineVC.swift */,
-				A71C54902E6ADB6400FB797D /* WidgetTestVC.swift */,
-				A71C54922E6ADE1C00FB797D /* GlassToggleRow.swift */,
-				A72401372E559184005DB615 /* PersonalVC.swift */,
-				EC38DE9A2BEF661D008E7FCE /* MaterialVC.swift */,
-				EC93FC982C0FF7E7007DBC39 /* TutorialsListVC.swift */,
-				ECD041A52C0F0C160073BFB8 /* TutorialsVC.swift */,
-				EC1EB52E2BFB449A00537F0B /* MyFoodsListVC.swift */,
-				A740EEE72E72BB4000B6ABAA /* MyAddressListVC.swift */,
-				A740EEF02E72C54F00B6ABAA /* MyAddressDetailVC.swift */,
-				A7454B312E73B6E50064076C /* AddressPickerView.swift */,
-				EC30F2B22C8701F900E7BD33 /* NaturalStatVC.swift */,
-				A73323652D9258530065BF0A /* VdoTestVC.swift */,
-				A74364CE2E409AB100102313 /* AliPlayerTest.swift */,
-				A732FD762E44AF60007E6E20 /* TutorialVideoSwiftControlView.swift */,
-				A733236A2D9259F80065BF0A /* VideoViewController.swift */,
-				A7AC41E82E29E7020019C81E /* FitnessTipsVC.swift */,
-				A7AC41EA2E29F8AA0019C81E /* BViewController.swift */,
-				A7092D122E4EE02C005A2087 /* ArticlesVC.swift */,
-				A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */,
-				A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -5817,6 +5828,7 @@
 				A7FBA0CB2E3C5A8400EAEC68 /* ScreenShieldView.swift in Sources */,
 				A77F96312D0BFA5E0084D4FB /* PublishImageCollectionCell.swift in Sources */,
 				A775EA1F2E166E8C001DE90A /* ActionPopupView.swift in Sources */,
+				EC8835CC2F15ECC20088C275 /* HonorDonationEmptyCell.swift in Sources */,
 				A75012AE2DF0372C009BCA7E /* PropotionResultCaloriVM.swift in Sources */,
 				A75F43232CA7EEE80062E7B2 /* DataAddImageItemVM.swift in Sources */,
 				ECD0FE7A2BABCC69001232C9 /* WXUtil.swift in Sources */,

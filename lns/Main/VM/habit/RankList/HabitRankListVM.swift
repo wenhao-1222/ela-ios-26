@@ -209,81 +209,6 @@ extension HabitRankListVM{
 }
 
 extension HabitRankListVM{
-    func sendDataRequest(animateSelfChange: Bool = false){
-        let previousSelfIndex = animateSelfChange ? indexOfCurrentUser(in: dataSourceArray) : nil
-        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
-            
-            let code = responseObject["code"]as? Int ?? -1
-            if code == 200 {
-                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-                let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-                
-                DLLog(message: "sendDataRequest:\(dataDict)")
-                
-//                self.dataSourceArray = dataDict["leaderboard"]as? NSArray ?? []
-                self.dataSourceArray = self.prepareLeaderboardData(from: dataDict["leaderboard"]as? NSArray ?? [])
-                self.cacheLeaderboard(self.dataSourceArray)
-                let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
-                
-                self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
-                                runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
-                                thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
-                                 secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
-                self.headVm.updateDegree(tier: self.currentTierIndex)
-                
-                let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
-                
-                self.displayedDataArray = self.initialDisplayArray(
-                    for: self.dataSourceArray,
-                    previousIndex: previousSelfIndex,
-                    newIndex: newIndex,
-                    shouldAnimate: animateSelfChange
-                )
-//                self.displayedDataArray = self.dataSourceArray
-                self.tableView.reloadData()
-                if animateSelfChange {
-                    self.onTapRank()
-                    self.promotionLine = dataDict.stringValueForKey(key: "promotionLine").intValue
-                    self.relegationLine = dataDict.stringValueForKey(key: "relegationLine").intValue
-                    self.performSelfRankMove(from: previousSelfIndex, to: newIndex)
-                }else{
-                    guard let oldIndex = previousSelfIndex else { return  }
-                    let fromIndexPath = IndexPath(row: 0, section: oldIndex)
-                    
-                    self.tableView.layoutIfNeeded()
-                    self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: false)
-                    self.tableView.layoutIfNeeded()
-                }
-            }else{
-                self.dataSourceArray = NSArray()
-                self.cacheLeaderboard(self.dataSourceArray)
-                self.displayedDataArray = self.dataSourceArray
-                self.tableView.reloadData()
-            }
-        }
-    }
-    func sendDataRequestForHeadMsg(){
-        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
-            let code = responseObject["code"]as? Int ?? -1
-            if code == 200 {
-                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-                let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-                DLLog(message: "sendDataRequest:\(dataDict)")
-                UserDefaults.setTierData(tier: dataDict.stringValueForKey(key: "tier"), isRefresh: false)
-                self.currentTierIndex = 9//dataDict.stringValueForKey(key: "tier").intValue
-                let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
-                
-                self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
-                                runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
-                                thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
-                                 secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
-                self.headVm.updateDegree(tier: self.currentTierIndex)
-            }
-        }
-    }
-}
-
-extension HabitRankListVM{
     private func indexOfCurrentUser(in leaderboard: NSArray) -> Int? {
         let uid = UserDefaults.standard.value(forKey: userId) as? String ?? ""
         guard !uid.isEmpty else { return nil }
@@ -847,4 +772,79 @@ extension HabitRankListVM {
         demoVC.view.isHidden = false
         return convertedFrame
    }
+}
+
+extension HabitRankListVM{
+    func sendDataRequest(animateSelfChange: Bool = false){
+        let previousSelfIndex = animateSelfChange ? indexOfCurrentUser(in: dataSourceArray) : nil
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
+            
+            let code = responseObject["code"]as? Int ?? -1
+            if code == 200 {
+                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+                let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+                
+                DLLog(message: "sendDataRequest:\(dataDict)")
+                
+//                self.dataSourceArray = dataDict["leaderboard"]as? NSArray ?? []
+                self.dataSourceArray = self.prepareLeaderboardData(from: dataDict["leaderboard"]as? NSArray ?? [])
+                self.cacheLeaderboard(self.dataSourceArray)
+                let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
+                
+                self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
+                                runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
+                                thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
+                                 secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
+                self.headVm.updateDegree(tier: self.currentTierIndex)
+                
+                let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
+                
+                self.displayedDataArray = self.initialDisplayArray(
+                    for: self.dataSourceArray,
+                    previousIndex: previousSelfIndex,
+                    newIndex: newIndex,
+                    shouldAnimate: animateSelfChange
+                )
+//                self.displayedDataArray = self.dataSourceArray
+                self.tableView.reloadData()
+                if animateSelfChange {
+                    self.onTapRank()
+                    self.promotionLine = dataDict.stringValueForKey(key: "promotionLine").intValue
+                    self.relegationLine = dataDict.stringValueForKey(key: "relegationLine").intValue
+                    self.performSelfRankMove(from: previousSelfIndex, to: newIndex)
+                }else{
+                    guard let oldIndex = previousSelfIndex else { return  }
+                    let fromIndexPath = IndexPath(row: 0, section: oldIndex)
+                    
+                    self.tableView.layoutIfNeeded()
+                    self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: false)
+                    self.tableView.layoutIfNeeded()
+                }
+            }else{
+                self.dataSourceArray = NSArray()
+                self.cacheLeaderboard(self.dataSourceArray)
+                self.displayedDataArray = self.dataSourceArray
+                self.tableView.reloadData()
+            }
+        }
+    }
+    func sendDataRequestForHeadMsg(){
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
+            let code = responseObject["code"]as? Int ?? -1
+            if code == 200 {
+                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+                let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+                DLLog(message: "sendDataRequest:\(dataDict)")
+                UserDefaults.setTierData(tier: dataDict.stringValueForKey(key: "tier"), isRefresh: false)
+                self.currentTierIndex = dataDict.stringValueForKey(key: "tier").intValue
+                let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
+                
+                self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
+                                runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
+                                thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
+                                 secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
+                self.headVm.updateDegree(tier: self.currentTierIndex)
+            }
+        }
+    }
 }

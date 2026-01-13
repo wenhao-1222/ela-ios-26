@@ -135,9 +135,11 @@ class HonorDonationPreviewView: UIView {
         }
         
         buttonStack.snp.remakeConstraints { make in
-            make.left.equalToSuperview().offset(kFitWidth(32))
-            make.right.equalToSuperview().offset(kFitWidth(-32))
+//            make.left.equalToSuperview().offset(kFitWidth(32))
+//            make.right.equalToSuperview().offset(kFitWidth(-32))
 //            make.bottom.equalToSuperview().offset(-kFitWidth(24) - safeInsets.bottom)
+            make.left.equalTo(msgContainer).offset(kFitWidth(32))
+            make.right.equalTo(msgContainer).offset(kFitWidth(-32))
             make.bottom.equalTo(msgContainer).offset(kFitWidth(-90))
             make.height.equalTo(kFitWidth(48))
         }

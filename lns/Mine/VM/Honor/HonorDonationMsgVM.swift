@@ -65,8 +65,8 @@ extension HonorDonationMsgVM{
     func updateUI(dict:NSDictionary) {
         headImgView.setImgUrl(urlString: dict.stringValueForKey(key: "headimgurl"))
         nickNameLabel.text = dict.stringValueForKey(key: "nickname")
-        certNoLabel.text = "证书编号：\(dict.stringValueForKey(key: "certificateNo"))"
-        certDateLabel.text = "颁发日期：\(dict.stringValueForKey(key: "ctime"))"
+        certNoLabel.text = "证书编号:\(dict.stringValueForKey(key: "certificateNo"))"
+        certDateLabel.text = "颁发日期:\(dict.stringValueForKey(key: "ctime"))"
     }
 }
 
@@ -79,8 +79,6 @@ extension HonorDonationMsgVM{
         addSubview(nickNameLabel)
         
         setConstrait()
-        
-//        updateUI(dict: [:])
     }
     func setConstrait()  {
         bgImgView.snp.makeConstraints { make in
@@ -104,6 +102,8 @@ extension HonorDonationMsgVM{
         }
         certDateLabel.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-56))
+            make.width.equalTo(kFitWidth(100))
+            make.height.equalTo(kFitWidth(18))
             make.centerY.equalTo(kFitWidth(174)+kFitWidth(29))
         }
     }
