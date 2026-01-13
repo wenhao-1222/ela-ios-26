@@ -12,6 +12,7 @@ class HonorDonationPreviewView: UIView {
     
     private let msgBaseSize = CGSize(width: kFitWidth(375), height: kFitWidth(812))
     private let msgContainer = UIView()
+    private let bgView = UIView()
     private let buttonStack = UIStackView()
     private let closeButton = UIButton(type: .system)
     private let saveButton = UIButton(type: .system)
@@ -48,11 +49,15 @@ class HonorDonationPreviewView: UIView {
     }
     
     private func setupUI() {
-        backgroundColor = WHColor_16(colorStr: "F2F2F2")//.COLOR_BG_F2
+        backgroundColor = UIColor.black.withAlphaComponent(0.2)//WHColor_16(colorStr: "F2F2F2")//.COLOR_BG_F2
         
+        addSubview(bgView)
         addSubview(msgContainer)
         msgContainer.addSubview(msgVm)
         addSubview(buttonStack)
+        
+        msgContainer.layer.cornerRadius = kFitWidth(27)
+        msgContainer.clipsToBounds = true
         
         buttonStack.axis = .horizontal
         buttonStack.spacing = kFitWidth(16)
@@ -78,6 +83,9 @@ class HonorDonationPreviewView: UIView {
         buttonStack.addArrangedSubview(closeButton)
         buttonStack.addArrangedSubview(saveButton)
         
+        bgView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         msgVm.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalTo(msgBaseSize.width)
@@ -98,13 +106,17 @@ class HonorDonationPreviewView: UIView {
     
     private func updateLayout() {
         let safeInsets = safeAreaInsets
-        let availableWidth = bounds.width - kFitWidth(32)
+        let availableWidth = bounds.width - kFitWidth(30)
         let availableHeight = bounds.height
-            - safeInsets.top
-            - safeInsets.bottom
-            - kFitWidth(24)
-            - kFitWidth(48)
-            - kFitWidth(24)
+        - statusBarHeight
+        - safeInsets.bottom
+        - kFitWidth(10)
+        
+//            - safeInsets.top
+//            - safeInsets.bottom
+//            - kFitWidth(24)
+//            - kFitWidth(48)
+//            - kFitWidth(24)
         
         let scale = min(
             availableWidth / msgBaseSize.width,
@@ -117,7 +129,7 @@ class HonorDonationPreviewView: UIView {
         
         msgContainer.snp.remakeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(safeInsets.top + kFitWidth(24))
+            make.top.equalToSuperview().offset(statusBarHeight)//.offset(safeInsets.top + kFitWidth(24))
             make.width.equalTo(displaySize.width)
             make.height.equalTo(displaySize.height)
         }
@@ -125,7 +137,8 @@ class HonorDonationPreviewView: UIView {
         buttonStack.snp.remakeConstraints { make in
             make.left.equalToSuperview().offset(kFitWidth(32))
             make.right.equalToSuperview().offset(kFitWidth(-32))
-            make.bottom.equalToSuperview().offset(-kFitWidth(24) - safeInsets.bottom)
+//            make.bottom.equalToSuperview().offset(-kFitWidth(24) - safeInsets.bottom)
+            make.bottom.equalTo(msgContainer).offset(kFitWidth(-90))
             make.height.equalTo(kFitWidth(48))
         }
         
@@ -138,15 +151,18 @@ class HonorDonationPreviewView: UIView {
     func prepareForPresentation() {
         setMessageHidden(true)
         setChromeAlpha(0)
+        bgView.backgroundColor = UIColor.black.withAlphaComponent(0)
     }
     
     func finishPresentation() {
         setMessageHidden(false)
         setChromeAlpha(1)
+        bgView.backgroundColor = UIColor.black.withAlphaComponent(0.2)
     }
     
     private func setChromeAlpha(_ alpha: CGFloat) {
         buttonStack.alpha = alpha
+//        bgView.backgroundColor = WHColorWithAlpha(colorStr: "F2F2F2", alpha: alpha)
         backgroundColor = WHColorWithAlpha(colorStr: "F2F2F2", alpha: alpha)//UIColor.COLOR_BG_F2.withAlphaComponent(alpha)
     }
 

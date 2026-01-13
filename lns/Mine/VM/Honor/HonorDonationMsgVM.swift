@@ -26,6 +26,7 @@ class HonorDonationMsgVM: UIView {
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "donation_bg_img")
+        img.backgroundColor = .white
         return img
     }()
     lazy var certNoLabel: UILabel = {
