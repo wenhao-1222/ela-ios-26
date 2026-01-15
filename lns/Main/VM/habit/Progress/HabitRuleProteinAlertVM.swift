@@ -133,7 +133,7 @@ class HabitRuleProteinAlertVM: UIView {
     }()
     lazy var tipsLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.text = "生活中难免外食或聚餐，脂肪和碳水可能会临时上下浮动，而蛋白质需求相对稳定。\n生活中难免外食或聚餐，脂肪和碳水可能会临时上下浮动，而蛋白质需求相对稳定。"
+        lab.text = "生活中难免外食或聚餐，脂肪和碳水可能会临时上下浮动，而蛋白质需求相对稳定。"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true

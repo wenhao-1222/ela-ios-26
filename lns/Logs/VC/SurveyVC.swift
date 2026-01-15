@@ -34,8 +34,6 @@ class SurveyVC: WHBaseViewVC {
         enableInteractivePopGesture()
         
         initUI()
-        
-        
         currentVmCenter = sexVm.center
         leftVmCenter = CGPoint.init(x: -SCREEN_WIDHT*0.5, y: currentVmCenter.y)
         rightVmCenter = CGPoint.init(x: SCREEN_WIDHT*1.5, y: currentVmCenter.y)
@@ -75,7 +73,6 @@ class SurveyVC: WHBaseViewVC {
     lazy var sexVm : QuestionnaireSexVM = {
         let vm = QuestionnaireSexVM.init(frame: CGRect.init(x: 0, y: self.progressVm.frame.maxY, width: 0, height: 0))
         vm.manTapBlock = {()in
-            
             self.step = 2
             self.scrollMsgVmNext()
             self.bodyFatManVm.updateScrollView()
@@ -97,6 +94,7 @@ class SurveyVC: WHBaseViewVC {
     }()
     lazy var goalVm : QuestionnaireGoalVM = {
         let vm = QuestionnaireGoalVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.progressVm.frame.maxY, width: 0, height: 0))
+        vm.backgroundColor = .clear
         vm.nextBlock = {()in
             self.step = 4
             self.scrollMsgVmNext()
@@ -108,16 +106,18 @@ class SurveyVC: WHBaseViewVC {
     }()
     lazy var heightVm : QuestionnaireHeightVM = {
         let vm = QuestionnaireHeightVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.progressVm.frame.maxY, width: 0, height: 0))
-        
+        vm.backgroundColor = .clear
         return vm
     }()
     lazy var weightVm : QuestionnaireWeightVM = {
         let vm = QuestionnaireWeightVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.progressVm.frame.maxY, width: 0, height: 0))
+        vm.backgroundColor = .clear
         
         return vm
     }()
     lazy var eventsVm : QuestionnaireEventsVM = {
         let vm = QuestionnaireEventsVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.progressVm.frame.maxY, width: 0, height: 0))
+        vm.backgroundColor = .clear
         vm.selectedBlock = {()in
             self.showNextButtonCenter()
         }
@@ -125,6 +125,7 @@ class SurveyVC: WHBaseViewVC {
     }()
     lazy var caloriesResultBaseVm: QuestionResultBaseVM = {
         let vm = QuestionResultBaseVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.progressPartVm.frame.maxY, width: 0, height: 0))
+        vm.backgroundColor = .clear
         vm.showTipsBlock = {()in
             self.katchAlertVm.showView()
         }
@@ -132,10 +133,12 @@ class SurveyVC: WHBaseViewVC {
     }()
     lazy var caloriesResultExplainVm: QuestionResultExplainVM = {
         let vm = QuestionResultExplainVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.progressPartVm.frame.maxY, width: 0, height: 0))
+        vm.backgroundColor = .clear
         return vm
     }()
     lazy var bodyFatManVm : QuestionnaireBodyFatManVM = {
         let vm = QuestionnaireBodyFatManVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.progressVm.frame.maxY, width: 0, height: 0))
+        vm.backgroundColor = .clear
         vm.selectedBlock = {()in
             self.showNextButtonCenter()
         }
@@ -146,16 +149,19 @@ class SurveyVC: WHBaseViewVC {
     }()
     lazy var dayMealsVm : QuestionnaireDaylyMealsVM = {
         let vm = QuestionnaireDaylyMealsVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.progressVm.frame.maxY, width: 0, height: 0))
+        vm.backgroundColor = .clear
         
         return vm
     }()
     lazy var planWeeksVm : QuestionnairePlanWeeksVM = {
         let vm = QuestionnairePlanWeeksVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.progressVm.frame.maxY, width: 0, height: 0))
+        vm.backgroundColor = .clear
         
         return vm
     }()
     lazy var foodsVm: QuestionnairePlanFoodsVM = {
         let vm = QuestionnairePlanFoodsVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.progressVm.frame.maxY, width: 0, height: 0))
+        vm.backgroundColor = .clear
         
         vm.showTipsBlock = {()in
             self.foodsTipsAlertVm.showView()
@@ -164,6 +170,7 @@ class SurveyVC: WHBaseViewVC {
     }()
     lazy var dailyFoodsSqltVm : QuestionnairePlanDailyFoodsSqtyVM = {
         let vm = QuestionnairePlanDailyFoodsSqtyVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.progressVm.frame.maxY, width: 0, height: 0))
+        vm.backgroundColor = .clear
         vm.selectedBlock = {()in
             self.showNextButtonCenter()
         }

@@ -145,6 +145,8 @@ extension HabitRankListVM{
 }
 extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
+        emptyVm.isHidden = displayedDataArray.count > 0
+        headVm.isHidden = displayedDataArray.count == 0
         return displayedDataArray.count
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -168,8 +170,8 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
 //        headVm.isHidden = dataSourceArray.count == 0
 //        return dataSourceArray.count
         
-        emptyVm.isHidden = displayedDataArray.count > 0
-        headVm.isHidden = displayedDataArray.count == 0
+//        emptyVm.isHidden = displayedDataArray.count > 0
+//        headVm.isHidden = displayedDataArray.count == 0
         return 1//displayedDataArray.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -203,7 +205,7 @@ extension HabitRankListVM{
     func initUI() {
         addSubview(tableView)
         addSubview(headVm)
-//        tableView.addSubview(emptyVm)
+        tableView.addSubview(emptyVm)
         
     }
 }
@@ -751,11 +753,6 @@ extension HabitRankListVM {
         }
     }
     private func targetBadgeFrame(in window: UIWindow, using demoVC: DemoViewController) -> CGRect? {
-//       demoVC.loadViewIfNeeded()
-//       demoVC.view.frame = window.bounds
-//       demoVC.view.layoutIfNeeded()
-//       guard let targetFrame = demoVC.badgeFrame(in: demoVC.view) else { return nil }
-//       return demoVC.view.convert(targetFrame, to: window)
         demoVC.loadViewIfNeeded()
         demoVC.view.frame = window.bounds
         demoVC.view.isHidden = true
@@ -845,6 +842,11 @@ extension HabitRankListVM{
                                  secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
                 self.headVm.updateDegree(tier: self.currentTierIndex)
             }
+//            else{
+//                self.dataSourceArray = NSArray()
+//                self.displayedDataArray = self.dataSourceArray
+//                self.tableView.reloadData()
+//            }
         }
     }
 }
