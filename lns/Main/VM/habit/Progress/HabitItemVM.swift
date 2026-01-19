@@ -10,6 +10,8 @@ class HabitItemVM: UIView {
     
     let selfHeight = kFitWidth(40)
     
+    var tapBlock:(()->())?
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
         self.backgroundColor = .clear
@@ -62,6 +64,7 @@ class HabitItemVM: UIView {
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
         
         btn.enablePressEffect()
+        btn.addTarget(self, action: #selector(tapAction), for: .touchUpInside)
         
         return btn
     }()
@@ -76,6 +79,9 @@ extension HabitItemVM{
 //        showButton.setTitleColor(isComplete ? UIColor.COLOR_TEXT_WHITE : UIColor.white, for: .normal)
         leftIconImgView.alpha = isComplete ? 0.5 : 1
         pointLabel.text = "+\(point)"
+    }
+    @objc func tapAction() {
+        self.tapBlock?()
     }
 }
 

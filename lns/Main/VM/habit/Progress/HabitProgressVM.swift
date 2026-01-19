@@ -9,6 +9,7 @@
 class HabitProgressVM: UIView {
     
     var controller = WHBaseViewVC()
+    var refreshBlock:(()->())?
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -45,9 +46,27 @@ class HabitProgressVM: UIView {
     lazy var friendMsgVm: HabitFriendsGoalVM = {
         let vm = HabitFriendsGoalVM.init(frame: CGRect.init(x: 0, y: self.todayMsgVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
         vm.heightChangeBlock = {(height)in
-            self.scrollView.contentSize = CGSize.init(width: 0, height: self.todayMsgVm.frame.maxY+height+kFitWidth(20))
+            let streakMsgVmCenter = self.streakMsgVm.center
+            self.streakMsgVm.center = CGPoint.init(x: streakMsgVmCenter.x, y: self.friendMsgVm.frame.maxY + kFitWidth(12) + self.streakMsgVm.selfHeight*0.5)
+            self.streakListVm.frame = CGRect.init(x: 0, y: self.streakMsgVm.frame.maxY+kFitWidth(12), width: SCREEN_WIDHT, height: self.streakListVm.selfHeight)
+            self.scrollView.contentSize = CGSize.init(width: 0, height: self.streakListVm.frame.maxY+kFitWidth(20))
         }
         
+        return vm
+    }()
+    lazy var streakMsgVm: HabitStreakMsgVM = {
+        let vm = HabitStreakMsgVM.init(frame: CGRect.init(x: 0, y: self.friendMsgVm.frame.maxY + kFitWidth(12), width: 0, height: 0))
+        return vm
+    }()
+    lazy var streakListVm: HabitStreakListVM = {
+        let vm = HabitStreakListVM.init(frame: CGRect.init(x: 0, y: self.streakMsgVm.frame.maxY + kFitWidth(12), width: 0, height: 0))
+        vm.heightChangeBlock = {(height)in
+            self.streakListVm.frame = CGRect.init(x: 0, y: self.streakMsgVm.frame.maxY+kFitWidth(12), width: SCREEN_WIDHT, height: self.streakListVm.selfHeight)
+            self.scrollView.contentSize = CGSize.init(width: 0, height: self.streakListVm.frame.maxY+kFitWidth(20))
+        }
+        vm.recieveBlock = {(streakId)in
+            self.sendRecieveStreakRequest(streakId: streakId)
+        }
         return vm
     }()
     lazy var habitRuleAlertVm: HabitRuleAlertVM = {
@@ -77,6 +96,7 @@ extension HabitProgressVM{
         self.topMsgVm.numberLabel.text = dict.stringValueForKey(key: "pointBalance")
         self.todayMsgVm.updateUI(dict: dict)
         self.friendMsgVm.updateUI(dict: dict)
+        self.streakListVm.updateUI(listArray: dict["streakRewardList"]as? NSArray ?? [])
     }
 }
 
@@ -93,8 +113,6 @@ extension HabitProgressVM{
     @objc func showFitnessRuleAction(){
         ruleFitnessAlertVm.showSelf()
     }
-    
-    
 }
 
 extension HabitProgressVM{
@@ -103,6 +121,8 @@ extension HabitProgressVM{
         scrollView.addSubview(topMsgVm)
         scrollView.addSubview(todayMsgVm)
         scrollView.addSubview(friendMsgVm)
+        scrollView.addSubview(streakMsgVm)
+        scrollView.addSubview(streakListVm)
         
         scrollView.snp.makeConstraints { make in
             make.left.top.width.height.equalToSuperview()
@@ -117,3 +137,17 @@ extension HabitProgressVM{
     }
 }
 
+
+extension HabitProgressVM{
+    func sendRecieveStreakRequest(streakId:String) {
+        let param = ["streakRewardId":streakId]
+        
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimStreakReward, parameters: param as [String:AnyObject]) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            
+            DLLog(message: "sendDataRequest:\(dataDict)")
+            self.refreshBlock?()
+        }
+    }
+}

@@ -15,6 +15,7 @@ class HabitVC: WHBaseViewVC {
         
         initUI()
         sendDataRequest()
+        sendLastWeekRanklistRequest()
     }
     lazy var topTypeVm: HabitTopTypeVM = {
         let vm = HabitTopTypeVM.init(frame: .zero)
@@ -32,6 +33,9 @@ class HabitVC: WHBaseViewVC {
         vm.topMsgVm.numberTapBlock = {()in
             self.pointDetailTapAction()
         }
+        vm.refreshBlock = {()in
+            self.sendDataRequest()
+        }
         
         vm.topMsgVm.changeButton.addTarget(self, action: #selector(pointExchangeTapAction), for: .touchUpInside)
         
@@ -39,6 +43,13 @@ class HabitVC: WHBaseViewVC {
     }()
     lazy var rankListVm: HabitRankListVM = {
         let vm = HabitRankListVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.topTypeVm.frame.maxY, width: 0, height: 0 ))
+        return vm
+    }()
+    lazy var guideVm: HabitGuideVM = {
+        let vm = HabitGuideVM.init(frame: .zero)
+        vm.backBlock = {()in
+            self.backTapAction()
+        }
         return vm
     }()
 }
@@ -70,6 +81,9 @@ extension HabitVC{
         view.addSubview(topTypeVm)
         
         view.addSubview(scrollViewBase)
+        
+//        view.addSubview(guideVm)
+        
         scrollViewBase.frame = CGRect.init(x: 0, y: self.topTypeVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT - self.topTypeVm.frame.maxY)
         scrollViewBase.addSubview(progressVm)
         scrollViewBase.addSubview(rankListVm)
@@ -127,6 +141,15 @@ extension HabitVC{
             
             self.dataObj = dataDict
             self.progressVm.updateUI(dict: self.dataObj)
+        }
+    }
+    func sendLastWeekRanklistRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard_last, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendLastWeekRanklistRequest:\(dataDict)")
+            
+            
         }
     }
 }

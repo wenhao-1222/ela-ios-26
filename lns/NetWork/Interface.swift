@@ -334,10 +334,14 @@ public let URL_user_address_getDefault   = URL_Type + "users/address/getDefault"
 
 //MARK: 自律习惯养成
 public let URL_user_habit_dashboard      = URL_Type + "users/habit/dashboard"
+///领取连胜的奖励
+public let URL_user_habit_claimStreakReward  = URL_Type + "users/habit/claimStreakReward"
 /// 自律习惯养成  积分明细
 public let URL_user_habit_list           = URL_Type + "users/habit/list"
 ///排行榜
 public let URL_user_habit_leaderboard    = URL_Type + "users/habit/leaderboard"
+///排行榜--上周
+public let URL_user_habit_leaderboard_last    = URL_Type + "users/habit/pre_leaderboard"
 ///  兑换餐食
 public let URL_user_habit_donate         = URL_Type + "users/habit/donate"
 

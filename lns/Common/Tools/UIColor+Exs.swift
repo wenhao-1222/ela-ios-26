@@ -27,7 +27,9 @@ extension UIColor {
     public static let COLOR_WHITE_04                    = UIColor(named: "color_white_04")!
     public static let COLOR_WHITE_65                    = UIColor(named: "color_white_65")!
     public static let COLOR_WHITE_75                    = UIColor(named: "color_white_75")!
+    public static let COLOR_CELL_HIGHLIGHT_BG           = UIColor(named: "color_cell_current_bg")!
     
+//
     
     
     public static let COLOR_BG_WHITE                    = UIColor(named: "color_bg_white")!

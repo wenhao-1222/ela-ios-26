@@ -169,7 +169,8 @@ class HabitRankTableViewCell: UITableViewCell {
         name: String,
         fireCount: Int?,
         score: String,
-        needAvatarTransition: Bool = true
+        needAvatarTransition: Bool = true,
+        isCurrentUser: Bool = false
     ) {
 //        rankLabel.text = "\(rank)"
         let rankInt = rank.intValue
@@ -194,6 +195,7 @@ class HabitRankTableViewCell: UITableViewCell {
             fireLabel.text = ""
         }
         
+        bgView.backgroundColor = isCurrentUser ? .COLOR_CELL_HIGHLIGHT_BG : .clear
         switch rankInt {
         case 1:
             degreeImgView.isHidden = false

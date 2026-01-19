@@ -59,6 +59,7 @@ class HabitRankListVM: UIView {
         let vi = UITableView(frame: CGRect.init(x: 0, y: self.headVm.frame.maxY, width: SCREEN_WIDHT, height: selfHeight-self.headVm.selfHeight), style: .grouped)
         vi.backgroundColor = .COLOR_CARD_BG_WHITE//.COLOR_BG_F2
 //        vi.tableHeaderView = headVm
+        
         vi.delegate = self
         vi.dataSource = self
         vi.separatorStyle = .none
@@ -67,6 +68,7 @@ class HabitRankListVM: UIView {
         vi.estimatedRowHeight = 0
         vi.estimatedSectionHeaderHeight = 0
         vi.estimatedSectionFooterHeight = 0
+        vi.sectionHeaderHeight = 0
 
         if #available(iOS 15.0, *) {
             vi.sectionHeaderTopPadding = 0
@@ -155,7 +157,7 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
         }else if section == relegationLine - 1{
             return downDegreeeVm.selfHeight
         }
-        return section > 0 ? kFitWidth(25) : 0
+        return 0//section > 0 ? kFitWidth(25) : 0
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == promotionLine{
@@ -192,12 +194,13 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
             avatar: dict.stringValueForKey(key: "headimgurl"),
             name: dict.stringValueForKey(key: "nickname"),
             fireCount: dict.stringValueForKey(key: "donateCount").intValue,
-            score: dict.stringValueForKey(key: "rankPointBalance")
+            score: dict.stringValueForKey(key: "rankPointBalance"),
+            isCurrentUser: isCurrentUser(dict)
         )
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return kFitWidth(45)
+        return kFitWidth(70)
     }
 }
 
@@ -226,6 +229,12 @@ extension HabitRankListVM{
         return nil
     }
 
+    private func isCurrentUser(_ dict: NSDictionary) -> Bool {
+        let uid = UserDefaults.standard.value(forKey: userId) as? String ?? ""
+        guard !uid.isEmpty else { return false }
+        let elementId = extractUserId(from: dict)
+        return !elementId.isEmpty && elementId == uid
+    }
     private func extractUserId(from dict: NSDictionary) -> String {
         if let uid = dict["uid"] as? String, !uid.isEmpty {
             return uid
@@ -278,7 +287,7 @@ extension HabitRankListVM{
         }
         guard let newIndex, oldIndex != newIndex else { return }
         DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
-            self.animateHighlightMove3Stage(from: oldIndex, to: newIndex, extraVertical: 20)
+            self.animateHighlightMove3Stage(from: oldIndex, to: newIndex, extraVertical: 0)
         })
 //        DispatchQueue.main.async {
 //            // ✅ 调用三段式动画
@@ -393,12 +402,17 @@ extension HabitRankListVM {
         } completion: { _ in
 
             // --- 段2：Move + Scroll（同时从 start -> end，路径直达，不回头）
-            let moveAnimator = UIViewPropertyAnimator(duration: moveDuration, curve: .easeInOut) {
-                self.tableView.contentOffset = endOffset
-                highlightView.frame = endFrame
-            }
-
-            moveAnimator.addCompletion { _ in
+//            let moveAnimator = UIViewPropertyAnimator(duration: moveDuration, curve: .easeInOut) {
+//                self.tableView.contentOffset = endOffset
+//                highlightView.frame = endFrame
+//            }
+//
+//            moveAnimator.addCompletion { _ in
+            // --- 段2：Move + Scroll（系统滚动更稳，避免远距离出现空白）
+            CATransaction.begin()
+            CATransaction.setAnimationDuration(moveDuration)
+            CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeInEaseOut))
+            CATransaction.setCompletionBlock {
 
                 // --- 段3：Drop（只回到正常 scale，不改位置）
                 UIView.animate(withDuration: dropDuration,
@@ -439,7 +453,14 @@ extension HabitRankListVM {
                 }
             }
 
-            moveAnimator.startAnimation()
+//            moveAnimator.startAnimation()
+            self.tableView.setContentOffset(endOffset, animated: true)
+            UIView.animate(withDuration: moveDuration,
+                           delay: 0,
+                           options: [.curveEaseInOut, .beginFromCurrentState]) {
+                highlightView.frame = endFrame
+            }
+            CATransaction.commit()
         }
     }
     private func safeSnapshot(of view: UIView) -> UIView {
@@ -515,7 +536,8 @@ extension HabitRankListVM{
             name: dict.stringValueForKey(key: "nickname"),
             fireCount: dict.stringValueForKey(key: "donateCount").intValue,
             score: dict.stringValueForKey(key: "rankPointBalance"),
-            needAvatarTransition: false // ✅ 高亮不fade，像拖拽
+            needAvatarTransition: false , // ✅ 高亮不fade，像拖拽
+            isCurrentUser: isCurrentUser(dict)
         )
 
         mirror.layoutIfNeeded()
@@ -524,7 +546,7 @@ extension HabitRankListVM{
         let inner = UIView(frame: CGRect(x: 0, y: 0,
                                          width: mirror.bounds.width,
                                          height: mirror.bounds.height + extraVertical * 2))
-        inner.backgroundColor = .COLOR_CARD_BG_WHITE
+        inner.backgroundColor = .COLOR_CELL_HIGHLIGHT_BG
         inner.layer.cornerRadius = 12
         inner.clipsToBounds = true
 
@@ -803,13 +825,17 @@ extension HabitRankListVM{
                     shouldAnimate: animateSelfChange
                 )
 //                self.displayedDataArray = self.dataSourceArray
-                self.tableView.reloadData()
+//                self.tableView.reloadData()
                 if animateSelfChange {
-                    self.onTapRank()
+//                    self.onTapRank()
                     self.promotionLine = dataDict.stringValueForKey(key: "promotionLine").intValue
                     self.relegationLine = dataDict.stringValueForKey(key: "relegationLine").intValue
+                    self.tableView.reloadData()
+                    self.tableView.layoutIfNeeded()
+                    self.onTapRank()
                     self.performSelfRankMove(from: previousSelfIndex, to: newIndex)
                 }else{
+                    self.tableView.reloadData()
                     guard let oldIndex = previousSelfIndex else { return  }
                     let fromIndexPath = IndexPath(row: 0, section: oldIndex)
                     

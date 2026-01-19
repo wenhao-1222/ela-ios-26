@@ -8,7 +8,7 @@
 
 class HabitRankListSectionVM: UIView {
     
-    let selfHeight = kFitWidth(60)
+    let selfHeight = kFitWidth(20)
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
