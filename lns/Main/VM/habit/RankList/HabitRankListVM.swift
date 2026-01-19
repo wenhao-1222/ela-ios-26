@@ -78,7 +78,13 @@ class HabitRankListVM: UIView {
         return vi
     }()
     lazy var emptyVm: HabitRankListEmptyVM = {
-        let vm = HabitRankListEmptyVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight-self.headVm.selfHeight))
+        let vm = HabitRankListEmptyVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
+        vm.togoRecordBlock = {()in
+            self.controller.navigationController?.tabBarController?.selectedIndex = 1
+            self.controller.navigationController?.popToRootViewController(animated: true)
+            
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "activePlan"), object: nil)
+        }
         return vm
     }()
     lazy var headVm: HabitRankListHeadVM = {
@@ -208,7 +214,7 @@ extension HabitRankListVM{
     func initUI() {
         addSubview(tableView)
         addSubview(headVm)
-        tableView.addSubview(emptyVm)
+        addSubview(emptyVm)
         
     }
 }

@@ -50,7 +50,7 @@ extension HabitStreakListVM{
                 let dict = listArray[i]as? NSDictionary ?? [:]
                 let vm = HabitItemVM.init(frame: CGRect.init(x: 0, y: kFitWidth(16)+kFitWidth(60)*CGFloat(i), width: 0, height: 0))
                 vm.titleLabel.text = dict.stringValueForKey(key: "streakRewardName")
-                
+
                 let tipsStr = NSAttributedString(string: "（不记入排行榜）",
                                                  attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50])
                 if dict.stringValueForKey(key: "isClaimed") == "1"{

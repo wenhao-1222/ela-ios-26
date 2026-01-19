@@ -10,6 +10,8 @@ class HabitProgressVM: UIView {
     
     var controller = WHBaseViewVC()
     var refreshBlock:(()->())?
+    var lastNumber = 0
+    var isCounting = false
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -94,6 +96,11 @@ class HabitProgressVM: UIView {
 extension HabitProgressVM{
     func updateUI(dict:NSDictionary) {
         self.topMsgVm.numberLabel.text = dict.stringValueForKey(key: "pointBalance")
+        if isCounting{
+            isCounting = false
+            self.topMsgVm.numberLabel.count(from: CGFloat(self.lastNumber), to: CGFloat(Int(dict.doubleValueForKey(key: "pointBalance").rounded())), withDuration: 0.5)
+        }
+        self.lastNumber = dict.stringValueForKey(key: "pointBalance").intValue
         self.todayMsgVm.updateUI(dict: dict)
         self.friendMsgVm.updateUI(dict: dict)
         self.streakListVm.updateUI(listArray: dict["streakRewardList"]as? NSArray ?? [])
@@ -147,6 +154,7 @@ extension HabitProgressVM{
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             
             DLLog(message: "sendDataRequest:\(dataDict)")
+            self.isCounting = true
             self.refreshBlock?()
         }
     }

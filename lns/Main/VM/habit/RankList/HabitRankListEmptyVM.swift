@@ -11,6 +11,8 @@ class HabitRankListEmptyVM: UIView {
     
     let selfHeight = kFitWidth(60)
     
+    var togoRecordBlock:(()->())?
+    
     override init(frame:CGRect){
 //        super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
         super.init(frame: frame)
@@ -47,8 +49,16 @@ class HabitRankListEmptyVM: UIView {
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
         
+        btn.addTarget(self, action: #selector(recordTapAction), for: .touchUpInside)
+        
         return btn
     }()
+}
+
+extension HabitRankListEmptyVM{
+    @objc func recordTapAction() {
+        self.togoRecordBlock?()
+    }
 }
 
 extension HabitRankListEmptyVM{

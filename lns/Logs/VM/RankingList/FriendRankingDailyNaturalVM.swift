@@ -116,6 +116,7 @@ extension FriendRankingDailyNaturalVM{
         let remainNum = abs(totalNum - currentNum)
 //        self.remainLabel.text = "\(totalNum - currentNum)"
         
+        self.remainLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
         if sign == "0" {
             self.remainLabel.text = "剩余\(WHUtils.convertStringToStringNoDigit("\(remainNum.rounded())") ?? "")\(unitStr)"
         }else if sign == "2"{

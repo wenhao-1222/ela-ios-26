@@ -31,10 +31,11 @@ class HabitTopMsgVM: UIView {
         img.isUserInteractionEnabled = true
         return img
     }()
-    lazy var numberLabel: UILabel = {
-        let lab = UILabel()
+    lazy var numberLabel: UICountingLabel = {
+        let lab = UICountingLabel()
         lab.font = UIFont().DDInFontSemiBold(fontSize: 50)
         lab.text = "0"
+        lab.format = "%d"
         return lab
     }()
     lazy var numberDetailLab: UILabel = {
