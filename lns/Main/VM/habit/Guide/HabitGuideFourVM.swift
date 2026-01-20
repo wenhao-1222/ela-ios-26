@@ -62,7 +62,7 @@ extension HabitGuideFourVM{
         
         setConstrait()
         titleLab.setLineHeight(textString: "在elavatine，我们相信你能\n改变不仅限于自己",
-                                lineHeight: kFitWidth(37))
+                                lineHeight: kFitWidth(33))
         detailLab.setLineHeight(textString: "积分每到达一定分数，我们将代表你向贫困山区捐赠一份营养餐",
                                 lineHeight: kFitWidth(27))
     }

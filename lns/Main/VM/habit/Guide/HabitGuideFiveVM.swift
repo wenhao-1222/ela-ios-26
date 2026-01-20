@@ -28,6 +28,7 @@ class HabitGuideFiveVM: UIView {
     lazy var imgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "habit_guide_5_img")
+        img.contentMode = .scaleAspectFit
         
         return img
     }()
@@ -82,7 +83,7 @@ extension HabitGuideFiveVM{
         
         setConstrait()
         titleLab.setLineHeight(textString: "不仅如此，\n你的自律还将带动身边的人",
-                                lineHeight: kFitWidth(37))
+                                lineHeight: kFitWidth(33))
         detailLab.setLineHeight(textString: "当你和朋友们同时达到目标时，你们也将一起获得额外的积分",
                                 lineHeight: kFitWidth(27))
     }

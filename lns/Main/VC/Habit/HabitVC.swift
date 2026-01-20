@@ -118,7 +118,9 @@ extension HabitVC{
 
         topTypeVm.changeType(isLeft: !isShowingRank)
         rankListVm.updateVisibility(isVisible: isShowingRank)
-
+        if !isShowingRank {
+            progressVm.triggerPointAnimationIfNeeded()
+        }
         if scrollView.contentOffset.x > kFitWidth(20){
             self.navigationController?.fd_interactivePopDisabled = true
             self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false

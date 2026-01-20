@@ -50,11 +50,13 @@ extension HabitStreakListVM{
                 let dict = listArray[i]as? NSDictionary ?? [:]
                 let vm = HabitItemVM.init(frame: CGRect.init(x: 0, y: kFitWidth(16)+kFitWidth(60)*CGFloat(i), width: 0, height: 0))
                 vm.titleLabel.text = dict.stringValueForKey(key: "streakRewardName")
+                vm.leftIconImgView.image = UIImage(named: "haibit_streak_normal_icon")
 
                 let tipsStr = NSAttributedString(string: "（不记入排行榜）",
                                                  attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50])
                 if dict.stringValueForKey(key: "isClaimed") == "1"{
-                    vm.leftIconImgView.image = UIImage(named: "haibit_streak_normal_icon")?.withTintColor(.COLOR_TEXT_TITLE_0f1214_20)
+                    
+                    vm.leftIconImgView.alpha = 0.5
                     vm.showButton.setTitle("已领取", for: .normal)
                     vm.showButton.isEnabled = false
                     vm.titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
@@ -63,12 +65,9 @@ extension HabitStreakListVM{
                                                               attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50])
                     pointAttr.append(tipsStr)
                     vm.pointLabel.attributedText = pointAttr
-                    
                 }else{
-                    vm.leftIconImgView.image = UIImage(named: "haibit_streak_normal_icon")
                     vm.showButton.setTitle("领取", for: .normal)
                     vm.showButton.isEnabled = true
-//                    vm.pointLabel.text = "+\(dict.stringValueForKey(key: "streakRewardPoint"))"
                     let pointAttr = NSMutableAttributedString(string: "+\(dict.stringValueForKey(key: "streakRewardPoint"))",
                                                               attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214])
                     pointAttr.append(tipsStr)

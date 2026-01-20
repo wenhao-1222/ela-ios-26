@@ -80,10 +80,10 @@ extension JournalReportDailyCaloriesMealsVM{
                 }
             }
             
-            DispatchQueue.main.async {
-                DLLog(message: "numArray:\(numArray)")
-//                self.setChart(dataPoints: self.nameArray, values: numArray as! [Double])
-            }
+//            DispatchQueue.main.async {
+//                DLLog(message: "numArray:\(numArray)")
+////                self.setChart(dataPoints: self.nameArray, values: numArray as! [Double])
+//            }
             
             var totalNum = Double(0)
             

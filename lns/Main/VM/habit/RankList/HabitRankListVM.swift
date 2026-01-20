@@ -808,46 +808,47 @@ extension HabitRankListVM{
             if code == 200 {
                 let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
                 let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-                
                 DLLog(message: "sendDataRequest:\(dataDict)")
                 
-//                self.dataSourceArray = dataDict["leaderboard"]as? NSArray ?? []
                 self.dataSourceArray = self.prepareLeaderboardData(from: dataDict["leaderboard"]as? NSArray ?? [])
                 self.cacheLeaderboard(self.dataSourceArray)
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
-                
-                self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
-                                runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
-                                thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
-                                 secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
-                self.headVm.updateDegree(tier: self.currentTierIndex)
-                
-                let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
-                
-                self.displayedDataArray = self.initialDisplayArray(
-                    for: self.dataSourceArray,
-                    previousIndex: previousSelfIndex,
-                    newIndex: newIndex,
-                    shouldAnimate: animateSelfChange
-                )
-//                self.displayedDataArray = self.dataSourceArray
-//                self.tableView.reloadData()
-                if animateSelfChange {
-//                    self.onTapRank()
-                    self.promotionLine = dataDict.stringValueForKey(key: "promotionLine").intValue
-                    self.relegationLine = dataDict.stringValueForKey(key: "relegationLine").intValue
-                    self.tableView.reloadData()
-                    self.tableView.layoutIfNeeded()
-                    self.onTapRank()
-                    self.performSelfRankMove(from: previousSelfIndex, to: newIndex)
-                }else{
-                    self.tableView.reloadData()
-                    guard let oldIndex = previousSelfIndex else { return  }
-                    let fromIndexPath = IndexPath(row: 0, section: oldIndex)
+                if weeklyRewardPoint.stringValueForKey(key: "champion").count > 0 {
+                    self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
+                                    runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
+                                    thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
+                                     secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
+                    self.headVm.updateDegree(tier: self.currentTierIndex)
                     
-                    self.tableView.layoutIfNeeded()
-                    self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: false)
-                    self.tableView.layoutIfNeeded()
+                    let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
+                    
+                    self.displayedDataArray = self.initialDisplayArray(
+                        for: self.dataSourceArray,
+                        previousIndex: previousSelfIndex,
+                        newIndex: newIndex,
+                        shouldAnimate: animateSelfChange
+                    )
+                    if animateSelfChange {
+                        self.promotionLine = dataDict.stringValueForKey(key: "promotionLine").intValue
+                        self.relegationLine = dataDict.stringValueForKey(key: "relegationLine").intValue
+                        self.tableView.reloadData()
+                        self.tableView.layoutIfNeeded()
+                        self.onTapRank()
+                        self.performSelfRankMove(from: previousSelfIndex, to: newIndex)
+                    }else{
+                        self.tableView.reloadData()
+                        guard let oldIndex = previousSelfIndex else { return  }
+                        let fromIndexPath = IndexPath(row: 0, section: oldIndex)
+                        
+                        self.tableView.layoutIfNeeded()
+                        self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: false)
+                        self.tableView.layoutIfNeeded()
+                    }
+                }else{
+                    self.dataSourceArray = NSArray()
+                    self.cacheLeaderboard(self.dataSourceArray)
+                    self.displayedDataArray = self.dataSourceArray
+                    self.tableView.reloadData()
                 }
             }else{
                 self.dataSourceArray = NSArray()
@@ -867,18 +868,14 @@ extension HabitRankListVM{
                 UserDefaults.setTierData(tier: dataDict.stringValueForKey(key: "tier"), isRefresh: false)
                 self.currentTierIndex = dataDict.stringValueForKey(key: "tier").intValue
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
-                
-                self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
-                                runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
-                                thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
-                                 secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
-                self.headVm.updateDegree(tier: self.currentTierIndex)
+                if weeklyRewardPoint.stringValueForKey(key: "champion").count > 0 {
+                    self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
+                                    runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
+                                    thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
+                                     secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
+                    self.headVm.updateDegree(tier: self.currentTierIndex)
+                }
             }
-//            else{
-//                self.dataSourceArray = NSArray()
-//                self.displayedDataArray = self.dataSourceArray
-//                self.tableView.reloadData()
-//            }
         }
     }
 }
