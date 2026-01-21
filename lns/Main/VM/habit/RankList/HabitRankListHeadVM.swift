@@ -17,7 +17,6 @@ class HabitRankListHeadVM: UIView {
     private var isAnimatingToDemo: Bool = false
     private var isAnimatingBackFromDemo: Bool = false
     
-    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
         self.backgroundColor = .COLOR_BG_F2

@@ -98,12 +98,6 @@ extension HabitVC{
 
 extension HabitVC:UIScrollViewDelegate{
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//        if scrollView.contentOffset.x > SCREEN_WIDHT*0.5{
-//            self.topTypeVm.changeType(isLeft: false)
-//        }else{
-//            self.topTypeVm.changeType(isLeft: true)
-//        }
-        
         adjustPageState(for: scrollView)
     }
 
