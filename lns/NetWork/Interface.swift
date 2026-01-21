@@ -338,6 +338,8 @@ public let URL_user_habit_dashboard      = URL_Type + "users/habit/dashboard"
 public let URL_user_habit_claimStreakReward  = URL_Type + "users/habit/claimStreakReward"
 /// 自律习惯养成  积分明细
 public let URL_user_habit_list           = URL_Type + "users/habit/list"
+
+public let URL_user_habit_weeklyRewardPointDescription  = URL_Type + "users/habit/weeklyRewardPointDescription"
 ///排行榜
 public let URL_user_habit_leaderboard    = URL_Type + "users/habit/leaderboard"
 ///排行榜--上周

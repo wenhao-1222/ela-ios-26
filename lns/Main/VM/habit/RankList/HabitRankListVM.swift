@@ -56,7 +56,7 @@ class HabitRankListVM: UIView {
 
     lazy var tableView: UITableView = {
 //        let vi = UITableView(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight), style: .plain)
-        let vi = UITableView(frame: CGRect.init(x: 0, y: self.headVm.frame.maxY, width: SCREEN_WIDHT, height: selfHeight-self.headVm.selfHeight), style: .grouped)
+        let vi = UITableView(frame: CGRect.init(x: 0, y: self.headCupVm.frame.maxY, width: SCREEN_WIDHT, height: selfHeight-self.headCupVm.selfHeight), style: .grouped)
         vi.backgroundColor = .COLOR_CARD_BG_WHITE//.COLOR_BG_F2
 //        vi.tableHeaderView = headVm
         
@@ -91,6 +91,15 @@ class HabitRankListVM: UIView {
         let vm = HabitRankListHeadVM.init(frame: .zero)
         return vm
     }()
+    lazy var headCupVm: HabitRankListHeadCupVM = {
+        let vm = HabitRankListHeadCupVM.init(frame: .zero)
+        
+        vm.pointTapBlock = {()in
+            self.rewardPointAlertVm.showSelf()
+        }
+        
+        return vm
+    }()
     lazy var upDegreeeVm: HabitRankListSectionVM = {
         let vm = HabitRankListSectionVM.init(frame: .zero)
         vm.updateUI(isUp: true)
@@ -99,6 +108,10 @@ class HabitRankListVM: UIView {
     lazy var downDegreeeVm: HabitRankListSectionVM = {
         let vm = HabitRankListSectionVM.init(frame: .zero)
         vm.updateUI(isUp: false)
+        return vm
+    }()
+    lazy var rewardPointAlertVm: HabitWeeklyRewardPointAlertVM = {
+        let vm = HabitWeeklyRewardPointAlertVM.init(frame: .zero)
         return vm
     }()
 }
@@ -174,13 +187,7 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
         return nil
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        emptyVm.isHidden = dataSourceArray.count > 0
-//        headVm.isHidden = dataSourceArray.count == 0
-//        return dataSourceArray.count
-        
-//        emptyVm.isHidden = displayedDataArray.count > 0
-//        headVm.isHidden = displayedDataArray.count == 0
-        return 1//displayedDataArray.count
+        return 1
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
@@ -213,9 +220,12 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
 extension HabitRankListVM{
     func initUI() {
         addSubview(tableView)
-        addSubview(headVm)
+//        addSubview(headVm)
+        addSubview(headCupVm)
         addSubview(emptyVm)
         
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.getKeyWindow().addSubview(rewardPointAlertVm)
     }
 }
 
@@ -818,6 +828,10 @@ extension HabitRankListVM{
                                     runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
                                     thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
                                      secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
+                    self.headCupVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
+                                    runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
+                                    thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
+                                     secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
                     self.headVm.updateDegree(tier: self.currentTierIndex)
                     
                     let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
@@ -873,6 +887,11 @@ extension HabitRankListVM{
                                     runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
                                     thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
                                      secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
+                    self.headCupVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
+                                    runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
+                                    thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
+                                     secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
+                    self.headCupVm.setCurrentTier(tier: dataDict.stringValueForKey(key: "tier").intValue, tierName: dataDict.stringValueForKey(key: "tierName"))
                     self.headVm.updateDegree(tier: self.currentTierIndex)
                 }
             }

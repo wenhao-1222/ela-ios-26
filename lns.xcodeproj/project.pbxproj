@@ -676,6 +676,10 @@
 		EC0623E42C478D18008230BA /* JournalBottomFuncAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0623E32C478D18008230BA /* JournalBottomFuncAlertVM.swift */; };
 		EC0623E62C47B7C0008230BA /* JournalFuncAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0623E52C47B7C0008230BA /* JournalFuncAlertVM.swift */; };
 		EC094FCC2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC094FCB2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift */; };
+		EC0C9A0F2F207A5C00E1E7DE /* HabitRankListHeadCupVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0C9A0E2F207A5600E1E7DE /* HabitRankListHeadCupVM.swift */; };
+		EC0C9A112F209AC200E1E7DE /* RankTierModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0C9A102F209ABF00E1E7DE /* RankTierModel.swift */; };
+		EC0C9A132F20A31A00E1E7DE /* HabitWeeklyRewardPointAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0C9A122F20A30E00E1E7DE /* HabitWeeklyRewardPointAlertVM.swift */; };
+		EC0C9A152F20A86400E1E7DE /* HabitWeeklyRewardPointAlertItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0C9A142F20A86100E1E7DE /* HabitWeeklyRewardPointAlertItemVM.swift */; };
 		EC0CB44B2BAD650300A7EBD0 /* RSA.m in Sources */ = {isa = PBXBuildFile; fileRef = EC0CB44A2BAD650300A7EBD0 /* RSA.m */; };
 		EC0CB4522BAD804500A7EBD0 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0CB4512BAD804500A7EBD0 /* LoginVC.swift */; };
 		EC0CB4542BAD8A2200A7EBD0 /* CountdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0CB4532BAD8A2200A7EBD0 /* CountdownView.swift */; };
@@ -2026,6 +2030,10 @@
 		EC0623E32C478D18008230BA /* JournalBottomFuncAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalBottomFuncAlertVM.swift; sourceTree = "<group>"; };
 		EC0623E52C47B7C0008230BA /* JournalFuncAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalFuncAlertVM.swift; sourceTree = "<group>"; };
 		EC094FCB2BC7B50E00C2AA9B /* MainSaveNutrationAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSaveNutrationAlertVM.swift; sourceTree = "<group>"; };
+		EC0C9A0E2F207A5600E1E7DE /* HabitRankListHeadCupVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRankListHeadCupVM.swift; sourceTree = "<group>"; };
+		EC0C9A102F209ABF00E1E7DE /* RankTierModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankTierModel.swift; sourceTree = "<group>"; };
+		EC0C9A122F20A30E00E1E7DE /* HabitWeeklyRewardPointAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitWeeklyRewardPointAlertVM.swift; sourceTree = "<group>"; };
+		EC0C9A142F20A86100E1E7DE /* HabitWeeklyRewardPointAlertItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitWeeklyRewardPointAlertItemVM.swift; sourceTree = "<group>"; };
 		EC0CB4442BAD5B3000A7EBD0 /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC0CB4472BAD5B6E00A7EBD0 /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC0CB4492BAD650300A7EBD0 /* RSA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSA.h; sourceTree = "<group>"; };
@@ -4348,9 +4356,12 @@
 				EC61ABD12F03A47B008FA297 /* HabitRankListVM.swift */,
 				EC61ABD52F03A5F3008FA297 /* HabitRankListEmptyVM.swift */,
 				EC61ABD72F03A611008FA297 /* HabitRankListHeadVM.swift */,
+				EC0C9A0E2F207A5600E1E7DE /* HabitRankListHeadCupVM.swift */,
 				EC5284922F0D0597006C81CE /* HabitRankListSectionVM.swift */,
 				EC61ABD92F03D120008FA297 /* HabitRankListTableViewCell.swift */,
 				EC61ABDB2F03D42F008FA297 /* HabitRankTableViewCell.swift */,
+				EC0C9A122F20A30E00E1E7DE /* HabitWeeklyRewardPointAlertVM.swift */,
+				EC0C9A142F20A86100E1E7DE /* HabitWeeklyRewardPointAlertItemVM.swift */,
 				EC9E63232F0A09B700FF6929 /* RankTier.swift */,
 				EC9E63252F0A09C300FF6929 /* EffectsFactory.swift */,
 				EC9E63272F0A09D400FF6929 /* RankBadgeCell.swift */,
@@ -5208,6 +5219,7 @@
 				A707D2BF2CBBE7B2005BDC0E /* BodyDataSQLiteManagerOld.swift */,
 				ECC8DC062BFF1A5800C97240 /* BodyDataUploadManager.swift */,
 				EC6253802EFA8A19003C076C /* HabitItemModel.swift */,
+				EC0C9A102F209ABF00E1E7DE /* RankTierModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -5881,6 +5893,7 @@
 				A7881ED52CC237C2008F4390 /* LogsMealsAlertSetManage.swift in Sources */,
 				A740EEE12E72914000B6ABAA /* MallOrderCreateVC.swift in Sources */,
 				ECD0FEF82BABD25B001232C9 /* YYTextMagnifier.m in Sources */,
+				EC0C9A112F209AC200E1E7DE /* RankTierModel.swift in Sources */,
 				ECD0FEF22BABD25B001232C9 /* YYTextDebugOption.m in Sources */,
 				EC2802EB2F19D33B00FEF08D /* HabitGuideFirstVM.swift in Sources */,
 				A775EA312E24C9EA001DE90A /* CourseListVM.swift in Sources */,
@@ -6261,6 +6274,7 @@
 				EC14405E2C3E669500566E9F /* JournalShareDetailsContentVM.swift in Sources */,
 				ECCCA7CE2BECB60700696807 /* NewQuestionnaireVC.swift in Sources */,
 				A740EEF12E72C55500B6ABAA /* MyAddressDetailVC.swift in Sources */,
+				EC0C9A0F2F207A5C00E1E7DE /* HabitRankListHeadCupVM.swift in Sources */,
 				EC30F2B32C8701F900E7BD33 /* NaturalStatVC.swift in Sources */,
 				ECB6AEB52BC63DBB00F03567 /* MainTopGoalVM.swift in Sources */,
 				EC4732D82EEFF05A008F67F5 /* OverSeaMsgVC.swift in Sources */,
@@ -6311,6 +6325,7 @@
 				EC9E632E2F0A0A0B00FF6929 /* DemoViewController.swift in Sources */,
 				ECA1E2EC2C007B7E00C31B77 /* AESEncyptUtil.swift in Sources */,
 				ECB6AEB92BC6620500F03567 /* MainNutrientItemVM.swift in Sources */,
+				EC0C9A152F20A86400E1E7DE /* HabitWeeklyRewardPointAlertItemVM.swift in Sources */,
 				EC38DEA02BEF7503008E7FCE /* MaterialSexAlertVM.swift in Sources */,
 				A7A083CA2D8415EE008B8A3E /* FoodsMergeListTableViewCell.swift in Sources */,
 				EC5C816E2C5A0305000EC4BC /* GoalSetVM.swift in Sources */,
@@ -6530,6 +6545,7 @@
 				EC0CB44B2BAD650300A7EBD0 /* RSA.m in Sources */,
 				A7BAAC1A2E2F5E67002CE2D1 /* CoursePayResultBottomVM.swift in Sources */,
 				EC87A4572C900A6300BAB8CE /* NaturalStatDateCustomAlertVM.swift in Sources */,
+				EC0C9A132F20A31A00E1E7DE /* HabitWeeklyRewardPointAlertVM.swift in Sources */,
 				A72A27B52E794D8E00BAE1A6 /* MallPaySuccessTextCell.swift in Sources */,
 				EC312A9E2EFCE2AC0026F005 /* HabitExchangeMsgVM.swift in Sources */,
 				ECFAB0C92BD89EFF003AA249 /* FoodsDetailSpecAlertVM.swift in Sources */,
