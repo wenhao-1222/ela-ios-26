@@ -74,8 +74,9 @@ extension HabitRankListEmptyVM{
             make.left.top.width.height.equalToSuperview()
         }
         emptyLabel.snp.makeConstraints { make in
-            make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(kFitWidth(322))
+//            make.centerX.lessThanOrEqualToSuperview()
+//            make.top.equalTo(kFitWidth(222))
+            make.center.lessThanOrEqualToSuperview()
         }
         recordButton.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()

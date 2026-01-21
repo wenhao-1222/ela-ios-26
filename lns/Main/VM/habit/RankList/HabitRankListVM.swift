@@ -78,7 +78,7 @@ class HabitRankListVM: UIView {
         return vi
     }()
     lazy var emptyVm: HabitRankListEmptyVM = {
-        let vm = HabitRankListEmptyVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
+        let vm = HabitRankListEmptyVM.init(frame: CGRect.init(x: 0, y: self.headCupVm.frame.maxY, width: SCREEN_WIDHT, height: selfHeight-self.headCupVm.frame.maxY))
         vm.togoRecordBlock = {()in
             self.controller.navigationController?.tabBarController?.selectedIndex = 1
             self.controller.navigationController?.popToRootViewController(animated: true)

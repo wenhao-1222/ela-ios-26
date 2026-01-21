@@ -26,12 +26,11 @@
           "value" : "dark"
         }
       ],
-      "filename" : "容器 1123@2x.png",
+      "filename" : "背景切图@2x 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "背景切图@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -42,7 +41,6 @@
           "value" : "dark"
         }
       ],
-      "filename" : "容器 1123@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
