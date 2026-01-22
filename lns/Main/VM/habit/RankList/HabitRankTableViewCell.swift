@@ -68,7 +68,7 @@ class HabitRankTableViewCell: UITableViewCell {
 
     private let scoreLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont().DDInFontMedium(fontSize: 17)
+        label.font = UIFont().DDInFontSemiBold(fontSize: 17)
         label.textAlignment = .right
         label.textColor = .COLOR_TEXT_TITLE_0f1214
         label.adjustsFontSizeToFitWidth = true

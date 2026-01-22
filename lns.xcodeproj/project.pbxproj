@@ -1211,6 +1211,10 @@
 		ECF0BFE42BFCA29D00E5F6F0 /* WithDrawMoneyVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFE32BFCA29D00E5F6F0 /* WithDrawMoneyVM.swift */; };
 		ECF124422C087CE300BD8D1C /* NumericTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF124412C087CE300BD8D1C /* NumericTextField.swift */; };
 		ECF194202EC6F33E00049DB0 /* JournalShareSaveFooterVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1941F2EC6F33E00049DB0 /* JournalShareSaveFooterVM.swift */; };
+		ECF1AD062F21BB1100AE36D6 /* NaturalShakeImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1AD052F21BB0F00AE36D6 /* NaturalShakeImageView.swift */; };
+		ECF1AD082F21BBE200AE36D6 /* HabitSettleMentVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1AD072F21BBD800AE36D6 /* HabitSettleMentVM.swift */; };
+		ECF1AD0B2F21BD7B00AE36D6 /* RankBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1AD0A2F21BD7B00AE36D6 /* RankBadgeView.swift */; };
+		ECF1AD0D2F21BD8800AE36D6 /* RankSettleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1AD0C2F21BD8700AE36D6 /* RankSettleView.swift */; };
 		ECF1D3252C3D172A002A3B55 /* ElaLaunch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECF1D3242C3D172A002A3B55 /* ElaLaunch.storyboard */; };
 		ECF581E02C329A9900FE0937 /* GuideMainNaturalGoalAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF581DF2C329A9900FE0937 /* GuideMainNaturalGoalAlertVM.swift */; };
 		ECF581E22C32A54C00FE0937 /* GuideJournalGotPlanAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF581E12C32A54C00FE0937 /* GuideJournalGotPlanAlertVM.swift */; };
@@ -2600,6 +2604,10 @@
 		ECF0BFE32BFCA29D00E5F6F0 /* WithDrawMoneyVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithDrawMoneyVM.swift; sourceTree = "<group>"; };
 		ECF124412C087CE300BD8D1C /* NumericTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumericTextField.swift; sourceTree = "<group>"; };
 		ECF1941F2EC6F33E00049DB0 /* JournalShareSaveFooterVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalShareSaveFooterVM.swift; sourceTree = "<group>"; };
+		ECF1AD052F21BB0F00AE36D6 /* NaturalShakeImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalShakeImageView.swift; sourceTree = "<group>"; };
+		ECF1AD072F21BBD800AE36D6 /* HabitSettleMentVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitSettleMentVM.swift; sourceTree = "<group>"; };
+		ECF1AD0A2F21BD7B00AE36D6 /* RankBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankBadgeView.swift; sourceTree = "<group>"; };
+		ECF1AD0C2F21BD8700AE36D6 /* RankSettleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankSettleView.swift; sourceTree = "<group>"; };
 		ECF1D3242C3D172A002A3B55 /* ElaLaunch.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ElaLaunch.storyboard; sourceTree = "<group>"; };
 		ECF581DF2C329A9900FE0937 /* GuideMainNaturalGoalAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideMainNaturalGoalAlertVM.swift; sourceTree = "<group>"; };
 		ECF581E12C32A54C00FE0937 /* GuideJournalGotPlanAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideJournalGotPlanAlertVM.swift; sourceTree = "<group>"; };
@@ -4401,6 +4409,7 @@
 			children = (
 				EC6253732EFA6CAA003C076C /* MainHabitVM.swift */,
 				EC6253782EFA72B8003C076C /* HabitTopTypeVM.swift */,
+				ECF1AD092F21BD5F00AE36D6 /* Settle */,
 				EC2802E92F19D32800FEF08D /* Guide */,
 				EC61ABD42F03A5AD008FA297 /* Progress */,
 				EC61ABD32F03A5A5008FA297 /* RankList */,
@@ -5312,6 +5321,17 @@
 			path = Invite;
 			sourceTree = "<group>";
 		};
+		ECF1AD092F21BD5F00AE36D6 /* Settle */ = {
+			isa = PBXGroup;
+			children = (
+				ECF1AD052F21BB0F00AE36D6 /* NaturalShakeImageView.swift */,
+				ECF1AD072F21BBD800AE36D6 /* HabitSettleMentVM.swift */,
+				ECF1AD0A2F21BD7B00AE36D6 /* RankBadgeView.swift */,
+				ECF1AD0C2F21BD8700AE36D6 /* RankSettleView.swift */,
+			);
+			path = Settle;
+			sourceTree = "<group>";
+		};
 		ECF581DE2C329A8200FE0937 /* Guide */ = {
 			isa = PBXGroup;
 			children = (
@@ -5866,6 +5886,7 @@
 				A729C7582D2FA6A60067BB97 /* ForumTimeUtils.swift in Sources */,
 				EC312AA22EFCE93E0026F005 /* AlertVMCommon.swift in Sources */,
 				EC93FC9B2C0FF839007DBC39 /* TutorialListTableViewCell.swift in Sources */,
+				ECF1AD0D2F21BD8800AE36D6 /* RankSettleView.swift in Sources */,
 				A7FBA0CB2E3C5A8400EAEC68 /* ScreenShieldView.swift in Sources */,
 				A77F96312D0BFA5E0084D4FB /* PublishImageCollectionCell.swift in Sources */,
 				A775EA1F2E166E8C001DE90A /* ActionPopupView.swift in Sources */,
@@ -6284,6 +6305,7 @@
 				EC24EB532BB2BFD1002F21DF /* QuestionnaireSurveyEventVM.swift in Sources */,
 				A714DDC92DC2258E00745F84 /* JournalShareMsgNaturalVM.swift in Sources */,
 				ECB3E0772BD63BCF00CFDDFD /* LogsMealsNaturalMsgVM.swift in Sources */,
+				ECF1AD062F21BB1100AE36D6 /* NaturalShakeImageView.swift in Sources */,
 				EC85AFFD2C6DED2C006F788D /* ProgressView.swift in Sources */,
 				EC4DE2B82BCCF2930090A7BD /* PlanCreateGoalNaturalVM.swift in Sources */,
 				EC97261C2C5B75A900F244A2 /* GoalSetWeeksSegmentVM.swift in Sources */,
@@ -6588,6 +6610,7 @@
 				ECDB375C2EA5E04C002C6190 /* CourseAliPlayerViewController.swift in Sources */,
 				A7CEA5EE2D1A51F1009DDEB5 /* TutorialDataListVM.swift in Sources */,
 				EC4DE2E52BCF57F70090A7BD /* PlanDetailsShareVM.swift in Sources */,
+				ECF1AD0B2F21BD7B00AE36D6 /* RankBadgeView.swift in Sources */,
 				EC6D20ED2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift in Sources */,
 				EC9048832BBBE02F00F62262 /* QuestionCustomVC.swift in Sources */,
 				ECB6AEBD2BC66DF800F03567 /* MainHeightVM.swift in Sources */,
@@ -6699,6 +6722,7 @@
 				EC38DE992BEF56D4008E7FCE /* MineFuncItemVM.swift in Sources */,
 				A77F96352D0C091F0084D4FB /* LXReorderableCollectionViewFlowLayout.m in Sources */,
 				EC87EEFD2BB3EACE00350EB0 /* QuestionnaireSurveyFoodsListVC.swift in Sources */,
+				ECF1AD082F21BBE200AE36D6 /* HabitSettleMentVM.swift in Sources */,
 				A75039F62CF04DC400C2B2B3 /* SportVC.swift in Sources */,
 				EC000E6A2EA78F6000E2C60A /* CoursePayPopupView.swift in Sources */,
 				A7EDC0F32D140B870012D3FF /* ForumOfficialTextCell.swift in Sources */,
