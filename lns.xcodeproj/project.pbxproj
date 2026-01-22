@@ -1215,6 +1215,8 @@
 		ECF1AD082F21BBE200AE36D6 /* HabitSettleMentVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1AD072F21BBD800AE36D6 /* HabitSettleMentVM.swift */; };
 		ECF1AD0B2F21BD7B00AE36D6 /* RankBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1AD0A2F21BD7B00AE36D6 /* RankBadgeView.swift */; };
 		ECF1AD0D2F21BD8800AE36D6 /* RankSettleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1AD0C2F21BD8700AE36D6 /* RankSettleView.swift */; };
+		ECF1AD132F220BFB00AE36D6 /* RankDownShatterEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1AD122F220BFA00AE36D6 /* RankDownShatterEffect.swift */; };
+		ECF1AD152F220D1400AE36D6 /* RankDownShatterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1AD142F220D1400AE36D6 /* RankDownShatterView.swift */; };
 		ECF1D3252C3D172A002A3B55 /* ElaLaunch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECF1D3242C3D172A002A3B55 /* ElaLaunch.storyboard */; };
 		ECF581E02C329A9900FE0937 /* GuideMainNaturalGoalAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF581DF2C329A9900FE0937 /* GuideMainNaturalGoalAlertVM.swift */; };
 		ECF581E22C32A54C00FE0937 /* GuideJournalGotPlanAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF581E12C32A54C00FE0937 /* GuideJournalGotPlanAlertVM.swift */; };
@@ -2608,6 +2610,8 @@
 		ECF1AD072F21BBD800AE36D6 /* HabitSettleMentVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitSettleMentVM.swift; sourceTree = "<group>"; };
 		ECF1AD0A2F21BD7B00AE36D6 /* RankBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankBadgeView.swift; sourceTree = "<group>"; };
 		ECF1AD0C2F21BD8700AE36D6 /* RankSettleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankSettleView.swift; sourceTree = "<group>"; };
+		ECF1AD122F220BFA00AE36D6 /* RankDownShatterEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankDownShatterEffect.swift; sourceTree = "<group>"; };
+		ECF1AD142F220D1400AE36D6 /* RankDownShatterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankDownShatterView.swift; sourceTree = "<group>"; };
 		ECF1D3242C3D172A002A3B55 /* ElaLaunch.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ElaLaunch.storyboard; sourceTree = "<group>"; };
 		ECF581DF2C329A9900FE0937 /* GuideMainNaturalGoalAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideMainNaturalGoalAlertVM.swift; sourceTree = "<group>"; };
 		ECF581E12C32A54C00FE0937 /* GuideJournalGotPlanAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideJournalGotPlanAlertVM.swift; sourceTree = "<group>"; };
@@ -5328,6 +5332,8 @@
 				ECF1AD072F21BBD800AE36D6 /* HabitSettleMentVM.swift */,
 				ECF1AD0A2F21BD7B00AE36D6 /* RankBadgeView.swift */,
 				ECF1AD0C2F21BD8700AE36D6 /* RankSettleView.swift */,
+				ECF1AD122F220BFA00AE36D6 /* RankDownShatterEffect.swift */,
+				ECF1AD142F220D1400AE36D6 /* RankDownShatterView.swift */,
 			);
 			path = Settle;
 			sourceTree = "<group>";
@@ -6739,6 +6745,7 @@
 				A775EA2B2E17C2BB001DE90A /* FriendRankingWeekTableViewCell.swift in Sources */,
 				ECC977BA2C19C22600F7FAA6 /* ServiceInputVM.swift in Sources */,
 				EC9321B22C50CD7A00FDBBE2 /* MealsCaloriesTableViewCell.swift in Sources */,
+				ECF1AD132F220BFB00AE36D6 /* RankDownShatterEffect.swift in Sources */,
 				A71DA3462D0FBFFE00FCC6CA /* SportHistorySynSettingVM.swift in Sources */,
 				A79541E52E0252A300E019C8 /* GoalCircleVM.swift in Sources */,
 				ECB7C29E2C37A076000E83C2 /* FoodsListMyListVM.swift in Sources */,
@@ -6942,6 +6949,7 @@
 				A762B9752D19371B003E8B22 /* ForumTutorialModel.swift in Sources */,
 				EC6240822EAF16EB009ADEFD /* BottomCardAnimator.swift in Sources */,
 				A718AF962E7D397C00710C20 /* ReasonInputCell.swift in Sources */,
+				ECF1AD152F220D1400AE36D6 /* RankDownShatterView.swift in Sources */,
 				A7C72B462E0B92B2001EA74D /* LineHeightLabel.swift in Sources */,
 				A7A78D6F2D9BD86100DDB1E6 /* FileCacheManager.swift in Sources */,
 				EC6C231A2BFE0166001DFF97 /* QuestionnairePreVC.swift in Sources */,

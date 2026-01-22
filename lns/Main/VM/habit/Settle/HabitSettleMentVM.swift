@@ -29,14 +29,20 @@ extension HabitSettleMentVM{
             imgs.append(UIImage(named: "rank_\(i)")!)
         }
         
-        let settleView = RankSettleView.init(frame: self.bounds,
+        let settleView = RankSettleView.init(frame: CGRect.init(x: 0, y: kFitWidth(180), width: SCREEN_WIDHT, height: kFitWidth(240)),
                                              rankImages: imgs,
-                                             currentRank: 2)
+                                             currentRank: 7)
         
+//        let settleView = RankSettleView.init(frame: self.bounds,
+//                                             rankImages: imgs,
+//                                             currentRank: 7)
         self.addSubview(settleView)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+            //段位上升
             settleView.playRankUpAnimation()
+            //段位下降
+//            settleView.playRankDownAnimation()
         }
     }
 }
