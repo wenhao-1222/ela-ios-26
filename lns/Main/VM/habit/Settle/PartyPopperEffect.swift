@@ -23,12 +23,23 @@ final class PartyPopperEffect: UIView {
         duration: TimeInterval = 1.2,
         intensity: CGFloat = 1.0,
         colors: [UIColor] = [
-            .systemRed, .systemBlue, .systemGreen, .systemYellow,
-            .systemPurple, .systemPink, .systemOrange, .systemTeal
+            .THEME, .THEME, .THEME, .THEME,
+            WHColor_16(colorStr: "F5C54B"),
+            WHColor_16(colorStr: "F7E7CE"),
+            WHColor_16(colorStr: "F1E2D3"),
+            WHColor_16(colorStr: "E6C78F"),
+            WHColor_16(colorStr: "d6d9de"),
+            WHColor_16(colorStr: "d6d9de"),
+            WHColor_16(colorStr: "FFA500")
         ]
+//        colors: [UIColor] = [
+//            .systemRed, .systemBlue, .systemGreen, .systemYellow,
+//            .systemPurple, .systemPink, .systemOrange, .systemTeal
+//        ]
     ) -> PartyPopperEffect {
         let v = PartyPopperEffect(frame: parent.bounds)
         v.isUserInteractionEnabled = false
+        v.autoresizingMask = [.flexibleWidth,.flexibleHeight]
         parent.addSubview(v)
         
         v.play(at: point, duration: duration, intensity: intensity, colors: colors)
@@ -43,6 +54,18 @@ final class PartyPopperEffect: UIView {
 
         emitter.frame = bounds
         emitter.masksToBounds = false
+        // ✅ 彻底禁止 CAEmitterLayer 关键属性的隐式动画
+        emitter.actions = [
+            "emitterPosition": NSNull(),
+            "emitterSize": NSNull(),
+            "emitterCells": NSNull(),
+            "birthRate": NSNull(),
+            "lifetime": NSNull(),
+            "beginTime": NSNull(),
+            "timeOffset": NSNull(),
+            "position": NSNull(),
+            "bounds": NSNull()
+        ]
         layer.addSublayer(emitter)
     }
 
@@ -51,37 +74,78 @@ final class PartyPopperEffect: UIView {
     }
 
     // MARK: - Core
-
+//    private func play(at point: CGPoint,
+//                      duration: TimeInterval,
+//                      intensity: CGFloat,
+//                      colors: [UIColor]) {
+//
+//        // “手捧礼花棒”感觉：从一个点向上喷射、带一定散射角
+//        emitter.emitterPosition = point
+//        emitter.emitterShape = .point
+//        emitter.emitterMode = .points
+//        emitter.renderMode = .additive
+//
+//        // 彩带（短/长）+ 少量纸屑点
+//        let ribbonShort = makeRibbonCells(colors: colors, long: false, intensity: intensity)
+//        let ribbonLong  = makeRibbonCells(colors: colors, long: true, intensity: intensity * 0.75)
+////        let confettiDot = makeDotCells(colors: colors, intensity: intensity * 0.35)
+//
+//        emitter.emitterCells = ribbonShort + ribbonLong //+ confettiDot
+//        emitter.birthRate = 1
+//
+//        // 先爆发一段，再停止发射，剩余粒子自然落下
+//        DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
+//            guard let self else { return }
+//            CATransaction.begin()
+//            CATransaction.setDisableActions(true)
+//            self.emitter.birthRate = 0
+//            self.emitter.emitterCells?.forEach { $0.birthRate = 0 }
+//            CATransaction.commit()
+//        }
+//
+//        // 根据粒子生命周期移除自身
+//        let maxLife: TimeInterval = 2.6
+//        DispatchQueue.main.asyncAfter(deadline: .now() + duration + maxLife) { [weak self] in
+//            self?.removeFromSuperview()
+//        }
+//    }
+    
     private func play(at point: CGPoint,
                       duration: TimeInterval,
                       intensity: CGFloat,
                       colors: [UIColor]) {
 
-        // “手捧礼花棒”感觉：从一个点向上喷射、带一定散射角
-        emitter.emitterPosition = point
+        // point 本来就是 parent(=superview) 坐标系里的点，这里转到自己坐标系
+        let localPoint = point//convert(point, from: superview)
+
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+
+        emitter.frame = bounds
+        emitter.masksToBounds = false
+
+        emitter.emitterPosition = localPoint
+        emitter.emitterSize = CGSize(width: 1, height: 1)   // ✅ 比 .zero 更稳
         emitter.emitterShape = .point
         emitter.emitterMode = .points
         emitter.renderMode = .additive
 
-        // 彩带（短/长）+ 少量纸屑点
         let ribbonShort = makeRibbonCells(colors: colors, long: false, intensity: intensity)
         let ribbonLong  = makeRibbonCells(colors: colors, long: true, intensity: intensity * 0.75)
-        let confettiDot = makeDotCells(colors: colors, intensity: intensity * 0.35)
 
-        emitter.emitterCells = ribbonShort + ribbonLong + confettiDot
+        emitter.emitterCells = ribbonShort + ribbonLong
         emitter.birthRate = 1
 
-        // 先爆发一段，再停止发射，剩余粒子自然落下
+        CATransaction.commit()
+
         DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
             guard let self else { return }
             CATransaction.begin()
             CATransaction.setDisableActions(true)
             self.emitter.birthRate = 0
-            self.emitter.emitterCells?.forEach { $0.birthRate = 0 }
             CATransaction.commit()
         }
 
-        // 根据粒子生命周期移除自身
         let maxLife: TimeInterval = 2.6
         DispatchQueue.main.asyncAfter(deadline: .now() + duration + maxLife) { [weak self] in
             self?.removeFromSuperview()
@@ -90,7 +154,7 @@ final class PartyPopperEffect: UIView {
 
     // MARK: - Particle builders
     private func makeRibbonCells(colors: [UIColor], long: Bool, intensity: CGFloat) -> [CAEmitterCell] {
-        let size = long ? CGSize(width: 18, height: 5) : CGSize(width: 12, height: 4)
+        let size = long ? CGSize(width: 22, height: 8) : CGSize(width: 15, height: 5)
         let birth = (long ? 55.0 : 105.0) * Double(intensity) // 彩带更多
 
         return colors.map { color in
@@ -126,7 +190,6 @@ final class PartyPopperEffect: UIView {
 
 //            cell.alphaRange = 0.15
 //            cell.alphaSpeed = -0.38
-
             return cell
         }
     }

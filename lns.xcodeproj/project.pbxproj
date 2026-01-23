@@ -846,6 +846,7 @@
 		EC5E12602C801C6700F5828A /* NSDictionary+Widget+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D03822C6F201700F33137 /* NSDictionary+Widget+Exs.swift */; };
 		EC6048B22BEB48CB004E9578 /* PlanListActiveCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */; };
 		EC6108FF2F23460C00085BA3 /* PartyPopperEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6108FE2F23460B00085BA3 /* PartyPopperEffect.swift */; };
+		EC6109012F2370A000085BA3 /* ConfettiEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6109002F23709F00085BA3 /* ConfettiEmitter.swift */; };
 		EC61ABC82F036788008FA297 /* HabitRuleAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABC72F036782008FA297 /* HabitRuleAlertVM.swift */; };
 		EC61ABCA2F036CB6008FA297 /* HabitRuleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABC92F036CAD008FA297 /* HabitRuleTableViewCell.swift */; };
 		EC61ABCC2F037C09008FA297 /* HabitRuleProteinAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABCB2F037C02008FA297 /* HabitRuleProteinAlertVM.swift */; };
@@ -2214,6 +2215,7 @@
 		EC5D4F802C21524300F376A4 /* TutorialUpdateAttr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialUpdateAttr.swift; sourceTree = "<group>"; };
 		EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanListActiveCellVM.swift; sourceTree = "<group>"; };
 		EC6108FE2F23460B00085BA3 /* PartyPopperEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyPopperEffect.swift; sourceTree = "<group>"; };
+		EC6109002F23709F00085BA3 /* ConfettiEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiEmitter.swift; sourceTree = "<group>"; };
 		EC61ABC72F036782008FA297 /* HabitRuleAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleAlertVM.swift; sourceTree = "<group>"; };
 		EC61ABC92F036CAD008FA297 /* HabitRuleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewCell.swift; sourceTree = "<group>"; };
 		EC61ABCB2F037C02008FA297 /* HabitRuleProteinAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleProteinAlertVM.swift; sourceTree = "<group>"; };
@@ -5337,6 +5339,7 @@
 				ECF1AD122F220BFA00AE36D6 /* RankDownShatterEffect.swift */,
 				ECF1AD142F220D1400AE36D6 /* RankDownShatterView.swift */,
 				EC6108FE2F23460B00085BA3 /* PartyPopperEffect.swift */,
+				EC6109002F23709F00085BA3 /* ConfettiEmitter.swift */,
 			);
 			path = Settle;
 			sourceTree = "<group>";
@@ -6327,6 +6330,7 @@
 				A735A78E2D5DDBAB006CE140 /* UIColor+Extension.swift in Sources */,
 				A73207FD2DFA6F84000A807D /* GuideAddFirstFoodsAlertVM.swift in Sources */,
 				A735A78F2D5DDBAB006CE140 /* JF.swift in Sources */,
+				EC6109012F2370A000085BA3 /* ConfettiEmitter.swift in Sources */,
 				A735A7902D5DDBAB006CE140 /* Size+Extenison.swift in Sources */,
 				EC3A9CBD2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift in Sources */,
 				ECF581E42C32ACF100FE0937 /* GuideMineCreatePlanAlertVM.swift in Sources */,

@@ -223,10 +223,10 @@ extension HabitSettleMentVM{
             self.tableView.transform = CGAffineTransform(translationX: 0, y: kFitWidth(40))
             self.tableView.alpha = 0
         }
-        UIView.animate(withDuration: 0.75, delay: 0) {
+        UIView.animate(withDuration: 0.65, delay: 0,options: .curveEaseInOut) {
             self.settleView.transform = .identity
         }completion: { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                 //段位上升
                 self.settleView.playRankUpAnimation()
                 //段位下降

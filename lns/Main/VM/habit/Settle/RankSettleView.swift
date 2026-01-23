@@ -43,6 +43,17 @@ final class RankSettleView: UIView {
         let y = (bounds.height - badgeSize.height) / 2
         return y + badgeSize.height / 2
     }
+    
+//    private var confetti: ConfettiEmitter?
+    private var confettis: [ConfettiEmitter] = []
+
+    // 四次喷射参数
+    private let bursts: [(duration: TimeInterval, interval: TimeInterval, rate: Float)] = [
+        (0.35, 0.50, 60),
+        (0.30, 0.35, 90),
+        (0.22, 0.25, 120),
+        (0.15, 0.15, 140)
+    ]
 
     init(frame: CGRect, rankImages: [UIImage], currentRank: Int) {
         self.rankImages = rankImages
@@ -107,9 +118,8 @@ final class RankSettleView: UIView {
         }
 
         // oldRight 在“从右到中”的过程中带一点倾斜（惯性）
-        oldRight.setScale(sideScale)
-        oldRight.setTiltForEnter(true)
-//        oldRight.setGrayscale(true)
+//        oldRight.setScale(sideScale)
+//        oldRight.setTiltForEnter(true)
         
         UIView.animate(
             withDuration: slideDuration,
@@ -132,7 +142,6 @@ final class RankSettleView: UIView {
                 oldRight.center.x = self.centerSlotCX
                 oldRight.setScale(self.centerScale)
 //                oldRight.setTiltForEnter(false)
-                oldRight.setTiltForEnter(true)
 
                 // 4) incomingRight -> 右槽位（跟随移动出现）
                 if let incomingRight {
@@ -155,30 +164,61 @@ final class RankSettleView: UIView {
                 self.rightBadge = incomingRight
 
                 oldRight.setGrayscale(false)
-                oldRight.flashGlow {
-                    
-                }
-                
+//                oldRight.flashGlow {
+//                    
+//                }
+//                
                 let p = CGPoint(x: oldRight.center.x,
                                 y: oldRight.center.y + oldRight.bounds.height * 0.25)
-                PartyPopperEffect.burst(in: self, at: p, duration: 0.4, intensity: 0.2)
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.46, execute: {
-                    PartyPopperEffect.burst(in: self, at: p, duration: 0.4, intensity: 0.2)
-                })
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: {
-                    PartyPopperEffect.burst(in: self, at: p, duration: 0.3, intensity: 0.2)
-                })
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.88, execute: {
-                    PartyPopperEffect.burst(in: self, at: p, duration: 0.3, intensity: 0.2)
-                })
-                oldRight.shakeInPlace()
+//                PartyPopperEffect.burst(in: self, at: p, duration: 0.4, intensity: 0.1)
+                self.confettis.removeAll()
+
+                for i in 0..<4 {
+                    let emitter = ConfettiEmitter(in: self, emitPoint: p)
+                    emitter.colors = [
+                        .THEME, .THEME, .THEME, .THEME,
+                        WHColor_16(colorStr: "F5C54B"),
+                        WHColor_16(colorStr: "F7E7CE"),
+                        WHColor_16(colorStr: "F1E2D3"),
+                        WHColor_16(colorStr: "E6C78F"),
+                        WHColor_16(colorStr: "d6d9de"),
+                        WHColor_16(colorStr: "d6d9de"),
+                        WHColor_16(colorStr: "FFA500")
+                    ]
+                    emitter.gravity = 800
+                    emitter.lifetime = 5
+                    self.confettis.append(emitter)
+                }
+
+                self.play(point: p)
+
+//                oldRight.shakeInPlace()
             }
         )
     }
     func currentRankBadgeView() -> RankBadgeView? {
        return centerBadge
    }
+    func play(point: CGPoint) {
+        playBurst(index: 0,point: point)
+    }
+    private func playBurst(index: Int, point: CGPoint) {
+        guard index < bursts.count else { return }
+
+        let burst = bursts[index]
+        let emitter = confettis[index]
+
+        emitter.confettiPerSecond = burst.rate
+        emitter.startEmission(at: point)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + burst.duration) {
+            emitter.stopEmission()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + burst.interval) {
+                self.playBurst(index: index + 1, point: point)
+            }
+        }
+    }
 }
 extension RankSettleView {
 
