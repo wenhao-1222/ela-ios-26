@@ -53,10 +53,6 @@ class HabitVC: WHBaseViewVC {
         }
         return vm
     }()
-    lazy var shakeImgView: HabitSettleMentVM = {
-        let vm = HabitSettleMentVM.init(frame: .zero)
-        return vm
-    }()
 }
 
 extension HabitVC{
@@ -88,7 +84,6 @@ extension HabitVC{
         view.addSubview(scrollViewBase)
         
 //        view.addSubview(guideVm)
-        view.addSubview(shakeImgView)
         
         scrollViewBase.frame = CGRect.init(x: 0, y: self.topTypeVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT - self.topTypeVm.frame.maxY)
         scrollViewBase.addSubview(progressVm)
@@ -151,7 +146,7 @@ extension HabitVC{
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendLastWeekRanklistRequest:\(dataDict)")
             
-            
+            self.rankListVm.updateUI(dict: dataDict)
         }
     }
 }

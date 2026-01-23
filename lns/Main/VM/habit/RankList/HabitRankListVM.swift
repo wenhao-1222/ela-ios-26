@@ -10,7 +10,7 @@ class HabitRankListVM: UIView {
     
     var selfHeight = kFitWidth(600)
     var controller = WHBaseViewVC()
-    
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var dataSourceArray = NSArray()
     private var displayedDataArray = NSArray()
     
@@ -114,10 +114,19 @@ class HabitRankListVM: UIView {
         let vm = HabitWeeklyRewardPointAlertVM.init(frame: .zero)
         return vm
     }()
+    lazy var settlementVm: HabitSettleMentVM = {
+        let vm = HabitSettleMentVM.init(frame: .zero)
+
+        return vm
+    }()
 }
 
 extension HabitRankListVM{
     func updateUI(dict:NSDictionary) {
+        settlementVm.updateCurrentTier(tier: dict.stringValueForKey(key: "tier").intValue,
+                                       sn: 3,
+                                       point: "185",
+                                       rankList: [])
         
     }
 }
@@ -131,20 +140,12 @@ extension HabitRankListVM{
             sendDataRequest()
             return
         }
-//        guard let data = UserDefaults.standard.data(forKey: leaderboardCacheKey),
-//              let cache = try? JSONSerialization.jsonObject(with: data) as? [NSDictionary] else {
-//            sendDataRequest()
-//            return
-//        }
-
-//        dataSourceArray = dataArray//cache as NSArray
         dataSourceArray = prepareLeaderboardData(from: dataArray)//cache as NSArray
         displayedDataArray = dataSourceArray
         
         if dataSourceArray.count == 0 {
             sendDataRequest()
         }
-//        tableView.reloadData()
     }
 
     private func cacheLeaderboard(_ leaderboard: NSArray) {
@@ -160,6 +161,10 @@ extension HabitRankListVM{
     func updateVisibility(isVisible: Bool) {
         if isVisible && !isCurrentlyVisible {
             isCurrentlyVisible = true
+            appDelegate.getKeyWindow().addSubview(settlementVm)
+            UIView.animate(withDuration: 0.45) {
+                self.settlementVm.alpha = 1
+            }
             sendDataRequest(animateSelfChange: true)
         }
     }
@@ -224,7 +229,6 @@ extension HabitRankListVM{
         addSubview(headCupVm)
         addSubview(emptyVm)
         
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.getKeyWindow().addSubview(rewardPointAlertVm)
     }
 }
