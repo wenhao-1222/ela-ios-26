@@ -158,108 +158,28 @@ final class RankSettleView: UIView {
                 oldRight.flashGlow {
                     
                 }
+                
+                let p = CGPoint(x: oldRight.center.x,
+                                y: oldRight.center.y + oldRight.bounds.height * 0.25)
+                PartyPopperEffect.burst(in: self, at: p, duration: 0.4, intensity: 0.2)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.46, execute: {
+                    PartyPopperEffect.burst(in: self, at: p, duration: 0.4, intensity: 0.2)
+                })
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: {
+                    PartyPopperEffect.burst(in: self, at: p, duration: 0.3, intensity: 0.2)
+                })
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.88, execute: {
+                    PartyPopperEffect.burst(in: self, at: p, duration: 0.3, intensity: 0.2)
+                })
                 oldRight.shakeInPlace()
             }
         )
     }
+    func currentRankBadgeView() -> RankBadgeView? {
+       return centerBadge
+   }
 }
-//extension RankSettleView {
-//
-//    func playRankDownAnimation() {
-//        guard currentRank > minRank else { return }
-//
-//        let oldLeft = leftBadge                // 将成为新中心
-//        let oldCenter = centerBadge!           // 会碎裂并移到右侧
-//        let oldRight = rightBadge              // 可能存在，推出
-//
-//        // 1) 先原地碎裂（中心）
-//        var shatterCfg = RankDownShatterView.Config()
-////        shatterCfg.maxPieceCount = 12
-////        shatterCfg.duration = 0.45
-//////        shatterCfg.burstUp = 100...160
-//        shatterCfg.burstX = -40...40
-////        shatterCfg.keepBaseRows = 1
-//
-//        // ✅ 关键：先声明，后赋值（避免闭包提前捕获）
-//        var shatterView: RankDownShatterView?
-//
-//        shatterView = RankDownShatterView.play(on: oldCenter, in: self, config: shatterCfg) { [weak self] in
-//            guard let self else { return }
-//            guard let shatterView = shatterView else { return }
-//
-//            // 2) 碎裂完成后：整体向右移动，同时左->中，右->推出
-//            UIView.animate(withDuration: self.slideDuration,
-//                           delay: 0.25,
-//                           options: [.curveEaseOut, .beginFromCurrentState],
-//                           animations: {
-//
-//                // oldLeft -> 中心（放大）
-//                if let oldLeft {
-//                    oldLeft.center.x = self.centerSlotCX
-//                    oldLeft.setScale(self.centerScale)
-//                    oldLeft.alpha = 1
-//                    oldLeft.setGrayscale(false)
-//                }
-//
-//                // oldRight -> 更右推出并淡出
-//                if let oldRight {
-//                    oldRight.center.x = self.rightSlotCX + self.sideOffset
-//                    oldRight.alpha = 0
-//                }
-//
-//                // ✅ 碎裂整体 -> 右槽位（缩小）
-//                shatterView.center.x = self.rightSlotCX
-//                shatterView.transform = CGAffineTransform(scaleX: self.sideScale, y: self.sideScale)
-//
-//            }, completion: { _ in
-//
-//                // 清理推出的 oldRight
-//                if let oldRight {
-//                    oldRight.removeFromSuperview()
-//                }
-//
-//                // oldCenter 已经被隐藏，直接移除（碎裂层替代显示）
-//                oldCenter.removeFromSuperview()
-//
-//                // ✅ 更新 rank
-//                self.currentRank -= 1
-//
-//                // ✅ 更新 center
-//                if let oldLeft {
-//                    self.centerBadge = oldLeft
-//                }
-//
-//                // ✅ 更新 left（新的左 = currentRank-1）
-//                // 先移除旧 left（oldLeft 已经变成 center，不移除）
-//                // leftBadge 应该变为 “currentRank-1”，也就是 currentRank-2 索引
-//                if self.currentRank > self.minRank {
-//                    let img = self.rankImages[self.currentRank - 2]
-//                    let newLeft = self.makeBadge(image: img, centerX: self.leftSlotCX, scale: self.sideScale)
-//                    newLeft.alpha = 1
-//                    self.leftBadge = newLeft
-//                } else {
-//                    self.leftBadge = nil
-//                }
-//                // ✅ 右侧只展示碎裂层：不创建可见的 rightBadge
-//                if self.currentRank < self.maxRank {
-//                    // 仍然创建一个“隐藏的逻辑 rightBadge”，确保后续升级动画有 oldRight 可用
-//                    let img = self.rankImages[self.currentRank]  // currentRank+1
-//                    let hiddenRight = self.makeBadge(image: img, centerX: self.rightSlotCX, scale: self.sideScale)
-//                    hiddenRight.setGrayscale(true)
-//                    hiddenRight.alpha = 0.0          // ✅ 不显示完整奖杯
-//                    hiddenRight.isUserInteractionEnabled = false
-//                    self.rightBadge = hiddenRight
-//
-//                    // 碎裂层盖在最上面
-//                    self.bringSubviewToFront(shatterView)
-//                } else {
-//                    self.rightBadge = nil
-//                }
-//
-//            })
-//        }
-//    }
-//}
 extension RankSettleView {
 
     func playRankDownAnimation() {

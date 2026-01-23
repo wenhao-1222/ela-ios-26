@@ -116,6 +116,8 @@ class HabitRankListVM: UIView {
     }()
     lazy var settlementVm: HabitSettleMentVM = {
         let vm = HabitSettleMentVM.init(frame: .zero)
+        vm.headCupVm = headCupVm
+        
 
         return vm
     }()
@@ -126,7 +128,7 @@ extension HabitRankListVM{
         settlementVm.updateCurrentTier(tier: dict.stringValueForKey(key: "tier").intValue,
                                        sn: 3,
                                        point: "185",
-                                       rankList: [])
+                                       rankList: self.displayedDataArray)
         
     }
 }
@@ -162,7 +164,7 @@ extension HabitRankListVM{
         if isVisible && !isCurrentlyVisible {
             isCurrentlyVisible = true
             appDelegate.getKeyWindow().addSubview(settlementVm)
-            UIView.animate(withDuration: 0.45) {
+            UIView.animate(withDuration: 0.15) {
                 self.settlementVm.alpha = 1
             }
             sendDataRequest(animateSelfChange: true)

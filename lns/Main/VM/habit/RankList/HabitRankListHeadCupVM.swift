@@ -17,6 +17,7 @@ class HabitRankListHeadCupVM: UIView {
     var remainSeconds = 3
     private var currentTierIndex: Int = 0
     private var rankTiers: [RankTierModel] = [RankTierModel]()
+    private var currentTierImageView: UIImageView?
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
@@ -104,6 +105,7 @@ extension HabitRankListHeadCupVM{
         self.currentTierIndex = tier
         self.degreeLabel.text = tierName
         self.rankTiers.removeAll()
+        self.currentTierImageView = nil
         for vi in self.scrollView.subviews{
             vi.removeFromSuperview()
         }
@@ -131,12 +133,19 @@ extension HabitRankListHeadCupVM{
             scrollView.addSubview(img)
             imgOriginX += imgWidth + imgGap
             
+            if model.isCurrentTier {
+                currentTierImageView = img
+            }
+            
             
             if model.isCurrentTier && img.jf_centerX > SCREEN_WIDHT*0.5{
                 scrollView.setContentOffset(CGPoint(x: img.jf_centerX - SCREEN_WIDHT*0.5, y: 0), animated: false)
             }
         }
         scrollView.contentSize = CGSize(width: imgOriginX, height: 0)
+    }
+    func currentTierBadgeView() -> UIImageView? {
+        return currentTierImageView
     }
     func updateUI(champion:String,runnerUp:String,thirdPlace:String,secondsToWeekEnd:Int) {
         degreeLabel.text = "青铜"

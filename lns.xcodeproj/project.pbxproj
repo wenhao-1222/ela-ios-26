@@ -845,6 +845,7 @@
 		EC5D4F812C21524300F376A4 /* TutorialUpdateAttr.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5D4F802C21524300F376A4 /* TutorialUpdateAttr.swift */; };
 		EC5E12602C801C6700F5828A /* NSDictionary+Widget+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D03822C6F201700F33137 /* NSDictionary+Widget+Exs.swift */; };
 		EC6048B22BEB48CB004E9578 /* PlanListActiveCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */; };
+		EC6108FF2F23460C00085BA3 /* PartyPopperEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6108FE2F23460B00085BA3 /* PartyPopperEffect.swift */; };
 		EC61ABC82F036788008FA297 /* HabitRuleAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABC72F036782008FA297 /* HabitRuleAlertVM.swift */; };
 		EC61ABCA2F036CB6008FA297 /* HabitRuleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABC92F036CAD008FA297 /* HabitRuleTableViewCell.swift */; };
 		EC61ABCC2F037C09008FA297 /* HabitRuleProteinAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC61ABCB2F037C02008FA297 /* HabitRuleProteinAlertVM.swift */; };
@@ -2212,6 +2213,7 @@
 		EC5C81772C5A1A49000EC4BC /* GoalSetSpecPercentNaturalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSetSpecPercentNaturalVM.swift; sourceTree = "<group>"; };
 		EC5D4F802C21524300F376A4 /* TutorialUpdateAttr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialUpdateAttr.swift; sourceTree = "<group>"; };
 		EC6048B12BEB48CB004E9578 /* PlanListActiveCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanListActiveCellVM.swift; sourceTree = "<group>"; };
+		EC6108FE2F23460B00085BA3 /* PartyPopperEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyPopperEffect.swift; sourceTree = "<group>"; };
 		EC61ABC72F036782008FA297 /* HabitRuleAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleAlertVM.swift; sourceTree = "<group>"; };
 		EC61ABC92F036CAD008FA297 /* HabitRuleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewCell.swift; sourceTree = "<group>"; };
 		EC61ABCB2F037C02008FA297 /* HabitRuleProteinAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleProteinAlertVM.swift; sourceTree = "<group>"; };
@@ -5334,6 +5336,7 @@
 				ECF1AD0C2F21BD8700AE36D6 /* RankSettleView.swift */,
 				ECF1AD122F220BFA00AE36D6 /* RankDownShatterEffect.swift */,
 				ECF1AD142F220D1400AE36D6 /* RankDownShatterView.swift */,
+				EC6108FE2F23460B00085BA3 /* PartyPopperEffect.swift */,
 			);
 			path = Settle;
 			sourceTree = "<group>";
@@ -5880,6 +5883,7 @@
 				A70A2FD52DCAF90900F1E630 /* FPSMonitor.swift in Sources */,
 				EC38DE952BEF5239008E7FCE /* MineTopFuncVM.swift in Sources */,
 				A7443DF92DD1EB8C0040FEFD /* JournalReportDailyCaloriesMealsItemVm.swift in Sources */,
+				EC6108FF2F23460C00085BA3 /* PartyPopperEffect.swift in Sources */,
 				A762BA772D195F6F003E8B22 /* TutorialVideoTypeVM.swift in Sources */,
 				A77F96232D0A902C0084D4FB /* PublishPollSettingCell.swift in Sources */,
 				ECBA93542C94040300117888 /* NaturalStatCalendarMarkView.swift in Sources */,
