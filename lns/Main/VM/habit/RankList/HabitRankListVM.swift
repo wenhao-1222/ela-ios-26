@@ -318,10 +318,6 @@ extension HabitRankListVM{
         DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
             self.animateHighlightMove3Stage(from: oldIndex, to: newIndex, extraVertical: 0)
         })
-//        DispatchQueue.main.async {
-//            // ✅ 调用三段式动画
-//            self.animateHighlightMove3Stage(from: oldIndex, to: newIndex, extraVertical: 20)
-//        }
     }
 }
 
@@ -832,9 +828,6 @@ extension HabitRankListVM{
                 let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
                 let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
                 DLLog(message: "sendDataRequest:\(dataDict)")
-                
-                self.dataSourceArray = self.prepareLeaderboardData(from: dataDict["leaderboard"]as? NSArray ?? [])
-                self.cacheLeaderboard(self.dataSourceArray)
                 self.headCupVm.setCurrentTier(tier: self.currentTierIndex,
                                               tierName: dataDict.stringValueForKey(key: "tierName"))
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
@@ -843,7 +836,10 @@ extension HabitRankListVM{
                                     runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
                                     thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
                                      secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
-                    
+                }
+                if (dataDict["leaderboard"]as? NSArray ?? []).count > 0 {
+                    self.dataSourceArray = self.prepareLeaderboardData(from: dataDict["leaderboard"]as? NSArray ?? [])
+                    self.cacheLeaderboard(self.dataSourceArray)
                     let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
                     
                     self.displayedDataArray = self.initialDisplayArray(
@@ -874,9 +870,10 @@ extension HabitRankListVM{
                     self.displayedDataArray = self.dataSourceArray
                     self.tableView.reloadData()
                 }
-            }else{
+            }
+            else{
                 self.dataSourceArray = NSArray()
-                self.cacheLeaderboard(self.dataSourceArray)
+//                self.cacheLeaderboard(self.dataSourceArray)
                 self.displayedDataArray = self.dataSourceArray
                 self.tableView.reloadData()
             }

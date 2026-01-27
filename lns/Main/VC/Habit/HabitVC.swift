@@ -57,8 +57,8 @@ class HabitVC: WHBaseViewVC {
 
 extension HabitVC{
     @objc func pointDetailTapAction() {
-//        let vc = HabitDetailVC()
-        let vc = DemoVC()
+        let vc = HabitDetailVC()
+//        let vc = DemoVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     @objc func pointExchangeTapAction() {
