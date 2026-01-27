@@ -7,6 +7,7 @@
 
 class HabitSettleMentVM: UIView {
     
+    var hasData = false
     var currentRank = 1
     var tapCount = 0
     var tapBlock:(()->())?
@@ -151,6 +152,7 @@ extension HabitSettleMentVM{
         
     }
     func updateCurrentTier(tier:Int,sn:Int,point:String,rankList:NSArray) {
+        self.hasData = true
         self.currentRank = tier
         self.addSubview(settleView)
         self.displayedDataArray = rankList

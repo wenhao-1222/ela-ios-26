@@ -1242,6 +1242,8 @@
 		ECF854622C1837D700B9C7E7 /* MainDataLineChartYXaisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF854612C1837D700B9C7E7 /* MainDataLineChartYXaisView.swift */; };
 		ECF854642C183F8500B9C7E7 /* MainDataLineChartLegentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF854632C183F8500B9C7E7 /* MainDataLineChartLegentView.swift */; };
 		ECF854662C18537900B9C7E7 /* MainWeightLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF854652C18537900B9C7E7 /* MainWeightLineChartView.swift */; };
+		ECF9706A2F2854FD00BEA528 /* RankUpConfetti3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF970692F2854FC00BEA528 /* RankUpConfetti3DView.swift */; };
+		ECF9706C2F28560300BEA528 /* DemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF9706B2F28560200BEA528 /* DemoVC.swift */; };
 		ECFAB0C92BD89EFF003AA249 /* FoodsDetailSpecAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFAB0C82BD89EFF003AA249 /* FoodsDetailSpecAlertVM.swift */; };
 		ECFAB0CD2BD8DC54003AA249 /* JournalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFAB0CC2BD8DC54003AA249 /* JournalTableViewCell.swift */; };
 		ECFACE822BC7C805003CDA3A /* PlanListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFACE812BC7C805003CDA3A /* PlanListVC.swift */; };
@@ -2640,6 +2642,8 @@
 		ECF854612C1837D700B9C7E7 /* MainDataLineChartYXaisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainDataLineChartYXaisView.swift; sourceTree = "<group>"; };
 		ECF854632C183F8500B9C7E7 /* MainDataLineChartLegentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainDataLineChartLegentView.swift; sourceTree = "<group>"; };
 		ECF854652C18537900B9C7E7 /* MainWeightLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWeightLineChartView.swift; sourceTree = "<group>"; };
+		ECF970692F2854FC00BEA528 /* RankUpConfetti3DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankUpConfetti3DView.swift; sourceTree = "<group>"; };
+		ECF9706B2F28560200BEA528 /* DemoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoVC.swift; sourceTree = "<group>"; };
 		ECFAB0C82BD89EFF003AA249 /* FoodsDetailSpecAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsDetailSpecAlertVM.swift; sourceTree = "<group>"; };
 		ECFAB0CC2BD8DC54003AA249 /* JournalTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalTableViewCell.swift; sourceTree = "<group>"; };
 		ECFACE812BC7C805003CDA3A /* PlanListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanListVC.swift; sourceTree = "<group>"; };
@@ -4428,6 +4432,7 @@
 		EC6253752EFA71D6003C076C /* Habit */ = {
 			isa = PBXGroup;
 			children = (
+				ECF9706B2F28560200BEA528 /* DemoVC.swift */,
 				EC6253762EFA71DC003C076C /* HabitVC.swift */,
 				EC2802EC2F19D5F900FEF08D /* HabitGuideVC.swift */,
 				EC8264EB2EFBDDC700965196 /* HabitDetailVC.swift */,
@@ -5340,6 +5345,7 @@
 				ECF1AD142F220D1400AE36D6 /* RankDownShatterView.swift */,
 				EC6108FE2F23460B00085BA3 /* PartyPopperEffect.swift */,
 				EC6109002F23709F00085BA3 /* ConfettiEmitter.swift */,
+				ECF970692F2854FC00BEA528 /* RankUpConfetti3DView.swift */,
 			);
 			path = Settle;
 			sourceTree = "<group>";
@@ -6437,6 +6443,7 @@
 				ECD04BB32BEE025000B8069B /* JounalCollectionViewMealsVM.swift in Sources */,
 				A718AF8A2E7D2A1600710C20 /* MallOrderAfterSaleVC.swift in Sources */,
 				A795CA872CE3359C0090D89C /* ForumCommentModel.swift in Sources */,
+				ECF9706C2F28560300BEA528 /* DemoVC.swift in Sources */,
 				EC4DE2B62BCCD5F10090A7BD /* UICountingLabel.m in Sources */,
 				A79A4F8C2D65B96C002B8EB4 /* VideoEditKeyFrameVM.swift in Sources */,
 				A79A4F8A2D65B4D2002B8EB4 /* VideoEditBottomVM.swift in Sources */,
@@ -6637,6 +6644,7 @@
 				ECB8ABE22C69E85B0063A5F4 /* PlanDetailFoodsTableViewCell.swift in Sources */,
 				ECD0FF072BABD25B001232C9 /* YYLabel.m in Sources */,
 				ECF745D52BDA31B70076DDB9 /* FoodsCreateVC.swift in Sources */,
+				ECF9706A2F2854FD00BEA528 /* RankUpConfetti3DView.swift in Sources */,
 				ECD04BAF2BEDE32800B8069B /* JounalCollectionViewCell.swift in Sources */,
 				A7D3B2172CBE32810016B2B5 /* LogsMealsAlertSetVC.swift in Sources */,
 				ECB3E0732BD62AAF00CFDDFD /* LogsNaturalGoalCircleVM.swift in Sources */,

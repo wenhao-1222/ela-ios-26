@@ -148,7 +148,7 @@ extension HabitRankListHeadCupVM{
         return currentTierImageView
     }
     func updateUI(champion:String,runnerUp:String,thirdPlace:String,secondsToWeekEnd:Int) {
-        degreeLabel.text = "青铜"
+//        degreeLabel.text = "青铜"
 
         let attr = NSMutableAttributedString(string: "周结算奖励：冠军 ", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
            .font:UIFont.systemFont(ofSize: 12, weight: .regular)])

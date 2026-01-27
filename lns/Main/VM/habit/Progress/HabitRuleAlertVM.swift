@@ -154,7 +154,7 @@ class HabitRuleAlertVM: UIView {
         return vi
     }()
     lazy var tableView: UITableView = {
-        let vi = UITableView.init(frame: CGRect.init(x: 0, y: kFitWidth(80), width: SCREEN_WIDHT, height: kFitWidth(490)), style: .plain)
+        let vi = UITableView.init(frame: CGRect.init(x: 0, y: kFitWidth(80), width: SCREEN_WIDHT, height: kFitWidth(470)), style: .plain)
         vi.delegate = self
         vi.dataSource = self
         vi.separatorStyle = .none

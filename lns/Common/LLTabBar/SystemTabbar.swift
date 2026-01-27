@@ -10,6 +10,7 @@ import UIKit
 class SystemTabbar: UITabBarController {
 
     private weak var myTabItem: UITabBarItem?
+    private let tabBarTouchBlocker = UIControl()
     let generator = UIImpactFeedbackGenerator(style: .soft)
     private var shouldShowDotAfterLayout = false
     private var pendingDotDiameter: CGFloat = 5
@@ -28,6 +29,7 @@ class SystemTabbar: UITabBarController {
         super.viewDidLoad()
         delegate = self
         generator.prepare()
+        configureTabBarTouchBlocker()
         initConfig()
         initVc()
         observeMineTabNotifications()
@@ -43,6 +45,7 @@ class SystemTabbar: UITabBarController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        updateTabBarTouchBlockerFrame()
 
         // 记录稳定 frame
         if tabBar.transform == .identity && !tabBar.isHidden && tabBar.alpha > 0.99 {
@@ -116,7 +119,21 @@ class SystemTabbar: UITabBarController {
         UITabBar.appearance().itemSpacing = 8
         UITabBar.appearance().tintColor = themeColor
     }
+    private func configureTabBarTouchBlocker() {
+        tabBarTouchBlocker.backgroundColor = .clear
+        tabBarTouchBlocker.isUserInteractionEnabled = true
+        tabBarTouchBlocker.accessibilityIdentifier = "systemTabbarTouchBlocker"
+        if tabBarTouchBlocker.superview == nil {
+            view.insertSubview(tabBarTouchBlocker, belowSubview: tabBar)
+        }
+    }
 
+    private func updateTabBarTouchBlockerFrame() {
+        guard tabBarTouchBlocker.superview != nil else { return }
+        tabBarTouchBlocker.frame = tabBar.frame
+        tabBarTouchBlocker.isHidden = tabBar.isHidden || tabBar.alpha <= 0.01
+        view.bringSubviewToFront(tabBar)
+    }
     func initVc() {
         let mainVc = OverViewVC()
         let journalVc = JournalVC()

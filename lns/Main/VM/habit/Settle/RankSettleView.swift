@@ -43,10 +43,10 @@ final class RankSettleView: UIView {
         let y = (bounds.height - badgeSize.height) / 2
         return y + badgeSize.height / 2
     }
-    
-//    private var confetti: ConfettiEmitter?
-    private var confettis: [ConfettiEmitter] = []
+    private let confetti = RankUpConfetti3DView()
 
+    private var rankUpAnimationPlayKey: Int = 0
+    
     // 四次喷射参数
     private let bursts: [(duration: TimeInterval, interval: TimeInterval, rate: Float)] = [
         (0.35, 0.50, 60),
@@ -61,6 +61,7 @@ final class RankSettleView: UIView {
         super.init(frame: frame)
         backgroundColor = .clear
         setupInitialRanks()
+        initConfetti()
     }
 
     required init?(coder: NSCoder) {
@@ -97,6 +98,60 @@ final class RankSettleView: UIView {
         } else {
             rightBadge = nil
         }
+    }
+    
+    func initConfetti() {
+        confetti.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+        confetti.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        confetti.layer.zPosition = 12345
+        confetti.isUserInteractionEnabled = false
+        
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.getKeyWindow().addSubview(confetti)
+        // 建议加到最顶层 overlay
+//        addSubview(confetti)
+
+        // 配置参数（对齐 Kotlin）
+        var cfg = RankUpConfetti3DView.Config()
+        cfg.enabledShapes = [.parallelogram]
+
+        cfg.burstCount = 5
+        cfg.burstIntervalMsList = [0, 500, 350, 200, 200]
+        cfg.durationMs = 2500
+        cfg.burstIntervalMs = 1000 // 兜底
+
+        cfg.clearPreviousOnNewBurst = false
+
+        cfg.particleCount = 70
+        cfg.verticalRange = 0       // 0：不限制垂直范围（对齐 Kotlin 的 0f=>∞）
+        cfg.horizontalRange = 2
+        cfg.minParticleSize = 5
+        cfg.maxParticleSize = 10
+
+        cfg.originX = 0.5
+        cfg.originY = 0.43
+        cfg.spawnRadius = 50
+
+        cfg.colors = [
+            UIColor(red: 0x25/255, green: 0x63/255, blue: 0xEB/255, alpha: 1),
+            UIColor(red: 0x43/255, green: 0x38/255, blue: 0xCA/255, alpha: 1),
+            UIColor(red: 0x7C/255, green: 0x3A/255, blue: 0xED/255, alpha: 1),
+            UIColor(red: 0x08/255, green: 0x91/255, blue: 0xB2/255, alpha: 1),
+            UIColor(red: 0x0D/255, green: 0x94/255, blue: 0x88/255, alpha: 1),
+            UIColor(red: 0xDB/255, green: 0x27/255, blue: 0x77/255, alpha: 1),
+            UIColor(red: 0xEA/255, green: 0x58/255, blue: 0x0C/255, alpha: 1),
+            UIColor(red: 0xD9/255, green: 0x77/255, blue: 0x06/255, alpha: 1),
+            UIColor(red: 0x16/255, green: 0xA3/255, blue: 0x4A/255, alpha: 1),
+            UIColor(red: 0x65/255, green: 0xA3/255, blue: 0x0D/255, alpha: 1),
+        ]
+
+        cfg.explodePower = 45 // 还高就 30；想更猛就 50
+        cfg.explosionDirectionDeg = -90
+        cfg.gravityPx = 1500
+        cfg.windPx = 0
+        cfg.randomSeed = 0 // 0:完全随机
+
+        confetti.config = cfg
     }
 
     // MARK: - 段位升级动画：四个一起动（oldLeft / oldCenter / oldRight / incomingRight）
@@ -170,54 +225,24 @@ final class RankSettleView: UIView {
 //                
                 let p = CGPoint(x: oldRight.center.x,
                                 y: oldRight.center.y + oldRight.bounds.height * 0.25)
-//                PartyPopperEffect.burst(in: self, at: p, duration: 0.4, intensity: 0.1)
-                self.confettis.removeAll()
-
-                for i in 0..<4 {
-                    let emitter = ConfettiEmitter(in: self, emitPoint: p)
-                    emitter.colors = [
-                        .THEME, .THEME, .THEME, .THEME,
-                        WHColor_16(colorStr: "F5C54B"),
-                        WHColor_16(colorStr: "F7E7CE"),
-                        WHColor_16(colorStr: "F1E2D3"),
-                        WHColor_16(colorStr: "E6C78F"),
-                        WHColor_16(colorStr: "d6d9de"),
-                        WHColor_16(colorStr: "d6d9de"),
-                        WHColor_16(colorStr: "FFA500")
-                    ]
-                    emitter.gravity = 800
-                    emitter.lifetime = 5
-                    self.confettis.append(emitter)
+                
+                // playKey 变化触发（对齐 Compose 的 playKey）
+                self.rankUpAnimationPlayKey += 1
+                DLLog(message: "动画播放 开始  ---   \(self.rankUpAnimationPlayKey)")
+                self.confetti.play(playKey: self.rankUpAnimationPlayKey) { [weak self] in
+                    // 对齐 Kotlin：onFinished -> onAnimationEvent(Finished)
+                    self?.handleFinished()
                 }
-
-                self.play(point: p)
-
-//                oldRight.shakeInPlace()
             }
         )
     }
     func currentRankBadgeView() -> RankBadgeView? {
        return centerBadge
    }
-    func play(point: CGPoint) {
-        playBurst(index: 0,point: point)
-    }
-    private func playBurst(index: Int, point: CGPoint) {
-        guard index < bursts.count else { return }
-
-        let burst = bursts[index]
-        let emitter = confettis[index]
-
-        emitter.confettiPerSecond = burst.rate
-        emitter.startEmission(at: point)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + burst.duration) {
-            emitter.stopEmission()
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + burst.interval) {
-                self.playBurst(index: index + 1, point: point)
-            }
-        }
+    
+    private func handleFinished() {
+        DLLog(message: "动画播放完毕")
+        // ...
     }
 }
 extension RankSettleView {

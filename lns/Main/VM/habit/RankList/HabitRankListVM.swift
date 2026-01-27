@@ -163,10 +163,17 @@ extension HabitRankListVM{
     func updateVisibility(isVisible: Bool) {
         if isVisible && !isCurrentlyVisible {
             isCurrentlyVisible = true
-            appDelegate.getKeyWindow().addSubview(settlementVm)
-            UIView.animate(withDuration: 0.15) {
-                self.settlementVm.alpha = 1
-            }
+            settlementVm.updateCurrentTier(tier: 2,
+                                           sn: 3,
+                                           point: "185",
+                                           rankList: self.displayedDataArray)
+//            if self.settlementVm.hasData {
+                appDelegate.getKeyWindow().addSubview(settlementVm)
+                UIView.animate(withDuration: 0.15) {
+                    self.settlementVm.alpha = 1
+                }
+//            }
+            
             sendDataRequest(animateSelfChange: true)
         }
     }
@@ -828,17 +835,14 @@ extension HabitRankListVM{
                 
                 self.dataSourceArray = self.prepareLeaderboardData(from: dataDict["leaderboard"]as? NSArray ?? [])
                 self.cacheLeaderboard(self.dataSourceArray)
+                self.headCupVm.setCurrentTier(tier: self.currentTierIndex,
+                                              tierName: dataDict.stringValueForKey(key: "tierName"))
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
                 if weeklyRewardPoint.stringValueForKey(key: "champion").count > 0 {
-                    self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
-                                    runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
-                                    thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
-                                     secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
                     self.headCupVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
                                     runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
                                     thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
                                      secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
-                    self.headVm.updateDegree(tier: self.currentTierIndex)
                     
                     let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
                     
@@ -887,18 +891,13 @@ extension HabitRankListVM{
                 DLLog(message: "sendDataRequest:\(dataDict)")
                 UserDefaults.setTierData(tier: dataDict.stringValueForKey(key: "tier"), isRefresh: false)
                 self.currentTierIndex = dataDict.stringValueForKey(key: "tier").intValue
+                self.headCupVm.setCurrentTier(tier: dataDict.stringValueForKey(key: "tier").intValue, tierName: dataDict.stringValueForKey(key: "tierName"))
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
                 if weeklyRewardPoint.stringValueForKey(key: "champion").count > 0 {
-                    self.headVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
-                                    runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
-                                    thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
-                                     secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
                     self.headCupVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),
                                     runnerUp: weeklyRewardPoint.stringValueForKey(key: "runnerUp"),
                                     thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
                                      secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
-                    self.headCupVm.setCurrentTier(tier: dataDict.stringValueForKey(key: "tier").intValue, tierName: dataDict.stringValueForKey(key: "tierName"))
-                    self.headVm.updateDegree(tier: self.currentTierIndex)
                 }
             }
         }

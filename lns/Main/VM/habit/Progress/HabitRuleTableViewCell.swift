@@ -48,7 +48,7 @@ extension HabitRuleTableViewCell{
         titleLab.font = isTitle ? .systemFont(ofSize: 14, weight: .medium) :
             .systemFont(ofSize: 12, weight: .regular)
         if isTitle{
-            titleLab.setLineHeight(textString: contentStr,lineHeight: 26)
+            titleLab.setLineHeight(textString: contentStr,lineHeight: kFitWidth(26))
             titleLab.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(32))
                 make.top.equalToSuperview()
@@ -56,10 +56,11 @@ extension HabitRuleTableViewCell{
                 make.right.equalTo(kFitWidth(-32))
             }
         }else{
-            titleLab.setLineHeight(textString: contentStr,lineHeight: 24)
+            titleLab.setLineHeight(textString: contentStr,lineHeight: kFitWidth(18))
             titleLab.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(46))
-                make.top.equalToSuperview()
+//                make.top.equalToSuperview()
+                make.top.equalTo(kFitWidth(5))
                 make.right.equalTo(kFitWidth(-32))
                 make.bottom.equalTo(bottomGap)
             }
@@ -83,7 +84,7 @@ extension HabitRuleTableViewCell{
         }
         dottlView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(36))
-            make.top.equalTo(kFitWidth(7))
+            make.top.equalTo(kFitWidth(13))
             make.width.height.equalTo(kFitWidth(2))
         }
     }
