@@ -219,7 +219,7 @@ extension WelcomeVC{
 //        }else{
 //            checkBoxProtocalImgView.setImgLocal(imgName: "question_checkbox_normal")
 //        }
-        checkBoxProtocalImgView.setCheckState(isAgreeData,
+        checkBoxProtocalImgView.setCheckState(isAgreeProtocal,
                                           checkedImageName: "question_checkbox_selected",
                                           uncheckedImageName: "question_checkbox_normal")
         changeBtnCenter()
