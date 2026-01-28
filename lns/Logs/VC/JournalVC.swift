@@ -31,6 +31,13 @@ class JournalVC: WHBaseViewVC {
 //        self.naviVm.bgView.addShadow(opacity: 0.05)
 //    }
     
+    lazy var tabbarCoverView: UIView = {
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getTabbarHeight(), width: SCREEN_WIDHT, height: getTabbarHeight()))
+        vi.backgroundColor = .clear
+        
+        return vi
+    }()
+    
     override func viewWillAppear(_ animated: Bool) {
         self.judegeToDay()
         
@@ -923,6 +930,11 @@ extension JournalVC{
         
         collectView.delegate = self
         collectView.dataSource = self
+        
+        if !isIpad(){
+            view.addSubview(tabbarCoverView)
+        }
+        
         /*
 //        if isIpad(){
             DispatchQueue.main.asyncAfter(deadline: .now()+0.7, execute: {

@@ -193,6 +193,7 @@ extension WelcomeVC{
         })
     }
     @objc func startBtnAction(){
+        UserDefaults.standard.set("1", forKey: "agreeProtocal")
         let vc = NeedBuildPlanVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }

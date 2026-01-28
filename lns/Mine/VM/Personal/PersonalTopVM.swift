@@ -38,8 +38,8 @@ class PersonalTopVM: UIView {
         return img
     }()
     
-    lazy var settingButton: FeedBackButton = {
-        let btn = FeedBackButton()
+    lazy var settingButton: UIButton = {
+        let btn = UIButton()
         btn.setImage(UIImage.init(named: "mine_func_setting"), for: .normal)
         
         btn.addTarget(self, action: #selector(settingAction), for: .touchUpInside)

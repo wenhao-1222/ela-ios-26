@@ -77,6 +77,7 @@ class QuestionnaireBodyFatItemVM: UIView {
     lazy var coverView : UIView = {
         let vi = UIView()
         vi.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
+        vi.alpha = 0
         vi.layer.cornerRadius = kFitWidth(8)
         vi.clipsToBounds = true
         vi.isHidden = true

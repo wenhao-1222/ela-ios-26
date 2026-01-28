@@ -205,11 +205,14 @@ class WHBaseViewVC: ViewController {
         appDelegate.switchRootViewController(to: newRootVC)
     }
     func changeRootVcToWelcome() {
-//        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-//        let newRootVC = LLNaviViewController(rootViewController: WelcomeVC())
-//        appDelegate.switchRootViewController(to: newRootVC)
-        let navVc = UINavigationController(rootViewController: WelcomeVC())
-//        appDelegate.window?.rootViewController = navVc
+//        let navVc = UINavigationController(rootViewController: WelcomeVC())
+        var navVc = UINavigationController(rootViewController: NeedBuildPlanVC())
+        
+        let agreeProtocal = UserDefaults.standard.value(forKey: "agreeProtocal") as? String ?? ""
+        if agreeProtocal.count == 0 {
+            navVc = UINavigationController(rootViewController: WelcomeVC())
+        }
+        
         appDelegate.switchRootViewController(to: navVc)
     }
     @objc func backTapAction(){

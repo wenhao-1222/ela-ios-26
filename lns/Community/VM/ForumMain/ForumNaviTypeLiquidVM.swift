@@ -32,8 +32,8 @@ class ForumNaviTypeLiquidVM: UIView {
     
     // 分段选择器：课程 / 发现 / 商品
     private lazy var segment: UISegmentedControl = {
-//        let items = ["课程", "发现"]
-        let items = ["课程", "发现", "商品"]
+        let items = ["课程", "发现"]
+//        let items = ["课程", "发现", "商品"]
         let seg = UISegmentedControl(items: items)
         // 初始选中「发现」
         seg.backgroundColor = UIColor.clear

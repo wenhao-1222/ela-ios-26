@@ -105,8 +105,8 @@ class MineVC : WHBaseViewVC {
     lazy var funcBottomVm: PersonalBottomFuncVM = {
         let vm = PersonalBottomFuncVM.init(frame: CGRect.init(x: 0, y: self.settingVm.frame.maxY+kFitWidth(20), width: 0, height: 0))
         vm.contactVm.tapBlock = {()in
-//            let vc = ServiceContactVC()
-            let vc = ServiceVC()
+            let vc = ServiceContactVC()
+//            let vc = ServiceVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.tutorialsVm.tapBlock = {()in

@@ -104,6 +104,12 @@ class ForumVC : WHBaseViewVC {
         
         return vm
     }()
+    lazy var tabbarCoverView: UIView = {
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getTabbarHeight(), width: SCREEN_WIDHT, height: getTabbarHeight()))
+        vi.backgroundColor = .clear
+        
+        return vi
+    }()
 }
 
 extension ForumVC{
@@ -130,6 +136,9 @@ extension ForumVC{
 extension ForumVC{
     func initUI(){
         view.addSubview(scrollViewBase)
+        if !isIpad(){
+            view.addSubview(tabbarCoverView)
+        }
         if #available(iOS 26.0, *) {
             view.addSubview(naviLiquidView)
             scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
@@ -150,7 +159,7 @@ extension ForumVC{
         DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
             self.scrollViewBase.addSubview(self.tutorialListVm)
             self.scrollViewBase.isPagingEnabled = true
-            self.scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*3, height: 0)
+            self.scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*2, height: 0)
             self.scrollViewBase.setContentOffset(CGPointMake(SCREEN_WIDHT, 0), animated: false)
         })
     }

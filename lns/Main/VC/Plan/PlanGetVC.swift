@@ -134,7 +134,8 @@ class PlanGetVC: WHBaseViewVC {
         vm.caloriesTextField.isEnabled = false
         vm.caloriesBgView.isUserInteractionEnabled = false
         vm.caloriesTextField.textColor = .COLOR_TEXT_TITLE_0f1214
-        vm.tipsLabel.text = "我们运用 Katch-McArdle 公式计算出了您的瘦体重质量、基础代谢率和每日总消耗热量。这个预估值已包括了您日常活动和运动的热量消耗，因此无需额外记录运动量。"
+//        vm.tipsLabel.text = "我们运用 Katch-McArdle 公式计算出了您的瘦体重质量、基础代谢率和每日总消耗热量。这个预估值已包括了您日常活动和运动的热量消耗，因此无需额外记录运动量。"
+        vm.tipsLabel.text = "我们根据你的体重和体脂率估算了瘦体重(去脂体重)，并使用 Katch-McArdle 公式计算基础代谢，再结合你选择的活动水平，得到维持体重所需的每日总消耗。\n\n这个预估值已包括了日常活动和运动的热量消耗，因此无需额外记录运动量。\n\n如果你觉得该数值过高或过低，可以点击并手动调整。"
         vm.showTipsBlock = {()in
             self.katchAlertVm.showView()
         }
@@ -225,8 +226,10 @@ class PlanGetVC: WHBaseViewVC {
     }()
     lazy var katchAlertVm : QuestionnaireBodyFatAlertVM = {
         let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
-        vm.titleLabel.text = "为什么选择Katch-McArdle公式?"
-        vm.contentLabelOne.text = "Katch-McArdle公式更适合健身人群，因为瘦体重比总体重更能准确反映身体的代谢需求。与传统的BMR和BMI 公式相比，它更能体现肌肉量对代谢的影响，因此对于健美运动员、健身爱好者、或体脂率低的人，这个公式提供了更个性化的结果。"
+//        vm.titleLabel.text = "为什么选择Katch-McArdle公式?"
+//        vm.contentLabelOne.text = "Katch-McArdle公式更适合健身人群，因为瘦体重比总体重更能准确反映身体的代谢需求。与传统的BMR和BMI 公式相比，它更能体现肌肉量对代谢的影响，因此对于健美运动员、健身爱好者、或体脂率低的人，这个公式提供了更个性化的结果。"
+        vm.titleLabel.text = "为什么不用BMI或身高？"
+        vm.contentLabelOne.text = "BMI 主要反映体重和身高的比例，无法区分肌肉和脂肪，因此同样 BMI 的两个人，代谢需求可能差很多。Katch-McArdle 会参考你的瘦体重(去脂体重)，在体脂数据较准确时，通常能更贴近健身人群的代谢情况，给出更个性化的结果。"
         vm.contentLabelTwo.text = ""
         vm.contentLabelThree.text = ""
         return vm

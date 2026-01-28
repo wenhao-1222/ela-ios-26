@@ -132,7 +132,7 @@ class OverViewVC : WHBaseViewVC {
         return vm
     }()
     lazy var sportVm: MainSportVM = {
-        let vm = MainSportVM.init(frame: CGRect.init(x: 0, y: self.habitVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
+        let vm = MainSportVM.init(frame: CGRect.init(x: 0, y: self.topMsgVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
         vm.tapBlock = {()in
             let vc = SportHistoryVC()
             vc.isCanAdd = true
@@ -192,6 +192,12 @@ class OverViewVC : WHBaseViewVC {
         
         return vm
     }()
+    lazy var tabbarCoverView: UIView = {
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getTabbarHeight(), width: SCREEN_WIDHT, height: getTabbarHeight()))
+        vi.backgroundColor = .clear
+        
+        return vi
+    }()
 }
 
 extension OverViewVC{
@@ -239,16 +245,17 @@ extension OverViewVC{
         
         view.addSubview(topBgImgView)
         view.addSubview(scrollView)
+        if !isIpad(){
+            view.addSubview(tabbarCoverView)
+        }
         
         if #available(iOS 26.0, *) {
             view.addSubview(naviVm)
         }else{
             view.addSubview(logoVm)
         }
-//        scrollView.addSubview(topBgImgView)
         scrollView.addSubview(topMsgVm)
-//        scrollView.addSubview(logoImgView)
-        scrollView.addSubview(habitVm)
+//        scrollView.addSubview(habitVm)
         scrollView.addSubview(sportVm)
         scrollView.addSubview(dataLineChartView)
         scrollView.addSubview(weightLineChartView)

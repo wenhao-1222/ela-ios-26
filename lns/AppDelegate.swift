@@ -104,7 +104,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                     UserInfoModel.shared.uId = ""
                     UserInfoModel.shared.token = ""
                     
-                    rootVc = UINavigationController(rootViewController: WelcomeVC())
+                    let agreeProtocal = UserDefaults.standard.value(forKey: "agreeProtocal") as? String ?? ""
+                    if agreeProtocal.count > 0 {
+                        rootVc = UINavigationController(rootViewController: NeedBuildPlanVC())
+                    }else{
+                        rootVc = UINavigationController(rootViewController: WelcomeVC())
+                    }
                 }
                 UIView.transition(with: window, duration: 0.35, options: .transitionCrossDissolve, animations: {
                                     window.rootViewController = rootVc
