@@ -297,6 +297,12 @@ extension QuestionnaireBodyFatItemVM{
         coverView.addSubview(selectImgView)
         
         setConstrait()
+        // ❌ 删掉 SnapKit 约束
+        // coverView.snp.makeConstraints { ... }
+
+        // ✅ 在 layout / 初始化时
+        coverView.frame = imgView.bounds
+        coverView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
     func setConstrait() {
         imgView.frame = CGRect.init(x: kFitWidth(16), y: 0, width: kFitWidth(164), height: kFitWidth(164))
@@ -309,9 +315,9 @@ extension QuestionnaireBodyFatItemVM{
             make.top.equalTo(kFitWidth(49))
             make.width.height.equalTo(kFitWidth(16))
         }
-        coverView.snp.makeConstraints { make in
-            make.left.top.width.height.equalToSuperview()
-        }
+//        coverView.snp.makeConstraints { make in
+//            make.left.top.width.height.equalToSuperview()
+//        }
     }
 }
 

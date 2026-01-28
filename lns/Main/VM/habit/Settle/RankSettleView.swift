@@ -6,6 +6,10 @@
 //
 
 import UIKit
+/// 让外部（HabitSettleVM）能拿到“奖杯底座接触点”的锚点
+protocol CupBaseAnchorProviding: AnyObject {
+    var cupBaseAnchorView: UIView { get }
+}
 
 final class RankSettleView: UIView {
 
@@ -41,7 +45,7 @@ final class RankSettleView: UIView {
 
     private var badgeCenterY: CGFloat {
         let y = (bounds.height - badgeSize.height) / 2
-        return y + badgeSize.height / 2
+        return y + badgeSize.height / 2 - kFitWidth(80)
     }
     private let confetti = RankUpConfetti3DView()
 
@@ -54,6 +58,15 @@ final class RankSettleView: UIView {
         (0.22, 0.25, 120),
         (0.15, 0.15, 140)
     ]
+    // ✅ 新增：底座锚点（透明 view，用来给阴影和“贴桌面”对齐）
+    public let cupBaseAnchorView: UIView = {
+        let v = UIView()
+        v.backgroundColor = .clear
+        v.isUserInteractionEnabled = false
+        // v.backgroundColor = UIColor.red.withAlphaComponent(0.3) // 调试时可打开
+        return v
+    }()
+    private let trophyContainerView = UIView() // 仅示例：你可能叫 cupView / cupImgView 等
 
     init(frame: CGRect, rankImages: [UIImage], currentRank: Int) {
         self.rankImages = rankImages
@@ -62,6 +75,7 @@ final class RankSettleView: UIView {
         backgroundColor = .clear
         setupInitialRanks()
         initConfetti()
+        setupUI()
     }
 
     required init?(coder: NSCoder) {
@@ -99,7 +113,34 @@ final class RankSettleView: UIView {
             rightBadge = nil
         }
     }
-    
+    private func setupUI() {
+        // ⚠️ 你原本 RankSettleView 的 UI 代码保留不动
+        // 这里仅演示：确保 trophyContainerView 是“奖杯（含底座）所在的容器”
+        addSubview(trophyContainerView)
+        trophyContainerView.snp.makeConstraints { make in
+            make.left.right.top.bottom.equalToSuperview()
+        }
+
+        // ✅ 把 cupBaseAnchorView 加进来，并把它钉在“奖杯底座接触点”
+        // 关键：这个锚点要跟着奖杯缩放/移动，所以必须在 settleView 内部
+        trophyContainerView.addSubview(cupBaseAnchorView)
+
+        // ✅ 这里你需要把它约束到“底座接触桌面的位置”
+        // 如果你有底座图片 view（比如 baseImgView），最好这样写：
+        //
+//         cupBaseAnchorView.snp.makeConstraints { make in
+//             make.centerX.equalTo(baseImgView.snp.centerX)
+//             make.bottom.equalTo(baseImgView.snp.bottom)   // 接触点
+//             make.width.height.equalTo(2)                  // 锚点很小即可
+//         }
+        //
+        // 如果你暂时拿不到底座 view，那么用 settleView 的“奖杯整体底部”先顶住：
+        cupBaseAnchorView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-kFitWidth(120)) // ⚠️ 先用这个，之后你把它改成真正的底座接触点
+            make.width.height.equalTo(2)
+        }
+    }
     func initConfetti() {
         confetti.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         confetti.autoresizingMask = [.flexibleWidth, .flexibleHeight]

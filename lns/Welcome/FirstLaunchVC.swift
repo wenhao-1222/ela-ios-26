@@ -110,7 +110,7 @@ class FirstLaunchVC: WHBaseViewVC {
     
     lazy var secondLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.text = "我们会将所有实测有效的功能，\n全部免费开放供你使用，\n帮助你高效实现目标" // 目标文案
+        lab.text = "我们会将实测有效的功能，\n全部开放供你使用，\n助你高效实现目标" // 目标文案
         lab.font = .systemFont(ofSize: 20, weight: .medium) // 目标样式
         lab.textColor = .white
         lab.textAlignment = .left
