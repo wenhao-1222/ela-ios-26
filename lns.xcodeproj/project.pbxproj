@@ -736,6 +736,7 @@
 		EC2AC88A2C40E88A00A6C083 /* LogsDetailsShareVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2AC8892C40E88A00A6C083 /* LogsDetailsShareVM.swift */; };
 		EC2AC88C2C42BD1000A6C083 /* UITextField+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2AC88B2C42BD1000A6C083 /* UITextField+Exs.swift */; };
 		EC2B38352C070E87008315DA /* WHPieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2B38342C070E87008315DA /* WHPieChartView.swift */; };
+		EC2F521B2F29A32200821384 /* HabitSettleVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2F521A2F29A32000821384 /* HabitSettleVM.swift */; };
 		EC30F2B32C8701F900E7BD33 /* NaturalStatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30F2B22C8701F900E7BD33 /* NaturalStatVC.swift */; };
 		EC30F2B62C8702B300E7BD33 /* NaturalStatNaviVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30F2B52C8702B300E7BD33 /* NaturalStatNaviVM.swift */; };
 		EC30F2D52C89C38500E7BD33 /* ElaNaturalWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EC356CD42C6C99D00023C0BA /* ElaNaturalWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -2106,6 +2107,7 @@
 		EC2AC8892C40E88A00A6C083 /* LogsDetailsShareVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsDetailsShareVM.swift; sourceTree = "<group>"; };
 		EC2AC88B2C42BD1000A6C083 /* UITextField+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Exs.swift"; sourceTree = "<group>"; };
 		EC2B38342C070E87008315DA /* WHPieChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHPieChartView.swift; sourceTree = "<group>"; };
+		EC2F521A2F29A32000821384 /* HabitSettleVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitSettleVM.swift; sourceTree = "<group>"; };
 		EC30F2B22C8701F900E7BD33 /* NaturalStatVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatVC.swift; sourceTree = "<group>"; };
 		EC30F2B52C8702B300E7BD33 /* NaturalStatNaviVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatNaviVM.swift; sourceTree = "<group>"; };
 		EC30F35E2C8A42C400E7BD33 /* ElaNaturalWidgetCalories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetCalories.swift; sourceTree = "<group>"; };
@@ -5339,6 +5341,7 @@
 			children = (
 				ECF1AD052F21BB0F00AE36D6 /* NaturalShakeImageView.swift */,
 				ECF1AD072F21BBD800AE36D6 /* HabitSettleMentVM.swift */,
+				EC2F521A2F29A32000821384 /* HabitSettleVM.swift */,
 				ECF1AD0A2F21BD7B00AE36D6 /* RankBadgeView.swift */,
 				ECF1AD0C2F21BD8700AE36D6 /* RankSettleView.swift */,
 				ECF1AD122F220BFA00AE36D6 /* RankDownShatterEffect.swift */,
@@ -5867,6 +5870,7 @@
 				ECF745C62BD9F4610076DDB9 /* FoodsListVC.swift in Sources */,
 				A78E67CB2CB66B7200B4C443 /* BodyDataImageAbbreVM.swift in Sources */,
 				EC3A9CB52BB55FB100C6E442 /* QuestionnaireWeightVM.swift in Sources */,
+				EC2F521B2F29A32200821384 /* HabitSettleVM.swift in Sources */,
 				ECF8545E2C16A22E00B9C7E7 /* DataMainLineView.m in Sources */,
 				A79541E72E02543F00E019C8 /* GoalCircleSegmentVM.swift in Sources */,
 				EC10D9A02BD21043002904DC /* AliYunUtil.swift in Sources */,

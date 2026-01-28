@@ -114,13 +114,14 @@ class HabitRankListVM: UIView {
         let vm = HabitWeeklyRewardPointAlertVM.init(frame: .zero)
         return vm
     }()
-    lazy var settlementVm: HabitSettleMentVM = {
-        let vm = HabitSettleMentVM.init(frame: .zero)
+    lazy var settlementVm: HabitSettleVM = {
+        let vm = HabitSettleVM.init(frame: .zero)
         vm.headCupVm = headCupVm
         
 
         return vm
     }()
+    
 }
 
 extension HabitRankListVM{

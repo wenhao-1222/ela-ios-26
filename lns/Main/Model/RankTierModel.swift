@@ -12,6 +12,11 @@ class RankTierModel: NSObject {
     var tier : Int = 1
     /// 为当前段位时的图片
     var tierImg : String = ""
+    /// 锁的图片
+    var tierLockedImg : String = "rank_locked_img"
+    var tierLockedIcon : String = "rank_locked_icon"
+    /// 是否为锁定状态
+    var isLocked : Bool = true
     /// 段位名称
     var tierName : String = ""
     /// 是否为当前段位
@@ -24,12 +29,14 @@ class RankTierModel: NSObject {
         model.tier = tier
         model.tierName = tierName
         model.isCurrentTier = tier == currentTier
+        model.isLocked = false
         
         if tier < currentTier{
             model.tierImg = "rank_\(tier)_reached"
         }else if tier == currentTier{
             model.tierImg = "rank_\(tier)"
         }else{
+            model.isLocked = true
             model.tierImg = "rank_unlock"
             
             if tier - currentTier == 1{
