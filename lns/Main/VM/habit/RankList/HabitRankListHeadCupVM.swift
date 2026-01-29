@@ -46,11 +46,11 @@ class HabitRankListHeadCupVM: UIView {
     }()
     lazy var tipsBgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = UIColor.white.withAlphaComponent(0.5)
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.5)//.COLOR_BG_WHITE.withAlphaComponent(0.5)//UIColor.white.withAlphaComponent(0.5)
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(4.5)
         vi.layer.borderWidth = kFitWidth(1)
-        vi.layer.borderColor = UIColor.white.cgColor
+        vi.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))
         vi.addGestureRecognizer(tap)

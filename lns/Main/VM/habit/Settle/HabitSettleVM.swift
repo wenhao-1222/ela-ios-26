@@ -38,6 +38,18 @@ class HabitSettleVM: UIView {
     private var settleAlignedTop: CGFloat = 0
     private var deskBaseTop: CGFloat = 0
 
+    // MARK: - Init
+    override init(frame: CGRect) {
+        super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        self.backgroundColor = .COLOR_CARD_BG_WHITE
+        self.isUserInteractionEnabled = true
+        self.alpha = 0
+        initUI()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     // MARK: - Views
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
@@ -83,10 +95,85 @@ class HabitSettleVM: UIView {
 //        img.backgroundColor = .THEME
         return img
     }()
+    lazy var rankLabel: LineHeightLabel = {
+        let lab = LineHeightLabel()
+        
+        return lab
+    }()
+    lazy var rankTipLabel: UILabel = {
+        let lab = UILabel()
+        lab.alpha = 0
+        lab.text = "你晋升到了"
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.font = .systemFont(ofSize: 18, weight: .regular)
+        
+        return lab
+    }()
+    lazy var pointLabel: UILabel = {
+        let lab = UILabel()
+        
+        return lab
+    }()
+    lazy var currentCupNameLabel: UILabel = {
+        let lab = UILabel()
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.font = .systemFont(ofSize: 28, weight: .semibold)
+        lab.numberOfLines = 2
+        lab.textAlignment = .center
+        lab.lineBreakMode = .byWordWrapping
+        lab.alpha = 0
+        
+        return lab
+    }()
+    lazy var cupLeftImgView: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "habit_settle_degree_left_icon")
+        img.alpha = 0
+        
+        return img
+    }()
+    lazy var cupRightImgView: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "habit_settle_degree_right_icon")
+        img.alpha = 0
+        
+        return img
+    }()
+    
+    lazy var tableView: UITableView = {
+        let vi = UITableView(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(100)), style: .plain)
+        vi.backgroundColor = .clear//.COLOR_BG_F2
+//        vi.layer.borderWidth = kFitWidth(1)
+//        vi.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_10.cgColor
+        vi.layer.cornerRadius = kFitWidth(12)
+        vi.clipsToBounds = true
+        
+        vi.delegate = self
+        vi.dataSource = self
+        vi.separatorStyle = .none
+        vi.contentInsetAdjustmentBehavior = .never
+        vi.estimatedRowHeight = 0
+        vi.estimatedSectionHeaderHeight = 0
+        vi.estimatedSectionFooterHeight = 0
+        vi.sectionHeaderHeight = 0
+
+        if #available(iOS 15.0, *) {
+            vi.sectionHeaderTopPadding = 0
+        }
+        vi.register(HabitRankTableViewCell.classForCoder(), forCellReuseIdentifier: HabitRankTableViewCell.identifier)
+        
+        return vi
+    }()
+    lazy var tableViewBgImg: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "habit_settle_list_bg")
+        img.isUserInteractionEnabled = true
+        return img
+    }()
     lazy var confirmButton: UIButton = {
         let btn = UIButton()
         btn.backgroundColor = .THEME
-        btn.layer.cornerRadius = kFitWidth(4)
+        btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
         btn.setTitle("继续", for: .normal)
         btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
@@ -95,26 +182,26 @@ class HabitSettleVM: UIView {
         
         return btn
     }()
-
-    // MARK: - Init
-    override init(frame: CGRect) {
-        super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        self.backgroundColor = .COLOR_CARD_BG_WHITE
-        self.isUserInteractionEnabled = true
-        self.alpha = 0
-        initUI()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 }
 
 extension HabitSettleVM{
     @objc func tapAction() {
-        animateDownFromRankToTier {
-            self.startAnimation()
+        self.confirmButton.isUserInteractionEnabled = false
+        if self.tapCount == 0 {
+            animateDownFromRankToTier {
+                self.startAnimation()
+            }
+        }else{
+            guard !isAnimatingToHeadCup else { return }
+           isAnimatingToHeadCup = true
+           animateRankIconToHeadCup { [weak self] in
+               guard let self else { return }
+               self.isAnimatingToHeadCup = false
+//               self.confirmButton.isUserInteractionEnabled = true
+//               self.tapBlock?()
+           }
         }
+        tapCount += 1
     }
 }
 
@@ -124,6 +211,14 @@ extension HabitSettleVM {
         addSubview(bgImgView)
         addSubview(deskImgView)
         addSubview(confirmButton)
+        addSubview(tableViewBgImg)
+        addSubview(tableView)
+        addSubview(rankLabel)
+        addSubview(rankTipLabel)
+        addSubview(pointLabel)
+        addSubview(currentCupNameLabel)
+        addSubview(cupLeftImgView)
+        addSubview(cupRightImgView)
 
         setConstrait()
     }
@@ -142,23 +237,79 @@ extension HabitSettleVM {
             make.left.equalTo(kFitWidth(32))
             make.right.equalTo(kFitWidth(-32))
             make.height.equalTo(kFitWidth(44))
-            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(5))
+        }
+    }
+    func udpateConstrait() {
+        rankLabel.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalTo(cupShadowImgView.snp.bottom).offset(kFitWidth(22))
+        }
+        rankTipLabel.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalTo(cupShadowImgView.snp.bottom).offset(kFitWidth(22))
+        }
+        pointLabel.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalTo(rankLabel.snp.bottom).offset(kFitWidth(22))
+        }
+        currentCupNameLabel.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalTo(rankLabel.snp.bottom).offset(kFitWidth(22))
+        }
+        cupLeftImgView.snp.makeConstraints { make in
+            make.centerY.lessThanOrEqualTo(currentCupNameLabel)
+            make.width.equalTo(kFitWidth(20))
+            make.height.equalTo(kFitWidth(38.5))
+            make.right.equalTo(currentCupNameLabel.snp.left).offset(kFitWidth(-19))
+        }
+        cupRightImgView.snp.makeConstraints { make in
+            make.centerY.lessThanOrEqualTo(currentCupNameLabel)
+            make.width.height.equalTo(cupLeftImgView)
+            make.left.equalTo(currentCupNameLabel.snp.right).offset(kFitWidth(19))
+        }
+        tableView.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(28))
+            make.right.equalTo(kFitWidth(-28))
+            make.top.equalTo(pointLabel.snp.bottom).offset(kFitWidth(30))
+//            make.bottom.equalTo(confirmButton.snp.top).offset(kFitWidth(-20))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(74))
+        }
+        tableViewBgImg.snp.makeConstraints { make in
+//            make.left.top.width.height.equalTo(tableView)
+            make.center.lessThanOrEqualTo(tableView)
+            make.width.height.equalTo(tableView.snp.width).offset(kFitWidth(6))
         }
     }
 }
 
 // MARK: - Public Update
 extension HabitSettleVM {
-
     /// 图一初始化（缩放+贴桌面+阴影绑定到底座）
     func updateCurrentTier(tier: Int, sn: Int, point: String, rankList: NSArray) {
         self.hasData = true
         self.currentRank = tier
         self.displayedDataArray = rankList
-
+        self.tableView.reloadData()
+        
+        let newIndex = self.indexOfCurrentUser(in: self.displayedDataArray)
+        if newIndex ?? 0 > 0 {
+            self.tableView.scrollToRow(at: IndexPath(row: newIndex!, section: 0), at: .middle, animated: false)
+        }
+        self.updateRankAndPointAttr(sn: sn, point: point)
+        self.currentCupNameLabel.text = "纸浆杯"
         // settleView 只 add 一次
         if settleView.superview == nil {
             addSubview(settleView)
+            settleView.animateCompletBlock = {()in
+                
+                DispatchQueue.main.asyncAfter(deadline: .now()) {
+                    UIView.animate(withDuration: 0.25) {
+                        self.confirmButton.alpha = 1
+                    }
+                    self.confirmButton.isUserInteractionEnabled = true
+                }
+            }
 
             settleView.snp.makeConstraints { make in
                 make.centerX.equalToSuperview()
@@ -203,12 +354,53 @@ extension HabitSettleVM {
         ) {
             // ✅ 关键：恢复到正常尺寸
             self.settleView.transform = .identity
+            self.confirmButton.alpha = 0
+            self.rankLabel.alpha = 0
+            self.pointLabel.alpha = 0
+            self.tableView.alpha = 0
+            self.tableViewBgImg.alpha = 0
 
             // 同步执行约束动画
             self.layoutIfNeeded()
         } completion: { _ in
             self.isAnimatingToHeadCup = false
             completion?()
+        }
+    }
+    private func animateRankIconToHeadCup(completion: @escaping () -> Void) {
+        guard let headCupVm,
+              let targetImageView = headCupVm.currentTierBadgeView(),
+              let sourceBadge = settleView.currentRankBadgeView(),
+              let sourceImage = sourceBadge.image,
+              let window = self.window else {
+            completion()
+            return
+        }
+
+        window.layoutIfNeeded()
+        headCupVm.layoutIfNeeded()
+        settleView.layoutIfNeeded()
+        targetImageView.layoutIfNeeded()
+        sourceBadge.layoutIfNeeded()
+
+        let startFrame = sourceBadge.convert(sourceBadge.bounds, to: window)
+        let endFrame = targetImageView.convert(targetImageView.bounds, to: window)
+        let movingImageView = UIImageView(image: sourceImage)
+        movingImageView.contentMode = .scaleAspectFit
+        movingImageView.frame = startFrame
+        window.addSubview(movingImageView)
+
+        let targetAlpha = targetImageView.alpha
+        targetImageView.alpha = 0
+        sourceBadge.alpha = 0
+        UIView.animate(withDuration: 0.6, delay: 0, options: [.curveEaseInOut]) {
+            movingImageView.frame = endFrame
+            movingImageView.alpha = 0.9
+            self.alpha = 0
+        } completion: { _ in
+            targetImageView.alpha = targetAlpha
+            movingImageView.removeFromSuperview()
+            completion()
         }
     }
     func startAnimation() {
@@ -228,21 +420,46 @@ extension HabitSettleVM {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                 //段位上升
                 self.settleView.playRankUpAnimation()
-                UIView.animate(withDuration: 0.15) {
+                UIView.animate(withDuration: 0.08) {
                     self.cupShadowImgView.alpha = 0
                 }
                 //段位下降
     //            settleView.playRankDownAnimation()
             }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             UIView.animate(withDuration: 0.15) {
                 self.cupShadowImgView.alpha = 1
             }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.confirmButton.isUserInteractionEnabled = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.85) {
+            UIView.animate(withDuration: 0.25) {
+                self.rankTipLabel.alpha = 1
+                self.currentCupNameLabel.alpha = 1
+                self.cupLeftImgView.alpha = 1
+                self.cupRightImgView.alpha = 1
+            }
         }
+        
 //        }
+    }
+    ///排名  +   积分
+    func updateRankAndPointAttr(sn:Int,point:String) {
+        let attr = NSMutableAttributedString(string: "您上周排名第 ", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
+                       .font:UIFont.systemFont(ofSize: 21, weight: .medium)])
+        attr.append(NSAttributedString(string: "\(sn) ", attributes: [.foregroundColor:UIColor.THEME,
+                                                                     .font:UIFont().DDInFontBold(fontSize: 26)]))
+        attr.append(NSAttributedString(string: "位", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
+                         .font:UIFont.systemFont(ofSize: 21, weight: .medium)]))
+        
+        self.rankLabel.attributedText = attr
+        
+        let pointAttr = NSMutableAttributedString(string: "+", attributes: [.foregroundColor:UIColor.THEME,
+                                                                            .font:UIFont().DDInFontSemiBold(fontSize: 40)])
+        pointAttr.append(NSAttributedString(string: "\(point)", attributes: [.foregroundColor:UIColor.THEME,
+                                                                          .font:UIFont().DDInFontBold(fontSize: 45)]))
+        pointAttr.append(NSAttributedString(string: "积分", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                                                                      .font:UIFont.systemFont(ofSize: 12, weight: .regular)]))
+        pointLabel.attributedText = pointAttr
     }
 }
 
@@ -264,6 +481,7 @@ extension HabitSettleVM {
             make.width.equalTo(kFitWidth(222)*0.6)
             make.height.equalTo(kFitWidth(34))
         }
+        udpateConstrait()
     }
 
     /// ✅ 把 settleView 的“底座 anchor”对齐到 desk 的桌面线
@@ -298,5 +516,73 @@ extension HabitSettleVM {
         } else {
             self.layoutIfNeeded()
         }
+    }
+}
+
+extension HabitSettleVM:UITableViewDelegate,UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return displayedDataArray.count
+    }
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(
+                withIdentifier: HabitRankTableViewCell.identifier,
+                for: indexPath
+            ) as! HabitRankTableViewCell
+        cell.isHidden = false        // ✅ 复位，避免复用导致隐藏
+        cell.alpha = 1               // ✅ 保险一点
+        cell.contentView.alpha = 1
+        
+        let dict = displayedDataArray[indexPath.row] as? NSDictionary ?? [:]
+        
+        cell.configure(
+            rank: "\(indexPath.row + 1)",
+            avatar: dict.stringValueForKey(key: "headimgurl"),
+            name: dict.stringValueForKey(key: "nickname"),
+            fireCount: dict.stringValueForKey(key: "donateCount").intValue,
+            score: dict.stringValueForKey(key: "rankPointBalance"),
+            isCurrentUser: isCurrentUser(dict)
+        )
+        cell.backgroundColor = .clear
+        cell.contentView.backgroundColor = .clear
+        return cell
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return kFitWidth(70)
+    }
+    private func indexOfCurrentUser(in leaderboard: NSArray) -> Int? {
+        let uid = UserDefaults.standard.value(forKey: userId) as? String ?? ""
+        guard !uid.isEmpty else { return nil }
+
+        for (index, element) in leaderboard.enumerated() {
+            guard let dict = element as? NSDictionary else { continue }
+            let elementId = extractUserId(from: dict)
+            if !elementId.isEmpty && elementId == uid {
+                return index
+            }
+        }
+
+        return nil
+    }
+    private func isCurrentUser(_ dict: NSDictionary) -> Bool {
+        let uid = UserDefaults.standard.value(forKey: userId) as? String ?? ""
+        guard !uid.isEmpty else { return false }
+        let elementId = extractUserId(from: dict)
+        return !elementId.isEmpty && elementId == uid
+    }
+    private func extractUserId(from dict: NSDictionary) -> String {
+        if let uid = dict["uid"] as? String, !uid.isEmpty {
+            return uid
+        }
+        if let uid = dict["userId"] as? String, !uid.isEmpty {
+            return uid
+        }
+        if let uid = dict["user_id"] as? String, !uid.isEmpty {
+            return uid
+        }
+        if let uid = dict["id"] as? String, !uid.isEmpty {
+            return uid
+        }
+
+        return dict.stringValueForKey(key: "uid")
     }
 }

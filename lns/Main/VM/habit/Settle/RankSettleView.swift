@@ -28,7 +28,7 @@ final class RankSettleView: UIView {
     private let sideScale: CGFloat = 0.7
 
     /// 进入动画时长
-    private let slideDuration: TimeInterval = 0.55
+    public let slideDuration: TimeInterval = 0.55
 
     private let rankImages: [UIImage]
     private var currentRank: Int // 1...9
@@ -50,6 +50,8 @@ final class RankSettleView: UIView {
     private let confetti = RankUpConfetti3DView()
 
     private var rankUpAnimationPlayKey: Int = 0
+    
+    var animateCompletBlock:(()->())?
     
     // 四次喷射参数
     private let bursts: [(duration: TimeInterval, interval: TimeInterval, rate: Float)] = [
@@ -202,6 +204,8 @@ final class RankSettleView: UIView {
 
         let oldLeft = leftBadge
         let oldCenter = centerBadge
+        let upgradedRank = currentRank + 1
+        let upgradedImage = UIImage(named: "rank_\(upgradedRank)")
 
         // incomingRight：升级后新的右侧段位 = currentRank + 2
         let incomingRank = currentRank + 2
@@ -212,7 +216,20 @@ final class RankSettleView: UIView {
             incomingRight?.alpha = 1.0
             incomingRight?.setGrayscale(true)
         }
-        
+        if let upgradedImage {
+        let crossfadeDelay = slideDuration * 0.5
+        let crossfadeDuration = slideDuration * 0.35
+        DispatchQueue.main.asyncAfter(deadline: .now() + crossfadeDelay) { [weak oldRight] in
+            guard let oldRight else { return }
+            UIView.transition(
+                with: oldRight,
+                duration: crossfadeDuration,
+                options: [.transitionCrossDissolve, .beginFromCurrentState]
+            ) {
+                oldRight.updateImage(upgradedImage, grayscale: false)
+            }
+        }
+    }
         UIView.animate(
             withDuration: slideDuration,
             delay: 0,
@@ -253,14 +270,16 @@ final class RankSettleView: UIView {
                 self.leftBadge = oldCenter
                 self.centerBadge = oldRight
                 self.rightBadge = incomingRight
+                
+                UIView.animate(withDuration: 0.25) {
+                    self.leftBadge?.alpha = 0
+                    self.rightBadge?.alpha = 0
+                }
 
                 oldRight.setGrayscale(false)
 //                oldRight.flashGlow {
 //                    
 //                }
-//                
-                let p = CGPoint(x: oldRight.center.x,
-                                y: oldRight.center.y + oldRight.bounds.height * 0.25)
                 
                 // playKey 变化触发（对齐 Compose 的 playKey）
                 self.rankUpAnimationPlayKey += 1
@@ -279,6 +298,7 @@ final class RankSettleView: UIView {
     private func handleFinished() {
         DLLog(message: "动画播放完毕")
         // ...
+        self.animateCompletBlock?()
     }
 }
 extension RankSettleView {

@@ -15,19 +15,34 @@ final class RankBadgeView: NaturalDampedShakeImageView {
 
     /// 进入时倾斜角（模拟加速惯性）
     var enterTiltAngle: CGFloat = 8 * .pi / 180
-    private let originalImage: UIImage?
-  private var grayscaleImage: UIImage?
-  private lazy var primaryColor: UIColor? = Self.averageColor(from: originalImage)
+//    private let originalImage: UIImage?
+//  private var grayscaleImage: UIImage?
+//  private lazy var primaryColor: UIColor? = Self.averageColor(from: originalImage)
+//
+//  override init(image: UIImage?) {
+//      self.originalImage = image
+//      super.init(image: image)
+//  }
+//
+//  required init?(coder: NSCoder) {
+//      self.originalImage = nil
+//      super.init(coder: coder)
+//  }
+    private var originalImage: UIImage?
+    private var grayscaleImage: UIImage?
+    private var primaryColor: UIColor?
 
-  override init(image: UIImage?) {
-      self.originalImage = image
-      super.init(image: image)
-  }
+    override init(image: UIImage?) {
+        self.originalImage = image
+        self.primaryColor = Self.averageColor(from: image)
+        super.init(image: image)
+    }
 
-  required init?(coder: NSCoder) {
-      self.originalImage = nil
-      super.init(coder: coder)
-  }
+    required init?(coder: NSCoder) {
+        self.originalImage = nil
+        self.primaryColor = nil
+        super.init(coder: coder)
+    }
     func setScale(_ scale: CGFloat) {
         currentScale = scale
         apply(scale: scale, angle: 0)
@@ -52,7 +67,13 @@ final class RankBadgeView: NaturalDampedShakeImageView {
             image = originalImage
         }
     }
-
+    func updateImage(_ image: UIImage?, grayscale: Bool) {
+        originalImage = image
+        grayscaleImage = nil
+        primaryColor = Self.averageColor(from: image)
+        self.image = image
+        setGrayscale(grayscale)
+    }
     func flashGlow(completion: (() -> Void)? = nil) {
         guard let primaryColor else {
             completion?()
