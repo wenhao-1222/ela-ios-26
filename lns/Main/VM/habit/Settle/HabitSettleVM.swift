@@ -49,7 +49,7 @@ class HabitSettleVM: UIView {
     lazy var imgs: [UIImage] = {
         var imgT = [UIImage]()
         for i in 1...9 {
-            imgT.append(UIImage(named: "rank_\(i)")!)
+            imgT.append(UIImage(named: "rank_\(i)")!)//rank_unlock
         }
         return imgT
     }()
@@ -78,6 +78,18 @@ class HabitSettleVM: UIView {
 //        img.backgroundColor = .THEME
         return img
     }()
+    lazy var confirmButton: UIButton = {
+        let btn = UIButton()
+        btn.backgroundColor = .THEME
+        btn.layer.cornerRadius = kFitWidth(4)
+        btn.clipsToBounds = true
+        btn.setTitle("继续", for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
+        btn.enablePressEffect()
+        btn.addTarget(self, action: #selector(tapAction), for: .touchUpInside)
+        
+        return btn
+    }()
 
     // MARK: - Init
     override init(frame: CGRect) {
@@ -93,11 +105,20 @@ class HabitSettleVM: UIView {
     }
 }
 
+extension HabitSettleVM{
+    @objc func tapAction() {
+        animateDownFromRankToTier {
+            
+        }
+    }
+}
+
 // MARK: - UI
 extension HabitSettleVM {
     func initUI() {
         addSubview(bgImgView)
         addSubview(deskImgView)
+        addSubview(confirmButton)
 
         setConstrait()
     }
@@ -111,6 +132,12 @@ extension HabitSettleVM {
             deskTopC = make.top.equalToSuperview().offset(deskBaseTop).constraint
             make.left.right.equalToSuperview()
             make.height.equalTo(SCREEN_WIDHT + WHUtils().getTopSafeAreaHeight())
+        }
+        confirmButton.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(32))
+            make.right.equalTo(kFitWidth(-32))
+            make.height.equalTo(kFitWidth(44))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
         }
     }
 }
@@ -155,6 +182,25 @@ extension HabitSettleVM {
     }
 
     /// 图一 -> 图二：桌子和奖杯同步下移（阴影跟随奖杯无需单独动）
+//    func animateDownFromRankToTier(completion: (() -> Void)? = nil) {
+//        guard !isAnimatingToHeadCup else { return }
+//        isAnimatingToHeadCup = true
+//
+//        // desk 下移
+//        deskTopC?.update(offset: deskBaseTop + dropOffset)
+//
+//        // settleView 下移：用“已对齐后的基准 top”再 +dropOffset
+//        settleTopC?.update(offset: settleAlignedTop + dropOffset)
+//
+//        UIView.animate(withDuration: 0.45,
+//                       delay: 0,
+//                       options: [.curveEaseInOut, .beginFromCurrentState]) {
+//            self.layoutIfNeeded()
+//        } completion: { _ in
+//            self.isAnimatingToHeadCup = false
+//            completion?()
+//        }
+//    }
     func animateDownFromRankToTier(completion: (() -> Void)? = nil) {
         guard !isAnimatingToHeadCup else { return }
         isAnimatingToHeadCup = true
@@ -162,12 +208,18 @@ extension HabitSettleVM {
         // desk 下移
         deskTopC?.update(offset: deskBaseTop + dropOffset)
 
-        // settleView 下移：用“已对齐后的基准 top”再 +dropOffset
+        // settleView 下移（基于对齐后的 top）
         settleTopC?.update(offset: settleAlignedTop + dropOffset)
 
-        UIView.animate(withDuration: 0.45,
-                       delay: 0,
-                       options: [.curveEaseInOut, .beginFromCurrentState]) {
+        UIView.animate(
+            withDuration: 0.45,
+            delay: 0,
+            options: [.curveEaseInOut, .beginFromCurrentState]
+        ) {
+            // ✅ 关键：恢复到正常尺寸
+            self.settleView.transform = .identity
+
+            // 同步执行约束动画
             self.layoutIfNeeded()
         } completion: { _ in
             self.isAnimatingToHeadCup = false
@@ -178,7 +230,6 @@ extension HabitSettleVM {
 
 // MARK: - Shadow bind & Align
 extension HabitSettleVM {
-
     /// ✅ 阴影在 settleView 内部，绑定到底座 anchor
     private func installShadowInsideSettleView() {
         // 防止重复添加
@@ -191,9 +242,9 @@ extension HabitSettleVM {
         // 阴影紧贴底座接触点下方
         cupShadowImgView.snp.makeConstraints { make in
             make.centerX.equalTo(settleView.cupBaseAnchorView.snp.centerX)
-            make.top.equalTo(settleView.cupBaseAnchorView.snp.bottom).offset(kFitWidth(-65))
+            make.top.equalTo(settleView.cupBaseAnchorView.snp.bottom).offset(kFitWidth(-70))
             make.width.equalTo(kFitWidth(222)*0.6)
-            make.height.equalTo(kFitWidth(34)*0.6)
+            make.height.equalTo(kFitWidth(34))
         }
     }
 

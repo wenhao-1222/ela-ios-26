@@ -8,7 +8,7 @@
 
 class PersonalTopFuncVM: UIView {
     
-    let selfHeight = kFitWidth(50)*3
+    let selfHeight = kFitWidth(50)*4
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: kFitWidth(16), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
@@ -55,6 +55,6 @@ extension PersonalTopFuncVM{
         addSubview(planVm)
         addSubview(bodyDataVm)
         addSubview(orderVm)
-//        addSubview(honorVm)
+        addSubview(honorVm)
     }
 }
