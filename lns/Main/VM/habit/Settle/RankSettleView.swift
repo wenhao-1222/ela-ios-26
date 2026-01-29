@@ -212,17 +212,12 @@ final class RankSettleView: UIView {
             incomingRight?.alpha = 1.0
             incomingRight?.setGrayscale(true)
         }
-
-        // oldRight 在“从右到中”的过程中带一点倾斜（惯性）
-//        oldRight.setScale(sideScale)
-//        oldRight.setTiltForEnter(true)
         
         UIView.animate(
             withDuration: slideDuration,
             delay: 0,
             options: [.curveEaseOut, .beginFromCurrentState],
             animations: {
-
                 // 1) oldLeft 向更左移出并淡出
                 if let oldLeft {
                     oldLeft.center.x = self.leftSlotCX - self.sideOffset

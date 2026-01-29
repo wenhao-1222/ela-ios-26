@@ -49,7 +49,12 @@ class HabitSettleVM: UIView {
     lazy var imgs: [UIImage] = {
         var imgT = [UIImage]()
         for i in 1...9 {
-            imgT.append(UIImage(named: "rank_\(i)")!)//rank_unlock
+//            imgT.append(UIImage(named: "rank_\(i)")!)//rank_unlock
+            if i > currentRank {
+                imgT.append(UIImage(named: "rank_unlock")!)
+            } else {
+                imgT.append(UIImage(named: "rank_\(i)")!)
+            }
         }
         return imgT
     }()
@@ -108,7 +113,7 @@ class HabitSettleVM: UIView {
 extension HabitSettleVM{
     @objc func tapAction() {
         animateDownFromRankToTier {
-            
+            self.startAnimation()
         }
     }
 }
@@ -180,27 +185,7 @@ extension HabitSettleVM {
         // ✅ 让“奖杯底座 anchor”贴到桌面线
         alignCupBaseToDeskSurface(animated: false)
     }
-
-    /// 图一 -> 图二：桌子和奖杯同步下移（阴影跟随奖杯无需单独动）
-//    func animateDownFromRankToTier(completion: (() -> Void)? = nil) {
-//        guard !isAnimatingToHeadCup else { return }
-//        isAnimatingToHeadCup = true
-//
-//        // desk 下移
-//        deskTopC?.update(offset: deskBaseTop + dropOffset)
-//
-//        // settleView 下移：用“已对齐后的基准 top”再 +dropOffset
-//        settleTopC?.update(offset: settleAlignedTop + dropOffset)
-//
-//        UIView.animate(withDuration: 0.45,
-//                       delay: 0,
-//                       options: [.curveEaseInOut, .beginFromCurrentState]) {
-//            self.layoutIfNeeded()
-//        } completion: { _ in
-//            self.isAnimatingToHeadCup = false
-//            completion?()
-//        }
-//    }
+    
     func animateDownFromRankToTier(completion: (() -> Void)? = nil) {
         guard !isAnimatingToHeadCup else { return }
         isAnimatingToHeadCup = true
@@ -225,6 +210,39 @@ extension HabitSettleVM {
             self.isAnimatingToHeadCup = false
             completion?()
         }
+    }
+    func startAnimation() {
+//        UIView.animate(withDuration: 0.25, delay: 0) {
+//            self.resultLabel.transform = CGAffineTransform(translationX: 0, y: kFitWidth(15))
+//            self.pointLabel.transform = CGAffineTransform(translationX: 0, y: kFitWidth(20))
+//            self.resultLabel.alpha = 0
+//            self.pointLabel.alpha = 0
+//        }
+//        UIView.animate(withDuration: 0.55, delay: 0) {
+//            self.tableView.transform = CGAffineTransform(translationX: 0, y: kFitWidth(40))
+//            self.tableView.alpha = 0
+//        }
+//        UIView.animate(withDuration: 0.65, delay: 0,options: .curveEaseInOut) {
+//            self.settleView.transform = .identity
+//        }completion: { _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                //段位上升
+                self.settleView.playRankUpAnimation()
+                UIView.animate(withDuration: 0.15) {
+                    self.cupShadowImgView.alpha = 0
+                }
+                //段位下降
+    //            settleView.playRankDownAnimation()
+            }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            UIView.animate(withDuration: 0.15) {
+                self.cupShadowImgView.alpha = 1
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.confirmButton.isUserInteractionEnabled = true
+        }
+//        }
     }
 }
 
