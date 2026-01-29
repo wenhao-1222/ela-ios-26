@@ -19,6 +19,10 @@ class HabitRankListHeadCupVM: UIView {
     private var rankTiers: [RankTierModel] = [RankTierModel]()
     private var currentTierImageView: UIImageView?
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        tipsBgView.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
+    }
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
         self.backgroundColor = .COLOR_BG_F2
