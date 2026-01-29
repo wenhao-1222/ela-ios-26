@@ -18,6 +18,10 @@ public final class RankUpConfetti3DView: UIView {
         case triangle
         case parallelogram
     }
+    
+    private var impactGen: UIImpactFeedbackGenerator?
+    private var hapticEndMs: Int = 0
+    private var lastHapticMs: Int = 0
 
     public struct Config {
         // 图案开关
@@ -76,6 +80,14 @@ public final class RankUpConfetti3DView: UIView {
 
         /// 3D 透视强度（与 Kotlin 的 900f 对齐）
         public var perspective: CGFloat = 900
+        
+        /// 触感反馈
+        public var hapticsEnabled: Bool = true
+        public var hapticStyle: UIImpactFeedbackGenerator.FeedbackStyle = .medium
+        public var hapticContinuous: Bool = true
+        public var hapticDurationMs: Int = 250        // 每次喷射持续震多久
+        public var hapticIntervalMs: Int = 50         // 多久震一次（越小越密）
+        public var hapticIntensity: CGFloat = 0.8     // iOS13+
 
         public init() {}
     }
@@ -92,7 +104,6 @@ public final class RankUpConfetti3DView: UIView {
     }
 
     // MARK: - Lifecycle
-
     public override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
@@ -208,7 +219,16 @@ public final class RankUpConfetti3DView: UIView {
         lastFrameTimestamp = 0
 
         animationStartMs = nowMs()
-
+        // ✅ 这里创建触感生成器（关键）
+        if config.hapticsEnabled {
+            let g = UIImpactFeedbackGenerator(style: config.hapticStyle)
+            g.prepare()
+            impactGen = g
+            lastHapticMs = 0
+            hapticEndMs = 0
+        } else {
+            impactGen = nil
+        }
         let safeBurstCount = max(1, config.burstCount)
         let safeInterval = max(1, config.burstIntervalMs)
 
@@ -240,6 +260,7 @@ public final class RankUpConfetti3DView: UIView {
     private func finishAnimation() {
         stopDisplayLink()
         particles.removeAll()
+        impactGen = nil
         setNeedsDisplay()
         onFinished?()
     }
@@ -262,6 +283,29 @@ public final class RankUpConfetti3DView: UIView {
               elapsed < config.durationMs
         {
             spawnBurst(nowMs: now)
+            if config.hapticsEnabled {
+                if config.hapticContinuous {
+                    hapticEndMs = now + config.hapticDurationMs
+                    lastHapticMs = 0
+
+                    // ✅ 先立刻震一下（否则要等下一次 tick 才可能震）
+                    if #available(iOS 13.0, *) {
+                        impactGen?.impactOccurred(intensity: config.hapticIntensity)
+                    } else {
+                        impactGen?.impactOccurred()
+                    }
+                    impactGen?.prepare()
+                    lastHapticMs = now
+                } else {
+                    if #available(iOS 13.0, *) {
+                        impactGen?.impactOccurred(intensity: config.hapticIntensity)
+                    } else {
+                        impactGen?.impactOccurred()
+                    }
+                    impactGen?.prepare()
+                }
+            }
+
             launchedBursts += 1
         }
 
@@ -293,7 +337,17 @@ public final class RankUpConfetti3DView: UIView {
         let oy = clamp(config.originY, 0, 1)
         let center = CGPoint(x: bounds.width * ox, y: bounds.height * oy)
         let margin: CGFloat = max(config.maxParticleSize, 10) * 4
-
+        if config.hapticsEnabled, config.hapticContinuous, now < hapticEndMs {
+            if lastHapticMs == 0 || (now - lastHapticMs) >= config.hapticIntervalMs {
+                if #available(iOS 13.0, *) {
+                    impactGen?.impactOccurred(intensity: config.hapticIntensity)
+                } else {
+                    impactGen?.impactOccurred()
+                }
+                impactGen?.prepare()
+                lastHapticMs = now
+            }
+        }
         particles.removeAll { p in
             let absY = center.y + p.y
             return absY > bounds.height + margin
@@ -331,7 +385,7 @@ public final class RankUpConfetti3DView: UIView {
         let baseSpeedMax: CGFloat = 1500
         let baseSpeed = baseSpeedMin + (baseSpeedMax - baseSpeedMin) * powerNorm
 
-        let spreadDegWhenDirected: CGFloat = 20//60
+        let spreadDegWhenDirected: CGFloat = 35//60    彩带的散开程度，数字越大越散
         let deg2rad = CGFloat.pi / 180.0
 
         func randColor() -> UIColor {

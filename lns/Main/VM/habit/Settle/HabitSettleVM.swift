@@ -276,10 +276,16 @@ extension HabitSettleVM {
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(74))
         }
         tableViewBgImg.snp.makeConstraints { make in
-//            make.left.top.width.height.equalTo(tableView)
-            make.center.lessThanOrEqualTo(tableView)
-            make.width.height.equalTo(tableView.snp.width).offset(kFitWidth(6))
+            make.left.equalTo(kFitWidth(25))
+            make.right.equalTo(kFitWidth(-25))
+            make.top.equalTo(pointLabel.snp.bottom).offset(kFitWidth(30))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(74))
         }
+//        tableViewBgImg.snp.makeConstraints { make in
+////            make.left.top.width.height.equalTo(tableView)
+//            make.center.lessThanOrEqualTo(tableView)
+//            make.width.height.equalTo(tableView.snp.width).offset(kFitWidth(6))
+//        }
     }
 }
 
@@ -337,36 +343,70 @@ extension HabitSettleVM {
         alignCupBaseToDeskSurface(animated: false)
     }
     
+//    func animateDownFromRankToTier(completion: (() -> Void)? = nil) {
+//        guard !isAnimatingToHeadCup else { return }
+//        isAnimatingToHeadCup = true
+//
+//        // desk 下移
+//        deskTopC?.update(offset: deskBaseTop + dropOffset)
+//
+//        // settleView 下移（基于对齐后的 top）
+//        settleTopC?.update(offset: settleAlignedTop + dropOffset)
+//
+//        UIView.animate(
+//            withDuration: 0.75,
+//            delay: 0,
+//            options: [.curveEaseInOut]
+//        ) {
+//            // ✅ 关键：恢复到正常尺寸
+//            self.settleView.transform = .identity
+//            self.confirmButton.alpha = 0
+//            self.rankLabel.alpha = 0
+//            self.pointLabel.alpha = 0
+//            self.tableView.alpha = 0
+//            self.tableViewBgImg.alpha = 0
+//
+//            // 同步执行约束动画
+//            self.layoutIfNeeded()
+//        } completion: { _ in
+//            self.isAnimatingToHeadCup = false
+//            completion?()
+//        }
+//    }
     func animateDownFromRankToTier(completion: (() -> Void)? = nil) {
         guard !isAnimatingToHeadCup else { return }
         isAnimatingToHeadCup = true
 
-        // desk 下移
         deskTopC?.update(offset: deskBaseTop + dropOffset)
-
-        // settleView 下移（基于对齐后的 top）
         settleTopC?.update(offset: settleAlignedTop + dropOffset)
 
-        UIView.animate(
-            withDuration: 0.45,
+        UIView.animateKeyframes(
+            withDuration: 0.75,
             delay: 0,
-            options: [.curveEaseInOut, .beginFromCurrentState]
+            options: [.calculationModeCubic]
         ) {
-            // ✅ 关键：恢复到正常尺寸
-            self.settleView.transform = .identity
-            self.confirmButton.alpha = 0
-            self.rankLabel.alpha = 0
-            self.pointLabel.alpha = 0
-            self.tableView.alpha = 0
-            self.tableViewBgImg.alpha = 0
+            // 0% ~ 85%：主运动（更快到位）
+            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.85) {
+                self.settleView.transform = CGAffineTransform(scaleX: 1.02, y: 1.02) // 可选：稍微“冲一下”
+                self.confirmButton.alpha = 0
+                self.rankLabel.alpha = 0
+                self.pointLabel.alpha = 0
+                self.tableView.alpha = 0
+                self.tableViewBgImg.alpha = 0
+                self.layoutIfNeeded()
+            }
 
-            // 同步执行约束动画
-            self.layoutIfNeeded()
+            // 85% ~ 100%：刹车段（轻微反向再回正）
+            UIView.addKeyframe(withRelativeStartTime: 0.85, relativeDuration: 0.15) {
+                self.settleView.transform = .identity
+                self.layoutIfNeeded()
+            }
         } completion: { _ in
             self.isAnimatingToHeadCup = false
             completion?()
         }
     }
+
     private func animateRankIconToHeadCup(completion: @escaping () -> Void) {
         guard let headCupVm,
               let targetImageView = headCupVm.currentTierBadgeView(),
@@ -420,11 +460,12 @@ extension HabitSettleVM {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                 //段位上升
                 self.settleView.playRankUpAnimation()
+                //段位下降
+//                self.settleView.playRankDownAnimation()
+//                self.settleView.playRankDownAnimation2()
                 UIView.animate(withDuration: 0.08) {
                     self.cupShadowImgView.alpha = 0
                 }
-                //段位下降
-    //            settleView.playRankDownAnimation()
             }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             UIView.animate(withDuration: 0.15) {

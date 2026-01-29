@@ -28,7 +28,7 @@ final class RankSettleView: UIView {
     private let sideScale: CGFloat = 0.7
 
     /// 进入动画时长
-    public let slideDuration: TimeInterval = 0.55
+    public let slideDuration: TimeInterval = 0.6
 
     private let rankImages: [UIImage]
     private var currentRank: Int // 1...9
@@ -173,7 +173,7 @@ final class RankSettleView: UIView {
 
         cfg.originX = 0.5
         cfg.originY = 0.43
-        cfg.spawnRadius = 50
+        cfg.spawnRadius = 80
 
         cfg.colors = [
             UIColor(red: 0x25/255, green: 0x63/255, blue: 0xEB/255, alpha: 1),
@@ -271,7 +271,7 @@ final class RankSettleView: UIView {
                 self.centerBadge = oldRight
                 self.rightBadge = incomingRight
                 
-                UIView.animate(withDuration: 0.25) {
+                UIView.animate(withDuration: 0.7) {
                     self.leftBadge?.alpha = 0
                     self.rightBadge?.alpha = 0
                 }
@@ -303,6 +303,73 @@ final class RankSettleView: UIView {
 }
 extension RankSettleView {
 
+    func playRankDownAnimation2() {
+        guard currentRank > minRank else { return }
+
+        let oldLeft = leftBadge                // 将成为新中心（rank-1）
+        let oldCenter = centerBadge!           // 将渐变为 unlock 并移到右侧（rank）
+        let oldRight = rightBadge              // 可能存在（rank+1），推出
+
+        let newRank = currentRank - 1
+        let incomingLeftRank = newRank - 1 // 需要显示在左槽位的段位
+        var incomingLeft: RankBadgeView? = nil
+        if incomingLeftRank >= minRank {
+            let img = rankImages[incomingLeftRank - 1]
+            let startCX = leftSlotCX - sideOffset
+            incomingLeft = makeBadge(image: img, centerX: startCX, scale: sideScale)
+            incomingLeft?.alpha = 1.0
+            incomingLeft?.setGrayscale(false)
+        }
+        let unlockImage = UIImage(named: "rank_unlock")
+        let crossfadeDuration: TimeInterval = slideDuration * 0.35//0.25
+        
+        UIView.transition(
+            with: oldCenter,
+            duration: crossfadeDuration,
+            options: [.transitionCrossDissolve, .beginFromCurrentState]
+        ) {
+            oldCenter.updateImage(unlockImage, grayscale: false)
+        } completion: { [weak self] _ in
+            guard let self else { return }
+            UIView.animate(withDuration: self.slideDuration,
+                           delay: 0,
+                           options: [.curveEaseOut, .beginFromCurrentState],
+                           animations: {
+                
+                // 0) ✅ incomingLeft 同步移动到 left 槽位（一起出现）
+                // incomingLeft 同步移动到 left 槽位
+                incomingLeft?.center.x = self.leftSlotCX
+                // oldLeft -> 中心（放大）
+                if let oldLeft {
+                    oldLeft.center.x = self.centerSlotCX
+                    oldLeft.setScale(self.centerScale)
+                    oldLeft.alpha = 1
+                    oldLeft.setGrayscale(false)
+                }
+                
+                // oldRight -> 更右推出并淡出
+                if let oldRight {
+                    oldRight.center.x = self.rightSlotCX + self.sideOffset
+                    oldRight.alpha = 0
+                }
+                // oldCenter -> 右槽位（缩小）
+                oldCenter.center.x = self.rightSlotCX
+                oldCenter.setScale(self.sideScale)
+                oldCenter.alpha = 1
+            }, completion: { _ in
+                if let oldRight {
+                    oldRight.removeFromSuperview()
+                }
+                self.currentRank = newRank
+                if let oldLeft {
+                    self.centerBadge = oldLeft
+                }
+                self.leftBadge = incomingLeft
+                self.rightBadge = oldCenter
+                self.handleFinished()
+            })
+        }
+    }
     func playRankDownAnimation() {
         guard currentRank > minRank else { return }
 
