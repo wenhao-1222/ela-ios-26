@@ -683,6 +683,8 @@
 		EC0CB44B2BAD650300A7EBD0 /* RSA.m in Sources */ = {isa = PBXBuildFile; fileRef = EC0CB44A2BAD650300A7EBD0 /* RSA.m */; };
 		EC0CB4522BAD804500A7EBD0 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0CB4512BAD804500A7EBD0 /* LoginVC.swift */; };
 		EC0CB4542BAD8A2200A7EBD0 /* CountdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0CB4532BAD8A2200A7EBD0 /* CountdownView.swift */; };
+		EC0F9BFD2F2C93FB006CFB10 /* ConfettiHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0F9BFC2F2C93FB006CFB10 /* ConfettiHaptics.swift */; };
+		EC0F9C002F2CB022006CFB10 /* RankUpConfetti3DViewCC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC0F9BFF2F2CB01F006CFB10 /* RankUpConfetti3DViewCC.swift */; };
 		EC10D9A02BD21043002904DC /* AliYunUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC10D99F2BD21043002904DC /* AliYunUtil.swift */; };
 		EC1222472C367DA800B3873B /* FoodsListAllListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1222462C367DA800B3873B /* FoodsListAllListVM.swift */; };
 		EC1440592C3E55D100566E9F /* JournalShareNewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1440582C3E55D100566E9F /* JournalShareNewVC.swift */; };
@@ -2052,6 +2054,8 @@
 		EC0CB44C2BAD772600A7EBD0 /* CryptoKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoKit.framework; path = System/Library/Frameworks/CryptoKit.framework; sourceTree = SDKROOT; };
 		EC0CB4512BAD804500A7EBD0 /* LoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		EC0CB4532BAD8A2200A7EBD0 /* CountdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownView.swift; sourceTree = "<group>"; };
+		EC0F9BFC2F2C93FB006CFB10 /* ConfettiHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiHaptics.swift; sourceTree = "<group>"; };
+		EC0F9BFF2F2CB01F006CFB10 /* RankUpConfetti3DViewCC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankUpConfetti3DViewCC.swift; sourceTree = "<group>"; };
 		EC10D99F2BD21043002904DC /* AliYunUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliYunUtil.swift; sourceTree = "<group>"; };
 		EC1222462C367DA800B3873B /* FoodsListAllListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsListAllListVM.swift; sourceTree = "<group>"; };
 		EC1440582C3E55D100566E9F /* JournalShareNewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalShareNewVC.swift; sourceTree = "<group>"; };
@@ -5349,6 +5353,8 @@
 				EC6108FE2F23460B00085BA3 /* PartyPopperEffect.swift */,
 				EC6109002F23709F00085BA3 /* ConfettiEmitter.swift */,
 				ECF970692F2854FC00BEA528 /* RankUpConfetti3DView.swift */,
+				EC0F9BFF2F2CB01F006CFB10 /* RankUpConfetti3DViewCC.swift */,
+				EC0F9BFC2F2C93FB006CFB10 /* ConfettiHaptics.swift */,
 			);
 			path = Settle;
 			sourceTree = "<group>";
@@ -6458,6 +6464,7 @@
 				EC9CB9322EE90E1600FBF915 /* ServiceContactTableViewGoodsInfoCell.swift in Sources */,
 				EC87EEF32BB3BB9900350EB0 /* QuestionnaireSurveyMealsVM.swift in Sources */,
 				EC0518192EDFFBD4007747E0 /* ServiceContactTableViewImageCell.swift in Sources */,
+				EC0F9C002F2CB022006CFB10 /* RankUpConfetti3DViewCC.swift in Sources */,
 				A73348AC2DACEF8A00AD747A /* CourseItemCell.swift in Sources */,
 				A73207F92DF91DC2000A807D /* GuideSevenCircleVM.swift in Sources */,
 				EC4DE32F2BD104740090A7BD /* DataDetailTimeFilterAlertVM.swift in Sources */,
@@ -6589,6 +6596,7 @@
 				EC24EB572BB2CA44002F21DF /* QuestionnaireSurveyBodyFatDataVM.swift in Sources */,
 				A732FD772E44AF62007E6E20 /* TutorialVideoSwiftControlView.swift in Sources */,
 				A7CEA5F02D1A520F009DDEB5 /* TutorialDataListCell.swift in Sources */,
+				EC0F9BFD2F2C93FB006CFB10 /* ConfettiHaptics.swift in Sources */,
 				EC0CB44B2BAD650300A7EBD0 /* RSA.m in Sources */,
 				A7BAAC1A2E2F5E67002CE2D1 /* CoursePayResultBottomVM.swift in Sources */,
 				EC87A4572C900A6300BAB8CE /* NaturalStatDateCustomAlertVM.swift in Sources */,

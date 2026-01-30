@@ -378,6 +378,39 @@ extension HabitSettleVM {
 //            completion?()
 //        }
 //    }
+//    func animateDownFromRankToTier(completion: (() -> Void)? = nil) {
+//        guard !isAnimatingToHeadCup else { return }
+//        isAnimatingToHeadCup = true
+//
+//        deskTopC?.update(offset: deskBaseTop + dropOffset)
+//        settleTopC?.update(offset: settleAlignedTop + dropOffset)
+//
+//        UIView.animateKeyframes(
+//            withDuration: 0.75,
+//            delay: 0,
+//            options: [.calculationModeCubic]
+//        ) {
+//            // 0% ~ 85%：主运动（更快到位）
+//            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.85) {
+//                self.settleView.transform = CGAffineTransform(scaleX: 1.02, y: 1.02) // 可选：稍微“冲一下”
+//                self.confirmButton.alpha = 0
+//                self.rankLabel.alpha = 0
+//                self.pointLabel.alpha = 0
+//                self.tableView.alpha = 0
+//                self.tableViewBgImg.alpha = 0
+//                self.layoutIfNeeded()
+//            }
+//
+//            // 85% ~ 100%：刹车段（轻微反向再回正）
+//            UIView.addKeyframe(withRelativeStartTime: 0.85, relativeDuration: 0.15) {
+//                self.settleView.transform = .identity
+//                self.layoutIfNeeded()
+//            }
+//        } completion: { _ in
+//            self.isAnimatingToHeadCup = false
+//            completion?()
+//        }
+//    }
     func animateDownFromRankToTier(completion: (() -> Void)? = nil) {
         guard !isAnimatingToHeadCup else { return }
         isAnimatingToHeadCup = true
@@ -385,31 +418,36 @@ extension HabitSettleVM {
         deskTopC?.update(offset: deskBaseTop + dropOffset)
         settleTopC?.update(offset: settleAlignedTop + dropOffset)
 
-        UIView.animateKeyframes(
-            withDuration: 0.75,
-            delay: 0,
-            options: [.calculationModeCubic]
-        ) {
-            // 0% ~ 85%：主运动（更快到位）
-            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.85) {
-                self.settleView.transform = CGAffineTransform(scaleX: 1.02, y: 1.02) // 可选：稍微“冲一下”
-                self.confirmButton.alpha = 0
-                self.rankLabel.alpha = 0
-                self.pointLabel.alpha = 0
-                self.tableView.alpha = 0
-                self.tableViewBgImg.alpha = 0
-                self.layoutIfNeeded()
-            }
+        // 自定义速度曲线（关键）
+        // 0.4, 0.0 -> 慢起
+        // 0.2, 1.0 -> 快速推进
+        let timing = UICubicTimingParameters(
+            controlPoint1: CGPoint(x: 0.4, y: 0.0),
+            controlPoint2: CGPoint(x: 0.2, y: 1.0)
+        )
 
-            // 85% ~ 100%：刹车段（轻微反向再回正）
-            UIView.addKeyframe(withRelativeStartTime: 0.85, relativeDuration: 0.15) {
-                self.settleView.transform = .identity
-                self.layoutIfNeeded()
-            }
-        } completion: { _ in
-            self.isAnimatingToHeadCup = false
-            completion?()
+        let animator = UIViewPropertyAnimator(duration: 0.75, timingParameters: timing)
+
+        animator.addAnimations {
+            self.settleView.transform =  .identity//CGAffineTransform(scaleX: 1.01, y: 1.01)
+            self.confirmButton.alpha = 0
+            self.rankLabel.alpha = 0
+            self.pointLabel.alpha = 0
+            self.tableView.alpha = 0
+            self.tableViewBgImg.alpha = 0
+            self.layoutIfNeeded()
         }
+
+        animator.addCompletion { _ in
+            UIView.animate(withDuration: 0.12) {
+                self.settleView.transform = .identity
+            } completion: { _ in
+                self.isAnimatingToHeadCup = false
+                completion?()
+            }
+        }
+
+        animator.startAnimation()
     }
 
     private func animateRankIconToHeadCup(completion: @escaping () -> Void) {

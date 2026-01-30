@@ -20,8 +20,16 @@ public final class RankUpConfetti3DView: UIView {
     }
     
     private var impactGen: UIImpactFeedbackGenerator?
+    private var impactMedium: UIImpactFeedbackGenerator?
+    private let haptics = ConfettiHaptics()
+    private var isFinalBurst: Bool = false
+
     private var hapticEndMs: Int = 0
     private var lastHapticMs: Int = 0
+    private var lastSustainHapticMs: Int = 0
+    
+    // ✅ 新增：记录当前 burst 的开始时间，用于计算烟花强弱包络
+    private var currentBurstStartMs: Int = 0
 
     public struct Config {
         // 图案开关
@@ -83,11 +91,11 @@ public final class RankUpConfetti3DView: UIView {
         
         /// 触感反馈
         public var hapticsEnabled: Bool = true
-        public var hapticStyle: UIImpactFeedbackGenerator.FeedbackStyle = .medium
+        public var hapticStyle: UIImpactFeedbackGenerator.FeedbackStyle = .rigid
         public var hapticContinuous: Bool = true
         public var hapticDurationMs: Int = 250        // 每次喷射持续震多久
-        public var hapticIntervalMs: Int = 50         // 多久震一次（越小越密）
-        public var hapticIntensity: CGFloat = 0.8     // iOS13+
+        public var hapticIntervalMs: Int = 5         // 多久震一次（越小越密）
+        public var hapticIntensity: CGFloat = 0.75     // iOS13+
 
         public init() {}
     }
@@ -213,7 +221,6 @@ public final class RankUpConfetti3DView: UIView {
 
     private func startAnimation() {
         stopDisplayLink()
-
         particles.removeAll(keepingCapacity: true)
         launchedBursts = 0
         lastFrameTimestamp = 0
@@ -221,13 +228,18 @@ public final class RankUpConfetti3DView: UIView {
         animationStartMs = nowMs()
         // ✅ 这里创建触感生成器（关键）
         if config.hapticsEnabled {
+//            haptics.prepare()
             let g = UIImpactFeedbackGenerator(style: config.hapticStyle)
             g.prepare()
             impactGen = g
+            impactMedium = UIImpactFeedbackGenerator(style: .heavy)
+            impactMedium?.prepare()
             lastHapticMs = 0
             hapticEndMs = 0
+            currentBurstStartMs = 0   // ✅ 新增：初始化
         } else {
             impactGen = nil
+            impactMedium = nil
         }
         let safeBurstCount = max(1, config.burstCount)
         let safeInterval = max(1, config.burstIntervalMs)
@@ -261,6 +273,7 @@ public final class RankUpConfetti3DView: UIView {
         stopDisplayLink()
         particles.removeAll()
         impactGen = nil
+        impactMedium = nil
         setNeedsDisplay()
         onFinished?()
     }
@@ -283,25 +296,31 @@ public final class RankUpConfetti3DView: UIView {
               elapsed < config.durationMs
         {
             spawnBurst(nowMs: now)
+            // ✅ 新增：记录本次 burst 的起点（用于后续连续震动强弱变化）
+            currentBurstStartMs = now
+            lastSustainHapticMs = 0
+
+            isFinalBurst = (launchedBursts == totalBursts - 1)
+
             if config.hapticsEnabled {
+//                haptics.playPerfectConfetti(leadTime: 0)
                 if config.hapticContinuous {
                     hapticEndMs = now + config.hapticDurationMs
                     lastHapticMs = 0
 
-                    // ✅ 先立刻震一下（否则要等下一次 tick 才可能震）
-                    if #available(iOS 13.0, *) {
-                        impactGen?.impactOccurred(intensity: config.hapticIntensity)
-                    } else {
-                        impactGen?.impactOccurred()
-                    }
+                    // ✅ 保留：先立刻震一下（但用“爆点强度”）
+                    let firstIntensity = clamp(1.0 * config.hapticIntensity, 0.05, 1.0)
+//                    impactGen?.impactOccurred(intensity: firstIntensity)
+                    impactMedium?.impactOccurred(intensity: 0.95)
+                    impactMedium?.prepare()
                     impactGen?.prepare()
                     lastHapticMs = now
                 } else {
-                    if #available(iOS 13.0, *) {
-                        impactGen?.impactOccurred(intensity: config.hapticIntensity)
-                    } else {
-                        impactGen?.impactOccurred()
-                    }
+                    // 单次震动：也给“爆点强度”
+                    let oneShotIntensity = clamp(1.0 * config.hapticIntensity, 0.05, 1.0)
+                    //                        impactGen?.impactOccurred(intensity: oneShotIntensity)
+                                            impactMedium?.impactOccurred(intensity: 0.95)
+                    impactMedium?.prepare()
                     impactGen?.prepare()
                 }
             }
@@ -337,17 +356,49 @@ public final class RankUpConfetti3DView: UIView {
         let oy = clamp(config.originY, 0, 1)
         let center = CGPoint(x: bounds.width * ox, y: bounds.height * oy)
         let margin: CGFloat = max(config.maxParticleSize, 10) * 4
-        if config.hapticsEnabled, config.hapticContinuous, now < hapticEndMs {
-            if lastHapticMs == 0 || (now - lastHapticMs) >= config.hapticIntervalMs {
-                if #available(iOS 13.0, *) {
-                    impactGen?.impactOccurred(intensity: config.hapticIntensity)
-                } else {
-                    impactGen?.impactOccurred()
+        
+        // ✅ 连续震动：改为“烟花包络强弱变化”，其他逻辑不动
+//        if config.hapticsEnabled, config.hapticContinuous, now < hapticEndMs {
+//            if lastHapticMs == 0 || (now - lastHapticMs) >= config.hapticIntervalMs {
+//                // 0~1：当前 burst 内的进度
+//                let denom = max(1, config.hapticDurationMs)
+//                let t = clamp(CGFloat(now - currentBurstStartMs) / CGFloat(denom), 0, 1)
+//                
+//                // 烟花包络：弱->强->爆点->衰减余震
+//                let env = fireworkEnvelope(t)
+//                
+//                // 最终强度：env * 用户配置强度
+//                let intensity = clamp(env * config.hapticIntensity, 0.05, 1.0)
+//                
+//                impactGen?.impactOccurred(intensity: intensity)
+//                impactGen?.prepare()
+//                lastHapticMs = now
+//            }
+//        }
+        if config.hapticsEnabled, config.hapticContinuous {
+            if now < hapticEndMs {
+                // 🟡 A. 当前 burst 的 envelope 阶段（强 → 衰减）
+                if lastHapticMs == 0 || (now - lastHapticMs) >= config.hapticIntervalMs {
+                    let denom = max(1, config.hapticDurationMs)
+                    let t = clamp(CGFloat(now - currentBurstStartMs) / CGFloat(denom), 0, 1)
+                    let env = fireworkEnvelope(t)
+                    let intensity = clamp(env * config.hapticIntensity, 0.05, 1.0)
+
+                    impactGen?.impactOccurred(intensity: intensity)
+                    impactGen?.prepare()
+                    lastHapticMs = now
                 }
-                impactGen?.prepare()
-                lastHapticMs = now
+            } else if isFinalBurst {
+                // 🔵 B. 第五次爆炸后的“余焰维持震感”
+//                if (lastHapticMs == 0 || (now - lastHapticMs) >= 25)  && now < hapticEndMs + Int(1){
+////                    let sustainIntensity = clamp(config.hapticIntensity * 0.18, 0.04, 0.2)
+//                    impactGen?.impactOccurred(intensity: 0.4)
+//                    impactGen?.prepare()
+//                    lastHapticMs = now
+//                }
             }
         }
+        
         particles.removeAll { p in
             let absY = center.y + p.y
             return absY > bounds.height + margin
@@ -362,7 +413,6 @@ public final class RankUpConfetti3DView: UIView {
 
         setNeedsDisplay()
     }
-
 
     private func spawnBurst(nowMs: Int) {
         if config.clearPreviousOnNewBurst && launchedBursts > 0 {
@@ -688,9 +738,23 @@ public final class RankUpConfetti3DView: UIView {
     private func clampInt(_ x: Int, _ a: Int, _ b: Int) -> Int {
         min(max(x, a), b)
     }
+
+    // ✅ 新增：烟花强弱包络（0~1 -> 0~1）
+    // 弱 -> 快速上升 -> 爆点持平 -> 指数衰减余震
+    private func fireworkEnvelope(_ t: CGFloat) -> CGFloat {
+        if t < 0.15 {
+            return t / 0.15
+        } else if t < 0.4 {
+            return 1.0
+        } else {
+            let decay = (t - 0.4) / 0.6
+            return CGFloat(exp(-3.0 * Double(decay)))
+        }
+    }
 }
 
 // Swift 的 sin/cos 用 Double，做个 CGFloat 版
 @inline(__always) private func sin(_ x: CGFloat) -> CGFloat { CGFloat(Darwin.sin(Double(x))) }
 @inline(__always) private func cos(_ x: CGFloat) -> CGFloat { CGFloat(Darwin.cos(Double(x))) }
 @inline(__always) private func pow(_ x: CGFloat, _ y: CGFloat) -> CGFloat { CGFloat(Darwin.pow(Double(x), Double(y))) }
+
