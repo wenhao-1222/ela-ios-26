@@ -65,7 +65,7 @@ class HabitSettleVM: UIView {
             if i > currentRank {
                 imgT.append(UIImage(named: "rank_unlock")!)
             } else {
-                imgT.append(UIImage(named: "rank_\(i)")!)
+                imgT.append(UIImage(named: "rank_\(i)_reached")!)
             }
         }
         return imgT
@@ -194,6 +194,9 @@ extension HabitSettleVM{
         }else{
             guard !isAnimatingToHeadCup else { return }
            isAnimatingToHeadCup = true
+            UIView.animate(withDuration: 0.1) {
+                self.cupShadowImgView.alpha = 0
+            }
            animateRankIconToHeadCup { [weak self] in
                guard let self else { return }
                self.isAnimatingToHeadCup = false
@@ -444,30 +447,23 @@ extension HabitSettleVM {
         }
     }
     func startAnimation() {
-//        UIView.animate(withDuration: 0.25, delay: 0) {
-//            self.resultLabel.transform = CGAffineTransform(translationX: 0, y: kFitWidth(15))
-//            self.pointLabel.transform = CGAffineTransform(translationX: 0, y: kFitWidth(20))
-//            self.resultLabel.alpha = 0
-//            self.pointLabel.alpha = 0
-//        }
-//        UIView.animate(withDuration: 0.55, delay: 0) {
-//            self.tableView.transform = CGAffineTransform(translationX: 0, y: kFitWidth(40))
-//            self.tableView.alpha = 0
-//        }
-//        UIView.animate(withDuration: 0.65, delay: 0,options: .curveEaseInOut) {
-//            self.settleView.transform = .identity
-//        }completion: { _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+        let isRankUp = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            if isRankUp{
                 //段位上升
                 self.settleView.playRankUpAnimation()
+            }else{
                 //段位下降
-//                self.settleView.playRankDownAnimation()
-//                self.settleView.playRankDownAnimation2()
-                UIView.animate(withDuration: 0.08) {
-                    self.cupShadowImgView.alpha = 0
-                }
+//                    self.settleView.playRankDownAnimation()
+                self.settleView.playRankDownAnimation2()
             }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            UIView.animate(withDuration: 0.08) {
+                self.cupShadowImgView.alpha = 0
+            }
+        }
+        let dealyTime = isRankUp ? 0.5 : 1.5
+        DispatchQueue.main.asyncAfter(deadline: .now() + dealyTime) {
             UIView.animate(withDuration: 0.15) {
                 self.cupShadowImgView.alpha = 1
             }
@@ -480,8 +476,6 @@ extension HabitSettleVM {
                 self.cupRightImgView.alpha = 1
             }
         }
-        
-//        }
     }
     ///排名  +   积分
     func updateRankAndPointAttr(sn:Int,point:String) {

@@ -16,7 +16,7 @@ final class RankSettleView: UIView {
     private let minRank = 1
     private let maxRank = 9
 
-    private let badgeSize = CGSize(width: 180, height: 260)
+    private let badgeSize = CGSize(width: kFitWidth(220), height: kFitWidth(220))
 
     /// 左右槽位相对中间的偏移（决定露出多少）
     private let sideOffset: CGFloat = kFitWidth(150)
@@ -45,7 +45,7 @@ final class RankSettleView: UIView {
 
     private var badgeCenterY: CGFloat {
         let y = (bounds.height - badgeSize.height) / 2
-        return y + badgeSize.height / 2 - kFitWidth(80)
+        return y + badgeSize.height / 2 - kFitWidth(90)
     }
     private let confetti = RankUpConfetti3DView()
 
@@ -205,7 +205,7 @@ final class RankSettleView: UIView {
         let oldLeft = leftBadge
         let oldCenter = centerBadge
         let upgradedRank = currentRank + 1
-        let upgradedImage = UIImage(named: "rank_\(upgradedRank)")
+        let upgradedImage = UIImage(named: "rank_\(upgradedRank)_reached")
 
         // incomingRight：升级后新的右侧段位 = currentRank + 2
         let incomingRank = currentRank + 2
@@ -302,7 +302,6 @@ final class RankSettleView: UIView {
     }
 }
 extension RankSettleView {
-
     func playRankDownAnimation2() {
         guard currentRank > minRank else { return }
 
@@ -321,7 +320,7 @@ extension RankSettleView {
             incomingLeft?.setGrayscale(false)
         }
         let unlockImage = UIImage(named: "rank_unlock")
-        let crossfadeDuration: TimeInterval = slideDuration * 0.35//0.25
+        let crossfadeDuration: TimeInterval = slideDuration * 0.85//0.25
         
         UIView.transition(
             with: oldCenter,
@@ -332,7 +331,7 @@ extension RankSettleView {
         } completion: { [weak self] _ in
             guard let self else { return }
             UIView.animate(withDuration: self.slideDuration,
-                           delay: 0,
+                           delay: 0.25,
                            options: [.curveEaseOut, .beginFromCurrentState],
                            animations: {
                 

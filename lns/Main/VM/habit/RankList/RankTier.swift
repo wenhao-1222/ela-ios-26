@@ -36,7 +36,7 @@ public struct RankTier {
             UIColor(red: 0.25, green: 0.25, blue: 0.25, alpha: 1.0),
         ]
         return (1...9).map { i in
-            RankTier(id: i, name: "段位\(i)", imageName: "rank_\(i)", accent: accents[(i-1) % accents.count])
+            RankTier(id: i, name: "段位\(i)", imageName: "rank_\(i)_reached", accent: accents[(i-1) % accents.count])
         }
     }
 }

@@ -31,24 +31,25 @@ class RankTierModel: NSObject {
         model.isCurrentTier = tier == currentTier
         model.isLocked = false
         
-        if tier < currentTier{
+        if tier <= currentTier{
             model.tierImg = "rank_\(tier)_reached"
-        }else if tier == currentTier{
-            model.tierImg = "rank_\(tier)"
-        }else{
+        }
+//        else if tier == currentTier{
+//            model.tierImg = "rank_\(tier)"
+//        }
+        else{
             model.isLocked = true
             model.tierImg = "rank_unlock"
             
-            if tier - currentTier == 1{
-                model.tierAlpha = 0.5
-            }else if tier - currentTier == 2{
+//            if tier - currentTier == 1{
+//                model.tierAlpha = 0.5
+//            }else if tier - currentTier == 2{
                 model.tierAlpha = 0.3
-            }else{
-                model.tierAlpha = 0.2
-            }
+//            }else{
+//                model.tierAlpha = 0.2
+//            }
         }
         
         return model
     }
-    
 }

@@ -117,7 +117,7 @@ extension HabitRankListHeadCupVM{
         var imgOriginX = kFitWidth(20)
         var imgWidth = kFitWidth(55)
         var imgHeight = kFitWidth(70)
-        let imgGap = kFitWidth(27)
+        let imgGap = kFitWidth(5)
         
         for i in 1...9{
             let model = RankTierModel().initModel(tier: i, tierName: "", currentTier: tier)
@@ -126,9 +126,13 @@ extension HabitRankListHeadCupVM{
             let img = UIImageView()
             img.setImgLocal(imgName: model.tierImg)
             img.alpha = model.tierAlpha
+            img.contentMode = .scaleAspectFit
             
-            imgWidth = model.isCurrentTier ? kFitWidth(85.5) : kFitWidth(55)
-            imgHeight = model.isCurrentTier ? kFitWidth(110) : kFitWidth(70)
+//            imgWidth = model.isCurrentTier ? kFitWidth(85.5) : kFitWidth(55)
+//            imgHeight = model.isCurrentTier ? kFitWidth(110) : kFitWidth(70)
+            
+            imgWidth = model.isCurrentTier ? kFitWidth(120) : kFitWidth(80)
+            imgHeight = imgWidth
             
             img.frame = CGRect.init(x: imgOriginX,
                                     y: scroviewHeight - imgHeight,
@@ -140,7 +144,6 @@ extension HabitRankListHeadCupVM{
             if model.isCurrentTier {
                 currentTierImageView = img
             }
-            
             
             if model.isCurrentTier && img.jf_centerX > SCREEN_WIDHT*0.5{
                 scrollView.setContentOffset(CGPoint(x: img.jf_centerX - SCREEN_WIDHT*0.5, y: 0), animated: false)

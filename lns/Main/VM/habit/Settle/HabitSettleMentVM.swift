@@ -31,7 +31,7 @@ class HabitSettleMentVM: UIView {
         var imgT = [UIImage]()
         
         for i in 1...9{
-            imgT.append(UIImage(named: "rank_\(i)")!)
+            imgT.append(UIImage(named: "rank_\(i)_reached")!)
         }
         return imgT
     }()

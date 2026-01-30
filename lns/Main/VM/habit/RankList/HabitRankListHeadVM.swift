@@ -58,7 +58,7 @@ class HabitRankListHeadVM: UIView {
     }()
     lazy var rankImgView: UIImageView = {
         let vi = UIImageView()
-        vi.setImgLocal(imgName: "rank_1")
+        vi.setImgLocal(imgName: "rank_1_reached")
         vi.isUserInteractionEnabled = true
         
         return vi
@@ -113,10 +113,7 @@ extension HabitRankListHeadVM{
     
     func updateDegree(tier:Int) {
         let fromIndex: Int = UserDefaults().getTierData().intValue
-        
-        DLLog(message: "updateDegree:\(tier)")
-        DLLog(message: "updateDegree: ---  \(tier)")
-        rankImgView.setImgLocal(imgName: "rank_\(fromIndex)")
+        rankImgView.setImgLocal(imgName: "rank_\(fromIndex)_reached")
         currentTierIndex = max(0, min(rankTiers.count - 1, fromIndex - 1))
         unlockedTierIndex = max(unlockedTierIndex, currentTierIndex)
         rankImgViewDefault_one.isHidden = fromIndex == 9

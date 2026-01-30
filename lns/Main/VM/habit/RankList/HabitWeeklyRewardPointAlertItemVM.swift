@@ -42,7 +42,7 @@ class HabitWeeklyRewardPointAlertItemVM: UIView {
 
 extension HabitWeeklyRewardPointAlertItemVM{
     func updateDict(dict:NSDictionary) {
-        iconImgView.setImgLocal(imgName: "rank_\(dict.stringValueForKey(key: "tier"))")
+        iconImgView.setImgLocal(imgName: "rank_\(dict.stringValueForKey(key: "tier"))_reached")
         nameLabel.text = dict.stringValueForKey(key: "tierName")
         
         let attr = NSMutableAttributedString(string: "周结算奖励：冠军 ", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,

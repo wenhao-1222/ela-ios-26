@@ -52,7 +52,7 @@ extension HabitStreakListVM{
                 vm.titleLabel.text = dict.stringValueForKey(key: "streakRewardName")
                 vm.leftIconImgView.image = UIImage(named: "haibit_streak_normal_icon")
 
-                let tipsStr = NSAttributedString(string: "（不记入排行榜）",
+                let tipsStr = NSAttributedString(string: "（不计入排行榜）",
                                                  attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50])
                 if dict.stringValueForKey(key: "isClaimed") == "1"{
                     
