@@ -54,7 +54,7 @@ class HabitSettleVM: UIView {
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "habit_settle_bg_img")
-        img.contentMode = .scaleAspectFit
+        img.contentMode = .scaleAspectFill
         return img
     }()
 
