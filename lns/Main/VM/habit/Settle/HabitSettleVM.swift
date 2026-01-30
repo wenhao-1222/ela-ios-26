@@ -25,7 +25,9 @@ class HabitSettleVM: UIView {
 
     /// 桌面“接触线”在 deskImgView 内的 y 偏移（从 deskImgView 顶部算）
     /// ✅ 这是唯一需要你微调的值，用来让奖杯底座贴在桌面上
-    private let deskSurfaceOffsetY: CGFloat = kFitWidth(265)
+//    private let deskSurfaceOffsetY: CGFloat = kFitWidth(265)
+    /// 桌面“接触线”在 desk 图片内的 y 比例（基于 375 设计稿的比例）
+    private let deskSurfaceOffsetRatio: CGFloat = 250.0 / 375.0
 
     /// 图一 -> 图二 下移距离
     private let dropOffset: CGFloat = kFitWidth(90)
@@ -522,9 +524,11 @@ extension HabitSettleVM {
     /// ✅ 把 settleView 的“底座 anchor”对齐到 desk 的桌面线
     private func alignCupBaseToDeskSurface(animated: Bool) {
         guard let settleTopC = self.settleTopC else { return }
-
+        // desk 桌面线的绝对 y（按图片在 imageView 中的实际展示区域来算）
+       let deskContentRect = deskImageContentRect()
+        let deskSurfaceY = deskImgView.frame.minY + deskContentRect.minY + deskContentRect.height * deskSurfaceOffsetRatio //+ WHUtils().getTopSafeAreaHeight()
         // desk 桌面线的绝对 y
-        let deskSurfaceY = deskImgView.frame.minY + deskSurfaceOffsetY
+//        let deskSurfaceY = deskImgView.frame.minY + deskSurfaceOffsetY
 
         // 底座 anchor 在 HabitSettleVM 里的绝对 y
         let anchorRect = settleView.cupBaseAnchorView.convert(settleView.cupBaseAnchorView.bounds, to: self)
@@ -551,6 +555,18 @@ extension HabitSettleVM {
         } else {
             self.layoutIfNeeded()
         }
+    }
+}
+// MARK: - Helpers
+extension HabitSettleVM {
+    private func deskImageContentRect() -> CGRect {
+        guard let image = deskImgView.image else { return deskImgView.bounds }
+        let bounds = deskImgView.bounds
+        if bounds.width <= 0 || bounds.height <= 0 { return bounds }
+        let scale = min(bounds.width / image.size.width, bounds.height / image.size.height)
+        let size = CGSize(width: image.size.width * scale, height: image.size.height * scale)
+        let origin = CGPoint(x: (bounds.width - size.width) * 0.5, y: (bounds.height - size.height) * 0.5)
+        return CGRect(origin: origin, size: size)
     }
 }
 
