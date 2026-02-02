@@ -50,6 +50,7 @@ public extension UserDefaults {
         case activity_popupId //本地弹出过的活动id
         case habitRankListVM_leaderboardCache//自律习惯养成--排行榜数据
         case tier
+        case tier_weekStartDate//自律习惯，结算页面是否展示过   这里记录的是当周的开始日期  eg.20260126
     }
 }
 
@@ -429,6 +430,12 @@ extension UserDefaults {
     func getTierData() -> String{
         let tier = UserDefaults.getString(forKey: .tier) ?? ""
         return tier
+    }
+    static func setTierData(tierStartDate:String){
+        UserDefaults.set(value: tierStartDate, forKey: .tier_weekStartDate)
+    }
+    func getTierWeekStartDate() -> String {
+        return UserDefaults.getString(forKey: .tier_weekStartDate) ?? ""
     }
     
     // MARK: - Splash Material

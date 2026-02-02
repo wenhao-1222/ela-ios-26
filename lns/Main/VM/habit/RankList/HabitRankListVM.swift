@@ -26,6 +26,8 @@ class HabitRankListVM: UIView {
     private let rankTiers: [RankTier] = RankTier.defaultNine()
     private var isAnimatingToDemo: Bool = false
     private var isAnimatingBackFromDemo: Bool = false
+    private var pendingSettlementDict: NSDictionary?
+    private var headTierName: String?
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -118,7 +120,6 @@ class HabitRankListVM: UIView {
     lazy var settlementVm: HabitSettleVM = {
         let vm = HabitSettleVM.init(frame: .zero)
         vm.headCupVm = headCupVm
-        
 
         return vm
     }()
@@ -127,6 +128,19 @@ class HabitRankListVM: UIView {
 
 extension HabitRankListVM{
     func updateUI(dict:NSDictionary) {
+        if dict.stringValueForKey(key: "weekStartDate").count > 0 &&
+            UserDefaults.standard.getTierWeekStartDate() != dict.stringValueForKey(key: "weekStartDate"){
+            pendingSettlementDict = dict
+            UserDefaults.setTierData(tierStartDate: dict.stringValueForKey(key: "weekStartDate"))
+            updateSettlementVmIfReady()
+        }
+    }
+
+    private func updateSettlementVmIfReady() {
+        guard let dict = pendingSettlementDict,
+              let headTierName = headTierName else {
+            return
+        }
         let leaderboard = dict["leaderboard"]as? NSArray ?? []
         let newIndex = (self.indexOfCurrentUser(in: leaderboard) ?? 0) + 1
         let dataArray = self.initialDisplayArray(
@@ -147,18 +161,20 @@ extension HabitRankListVM{
         }
         
         var type = RANK_TYPE.REMAIN //默认保持段位不变
-        if newIndex <= dict.stringValueForKey(key: "promotionLine").intValue{
-            type = .RISE//段位上升
-        }else if newIndex >= dict.stringValueForKey(key: "relegationLine").intValue && dict.stringValueForKey(key: "relegationLine").intValue >= 0{
-            type = .DECLINE//段位下降
+        if self.currentTierIndex > dict.stringValueForKey(key: "tier").intValue{
+            type = .RISE
+        }else if self.currentTierIndex < dict.stringValueForKey(key: "tier").intValue{
+            type = .DECLINE
         }
-        settlementVm.rankUpType = type
+        settlementVm.rankUpType = .REMAIN//type
         settlementVm.updateCurrentTier(tier: dict.stringValueForKey(key: "tier").intValue,
                                        sn: newIndex,
                                        point: point,
                                        lastRankName: dict.stringValueForKey(key: "tierName"),
-                                       rankName: dict.stringValueForKey(key: "nextTierName"),
+                                       rankName: headTierName,
+                                       promotionLine: dict.stringValueForKey(key: "promotionLine").intValue,
                                        rankList: dataArray)
+        showSettlementIfNeeded()
     }
 }
 
@@ -192,14 +208,25 @@ extension HabitRankListVM{
     func updateVisibility(isVisible: Bool) {
         if isVisible && !isCurrentlyVisible {
             isCurrentlyVisible = true
-            if self.settlementVm.hasData {
-                appDelegate.getKeyWindow().addSubview(settlementVm)
-                UIView.animate(withDuration: 0.15) {
-                    self.settlementVm.alpha = 1
-                }
-            }
-            
+//            if self.settlementVm.hasData {
+//                appDelegate.getKeyWindow().addSubview(settlementVm)
+//                UIView.animate(withDuration: 0.15) {
+//                    self.settlementVm.alpha = 1
+//                }
+//            }
+            showSettlementIfNeeded()
             sendDataRequest(animateSelfChange: true)
+        }
+    }
+    private func showSettlementIfNeeded() {
+        guard isCurrentlyVisible,
+              settlementVm.hasData,
+              settlementVm.superview == nil else {
+            return
+        }
+        appDelegate.getKeyWindow().addSubview(settlementVm)
+        UIView.animate(withDuration: 0.15) {
+            self.settlementVm.alpha = 1
         }
     }
 }
@@ -914,6 +941,11 @@ extension HabitRankListVM{
                 UserDefaults.setTierData(tier: dataDict.stringValueForKey(key: "tier"), isRefresh: false)
                 self.currentTierIndex = dataDict.stringValueForKey(key: "tier").intValue
                 self.headCupVm.setCurrentTier(tier: dataDict.stringValueForKey(key: "tier").intValue, tierName: dataDict.stringValueForKey(key: "tierName"))
+//                DispatchQueue.main.asyncAfter(deadline: .now()+10, execute: {
+                    self.headTierName = dataDict.stringValueForKey(key: "tierName")
+                    self.updateSettlementVmIfReady()
+//                })
+                
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
                 if weeklyRewardPoint.stringValueForKey(key: "champion").count > 0 {
                     self.headCupVm.updateUI(champion: weeklyRewardPoint.stringValueForKey(key: "champion"),

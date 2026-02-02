@@ -29,6 +29,8 @@ class HabitSettleVM: UIView {
     var displayedDataArray = NSArray()
     var rankUpType = RANK_TYPE.REMAIN
     var newRankName = ""
+    var rankSn = 0
+    var promotionLine = 0
 
     // MARK: - Layout Const
     /// 图一 settleView 缩放比例（你要求缩小显示）
@@ -117,6 +119,9 @@ class HabitSettleVM: UIView {
         let lab = UILabel()
         lab.alpha = 0
         lab.text = "你晋升到了"
+        lab.textAlignment = .center
+        lab.numberOfLines = 0
+        lab.lineBreakMode = .byWordWrapping
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .regular)
         
@@ -313,6 +318,7 @@ extension HabitSettleVM {
                            point: String,
                            lastRankName:String,
                            rankName:String,
+                           promotionLine:Int,
                            rankList: NSArray) {
         self.hasData = true
         self.currentRank = tier
@@ -324,6 +330,8 @@ extension HabitSettleVM {
             self.tableView.scrollToRow(at: IndexPath(row: newIndex!, section: 0), at: .middle, animated: false)
         }
         self.updateRankAndPointAttr(sn: sn, point: point)
+        self.rankSn = sn
+        self.promotionLine = promotionLine
         self.currentCupNameLabel.text = lastRankName
         self.newRankName = rankName
         // settleView 只 add 一次
@@ -441,9 +449,28 @@ extension HabitSettleVM {
         }
     }
     func startAnimation() {
-        self.currentCupNameLabel.text = self.newRankName
         if self.rankUpType == .REMAIN{
-            
+            let attr = NSMutableAttributedString.init(string: "你处于\(self.currentCupNameLabel.text ?? "")第", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,.font:UIFont.systemFont(ofSize: 18, weight: .regular)])
+            attr.append(NSAttributedString.init(string: "\(rankSn)", attributes: [.foregroundColor:UIColor.THEME,.font:UIFont().DDInFontHeavy(fontSize: 21)]))
+            attr.append(NSAttributedString.init(string: "位\n\n冲进前", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,.font:UIFont.systemFont(ofSize: 18, weight: .regular)]))
+            attr.append(NSAttributedString.init(string: "\(promotionLine)", attributes: [.foregroundColor:UIColor.THEME,.font:UIFont().DDInFontHeavy(fontSize: 18)]))
+            attr.append(NSAttributedString.init(string: "即可晋升等级", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,.font:UIFont.systemFont(ofSize: 18, weight: .regular)]))//\(newRankName)
+            rankTipLabel.attributedText = attr
+            currentCupNameLabel.snp.remakeConstraints { make in
+                make.centerX.lessThanOrEqualToSuperview()
+                make.top.equalTo(rankTipLabel.snp.bottom).offset(kFitWidth(22))
+            }
+            UIView.animate(withDuration: 0.25) {
+                self.rankTipLabel.alpha = 1
+                self.currentCupNameLabel.alpha = 1
+                self.cupLeftImgView.alpha = 1
+                self.cupRightImgView.alpha = 1
+            }completion: { t in
+                UIView.animate(withDuration: 0.25) {
+                    self.confirmButton.alpha = 1
+                }
+                self.confirmButton.isUserInteractionEnabled = true
+            }
         }else{
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                 if self.rankUpType == .RISE{
@@ -452,12 +479,22 @@ extension HabitSettleVM {
                 }else if self.rankUpType == .DECLINE{
                     //段位下降
     //                    self.settleView.playRankDownAnimation()
+//                    let attr = NSMutableAttributedString.init(string: "你处于\(self.currentCupNameLabel.text ?? "")第", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,.font:UIFont.systemFont(ofSize: 18, weight: .regular)])
+//                    attr.append(NSAttributedString.init(string: "\(self.rankSn)", attributes: [.foregroundColor:UIColor.THEME,.font:UIFont().DDInFontHeavy(fontSize: 21)]))
+//                    attr.append(NSAttributedString.init(string: "位\n\n现已下跌至\(self.newRankName)", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,.font:UIFont.systemFont(ofSize: 18, weight: .regular)]))
+//                    self.rankTipLabel.attributedText = attr
+                    self.rankTipLabel.text = "现已下跌至"
+                    self.currentCupNameLabel.snp.remakeConstraints { make in
+                        make.centerX.lessThanOrEqualToSuperview()
+                        make.top.equalTo(self.rankTipLabel.snp.bottom).offset(kFitWidth(22))
+                    }
                     self.settleView.playRankDownAnimation2()
                 }
                 UIView.animate(withDuration: 0.08) {
                     self.cupShadowImgView.alpha = 0
                 }
             }
+            self.currentCupNameLabel.text = self.newRankName
             let dealyTime = self.rankUpType == .RISE ? 0.5 : 1.5
             DispatchQueue.main.asyncAfter(deadline: .now() + dealyTime) {
                 UIView.animate(withDuration: 0.15) {
@@ -476,7 +513,7 @@ extension HabitSettleVM {
     }
     ///排名  +   积分
     func updateRankAndPointAttr(sn:Int,point:String) {
-        let attr = NSMutableAttributedString(string: "您上周排名第 ", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
+        let attr = NSMutableAttributedString(string: "你上周排名第 ", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                        .font:UIFont.systemFont(ofSize: 21, weight: .medium)])
         attr.append(NSAttributedString(string: "\(sn) ", attributes: [.foregroundColor:UIColor.THEME,
                                                                      .font:UIFont().DDInFontBold(fontSize: 26)]))
