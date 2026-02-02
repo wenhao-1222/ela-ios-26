@@ -10,12 +10,21 @@ class RuleTextModel: NSObject {
     var contentStr : String = ""
     var isTitle    : Bool = false
     var bottomGap  : CGFloat = kFitWidth(-2)
+    var contentType : String = "0"
+    var imgString  : String = ""
     
-    func initModel(content:String,isTitle:Bool=false,bottomGap:CGFloat=kFitWidth(-2)) -> RuleTextModel {
+    ///contentType  0   纯文字    1  纯图片   2  图 + 文
+    func initModel(content:String,
+                   isTitle:Bool=false,
+                   bottomGap:CGFloat=kFitWidth(-2),
+                   contentType:String="0",
+                   imgString:String="") -> RuleTextModel {
         let model = RuleTextModel()
         model.contentStr = content
         model.isTitle = isTitle
         model.bottomGap = bottomGap
+        model.contentType = contentType
+        model.imgString = imgString
         
         return model
     }
@@ -132,7 +141,7 @@ class HabitRuleAlertVM: UIView {
     
     lazy var titleLab: UILabel = {
         let lab = UILabel()
-        lab.text = "今日目标说明"
+        lab.text = "周末记录双倍积分"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 17, weight: .medium)
         
@@ -160,26 +169,17 @@ class HabitRuleAlertVM: UIView {
         vi.separatorStyle = .none
         vi.backgroundColor = .clear
         vi.register(HabitRuleTableViewCell.classForCoder(), forCellReuseIdentifier: "HabitRuleTableViewCell")
+        vi.register(HabitRuleTableViewImgCell.classForCoder(), forCellReuseIdentifier: "HabitRuleTableViewImgCell")
+        vi.register(HabitRuleTableViewImgTextCell.classForCoder(), forCellReuseIdentifier: "HabitRuleTableViewImgTextCell")
         
         return vi
     }()
     lazy var dataSourceArray: [RuleTextModel] = {
-        return [RuleTextModel().initModel(content: "1 今日目标", isTitle: true),
-                RuleTextModel().initModel(content: "记录当日完整饮食 +1 分"),
-                RuleTextModel().initModel(content: "当日蛋白质达标 +1 分"),
-                RuleTextModel().initModel(content: "提交身体数据 +1 分"),
-                RuleTextModel().initModel(content: "记录力量训练 +1 分",bottomGap: kFitWidth(-15)),
-                RuleTextModel().initModel(content: "2 计分说明", isTitle: true),
-                RuleTextModel().initModel(content: "扣分：缺失一天 -1，连续缺失两天再 -2（一周封顶7分）"),
-                RuleTextModel().initModel(content: "周末双倍积分"),
-                RuleTextModel().initModel(content: "好友蛋白质达标：各 +1 分"),
-                RuleTextModel().initModel(content: "与好友蛋白质初次达标：各+5分",bottomGap: kFitWidth(-15)),
-                RuleTextModel().initModel(content: "3 规则", isTitle: true),
-                RuleTextModel().initModel(content: "在当日结束前记录 ≥3 种食物。只要完成了记录了三个食物的动作就算，无论是哪一天的。"),
-                RuleTextModel().initModel(content: "在当日完整饮食记录后，摄入蛋白质 ≥ 蛋白质目标。必须建立在 1. 达到的前提下。"),
-                RuleTextModel().initModel(content: "当日完成新提交体重、身体围度、照片等任意数据的动作（或通过其他 App 导入）。"),
-                RuleTextModel().initModel(content: "在日志页右上角“力量训练标签”，记录训练部位或休息日（不是空的就算，不一定当日要有记录动作）。",bottomGap: kFitWidth(-15))]
-    }()
+        return [RuleTextModel().initModel(content: "根据elavatine数据显示，活跃用户中能做到周末记录，养成长期记录习惯（持续记录30天及以上）高达53.8%（无周末记录时：21.0%）",bottomGap: kFitWidth(-15)),
+                RuleTextModel().initModel(content: "",bottomGap: kFitWidth(-15),contentType: "1",imgString: "habit_rule_img_1"),
+                RuleTextModel().initModel(content: "缺失记录扣分", isTitle: true),
+                RuleTextModel().initModel(content: "和养成习惯一样，短期记录缺失影响不大，但负面习惯累计越多，对坚持的影响就越大，所以当你连续未记录饮食时，积分的减少也是阶梯式的。"),
+                RuleTextModel().initModel(content: "缺失记录1天扣1分，缺失2天在此基础上再扣2分，3天再扣3分，以此类推叠加。(7分封顶)",contentType: "2",imgString: "habit_rule_img_2")]  }()
 }
 // MARK: - Public API
 extension HabitRuleAlertVM {
@@ -222,12 +222,27 @@ extension HabitRuleAlertVM:UITableViewDelegate,UITableViewDataSource{
         return dataSourceArray.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "HabitRuleTableViewCell") as? HabitRuleTableViewCell
-        
         let model = dataSourceArray[indexPath.row]
-        cell?.updateUI(contentStr: model.contentStr, isTitle: model.isTitle, bottomGap: model.bottomGap)
         
-        return cell ?? HabitRuleTableViewCell()
+        if model.contentType == "1"{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "HabitRuleTableViewImgCell") as? HabitRuleTableViewImgCell
+            cell?.updateUI(imgString: model.imgString,
+                           bottomGap: model.bottomGap)
+            
+            return cell ?? HabitRuleTableViewImgCell()
+        }else if model.contentType == "2"{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "HabitRuleTableViewImgTextCell") as? HabitRuleTableViewImgTextCell
+            cell?.updateUI(contentStr: model.contentStr,
+                           imgString: model.imgString,
+                           bottomGap: model.bottomGap)
+            
+            return cell ?? HabitRuleTableViewImgTextCell()
+        }else{
+            let cell = tableView.dequeueReusableCell(withIdentifier: "HabitRuleTableViewCell") as? HabitRuleTableViewCell
+            cell?.updateUI(contentStr: model.contentStr, isTitle: model.isTitle, bottomGap: model.bottomGap)
+            
+            return cell ?? HabitRuleTableViewCell()
+        }
     }
 }
 

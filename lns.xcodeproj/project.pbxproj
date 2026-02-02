@@ -891,6 +891,8 @@
 		EC6D20ED2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D20EC2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift */; };
 		EC6E7D092C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E7D082C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift */; };
 		EC747D8B2ED69A1600F8D3D2 /* AppearanceOptionsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */; };
+		EC7575E02F303E52005E2077 /* HabitRuleTableViewImgCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */; };
+		EC7575E22F303E5A005E2077 /* HabitRuleTableViewImgTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7575E12F303E56005E2077 /* HabitRuleTableViewImgTextCell.swift */; };
 		EC75B41E2C61F07300EA510D /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC75B41D2C61F07300EA510D /* HealthKitManager.swift */; };
 		EC768B4C2C8A4EE8006B98E5 /* ElaNaturalFiveMealsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC768B4B2C8A4EE8006B98E5 /* ElaNaturalFiveMealsWidget.swift */; };
 		EC768B4E2C8A4F13006B98E5 /* ElaNaturalFourMealsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC768B4D2C8A4F13006B98E5 /* ElaNaturalFourMealsWidget.swift */; };
@@ -2269,6 +2271,8 @@
 		EC6D20EC2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideFoodsListAlertVM.swift; sourceTree = "<group>"; };
 		EC6E7D082C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewQuestionnaireNoSexVC.swift; sourceTree = "<group>"; };
 		EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceOptionsAlertVM.swift; sourceTree = "<group>"; };
+		EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewImgCell.swift; sourceTree = "<group>"; };
+		EC7575E12F303E56005E2077 /* HabitRuleTableViewImgTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewImgTextCell.swift; sourceTree = "<group>"; };
 		EC75B41D2C61F07300EA510D /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		EC768B4B2C8A4EE8006B98E5 /* ElaNaturalFiveMealsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalFiveMealsWidget.swift; sourceTree = "<group>"; };
 		EC768B4D2C8A4F13006B98E5 /* ElaNaturalFourMealsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalFourMealsWidget.swift; sourceTree = "<group>"; };
@@ -4411,6 +4415,8 @@
 				EC8264E92EFBB76500965196 /* HabitFriendsGoalVM.swift */,
 				EC8264ED2EFBDED000965196 /* HabitDetailTableViewCell.swift */,
 				EC61ABC92F036CAD008FA297 /* HabitRuleTableViewCell.swift */,
+				EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */,
+				EC7575E12F303E56005E2077 /* HabitRuleTableViewImgTextCell.swift */,
 				EC312A9D2EFCE2A60026F005 /* HabitExchangeMsgVM.swift */,
 				EC52848C2F0CA6BB006C81CE /* HabitExchangeTipsMsgVM.swift */,
 				EC312A9F2EFCE8740026F005 /* HabitExchangeAlertVM.swift */,
@@ -6859,6 +6865,7 @@
 				A744268D2CDB5A7F000D7E2B /* StringUtil.swift in Sources */,
 				A744268E2CDB5A7F000D7E2B /* Connection.swift in Sources */,
 				A760ED462CF06B6100E786EE /* SportAddAlertVM.swift in Sources */,
+				EC7575E02F303E52005E2077 /* HabitRuleTableViewImgCell.swift in Sources */,
 				A744268F2CDB5A7F000D7E2B /* Token.swift in Sources */,
 				EC1CFB562EE18519003E42DD /* MallDetailBottomFuncVM.swift in Sources */,
 				A74426902CDB5A7F000D7E2B /* DataUtil.swift in Sources */,
@@ -6916,6 +6923,7 @@
 				A741873B2D797B82006C8858 /* AITipsAlertVM.swift in Sources */,
 				EC5C81762C5A19FF000EC4BC /* GoalSetSpecPercentVM.swift in Sources */,
 				ECB8483F2BF305F400B554B9 /* SettingTopVM.swift in Sources */,
+				EC7575E22F303E5A005E2077 /* HabitRuleTableViewImgTextCell.swift in Sources */,
 				A707D2C02CBBE7B7005BDC0E /* BodyDataSQLiteManagerOld.swift in Sources */,
 				A76BE7CF2CF41B6D0058F459 /* SportCustomVC.swift in Sources */,
 				ECB80C562F149E1700F429DB /* HonorIconCell.swift in Sources */,
