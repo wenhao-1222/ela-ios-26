@@ -123,7 +123,8 @@ class HabitRuleFitnessAlertVM: UIView {
     }()
     lazy var tipsLab: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.text = "力量训练对增肌同样重要\n每个人需求不同"
+//        lab.text = "力量训练对增肌同样重要\n每个人需求不同"
+        lab.text = "力量训练对增肌和减脂同样重要，但每个人对训练容量和训练安排的需求都不一样。"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.numberOfLines = 2
         lab.font = .systemFont(ofSize: 17, weight: .semibold)
@@ -133,7 +134,7 @@ class HabitRuleFitnessAlertVM: UIView {
     }()
     lazy var tipsLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.text = "记录下来，清晰复盘，根据身体反应去调整每周训练次数与休息次数，最大化增肌效果。"
+        lab.text = "记录下来，清晰复盘，再根据身体反应去调整每周训练次数与休息次数，最大化健身效果。"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true

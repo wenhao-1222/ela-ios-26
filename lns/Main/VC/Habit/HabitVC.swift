@@ -44,6 +44,9 @@ class HabitVC: WHBaseViewVC {
     lazy var rankListVm: HabitRankListVM = {
         let vm = HabitRankListVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: self.topTypeVm.frame.maxY, width: 0, height: 0 ))
         vm.controller = self
+        vm.emptyVm.togoRecordBlock = {()in
+            self.scrollViewBase.setContentOffset(.zero, animated: true)
+        }
         return vm
     }()
     lazy var guideVm: HabitGuideVM = {

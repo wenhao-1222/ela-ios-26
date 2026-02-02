@@ -5,7 +5,6 @@
 //  Created by LNS2 on 2026/1/21.
 //
 
-
 class RankTierModel: NSObject {
     
     /// 段位 1 ~ 9

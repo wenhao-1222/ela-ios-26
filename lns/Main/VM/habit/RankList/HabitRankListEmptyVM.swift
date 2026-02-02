@@ -42,7 +42,7 @@ class HabitRankListEmptyVM: UIView {
     }()
     lazy var recordButton: UIButton = {
         let btn = UIButton()
-        btn.setTitle("去记录", for: .normal)
+        btn.setTitle("去查看", for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
         btn.backgroundColor = .THEME
         btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)

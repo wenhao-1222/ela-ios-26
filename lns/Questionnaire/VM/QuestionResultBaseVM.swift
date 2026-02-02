@@ -78,7 +78,7 @@ class QuestionResultBaseVM: UIView {
         let lab = UILabel()
 //        lab.text = "我们根据你的体重和体脂率估算了瘦体重(去脂体重)，并使用 Katch-McArdle 公式计算基础代谢，再结合你选择的活动水平，得到维持体重所需的每日总消耗(约值)。如果您觉得该数值过高或过低，可以点击并手动调整。"
 //        lab.text = "我们运用 Katch-McArdle 公式计算出了您的瘦体重质量、基础代谢率和每日总消耗热量。这个预估值已包括了您日常活动和运动的热量消耗，因此无需额外记录运动量。如果您觉得该数值过高或过低，可以点击并手动调整。"
-        lab.text = "我们根据你的体重和体脂率估算了瘦体重(去脂体重)，并使用 Katch-McArdle 公式计算基础代谢，再结合你选择的活动水平，得到维持体重所需的每日总消耗。\n\n这个预估值已包括了日常活动和运动的热量消耗，因此无需额外记录运动量。\n\n如果你觉得该数值过高或过低，可以点击并手动调整。"
+        lab.text = "我们根据你的体重和体脂率估算了瘦体重(去脂体重)，并使用 Katch-McArdle 公式计算基础代谢，再结合你选择的活动水平，得到维持体重所需的每日总消耗。\n\n如果你觉得该数值过高或过低，可以点击并手动调整。"
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.numberOfLines = 0

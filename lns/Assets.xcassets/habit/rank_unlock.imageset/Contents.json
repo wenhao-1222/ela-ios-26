@@ -15,7 +15,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "未解锁@2x.png",
+      "filename" : "未解锁@1.5x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -26,7 +26,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "未解锁-深色@2x 1.png",
+      "filename" : "未解锁-深色@1.5x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

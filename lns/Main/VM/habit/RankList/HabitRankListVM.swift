@@ -14,8 +14,8 @@ class HabitRankListVM: UIView {
     var dataSourceArray = NSArray()
     private var displayedDataArray = NSArray()
     
-    var promotionLine = -1
-    var relegationLine = -1
+    var promotionLine = -1//排名以上的升段
+    var relegationLine = -1//排名以下的降段
     
 //    private let leaderboardCacheKey = "HabitRankListVM.leaderboardCache"
     private var isCurrentlyVisible = false
@@ -79,12 +79,13 @@ class HabitRankListVM: UIView {
     }()
     lazy var emptyVm: HabitRankListEmptyVM = {
         let vm = HabitRankListEmptyVM.init(frame: CGRect.init(x: 0, y: self.headCupVm.frame.maxY, width: SCREEN_WIDHT, height: selfHeight-self.headCupVm.frame.maxY))
-        vm.togoRecordBlock = {()in
-            self.controller.navigationController?.tabBarController?.selectedIndex = 1
-            self.controller.navigationController?.popToRootViewController(animated: true)
+//        vm.togoRecordBlock = {()in
             
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "activePlan"), object: nil)
-        }
+//            self.controller.navigationController?.tabBarController?.selectedIndex = 1
+//            self.controller.navigationController?.popToRootViewController(animated: true)
+//            
+//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "activePlan"), object: nil)
+//        }
         return vm
     }()
     lazy var headVm: HabitRankListHeadVM = {
@@ -126,11 +127,38 @@ class HabitRankListVM: UIView {
 
 extension HabitRankListVM{
     func updateUI(dict:NSDictionary) {
-        settlementVm.updateCurrentTier(tier: dict.stringValueForKey(key: "tier").intValue,
-                                       sn: 3,
-                                       point: "185",
-                                       rankList: self.displayedDataArray)
+        let leaderboard = dict["leaderboard"]as? NSArray ?? []
+        let newIndex = (self.indexOfCurrentUser(in: leaderboard) ?? 0) + 1
+        let dataArray = self.initialDisplayArray(
+            for: leaderboard,
+            previousIndex: 0,
+            newIndex: newIndex,
+            shouldAnimate: false
+        )
         
+        var point = "0"
+        let weeklyRewardPoint = dict["weeklyRewardPoint"]as? NSDictionary ?? [:]
+        if newIndex == 1{
+            point = weeklyRewardPoint.stringValueForKey(key: "champion")
+        }else if newIndex == 2{
+            point = weeklyRewardPoint.stringValueForKey(key: "runnerUp")
+        }else if newIndex == 3{
+            point = weeklyRewardPoint.stringValueForKey(key: "thirdPlace")
+        }
+        
+        var type = RANK_TYPE.REMAIN //默认保持段位不变
+        if newIndex <= dict.stringValueForKey(key: "promotionLine").intValue{
+            type = .RISE//段位上升
+        }else if newIndex >= dict.stringValueForKey(key: "relegationLine").intValue && dict.stringValueForKey(key: "relegationLine").intValue >= 0{
+            type = .DECLINE//段位下降
+        }
+        settlementVm.rankUpType = type
+        settlementVm.updateCurrentTier(tier: dict.stringValueForKey(key: "tier").intValue,
+                                       sn: newIndex,
+                                       point: point,
+                                       lastRankName: dict.stringValueForKey(key: "tierName"),
+                                       rankName: dict.stringValueForKey(key: "nextTierName"),
+                                       rankList: dataArray)
     }
 }
 
@@ -164,16 +192,12 @@ extension HabitRankListVM{
     func updateVisibility(isVisible: Bool) {
         if isVisible && !isCurrentlyVisible {
             isCurrentlyVisible = true
-            settlementVm.updateCurrentTier(tier: 2,
-                                           sn: 3,
-                                           point: "185",
-                                           rankList: self.displayedDataArray)
-//            if self.settlementVm.hasData {
+            if self.settlementVm.hasData {
                 appDelegate.getKeyWindow().addSubview(settlementVm)
                 UIView.animate(withDuration: 0.15) {
                     self.settlementVm.alpha = 1
                 }
-//            }
+            }
             
             sendDataRequest(animateSelfChange: true)
         }

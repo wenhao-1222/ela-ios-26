@@ -8,6 +8,15 @@
 import SnapKit
 import UIKit
 
+enum RANK_TYPE {
+    ///段位不变
+    case REMAIN
+    ///段位上升
+    case RISE
+    ///段位下降
+    case DECLINE
+}
+
 class HabitSettleVM: UIView {
 
     var hasData = false
@@ -18,6 +27,8 @@ class HabitSettleVM: UIView {
 
     private var isAnimatingToHeadCup = false
     var displayedDataArray = NSArray()
+    var rankUpType = RANK_TYPE.REMAIN
+    var newRankName = ""
 
     // MARK: - Layout Const
     /// 图一 settleView 缩放比例（你要求缩小显示）
@@ -297,7 +308,12 @@ extension HabitSettleVM {
 // MARK: - Public Update
 extension HabitSettleVM {
     /// 图一初始化（缩放+贴桌面+阴影绑定到底座）
-    func updateCurrentTier(tier: Int, sn: Int, point: String, rankList: NSArray) {
+    func updateCurrentTier(tier: Int,
+                           sn: Int,
+                           point: String,
+                           lastRankName:String,
+                           rankName:String,
+                           rankList: NSArray) {
         self.hasData = true
         self.currentRank = tier
         self.displayedDataArray = rankList
@@ -308,7 +324,8 @@ extension HabitSettleVM {
             self.tableView.scrollToRow(at: IndexPath(row: newIndex!, section: 0), at: .middle, animated: false)
         }
         self.updateRankAndPointAttr(sn: sn, point: point)
-        self.currentCupNameLabel.text = "纸浆杯"
+        self.currentCupNameLabel.text = lastRankName
+        self.newRankName = rankName
         // settleView 只 add 一次
         if settleView.superview == nil {
             addSubview(settleView)
@@ -348,69 +365,6 @@ extension HabitSettleVM {
         alignCupBaseToDeskSurface(animated: false)
     }
     
-//    func animateDownFromRankToTier(completion: (() -> Void)? = nil) {
-//        guard !isAnimatingToHeadCup else { return }
-//        isAnimatingToHeadCup = true
-//
-//        // desk 下移
-//        deskTopC?.update(offset: deskBaseTop + dropOffset)
-//
-//        // settleView 下移（基于对齐后的 top）
-//        settleTopC?.update(offset: settleAlignedTop + dropOffset)
-//
-//        UIView.animate(
-//            withDuration: 0.75,
-//            delay: 0,
-//            options: [.curveEaseInOut]
-//        ) {
-//            // ✅ 关键：恢复到正常尺寸
-//            self.settleView.transform = .identity
-//            self.confirmButton.alpha = 0
-//            self.rankLabel.alpha = 0
-//            self.pointLabel.alpha = 0
-//            self.tableView.alpha = 0
-//            self.tableViewBgImg.alpha = 0
-//
-//            // 同步执行约束动画
-//            self.layoutIfNeeded()
-//        } completion: { _ in
-//            self.isAnimatingToHeadCup = false
-//            completion?()
-//        }
-//    }
-//    func animateDownFromRankToTier(completion: (() -> Void)? = nil) {
-//        guard !isAnimatingToHeadCup else { return }
-//        isAnimatingToHeadCup = true
-//
-//        deskTopC?.update(offset: deskBaseTop + dropOffset)
-//        settleTopC?.update(offset: settleAlignedTop + dropOffset)
-//
-//        UIView.animateKeyframes(
-//            withDuration: 0.75,
-//            delay: 0,
-//            options: [.calculationModeCubic]
-//        ) {
-//            // 0% ~ 85%：主运动（更快到位）
-//            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.85) {
-//                self.settleView.transform = CGAffineTransform(scaleX: 1.02, y: 1.02) // 可选：稍微“冲一下”
-//                self.confirmButton.alpha = 0
-//                self.rankLabel.alpha = 0
-//                self.pointLabel.alpha = 0
-//                self.tableView.alpha = 0
-//                self.tableViewBgImg.alpha = 0
-//                self.layoutIfNeeded()
-//            }
-//
-//            // 85% ~ 100%：刹车段（轻微反向再回正）
-//            UIView.addKeyframe(withRelativeStartTime: 0.85, relativeDuration: 0.15) {
-//                self.settleView.transform = .identity
-//                self.layoutIfNeeded()
-//            }
-//        } completion: { _ in
-//            self.isAnimatingToHeadCup = false
-//            completion?()
-//        }
-//    }
     func animateDownFromRankToTier(completion: (() -> Void)? = nil) {
         guard !isAnimatingToHeadCup else { return }
         isAnimatingToHeadCup = true
@@ -487,33 +441,36 @@ extension HabitSettleVM {
         }
     }
     func startAnimation() {
-        let isRankUp = true
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-            if isRankUp{
-                //段位上升
-                self.settleView.playRankUpAnimation()
-            }else{
-                //段位下降
-//                    self.settleView.playRankDownAnimation()
-                self.settleView.playRankDownAnimation2()
+        self.currentCupNameLabel.text = self.newRankName
+        if self.rankUpType == .REMAIN{
+            
+        }else{
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                if self.rankUpType == .RISE{
+                    //段位上升
+                    self.settleView.playRankUpAnimation()
+                }else if self.rankUpType == .DECLINE{
+                    //段位下降
+    //                    self.settleView.playRankDownAnimation()
+                    self.settleView.playRankDownAnimation2()
+                }
+                UIView.animate(withDuration: 0.08) {
+                    self.cupShadowImgView.alpha = 0
+                }
             }
-            UIView.animate(withDuration: 0.08) {
-                self.cupShadowImgView.alpha = 0
+            let dealyTime = self.rankUpType == .RISE ? 0.5 : 1.5
+            DispatchQueue.main.asyncAfter(deadline: .now() + dealyTime) {
+                UIView.animate(withDuration: 0.15) {
+                    self.cupShadowImgView.alpha = 1
+                }
             }
-        }
-        let dealyTime = isRankUp ? 0.5 : 1.5
-        DispatchQueue.main.asyncAfter(deadline: .now() + dealyTime) {
-            UIView.animate(withDuration: 0.15) {
-                self.cupShadowImgView.alpha = 1
-            }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.85) {
-            UIView.animate(withDuration: 0.25) {
-                self.rankTipLabel.alpha = 1
-                self.currentCupNameLabel.alpha = 1
-                self.cupLeftImgView.alpha = 1
-                self.cupRightImgView.alpha = 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.85) {
+                UIView.animate(withDuration: 0.25) {
+                    self.rankTipLabel.alpha = 1
+                    self.currentCupNameLabel.alpha = 1
+                    self.cupLeftImgView.alpha = 1
+                    self.cupRightImgView.alpha = 1
+                }
             }
         }
     }
@@ -528,13 +485,17 @@ extension HabitSettleVM {
         
         self.rankLabel.attributedText = attr
         
-        let pointAttr = NSMutableAttributedString(string: "+", attributes: [.foregroundColor:UIColor.THEME,
-                                                                            .font:UIFont().DDInFontSemiBold(fontSize: 40)])
-        pointAttr.append(NSAttributedString(string: "\(point)", attributes: [.foregroundColor:UIColor.THEME,
-                                                                          .font:UIFont().DDInFontBold(fontSize: 45)]))
-        pointAttr.append(NSAttributedString(string: "积分", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
-                                                                      .font:UIFont.systemFont(ofSize: 12, weight: .regular)]))
-        pointLabel.attributedText = pointAttr
+        if point.intValue > 0 {
+            let pointAttr = NSMutableAttributedString(string: "+", attributes: [.foregroundColor:UIColor.THEME,
+                                                                                .font:UIFont().DDInFontSemiBold(fontSize: 40)])
+            pointAttr.append(NSAttributedString(string: "\(point)", attributes: [.foregroundColor:UIColor.THEME,
+                                                                              .font:UIFont().DDInFontBold(fontSize: 45)]))
+            pointAttr.append(NSAttributedString(string: "积分", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                                                                          .font:UIFont.systemFont(ofSize: 12, weight: .regular)]))
+            pointLabel.attributedText = pointAttr
+        }else{
+            pointLabel.text = ""
+        }
     }
 }
 

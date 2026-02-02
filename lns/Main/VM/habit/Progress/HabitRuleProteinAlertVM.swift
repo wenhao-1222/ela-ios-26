@@ -65,6 +65,7 @@ class HabitRuleProteinAlertVM: UIView {
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: whiteViewTopRadius)
         if #available(iOS 13.0, *) { vi.layer.cornerCurve = .continuous }
         vi.layer.masksToBounds = true
+        vi.isUserInteractionEnabled = true
         
         // 吞掉点击
         let tap = UITapGestureRecognizer(target: self, action: #selector(nothingToDo))
@@ -100,6 +101,11 @@ class HabitRuleProteinAlertVM: UIView {
         return layer
     }()
 
+    lazy var scrollView: UIScrollView = {
+        let scro = UIScrollView()
+        scro.showsVerticalScrollIndicator = false
+        return scro
+    }()
     lazy var ruleLab: LineHeightLabel = {
         let lab = LineHeightLabel()
         lab.numberOfLines = 2
@@ -133,7 +139,7 @@ class HabitRuleProteinAlertVM: UIView {
     }()
     lazy var tipsLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.text = "生活中难免外食或聚餐，脂肪和碳水可能会临时上下浮动，而蛋白质需求相对稳定。"
+        lab.text = "生活中难免外食或聚餐，脂肪和碳水可能会临时上下浮动，而蛋白质需求相对稳定。\n我们选择蛋白质作为每日目标，因为这更符合日常饮食习惯。"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
@@ -144,7 +150,7 @@ class HabitRuleProteinAlertVM: UIView {
     }()
     lazy var imgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "rule_journal_alert_img")
+        img.setImgLocal(imgName: "rule_journal_alert_img_protein")
         
         return img
     }()
@@ -208,39 +214,54 @@ extension HabitRuleProteinAlertVM{
         whiteBlurView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        whiteView.addSubview(ruleLab)
-        whiteView.addSubview(dottlineView)
-        whiteView.addSubview(tipsLab)
-        whiteView.addSubview(tipsLabel)
-        whiteView.addSubview(imgView)
+        whiteView.addSubview(scrollView)
+        scrollView.addSubview(ruleLab)
+        scrollView.addSubview(dottlineView)
+        scrollView.addSubview(tipsLab)
+        scrollView.addSubview(tipsLabel)
+        scrollView.addSubview(imgView)
         whiteView.addSubview(confirmButton)
         
         setConstrait()
         setupWhiteViewBorder()
+        
+        setNeedsLayout()
+        layoutIfNeeded()
+        scrollView.contentSize = CGSizeMake(0, imgView.frame.maxY+kFitWidth(5))
+//        scrollView.contentSize = CGSize.init(width: 0, height: kFitWidth(650))
     }
     func setConstrait() {
+        scrollView.snp.makeConstraints { make in
+            make.left.top.right.equalToSuperview()
+//            make.width.equalTo(SCREEN_WIDHT)
+            make.bottom.equalTo(confirmButton.snp.top).offset(kFitWidth(-10))
+        }
         ruleLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(32))
-            make.right.equalTo(kFitWidth(-32))
+//            make.right.equalTo(kFitWidth(-32))
+            make.width.equalTo(SCREEN_WIDHT-kFitWidth(64))
             make.top.equalTo(kFitWidth(30))
             make.height.equalTo(kFitWidth(55))
         }
         tipsLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(32))
-            make.right.equalTo(kFitWidth(-30))
+//            make.right.equalTo(kFitWidth(-30))
+            make.width.equalTo(SCREEN_WIDHT-kFitWidth(64))
             make.top.equalTo(kFitWidth(135))
             make.height.equalTo(kFitWidth(52))
         }
         tipsLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(32))
-            make.right.equalTo(kFitWidth(-32))
+//            make.right.equalTo(kFitWidth(-32))
+            make.width.equalTo(SCREEN_WIDHT-kFitWidth(64))
             make.top.equalTo(kFitWidth(202))
         }
         imgView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(32))
-            make.top.equalTo(kFitWidth(312))
+//            make.top.equalTo(kFitWidth(317))
+            make.top.equalTo(tipsLabel.snp.bottom).offset(kFitWidth(20))
             make.width.equalTo(kFitWidth(311))
-            make.height.equalTo(kFitWidth(250))
+            make.height.equalTo(kFitWidth(319))
         }
         confirmButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))

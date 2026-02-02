@@ -15,7 +15,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "背景切图@2x.png",
+      "filename" : "背景切图@1.5x.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -26,7 +26,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "深色背景@2x.png",
+      "filename" : "深色背景@1.5x.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
