@@ -288,6 +288,7 @@ final class RankSettleView: UIView {
                     // 对齐 Kotlin：onFinished -> onAnimationEvent(Finished)
                     self?.handleFinished()
                 }
+                
             }
         )
     }

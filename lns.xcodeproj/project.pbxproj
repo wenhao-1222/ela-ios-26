@@ -893,6 +893,7 @@
 		EC747D8B2ED69A1600F8D3D2 /* AppearanceOptionsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */; };
 		EC7575E02F303E52005E2077 /* HabitRuleTableViewImgCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */; };
 		EC7575E22F303E5A005E2077 /* HabitRuleTableViewImgTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7575E12F303E56005E2077 /* HabitRuleTableViewImgTextCell.swift */; };
+		EC7575E42F309A56005E2077 /* LowBuzzHaptic.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7575E32F309A55005E2077 /* LowBuzzHaptic.swift */; };
 		EC75B41E2C61F07300EA510D /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC75B41D2C61F07300EA510D /* HealthKitManager.swift */; };
 		EC768B4C2C8A4EE8006B98E5 /* ElaNaturalFiveMealsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC768B4B2C8A4EE8006B98E5 /* ElaNaturalFiveMealsWidget.swift */; };
 		EC768B4E2C8A4F13006B98E5 /* ElaNaturalFourMealsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC768B4D2C8A4F13006B98E5 /* ElaNaturalFourMealsWidget.swift */; };
@@ -2273,6 +2274,7 @@
 		EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceOptionsAlertVM.swift; sourceTree = "<group>"; };
 		EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewImgCell.swift; sourceTree = "<group>"; };
 		EC7575E12F303E56005E2077 /* HabitRuleTableViewImgTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewImgTextCell.swift; sourceTree = "<group>"; };
+		EC7575E32F309A55005E2077 /* LowBuzzHaptic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LowBuzzHaptic.swift; sourceTree = "<group>"; };
 		EC75B41D2C61F07300EA510D /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		EC768B4B2C8A4EE8006B98E5 /* ElaNaturalFiveMealsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalFiveMealsWidget.swift; sourceTree = "<group>"; };
 		EC768B4D2C8A4F13006B98E5 /* ElaNaturalFourMealsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalFourMealsWidget.swift; sourceTree = "<group>"; };
@@ -5361,6 +5363,7 @@
 				ECF970692F2854FC00BEA528 /* RankUpConfetti3DView.swift */,
 				EC0F9BFF2F2CB01F006CFB10 /* RankUpConfetti3DViewCC.swift */,
 				EC0F9BFC2F2C93FB006CFB10 /* ConfettiHaptics.swift */,
+				EC7575E32F309A55005E2077 /* LowBuzzHaptic.swift */,
 			);
 			path = Settle;
 			sourceTree = "<group>";
@@ -6315,6 +6318,7 @@
 				A760ED482CF06E8100E786EE /* SportAddAlertItemVM.swift in Sources */,
 				A775EA1D2E166E13001DE90A /* ActionPopupController.swift in Sources */,
 				EC4DE2BA2BCCF71C0090A7BD /* PlanCreateFilterVM.swift in Sources */,
+				EC7575E42F309A56005E2077 /* LowBuzzHaptic.swift in Sources */,
 				ECD0FEFB2BABD25B001232C9 /* YYTextAttribute.m in Sources */,
 				A79A50032D684545002B8EB4 /* ForumPublishSqlite.swift in Sources */,
 				ECD0FF062BABD25B001232C9 /* YYTextWeakProxy.m in Sources */,

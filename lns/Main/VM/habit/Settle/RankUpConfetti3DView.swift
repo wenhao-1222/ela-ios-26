@@ -306,7 +306,7 @@ public final class RankUpConfetti3DView: UIView {
                     lastHapticMs = 0
 
                     // ✅ 保留：先立刻震一下（但用“爆点强度”）
-                    let firstIntensity = clamp(1.0 * config.hapticIntensity, 0.05, 1.0)
+//                    let firstIntensity = clamp(1.0 * config.hapticIntensity, 0.05, 1.0)
 //                    impactGen?.impactOccurred(intensity: firstIntensity)
                     impactMedium?.impactOccurred(intensity: 0.95)
                     impactMedium?.prepare()
@@ -314,7 +314,7 @@ public final class RankUpConfetti3DView: UIView {
                     lastHapticMs = now
                 } else {
                     // 单次震动：也给“爆点强度”
-                    let oneShotIntensity = clamp(1.0 * config.hapticIntensity, 0.05, 1.0)
+//                    let oneShotIntensity = clamp(1.0 * config.hapticIntensity, 0.05, 1.0)
                     //                        impactGen?.impactOccurred(intensity: oneShotIntensity)
                                             impactMedium?.impactOccurred(intensity: 0.95)
                     impactMedium?.prepare()
@@ -323,6 +323,12 @@ public final class RankUpConfetti3DView: UIView {
             }
 
             launchedBursts += 1
+            
+            // ✅ 烟花即将落地时的“低频余震”
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                LowBuzzHaptic.shared.playBuzz(duration: 0.25)
+//                BuzzFallbackHaptic.playBuzz()
+            }
         }
 
         // 2) 更新
@@ -732,3 +738,20 @@ public final class RankUpConfetti3DView: UIView {
 @inline(__always) private func cos(_ x: CGFloat) -> CGFloat { CGFloat(Darwin.cos(Double(x))) }
 @inline(__always) private func pow(_ x: CGFloat, _ y: CGFloat) -> CGFloat { CGFloat(Darwin.pow(Double(x), Double(y))) }
 
+final class BuzzFallbackHaptic {
+
+    static func playBuzz() {
+        let generator = UIImpactFeedbackGenerator(style: .soft)
+        generator.prepare()
+
+        generator.impactOccurred(intensity: 0.35)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            generator.impactOccurred(intensity: 0.25)
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.10) {
+            generator.impactOccurred(intensity: 0.18)
+        }
+    }
+}
