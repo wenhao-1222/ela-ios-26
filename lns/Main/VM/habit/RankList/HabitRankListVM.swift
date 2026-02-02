@@ -129,9 +129,9 @@ class HabitRankListVM: UIView {
 extension HabitRankListVM{
     func updateUI(dict:NSDictionary) {
         if dict.stringValueForKey(key: "weekStartDate").count > 0 &&
-            UserDefaults.standard.getTierWeekStartDate() != dict.stringValueForKey(key: "weekStartDate"){
+            UserDefaults.standard.getTierWeekStartDate() == dict.stringValueForKey(key: "weekStartDate"){
             pendingSettlementDict = dict
-            UserDefaults.setTierData(tierStartDate: dict.stringValueForKey(key: "weekStartDate"))
+//            UserDefaults.setTierData(tierStartDate: dict.stringValueForKey(key: "weekStartDate"))
             updateSettlementVmIfReady()
         }
     }
@@ -166,7 +166,7 @@ extension HabitRankListVM{
         }else if self.currentTierIndex < dict.stringValueForKey(key: "tier").intValue{
             type = .DECLINE
         }
-        settlementVm.rankUpType = .REMAIN//type
+        settlementVm.rankUpType = type
         settlementVm.updateCurrentTier(tier: dict.stringValueForKey(key: "tier").intValue,
                                        sn: newIndex,
                                        point: point,
