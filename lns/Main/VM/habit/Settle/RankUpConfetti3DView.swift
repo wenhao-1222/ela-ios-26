@@ -5,6 +5,7 @@
 //  Created by LNS2 on 2026/1/27.
 //
 
+
 import UIKit
 
 // MARK: - Public API
@@ -22,11 +23,9 @@ public final class RankUpConfetti3DView: UIView {
     private var impactGen: UIImpactFeedbackGenerator?
     private var impactMedium: UIImpactFeedbackGenerator?
     private let haptics = ConfettiHaptics()
-    private var isFinalBurst: Bool = false
 
     private var hapticEndMs: Int = 0
     private var lastHapticMs: Int = 0
-    private var lastSustainHapticMs: Int = 0
     
     // ✅ 新增：记录当前 burst 的开始时间，用于计算烟花强弱包络
     private var currentBurstStartMs: Int = 0
@@ -94,7 +93,7 @@ public final class RankUpConfetti3DView: UIView {
         public var hapticStyle: UIImpactFeedbackGenerator.FeedbackStyle = .rigid
         public var hapticContinuous: Bool = true
         public var hapticDurationMs: Int = 250        // 每次喷射持续震多久
-        public var hapticIntervalMs: Int = 5         // 多久震一次（越小越密）
+        public var hapticIntervalMs: Int = 50         // 多久震一次（越小越密）
         public var hapticIntensity: CGFloat = 0.75     // iOS13+
 
         public init() {}
@@ -228,7 +227,7 @@ public final class RankUpConfetti3DView: UIView {
         animationStartMs = nowMs()
         // ✅ 这里创建触感生成器（关键）
         if config.hapticsEnabled {
-//            haptics.prepare()
+            haptics.prepare()
             let g = UIImpactFeedbackGenerator(style: config.hapticStyle)
             g.prepare()
             impactGen = g
@@ -296,11 +295,9 @@ public final class RankUpConfetti3DView: UIView {
               elapsed < config.durationMs
         {
             spawnBurst(nowMs: now)
+            
             // ✅ 新增：记录本次 burst 的起点（用于后续连续震动强弱变化）
             currentBurstStartMs = now
-            lastSustainHapticMs = 0
-
-            isFinalBurst = (launchedBursts == totalBursts - 1)
 
             if config.hapticsEnabled {
 //                haptics.playPerfectConfetti(leadTime: 0)
@@ -358,44 +355,21 @@ public final class RankUpConfetti3DView: UIView {
         let margin: CGFloat = max(config.maxParticleSize, 10) * 4
         
         // ✅ 连续震动：改为“烟花包络强弱变化”，其他逻辑不动
-//        if config.hapticsEnabled, config.hapticContinuous, now < hapticEndMs {
-//            if lastHapticMs == 0 || (now - lastHapticMs) >= config.hapticIntervalMs {
-//                // 0~1：当前 burst 内的进度
-//                let denom = max(1, config.hapticDurationMs)
-//                let t = clamp(CGFloat(now - currentBurstStartMs) / CGFloat(denom), 0, 1)
-//                
-//                // 烟花包络：弱->强->爆点->衰减余震
-//                let env = fireworkEnvelope(t)
-//                
-//                // 最终强度：env * 用户配置强度
-//                let intensity = clamp(env * config.hapticIntensity, 0.05, 1.0)
-//                
-//                impactGen?.impactOccurred(intensity: intensity)
-//                impactGen?.prepare()
-//                lastHapticMs = now
-//            }
-//        }
-        if config.hapticsEnabled, config.hapticContinuous {
-            if now < hapticEndMs {
-                // 🟡 A. 当前 burst 的 envelope 阶段（强 → 衰减）
-                if lastHapticMs == 0 || (now - lastHapticMs) >= config.hapticIntervalMs {
-                    let denom = max(1, config.hapticDurationMs)
-                    let t = clamp(CGFloat(now - currentBurstStartMs) / CGFloat(denom), 0, 1)
-                    let env = fireworkEnvelope(t)
-                    let intensity = clamp(env * config.hapticIntensity, 0.05, 1.0)
-
-                    impactGen?.impactOccurred(intensity: intensity)
-                    impactGen?.prepare()
-                    lastHapticMs = now
-                }
-            } else if isFinalBurst {
-                // 🔵 B. 第五次爆炸后的“余焰维持震感”
-//                if (lastHapticMs == 0 || (now - lastHapticMs) >= 25)  && now < hapticEndMs + Int(1){
-////                    let sustainIntensity = clamp(config.hapticIntensity * 0.18, 0.04, 0.2)
-//                    impactGen?.impactOccurred(intensity: 0.4)
-//                    impactGen?.prepare()
-//                    lastHapticMs = now
-//                }
+        if config.hapticsEnabled, config.hapticContinuous, now < hapticEndMs {
+            if lastHapticMs == 0 || (now - lastHapticMs) >= config.hapticIntervalMs {
+                // 0~1：当前 burst 内的进度
+                let denom = max(1, config.hapticDurationMs)
+                let t = clamp(CGFloat(now - currentBurstStartMs) / CGFloat(denom), 0, 1)
+                
+                // 烟花包络：弱->强->爆点->衰减余震
+                let env = fireworkEnvelope(t)
+                
+                // 最终强度：env * 用户配置强度
+                let intensity = clamp(env * config.hapticIntensity, 0.05, 1.0)
+                
+                impactGen?.impactOccurred(intensity: intensity)
+                impactGen?.prepare()
+                lastHapticMs = now
             }
         }
         

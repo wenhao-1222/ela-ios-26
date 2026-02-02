@@ -21,6 +21,7 @@ class HabitExchangeVC: WHBaseViewVC {
     lazy var elaIconImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "ela_clear_icon")
+        img.isHidden = true
         
         return img
     }()
