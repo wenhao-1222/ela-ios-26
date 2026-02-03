@@ -42,6 +42,9 @@ class HabitStreakListVM: UIView {
 
 extension HabitStreakListVM{
     func updateUI(listArray:NSArray) {
+        for vi in whiteView.subviews{
+            vi.removeFromSuperview()
+        }
         if listArray.count > 0 {
             self.selfHeight = kFitWidth(32)+kFitWidth(40)*CGFloat(listArray.count)+kFitWidth(20)*CGFloat(listArray.count-1)
             self.heightChangeBlock?(kFitWidth(32)+kFitWidth(40)*CGFloat(listArray.count))

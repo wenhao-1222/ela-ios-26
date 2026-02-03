@@ -26,9 +26,12 @@ public final class RankUpConfetti3DView: UIView {
 
     private var hapticEndMs: Int = 0
     private var lastHapticMs: Int = 0
+    private var lastLandingHapticMs: Int = 0
     
     // ✅ 新增：记录当前 burst 的开始时间，用于计算烟花强弱包络
     private var currentBurstStartMs: Int = 0
+    private let landingHapticDelayMs: Int = 600
+    private let landingHapticCooldownMs: Int = 800
 
     public struct Config {
         // 图案开关
@@ -236,6 +239,7 @@ public final class RankUpConfetti3DView: UIView {
             lastHapticMs = 0
             hapticEndMs = 0
             currentBurstStartMs = 0   // ✅ 新增：初始化
+            lastLandingHapticMs = 0
         } else {
             impactGen = nil
             impactMedium = nil
@@ -325,9 +329,14 @@ public final class RankUpConfetti3DView: UIView {
             launchedBursts += 1
             
             // ✅ 烟花即将落地时的“低频余震”
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                LowBuzzHaptic.shared.playBuzz(duration: 0.25)
-//                BuzzFallbackHaptic.playBuzz()
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(landingHapticDelayMs) + 0.3) { [weak self] in
+                            guard let self else { return }
+                            let nowMs = self.nowMs()
+                            guard nowMs - self.lastLandingHapticMs >= self.landingHapticCooldownMs else { return }
+                            self.lastLandingHapticMs = nowMs
+//                LowBuzzHaptic.shared.playBuzz(duration: 0.25)
+                BuzzFallbackHaptic.playBuzz()
             }
         }
 
@@ -739,19 +748,25 @@ public final class RankUpConfetti3DView: UIView {
 @inline(__always) private func pow(_ x: CGFloat, _ y: CGFloat) -> CGFloat { CGFloat(Darwin.pow(Double(x), Double(y))) }
 
 final class BuzzFallbackHaptic {
-
     static func playBuzz() {
         let generator = UIImpactFeedbackGenerator(style: .soft)
         generator.prepare()
 
-        generator.impactOccurred(intensity: 0.35)
+        generator.impactOccurred(intensity: 0.9)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            generator.impactOccurred(intensity: 0.25)
+            generator.impactOccurred(intensity: 0.8)
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.10) {
-            generator.impactOccurred(intensity: 0.18)
+            generator.impactOccurred(intensity: 0.75)
+        }
+//        var iden = 0.68
+        for i in 0..<18{
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.14 + 0.06*Double(i)) {
+                let iden = 0.68-Double(i)*0.01
+                generator.impactOccurred(intensity: iden)
+            }
         }
     }
 }

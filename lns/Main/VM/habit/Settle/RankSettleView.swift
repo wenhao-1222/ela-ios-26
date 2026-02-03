@@ -122,20 +122,7 @@ final class RankSettleView: UIView {
         trophyContainerView.snp.makeConstraints { make in
             make.left.right.top.bottom.equalToSuperview()
         }
-
-        // ✅ 把 cupBaseAnchorView 加进来，并把它钉在“奖杯底座接触点”
-        // 关键：这个锚点要跟着奖杯缩放/移动，所以必须在 settleView 内部
         trophyContainerView.addSubview(cupBaseAnchorView)
-
-        // ✅ 这里你需要把它约束到“底座接触桌面的位置”
-        // 如果你有底座图片 view（比如 baseImgView），最好这样写：
-        //
-//         cupBaseAnchorView.snp.makeConstraints { make in
-//             make.centerX.equalTo(baseImgView.snp.centerX)
-//             make.bottom.equalTo(baseImgView.snp.bottom)   // 接触点
-//             make.width.height.equalTo(2)                  // 锚点很小即可
-//         }
-        //
         // 如果你暂时拿不到底座 view，那么用 settleView 的“奖杯整体底部”先顶住：
         cupBaseAnchorView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -335,7 +322,6 @@ extension RankSettleView {
                            delay: 0.25,
                            options: [.curveEaseOut, .beginFromCurrentState],
                            animations: {
-                
                 // 0) ✅ incomingLeft 同步移动到 left 槽位（一起出现）
                 // incomingLeft 同步移动到 left 槽位
                 incomingLeft?.center.x = self.leftSlotCX

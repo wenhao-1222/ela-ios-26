@@ -141,7 +141,7 @@ extension HabitVC{
             DLLog(message: "sendDataRequest:\(dataDict)")
             
             self.dataObj = dataDict
-            self.progressVm.updateUI(dict: self.dataObj)
+            self.progressVm.updateUI(dict: self.dataObj,isAnimate: true)
         }
     }
     func sendLastWeekRanklistRequest() {

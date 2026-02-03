@@ -102,23 +102,29 @@ class HabitProgressVM: UIView {
 }
 
 extension HabitProgressVM{
-    func updateUI(dict:NSDictionary) {
+    func updateUI(dict:NSDictionary,isAnimate:Bool=false) {
 //        self.topMsgVm.numberLabel.text = dict.stringValueForKey(key: "pointBalance")
 //        if isCounting{
         let nextPointBalance = Int(dict.doubleValueForKey(key: "pointBalance").rounded())
         let previousPointBalance = lastNumber
 
-        if isCounting {
+//        if isCounting {
             pendingPointAnimation = (start: previousPointBalance, target: nextPointBalance)
             isCounting = false
-//            self.topMsgVm.numberLabel.count(from: CGFloat(self.lastNumber), to: CGFloat(Int(dict.doubleValueForKey(key: "pointBalance").rounded())), withDuration: 0.5)
-            if isPointLabelVisible() {
-                triggerPointAnimationIfNeeded()
-            } else {
-                self.topMsgVm.numberLabel.text = "\(previousPointBalance)"
-            }
-        } else if pendingPointAnimation == nil {
-            self.topMsgVm.numberLabel.text = "\(nextPointBalance)"
+        
+//            if isPointLabelVisible() {
+//                triggerPointAnimationIfNeeded()
+//            } else {
+//                self.topMsgVm.numberLabel.text = "\(previousPointBalance)"
+//            }
+//        } else if pendingPointAnimation == nil {
+//            self.topMsgVm.numberLabel.text = "\(nextPointBalance)"
+//        }
+        
+        if isAnimate{
+            topMsgVm.numberLabel.count(from: CGFloat(previousPointBalance),
+                                       to: CGFloat(nextPointBalance),
+                                       withDuration: 0.5)
         }
         self.lastNumber = nextPointBalance//dict.stringValueForKey(key: "pointBalance").intValue
         self.todayMsgVm.updateUI(dict: dict)

@@ -68,7 +68,7 @@ class HabitStreakMsgVM: UIView {
         let img = UIImageView()
         
         if UserInfoModel.shared.streakDict.doubleValueForKey(key: "level") < 7{
-            img.setImgLocal(imgName: "streak_icon_\(Int(UserInfoModel.shared.streakDict.doubleValueForKey(key: "level")))")
+            img.setImgLocal(imgName: "streak_icon_\(Int(UserInfoModel.shared.streakDict.doubleValueForKey(key: "level"))-1)")
         }else{
             img.setImgLocal(imgName: "streak_icon_6")
         }
@@ -100,8 +100,8 @@ class HabitStreakMsgVM: UIView {
     
     lazy var nextIconImg: UIImageView = {
         let img = UIImageView()
-        if UserInfoModel.shared.streakDict.doubleValueForKey(key: "level") < 6{
-            img.setImgLocal(imgName: "streak_icon_\(Int(UserInfoModel.shared.streakDict.doubleValueForKey(key: "level"))+1)")
+        if UserInfoModel.shared.streakDict.doubleValueForKey(key: "level") < 7{
+            img.setImgLocal(imgName: "streak_icon_\(Int(UserInfoModel.shared.streakDict.doubleValueForKey(key: "level")))")
         }else{
             img.isHidden = true
             img.setImgLocal(imgName: "streak_icon_6")

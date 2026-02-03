@@ -299,8 +299,8 @@ extension HabitSettleVM {
         tableViewBgImg.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(25))
             make.right.equalTo(kFitWidth(-25))
-            make.top.equalTo(pointLabel.snp.bottom).offset(kFitWidth(30))
-            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(74))
+            make.top.equalTo(pointLabel.snp.bottom).offset(kFitWidth(27))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(71))
         }
 //        tableViewBgImg.snp.makeConstraints { make in
 ////            make.left.top.width.height.equalTo(tableView)
@@ -463,8 +463,8 @@ extension HabitSettleVM {
             UIView.animate(withDuration: 0.25) {
                 self.rankTipLabel.alpha = 1
                 self.currentCupNameLabel.alpha = 1
-                self.cupLeftImgView.alpha = 1
-                self.cupRightImgView.alpha = 1
+                self.cupLeftImgView.alpha = 0.6
+                self.cupRightImgView.alpha = 0.6
             }completion: { t in
                 UIView.animate(withDuration: 0.25) {
                     self.confirmButton.alpha = 1
@@ -505,8 +505,8 @@ extension HabitSettleVM {
                 UIView.animate(withDuration: 0.25) {
                     self.rankTipLabel.alpha = 1
                     self.currentCupNameLabel.alpha = 1
-                    self.cupLeftImgView.alpha = 1
-                    self.cupRightImgView.alpha = 1
+                    self.cupLeftImgView.alpha = 0.6
+                    self.cupRightImgView.alpha = 0.6
                 }
             }
         }
