@@ -73,6 +73,7 @@ class HabitGuideVM: UIView {
             UIView.animate(withDuration: 0.45, delay: 0) {
                 self.alpha = 0
             } completion: { _ in
+                UserDefaults.set(value: "1", forKey: .rank_list_guide)
                 self.isHidden = true
             }
         }

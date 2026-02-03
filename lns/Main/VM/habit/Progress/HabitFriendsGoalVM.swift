@@ -103,6 +103,14 @@ extension HabitFriendsGoalVM{
 extension HabitFriendsGoalVM{
     func updateUI(dict:NSDictionary) {
         itemModels.removeAll()
+        /*
+         这里又改了，变成4种状态了。
+
+         1：未达成的时候，灰色文案“领取”
+         2：达成了，但后台不要自动给用户加分，显示蓝色“领取”，用户点击了才加分，跟连胜一样
+         3：领取了，变成灰色“已领取”。
+         4：已经领取，超过24小时/第二天再打开这个页面，就直接不显示这条
+         */
         itemModels.append(HabitItemModel().createModel(vm: firstOnTargetVm,
                                                        isComplete: dict.stringValueForKey(key: "isProteinIntakeOnTargetWithFriendFirstTime") == "1",
                                                        type: .protein_target_friend_first,

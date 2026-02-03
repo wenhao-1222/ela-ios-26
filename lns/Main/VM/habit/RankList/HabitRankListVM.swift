@@ -43,24 +43,11 @@ class HabitRankListVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        headVm.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: headVm.selfHeight)
-
-        tableView.frame = CGRect(
-            x: 0,
-            y: headVm.frame.maxY,
-            width: SCREEN_WIDHT,
-            height: selfHeight - headVm.frame.maxY
-        )
-    }
 
     lazy var tableView: UITableView = {
 //        let vi = UITableView(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight), style: .plain)
         let vi = UITableView(frame: CGRect.init(x: 0, y: self.headCupVm.frame.maxY, width: SCREEN_WIDHT, height: selfHeight-self.headCupVm.selfHeight), style: .grouped)
         vi.backgroundColor = .COLOR_CARD_BG_WHITE//.COLOR_BG_F2
-//        vi.tableHeaderView = headVm
         
         vi.delegate = self
         vi.dataSource = self
@@ -88,10 +75,6 @@ class HabitRankListVM: UIView {
 //            
 //            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "activePlan"), object: nil)
 //        }
-        return vm
-    }()
-    lazy var headVm: HabitRankListHeadVM = {
-        let vm = HabitRankListHeadVM.init(frame: .zero)
         return vm
     }()
     lazy var headCupVm: HabitRankListHeadCupVM = {
@@ -233,7 +216,6 @@ extension HabitRankListVM{
 extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
         emptyVm.isHidden = displayedDataArray.count > 0
-        headVm.isHidden = displayedDataArray.count == 0
         return displayedDataArray.count
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -286,7 +268,6 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
 extension HabitRankListVM{
     func initUI() {
         addSubview(tableView)
-//        addSubview(headVm)
         addSubview(headCupVm)
         addSubview(emptyVm)
         
@@ -706,170 +687,6 @@ extension HabitRankListVM{
 
 }
 
-// MARK: - 段位变化动画
-extension HabitRankListVM {
-    @objc private func onTapRank() {
-        guard !isAnimatingToDemo else { return }
-        let fromIndex: Int = UserDefaults().getTierData().intValue
-        
-        guard fromIndex != currentTierIndex,
-        fromIndex > 0 else { return }
-        
-        let mode: RankResultViewController.Mode = fromIndex < currentTierIndex ? .promote : .demote
-        unlockedTierIndex = currentTierIndex//max(unlockedTierIndex, currentTierIndex)
-        playTransitionToDemo(mode: mode,
-                             fromIndex: fromIndex - 1,
-                             toIndex: currentTierIndex - 1)
-        UserDefaults.setTierData(tier: "\(currentTierIndex)", isRefresh: true)
-//        self.headVm.updateDegree(tier: currentTierIndex)
-    }
-
-    private func playTransitionToDemo(mode: RankResultViewController.Mode, fromIndex: Int, toIndex: Int) {
-        guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.keyWindow else { return }
-        isAnimatingToDemo = true
-
-        let overlay = UIView(frame: window.bounds)
-        overlay.backgroundColor = UIColor.black.withAlphaComponent(0.0)
-        window.addSubview(overlay)
-
-        let snapshot = UIImageView(image: self.headVm.rankImgView.image)
-        snapshot.contentMode = .scaleAspectFit
-        snapshot.frame = self.headVm.rankImgView.convert(self.headVm.rankImgView.bounds, to: window)
-        overlay.addSubview(snapshot)
-        self.headVm.rankImgView.isHidden = true
-        let demoVC = DemoViewController()
-       demoVC.configure(currentIndex: fromIndex, unlockedMaxIndex: toIndex)
-//       let preparedTargetFrame = targetBadgeFrame(in: window, using: demoVC)
-//        demoVC.configure(currentIndex: currentTierIndex, unlockedMaxIndex: unlockedTierIndex)
-        let preparedTargetFrame = targetBadgeFrame(in: window, using: demoVC)
-
-        UIView.animate(withDuration: 0.2,
-                       delay: 0,
-                       options: [.curveEaseInOut]) {
-            overlay.backgroundColor = UIColor.black.withAlphaComponent(0.15)
-            
-            if let targetFrame = preparedTargetFrame {
-                            snapshot.frame = targetFrame
-                        } else {
-                            snapshot.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
-                            snapshot.center = CGPoint(x: window.bounds.midX, y: window.bounds.midY)
-                        }
-        } completion: { _ in
-            self.presentDemoPage(using: snapshot,
-                                 overlay: overlay,
-                                 mode: mode,
-                                 fromIndex: fromIndex,
-                                 toIndex: toIndex,
-                                 demoVC: demoVC,
-                                 preparedTargetFrame: preparedTargetFrame)
-        }
-    }
-
-    private func presentDemoPage(using snapshot: UIImageView,
-                                 overlay: UIView,
-                                 mode: RankResultViewController.Mode,
-                                 fromIndex: Int,
-                                 toIndex: Int,
-                                  demoVC: DemoViewController,
-                                  preparedTargetFrame: CGRect?) {
-        demoVC.modalPresentationStyle = .fullScreen
-        demoVC.onRequestDismiss = { [weak self, weak demoVC] badgeFrame, badgeImage in
-            guard let self, let demoVC else { return }
-            self.animateBackToRank(from: badgeFrame, badgeImage: badgeImage, demoVC: demoVC)
-        }
-
-        let hostVC = WHTool.shared.getCurrentViewController()
-        hostVC.present(demoVC, animated: false) {
-            demoVC.view.layoutIfNeeded()
-            guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.keyWindow else {
-                overlay.removeFromSuperview()
-                snapshot.removeFromSuperview()
-                demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
-                self.headVm.updateDegree(tier: self.currentTierIndex)
-                self.isAnimatingToDemo = false
-                return
-            }
-            let targetInWindow = preparedTargetFrame ?? {
-                guard let targetFrame = demoVC.badgeFrame(in: demoVC.view) else { return nil }
-                return demoVC.view.convert(targetFrame, to: window)
-            }()
-
-            guard let finalFrame = targetInWindow else {
-                overlay.removeFromSuperview()
-                snapshot.removeFromSuperview()
-                demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
-                self.headVm.updateDegree(tier: self.currentTierIndex)
-                self.isAnimatingToDemo = false
-                return
-            }
-            
-            demoVC.updateCurrentIndex(currentIndex: fromIndex)
-            UIView.animate(withDuration: 0.15,
-                           delay: 0,
-                           options: [.curveEaseInOut]) {
-                snapshot.transform = .identity
-                snapshot.frame = finalFrame
-                overlay.backgroundColor = .clear
-//                demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
-            } completion: { _ in
-                overlay.removeFromSuperview()
-                snapshot.removeFromSuperview()
-                demoVC.play(mode: mode, fromIndex: fromIndex, toIndex: toIndex)
-                self.headVm.updateDegree(tier: self.currentTierIndex)
-                self.isAnimatingToDemo = false
-            }
-        }
-    }
-    private func animateBackToRank(from badgeFrame: CGRect, badgeImage: UIImage?, demoVC: DemoViewController) {
-        guard !isAnimatingBackFromDemo else { return }
-        guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) ?? UIApplication.shared.keyWindow else {
-            demoVC.dismiss(animated: true)
-            return
-        }
-        isAnimatingBackFromDemo = true
-
-        let overlay = UIView(frame: window.bounds)
-        overlay.backgroundColor = UIColor.black.withAlphaComponent(0.0)
-        window.addSubview(overlay)
-
-        let snapshot = UIImageView(image: badgeImage ?? self.headVm.rankImgView.image)
-        snapshot.contentMode = .scaleAspectFit
-        snapshot.frame = badgeFrame
-        overlay.addSubview(snapshot)
-
-        demoVC.dismiss(animated: false) {
-            let targetFrame = self.headVm.rankImgView.convert(self.headVm.rankImgView.bounds, to: window)
-            UIView.animate(withDuration: 0.32,
-                           delay: 0,
-                           options: [.curveEaseInOut]) {
-                overlay.backgroundColor = UIColor.black.withAlphaComponent(0.08)
-                snapshot.frame = targetFrame
-            } completion: { _ in
-                overlay.removeFromSuperview()
-                self.headVm.rankImgView.isHidden = false
-                self.isAnimatingBackFromDemo = false
-            }
-        }
-    }
-    private func targetBadgeFrame(in window: UIWindow, using demoVC: DemoViewController) -> CGRect? {
-        demoVC.loadViewIfNeeded()
-        demoVC.view.frame = window.bounds
-        demoVC.view.isHidden = true
-        window.addSubview(demoVC.view)
-        demoVC.view.setNeedsLayout()
-        demoVC.view.layoutIfNeeded()
-        guard let targetFrame = demoVC.badgeFrame(in: demoVC.view) else {
-            demoVC.view.removeFromSuperview()
-            demoVC.view.isHidden = false
-            return nil
-        }
-        let convertedFrame = demoVC.view.convert(targetFrame, to: window)
-        demoVC.view.removeFromSuperview()
-        demoVC.view.isHidden = false
-        return convertedFrame
-   }
-}
-
 extension HabitRankListVM{
     func sendDataRequest(animateSelfChange: Bool = false){
         let previousSelfIndex = animateSelfChange ? indexOfCurrentUser(in: dataSourceArray) : nil
@@ -905,7 +722,6 @@ extension HabitRankListVM{
                         self.relegationLine = dataDict.stringValueForKey(key: "relegationLine").intValue
                         self.tableView.reloadData()
                         self.tableView.layoutIfNeeded()
-                        self.onTapRank()
                         self.performSelfRankMove(from: previousSelfIndex, to: newIndex)
                     }else{
                         self.tableView.reloadData()
