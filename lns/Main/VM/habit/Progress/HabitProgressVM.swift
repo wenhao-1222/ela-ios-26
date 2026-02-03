@@ -13,7 +13,7 @@ class HabitProgressVM: UIView {
     var refreshBlock:(()->())?
     var lastNumber = 0
     var isCounting = false
-    private var pendingPointAnimation: (start: Int, target: Int)?
+    private var pendingPointTarget: Int?
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -109,23 +109,16 @@ extension HabitProgressVM{
         let nextPointBalance = Int(dict.doubleValueForKey(key: "pointBalance").rounded())
         let previousPointBalance = lastNumber
 
-//        if isCounting {
-            pendingPointAnimation = (start: previousPointBalance, target: nextPointBalance)
-            isCounting = false
-        
-//            if isPointLabelVisible() {
-//                triggerPointAnimationIfNeeded()
-//            } else {
-//                self.topMsgVm.numberLabel.text = "\(previousPointBalance)"
-//            }
-//        } else if pendingPointAnimation == nil {
-//            self.topMsgVm.numberLabel.text = "\(nextPointBalance)"
-//        }
-        
-        if previousPointBalance != nextPointBalance{
-            topMsgVm.numberLabel.count(from: CGFloat(previousPointBalance),
-                                       to: CGFloat(nextPointBalance),
-                                       withDuration: 0.5)
+        isCounting = false
+
+        if previousPointBalance != nextPointBalance {
+            pendingPointTarget = nextPointBalance
+            if isPointLabelVisible() {
+                triggerPointAnimationIfNeeded()
+            }
+        } else {
+            pendingPointTarget = nil
+            self.topMsgVm.numberLabel.text = "\(nextPointBalance)"
         }
         self.lastNumber = nextPointBalance//dict.stringValueForKey(key: "pointBalance").intValue
         self.todayMsgVm.updateUI(dict: dict)
@@ -192,15 +185,16 @@ extension HabitProgressVM{
 
 extension HabitProgressVM{
     func triggerPointAnimationIfNeeded() {
-        guard let pending = pendingPointAnimation else { return }
+        guard let target = pendingPointTarget else { return }
         guard isPointLabelVisible() else { return }
-        pendingPointAnimation = nil
-        if pending.start == pending.target {
-            topMsgVm.numberLabel.text = "\(pending.target)"
+        pendingPointTarget = nil
+
+        let currentValue = currentPointLabelValue()
+        if currentValue == target {
+            topMsgVm.numberLabel.text = "\(target)"
             return
         }
-        topMsgVm.numberLabel.text = "\(pending.start)"
-        topMsgVm.numberLabel.count(from: CGFloat(pending.start), to: CGFloat(pending.target), withDuration: 0.5)
+        topMsgVm.numberLabel.count(from: CGFloat(currentValue), to: CGFloat(target), withDuration: 0.5)
     }
 
     private func isPointLabelVisible() -> Bool {
@@ -213,6 +207,15 @@ extension HabitProgressVM{
 
         let labelFrameInScroll = topMsgVm.numberLabel.convert(topMsgVm.numberLabel.bounds, to: scrollView)
         return scrollView.bounds.intersects(labelFrameInScroll)
+    }
+
+    private func currentPointLabelValue() -> Int {
+        if let text = topMsgVm.numberLabel.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+           let value = Int(text) {
+            return value
+        }
+        return topMsgVm.numberLabel.text?.intValue ?? 0
+//        return Int(topMsgVm.numberLabel.text)
     }
 }
 
