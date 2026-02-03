@@ -33,6 +33,7 @@ class HabitProgressVM: UIView {
         let scro = UIScrollView()
         scro.backgroundColor = .clear
         scro.delegate = self
+        scro.showsVerticalScrollIndicator = false
         
         return scro
     }()
@@ -121,7 +122,7 @@ extension HabitProgressVM{
 //            self.topMsgVm.numberLabel.text = "\(nextPointBalance)"
 //        }
         
-        if isAnimate{
+        if previousPointBalance != nextPointBalance{
             topMsgVm.numberLabel.count(from: CGFloat(previousPointBalance),
                                        to: CGFloat(nextPointBalance),
                                        withDuration: 0.5)
@@ -169,7 +170,6 @@ extension HabitProgressVM{
         appDelegate.getKeyWindow().addSubview(ruleFitnessAlertVm)
     }
 }
-
 
 extension HabitProgressVM{
     func sendRecieveStreakRequest(streakId:String) {

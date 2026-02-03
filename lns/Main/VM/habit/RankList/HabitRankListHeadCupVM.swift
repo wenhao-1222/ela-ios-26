@@ -98,6 +98,7 @@ class HabitRankListHeadCupVM: UIView {
     lazy var scrollView: UIScrollView = {
         let scro = UIScrollView.init(frame: CGRect.init(x: 0, y: kFitWidth(83), width: SCREEN_WIDHT, height: scroviewHeight))
         scro.backgroundColor = .clear
+        scro.showsHorizontalScrollIndicator = false
         
         return scro
     }()
