@@ -37,6 +37,13 @@ class HabitProgressVM: UIView {
         
         return scro
     }()
+    lazy var animOverlayView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = .clear
+        vi.isUserInteractionEnabled = false
+        vi.clipsToBounds = true
+        return vi
+    }()
     lazy var topMsgVm: HabitTopMsgVM = {
         let vm = HabitTopMsgVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
         
@@ -146,6 +153,7 @@ extension HabitProgressVM{
 extension HabitProgressVM{
     func initUI() {
         addSubview(scrollView)
+        addSubview(animOverlayView)
         scrollView.addSubview(topMsgVm)
         scrollView.addSubview(todayMsgVm)
         scrollView.addSubview(friendMsgVm)
@@ -153,6 +161,9 @@ extension HabitProgressVM{
         scrollView.addSubview(streakListVm)
         
         scrollView.snp.makeConstraints { make in
+            make.left.top.width.height.equalToSuperview()
+        }
+        animOverlayView.snp.makeConstraints { make in
             make.left.top.width.height.equalToSuperview()
         }
         
@@ -186,16 +197,29 @@ extension HabitProgressVM{
 
 extension HabitProgressVM{
     func playStreakReceiveAnimation(from sourceView: UIView, point: String) {
-        guard let window = self.window else { return }
-        let startFrame = sourceView.convert(sourceView.bounds, to: window)
-        let endFrame = topMsgVm.numberLabel.convert(topMsgVm.numberLabel.bounds, to: window)
+        let containerView = animOverlayView
+        let startFrame: CGRect
+        let snapshotView: UIView
+        if let item = sourceView as? HabitItemVM {
+            let buttonFrame = item.showButton.convert(item.showButton.bounds, to: containerView)
+            startFrame = buttonFrame
+            snapshotView = item.showButton.snapshotView(afterScreenUpdates: false) ?? UIView()
+            snapshotView.clipsToBounds = true
+            snapshotView.layer.cornerRadius = kFitWidth(15)//item.showButton.layer.cornerRadius
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+                item.showButton.isHidden = true
+            })
+        } else {
+            startFrame = sourceView.convert(sourceView.bounds, to: containerView)
+            snapshotView = sourceView.snapshotView(afterScreenUpdates: false) ?? UIView()
+        }
+        let endFrame = topMsgVm.numberLabel.convert(topMsgVm.numberLabel.bounds, to: containerView)
 
-        let snapshotView = sourceView.snapshotView(afterScreenUpdates: false) ?? UIView()
         snapshotView.frame = startFrame
         snapshotView.layer.masksToBounds = true
-        window.addSubview(snapshotView)
+        containerView.addSubview(snapshotView)
 
-        let circleSize = kFitWidth(48)
+        let circleSize = startFrame.height//kFitWidth(48)
         let circleBounds = CGRect(x: 0, y: 0, width: circleSize, height: circleSize)
         let startCenter = CGPoint(x: startFrame.midX, y: startFrame.midY)
         let endCenter = CGPoint(x: endFrame.midX, y: endFrame.midY)
@@ -204,7 +228,7 @@ extension HabitProgressVM{
         animateView.backgroundColor = .THEME
         animateView.layer.cornerRadius = circleSize*0.5
         animateView.isHidden = true
-        window.addSubview(animateView)
+        containerView.addSubview(animateView)
         
         let pointLabel = UILabel()
         pointLabel.text = "+\(point)"
@@ -222,7 +246,7 @@ extension HabitProgressVM{
 
         UIView.animateKeyframes(withDuration: 0.5, delay: 0, options: [.calculationModeCubic], animations: {
             UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.35) {
-                snapshotView.transform = CGAffineTransform(scaleX: 1.08, y: 1.08)
+                snapshotView.transform = CGAffineTransform(scaleX: 1.01, y: 1.01)
             }
             UIView.addKeyframe(withRelativeStartTime: 0.35, relativeDuration: 0.65) {
                 snapshotView.transform = .identity
