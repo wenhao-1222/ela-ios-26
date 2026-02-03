@@ -10,7 +10,7 @@ class HabitStreakListVM: UIView {
     
     var selfHeight = kFitWidth(32)+kFitWidth(40)
     var heightChangeBlock:((CGFloat)->())?
-    var recieveBlock:((String)->())?
+    var recieveBlock:((String, HabitItemVM, String)->())?
     var controller = WHBaseViewVC()
     
     override init(frame:CGRect){
@@ -78,7 +78,11 @@ extension HabitStreakListVM{
                     
                     vm.tapBlock = {()in
                         vm.showButton.isUserInteractionEnabled = false
-                        self.recieveBlock?(dict.stringValueForKey(key: "streakRewardId"))
+                        self.recieveBlock?(
+                            dict.stringValueForKey(key: "streakRewardId"),
+                            vm,
+                            dict.stringValueForKey(key: "streakRewardPoint")
+                        )
                     }
                 }
                 whiteView.addSubview(vm)

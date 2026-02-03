@@ -75,8 +75,9 @@ class HabitProgressVM: UIView {
             self.streakListVm.frame = CGRect.init(x: 0, y: self.streakMsgVm.frame.maxY+kFitWidth(12), width: SCREEN_WIDHT, height: self.streakListVm.selfHeight)
             self.scrollView.contentSize = CGSize.init(width: 0, height: self.streakListVm.frame.maxY+kFitWidth(20))
         }
-        vm.recieveBlock = {(streakId)in
+        vm.recieveBlock = {(streakId, sourceVm, point)in
             self.sendRecieveStreakRequest(streakId: streakId)
+            self.playStreakReceiveAnimation(from: sourceVm, point: point)
         }
         return vm
     }()
@@ -175,8 +176,8 @@ extension HabitProgressVM{
             DLLog(message: "sendDataRequest:\(dataDict)")
             self.isCounting = true
             
-            MCToast.mc_text("领取成功")
-            DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+//            MCToast.mc_text("领取成功")
+            DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
                 self.refreshBlock?()
             })
         }
@@ -184,6 +185,109 @@ extension HabitProgressVM{
 }
 
 extension HabitProgressVM{
+    func playStreakReceiveAnimation(from sourceView: UIView, point: String) {
+        guard let window = self.window else { return }
+        let startFrame = sourceView.convert(sourceView.bounds, to: window)
+        let endFrame = topMsgVm.numberLabel.convert(topMsgVm.numberLabel.bounds, to: window)
+
+        let snapshotView = sourceView.snapshotView(afterScreenUpdates: false) ?? UIView()
+        snapshotView.frame = startFrame
+        snapshotView.layer.masksToBounds = true
+        window.addSubview(snapshotView)
+
+        let circleSize = kFitWidth(48)
+        let circleBounds = CGRect(x: 0, y: 0, width: circleSize, height: circleSize)
+        let startCenter = CGPoint(x: startFrame.midX, y: startFrame.midY)
+        let endCenter = CGPoint(x: endFrame.midX, y: endFrame.midY)
+
+        let animateView = UIView(frame: CGRect.init(x: 0, y: 0, width: circleSize, height: circleSize))
+        animateView.backgroundColor = .THEME
+        animateView.layer.cornerRadius = circleSize*0.5
+        animateView.isHidden = true
+        window.addSubview(animateView)
+        
+        let pointLabel = UILabel()
+        pointLabel.text = "+\(point)"
+        pointLabel.textColor = .white
+        pointLabel.font = .systemFont(ofSize: 12, weight: .semibold)
+        pointLabel.textAlignment = .center
+        pointLabel.adjustsFontSizeToFitWidth = true
+        pointLabel.minimumScaleFactor = 0.6
+//        pointLabel.isHidden = true
+//        snapshotView.addSubview(pointLabel)
+        animateView.addSubview(pointLabel)
+        pointLabel.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(kFitWidth(4))
+        }
+
+        UIView.animateKeyframes(withDuration: 0.5, delay: 0, options: [.calculationModeCubic], animations: {
+            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.35) {
+                snapshotView.transform = CGAffineTransform(scaleX: 1.08, y: 1.08)
+            }
+            UIView.addKeyframe(withRelativeStartTime: 0.35, relativeDuration: 0.65) {
+                snapshotView.transform = .identity
+                snapshotView.bounds = circleBounds
+                snapshotView.center = startCenter
+                snapshotView.layer.cornerRadius = circleSize * 0.5
+                snapshotView.backgroundColor = .THEME
+            }
+        }, completion: { _ in
+            snapshotView.subviews.forEach { subview in
+                if subview !== pointLabel {
+                    subview.removeFromSuperview()
+                }
+            }
+            pointLabel.isHidden = false
+            snapshotView.backgroundColor = .clear
+            snapshotView.layer.cornerRadius = 0
+            snapshotView.clipsToBounds = false
+            self.playParabolaAnimation(view: animateView,
+                                       sourceView: snapshotView,
+                                       from: startCenter,
+                                       to: endCenter)
+        })
+    }
+
+    private func playParabolaAnimation(view animView: UIView,
+                                       sourceView : UIView,
+                                       from startPoint: CGPoint,
+                                       to endPoint: CGPoint) {
+        animView.center = sourceView.center
+        animView.isHidden = false
+        sourceView.isHidden = true
+        let midX = (startPoint.x + endPoint.x) * 0.5
+        let controlPoint = CGPoint(x: midX, y: min(startPoint.y, endPoint.y) - kFitWidth(120))
+
+        let path = UIBezierPath()
+        path.move(to: startPoint)
+        path.addQuadCurve(to: endPoint, controlPoint: controlPoint)
+
+        let positionAnim = CAKeyframeAnimation(keyPath: "position")
+        positionAnim.path = path.cgPath
+        positionAnim.rotationMode = .rotateAuto
+
+        let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
+        scaleAnim.fromValue = 1.0
+        scaleAnim.toValue = 0.3
+
+        let opacityAnim = CABasicAnimation(keyPath: "opacity")
+        opacityAnim.fromValue = 1.0
+        opacityAnim.toValue = 0.2
+
+        let group = CAAnimationGroup()
+        group.animations = [positionAnim, scaleAnim, opacityAnim]
+        group.duration = 1
+        group.timingFunction = CAMediaTimingFunction(name: .easeIn)
+
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            animView.removeFromSuperview()
+        }
+        animView.layer.add(group, forKey: "streakReceiveParabola")
+        animView.layer.position = endPoint
+        CATransaction.commit()
+    }
+
     func triggerPointAnimationIfNeeded() {
         guard let target = pendingPointTarget else { return }
         guard isPointLabelVisible() else { return }
