@@ -46,13 +46,17 @@ class HabitRankListVM: UIView {
 
     lazy var tableView: UITableView = {
 //        let vi = UITableView(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight), style: .plain)
-        let vi = UITableView(frame: CGRect.init(x: 0, y: self.headCupVm.frame.maxY, width: SCREEN_WIDHT, height: selfHeight-self.headCupVm.selfHeight), style: .grouped)
+        let vi = UITableView(frame: CGRect.init(x: 0, y: self.headCupVm.frame.maxY-kFitWidth(12), width: SCREEN_WIDHT, height: selfHeight-self.headCupVm.selfHeight+kFitWidth(12)), style: .grouped)
         vi.backgroundColor = .COLOR_CARD_BG_WHITE//.COLOR_BG_F2
         
         vi.delegate = self
         vi.dataSource = self
         vi.separatorStyle = .none
         vi.clipsToBounds = true
+        vi.layer.cornerRadius = kFitWidth(12)
+//        if #available(iOS 11.0, *) {
+            vi.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+//        }
         vi.contentInsetAdjustmentBehavior = .never
         vi.estimatedRowHeight = 0
         vi.estimatedSectionHeaderHeight = 0
@@ -267,9 +271,11 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
 
 extension HabitRankListVM{
     func initUI() {
-        addSubview(tableView)
         addSubview(headCupVm)
+        addSubview(tableView)
         addSubview(emptyVm)
+        
+//        tableView.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(12))
         
         appDelegate.getKeyWindow().addSubview(rewardPointAlertVm)
     }

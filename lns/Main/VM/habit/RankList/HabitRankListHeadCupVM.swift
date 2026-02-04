@@ -92,6 +92,7 @@ class HabitRankListHeadCupVM: UIView {
         vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
+        vi.isHidden = true
         
         return vi
     }()
