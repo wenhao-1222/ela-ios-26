@@ -12,7 +12,7 @@ class HabitExchangeVC: WHBaseViewVC {
     var msgDict = NSDictionary()
     var exchangeBlock:(()->())?
 
-    override var prefersSystemNavigationBarOnIOS26: Bool { true }
+//    override var prefersSystemNavigationBarOnIOS26: Bool { true }
     
     override func viewDidLoad() {
         super.viewDidLoad()

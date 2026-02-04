@@ -10,7 +10,7 @@ class HabitVC: WHBaseViewVC {
     var dataObj = NSDictionary()
     var isSetPopGesture = false
 
-    override var prefersSystemNavigationBarOnIOS26: Bool { true }
+//    override var prefersSystemNavigationBarOnIOS26: Bool { true }
     
     override func viewDidLoad() {
         super.viewDidLoad()
