@@ -16,6 +16,7 @@ class HabitProgressVM: UIView {
     var proteinIntakeOnTargetWithFriendFirstTimeRewardId = ""
     var proteinIntakeOnTargetWithFriendFirstTimePoint = ""
     private var pendingPointTarget: Int?
+    private var deferPointAnimation = false
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -73,8 +74,13 @@ class HabitProgressVM: UIView {
         }
         vm.firstOnTargetVm.tapBlock = {()in
             DLLog(message: "proteinIntakeOnTargetWithFriendFirstTimeRewardId:\(self.proteinIntakeOnTargetWithFriendFirstTimeRewardId)   --- \(self.proteinIntakeOnTargetWithFriendFirstTimePoint)")
+            self.deferPointAnimation = true
             self.sendRecieveFriendProteinRequest()
-            self.playStreakReceiveAnimation(from: self.friendMsgVm.firstOnTargetVm, point: self.proteinIntakeOnTargetWithFriendFirstTimePoint)
+            self.playStreakReceiveAnimation(from: self.friendMsgVm.firstOnTargetVm,
+                                            point: self.proteinIntakeOnTargetWithFriendFirstTimePoint) {
+                self.deferPointAnimation = false
+                self.triggerPointAnimationIfNeeded()
+            }
         }
         
         return vm
@@ -185,7 +191,9 @@ extension HabitProgressVM{
     }
 }
 extension HabitProgressVM{
-    func playStreakReceiveAnimation(from sourceView: UIView, point: String) {
+    func playStreakReceiveAnimation(from sourceView: UIView,
+                                    point: String,
+                                    completion: (() -> Void)? = nil) {
         let containerView = animOverlayView
         let startFrame: CGRect
         let snapshotView: UIView
@@ -257,14 +265,16 @@ extension HabitProgressVM{
             self.playParabolaAnimation(view: animateView,
                                        sourceView: snapshotView,
                                        from: startCenter,
-                                       to: endCenter)
+                                       to: endCenter,
+                                       completion: completion)
         })
     }
 
     private func playParabolaAnimation(view animView: UIView,
                                        sourceView : UIView,
                                        from startPoint: CGPoint,
-                                       to endPoint: CGPoint) {
+                                       to endPoint: CGPoint,
+                                       completion: (() -> Void)? = nil) {
         animView.center = sourceView.center
         animView.isHidden = false
         sourceView.isHidden = true
@@ -295,6 +305,7 @@ extension HabitProgressVM{
         CATransaction.begin()
         CATransaction.setCompletionBlock {
             animView.removeFromSuperview()
+            completion?()
         }
         animView.layer.add(group, forKey: "streakReceiveParabola")
         animView.layer.position = endPoint
@@ -302,6 +313,7 @@ extension HabitProgressVM{
     }
 
     func triggerPointAnimationIfNeeded() {
+        guard !deferPointAnimation else { return }
         guard let target = pendingPointTarget else { return }
         guard isPointLabelVisible() else { return }
         pendingPointTarget = nil
@@ -363,7 +375,7 @@ extension HabitProgressVM{
         let param = ["rewardId":self.proteinIntakeOnTargetWithFriendFirstTimeRewardId]
         
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimFirstFriendGoalReward, parameters: param as [String:AnyObject]) { responseObject in
-            DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
                 self.refreshBlock?()
             })
         }

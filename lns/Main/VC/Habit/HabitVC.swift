@@ -142,7 +142,7 @@ extension HabitVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             
-            DLLog(message: "sendDataRequest:\(dataDict)")
+            DLLog(message: "sendDataRequest dashboard:\(dataDict)")
             
             self.dataObj = dataDict
             self.progressVm.updateUI(dict: self.dataObj,isAnimate: true)

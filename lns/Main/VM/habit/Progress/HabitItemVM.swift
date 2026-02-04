@@ -90,7 +90,7 @@ extension HabitItemVM{
         
         if status == "1"{
             showButton.setTitle("未达成", for: .normal)
-//            showButton.isUserInteractionEnabled = false
+            showButton.isUserInteractionEnabled = false
         }else if status == "2"{
             showButton.setTitle("领取", for: .normal)
             showButton.isUserInteractionEnabled = true
