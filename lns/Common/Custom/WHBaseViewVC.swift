@@ -17,6 +17,8 @@ class WHBaseViewVC: ViewController {
     public var fatherViewController: UIViewController?
     //能否侧滑返回
     var canEdgeBack:Bool = true
+    // iOS 26+ can opt into system navigation bar/back button.
+    @objc var prefersSystemNavigationBarOnIOS26: Bool { false }
     
     var navigationView = UIView()
     var naviTitleLabel     = UILabel()
@@ -57,7 +59,11 @@ class WHBaseViewVC: ViewController {
         // （关键）提前布局，阻止 push 完成后的 subviews 展开动画
         self.scrollViewBase.layoutIfNeeded()
         self.view.layoutIfNeeded()
-        self.navigationController?.navigationBar.isHidden = true
+        if #available(iOS 26.0, *), prefersSystemNavigationBarOnIOS26 {
+            self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        } else {
+            self.navigationController?.navigationBar.isHidden = true
+        }
         UserInfoModel.shared.currentVc = self
         openInteractivePopGesture()
         MobClick.beginLogPageView(self.ClassName)
@@ -65,7 +71,11 @@ class WHBaseViewVC: ViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
     override func viewDidDisappear(_ animated: Bool) {
-        self.navigationController?.navigationBar.isHidden = true
+        if #available(iOS 26.0, *), prefersSystemNavigationBarOnIOS26 {
+            self.navigationController?.setNavigationBarHidden(false, animated: false)
+        } else {
+            self.navigationController?.navigationBar.isHidden = true
+        }
         MobClick.endLogPageView(self.ClassName)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
@@ -78,7 +88,11 @@ class WHBaseViewVC: ViewController {
         super.viewDidLoad()
         
         self.view.backgroundColor = UIColor.COLOR_BG_WHITE
-        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        if #available(iOS 26.0, *), prefersSystemNavigationBarOnIOS26 {
+            self.navigationController?.setNavigationBarHidden(false, animated: false)
+        } else {
+            self.navigationController?.setNavigationBarHidden(true, animated: true)
+        }
         self.navigationController?.navigationItem.largeTitleDisplayMode = .never
         self.navigationController?.navigationBar.prefersLargeTitles = false
 
@@ -619,6 +633,10 @@ extension WHBaseViewVC{
 
 extension WHBaseViewVC{
     func initNavi(titleStr:String,naviBgColor:UIColor? = .COLOR_CARD_BG_WHITE,isWhite:Bool? = false){
+        if #available(iOS 26.0, *), prefersSystemNavigationBarOnIOS26 {
+            self.navigationItem.title = titleStr
+            self.navigationController?.navigationBar.isHidden = false
+        }
         let naviView = UIView()
         view.addSubview(naviView)
         naviView.backgroundColor = naviBgColor
@@ -686,6 +704,13 @@ extension WHBaseViewVC{
         }else{
             backArrowImg.image = UIImage.init(named: "back_arrow")
             titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214//WHColor_16(colorStr: "222222")
+        }
+
+        if #available(iOS 26.0, *), prefersSystemNavigationBarOnIOS26 {
+            naviView.isHidden = true
+            backArrowImg.isHidden = true
+            backView.isHidden = true
+            backArrowButton.isHidden = true
         }
     }
     

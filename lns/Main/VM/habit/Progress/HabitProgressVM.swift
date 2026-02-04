@@ -13,6 +13,8 @@ class HabitProgressVM: UIView {
     var refreshBlock:(()->())?
     var lastNumber = 0
     var isCounting = false
+    var proteinIntakeOnTargetWithFriendFirstTimeRewardId = ""
+    var proteinIntakeOnTargetWithFriendFirstTimePoint = ""
     private var pendingPointTarget: Int?
     
     override init(frame:CGRect){
@@ -69,6 +71,11 @@ class HabitProgressVM: UIView {
             self.streakListVm.frame = CGRect.init(x: 0, y: self.streakMsgVm.frame.maxY+kFitWidth(12), width: SCREEN_WIDHT, height: self.streakListVm.selfHeight)
             self.scrollView.contentSize = CGSize.init(width: 0, height: self.streakListVm.frame.maxY+kFitWidth(20))
         }
+        vm.firstOnTargetVm.tapBlock = {()in
+            DLLog(message: "proteinIntakeOnTargetWithFriendFirstTimeRewardId:\(self.proteinIntakeOnTargetWithFriendFirstTimeRewardId)   --- \(self.proteinIntakeOnTargetWithFriendFirstTimePoint)")
+            self.sendRecieveFriendProteinRequest()
+            self.playStreakReceiveAnimation(from: self.friendMsgVm.firstOnTargetVm, point: self.proteinIntakeOnTargetWithFriendFirstTimePoint)
+        }
         
         return vm
     }()
@@ -112,6 +119,8 @@ class HabitProgressVM: UIView {
 
 extension HabitProgressVM{
     func updateUI(dict:NSDictionary,isAnimate:Bool=false) {
+        self.proteinIntakeOnTargetWithFriendFirstTimeRewardId = dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeRewardId")
+        self.proteinIntakeOnTargetWithFriendFirstTimePoint = dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimePoint")
 //        self.topMsgVm.numberLabel.text = dict.stringValueForKey(key: "pointBalance")
 //        if isCounting{
         let nextPointBalance = Int(dict.doubleValueForKey(key: "pointBalance").rounded())
@@ -175,26 +184,6 @@ extension HabitProgressVM{
         appDelegate.getKeyWindow().addSubview(ruleFitnessAlertVm)
     }
 }
-
-extension HabitProgressVM{
-    func sendRecieveStreakRequest(streakId:String) {
-        let param = ["streakRewardId":streakId]
-        
-        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimStreakReward, parameters: param as [String:AnyObject]) { responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            
-            DLLog(message: "sendDataRequest:\(dataDict)")
-            self.isCounting = true
-            
-//            MCToast.mc_text("领取成功")
-            DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
-                self.refreshBlock?()
-            })
-        }
-    }
-}
-
 extension HabitProgressVM{
     func playStreakReceiveAnimation(from sourceView: UIView, point: String) {
         let containerView = animOverlayView
@@ -300,7 +289,7 @@ extension HabitProgressVM{
 
         let group = CAAnimationGroup()
         group.animations = [positionAnim, scaleAnim, opacityAnim]
-        group.duration = 1
+        group.duration = 0.65
         group.timingFunction = CAMediaTimingFunction(name: .easeIn)
 
         CATransaction.begin()
@@ -350,5 +339,33 @@ extension HabitProgressVM{
 extension HabitProgressVM: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         triggerPointAnimationIfNeeded()
+    }
+}
+
+extension HabitProgressVM{
+    func sendRecieveStreakRequest(streakId:String) {
+        let param = ["streakRewardId":streakId]
+        
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimStreakReward, parameters: param as [String:AnyObject]) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            
+            DLLog(message: "sendDataRequest:\(dataDict)")
+            self.isCounting = true
+            
+//            MCToast.mc_text("领取成功")
+            DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+                self.refreshBlock?()
+            })
+        }
+    }
+    func sendRecieveFriendProteinRequest() {
+        let param = ["rewardId":self.proteinIntakeOnTargetWithFriendFirstTimeRewardId]
+        
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimFirstFriendGoalReward, parameters: param as [String:AnyObject]) { responseObject in
+            DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+                self.refreshBlock?()
+            })
+        }
     }
 }

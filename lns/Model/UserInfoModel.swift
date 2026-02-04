@@ -72,7 +72,7 @@ class UserInfoModel {
     //营养统计功能--是否未读
     var statNewFuncRead = true
     //设置--新功能  个性化设置
-    var settingNewFuncRead = false
+    var settingNewFuncRead = true
     //消息通知是否有新消息
     var newsListHasUnRead = false
     

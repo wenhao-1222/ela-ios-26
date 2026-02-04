@@ -123,8 +123,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         }
         window?.rootViewController = rootViewController
         launchWindow.makeKeyAndVisible()
-        
-        UserInfoModel.shared.settingNewFuncRead = (UserDefaults.standard.value(forKey: "settingNewFuncRead")as? String ?? "").count > 0 ? true : false
+        //2026年02月04日13:41:23   个性化设置新功能红点不再显示
+        UserInfoModel.shared.settingNewFuncRead = true//(UserDefaults.standard.value(forKey: "settingNewFuncRead")as? String ?? "").count > 0 ? true : false
         UserInfoModel.shared.widgetNewFuncRead = true
         
         EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW, scenarioType: .launch_App, text: "")

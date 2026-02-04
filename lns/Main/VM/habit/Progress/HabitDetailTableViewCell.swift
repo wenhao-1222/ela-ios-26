@@ -31,7 +31,7 @@ class HabitDetailTableViewCell: FeedBackTableViewCell {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
-        lab.text = "捐赠 1 份饭"
+        lab.text = "捐赠 1 餐"
         
         return lab
     }()

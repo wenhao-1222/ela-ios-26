@@ -17,7 +17,7 @@ class SettingVC: WHBaseViewVC {
         bindPhoneVm.detailLabel.text = "\(UserInfoModel.shared.phoneStar)"
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
         
-        personalSettingVm.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
+//        personalSettingVm.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
     }
     
     override func viewDidAppear(_ animated: Bool) {

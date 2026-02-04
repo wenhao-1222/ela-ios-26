@@ -64,7 +64,7 @@ class FriendListVM: UIView {
     }()
     lazy var noResultLabel: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: 0, y: -1, width: SCREEN_WIDHT, height: kFitWidth(75)))
-        lab.text = "该ID不存在"
+        lab.text = "用户不存在"
         lab.backgroundColor = .COLOR_CARD_BG_WHITE
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 17, weight: .regular)

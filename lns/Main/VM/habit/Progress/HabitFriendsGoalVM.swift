@@ -39,7 +39,7 @@ class HabitFriendsGoalVM: UIView {
     }()
     lazy var firstOnTargetVm: HabitItemVM = {
         let vm = HabitItemVM.init(frame: CGRect.init(x: 0, y: vmOriginY[0], width: 0, height: 0))
-        vm.titleLabel.text = "初次与好友达成目标"
+        vm.titleLabel.text = "初次与好友达成蛋白质目标"
         vm.leftIconImgView.setImgLocal(imgName: "haibit_friend_icon")
         return vm
     }()
@@ -103,6 +103,9 @@ extension HabitFriendsGoalVM{
 extension HabitFriendsGoalVM{
     func updateUI(dict:NSDictionary) {
         itemModels.removeAll()
+        firstOnTargetVm.isHidden = true
+        proteinSecondVm.isHidden = true
+        proteinThirdVm.isHidden = true
         /*
          这里又改了，变成4种状态了。
 
@@ -111,10 +114,16 @@ extension HabitFriendsGoalVM{
          3：领取了，变成灰色“已领取”。
          4：已经领取，超过24小时/第二天再打开这个页面，就直接不显示这条
          */
-        itemModels.append(HabitItemModel().createModel(vm: firstOnTargetVm,
-                                                       isComplete: dict.stringValueForKey(key: "isProteinIntakeOnTargetWithFriendFirstTime") == "1",
-                                                       type: .protein_target_friend_first,
-                                                       point: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimePoint")))
+        if dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus").count > 0{
+            firstOnTargetVm.isHidden = false
+            firstOnTargetVm.showButton.isHidden = false
+            itemModels.append(HabitItemModel().createModel(vm: firstOnTargetVm,
+                                                           isComplete: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus") != "2",
+                                                           type: .protein_target_friend_first,
+                                                           point: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimePoint"),
+                                                           proteinFriendFirstStatus:dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus")))
+        }
+        
         var buttenText = "添加好友"
         friendCount = dict.stringValueForKey(key: "friendCount").intValue
         buttenText = friendCount > 0 ? "好友摄入" : "添加好友"
@@ -123,8 +132,6 @@ extension HabitFriendsGoalVM{
                                                        type: .protein_target_friend,
                                                        point: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendPoint1"),
                                                       buttonText: buttenText))
-        proteinSecondVm.isHidden = true
-        proteinThirdVm.isHidden = true
         if dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendCount").intValue >= 1{
             proteinSecondVm.isHidden = false
 //            buttenText = friendCount > 1 ? "好友摄入" : "添加好友"
@@ -168,7 +175,15 @@ extension HabitFriendsGoalVM{
             let model = itemModels[i]
             let vmFrame = model.vm.frame
             model.vm.frame = CGRect.init(x: vmFrame.origin.x, y: vmOriginY[i], width: vmFrame.width, height: vmFrame.height)
-            model.vm.updateUI(isComplete: model.isComplete,point: model.point,buttonText: model.buttonText)
+            if model.type == .protein_target_friend_first{
+                model.vm.updateUIForProteinFriendFirst(point: model.point,
+                                                       buttonText: model.buttonText,
+                                                       status: model.proteinFriendFirstStatus)
+            }else{
+                model.vm.updateUI(isComplete: model.isComplete,
+                                  point: model.point,
+                                  buttonText: model.buttonText)
+            }
         }
         self.setNeedsLayout()
         self.layoutIfNeeded()

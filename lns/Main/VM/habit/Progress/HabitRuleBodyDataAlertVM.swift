@@ -108,7 +108,7 @@ class HabitRuleBodyDataAlertVM: UIView {
         let attr = NSMutableAttributedString(string: "规则：",
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .semibold)])
-        let attr1 = NSMutableAttributedString(string: "当日提交体重、身体围度、照片等任意数据（或通过其他App导入）",
+        let attr1 = NSMutableAttributedString(string: "本日提交体重、身体围度、照片等任意数据（或通过其他App导入）",
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .regular)])
         
@@ -132,7 +132,7 @@ class HabitRuleBodyDataAlertVM: UIView {
     }()
     lazy var tipsLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.text = "身体数据配合饮食记录，能够清晰看出哪些食物导致身体变化，从而快速科学地调整。"
+        lab.text = "身体数据配合饮食记录，清晰看出哪些食物导致身体变化，从而快速科学地调整。"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true

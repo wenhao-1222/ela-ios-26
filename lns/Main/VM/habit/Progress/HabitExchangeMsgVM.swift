@@ -47,7 +47,7 @@ class HabitExchangeMsgVM: UIView {
     }()
     lazy var numberLab: UILabel = {
         let lab = UILabel()
-        lab.text = "份饭"
+        lab.text = "餐"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         

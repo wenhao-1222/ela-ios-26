@@ -107,7 +107,7 @@ class HabitRuleJournalAlertVM: UIView {
         let attr = NSMutableAttributedString(string: "规则：",
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .semibold)])
-        let attr1 = NSMutableAttributedString(string: "在当日结束前记录≥3种食物。",
+        let attr1 = NSMutableAttributedString(string: "在本日结束前记录≥3种食物。",
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .regular)])
         
@@ -148,7 +148,7 @@ class HabitRuleJournalAlertVM: UIView {
     }()
     lazy var tipsLabBottom: UILabel = {
         let lab = UILabel()
-        lab.text = "记录缺失会影响数据准确性，并导致瓶颈时难以定位原因。"
+        lab.text = "记录缺失会影响数据准确性，瓶颈时难以定位原因。"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 11, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true

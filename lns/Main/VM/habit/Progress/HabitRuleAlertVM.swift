@@ -141,7 +141,7 @@ class HabitRuleAlertVM: UIView {
     
     lazy var titleLab: UILabel = {
         let lab = UILabel()
-        lab.text = "周末记录双倍积分"
+//        lab.text = "周末记录双倍积分"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 17, weight: .medium)
         
@@ -163,7 +163,7 @@ class HabitRuleAlertVM: UIView {
         return vi
     }()
     lazy var tableView: UITableView = {
-        let vi = UITableView.init(frame: CGRect.init(x: 0, y: kFitWidth(80), width: SCREEN_WIDHT, height: kFitWidth(470)), style: .plain)
+        let vi = UITableView.init(frame: CGRect.init(x: 0, y: kFitWidth(10), width: SCREEN_WIDHT, height: kFitWidth(540)), style: .plain)
         vi.delegate = self
         vi.dataSource = self
         vi.separatorStyle = .none
@@ -175,7 +175,8 @@ class HabitRuleAlertVM: UIView {
         return vi
     }()
     lazy var dataSourceArray: [RuleTextModel] = {
-        return [RuleTextModel().initModel(content: "根据elavatine数据显示，活跃用户中能做到周末记录，养成长期记录习惯（持续记录30天及以上）高达53.8%（无周末记录时：21.0%）",bottomGap: kFitWidth(-15)),
+        return [RuleTextModel().initModel(content: "周末记录双倍积分", isTitle: true),
+                RuleTextModel().initModel(content: "根据elavatine数据显示，活跃用户中能做到周末记录，养成长期记录习惯（持续记录30天及以上）高达53.8%（无周末记录时：21.0%）",bottomGap: kFitWidth(-15)),
                 RuleTextModel().initModel(content: "",bottomGap: kFitWidth(-15),contentType: "1",imgString: "habit_rule_img_1"),
                 RuleTextModel().initModel(content: "缺失记录扣分", isTitle: true),
                 RuleTextModel().initModel(content: "和养成习惯一样，短期记录缺失影响不大，但负面习惯累计越多，对坚持的影响就越大，所以当你连续未记录饮食时，积分的减少也是阶梯式的。"),
@@ -244,6 +245,34 @@ extension HabitRuleAlertVM:UITableViewDelegate,UITableViewDataSource{
             return cell ?? HabitRuleTableViewCell()
         }
     }
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(70)))
+        vi.backgroundColor = .clear
+        return vi
+    }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return kFitWidth(70)
+    }
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        if scrollView == tableView{
+            let scroOffsetY = scrollView.contentOffset.y
+            let percent = scroOffsetY/kFitWidth(140)
+            DLLog(message: "scrollViewDidScroll  percent:\(percent)")
+            
+            if scroOffsetY > 0{
+                if scroOffsetY < kFitWidth(140){
+                    closeIconImgView.alpha = 1 - percent
+                    closeTapView.isUserInteractionEnabled = true
+                }else{
+                    closeIconImgView.alpha = 0
+                    closeTapView.isUserInteractionEnabled = false
+                }
+            }else{
+                closeIconImgView.alpha = 1
+                closeTapView.isUserInteractionEnabled = true
+            }
+//        }
+    }
 }
 
 extension HabitRuleAlertVM{
@@ -257,9 +286,9 @@ extension HabitRuleAlertVM{
         }
         whiteView.addSubview(confirmButton)
         whiteView.addSubview(titleLab)
+        whiteView.addSubview(tableView)
         whiteView.addSubview(closeIconImgView)
         whiteView.addSubview(closeTapView)
-        whiteView.addSubview(tableView)
         
         setConstrait()
         setupWhiteViewBorder()

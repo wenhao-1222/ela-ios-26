@@ -112,7 +112,7 @@ class HabitRankListVM: UIView {
 extension HabitRankListVM{
     func updateUI(dict:NSDictionary) {
         if dict.stringValueForKey(key: "weekStartDate").count > 0 &&
-            UserDefaults.standard.getTierWeekStartDate() == dict.stringValueForKey(key: "weekStartDate"){
+            UserDefaults.standard.getTierWeekStartDate() != dict.stringValueForKey(key: "weekStartDate"){
             pendingSettlementDict = dict
 //            UserDefaults.setTierData(tierStartDate: dict.stringValueForKey(key: "weekStartDate"))
             updateSettlementVmIfReady()
@@ -759,7 +759,7 @@ extension HabitRankListVM{
                 self.headCupVm.setCurrentTier(tier: dataDict.stringValueForKey(key: "tier").intValue, tierName: dataDict.stringValueForKey(key: "tierName"))
 //                DispatchQueue.main.asyncAfter(deadline: .now()+10, execute: {
                     self.headTierName = dataDict.stringValueForKey(key: "tierName")
-                    self.updateSettlementVmIfReady()
+//                    self.updateSettlementVmIfReady()
 //                })
                 
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]

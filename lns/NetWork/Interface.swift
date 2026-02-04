@@ -336,6 +336,8 @@ public let URL_user_address_getDefault   = URL_Type + "users/address/getDefault"
 public let URL_user_habit_dashboard      = URL_Type + "users/habit/dashboard"
 ///领取连胜的奖励
 public let URL_user_habit_claimStreakReward  = URL_Type + "users/habit/claimStreakReward"
+///领取初次与好友达成蛋白质目标的奖励
+public let URL_user_habit_claimFirstFriendGoalReward  = URL_Type + "users/habit/claimFirstFriendGoalReward"
 /// 自律习惯养成  积分明细
 public let URL_user_habit_list           = URL_Type + "users/habit/list"
 

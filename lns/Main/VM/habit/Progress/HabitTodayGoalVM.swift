@@ -74,7 +74,7 @@ class HabitTodayGoalVM: UIView {
     }()
     lazy var proteinMsgVm: HabitItemVM = {
         let vm = HabitItemVM.init(frame: CGRect.init(x: 0, y: vmOriginY[1], width: 0, height: 0))
-        vm.titleLabel.text = "当日蛋白质达标"
+        vm.titleLabel.text = "本日蛋白质达标"
         vm.leftIconImgView.setImgLocal(imgName: "haibit_protein_icon")
         return vm
     }()

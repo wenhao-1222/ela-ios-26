@@ -30,15 +30,23 @@ class HabitItemModel: NSObject {
     var buttonText : String = "查看"
     var isComplete : Bool = false
     var type    : HABIT_TYPE = HABIT_TYPE.log_food
+    ///1  未达成   2   已达成未领取   3   已领取
+    var proteinFriendFirstStatus = "1"
     var vm       = HabitItemVM()
     
-    func createModel(vm:HabitItemVM,isComplete:Bool,type:HABIT_TYPE,point:String="1",buttonText:String="查看") -> HabitItemModel {
+    func createModel(vm:HabitItemVM,
+                     isComplete:Bool,
+                     type:HABIT_TYPE,
+                     point:String="1",
+                     buttonText:String="查看",
+                     proteinFriendFirstStatus:String="1") -> HabitItemModel {
         let model = HabitItemModel()
         model.vm = vm
         model.isComplete = isComplete
         model.point = point.isEmpty ? "1" : point
         model.type = type
         model.buttonText = buttonText
+        model.proteinFriendFirstStatus = proteinFriendFirstStatus
         
         return model
     }

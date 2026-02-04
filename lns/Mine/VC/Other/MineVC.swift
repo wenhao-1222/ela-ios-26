@@ -19,8 +19,8 @@ class MineVC : WHBaseViewVC {
         sendUserCenterRequest()
         getUserConfigRequest()
         sendForumMsgNuberRequest()
-        
-        settingVm.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
+        //2026年02月04日13:41:23   个性化设置新功能红点不再显示
+//        settingVm.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
     

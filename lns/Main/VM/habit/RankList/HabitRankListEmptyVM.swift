@@ -48,6 +48,7 @@ class HabitRankListEmptyVM: UIView {
         btn.setTitleColor(.COLOR_TEXT_WHITE, for: .normal)
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
+        btn.enablePressEffect()
         
         btn.addTarget(self, action: #selector(recordTapAction), for: .touchUpInside)
         

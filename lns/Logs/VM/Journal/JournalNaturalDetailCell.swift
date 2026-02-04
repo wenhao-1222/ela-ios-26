@@ -79,7 +79,7 @@ class JournalNaturalDetailCell: UITableViewCell {
 extension JournalNaturalDetailCell{
     @objc func detailTapAction() {
         UserDefaults.set(value: "1", forKey: .isTapTodayNutrion)
-        self.detailNewIcon.isHidden = true
+//        self.detailNewIcon.isHidden = true
         self.detalBlock?()
     }
     @objc func detailOldTapAction() {
@@ -90,16 +90,14 @@ extension JournalNaturalDetailCell{
 extension JournalNaturalDetailCell{
     func initUI() {
         contentView.addSubview(detailButton)
-        contentView.addSubview(detailNewIcon)
+//        contentView.addSubview(detailNewIcon)
         setConstrait()
         
-//        detailButton.imagePosition(style: .right, spacing: kFitWidth(0))
-        
-        let isTapTodayNutrion = UserDefaults.getString(forKey: .isTapTodayNutrion)
-        if isTapTodayNutrion?.count ?? 0 > 0 {
-            detailNewIcon.isHidden = true
-        }
-        
+//        let isTapTodayNutrion = UserDefaults.getString(forKey: .isTapTodayNutrion)
+//        if isTapTodayNutrion?.count ?? 0 > 0 {
+//            detailNewIcon.isHidden = true
+//        }
+//        
         
 //        contentView.addSubview(detailOldButton)
 //        detailOldButton.snp.makeConstraints { make in
@@ -119,11 +117,11 @@ extension JournalNaturalDetailCell{
             make.centerX.lessThanOrEqualToSuperview()
             make.bottom.equalTo(kFitWidth(-30)-self.bottomGap)
         }
-        detailNewIcon.snp.makeConstraints { make in
-            make.right.equalTo(detailButton).offset(kFitWidth(3))
-            make.top.equalTo(detailButton).offset(kFitWidth(-7))
-            make.width.equalTo(kFitWidth(42))
-            make.height.equalTo(kFitWidth(15))
-        }
+//        detailNewIcon.snp.makeConstraints { make in
+//            make.right.equalTo(detailButton).offset(kFitWidth(3))
+//            make.top.equalTo(detailButton).offset(kFitWidth(-7))
+//            make.width.equalTo(kFitWidth(42))
+//            make.height.equalTo(kFitWidth(15))
+//        }
     }
 }

@@ -33,6 +33,7 @@ class HabitTopMsgVM: UIView {
     }()
     lazy var numberLabel: UICountingLabel = {
         let lab = UICountingLabel()
+        lab.method = UILabelCountingMethod.linear
         lab.font = UIFont().DDInFontSemiBold(fontSize: 50)
         lab.text = "0"
         lab.format = "%d"
@@ -65,6 +66,7 @@ class HabitTopMsgVM: UIView {
         let btn = UIButton()
         btn.setTitle("兑换", for: .normal)
         btn.layer.cornerRadius = kFitWidth(15)
+        btn.enablePressEffect()
         btn.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214.cgColor
         btn.layer.borderWidth = kFitWidth(1)
         btn.titleLabel?.font = .systemFont(ofSize: 12, weight: .regular)

@@ -9,6 +9,8 @@
 class HabitDetailVC: WHBaseViewVC {
     
     var dataSourceArray = NSArray()
+
+    override var prefersSystemNavigationBarOnIOS26: Bool { true }
     
     override func viewDidLoad() {
         super.viewDidLoad()

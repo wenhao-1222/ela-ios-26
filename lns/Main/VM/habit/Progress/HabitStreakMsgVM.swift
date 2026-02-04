@@ -89,7 +89,10 @@ class HabitStreakMsgVM: UIView {
         vi.layer.cornerRadius = kFitWidth(2.5)
         vi.clipsToBounds = true
         
-        let nextNum = UserInfoModel.shared.streakDict.stringValueForKey(key: "streak").intValue + UserInfoModel.shared.streakDict.stringValueForKey(key: "gap").intValue
+        var nextNum = UserInfoModel.shared.streakDict.stringValueForKey(key: "streak").intValue + UserInfoModel.shared.streakDict.stringValueForKey(key: "gap").intValue
+        if nextNum == 0{
+            nextNum = 1
+        }
         let percent = (UserInfoModel.shared.streakDict.stringValueForKey(key: "streak").floatValue * 0.01) / (Float(nextNum) * 0.01)
         
         let width = Float(progressWidth) * Float(percent)

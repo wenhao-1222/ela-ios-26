@@ -58,7 +58,6 @@ extension HabitStreakListVM{
                 let tipsStr = NSAttributedString(string: "（不计入排行榜）",
                                                  attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50])
                 if dict.stringValueForKey(key: "isClaimed") == "1"{
-                    
                     vm.leftIconImgView.alpha = 0.5
                     vm.showButton.setTitle("已领取", for: .normal)
                     vm.showButton.isEnabled = false

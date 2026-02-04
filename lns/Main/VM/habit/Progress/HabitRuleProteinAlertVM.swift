@@ -11,7 +11,7 @@ import UIKit
 class HabitRuleProteinAlertVM: UIView {
     
     // MARK: - Layout constants
-    var whiteViewHeight: CGFloat = kFitWidth(616) + WHUtils().getBottomSafeAreaHeight()
+    var whiteViewHeight: CGFloat = kFitWidth(690) + WHUtils().getBottomSafeAreaHeight()
     let whiteViewTopRadius: CGFloat = kFitWidth(50)
     
     /// 蒙层目标透明度：浅色 0.15，深色 0.85
@@ -33,6 +33,9 @@ class HabitRuleProteinAlertVM: UIView {
         backgroundColor = .clear
         isUserInteractionEnabled = true
         isHidden = true
+        if SCREEN_HEIGHT < kFitWidth(680){
+            whiteViewHeight = kFitWidth(616) + WHUtils().getBottomSafeAreaHeight()
+        }
         initUI()
     }
 
@@ -114,7 +117,7 @@ class HabitRuleProteinAlertVM: UIView {
         let attr = NSMutableAttributedString(string: "规则：",
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .semibold)])
-        let attr1 = NSMutableAttributedString(string: "在当日完整饮食记录后，摄入蛋白质≥蛋白质目标。",
+        let attr1 = NSMutableAttributedString(string: "在当日完整饮食记录后，本日蛋白质摄入≥蛋白质目标。",
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .regular)])
         

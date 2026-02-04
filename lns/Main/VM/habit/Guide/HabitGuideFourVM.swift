@@ -28,6 +28,12 @@ class HabitGuideFourVM: UIView {
         
         return img
     }()
+    lazy var coverImgView: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "habit_guide_4_cover")
+        img.contentMode = .scaleAspectFill
+        return img
+    }()
     lazy var whiteView: UIView = {
         let vi = UIView()
         vi.backgroundColor = .COLOR_CARD_BG_WHITE

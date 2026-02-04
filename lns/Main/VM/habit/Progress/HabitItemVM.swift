@@ -80,6 +80,25 @@ extension HabitItemVM{
         leftIconImgView.alpha = isComplete ? 0.5 : 1
         pointLabel.text = "+\(point)"
     }
+    ///初次与好友达成目标
+    func updateUIForProteinFriendFirst(point:String,buttonText:String,status:String) {
+        titleLabel.textColor = status == "3" ? UIColor.COLOR_TEXT_TITLE_0f1214_50 : UIColor.COLOR_TEXT_TITLE_0f1214
+        pointLabel.textColor = status == "3"  ? UIColor.COLOR_TEXT_TITLE_0f1214_50 : UIColor.COLOR_TEXT_TITLE_0f1214
+        showButton.backgroundColor = status == "2"  ? UIColor.THEME : UIColor.COLOR_BG_C4
+        leftIconImgView.alpha = status == "3" ? 0.5 : 1
+        pointLabel.text = "+\(point)"
+        
+        if status == "1"{
+            showButton.setTitle("未达成", for: .normal)
+//            showButton.isUserInteractionEnabled = false
+        }else if status == "2"{
+            showButton.setTitle("领取", for: .normal)
+            showButton.isUserInteractionEnabled = true
+        }else if status == "3"{
+            showButton.setTitle("已领取", for: .normal)
+            showButton.isUserInteractionEnabled = false
+        }
+    }
     @objc func tapAction() {
         self.tapBlock?()
     }
