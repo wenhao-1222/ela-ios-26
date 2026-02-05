@@ -136,6 +136,17 @@ class HabitExchangeTipsAlertVM: UIView {
         
         return lab
     }()
+    lazy var tipsContent2Label: LineHeightLabel = {
+        let lab = LineHeightLabel()
+        lab.numberOfLines = 0
+        lab.lineBreakMode = .byWordWrapping
+        lab.preferredMaxLayoutWidth = lab.bounds.width
+        lab.font = .systemFont(ofSize: 13, weight: .regular)
+        lab.textColor = UIColor.white
+        lab.textInsets = UIEdgeInsets(top: 0, left: 0, bottom: kFitWidth(4), right: 0)
+        
+        return lab
+    }()
     lazy var dottedLineView: DottedLineView = {
         let vi = DottedLineView.init(frame: CGRect.init(x: kFitWidth(12), y: kFitWidth(55), width: SCREEN_WIDHT-kFitWidth(56), height: kFitHeight(1)))
         vi.lineColor = UIColor.white.withAlphaComponent(0.2)
@@ -200,10 +211,14 @@ extension HabitExchangeTipsAlertVM{
                                               "健康不是从第一次训练开始，而是从每一天的饮食开始"])
         tipsDescriptLabel.setLineHeight(textString: "免费午餐基金是中国社会福利基金会下设专项基金，2011年4月2日发起，倡议公众捐赠，帮助乡村孩子免于课间饥饿。\n该项目累计在全国26个省市自治区1830所学校开餐，累计帮助超过44万人，目前开餐学校748所，每个开餐日有超过14万人在校用餐，并以师生同食，就地取材，透明公开，村校联合等原则执行与监督。",lineHeight: kFitWidth(20))
         
+        let attr = NSMutableAttributedString(string: "每当你在「自律习惯养成」中兑换一餐", attributes: [.font : UIFont.systemFont(ofSize: 16, weight: .medium)])
+        attr.append(NSAttributedString(string: "\n我们将代表你通过中国社会福利基金会免费午餐基金，向乡村困境学童捐出一份营养午餐。", attributes: [.font : UIFont.systemFont(ofSize: 13, weight: .regular)]))
+//        tipsContent2Label.setLineHeight(attr: attr, lineHeight: kFitWidth(23))
+        tipsContent2Label.attributedText = attr
         self.setNeedsLayout()
         self.layoutIfNeeded()
         
-        dottedLineView.frame = CGRect.init(x: kFitWidth(29), y: tipsContentLabel.frame.maxY+kFitWidth(25), width: SCREEN_WIDHT-kFitWidth(58), height: kFitWidth(1))
+        dottedLineView.frame = CGRect.init(x: kFitWidth(29), y: tipsContent2Label.frame.maxY+kFitWidth(25), width: SCREEN_WIDHT-kFitWidth(58), height: kFitWidth(1))
         scrollView.contentSize = CGSize.init(width: 0, height: tipsDescriptLabel.frame.maxY+kFitWidth(90))
     }
 }
@@ -222,6 +237,7 @@ extension HabitExchangeTipsAlertVM{
         whiteView.addSubview(closeTapView)
         
         scrollView.addSubview(tipsContentLabel)
+        scrollView.addSubview(tipsContent2Label)
         scrollView.addSubview(dottedLineView)
         scrollView.addSubview(tipsDesLabel)
         scrollView.addSubview(tipsDescriptLabel)
@@ -259,6 +275,10 @@ extension HabitExchangeTipsAlertVM{
             make.width.equalTo(SCREEN_WIDHT-kFitWidth(58))
             make.top.equalTo(kFitWidth(203))
         }
+        tipsContent2Label.snp.makeConstraints { make in
+            make.left.width.equalTo(tipsContentLabel)
+            make.top.equalTo(tipsContentLabel.snp.bottom).offset(kFitWidth(20))
+        }
 //        dottedLineView.snp.makeConstraints { make in
 //            make.left.equalTo(kFitWidth(29))
 //            make.right.equalTo(kFitWidth(-29))
@@ -266,8 +286,8 @@ extension HabitExchangeTipsAlertVM{
 //            make.height.equalTo(kFitWidth(2))
 //        }
         tipsDesLabel.snp.makeConstraints { make in
-            make.left.right.equalTo(tipsContentLabel)
-            make.top.equalTo(tipsContentLabel.snp.bottom).offset(kFitWidth(50))
+            make.left.right.equalTo(tipsContent2Label)
+            make.top.equalTo(tipsContent2Label.snp.bottom).offset(kFitWidth(50))
         }
         tipsDescriptLabel.snp.makeConstraints { make in
             make.left.right.equalTo(tipsContentLabel)
@@ -278,7 +298,7 @@ extension HabitExchangeTipsAlertVM{
             make.left.equalToSuperview()
 //            make.bottom.equalTo(tipsDescriptLabel).offset(kFitWidth(90))
             make.width.equalTo(SCREEN_WIDHT)
-            make.top.equalTo(tipsContentLabel.snp.bottom).offset(kFitWidth(81))
+            make.top.equalTo(tipsContent2Label.snp.bottom).offset(kFitWidth(81))
         }
     }
 }

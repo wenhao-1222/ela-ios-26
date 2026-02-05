@@ -110,7 +110,6 @@ class HabitRankListVM: UIView {
 
         return vm
     }()
-    
 }
 
 extension HabitRankListVM{
@@ -118,7 +117,7 @@ extension HabitRankListVM{
         if dict.stringValueForKey(key: "weekStartDate").count > 0 &&
             UserDefaults.standard.getTierWeekStartDate() != dict.stringValueForKey(key: "weekStartDate"){
             pendingSettlementDict = dict
-//            UserDefaults.setTierData(tierStartDate: dict.stringValueForKey(key: "weekStartDate"))
+            UserDefaults.setTierData(tierStartDate: dict.stringValueForKey(key: "weekStartDate"))
             updateSettlementVmIfReady()
         }
     }
@@ -362,6 +361,7 @@ extension HabitRankListVM{
 
 extension HabitRankListVM{
     private func prepareLeaderboardData(from array: NSArray) -> NSArray {
+//        return array
         var entries = array.compactMap { $0 as? NSDictionary }
         var placeholderIndex = 1
 

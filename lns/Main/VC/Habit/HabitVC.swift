@@ -89,7 +89,7 @@ extension HabitVC{
         
         view.addSubview(scrollViewBase)
         
-        if UserDefaults.getString(forKey: .rank_list_guide) == nil{
+        if UserDefaults.getString(forKey: .rank_list_guide) != nil{
             view.addSubview(guideVm)
         }
         

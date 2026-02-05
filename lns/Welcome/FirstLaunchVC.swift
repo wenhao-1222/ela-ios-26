@@ -27,6 +27,9 @@ private extension UIImage {
 
 
 class FirstLaunchVC: WHBaseViewVC {
+    private let skipAnimation: Bool
+    private let forceNeedBuildPlanOnConfirm: Bool
+    private var didApplyFinalState = false
     
     var firstLabelTopConstraint: Constraint?
     var firstLabelTwoTopConstraint: Constraint?
@@ -39,9 +42,28 @@ class FirstLaunchVC: WHBaseViewVC {
     private var hapticLink: CADisplayLink?
     private var hapticFired: [Int: Bool] = [:] // 0: 25%, 1: 55%
     
+    init(skipAnimation: Bool = false, forceNeedBuildPlanOnConfirm: Bool = false) {
+        self.skipAnimation = skipAnimation
+        self.forceNeedBuildPlanOnConfirm = forceNeedBuildPlanOnConfirm
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        self.skipAnimation = false
+        self.forceNeedBuildPlanOnConfirm = false
+        super.init(coder: coder)
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        showAnimation()
+        if skipAnimation {
+            if !didApplyFinalState {
+                showFinalState()
+                didApplyFinalState = true
+            }
+        } else {
+            showAnimation()
+        }
     }
     
     override func viewDidLoad() {
@@ -138,6 +160,30 @@ class FirstLaunchVC: WHBaseViewVC {
 }
 
 extension FirstLaunchVC{
+    private func showFinalState() {
+        view.layoutIfNeeded()
+
+        bgImgView.alpha = 0
+        bgImgView.isHidden = true
+
+        bgImgViewTwo.alpha = 1
+        bgImgViewTwo.isHidden = false
+        bgImgViewTwo.isUserInteractionEnabled = true
+
+        firstLabelOne.alpha = 0
+        firstLabelOne.isHidden = true
+        firstLabelTwo.alpha = 0
+        firstLabelTwo.isHidden = true
+        firstLogoImgView.alpha = 0
+        firstLogoImgView.isHidden = true
+        firstLabelOne.transform = .identity
+        firstLogoImgView.transform = .identity
+
+        secondLogoImgView.alpha = 1
+        secondLabel.alpha = 1
+        confirmButton.alpha = 1
+    }
+
     @objc func showAnimation() {
         generator.prepare()
         generatorMedium.prepare()
@@ -645,7 +691,16 @@ extension FirstLaunchVC{
 extension FirstLaunchVC{
     @objc func startBtnAction() {
         UserDefaults.standard.setValue("1", forKey: isLaunchWelcome)
-        self.changeRootVC()
+        if forceNeedBuildPlanOnConfirm {
+            changeRootToNeedBuildPlan()
+        } else {
+            self.changeRootVC()
+        }
+    }
+    private func changeRootToNeedBuildPlan() {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let navVc = UINavigationController(rootViewController: NeedBuildPlanVC())
+        appDelegate.switchRootViewController(to: navVc)
     }
     func changeRootVC() {
         let token = UserDefaults.standard.value(forKey: token) as? String ?? ""

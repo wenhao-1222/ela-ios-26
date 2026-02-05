@@ -106,7 +106,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                     
                     let agreeProtocal = UserDefaults.standard.value(forKey: "agreeProtocal") as? String ?? ""
                     if agreeProtocal.count > 0 {
-                        rootVc = UINavigationController(rootViewController: NeedBuildPlanVC())
+                        rootVc = UINavigationController(rootViewController: FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true))
                     }else{
                         rootVc = UINavigationController(rootViewController: WelcomeVC())
                     }
