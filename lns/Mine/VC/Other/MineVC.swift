@@ -50,10 +50,15 @@ class MineVC : WHBaseViewVC {
             let vc = MyFoodsListVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
-        vm.fastingVm.tapBlock = {()in
-            let vc = LogsMealsAlertSetVC()
+//        vm.fastingVm.tapBlock = {()in
+//            let vc = LogsMealsAlertSetVC()
+//            self.navigationController?.pushViewController(vc, animated: true)
+//        }
+        vm.friendsVm.tapBlock = {()in
+            let vc = FriendRankingVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
+        
         vm.settinBlock = {()in
             let vc = SettingVC()
             self.navigationController?.pushViewController(vc, animated: true)
@@ -74,6 +79,10 @@ class MineVC : WHBaseViewVC {
         }
         vm.bodyDataVm.tapBlock = {()in
             let vc = BodyDataDetailVC()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        vm.fastingVm.tapBlock = {()in
+            let vc = LogsMealsAlertSetVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.orderVm.tapBlock = {()in

@@ -142,10 +142,16 @@ class PersonalTopVM: UIView {
         vm.titleLab.text = "食物/食谱"
         return vm
     }()
-    lazy var fastingVm: PersonalTopItemVM = {
+//    lazy var fastingVm: PersonalTopItemVM = {
+//        let vm = PersonalTopItemVM.init(frame: CGRect.init(x: self.mealVm.frame.maxX, y: 0, width: 0, height: 0))
+//        vm.iconImgView.setImgLocal(imgName: "mine_func_fasting")
+//        vm.titleLab.text = "轻断食"
+//        return vm
+//    }()
+    lazy var friendsVm: PersonalTopItemVM = {
         let vm = PersonalTopItemVM.init(frame: CGRect.init(x: self.mealVm.frame.maxX, y: 0, width: 0, height: 0))
-        vm.iconImgView.setImgLocal(imgName: "mine_func_fasting")
-        vm.titleLab.text = "轻断食"
+        vm.iconImgView.setImgLocal(imgName: "mine_func_friends")
+        vm.titleLab.text = "我的好友"
         return vm
     }()
 }
@@ -191,7 +197,8 @@ extension PersonalTopVM{
         funcWhiteView.addSubview(goalVm)
         funcWhiteView.addSubview(statVm)
         funcWhiteView.addSubview(mealVm)
-        funcWhiteView.addSubview(fastingVm)
+//        funcWhiteView.addSubview(fastingVm)
+        funcWhiteView.addSubview(friendsVm)
         funcWhiteView.addSubview(lineView)
         
         setConstrait()
