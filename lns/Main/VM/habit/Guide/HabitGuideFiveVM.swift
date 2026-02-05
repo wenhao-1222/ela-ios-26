@@ -19,24 +19,31 @@ class HabitGuideFiveVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    lazy var topIconImg: UIImageView = {
-        let img = UIImageView()
-        img.setImgLocal(imgName: "habit_guide_ela_icon")
-        img.contentMode = .scaleAspectFit
-        return img
-    }()
+//    lazy var topIconImg: UIImageView = {
+//        let img = UIImageView()
+//        img.setImgLocal(imgName: "habit_guide_ela_icon")
+//        img.contentMode = .scaleAspectFit
+//        return img
+//    }()
     lazy var imgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "habit_guide_5_img")
-        img.contentMode = .scaleAspectFit
+        img.contentMode = .scaleAspectFill
         
         return img
     }()
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_CARD_BG_WHITE
+        vi.backgroundColor = .clear
         vi.isUserInteractionEnabled = true
         return vi
+    }()
+    lazy var tipLaeb: UILabel = {
+        let lab = UILabel()
+        lab.text = "不仅如此"
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.font = .systemFont(ofSize: 16, weight: .medium)
+        return lab
     }()
     lazy var titleLab: LineHeightLabel = {
         let lab = LineHeightLabel()
@@ -48,7 +55,7 @@ class HabitGuideFiveVM: UIView {
     }()
     lazy var detailLab: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         
@@ -74,39 +81,49 @@ class HabitGuideFiveVM: UIView {
 extension HabitGuideFiveVM{
     func initUI() {
         backgroundColor = .COLOR_BG_F5
-        addSubview(topIconImg)
+//        addSubview(topIconImg)
         addSubview(imgView)
         addSubview(whiteView)
+        whiteView.addSubview(tipLaeb)
         whiteView.addSubview(titleLab)
         whiteView.addSubview(detailLab)
         whiteView.addSubview(confirmButton)
         
         setConstrait()
-        titleLab.setLineHeight(textString: "不仅如此，\n你的自律还将带动身边的人",
-                                lineHeight: kFitWidth(33))
+        titleLab.setLineHeight(textString: "你的自律\n还将带动身边的人",
+                                lineHeight: kFitWidth(28))
         detailLab.setLineHeight(textString: "当你和朋友们同时达到目标时，你们也将一起获得额外的积分",
-                                lineHeight: kFitWidth(27))
+                                lineHeight: kFitWidth(22))
     }
     func setConstrait() {
-        topIconImg.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.centerX.lessThanOrEqualToSuperview()
-            make.height.equalTo(kFitWidth(68))
-            make.width.equalToSuperview()
-        }
+//        topIconImg.snp.makeConstraints { make in
+//            make.top.equalToSuperview()
+//            make.centerX.lessThanOrEqualToSuperview()
+//            make.height.equalTo(kFitWidth(68))
+//            make.width.equalToSuperview()
+//        }
+//        imgView.snp.makeConstraints { make in
+//            make.centerX.lessThanOrEqualToSuperview()
+//            make.top.equalTo(topIconImg.snp.bottom).offset(kFitWidth(22))
+//            make.width.equalTo(kFitWidth(305))
+//            make.height.equalTo(kFitWidth(290))
+//        }
         imgView.snp.makeConstraints { make in
-            make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(topIconImg.snp.bottom).offset(kFitWidth(22))
-            make.width.equalTo(kFitWidth(305))
-            make.height.equalTo(kFitWidth(290))
+            make.left.top.width.height.equalToSuperview()
         }
         whiteView.snp.makeConstraints { make in
             make.left.width.bottom.equalToSuperview()
-            make.top.equalTo(imgView.snp.bottom).offset(kFitWidth(20))
+//            make.top.equalTo(imgView.snp.bottom).offset(kFitWidth(20))
+            make.top.equalTo(kFitWidth(450))
+        }
+        tipLaeb.snp.makeConstraints { make in
+            make.top.equalTo(kFitWidth(35))
+            make.left.equalTo(kFitWidth(24))
         }
         titleLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))
-            make.top.equalTo(kFitWidth(25))
+//            make.top.equalTo(kFitWidth(25))
+            make.top.equalTo(tipLaeb.snp.bottom).offset(kFitWidth(10))
         }
         detailLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))
@@ -134,6 +151,7 @@ extension HabitGuideFiveVM {
     func prepareEntranceAnimation() {
         imgView.alpha = 0
         whiteView.alpha = 0
+        tipLaeb.alpha = 0
         titleLab.alpha = 0
         detailLab.alpha = 0
         confirmButton.alpha = 0
@@ -147,6 +165,7 @@ extension HabitGuideFiveVM {
         }completion: { _ in
             UIView.animate(withDuration: 0.8, delay: 0.5,options: .curveLinear) {
                 self.whiteView.alpha = 1
+                self.tipLaeb.alpha = 1
                 self.titleLab.alpha = 1
             }completion: { _ in
                 UIView.animate(withDuration: 0.8, delay: 0.5,options: .curveLinear) {

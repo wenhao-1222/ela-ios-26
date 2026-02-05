@@ -22,21 +22,22 @@ class HabitGuideThirdVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    lazy var topIconImg: UIImageView = {
-        let img = UIImageView()
-        img.setImgLocal(imgName: "habit_guide_ela_icon")
-        img.contentMode = .scaleAspectFit
-        return img
-    }()
+//    lazy var topIconImg: UIImageView = {
+//        let img = UIImageView()
+//        img.setImgLocal(imgName: "habit_guide_ela_icon")
+//        img.contentMode = .scaleAspectFit
+//        return img
+//    }()
     lazy var imgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "habit_guide_3_img")
+        img.contentMode = .scaleAspectFill
         
         return img
     }()
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_CARD_BG_WHITE
+        vi.backgroundColor = .clear//.COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -49,7 +50,7 @@ class HabitGuideThirdVM: UIView {
     }()
     lazy var detailLab: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         
@@ -60,7 +61,7 @@ class HabitGuideThirdVM: UIView {
 extension HabitGuideThirdVM{
     func initUI() {
         backgroundColor = .COLOR_BG_F5
-        addSubview(topIconImg)
+//        addSubview(topIconImg)
         addSubview(imgView)
         addSubview(whiteView)
         whiteView.addSubview(titleLab)
@@ -68,28 +69,32 @@ extension HabitGuideThirdVM{
         
         setConstrait()
         detailLab.setLineHeight(textString: "我们会给到你一些每日目标，搭配激励积分去帮助你养成习惯",
-                                lineHeight: kFitWidth(27))
+                                lineHeight: kFitWidth(22))
     }
     func setConstrait() {
-        topIconImg.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.centerX.lessThanOrEqualToSuperview()
-            make.height.equalTo(kFitWidth(68))
-            make.width.equalToSuperview()
-        }
+//        topIconImg.snp.makeConstraints { make in
+//            make.top.equalToSuperview()
+//            make.centerX.lessThanOrEqualToSuperview()
+//            make.height.equalTo(kFitWidth(68))
+//            make.width.equalToSuperview()
+//        }
+//        imgView.snp.makeConstraints { make in
+//            make.centerX.lessThanOrEqualToSuperview()
+//            make.top.equalTo(topIconImg.snp.bottom).offset(kFitWidth(22))
+//            make.width.equalTo(kFitWidth(305))
+//            make.height.equalTo(kFitWidth(290))
+//        }
         imgView.snp.makeConstraints { make in
-            make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(topIconImg.snp.bottom).offset(kFitWidth(22))
-            make.width.equalTo(kFitWidth(305))
-            make.height.equalTo(kFitWidth(290))
+            make.left.top.width.height.equalToSuperview()
         }
         whiteView.snp.makeConstraints { make in
             make.left.width.bottom.equalToSuperview()
-            make.top.equalTo(imgView.snp.bottom).offset(kFitWidth(20))
+//            make.top.equalTo(imgView.snp.bottom).offset(kFitWidth(20))
+            make.top.equalTo(kFitWidth(450))
         }
         titleLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))
-            make.top.equalTo(kFitWidth(25))
+            make.top.equalTo(kFitWidth(35))
         }
         detailLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))

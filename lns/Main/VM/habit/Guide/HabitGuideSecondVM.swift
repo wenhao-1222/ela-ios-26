@@ -26,17 +26,19 @@ class HabitGuideSecondVM: UIView {
         let img = UIImageView()
         img.setImgLocal(imgName: "habit_guide_ela_icon")
         img.contentMode = .scaleAspectFit
+        img.isHidden = true
         return img
     }()
     lazy var imgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "habit_guide_2_img")
+        img.contentMode = .scaleAspectFill
         
         return img
     }()
     lazy var whiteView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_CARD_BG_WHITE
+        vi.backgroundColor = .clear//.COLOR_CARD_BG_WHITE
         vi.isUserInteractionEnabled = true
         return vi
     }()
@@ -63,6 +65,7 @@ class HabitGuideSecondVM: UIView {
     
     lazy var detailLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping
         lab.font = .systemFont(ofSize: 14, weight: .light)
@@ -71,6 +74,7 @@ class HabitGuideSecondVM: UIView {
     }()
     lazy var tipsLab: LineHeightLabel = {
         let lab = LineHeightLabel()
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         lab.font = .systemFont(ofSize: 10, weight: .regular)
@@ -89,7 +93,7 @@ extension HabitGuideSecondVM {
 extension HabitGuideSecondVM{
     func initUI() {
         backgroundColor = .COLOR_BG_F5
-        addSubview(topIconImg)
+//        addSubview(topIconImg)
         addSubview(imgView)
         addSubview(whiteView)
         whiteView.addSubview(titleLab)
@@ -99,25 +103,29 @@ extension HabitGuideSecondVM{
         
         setConstrait()
         
-        detailLabel.setLineHeight(textString: "我们会通过帮助你养成习惯，提高规律饮食的\n自动化程度，进而提升执行力及坚持率。", lineHeight: kFitWidth(24))
+        detailLabel.setLineHeight(textString: "我们会通过帮助你养成习惯，提高规律饮食的\n自动化程度，进而提升执行力及坚持率。", lineHeight: kFitWidth(22))
         tipsLab.setLineHeight(textString: "Wing RR, Phelan S. Long-term weight loss maintenance, American Journal of Clinical Nutrition, 2005。", lineHeight: kFitWidth(17))
     }
     func setConstrait() {
-        topIconImg.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.centerX.lessThanOrEqualToSuperview()
-            make.height.equalTo(kFitWidth(68))
-            make.width.equalToSuperview()
-        }
+//        topIconImg.snp.makeConstraints { make in
+//            make.top.equalToSuperview()
+//            make.centerX.lessThanOrEqualToSuperview()
+//            make.height.equalTo(kFitWidth(68))
+//            make.width.equalToSuperview()
+//        }
+//        imgView.snp.makeConstraints { make in
+//            make.centerX.lessThanOrEqualToSuperview()
+//            make.top.equalTo(topIconImg.snp.bottom).offset(kFitWidth(22))
+//            make.width.equalTo(kFitWidth(305))
+//            make.height.equalTo(kFitWidth(290))
+//        }
         imgView.snp.makeConstraints { make in
-            make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(topIconImg.snp.bottom).offset(kFitWidth(22))
-            make.width.equalTo(kFitWidth(305))
-            make.height.equalTo(kFitWidth(290))
+            make.left.top.width.height.equalToSuperview()
         }
         whiteView.snp.makeConstraints { make in
             make.left.width.bottom.equalToSuperview()
-            make.top.equalTo(imgView.snp.bottom).offset(kFitWidth(20))
+//            make.top.equalTo(imgView.snp.bottom).offset(kFitWidth(20))
+            make.top.equalTo(kFitWidth(450))
         }
         titleLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))

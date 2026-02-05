@@ -15,7 +15,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "蒙版组 60@2x.png",
+      "filename" : "浅色@1.5x.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -26,7 +26,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "深色切图-1@2x.jpg",
+      "filename" : "深色切图-1@1.5x.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
