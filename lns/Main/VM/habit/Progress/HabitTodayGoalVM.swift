@@ -124,7 +124,7 @@ extension HabitTodayGoalVM{
         var tempModels = [HabitItemModel]()
         
         for i in 0..<itemModels.count{
-            let model = itemModels[i]
+            let model = itemModels[itemModels.count-1-i]
             if model.isComplete{
                 tempModels.append(model)
             }else{

@@ -18,7 +18,7 @@ class HabitRankListVM: UIView {
     var relegationLine = -1//排名以下的降段
     
 //    private let leaderboardCacheKey = "HabitRankListVM.leaderboardCache"
-    private var isCurrentlyVisible = false
+    public var isCurrentlyVisible = false
     
     //段位变化动画  需要
     private var currentTierIndex: Int = 0
@@ -62,6 +62,7 @@ class HabitRankListVM: UIView {
         vi.estimatedSectionHeaderHeight = 0
         vi.estimatedSectionFooterHeight = 0
         vi.sectionHeaderHeight = 0
+        vi.sectionFooterHeight = 0
 
         if #available(iOS 15.0, *) {
             vi.sectionHeaderTopPadding = 0
@@ -227,7 +228,7 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
         }else if section == relegationLine - 1{
             return downDegreeeVm.selfHeight
         }
-        return 0//section > 0 ? kFitWidth(25) : 0
+        return CGFloat.leastNormalMagnitude//section > 0 ? kFitWidth(25) : 0
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section == promotionLine{
@@ -236,6 +237,9 @@ extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
             return downDegreeeVm
         }
         return nil
+    }
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
@@ -361,27 +365,27 @@ extension HabitRankListVM{
 
 extension HabitRankListVM{
     private func prepareLeaderboardData(from array: NSArray) -> NSArray {
-//        return array
-        var entries = array.compactMap { $0 as? NSDictionary }
-        var placeholderIndex = 1
-
-        while entries.count < 20 {
-            let randomScore = Int.random(in: 1...13)
-            let placeholder: NSDictionary = [
-                "headimgurl": "",
-                "nickname": "Tester \(placeholderIndex)",
-                "donateCount": 0,
-                "rankPointBalance": "\(randomScore)"
-            ]
-            entries.append(placeholder)
-            placeholderIndex += 1
-        }
-
-        let sortedEntries = entries.sorted {
-            $0.stringValueForKey(key: "rankPointBalance").intValue > $1.stringValueForKey(key: "rankPointBalance").intValue
-        }
-
-        return Array(sortedEntries.prefix(20)) as NSArray
+        return array
+//        var entries = array.compactMap { $0 as? NSDictionary }
+//        var placeholderIndex = 1
+//
+//        while entries.count < 20 {
+//            let randomScore = Int.random(in: 1...13)
+//            let placeholder: NSDictionary = [
+//                "headimgurl": "",
+//                "nickname": "Tester \(placeholderIndex)",
+//                "donateCount": 0,
+//                "rankPointBalance": "\(randomScore)"
+//            ]
+//            entries.append(placeholder)
+//            placeholderIndex += 1
+//        }
+//
+//        let sortedEntries = entries.sorted {
+//            $0.stringValueForKey(key: "rankPointBalance").intValue > $1.stringValueForKey(key: "rankPointBalance").intValue
+//        }
+//
+//        return Array(sortedEntries.prefix(20)) as NSArray
     }
 }
 

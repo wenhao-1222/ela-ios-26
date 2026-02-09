@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import SnapKit
 
 class LogsTimeAlertVM: UIView {
     //kFitWidth(500) + WHUtils().getBottomSafeAreaHeight()
@@ -20,6 +21,8 @@ class LogsTimeAlertVM: UIView {
     var mealsIndex = ""
     var confirmBlock:((String)->())?
     var setAlertBlock:(()->())?
+    
+    private var whiteViewBottomConstraint: Constraint?
     
     /// 蒙层目标透明度：浅色 0.15，深色 0.85
     private var targetDimAlpha: CGFloat {
@@ -170,22 +173,25 @@ extension LogsTimeAlertVM{
         self.isHidden = false
         bgView.alpha = 0
         bgView.isUserInteractionEnabled = false
-//        self.startCountdown()
-        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-//            self.alpha = 1
-//            self.whiteView.alpha = 1
-            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: (SCREEN_HEIGHT-self.whiteViewHeight*0.5+kFitWidth(16)))
+        whiteViewBottomConstraint?.update(offset: whiteViewHeight)
+        self.layoutIfNeeded()
+        UIView.animate(withDuration: 0.45,
+                       delay: 0,
+                       usingSpringWithDamping: 0.85,
+                       initialSpringVelocity: 0.6,
+                       options: [.curveEaseOut, .allowUserInteraction]) {
+            self.whiteViewBottomConstraint?.update(offset: 0)
+            self.layoutIfNeeded()
             self.bgView.alpha = self.targetDimAlpha//0.25
         } completion: { _ in
             self.bgView.isUserInteractionEnabled = true
         }
     }
     @objc func hiddenView() {
-        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-//            self.alpha = 0
-//            self.whiteView.alpha = 0.7
+        UIView.animate(withDuration: 0.28, delay: 0, options: [.curveEaseIn, .allowUserInteraction]) {
             self.bgView.alpha = 0
-            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
+            self.whiteViewBottomConstraint?.update(offset: self.whiteViewHeight)
+            self.layoutIfNeeded()
         }completion: { t in
             self.isHidden = true
         }
@@ -224,6 +230,11 @@ extension LogsTimeAlertVM{
     func initUI() {
         addSubview(bgView)
         addSubview(whiteView)
+        whiteView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.height.equalTo(whiteViewHeight)
+            whiteViewBottomConstraint = make.bottom.equalToSuperview().offset(whiteViewHeight).constraint
+        }
         whiteView.addSubview(closeButton)
         whiteView.addSubview(confirmButton)
         whiteView.addSubview(lineView)

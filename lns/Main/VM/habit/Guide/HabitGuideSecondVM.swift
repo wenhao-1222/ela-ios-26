@@ -120,12 +120,13 @@ extension HabitGuideSecondVM{
 //            make.height.equalTo(kFitWidth(290))
 //        }
         imgView.snp.makeConstraints { make in
-            make.left.top.width.height.equalToSuperview()
+            make.left.right.top.height.equalToSuperview()
+//            make.height.equalTo(kFitWidth(300))
         }
         whiteView.snp.makeConstraints { make in
             make.left.width.bottom.equalToSuperview()
 //            make.top.equalTo(imgView.snp.bottom).offset(kFitWidth(20))
-            make.top.equalTo(kFitWidth(450))
+            make.top.equalTo(WHUtils().getTopSafeAreaHeight() > 0 ? kFitWidth(450) : kFitWidth(380))
         }
         titleLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))
