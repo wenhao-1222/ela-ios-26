@@ -98,13 +98,15 @@ extension HabitGuideFirstVM {
     /// Sequentially fades in the title and image views
     func startEntranceAnimation() {
         self.isUserInteractionEnabled = false
-        UIView.animate(withDuration: 0.7, delay: 0.2,options: .curveLinear) {
+        UIView.animate(withDuration: 0.55, delay: 0.05,options: .curveLinear) {
             self.detailLabelOne.alpha = 1
         }completion: { _ in
-            UIView.animate(withDuration: 0.8, delay: 0.5,options: .curveLinear) {
+            UIView.animate(withDuration: 0.65, delay: 0.35,options: .curveLinear) {
                 self.detailLabelTwo.alpha = 1
             }completion: { _ in
-                self.isUserInteractionEnabled = true
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
+                    self.isUserInteractionEnabled = true
+                })
             }
         }
     }

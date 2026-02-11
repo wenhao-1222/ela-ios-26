@@ -94,7 +94,7 @@ extension HabitGuideVM{
         scrollView.isScrollEnabled = false
         scrollView.contentSize = CGSize.init(width: SCREEN_WIDHT*5, height: 0)
         
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
             self.firstVm.startEntranceAnimation()
         })
         

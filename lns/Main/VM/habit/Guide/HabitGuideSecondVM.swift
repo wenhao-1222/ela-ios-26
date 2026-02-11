@@ -177,22 +177,25 @@ extension HabitGuideSecondVM {
         self.isUserInteractionEnabled = false
         UIView.animate(withDuration: 0.7, delay: 0,options: .curveLinear) {
             self.imgView.alpha = 1
+            self.titleLab.alpha = 1
+            self.whiteView.alpha = 1
         }completion: { _ in
-            UIView.animate(withDuration: 0.8, delay: 0.5,options: .curveLinear) {
-                self.whiteView.alpha = 1
-                self.titleLab.alpha = 1
-            }completion: { _ in
+//            UIView.animate(withDuration: 0.1, delay: 0.1,options: .curveLinear) {
+//                self.whiteView.alpha = 1
+//            }completion: { _ in
 //                UIView.animate(withDuration: 0.8, delay: 0.5,options: .curveLinear) {
 //                    self.detailLab.alpha = 1
 //                }completion: { _ in
-                    UIView.animate(withDuration: 0.8, delay: 0.5,options: .curveLinear) {
+                    UIView.animate(withDuration: 0.8, delay: 0.75,options: .curveLinear) {
                         self.detailLabel.alpha = 1
                         self.tipsLab.alpha = 1
                     }completion: { _ in
-                        self.isUserInteractionEnabled = true
+                        DispatchQueue.main.asyncAfter(deadline: .now()+0.4, execute: {
+                            self.isUserInteractionEnabled = true
+                        })
                     }
 //                }
-            }
+//            }
         }
     }
 }
