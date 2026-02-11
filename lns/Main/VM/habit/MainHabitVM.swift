@@ -29,11 +29,29 @@ class MainHabitVM: UIView {
         vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.isUserInteractionEnabled = true
+        vi.clipsToBounds = true
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(selfTapAction))
         vi.addGestureRecognizer(tap)
 //        
         return vi
+    }()
+    lazy var betaBgView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = .THEME
+        vi.layer.cornerRadius = kFitWidth(12)
+        
+        return vi
+    }()
+    lazy var betaLabel: UILabel = {
+        let lab = UILabel()
+        lab.text = "Beta"
+        lab.textAlignment = .center
+        lab.textColor = .white
+        lab.font = .systemFont(ofSize: 9, weight: .medium)
+//        lab.backgroundColor = .THEME
+        
+        return lab
     }()
     lazy var titleLab : UILabel = {
         let lab = UILabel()
@@ -63,15 +81,30 @@ extension MainHabitVM{
     
     func initUI() {
         addSubview(whiteView)
+        
         whiteView.addSubview(titleLab)
+        whiteView.addSubview(betaBgView)
+        whiteView.addSubview(betaLabel)
         whiteView.addSubview(arrowImgView)
         
         setConstrait()
+        
+//        betaLabel.layer.cornerRadius = kFitWidth(12)
+//        betaLabel.layer.maskedCorners = [.layerMinXMinYCorner,.layerMinXMaxYCorner]
     }
     func setConstrait() {
         titleLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.centerY.lessThanOrEqualToSuperview()
+        }
+        betaBgView.snp.makeConstraints { make in
+            make.left.top.equalTo(kFitWidth(-12))
+            make.right.bottom.equalTo(betaLabel)
+        }
+        betaLabel.snp.makeConstraints { make in
+            make.left.top.equalToSuperview()
+            make.width.equalTo(kFitWidth(37))
+            make.height.equalTo(kFitWidth(15))
         }
         arrowImgView.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-11))
