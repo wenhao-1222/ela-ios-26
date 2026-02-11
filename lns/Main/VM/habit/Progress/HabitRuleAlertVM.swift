@@ -163,7 +163,7 @@ class HabitRuleAlertVM: UIView {
         return vi
     }()
     lazy var tableView: UITableView = {
-        let vi = UITableView.init(frame: CGRect.init(x: 0, y: kFitWidth(10), width: SCREEN_WIDHT, height: kFitWidth(540)), style: .plain)
+        let vi = UITableView.init(frame: CGRect.init(x: 0, y: kFitWidth(0), width: SCREEN_WIDHT, height: kFitWidth(560)), style: .plain)
         vi.delegate = self
         vi.dataSource = self
         vi.separatorStyle = .none
@@ -251,28 +251,28 @@ extension HabitRuleAlertVM:UITableViewDelegate,UITableViewDataSource{
         return vi
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return kFitWidth(70)
+        return kFitWidth(10)//kFitWidth(70)
     }
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        if scrollView == tableView{
-            let scroOffsetY = scrollView.contentOffset.y
-            let percent = scroOffsetY/kFitWidth(140)
-            DLLog(message: "scrollViewDidScroll  percent:\(percent)")
-            
-            if scroOffsetY > 0{
-                if scroOffsetY < kFitWidth(140){
-                    closeIconImgView.alpha = 1 - percent
-                    closeTapView.isUserInteractionEnabled = true
-                }else{
-                    closeIconImgView.alpha = 0
-                    closeTapView.isUserInteractionEnabled = false
-                }
-            }else{
-                closeIconImgView.alpha = 1
-                closeTapView.isUserInteractionEnabled = true
-            }
-//        }
-    }
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+////        if scrollView == tableView{
+//            let scroOffsetY = scrollView.contentOffset.y
+//            let percent = scroOffsetY/kFitWidth(140)
+//            DLLog(message: "scrollViewDidScroll  percent:\(percent)")
+//            
+//            if scroOffsetY > 0{
+//                if scroOffsetY < kFitWidth(140){
+//                    closeIconImgView.alpha = 1 - percent
+//                    closeTapView.isUserInteractionEnabled = true
+//                }else{
+//                    closeIconImgView.alpha = 0
+//                    closeTapView.isUserInteractionEnabled = false
+//                }
+//            }else{
+//                closeIconImgView.alpha = 1
+//                closeTapView.isUserInteractionEnabled = true
+//            }
+////        }
+//    }
 }
 
 extension HabitRuleAlertVM{
@@ -287,8 +287,8 @@ extension HabitRuleAlertVM{
         whiteView.addSubview(confirmButton)
         whiteView.addSubview(titleLab)
         whiteView.addSubview(tableView)
-        whiteView.addSubview(closeIconImgView)
-        whiteView.addSubview(closeTapView)
+//        whiteView.addSubview(closeIconImgView)
+//        whiteView.addSubview(closeTapView)
         
         setConstrait()
         setupWhiteViewBorder()
@@ -299,15 +299,15 @@ extension HabitRuleAlertVM{
             make.top.equalTo(kFitWidth(25))
             make.height.equalTo(kFitWidth(25))
         }
-        closeIconImgView.snp.makeConstraints { make in
-            make.right.equalTo(kFitWidth(-25))
-            make.width.height.equalTo(kFitWidth(25))
-            make.centerY.lessThanOrEqualTo(titleLab)
-        }
-        closeTapView.snp.makeConstraints { make in
-            make.center.lessThanOrEqualTo(closeIconImgView)
-            make.width.height.equalTo(kFitWidth(75))
-        }
+//        closeIconImgView.snp.makeConstraints { make in
+//            make.right.equalTo(kFitWidth(-25))
+//            make.width.height.equalTo(kFitWidth(25))
+//            make.centerY.lessThanOrEqualTo(titleLab)
+//        }
+//        closeTapView.snp.makeConstraints { make in
+//            make.center.lessThanOrEqualTo(closeIconImgView)
+//            make.width.height.equalTo(kFitWidth(75))
+//        }
         confirmButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))

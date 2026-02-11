@@ -70,9 +70,9 @@ extension HabitGuideFourVM{
         
         setConstrait()
         titleLab.setLineHeight(textString: "我们相信你能\n改变不仅限于自己",
-                                lineHeight: kFitWidth(28))
+                                lineHeight: (titleLab.font.lineHeight) * 1)
         detailLab.setLineHeight(textString: "积分每到达一定分数，我们将代表你向贫困山区捐赠一份营养餐",
-                                lineHeight: kFitWidth(22))
+                                lineHeight: (detailLab.font.lineHeight) * 1.2)
     }
     func setConstrait() {
 //        let imgHeight = kFitWidth(400)*SCREEN_WIDHT/kFitWidth(375)
@@ -96,7 +96,7 @@ extension HabitGuideFourVM{
         }
         detailLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))
-            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(20))
+            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(30))
             make.right.equalTo(kFitWidth(-20))
         }
     }

@@ -44,7 +44,9 @@ class HabitGuideSecondVM: UIView {
     }()
     lazy var titleLab: UILabel = {
         let lab = UILabel()
-        lab.text = "规律饮食最难的是坚持"
+//        lab.text = "规律饮食最难的是坚持"
+//        lab.text = "80%未达到理想身材\n是因为无法坚持"
+        lab.numberOfLines = 2
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 25, weight: .semibold)
         return lab
@@ -68,7 +70,7 @@ class HabitGuideSecondVM: UIView {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping
-        lab.font = .systemFont(ofSize: 14, weight: .light)
+        lab.font = .systemFont(ofSize: 16, weight: .regular)
         
         return lab
     }()
@@ -97,14 +99,22 @@ extension HabitGuideSecondVM{
         addSubview(imgView)
         addSubview(whiteView)
         whiteView.addSubview(titleLab)
-        whiteView.addSubview(detailLab)
+//        whiteView.addSubview(detailLab)
         whiteView.addSubview(detailLabel)
         whiteView.addSubview(tipsLab)
         
         setConstrait()
         
-        detailLabel.setLineHeight(textString: "我们会通过帮助你养成习惯，提高规律饮食的\n自动化程度，进而提升执行力及坚持率。", lineHeight: kFitWidth(22))
-        tipsLab.setLineHeight(textString: "Wing RR, Phelan S. Long-term weight loss maintenance, American Journal of Clinical Nutrition, 2005。", lineHeight: kFitWidth(17))
+        titleLab.setLineHeight(textString: "80%未达到理想身材\n是因为无法坚持",
+                               lineHeight: (titleLab.font.lineHeight) * 1.2)
+        detailLabel.setLineHeight(
+            textString: "我们会通过帮助你养成习惯，提高规律饮食的自动化程度，进而提升执行力及坚持率。",
+            lineHeight: (detailLabel.font.lineHeight) * 1.2
+        )
+        tipsLab.setLineHeight(
+            textString: "Wing RR, Phelan S. Long-term weight loss maintenance, American Journal of Clinical Nutrition, 2005。",
+            lineHeight: (tipsLab.font.lineHeight) * 1.2
+        )
     }
     func setConstrait() {
 //        topIconImg.snp.makeConstraints { make in
@@ -132,14 +142,16 @@ extension HabitGuideSecondVM{
             make.left.equalTo(kFitWidth(24))
             make.top.equalTo(kFitWidth(25))
         }
-        detailLab.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(24))
-            make.top.equalTo(kFitWidth(82.5))
-            make.right.equalTo(kFitWidth(-20))
-        }
+//        detailLab.snp.makeConstraints { make in
+//            make.left.equalTo(kFitWidth(24))
+//            make.top.equalTo(kFitWidth(82.5))
+//            make.right.equalTo(kFitWidth(-20))
+//        }
         detailLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))
-            make.top.equalTo(kFitWidth(127))
+//            make.top.equalTo(kFitWidth(127))
+            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(25))
+            make.right.equalTo(kFitWidth(-24))
         }
         tipsLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))
@@ -155,7 +167,7 @@ extension HabitGuideSecondVM {
         imgView.alpha = 0
         whiteView.alpha = 0
         titleLab.alpha = 0
-        detailLab.alpha = 0
+//        detailLab.alpha = 0
         detailLabel.alpha = 0
         tipsLab.alpha = 0
     }
@@ -170,18 +182,17 @@ extension HabitGuideSecondVM {
                 self.whiteView.alpha = 1
                 self.titleLab.alpha = 1
             }completion: { _ in
-                UIView.animate(withDuration: 0.8, delay: 0.5,options: .curveLinear) {
-                    self.detailLab.alpha = 1
-                }completion: { _ in
+//                UIView.animate(withDuration: 0.8, delay: 0.5,options: .curveLinear) {
+//                    self.detailLab.alpha = 1
+//                }completion: { _ in
                     UIView.animate(withDuration: 0.8, delay: 0.5,options: .curveLinear) {
                         self.detailLabel.alpha = 1
                         self.tipsLab.alpha = 1
                     }completion: { _ in
                         self.isUserInteractionEnabled = true
                     }
-                }
+//                }
             }
         }
-        
     }
 }

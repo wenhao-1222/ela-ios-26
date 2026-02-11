@@ -27,7 +27,7 @@ class HabitTopMsgVM: UIView {
     }
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "habit_bg_ela_img")
+//        img.setImgLocal(imgName: "habit_bg_ela_img")
         img.isUserInteractionEnabled = true
         return img
     }()

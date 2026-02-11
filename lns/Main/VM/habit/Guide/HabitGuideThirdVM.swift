@@ -69,7 +69,7 @@ extension HabitGuideThirdVM{
         
         setConstrait()
         detailLab.setLineHeight(textString: "我们会给到你一些每日目标，搭配激励积分去帮助你养成习惯",
-                                lineHeight: kFitWidth(22))
+                                lineHeight: (detailLab.font.lineHeight) * 1.2)
     }
     func setConstrait() {
 //        topIconImg.snp.makeConstraints { make in

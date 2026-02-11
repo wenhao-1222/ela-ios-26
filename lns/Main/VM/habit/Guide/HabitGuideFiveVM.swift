@@ -91,9 +91,9 @@ extension HabitGuideFiveVM{
         
         setConstrait()
         titleLab.setLineHeight(textString: "你的自律\n还将带动身边的人",
-                                lineHeight: kFitWidth(28))
+                                lineHeight: (titleLab.font.lineHeight) * 1)
         detailLab.setLineHeight(textString: "当你和朋友们同时达到目标时，你们也将一起获得额外的积分",
-                                lineHeight: kFitWidth(22))
+                                lineHeight: (detailLab.font.lineHeight) * 1.2)
     }
     func setConstrait() {
 //        topIconImg.snp.makeConstraints { make in

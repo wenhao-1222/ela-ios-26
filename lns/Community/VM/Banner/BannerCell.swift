@@ -28,7 +28,6 @@ class BannerCell: UICollectionViewCell {
                 let resource = KF.ImageResource(downloadURL: resourceUrl, cacheKey: self.imageUrl!.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
                 self.imgView?.kf.setImage(with: resource, placeholder: createImageWithColor(color: .WIDGET_COLOR_GRAY_BLACK_04), options: [.transition(.fade(0.2))])
             }
-            
         }
     }
     

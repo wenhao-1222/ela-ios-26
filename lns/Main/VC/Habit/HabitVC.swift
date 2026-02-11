@@ -90,9 +90,9 @@ extension HabitVC{
         
         view.addSubview(scrollViewBase)
         
-        if UserDefaults.getString(forKey: .rank_list_guide) == nil{
+//        if UserDefaults.getString(forKey: .rank_list_guide) == nil{
             view.addSubview(guideVm)
-        }
+//        }
         
         scrollViewBase.frame = CGRect.init(x: 0, y: self.topTypeVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT - self.topTypeVm.frame.maxY)
         scrollViewBase.addSubview(progressVm)
