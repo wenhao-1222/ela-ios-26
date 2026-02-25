@@ -1247,6 +1247,7 @@
 		ECF854642C183F8500B9C7E7 /* MainDataLineChartLegentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF854632C183F8500B9C7E7 /* MainDataLineChartLegentView.swift */; };
 		ECF854662C18537900B9C7E7 /* MainWeightLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF854652C18537900B9C7E7 /* MainWeightLineChartView.swift */; };
 		ECF9706A2F2854FD00BEA528 /* RankUpConfetti3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF970692F2854FC00BEA528 /* RankUpConfetti3DView.swift */; };
+		ECF9D1012F500C1100A1B2C3 /* DietPlanCreateHeightVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF9D1022F500C1100A1B2C3 /* DietPlanCreateHeightVM.swift */; };
 		ECFAB0C92BD89EFF003AA249 /* FoodsDetailSpecAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFAB0C82BD89EFF003AA249 /* FoodsDetailSpecAlertVM.swift */; };
 		ECFAB0CD2BD8DC54003AA249 /* JournalTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFAB0CC2BD8DC54003AA249 /* JournalTableViewCell.swift */; };
 		ECFACE822BC7C805003CDA3A /* PlanListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFACE812BC7C805003CDA3A /* PlanListVC.swift */; };
@@ -2650,6 +2651,7 @@
 		ECF854632C183F8500B9C7E7 /* MainDataLineChartLegentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainDataLineChartLegentView.swift; sourceTree = "<group>"; };
 		ECF854652C18537900B9C7E7 /* MainWeightLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWeightLineChartView.swift; sourceTree = "<group>"; };
 		ECF970692F2854FC00BEA528 /* RankUpConfetti3DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankUpConfetti3DView.swift; sourceTree = "<group>"; };
+		ECF9D1022F500C1100A1B2C3 /* DietPlanCreateHeightVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateHeightVM.swift; sourceTree = "<group>"; };
 		ECFAB0C82BD89EFF003AA249 /* FoodsDetailSpecAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsDetailSpecAlertVM.swift; sourceTree = "<group>"; };
 		ECFAB0CC2BD8DC54003AA249 /* JournalTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalTableViewCell.swift; sourceTree = "<group>"; };
 		ECFACE812BC7C805003CDA3A /* PlanListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanListVC.swift; sourceTree = "<group>"; };
@@ -4491,11 +4493,11 @@
 				EC25C8332ED560CB00BF2D1F /* SkeletonListLoadingManager.swift */,
 				ECD0FE6D2BABC59E001232C9 /* PrefixHeader.pch */,
 				ECD0FE762BABCA04001232C9 /* lns-Bridging-Header.h */,
-				ECA059452F4D961A00E257E8 /* DietPlan */,
 				ECF581DE2C329A8200FE0937 /* Guide */,
 				ECD0FE872BABD0E3001232C9 /* NetWork */,
 				ECAD701C2BB6B82700D8E3E5 /* ThirdPart */,
 				ECADF2AB2BB43200004B2C4B /* Welcome */,
+				ECA059452F4D961A00E257E8 /* DietPlan */,
 				ECADF2A62BB431B8004B2C4B /* Questionnaire */,
 				EC380A232BB1583000B0C58F /* QuestionnaireSurvey */,
 				EC4E49392BAD1302008295A2 /* Model */,
@@ -4660,6 +4662,7 @@
 				ECA0594F2F4D9EA100E257E8 /* DietPlanCreateGoalVM.swift */,
 				EC8B56032F4E8958002F2C16 /* DietPlanCreateSexVM.swift */,
 				EC8B56052F4E8E9F002F2C16 /* DietPlanCreateYearVM.swift */,
+				ECF9D1022F500C1100A1B2C3 /* DietPlanCreateHeightVM.swift */,
 			);
 			path = VM;
 			sourceTree = "<group>";
@@ -6092,6 +6095,7 @@
 				EC24EB392BB25BDA002F21DF /* QuestionnaireSurveyMsgHeightVM.swift in Sources */,
 				A754BD4E2DA3CA89000ACC79 /* PlayerTestVC.swift in Sources */,
 				ECA059502F4D9EAA00E257E8 /* DietPlanCreateGoalVM.swift in Sources */,
+				ECF9D1012F500C1100A1B2C3 /* DietPlanCreateHeightVM.swift in Sources */,
 				A77A37182CBD095B00ED4DD0 /* LogsTimeAlertVM.swift in Sources */,
 				ECD89EF62BDF9B3800EF89A6 /* JournalShareVC.swift in Sources */,
 				A778EEF52D89684F002548D4 /* FeedBackView.swift in Sources */,

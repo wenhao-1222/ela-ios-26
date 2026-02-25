@@ -104,7 +104,7 @@ extension HabitGuideFirstVM {
             UIView.animate(withDuration: 0.65, delay: 0.35,options: .curveLinear) {
                 self.detailLabelTwo.alpha = 1
             }completion: { _ in
-                DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.12, execute: {
                     self.isUserInteractionEnabled = true
                 })
             }

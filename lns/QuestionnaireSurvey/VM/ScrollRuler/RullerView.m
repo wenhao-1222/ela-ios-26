@@ -66,14 +66,16 @@
         
         if (_rulerFace == RulerFace_up_left) {
             
-            _mark_bottom = cy_selfWidth/2.0;
+            // Vertical(up_left): align axis to the right edge to avoid extra blank area.
+            _mark_bottom = cy_selfWidth;
             _short_mark_top = _mark_bottom-_m_height;
             _long_mark_top = _mark_bottom-_h_height;
             _num_top = _long_mark_top-_unitPX*8+cy_fit(10);
             
         }else if (_rulerFace == RulerFace_down_right) {
             
-            _mark_bottom = cy_selfWidth/2.0;
+            // Vertical(down_right): align axis to the left edge so scale starts without left gap.
+            _mark_bottom = 0;
             _short_mark_top = _mark_bottom+_m_height;
             _long_mark_top = _mark_bottom+_h_height;
             _num_top = _long_mark_top-cy_fit(10);
@@ -101,7 +103,13 @@
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetRGBStrokeColor(context,self.lineColor.R,self.lineColor.G,self.lineColor.B,1.0);
-    CGContextSetLineWidth(context, _coarseness);
+//    CGContextSetLineWidth(context, _coarseness);
+    if (_rulerDirection == RulerDirectionVertical) {
+        CGContextSetLineWidth(context, cy_fit(4)); // 改这里
+    } else {
+        CGContextSetLineWidth(context, _coarseness);
+    }
+
     //画轴
     CGPoint aPoints[2];//X轴
     if (_rulerDirection == RulerDirectionHorizontal) {

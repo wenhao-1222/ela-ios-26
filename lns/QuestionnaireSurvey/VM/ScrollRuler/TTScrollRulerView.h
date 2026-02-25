@@ -40,8 +40,6 @@
 
 @property (nonatomic,weak) id<rulerDelegate> rulerDelegate;
 
-
-
 /**
  标尺视图的宽度，默认 手机屏幕宽度
  */
@@ -56,11 +54,6 @@
  标尺视图的背景颜色 默认白色
  */
 @property (nonatomic,strong) UIColor *rulerBackgroundColor;
-
-
-
-
-
 
 
 /**
@@ -82,11 +75,6 @@
  一个刻度代表的值是多少，默认 1
  */
 @property (nonatomic,assign) NSInteger unitValue;
-
-
-
-
-
 
 
 /**
@@ -115,10 +103,6 @@
 @property (nonatomic,assign) float m_height;
 
 
-
-
-
-
 /**
  指针位置，默认居中
  */
@@ -133,11 +117,6 @@
  指针视图背景颜色
  */
 @property (nonatomic,strong) UIColor *pointerBackgroundColor;
-
-
-
-
-
 
 
 

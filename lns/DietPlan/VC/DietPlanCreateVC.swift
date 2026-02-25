@@ -9,6 +9,18 @@
 class DietPlanCreateVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.fd_interactivePopDisabled = true
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        navigationController?.fd_interactivePopDisabled = false
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,6 +64,10 @@ class DietPlanCreateVC: WHBaseViewVC {
     }()
     lazy var birthdayVm: DietPlanCreateYearVM = {
         let vm = DietPlanCreateYearVM.init(frame: CGRect.init(x: SCREEN_WIDHT*2, y: 0, width: 0, height: 0))
+        return vm
+    }()
+    lazy var heightVm: DietPlanCreateHeightVM = {
+        let vm = DietPlanCreateHeightVM.init(frame: CGRect(x: SCREEN_WIDHT * 3, y: 0, width: 0, height: 0))
         return vm
     }()
     lazy var nextButton: UIButton = {
@@ -124,10 +140,12 @@ extension DietPlanCreateVC{
         
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
+        scrollViewBase.isScrollEnabled = false
         
         scrollViewBase.addSubview(goalVm)
         scrollViewBase.addSubview(sexVm)
         scrollViewBase.addSubview(birthdayVm)
+        scrollViewBase.addSubview(heightVm)
         
         
         DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
@@ -135,7 +153,7 @@ extension DietPlanCreateVC{
         })
         
         scrollViewBase.isPagingEnabled = true
-        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*3, height: 0)
+        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*4, height: 0)
 
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))

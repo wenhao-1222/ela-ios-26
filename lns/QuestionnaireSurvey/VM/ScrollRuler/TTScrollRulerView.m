@@ -146,8 +146,9 @@
         [_rulerBackgroundView setContentOffset:CGPointMake(value/_unitValue*_unitPX, 0) animated:flag?flag:NO];
         
     }else if (_rulerDirection == RulerDirectionVertical) {
-        
-        [_rulerBackgroundView setContentOffset:CGPointMake(0, value/_unitValue*_unitPX) animated:flag?flag:NO];
+        // Vertical ruler callback uses reversed mapping, so offset must be reversed too.
+        CGFloat index = (_lockMax + _lockMin) - ((CGFloat)value / (CGFloat)_unitValue);
+        [_rulerBackgroundView setContentOffset:CGPointMake(0, index * _unitPX) animated:flag?flag:NO];
         
     }else {
         NSAssert(NO, @"error");
@@ -190,7 +191,8 @@
             
         }
         if (!_pointerFrameSeted && _rulerFace == RulerFace_down_right) {
-            _pointerView.frame = CGRectMake(cy_selfWidth/2.0, cy_selfHeight/2.0-cy_fit(1)/2.0, cy_selfWidth>=cy_fit(120)?cy_fit(80):cy_selfWidth/2.0, cy_fit(4));
+            // Keep pointer line starting from the ruler axis (left edge in down_right mode).
+            _pointerView.frame = CGRectMake(0, cy_selfHeight/2.0-cy_fit(1)/2.0, cy_selfWidth>=cy_fit(120)?cy_fit(80):cy_selfWidth/2.0, cy_fit(4));
         }
         
     }else {

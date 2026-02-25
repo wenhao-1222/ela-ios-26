@@ -1,0 +1,195 @@
+//
+//  DietPlanCreateHeightVM.swift
+//  lns
+//
+//  Created by Codex on 2026/2/25.
+//
+
+
+class DietPlanCreateHeightVM: UIView {
+
+    var valueChangeBlock: ((Int) -> ())?
+    var currentValue: Int = 170
+    private var hasAppliedInitialValue = false
+    private let feedbackGenerator = UISelectionFeedbackGenerator()
+
+    override init(frame: CGRect) {
+        super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        backgroundColor = .clear
+        isUserInteractionEnabled = true
+
+        initUI()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    lazy var titleLabel: UILabel = {
+        let lab = UILabel()
+        lab.text = "你的身高是?"
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.font = .systemFont(ofSize: 48 / 2.0, weight: .medium)
+
+        return lab
+    }()
+
+    lazy var numberLabel: YYLabel = {
+        let lab = YYLabel()
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.textAlignment = .right
+        lab.font = .systemFont(ofSize: 12, weight: .regular)
+
+        return lab
+    }()
+
+    lazy var rulerView: TTScrollRulerView = {
+        let vi = TTScrollRulerView(frame: CGRect(x: kFitWidth(183), y: kFitWidth(170), width: kFitWidth(200), height: kFitWidth(420)))
+        vi.backgroundColor = .clear
+        vi.rulerBackgroundColor = .clear
+        return vi
+    }()
+
+    lazy var topMaskView: UIView = {
+        let v = UIView()
+        v.isUserInteractionEnabled = false
+        return v
+    }()
+
+    lazy var topMaskLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+        return layer
+    }()
+
+    lazy var bottomMaskView: UIView = {
+        let v = UIView()
+        v.isUserInteractionEnabled = false
+        return v
+    }()
+
+    lazy var bottomMaskLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.cgColor
+        ]
+        return layer
+    }()
+}
+
+extension DietPlanCreateHeightVM {
+    func initUI() {
+        addSubview(titleLabel)
+        addSubview(numberLabel)
+        addSubview(rulerView)
+        addSubview(topMaskView)
+        addSubview(bottomMaskView)
+        topMaskView.layer.addSublayer(topMaskLayer)
+        bottomMaskView.layer.addSublayer(bottomMaskLayer)
+        feedbackGenerator.prepare()
+
+        rulerView.rulerDelegate = self
+        rulerView.rulerDirection = .vertical
+        rulerView.rulerFace = .down_right
+        rulerView.lockMax = 240
+        rulerView.lockMin = 110
+        rulerView.lockDefault = rulerView.lockMax + rulerView.lockMin - currentValue
+        rulerView.pointerBackgroundColor = .THEME
+        rulerView.h_height = Float(kFitWidth(36))
+        rulerView.m_height = Float(kFitWidth(24))
+        rulerView.customRuler(with: customColorMake(217.0 / 255.0, 217.0 / 255.0, 217.0 / 255.0),
+                              numColor: .COLOR_TEXT_TITLE_0f1214_20,
+                              scrollEnable: true)
+//        rulerView.customRuler(with: customColorMake(217.0 / 255.0, 217.0 / 255.0, 217.0 / 255.0),
+//                              numColor: WHColorWithAlpha(colorStr: "000000", alpha: 0.15),
+//                              scrollEnable: true)
+        rulerView.unitValue = 1
+        rulerView.classicRuler()
+        rulerView.scroll(toValue: currentValue, animation: false)
+
+        setConstrait()
+        updateHeightText(value: currentValue)
+        QuestinonaireMsgModel.shared.height = "\(currentValue)"
+    }
+
+    func setConstrait() {
+        titleLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(55))
+        }
+
+        numberLabel.snp.makeConstraints { make in
+//            make.left.equalTo(kFitWidth(59))
+            make.centerY.equalTo(rulerView)
+            make.right.lessThanOrEqualTo(rulerView.snp.left).offset(kFitWidth(-30))
+        }
+
+        rulerView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(42))
+//            make.centerX.equalToSuperview().offset(kFitWidth(56))
+            make.left.equalTo(SCREEN_WIDHT*0.5)
+            make.width.equalTo(kFitWidth(200))
+            make.height.equalTo(kFitWidth(420))
+        }
+
+        topMaskView.snp.makeConstraints { make in
+            make.top.equalTo(rulerView.snp.top)
+            make.left.equalTo(rulerView.snp.left)
+            make.width.equalTo(kFitWidth(112))
+            make.height.equalTo(kFitWidth(128))
+        }
+
+        bottomMaskView.snp.makeConstraints { make in
+            make.bottom.equalTo(rulerView.snp.bottom)
+            make.left.equalTo(rulerView.snp.left)
+            make.width.equalTo(kFitWidth(112))
+            make.height.equalTo(kFitWidth(128))
+        }
+    }
+
+    func updateHeightText(value: Int) {
+        let text = NSMutableAttributedString(string: "\(value)")
+        let unit = NSMutableAttributedString(string: " 厘米")
+        text.yy_font = .systemFont(ofSize: 40, weight: .medium)
+        text.yy_color = .THEME
+        unit.yy_font = .systemFont(ofSize: 12, weight: .regular)
+        unit.yy_color = .COLOR_TEXT_TITLE_0f1214
+        text.append(unit)
+        numberLabel.attributedText = text
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        topMaskLayer.frame = topMaskView.bounds
+        bottomMaskLayer.frame = bottomMaskView.bounds
+        if !hasAppliedInitialValue {
+            hasAppliedInitialValue = true
+            DispatchQueue.main.async {
+                self.rulerView.scroll(toValue: self.currentValue, animation: false)
+                QuestinonaireMsgModel.shared.height = "\(self.currentValue)"
+                self.updateHeightText(value: self.currentValue)
+            }
+        }
+    }
+}
+
+extension DietPlanCreateHeightVM: rulerDelegate {
+    func ruler(with value: Int) {
+        if value != currentValue {
+            feedbackGenerator.selectionChanged()
+            feedbackGenerator.prepare()
+        }
+        currentValue = value
+        QuestinonaireMsgModel.shared.height = "\(value)"
+        updateHeightText(value: value)
+        valueChangeBlock?(value)
+    }
+}
