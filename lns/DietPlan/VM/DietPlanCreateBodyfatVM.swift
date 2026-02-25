@@ -26,6 +26,12 @@ class DietPlanCreateBodyfatVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        topGradientLayer.frame = topGradientView.bounds
+        bottomGradientLayer.frame = bottomGradientView.bounds
+    }
 
     lazy var dataArray: [[String: String]] = {
         return [["data":"3%~5%","imgUrl":"body_fat_man_1"],
@@ -74,21 +80,39 @@ class DietPlanCreateBodyfatVM: UIView {
         vi.backgroundColor = .clear
         vi.showsVerticalScrollIndicator = false
         vi.contentInsetAdjustmentBehavior = .never
-        vi.delegate = self
         return vi
     }()
-    lazy var coverView: UIImageView = {
-        let vi = UIImageView()
-        vi.setImgLocal(imgName: "bottom_cover_img")
+    lazy var bottomGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
         return vi
     }()
-    lazy var coverTopView: UIImageView = {
-        let vi = UIImageView()
-        vi.setImgLocal(imgName: "bottom_cover_img")
-        vi.transform = CGAffineTransform(scaleX: -1, y: -1)
-//        vi.isHidden = true
-        vi.alpha = 0
+    lazy var topGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
         return vi
+    }()
+    lazy var bottomGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
+    }()
+    lazy var topGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
     }()
 }
 
@@ -109,8 +133,10 @@ extension DietPlanCreateBodyfatVM {
         addSubview(titleLabel)
         addSubview(tipsButton)
         addSubview(scrollView)
-        addSubview(coverView)
-        addSubview(coverTopView)
+        addSubview(topGradientView)
+        addSubview(bottomGradientView)
+        bottomGradientView.layer.addSublayer(bottomGradientLayer)
+        topGradientView.layer.addSublayer(topGradientLayer)
 
         setConstraint()
         updateScrollView()
@@ -136,15 +162,14 @@ extension DietPlanCreateBodyfatVM {
 //            make.bottom.equalToSuperview().offset(-WHUtils().getBottomSafeAreaHeight())
             make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
         }
-        coverView.snp.makeConstraints { make in
-            make.left.width.equalToSuperview()
-            make.height.equalTo(kFitWidth(40))
-            make.bottom.equalTo(scrollView.snp.bottom)
+        topGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(scrollView.snp.top)
+            make.height.equalTo(kFitWidth(35))
         }
-        coverTopView.snp.makeConstraints { make in
-            make.left.width.equalToSuperview()
-            make.height.equalTo(kFitWidth(40))
-            make.top.equalTo(scrollView.snp.top).offset(kFitWidth(-5))
+        bottomGradientView.snp.makeConstraints { make in
+            make.left.right.bottom.equalToSuperview()
+            make.top.equalTo(scrollView.snp.bottom).offset(kFitWidth(-56))
         }
     }
 
@@ -188,10 +213,6 @@ extension DietPlanCreateBodyfatVM {
 
         scrollView.contentSize = CGSize(width: 0, height: offsetY + kFitWidth(12))
         scrollView.setContentOffset(.zero, animated: false)
-//        coverTopView.isHidden = true
-        UIView.animate(withDuration: 0.65) {
-            self.coverTopView.alpha = 0
-        }
     }
 
     func updateBodyFatValue(index: Int) {
@@ -202,42 +223,5 @@ extension DietPlanCreateBodyfatVM {
         }
         QuestinonaireMsgModel.shared.bodyFat = array[index]["data"] ?? ""
     }
-}
 
-extension DietPlanCreateBodyfatVM: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        coverTopView.isHidden = false
-        UIView.animate(withDuration: 0.65) {
-            self.coverTopView.alpha = 1
-        }
-    }
-
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            if scrollView.contentOffset.y <= kFitWidth(40){
-                UIView.animate(withDuration: 0.65) {
-                    self.coverTopView.alpha = 0
-                }
-            }else{
-                UIView.animate(withDuration: 0.65) {
-                    self.coverTopView.alpha = 1
-                }
-            }
-            
-//            coverTopView.isHidden = scrollView.contentOffset.y <= kFitWidth(40)
-        }
-    }
-
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.y <= kFitWidth(40){
-            UIView.animate(withDuration: 0.65) {
-                self.coverTopView.alpha = 0
-            }
-        }else{
-            UIView.animate(withDuration: 0.65) {
-                self.coverTopView.alpha = 1
-            }
-        }
-//        coverTopView.isHidden = scrollView.contentOffset.y <= kFitWidth(40)
-    }
 }

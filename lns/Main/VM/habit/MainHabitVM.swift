@@ -10,6 +10,7 @@
 class MainHabitVM: UIView {
     
     let selfHeight = kFitWidth(60)
+    private let pressScale: CGFloat = 0.97
     
     var tapBlock:(()->())?
     
@@ -33,6 +34,11 @@ class MainHabitVM: UIView {
         
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(selfTapAction))
         vi.addGestureRecognizer(tap)
+        
+        let press = UILongPressGestureRecognizer(target: self, action: #selector(handlePressGesture(_:)))
+        press.minimumPressDuration = 0
+        press.cancelsTouchesInView = false
+        vi.addGestureRecognizer(press)
 //        
         return vi
     }()
@@ -73,6 +79,44 @@ extension MainHabitVM{
     @objc func selfTapAction() {
         if self.tapBlock != nil{
             self.tapBlock!()
+        }
+    }
+    
+    @objc private func handlePressGesture(_ gesture: UILongPressGestureRecognizer) {
+        let point = gesture.location(in: whiteView)
+        let isInside = whiteView.bounds.contains(point)
+        
+        switch gesture.state {
+        case .began:
+            animatePressDown()
+        case .changed:
+            if isInside {
+                animatePressDown()
+            } else {
+                animatePressUp()
+            }
+        case .cancelled, .failed:
+            animatePressUp()
+        case .ended:
+            animatePressUp()
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
+                self.tapBlock?()
+            })
+            
+        default:
+            break
+        }
+    }
+    
+    private func animatePressDown() {
+        UIView.animate(withDuration: 0.08, delay: 0, options: [.allowUserInteraction, .curveEaseOut]) {
+            self.whiteView.transform = CGAffineTransform(scaleX: self.pressScale, y: self.pressScale)
+        }
+    }
+    
+    private func animatePressUp() {
+        UIView.animate(withDuration: 0.12, delay: 0, options: [.allowUserInteraction, .curveEaseOut]) {
+            self.whiteView.transform = .identity
         }
     }
 }

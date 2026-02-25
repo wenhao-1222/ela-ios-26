@@ -70,6 +70,11 @@ class DietPlanCreateGoalVM: UIView {
         vi.isUserInteractionEnabled = false
         return vi
     }()
+    lazy var topGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
+        return vi
+    }()
     lazy var bottomGradientLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
         layer.startPoint = CGPoint(x: 0.5, y: 0.0)
@@ -81,10 +86,22 @@ class DietPlanCreateGoalVM: UIView {
         layer.locations = [0, 1]
         return layer
     }()
+    lazy var topGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
+    }()
     
     override func layoutSubviews() {
         super.layoutSubviews()
         bottomGradientLayer.frame = bottomGradientView.bounds
+        topGradientLayer.frame = topGradientView.bounds
     }
 }
 
@@ -92,16 +109,18 @@ extension DietPlanCreateGoalVM{
     func initUI() {
         addSubview(titleLabel)
         addSubview(scrollView)
+        addSubview(topGradientView)
         addSubview(bottomGradientView)
         scrollView.addSubview(contentView)
         contentView.addSubview(stackView)
         bottomGradientView.layer.addSublayer(bottomGradientLayer)
+        topGradientView.layer.addSublayer(topGradientLayer)
         
         setConstrait()
         refreshListUI()
         
         titleLabel.setLineHeight(
-            textString: "你希望通过饮食计划\n达到什么？",
+            textString: "你希望通过饮食计划\n达到什么目标？",
             lineHeight: (titleLabel.font.lineHeight) * 1.2
         )
     }
@@ -118,9 +137,16 @@ extension DietPlanCreateGoalVM{
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
         }
+        topGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(scrollView.snp.top)
+            make.height.equalTo(kFitWidth(35))
+        }
         bottomGradientView.snp.makeConstraints { make in
-            make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(scrollView.snp.bottom).offset(kFitWidth(-56))
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(scrollView)
+//            make.top.equalTo(scrollView.snp.bottom).offset(kFitWidth(-56))
+            make.height.equalTo(kFitWidth(35))
 //            make.top.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(56)))
         }
         contentView.snp.makeConstraints { make in

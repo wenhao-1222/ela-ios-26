@@ -35,7 +35,7 @@ extension HabitRuleTableViewCell{
     func updateUI(contentStr:String,isTitle:Bool = false,bottomGap:CGFloat) {
         titleLab.textColor = isTitle ? .COLOR_TEXT_TITLE_0f1214 :
             .COLOR_TEXT_TITLE_0f1214_50
-        titleLab.font = isTitle ? .systemFont(ofSize: 14, weight: .medium) :
+        titleLab.font = isTitle ? .systemFont(ofSize: 17, weight: .medium) :
             .systemFont(ofSize: 12, weight: .regular)
         if isTitle{
             titleLab.setLineHeight(textString: contentStr,lineHeight: kFitWidth(26))

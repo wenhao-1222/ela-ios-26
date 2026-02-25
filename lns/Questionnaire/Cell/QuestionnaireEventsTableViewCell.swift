@@ -65,6 +65,17 @@ extension QuestionnaireEventsTableViewCell{
         titleLabel.text = "\(dict["name"]as? String ?? "")"
         contentLabel.text = "\(dict["detail"]as? String ?? "")"
         
+        if dict.stringValueForKey(key: "detail").count > 0 {
+            titleLabel.snp.remakeConstraints { make in
+                make.centerX.lessThanOrEqualToSuperview()
+                make.top.equalTo(kFitWidth(16))
+            }
+        }else{
+            titleLabel.snp.remakeConstraints { make in
+                make.center.lessThanOrEqualToSuperview()
+            }
+        }
+        
         if isSelected{
             UIView.animate(withDuration: 0.3, delay: 0, animations: {
                 self.titleLabel.textColor = .COLOR_TEXT_WHITE
