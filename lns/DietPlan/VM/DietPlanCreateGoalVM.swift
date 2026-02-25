@@ -27,7 +27,7 @@ class DietPlanCreateGoalVM: UIView {
     lazy var dataArray: [String] = {
         return ["增肌",
                 "减脂",
-                "保持体态",
+                "保持体型",
                 "提升力量",
                 "提高运动表现",
                 "提升整体健康",
@@ -160,12 +160,13 @@ extension DietPlanCreateGoalVM{
         }
         let oldSelectedIndexes = selectedIndexes
 
-        if index == 0 || index == 1 {
+        if index == 0 || index == 1 || index == 2{
             if selectedIndexes.contains(index) {
                 selectedIndexes.remove(index)
             } else {
                 selectedIndexes.remove(0)
                 selectedIndexes.remove(1)
+                selectedIndexes.remove(2)
                 selectedIndexes.insert(index)
             }
         } else {

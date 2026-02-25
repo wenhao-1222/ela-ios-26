@@ -950,6 +950,7 @@
 		EC8B56062F4E8EAF002F2C16 /* DietPlanCreateYearVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8B56052F4E8E9F002F2C16 /* DietPlanCreateYearVM.swift */; };
 		EC8B56082F4EAA64002F2C16 /* DietPlanCreateWeightVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8B56072F4EAA5C002F2C16 /* DietPlanCreateWeightVM.swift */; };
 		EC8B560A2F4EBC29002F2C16 /* DietPlanCreateBodyfatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8B56092F4EBC24002F2C16 /* DietPlanCreateBodyfatVM.swift */; };
+		EC8B560C2F4ED110002F2C16 /* DietPlanCreateEventsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8B560B2F4ED110002F2C16 /* DietPlanCreateEventsVM.swift */; };
 		EC8D210C2C64704000E68B59 /* GuideSetWeekGoalAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210B2C64704000E68B59 /* GuideSetWeekGoalAlertVM.swift */; };
 		EC8D210E2C64C42000E68B59 /* JournalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210D2C64C42000E68B59 /* JournalVC.swift */; };
 		EC8D21102C64C4D300E68B59 /* JounalCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210F2C64C4D300E68B59 /* JounalCollectionCell.swift */; };
@@ -2329,6 +2330,7 @@
 		EC8B56052F4E8E9F002F2C16 /* DietPlanCreateYearVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateYearVM.swift; sourceTree = "<group>"; };
 		EC8B56072F4EAA5C002F2C16 /* DietPlanCreateWeightVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateWeightVM.swift; sourceTree = "<group>"; };
 		EC8B56092F4EBC24002F2C16 /* DietPlanCreateBodyfatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateBodyfatVM.swift; sourceTree = "<group>"; };
+		EC8B560B2F4ED110002F2C16 /* DietPlanCreateEventsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateEventsVM.swift; sourceTree = "<group>"; };
 		EC8D210B2C64704000E68B59 /* GuideSetWeekGoalAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideSetWeekGoalAlertVM.swift; sourceTree = "<group>"; };
 		EC8D210D2C64C42000E68B59 /* JournalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalVC.swift; sourceTree = "<group>"; };
 		EC8D210F2C64C4D300E68B59 /* JounalCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JounalCollectionCell.swift; sourceTree = "<group>"; };
@@ -4669,6 +4671,7 @@
 				ECF9D1022F500C1100A1B2C3 /* DietPlanCreateHeightVM.swift */,
 				EC8B56072F4EAA5C002F2C16 /* DietPlanCreateWeightVM.swift */,
 				EC8B56092F4EBC24002F2C16 /* DietPlanCreateBodyfatVM.swift */,
+				EC8B560B2F4ED110002F2C16 /* DietPlanCreateEventsVM.swift */,
 			);
 			path = VM;
 			sourceTree = "<group>";
@@ -6349,6 +6352,7 @@
 				EC26E6292BBCF40D001E4381 /* LoginPhoneButton.swift in Sources */,
 				A778EEF92D8AA432002548D4 /* FoodsMergeAddFoodsVM.swift in Sources */,
 				EC8B560A2F4EBC29002F2C16 /* DietPlanCreateBodyfatVM.swift in Sources */,
+				EC8B560C2F4ED110002F2C16 /* DietPlanCreateEventsVM.swift in Sources */,
 				ECF745DD2BDA4AFE0076DDB9 /* FoodsCreateFastVC.swift in Sources */,
 				A760ED482CF06E8100E786EE /* SportAddAlertItemVM.swift in Sources */,
 				A775EA1D2E166E13001DE90A /* ActionPopupController.swift in Sources */,
