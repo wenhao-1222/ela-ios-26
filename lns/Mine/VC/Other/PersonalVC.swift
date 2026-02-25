@@ -62,7 +62,6 @@ class PersonalVC : WHBaseViewVC {
         }
         vm.goalVm.tapBlock = {()in
             let vc = GoalSetVC()
-//            let vc = VdoTestVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.serviceVm.tapBlock = {()in

@@ -154,7 +154,6 @@
 		A733235D2D90E77D0065BF0A /* LaunchAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73323562D90E77D0065BF0A /* LaunchAppIntent.swift */; };
 		A733235F2D9100E20065BF0A /* UniversalTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A733235E2D9100E10065BF0A /* UniversalTabBarController.swift */; };
 		A73323612D9244AB0065BF0A /* FoodsNewFuncVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73323602D9244A70065BF0A /* FoodsNewFuncVM.swift */; };
-		A73323662D92585F0065BF0A /* VdoTestVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73323652D9258530065BF0A /* VdoTestVC.swift */; };
 		A733236B2D9259F90065BF0A /* VideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A733236A2D9259F80065BF0A /* VideoViewController.swift */; };
 		A733236D2D93E6A90065BF0A /* NotificationNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = A733236C2D93E6A30065BF0A /* NotificationNames.swift */; };
 		A73348A82DACE82800AD747A /* CourseTiTleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73348A72DACE82200AD747A /* CourseTiTleCell.swift */; };
@@ -239,7 +238,6 @@
 		A741874C2D7AA19F006C8858 /* RippleAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A741874B2D7AA19E006C8858 /* RippleAnimationView.swift */; };
 		A741874E2D7AA384006C8858 /* SolidRippleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A741874D2D7AA383006C8858 /* SolidRippleView.swift */; };
 		A74256E42DDC7F9300AFCC07 /* JournalWaterViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74256E32DDC7F9200AFCC07 /* JournalWaterViewCell.swift */; };
-		A74364CF2E409AB600102313 /* AliPlayerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74364CE2E409AB100102313 /* AliPlayerTest.swift */; };
 		A744266A2CDB5A7F000D7E2B /* UnicodeScalar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74426642CDB5A7F000D7E2B /* UnicodeScalar.swift */; };
 		A744266B2CDB5A7F000D7E2B /* ParseSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74426502CDB5A7F000D7E2B /* ParseSettings.swift */; };
 		A744266C2CDB5A7F000D7E2B /* CssSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74426362CDB5A7F000D7E2B /* CssSelector.swift */; };
@@ -1011,6 +1009,11 @@
 		EC9CB9362EE9554000FBF915 /* ServiceOrderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9CB9352EE9553600FBF915 /* ServiceOrderTableViewCell.swift */; };
 		EC9CB9382EE9699400FBF915 /* ServiceContactTableViewOrderInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9CB9372EE9699400FBF915 /* ServiceContactTableViewOrderInfoCell.swift */; };
 		EC9E63242F0A09B700FF6929 /* RankTier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9E63232F0A09B700FF6929 /* RankTier.swift */; };
+		ECA0594A2F4D967400E257E8 /* DietPlanCreateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA059492F4D966E00E257E8 /* DietPlanCreateVC.swift */; };
+		ECA0594C2F4D96DA00E257E8 /* DietPlanCreateNaviVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA0594B2F4D96D500E257E8 /* DietPlanCreateNaviVM.swift */; };
+		ECA0594E2F4D985E00E257E8 /* DietPlanCreateNaviSegmentVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA0594D2F4D985600E257E8 /* DietPlanCreateNaviSegmentVM.swift */; };
+		ECA059502F4D9EAA00E257E8 /* DietPlanCreateGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA0594F2F4D9EA100E257E8 /* DietPlanCreateGoalVM.swift */; };
+		ECA059522F4DA31100E257E8 /* DietPlanCreateItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA059512F4DA30C00E257E8 /* DietPlanCreateItemVM.swift */; };
 		ECA1E2EC2C007B7E00C31B77 /* AESEncyptUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA1E2EB2C007B7E00C31B77 /* AESEncyptUtil.swift */; };
 		ECA1E2EE2C00818B00C31B77 /* Character+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA1E2ED2C00818B00C31B77 /* Character+Exs.swift */; };
 		ECA1E2F02C0081F700C31B77 /* Data+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA1E2EF2C0081F700C31B77 /* Data+Exs.swift */; };
@@ -1500,7 +1503,6 @@
 		A73323562D90E77D0065BF0A /* LaunchAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAppIntent.swift; sourceTree = "<group>"; };
 		A733235E2D9100E10065BF0A /* UniversalTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniversalTabBarController.swift; sourceTree = "<group>"; };
 		A73323602D9244A70065BF0A /* FoodsNewFuncVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsNewFuncVM.swift; sourceTree = "<group>"; };
-		A73323652D9258530065BF0A /* VdoTestVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VdoTestVC.swift; sourceTree = "<group>"; };
 		A733236A2D9259F80065BF0A /* VideoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewController.swift; sourceTree = "<group>"; };
 		A733236C2D93E6A30065BF0A /* NotificationNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationNames.swift; sourceTree = "<group>"; };
 		A73348A72DACE82200AD747A /* CourseTiTleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseTiTleCell.swift; sourceTree = "<group>"; };
@@ -1585,7 +1587,6 @@
 		A741874B2D7AA19E006C8858 /* RippleAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RippleAnimationView.swift; sourceTree = "<group>"; };
 		A741874D2D7AA383006C8858 /* SolidRippleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolidRippleView.swift; sourceTree = "<group>"; };
 		A74256E32DDC7F9200AFCC07 /* JournalWaterViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalWaterViewCell.swift; sourceTree = "<group>"; };
-		A74364CE2E409AB100102313 /* AliPlayerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AliPlayerTest.swift; sourceTree = "<group>"; };
 		A744262A2CDB5A7F000D7E2B /* ArrayExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExt.swift; sourceTree = "<group>"; };
 		A744262B2CDB5A7F000D7E2B /* Attribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attribute.swift; sourceTree = "<group>"; };
 		A744262C2CDB5A7F000D7E2B /* Attributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attributes.swift; sourceTree = "<group>"; };
@@ -2379,6 +2380,11 @@
 		EC9CB9352EE9553600FBF915 /* ServiceOrderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceOrderTableViewCell.swift; sourceTree = "<group>"; };
 		EC9CB9372EE9699400FBF915 /* ServiceContactTableViewOrderInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContactTableViewOrderInfoCell.swift; sourceTree = "<group>"; };
 		EC9E63232F0A09B700FF6929 /* RankTier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankTier.swift; sourceTree = "<group>"; };
+		ECA059492F4D966E00E257E8 /* DietPlanCreateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateVC.swift; sourceTree = "<group>"; };
+		ECA0594B2F4D96D500E257E8 /* DietPlanCreateNaviVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateNaviVM.swift; sourceTree = "<group>"; };
+		ECA0594D2F4D985600E257E8 /* DietPlanCreateNaviSegmentVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateNaviSegmentVM.swift; sourceTree = "<group>"; };
+		ECA0594F2F4D9EA100E257E8 /* DietPlanCreateGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateGoalVM.swift; sourceTree = "<group>"; };
+		ECA059512F4DA30C00E257E8 /* DietPlanCreateItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateItemVM.swift; sourceTree = "<group>"; };
 		ECA1E2EB2C007B7E00C31B77 /* AESEncyptUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AESEncyptUtil.swift; sourceTree = "<group>"; };
 		ECA1E2ED2C00818B00C31B77 /* Character+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Character+Exs.swift"; sourceTree = "<group>"; };
 		ECA1E2EF2C0081F700C31B77 /* Data+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Exs.swift"; sourceTree = "<group>"; };
@@ -4481,6 +4487,7 @@
 				EC25C8332ED560CB00BF2D1F /* SkeletonListLoadingManager.swift */,
 				ECD0FE6D2BABC59E001232C9 /* PrefixHeader.pch */,
 				ECD0FE762BABCA04001232C9 /* lns-Bridging-Header.h */,
+				ECA059452F4D961A00E257E8 /* DietPlan */,
 				ECF581DE2C329A8200FE0937 /* Guide */,
 				ECD0FE872BABD0E3001232C9 /* NetWork */,
 				ECAD701C2BB6B82700D8E3E5 /* ThirdPart */,
@@ -4550,8 +4557,6 @@
 				A740EEF02E72C54F00B6ABAA /* MyAddressDetailVC.swift */,
 				A7454B312E73B6E50064076C /* AddressPickerView.swift */,
 				EC30F2B22C8701F900E7BD33 /* NaturalStatVC.swift */,
-				A73323652D9258530065BF0A /* VdoTestVC.swift */,
-				A74364CE2E409AB100102313 /* AliPlayerTest.swift */,
 				A732FD762E44AF60007E6E20 /* TutorialVideoSwiftControlView.swift */,
 				A733236A2D9259F80065BF0A /* VideoViewController.swift */,
 				A7AC41E82E29E7020019C81E /* FitnessTipsVC.swift */,
@@ -4622,6 +4627,42 @@
 				EC9321B52C50E83700FDBBE2 /* AutoSizingTextView.swift */,
 			);
 			path = Meals;
+			sourceTree = "<group>";
+		};
+		ECA059452F4D961A00E257E8 /* DietPlan */ = {
+			isa = PBXGroup;
+			children = (
+				ECA059482F4D965B00E257E8 /* Model */,
+				ECA059472F4D965800E257E8 /* VM */,
+				ECA059462F4D965400E257E8 /* VC */,
+			);
+			path = DietPlan;
+			sourceTree = "<group>";
+		};
+		ECA059462F4D965400E257E8 /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				ECA059492F4D966E00E257E8 /* DietPlanCreateVC.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		ECA059472F4D965800E257E8 /* VM */ = {
+			isa = PBXGroup;
+			children = (
+				ECA0594B2F4D96D500E257E8 /* DietPlanCreateNaviVM.swift */,
+				ECA0594D2F4D985600E257E8 /* DietPlanCreateNaviSegmentVM.swift */,
+				ECA059512F4DA30C00E257E8 /* DietPlanCreateItemVM.swift */,
+				ECA0594F2F4D9EA100E257E8 /* DietPlanCreateGoalVM.swift */,
+			);
+			path = VM;
+			sourceTree = "<group>";
+		};
+		ECA059482F4D965B00E257E8 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		ECAD70132BB652A000D8E3E5 /* Model */ = {
@@ -6043,6 +6084,7 @@
 				A7881EAB2CBF8B98008F4390 /* LogsMealsAlertSetRemarkVM.swift in Sources */,
 				EC24EB392BB25BDA002F21DF /* QuestionnaireSurveyMsgHeightVM.swift in Sources */,
 				A754BD4E2DA3CA89000ACC79 /* PlayerTestVC.swift in Sources */,
+				ECA059502F4D9EAA00E257E8 /* DietPlanCreateGoalVM.swift in Sources */,
 				A77A37182CBD095B00ED4DD0 /* LogsTimeAlertVM.swift in Sources */,
 				ECD89EF62BDF9B3800EF89A6 /* JournalShareVC.swift in Sources */,
 				A778EEF52D89684F002548D4 /* FeedBackView.swift in Sources */,
@@ -6109,7 +6151,6 @@
 				EC498A6A2ED816B800BC7876 /* ColorWheelView.swift in Sources */,
 				A71543032E08F69A0078A5AE /* FoodsListHeaderNoDataVM.swift in Sources */,
 				A72F5FEE2DB75D150098C782 /* LogsRemarkNewVM.swift in Sources */,
-				A74364CF2E409AB600102313 /* AliPlayerTest.swift in Sources */,
 				EC87A44D2C8EC43B00BAB8CE /* NaturalStatCaloriesBarItemView.swift in Sources */,
 				A7942C4C2DCDEC0700C4816D /* JournalReportVC.swift in Sources */,
 				EC87A4492C8E937400BAB8CE /* NaturalStatCaloriesBarChartView.swift in Sources */,
@@ -6152,6 +6193,7 @@
 				A7DAA8E52D155A680035849F /* ForumPublishPreviewVC.swift in Sources */,
 				A71D4CBF2D408B59000399A4 /* YFPlayerPushTransition.m in Sources */,
 				A7BD40BD2E8112DF009DE692 /* MallOrderAfterSaleSubmitVC.swift in Sources */,
+				ECA0594A2F4D967400E257E8 /* DietPlanCreateVC.swift in Sources */,
 				A72F5FF12DB75E630098C782 /* DottedLabelView.swift in Sources */,
 				A71D4CC02D408B59000399A4 /* YFPlayerPopTransition.m in Sources */,
 				A71D4CC12D408B59000399A4 /* YFPlayerTransitionParameter.m in Sources */,
@@ -6345,6 +6387,7 @@
 				ECD0FEF92BABD25B001232C9 /* YYTextSelectionView.m in Sources */,
 				ECB848432BF3448900B554B9 /* MaterialNickNameAlertVM.swift in Sources */,
 				ECAE25E42BF1DFD0007D4B57 /* FoodsMsgDetailsVM.swift in Sources */,
+				ECA0594E2F4D985E00E257E8 /* DietPlanCreateNaviSegmentVM.swift in Sources */,
 				A77F96122D02F76A0084D4FB /* PublishWidgetCell.swift in Sources */,
 				A7C72B552E1223C7001EA74D /* FriendRankingVC.swift in Sources */,
 				A70A2FC72DCAED5400F1E630 /* ElaLaunchVC.swift in Sources */,
@@ -6447,6 +6490,7 @@
 				EC0F9C002F2CB022006CFB10 /* RankUpConfetti3DViewCC.swift in Sources */,
 				A73348AC2DACEF8A00AD747A /* CourseItemCell.swift in Sources */,
 				A73207F92DF91DC2000A807D /* GuideSevenCircleVM.swift in Sources */,
+				ECA0594C2F4D96DA00E257E8 /* DietPlanCreateNaviVM.swift in Sources */,
 				EC4DE32F2BD104740090A7BD /* DataDetailTimeFilterAlertVM.swift in Sources */,
 				A7B23E932DD499BF000B2B85 /* JournalReportWeekNaturalCell.swift in Sources */,
 				EC38DE9B2BEF661D008E7FCE /* MaterialVC.swift in Sources */,
@@ -6506,6 +6550,7 @@
 				ECB80C542F149C3B00F429DB /* HonorIconVM.swift in Sources */,
 				EC8FF3EA2C92BCB8003A7E0B /* NaturalStatCPFDGBarLegendView.swift in Sources */,
 				EC4DE28F2BC931030090A7BD /* PlanCreateNameVM.swift in Sources */,
+				ECA059522F4DA31100E257E8 /* DietPlanCreateItemVM.swift in Sources */,
 				A798F5372CA1102E00B8327E /* JournalSettingVC.swift in Sources */,
 				A7443DF12DD1D6CB0040FEFD /* JournalReportDailyNaturalCell.swift in Sources */,
 				A775EA172E164ADF001DE90A /* FriendRankingDailyNaturalVM.swift in Sources */,
@@ -6939,7 +6984,6 @@
 				A79A4FFA2D65DCF0002B8EB4 /* Croper+Model.swift in Sources */,
 				A79A4FFB2D65DCF0002B8EB4 /* Croper+UI.swift in Sources */,
 				A79A4FFC2D65DCF0002B8EB4 /* Croper.swift in Sources */,
-				A73323662D92585F0065BF0A /* VdoTestVC.swift in Sources */,
 				A79A4FFD2D65DCF0002B8EB4 /* Croper+Calculation.swift in Sources */,
 				EC5284932F0D05A0006C81CE /* HabitRankListSectionVM.swift in Sources */,
 				A79A4FFE2D65DCF0002B8EB4 /* Croper+Func.swift in Sources */,
