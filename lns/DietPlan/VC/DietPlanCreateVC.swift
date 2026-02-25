@@ -9,6 +9,7 @@
 class DietPlanCreateVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
+    private var isGoalStepEnabled = false
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -47,7 +48,8 @@ class DietPlanCreateVC: WHBaseViewVC {
     lazy var goalVm: DietPlanCreateGoalVM = {
         let vm = DietPlanCreateGoalVM.init(frame: .zero)
         vm.nextButtonEnableChangeBlock = {[weak self] isEnabled in
-            self?.nextButton.isEnabled = isEnabled
+            self?.isGoalStepEnabled = isEnabled
+            self?.syncNextButtonEnableStatus()
         }
         return vm
     }()
@@ -68,6 +70,27 @@ class DietPlanCreateVC: WHBaseViewVC {
     }()
     lazy var heightVm: DietPlanCreateHeightVM = {
         let vm = DietPlanCreateHeightVM.init(frame: CGRect(x: SCREEN_WIDHT * 3, y: 0, width: 0, height: 0))
+        return vm
+    }()
+    lazy var weightVm: DietPlanCreateWeightVM = {
+        let vm = DietPlanCreateWeightVM.init(frame: CGRect.init(x: SCREEN_WIDHT*4, y: 0, width: 0, height: 0))
+        return vm
+    }()
+    lazy var bodyfatVm: DietPlanCreateBodyfatVM = {
+        let vm = DietPlanCreateBodyfatVM.init(frame: CGRect(x: SCREEN_WIDHT * 5, y: 0, width: 0, height: 0))
+        vm.selectStateChangeBlock = {[weak self] _ in
+            self?.syncNextButtonEnableStatus()
+        }
+        vm.showTipsBlock = {()in
+            self.bodyFatAlertVm.showView()
+        }
+        return vm
+    }()
+    
+    
+    lazy var bodyFatAlertVm : QuestionnaireBodyFatAlertVM = {
+        let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
+        
         return vm
     }()
     lazy var nextButton: UIButton = {
@@ -108,18 +131,19 @@ extension DietPlanCreateVC{
         currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
         scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: true)
         updateNextButtonForCurrentStep(animated: true)
+        self.bodyfatVm.updateScrollView()
     }
 
     func updateNextButtonForCurrentStep(animated: Bool) {
-        let shouldHideOnSexStep = (currentIndex == 1)
+        let shouldHideButton = (currentIndex == 1)
         let moveY = kFitWidth(90) + WHUtils().getBottomSafeAreaHeight()
-        let targetTransform = shouldHideOnSexStep ? CGAffineTransform(translationX: 0, y: moveY) : .identity
-        let targetAlpha: CGFloat = shouldHideOnSexStep ? 0 : 1
+        let targetTransform = shouldHideButton ? CGAffineTransform(translationX: 0, y: moveY) : .identity
+        let targetAlpha: CGFloat = shouldHideButton ? 0 : 1
         let applyChange = {
             self.nextButton.transform = targetTransform
             self.nextButton.alpha = targetAlpha
         }
-        nextButton.isUserInteractionEnabled = !shouldHideOnSexStep
+        nextButton.isUserInteractionEnabled = !shouldHideButton
 
         if animated {
             UIView.animate(withDuration: 0.25) {
@@ -127,6 +151,20 @@ extension DietPlanCreateVC{
             }
         } else {
             applyChange()
+        }
+        syncNextButtonEnableStatus()
+    }
+
+    func syncNextButtonEnableStatus() {
+        switch currentIndex {
+        case 0:
+            nextButton.isEnabled = isGoalStepEnabled
+        case 1:
+            nextButton.isEnabled = false
+        case 5:
+            nextButton.isEnabled = bodyfatVm.selectIndex >= 0
+        default:
+            nextButton.isEnabled = true
         }
     }
 }
@@ -138,6 +176,8 @@ extension DietPlanCreateVC{
         view.addSubview(naviVm)
         view.addSubview(nextButton)
         
+        view.addSubview(bodyFatAlertVm)
+        
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
         scrollViewBase.isScrollEnabled = false
@@ -146,6 +186,8 @@ extension DietPlanCreateVC{
         scrollViewBase.addSubview(sexVm)
         scrollViewBase.addSubview(birthdayVm)
         scrollViewBase.addSubview(heightVm)
+        scrollViewBase.addSubview(weightVm)
+        scrollViewBase.addSubview(bodyfatVm)
         
         
         DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
@@ -153,7 +195,7 @@ extension DietPlanCreateVC{
         })
         
         scrollViewBase.isPagingEnabled = true
-        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*4, height: 0)
+        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*6, height: 0)
 
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
