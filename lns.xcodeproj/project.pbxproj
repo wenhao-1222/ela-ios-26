@@ -946,6 +946,8 @@
 		EC87EEFF2BB3EC7400350EB0 /* SearchVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC87EEFE2BB3EC7400350EB0 /* SearchVM.swift */; };
 		EC87EF012BB3ECED00350EB0 /* FoodsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC87EF002BB3ECED00350EB0 /* FoodsTableViewCell.swift */; };
 		EC8835CC2F15ECC20088C275 /* HonorDonationEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8835CB2F15ECB20088C275 /* HonorDonationEmptyCell.swift */; };
+		EC8B56042F4E895B002F2C16 /* DietPlanCreateSexVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8B56032F4E8958002F2C16 /* DietPlanCreateSexVM.swift */; };
+		EC8B56062F4E8EAF002F2C16 /* DietPlanCreateYearVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8B56052F4E8E9F002F2C16 /* DietPlanCreateYearVM.swift */; };
 		EC8D210C2C64704000E68B59 /* GuideSetWeekGoalAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210B2C64704000E68B59 /* GuideSetWeekGoalAlertVM.swift */; };
 		EC8D210E2C64C42000E68B59 /* JournalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210D2C64C42000E68B59 /* JournalVC.swift */; };
 		EC8D21102C64C4D300E68B59 /* JounalCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210F2C64C4D300E68B59 /* JounalCollectionCell.swift */; };
@@ -2320,6 +2322,8 @@
 		EC87EEFE2BB3EC7400350EB0 /* SearchVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchVM.swift; sourceTree = "<group>"; };
 		EC87EF002BB3ECED00350EB0 /* FoodsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsTableViewCell.swift; sourceTree = "<group>"; };
 		EC8835CB2F15ECB20088C275 /* HonorDonationEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HonorDonationEmptyCell.swift; sourceTree = "<group>"; };
+		EC8B56032F4E8958002F2C16 /* DietPlanCreateSexVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateSexVM.swift; sourceTree = "<group>"; };
+		EC8B56052F4E8E9F002F2C16 /* DietPlanCreateYearVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateYearVM.swift; sourceTree = "<group>"; };
 		EC8D210B2C64704000E68B59 /* GuideSetWeekGoalAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideSetWeekGoalAlertVM.swift; sourceTree = "<group>"; };
 		EC8D210D2C64C42000E68B59 /* JournalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalVC.swift; sourceTree = "<group>"; };
 		EC8D210F2C64C4D300E68B59 /* JounalCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JounalCollectionCell.swift; sourceTree = "<group>"; };
@@ -4654,6 +4658,8 @@
 				ECA0594D2F4D985600E257E8 /* DietPlanCreateNaviSegmentVM.swift */,
 				ECA059512F4DA30C00E257E8 /* DietPlanCreateItemVM.swift */,
 				ECA0594F2F4D9EA100E257E8 /* DietPlanCreateGoalVM.swift */,
+				EC8B56032F4E8958002F2C16 /* DietPlanCreateSexVM.swift */,
+				EC8B56052F4E8E9F002F2C16 /* DietPlanCreateYearVM.swift */,
 			);
 			path = VM;
 			sourceTree = "<group>";
@@ -5898,6 +5904,7 @@
 				A735A7BE2D5DE3F5006CE140 /* UIViewContoller+JFPopup.swift in Sources */,
 				A735A7BF2D5DE3F5006CE140 /* UIView+JFPopup.swift in Sources */,
 				EC4E493D2BAD35D5008295A2 /* UIDevice+iPhoneModel.swift in Sources */,
+				EC8B56042F4E895B002F2C16 /* DietPlanCreateSexVM.swift in Sources */,
 				ECD0FEEF2BABD25B001232C9 /* LLTabBarViewController.swift in Sources */,
 				ECF745C62BD9F4610076DDB9 /* FoodsListVC.swift in Sources */,
 				A78E67CB2CB66B7200B4C443 /* BodyDataImageAbbreVM.swift in Sources */,
@@ -6971,6 +6978,7 @@
 				EC24EB4C2BB2B364002F21DF /* QuestionnaireSurveyLoseFatVM.swift in Sources */,
 				EC67033F2E9CF3EA00C0FDFE /* ForumNaviTypeLiquidVM.swift in Sources */,
 				EC781CD82BBAA47000752C95 /* QuestionnairePlanDailyFoodsSqtyVM.swift in Sources */,
+				EC8B56062F4E8EAF002F2C16 /* DietPlanCreateYearVM.swift in Sources */,
 				EC38DE9E2BEF66CB008E7FCE /* MaterialItemVM.swift in Sources */,
 				ECC050612C65B1F10029A47F /* LogsSQLiteUploadManager.swift in Sources */,
 				A7B23E8D2DD47EC6000B2B85 /* JournalReportWeekTopCell.swift in Sources */,

@@ -9,7 +9,10 @@
 class DietPlanCreateGoalVM: UIView {
     
     var selectedIndex = -1
+    var selectedIndexes: Set<Int> = []
     var selectedGoalBlock:((String)->())?
+    var selectedGoalsBlock:(([String])->())?
+    var nextButtonEnableChangeBlock:((Bool)->())?
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -62,21 +65,6 @@ class DietPlanCreateGoalVM: UIView {
         st.spacing = kFitWidth(4)
         return st
     }()
-    lazy var nextButton: UIButton = {
-        let btn = UIButton(type: .custom)
-        btn.setTitle("下一步", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        btn.backgroundColor = .COLOR_BUTTON_DISABLE_BG_THEME
-        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .disabled)
-        btn.layer.cornerRadius = kFitWidth(24)
-        btn.clipsToBounds = true
-        btn.isEnabled = false
-        btn.enablePressEffect()
-        
-        return btn
-    }()
     lazy var bottomGradientView: UIView = {
         let vi = UIView()
         vi.isUserInteractionEnabled = false
@@ -105,7 +93,6 @@ extension DietPlanCreateGoalVM{
         addSubview(titleLabel)
         addSubview(scrollView)
         addSubview(bottomGradientView)
-        addSubview(nextButton)
         scrollView.addSubview(contentView)
         contentView.addSubview(stackView)
         bottomGradientView.layer.addSublayer(bottomGradientLayer)
@@ -119,24 +106,22 @@ extension DietPlanCreateGoalVM{
         )
     }
     func setConstrait() {
+        let bottomSafe = WHUtils().getBottomSafeAreaHeight()
+        let nextButtonTopOffset = bottomSafe + kFitWidth(58)
+
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(55))
         }
-        nextButton.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.right.equalTo(kFitWidth(-20))
-            make.height.equalTo(kFitWidth(48))
-            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
-        }
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(28))
             make.left.right.equalToSuperview()
-            make.bottom.equalTo(nextButton.snp.top).offset(kFitWidth(-8))
+            make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
         }
         bottomGradientView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(nextButton.snp.top).offset(kFitWidth(-56))
+            make.top.equalTo(scrollView.snp.bottom).offset(kFitWidth(-56))
+//            make.top.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(56)))
         }
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -157,7 +142,7 @@ extension DietPlanCreateGoalVM{
         
         for (index,title) in dataArray.enumerated() {
             let itemVm = DietPlanCreateItemVM(frame: .zero)
-            itemVm.updateUI(title: title, isSelected: index == selectedIndex)
+            itemVm.updateUI(title: title, isSelected: selectedIndexes.contains(index))
             itemVm.tapBlock = {[weak self] in
                 self?.selectItem(index: index)
             }
@@ -173,11 +158,37 @@ extension DietPlanCreateGoalVM{
         guard index >= 0 && index < dataArray.count else {
             return
         }
-        selectedIndex = index
-        for (i,itemView) in itemViews.enumerated() {
-            itemView.updateUI(title: dataArray[i], isSelected: i == selectedIndex)
+        let oldSelectedIndexes = selectedIndexes
+
+        if index == 0 || index == 1 {
+            if selectedIndexes.contains(index) {
+                selectedIndexes.remove(index)
+            } else {
+                selectedIndexes.remove(0)
+                selectedIndexes.remove(1)
+                selectedIndexes.insert(index)
+            }
+        } else {
+            if selectedIndexes.contains(index) {
+                selectedIndexes.remove(index)
+            } else {
+                selectedIndexes.insert(index)
+            }
         }
-        nextButton.isEnabled = true
+
+        selectedIndex = selectedIndexes.sorted().first ?? -1
+        for (i,itemView) in itemViews.enumerated() {
+            let oldIsSelected = oldSelectedIndexes.contains(i)
+            let newIsSelected = selectedIndexes.contains(i)
+            guard oldIsSelected != newIsSelected else {
+                continue
+            }
+            itemView.updateUI(title: dataArray[i], isSelected: newIsSelected)
+        }
+
+        let selectedGoals = selectedIndexes.sorted().map({ dataArray[$0] })
+        nextButtonEnableChangeBlock?(!selectedGoals.isEmpty)
         selectedGoalBlock?(dataArray[index])
+        selectedGoalsBlock?(selectedGoals)
     }
 }
