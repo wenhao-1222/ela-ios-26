@@ -140,6 +140,21 @@ class DietPlanCreateVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var ketoHistoryVm: DietPlanCreateKetoHistoryVM = {
+        let vm = DietPlanCreateKetoHistoryVM(frame: CGRect(x: SCREEN_WIDHT * 14, y: 0, width: 0, height: 0))
+        vm.selectedBlock = {[weak self] in
+            self?.syncNextButtonEnableStatus()
+        }
+        return vm
+    }()
+    
+    lazy var flavorVM: DietPlanCreateFlavorVM = {
+        let vm = DietPlanCreateFlavorVM(frame: CGRect(x: SCREEN_WIDHT * 15, y: 0, width: 0, height: 0))
+        vm.selectedBlock = {[weak self] in
+            self?.syncNextButtonEnableStatus()
+        }
+        return vm
+    }()
     lazy var bodyFatAlertVm : QuestionnaireBodyFatAlertVM = {
         let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
         
@@ -227,6 +242,10 @@ extension DietPlanCreateVC{
             nextButton.isEnabled = mealStyleVm.selectedIndex >= 0
         case 13:
             nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
+        case 14:
+            nextButton.isEnabled = ketoHistoryVm.selectedIndex >= 0
+        case 15:
+            nextButton.isEnabled = flavorVM.selectedIndex >= 0
         default:
             nextButton.isEnabled = true
         }
@@ -260,6 +279,8 @@ extension DietPlanCreateVC{
         scrollViewBase.addSubview(adviceVm)
         scrollViewBase.addSubview(mealStyleVm)
         scrollViewBase.addSubview(eatStyleVm)
+        scrollViewBase.addSubview(ketoHistoryVm)
+        scrollViewBase.addSubview(flavorVM)
         
         
         DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
@@ -267,7 +288,7 @@ extension DietPlanCreateVC{
         })
         
         scrollViewBase.isPagingEnabled = true
-        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*14, height: 0)
+        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*16, height: 0)
 
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))

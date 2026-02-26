@@ -32,7 +32,7 @@ class DietPlanCreateMealStyleVM: UIView {
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "达成目标对你有多重要？"
+        lab.text = "你更喜欢哪种进餐方式？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab

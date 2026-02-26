@@ -1027,6 +1027,8 @@
 		ECA278BB2BF4BA9900AEED64 /* BindOtherAccountItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA278BA2BF4BA9900AEED64 /* BindOtherAccountItemVM.swift */; };
 		ECA2DBF42C4E32E40084D5E0 /* MealsListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA2DBF32C4E32E40084D5E0 /* MealsListVM.swift */; };
 		ECA8BF002F5010AF007E240E /* DietPlanCreateEatStyleVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA8BEFF2F5010AB007E240E /* DietPlanCreateEatStyleVM.swift */; };
+		ECA8BF042F511E93007E240E /* DietPlanCreateKetoHistoryVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA8BF032F511E93007E240E /* DietPlanCreateKetoHistoryVM.swift */; };
+		ECA8BF062F512300007E240E /* DietPlanCreateFlavorVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECA8BF052F512300007E240E /* DietPlanCreateFlavorVM.swift */; };
 		ECAD70152BB652B200D8E3E5 /* QuestinonaireMsgModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAD70142BB652B200D8E3E5 /* QuestinonaireMsgModel.swift */; };
 		ECAD70172BB6988B00D8E3E5 /* QuestionnaireBodyFatAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAD70162BB6988B00D8E3E5 /* QuestionnaireBodyFatAlertVM.swift */; };
 		ECAD70192BB6A1F700D8E3E5 /* QuestionnaireDaylyMealsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAD70182BB6A1F700D8E3E5 /* QuestionnaireDaylyMealsVM.swift */; };
@@ -2411,6 +2413,8 @@
 		ECA278BA2BF4BA9900AEED64 /* BindOtherAccountItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BindOtherAccountItemVM.swift; sourceTree = "<group>"; };
 		ECA2DBF32C4E32E40084D5E0 /* MealsListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealsListVM.swift; sourceTree = "<group>"; };
 		ECA8BEFF2F5010AB007E240E /* DietPlanCreateEatStyleVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateEatStyleVM.swift; sourceTree = "<group>"; };
+		ECA8BF032F511E93007E240E /* DietPlanCreateKetoHistoryVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateKetoHistoryVM.swift; sourceTree = "<group>"; };
+		ECA8BF052F512300007E240E /* DietPlanCreateFlavorVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateFlavorVM.swift; sourceTree = "<group>"; };
 		ECAD70142BB652B200D8E3E5 /* QuestinonaireMsgModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestinonaireMsgModel.swift; sourceTree = "<group>"; };
 		ECAD70162BB6988B00D8E3E5 /* QuestionnaireBodyFatAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireBodyFatAlertVM.swift; sourceTree = "<group>"; };
 		ECAD70182BB6A1F700D8E3E5 /* QuestionnaireDaylyMealsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireDaylyMealsVM.swift; sourceTree = "<group>"; };
@@ -4693,6 +4697,8 @@
 				ECF9D1092F50F11100A1B2C3 /* DietPlanCreateAdviceVM.swift */,
 				ECF9D10B2F51001100A1B2C3 /* DietPlanCreateMealStyleVM.swift */,
 				ECA8BEFF2F5010AB007E240E /* DietPlanCreateEatStyleVM.swift */,
+				ECA8BF032F511E93007E240E /* DietPlanCreateKetoHistoryVM.swift */,
+				ECA8BF052F512300007E240E /* DietPlanCreateFlavorVM.swift */,
 			);
 			path = VM;
 			sourceTree = "<group>";
@@ -6131,6 +6137,8 @@
 				ECF9D10A2F50F11100A1B2C3 /* DietPlanCreateAdviceVM.swift in Sources */,
 				ECF9D10C2F51001100A1B2C3 /* DietPlanCreateMealStyleVM.swift in Sources */,
 				ECF9D1082F50E61100A1B2C3 /* DietPlanCreateBarrierVM.swift in Sources */,
+				ECA8BF042F511E93007E240E /* DietPlanCreateKetoHistoryVM.swift in Sources */,
+				ECA8BF062F512300007E240E /* DietPlanCreateFlavorVM.swift in Sources */,
 				ECF9D1042F50AA1100A1B2C3 /* DietPlanCreatePaceVM.swift in Sources */,
 				A77A37182CBD095B00ED4DD0 /* LogsTimeAlertVM.swift in Sources */,
 				ECD89EF62BDF9B3800EF89A6 /* JournalShareVC.swift in Sources */,
