@@ -23,6 +23,11 @@ class QuestinonaireMsgModel{
     var goal = ""//目标
     var height = ""//身高
     var weight = ""//体重
+    var targetWeight = ""//目标体重
+    var paceLevel = "steady"//计划节奏档位
+    var chartStartDate = Date()//折线图开始日期
+    var chartEndDate = Calendar.current.date(byAdding: .day, value: 14, to: Date()) ?? Date()//折线图结束日期（最多间隔14天）
+    var foodAllergy = ""//过敏/忌口
     var events = ""//日常活动量
     var bodyFat = ""//体脂肪
     var mealsPerDay = ""
@@ -53,6 +58,11 @@ class QuestinonaireMsgModel{
         DLLog(message: "目标：\(goal)")
         DLLog(message: "身高：\(height)")
         DLLog(message: "体重：\(weight)")
+        DLLog(message: "目标体重：\(targetWeight)")
+        DLLog(message: "节奏：\(paceLevel)")
+        DLLog(message: "折线图开始日期：\(chartStartDate)")
+        DLLog(message: "折线图结束日期：\(chartEndDate)")
+        DLLog(message: "过敏忌口：\(foodAllergy)")
         DLLog(message: "活动量：\(events)")
         DLLog(message: "体脂肪：\(bodyFat)")
         DLLog(message: "每日餐数：\(mealsPerDay)")
@@ -94,6 +104,11 @@ class QuestinonaireMsgModel{
         self.goal = ""
         self.height = ""
         self.weight = ""
+        self.targetWeight = ""
+        self.paceLevel = "steady"
+        self.chartStartDate = Date()
+        self.chartEndDate = Calendar.current.date(byAdding: .day, value: 14, to: self.chartStartDate) ?? self.chartStartDate
+        self.foodAllergy = ""
         self.events = ""
         self.bodyFat = ""
         self.mealsPerDay = ""

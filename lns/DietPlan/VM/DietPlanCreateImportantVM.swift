@@ -35,7 +35,7 @@ class DietPlanCreateImportantVM: UIView {
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "您的日常活动量是多少？"
+        lab.text = "达成目标对你有多重要？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
@@ -91,7 +91,7 @@ extension DietPlanCreateImportantVM {
         }
 
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(24))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(80))
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
         }

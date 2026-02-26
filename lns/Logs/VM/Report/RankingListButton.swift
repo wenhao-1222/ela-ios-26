@@ -44,7 +44,8 @@ class RankingListButton: UIView {
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = self.selfHeight*0.5
         btn.clipsToBounds = true
-        btn.backgroundColor = .COLOR_WHITE_65//WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.2)
+//        btn.backgroundColor = .COLOR_WHITE_65
+        btn.backgroundColor = WHColorWithAlpha(colorStr: "FFFFFF", alpha: 0.2)
         
         btn.enablePressEffect()
         

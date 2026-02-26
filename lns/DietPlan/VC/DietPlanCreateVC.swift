@@ -25,7 +25,8 @@ class DietPlanCreateVC: WHBaseViewVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        self.enableInteractivePopGesture()
         initUI()
         
     }
@@ -50,6 +51,9 @@ class DietPlanCreateVC: WHBaseViewVC {
         vm.nextButtonEnableChangeBlock = {[weak self] isEnabled in
             self?.isGoalStepEnabled = isEnabled
             self?.syncNextButtonEnableStatus()
+        }
+        vm.selectedGoalsBlock = { selectedGoals in
+            QuestinonaireMsgModel.shared.goal = selectedGoals.joined(separator: ",")
         }
         return vm
     }()
@@ -95,6 +99,17 @@ class DietPlanCreateVC: WHBaseViewVC {
     }()
     lazy var importantVm: DietPlanCreateImportantVM = {
         let vm = DietPlanCreateImportantVM.init(frame: CGRect.init(x: SCREEN_WIDHT*7, y: 0, width: 0, height: 0))
+        vm.selectedBlock = {[weak self] in
+            self?.syncNextButtonEnableStatus()
+        }
+        return vm
+    }()
+    lazy var paceVm: DietPlanCreatePaceVM = {
+        let vm = DietPlanCreatePaceVM(frame: CGRect(x: SCREEN_WIDHT * 8, y: 0, width: 0, height: 0))
+        return vm
+    }()
+    lazy var allergyVm: DietPlanCreateAllergyVM = {
+        let vm = DietPlanCreateAllergyVM(frame: CGRect(x: SCREEN_WIDHT * 9, y: 0, width: 0, height: 0))
         vm.selectedBlock = {[weak self] in
             self?.syncNextButtonEnableStatus()
         }
@@ -180,6 +195,8 @@ extension DietPlanCreateVC{
             nextButton.isEnabled = eventsVm.selectedIndex >= 0
         case 7:
             nextButton.isEnabled = importantVm.selectedIndex >= 0
+        case 9:
+            nextButton.isEnabled = allergyVm.selectedIndex >= 0
         default:
             nextButton.isEnabled = true
         }
@@ -207,6 +224,8 @@ extension DietPlanCreateVC{
         scrollViewBase.addSubview(bodyfatVm)
         scrollViewBase.addSubview(eventsVm)
         scrollViewBase.addSubview(importantVm)
+        scrollViewBase.addSubview(paceVm)
+        scrollViewBase.addSubview(allergyVm)
         
         
         DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
@@ -214,7 +233,7 @@ extension DietPlanCreateVC{
         })
         
         scrollViewBase.isPagingEnabled = true
-        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*8, height: 0)
+        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*10, height: 0)
 
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
