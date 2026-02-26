@@ -99,6 +99,7 @@ extension MainHabitVM{
             animatePressUp()
         case .ended:
             animatePressUp()
+            guard isInside else { return }
             DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
                 self.tapBlock?()
             })

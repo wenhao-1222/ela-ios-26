@@ -45,7 +45,9 @@ class DietPlanCreateVC: WHBaseViewVC {
         }
         return vm
     }()
-    
+    lazy var stepsArray: [Int] = {
+        return [5,6,5]
+    }()
     lazy var goalVm: DietPlanCreateGoalVM = {
         let vm = DietPlanCreateGoalVM.init(frame: .zero)
         vm.nextButtonEnableChangeBlock = {[weak self] isEnabled in
@@ -211,6 +213,7 @@ extension DietPlanCreateVC{
             self.nextButton.alpha = targetAlpha
         }
         nextButton.isUserInteractionEnabled = !shouldHideButton
+        naviVm.updateStep(steps: self.stepsArray, currentStep: currentIndex)
 
         if animated {
             UIView.animate(withDuration: 0.25) {

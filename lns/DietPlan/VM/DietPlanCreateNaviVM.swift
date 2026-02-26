@@ -10,6 +10,7 @@ class DietPlanCreateNaviVM: UIView {
     
     let segmentWidth = (SCREEN_WIDHT - kFitWidth(56) - kFitWidth(24) - kFitWidth(15))/3
     var backTapBlock:(()->())?
+    var lastStep = 1
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: WHUtils().getNavigationBarHeight()))
@@ -51,6 +52,28 @@ extension DietPlanCreateNaviVM{
     @objc func backAction() {
         self.backTapBlock?()
     }
+    func updateStep(steps:[Int],currentStep:Int) {
+        let firstTotal = steps.indices.contains(0) ? max(steps[0], 0) : 0
+        let secondTotal = steps.indices.contains(1) ? max(steps[1], 0) : 0
+        let thirdTotal = steps.indices.contains(2) ? max(steps[2], 0) : 0
+        let totalStep = firstTotal + secondTotal + thirdTotal
+        let safeCurrentStep = max(0, min(currentStep, max(totalStep - 1, 0)))
+        var progressStep = min(safeCurrentStep + 1, totalStep)
+
+        let firstProgress = min(firstTotal, progressStep)
+        progressStep = max(0, progressStep - firstTotal)
+
+        let secondProgress = min(secondTotal, progressStep)
+        progressStep = max(0, progressStep - secondTotal)
+
+        let thirdProgress = min(thirdTotal, progressStep)
+
+        let animate = safeCurrentStep != lastStep
+        firstStepVm.updateProgress(step: firstProgress, totalStep: firstTotal, animate: animate)
+        secondStepVm.updateProgress(step: secondProgress, totalStep: secondTotal, animate: animate)
+        thirdStepVm.updateProgress(step: thirdProgress, totalStep: thirdTotal, animate: animate)
+        lastStep = safeCurrentStep
+    }
 }
 
 extension DietPlanCreateNaviVM{
@@ -63,17 +86,5 @@ extension DietPlanCreateNaviVM{
         firstStepVm.updateProgress(step: 1, totalStep: 4, animate: false)
         secondStepVm.updateProgress(step: 0, totalStep: 4, animate: false)
         thirdStepVm.updateProgress(step: 0, totalStep: 4, animate: false)
-        
-//        DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
-//            self.firstStepVm.updateProgress(step: 2, totalStep: 5, animate: false)
-//            self.secondStepVm.updateProgress(step: 4, totalStep: 6, animate: true)
-//            self.thirdStepVm.updateProgress(step: 2, totalStep: 5, animate: true)
-//        })
-//        
-//        DispatchQueue.main.asyncAfter(deadline: .now()+4, execute: {
-//            self.firstStepVm.updateProgress(step: 5, totalStep: 5, animate: true)
-//            self.secondStepVm.updateProgress(step: 1, totalStep: 6, animate: true)
-//            self.thirdStepVm.updateProgress(step: 4, totalStep: 5, animate: true)
-//        })
     }
 }
