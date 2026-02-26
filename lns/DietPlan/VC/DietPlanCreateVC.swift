@@ -46,7 +46,7 @@ class DietPlanCreateVC: WHBaseViewVC {
         return vm
     }()
     lazy var stepsArray: [Int] = {
-        return [5,6,5]
+        return [5,7,5]
     }()
     lazy var goalVm: DietPlanCreateGoalVM = {
         let vm = DietPlanCreateGoalVM.init(frame: .zero)
@@ -92,58 +92,62 @@ class DietPlanCreateVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var targetWeightVm: DietPlanCreateTargetWeightVM = {
+        let vm = DietPlanCreateTargetWeightVM(frame: CGRect(x: SCREEN_WIDHT * 6, y: 0, width: 0, height: 0))
+        return vm
+    }()
     lazy var eventsVm: DietPlanCreateEventsVM = {
-        let vm = DietPlanCreateEventsVM.init(frame: CGRect(x: SCREEN_WIDHT * 6, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateEventsVM.init(frame: CGRect(x: SCREEN_WIDHT * 7, y: 0, width: 0, height: 0))
         vm.selectedBlock = {[weak self] in
             self?.syncNextButtonEnableStatus()
         }
         return vm
     }()
     lazy var importantVm: DietPlanCreateImportantVM = {
-        let vm = DietPlanCreateImportantVM.init(frame: CGRect.init(x: SCREEN_WIDHT*7, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateImportantVM.init(frame: CGRect.init(x: SCREEN_WIDHT*8, y: 0, width: 0, height: 0))
         vm.selectedBlock = {[weak self] in
             self?.syncNextButtonEnableStatus()
         }
         return vm
     }()
     lazy var paceVm: DietPlanCreatePaceVM = {
-        let vm = DietPlanCreatePaceVM(frame: CGRect(x: SCREEN_WIDHT * 8, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreatePaceVM(frame: CGRect(x: SCREEN_WIDHT * 9, y: 0, width: 0, height: 0))
         return vm
     }()
     lazy var allergyVm: DietPlanCreateAllergyVM = {
-        let vm = DietPlanCreateAllergyVM(frame: CGRect(x: SCREEN_WIDHT * 9, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateAllergyVM(frame: CGRect(x: SCREEN_WIDHT * 10, y: 0, width: 0, height: 0))
         vm.selectedBlock = {[weak self] in
             self?.syncNextButtonEnableStatus()
         }
         return vm
     }()
     lazy var barrierVm: DietPlanCreateBarrierVM = {
-        let vm = DietPlanCreateBarrierVM(frame: CGRect(x: SCREEN_WIDHT * 10, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateBarrierVM(frame: CGRect(x: SCREEN_WIDHT * 11, y: 0, width: 0, height: 0))
         vm.selectedBlock = {[weak self] in
             self?.syncNextButtonEnableStatus()
         }
         return vm
     }()
     lazy var adviceVm: DietPlanCreateAdviceVM = {
-        let vm = DietPlanCreateAdviceVM(frame: CGRect(x: SCREEN_WIDHT * 11, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateAdviceVM(frame: CGRect(x: SCREEN_WIDHT * 12, y: 0, width: 0, height: 0))
         return vm
     }()
     lazy var mealStyleVm: DietPlanCreateMealStyleVM = {
-        let vm = DietPlanCreateMealStyleVM(frame: CGRect(x: SCREEN_WIDHT * 12, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateMealStyleVM(frame: CGRect(x: SCREEN_WIDHT * 13, y: 0, width: 0, height: 0))
         vm.selectedBlock = {[weak self] in
             self?.syncNextButtonEnableStatus()
         }
         return vm
     }()
     lazy var eatStyleVm: DietPlanCreateEatStyleVM = {
-        let vm = DietPlanCreateEatStyleVM.init(frame: CGRect.init(x: SCREEN_WIDHT*13, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateEatStyleVM.init(frame: CGRect.init(x: SCREEN_WIDHT*14, y: 0, width: 0, height: 0))
         vm.selectedBlock = {[weak self] in
             self?.syncNextButtonEnableStatus()
         }
         return vm
     }()
     lazy var ketoHistoryVm: DietPlanCreateKetoHistoryVM = {
-        let vm = DietPlanCreateKetoHistoryVM(frame: CGRect(x: SCREEN_WIDHT * 14, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateKetoHistoryVM(frame: CGRect(x: SCREEN_WIDHT * 15, y: 0, width: 0, height: 0))
         vm.selectedBlock = {[weak self] in
             self?.syncNextButtonEnableStatus()
         }
@@ -151,7 +155,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     }()
     
     lazy var flavorVM: DietPlanCreateFlavorVM = {
-        let vm = DietPlanCreateFlavorVM(frame: CGRect(x: SCREEN_WIDHT * 15, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateFlavorVM(frame: CGRect(x: SCREEN_WIDHT * 16, y: 0, width: 0, height: 0))
         vm.selectedBlock = {[weak self] in
             self?.syncNextButtonEnableStatus()
         }
@@ -234,20 +238,22 @@ extension DietPlanCreateVC{
         case 5:
             nextButton.isEnabled = bodyfatVm.selectIndex >= 0
         case 6:
-            nextButton.isEnabled = eventsVm.selectedIndex >= 0
+            nextButton.isEnabled = !QuestinonaireMsgModel.shared.targetWeight.isEmpty
         case 7:
+            nextButton.isEnabled = eventsVm.selectedIndex >= 0
+        case 8:
             nextButton.isEnabled = importantVm.selectedIndex >= 0
-        case 9:
-            nextButton.isEnabled = allergyVm.selectedIndex >= 0
         case 10:
+            nextButton.isEnabled = allergyVm.selectedIndex >= 0
+        case 11:
             nextButton.isEnabled = barrierVm.selectedIndex >= 0
-        case 12:
-            nextButton.isEnabled = mealStyleVm.selectedIndex >= 0
         case 13:
-            nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
+            nextButton.isEnabled = mealStyleVm.selectedIndex >= 0
         case 14:
-            nextButton.isEnabled = ketoHistoryVm.selectedIndex >= 0
+            nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
         case 15:
+            nextButton.isEnabled = ketoHistoryVm.selectedIndex >= 0
+        case 16:
             nextButton.isEnabled = flavorVM.selectedIndex >= 0
         default:
             nextButton.isEnabled = true
@@ -274,6 +280,7 @@ extension DietPlanCreateVC{
         scrollViewBase.addSubview(heightVm)
         scrollViewBase.addSubview(weightVm)
         scrollViewBase.addSubview(bodyfatVm)
+        scrollViewBase.addSubview(targetWeightVm)
         scrollViewBase.addSubview(eventsVm)
         scrollViewBase.addSubview(importantVm)
         scrollViewBase.addSubview(paceVm)
@@ -291,7 +298,7 @@ extension DietPlanCreateVC{
         })
         
         scrollViewBase.isPagingEnabled = true
-        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*16, height: 0)
+        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17, height: 0)
 
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
