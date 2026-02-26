@@ -4687,12 +4687,14 @@
 				ECA0594B2F4D96D500E257E8 /* DietPlanCreateNaviVM.swift */,
 				ECA0594D2F4D985600E257E8 /* DietPlanCreateNaviSegmentVM.swift */,
 				ECA059512F4DA30C00E257E8 /* DietPlanCreateItemVM.swift */,
+				ECA8BF012F5034D3007E240E /* DietPlanTargetWeightRulerView.swift */,
 				ECA0594F2F4D9EA100E257E8 /* DietPlanCreateGoalVM.swift */,
 				EC8B56032F4E8958002F2C16 /* DietPlanCreateSexVM.swift */,
 				EC8B56052F4E8E9F002F2C16 /* DietPlanCreateYearVM.swift */,
 				ECF9D1022F500C1100A1B2C3 /* DietPlanCreateHeightVM.swift */,
 				EC8B56072F4EAA5C002F2C16 /* DietPlanCreateWeightVM.swift */,
 				EC8B56092F4EBC24002F2C16 /* DietPlanCreateBodyfatVM.swift */,
+				ECA8BF072F512A10007E240E /* DietPlanCreateTargetWeightVM.swift */,
 				EC8B560B2F4ED110002F2C16 /* DietPlanCreateEventsVM.swift */,
 				EC8B560B2F4ED705002F2C16 /* DietPlanCreateImportantVM.swift */,
 				ECF9D1032F50AA1100A1B2C3 /* DietPlanCreatePaceVM.swift */,
@@ -4703,8 +4705,6 @@
 				ECA8BEFF2F5010AB007E240E /* DietPlanCreateEatStyleVM.swift */,
 				ECA8BF032F511E93007E240E /* DietPlanCreateKetoHistoryVM.swift */,
 				ECA8BF052F512300007E240E /* DietPlanCreateFlavorVM.swift */,
-				ECA8BF072F512A10007E240E /* DietPlanCreateTargetWeightVM.swift */,
-				ECA8BF012F5034D3007E240E /* DietPlanTargetWeightRulerView.swift */,
 			);
 			path = VM;
 			sourceTree = "<group>";

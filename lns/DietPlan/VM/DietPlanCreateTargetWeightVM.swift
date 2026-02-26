@@ -7,8 +7,20 @@
 
 class DietPlanCreateTargetWeightVM: UIView {
 
-    private let minWeight = 40.0
-    private let maxWeight = 130.0
+    /*
+     ●（1. 体重上限 150kg，下限 50kg，超过提示：请更新体重目标；你填写的体重可能会不利于你的健康。你可以选择跳过这一步，我们会为你推荐一个更合理的默认目标。）
+     ●（2. 选择了：降低血脂
+     提示：你的体重目标可能会不利于你达到降低血脂的目标。你可以选择跳过这一步，我们会为你推荐一个更合理的默认目标。）
+    
+     ●目标低于最低：取 50kg
+     ●目标超过最高：取 150kg
+     ●选降低血脂：取现在体重 90%
+
+     默认目标 / 维持，跳过问题 8、9
+
+     */
+    private let minWeight = 30.0
+    private let maxWeight = 180.0
     private let stepWeight = 0.1
 
     private var currentWeightValue = 60.0

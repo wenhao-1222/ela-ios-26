@@ -46,7 +46,7 @@ class DietPlanCreateVC: WHBaseViewVC {
         return vm
     }()
     lazy var stepsArray: [Int] = {
-        return [5,7,5]
+        return [5,6,6]
     }()
     lazy var goalVm: DietPlanCreateGoalVM = {
         let vm = DietPlanCreateGoalVM.init(frame: .zero)
