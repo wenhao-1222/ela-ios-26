@@ -115,6 +115,13 @@ class DietPlanCreateVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var barrierVm: DietPlanCreateBarrierVM = {
+        let vm = DietPlanCreateBarrierVM(frame: CGRect(x: SCREEN_WIDHT * 10, y: 0, width: 0, height: 0))
+        vm.selectedBlock = {[weak self] in
+            self?.syncNextButtonEnableStatus()
+        }
+        return vm
+    }()
     
     lazy var bodyFatAlertVm : QuestionnaireBodyFatAlertVM = {
         let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
@@ -197,6 +204,8 @@ extension DietPlanCreateVC{
             nextButton.isEnabled = importantVm.selectedIndex >= 0
         case 9:
             nextButton.isEnabled = allergyVm.selectedIndex >= 0
+        case 10:
+            nextButton.isEnabled = barrierVm.selectedIndex >= 0
         default:
             nextButton.isEnabled = true
         }
@@ -226,6 +235,7 @@ extension DietPlanCreateVC{
         scrollViewBase.addSubview(importantVm)
         scrollViewBase.addSubview(paceVm)
         scrollViewBase.addSubview(allergyVm)
+        scrollViewBase.addSubview(barrierVm)
         
         
         DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
@@ -233,7 +243,7 @@ extension DietPlanCreateVC{
         })
         
         scrollViewBase.isPagingEnabled = true
-        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*10, height: 0)
+        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*11, height: 0)
 
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))

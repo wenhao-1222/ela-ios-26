@@ -28,6 +28,7 @@ class QuestinonaireMsgModel{
     var chartStartDate = Date()//折线图开始日期
     var chartEndDate = Calendar.current.date(byAdding: .day, value: 14, to: Date()) ?? Date()//折线图结束日期（最多间隔14天）
     var foodAllergy = ""//过敏/忌口
+    var foodBarrier = ""//饮食阻碍
     var events = ""//日常活动量
     var bodyFat = ""//体脂肪
     var mealsPerDay = ""
@@ -63,6 +64,7 @@ class QuestinonaireMsgModel{
         DLLog(message: "折线图开始日期：\(chartStartDate)")
         DLLog(message: "折线图结束日期：\(chartEndDate)")
         DLLog(message: "过敏忌口：\(foodAllergy)")
+        DLLog(message: "饮食阻碍：\(foodBarrier)")
         DLLog(message: "活动量：\(events)")
         DLLog(message: "体脂肪：\(bodyFat)")
         DLLog(message: "每日餐数：\(mealsPerDay)")
@@ -109,6 +111,7 @@ class QuestinonaireMsgModel{
         self.chartStartDate = Date()
         self.chartEndDate = Calendar.current.date(byAdding: .day, value: 14, to: self.chartStartDate) ?? self.chartStartDate
         self.foodAllergy = ""
+        self.foodBarrier = ""
         self.events = ""
         self.bodyFat = ""
         self.mealsPerDay = ""
