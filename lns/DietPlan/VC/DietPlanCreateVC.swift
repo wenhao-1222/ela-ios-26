@@ -122,7 +122,24 @@ class DietPlanCreateVC: WHBaseViewVC {
         }
         return vm
     }()
-    
+    lazy var adviceVm: DietPlanCreateAdviceVM = {
+        let vm = DietPlanCreateAdviceVM(frame: CGRect(x: SCREEN_WIDHT * 11, y: 0, width: 0, height: 0))
+        return vm
+    }()
+    lazy var mealStyleVm: DietPlanCreateMealStyleVM = {
+        let vm = DietPlanCreateMealStyleVM(frame: CGRect(x: SCREEN_WIDHT * 12, y: 0, width: 0, height: 0))
+        vm.selectedBlock = {[weak self] in
+            self?.syncNextButtonEnableStatus()
+        }
+        return vm
+    }()
+    lazy var eatStyleVm: DietPlanCreateEatStyleVM = {
+        let vm = DietPlanCreateEatStyleVM.init(frame: CGRect.init(x: SCREEN_WIDHT*13, y: 0, width: 0, height: 0))
+        vm.selectedBlock = {[weak self] in
+            self?.syncNextButtonEnableStatus()
+        }
+        return vm
+    }()
     lazy var bodyFatAlertVm : QuestionnaireBodyFatAlertVM = {
         let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
         
@@ -206,6 +223,10 @@ extension DietPlanCreateVC{
             nextButton.isEnabled = allergyVm.selectedIndex >= 0
         case 10:
             nextButton.isEnabled = barrierVm.selectedIndex >= 0
+        case 12:
+            nextButton.isEnabled = mealStyleVm.selectedIndex >= 0
+        case 13:
+            nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
         default:
             nextButton.isEnabled = true
         }
@@ -236,6 +257,9 @@ extension DietPlanCreateVC{
         scrollViewBase.addSubview(paceVm)
         scrollViewBase.addSubview(allergyVm)
         scrollViewBase.addSubview(barrierVm)
+        scrollViewBase.addSubview(adviceVm)
+        scrollViewBase.addSubview(mealStyleVm)
+        scrollViewBase.addSubview(eatStyleVm)
         
         
         DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
@@ -243,7 +267,7 @@ extension DietPlanCreateVC{
         })
         
         scrollViewBase.isPagingEnabled = true
-        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*11, height: 0)
+        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*14, height: 0)
 
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
