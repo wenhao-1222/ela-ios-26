@@ -75,12 +75,11 @@ class DietPlanCreatePaceVM: UIView {
     
     struct LevelRenderData {
         let endDisplay: Double
-        let plateauStart: Double?
         let points: [ChartPoint]
     }
 
-    private let hMax: Double = 20
     private let pointCount: Int = 60
+    private let defaultChartDurationDays: Int = 14
 
     private var currentLevel: Level = .steady
     private var levelDataMap: [Level: LevelRenderData] = [:]
@@ -339,54 +338,20 @@ private extension DietPlanCreatePaceVM {
 
     func recomputeAllLevelData() {
         let w0 = resolveCurrentWeight()
-        let wt = resolveTargetWeight(currentWeight: w0)
-        let delta = wt - w0
         startWeight = w0
-
-        if abs(delta) < 0.0001 {
-            let weeks = resolveChartWindowWeeks()
-            displayWeeks = weeks
-            var flatData: [Level: LevelRenderData] = [:]
-            for level in Level.allCases {
-                flatData[level] = LevelRenderData(
-                    endDisplay: w0,
-                    plateauStart: nil,
-                    points: buildFlatPoints(weight: w0, weeks: weeks)
-                )
-            }
-            levelDataMap = flatData
-            yMinValue = w0 - 0.5
-            yMaxValue = w0 + 0.5
-            return
-        }
-
-        let dir = delta > 0 ? 1.0 : -1.0
-        let slightRate = Level.slight.rateAbs
-        let slightWeeks = abs(delta) / slightRate
-        let goalWeeks = min(slightWeeks, hMax)
-        let chartWeeks = resolveChartWindowWeeks()
-        displayWeeks = min(goalWeeks, chartWeeks)
+        let goalDirection = resolveGoalDirection(currentWeight: w0)
+        let weeks = resolveChartWindowWeeks()
+        displayWeeks = weeks
 
         var tmpMap: [Level: LevelRenderData] = [:]
         var endDisplays: [Double] = [w0]
 
         for level in Level.allCases {
-            let rAbs = level.rateAbs
-            let tGoal = abs(delta) / rAbs
-            let hasPlateau = tGoal <= displayWeeks
-            let endDisplay = hasPlateau ? wt : (w0 + dir * rAbs * displayWeeks)
-            let plateauStart = hasPlateau ? tGoal : nil
-            let points = buildPoints(
-                startWeight: w0,
-                targetWeight: wt,
-                endDisplay: endDisplay,
-                plateauStart: plateauStart,
-                weeks: displayWeeks
-            )
+            let endDisplay = resolveTargetWeight(startWeight: w0, level: level, direction: goalDirection, weeks: displayWeeks)
+            let points = buildPoints(startWeight: w0, endWeight: endDisplay, weeks: displayWeeks)
 
             tmpMap[level] = LevelRenderData(
                 endDisplay: endDisplay,
-                plateauStart: plateauStart,
                 points: points
             )
             endDisplays.append(endDisplay)
@@ -401,24 +366,16 @@ private extension DietPlanCreatePaceVM {
     }
     
     func buildPoints(startWeight: Double,
-                     targetWeight: Double,
-                     endDisplay: Double,
-                     plateauStart: Double?,
+                     endWeight: Double,
                      weeks: Double) -> [ChartPoint] {
         var points: [ChartPoint] = []
         points.reserveCapacity(pointCount)
-        let duration = max(plateauStart ?? weeks, 0.0001)
         
         for i in 0..<pointCount {
             let t = Double(i) * weeks / Double(max(pointCount - 1, 1))
-            let value: Double
-            if let plateauStart, t > plateauStart {
-                value = targetWeight
-            } else {
-                let u = max(0, min(1, t / duration))
-                let e = smoothstep(u)
-                value = startWeight + (endDisplay - startWeight) * e
-            }
+            let u = max(0, min(1, t / max(weeks, 0.0001)))
+            let e = smoothstep(u)
+            let value = startWeight + (endWeight - startWeight) * e
             points.append(ChartPoint(t: t, value: value))
         }
         
@@ -485,64 +442,45 @@ private extension DietPlanCreatePaceVM {
     }
     
     func resolveChartWindowWeeks() -> Double {
-        let (startDate, endDate) = normalizedChartDateRange()
-        let seconds = max(endDate.timeIntervalSince(startDate), 1)
-        let weeks = seconds / (7.0 * 24.0 * 3600.0)
-        return min(max(weeks, 1.0 / 7.0), 2.0)
+        return Double(resolveChartDurationDays()) / 7.0
     }
     
     func normalizedChartDateRange() -> (Date, Date) {
         let start = QuestinonaireMsgModel.shared.chartStartDate
-        var end = QuestinonaireMsgModel.shared.chartEndDate
-        if end <= start {
-            end = Calendar.current.date(byAdding: .day, value: 14, to: start) ?? start.addingTimeInterval(14 * 24 * 3600)
-        }
-        let maxEnd = Calendar.current.date(byAdding: .day, value: 14, to: start) ?? start.addingTimeInterval(14 * 24 * 3600)
-        if end > maxEnd {
-            end = maxEnd
-        }
+        let days = resolveChartDurationDays()
+        let end = Calendar.current.date(byAdding: .day, value: days, to: start) ?? start.addingTimeInterval(Double(days) * 24 * 3600)
         QuestinonaireMsgModel.shared.chartStartDate = start
         QuestinonaireMsgModel.shared.chartEndDate = end
         return (start, end)
     }
 
     func resolveCurrentWeight() -> Double {
-        let weightString = QuestinonaireMsgModel.shared.weight.trimmingCharacters(in: .whitespacesAndNewlines)
+        let weightString = QuestinonaireMsgModel.shared.weight//.trimmingCharacters(in: .whitespacesAndNewlines)
         let parsed = Double(weightString.replacingOccurrences(of: ",", with: "."))
         return max(parsed ?? 85.0, 30.0)
     }
 
-    func resolveTargetWeight(currentWeight: Double) -> Double {
-        let targetString = QuestinonaireMsgModel.shared.targetWeight.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let target = Double(targetString.replacingOccurrences(of: ",", with: ".")), target > 0 {
-            return max(target, 30.0)
-        }
-
-        let goalString = QuestinonaireMsgModel.shared.goal
-        if goalString.contains("减脂") {
-            return max(currentWeight - 5.0, 30.0)
-        }
-        if goalString.contains("增肌") {
-            return currentWeight + 5.0
-        }
-        if goalString.contains("保持") {
-            return currentWeight
-        }
-
-        if currentWeight >= 80 {
-            return currentWeight - 3.0
-        }
-        return currentWeight + 3.0
+    func resolveTargetWeight(startWeight: Double, level: Level, direction: Double, weeks: Double) -> Double {
+        return max(startWeight + direction * level.rateAbs * weeks, 30.0)
     }
 
-    func buildFlatPoints(weight: Double, weeks: Double) -> [ChartPoint] {
-        var points: [ChartPoint] = []
-        points.reserveCapacity(pointCount)
-        for i in 0..<pointCount {
-            let t = Double(i) * weeks / Double(max(pointCount - 1, 1))
-            points.append(ChartPoint(t: t, value: weight))
+    func resolveGoalDirection(currentWeight: Double) -> Double {
+        let goalString = QuestinonaireMsgModel.shared.goal
+        if goalString.contains("减脂") {
+            return -1.0
         }
-        return points
+        if goalString.contains("增肌") {
+            return 1.0
+        }
+        if goalString.contains("保持") {
+            return 0.0
+        }
+        return currentWeight >= 80 ? -1.0 : 1.0
+    }
+
+    func resolveChartDurationDays() -> Int {
+        // 预留自定义时长扩展，当前固定 14 天
+        return defaultChartDurationDays
     }
 
     func smoothstep(_ u: Double) -> Double {
