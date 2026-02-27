@@ -358,8 +358,55 @@ extension HabitRankListVM{
         }
         guard let newIndex, oldIndex != newIndex else { return }
         DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
-            self.animateHighlightMove3Stage(from: oldIndex, to: newIndex, extraVertical: 0)
+            self.waitUntilAvatarReadyForHighlight(at: oldIndex, timeout: 1.0) { [weak self] avatarImage in
+                guard let self = self else { return }
+                self.animateHighlightMove3Stage(from: oldIndex,
+                                                to: newIndex,
+                                                extraVertical: 0,
+                                                avatarOverride: avatarImage)
+            }
         })
+    }
+    
+    private func waitUntilAvatarReadyForHighlight(at index: Int,
+                                                   timeout: TimeInterval = 1.0,
+                                                   completion: @escaping (UIImage?) -> Void) {
+        guard index >= 0, index < displayedDataArray.count else {
+            completion(nil)
+            return
+        }
+        
+        let dict = displayedDataArray[index] as? NSDictionary ?? [:]
+        let avatarURL = dict.stringValueForKey(key: "headimgurl")
+        guard avatarURL.count > 0 else {
+            completion(nil)
+            return
+        }
+        
+        let indexPath = IndexPath(row: 0, section: index)
+        if let cell = tableView.cellForRow(at: indexPath) as? HabitRankTableViewCell,
+           let avatar = cell.currentAvatarImage() {
+            completion(avatar)
+            return
+        }
+        
+        var isFinished = false
+        let finish: (UIImage?) -> Void = { image in
+            guard !isFinished else { return }
+            isFinished = true
+            DispatchQueue.main.async {
+                completion(image)
+            }
+        }
+        
+        let preloader = UIImageView()
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeout) {
+            finish(preloader.image)
+        }
+        
+        preloader.setImgUrlWithComplete(urlString: avatarURL) {
+            finish(preloader.image)
+        }
     }
 }
 
@@ -393,7 +440,8 @@ extension HabitRankListVM {
     /// ⭐️ 三段式（不贴边、不回头）：Lift → Move+Scroll → Drop
     private func animateHighlightMove3Stage(from oldIndex: Int,
                                             to newIndex: Int,
-                                            extraVertical: CGFloat = 20) {
+                                            extraVertical: CGFloat = 20,
+                                            avatarOverride: UIImage? = nil) {
 
         let fromIndexPath = IndexPath(row: 0, section: oldIndex)
         let toIndexPath   = IndexPath(row: 0, section: newIndex)
@@ -420,7 +468,10 @@ extension HabitRankListVM {
 //        let highlightView = makeHighlightSnapshotView(from: fromCell, extraVertical: extraVertical)
         let highlightView: UIView
         if let habitCell = fromCell as? HabitRankTableViewCell {
-            highlightView = makeHighlightMirrorCellView(from: oldIndex, fromCell: habitCell, extraVertical: extraVertical)
+            highlightView = makeHighlightMirrorCellView(from: oldIndex,
+                                                        fromCell: habitCell,
+                                                        extraVertical: extraVertical,
+                                                        avatarOverride: avatarOverride)
         } else {
             highlightView = makeHighlightSnapshotView(from: fromCell, extraVertical: extraVertical)
         }
@@ -590,7 +641,8 @@ extension HabitRankListVM{
     }
     private func makeHighlightMirrorCellView(from index: Int,
                                              fromCell: HabitRankTableViewCell,
-                                             extraVertical: CGFloat) -> UIView {
+                                             extraVertical: CGFloat,
+                                             avatarOverride: UIImage?) -> UIView {
 
         let dict = displayedDataArray[index] as? NSDictionary ?? [:]
         let avatarURL = dict.stringValueForKey(key: "headimgurl")
@@ -607,6 +659,10 @@ extension HabitRankListVM{
             needAvatarTransition: false , // ✅ 高亮不fade，像拖拽
             isCurrentUser: isCurrentUser(dict)
         )
+        // 优先使用已就绪头像，避免弱网下高亮移动时头像空白
+        if let image = avatarOverride ?? fromCell.currentAvatarImage() {
+            mirror.applyAvatarImage(image)
+        }
 
         mirror.layoutIfNeeded()
 

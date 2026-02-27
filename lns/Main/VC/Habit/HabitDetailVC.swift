@@ -25,7 +25,7 @@ class HabitDetailVC: WHBaseViewVC {
         
         vi.register(HabitDetailTableViewCell.classForCoder(), forCellReuseIdentifier: "HabitDetailTableViewCell")
         vi.separatorStyle = .none
-        
+        vi.alpha = 0
         vi.delegate = self
         vi.dataSource = self
         vi.bounces = false
@@ -117,6 +117,12 @@ extension HabitDetailVC{
             self.dataSourceArray = dataArray
             if self.dataSourceArray.count > 0 {
                 self.tableView.reloadData()
+                UIView.animate(withDuration: 0.35, delay: 0) {
+                    self.tableView.alpha = 1
+                }
+//                DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
+//                    self.tableView.reloadData()
+//                })
             }else{
                 self.noDataView.isHidden = false
                 UIView.animate(withDuration: 0.25, delay: 0) {

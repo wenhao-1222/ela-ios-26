@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 class HabitRankTableViewCell: UITableViewCell {
 
@@ -98,11 +99,11 @@ class HabitRankTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        avatarImageView.kf.cancelDownloadTask()
-        avatarImageView.image = nil
-    }
+//    override func prepareForReuse() {
+//        super.prepareForReuse()
+//        avatarImageView.kf.cancelDownloadTask()
+//        avatarImageView.image = nil
+//    }
 
     // MARK: - Setup
 
@@ -172,14 +173,38 @@ class HabitRankTableViewCell: UITableViewCell {
         needAvatarTransition: Bool = true,
         isCurrentUser: Bool = false
     ) {
-//        rankLabel.text = "\(rank)"
         let rankInt = rank.intValue
         rankLabel.text = "\(rankInt)"
-//        let avatarPlaceholder = createImageWithColor(color: .COLOR_BG_F5)//UIImage(named: "control_widget_icon")
-//        avatarImageView.image = avatarPlaceholder
+        
         if avatar.count > 0 {
-            avatarImageView.setImgUrl(urlString: avatar)
-//            avatarImageView.setImgUrl(urlString: avatar, placeHolder: avatarPlaceholder)
+            if let cacheImg = ImageCache.default.retrieveImageInMemoryCache(forKey: avatar) {
+                avatarImageView.setImgUrl(urlString: avatar)
+            }else{
+                ImageCache.default.retrieveImage(forKey: avatar) { result in
+                    switch result {
+                    case .success(let value):
+                        if let image = value.image {
+                            // 成功获取磁盘缓存图片
+                            DispatchQueue.main.async {
+                                self.avatarImageView.image = image
+                            }
+                        } else {
+                            // 没有找到缓存图片（image 为 nil）
+                            DispatchQueue.main.async {
+                                self.avatarImageView.image = nil
+                                self.avatarImageView.setImgUrl(urlString: avatar)
+                            }
+                        }
+                    case .failure(let error):
+                        // 读取缓存失败，可能是找不到或读取失败
+                        print("读取缓存失败: \(error)")
+                        DispatchQueue.main.async {
+                            self.avatarImageView.image = nil
+                            self.avatarImageView.setImgUrl(urlString: avatar)
+                        }
+                    }
+                }
+            }
         }else{
             avatarImageView.setImgLocal(imgName: "control_widget_icon")
         }

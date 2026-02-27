@@ -5,9 +5,17 @@
 //  Created by LNS2 on 2026/1/21.
 //
 
+class HabitRankHitExpandView: UIView {
+    /// 负值表示向外扩展点击区域
+    var hitTestEdgeInsets: UIEdgeInsets = .init(top: -12, left: -8, bottom: -12, right: -8)
+    
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        let largerBounds = bounds.inset(by: hitTestEdgeInsets)
+        return largerBounds.contains(point)
+    }
+}
 
 class HabitRankListHeadCupVM: UIView {
-    
     let selfHeight = kFitWidth(206) + kFitWidth(12)
     let scroviewHeight = kFitWidth(98)
     
@@ -48,9 +56,9 @@ class HabitRankListHeadCupVM: UIView {
         
         return lab
     }()
-    lazy var tipsBgView: UIView = {
-        let vi = UIView()
-        vi.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.5)//.COLOR_BG_WHITE.withAlphaComponent(0.5)//UIColor.white.withAlphaComponent(0.5)
+    lazy var tipsBgView: HabitRankHitExpandView = {
+        let vi = HabitRankHitExpandView()
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE.withAlphaComponent(0.5)
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(4.5)
         vi.layer.borderWidth = kFitWidth(1)

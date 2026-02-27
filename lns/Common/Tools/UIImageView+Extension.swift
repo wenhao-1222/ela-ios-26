@@ -11,7 +11,6 @@ import Kingfisher
 
 extension UIImageView{
     public func setImgUrl(urlString:String,placeHolder:UIImage?=nil,needTransiton:Bool?=true){
-//        DLLog(message: "图片加载地址：\(urlString)")
         ImageCache.default.retrieveImage(forKey: urlString) {[weak self] result in
             guard let self = self else { return }
             switch result {
