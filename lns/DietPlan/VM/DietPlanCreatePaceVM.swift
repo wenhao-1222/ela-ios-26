@@ -48,11 +48,11 @@ class DietPlanCreatePaceVM: UIView {
         var lineColor: UIColor {
             switch self {
             case .slight:
-                return WHColor_16(colorStr: "2F8C63")
-            case .steady:
                 return .THEME
+            case .steady:
+                return WHColor_16(colorStr: "2C845C")
             case .major:
-                return WHColor_16(colorStr: "F08A25")
+                return WHColor_16(colorStr: "FF8725")
             }
         }
 

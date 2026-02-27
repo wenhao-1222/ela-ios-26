@@ -10,7 +10,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
     private var isGoalStepEnabled = false
-
+    var skipStepsNine = false//是否跳过第九步  此处是由第八步决定
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.fd_interactivePopDisabled = true
@@ -274,6 +274,46 @@ extension DietPlanCreateVC{
     func nextStepIndex(from index: Int) -> Int {
         if index == 6 && shouldSkipImportantAndPaceSteps() {
 //            return 10
+        }
+        if index == 8 {
+            //8. 达成目标对你有多重要？
+            //以下处理，只有当目标体重  非维持时，即显示 “达成目标对你有多重要？”时。否则 跳过这里的判断
+            if !shouldSkipImportantAndPaceSteps(){
+                if importantVm.selectedIndex == 3{
+    //            1.非常重要，我愿意全力以赴   想尽快看到明显进展
+    //            2.我愿意认真尝试           希望稳步取得不错的进度
+    //            3.我更想循序渐进           选择更轻松、更容易坚持的方式
+    //            4.我还不确定
+    //            备注：如选择 4，则跳过 9（9 默认选择 2）
+                    paceVm.isHidden = true
+                    skipStepsNine = true
+                    scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*16, height: 0)
+                    self.stepsArray = [5,5,6]
+                    let firstCenterX = paceVm.center.x//(SCREEN_WIDHT * 9.5)
+                    allergyVm.center = CGPoint(x: firstCenterX, y: SCREEN_HEIGHT*0.5)
+                    barrierVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT, y: SCREEN_HEIGHT*0.5)
+                    adviceVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*2, y: SCREEN_HEIGHT*0.5)
+                    mealStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*3, y: SCREEN_HEIGHT*0.5)
+                    eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4, y: SCREEN_HEIGHT*0.5)
+                    ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5, y: SCREEN_HEIGHT*0.5)
+                    flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6, y: SCREEN_HEIGHT*0.5)
+                }else{
+                    if skipStepsNine{//如果之前选择的是 4
+                        paceVm.isHidden = false
+                        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17, height: 0)
+                        self.stepsArray = [5,6,6]
+                        let firstCenterX = (SCREEN_WIDHT * 10.5)
+                        allergyVm.center = CGPoint(x: firstCenterX, y: SCREEN_HEIGHT*0.5)
+                        barrierVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT, y: SCREEN_HEIGHT*0.5)
+                        adviceVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*2, y: SCREEN_HEIGHT*0.5)
+                        mealStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*3, y: SCREEN_HEIGHT*0.5)
+                        eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4, y: SCREEN_HEIGHT*0.5)
+                        ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5, y: SCREEN_HEIGHT*0.5)
+                        flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6, y: SCREEN_HEIGHT*0.5)
+                    }
+                    skipStepsNine = false
+                }
+            }
         }
         return index + 1
     }
