@@ -53,6 +53,7 @@ extension DietPlanCreateNaviVM{
         self.backTapBlock?()
     }
     func updateStep(steps:[Int],currentStep:Int) {
+        DLLog(message: "\(steps)   --    \(currentStep)")
         let firstTotal = steps.indices.contains(0) ? max(steps[0], 0) : 0
         let secondTotal = steps.indices.contains(1) ? max(steps[1], 0) : 0
         let thirdTotal = steps.indices.contains(2) ? max(steps[2], 0) : 0

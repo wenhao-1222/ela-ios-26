@@ -17,14 +17,13 @@ class DietPlanCreateTargetWeightVM: UIView {
      ●选降低血脂：取现在体重 90%
 
      默认目标 / 维持，跳过问题 8、9
-
      */
     private let minWeight = 30.0
     private let maxWeight = 180.0
     private let stepWeight = 0.1
 
-    private var currentWeightValue = 60.0
-    private var currentTargetWeight = 60.0
+    var currentWeightValue = 60.0
+    var currentTargetWeight = 60.0
 
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -154,7 +153,7 @@ extension DietPlanCreateTargetWeightVM {
     func applyInitialValue() {
         currentWeightValue = parseWeight(QuestinonaireMsgModel.shared.weight) ?? 60.0
         currentWeightValue = clamp(roundToTenth(currentWeightValue))
-        let targetFromModel = parseWeight(QuestinonaireMsgModel.shared.targetWeight)
+        let targetFromModel = parseWeight(QuestinonaireMsgModel.shared.weight)
         let initialTarget = targetFromModel ?? currentWeightValue
         currentTargetWeight = clamp(roundToTenth(initialTarget))
 

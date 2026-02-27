@@ -38,7 +38,7 @@ class DietPlanCreateVC: WHBaseViewVC {
                 self.backTapAction()
                 return
             }
-            self.currentIndex -= 1
+            self.currentIndex = self.previousStepIndex(from: self.currentIndex)
             let targetOffsetX = SCREEN_WIDHT * CGFloat(self.currentIndex)
             self.scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: true)
             self.updateNextButtonForCurrentStep(animated: true)
@@ -186,7 +186,13 @@ class DietPlanCreateVC: WHBaseViewVC {
 
 extension DietPlanCreateVC{
     @objc func nextButtonTapAction() {
-        let nextIndex = currentIndex + 1
+        let nextIndex = nextStepIndex(from: currentIndex)
+        
+        if nextIndex == 5 {
+            weightVm.getWeightValue()
+            targetWeightVm.applyInitialValue()
+        }
+        
         let targetOffsetX = SCREEN_WIDHT * CGFloat(nextIndex)
         let maxOffsetX = max(scrollViewBase.contentSize.width - scrollViewBase.bounds.width, 0)
         let finalOffsetX = min(targetOffsetX, maxOffsetX)
@@ -197,7 +203,7 @@ extension DietPlanCreateVC{
 
     func moveFromSexToNextStep() {
         guard currentIndex == 1 else { return }
-        let nextIndex = currentIndex + 1
+        let nextIndex = nextStepIndex(from: currentIndex)
         let targetOffsetX = SCREEN_WIDHT * CGFloat(nextIndex)
         let maxOffsetX = max(scrollViewBase.contentSize.width - scrollViewBase.bounds.width, 0)
         let finalOffsetX = min(targetOffsetX, maxOffsetX)
@@ -230,6 +236,11 @@ extension DietPlanCreateVC{
     }
 
     func syncNextButtonEnableStatus() {
+        DLLog(message: "当前步骤：\(currentIndex)")
+        //目标体重如果是维持，则跳过 第8步“达成目标对你有多重要？”   和  第9步“你希望多快达成目标？”
+        let skipStepsOne = shouldSkipImportantAndPaceSteps() ? 2 : 0
+        
+        
         switch currentIndex {
         case 0:
             nextButton.isEnabled = isGoalStepEnabled
@@ -241,23 +252,69 @@ extension DietPlanCreateVC{
             nextButton.isEnabled = !QuestinonaireMsgModel.shared.targetWeight.isEmpty
         case 7:
             nextButton.isEnabled = eventsVm.selectedIndex >= 0
-        case 8:
+        case 8-skipStepsOne:
             nextButton.isEnabled = importantVm.selectedIndex >= 0
-        case 10:
+        case 10-skipStepsOne:
             nextButton.isEnabled = allergyVm.selectedIndex >= 0
-        case 11:
+        case 11-skipStepsOne:
             nextButton.isEnabled = barrierVm.selectedIndex >= 0
-        case 13:
+        case 13-skipStepsOne:
             nextButton.isEnabled = mealStyleVm.selectedIndex >= 0
-        case 14:
+        case 14-skipStepsOne:
             nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
-        case 15:
+        case 15-skipStepsOne:
             nextButton.isEnabled = ketoHistoryVm.selectedIndex >= 0
-        case 16:
+        case 16-skipStepsOne:
             nextButton.isEnabled = flavorVM.selectedIndex >= 0
         default:
             nextButton.isEnabled = true
         }
+    }
+
+    func nextStepIndex(from index: Int) -> Int {
+        if index == 6 && shouldSkipImportantAndPaceSteps() {
+//            return 10
+        }
+        return index + 1
+    }
+
+    func previousStepIndex(from index: Int) -> Int {
+//        if index == 10 && shouldSkipImportantAndPaceSteps() {
+//            return 6
+//        }
+        return index - 1
+    }
+
+    func shouldSkipImportantAndPaceSteps() -> Bool {
+        let currentWeightText = QuestinonaireMsgModel.shared.weight
+        let targetWeightText = QuestinonaireMsgModel.shared.targetWeight
+        guard
+            let currentWeight = Double(currentWeightText),
+            let targetWeight = Double(targetWeightText)
+        else {
+            return false
+        }
+        let isSkip = abs(currentWeight - targetWeight) < 0.05
+        self.stepsArray = isSkip ? [5,5,5] : [5,6,6]
+        let firstCenterX = isSkip ? (SCREEN_WIDHT * 8.5) : (SCREEN_WIDHT * 10.5)
+        allergyVm.center = CGPoint(x: firstCenterX, y: SCREEN_HEIGHT*0.5)
+        barrierVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT, y: SCREEN_HEIGHT*0.5)
+        adviceVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*2, y: SCREEN_HEIGHT*0.5)
+        mealStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*3, y: SCREEN_HEIGHT*0.5)
+        eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4, y: SCREEN_HEIGHT*0.5)
+        ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5, y: SCREEN_HEIGHT*0.5)
+        flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6, y: SCREEN_HEIGHT*0.5)
+        
+        if isSkip{
+            importantVm.isHidden = true
+            paceVm.isHidden = true
+            scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*15, height: 0)
+        }else{
+            importantVm.isHidden = false
+            paceVm.isHidden = false
+            scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17, height: 0)
+        }
+        return isSkip
     }
 }
     
@@ -291,7 +348,6 @@ extension DietPlanCreateVC{
         scrollViewBase.addSubview(eatStyleVm)
         scrollViewBase.addSubview(ketoHistoryVm)
         scrollViewBase.addSubview(flavorVM)
-        
         
         DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
             self.birthdayVm.pickerView.selectRow(self.birthdayVm.defaultIndex, inComponent: 0, animated: true)
