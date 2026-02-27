@@ -10,6 +10,8 @@ class DietPlanCreateVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
     private var isGoalStepEnabled = false
+    
+    var skipStepsOne = 0
     var skipStepsNine = false//是否跳过第九步  此处是由第八步决定
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -192,6 +194,10 @@ extension DietPlanCreateVC{
             weightVm.getWeightValue()
             targetWeightVm.applyInitialValue()
         }
+        if currentIndex == 6{
+            //目标体重如果是维持，则跳过 第8步“达成目标对你有多重要？”   和  第9步“你希望多快达成目标？”
+            skipStepsOne = shouldSkipImportantAndPaceSteps() ? 2 : 0
+        }
         
         let targetOffsetX = SCREEN_WIDHT * CGFloat(nextIndex)
         let maxOffsetX = max(scrollViewBase.contentSize.width - scrollViewBase.bounds.width, 0)
@@ -237,9 +243,8 @@ extension DietPlanCreateVC{
 
     func syncNextButtonEnableStatus() {
         DLLog(message: "当前步骤：\(currentIndex)")
-        //目标体重如果是维持，则跳过 第8步“达成目标对你有多重要？”   和  第9步“你希望多快达成目标？”
-        let skipStepsOne = shouldSkipImportantAndPaceSteps() ? 2 : 0
         
+        let skipStepN = skipStepsNine ? 1 : 0
         
         switch currentIndex {
         case 0:
@@ -254,17 +259,17 @@ extension DietPlanCreateVC{
             nextButton.isEnabled = eventsVm.selectedIndex >= 0
         case 8-skipStepsOne:
             nextButton.isEnabled = importantVm.selectedIndex >= 0
-        case 10-skipStepsOne:
+        case 10-skipStepsOne-skipStepN:
             nextButton.isEnabled = allergyVm.selectedIndex >= 0
-        case 11-skipStepsOne:
+        case 11-skipStepsOne-skipStepN:
             nextButton.isEnabled = barrierVm.selectedIndex >= 0
-        case 13-skipStepsOne:
+        case 13-skipStepsOne-skipStepN:
             nextButton.isEnabled = mealStyleVm.selectedIndex >= 0
-        case 14-skipStepsOne:
+        case 14-skipStepsOne-skipStepN:
             nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
-        case 15-skipStepsOne:
+        case 15-skipStepsOne-skipStepN:
             nextButton.isEnabled = ketoHistoryVm.selectedIndex >= 0
-        case 16-skipStepsOne:
+        case 16-skipStepsOne-skipStepN:
             nextButton.isEnabled = flavorVM.selectedIndex >= 0
         default:
             nextButton.isEnabled = true
