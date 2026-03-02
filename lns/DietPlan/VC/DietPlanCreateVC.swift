@@ -56,8 +56,9 @@ class DietPlanCreateVC: WHBaseViewVC {
             self?.isGoalStepEnabled = isEnabled
             self?.syncNextButtonEnableStatus()
         }
-        vm.selectedGoalsBlock = { selectedGoals in
+        vm.selectedGoalsBlock = { [weak self] selectedGoals in
             QuestinonaireMsgModel.shared.goal = selectedGoals.joined(separator: ",")
+            self?.allergyVm.applyGoalFilter()
         }
         return vm
     }()

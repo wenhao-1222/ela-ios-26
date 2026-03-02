@@ -11,9 +11,8 @@ class DietPlanCreateAllergyVM: UIView {
     var selectedIndexes: Set<Int> = []
     var selectedBlock: (() -> ())?
 
-    lazy var dataArray: [String] = {
-        return ["无", "花生", "坚果", "乳制品", "豆制品", "海鲜", "猪肉"]
-    }()
+    private let fullDataArray: [String] = ["无", "花生", "坚果", "乳制品", "豆制品", "海鲜", "猪肉"]
+    var dataArray: [String] = ["无", "花生", "坚果", "乳制品", "豆制品", "海鲜", "猪肉"]
 
     private var itemViews: [DietPlanCreateItemVM] = []
 
@@ -111,7 +110,7 @@ extension DietPlanCreateAllergyVM {
         bottomGradientView.layer.addSublayer(bottomGradientLayer)
 
         setConstraint()
-        refreshListUI()
+        applyGoalFilter()
     }
 
     func setConstraint() {
@@ -171,6 +170,40 @@ extension DietPlanCreateAllergyVM {
             }
             itemViews.append(itemVm)
         }
+    }
+
+    func applyGoalFilter() {
+        let oldDataArray = dataArray
+        let oldSelectedTitles = selectedIndexes.compactMap { index -> String? in
+            guard index >= 0, index < oldDataArray.count else { return nil }
+            return oldDataArray[index]
+        }
+
+        let shouldExcludePurine = QuestinonaireMsgModel.shared.goal.contains("降低尿酸")
+        if shouldExcludePurine {
+            dataArray = fullDataArray.filter { $0 != "豆制品" && $0 != "海鲜" }
+        } else {
+            dataArray = fullDataArray
+        }
+
+        var newSelectedIndexes: Set<Int> = []
+        for title in oldSelectedTitles {
+            if let newIndex = dataArray.firstIndex(of: title) {
+                newSelectedIndexes.insert(newIndex)
+            }
+        }
+        selectedIndexes = newSelectedIndexes
+        selectedIndex = selectedIndexes.sorted().first ?? -1
+
+        if selectedIndexes.isEmpty {
+            QuestinonaireMsgModel.shared.foodAllergy = ""
+        } else {
+            let selectedTitles = selectedIndexes.sorted().map { dataArray[$0] }
+            QuestinonaireMsgModel.shared.foodAllergy = selectedTitles.joined(separator: ",")
+        }
+
+        refreshListUI()
+        selectedBlock?()
     }
 
     func selectItem(index: Int) {
