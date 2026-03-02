@@ -345,11 +345,14 @@ class HealthKitManager: NSObject, ObservableObject {
         dateFormatter.timeZone = TimeZone.current//TimeZone(secondsFromGMT: 0)
         
         let deleteUUidsArray = UserDefaults.getSportUUID()
+        let uploadedUUidsArray = UserDefaults.getUploadedSportUUID()
         DLLog(message: "dealRunningData (results):\(results)")
         for i in 0..<(results?.count ?? 0){
             let result = results?[i] as? HKWorkout
             
-            if deleteUUidsArray.contains(result?.uuid.uuidString ?? "uuids") || result?.workoutActivityType != workType{
+            if deleteUUidsArray.contains(result?.uuid.uuidString ?? "uuids") ||
+                uploadedUUidsArray.contains(result?.uuid.uuidString ?? "uuids") ||
+                result?.workoutActivityType != workType{
                 continue
             }
             
@@ -373,7 +376,11 @@ class HealthKitManager: NSObject, ObservableObject {
                 prancerciseWorkout.start = result?.startDate ?? Date()
                 prancerciseWorkout.end = result?.endDate ?? Date()
                 prancerciseWorkout.calories = WHUtils.convertStringToString("\(result?.totalEnergyBurned?.doubleValue(for: HKUnit(from: "kcal")) ?? 0)") ?? "0"
-                self.sendAddSportRequest(prancerciseWorkout: prancerciseWorkout,sdate: time)
+                self.sendAddSportRequest(prancerciseWorkout: prancerciseWorkout, sdate: time) { success in
+                    if success {
+                        UserDefaults.saveUploadedSportUUID(uuid: prancerciseWorkout.id)
+                    }
+                }
             }
         }
     }
@@ -422,7 +429,7 @@ class HealthKitManager: NSObject, ObservableObject {
             DLLog(message: "saveRunningData(delete):\(success)      -    \(error)")
         }
     }
-    func sendAddSportRequest(prancerciseWorkout:PrancerciseWorkout,sdate:String) {
+    func sendAddSportRequest(prancerciseWorkout:PrancerciseWorkout,sdate:String,completion:((Bool)->())? = nil) {
 //        let sportCaloriesInTarget = UserInfoModel.shared.statSportDataFromHealth == "2" ? "1": "0"
         let sportCaloriesInTarget = UserInfoModel.shared.statSportDataToTarget// == "1" ? "1": "0"
 
@@ -438,8 +445,10 @@ class HealthKitManager: NSObject, ObservableObject {
         DLLog(message: "sendAddSportRequest By HealthKit APP (param) :\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_sport_add, parameters: param as [String : AnyObject]) { responseObject in
             DLLog(message: "sendAddSportRequest By HealthKit APP :\(responseObject)")
+            let code = responseObject["code"] as? Int ?? -1
+            let message = responseObject["message"] as? String ?? ""
+            completion?(code == 200 || message.contains("存在"))
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
         }
     }
 }
-

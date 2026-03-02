@@ -23,6 +23,7 @@ public extension UserDefaults {
         case health_water_Authori //是否请求过健康APP 饮水的权限
         
         case delete_sport_uuids  //APP内删除过的体能训练数据uuid
+        case uploaded_sport_uuids //APP已上传过的健康APP体能训练uuid
         case delete_weight_date  //APP内删除过的体重数据sdate
         case mealsNumber
         case isShowSurveryButton
@@ -321,6 +322,27 @@ extension UserDefaults {
         
         return NSArray()
     }
+    static public func saveUploadedSportUUID(uuid:String) {
+        if uuid.isEmpty {
+            return
+        }
+        let uuids = self.getString(forKey: .uploaded_sport_uuids) ?? ""
+        let uuidsArray = NSMutableArray(array: WHUtils.getArrayFromJSONString(jsonString: uuids))
+        if uuidsArray.contains(uuid) == false {
+            uuidsArray.add(uuid)
+            self.set(value: WHUtils.getJSONStringFromArray(array: uuidsArray), forKey: .uploaded_sport_uuids)
+        }
+    }
+    static public func getUploadedSportUUID() -> NSArray{
+        let uuids = self.getString(forKey: .uploaded_sport_uuids) ?? ""
+        let uuidsArray = WHUtils.getArrayFromJSONString(jsonString: uuids)
+        
+        if uuidsArray.count > 0 {
+            return uuidsArray as NSArray
+        }
+        
+        return NSArray()
+    }
     static public func deleteWeightDate(sdate:String) {
         let dates = self.getString(forKey: .delete_weight_date) ?? ""
         let sdatesArray = NSMutableArray(array: WHUtils.getArrayFromJSONString(jsonString: dates))
@@ -471,4 +493,3 @@ extension UserDefaults {
     }
     
 }
-
