@@ -153,7 +153,7 @@ extension DietPlanCreateTargetWeightVM {
     func applyInitialValue() {
         currentWeightValue = parseWeight(QuestinonaireMsgModel.shared.weight) ?? 60.0
         currentWeightValue = clamp(roundToTenth(currentWeightValue))
-        let targetFromModel = parseWeight(QuestinonaireMsgModel.shared.weight)
+        let targetFromModel = parseWeight(QuestinonaireMsgModel.shared.targetWeight)
         let initialTarget = targetFromModel ?? currentWeightValue
         currentTargetWeight = clamp(roundToTenth(initialTarget))
 
@@ -161,6 +161,7 @@ extension DietPlanCreateTargetWeightVM {
         updateTargetWeightText(value: currentTargetWeight)
         updateGoalTips()
         QuestinonaireMsgModel.shared.targetWeight = formatOneDecimal(currentTargetWeight)
+        NotificationCenter.default.post(name: .dietPlanPaceInputDidChange, object: nil)
 
         DispatchQueue.main.async {
             self.rulerView.setValue(self.currentTargetWeight, animated: false)
@@ -182,6 +183,7 @@ extension DietPlanCreateTargetWeightVM {
         updateTargetWeightText(value: currentTargetWeight)
         updateGoalTips()
         QuestinonaireMsgModel.shared.targetWeight = formatOneDecimal(currentTargetWeight)
+        NotificationCenter.default.post(name: .dietPlanPaceInputDidChange, object: nil)
     }
 
     func updateTargetWeightText(value: Double) {

@@ -5,6 +5,10 @@
 //  Created by Codex on 2026/2/26.
 //
 
+extension Notification.Name {
+    static let dietPlanPaceInputDidChange = Notification.Name("dietPlanPaceInputDidChange")
+}
+
 class DietPlanCreatePaceVM: UIView {
 
     enum Level: Int, CaseIterable {
@@ -39,7 +43,7 @@ class DietPlanCreatePaceVM: UIView {
             case .slight:
                 return 0.25
             case .steady:
-                return 0.45
+                return 0.50
             case .major:
                 return 0.70
             }
@@ -73,16 +77,19 @@ class DietPlanCreatePaceVM: UIView {
         let value: Double
     }
     
-    struct LevelRenderData {
-        let endDisplay: Double
-        let points: [ChartPoint]
-    }
-
-    private let pointCount: Int = 60
-    private let defaultChartDurationDays: Int = 14
+    private let pointCount: Int = 61
+    private let minHorizonWeeks: Double = 4.0
+    private let maxHorizonWeeks: Double = 20.0
+    private let minRateKgPerWeek: Double = 0.25
+    private let maxRateKgPerWeek: Double = 0.70
+    private let defaultCurrentWeight: Double = 70.0
+    private let defaultTargetWeight: Double = 65.0
 
     private var currentLevel: Level = .steady
-    private var levelDataMap: [Level: LevelRenderData] = [:]
+    private var sliderRawValue: Double = 1.0
+    private var currentRateKgPerWeek: Double = 0.50
+    private var currentEndWeight: Double = 0
+    private var targetWeight: Double = 0
     private var chartPoints: [ChartPoint] = []
     private var startWeight: Double = 0
     private var displayWeeks: Double = 20
@@ -96,11 +103,16 @@ class DietPlanCreatePaceVM: UIView {
         clipsToBounds = true
 
         initUI()
+        observePaceInputs()
         applyLevel(level: .steady, animated: false)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     override func layoutSubviews() {
@@ -303,82 +315,132 @@ extension DietPlanCreatePaceVM {
 }
 
 private extension DietPlanCreatePaceVM {
+    func observePaceInputs() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handlePaceInputChanged),
+            name: .dietPlanPaceInputDidChange,
+            object: nil
+        )
+    }
+
+    @objc func handlePaceInputChanged() {
+        render(level: currentLevel, rateKgPerWeek: currentRateKgPerWeek, animated: false, persistLevel: false)
+    }
+
     @objc func sliderValueChanged() {
-        let snapped = Int(round(sliderView.value))
-        guard let newLevel = Level(rawValue: max(0, min(2, snapped))) else {
+        sliderRawValue = min(max(Double(sliderView.value), 0), 2)
+        currentRateKgPerWeek = mapRawValueToRate(sliderRawValue)
+        let previewLevelValue = max(0, min(2, Int(round(sliderRawValue))))
+        guard let previewLevel = Level(rawValue: previewLevelValue) else {
             return
         }
-        sliderView.setValue(Float(newLevel.rawValue), animated: false)
-        if newLevel != currentLevel {
-            applyLevel(level: newLevel, animated: true)
-        }
+        render(level: previewLevel, rateKgPerWeek: currentRateKgPerWeek, animated: false, persistLevel: false)
     }
 
     @objc func sliderTouchEnd() {
-        sliderView.setValue(Float(currentLevel.rawValue), animated: true)
+        let snapRaw = min(max(round(sliderRawValue), 0), 2)
+        sliderRawValue = snapRaw
+        currentRateKgPerWeek = mapRawValueToRate(snapRaw)
+        sliderView.setValue(Float(snapRaw), animated: true)
+        guard let level = Level(rawValue: Int(snapRaw)) else {
+            return
+        }
+        applyLevel(level: level, animated: true)
     }
 
     func applyLevel(level: Level, animated: Bool) {
         currentLevel = level
-        QuestinonaireMsgModel.shared.paceLevel = level.modelValue
+        sliderRawValue = Double(level.rawValue)
+        sliderView.setValue(Float(sliderRawValue), animated: false)
+        currentRateKgPerWeek = mapRawValueToRate(sliderRawValue)
+        render(level: level, rateKgPerWeek: currentRateKgPerWeek, animated: animated, persistLevel: true)
+    }
 
+    func render(level: Level, rateKgPerWeek: Double, animated: Bool, persistLevel: Bool) {
+        if persistLevel {
+            QuestinonaireMsgModel.shared.paceLevel = level.modelValue
+        }
         levelLabel.text = level.title
         descLabel.text = level.detail
         chartLineLayer.strokeColor = level.lineColor.cgColor
 
-        recomputeAllLevelData()
-        chartPoints = levelDataMap[level]?.points ?? []
-        let endDisplay = levelDataMap[level]?.endDisplay ?? startWeight
+        recomputeSpec(rateKgPerWeek: rateKgPerWeek)
 
         startWeightLabel.text = "\(formatWeight(startWeight)) 公斤"
-        endWeightLabel.text = "\(formatWeight(endDisplay)) 公斤"
+        endWeightLabel.text = "\(formatWeight(endLabelDisplayWeight())) 公斤"
         updateTickLabels()
         redrawChartPath(animated: animated)
     }
 
-    func recomputeAllLevelData() {
+    func recomputeSpec(rateKgPerWeek: Double) {
         let w0 = resolveCurrentWeight()
+        let wt = resolveTargetWeight()
         startWeight = w0
-        let goalDirection = resolveGoalDirection(currentWeight: w0)
-        let weeks = resolveChartWindowWeeks()
-        displayWeeks = weeks
+        targetWeight = wt
+        let horizonWeeks = resolveHorizonWeeks(currentWeight: w0, targetWeight: wt)
+        displayWeeks = horizonWeeks
 
-        var tmpMap: [Level: LevelRenderData] = [:]
-        var endDisplays: [Double] = [w0]
-
-        for level in Level.allCases {
-            let endDisplay = resolveTargetWeight(startWeight: w0, level: level, direction: goalDirection, weeks: displayWeeks)
-            let points = buildPoints(startWeight: w0, endWeight: endDisplay, weeks: displayWeeks)
-
-            tmpMap[level] = LevelRenderData(
-                endDisplay: endDisplay,
-                points: points
+        let allEndDisplays = Level.allCases.map { level in
+            resolveEndDisplayWeight(
+                currentWeight: w0,
+                targetWeight: wt,
+                horizonWeeks: horizonWeeks,
+                rateKgPerWeek: level.rateAbs
             )
-            endDisplays.append(endDisplay)
         }
 
-        let baseMin = endDisplays.min() ?? w0
-        let baseMax = endDisplays.max() ?? w0
-        let pad = max(0.5, (baseMax - baseMin) * 0.15)
+        let baseMin = min(w0, allEndDisplays.min() ?? w0)
+        let baseMax = max(w0, allEndDisplays.max() ?? w0)
+        let pad = max(1.0, (baseMax - baseMin) * 0.15)
         yMinValue = baseMin - pad
         yMaxValue = baseMax + pad
-        levelDataMap = tmpMap
+        chartPoints = buildPoints(
+            currentWeight: w0,
+            targetWeight: wt,
+            horizonWeeks: horizonWeeks,
+            rateKgPerWeek: rateKgPerWeek
+        )
+        currentEndWeight = chartPoints.last?.value ?? w0
     }
     
-    func buildPoints(startWeight: Double,
-                     endWeight: Double,
-                     weeks: Double) -> [ChartPoint] {
+    func buildPoints(currentWeight: Double,
+                     targetWeight: Double,
+                     horizonWeeks: Double,
+                     rateKgPerWeek: Double) -> [ChartPoint] {
+        let delta = targetWeight - currentWeight
+        let absDelta = abs(delta)
         var points: [ChartPoint] = []
         points.reserveCapacity(pointCount)
-        
+
+        if absDelta < 0.001 {
+            for i in 0..<pointCount {
+                let t = Double(i) * horizonWeeks / Double(max(pointCount - 1, 1))
+                points.append(ChartPoint(t: t, value: currentWeight))
+            }
+            return points
+        }
+
+        let direction = delta >= 0 ? 1.0 : -1.0
+        let tGoal = absDelta / max(rateKgPerWeek, 0.0001)
+
         for i in 0..<pointCount {
-            let t = Double(i) * weeks / Double(max(pointCount - 1, 1))
-            let u = max(0, min(1, t / max(weeks, 0.0001)))
-            let e = smoothstep(u)
-            let value = startWeight + (endWeight - startWeight) * e
+            let t = Double(i) * horizonWeeks / Double(max(pointCount - 1, 1))
+            let value: Double
+            if tGoal <= horizonWeeks, t >= tGoal {
+                value = targetWeight
+            } else {
+                let segmentEnd = tGoal <= horizonWeeks ? tGoal : horizonWeeks
+                let u = segmentEnd <= 0.0001 ? 1.0 : min(max(t / segmentEnd, 0), 1)
+                let eased = smoothstep(u)
+                let segmentTarget: Double = tGoal <= horizonWeeks
+                    ? targetWeight
+                    : currentWeight + direction * rateKgPerWeek * horizonWeeks
+                value = currentWeight + (segmentTarget - currentWeight) * eased
+            }
             points.append(ChartPoint(t: t, value: value))
         }
-        
+
         return points
     }
 
@@ -423,14 +485,14 @@ private extension DietPlanCreatePaceVM {
     }
 
     func updateTickLabels() {
-        let (startDate, endDate) = normalizedChartDateRange()
+        let (startDate, endDate) = chartDateRange()
         let midDate = Date(timeIntervalSince1970: (startDate.timeIntervalSince1970 + endDate.timeIntervalSince1970) * 0.5)
-        let windowWeeks = max(endDate.timeIntervalSince(startDate) / (7 * 24 * 3600), 0.0001)
+        let windowWeeks = max(displayWeeks, 0)
 
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "zh_CN")
 
-        if windowWeeks <= 6 {
+        if windowWeeks <= 8 {
             formatter.dateFormat = "M月d日"
         } else {
             formatter.dateFormat = "M月"
@@ -440,47 +502,69 @@ private extension DietPlanCreatePaceVM {
         tickMidLabel.text = formatter.string(from: midDate)
         tickRightLabel.text = formatter.string(from: endDate)
     }
-    
-    func resolveChartWindowWeeks() -> Double {
-        return Double(resolveChartDurationDays()) / 7.0
-    }
-    
-    func normalizedChartDateRange() -> (Date, Date) {
-        let start = QuestinonaireMsgModel.shared.chartStartDate
-        let days = resolveChartDurationDays()
-        let end = Calendar.current.date(byAdding: .day, value: days, to: start) ?? start.addingTimeInterval(Double(days) * 24 * 3600)
+
+    func chartDateRange() -> (Date, Date) {
+        let start = Calendar.current.startOfDay(for: Date())
+        let days = Int(round(displayWeeks * 7))
+        let end = Calendar.current.date(byAdding: .day, value: days, to: start) ?? start
         QuestinonaireMsgModel.shared.chartStartDate = start
         QuestinonaireMsgModel.shared.chartEndDate = end
         return (start, end)
     }
 
     func resolveCurrentWeight() -> Double {
-        let weightString = QuestinonaireMsgModel.shared.weight//.trimmingCharacters(in: .whitespacesAndNewlines)
-        let parsed = Double(weightString.replacingOccurrences(of: ",", with: "."))
-        return max(parsed ?? 85.0, 30.0)
+        let parsed = parseWeight(QuestinonaireMsgModel.shared.weight)
+        return max(parsed ?? defaultCurrentWeight, 30.0)
     }
 
-    func resolveTargetWeight(startWeight: Double, level: Level, direction: Double, weeks: Double) -> Double {
-        return max(startWeight + direction * level.rateAbs * weeks, 30.0)
+    func resolveTargetWeight() -> Double {
+        let parsed = parseWeight(QuestinonaireMsgModel.shared.targetWeight)
+        return max(parsed ?? defaultTargetWeight, 30.0)
     }
 
-    func resolveGoalDirection(currentWeight: Double) -> Double {
-        let goalString = QuestinonaireMsgModel.shared.goal
-        if goalString.contains("减脂") {
-            return -1.0
+    func resolveHorizonWeeks(currentWeight: Double, targetWeight: Double) -> Double {
+        let absDelta = abs(targetWeight - currentWeight)
+        if absDelta < 0.001 {
+            return minHorizonWeeks
         }
-        if goalString.contains("增肌") {
-            return 1.0
-        }
-        if goalString.contains("保持") {
-            return 0.0
-        }
-        return currentWeight >= 80 ? -1.0 : 1.0
+        let weeks = absDelta / minRateKgPerWeek
+        return min(max(weeks, minHorizonWeeks), maxHorizonWeeks)
     }
 
-    func resolveChartDurationDays() -> Int {
-        // 预留自定义时长扩展，当前固定 14 天
-        return defaultChartDurationDays
+    func resolveEndDisplayWeight(currentWeight: Double,
+                                 targetWeight: Double,
+                                 horizonWeeks: Double,
+                                 rateKgPerWeek: Double) -> Double {
+        let delta = targetWeight - currentWeight
+        let absDelta = abs(delta)
+        if absDelta < 0.001 {
+            return currentWeight
+        }
+
+        let direction = delta >= 0 ? 1.0 : -1.0
+        let tGoal = absDelta / max(rateKgPerWeek, 0.0001)
+        if tGoal <= horizonWeeks {
+            return targetWeight
+        }
+        return currentWeight + direction * rateKgPerWeek * horizonWeeks
+    }
+
+    func mapRawValueToRate(_ rawValue: Double) -> Double {
+        let t = min(max(rawValue / 2.0, 0), 1)
+        return minRateKgPerWeek + (maxRateKgPerWeek - minRateKgPerWeek) * t
+    }
+
+    func endLabelDisplayWeight() -> Double {
+        if abs(currentEndWeight - targetWeight) < 0.001 {
+            return targetWeight
+        }
+        return currentEndWeight.rounded()
+    }
+
+    func parseWeight(_ text: String) -> Double? {
+        let clean = text.replacingOccurrences(of: ",", with: ".").trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !clean.isEmpty else { return nil }
+        return Double(clean)
     }
 
     func smoothstep(_ u: Double) -> Double {

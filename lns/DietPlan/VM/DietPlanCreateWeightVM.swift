@@ -77,6 +77,7 @@ extension DietPlanCreateWeightVM{
         let index = pickerView.selectedRow(inComponent: 0)
         let indexDecimal = pickerView.selectedRow(inComponent: 1)
         QuestinonaireMsgModel.shared.weight = "\(numberIntArray[index]as? Int ?? 0).\(numberDemicalArray[indexDecimal]as? Int ?? 0)"
+        NotificationCenter.default.post(name: .dietPlanPaceInputDidChange, object: nil)
         DLLog(message: "体重：\(QuestinonaireMsgModel.shared.weight)")
     }
 }
@@ -160,6 +161,11 @@ extension DietPlanCreateWeightVM:UIPickerViewDelegate,UIPickerViewDataSource{
             return lab
         }
     }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        getWeightValue()
+    }
+
     func setUpPickerStyleRowStyle(row:Int,component:Int) {
         DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
             let label = self.pickerView.view(forRow: row, forComponent: component) as? UILabel

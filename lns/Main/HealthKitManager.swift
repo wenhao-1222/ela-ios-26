@@ -353,6 +353,8 @@ class HealthKitManager: NSObject, ObservableObject {
             if deleteUUidsArray.contains(result?.uuid.uuidString ?? "uuids") ||
                 uploadedUUidsArray.contains(result?.uuid.uuidString ?? "uuids") ||
                 result?.workoutActivityType != workType{
+                DLLog(message: "体能训练数据  已上传过 : \(result)")
+                
                 continue
             }
             
