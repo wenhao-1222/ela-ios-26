@@ -183,14 +183,14 @@ class DietPlanCreatePaceVM: UIView {
     lazy var startWeightLabel: UILabel = {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 20, weight: .regular)
+        lab.font = .systemFont(ofSize: 12, weight: .regular)
         return lab
     }()
 
     lazy var endWeightLabel: UILabel = {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 20, weight: .regular)
+        lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.textAlignment = .right
         return lab
     }()
@@ -204,6 +204,8 @@ class DietPlanCreatePaceVM: UIView {
     lazy var tickLeftLabel: UILabel = makeTickLabel()
     lazy var tickMidLabel: UILabel = makeTickLabel()
     lazy var tickRightLabel: UILabel = makeTickLabel()
+    private var startWeightTopOffset: CGFloat = 0
+    private var endWeightTopOffset: CGFloat = 0
 
     lazy var chartLineLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
@@ -283,12 +285,12 @@ extension DietPlanCreatePaceVM {
 
         startWeightLabel.snp.makeConstraints { make in
             make.left.equalTo(chartPlotView)
-            make.bottom.equalTo(chartPlotView.snp.bottom).offset(kFitWidth(6))
+            make.top.equalTo(chartWrapView.snp.top).offset(kFitWidth(140))
         }
 
         endWeightLabel.snp.makeConstraints { make in
             make.right.equalTo(chartPlotView)
-            make.bottom.equalTo(chartPlotView.snp.top).offset(kFitWidth(3))
+            make.top.equalTo(chartWrapView.snp.top).offset(kFitWidth(24))
         }
 
         xAxisLine.snp.makeConstraints { make in
@@ -470,6 +472,7 @@ private extension DietPlanCreatePaceVM {
         }
 
         chartLineLayer.path = path.cgPath
+        updateWeightLabelPositions(yRange: yRange, plotHeight: height)
 
         guard animated else {
             return
@@ -482,6 +485,46 @@ private extension DietPlanCreatePaceVM {
         ani.toValue = 1
         ani.timingFunction = CAMediaTimingFunction(name: .easeOut)
         chartLineLayer.add(ani, forKey: "pace_path")
+    }
+
+    func updateWeightLabelPositions(yRange: Double, plotHeight: CGFloat) {
+        guard let startPoint = chartPoints.first, let endPoint = chartPoints.last else {
+            return
+        }
+        let startRatio = (startPoint.value - yMinValue) / yRange
+        let endRatio = (endPoint.value - yMinValue) / yRange
+        let startLineYInPlot = plotHeight - CGFloat(startRatio) * plotHeight
+        let endLineYInPlot = plotHeight - CGFloat(endRatio) * plotHeight
+        let startLineY = chartPlotView.frame.minY + startLineYInPlot
+        let endLineY = chartPlotView.frame.minY + endLineYInPlot
+
+        let labelGap = kFitWidth(4)
+        let startHeight = startWeightLabel.intrinsicContentSize.height
+        let endHeight = endWeightLabel.intrinsicContentSize.height
+
+        // start 标签始终在折线下方，x 固定在左侧
+        let startTop = startLineY + labelGap
+
+        // end 标签：增肌在上方，否则在下方，x 固定在右侧
+        let isGain = currentEndWeight > startWeight
+        let endTop = isGain
+            ? (endLineY - endHeight - labelGap)
+            : (endLineY + labelGap)
+
+        let minTop = chartPlotView.frame.minY - endHeight * 0.2
+        let maxTop = chartWrapView.bounds.height - max(startHeight, endHeight) - kFitWidth(2)
+        let clampedStartTop = min(max(startTop, minTop), maxTop)
+        let clampedEndTop = min(max(endTop, minTop), maxTop)
+
+        startWeightTopOffset = clampedStartTop
+        endWeightTopOffset = clampedEndTop
+        startWeightLabel.snp.updateConstraints { make in
+            make.top.equalTo(chartWrapView.snp.top).offset(startWeightTopOffset)
+        }
+        endWeightLabel.snp.updateConstraints { make in
+            make.top.equalTo(chartWrapView.snp.top).offset(endWeightTopOffset)
+        }
+        chartWrapView.layoutIfNeeded()
     }
 
     func updateTickLabels() {
