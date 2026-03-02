@@ -187,7 +187,7 @@ extension DietPlanCreateAdviceVM {
         }
 
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(18))
+            make.top.equalTo(subTitleLabel.snp.bottom)//.offset(kFitWidth(18))
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
         }
@@ -205,7 +205,9 @@ extension DietPlanCreateAdviceVM {
         }
 
         contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+//            make.edges.equalToSuperview()
+            make.top.equalTo(kFitWidth(28))
+            make.bottom.equalTo(kFitWidth(-28))
             make.width.equalToSuperview()
         }
 

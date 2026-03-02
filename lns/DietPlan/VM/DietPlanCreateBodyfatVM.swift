@@ -157,7 +157,7 @@ extension DietPlanCreateBodyfatVM {
         }
 
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(tipsButton.snp.bottom).offset(kFitWidth(24))
+            make.top.equalTo(tipsButton.snp.bottom)//.offset(kFitWidth(24))
             make.left.right.equalToSuperview()
 //            make.bottom.equalToSuperview().offset(-WHUtils().getBottomSafeAreaHeight())
             make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
@@ -168,8 +168,10 @@ extension DietPlanCreateBodyfatVM {
             make.height.equalTo(kFitWidth(35))
         }
         bottomGradientView.snp.makeConstraints { make in
-            make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(scrollView.snp.bottom).offset(kFitWidth(-56))
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(scrollView)
+            make.height.equalTo(kFitWidth(35))
+//            make.top.equalTo(scrollView.snp.bottom).offset(kFitWidth(-35))
         }
     }
 
@@ -188,7 +190,7 @@ extension DietPlanCreateBodyfatVM {
         for i in 0..<array.count {
             let row = i / colNum
             let col = i % colNum
-            let itemVm = QuestionnaireBodyFatItemVM(frame: CGRect(x: itemWidth * CGFloat(col), y: QuestionnaireBodyFatItemVM().selfHeight * CGFloat(row), width: 0, height: 0))
+            let itemVm = QuestionnaireBodyFatItemVM(frame: CGRect(x: itemWidth * CGFloat(col), y: QuestionnaireBodyFatItemVM().selfHeight * CGFloat(row)+kFitWidth(35), width: 0, height: 0))
             scrollView.addSubview(itemVm)
 
             let dict = array[i]
@@ -211,7 +213,7 @@ extension DietPlanCreateBodyfatVM {
             offsetY = itemVm.frame.maxY
         }
 
-        scrollView.contentSize = CGSize(width: 0, height: offsetY + kFitWidth(12))
+        scrollView.contentSize = CGSize(width: 0, height: offsetY + kFitWidth(35))
         scrollView.setContentOffset(.zero, animated: false)
     }
 

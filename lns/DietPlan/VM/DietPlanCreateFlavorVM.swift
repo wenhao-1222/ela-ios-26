@@ -78,13 +78,15 @@ extension DietPlanCreateFlavorVM {
         }
 
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(28))
+            make.top.equalTo(titleLabel.snp.bottom)//.offset(kFitWidth(28))
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
         }
 
         contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+//            make.edges.equalToSuperview()
+            make.top.equalTo(kFitWidth(28))
+            make.bottom.equalTo(kFitWidth(-28))
             make.width.equalToSuperview()
         }
 

@@ -48,6 +48,7 @@ class DietPlanCreateImportantVM: UIView {
         vi.backgroundColor = .clear
         vi.separatorStyle = .none
         vi.backgroundColor = .clear
+        vi.bounces = false
         vi.showsVerticalScrollIndicator = false
         vi.contentInsetAdjustmentBehavior = .never
         vi.register(QuestionnaireEventsTableViewCell.classForCoder(), forCellReuseIdentifier: "QuestionnaireEventsTableViewCell")

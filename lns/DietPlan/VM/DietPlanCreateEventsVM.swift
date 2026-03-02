@@ -119,7 +119,7 @@ extension DietPlanCreateEventsVM {
         }
 
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(24))
+            make.top.equalTo(titleLabel.snp.bottom)//.offset(kFitWidth(24))
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
         }
@@ -141,14 +141,14 @@ extension DietPlanCreateEventsVM: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataArray.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "QuestionnaireEventsTableViewCell", for: indexPath) as? QuestionnaireEventsTableViewCell
         let dict = dataArray[indexPath.row] as NSDictionary
         cell?.updateUI(dict: dict, isSelected: selectedIndex == indexPath.row)
         return cell ?? QuestionnaireEventsTableViewCell()
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if selectedIndex == indexPath.row {
             return
@@ -161,9 +161,25 @@ extension DietPlanCreateEventsVM: UITableViewDataSource, UITableViewDelegate {
         tableView.reloadData()
         QuestinonaireMsgModel.shared.events = "\(indexPath.row + 1)"
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return kFitWidth(82)
     }
-
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(35)))
+        vi.backgroundColor = .clear
+        return vi
+    }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return kFitWidth(35)
+    }
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(35)))
+        vi.backgroundColor = .clear
+        return vi
+    }
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return kFitWidth(35)
+    }
 }
