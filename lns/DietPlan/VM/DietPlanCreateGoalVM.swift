@@ -12,6 +12,7 @@ class DietPlanCreateGoalVM: UIView {
     var selectedIndexes: Set<Int> = []
     var selectedGoalBlock:((String)->())?
     var selectedGoalsBlock:(([String])->())?
+    var selectedUserGoalsBlock:(([Int])->())?
     var nextButtonEnableChangeBlock:((Bool)->())?
     
     override init(frame:CGRect){
@@ -216,8 +217,28 @@ extension DietPlanCreateGoalVM{
         }
 
         let selectedGoals = selectedIndexes.sorted().map({ dataArray[$0] })
+        let userGoal = buildUserGoal()
         nextButtonEnableChangeBlock?(!selectedGoals.isEmpty)
         selectedGoalBlock?(dataArray[index])
         selectedGoalsBlock?(selectedGoals)
+        selectedUserGoalsBlock?(userGoal)
+    }
+
+    // 后台 userGoal 枚举映射：
+    // 1减脂 2增肌 3保持体型 4提升力量 5提高运动表现 6提升整体健康
+    // 7改善血脂 8降低尿酸 9养成规律饮食习惯 10节省时间 11节省外食开销
+    func buildUserGoal() -> [Int] {
+        return selectedIndexes.sorted().compactMap { mapUserGoalValue(fromSelectedIndex: $0) }
+    }
+
+    private func mapUserGoalValue(fromSelectedIndex index: Int) -> Int? {
+        guard index >= 0 && index < dataArray.count else {
+            return nil
+        }
+        switch index {
+        case 0: return 2 // 增肌
+        case 1: return 1 // 减脂
+        default: return index + 1
+        }
     }
 }

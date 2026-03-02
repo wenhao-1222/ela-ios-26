@@ -13,6 +13,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     
     var skipStepsOne = 0
     var skipStepsNine = false//是否跳过第九步  此处是由第八步决定
+    var skipKetoHistory = false//是否跳过生酮历史（由饮食风格决定）
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.fd_interactivePopDisabled = true
@@ -145,6 +146,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     lazy var eatStyleVm: DietPlanCreateEatStyleVM = {
         let vm = DietPlanCreateEatStyleVM.init(frame: CGRect.init(x: SCREEN_WIDHT*14, y: 0, width: 0, height: 0))
         vm.selectedBlock = {[weak self] in
+            self?.updateKetoHistorySkipIfNeeded()
             self?.syncNextButtonEnableStatus()
         }
         return vm
@@ -194,6 +196,7 @@ extension DietPlanCreateVC{
         if nextIndex == 5 {
             weightVm.getWeightValue()
             targetWeightVm.applyInitialValue()
+            birthdayVm.getBirthDayData()
         }
         if currentIndex == 6{
             //目标体重如果是维持，则跳过 第8步“达成目标对你有多重要？”   和  第9步“你希望多快达成目标？”
@@ -206,6 +209,7 @@ extension DietPlanCreateVC{
         currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
         scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: true)
         updateNextButtonForCurrentStep(animated: true)
+        
     }
 
     func moveFromSexToNextStep() {
@@ -246,6 +250,8 @@ extension DietPlanCreateVC{
         DLLog(message: "当前步骤：\(currentIndex)")
         
         let skipStepN = skipStepsNine ? 1 : 0
+        let ketoIndex = 15-skipStepsOne-skipStepN
+        let flavorIndex = 16-skipStepsOne-skipStepN-(skipKetoHistory ? 1 : 0)
         
         switch currentIndex {
         case 0:
@@ -268,9 +274,9 @@ extension DietPlanCreateVC{
             nextButton.isEnabled = mealStyleVm.selectedIndex >= 0
         case 14-skipStepsOne-skipStepN:
             nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
-        case 15-skipStepsOne-skipStepN:
-            nextButton.isEnabled = ketoHistoryVm.selectedIndex >= 0
-        case 16-skipStepsOne-skipStepN:
+        case ketoIndex:
+            nextButton.isEnabled = skipKetoHistory ? (flavorVM.selectedIndex >= 0) : (ketoHistoryVm.selectedIndex >= 0)
+        case flavorIndex:
             nextButton.isEnabled = flavorVM.selectedIndex >= 0
         default:
             nextButton.isEnabled = true
@@ -303,6 +309,7 @@ extension DietPlanCreateVC{
                     eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4, y: SCREEN_HEIGHT*0.5)
                     ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5, y: SCREEN_HEIGHT*0.5)
                     flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6, y: SCREEN_HEIGHT*0.5)
+                    updateKetoHistorySkipIfNeeded()
                 }else{
                     if skipStepsNine{//如果之前选择的是 4
                         paceVm.isHidden = false
@@ -316,6 +323,7 @@ extension DietPlanCreateVC{
                         eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4, y: SCREEN_HEIGHT*0.5)
                         ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5, y: SCREEN_HEIGHT*0.5)
                         flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6, y: SCREEN_HEIGHT*0.5)
+                        updateKetoHistorySkipIfNeeded()
                     }
                     skipStepsNine = false
                 }
@@ -360,7 +368,43 @@ extension DietPlanCreateVC{
             paceVm.isHidden = false
             scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17, height: 0)
         }
+        updateKetoHistorySkipIfNeeded()
         return isSkip
+    }
+
+    func shouldSkipKetoHistoryStep() -> Bool {
+        guard eatStyleVm.selectedIndex >= 0,
+              eatStyleVm.selectedIndex < eatStyleVm.dataArray.count else {
+            return false
+        }
+        let styleName = eatStyleVm.dataArray[eatStyleVm.selectedIndex]["name"] ?? ""
+        return styleName == "均衡，碳蛋脂平衡"
+    }
+
+    func updateKetoHistorySkipIfNeeded() {
+        let shouldSkip = shouldSkipKetoHistoryStep()
+        let skipStateChanged = (shouldSkip != skipKetoHistory)
+
+        skipKetoHistory = shouldSkip
+        ketoHistoryVm.isHidden = shouldSkip
+
+        if shouldSkip {
+            flavorVM.center = ketoHistoryVm.center
+            if skipStateChanged {
+                scrollViewBase.contentSize = CGSize(width: max(scrollViewBase.contentSize.width - SCREEN_WIDHT, SCREEN_WIDHT), height: 0)
+                if stepsArray.count >= 3 {
+                    stepsArray[2] = max(1, stepsArray[2] - 1)
+                }
+            }
+        } else {
+            flavorVM.center = CGPoint(x: ketoHistoryVm.center.x + SCREEN_WIDHT, y: ketoHistoryVm.center.y)
+            if skipStateChanged {
+                scrollViewBase.contentSize = CGSize(width: scrollViewBase.contentSize.width + SCREEN_WIDHT, height: 0)
+                if stepsArray.count >= 3 {
+                    stepsArray[2] += 1
+                }
+            }
+        }
     }
 }
     
@@ -409,5 +453,33 @@ extension DietPlanCreateVC{
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
         }
         updateNextButtonForCurrentStep(animated: false)
+    }
+}
+
+extension DietPlanCreateVC{
+    func sendDietUpsertRequest() {
+        let flavorPreferences = flavorVM.selectedIndex == 4 ? 1 : (flavorVM.selectedIndex + 1)
+        var param = ["userGoal":goalVm.buildUserGoal(),
+                     "birthday":QuestinonaireMsgModel.shared.birthDay,
+                     "gender":QuestinonaireMsgModel.shared.sex,
+                     "currentWeight":QuestinonaireMsgModel.shared.weight,
+                     "targetWeight":QuestinonaireMsgModel.shared.targetWeight,
+                     "height":QuestinonaireMsgModel.shared.height,
+                     "bodyFat":QuestinonaireMsgModel.shared.bodyFat,
+                     "dailyActivityLevel":QuestinonaireMsgModel.shared.events,
+                     "goalImportance":"\(importantVm.selectedIndex+1)",
+                     "goalTimeline":QuestinonaireMsgModel.shared.paceLevel,
+                     "foodRestrictions":allergyVm.buildFoodRestrictions(),
+                     "dietBarriers":barrierVm.buildDietBarriers(),
+                     "dailyMeals":mealStyleVm.selectedIndex == 1 ? "4" : "3",
+                     "dietType":eatStyleVm.selectedIndex + 1,
+                     "dietMethodExperience":ketoHistoryVm.selectedIndex + 1,
+                     "flavorPreferences":flavorPreferences] as [String : Any]
+        
+        
+        DLLog(message: "sendDietUpsertRequest:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_diet_upsert, parameters: param) { responseObject in
+            DLLog(message: "\(responseObject)")
+        }
     }
 }

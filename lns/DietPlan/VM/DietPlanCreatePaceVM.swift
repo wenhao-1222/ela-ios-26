@@ -63,11 +63,11 @@ class DietPlanCreatePaceVM: UIView {
         var modelValue: String {
             switch self {
             case .slight:
-                return "slight"
+                return "1"
             case .steady:
-                return "steady"
+                return "2"
             case .major:
-                return "major"
+                return "3"
             }
         }
     }

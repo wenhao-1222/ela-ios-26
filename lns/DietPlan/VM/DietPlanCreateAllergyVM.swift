@@ -248,4 +248,41 @@ extension DietPlanCreateAllergyVM {
         }
         selectedBlock?()
     }
+
+    // 后台 foodRestrictions 枚举映射：
+    // 1花生 2坚果 3乳制品 4豆制品 5海鲜 6猪肉
+    // 规则补充：若目标包含“降低尿酸”，强制包含[4,5]，再叠加用户选择（即使选择“无”）
+    func buildFoodRestrictions() -> [Int] {
+        let selectedTitles = QuestinonaireMsgModel.shared.foodAllergy
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+
+        let mapping: [String: Int] = [
+            "花生": 1,
+            "坚果": 2,
+            "乳制品": 3,
+            "豆制品": 4,
+            "海鲜": 5,
+            "猪肉": 6
+        ]
+        var values = Set<Int>()
+        let isLowerUricAcidGoal = QuestinonaireMsgModel.shared.goal.contains("降低尿酸")
+        if isLowerUricAcidGoal {
+            values.insert(4)
+            values.insert(5)
+            values.insert(7)
+            values.insert(8)
+            values.insert(9)
+            values.insert(10)
+            values.insert(11)
+            values.insert(12)
+            values.insert(13)
+            values.insert(14)
+        }
+        if !selectedTitles.contains("无") {
+            selectedTitles.compactMap { mapping[$0] }.forEach { values.insert($0) }
+        }
+        return values.sorted()
+    }
 }

@@ -187,7 +187,8 @@ public let URL_report_daily_ranking              = URL_Type + "plans/log/daily_n
 //周报  好友榜
 public let URL_report_weekly_ranking             = URL_Type + "plans/log/weekly_nutrition_report_ranking"
 
-
+//问卷--内容提交
+public let URL_diet_upsert          = URL_Type + "users/diet/profile/upsert"
 
 //MARK: 运动记录
 public let URL_sport_catogary_list          = URL_Type + "users/sport/list"

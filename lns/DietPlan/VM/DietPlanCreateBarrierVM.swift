@@ -209,4 +209,23 @@ extension DietPlanCreateBarrierVM {
         }
         selectedBlock?()
     }
+
+    // 后台 dietBarriers 枚举映射：
+    // 1不确定 2容易嘴馋 3做饭太麻烦 4健身餐不好吃 5无法平衡家庭餐和健身餐 6不知道吃什么
+    func buildDietBarriers() -> [Int] {
+        let selectedTitles = QuestinonaireMsgModel.shared.foodBarrier
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+
+        let mapping: [String: Int] = [
+            "不确定": 1,
+            "容易嘴馋": 2,
+            "做饭太麻烦": 3,
+            "健身餐不好吃": 4,
+            "无法平衡家庭餐和健身餐": 5,
+            "不知道吃什么": 6
+        ]
+        return Array(Set(selectedTitles.compactMap { mapping[$0] })).sorted()
+    }
 }
