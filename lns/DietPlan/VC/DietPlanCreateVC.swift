@@ -14,6 +14,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     var skipStepsOne = 0
     var skipStepsNine = false//是否跳过第九步  此处是由第八步决定
     var skipKetoHistory = false//是否跳过生酮历史（由饮食风格决定）
+    private var isUploadingDietProfile = false
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.fd_interactivePopDisabled = true
@@ -191,6 +192,13 @@ class DietPlanCreateVC: WHBaseViewVC {
 
 extension DietPlanCreateVC{
     @objc func nextButtonTapAction() {
+        let maxOffsetX = max(scrollViewBase.contentSize.width - scrollViewBase.bounds.width, 0)
+        let isAtLastStep = scrollViewBase.contentOffset.x >= (maxOffsetX - 0.5)
+        if isAtLastStep {
+            sendDietUpsertRequest()
+            return
+        }
+
         let nextIndex = nextStepIndex(from: currentIndex)
         
         if nextIndex == 5 {
@@ -204,7 +212,6 @@ extension DietPlanCreateVC{
         }
         
         let targetOffsetX = SCREEN_WIDHT * CGFloat(nextIndex)
-        let maxOffsetX = max(scrollViewBase.contentSize.width - scrollViewBase.bounds.width, 0)
         let finalOffsetX = min(targetOffsetX, maxOffsetX)
         currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
         scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: true)
@@ -458,6 +465,10 @@ extension DietPlanCreateVC{
 
 extension DietPlanCreateVC{
     func sendDietUpsertRequest() {
+        if isUploadingDietProfile {
+            return
+        }
+        isUploadingDietProfile = true
         let flavorPreferences = flavorVM.selectedIndex == 4 ? 1 : (flavorVM.selectedIndex + 1)
         var param = ["userGoal":goalVm.buildUserGoal(),
                      "birthday":QuestinonaireMsgModel.shared.birthDay,
@@ -478,8 +489,9 @@ extension DietPlanCreateVC{
         
         
         DLLog(message: "sendDietUpsertRequest:\(param)")
-        WHNetworkUtil.shareManager().POST(urlString: URL_diet_upsert, parameters: param) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_diet_upsert, parameters: param as [String : AnyObject]) { responseObject in
             DLLog(message: "\(responseObject)")
+            self.isUploadingDietProfile = false
         }
     }
 }

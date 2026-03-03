@@ -78,7 +78,8 @@ class MineVC : WHBaseViewVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.bodyDataVm.tapBlock = {()in
-            let vc = BodyDataDetailVC()
+//            let vc = BodyDataDetailVC()
+            let vc = ElaProVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.fastingVm.tapBlock = {()in
