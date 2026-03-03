@@ -10,6 +10,7 @@ import SnapKit
 
 class ElaProProgressVM: UIView {
     var backTapBlock: (() -> ())?
+    var progressCompleteBlock: (() -> ())?
     // 进度节奏系数：1.0 为默认；>1 更快，<1 更慢（例如 1.5 约快 50%）
     var progressTempo: CGFloat = 3.8 {
         didSet {
@@ -31,6 +32,7 @@ class ElaProProgressVM: UIView {
     private var stallRemaining: TimeInterval = 0
     private var finishHoldRemaining: TimeInterval = 0
     private var lastTickTime: CFTimeInterval = CACurrentMediaTime()
+    private var hasNotifiedComplete = false
     
     private let stepTexts = [
         "分析你的饮食习惯",
@@ -41,7 +43,7 @@ class ElaProProgressVM: UIView {
     ]
     
     override init(frame: CGRect) {
-        super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         backgroundColor = .COLOR_BG_F2
         isUserInteractionEnabled = true
         
@@ -155,6 +157,7 @@ extension ElaProProgressVM {
         displayedProgress = CGFloat(currentProgress)
         stallRemaining = 0
         finishHoldRemaining = 0
+        hasNotifiedComplete = currentProgress >= 100
         updateProgressUI(animated: animated)
         if currentProgress >= 100 {
             stopFakeProgress()
@@ -176,6 +179,7 @@ extension ElaProProgressVM {
                 currentProgress = 100
                 updateProgressUI(animated: true)
                 stopFakeProgress()
+                notifyProgressCompletedIfNeeded()
                 return
             }
             updateProgressUI(animated: true)
@@ -264,6 +268,12 @@ extension ElaProProgressVM {
         } else {
             layoutIfNeeded()
         }
+    }
+    
+    private func notifyProgressCompletedIfNeeded() {
+        guard !hasNotifiedComplete else { return }
+        hasNotifiedComplete = true
+        progressCompleteBlock?()
     }
     
     private func stageTextForCurrentProgress() -> String {

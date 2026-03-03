@@ -13,7 +13,7 @@ class ElaProPriceVM: UIView {
     private let lightBorderColor = WHColor_16(colorStr: "EEF1F5")
     
     override init(frame:CGRect){
-        super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         self.backgroundColor = .clear
         self.isUserInteractionEnabled = true
         

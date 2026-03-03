@@ -7,39 +7,122 @@
 
 
 class ElaProVC: WHBaseViewVC {
-    
+    private var currentIndex: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         initUI()
     }
+    
     lazy var naviVm: DietPlanCreateNaviVM = {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
         vm.firstStepVm.isHidden = true
         vm.secondStepVm.isHidden = true
         vm.thirdStepVm.isHidden = true
-        vm.backTapBlock = {() in
-            self.backTapAction()
+        vm.backTapBlock = {[weak self] in
+            guard let self = self else { return }
+            if self.currentIndex == 0 {
+                self.backTapAction()
+            } else {
+                self.currentIndex -= 1
+                self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(self.currentIndex), y: 0), animated: true)
+                self.updateNextButtonForCurrentStep(animated: true)
+            }
         }
         return vm
     }()
+    
     lazy var progressVm: ElaProProgressVM = {
-        let vm = ElaProProgressVM.init(frame: .zero)
+        let vm = ElaProProgressVM.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+        vm.progressCompleteBlock = {[weak self] in
+            guard let self = self else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                guard self.currentIndex == 0 else { return }
+                self.currentIndex = 1
+                self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: true)
+                self.updateNextButtonForCurrentStep(animated: true)
+            }
+        }
         return vm
     }()
-    lazy var priceVm: ElaProPriceVM = {
-        let vm = ElaProPriceVM.init(frame: .zero)
+    
+    lazy var planVm: ElaProPlanVM = {
+        let vm = ElaProPlanVM.init(frame: CGRect(x: SCREEN_WIDHT, y: 0, width: 0, height: 0))
         return vm
+    }()
+    
+    lazy var priceVm: ElaProPriceVM = {
+        let vm = ElaProPriceVM.init(frame: CGRect(x: SCREEN_WIDHT * 2, y: 0, width: 0, height: 0))
+        return vm
+    }()
+    
+    lazy var nextButton: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitle("下一步", for: .normal)
+        btn.setTitleColor(.white, for: .normal)
+        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
+        btn.layer.cornerRadius = kFitWidth(24)
+        btn.clipsToBounds = true
+        btn.enablePressEffect()
+        btn.addTarget(self, action: #selector(nextButtonTapAction), for: .touchUpInside)
+        return btn
     }()
 }
 
 extension ElaProVC{
+    @objc func nextButtonTapAction() {
+        if currentIndex == 1 {
+            currentIndex = 2
+            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 2, y: 0), animated: true)
+            updateNextButtonForCurrentStep(animated: true)
+        }
+    }
+    
+    func updateNextButtonForCurrentStep(animated: Bool) {
+        let shouldShow = (currentIndex == 1)
+        let moveY = kFitWidth(90) + WHUtils().getBottomSafeAreaHeight()
+        let targetTransform = shouldShow ? .identity : CGAffineTransform(translationX: 0, y: moveY)
+        let targetAlpha: CGFloat = shouldShow ? 1 : 0
+        let apply = {
+            self.nextButton.transform = targetTransform
+            self.nextButton.alpha = targetAlpha
+        }
+        nextButton.isUserInteractionEnabled = shouldShow
+        
+        if animated {
+            UIView.animate(withDuration: 0.25) {
+                apply()
+            }
+        } else {
+            apply()
+        }
+    }
+    
     func initUI() {
         view.backgroundColor = .COLOR_BG_F2
-//        view.addSubview(priceVm)
-        view.addSubview(progressVm)
+        
+        view.addSubview(scrollViewBase)
+        scrollViewBase.isPagingEnabled = true
+        scrollViewBase.showsHorizontalScrollIndicator = false
+        scrollViewBase.isScrollEnabled = false
         view.addSubview(naviVm)
+        view.addSubview(nextButton)
+        
+        scrollViewBase.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 3, height: 0)
+        scrollViewBase.addSubview(progressVm)
+        scrollViewBase.addSubview(planVm)
+        scrollViewBase.addSubview(priceVm)
+        
+        nextButton.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.right.equalTo(kFitWidth(-20))
+            make.height.equalTo(kFitWidth(48))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
+        }
+        
+        updateNextButtonForCurrentStep(animated: false)
     }
 }

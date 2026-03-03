@@ -903,6 +903,8 @@
 		EC7784272F5675F6003102D2 /* ElaProVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7784262F5675F2003102D2 /* ElaProVC.swift */; };
 		EC7784292F568CBB003102D2 /* ElaProPriceVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7784282F568CB7003102D2 /* ElaProPriceVM.swift */; };
 		EC77842B2F56900003102D21 /* ElaProProgressVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */; };
+		EC77842E2F5698AC03102D21 /* ElaProPlanVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */; };
+		EC77AAC52F56DA2700ED0E93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC77AAC42F56DA2700ED0E93 /* StoreKit.framework */; };
 		EC781CC82BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC781CC72BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift */; };
 		EC781CCA2BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC781CC92BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift */; };
 		EC781CCC2BB954CD00752C95 /* QuestionnairePlanFoodsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC781CCB2BB954CD00752C95 /* QuestionnairePlanFoodsAlertVM.swift */; };
@@ -2299,6 +2301,8 @@
 		EC7784262F5675F2003102D2 /* ElaProVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProVC.swift; sourceTree = "<group>"; };
 		EC7784282F568CB7003102D2 /* ElaProPriceVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProPriceVM.swift; sourceTree = "<group>"; };
 		EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProProgressVM.swift; sourceTree = "<group>"; };
+		EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProPlanVM.swift; sourceTree = "<group>"; };
+		EC77AAC42F56DA2700ED0E93 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EC781CC72BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnairePlanFoodsVM.swift; sourceTree = "<group>"; };
 		EC781CC92BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnairePlanFoodsTableViewCell.swift; sourceTree = "<group>"; };
 		EC781CCB2BB954CD00752C95 /* QuestionnairePlanFoodsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnairePlanFoodsAlertVM.swift; sourceTree = "<group>"; };
@@ -2727,6 +2731,7 @@
 			files = (
 				ECD0FE752BABC7A3001232C9 /* CoreGraphics.framework in Frameworks */,
 				ECD0FE732BABC799001232C9 /* Security.framework in Frameworks */,
+				EC77AAC52F56DA2700ED0E93 /* StoreKit.framework in Frameworks */,
 				ECD0FE6F2BABC773001232C9 /* WechatOpenSDK-XCFramework.xcframework in Frameworks */,
 				98BEA455F46045C31BECACA0 /* Pods_lns.framework in Frameworks */,
 			);
@@ -2752,6 +2757,7 @@
 		A221DAC9833D73761BD3DEF9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EC77AAC42F56DA2700ED0E93 /* StoreKit.framework */,
 				EC0CB44C2BAD772600A7EBD0 /* CryptoKit.framework */,
 				EC0CB4472BAD5B6E00A7EBD0 /* Alamofire.framework */,
 				EC0CB4442BAD5B3000A7EBD0 /* Alamofire.framework */,
@@ -4595,6 +4601,7 @@
 			children = (
 				EC7784282F568CB7003102D2 /* ElaProPriceVM.swift */,
 				EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */,
+				EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */,
 			);
 			path = VM;
 			sourceTree = "<group>";
@@ -6519,6 +6526,7 @@
 				A790DD092E7169490036D5B5 /* SpecAnchorPopup.swift in Sources */,
 				EC7784292F568CBB003102D2 /* ElaProPriceVM.swift in Sources */,
 				EC77842B2F56900003102D21 /* ElaProProgressVM.swift in Sources */,
+				EC77842E2F5698AC03102D21 /* ElaProPlanVM.swift in Sources */,
 				ECAE25E62BF20F37007D4B57 /* NSDictionary+Exs.swift in Sources */,
 				A75F431D2CA797730062E7B2 /* FoodsCreateFastRemarkVM.swift in Sources */,
 				ECD0FEFC2BABD25B001232C9 /* YYTextParser.m in Sources */,
