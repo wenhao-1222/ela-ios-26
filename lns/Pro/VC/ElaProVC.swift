@@ -54,6 +54,9 @@ class ElaProVC: WHBaseViewVC {
     
     lazy var priceVm: ElaProPriceVM = {
         let vm = ElaProPriceVM.init(frame: CGRect(x: SCREEN_WIDHT * 2, y: 0, width: 0, height: 0))
+        vm.purchaseSuccessBlock = { [weak self] in
+            self?.backTapAction()
+        }
         return vm
     }()
     

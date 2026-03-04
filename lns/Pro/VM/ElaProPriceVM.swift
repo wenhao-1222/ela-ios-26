@@ -5,12 +5,29 @@
 //  Created by LNS2 on 2026/3/3.
 //
 
+import StoreKit
+import MCToast
 
 class ElaProPriceVM: UIView {
+    enum PlanType {
+        case month
+        case annual
+        case lifetime
+    }
+    
+    var purchaseSuccessBlock: (() -> ())?
+    
     private let selectedBlue = WHColor_16(colorStr: "1677F2")
     private let normalTextColor = WHColor_16(colorStr: "0F1214")
     private let subTextColor = WHColor_16(colorStr: "8C8D94")
     private let lightBorderColor = WHColor_16(colorStr: "EEF1F5")
+    
+    private var selectedPlan: PlanType = .annual
+    private var annualProduct: SKProduct?
+    private var annualPriceText = "¥128"
+    private var annualSubTitleText = "每月仅需¥10.66"
+    private var annualOriginPriceText: String? = "¥198/年"
+    private var isPurchasing = false
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -18,6 +35,8 @@ class ElaProPriceVM: UIView {
         self.isUserInteractionEnabled = true
         
         initUI()
+        refreshPlanCards()
+        fetchAnnualProductIfNeeded()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -176,6 +195,120 @@ extension ElaProPriceVM{
         agreeButton.isSelected.toggle()
     }
     
+    @objc func selectMonthCardAction() {
+        selectedPlan = .month
+        refreshPlanCards()
+    }
+    
+    @objc func selectYearCardAction() {
+        selectedPlan = .annual
+        refreshPlanCards()
+    }
+    
+    @objc func selectLifeCardAction() {
+        selectedPlan = .lifetime
+        refreshPlanCards()
+    }
+    
+    @objc func confirmButtonTapAction() {
+        guard agreeButton.isSelected else {
+            MCToast.mc_text("请先勾选并同意协议")
+            return
+        }
+        
+        guard !isPurchasing else { return }
+        
+        guard selectedPlan == .annual else {
+            MCToast.mc_text("当前仅开放年费会员订阅")
+            return
+        }
+        
+        isPurchasing = true
+        confirmButton.isEnabled = false
+        confirmButton.setTitle("处理中...", for: .normal)
+        
+        ElaProIAPManager.shared.purchaseAnnual { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.isPurchasing = false
+                self.confirmButton.isEnabled = true
+                self.confirmButton.setTitle("确认", for: .normal)
+                
+                switch result {
+                case .success:
+                    MCToast.mc_text("订阅成功")
+                    self.purchaseSuccessBlock?()
+                case .failure(let error):
+                    if let iapError = error as? ElaProIAPError {
+                        MCToast.mc_text(iapError.localizedDescription)
+                    } else {
+                        MCToast.mc_text(error.localizedDescription)
+                    }
+                }
+            }
+        }
+    }
+    
+    func fetchAnnualProductIfNeeded() {
+        ElaProIAPManager.shared.fetchAnnualProduct { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                if case .success(let product) = result {
+                    self.annualProduct = product
+                    self.annualPriceText = ElaProIAPManager.shared.localizedPriceString(for: product)
+                    self.annualSubTitleText = self.buildMonthlyText(for: product)
+                    self.dailyPriceLabel.text = self.buildDailyText(for: product)
+                    self.annualOriginPriceText = nil
+                    self.refreshPlanCards()
+                }
+            }
+        }
+    }
+    
+    func refreshPlanCards() {
+        monthCard.configure(tag: "首月特惠",
+                            title: "连续包月",
+                            subTitle: nil,
+                            price: "¥9",
+                            originPrice: "¥19/月",
+                            selected: selectedPlan == .month)
+        
+        yearCard.configure(tag: "首年特惠",
+                           title: "连续包年",
+                           subTitle: annualSubTitleText,
+                           price: annualPriceText,
+                           originPrice: annualOriginPriceText,
+                           selected: selectedPlan == .annual)
+        
+        lifeCard.configure(tag: nil,
+                           title: "终身会员",
+                           subTitle: nil,
+                           price: "¥598",
+                           originPrice: nil,
+                           selected: selectedPlan == .lifetime)
+    }
+    
+    func buildMonthlyText(for product: SKProduct) -> String {
+        let monthly = product.price.dividing(by: NSDecimalNumber(value: 12))
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = product.priceLocale
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        let price = formatter.string(from: monthly) ?? "\(monthly)"
+        return "每月仅需\(price)"
+    }
+    
+    func buildDailyText(for product: SKProduct) -> String {
+        let daily = product.price.dividing(by: NSDecimalNumber(value: 365))
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        let value = formatter.string(from: daily) ?? "\(daily)"
+        return "\(value)元/天"
+    }
+    
     func initUI() {
         addSubview(bgImgView)
         addSubview(scrollView)
@@ -194,6 +327,13 @@ extension ElaProPriceVM{
         cardContainer.addSubview(yearCard)
         cardContainer.addSubview(lifeCard)
         
+        monthCard.isUserInteractionEnabled = true
+        yearCard.isUserInteractionEnabled = true
+        lifeCard.isUserInteractionEnabled = true
+        monthCard.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(selectMonthCardAction)))
+        yearCard.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(selectYearCardAction)))
+        lifeCard.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(selectLifeCardAction)))
+        
         benefitContainer.addSubview(benefitOne)
         benefitContainer.addSubview(benefitTwo)
         benefitContainer.addSubview(benefitThree)
@@ -204,6 +344,8 @@ extension ElaProPriceVM{
         bottomBar.addSubview(dailyPriceLabel)
         bottomBar.addSubview(agreeButton)
         bottomBar.addSubview(agreementLabel)
+        
+        confirmButton.addTarget(self, action: #selector(confirmButtonTapAction), for: .touchUpInside)
         
         setConstrait()
     }

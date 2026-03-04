@@ -904,6 +904,7 @@
 		EC7784292F568CBB003102D2 /* ElaProPriceVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7784282F568CB7003102D2 /* ElaProPriceVM.swift */; };
 		EC77842B2F56900003102D21 /* ElaProProgressVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */; };
 		EC77842E2F5698AC03102D21 /* ElaProPlanVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */; };
+		EC7784302F56A3A103102D21 /* ElaProIAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC77842F2F56A39F03102D21 /* ElaProIAPManager.swift */; };
 		EC77AAC52F56DA2700ED0E93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC77AAC42F56DA2700ED0E93 /* StoreKit.framework */; };
 		EC781CC82BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC781CC72BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift */; };
 		EC781CCA2BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC781CC92BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift */; };
@@ -2302,6 +2303,7 @@
 		EC7784282F568CB7003102D2 /* ElaProPriceVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProPriceVM.swift; sourceTree = "<group>"; };
 		EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProProgressVM.swift; sourceTree = "<group>"; };
 		EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProPlanVM.swift; sourceTree = "<group>"; };
+		EC77842F2F56A39F03102D21 /* ElaProIAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProIAPManager.swift; sourceTree = "<group>"; };
 		EC77AAC42F56DA2700ED0E93 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EC781CC72BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnairePlanFoodsVM.swift; sourceTree = "<group>"; };
 		EC781CC92BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnairePlanFoodsTableViewCell.swift; sourceTree = "<group>"; };
@@ -4609,6 +4611,7 @@
 		EC7784252F5675E2003102D2 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				EC77842F2F56A39F03102D21 /* ElaProIAPManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -6527,6 +6530,7 @@
 				EC7784292F568CBB003102D2 /* ElaProPriceVM.swift in Sources */,
 				EC77842B2F56900003102D21 /* ElaProProgressVM.swift in Sources */,
 				EC77842E2F5698AC03102D21 /* ElaProPlanVM.swift in Sources */,
+				EC7784302F56A3A103102D21 /* ElaProIAPManager.swift in Sources */,
 				ECAE25E62BF20F37007D4B57 /* NSDictionary+Exs.swift in Sources */,
 				A75F431D2CA797730062E7B2 /* FoodsCreateFastRemarkVM.swift in Sources */,
 				ECD0FEFC2BABD25B001232C9 /* YYTextParser.m in Sources */,
