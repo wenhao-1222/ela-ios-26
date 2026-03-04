@@ -18,9 +18,9 @@ class ElaProPriceVM: UIView {
     var purchaseSuccessBlock: (() -> ())?
     
     private let selectedBlue = WHColor_16(colorStr: "1677F2")
-    private let normalTextColor = WHColor_16(colorStr: "0F1214")
-    private let subTextColor = WHColor_16(colorStr: "8C8D94")
-    private let lightBorderColor = WHColor_16(colorStr: "EEF1F5")
+    private let normalTextColor = UIColor.COLOR_TEXT_TITLE_0f1214
+    private let subTextColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
+    private let renewalDashLayer = CAShapeLayer()
     
     private var selectedPlan: PlanType = .annual
     private var monthProduct: SKProduct?
@@ -77,7 +77,7 @@ class ElaProPriceVM: UIView {
         let lab = UILabel()
         lab.text = "专业健身饮食，助你精准达成目标"
         lab.textColor = subTextColor
-        lab.font = .systemFont(ofSize: 18, weight: .regular)
+        lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.textAlignment = .center
         return lab
     }()
@@ -119,31 +119,88 @@ class ElaProPriceVM: UIView {
         let lab = UILabel()
         lab.text = "价格加载中..."
         lab.textColor = subTextColor
-        lab.font = .systemFont(ofSize: 19, weight: .regular)
+        lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.textAlignment = .center
         return lab
+    }()
+    lazy var renewalDashView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = .clear
+        return vi
+    }()
+    lazy var renewalNoticeLabel: UILabel = {
+        let lab = UILabel()
+        lab.text = "订阅不知不觉扣费？我们也是。开启提醒，每次续费前5天我们会通过推送通知你。把选择权交还给你。"
+        lab.textColor = subTextColor
+        lab.font = .systemFont(ofSize: 12, weight: .regular)
+        lab.numberOfLines = 0
+        return lab
+    }()
+    lazy var renewalSwitch: UISwitch = {
+        let sw = UISwitch()
+        sw.isOn = true
+        sw.onTintColor = selectedBlue
+        return sw
     }()
     lazy var benefitTitleLabel: UILabel = {
         let lab = UILabel()
         lab.text = "ELA PRO 将帮助你："
         lab.textColor = normalTextColor
-        lab.font = .systemFont(ofSize: 22, weight: .semibold)
+        lab.font = .systemFont(ofSize: 14, weight: .semibold)
         return lab
     }()
     lazy var benefitContainer: UIView = {
         let vi = UIView()
-        vi.backgroundColor = UIColor.white.withAlphaComponent(0.22)
-        vi.layer.cornerRadius = kFitWidth(16)
-        vi.layer.borderWidth = 1
-        vi.layer.borderColor = lightBorderColor.cgColor
+        vi.backgroundColor = UIColor.white.withAlphaComponent(0.2)
+        vi.layer.cornerRadius = kFitWidth(12)
+        vi.layer.borderWidth = kFitWidth(1.5)
+        vi.layer.borderColor = UIColor.white.cgColor
         vi.clipsToBounds = true
         return vi
     }()
     lazy var benefitOne = makeBenefitRow(title: "定制每周食谱", desc: "每天不重样，照着吃就行")
     lazy var benefitTwo = makeBenefitRow(title: "消除选择困难", desc: "不用每天纠结吃什么")
     lazy var benefitThree = makeBenefitRow(title: "平衡家庭与健康饮食", desc: "和家人同桌，也能精准对齐目标")
+    lazy var benefitFour = makeBenefitRow(title: "节省外卖支出", desc: "每月省下上千元外卖费用")
+    lazy var benefitFive = makeBenefitRow(title: "整理购物清单", desc: "提前列好未来一周所需食材")
+    lazy var benefitSix = makeBenefitRow(title: "快速记录", desc: "无需手动搜索，一键把每餐加入日志")
     lazy var dividerOne = makeDivider()
     lazy var dividerTwo = makeDivider()
+    lazy var dividerThree = makeDivider()
+    lazy var dividerFour = makeDivider()
+    lazy var dividerFive = makeDivider()
+    lazy var aiTitleLabel: UILabel = {
+        let lab = UILabel()
+        lab.text = "解锁ELA AI教练："
+        lab.textColor = normalTextColor
+        lab.font = .systemFont(ofSize: 22, weight: .semibold)
+        return lab
+    }()
+    lazy var aiContainer: UIView = {
+        let vi = UIView()
+        return vi
+    }()
+    lazy var aiOne = makeBenefitRow(title: "每周复盘", desc: "结合饮食训练变化，系统复盘进度")
+    lazy var aiTwo = makeBenefitRow(title: "卡点预警", desc: "多维数据早发现，瓶颈前先介入")
+    lazy var aiThree = makeBenefitRow(title: "体重去噪", desc: "分清真实进度，减少结果焦虑")
+    lazy var aiFour = makeBenefitRow(title: "持续微调", desc: "越用越懂你，你只需照做")
+    lazy var aiDividerOne = makeDivider()
+    lazy var aiDividerTwo = makeDivider()
+    lazy var aiDividerThree = makeDivider()
+    lazy var moreTitleLabel: UILabel = {
+        let lab = UILabel()
+        lab.text = "和更多："
+        lab.textColor = normalTextColor
+        lab.font = .systemFont(ofSize: 22, weight: .semibold)
+        return lab
+    }()
+    lazy var moreContainer: UIView = {
+        let vi = UIView()
+        return vi
+    }()
+    lazy var moreOne = makeSimpleRow(title: "无广告")
+    lazy var moreTwo = makeSimpleRow(title: "解锁AI识图上限")
+    lazy var moreDividerOne = makeDivider()
     lazy var bottomBar: UIView = {
         let vi = UIView()
         vi.backgroundColor = UIColor.white.withAlphaComponent(0.94)
@@ -196,6 +253,16 @@ class ElaProPriceVM: UIView {
         lab.attributedText = attr
         return lab
     }()
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        renewalDashLayer.frame = renewalDashView.bounds
+        let path = UIBezierPath()
+        let y = renewalDashView.bounds.height * 0.5
+        path.move(to: CGPoint(x: 0, y: y))
+        path.addLine(to: CGPoint(x: renewalDashView.bounds.width, y: y))
+        renewalDashLayer.path = path.cgPath
+    }
 }
 
 extension ElaProPriceVM{
@@ -507,8 +574,15 @@ extension ElaProPriceVM{
         contentView.addSubview(subTitleLabel)
         contentView.addSubview(cardContainer)
         contentView.addSubview(tipsLabel)
+        contentView.addSubview(renewalDashView)
+        contentView.addSubview(renewalNoticeLabel)
+        contentView.addSubview(renewalSwitch)
         contentView.addSubview(benefitTitleLabel)
         contentView.addSubview(benefitContainer)
+        contentView.addSubview(aiTitleLabel)
+        contentView.addSubview(aiContainer)
+        contentView.addSubview(moreTitleLabel)
+        contentView.addSubview(moreContainer)
         
         cardContainer.addSubview(monthCard)
         cardContainer.addSubview(yearCard)
@@ -524,8 +598,32 @@ extension ElaProPriceVM{
         benefitContainer.addSubview(benefitOne)
         benefitContainer.addSubview(benefitTwo)
         benefitContainer.addSubview(benefitThree)
+        benefitContainer.addSubview(benefitFour)
+        benefitContainer.addSubview(benefitFive)
+        benefitContainer.addSubview(benefitSix)
         benefitContainer.addSubview(dividerOne)
         benefitContainer.addSubview(dividerTwo)
+        benefitContainer.addSubview(dividerThree)
+        benefitContainer.addSubview(dividerFour)
+        benefitContainer.addSubview(dividerFive)
+        
+        aiContainer.addSubview(aiOne)
+        aiContainer.addSubview(aiTwo)
+        aiContainer.addSubview(aiThree)
+        aiContainer.addSubview(aiFour)
+        aiContainer.addSubview(aiDividerOne)
+        aiContainer.addSubview(aiDividerTwo)
+        aiContainer.addSubview(aiDividerThree)
+        
+        moreContainer.addSubview(moreOne)
+        moreContainer.addSubview(moreTwo)
+        moreContainer.addSubview(moreDividerOne)
+        
+        renewalDashLayer.strokeColor = UIColor.COLOR_TEXT_TITLE_0f1214_20.cgColor
+        renewalDashLayer.lineWidth = 1
+        renewalDashLayer.lineDashPattern = [4, 3]
+        renewalDashLayer.fillColor = UIColor.clear.cgColor
+        renewalDashView.layer.addSublayer(renewalDashLayer)
         
         bottomBar.addSubview(confirmButton)
         bottomBar.addSubview(dailyPriceLabel)
@@ -584,21 +682,21 @@ extension ElaProPriceVM{
         
         logoImgView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(28))
-            make.width.equalTo(kFitWidth(220))
-            make.height.equalTo(kFitWidth(52))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(8))
+            make.width.equalTo(kFitWidth(165))
+            make.height.equalTo(kFitWidth(59))
         }
         
         subTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(logoImgView.snp.bottom).offset(kFitWidth(24))
+            make.top.equalTo(logoImgView.snp.bottom).offset(kFitWidth(2))
             make.centerX.equalToSuperview()
         }
         
         cardContainer.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
-            make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(34))
-            make.height.equalTo(kFitWidth(182))
+            make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
+            make.height.equalTo(kFitWidth(141))
         }
         
         let cardGap = kFitWidth(14)
@@ -620,65 +718,202 @@ extension ElaProPriceVM{
             make.top.equalTo(cardContainer.snp.bottom).offset(kFitWidth(30))
         }
         
+        renewalDashView.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.right.equalTo(kFitWidth(-20))
+            make.top.equalTo(tipsLabel.snp.bottom).offset(kFitWidth(25))
+            make.height.equalTo(1)
+        }
+        
+        renewalSwitch.snp.makeConstraints { make in
+            make.right.equalTo(kFitWidth(-16))
+            make.centerY.equalTo(renewalNoticeLabel)
+        }
+        
+        renewalNoticeLabel.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+//            make.right.equalTo(renewalSwitch.snp.left).offset(kFitWidth(-12))
+            make.right.equalTo(kFitWidth(-69))
+            make.top.equalTo(renewalDashView.snp.bottom).offset(kFitWidth(16))
+        }
+        
         benefitTitleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
-            make.top.equalTo(tipsLabel.snp.bottom).offset(kFitWidth(42))
+            make.top.equalTo(renewalNoticeLabel.snp.bottom).offset(kFitWidth(24))
         }
         
         benefitContainer.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(benefitTitleLabel.snp.bottom).offset(kFitWidth(18))
-            make.bottom.equalToSuperview().offset(kFitWidth(-20))
+            make.top.equalTo(benefitTitleLabel.snp.bottom).offset(kFitWidth(14))
         }
         
         benefitOne.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
-            make.height.equalTo(kFitWidth(100))
+            make.height.equalTo(kFitWidth(82))
         }
         dividerOne.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(72))
             make.right.equalToSuperview()
             make.top.equalTo(benefitOne.snp.bottom)
-            make.height.equalTo(kFitWidth(1))
+            make.height.equalTo(1)
         }
         
         benefitTwo.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(dividerOne.snp.bottom)
-            make.height.equalTo(kFitWidth(100))
+            make.height.equalTo(kFitWidth(82))
         }
         dividerTwo.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(72))
             make.right.equalToSuperview()
             make.top.equalTo(benefitTwo.snp.bottom)
-            make.height.equalTo(kFitWidth(1))
+            make.height.equalTo(1)
         }
         
         benefitThree.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(dividerTwo.snp.bottom)
-            make.height.equalTo(kFitWidth(100))
+            make.height.equalTo(kFitWidth(82))
+        }
+        dividerThree.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(72))
+            make.right.equalToSuperview()
+            make.top.equalTo(benefitThree.snp.bottom)
+            make.height.equalTo(1)
+        }
+        
+        benefitFour.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(dividerThree.snp.bottom)
+            make.height.equalTo(kFitWidth(82))
+        }
+        dividerFour.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(72))
+            make.right.equalToSuperview()
+            make.top.equalTo(benefitFour.snp.bottom)
+            make.height.equalTo(1)
+        }
+        
+        benefitFive.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(dividerFour.snp.bottom)
+            make.height.equalTo(kFitWidth(82))
+        }
+        dividerFive.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(72))
+            make.right.equalToSuperview()
+            make.top.equalTo(benefitFive.snp.bottom)
+            make.height.equalTo(1)
+        }
+        
+        benefitSix.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(dividerFive.snp.bottom)
+            make.height.equalTo(kFitWidth(82))
+            make.bottom.equalToSuperview()
+        }
+        
+        aiTitleLabel.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.top.equalTo(benefitContainer.snp.bottom).offset(kFitWidth(24))
+        }
+        
+        aiContainer.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.right.equalTo(kFitWidth(-20))
+            make.top.equalTo(aiTitleLabel.snp.bottom).offset(kFitWidth(10))
+        }
+        
+        aiOne.snp.makeConstraints { make in
+            make.left.right.top.equalToSuperview()
+            make.height.equalTo(kFitWidth(78))
+        }
+        aiDividerOne.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(72))
+            make.right.equalToSuperview()
+            make.top.equalTo(aiOne.snp.bottom)
+            make.height.equalTo(1)
+        }
+        
+        aiTwo.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(aiDividerOne.snp.bottom)
+            make.height.equalTo(kFitWidth(78))
+        }
+        aiDividerTwo.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(72))
+            make.right.equalToSuperview()
+            make.top.equalTo(aiTwo.snp.bottom)
+            make.height.equalTo(1)
+        }
+        
+        aiThree.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(aiDividerTwo.snp.bottom)
+            make.height.equalTo(kFitWidth(78))
+        }
+        aiDividerThree.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(72))
+            make.right.equalToSuperview()
+            make.top.equalTo(aiThree.snp.bottom)
+            make.height.equalTo(1)
+        }
+        
+        aiFour.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(aiDividerThree.snp.bottom)
+            make.height.equalTo(kFitWidth(78))
+            make.bottom.equalToSuperview()
+        }
+        
+        moreTitleLabel.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.top.equalTo(aiContainer.snp.bottom).offset(kFitWidth(24))
+        }
+        
+        moreContainer.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.right.equalTo(kFitWidth(-20))
+            make.top.equalTo(moreTitleLabel.snp.bottom).offset(kFitWidth(10))
+            make.bottom.equalToSuperview().offset(kFitWidth(-20))
+        }
+        
+        moreOne.snp.makeConstraints { make in
+            make.left.right.top.equalToSuperview()
+            make.height.equalTo(kFitWidth(64))
+        }
+        moreDividerOne.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(72))
+            make.right.equalToSuperview()
+            make.top.equalTo(moreOne.snp.bottom)
+            make.height.equalTo(1)
+        }
+        
+        moreTwo.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(moreDividerOne.snp.bottom)
+            make.height.equalTo(kFitWidth(64))
             make.bottom.equalToSuperview()
         }
     }
     
     func makeBenefitRow(title: String, desc: String) -> UIView {
         let row = UIView()
-        let dot = UIView()
+        let dot = UIImageView()
         dot.backgroundColor = UIColor.white.withAlphaComponent(0.9)
-        dot.layer.cornerRadius = kFitWidth(18)
+        dot.layer.cornerRadius = kFitWidth(14)
         dot.clipsToBounds = true
         
         let titleLab = UILabel()
         titleLab.text = title
         titleLab.textColor = normalTextColor
-        titleLab.font = .systemFont(ofSize: 24, weight: .semibold)
+        titleLab.font = .systemFont(ofSize: 15, weight: .medium)
         
         let descLab = UILabel()
         descLab.text = desc
         descLab.textColor = subTextColor
-        descLab.font = .systemFont(ofSize: 18, weight: .regular)
+        descLab.font = .systemFont(ofSize: 12, weight: .regular)
         
         row.addSubview(dot)
         row.addSubview(titleLab)
@@ -687,16 +922,49 @@ extension ElaProPriceVM{
         dot.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(18))
             make.top.equalTo(kFitWidth(18))
-            make.width.height.equalTo(kFitWidth(36))
+            make.width.height.equalTo(kFitWidth(28))
         }
         titleLab.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(72))
-            make.top.equalTo(kFitWidth(16))
+            make.left.equalTo(kFitWidth(65))
+            make.top.equalTo(kFitWidth(12))
             make.right.equalTo(kFitWidth(-16))
+            make.height.equalTo(kFitWidth(21))
         }
         descLab.snp.makeConstraints { make in
             make.left.right.equalTo(titleLab)
-            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(8))
+            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(6))
+            make.height.equalTo(kFitWidth(18))
+        }
+        
+        return row
+    }
+    
+    func makeSimpleRow(title: String) -> UIView {
+        let row = UIView()
+        
+        let dot = UIImageView()
+        dot.backgroundColor = UIColor.white.withAlphaComponent(0.9)
+        dot.layer.cornerRadius = kFitWidth(14)
+        dot.clipsToBounds = true
+        
+        let titleLab = UILabel()
+        titleLab.text = title
+        titleLab.textColor = normalTextColor
+        titleLab.font = .systemFont(ofSize: 16, weight: .semibold)
+        
+        row.addSubview(dot)
+        row.addSubview(titleLab)
+        
+        dot.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(18))
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(kFitWidth(28))
+        }
+        
+        titleLab.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(72))
+            make.right.equalTo(kFitWidth(-16))
+            make.centerY.equalTo(dot)
         }
         
         return row
@@ -743,197 +1011,5 @@ extension ElaProPriceVM{
         let image = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
         UIGraphicsEndImageContext()
         return image
-    }
-}
-
-class ElaProPriceCardView: UIView {
-    private let blueColor = UIColor.THEME
-    private let borderColor = UIColor.COLOR_WHITE_65
-    private let titleColor = UIColor.COLOR_TEXT_TITLE_0f1214
-    private let subColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
-    private let borderLayer = CAShapeLayer()
-    private var isCardSelected = false
-    
-    lazy var tagLabel: UILabel = {
-        let lab = UILabel()
-        lab.font = .systemFont(ofSize: 12, weight: .medium)
-        lab.textColor = .white
-        lab.textAlignment = .center
-        lab.backgroundColor = blueColor
-        lab.layer.cornerRadius = kFitWidth(14)
-        lab.clipsToBounds = true
-        return lab
-    }()
-    lazy var titleLabel: UILabel = {
-        let lab = UILabel()
-        lab.textAlignment = .center
-        lab.font = .systemFont(ofSize: 14, weight: .medium)
-        lab.textColor = titleColor
-        return lab
-    }()
-    lazy var subTitleLabel: UILabel = {
-        let lab = UILabel()
-        lab.textAlignment = .center
-        lab.font = .systemFont(ofSize: 11, weight: .regular)
-        lab.textColor = subColor
-        return lab
-    }()
-    lazy var priceLabel: UILabel = {
-        let lab = UILabel()
-        lab.textAlignment = .center
-        lab.font = .systemFont(ofSize: 26, weight: .semibold)
-        lab.textColor = blueColor
-        return lab
-    }()
-    lazy var originLabel: UILabel = {
-        let lab = UILabel()
-        lab.textAlignment = .center
-        lab.font = .systemFont(ofSize: 11, weight: .regular)
-        lab.textColor = subColor
-        return lab
-    }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        layer.cornerRadius = kFitWidth(18)
-        clipsToBounds = false
-        
-        borderLayer.fillColor = UIColor.clear.cgColor
-        borderLayer.lineJoin = .round
-        borderLayer.contentsScale = UIScreen.main.scale
-        layer.addSublayer(borderLayer)
-        
-        addSubview(titleLabel)
-        addSubview(subTitleLabel)
-        addSubview(priceLabel)
-        addSubview(originLabel)
-        addSubview(tagLabel)
-        
-        tagLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(kFitWidth(-15))
-            make.height.equalTo(kFitWidth(28))
-            make.width.greaterThanOrEqualTo(kFitWidth(86))
-        }
-        titleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(kFitWidth(28))
-            make.left.greaterThanOrEqualTo(kFitWidth(8))
-            make.right.lessThanOrEqualTo(kFitWidth(-8))
-        }
-        subTitleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(6))
-            make.left.greaterThanOrEqualTo(kFitWidth(8))
-            make.right.lessThanOrEqualTo(kFitWidth(-8))
-        }
-        priceLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(originLabel.snp.top).offset(kFitWidth(-10))
-        }
-        originLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(kFitWidth(-18))
-            make.left.greaterThanOrEqualTo(kFitWidth(8))
-            make.right.lessThanOrEqualTo(kFitWidth(-8))
-        }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        borderLayer.frame = bounds
-        updateBorderPath()
-    }
-    
-    private func updateBorderPath() {
-        guard bounds.width > 0, bounds.height > 0 else { return }
-        
-        let lineWidth: CGFloat = isCardSelected ? 2 : 1
-        let radius = min(kFitWidth(18), min(bounds.width, bounds.height) * 0.5)
-        let insetRect = bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5)
-        let topY = insetRect.minY
-        let leftX = insetRect.minX
-        let rightX = insetRect.maxX
-        let bottomY = insetRect.maxY
-        let topLeftStart = CGPoint(x: leftX + radius, y: topY)
-        
-        let path = UIBezierPath()
-        
-        if !tagLabel.isHidden {
-            let tagWidth = max(kFitWidth(86), tagLabel.bounds.width)
-            let maxGap = max(0, insetRect.width - radius * 2 - 6)
-            let gapWidth = min(tagWidth + kFitWidth(18), maxGap)
-            let gapStartX = insetRect.midX - gapWidth * 0.5
-            let gapEndX = insetRect.midX + gapWidth * 0.5
-            path.move(to: topLeftStart)
-            path.addLine(to: CGPoint(x: gapStartX, y: topY))
-            path.move(to: CGPoint(x: gapEndX, y: topY))
-        } else {
-            path.move(to: topLeftStart)
-        }
-        
-        path.addLine(to: CGPoint(x: rightX - radius, y: topY))
-        path.addArc(withCenter: CGPoint(x: rightX - radius, y: topY + radius),
-                    radius: radius,
-                    startAngle: -.pi * 0.5,
-                    endAngle: 0,
-                    clockwise: true)
-        path.addLine(to: CGPoint(x: rightX, y: bottomY - radius))
-        path.addArc(withCenter: CGPoint(x: rightX - radius, y: bottomY - radius),
-                    radius: radius,
-                    startAngle: 0,
-                    endAngle: .pi * 0.5,
-                    clockwise: true)
-        path.addLine(to: CGPoint(x: leftX + radius, y: bottomY))
-        path.addArc(withCenter: CGPoint(x: leftX + radius, y: bottomY - radius),
-                    radius: radius,
-                    startAngle: .pi * 0.5,
-                    endAngle: .pi,
-                    clockwise: true)
-        path.addLine(to: CGPoint(x: leftX, y: topY + radius))
-        path.addArc(withCenter: CGPoint(x: leftX + radius, y: topY + radius),
-                    radius: radius,
-                    startAngle: .pi,
-                    endAngle: .pi * 1.5,
-                    clockwise: true)
-        
-        borderLayer.path = path.cgPath
-        borderLayer.strokeColor = (isCardSelected ? blueColor : borderColor).cgColor
-        borderLayer.lineWidth = lineWidth
-    }
-    
-    func configure(tag: String?,
-                   title: String,
-                   subTitle: String?,
-                   price: String,
-                   originPrice: String?,
-                   selected: Bool) {
-        tagLabel.text = "  \(tag ?? "")  "
-        tagLabel.isHidden = tag == nil
-        titleLabel.text = title
-        subTitleLabel.text = subTitle
-        subTitleLabel.isHidden = (subTitle?.isEmpty ?? true)
-        priceLabel.text = price
-        
-        if let originPrice = originPrice, !originPrice.isEmpty {
-            let attr = NSMutableAttributedString(string: originPrice)
-            attr.addAttributes([
-                .strikethroughStyle: NSUnderlineStyle.single.rawValue,
-                .foregroundColor: subColor
-            ], range: NSRange(location: 0, length: originPrice.count))
-            originLabel.attributedText = attr
-            originLabel.isHidden = false
-        } else {
-            originLabel.attributedText = nil
-            originLabel.text = nil
-            originLabel.isHidden = true
-        }
-        
-        isCardSelected = selected
-        setNeedsLayout()
     }
 }

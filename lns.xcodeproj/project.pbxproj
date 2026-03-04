@@ -782,6 +782,7 @@
 		EC44393D2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC44393C2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift */; };
 		EC4732D62EEFBDEC008F67F5 /* MallDetailImageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D52EEFBDEB008F67F5 /* MallDetailImageVM.swift */; };
 		EC4732D82EEFF05A008F67F5 /* OverSeaMsgVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */; };
+		EC48CBD02F582FBA00ADB6E7 /* ElaProPriceCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC48CBCF2F582FB900ADB6E7 /* ElaProPriceCardView.swift */; };
 		EC498A6A2ED816B800BC7876 /* ColorWheelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC498A692ED816B700BC7876 /* ColorWheelView.swift */; };
 		EC498A6C2ED816CB00BC7876 /* ColorWheelVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC498A6B2ED816C800BC7876 /* ColorWheelVC.swift */; };
 		EC4DE2802BC8D0B30090A7BD /* PlanDetailTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE27F2BC8D0B30090A7BD /* PlanDetailTopVM.swift */; };
@@ -2179,6 +2180,7 @@
 		EC4732D52EEFBDEB008F67F5 /* MallDetailImageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallDetailImageVM.swift; sourceTree = "<group>"; };
 		EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverSeaMsgVC.swift; sourceTree = "<group>"; };
 		EC47FE352C3B8D87006CFA2A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
+		EC48CBCF2F582FB900ADB6E7 /* ElaProPriceCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProPriceCardView.swift; sourceTree = "<group>"; };
 		EC498A692ED816B700BC7876 /* ColorWheelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWheelView.swift; sourceTree = "<group>"; };
 		EC498A6B2ED816C800BC7876 /* ColorWheelVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWheelVC.swift; sourceTree = "<group>"; };
 		EC4DE27F2BC8D0B30090A7BD /* PlanDetailTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDetailTopVM.swift; sourceTree = "<group>"; };
@@ -4605,6 +4607,7 @@
 		EC7784222F5675CD003102D2 /* VM */ = {
 			isa = PBXGroup;
 			children = (
+				EC48CBCF2F582FB900ADB6E7 /* ElaProPriceCardView.swift */,
 				EC7784282F568CB7003102D2 /* ElaProPriceVM.swift */,
 				EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */,
 				EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */,
@@ -6036,6 +6039,7 @@
 				ECB6AEB72BC6561F00F03567 /* CalCircleView.swift in Sources */,
 				A70A2FD52DCAF90900F1E630 /* FPSMonitor.swift in Sources */,
 				EC38DE952BEF5239008E7FCE /* MineTopFuncVM.swift in Sources */,
+				EC48CBD02F582FBA00ADB6E7 /* ElaProPriceCardView.swift in Sources */,
 				A7443DF92DD1EB8C0040FEFD /* JournalReportDailyCaloriesMealsItemVm.swift in Sources */,
 				EC6108FF2F23460C00085BA3 /* PartyPopperEffect.swift in Sources */,
 				A762BA772D195F6F003E8B22 /* TutorialVideoTypeVM.swift in Sources */,
