@@ -23,10 +23,16 @@ class ElaProPriceVM: UIView {
     private let lightBorderColor = WHColor_16(colorStr: "EEF1F5")
     
     private var selectedPlan: PlanType = .annual
+    private var monthProduct: SKProduct?
     private var annualProduct: SKProduct?
+    private var lifetimeProduct: SKProduct?
+    private var monthPriceText = "¥9"
+    private var monthSubTitleText: String?
+    private var monthOriginPriceText: String? = "¥19/月"
     private var annualPriceText = "¥128"
     private var annualSubTitleText = "每月仅需¥10.66"
     private var annualOriginPriceText: String? = "¥198/年"
+    private var lifetimePriceText = "¥598"
     private var isPurchasing = false
     
     override init(frame:CGRect){
@@ -36,7 +42,7 @@ class ElaProPriceVM: UIView {
         
         initUI()
         refreshPlanCards()
-        fetchAnnualProductIfNeeded()
+        fetchProProductsIfNeeded()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -102,7 +108,7 @@ class ElaProPriceVM: UIView {
         vm.configure(tag: nil,
                      title: "终身会员",
                      subTitle: nil,
-                     price: "¥598",
+                     price: lifetimePriceText,
                      originPrice: nil,
                      selected: false)
         return vm
@@ -218,16 +224,11 @@ extension ElaProPriceVM{
         
         guard !isPurchasing else { return }
         
-        guard selectedPlan == .annual else {
-            MCToast.mc_text("当前仅开放年费会员订阅")
-            return
-        }
-        
+        let purchasingPlan = selectedPlan
         isPurchasing = true
         confirmButton.isEnabled = false
         confirmButton.setTitle("处理中...", for: .normal)
-        
-        ElaProIAPManager.shared.purchaseAnnual { [weak self] result in
+        let completion: (Result<SKPaymentTransaction, Error>) -> Void = { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 self.isPurchasing = false
@@ -236,7 +237,7 @@ extension ElaProPriceVM{
                 
                 switch result {
                 case .success:
-                    MCToast.mc_text("订阅成功")
+                    MCToast.mc_text(purchasingPlan == .lifetime ? "购买成功" : "订阅成功")
                     self.purchaseSuccessBlock?()
                 case .failure(let error):
                     if let iapError = error as? ElaProIAPError {
@@ -247,18 +248,47 @@ extension ElaProPriceVM{
                 }
             }
         }
+        
+        switch selectedPlan {
+        case .month:
+            ElaProIAPManager.shared.purchaseMonth(completion: completion)
+        case .annual:
+            ElaProIAPManager.shared.purchaseAnnual(completion: completion)
+        case .lifetime:
+            ElaProIAPManager.shared.purchaseLifetime(completion: completion)
+        }
     }
     
-    func fetchAnnualProductIfNeeded() {
-        ElaProIAPManager.shared.fetchAnnualProduct { [weak self] result in
+    func fetchProProductsIfNeeded() {
+        ElaProIAPManager.shared.fetchProProducts { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                if case .success(let product) = result {
-                    self.annualProduct = product
-                    self.annualPriceText = ElaProIAPManager.shared.localizedPriceString(for: product)
-                    self.annualSubTitleText = self.buildMonthlyText(for: product)
-                    self.dailyPriceLabel.text = self.buildDailyText(for: product)
-                    self.annualOriginPriceText = nil
+                if case .success(let products) = result {
+                    if let month = products.first(where: { $0.productIdentifier == ElaProIAPConfig.monthProductID }) {
+                        self.monthProduct = month
+                        if let intro = month.introductoryPrice {
+                            self.monthPriceText = self.localizedPriceString(decimal: intro.price, locale: intro.priceLocale)
+                            self.monthOriginPriceText = ElaProIAPManager.shared.localizedPriceString(for: month) + "/月"
+                            self.monthSubTitleText = nil
+                        } else {
+                            self.monthPriceText = ElaProIAPManager.shared.localizedPriceString(for: month)
+                            self.monthOriginPriceText = nil
+                            self.monthSubTitleText = nil
+                        }
+                    }
+                    
+                    if let annual = products.first(where: { $0.productIdentifier == ElaProIAPConfig.annualProductID }) {
+                        self.annualProduct = annual
+                        self.annualPriceText = ElaProIAPManager.shared.localizedPriceString(for: annual)
+                        self.annualSubTitleText = self.buildMonthlyText(for: annual)
+                        self.annualOriginPriceText = nil
+                    }
+                    
+                    if let lifetime = products.first(where: { $0.productIdentifier == ElaProIAPConfig.lifetimeProductID }) {
+                        self.lifetimeProduct = lifetime
+                        self.lifetimePriceText = ElaProIAPManager.shared.localizedPriceString(for: lifetime)
+                    }
+                    
                     self.refreshPlanCards()
                 }
             }
@@ -268,9 +298,9 @@ extension ElaProPriceVM{
     func refreshPlanCards() {
         monthCard.configure(tag: "首月特惠",
                             title: "连续包月",
-                            subTitle: nil,
-                            price: "¥9",
-                            originPrice: "¥19/月",
+                            subTitle: monthSubTitleText,
+                            price: monthPriceText,
+                            originPrice: monthOriginPriceText,
                             selected: selectedPlan == .month)
         
         yearCard.configure(tag: "首年特惠",
@@ -283,9 +313,37 @@ extension ElaProPriceVM{
         lifeCard.configure(tag: nil,
                            title: "终身会员",
                            subTitle: nil,
-                           price: "¥598",
+                           price: lifetimePriceText,
                            originPrice: nil,
                            selected: selectedPlan == .lifetime)
+        
+        switch selectedPlan {
+        case .month:
+            if let monthProduct = monthProduct, let intro = monthProduct.introductoryPrice {
+                dailyPriceLabel.text = buildDailyText(decimal: intro.price)
+            } else if let monthProduct = monthProduct {
+                dailyPriceLabel.text = buildDailyText(for: monthProduct, days: 30)
+            } else {
+                dailyPriceLabel.text = "0.30元/天"
+            }
+            let renewText = monthOriginPriceText ?? monthPriceText + "/月"
+            tipsLabel.text = "首月\(monthPriceText)，随后\(renewText)，可随时取消"
+        case .annual:
+            if let annualProduct = annualProduct {
+                dailyPriceLabel.text = buildDailyText(for: annualProduct, days: 365)
+            } else {
+                dailyPriceLabel.text = "0.35元/天"
+            }
+            let renewText = annualOriginPriceText ?? annualPriceText + "/年"
+            tipsLabel.text = "首年\(annualPriceText)，随后\(renewText)，可随时取消"
+        case .lifetime:
+            if let lifetimeProduct = lifetimeProduct {
+                dailyPriceLabel.text = buildDailyText(for: lifetimeProduct, days: 365)
+            } else {
+                dailyPriceLabel.text = "1.64元/天"
+            }
+            tipsLabel.text = "买断价\(lifetimePriceText)，一次购买长期可用"
+        }
     }
     
     func buildMonthlyText(for product: SKProduct) -> String {
@@ -299,14 +357,26 @@ extension ElaProPriceVM{
         return "每月仅需\(price)"
     }
     
-    func buildDailyText(for product: SKProduct) -> String {
-        let daily = product.price.dividing(by: NSDecimalNumber(value: 365))
+    func buildDailyText(for product: SKProduct, days: Int) -> String {
+        let safeDays = max(days, 1)
+        let daily = product.price.dividing(by: NSDecimalNumber(value: safeDays))
+        return buildDailyText(decimal: daily)
+    }
+    
+    func buildDailyText(decimal: NSDecimalNumber) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.minimumFractionDigits = 2
         formatter.maximumFractionDigits = 2
-        let value = formatter.string(from: daily) ?? "\(daily)"
+        let value = formatter.string(from: decimal) ?? "\(decimal)"
         return "\(value)元/天"
+    }
+    
+    func localizedPriceString(decimal: NSDecimalNumber, locale: Locale) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = locale
+        return formatter.string(from: decimal) ?? "\(decimal)"
     }
     
     func initUI() {

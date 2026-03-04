@@ -12,7 +12,9 @@ enum ElaProIAPConfig {
     // App Store Connect: 订阅群组「Pro」，订阅群组 ID「21956560」
     static let subscriptionGroupName = "Pro"
     static let subscriptionGroupID = "21956560"
+    static let monthProductID = "month_continue"
     static let annualProductID = "annual"
+    static let lifetimeProductID = "LifetimePro"
 }
 
 enum ElaProIAPError: LocalizedError {
@@ -88,8 +90,54 @@ final class ElaProIAPManager: NSObject {
         }
     }
     
+    func fetchMonthProduct(completion: @escaping (Result<SKProduct, Error>) -> Void) {
+        fetchProducts(ids: [ElaProIAPConfig.monthProductID], forceRefresh: false) { result in
+            switch result {
+            case .success(let products):
+                if let product = products.first(where: { $0.productIdentifier == ElaProIAPConfig.monthProductID }) {
+                    completion(.success(product))
+                } else {
+                    completion(.failure(ElaProIAPError.productUnavailable))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func fetchProProducts(completion: @escaping (Result<[SKProduct], Error>) -> Void) {
+        fetchProducts(ids: [ElaProIAPConfig.monthProductID,
+                            ElaProIAPConfig.annualProductID,
+                            ElaProIAPConfig.lifetimeProductID],
+                      forceRefresh: false,
+                      completion: completion)
+    }
+
+    func fetchLifetimeProduct(completion: @escaping (Result<SKProduct, Error>) -> Void) {
+        fetchProducts(ids: [ElaProIAPConfig.lifetimeProductID], forceRefresh: false) { result in
+            switch result {
+            case .success(let products):
+                if let product = products.first(where: { $0.productIdentifier == ElaProIAPConfig.lifetimeProductID }) {
+                    completion(.success(product))
+                } else {
+                    completion(.failure(ElaProIAPError.productUnavailable))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
     func purchaseAnnual(completion: @escaping (Result<SKPaymentTransaction, Error>) -> Void) {
         purchase(productID: ElaProIAPConfig.annualProductID, completion: completion)
+    }
+    
+    func purchaseMonth(completion: @escaping (Result<SKPaymentTransaction, Error>) -> Void) {
+        purchase(productID: ElaProIAPConfig.monthProductID, completion: completion)
+    }
+
+    func purchaseLifetime(completion: @escaping (Result<SKPaymentTransaction, Error>) -> Void) {
+        purchase(productID: ElaProIAPConfig.lifetimeProductID, completion: completion)
     }
     
     func localizedPriceString(for product: SKProduct) -> String {
@@ -220,4 +268,3 @@ extension ElaProIAPManager: SKPaymentTransactionObserver {
         }
     }
 }
-
