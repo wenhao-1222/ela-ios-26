@@ -379,3 +379,6 @@ public let URL_cancelAccount                = "https://static.leungnutritionscie
 public let URL_reward_rule              = "https://static.leungnutritionsciences.cn/agreements/invitation_reward_rules.html"
 //知识付费 课程购买协议
 public let URL_turorial_purchase_agreement = "https://static.leungnutritionsciences.cn/agreements/ela_tutorial_purchase_agreement.html"
+//ela Pro 会员服务协议
+public let URL_pro_agreement = "https://static.leungnutritionsciences.cn/agreements/ela_membership_agreement.html"
+

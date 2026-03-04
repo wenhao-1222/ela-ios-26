@@ -26,13 +26,15 @@ class ElaProPriceVM: UIView {
     private var monthProduct: SKProduct?
     private var annualProduct: SKProduct?
     private var lifetimeProduct: SKProduct?
-    private var monthPriceText = "¥9"
+    private var monthTagText: String?
+    private var monthPriceText = "--"
     private var monthSubTitleText: String?
-    private var monthOriginPriceText: String? = "¥19/月"
-    private var annualPriceText = "¥128"
-    private var annualSubTitleText = "每月仅需¥10.66"
-    private var annualOriginPriceText: String? = "¥198/年"
-    private var lifetimePriceText = "¥598"
+    private var monthOriginPriceText: String?
+    private var annualTagText: String?
+    private var annualPriceText = "--"
+    private var annualSubTitleText: String?
+    private var annualOriginPriceText: String?
+    private var lifetimePriceText = "--"
     private var isPurchasing = false
     
     override init(frame:CGRect){
@@ -85,21 +87,21 @@ class ElaProPriceVM: UIView {
     }()
     lazy var monthCard: ElaProPriceCardView = {
         let vm = ElaProPriceCardView()
-        vm.configure(tag: "首月特惠",
+        vm.configure(tag: monthTagText,
                      title: "连续包月",
-                     subTitle: nil,
-                     price: "¥9",
-                     originPrice: "¥19/月",
+                     subTitle: monthSubTitleText,
+                     price: monthPriceText,
+                     originPrice: monthOriginPriceText,
                      selected: false)
         return vm
     }()
     lazy var yearCard: ElaProPriceCardView = {
         let vm = ElaProPriceCardView()
-        vm.configure(tag: "首年特惠",
+        vm.configure(tag: annualTagText,
                      title: "连续包年",
-                     subTitle: "每月仅需¥10.66",
-                     price: "¥128",
-                     originPrice: "¥198/年",
+                     subTitle: annualSubTitleText,
+                     price: annualPriceText,
+                     originPrice: annualOriginPriceText,
                      selected: true)
         return vm
     }()
@@ -115,7 +117,7 @@ class ElaProPriceVM: UIView {
     }()
     lazy var tipsLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "首年128，随后198/年，可随时取消"
+        lab.text = "价格加载中..."
         lab.textColor = subTextColor
         lab.font = .systemFont(ofSize: 19, weight: .regular)
         lab.textAlignment = .center
@@ -159,7 +161,7 @@ class ElaProPriceVM: UIView {
     }()
     lazy var dailyPriceLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "0.35元/天"
+        lab.text = "--元/天"
         lab.textColor = .white
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.textAlignment = .center
@@ -179,13 +181,13 @@ class ElaProPriceVM: UIView {
     lazy var agreementLabel: UILabel = {
         let lab = UILabel()
         lab.numberOfLines = 1
-        let allText = "已阅读并同意《ELA PRO条款》《自动订阅协议》"
+        let allText = "已阅读并同意《ELA PRO条款》（含自动续费条款）"
         let attr = NSMutableAttributedString(string: allText)
         attr.addAttributes([
             .foregroundColor: subTextColor,
             .font: UIFont.systemFont(ofSize: 11, weight: .regular)
         ], range: NSRange(location: 0, length: allText.count))
-        if let range = allText.range(of: "《ELA PRO条款》《自动订阅协议》") {
+        if let range = allText.range(of: "《ELA PRO条款》") {
             let nsRange = NSRange(range, in: allText)
             attr.addAttributes([
                 .foregroundColor: selectedBlue
@@ -236,7 +238,8 @@ extension ElaProPriceVM{
                 self.confirmButton.setTitle("确认", for: .normal)
                 
                 switch result {
-                case .success:
+                case .success(let transaction):
+                    ElaProIAPManager.shared.handlePurchaseSuccessPostAction(transaction: transaction)
                     MCToast.mc_text(purchasingPlan == .lifetime ? "购买成功" : "订阅成功")
                     self.purchaseSuccessBlock?()
                 case .failure(let error):
@@ -266,22 +269,28 @@ extension ElaProPriceVM{
                 if case .success(let products) = result {
                     if let month = products.first(where: { $0.productIdentifier == ElaProIAPConfig.monthProductID }) {
                         self.monthProduct = month
+                        self.monthTagText = self.promoTagText(for: month)
+                        self.monthSubTitleText = nil
                         if let intro = month.introductoryPrice {
                             self.monthPriceText = self.localizedPriceString(decimal: intro.price, locale: intro.priceLocale)
-                            self.monthOriginPriceText = ElaProIAPManager.shared.localizedPriceString(for: month) + "/月"
-                            self.monthSubTitleText = nil
+                            self.monthOriginPriceText = self.recurringPriceText(for: month)
                         } else {
                             self.monthPriceText = ElaProIAPManager.shared.localizedPriceString(for: month)
                             self.monthOriginPriceText = nil
-                            self.monthSubTitleText = nil
                         }
                     }
                     
                     if let annual = products.first(where: { $0.productIdentifier == ElaProIAPConfig.annualProductID }) {
                         self.annualProduct = annual
-                        self.annualPriceText = ElaProIAPManager.shared.localizedPriceString(for: annual)
+                        self.annualTagText = self.promoTagText(for: annual)
                         self.annualSubTitleText = self.buildMonthlyText(for: annual)
-                        self.annualOriginPriceText = nil
+                        if let intro = annual.introductoryPrice {
+                            self.annualPriceText = self.localizedPriceString(decimal: intro.price, locale: intro.priceLocale)
+                            self.annualOriginPriceText = self.recurringPriceText(for: annual)
+                        } else {
+                            self.annualPriceText = ElaProIAPManager.shared.localizedPriceString(for: annual)
+                            self.annualOriginPriceText = nil
+                        }
                     }
                     
                     if let lifetime = products.first(where: { $0.productIdentifier == ElaProIAPConfig.lifetimeProductID }) {
@@ -296,14 +305,14 @@ extension ElaProPriceVM{
     }
     
     func refreshPlanCards() {
-        monthCard.configure(tag: "首月特惠",
+        monthCard.configure(tag: monthTagText,
                             title: "连续包月",
                             subTitle: monthSubTitleText,
                             price: monthPriceText,
                             originPrice: monthOriginPriceText,
                             selected: selectedPlan == .month)
         
-        yearCard.configure(tag: "首年特惠",
+        yearCard.configure(tag: annualTagText,
                            title: "连续包年",
                            subTitle: annualSubTitleText,
                            price: annualPriceText,
@@ -319,40 +328,47 @@ extension ElaProPriceVM{
         
         switch selectedPlan {
         case .month:
-            if let monthProduct = monthProduct, let intro = monthProduct.introductoryPrice {
-                dailyPriceLabel.text = buildDailyText(decimal: intro.price)
-            } else if let monthProduct = monthProduct {
-                dailyPriceLabel.text = buildDailyText(for: monthProduct, days: 30)
+            if let monthProduct = monthProduct {
+                dailyPriceLabel.text = buildDailyText(for: monthProduct)
+                tipsLabel.text = buildSubscriptionTips(for: monthProduct,
+                                                       currentPriceText: monthPriceText,
+                                                       originPriceText: monthOriginPriceText)
             } else {
-                dailyPriceLabel.text = "0.30元/天"
+                dailyPriceLabel.text = "--元/天"
+                tipsLabel.text = "价格加载中..."
             }
-            let renewText = monthOriginPriceText ?? monthPriceText + "/月"
-            tipsLabel.text = "首月\(monthPriceText)，随后\(renewText)，可随时取消"
         case .annual:
             if let annualProduct = annualProduct {
-                dailyPriceLabel.text = buildDailyText(for: annualProduct, days: 365)
+                dailyPriceLabel.text = buildDailyText(for: annualProduct)
+                tipsLabel.text = buildSubscriptionTips(for: annualProduct,
+                                                       currentPriceText: annualPriceText,
+                                                       originPriceText: annualOriginPriceText)
             } else {
-                dailyPriceLabel.text = "0.35元/天"
+                dailyPriceLabel.text = "--元/天"
+                tipsLabel.text = "价格加载中..."
             }
-            let renewText = annualOriginPriceText ?? annualPriceText + "/年"
-            tipsLabel.text = "首年\(annualPriceText)，随后\(renewText)，可随时取消"
         case .lifetime:
             if let lifetimeProduct = lifetimeProduct {
                 dailyPriceLabel.text = buildDailyText(for: lifetimeProduct, days: 365)
+                tipsLabel.text = "买断价\(lifetimePriceText)，一次购买长期可用"
             } else {
-                dailyPriceLabel.text = "1.64元/天"
+                dailyPriceLabel.text = "--元/天"
+                tipsLabel.text = "价格加载中..."
             }
-            tipsLabel.text = "买断价\(lifetimePriceText)，一次购买长期可用"
         }
     }
     
     func buildMonthlyText(for product: SKProduct) -> String {
-        let monthly = product.price.dividing(by: NSDecimalNumber(value: 12))
+        guard let period = product.subscriptionPeriod else { return "" }
+        let months = monthCount(from: period)
+        guard months > 1 else { return "" }
+        
+        let monthly = product.price.dividing(by: NSDecimalNumber(value: months))
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.locale = product.priceLocale
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = max(2, formatter.maximumFractionDigits)
         let price = formatter.string(from: monthly) ?? "\(monthly)"
         return "每月仅需\(price)"
     }
@@ -363,10 +379,21 @@ extension ElaProPriceVM{
         return buildDailyText(decimal: daily)
     }
     
+    func buildDailyText(for product: SKProduct) -> String {
+        if let intro = product.introductoryPrice {
+            let days = daysCount(from: intro.subscriptionPeriod)
+            let daily = intro.price.dividing(by: NSDecimalNumber(value: max(days, 1)))
+            return buildDailyText(decimal: daily)
+        }
+        
+        let days = daysCount(from: product.subscriptionPeriod)
+        return buildDailyText(for: product, days: days)
+    }
+    
     func buildDailyText(decimal: NSDecimalNumber) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 2
+        formatter.minimumFractionDigits = 0
         formatter.maximumFractionDigits = 2
         let value = formatter.string(from: decimal) ?? "\(decimal)"
         return "\(value)元/天"
@@ -376,7 +403,97 @@ extension ElaProPriceVM{
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.locale = locale
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = max(2, formatter.maximumFractionDigits)
         return formatter.string(from: decimal) ?? "\(decimal)"
+    }
+    
+    func recurringPriceText(for product: SKProduct) -> String {
+        return ElaProIAPManager.shared.localizedPriceString(for: product) + periodSuffix(period: product.subscriptionPeriod)
+    }
+    
+    func buildSubscriptionTips(for product: SKProduct,
+                               currentPriceText: String,
+                               originPriceText: String?) -> String {
+        if let renewText = originPriceText {
+            return "首期\(currentPriceText)，随后\(renewText)，可随时取消"
+        }
+        
+        return "\(currentPriceText)\(periodSuffix(period: product.subscriptionPeriod))，可随时取消"
+    }
+    
+    func promoTagText(for product: SKProduct) -> String? {
+        guard let intro = product.introductoryPrice else { return nil }
+        let periodText = periodText(period: intro.subscriptionPeriod)
+        switch periodText {
+        case "月":
+            return "首月特惠"
+        case "年":
+            return "首年特惠"
+        default:
+            return "首期特惠"
+        }
+    }
+    
+    func periodSuffix(period: SKProductSubscriptionPeriod?) -> String {
+        let text = periodText(period: period)
+        if text.isEmpty { return "" }
+        return "/\(text)"
+    }
+    
+    func periodText(period: SKProductSubscriptionPeriod?) -> String {
+        guard let period = period else { return "" }
+        let unitText: String
+        switch period.unit {
+        case .day:
+            unitText = "天"
+        case .week:
+            unitText = "周"
+        case .month:
+            unitText = "月"
+        case .year:
+            unitText = "年"
+        @unknown default:
+            unitText = "期"
+        }
+        
+        if period.numberOfUnits <= 1 {
+            return unitText
+        }
+        return "\(period.numberOfUnits)\(unitText)"
+    }
+    
+    func daysCount(from period: SKProductSubscriptionPeriod?) -> Int {
+        guard let period = period else { return 30 }
+        let units = max(period.numberOfUnits, 1)
+        switch period.unit {
+        case .day:
+            return units
+        case .week:
+            return units * 7
+        case .month:
+            return units * 30
+        case .year:
+            return units * 365
+        @unknown default:
+            return 30
+        }
+    }
+    
+    func monthCount(from period: SKProductSubscriptionPeriod) -> Double {
+        let units = Double(max(period.numberOfUnits, 1))
+        switch period.unit {
+        case .day:
+            return units / 30.0
+        case .week:
+            return units * 7.0 / 30.0
+        case .month:
+            return units
+        case .year:
+            return units * 12.0
+        @unknown default:
+            return units
+        }
     }
     
     func initUI() {

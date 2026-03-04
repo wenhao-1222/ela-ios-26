@@ -12,9 +12,9 @@ enum ElaProIAPConfig {
     // App Store Connect: 订阅群组「Pro」，订阅群组 ID「21956560」
     static let subscriptionGroupName = "Pro"
     static let subscriptionGroupID = "21956560"
-    static let monthProductID = "month_continue"
-    static let annualProductID = "annual"
-    static let lifetimeProductID = "LifetimePro"
+    static var monthProductID = "month_continue"
+    static var annualProductID = "annual"
+    static var lifetimeProductID = "LifetimePro"
 }
 
 enum ElaProIAPError: LocalizedError {
@@ -45,6 +45,7 @@ enum ElaProIAPError: LocalizedError {
 
 final class ElaProIAPManager: NSObject {
     static let shared = ElaProIAPManager()
+    static let localEntitlementUpdatedNotification = NSNotification.Name("ela_pro_local_entitlement_updated")
     
     private var productsRequest: SKProductsRequest?
     private var cachedProducts: [String: SKProduct] = [:]
@@ -53,6 +54,16 @@ final class ElaProIAPManager: NSObject {
     private var purchaseCompletion: ((Result<SKPaymentTransaction, Error>) -> Void)?
     private var purchasingProductID: String?
     private var isObservingQueue = false
+    
+    private enum LocalUnlockKeys {
+        static let isUnlocked = "ela_pro_local_is_unlocked"
+        static let productID = "ela_pro_local_product_id"
+        static let transactionID = "ela_pro_local_transaction_id"
+        static let unlockAtMs = "ela_pro_local_unlock_at_ms"
+        static let expireAtMs = "ela_pro_local_expire_at_ms"
+        static let source = "ela_pro_local_source"
+        static let pendingVerifyPayload = "ela_pro_pending_verify_payload"
+    }
     
     private override init() {
         super.init()
@@ -80,6 +91,7 @@ final class ElaProIAPManager: NSObject {
             switch result {
             case .success(let products):
                 if let product = products.first(where: { $0.productIdentifier == ElaProIAPConfig.annualProductID }) {
+                    self.logProductInfo(product, source: "annualProductID")
                     completion(.success(product))
                 } else {
                     completion(.failure(ElaProIAPError.productUnavailable))
@@ -95,6 +107,7 @@ final class ElaProIAPManager: NSObject {
             switch result {
             case .success(let products):
                 if let product = products.first(where: { $0.productIdentifier == ElaProIAPConfig.monthProductID }) {
+                    self.logProductInfo(product, source: "monthProductID")
                     completion(.success(product))
                 } else {
                     completion(.failure(ElaProIAPError.productUnavailable))
@@ -109,8 +122,20 @@ final class ElaProIAPManager: NSObject {
         fetchProducts(ids: [ElaProIAPConfig.monthProductID,
                             ElaProIAPConfig.annualProductID,
                             ElaProIAPConfig.lifetimeProductID],
-                      forceRefresh: false,
-                      completion: completion)
+                      forceRefresh: false) { result in
+            if case .success(let products) = result {
+                if let month = products.first(where: { $0.productIdentifier == ElaProIAPConfig.monthProductID }) {
+                    self.logProductInfo(month, source: "monthProductID")
+                }
+                if let annual = products.first(where: { $0.productIdentifier == ElaProIAPConfig.annualProductID }) {
+                    self.logProductInfo(annual, source: "annualProductID")
+                }
+                if let lifetime = products.first(where: { $0.productIdentifier == ElaProIAPConfig.lifetimeProductID }) {
+                    self.logProductInfo(lifetime, source: "lifetimeProductID")
+                }
+            }
+            completion(result)
+        }
     }
 
     func fetchLifetimeProduct(completion: @escaping (Result<SKProduct, Error>) -> Void) {
@@ -118,6 +143,7 @@ final class ElaProIAPManager: NSObject {
             switch result {
             case .success(let products):
                 if let product = products.first(where: { $0.productIdentifier == ElaProIAPConfig.lifetimeProductID }) {
+                    self.logProductInfo(product, source: "lifetimeProductID")
                     completion(.success(product))
                 } else {
                     completion(.failure(ElaProIAPError.productUnavailable))
@@ -144,7 +170,33 @@ final class ElaProIAPManager: NSObject {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.locale = product.priceLocale
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = max(2, formatter.maximumFractionDigits)
         return formatter.string(from: product.price) ?? "\(product.price)"
+    }
+    
+    func updateProductIDs(month: String, annual: String, lifetime: String) {
+        let monthID = month.trimmingCharacters(in: .whitespacesAndNewlines)
+        let annualID = annual.trimmingCharacters(in: .whitespacesAndNewlines)
+        let lifetimeID = lifetime.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !monthID.isEmpty, !annualID.isEmpty, !lifetimeID.isEmpty else { return }
+        
+        ElaProIAPConfig.monthProductID = monthID
+        ElaProIAPConfig.annualProductID = annualID
+        ElaProIAPConfig.lifetimeProductID = lifetimeID
+        cachedProducts.removeAll()
+    }
+    
+    func handlePurchaseSuccessPostAction(transaction: SKPaymentTransaction) {
+        let expireAt = applyLocalTemporaryUnlock(transaction: transaction)
+        let payload = makePurchaseVerifyPayload(transaction: transaction, localUnlockExpireAt: expireAt)
+        cachePendingVerifyPayload(payload: payload)
+        uploadPurchaseVerifyPayloadTODO(payload: payload)
+    }
+    
+    func isLocalProUnlocked() -> Bool {
+        clearExpiredLocalUnlockIfNeeded()
+        return UserDefaults.standard.bool(forKey: LocalUnlockKeys.isUnlocked)
     }
     
     private func fetchProducts(ids: [String],
@@ -207,6 +259,154 @@ final class ElaProIAPManager: NSObject {
         purchaseCompletion = nil
         purchasingProductID = nil
         completion?(result)
+    }
+    
+    private func applyLocalTemporaryUnlock(transaction: SKPaymentTransaction) -> Date {
+        let now = Date()
+        let productID = transaction.payment.productIdentifier
+        let expireAt = now.addingTimeInterval(localUnlockDuration(productID: productID))
+        let defaults = UserDefaults.standard
+        
+        defaults.set(true, forKey: LocalUnlockKeys.isUnlocked)
+        defaults.set(productID, forKey: LocalUnlockKeys.productID)
+        defaults.set(transaction.transactionIdentifier ?? "", forKey: LocalUnlockKeys.transactionID)
+        defaults.set(Int64(now.timeIntervalSince1970 * 1000), forKey: LocalUnlockKeys.unlockAtMs)
+        defaults.set(Int64(expireAt.timeIntervalSince1970 * 1000), forKey: LocalUnlockKeys.expireAtMs)
+        defaults.set("iap_purchase_success", forKey: LocalUnlockKeys.source)
+        
+        NotificationCenter.default.post(name: Self.localEntitlementUpdatedNotification, object: nil)
+        return expireAt
+    }
+    
+    private func clearExpiredLocalUnlockIfNeeded() {
+        let defaults = UserDefaults.standard
+        let expireAtMs = Int64(defaults.double(forKey: LocalUnlockKeys.expireAtMs))
+        if expireAtMs <= 0 { return }
+        
+        let nowMs = Int64(Date().timeIntervalSince1970 * 1000)
+        guard nowMs >= expireAtMs else { return }
+        
+        defaults.set(false, forKey: LocalUnlockKeys.isUnlocked)
+        defaults.removeObject(forKey: LocalUnlockKeys.productID)
+        defaults.removeObject(forKey: LocalUnlockKeys.transactionID)
+        defaults.removeObject(forKey: LocalUnlockKeys.unlockAtMs)
+        defaults.removeObject(forKey: LocalUnlockKeys.expireAtMs)
+        defaults.removeObject(forKey: LocalUnlockKeys.source)
+        NotificationCenter.default.post(name: Self.localEntitlementUpdatedNotification, object: nil)
+    }
+    
+    private func localUnlockDuration(productID: String) -> TimeInterval {
+        // 本地先做临时放行，最终以后台验单结果为准
+        if productID == ElaProIAPConfig.monthProductID ||
+            productID == ElaProIAPConfig.annualProductID ||
+            productID == ElaProIAPConfig.lifetimeProductID {
+            return 7 * 24 * 60 * 60
+        }
+        return 3 * 24 * 60 * 60
+    }
+    
+    private func makePurchaseVerifyPayload(transaction: SKPaymentTransaction,
+                                           localUnlockExpireAt: Date) -> [String: Any] {
+        let txDate = transaction.transactionDate ?? Date()
+        let oriTx = transaction.original ?? transaction
+        let oriTxDate = oriTx.transactionDate ?? txDate
+        let now = Date()
+        
+        return [
+            "userId": UserInfoModel.shared.uId,
+            "productId": transaction.payment.productIdentifier,
+            "transactionId": transaction.transactionIdentifier ?? "",
+            "originalTransactionId": oriTx.transactionIdentifier ?? "",
+            "transactionDateMs": Int64(txDate.timeIntervalSince1970 * 1000),
+            "originalTransactionDateMs": Int64(oriTxDate.timeIntervalSince1970 * 1000),
+            "subscriptionGroupName": ElaProIAPConfig.subscriptionGroupName,
+            "subscriptionGroupId": ElaProIAPConfig.subscriptionGroupID,
+            "receiptBase64": loadReceiptBase64(),
+            "receiptEnvironmentHint": receiptEnvironmentHint(),
+            "appBundleId": Bundle.main.bundleIdentifier ?? "",
+            "appVersion": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "",
+            "appBuild": Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "",
+            "clientTimestampMs": Int64(now.timeIntervalSince1970 * 1000),
+            "localUnlockExpireAtMs": Int64(localUnlockExpireAt.timeIntervalSince1970 * 1000)
+        ]
+    }
+    
+    private func cachePendingVerifyPayload(payload: [String: Any]) {
+        let json = WHUtils.getJSONStringFromDictionary(dictionary: payload as NSDictionary)
+        UserDefaults.standard.set(json, forKey: LocalUnlockKeys.pendingVerifyPayload)
+    }
+    
+    private func uploadPurchaseVerifyPayloadTODO(payload: [String: Any]) {
+        // TODO(iap-backend): 对接苹果内购凭证确认接口，接口名先占位为 `URL_pro_iap_purchase_confirm`
+        // TODO(iap-backend): 请求体建议至少包含 userId/productId/transactionId/originalTransactionId/receiptBase64
+        // TODO(iap-backend): 后台返回最终会员状态后，需覆盖本地临时解锁状态
+        DLLog(message: "[ElaProIAP][TODO_UPLOAD] payload=\(payload)")
+        
+        // 预留调用形式（后台接口就绪后放开）：
+        // WHNetworkUtil.shareManager().POST(urlString: URL_pro_iap_purchase_confirm,
+        //                                  parameters: payload as [String : AnyObject]) { _ in }
+    }
+    
+    private func loadReceiptBase64() -> String {
+        guard let receiptURL = Bundle.main.appStoreReceiptURL,
+              let receiptData = try? Data(contentsOf: receiptURL) else {
+            return ""
+        }
+        return receiptData.base64EncodedString()
+    }
+    
+    private func receiptEnvironmentHint() -> String {
+        guard let receiptURL = Bundle.main.appStoreReceiptURL else { return "unknown" }
+        return receiptURL.lastPathComponent.lowercased().contains("sandbox") ? "sandbox" : "production"
+    }
+    
+    private func logProductInfo(_ product: SKProduct, source: String) {
+        var lines: [String] = []
+        lines.append("[ElaProIAP][\(source)] 拉取成功")
+        lines.append("productId=\(product.productIdentifier)")
+        lines.append("price=\(localizedPriceString(for: product))")
+        lines.append("subscriptionPeriod=\(periodDebugText(product.subscriptionPeriod))")
+        
+        if let intro = product.introductoryPrice {
+            let introPrice = localizedPriceString(decimal: intro.price, locale: intro.priceLocale)
+            lines.append("introPrice=\(introPrice)")
+            lines.append("introPeriod=\(periodDebugText(intro.subscriptionPeriod))")
+            lines.append("introType=\(intro.paymentMode.rawValue)")
+            lines.append("introCycles=\(intro.numberOfPeriods)")
+        } else {
+            lines.append("introPrice=<none>")
+        }
+        
+        DLLog(message: lines.joined(separator: " | "))
+    }
+    
+    private func localizedPriceString(decimal: NSDecimalNumber, locale: Locale) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = locale
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = max(2, formatter.maximumFractionDigits)
+        return formatter.string(from: decimal) ?? "\(decimal)"
+    }
+    
+    private func periodDebugText(_ period: SKProductSubscriptionPeriod?) -> String {
+        guard let period = period else { return "<none>" }
+        
+        let unitText: String
+        switch period.unit {
+        case .day:
+            unitText = "day"
+        case .week:
+            unitText = "week"
+        case .month:
+            unitText = "month"
+        case .year:
+            unitText = "year"
+        @unknown default:
+            unitText = "unknown"
+        }
+        
+        return "\(period.numberOfUnits) \(unitText)"
     }
 }
 
