@@ -51,9 +51,17 @@ class ElaProVC: WHBaseViewVC {
         let vm = ElaProPlanVM.init(frame: CGRect(x: SCREEN_WIDHT, y: 0, width: 0, height: 0))
         return vm
     }()
+    lazy var readyVm: ElaProReadyVM = {
+        let vm = ElaProReadyVM.init(frame: CGRect(x: SCREEN_WIDHT*2, y: 0, width: 0, height: 0))
+        return vm
+    }()
+    lazy var transformVm: ElaProTransformVM = {
+        let vm = ElaProTransformVM.init(frame: CGRect(x: SCREEN_WIDHT*3, y: 0, width: 0, height: 0))
+        return vm
+    }()
     
     lazy var priceVm: ElaProPriceVM = {
-        let vm = ElaProPriceVM.init(frame: CGRect(x: SCREEN_WIDHT * 2, y: 0, width: 0, height: 0))
+        let vm = ElaProPriceVM.init(frame: CGRect(x: SCREEN_WIDHT * 4, y: 0, width: 0, height: 0))
         vm.purchaseSuccessBlock = { [weak self] in
             self?.backTapAction()
         }
@@ -80,11 +88,19 @@ extension ElaProVC{
             currentIndex = 2
             scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 2, y: 0), animated: true)
             updateNextButtonForCurrentStep(animated: true)
+        } else if currentIndex == 2 {
+            currentIndex = 3
+            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 3, y: 0), animated: true)
+            updateNextButtonForCurrentStep(animated: true)
+        } else if currentIndex == 3 {
+            currentIndex = 4
+            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 4, y: 0), animated: true)
+            updateNextButtonForCurrentStep(animated: true)
         }
     }
     
     func updateNextButtonForCurrentStep(animated: Bool) {
-        let shouldShow = (currentIndex == 1)
+        let shouldShow = (currentIndex == 1 || currentIndex == 2 || currentIndex == 3)
         let moveY = kFitWidth(90) + WHUtils().getBottomSafeAreaHeight()
         let targetTransform = shouldShow ? .identity : CGAffineTransform(translationX: 0, y: moveY)
         let targetAlpha: CGFloat = shouldShow ? 1 : 0
@@ -114,9 +130,11 @@ extension ElaProVC{
         view.addSubview(nextButton)
         
         scrollViewBase.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
-        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 3, height: 0)
+        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 5, height: 0)
         scrollViewBase.addSubview(progressVm)
         scrollViewBase.addSubview(planVm)
+        scrollViewBase.addSubview(readyVm)
+        scrollViewBase.addSubview(transformVm)
         scrollViewBase.addSubview(priceVm)
         
         nextButton.snp.makeConstraints { make in

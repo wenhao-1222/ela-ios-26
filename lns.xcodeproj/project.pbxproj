@@ -905,6 +905,8 @@
 		EC77842B2F56900003102D21 /* ElaProProgressVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */; };
 		EC77842E2F5698AC03102D21 /* ElaProPlanVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */; };
 		EC7784302F56A3A103102D21 /* ElaProIAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC77842F2F56A39F03102D21 /* ElaProIAPManager.swift */; };
+		EC7784322F57A92103102D21 /* ElaProReadyVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7784312F57A91F03102D21 /* ElaProReadyVM.swift */; };
+		EC7784342F57E00403102D21 /* ElaProTransformVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7784332F57E00103102D21 /* ElaProTransformVM.swift */; };
 		EC77AAC52F56DA2700ED0E93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC77AAC42F56DA2700ED0E93 /* StoreKit.framework */; };
 		EC781CC82BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC781CC72BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift */; };
 		EC781CCA2BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC781CC92BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift */; };
@@ -2304,6 +2306,8 @@
 		EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProProgressVM.swift; sourceTree = "<group>"; };
 		EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProPlanVM.swift; sourceTree = "<group>"; };
 		EC77842F2F56A39F03102D21 /* ElaProIAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProIAPManager.swift; sourceTree = "<group>"; };
+		EC7784312F57A91F03102D21 /* ElaProReadyVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProReadyVM.swift; sourceTree = "<group>"; };
+		EC7784332F57E00103102D21 /* ElaProTransformVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProTransformVM.swift; sourceTree = "<group>"; };
 		EC77AAC42F56DA2700ED0E93 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EC781CC72BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnairePlanFoodsVM.swift; sourceTree = "<group>"; };
 		EC781CC92BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnairePlanFoodsTableViewCell.swift; sourceTree = "<group>"; };
@@ -4535,11 +4539,11 @@
 				EC25C8332ED560CB00BF2D1F /* SkeletonListLoadingManager.swift */,
 				ECD0FE6D2BABC59E001232C9 /* PrefixHeader.pch */,
 				ECD0FE762BABCA04001232C9 /* lns-Bridging-Header.h */,
-				EC7784202F5675C3003102D2 /* Pro */,
 				ECF581DE2C329A8200FE0937 /* Guide */,
 				ECD0FE872BABD0E3001232C9 /* NetWork */,
 				ECAD701C2BB6B82700D8E3E5 /* ThirdPart */,
 				ECADF2AB2BB43200004B2C4B /* Welcome */,
+				EC7784202F5675C3003102D2 /* Pro */,
 				ECA059452F4D961A00E257E8 /* DietPlan */,
 				ECADF2A62BB431B8004B2C4B /* Questionnaire */,
 				EC380A232BB1583000B0C58F /* QuestionnaireSurvey */,
@@ -4604,6 +4608,8 @@
 				EC7784282F568CB7003102D2 /* ElaProPriceVM.swift */,
 				EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */,
 				EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */,
+				EC7784312F57A91F03102D21 /* ElaProReadyVM.swift */,
+				EC7784332F57E00103102D21 /* ElaProTransformVM.swift */,
 			);
 			path = VM;
 			sourceTree = "<group>";
@@ -6530,6 +6536,8 @@
 				EC7784292F568CBB003102D2 /* ElaProPriceVM.swift in Sources */,
 				EC77842B2F56900003102D21 /* ElaProProgressVM.swift in Sources */,
 				EC77842E2F5698AC03102D21 /* ElaProPlanVM.swift in Sources */,
+				EC7784322F57A92103102D21 /* ElaProReadyVM.swift in Sources */,
+				EC7784342F57E00403102D21 /* ElaProTransformVM.swift in Sources */,
 				EC7784302F56A3A103102D21 /* ElaProIAPManager.swift in Sources */,
 				ECAE25E62BF20F37007D4B57 /* NSDictionary+Exs.swift in Sources */,
 				A75F431D2CA797730062E7B2 /* FoodsCreateFastRemarkVM.swift in Sources */,
