@@ -61,6 +61,7 @@ class ElaProPriceVM: UIView {
     lazy var scrollView: UIScrollView = {
         let vi = UIScrollView()
         vi.showsVerticalScrollIndicator = false
+        vi.contentInsetAdjustmentBehavior = .never
         return vi
     }()
     lazy var contentView: UIView = {
@@ -138,7 +139,6 @@ class ElaProPriceVM: UIView {
     }()
     lazy var renewalSwitch: UISwitch = {
         let sw = UISwitch()
-        sw.isOn = true
         sw.onTintColor = selectedBlue
         return sw
     }()
@@ -151,10 +151,10 @@ class ElaProPriceVM: UIView {
     }()
     lazy var benefitContainer: UIView = {
         let vi = UIView()
-        vi.backgroundColor = UIColor.white.withAlphaComponent(0.2)
+        vi.backgroundColor = UIColor(named: "color_white_20_pro")//UIColor.white.withAlphaComponent(0.2)
         vi.layer.cornerRadius = kFitWidth(12)
         vi.layer.borderWidth = kFitWidth(1.5)
-        vi.layer.borderColor = UIColor.white.cgColor
+        vi.layer.borderColor = UIColor(named: "color_white_20_pro_border")?.cgColor
         vi.clipsToBounds = true
         return vi
     }()
@@ -690,6 +690,7 @@ extension ElaProPriceVM{
         subTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(logoImgView.snp.bottom).offset(kFitWidth(2))
             make.centerX.equalToSuperview()
+            make.height.equalTo(kFitWidth(22))
         }
         
         cardContainer.snp.makeConstraints { make in
@@ -715,7 +716,8 @@ extension ElaProPriceVM{
         
         tipsLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(cardContainer.snp.bottom).offset(kFitWidth(30))
+            make.top.equalTo(cardContainer.snp.bottom).offset(kFitWidth(20))
+            make.height.equalTo(kFitWidth(22))
         }
         
         renewalDashView.snp.makeConstraints { make in
@@ -734,26 +736,26 @@ extension ElaProPriceVM{
             make.left.equalTo(kFitWidth(20))
 //            make.right.equalTo(renewalSwitch.snp.left).offset(kFitWidth(-12))
             make.right.equalTo(kFitWidth(-69))
-            make.top.equalTo(renewalDashView.snp.bottom).offset(kFitWidth(16))
+            make.top.equalTo(renewalDashView.snp.bottom).offset(kFitWidth(20))
         }
         
         benefitTitleLabel.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.top.equalTo(renewalNoticeLabel.snp.bottom).offset(kFitWidth(24))
+            make.left.equalTo(kFitWidth(16))
+            make.top.equalTo(renewalNoticeLabel.snp.bottom).offset(kFitWidth(35))
         }
         
         benefitContainer.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.right.equalTo(kFitWidth(-20))
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
             make.top.equalTo(benefitTitleLabel.snp.bottom).offset(kFitWidth(14))
         }
         
         benefitOne.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
-            make.height.equalTo(kFitWidth(82))
+            make.height.equalTo(kFitWidth(65))
         }
         dividerOne.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(72))
+            make.left.equalTo(kFitWidth(65))
             make.right.equalToSuperview()
             make.top.equalTo(benefitOne.snp.bottom)
             make.height.equalTo(1)
@@ -762,10 +764,10 @@ extension ElaProPriceVM{
         benefitTwo.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(dividerOne.snp.bottom)
-            make.height.equalTo(kFitWidth(82))
+            make.height.equalTo(benefitOne)
         }
         dividerTwo.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(72))
+            make.left.equalTo(kFitWidth(65))
             make.right.equalToSuperview()
             make.top.equalTo(benefitTwo.snp.bottom)
             make.height.equalTo(1)
@@ -774,10 +776,10 @@ extension ElaProPriceVM{
         benefitThree.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(dividerTwo.snp.bottom)
-            make.height.equalTo(kFitWidth(82))
+            make.height.equalTo(benefitOne)
         }
         dividerThree.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(72))
+            make.left.equalTo(kFitWidth(65))
             make.right.equalToSuperview()
             make.top.equalTo(benefitThree.snp.bottom)
             make.height.equalTo(1)
@@ -786,10 +788,10 @@ extension ElaProPriceVM{
         benefitFour.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(dividerThree.snp.bottom)
-            make.height.equalTo(kFitWidth(82))
+            make.height.equalTo(benefitOne)
         }
         dividerFour.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(72))
+            make.left.equalTo(kFitWidth(65))
             make.right.equalToSuperview()
             make.top.equalTo(benefitFour.snp.bottom)
             make.height.equalTo(1)
@@ -798,10 +800,10 @@ extension ElaProPriceVM{
         benefitFive.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(dividerFour.snp.bottom)
-            make.height.equalTo(kFitWidth(82))
+            make.height.equalTo(benefitOne)
         }
         dividerFive.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(72))
+            make.left.equalTo(kFitWidth(65))
             make.right.equalToSuperview()
             make.top.equalTo(benefitFive.snp.bottom)
             make.height.equalTo(1)
@@ -810,27 +812,27 @@ extension ElaProPriceVM{
         benefitSix.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(dividerFive.snp.bottom)
-            make.height.equalTo(kFitWidth(82))
+            make.height.equalTo(benefitOne)
             make.bottom.equalToSuperview()
         }
         
         aiTitleLabel.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
+            make.left.equalTo(kFitWidth(16))
             make.top.equalTo(benefitContainer.snp.bottom).offset(kFitWidth(24))
         }
         
         aiContainer.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(aiTitleLabel.snp.bottom).offset(kFitWidth(10))
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(aiTitleLabel.snp.bottom).offset(kFitWidth(20))
         }
         
         aiOne.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
-            make.height.equalTo(kFitWidth(78))
+            make.height.equalTo(kFitWidth(65))
         }
         aiDividerOne.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(72))
+            make.left.equalTo(kFitWidth(65))
             make.right.equalToSuperview()
             make.top.equalTo(aiOne.snp.bottom)
             make.height.equalTo(1)
@@ -839,10 +841,10 @@ extension ElaProPriceVM{
         aiTwo.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(aiDividerOne.snp.bottom)
-            make.height.equalTo(kFitWidth(78))
+            make.height.equalTo(kFitWidth(65))
         }
         aiDividerTwo.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(72))
+            make.left.equalTo(kFitWidth(65))
             make.right.equalToSuperview()
             make.top.equalTo(aiTwo.snp.bottom)
             make.height.equalTo(1)
@@ -851,10 +853,10 @@ extension ElaProPriceVM{
         aiThree.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(aiDividerTwo.snp.bottom)
-            make.height.equalTo(kFitWidth(78))
+            make.height.equalTo(kFitWidth(65))
         }
         aiDividerThree.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(72))
+            make.left.equalTo(kFitWidth(65))
             make.right.equalToSuperview()
             make.top.equalTo(aiThree.snp.bottom)
             make.height.equalTo(1)
@@ -863,28 +865,28 @@ extension ElaProPriceVM{
         aiFour.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(aiDividerThree.snp.bottom)
-            make.height.equalTo(kFitWidth(78))
+            make.height.equalTo(kFitWidth(65))
             make.bottom.equalToSuperview()
         }
         
         moreTitleLabel.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.top.equalTo(aiContainer.snp.bottom).offset(kFitWidth(24))
+            make.left.equalTo(kFitWidth(16))
+            make.top.equalTo(aiContainer.snp.bottom).offset(kFitWidth(25))
         }
         
         moreContainer.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(moreTitleLabel.snp.bottom).offset(kFitWidth(10))
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(moreTitleLabel.snp.bottom).offset(kFitWidth(20))
             make.bottom.equalToSuperview().offset(kFitWidth(-20))
         }
         
         moreOne.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
-            make.height.equalTo(kFitWidth(64))
+            make.height.equalTo(kFitWidth(55))
         }
         moreDividerOne.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(72))
+            make.left.equalTo(kFitWidth(65))
             make.right.equalToSuperview()
             make.top.equalTo(moreOne.snp.bottom)
             make.height.equalTo(1)
@@ -893,7 +895,7 @@ extension ElaProPriceVM{
         moreTwo.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(moreDividerOne.snp.bottom)
-            make.height.equalTo(kFitWidth(64))
+            make.height.equalTo(kFitWidth(55))
             make.bottom.equalToSuperview()
         }
     }
@@ -932,7 +934,7 @@ extension ElaProPriceVM{
         }
         descLab.snp.makeConstraints { make in
             make.left.right.equalTo(titleLab)
-            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(6))
+            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(2))
             make.height.equalTo(kFitWidth(18))
         }
         
@@ -972,7 +974,7 @@ extension ElaProPriceVM{
     
     func makeDivider() -> UIView {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "E7EAF0")
+        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_10//WHColor_16(colorStr: "E7EAF0")
         return vi
     }
     

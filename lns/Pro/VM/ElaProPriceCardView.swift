@@ -7,7 +7,7 @@
 
 class ElaProPriceCardView: UIView {
     private let blueColor = UIColor.THEME
-    private let borderColor = UIColor.COLOR_WHITE_65
+    private let borderColor = UIColor(named: "color_white_20_pro_border")
     private let titleColor = UIColor.COLOR_TEXT_TITLE_0f1214
     private let subColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
     private let borderLayer = CAShapeLayer()
@@ -54,6 +54,7 @@ class ElaProPriceCardView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = UIColor(named: "color_white_20_pro")
         layer.cornerRadius = kFitWidth(12)
         clipsToBounds = false
         
@@ -112,8 +113,8 @@ class ElaProPriceCardView: UIView {
     private func updateBorderPath() {
         guard bounds.width > 0, bounds.height > 0 else { return }
         
-        let lineWidth: CGFloat = isCardSelected ? 2 : 1
-        let radius = min(kFitWidth(18), min(bounds.width, bounds.height) * 0.5)
+        let lineWidth: CGFloat = kFitWidth(1.5)//isCardSelected ? kFitWidth(1.5) : 1
+        let radius = min(kFitWidth(12), min(bounds.width, bounds.height) * 0.5)
         let insetRect = bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5)
         let topY = insetRect.minY
         let leftX = insetRect.minX
@@ -124,14 +125,19 @@ class ElaProPriceCardView: UIView {
         let path = UIBezierPath()
         
         if !tagLabel.isHidden {
-            let tagWidth = max(kFitWidth(86), tagLabel.bounds.width)
-            let maxGap = max(0, insetRect.width - radius * 2 - 6)
-            let gapWidth = min(tagWidth + kFitWidth(18), maxGap)
-            let gapStartX = insetRect.midX - gapWidth * 0.5
-            let gapEndX = insetRect.midX + gapWidth * 0.5
+            // 缺口紧贴 tag 两侧边缘，不再用估算宽度。
+            let minGapX = leftX + radius + 1
+            let maxGapX = rightX - radius - 1
+            let rawStartX = tagLabel.frame.minX
+            let rawEndX = tagLabel.frame.maxX
+            let gapStartX = max(minGapX, min(rawStartX, maxGapX))
+            let gapEndX = min(maxGapX, max(rawEndX, minGapX))
+            
             path.move(to: topLeftStart)
-            path.addLine(to: CGPoint(x: gapStartX, y: topY))
-            path.move(to: CGPoint(x: gapEndX, y: topY))
+            if gapEndX > gapStartX {
+                path.addLine(to: CGPoint(x: gapStartX, y: topY))
+                path.move(to: CGPoint(x: gapEndX, y: topY))
+            }
         } else {
             path.move(to: topLeftStart)
         }
@@ -162,7 +168,7 @@ class ElaProPriceCardView: UIView {
                     clockwise: true)
         
         borderLayer.path = path.cgPath
-        borderLayer.strokeColor = (isCardSelected ? blueColor : borderColor).cgColor
+        borderLayer.strokeColor = (isCardSelected ? blueColor : borderColor)?.cgColor
         borderLayer.lineWidth = lineWidth
     }
     
@@ -178,6 +184,7 @@ class ElaProPriceCardView: UIView {
         subTitleLabel.text = subTitle
         subTitleLabel.isHidden = (subTitle?.isEmpty ?? true)
         priceLabel.text = price
+        backgroundColor = selected ? UIColor(named: "color_white_20_pro_select") : UIColor(named: "color_white_20_pro")
         
         if let originPrice = originPrice, !originPrice.isEmpty {
             let attr = NSMutableAttributedString(string: originPrice)

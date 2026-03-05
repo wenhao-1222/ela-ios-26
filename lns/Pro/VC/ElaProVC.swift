@@ -17,18 +17,20 @@ class ElaProVC: WHBaseViewVC {
     
     lazy var naviVm: DietPlanCreateNaviVM = {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
+//        vm.alpha = 0
         vm.firstStepVm.isHidden = true
         vm.secondStepVm.isHidden = true
         vm.thirdStepVm.isHidden = true
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
-            if self.currentIndex == 0 {
+//            if self.currentIndex == 0 {
                 self.backTapAction()
-            } else {
-                self.currentIndex -= 1
-                self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(self.currentIndex), y: 0), animated: true)
-                self.updateNextButtonForCurrentStep(animated: true)
-            }
+//            }
+//            else {
+//                self.currentIndex -= 1
+//                self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(self.currentIndex), y: 0), animated: true)
+//                self.updateNextButtonForCurrentStep(animated: true)
+//            }
         }
         return vm
     }()
@@ -40,6 +42,9 @@ class ElaProVC: WHBaseViewVC {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                 guard self.currentIndex == 0 else { return }
                 self.currentIndex = 1
+                UIView.animate(withDuration: 0.35, delay: 0) {
+                    self.naviVm.alpha = 0
+                }
                 self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: true)
                 self.updateNextButtonForCurrentStep(animated: true)
             }
@@ -88,12 +93,20 @@ extension ElaProVC{
             currentIndex = 2
             scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 2, y: 0), animated: true)
             updateNextButtonForCurrentStep(animated: true)
+            UIView.animate(withDuration: 0.35, delay: 0) {
+                self.naviVm.alpha = 1
+            }
         } else if currentIndex == 2 {
             currentIndex = 3
+            self.naviVm.alpha = 0
             scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 3, y: 0), animated: true)
             updateNextButtonForCurrentStep(animated: true)
         } else if currentIndex == 3 {
             currentIndex = 4
+            self.naviVm.backButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
+            UIView.animate(withDuration: 0.35, delay: 0) {
+                self.naviVm.alpha = 1
+            }
             scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 4, y: 0), animated: true)
             updateNextButtonForCurrentStep(animated: true)
         }

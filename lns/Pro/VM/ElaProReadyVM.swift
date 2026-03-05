@@ -30,6 +30,7 @@ class ElaProReadyVM: UIView {
     private var selectedStrategy: DietStrategy = .balanced
     private var selectedSpecialAdjustment: SpecialAdjustment?
     private var items: [ReadyItem] = []
+    private var titleTopConstraint: Constraint?
     
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -45,6 +46,18 @@ class ElaProReadyVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        titleTopConstraint?.update(offset: resolvedStatusBarHeight() + kFitWidth(52))
+    }
+    
+    private func resolvedStatusBarHeight() -> CGFloat {
+        if let scene = window?.windowScene {
+            return scene.statusBarManager?.statusBarFrame.height ?? statusBarHeight
+        }
+        return statusBarHeight
+    }
+    
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "ela_pro_progress_bg")
@@ -56,6 +69,7 @@ class ElaProReadyVM: UIView {
     lazy var scrollView: UIScrollView = {
         let vi = UIScrollView()
         vi.showsVerticalScrollIndicator = false
+        vi.contentInsetAdjustmentBehavior = .never
         return vi
     }()
     
@@ -68,7 +82,7 @@ class ElaProReadyVM: UIView {
         let lab = UILabel()
         lab.text = "一切都替你准备好了"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 26, weight: .semibold)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.textAlignment = .center
         return lab
     }()
@@ -76,7 +90,7 @@ class ElaProReadyVM: UIView {
     lazy var stackView: UIStackView = {
         let vi = UIStackView()
         vi.axis = .vertical
-        vi.spacing = kFitWidth(14)
+        vi.spacing = kFitWidth(12)
         vi.alignment = .fill
         vi.distribution = .fill
         return vi
@@ -259,6 +273,8 @@ extension ElaProReadyVM {
         contentView.addSubview(stackView)
         
         setConstrait()
+//        scrollView.contentSize
+        //-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(86))
     }
     
     func setConstrait() {
@@ -267,23 +283,24 @@ extension ElaProReadyVM {
         }
         
         scrollView.snp.makeConstraints { make in
-            make.left.right.top.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(86)))
+            make.left.right.top.bottom.equalToSuperview()
+//            make.bottom.equalToSuperview().offset(-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(86)))
         }
         
         contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.left.top.equalToSuperview()
             make.width.equalToSuperview()
+            make.bottom.equalTo(-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(86)))
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(52))
+            titleTopConstraint = make.top.equalTo(statusBarHeight + kFitWidth(52)).constraint
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(34))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(45))
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
             make.bottom.equalToSuperview().offset(kFitWidth(-20))
@@ -322,8 +339,8 @@ private final class ElaProReadyItemCardView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.white.withAlphaComponent(0.72)
-        layer.cornerRadius = kFitWidth(16)
+        backgroundColor = .COLOR_CARD_BG_WHITE//UIColor.white.withAlphaComponent(0.72)
+        layer.cornerRadius = kFitWidth(12)
         clipsToBounds = true
         
         addSubview(iconView)

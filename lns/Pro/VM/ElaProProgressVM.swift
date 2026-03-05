@@ -11,12 +11,24 @@ import SnapKit
 class ElaProProgressVM: UIView {
     var backTapBlock: (() -> ())?
     var progressCompleteBlock: (() -> ())?
-    // 进度节奏系数：1.0 为默认；>1 更快，<1 更慢（例如 1.5 约快 50%）
+    // 进度节奏系数：1.0 为默认；>1 更快，<1 更慢
     var progressTempo: CGFloat = 3.8 {
         didSet {
             if progressTempo < 0.2 { progressTempo = 0.2 }
-            if progressTempo > 4.0 { progressTempo = 4.0 }
+            if progressTempo > 8.0 { progressTempo = 8.0 }
             if abs(progressTempo - oldValue) < 0.0001 { return }
+            if progressTimer != nil && currentProgress < 100 {
+                stopFakeProgress()
+                startFakeProgress()
+            }
+        }
+    }
+    // 总时长缩放：1.0=当前基准时长，0.5=基准一半时长，2.0=基准两倍时长
+    var totalDurationScale: CGFloat = 0.5 {
+        didSet {
+            if totalDurationScale < 0.2 { totalDurationScale = 0.2 }
+            if totalDurationScale > 3.0 { totalDurationScale = 3.0 }
+            if abs(totalDurationScale - oldValue) < 0.0001 { return }
             if progressTimer != nil && currentProgress < 100 {
                 stopFakeProgress()
                 startFakeProgress()
@@ -91,7 +103,7 @@ class ElaProProgressVM: UIView {
     
     lazy var progressTrackView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "ECECEF")
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//WHColor_16(colorStr: "ECECEF")
         vi.layer.cornerRadius = kFitWidth(6)
         vi.clipsToBounds = true
         return vi
@@ -137,6 +149,15 @@ class ElaProProgressVM: UIView {
 }
 
 extension ElaProProgressVM {
+    // 提供给外部动态修改整体时长
+    func updateTotalDurationScale(_ scale: CGFloat) {
+        totalDurationScale = scale
+    }
+    
+    private func effectiveSpeedMultiplier() -> CGFloat {
+        return 1.0 / max(totalDurationScale, 0.2)
+    }
+    
     private func startFakeProgress() {
         if progressTimer != nil || currentProgress >= 100 { return }
         lastTickTime = CACurrentMediaTime()
@@ -168,10 +189,11 @@ extension ElaProProgressVM {
         let now = CACurrentMediaTime()
         let dt = min(max(now - lastTickTime, 0.016), 0.2)
         lastTickTime = now
+        let speedMultiplier = effectiveSpeedMultiplier()
         
         if displayedProgress >= 99 {
             if finishHoldRemaining <= 0 {
-                finishHoldRemaining = Double.random(in: 0.45...1.1) / Double(max(progressTempo, 0.2))
+                finishHoldRemaining = Double.random(in: 0.45...1.1) / Double(max(progressTempo, 0.2) * speedMultiplier)
             }
             finishHoldRemaining -= dt
             if finishHoldRemaining <= 0 {
@@ -188,7 +210,7 @@ extension ElaProProgressVM {
         
         if stallRemaining > 0 {
             stallRemaining -= dt
-            displayedProgress = min(displayedProgress + CGFloat(dt * 0.15), 99)
+            displayedProgress = min(displayedProgress + CGFloat(dt * 0.15) * speedMultiplier, 99)
             updateProgressUI(animated: true)
             return
         }
@@ -205,23 +227,23 @@ extension ElaProProgressVM {
         displayedProgress = min(displayedProgress + delta, 99)
         
         if shouldPause(progress: displayedProgress) {
-            stallRemaining = Double.random(in: 0.18...0.6) / Double(max(progressTempo, 0.2))
+            stallRemaining = Double.random(in: 0.18...0.6) / Double(max(progressTempo, 0.2) * speedMultiplier)
         }
         
         updateProgressUI(animated: true)
     }
     
     private func baseSpeedFor(progress: CGFloat) -> CGFloat {
-        let tempo = max(progressTempo, 0.2)
+        let tempo = max(progressTempo, 0.2) * effectiveSpeedMultiplier()
         switch progress {
         case 0..<20:
-            return 12.0 * tempo
+            return 8.0 * tempo
         case 20..<45:
-            return 8.2 * tempo
+            return 6.2 * tempo
         case 45..<70:
-            return 5.6 * tempo
+            return 4.6 * tempo
         case 70..<85:
-            return 3.3 * tempo
+            return 2.3 * tempo
         case 85..<95:
             return 1.7 * tempo
         default:

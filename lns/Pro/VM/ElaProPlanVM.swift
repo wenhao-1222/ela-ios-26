@@ -43,18 +43,33 @@ class ElaProPlanVM: UIView {
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
         lab.numberOfLines = 0
-        lab.text = "把专业健身饮食\n变成你每天能执行的菜谱"
+        let text = "把专业健身饮食\n变成你每天能执行的菜谱"
+        let font = UIFont.systemFont(ofSize: 26, weight: .semibold)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.3
+        lab.attributedText = NSAttributedString(
+            string: text,
+            attributes: [
+                .font: font,
+                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+                .paragraphStyle: paragraphStyle
+            ]
+        )
         lab.textColor = .white
-        lab.font = .systemFont(ofSize: 26, weight: .semibold)
+        lab.font = font
         return lab
     }()
     
     lazy var tagLeftLabel: UILabel = makeTagLabel("运动员共创")
     lazy var tagRightLabel: UILabel = makeTagLabel("营养师校准")
+    lazy var tagLeftLeftIcon: UIImageView = makeTagIcon(named: "ela_tag_label_left_icon")
+    lazy var tagLeftRightIcon: UIImageView = makeTagIcon(named: "ela_tag_label_right_icon")
+    lazy var tagRightLeftIcon: UIImageView = makeTagIcon(named: "ela_tag_label_left_icon")
+    lazy var tagRightRightIcon: UIImageView = makeTagIcon(named: "ela_tag_label_right_icon")
     
     lazy var planOneCard: UIView = {
         let vi = UIView()
-        vi.backgroundColor = UIColor.white.withAlphaComponent(0.96)
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//UIColor.white.withAlphaComponent(0.96)
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         return vi
@@ -72,10 +87,13 @@ class ElaProPlanVM: UIView {
         let lab = UILabel()
         lab.numberOfLines = 0
         let text = "旧版本已帮助和你情况相似的用户，在尽量减少避免脂肪堆积情况下 3 个月内完成 增肌 5.4 公斤。"
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.5
         let attr = NSMutableAttributedString(string: text)
         attr.addAttributes([
             .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
-            .font: UIFont.systemFont(ofSize: 14, weight: .regular)
+            .font: UIFont.systemFont(ofSize: 14, weight: .regular),
+            .paragraphStyle: paragraphStyle
         ], range: NSRange(location: 0, length: text.count))
         
         let highlights = ["3", "增肌 5.4 公斤"]
@@ -84,7 +102,8 @@ class ElaProPlanVM: UIView {
                 let nsRange = NSRange(range, in: text)
                 attr.addAttributes([
                     .foregroundColor: UIColor.THEME,
-                    .font: UIFont.systemFont(ofSize: 16, weight: .semibold)
+                    .font: UIFont.systemFont(ofSize: 16, weight: .semibold),
+                    .paragraphStyle: paragraphStyle
                 ], range: nsRange)
             }
         }
@@ -94,7 +113,7 @@ class ElaProPlanVM: UIView {
     
     lazy var planTwoCard: UIView = {
         let vi = UIView()
-        vi.backgroundColor = UIColor.white.withAlphaComponent(0.92)
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(16)
         vi.clipsToBounds = true
         return vi
@@ -119,10 +138,17 @@ class ElaProPlanVM: UIView {
     
     private func makeTagLabel(_ text: String) -> UILabel {
         let lab = UILabel()
-        lab.text = "❨ \(text) ❩"
+        lab.text = text
         lab.textColor = WHColor_16(colorStr: "EAD6AE")
         lab.font = .systemFont(ofSize: 17, weight: .medium)
         return lab
+    }
+    
+    private func makeTagIcon(named: String) -> UIImageView {
+        let img = UIImageView()
+        img.setImgLocal(imgName: named)
+        img.contentMode = .scaleAspectFit
+        return img
     }
     
     private func makeRow(icon: String, title: String) -> UIView {
@@ -159,7 +185,7 @@ class ElaProPlanVM: UIView {
     
     private func makeDivider() -> UIView {
         let vi = UIView()
-        vi.backgroundColor = WHColor_16(colorStr: "ECEDEE")
+        vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_10//WHColor_16(colorStr: "ECEDEE")
         return vi
     }
 }
@@ -173,6 +199,10 @@ extension ElaProPlanVM {
         contentView.addSubview(titleLabel)
         contentView.addSubview(tagLeftLabel)
         contentView.addSubview(tagRightLabel)
+        contentView.addSubview(tagLeftLeftIcon)
+        contentView.addSubview(tagLeftRightIcon)
+        contentView.addSubview(tagRightLeftIcon)
+        contentView.addSubview(tagRightRightIcon)
         contentView.addSubview(planOneCard)
         contentView.addSubview(planTwoCard)
         
@@ -209,18 +239,41 @@ extension ElaProPlanVM {
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(32))
             make.right.equalTo(kFitWidth(-32))
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(60))
+            make.top.equalTo(statusBarHeight + kFitWidth(65))
         }
         
         tagLeftLabel.snp.makeConstraints { make in
-            make.left.equalTo(titleLabel.snp.left)
+            make.left.equalTo(tagLeftLeftIcon.snp.right).offset(kFitWidth(6))
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(22))
+        }
+        tagLeftLeftIcon.snp.makeConstraints { make in
+            make.left.equalTo(titleLabel.snp.left)
+            make.centerY.equalTo(tagLeftLabel)
+            make.width.equalTo(kFitWidth(11))
+            make.height.equalTo(kFitWidth(21))
+        }
+        tagLeftRightIcon.snp.makeConstraints { make in
+            make.left.equalTo(tagLeftLabel.snp.right).offset(kFitWidth(6))
+            make.centerY.equalTo(tagLeftLabel)
+            make.width.equalTo(kFitWidth(11))
+            make.height.equalTo(kFitWidth(21))
         }
         
         tagRightLabel.snp.makeConstraints { make in
-            make.left.equalTo(tagLeftLabel.snp.right).offset(kFitWidth(24))
+            make.left.equalTo(tagRightLeftIcon.snp.right).offset(kFitWidth(6))
             make.centerY.equalTo(tagLeftLabel)
-            make.right.lessThanOrEqualTo(kFitWidth(-20))
+        }
+        tagRightLeftIcon.snp.makeConstraints { make in
+            make.left.equalTo(tagLeftRightIcon.snp.right).offset(kFitWidth(21))
+            make.centerY.equalTo(tagLeftLabel)
+            make.width.equalTo(kFitWidth(11))
+            make.height.equalTo(kFitWidth(21))
+        }
+        tagRightRightIcon.snp.makeConstraints { make in
+            make.left.equalTo(tagRightLabel.snp.right).offset(kFitWidth(6))
+            make.centerY.equalTo(tagLeftLabel)
+            make.width.equalTo(kFitWidth(11))
+            make.height.equalTo(kFitWidth(21))
         }
         
         planOneCard.snp.makeConstraints { make in
@@ -230,14 +283,14 @@ extension ElaProPlanVM {
         }
         
         planOneTitleLabel.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(18))
-            make.top.equalTo(kFitWidth(18))
+            make.left.equalTo(kFitWidth(16))
+            make.top.equalTo(kFitWidth(16))
         }
         
         planOneDescLabel.snp.makeConstraints { make in
             make.left.equalTo(planOneTitleLabel)
-            make.right.equalTo(kFitWidth(-18))
-            make.top.equalTo(planOneTitleLabel.snp.bottom).offset(kFitWidth(14))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(planOneTitleLabel.snp.bottom).offset(kFitWidth(8))
             make.bottom.equalTo(kFitWidth(-16))
         }
         
@@ -250,17 +303,19 @@ extension ElaProPlanVM {
         planTwoTitleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(18))
             make.top.equalTo(kFitWidth(18))
+            make.height.equalTo(kFitWidth(24))
         }
         
         rowOne.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(18))
             make.right.equalTo(kFitWidth(-18))
-            make.top.equalTo(planTwoTitleLabel.snp.bottom).offset(kFitWidth(18))
+            make.top.equalTo(planTwoTitleLabel.snp.bottom).offset(kFitWidth(7))
             make.height.equalTo(kFitWidth(52))
         }
         
         dividerOne.snp.makeConstraints { make in
-            make.left.right.equalTo(rowOne)
+            make.right.equalTo(rowOne)
+            make.left.equalTo(rowOne).offset(kFitWidth(37))
             make.top.equalTo(rowOne.snp.bottom)
             make.height.equalTo(kFitWidth(1))
         }
@@ -292,4 +347,3 @@ extension ElaProPlanVM {
         }
     }
 }
-
