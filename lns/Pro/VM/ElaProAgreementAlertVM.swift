@@ -5,6 +5,8 @@
 //  Created by LNS2 on 2026/3/5.
 //
 
+import UIKit
+import WebKit
 
 class ElaProAgreementAlertVM: UIView {
     
@@ -13,6 +15,7 @@ class ElaProAgreementAlertVM: UIView {
     let whiteViewTopRadius: CGFloat = kFitWidth(50)
     
     private var didLoadPage = false
+    private let transparentStyleID = "ela_pro_agreement_transparent_style"
     /// 蒙层目标透明度：浅色 0.15，深色 0.85
     private var targetDimAlpha: CGFloat {
         return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
@@ -21,8 +24,13 @@ class ElaProAgreementAlertVM: UIView {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         setupWhiteViewBorder()
+        applyTransparentBackgroundToLoadedPage()
         UIView.animate(withDuration: 0.2) {
             self.bgView.alpha = self.targetDimAlpha
+            self.topGradientLayer.colors = [
+                UIColor.COLOR_CARD_BG_WHITE_ALERT.withAlphaComponent(0.05).cgColor,
+                UIColor.COLOR_CARD_BG_WHITE_ALERT.withAlphaComponent(0).cgColor
+            ]
         }
     }
     
@@ -127,7 +135,12 @@ class ElaProAgreementAlertVM: UIView {
     private lazy var wkWebView: WKWebView = {
         let config = WKWebViewConfiguration()
         let web = WKWebView(frame: .zero, configuration: config)
+        web.isOpaque = false
         web.backgroundColor = .clear
+        if #available(iOS 15.0, *) {
+            web.underPageBackgroundColor = .clear
+        }
+        web.navigationDelegate = self
         web.scrollView.backgroundColor = .clear
         web.scrollView.showsVerticalScrollIndicator = true
         return web
@@ -142,8 +155,8 @@ class ElaProAgreementAlertVM: UIView {
         layer.startPoint = CGPoint(x: 0.5, y: 0.0)
         layer.endPoint = CGPoint(x: 0.5, y: 1.0)
         layer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+            UIColor.COLOR_CARD_BG_WHITE_ALERT.withAlphaComponent(0.05).cgColor,
+            UIColor.COLOR_CARD_BG_WHITE_ALERT.withAlphaComponent(0).cgColor
         ]
         layer.locations = [0, 1]
         return layer
@@ -254,7 +267,7 @@ extension ElaProAgreementAlertVM {
                                      forMainFrameOnly: true)
         let earlyCSS = """
         html, body {
-            background-color: #000000 !important;
+                    background:transparent !important;background-color:transparent !important;
         }
         """
 
@@ -262,6 +275,11 @@ extension ElaProAgreementAlertVM {
         var style = document.createElement('style');
         style.innerHTML = `\(earlyCSS)`;
         document.head.appendChild(style);
+        document.documentElement.style.background = 'transparent';
+        if (document.body) {
+            document.body.style.background = 'transparent';
+            document.body.style.backgroundColor = 'transparent';
+        }
         """
 
         let earlyScript = WKUserScript(source: earlyJS,
@@ -274,6 +292,32 @@ extension ElaProAgreementAlertVM {
 
         // --- 3. 保持 WKWebView 跟随系统外观 ---
         wkWebView.overrideUserInterfaceStyle = .unspecified
+    }
+
+    
+    private func transparentBackgroundJavaScript() -> String {
+        return """
+        (function() {
+            var style = document.getElementById('\(transparentStyleID)');
+            if (!style) {
+                style = document.createElement('style');
+                style.id = '\(transparentStyleID)';
+                document.documentElement.appendChild(style);
+            }
+            style.innerHTML = 'html,body{background:transparent !important;background-color:transparent !important;}';
+            document.documentElement.style.background = 'transparent';
+            if (document.body) {
+                document.body.style.background = 'transparent';
+                document.body.style.backgroundColor = 'transparent';
+            }
+        })();
+        """
+    }
+    
+    
+    private func applyTransparentBackgroundToLoadedPage() {
+        guard didLoadPage else { return }
+        wkWebView.evaluateJavaScript(transparentBackgroundJavaScript(), completionHandler: nil)
     }
 }
 
@@ -320,8 +364,8 @@ extension ElaProAgreementAlertVM{
         }
         topGradientView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(wkWebView.snp.top).offset(kFitWidth(-10))
-            make.height.equalTo(kFitWidth(35))
+            make.top.equalTo(wkWebView.snp.top)//.offset(kFitWidth(-10))
+            make.height.equalTo(kFitWidth(50))
         }
     }
     private func setupWhiteViewBorder() {
@@ -346,6 +390,12 @@ extension ElaProAgreementAlertVM{
         let pathRect = whiteView.bounds.insetBy(dx: inset, dy: inset)
         whiteBorderMaskLayer.path = UIBezierPath(roundedRect: pathRect,
                                                  cornerRadius: whiteViewTopRadius - inset).cgPath
+    }
+}
+
+extension ElaProAgreementAlertVM: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        applyTransparentBackgroundToLoadedPage()
     }
 }
 
