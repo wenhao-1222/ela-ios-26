@@ -7,6 +7,7 @@
 
 import StoreKit
 import MCToast
+import UserNotifications
 
 class ElaProPriceVM: UIView {
     enum PlanType {
@@ -36,6 +37,7 @@ class ElaProPriceVM: UIView {
     private var annualOriginPriceText: String?
     private var lifetimePriceText = "--"
     private var isPurchasing = false
+    private var shouldSyncRenewalSwitchAfterSettings = false
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -43,11 +45,16 @@ class ElaProPriceVM: UIView {
         self.isUserInteractionEnabled = true
         
         initUI()
+        observeAppBecomeActive()
         refreshPlanCards()
         fetchProProductsIfNeeded()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
@@ -139,7 +146,9 @@ class ElaProPriceVM: UIView {
     }()
     lazy var renewalSwitch: UISwitch = {
         let sw = UISwitch()
+        sw.isOn = false
         sw.onTintColor = selectedBlue
+        sw.addTarget(self, action: #selector(renewalSwitchValueChanged(_:)), for: .valueChanged)
         return sw
     }()
     lazy var benefitTitleLabel: UILabel = {
@@ -203,7 +212,7 @@ class ElaProPriceVM: UIView {
     lazy var moreDividerOne = makeDivider()
     lazy var bottomBar: UIView = {
         let vi = UIView()
-        vi.backgroundColor = UIColor.white.withAlphaComponent(0.94)
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE//UIColor.white.withAlphaComponent(0.94)
         return vi
     }()
     lazy var confirmButton: UIButton = {
@@ -266,6 +275,83 @@ class ElaProPriceVM: UIView {
 }
 
 extension ElaProPriceVM{
+    @objc func renewalSwitchValueChanged(_ sender: UISwitch) {
+        guard sender.isOn else {
+            shouldSyncRenewalSwitchAfterSettings = false
+            return
+        }
+        
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
+            DispatchQueue.main.async {
+                if granted {
+                    self.shouldSyncRenewalSwitchAfterSettings = false
+                    return
+                }
+                sender.setOn(false, animated: true)
+                self.shouldSyncRenewalSwitchAfterSettings = true
+                self.presentNotificationPermissionAlert()
+            }
+        }
+    }
+    
+    private func observeAppBecomeActive() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleAppDidBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
+    }
+    
+    @objc private func handleAppDidBecomeActive() {
+        guard shouldSyncRenewalSwitchAfterSettings else { return }
+        syncRenewalSwitchStatusFromSystem(animated: true) { [weak self] _ in
+            self?.shouldSyncRenewalSwitchAfterSettings = false
+        }
+    }
+    
+    private func syncRenewalSwitchStatusFromSystem(animated: Bool,
+                                                   completion: ((Bool) -> Void)? = nil) {
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            let enabled: Bool
+            switch settings.authorizationStatus {
+            case .authorized, .provisional, .ephemeral:
+                enabled = true
+            default:
+                enabled = false
+            }
+            DispatchQueue.main.async {
+                self?.renewalSwitch.setOn(enabled, animated: animated)
+                completion?(enabled)
+            }
+        }
+    }
+    
+    private func presentNotificationPermissionAlert() {
+        guard let topVC = UIApplication.topViewController() else {
+            MCToast.mc_text("通知权限未开启，请在系统设置中允许通知")
+            return
+        }
+        guard !(topVC.presentedViewController is UIAlertController) else { return }
+        
+        let alert = UIAlertController(title: "通知权限未开启",
+                                      message: "请在系统设置中允许通知，便于你在续费前收到提醒。",
+                                      preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel)
+        let settingsAction = UIAlertAction(title: "去设置", style: .default) { _ in
+            self.openSystemSettings()
+        }
+        alert.addAction(cancelAction)
+        alert.addAction(settingsAction)
+        topVC.present(alert, animated: true)
+    }
+    
+    private func openSystemSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString),
+              UIApplication.shared.canOpenURL(url) else {
+            return
+        }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+    
     @objc func toggleAgreeAction() {
         agreeButton.isSelected.toggle()
     }

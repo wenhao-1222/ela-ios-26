@@ -237,11 +237,11 @@ extension ElaProProgressVM {
         let tempo = max(progressTempo, 0.2) * effectiveSpeedMultiplier()
         switch progress {
         case 0..<20:
-            return 8.0 * tempo
+            return 6.0 * tempo
         case 20..<45:
-            return 6.2 * tempo
+            return 5.2 * tempo
         case 45..<70:
-            return 4.6 * tempo
+            return 4.0 * tempo
         case 70..<85:
             return 2.3 * tempo
         case 85..<95:
