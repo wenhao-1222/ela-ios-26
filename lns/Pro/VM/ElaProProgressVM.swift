@@ -60,8 +60,11 @@ class ElaProProgressVM: UIView {
         isUserInteractionEnabled = true
         
         initUI()
-        updateProgressUI(animated: false)
-        startFakeProgress()
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+            self.updateProgressUI(animated: true)
+            self.startFakeProgress()
+        })
+        
     }
     
     required init?(coder: NSCoder) {

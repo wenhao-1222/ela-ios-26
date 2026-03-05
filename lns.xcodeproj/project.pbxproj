@@ -887,6 +887,7 @@
 		EC6D03852C6F483E00F33137 /* WidgetMsgModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D03842C6F483E00F33137 /* WidgetMsgModel.swift */; };
 		EC6D20ED2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D20EC2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift */; };
 		EC6E7D092C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E7D082C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift */; };
+		EC73D5D82F5975DF00E408EB /* ElaProAgreementAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */; };
 		EC747D8B2ED69A1600F8D3D2 /* AppearanceOptionsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */; };
 		EC7575E02F303E52005E2077 /* HabitRuleTableViewImgCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */; };
 		EC7575E22F303E5A005E2077 /* HabitRuleTableViewImgTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7575E12F303E56005E2077 /* HabitRuleTableViewImgTextCell.swift */; };
@@ -2289,6 +2290,7 @@
 		EC6D03842C6F483E00F33137 /* WidgetMsgModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetMsgModel.swift; sourceTree = "<group>"; };
 		EC6D20EC2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideFoodsListAlertVM.swift; sourceTree = "<group>"; };
 		EC6E7D082C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewQuestionnaireNoSexVC.swift; sourceTree = "<group>"; };
+		EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProAgreementAlertVM.swift; sourceTree = "<group>"; };
 		EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceOptionsAlertVM.swift; sourceTree = "<group>"; };
 		EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewImgCell.swift; sourceTree = "<group>"; };
 		EC7575E12F303E56005E2077 /* HabitRuleTableViewImgTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewImgTextCell.swift; sourceTree = "<group>"; };
@@ -4613,6 +4615,7 @@
 				EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */,
 				EC7784312F57A91F03102D21 /* ElaProReadyVM.swift */,
 				EC7784332F57E00103102D21 /* ElaProTransformVM.swift */,
+				EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */,
 			);
 			path = VM;
 			sourceTree = "<group>";
@@ -6426,6 +6429,7 @@
 				EC4DE2EF2BCF7DE90090A7BD /* DataAddItemImageVM.swift in Sources */,
 				EC93FC9D2C103DC2007DBC39 /* TutorialsAlertVM.swift in Sources */,
 				A755ED6D2DF7C3E500005C3A /* ProgressChartView.swift in Sources */,
+				EC73D5D82F5975DF00E408EB /* ElaProAgreementAlertVM.swift in Sources */,
 				A74187422D79894A006C8858 /* AITipsContentCell.swift in Sources */,
 				EC38DE972BEF5671008E7FCE /* MineFuncVM.swift in Sources */,
 				EC4DE2862BC8E4490090A7BD /* PlanDetailDayMealsFoodsVM.swift in Sources */,

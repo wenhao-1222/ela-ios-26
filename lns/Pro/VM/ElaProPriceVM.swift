@@ -8,6 +8,7 @@
 import StoreKit
 import MCToast
 import UserNotifications
+import WebKit
 
 class ElaProPriceVM: UIView {
     enum PlanType {
@@ -38,6 +39,7 @@ class ElaProPriceVM: UIView {
     private var lifetimePriceText = "--"
     private var isPurchasing = false
     private var shouldSyncRenewalSwitchAfterSettings = false
+//    private lazy var agreementAlertVm = ElaProAgreementAlertVM(urlString: URL_pro_agreement)
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -247,6 +249,7 @@ class ElaProPriceVM: UIView {
     lazy var agreementLabel: UILabel = {
         let lab = UILabel()
         lab.numberOfLines = 1
+        lab.isUserInteractionEnabled = true
         let allText = "已阅读并同意《ELA PRO条款》（含自动续费条款）"
         let attr = NSMutableAttributedString(string: allText)
         attr.addAttributes([
@@ -260,7 +263,13 @@ class ElaProPriceVM: UIView {
             ], range: nsRange)
         }
         lab.attributedText = attr
+        let tap = UITapGestureRecognizer(target: self, action: #selector(openProAgreementAction))
+        lab.addGestureRecognizer(tap)
         return lab
+    }()
+    lazy var agreementAlertVm: ElaProAgreementAlertVM = {
+        let vm = ElaProAgreementAlertVM.init(frame: .zero)
+        return vm
     }()
     
     override func layoutSubviews() {
@@ -354,6 +363,10 @@ extension ElaProPriceVM{
     
     @objc func toggleAgreeAction() {
         agreeButton.isSelected.toggle()
+    }
+    
+    @objc func openProAgreementAction() {
+        agreementAlertVm.showSelf()
     }
     
     @objc func selectMonthCardAction() {
@@ -719,6 +732,8 @@ extension ElaProPriceVM{
         confirmButton.addTarget(self, action: #selector(confirmButtonTapAction), for: .touchUpInside)
         
         setConstrait()
+        
+        addSubview(agreementAlertVm)
     }
     func setConstrait() {
         bgImgView.snp.makeConstraints { make in
