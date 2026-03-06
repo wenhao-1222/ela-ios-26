@@ -23,7 +23,7 @@ class ElaProPlanVM: UIView {
     
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "Image 5")
+        img.setImgLocal(imgName: "ela_pro_2_bg")
         img.contentMode = .scaleAspectFill
         img.clipsToBounds = true
         return img

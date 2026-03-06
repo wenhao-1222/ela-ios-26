@@ -18,6 +18,7 @@ class ElaProPriceVM: UIView {
     }
     
     var purchaseSuccessBlock: (() -> ())?
+    var protocalTapBlock: (() -> ())?
     
     private let selectedBlue = WHColor_16(colorStr: "1677F2")
     private let normalTextColor = UIColor.COLOR_TEXT_TITLE_0f1214
@@ -39,7 +40,6 @@ class ElaProPriceVM: UIView {
     private var lifetimePriceText = "--"
     private var isPurchasing = false
     private var shouldSyncRenewalSwitchAfterSettings = false
-//    private lazy var agreementAlertVm = ElaProAgreementAlertVM(urlString: URL_pro_agreement)
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -227,14 +227,20 @@ class ElaProPriceVM: UIView {
         btn.clipsToBounds = true
         return btn
     }()
+    lazy var labelBgImgView: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "ela_price_per_bg")
+        img.contentMode = .scaleAspectFill
+        return img
+    }()
     lazy var dailyPriceLabel: UILabel = {
         let lab = UILabel()
         lab.text = "--元/天"
         lab.textColor = .white
-        lab.font = .systemFont(ofSize: 14, weight: .medium)
+        lab.font = .systemFont(ofSize: 10, weight: .regular)
         lab.textAlignment = .center
-        lab.backgroundColor = WHColor_16(colorStr: "FF8F29")
-        lab.layer.cornerRadius = kFitWidth(13)
+//        lab.backgroundColor = WHColor_16(colorStr: "FF8F29")
+//        lab.layer.cornerRadius = kFitWidth(13)
         lab.clipsToBounds = true
         return lab
     }()
@@ -266,10 +272,6 @@ class ElaProPriceVM: UIView {
         let tap = UITapGestureRecognizer(target: self, action: #selector(openProAgreementAction))
         lab.addGestureRecognizer(tap)
         return lab
-    }()
-    lazy var agreementAlertVm: ElaProAgreementAlertVM = {
-        let vm = ElaProAgreementAlertVM.init(frame: .zero)
-        return vm
     }()
     
     override func layoutSubviews() {
@@ -366,7 +368,7 @@ extension ElaProPriceVM{
     }
     
     @objc func openProAgreementAction() {
-        agreementAlertVm.showSelf()
+        self.protocalTapBlock?()
     }
     
     @objc func selectMonthCardAction() {
@@ -494,6 +496,7 @@ extension ElaProPriceVM{
         
         switch selectedPlan {
         case .month:
+            labelBgImgView.isHidden = true
             if let monthProduct = monthProduct {
                 dailyPriceLabel.text = buildDailyText(for: monthProduct)
                 tipsLabel.text = buildSubscriptionTips(for: monthProduct,
@@ -505,6 +508,7 @@ extension ElaProPriceVM{
             }
         case .annual:
             if let annualProduct = annualProduct {
+                labelBgImgView.isHidden = false
                 dailyPriceLabel.text = buildDailyText(for: annualProduct)
                 tipsLabel.text = buildSubscriptionTips(for: annualProduct,
                                                        currentPriceText: annualPriceText,
@@ -514,6 +518,7 @@ extension ElaProPriceVM{
                 tipsLabel.text = "价格加载中..."
             }
         case .lifetime:
+            labelBgImgView.isHidden = true
             if let lifetimeProduct = lifetimeProduct {
                 dailyPriceLabel.text = buildDailyText(for: lifetimeProduct, days: 365)
                 tipsLabel.text = "买断价\(lifetimePriceText)，一次购买长期可用"
@@ -724,16 +729,15 @@ extension ElaProPriceVM{
         renewalDashLayer.fillColor = UIColor.clear.cgColor
         renewalDashView.layer.addSublayer(renewalDashLayer)
         
+        bottomBar.addSubview(labelBgImgView)
+        labelBgImgView.addSubview(dailyPriceLabel)
         bottomBar.addSubview(confirmButton)
-        bottomBar.addSubview(dailyPriceLabel)
         bottomBar.addSubview(agreeButton)
         bottomBar.addSubview(agreementLabel)
         
         confirmButton.addTarget(self, action: #selector(confirmButtonTapAction), for: .touchUpInside)
         
         setConstrait()
-        
-        addSubview(agreementAlertVm)
     }
     func setConstrait() {
         bgImgView.snp.makeConstraints { make in
@@ -751,13 +755,22 @@ extension ElaProPriceVM{
             make.top.equalTo(kFitWidth(20))
             make.height.equalTo(kFitWidth(56))
         }
-        
-        dailyPriceLabel.snp.makeConstraints { make in
-            make.right.equalTo(confirmButton.snp.right)
-            make.bottom.equalTo(confirmButton.snp.top).offset(kFitWidth(5))
-            make.width.equalTo(kFitWidth(70))
-            make.height.equalTo(kFitWidth(26))
+        labelBgImgView.snp.makeConstraints { make in
+            make.right.equalTo(confirmButton)
+            make.top.equalTo(confirmButton).offset(kFitWidth(-16))
+            make.width.equalTo(kFitWidth(64.5))
+            make.height.equalTo(kFitWidth(43.5))
         }
+        dailyPriceLabel.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalTo(kFitWidth(4))
+        }
+//        dailyPriceLabel.snp.makeConstraints { make in
+//            make.right.equalTo(confirmButton.snp.right)
+//            make.bottom.equalTo(confirmButton.snp.top).offset(kFitWidth(5))
+//            make.width.equalTo(kFitWidth(70))
+//            make.height.equalTo(kFitWidth(26))
+//        }
         
         agreeButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(84))

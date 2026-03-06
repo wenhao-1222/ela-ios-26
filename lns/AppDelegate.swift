@@ -36,10 +36,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         DLLog(message: "application  -----   didFinishLaunchingWithOptions")
-//        UserDefaults.standard.setValue("vvdLm4akIHFbUGQE", forKey: token)
-//        UserDefaults.standard.setValue("2cc064b8797a28c6414e24e31114da2c", forKey: userId)
-//        UserInfoModel.shared.uId = "2cc064b8797a28c6414e24e31114da2c"
-//        UserInfoModel.shared.token = "vvdLm4akIHFbUGQE"
+//        UserDefaults.standard.setValue("HaoYkxwJQrHkmFgE", forKey: token)
+//        UserDefaults.standard.setValue("a6679bcde4263b33f6e5c66089c192e6", forKey: userId)
+//        UserInfoModel.shared.uId = "a6679bcde4263b33f6e5c66089c192e6"
+//        UserInfoModel.shared.token = "HaoYkxwJQrHkmFgE"
         let launchWindow: UIWindow
         if let existingWindow = window {
             launchWindow = existingWindow
@@ -52,14 +52,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         window = launchWindow
         launchWindow.backgroundColor = .THEME
         UIApplication.shared.applyInterfaceStyle(UserConfigModel.shared.overrideUserInterfaceStyle)
-//        let launchWindow = window ?? UIWindow(frame: UIScreen.main.bounds)
-//        launchWindow.backgroundColor = .THEME
-//        launchWindow.isOpaque = true
-//        window = launchWindow
-//        window?.backgroundColor = .THEME
-//        window?.isOpaque = true
-//        window?.rootViewController = FirstLaunchVC()
-//        window?.makeKeyAndVisible()
         MCToastConfig.shared.text.maxWidth = kFitWidth(343)//SCREEN_WIDHT-kFitWidth(82)-kFitWidth(72)
         
         let token = UserDefaults.standard.value(forKey: token) as? String ?? ""

@@ -70,6 +70,13 @@ class ElaProVC: WHBaseViewVC {
         vm.purchaseSuccessBlock = { [weak self] in
             self?.backTapAction()
         }
+        vm.protocalTapBlock = {()in
+            self.agreementAlertVm.showSelf()
+        }
+        return vm
+    }()
+    lazy var agreementAlertVm: ElaProAgreementAlertVM = {
+        let vm = ElaProAgreementAlertVM.init(frame: .zero)
         return vm
     }()
     
@@ -141,6 +148,8 @@ extension ElaProVC{
         scrollViewBase.isScrollEnabled = false
         view.addSubview(naviVm)
         view.addSubview(nextButton)
+        
+        view.addSubview(agreementAlertVm)
         
         scrollViewBase.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 5, height: 0)
