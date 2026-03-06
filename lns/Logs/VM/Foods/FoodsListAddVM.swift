@@ -162,16 +162,16 @@ extension FoodsListAddVM{
         addSubview(mergeFoodsButton)
         addSubview(createMealsButton)
         
-        aiFoodsButton.addSubview(aiFoodsNewVm)
+//        aiFoodsButton.addSubview(aiFoodsNewVm)
         mergeFoodsButton.addSubview(mergeFoodsNewVm)
         
-        aiFoodsNewVm.snp.makeConstraints { make in
-//            make.top.right.equalToSuperview()
-            make.top.equalTo(kFitWidth(5))
-            make.right.equalTo(kFitWidth(-5))
-            make.width.height.equalTo(kFitWidth(12))
-//            make.height.equalTo(kFitWidth(15))
-        }
+//        aiFoodsNewVm.snp.makeConstraints { make in
+////            make.top.right.equalToSuperview()
+//            make.top.equalTo(kFitWidth(5))
+//            make.right.equalTo(kFitWidth(-5))
+//            make.width.height.equalTo(kFitWidth(12))
+////            make.height.equalTo(kFitWidth(15))
+//        }
         mergeFoodsNewVm.snp.makeConstraints { make in
 //            make.top.right.equalToSuperview()
 //            make.width.equalTo(kFitWidth(40))

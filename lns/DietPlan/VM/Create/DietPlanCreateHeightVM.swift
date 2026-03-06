@@ -86,6 +86,15 @@ class DietPlanCreateHeightVM: UIView {
 }
 
 extension DietPlanCreateHeightVM {
+    func applyDefaultHeight(_ value: Int) {
+        currentValue = value
+        QuestinonaireMsgModel.shared.height = "\(value)"
+        updateHeightText(value: value)
+        if hasAppliedInitialValue {
+            rulerView.scroll(toValue: value, animation: false)
+        }
+    }
+    
     func initUI() {
         addSubview(titleLabel)
         addSubview(numberLabel)

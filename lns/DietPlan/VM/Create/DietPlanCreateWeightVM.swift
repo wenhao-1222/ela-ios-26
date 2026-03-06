@@ -73,6 +73,14 @@ class DietPlanCreateWeightVM: UIView {
 }
 
 extension DietPlanCreateWeightVM{
+    func applyDefaultWeight(integer: Int, decimal: Int = 0) {
+        let integerIndex = max(0, min(numberIntArray.count - 1, integer - 30))
+        let decimalIndex = max(0, min(numberDemicalArray.count - 1, decimal))
+        pickerView.selectRow(integerIndex, inComponent: 0, animated: false)
+        pickerView.selectRow(decimalIndex, inComponent: 1, animated: false)
+        getWeightValue()
+    }
+    
     func getWeightValue() {
         let index = pickerView.selectedRow(inComponent: 0)
         let indexDecimal = pickerView.selectedRow(inComponent: 1)

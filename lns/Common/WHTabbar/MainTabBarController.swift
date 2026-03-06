@@ -74,8 +74,11 @@ class MainTabBarController: UITabBarController {
         let vc2 = JournalVC()
         vc2.tabBarItem = UITabBarItem(title: "日志", image: UIImage.init(named: "tabbar_logs_normal")!, tag: 1)
         
-        let vc3 = ForumVC()
-        vc3.tabBarItem = UITabBarItem(title: "干货", image: UIImage.init(named: "tabbar_forum_normal")!, tag: 2)
+//        let vc3 = ForumVC()
+//        vc3.tabBarItem = UITabBarItem(title: "干货", image: UIImage.init(named: "tabbar_forum_normal")!, tag: 2)
+        
+        let vc3 = DietPlanVC()
+        vc3.tabBarItem = UITabBarItem(title: "食谱", image: UIImage.init(named: "tabbar_forum_normal")!, tag: 2)
         
         let vc4 = MineVC()
         vc4.tabBarItem = UITabBarItem(title: "我的", image: UIImage.init(named: "tabbar_mine_normal")!, tag: 3)

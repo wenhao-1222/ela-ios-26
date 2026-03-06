@@ -138,9 +138,12 @@ class SystemTabbar: UITabBarController {
         let mainVc = OverViewVC()
         let journalVc = JournalVC()
         let mineVc = MineVC()
-        let forumVc = ForumVC()
+//        let forumVc = ForumVC()
+        let dietPlanVc = DietPlanVC()
 
-        _ = mainVc.view; _ = journalVc.view; _ = forumVc.view
+        _ = mainVc.view; _ = journalVc.view;
+        _ = dietPlanVc.view
+//        _ = forumVc.view
 
         let vc1 = mainVc
         vc1.tabBarItem = UITabBarItem(title: "概览",
@@ -152,8 +155,9 @@ class SystemTabbar: UITabBarController {
                                       image: UIImage(named: "tabbar_logs_normal")!,
                                       selectedImage: UIImage(named: "tabbar_logs_selected")?.withRenderingMode(.alwaysOriginal))
 
-        let vc3 = forumVc
-        vc3.tabBarItem = UITabBarItem(title: "干货",
+//        let vc3 = forumVc
+        let vc3 = dietPlanVc
+        vc3.tabBarItem = UITabBarItem(title: "食谱",
                                       image: UIImage(named: "tabbar_forum_normal")!,
                                       selectedImage: UIImage(named: "tabbar_forum_selected")?.withRenderingMode(.alwaysOriginal))
 

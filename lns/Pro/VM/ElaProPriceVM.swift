@@ -17,6 +17,38 @@ class ElaProPriceVM: UIView {
         case lifetime
     }
     
+    private struct RemotePlanProduct {
+        let type: Int
+        let iosProductId: String
+        let name: String
+        let originalPrice: String
+        let price: String
+        let promotionDesc: String
+        let promotionLabel: String
+        let dayAvgPriceLabel: String
+        let monthAvgPriceLabel: String
+        
+        init(dict: NSDictionary) {
+            type = Int(dict.stringValueForKey(key: "type")) ?? 0
+            iosProductId = dict.stringValueForKey(key: "iosProductId")
+            name = dict.stringValueForKey(key: "name")
+            originalPrice = dict.stringValueForKey(key: "originalPrice")
+            price = dict.stringValueForKey(key: "price")
+            promotionDesc = dict.stringValueForKey(key: "promotionDesc")
+            promotionLabel = dict.stringValueForKey(key: "promotionLabel")
+            dayAvgPriceLabel = dict.stringValueForKey(key: "dayAvgPriceLable")
+            monthAvgPriceLabel = dict.stringValueForKey(key: "monthAvgPriceLable")
+        }
+        
+        var displayPriceText: String? {
+            guard !price.isEmpty else { return nil }
+            if price.contains("¥") || price.contains("￥") || price.contains("$") {
+                return price
+            }
+            return "¥\(price)"
+        }
+    }
+    
     var purchaseSuccessBlock: (() -> ())?
     var protocalTapBlock: (() -> ())?
     
@@ -29,14 +61,20 @@ class ElaProPriceVM: UIView {
     private var monthProduct: SKProduct?
     private var annualProduct: SKProduct?
     private var lifetimeProduct: SKProduct?
+    private var monthRemoteProduct: RemotePlanProduct?
+    private var annualRemoteProduct: RemotePlanProduct?
+    private var lifetimeRemoteProduct: RemotePlanProduct?
+    private var monthTitleText = "连续包月"
     private var monthTagText: String?
     private var monthPriceText = "--"
     private var monthSubTitleText: String?
     private var monthOriginPriceText: String?
+    private var annualTitleText = "连续包年"
     private var annualTagText: String?
     private var annualPriceText = "--"
     private var annualSubTitleText: String?
     private var annualOriginPriceText: String?
+    private var lifetimeTitleText = "终身会员"
     private var lifetimePriceText = "--"
     private var isPurchasing = false
     private var shouldSyncRenewalSwitchAfterSettings = false
@@ -49,7 +87,7 @@ class ElaProPriceVM: UIView {
         initUI()
         observeAppBecomeActive()
         refreshPlanCards()
-        fetchProProductsIfNeeded()
+        sendProProductListRequest()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -220,17 +258,17 @@ class ElaProPriceVM: UIView {
     lazy var confirmButton: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("确认", for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 24, weight: .semibold)
+        btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         btn.setTitleColor(.white, for: .normal)
         btn.backgroundColor = selectedBlue
-        btn.layer.cornerRadius = kFitWidth(28)
+        btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
         return btn
     }()
     lazy var labelBgImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "ela_price_per_bg")
-        img.contentMode = .scaleAspectFill
+        img.contentMode = .scaleToFill
         return img
     }()
     lazy var dailyPriceLabel: UILabel = {
@@ -239,6 +277,7 @@ class ElaProPriceVM: UIView {
         lab.textColor = .white
         lab.font = .systemFont(ofSize: 10, weight: .regular)
         lab.textAlignment = .center
+        lab.adjustsFontSizeToFitWidth = true
 //        lab.backgroundColor = WHColor_16(colorStr: "FF8F29")
 //        lab.layer.cornerRadius = kFitWidth(13)
         lab.clipsToBounds = true
@@ -249,6 +288,7 @@ class ElaProPriceVM: UIView {
         btn.setImage(makeCircleImage(color: WHColor_16(colorStr: "BFC3CA")), for: .normal)
         btn.setImage(makeCheckedImage(), for: .selected)
         btn.isSelected = false
+        btn.enablePressEffect()
         btn.addTarget(self, action: #selector(toggleAgreeAction), for: .touchUpInside)
         return btn
     }()
@@ -409,7 +449,7 @@ extension ElaProPriceVM{
                 case .success(let transaction):
                     ElaProIAPManager.shared.handlePurchaseSuccessPostAction(transaction: transaction)
                     MCToast.mc_text(purchasingPlan == .lifetime ? "购买成功" : "订阅成功")
-                    self.purchaseSuccessBlock?()
+//                    self.purchaseSuccessBlock?()
                 case .failure(let error):
                     if let iapError = error as? ElaProIAPError {
                         MCToast.mc_text(iapError.localizedDescription)
@@ -437,27 +477,27 @@ extension ElaProPriceVM{
                 if case .success(let products) = result {
                     if let month = products.first(where: { $0.productIdentifier == ElaProIAPConfig.monthProductID }) {
                         self.monthProduct = month
-                        self.monthTagText = self.promoTagText(for: month)
-                        self.monthSubTitleText = nil
+                        self.monthTagText = self.preferredRemoteText(self.monthRemoteProduct?.promotionLabel) ?? self.promoTagText(for: month)
+                        self.monthSubTitleText = self.preferredRemoteText(self.monthRemoteProduct?.monthAvgPriceLabel)
                         if let intro = month.introductoryPrice {
                             self.monthPriceText = self.localizedPriceString(decimal: intro.price, locale: intro.priceLocale)
-                            self.monthOriginPriceText = self.recurringPriceText(for: month)
+                            self.monthOriginPriceText = self.preferredRemoteText(self.monthRemoteProduct?.originalPrice) ?? self.recurringPriceText(for: month)
                         } else {
                             self.monthPriceText = ElaProIAPManager.shared.localizedPriceString(for: month)
-                            self.monthOriginPriceText = nil
+                            self.monthOriginPriceText = self.preferredRemoteText(self.monthRemoteProduct?.originalPrice)
                         }
                     }
                     
                     if let annual = products.first(where: { $0.productIdentifier == ElaProIAPConfig.annualProductID }) {
                         self.annualProduct = annual
-                        self.annualTagText = self.promoTagText(for: annual)
-                        self.annualSubTitleText = self.buildMonthlyText(for: annual)
+                        self.annualTagText = self.preferredRemoteText(self.annualRemoteProduct?.promotionLabel) ?? self.promoTagText(for: annual)
+                        self.annualSubTitleText = self.preferredRemoteText(self.annualRemoteProduct?.monthAvgPriceLabel) ?? self.buildMonthlyText(for: annual)
                         if let intro = annual.introductoryPrice {
                             self.annualPriceText = self.localizedPriceString(decimal: intro.price, locale: intro.priceLocale)
-                            self.annualOriginPriceText = self.recurringPriceText(for: annual)
+                            self.annualOriginPriceText = self.preferredRemoteText(self.annualRemoteProduct?.originalPrice) ?? self.recurringPriceText(for: annual)
                         } else {
                             self.annualPriceText = ElaProIAPManager.shared.localizedPriceString(for: annual)
-                            self.annualOriginPriceText = nil
+                            self.annualOriginPriceText = self.preferredRemoteText(self.annualRemoteProduct?.originalPrice)
                         }
                     }
                     
@@ -474,21 +514,21 @@ extension ElaProPriceVM{
     
     func refreshPlanCards() {
         monthCard.configure(tag: monthTagText,
-                            title: "连续包月",
+                            title: monthTitleText,
                             subTitle: monthSubTitleText,
                             price: monthPriceText,
                             originPrice: monthOriginPriceText,
                             selected: selectedPlan == .month)
         
         yearCard.configure(tag: annualTagText,
-                           title: "连续包年",
+                           title: annualTitleText,
                            subTitle: annualSubTitleText,
                            price: annualPriceText,
                            originPrice: annualOriginPriceText,
                            selected: selectedPlan == .annual)
         
         lifeCard.configure(tag: nil,
-                           title: "终身会员",
+                           title: lifetimeTitleText,
                            subTitle: nil,
                            price: lifetimePriceText,
                            originPrice: nil,
@@ -498,34 +538,95 @@ extension ElaProPriceVM{
         case .month:
             labelBgImgView.isHidden = true
             if let monthProduct = monthProduct {
-                dailyPriceLabel.text = buildDailyText(for: monthProduct)
-                tipsLabel.text = buildSubscriptionTips(for: monthProduct,
-                                                       currentPriceText: monthPriceText,
-                                                       originPriceText: monthOriginPriceText)
+                dailyPriceLabel.text = preferredRemoteText(monthRemoteProduct?.dayAvgPriceLabel) ?? buildDailyText(for: monthProduct)
+                tipsLabel.text = preferredRemoteText(monthRemoteProduct?.promotionDesc) ?? buildSubscriptionTips(for: monthProduct,
+                                                                                                                  currentPriceText: monthPriceText,
+                                                                                                                  originPriceText: monthOriginPriceText)
             } else {
-                dailyPriceLabel.text = "--元/天"
-                tipsLabel.text = "价格加载中..."
+                dailyPriceLabel.text = preferredRemoteText(monthRemoteProduct?.dayAvgPriceLabel) ?? "--元/天"
+                tipsLabel.text = preferredRemoteText(monthRemoteProduct?.promotionDesc) ?? "价格加载中..."
             }
         case .annual:
+            let annualDailyText = preferredRemoteText(annualRemoteProduct?.dayAvgPriceLabel) ?? annualProduct.map { buildDailyText(for: $0) }
+            labelBgImgView.isHidden = (annualDailyText?.isEmpty ?? true)
+            dailyPriceLabel.text = annualDailyText ?? "--元/天"
             if let annualProduct = annualProduct {
-                labelBgImgView.isHidden = false
-                dailyPriceLabel.text = buildDailyText(for: annualProduct)
-                tipsLabel.text = buildSubscriptionTips(for: annualProduct,
-                                                       currentPriceText: annualPriceText,
-                                                       originPriceText: annualOriginPriceText)
+                tipsLabel.text = preferredRemoteText(annualRemoteProduct?.promotionDesc) ?? buildSubscriptionTips(for: annualProduct,
+                                                                                                                   currentPriceText: annualPriceText,
+                                                                                                                   originPriceText: annualOriginPriceText)
             } else {
-                dailyPriceLabel.text = "--元/天"
-                tipsLabel.text = "价格加载中..."
+                tipsLabel.text = preferredRemoteText(annualRemoteProduct?.promotionDesc) ?? "价格加载中..."
             }
         case .lifetime:
             labelBgImgView.isHidden = true
             if let lifetimeProduct = lifetimeProduct {
                 dailyPriceLabel.text = buildDailyText(for: lifetimeProduct, days: 365)
-                tipsLabel.text = "买断价\(lifetimePriceText)，一次购买长期可用"
+                tipsLabel.text = preferredRemoteText(lifetimeRemoteProduct?.promotionDesc) ?? "买断价\(lifetimePriceText)，一次购买长期可用"
             } else {
                 dailyPriceLabel.text = "--元/天"
-                tipsLabel.text = "价格加载中..."
+                tipsLabel.text = preferredRemoteText(lifetimeRemoteProduct?.promotionDesc) ?? "价格加载中..."
             }
+        }
+    }
+
+    private func preferredRemoteText(_ text: String?) -> String? {
+        guard let text = text?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else {
+            return nil
+        }
+        return text
+    }
+
+    private func applyRemoteProducts(_ products: [RemotePlanProduct]) {
+        monthRemoteProduct = remoteProduct(from: products, type: .month)
+        annualRemoteProduct = remoteProduct(from: products, type: .annual)
+        lifetimeRemoteProduct = remoteProduct(from: products, type: .lifetime)
+        
+        monthTitleText = preferredRemoteText(monthRemoteProduct?.name) ?? "连续包月"
+        annualTitleText = preferredRemoteText(annualRemoteProduct?.name) ?? "连续包年"
+        lifetimeTitleText = preferredRemoteText(lifetimeRemoteProduct?.name) ?? "终身会员"
+        
+        monthTagText = preferredRemoteText(monthRemoteProduct?.promotionLabel)
+        annualTagText = preferredRemoteText(annualRemoteProduct?.promotionLabel)
+        monthSubTitleText = preferredRemoteText(monthRemoteProduct?.monthAvgPriceLabel)
+        annualSubTitleText = preferredRemoteText(annualRemoteProduct?.monthAvgPriceLabel)
+        monthOriginPriceText = preferredRemoteText(monthRemoteProduct?.originalPrice)
+        annualOriginPriceText = preferredRemoteText(annualRemoteProduct?.originalPrice)
+        monthPriceText = preferredRemoteText(monthRemoteProduct?.displayPriceText) ?? monthPriceText
+        annualPriceText = preferredRemoteText(annualRemoteProduct?.displayPriceText) ?? annualPriceText
+        lifetimePriceText = preferredRemoteText(lifetimeRemoteProduct?.displayPriceText) ?? lifetimePriceText
+    }
+
+    private func remoteProduct(from products: [RemotePlanProduct], type: PlanType) -> RemotePlanProduct? {
+        if let matchedByType = products.first(where: { remotePlanType(for: $0) == type }) {
+            return matchedByType
+        }
+        
+        switch type {
+        case .month:
+            return products.first(where: {
+                $0.iosProductId.lowercased().contains("month") || $0.name.contains("月")
+            })
+        case .annual:
+            return products.first(where: {
+                $0.iosProductId.lowercased().contains("annual") || $0.name.contains("年")
+            })
+        case .lifetime:
+            return products.first(where: {
+                $0.iosProductId.lowercased().contains("life") || $0.name.contains("终身")
+            })
+        }
+    }
+
+    private func remotePlanType(for product: RemotePlanProduct) -> PlanType? {
+        switch product.type {
+        case 1:
+            return .month
+        case 2:
+            return .annual
+        case 3:
+            return .lifetime
+        default:
+            return nil
         }
     }
     
@@ -746,14 +847,14 @@ extension ElaProPriceVM{
         
         bottomBar.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
-            make.height.equalTo(kFitWidth(145) + WHUtils().getBottomSafeAreaHeight())
+            make.height.equalTo(kFitWidth(100) + WHUtils().getBottomSafeAreaHeight())
         }
         
         confirmButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(kFitWidth(20))
-            make.height.equalTo(kFitWidth(56))
+            make.top.equalTo(kFitWidth(22))
+            make.height.equalTo(kFitWidth(44))
         }
         labelBgImgView.snp.makeConstraints { make in
             make.right.equalTo(confirmButton)
@@ -762,8 +863,9 @@ extension ElaProPriceVM{
             make.height.equalTo(kFitWidth(43.5))
         }
         dailyPriceLabel.snp.makeConstraints { make in
-            make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(kFitWidth(4))
+            make.top.equalToSuperview().offset(kFitWidth(4))
+            make.left.equalToSuperview().offset(kFitWidth(9.5))
+            make.right.equalToSuperview().offset(kFitWidth(-9))
         }
 //        dailyPriceLabel.snp.makeConstraints { make in
 //            make.right.equalTo(confirmButton.snp.right)
@@ -1127,5 +1229,34 @@ extension ElaProPriceVM{
         let image = UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
         UIGraphicsEndImageContext()
         return image
+    }
+}
+
+extension ElaProPriceVM{
+    func sendProProductListRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_pro_product,
+                                          parameters: nil,
+                                          success: { [weak self] responseObject in
+            guard let self = self else { return }
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendProProductListRequest:\(dataDict)")
+            let rawProducts = (dataDict["products"] as? NSArray) ?? (dataDict["product"] as? NSArray) ?? []
+            let products = rawProducts.compactMap { item -> RemotePlanProduct? in
+                guard let dict = item as? NSDictionary else { return nil }
+                return RemotePlanProduct(dict: dict)
+            }
+            
+            self.applyRemoteProducts(products)
+            let monthID = self.preferredRemoteText(self.monthRemoteProduct?.iosProductId) ?? ElaProIAPConfig.monthProductID
+            let annualID = self.preferredRemoteText(self.annualRemoteProduct?.iosProductId) ?? ElaProIAPConfig.annualProductID
+            let lifetimeID = self.preferredRemoteText(self.lifetimeRemoteProduct?.iosProductId) ?? ElaProIAPConfig.lifetimeProductID
+            
+            ElaProIAPManager.shared.updateProductIDs(month: monthID, annual: annualID, lifetime: lifetimeID)
+            self.refreshPlanCards()
+            self.fetchProProductsIfNeeded()
+        }, failure: { [weak self] _ in
+            self?.fetchProProductsIfNeeded()
+        })
     }
 }

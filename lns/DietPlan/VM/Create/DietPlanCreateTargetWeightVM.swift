@@ -24,6 +24,8 @@ class DietPlanCreateTargetWeightVM: UIView {
 
     var currentWeightValue = 60.0
     var currentTargetWeight = 60.0
+    
+    var valueChanged = false
 
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -67,6 +69,7 @@ class DietPlanCreateTargetWeightVM: UIView {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.textAlignment = .center
+        lab.alpha = 0
         return lab
     }()
 
@@ -169,6 +172,12 @@ extension DietPlanCreateTargetWeightVM {
     }
 
     func updateGoalTips() {
+        if valueChanged == false {
+            valueChanged = true
+            UIView.animate(withDuration: 0.35) {
+                self.tipsLabel.alpha = 1
+            }
+        }
         if currentTargetWeight > currentWeightValue {
             tipsLabel.text = "你的目标是增肌"
         } else if currentTargetWeight == currentWeightValue {

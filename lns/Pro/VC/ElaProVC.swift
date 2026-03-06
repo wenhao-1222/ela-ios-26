@@ -9,10 +9,36 @@
 class ElaProVC: WHBaseViewVC {
     private var currentIndex: Int = 0
     
+    var param = [String : Any]()
+    private var agreementAlertVm: ElaProAgreementAlertVM?
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.fd_interactivePopDisabled = true
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        navigationController?.fd_interactivePopDisabled = false
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         initUI()
+        self.sendDietUpsertRequest()
+        
+        if let nav = navigationController {
+            var controllers = nav.viewControllers
+            if let index = controllers.firstIndex(where: { $0 is DietPlanCreateVC }) {
+                controllers.remove(at: index)
+                nav.viewControllers = controllers
+            }
+        }
     }
     
     lazy var naviVm: DietPlanCreateNaviVM = {
@@ -70,13 +96,9 @@ class ElaProVC: WHBaseViewVC {
         vm.purchaseSuccessBlock = { [weak self] in
             self?.backTapAction()
         }
-        vm.protocalTapBlock = {()in
-            self.agreementAlertVm.showSelf()
+        vm.protocalTapBlock = { [weak self] in
+            self?.showAgreementAlert()
         }
-        return vm
-    }()
-    lazy var agreementAlertVm: ElaProAgreementAlertVM = {
-        let vm = ElaProAgreementAlertVM.init(frame: .zero)
         return vm
     }()
     
@@ -148,9 +170,7 @@ extension ElaProVC{
         scrollViewBase.isScrollEnabled = false
         view.addSubview(naviVm)
         view.addSubview(nextButton)
-        
-        view.addSubview(agreementAlertVm)
-        
+
         scrollViewBase.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 5, height: 0)
         scrollViewBase.addSubview(progressVm)
@@ -167,5 +187,28 @@ extension ElaProVC{
         }
         
         updateNextButtonForCurrentStep(animated: false)
+    }
+    
+    private func showAgreementAlert() {
+        let alertVm: ElaProAgreementAlertVM
+        if let existing = agreementAlertVm {
+            alertVm = existing
+        } else {
+            let created = ElaProAgreementAlertVM(frame: .zero)
+            agreementAlertVm = created
+            view.addSubview(created)
+            alertVm = created
+        }
+        alertVm.showSelf()
+    }
+}
+
+extension ElaProVC{
+    func sendDietUpsertRequest() {
+        DLLog(message: "sendDietUpsertRequest:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_diet_upsert, parameters: param as [String : AnyObject]) { responseObject in
+            DLLog(message: "\(responseObject)")
+            
+        }
     }
 }

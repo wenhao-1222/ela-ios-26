@@ -46,7 +46,8 @@ class LLTabBarViewController: UITabBarController,LLMyTabbarDelegate {
         self.setUpChildViewController(viewController: OverViewVC(), image: UIImage.init(named: "tabbar_main_normal")!, selectImage: UIImage.init(named: "tabbar_main_selected")!, title: "概览")
 //
         self.setUpChildViewController(viewController: LogsVC(), image: UIImage.init(named: "tabbar_logs_normal")!, selectImage: UIImage.init(named: "tabbar_logs_selected")!, title: "日志")
-        self.setUpChildViewController(viewController: ForumVC(), image: UIImage.init(named: "tabbar_forum_normal")!, selectImage: UIImage.init(named: "tabbar_forum_selected")!, title: "社区")
+        self.setUpChildViewController(viewController: DietPlanVC(), image: UIImage.init(named: "tabbar_forum_normal")!, selectImage: UIImage.init(named: "tabbar_forum_selected")!, title: "食谱")
+//        self.setUpChildViewController(viewController: ForumVC(), image: UIImage.init(named: "tabbar_forum_normal")!, selectImage: UIImage.init(named: "tabbar_forum_selected")!, title: "社区")
         self.setUpChildViewController(viewController: MineVC(), image: UIImage.init(named: "tabbar_mine_normal")!, selectImage: UIImage.init(named: "tabbar_mine_selected")!, title: "我的")
         
         

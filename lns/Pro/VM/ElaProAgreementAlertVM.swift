@@ -165,6 +165,7 @@ class ElaProAgreementAlertVM: UIView {
 // MARK: - Public API
 extension ElaProAgreementAlertVM {
     func showSelf() {
+        loadIfNeeded()
         isHidden = false
 
         bgView.isUserInteractionEnabled = false
@@ -340,7 +341,6 @@ extension ElaProAgreementAlertVM{
         
         setConstrait()
         setupWhiteViewBorder()
-        loadIfNeeded()
     }
     func setConstrait() {
         titleLab.snp.makeConstraints { make in

@@ -104,11 +104,12 @@ class UniversalTabBarController: UITabBarController, DeviceAdaptable {
         let mainVc = OverViewVC()
         let journalVc = JournalVC()
         let mineVc = MineVC()
-        let forumVc = ForumVC()
+//        let forumVc = ForumVC()
+        let dietPlanVc = DietPlanVC()
         
         //预加载
         _ = journalVc.view
-        _ = forumVc.view
+//        _ = forumVc.view
         
 //        self.setUpChildViewController(viewController: mainVc, image: UIImage.init(named: "tabbar_main_normal")!, selectImage: UIImage.init(named: "tabbar_main_selected")!, title: "概览")
 //        self.setUpChildViewController(viewController: journalVc, image: UIImage.init(named: "tabbar_logs_normal")!, selectImage: UIImage.init(named: "tabbar_logs_selected")!, title: "日志")
@@ -117,7 +118,8 @@ class UniversalTabBarController: UITabBarController, DeviceAdaptable {
         let controllers = [
             makeViewController(title: "概览", icon: "house", type: MainVC.self),
             makeViewController(title: "日志", icon: "magnifyingglass", type: JournalVC.self),
-            makeViewController(title: "干货", icon: "gear", type: ForumVC.self),
+//            makeViewController(title: "干货", icon: "gear", type: ForumVC.self),
+            makeViewController(title: "食谱", icon: "gear", type: DietPlanVC.self),
             makeViewController(title: "我的", icon: "gear", type: MineVC.self)
         ]
         

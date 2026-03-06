@@ -19,18 +19,18 @@ class DietPlanCreateVC: WHBaseViewVC {
         super.viewWillAppear(animated)
         navigationController?.fd_interactivePopDisabled = true
         navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         navigationController?.fd_interactivePopDisabled = false
         navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.enableInteractivePopGesture()
         initUI()
         
     }
@@ -67,9 +67,13 @@ class DietPlanCreateVC: WHBaseViewVC {
     lazy var sexVm: DietPlanCreateSexVM = {
         let vm = DietPlanCreateSexVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: 0, height: 0))
         vm.manTapBlock = {[weak self] in
+            self?.heightVm.applyDefaultHeight(170)
+            self?.weightVm.applyDefaultWeight(integer: 70)
             self?.moveFromSexToNextStep()
         }
         vm.femanTapBlock = {[weak self] in
+            self?.heightVm.applyDefaultHeight(160)
+            self?.weightVm.applyDefaultWeight(integer: 50)
             self?.moveFromSexToNextStep()
         }
         
@@ -268,6 +272,8 @@ extension DietPlanCreateVC{
         case 5:
             nextButton.isEnabled = bodyfatVm.selectIndex >= 0
         case 6:
+            targetWeightVm.tipsLabel.alpha = 0
+            targetWeightVm.valueChanged = false
             nextButton.isEnabled = !QuestinonaireMsgModel.shared.targetWeight.isEmpty
         case 7:
             nextButton.isEnabled = eventsVm.selectedIndex >= 0
@@ -487,11 +493,14 @@ extension DietPlanCreateVC{
                      "dietMethodExperience":ketoHistoryVm.selectedIndex + 1,
                      "flavorPreferences":flavorPreferences] as [String : Any]
         
+        let vc = ElaProVC()
+        vc.param = param
+        self.navigationController?.pushViewController(vc, animated: true)
         
-        DLLog(message: "sendDietUpsertRequest:\(param)")
-        WHNetworkUtil.shareManager().POST(urlString: URL_diet_upsert, parameters: param as [String : AnyObject]) { responseObject in
-            DLLog(message: "\(responseObject)")
-            self.isUploadingDietProfile = false
-        }
+//        DLLog(message: "sendDietUpsertRequest:\(param)")
+//        WHNetworkUtil.shareManager().POST(urlString: URL_diet_upsert, parameters: param as [String : AnyObject]) { responseObject in
+//            DLLog(message: "\(responseObject)")
+//            self.isUploadingDietProfile = false
+//        }
     }
 }

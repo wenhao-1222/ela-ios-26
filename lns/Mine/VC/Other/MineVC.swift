@@ -73,8 +73,7 @@ class MineVC : WHBaseViewVC {
     lazy var funcTopVm: PersonalTopFuncVM = {
         let vm = PersonalTopFuncVM.init(frame: CGRect.init(x: 0, y: self.personalTopVm.frame.maxY+kFitWidth(6), width: 0, height: 0))
         vm.planVm.tapBlock = {()in
-//            let vc = PlanListVC()
-            let vc = DietPlanCreateVC()
+            let vc = PlanListVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.bodyDataVm.tapBlock = {()in

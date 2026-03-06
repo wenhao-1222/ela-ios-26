@@ -191,6 +191,7 @@ final class ElaProIAPManager: NSObject {
         let expireAt = applyLocalTemporaryUnlock(transaction: transaction)
         let payload = makePurchaseVerifyPayload(transaction: transaction, localUnlockExpireAt: expireAt)
         cachePendingVerifyPayload(payload: payload)
+        queryPurchaseOrder(transaction: transaction)
         uploadPurchaseVerifyPayloadTODO(payload: payload)
     }
     
@@ -334,6 +335,29 @@ final class ElaProIAPManager: NSObject {
     private func cachePendingVerifyPayload(payload: [String: Any]) {
         let json = WHUtils.getJSONStringFromDictionary(dictionary: payload as NSDictionary)
         UserDefaults.standard.set(json, forKey: LocalUnlockKeys.pendingVerifyPayload)
+    }
+    
+    private func queryPurchaseOrder(transaction: SKPaymentTransaction) {
+        guard let transactionID = transaction.transactionIdentifier?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !transactionID.isEmpty else {
+            DLLog(message: "[ElaProIAP][QUERY] skipped: empty transactionIdentifier")
+            return
+        }
+        
+        let params: [String: AnyObject] = [
+            "transactionId": transactionID as AnyObject
+        ]
+        
+        WHNetworkUtil.shareManager().POST(urlString: URL_pro_ipa_query,
+                                          parameters: params,
+                                          success: { responseObject in
+            DLLog(message: "[ElaProIAP][QUERY] success: \(responseObject)")
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "[ElaProIAP][QUERY] success:\(dataDict)")
+        }, failure: { failed in
+            DLLog(message: "[ElaProIAP][QUERY] failure: \(failed), tractionId=\(transactionID)")
+        })
     }
     
     private func uploadPurchaseVerifyPayloadTODO(payload: [String: Any]) {
