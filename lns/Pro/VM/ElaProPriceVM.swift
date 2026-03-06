@@ -263,6 +263,7 @@ class ElaProPriceVM: UIView {
         btn.backgroundColor = selectedBlue
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
+        btn.enablePressEffect()
         return btn
     }()
     lazy var labelBgImgView: UIImageView = {
@@ -288,7 +289,6 @@ class ElaProPriceVM: UIView {
         btn.setImage(makeCircleImage(color: WHColor_16(colorStr: "BFC3CA")), for: .normal)
         btn.setImage(makeCheckedImage(), for: .selected)
         btn.isSelected = false
-        btn.enablePressEffect()
         btn.addTarget(self, action: #selector(toggleAgreeAction), for: .touchUpInside)
         return btn
     }()
