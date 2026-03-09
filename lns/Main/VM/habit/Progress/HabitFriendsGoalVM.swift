@@ -117,6 +117,7 @@ extension HabitFriendsGoalVM{
         if dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus").count > 0{
             firstOnTargetVm.isHidden = false
             firstOnTargetVm.showButton.isHidden = false
+            firstOnTargetVm.showButton.isUserInteractionEnabled = true
             itemModels.append(HabitItemModel().createModel(vm: firstOnTargetVm,
                                                            isComplete: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus") != "2",
                                                            type: .protein_target_friend_first,

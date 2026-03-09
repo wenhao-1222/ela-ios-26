@@ -87,6 +87,7 @@ class WHTabBarVC : UITabBarController{
         
         NotificationCenter.default.addObserver(self, selector: #selector(gotoLogsNotification), name: NSNotification.Name(rawValue: "activePlan"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showGuideTotalIfNeeded), name: NOTIFI_NAME_GUIDE, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(gotoDietPlanNotification), name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
         
         tabbar.centerClick()
 //        showGuideTotalIfNeeded()
@@ -201,6 +202,14 @@ extension WHTabBarVC:LLMyTabbarDelegate{
         }
     }
     
+    @objc func gotoDietPlanNotification(){
+        DLLog(message: "跳转到食谱")
+        for vi in self.tabBar.subviews{
+            if vi.isKind(of: UIControl.self){
+                vi.removeFromSuperview()
+            }
+        }
+    }
     @objc func widgetAddFoods(){
 //        self.navigationController?.popToRootViewController(animated: true)
 //        self.navigationController?.tabBarController?.selectedIndex = 1

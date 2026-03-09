@@ -29,6 +29,7 @@ class LLMyTabbar: UIView {
         NotificationCenter.default.addObserver(self, selector: #selector(gotoMainNotification), name: NSNotification.Name(rawValue: "gotoMain"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(gotoLogsNotification), name: NSNotification.Name(rawValue: "activePlan"), object: nil)
 //        NotificationCenter.default.addObserver(self, selector: #selector(gotoLogsNotification), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(gotoDietPlanNotification), name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(mineServiceMsgNotification), name: NSNotification.Name(rawValue: "serviceMsgUnRead"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(mineServiceMsgReadNotification), name: NSNotification.Name(rawValue: "serviceMsgRead"), object: nil)
@@ -58,6 +59,12 @@ class LLMyTabbar: UIView {
         seletedButton = btnArr[1]
 //        seletedButton.isSelected = true
 //        seletedButton.conentLab.textColor = .THEME
+        seletedButton.setSelectStatus(isSelect: true)
+    }
+    @objc func gotoDietPlanNotification(){
+        DLLog(message: "跳转到食谱")
+        seletedButton.setSelectStatus(isSelect: false)
+        seletedButton = btnArr[2]
         seletedButton.setSelectStatus(isSelect: true)
     }
     @objc func mineServiceMsgNotification(){

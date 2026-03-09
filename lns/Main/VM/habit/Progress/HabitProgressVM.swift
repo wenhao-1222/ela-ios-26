@@ -17,6 +17,7 @@ class HabitProgressVM: UIView {
     var proteinIntakeOnTargetWithFriendFirstTimePoint = ""
     private var pendingPointTarget: Int?
     private var deferPointAnimation = false
+    private var shouldAnimatePointWhenVisible = false
     private var pendingStreakParabolaAction: (() -> Void)?
     private var pendingStreakSnapshotRestoreAction: (((() -> Void)?) -> Void)?
     private var pendingStreakFailureRestoreAction: (((() -> Void)?) -> Void)?
@@ -34,6 +35,10 @@ class HabitProgressVM: UIView {
     }
     override func didMoveToWindow() {
         super.didMoveToWindow()
+        triggerPointAnimationIfNeeded()
+    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
         triggerPointAnimationIfNeeded()
     }
     lazy var scrollView: UIScrollView = {
@@ -145,7 +150,7 @@ extension HabitProgressVM{
 
         if previousPointBalance != nextPointBalance {
             pendingPointTarget = nextPointBalance
-            if isPointLabelVisible() {
+            if shouldAnimatePointWhenVisible || isPointLabelVisible() {
                 triggerPointAnimationIfNeeded()
             }
         } else {
@@ -413,9 +418,11 @@ extension HabitProgressVM{
 
         let currentValue = currentPointLabelValue()
         if currentValue == target {
+            shouldAnimatePointWhenVisible = false
             topMsgVm.numberLabel.text = "\(target)"
             return
         }
+        shouldAnimatePointWhenVisible = false
         topMsgVm.numberLabel.count(from: CGFloat(currentValue), to: CGFloat(target), withDuration: 0.5)
     }
 
@@ -451,56 +458,66 @@ extension HabitProgressVM{
     func sendRecieveStreakRequest(streakId:String) {
         let param = ["streakRewardId":streakId]
 
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-            self.shouldStartPendingStreakParabola = true
-            self.triggerPendingStreakParabolaIfNeeded()
-            self.restorePendingStreakSnapshotIfNeeded {
-            }
-        })
+//        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+//            self.shouldStartPendingStreakParabola = true
+//            self.triggerPendingStreakParabolaIfNeeded()
+//            self.restorePendingStreakSnapshotIfNeeded {
+//            }
+//            self.shouldAnimatePointWhenVisible = true
+//            self.refreshBlock?()
+//        })
 
-//        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimStreakReward, parameters: param as [String:AnyObject]) { responseObject in
-//            let code = responseObject["code"]as? Int ?? -1
-//            if (code == 200) {
-//                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-//                let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-//
-//                DLLog(message: "sendDataRequest:\(dataDict)")
-//                self.isCounting = true
-//
-//    //            MCToast.mc_text("领取成功")
-//                DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
-//                    self.shouldStartPendingStreakParabola = true
-//                    self.triggerPendingStreakParabolaIfNeeded()
-//                    self.restorePendingStreakSnapshotIfNeeded {
-//                    }
-//                    self.refreshBlock?()
-//                })
-//            }else {
-//                MCToast.mc_text("领取失败")
-//                self.pendingStreakParabolaAction = nil
-//                self.shouldStartPendingStreakParabola = false
-//                self.restorePendingStreakFailureIfNeeded {
-//                }
-//            }
-//        } failure: { _ in
-//            self.pendingStreakParabolaAction = nil
-//            self.shouldStartPendingStreakParabola = false
-//            self.restorePendingStreakFailureIfNeeded {
-//            }
-//        }
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimStreakReward, parameters: param as [String:AnyObject]) { responseObject in
+            let code = responseObject["code"]as? Int ?? -1
+            if (code == 200) {
+                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+                let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+
+                DLLog(message: "sendDataRequest:\(dataDict)")
+                self.isCounting = true
+
+    //            MCToast.mc_text("领取成功")
+                DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+                    self.shouldStartPendingStreakParabola = true
+                    self.triggerPendingStreakParabolaIfNeeded()
+                    self.restorePendingStreakSnapshotIfNeeded {
+                    }
+                    self.shouldAnimatePointWhenVisible = true
+                    self.refreshBlock?()
+                })
+            }else {
+                MCToast.mc_text("领取失败")
+                self.pendingStreakParabolaAction = nil
+                self.shouldStartPendingStreakParabola = false
+                self.restorePendingStreakFailureIfNeeded {
+                }
+            }
+        } failure: { _ in
+            self.pendingStreakParabolaAction = nil
+            self.shouldStartPendingStreakParabola = false
+            self.restorePendingStreakFailureIfNeeded {
+            }
+        }
     }
     func sendRecieveFriendProteinRequest() {
         let param = ["rewardId":self.proteinIntakeOnTargetWithFriendFirstTimeRewardId]
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-            self.shouldStartPendingStreakParabola = true
-            self.triggerPendingStreakParabolaIfNeeded()
-            self.restorePendingStreakSnapshotIfNeeded {
-            }
-        })
-//        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimFirstFriendGoalReward, parameters: param as [String:AnyObject]) { responseObject in
-//            DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-//                self.refreshBlock?()
-//            })
-//        }
+//        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+//            self.shouldStartPendingStreakParabola = true
+//            self.triggerPendingStreakParabolaIfNeeded()
+//            self.restorePendingStreakSnapshotIfNeeded {
+//            }
+//            self.shouldAnimatePointWhenVisible = true
+//            self.refreshBlock?()
+//        })
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimFirstFriendGoalReward, parameters: param as [String:AnyObject]) { responseObject in
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+                self.shouldStartPendingStreakParabola = true
+                self.triggerPendingStreakParabolaIfNeeded()
+                self.restorePendingStreakSnapshotIfNeeded {
+                }
+                self.shouldAnimatePointWhenVisible = true
+                self.refreshBlock?()
+            })
+        }
     }
 }

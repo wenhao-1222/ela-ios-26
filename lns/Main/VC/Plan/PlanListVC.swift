@@ -59,22 +59,29 @@ class PlanListVC: WHBaseViewVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.getPlanBlock = {()in
-            if UserInfoModel.shared.birthDay.count > 0 && (UserInfoModel.shared.gender == "1" || UserInfoModel.shared.gender == "2"){
-                QuestinonaireMsgModel.shared.sex = UserInfoModel.shared.gender
-                QuestinonaireMsgModel.shared.weight = ""
-                QuestinonaireMsgModel.shared.birthDay = Date().changeDateFormatter(dateString: UserInfoModel.shared.birthDay, formatter: "yyyy-MM-dd", targetFormatter: "yyyy")
-                let vc = PlanGetNoSexVC()
-                vc.savePlanBlock = {()in
-                    self.refreshData()
-                }
-                self.navigationController?.pushViewController(vc, animated: true)
-            }else{
-                let vc = PlanGetVC()
-                vc.savePlanBlock = {()in
-                    self.refreshData()
-                }
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
+//            if UserInfoModel.shared.birthDay.count > 0 && (UserInfoModel.shared.gender == "1" || UserInfoModel.shared.gender == "2"){
+//                QuestinonaireMsgModel.shared.sex = UserInfoModel.shared.gender
+//                QuestinonaireMsgModel.shared.weight = ""
+//                QuestinonaireMsgModel.shared.birthDay = Date().changeDateFormatter(dateString: UserInfoModel.shared.birthDay, formatter: "yyyy-MM-dd", targetFormatter: "yyyy")
+//                let vc = PlanGetNoSexVC()
+//                vc.savePlanBlock = {()in
+//                    self.refreshData()
+//                }
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            }else{
+//                let vc = PlanGetVC()
+//                vc.savePlanBlock = {()in
+//                    self.refreshData()
+//                }
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+                self.navigationController?.tabBarController?.selectedIndex = 2
+                self.navigationController?.popToRootViewController(animated: true)
+                
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
+            })
         }
         vm.createPlanBlock = {()in
             let vc = PlanCreateVC()

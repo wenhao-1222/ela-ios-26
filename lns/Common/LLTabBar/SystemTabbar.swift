@@ -37,6 +37,9 @@ class SystemTabbar: UITabBarController {
                                                selector: #selector(gotoLogsNotification),
                                                name: NSNotification.Name(rawValue: "activePlan"),
                                                object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(gotoDietPlanNotification),
+                                               name: NSNotification.Name(rawValue: "dietPlan"),
+                                               object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(showGuideTotalIfNeeded),
                                                name: NOTIFI_NAME_GUIDE,
@@ -361,6 +364,9 @@ extension SystemTabbar {
 
     @objc private func gotoLogsNotification() {
         selectedIndex = 1
+    }
+    @objc private func gotoDietPlanNotification() {
+        selectedIndex = 2
     }
 }
 
