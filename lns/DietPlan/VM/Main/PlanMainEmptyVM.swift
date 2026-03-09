@@ -44,7 +44,7 @@ class PlanMainEmptyVM: UIView {
     }()
     lazy var tipsOneLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "开启你的专属健身食谱"
+        lab.text = "你的专属健身食谱"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 20, weight: .medium)
         

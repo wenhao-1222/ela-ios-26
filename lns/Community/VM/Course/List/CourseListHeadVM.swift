@@ -228,26 +228,6 @@ extension CourseListHeadVM{
     }
 }
 
-//extension CourseListHeadVM{
-//    // ====== 关键：高度更新集中到一个方法，并做去抖 + 阈值过滤 ======
-//    private func scheduleHeightUpdate(_ newHeight: CGFloat) {
-//        // 小变化直接忽略，防止“抖”
-//        guard abs(newHeight - self.selfHeight) >= heightChangeThreshold else { return }
-//
-//        // 取消上一次待执行的高度变更
-//        debounceWork?.cancel()
-//
-//        let work = DispatchWorkItem { [weak self] in
-//            guard let self = self else { return }
-//            self.selfHeight = newHeight
-//            self.heightChangeBlock?()
-//        }
-//        debounceWork = work
-//        // 略微延迟执行，聚合短时间内的多次高度变更
-//        DispatchQueue.main.asyncAfter(deadline: .now() + debounceInterval, execute: work)
-//    }
-//}
-
 extension CourseListHeadVM{
     func initUI() {
         addSubview(imgView)

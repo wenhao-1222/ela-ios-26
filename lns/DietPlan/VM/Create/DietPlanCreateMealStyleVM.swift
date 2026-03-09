@@ -12,7 +12,7 @@ class DietPlanCreateMealStyleVM: UIView {
 
     lazy var dataArray: [[String: String]] = {
         return [
-            ["name": "正常一日三餐", "detail": "更省时间，每餐更有饱腹感，但两餐之间可能更容易饿"],
+            ["name": "一日三餐", "detail": "更省时间，每餐更有饱腹感，但两餐之间可能更容易饿"],
             ["name": "少吃多餐", "detail": "利于血糖平稳，更容易稳住食欲"]
         ]
     }()

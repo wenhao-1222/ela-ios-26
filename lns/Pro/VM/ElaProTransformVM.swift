@@ -40,7 +40,7 @@ class ElaProTransformVM: UIView {
     
     private lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "即刻开启你的蜕变之旅?"
+        lab.text = "即刻开启你的蜕变之旅"
         lab.textColor = .white
         lab.font = .systemFont(ofSize: 24, weight: .semibold)
         lab.numberOfLines = 0

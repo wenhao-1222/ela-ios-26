@@ -1055,6 +1055,7 @@
 		ECAE25E22BF1DB3E007D4B57 /* FoodsMsgDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE25E12BF1DB3E007D4B57 /* FoodsMsgDetailsVC.swift */; };
 		ECAE25E42BF1DFD0007D4B57 /* FoodsMsgDetailsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE25E32BF1DFD0007D4B57 /* FoodsMsgDetailsVM.swift */; };
 		ECAE25E62BF20F37007D4B57 /* NSDictionary+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE25E52BF20F37007D4B57 /* NSDictionary+Exs.swift */; };
+		ECAE372D2F5E69540051F234 /* ElaExpandedTapButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE372C2F5E694F0051F234 /* ElaExpandedTapButton.swift */; };
 		ECB3E03D2BD2353700CFDDFD /* DataDetailShareLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB3E03C2BD2353700CFDDFD /* DataDetailShareLineChartView.swift */; };
 		ECB3E0402BD2359700CFDDFD /* DataDetailShareLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECB3E03F2BD2359700CFDDFD /* DataDetailShareLineView.m */; };
 		ECB3E06F2BD605C200CFDDFD /* LogsNaviVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB3E06E2BD605C200CFDDFD /* LogsNaviVM.swift */; };
@@ -2456,6 +2457,7 @@
 		ECAE25E12BF1DB3E007D4B57 /* FoodsMsgDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsMsgDetailsVC.swift; sourceTree = "<group>"; };
 		ECAE25E32BF1DFD0007D4B57 /* FoodsMsgDetailsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsMsgDetailsVM.swift; sourceTree = "<group>"; };
 		ECAE25E52BF20F37007D4B57 /* NSDictionary+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDictionary+Exs.swift"; sourceTree = "<group>"; };
+		ECAE372C2F5E694F0051F234 /* ElaExpandedTapButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaExpandedTapButton.swift; sourceTree = "<group>"; };
 		ECB3E03C2BD2353700CFDDFD /* DataDetailShareLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailShareLineChartView.swift; sourceTree = "<group>"; };
 		ECB3E03E2BD2359700CFDDFD /* DataDetailShareLineView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataDetailShareLineView.h; sourceTree = "<group>"; };
 		ECB3E03F2BD2359700CFDDFD /* DataDetailShareLineView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DataDetailShareLineView.m; sourceTree = "<group>"; };
@@ -2831,6 +2833,7 @@
 				ECD0FEE82BABD25B001232C9 /* WHCommonH5VC.swift */,
 				A73348A92DACED6B00AD747A /* GradientView.swift */,
 				A7EE9E0A2DB74228003E767A /* DottedLineView.swift */,
+				ECAE372C2F5E694F0051F234 /* ElaExpandedTapButton.swift */,
 				A72F5FF62DB76A330098C782 /* DottedRectView.swift */,
 				ECF124412C087CE300BD8D1C /* NumericTextField.swift */,
 				ECDF3F992C35229E005F7D7D /* ChineseTextField.swift */,
@@ -6150,6 +6153,7 @@
 				ECB848462BF35C3F00B554B9 /* UpdatePhoneVC.swift in Sources */,
 				A71D4CD12D411CD4000399A4 /* ForumListFooterVM.swift in Sources */,
 				A736262D2D003EC40038351C /* UTType+Exs.swift in Sources */,
+				ECAE372D2F5E69540051F234 /* ElaExpandedTapButton.swift in Sources */,
 				A7EDC0E02D12A5000012D3FF /* PublishPollMultipleAlertVM.swift in Sources */,
 				EC6253792EFA72C0003C076C /* HabitTopTypeVM.swift in Sources */,
 				A7D3B21D2CBE60BD0016B2B5 /* LogsMealsAlertSetWeekVM.swift in Sources */,

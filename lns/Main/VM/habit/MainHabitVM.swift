@@ -11,6 +11,11 @@ class MainHabitVM: UIView {
     
     let selfHeight = kFitWidth(60)
     private let pressScale: CGFloat = 0.97
+    private let pressFeedbackGenerator = UIImpactFeedbackGenerator(style: .rigid)
+    private let releaseFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
+    private let minimumFeedbackInterval: TimeInterval = 0.2
+    private var lastFeedbackTime: TimeInterval = 0
+    private var isPressingInside = false
     
     var tapBlock:(()->())?
     
@@ -88,18 +93,26 @@ extension MainHabitVM{
         
         switch gesture.state {
         case .began:
+            isPressingInside = true
             animatePressDown()
+            triggerImpact(pressFeedbackGenerator, intensity: 0.6)
         case .changed:
+            guard isInside != isPressingInside else { return }
+            isPressingInside = isInside
             if isInside {
                 animatePressDown()
             } else {
                 animatePressUp()
             }
+            triggerImpact(pressFeedbackGenerator, intensity: 0.6)
         case .cancelled, .failed:
+            isPressingInside = false
             animatePressUp()
         case .ended:
+            isPressingInside = false
             animatePressUp()
             guard isInside else { return }
+//            triggerImpact(releaseFeedbackGenerator, intensity: 0.9)
             DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
                 self.tapBlock?()
             })
@@ -119,6 +132,13 @@ extension MainHabitVM{
         UIView.animate(withDuration: 0.12, delay: 0, options: [.allowUserInteraction, .curveEaseOut]) {
             self.whiteView.transform = .identity
         }
+    }
+    
+    private func triggerImpact(_ generator: UIImpactFeedbackGenerator, intensity: CGFloat) {
+        let now = Date().timeIntervalSince1970
+        guard now - lastFeedbackTime > minimumFeedbackInterval else { return }
+        generator.impactOccurred(intensity: intensity)
+        lastFeedbackTime = now
     }
 }
 

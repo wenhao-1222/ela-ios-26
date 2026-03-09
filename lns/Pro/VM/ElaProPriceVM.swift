@@ -178,7 +178,7 @@ class ElaProPriceVM: UIView {
     }()
     lazy var renewalNoticeLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "订阅不知不觉扣费？我们也是。开启提醒，每次续费前5天我们会通过推送通知你。把选择权交还给你。"
+        lab.text = "讨厌不知不觉扣费？我们也是。开启提醒，每次续费前5天我们会通过推送通知你，把选择权交还给你。"
         lab.textColor = subTextColor
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.numberOfLines = 0
@@ -284,8 +284,8 @@ class ElaProPriceVM: UIView {
         lab.clipsToBounds = true
         return lab
     }()
-    lazy var agreeButton: UIButton = {
-        let btn = UIButton(type: .custom)
+    lazy var agreeButton: ElaExpandedTapButton = {
+        let btn = ElaExpandedTapButton(type: .custom)
         btn.setImage(makeCircleImage(color: WHColor_16(colorStr: "BFC3CA")), for: .normal)
         btn.setImage(makeCheckedImage(), for: .selected)
         btn.isSelected = false
@@ -688,7 +688,7 @@ extension ElaProPriceVM{
                                currentPriceText: String,
                                originPriceText: String?) -> String {
         if let renewText = originPriceText {
-            return "首期\(currentPriceText)，随后\(renewText)，可随时取消"
+            return "首期\(currentPriceText)，随后以\(renewText)，可随时取消"
         }
         
         return "\(currentPriceText)\(periodSuffix(period: product.subscriptionPeriod))，可随时取消"
