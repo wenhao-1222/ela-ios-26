@@ -84,6 +84,7 @@ class DietPlanCreatePaceVM: UIView {
     private let maxRateKgPerWeek: Double = 0.70
     private let defaultCurrentWeight: Double = 70.0
     private let defaultTargetWeight: Double = 65.0
+    private let edgeTickInset: CGFloat = kFitWidth(35)
 
     private var currentLevel: Level = .steady
     private var sliderRawValue: Double = 1.0
@@ -204,6 +205,9 @@ class DietPlanCreatePaceVM: UIView {
     lazy var tickLeftLabel: UILabel = makeTickLabel()
     lazy var tickMidLabel: UILabel = makeTickLabel()
     lazy var tickRightLabel: UILabel = makeTickLabel()
+    lazy var tickLeftMark: UIView = makeTickMarkView()
+    lazy var tickMidMark: UIView = makeTickMarkView()
+    lazy var tickRightMark: UIView = makeTickMarkView()
     private var startWeightTopOffset: CGFloat = 0
     private var endWeightTopOffset: CGFloat = 0
 
@@ -230,6 +234,9 @@ extension DietPlanCreatePaceVM {
         chartWrapView.addSubview(startWeightLabel)
         chartWrapView.addSubview(endWeightLabel)
         chartWrapView.addSubview(xAxisLine)
+        chartWrapView.addSubview(tickLeftMark)
+        chartWrapView.addSubview(tickMidMark)
+        chartWrapView.addSubview(tickRightMark)
         chartWrapView.addSubview(tickLeftLabel)
         chartWrapView.addSubview(tickMidLabel)
         chartWrapView.addSubview(tickRightLabel)
@@ -257,8 +264,8 @@ extension DietPlanCreatePaceVM {
         }
 
         cardView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.right.equalTo(kFitWidth(-20))
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
             make.top.equalTo(sliderView.snp.bottom).offset(kFitWidth(20))
             make.bottom.lessThanOrEqualToSuperview().offset(-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(72)))
         }
@@ -277,8 +284,8 @@ extension DietPlanCreatePaceVM {
         }
 
         chartPlotView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.right.equalTo(kFitWidth(-20))
+            make.left.equalTo(kFitWidth(22))
+            make.right.equalTo(kFitWidth(-22))
             make.top.equalTo(kFitWidth(18))
             make.height.equalTo(kFitWidth(125))
         }
@@ -299,8 +306,29 @@ extension DietPlanCreatePaceVM {
             make.bottom.equalToSuperview().offset(kFitWidth(-36))
         }
 
+        tickLeftMark.snp.makeConstraints { make in
+            make.centerX.equalTo(tickLeftLabel)
+            make.top.equalTo(xAxisLine.snp.bottom)
+            make.width.equalTo(kFitWidth(1))
+            make.height.equalTo(kFitWidth(5))
+        }
+
+        tickMidMark.snp.makeConstraints { make in
+            make.centerX.equalTo(tickMidLabel)
+            make.top.equalTo(xAxisLine.snp.bottom)
+            make.width.equalTo(kFitWidth(1))
+            make.height.equalTo(kFitWidth(5))
+        }
+
+        tickRightMark.snp.makeConstraints { make in
+            make.centerX.equalTo(tickRightLabel)
+            make.top.equalTo(xAxisLine.snp.bottom)
+            make.width.equalTo(kFitWidth(1))
+            make.height.equalTo(kFitWidth(5))
+        }
+
         tickLeftLabel.snp.makeConstraints { make in
-            make.left.equalTo(chartPlotView)
+            make.left.equalTo(chartPlotView).offset(kFitWidth(edgeTickInset))
             make.top.equalTo(xAxisLine.snp.bottom).offset(kFitWidth(9))
         }
 
@@ -310,7 +338,7 @@ extension DietPlanCreatePaceVM {
         }
 
         tickRightLabel.snp.makeConstraints { make in
-            make.right.equalTo(chartPlotView)
+            make.right.equalTo(chartPlotView).offset(kFitWidth(-edgeTickInset))
             make.top.equalTo(tickLeftLabel)
         }
     }
@@ -501,18 +529,19 @@ private extension DietPlanCreatePaceVM {
         let labelGap = kFitWidth(4)
         let startHeight = startWeightLabel.intrinsicContentSize.height
         let endHeight = endWeightLabel.intrinsicContentSize.height
+        let maxLabelHeight = max(startHeight, endHeight)
+        let isAscending = currentEndWeight >= startWeight
 
-        // start 标签始终在折线下方，x 固定在左侧
-        let startTop = startLineY + labelGap
-
-        // end 标签：增肌在上方，否则在下方，x 固定在右侧
-        let isGain = currentEndWeight > startWeight
-        let endTop = isGain
+        // 上升时左下右上，下降时左上右下，避免文本压住折线。
+        let startTop = isAscending
+            ? (startLineY + labelGap)
+            : (startLineY - startHeight - labelGap)
+        let endTop = isAscending
             ? (endLineY - endHeight - labelGap)
             : (endLineY + labelGap)
 
-        let minTop = chartPlotView.frame.minY - endHeight * 0.2
-        let maxTop = chartWrapView.bounds.height - max(startHeight, endHeight) - kFitWidth(2)
+        let minTop = chartPlotView.frame.minY - maxLabelHeight * 0.2
+        let maxTop = chartWrapView.bounds.height - maxLabelHeight - kFitWidth(2)
         let clampedStartTop = min(max(startTop, minTop), maxTop)
         let clampedEndTop = min(max(endTop, minTop), maxTop)
 
@@ -623,6 +652,12 @@ private extension DietPlanCreatePaceVM {
         lab.textColor = WHColor_16(colorStr: "8C8D94")
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         return lab
+    }
+
+    func makeTickMarkView() -> UIView {
+        let vi = UIView()
+        vi.backgroundColor = WHColor_16(colorStr: "D9D9D9")
+        return vi
     }
 
     func makeThumbImage() -> UIImage? {
