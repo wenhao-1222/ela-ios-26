@@ -56,6 +56,9 @@ class ElaProPriceVM: UIView {
     private let normalTextColor = UIColor.COLOR_TEXT_TITLE_0f1214
     private let subTextColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
     private let renewalDashLayer = CAShapeLayer()
+    private var agreementConfirmSheetHeight: CGFloat {
+        kFitWidth(254) + WHUtils().getBottomSafeAreaHeight()
+    }
     
     private var selectedPlan: PlanType = .annual
     private var monthProduct: SKProduct?
@@ -78,6 +81,7 @@ class ElaProPriceVM: UIView {
     private var lifetimePriceText = "--"
     private var isPurchasing = false
     private var shouldSyncRenewalSwitchAfterSettings = false
+    private var isAgreementConfirmVisible = false
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -313,6 +317,70 @@ class ElaProPriceVM: UIView {
         lab.addGestureRecognizer(tap)
         return lab
     }()
+    lazy var agreementConfirmDimView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = UIColor.COLOR_ALERT_BG_BLACK
+        vi.alpha = 0
+        vi.isHidden = true
+        vi.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hideAgreementConfirmSheetAction)))
+        return vi
+    }()
+    lazy var agreementConfirmSheet: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
+        vi.layer.cornerRadius = kFitWidth(28)
+        vi.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        vi.clipsToBounds = true
+        vi.isHidden = true
+        return vi
+    }()
+    lazy var agreementConfirmCloseButton: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setImage(UIImage(named: "alert_close_icon"), for: .normal)
+        btn.addTarget(self, action: #selector(hideAgreementConfirmSheetAction), for: .touchUpInside)
+        return btn
+    }()
+    lazy var agreementConfirmTitleLabel: UILabel = {
+        let lab = UILabel()
+        lab.text = "阅读并同意以下条款"
+        lab.textColor = normalTextColor
+        lab.font = .systemFont(ofSize: 20, weight: .semibold)
+        lab.textAlignment = .center
+        return lab
+    }()
+    lazy var agreementConfirmLabel: UILabel = {
+        let lab = UILabel()
+        lab.numberOfLines = 1
+        lab.textAlignment = .center
+        lab.isUserInteractionEnabled = true
+        let allText = "我已阅读并同意《ELA PRO条款和条件》"
+        let attr = NSMutableAttributedString(string: allText)
+        attr.addAttributes([
+            .foregroundColor: subTextColor,
+            .font: UIFont.systemFont(ofSize: 15, weight: .regular)
+        ], range: NSRange(location: 0, length: allText.count))
+        if let range = allText.range(of: "《ELA PRO条款和条件》") {
+            let nsRange = NSRange(range, in: allText)
+            attr.addAttributes([
+                .foregroundColor: selectedBlue
+            ], range: nsRange)
+        }
+        lab.attributedText = attr
+        lab.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openProAgreementAction)))
+        return lab
+    }()
+    lazy var agreementConfirmContinueButton: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitle("同意并继续", for: .normal)
+        btn.setTitleColor(.white, for: .normal)
+        btn.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
+        btn.backgroundColor = selectedBlue
+        btn.layer.cornerRadius = kFitWidth(24)
+        btn.clipsToBounds = true
+        btn.enablePressEffect()
+        btn.addTarget(self, action: #selector(agreeAndContinueAction), for: .touchUpInside)
+        return btn
+    }()
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -428,9 +496,73 @@ extension ElaProPriceVM{
     
     @objc func confirmButtonTapAction() {
         guard agreeButton.isSelected else {
-            MCToast.mc_text("请先勾选并同意协议")
+            showAgreementConfirmSheet()
             return
         }
+        startPurchaseFlow()
+    }
+
+    @objc func hideAgreementConfirmSheetAction() {
+        hideAgreementConfirmSheet(animated: true)
+    }
+
+    @objc func agreeAndContinueAction() {
+        agreeButton.isSelected = true
+        hideAgreementConfirmSheet(animated: true) { [weak self] in
+            self?.startPurchaseFlow()
+        }
+    }
+
+    func showAgreementConfirmSheet() {
+        guard !isAgreementConfirmVisible else { return }
+        isAgreementConfirmVisible = true
+        agreementConfirmDimView.isHidden = false
+        agreementConfirmSheet.isHidden = false
+        agreementConfirmDimView.alpha = 0
+        agreementConfirmSheet.transform = CGAffineTransform(translationX: 0, y: agreementConfirmSheetHeight)
+
+        UIView.animate(withDuration: 0.45,
+                       delay: 0.02,
+                       usingSpringWithDamping: 0.88,
+                       initialSpringVelocity: 0.1,
+                       options: [.curveEaseOut, .allowUserInteraction]) {
+            self.agreementConfirmDimView.alpha = 0.2
+            self.agreementConfirmSheet.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
+        } completion: { _ in
+            UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut) {
+                self.agreementConfirmSheet.transform = .identity
+            }
+        }
+    }
+
+    func hideAgreementConfirmSheet(animated: Bool, completion: (() -> Void)? = nil) {
+        guard isAgreementConfirmVisible || !agreementConfirmSheet.isHidden else {
+            completion?()
+            return
+        }
+        isAgreementConfirmVisible = false
+        let animations = {
+            self.agreementConfirmDimView.alpha = 0
+            self.agreementConfirmSheet.transform = CGAffineTransform(translationX: 0, y: self.agreementConfirmSheetHeight)
+        }
+        let finish = {
+            self.agreementConfirmDimView.isHidden = true
+            self.agreementConfirmSheet.isHidden = true
+            completion?()
+        }
+        if animated {
+            UIView.animate(withDuration: 0.22, delay: 0, options: [.curveEaseIn, .allowUserInteraction]) {
+                animations()
+            } completion: { _ in
+                finish()
+            }
+        } else {
+            animations()
+            finish()
+        }
+    }
+
+    func startPurchaseFlow() {
         
         guard !isPurchasing else { return }
         
@@ -772,6 +904,8 @@ extension ElaProPriceVM{
         addSubview(bgImgView)
         addSubview(scrollView)
         addSubview(bottomBar)
+        addSubview(agreementConfirmDimView)
+        addSubview(agreementConfirmSheet)
         
         scrollView.addSubview(contentView)
         
@@ -835,6 +969,10 @@ extension ElaProPriceVM{
         bottomBar.addSubview(confirmButton)
         bottomBar.addSubview(agreeButton)
         bottomBar.addSubview(agreementLabel)
+        agreementConfirmSheet.addSubview(agreementConfirmCloseButton)
+        agreementConfirmSheet.addSubview(agreementConfirmTitleLabel)
+        agreementConfirmSheet.addSubview(agreementConfirmLabel)
+        agreementConfirmSheet.addSubview(agreementConfirmContinueButton)
         
         confirmButton.addTarget(self, action: #selector(confirmButtonTapAction), for: .touchUpInside)
         
@@ -848,6 +986,15 @@ extension ElaProPriceVM{
         bottomBar.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
             make.height.equalTo(kFitWidth(100) + WHUtils().getBottomSafeAreaHeight())
+        }
+
+        agreementConfirmDimView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+
+        agreementConfirmSheet.snp.makeConstraints { make in
+            make.left.right.bottom.equalToSuperview()
+            make.height.equalTo(agreementConfirmSheetHeight)
         }
         
         confirmButton.snp.makeConstraints { make in
@@ -884,6 +1031,31 @@ extension ElaProPriceVM{
             make.centerY.equalTo(agreeButton)
             make.left.equalTo(agreeButton.snp.right).offset(kFitWidth(10))
             make.right.lessThanOrEqualTo(kFitWidth(-20))
+        }
+
+        agreementConfirmCloseButton.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(kFitWidth(20))
+            make.right.equalToSuperview().offset(kFitWidth(-19))
+            make.width.height.equalTo(kFitWidth(28))
+        }
+
+        agreementConfirmTitleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(kFitWidth(53))
+            make.centerX.equalToSuperview()
+        }
+
+        agreementConfirmLabel.snp.makeConstraints { make in
+            make.top.equalTo(agreementConfirmTitleLabel.snp.bottom).offset(kFitWidth(27))
+            make.centerX.equalToSuperview()
+            make.left.greaterThanOrEqualTo(kFitWidth(24))
+            make.right.lessThanOrEqualTo(kFitWidth(-24))
+        }
+
+        agreementConfirmContinueButton.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(19))
+            make.right.equalTo(kFitWidth(-19))
+            make.top.equalTo(agreementConfirmLabel.snp.bottom).offset(kFitWidth(28))
+            make.height.equalTo(kFitWidth(48))
         }
         
         scrollView.snp.makeConstraints { make in
