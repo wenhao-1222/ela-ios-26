@@ -218,7 +218,7 @@ extension HabitProgressVM{
 
         let circleSize = startFrame.height//kFitWidth(48)
         let circleBounds = CGRect(x: 0, y: 0, width: circleSize, height: circleSize)
-        let startCenter = CGPoint(x: startFrame.midX, y: startFrame.midY)
+        let startCenter = CGPoint(x: startFrame.maxX - circleSize*0.5, y: startFrame.midY)
         let endCenter = CGPoint(x: endFrame.midX, y: endFrame.midY)
 
         let animateView = UIView(frame: CGRect.init(x: 0, y: 0, width: circleSize, height: circleSize))

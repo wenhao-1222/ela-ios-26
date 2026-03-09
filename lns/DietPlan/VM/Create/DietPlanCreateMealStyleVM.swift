@@ -7,7 +7,7 @@
 
 class DietPlanCreateMealStyleVM: UIView {
 
-    var selectedIndex = 1
+    var selectedIndex = -1
     var selectedBlock: (() -> ())?
 
     lazy var dataArray: [[String: String]] = {
