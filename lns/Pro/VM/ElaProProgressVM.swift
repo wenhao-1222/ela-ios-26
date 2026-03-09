@@ -24,7 +24,7 @@ class ElaProProgressVM: UIView {
         }
     }
     // 总时长缩放：1.0=当前基准时长，0.5=基准一半时长，2.0=基准两倍时长
-    var totalDurationScale: CGFloat = 0.5 {
+    var totalDurationScale: CGFloat = 0.95 {
         didSet {
             if totalDurationScale < 0.2 { totalDurationScale = 0.2 }
             if totalDurationScale > 3.0 { totalDurationScale = 3.0 }

@@ -100,6 +100,7 @@ extension HabitItemVM{
         }
     }
     @objc func tapAction() {
+        showButton.isUserInteractionEnabled = false
         self.tapBlock?()
     }
 }

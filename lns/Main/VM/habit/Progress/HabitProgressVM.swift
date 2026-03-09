@@ -17,6 +17,10 @@ class HabitProgressVM: UIView {
     var proteinIntakeOnTargetWithFriendFirstTimePoint = ""
     private var pendingPointTarget: Int?
     private var deferPointAnimation = false
+    private var pendingStreakParabolaAction: (() -> Void)?
+    private var pendingStreakSnapshotRestoreAction: (((() -> Void)?) -> Void)?
+    private var pendingStreakFailureRestoreAction: (((() -> Void)?) -> Void)?
+    private var shouldStartPendingStreakParabola = false
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -75,12 +79,15 @@ class HabitProgressVM: UIView {
         vm.firstOnTargetVm.tapBlock = {()in
             DLLog(message: "proteinIntakeOnTargetWithFriendFirstTimeRewardId:\(self.proteinIntakeOnTargetWithFriendFirstTimeRewardId)   --- \(self.proteinIntakeOnTargetWithFriendFirstTimePoint)")
             self.deferPointAnimation = true
-            self.sendRecieveFriendProteinRequest()
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.7, execute: {
+                self.sendRecieveFriendProteinRequest()
+            })
             self.playStreakReceiveAnimation(from: self.friendMsgVm.firstOnTargetVm,
                                             point: self.proteinIntakeOnTargetWithFriendFirstTimePoint) {
                 self.deferPointAnimation = false
                 self.triggerPointAnimationIfNeeded()
             }
+            self.triggerPendingStreakParabolaIfNeeded(forceStart: true)
         }
         
         return vm
@@ -96,8 +103,10 @@ class HabitProgressVM: UIView {
             self.scrollView.contentSize = CGSize.init(width: 0, height: self.streakListVm.frame.maxY+kFitWidth(20))
         }
         vm.recieveBlock = {(streakId, sourceVm, point)in
-            self.sendRecieveStreakRequest(streakId: streakId)
             self.playStreakReceiveAnimation(from: sourceVm, point: point)
+            DispatchQueue.main.asyncAfter(deadline: .now()+0.7, execute: {
+                self.sendRecieveStreakRequest(streakId: streakId)
+            })
         }
         return vm
     }()
@@ -146,7 +155,16 @@ extension HabitProgressVM{
         self.lastNumber = nextPointBalance//dict.stringValueForKey(key: "pointBalance").intValue
         self.todayMsgVm.updateUI(dict: dict)
         self.friendMsgVm.updateUI(dict: dict)
-        self.streakListVm.updateUI(listArray: dict["streakRewardList"]as? NSArray ?? [])
+//        self.streakListVm.updateUI(listArray: dict["streakRewardList"]as? NSArray ?? [])
+        let arr = [["streakRewardName":"测试连胜一",
+                    "isClaimed":"0",
+                    "streakRewardPoint":"14",
+                    "streakRewardId":"2342342"],
+                   ["streakRewardName":"测试连胜二",
+                               "isClaimed":"0",
+                               "streakRewardPoint":"88",
+                               "streakRewardId":"2342wfwe342"]]
+        self.streakListVm.updateUI(listArray: arr as NSArray)
     }
 }
 
@@ -191,18 +209,53 @@ extension HabitProgressVM{
     }
 }
 extension HabitProgressVM{
+    private func triggerPendingStreakParabolaIfNeeded(forceStart: Bool = false) {
+        if forceStart {
+            shouldStartPendingStreakParabola = true
+        }
+        guard shouldStartPendingStreakParabola,
+              let action = pendingStreakParabolaAction else { return }
+        pendingStreakParabolaAction = nil
+        shouldStartPendingStreakParabola = false
+        action()
+    }
+
+    private func restorePendingStreakSnapshotIfNeeded(completion: (() -> Void)? = nil) {
+        guard let action = pendingStreakSnapshotRestoreAction else {
+            completion?()
+            return
+        }
+        pendingStreakSnapshotRestoreAction = nil
+        action(completion)
+    }
+
+    private func restorePendingStreakFailureIfNeeded(completion: (() -> Void)? = nil) {
+        guard let action = pendingStreakFailureRestoreAction else {
+            completion?()
+            return
+        }
+        pendingStreakFailureRestoreAction = nil
+        action(completion)
+    }
+
     func playStreakReceiveAnimation(from sourceView: UIView,
                                     point: String,
                                     completion: (() -> Void)? = nil) {
+        shouldStartPendingStreakParabola = false
+        pendingStreakParabolaAction = nil
+        pendingStreakSnapshotRestoreAction = nil
+        pendingStreakFailureRestoreAction = nil
         let containerView = animOverlayView
         let startFrame: CGRect
         let snapshotView: UIView
+        weak var sourceButton: UIButton?
         if let item = sourceView as? HabitItemVM {
             let buttonFrame = item.showButton.convert(item.showButton.bounds, to: containerView)
             startFrame = buttonFrame
             snapshotView = item.showButton.snapshotView(afterScreenUpdates: false) ?? UIView()
             snapshotView.clipsToBounds = true
             snapshotView.layer.cornerRadius = kFitWidth(15)//item.showButton.layer.cornerRadius
+            sourceButton = item.showButton
             DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
                 item.showButton.isHidden = true
             })
@@ -222,14 +275,14 @@ extension HabitProgressVM{
         let endCenter = CGPoint(x: endFrame.midX, y: endFrame.midY)
 
         let animateView = UIView(frame: CGRect.init(x: 0, y: 0, width: circleSize, height: circleSize))
-        animateView.backgroundColor = .THEME
+        animateView.backgroundColor = .clear//.THEME
         animateView.layer.cornerRadius = circleSize*0.5
         animateView.isHidden = true
         containerView.addSubview(animateView)
         
         let pointLabel = UILabel()
         pointLabel.text = "+\(point)"
-        pointLabel.textColor = .white
+        pointLabel.textColor = .THEME//.white
         pointLabel.font = .systemFont(ofSize: 12, weight: .semibold)
         pointLabel.textAlignment = .center
         pointLabel.adjustsFontSizeToFitWidth = true
@@ -262,11 +315,51 @@ extension HabitProgressVM{
             snapshotView.backgroundColor = .clear
             snapshotView.layer.cornerRadius = 0
             snapshotView.clipsToBounds = false
-            self.playParabolaAnimation(view: animateView,
-                                       sourceView: snapshotView,
-                                       from: startCenter,
-                                       to: endCenter,
-                                       completion: completion)
+            self.pendingStreakSnapshotRestoreAction = { restoreCompletion in
+                snapshotView.backgroundColor = .COLOR_BG_C4
+                sourceButton?.setTitle("已领取", for: .normal)
+                UIView.animate(withDuration: 0.22, delay: 0, options: [.curveEaseInOut, .allowUserInteraction]) {
+                    snapshotView.transform = .identity
+                    snapshotView.frame = startFrame
+                    snapshotView.layer.cornerRadius = kFitWidth(15)
+                } completion: { _ in
+                    sourceButton?.backgroundColor = .COLOR_BG_C4
+                    sourceButton?.setTitle("已领取", for: .normal)
+                    sourceButton?.isEnabled = false
+                    sourceButton?.isUserInteractionEnabled = false
+                    sourceButton?.transform = .identity
+                    sourceButton?.alpha = 1
+                    sourceButton?.isHidden = false
+                    snapshotView.removeFromSuperview()
+                    restoreCompletion?()
+                }
+            }
+            self.pendingStreakFailureRestoreAction = { restoreCompletion in
+                UIView.animate(withDuration: 0.22, delay: 0, options: [.curveEaseInOut, .allowUserInteraction]) {
+                    snapshotView.transform = .identity
+                    snapshotView.frame = startFrame
+                    snapshotView.layer.cornerRadius = kFitWidth(15)
+                    snapshotView.backgroundColor = .THEME
+                } completion: { _ in
+                    sourceButton?.backgroundColor = .THEME
+                    sourceButton?.setTitle("领取", for: .normal)
+                    sourceButton?.isEnabled = true
+                    sourceButton?.isUserInteractionEnabled = true
+                    sourceButton?.transform = .identity
+                    sourceButton?.alpha = 1
+                    sourceButton?.isHidden = false
+                    snapshotView.removeFromSuperview()
+                    restoreCompletion?()
+                }
+            }
+            self.pendingStreakParabolaAction = {
+                self.playParabolaAnimation(view: animateView,
+                                           sourceView: snapshotView,
+                                           from: startCenter,
+                                           to: endCenter,
+                                           completion: completion)
+            }
+            self.triggerPendingStreakParabolaIfNeeded()
         })
     }
 
@@ -277,7 +370,7 @@ extension HabitProgressVM{
                                        completion: (() -> Void)? = nil) {
         animView.center = sourceView.center
         animView.isHidden = false
-        sourceView.isHidden = true
+        sourceView.isHidden = false//true
         let midX = (startPoint.x + endPoint.x) * 0.5
         let controlPoint = CGPoint(x: midX, y: min(startPoint.y, endPoint.y) - kFitWidth(120))
 
@@ -291,7 +384,7 @@ extension HabitProgressVM{
 
         let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
         scaleAnim.fromValue = 1.0
-        scaleAnim.toValue = 0.3
+        scaleAnim.toValue = 0.5
 
         let opacityAnim = CABasicAnimation(keyPath: "opacity")
         opacityAnim.fromValue = 1.0
@@ -357,27 +450,57 @@ extension HabitProgressVM: UIScrollViewDelegate {
 extension HabitProgressVM{
     func sendRecieveStreakRequest(streakId:String) {
         let param = ["streakRewardId":streakId]
-        
-        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimStreakReward, parameters: param as [String:AnyObject]) { responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            
-            DLLog(message: "sendDataRequest:\(dataDict)")
-            self.isCounting = true
-            
-//            MCToast.mc_text("领取成功")
-            DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
-                self.refreshBlock?()
-            })
-        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+            self.shouldStartPendingStreakParabola = true
+            self.triggerPendingStreakParabolaIfNeeded()
+            self.restorePendingStreakSnapshotIfNeeded {
+            }
+        })
+
+//        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimStreakReward, parameters: param as [String:AnyObject]) { responseObject in
+//            let code = responseObject["code"]as? Int ?? -1
+//            if (code == 200) {
+//                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+//                let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+//
+//                DLLog(message: "sendDataRequest:\(dataDict)")
+//                self.isCounting = true
+//
+//    //            MCToast.mc_text("领取成功")
+//                DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+//                    self.shouldStartPendingStreakParabola = true
+//                    self.triggerPendingStreakParabolaIfNeeded()
+//                    self.restorePendingStreakSnapshotIfNeeded {
+//                    }
+//                    self.refreshBlock?()
+//                })
+//            }else {
+//                MCToast.mc_text("领取失败")
+//                self.pendingStreakParabolaAction = nil
+//                self.shouldStartPendingStreakParabola = false
+//                self.restorePendingStreakFailureIfNeeded {
+//                }
+//            }
+//        } failure: { _ in
+//            self.pendingStreakParabolaAction = nil
+//            self.shouldStartPendingStreakParabola = false
+//            self.restorePendingStreakFailureIfNeeded {
+//            }
+//        }
     }
     func sendRecieveFriendProteinRequest() {
         let param = ["rewardId":self.proteinIntakeOnTargetWithFriendFirstTimeRewardId]
-        
-        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimFirstFriendGoalReward, parameters: param as [String:AnyObject]) { responseObject in
-            DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-                self.refreshBlock?()
-            })
-        }
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+            self.shouldStartPendingStreakParabola = true
+            self.triggerPendingStreakParabolaIfNeeded()
+            self.restorePendingStreakSnapshotIfNeeded {
+            }
+        })
+//        WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimFirstFriendGoalReward, parameters: param as [String:AnyObject]) { responseObject in
+//            DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+//                self.refreshBlock?()
+//            })
+//        }
     }
 }
