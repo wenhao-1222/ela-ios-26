@@ -151,6 +151,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     lazy var eatStyleVm: DietPlanCreateEatStyleVM = {
         let vm = DietPlanCreateEatStyleVM.init(frame: CGRect.init(x: SCREEN_WIDHT*14, y: 0, width: 0, height: 0))
         vm.selectedBlock = {[weak self] in
+            self?.updateKetoHistoryTitleIfNeeded()
             self?.updateKetoHistorySkipIfNeeded()
             self?.syncNextButtonEnableStatus()
         }
@@ -394,7 +395,26 @@ extension DietPlanCreateVC{
         return styleName == "均衡，碳蛋脂平衡"
     }
 
+    func updateKetoHistoryTitleIfNeeded() {
+        let titleText: String
+        switch eatStyleVm.selectedIndex {
+        case 1:
+            titleText = "你之前有尝试过\n高蛋白饮食吗？"
+        case 2:
+            titleText = "你之前有尝试过\n生酮饮食吗？"
+        case 3:
+            titleText = "你之前有尝试过\n低碳饮食吗？"
+        default:
+            titleText = "你之前有尝试过\n高蛋白/低碳/生酮饮食吗？"
+        }
+        ketoHistoryVm.titleLabel.setLineHeight(
+            textString: titleText,
+            lineHeight: ketoHistoryVm.titleLabel.font.lineHeight * 1
+        )
+    }
+
     func updateKetoHistorySkipIfNeeded() {
+        updateKetoHistoryTitleIfNeeded()
         let shouldSkip = shouldSkipKetoHistoryStep()
         let skipStateChanged = (shouldSkip != skipKetoHistory)
 
