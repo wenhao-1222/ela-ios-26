@@ -89,6 +89,9 @@ class DietPlanCreateVC: WHBaseViewVC {
     }()
     lazy var weightVm: DietPlanCreateWeightVM = {
         let vm = DietPlanCreateWeightVM.init(frame: CGRect.init(x: SCREEN_WIDHT*4, y: 0, width: 0, height: 0))
+        vm.weightChangedBlock = { [weak self] weight in
+            self?.targetWeightVm.syncWithCurrentWeight(weight)
+        }
         return vm
     }()
     lazy var bodyfatVm: DietPlanCreateBodyfatVM = {

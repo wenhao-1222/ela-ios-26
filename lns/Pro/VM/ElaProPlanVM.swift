@@ -86,7 +86,21 @@ class ElaProPlanVM: UIView {
     lazy var planOneDescLabel: UILabel = {
         let lab = UILabel()
         lab.numberOfLines = 0
-        let text = "旧版本已帮助和你情况相似的用户，在尽量减少避免脂肪堆积情况下 3 个月内完成 增肌 5.4 公斤。"
+        let currentWeightText = QuestinonaireMsgModel.shared.weight
+        let targetWeightText = QuestinonaireMsgModel.shared.targetWeight
+        let isSkip = abs((Double(currentWeightText) ?? 0) - (Double(targetWeightText) ?? 0)) < 0.05
+        var text = "旧版本已帮助与你情况相似的用户，显著改善饮食习惯，并提升瘦体重占比。"//
+        var weightHight = "增肌 5.4 公斤"
+        if (Double(currentWeightText) ?? 0) > (Double(targetWeightText) ?? 0){
+            //减脂
+            let weight = (Double(currentWeightText) ?? 0) * 0.12
+            weightHight = "减脂 \(WHUtils.convertStringToStringOneDigit("\(weight)") ?? "5.4") 公斤"
+            text = "旧版本已帮助和你情况相似的用户，在 维持肌肉量情况下 3 个月内完成 \(weightHight)"
+        }else if (Double(currentWeightText) ?? 0) < (Double(targetWeightText) ?? 0){
+            //增肌
+            text = "旧版本已帮助和你情况相似的用户，在尽量减少避免脂肪堆积情况下 3 个月内完成 增肌 5.4 公斤。"
+        }
+        
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.5
         let attr = NSMutableAttributedString(string: text)
@@ -96,7 +110,7 @@ class ElaProPlanVM: UIView {
             .paragraphStyle: paragraphStyle
         ], range: NSRange(location: 0, length: text.count))
         
-        let highlights = ["3", "增肌 5.4 公斤"]
+        let highlights = ["3", weightHight]
         for key in highlights {
             if let range = text.range(of: key) {
                 let nsRange = NSRange(range, in: text)

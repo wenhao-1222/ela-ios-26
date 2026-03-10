@@ -313,7 +313,7 @@ class ElaProPriceVM: UIView {
             ], range: nsRange)
         }
         lab.attributedText = attr
-        let tap = UITapGestureRecognizer(target: self, action: #selector(openProAgreementAction))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleAgreementLabelTap(_:)))
         lab.addGestureRecognizer(tap)
         return lab
     }()
@@ -353,20 +353,20 @@ class ElaProPriceVM: UIView {
         lab.numberOfLines = 1
         lab.textAlignment = .center
         lab.isUserInteractionEnabled = true
-        let allText = "我已阅读并同意《ELA PRO条款和条件》"
+        let allText = "我已阅读并同意《ELA PRO条款》"
         let attr = NSMutableAttributedString(string: allText)
         attr.addAttributes([
             .foregroundColor: subTextColor,
             .font: UIFont.systemFont(ofSize: 15, weight: .regular)
         ], range: NSRange(location: 0, length: allText.count))
-        if let range = allText.range(of: "《ELA PRO条款和条件》") {
+        if let range = allText.range(of: "《ELA PRO条款》") {
             let nsRange = NSRange(range, in: allText)
             attr.addAttributes([
                 .foregroundColor: selectedBlue
             ], range: nsRange)
         }
         lab.attributedText = attr
-        lab.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(openProAgreementAction)))
+        lab.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleAgreementConfirmLabelTap(_:))))
         return lab
     }()
     lazy var agreementConfirmContinueButton: UIButton = {
@@ -475,8 +475,51 @@ extension ElaProPriceVM{
         agreeButton.isSelected.toggle()
     }
     
+    @objc func handleAgreementLabelTap(_ gesture: UITapGestureRecognizer) {
+        guard let label = gesture.view as? UILabel else { return }
+        guard didTapAgreementKeyword(in: label, gesture: gesture) else { return }
+        openProAgreementAction()
+    }
+
+    @objc func handleAgreementConfirmLabelTap(_ gesture: UITapGestureRecognizer) {
+        guard let label = gesture.view as? UILabel else { return }
+        guard didTapAgreementKeyword(in: label, gesture: gesture) else { return }
+        openProAgreementAction()
+    }
+
     @objc func openProAgreementAction() {
         self.protocalTapBlock?()
+    }
+
+    private func didTapAgreementKeyword(in label: UILabel, gesture: UITapGestureRecognizer) -> Bool {
+        guard let attributedText = label.attributedText, !attributedText.string.isEmpty else { return false }
+        let keyword = "《ELA PRO条款》"
+        let keywordRange = (attributedText.string as NSString).range(of: keyword)
+        guard keywordRange.location != NSNotFound else { return false }
+
+        let textStorage = NSTextStorage(attributedString: attributedText)
+        let layoutManager = NSLayoutManager()
+        textStorage.addLayoutManager(layoutManager)
+
+        let textContainer = NSTextContainer(size: label.bounds.size)
+        textContainer.lineFragmentPadding = 0
+        textContainer.maximumNumberOfLines = label.numberOfLines
+        textContainer.lineBreakMode = label.lineBreakMode
+        layoutManager.addTextContainer(textContainer)
+
+        let tapLocation = gesture.location(in: label)
+        let textRect = label.textRect(forBounds: label.bounds, limitedToNumberOfLines: label.numberOfLines)
+        guard textRect.contains(tapLocation) else { return false }
+
+        let locationInTextContainer = CGPoint(x: tapLocation.x - textRect.origin.x,
+                                              y: tapLocation.y - textRect.origin.y)
+        let glyphIndex = layoutManager.glyphIndex(for: locationInTextContainer, in: textContainer)
+        let glyphRect = layoutManager.boundingRect(forGlyphRange: NSRange(location: glyphIndex, length: 1),
+                                                   in: textContainer)
+        guard glyphRect.contains(locationInTextContainer) else { return false }
+
+        let characterIndex = layoutManager.characterIndexForGlyph(at: glyphIndex)
+        return NSLocationInRange(characterIndex, keywordRange)
     }
     
     @objc func selectMonthCardAction() {

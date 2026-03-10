@@ -376,7 +376,7 @@ private extension DietPlanCreatePaceVM {
         guard let level = Level(rawValue: Int(snapRaw)) else {
             return
         }
-        applyLevel(level: level, animated: true)
+        applyLevel(level: level, animated: false)
     }
 
     func applyLevel(level: Level, animated: Bool) {

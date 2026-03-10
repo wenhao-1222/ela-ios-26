@@ -8,6 +8,7 @@
 
 
 class DietPlanCreateWeightVM: UIView {
+    var weightChangedBlock: ((Double) -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -84,7 +85,11 @@ extension DietPlanCreateWeightVM{
     func getWeightValue() {
         let index = pickerView.selectedRow(inComponent: 0)
         let indexDecimal = pickerView.selectedRow(inComponent: 1)
-        QuestinonaireMsgModel.shared.weight = "\(numberIntArray[index]as? Int ?? 0).\(numberDemicalArray[indexDecimal]as? Int ?? 0)"
+        let integerValue = numberIntArray[index] as? Int ?? 0
+        let decimalValue = numberDemicalArray[indexDecimal] as? Int ?? 0
+        let weight = Double(integerValue) + Double(decimalValue) / 10.0
+        QuestinonaireMsgModel.shared.weight = String(format: "%.1f", weight)
+        weightChangedBlock?(weight)
         NotificationCenter.default.post(name: .dietPlanPaceInputDidChange, object: nil)
         DLLog(message: "体重：\(QuestinonaireMsgModel.shared.weight)")
     }

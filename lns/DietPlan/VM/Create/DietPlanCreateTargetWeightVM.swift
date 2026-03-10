@@ -99,6 +99,20 @@ class DietPlanCreateTargetWeightVM: UIView {
 }
 
 extension DietPlanCreateTargetWeightVM {
+    func syncWithCurrentWeight(_ weight: Double, syncTarget: Bool = true) {
+        currentWeightValue = clamp(roundToTenth(weight))
+        currentWeightValueLabel.text = "\(formatOneDecimal(currentWeightValue)) 公斤"
+        if syncTarget {
+            currentTargetWeight = currentWeightValue
+            updateTargetWeightText(value: currentTargetWeight)
+            QuestinonaireMsgModel.shared.targetWeight = formatOneDecimal(currentTargetWeight)
+            NotificationCenter.default.post(name: .dietPlanPaceInputDidChange, object: nil)
+            DispatchQueue.main.async {
+                self.rulerView.setValue(self.currentTargetWeight, animated: false)
+            }
+        }
+    }
+
     func initUI() {
         addSubview(titleLabel)
         addSubview(targetWeightLabel)
@@ -154,13 +168,11 @@ extension DietPlanCreateTargetWeightVM {
     }
 
     func applyInitialValue() {
-        currentWeightValue = parseWeight(QuestinonaireMsgModel.shared.weight) ?? 60.0
-        currentWeightValue = clamp(roundToTenth(currentWeightValue))
+        let parsedWeight = parseWeight(QuestinonaireMsgModel.shared.weight) ?? 60.0
+        syncWithCurrentWeight(parsedWeight, syncTarget: false)
         let targetFromModel = parseWeight(QuestinonaireMsgModel.shared.targetWeight)
         let initialTarget = targetFromModel ?? currentWeightValue
         currentTargetWeight = clamp(roundToTenth(initialTarget))
-
-        currentWeightValueLabel.text = "\(formatOneDecimal(currentWeightValue)) 公斤"
         updateTargetWeightText(value: currentTargetWeight)
         updateGoalTips()
         QuestinonaireMsgModel.shared.targetWeight = formatOneDecimal(currentTargetWeight)
