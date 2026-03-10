@@ -23,6 +23,10 @@ class MineVC : WHBaseViewVC {
 //        settingVm.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
+    public override func viewDidAppear(_ animated: Bool) {
+        self.navigationController?.fd_interactivePopDisabled = false
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,6 +82,8 @@ class MineVC : WHBaseViewVC {
         }
         vm.bodyDataVm.tapBlock = {()in
 //            let vc = BodyDataDetailVC()
+            self.navigationController?.fd_interactivePopDisabled = true
+            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
             let vc = ElaProVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }

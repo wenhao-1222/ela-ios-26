@@ -14,7 +14,6 @@ class QuestionnairePreVC: WHBaseViewVC {
     public override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = false
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
-        
     }
 //    public override func viewDidDisappear(_ animated: Bool) {
 //        self.navigationController?.fd_interactivePopDisabled = true

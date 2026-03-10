@@ -76,9 +76,9 @@ class PlanListVC: WHBaseViewVC {
 //                self.navigationController?.pushViewController(vc, animated: true)
 //            }
             
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
+            self.navigationController?.tabBarController?.selectedIndex = 2
             DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
-                self.navigationController?.tabBarController?.selectedIndex = 2
                 self.navigationController?.popToRootViewController(animated: true)
             })
         }

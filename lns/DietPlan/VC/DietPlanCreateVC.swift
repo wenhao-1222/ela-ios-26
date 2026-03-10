@@ -17,24 +17,22 @@ class DietPlanCreateVC: WHBaseViewVC {
     var skipKetoHistory = false//是否跳过生酮历史（由饮食风格决定）
     
     private var isUploadingDietProfile = false
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.fd_interactivePopDisabled = true
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+    
+    override func viewDidAppear(_ animated: Bool) {
+        self.navigationController?.fd_interactivePopDisabled = true
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
-
+    
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         navigationController?.fd_interactivePopDisabled = false
         navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
-        
     }
     lazy var naviVm: DietPlanCreateNaviVM = {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
@@ -267,6 +265,12 @@ extension DietPlanCreateVC{
 
     func syncNextButtonEnableStatus() {
         DLLog(message: "当前步骤：\(currentIndex)")
+        
+        if currentIndex > 0 {
+            self.enableInteractivePopGesture()
+        }else{
+            self.openInteractivePopGesture()
+        }
         
         let skipStepN = skipStepsNine ? 1 : 0
         let mealStyleIndex = skipMealStyle ? 1 : 0
@@ -574,15 +578,15 @@ extension DietPlanCreateVC{
                      "dietMethodExperience":ketoHistoryVm.selectedIndex + 1,
                      "flavorPreferences":flavorPreferences] as [String : Any]
         
+        DLLog(message: "sendDietUpsertRequest:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_diet_upsert, parameters: param as [String : AnyObject]) { responseObject in
+            DLLog(message: "\(responseObject)")
+            self.isUploadingDietProfile = false
+        }
+        
         let vc = ElaProVC()
         vc.param = param
         self.navigationController?.pushViewController(vc, animated: true)
-        
-//        DLLog(message: "sendDietUpsertRequest:\(param)")
-//        WHNetworkUtil.shareManager().POST(urlString: URL_diet_upsert, parameters: param as [String : AnyObject]) { responseObject in
-//            DLLog(message: "\(responseObject)")
-//            self.isUploadingDietProfile = false
-//        }
     }
     func sendBasicRequest() {
         let param = ["gender":"\(QuestinonaireMsgModel.shared.sex)",
@@ -592,7 +596,7 @@ extension DietPlanCreateVC{
         DLLog(message: "sendBasicRequest:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_question_basic_consumption, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
             var dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            dataString = "3200"
+//            dataString = "3200"
             DLLog(message: "sendBasicRequest:\(dataString ?? "")")
             QuestinonaireMsgModel.shared.caloriesNumber = "\(dataString ?? "0")"
             QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(dataString ?? "0")"

@@ -12,19 +12,19 @@ class ElaProVC: WHBaseViewVC {
     var param = [String : Any]()
     private var agreementAlertVm: ElaProAgreementAlertVM?
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.fd_interactivePopDisabled = true
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        navigationController?.fd_interactivePopDisabled = false
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-    }
+    lazy var purchaseLoadingMaskView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = UIColor.black.withAlphaComponent(0.2)
+        vi.isUserInteractionEnabled = true
+        vi.isHidden = true
+        return vi
+    }()
+    lazy var purchaseLoadingIndicator: UIActivityIndicatorView = {
+        let vi = UIActivityIndicatorView(style: .large)
+        vi.color = .white
+        vi.hidesWhenStopped = false
+        return vi
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -99,6 +99,9 @@ class ElaProVC: WHBaseViewVC {
         vm.protocalTapBlock = { [weak self] in
             self?.showAgreementAlert()
         }
+        vm.purchaseLoadingStateChangeBlock = { [weak self] visible in
+            self?.setPurchaseLoadingVisible(visible)
+        }
         return vm
     }()
     
@@ -170,6 +173,8 @@ extension ElaProVC{
         scrollViewBase.isScrollEnabled = false
         view.addSubview(naviVm)
         view.addSubview(nextButton)
+        view.addSubview(purchaseLoadingMaskView)
+        purchaseLoadingMaskView.addSubview(purchaseLoadingIndicator)
 
         scrollViewBase.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 5, height: 0)
@@ -186,6 +191,14 @@ extension ElaProVC{
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
         }
         
+        purchaseLoadingMaskView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        purchaseLoadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+        
         updateNextButtonForCurrentStep(animated: false)
     }
     
@@ -200,6 +213,16 @@ extension ElaProVC{
             alertVm = created
         }
         alertVm.showSelf()
+    }
+    
+    private func setPurchaseLoadingVisible(_ visible: Bool) {
+        purchaseLoadingMaskView.isHidden = !visible
+        if visible {
+            view.bringSubviewToFront(purchaseLoadingMaskView)
+            purchaseLoadingIndicator.startAnimating()
+        } else {
+            purchaseLoadingIndicator.stopAnimating()
+        }
     }
 }
 

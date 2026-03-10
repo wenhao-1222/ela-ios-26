@@ -48,7 +48,6 @@ class SurveyNoSexVC: WHBaseViewVC {
             panGes.edges = .left
             view.addGestureRecognizer(panGes)
         }
-        
     }
     
     lazy var progressVm: QuestionnaireProgressVM = {

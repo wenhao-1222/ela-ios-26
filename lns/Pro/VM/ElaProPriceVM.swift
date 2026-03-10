@@ -51,6 +51,7 @@ class ElaProPriceVM: UIView {
     
     var purchaseSuccessBlock: (() -> ())?
     var protocalTapBlock: (() -> ())?
+    var purchaseLoadingStateChangeBlock: ((Bool) -> ())?
     
     private let selectedBlue = WHColor_16(colorStr: "1677F2")
     private let normalTextColor = UIColor.COLOR_TEXT_TITLE_0f1214
@@ -381,7 +382,6 @@ class ElaProPriceVM: UIView {
         btn.addTarget(self, action: #selector(agreeAndContinueAction), for: .touchUpInside)
         return btn
     }()
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         renewalDashLayer.frame = renewalDashView.bounds
@@ -611,12 +611,14 @@ extension ElaProPriceVM{
         
         let purchasingPlan = selectedPlan
         isPurchasing = true
+        purchaseLoadingStateChangeBlock?(true)
         confirmButton.isEnabled = false
         confirmButton.setTitle("处理中...", for: .normal)
         let completion: (Result<SKPaymentTransaction, Error>) -> Void = { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 self.isPurchasing = false
+                self.purchaseLoadingStateChangeBlock?(false)
                 self.confirmButton.isEnabled = true
                 self.confirmButton.setTitle("确认", for: .normal)
                 
@@ -942,7 +944,7 @@ extension ElaProPriceVM{
             return units
         }
     }
-    
+
     func initUI() {
         addSubview(bgImgView)
         addSubview(scrollView)
@@ -1039,7 +1041,7 @@ extension ElaProPriceVM{
             make.left.right.bottom.equalToSuperview()
             make.height.equalTo(agreementConfirmSheetHeight)
         }
-        
+
         confirmButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))

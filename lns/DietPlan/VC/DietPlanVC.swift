@@ -8,6 +8,11 @@
 
 class DietPlanVC: WHBaseViewVC {
     
+    public override func viewDidAppear(_ animated: Bool) {
+        self.navigationController?.fd_interactivePopDisabled = false
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -22,6 +27,9 @@ class DietPlanVC: WHBaseViewVC {
 
 extension DietPlanVC{
     @objc func createDietPlanAction() {
+        self.navigationController?.fd_interactivePopDisabled = true
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+        
         let vc = DietPlanCreateVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
