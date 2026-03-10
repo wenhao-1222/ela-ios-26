@@ -13,7 +13,9 @@ class DietPlanCreateVC: WHBaseViewVC {
     
     var skipStepsOne = 0
     var skipStepsNine = false//是否跳过第九步  此处是由第八步决定
+    var skipMealStyle = false//是否跳过 一日几餐的选择页面
     var skipKetoHistory = false//是否跳过生酮历史（由饮食风格决定）
+    
     private var isUploadingDietProfile = false
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -218,13 +220,15 @@ extension DietPlanCreateVC{
             //目标体重如果是维持，则跳过 第8步“达成目标对你有多重要？”   和  第9步“你希望多快达成目标？”
             skipStepsOne = shouldSkipImportantAndPaceSteps() ? 2 : 0
         }
+        if currentIndex == 7 {
+            sendBasicRequest()
+        }
         
         let targetOffsetX = SCREEN_WIDHT * CGFloat(nextIndex)
         let finalOffsetX = min(targetOffsetX, maxOffsetX)
         currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
         scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: true)
         updateNextButtonForCurrentStep(animated: true)
-        
     }
 
     func moveFromSexToNextStep() {
@@ -265,8 +269,9 @@ extension DietPlanCreateVC{
         DLLog(message: "当前步骤：\(currentIndex)")
         
         let skipStepN = skipStepsNine ? 1 : 0
-        let ketoIndex = 15-skipStepsOne-skipStepN
-        let flavorIndex = 16-skipStepsOne-skipStepN-(skipKetoHistory ? 1 : 0)
+        let mealStyleIndex = skipMealStyle ? 1 : 0
+        let ketoIndex = 15-skipStepsOne-skipStepN-mealStyleIndex
+        let flavorIndex = 16-skipStepsOne-skipStepN-(skipKetoHistory ? 1 : 0)-mealStyleIndex
         
         switch currentIndex {
         case 0:
@@ -288,8 +293,12 @@ extension DietPlanCreateVC{
         case 11-skipStepsOne-skipStepN:
             nextButton.isEnabled = barrierVm.selectedIndex >= 0
         case 13-skipStepsOne-skipStepN:
-            nextButton.isEnabled = mealStyleVm.selectedIndex >= 0
-        case 14-skipStepsOne-skipStepN:
+            if skipMealStyle{
+                nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
+            }else{
+                nextButton.isEnabled = mealStyleVm.selectedIndex >= 0
+            }
+        case 14-skipStepsOne-skipStepN-mealStyleIndex:
             nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
         case ketoIndex:
             nextButton.isEnabled = skipKetoHistory ? (flavorVM.selectedIndex >= 0) : (ketoHistoryVm.selectedIndex >= 0)
@@ -304,10 +313,14 @@ extension DietPlanCreateVC{
         if index == 6 && shouldSkipImportantAndPaceSteps() {
 //            return 10
         }
+//        if index == 7{
+//            DLLog(message: "日常活动量选择------")
+//        }
         if index == 8 {
             //8. 达成目标对你有多重要？
             //以下处理，只有当目标体重  非维持时，即显示 “达成目标对你有多重要？”时。否则 跳过这里的判断
             if !shouldSkipImportantAndPaceSteps(){
+                let off = skipMealStyle ? SCREEN_WIDHT : 0
                 if importantVm.selectedIndex == 3{
     //            1.非常重要，我愿意全力以赴   想尽快看到明显进展
     //            2.我愿意认真尝试           希望稳步取得不错的进度
@@ -316,30 +329,44 @@ extension DietPlanCreateVC{
     //            备注：如选择 4，则跳过 9（9 默认选择 2）
                     paceVm.isHidden = true
                     skipStepsNine = true
-                    scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*16, height: 0)
-                    self.stepsArray = [5,5,6]
+                    if skipMealStyle {
+                        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*15, height: 0)
+                        self.stepsArray = [5,5,5]
+                    }else{
+                        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*16, height: 0)
+                        self.stepsArray = [5,5,6]
+                    }
+//                    scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*16, height: 0)
+//                    self.stepsArray = skipMealStyle ? [5,5,5] : [5,5,6]
                     let firstCenterX = paceVm.center.x//(SCREEN_WIDHT * 9.5)
                     allergyVm.center = CGPoint(x: firstCenterX, y: SCREEN_HEIGHT*0.5)
                     barrierVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT, y: SCREEN_HEIGHT*0.5)
                     adviceVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*2, y: SCREEN_HEIGHT*0.5)
                     mealStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*3, y: SCREEN_HEIGHT*0.5)
-                    eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4, y: SCREEN_HEIGHT*0.5)
-                    ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5, y: SCREEN_HEIGHT*0.5)
-                    flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6, y: SCREEN_HEIGHT*0.5)
+                    eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4-off, y: SCREEN_HEIGHT*0.5)
+                    ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5-off, y: SCREEN_HEIGHT*0.5)
+                    flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6-off, y: SCREEN_HEIGHT*0.5)
                     updateKetoHistorySkipIfNeeded()
                 }else{
                     if skipStepsNine{//如果之前选择的是 4
                         paceVm.isHidden = false
-                        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17, height: 0)
-                        self.stepsArray = [5,6,6]
+                        if skipMealStyle {
+                            scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*16, height: 0)
+                            self.stepsArray = [5,5,6]
+                        }else{
+                            scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17, height: 0)
+                            self.stepsArray = [5,6,6]
+                        }
+//                        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17, height: 0)
+//                        self.stepsArray = skipMealStyle ? [5,6,5] : [5,6,6]
                         let firstCenterX = (SCREEN_WIDHT * 10.5)
                         allergyVm.center = CGPoint(x: firstCenterX, y: SCREEN_HEIGHT*0.5)
                         barrierVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT, y: SCREEN_HEIGHT*0.5)
                         adviceVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*2, y: SCREEN_HEIGHT*0.5)
                         mealStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*3, y: SCREEN_HEIGHT*0.5)
-                        eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4, y: SCREEN_HEIGHT*0.5)
-                        ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5, y: SCREEN_HEIGHT*0.5)
-                        flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6, y: SCREEN_HEIGHT*0.5)
+                        eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4-off, y: SCREEN_HEIGHT*0.5)
+                        ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5-off, y: SCREEN_HEIGHT*0.5)
+                        flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6-off, y: SCREEN_HEIGHT*0.5)
                         updateKetoHistorySkipIfNeeded()
                     }
                     skipStepsNine = false
@@ -366,24 +393,30 @@ extension DietPlanCreateVC{
             return false
         }
         let isSkip = abs(currentWeight - targetWeight) < 0.05
-        self.stepsArray = isSkip ? [5,5,5] : [5,6,6]
+        let off = skipMealStyle ? SCREEN_WIDHT : 0
+        if skipMealStyle{
+            self.stepsArray = isSkip ? [5,5,4] : [5,5,6]
+        }else{
+            self.stepsArray = isSkip ? [5,5,5] : [5,6,6]
+        }
+//        self.stepsArray = isSkip ? [5,5,5] : [5,6,6]
         let firstCenterX = isSkip ? (SCREEN_WIDHT * 8.5) : (SCREEN_WIDHT * 10.5)
         allergyVm.center = CGPoint(x: firstCenterX, y: SCREEN_HEIGHT*0.5)
         barrierVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT, y: SCREEN_HEIGHT*0.5)
         adviceVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*2, y: SCREEN_HEIGHT*0.5)
         mealStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*3, y: SCREEN_HEIGHT*0.5)
-        eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4, y: SCREEN_HEIGHT*0.5)
-        ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5, y: SCREEN_HEIGHT*0.5)
-        flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6, y: SCREEN_HEIGHT*0.5)
+        eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4-off, y: SCREEN_HEIGHT*0.5)
+        ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5-off, y: SCREEN_HEIGHT*0.5)
+        flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6-off, y: SCREEN_HEIGHT*0.5)
         
         if isSkip{
             importantVm.isHidden = true
             paceVm.isHidden = true
-            scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*15, height: 0)
+            scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*15-off, height: 0)
         }else{
             importantVm.isHidden = false
             paceVm.isHidden = false
-            scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17, height: 0)
+            scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17-off, height: 0)
         }
         updateKetoHistorySkipIfNeeded()
         return isSkip
@@ -439,6 +472,31 @@ extension DietPlanCreateVC{
                 if stepsArray.count >= 3 {
                     stepsArray[2] += 1
                 }
+            }
+        }
+    }
+    //第七步，判断是否跳过 mealStyleVm
+    func updateEatStyleSkipIfNeeded(){
+        if mealStyleVm.isHidden == skipMealStyle{
+            return
+        }
+        mealStyleVm.isHidden = skipMealStyle
+        if skipMealStyle{
+            flavorVM.center = ketoHistoryVm.center
+            ketoHistoryVm.center = eatStyleVm.center
+            eatStyleVm.center = mealStyleVm.center
+            scrollViewBase.contentSize = CGSize(width: max(scrollViewBase.contentSize.width - SCREEN_WIDHT, SCREEN_WIDHT), height: 0)
+            if stepsArray.count >= 3 {
+                stepsArray[2] = max(1, stepsArray[2] - 1)
+            }
+        }else{
+            mealStyleVm.center = eatStyleVm.center
+            eatStyleVm.center = ketoHistoryVm.center
+            ketoHistoryVm.center = flavorVM.center
+            flavorVM.center = CGPoint(x: ketoHistoryVm.center.x+SCREEN_WIDHT, y: ketoHistoryVm.center.y)
+            scrollViewBase.contentSize = CGSize(width: scrollViewBase.contentSize.width + SCREEN_WIDHT, height: 0)
+            if stepsArray.count >= 3 {
+                stepsArray[2] += 1
             }
         }
     }
@@ -525,5 +583,27 @@ extension DietPlanCreateVC{
 //            DLLog(message: "\(responseObject)")
 //            self.isUploadingDietProfile = false
 //        }
+    }
+    func sendBasicRequest() {
+        let param = ["gender":"\(QuestinonaireMsgModel.shared.sex)",
+                     "dailyact":"\(QuestinonaireMsgModel.shared.events)",
+                     "bodyfat":"\(QuestinonaireMsgModel.shared.bodyFat)",
+                     "weight":"\(QuestinonaireMsgModel.shared.weight)"]
+        DLLog(message: "sendBasicRequest:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_question_basic_consumption, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
+            var dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            dataString = "3200"
+            DLLog(message: "sendBasicRequest:\(dataString ?? "")")
+            QuestinonaireMsgModel.shared.caloriesNumber = "\(dataString ?? "0")"
+            QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(dataString ?? "0")"
+            self.skipMealStyle = dataString?.doubleValue ?? 0 > 3000
+            self.updateEatStyleSkipIfNeeded()
+//            let targetOffsetX = SCREEN_WIDHT * CGFloat(8)
+//            let maxOffsetX = max(self.scrollViewBase.contentSize.width - self.scrollViewBase.bounds.width, 0)
+//            let finalOffsetX = min(targetOffsetX, maxOffsetX)
+//            self.currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
+//            self.scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: true)
+//            self.updateNextButtonForCurrentStep(animated: true)
+        }
     }
 }

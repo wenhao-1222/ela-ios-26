@@ -77,10 +77,9 @@ class PlanListVC: WHBaseViewVC {
 //            }
             
             DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
                 self.navigationController?.tabBarController?.selectedIndex = 2
                 self.navigationController?.popToRootViewController(animated: true)
-                
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
             })
         }
         vm.createPlanBlock = {()in
