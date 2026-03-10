@@ -10,6 +10,10 @@ class DietPlanCreateVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
     private var isGoalStepEnabled = false
+    private let draftKeyPrefix = "diet_plan_create_draft_"
+    private var isRestoringDraft = false
+    private var shouldSkipDraftPersistence = false
+    private var hasRestoredDraft = false
     
     var skipStepsOne = 0
     var skipStepsNine = false//是否跳过第九步  此处是由第八步决定
@@ -29,10 +33,17 @@ class DietPlanCreateVC: WHBaseViewVC {
         navigationController?.fd_interactivePopDisabled = false
         navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        persistDraftIfNeeded()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
+        observeDraftChanges()
+        restoreDraftIfNeeded()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .dietPlanPaceInputDidChange, object: nil)
     }
     lazy var naviVm: DietPlanCreateNaviVM = {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
@@ -46,6 +57,7 @@ class DietPlanCreateVC: WHBaseViewVC {
             let targetOffsetX = SCREEN_WIDHT * CGFloat(self.currentIndex)
             self.scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: true)
             self.updateNextButtonForCurrentStep(animated: true)
+            self.persistDraftIfNeeded()
         }
         return vm
     }()
@@ -227,6 +239,7 @@ extension DietPlanCreateVC{
         currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
         scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: true)
         updateNextButtonForCurrentStep(animated: true)
+        persistDraftIfNeeded()
     }
 
     func moveFromSexToNextStep() {
@@ -239,6 +252,7 @@ extension DietPlanCreateVC{
         scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: true)
         updateNextButtonForCurrentStep(animated: true)
         self.bodyfatVm.updateScrollView()
+        persistDraftIfNeeded()
     }
 
     func updateNextButtonForCurrentStep(animated: Bool) {
@@ -538,6 +552,9 @@ extension DietPlanCreateVC{
         scrollViewBase.addSubview(flavorVM)
         
         DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+            if self.hasRestoredDraft {
+                return
+            }
             self.birthdayVm.pickerView.selectRow(self.birthdayVm.defaultIndex, inComponent: 0, animated: true)
         })
         
@@ -555,6 +572,221 @@ extension DietPlanCreateVC{
 }
 
 extension DietPlanCreateVC{
+    func observeDraftChanges() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDraftInputDidChange),
+            name: .dietPlanPaceInputDidChange,
+            object: nil
+        )
+    }
+    
+    @objc func handleDraftInputDidChange() {
+        persistDraftIfNeeded()
+    }
+    
+    func persistDraftIfNeeded() {
+        if isRestoringDraft || shouldSkipDraftPersistence {
+            return
+        }
+        guard let key = draftStorageKey() else {
+            return
+        }
+        let draft = buildDraftPayload()
+        if hasDraftProgress(draft) {
+            UserDefaults.standard.set(draft, forKey: key)
+        } else {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+    }
+    
+    func restoreDraftIfNeeded() {
+        if hasRestoredDraft {
+            return
+        }
+        guard let key = draftStorageKey(),
+              let draft = UserDefaults.standard.dictionary(forKey: key) else {
+            return
+        }
+        
+        isRestoringDraft = true
+        defer {
+            isRestoringDraft = false
+            hasRestoredDraft = true
+        }
+        
+        let model = QuestinonaireMsgModel.shared
+        model.sex = draftString(draft["sex"])
+        model.birthDay = draftString(draft["birthDay"])
+        model.goal = draftString(draft["goal"])
+        model.height = draftString(draft["height"])
+        model.weight = draftString(draft["weight"])
+        model.targetWeight = draftString(draft["targetWeight"])
+        model.bodyFat = draftString(draft["bodyFat"])
+        model.events = draftString(draft["events"])
+        model.paceLevel = draftString(draft["paceLevel"], fallback: "2")
+        model.foodAllergy = draftString(draft["foodAllergy"])
+        model.foodBarrier = draftString(draft["foodBarrier"])
+        model.foodTasteType = draftString(draft["foodTasteType"])
+        model.dietHistoryType = draftString(draft["dietHistoryType"])
+        model.caloriesNumber = draftString(draft["caloriesNumber"])
+        model.caloriesNumberFromServer = draftString(draft["caloriesNumberFromServer"])
+        
+        let goalIndexes = Set(draftIntArray(draft["goalSelectedIndexes"]).filter { $0 >= 0 && $0 < goalVm.dataArray.count })
+        goalVm.selectedIndexes = goalIndexes
+        goalVm.selectedIndex = goalIndexes.sorted().first ?? -1
+        goalVm.refreshListUI()
+        let selectedGoals = goalIndexes.sorted().map { goalVm.dataArray[$0] }
+        model.goal = selectedGoals.joined(separator: ",")
+        isGoalStepEnabled = !selectedGoals.isEmpty
+        goalVm.nextButtonEnableChangeBlock?(!selectedGoals.isEmpty)
+        goalVm.selectedGoalsBlock?(selectedGoals)
+        
+        applySexSelectionUI()
+        bodyfatVm.updateScrollView()
+        
+        if let birthYear = Int(model.birthDay) {
+            let yearArray = birthdayVm.yearDataArray.compactMap { $0 as? Int }
+            if let yearIndex = yearArray.firstIndex(of: birthYear) {
+                birthdayVm.pickerView.selectRow(yearIndex, inComponent: 0, animated: false)
+            }
+        }
+        
+        if let heightValue = Int(model.height), heightValue > 0 {
+            heightVm.applyDefaultHeight(heightValue)
+        }
+        
+        if let weightValue = Double(model.weight), weightValue > 0 {
+            let rounded = (weightValue * 10).rounded() / 10
+            let integerPart = Int(rounded)
+            let decimalPart = Int((rounded * 10).truncatingRemainder(dividingBy: 10))
+            weightVm.applyDefaultWeight(integer: integerPart, decimal: max(0, min(decimalPart, 9)))
+        } else {
+            weightVm.getWeightValue()
+        }
+        
+        targetWeightVm.applyInitialValue()
+        
+        let maxBodyFatCount = model.sex == "1" ? bodyfatVm.dataArray.count : bodyfatVm.dataFemanArray.count
+        let bodyFatIndex = draftInt(draft["bodyFatSelectIndex"], fallback: -1)
+        if bodyFatIndex >= 0 && bodyFatIndex < maxBodyFatCount {
+            bodyfatVm.selectIndex = bodyFatIndex
+            bodyfatVm.refreshSelectStatus()
+            bodyfatVm.updateBodyFatValue(index: bodyFatIndex)
+            bodyfatVm.selectStateChangeBlock?(true)
+        } else {
+            bodyfatVm.selectStateChangeBlock?(false)
+        }
+        
+        eventsVm.selectedIndex = normalizedSingleSelectionIndex(
+            preferred: draftInt(draft["eventsSelectedIndex"], fallback: -1),
+            fallback: (Int(model.events) ?? 0) - 1,
+            count: eventsVm.dataArray.count
+        )
+        if eventsVm.selectedIndex >= 0 {
+            model.events = "\(eventsVm.selectedIndex + 1)"
+        }
+        eventsVm.tableView.reloadData()
+        
+        importantVm.selectedIndex = normalizedSingleSelectionIndex(
+            preferred: draftInt(draft["importantSelectedIndex"], fallback: -1),
+            fallback: -1,
+            count: importantVm.dataArray.count
+        )
+        importantVm.tableView.reloadData()
+        
+        if model.paceLevel.isEmpty {
+            model.paceLevel = "2"
+        }
+        paceVm.restoreLevelFromDraft(modelValue: model.paceLevel)
+        
+        allergyVm.applyGoalFilter()
+        let allergyIndexes = restoredIndexes(
+            csvText: model.foodAllergy,
+            rawIndexes: draftIntArray(draft["allergySelectedIndexes"]),
+            dataArray: allergyVm.dataArray
+        )
+        allergyVm.selectedIndexes = allergyIndexes
+        allergyVm.selectedIndex = allergyIndexes.sorted().first ?? -1
+        allergyVm.refreshListUI()
+        model.foodAllergy = allergyIndexes.sorted().map { allergyVm.dataArray[$0] }.joined(separator: ",")
+        
+        let barrierIndexes = restoredIndexes(
+            csvText: model.foodBarrier,
+            rawIndexes: draftIntArray(draft["barrierSelectedIndexes"]),
+            dataArray: barrierVm.dataArray
+        )
+        barrierVm.selectedIndexes = barrierIndexes
+        barrierVm.selectedIndex = barrierIndexes.sorted().first ?? -1
+        barrierVm.refreshListUI()
+        model.foodBarrier = barrierIndexes.sorted().map { barrierVm.dataArray[$0] }.joined(separator: ",")
+        
+        mealStyleVm.selectedIndex = normalizedSingleSelectionIndex(
+            preferred: draftInt(draft["mealStyleSelectedIndex"], fallback: -1),
+            fallback: -1,
+            count: mealStyleVm.dataArray.count
+        )
+        if mealStyleVm.selectedIndex >= 0 {
+            model.mealsPerDay = mealStyleVm.selectedIndex == 1 ? "4" : "3"
+        }
+        mealStyleVm.tableView.reloadData()
+        
+        eatStyleVm.selectedIndex = normalizedSingleSelectionIndex(
+            preferred: draftInt(draft["eatStyleSelectedIndex"], fallback: -1),
+            fallback: -1,
+            count: eatStyleVm.dataArray.count
+        )
+        eatStyleVm.tableView.reloadData()
+        
+        let ketoIndex = normalizedSingleSelectionIndex(
+            preferred: draftInt(draft["ketoHistorySelectedIndex"], fallback: -1),
+            fallback: -1,
+            count: 3
+        )
+        if ketoIndex >= 0 {
+            ketoHistoryVm.select(index: ketoIndex)
+        }
+        
+        let flavorIndexes = restoredIndexes(
+            csvText: model.foodTasteType,
+            rawIndexes: draftIntArray(draft["flavorSelectedIndexes"]),
+            dataArray: flavorVM.dataArray
+        )
+        flavorVM.selectedIndexes = flavorIndexes
+        flavorVM.selectedIndex = flavorIndexes.sorted().first ?? -1
+        flavorVM.refreshListUI()
+        model.foodTasteType = flavorIndexes.sorted().map { flavorVM.dataArray[$0] }.joined(separator: ",")
+        
+        skipMealStyle = draftBool(draft["skipMealStyle"])
+        if skipMealStyle && mealStyleVm.selectedIndex < 0 {
+            mealStyleVm.selectedIndex = 1
+            mealStyleVm.tableView.reloadData()
+        }
+        updateEatStyleSkipIfNeeded()
+        
+        let skipImportantAndPace = shouldSkipImportantAndPaceSteps()
+        skipStepsOne = skipImportantAndPace ? 2 : 0
+        if skipImportantAndPace {
+            skipStepsNine = false
+        } else {
+            applySkipNineLayout(isSkip: draftBool(draft["skipStepsNine"]))
+        }
+        updateKetoHistorySkipIfNeeded()
+        
+        let savedIndex = draftInt(draft["currentIndex"], fallback: 0)
+        let maxIndex = max(Int(round((scrollViewBase.contentSize.width / SCREEN_WIDHT) - 1)), 0)
+        currentIndex = min(max(savedIndex, 0), maxIndex)
+        scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0), animated: false)
+        updateNextButtonForCurrentStep(animated: false)
+    }
+    
+    func clearDraftIfNeeded() {
+        guard let key = draftStorageKey() else {
+            return
+        }
+        UserDefaults.standard.removeObject(forKey: key)
+    }
+    
     func sendDietUpsertRequest() {
         if isUploadingDietProfile {
             return
@@ -577,6 +809,9 @@ extension DietPlanCreateVC{
                      "dietType":eatStyleVm.selectedIndex + 1,
                      "dietMethodExperience":ketoHistoryVm.selectedIndex + 1,
                      "flavorPreferences":flavorPreferences] as [String : Any]
+        
+        shouldSkipDraftPersistence = true
+        clearDraftIfNeeded()
         
         DLLog(message: "sendDietUpsertRequest:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_diet_upsert, parameters: param as [String : AnyObject]) { responseObject in
@@ -601,7 +836,15 @@ extension DietPlanCreateVC{
             QuestinonaireMsgModel.shared.caloriesNumber = "\(dataString ?? "0")"
             QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(dataString ?? "0")"
             self.skipMealStyle = dataString?.doubleValue ?? 0 > 3000
+            if self.skipMealStyle {
+                self.mealStyleVm.selectedIndex = 1
+                QuestinonaireMsgModel.shared.mealsPerDay = "4"
+                self.mealStyleVm.tableView.reloadData()
+            } else if self.mealStyleVm.selectedIndex >= 0 {
+                QuestinonaireMsgModel.shared.mealsPerDay = self.mealStyleVm.selectedIndex == 1 ? "4" : "3"
+            }
             self.updateEatStyleSkipIfNeeded()
+            self.persistDraftIfNeeded()
 //            let targetOffsetX = SCREEN_WIDHT * CGFloat(8)
 //            let maxOffsetX = max(self.scrollViewBase.contentSize.width - self.scrollViewBase.bounds.width, 0)
 //            let finalOffsetX = min(targetOffsetX, maxOffsetX)
@@ -609,5 +852,236 @@ extension DietPlanCreateVC{
 //            self.scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: true)
 //            self.updateNextButtonForCurrentStep(animated: true)
         }
+    }
+}
+
+private extension DietPlanCreateVC {
+    func draftStorageKey() -> String? {
+        let uid = UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines)
+        if uid.isEmpty {
+            return nil
+        }
+        return draftKeyPrefix + uid
+    }
+    
+    func buildDraftPayload() -> [String: Any] {
+        return [
+            "currentIndex": currentIndex,
+            "skipStepsOne": skipStepsOne,
+            "skipStepsNine": skipStepsNine,
+            "skipMealStyle": skipMealStyle,
+            "skipKetoHistory": skipKetoHistory,
+            "goalSelectedIndexes": Array(goalVm.selectedIndexes).sorted(),
+            "sex": QuestinonaireMsgModel.shared.sex,
+            "birthDay": QuestinonaireMsgModel.shared.birthDay,
+            "goal": QuestinonaireMsgModel.shared.goal,
+            "height": QuestinonaireMsgModel.shared.height,
+            "weight": QuestinonaireMsgModel.shared.weight,
+            "targetWeight": QuestinonaireMsgModel.shared.targetWeight,
+            "bodyFat": QuestinonaireMsgModel.shared.bodyFat,
+            "bodyFatSelectIndex": bodyfatVm.selectIndex,
+            "events": QuestinonaireMsgModel.shared.events,
+            "eventsSelectedIndex": eventsVm.selectedIndex,
+            "importantSelectedIndex": importantVm.selectedIndex,
+            "paceLevel": QuestinonaireMsgModel.shared.paceLevel,
+            "foodAllergy": QuestinonaireMsgModel.shared.foodAllergy,
+            "allergySelectedIndexes": Array(allergyVm.selectedIndexes).sorted(),
+            "foodBarrier": QuestinonaireMsgModel.shared.foodBarrier,
+            "barrierSelectedIndexes": Array(barrierVm.selectedIndexes).sorted(),
+            "mealStyleSelectedIndex": mealStyleVm.selectedIndex,
+            "eatStyleSelectedIndex": eatStyleVm.selectedIndex,
+            "dietHistoryType": QuestinonaireMsgModel.shared.dietHistoryType,
+            "ketoHistorySelectedIndex": ketoHistoryVm.selectedIndex,
+            "foodTasteType": QuestinonaireMsgModel.shared.foodTasteType,
+            "flavorSelectedIndexes": Array(flavorVM.selectedIndexes).sorted(),
+            "caloriesNumber": QuestinonaireMsgModel.shared.caloriesNumber,
+            "caloriesNumberFromServer": QuestinonaireMsgModel.shared.caloriesNumberFromServer
+        ]
+    }
+    
+    func hasDraftProgress(_ draft: [String: Any]) -> Bool {
+        if (draft["currentIndex"] as? Int ?? 0) > 0 {
+            return true
+        }
+        let hasText = [
+            draftString(draft["sex"]),
+            draftString(draft["birthDay"]),
+            draftString(draft["goal"]),
+            draftString(draft["height"]),
+            draftString(draft["weight"]),
+            draftString(draft["targetWeight"]),
+            draftString(draft["bodyFat"]),
+            draftString(draft["events"]),
+            draftString(draft["foodAllergy"]),
+            draftString(draft["foodBarrier"]),
+            draftString(draft["foodTasteType"])
+        ].contains { !$0.isEmpty }
+        if hasText {
+            return true
+        }
+        if !(goalVm.selectedIndexes.isEmpty &&
+             allergyVm.selectedIndexes.isEmpty &&
+             barrierVm.selectedIndexes.isEmpty &&
+             flavorVM.selectedIndexes.isEmpty) {
+            return true
+        }
+        return eventsVm.selectedIndex >= 0 ||
+               importantVm.selectedIndex >= 0 ||
+               mealStyleVm.selectedIndex >= 0 ||
+               eatStyleVm.selectedIndex >= 0 ||
+               ketoHistoryVm.selectedIndex >= 0 ||
+               bodyfatVm.selectIndex >= 0
+    }
+    
+    func applySexSelectionUI() {
+        if QuestinonaireMsgModel.shared.sex == "1" {
+            sexVm.sexManButton.backgroundColor = .THEME
+            sexVm.sexManIcon.setImgLocal(imgName: "sex_icon_man")
+            sexVm.sexManLabel.textColor = .COLOR_TEXT_WHITE
+            
+            sexVm.sexFeManButton.backgroundColor = .COLOR_BG_BLACK_04
+            sexVm.sexFeManIcon.setImgLocal(imgName: "sex_icon_feman_normal")
+            sexVm.sexFeManLabel.textColor = WHColor_16(colorStr: "595959")
+        } else if QuestinonaireMsgModel.shared.sex == "2" {
+            sexVm.sexManButton.backgroundColor = .COLOR_BG_BLACK_04
+            sexVm.sexManIcon.setImgLocal(imgName: "sex_icon_man_normal")
+            sexVm.sexManLabel.textColor = WHColor_16(colorStr: "595959")
+            
+            sexVm.sexFeManButton.backgroundColor = UIColor(named: "color_sex_femal") ?? .THEME
+            sexVm.sexFeManIcon.setImgLocal(imgName: "sex_icon_feman")
+            sexVm.sexFeManLabel.textColor = .COLOR_TEXT_WHITE
+        } else {
+            sexVm.sexManButton.backgroundColor = .COLOR_BG_BLACK_04
+            sexVm.sexManIcon.setImgLocal(imgName: "sex_icon_man_normal")
+            sexVm.sexManLabel.textColor = WHColor_16(colorStr: "595959")
+            
+            sexVm.sexFeManButton.backgroundColor = .COLOR_BG_BLACK_04
+            sexVm.sexFeManIcon.setImgLocal(imgName: "sex_icon_feman_normal")
+            sexVm.sexFeManLabel.textColor = WHColor_16(colorStr: "595959")
+        }
+    }
+    
+    func applySkipNineLayout(isSkip: Bool) {
+        let off = skipMealStyle ? SCREEN_WIDHT : 0
+        skipStepsNine = isSkip
+        if isSkip {
+            paceVm.isHidden = true
+            if skipMealStyle {
+                scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 15, height: 0)
+                stepsArray = [5,5,5]
+            } else {
+                scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 16, height: 0)
+                stepsArray = [5,5,6]
+            }
+            let firstCenterX = paceVm.center.x
+            allergyVm.center = CGPoint(x: firstCenterX, y: SCREEN_HEIGHT * 0.5)
+            barrierVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT, y: SCREEN_HEIGHT * 0.5)
+            adviceVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 2, y: SCREEN_HEIGHT * 0.5)
+            mealStyleVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 3, y: SCREEN_HEIGHT * 0.5)
+            eatStyleVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 4 - off, y: SCREEN_HEIGHT * 0.5)
+            ketoHistoryVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 5 - off, y: SCREEN_HEIGHT * 0.5)
+            flavorVM.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 6 - off, y: SCREEN_HEIGHT * 0.5)
+        } else {
+            paceVm.isHidden = false
+            if skipMealStyle {
+                scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 16, height: 0)
+                stepsArray = [5,5,6]
+            } else {
+                scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 17, height: 0)
+                stepsArray = [5,6,6]
+            }
+            let firstCenterX = SCREEN_WIDHT * 10.5
+            allergyVm.center = CGPoint(x: firstCenterX, y: SCREEN_HEIGHT * 0.5)
+            barrierVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT, y: SCREEN_HEIGHT * 0.5)
+            adviceVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 2, y: SCREEN_HEIGHT * 0.5)
+            mealStyleVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 3, y: SCREEN_HEIGHT * 0.5)
+            eatStyleVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 4 - off, y: SCREEN_HEIGHT * 0.5)
+            ketoHistoryVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 5 - off, y: SCREEN_HEIGHT * 0.5)
+            flavorVM.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 6 - off, y: SCREEN_HEIGHT * 0.5)
+        }
+        updateKetoHistorySkipIfNeeded()
+    }
+    
+    func draftString(_ value: Any?, fallback: String = "") -> String {
+        if let text = value as? String {
+            return text
+        }
+        if let number = value as? NSNumber {
+            return number.stringValue
+        }
+        return fallback
+    }
+    
+    func draftInt(_ value: Any?, fallback: Int) -> Int {
+        if let intValue = value as? Int {
+            return intValue
+        }
+        if let number = value as? NSNumber {
+            return number.intValue
+        }
+        if let text = value as? String, let intValue = Int(text) {
+            return intValue
+        }
+        return fallback
+    }
+    
+    func draftBool(_ value: Any?) -> Bool {
+        if let boolValue = value as? Bool {
+            return boolValue
+        }
+        if let number = value as? NSNumber {
+            return number.boolValue
+        }
+        if let text = value as? String {
+            return (text as NSString).boolValue
+        }
+        return false
+    }
+    
+    func draftIntArray(_ value: Any?) -> [Int] {
+        let array = value as? [Any] ?? []
+        return array.compactMap { item in
+            if let intValue = item as? Int {
+                return intValue
+            }
+            if let number = item as? NSNumber {
+                return number.intValue
+            }
+            if let text = item as? String {
+                return Int(text)
+            }
+            return nil
+        }
+    }
+    
+    func normalizedSingleSelectionIndex(preferred: Int, fallback: Int, count: Int) -> Int {
+        if preferred >= 0 && preferred < count {
+            return preferred
+        }
+        if fallback >= 0 && fallback < count {
+            return fallback
+        }
+        return -1
+    }
+    
+    func csvItems(_ text: String) -> [String] {
+        return text
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+    }
+    
+    func restoredIndexes(csvText: String, rawIndexes: [Int], dataArray: [String]) -> Set<Int> {
+        let titles = csvItems(csvText)
+        if !titles.isEmpty {
+            var indexes = Set<Int>()
+            for title in titles {
+                if let index = dataArray.firstIndex(of: title) {
+                    indexes.insert(index)
+                }
+            }
+            return indexes
+        }
+        return Set(rawIndexes.filter { $0 >= 0 && $0 < dataArray.count })
     }
 }

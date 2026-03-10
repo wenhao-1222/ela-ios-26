@@ -795,7 +795,7 @@ extension HabitRankListVM{
                         let fromIndexPath = IndexPath(row: 0, section: oldIndex)
                         
                         self.tableView.layoutIfNeeded()
-                        self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: false)
+                        self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: true)
                         self.tableView.layoutIfNeeded()
                     }
                 }else{

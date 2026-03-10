@@ -222,6 +222,20 @@ class DietPlanCreatePaceVM: UIView {
 }
 
 extension DietPlanCreatePaceVM {
+    func restoreLevelFromDraft(modelValue: String) {
+        let normalizedValue = modelValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        let level: Level
+        switch normalizedValue {
+        case "1", "slight":
+            level = .slight
+        case "3", "major":
+            level = .major
+        default:
+            level = .steady
+        }
+        applyLevel(level: level, animated: false)
+    }
+    
     func initUI() {
         addSubview(titleLabel)
         addSubview(levelLabel)

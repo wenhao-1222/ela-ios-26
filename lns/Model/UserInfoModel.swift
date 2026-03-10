@@ -314,6 +314,7 @@ extension UserInfoModel{
 //        }
     }
     func clearMsg() {
+        clearDietPlanCreateDraftCache()
         self.birthDay = ""
         self.gender = ""
         self.isAppStoreMark = "0"
@@ -413,6 +414,7 @@ extension UserInfoModel{
     ///退出登录，清除本地个人信息，保留日志和身体数据
     func logoutClearMsg() {
         LogsMealsAlertSetManage().removeAllNotifi()
+        clearDietPlanCreateDraftCache()
 //        UserInfoModel.shared.clearMsg()
 //
 //        UserDefaults.standard.setValue("", forKey: token)
@@ -438,5 +440,13 @@ extension UserInfoModel{
         UserDefaults.set(value: "", forKey: .myFoodsList)
         UserDefaults.set(value: "", forKey: .hidsoryFoodsAdd)
 //        UserInfoModel.shared.clearMsg()
+    }
+    
+    private func clearDietPlanCreateDraftCache() {
+        let prefix = "diet_plan_create_draft_"
+        let defaults = UserDefaults.standard
+        for key in defaults.dictionaryRepresentation().keys where key.hasPrefix(prefix) {
+            defaults.removeObject(forKey: key)
+        }
     }
 }

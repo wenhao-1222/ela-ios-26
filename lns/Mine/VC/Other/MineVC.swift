@@ -81,10 +81,10 @@ class MineVC : WHBaseViewVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.bodyDataVm.tapBlock = {()in
-//            let vc = BodyDataDetailVC()
-            self.navigationController?.fd_interactivePopDisabled = true
-            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-            let vc = ElaProVC()
+            let vc = BodyDataDetailVC()
+//            self.navigationController?.fd_interactivePopDisabled = true
+//            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+//            let vc = ElaProVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.fastingVm.tapBlock = {()in
