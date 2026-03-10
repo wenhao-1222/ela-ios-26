@@ -30,7 +30,7 @@ class NeedBuildPlanVC: WHBaseViewVC {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.textColor = .COLOR_BG_BLACK
-        lab.text = "设定您的营养目标"
+        lab.text = "设定你的营养目标"
         
         return lab
     }()

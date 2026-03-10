@@ -14,7 +14,7 @@ class LocalAuthenUtil{
         
         var error: NSError?
         if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) {
-            context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "验证您的指纹，用于登录LNS") { success, evaluateError in
+            context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: "验证你的指纹，用于登录LNS") { success, evaluateError in
                 DispatchQueue.main.async {
                     // Handle authentication result or failure reason here
                     

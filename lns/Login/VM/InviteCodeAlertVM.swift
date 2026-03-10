@@ -97,7 +97,7 @@ class InviteCodeAlertVM: UIView {
     }()
     lazy var tipsLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "如果您没有邀请码可以选择跳过"
+        lab.text = "如果你没有邀请码可以选择跳过"
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         

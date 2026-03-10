@@ -192,14 +192,14 @@ extension ElaProReadyVM {
             highlights: []
         ))
         
-//        if let special = selectedSpecialAdjustment {
+        if let special = selectedSpecialAdjustment {
         let special = SpecialAdjustment.lowerUricAcid
             result.append(ReadyItem(
                 title: "为你做出特殊调整",
                 desc: specialText(special),
                 highlights: []//specialHighlights(special)
             ))
-//        }
+        }
         
         return result
     }

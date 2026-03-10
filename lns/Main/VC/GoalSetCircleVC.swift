@@ -487,7 +487,7 @@ extension GoalSetCircleVC{
 //            self.presentAlertVc(confirmBtn: "返回，不保存", message: "返回页面后，当前页面设置的循环目标不会保存。", title: "温馨提示", cancelBtn: "不返回", handler: { action in
 //                self.backTapAction()
 //            }, viewController: self)
-            self.presentAlertVc(confirmBtn: "返回", message: "", title: "您的修改尚未保存\n确定要返回吗？", cancelBtn: "继续编辑", handler: { action in
+            self.presentAlertVc(confirmBtn: "返回", message: "", title: "你的修改尚未保存\n确定要返回吗？", cancelBtn: "继续编辑", handler: { action in
                 self.backTapAction()
             }, viewController: self)
         }else{

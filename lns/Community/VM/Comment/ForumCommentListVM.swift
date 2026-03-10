@@ -295,7 +295,7 @@ extension ForumCommentListVM{
     }
 
     func openSystemSettingPhotoLibrary() {
-        let alert = UIAlertController(title:"未获得权限访问您的照片", message:"请在设置选项中允许访问您的照片", preferredStyle: .alert)
+        let alert = UIAlertController(title:"未获得权限访问你的照片", message:"请在设置选项中允许访问你的照片", preferredStyle: .alert)
         let confirm = UIAlertAction(title:"去设置", style: .default) { (_)in
             let url = URL(string: UIApplication.openSettingsURLString)!
             if UIApplication.shared.canOpenURL(url) {

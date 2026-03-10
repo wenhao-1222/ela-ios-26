@@ -26,7 +26,7 @@ class QuestionnaireSurveyPlanDaysVM: UIView {
     }
     lazy var titleVm : QuestionnaireSurveyTopVM = {
         let vm = QuestionnaireSurveyTopVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
-        vm.titleLabel.text = "您的预计时长是"
+        vm.titleLabel.text = "你的预计时长是"
         
         return vm
     }()

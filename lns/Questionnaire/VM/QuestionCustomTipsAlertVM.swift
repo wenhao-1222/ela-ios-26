@@ -82,7 +82,7 @@ class QuestionCustomTipsAlertVM: UIView {
     }()
     lazy var contentLabelOne : UILabel = {
         let label = UILabel()
-        label.text = "· 完成注册后，您的营养目标会自动显示在软件的概览页及饮食日志顶部。\n\n·记录日常饮食时，您可以轻松核对目标，确保饮食选择有助于达成营养摄入目标。"
+        label.text = "· 完成注册后，你的营养目标会自动显示在软件的概览页及饮食日志顶部。\n\n·记录日常饮食时，你可以轻松核对目标，确保饮食选择有助于达成营养摄入目标。"
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true

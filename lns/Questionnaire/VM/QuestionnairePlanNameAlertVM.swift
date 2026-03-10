@@ -63,7 +63,7 @@ class QuestionnairePlanNameAlertVM: UIView {
     }()
     lazy var contentLabelOne : UILabel = {
         let label = UILabel()
-        label.text = "在完成注册后，您的定制营养目标和饮食计划将被保存在软件的“计划列表”中，如需："
+        label.text = "在完成注册后，你的定制营养目标和饮食计划将被保存在软件的“计划列表”中，如需："
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true
@@ -79,8 +79,8 @@ class QuestionnairePlanNameAlertVM: UIView {
         label.adjustsFontSizeToFitWidth = true
 //        label.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         
-        var tiAttr = NSMutableAttributedString(string: "1. 查看您的计划：")
-        var contAttr = NSMutableAttributedString(string: "访问“我的计划”以浏览所有为您量身定制的饮食计划。")
+        var tiAttr = NSMutableAttributedString(string: "1. 查看你的计划：")
+        var contAttr = NSMutableAttributedString(string: "访问“我的计划”以浏览所有为你量身定制的饮食计划。")
         
         tiAttr.yy_color = .COLOR_TEXT_TITLE_0f1214
         tiAttr.yy_font = .systemFont(ofSize: 14, weight: .medium)
@@ -103,7 +103,7 @@ class QuestionnairePlanNameAlertVM: UIView {
         
         
         var tiAttr = NSMutableAttributedString(string: "2. 执行计划：")
-        var contAttr = NSMutableAttributedString(string: "选中您想要开始的计划，并点击“激活计划”按钮，将该计划导入到您的饮食日志中，以便跟踪和管理您的饮食。")
+        var contAttr = NSMutableAttributedString(string: "选中你想要开始的计划，并点击“激活计划”按钮，将该计划导入到你的饮食日志中，以便跟踪和管理你的饮食。")
         
         tiAttr.yy_color = .COLOR_TEXT_TITLE_0f1214
         tiAttr.yy_font = .systemFont(ofSize: 14, weight: .medium)
@@ -124,7 +124,7 @@ class QuestionnairePlanNameAlertVM: UIView {
 //        label.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         
         var tiAttr = NSMutableAttributedString(string: "3. 获取更多计划：")
-        var contAttr = NSMutableAttributedString(string: "您可以在我的计划页面点击“获取计划”以生成更多的饮食计划，以便探索和尝试新的饮食建议。")
+        var contAttr = NSMutableAttributedString(string: "你可以在我的计划页面点击“获取计划”以生成更多的饮食计划，以便探索和尝试新的饮食建议。")
         
         tiAttr.yy_color = .COLOR_TEXT_TITLE_0f1214
         tiAttr.yy_font = .systemFont(ofSize: 14, weight: .medium)
@@ -144,7 +144,7 @@ class QuestionnairePlanNameAlertVM: UIView {
 //        label.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         
         var tiAttr = NSMutableAttributedString(string: "4. 自定义计划：")
-        var contAttr = NSMutableAttributedString(string: "如果您希望创建一个完全符合个人口味和需求的计划，可以在“我的计划”下的“制作计划”选项中自定义并保存您的计划。")
+        var contAttr = NSMutableAttributedString(string: "如果你希望创建一个完全符合个人口味和需求的计划，可以在“我的计划”下的“制作计划”选项中自定义并保存您的计划。")
         
         tiAttr.yy_color = .COLOR_TEXT_TITLE_0f1214
         tiAttr.yy_font = .systemFont(ofSize: 14, weight: .medium)
@@ -163,8 +163,8 @@ class QuestionnairePlanNameAlertVM: UIView {
         label.adjustsFontSizeToFitWidth = true
 //        label.textColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         
-        var tiAttr = NSMutableAttributedString(string: "5. 分享您的计划：")
-        var contAttr = NSMutableAttributedString(string: "您可以通过在“日志”或计划详情页内点击“分享”按钮，将您的饮食计划分享给其他用户。")
+        var tiAttr = NSMutableAttributedString(string: "5. 分享你的计划：")
+        var contAttr = NSMutableAttributedString(string: "你可以通过在“日志”或计划详情页内点击“分享”按钮，将你的饮食计划分享给其他用户。")
         
         tiAttr.yy_color = .COLOR_TEXT_TITLE_0f1214
         tiAttr.yy_font = .systemFont(ofSize: 14, weight: .medium)

@@ -93,7 +93,7 @@ final class OverSeaMsgVC: WHBaseViewVC {
 
     lazy var tipsLab: UILabel = {
         let lab = UILabel()
-        lab.text = "您的信息将被严格保密，仅用于海关清关"
+        lab.text = "你的信息将被严格保密，仅用于海关清关"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         return lab

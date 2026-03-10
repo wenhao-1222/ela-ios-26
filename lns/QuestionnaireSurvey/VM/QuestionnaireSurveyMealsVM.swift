@@ -25,12 +25,12 @@ class QuestionnaireSurveyMealsVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     lazy var dataArray : NSArray = {
-        return [["name":"每日一餐","detail":"根据您的选择来为您制定特殊计划"],
-                ["name":"每日二餐","detail":"根据您的选择来为您制定特殊计划"],
-                ["name":"每日三餐","detail":"根据您的选择来为您制定特殊计划"],
-                ["name":"每日四餐","detail":"根据您的选择来为您制定特殊计划"],
-                ["name":"每日五餐","detail":"根据您的选择来为您制定特殊计划"],
-                ["name":"每日六餐","detail":"根据您的选择来为您制定特殊计划"]]
+        return [["name":"每日一餐","detail":"根据你的选择来为你制定特殊计划"],
+                ["name":"每日二餐","detail":"根据你的选择来为你制定特殊计划"],
+                ["name":"每日三餐","detail":"根据你的选择来为你制定特殊计划"],
+                ["name":"每日四餐","detail":"根据你的选择来为你制定特殊计划"],
+                ["name":"每日五餐","detail":"根据你的选择来为你制定特殊计划"],
+                ["name":"每日六餐","detail":"根据你的选择来为你制定特殊计划"]]
     }()
     lazy var titleVm : QuestionnaireSurveyTopVM = {
         let vm = QuestionnaireSurveyTopVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))

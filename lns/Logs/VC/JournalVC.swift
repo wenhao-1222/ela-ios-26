@@ -745,7 +745,7 @@ extension JournalVC{
 
 extension JournalVC{
     func appMarkAlertVm() {
-        let alertVc = UIAlertController(title: "喜欢“Elavatine”吗", message: "您的支持是我们能维持免费服务的关键\n请评分鼓励一下吧:)", preferredStyle: .alert)
+        let alertVc = UIAlertController(title: "喜欢“Elavatine”吗", message: "你的支持是我们能维持免费服务的关键\n请评分鼓励一下吧:)", preferredStyle: .alert)
         
         let action1 = UIAlertAction(title: "喜欢，去评分", style: .default) { action in
             self.sendSaveMaterialAppMarkRequest()

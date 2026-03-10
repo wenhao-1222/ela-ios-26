@@ -27,7 +27,7 @@ class QuestionnaireHeightVM: UIView {
     }
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "您的身高是多少?"
+        lab.text = "你的身高是多少?"
         lab.textColor = .COLOR_GRAY_BLACK_85
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         

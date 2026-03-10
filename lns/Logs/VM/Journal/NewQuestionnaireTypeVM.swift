@@ -36,7 +36,7 @@ class NewQuestionnaireTypeVM: UIView {
     }()
     lazy var tipsLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "您是否需要饮食计划？"
+        lab.text = "你是否需要饮食计划？"
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.textColor = .COLOR_GRAY_BLACK_85
         

@@ -60,7 +60,7 @@ class LogsRemarkNewVM: UIView {
     }()
     lazy var placeHoldLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "这里输入您的注释说明"
+        lab.text = "这里输入你的注释说明"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_35
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         
@@ -86,7 +86,7 @@ extension LogsRemarkNewVM{
                 make.right.equalTo(kFitWidth(-36))
             }
         }else{
-            self.placeHoldLabel.text = "这里输入您的注释说明"
+            self.placeHoldLabel.text = "这里输入你的注释说明"
             self.placeHoldLabel.textColor = .COLOR_TEXT_TITLE_0f1214_35
             penIcon.isHidden = false
             placeHoldLabel.snp.remakeConstraints { make in

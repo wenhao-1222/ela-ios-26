@@ -25,7 +25,7 @@ class QuestionnaireSexVM: UIView {
     }
     lazy var sexLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "您的性别是？"
+        lab.text = "你的性别是？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         

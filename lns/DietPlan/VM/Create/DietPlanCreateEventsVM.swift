@@ -43,7 +43,7 @@ class DietPlanCreateEventsVM: UIView {
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "您的日常活动量是多少？"
+        lab.text = "你的日常活动量是多少？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab

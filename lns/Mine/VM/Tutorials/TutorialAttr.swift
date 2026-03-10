@@ -295,7 +295,7 @@ class TutorialAttr {
     }
     func getContent_1_4_4(){
         let step1 = NSMutableAttributedString(string: "偏离计划")
-        var step2 = NSMutableAttributedString(string: "：添加/删减/修改食物可能会导致您无法填满/超出您的营养目标进度。")
+        var step2 = NSMutableAttributedString(string: "：添加/删减/修改食物可能会导致你无法填满/超出你的营养目标进度。")
         
 //        step2 = createAttributedStringWithImage(image: UIImage.init(named: "tutorials_eat_icon")!, text: "：食用完该食物之后点击列表右边的")
         
@@ -313,8 +313,8 @@ class TutorialAttr {
     }
     func getContent_1_5(){
         let titleAttr = NSMutableAttributedString(string: "1.5 创建食物\n")
-        let step1 = NSMutableAttributedString(string: "如果数据库中没有您想要的食物")
-        let step2 = NSMutableAttributedString(string: "，可以在搜索页点击左上角的“创建食物”，填写食物名字，单位，营养成分，（系统会自动为您计算出该食物的卡路里，也可以手动填写）并点击保存。随后在食物搜索页，我的食物栏目下点击该食物添加即可")
+        let step1 = NSMutableAttributedString(string: "如果数据库中没有你想要的食物")
+        let step2 = NSMutableAttributedString(string: "，可以在搜索页点击左上角的“创建食物”，填写食物名字，单位，营养成分，（系统会自动为你计算出该食物的卡路里，也可以手动填写）并点击保存。随后在食物搜索页，我的食物栏目下点击该食物添加即可")
         
         setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_13_medium, attr: titleAttr)
         setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_medium, attr: step1)
@@ -341,7 +341,7 @@ class TutorialAttr {
         let step1 = NSMutableAttributedString(string: "如果想快速添加已知营养素的食物")
         let step2 = NSMutableAttributedString(string: "，可通过点击该餐右上角的“加号”进入搜索页，随后在搜索页点击右上角的“")
         let step3 = NSMutableAttributedString(string: "快速添加")
-        let step4 = NSMutableAttributedString(string: "”，填写该食物的营养成分（系统会自动为您计算出该食物的卡路里，若只知道卡路里，不知道营养素，可只手动填写卡路里）并点击添加即可")
+        let step4 = NSMutableAttributedString(string: "”，填写该食物的营养成分（系统会自动为你计算出该食物的卡路里，若只知道卡路里，不知道营养素，可只手动填写卡路里）并点击添加即可")
         
         setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_13_medium, attr: titleAttr)
         setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_11_medium, attr: step1)
@@ -633,7 +633,7 @@ class TutorialAttr {
         var step2 = NSMutableAttributedString(string: "”\n步骤 2：点击需要分享的计划进入计划详情\n步骤3：点击右上角的")
         let step3 = NSMutableAttributedString(string: "\n步骤4：点击屏幕下方的“复制分享码”并将分享码转发给需要分享计划的用户\n")
         let step4 = NSMutableAttributedString(string: "需分享计划到社交媒体/非Elavatine用户")
-        let step5 = NSMutableAttributedString(string: "：如：在分享计划页面点击右下角的“保存图片”即可生成计划长图，其他用户可以通过长图底部的分享码使用您分享的计划。")
+        let step5 = NSMutableAttributedString(string: "：如：在分享计划页面点击右下角的“保存图片”即可生成计划长图，其他用户可以通过长图底部的分享码使用你分享的计划。")
         let step6 = NSMutableAttributedString(string: "饮食计划")
         
         step2 = createAttributedStringWithImage(image: UIImage(named: "tutorials_share_icon_theme")!, text: "”\n步骤 2：点击需要分享的计划进入计划详情\n步骤3：点击右上角的")
@@ -821,7 +821,7 @@ class TutorialAttr {
     }
     func getContent_5_2(){
         let titleAttr = NSMutableAttributedString(string: "5.2 查看数据\n")
-        let step1 = NSMutableAttributedString(string: "在“首页”点击体重数据栏/体重维度栏\n您可以通过对比身体状况、数据变化以及历史饮食日志，调整并优化计划，以找到最适合的饮食方案")
+        let step1 = NSMutableAttributedString(string: "在“首页”点击体重数据栏/体重维度栏\n你可以通过对比身体状况、数据变化以及历史饮食日志，调整并优化计划，以找到最适合的饮食方案")
         
         
         setAttr(color: .COLOR_TEXT_TITLE_0f1214_60, font: font_13_medium, attr: titleAttr)
@@ -837,11 +837,11 @@ class TutorialAttr {
     }
     public func getNutritionTipsAttr(){
         let titleAttr = NSMutableAttributedString(string: "·手动输入\n")
-        let step1 = NSMutableAttributedString(string: "自行设定您的卡路里、蛋白质、碳水化合物、脂肪目标，适合")
+        let step1 = NSMutableAttributedString(string: "自行设定你的卡路里、蛋白质、碳水化合物、脂肪目标，适合")
         let step2 = NSMutableAttributedString(string: "具备基础营养知识的用户")
         let step3 = NSMutableAttributedString(string: "。")
         let step4 = NSMutableAttributedString(string: "·智能推荐\n")
-        let step5 = NSMutableAttributedString(string: "我们基于您的需求为您设定卡路里、蛋白质、碳水化合物、脂肪目标，适合")
+        let step5 = NSMutableAttributedString(string: "我们基于你的需求为你设定卡路里、蛋白质、碳水化合物、脂肪目标，适合")
         let step6 = NSMutableAttributedString(string: "各类人群")
         let step7 = NSMutableAttributedString(string: "。\n\n")
         

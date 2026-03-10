@@ -41,7 +41,7 @@ class QuestionnaireSurveyFoodsVM: UIView {
     }()
     lazy var tipsLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "根据您的膳食习惯，在每个食物类别中选择2-7种食物，以满足您计划内的需求"
+        lab.text = "根据你的膳食习惯，在每个食物类别中选择2-7种食物，以满足你计划内的需求"
         lab.textColor = .white
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping

@@ -74,7 +74,7 @@ class ServiceInputVM: UIView {
     }()
     private lazy var placeholderLabel: UILabel = {
         let label = UILabel()
-        label.text = "请输入您的问题"
+        label.text = "请输入你的问题"
         label.textColor = .COLOR_TEXT_TITLE_0f1214_50
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.isUserInteractionEnabled = false

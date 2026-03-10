@@ -34,7 +34,7 @@ class ServiceTextView : UIView{
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = .systemFont(ofSize: 16, weight: .regular)
-        lab.text = "输入您遇到的问题"
+        lab.text = "输入你遇到的问题"
         return lab
     }()
     lazy var limitCountLabel: UILabel = {

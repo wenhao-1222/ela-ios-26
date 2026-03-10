@@ -28,7 +28,7 @@ class QuestionnairePlanWeeksVM: UIView {
     }
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "您的预期计划时长是？"
+        lab.text = "你的预期计划时长是？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         
@@ -53,35 +53,35 @@ class QuestionnairePlanWeeksVM: UIView {
 extension QuestionnairePlanWeeksVM{
     func dealTipsString() {
         if QuestinonaireMsgModel.shared.goal == "1"{
-            tipsLabel.text = "根据您选择的目标，推荐的计划周期为：不超过4周"
+            tipsLabel.text = "根据你选择的目标，推荐的计划周期为：不超过4周"
             pickerView.scrollToIndex = 3
             QuestinonaireMsgModel.shared.planWeeks = "4"
         }else if QuestinonaireMsgModel.shared.goal == "2"{
-            tipsLabel.text = "根据您选择的目标，推荐的计划周期为：8-16周"
+            tipsLabel.text = "根据你选择的目标，推荐的计划周期为：8-16周"
             pickerView.scrollToIndex = 11
             QuestinonaireMsgModel.shared.planWeeks = "12"
         }else if QuestinonaireMsgModel.shared.goal == "3"{
-            tipsLabel.text = "根据您选择的目标，推荐的计划周期为：15-20周"
+            tipsLabel.text = "根据你选择的目标，推荐的计划周期为：15-20周"
             pickerView.scrollToIndex = 17
             QuestinonaireMsgModel.shared.planWeeks = "18"
         }else if QuestinonaireMsgModel.shared.goal == "4"{
-            tipsLabel.text = "根据您选择的目标，推荐的计划周期为：8-12周"
+            tipsLabel.text = "根据你选择的目标，推荐的计划周期为：8-12周"
             pickerView.scrollToIndex = 9
             QuestinonaireMsgModel.shared.planWeeks = "10"
         }else if QuestinonaireMsgModel.shared.goal == "5"{
-            tipsLabel.text = "根据您选择的目标，推荐的计划周期为：8-12周"
+            tipsLabel.text = "根据你选择的目标，推荐的计划周期为：8-12周"
             pickerView.scrollToIndex = 9
             QuestinonaireMsgModel.shared.planWeeks = "10"
         }else if QuestinonaireMsgModel.shared.goal == "6"{
-            tipsLabel.text = "根据您选择的目标，推荐的计划周期为：≥1周"
+            tipsLabel.text = "根据你选择的目标，推荐的计划周期为：≥1周"
             pickerView.scrollToIndex = 3
             QuestinonaireMsgModel.shared.planWeeks = "4"
         }else if QuestinonaireMsgModel.shared.goal == "7"{
-            tipsLabel.text = "根据您选择的目标，推荐的计划周期为：6-8周"
+            tipsLabel.text = "根据你选择的目标，推荐的计划周期为：6-8周"
             pickerView.scrollToIndex = 6
             QuestinonaireMsgModel.shared.planWeeks = "7"
         }else if QuestinonaireMsgModel.shared.goal == "8"{
-            tipsLabel.text = "根据您选择的目标，推荐的计划周期为：8-16周"
+            tipsLabel.text = "根据你选择的目标，推荐的计划周期为：8-16周"
             pickerView.scrollToIndex = 11
             QuestinonaireMsgModel.shared.planWeeks = "12"
         }

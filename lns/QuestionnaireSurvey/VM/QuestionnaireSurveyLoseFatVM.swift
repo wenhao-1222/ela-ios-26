@@ -36,7 +36,7 @@ class QuestionnaireSurveyLoseFatVM: UIView {
     }()
     lazy var titleVm : QuestionnaireSurveyTopVM = {
         let vm = QuestionnaireSurveyTopVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
-        vm.titleLabel.text = "您的目标"
+        vm.titleLabel.text = "你的目标"
         
         return vm
     }()

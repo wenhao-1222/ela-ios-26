@@ -25,7 +25,7 @@ class QuestionnaireWeightVM: UIView {
     }
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "您的体重是多少？"
+        lab.text = "你的体重是多少？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         

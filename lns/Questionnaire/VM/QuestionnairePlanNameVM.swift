@@ -35,7 +35,7 @@ class QuestionnairePlanNameVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "您的计划名称是？"
+        lab.text = "你的计划名称是？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         
@@ -93,7 +93,7 @@ extension QuestionnairePlanNameVM{
     @objc func confirmAction(){
         QuestinonaireMsgModel.shared.name = (nameTextField.text ?? "").disable_emoji(text: (nameTextField.text ?? "")as NSString)
         if QuestinonaireMsgModel.shared.name.count < 1 {
-            MCToast.mc_text("请输入您的计划名称")
+            MCToast.mc_text("请输入你的计划名称")
             return
         }
         if QuestinonaireMsgModel.shared.name.count > 15 {

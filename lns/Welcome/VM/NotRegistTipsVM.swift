@@ -26,7 +26,7 @@ class NotRegistTipsVM: UIView {
     }
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "很遗憾\n我们未能匹配到您的账号信息"
+        lab.text = "很遗憾\n我们未能匹配到你的账号信息"
         lab.textAlignment = .center
         lab.numberOfLines = 2
         lab.lineBreakMode = .byWordWrapping

@@ -49,7 +49,7 @@ class LogsMealsAlertSetRemarkVM: UIView {
     }()
     lazy var placeHoldLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "这里输入您的备注"
+        lab.text = "这里输入你的备注"
         lab.textColor = .COLOR_BG_BLACK_045//WHColorWithAlpha(colorStr: "000000", alpha: 0.45)
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         

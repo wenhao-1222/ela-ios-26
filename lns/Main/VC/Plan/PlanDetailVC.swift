@@ -205,7 +205,7 @@ class PlanDetailVC: WHBaseViewVC {
 //                self.navigationController?.fd_interactivePopDisabled = true
                 self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
             }else{
-                self.presentAlertVc(confirmBtn: "确定", message: "若您仍想修改此计划，请先停止计划。", title: "当前计划执行中", cancelBtn: nil, handler: { action in
+                self.presentAlertVc(confirmBtn: "确定", message: "若你仍想修改此计划，请先停止计划。", title: "当前计划执行中", cancelBtn: nil, handler: { action in
                     
                 }, viewController: self)
             }

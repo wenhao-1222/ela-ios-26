@@ -167,7 +167,7 @@ extension LogsMealsAlertSetVC{
                     }
                 }else{
 //                    DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
-                        self.presentAlertVc(confirmBtn: "设置", message: "“通知”可能包括提醒、声音和图标标记。这些可在“设置”中配置", title: "“Elavatine”想给您发送通知", cancelBtn: "取消", handler: { action in
+                        self.presentAlertVc(confirmBtn: "设置", message: "“通知”可能包括提醒、声音和图标标记。这些可在“设置”中配置", title: "“Elavatine”想给你发送通知", cancelBtn: "取消", handler: { action in
                             self.openUrl(urlString: UIApplication.openSettingsURLString)
                         },cancelHandler: { cancelAction in
                             

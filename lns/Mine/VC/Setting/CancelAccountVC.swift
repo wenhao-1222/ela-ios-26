@@ -80,7 +80,7 @@ class CancelAccountVC: WHBaseViewVC {
     }()
     lazy var remarkTextView: ServiceTextView = {
         let text = ServiceTextView.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight()+kFitWidth(331), width: 0, height: 0))
-        text.placeholderLabel.text = "请详细描述您所遇到的问题，以便我们能够提供更加优质的服务。"
+        text.placeholderLabel.text = "请详细描述你所遇到的问题，以便我们能够提供更加优质的服务。"
         text.placeholderLabel.numberOfLines = 2
         text.placeholderLabel.lineBreakMode = .byWordWrapping
         text.limitCountLabel.isHidden = true
@@ -175,7 +175,7 @@ extension CancelAccountVC{
             MCToast.mc_text("请输入问题描述")
             return
         }
-        self.presentAlertVc(confirmBtn: "确认注销", message: "注销此Elavatine账号后，您可能无法立即重新注册。该账号及其所有数据将被永久删除且无法恢复，请谨慎操作！", title: "温馨提示", cancelBtn: "取消", handler: { action in
+        self.presentAlertVc(confirmBtn: "确认注销", message: "注销此Elavatine账号后，你可能无法立即重新注册。该账号及其所有数据将被永久删除且无法恢复，请谨慎操作！", title: "温馨提示", cancelBtn: "取消", handler: { action in
             self.sendCancelPreRequest()
 //            self.sendCancelRequest()
 //            LogsMealsAlertSetManage().removeAllNotifi()

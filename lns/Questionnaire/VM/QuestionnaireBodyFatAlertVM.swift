@@ -104,7 +104,7 @@ class QuestionnaireBodyFatAlertVM: UIView {
     
     lazy var contentLabelThree : UILabel = {
         let label = UILabel()
-        label.text = "请以这些信息作为指导，尝试更准确地评估您的体脂肪水平。"
+        label.text = "请以这些信息作为指导，尝试更准确地评估你的体脂肪水平。"
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true

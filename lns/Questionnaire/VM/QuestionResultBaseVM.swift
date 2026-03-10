@@ -27,7 +27,7 @@ class QuestionResultBaseVM: UIView {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 20, weight: .medium)
-        lab.text = "结合您的代谢和活动量，\n您维持现体重所需的大致热量为："
+        lab.text = "结合你的代谢和活动量，\n你维持现体重所需的大致热量为："
         lab.numberOfLines = 2
         lab.adjustsFontSizeToFitWidth = true
         lab.lineBreakMode = .byWordWrapping

@@ -92,7 +92,7 @@ extension HabitExchangeVC{
             DLLog(message: responseObject)
             
             DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
-                MCToast.mc_text("感谢您的爱心捐赠")
+                MCToast.mc_text("感谢你的爱心捐赠")
             })
             
             self.exchangeBlock?()

@@ -180,7 +180,7 @@ class SurveyNoSexVC: WHBaseViewVC {
     }()
     lazy var planNameAlertVm : QuestionnairePlanNameAlertVM = {
         let vm = QuestionnairePlanNameAlertVM.init(frame: .zero)
-        vm.contentLabelOne.text = "您的定制营养目标和饮食计划将被保存在软件的“计划列表”中，如需："
+        vm.contentLabelOne.text = "你的定制营养目标和饮食计划将被保存在软件的“计划列表”中，如需："
         
         return vm
     }()

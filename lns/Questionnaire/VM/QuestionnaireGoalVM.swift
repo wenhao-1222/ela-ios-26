@@ -39,7 +39,7 @@ class QuestionnaireGoalVM: UIView {
     }()
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "选择您的目标"
+        lab.text = "选择你的目标"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         

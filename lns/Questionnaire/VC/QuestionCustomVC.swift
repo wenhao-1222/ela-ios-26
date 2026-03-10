@@ -87,7 +87,7 @@ class QuestionCustomVC : WHBaseViewVC {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         if QuestinonaireMsgModel.shared.surveytype == "part" {
-            lab.text = "您的营养目标"
+            lab.text = "你的营养目标"
         }
         return lab
     }()
@@ -231,7 +231,7 @@ class QuestionCustomVC : WHBaseViewVC {
 //        vm.contentLabelOne.text = "· 您的营养目标会自动显示在软件的概览页及饮食日志顶部。\n\n·记录日常饮食时，您可以轻松核对目标，确保饮食选择有助于达成营养摄入目标。"
         
         vm.titleLabel.text = "摄入太高/太低？"
-        vm.contentLabelOne.text = "Elavatine的计划的重心更偏向于最快达到健身目标，比起日常生活更接近专业运动员的需求，如果您觉得某营养素数值过高或者过低，您可以点击该值并进行手动修改。"
+        vm.contentLabelOne.text = "Elavatine的计划的重心更偏向于最快达到健身目标，比起日常生活更接近专业运动员的需求，如果你觉得某营养素数值过高或者过低，你可以点击该值并进行手动修改。"
         return vm
     }()
 }

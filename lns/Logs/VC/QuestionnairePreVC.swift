@@ -47,7 +47,7 @@ class QuestionnairePreVC: WHBaseViewVC {
         let lab = UILabel()
 //        lab.text = "通过填写由职业运动员和健身教练共同设计的调查问卷，我们将根据您的目标，生活及饮食习惯为您量身定制一个适合您的饮食计划。"
 //        lab.text = "通过填写由运动员和营养师联合设计的问卷，我们将根据您的目标和日常习惯为您量身定制一个营养参考值。"
-        lab.text = "填写由运动员和营养师联合设计的问卷，我们将为您量身定制一个营养目标。"
+        lab.text = "填写由运动员和营养师联合设计的问卷，我们将为你量身定制一个营养目标。"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.numberOfLines = 0

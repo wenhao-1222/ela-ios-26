@@ -167,7 +167,7 @@ class InviteRewardsRuleAlertVM: UIView {
         let attr = NSMutableAttributedString.init(attributedString: ("邀请者奖励\n").mc_setLineSpace(lineSpace: lineGap))
         let attr1 = NSMutableAttributedString.init(attributedString: ("· 邀请一位新用户成功注册并使用服务，邀请者将获得1-2元奖励。\n").mc_setLineSpace(lineSpace: lineGap))
         let attr2 = NSMutableAttributedString.init(attributedString:("额外奖励\n").mc_setLineSpace(lineSpace: lineGap))
-        let attr3 = NSMutableAttributedString.init(attributedString: ("· 当您邀请的用户成功通过邀请码邀请他人加入并使用我们的服务时，您也将获得奖励。").mc_setLineSpace(lineSpace: lineGap))
+        let attr3 = NSMutableAttributedString.init(attributedString: ("· 当你邀请的用户成功通过邀请码邀请他人加入并使用我们的服务时，你也将获得奖励。").mc_setLineSpace(lineSpace: lineGap))
         
         attr.yy_font = .systemFont(ofSize: 14, weight: .medium)
         attr.yy_color = .COLOR_TEXT_TITLE_0f1214

@@ -12,7 +12,7 @@ class ElaProProgressVM: UIView {
     var backTapBlock: (() -> ())?
     var progressCompleteBlock: (() -> ())?
     // 进度节奏系数：1.0 为默认；>1 更快，<1 更慢
-    var progressTempo: CGFloat = 3.8 {
+    var progressTempo: CGFloat = 2.8 {
         didSet {
             if progressTempo < 0.2 { progressTempo = 0.2 }
             if progressTempo > 8.0 { progressTempo = 8.0 }
@@ -24,7 +24,7 @@ class ElaProProgressVM: UIView {
         }
     }
     // 总时长缩放：1.0=当前基准时长，0.5=基准一半时长，2.0=基准两倍时长
-    var totalDurationScale: CGFloat = 0.95 {
+    var totalDurationScale: CGFloat = 1.15 {
         didSet {
             if totalDurationScale < 0.2 { totalDurationScale = 0.2 }
             if totalDurationScale > 3.0 { totalDurationScale = 3.0 }

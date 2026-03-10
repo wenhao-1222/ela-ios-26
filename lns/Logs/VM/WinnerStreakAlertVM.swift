@@ -83,7 +83,7 @@ extension WinnerStreakAlertVM{
             iconImgView.setImgLocal(imgName: "streak_icon_6")
         }
         
-        maxStreakDaysLabel.text = "您记录饮食的最高连续记录为 \(dict.stringValueForKey(key: "max_streak")) 天"
+        maxStreakDaysLabel.text = "你记录饮食的最高连续记录为 \(dict.stringValueForKey(key: "max_streak")) 天"
         topLabel.text = "距离下个里程碑还差 \(dict.stringValueForKey(key: "gap")) 天"
     }
     @objc func closeSelfAction() {

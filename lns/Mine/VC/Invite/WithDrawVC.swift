@@ -124,7 +124,7 @@ extension WithDrawVC{
         let money = moneyStr.doubleValue * 100
         let param = ["amount":"\(WHUtils.convertStringToStringNoDigit("\(money)") ?? "")"]
         WHNetworkUtil.shareManager().POST(urlString: URL_wx_withdraw, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
-            self.presentAlertVc(confirmBtn: "确定", message: "我们已收到您的请求，请留意微信消息", title: "温馨提示", cancelBtn: nil, handler: { action in
+            self.presentAlertVc(confirmBtn: "确定", message: "我们已收到你的请求，请留意微信消息", title: "温馨提示", cancelBtn: nil, handler: { action in
                 self.navigationController?.popToRootViewController(animated: true)
             }, viewController: self)
         }
