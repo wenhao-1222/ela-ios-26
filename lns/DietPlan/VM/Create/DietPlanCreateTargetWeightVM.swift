@@ -254,7 +254,6 @@ extension DietPlanCreateTargetWeightVM {
             )
         }
         if containsBloodLipidGoal() && target > QuestinonaireMsgModel.shared.weight.doubleValue{
-            
             let bloodLipidUpperLimit = roundToTenth(currentWeightValue * 0.9)
             if target > bloodLipidUpperLimit {
                 let recommend = clampToAlertRange(bloodLipidUpperLimit)

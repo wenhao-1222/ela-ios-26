@@ -23,6 +23,10 @@ class DietPlanVC: WHBaseViewVC {
         vm.startButton.addTarget(self, action: #selector(createDietPlanAction), for: .touchUpInside)
         return vm
     }()
+    lazy var nonePlanVm: PlanMainNonePlanVM = {
+        let vm = PlanMainNonePlanVM.init(frame: .zero)
+        return vm
+    }()
 }
 
 extension DietPlanVC{
@@ -37,7 +41,7 @@ extension DietPlanVC{
 
 extension DietPlanVC{
     func initUI() {
-        view.addSubview(emptyVm)
-        
+//        view.addSubview(emptyVm)
+        view.addSubview(nonePlanVm)
     }
 }

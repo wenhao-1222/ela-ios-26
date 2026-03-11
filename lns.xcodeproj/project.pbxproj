@@ -966,6 +966,8 @@
 		EC8D210E2C64C42000E68B59 /* JournalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210D2C64C42000E68B59 /* JournalVC.swift */; };
 		EC8D21102C64C4D300E68B59 /* JounalCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210F2C64C4D300E68B59 /* JounalCollectionCell.swift */; };
 		EC8D62322F611790009B38B2 /* ElaCreateTargetWeightAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D62312F61178F009B38B2 /* ElaCreateTargetWeightAlertVM.swift */; };
+		EC8D62342F613678009B38B2 /* PlanMainNonePlanVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D62332F613670009B38B2 /* PlanMainNonePlanVM.swift */; };
+		EC8D62382F614146009B38B2 /* DietPlanCreateDateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D62372F614141009B38B2 /* DietPlanCreateDateVC.swift */; };
 		EC8FF3D62C9025CE003A7E0B /* NaturalStatDateCustomHeadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8FF3D52C9025CE003A7E0B /* NaturalStatDateCustomHeadView.swift */; };
 		EC8FF3D82C904128003A7E0B /* NaturalStatDateCustomDateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8FF3D72C904128003A7E0B /* NaturalStatDateCustomDateButton.swift */; };
 		EC8FF3DA2C9049FA003A7E0B /* NaturalStatDateCustomBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8FF3D92C9049FA003A7E0B /* NaturalStatDateCustomBottomView.swift */; };
@@ -2371,6 +2373,8 @@
 		EC8D210D2C64C42000E68B59 /* JournalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalVC.swift; sourceTree = "<group>"; };
 		EC8D210F2C64C4D300E68B59 /* JounalCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JounalCollectionCell.swift; sourceTree = "<group>"; };
 		EC8D62312F61178F009B38B2 /* ElaCreateTargetWeightAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaCreateTargetWeightAlertVM.swift; sourceTree = "<group>"; };
+		EC8D62332F613670009B38B2 /* PlanMainNonePlanVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMainNonePlanVM.swift; sourceTree = "<group>"; };
+		EC8D62372F614141009B38B2 /* DietPlanCreateDateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateDateVC.swift; sourceTree = "<group>"; };
 		EC8FF3D52C9025CE003A7E0B /* NaturalStatDateCustomHeadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatDateCustomHeadView.swift; sourceTree = "<group>"; };
 		EC8FF3D72C904128003A7E0B /* NaturalStatDateCustomDateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatDateCustomDateButton.swift; sourceTree = "<group>"; };
 		EC8FF3D92C9049FA003A7E0B /* NaturalStatDateCustomBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatDateCustomBottomView.swift; sourceTree = "<group>"; };
@@ -4749,6 +4753,7 @@
 			isa = PBXGroup;
 			children = (
 				ECA306A52F5AC4AE0087B95C /* DietPlanVC.swift */,
+				EC8D62372F614141009B38B2 /* DietPlanCreateDateVC.swift */,
 				ECA059492F4D966E00E257E8 /* DietPlanCreateVC.swift */,
 			);
 			path = VC;
@@ -4803,6 +4808,7 @@
 			isa = PBXGroup;
 			children = (
 				ECA306A92F5AC4EC0087B95C /* PlanMainEmptyVM.swift */,
+				EC8D62332F613670009B38B2 /* PlanMainNonePlanVM.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -6021,6 +6027,7 @@
 				A7B6ACA72DD5D59E00333D5D /* KeywordHighlightLabel.swift in Sources */,
 				A71C54812E6AA95600FB797D /* MarketListVM.swift in Sources */,
 				A735A7B52D5DE3F5006CE140 /* JFPopupView.swift in Sources */,
+				EC8D62342F613678009B38B2 /* PlanMainNonePlanVM.swift in Sources */,
 				A735A7B62D5DE3F5006CE140 /* JFToastView.swift in Sources */,
 				A735A7B72D5DE3F5006CE140 /* JFPopup.swift in Sources */,
 				A7454B3C2E7413450064076C /* AddressCell.swift in Sources */,
@@ -6698,6 +6705,7 @@
 				A78F02612E45A2C300079B96 /* PlayerControlTopToolVM.swift in Sources */,
 				A70289B02E7BB95B00B03AA6 /* MallPaySuccessBottomVM.swift in Sources */,
 				ECD549162C75CCB5009E7E6B /* WidgetNetWorkUtil.swift in Sources */,
+				EC8D62382F614146009B38B2 /* DietPlanCreateDateVC.swift in Sources */,
 				A768BDAA2D6FFE9500D18779 /* VideoCompress.swift in Sources */,
 				EC1EB5272BFAED5400537F0B /* FoodsEstablishVC.swift in Sources */,
 				EC6978E32BABBD81000B933A /* ViewController.swift in Sources */,
