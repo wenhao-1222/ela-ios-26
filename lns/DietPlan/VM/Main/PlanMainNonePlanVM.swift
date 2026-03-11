@@ -36,7 +36,7 @@ class PlanMainNonePlanVM: UIView {
     
     lazy var createPlanButton: GJVerButtonNoneFeedBack = {
         let frame = CGRect(x: kFitWidth(16),
-                           y: kFitWidth(61) + WHUtils().getNavigationBarHeight(),
+                           y: kFitWidth(61) + statusBarHeight,
                            width: kFitWidth(106),
                            height: kFitWidth(71))
         return makeRecipeActionButton(title: "创建",
@@ -73,11 +73,21 @@ class PlanMainNonePlanVM: UIView {
     }()
     lazy var tipsLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.text = "点击“创建”\n开始计划"
         lab.numberOfLines = 2
-        lab.lineBreakMode = .byWordWrapping
-        lab.font = .systemFont(ofSize: 21, weight: .medium)
+        
+        let text = "点击“创建”\n开始计划"
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.5
+        let attr = NSMutableAttributedString(string: text)
+        attr.addAttributes([
+            .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+            .font: UIFont.systemFont(ofSize: 21, weight: .medium),
+            .paragraphStyle: paragraphStyle
+        ], range: NSRange(location: 0, length: text.count))
+        lab.attributedText = attr
+        
+        lab.textAlignment = .center
+        
         return lab
     }()
 }
@@ -122,11 +132,11 @@ private extension PlanMainNonePlanVM {
 extension PlanMainNonePlanVM{
     func initUI() {
         addSubview(bgImgView)
+        addSubview(bottomCoverImgView)
         addSubview(titleLab)
         addSubview(createPlanButton)
         addSubview(buyListButton)
         addSubview(sauceButton)
-        addSubview(bottomCoverImgView)
         bottomCoverImgView.addSubview(tipsLabel)
      
         buyListButton.isEnabled = false
@@ -140,11 +150,12 @@ extension PlanMainNonePlanVM{
         }
         titleLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
-            make.top.equalTo(kFitWidth(20)+WHUtils().getNavigationBarHeight())
+            make.top.equalTo(kFitWidth(20)+statusBarHeight)
             make.height.equalTo(kFitWidth(25))
         }
         bottomCoverImgView.snp.makeConstraints { make in
-            make.left.right.bottom.equalToSuperview()
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(WHUtils().getBottomSafeAreaHeight())
             make.top.equalTo(createPlanButton.snp.bottom).offset(kFitWidth(15))
         }
         tipsLabel.snp.makeConstraints { make in

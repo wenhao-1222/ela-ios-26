@@ -109,6 +109,7 @@ class UniversalTabBarController: UITabBarController, DeviceAdaptable {
         
         //预加载
         _ = journalVc.view
+        _ = dietPlanVc.view
 //        _ = forumVc.view
         
 //        self.setUpChildViewController(viewController: mainVc, image: UIImage.init(named: "tabbar_main_normal")!, selectImage: UIImage.init(named: "tabbar_main_selected")!, title: "概览")

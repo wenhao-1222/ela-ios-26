@@ -144,7 +144,8 @@ class SystemTabbar: UITabBarController {
 //        let forumVc = ForumVC()
         let dietPlanVc = DietPlanVC()
 
-        _ = mainVc.view; _ = journalVc.view;
+        _ = mainVc.view;
+        _ = journalVc.view;
         _ = dietPlanVc.view
 //        _ = forumVc.view
 

@@ -968,6 +968,7 @@
 		EC8D62322F611790009B38B2 /* ElaCreateTargetWeightAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D62312F61178F009B38B2 /* ElaCreateTargetWeightAlertVM.swift */; };
 		EC8D62342F613678009B38B2 /* PlanMainNonePlanVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D62332F613670009B38B2 /* PlanMainNonePlanVM.swift */; };
 		EC8D62382F614146009B38B2 /* DietPlanCreateDateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D62372F614141009B38B2 /* DietPlanCreateDateVC.swift */; };
+		EC8D623A2F61670F009B38B2 /* DateChoiceAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D62392F6166FA009B38B2 /* DateChoiceAlertVM.swift */; };
 		EC8FF3D62C9025CE003A7E0B /* NaturalStatDateCustomHeadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8FF3D52C9025CE003A7E0B /* NaturalStatDateCustomHeadView.swift */; };
 		EC8FF3D82C904128003A7E0B /* NaturalStatDateCustomDateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8FF3D72C904128003A7E0B /* NaturalStatDateCustomDateButton.swift */; };
 		EC8FF3DA2C9049FA003A7E0B /* NaturalStatDateCustomBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8FF3D92C9049FA003A7E0B /* NaturalStatDateCustomBottomView.swift */; };
@@ -2375,6 +2376,7 @@
 		EC8D62312F61178F009B38B2 /* ElaCreateTargetWeightAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaCreateTargetWeightAlertVM.swift; sourceTree = "<group>"; };
 		EC8D62332F613670009B38B2 /* PlanMainNonePlanVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMainNonePlanVM.swift; sourceTree = "<group>"; };
 		EC8D62372F614141009B38B2 /* DietPlanCreateDateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateDateVC.swift; sourceTree = "<group>"; };
+		EC8D62392F6166FA009B38B2 /* DateChoiceAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateChoiceAlertVM.swift; sourceTree = "<group>"; };
 		EC8FF3D52C9025CE003A7E0B /* NaturalStatDateCustomHeadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatDateCustomHeadView.swift; sourceTree = "<group>"; };
 		EC8FF3D72C904128003A7E0B /* NaturalStatDateCustomDateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatDateCustomDateButton.swift; sourceTree = "<group>"; };
 		EC8FF3D92C9049FA003A7E0B /* NaturalStatDateCustomBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatDateCustomBottomView.swift; sourceTree = "<group>"; };
@@ -4809,6 +4811,7 @@
 			children = (
 				ECA306A92F5AC4EC0087B95C /* PlanMainEmptyVM.swift */,
 				EC8D62332F613670009B38B2 /* PlanMainNonePlanVM.swift */,
+				EC8D62392F6166FA009B38B2 /* DateChoiceAlertVM.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -7161,6 +7164,7 @@
 				A79A4FF92D65DCF0002B8EB4 /* Croper+API.swift in Sources */,
 				A775EA2D2E1B66B8001DE90A /* JournalFriendReportVC.swift in Sources */,
 				A79A4FFA2D65DCF0002B8EB4 /* Croper+Model.swift in Sources */,
+				EC8D623A2F61670F009B38B2 /* DateChoiceAlertVM.swift in Sources */,
 				A79A4FFB2D65DCF0002B8EB4 /* Croper+UI.swift in Sources */,
 				A79A4FFC2D65DCF0002B8EB4 /* Croper.swift in Sources */,
 				A79A4FFD2D65DCF0002B8EB4 /* Croper+Calculation.swift in Sources */,

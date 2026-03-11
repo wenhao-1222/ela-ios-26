@@ -152,6 +152,7 @@ class WHTabBarVC : UITabBarController{
         //预加载
         _ = mainVc.view
         _ = journalVc.view
+        _ = dietPlanVc.view
 //        _ = forumVc.view
         
         if traitCollection.userInterfaceStyle == .dark && UserConfigModel.shared.overrideUserInterfaceStyle != .light{
