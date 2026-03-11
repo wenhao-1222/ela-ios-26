@@ -8,11 +8,11 @@
 class DietPlanCreateTargetWeightVM: UIView {
 
     /*
-     ●（1. 体重上限 150kg，下限 50kg，超过提示：请更新体重目标；你填写的体重可能会不利于你的健康。你可以选择跳过这一步，我们会为你推荐一个更合理的默认目标。）
+     ●（1. 体重上限 150kg，下限 40kg，超过提示：请更新体重目标；你填写的体重可能会不利于你的健康。你可以选择跳过这一步，我们会为你推荐一个更合理的默认目标。）
      ●（2. 选择了：降低血脂
-     提示：你的体重目标可能会不利于你达到降低血脂的目标。你可以选择跳过这一步，我们会为你推荐一个更合理的默认目标。）
-    
-     ●目标低于最低：取 50kg
+     提示：这个体重可能会不利于你达到降低血脂的目标。你可以选择跳过这一步，我们会为你推荐一个更合理的默认目标。）
+
+     ●目标低于最低：取 40kg
      ●目标超过最高：取 150kg
      ●选降低血脂：取现在体重 90%
 
@@ -21,6 +21,8 @@ class DietPlanCreateTargetWeightVM: UIView {
     private let minWeight = 30.0
     private let maxWeight = 180.0
     private let stepWeight = 0.1
+    private let alertMinWeight = 40.0
+    private let alertMaxWeight = 150.0
 
     var currentWeightValue = 60.0
     var currentTargetWeight = 60.0
@@ -235,5 +237,56 @@ extension DietPlanCreateTargetWeightVM {
 
     func formatOneDecimal(_ value: Double) -> String {
         return String(format: "%.1f", value)
+    }
+
+    func buildTargetWeightAlertPayload() -> DietPlanTargetWeightAlertPayload? {
+        let target = roundToTenth(currentTargetWeight)
+        if target < alertMinWeight {
+            return DietPlanTargetWeightAlertPayload(
+                type: .healthRisk,
+                recommendedWeight: alertMinWeight
+            )
+        }
+        if target > alertMaxWeight {
+            return DietPlanTargetWeightAlertPayload(
+                type: .healthRisk,
+                recommendedWeight: alertMaxWeight
+            )
+        }
+        if containsBloodLipidGoal() && target > QuestinonaireMsgModel.shared.weight.doubleValue{
+            
+            let bloodLipidUpperLimit = roundToTenth(currentWeightValue * 0.9)
+            if target > bloodLipidUpperLimit {
+                let recommend = clampToAlertRange(bloodLipidUpperLimit)
+                return DietPlanTargetWeightAlertPayload(
+                    type: .bloodLipidGoal,
+                    recommendedWeight: recommend
+                )
+            }
+        }
+        return nil
+    }
+
+    func applyRecommendedTargetWeight(_ weight: Double) {
+        let recommended = clamp(roundToTenth(weight))
+        currentTargetWeight = recommended
+        updateTargetWeightText(value: currentTargetWeight)
+        updateGoalTips()
+        QuestinonaireMsgModel.shared.targetWeight = formatOneDecimal(currentTargetWeight)
+        NotificationCenter.default.post(name: .dietPlanPaceInputDidChange, object: nil)
+        DispatchQueue.main.async {
+            self.rulerView.setValue(self.currentTargetWeight, animated: true)
+        }
+    }
+
+    private func containsBloodLipidGoal() -> Bool {
+        let goals = QuestinonaireMsgModel.shared.goal
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        return goals.contains(where: { $0.contains("血脂") })
+    }
+
+    private func clampToAlertRange(_ value: Double) -> Double {
+        return min(max(value, alertMinWeight), alertMaxWeight)
     }
 }

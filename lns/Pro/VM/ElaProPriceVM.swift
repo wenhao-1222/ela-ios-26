@@ -183,7 +183,8 @@ class ElaProPriceVM: UIView {
     }()
     lazy var renewalNoticeLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "讨厌不知不觉扣费？我们也是。开启提醒，每次续费前5天我们会通过推送通知你，把选择权交还给你。"
+        let nonBreakingPhrase = "续费前5天".map(String.init).joined(separator: "\u{2060}")
+        lab.text = "讨厌不知不觉扣费？我们也是。开启提醒，每次\(nonBreakingPhrase)我们会通过推送通知你，把选择权交还给你。"
         lab.textColor = subTextColor
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.numberOfLines = 0

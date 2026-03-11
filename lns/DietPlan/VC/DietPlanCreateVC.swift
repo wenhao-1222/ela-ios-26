@@ -192,6 +192,10 @@ class DietPlanCreateVC: WHBaseViewVC {
         
         return vm
     }()
+    lazy var targetWeightAlertVm: ElaCreateTargetWeightAlertVM = {
+        let vm = ElaCreateTargetWeightAlertVM(frame: .zero)
+        return vm
+    }()
     lazy var nextButton: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("下一步", for: .normal)
@@ -212,6 +216,18 @@ class DietPlanCreateVC: WHBaseViewVC {
 
 extension DietPlanCreateVC{
     @objc func nextButtonTapAction() {
+        if currentIndex == 6, let payload = targetWeightVm.buildTargetWeightAlertPayload() {
+            targetWeightAlertVm.showView(type: payload.type, confirmBlock: { [weak self] in
+                guard let self = self else { return }
+                self.targetWeightVm.applyRecommendedTargetWeight(payload.recommendedWeight)
+                self.goToNextStep()
+            })
+            return
+        }
+        goToNextStep()
+    }
+
+    func goToNextStep() {
         let maxOffsetX = max(scrollViewBase.contentSize.width - scrollViewBase.bounds.width, 0)
         let isAtLastStep = scrollViewBase.contentOffset.x >= (maxOffsetX - 0.5)
         if isAtLastStep {
@@ -528,6 +544,7 @@ extension DietPlanCreateVC{
         view.addSubview(nextButton)
         
         view.addSubview(bodyFatAlertVm)
+        view.addSubview(targetWeightAlertVm)
         
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear

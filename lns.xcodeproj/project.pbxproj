@@ -965,6 +965,7 @@
 		EC8D210C2C64704000E68B59 /* GuideSetWeekGoalAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210B2C64704000E68B59 /* GuideSetWeekGoalAlertVM.swift */; };
 		EC8D210E2C64C42000E68B59 /* JournalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210D2C64C42000E68B59 /* JournalVC.swift */; };
 		EC8D21102C64C4D300E68B59 /* JounalCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D210F2C64C4D300E68B59 /* JounalCollectionCell.swift */; };
+		EC8D62322F611790009B38B2 /* ElaCreateTargetWeightAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8D62312F61178F009B38B2 /* ElaCreateTargetWeightAlertVM.swift */; };
 		EC8FF3D62C9025CE003A7E0B /* NaturalStatDateCustomHeadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8FF3D52C9025CE003A7E0B /* NaturalStatDateCustomHeadView.swift */; };
 		EC8FF3D82C904128003A7E0B /* NaturalStatDateCustomDateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8FF3D72C904128003A7E0B /* NaturalStatDateCustomDateButton.swift */; };
 		EC8FF3DA2C9049FA003A7E0B /* NaturalStatDateCustomBottomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8FF3D92C9049FA003A7E0B /* NaturalStatDateCustomBottomView.swift */; };
@@ -2369,6 +2370,7 @@
 		EC8D210B2C64704000E68B59 /* GuideSetWeekGoalAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideSetWeekGoalAlertVM.swift; sourceTree = "<group>"; };
 		EC8D210D2C64C42000E68B59 /* JournalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalVC.swift; sourceTree = "<group>"; };
 		EC8D210F2C64C4D300E68B59 /* JounalCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JounalCollectionCell.swift; sourceTree = "<group>"; };
+		EC8D62312F61178F009B38B2 /* ElaCreateTargetWeightAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaCreateTargetWeightAlertVM.swift; sourceTree = "<group>"; };
 		EC8FF3D52C9025CE003A7E0B /* NaturalStatDateCustomHeadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatDateCustomHeadView.swift; sourceTree = "<group>"; };
 		EC8FF3D72C904128003A7E0B /* NaturalStatDateCustomDateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatDateCustomDateButton.swift; sourceTree = "<group>"; };
 		EC8FF3D92C9049FA003A7E0B /* NaturalStatDateCustomBottomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatDateCustomBottomView.swift; sourceTree = "<group>"; };
@@ -4775,6 +4777,7 @@
 				ECA0594D2F4D985600E257E8 /* DietPlanCreateNaviSegmentVM.swift */,
 				ECA059512F4DA30C00E257E8 /* DietPlanCreateItemVM.swift */,
 				ECA8BF012F5034D3007E240E /* DietPlanTargetWeightRulerView.swift */,
+				EC8D62312F61178F009B38B2 /* ElaCreateTargetWeightAlertVM.swift */,
 				ECA0594F2F4D9EA100E257E8 /* DietPlanCreateGoalVM.swift */,
 				EC8B56032F4E8958002F2C16 /* DietPlanCreateSexVM.swift */,
 				EC8B56052F4E8E9F002F2C16 /* DietPlanCreateYearVM.swift */,
@@ -6918,6 +6921,7 @@
 				A71A53922CD9EF70009FDAF9 /* ZFSliderView.m in Sources */,
 				A71A53932CD9EF70009FDAF9 /* ZFKVOController.m in Sources */,
 				EC2802F12F19DF5C00FEF08D /* HabitGuideSecondVM.swift in Sources */,
+				EC8D62322F611790009B38B2 /* ElaCreateTargetWeightAlertVM.swift in Sources */,
 				A729C7502D2E4F2D0067BB97 /* ForumNewsListVC.swift in Sources */,
 				A7E2725D2DA8E660006AF4CF /* CourseListVC.swift in Sources */,
 				A71A53942CD9EF70009FDAF9 /* ZFPlayerView.m in Sources */,
