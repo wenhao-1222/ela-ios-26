@@ -16,13 +16,13 @@ class DietPlanCreateDateVC: WHBaseViewVC {
     }
     
     enum DateRangeConfig {
-        // 可配置：开始日期可选“今天往后几个月”
-        static let startSelectableMonthsAhead = 1
+        // 可配置：开始日期可选“今天往后几天”（两周）
+        static let startSelectableDaysAhead = 14
         // 可配置：结束日期可选“开始日期往后几天”
         static let endSelectableDaysAfterStart = 14
     }
     
-    private var currentSelectType: SelectDateType = .start
+    var currentSelectType: SelectDateType = .start
     private var startDate: Date?
     private var endDate: Date?
     
@@ -35,6 +35,14 @@ class DietPlanCreateDateVC: WHBaseViewVC {
     private lazy var displayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy.MM.dd"
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter
+    }()
+    
+    private lazy var requestDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
         formatter.calendar = Calendar(identifier: .gregorian)
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
@@ -135,7 +143,16 @@ class DietPlanCreateDateVC: WHBaseViewVC {
         vm.isHidden = true
         vm.isWeekDay = true
         vm.confirmBlock = { [weak self] _ in
-//            self?.applySelectedDate(vm.datePicker.date)
+            guard let self = self else { return }
+            let selected = Date().changeDateStringToDate(dateString: vm.dateStringYear)
+            let selectedType = self.currentSelectType
+            self.applySelectedDate(selected)
+            
+            if selectedType == .start {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.28) { [weak self] in
+                    self?.endDateTapAction()
+                }
+            }
         }
         return vm
     }()
@@ -146,9 +163,6 @@ class DietPlanCreateDateVC: WHBaseViewVC {
         initUI()
         updateDateButtons()
         updateNextButtonState()
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
-            self.startDateTapAction()
-        })
     }
 }
 
@@ -169,7 +183,7 @@ extension DietPlanCreateDateVC {
     @objc func nextButtonTapAction() {
         guard let start = startDate, let end = endDate else { return }
         guard isStartDateInRange(start) else {
-            MCToast.mc_text("开始日期需在今天起\(DateRangeConfig.startSelectableMonthsAhead)个月内")
+            MCToast.mc_text("开始日期需在今天起两周内")
             return
         }
         guard end >= start else {
@@ -180,35 +194,32 @@ extension DietPlanCreateDateVC {
             MCToast.mc_text("结束日期不能超过开始日期后\(DateRangeConfig.endSelectableDaysAfterStart)天")
             return
         }
-        QuestinonaireMsgModel.shared.chartStartDate = start
-        QuestinonaireMsgModel.shared.chartEndDate = end
-        let vc = DietPlanCreateVC()
-        navigationController?.pushViewController(vc, animated: true)
+        let startDateStr = requestDateFormatter.string(from: start)
+        let endDateStr = requestDateFormatter.string(from: end)
+        sendCreatePlanRequest(startDate: startDateStr, endDate: endDateStr)
     }
     
     func showDatePickerAlert(type: SelectDateType) {
         currentSelectType = type
-        datePickerAlertVm.titleLabel.text = (type == .start) ? "开始日期" : "结束日期"
+        datePickerAlertVm.pickerTitle = (type == .start) ? "开始日期" : "结束日期"
         
         switch type {
         case .start:
             let minDate = startSelectableMinDate()
-            let maxDate = endOfDay(startSelectableMaxDate())
-//            datePickerAlertVm.datePicker.minimumDate = minDate
-//            datePickerAlertVm.datePicker.maximumDate = maxDate
+            let maxDate = startSelectableMaxDate()
             let initialDate = clampDate(startDate ?? minDate, min: minDate, max: maxDate)
-//            datePickerAlertVm.datePicker.setDate(initialDate, animated: false)
+            datePickerAlertVm.setDateRange(minDate: minDate, maxDate: maxDate)
+            datePickerAlertVm.setSelectedDate(initialDate, animated: false)
         case .end:
             guard let startDate = startDate else {
                 MCToast.mc_text("请先选择开始日期")
                 return
             }
             let minDate = startDate
-            let maxDate = endOfDay(endSelectableMaxDate(for: startDate))
-//            datePickerAlertVm.datePicker.minimumDate = minDate
-//            datePickerAlertVm.datePicker.maximumDate = maxDate
+            let maxDate = endSelectableMaxDate(for: startDate)
             let initialDate = clampDate(endDate ?? minDate, min: minDate, max: maxDate)
-//            datePickerAlertVm.datePicker.setDate(initialDate, animated: false)
+            datePickerAlertVm.setDateRange(minDate: minDate, maxDate: maxDate)
+            datePickerAlertVm.setSelectedDate(initialDate, animated: false)
         }
         datePickerAlertVm.showView()
     }
@@ -250,7 +261,8 @@ extension DietPlanCreateDateVC {
             button.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
             return
         }
-        button.setTitle(displayFormatter.string(from: date), for: .normal)
+        let text = "\(displayFormatter.string(from: date)) \(weekdayText(from: date))"
+        button.setTitle(text, for: .normal)
         button.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
     }
     
@@ -270,8 +282,8 @@ extension DietPlanCreateDateVC {
     
     func startSelectableMaxDate() -> Date {
         let minDate = startSelectableMinDate()
-        return calendar.date(byAdding: .month,
-                             value: DateRangeConfig.startSelectableMonthsAhead,
+        return calendar.date(byAdding: .day,
+                             value: DateRangeConfig.startSelectableDaysAhead,
                              to: minDate) ?? minDate
     }
     
@@ -291,9 +303,17 @@ extension DietPlanCreateDateVC {
         return calendar.startOfDay(for: date)
     }
     
-    func endOfDay(_ date: Date) -> Date {
-        let dayStart = startOfDay(date)
-        return calendar.date(byAdding: DateComponents(day: 1, second: -1), to: dayStart) ?? dayStart
+    func weekdayText(from date: Date) -> String {
+        switch calendar.component(.weekday, from: date) {
+        case 1: return "周日"
+        case 2: return "周一"
+        case 3: return "周二"
+        case 4: return "周三"
+        case 5: return "周四"
+        case 6: return "周五"
+        case 7: return "周六"
+        default: return ""
+        }
     }
     
     func clampDate(_ date: Date, min minDate: Date, max maxDate: Date) -> Date {
@@ -354,6 +374,20 @@ extension DietPlanCreateDateVC {
         
         datePickerAlertVm.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+    }
+}
+
+extension DietPlanCreateDateVC{
+    func sendCreatePlanRequest(startDate: String, endDate: String) {
+        let param = [
+            "startDate": startDate,
+            "endDate": endDate
+        ]
+        WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_create, parameters: param as [String : AnyObject]) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendDietPlanMsgRequest:\(dataObj)")
         }
     }
 }
