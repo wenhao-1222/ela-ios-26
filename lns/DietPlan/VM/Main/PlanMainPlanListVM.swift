@@ -269,11 +269,11 @@ extension PlanMainPlanListVM: UICollectionViewDataSource, UICollectionViewDelega
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         let contentWidth = collectionView.bounds.width - sectionInset.left - sectionInset.right
         if isLargeCard(for: indexPath) {
-            return CGSize(width: contentWidth, height: kFitWidth(372))
+            return CGSize(width: contentWidth, height: kFitWidth(308))
         }
         
         let width = (contentWidth - itemSpacing) * 0.5
-        return CGSize(width: width, height: kFitWidth(279))
+        return CGSize(width: width, height: kFitWidth(234))
     }
 }
 

@@ -10,15 +10,23 @@ import SnapKit
 class PlanMainMealCardCell: UICollectionViewCell {
     private var imageHeightConstraint: Constraint?
     private var imageLoadToken = ""
-    private let imageSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
-                                                     highlightColorLight: .COLOR_BG_F5,
-                                                     baseColorDark: .COLOR_LIGHT_GREY,
-                                                     highlightColorDark: .COLOR_BG_F5,
-                                                     cornerRadius: 0,
-                                                     shimmerWidth: 0.22,
-                                                     shimmerDuration: 1.05,
-                                                     skeletonFadeInDuration: 0.12,
-                                                     contentFadeInDuration: 0.22)
+    private var skeletonStartTime: TimeInterval = 0
+    private let minSkeletonDisplayDuration: TimeInterval = 0.18
+//    private let imageSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+//                                                     highlightColorLight: .COLOR_BG_F5,
+//                                                     baseColorDark: .COLOR_LIGHT_GREY,
+//                                                     highlightColorDark: .COLOR_BG_F5,
+//                                                     cornerRadius: 0,
+//                                                     shimmerWidth: 0.22,
+//                                                     shimmerDuration: 1.05,
+//                                                     skeletonFadeInDuration: 0.12,
+//                                                     contentFadeInDuration: 0.22)
+    // 需要骨架的子视图：显示骨架（从左向右 Shimmer + 渐入）
+    let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                             highlightColorLight: .COLOR_GRAY_E2,
+                             cornerRadius: kFitWidth(4),
+                             shimmerWidth: 0.22,
+                             shimmerDuration: 1.15)
     private let cardView: UIView = {
         let view = UIView()
         view.backgroundColor = .COLOR_CARD_BG_WHITE
@@ -84,9 +92,9 @@ class PlanMainMealCardCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        imageLoadToken = ""
         mealImgView.image = nil
         mealImgView.removeSkeletonImmediately()
-        mealImgView.image = nil
     }
     
     func updateUI(typeText: String,
@@ -106,13 +114,21 @@ class PlanMainMealCardCell: UICollectionViewCell {
         if imageUrl.count > 0{
             imageLoadToken = UUID().uuidString
             let currentToken = imageLoadToken
-            
-            mealImgView.image = placeHolder
-            mealImgView.showSkeleton(imageSkeletonConfig)
-            mealImgView.setImgUrlWithComplete(urlString: imageUrl, placeHolder: placeHolder) { [weak self] in
+
+            mealImgView.removeSkeletonImmediately()
+            mealImgView.showSkeleton(cfg)
+            skeletonStartTime = Date().timeIntervalSince1970
+
+            mealImgView.setImgUrlWithComplete(urlString: imageUrl, placeHolder: nil) { [weak self] in
                 guard let self = self else { return }
                 guard self.imageLoadToken == currentToken else { return }
-                self.mealImgView.hideSkeletonWithCrossfade()
+                let elapsed = Date().timeIntervalSince1970 - self.skeletonStartTime
+                let delay = max(0, self.minSkeletonDisplayDuration - elapsed)
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                    guard let self = self else { return }
+                    guard self.imageLoadToken == currentToken else { return }
+                    self.mealImgView.hideSkeletonWithCrossfade()
+                }
             }
         } else {
             imageLoadToken = ""
@@ -125,16 +141,6 @@ class PlanMainMealCardCell: UICollectionViewCell {
                               },
                               completion: nil)
         }
-        
-//
-//        let placeHolderName = isLarge ? "Image 1" : "Image"
-//        if imageUrl.count > 0 {
-//            mealImgView.setImgUrl(urlString: imageUrl,
-//                                  placeHolder: UIImage(named: placeHolderName),
-//                                  needTransiton: false)
-//        } else {
-//            mealImgView.setImgLocal(imgName: placeHolderName)
-//        }
         imageHeightConstraint?.update(offset: isLarge ? kFitWidth(192) : kFitWidth(93))
     }
 }
