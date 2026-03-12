@@ -660,6 +660,7 @@ extension WHBaseViewVC{
             frame.centerY.lessThanOrEqualTo(statusBarHeight+kFitWidth(22))
 //            frame.bottom.equalToSuperview().offset(-bottomGap)
         }
+        
         backArrowImg.isUserInteractionEnabled = true
         naviBackImg = backArrowImg
         

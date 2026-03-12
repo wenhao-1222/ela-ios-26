@@ -1064,6 +1064,8 @@
 		ECB0F00B2F6265F500056D6A /* PlanMainMealCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */; };
 		ECB0F00D2F628FDA00056D6A /* DietPlanBuyListDateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F00C2F628FD900056D6A /* DietPlanBuyListDateVC.swift */; };
 		ECB0F00F2F6291A200056D6A /* DietPlanBuyListDateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F00E2F6291A100056D6A /* DietPlanBuyListDateCell.swift */; };
+		ECB0F0112F629D5700056D6A /* DietPlanBuyListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F0102F629D5500056D6A /* DietPlanBuyListVC.swift */; };
+		ECB0F0132F62A3BE00056D6A /* DietPlanBuyListFoodsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F0122F62A3B700056D6A /* DietPlanBuyListFoodsCell.swift */; };
 		ECB3E03D2BD2353700CFDDFD /* DataDetailShareLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB3E03C2BD2353700CFDDFD /* DataDetailShareLineChartView.swift */; };
 		ECB3E0402BD2359700CFDDFD /* DataDetailShareLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECB3E03F2BD2359700CFDDFD /* DataDetailShareLineView.m */; };
 		ECB3E06F2BD605C200CFDDFD /* LogsNaviVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB3E06E2BD605C200CFDDFD /* LogsNaviVM.swift */; };
@@ -2474,6 +2476,8 @@
 		ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMainMealCardCell.swift; sourceTree = "<group>"; };
 		ECB0F00C2F628FD900056D6A /* DietPlanBuyListDateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanBuyListDateVC.swift; sourceTree = "<group>"; };
 		ECB0F00E2F6291A100056D6A /* DietPlanBuyListDateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanBuyListDateCell.swift; sourceTree = "<group>"; };
+		ECB0F0102F629D5500056D6A /* DietPlanBuyListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanBuyListVC.swift; sourceTree = "<group>"; };
+		ECB0F0122F62A3B700056D6A /* DietPlanBuyListFoodsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanBuyListFoodsCell.swift; sourceTree = "<group>"; };
 		ECB3E03C2BD2353700CFDDFD /* DataDetailShareLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailShareLineChartView.swift; sourceTree = "<group>"; };
 		ECB3E03E2BD2359700CFDDFD /* DataDetailShareLineView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataDetailShareLineView.h; sourceTree = "<group>"; };
 		ECB3E03F2BD2359700CFDDFD /* DataDetailShareLineView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DataDetailShareLineView.m; sourceTree = "<group>"; };
@@ -4766,6 +4770,7 @@
 				EC8D62372F614141009B38B2 /* DietPlanCreateDateVC.swift */,
 				ECA059492F4D966E00E257E8 /* DietPlanCreateVC.swift */,
 				ECB0F00C2F628FD900056D6A /* DietPlanBuyListDateVC.swift */,
+				ECB0F0102F629D5500056D6A /* DietPlanBuyListVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -4824,6 +4829,7 @@
 				EC8D62392F6166FA009B38B2 /* DateChoiceAlertVM.swift */,
 				ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */,
 				ECB0F00E2F6291A100056D6A /* DietPlanBuyListDateCell.swift */,
+				ECB0F0122F62A3B700056D6A /* DietPlanBuyListFoodsCell.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -6157,6 +6163,7 @@
 				EC9CB9362EE9554000FBF915 /* ServiceOrderTableViewCell.swift in Sources */,
 				ECD0FEF12BABD25B001232C9 /* YYTextContainerView.m in Sources */,
 				EC8264EC2EFBDDCA00965196 /* HabitDetailVC.swift in Sources */,
+				ECB0F0112F629D5700056D6A /* DietPlanBuyListVC.swift in Sources */,
 				ECFACE822BC7C805003CDA3A /* PlanListVC.swift in Sources */,
 				EC9321AE2C50C80D00FDBBE2 /* MealsNameVM.swift in Sources */,
 				ECF0BFE02BFC9D0200E5F6F0 /* WithDrawVC.swift in Sources */,
@@ -7137,6 +7144,7 @@
 				A741874A2D7A8B3B006C8858 /* AICapturePhotoVM.swift in Sources */,
 				A741873B2D797B82006C8858 /* AITipsAlertVM.swift in Sources */,
 				EC5C81762C5A19FF000EC4BC /* GoalSetSpecPercentVM.swift in Sources */,
+				ECB0F0132F62A3BE00056D6A /* DietPlanBuyListFoodsCell.swift in Sources */,
 				ECB8483F2BF305F400B554B9 /* SettingTopVM.swift in Sources */,
 				EC7575E22F303E5A005E2077 /* HabitRuleTableViewImgTextCell.swift in Sources */,
 				A707D2C02CBBE7B7005BDC0E /* BodyDataSQLiteManagerOld.swift in Sources */,

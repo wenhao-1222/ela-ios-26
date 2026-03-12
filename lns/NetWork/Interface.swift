@@ -194,12 +194,18 @@ public let URL_report_daily_ranking              = URL_Type + "plans/log/daily_n
 public let URL_report_weekly_ranking             = URL_Type + "plans/log/weekly_nutrition_report_ranking"
 
 //MARK: 新问卷 pro
-//问卷--内容提交
+///问卷--内容提交
 public let URL_diet_upsert          = URL_Type + "users/diet/profile/upsert"
-//问卷--自动获取食谱计划
+///问卷--自动获取食谱计划
 public let URL_diet_plan_create          = URL_Type + "plans/pro/meal_plan/create"
-//问卷--获取食谱信息
+///问卷--获取食谱信息
 public let URL_diet_plan_msg          = URL_Type + "plans/pro/meal_plan/list"
+///食谱--生成购物清单
+public let URL_diet_plan_shopping_list_create  = URL_Type + "plans/pro/meal_plan/create_shopping_list"
+///食谱--获取购物清单
+public let URL_diet_plan_shopping_list  = URL_Type + "plans/pro/meal_plan/my_shopping_list"
+///食谱--购物清单标记
+public let URL_diet_plan_shopping_list_check  = URL_Type + "plans/pro/meal_plan/check_shopping_item"
 
 //MARK: 运动记录
 public let URL_sport_catogary_list          = URL_Type + "users/sport/list"

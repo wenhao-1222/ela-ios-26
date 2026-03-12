@@ -62,6 +62,18 @@ class DietPlanBuyListDateVC: WHBaseViewVC {
         return label
     }()
     
+    lazy var buylistButton: UIButton = {
+        let btn = UIButton()
+        btn.setTitle("我的购物清单", for: .normal)
+        btn.setTitleColor(.THEME, for: .normal)
+        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME, for: .highlighted)
+        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        
+        btn.addTarget(self, action: #selector(buyListTapAction), for: .touchUpInside)
+        
+        return btn
+    }()
+    
     private lazy var tableView: UITableView = {
         let table = UITableView(frame: .zero, style: .plain)
         table.backgroundColor = .clear
@@ -108,7 +120,7 @@ class DietPlanBuyListDateVC: WHBaseViewVC {
     }()
     private lazy var nextButton: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setTitle("下一步", for: .normal)
+        btn.setTitle("新建购物清单", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         btn.backgroundColor = .COLOR_BUTTON_DISABLE_BG_THEME
@@ -152,16 +164,19 @@ private extension DietPlanBuyListDateVC {
     @objc func nextButtonTapAction() {
         let selectedDates = dateOptions.filter({ $0.isSelected }).map(\.sdate)
         guard !selectedDates.isEmpty else { return }
-        if let onConfirm = onConfirm {
-            onConfirm(selectedDates)
-            return
-        }
-        MCToast.mc_text("已选择\(selectedDates.count)天")
+        let vc = DietPlanBuyListVC()
+        vc.selectedDates = selectedDates
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    @objc func buyListTapAction() {
+        let vc = DietPlanBuyListVC()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     func initUI() {
         view.addSubview(titleLabel)
-        view.addSubview(subTitleLabel)
+//        view.addSubview(subTitleLabel)
+        view.addSubview(buylistButton)
         view.addSubview(tableView)
         view.addSubview(nextButton)
         view.addSubview(topGradientView)
@@ -175,7 +190,12 @@ private extension DietPlanBuyListDateVC {
             make.right.equalTo(kFitWidth(-20))
             make.height.equalTo(kFitWidth(34))
         }
-        subTitleLabel.snp.makeConstraints { make in
+//        subTitleLabel.snp.makeConstraints { make in
+//            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(20))
+//            make.left.right.equalTo(titleLabel)
+//            make.height.equalTo(kFitWidth(28))
+//        }
+        buylistButton.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(20))
             make.left.right.equalTo(titleLabel)
             make.height.equalTo(kFitWidth(28))
@@ -188,7 +208,7 @@ private extension DietPlanBuyListDateVC {
         }
         tableView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(10))
+            make.top.equalTo(buylistButton.snp.bottom).offset(kFitWidth(10))
             make.bottom.equalTo(nextButton.snp.top).offset(kFitWidth(-8))
         }
         topGradientView.snp.makeConstraints { make in
