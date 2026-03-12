@@ -243,6 +243,9 @@ static NSString * const ACColorNameWidgetTextColor AC_SWIFT_PRIVATE = @"widget_t
 /// The "Image" asset catalog image resource.
 static NSString * const ACImageNameImage AC_SWIFT_PRIVATE = @"Image";
 
+/// The "Image 1" asset catalog image resource.
+static NSString * const ACImageNameImage1 AC_SWIFT_PRIVATE = @"Image 1";
+
 /// The "ai_alert_close_icon" asset catalog image resource.
 static NSString * const ACImageNameAiAlertCloseIcon AC_SWIFT_PRIVATE = @"ai_alert_close_icon";
 
@@ -579,11 +582,32 @@ static NSString * const ACImageNameDateFliterConfirmImg AC_SWIFT_PRIVATE = @"dat
 /// The "dietplan_bg_img" asset catalog image resource.
 static NSString * const ACImageNameDietplanBgImg AC_SWIFT_PRIVATE = @"dietplan_bg_img";
 
+/// The "dietplan_buy_list_disable_icon" asset catalog image resource.
+static NSString * const ACImageNameDietplanBuyListDisableIcon AC_SWIFT_PRIVATE = @"dietplan_buy_list_disable_icon";
+
+/// The "dietplan_buy_list_icon" asset catalog image resource.
+static NSString * const ACImageNameDietplanBuyListIcon AC_SWIFT_PRIVATE = @"dietplan_buy_list_icon";
+
+/// The "dietplan_create_icon" asset catalog image resource.
+static NSString * const ACImageNameDietplanCreateIcon AC_SWIFT_PRIVATE = @"dietplan_create_icon";
+
+/// The "dietplan_disable_cover_img" asset catalog image resource.
+static NSString * const ACImageNameDietplanDisableCoverImg AC_SWIFT_PRIVATE = @"dietplan_disable_cover_img";
+
 /// The "dietplan_empty_img" asset catalog image resource.
 static NSString * const ACImageNameDietplanEmptyImg AC_SWIFT_PRIVATE = @"dietplan_empty_img";
 
+/// The "dietplan_plan_change_icon" asset catalog image resource.
+static NSString * const ACImageNameDietplanPlanChangeIcon AC_SWIFT_PRIVATE = @"dietplan_plan_change_icon";
+
 /// The "dietplan_pro_icon" asset catalog image resource.
 static NSString * const ACImageNameDietplanProIcon AC_SWIFT_PRIVATE = @"dietplan_pro_icon";
+
+/// The "dietplan_sauce_disable_icon" asset catalog image resource.
+static NSString * const ACImageNameDietplanSauceDisableIcon AC_SWIFT_PRIVATE = @"dietplan_sauce_disable_icon";
+
+/// The "dietplan_sauce_icon" asset catalog image resource.
+static NSString * const ACImageNameDietplanSauceIcon AC_SWIFT_PRIVATE = @"dietplan_sauce_icon";
 
 /// The "donation_baby_img" asset catalog image resource.
 static NSString * const ACImageNameDonationBabyImg AC_SWIFT_PRIVATE = @"donation_baby_img";

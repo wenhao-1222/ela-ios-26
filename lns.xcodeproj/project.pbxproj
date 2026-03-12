@@ -1060,6 +1060,8 @@
 		ECAE25E42BF1DFD0007D4B57 /* FoodsMsgDetailsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE25E32BF1DFD0007D4B57 /* FoodsMsgDetailsVM.swift */; };
 		ECAE25E62BF20F37007D4B57 /* NSDictionary+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE25E52BF20F37007D4B57 /* NSDictionary+Exs.swift */; };
 		ECAE372D2F5E69540051F234 /* ElaExpandedTapButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE372C2F5E694F0051F234 /* ElaExpandedTapButton.swift */; };
+		ECB0F0092F62563F00056D6A /* PlanMainPlanListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F0082F62563700056D6A /* PlanMainPlanListVM.swift */; };
+		ECB0F00B2F6265F500056D6A /* PlanMainMealCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */; };
 		ECB3E03D2BD2353700CFDDFD /* DataDetailShareLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB3E03C2BD2353700CFDDFD /* DataDetailShareLineChartView.swift */; };
 		ECB3E0402BD2359700CFDDFD /* DataDetailShareLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECB3E03F2BD2359700CFDDFD /* DataDetailShareLineView.m */; };
 		ECB3E06F2BD605C200CFDDFD /* LogsNaviVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB3E06E2BD605C200CFDDFD /* LogsNaviVM.swift */; };
@@ -2466,6 +2468,8 @@
 		ECAE25E32BF1DFD0007D4B57 /* FoodsMsgDetailsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsMsgDetailsVM.swift; sourceTree = "<group>"; };
 		ECAE25E52BF20F37007D4B57 /* NSDictionary+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDictionary+Exs.swift"; sourceTree = "<group>"; };
 		ECAE372C2F5E694F0051F234 /* ElaExpandedTapButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaExpandedTapButton.swift; sourceTree = "<group>"; };
+		ECB0F0082F62563700056D6A /* PlanMainPlanListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMainPlanListVM.swift; sourceTree = "<group>"; };
+		ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMainMealCardCell.swift; sourceTree = "<group>"; };
 		ECB3E03C2BD2353700CFDDFD /* DataDetailShareLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailShareLineChartView.swift; sourceTree = "<group>"; };
 		ECB3E03E2BD2359700CFDDFD /* DataDetailShareLineView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataDetailShareLineView.h; sourceTree = "<group>"; };
 		ECB3E03F2BD2359700CFDDFD /* DataDetailShareLineView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DataDetailShareLineView.m; sourceTree = "<group>"; };
@@ -4811,7 +4815,9 @@
 			children = (
 				ECA306A92F5AC4EC0087B95C /* PlanMainEmptyVM.swift */,
 				EC8D62332F613670009B38B2 /* PlanMainNonePlanVM.swift */,
+				ECB0F0082F62563700056D6A /* PlanMainPlanListVM.swift */,
 				EC8D62392F6166FA009B38B2 /* DateChoiceAlertVM.swift */,
+				ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -6522,6 +6528,7 @@
 				A740EEF12E72C55500B6ABAA /* MyAddressDetailVC.swift in Sources */,
 				EC0C9A0F2F207A5C00E1E7DE /* HabitRankListHeadCupVM.swift in Sources */,
 				EC30F2B32C8701F900E7BD33 /* NaturalStatVC.swift in Sources */,
+				ECB0F0092F62563F00056D6A /* PlanMainPlanListVM.swift in Sources */,
 				ECB6AEB52BC63DBB00F03567 /* MainTopGoalVM.swift in Sources */,
 				EC4732D82EEFF05A008F67F5 /* OverSeaMsgVC.swift in Sources */,
 				EC781CD42BBA99F400752C95 /* QuestionnairePlanFoodsTypeAlertVM.swift in Sources */,
@@ -6623,6 +6630,7 @@
 				EC8FF3F02C92C31C003A7E0B /* NaturalStatCalendarVM.swift in Sources */,
 				ECF745DF2BDA5FF90076DDB9 /* NaturalDetailVC.swift in Sources */,
 				EC925DA72C7DB2B4009F1E72 /* Widget+Color+Exs.swift in Sources */,
+				ECB0F00B2F6265F500056D6A /* PlanMainMealCardCell.swift in Sources */,
 				A762B9732D19351B003E8B22 /* TutorialVideoVM.swift in Sources */,
 				EC26E6272BBCF3A5001E4381 /* LNSLoginVC.swift in Sources */,
 				ECFACE8D2BC7EACD003CDA3A /* PlanSearchVM.swift in Sources */,

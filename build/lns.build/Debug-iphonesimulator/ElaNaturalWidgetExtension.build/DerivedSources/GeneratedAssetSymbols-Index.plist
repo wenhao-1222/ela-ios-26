@@ -791,6 +791,16 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameImage1</string>
+			<key>relativePath</key>
+			<string>./dietplan/Image 1.imageset</string>
+			<key>swiftSymbol</key>
+			<string>image1</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameAiAlertCloseIcon</string>
 			<key>relativePath</key>
 			<string>./ai/ai_alert_close_icon.imageset</string>
@@ -1911,6 +1921,46 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameDietplanBuyListDisableIcon</string>
+			<key>relativePath</key>
+			<string>./dietplan/dietplan_buy_list_disable_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>dietplanBuyListDisableIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameDietplanBuyListIcon</string>
+			<key>relativePath</key>
+			<string>./dietplan/dietplan_buy_list_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>dietplanBuyListIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameDietplanCreateIcon</string>
+			<key>relativePath</key>
+			<string>./dietplan/dietplan_create_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>dietplanCreateIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameDietplanDisableCoverImg</string>
+			<key>relativePath</key>
+			<string>./dietplan/dietplan_disable_cover_img.imageset</string>
+			<key>swiftSymbol</key>
+			<string>dietplanDisableCoverImg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameDietplanEmptyImg</string>
 			<key>relativePath</key>
 			<string>./dietplan/dietplan_empty_img.imageset</string>
@@ -1921,11 +1971,41 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameDietplanPlanChangeIcon</string>
+			<key>relativePath</key>
+			<string>./dietplan/dietplan_plan_change_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>dietplanPlanChangeIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameDietplanProIcon</string>
 			<key>relativePath</key>
 			<string>./dietplan/dietplan_pro_icon.imageset</string>
 			<key>swiftSymbol</key>
 			<string>dietplanProIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameDietplanSauceDisableIcon</string>
+			<key>relativePath</key>
+			<string>./dietplan/dietplan_sauce_disable_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>dietplanSauceDisableIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameDietplanSauceIcon</string>
+			<key>relativePath</key>
+			<string>./dietplan/dietplan_sauce_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>dietplanSauceIcon</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>

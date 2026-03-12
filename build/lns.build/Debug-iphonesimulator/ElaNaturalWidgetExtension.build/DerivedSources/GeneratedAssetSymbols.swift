@@ -265,6 +265,9 @@ extension ImageResource {
     /// The "Image" asset catalog image resource.
     static let image = ImageResource(name: "Image", bundle: resourceBundle)
 
+    /// The "Image 1" asset catalog image resource.
+    static let image1 = ImageResource(name: "Image 1", bundle: resourceBundle)
+
     /// The "ai_alert_close_icon" asset catalog image resource.
     static let aiAlertCloseIcon = ImageResource(name: "ai_alert_close_icon", bundle: resourceBundle)
 
@@ -601,11 +604,32 @@ extension ImageResource {
     /// The "dietplan_bg_img" asset catalog image resource.
     static let dietplanBgImg = ImageResource(name: "dietplan_bg_img", bundle: resourceBundle)
 
+    /// The "dietplan_buy_list_disable_icon" asset catalog image resource.
+    static let dietplanBuyListDisableIcon = ImageResource(name: "dietplan_buy_list_disable_icon", bundle: resourceBundle)
+
+    /// The "dietplan_buy_list_icon" asset catalog image resource.
+    static let dietplanBuyListIcon = ImageResource(name: "dietplan_buy_list_icon", bundle: resourceBundle)
+
+    /// The "dietplan_create_icon" asset catalog image resource.
+    static let dietplanCreateIcon = ImageResource(name: "dietplan_create_icon", bundle: resourceBundle)
+
+    /// The "dietplan_disable_cover_img" asset catalog image resource.
+    static let dietplanDisableCoverImg = ImageResource(name: "dietplan_disable_cover_img", bundle: resourceBundle)
+
     /// The "dietplan_empty_img" asset catalog image resource.
     static let dietplanEmptyImg = ImageResource(name: "dietplan_empty_img", bundle: resourceBundle)
 
+    /// The "dietplan_plan_change_icon" asset catalog image resource.
+    static let dietplanPlanChangeIcon = ImageResource(name: "dietplan_plan_change_icon", bundle: resourceBundle)
+
     /// The "dietplan_pro_icon" asset catalog image resource.
     static let dietplanProIcon = ImageResource(name: "dietplan_pro_icon", bundle: resourceBundle)
+
+    /// The "dietplan_sauce_disable_icon" asset catalog image resource.
+    static let dietplanSauceDisableIcon = ImageResource(name: "dietplan_sauce_disable_icon", bundle: resourceBundle)
+
+    /// The "dietplan_sauce_icon" asset catalog image resource.
+    static let dietplanSauceIcon = ImageResource(name: "dietplan_sauce_icon", bundle: resourceBundle)
 
     /// The "donation_baby_img" asset catalog image resource.
     static let donationBabyImg = ImageResource(name: "donation_baby_img", bundle: resourceBundle)
@@ -4009,6 +4033,15 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "Image 1" asset catalog image.
+    static var image1: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .image1)
+#else
+        .init()
+#endif
+    }
+
     /// The "ai_alert_close_icon" asset catalog image.
     static var aiAlertCloseIcon: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
@@ -5017,6 +5050,42 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "dietplan_buy_list_disable_icon" asset catalog image.
+    static var dietplanBuyListDisableIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .dietplanBuyListDisableIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "dietplan_buy_list_icon" asset catalog image.
+    static var dietplanBuyListIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .dietplanBuyListIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "dietplan_create_icon" asset catalog image.
+    static var dietplanCreateIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .dietplanCreateIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "dietplan_disable_cover_img" asset catalog image.
+    static var dietplanDisableCoverImg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .dietplanDisableCoverImg)
+#else
+        .init()
+#endif
+    }
+
     /// The "dietplan_empty_img" asset catalog image.
     static var dietplanEmptyImg: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
@@ -5026,10 +5095,37 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "dietplan_plan_change_icon" asset catalog image.
+    static var dietplanPlanChangeIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .dietplanPlanChangeIcon)
+#else
+        .init()
+#endif
+    }
+
     /// The "dietplan_pro_icon" asset catalog image.
     static var dietplanProIcon: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .dietplanProIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "dietplan_sauce_disable_icon" asset catalog image.
+    static var dietplanSauceDisableIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .dietplanSauceDisableIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "dietplan_sauce_icon" asset catalog image.
+    static var dietplanSauceIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .dietplanSauceIcon)
 #else
         .init()
 #endif
@@ -9570,6 +9666,15 @@ extension UIKit.UIImage {
 #endif
     }
 
+    /// The "Image 1" asset catalog image.
+    static var image1: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .image1)
+#else
+        .init()
+#endif
+    }
+
     /// The "ai_alert_close_icon" asset catalog image.
     static var aiAlertCloseIcon: UIKit.UIImage {
 #if !os(watchOS)
@@ -10578,6 +10683,42 @@ extension UIKit.UIImage {
 #endif
     }
 
+    /// The "dietplan_buy_list_disable_icon" asset catalog image.
+    static var dietplanBuyListDisableIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .dietplanBuyListDisableIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "dietplan_buy_list_icon" asset catalog image.
+    static var dietplanBuyListIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .dietplanBuyListIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "dietplan_create_icon" asset catalog image.
+    static var dietplanCreateIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .dietplanCreateIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "dietplan_disable_cover_img" asset catalog image.
+    static var dietplanDisableCoverImg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .dietplanDisableCoverImg)
+#else
+        .init()
+#endif
+    }
+
     /// The "dietplan_empty_img" asset catalog image.
     static var dietplanEmptyImg: UIKit.UIImage {
 #if !os(watchOS)
@@ -10587,10 +10728,37 @@ extension UIKit.UIImage {
 #endif
     }
 
+    /// The "dietplan_plan_change_icon" asset catalog image.
+    static var dietplanPlanChangeIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .dietplanPlanChangeIcon)
+#else
+        .init()
+#endif
+    }
+
     /// The "dietplan_pro_icon" asset catalog image.
     static var dietplanProIcon: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .dietplanProIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "dietplan_sauce_disable_icon" asset catalog image.
+    static var dietplanSauceDisableIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .dietplanSauceDisableIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "dietplan_sauce_icon" asset catalog image.
+    static var dietplanSauceIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .dietplanSauceIcon)
 #else
         .init()
 #endif

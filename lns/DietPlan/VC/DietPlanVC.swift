@@ -29,6 +29,11 @@ class DietPlanVC: WHBaseViewVC {
         vm.createPlanButton.addTarget(self, action: #selector(createPlanAction), for: .touchUpInside)
         return vm
     }()
+    lazy var listVm: PlanMainPlanListVM = {
+        let vm = PlanMainPlanListVM.init(frame: .zero)
+        vm.createPlanButton.addTarget(self, action: #selector(createPlanAction), for: .touchUpInside)
+        return vm
+    }()
 }
 
 extension DietPlanVC{
@@ -54,21 +59,31 @@ extension DietPlanVC{
 }
 
 extension DietPlanVC{
+    func removeStateViews() {
+        emptyVm.removeFromSuperview()
+        nonePlanVm.removeFromSuperview()
+        listVm.removeFromSuperview()
+    }
+    
     func sendDietPlanMsgRequest() {
         WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_msg, parameters: nil) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendDietPlanMsgRequest:\(dataObj)")
             
+            self.removeStateViews()
+            let mealPlanItemList = dataObj["mealPlanItemList"] as? NSArray ?? []
             let status = dataObj.stringValueForKey(key: "status")
             if status == "1"{//无问卷
                 self.view.addSubview(self.emptyVm)
             }else if status == "2"{//做过问卷，未生成计划
                 self.view.addSubview(self.nonePlanVm)
             }else if status == "4"{//有问卷，且在有效期内
-                
+                self.listVm.updatePlanList(mealPlanItemList: mealPlanItemList)
+                self.view.addSubview(self.listVm)
             }else{//有问卷，但是计划过期   默认此选项
-                
+                self.listVm.updatePlanList(mealPlanItemList: mealPlanItemList)
+                self.view.addSubview(self.listVm)
             }
         }
     }
