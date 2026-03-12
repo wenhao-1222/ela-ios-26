@@ -5,6 +5,8 @@
 //  Created by LNS2 on 2026/3/6.
 //
 
+import UIKit
+import MCToast
 
 class DietPlanVC: WHBaseViewVC {
     
@@ -32,6 +34,7 @@ class DietPlanVC: WHBaseViewVC {
     lazy var listVm: PlanMainPlanListVM = {
         let vm = PlanMainPlanListVM.init(frame: .zero)
         vm.createPlanButton.addTarget(self, action: #selector(createPlanAction), for: .touchUpInside)
+        vm.buyListButton.addTarget(self, action: #selector(openBuyListSelectionAction), for: .touchUpInside)
         return vm
     }()
 }
@@ -48,6 +51,16 @@ extension DietPlanVC{
     //创建计划，选择时间
     @objc func createPlanAction() {
         let vc = DietPlanCreateDateVC()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc func openBuyListSelectionAction() {
+        let availableDates = listVm.buyListDateStringsFromToday()
+        guard !availableDates.isEmpty else {
+            MCToast.mc_text("当前没有可用的购物清单日期")
+            return
+        }
+        let vc = DietPlanBuyListDateVC(dateStrings: availableDates)
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }

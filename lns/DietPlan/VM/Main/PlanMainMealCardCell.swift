@@ -11,7 +11,7 @@ class PlanMainMealCardCell: UICollectionViewCell {
     private var imageHeightConstraint: Constraint?
     private var imageLoadToken = ""
     private var skeletonStartTime: TimeInterval = 0
-    private let minSkeletonDisplayDuration: TimeInterval = 0.18
+    private let minSkeletonDisplayDuration: TimeInterval = 0.35
 //    private let imageSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
 //                                                     highlightColorLight: .COLOR_BG_F5,
 //                                                     baseColorDark: .COLOR_LIGHT_GREY,
@@ -22,11 +22,13 @@ class PlanMainMealCardCell: UICollectionViewCell {
 //                                                     skeletonFadeInDuration: 0.12,
 //                                                     contentFadeInDuration: 0.22)
     // 需要骨架的子视图：显示骨架（从左向右 Shimmer + 渐入）
-    let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
-                             highlightColorLight: .COLOR_GRAY_E2,
+    let cfg = SkeletonConfig(baseColorLight: .COLOR_GRAY_E8,
+                             highlightColorLight: .COLOR_GRAY_D6D6D6,
                              cornerRadius: kFitWidth(4),
                              shimmerWidth: 0.22,
-                             shimmerDuration: 1.15)
+                             shimmerDuration: 1.0,
+                             skeletonFadeInDuration: 0.0,
+                             contentFadeInDuration: 0.18)
     private let cardView: UIView = {
         let view = UIView()
         view.backgroundColor = .COLOR_CARD_BG_WHITE

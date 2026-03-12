@@ -1062,6 +1062,8 @@
 		ECAE372D2F5E69540051F234 /* ElaExpandedTapButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE372C2F5E694F0051F234 /* ElaExpandedTapButton.swift */; };
 		ECB0F0092F62563F00056D6A /* PlanMainPlanListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F0082F62563700056D6A /* PlanMainPlanListVM.swift */; };
 		ECB0F00B2F6265F500056D6A /* PlanMainMealCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */; };
+		ECB0F00D2F628FDA00056D6A /* DietPlanBuyListDateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F00C2F628FD900056D6A /* DietPlanBuyListDateVC.swift */; };
+		ECB0F00F2F6291A200056D6A /* DietPlanBuyListDateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F00E2F6291A100056D6A /* DietPlanBuyListDateCell.swift */; };
 		ECB3E03D2BD2353700CFDDFD /* DataDetailShareLineChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB3E03C2BD2353700CFDDFD /* DataDetailShareLineChartView.swift */; };
 		ECB3E0402BD2359700CFDDFD /* DataDetailShareLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = ECB3E03F2BD2359700CFDDFD /* DataDetailShareLineView.m */; };
 		ECB3E06F2BD605C200CFDDFD /* LogsNaviVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB3E06E2BD605C200CFDDFD /* LogsNaviVM.swift */; };
@@ -2470,6 +2472,8 @@
 		ECAE372C2F5E694F0051F234 /* ElaExpandedTapButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaExpandedTapButton.swift; sourceTree = "<group>"; };
 		ECB0F0082F62563700056D6A /* PlanMainPlanListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMainPlanListVM.swift; sourceTree = "<group>"; };
 		ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMainMealCardCell.swift; sourceTree = "<group>"; };
+		ECB0F00C2F628FD900056D6A /* DietPlanBuyListDateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanBuyListDateVC.swift; sourceTree = "<group>"; };
+		ECB0F00E2F6291A100056D6A /* DietPlanBuyListDateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanBuyListDateCell.swift; sourceTree = "<group>"; };
 		ECB3E03C2BD2353700CFDDFD /* DataDetailShareLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailShareLineChartView.swift; sourceTree = "<group>"; };
 		ECB3E03E2BD2359700CFDDFD /* DataDetailShareLineView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataDetailShareLineView.h; sourceTree = "<group>"; };
 		ECB3E03F2BD2359700CFDDFD /* DataDetailShareLineView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DataDetailShareLineView.m; sourceTree = "<group>"; };
@@ -4761,6 +4765,7 @@
 				ECA306A52F5AC4AE0087B95C /* DietPlanVC.swift */,
 				EC8D62372F614141009B38B2 /* DietPlanCreateDateVC.swift */,
 				ECA059492F4D966E00E257E8 /* DietPlanCreateVC.swift */,
+				ECB0F00C2F628FD900056D6A /* DietPlanBuyListDateVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -4818,6 +4823,7 @@
 				ECB0F0082F62563700056D6A /* PlanMainPlanListVM.swift */,
 				EC8D62392F6166FA009B38B2 /* DateChoiceAlertVM.swift */,
 				ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */,
+				ECB0F00E2F6291A100056D6A /* DietPlanBuyListDateCell.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -6328,6 +6334,7 @@
 				EC87A4492C8E937400BAB8CE /* NaturalStatCaloriesBarChartView.swift in Sources */,
 				A70A2FD82DCB026F00F1E630 /* MJRefreshHeader+Exs.swift in Sources */,
 				A773C2342E84EE7000F1E3AA /* ServiceContactVideoManager.swift in Sources */,
+				ECB0F00F2F6291A200056D6A /* DietPlanBuyListDateCell.swift in Sources */,
 				A740EEED2E72BE4B00B6ABAA /* AddressModel.swift in Sources */,
 				A773C2302E84EB7F00F1E3AA /* ServiceVideoProgressRing.swift in Sources */,
 				A7C95D592DDDA40D00F42FC9 /* JournalWaterVC.swift in Sources */,
@@ -6931,6 +6938,7 @@
 				A71A538C2CD9EF70009FDAF9 /* UIViewController+ZFPlayerRotation.m in Sources */,
 				ECE3999A2EA87AA7005718C5 /* CoursePDFCell.swift in Sources */,
 				A71A538D2CD9EF70009FDAF9 /* ZFPlayerController.m in Sources */,
+				ECB0F00D2F628FDA00056D6A /* DietPlanBuyListDateVC.swift in Sources */,
 				A71A538E2CD9EF70009FDAF9 /* ZFNetworkSpeedMonitor.m in Sources */,
 				A71A538F2CD9EF70009FDAF9 /* UIView+ZFFrame.m in Sources */,
 				A71A53902CD9EF70009FDAF9 /* ZFAVPlayerManager.m in Sources */,

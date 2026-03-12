@@ -37,6 +37,19 @@ class PlanMainPlanListVM: UIView {
     private let sectionInset = UIEdgeInsets(top: 0, left: kFitWidth(16), bottom: kFitWidth(24), right: kFitWidth(16))
     private let itemSpacing = kFitWidth(12)
     private var mealDaySections: [PlanMainMealDaySection] = []
+    private lazy var buyListCalendar: Calendar = {
+        var cal = Calendar(identifier: .gregorian)
+        cal.locale = Locale(identifier: "en_US_POSIX")
+        return cal
+    }()
+    private lazy var buyListDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone.current
+        return formatter
+    }()
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getTabbarHeight()))
@@ -48,6 +61,10 @@ class PlanMainPlanListVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+//    override func layoutSubviews() {
+//        super.layoutSubviews()
+//        topGradientLayer.frame = topGradientView.bounds
+//    }
     
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
@@ -80,10 +97,16 @@ class PlanMainPlanListVM: UIView {
                            y: createPlanButton.frame.minY,
                            width: createPlanButton.frame.width,
                            height: createPlanButton.frame.height)
-        return makeRecipeActionButton(title: "购物清单",
-                                      imageName: "dietplan_buy_list_icon",
-                                      imageSize: CGSize(width: kFitWidth(30), height: kFitWidth(30)),
-                                      frame: frame)
+        let imageSize = CGSize(width: kFitWidth(30), height: kFitWidth(30))
+        let btn = makeRecipeActionButton(title: "购物清单",
+                                         imageName: "dietplan_buy_list_icon",
+                                         imageSize: imageSize,
+                                         frame: frame)
+        let normalImage = resizedImage(named: "dietplan_buy_list_icon", size: imageSize) ?? UIImage(named: "dietplan_buy_list_icon")
+        let disabledImage = resizedImage(named: "dietplan_buy_list_disable_icon", size: imageSize) ?? UIImage(named: "dietplan_buy_list_disable_icon")
+        btn.setImage(normalImage, for: .normal)
+        btn.setImage(disabledImage, for: .disabled)
+        return btn
     }()
     lazy var sauceButton: GJVerButtonNoneFeedBack = {
         let frame = CGRect(x: kFitWidth(252),
@@ -116,12 +139,47 @@ class PlanMainPlanListVM: UIView {
                       withReuseIdentifier: planMainHeaderReuseId)
         return view
     }()
+//    lazy var topGradientView: UIView = {
+//        let vi = UIView()
+//        vi.isUserInteractionEnabled = false
+//        return vi
+//    }()
+//    lazy var topGradientLayer: CAGradientLayer = {
+//        let layer = CAGradientLayer()
+//        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+//        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+//        layer.colors = [
+//            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+//            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+//        ]
+//        layer.locations = [0, 1]
+//        return layer
+//    }()
 }
 
 extension PlanMainPlanListVM {
     func updatePlanList(mealPlanItemList: NSArray) {
         mealDaySections = parseSections(mealPlanItemList)
+        updateBuyListButtonState()
         collectionView.reloadData()
+    }
+    
+    func buyListDateStringsFromToday() -> [String] {
+        let today = buyListCalendar.startOfDay(for: Date())
+        let datePairs = mealDaySections.compactMap { section -> (String, Date)? in
+            guard let date = parsedBuyListDate(from: section.sdate) else { return nil }
+            return (section.sdate, date)
+        }
+        .filter { $0.1 >= today }
+        .sorted { $0.1 < $1.1 }
+        
+        var uniqueDates: [String] = []
+        var seen = Set<String>()
+        for (sdate, _) in datePairs where !seen.contains(sdate) {
+            seen.insert(sdate)
+            uniqueDates.append(sdate)
+        }
+        return uniqueDates
     }
 }
 
@@ -133,6 +191,10 @@ extension PlanMainPlanListVM{
         addSubview(buyListButton)
         addSubview(sauceButton)
         addSubview(collectionView)
+//        addSubview(topGradientView)
+//        topGradientView.layer.addSublayer(topGradientLayer)
+        
+        buyListButton.isEnabled = false
         
         setConstrait()
     }
@@ -149,10 +211,24 @@ extension PlanMainPlanListVM{
             make.left.right.bottom.equalToSuperview()
             make.top.equalTo(createPlanButton.snp.bottom).offset(kFitWidth(14))
         }
+//        topGradientView.snp.makeConstraints { make in
+//            make.left.right.equalToSuperview()
+//            make.top.equalTo(collectionView.snp.top)//.offset(kFitWidth(-20))
+//            make.height.equalTo(kFitWidth(35))
+//        }
     }
 }
 
 private extension PlanMainPlanListVM {
+    func parsedBuyListDate(from sdate: String) -> Date? {
+        guard let date = buyListDateFormatter.date(from: sdate) else { return nil }
+        return buyListCalendar.startOfDay(for: date)
+    }
+    
+    func updateBuyListButtonState() {
+        buyListButton.isEnabled = !buyListDateStringsFromToday().isEmpty
+    }
+    
     func parseSections(_ source: NSArray) -> [PlanMainMealDaySection] {
         var sections: [PlanMainMealDaySection] = []
         
