@@ -166,6 +166,7 @@ class JournalVC: WHBaseViewVC {
         NotificationCenter.default.addObserver(self, selector: #selector(gotoLogsNotification), name: NSNotification.Name(rawValue: "widgetAddFoodsForLogs"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(editStatus), name: NSNotification.Name(rawValue: "longPressCellForEdit"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refreshTodayData), name: NOTIFI_NAME_REFRESH_TODAY_JOUNAL, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDietPlanFoodsAddToLogs(notify:)), name: NSNotification.Name(rawValue: "dietPlanFoodsAddToLogs"), object: nil)
         
 //        let launchInt = UserDefaults.standard.value(forKey: launchNum) as? Int ?? 0
         
@@ -648,6 +649,23 @@ extension JournalVC{
         let indexPath = IndexPath(row: self.todayIndex, section: 0)
         let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
         cell?.reloadTableView()
+    }
+    @objc func handleDietPlanFoodsAddToLogs(notify: Notification) {
+        let sdate = notify.userInfo?["sdate"] as? String ?? ""
+        guard sdate.count > 0 else { return }
+        
+        self.queryDay = sdate
+        self.isEdit = false
+        self.refreshNaviDayText()
+        self.getQueryDayIndex()
+        self.collectView.reloadData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            let indexPath = IndexPath(row: self.selecteIndex, section: 0)
+            let cell = self.collectView.cellForItem(at: indexPath) as? JounalCollectionCell
+            cell?.setQueryDate(date: sdate, isEdit: false)
+            cell?.reloadTableView()
+        }
     }
     @objc func addFoodsNotifi(notify:Notification) {
 //        let foodsDict = notify.object ?? [:]

@@ -106,6 +106,7 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
     
     private let imageHeight = kFitWidth(209)
     private var foodItems: [DietPlanFoodsDetailFoodItem] = []
+    private var detailFoodsSource = NSArray()
     private let scrollContentGradientLayer = CAGradientLayer()
     private let scrollTopOverlayGradientLayer = CAGradientLayer()
     
@@ -255,10 +256,16 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
         return button
     }()
     
+    private lazy var foodsAddAlertVm: DietPlanFoodsAddAlertVM = {
+        let vm = DietPlanFoodsAddAlertVM(frame: .zero)
+        return vm
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         initUI()
+        preloadFoodsAddAlertSelectionIfNeeded()
         sendFoodsDetaiLRequest()
     }
     
@@ -419,7 +426,12 @@ extension DietPlanFoodsDetailVC {
         if replacePlanItemId.count > 0 {
             sendReplaceFoodsRequest()
         }else{
-            ADD_FOODS_FOR_HEALTHKIT_NATURAL = foodsDataArray.count
+            guard detailFoodsSource.count > 0 else {
+                MCToast.mc_text("食材信息为空")
+                return
+            }
+            
+            showFoodsAddAlert()
         }
     }
     @objc func chooseReplaceAction() {
@@ -486,7 +498,8 @@ private extension DietPlanFoodsDetailVC {
             topImageView.setImgUrlWithComplete(urlString: imageUrl, placeHolder: placeholder) { }
         }
         
-        foodItems = parseFoods(dict["foods"] as? NSArray)
+        detailFoodsSource = dict["foods"] as? NSArray ?? []
+        foodItems = parseFoods(detailFoodsSource)
         reloadFoods()
         
         let notesText = dict.stringValueForKey(key: "notes")
@@ -633,6 +646,24 @@ private extension DietPlanFoodsDetailVC {
     
     func updateMacroItem(_ itemView: DietPlanMacroItemView, value: String) {
         itemView.updateValue(value)
+    }
+    
+    func preloadFoodsAddAlertSelectionIfNeeded() {
+        guard replacePlanItemId.isEmpty, sdate.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false else {
+            return
+        }
+        
+        foodsAddAlertVm.preloadDefaultSelection(sdate: sdate)
+    }
+    
+    func showFoodsAddAlert() {
+        if foodsAddAlertVm.superview == nil,
+           let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            appDelegate.getKeyWindow().addSubview(foodsAddAlertVm)
+        }
+        
+        foodsAddAlertVm.prepare(sdate: sdate, foodsArray: detailFoodsSource)
+        foodsAddAlertVm.showSelf()
     }
     
     func popBackToDietPlanPage() {

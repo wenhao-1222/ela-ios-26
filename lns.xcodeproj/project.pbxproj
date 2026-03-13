@@ -891,6 +891,7 @@
 		EC6ED3072F63B2EA00DF53D6 /* DietPlanFoodsChangeListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6ED3062F63B2E000DF53D6 /* DietPlanFoodsChangeListVC.swift */; };
 		EC6ED3092F63BF4900DF53D6 /* DietPlanFoodsChangeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6ED3082F63BF4600DF53D6 /* DietPlanFoodsChangeCell.swift */; };
 		EC6ED30B2F63D9C700DF53D6 /* DietPlanFoodsDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6ED30A2F63D9BF00DF53D6 /* DietPlanFoodsDetailVC.swift */; };
+		F0A1D0022F63E10000AADD11 /* DietPlanFoodsAddAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1D0012F63E10000AADD11 /* DietPlanFoodsAddAlertVM.swift */; };
 		EC73D5D82F5975DF00E408EB /* ElaProAgreementAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */; };
 		EC747D8B2ED69A1600F8D3D2 /* AppearanceOptionsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */; };
 		EC7575E02F303E52005E2077 /* HabitRuleTableViewImgCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */; };
@@ -2311,6 +2312,7 @@
 		EC6ED3062F63B2E000DF53D6 /* DietPlanFoodsChangeListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanFoodsChangeListVC.swift; sourceTree = "<group>"; };
 		EC6ED3082F63BF4600DF53D6 /* DietPlanFoodsChangeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanFoodsChangeCell.swift; sourceTree = "<group>"; };
 		EC6ED30A2F63D9BF00DF53D6 /* DietPlanFoodsDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanFoodsDetailVC.swift; sourceTree = "<group>"; };
+		F0A1D0012F63E10000AADD11 /* DietPlanFoodsAddAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanFoodsAddAlertVM.swift; sourceTree = "<group>"; };
 		EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProAgreementAlertVM.swift; sourceTree = "<group>"; };
 		EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceOptionsAlertVM.swift; sourceTree = "<group>"; };
 		EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewImgCell.swift; sourceTree = "<group>"; };
@@ -4781,6 +4783,7 @@
 				ECB0F0102F629D5500056D6A /* DietPlanBuyListVC.swift */,
 				EC6ED3062F63B2E000DF53D6 /* DietPlanFoodsChangeListVC.swift */,
 				EC6ED30A2F63D9BF00DF53D6 /* DietPlanFoodsDetailVC.swift */,
+				F0A1D0012F63E10000AADD11 /* DietPlanFoodsAddAlertVM.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -6188,6 +6191,7 @@
 				ECD0FF3A2BABE04B001232C9 /* MineVC.swift in Sources */,
 				A79541ED2E025BED00E019C8 /* GoalCircleTagsItemVM.swift in Sources */,
 				EC6ED30B2F63D9C700DF53D6 /* DietPlanFoodsDetailVC.swift in Sources */,
+				F0A1D0022F63E10000AADD11 /* DietPlanFoodsAddAlertVM.swift in Sources */,
 				EC4DE2EB2BCF75220090A7BD /* DataAddFilterVM.swift in Sources */,
 				EC3A9CAE2BB5352000C6E442 /* QuestionnaireGoalVM.swift in Sources */,
 				A775EBA32CB6299700A890D8 /* BodyDataShowImageVC.swift in Sources */,

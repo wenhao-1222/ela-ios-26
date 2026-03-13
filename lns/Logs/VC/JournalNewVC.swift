@@ -79,6 +79,7 @@ class JournalNewVC: WHBaseViewVC {
         NotificationCenter.default.addObserver(self, selector: #selector(cancelEditNotifi), name: NSNotification.Name(rawValue: "cancelEditStatus"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showBottomFuncVm), name: NSNotification.Name(rawValue: "editFoodsHasSelect"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hiddenBottomFuncVm), name: NSNotification.Name(rawValue: "editFoodsHasSelectNone"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleDietPlanFoodsAddToLogs(notify:)), name: NSNotification.Name(rawValue: "dietPlanFoodsAddToLogs"), object: nil)
         
         let is_guide = UserDefaults.standard.value(forKey: guide_logs_plan) as? String ?? ""
         if is_guide.count > 0 || Date().judgeMin(firstTime: UserInfoModel.shared.registDate, secondTime: "2024-07-02",formatter: "yyyy-MM-dd"){
@@ -347,6 +348,23 @@ extension JournalNewVC{
             self.selecteIndex = self.todayIndex
             self.collectView.reloadData()
             self.collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
+        }
+    }
+    @objc func handleDietPlanFoodsAddToLogs(notify: Notification) {
+        let sdate = notify.userInfo?["sdate"] as? String ?? ""
+        guard sdate.count > 0 else { return }
+        
+        self.queryDay = sdate
+        self.isEdit = false
+        self.refreshNaviDayText()
+        self.getQueryDayIndex()
+        self.collectView.reloadData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            let indexPath = IndexPath(row: self.selecteIndex, section: 0)
+            let cell = self.collectView.cellForItem(at: indexPath) as? JounalCollectionViewCell
+            cell?.setQueryDate(date: sdate, isEdit: false)
+            cell?.reloadTableView()
         }
     }
     @objc func addFoodsNotifi(notify:Notification) {
