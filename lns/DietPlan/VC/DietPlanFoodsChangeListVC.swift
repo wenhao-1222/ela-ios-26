@@ -263,6 +263,8 @@ extension DietPlanFoodsChangeListVC: UICollectionViewDataSource, UICollectionVie
         
         let vc = DietPlanFoodsDetailVC()
         vc.mealId = item?.mealId ?? ""
+        vc.replacePlanItemId = id
+        vc.replaceSuccessBlock = replaceSuccessBlock
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
