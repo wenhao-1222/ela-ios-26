@@ -11,7 +11,7 @@ import SnapKit
 private let planMainMealCellReuseId = "PlanMainMealCardCell"
 private let planMainHeaderReuseId = "PlanMainDayHeaderView"
 
-private struct PlanMainMealItem {
+struct PlanMainMealItem {
     let mealId: String
     let id : String
     let mealImage: String
@@ -35,6 +35,7 @@ private struct PlanMainMealDaySection {
 
 class PlanMainPlanListVM: UIView {
     var mealChangeTapBlock: ((String,String) -> Void)?
+    var mealTapBlock:((PlanMainMealItem,String)->())?
     
     private let sectionInset = UIEdgeInsets(top: 0, left: kFitWidth(16), bottom: kFitWidth(24), right: kFitWidth(16))
     private let itemSpacing = kFitWidth(12)
@@ -354,6 +355,12 @@ extension PlanMainPlanListVM: UICollectionViewDataSource, UICollectionViewDelega
             self?.mealChangeTapBlock?(meal.mealId,meal.id)
         }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let daySection = mealDaySections[indexPath.section]
+        let meal = daySection.meals[indexPath.item]
+        self.mealTapBlock?(meal,daySection.sdate)
     }
     
     func collectionView(_ collectionView: UICollectionView,

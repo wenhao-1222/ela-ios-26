@@ -258,6 +258,14 @@ extension DietPlanFoodsChangeListVC: UICollectionViewDataSource, UICollectionVie
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let item = indexPath.item < mealItems.count ? mealItems[indexPath.item] : nil
+        
+        let vc = DietPlanFoodsDetailVC()
+        vc.mealId = item?.mealId ?? ""
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {

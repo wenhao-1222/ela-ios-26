@@ -38,6 +38,12 @@ class DietPlanVC: WHBaseViewVC {
         vm.mealChangeTapBlock = { [weak self] mealId,id in
             self?.openMealChangeList(mealId: mealId,id: id)
         }
+        vm.mealTapBlock = {(meal,sdate) in
+            let vc = DietPlanFoodsDetailVC()
+            vc.mealId = meal.mealId
+            vc.sdate = sdate
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
         return vm
     }()
 }

@@ -106,7 +106,7 @@ class DietPlanFoodsChangeCell: UICollectionViewCell {
         }
         
         prepareTextContentFadeInIfNeeded()
-        nameLabel.text = item.mealName + "sdfj"
+        nameLabel.text = item.mealName
         chooseButton.setTitle("选择", for: .normal)
         [nameLabel, chooseButton].forEach { $0.hideSkeletonWithCrossfade() }
         
