@@ -8,6 +8,7 @@
 import SnapKit
 
 class PlanMainMealCardCell: UICollectionViewCell {
+    var changeButtonTapBlock: (() -> Void)?
     private var imageHeightConstraint: Constraint?
     private var imageLoadToken = ""
     private var skeletonStartTime: TimeInterval = 0
@@ -94,6 +95,7 @@ class PlanMainMealCardCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        changeButtonTapBlock = nil
         imageLoadToken = ""
         mealImgView.image = nil
         mealImgView.removeSkeletonImmediately()
@@ -156,6 +158,7 @@ extension PlanMainMealCardCell {
         cardView.addSubview(macroLabel)
         cardView.addSubview(kcalLabel)
         cardView.addSubview(changeButton)
+        changeButton.addTarget(self, action: #selector(changeButtonTapAction), for: .touchUpInside)
         
         cardView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -192,5 +195,9 @@ extension PlanMainMealCardCell {
             make.bottom.equalTo(kFitWidth(-12))
             make.width.height.equalTo(kFitWidth(20))
         }
+    }
+    
+    @objc func changeButtonTapAction() {
+        changeButtonTapBlock?()
     }
 }

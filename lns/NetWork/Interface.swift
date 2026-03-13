@@ -208,9 +208,8 @@ public let URL_diet_plan_shopping_list  = URL_Type + "plans/pro/meal_plan/my_sho
 public let URL_diet_plan_shopping_list_check  = URL_Type + "plans/pro/meal_plan/check_shopping_item"
 ///食谱--可替换食谱列表
 public let URL_diet_plan_foods_change_list  = URL_Type + "plans/pro/meal_plan/select_candidate"
-
-
-
+///食谱--替换某个食谱
+public let URL_diet_plan_foods_replace  = URL_Type + "plans/pro/meal_plan/replace_meal"
 
 //MARK: 运动记录
 public let URL_sport_catogary_list          = URL_Type + "users/sport/list"

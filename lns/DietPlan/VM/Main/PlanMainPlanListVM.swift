@@ -13,6 +13,7 @@ private let planMainHeaderReuseId = "PlanMainDayHeaderView"
 
 private struct PlanMainMealItem {
     let mealId: String
+    let id : String
     let mealImage: String
     let mealName: String
     let mealType: Int
@@ -33,6 +34,7 @@ private struct PlanMainMealDaySection {
 }
 
 class PlanMainPlanListVM: UIView {
+    var mealChangeTapBlock: ((String,String) -> Void)?
     
     private let sectionInset = UIEdgeInsets(top: 0, left: kFitWidth(16), bottom: kFitWidth(24), right: kFitWidth(16))
     private let itemSpacing = kFitWidth(12)
@@ -241,6 +243,7 @@ private extension PlanMainPlanListVM {
                 let mealDict = mealObj as? NSDictionary ?? [:]
                 let item = PlanMainMealItem(
                     mealId: mealDict.stringValueForKey(key: "mealId"),
+                    id: mealDict.stringValueForKey(key: "id"),
                     mealImage: mealDict.stringValueForKey(key: "mealImage"),
                     mealName: mealDict.stringValueForKey(key: "mealName"),
                     mealType: Int(mealDict.doubleValueForKey(key: "mealType")),
@@ -324,6 +327,9 @@ extension PlanMainPlanListVM: UICollectionViewDataSource, UICollectionViewDelega
                       macroText: macroText(for: meal),
                       kcalText: "\(WHUtils.convertStringToStringNoDigit("\(meal.calories)") ?? "0") kcal",
                       isLarge: isLarge)
+        cell.changeButtonTapBlock = { [weak self] in
+            self?.mealChangeTapBlock?(meal.mealId,meal.id)
+        }
         return cell
     }
     
