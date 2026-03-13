@@ -887,6 +887,8 @@
 		EC6D03852C6F483E00F33137 /* WidgetMsgModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D03842C6F483E00F33137 /* WidgetMsgModel.swift */; };
 		EC6D20ED2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6D20EC2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift */; };
 		EC6E7D092C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6E7D082C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift */; };
+		EC6ED3052F63ABA900DF53D6 /* DietPlanFakeProgressLoadingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6ED3042F63ABA700DF53D6 /* DietPlanFakeProgressLoadingVM.swift */; };
+		EC6ED3072F63B2EA00DF53D6 /* DietPlanFoodsChangeListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6ED3062F63B2E000DF53D6 /* DietPlanFoodsChangeListVC.swift */; };
 		EC73D5D82F5975DF00E408EB /* ElaProAgreementAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */; };
 		EC747D8B2ED69A1600F8D3D2 /* AppearanceOptionsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */; };
 		EC7575E02F303E52005E2077 /* HabitRuleTableViewImgCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */; };
@@ -2303,6 +2305,8 @@
 		EC6D03842C6F483E00F33137 /* WidgetMsgModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetMsgModel.swift; sourceTree = "<group>"; };
 		EC6D20EC2C3BD23D009E6B22 /* GuideFoodsListAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideFoodsListAlertVM.swift; sourceTree = "<group>"; };
 		EC6E7D082C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewQuestionnaireNoSexVC.swift; sourceTree = "<group>"; };
+		EC6ED3042F63ABA700DF53D6 /* DietPlanFakeProgressLoadingVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanFakeProgressLoadingVM.swift; sourceTree = "<group>"; };
+		EC6ED3062F63B2E000DF53D6 /* DietPlanFoodsChangeListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanFoodsChangeListVC.swift; sourceTree = "<group>"; };
 		EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProAgreementAlertVM.swift; sourceTree = "<group>"; };
 		EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceOptionsAlertVM.swift; sourceTree = "<group>"; };
 		EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewImgCell.swift; sourceTree = "<group>"; };
@@ -4771,6 +4775,7 @@
 				ECA059492F4D966E00E257E8 /* DietPlanCreateVC.swift */,
 				ECB0F00C2F628FD900056D6A /* DietPlanBuyListDateVC.swift */,
 				ECB0F0102F629D5500056D6A /* DietPlanBuyListVC.swift */,
+				EC6ED3062F63B2E000DF53D6 /* DietPlanFoodsChangeListVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -4825,6 +4830,7 @@
 			children = (
 				ECA306A92F5AC4EC0087B95C /* PlanMainEmptyVM.swift */,
 				EC8D62332F613670009B38B2 /* PlanMainNonePlanVM.swift */,
+				EC6ED3042F63ABA700DF53D6 /* DietPlanFakeProgressLoadingVM.swift */,
 				ECB0F0082F62563700056D6A /* PlanMainPlanListVM.swift */,
 				EC8D62392F6166FA009B38B2 /* DateChoiceAlertVM.swift */,
 				ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */,
@@ -6355,6 +6361,7 @@
 				ECADF2B02BB43363004B2C4B /* WelcomeProtocalVM.swift in Sources */,
 				ECFACE8F2BC7F0B2003CDA3A /* PlanDetailVC.swift in Sources */,
 				A7A801242D57098700520A83 /* UIVisualEffectView+Exs.swift in Sources */,
+				EC6ED3072F63B2EA00DF53D6 /* DietPlanFoodsChangeListVC.swift in Sources */,
 				A7C72B622E125988001EA74D /* FriendListVM.swift in Sources */,
 				ECC977B82C19C1A500F7FAA6 /* ServiceContactVC.swift in Sources */,
 				ECB80C5A2F14C02000F429DB /* FireworkParticlesBurst.swift in Sources */,
@@ -7119,6 +7126,7 @@
 				A74426A22CDB5A7F000D7E2B /* Tokeniser.swift in Sources */,
 				A74426A32CDB5A7F000D7E2B /* UnfairLock.swift in Sources */,
 				ECD0FF0A2BABD25B001232C9 /* GTMBase64.m in Sources */,
+				EC6ED3052F63ABA900DF53D6 /* DietPlanFakeProgressLoadingVM.swift in Sources */,
 				A795CA8F2CE470B00090D89C /* ForumCommentReplyModel.swift in Sources */,
 				ECFAB0CD2BD8DC54003AA249 /* JournalTableViewCell.swift in Sources */,
 				A7F34D942DAF838D00DA1A63 /* CourseLastMsgVM.swift in Sources */,

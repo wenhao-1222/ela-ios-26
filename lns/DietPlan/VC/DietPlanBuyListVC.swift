@@ -209,7 +209,6 @@ extension DietPlanBuyListVC: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
-
 extension DietPlanBuyListVC{
     func createBuyListRequest() {
         let param = ["sdates":self.selectedDates]
@@ -228,6 +227,16 @@ extension DietPlanBuyListVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendBuyListRequest:\(dataObj)")
+            
+            let startDate = dataObj.stringValueForKey(key: "startDate")
+            let endDate = dataObj.stringValueForKey(key: "endDate")
+            if startDate.count > 0 && endDate.count > 0{
+                self.timeLabel.text = "\(startDate) 至 \(endDate)"
+            }else if startDate.count > 0{
+                self.timeLabel.text = "\(startDate)"
+            }else if endDate.count > 0{
+                self.timeLabel.text = "\(endDate)"
+            }
             
             self.foodsArray = NSMutableArray(array: dataObj["shoppingList"]as? NSArray ?? [])
             self.tableView.reloadData()

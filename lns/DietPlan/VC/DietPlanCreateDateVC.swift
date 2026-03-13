@@ -7,6 +7,8 @@
 
 import UIKit
 import MCToast
+import SnapKit
+import CoreImage
 
 class DietPlanCreateDateVC: WHBaseViewVC {
     
@@ -25,6 +27,19 @@ class DietPlanCreateDateVC: WHBaseViewVC {
     var currentSelectType: SelectDateType = .start
     private var startDate: Date?
     private var endDate: Date?
+    private var isSubmittingCreatePlan = false
+    // 可调：假进度节奏配置，其他页面可直接复用同一个 VM + 配置
+    private var createPlanLoadingConfig = DietPlanFakeProgressLoadingVM.Config(
+        fakeDuration: 3.0,
+        maxProgressBeforeSuccess: 0.92,
+        statusText: "创建食谱中..."
+    )
+    
+    private lazy var createPlanLoadingVm: DietPlanFakeProgressLoadingVM = {
+        let vm = DietPlanFakeProgressLoadingVM(frame: .zero)
+        vm.updateConfig(createPlanLoadingConfig)
+        return vm
+    }()
     
     private lazy var calendar: Calendar = {
         var cal = Calendar(identifier: .gregorian)
@@ -164,6 +179,14 @@ class DietPlanCreateDateVC: WHBaseViewVC {
         updateDateButtons()
         updateNextButtonState()
     }
+    override func viewDidAppear(_ animated: Bool) {
+        self.navigationController?.fd_interactivePopDisabled = true
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        self.navigationController?.fd_interactivePopDisabled = false
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+    }
 }
 
 extension DietPlanCreateDateVC {
@@ -267,6 +290,10 @@ extension DietPlanCreateDateVC {
     }
     
     func updateNextButtonState() {
+        guard !isSubmittingCreatePlan else {
+            nextButton.isEnabled = false
+            return
+        }
         guard let start = startDate, let end = endDate else {
             nextButton.isEnabled = false
             return
@@ -380,14 +407,52 @@ extension DietPlanCreateDateVC {
 
 extension DietPlanCreateDateVC{
     func sendCreatePlanRequest(startDate: String, endDate: String) {
+        guard !isSubmittingCreatePlan else { return }
+        isSubmittingCreatePlan = true
+        updateNextButtonState()
+        
+        createPlanLoadingVm.updateConfig(createPlanLoadingConfig)
+        createPlanLoadingVm.start(on: view)
+        
+        self.enableInteractivePopGesture()
+        
         let param = [
             "startDate": startDate,
             "endDate": endDate
         ]
-        WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_create, parameters: param as [String : AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_create, parameters: param as [String : AnyObject]) { [weak self] responseObject in
+            guard let self = self else { return }
+            let code = responseObject["code"] as? Int ?? -1
+            guard code == 200 else {
+                let msg = responseObject["message"] as? String ?? "创建失败，请稍后重试"
+                self.createPlanLoadingVm.completeFailure { [weak self] in
+                    guard let self = self else { return }
+                    self.isSubmittingCreatePlan = false
+                    self.updateNextButtonState()
+                    MCToast.mc_text(msg)
+                }
+                return
+            }
+            
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendDietPlanMsgRequest:\(dataObj)")
+            
+            self.createPlanLoadingVm.completeSuccess { [weak self] in
+                guard let self = self else { return }
+                self.isSubmittingCreatePlan = false
+                self.updateNextButtonState()
+            }
+        } failure: { [weak self] isError in
+            guard let self = self else { return }
+            self.createPlanLoadingVm.completeFailure { [weak self] in
+                guard let self = self else { return }
+                self.isSubmittingCreatePlan = false
+                self.updateNextButtonState()
+                if isError {
+                    MCToast.mc_text("创建失败，请稍后重试")
+                }
+            }
         }
     }
 }
