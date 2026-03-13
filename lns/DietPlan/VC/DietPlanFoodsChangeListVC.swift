@@ -24,6 +24,7 @@ class DietPlanFoodsChangeListVC: WHBaseViewVC {
     var id = ""
     var templateMealId = ""
     var choiceDate = ""//选择的日期
+    var replaceSuccessBlock: ((NSDictionary) -> Void)?
     
     private var isLoading = true
     private var mealItems: [DietPlanFoodsChangeItem] = []
@@ -278,21 +279,18 @@ extension DietPlanFoodsChangeListVC {
             
             let items = self.parseMealItems(from: dataObj)
             self.endLoadingState(items: items)
-        } failure: { [weak self] isError in
-            guard let self = self else { return }
-            self.endLoadingState(items: [])
-            if isError {
-                MCToast.mc_text("获取替换食谱失败，请稍后重试")
-            }
         }
     }
     
     func sendReplaceFoodsRequest(mealId:String) {
         let param = ["userMealPlanItemId": id,
                      "mealId":mealId]
-        WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_foods_replace, parameters: param as [String : AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_foods_replace, parameters: param as [String : AnyObject]) { [weak self] responseObject in
+            guard let self = self else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendReplaceFoodsRequest:\(dataString)")
+            self.replaceSuccessBlock?(dataObj)
             self.backTapAction()
         }
     }

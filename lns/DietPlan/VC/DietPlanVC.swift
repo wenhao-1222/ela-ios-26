@@ -75,6 +75,9 @@ extension DietPlanVC{
         let vc = DietPlanFoodsChangeListVC()
         vc.templateMealId = mealId
         vc.id = id
+        vc.replaceSuccessBlock = { [weak self] dataObj in
+            self?.applyDietPlanResponse(dataObj, preservingListOffset: true)
+        }
         navigationController?.pushViewController(vc, animated: true)
     }
 }
@@ -92,26 +95,39 @@ extension DietPlanVC{
         listVm.removeFromSuperview()
     }
     
+    func applyDietPlanResponse(_ dataObj: NSDictionary, preservingListOffset: Bool = false) {
+        let mealPlanItemList = dataObj["mealPlanItemList"] as? NSArray ?? []
+        let status = dataObj.stringValueForKey(key: "status")
+        
+        if status == "1" {//无问卷
+            if emptyVm.superview == nil {
+                removeStateViews()
+                view.addSubview(emptyVm)
+            }
+            return
+        }
+        
+        if status == "2" {//做过问卷，未生成计划
+            if nonePlanVm.superview == nil {
+                removeStateViews()
+                view.addSubview(nonePlanVm)
+            }
+            return
+        }
+        
+        if listVm.superview == nil {
+            removeStateViews()
+            view.addSubview(listVm)
+        }
+        listVm.updatePlanList(mealPlanItemList: mealPlanItemList, preservingScrollOffset: preservingListOffset)
+    }
+    
     func sendDietPlanMsgRequest() {
         WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_msg, parameters: nil) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendDietPlanMsgRequest:\(dataObj)")
-            
-            self.removeStateViews()
-            let mealPlanItemList = dataObj["mealPlanItemList"] as? NSArray ?? []
-            let status = dataObj.stringValueForKey(key: "status")
-            if status == "1"{//无问卷
-                self.view.addSubview(self.emptyVm)
-            }else if status == "2"{//做过问卷，未生成计划
-                self.view.addSubview(self.nonePlanVm)
-            }else if status == "4"{//有问卷，且在有效期内
-                self.listVm.updatePlanList(mealPlanItemList: mealPlanItemList)
-                self.view.addSubview(self.listVm)
-            }else{//有问卷，但是计划过期   默认此选项
-                self.listVm.updatePlanList(mealPlanItemList: mealPlanItemList)
-                self.view.addSubview(self.listVm)
-            }
+            self.applyDietPlanResponse(dataObj)
         }
     }
 }

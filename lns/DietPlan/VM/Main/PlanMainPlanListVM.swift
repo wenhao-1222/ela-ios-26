@@ -160,9 +160,20 @@ class PlanMainPlanListVM: UIView {
 }
 
 extension PlanMainPlanListVM {
-    func updatePlanList(mealPlanItemList: NSArray) {
+    func updatePlanList(mealPlanItemList: NSArray, preservingScrollOffset: Bool = false) {
+        let currentOffset = collectionView.contentOffset
         mealDaySections = parseSections(mealPlanItemList)
         updateBuyListButtonState()
+        
+        if preservingScrollOffset {
+            UIView.performWithoutAnimation {
+                collectionView.reloadData()
+                collectionView.layoutIfNeeded()
+            }
+            restoreCollectionViewOffset(currentOffset)
+            return
+        }
+        
         collectionView.reloadData()
     }
     
@@ -222,6 +233,18 @@ extension PlanMainPlanListVM{
 }
 
 private extension PlanMainPlanListVM {
+    func restoreCollectionViewOffset(_ targetOffset: CGPoint) {
+        let adjustedInset = collectionView.adjustedContentInset
+        let minX = -adjustedInset.left
+        let maxX = max(minX, collectionView.contentSize.width + adjustedInset.right - collectionView.bounds.width)
+        let minY = -adjustedInset.top
+        let maxY = max(minY, collectionView.contentSize.height + adjustedInset.bottom - collectionView.bounds.height)
+        
+        let clampedOffset = CGPoint(x: min(max(targetOffset.x, minX), maxX),
+                                    y: min(max(targetOffset.y, minY), maxY))
+        collectionView.setContentOffset(clampedOffset, animated: false)
+    }
+    
     func parsedBuyListDate(from sdate: String) -> Date? {
         guard let date = buyListDateFormatter.date(from: sdate) else { return nil }
         return buyListCalendar.startOfDay(for: date)
