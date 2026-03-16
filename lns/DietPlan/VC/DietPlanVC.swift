@@ -33,7 +33,7 @@ class DietPlanVC: WHBaseViewVC {
     }()
     lazy var listVm: PlanMainPlanListVM = {
         let vm = PlanMainPlanListVM.init(frame: .zero)
-        vm.createPlanButton.addTarget(self, action: #selector(createPlanAction), for: .touchUpInside)
+        vm.createPlanButton.addTarget(self, action: #selector(createSecondPlanAction), for: .touchUpInside)
         vm.buyListButton.addTarget(self, action: #selector(openBuyListSelectionAction), for: .touchUpInside)
         vm.sauceButton.addTarget(self, action: #selector(condimentAction), for: .touchUpInside)
         vm.mealChangeTapBlock = { [weak self] mealId,id in
@@ -58,9 +58,16 @@ extension DietPlanVC{
         let vc = DietPlanCreateVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
-    //创建计划，选择时间
+    //第一次创建计划，只选择时间
     @objc func createPlanAction() {
         let vc = DietPlanCreateDateVC()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    //非第一次创建计划，需要走问卷
+    @objc func createSecondPlanAction() {
+        self.navigationController?.fd_interactivePopDisabled = true
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+        let vc = DietPlanCreateSecondVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     //购物清单

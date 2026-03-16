@@ -196,6 +196,8 @@ public let URL_report_weekly_ranking             = URL_Type + "plans/log/weekly_
 //MARK: 新问卷 pro
 ///问卷--内容提交
 public let URL_diet_upsert          = URL_Type + "users/diet/profile/upsert"
+///问卷--获取用户提交的问卷信息
+public let URL_diet_get             = URL_Type + "users/diet/profile/get"
 ///问卷--自动获取食谱计划
 public let URL_diet_plan_create          = URL_Type + "plans/pro/meal_plan/create"
 ///问卷--获取食谱信息

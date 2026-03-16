@@ -21,7 +21,7 @@ class DateChoiceAlertVM: UIView {
     var confirmBlock: ((String) -> Void)?
     
     /// 顶部标题
-    var pickerTitle: String = "First day" {
+    var pickerTitle: String = "开始日期" {
         didSet {
             titleLabel.text = pickerTitle
         }
@@ -79,7 +79,7 @@ class DateChoiceAlertVM: UIView {
     
     lazy var saveButton: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setTitle("Save", for: .normal)
+        btn.setTitle("确认", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_GRAY, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)

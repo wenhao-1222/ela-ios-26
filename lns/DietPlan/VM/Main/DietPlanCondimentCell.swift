@@ -10,7 +10,7 @@ class DietPlanCondimentCell: UICollectionViewCell {
 
     private let imageSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_GRAY_E8,
                                                      highlightColorLight: .COLOR_GRAY_D6D6D6,
-                                                     cornerRadius: kFitWidth(12),
+                                                     cornerRadius: kFitWidth(0),
                                                      shimmerWidth: 0.22,
                                                      shimmerDuration: 1.0,
                                                      skeletonFadeInDuration: 0.0,

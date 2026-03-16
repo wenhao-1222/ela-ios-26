@@ -1,44 +1,29 @@
 //
-//  DietPlanCreateDateVC.swift
+//  DietPlanCreateDateVM.swift
 //  lns
 //
-//  Created by LNS2 on 2026/3/11.
+//  Created by LNS2 on 2026/3/16.
 //
 
-import UIKit
 import MCToast
-import SnapKit
-import CoreImage
 
-enum SelectDateType {
-    case start
-    case end
-}
-
-enum DateRangeConfig {
-    // 可配置：开始日期可选“今天往后几天”（两周）
-    static let startSelectableDaysAhead = 14
-    // 可配置：结束日期可选“开始日期往后几天”
-    static let endSelectableDaysAfterStart = 14
-}
-class DietPlanCreateDateVC: WHBaseViewVC {
+class DietPlanCreateDateVM: UIView {
     
     var currentSelectType: SelectDateType = .start
+    var nextButtonEnableChangeBlock: ((Bool) -> Void)?
     private var startDate: Date?
     private var endDate: Date?
-    private var isSubmittingCreatePlan = false
-    // 可调：假进度节奏配置，其他页面可直接复用同一个 VM + 配置
-    private var createPlanLoadingConfig = DietPlanFakeProgressLoadingVM.Config(
-        fakeDuration: 3.0,
-        maxProgressBeforeSuccess: 0.92,
-        statusText: "创建食谱中..."
-    )
     
-    private lazy var createPlanLoadingVm: DietPlanFakeProgressLoadingVM = {
-        let vm = DietPlanFakeProgressLoadingVM(frame: .zero)
-        vm.updateConfig(createPlanLoadingConfig)
-        return vm
-    }()
+    override init(frame:CGRect){
+        super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        self.backgroundColor = .clear
+        self.isUserInteractionEnabled = true
+        
+        initUI()
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private lazy var calendar: Calendar = {
         var cal = Calendar(identifier: .gregorian)
@@ -61,20 +46,6 @@ class DietPlanCreateDateVC: WHBaseViewVC {
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
     }()
-    
-    private lazy var backButton: UIButton = {
-        let btn = UIButton(type: .custom)
-        btn.setImage(UIImage(named: "habit_guide_back_icon"), for: .normal)
-        btn.backgroundColor = .COLOR_CARD_BG_WHITE//.withAlphaComponent(0.35)
-        btn.layer.cornerRadius = kFitWidth(20)
-        btn.layer.borderColor = UIColor.COLOR_BG_BLACK_06.cgColor
-        btn.layer.borderWidth = 1
-        btn.clipsToBounds = true
-        btn.enablePressEffect()
-        btn.addTarget(self, action: #selector(backAction), for: .touchUpInside)
-        return btn
-    }()
-    
     private lazy var titleLabel: UILabel = {
         let lab = UILabel()
         lab.text = "选择日期"
@@ -127,31 +98,6 @@ class DietPlanCreateDateVC: WHBaseViewVC {
         btn.addTarget(self, action: #selector(endDateTapAction), for: .touchUpInside)
         return btn
     }()
-    
-    private lazy var nextButton: UIButton = {
-        let btn = UIButton(type: .custom)
-        btn.setTitle("下一步", for: .normal)
-        btn.setTitleColor(.white, for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
-        btn.backgroundColor = .COLOR_BUTTON_DISABLE_BG_THEME
-        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .disabled)
-        btn.layer.cornerRadius = kFitWidth(22)
-        btn.clipsToBounds = true
-        btn.isEnabled = false
-        btn.enablePressEffect()
-        btn.addTarget(self, action: #selector(nextButtonTapAction), for: .touchUpInside)
-        return btn
-    }()
-//    
-//    private lazy var datePickerAlertVm: DataAddDateAlertVM = {
-//        let vm = DataAddDateAlertVM(frame: .zero)
-//        vm.isHidden = true
-//        vm.confirmBlock = { [weak self] _ in
-//            self?.applySelectedDate(vm.datePicker.date)
-//        }
-//        return vm
-//    }()
     private lazy var datePickerAlertVm: DateChoiceAlertVM = {
         let vm = DateChoiceAlertVM(frame: .zero)
         vm.isHidden = true
@@ -170,29 +116,9 @@ class DietPlanCreateDateVC: WHBaseViewVC {
         }
         return vm
     }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .COLOR_BG_F2
-        initUI()
-        updateDateButtons()
-        updateNextButtonState()
-    }
-    override func viewDidAppear(_ animated: Bool) {
-        self.navigationController?.fd_interactivePopDisabled = true
-        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-    }
-    override func viewDidDisappear(_ animated: Bool) {
-        self.navigationController?.fd_interactivePopDisabled = false
-        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
-    }
 }
 
-extension DietPlanCreateDateVC {
-    @objc func backAction() {
-        backTapAction()
-    }
-    
+extension DietPlanCreateDateVM {
     @objc func startDateTapAction() {
         showDatePickerAlert(type: .start)
         
@@ -216,9 +142,9 @@ extension DietPlanCreateDateVC {
             MCToast.mc_text("结束日期不能超过开始日期后\(DateRangeConfig.endSelectableDaysAfterStart)天")
             return
         }
-        let startDateStr = requestDateFormatter.string(from: start)
-        let endDateStr = requestDateFormatter.string(from: end)
-        sendCreatePlanRequest(startDate: startDateStr, endDate: endDateStr)
+//        let startDateStr = requestDateFormatter.string(from: start)
+//        let endDateStr = requestDateFormatter.string(from: end)
+//        sendCreatePlanRequest(startDate: startDateStr, endDate: endDateStr)
     }
     
     func showDatePickerAlert(type: SelectDateType) {
@@ -289,15 +215,14 @@ extension DietPlanCreateDateVC {
     }
     
     func updateNextButtonState() {
-        guard !isSubmittingCreatePlan else {
-            nextButton.isEnabled = false
-            return
-        }
+        nextButtonEnableChangeBlock?(isCurrentDateRangeValid())
+    }
+
+    func isCurrentDateRangeValid() -> Bool {
         guard let start = startDate, let end = endDate else {
-            nextButton.isEnabled = false
-            return
+            return false
         }
-        nextButton.isEnabled = isStartDateInRange(start)
+        return isStartDateInRange(start)
             && end >= start
             && end <= endSelectableMaxDate(for: start)
     }
@@ -347,26 +272,20 @@ extension DietPlanCreateDateVC {
     }
 }
 
-extension DietPlanCreateDateVC {
+extension DietPlanCreateDateVM {
     func initUI() {
-        view.addSubview(backButton)
-        view.addSubview(titleLabel)
-        view.addSubview(startTitleLabel)
-        view.addSubview(startDateButton)
-        view.addSubview(endTitleLabel)
-        view.addSubview(endDateButton)
-        view.addSubview(nextButton)
-        view.addSubview(datePickerAlertVm)
+        addSubview(titleLabel)
+        addSubview(startTitleLabel)
+        addSubview(startDateButton)
+        addSubview(endTitleLabel)
+        addSubview(endDateButton)
         
-        backButton.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(12.5))
-            make.top.equalTo(statusBarHeight + kFitWidth(5))
-            make.width.height.equalTo(kFitWidth(40))
-        }
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.getKeyWindow().addSubview(self.datePickerAlertVm)
         
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(getNavigationBarHeight() + kFitWidth(94))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(94))
         }
         
         startTitleLabel.snp.makeConstraints { make in
@@ -391,67 +310,11 @@ extension DietPlanCreateDateVC {
             make.top.equalTo(endTitleLabel.snp.bottom).offset(kFitWidth(20))
         }
         
-        nextButton.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(16))
-            make.right.equalTo(kFitWidth(-16))
-            make.height.equalTo(kFitWidth(44))
-            make.bottom.equalTo(-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(16)))
-        }
-        
         datePickerAlertVm.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-    }
-}
 
-extension DietPlanCreateDateVC{
-    func sendCreatePlanRequest(startDate: String, endDate: String) {
-        guard !isSubmittingCreatePlan else { return }
-        isSubmittingCreatePlan = true
+        updateDateButtons()
         updateNextButtonState()
-        
-        createPlanLoadingVm.updateConfig(createPlanLoadingConfig)
-        createPlanLoadingVm.start(on: view)
-        
-        self.enableInteractivePopGesture()
-        
-        let param = [
-            "startDate": startDate,
-            "endDate": endDate
-        ]
-        WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_create, parameters: param as [String : AnyObject]) { [weak self] responseObject in
-            guard let self = self else { return }
-            let code = responseObject["code"] as? Int ?? -1
-            guard code == 200 else {
-                let msg = responseObject["message"] as? String ?? "创建失败，请稍后重试"
-                self.createPlanLoadingVm.completeFailure { [weak self] in
-                    guard let self = self else { return }
-                    self.isSubmittingCreatePlan = false
-                    self.updateNextButtonState()
-                    MCToast.mc_text(msg)
-                }
-                return
-            }
-            
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendDietPlanMsgRequest:\(dataObj)")
-            
-            self.createPlanLoadingVm.completeSuccess { [weak self] in
-                guard let self = self else { return }
-                self.isSubmittingCreatePlan = false
-                self.updateNextButtonState()
-            }
-        } failure: { [weak self] isError in
-            guard let self = self else { return }
-            self.createPlanLoadingVm.completeFailure { [weak self] in
-                guard let self = self else { return }
-                self.isSubmittingCreatePlan = false
-                self.updateNextButtonState()
-                if isError {
-                    MCToast.mc_text("创建失败，请稍后重试")
-                }
-            }
-        }
     }
 }
