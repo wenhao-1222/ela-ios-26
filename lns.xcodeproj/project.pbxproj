@@ -893,6 +893,7 @@
 		EC6ED30B2F63D9C700DF53D6 /* DietPlanFoodsDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6ED30A2F63D9BF00DF53D6 /* DietPlanFoodsDetailVC.swift */; };
 		EC6F55D82F67996E00EB18A5 /* DietPlanCreateSecondVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55D72F67995F00EB18A5 /* DietPlanCreateSecondVC.swift */; };
 		EC6F55DA2F67A29800EB18A5 /* DietPlanCondimentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55D92F67A29000EB18A5 /* DietPlanCondimentVC.swift */; };
+		EC6F55DC2F67A2AA00EB18A5 /* DietPlanCondimentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55DB2F67A2A200EB18A5 /* DietPlanCondimentCell.swift */; };
 		EC73D5D82F5975DF00E408EB /* ElaProAgreementAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */; };
 		EC747D8B2ED69A1600F8D3D2 /* AppearanceOptionsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */; };
 		EC7575E02F303E52005E2077 /* HabitRuleTableViewImgCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */; };
@@ -2491,6 +2492,7 @@
 		ECB0F00E2F6291A100056D6A /* DietPlanBuyListDateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanBuyListDateCell.swift; sourceTree = "<group>"; };
 		ECB0F0102F629D5500056D6A /* DietPlanBuyListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanBuyListVC.swift; sourceTree = "<group>"; };
 		ECB0F0122F62A3B700056D6A /* DietPlanBuyListFoodsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanBuyListFoodsCell.swift; sourceTree = "<group>"; };
+		EC6F55DB2F67A2A200EB18A5 /* DietPlanCondimentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCondimentCell.swift; sourceTree = "<group>"; };
 		ECB3E03C2BD2353700CFDDFD /* DataDetailShareLineChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailShareLineChartView.swift; sourceTree = "<group>"; };
 		ECB3E03E2BD2359700CFDDFD /* DataDetailShareLineView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataDetailShareLineView.h; sourceTree = "<group>"; };
 		ECB3E03F2BD2359700CFDDFD /* DataDetailShareLineView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DataDetailShareLineView.m; sourceTree = "<group>"; };
@@ -4849,6 +4851,7 @@
 				ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */,
 				ECB0F00E2F6291A100056D6A /* DietPlanBuyListDateCell.swift */,
 				ECB0F0122F62A3B700056D6A /* DietPlanBuyListFoodsCell.swift */,
+				EC6F55DB2F67A2A200EB18A5 /* DietPlanCondimentCell.swift */,
 				EC6ED3082F63BF4600DF53D6 /* DietPlanFoodsChangeCell.swift */,
 				F0A1D0012F63E10000AADD11 /* DietPlanFoodsAddAlertVM.swift */,
 			);
@@ -7173,6 +7176,7 @@
 				A741873B2D797B82006C8858 /* AITipsAlertVM.swift in Sources */,
 				EC5C81762C5A19FF000EC4BC /* GoalSetSpecPercentVM.swift in Sources */,
 				ECB0F0132F62A3BE00056D6A /* DietPlanBuyListFoodsCell.swift in Sources */,
+				EC6F55DC2F67A2AA00EB18A5 /* DietPlanCondimentCell.swift in Sources */,
 				ECB8483F2BF305F400B554B9 /* SettingTopVM.swift in Sources */,
 				EC7575E22F303E5A005E2077 /* HabitRuleTableViewImgTextCell.swift in Sources */,
 				A707D2C02CBBE7B7005BDC0E /* BodyDataSQLiteManagerOld.swift in Sources */,
