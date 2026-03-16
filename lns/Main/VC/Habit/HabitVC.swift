@@ -146,7 +146,7 @@ extension HabitVC{
             DLLog(message: "sendDataRequest dashboard:\(dataDict)")
             
             self.dataObj = dataDict
-            DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
                 self.progressVm.updateUI(dict: self.dataObj,isAnimate: true)
             })
         }

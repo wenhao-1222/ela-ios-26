@@ -619,6 +619,7 @@ private final class HabitProgressSkeletonRowView: UIView {
         pointTitleView.layer.cornerRadius = kFitWidth(8)
         pointValueView.layer.cornerRadius = kFitWidth(8)
         buttonView.layer.cornerRadius = kFitWidth(15)
+        buttonView.clipsToBounds = true
         
     }
 

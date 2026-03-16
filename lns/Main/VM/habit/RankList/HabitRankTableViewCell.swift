@@ -175,16 +175,20 @@ class HabitRankTableViewCell: UITableViewCell {
         name: String,
         fireCount: Int?,
         score: String,
-        needAvatarTransition: Bool = true,
+        needAvatarTransition: Bool = false,
         isCurrentUser: Bool = false
     ) {
+        let previousAvatarURL = currentAvatarURL
+        let shouldKeepCurrentAvatar = previousAvatarURL == avatar && avatarImageView.image != nil
         avatarRequestID = UUID()
         currentAvatarURL = avatar
 
         let rankInt = rank.intValue
         rankLabel.text = "\(rankInt)"
 
-        loadAvatar(urlString: avatar, needTransition: needAvatarTransition)
+        loadAvatar(urlString: avatar,
+                   needTransition: needAvatarTransition,
+                   keepCurrentImage: shouldKeepCurrentAvatar)
         
         nameLabel.text = name
         scoreLabel.text = "\(score)"
@@ -227,7 +231,9 @@ class HabitRankTableViewCell: UITableViewCell {
 }
 
 private extension HabitRankTableViewCell {
-    func loadAvatar(urlString: String, needTransition: Bool) {
+    func loadAvatar(urlString: String,
+                    needTransition: Bool,
+                    keepCurrentImage: Bool) {
         avatarImageView.kf.cancelDownloadTask()
 
         let requestID = avatarRequestID
@@ -242,13 +248,31 @@ private extension HabitRankTableViewCell {
             return
         }
 
-//        avatarImageView.image = placeholder
+        if keepCurrentImage {
+            return
+        }
+
+        if let memoryImage = ImageCache.default.retrieveImageInMemoryCache(forKey: urlString) {
+            avatarImageView.image = memoryImage
+            return
+        }
+
+        avatarImageView.image = nil
+
+        let applyCachedImage: (UIImage?) -> Bool = { [weak self] image in
+            guard let self = self,
+                  self.avatarRequestID == requestID,
+                  self.currentAvatarURL == urlString,
+                  let image = image else { return false }
+            self.avatarImageView.image = image
+            return true
+        }
 
         let setImage: (Source) -> Void = { [weak self] source in
             guard let self = self else { return }
             self.avatarImageView.kf.setImage(
                 with: source,
-                placeholder: placeholder,
+                placeholder: nil,
                 options: options
             ) { [weak self] result in
                 guard let self = self,
@@ -260,6 +284,32 @@ private extension HabitRankTableViewCell {
             }
         }
 
+        ImageCache.default.retrieveImage(forKey: urlString) { [weak self] result in
+            guard let self = self,
+                  self.avatarRequestID == requestID,
+                  self.currentAvatarURL == urlString else { return }
+            switch result {
+            case .success(let value):
+                if applyCachedImage(value.image) {
+                    return
+                }
+                self.loadAvatarFromNetwork(urlString: urlString,
+                                           placeholder: placeholder,
+                                           requestID: requestID,
+                                           setImage: setImage)
+            case .failure:
+                self.loadAvatarFromNetwork(urlString: urlString,
+                                           placeholder: placeholder,
+                                           requestID: requestID,
+                                           setImage: setImage)
+            }
+        }
+    }
+
+    func loadAvatarFromNetwork(urlString: String,
+                               placeholder: UIImage?,
+                               requestID: UUID,
+                               setImage: @escaping (Source) -> Void) {
         if urlString.contains("aliyuncs.com") {
             DSImageUploader().dealImgUrlSignForOss(urlStr: urlString) { [weak self] signedUrl in
                 guard let self = self,
