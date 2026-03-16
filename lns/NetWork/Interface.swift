@@ -212,6 +212,10 @@ public let URL_diet_plan_foods_change_list  = URL_Type + "plans/pro/meal_plan/se
 public let URL_diet_plan_foods_replace  = URL_Type + "plans/pro/meal_plan/replace_meal"
 ///食谱--详情
 public let URL_diet_plan_foods_detail  = URL_Type + "plans/pro/meal_plan/meal_details"
+///食谱--酱料列表
+public let URL_diet_plan_condiment      = URL_Type + "plans/pro/meal_plan/condiment"
+
+
 
 //MARK: 运动记录
 public let URL_sport_catogary_list          = URL_Type + "users/sport/list"

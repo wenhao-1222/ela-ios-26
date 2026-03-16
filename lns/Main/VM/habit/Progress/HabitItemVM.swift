@@ -11,6 +11,7 @@ class HabitItemVM: UIView {
     let selfHeight = kFitWidth(40)
     
     var tapBlock:(()->())?
+    var canTapMore = true
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
@@ -100,7 +101,7 @@ extension HabitItemVM{
         }
     }
     @objc func tapAction() {
-        showButton.isUserInteractionEnabled = false
+        showButton.isUserInteractionEnabled = canTapMore
         self.tapBlock?()
     }
 }

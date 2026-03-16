@@ -70,6 +70,7 @@ extension HabitStreakListVM{
                 }else{
                     vm.showButton.setTitle("领取", for: .normal)
                     vm.showButton.isEnabled = true
+                    vm.canTapMore = false
                     let pointAttr = NSMutableAttributedString(string: "+\(dict.stringValueForKey(key: "streakRewardPoint"))",
                                                               attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214])
                     pointAttr.append(tipsStr)

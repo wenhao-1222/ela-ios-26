@@ -146,7 +146,9 @@ extension HabitVC{
             DLLog(message: "sendDataRequest dashboard:\(dataDict)")
             
             self.dataObj = dataDict
-            self.progressVm.updateUI(dict: self.dataObj,isAnimate: true)
+            DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
+                self.progressVm.updateUI(dict: self.dataObj,isAnimate: true)
+            })
         }
     }
     func sendLastWeekRanklistRequest() {

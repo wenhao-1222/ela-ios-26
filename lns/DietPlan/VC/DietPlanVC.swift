@@ -35,6 +35,7 @@ class DietPlanVC: WHBaseViewVC {
         let vm = PlanMainPlanListVM.init(frame: .zero)
         vm.createPlanButton.addTarget(self, action: #selector(createPlanAction), for: .touchUpInside)
         vm.buyListButton.addTarget(self, action: #selector(openBuyListSelectionAction), for: .touchUpInside)
+        vm.sauceButton.addTarget(self, action: #selector(condimentAction), for: .touchUpInside)
         vm.mealChangeTapBlock = { [weak self] mealId,id in
             self?.openMealChangeList(mealId: mealId,id: id)
         }
@@ -62,7 +63,7 @@ extension DietPlanVC{
         let vc = DietPlanCreateDateVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
-    
+    //购物清单
     @objc func openBuyListSelectionAction() {
         let availableDates = listVm.buyListDateStringsFromToday()
         guard !availableDates.isEmpty else {
@@ -73,6 +74,11 @@ extension DietPlanVC{
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
+    //酱料
+    @objc func condimentAction() {
+        let vc = DietPlanCondimentVC()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
     func openMealChangeList(mealId: String,id:String) {
         guard !mealId.isEmpty else {
             MCToast.mc_text("餐食信息异常")

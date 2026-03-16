@@ -11,6 +11,7 @@ class HabitProgressVM: UIView {
     
     var controller = WHBaseViewVC()
     var refreshBlock:(()->())?
+    private var isInitialLoading = true
     var lastNumber = 0
     var isCounting = false
     var proteinIntakeOnTargetWithFriendFirstTimeRewardId = ""
@@ -54,6 +55,10 @@ class HabitProgressVM: UIView {
         vi.backgroundColor = .clear
         vi.isUserInteractionEnabled = false
         vi.clipsToBounds = true
+        return vi
+    }()
+    lazy var loadingSkeletonView: HabitProgressLoadingSkeletonView = {
+        let vi = HabitProgressLoadingSkeletonView()
         return vi
     }()
     lazy var topMsgVm: HabitTopMsgVM = {
@@ -170,6 +175,7 @@ extension HabitProgressVM{
                                "streakRewardPoint":"88",
                                "streakRewardId":"2342wfwe342"]]
         self.streakListVm.updateUI(listArray: arr as NSArray)
+        hideLoadingSkeletonIfNeeded()
     }
 }
 
@@ -191,6 +197,7 @@ extension HabitProgressVM{
 extension HabitProgressVM{
     func initUI() {
         addSubview(scrollView)
+        addSubview(loadingSkeletonView)
         addSubview(animOverlayView)
         scrollView.addSubview(topMsgVm)
         scrollView.addSubview(todayMsgVm)
@@ -201,9 +208,13 @@ extension HabitProgressVM{
         scrollView.snp.makeConstraints { make in
             make.left.top.width.height.equalToSuperview()
         }
+        loadingSkeletonView.snp.makeConstraints { make in
+            make.left.top.width.height.equalToSuperview()
+        }
         animOverlayView.snp.makeConstraints { make in
             make.left.top.width.height.equalToSuperview()
         }
+        scrollView.isScrollEnabled = false
         
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.getKeyWindow().addSubview(habitRuleAlertVm)
@@ -211,6 +222,13 @@ extension HabitProgressVM{
         appDelegate.getKeyWindow().addSubview(ruleProteinAlertVm)
         appDelegate.getKeyWindow().addSubview(ruleBodydataAlertVm)
         appDelegate.getKeyWindow().addSubview(ruleFitnessAlertVm)
+    }
+
+    private func hideLoadingSkeletonIfNeeded() {
+        guard isInitialLoading else { return }
+        isInitialLoading = false
+        scrollView.isScrollEnabled = true
+        loadingSkeletonView.hideAnimated()
     }
 }
 extension HabitProgressVM{
@@ -445,6 +463,207 @@ extension HabitProgressVM{
         }
         return topMsgVm.numberLabel.text?.intValue ?? 0
 //        return Int(topMsgVm.numberLabel.text)
+    }
+}
+
+class HabitProgressLoadingSkeletonView: UIView {
+    private let skeletonConfig = SkeletonConfig(
+        baseColorLight: UIColor(white: 0.92, alpha: 1),
+        highlightColorLight: UIColor(white: 0.98, alpha: 1),
+        baseColorDark: UIColor(white: 0.18, alpha: 1),
+        highlightColorDark: UIColor(white: 0.28, alpha: 1),
+        cornerRadius: kFitWidth(10),
+        shimmerWidth: 0.22,
+        shimmerDuration: 1.15,
+        skeletonFadeInDuration: 0.18,
+        contentFadeInDuration: 0.22
+    )
+
+    private let topPointPlaceholder = UIView()
+    private let topDetailPlaceholder = UIView()
+    private let topButtonPlaceholder = UIView()
+
+    private let todayCard = UIView()
+    private let todayTitlePlaceholder = UIView()
+    private let todayTimePlaceholder = UIView()
+    private let todayTipsPlaceholder = UIView()
+    private let todayRows = (0..<4).map { _ in HabitProgressSkeletonRowView() }
+
+    private let friendCard = UIView()
+    private let friendRows = (0..<2).map { _ in HabitProgressSkeletonRowView() }
+
+    private let streakTitlePlaceholder = UIView()
+    private let streakRows = (0..<2).map { _ in HabitProgressSkeletonPillView() }
+
+    private var didStartSkeleton = false
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .COLOR_BG_F2
+        isUserInteractionEnabled = true
+
+        [topPointPlaceholder, topDetailPlaceholder, topButtonPlaceholder,
+         todayTitlePlaceholder, todayTimePlaceholder, todayTipsPlaceholder,
+         streakTitlePlaceholder].forEach {
+            $0.backgroundColor = .clear
+            addSubview($0)
+        }
+
+        [todayCard, friendCard].forEach {
+            $0.backgroundColor = .COLOR_CARD_BG_WHITE
+            $0.layer.cornerRadius = kFitWidth(12)
+            $0.clipsToBounds = true
+            addSubview($0)
+        }
+
+        todayRows.forEach { todayCard.addSubview($0) }
+        friendRows.forEach { friendCard.addSubview($0) }
+        streakRows.forEach { addSubview($0) }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        let width = bounds.width
+        guard width > 0 else { return }
+
+        topPointPlaceholder.frame = CGRect(x: kFitWidth(32), y: kFitWidth(54), width: kFitWidth(150), height: kFitWidth(54))
+        topDetailPlaceholder.frame = CGRect(x: kFitWidth(190), y: kFitWidth(88), width: kFitWidth(58), height: kFitWidth(16))
+        topButtonPlaceholder.frame = CGRect(x: kFitWidth(32), y: kFitWidth(120), width: kFitWidth(68), height: kFitWidth(30))
+
+        todayCard.frame = CGRect(x: kFitWidth(16), y: kFitWidth(170), width: width-kFitWidth(32), height: kFitWidth(305))
+        todayTitlePlaceholder.frame = CGRect(x: todayCard.frame.minX + kFitWidth(16), y: todayCard.frame.minY + kFitWidth(16), width: kFitWidth(86), height: kFitWidth(24))
+        todayTimePlaceholder.frame = CGRect(x: todayCard.frame.maxX - kFitWidth(122), y: todayCard.frame.minY + kFitWidth(20), width: kFitWidth(86), height: kFitWidth(16))
+        todayTipsPlaceholder.frame = CGRect(x: todayCard.frame.maxX - kFitWidth(36), y: todayCard.frame.minY + kFitWidth(18), width: kFitWidth(20), height: kFitWidth(20))
+
+        for (index, row) in todayRows.enumerated() {
+            row.frame = CGRect(x: 0, y: kFitWidth(65) + CGFloat(index) * kFitWidth(60), width: todayCard.bounds.width, height: kFitWidth(40))
+        }
+
+        friendCard.frame = CGRect(x: kFitWidth(16), y: todayCard.frame.maxY + kFitWidth(12), width: width-kFitWidth(32), height: kFitWidth(132))
+        for (index, row) in friendRows.enumerated() {
+            row.frame = CGRect(x: 0, y: kFitWidth(16) + CGFloat(index) * kFitWidth(60), width: friendCard.bounds.width, height: kFitWidth(40))
+        }
+
+        streakTitlePlaceholder.frame = CGRect(x: kFitWidth(16), y: friendCard.frame.maxY + kFitWidth(18), width: kFitWidth(118), height: kFitWidth(22))
+        for (index, row) in streakRows.enumerated() {
+            row.frame = CGRect(x: kFitWidth(16) + CGFloat(index) * kFitWidth(136), y: streakTitlePlaceholder.frame.maxY + kFitWidth(16), width: kFitWidth(120), height: kFitWidth(66))
+        }
+
+        startSkeletonIfNeeded()
+    }
+
+    func hideAnimated() {
+        UIView.animate(withDuration: 0.22, animations: {
+            self.alpha = 0
+        }, completion: { _ in
+            self.removeSkeletons()
+            self.removeFromSuperview()
+        })
+    }
+
+    private func startSkeletonIfNeeded() {
+        guard !didStartSkeleton else { return }
+        didStartSkeleton = true
+
+        [topPointPlaceholder, topDetailPlaceholder, topButtonPlaceholder,
+         todayTitlePlaceholder, todayTimePlaceholder, todayTipsPlaceholder,
+         streakTitlePlaceholder].forEach { $0.showSkeleton(skeletonConfig) }
+        todayRows.forEach { $0.showSkeletons(config: skeletonConfig) }
+        friendRows.forEach { $0.showSkeletons(config: skeletonConfig) }
+        streakRows.forEach { $0.showSkeletons(config: skeletonConfig) }
+    }
+
+    private func removeSkeletons() {
+        [topPointPlaceholder, topDetailPlaceholder, topButtonPlaceholder,
+         todayTitlePlaceholder, todayTimePlaceholder, todayTipsPlaceholder,
+         streakTitlePlaceholder].forEach { $0.removeSkeletonImmediately() }
+        todayRows.forEach { $0.removeSkeletons() }
+        friendRows.forEach { $0.removeSkeletons() }
+        streakRows.forEach { $0.removeSkeletons() }
+    }
+}
+
+private final class HabitProgressSkeletonRowView: UIView {
+    private let iconView = UIView()
+    private let titleView = UIView()
+    private let pointTitleView = UIView()
+    private let pointValueView = UIView()
+    private let buttonView = UIView()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        [iconView, titleView, pointTitleView, pointValueView, buttonView].forEach {
+            $0.backgroundColor = .clear
+            addSubview($0)
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        iconView.frame = CGRect(x: kFitWidth(16), y: 0, width: kFitWidth(40), height: kFitWidth(40))
+        iconView.layer.cornerRadius = kFitWidth(20)
+        iconView.clipsToBounds = true
+        titleView.frame = CGRect(x: kFitWidth(68), y: kFitWidth(1), width: bounds.width-kFitWidth(190), height: kFitWidth(20))
+        pointTitleView.frame = CGRect(x: kFitWidth(68), y: kFitWidth(24), width: kFitWidth(24), height: kFitWidth(18))
+        pointValueView.frame = CGRect(x: kFitWidth(92), y: kFitWidth(24), width: kFitWidth(28), height: kFitWidth(18))
+        buttonView.frame = CGRect(x: bounds.width-kFitWidth(83), y: kFitWidth(5), width: kFitWidth(67), height: kFitWidth(30))
+        pointTitleView.layer.cornerRadius = kFitWidth(8)
+        pointValueView.layer.cornerRadius = kFitWidth(8)
+        buttonView.layer.cornerRadius = kFitWidth(15)
+        
+    }
+
+    func showSkeletons(config: SkeletonConfig) {
+        [iconView, titleView, pointTitleView, pointValueView, buttonView].forEach { $0.showSkeleton(config) }
+    }
+
+    func removeSkeletons() {
+        [iconView, titleView, pointTitleView, pointValueView, buttonView].forEach { $0.removeSkeletonImmediately() }
+    }
+}
+
+private final class HabitProgressSkeletonPillView: UIView {
+    private let titleView = UIView()
+    private let subtitleView = UIView()
+    private let actionView = UIView()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .COLOR_CARD_BG_WHITE
+        layer.cornerRadius = kFitWidth(12)
+        clipsToBounds = true
+        [titleView, subtitleView, actionView].forEach {
+            $0.backgroundColor = .clear
+            addSubview($0)
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        titleView.frame = CGRect(x: kFitWidth(14), y: kFitWidth(14), width: bounds.width-kFitWidth(28), height: kFitWidth(16))
+        subtitleView.frame = CGRect(x: kFitWidth(14), y: kFitWidth(36), width: bounds.width-kFitWidth(48), height: kFitWidth(12))
+        actionView.frame = CGRect(x: kFitWidth(14), y: bounds.height-kFitWidth(22), width: kFitWidth(52), height: kFitWidth(10))
+    }
+
+    func showSkeletons(config: SkeletonConfig) {
+        [titleView, subtitleView, actionView].forEach { $0.showSkeleton(config) }
+    }
+
+    func removeSkeletons() {
+        [titleView, subtitleView, actionView].forEach { $0.removeSkeletonImmediately() }
     }
 }
 

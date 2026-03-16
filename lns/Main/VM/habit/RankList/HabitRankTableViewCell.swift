@@ -12,6 +12,8 @@ import Kingfisher
 class HabitRankTableViewCell: UITableViewCell {
 
     static let identifier = "HabitRankTableViewCell"
+    private var avatarRequestID = UUID()
+    private var currentAvatarURL = ""
 
     // MARK: - UI
     
@@ -99,11 +101,14 @@ class HabitRankTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
-//        avatarImageView.kf.cancelDownloadTask()
-//        avatarImageView.image = nil
-//    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        avatarRequestID = UUID()
+        currentAvatarURL = ""
+        avatarImageView.kf.cancelDownloadTask()
+        avatarImageView.image = nil
+    }
 
     // MARK: - Setup
 
@@ -173,41 +178,13 @@ class HabitRankTableViewCell: UITableViewCell {
         needAvatarTransition: Bool = true,
         isCurrentUser: Bool = false
     ) {
+        avatarRequestID = UUID()
+        currentAvatarURL = avatar
+
         let rankInt = rank.intValue
         rankLabel.text = "\(rankInt)"
-        
-        if avatar.count > 0 {
-            if let cacheImg = ImageCache.default.retrieveImageInMemoryCache(forKey: avatar) {
-                avatarImageView.setImgUrl(urlString: avatar)
-            }else{
-                ImageCache.default.retrieveImage(forKey: avatar) { result in
-                    switch result {
-                    case .success(let value):
-                        if let image = value.image {
-                            // 成功获取磁盘缓存图片
-                            DispatchQueue.main.async {
-                                self.avatarImageView.image = image
-                            }
-                        } else {
-                            // 没有找到缓存图片（image 为 nil）
-                            DispatchQueue.main.async {
-                                self.avatarImageView.image = nil
-                                self.avatarImageView.setImgUrl(urlString: avatar)
-                            }
-                        }
-                    case .failure(let error):
-                        // 读取缓存失败，可能是找不到或读取失败
-                        print("读取缓存失败: \(error)")
-                        DispatchQueue.main.async {
-                            self.avatarImageView.image = nil
-                            self.avatarImageView.setImgUrl(urlString: avatar)
-                        }
-                    }
-                }
-            }
-        }else{
-            avatarImageView.setImgLocal(imgName: "control_widget_icon")
-        }
+
+        loadAvatar(urlString: avatar, needTransition: needAvatarTransition)
         
         nameLabel.text = name
         scoreLabel.text = "\(score)"
@@ -247,5 +224,61 @@ class HabitRankTableViewCell: UITableViewCell {
     func applyAvatarImage(_ image: UIImage?) {
         avatarImageView.image = image
     }
+}
 
+private extension HabitRankTableViewCell {
+    func loadAvatar(urlString: String, needTransition: Bool) {
+        avatarImageView.kf.cancelDownloadTask()
+
+        let requestID = avatarRequestID
+        let placeholder = UIImage(named: "control_widget_icon")
+        var options: KingfisherOptionsInfo = [.keepCurrentImageWhileLoading, .transition(.fade(0.2))]
+        if !needTransition {
+            options = [.keepCurrentImageWhileLoading]
+        }
+
+        guard !urlString.isEmpty else {
+            avatarImageView.image = placeholder
+            return
+        }
+
+//        avatarImageView.image = placeholder
+
+        let setImage: (Source) -> Void = { [weak self] source in
+            guard let self = self else { return }
+            self.avatarImageView.kf.setImage(
+                with: source,
+                placeholder: placeholder,
+                options: options
+            ) { [weak self] result in
+                guard let self = self,
+                      self.avatarRequestID == requestID,
+                      self.currentAvatarURL == urlString else { return }
+                if case .failure = result {
+                    self.avatarImageView.image = placeholder
+                }
+            }
+        }
+
+        if urlString.contains("aliyuncs.com") {
+            DSImageUploader().dealImgUrlSignForOss(urlStr: urlString) { [weak self] signedUrl in
+                guard let self = self,
+                      self.avatarRequestID == requestID,
+                      self.currentAvatarURL == urlString else { return }
+                guard let resourceURL = URL(string: signedUrl) else {
+                    self.avatarImageView.image = placeholder
+                    return
+                }
+                let resource = KF.ImageResource(downloadURL: resourceURL, cacheKey: urlString)
+                setImage(.network(resource))
+            }
+            return
+        }
+
+        guard let url = URL(string: urlString) else {
+            avatarImageView.image = placeholder
+            return
+        }
+        setImage(.network(url))
+    }
 }

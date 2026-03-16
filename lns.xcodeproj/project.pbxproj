@@ -891,6 +891,8 @@
 		EC6ED3072F63B2EA00DF53D6 /* DietPlanFoodsChangeListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6ED3062F63B2E000DF53D6 /* DietPlanFoodsChangeListVC.swift */; };
 		EC6ED3092F63BF4900DF53D6 /* DietPlanFoodsChangeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6ED3082F63BF4600DF53D6 /* DietPlanFoodsChangeCell.swift */; };
 		EC6ED30B2F63D9C700DF53D6 /* DietPlanFoodsDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6ED30A2F63D9BF00DF53D6 /* DietPlanFoodsDetailVC.swift */; };
+		EC6F55D82F67996E00EB18A5 /* DietPlanCreateSecondVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55D72F67995F00EB18A5 /* DietPlanCreateSecondVC.swift */; };
+		EC6F55DA2F67A29800EB18A5 /* DietPlanCondimentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55D92F67A29000EB18A5 /* DietPlanCondimentVC.swift */; };
 		EC73D5D82F5975DF00E408EB /* ElaProAgreementAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */; };
 		EC747D8B2ED69A1600F8D3D2 /* AppearanceOptionsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */; };
 		EC7575E02F303E52005E2077 /* HabitRuleTableViewImgCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */; };
@@ -2312,6 +2314,8 @@
 		EC6ED3062F63B2E000DF53D6 /* DietPlanFoodsChangeListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanFoodsChangeListVC.swift; sourceTree = "<group>"; };
 		EC6ED3082F63BF4600DF53D6 /* DietPlanFoodsChangeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanFoodsChangeCell.swift; sourceTree = "<group>"; };
 		EC6ED30A2F63D9BF00DF53D6 /* DietPlanFoodsDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanFoodsDetailVC.swift; sourceTree = "<group>"; };
+		EC6F55D72F67995F00EB18A5 /* DietPlanCreateSecondVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateSecondVC.swift; sourceTree = "<group>"; };
+		EC6F55D92F67A29000EB18A5 /* DietPlanCondimentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCondimentVC.swift; sourceTree = "<group>"; };
 		EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProAgreementAlertVM.swift; sourceTree = "<group>"; };
 		EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceOptionsAlertVM.swift; sourceTree = "<group>"; };
 		EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewImgCell.swift; sourceTree = "<group>"; };
@@ -4779,8 +4783,10 @@
 				ECA306A52F5AC4AE0087B95C /* DietPlanVC.swift */,
 				EC8D62372F614141009B38B2 /* DietPlanCreateDateVC.swift */,
 				ECA059492F4D966E00E257E8 /* DietPlanCreateVC.swift */,
+				EC6F55D72F67995F00EB18A5 /* DietPlanCreateSecondVC.swift */,
 				ECB0F00C2F628FD900056D6A /* DietPlanBuyListDateVC.swift */,
 				ECB0F0102F629D5500056D6A /* DietPlanBuyListVC.swift */,
+				EC6F55D92F67A29000EB18A5 /* DietPlanCondimentVC.swift */,
 				EC6ED3062F63B2E000DF53D6 /* DietPlanFoodsChangeListVC.swift */,
 				EC6ED30A2F63D9BF00DF53D6 /* DietPlanFoodsDetailVC.swift */,
 			);
@@ -6353,6 +6359,7 @@
 				EC498A6A2ED816B800BC7876 /* ColorWheelView.swift in Sources */,
 				A71543032E08F69A0078A5AE /* FoodsListHeaderNoDataVM.swift in Sources */,
 				A72F5FEE2DB75D150098C782 /* LogsRemarkNewVM.swift in Sources */,
+				EC6F55DA2F67A29800EB18A5 /* DietPlanCondimentVC.swift in Sources */,
 				EC87A44D2C8EC43B00BAB8CE /* NaturalStatCaloriesBarItemView.swift in Sources */,
 				A7942C4C2DCDEC0700C4816D /* JournalReportVC.swift in Sources */,
 				EC87A4492C8E937400BAB8CE /* NaturalStatCaloriesBarChartView.swift in Sources */,
@@ -6374,6 +6381,7 @@
 				A7A801242D57098700520A83 /* UIVisualEffectView+Exs.swift in Sources */,
 				EC6ED3072F63B2EA00DF53D6 /* DietPlanFoodsChangeListVC.swift in Sources */,
 				A7C72B622E125988001EA74D /* FriendListVM.swift in Sources */,
+				EC6F55D82F67996E00EB18A5 /* DietPlanCreateSecondVC.swift in Sources */,
 				ECC977B82C19C1A500F7FAA6 /* ServiceContactVC.swift in Sources */,
 				ECB80C5A2F14C02000F429DB /* FireworkParticlesBurst.swift in Sources */,
 				A75039FA2CF051C800C2B2B3 /* SportCatogaryTableViewCell.swift in Sources */,

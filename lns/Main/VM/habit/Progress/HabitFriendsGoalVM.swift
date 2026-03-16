@@ -40,7 +40,9 @@ class HabitFriendsGoalVM: UIView {
     lazy var firstOnTargetVm: HabitItemVM = {
         let vm = HabitItemVM.init(frame: CGRect.init(x: 0, y: vmOriginY[0], width: 0, height: 0))
         vm.titleLabel.text = "初次与好友达成蛋白质目标"
+        vm.showButton.isUserInteractionEnabled = false
         vm.leftIconImgView.setImgLocal(imgName: "haibit_friend_icon")
+        vm.canTapMore = false
         return vm
     }()
     lazy var proteinFirstVm: HabitItemVM = {
