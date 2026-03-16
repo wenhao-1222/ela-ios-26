@@ -34,6 +34,8 @@ class QuestinonaireMsgModel{
     var events = ""//日常活动量
     var bodyFat = ""//体脂肪
     var mealsPerDay = ""
+    var goalImportance = ""//目标重要性
+    var dietType = ""//饮食风格
     var planWeeks = ""
     var dailyfoodsqty = "2"
     
@@ -72,6 +74,8 @@ class QuestinonaireMsgModel{
         DLLog(message: "活动量：\(events)")
         DLLog(message: "体脂肪：\(bodyFat)")
         DLLog(message: "每日餐数：\(mealsPerDay)")
+        DLLog(message: "目标重要性：\(goalImportance)")
+        DLLog(message: "饮食风格：\(dietType)")
         DLLog(message: "计划时长：\(planWeeks)周")
         DLLog(message: "单日食物种类：\(dailyfoodsqty)")
         DLLog(message: "************   食物   ***************")
@@ -121,6 +125,8 @@ class QuestinonaireMsgModel{
         self.events = ""
         self.bodyFat = ""
         self.mealsPerDay = ""
+        self.goalImportance = ""
+        self.dietType = ""
         self.planWeeks = ""
         self.dailyfoodsqty = "2"
         self.foodsMsgProteins.removeAllObjects()

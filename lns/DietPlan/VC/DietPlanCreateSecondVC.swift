@@ -32,6 +32,11 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
                 self.backTapAction()
                 return
             }
+            self.currentIndex = self.previousStepIndex(from: self.currentIndex)
+            let targetOffsetX = SCREEN_WIDHT * CGFloat(self.currentIndex)
+            self.scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: true)
+            self.updateNextButtonForCurrentStep(animated: true)
+//            self.persistDraftIfNeeded()
         }
         return vm
     }()
@@ -66,13 +71,26 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         let vm = DietPlanCreateWeightVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: 0, height: 0))
         vm.titleLabel.text = "你的最新体重是？"
         vm.weightChangedBlock = { [weak self] weight in
-            self?.targetWeightVm.syncWithCurrentWeight(weight)
+            self?.targetWeightVm.syncWithCurrentWeight(weight, syncTarget: false)
         }
         return vm
     }()
     lazy var targetWeightVm: DietPlanCreateTargetWeightVM = {
         let vm = DietPlanCreateTargetWeightVM(frame: CGRect(x: SCREEN_WIDHT * 2, y: 0, width: 0, height: 0))
         vm.titleLabel.text = "你的目标体重需要改变吗？"
+        return vm
+    }()
+    lazy var eventsVm: DietPlanCreateEventsVM = {
+        let vm = DietPlanCreateEventsVM.init(frame: CGRect(x: SCREEN_WIDHT * 3, y: 0, width: 0, height: 0))
+        vm.titleLabel.text = "你的每日活动量有变动吗？"
+        vm.selectedBlock = {[weak self] in
+            self?.syncNextButtonEnableStatus()
+        }
+        return vm
+    }()
+    lazy var paceVm: DietPlanCreatePaceSecondVM = {
+        let vm = DietPlanCreatePaceSecondVM(frame: CGRect(x: SCREEN_WIDHT * 4, y: 0, width: 0, height: 0))
+//        vm.titleLabel.text = "你的增肌节奏需要改变吗？"
         return vm
     }()
 }
@@ -131,6 +149,25 @@ extension DietPlanCreateSecondVC{
     func nextStepIndex(from index: Int) -> Int {
         return index + 1
     }
+    
+    func previousStepIndex(from index: Int) -> Int {
+        return index - 1
+    }
+    //更新本地问卷数据
+    func persistDraftIfNeeded() {
+//        if isRestoringDraft || shouldSkipDraftPersistence {
+//            return
+//        }
+//        guard let key = draftStorageKey() else {
+//            return
+//        }
+//        let draft = buildDraftPayload()
+//        if hasDraftProgress(draft) {
+//            UserDefaults.standard.set(draft, forKey: key)
+//        } else {
+//            UserDefaults.standard.removeObject(forKey: key)
+//        }
+    }
 }
 
 extension DietPlanCreateSecondVC{
@@ -147,7 +184,9 @@ extension DietPlanCreateSecondVC{
         scrollViewBase.addSubview(dateVm)
         scrollViewBase.addSubview(weightVm)
         scrollViewBase.addSubview(targetWeightVm)
-        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT*3, height: 0)
+        scrollViewBase.addSubview(eventsVm)
+        scrollViewBase.addSubview(paceVm)
+        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT*5, height: 0)
         
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
@@ -166,7 +205,201 @@ extension DietPlanCreateSecondVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendDietMsgRequest:\(dataObj)")
+
+            guard let dict = dataObj as? NSDictionary else {
+                return
+            }
+
+            DispatchQueue.main.async {
+                self.applyDietQuestionnaireData(dict)
+//                if QuestinonaireMsgModel.shared.targetWeight.floatValue == QuestinonaireMsgModel.shared.weight.floatValue{
+//                    //TODO: 这里需要隐藏 paceVm
+//                }else if QuestinonaireMsgModel.shared.targetWeight.floatValue > QuestinonaireMsgModel.shared.weight.floatValue{
+//                    self.paceVm.titleLabel.text = "你的增肌节奏需要改变吗？"
+//                }else{
+//                    self.paceVm.titleLabel.text = "你的减脂节奏需要改变吗？"
+//                }
+            }
+        }
+    }
+    
+    func sendBasicRequest() {
+        let param = ["gender":"\(QuestinonaireMsgModel.shared.sex)",
+                     "dailyact":"\(QuestinonaireMsgModel.shared.events)",
+                     "bodyfat":"\(QuestinonaireMsgModel.shared.bodyFat)",
+                     "weight":"\(QuestinonaireMsgModel.shared.weight)"]
+        DLLog(message: "sendBasicRequest:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_question_basic_consumption, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
+            var dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+//            dataString = "3200"
+            DLLog(message: "sendBasicRequest:\(dataString ?? "")")
+            QuestinonaireMsgModel.shared.caloriesNumber = "\(dataString ?? "0")"
+            QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(dataString ?? "0")"
             
         }
+    }
+}
+
+extension DietPlanCreateSecondVC {
+    func applyDietQuestionnaireData(_ data: NSDictionary) {
+        let model = QuestinonaireMsgModel.shared
+
+        model.sex = stringValue(from: data["gender"])
+        model.birthDay = birthYear(from: data["birthday"])
+        model.goal = mapUserGoals(from: intArrayValue(from: data["userGoal"]))
+        model.height = stringValue(from: data["height"])
+        model.weight = formattedWeightString(from: data["currentWeight"])
+        model.targetWeight = formattedWeightString(from: data["targetWeight"])
+        model.bodyFat = stringValue(from: data["bodyFat"])
+        model.events = stringValue(from: data["dailyActivityLevel"])
+        model.paceLevel = normalizedPaceLevel(from: data["goalTimeline"])
+        model.foodAllergy = mapFoodRestrictions(from: intArrayValue(from: data["foodRestrictions"]))
+        model.foodBarrier = mapDietBarriers(from: intArrayValue(from: data["dietBarriers"]))
+        model.foodTasteType = mapFlavorPreferences(from: multiValueArray(from: data["flavorPreferences"]))
+        model.dietHistoryType = localDietHistoryValue(from: data["dietMethodExperience"])
+        model.mealsPerDay = stringValue(from: data["dailyMeals"])
+        model.goalImportance = stringValue(from: data["goalImportance"])
+        model.dietType = stringValue(from: data["dietType"])
+
+        applyRestoredQuestionnaireDataToCurrentSteps()
+        model.printModelMsg()
+    }
+
+    func applyRestoredQuestionnaireDataToCurrentSteps() {
+        if let weightValue = parsedWeight(from: QuestinonaireMsgModel.shared.weight) {
+            let tenths = Int((weightValue * 10).rounded())
+            let integer = tenths / 10
+            let decimal = abs(tenths % 10)
+            weightVm.applyDefaultWeight(integer: integer, decimal: decimal)
+        }
+
+        targetWeightVm.applyInitialValue()
+
+        if let eventsValue = Int(QuestinonaireMsgModel.shared.events),
+           eventsValue > 0,
+           eventsValue <= eventsVm.dataArray.count {
+            eventsVm.selectedIndex = eventsValue - 1
+            eventsVm.tableView.reloadData()
+        }
+
+        if !QuestinonaireMsgModel.shared.paceLevel.isEmpty {
+            paceVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.paceLevel)
+        }
+        
+        syncNextButtonEnableStatus()
+    }
+
+    func stringValue(from value: Any?) -> String {
+        if let string = value as? String {
+            return string.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        if let number = value as? NSNumber {
+            return number.stringValue
+        }
+        return ""
+    }
+
+    func birthYear(from value: Any?) -> String {
+        let birthday = stringValue(from: value)
+        if birthday.contains("-") {
+            return birthday.components(separatedBy: "-").first ?? birthday
+        }
+        return birthday
+    }
+
+    func formattedWeightString(from value: Any?) -> String {
+        guard let weightValue = parsedWeight(from: value) else {
+            return ""
+        }
+        return String(format: "%.1f", weightValue)
+    }
+
+    func parsedWeight(from value: Any?) -> Double? {
+        if let number = value as? NSNumber {
+            return number.doubleValue
+        }
+        if let string = value as? String {
+            return Double(string.trimmingCharacters(in: .whitespacesAndNewlines))
+        }
+        return nil
+    }
+
+    func intArrayValue(from value: Any?) -> [Int] {
+        return multiValueArray(from: value).compactMap { Int($0) }
+    }
+
+    func multiValueArray(from value: Any?) -> [String] {
+        if let array = value as? [Any] {
+            return array.map { stringValue(from: $0) }.filter { !$0.isEmpty }
+        }
+        if let nsArray = value as? NSArray {
+            return nsArray.compactMap { stringValue(from: $0) }.filter { !$0.isEmpty }
+        }
+        let single = stringValue(from: value)
+        return single.isEmpty ? [] : [single]
+    }
+
+    func mapUserGoals(from values: [Int]) -> String {
+        let mapping: [Int: String] = [
+            1: "减脂",
+            2: "增肌",
+            3: "保持体型",
+            4: "提升力量",
+            5: "提高运动表现",
+            6: "提升整体健康",
+            7: "改善血脂",
+            8: "降低尿酸",
+            9: "养成规律饮食习惯",
+            10: "节省时间",
+            11: "节省外食开销"
+        ]
+        return values.compactMap { mapping[$0] }.joined(separator: ",")
+    }
+
+    func mapFoodRestrictions(from values: [Int]) -> String {
+        let mapping: [Int: String] = [
+            1: "花生",
+            2: "坚果",
+            3: "乳制品",
+            4: "豆制品",
+            5: "海鲜",
+            6: "猪肉"
+        ]
+        return values.compactMap { mapping[$0] }.joined(separator: ",")
+    }
+
+    func mapDietBarriers(from values: [Int]) -> String {
+        let mapping: [Int: String] = [
+            1: "不确定",
+            2: "容易嘴馋",
+            3: "做饭太麻烦",
+            4: "健身餐不好吃",
+            5: "无法平衡家庭餐和健身餐",
+            6: "不知道吃什么"
+        ]
+        return values.compactMap { mapping[$0] }.joined(separator: ",")
+    }
+
+    func mapFlavorPreferences(from values: [String]) -> String {
+        let mapping: [String: String] = [
+            "1": "不确定",
+            "2": "清爽",
+            "3": "咸香",
+            "4": "香辣",
+            "5": "香甜"
+        ]
+        return values.compactMap { mapping[$0] }.joined(separator: ",")
+    }
+
+    func normalizedPaceLevel(from value: Any?) -> String {
+        let pace = stringValue(from: value)
+        return pace.isEmpty ? "2" : pace
+    }
+
+    func localDietHistoryValue(from value: Any?) -> String {
+        guard let serverValue = Int(stringValue(from: value)), serverValue > 0 else {
+            return ""
+        }
+        return "\(serverValue - 1)"
     }
 }

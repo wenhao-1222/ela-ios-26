@@ -113,6 +113,7 @@ extension DietPlanCreateTargetWeightVM {
                 self.rulerView.setValue(self.currentTargetWeight, animated: false)
             }
         }
+        updateGoalTips()
     }
 
     func initUI() {
