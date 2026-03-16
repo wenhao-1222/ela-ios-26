@@ -5,18 +5,22 @@
 //  Created by LNS2 on 2026/2/26.
 //
 
-
 class DietPlanCreateEatStyleVM: UIView {
 
     var selectedIndex = -1
     var selectedBlock: (() -> ())?
 
+    private var cardViews: [UIView] = []
+    private var titleLabels: [UILabel] = []
+    private var subTitleLabels: [UILabel] = []
+    private var detailLabels: [UILabel] = []
+
     lazy var dataArray: [[String: String]] = {
         return [
-            ["name": "均衡，碳蛋脂平衡", "detail": "更贴近大多数人的日常饮食"],
-            ["name": "高蛋白，中碳水，高蛋白质，低脂肪", "detail": "饱腹感更强，更利于肌肉生长"],
-            ["name": "生酮，几乎无碳水，中蛋白质，高脂肪", "detail": "更适合在医生指导下使用，健康人群一般不建议"],
-            ["name": "低碳，低碳水，高蛋白质，中脂肪", "detail": "血糖波动更小，适合喜欢少主食的人"]
+            ["name": "均衡", "subTitle": "碳蛋脂平衡", "detail": "更贴近大多数人的日常饮食"],
+            ["name": "高蛋白", "subTitle": "中碳水，高蛋白质，低脂肪", "detail": "饱腹感更强，更利于肌肉生长"],
+            ["name": "生酮", "subTitle": "几乎无碳水，中蛋白质，高脂肪", "detail": "更适合在医生指导下使用，健康人群一般不建议"],
+            ["name": "低碳", "subTitle": "低碳水，高蛋白质，中脂肪", "detail": "血糖波动更小，适合喜欢少主食的人"]
         ]
     }()
 
@@ -35,33 +39,41 @@ class DietPlanCreateEatStyleVM: UIView {
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "饮食风格选项"
+        lab.text = "确认你的饮食风格"
+        lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
     }()
 
-    lazy var tableView: UITableView = {
-        let vi = UITableView(frame: .zero, style: .plain)
-        vi.delegate = self
-        vi.dataSource = self
-        vi.backgroundColor = .clear
-        vi.separatorStyle = .none
-        vi.backgroundColor = .clear
-        vi.bounces = false
+    lazy var scrollView: UIScrollView = {
+        let vi = UIScrollView()
         vi.showsVerticalScrollIndicator = false
-        vi.contentInsetAdjustmentBehavior = .never
-        vi.register(QuestionnaireEventsTableViewCell.classForCoder(), forCellReuseIdentifier: "QuestionnaireEventsTableViewCell")
         return vi
+    }()
+
+    lazy var contentView: UIView = {
+        let vi = UIView()
+        return vi
+    }()
+
+    lazy var stackView: UIStackView = {
+        let st = UIStackView()
+        st.axis = .vertical
+        st.spacing = kFitWidth(12)
+        return st
     }()
 }
 
 extension DietPlanCreateEatStyleVM {
     func initUI() {
         addSubview(titleLabel)
-        addSubview(tableView)
-        
+        addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(stackView)
+
         setConstraint()
+        refreshListUI()
     }
 
     func setConstraint() {
@@ -70,40 +82,143 @@ extension DietPlanCreateEatStyleVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(55))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(72))
         }
 
-        tableView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(80))
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(48))
             make.left.right.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
+            make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(12)))
+        }
+
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+
+        stackView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.left.equalTo(kFitWidth(20))
+            make.right.equalTo(kFitWidth(-20))
+            make.bottom.equalToSuperview()
         }
     }
-}
 
-extension DietPlanCreateEatStyleVM: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataArray.count
+    func refreshListUI() {
+        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        cardViews.removeAll()
+        titleLabels.removeAll()
+        subTitleLabels.removeAll()
+        detailLabels.removeAll()
+
+        if selectedIndex >= 0 && selectedIndex < dataArray.count {
+            QuestinonaireMsgModel.shared.dietType = "\(selectedIndex + 1)"
+        }
+
+        for (index, item) in dataArray.enumerated() {
+            let cardView = UIView()
+            cardView.layer.cornerRadius = kFitWidth(47)
+            cardView.clipsToBounds = true
+            cardView.tag = index
+
+            let tap = UITapGestureRecognizer(target: self, action: #selector(cardTapAction(_:)))
+            cardView.addGestureRecognizer(tap)
+
+            let titleLab = UILabel()
+            titleLab.textAlignment = .center
+            titleLab.font = .systemFont(ofSize: 17, weight: .medium)
+            titleLab.text = item["name"] ?? ""
+
+            let subTitleLab = UILabel()
+            subTitleLab.textAlignment = .center
+            subTitleLab.font = .systemFont(ofSize: 13, weight: .regular)
+            subTitleLab.numberOfLines = 0
+            subTitleLab.text = item["subTitle"] ?? ""
+
+            let detailLab = UILabel()
+            detailLab.textAlignment = .center
+            detailLab.font = .systemFont(ofSize: 12, weight: .regular)
+            detailLab.numberOfLines = 0
+            detailLab.text = item["detail"] ?? ""
+
+            cardView.addSubview(titleLab)
+            cardView.addSubview(subTitleLab)
+            cardView.addSubview(detailLab)
+            stackView.addArrangedSubview(cardView)
+
+            cardView.snp.makeConstraints { make in
+                make.height.equalTo(kFitWidth(94))
+            }
+
+            titleLab.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.top.equalTo(kFitWidth(16))
+            }
+
+            subTitleLab.snp.makeConstraints { make in
+                make.left.equalTo(kFitWidth(20))
+                make.right.equalTo(kFitWidth(-20))
+                make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(7))
+            }
+
+            detailLab.snp.makeConstraints { make in
+                make.left.equalTo(kFitWidth(20))
+                make.right.equalTo(kFitWidth(-20))
+                make.height.equalTo(kFitWidth(16))
+                make.top.equalTo(subTitleLab.snp.bottom).offset(kFitWidth(6))
+            }
+
+            cardViews.append(cardView)
+            titleLabels.append(titleLab)
+            subTitleLabels.append(subTitleLab)
+            detailLabels.append(detailLab)
+            applyCardStyle(index: index, isSelected: selectedIndex == index)
+        }
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "QuestionnaireEventsTableViewCell", for: indexPath) as? QuestionnaireEventsTableViewCell
-        let dict = dataArray[indexPath.row] as NSDictionary
-        cell?.updateUI(dict: dict, isSelected: selectedIndex == indexPath.row)
-        return cell ?? QuestionnaireEventsTableViewCell()
-    }
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if selectedIndex == indexPath.row {
+    func restoreSelection(modelValue: String) {
+        guard let value = Int(modelValue), value > 0, value <= dataArray.count else {
             return
         }
-        selectedIndex = indexPath.row
-        selectedBlock?()
-        tableView.reloadData()
-        QuestinonaireMsgModel.shared.events = "\(indexPath.row + 1)"
+        select(index: value - 1, notify: false)
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return kFitWidth(82)
+    func select(index: Int, notify: Bool) {
+        guard index >= 0 && index < dataArray.count else {
+            return
+        }
+        if selectedIndex == index && notify {
+            return
+        }
+
+        let oldIndex = selectedIndex
+        selectedIndex = index
+        QuestinonaireMsgModel.shared.dietType = "\(index + 1)"
+
+        if oldIndex >= 0 {
+            applyCardStyle(index: oldIndex, isSelected: false)
+        }
+        applyCardStyle(index: index, isSelected: true)
+
+        if notify {
+            selectedBlock?()
+        }
+    }
+
+    func applyCardStyle(index: Int, isSelected: Bool) {
+        guard index >= 0, index < cardViews.count else {
+            return
+        }
+        cardViews[index].backgroundColor = isSelected ? .THEME : .COLOR_TEXT_TITLE_0f1214_05
+        titleLabels[index].textColor = isSelected ? .white : .COLOR_TEXT_TITLE_0f1214
+        subTitleLabels[index].textColor = isSelected ? .white : .COLOR_TEXT_TITLE_0f1214
+        detailLabels[index].textColor = isSelected ? UIColor.white.withAlphaComponent(0.88) : .COLOR_TEXT_TITLE_0f1214_50
+    }
+
+    @objc func cardTapAction(_ tap: UITapGestureRecognizer) {
+        guard let view = tap.view else {
+            return
+        }
+        select(index: view.tag, notify: true)
     }
 }

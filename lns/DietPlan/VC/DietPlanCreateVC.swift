@@ -461,8 +461,7 @@ extension DietPlanCreateVC{
               eatStyleVm.selectedIndex < eatStyleVm.dataArray.count else {
             return false
         }
-        let styleName = eatStyleVm.dataArray[eatStyleVm.selectedIndex]["name"] ?? ""
-        return styleName == "均衡，碳蛋脂平衡"
+        return eatStyleVm.selectedIndex == 0
     }
 
     func updateKetoHistoryTitleIfNeeded() {
@@ -753,7 +752,7 @@ extension DietPlanCreateVC{
             fallback: -1,
             count: eatStyleVm.dataArray.count
         )
-        eatStyleVm.tableView.reloadData()
+        eatStyleVm.refreshListUI()
         
         let ketoIndex = normalizedSingleSelectionIndex(
             preferred: draftInt(draft["ketoHistorySelectedIndex"], fallback: -1),
