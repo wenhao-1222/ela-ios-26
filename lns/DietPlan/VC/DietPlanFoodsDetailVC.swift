@@ -368,7 +368,7 @@ extension DietPlanFoodsDetailVC {
         
         ingredientsTitleLabel.snp.makeConstraints { make in
             make.left.right.equalTo(titleLabel)
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(28))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(20))
         }
         
         foodsStackView.snp.makeConstraints { make in
@@ -378,7 +378,7 @@ extension DietPlanFoodsDetailVC {
         
         stepsTitleLabel.snp.makeConstraints { make in
             make.left.right.equalTo(titleLabel)
-            make.top.equalTo(foodsStackView.snp.bottom).offset(kFitWidth(28))
+            make.top.equalTo(foodsStackView.snp.bottom).offset(kFitWidth(22))
         }
         
         notesLabel.snp.makeConstraints { make in
@@ -629,7 +629,7 @@ private extension DietPlanFoodsDetailVC {
         let label = UILabel()
         label.text = text
         label.textColor = .COLOR_TEXT_TITLE_0f1214
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
+        label.font = .systemFont(ofSize: 14, weight: .medium)
         return label
     }
     
@@ -638,7 +638,7 @@ private extension DietPlanFoodsDetailVC {
         paragraphStyle.lineSpacing = kFitWidth(6)
         
         return NSAttributedString(string: text, attributes: [
-            .font: UIFont.systemFont(ofSize: 17, weight: .regular),
+            .font: UIFont.systemFont(ofSize: 13, weight: .regular),
             .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
             .paragraphStyle: paragraphStyle
         ])
