@@ -10,6 +10,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
     private var isDateStepEnabled = false
+    private var isShowingManualTargetEditor = false
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -36,7 +37,6 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
             let targetOffsetX = SCREEN_WIDHT * CGFloat(self.currentIndex)
             self.scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: true)
             self.updateNextButtonForCurrentStep(animated: true)
-//            self.persistDraftIfNeeded()
         }
         return vm
     }()
@@ -93,6 +93,30 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
 //        vm.titleLabel.text = "你的增肌节奏需要改变吗？"
         return vm
     }()
+    lazy var recommendIntakeVm: DietPlanCreateRecommendIntakeVM = {
+        let vm = DietPlanCreateRecommendIntakeVM(frame: CGRect(x: SCREEN_WIDHT * 5, y: 0, width: 0, height: 0))
+        vm.editTargetBlock = { [weak self] in
+            self?.showManualTargetEditor()
+        }
+        return vm
+    }()
+    lazy var eatStyleVm: DietPlanCreateEatStyleSecondVM = {
+        let vm = DietPlanCreateEatStyleSecondVM(frame: CGRect(x: SCREEN_WIDHT * 6, y: 0, width: 0, height: 0))
+        vm.selectedBlock = { [weak self] in
+            self?.syncNextButtonEnableStatus()
+        }
+        return vm
+    }()
+    lazy var manualTargetVm: DietPlanCreateManualTargetVM = {
+        let vm = DietPlanCreateManualTargetVM(frame: CGRect(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        vm.backTapBlock = { [weak self] in
+            self?.hideManualTargetEditor(isBack: true)
+        }
+        vm.saveTapBlock = { [weak self] value in
+            self?.saveManualTarget(value)
+        }
+        return vm
+    }()
 }
 
 extension DietPlanCreateSecondVC{
@@ -108,6 +132,9 @@ extension DietPlanCreateSecondVC{
         }
 
         let nextIndex = nextStepIndex(from: currentIndex)
+        if currentIndex == 3 {
+            sendBasicRequest()
+        }
         let targetOffsetX = SCREEN_WIDHT * CGFloat(nextIndex)
         let finalOffsetX = min(targetOffsetX, maxOffsetX)
         currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
@@ -141,6 +168,8 @@ extension DietPlanCreateSecondVC{
         switch currentIndex {
         case 0:
             nextButton.isEnabled = isDateStepEnabled
+        case 6:
+            nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
         default:
             nextButton.isEnabled = true
         }
@@ -153,20 +182,56 @@ extension DietPlanCreateSecondVC{
     func previousStepIndex(from index: Int) -> Int {
         return index - 1
     }
-    //更新本地问卷数据
-    func persistDraftIfNeeded() {
-//        if isRestoringDraft || shouldSkipDraftPersistence {
-//            return
-//        }
-//        guard let key = draftStorageKey() else {
-//            return
-//        }
-//        let draft = buildDraftPayload()
-//        if hasDraftProgress(draft) {
-//            UserDefaults.standard.set(draft, forKey: key)
-//        } else {
-//            UserDefaults.standard.removeObject(forKey: key)
-//        }
+
+    func showManualTargetEditor() {
+        let initialValue = QuestinonaireMsgModel.shared.caloriesNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+        manualTargetVm.configure(initialValue: initialValue)
+        manualTargetVm.isHidden = false
+        view.bringSubviewToFront(manualTargetVm)
+        isShowingManualTargetEditor = true
+        
+        UIView.animate(withDuration: 0.25, animations: {
+            self.manualTargetVm.frame.origin.x = 0
+            self.nextButtonTapAction()
+        }, completion: { _ in
+            self.manualTargetVm.focusInput()
+            
+        })
+    }
+
+    func hideManualTargetEditor(isBack:Bool) {
+        manualTargetVm.resignInput()
+        isShowingManualTargetEditor = false
+        if isBack{
+//            self.currentIndex = self.previousStepIndex(from: self.currentIndex)
+//            let targetOffsetX = SCREEN_WIDHT * CGFloat(self.currentIndex)
+//            self.scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: true)
+//            self.updateNextButtonForCurrentStep(animated: true)
+        }else{
+            self.nextButtonTapAction()
+        }
+        
+        UIView.animate(withDuration: 0.25, animations: {
+            self.manualTargetVm.frame.origin.x = isBack ? SCREEN_WIDHT : -SCREEN_WIDHT
+            if isBack{
+                self.currentIndex = self.previousStepIndex(from: self.currentIndex)
+                let targetOffsetX = SCREEN_WIDHT * CGFloat(self.currentIndex)
+                self.scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: true)
+                self.updateNextButtonForCurrentStep(animated: true)
+            }
+        }, completion: { _ in
+            self.manualTargetVm.frame.origin.x = SCREEN_WIDHT
+        })
+    }
+
+    func saveManualTarget(_ value: String) {
+        self.currentIndex = self.previousStepIndex(from: self.currentIndex)
+        let targetOffsetX = SCREEN_WIDHT * CGFloat(self.currentIndex)
+        self.scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: false)
+        self.updateNextButtonForCurrentStep(animated: true)
+        QuestinonaireMsgModel.shared.caloriesNumber = value
+//        recommendIntakeVm.updateCalories(value)
+        hideManualTargetEditor(isBack: false)
     }
 }
 
@@ -176,6 +241,7 @@ extension DietPlanCreateSecondVC{
         view.addSubview(scrollViewBase)
         view.addSubview(naviVm)
         view.addSubview(nextButton)
+        view.addSubview(manualTargetVm)
         
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
@@ -186,7 +252,9 @@ extension DietPlanCreateSecondVC{
         scrollViewBase.addSubview(targetWeightVm)
         scrollViewBase.addSubview(eventsVm)
         scrollViewBase.addSubview(paceVm)
-        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT*5, height: 0)
+        scrollViewBase.addSubview(recommendIntakeVm)
+        scrollViewBase.addSubview(eatStyleVm)
+        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT*7, height: 0)
         
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
@@ -233,9 +301,13 @@ extension DietPlanCreateSecondVC{
             var dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
 //            dataString = "3200"
             DLLog(message: "sendBasicRequest:\(dataString ?? "")")
-            QuestinonaireMsgModel.shared.caloriesNumber = "\(dataString ?? "0")"
-            QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(dataString ?? "0")"
-            
+            let caloriesText = (dataString ?? "0").trimmingCharacters(in: .whitespacesAndNewlines)
+            QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
+            QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
+
+            DispatchQueue.main.async {
+                self.recommendIntakeVm.updateCalories(caloriesText)
+            }
         }
     }
 }
@@ -284,6 +356,11 @@ extension DietPlanCreateSecondVC {
 
         if !QuestinonaireMsgModel.shared.paceLevel.isEmpty {
             paceVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.paceLevel)
+        }
+
+        recommendIntakeVm.refreshContent()
+        if !QuestinonaireMsgModel.shared.dietType.isEmpty {
+            eatStyleVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.dietType)
         }
         
         syncNextButtonEnableStatus()
