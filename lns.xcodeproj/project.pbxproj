@@ -941,6 +941,7 @@
 		EC78C2AF2F69222300681507 /* GuidanceSexVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2AE2F69221900681507 /* GuidanceSexVM.swift */; };
 		EC78C2B22F6932A600681507 /* GuidanceDietRecordVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2B12F6932A600681507 /* GuidanceDietRecordVM.swift */; };
 		EC78C2B42F69396E00681507 /* GuidanceFixedTargetVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2B32F69396200681507 /* GuidanceFixedTargetVM.swift */; };
+		EC78C2B62F6946B000681507 /* GuidanceTakeoutFrequencyVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2B52F6946A900681507 /* GuidanceTakeoutFrequencyVM.swift */; };
 		EC79A77E2BD119F800D72FDF /* BodyDataDetailShareVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC79A77D2BD119F800D72FDF /* BodyDataDetailShareVC.swift */; };
 		EC79A7922BD12F7E00D72FDF /* DataDetailSharePopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC79A7912BD12F7E00D72FDF /* DataDetailSharePopView.swift */; };
 		EC81531A2BE86CDC00879233 /* WHTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC8153192BE86CDC00879233 /* WHTabBar.swift */; };
@@ -2376,6 +2377,7 @@
 		EC78C2AE2F69221900681507 /* GuidanceSexVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexVM.swift; sourceTree = "<group>"; };
 		EC78C2B12F6932A600681507 /* GuidanceDietRecordVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordVM.swift; sourceTree = "<group>"; };
 		EC78C2B32F69396200681507 /* GuidanceFixedTargetVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceFixedTargetVM.swift; sourceTree = "<group>"; };
+		EC78C2B52F6946A900681507 /* GuidanceTakeoutFrequencyVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceTakeoutFrequencyVM.swift; sourceTree = "<group>"; };
 		EC79A77D2BD119F800D72FDF /* BodyDataDetailShareVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyDataDetailShareVC.swift; sourceTree = "<group>"; };
 		EC79A7912BD12F7E00D72FDF /* DataDetailSharePopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailSharePopView.swift; sourceTree = "<group>"; };
 		EC8153192BE86CDC00879233 /* WHTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHTabBar.swift; sourceTree = "<group>"; };
@@ -4731,6 +4733,7 @@
 			children = (
 				EC78C2B12F6932A600681507 /* GuidanceDietRecordVM.swift */,
 				EC78C2B32F69396200681507 /* GuidanceFixedTargetVM.swift */,
+				EC78C2B52F6946A900681507 /* GuidanceTakeoutFrequencyVM.swift */,
 				EC78C2AE2F69221900681507 /* GuidanceSexVM.swift */,
 			);
 			path = VM;
@@ -6607,6 +6610,7 @@
 				A775EA362E26286C001DE90A /* DeviceUUIDManager.swift in Sources */,
 				EC78C2B22F6932A600681507 /* GuidanceDietRecordVM.swift in Sources */,
 				EC78C2B42F69396E00681507 /* GuidanceFixedTargetVM.swift in Sources */,
+				EC78C2B62F6946B000681507 /* GuidanceTakeoutFrequencyVM.swift in Sources */,
 				EC78C2AF2F69222300681507 /* GuidanceSexVM.swift in Sources */,
 				A7B772FC2D3A6688006B12C4 /* UINavigationController+FDFullscreenPopGesture.m in Sources */,
 				ECD0FEFD2BABD25B001232C9 /* YYTextRubyAnnotation.m in Sources */,

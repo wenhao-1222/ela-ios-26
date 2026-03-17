@@ -12,7 +12,7 @@ import UMCommon
 class GuidanceVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
-    private let totalSteps = 8
+    private let totalSteps = 9
     private var nextButtonEnableWorkItem: DispatchWorkItem?
     
     override func viewDidAppear(_ animated: Bool) {
@@ -53,7 +53,7 @@ class GuidanceVC: WHBaseViewVC {
         return vm
     }()
     lazy var stepsArray: [Int] = {
-        return [8,0,0]
+        return [9,0,0]
     }()
     lazy var loginAlertVm : LoginAlertVm = {
         let vm = LoginAlertVm.init(frame: .zero)
@@ -172,6 +172,13 @@ class GuidanceVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var takeoutFrequencyVm: GuidanceTakeoutFrequencyVM = {
+        let vm = GuidanceTakeoutFrequencyVM.init(frame: CGRect.init(x: SCREEN_WIDHT*8, y: 0, width: 0, height: 0))
+        vm.selectedBlock = { [weak self] in
+            self?.updateNextButtonForCurrentStep()
+        }
+        return vm
+    }()
 }
 
 
@@ -191,6 +198,8 @@ extension GuidanceVC{
         case 6:
             moveToStep(index: 7, animated: true)
         case 7:
+            moveToStep(index: 8, animated: true)
+        case 8:
             break
         default:
             break
@@ -237,6 +246,9 @@ extension GuidanceVC{
         case 7:
             nextButton.isHidden = false
             nextButton.isEnabled = bodyfatVm.selectIndex >= 0
+        case 8:
+            nextButton.isHidden = false
+            nextButton.isEnabled = takeoutFrequencyVm.hasSelection
         default:
             nextButton.isHidden = true
             nextButton.isEnabled = false
@@ -300,6 +312,7 @@ extension GuidanceVC{
         scrollViewBase.addSubview(weightVm)
         scrollViewBase.addSubview(heightVm)
         scrollViewBase.addSubview(bodyfatVm)
+        scrollViewBase.addSubview(takeoutFrequencyVm)
         
         setConstrait()
         moveToStep(index: 0, animated: false)
