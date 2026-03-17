@@ -12,9 +12,10 @@ import UMCommon
 class GuidanceVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
-    private let totalSteps = 11
+    private let totalSteps = 14
     private var nextButtonEnableWorkItem: DispatchWorkItem?
     private var isShowingMealsSummary = false
+    private var isShowingStrengthTrainingSummary = false
     
     override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = true
@@ -45,7 +46,7 @@ class GuidanceVC: WHBaseViewVC {
         vm.backButton.isHidden = false
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
-            if self.isShowingMealsSummary {
+            if self.isShowingMealsSummary || self.isShowingStrengthTrainingSummary {
                 return
             }
             if self.currentIndex == 0 {
@@ -156,6 +157,7 @@ class GuidanceVC: WHBaseViewVC {
     }()
     lazy var birthdayVm: DietPlanCreateYearVM = {
         let vm = DietPlanCreateYearVM.init(frame: CGRect.init(x: SCREEN_WIDHT*4, y: 0, width: 0, height: 0))
+        vm.applyDefaultAge(18)
         return vm
     }()
     lazy var weightVm: DietPlanCreateWeightVM = {
@@ -186,6 +188,8 @@ class GuidanceVC: WHBaseViewVC {
     lazy var mealsPerDayVm: GuidanceMealsPerDayVM = {
         let vm = GuidanceMealsPerDayVM.init(frame: CGRect.init(x: SCREEN_WIDHT*9, y: 0, width: 0, height: 0))
         vm.selectedBlock = { [weak self] in 
+            QuestinonaireMsgModel.shared.guidanceMealsAdjustType = QuestinonaireMsgModel.shared.guidanceMealsPerDayType
+            self?.mealsAdjustVm.refreshSelectionFromModel()
             self?.updateNextButtonForCurrentStep()
         }
         return vm
@@ -195,6 +199,7 @@ class GuidanceVC: WHBaseViewVC {
         vm.isHidden = true
         vm.nextBlock = { [weak self] in
             self?.hideMealsSummary()
+            self?.mealsAdjustVm.refreshSelectionFromModel()
             self?.moveToStep(index: 10, animated: true)
         }
         return vm
@@ -203,6 +208,35 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceMealsAdjustVM.init(frame: CGRect.init(x: SCREEN_WIDHT*10, y: 0, width: 0, height: 0))
         vm.selectedBlock = { [weak self] in
             self?.updateNextButtonForCurrentStep()
+        }
+        return vm
+    }()
+    lazy var exerciseCaloriesRecordVm: GuidanceExerciseCaloriesRecordVM = {
+        let vm = GuidanceExerciseCaloriesRecordVM.init(frame: CGRect.init(x: SCREEN_WIDHT*11, y: 0, width: 0, height: 0))
+        vm.selectedBlock = { [weak self] in
+            self?.updateNextButtonForCurrentStep()
+        }
+        return vm
+    }()
+    lazy var cardioFrequencyVm: GuidanceCardioFrequencyVM = {
+        let vm = GuidanceCardioFrequencyVM.init(frame: CGRect.init(x: SCREEN_WIDHT*12, y: 0, width: 0, height: 0))
+        vm.selectedBlock = { [weak self] in
+            self?.updateNextButtonForCurrentStep()
+        }
+        return vm
+    }()
+    lazy var strengthTrainingFrequencyVm: GuidanceStrengthTrainingFrequencyVM = {
+        let vm = GuidanceStrengthTrainingFrequencyVM.init(frame: CGRect.init(x: SCREEN_WIDHT*13, y: 0, width: 0, height: 0))
+        vm.selectedBlock = { [weak self] in
+            self?.updateNextButtonForCurrentStep()
+        }
+        return vm
+    }()
+    lazy var strengthTrainingSummaryVm: GuidanceStrengthTrainingSummaryVM = {
+        let vm = GuidanceStrengthTrainingSummaryVM.init(frame: .zero)
+        vm.isHidden = true
+        vm.nextBlock = { [weak self] in
+            self?.hideStrengthTrainingSummary()
         }
         return vm
     }()
@@ -232,7 +266,14 @@ extension GuidanceVC{
             mealsSummaryVm.refreshContentFromModel()
             showMealsSummary()
         case 10:
-            break
+            moveToStep(index: 11, animated: true)
+        case 11:
+            moveToStep(index: 12, animated: true)
+        case 12:
+            moveToStep(index: 13, animated: true)
+        case 13:
+            strengthTrainingSummaryVm.refreshContentFromModel()
+            showStrengthTrainingSummary()
         default:
             break
         }
@@ -250,6 +291,9 @@ extension GuidanceVC{
         let targetIndex = max(0, min(index, totalSteps - 1))
         if isShowingMealsSummary {
             hideMealsSummary()
+        }
+        if isShowingStrengthTrainingSummary {
+            hideStrengthTrainingSummary()
         }
         currentIndex = targetIndex
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: animated)
@@ -291,6 +335,15 @@ extension GuidanceVC{
         case 10:
             nextButton.isHidden = false
             nextButton.isEnabled = mealsAdjustVm.hasSelection
+        case 11:
+            nextButton.isHidden = false
+            nextButton.isEnabled = exerciseCaloriesRecordVm.hasSelection
+        case 12:
+            nextButton.isHidden = false
+            nextButton.isEnabled = cardioFrequencyVm.hasSelection
+        case 13:
+            nextButton.isHidden = false
+            nextButton.isEnabled = strengthTrainingFrequencyVm.hasSelection
         default:
             nextButton.isHidden = true
             nextButton.isEnabled = false
@@ -320,6 +373,22 @@ extension GuidanceVC{
         isShowingMealsSummary = false
         mealsSummaryVm.isHidden = true
         naviVm.isHidden = false
+    }
+
+    func showStrengthTrainingSummary() {
+        isShowingStrengthTrainingSummary = true
+        strengthTrainingSummaryVm.isHidden = false
+        naviVm.isHidden = true
+        nextButton.isHidden = true
+        nextButton.isEnabled = false
+    }
+
+    func hideStrengthTrainingSummary() {
+        guard isShowingStrengthTrainingSummary else { return }
+        isShowingStrengthTrainingSummary = false
+        strengthTrainingSummaryVm.isHidden = true
+        naviVm.isHidden = false
+        updateNextButtonForCurrentStep()
     }
     @objc func loginAction(){
         openNetWorkServiceWithBolck(action: { netConnect in
@@ -353,6 +422,7 @@ extension GuidanceVC{
         view.addSubview(naviVm)
         view.addSubview(nextButton)
         view.addSubview(mealsSummaryVm)
+        view.addSubview(strengthTrainingSummaryVm)
         view.addSubview(loginAlertVm)
         view.addSubview(notRegistVm)
         view.addSubview(bodyFatAlertVm)
@@ -373,6 +443,9 @@ extension GuidanceVC{
         scrollViewBase.addSubview(takeoutFrequencyVm)
         scrollViewBase.addSubview(mealsPerDayVm)
         scrollViewBase.addSubview(mealsAdjustVm)
+        scrollViewBase.addSubview(exerciseCaloriesRecordVm)
+        scrollViewBase.addSubview(cardioFrequencyVm)
+        scrollViewBase.addSubview(strengthTrainingFrequencyVm)
         
         setConstrait()
         moveToStep(index: 0, animated: false)

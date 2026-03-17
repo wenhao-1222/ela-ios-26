@@ -42,6 +42,9 @@ class QuestinonaireMsgModel{
     var guidanceTakeoutFrequencyType = ""//引导页：每周外卖频次
     var guidanceMealsPerDayType = ""//引导页：每天习惯吃几餐
     var guidanceMealsAdjustType = ""//引导页：每日餐数调整偏好
+    var guidanceExerciseCaloriesRecordType = ""//引导页：是否记录运动消耗热量
+    var guidanceCardioFrequencyType = ""//引导页：日常有氧频次
+    var guidanceStrengthTrainingFrequencyType = ""//引导页：力量训练频次
     var planWeeks = ""
     var dailyfoodsqty = "2"
     
@@ -88,6 +91,9 @@ class QuestinonaireMsgModel{
         DLLog(message: "引导外卖频次：\(guidanceTakeoutFrequencyType)")
         DLLog(message: "引导每日餐数：\(guidanceMealsPerDayType)")
         DLLog(message: "引导餐数调整：\(guidanceMealsAdjustType)")
+        DLLog(message: "引导运动热量记录：\(guidanceExerciseCaloriesRecordType)")
+        DLLog(message: "引导有氧频次：\(guidanceCardioFrequencyType)")
+        DLLog(message: "引导力量训练频次：\(guidanceStrengthTrainingFrequencyType)")
         DLLog(message: "计划时长：\(planWeeks)周")
         DLLog(message: "单日食物种类：\(dailyfoodsqty)")
         DLLog(message: "************   食物   ***************")
@@ -145,6 +151,9 @@ class QuestinonaireMsgModel{
         self.guidanceTakeoutFrequencyType = ""
         self.guidanceMealsPerDayType = ""
         self.guidanceMealsAdjustType = ""
+        self.guidanceExerciseCaloriesRecordType = ""
+        self.guidanceCardioFrequencyType = ""
+        self.guidanceStrengthTrainingFrequencyType = ""
         self.planWeeks = ""
         self.dailyfoodsqty = "2"
         self.foodsMsgProteins.removeAllObjects()

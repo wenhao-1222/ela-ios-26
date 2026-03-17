@@ -61,6 +61,14 @@ class DietPlanCreateYearVM: UIView {
 }
 
 extension DietPlanCreateYearVM{
+    func applyDefaultAge(_ age: Int) {
+        let targetYear = Date().currentYear - age
+        guard let yearArray = yearDataArray as? [Int],
+              let index = yearArray.firstIndex(of: targetYear) else { return }
+        defaultIndex = index
+        pickerView.selectRow(index, inComponent: 0, animated: false)
+        QuestinonaireMsgModel.shared.birthDay = "\(targetYear)"
+    }
     
     func getBirthDayData() {
         let index = pickerView.selectedRow(inComponent: 0)
