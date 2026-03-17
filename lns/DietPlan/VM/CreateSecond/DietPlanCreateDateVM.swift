@@ -119,6 +119,26 @@ class DietPlanCreateDateVM: UIView {
 }
 
 extension DietPlanCreateDateVM {
+    func restoreDateRange(start startDate: Date, end endDate: Date) {
+        let normalizedStart = startOfDay(startDate)
+        let normalizedEnd = startOfDay(endDate)
+
+        self.startDate = clampDate(normalizedStart,
+                                   min: startSelectableMinDate(),
+                                   max: startSelectableMaxDate())
+
+        if let restoredStartDate = self.startDate {
+            self.endDate = clampDate(normalizedEnd,
+                                     min: restoredStartDate,
+                                     max: endSelectableMaxDate(for: restoredStartDate))
+        } else {
+            self.endDate = nil
+        }
+
+        updateDateButtons()
+        updateNextButtonState()
+    }
+
     @objc func startDateTapAction() {
         showDatePickerAlert(type: .start)
         
@@ -193,6 +213,10 @@ extension DietPlanCreateDateVM {
                                     min: startDate,
                                     max: endSelectableMaxDate(for: startDate))
             }
+        }
+        if let startDate = startDate, let endDate = endDate, isCurrentDateRangeValid() {
+            QuestinonaireMsgModel.shared.chartStartDate = startDate
+            QuestinonaireMsgModel.shared.chartEndDate = endDate
         }
         updateDateButtons()
         updateNextButtonState()

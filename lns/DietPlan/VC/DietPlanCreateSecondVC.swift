@@ -12,6 +12,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     private var isDateStepEnabled = false
     private var isShowingManualTargetEditor = false
     private var shouldPreserveManualTargetCalories = false
+    private var hasRestoredDateRangeFromResponse = false
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -386,12 +387,24 @@ extension DietPlanCreateSecondVC {
         model.goalImportance = stringValue(from: data["goalImportance"])
         model.dietType = stringValue(from: data["dietType"])
         model.specialAdjustmentType = defaultSpecialAdjustmentType(from: model.goal)
+        hasRestoredDateRangeFromResponse = false
+        if let startDate = dateValue(from: data["startDate"]),
+           let endDate = dateValue(from: data["endDate"]) {
+            model.chartStartDate = startDate
+            model.chartEndDate = endDate
+            hasRestoredDateRangeFromResponse = true
+        }
 
         applyRestoredQuestionnaireDataToCurrentSteps()
         model.printModelMsg()
     }
 
     func applyRestoredQuestionnaireDataToCurrentSteps() {
+        if hasRestoredDateRangeFromResponse {
+            dateVm.restoreDateRange(start: QuestinonaireMsgModel.shared.chartStartDate,
+                                    end: QuestinonaireMsgModel.shared.chartEndDate)
+        }
+
         if let weightValue = parsedWeight(from: QuestinonaireMsgModel.shared.weight) {
             let tenths = Int((weightValue * 10).rounded())
             let integer = tenths / 10
@@ -414,6 +427,10 @@ extension DietPlanCreateSecondVC {
 
         recommendIntakeVm.refreshContent()
         mealModeVm.refreshOptions(caloriesText: QuestinonaireMsgModel.shared.caloriesNumber)
+        allergyVm.applyGoalFilter()
+        if !QuestinonaireMsgModel.shared.foodAllergy.isEmpty {
+            allergyVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.foodAllergy)
+        }
         if !QuestinonaireMsgModel.shared.specialAdjustmentType.isEmpty {
             specialAdjustmentVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.specialAdjustmentType)
         }
@@ -435,6 +452,31 @@ extension DietPlanCreateSecondVC {
             return number.stringValue
         }
         return ""
+    }
+
+    func dateValue(from value: Any?) -> Date? {
+        let text = stringValue(from: value)
+        guard !text.isEmpty else {
+            return nil
+        }
+
+        let formatters: [DateFormatter] = {
+            let formats = ["yyyy-MM-dd", "yyyy.MM.dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd'T'HH:mm:ss"]
+            return formats.map { format in
+                let formatter = DateFormatter()
+                formatter.dateFormat = format
+                formatter.calendar = Calendar(identifier: .gregorian)
+                formatter.locale = Locale(identifier: "en_US_POSIX")
+                return formatter
+            }
+        }()
+
+        for formatter in formatters {
+            if let date = formatter.date(from: text) {
+                return Calendar(identifier: .gregorian).startOfDay(for: date)
+            }
+        }
+        return nil
     }
 
     func syncCaloriesNumberForRecommendStepIfNeeded() {

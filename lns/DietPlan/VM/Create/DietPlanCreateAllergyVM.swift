@@ -206,6 +206,36 @@ extension DietPlanCreateAllergyVM {
         selectedBlock?()
     }
 
+    func restoreSelection(modelValue: String) {
+        let selectedTitles = modelValue
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+
+        var restoredIndexes = Set<Int>()
+        if selectedTitles.contains("无"), let noneIndex = dataArray.firstIndex(of: "无") {
+            restoredIndexes.insert(noneIndex)
+        } else {
+            for title in selectedTitles {
+                if let index = dataArray.firstIndex(of: title) {
+                    restoredIndexes.insert(index)
+                }
+            }
+        }
+
+        selectedIndexes = restoredIndexes
+        selectedIndex = selectedIndexes.sorted().first ?? -1
+
+        if selectedIndexes.isEmpty {
+            QuestinonaireMsgModel.shared.foodAllergy = ""
+        } else {
+            let restoredTitles = selectedIndexes.sorted().map { dataArray[$0] }
+            QuestinonaireMsgModel.shared.foodAllergy = restoredTitles.joined(separator: ",")
+        }
+
+        refreshListUI()
+    }
+
     func selectItem(index: Int) {
         guard index >= 0 && index < dataArray.count else {
             return
