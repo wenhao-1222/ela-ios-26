@@ -40,6 +40,8 @@ class QuestinonaireMsgModel{
     var guidanceDietRecordType = ""//引导页：之前是否记录过饮食
     var guidanceFixedTargetType = ""//引导页：是否已有固定每日摄入目标
     var guidanceTakeoutFrequencyType = ""//引导页：每周外卖频次
+    var guidanceMealsPerDayType = ""//引导页：每天习惯吃几餐
+    var guidanceMealsAdjustType = ""//引导页：每日餐数调整偏好
     var planWeeks = ""
     var dailyfoodsqty = "2"
     
@@ -84,6 +86,8 @@ class QuestinonaireMsgModel{
         DLLog(message: "引导饮食记录：\(guidanceDietRecordType)")
         DLLog(message: "引导固定目标：\(guidanceFixedTargetType)")
         DLLog(message: "引导外卖频次：\(guidanceTakeoutFrequencyType)")
+        DLLog(message: "引导每日餐数：\(guidanceMealsPerDayType)")
+        DLLog(message: "引导餐数调整：\(guidanceMealsAdjustType)")
         DLLog(message: "计划时长：\(planWeeks)周")
         DLLog(message: "单日食物种类：\(dailyfoodsqty)")
         DLLog(message: "************   食物   ***************")
@@ -139,6 +143,8 @@ class QuestinonaireMsgModel{
         self.guidanceDietRecordType = ""
         self.guidanceFixedTargetType = ""
         self.guidanceTakeoutFrequencyType = ""
+        self.guidanceMealsPerDayType = ""
+        self.guidanceMealsAdjustType = ""
         self.planWeeks = ""
         self.dailyfoodsqty = "2"
         self.foodsMsgProteins.removeAllObjects()

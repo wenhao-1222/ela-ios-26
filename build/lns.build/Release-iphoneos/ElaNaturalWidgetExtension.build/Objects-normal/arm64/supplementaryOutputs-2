@@ -1,0 +1,12 @@
+{
+  "/Users/lns2/Desktop/lnsapp-ios/ElaNaturalWidget/ElaNaturalWidget.swift" : {
+    "abi-baseline-json" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetExtension.abi.json",
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetExtension-primary.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetExtension-primary.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetExtension-primary.dia",
+    "objc-header" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetExtension-Swift.h",
+    "swiftdoc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetExtension.swiftdoc",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetExtension.swiftmodule",
+    "swiftsourceinfo" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetExtension.swiftsourceinfo"
+  }
+}

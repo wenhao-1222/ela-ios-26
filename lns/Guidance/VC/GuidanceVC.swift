@@ -12,8 +12,9 @@ import UMCommon
 class GuidanceVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
-    private let totalSteps = 9
+    private let totalSteps = 11
     private var nextButtonEnableWorkItem: DispatchWorkItem?
+    private var isShowingMealsSummary = false
     
     override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = true
@@ -44,6 +45,9 @@ class GuidanceVC: WHBaseViewVC {
         vm.backButton.isHidden = false
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
+            if self.isShowingMealsSummary {
+                return
+            }
             if self.currentIndex == 0 {
                 self.backTapAction()
                 return
@@ -53,7 +57,7 @@ class GuidanceVC: WHBaseViewVC {
         return vm
     }()
     lazy var stepsArray: [Int] = {
-        return [9,0,0]
+        return [4,4,3]
     }()
     lazy var loginAlertVm : LoginAlertVm = {
         let vm = LoginAlertVm.init(frame: .zero)
@@ -179,6 +183,29 @@ class GuidanceVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var mealsPerDayVm: GuidanceMealsPerDayVM = {
+        let vm = GuidanceMealsPerDayVM.init(frame: CGRect.init(x: SCREEN_WIDHT*9, y: 0, width: 0, height: 0))
+        vm.selectedBlock = { [weak self] in 
+            self?.updateNextButtonForCurrentStep()
+        }
+        return vm
+    }()
+    lazy var mealsSummaryVm: GuidanceMealsSummaryVM = {
+        let vm = GuidanceMealsSummaryVM.init(frame: .zero)
+        vm.isHidden = true
+        vm.nextBlock = { [weak self] in
+            self?.hideMealsSummary()
+            self?.moveToStep(index: 10, animated: true)
+        }
+        return vm
+    }()
+    lazy var mealsAdjustVm: GuidanceMealsAdjustVM = {
+        let vm = GuidanceMealsAdjustVM.init(frame: CGRect.init(x: SCREEN_WIDHT*10, y: 0, width: 0, height: 0))
+        vm.selectedBlock = { [weak self] in
+            self?.updateNextButtonForCurrentStep()
+        }
+        return vm
+    }()
 }
 
 
@@ -200,6 +227,11 @@ extension GuidanceVC{
         case 7:
             moveToStep(index: 8, animated: true)
         case 8:
+            moveToStep(index: 9, animated: true)
+        case 9:
+            mealsSummaryVm.refreshContentFromModel()
+            showMealsSummary()
+        case 10:
             break
         default:
             break
@@ -216,9 +248,13 @@ extension GuidanceVC{
 
     func moveToStep(index: Int, animated: Bool) {
         let targetIndex = max(0, min(index, totalSteps - 1))
+        if isShowingMealsSummary {
+            hideMealsSummary()
+        }
         currentIndex = targetIndex
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: animated)
         naviVm.updateStep(steps: stepsArray, currentStep: targetIndex)
+        naviVm.backButton.isEnabled = true
         updateNextButtonForCurrentStep()
 
         if currentIndex == 2 {
@@ -249,6 +285,12 @@ extension GuidanceVC{
         case 8:
             nextButton.isHidden = false
             nextButton.isEnabled = takeoutFrequencyVm.hasSelection
+        case 9:
+            nextButton.isHidden = false
+            nextButton.isEnabled = mealsPerDayVm.hasSelection
+        case 10:
+            nextButton.isHidden = false
+            nextButton.isEnabled = mealsAdjustVm.hasSelection
         default:
             nextButton.isHidden = true
             nextButton.isEnabled = false
@@ -263,6 +305,21 @@ extension GuidanceVC{
         }
         nextButtonEnableWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: workItem)
+    }
+
+    func showMealsSummary() {
+        isShowingMealsSummary = true
+        mealsSummaryVm.isHidden = false
+        naviVm.isHidden = true
+        nextButton.isHidden = true
+        nextButton.isEnabled = false
+    }
+
+    func hideMealsSummary() {
+        guard isShowingMealsSummary else { return }
+        isShowingMealsSummary = false
+        mealsSummaryVm.isHidden = true
+        naviVm.isHidden = false
     }
     @objc func loginAction(){
         openNetWorkServiceWithBolck(action: { netConnect in
@@ -295,6 +352,7 @@ extension GuidanceVC{
         view.addSubview(scrollViewBase)
         view.addSubview(naviVm)
         view.addSubview(nextButton)
+        view.addSubview(mealsSummaryVm)
         view.addSubview(loginAlertVm)
         view.addSubview(notRegistVm)
         view.addSubview(bodyFatAlertVm)
@@ -313,6 +371,8 @@ extension GuidanceVC{
         scrollViewBase.addSubview(heightVm)
         scrollViewBase.addSubview(bodyfatVm)
         scrollViewBase.addSubview(takeoutFrequencyVm)
+        scrollViewBase.addSubview(mealsPerDayVm)
+        scrollViewBase.addSubview(mealsAdjustVm)
         
         setConstrait()
         moveToStep(index: 0, animated: false)
