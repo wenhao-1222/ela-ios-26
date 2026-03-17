@@ -437,6 +437,9 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Report/Week/WeekReportNoDataVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/naturalStat/PaddingLabel.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/NetWork/DeviceUUIDManager.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/GuidanceDietRecordVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/GuidanceFixedTargetVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/GuidanceSexVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/data/DataDetailShareLineChartView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Foods/FoodsCreateSpecAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/data/MainDataLineChartYXaisView.swift
@@ -444,6 +447,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Journal/JounalCollectionCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/Main/PlanLeadIntoDetailsMsgAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Login/VM/LoginCodeVerifyVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VC/GuidanceVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Invite/InviteRewardsVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Service/ServiceCameraCaptureViewController.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/WidgetUtils/Widget+Date+Exs.swift

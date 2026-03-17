@@ -699,7 +699,8 @@ extension FirstLaunchVC{
     }
     private func changeRootToNeedBuildPlan() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let navVc = UINavigationController(rootViewController: NeedBuildPlanVC())
+//        let navVc = UINavigationController(rootViewController: NeedBuildPlanVC())
+        let navVc = UINavigationController(rootViewController: GuidanceVC())
         appDelegate.switchRootViewController(to: navVc)
     }
     func changeRootVC() {

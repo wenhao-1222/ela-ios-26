@@ -30,6 +30,7 @@ class GuideTotalFirstVM: UIView {
     private var pageDisplayDate = Date()
     /// Ensures navigation only happens once
     private var hasScheduledNext = false
+    var shouldAutoStartChartAnimation = true
     
     let chart = ProgressChartView()
 //    let chart = WeightChangeChartView()
@@ -220,6 +221,7 @@ extension GuideTotalFirstVM{
 //                chart.heightAnchor.constraint(equalToConstant: 240)
 //            ])
         DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+            guard self.shouldAutoStartChartAnimation else { return }
             self.chart.startGradientAnimation()
         })
         
@@ -279,6 +281,38 @@ extension GuideTotalFirstVM{
         
         nextTapView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+    }
+    
+    func updateConstraitForGuidance() {
+        titleLab.numberOfLines = 2
+        
+        titleLab.setLineHeight(textString: "Elavatine能够帮助你\n用更短的时间达到目标", lineHeight: titleLab.font.lineHeight * 1.2)
+        titleLab.snp.remakeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(35))
+        }
+        downImgIcon.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(30))
+            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(54))
+            make.width.equalTo(kFitWidth(14))
+            make.height.equalTo(kFitWidth(20))
+        }
+        logoImgView.snp.remakeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalTo(chart.snp.bottom).offset(kFitWidth(35))
+            make.width.equalTo(kFitWidth(111))
+//            make.bottom.equalTo(tipsLabel.snp.top).offset(kFitWidth(-50))
+        }
+        let font = UIFont.systemFont(ofSize: 11, weight: .regular)
+        let widths = tipsLines.map { line -> CGFloat in
+            return (line as NSString).size(withAttributes: [.font: font]).width
+        }
+        tipsLabel1.snp.remakeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(logoImgView.snp.bottom).offset(kFitWidth(35))
+//            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(30))
+            make.width.equalTo(widths[0])
         }
     }
     

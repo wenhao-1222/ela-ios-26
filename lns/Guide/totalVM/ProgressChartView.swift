@@ -44,6 +44,7 @@ class ProgressChartView: UIView {
     }()
     var animationProgress: CGFloat = 0.0
     var displayLink: CADisplayLink?
+    var gradientAnimationDidFinish: (() -> Void)?
     
    /// 设置记录折线的渐变色
    func setRecordedLineGradient(start: UIColor, end: UIColor) {
@@ -76,6 +77,7 @@ class ProgressChartView: UIView {
 //            animationProgress = 1.0
             displayLink?.invalidate()
             displayLink = nil
+            gradientAnimationDidFinish?()
         }
         setNeedsDisplay() // 触发 draw(_:)
     }
