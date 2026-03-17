@@ -141,7 +141,7 @@ extension HabitRankListHeadCupVM{
 //            imgWidth = model.isCurrentTier ? kFitWidth(85.5) : kFitWidth(55)
 //            imgHeight = model.isCurrentTier ? kFitWidth(110) : kFitWidth(70)
             
-            imgWidth = model.isCurrentTier ? kFitWidth(120) : kFitWidth(80)
+            imgWidth = model.isCurrentTier ? kFitWidth(96) : kFitWidth(80)
             imgHeight = imgWidth
             
             img.frame = CGRect.init(x: imgOriginX,

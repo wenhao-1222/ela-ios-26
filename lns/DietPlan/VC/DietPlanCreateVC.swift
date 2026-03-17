@@ -424,9 +424,18 @@ extension DietPlanCreateVC{
             let currentWeight = Double(currentWeightText),
             let targetWeight = Double(targetWeightText)
         else {
+            if goalVm.buildUserGoal().contains(7){
+                return true
+            }
             return false
         }
-        let isSkip = abs(currentWeight - targetWeight) < 0.05
+        var isSkip = abs(currentWeight - targetWeight) < 0.05
+        
+        //2026年03月16日17:48:27    如果第一步选择了增肌 +  降血脂，默认跳过8/9
+        if goalVm.buildUserGoal().contains(7){
+            isSkip = true
+        }
+        
         let off = skipMealStyle ? SCREEN_WIDHT : 0
         if skipMealStyle{
             self.stepsArray = isSkip ? [5,5,4] : [5,5,6]

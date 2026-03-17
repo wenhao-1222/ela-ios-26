@@ -11,6 +11,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     var currentIndex: Int = 0
     private var isDateStepEnabled = false
     private var isShowingManualTargetEditor = false
+    private var shouldPreserveManualTargetCalories = false
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -41,7 +42,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         return vm
     }()
     lazy var stepsArray: [Int] = {
-        return [5,6,6]
+        return [3,3,4]
     }()
     lazy var nextButton: UIButton = {
         let btn = UIButton(type: .custom)
@@ -107,6 +108,34 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         }
         return vm
     }()
+//    lazy var flavorVM: DietPlanCreateFlavorVM = {
+//        let vm = DietPlanCreateFlavorVM(frame: CGRect(x: SCREEN_WIDHT * 8, y: 0, width: 0, height: 0))
+//        vm.selectedBlock = {[weak self] in
+//            self?.syncNextButtonEnableStatus()
+//        }
+//        return vm
+//    }()
+    lazy var allergyVm: DietPlanCreateAllergyVM = {
+        let vm = DietPlanCreateAllergyVM(frame: CGRect(x: SCREEN_WIDHT * 7, y: 0, width: 0, height: 0))
+        vm.selectedBlock = {[weak self] in
+            self?.syncNextButtonEnableStatus()
+        }
+        return vm
+    }()
+    lazy var specialAdjustmentVm: DietPlanCreateSpecialAdjustmentVM = {
+        let vm = DietPlanCreateSpecialAdjustmentVM(frame: CGRect(x: SCREEN_WIDHT * 8, y: 0, width: 0, height: 0))
+        vm.selectedBlock = { [weak self] in
+            self?.syncNextButtonEnableStatus()
+        }
+        return vm
+    }()
+    lazy var mealModeVm: DietPlanCreateMealModeSecondVM = {
+        let vm = DietPlanCreateMealModeSecondVM(frame: CGRect(x: SCREEN_WIDHT * 9, y: 0, width: 0, height: 0))
+        vm.selectedBlock = { [weak self] in
+            self?.syncNextButtonEnableStatus()
+        }
+        return vm
+    }()
     lazy var manualTargetVm: DietPlanCreateManualTargetVM = {
         let vm = DietPlanCreateManualTargetVM(frame: CGRect(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vm.backTapBlock = { [weak self] in
@@ -131,9 +160,16 @@ extension DietPlanCreateSecondVC{
             return
         }
 
+        if currentIndex == 5 {
+            syncCaloriesNumberForRecommendStepIfNeeded()
+            
+        }
         let nextIndex = nextStepIndex(from: currentIndex)
         if currentIndex == 3 {
             sendBasicRequest()
+        }
+        if currentIndex == 6{
+            mealModeVm.refreshOptions(caloriesText: QuestinonaireMsgModel.shared.caloriesNumber)
         }
         let targetOffsetX = SCREEN_WIDHT * CGFloat(nextIndex)
         let finalOffsetX = min(targetOffsetX, maxOffsetX)
@@ -170,6 +206,12 @@ extension DietPlanCreateSecondVC{
             nextButton.isEnabled = isDateStepEnabled
         case 6:
             nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
+        case 7:
+            nextButton.isEnabled = allergyVm.selectedIndex >= 0
+        case 8:
+            nextButton.isEnabled = specialAdjustmentVm.selectedIndex >= 0
+        case 9:
+            nextButton.isEnabled = mealModeVm.selectedIndex >= 0
         default:
             nextButton.isEnabled = true
         }
@@ -230,7 +272,11 @@ extension DietPlanCreateSecondVC{
         self.scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: false)
         self.updateNextButtonForCurrentStep(animated: true)
         QuestinonaireMsgModel.shared.caloriesNumber = value
-//        recommendIntakeVm.updateCalories(value)
+        shouldPreserveManualTargetCalories = true
+        mealModeVm.refreshOptions(caloriesText: value)
+        if !QuestinonaireMsgModel.shared.mealsPerDay.isEmpty {
+            mealModeVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.mealsPerDay)
+        }
         hideManualTargetEditor(isBack: false)
     }
 }
@@ -254,7 +300,10 @@ extension DietPlanCreateSecondVC{
         scrollViewBase.addSubview(paceVm)
         scrollViewBase.addSubview(recommendIntakeVm)
         scrollViewBase.addSubview(eatStyleVm)
-        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT*7, height: 0)
+        scrollViewBase.addSubview(allergyVm)
+        scrollViewBase.addSubview(specialAdjustmentVm)
+        scrollViewBase.addSubview(mealModeVm)
+        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT*10, height: 0)
         
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
@@ -307,6 +356,10 @@ extension DietPlanCreateSecondVC{
 
             DispatchQueue.main.async {
                 self.recommendIntakeVm.updateCalories(caloriesText)
+                self.mealModeVm.refreshOptions(caloriesText: caloriesText)
+                if !QuestinonaireMsgModel.shared.mealsPerDay.isEmpty {
+                    self.mealModeVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.mealsPerDay)
+                }
             }
         }
     }
@@ -332,6 +385,7 @@ extension DietPlanCreateSecondVC {
         model.mealsPerDay = stringValue(from: data["dailyMeals"])
         model.goalImportance = stringValue(from: data["goalImportance"])
         model.dietType = stringValue(from: data["dietType"])
+        model.specialAdjustmentType = defaultSpecialAdjustmentType(from: model.goal)
 
         applyRestoredQuestionnaireDataToCurrentSteps()
         model.printModelMsg()
@@ -359,8 +413,15 @@ extension DietPlanCreateSecondVC {
         }
 
         recommendIntakeVm.refreshContent()
+        mealModeVm.refreshOptions(caloriesText: QuestinonaireMsgModel.shared.caloriesNumber)
+        if !QuestinonaireMsgModel.shared.specialAdjustmentType.isEmpty {
+            specialAdjustmentVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.specialAdjustmentType)
+        }
         if !QuestinonaireMsgModel.shared.dietType.isEmpty {
             eatStyleVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.dietType)
+        }
+        if !QuestinonaireMsgModel.shared.mealsPerDay.isEmpty {
+            mealModeVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.mealsPerDay)
         }
         
         syncNextButtonEnableStatus()
@@ -374,6 +435,22 @@ extension DietPlanCreateSecondVC {
             return number.stringValue
         }
         return ""
+    }
+
+    func syncCaloriesNumberForRecommendStepIfNeeded() {
+        defer {
+            shouldPreserveManualTargetCalories = false
+        }
+
+        guard !shouldPreserveManualTargetCalories else {
+            return
+        }
+
+        let caloriesText = recommendIntakeVm.caloriesLabel.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        guard !caloriesText.isEmpty, caloriesText != "--" else {
+            return
+        }
+        QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
     }
 
     func birthYear(from value: Any?) -> String {
@@ -478,5 +555,29 @@ extension DietPlanCreateSecondVC {
             return ""
         }
         return "\(serverValue - 1)"
+    }
+
+    func defaultSpecialAdjustmentType(from goals: String) -> String {
+        let normalized = goals.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalized.isEmpty else {
+            return ""
+        }
+        let combined = normalized.lowercased()
+        if combined.contains("尿酸") {
+            return "1"
+        }
+        if combined.contains("血脂") {
+            return "2"
+        }
+        let tokens = normalized
+            .split(whereSeparator: { ",|， ".contains($0) })
+            .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
+        if tokens.contains("8") {
+            return "1"
+        }
+        if tokens.contains("7") {
+            return "2"
+        }
+        return ""
     }
 }
