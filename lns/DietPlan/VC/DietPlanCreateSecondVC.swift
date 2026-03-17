@@ -371,7 +371,7 @@ extension DietPlanCreateSecondVC{
             return
         }
 
-        syncCaloriesNumberForRecommendStepIfNeeded()
+//        syncCaloriesNumberForRecommendStepIfNeeded()
         isSubmittingFinalFlow = true
         syncNextButtonEnableStatus()
         createPlanLoadingVm.updateConfig(createPlanLoadingConfig)
