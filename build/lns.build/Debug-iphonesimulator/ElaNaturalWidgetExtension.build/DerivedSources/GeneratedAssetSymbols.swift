@@ -619,6 +619,9 @@ extension ImageResource {
     /// The "dietplan_empty_img" asset catalog image resource.
     static let dietplanEmptyImg = ImageResource(name: "dietplan_empty_img", bundle: resourceBundle)
 
+    /// The "dietplan_foods_refresh_icon" asset catalog image resource.
+    static let dietplanFoodsRefreshIcon = ImageResource(name: "dietplan_foods_refresh_icon", bundle: resourceBundle)
+
     /// The "dietplan_plan_change_icon" asset catalog image resource.
     static let dietplanPlanChangeIcon = ImageResource(name: "dietplan_plan_change_icon", bundle: resourceBundle)
 
@@ -5090,6 +5093,15 @@ extension AppKit.NSImage {
     static var dietplanEmptyImg: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .dietplanEmptyImg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "dietplan_foods_refresh_icon" asset catalog image.
+    static var dietplanFoodsRefreshIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .dietplanFoodsRefreshIcon)
 #else
         .init()
 #endif
@@ -10723,6 +10735,15 @@ extension UIKit.UIImage {
     static var dietplanEmptyImg: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .dietplanEmptyImg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "dietplan_foods_refresh_icon" asset catalog image.
+    static var dietplanFoodsRefreshIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .dietplanFoodsRefreshIcon)
 #else
         .init()
 #endif

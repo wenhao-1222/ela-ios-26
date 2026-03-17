@@ -440,7 +440,8 @@ extension DietPlanCreateDateVC{
             self.createPlanLoadingVm.completeSuccess { [weak self] in
                 guard let self = self else { return }
                 self.isSubmittingCreatePlan = false
-                self.updateNextButtonState()
+                self.backAction()
+//                self.updateNextButtonState()
             }
         } failure: { [weak self] isError in
             guard let self = self else { return }

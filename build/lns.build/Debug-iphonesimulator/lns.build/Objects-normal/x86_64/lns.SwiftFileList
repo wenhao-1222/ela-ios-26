@@ -115,6 +115,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/NetWork/WHNetworkUtil.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Service/ServiceOrderTableViewCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VC/Habit/HabitDetailVC.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VC/DietPlanBuyListVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VC/Plan/PlanListVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Meals/MealsNameVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Invite/WithDrawVC.swift
@@ -126,6 +127,8 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/sport/SportCatogaryItemCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Other/MineVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/Circle/GoalCircleTagsItemVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VC/DietPlanFoodsDetailVC.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Main/DietPlanFoodsAddAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/data/DataAddFilterVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Questionnaire/VM/QuestionnaireGoalVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VC/Data/BodyDataShowImageVC.swift
@@ -187,6 +190,12 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Login/VM/LoginPhoneTypeAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/Comment/ForumCommentListVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Report/Week/JournalReportWeekMsgShareVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/CreateSecond/DietPlanCreatePaceSecondVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/CreateSecond/DietPlanCreateRecommendIntakeVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/CreateSecond/DietPlanCreateManualTargetVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/CreateSecond/DietPlanCreateEatStyleSecondVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/CreateSecond/DietPlanCreateSpecialAdjustmentVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/CreateSecond/DietPlanCreateMealModeSecondVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/Comment/ForumCommentFuncAlertItemVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/ForumMain/LiquidGlassShadow.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VC/FoodsMsgDetailsVC.swift
@@ -278,11 +287,14 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/ColorWheelView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Foods/FoodsListHeaderNoDataVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Journal/LogsRemarkNewVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VC/DietPlanCondimentVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/naturalStat/Bar/NaturalStatCaloriesBarItemView.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/CreateSecond/DietPlanCreateDateVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VC/JournalReportVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/naturalStat/Bar/NaturalStatCaloriesBarChartView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Common/Tools/MJRefreshHeader+Exs.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/Model/ServiceContactVideoManager.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Main/DietPlanBuyListDateCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/Model/AddressModel.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Service/ServiceVideoProgressRing.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VC/JournalWaterVC.swift
@@ -296,7 +308,9 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Welcome/VM/WelcomeProtocalVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VC/Plan/PlanDetailVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/WHUtil/UIVisualEffectView+Exs.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VC/DietPlanFoodsChangeListVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/RankingList/FriendListVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VC/DietPlanCreateSecondVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Service/ServiceContactVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Honor/FireworkParticlesBurst.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/sport/SportCatogaryTableViewCell.swift
@@ -847,6 +861,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/Model/CourseProgressSQLiteManager.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/WHUtil/TouchGenerator.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/Course/List/CoursePDFCell.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VC/DietPlanBuyListDateVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Personal/PersonalTopVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/goal/GoalOtherSetTypeVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/habit/Guide/HabitGuideSecondVM.swift
@@ -956,6 +971,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/habit/Progress/HabitRuleTableViewCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/Soup/Sources/SimpleDictionary.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/Soup/Sources/TokenQueue.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Main/DietPlanFoodsChangeCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VC/Habit/HabitVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/Soup/Sources/DataNode.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/Soup/Sources/Validate.swift
@@ -1002,6 +1018,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Honor/HonorVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/Soup/Sources/Tokeniser.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/Soup/Sources/UnfairLock.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Main/DietPlanFakeProgressLoadingVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/Model/ForumCommentReplyModel.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Journal/JournalTableViewCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/Course/List/CourseLastMsgVM.swift
@@ -1026,6 +1043,8 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/AICapturePhotoVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/TipsAlert/AITipsAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/goal/GoalSetSpecPercentVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Main/DietPlanBuyListFoodsCell.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Main/DietPlanCondimentCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Setting/SettingTopVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/habit/Progress/HabitRuleTableViewImgTextCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/Model/BodyDataSQLiteManagerOld.swift

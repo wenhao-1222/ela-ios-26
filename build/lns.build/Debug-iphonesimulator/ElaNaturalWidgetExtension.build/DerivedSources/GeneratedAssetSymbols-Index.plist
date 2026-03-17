@@ -1971,6 +1971,16 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameDietplanFoodsRefreshIcon</string>
+			<key>relativePath</key>
+			<string>./dietplan/dietplan_foods_refresh_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>dietplanFoodsRefreshIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameDietplanPlanChangeIcon</string>
 			<key>relativePath</key>
 			<string>./dietplan/dietplan_plan_change_icon.imageset</string>

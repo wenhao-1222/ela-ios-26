@@ -818,6 +818,7 @@ extension DietPlanCreateVC{
         }
         isUploadingDietProfile = true
         let flavorPreferences = flavorVM.selectedIndex == 4 ? 1 : (flavorVM.selectedIndex + 1)
+        let goalImportance = importantVm.selectedIndex < 0 ? 4 : (importantVm.selectedIndex == 3 ? 1 : importantVm.selectedIndex + 1)
         var param = ["userGoal":goalVm.buildUserGoal(),
                      "birthday":QuestinonaireMsgModel.shared.birthDay,
                      "gender":QuestinonaireMsgModel.shared.sex,
@@ -826,7 +827,7 @@ extension DietPlanCreateVC{
                      "height":QuestinonaireMsgModel.shared.height,
                      "bodyFat":QuestinonaireMsgModel.shared.bodyFat,
                      "dailyActivityLevel":QuestinonaireMsgModel.shared.events,
-                     "goalImportance":"\(importantVm.selectedIndex+1)",
+                     "goalImportance":"\(goalImportance)",
                      "goalTimeline":QuestinonaireMsgModel.shared.paceLevel,
                      "foodRestrictions":allergyVm.buildFoodRestrictions(),
                      "dietBarriers":barrierVm.buildDietBarriers(),
@@ -835,6 +836,12 @@ extension DietPlanCreateVC{
                      "dietMethodExperience":ketoHistoryVm.selectedIndex + 1,
                      "flavorPreferences":flavorPreferences] as [String : Any]
         
+//        if importantVm.selectedIndex < 0 {
+//            param.removeValue(forKey: "goalImportance")
+//        }
+        if ketoHistoryVm.selectedIndex + 1 <= 0{
+            param.removeValue(forKey: "dietMethodExperience")
+        }
         shouldSkipDraftPersistence = true
         clearDraftIfNeeded()
         

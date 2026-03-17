@@ -597,6 +597,9 @@ static NSString * const ACImageNameDietplanDisableCoverImg AC_SWIFT_PRIVATE = @"
 /// The "dietplan_empty_img" asset catalog image resource.
 static NSString * const ACImageNameDietplanEmptyImg AC_SWIFT_PRIVATE = @"dietplan_empty_img";
 
+/// The "dietplan_foods_refresh_icon" asset catalog image resource.
+static NSString * const ACImageNameDietplanFoodsRefreshIcon AC_SWIFT_PRIVATE = @"dietplan_foods_refresh_icon";
+
 /// The "dietplan_plan_change_icon" asset catalog image resource.
 static NSString * const ACImageNameDietplanPlanChangeIcon AC_SWIFT_PRIVATE = @"dietplan_plan_change_icon";
 

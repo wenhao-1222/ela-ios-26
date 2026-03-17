@@ -14,7 +14,7 @@ class DietPlanCondimentVC: WHBaseViewVC {
         super.viewDidLoad()
         
         initUI()
-        DispatchQueue.main.asyncAfter(deadline: .now()+4, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
             self.sendSauceListRequest()
         })
     }

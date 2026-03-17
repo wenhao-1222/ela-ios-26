@@ -59,6 +59,7 @@ class DietPlanBuyListDateVC: WHBaseViewVC {
         label.textColor = .THEME
         label.font = .systemFont(ofSize: 18, weight: .regular)
         label.textAlignment = .center
+        
         return label
     }()
     
@@ -66,8 +67,11 @@ class DietPlanBuyListDateVC: WHBaseViewVC {
         let btn = UIButton()
         btn.setTitle("我的购物清单", for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
+        btn.setTitleColor(.COLOR_BUTTON_DISABLE_BG_THEME, for: .disabled)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        btn.isEnabled = false
+        btn.isHidden = true
         
         btn.addTarget(self, action: #selector(buyListTapAction), for: .touchUpInside)
         
@@ -147,6 +151,7 @@ class DietPlanBuyListDateVC: WHBaseViewVC {
         super.viewDidLoad()
         view.backgroundColor = .COLOR_BG_F2
         initNavi(titleStr: "")
+        sendBuyListRequest()
         self.navigationView.backgroundColor = .clear
         naviTitleLabel.text = ""
         dateOptions = buildDateOptions(from: sourceDateStrings)
@@ -306,5 +311,21 @@ extension DietPlanBuyListDateVC: UITableViewDataSource, UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return kFitWidth(35)
+    }
+}
+
+extension DietPlanBuyListDateVC{
+    func sendBuyListRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_shopping_list, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendBuyListRequest:\(dataObj)")
+            
+            let foodsArray = NSMutableArray(array: dataObj["shoppingList"]as? NSArray ?? [])
+            if foodsArray.count > 0{
+                self.buylistButton.isEnabled = true
+                self.buylistButton.isHidden = false
+            }
+        }
     }
 }

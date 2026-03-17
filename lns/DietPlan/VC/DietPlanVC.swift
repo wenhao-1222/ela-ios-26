@@ -15,6 +15,11 @@ class DietPlanVC: WHBaseViewVC {
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        sendDietPlanMsgRequest()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
