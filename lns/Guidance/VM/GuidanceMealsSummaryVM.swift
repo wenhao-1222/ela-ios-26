@@ -37,10 +37,10 @@ class GuidanceMealsSummaryVM: UIView {
 
     lazy var cardView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = UIColor.white.withAlphaComponent(0.9)
-        vi.layer.cornerRadius = kFitWidth(18)
+        vi.backgroundColor = .COLOR_WHITE_65//UIColor.white.withAlphaComponent(0.9)
+        vi.layer.cornerRadius = kFitWidth(12)
         vi.layer.borderWidth = 1
-        vi.layer.borderColor = UIColor.white.withAlphaComponent(0.9).cgColor
+        vi.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
         vi.clipsToBounds = true
         return vi
     }()
@@ -58,7 +58,7 @@ class GuidanceMealsSummaryVM: UIView {
         lab.numberOfLines = 0
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        lab.font = .systemFont(ofSize: 18, weight: .regular)
+        lab.font = .systemFont(ofSize: 16, weight: .regular)
         return lab
     }()
 
@@ -66,9 +66,9 @@ class GuidanceMealsSummaryVM: UIView {
         let btn = UIButton(type: .custom)
         btn.setTitle("下一步", for: .normal)
         btn.setTitleColor(.white, for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
+        btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         btn.backgroundColor = .THEME
-        btn.layer.cornerRadius = kFitWidth(25)
+        btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
         btn.enablePressEffect()
         btn.addTarget(self, action: #selector(nextTapAction), for: .touchUpInside)
@@ -142,22 +142,23 @@ extension GuidanceMealsSummaryVM {
         }
 
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(kFitWidth(48))
+            make.top.equalTo(kFitWidth(30))
+            make.height.equalTo(kFitWidth(36))
             make.centerX.equalToSuperview()
         }
 
         messageLabel.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(34))
-            make.right.equalTo(kFitWidth(-34))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(34))
+            make.left.equalTo(kFitWidth(20))
+            make.right.equalTo(kFitWidth(-20))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(20))
         }
 
         nextButton.snp.makeConstraints { make in
             make.top.equalTo(messageLabel.snp.bottom).offset(kFitWidth(50))
             make.centerX.equalToSuperview()
             make.width.equalTo(kFitWidth(232))
-            make.height.equalTo(kFitWidth(50))
-            make.bottom.equalTo(kFitWidth(-36))
+            make.height.equalTo(kFitWidth(44))
+            make.bottom.equalTo(kFitWidth(-30))
         }
     }
 }

@@ -57,7 +57,7 @@ class GuidanceVC: WHBaseViewVC {
         return vm
     }()
     lazy var stepsArray: [Int] = {
-        return [4,4,3]
+        return [7,7,8]
     }()
     lazy var loginAlertVm : LoginAlertVm = {
         let vm = LoginAlertVm.init(frame: .zero)
