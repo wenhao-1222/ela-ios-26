@@ -47,6 +47,19 @@ class GuidanceGoalBarrierVM: UIView {
         return lab
     }()
 
+    lazy var scrollView: UIScrollView = {
+        let sv = UIScrollView()
+        sv.showsVerticalScrollIndicator = false
+        sv.alwaysBounceVertical = true
+        sv.contentInsetAdjustmentBehavior = .never
+        return sv
+    }()
+
+    lazy var contentView: UIView = {
+        let vi = UIView()
+        return vi
+    }()
+
     lazy var stackView: UIStackView = {
         let st = UIStackView()
         st.axis = .vertical
@@ -94,17 +107,31 @@ extension GuidanceGoalBarrierVM {
 
     func initUI() {
         addSubview(titleLabel)
-        addSubview(stackView)
+        addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(stackView)
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(35))
         }
 
+        scrollView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(40))
+            make.bottom.equalToSuperview()
+        }
+
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+
         stackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(45))
             make.right.equalTo(kFitWidth(-45))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(80))
+            make.top.equalToSuperview().offset(kFitWidth(40))
+            make.bottom.equalToSuperview().offset(-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(88)))
         }
 
         dataArray = itemsForCurrentGoal(modelValue: QuestinonaireMsgModel.shared.goal)

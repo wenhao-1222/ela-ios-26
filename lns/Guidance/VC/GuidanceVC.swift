@@ -13,12 +13,13 @@ import UserNotifications
 class GuidanceVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
-    private let totalSteps = 20
+    private let totalSteps = 21
     private var nextButtonEnableWorkItem: DispatchWorkItem?
     private var delayedNextWorkItem: DispatchWorkItem?
     private var isShowingMealsSummary = false
     private var isShowingStrengthTrainingSummary = false
     private var isShowingFinishLoading = false
+    private var pendingNutritionGoalPresentation = false
     
     override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = true
@@ -49,7 +50,7 @@ class GuidanceVC: WHBaseViewVC {
         vm.backButton.isHidden = false
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
-            if self.isShowingMealsSummary || self.isShowingStrengthTrainingSummary || self.isShowingFinishLoading {
+            if self.isShowingMealsSummary || self.isShowingStrengthTrainingSummary || self.isShowingFinishLoading || self.currentIndex >= 19 {
                 return
             }
             if self.currentIndex == 0 {
@@ -284,8 +285,15 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceRemoveBarrierVM.init(frame: CGRect(x: SCREEN_WIDHT * 18, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         return vm
     }()
+    lazy var nutritionGoalVm: GuidanceNutritionGoalVM = {
+        let vm = GuidanceNutritionGoalVM.init(frame: CGRect(x: SCREEN_WIDHT * 19, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        vm.saveBlock = { [weak self] in
+            self?.saveGuidanceNutritionGoals()
+        }
+        return vm
+    }()
     lazy var reminderPromptVm: GuidanceReminderPromptVM = {
-        let vm = GuidanceReminderPromptVM.init(frame: CGRect(x: SCREEN_WIDHT * 19, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        let vm = GuidanceReminderPromptVM.init(frame: CGRect(x: SCREEN_WIDHT * 20, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vm.enableReminderBlock = { [weak self] in
             self?.requestReminderPermissionIfNeeded()
         }
@@ -298,7 +306,16 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceFinishLoadingVM.init(frame: .zero)
         vm.progressCompleteBlock = { [weak self] in
             guard let self = self else { return }
+            if self.pendingNutritionGoalPresentation {
+                self.pendingNutritionGoalPresentation = false
+                self.isShowingFinishLoading = false
+                self.finishLoadingVm.hideLoadingView()
+                self.naviVm.isHidden = false
+                self.moveToStep(index: 19, animated: true)
+                return
+            }
             self.isShowingFinishLoading = false
+            self.finishLoadingVm.hideLoadingView()
             self.changeRootVcToTabbar()
         }
         return vm
@@ -356,15 +373,13 @@ extension GuidanceVC{
             delayedNextWorkItem?.cancel()
             let workItem = DispatchWorkItem { [weak self] in
                 guard let self = self else { return }
-                self.nextButton.isEnabled = true
-                let nextIndex = self.currentIndex + 1
-                if nextIndex < self.totalSteps {
-                    self.moveToStep(index: nextIndex, animated: true)
-                }
+                self.startNutritionGoalLoadingFlow()
             }
             delayedNextWorkItem = workItem
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.75, execute: workItem)
         case 19:
+            break
+        case 20:
             break
         default:
             break
@@ -391,7 +406,8 @@ extension GuidanceVC{
         currentIndex = targetIndex
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: animated)
         naviVm.updateStep(steps: stepsArray, currentStep: targetIndex)
-        naviVm.backButton.isEnabled = true
+        naviVm.backButton.isEnabled = targetIndex < 19
+        naviVm.isHidden = (targetIndex == 19)
         updateNextButtonForCurrentStep()
 
         if currentIndex == 2 {
@@ -402,6 +418,9 @@ extension GuidanceVC{
         }
         if currentIndex == 18 {
             removeBarrierVm.startScrollersIfNeeded()
+        }
+        if currentIndex == 19 {
+            nutritionGoalVm.refreshContentFromModel()
         }
     }
 
@@ -458,7 +477,7 @@ extension GuidanceVC{
         case 18:
             nextButton.isHidden = false
             nextButton.isEnabled = true
-        case 19:
+        case 19, 20:
             nextButton.isHidden = true
             nextButton.isEnabled = false
         default:
@@ -474,7 +493,26 @@ extension GuidanceVC{
         naviVm.isHidden = true
         nextButton.isHidden = true
         nextButton.isEnabled = false
-        finishLoadingVm.showLoading()
+//        finishLoadingVm.showLoading()
+    }
+
+    func startNutritionGoalLoadingFlow() {
+        guard !isShowingFinishLoading else { return }
+        isShowingFinishLoading = true
+        pendingNutritionGoalPresentation = true
+        naviVm.isHidden = true
+        nextButton.isHidden = true
+        nextButton.isEnabled = false
+        finishLoadingVm.showLoading(waitForExternalCompletion: true)
+        sendGuidanceNutritionGoalRequest()
+    }
+
+    func cancelNutritionGoalLoadingFlow() {
+        pendingNutritionGoalPresentation = false
+        isShowingFinishLoading = false
+        finishLoadingVm.hideLoadingView()
+        naviVm.isHidden = false
+        updateNextButtonForCurrentStep()
     }
 
     func requestReminderPermissionIfNeeded() {
@@ -615,6 +653,68 @@ extension GuidanceVC{
             }
         }
     }
+
+    func sendGuidanceNutritionGoalRequest() {
+        let param = [
+            "gender": "\(QuestinonaireMsgModel.shared.sex)",
+            "birthday": "\(QuestinonaireMsgModel.shared.birthDay)",
+            "weight": "\(QuestinonaireMsgModel.shared.weight)",
+            "goal": "\(QuestinonaireMsgModel.shared.goal)",
+            "dailyact": "\(QuestinonaireMsgModel.shared.events)",
+            "bodyfat": "\(QuestinonaireMsgModel.shared.bodyFat)",
+            "calories": QuestinonaireMsgModel.shared.caloriesNumber == "" ? QuestinonaireMsgModel.shared.caloriesNumberFromServer : QuestinonaireMsgModel.shared.caloriesNumber
+        ]
+        DLLog(message: "sendGuidanceNutritionGoalRequest:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_question_survey_part_save, parameters: param as [String:AnyObject]) { [weak self] responseObject in
+            guard let self = self else { return }
+            let code = responseObject["code"]as? Int ?? -1
+            if (code != 200) {
+                DispatchQueue.main.async {
+                    self.cancelNutritionGoalLoadingFlow()
+                    self.presentAlertVc(confirmBtn: "刷新", message: "", title: "当前网络不稳定", cancelBtn: nil, handler: { _ in
+                        self.startNutritionGoalLoadingFlow()
+                    }, viewController: self)
+                }
+                return
+            }
+
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            let data = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendGuidanceNutritionGoalRequest:\(data)")
+
+            let carbohydrate = data["carbohydrate"] as? Int ?? Int(data.doubleValueForKey(key: "carbohydrate"))
+            let fat = data["fat"] as? Int ?? Int(data.doubleValueForKey(key: "fat"))
+            let protein = data["protein"] as? Int ?? Int(data.doubleValueForKey(key: "protein"))
+            let calories = data["calories"] as? Int ?? Int(data.doubleValueForKey(key: "calories"))
+
+            QuestinonaireMsgModel.shared.surveytype = "part"
+            QuestinonaireMsgModel.shared.carbohydratesNumber = "\(carbohydrate)"
+            QuestinonaireMsgModel.shared.fatsNumber = "\(fat)"
+            QuestinonaireMsgModel.shared.proteinNumber = "\(protein)"
+            QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
+            
+            QuestinonaireMsgModel.shared.carbohydratesNumber = "\(carbohydrate)"
+            QuestinonaireMsgModel.shared.proteinNumber = "\(protein)"
+            QuestinonaireMsgModel.shared.fatsNumber = "\(fat)"
+            QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
+
+            DispatchQueue.main.async {
+                self.nutritionGoalVm.refreshContentFromModel()
+                self.finishLoadingVm.completeLoading()
+            }
+        }
+    }
+
+    func saveGuidanceNutritionGoals() {
+        WHBaseViewVC().changeRootVcToLogin()
+//        NutritionDefaultModel.shared.saveGoals(dict: [
+//            "calories": QuestinonaireMsgModel.shared.caloriesNumber,
+//            "carbohydrates": QuestinonaireMsgModel.shared.carbohydratesNumber,
+//            "proteins": QuestinonaireMsgModel.shared.proteinNumber,
+//            "fats": QuestinonaireMsgModel.shared.fatsNumber
+//        ])
+//        moveToStep(index: 20, animated: true)
+    }
     @objc func loginAction(){
         openNetWorkServiceWithBolck(action: { netConnect in
             DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
@@ -662,7 +762,8 @@ extension GuidanceVC{
         case 16: return goalVm
         case 17: return goalBarrierVm
         case 18: return removeBarrierVm
-        case 19: return reminderPromptVm
+        case 19: return nutritionGoalVm
+        case 20: return reminderPromptVm
         default: return nil
         }
     }

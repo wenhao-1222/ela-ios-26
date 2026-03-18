@@ -12,12 +12,21 @@ class GuidanceFinishLoadingVM: UIView {
 
     var progressCompleteBlock: (() -> ())?
 
+    private enum ProgressMode {
+        case autoComplete
+        case waitForExternalCompletion
+    }
+
     private var progressTimer: Timer?
     private var displayedProgress: CGFloat = 0
     private var progressWidthConstraint: Constraint?
     private var finishHoldRemaining: TimeInterval = 0
     private var lastTickTime: CFTimeInterval = CACurrentMediaTime()
     private var hasNotifiedComplete = false
+    private var progressMode: ProgressMode = .autoComplete
+    private var externalCompletionRequested = false
+    private var loadingStartTime: CFTimeInterval = CACurrentMediaTime()
+    private var minimumDisplayDuration: TimeInterval = 0
 
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -95,8 +104,10 @@ class GuidanceFinishLoadingVM: UIView {
 }
 
 extension GuidanceFinishLoadingVM {
-    func showLoading() {
+    func showLoading(waitForExternalCompletion: Bool = false) {
         isHidden = false
+        progressMode = waitForExternalCompletion ? .waitForExternalCompletion : .autoComplete
+        minimumDisplayDuration = waitForExternalCompletion ? 3.0 : 0
         resetProgress()
         startFakeProgress()
     }
@@ -110,8 +121,17 @@ extension GuidanceFinishLoadingVM {
         displayedProgress = 0
         finishHoldRemaining = 0
         hasNotifiedComplete = false
+        externalCompletionRequested = false
+        loadingStartTime = CACurrentMediaTime()
         lastTickTime = CACurrentMediaTime()
         updateProgressUI(animated: false)
+    }
+
+    func completeLoading() {
+        externalCompletionRequested = true
+        if progressTimer == nil {
+            startFakeProgress()
+        }
     }
 
     private func startFakeProgress() {
@@ -134,6 +154,62 @@ extension GuidanceFinishLoadingVM {
         let now = CACurrentMediaTime()
         let dt = min(max(now - lastTickTime, 0.016), 0.2)
         lastTickTime = now
+        let elapsed = now - loadingStartTime
+
+        if progressMode == .waitForExternalCompletion && !externalCompletionRequested {
+            let baseSpeed: CGFloat
+            switch displayedProgress {
+            case 0..<35:
+                baseSpeed = 29
+            case 35..<60:
+                baseSpeed = 15
+            case 60..<78:
+                baseSpeed = 8
+            default:
+                baseSpeed = 4
+            }
+
+            let waitCap = waitingCapProgress(for: elapsed)
+            displayedProgress = min(displayedProgress + CGFloat(dt) * baseSpeed, waitCap)
+            updateProgressUI(animated: true)
+            return
+        }
+
+        if progressMode == .waitForExternalCompletion && externalCompletionRequested {
+            if elapsed < minimumDisplayDuration {
+                let holdCap = completionHoldCapProgress(for: elapsed)
+                let baseSpeed: CGFloat
+                switch displayedProgress {
+                case 0..<45:
+                    baseSpeed = 22
+                case 45..<75:
+                    baseSpeed = 12
+                default:
+                    baseSpeed = 6
+                }
+                displayedProgress = min(displayedProgress + CGFloat(dt) * baseSpeed, holdCap)
+                updateProgressUI(animated: true)
+                return
+            }
+
+            let finalSpeed: CGFloat
+            switch displayedProgress {
+            case 0..<90:
+                finalSpeed = 34
+            case 90..<97:
+                finalSpeed = 22
+            default:
+                finalSpeed = 12
+            }
+
+            displayedProgress = min(displayedProgress + CGFloat(dt) * finalSpeed, 100)
+            updateProgressUI(animated: true)
+            if displayedProgress >= 100 {
+                stopFakeProgress()
+                notifyCompleteIfNeeded()
+            }
+            return
+        }
 
         if displayedProgress >= 99 {
             if finishHoldRemaining <= 0 {
@@ -168,6 +244,36 @@ extension GuidanceFinishLoadingVM {
         let jitter = CGFloat.random(in: -0.12...0.18)
         displayedProgress = min(displayedProgress + CGFloat(dt) * max(1, baseSpeed + jitter * 10), 99)
         updateProgressUI(animated: true)
+    }
+
+    private func waitingCapProgress(for elapsed: TimeInterval) -> CGFloat {
+        switch elapsed {
+        case ..<0.7:
+            return 32
+        case ..<1.5:
+            return 56
+        case ..<2.3:
+            return 74
+        case ..<3.0:
+            return 88
+        default:
+            return 88
+        }
+    }
+
+    private func completionHoldCapProgress(for elapsed: TimeInterval) -> CGFloat {
+        switch elapsed {
+        case ..<1.0:
+            return 58
+        case ..<1.8:
+            return 72
+        case ..<2.5:
+            return 84
+        case ..<3.0:
+            return 92
+        default:
+            return 92
+        }
     }
 
     private func updateProgressUI(animated: Bool) {

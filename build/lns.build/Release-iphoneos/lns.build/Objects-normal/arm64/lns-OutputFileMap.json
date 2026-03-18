@@ -1783,6 +1783,11 @@
     "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceMealsSummaryVM.bc",
     "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceMealsSummaryVM.o"
   },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/GuidanceNutritionGoalVM.swift" : {
+    "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceNutritionGoalVM.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceNutritionGoalVM.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceNutritionGoalVM.o"
+  },
   "/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/GuidanceReminderPromptVM.swift" : {
     "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceReminderPromptVM.o",
     "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceReminderPromptVM.bc",
