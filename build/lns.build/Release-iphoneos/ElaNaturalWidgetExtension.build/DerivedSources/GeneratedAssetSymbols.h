@@ -1041,6 +1041,9 @@ static NSString * const ACImageNameGuideSecondImg3 AC_SWIFT_PRIVATE = @"guide_se
 /// The "guide_second_img_4" asset catalog image resource.
 static NSString * const ACImageNameGuideSecondImg4 AC_SWIFT_PRIVATE = @"guide_second_img_4";
 
+/// The "guide_second_img_cover" asset catalog image resource.
+static NSString * const ACImageNameGuideSecondImgCover AC_SWIFT_PRIVATE = @"guide_second_img_cover";
+
 /// The "guide_second_jijian" asset catalog image resource.
 static NSString * const ACImageNameGuideSecondJijian AC_SWIFT_PRIVATE = @"guide_second_jijian";
 

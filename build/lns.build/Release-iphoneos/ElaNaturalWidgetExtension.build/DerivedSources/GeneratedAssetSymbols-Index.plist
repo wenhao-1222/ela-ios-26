@@ -3451,6 +3451,16 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameGuideSecondImgCover</string>
+			<key>relativePath</key>
+			<string>./guide/guide_second_img_cover.imageset</string>
+			<key>swiftSymbol</key>
+			<string>guideSecondImgCover</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameGuideSecondJijian</string>
 			<key>relativePath</key>
 			<string>./guide/guide_second_jijian.imageset</string>

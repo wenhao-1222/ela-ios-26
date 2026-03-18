@@ -13,16 +13,9 @@ class GuidanceGoalBarrierVM: UIView {
     }
 
     var selectedBlock: (() -> ())?
-    private(set) var selectedIndex = -1
+    private(set) var selectedValues = Set<String>()
 
-    private let dataArray: [Item] = [
-        Item(title: "休息日容易摆烂", value: "rest_day"),
-        Item(title: "训练后没胃口", value: "post_workout_appetite"),
-        Item(title: "一吃多就消化不好", value: "digestion"),
-        Item(title: "太忙没时间加餐", value: "busy"),
-        Item(title: "吃不够蛋白质", value: "protein"),
-        Item(title: "家庭因素干扰", value: "family")
-    ]
+    private var dataArray: [Item] = []
 
     private var cardViews: [UIView] = []
     private var titleLabels: [UILabel] = []
@@ -42,7 +35,7 @@ class GuidanceGoalBarrierVM: UIView {
     }
 
     var hasSelection: Bool {
-        return selectedIndex >= 0
+        return !selectedValues.isEmpty
     }
 
     lazy var titleLabel: UILabel = {
@@ -63,6 +56,42 @@ class GuidanceGoalBarrierVM: UIView {
 }
 
 extension GuidanceGoalBarrierVM {
+    func itemsForCurrentGoal(modelValue: String) -> [Item] {
+        switch modelValue {
+        case "4", "5", "7":
+            return [
+                Item(title: "休息日容易摆烂", value: "rest_day"),
+                Item(title: "训练后没胃口", value: "post_workout_appetite"),
+                Item(title: "一吃多就消化不好", value: "digestion"),
+                Item(title: "太忙没时间加餐", value: "busy"),
+                Item(title: "吃不够蛋白质", value: "protein"),
+                Item(title: "备餐太麻烦", value: "meal_prep"),
+                Item(title: "不知道吃什么", value: "unknown_food"),
+                Item(title: "家庭因素干扰", value: "family")
+            ]
+        default:
+            return [
+                Item(title: "休息日容易摆烂", value: "rest_day"),
+                Item(title: "练完肚子更饿了", value: "more_hungry"),
+                Item(title: "不吃点东西睡不着", value: "cant_sleep"),
+                Item(title: "压力一大就想暴饮暴食", value: "binge_eating"),
+                Item(title: "方法太极端，总是反弹", value: "rebound"),
+                Item(title: "备餐太麻烦", value: "meal_prep"),
+                Item(title: "不知道吃什么", value: "unknown_food"),
+                Item(title: "家庭因素干扰", value: "family")
+            ]
+        }
+    }
+
+    func updateContentForGoal(modelValue: String) {
+        let oldSelectedValues = selectedValues
+        dataArray = itemsForCurrentGoal(modelValue: modelValue)
+        let validValues = Set(dataArray.map { $0.value })
+        selectedValues = oldSelectedValues.intersection(validValues)
+        syncModelValue()
+        refreshListUI()
+    }
+
     func initUI() {
         addSubview(titleLabel)
         addSubview(stackView)
@@ -78,18 +107,20 @@ extension GuidanceGoalBarrierVM {
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(80))
         }
 
+        dataArray = itemsForCurrentGoal(modelValue: QuestinonaireMsgModel.shared.goal)
         refreshListUI()
+        refreshSelectionFromModel()
     }
 
     func refreshSelectionFromModel() {
-        let selectedValue = QuestinonaireMsgModel.shared.guidanceGoalBarrierType
-        if let index = dataArray.firstIndex(where: { $0.value == selectedValue }) {
-            select(index: index, notify: false)
-        } else {
-            selectedIndex = -1
-            for idx in cardViews.indices {
-                applyCardStyle(index: idx, isSelected: false)
-            }
+        let selectedValues = Set(QuestinonaireMsgModel.shared.guidanceGoalBarrierType
+            .split(separator: ",")
+            .map { String($0) })
+        let validValues = Set(dataArray.map { $0.value })
+        self.selectedValues = selectedValues.intersection(validValues)
+        syncModelValue()
+        for idx in cardViews.indices {
+            applyCardStyle(index: idx, isSelected: self.selectedValues.contains(dataArray[idx].value))
         }
     }
 
@@ -139,30 +170,34 @@ extension GuidanceGoalBarrierVM {
             cardViews.append(cardView)
             titleLabels.append(titleLab)
             checkImageViews.append(checkImageView)
-            applyCardStyle(index: index, isSelected: selectedIndex == index)
+            applyCardStyle(index: index, isSelected: selectedValues.contains(item.value))
         }
     }
 
-    func select(index: Int, notify: Bool) {
+    func toggleSelection(index: Int, notify: Bool) {
         guard index >= 0 && index < dataArray.count else {
             return
         }
-        if selectedIndex == index && notify {
-            return
+        let itemValue = dataArray[index].value
+        let isSelected = selectedValues.contains(itemValue)
+        if isSelected {
+            selectedValues.remove(itemValue)
+        } else {
+            selectedValues.insert(itemValue)
         }
-
-        let oldIndex = selectedIndex
-        selectedIndex = index
-        QuestinonaireMsgModel.shared.guidanceGoalBarrierType = dataArray[index].value
-
-        if oldIndex >= 0 {
-            applyCardStyle(index: oldIndex, isSelected: false)
-        }
-        applyCardStyle(index: index, isSelected: true)
+        applyCardStyle(index: index, isSelected: !isSelected)
+        syncModelValue()
 
         if notify {
             selectedBlock?()
         }
+    }
+
+    func syncModelValue() {
+        let orderedValues = dataArray
+            .map { $0.value }
+            .filter { selectedValues.contains($0) }
+        QuestinonaireMsgModel.shared.guidanceGoalBarrierType = orderedValues.joined(separator: ",")
     }
 
     func applyCardStyle(index: Int, isSelected: Bool) {
@@ -181,6 +216,6 @@ extension GuidanceGoalBarrierVM {
         guard let view = tap.view else {
             return
         }
-        select(index: view.tag, notify: true)
+        toggleSelection(index: view.tag, notify: true)
     }
 }

@@ -12,8 +12,9 @@ import UMCommon
 class GuidanceVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
-    private let totalSteps = 18
+    private let totalSteps = 19
     private var nextButtonEnableWorkItem: DispatchWorkItem?
+    private var delayedNextWorkItem: DispatchWorkItem?
     private var isShowingMealsSummary = false
     private var isShowingStrengthTrainingSummary = false
     
@@ -58,7 +59,7 @@ class GuidanceVC: WHBaseViewVC {
         return vm
     }()
     lazy var stepsArray: [Int] = {
-        return [7,7,8]
+        return [7,7,9]
     }()
     lazy var loginAlertVm : LoginAlertVm = {
         let vm = LoginAlertVm.init(frame: .zero)
@@ -265,6 +266,7 @@ class GuidanceVC: WHBaseViewVC {
         let vm = QuestionnaireGoalVM.init(frame: CGRect.init(x: SCREEN_WIDHT*16, y: 0, width: 0, height: 0))
         vm.updateConstrait()
         vm.choiceBlock = { [weak self] in
+            self?.goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
             self?.updateNextButtonForCurrentStep()
         }
         return vm
@@ -276,8 +278,11 @@ class GuidanceVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var removeBarrierVm: GuidanceRemoveBarrierVM = {
+        let vm = GuidanceRemoveBarrierVM.init(frame: CGRect(x: SCREEN_WIDHT * 18, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        return vm
+    }()
 }
-
 
 extension GuidanceVC{
     @objc func nextButtonTapAction() {
@@ -324,7 +329,20 @@ extension GuidanceVC{
         case 16:
             moveToStep(index: 17, animated: true)
         case 17:
-            break
+            moveToStep(index: 18, animated: true)
+        case 18:
+            nextButton.isEnabled = false
+            delayedNextWorkItem?.cancel()
+            let workItem = DispatchWorkItem { [weak self] in
+                guard let self = self else { return }
+                self.nextButton.isEnabled = true
+                let nextIndex = self.currentIndex + 1
+                if nextIndex < self.totalSteps {
+                    self.moveToStep(index: nextIndex, animated: true)
+                }
+            }
+            delayedNextWorkItem = workItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.75, execute: workItem)
         default:
             break
         }
@@ -346,6 +364,7 @@ extension GuidanceVC{
         if isShowingStrengthTrainingSummary {
             hideStrengthTrainingSummary()
         }
+        installStepViewsIfNeeded(indexes: [targetIndex, targetIndex + 1, targetIndex + 2])
         currentIndex = targetIndex
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: animated)
         naviVm.updateStep(steps: stepsArray, currentStep: targetIndex)
@@ -354,6 +373,12 @@ extension GuidanceVC{
 
         if currentIndex == 2 {
             progressChartVm.chart.startGradientAnimation()
+        }
+        if currentIndex == 17 {
+            goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
+        }
+        if currentIndex == 18 {
+            removeBarrierVm.startScrollersIfNeeded()
         }
     }
 
@@ -407,6 +432,9 @@ extension GuidanceVC{
         case 17:
             nextButton.isHidden = false
             nextButton.isEnabled = goalBarrierVm.hasSelection
+        case 18:
+            nextButton.isHidden = false
+            nextButton.isEnabled = true
         default:
             nextButton.isHidden = true
             nextButton.isEnabled = false
@@ -550,6 +578,40 @@ extension GuidanceVC{
     }
 }
 extension GuidanceVC{
+    func stepView(for index: Int) -> UIView? {
+        switch index {
+        case 0: return sexVm
+        case 1: return dietRecordVm
+        case 2: return progressChartVm
+        case 3: return fixedTargetVm
+        case 4: return birthdayVm
+        case 5: return weightVm
+        case 6: return heightVm
+        case 7: return bodyfatVm
+        case 8: return takeoutFrequencyVm
+        case 9: return mealsPerDayVm
+        case 10: return mealsAdjustVm
+        case 11: return exerciseCaloriesRecordVm
+        case 12: return cardioFrequencyVm
+        case 13: return strengthTrainingFrequencyVm
+        case 14: return caloriesResultBaseVm
+        case 15: return caloriesResultExplainVm
+        case 16: return goalVm
+        case 17: return goalBarrierVm
+        case 18: return removeBarrierVm
+        default: return nil
+        }
+    }
+
+    func installStepViewsIfNeeded(indexes: [Int]) {
+        for index in indexes {
+            guard let stepView = stepView(for: index), stepView.superview == nil else {
+                continue
+            }
+            scrollViewBase.addSubview(stepView)
+        }
+    }
+
     func initUI() {
         view.backgroundColor = .COLOR_BG_F2
         view.addSubview(scrollViewBase)
@@ -567,24 +629,7 @@ extension GuidanceVC{
         scrollViewBase.isScrollEnabled = false
         scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalSteps), height: SCREEN_HEIGHT)
         
-        scrollViewBase.addSubview(sexVm)
-        scrollViewBase.addSubview(dietRecordVm)
-        scrollViewBase.addSubview(progressChartVm)
-        scrollViewBase.addSubview(fixedTargetVm)
-        scrollViewBase.addSubview(birthdayVm)
-        scrollViewBase.addSubview(weightVm)
-        scrollViewBase.addSubview(heightVm)
-        scrollViewBase.addSubview(bodyfatVm)
-        scrollViewBase.addSubview(takeoutFrequencyVm)
-        scrollViewBase.addSubview(mealsPerDayVm)
-        scrollViewBase.addSubview(mealsAdjustVm)
-        scrollViewBase.addSubview(exerciseCaloriesRecordVm)
-        scrollViewBase.addSubview(cardioFrequencyVm)
-        scrollViewBase.addSubview(strengthTrainingFrequencyVm)
-        scrollViewBase.addSubview(caloriesResultBaseVm)
-        scrollViewBase.addSubview(caloriesResultExplainVm)
-        scrollViewBase.addSubview(goalVm)
-        scrollViewBase.addSubview(goalBarrierVm)
+        installStepViewsIfNeeded(indexes: [0, 1, 2])
         
         setConstrait()
         moveToStep(index: 0, animated: false)
