@@ -8,8 +8,8 @@
 import UIKit
 
 enum AICoachReportPDFGenerator {
-    static let pageSize = CGSize(width: 595, height: 842)
-    private static let pageInsets = UIEdgeInsets(top: 24, left: 24, bottom: 24, right: 24)
+    static let pageSize = CGSize(width: 595, height: 1036)
+    private static let pageInsets = UIEdgeInsets(top: 16, left: 10, bottom: 16, right: 10)
 
     static func generate(report: AICoachReportDemoData) throws -> URL {
         let contentWidth = pageSize.width - pageInsets.left - pageInsets.right
@@ -34,7 +34,7 @@ enum AICoachReportPDFGenerator {
 
                 context.beginPage()
                 let cgContext = context.cgContext
-                cgContext.setFillColor(UIColor.white.cgColor)
+                cgContext.setFillColor(AICoachReportDemoPalette.pageBackground.cgColor)
                 cgContext.fill(pageBounds)
 
                 cgContext.saveGState()
@@ -63,6 +63,6 @@ enum AICoachReportPDFGenerator {
             try? FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
         }
 
-        return folderURL.appendingPathComponent("ai-coach-report-demo.pdf")
+        return folderURL.appendingPathComponent("ai-coach-analysis-report.pdf")
     }
 }

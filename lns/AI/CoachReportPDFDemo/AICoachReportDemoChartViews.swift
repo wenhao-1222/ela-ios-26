@@ -8,18 +8,13 @@
 import UIKit
 
 final class AICoachReportLineChartView: UIView {
-    private let entries: [AICoachReportPoint]
-    private let lineColor: UIColor
-    private let fillColor: UIColor
+    private let data: AICoachReportLineChartData
 
-    init(entries: [AICoachReportPoint],
-         lineColor: UIColor = AICoachReportDemoPalette.themeBlue,
-         fillColor: UIColor = AICoachReportDemoPalette.themeBlueLight) {
-        self.entries = entries
-        self.lineColor = lineColor
-        self.fillColor = fillColor
+    init(data: AICoachReportLineChartData) {
+        self.data = data
         super.init(frame: .zero)
         backgroundColor = .clear
+        contentMode = .redraw
     }
 
     required init?(coder: NSCoder) {
@@ -27,28 +22,18 @@ final class AICoachReportLineChartView: UIView {
     }
 
     override func draw(_ rect: CGRect) {
-        guard let context = UIGraphicsGetCurrentContext(), entries.count > 1 else { return }
+        guard let context = UIGraphicsGetCurrentContext(), data.entries.count > 1 else { return }
 
-        let chartInsets = UIEdgeInsets(top: 24, left: 18, bottom: 26, right: 10)
+        let chartInsets = UIEdgeInsets(top: 14, left: 30, bottom: 24, right: 8)
         let chartRect = rect.inset(by: chartInsets)
-        let maxValue = max(entries.map(\.value).max() ?? 1, 1)
-        let minValue = min(entries.map(\.value).min() ?? 0, 0)
-        let range = max(maxValue - minValue, 1)
-        let stepX = chartRect.width / CGFloat(max(entries.count - 1, 1))
+        let stepX = chartRect.width / CGFloat(max(data.entries.count - 1, 1))
 
-        context.setStrokeColor(AICoachReportDemoPalette.border.cgColor)
-        context.setLineWidth(1)
-        for index in 0...3 {
-            let y = chartRect.minY + CGFloat(index) * (chartRect.height / 3)
-            context.move(to: CGPoint(x: chartRect.minX, y: y))
-            context.addLine(to: CGPoint(x: chartRect.maxX, y: y))
-            context.strokePath()
-        }
+        drawYAxis(in: context, rect: chartRect, labels: data.yAxisTexts)
 
-        let points: [CGPoint] = entries.enumerated().map { index, entry in
+        let points = data.entries.enumerated().map { index, entry -> CGPoint in
             let x = chartRect.minX + CGFloat(index) * stepX
-            let ratio = (entry.value - minValue) / range
-            let y = chartRect.maxY - CGFloat(ratio) * chartRect.height
+            let ratio = (entry.plottedValue - data.minValue) / max(data.maxValue - data.minValue, 1)
+            let y = chartRect.maxY - ratio * chartRect.height
             return CGPoint(x: x, y: y)
         }
 
@@ -57,8 +42,22 @@ final class AICoachReportLineChartView: UIView {
         points.forEach { fillPath.addLine(to: $0) }
         fillPath.addLine(to: CGPoint(x: points.last?.x ?? chartRect.maxX, y: chartRect.maxY))
         fillPath.close()
-        fillColor.withAlphaComponent(0.65).setFill()
-        fillPath.fill()
+
+        context.saveGState()
+        fillPath.addClip()
+        let colors = [
+            AICoachReportDemoPalette.chartFillBlue.withAlphaComponent(0.72).cgColor,
+            AICoachReportDemoPalette.chartFillBlue.withAlphaComponent(0.12).cgColor
+        ] as CFArray
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0, 1])!
+        context.drawLinearGradient(
+            gradient,
+            start: CGPoint(x: chartRect.midX, y: chartRect.minY),
+            end: CGPoint(x: chartRect.midX, y: chartRect.maxY),
+            options: []
+        )
+        context.restoreGState()
 
         let linePath = UIBezierPath()
         linePath.lineWidth = 2
@@ -68,44 +67,51 @@ final class AICoachReportLineChartView: UIView {
             linePath.move(to: firstPoint)
         }
         points.forEach { linePath.addLine(to: $0) }
-        lineColor.setStroke()
+        AICoachReportDemoPalette.themeBlue.setStroke()
         linePath.stroke()
 
-        let pointRadius: CGFloat = 3.5
         for (index, point) in points.enumerated() {
-            let pointRect = CGRect(x: point.x - pointRadius, y: point.y - pointRadius, width: pointRadius * 2, height: pointRadius * 2)
-            let pointPath = UIBezierPath(ovalIn: pointRect)
+            let pointRect = CGRect(x: point.x - 3, y: point.y - 3, width: 6, height: 6)
+            let circle = UIBezierPath(ovalIn: pointRect)
             UIColor.white.setFill()
-            pointPath.fill()
-            lineColor.setStroke()
-            pointPath.lineWidth = 1.5
-            pointPath.stroke()
+            circle.fill()
+            AICoachReportDemoPalette.themeBlue.setStroke()
+            circle.lineWidth = 1.5
+            circle.stroke()
 
-            let value = Int(entries[index].value)
-            let valueText = "\(value)" as NSString
-            valueText.draw(in: CGRect(x: point.x - 12, y: point.y - 20, width: 24, height: 14), withAttributes: [
-                .font: UIFont.systemFont(ofSize: 10, weight: .semibold),
-                .foregroundColor: lineColor
-            ])
+            if data.entries[index].valueText.isEmpty == false {
+                let valueText = data.entries[index].valueText as NSString
+                valueText.draw(
+                    in: CGRect(x: point.x - 12, y: point.y - 18, width: 24, height: 12),
+                    withAttributes: [
+                        .font: UIFont.systemFont(ofSize: 9, weight: .semibold),
+                        .foregroundColor: AICoachReportDemoPalette.themeBlue
+                    ]
+                )
+            }
 
-            let labelText = entries[index].label as NSString
-            labelText.draw(in: CGRect(x: point.x - 16, y: chartRect.maxY + 8, width: 32, height: 12), withAttributes: [
-                .font: UIFont.systemFont(ofSize: 9, weight: .regular),
-                .foregroundColor: AICoachReportDemoPalette.textSecondary
-            ])
+            if data.entries[index].axisLabel.isEmpty == false {
+                let axisText = data.entries[index].axisLabel as NSString
+                axisText.draw(
+                    in: CGRect(x: point.x - 16, y: chartRect.maxY + 7, width: 32, height: 11),
+                    withAttributes: [
+                        .font: UIFont.systemFont(ofSize: 8.5, weight: .regular),
+                        .foregroundColor: AICoachReportDemoPalette.textTertiary
+                    ]
+                )
+            }
         }
     }
 }
 
 final class AICoachReportBarChartView: UIView {
-    private let entries: [AICoachReportPoint]
-    private let barColor: UIColor
+    private let data: AICoachReportBarChartData
 
-    init(entries: [AICoachReportPoint], barColor: UIColor = AICoachReportDemoPalette.themeBlue) {
-        self.entries = entries
-        self.barColor = barColor
+    init(data: AICoachReportBarChartData) {
+        self.data = data
         super.init(frame: .zero)
         backgroundColor = .clear
+        contentMode = .redraw
     }
 
     required init?(coder: NSCoder) {
@@ -113,48 +119,45 @@ final class AICoachReportBarChartView: UIView {
     }
 
     override func draw(_ rect: CGRect) {
-        guard let context = UIGraphicsGetCurrentContext(), entries.isEmpty == false else { return }
+        guard data.entries.isEmpty == false else { return }
 
-        let chartInsets = UIEdgeInsets(top: 24, left: 18, bottom: 26, right: 10)
+        let chartInsets = UIEdgeInsets(top: 14, left: 31, bottom: 24, right: 8)
         let chartRect = rect.inset(by: chartInsets)
-        let maxValue = max(entries.map(\.value).max() ?? 1, 1)
-        let step = chartRect.width / CGFloat(entries.count)
-        let barWidth = min(20, step * 0.5)
+        let step = chartRect.width / CGFloat(data.entries.count)
+        let barWidth = min(17, step * 0.46)
 
-        context.setStrokeColor(AICoachReportDemoPalette.border.cgColor)
-        context.setLineWidth(1)
-        for index in 0...3 {
-            let y = chartRect.minY + CGFloat(index) * (chartRect.height / 3)
-            context.move(to: CGPoint(x: chartRect.minX, y: y))
-            context.addLine(to: CGPoint(x: chartRect.maxX, y: y))
-            context.strokePath()
-        }
+        guard let context = UIGraphicsGetCurrentContext() else { return }
+        drawYAxis(in: context, rect: chartRect, labels: data.yAxisTexts)
 
-        for (index, entry) in entries.enumerated() {
-            let barHeight = CGFloat(entry.value / maxValue) * chartRect.height
+        for (index, entry) in data.entries.enumerated() {
+            let barHeight = (entry.value / max(data.maxValue, 1)) * chartRect.height
             let x = chartRect.minX + CGFloat(index) * step + (step - barWidth) / 2
             let y = chartRect.maxY - barHeight
             let barRect = CGRect(x: x, y: y, width: barWidth, height: barHeight)
-            let barPath = UIBezierPath(roundedRect: barRect, cornerRadius: 4)
-            barColor.setFill()
+            let barPath = UIBezierPath(roundedRect: barRect, cornerRadius: 3)
+            AICoachReportDemoPalette.themeBlue.setFill()
             barPath.fill()
 
-            let labelText = entry.label as NSString
-            labelText.draw(in: CGRect(x: x - 6, y: chartRect.maxY + 8, width: barWidth + 12, height: 12), withAttributes: [
-                .font: UIFont.systemFont(ofSize: 9, weight: .regular),
-                .foregroundColor: AICoachReportDemoPalette.textSecondary
-            ])
+            let axisText = entry.axisLabel as NSString
+            axisText.draw(
+                in: CGRect(x: x - 8, y: chartRect.maxY + 7, width: barWidth + 16, height: 11),
+                withAttributes: [
+                    .font: UIFont.systemFont(ofSize: 8.5, weight: .regular),
+                    .foregroundColor: AICoachReportDemoPalette.textTertiary
+                ]
+            )
         }
     }
 }
 
 final class AICoachReportGroupedBarChartView: UIView {
-    private let entries: [AICoachReportGroupedPoint]
+    private let data: AICoachReportGroupedBarChartData
 
-    init(entries: [AICoachReportGroupedPoint]) {
-        self.entries = entries
+    init(data: AICoachReportGroupedBarChartData) {
+        self.data = data
         super.init(frame: .zero)
         backgroundColor = .clear
+        contentMode = .redraw
     }
 
     required init?(coder: NSCoder) {
@@ -162,50 +165,66 @@ final class AICoachReportGroupedBarChartView: UIView {
     }
 
     override func draw(_ rect: CGRect) {
-        guard let context = UIGraphicsGetCurrentContext(), entries.isEmpty == false else { return }
+        guard data.entries.isEmpty == false else { return }
 
-        let chartInsets = UIEdgeInsets(top: 24, left: 18, bottom: 26, right: 10)
+        let chartInsets = UIEdgeInsets(top: 13, left: 31, bottom: 24, right: 8)
         let chartRect = rect.inset(by: chartInsets)
-        let maxValue = max(
-            entries.map { max($0.firstValue, max($0.secondValue, $0.thirdValue)) }.max() ?? 1,
-            1
-        )
-        let step = chartRect.width / CGFloat(entries.count)
-        let groupWidth = step * 0.72
-        let barWidth = groupWidth / 3.6
+        let step = chartRect.width / CGFloat(data.entries.count)
+        let groupWidth = step * 0.66
+        let barWidth = groupWidth / 3.45
         let colors = [
             AICoachReportDemoPalette.nutrientPurple,
             AICoachReportDemoPalette.nutrientYellow,
             AICoachReportDemoPalette.nutrientOrange
         ]
 
-        context.setStrokeColor(AICoachReportDemoPalette.border.cgColor)
-        context.setLineWidth(1)
-        for index in 0...3 {
-            let y = chartRect.minY + CGFloat(index) * (chartRect.height / 3)
-            context.move(to: CGPoint(x: chartRect.minX, y: y))
-            context.addLine(to: CGPoint(x: chartRect.maxX, y: y))
-            context.strokePath()
-        }
+        guard let context = UIGraphicsGetCurrentContext() else { return }
+        drawYAxis(in: context, rect: chartRect, labels: data.yAxisTexts)
 
-        for (index, entry) in entries.enumerated() {
-            let groupX = chartRect.minX + CGFloat(index) * step + (step - groupWidth) / 2
-            let values = [entry.firstValue, entry.secondValue, entry.thirdValue]
-            for valueIndex in 0..<values.count {
-                let barHeight = CGFloat(values[valueIndex] / maxValue) * chartRect.height
-                let x = groupX + CGFloat(valueIndex) * (barWidth + 3)
+        for (index, entry) in data.entries.enumerated() {
+            let startX = chartRect.minX + CGFloat(index) * step + (step - groupWidth) / 2
+            for valueIndex in 0..<entry.values.count {
+                let barHeight = (entry.values[valueIndex] / max(data.maxValue, 1)) * chartRect.height
+                let x = startX + CGFloat(valueIndex) * (barWidth + 2.4)
                 let y = chartRect.maxY - barHeight
                 let barRect = CGRect(x: x, y: y, width: barWidth, height: barHeight)
-                let barPath = UIBezierPath(roundedRect: barRect, cornerRadius: 3)
+                let barPath = UIBezierPath(roundedRect: barRect, cornerRadius: 2.4)
                 colors[valueIndex].setFill()
                 barPath.fill()
             }
 
-            let labelText = entry.label as NSString
-            labelText.draw(in: CGRect(x: groupX - 4, y: chartRect.maxY + 8, width: groupWidth + 8, height: 12), withAttributes: [
-                .font: UIFont.systemFont(ofSize: 9, weight: .regular),
-                .foregroundColor: AICoachReportDemoPalette.textSecondary
-            ])
+            let axisText = entry.axisLabel as NSString
+            axisText.draw(
+                in: CGRect(x: startX - 5, y: chartRect.maxY + 7, width: groupWidth + 10, height: 11),
+                withAttributes: [
+                    .font: UIFont.systemFont(ofSize: 8.5, weight: .regular),
+                    .foregroundColor: AICoachReportDemoPalette.textTertiary
+                ]
+            )
         }
+    }
+}
+
+private func drawYAxis(in context: CGContext, rect: CGRect, labels: [String]) {
+    let paragraph = NSMutableParagraphStyle()
+    paragraph.alignment = .right
+
+    for index in 0..<labels.count {
+        let y = rect.minY + CGFloat(index) * (rect.height / CGFloat(max(labels.count - 1, 1)))
+        context.setStrokeColor(AICoachReportDemoPalette.grid.cgColor)
+        context.setLineWidth(1)
+        context.move(to: CGPoint(x: rect.minX, y: y))
+        context.addLine(to: CGPoint(x: rect.maxX, y: y))
+        context.strokePath()
+
+        let label = labels[index] as NSString
+        label.draw(
+            in: CGRect(x: rect.minX - 24, y: y - 6, width: 16, height: 11),
+            withAttributes: [
+                .font: UIFont.systemFont(ofSize: 8, weight: .regular),
+                .foregroundColor: AICoachReportDemoPalette.textTertiary,
+                .paragraphStyle: paragraph
+            ]
+        )
     }
 }

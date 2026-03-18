@@ -14,13 +14,69 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     private var pdfFileURL: URL?
     private var hasGeneratedPDF = false
 
+    private lazy var topContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        return view
+    }()
+
+    private lazy var backButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(named: "back_arrow_black"), for: .normal)
+        button.addTarget(self, action: #selector(backTapAction), for: .touchUpInside)
+        return button
+    }()
+
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 19, weight: .semibold)
+        label.textColor = AICoachReportDemoPalette.textPrimary
+        label.textAlignment = .center
+        label.text = report.navigationTitle
+        return label
+    }()
+
+    private lazy var dateLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 17, weight: .medium)
+        label.textColor = AICoachReportDemoPalette.textPrimary
+        label.text = report.navigationDateRange
+        return label
+    }()
+
+    private lazy var arrowImageView: UIImageView = {
+        let config = UIImage.SymbolConfiguration(pointSize: 10, weight: .semibold)
+        let view = UIImageView(image: UIImage(systemName: "chevron.down", withConfiguration: config))
+        view.tintColor = AICoachReportDemoPalette.textPrimary
+        return view
+    }()
+
+    private lazy var dividerBand: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(hex: "F2F2F3")
+        return view
+    }()
+
     private lazy var pdfView: PDFView = {
         let view = PDFView()
         view.autoScales = true
         view.displayMode = .singlePageContinuous
         view.displayDirection = .vertical
-        view.backgroundColor = AICoachReportDemoPalette.background
+        view.displaysPageBreaks = false
+        view.backgroundColor = AICoachReportDemoPalette.pageBackground
         view.usePageViewController(false, withViewOptions: nil)
+        return view
+    }()
+
+    private lazy var bottomBar: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        return view
+    }()
+
+    private lazy var bottomSeparator: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(hex: "EEEEF0")
         return view
     }()
 
@@ -42,19 +98,9 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         let button = UIButton(type: .system)
         button.backgroundColor = AICoachReportDemoPalette.themeBlue
         button.layer.cornerRadius = 28
-        button.setTitle("下载 PDF", for: .normal)
+        button.setTitle("下载", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-        button.addTarget(self, action: #selector(downloadAction), for: .touchUpInside)
-        button.isEnabled = false
-        return button
-    }()
-
-    private lazy var shareNavButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("分享", for: .normal)
-        button.setTitleColor(AICoachReportDemoPalette.themeBlue, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 15, weight: .semibold)
+        button.titleLabel?.font = .systemFont(ofSize: 21, weight: .medium)
         button.addTarget(self, action: #selector(downloadAction), for: .touchUpInside)
         button.isEnabled = false
         return button
@@ -62,8 +108,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AICoachReportDemoPalette.background
-        setupNavigation()
+        view.backgroundColor = .white
         setupUI()
     }
 
@@ -76,33 +121,73 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
 }
 
 private extension AICoachReportPDFDemoVC {
-    func setupNavigation() {
-        initNavigationView()
-        naviTitleLabel.text = "AI 教练分析"
-        navigationView.addSubview(shareNavButton)
-        shareNavButton.snp.makeConstraints { make in
-            make.right.equalToSuperview().offset(-16)
-            make.centerY.equalTo(naviTitleLabel)
-            make.height.equalTo(30)
-        }
-    }
-
     func setupUI() {
+        view.addSubview(topContainerView)
+        topContainerView.addSubview(backButton)
+        topContainerView.addSubview(titleLabel)
+        topContainerView.addSubview(dateLabel)
+        topContainerView.addSubview(arrowImageView)
+        view.addSubview(dividerBand)
         view.addSubview(pdfView)
-        view.addSubview(downloadButton)
+        view.addSubview(bottomBar)
+        bottomBar.addSubview(bottomSeparator)
+        bottomBar.addSubview(downloadButton)
         view.addSubview(loadingIndicator)
         view.addSubview(loadingLabel)
 
-        pdfView.snp.makeConstraints { make in
-            make.top.equalTo(navigationView.snp.bottom)
+        topContainerView.snp.makeConstraints { make in
+            make.top.left.right.equalToSuperview()
+            make.height.equalTo(statusBarHeight + 116)
+        }
+
+        backButton.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(statusBarHeight + 18)
+            make.width.height.equalTo(24)
+        }
+
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(statusBarHeight + 14)
+            make.centerX.equalToSuperview()
+        }
+
+        dateLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(24)
+            make.centerX.equalToSuperview().offset(-7)
+        }
+
+        arrowImageView.snp.makeConstraints { make in
+            make.left.equalTo(dateLabel.snp.right).offset(8)
+            make.centerY.equalTo(dateLabel.snp.centerY).offset(2)
+            make.width.height.equalTo(10)
+        }
+
+        dividerBand.snp.makeConstraints { make in
+            make.top.equalTo(topContainerView.snp.bottom)
             make.left.right.equalToSuperview()
-            make.bottom.equalTo(downloadButton.snp.top).offset(-16)
+            make.height.equalTo(12)
+        }
+
+        pdfView.snp.makeConstraints { make in
+            make.top.equalTo(dividerBand.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(bottomBar.snp.top)
+        }
+
+        bottomBar.snp.makeConstraints { make in
+            make.left.right.bottom.equalToSuperview()
+            make.height.equalTo(getBottomSafeAreaHeight() + 96)
+        }
+
+        bottomSeparator.snp.makeConstraints { make in
+            make.top.left.right.equalToSuperview()
+            make.height.equalTo(1)
         }
 
         downloadButton.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(24)
-            make.right.equalToSuperview().offset(-24)
-            make.bottom.equalToSuperview().offset(-(getBottomSafeAreaHeight() + 18))
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
+            make.top.equalToSuperview().offset(18)
             make.height.equalTo(56)
         }
 
@@ -127,7 +212,6 @@ private extension AICoachReportPDFDemoVC {
                 self.pdfFileURL = fileURL
                 self.loadPDF(from: fileURL)
                 self.downloadButton.isEnabled = true
-                self.shareNavButton.isEnabled = true
                 self.loadingIndicator.stopAnimating()
                 self.loadingLabel.isHidden = true
             } catch {
@@ -143,6 +227,7 @@ private extension AICoachReportPDFDemoVC {
             return
         }
         pdfView.document = document
+        pdfView.minScaleFactor = pdfView.scaleFactorForSizeToFit
         pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
     }
 
