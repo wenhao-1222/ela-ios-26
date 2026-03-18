@@ -18,6 +18,7 @@ class GuidanceVC: WHBaseViewVC {
     private var delayedNextWorkItem: DispatchWorkItem?
     private var isShowingMealsSummary = false
     private var isShowingStrengthTrainingSummary = false
+    private var isShowingFinishLoading = false
     
     override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = true
@@ -48,7 +49,7 @@ class GuidanceVC: WHBaseViewVC {
         vm.backButton.isHidden = false
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
-            if self.isShowingMealsSummary || self.isShowingStrengthTrainingSummary {
+            if self.isShowingMealsSummary || self.isShowingStrengthTrainingSummary || self.isShowingFinishLoading {
                 return
             }
             if self.currentIndex == 0 {
@@ -293,6 +294,15 @@ class GuidanceVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var finishLoadingVm: GuidanceFinishLoadingVM = {
+        let vm = GuidanceFinishLoadingVM.init(frame: .zero)
+        vm.progressCompleteBlock = { [weak self] in
+            guard let self = self else { return }
+            self.isShowingFinishLoading = false
+            self.changeRootVcToTabbar()
+        }
+        return vm
+    }()
 }
 
 extension GuidanceVC{
@@ -459,7 +469,12 @@ extension GuidanceVC{
 
     func finishGuidanceFlow() {
         UserInfoModel.shared.showNotifiAuthoriAlertVM = false
-//        changeRootVcToTabbar()
+        guard !isShowingFinishLoading else { return }
+        isShowingFinishLoading = true
+        naviVm.isHidden = true
+        nextButton.isHidden = true
+        nextButton.isEnabled = false
+        finishLoadingVm.showLoading()
     }
 
     func requestReminderPermissionIfNeeded() {
@@ -672,6 +687,7 @@ extension GuidanceVC{
         view.addSubview(notRegistVm)
         view.addSubview(bodyFatAlertVm)
         view.addSubview(katchAlertVm)
+        view.addSubview(finishLoadingVm)
         
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
@@ -689,6 +705,9 @@ extension GuidanceVC{
             make.right.equalTo(kFitWidth(-20))
             make.height.equalTo(kFitWidth(48))
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
+        }
+        finishLoadingVm.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
 }

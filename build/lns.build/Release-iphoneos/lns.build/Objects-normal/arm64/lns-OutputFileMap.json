@@ -1753,6 +1753,11 @@
     "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceExerciseCaloriesRecordVM.bc",
     "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceExerciseCaloriesRecordVM.o"
   },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/GuidanceFinishLoadingVM.swift" : {
+    "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceFinishLoadingVM.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceFinishLoadingVM.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceFinishLoadingVM.o"
+  },
   "/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/GuidanceFixedTargetVM.swift" : {
     "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceFixedTargetVM.o",
     "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceFixedTargetVM.bc",
