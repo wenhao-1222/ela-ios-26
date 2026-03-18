@@ -8,11 +8,12 @@
 import MCToast
 import AuthenticationServices
 import UMCommon
+import UserNotifications
 
 class GuidanceVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
-    private let totalSteps = 19
+    private let totalSteps = 20
     private var nextButtonEnableWorkItem: DispatchWorkItem?
     private var delayedNextWorkItem: DispatchWorkItem?
     private var isShowingMealsSummary = false
@@ -59,7 +60,7 @@ class GuidanceVC: WHBaseViewVC {
         return vm
     }()
     lazy var stepsArray: [Int] = {
-        return [7,7,9]
+        return [7,7,6]
     }()
     lazy var loginAlertVm : LoginAlertVm = {
         let vm = LoginAlertVm.init(frame: .zero)
@@ -282,6 +283,16 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceRemoveBarrierVM.init(frame: CGRect(x: SCREEN_WIDHT * 18, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         return vm
     }()
+    lazy var reminderPromptVm: GuidanceReminderPromptVM = {
+        let vm = GuidanceReminderPromptVM.init(frame: CGRect(x: SCREEN_WIDHT * 19, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        vm.enableReminderBlock = { [weak self] in
+            self?.requestReminderPermissionIfNeeded()
+        }
+        vm.skipBlock = { [weak self] in
+            self?.finishGuidanceFlow()
+        }
+        return vm
+    }()
 }
 
 extension GuidanceVC{
@@ -343,6 +354,8 @@ extension GuidanceVC{
             }
             delayedNextWorkItem = workItem
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.75, execute: workItem)
+        case 19:
+            break
         default:
             break
         }
@@ -435,9 +448,44 @@ extension GuidanceVC{
         case 18:
             nextButton.isHidden = false
             nextButton.isEnabled = true
+        case 19:
+            nextButton.isHidden = true
+            nextButton.isEnabled = false
         default:
             nextButton.isHidden = true
             nextButton.isEnabled = false
+        }
+    }
+
+    func finishGuidanceFlow() {
+        UserInfoModel.shared.showNotifiAuthoriAlertVM = false
+//        changeRootVcToTabbar()
+    }
+
+    func requestReminderPermissionIfNeeded() {
+        UserInfoModel.shared.showNotifiAuthoriAlertVM = false
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            guard let self = self else { return }
+            switch settings.authorizationStatus {
+            case .denied:
+                DispatchQueue.main.async {
+                    self.openUrl(urlString: UIApplication.openSettingsURLString)
+                }
+            case .authorized, .provisional, .ephemeral:
+                DispatchQueue.main.async {
+                    self.finishGuidanceFlow()
+                }
+            case .notDetermined:
+                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in
+                    DispatchQueue.main.async {
+                        self.finishGuidanceFlow()
+                    }
+                }
+            @unknown default:
+                DispatchQueue.main.async {
+                    self.finishGuidanceFlow()
+                }
+            }
         }
     }
 
@@ -599,6 +647,7 @@ extension GuidanceVC{
         case 16: return goalVm
         case 17: return goalBarrierVm
         case 18: return removeBarrierVm
+        case 19: return reminderPromptVm
         default: return nil
         }
     }
