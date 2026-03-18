@@ -120,6 +120,14 @@ extension QuestionnaireGoalVM{
             make.top.equalTo(self.tableView)
         }
     }
+    func updateConstrait() {
+        titleLabel.snp.remakeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(35))
+//            make.height.equalTo(kFitWidth(72))
+        }
+        tableView.frame = CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight()+kFitWidth(75), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-(WHUtils().getNavigationBarHeight()+kFitWidth(75))-kFitWidth(84)-WHUtils().getBottomSafeAreaHeight())
+    }
     func refresNextBtnCenter() {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut){
             self.nextBtn.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.selfHeight-kFitWidth(36)-WHUtils().getBottomSafeAreaHeight())
@@ -147,12 +155,6 @@ extension QuestionnaireGoalVM:UITableViewDataSource,UITableViewDelegate{
         if self.selectIndex == indexPath.row{
             return
         }
-        if self.selectIndex < 0 {
-//            self.refresNextBtnCenter()
-            if self.choiceBlock != nil{
-                self.choiceBlock!()
-            }
-        }
         self.selectIndex = -1
         self.tableView.reloadData()
         
@@ -166,6 +168,7 @@ extension QuestionnaireGoalVM:UITableViewDataSource,UITableViewDelegate{
 //        self.tableView.reloadData()
         QuestinonaireMsgModel.shared.goal = "\(self.selectIndex+1)"
         DLLog(message: "目标：\(QuestinonaireMsgModel.shared.goal)")
+        self.choiceBlock?()
     }
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.coverTopView.isHidden = false
