@@ -74,6 +74,11 @@
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/CourseCoverControlView.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/YYTextAsyncLayer.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/YYTextLine.o
+/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportDemoModels.o
+/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportDemoChartViews.o
+/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportDemoContentView.o
+/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportPDFGenerator.o
+/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportPDFDemoVC.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/JFPopupAction.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/JFPopupController.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/JFPopupAnimation.o
@@ -517,6 +522,7 @@
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceCardioFrequencyVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceExerciseCaloriesRecordVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceFixedTargetVM.o
+/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceGoalBarrierVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceMealsAdjustVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceMealsPerDayVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceMealsSummaryVM.o

@@ -45,6 +45,7 @@ class QuestinonaireMsgModel{
     var guidanceExerciseCaloriesRecordType = ""//引导页：是否记录运动消耗热量
     var guidanceCardioFrequencyType = ""//引导页：日常有氧频次
     var guidanceStrengthTrainingFrequencyType = ""//引导页：力量训练频次
+    var guidanceGoalBarrierType = ""//引导页：阻碍目标达成的主要因素
     var planWeeks = ""
     var dailyfoodsqty = "2"
     
@@ -94,6 +95,7 @@ class QuestinonaireMsgModel{
         DLLog(message: "引导运动热量记录：\(guidanceExerciseCaloriesRecordType)")
         DLLog(message: "引导有氧频次：\(guidanceCardioFrequencyType)")
         DLLog(message: "引导力量训练频次：\(guidanceStrengthTrainingFrequencyType)")
+        DLLog(message: "引导目标阻碍：\(guidanceGoalBarrierType)")
         DLLog(message: "计划时长：\(planWeeks)周")
         DLLog(message: "单日食物种类：\(dailyfoodsqty)")
         DLLog(message: "************   食物   ***************")
@@ -154,6 +156,7 @@ class QuestinonaireMsgModel{
         self.guidanceExerciseCaloriesRecordType = ""
         self.guidanceCardioFrequencyType = ""
         self.guidanceStrengthTrainingFrequencyType = ""
+        self.guidanceGoalBarrierType = ""
         self.planWeeks = ""
         self.dailyfoodsqty = "2"
         self.foodsMsgProteins.removeAllObjects()

@@ -121,6 +121,7 @@ extension QuestionnaireGoalVM{
         }
     }
     func updateConstrait() {
+        titleLabel.text = "你的目标是什么？"
         titleLabel.snp.remakeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
             make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(35))

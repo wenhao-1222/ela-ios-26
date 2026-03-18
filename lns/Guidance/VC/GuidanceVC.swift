@@ -12,7 +12,7 @@ import UMCommon
 class GuidanceVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
-    private let totalSteps = 17
+    private let totalSteps = 18
     private var nextButtonEnableWorkItem: DispatchWorkItem?
     private var isShowingMealsSummary = false
     private var isShowingStrengthTrainingSummary = false
@@ -269,6 +269,13 @@ class GuidanceVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var goalBarrierVm: GuidanceGoalBarrierVM = {
+        let vm = GuidanceGoalBarrierVM.init(frame: CGRect.init(x: SCREEN_WIDHT*17, y: 0, width: 0, height: 0))
+        vm.selectedBlock = { [weak self] in
+            self?.updateNextButtonForCurrentStep()
+        }
+        return vm
+    }()
 }
 
 
@@ -315,6 +322,8 @@ extension GuidanceVC{
         case 15:
             moveToStep(index: 16, animated: true)
         case 16:
+            moveToStep(index: 17, animated: true)
+        case 17:
             break
         default:
             break
@@ -395,6 +404,9 @@ extension GuidanceVC{
         case 16:
             nextButton.isHidden = false
             nextButton.isEnabled = goalVm.selectIndex >= 0
+        case 17:
+            nextButton.isHidden = false
+            nextButton.isEnabled = goalBarrierVm.hasSelection
         default:
             nextButton.isHidden = true
             nextButton.isEnabled = false
@@ -572,6 +584,7 @@ extension GuidanceVC{
         scrollViewBase.addSubview(caloriesResultBaseVm)
         scrollViewBase.addSubview(caloriesResultExplainVm)
         scrollViewBase.addSubview(goalVm)
+        scrollViewBase.addSubview(goalBarrierVm)
         
         setConstrait()
         moveToStep(index: 0, animated: false)

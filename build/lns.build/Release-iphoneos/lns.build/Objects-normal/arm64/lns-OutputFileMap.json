@@ -43,6 +43,31 @@
     "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
     "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GeneratedAssetSymbols.o"
   },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportDemoChartViews.swift" : {
+    "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportDemoChartViews.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportDemoChartViews.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportDemoChartViews.o"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportDemoContentView.swift" : {
+    "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportDemoContentView.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportDemoContentView.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportDemoContentView.o"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportDemoModels.swift" : {
+    "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportDemoModels.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportDemoModels.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportDemoModels.o"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportPDFDemoVC.swift" : {
+    "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportPDFDemoVC.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportPDFDemoVC.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportPDFDemoVC.o"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportPDFGenerator.swift" : {
+    "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportPDFGenerator.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportPDFGenerator.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AICoachReportPDFGenerator.o"
+  },
   "/Users/lns2/Desktop/lnsapp-ios/lns/AI/Model/AIResultStatusModel.swift" : {
     "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AIResultStatusModel.o",
     "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/AIResultStatusModel.bc",
@@ -1732,6 +1757,11 @@
     "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceFixedTargetVM.o",
     "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceFixedTargetVM.bc",
     "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceFixedTargetVM.o"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/GuidanceGoalBarrierVM.swift" : {
+    "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceGoalBarrierVM.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceGoalBarrierVM.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceGoalBarrierVM.o"
   },
   "/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/GuidanceMealsAdjustVM.swift" : {
     "index-unit-output-path" : "/lns.build/Release-iphoneos/lns.build/Objects-normal/arm64/GuidanceMealsAdjustVM.o",
