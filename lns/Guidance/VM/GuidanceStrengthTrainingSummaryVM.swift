@@ -50,7 +50,7 @@ class GuidanceStrengthTrainingSummaryVM: UIView {
         let lab = UILabel()
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .semibold)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
     }()
 
@@ -59,7 +59,7 @@ class GuidanceStrengthTrainingSummaryVM: UIView {
         lab.numberOfLines = 0
         lab.textAlignment = .left
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 16, weight: .medium)
+        lab.font = .systemFont(ofSize: 16, weight: .regular)
         return lab
     }()
 
@@ -68,7 +68,7 @@ class GuidanceStrengthTrainingSummaryVM: UIView {
         lab.numberOfLines = 0
         lab.textAlignment = .left
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        lab.font = .systemFont(ofSize: 16, weight: .regular)
+        lab.font = .systemFont(ofSize: 13, weight: .regular)
         return lab
     }()
 
@@ -104,11 +104,11 @@ extension GuidanceStrengthTrainingSummaryVM {
         titleLabel.text = content.title
         primaryMessageLabel.setLineHeight(
             textString: content.primaryMessage,
-            lineHeight: primaryMessageLabel.font.lineHeight * 1.5
+            lineHeight: primaryMessageLabel.font.lineHeight * 1.2
         )
         secondaryMessageLabel.setLineHeight(
             textString: content.secondaryMessage,
-            lineHeight: secondaryMessageLabel.font.lineHeight * 1.55
+            lineHeight: secondaryMessageLabel.font.lineHeight * 1.2
         )
         footerLabel.attributedText = footerAttributedText()
     }
@@ -153,7 +153,7 @@ extension GuidanceStrengthTrainingSummaryVM {
         let attributed = NSMutableAttributedString(
             string: fullText,
             attributes: [
-                .font: UIFont.systemFont(ofSize: 14, weight: .regular),
+                .font: UIFont.systemFont(ofSize: 12, weight: .regular),
                 .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50
             ]
         )
@@ -162,15 +162,15 @@ extension GuidanceStrengthTrainingSummaryVM {
         if range.location != NSNotFound {
             attributed.addAttributes(
                 [
-                    .font: UIFont.systemFont(ofSize: 14, weight: .semibold),
+                    .font: UIFont.systemFont(ofSize: 12, weight: .medium),
                     .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214
                 ],
                 range: range
             )
         }
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.minimumLineHeight = kFitWidth(24)
-        paragraphStyle.maximumLineHeight = kFitWidth(24)
+        paragraphStyle.minimumLineHeight = kFitWidth(19)
+        paragraphStyle.maximumLineHeight = kFitWidth(19)
         attributed.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: fullText.count))
         return attributed
     }
@@ -193,7 +193,7 @@ extension GuidanceStrengthTrainingSummaryVM {
         cardView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(25))
             make.right.equalTo(kFitWidth(-25))
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(116))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(115))
         }
 
         titleLabel.snp.makeConstraints { make in
@@ -204,16 +204,16 @@ extension GuidanceStrengthTrainingSummaryVM {
         primaryMessageLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(34))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(20))
         }
 
         secondaryMessageLabel.snp.makeConstraints { make in
             make.left.right.equalTo(primaryMessageLabel)
-            make.top.equalTo(primaryMessageLabel.snp.bottom).offset(kFitWidth(20))
+            make.top.equalTo(primaryMessageLabel.snp.bottom).offset(kFitWidth(12))
         }
 
         nextButton.snp.makeConstraints { make in
-            make.top.equalTo(secondaryMessageLabel.snp.bottom).offset(kFitWidth(38))
+            make.top.equalTo(secondaryMessageLabel.snp.bottom).offset(kFitWidth(40))
             make.centerX.equalToSuperview()
             make.width.equalTo(kFitWidth(232))
             make.height.equalTo(kFitWidth(44))
@@ -221,9 +221,9 @@ extension GuidanceStrengthTrainingSummaryVM {
         }
 
         footerLabel.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(65))
-            make.right.equalTo(kFitWidth(-65))
-            make.top.equalTo(cardView.snp.bottom).offset(kFitWidth(32))
+            make.left.equalTo(kFitWidth(45))
+            make.right.equalTo(kFitWidth(-45))
+            make.top.equalTo(cardView.snp.bottom).offset(kFitWidth(45))
         }
     }
 }

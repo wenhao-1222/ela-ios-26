@@ -156,6 +156,14 @@ extension QuestionResultBaseVM{
             make.height.equalTo(kFitWidth(30))
         }
     }
+    func updateConstrait() {
+        titleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(28))
+//            make.right.equalTo(kFitWidth(-28))
+            make.width.equalTo(kFitWidth(320))
+            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(35))
+        }
+    }
 }
 
 extension QuestionResultBaseVM:UITextFieldDelegate{

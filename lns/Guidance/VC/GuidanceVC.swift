@@ -12,7 +12,7 @@ import UMCommon
 class GuidanceVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
-    private let totalSteps = 14
+    private let totalSteps = 17
     private var nextButtonEnableWorkItem: DispatchWorkItem?
     private var isShowingMealsSummary = false
     private var isShowingStrengthTrainingSummary = false
@@ -94,6 +94,14 @@ class GuidanceVC: WHBaseViewVC {
     }()
     lazy var bodyFatAlertVm : QuestionnaireBodyFatAlertVM = {
         let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
+        return vm
+    }()
+    lazy var katchAlertVm : QuestionnaireBodyFatAlertVM = {
+        let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
+        vm.titleLabel.text = "为什么不用BMI或身高？"
+        vm.contentLabelOne.text = "BMI 主要反映体重和身高的比例，无法区分肌肉和脂肪，因此同样 BMI 的两个人，代谢需求可能差很多。Katch-McArdle 会参考你的瘦体重(去脂体重)，在体脂数据较准确时，通常能更贴近健身人群的代谢情况，给出更个性化的结果。"
+        vm.contentLabelTwo.text = ""
+        vm.contentLabelThree.text = ""
         return vm
     }()
     lazy var nextButton: UIButton = {
@@ -237,6 +245,26 @@ class GuidanceVC: WHBaseViewVC {
         vm.isHidden = true
         vm.nextBlock = { [weak self] in
             self?.hideStrengthTrainingSummary()
+            self?.sendBasicRequest()
+        }
+        return vm
+    }()
+    lazy var caloriesResultBaseVm: QuestionResultBaseVM = {
+        let vm = QuestionResultBaseVM.init(frame: CGRect.init(x: SCREEN_WIDHT*14, y: 0, width: 0, height: 0))
+        vm.updateConstrait()
+        vm.showTipsBlock = { [weak self] in
+            self?.katchAlertVm.showView()
+        }
+        return vm
+    }()
+    lazy var caloriesResultExplainVm: QuestionResultExplainVM = {
+        let vm = QuestionResultExplainVM.init(frame: CGRect.init(x: SCREEN_WIDHT*15, y: 0, width: 0, height: 0))
+        return vm
+    }()
+    lazy var goalVm : QuestionnaireGoalVM = {
+        let vm = QuestionnaireGoalVM.init(frame: CGRect.init(x: SCREEN_WIDHT*16, y: 0, width: 0, height: 0))
+        vm.choiceBlock = { [weak self] in
+            self?.updateNextButtonForCurrentStep()
         }
         return vm
     }()
@@ -274,6 +302,19 @@ extension GuidanceVC{
         case 13:
             strengthTrainingSummaryVm.refreshContentFromModel()
             showStrengthTrainingSummary()
+        case 14:
+            let caloriesText = caloriesResultBaseVm.caloriesTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "0"
+            if caloriesText.floatValue < 100 {
+                presentAlertVcNoAction(title: "请输入合理的热量摄入值", viewController: self)
+                return
+            }
+            QuestinonaireMsgModel.shared.caloriesNumber = "\(Int(caloriesText.floatValue))"
+            caloriesResultBaseVm.caloriesTextField.resignFirstResponder()
+            moveToStep(index: 15, animated: true)
+        case 15:
+            moveToStep(index: 16, animated: true)
+        case 16:
+            break
         default:
             break
         }
@@ -344,6 +385,15 @@ extension GuidanceVC{
         case 13:
             nextButton.isHidden = false
             nextButton.isEnabled = strengthTrainingFrequencyVm.hasSelection
+        case 14:
+            nextButton.isHidden = false
+            nextButton.isEnabled = true
+        case 15:
+            nextButton.isHidden = false
+            nextButton.isEnabled = true
+        case 16:
+            nextButton.isHidden = false
+            nextButton.isEnabled = goalVm.selectIndex >= 0
         default:
             nextButton.isHidden = true
             nextButton.isEnabled = false
@@ -390,6 +440,77 @@ extension GuidanceVC{
         naviVm.isHidden = false
         updateNextButtonForCurrentStep()
     }
+
+    func estimatedDailyActivityLevel() -> String {
+        let cardioScore: Double
+        switch QuestinonaireMsgModel.shared.guidanceCardioFrequencyType {
+        case "never":
+            cardioScore = 0
+        case "commute":
+            cardioScore = 1
+        case "2-3":
+            cardioScore = 2.5
+        case "4-5":
+            cardioScore = 4.5
+        case "6-7":
+            cardioScore = 6.5
+        default:
+            cardioScore = 0
+        }
+
+        let strengthScore: Double
+        switch QuestinonaireMsgModel.shared.guidanceStrengthTrainingFrequencyType {
+        case "0-2":
+            strengthScore = 1
+        case "3-4":
+            strengthScore = 3.5
+        case "5-6":
+            strengthScore = 5.5
+        case "7+":
+            strengthScore = 7
+        default:
+            strengthScore = 0
+        }
+
+        let totalScore = cardioScore + strengthScore
+        switch totalScore {
+        case ..<1:
+            return "1"
+        case ..<3:
+            return "2"
+        case ..<5:
+            return "3"
+        case ..<8:
+            return "4"
+        case ..<12:
+            return "5"
+        default:
+            return "6"
+        }
+    }
+
+    func sendBasicRequest() {
+        QuestinonaireMsgModel.shared.events = estimatedDailyActivityLevel()
+        let param = [
+            "gender": "\(QuestinonaireMsgModel.shared.sex)",
+            "dailyact": "\(QuestinonaireMsgModel.shared.events)",
+            "bodyfat": "\(QuestinonaireMsgModel.shared.bodyFat)",
+            "weight": "\(QuestinonaireMsgModel.shared.weight)"
+        ]
+        DLLog(message: "sendBasicRequest(guidance):\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_question_basic_consumption, parameters: param as [String: AnyObject], isNeedToast: true, vc: self) { [weak self] responseObject in
+            guard let self = self else { return }
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            DLLog(message: "sendBasicRequest(guidance):\(dataString ?? "")")
+            let caloriesText = (dataString ?? "0").trimmingCharacters(in: .whitespacesAndNewlines)
+            QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
+            QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
+            DispatchQueue.main.async {
+                self.caloriesResultBaseVm.caloriesTextField.text = caloriesText
+                self.moveToStep(index: 14, animated: true)
+            }
+        }
+    }
     @objc func loginAction(){
         openNetWorkServiceWithBolck(action: { netConnect in
             DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
@@ -426,6 +547,7 @@ extension GuidanceVC{
         view.addSubview(loginAlertVm)
         view.addSubview(notRegistVm)
         view.addSubview(bodyFatAlertVm)
+        view.addSubview(katchAlertVm)
         
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
@@ -446,6 +568,9 @@ extension GuidanceVC{
         scrollViewBase.addSubview(exerciseCaloriesRecordVm)
         scrollViewBase.addSubview(cardioFrequencyVm)
         scrollViewBase.addSubview(strengthTrainingFrequencyVm)
+        scrollViewBase.addSubview(caloriesResultBaseVm)
+        scrollViewBase.addSubview(caloriesResultExplainVm)
+        scrollViewBase.addSubview(goalVm)
         
         setConstrait()
         moveToStep(index: 0, animated: false)
