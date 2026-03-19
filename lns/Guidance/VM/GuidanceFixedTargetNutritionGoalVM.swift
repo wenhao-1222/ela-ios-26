@@ -145,6 +145,7 @@ extension GuidanceFixedTargetNutritionGoalVM: UITextFieldDelegate {
         guard string.rangeOfCharacter(from: allowed.inverted) == nil else { return false }
         let current = textField.text ?? ""
         let updated = (current as NSString).replacingCharacters(in: range, with: string)
+        guard !updated.hasPrefix("0") else { return false }
         return updated.count <= 4
     }
 }
@@ -469,6 +470,7 @@ extension GuidanceFixedTargetNutritionInputRowView {
         guard string.rangeOfCharacter(from: allowed.inverted) == nil else { return false }
         let current = textField.text ?? ""
         let updated = (current as NSString).replacingCharacters(in: range, with: string)
+        guard !updated.hasPrefix("0") else { return false }
         return updated.count <= 4
     }
 

@@ -46,8 +46,9 @@ class MineVC : WHBaseViewVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.statVm.tapBlock = {()in
-            let vc = NaturalStatVC()
+//            let vc = NaturalStatVC()
 //            let vc = ColorWheelVC()
+            let vc = AICoachBreathingOrbDemoViewController()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.mealVm.tapBlock = {()in
