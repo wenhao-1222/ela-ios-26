@@ -632,11 +632,22 @@ extension GuidanceVC{
         UserInfoModel.shared.showNotifiAuthoriAlertVM = false
         guard !isShowingFinishLoading else { return }
         isShowingFinishLoading = true
+        pendingNutritionGoalPresentation = false
         naviVm.isHidden = true
         nextButton.isHidden = true
         nextButton.isEnabled = false
-//        finishLoadingVm.showLoading()
-        finishLoadingVm.showLoading(waitForExternalCompletion: true)
+        if isFixedTargetFlowEnabled {
+            finishLoadingVm.configureLoading(
+                titleText: "正在根据你的选择优化设置…",
+                completionTitleText: "已完成",
+                completionNotifyDelay: 0.35
+            )
+            finishLoadingVm.showLoading(waitForExternalCompletion: false)
+        } else {
+            finishLoadingVm.configureLoading(titleText: "计划生成中...")
+            finishLoadingVm.showLoading(waitForExternalCompletion: true)
+            sendGuidanceNutritionGoalRequest()
+        }
     }
 
     func startNutritionGoalLoadingFlow() {
@@ -646,6 +657,7 @@ extension GuidanceVC{
         naviVm.isHidden = true
         nextButton.isHidden = true
         nextButton.isEnabled = false
+        finishLoadingVm.configureLoading(titleText: "计划生成中...")
         finishLoadingVm.showLoading(waitForExternalCompletion: true)
         sendGuidanceNutritionGoalRequest()
     }

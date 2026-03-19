@@ -27,6 +27,10 @@ class GuidanceFinishLoadingVM: UIView {
     private var externalCompletionRequested = false
     private var loadingStartTime: CFTimeInterval = CACurrentMediaTime()
     private var minimumDisplayDuration: TimeInterval = 0
+    private var loadingTitleText = "计划生成中..."
+    private var completionTitleText: String?
+    private var completionNotifyDelay: TimeInterval = 0
+    private var delayedCompletionWorkItem: DispatchWorkItem?
 
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -41,6 +45,7 @@ class GuidanceFinishLoadingVM: UIView {
     }
 
     deinit {
+        delayedCompletionWorkItem?.cancel()
         stopFakeProgress()
     }
 
@@ -104,6 +109,13 @@ class GuidanceFinishLoadingVM: UIView {
 }
 
 extension GuidanceFinishLoadingVM {
+    func configureLoading(titleText: String, completionTitleText: String? = nil, completionNotifyDelay: TimeInterval = 0) {
+        loadingTitleText = titleText
+        self.completionTitleText = completionTitleText
+        self.completionNotifyDelay = completionNotifyDelay
+        titleLabel.text = titleText
+    }
+
     func showLoading(waitForExternalCompletion: Bool = false) {
         isHidden = false
         progressMode = waitForExternalCompletion ? .waitForExternalCompletion : .autoComplete
@@ -118,12 +130,15 @@ extension GuidanceFinishLoadingVM {
     }
 
     private func resetProgress() {
+        delayedCompletionWorkItem?.cancel()
+        delayedCompletionWorkItem = nil
         displayedProgress = 0
         finishHoldRemaining = 0
         hasNotifiedComplete = false
         externalCompletionRequested = false
         loadingStartTime = CACurrentMediaTime()
         lastTickTime = CACurrentMediaTime()
+        titleLabel.text = loadingTitleText
         updateProgressUI(animated: false)
     }
 
@@ -206,7 +221,7 @@ extension GuidanceFinishLoadingVM {
             updateProgressUI(animated: true)
             if displayedProgress >= 100 {
                 stopFakeProgress()
-                notifyCompleteIfNeeded()
+                handleProgressFinished()
             }
             return
         }
@@ -220,7 +235,7 @@ extension GuidanceFinishLoadingVM {
                 displayedProgress = 100
                 updateProgressUI(animated: true)
                 stopFakeProgress()
-                notifyCompleteIfNeeded()
+                handleProgressFinished()
                 return
             }
             updateProgressUI(animated: true)
@@ -295,6 +310,22 @@ extension GuidanceFinishLoadingVM {
         guard !hasNotifiedComplete else { return }
         hasNotifiedComplete = true
         progressCompleteBlock?()
+    }
+
+    private func handleProgressFinished() {
+        if let completionTitleText {
+            titleLabel.text = completionTitleText
+        }
+        if completionNotifyDelay > 0 {
+            delayedCompletionWorkItem?.cancel()
+            let workItem = DispatchWorkItem { [weak self] in
+                self?.notifyCompleteIfNeeded()
+            }
+            delayedCompletionWorkItem = workItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + completionNotifyDelay, execute: workItem)
+        } else {
+            notifyCompleteIfNeeded()
+        }
     }
 }
 
