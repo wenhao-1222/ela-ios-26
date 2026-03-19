@@ -119,7 +119,8 @@ extension GuidanceGoalBarrierVM {
         scrollView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(40))
-            make.bottom.equalToSuperview()
+//            make.bottom.equalToSuperview()
+            make.bottom.equalTo(-WHUtils().getTabbarHeight()-kFitWidth(65))
         }
 
         contentView.snp.makeConstraints { make in

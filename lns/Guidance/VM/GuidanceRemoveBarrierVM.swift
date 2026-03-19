@@ -18,10 +18,19 @@ class GuidanceRemoveBarrierVM: UIView {
         isUserInteractionEnabled = true
         clipsToBounds = true
         initUI()
+        updateGradientMaskColors()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if #available(iOS 13.0, *),
+           previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            updateGradientMaskColors()
+        }
     }
 
     lazy var collageContainerView: UIView = {
@@ -78,11 +87,6 @@ class GuidanceRemoveBarrierVM: UIView {
 
     lazy var gradientMaskLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
-        layer.colors = [
-            UIColor.white.withAlphaComponent(0).cgColor,
-            UIColor.white.cgColor,
-            UIColor.white.cgColor
-        ]
         layer.startPoint = CGPoint(x: 0.5, y: 0)
         layer.endPoint = CGPoint(x: 0.5, y: 1)
         layer.locations = [0, 0.5, 1]
@@ -109,7 +113,9 @@ class GuidanceRemoveBarrierVM: UIView {
 
     lazy var zhuanyeImg: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "guide_second_zhuanye")
+        img.image = UIImage(named: "guide_second_zhuanye_gray")
+//        img.setImgLocal(imgName: "guide_second_zhuanye_gray")
+//        img.tintColor = .COLOR_TEXT_TITLE_0f1214_20
         return img
     }()
 
@@ -125,7 +131,9 @@ class GuidanceRemoveBarrierVM: UIView {
 
     lazy var jijianImg: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "guide_second_jijian")
+        img.image = UIImage(named: "guide_second_jijian_gray")
+//        img.setImgLocal(imgName: "guide_second_jijian_gray")
+//        img.tintColor = .COLOR_TEXT_TITLE_0f1214_20
         return img
     }()
 
@@ -141,6 +149,20 @@ class GuidanceRemoveBarrierVM: UIView {
 }
 
 extension GuidanceRemoveBarrierVM {
+    func updateGradientMaskColors() {
+        let baseColor: UIColor
+        if #available(iOS 13.0, *), traitCollection.userInterfaceStyle == .dark {
+            baseColor = UIColor(hex: "0f1219")
+        } else {
+            baseColor = .white
+        }
+        gradientMaskLayer.colors = [
+            baseColor.withAlphaComponent(0).cgColor,
+            baseColor.cgColor,
+            baseColor.cgColor
+        ]
+    }
+
     func startScrollersIfNeeded() {
         guard !hasStartedScrolling else { return }
         scrollerOne.startScrolling()

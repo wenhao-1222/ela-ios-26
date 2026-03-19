@@ -958,6 +958,7 @@
 		EC78C2C82F6B040000681507 /* GuidanceRemoveBarrierVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2C72F6B03F700681507 /* GuidanceRemoveBarrierVM.swift */; };
 		EC78C2CA2F6B160000681507 /* GuidanceReminderPromptVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2C92F6B15F800681507 /* GuidanceReminderPromptVM.swift */; };
 		EC78C2CC2F6B1D9E00681507 /* GuidanceFinishLoadingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2CB2F6B1D9700681507 /* GuidanceFinishLoadingVM.swift */; };
+		ECE1F1002F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE1F1012F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift */; };
 		EC78C2CE2F6B2E7900681507 /* GuidanceNutritionGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2CD2F6B2E7000681507 /* GuidanceNutritionGoalVM.swift */; };
 		EC79A77E2BD119F800D72FDF /* BodyDataDetailShareVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC79A77D2BD119F800D72FDF /* BodyDataDetailShareVC.swift */; };
 		EC79A7922BD12F7E00D72FDF /* DataDetailSharePopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC79A7912BD12F7E00D72FDF /* DataDetailSharePopView.swift */; };
@@ -2411,6 +2412,7 @@
 		EC78C2C72F6B03F700681507 /* GuidanceRemoveBarrierVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceRemoveBarrierVM.swift; sourceTree = "<group>"; };
 		EC78C2C92F6B15F800681507 /* GuidanceReminderPromptVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceReminderPromptVM.swift; sourceTree = "<group>"; };
 		EC78C2CB2F6B1D9700681507 /* GuidanceFinishLoadingVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceFinishLoadingVM.swift; sourceTree = "<group>"; };
+		ECE1F1012F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceFixedTargetNutritionGoalVM.swift; sourceTree = "<group>"; };
 		EC78C2CD2F6B2E7000681507 /* GuidanceNutritionGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceNutritionGoalVM.swift; sourceTree = "<group>"; };
 		EC79A77D2BD119F800D72FDF /* BodyDataDetailShareVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyDataDetailShareVC.swift; sourceTree = "<group>"; };
 		EC79A7912BD12F7E00D72FDF /* DataDetailSharePopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailSharePopView.swift; sourceTree = "<group>"; };
@@ -4782,6 +4784,7 @@
 				EC78C2BF2F69A1C300681507 /* GuidanceCardioFrequencyVM.swift */,
 				EC78C2BD2F698FFA00681507 /* GuidanceExerciseCaloriesRecordVM.swift */,
 				EC78C2B32F69396200681507 /* GuidanceFixedTargetVM.swift */,
+				ECE1F1012F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift */,
 				EC78C2CB2F6B1D9700681507 /* GuidanceFinishLoadingVM.swift */,
 				EC78C2C52F6AF00000681507 /* GuidanceGoalBarrierVM.swift */,
 				EC78C2BB2F69776500681507 /* GuidanceMealsAdjustVM.swift */,
@@ -6676,6 +6679,7 @@
 				EC78C2C02F69A1C800681507 /* GuidanceCardioFrequencyVM.swift in Sources */,
 				EC78C2BE2F69900100681507 /* GuidanceExerciseCaloriesRecordVM.swift in Sources */,
 				EC78C2B42F69396E00681507 /* GuidanceFixedTargetVM.swift in Sources */,
+				ECE1F1002F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift in Sources */,
 				EC78C2CC2F6B1D9E00681507 /* GuidanceFinishLoadingVM.swift in Sources */,
 				EC78C2C62F6AF00100681507 /* GuidanceGoalBarrierVM.swift in Sources */,
 				EC78C2BC2F69776B00681507 /* GuidanceMealsAdjustVM.swift in Sources */,

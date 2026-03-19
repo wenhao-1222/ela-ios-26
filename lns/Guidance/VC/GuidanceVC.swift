@@ -9,6 +9,7 @@ import MCToast
 import AuthenticationServices
 import UMCommon
 import UserNotifications
+import IQKeyboardManagerSwift
 
 class GuidanceVC: WHBaseViewVC {
 
@@ -69,6 +70,7 @@ class GuidanceVC: WHBaseViewVC {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        IQKeyboardManager.shared.enable = false
         self.navigationController?.fd_interactivePopDisabled = true
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
@@ -76,11 +78,11 @@ class GuidanceVC: WHBaseViewVC {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        IQKeyboardManager.shared.enable = true
         navigationController?.fd_interactivePopDisabled = false
         navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
-    
     override func viewWillAppear(_ animated: Bool) {
         NotificationCenter.default.addObserver(self, selector: #selector(wechatLogin), name: Notification.Name(rawValue: "wechatLogin"), object: nil)
     }
@@ -339,6 +341,14 @@ class GuidanceVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var fixedTargetNutritionGoalVm: GuidanceFixedTargetNutritionGoalVM = {
+        let vm = GuidanceFixedTargetNutritionGoalVM.init(frame: CGRect(x: SCREEN_WIDHT * 19, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        vm.saveBlock = { [weak self] in
+            self?.nextButtonTapAction()
+//            self?.saveGuidanceNutritionGoals()
+        }
+        return vm
+    }()
     lazy var reminderPromptVm: GuidanceReminderPromptVM = {
         let vm = GuidanceReminderPromptVM.init(frame: CGRect(x: SCREEN_WIDHT * 20, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vm.enableReminderBlock = { [weak self] in
@@ -346,6 +356,7 @@ class GuidanceVC: WHBaseViewVC {
         }
         vm.skipBlock = { [weak self] in
             self?.finishGuidanceFlow()
+//            self?.finishLoadingVm.showLoading(waitForExternalCompletion: false)
         }
         return vm
     }()
@@ -363,7 +374,7 @@ class GuidanceVC: WHBaseViewVC {
             }
             self.isShowingFinishLoading = false
             self.finishLoadingVm.hideLoadingView()
-            self.changeRootVcToTabbar()
+            self.changeRootVcToLogin()
         }
         return vm
     }()
@@ -376,7 +387,7 @@ extension GuidanceVC{
         switch currentStep {
         case .progressChart, .fixedTarget, .height, .bodyfat, .takeoutFrequency,
              .mealsAdjust, .exerciseCaloriesRecord, .cardioFrequency,
-             .caloriesResultExplain, .goal, .goalBarrier:
+             .caloriesResultExplain, .nutritionGoal,.goalBarrier:
             moveToStep(index: currentIndex + 1, animated: true)
         case .birthday:
             birthdayVm.getBirthDayData()
@@ -387,6 +398,8 @@ extension GuidanceVC{
         case .mealsPerDay:
             moveToStep(index: currentIndex + 1, animated: true)
         case .strengthTrainingFrequency:
+            moveToStep(index: currentIndex + 1, animated: true)
+        case .goal:
             moveToStep(index: currentIndex + 1, animated: true)
         case .caloriesResultBase:
             let caloriesText = caloriesResultBaseVm.caloriesTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "0"
@@ -410,7 +423,7 @@ extension GuidanceVC{
                 delayedNextWorkItem = workItem
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.75, execute: workItem)
             }
-        case .sex, .dietRecord, .mealsSummary, .strengthTrainingSummary, .nutritionGoal, .reminderPrompt:
+        case .sex, .dietRecord, .mealsSummary, .strengthTrainingSummary,  .reminderPrompt:
             break
         }
     }
@@ -471,6 +484,7 @@ extension GuidanceVC{
         stepsArray = isFixedTargetFlowEnabled ? fixedTargetStepsArray : defaultStepsArray
         scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalSteps), height: SCREEN_HEIGHT)
         layoutMountedStepViews()
+        updateNutritionGoalViewVisibility()
     }
 
     func layoutMountedStepViews() {
@@ -483,6 +497,12 @@ extension GuidanceVC{
                 stepView.isHidden = true
             }
         }
+    }
+
+    func updateNutritionGoalViewVisibility() {
+        guard mountedSteps.contains(.nutritionGoal) else { return }
+        nutritionGoalVm.isHidden = isFixedTargetFlowEnabled
+        fixedTargetNutritionGoalVm.isHidden = !isFixedTargetFlowEnabled
     }
 
     func scrollableIndex(for targetIndex: Int) -> Int {
@@ -501,7 +521,7 @@ extension GuidanceVC{
         if isFixedTargetFlowEnabled {
             moveToStep(index: currentIndex + 1, animated: true)
         } else {
-            sendBasicRequest()
+            sendBasicRequest(continueTo: .caloriesResultBase)
         }
     }
 
@@ -509,6 +529,9 @@ extension GuidanceVC{
         updateFlowConfiguration()
         let targetIndex = max(0, min(index, totalSteps - 1))
         guard let targetStep = flowStep(for: targetIndex) else { return }
+        if flowStep(for: currentIndex) == .nutritionGoal {
+            fixedTargetNutritionGoalVm.endEditing(true)
+        }
         installStepViewsIfNeeded(indexes: [targetIndex, targetIndex + 1, targetIndex + 2])
         currentIndex = targetIndex
         let visibleIndex = scrollableIndex(for: targetIndex)
@@ -528,7 +551,18 @@ extension GuidanceVC{
             removeBarrierVm.startScrollersIfNeeded()
         }
         if targetStep == .nutritionGoal {
-            nutritionGoalVm.refreshContentFromModel()
+            if isFixedTargetFlowEnabled {
+                fixedTargetNutritionGoalVm.refreshContentFromModel()
+                let focusDelay = animated ? 0.35 : 0
+                DispatchQueue.main.asyncAfter(deadline: .now() + focusDelay) { [weak self] in
+                    guard let self = self,
+                          self.flowStep(for: self.currentIndex) == .nutritionGoal,
+                          self.isFixedTargetFlowEnabled else { return }
+                    self.fixedTargetNutritionGoalVm.focusCarbInput()
+                }
+            } else {
+                nutritionGoalVm.refreshContentFromModel()
+            }
         }
         if targetStep == .mealsSummary {
             mealsSummaryVm.refreshContentFromModel()
@@ -602,6 +636,7 @@ extension GuidanceVC{
         nextButton.isHidden = true
         nextButton.isEnabled = false
 //        finishLoadingVm.showLoading()
+        finishLoadingVm.showLoading(waitForExternalCompletion: true)
     }
 
     func startNutritionGoalLoadingFlow() {
@@ -708,79 +743,7 @@ extension GuidanceVC{
         }
     }
 
-    func sendBasicRequest() {
-        QuestinonaireMsgModel.shared.events = estimatedDailyActivityLevel()
-        let param = [
-            "gender": "\(QuestinonaireMsgModel.shared.sex)",
-            "dailyact": "\(QuestinonaireMsgModel.shared.events)",
-            "bodyfat": "\(QuestinonaireMsgModel.shared.bodyFat)",
-            "weight": "\(QuestinonaireMsgModel.shared.weight)"
-        ]
-        DLLog(message: "sendBasicRequest(guidance):\(param)")
-        WHNetworkUtil.shareManager().POST(urlString: URL_question_basic_consumption, parameters: param as [String: AnyObject], isNeedToast: true, vc: self) { [weak self] responseObject in
-            guard let self = self else { return }
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
-            DLLog(message: "sendBasicRequest(guidance):\(dataString ?? "")")
-            let caloriesText = (dataString ?? "0").trimmingCharacters(in: .whitespacesAndNewlines)
-            QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
-            QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
-            DispatchQueue.main.async {
-                self.caloriesResultBaseVm.caloriesTextField.text = caloriesText
-                self.moveToStep(index: self.indexOfStep(.caloriesResultBase) ?? self.currentIndex, animated: true)
-            }
-        }
-    }
-
-    func sendGuidanceNutritionGoalRequest() {
-        let param = [
-            "gender": "\(QuestinonaireMsgModel.shared.sex)",
-            "birthday": "\(QuestinonaireMsgModel.shared.birthDay)",
-            "weight": "\(QuestinonaireMsgModel.shared.weight)",
-            "goal": "\(QuestinonaireMsgModel.shared.goal)",
-            "dailyact": "\(QuestinonaireMsgModel.shared.events)",
-            "bodyfat": "\(QuestinonaireMsgModel.shared.bodyFat)",
-            "calories": QuestinonaireMsgModel.shared.caloriesNumber == "" ? QuestinonaireMsgModel.shared.caloriesNumberFromServer : QuestinonaireMsgModel.shared.caloriesNumber
-        ]
-        DLLog(message: "sendGuidanceNutritionGoalRequest:\(param)")
-        WHNetworkUtil.shareManager().POST(urlString: URL_question_survey_part_save, parameters: param as [String:AnyObject]) { [weak self] responseObject in
-            guard let self = self else { return }
-            let code = responseObject["code"]as? Int ?? -1
-            if (code != 200) {
-                DispatchQueue.main.async {
-                    self.cancelNutritionGoalLoadingFlow()
-                    self.presentAlertVc(confirmBtn: "刷新", message: "", title: "当前网络不稳定", cancelBtn: nil, handler: { _ in
-                        self.startNutritionGoalLoadingFlow()
-                    }, viewController: self)
-                }
-                return
-            }
-
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
-            let data = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendGuidanceNutritionGoalRequest:\(data)")
-
-            let carbohydrate = data["carbohydrate"] as? Int ?? Int(data.doubleValueForKey(key: "carbohydrate"))
-            let fat = data["fat"] as? Int ?? Int(data.doubleValueForKey(key: "fat"))
-            let protein = data["protein"] as? Int ?? Int(data.doubleValueForKey(key: "protein"))
-            let calories = data["calories"] as? Int ?? Int(data.doubleValueForKey(key: "calories"))
-
-            QuestinonaireMsgModel.shared.surveytype = "part"
-            QuestinonaireMsgModel.shared.carbohydratesNumber = "\(carbohydrate)"
-            QuestinonaireMsgModel.shared.fatsNumber = "\(fat)"
-            QuestinonaireMsgModel.shared.proteinNumber = "\(protein)"
-            QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
-            
-            QuestinonaireMsgModel.shared.carbohydratesNumber = "\(carbohydrate)"
-            QuestinonaireMsgModel.shared.proteinNumber = "\(protein)"
-            QuestinonaireMsgModel.shared.fatsNumber = "\(fat)"
-            QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
-
-            DispatchQueue.main.async {
-                self.nutritionGoalVm.refreshContentFromModel()
-                self.finishLoadingVm.completeLoading()
-            }
-        }
-    }
+    
 
     func saveGuidanceNutritionGoals() {
         if isFixedTargetFlowEnabled, let goalBarrierIndex = indexOfStep(.goalBarrier) {
@@ -821,6 +784,7 @@ extension GuidanceVC{
         }
     }
 }
+
 extension GuidanceVC{
     func stepView(for step: FlowStep) -> UIView? {
         switch step {
@@ -845,7 +809,7 @@ extension GuidanceVC{
         case .goal: return goalVm
         case .goalBarrier: return goalBarrierVm
         case .removeBarrier: return removeBarrierVm
-        case .nutritionGoal: return nutritionGoalVm
+        case .nutritionGoal: return isFixedTargetFlowEnabled ? fixedTargetNutritionGoalVm : nutritionGoalVm
         case .reminderPrompt: return reminderPromptVm
         }
     }
@@ -902,6 +866,79 @@ extension GuidanceVC{
 
 //MARK: 网络请求
 extension GuidanceVC{
+    func sendBasicRequest(continueTo step: FlowStep = .caloriesResultBase) {
+        QuestinonaireMsgModel.shared.events = estimatedDailyActivityLevel()
+        let param = [
+            "gender": "\(QuestinonaireMsgModel.shared.sex)",
+            "dailyact": "\(QuestinonaireMsgModel.shared.events)",
+            "bodyfat": "\(QuestinonaireMsgModel.shared.bodyFat)",
+            "weight": "\(QuestinonaireMsgModel.shared.weight)"
+        ]
+        DLLog(message: "sendBasicRequest(guidance):\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_question_basic_consumption, parameters: param as [String: AnyObject], isNeedToast: true, vc: self) { [weak self] responseObject in
+            guard let self = self else { return }
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            DLLog(message: "sendBasicRequest(guidance):\(dataString ?? "")")
+            let caloriesText = (dataString ?? "0").trimmingCharacters(in: .whitespacesAndNewlines)
+            QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
+            QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
+            DispatchQueue.main.async {
+                self.caloriesResultBaseVm.caloriesTextField.text = caloriesText
+                self.moveToStep(index: self.indexOfStep(step) ?? self.currentIndex, animated: true)
+            }
+        }
+    }
+
+    func sendGuidanceNutritionGoalRequest() {
+        let param = [
+            "gender": "\(QuestinonaireMsgModel.shared.sex)",
+            "birthday": "\(QuestinonaireMsgModel.shared.birthDay)",
+            "weight": "\(QuestinonaireMsgModel.shared.weight)",
+            "goal": "\(QuestinonaireMsgModel.shared.goal)",
+            "dailyact": "\(QuestinonaireMsgModel.shared.events)",
+            "bodyfat": "\(QuestinonaireMsgModel.shared.bodyFat)",
+            "calories": QuestinonaireMsgModel.shared.caloriesNumber == "" ? QuestinonaireMsgModel.shared.caloriesNumberFromServer : QuestinonaireMsgModel.shared.caloriesNumber
+        ]
+        DLLog(message: "sendGuidanceNutritionGoalRequest:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_question_survey_part_save, parameters: param as [String:AnyObject]) { [weak self] responseObject in
+            guard let self = self else { return }
+            let code = responseObject["code"]as? Int ?? -1
+            if (code != 200) {
+                DispatchQueue.main.async {
+                    self.cancelNutritionGoalLoadingFlow()
+                    self.presentAlertVc(confirmBtn: "刷新", message: "", title: "当前网络不稳定", cancelBtn: nil, handler: { _ in
+                        self.startNutritionGoalLoadingFlow()
+                    }, viewController: self)
+                }
+                return
+            }
+
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            let data = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendGuidanceNutritionGoalRequest:\(data)")
+
+            let carbohydrate = data["carbohydrate"] as? Int ?? Int(data.doubleValueForKey(key: "carbohydrate"))
+            let fat = data["fat"] as? Int ?? Int(data.doubleValueForKey(key: "fat"))
+            let protein = data["protein"] as? Int ?? Int(data.doubleValueForKey(key: "protein"))
+            let calories = data["calories"] as? Int ?? Int(data.doubleValueForKey(key: "calories"))
+
+            QuestinonaireMsgModel.shared.surveytype = "part"
+            QuestinonaireMsgModel.shared.carbohydratesNumber = "\(carbohydrate)"
+            QuestinonaireMsgModel.shared.fatsNumber = "\(fat)"
+            QuestinonaireMsgModel.shared.proteinNumber = "\(protein)"
+            QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
+            
+            QuestinonaireMsgModel.shared.carbohydratesNumber = "\(carbohydrate)"
+            QuestinonaireMsgModel.shared.proteinNumber = "\(protein)"
+            QuestinonaireMsgModel.shared.fatsNumber = "\(fat)"
+            QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
+
+            DispatchQueue.main.async {
+                self.nutritionGoalVm.refreshContentFromModel()
+                self.finishLoadingVm.completeLoading()
+            }
+        }
+    }
     func sendAppleIdLoginRequest(){
         MCToast.mc_loading()
         let param = ["appleid":"\(UserInfoModel.shared.appleId)"]
