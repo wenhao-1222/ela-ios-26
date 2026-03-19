@@ -11,15 +11,62 @@ import UMCommon
 import UserNotifications
 
 class GuidanceVC: WHBaseViewVC {
+
+    enum FlowStep: Hashable {
+        case sex
+        case dietRecord
+        case progressChart
+        case fixedTarget
+        case birthday
+        case weight
+        case height
+        case bodyfat
+        case takeoutFrequency
+        case mealsPerDay
+        case mealsSummary
+        case mealsAdjust
+        case exerciseCaloriesRecord
+        case cardioFrequency
+        case strengthTrainingFrequency
+        case strengthTrainingSummary
+        case caloriesResultBase
+        case caloriesResultExplain
+        case goal
+        case goalBarrier
+        case removeBarrier
+        case nutritionGoal
+        case reminderPrompt
+    }
     
     var currentIndex: Int = 0
-    private let totalSteps = 21
     private var nextButtonEnableWorkItem: DispatchWorkItem?
     private var delayedNextWorkItem: DispatchWorkItem?
-    private var isShowingMealsSummary = false
-    private var isShowingStrengthTrainingSummary = false
     private var isShowingFinishLoading = false
     private var pendingNutritionGoalPresentation = false
+    private let defaultStepsArray = [7,7,8]
+    private let fixedTargetStepsArray = [4,4,4]
+    private let defaultFlow: [FlowStep] = [
+        .sex, .dietRecord, .progressChart, .fixedTarget,
+        .birthday, .weight, .height, .bodyfat, .takeoutFrequency,
+        .mealsPerDay, .mealsSummary, .mealsAdjust, .exerciseCaloriesRecord, .cardioFrequency,
+        .strengthTrainingFrequency, .strengthTrainingSummary, .caloriesResultBase, .caloriesResultExplain,
+        .goal, .goalBarrier, .removeBarrier, .nutritionGoal, .reminderPrompt
+    ]
+    private let fixedTargetFlow: [FlowStep] = [
+        .sex, .dietRecord, .progressChart, .fixedTarget,
+        .strengthTrainingFrequency, .strengthTrainingSummary, .mealsPerDay, .mealsSummary, .goal,
+        .nutritionGoal, .goalBarrier, .removeBarrier, .reminderPrompt
+    ]
+    private var mountedSteps = Set<FlowStep>()
+    private var isFixedTargetFlowEnabled: Bool {
+        QuestinonaireMsgModel.shared.guidanceFixedTargetType == "fixed"
+    }
+    private var activeFlow: [FlowStep] {
+        isFixedTargetFlowEnabled ? fixedTargetFlow : defaultFlow
+    }
+    private var totalSteps: Int {
+        activeFlow.count
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = true
@@ -50,20 +97,23 @@ class GuidanceVC: WHBaseViewVC {
         vm.backButton.isHidden = false
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
-            if self.isShowingMealsSummary || self.isShowingStrengthTrainingSummary || self.isShowingFinishLoading || self.currentIndex >= 19 {
+            if self.isShowingFinishLoading {
                 return
             }
             if self.currentIndex == 0 {
                 self.backTapAction()
                 return
             }
-            self.moveToStep(index: self.currentIndex - 1, animated: true)
+            if let currentStep = self.flowStep(for: self.currentIndex),
+               self.shouldDisableBack(for: currentStep) {
+                return
+            }
+            let targetIndex = self.previousNavigableIndex(from: self.currentIndex)
+            self.moveToStep(index: targetIndex, animated: true)
         }
         return vm
     }()
-    lazy var stepsArray: [Int] = {
-        return [7,7,6]
-    }()
+    lazy var stepsArray: [Int] = defaultStepsArray
     lazy var loginAlertVm : LoginAlertVm = {
         let vm = LoginAlertVm.init(frame: .zero)
         vm.weChatLoginBlock = {()in
@@ -162,8 +212,8 @@ class GuidanceVC: WHBaseViewVC {
     lazy var fixedTargetVm: GuidanceFixedTargetVM = {
         let vm = GuidanceFixedTargetVM.init(frame: CGRect.init(x: SCREEN_WIDHT*3, y: 0, width: 0, height: 0))
         vm.selectedBlock = { [weak self] in
+            self?.updateFlowConfiguration()
             self?.nextButtonTapAction()
-//            self?.updateNextButtonForCurrentStep()
         }
         return vm
     }()
@@ -210,9 +260,7 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceMealsSummaryVM.init(frame: .zero)
         vm.isHidden = true
         vm.nextBlock = { [weak self] in
-            self?.hideMealsSummary()
-            self?.mealsAdjustVm.refreshSelectionFromModel()
-            self?.moveToStep(index: 10, animated: true)
+            self?.advanceFromMealsSummary()
         }
         return vm
     }()
@@ -248,8 +296,7 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceStrengthTrainingSummaryVM.init(frame: .zero)
         vm.isHidden = true
         vm.nextBlock = { [weak self] in
-            self?.hideStrengthTrainingSummary()
-            self?.sendBasicRequest()
+            self?.advanceFromStrengthTrainingSummary()
         }
         return vm
     }()
@@ -311,7 +358,7 @@ class GuidanceVC: WHBaseViewVC {
                 self.isShowingFinishLoading = false
                 self.finishLoadingVm.hideLoadingView()
                 self.naviVm.isHidden = false
-                self.moveToStep(index: 19, animated: true)
+                self.moveToStep(index: self.indexOfStep(.nutritionGoal) ?? self.currentIndex, animated: true)
                 return
             }
             self.isShowingFinishLoading = false
@@ -324,36 +371,24 @@ class GuidanceVC: WHBaseViewVC {
 
 extension GuidanceVC{
     @objc func nextButtonTapAction() {
-        switch currentIndex {
-        case 2:
-            moveToStep(index: 3, animated: true)
-        case 3:
-            moveToStep(index: 4, animated: true)
-        case 4:
+        guard let currentStep = flowStep(for: currentIndex) else { return }
+
+        switch currentStep {
+        case .progressChart, .fixedTarget, .height, .bodyfat, .takeoutFrequency,
+             .mealsAdjust, .exerciseCaloriesRecord, .cardioFrequency,
+             .caloriesResultExplain, .goal, .goalBarrier:
+            moveToStep(index: currentIndex + 1, animated: true)
+        case .birthday:
             birthdayVm.getBirthDayData()
-            moveToStep(index: 5, animated: true)
-        case 5:
+            moveToStep(index: currentIndex + 1, animated: true)
+        case .weight:
             weightVm.getWeightValue()
-            moveToStep(index: 6, animated: true)
-        case 6:
-            moveToStep(index: 7, animated: true)
-        case 7:
-            moveToStep(index: 8, animated: true)
-        case 8:
-            moveToStep(index: 9, animated: true)
-        case 9:
-            mealsSummaryVm.refreshContentFromModel()
-            showMealsSummary()
-        case 10:
-            moveToStep(index: 11, animated: true)
-        case 11:
-            moveToStep(index: 12, animated: true)
-        case 12:
-            moveToStep(index: 13, animated: true)
-        case 13:
-            strengthTrainingSummaryVm.refreshContentFromModel()
-            showStrengthTrainingSummary()
-        case 14:
+            moveToStep(index: currentIndex + 1, animated: true)
+        case .mealsPerDay:
+            moveToStep(index: currentIndex + 1, animated: true)
+        case .strengthTrainingFrequency:
+            moveToStep(index: currentIndex + 1, animated: true)
+        case .caloriesResultBase:
             let caloriesText = caloriesResultBaseVm.caloriesTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "0"
             if caloriesText.floatValue < 100 {
                 presentAlertVcNoAction(title: "请输入合理的热量摄入值", viewController: self)
@@ -361,27 +396,21 @@ extension GuidanceVC{
             }
             QuestinonaireMsgModel.shared.caloriesNumber = "\(Int(caloriesText.floatValue))"
             caloriesResultBaseVm.caloriesTextField.resignFirstResponder()
-            moveToStep(index: 15, animated: true)
-        case 15:
-            moveToStep(index: 16, animated: true)
-        case 16:
-            moveToStep(index: 17, animated: true)
-        case 17:
-            moveToStep(index: 18, animated: true)
-        case 18:
-            nextButton.isEnabled = false
-            delayedNextWorkItem?.cancel()
-            let workItem = DispatchWorkItem { [weak self] in
-                guard let self = self else { return }
-                self.startNutritionGoalLoadingFlow()
+            moveToStep(index: currentIndex + 1, animated: true)
+        case .removeBarrier:
+            if isFixedTargetFlowEnabled {
+                moveToStep(index: currentIndex + 1, animated: true)
+            } else {
+                nextButton.isEnabled = false
+                delayedNextWorkItem?.cancel()
+                let workItem = DispatchWorkItem { [weak self] in
+                    guard let self = self else { return }
+                    self.startNutritionGoalLoadingFlow()
+                }
+                delayedNextWorkItem = workItem
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.75, execute: workItem)
             }
-            delayedNextWorkItem = workItem
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.75, execute: workItem)
-        case 19:
-            break
-        case 20:
-            break
-        default:
+        case .sex, .dietRecord, .mealsSummary, .strengthTrainingSummary, .nutritionGoal, .reminderPrompt:
             break
         }
     }
@@ -394,33 +423,118 @@ extension GuidanceVC{
         moveToStep(index: 1, animated: true)
     }
 
+    func flowStep(for index: Int) -> FlowStep? {
+        guard activeFlow.indices.contains(index) else { return nil }
+        return activeFlow[index]
+    }
+
+    func indexOfStep(_ step: FlowStep) -> Int? {
+        activeFlow.firstIndex(of: step)
+    }
+
+    func isSummaryStep(_ step: FlowStep) -> Bool {
+        step == .mealsSummary || step == .strengthTrainingSummary
+    }
+
+    func shouldCountForProgress(_ step: FlowStep) -> Bool {
+        step != .strengthTrainingSummary
+    }
+
+    func previousNavigableIndex(from index: Int) -> Int {
+        var targetIndex = index - 1
+        while targetIndex >= 0,
+              let step = flowStep(for: targetIndex),
+              isSummaryStep(step) {
+            targetIndex -= 1
+        }
+        return max(0, targetIndex)
+    }
+
+    func progressIndex(for flowIndex: Int) -> Int {
+        let prefixSteps = activeFlow.prefix(max(0, flowIndex + 1))
+        let actualStepCount = prefixSteps.filter { shouldCountForProgress($0) }.count
+        return max(0, actualStepCount - 1)
+    }
+
+    func shouldDisableBack(for step: FlowStep) -> Bool {
+        !isFixedTargetFlowEnabled && step == .nutritionGoal
+    }
+
+    func shouldHideNavigation(for step: FlowStep) -> Bool {
+        if isShowingFinishLoading || isSummaryStep(step) {
+            return true
+        }
+        return shouldDisableBack(for: step)
+    }
+
+    func updateFlowConfiguration() {
+        stepsArray = isFixedTargetFlowEnabled ? fixedTargetStepsArray : defaultStepsArray
+        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalSteps), height: SCREEN_HEIGHT)
+        layoutMountedStepViews()
+    }
+
+    func layoutMountedStepViews() {
+        for step in mountedSteps {
+            guard let stepView = stepView(for: step) else { continue }
+            if let index = activeFlow.firstIndex(of: step) {
+                stepView.isHidden = false
+                stepView.frame = CGRect(x: SCREEN_WIDHT * CGFloat(index), y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+            } else {
+                stepView.isHidden = true
+            }
+        }
+    }
+
+    func scrollableIndex(for targetIndex: Int) -> Int {
+        var index = max(0, min(targetIndex, totalSteps - 1))
+        while index > 0 && stepView(for: activeFlow[index]) == nil {
+            index -= 1
+        }
+        return index
+    }
+
+    func advanceFromMealsSummary() {
+        moveToStep(index: currentIndex + 1, animated: true)
+    }
+
+    func advanceFromStrengthTrainingSummary() {
+        if isFixedTargetFlowEnabled {
+            moveToStep(index: currentIndex + 1, animated: true)
+        } else {
+            sendBasicRequest()
+        }
+    }
+
     func moveToStep(index: Int, animated: Bool) {
+        updateFlowConfiguration()
         let targetIndex = max(0, min(index, totalSteps - 1))
-        if isShowingMealsSummary {
-            hideMealsSummary()
-        }
-        if isShowingStrengthTrainingSummary {
-            hideStrengthTrainingSummary()
-        }
+        guard let targetStep = flowStep(for: targetIndex) else { return }
         installStepViewsIfNeeded(indexes: [targetIndex, targetIndex + 1, targetIndex + 2])
         currentIndex = targetIndex
-        scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: animated)
-        naviVm.updateStep(steps: stepsArray, currentStep: targetIndex)
-        naviVm.backButton.isEnabled = targetIndex < 19
-        naviVm.isHidden = (targetIndex == 19)
+        let visibleIndex = scrollableIndex(for: targetIndex)
+        scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(visibleIndex), y: 0), animated: animated)
+        naviVm.updateStep(steps: stepsArray, currentStep: progressIndex(for: targetIndex))
+        naviVm.backButton.isEnabled = targetIndex > 0 && !shouldDisableBack(for: targetStep)
+        naviVm.isHidden = shouldHideNavigation(for: targetStep)
         updateNextButtonForCurrentStep()
 
-        if currentIndex == 2 {
+        if targetStep == .progressChart {
             progressChartVm.chart.startGradientAnimation()
         }
-        if currentIndex == 17 {
+        if targetStep == .goalBarrier {
             goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
         }
-        if currentIndex == 18 {
+        if targetStep == .removeBarrier {
             removeBarrierVm.startScrollersIfNeeded()
         }
-        if currentIndex == 19 {
+        if targetStep == .nutritionGoal {
             nutritionGoalVm.refreshContentFromModel()
+        }
+        if targetStep == .mealsSummary {
+            mealsSummaryVm.refreshContentFromModel()
+        }
+        if targetStep == .strengthTrainingSummary {
+            strengthTrainingSummaryVm.refreshContentFromModel()
         }
     }
 
@@ -428,61 +542,55 @@ extension GuidanceVC{
         nextButtonEnableWorkItem?.cancel()
         nextButtonEnableWorkItem = nil
 
-        switch currentIndex {
-        case 0, 1:
+        guard let currentStep = flowStep(for: currentIndex) else {
             nextButton.isHidden = true
             nextButton.isEnabled = false
-        case 2:
+            return
+        }
+
+        switch currentStep {
+        case .sex, .dietRecord, .mealsSummary, .strengthTrainingSummary, .nutritionGoal, .reminderPrompt:
+            nextButton.isHidden = true
+            nextButton.isEnabled = false
+        case .progressChart:
             nextButton.isHidden = false
             nextButton.isEnabled = false
-        case 3:
+        case .fixedTarget:
             nextButton.isHidden = true
-            nextButton.isEnabled = true//fixedTargetVm.hasSelection
-        case 4, 5, 6:
+            nextButton.isEnabled = fixedTargetVm.hasSelection
+        case .birthday, .weight, .height, .removeBarrier:
             nextButton.isHidden = false
             nextButton.isEnabled = true
-        case 7:
+        case .bodyfat:
             nextButton.isHidden = false
             nextButton.isEnabled = bodyfatVm.selectIndex >= 0
-        case 8:
+        case .takeoutFrequency:
             nextButton.isHidden = false
             nextButton.isEnabled = takeoutFrequencyVm.hasSelection
-        case 9:
+        case .mealsPerDay:
             nextButton.isHidden = false
             nextButton.isEnabled = mealsPerDayVm.hasSelection
-        case 10:
+        case .mealsAdjust:
             nextButton.isHidden = false
             nextButton.isEnabled = mealsAdjustVm.hasSelection
-        case 11:
+        case .exerciseCaloriesRecord:
             nextButton.isHidden = false
             nextButton.isEnabled = exerciseCaloriesRecordVm.hasSelection
-        case 12:
+        case .cardioFrequency:
             nextButton.isHidden = false
             nextButton.isEnabled = cardioFrequencyVm.hasSelection
-        case 13:
+        case .strengthTrainingFrequency:
             nextButton.isHidden = false
             nextButton.isEnabled = strengthTrainingFrequencyVm.hasSelection
-        case 14:
+        case .caloriesResultBase, .caloriesResultExplain:
             nextButton.isHidden = false
             nextButton.isEnabled = true
-        case 15:
-            nextButton.isHidden = false
-            nextButton.isEnabled = true
-        case 16:
+        case .goal:
             nextButton.isHidden = false
             nextButton.isEnabled = goalVm.selectIndex >= 0
-        case 17:
+        case .goalBarrier:
             nextButton.isHidden = false
             nextButton.isEnabled = goalBarrierVm.hasSelection
-        case 18:
-            nextButton.isHidden = false
-            nextButton.isEnabled = true
-        case 19, 20:
-            nextButton.isHidden = true
-            nextButton.isEnabled = false
-        default:
-            nextButton.isHidden = true
-            nextButton.isEnabled = false
         }
     }
 
@@ -543,44 +651,13 @@ extension GuidanceVC{
     }
 
     func handleProgressChartAnimationFinished() {
-        guard currentIndex == 2 else { return }
+        guard flowStep(for: currentIndex) == .progressChart else { return }
         let workItem = DispatchWorkItem { [weak self] in
-            guard let self = self, self.currentIndex == 2 else { return }
+            guard let self = self, self.flowStep(for: self.currentIndex) == .progressChart else { return }
             self.nextButton.isEnabled = true
         }
         nextButtonEnableWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: workItem)
-    }
-
-    func showMealsSummary() {
-        isShowingMealsSummary = true
-        mealsSummaryVm.isHidden = false
-        naviVm.isHidden = true
-        nextButton.isHidden = true
-        nextButton.isEnabled = false
-    }
-
-    func hideMealsSummary() {
-        guard isShowingMealsSummary else { return }
-        isShowingMealsSummary = false
-        mealsSummaryVm.isHidden = true
-        naviVm.isHidden = false
-    }
-
-    func showStrengthTrainingSummary() {
-        isShowingStrengthTrainingSummary = true
-        strengthTrainingSummaryVm.isHidden = false
-        naviVm.isHidden = true
-        nextButton.isHidden = true
-        nextButton.isEnabled = false
-    }
-
-    func hideStrengthTrainingSummary() {
-        guard isShowingStrengthTrainingSummary else { return }
-        isShowingStrengthTrainingSummary = false
-        strengthTrainingSummaryVm.isHidden = true
-        naviVm.isHidden = false
-        updateNextButtonForCurrentStep()
     }
 
     func estimatedDailyActivityLevel() -> String {
@@ -649,7 +726,7 @@ extension GuidanceVC{
             QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
             DispatchQueue.main.async {
                 self.caloriesResultBaseVm.caloriesTextField.text = caloriesText
-                self.moveToStep(index: 14, animated: true)
+                self.moveToStep(index: self.indexOfStep(.caloriesResultBase) ?? self.currentIndex, animated: true)
             }
         }
     }
@@ -706,6 +783,10 @@ extension GuidanceVC{
     }
 
     func saveGuidanceNutritionGoals() {
+        if isFixedTargetFlowEnabled, let goalBarrierIndex = indexOfStep(.goalBarrier) {
+            moveToStep(index: goalBarrierIndex, animated: true)
+            return
+        }
         WHBaseViewVC().changeRootVcToLogin()
 //        NutritionDefaultModel.shared.saveGoals(dict: [
 //            "calories": QuestinonaireMsgModel.shared.caloriesNumber,
@@ -741,36 +822,44 @@ extension GuidanceVC{
     }
 }
 extension GuidanceVC{
-    func stepView(for index: Int) -> UIView? {
-        switch index {
-        case 0: return sexVm
-        case 1: return dietRecordVm
-        case 2: return progressChartVm
-        case 3: return fixedTargetVm
-        case 4: return birthdayVm
-        case 5: return weightVm
-        case 6: return heightVm
-        case 7: return bodyfatVm
-        case 8: return takeoutFrequencyVm
-        case 9: return mealsPerDayVm
-        case 10: return mealsAdjustVm
-        case 11: return exerciseCaloriesRecordVm
-        case 12: return cardioFrequencyVm
-        case 13: return strengthTrainingFrequencyVm
-        case 14: return caloriesResultBaseVm
-        case 15: return caloriesResultExplainVm
-        case 16: return goalVm
-        case 17: return goalBarrierVm
-        case 18: return removeBarrierVm
-        case 19: return nutritionGoalVm
-        case 20: return reminderPromptVm
-        default: return nil
+    func stepView(for step: FlowStep) -> UIView? {
+        switch step {
+        case .sex: return sexVm
+        case .dietRecord: return dietRecordVm
+        case .progressChart: return progressChartVm
+        case .fixedTarget: return fixedTargetVm
+        case .birthday: return birthdayVm
+        case .weight: return weightVm
+        case .height: return heightVm
+        case .bodyfat: return bodyfatVm
+        case .takeoutFrequency: return takeoutFrequencyVm
+        case .mealsPerDay: return mealsPerDayVm
+        case .mealsSummary: return mealsSummaryVm
+        case .mealsAdjust: return mealsAdjustVm
+        case .exerciseCaloriesRecord: return exerciseCaloriesRecordVm
+        case .cardioFrequency: return cardioFrequencyVm
+        case .strengthTrainingFrequency: return strengthTrainingFrequencyVm
+        case .strengthTrainingSummary: return strengthTrainingSummaryVm
+        case .caloriesResultBase: return caloriesResultBaseVm
+        case .caloriesResultExplain: return caloriesResultExplainVm
+        case .goal: return goalVm
+        case .goalBarrier: return goalBarrierVm
+        case .removeBarrier: return removeBarrierVm
+        case .nutritionGoal: return nutritionGoalVm
+        case .reminderPrompt: return reminderPromptVm
         }
     }
 
     func installStepViewsIfNeeded(indexes: [Int]) {
         for index in indexes {
-            guard let stepView = stepView(for: index), stepView.superview == nil else {
+            guard let step = flowStep(for: index),
+                  let stepView = stepView(for: step) else {
+                continue
+            }
+            mountedSteps.insert(step)
+            stepView.isHidden = false
+            stepView.frame = CGRect(x: SCREEN_WIDHT * CGFloat(index), y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+            guard stepView.superview == nil else {
                 continue
             }
             scrollViewBase.addSubview(stepView)
@@ -782,8 +871,6 @@ extension GuidanceVC{
         view.addSubview(scrollViewBase)
         view.addSubview(naviVm)
         view.addSubview(nextButton)
-        view.addSubview(mealsSummaryVm)
-        view.addSubview(strengthTrainingSummaryVm)
         view.addSubview(loginAlertVm)
         view.addSubview(notRegistVm)
         view.addSubview(bodyFatAlertVm)
@@ -793,7 +880,7 @@ extension GuidanceVC{
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
         scrollViewBase.isScrollEnabled = false
-        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalSteps), height: SCREEN_HEIGHT)
+        updateFlowConfiguration()
         
         installStepViewsIfNeeded(indexes: [0, 1, 2])
         

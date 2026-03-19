@@ -125,7 +125,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         return vm
     }()
 //    lazy var flavorVM: DietPlanCreateFlavorVM = {
-//        let vm = DietPlanCreateFlavorVM(frame: CGRect(x: SCREEN_WIDHT * 8, y: 0, width: 0, height: 0))
+//        let vm = DietPlanCreateFlavorVM(frame: CGRect(x: SCREEN_WIDHT * 7, y: 0, width: 0, height: 0))
 //        vm.selectedBlock = {[weak self] in
 //            self?.syncNextButtonEnableStatus()
 //        }

@@ -1,30 +1,30 @@
 {
-  "/Users/lns2/Desktop/lnsapp-ios/ElaNaturalWidget/ElaNaturalWidget.swift" : {
-    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidget.swiftconstvalues",
-    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidget.d",
-    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidget.dia",
-    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidget.o",
-    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidget.swiftdeps"
+  "/Users/lns2/Desktop/lnsapp-ios/ElaNaturalWidget/ElaNaturalThreeMealsWidget.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalThreeMealsWidget.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalThreeMealsWidget.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalThreeMealsWidget.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalThreeMealsWidget.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalThreeMealsWidget.swiftdeps"
   },
-  "/Users/lns2/Desktop/lnsapp-ios/ElaNaturalWidget/LockScreenProvider.swift" : {
-    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/LockScreenProvider.swiftconstvalues",
-    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/LockScreenProvider.d",
-    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/LockScreenProvider.dia",
-    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/LockScreenProvider.o",
-    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/LockScreenProvider.swiftdeps"
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Common/Tools/Date+Exs.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Date+Exs.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Date+Exs.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Date+Exs.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Date+Exs.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Date+Exs.swiftdeps"
   },
-  "/Users/lns2/Desktop/lnsapp-ios/ElaNaturalWidget/NSDictionary+Widget+Exs.swift" : {
-    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/NSDictionary+Widget+Exs.swiftconstvalues",
-    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/NSDictionary+Widget+Exs.d",
-    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/NSDictionary+Widget+Exs.dia",
-    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/NSDictionary+Widget+Exs.o",
-    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/NSDictionary+Widget+Exs.swiftdeps"
+  "/Users/lns2/Desktop/lnsapp-ios/lns/NetWork/DeviceUUIDManager.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/DeviceUUIDManager.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/DeviceUUIDManager.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/DeviceUUIDManager.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/DeviceUUIDManager.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/DeviceUUIDManager.swiftdeps"
   },
-  "/Users/lns2/Desktop/lnsapp-ios/lns/WidgetUtils/Widget+Date+Exs.swift" : {
-    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Widget+Date+Exs.swiftconstvalues",
-    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Widget+Date+Exs.d",
-    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Widget+Date+Exs.dia",
-    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Widget+Date+Exs.o",
-    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Widget+Date+Exs.swiftdeps"
+  "/Users/lns2/Desktop/lnsapp-ios/lns/NetWork/WHTool_ProjectInfo.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/WHTool_ProjectInfo.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/WHTool_ProjectInfo.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/WHTool_ProjectInfo.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/WHTool_ProjectInfo.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/ElaNaturalWidgetExtension.build/Objects-normal/arm64/WHTool_ProjectInfo.swiftdeps"
   }
 }

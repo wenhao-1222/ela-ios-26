@@ -1063,6 +1063,9 @@ extension ImageResource {
     /// The "guide_second_img_4" asset catalog image resource.
     static let guideSecondImg4 = ImageResource(name: "guide_second_img_4", bundle: resourceBundle)
 
+    /// The "guide_second_img_cover" asset catalog image resource.
+    static let guideSecondImgCover = ImageResource(name: "guide_second_img_cover", bundle: resourceBundle)
+
     /// The "guide_second_jijian" asset catalog image resource.
     static let guideSecondJijian = ImageResource(name: "guide_second_jijian", bundle: resourceBundle)
 
@@ -6425,6 +6428,15 @@ extension AppKit.NSImage {
     static var guideSecondImg4: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .guideSecondImg4)
+#else
+        .init()
+#endif
+    }
+
+    /// The "guide_second_img_cover" asset catalog image.
+    static var guideSecondImgCover: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .guideSecondImgCover)
 #else
         .init()
 #endif
@@ -12067,6 +12079,15 @@ extension UIKit.UIImage {
     static var guideSecondImg4: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .guideSecondImg4)
+#else
+        .init()
+#endif
+    }
+
+    /// The "guide_second_img_cover" asset catalog image.
+    static var guideSecondImgCover: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .guideSecondImgCover)
 #else
         .init()
 #endif
