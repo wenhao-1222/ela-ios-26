@@ -9,14 +9,6 @@
 /* Begin PBXBuildFile section */
 		7543A21138CB0CBAB35C5B67 /* Pods_ElaNaturalWidgetExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 837831D593326DA0293D574E /* Pods_ElaNaturalWidgetExtension.framework */; };
 		98BEA455F46045C31BECACA0 /* Pods_lns.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E1BA38AEFA387064083CCD0 /* Pods_lns.framework */; };
-		C0A100012E8F000100000001 /* AICoachReportDemoModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100112E8F000100000001 /* AICoachReportDemoModels.swift */; };
-		C0A100022E8F000100000001 /* AICoachReportDemoChartViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100122E8F000100000001 /* AICoachReportDemoChartViews.swift */; };
-		C0A100032E8F000100000001 /* AICoachReportDemoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100132E8F000100000001 /* AICoachReportDemoContentView.swift */; };
-		C0A100042E8F000100000001 /* AICoachReportPDFGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100142E8F000100000001 /* AICoachReportPDFGenerator.swift */; };
-		C0A100052E8F000100000001 /* AICoachReportPDFDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100152E8F000100000001 /* AICoachReportPDFDemoVC.swift */; };
-		D0B200012F6A100000000001 /* AICoachBreathingOrbPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200112F6A100000000001 /* AICoachBreathingOrbPalette.swift */; };
-		D0B200022F6A100000000001 /* AICoachBreathingOrbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200122F6A100000000001 /* AICoachBreathingOrbView.swift */; };
-		D0B200032F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200132F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift */; };
 		A70289B02E7BB95B00B03AA6 /* MallPaySuccessBottomVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70289AF2E7BB95800B03AA6 /* MallPaySuccessBottomVM.swift */; };
 		A70289B22E7BE07D00B03AA6 /* MallOrderDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70289B12E7BE07700B03AA6 /* MallOrderDetailVC.swift */; };
 		A70289B42E7BFF4900B03AA6 /* MallPayMsgCopyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70289B32E7BFF4100B03AA6 /* MallPayMsgCopyCell.swift */; };
@@ -672,6 +664,14 @@
 		A7FB331C2DC9E52B00751B64 /* JournalShareFooterVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB331B2DC9E52300751B64 /* JournalShareFooterVM.swift */; };
 		A7FB331E2DC9F47A00751B64 /* JournalShareVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FB331D2DC9F47500751B64 /* JournalShareVM.swift */; };
 		A7FBA0CB2E3C5A8400EAEC68 /* ScreenShieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FBA0CA2E3C5A8300EAEC68 /* ScreenShieldView.swift */; };
+		C0A100012E8F000100000001 /* AICoachReportDemoModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100112E8F000100000001 /* AICoachReportDemoModels.swift */; };
+		C0A100022E8F000100000001 /* AICoachReportDemoChartViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100122E8F000100000001 /* AICoachReportDemoChartViews.swift */; };
+		C0A100032E8F000100000001 /* AICoachReportDemoContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100132E8F000100000001 /* AICoachReportDemoContentView.swift */; };
+		C0A100042E8F000100000001 /* AICoachReportPDFGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100142E8F000100000001 /* AICoachReportPDFGenerator.swift */; };
+		C0A100052E8F000100000001 /* AICoachReportPDFDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100152E8F000100000001 /* AICoachReportPDFDemoVC.swift */; };
+		D0B200012F6A100000000001 /* AICoachBreathingOrbPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200112F6A100000000001 /* AICoachBreathingOrbPalette.swift */; };
+		D0B200022F6A100000000001 /* AICoachBreathingOrbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200122F6A100000000001 /* AICoachBreathingOrbView.swift */; };
+		D0B200032F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200132F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift */; };
 		EC000E6A2EA78F6000E2C60A /* CoursePayPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC000E692EA78F5900E2C60A /* CoursePayPopupView.swift */; };
 		EC029B8F2EAA188700834AD5 /* LiquidGlassShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B8E2EAA188600834AD5 /* LiquidGlassShadow.swift */; };
 		EC029B912EAA2F3A00834AD5 /* GradientGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B902EAA2F3A00834AD5 /* GradientGlassView.swift */; };
@@ -702,6 +702,10 @@
 		EC1B59E42EE6BFEB00FE3E9A /* ServiceContactMarketVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B59E32EE6BFE700FE3E9A /* ServiceContactMarketVC.swift */; };
 		EC1B59E62EE6D34200FE3E9A /* ServiceFuncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B59E52EE6D33B00FE3E9A /* ServiceFuncButton.swift */; };
 		EC1CFB562EE18519003E42DD /* MallDetailBottomFuncVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */; };
+		EC1D079E2F6CF264002A90EA /* GuidanceProFlowBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D079D2F6CF262002A90EA /* GuidanceProFlowBackgroundView.swift */; };
+		EC1D07A62F6D2A1A002A90EA /* GuidanceProPromiseVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */; };
+		EC1D07A22F6D1A11002A90EA /* GuidanceProTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A12F6D1A0F002A90EA /* GuidanceProTopVM.swift */; };
+		EC1D07A42F6D246A002A90EA /* GuidanceProTrialVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A32F6D2468002A90EA /* GuidanceProTrialVM.swift */; };
 		EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */; };
 		EC1EB5252BF72E3000537F0B /* PlanCreateSynDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5242BF72E3000537F0B /* PlanCreateSynDaysVM.swift */; };
 		EC1EB5272BFAED5400537F0B /* FoodsEstablishVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5262BFAED5400537F0B /* FoodsEstablishVC.swift */; };
@@ -831,6 +835,7 @@
 		EC4DE32B2BD0F18F0090A7BD /* DataDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE32A2BD0F18F0090A7BD /* DataDetailTableViewCell.swift */; };
 		EC4DE32D2BD0F6020090A7BD /* DataDetailTypeFilterAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE32C2BD0F6020090A7BD /* DataDetailTypeFilterAlertVM.swift */; };
 		EC4DE32F2BD104740090A7BD /* DataDetailTimeFilterAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE32E2BD104740090A7BD /* DataDetailTimeFilterAlertVM.swift */; };
+		EC4DE7C62F6BEEF3000FB82C /* GuidanceProVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE7C52F6BEEF0000FB82C /* GuidanceProVC.swift */; };
 		EC4E493B2BAD1322008295A2 /* UserInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E493A2BAD1322008295A2 /* UserInfoModel.swift */; };
 		EC4E493D2BAD35D5008295A2 /* UIDevice+iPhoneModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E493C2BAD35D5008295A2 /* UIDevice+iPhoneModel.swift */; };
 		EC52848D2F0CA6C1006C81CE /* HabitExchangeTipsMsgVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC52848C2F0CA6BB006C81CE /* HabitExchangeTipsMsgVM.swift */; };
@@ -961,7 +966,6 @@
 		EC78C2C82F6B040000681507 /* GuidanceRemoveBarrierVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2C72F6B03F700681507 /* GuidanceRemoveBarrierVM.swift */; };
 		EC78C2CA2F6B160000681507 /* GuidanceReminderPromptVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2C92F6B15F800681507 /* GuidanceReminderPromptVM.swift */; };
 		EC78C2CC2F6B1D9E00681507 /* GuidanceFinishLoadingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2CB2F6B1D9700681507 /* GuidanceFinishLoadingVM.swift */; };
-		ECE1F1002F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE1F1012F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift */; };
 		EC78C2CE2F6B2E7900681507 /* GuidanceNutritionGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2CD2F6B2E7000681507 /* GuidanceNutritionGoalVM.swift */; };
 		EC79A77E2BD119F800D72FDF /* BodyDataDetailShareVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC79A77D2BD119F800D72FDF /* BodyDataDetailShareVC.swift */; };
 		EC79A7922BD12F7E00D72FDF /* DataDetailSharePopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC79A7912BD12F7E00D72FDF /* DataDetailSharePopView.swift */; };
@@ -1275,6 +1279,7 @@
 		ECDED1962C450CEA00F9B0AD /* LoginPhoneTypeAlertItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDED1952C450CEA00F9B0AD /* LoginPhoneTypeAlertItemVM.swift */; };
 		ECDED1982C451AB800F9B0AD /* CodeAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDED1972C451AB800F9B0AD /* CodeAlertVM.swift */; };
 		ECDF3F9A2C35229E005F7D7D /* ChineseTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDF3F992C35229E005F7D7D /* ChineseTextField.swift */; };
+		ECE1F1002F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE1F1012F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift */; };
 		ECE399982EA8675E005718C5 /* CoursePayTipsPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */; };
 		ECE3999A2EA87AA7005718C5 /* CoursePDFCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE399992EA87A9E005718C5 /* CoursePDFCell.swift */; };
 		ECE3F9C82EE7BD710032E7C8 /* ServiceCameraCaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE3F9C72EE7BD700032E7C8 /* ServiceCameraCaptureViewController.swift */; };
@@ -1412,14 +1417,6 @@
 		A70289B32E7BFF4100B03AA6 /* MallPayMsgCopyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallPayMsgCopyCell.swift; sourceTree = "<group>"; };
 		A70289B52E7C06E300B03AA6 /* MallOrderExpressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallOrderExpressCell.swift; sourceTree = "<group>"; };
 		A707D2BF2CBBE7B2005BDC0E /* BodyDataSQLiteManagerOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyDataSQLiteManagerOld.swift; sourceTree = "<group>"; };
-		C0A100112E8F000100000001 /* AICoachReportDemoModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportDemoModels.swift; sourceTree = "<group>"; };
-		C0A100122E8F000100000001 /* AICoachReportDemoChartViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportDemoChartViews.swift; sourceTree = "<group>"; };
-		C0A100132E8F000100000001 /* AICoachReportDemoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportDemoContentView.swift; sourceTree = "<group>"; };
-		C0A100142E8F000100000001 /* AICoachReportPDFGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportPDFGenerator.swift; sourceTree = "<group>"; };
-		C0A100152E8F000100000001 /* AICoachReportPDFDemoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportPDFDemoVC.swift; sourceTree = "<group>"; };
-		D0B200112F6A100000000001 /* AICoachBreathingOrbPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachBreathingOrbPalette.swift; sourceTree = "<group>"; };
-		D0B200122F6A100000000001 /* AICoachBreathingOrbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachBreathingOrbView.swift; sourceTree = "<group>"; };
-		D0B200132F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachBreathingOrbDemoViewController.swift; sourceTree = "<group>"; };
 		A7092D122E4EE02C005A2087 /* ArticlesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesVC.swift; sourceTree = "<group>"; };
 		A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesTableViewCell.swift; sourceTree = "<group>"; };
 		A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonKit.swift; sourceTree = "<group>"; };
@@ -2113,8 +2110,16 @@
 		B2BA5650292ED0A5BF2585A3 /* Pods-ElaWeekFatWidgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekFatWidgetExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaWeekFatWidgetExtension/Pods-ElaWeekFatWidgetExtension.release.xcconfig"; sourceTree = "<group>"; };
 		B76980FD1B115E6D7F4C28E4 /* Pods_ElaWeekProteinWidgetExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ElaWeekProteinWidgetExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7F084EF57677C2E83A33BDC /* Pods-ElaNaturalWidgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalWidgetExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaNaturalWidgetExtension/Pods-ElaNaturalWidgetExtension.release.xcconfig"; sourceTree = "<group>"; };
+		C0A100112E8F000100000001 /* AICoachReportDemoModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportDemoModels.swift; sourceTree = "<group>"; };
+		C0A100122E8F000100000001 /* AICoachReportDemoChartViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportDemoChartViews.swift; sourceTree = "<group>"; };
+		C0A100132E8F000100000001 /* AICoachReportDemoContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportDemoContentView.swift; sourceTree = "<group>"; };
+		C0A100142E8F000100000001 /* AICoachReportPDFGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportPDFGenerator.swift; sourceTree = "<group>"; };
+		C0A100152E8F000100000001 /* AICoachReportPDFDemoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportPDFDemoVC.swift; sourceTree = "<group>"; };
 		CAEB3A5694EA2B884C5946E3 /* Pods_ElaNaturalThreeMealsWidgetExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ElaNaturalThreeMealsWidgetExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDFD4BE5993CA839312C9118 /* Pods-ElaNaturalFiveMealsWidgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalFiveMealsWidgetExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaNaturalFiveMealsWidgetExtension/Pods-ElaNaturalFiveMealsWidgetExtension.release.xcconfig"; sourceTree = "<group>"; };
+		D0B200112F6A100000000001 /* AICoachBreathingOrbPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachBreathingOrbPalette.swift; sourceTree = "<group>"; };
+		D0B200122F6A100000000001 /* AICoachBreathingOrbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachBreathingOrbView.swift; sourceTree = "<group>"; };
+		D0B200132F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachBreathingOrbDemoViewController.swift; sourceTree = "<group>"; };
 		DB3B3C07E8D8819AF777A82A /* Pods-ElaNaturalWidgetCaloriesFourMealsExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalWidgetCaloriesFourMealsExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaNaturalWidgetCaloriesFourMealsExtension/Pods-ElaNaturalWidgetCaloriesFourMealsExtension.release.xcconfig"; sourceTree = "<group>"; };
 		DD8104AF7D11321922808F22 /* Pods-ElaNaturalFiveMealsWidgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalFiveMealsWidgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-ElaNaturalFiveMealsWidgetExtension/Pods-ElaNaturalFiveMealsWidgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		E4FBFB54E8CC7241D44272E4 /* Pods_ElaWeekCaloriesWidgetExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ElaWeekCaloriesWidgetExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2152,6 +2157,10 @@
 		EC1B59E32EE6BFE700FE3E9A /* ServiceContactMarketVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContactMarketVC.swift; sourceTree = "<group>"; };
 		EC1B59E52EE6D33B00FE3E9A /* ServiceFuncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceFuncButton.swift; sourceTree = "<group>"; };
 		EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallDetailBottomFuncVM.swift; sourceTree = "<group>"; };
+		EC1D079D2F6CF262002A90EA /* GuidanceProFlowBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProFlowBackgroundView.swift; sourceTree = "<group>"; };
+		EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPromiseVM.swift; sourceTree = "<group>"; };
+		EC1D07A12F6D1A0F002A90EA /* GuidanceProTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProTopVM.swift; sourceTree = "<group>"; };
+		EC1D07A32F6D2468002A90EA /* GuidanceProTrialVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProTrialVM.swift; sourceTree = "<group>"; };
 		EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynAlertVM.swift; sourceTree = "<group>"; };
 		EC1EB5242BF72E3000537F0B /* PlanCreateSynDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynDaysVM.swift; sourceTree = "<group>"; };
 		EC1EB5262BFAED5400537F0B /* FoodsEstablishVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsEstablishVC.swift; sourceTree = "<group>"; };
@@ -2285,6 +2294,7 @@
 		EC4DE32A2BD0F18F0090A7BD /* DataDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailTableViewCell.swift; sourceTree = "<group>"; };
 		EC4DE32C2BD0F6020090A7BD /* DataDetailTypeFilterAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailTypeFilterAlertVM.swift; sourceTree = "<group>"; };
 		EC4DE32E2BD104740090A7BD /* DataDetailTimeFilterAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailTimeFilterAlertVM.swift; sourceTree = "<group>"; };
+		EC4DE7C52F6BEEF0000FB82C /* GuidanceProVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProVC.swift; sourceTree = "<group>"; };
 		EC4E493A2BAD1322008295A2 /* UserInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoModel.swift; sourceTree = "<group>"; };
 		EC4E493C2BAD35D5008295A2 /* UIDevice+iPhoneModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+iPhoneModel.swift"; sourceTree = "<group>"; };
 		EC52848C2F0CA6BB006C81CE /* HabitExchangeTipsMsgVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeTipsMsgVM.swift; sourceTree = "<group>"; };
@@ -2418,7 +2428,6 @@
 		EC78C2C72F6B03F700681507 /* GuidanceRemoveBarrierVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceRemoveBarrierVM.swift; sourceTree = "<group>"; };
 		EC78C2C92F6B15F800681507 /* GuidanceReminderPromptVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceReminderPromptVM.swift; sourceTree = "<group>"; };
 		EC78C2CB2F6B1D9700681507 /* GuidanceFinishLoadingVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceFinishLoadingVM.swift; sourceTree = "<group>"; };
-		ECE1F1012F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceFixedTargetNutritionGoalVM.swift; sourceTree = "<group>"; };
 		EC78C2CD2F6B2E7000681507 /* GuidanceNutritionGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceNutritionGoalVM.swift; sourceTree = "<group>"; };
 		EC79A77D2BD119F800D72FDF /* BodyDataDetailShareVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyDataDetailShareVC.swift; sourceTree = "<group>"; };
 		EC79A7912BD12F7E00D72FDF /* DataDetailSharePopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailSharePopView.swift; sourceTree = "<group>"; };
@@ -2756,6 +2765,7 @@
 		ECDED1952C450CEA00F9B0AD /* LoginPhoneTypeAlertItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPhoneTypeAlertItemVM.swift; sourceTree = "<group>"; };
 		ECDED1972C451AB800F9B0AD /* CodeAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeAlertVM.swift; sourceTree = "<group>"; };
 		ECDF3F992C35229E005F7D7D /* ChineseTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChineseTextField.swift; sourceTree = "<group>"; };
+		ECE1F1012F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceFixedTargetNutritionGoalVM.swift; sourceTree = "<group>"; };
 		ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePayTipsPopupView.swift; sourceTree = "<group>"; };
 		ECE399992EA87A9E005718C5 /* CoursePDFCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePDFCell.swift; sourceTree = "<group>"; };
 		ECE3F9C72EE7BD700032E7C8 /* ServiceCameraCaptureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCameraCaptureViewController.swift; sourceTree = "<group>"; };
@@ -3389,28 +3399,6 @@
 				D0B200212F6A100000000001 /* CoachBreathingOrbDemo */,
 			);
 			path = AI;
-			sourceTree = "<group>";
-		};
-		C0A100212E8F000100000001 /* CoachReportPDFDemo */ = {
-			isa = PBXGroup;
-			children = (
-				C0A100112E8F000100000001 /* AICoachReportDemoModels.swift */,
-				C0A100122E8F000100000001 /* AICoachReportDemoChartViews.swift */,
-				C0A100132E8F000100000001 /* AICoachReportDemoContentView.swift */,
-				C0A100142E8F000100000001 /* AICoachReportPDFGenerator.swift */,
-				C0A100152E8F000100000001 /* AICoachReportPDFDemoVC.swift */,
-			);
-			path = CoachReportPDFDemo;
-			sourceTree = "<group>";
-		};
-		D0B200212F6A100000000001 /* CoachBreathingOrbDemo */ = {
-			isa = PBXGroup;
-			children = (
-				D0B200112F6A100000000001 /* AICoachBreathingOrbPalette.swift */,
-				D0B200122F6A100000000001 /* AICoachBreathingOrbView.swift */,
-				D0B200132F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift */,
-			);
-			path = CoachBreathingOrbDemo;
 			sourceTree = "<group>";
 		};
 		A741872B2D794D76006C8858 /* VC */ = {
@@ -4151,6 +4139,28 @@
 			path = ForumOfficial;
 			sourceTree = "<group>";
 		};
+		C0A100212E8F000100000001 /* CoachReportPDFDemo */ = {
+			isa = PBXGroup;
+			children = (
+				C0A100112E8F000100000001 /* AICoachReportDemoModels.swift */,
+				C0A100122E8F000100000001 /* AICoachReportDemoChartViews.swift */,
+				C0A100132E8F000100000001 /* AICoachReportDemoContentView.swift */,
+				C0A100142E8F000100000001 /* AICoachReportPDFGenerator.swift */,
+				C0A100152E8F000100000001 /* AICoachReportPDFDemoVC.swift */,
+			);
+			path = CoachReportPDFDemo;
+			sourceTree = "<group>";
+		};
+		D0B200212F6A100000000001 /* CoachBreathingOrbDemo */ = {
+			isa = PBXGroup;
+			children = (
+				D0B200112F6A100000000001 /* AICoachBreathingOrbPalette.swift */,
+				D0B200122F6A100000000001 /* AICoachBreathingOrbView.swift */,
+				D0B200132F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift */,
+			);
+			path = CoachBreathingOrbDemo;
+			sourceTree = "<group>";
+		};
 		E0A62C21CE4AEE1226859378 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -4266,6 +4276,41 @@
 				ECE3F9C72EE7BD700032E7C8 /* ServiceCameraCaptureViewController.swift */,
 			);
 			path = Service;
+			sourceTree = "<group>";
+		};
+		EC1D079C2F6CF25A002A90EA /* GuidancePro */ = {
+			isa = PBXGroup;
+			children = (
+				EC1D079D2F6CF262002A90EA /* GuidanceProFlowBackgroundView.swift */,
+				EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */,
+				EC1D07A12F6D1A0F002A90EA /* GuidanceProTopVM.swift */,
+				EC1D07A32F6D2468002A90EA /* GuidanceProTrialVM.swift */,
+			);
+			path = GuidancePro;
+			sourceTree = "<group>";
+		};
+		EC1D079F2F6CF9FC002A90EA /* Guidance */ = {
+			isa = PBXGroup;
+			children = (
+				EC78C2B12F6932A600681507 /* GuidanceDietRecordVM.swift */,
+				EC78C2BF2F69A1C300681507 /* GuidanceCardioFrequencyVM.swift */,
+				EC78C2BD2F698FFA00681507 /* GuidanceExerciseCaloriesRecordVM.swift */,
+				EC78C2B32F69396200681507 /* GuidanceFixedTargetVM.swift */,
+				ECE1F1012F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift */,
+				EC78C2CB2F6B1D9700681507 /* GuidanceFinishLoadingVM.swift */,
+				EC78C2C52F6AF00000681507 /* GuidanceGoalBarrierVM.swift */,
+				EC78C2BB2F69776500681507 /* GuidanceMealsAdjustVM.swift */,
+				EC78C2B72F69522400681507 /* GuidanceMealsPerDayVM.swift */,
+				EC78C2B92F69669B00681507 /* GuidanceMealsSummaryVM.swift */,
+				EC78C2CD2F6B2E7000681507 /* GuidanceNutritionGoalVM.swift */,
+				EC78C2C92F6B15F800681507 /* GuidanceReminderPromptVM.swift */,
+				EC78C2C72F6B03F700681507 /* GuidanceRemoveBarrierVM.swift */,
+				EC78C2C12F69B4FD00681507 /* GuidanceStrengthTrainingFrequencyVM.swift */,
+				EC78C2C32F69C8E700681507 /* GuidanceStrengthTrainingSummaryVM.swift */,
+				EC78C2B52F6946A900681507 /* GuidanceTakeoutFrequencyVM.swift */,
+				EC78C2AE2F69221900681507 /* GuidanceSexVM.swift */,
+			);
+			path = Guidance;
 			sourceTree = "<group>";
 		};
 		EC24EB482BB278F8002F21DF /* ScrollRuler */ = {
@@ -4790,6 +4835,7 @@
 			isa = PBXGroup;
 			children = (
 				EC78C2AC2F691F0300681507 /* GuidanceVC.swift */,
+				EC4DE7C52F6BEEF0000FB82C /* GuidanceProVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -4797,23 +4843,8 @@
 		EC78C2AA2F691EF400681507 /* VM */ = {
 			isa = PBXGroup;
 			children = (
-				EC78C2B12F6932A600681507 /* GuidanceDietRecordVM.swift */,
-				EC78C2BF2F69A1C300681507 /* GuidanceCardioFrequencyVM.swift */,
-				EC78C2BD2F698FFA00681507 /* GuidanceExerciseCaloriesRecordVM.swift */,
-				EC78C2B32F69396200681507 /* GuidanceFixedTargetVM.swift */,
-				ECE1F1012F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift */,
-				EC78C2CB2F6B1D9700681507 /* GuidanceFinishLoadingVM.swift */,
-				EC78C2C52F6AF00000681507 /* GuidanceGoalBarrierVM.swift */,
-				EC78C2BB2F69776500681507 /* GuidanceMealsAdjustVM.swift */,
-				EC78C2B72F69522400681507 /* GuidanceMealsPerDayVM.swift */,
-				EC78C2B92F69669B00681507 /* GuidanceMealsSummaryVM.swift */,
-				EC78C2CD2F6B2E7000681507 /* GuidanceNutritionGoalVM.swift */,
-				EC78C2C92F6B15F800681507 /* GuidanceReminderPromptVM.swift */,
-				EC78C2C72F6B03F700681507 /* GuidanceRemoveBarrierVM.swift */,
-				EC78C2C12F69B4FD00681507 /* GuidanceStrengthTrainingFrequencyVM.swift */,
-				EC78C2C32F69C8E700681507 /* GuidanceStrengthTrainingSummaryVM.swift */,
-				EC78C2B52F6946A900681507 /* GuidanceTakeoutFrequencyVM.swift */,
-				EC78C2AE2F69221900681507 /* GuidanceSexVM.swift */,
+				EC1D079F2F6CF9FC002A90EA /* Guidance */,
+				EC1D079C2F6CF25A002A90EA /* GuidancePro */,
 			);
 			path = VM;
 			sourceTree = "<group>";
@@ -6490,6 +6521,7 @@
 				ECB3E0752BD6346B00CFDDFD /* LogsMealsMsgVM.swift in Sources */,
 				EC0CB4542BAD8A2200A7EBD0 /* CountdownView.swift in Sources */,
 				A7EDC0E32D13F4290012D3FF /* ForumDetailPollMsgModel.swift in Sources */,
+				EC4DE7C62F6BEEF3000FB82C /* GuidanceProVC.swift in Sources */,
 				EC9048872BBBEB6400F62262 /* QuestionCustomTipsAlertVM.swift in Sources */,
 				A7BAAC142E2F56F6002CE2D1 /* CoursePayResultVC.swift in Sources */,
 				EC356CCD2C6C856E0023C0BA /* WidgetUtils.swift in Sources */,
@@ -7107,6 +7139,10 @@
 				EC6703422E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift in Sources */,
 				EC6E7D092C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift in Sources */,
 				A7137ABB2DAE00A700DD2D0D /* CourseDetailVC.swift in Sources */,
+				EC1D079E2F6CF264002A90EA /* GuidanceProFlowBackgroundView.swift in Sources */,
+				EC1D07A62F6D2A1A002A90EA /* GuidanceProPromiseVM.swift in Sources */,
+				EC1D07A22F6D1A11002A90EA /* GuidanceProTopVM.swift in Sources */,
+				EC1D07A42F6D246A002A90EA /* GuidanceProTrialVM.swift in Sources */,
 				A78FE20C2CD47E2C00661F7D /* ForumNoticeVM.swift in Sources */,
 				A77F95DA2D017D2E0084D4FB /* HGImagePickerCell.swift in Sources */,
 				A77F95DB2D017D2E0084D4FB /* HGImageCompleteButton.swift in Sources */,
