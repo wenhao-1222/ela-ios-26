@@ -17,10 +17,10 @@ class GuidanceCardioFrequencyVM: UIView {
 
     private let dataArray: [Item] = [
         Item(title: "几乎不会", value: "never"),
-        Item(title: "日常通勤", value: "commute"),
+        Item(title: "每周 1 次", value: "commute"),
         Item(title: "每周 2-3 次", value: "2-3"),
-        Item(title: "每周 4-5次", value: "4-5"),
-        Item(title: "每周 6-7次", value: "6-7")
+        Item(title: "每周 4-5 次", value: "4-5"),
+        Item(title: "每周 6+ 次", value: "6-7")
     ]
 
     private var itemButtons: [FeedBackButton] = []
@@ -85,6 +85,7 @@ extension GuidanceCardioFrequencyVM {
 
         if index >= 0 && index < dataArray.count {
             QuestinonaireMsgModel.shared.guidanceCardioFrequencyType = dataArray[index].value
+            QuestinonaireMsgModel.shared.events = "\(index + 1)"
             if notify {
                 selectedBlock?()
             }

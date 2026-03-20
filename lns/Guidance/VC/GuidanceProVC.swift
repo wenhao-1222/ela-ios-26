@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import MCToast
 
 class GuidanceProVC: WHBaseViewVC {
 
@@ -14,6 +15,7 @@ class GuidanceProVC: WHBaseViewVC {
         case intro
         case trial
         case promise
+        case subscribe
     }
 
     var nextBlock: (() -> Void)?
@@ -23,7 +25,9 @@ class GuidanceProVC: WHBaseViewVC {
     private let topContentVM = GuidanceProTopVM()
     private let trialContentVM = GuidanceProTrialVM()
     private let promiseContentVM = GuidanceProPromiseVM()
+    private let subscribeContentVM = GuidanceProSubscribeVM()
     private var currentStep: ContentStep = .intro
+    private var isPurchasing = false
 
     private lazy var nextButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -70,6 +74,7 @@ private extension GuidanceProVC {
         contentContainerView.addSubview(topContentVM)
         contentContainerView.addSubview(trialContentVM)
         contentContainerView.addSubview(promiseContentVM)
+        view.addSubview(subscribeContentVM)
 
         topBackgroundView.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
@@ -79,18 +84,25 @@ private extension GuidanceProVC {
         contentContainerView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(kFitWidth(126) + statusBarHeight)
-            make.height.equalTo(kFitWidth(560))
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
 
         topContentVM.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.left.right.top.equalToSuperview()
+            make.height.equalTo(kFitWidth(434))
         }
 
         trialContentVM.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.left.right.top.equalToSuperview()
+            make.height.equalTo(kFitWidth(520))
         }
 
         promiseContentVM.snp.makeConstraints { make in
+            make.left.right.top.equalToSuperview()
+            make.height.equalTo(kFitWidth(520))
+        }
+
+        subscribeContentVM.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
@@ -101,10 +113,16 @@ private extension GuidanceProVC {
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-kFitWidth(22))
         }
 
+        subscribeContentVM.startTrialTapBlock = { [weak self] in
+            self?.startSubscriptionFlow()
+        }
+
         trialContentVM.isHidden = true
         trialContentVM.alpha = 0
         promiseContentVM.isHidden = true
         promiseContentVM.alpha = 0
+        subscribeContentVM.isHidden = true
+        subscribeContentVM.alpha = 0
     }
 
     @objc func nextButtonTapAction() {
@@ -114,6 +132,8 @@ private extension GuidanceProVC {
         case .trial:
             showPromiseContent()
         case .promise:
+            showSubscribeContent()
+        case .subscribe:
             nextBlock?()
         }
     }
@@ -131,6 +151,14 @@ private extension GuidanceProVC {
 
         currentStep = .promise
         transition(from: trialContentVM, to: promiseContentVM)
+    }
+
+    func showSubscribeContent() {
+        guard currentStep == .promise else { return }
+
+        currentStep = .subscribe
+        nextButton.isHidden = true
+        transition(from: promiseContentVM, to: subscribeContentVM)
     }
 
     func transition(from currentView: UIView, to nextView: UIView) {
@@ -151,6 +179,40 @@ private extension GuidanceProVC {
             currentView.isHidden = true
             currentView.alpha = 1
             currentView.transform = .identity
+        }
+    }
+
+    func startSubscriptionFlow() {
+        guard !isPurchasing else { return }
+
+        isPurchasing = true
+        subscribeContentVM.setLoading(true)
+
+        ElaProIAPManager.shared.updateProductIDs(
+            month: ElaProIAPConfig.monthProductID,
+            annual: "annual_yeal_new",
+            lifetime: ElaProIAPConfig.lifetimeProductID
+        )
+
+        ElaProIAPManager.shared.purchaseAnnual { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.isPurchasing = false
+                self.subscribeContentVM.setLoading(false)
+
+                switch result {
+                case .success(let transaction):
+                    ElaProIAPManager.shared.handlePurchaseSuccessPostAction(transaction: transaction)
+                    MCToast.mc_text("订阅成功")
+                    self.nextBlock?()
+                case .failure(let error):
+                    if let iapError = error as? ElaProIAPError {
+                        MCToast.mc_text(iapError.localizedDescription)
+                    } else {
+                        MCToast.mc_text(error.localizedDescription)
+                    }
+                }
+            }
         }
     }
 }

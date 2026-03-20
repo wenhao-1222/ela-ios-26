@@ -879,7 +879,7 @@ extension GuidanceVC{
 //MARK: 网络请求
 extension GuidanceVC{
     func sendBasicRequest(continueTo step: FlowStep = .caloriesResultBase) {
-        QuestinonaireMsgModel.shared.events = estimatedDailyActivityLevel()
+//        QuestinonaireMsgModel.shared.events = estimatedDailyActivityLevel()
         let param = [
             "gender": "\(QuestinonaireMsgModel.shared.sex)",
             "dailyact": "\(QuestinonaireMsgModel.shared.events)",

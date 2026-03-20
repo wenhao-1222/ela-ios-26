@@ -704,6 +704,7 @@
 		EC1CFB562EE18519003E42DD /* MallDetailBottomFuncVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */; };
 		EC1D079E2F6CF264002A90EA /* GuidanceProFlowBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D079D2F6CF262002A90EA /* GuidanceProFlowBackgroundView.swift */; };
 		EC1D07A62F6D2A1A002A90EA /* GuidanceProPromiseVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */; };
+		EC1D07A82F6D3587002A90EA /* GuidanceProSubscribeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A72F6D3585002A90EA /* GuidanceProSubscribeVM.swift */; };
 		EC1D07A22F6D1A11002A90EA /* GuidanceProTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A12F6D1A0F002A90EA /* GuidanceProTopVM.swift */; };
 		EC1D07A42F6D246A002A90EA /* GuidanceProTrialVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A32F6D2468002A90EA /* GuidanceProTrialVM.swift */; };
 		EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */; };
@@ -2159,6 +2160,7 @@
 		EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallDetailBottomFuncVM.swift; sourceTree = "<group>"; };
 		EC1D079D2F6CF262002A90EA /* GuidanceProFlowBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProFlowBackgroundView.swift; sourceTree = "<group>"; };
 		EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPromiseVM.swift; sourceTree = "<group>"; };
+		EC1D07A72F6D3585002A90EA /* GuidanceProSubscribeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProSubscribeVM.swift; sourceTree = "<group>"; };
 		EC1D07A12F6D1A0F002A90EA /* GuidanceProTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProTopVM.swift; sourceTree = "<group>"; };
 		EC1D07A32F6D2468002A90EA /* GuidanceProTrialVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProTrialVM.swift; sourceTree = "<group>"; };
 		EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynAlertVM.swift; sourceTree = "<group>"; };
@@ -4283,6 +4285,7 @@
 			children = (
 				EC1D079D2F6CF262002A90EA /* GuidanceProFlowBackgroundView.swift */,
 				EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */,
+				EC1D07A72F6D3585002A90EA /* GuidanceProSubscribeVM.swift */,
 				EC1D07A12F6D1A0F002A90EA /* GuidanceProTopVM.swift */,
 				EC1D07A32F6D2468002A90EA /* GuidanceProTrialVM.swift */,
 			);
@@ -7141,6 +7144,7 @@
 				A7137ABB2DAE00A700DD2D0D /* CourseDetailVC.swift in Sources */,
 				EC1D079E2F6CF264002A90EA /* GuidanceProFlowBackgroundView.swift in Sources */,
 				EC1D07A62F6D2A1A002A90EA /* GuidanceProPromiseVM.swift in Sources */,
+				EC1D07A82F6D3587002A90EA /* GuidanceProSubscribeVM.swift in Sources */,
 				EC1D07A22F6D1A11002A90EA /* GuidanceProTopVM.swift in Sources */,
 				EC1D07A42F6D246A002A90EA /* GuidanceProTrialVM.swift in Sources */,
 				A78FE20C2CD47E2C00661F7D /* ForumNoticeVM.swift in Sources */,

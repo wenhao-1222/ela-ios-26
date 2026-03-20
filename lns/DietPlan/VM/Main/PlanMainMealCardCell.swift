@@ -112,7 +112,7 @@ class PlanMainMealCardCell: UICollectionViewCell {
         macroLabel.text = macroText
         kcalLabel.text = kcalText
         
-        let placeHolderName = isLarge ? "Image 1" : "Image"
+        let placeHolderName = isLarge ? "DietPlanImage1" : "Image"
         let placeHolder = UIImage(named: placeHolderName)
         
         if imageUrl.count > 0{
