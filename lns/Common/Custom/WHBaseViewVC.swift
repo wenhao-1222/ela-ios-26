@@ -747,3 +747,148 @@ extension WHBaseViewVC{
 //        return self.canEdgeBack
 //    }
 //}
+
+extension WHBaseViewVC {
+    func isPendingGuidanceFixedTargetSurveyUpload() -> Bool {
+        QuestinonaireMsgModel.shared.surveytype == "custom_v2"
+    }
+
+    func uploadPendingGuidanceFixedTargetSurveyV2(success: @escaping () -> Void,
+                                                  failure: ((String?) -> Void)? = nil) {
+        guard let param = buildPendingGuidanceFixedTargetSurveyV2Parameters() else {
+            MCToast.mc_remove()
+            failure?("请先完善固定目标信息")
+            return
+        }
+
+        WHNetworkUtil.shareManager().POST(urlString: URL_question_custom_save_v2,
+                                          parameters: param,
+                                          isNeedToast: true,
+                                          vc: self) { _ in
+            QuestinonaireMsgModel.shared.surveytype = "custom"
+            NutritionDefaultModel.shared.saveGoals(dict: [
+                "calories": QuestinonaireMsgModel.shared.caloriesNumber,
+                "carbohydrates": QuestinonaireMsgModel.shared.carbohydratesNumber,
+                "proteins": QuestinonaireMsgModel.shared.proteinNumber,
+                "fats": QuestinonaireMsgModel.shared.fatsNumber
+            ])
+            success()
+        } failure: { isError in
+            failure?(isError ? nil : "请求已取消")
+        }
+    }
+
+    private func buildPendingGuidanceFixedTargetSurveyV2Parameters() -> [String: AnyObject]? {
+        let model = QuestinonaireMsgModel.shared
+        let caloriesText = model.caloriesNumber.isEmpty ? model.caloriesNumberFromServer : model.caloriesNumber
+
+        guard
+            let carbohydrate = Int(model.carbohydratesNumber), carbohydrate > 0,
+            let protein = Int(model.proteinNumber), protein > 0,
+            let fat = Int(model.fatsNumber), fat > 0,
+            let calories = Int(caloriesText), calories > 0
+        else {
+            return nil
+        }
+
+        var param: [String: AnyObject] = [
+            "carbohydrate": NSNumber(value: carbohydrate),
+            "protein": NSNumber(value: protein),
+            "fat": NSNumber(value: fat),
+            "calories": NSNumber(value: calories)
+        ]
+
+        if let gender = Int(model.sex), gender > 0 {
+            param["gender"] = NSNumber(value: gender)
+        }
+
+        if let dietTrackingExperience = guidanceDietTrackingExperienceForPendingFixedTargetSurvey() {
+            param["dietTrackingExperience"] = NSNumber(value: dietTrackingExperience)
+        }
+
+        if let dailyMeals = guidanceDailyMealsForPendingFixedTargetSurvey() {
+            param["dailyMeals"] = NSNumber(value: dailyMeals)
+        }
+
+        if let weeklyStrengthTrainingFrequency = guidanceStrengthTrainingFrequencyForPendingFixedTargetSurvey() {
+            param["weeklyStrengthTrainingFrequency"] = weeklyStrengthTrainingFrequency as NSString
+        }
+
+        if let goal = Int(model.goal), goal > 0 {
+            param["goal"] = NSNumber(value: goal)
+        }
+
+        let dietBarriers = guidanceDietBarriersForPendingFixedTargetSurvey()
+        if !dietBarriers.isEmpty {
+            param["dietBarriers"] = dietBarriers as NSArray
+        }
+
+        return param
+    }
+
+    private func guidanceDietTrackingExperienceForPendingFixedTargetSurvey() -> Int? {
+        switch QuestinonaireMsgModel.shared.guidanceDietRecordType {
+        case "none":
+            return 0
+        case "app":
+            return 1
+        case "manual":
+            return 2
+        default:
+            return nil
+        }
+    }
+
+    private func guidanceDailyMealsForPendingFixedTargetSurvey() -> Int? {
+        switch QuestinonaireMsgModel.shared.guidanceMealsPerDayType {
+        case "1-2":
+            return 2
+        case "3":
+            return 3
+        case "4":
+            return 4
+        case "5":
+            return 5
+        case "6+":
+            return 6
+        default:
+            return nil
+        }
+    }
+
+    private func guidanceStrengthTrainingFrequencyForPendingFixedTargetSurvey() -> String? {
+        let value = QuestinonaireMsgModel.shared.guidanceStrengthTrainingFrequencyType.trimmingCharacters(in: .whitespacesAndNewlines)
+        return value.isEmpty ? nil : value
+    }
+
+    private func guidanceDietBarriersForPendingFixedTargetSurvey() -> [String] {
+        let selectedValues = QuestinonaireMsgModel.shared.guidanceGoalBarrierType
+            .split(separator: ",")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+
+        let gainAndStrengthMapping: [String: String] = [
+            "rest_day": "增肌，力量-休息日容易摆烂",
+            "post_workout_appetite": "增肌，力量-训练后没胃口",
+            "digestion": "增肌，力量-一吃多就消化不好",
+            "busy": "增肌，力量-太忙没时间加餐",
+            "protein": "增肌，力量-吃不够蛋白质",
+            "meal_prep": "增肌，力量-备餐太麻烦",
+            "unknown_food": "增肌，力量-不知道吃什么",
+            "family": "增肌，力量-家庭因素干扰"
+        ]
+        let fatLossAndPerformanceMapping: [String: String] = [
+            "rest_day": "减脂，维持，运动表现-休息日容易摆烂",
+            "more_hungry": "减脂，维持，运动表现-练完肚子更饿了",
+            "cant_sleep": "减脂，维持，运动表现-不吃点东西睡不着",
+            "binge_eating": "减脂，维持，运动表现-压力一大就想暴饮暴食",
+            "rebound": "减脂，维持，运动表现-方法太极端，总是反弹",
+            "meal_prep": "减脂，维持，运动表现-备餐太麻烦",
+            "unknown_food": "减脂，维持，运动表现-不知道吃什么",
+            "family": "减脂，维持，运动表现-家庭因素干扰"
+        ]
+
+        let mapping = ["4", "5", "7"].contains(QuestinonaireMsgModel.shared.goal) ? gainAndStrengthMapping : fatLossAndPerformanceMapping
+        return selectedValues.compactMap { mapping[$0] }
+    }
+}

@@ -66,6 +66,8 @@ public let URL_question_survey_savepart       = URL_Type + "users/survey/savepar
 public let URL_question_survey_part_save       = URL_Type + "users/nutrition/goals"
 //用户自定义目标
 public let URL_question_custom_save       = URL_Type + "users/survey/custom"
+//用户自定义目标 v2（引导页固定目标分支）
+public let URL_question_custom_save_v2    = URL_Type + "users/survey/custom/v2"
 //保存周目标
 public let URL_goal_week_save       = URL_Type + "users/survey/custom_week"
 //保存碳循环目标
@@ -410,4 +412,3 @@ public let URL_reward_rule              = "https://static.leungnutritionsciences
 public let URL_turorial_purchase_agreement = "https://static.leungnutritionsciences.cn/agreements/ela_tutorial_purchase_agreement.html"
 //ela Pro 会员服务协议
 public let URL_pro_agreement = "https://static.leungnutritionsciences.cn/agreements/ela_membership_agreement.html"
-

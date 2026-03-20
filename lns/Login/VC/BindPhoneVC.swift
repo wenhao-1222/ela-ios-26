@@ -326,7 +326,14 @@ extension BindPhoneVC{
     func sendSurveySaveRequest() {
         MCToast.mc_loading()
         var param = NSDictionary()
-        if QuestinonaireMsgModel.shared.surveytype == "custom"{//自定义目标
+        if isPendingGuidanceFixedTargetSurveyUpload() {
+            uploadPendingGuidanceFixedTargetSurveyV2 { [weak self] in
+                self?.changeRootVcToTabbar()
+            } failure: { [weak self] message in
+                guard let self = self, let message, !message.isEmpty else { return }
+                self.presentAlertVcNoAction(title: message, viewController: self)
+            }
+        } else if QuestinonaireMsgModel.shared.surveytype == "custom"{//自定义目标
             param = ["uid":"\(UserInfoModel.shared.uId)",
                      "surveytype":"custom",
                      "calories":"\(QuestinonaireMsgModel.shared.calories)",

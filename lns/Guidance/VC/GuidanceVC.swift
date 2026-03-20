@@ -45,7 +45,7 @@ class GuidanceVC: WHBaseViewVC {
     private var isShowingFinishLoading = false
     private var pendingNutritionGoalPresentation = false
     private let defaultStepsArray = [7,7,8]
-    private let fixedTargetStepsArray = [4,4,4]
+    private let fixedTargetStepsArray = [4,5,4]
     private let defaultFlow: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
         .birthday, .weight, .height, .bodyfat, .takeoutFrequency,
@@ -55,7 +55,7 @@ class GuidanceVC: WHBaseViewVC {
     ]
     private let fixedTargetFlow: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
-        .strengthTrainingFrequency, .strengthTrainingSummary, .mealsPerDay, .mealsSummary, .goal,
+        .strengthTrainingFrequency, .strengthTrainingSummary, .mealsPerDay, .mealsSummary, .mealsAdjust, .goal,
         .nutritionGoal, .goalBarrier, .removeBarrier, .reminderPrompt
     ]
     private var mountedSteps = Set<FlowStep>()
@@ -630,6 +630,15 @@ extension GuidanceVC{
 
     func finishGuidanceFlow() {
         UserInfoModel.shared.showNotifiAuthoriAlertVM = false
+        if isFixedTargetFlowEnabled {
+            QuestinonaireMsgModel.shared.surveytype = "custom_v2"
+            changeRootVcToLogin()
+            return
+        }
+        startFinalGuidanceSubmissionFlow()
+    }
+
+    func startFinalGuidanceSubmissionFlow() {
         guard !isShowingFinishLoading else { return }
         isShowingFinishLoading = true
         pendingNutritionGoalPresentation = false
@@ -642,12 +651,11 @@ extension GuidanceVC{
                 completionTitleText: "已完成",
                 completionNotifyDelay: 0.35
             )
-            finishLoadingVm.showLoading(waitForExternalCompletion: false)
         } else {
-            finishLoadingVm.configureLoading(titleText: "计划生成中...")
-            finishLoadingVm.showLoading(waitForExternalCompletion: true)
-            sendGuidanceNutritionGoalRequest()
+            finishLoadingVm.configureLoading(titleText: "正在保存你的设置...")
         }
+        finishLoadingVm.showLoading(waitForExternalCompletion: true)
+        submitCompletedGuidanceFlow()
     }
 
     func startNutritionGoalLoadingFlow() {
@@ -667,6 +675,17 @@ extension GuidanceVC{
         isShowingFinishLoading = false
         finishLoadingVm.hideLoadingView()
         naviVm.isHidden = false
+        updateNextButtonForCurrentStep()
+    }
+
+    func cancelFinalGuidanceSubmissionFlow() {
+        pendingNutritionGoalPresentation = false
+        isShowingFinishLoading = false
+        finishLoadingVm.hideLoadingView()
+
+        let currentStep = flowStep(for: currentIndex) ?? .reminderPrompt
+        naviVm.isHidden = shouldHideNavigation(for: currentStep)
+        naviVm.backButton.isEnabled = currentIndex > 0 && !shouldDisableBack(for: currentStep)
         updateNextButtonForCurrentStep()
     }
 
@@ -762,7 +781,7 @@ extension GuidanceVC{
             moveToStep(index: goalBarrierIndex, animated: true)
             return
         }
-        WHBaseViewVC().changeRootVcToLogin()
+        startFinalGuidanceSubmissionFlow()
 //        NutritionDefaultModel.shared.saveGoals(dict: [
 //            "calories": QuestinonaireMsgModel.shared.caloriesNumber,
 //            "carbohydrates": QuestinonaireMsgModel.shared.carbohydratesNumber,
@@ -878,6 +897,10 @@ extension GuidanceVC{
 
 //MARK: 网络请求
 extension GuidanceVC{
+    func submitCompletedGuidanceFlow() {
+        sendGuidanceNonFixedTargetUploadPlaceholder()
+    }
+
     func sendBasicRequest(continueTo step: FlowStep = .caloriesResultBase) {
 //        QuestinonaireMsgModel.shared.events = estimatedDailyActivityLevel()
         let param = [
@@ -949,6 +972,13 @@ extension GuidanceVC{
                 self.nutritionGoalVm.refreshContentFromModel()
                 self.finishLoadingVm.completeLoading()
             }
+        }
+    }
+
+    func sendGuidanceNonFixedTargetUploadPlaceholder() {
+        // TODO: 这里预留给非“有固定目标”分支的最终上传接口，下一步接入。
+        DispatchQueue.main.async {
+            self.finishLoadingVm.completeLoading()
         }
     }
     func sendAppleIdLoginRequest(){
