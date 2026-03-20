@@ -24,7 +24,7 @@ class GuidanceMealsAdjustVM: UIView {
     private let dataArray: [Item] = [
         Item(
             title: "A. 每日 1-2 餐",
-            value: "1-2",
+            value: "2",
             bulking: "不适合",
             cutting: "一般",
             advantages: ["更省时间", "每餐饱腹感更强"],
@@ -220,6 +220,7 @@ extension GuidanceMealsAdjustVM {
         }
 
         if index >= 0 && index < dataArray.count {
+            QuestinonaireMsgModel.shared.guidanceMealsPerDayType = dataArray[index].value
             QuestinonaireMsgModel.shared.guidanceMealsAdjustType = dataArray[index].value
             if notify {
                 selectedBlock?()

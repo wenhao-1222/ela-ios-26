@@ -635,6 +635,7 @@ extension GuidanceVC{
             changeRootVcToLogin()
             return
         }
+        QuestinonaireMsgModel.shared.surveytype = "part_v2"
         startFinalGuidanceSubmissionFlow()
     }
 

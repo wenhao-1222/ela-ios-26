@@ -16,7 +16,7 @@ class GuidanceMealsPerDayVM: UIView {
     private(set) var selectedIndex = -1
 
     private let dataArray: [Item] = [
-        Item(title: "1-2 餐", value: "1-2"),
+        Item(title: "1-2 餐", value: "2"),
         Item(title: "3 餐", value: "3"),
         Item(title: "4 餐", value: "4"),
         Item(title: "5 餐", value: "5"),

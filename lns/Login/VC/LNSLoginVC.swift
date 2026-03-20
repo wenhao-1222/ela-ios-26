@@ -285,6 +285,13 @@ extension LNSLoginVC{
                 guard let self = self, let message, !message.isEmpty else { return }
                 self.presentAlertVcNoAction(title: message, viewController: self)
             }
+        } else if isPendingGuidancePartSurveyUpload() {
+            uploadPendingGuidancePartSurveyV2 { [weak self] in
+                self?.changeRootVcToTabbar()
+            } failure: { [weak self] message in
+                guard let self = self, let message, !message.isEmpty else { return }
+                self.presentAlertVcNoAction(title: message, viewController: self)
+            }
         } else if QuestinonaireMsgModel.shared.surveytype == "custom"{//自定义目标
             param = ["uid":"\(UserInfoModel.shared.uId)",
                      "surveytype":"custom",

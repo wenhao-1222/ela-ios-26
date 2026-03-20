@@ -753,6 +753,10 @@ extension WHBaseViewVC {
         QuestinonaireMsgModel.shared.surveytype == "custom_v2"
     }
 
+    func isPendingGuidancePartSurveyUpload() -> Bool {
+        QuestinonaireMsgModel.shared.surveytype == "part_v2"
+    }
+
     func uploadPendingGuidanceFixedTargetSurveyV2(success: @escaping () -> Void,
                                                   failure: ((String?) -> Void)? = nil) {
         guard let param = buildPendingGuidanceFixedTargetSurveyV2Parameters() else {
@@ -778,7 +782,89 @@ extension WHBaseViewVC {
         }
     }
 
+    func uploadPendingGuidancePartSurveyV2(success: @escaping () -> Void,
+                                           failure: ((String?) -> Void)? = nil) {
+        guard let param = buildPendingGuidancePartSurveyV2Parameters() else {
+            MCToast.mc_remove()
+            failure?("请先完善引导信息")
+            return
+        }
+
+        WHNetworkUtil.shareManager().POST(urlString: URL_question_survey_savepart_v2,
+                                          parameters: param,
+                                          isNeedToast: true,
+                                          vc: self) { _ in
+            QuestinonaireMsgModel.shared.surveytype = "part"
+            NutritionDefaultModel.shared.saveGoals(dict: [
+                "calories": QuestinonaireMsgModel.shared.caloriesNumber,
+                "carbohydrates": QuestinonaireMsgModel.shared.carbohydratesNumber,
+                "proteins": QuestinonaireMsgModel.shared.proteinNumber,
+                "fats": QuestinonaireMsgModel.shared.fatsNumber
+            ])
+            success()
+        } failure: { isError in
+            failure?(isError ? nil : "请求已取消")
+        }
+    }
+
     private func buildPendingGuidanceFixedTargetSurveyV2Parameters() -> [String: AnyObject]? {
+        guard var param = buildPendingGuidanceBaseNutritionParameters() else {
+            return nil
+        }
+
+        if let weeklyStrengthTrainingFrequency = guidanceStrengthTrainingFrequencyForPendingFixedTargetSurvey() {
+            param["weeklyStrengthTrainingFrequency"] = weeklyStrengthTrainingFrequency as NSString
+        }
+
+        return param
+    }
+
+    private func buildPendingGuidancePartSurveyV2Parameters() -> [String: AnyObject]? {
+        let model = QuestinonaireMsgModel.shared
+        guard var param = buildPendingGuidanceBaseNutritionParameters() else {
+            return nil
+        }
+
+        param["hasDailyIntakeGoal"] = NSNumber(value: 0)
+
+        let birthday = model.birthDay.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !birthday.isEmpty {
+            param["birthday"] = birthday as NSString
+        }
+
+        if let weight = Double(model.weight), weight > 0 {
+            param["weight"] = NSNumber(value: weight)
+        }
+
+        if let height = Int(model.height), height > 0 {
+            param["height"] = NSNumber(value: height)
+        }
+
+        let bodyFat = model.bodyFat.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !bodyFat.isEmpty {
+            param["bodyFat"] = bodyFat as NSString
+        }
+
+        if let weeklyTakeawayFrequency = guidanceTakeawayFrequencyForPendingPartSurvey() {
+            param["weeklyTakeawayFrequency"] = weeklyTakeawayFrequency as NSString
+        }
+
+        if let trackExerciseCalories = guidanceTrackExerciseCaloriesForPendingPartSurvey() {
+            param["trackExerciseCalories"] = NSNumber(value: trackExerciseCalories)
+        }
+
+        if let weeklyAerobicExerciseFrequency = guidanceAerobicFrequencyForPendingPartSurvey() {
+            param["weeklyAerobicExerciseFrequency"] = weeklyAerobicExerciseFrequency as NSString
+        }
+
+        if let weeklyStrengthTrainingFrequency = guidanceStrengthTrainingFrequencyForPendingFixedTargetSurvey() {
+            param["weeklyStrengthTrainingFrequency"] = weeklyStrengthTrainingFrequency as NSString
+        }
+
+        return param
+    }
+
+    private func buildPendingGuidanceBaseNutritionParameters() -> [String: AnyObject]? {
         let model = QuestinonaireMsgModel.shared
         let caloriesText = model.caloriesNumber.isEmpty ? model.caloriesNumberFromServer : model.caloriesNumber
 
@@ -806,19 +892,15 @@ extension WHBaseViewVC {
             param["dietTrackingExperience"] = NSNumber(value: dietTrackingExperience)
         }
 
-        if let dailyMeals = guidanceDailyMealsForPendingFixedTargetSurvey() {
+        if let dailyMeals = guidanceDailyMealsForPendingSurvey() {
             param["dailyMeals"] = NSNumber(value: dailyMeals)
-        }
-
-        if let weeklyStrengthTrainingFrequency = guidanceStrengthTrainingFrequencyForPendingFixedTargetSurvey() {
-            param["weeklyStrengthTrainingFrequency"] = weeklyStrengthTrainingFrequency as NSString
         }
 
         if let goal = Int(model.goal), goal > 0 {
             param["goal"] = NSNumber(value: goal)
         }
 
-        let dietBarriers = guidanceDietBarriersForPendingFixedTargetSurvey()
+        let dietBarriers = guidanceDietBarriersForPendingSurvey()
         if !dietBarriers.isEmpty {
             param["dietBarriers"] = dietBarriers as NSArray
         }
@@ -839,9 +921,12 @@ extension WHBaseViewVC {
         }
     }
 
-    private func guidanceDailyMealsForPendingFixedTargetSurvey() -> Int? {
-        switch QuestinonaireMsgModel.shared.guidanceMealsPerDayType {
-        case "1-2":
+    private func guidanceDailyMealsForPendingSurvey() -> Int? {
+        let selectedValue = QuestinonaireMsgModel.shared.guidanceMealsPerDayType//!QuestinonaireMsgModel.shared.guidanceMealsAdjustType.isEmpty
+//            ? QuestinonaireMsgModel.shared.guidanceMealsAdjustType
+//            : QuestinonaireMsgModel.shared.guidanceMealsPerDayType
+        switch selectedValue {
+        case "2":
             return 2
         case "3":
             return 3
@@ -861,7 +946,36 @@ extension WHBaseViewVC {
         return value.isEmpty ? nil : value
     }
 
-    private func guidanceDietBarriersForPendingFixedTargetSurvey() -> [String] {
+    private func guidanceTakeawayFrequencyForPendingPartSurvey() -> String? {
+        let value = QuestinonaireMsgModel.shared.guidanceTakeoutFrequencyType.trimmingCharacters(in: .whitespacesAndNewlines)
+        return value.isEmpty ? nil : value
+    }
+
+    private func guidanceTrackExerciseCaloriesForPendingPartSurvey() -> Int? {
+        switch QuestinonaireMsgModel.shared.guidanceExerciseCaloriesRecordType {
+        case "no":
+            return 0
+        case "yes":
+            return 1
+        default:
+            return nil
+        }
+    }
+
+    private func guidanceAerobicFrequencyForPendingPartSurvey() -> String? {
+        switch QuestinonaireMsgModel.shared.guidanceCardioFrequencyType {
+        case "never":
+            return "0"
+        case "commute":
+            return "1"
+        case "2-3", "4-5", "6-7":
+            return QuestinonaireMsgModel.shared.guidanceCardioFrequencyType
+        default:
+            return nil
+        }
+    }
+
+    private func guidanceDietBarriersForPendingSurvey() -> [String] {
         let selectedValues = QuestinonaireMsgModel.shared.guidanceGoalBarrierType
             .split(separator: ",")
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
