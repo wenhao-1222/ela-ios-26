@@ -774,15 +774,14 @@ extension GuidanceVC{
             return "6"
         }
     }
-
     
-
     func saveGuidanceNutritionGoals() {
         if isFixedTargetFlowEnabled, let goalBarrierIndex = indexOfStep(.goalBarrier) {
             moveToStep(index: goalBarrierIndex, animated: true)
             return
         }
-        startFinalGuidanceSubmissionFlow()
+        QuestinonaireMsgModel.shared.surveytype = "part_v2"
+        changeRootVcToLogin()
 //        NutritionDefaultModel.shared.saveGoals(dict: [
 //            "calories": QuestinonaireMsgModel.shared.caloriesNumber,
 //            "carbohydrates": QuestinonaireMsgModel.shared.carbohydratesNumber,
