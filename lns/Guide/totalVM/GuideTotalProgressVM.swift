@@ -9,7 +9,7 @@
 class GuideTotalProgressVM: UIView {
     
     let progressWidth = SCREEN_WIDHT-kFitWidth(110)
-    let totalStep = CGFloat(7)
+    let totalStep = CGFloat(5)
     var stepWidth = kFitWidth(55)
     
     var backBlock:(()->())?
@@ -53,7 +53,7 @@ class GuideTotalProgressVM: UIView {
         return vi
     }()
     lazy var progressView: UIView = {
-        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: stepWidth*CGFloat(2), height: kFitWidth(6)))
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: stepWidth, height: kFitWidth(6)))
         vi.backgroundColor = .THEME
         vi.layer.cornerRadius = kFitWidth(3)
         vi.clipsToBounds = true
@@ -93,7 +93,7 @@ extension GuideTotalProgressVM{
         
         setConstrait()
         
-        setStep(step: 1)
+        setStep(step: 0, animated: false)
     }
     func setConstrait() {
         backImg.snp.makeConstraints { make in

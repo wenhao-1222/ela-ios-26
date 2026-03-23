@@ -27,28 +27,11 @@ class GuideTotalVC: WHBaseViewVC {
         removeFromParent()
     }
     
-    lazy var firstVm: GuideTotalFirstVM = {
-        let vm = GuideTotalFirstVM.init(frame: .zero)
-        vm.nextBlock = { [weak self] in
-            self?.secondVm.pageDisplayDate = Date()
-            self?.animateTransition(to: 1)
-        }
-        return vm
-    }()
-    lazy var secondVm: GuideTotalSecondNewVM = {
-        let vm = GuideTotalSecondNewVM.init(frame: .zero)
-        vm.nextBlock = { [weak self] in
-            self?.animateTransition(to: 2)
-        }
-        return vm
-    }()
     lazy var progressVm: GuideTotalProgressVM = {
         let vm = GuideTotalProgressVM.init(frame: .zero)
-        vm.isHidden = true
         vm.backBlock = {[weak self] in
             guard let self = self else { return }
-            if self.currentIndex >= 2 {
-//                self.animateTransition(to: self.currentIndex-1)
+            if self.currentIndex > 0 {
                 self.showStep(self.currentIndex - 1, animated: true)
             }
         }
@@ -57,14 +40,14 @@ class GuideTotalVC: WHBaseViewVC {
     lazy var thirdVm: GuideTotalThirdVM = {
         let vm = GuideTotalThirdVM.init(frame: .zero)
         vm.nextBlock = { [weak self] in
-            self?.animateTransition(to: 3)
+            self?.animateTransition(to: 1)
         }
         return vm
     }()
     lazy var fourthVm: GuideTotalFourVM = {
         let vm = GuideTotalFourVM.init(frame: .zero)
         vm.nextBlock = { [weak self] in
-            self?.animateTransition(to: 4)
+            self?.animateTransition(to: 2)
         }
         return vm
     }()
@@ -73,14 +56,14 @@ class GuideTotalVC: WHBaseViewVC {
         let vm = GuideTotalFifthVM.init(frame: .zero)
         vm.nextBlock = { [weak self] in
             self?.sevenVm.caloriesCircleVm.setData(currentNumber: 266)
-            self?.animateTransition(to: 5)
+            self?.animateTransition(to: 3)
         }
         return vm
     }()
     lazy var sixthVm: GuideTotalSixthVM = {
         let vm = GuideTotalSixthVM.init(frame: .zero)
         vm.nextBlock = { [weak self] in
-            self?.animateTransition(to: 6)
+            self?.animateTransition(to: 4)
         }
         return vm
     }()
@@ -102,31 +85,27 @@ extension GuideTotalVC{
         self.progressVm.isUserInteractionEnabled = false
         let fromView: UIView
         switch currentIndex {
-        case 0: fromView = firstVm
-        case 1: fromView = secondVm
-        case 2: fromView = thirdVm
-        case 3: fromView = fourthVm
-        case 4: fromView = fifthVm
-        case 5: fromView = sixthVm
+        case 0: fromView = thirdVm
+        case 1: fromView = fourthVm
+        case 2: fromView = fifthVm
+        case 3: fromView = sixthVm
         default: fromView = sevenVm
         }
 
         let toView: UIView
         switch index {
-        case 1: toView = secondVm
-        case 2: toView = thirdVm
-        case 3: toView = fourthVm
-        case 4: toView = fifthVm
-        case 5: toView = sixthVm
+        case 1: toView = fourthVm
+        case 2: toView = fifthVm
+        case 3: toView = sixthVm
         default: toView = sevenVm
         }
         // Prepare entrance animations for upcoming view
         switch index {
-        case 2: thirdVm.prepareEntranceAnimation()
-        case 3: fourthVm.prepareEntranceAnimation()
-        case 4: fifthVm.prepareEntranceAnimation()
-        case 5: sixthVm.prepareEntranceAnimation()
-        case 6: sevenVm.prepareEntranceAnimation()
+        case 0: thirdVm.prepareEntranceAnimation()
+        case 1: fourthVm.prepareEntranceAnimation()
+        case 2: fifthVm.prepareEntranceAnimation()
+        case 3: sixthVm.prepareEntranceAnimation()
+        case 4: sevenVm.prepareEntranceAnimation()
         default: break
         }
 
@@ -136,22 +115,17 @@ extension GuideTotalVC{
         }completion: { _ in
             self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(index), y: 0), animated: false)
         }
-        let duration = index == 1 ? 0.75 : 0.01
+        let duration = 0.01
         
         UIView.animate(withDuration: duration, delay: 0.6,options: .curveEaseInOut) {
             toView.alpha = 1
         }completion: { _ in
-//            toView.setNeedsLayout()
-//            toView.layoutIfNeeded()
-            if index == 1 {
-                self.secondVm.startScrollersIfNeeded()
-            }
             switch index {
-            case 2: self.thirdVm.startEntranceAnimation()
-            case 3: self.fourthVm.startEntranceAnimation()
-            case 4: self.fifthVm.startEntranceAnimation()
-            case 5: self.sixthVm.startEntranceAnimation()
-            case 6: self.sevenVm.startEntranceAnimation()
+            case 0: self.thirdVm.startEntranceAnimation()
+            case 1: self.fourthVm.startEntranceAnimation()
+            case 2: self.fifthVm.startEntranceAnimation()
+            case 3: self.sixthVm.startEntranceAnimation()
+            case 4: self.sevenVm.startEntranceAnimation()
             default: break
             }
             self.progressVm.isUserInteractionEnabled = true
@@ -167,12 +141,8 @@ extension GuideTotalVC{
 //        }
 
         currentIndex = index
-        if index >= 2 {
-            progressVm.isHidden = false
-            progressVm.setStep(step: index)
-        } else {
-            progressVm.isHidden = true
-        }
+        progressVm.isHidden = false
+        progressVm.setStep(step: index)
         EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
                                             scenarioType: .guide_view,
                                             text: "\(currentIndex+1)")
@@ -182,24 +152,24 @@ extension GuideTotalVC{
         guard index != currentIndex else { return }
 
         // Ensure all pages are visible when switching without animation
-        [firstVm, secondVm, thirdVm, fourthVm, fifthVm, sixthVm, sevenVm].forEach { $0.alpha = 1 }
+        [thirdVm, fourthVm, fifthVm, sixthVm, sevenVm].forEach { $0.alpha = 1 }
 
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(index), y: 0), animated: true)
 
-        if index == 1 {
-            self.secondVm.startScrollersIfNeeded()
-        }
         currentIndex = index
-        if index >= 2 {
-            progressVm.isHidden = false
-            progressVm.setStep(step: index, animated: animated)
-        } else {
-            progressVm.isHidden = true
-        }
+        progressVm.isHidden = false
+        progressVm.setStep(step: index, animated: animated)
     }
 }
 
 extension GuideTotalVC{
+    func layoutGuidePages() {
+        let pages: [UIView] = [thirdVm, fourthVm, fifthVm, sixthVm, sevenVm]
+        for (index, page) in pages.enumerated() {
+            page.frame = CGRect(x: SCREEN_WIDHT * CGFloat(index), y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+        }
+    }
+
     func initUI() {
         
         view.addSubview(scrollViewBase)
@@ -210,29 +180,26 @@ extension GuideTotalVC{
         scrollViewBase.delegate = self
         scrollViewBase.isScrollEnabled = false
         scrollViewBase.showsHorizontalScrollIndicator = false
-        scrollViewBase.addSubview(firstVm)
         scrollViewBase.isPagingEnabled = true
-        scrollViewBase.addSubview(secondVm)
         scrollViewBase.addSubview(thirdVm)
         scrollViewBase.addSubview(fourthVm)
         scrollViewBase.addSubview(fifthVm)
         scrollViewBase.addSubview(sixthVm)
         scrollViewBase.addSubview(sevenVm)
         
-        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*7, height: 0)
+        layoutGuidePages()
+        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*5, height: 0)
         scrollViewBase.backgroundColor = UIColor(named: "color_card_bg_f5_guide")
         self.scrollViewBase.layoutIfNeeded()
         self.view.layoutIfNeeded()
+        progressVm.isHidden = false
+        progressVm.setStep(step: currentIndex, animated: false)
     }
 }
 
 extension GuideTotalVC:UIScrollViewDelegate{
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if scrollView.contentOffset.x > SCREEN_WIDHT*1.8{
-            self.progressVm.isHidden = false
-            self.progressVm.setStep(step: Int(scrollView.contentOffset.x/SCREEN_WIDHT))
-        }else{
-            self.progressVm.isHidden = true
-        }
+        self.progressVm.isHidden = false
+        self.progressVm.setStep(step: Int(scrollView.contentOffset.x/SCREEN_WIDHT))
     }
 }

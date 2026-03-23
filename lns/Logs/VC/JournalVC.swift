@@ -1100,7 +1100,7 @@ extension JournalVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "getUserConfigRequest:\(dataObj)")
-            if dataObj.stringValueForKey(key: "onboarding_flow_status") == "0"{
+            if dataObj.stringValueForKey(key: "onboarding_flow_status") != "0"{
                 NotificationCenter.default.post(name: NOTIFI_NAME_GUIDE, object: nil)
                 UserInfoModel.shared.onboarding_flow_status = false
             }else{
