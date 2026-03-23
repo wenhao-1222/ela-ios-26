@@ -12,6 +12,8 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
 
     var saveBlock: (() -> ())?
 
+    private let maxCaloriesInputValue = 9999
+    private let maxMacroInputValue = 999
     private var isUpdatingCaloriesProgrammatically = false
     private var hasManualCaloriesOverride = false
     private var shouldAutoFocusCarbInput = false
@@ -99,7 +101,7 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
     }()
 
     private lazy var carbInputRow: GuidanceFixedTargetNutritionInputRowView = {
-        let row = GuidanceFixedTargetNutritionInputRowView(title: "碳水化合物", unit: "g")
+        let row = GuidanceFixedTargetNutritionInputRowView(title: "碳水化合物", unit: "g", maxValue: maxMacroInputValue)
         row.valueChangedBlock = { [weak self] _ in
             self?.handleMacroInputChanged()
         }
@@ -107,7 +109,7 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
     }()
 
     private lazy var proteinInputRow: GuidanceFixedTargetNutritionInputRowView = {
-        let row = GuidanceFixedTargetNutritionInputRowView(title: "蛋白质", unit: "g")
+        let row = GuidanceFixedTargetNutritionInputRowView(title: "蛋白质", unit: "g", maxValue: maxMacroInputValue)
         row.valueChangedBlock = { [weak self] _ in
             self?.handleMacroInputChanged()
         }
@@ -115,7 +117,7 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
     }()
 
     private lazy var fatInputRow: GuidanceFixedTargetNutritionInputRowView = {
-        let row = GuidanceFixedTargetNutritionInputRowView(title: "脂肪", unit: "g")
+        let row = GuidanceFixedTargetNutritionInputRowView(title: "脂肪", unit: "g", maxValue: maxMacroInputValue)
         row.valueChangedBlock = { [weak self] _ in
             self?.handleMacroInputChanged()
         }
@@ -140,13 +142,10 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
 
 extension GuidanceFixedTargetNutritionGoalVM: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if string.isEmpty { return true }
-        let allowed = CharacterSet.decimalDigits
-        guard string.rangeOfCharacter(from: allowed.inverted) == nil else { return false }
-        let current = textField.text ?? ""
-        let updated = (current as NSString).replacingCharacters(in: range, with: string)
-        guard !updated.hasPrefix("0") else { return false }
-        return updated.count <= 4
+        return isValidNumericInput(currentText: textField.text ?? "",
+                                   range: range,
+                                   replacementString: string,
+                                   maxValue: maxCaloriesInputValue)
     }
 }
 
@@ -157,10 +156,10 @@ extension GuidanceFixedTargetNutritionGoalVM {
     }
 
     func refreshContentFromModel() {
-        let carbText = normalizedModelText(QuestinonaireMsgModel.shared.carbohydratesNumber)
-        let proteinText = normalizedModelText(QuestinonaireMsgModel.shared.proteinNumber)
-        let fatText = normalizedModelText(QuestinonaireMsgModel.shared.fatsNumber)
-        let caloriesText = normalizedModelText(QuestinonaireMsgModel.shared.caloriesNumber)
+        let carbText = normalizedModelText(QuestinonaireMsgModel.shared.carbohydratesNumber, maxValue: maxMacroInputValue)
+        let proteinText = normalizedModelText(QuestinonaireMsgModel.shared.proteinNumber, maxValue: maxMacroInputValue)
+        let fatText = normalizedModelText(QuestinonaireMsgModel.shared.fatsNumber, maxValue: maxMacroInputValue)
+        let caloriesText = normalizedModelText(QuestinonaireMsgModel.shared.caloriesNumber, maxValue: maxCaloriesInputValue)
 
         if !carbInputRow.textField.isFirstResponder {
             carbInputRow.updateValue(carbText)
@@ -251,12 +250,13 @@ extension GuidanceFixedTargetNutritionGoalVM {
             protein: inputValue(for: proteinInputRow),
             fat: inputValue(for: fatInputRow)
         )
-        updateCaloriesText(calories > 0 ? "\(calories)" : "")
+        let limitedCalories = min(calories, maxCaloriesInputValue)
+        updateCaloriesText(limitedCalories > 0 ? "\(limitedCalories)" : "")
     }
 
     func updateCaloriesText(_ value: String) {
         isUpdatingCaloriesProgrammatically = true
-        caloriesTextField.text = value
+        caloriesTextField.text = normalizedModelText(value, maxValue: maxCaloriesInputValue)
         isUpdatingCaloriesProgrammatically = false
     }
 
@@ -288,21 +288,36 @@ extension GuidanceFixedTargetNutritionGoalVM {
     }
 
     func caloriesValue() -> Int {
-        Int(caloriesTextField.text ?? "") ?? 0
+        min(Int(caloriesTextField.text ?? "") ?? 0, maxCaloriesInputValue)
     }
 
     func inputValue(for row: GuidanceFixedTargetNutritionInputRowView) -> Int {
-        Int(row.textField.text ?? "") ?? 0
+        min(Int(row.textField.text ?? "") ?? 0, maxMacroInputValue)
     }
 
     func calculateCalories(carb: Int, protein: Int, fat: Int) -> Int {
         carb * 4 + protein * 4 + fat * 9
     }
 
-    func normalizedModelText(_ value: String) -> String {
+    func normalizedModelText(_ value: String, maxValue: Int) -> String {
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty, trimmed != "0" else { return "" }
-        return trimmed
+        let numericValue = min(Int(trimmed) ?? 0, maxValue)
+        guard numericValue > 0 else { return "" }
+        return "\(numericValue)"
+    }
+
+    func isValidNumericInput(currentText: String,
+                             range: NSRange,
+                             replacementString string: String,
+                             maxValue: Int) -> Bool {
+        if string.isEmpty { return true }
+        let allowed = CharacterSet.decimalDigits
+        guard string.rangeOfCharacter(from: allowed.inverted) == nil else { return false }
+        let updated = (currentText as NSString).replacingCharacters(in: range, with: string)
+        guard !updated.hasPrefix("0") else { return false }
+        guard let updatedValue = Int(updated) else { return false }
+        return updatedValue <= maxValue
     }
 
     func attemptFocusCarbInputIfNeeded() {
@@ -406,9 +421,10 @@ class GuidanceFixedTargetNutritionInputRowView: UIView, UITextFieldDelegate {
 
     var valueChangedBlock: ((String) -> ())?
 
-    init(title: String, unit: String) {
+    init(title: String, unit: String, maxValue: Int) {
         self.titleText = title
         self.unitText = unit
+        self.maxValue = maxValue
         super.init(frame: .zero)
         initUI()
     }
@@ -419,6 +435,7 @@ class GuidanceFixedTargetNutritionInputRowView: UIView, UITextFieldDelegate {
 
     private let titleText: String
     private let unitText: String
+    private let maxValue: Int
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
@@ -457,10 +474,14 @@ class GuidanceFixedTargetNutritionInputRowView: UIView, UITextFieldDelegate {
 
 extension GuidanceFixedTargetNutritionInputRowView {
     func updateValue(_ value: String) {
-        textField.text = value
+        textField.text = normalizedInputText(value)
     }
 
     @objc func textDidChange(_ sender: UITextField) {
+        let normalizedText = normalizedInputText(sender.text ?? "")
+        if normalizedText != sender.text {
+            sender.text = normalizedText
+        }
         valueChangedBlock?(sender.text ?? "")
     }
 
@@ -471,7 +492,16 @@ extension GuidanceFixedTargetNutritionInputRowView {
         let current = textField.text ?? ""
         let updated = (current as NSString).replacingCharacters(in: range, with: string)
         guard !updated.hasPrefix("0") else { return false }
-        return updated.count <= 4
+        guard let updatedValue = Int(updated) else { return false }
+        return updatedValue <= maxValue
+    }
+
+    func normalizedInputText(_ value: String) -> String {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return "" }
+        let numericValue = min(Int(trimmed) ?? 0, maxValue)
+        guard numericValue > 0 else { return "" }
+        return "\(numericValue)"
     }
 
     func initUI() {

@@ -11,8 +11,6 @@ import SnapKit
 class GuidanceNutritionGoalVM: UIView {
 
     var saveBlock: (() -> ())?
-    private let maxCaloriesValue = 9999
-    private let maxMacroValue = 999
 
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -89,16 +87,14 @@ class GuidanceNutritionGoalVM: UIView {
 
 extension GuidanceNutritionGoalVM {
     @objc func saveTapAction() {
-        sanitizeModelValues()
         saveBlock?()
     }
 
     func refreshContentFromModel() {
-        sanitizeModelValues()
-        caloriesLabel.text = normalizedDisplayText(QuestinonaireMsgModel.shared.caloriesNumber, maxValue: maxCaloriesValue)
-        carbRow.updateValue(normalizedDisplayText(QuestinonaireMsgModel.shared.carbohydratesNumber, maxValue: maxMacroValue))
-        proteinRow.updateValue(normalizedDisplayText(QuestinonaireMsgModel.shared.proteinNumber, maxValue: maxMacroValue))
-        fatRow.updateValue(normalizedDisplayText(QuestinonaireMsgModel.shared.fatsNumber, maxValue: maxMacroValue))
+        caloriesLabel.text = QuestinonaireMsgModel.shared.caloriesNumber.isEmpty ? "0" : QuestinonaireMsgModel.shared.caloriesNumber
+        carbRow.updateValue(QuestinonaireMsgModel.shared.carbohydratesNumber)
+        proteinRow.updateValue(QuestinonaireMsgModel.shared.proteinNumber)
+        fatRow.updateValue(QuestinonaireMsgModel.shared.fatsNumber)
     }
 
     func initUI() {
@@ -164,23 +160,6 @@ extension GuidanceNutritionGoalVM {
             make.top.equalTo(fatRow.snp.bottom).offset(kFitWidth(40))
             make.bottom.equalTo(kFitWidth(-24))
         }
-    }
-}
-
-private extension GuidanceNutritionGoalVM {
-    func sanitizeModelValues() {
-        QuestinonaireMsgModel.shared.caloriesNumber = normalizedDisplayText(QuestinonaireMsgModel.shared.caloriesNumber, maxValue: maxCaloriesValue)
-        QuestinonaireMsgModel.shared.caloriesNumberFromServer = normalizedDisplayText(QuestinonaireMsgModel.shared.caloriesNumberFromServer, maxValue: maxCaloriesValue)
-        QuestinonaireMsgModel.shared.carbohydratesNumber = normalizedDisplayText(QuestinonaireMsgModel.shared.carbohydratesNumber, maxValue: maxMacroValue)
-        QuestinonaireMsgModel.shared.proteinNumber = normalizedDisplayText(QuestinonaireMsgModel.shared.proteinNumber, maxValue: maxMacroValue)
-        QuestinonaireMsgModel.shared.fatsNumber = normalizedDisplayText(QuestinonaireMsgModel.shared.fatsNumber, maxValue: maxMacroValue)
-    }
-
-    func normalizedDisplayText(_ rawValue: String, maxValue: Int) -> String {
-        let trimmedValue = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedValue.isEmpty else { return "0" }
-        let value = Int(trimmedValue) ?? 0
-        return "\(min(max(value, 0), maxValue))"
     }
 }
 
