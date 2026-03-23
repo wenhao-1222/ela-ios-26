@@ -211,6 +211,7 @@ class WHBaseViewVC: ViewController {
                 appDelegate.switchRootViewController(to: WHTabBarVC())
             }
         }
+        ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
     }
     func completeLoginSuccessAndEnterApp() {
         QuestinonaireMsgModel.shared.clearMsg()

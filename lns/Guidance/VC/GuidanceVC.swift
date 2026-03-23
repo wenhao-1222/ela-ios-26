@@ -44,12 +44,22 @@ class GuidanceVC: WHBaseViewVC {
     private var delayedNextWorkItem: DispatchWorkItem?
     private var isShowingFinishLoading = false
     private var pendingNutritionGoalPresentation = false
+    private var isTransitioningToGuidancePro = false
+    private var hasAutoSelectedSkippedCardioFrequency = false
     private let defaultStepsArray = [7,7,8]
+    private let defaultStepsArrayWithoutCardio = [7,6,8]
     private let fixedTargetStepsArray = [4,5,4]
     private let defaultFlow: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
         .birthday, .weight, .height, .bodyfat, .takeoutFrequency,
         .mealsPerDay, .mealsSummary, .mealsAdjust, .exerciseCaloriesRecord, .cardioFrequency,
+        .strengthTrainingFrequency, .strengthTrainingSummary, .caloriesResultBase, .caloriesResultExplain,
+        .goal, .goalBarrier, .removeBarrier, .nutritionGoal, .reminderPrompt
+    ]
+    private let defaultFlowNoCardioFrequency: [FlowStep] = [
+        .sex, .dietRecord, .progressChart, .fixedTarget,
+        .birthday, .weight, .height, .bodyfat, .takeoutFrequency,
+        .mealsPerDay, .mealsSummary, .mealsAdjust, .exerciseCaloriesRecord,
         .strengthTrainingFrequency, .strengthTrainingSummary, .caloriesResultBase, .caloriesResultExplain,
         .goal, .goalBarrier, .removeBarrier, .nutritionGoal, .reminderPrompt
     ]
@@ -62,8 +72,17 @@ class GuidanceVC: WHBaseViewVC {
     private var isFixedTargetFlowEnabled: Bool {
         QuestinonaireMsgModel.shared.guidanceFixedTargetType == "fixed"
     }
+    private var shouldSkipCardioFrequencyStep: Bool {
+        !isFixedTargetFlowEnabled && QuestinonaireMsgModel.shared.guidanceExerciseCaloriesRecordType == "yes"
+    }
     private var activeFlow: [FlowStep] {
-        isFixedTargetFlowEnabled ? fixedTargetFlow : defaultFlow
+        if isFixedTargetFlowEnabled {
+            return fixedTargetFlow
+        }
+        if shouldSkipCardioFrequencyStep {
+            return defaultFlowNoCardioFrequency
+        }
+        return defaultFlow
     }
     private var totalSteps: Int {
         activeFlow.count
@@ -84,6 +103,7 @@ class GuidanceVC: WHBaseViewVC {
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
     override func viewWillAppear(_ animated: Bool) {
+        isTransitioningToGuidancePro = false
         NotificationCenter.default.addObserver(self, selector: #selector(wechatLogin), name: Notification.Name(rawValue: "wechatLogin"), object: nil)
     }
     override func viewDidLoad() {
@@ -276,7 +296,7 @@ class GuidanceVC: WHBaseViewVC {
     lazy var exerciseCaloriesRecordVm: GuidanceExerciseCaloriesRecordVM = {
         let vm = GuidanceExerciseCaloriesRecordVM.init(frame: CGRect.init(x: SCREEN_WIDHT*11, y: 0, width: 0, height: 0))
         vm.selectedBlock = { [weak self] in
-            self?.updateNextButtonForCurrentStep()
+            self?.handleExerciseCaloriesRecordSelectionChanged()
         }
         return vm
     }()
@@ -374,7 +394,7 @@ class GuidanceVC: WHBaseViewVC {
             }
             self.isShowingFinishLoading = false
             self.finishLoadingVm.hideLoadingView()
-            self.changeRootVcToLogin()
+            self.showGuidanceProVCForSubscription()
         }
         return vm
     }()
@@ -481,10 +501,34 @@ extension GuidanceVC{
     }
 
     func updateFlowConfiguration() {
-        stepsArray = isFixedTargetFlowEnabled ? fixedTargetStepsArray : defaultStepsArray
+        syncCardioFrequencyFlowState()
+        if isFixedTargetFlowEnabled {
+            stepsArray = fixedTargetStepsArray
+        } else {
+            stepsArray = shouldSkipCardioFrequencyStep ? defaultStepsArrayWithoutCardio : defaultStepsArray
+        }
         scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalSteps), height: SCREEN_HEIGHT)
         layoutMountedStepViews()
         updateNutritionGoalViewVisibility()
+    }
+
+    func syncCardioFrequencyFlowState() {
+        guard !isFixedTargetFlowEnabled else {
+            hasAutoSelectedSkippedCardioFrequency = false
+            return
+        }
+
+        if shouldSkipCardioFrequencyStep {
+            cardioFrequencyVm.selectNeverAsDefault()
+            hasAutoSelectedSkippedCardioFrequency = true
+        } else if hasAutoSelectedSkippedCardioFrequency {
+            cardioFrequencyVm.clearSelection()
+            hasAutoSelectedSkippedCardioFrequency = false
+        }
+    }
+
+    func handleExerciseCaloriesRecordSelectionChanged() {
+        moveToStep(index: currentIndex, animated: false)
     }
 
     func layoutMountedStepViews() {
@@ -632,7 +676,7 @@ extension GuidanceVC{
         UserInfoModel.shared.showNotifiAuthoriAlertVM = false
         if isFixedTargetFlowEnabled {
             QuestinonaireMsgModel.shared.surveytype = "custom_v2"
-            changeRootVcToLogin()
+            showGuidanceProVCForSubscription()
             return
         }
         QuestinonaireMsgModel.shared.surveytype = "part_v2"
@@ -781,7 +825,7 @@ extension GuidanceVC{
             return
         }
         QuestinonaireMsgModel.shared.surveytype = "part_v2"
-        changeRootVcToLogin()
+        showGuidanceProVCForSubscription()
 //        NutritionDefaultModel.shared.saveGoals(dict: [
 //            "calories": QuestinonaireMsgModel.shared.caloriesNumber,
 //            "carbohydrates": QuestinonaireMsgModel.shared.carbohydratesNumber,
@@ -790,6 +834,25 @@ extension GuidanceVC{
 //        ])
 //        moveToStep(index: 20, animated: true)
     }
+
+    func showGuidanceProVCForSubscription() {
+        guard !isTransitioningToGuidancePro else { return }
+
+        isTransitioningToGuidancePro = true
+
+        let vc = GuidanceProVC()
+        vc.nextBlock = { [weak vc] in
+            vc?.changeRootVcToLogin()
+        }
+
+        if let navigationController = navigationController {
+            navigationController.pushViewController(vc, animated: true)
+        } else {
+            vc.modalPresentationStyle = .fullScreen
+            present(vc, animated: true)
+        }
+    }
+
     @objc func loginAction(){
         openNetWorkServiceWithBolck(action: { netConnect in
             DispatchQueue.main.asyncAfter(deadline: .now(), execute: {

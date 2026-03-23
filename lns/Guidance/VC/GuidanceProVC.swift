@@ -123,6 +123,11 @@ private extension GuidanceProVC {
         promiseContentVM.alpha = 0
         subscribeContentVM.isHidden = true
         subscribeContentVM.alpha = 0
+        
+        subscribeContentVM.closeTapBlock = { [weak self] in
+            guard let self = self, !self.isPurchasing else { return }
+            self.nextBlock?()
+        }
     }
 
     @objc func nextButtonTapAction() {

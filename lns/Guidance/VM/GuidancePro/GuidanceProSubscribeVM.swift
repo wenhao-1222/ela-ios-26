@@ -10,6 +10,7 @@ import SnapKit
 class GuidanceProSubscribeVM: UIView {
 
     var startTrialTapBlock: (() -> Void)?
+    var closeTapBlock: (() -> Void)?
 
     private lazy var loadingOverlayView: UIView = {
         let view = UIView()
@@ -33,7 +34,17 @@ class GuidanceProSubscribeVM: UIView {
     }()
 
     private lazy var contentView = UIView()
-
+    private lazy var closeImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "ela_pro_close_icon"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(closeTapAction))
+        imageView.addGestureRecognizer(tap)
+        
+        return imageView
+    }()
+    
     private lazy var logoImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "guidance_pro_intro_img"))
         imageView.contentMode = .scaleAspectFit
@@ -179,6 +190,9 @@ extension GuidanceProSubscribeVM {
         startTrialButton.isEnabled = !isLoading
         startTrialButton.setTitle(isLoading ? "处理中..." : "0元 开启体验", for: .normal)
     }
+    @objc func closeTapAction() {
+        self.closeTapBlock?()
+    }
 }
 
 private extension GuidanceProSubscribeVM {
@@ -206,6 +220,7 @@ private extension GuidanceProSubscribeVM {
         }
 
         contentView.addSubview(logoImageView)
+        contentView.addSubview(closeImageView)
         contentView.addSubview(starsLeftImgView)
         contentView.addSubview(starsLabel)
         contentView.addSubview(ratingLabel)
@@ -231,6 +246,11 @@ private extension GuidanceProSubscribeVM {
             make.top.equalTo(statusBarHeight+kFitWidth(110))
             make.width.equalTo(kFitWidth(165))
             make.height.equalTo(kFitWidth(29))
+        }
+        closeImageView.snp.makeConstraints { make in
+            make.right.equalTo(kFitWidth(-15))
+            make.top.equalTo(statusBarHeight+kFitWidth(10))
+            make.width.height.equalTo(kFitWidth(30))
         }
         starsRightImgView.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-29))

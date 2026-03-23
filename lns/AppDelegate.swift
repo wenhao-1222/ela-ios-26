@@ -92,6 +92,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                     }
                     
                     WidgetUtils().saveUserInfo(uId: "\(uId)", uToken: "\(token)")
+                    ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
                 }else{
                     UserInfoModel.shared.uId = ""
                     UserInfoModel.shared.token = ""
@@ -197,6 +198,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         setupJpushIfAuthorized()
         getHealthAppData()
         application.applicationIconBadgeNumber = 0
+        ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
     }
     func applicationWillEnterForeground(_ application: UIApplication) {
         let token = UserDefaults.standard.value(forKey: token) as? String ?? ""

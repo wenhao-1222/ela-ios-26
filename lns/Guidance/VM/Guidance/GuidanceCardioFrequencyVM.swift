@@ -61,6 +61,14 @@ class GuidanceCardioFrequencyVM: UIView {
 }
 
 extension GuidanceCardioFrequencyVM {
+    func selectNeverAsDefault() {
+        applySelection(index: 0, notify: false)
+    }
+
+    func clearSelection() {
+        applySelection(index: -1, notify: false)
+    }
+
     func refreshSelectionFromModel() {
         let selectedValue = QuestinonaireMsgModel.shared.guidanceCardioFrequencyType
         if let index = dataArray.firstIndex(where: { $0.value == selectedValue }) {
@@ -91,6 +99,7 @@ extension GuidanceCardioFrequencyVM {
             }
         } else {
             QuestinonaireMsgModel.shared.guidanceCardioFrequencyType = ""
+            QuestinonaireMsgModel.shared.events = ""
         }
     }
 }

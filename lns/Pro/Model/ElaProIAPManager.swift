@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Security
 import StoreKit
 
 enum ElaProIAPConfig {
@@ -63,6 +64,11 @@ final class ElaProIAPManager: NSObject {
         static let expireAtMs = "ela_pro_local_expire_at_ms"
         static let source = "ela_pro_local_source"
         static let pendingVerifyPayload = "ela_pro_pending_verify_payload"
+    }
+
+    private enum KeychainKeys {
+        static let pendingTransactionService = "com.elavatine.pro.iap"
+        static let pendingTransactionAccount = "pending_transaction_id"
     }
     
     private override init() {
@@ -191,13 +197,35 @@ final class ElaProIAPManager: NSObject {
         let expireAt = applyLocalTemporaryUnlock(transaction: transaction)
         let payload = makePurchaseVerifyPayload(transaction: transaction, localUnlockExpireAt: expireAt)
         cachePendingVerifyPayload(payload: payload)
-        queryPurchaseOrder(transaction: transaction)
+        storePendingTransactionID(transaction.transactionIdentifier)
+        if canBindPurchaseToCurrentUser() {
+            bindPendingPurchaseIfNeeded()
+        } else {
+            DLLog(message: "[ElaProIAP][QUERY] deferred until login: user not ready")
+        }
         uploadPurchaseVerifyPayloadTODO(payload: payload)
     }
-    
+
     func isLocalProUnlocked() -> Bool {
         clearExpiredLocalUnlockIfNeeded()
         return UserDefaults.standard.bool(forKey: LocalUnlockKeys.isUnlocked)
+    }
+
+    func bindPendingPurchaseIfNeeded(completion: ((Bool) -> Void)? = nil) {
+        guard canBindPurchaseToCurrentUser() else {
+            completion?(false)
+            return
+        }
+
+        guard let transactionID = readPendingTransactionID(),
+              !transactionID.isEmpty else {
+            completion?(true)
+            return
+        }
+
+        queryPurchaseOrder(transactionID: transactionID) { success in
+            completion?(success)
+        }
     }
     
     private func fetchProducts(ids: [String],
@@ -337,13 +365,7 @@ final class ElaProIAPManager: NSObject {
         UserDefaults.standard.set(json, forKey: LocalUnlockKeys.pendingVerifyPayload)
     }
     
-    private func queryPurchaseOrder(transaction: SKPaymentTransaction) {
-        guard let transactionID = transaction.transactionIdentifier?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !transactionID.isEmpty else {
-            DLLog(message: "[ElaProIAP][QUERY] skipped: empty transactionIdentifier")
-            return
-        }
-        
+    private func queryPurchaseOrder(transactionID: String, completion: ((Bool) -> Void)? = nil) {
         let params: [String: AnyObject] = [
             "transactionId": transactionID as AnyObject
         ]
@@ -351,13 +373,84 @@ final class ElaProIAPManager: NSObject {
         WHNetworkUtil.shareManager().POST(urlString: URL_pro_ipa_query,
                                           parameters: params,
                                           success: { responseObject in
+            let code = responseObject["code"] as? Int ?? -1
             DLLog(message: "[ElaProIAP][QUERY] success: \(responseObject)")
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "[ElaProIAP][QUERY] success:\(dataDict)")
+            if code == 200 {
+                self.clearPendingTransactionAfterBindSuccess(transactionID: transactionID)
+                completion?(true)
+            } else {
+                completion?(false)
+            }
         }, failure: { failed in
             DLLog(message: "[ElaProIAP][QUERY] failure: \(failed), tractionId=\(transactionID)")
+            completion?(false)
         })
+    }
+
+    private func canBindPurchaseToCurrentUser() -> Bool {
+        let uId = UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines)
+        let token = UserInfoModel.shared.token.trimmingCharacters(in: .whitespacesAndNewlines)
+        return !uId.isEmpty && !token.isEmpty
+    }
+
+    private func storePendingTransactionID(_ transactionID: String?) {
+        guard let transactionID = transactionID?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !transactionID.isEmpty,
+              let data = transactionID.data(using: .utf8) else {
+            return
+        }
+
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: KeychainKeys.pendingTransactionService,
+            kSecAttrAccount as String: KeychainKeys.pendingTransactionAccount,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
+            kSecValueData as String: data
+        ]
+
+        SecItemDelete(query as CFDictionary)
+        let status = SecItemAdd(query as CFDictionary, nil)
+        if status != errSecSuccess {
+            DLLog(message: "[ElaProIAP][KEYCHAIN] save failed: \(status)")
+        }
+    }
+
+    private func readPendingTransactionID() -> String? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: KeychainKeys.pendingTransactionService,
+            kSecAttrAccount as String: KeychainKeys.pendingTransactionAccount,
+            kSecReturnData as String: kCFBooleanTrue as Any,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        guard status == errSecSuccess,
+              let data = result as? Data,
+              let transactionID = String(data: data, encoding: .utf8),
+              !transactionID.isEmpty else {
+            return nil
+        }
+        return transactionID
+    }
+
+    private func clearPendingTransactionAfterBindSuccess(transactionID: String) {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: KeychainKeys.pendingTransactionService,
+            kSecAttrAccount as String: KeychainKeys.pendingTransactionAccount
+        ]
+        SecItemDelete(query as CFDictionary)
+
+        let defaults = UserDefaults.standard
+        if defaults.string(forKey: LocalUnlockKeys.transactionID) == transactionID {
+            defaults.removeObject(forKey: LocalUnlockKeys.transactionID)
+        }
+        defaults.removeObject(forKey: LocalUnlockKeys.pendingVerifyPayload)
     }
     
     private func uploadPurchaseVerifyPayloadTODO(payload: [String: Any]) {
