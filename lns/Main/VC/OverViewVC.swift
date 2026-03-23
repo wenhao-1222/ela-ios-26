@@ -14,6 +14,28 @@ import CryptoKit
 import HealthKit
 
 class OverViewVC : WHBaseViewVC {
+    private static var cachedNutritionDate = ""
+    private static var cachedNutritionData: NSDictionary?
+    private static var nutritionRequestId = 0
+    private static var nutritionCallbacks: [((NSDictionary) -> Void)] = []
+
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshTodayNutrition(notify:)), name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleTodayLogsLocalDataDidChange), name: LogsSQLiteManager.todayLogsLocalDataDidChangeNotification, object: nil)
+        Self.prefetchNutritionDataIfNeeded()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshTodayNutrition(notify:)), name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleTodayLogsLocalDataDidChange), name: LogsSQLiteManager.todayLogsLocalDataDidChangeNotification, object: nil)
+        Self.prefetchNutritionDataIfNeeded()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 //    override func viewDidAppear(_ animated: Bool) {
 //        self.navigationController?.fd_interactivePopDisabled = true
 //        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
@@ -25,7 +47,7 @@ class OverViewVC : WHBaseViewVC {
         IQKeyboardManager.shared.enableAutoToolbar = false
         sendUserCenterRequest()
         
-        getNutritionDataRequest()
+        requestNutritionDataIfNeeded()
         sendNutritionsDefaultRequest()
         BodyDataUploadManager().checkDayaUploadStatus()
         
@@ -70,7 +92,6 @@ class OverViewVC : WHBaseViewVC {
             HealthKitManager().fetchWaistCircumference()
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshTodayNutrition(notify:)), name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: nil)
     }
     override func traitCollectionDidChange(_ previous: UITraitCollection?) {
         super.traitCollectionDidChange(previous)
@@ -206,6 +227,12 @@ extension OverViewVC{
             self.getNutritionDataRequest()
         })
     }
+    @objc private func handleTodayLogsLocalDataDidChange() {
+        Self.prefetchNutritionDataIfNeeded(forceRefresh: true) { [weak self] dataObj in
+            guard let self, self.isViewLoaded else { return }
+            self.applyNutritionData(dataObj)
+        }
+    }
     @objc func addDataAction() {
 //        TouchGenerator.shared.touchGeneratorMedium()
         let vc = DataAddVC()
@@ -293,18 +320,62 @@ extension OverViewVC:UIScrollViewDelegate{
 }
 
 extension OverViewVC{
-    @objc func getNutritionDataRequest() {
-        let param = ["sdate":"\(Date().nextDay(days: 0))"]
+    private class func currentNutritionDateString() -> String {
+        "\(Date().nextDay(days: 0))"
+    }
+
+    class func prefetchNutritionDataIfNeeded(forceRefresh: Bool = false, completion: ((NSDictionary) -> Void)? = nil) {
+        let sdate = currentNutritionDateString()
+        if forceRefresh == false,
+           cachedNutritionDate == sdate,
+           let cachedNutritionData {
+            completion?(cachedNutritionData)
+            return
+        }
+
+        if let completion {
+            nutritionCallbacks.append(completion)
+        }
+
+        if forceRefresh == false, nutritionRequestId != 0 {
+            return
+        }
+
+        nutritionRequestId += 1
+        let currentRequestId = nutritionRequestId
+        let param = ["sdate": sdate]
+
         WHNetworkUtil.shareManager().POST(urlString: URL_get_current_nutrition, parameters: param as [String:AnyObject]) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "") ?? NSDictionary()
             DLLog(message: "getNutritionDataRequest：\(dataObj)")
-//            DLLog(message: "test:\(targetCalories) - \(currentCalories)   ===== \(targetCalories - currentCalories)")
-            self.topMsgVm.updateUI(dict: dataObj)
-//            self.guidGoalAlertVm.goalVm.numberLabel.text = "\(Int(dataObj.doubleValueForKey(key: "caloriesden").rounded()))"
-            self.saveNutrationAlertVm.updateUI(msgDict: dataObj)
-            self.sportVm.updateUI(dict: dataObj)
+
+            guard currentRequestId == Self.nutritionRequestId else { return }
+
+            Self.cachedNutritionDate = sdate
+            Self.cachedNutritionData = dataObj
+            Self.nutritionRequestId = 0
+
+            let callbacks = Self.nutritionCallbacks
+            Self.nutritionCallbacks.removeAll()
+            callbacks.forEach { $0(dataObj) }
         }
+    }
+
+    private func applyNutritionData(_ dataObj: NSDictionary) {
+        self.topMsgVm.updateUI(dict: dataObj)
+        self.saveNutrationAlertVm.updateUI(msgDict: dataObj)
+        self.sportVm.updateUI(dict: dataObj)
+    }
+
+    private func requestNutritionDataIfNeeded(forceRefresh: Bool = false) {
+        Self.prefetchNutritionDataIfNeeded(forceRefresh: forceRefresh) { [weak self] dataObj in
+            self?.applyNutritionData(dataObj)
+        }
+    }
+
+    @objc func getNutritionDataRequest() {
+        requestNutritionDataIfNeeded(forceRefresh: true)
     }
     func sendSaveNutrationRequest() {
         MCToast.mc_loading()

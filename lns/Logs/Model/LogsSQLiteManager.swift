@@ -66,6 +66,7 @@ struct LogsModel{
 class LogsSQLiteManager {
     
     static let shared = LogsSQLiteManager()
+    static let todayLogsLocalDataDidChangeNotification = Notification.Name("todayLogsLocalDataDidChange")
     
     private var db: Connection?
     private let logs = Table("logs")
@@ -98,6 +99,13 @@ class LogsSQLiteManager {
     private let circle_tag = Expression<String?>("circle_tag")
     private let fitness_tag = Expression<String?>("fitness_tag")
     private let notes_tag = Expression<String?>("notes_tag")
+
+    private func postTodayLogsLocalDataDidChangeIfNeeded(sDate: String) {
+        guard sDate == Date().todayDate else { return }
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: Self.todayLogsLocalDataDidChangeNotification, object: nil)
+        }
+    }
     
     class func getInstance() -> LogsSQLiteManager
      {
@@ -272,6 +280,7 @@ class LogsSQLiteManager {
             
             try db?.run(insert)
             DLLog(message:"更新日志成功(不存在数据) \(sDate)")
+            postTodayLogsLocalDataDidChangeIfNeeded(sDate: sDate)
         } catch {
 //            print("Unable to insert logs")
             DLLog(message:"更新日志失败(不存在数据) \(sDate)  --- 下一步，执行SQL语句")
@@ -296,12 +305,14 @@ class LogsSQLiteManager {
             
             try db?.execute("INSERT INTO logs (uid,sdate,ctime,etime,foods,calori,protein,carbohydrate,fat,caloriTarget,proteinTarget,carbohydrateTarget,fatTarget,notes,isUpload,isUploadString,meal_time_sn1,meal_time_sn2,meal_time_sn3,meal_time_sn4,meal_time_sn5,meal_time_sn6,water_num,water_upload,water_etime,circle_tag,fitness_tag,notes_tag) VALUES ('\(UserInfoModel.shared.uId)','\(sDate)','\(Date().todaySeconds)','\(eTime)','\(foodsString)','\(calori)','\(protein)','\(carbohydrates)','\(fats)','\(caloriGoal)','\(proteinGoal)','\(carboGoal)','\(fatGoal)','\(notes)','\(upload ? 1 : 0)','\(upload ? 1 : 0)','','','','','','','\(waterNum)','\(waterUpload)','\(waterEtime)','\(circleTag)','\(fitnessTag)','\(notesTag)')")
             DLLog(message: "SQL语句插入  ----  success")
+            postTodayLogsLocalDataDidChangeIfNeeded(sDate: sDate)
         }catch{
             DLLog(message: "SQL语句插入  ----  执行失败")
         }
     }
     func updateLogs(sDate: String,eTime:String, foods:String,caloriNum:String,proteinNum:String,carboNum:String,fatsNum:String,caloriTar:String,proteinTar:String,carboTar:String,fatsTar:String) {
         let foodsString = foods.replacingOccurrences(of: "'", with: "’")
+        var didChange = false
         if queryTable(sDate: sDate){//如果存在数据
             do {
                 let sql = logs.filter(sdate == sDate).filter(uid == UserInfoModel.shared.uId)
@@ -316,6 +327,7 @@ class LogsSQLiteManager {
                                        self.etime <- eTime,
                                        self.fatTarget<-fatsTar))
 //                DLLog(message:"更新日志成功 \(sDate)")
+                didChange = true
             } catch {
                 DLLog(message:"SQLite 更新日志失败 \(sDate)")
                 do {
@@ -333,6 +345,7 @@ class LogsSQLiteManager {
                     + " WHERE ((uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sDate)'));"
                     try db?.execute(updateSql)
                     DLLog(message: "SQL语句更新  ----  success")
+                    didChange = true
                 }catch{
                     DLLog(message: "SQL语句更新  ----  执行失败")
                 }
@@ -358,8 +371,12 @@ class LogsSQLiteManager {
                        fitnessTag: "",
                        notesTag: "")
         }
+        if didChange {
+            postTodayLogsLocalDataDidChangeIfNeeded(sDate: sDate)
+        }
     }
     func updateLogs(sDate: String,eTime:String,caloriNum:String,proteinNum:String,carboNum:String,fatsNum:String) {
+        var didChange = false
         if queryTable(sDate: sDate){//如果存在数据
             do {
                 let sql = logs.filter(sdate == sDate).filter(uid == UserInfoModel.shared.uId)
@@ -369,6 +386,7 @@ class LogsSQLiteManager {
                                        self.fat<-fatsNum,
                                        self.etime <- eTime))
 //                DLLog(message:"更新日志成功 \(sDate)")
+                didChange = true
             } catch {
                 DLLog(message:"更新日志失败 \(sDate)")
                 do {
@@ -380,6 +398,7 @@ class LogsSQLiteManager {
                                     + ", fat = '\(fatsNum)'"
                                     + " WHERE ((uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sDate)'));")
                     DLLog(message: "SQL语句更新  ----  success")
+                    didChange = true
                 }catch{
                     DLLog(message: "SQL语句更新  ----  执行失败")
                 }
@@ -403,10 +422,14 @@ class LogsSQLiteManager {
                        fitnessTag: "",
                        notesTag: "")
         }
+        if didChange {
+            postTodayLogsLocalDataDidChangeIfNeeded(sDate: sDate)
+        }
     }
     func updateLogs(sDate: String,eTime:String, foods:String,caloriNum:String,proteinNum:String,carboNum:String,fatsNum:String) {
         var foodsString = foods
         foodsString = foodsString.replacingOccurrences(of: "'", with: "’")
+        var didChange = false
         if queryTable(sDate: sDate){//如果存在数据
             do {
                 let sql = logs.filter(sdate == sDate).filter(uid == UserInfoModel.shared.uId)
@@ -417,6 +440,7 @@ class LogsSQLiteManager {
                                        self.fat<-fatsNum,
                                        self.etime <- eTime))
 //                DLLog(message:"更新日志成功 \(sDate)")
+                didChange = true
             } catch {
                 DLLog(message:"更新日志失败 \(sDate)")
                 do {
@@ -429,6 +453,7 @@ class LogsSQLiteManager {
                                     + ", fat = '\(fatsNum)'"
                                     + " WHERE ((uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sDate)'));")
                     DLLog(message: "SQL语句更新  ----  success")
+                    didChange = true
                 }catch{
                     DLLog(message: "SQL语句更新  ----  执行失败")
                 }
@@ -455,10 +480,14 @@ class LogsSQLiteManager {
                        fitnessTag: "",
                        notesTag: "")
         }
+        if didChange {
+            postTodayLogsLocalDataDidChangeIfNeeded(sDate: sDate)
+        }
     }
     func updateLogs(sDate: String,eTime:String, calori: String,protein:String,carbohydrates:String,fats:String,notes:String,foods:String,caloriTar:String,proteinTar:String,carboTar:String,fatsTar:String,circleTag:String,fitnessTag:String,notesTag:String) {
         var foodsString = foods
         foodsString = foodsString.replacingOccurrences(of: "'", with: "’")
+        var didChange = false
         if queryTable(sDate: sDate){//如果存在数据
             do {
                 let sql = logs.filter(sdate == sDate).filter(uid == UserInfoModel.shared.uId)
@@ -479,6 +508,7 @@ class LogsSQLiteManager {
                                        self.fitness_tag<-fitnessTag,
                                        self.notes_tag<-notesTag))
                 DLLog(message:"update logs success")
+                didChange = true
             } catch {
                 DLLog(message:"Unable to update logs details")
                 do {
@@ -502,6 +532,7 @@ class LogsSQLiteManager {
                     + " WHERE (uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sDate)');"
                     try db?.execute(updateSql)
                     DLLog(message: "SQL语句更新  ----  success")
+                    didChange = true
                 }catch{
                     DLLog(message: "SQL语句更新  ----  执行失败")
                 }
@@ -526,6 +557,9 @@ class LogsSQLiteManager {
                        circleTag: circleTag,
                        fitnessTag: fitnessTag,
                        notesTag: notesTag)
+        }
+        if didChange {
+            postTodayLogsLocalDataDidChangeIfNeeded(sDate: sDate)
         }
     }
     //MARK: 更新日志每一餐的用餐 时间
@@ -982,6 +1016,9 @@ class LogsSQLiteManager {
         }
         LogsSQLiteUploadManager().clearNaturalData()
         LogsMealsAlertSetManage().refreshClockAlertMsg()
+        if sDate <= Date().todayDate {
+            postTodayLogsLocalDataDidChangeIfNeeded(sDate: Date().todayDate)
+        }
     }
     //MARK: 更新往后数据的目标值
     /**
@@ -1001,6 +1038,7 @@ class LogsSQLiteManager {
                                                self.carbohydrateTarget<-carboTar,
                                                self.fatTarget<-fatsTar))
 //                        DLLog(message:"更改目标值 success")
+                        self.postTodayLogsLocalDataDidChangeIfNeeded(sDate: sDateTemp)
                     } catch {
                         DLLog(message:"Unable to update logs details")
                         do {
@@ -1012,6 +1050,7 @@ class LogsSQLiteManager {
                                              + ", circle_tag = ''"
                                             + " WHERE ((uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sDateTemp)'));")
                             DLLog(message: "SQL语句更新  ----  success")
+                            self.postTodayLogsLocalDataDidChangeIfNeeded(sDate: sDateTemp)
                         }catch{
                             DLLog(message: "SQL语句更新  ----  执行失败")
                         }
@@ -1088,6 +1127,7 @@ class LogsSQLiteManager {
                                                     self.etime<-Date().currentSecondsUTC8,
                                                     self.circle_tag<-circleTag))
 //                            DLLog(message:"更改目标值 success")
+                        self.postTodayLogsLocalDataDidChangeIfNeeded(sDate: sDateTemp)
                     } catch {
                         DLLog(message:"Unable to update logs details")
                         do {
@@ -1100,6 +1140,7 @@ class LogsSQLiteManager {
                                             + ", etime = '\(Date().currentSecondsUTC8)'"
                                             + " WHERE ((uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sDateTemp)'));")
                             DLLog(message: "SQL语句更新  ----  success")
+                            self.postTodayLogsLocalDataDidChangeIfNeeded(sDate: sDateTemp)
                         }catch{
                             DLLog(message: "SQL语句更新  ----  执行失败")
                         }
@@ -1124,6 +1165,7 @@ class LogsSQLiteManager {
                                             self.etime<-Date().currentSecondsUTC8,
                                             self.circle_tag<-circleTag))
 //                            DLLog(message:"更改目标值 success")
+                postTodayLogsLocalDataDidChangeIfNeeded(sDate: sdate)
             } catch {
                 DLLog(message:"Unable to update logs details")
                 do {
@@ -1136,6 +1178,7 @@ class LogsSQLiteManager {
                                     + ", etime = '\(Date().currentSecondsUTC8)'"
                                     + " WHERE ((uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sdate)'));")
                     DLLog(message: "SQL语句更新  ----  success")
+                    postTodayLogsLocalDataDidChangeIfNeeded(sDate: sdate)
                 }catch{
                     DLLog(message: "SQL语句更新  ----  执行失败")
                 }
@@ -1152,6 +1195,7 @@ class LogsSQLiteManager {
         }
         LogsSQLiteUploadManager().clearNaturalData()
         LogsMealsAlertSetManage().refreshClockAlertMsg()
+        postTodayLogsLocalDataDidChangeIfNeeded(sDate: Date().todayDate)
     }
     //MARK: SQL 语句查询数据
     func queryDataBySQL(sDate:String) -> LogsModel? {
