@@ -136,6 +136,7 @@ extension ElaProVC{
         } else if currentIndex == 3 {
             currentIndex = 4
             self.naviVm.backButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
+            self.naviVm.backButton.frame = CGRect.init(x: SCREEN_WIDHT - kFitWidth(12.5) - kFitWidth(35), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
             UIView.animate(withDuration: 0.35, delay: 0) {
                 self.naviVm.alpha = 1
             }

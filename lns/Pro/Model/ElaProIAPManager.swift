@@ -124,19 +124,26 @@ final class ElaProIAPManager: NSObject {
         }
     }
     
-    func fetchProProducts(completion: @escaping (Result<[SKProduct], Error>) -> Void) {
-        fetchProducts(ids: [ElaProIAPConfig.monthProductID,
-                            ElaProIAPConfig.annualProductID,
-                            ElaProIAPConfig.lifetimeProductID],
+    func fetchProProducts(productIDs: [String]? = nil,
+                          completion: @escaping (Result<[SKProduct], Error>) -> Void) {
+        let requestedProductIDs = (productIDs?.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } ?? [
+            ElaProIAPConfig.monthProductID,
+            ElaProIAPConfig.annualProductID,
+            ElaProIAPConfig.lifetimeProductID
+        ])
+        fetchProducts(ids: requestedProductIDs,
                       forceRefresh: false) { result in
             if case .success(let products) = result {
-                if let month = products.first(where: { $0.productIdentifier == ElaProIAPConfig.monthProductID }) {
+                if requestedProductIDs.contains(ElaProIAPConfig.monthProductID),
+                   let month = products.first(where: { $0.productIdentifier == ElaProIAPConfig.monthProductID }) {
                     self.logProductInfo(month, source: "monthProductID")
                 }
-                if let annual = products.first(where: { $0.productIdentifier == ElaProIAPConfig.annualProductID }) {
+                if requestedProductIDs.contains(ElaProIAPConfig.annualProductID),
+                   let annual = products.first(where: { $0.productIdentifier == ElaProIAPConfig.annualProductID }) {
                     self.logProductInfo(annual, source: "annualProductID")
                 }
-                if let lifetime = products.first(where: { $0.productIdentifier == ElaProIAPConfig.lifetimeProductID }) {
+                if requestedProductIDs.contains(ElaProIAPConfig.lifetimeProductID),
+                   let lifetime = products.first(where: { $0.productIdentifier == ElaProIAPConfig.lifetimeProductID }) {
                     self.logProductInfo(lifetime, source: "lifetimeProductID")
                 }
             }

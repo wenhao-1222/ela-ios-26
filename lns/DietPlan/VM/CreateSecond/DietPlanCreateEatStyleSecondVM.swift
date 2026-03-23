@@ -44,7 +44,7 @@ class DietPlanCreateEatStyleSecondVM: UIView {
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "确认你的饮食风格"
+        lab.text = "选择你的饮食风格"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)

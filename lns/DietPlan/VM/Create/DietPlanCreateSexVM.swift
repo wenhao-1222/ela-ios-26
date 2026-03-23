@@ -26,7 +26,7 @@ class DietPlanCreateSexVM: UIView {
         let lab = LineHeightLabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.text = "性别"
+        lab.text = "你的性别是？"
         
         return lab
     }()

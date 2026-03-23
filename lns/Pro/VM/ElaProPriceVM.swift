@@ -62,6 +62,7 @@ class ElaProPriceVM: UIView {
     }
     
     private var selectedPlan: PlanType = .annual
+    private var visiblePlans: [PlanType] = [.month, .annual]
     private var monthProduct: SKProduct?
     private var annualProduct: SKProduct?
     private var lifetimeProduct: SKProduct?
@@ -524,16 +525,19 @@ extension ElaProPriceVM{
     }
     
     @objc func selectMonthCardAction() {
+        guard isPlanVisible(.month) else { return }
         selectedPlan = .month
         refreshPlanCards()
     }
     
     @objc func selectYearCardAction() {
+        guard isPlanVisible(.annual) else { return }
         selectedPlan = .annual
         refreshPlanCards()
     }
     
     @objc func selectLifeCardAction() {
+        guard isPlanVisible(.lifetime) else { return }
         selectedPlan = .lifetime
         refreshPlanCards()
     }
@@ -649,13 +653,16 @@ extension ElaProPriceVM{
     }
     
     func fetchProProductsIfNeeded() {
-        ElaProIAPManager.shared.fetchProProducts { [weak self] result in
+        ElaProIAPManager.shared.fetchProProducts(productIDs: requestedProductIDs()) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 if case .success(let products) = result {
+                    self.monthProduct = nil
+                    self.annualProduct = nil
+                    self.lifetimeProduct = nil
                     if let month = products.first(where: { $0.productIdentifier == ElaProIAPConfig.monthProductID }) {
                         self.monthProduct = month
-                        self.monthTagText = self.preferredRemoteText(self.monthRemoteProduct?.promotionLabel) ?? self.promoTagText(for: month)
+                        self.monthTagText = nil
                         self.monthSubTitleText = self.preferredRemoteText(self.monthRemoteProduct?.monthAvgPriceLabel)
                         if let intro = month.introductoryPrice {
                             self.monthPriceText = self.localizedPriceString(decimal: intro.price, locale: intro.priceLocale)
@@ -665,7 +672,7 @@ extension ElaProPriceVM{
                             self.monthOriginPriceText = self.preferredRemoteText(self.monthRemoteProduct?.originalPrice)
                         }
                     }
-                    
+
                     if let annual = products.first(where: { $0.productIdentifier == ElaProIAPConfig.annualProductID }) {
                         self.annualProduct = annual
                         self.annualTagText = self.preferredRemoteText(self.annualRemoteProduct?.promotionLabel) ?? self.promoTagText(for: annual)
@@ -691,6 +698,9 @@ extension ElaProPriceVM{
     }
     
     func refreshPlanCards() {
+        ensureSelectedPlanIsVisible()
+        updatePlanCardVisibility()
+
         monthCard.configure(tag: monthTagText,
                             title: monthTitleText,
                             subTitle: monthSubTitleText,
@@ -758,12 +768,13 @@ extension ElaProPriceVM{
         monthRemoteProduct = remoteProduct(from: products, type: .month)
         annualRemoteProduct = remoteProduct(from: products, type: .annual)
         lifetimeRemoteProduct = remoteProduct(from: products, type: .lifetime)
+        updateVisiblePlans(products: products)
         
         monthTitleText = preferredRemoteText(monthRemoteProduct?.name) ?? "连续包月"
         annualTitleText = preferredRemoteText(annualRemoteProduct?.name) ?? "连续包年"
         lifetimeTitleText = preferredRemoteText(lifetimeRemoteProduct?.name) ?? "终身会员"
         
-        monthTagText = preferredRemoteText(monthRemoteProduct?.promotionLabel)
+        monthTagText = nil
         annualTagText = preferredRemoteText(annualRemoteProduct?.promotionLabel)
         monthSubTitleText = preferredRemoteText(monthRemoteProduct?.monthAvgPriceLabel)
         annualSubTitleText = preferredRemoteText(annualRemoteProduct?.monthAvgPriceLabel)
@@ -772,6 +783,22 @@ extension ElaProPriceVM{
         monthPriceText = preferredRemoteText(monthRemoteProduct?.displayPriceText) ?? monthPriceText
         annualPriceText = preferredRemoteText(annualRemoteProduct?.displayPriceText) ?? annualPriceText
         lifetimePriceText = preferredRemoteText(lifetimeRemoteProduct?.displayPriceText) ?? lifetimePriceText
+        
+        if products.count == 3{
+            cardContainer.snp.remakeConstraints { make in
+                make.left.equalTo(kFitWidth(16))
+                make.right.equalTo(kFitWidth(-16))
+                make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
+                make.height.equalTo(kFitWidth(141))
+            }
+        }else{
+            cardContainer.snp.remakeConstraints { make in
+                make.left.equalTo(kFitWidth(48))
+                make.right.equalTo(kFitWidth(-48))
+                make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
+                make.height.equalTo(kFitWidth(167))
+            }
+        }
     }
 
     private func remoteProduct(from products: [RemotePlanProduct], type: PlanType) -> RemotePlanProduct? {
@@ -792,6 +819,77 @@ extension ElaProPriceVM{
             return products.first(where: {
                 $0.iosProductId.lowercased().contains("life") || $0.name.contains("终身")
             })
+        }
+    }
+
+    private func updateVisiblePlans(products: [RemotePlanProduct]) {
+        let remoteVisiblePlans = [PlanType.month, .annual, .lifetime].filter { remoteProduct(from: products, type: $0) != nil }
+        guard !remoteVisiblePlans.isEmpty else { return }
+        visiblePlans = remoteVisiblePlans
+    }
+
+    private func ensureSelectedPlanIsVisible() {
+        guard !visiblePlans.contains(selectedPlan) else { return }
+        if visiblePlans.contains(.annual) {
+            selectedPlan = .annual
+        } else if visiblePlans.contains(.month) {
+            selectedPlan = .month
+        } else if let firstVisiblePlan = visiblePlans.first {
+            selectedPlan = firstVisiblePlan
+        }
+    }
+
+    private func isPlanVisible(_ plan: PlanType) -> Bool {
+        return visiblePlans.contains(plan)
+    }
+
+    private func requestedProductIDs() -> [String] {
+        var productIDs: [String] = []
+        if isPlanVisible(.month) {
+            productIDs.append(ElaProIAPConfig.monthProductID)
+        }
+        if isPlanVisible(.annual) {
+            productIDs.append(ElaProIAPConfig.annualProductID)
+        }
+        if isPlanVisible(.lifetime) {
+            productIDs.append(ElaProIAPConfig.lifetimeProductID)
+        }
+        return productIDs
+    }
+
+    private func updatePlanCardVisibility() {
+        monthCard.isHidden = !isPlanVisible(.month)
+        yearCard.isHidden = !isPlanVisible(.annual)
+        lifeCard.isHidden = !isPlanVisible(.lifetime)
+        remakePlanCardConstraints()
+    }
+
+    private func remakePlanCardConstraints() {
+        let cardGap = kFitWidth(14)
+        let cards = [monthCard, yearCard, lifeCard]
+        let visibleCards = cards.filter { !$0.isHidden }
+
+        for card in cards where !visibleCards.contains(where: { $0 === card }) {
+            card.snp.remakeConstraints { make in
+                make.left.top.bottom.equalToSuperview()
+                make.width.equalTo(0)
+            }
+        }
+
+        for (index, card) in visibleCards.enumerated() {
+            card.snp.remakeConstraints { make in
+                make.top.bottom.equalToSuperview()
+                if index == 0 {
+                    make.left.equalToSuperview()
+                } else {
+                    make.left.equalTo(visibleCards[index - 1].snp.right).offset(cardGap)
+                    make.width.equalTo(visibleCards[0])
+                }
+
+                if index == visibleCards.count - 1 {
+                    make.right.equalToSuperview()
+                }
+            }
         }
     }
 

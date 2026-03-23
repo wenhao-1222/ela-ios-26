@@ -139,7 +139,6 @@ extension DietPlanVC{
             return
         }
         
-        
         if listVm.superview == nil {
             removeStateViews()
             view.addSubview(listVm)
