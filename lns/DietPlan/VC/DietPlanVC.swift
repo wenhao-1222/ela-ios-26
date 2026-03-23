@@ -139,10 +139,16 @@ extension DietPlanVC{
             return
         }
         
+        
         if listVm.superview == nil {
             removeStateViews()
             view.addSubview(listVm)
         }
+//        if status == "3"{//有问卷，计划过期   buyListButton不可点
+//            listVm.buyListButton.isEnabled = false
+//        }else{//有问卷，计划且在有效期内
+//            listVm.buyListButton.isEnabled = true
+//        }
         listVm.updatePlanList(mealPlanItemList: mealPlanItemList, preservingScrollOffset: preservingListOffset)
     }
     
