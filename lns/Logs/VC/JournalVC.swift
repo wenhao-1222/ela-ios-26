@@ -142,7 +142,7 @@ class JournalVC: WHBaseViewVC {
         sendConstantRequest()
         sendNutritionsDefaultCircleRequest()
         getActivityListRequest()
-
+        sendProVipMsgRequest()
 //        BodyDataUploadManager().dealOldSqlData()
         
         initUI()
@@ -1228,6 +1228,13 @@ extension JournalVC{
             let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendNutritionsDefaultCircleRequest:\(dataArray)")
             UserDefaults.set(value: dataArray, forKey: .circleGoalArray)
+        }
+    }
+    func sendProVipMsgRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendProVipMsgRequest:\(dataDict)")
         }
     }
 }

@@ -168,8 +168,9 @@ public let URL_clear_logs                   = URL_Type + "plans/log/clear"
 ///会员订阅套餐列表
 public let URL_pro_product                   = URL_Type + "users/membership/product"
 ///会员订阅 后  向后台发起查询
-public let URL_pro_ipa_query                   = URL_Type + "users/apple/iap/order/query"
-
+public let URL_pro_iap_query                   = URL_Type + "users/apple/iap/order/query"
+///会员VIP信息
+public let URL_pro_info                   = URL_Type + "users/membership/vip_info"
 //MARK: 餐食
 //添加餐食
 public let URL_meals_add                    = URL_Type + "plans/meals/add"

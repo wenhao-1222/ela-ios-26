@@ -377,7 +377,7 @@ final class ElaProIAPManager: NSObject {
             "transactionId": transactionID as AnyObject
         ]
         
-        WHNetworkUtil.shareManager().POST(urlString: URL_pro_ipa_query,
+        WHNetworkUtil.shareManager().POST(urlString: URL_pro_iap_query,
                                           parameters: params,
                                           success: { responseObject in
             let code = responseObject["code"] as? Int ?? -1

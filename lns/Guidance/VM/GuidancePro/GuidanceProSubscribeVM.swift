@@ -7,10 +7,14 @@
 
 import UIKit
 import SnapKit
+import UserNotifications
+
 class GuidanceProSubscribeVM: UIView {
 
     var startTrialTapBlock: (() -> Void)?
     var closeTapBlock: (() -> Void)?
+
+    private var isSyncingReminderSwitchState = false
 
     private lazy var loadingOverlayView: UIView = {
         let view = UIView()
@@ -106,7 +110,8 @@ class GuidanceProSubscribeVM: UIView {
     private lazy var reminderSwitch: UISwitch = {
         let view = UISwitch()
         view.onTintColor = .THEME
-        view.isOn = true
+        view.isOn = false
+        view.addTarget(self, action: #selector(reminderSwitchValueChanged(_:)), for: .valueChanged)
         return view
     }()
 
@@ -168,10 +173,16 @@ class GuidanceProSubscribeVM: UIView {
         super.init(frame: frame)
         backgroundColor = .clear
         initUI()
+        observeAppBecomeActive()
+        syncReminderSwitchStatusFromSystem(animated: false)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -193,9 +204,103 @@ extension GuidanceProSubscribeVM {
     @objc func closeTapAction() {
         self.closeTapBlock?()
     }
+
+    @objc func reminderSwitchValueChanged(_ sender: UISwitch) {
+        guard !isSyncingReminderSwitchState else { return }
+        guard sender.isOn else { return }
+
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                switch settings.authorizationStatus {
+                case .authorized, .provisional, .ephemeral:
+                    self.setReminderSwitchOn(true, animated: true)
+                case .denied:
+                    self.setReminderSwitchOn(false, animated: true)
+                    self.presentNotificationPermissionAlert()
+                case .notDetermined:
+                    self.requestReminderNotificationAuthorization()
+                @unknown default:
+                    self.setReminderSwitchOn(false, animated: true)
+                }
+            }
+        }
+    }
+
+    @objc func handleAppDidBecomeActive() {
+        syncReminderSwitchStatusFromSystem(animated: true)
+    }
 }
 
 private extension GuidanceProSubscribeVM {
+    func requestReminderNotificationAuthorization() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { [weak self] granted, _ in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                if granted {
+                    self.syncReminderSwitchStatusFromSystem(animated: true)
+                } else {
+                    self.setReminderSwitchOn(false, animated: true)
+                }
+            }
+        }
+    }
+
+    func observeAppBecomeActive() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleAppDidBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
+    }
+
+    func syncReminderSwitchStatusFromSystem(animated: Bool) {
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            let isEnabled: Bool
+            switch settings.authorizationStatus {
+            case .authorized, .provisional, .ephemeral:
+                isEnabled = true
+            default:
+                isEnabled = false
+            }
+
+            DispatchQueue.main.async {
+                self?.setReminderSwitchOn(isEnabled, animated: animated)
+            }
+        }
+    }
+
+    func setReminderSwitchOn(_ isOn: Bool, animated: Bool) {
+        isSyncingReminderSwitchState = true
+        reminderSwitch.setOn(isOn, animated: animated)
+        isSyncingReminderSwitchState = false
+    }
+
+    func presentNotificationPermissionAlert() {
+        guard let topVC = UIApplication.topViewController() else {
+            return
+        }
+        guard !(topVC.presentedViewController is UIAlertController) else { return }
+
+        let alert = UIAlertController(title: "通知权限未开启",
+                                      message: "请在系统设置中允许通知，便于你在试用结束前收到提醒。",
+                                      preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel)
+        let settingsAction = UIAlertAction(title: "去设置", style: .default) { _ in
+            self.openSystemSettings()
+        }
+        alert.addAction(cancelAction)
+        alert.addAction(settingsAction)
+        topVC.present(alert, animated: true)
+    }
+
+    func openSystemSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString),
+              UIApplication.shared.canOpenURL(url) else {
+            return
+        }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+
     func initUI() {
         addSubview(scrollView)
         addSubview(loadingOverlayView)
