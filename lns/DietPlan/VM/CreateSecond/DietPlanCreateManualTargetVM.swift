@@ -12,6 +12,7 @@ class DietPlanCreateManualTargetVM: UIView {
     var backTapBlock: (() -> ())?
     var saveTapBlock: ((String) -> ())?
 
+    private let maxTargetValue = 9999
     private var keyboardBottomOffset: CGFloat = 0
 
     override init(frame: CGRect) {
@@ -144,9 +145,9 @@ extension DietPlanCreateManualTargetVM {
     }
 
     func configure(initialValue: String) {
-        textField.text = initialValue
+        textField.text = normalizedTargetText(initialValue)
         updateSaveButtonState()
-        clearButton.isHidden = initialValue.isEmpty
+        clearButton.isHidden = textField.text?.isEmpty ?? true
     }
 
     func focusInput() {
@@ -170,7 +171,7 @@ extension DietPlanCreateManualTargetVM {
 
     @objc func textDidChange() {
         let raw = textField.text ?? ""
-        let filtered = raw.filter { $0.isNumber }
+        let filtered = normalizedTargetText(raw)
         if filtered != raw {
             textField.text = filtered
         }
@@ -188,10 +189,11 @@ extension DietPlanCreateManualTargetVM {
     }
 
     @objc func saveAction() {
-        let value = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let value = normalizedTargetText(textField.text ?? "")
         guard !value.isEmpty else {
             return
         }
+        textField.text = value
         resignInput()
         saveTapBlock?(value)
     }
@@ -231,5 +233,14 @@ extension DietPlanCreateManualTargetVM: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         resignInput()
         return true
+    }
+}
+
+private extension DietPlanCreateManualTargetVM {
+    func normalizedTargetText(_ text: String) -> String {
+        let digitsOnly = text.filter { $0.isNumber }
+        guard !digitsOnly.isEmpty else { return "" }
+        let value = min(Int(digitsOnly) ?? 0, maxTargetValue)
+        return value > 0 ? "\(value)" : ""
     }
 }

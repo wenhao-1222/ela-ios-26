@@ -9,6 +9,7 @@
 class QuestionResultBaseVM: UIView {
     
     var selfHeight = kFitWidth(0)
+    private let maxCaloriesInputValue = 9999
     
     var showTipsBlock:(()->())?
     
@@ -168,14 +169,29 @@ extension QuestionResultBaseVM{
 
 extension QuestionResultBaseVM:UITextFieldDelegate{
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if string == ""{
-            return true
-        }
-        
-        if textField.text?.count ?? 0 >= 5{
+        guard let currentText = textField.text,
+              let textRange = Range(range, in: currentText) else {
             return false
         }
-        
-        return true
+
+        if string.isEmpty {
+            return true
+        }
+
+        let filteredReplacement = string.filter { $0.isNumber }
+        if filteredReplacement != string {
+            return false
+        }
+
+        let nextText = currentText.replacingCharacters(in: textRange, with: filteredReplacement)
+        if nextText.isEmpty {
+            return true
+        }
+
+        guard let nextValue = Int(nextText) else {
+            return false
+        }
+
+        return nextValue <= maxCaloriesInputValue
     }
 }

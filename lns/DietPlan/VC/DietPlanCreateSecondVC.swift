@@ -342,6 +342,7 @@ extension DietPlanCreateSecondVC{
     }
 }
 
+//MARK: 网络请求
 extension DietPlanCreateSecondVC{
     func sendDietMsgRequest() {
         WHNetworkUtil.shareManager().POST(urlString: URL_diet_get, parameters: nil) { responseObject in
@@ -422,7 +423,8 @@ extension DietPlanCreateSecondVC{
     func sendCreatePlanRequestAfterUpsert() {
         let param = [
             "startDate": requestDateFormatter.string(from: QuestinonaireMsgModel.shared.chartStartDate),
-            "endDate": requestDateFormatter.string(from: QuestinonaireMsgModel.shared.chartEndDate)
+            "endDate": requestDateFormatter.string(from: QuestinonaireMsgModel.shared.chartEndDate),
+            "customTdee":QuestinonaireMsgModel.shared.caloriesNumber
         ]
         DLLog(message: "sendCreatePlanRequest(second):\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_create, parameters: param as [String : AnyObject]) { [weak self] responseObject in
