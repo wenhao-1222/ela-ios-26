@@ -212,6 +212,10 @@ class WHBaseViewVC: ViewController {
             }
         }
     }
+    func completeLoginSuccessAndEnterApp() {
+        QuestinonaireMsgModel.shared.clearMsg()
+        changeRootVcToTabbar()
+    }
     func changeRootVcToLogin() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
 //        let newRootVC = LNSLoginVC()

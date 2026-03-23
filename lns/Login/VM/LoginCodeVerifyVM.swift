@@ -329,7 +329,7 @@ extension LoginCodeVerifyVM{
                         self.saveSurveyBlock!()
                     }
                 }else{
-                    self.controller.changeRootVcToTabbar()
+                    self.controller.completeLoginSuccessAndEnterApp()
                 }
 //            }else{
 //                self.controller.presentAlertVcNoAction(title: "账户已申请注销。", viewController: self.controller)
@@ -345,7 +345,7 @@ extension LoginCodeVerifyVM{
                     self.saveSurveyBlock!()
                 }
             }else{
-                self.controller.changeRootVcToTabbar()
+                self.controller.completeLoginSuccessAndEnterApp()
             }
         }
     }

@@ -66,7 +66,7 @@ class LoginVC: WHBaseViewVC {
         vm.controller = self
         vm.hasPlan = false
         vm.saveSurveyBlock = {()in
-            self.changeRootVcToTabbar()
+            self.completeLoginSuccessAndEnterApp()
         }
         vm.closeBlock = {()in
             self.isCodeShow = false

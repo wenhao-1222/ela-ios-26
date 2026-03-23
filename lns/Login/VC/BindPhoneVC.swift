@@ -265,7 +265,7 @@ extension BindPhoneVC{
 //                    self.sendBindInviteCodeRequest()
 //                }else{
                     if QuestinonaireMsgModel.shared.surveytype == "noPlan"{
-                        self.changeRootVcToTabbar()
+                        self.completeLoginSuccessAndEnterApp()
                     }else{
                         self.sendSurveySaveRequest()
                     }
@@ -300,7 +300,7 @@ extension BindPhoneVC{
 //                    self.sendBindInviteCodeRequest()
 //                }else{
                     if QuestinonaireMsgModel.shared.surveytype == "noPlan"{
-                        self.changeRootVcToTabbar()
+                        self.completeLoginSuccessAndEnterApp()
                     }else{
                         self.sendSurveySaveRequest()
                     }
@@ -316,7 +316,7 @@ extension BindPhoneVC{
         WHNetworkUtil.shareManager().POST(urlString: URL_bind_inviteCode, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
 //            DLLog(message: "\(responseObject)")
             if QuestinonaireMsgModel.shared.surveytype == "noPlan"{
-                self.changeRootVcToTabbar()
+                self.completeLoginSuccessAndEnterApp()
             }else{
                 self.sendSurveySaveRequest()
             }
@@ -328,14 +328,14 @@ extension BindPhoneVC{
         var param = NSDictionary()
         if isPendingGuidanceFixedTargetSurveyUpload() {
             uploadPendingGuidanceFixedTargetSurveyV2 { [weak self] in
-                self?.changeRootVcToTabbar()
+                self?.completeLoginSuccessAndEnterApp()
             } failure: { [weak self] message in
                 guard let self = self, let message, !message.isEmpty else { return }
                 self.presentAlertVcNoAction(title: message, viewController: self)
             }
         } else if isPendingGuidancePartSurveyUpload() {
             uploadPendingGuidancePartSurveyV2 { [weak self] in
-                self?.changeRootVcToTabbar()
+                self?.completeLoginSuccessAndEnterApp()
             } failure: { [weak self] message in
                 guard let self = self, let message, !message.isEmpty else { return }
                 self.presentAlertVcNoAction(title: message, viewController: self)
@@ -351,7 +351,7 @@ extension BindPhoneVC{
             WHNetworkUtil.shareManager().POST(urlString: URL_question_custom_save, parameters: param as? [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
                 DLLog(message: "\(responseObject)")
                 
-                self.changeRootVcToTabbar()
+                self.completeLoginSuccessAndEnterApp()
             }
         }else {//填写了问卷
             if QuestinonaireMsgModel.shared.surveytype == "full"{
@@ -380,7 +380,7 @@ extension BindPhoneVC{
 //                    }else{
 //                        BodyDataSQLiteManager.getInstance().updateData(cTime: Date().nextDay(days: 0), imgurl: "", hipsData: "", weightData: "\(QuestinonaireMsgModel.shared.weight)", waistlineData: "", shoulderData: "", bustData: "", thighData: "", calfData: "", bfpData: "", images: "[[],[],[]]", armcircumferenceData: "")
 //                    }
-                    self.changeRootVcToTabbar()
+                    self.completeLoginSuccessAndEnterApp()
                 }
             }else{
                 param = ["uid":"\(UserInfoModel.shared.uId)",
@@ -405,7 +405,7 @@ extension BindPhoneVC{
 //                        BodyDataSQLiteManager.getInstance().updateData(cTime: Date().nextDay(days: 0), imgurl: "", hipsData: "", weightData: "\(QuestinonaireMsgModel.shared.weight)", waistlineData: "", shoulderData: "", bustData: "", thighData: "", calfData: "", bfpData: "", images: "[[],[],[]]", armcircumferenceData: "")
 //                    }
 //                    MCToast.mc_text("计划保存成功")
-                    self.changeRootVcToTabbar()
+                    self.completeLoginSuccessAndEnterApp()
                 }
             }
         }

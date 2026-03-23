@@ -201,7 +201,7 @@ extension NeedBuildPlanVC{
     @objc func wechatLogin() {
         if UserInfoModel.shared.isRegist == "yes"{
             if UserInfoModel.shared.state == 1 {
-                self.changeRootVcToTabbar()
+                self.completeLoginSuccessAndEnterApp()
             }else{
                 self.presentAlertVcNoAction(title: "账户已申请注销！", viewController: self)
             }
@@ -295,7 +295,7 @@ extension NeedBuildPlanVC{
                     UserDefaults.standard.setValue("\(dataObj["uid"]as? String ?? "")", forKey: userId)
                     
                     WidgetUtils().saveUserInfo(uId: "\(dataObj["uid"]as? String ?? "")", uToken: "\(dataObj["token"]as? String ?? "")")
-                    self.changeRootVcToTabbar()
+                    self.completeLoginSuccessAndEnterApp()
                 }else{
                     self.presentAlertVcNoAction(title: "账户已申请注销。", viewController: self)
                 }
