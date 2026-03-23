@@ -10,6 +10,8 @@ import Foundation
 class QuestionnaireGoalTableViewCell: FeedBackTableViewCell {
     
     private var generator = UIImpactFeedbackGenerator(style: .rigid)
+    private var usesCompactSelectionStyle = false
+    private var currentSelectedState = false
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -28,7 +30,11 @@ class QuestionnaireGoalTableViewCell: FeedBackTableViewCell {
         if highlighted {
             self.bottomView.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT
         }else{
-            self.bottomView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+            if usesCompactSelectionStyle {
+                self.bottomView.backgroundColor = currentSelectedState ? .THEME : .COLOR_BG_BLACK_04
+            } else {
+                self.bottomView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+            }
         }
     }
     lazy var bottomView : UIView = {
@@ -84,13 +90,23 @@ class QuestionnaireGoalTableViewCell: FeedBackTableViewCell {
 }
 
 extension QuestionnaireGoalTableViewCell{
-    func updateUI(dict:NSDictionary,isSelected:Bool) {
-        if isSelected{
+    func updateUI(dict:NSDictionary,isSelected:Bool, usesCompactSelectionStyle: Bool = false) {
+        self.usesCompactSelectionStyle = usesCompactSelectionStyle
+        self.currentSelectedState = isSelected
+        
+        if usesCompactSelectionStyle {
+            bottomView.isHidden = false
+            borderRectView.isHidden = true
+            bottomView.backgroundColor = isSelected ? .THEME : .COLOR_BG_BLACK_04
+            titleLabel.textColor = isSelected ? .white : .COLOR_TEXT_TITLE_0f1214_50
+        } else if isSelected{
             bottomView.isHidden = true
             borderRectView.isHidden = false
         }else{
             bottomView.isHidden = false
             borderRectView.isHidden = true
+            bottomView.backgroundColor = .COLOR_BG_BLACK_04
+            titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
         titleLabel.text = "\(dict["name"]as? String ?? "")"
         titleLab.text = "\(dict["name"]as? String ?? "")"

@@ -12,7 +12,7 @@ import UserNotifications
 import IQKeyboardManagerSwift
 
 class GuidanceVC: WHBaseViewVC {
-
+    
     enum FlowStep: Hashable {
         case sex
         case dietRecord
@@ -234,6 +234,11 @@ class GuidanceVC: WHBaseViewVC {
     lazy var fixedTargetVm: GuidanceFixedTargetVM = {
         let vm = GuidanceFixedTargetVM.init(frame: CGRect.init(x: SCREEN_WIDHT*3, y: 0, width: 0, height: 0))
         vm.selectedBlock = { [weak self] in
+            QuestinonaireMsgModel.shared.caloriesNumber = ""
+            QuestinonaireMsgModel.shared.caloriesNumberFromServer = ""
+            QuestinonaireMsgModel.shared.carbohydrates = ""
+            QuestinonaireMsgModel.shared.proteinNumber = ""
+            QuestinonaireMsgModel.shared.fatsNumber = ""
             self?.updateFlowConfiguration()
             self?.nextButtonTapAction()
         }
@@ -336,7 +341,6 @@ class GuidanceVC: WHBaseViewVC {
     }()
     lazy var goalVm : QuestionnaireGoalVM = {
         let vm = QuestionnaireGoalVM.init(frame: CGRect.init(x: SCREEN_WIDHT*16, y: 0, width: 0, height: 0))
-        vm.updateConstrait()
         vm.choiceBlock = { [weak self] in
             self?.goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
             self?.updateNextButtonForCurrentStep()
@@ -502,6 +506,7 @@ extension GuidanceVC{
 
     func updateFlowConfiguration() {
         syncCardioFrequencyFlowState()
+        goalVm.applyGuidanceSelectionStyle(isCompact: isFixedTargetFlowEnabled)
         if isFixedTargetFlowEnabled {
             stepsArray = fixedTargetStepsArray
         } else {

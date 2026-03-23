@@ -12,6 +12,7 @@ class QuestionnaireGoalVM: UIView {
     
     var selfHeight = kFitWidth(0)
     var selectIndex = -1
+    private var usesCompactSelectionStyle = false
     
     var nextBlock:(()->())?
     var choiceBlock:(()->())?
@@ -121,6 +122,12 @@ extension QuestionnaireGoalVM{
         }
     }
     func updateConstrait() {
+        applyGuidanceSelectionStyle(isCompact: true)
+    }
+
+    func applyGuidanceSelectionStyle(isCompact: Bool) {
+        usesCompactSelectionStyle = isCompact
+        if isCompact {
         titleLabel.text = "你的目标是什么？"
         titleLabel.snp.remakeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
@@ -128,10 +135,31 @@ extension QuestionnaireGoalVM{
 //            make.height.equalTo(kFitWidth(72))
         }
         tableView.frame = CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight()+kFitWidth(75), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-(WHUtils().getNavigationBarHeight()+kFitWidth(75))-kFitWidth(84)-WHUtils().getBottomSafeAreaHeight())
+        } else {
+            titleLabel.text = "选择你的目标"
+            titleLabel.snp.remakeConstraints { make in
+                make.centerX.lessThanOrEqualToSuperview()
+                make.top.equalTo(kFitWidth(60))
+                make.height.equalTo(kFitWidth(72))
+            }
+            tableView.frame = CGRect.init(x: 0, y: kFitWidth(152), width: SCREEN_WIDHT, height: self.selfHeight-kFitWidth(152)-kFitWidth(84)-WHUtils().getBottomSafeAreaHeight())
+        }
+        tableView.reloadData()
     }
     func refresNextBtnCenter() {
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut){
             self.nextBtn.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.selfHeight-kFitWidth(36)-WHUtils().getBottomSafeAreaHeight())
+        }
+    }
+
+    func refreshGoalCellSelectionState(at indexPath: IndexPath, isSelected: Bool) {
+        let dict = self.dataArray[indexPath.row]as? NSDictionary ?? [:]
+        if let cell = tableView.cellForRow(at: indexPath) as? QuestionnaireGoalTableViewCell {
+            cell.updateUI(dict: dict, isSelected: isSelected, usesCompactSelectionStyle: usesCompactSelectionStyle)
+        } else {
+            UIView.performWithoutAnimation {
+                tableView.reloadRows(at: [indexPath], with: .none)
+            }
         }
     }
 }
@@ -145,28 +173,35 @@ extension QuestionnaireGoalVM:UITableViewDataSource,UITableViewDelegate{
         let cell = tableView.dequeueReusableCell(withIdentifier: "QuestionnaireGoalTableViewCell", for: indexPath) as? QuestionnaireGoalTableViewCell
         
         let dict = self.dataArray[indexPath.row]as? NSDictionary ?? [:]
-        cell?.updateUI(dict: dict, isSelected: self.selectIndex==indexPath.row)
+        cell?.updateUI(dict: dict, isSelected: self.selectIndex==indexPath.row, usesCompactSelectionStyle: usesCompactSelectionStyle)
         
         return cell ?? QuestionnaireGoalTableViewCell()
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if usesCompactSelectionStyle {
+            return kFitWidth(72)
+        }
         return self.selectIndex == indexPath.row ? kFitWidth(144) : kFitWidth(72)
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if self.selectIndex == indexPath.row{
             return
         }
-        self.selectIndex = -1
-        self.tableView.reloadData()
-        
+        let previousIndex = self.selectIndex
         self.selectIndex = indexPath.row
-        
-//        tableView.deselectRow(at: indexPath, animated: true)
-        
-        tableView.beginUpdates()
-        tableView.reloadRows(at: [indexPath], with: .fade)
-        tableView.endUpdates()
-//        self.tableView.reloadData()
+
+        if usesCompactSelectionStyle {
+            if previousIndex >= 0 {
+                let previousIndexPath = IndexPath(row: previousIndex, section: indexPath.section)
+                refreshGoalCellSelectionState(at: previousIndexPath, isSelected: false)
+            }
+            refreshGoalCellSelectionState(at: indexPath, isSelected: true)
+        } else {
+            self.tableView.reloadData()
+            tableView.beginUpdates()
+            tableView.reloadRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+        }
         QuestinonaireMsgModel.shared.goal = "\(self.selectIndex+1)"
         DLLog(message: "目标：\(QuestinonaireMsgModel.shared.goal)")
         self.choiceBlock?()
