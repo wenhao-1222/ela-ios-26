@@ -199,6 +199,7 @@ class WHBaseViewVC: ViewController {
     }
     func changeRootVcToTabbar() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
         if isIpad(){
             let newRootVC = MainTabBarController()
             appDelegate.switchRootViewController(to: newRootVC)
@@ -211,7 +212,6 @@ class WHBaseViewVC: ViewController {
                 appDelegate.switchRootViewController(to: WHTabBarVC())
             }
         }
-        ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
     }
     func completeLoginSuccessAndEnterApp() {
         QuestinonaireMsgModel.shared.clearMsg()

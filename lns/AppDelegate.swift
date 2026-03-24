@@ -75,6 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                     UserInfoModel.shared.token = token
                     UserInfoModel.shared.phone = phone
                     sendSplashIdRequest()
+                    ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
                     
                     UserInfoModel.shared.mealsNumber = UserDefaults.getMealsNumber()
                     UserInfoModel.shared.hidden_survery_button_status = UserDefaults.getSurveryStatus()
@@ -92,7 +93,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                     }
                     
                     WidgetUtils().saveUserInfo(uId: "\(uId)", uToken: "\(token)")
-                    ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
                 }else{
                     UserInfoModel.shared.uId = ""
                     UserInfoModel.shared.token = ""
