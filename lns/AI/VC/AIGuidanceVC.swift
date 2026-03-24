@@ -14,11 +14,12 @@ class AIGuidanceVC: WHBaseViewVC {
         case goal
         case goalStage
         case coachStrictness
+        case notice
     }
 
     var currentIndex: Int = 0
     private var mountedSteps = Set<FlowStep>()
-    private let totalSteps = 3
+    private let totalSteps = 4
     private var isSubmittingAICoachProfile = false
 
     override func viewDidLoad() {
@@ -81,6 +82,10 @@ class AIGuidanceVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var noticeVm: AIGuidanceNoticeVM = {
+        let vm = AIGuidanceNoticeVM.init(frame: .zero)
+        return vm
+    }()
 }
 
 extension AIGuidanceVC{
@@ -95,6 +100,8 @@ extension AIGuidanceVC{
         case .goalStage:
             moveToStep(index: 2, animated: true)
         case .coachStrictness:
+            moveToStep(index: 3, animated: true)
+        case .notice:
             submitAICoachProfile()
         }
     }
@@ -107,6 +114,8 @@ extension AIGuidanceVC{
             return .goalStage
         case 2:
             return .coachStrictness
+        case 3:
+            return .notice
         default:
             return nil
         }
@@ -120,6 +129,8 @@ extension AIGuidanceVC{
             return goalStageVm
         case .coachStrictness:
             return coachStrictnessVm
+        case .notice:
+            return noticeVm
         }
     }
 
@@ -140,10 +151,10 @@ extension AIGuidanceVC{
     }
 
     func moveToStep(index: Int, animated: Bool) {
-        let targetIndex = max(0, index)
+        let targetIndex = max(0, min(index, totalSteps - 1))
         currentIndex = targetIndex
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: animated)
-        naviVm.updateStep(steps: stepsArray, currentStep: targetIndex)
+        updateNavigationForCurrentStep()
         updateNextButtonForCurrentStep()
     }
 
@@ -168,6 +179,24 @@ extension AIGuidanceVC{
         case .coachStrictness:
             nextButton.isHidden = false
             nextButton.isEnabled = coachStrictnessVm.hasSelection
+        case .notice:
+            nextButton.isHidden = false
+            nextButton.isEnabled = true
+        }
+    }
+
+    func updateNavigationForCurrentStep() {
+        guard let currentStep = flowStep(for: currentIndex) else {
+            return
+        }
+
+        let shouldHideProgress = currentStep == .notice
+        naviVm.firstStepVm.isHidden = shouldHideProgress
+        naviVm.secondStepVm.isHidden = shouldHideProgress
+        naviVm.thirdStepVm.isHidden = shouldHideProgress
+
+        if shouldHideProgress == false {
+            naviVm.updateStep(steps: stepsArray, currentStep: currentIndex)
         }
     }
 
@@ -182,7 +211,7 @@ extension AIGuidanceVC{
         scrollViewBase.isScrollEnabled = false
         scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalSteps), height: SCREEN_HEIGHT)
 
-        installStepViewsIfNeeded(indexes: [0, 1, 2])
+        installStepViewsIfNeeded(indexes: [0, 1, 2, 3])
         setConstrait()
         moveToStep(index: 0, animated: false)
     }

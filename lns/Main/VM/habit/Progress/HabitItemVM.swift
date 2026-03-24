@@ -98,13 +98,16 @@ extension HabitItemVM{
         }else if status == "2"{
             showButton.setTitle("领取", for: .normal)
             showButton.isUserInteractionEnabled = true
-        }else if status == "3"{
+        }else{
             showButton.setTitle("已领取", for: .normal)
             showButton.isUserInteractionEnabled = false
-        }else{
-            showButton.setTitle("未达成", for: .normal)
-            showButton.isUserInteractionEnabled = false
         }
+//        else if status == "3"{
+//            showButton.setTitle("已领取", for: .normal)
+//            showButton.isUserInteractionEnabled = false
+//        }
+        //2026年03月24日17:33:28     1   未达成   2  可领取    其他 已领取
+        //因为发现后台返回了0，表明已领取，超过了24小时
     }
     @objc func tapAction() {
         showButton.isUserInteractionEnabled = canTapMore

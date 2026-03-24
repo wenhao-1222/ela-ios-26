@@ -119,18 +119,6 @@ extension HabitFriendsGoalVM{
         if dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus").count > 0{
             firstOnTargetVm.isHidden = false
             firstOnTargetVm.showButton.isHidden = false
-            ///1  未达成   2   已达成未领取   3   已领取
-//            if dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus") == "2" {
-//                firstOnTargetVm.showButton.setTitle("领取", for: .normal)
-//                firstOnTargetVm.showButton.isUserInteractionEnabled = true
-//                firstOnTargetVm.showButton.backgroundColor = .THEME
-//            }else if dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus") == "3" {
-//                firstOnTargetVm.showButton.setTitle("已领取", for: .normal)
-//                firstOnTargetVm.showButton.isUserInteractionEnabled = false
-//                firstOnTargetVm.showButton.backgroundColor = .COLOR_BUTTON_DISABLE_BG_THEME
-//            }else{
-//                
-//            }
             firstOnTargetVm.showButton.isUserInteractionEnabled = dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus") == "2"
             itemModels.append(HabitItemModel().createModel(vm: firstOnTargetVm,
                                                            isComplete: dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus") != "2",
