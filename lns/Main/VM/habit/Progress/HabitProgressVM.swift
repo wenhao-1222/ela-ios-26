@@ -19,10 +19,8 @@ class HabitProgressVM: UIView {
     private var pendingPointTarget: Int?
     private var deferPointAnimation = false
     private var shouldAnimatePointWhenVisible = false
-    private var pendingStreakParabolaAction: (() -> Void)?
-    private var pendingStreakSnapshotRestoreAction: (((() -> Void)?) -> Void)?
+    private var pendingStreakSuccessRestoreAction: (((() -> Void)?) -> Void)?
     private var pendingStreakFailureRestoreAction: (((() -> Void)?) -> Void)?
-    private var shouldStartPendingStreakParabola = false
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -97,7 +95,6 @@ class HabitProgressVM: UIView {
                 self.deferPointAnimation = false
                 self.triggerPointAnimationIfNeeded()
             }
-            self.triggerPendingStreakParabolaIfNeeded(forceStart: true)
         }
         
         return vm
@@ -165,16 +162,16 @@ extension HabitProgressVM{
         self.lastNumber = nextPointBalance//dict.stringValueForKey(key: "pointBalance").intValue
         self.todayMsgVm.updateUI(dict: dict)
         self.friendMsgVm.updateUI(dict: dict)
-//        self.streakListVm.updateUI(listArray: dict["streakRewardList"]as? NSArray ?? [])
-        let arr = [["streakRewardName":"测试连胜一",
-                    "isClaimed":"0",
-                    "streakRewardPoint":"14",
-                    "streakRewardId":"2342342"],
-                   ["streakRewardName":"测试连胜二",
-                               "isClaimed":"0",
-                               "streakRewardPoint":"88",
-                               "streakRewardId":"2342wfwe342"]]
-        self.streakListVm.updateUI(listArray: arr as NSArray)
+        self.streakListVm.updateUI(listArray: dict["streakRewardList"]as? NSArray ?? [])
+//        let arr = [["streakRewardName":"测试连胜一",
+//                    "isClaimed":"0",
+//                    "streakRewardPoint":"14",
+//                    "streakRewardId":"2342342"],
+//                   ["streakRewardName":"测试连胜二",
+//                               "isClaimed":"0",
+//                               "streakRewardPoint":"88",
+//                               "streakRewardId":"2342wfwe342"]]
+//        self.streakListVm.updateUI(listArray: arr as NSArray)
         hideLoadingSkeletonIfNeeded()
     }
 }
@@ -232,23 +229,12 @@ extension HabitProgressVM{
     }
 }
 extension HabitProgressVM{
-    private func triggerPendingStreakParabolaIfNeeded(forceStart: Bool = false) {
-        if forceStart {
-            shouldStartPendingStreakParabola = true
-        }
-        guard shouldStartPendingStreakParabola,
-              let action = pendingStreakParabolaAction else { return }
-        pendingStreakParabolaAction = nil
-        shouldStartPendingStreakParabola = false
-        action()
-    }
-
-    private func restorePendingStreakSnapshotIfNeeded(completion: (() -> Void)? = nil) {
-        guard let action = pendingStreakSnapshotRestoreAction else {
+    private func restorePendingStreakSuccessIfNeeded(completion: (() -> Void)? = nil) {
+        guard let action = pendingStreakSuccessRestoreAction else {
             completion?()
             return
         }
-        pendingStreakSnapshotRestoreAction = nil
+        pendingStreakSuccessRestoreAction = nil
         action(completion)
     }
 
@@ -264,138 +250,100 @@ extension HabitProgressVM{
     func playStreakReceiveAnimation(from sourceView: UIView,
                                     point: String,
                                     completion: (() -> Void)? = nil) {
-        shouldStartPendingStreakParabola = false
-        pendingStreakParabolaAction = nil
-        pendingStreakSnapshotRestoreAction = nil
+        pendingStreakSuccessRestoreAction = nil
         pendingStreakFailureRestoreAction = nil
-        let containerView = animOverlayView
-        let startFrame: CGRect
-        let snapshotView: UIView
-        weak var sourceButton: UIButton?
-        if let item = sourceView as? HabitItemVM {
-            let buttonFrame = item.showButton.convert(item.showButton.bounds, to: containerView)
-            startFrame = buttonFrame
-            snapshotView = item.showButton.snapshotView(afterScreenUpdates: false) ?? UIView()
-            snapshotView.clipsToBounds = true
-            snapshotView.layer.cornerRadius = kFitWidth(15)//item.showButton.layer.cornerRadius
-            sourceButton = item.showButton
-            DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
-                item.showButton.isHidden = true
-            })
-        } else {
-            startFrame = sourceView.convert(sourceView.bounds, to: containerView)
-            snapshotView = sourceView.snapshotView(afterScreenUpdates: false) ?? UIView()
-        }
-        let endFrame = topMsgVm.numberLabel.convert(topMsgVm.numberLabel.bounds, to: containerView)
-
-        snapshotView.frame = startFrame
-        snapshotView.layer.masksToBounds = true
-        containerView.addSubview(snapshotView)
-
-        let circleSize = startFrame.height//kFitWidth(48)
-        let circleBounds = CGRect(x: 0, y: 0, width: circleSize, height: circleSize)
-        let startCenter = CGPoint(x: startFrame.maxX - circleSize*0.5, y: startFrame.midY)
-        let endCenter = CGPoint(x: endFrame.midX, y: endFrame.midY)
-
-        let animateView = UIView(frame: CGRect.init(x: 0, y: 0, width: circleSize, height: circleSize))
-        animateView.backgroundColor = .clear//.THEME
-        animateView.layer.cornerRadius = circleSize*0.5
-        animateView.isHidden = true
-        containerView.addSubview(animateView)
-        
-        let pointLabel = UILabel()
-        pointLabel.text = "+\(point)"
-        pointLabel.textColor = .THEME//.white
-        pointLabel.font = .systemFont(ofSize: 12, weight: .semibold)
-        pointLabel.textAlignment = .center
-        pointLabel.adjustsFontSizeToFitWidth = true
-        pointLabel.minimumScaleFactor = 0.6
-//        pointLabel.isHidden = true
-//        snapshotView.addSubview(pointLabel)
-        animateView.addSubview(pointLabel)
-        pointLabel.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(kFitWidth(4))
+        guard let item = sourceView as? HabitItemVM else {
+            completion?()
+            return
         }
 
-        UIView.animateKeyframes(withDuration: 0.5, delay: 0, options: [.calculationModeCubic], animations: {
-            UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.35) {
-                snapshotView.transform = CGAffineTransform(scaleX: 1.01, y: 1.01)
-            }
-            UIView.addKeyframe(withRelativeStartTime: 0.35, relativeDuration: 0.65) {
-                snapshotView.transform = .identity
-                snapshotView.bounds = circleBounds
-                snapshotView.center = startCenter
-                snapshotView.layer.cornerRadius = circleSize * 0.5
-                snapshotView.backgroundColor = .THEME
-            }
-        }, completion: { _ in
-            snapshotView.subviews.forEach { subview in
-                if subview !== pointLabel {
-                    subview.removeFromSuperview()
-                }
-            }
-            pointLabel.isHidden = false
-            snapshotView.backgroundColor = .clear
-            snapshotView.layer.cornerRadius = 0
-            snapshotView.clipsToBounds = false
-            self.pendingStreakSnapshotRestoreAction = { restoreCompletion in
-                snapshotView.backgroundColor = .COLOR_BG_C4
-                sourceButton?.setTitle("已领取", for: .normal)
-                UIView.animate(withDuration: 0.22, delay: 0, options: [.curveEaseInOut, .allowUserInteraction]) {
-                    snapshotView.transform = .identity
-                    snapshotView.frame = startFrame
-                    snapshotView.layer.cornerRadius = kFitWidth(15)
+        item.layoutIfNeeded()
+        item.superview?.layoutIfNeeded()
+
+        let button = item.showButton
+        let originalTitle = button.title(for: .normal) ?? "领取"
+        let originalBackgroundColor = button.backgroundColor ?? .THEME
+        let expandedWidth = button.bounds.width > 0 ? button.bounds.width : kFitWidth(67)
+        let collapsedWidth = button.bounds.height > 0 ? button.bounds.height : kFitWidth(30)
+        let collapsedCornerRadius = collapsedWidth * 0.5
+
+        button.isEnabled = false
+        button.isUserInteractionEnabled = false
+
+        UIView.animate(withDuration: 0.24, delay: 0, options: [.curveEaseInOut, .allowUserInteraction]) {
+            item.showButtonWidthConstraint?.update(offset: collapsedWidth)
+            button.layer.cornerRadius = collapsedCornerRadius
+            button.titleLabel?.alpha = 0
+            item.layoutIfNeeded()
+            item.superview?.layoutIfNeeded()
+        } completion: { _ in
+            button.setTitle("", for: .normal)
+            let buttonFrame = button.convert(button.bounds, to: self.animOverlayView)
+            let startPoint = CGPoint(x: buttonFrame.midX, y: buttonFrame.midY)
+            let endFrame = self.topMsgVm.numberLabel.convert(self.topMsgVm.numberLabel.bounds, to: self.animOverlayView)
+            let endPoint = CGPoint(x: endFrame.midX, y: endFrame.midY)
+
+            self.pendingStreakSuccessRestoreAction = { restoreCompletion in
+                button.setTitle("已领取", for: .normal)
+                button.backgroundColor = self.streakDisabledBackgroundColor(for: item)
+                UIView.animate(withDuration: 0.24, delay: 0, options: [.curveEaseInOut, .allowUserInteraction]) {
+                    item.showButtonWidthConstraint?.update(offset: expandedWidth)
+                    button.layer.cornerRadius = kFitWidth(15)
+                    button.titleLabel?.alpha = 1
+                    item.layoutIfNeeded()
+                    item.superview?.layoutIfNeeded()
                 } completion: { _ in
-                    sourceButton?.backgroundColor = .COLOR_BG_C4
-                    sourceButton?.setTitle("已领取", for: .normal)
-                    sourceButton?.isEnabled = false
-                    sourceButton?.isUserInteractionEnabled = false
-                    sourceButton?.transform = .identity
-                    sourceButton?.alpha = 1
-                    sourceButton?.isHidden = false
-                    snapshotView.removeFromSuperview()
+                    button.isEnabled = false
+                    button.isUserInteractionEnabled = false
                     restoreCompletion?()
                 }
             }
+
             self.pendingStreakFailureRestoreAction = { restoreCompletion in
-                UIView.animate(withDuration: 0.22, delay: 0, options: [.curveEaseInOut, .allowUserInteraction]) {
-                    snapshotView.transform = .identity
-                    snapshotView.frame = startFrame
-                    snapshotView.layer.cornerRadius = kFitWidth(15)
-                    snapshotView.backgroundColor = .THEME
+                button.setTitle(originalTitle, for: .normal)
+                button.backgroundColor = originalBackgroundColor
+                UIView.animate(withDuration: 0.24, delay: 0, options: [.curveEaseInOut, .allowUserInteraction]) {
+                    item.showButtonWidthConstraint?.update(offset: expandedWidth)
+                    button.layer.cornerRadius = kFitWidth(15)
+                    button.titleLabel?.alpha = 1
+                    item.layoutIfNeeded()
+                    item.superview?.layoutIfNeeded()
                 } completion: { _ in
-                    sourceButton?.backgroundColor = .THEME
-                    sourceButton?.setTitle("领取", for: .normal)
-                    sourceButton?.isEnabled = true
-                    sourceButton?.isUserInteractionEnabled = true
-                    sourceButton?.transform = .identity
-                    sourceButton?.alpha = 1
-                    sourceButton?.isHidden = false
-                    snapshotView.removeFromSuperview()
+                    button.isEnabled = true
+                    button.isUserInteractionEnabled = true
                     restoreCompletion?()
                 }
             }
-            self.pendingStreakParabolaAction = {
-                self.playParabolaAnimation(view: animateView,
-                                           sourceView: snapshotView,
-                                           from: startCenter,
-                                           to: endCenter,
-                                           completion: completion)
-            }
-            self.triggerPendingStreakParabolaIfNeeded()
-        })
+
+            self.playParabolaAnimation(text: "+\(point)",
+                                       from: startPoint,
+                                       to: endPoint,
+                                       completion: completion)
+        }
     }
 
-    private func playParabolaAnimation(view animView: UIView,
-                                       sourceView : UIView,
+    private func streakDisabledBackgroundColor(for item: HabitItemVM) -> UIColor {
+        if item === friendMsgVm.firstOnTargetVm {
+            return .COLOR_BG_C4
+        }
+        return .COLOR_BUTTON_DISABLE_BG_THEME
+    }
+
+    private func playParabolaAnimation(text: String,
                                        from startPoint: CGPoint,
                                        to endPoint: CGPoint,
                                        completion: (() -> Void)? = nil) {
-        animView.center = sourceView.center
-        animView.isHidden = false
-        sourceView.isHidden = false//true
-        let midX = (startPoint.x + endPoint.x) * 0.5
-        let controlPoint = CGPoint(x: midX, y: min(startPoint.y, endPoint.y) - kFitWidth(120))
+        let animView = UILabel()
+        animView.text = text
+        animView.textColor = .THEME
+        animView.font = .systemFont(ofSize: 12, weight: .semibold)
+        animView.textAlignment = .center
+        animView.sizeToFit()
+        animView.center = startPoint
+        animOverlayView.addSubview(animView)
+
+        let controlPoint = CGPoint(x: min(startPoint.x, endPoint.x) - kFitWidth(24),
+                                   y: min(startPoint.y, endPoint.y) - kFitWidth(120))
 
         let path = UIBezierPath()
         path.move(to: startPoint)
@@ -407,15 +355,15 @@ extension HabitProgressVM{
 
         let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
         scaleAnim.fromValue = 1.0
-        scaleAnim.toValue = 0.5
+        scaleAnim.toValue = 0.85
 
         let opacityAnim = CABasicAnimation(keyPath: "opacity")
         opacityAnim.fromValue = 1.0
-        opacityAnim.toValue = 0.2
+        opacityAnim.toValue = 0.15
 
         let group = CAAnimationGroup()
         group.animations = [positionAnim, scaleAnim, opacityAnim]
-        group.duration = 0.65
+        group.duration = 0.7
         group.timingFunction = CAMediaTimingFunction(name: .easeIn)
 
         CATransaction.begin()
@@ -677,16 +625,12 @@ extension HabitProgressVM: UIScrollViewDelegate {
 extension HabitProgressVM{
     func sendRecieveStreakRequest(streakId:String) {
         let param = ["streakRewardId":streakId]
-
-//        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-//            self.shouldStartPendingStreakParabola = true
-//            self.triggerPendingStreakParabolaIfNeeded()
-//            self.restorePendingStreakSnapshotIfNeeded {
+//        DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+//            self.restorePendingStreakSuccessIfNeeded {
 //            }
 //            self.shouldAnimatePointWhenVisible = true
 //            self.refreshBlock?()
 //        })
-
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimStreakReward, parameters: param as [String:AnyObject]) { responseObject in
             let code = responseObject["code"]as? Int ?? -1
             if (code == 200) {
@@ -695,49 +639,43 @@ extension HabitProgressVM{
 
                 DLLog(message: "sendDataRequest:\(dataDict)")
                 self.isCounting = true
-
-    //            MCToast.mc_text("领取成功")
                 DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
-                    self.shouldStartPendingStreakParabola = true
-                    self.triggerPendingStreakParabolaIfNeeded()
-                    self.restorePendingStreakSnapshotIfNeeded {
+                    self.restorePendingStreakSuccessIfNeeded {
                     }
                     self.shouldAnimatePointWhenVisible = true
                     self.refreshBlock?()
                 })
             }else {
                 MCToast.mc_text("领取失败")
-                self.pendingStreakParabolaAction = nil
-                self.shouldStartPendingStreakParabola = false
                 self.restorePendingStreakFailureIfNeeded {
                 }
             }
         } failure: { _ in
-            self.pendingStreakParabolaAction = nil
-            self.shouldStartPendingStreakParabola = false
+            MCToast.mc_text("领取失败")
             self.restorePendingStreakFailureIfNeeded {
             }
         }
     }
     func sendRecieveFriendProteinRequest() {
         let param = ["rewardId":self.proteinIntakeOnTargetWithFriendFirstTimeRewardId]
-//        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-//            self.shouldStartPendingStreakParabola = true
-//            self.triggerPendingStreakParabolaIfNeeded()
-//            self.restorePendingStreakSnapshotIfNeeded {
-//            }
-//            self.shouldAnimatePointWhenVisible = true
-//            self.refreshBlock?()
-//        })
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_claimFirstFriendGoalReward, parameters: param as [String:AnyObject]) { responseObject in
-            DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-                self.shouldStartPendingStreakParabola = true
-                self.triggerPendingStreakParabolaIfNeeded()
-                self.restorePendingStreakSnapshotIfNeeded {
+            let code = responseObject["code"]as? Int ?? -1
+            if code == 200 {
+                DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+                    self.restorePendingStreakSuccessIfNeeded {
+                    }
+                    self.shouldAnimatePointWhenVisible = true
+                    self.refreshBlock?()
+                })
+            } else {
+                MCToast.mc_text("领取失败")
+                self.restorePendingStreakFailureIfNeeded {
                 }
-                self.shouldAnimatePointWhenVisible = true
-                self.refreshBlock?()
-            })
+            }
+        } failure: { _ in
+            MCToast.mc_text("领取失败")
+            self.restorePendingStreakFailureIfNeeded {
+            }
         }
     }
 }

@@ -5,6 +5,8 @@
 //  Created by LNS2 on 2025/12/23.
 //
 
+import SnapKit
+
 
 class HabitItemVM: UIView {
     
@@ -12,6 +14,7 @@ class HabitItemVM: UIView {
     
     var tapBlock:(()->())?
     var canTapMore = true
+    var showButtonWidthConstraint: Constraint?
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
@@ -98,6 +101,9 @@ extension HabitItemVM{
         }else if status == "3"{
             showButton.setTitle("已领取", for: .normal)
             showButton.isUserInteractionEnabled = false
+        }else{
+            showButton.setTitle("未达成", for: .normal)
+            showButton.isUserInteractionEnabled = false
         }
     }
     @objc func tapAction() {
@@ -139,7 +145,7 @@ extension HabitItemVM{
         }
         showButton.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-16))
-            make.width.equalTo(kFitWidth(67))
+            self.showButtonWidthConstraint = make.width.equalTo(kFitWidth(67)).constraint
             make.height.equalTo(kFitWidth(30))
             make.centerY.lessThanOrEqualToSuperview()
         }
