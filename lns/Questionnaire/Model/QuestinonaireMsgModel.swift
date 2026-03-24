@@ -47,6 +47,7 @@ class QuestinonaireMsgModel{
     var guidanceStrengthTrainingFrequencyType = ""//引导页：力量训练频次
     var guidanceGoalBarrierType = ""//引导页：阻碍目标达成的主要因素
     var aiGuidanceGoalStageType = ""//AI引导页：目标阶段
+    var aiGuidanceCoachStrictnessType = ""//AI引导页：AI教练执行标准
     var planWeeks = ""
     var dailyfoodsqty = "2"
     
@@ -98,6 +99,7 @@ class QuestinonaireMsgModel{
         DLLog(message: "引导力量训练频次：\(guidanceStrengthTrainingFrequencyType)")
         DLLog(message: "引导目标阻碍：\(guidanceGoalBarrierType)")
         DLLog(message: "AI引导目标阶段：\(aiGuidanceGoalStageType)")
+        DLLog(message: "AI引导执行标准：\(aiGuidanceCoachStrictnessType)")
         DLLog(message: "计划时长：\(planWeeks)周")
         DLLog(message: "单日食物种类：\(dailyfoodsqty)")
         DLLog(message: "************   食物   ***************")
@@ -160,6 +162,7 @@ class QuestinonaireMsgModel{
         self.guidanceStrengthTrainingFrequencyType = ""
         self.guidanceGoalBarrierType = ""
         self.aiGuidanceGoalStageType = ""
+        self.aiGuidanceCoachStrictnessType = ""
         self.planWeeks = ""
         self.dailyfoodsqty = "2"
         self.foodsMsgProteins.removeAllObjects()

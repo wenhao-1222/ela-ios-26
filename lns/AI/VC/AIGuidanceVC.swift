@@ -13,11 +13,12 @@ class AIGuidanceVC: WHBaseViewVC {
     enum FlowStep: Hashable {
         case goal
         case goalStage
+        case coachStrictness
     }
 
     var currentIndex: Int = 0
     private var mountedSteps = Set<FlowStep>()
-    private let totalSteps = 2
+    private let totalSteps = 3
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,16 +39,16 @@ class AIGuidanceVC: WHBaseViewVC {
         }
         return vm
     }()
-    lazy var stepsArray: [Int] = [1,1,0]
+    lazy var stepsArray: [Int] = [1,1,1]
     lazy var nextButton: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("下一步", for: .normal)
         btn.setTitleColor(.white, for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         btn.backgroundColor = .COLOR_BUTTON_DISABLE_BG_THEME
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .disabled)
-        btn.layer.cornerRadius = kFitWidth(24)
+        btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
         btn.isEnabled = false
         btn.isHidden = true
@@ -60,12 +61,20 @@ class AIGuidanceVC: WHBaseViewVC {
         let vm = AIGuidanceGoalVM.init(frame: .zero)
         vm.selectedBlock = { [weak self] in
             self?.goalStageVm.refreshContentForCurrentGoal()
+            self?.coachStrictnessVm.refreshContentForCurrentGoal()
             self?.moveToStep(index: 1, animated: true)
         }
         return vm
     }()
     lazy var goalStageVm: AIGuidanceGoalStageVM = {
         let vm = AIGuidanceGoalStageVM.init(frame: .zero)
+        vm.selectedBlock = { [weak self] in
+            self?.updateNextButtonForCurrentStep()
+        }
+        return vm
+    }()
+    lazy var coachStrictnessVm: AIGuidanceCoachStrictnessVM = {
+        let vm = AIGuidanceCoachStrictnessVM.init(frame: .zero)
         vm.selectedBlock = { [weak self] in
             self?.updateNextButtonForCurrentStep()
         }
@@ -83,6 +92,8 @@ extension AIGuidanceVC{
         case .goal:
             break
         case .goalStage:
+            moveToStep(index: 2, animated: true)
+        case .coachStrictness:
             break
         }
     }
@@ -93,6 +104,8 @@ extension AIGuidanceVC{
             return .goal
         case 1:
             return .goalStage
+        case 2:
+            return .coachStrictness
         default:
             return nil
         }
@@ -104,6 +117,8 @@ extension AIGuidanceVC{
             return goalVm
         case .goalStage:
             return goalStageVm
+        case .coachStrictness:
+            return coachStrictnessVm
         }
     }
 
@@ -144,6 +159,9 @@ extension AIGuidanceVC{
         case .goalStage:
             nextButton.isHidden = false
             nextButton.isEnabled = goalStageVm.hasSelection
+        case .coachStrictness:
+            nextButton.isHidden = false
+            nextButton.isEnabled = coachStrictnessVm.hasSelection
         }
     }
 
@@ -158,7 +176,7 @@ extension AIGuidanceVC{
         scrollViewBase.isScrollEnabled = false
         scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalSteps), height: SCREEN_HEIGHT)
 
-        installStepViewsIfNeeded(indexes: [0, 1])
+        installStepViewsIfNeeded(indexes: [0, 1, 2])
         setConstrait()
         moveToStep(index: 0, animated: false)
     }
@@ -167,7 +185,7 @@ extension AIGuidanceVC{
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.height.equalTo(kFitWidth(48))
+            make.height.equalTo(kFitWidth(44))
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
         }
     }

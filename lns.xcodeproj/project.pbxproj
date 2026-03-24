@@ -795,6 +795,7 @@
 		EC3F21FE2F722D19001F4C86 /* AIGuidanceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3F21FD2F722D13001F4C86 /* AIGuidanceVC.swift */; };
 		F1A0C1022F72400000A1B2C3 /* AIGuidanceGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1012F72400000A1B2C3 /* AIGuidanceGoalVM.swift */; };
 		F1A0C1042F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1032F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift */; };
+		F1A0C1062F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1052F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift */; };
 		EC44393D2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC44393C2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift */; };
 		EC4732D62EEFBDEC008F67F5 /* MallDetailImageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D52EEFBDEB008F67F5 /* MallDetailImageVM.swift */; };
 		EC4732D82EEFF05A008F67F5 /* OverSeaMsgVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */; };
@@ -2256,6 +2257,7 @@
 		EC3F21FD2F722D13001F4C86 /* AIGuidanceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceVC.swift; sourceTree = "<group>"; };
 		F1A0C1012F72400000A1B2C3 /* AIGuidanceGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceGoalVM.swift; sourceTree = "<group>"; };
 		F1A0C1032F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceGoalStageVM.swift; sourceTree = "<group>"; };
+		F1A0C1052F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceCoachStrictnessVM.swift; sourceTree = "<group>"; };
 		EC44393C2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalFuncCopyMealsAlertVM.swift; sourceTree = "<group>"; };
 		EC4732D52EEFBDEB008F67F5 /* MallDetailImageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallDetailImageVM.swift; sourceTree = "<group>"; };
 		EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverSeaMsgVC.swift; sourceTree = "<group>"; };
@@ -4482,6 +4484,7 @@
 		EC3F21FF2F722EA1001F4C86 /* Guidance */ = {
 			isa = PBXGroup;
 			children = (
+				F1A0C1052F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift */,
 				F1A0C1012F72400000A1B2C3 /* AIGuidanceGoalVM.swift */,
 				F1A0C1032F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift */,
 			);
@@ -7031,6 +7034,7 @@
 				EC3F21FE2F722D19001F4C86 /* AIGuidanceVC.swift in Sources */,
 				F1A0C1022F72400000A1B2C3 /* AIGuidanceGoalVM.swift in Sources */,
 				F1A0C1042F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift in Sources */,
+				F1A0C1062F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift in Sources */,
 				A73626292CFEEADA0038351C /* GoalSetPreviewAlertVM.swift in Sources */,
 				ECBFDFD62C2A77DA0004760A /* UIAlertAction+Exs.swift in Sources */,
 				ECAD70172BB6988B00D8E3E5 /* QuestionnaireBodyFatAlertVM.swift in Sources */,

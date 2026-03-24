@@ -208,12 +208,12 @@ extension AIGuidanceGoalStageVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(92))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(35))
         }
 
         stackView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.right.equalTo(kFitWidth(-20))
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(84))
         }
     }
