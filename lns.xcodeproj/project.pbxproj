@@ -793,9 +793,7 @@
 		EC3A9CBB2BB577E800C6E442 /* QuestionnaireBodyFatManVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3A9CBA2BB577E800C6E442 /* QuestionnaireBodyFatManVM.swift */; };
 		EC3A9CBD2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3A9CBC2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift */; };
 		EC3F21FE2F722D19001F4C86 /* AIGuidanceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3F21FD2F722D13001F4C86 /* AIGuidanceVC.swift */; };
-		F1A0C1022F72400000A1B2C3 /* AIGuidanceGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1012F72400000A1B2C3 /* AIGuidanceGoalVM.swift */; };
-		F1A0C1042F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1032F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift */; };
-		F1A0C1062F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1052F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift */; };
+		EC3F22012F7256A5001F4C86 /* ElaProExpiredAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3F22002F725697001F4C86 /* ElaProExpiredAlertVM.swift */; };
 		EC44393D2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC44393C2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift */; };
 		EC4732D62EEFBDEC008F67F5 /* MallDetailImageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D52EEFBDEB008F67F5 /* MallDetailImageVM.swift */; };
 		EC4732D82EEFF05A008F67F5 /* OverSeaMsgVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */; };
@@ -843,6 +841,7 @@
 		EC4DE7C62F6BEEF3000FB82C /* GuidanceProVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE7C52F6BEEF0000FB82C /* GuidanceProVC.swift */; };
 		EC4E493B2BAD1322008295A2 /* UserInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E493A2BAD1322008295A2 /* UserInfoModel.swift */; };
 		EC4E493D2BAD35D5008295A2 /* UIDevice+iPhoneModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E493C2BAD35D5008295A2 /* UIDevice+iPhoneModel.swift */; };
+		EC4E49412F703000008295A2 /* VIPModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4E49402F703000008295A2 /* VIPModel.swift */; };
 		EC52848D2F0CA6C1006C81CE /* HabitExchangeTipsMsgVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC52848C2F0CA6BB006C81CE /* HabitExchangeTipsMsgVM.swift */; };
 		EC52848F2F0CB305006C81CE /* HabitExchangeTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC52848E2F0CB300006C81CE /* HabitExchangeTipsAlertVM.swift */; };
 		EC5284912F0CD055006C81CE /* HabitExchangeTipsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC5284902F0CD03F006C81CE /* HabitExchangeTipsTableViewCell.swift */; };
@@ -1347,6 +1346,9 @@
 		ECFACE912BC7F0FD003CDA3A /* PlanDetailNaviVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFACE902BC7F0FD003CDA3A /* PlanDetailNaviVM.swift */; };
 		ECFACE932BC7F213003CDA3A /* NaviBackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECFACE922BC7F213003CDA3A /* NaviBackButton.swift */; };
 		F0A1D0022F63E10000AADD11 /* DietPlanFoodsAddAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1D0012F63E10000AADD11 /* DietPlanFoodsAddAlertVM.swift */; };
+		F1A0C1022F72400000A1B2C3 /* AIGuidanceGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1012F72400000A1B2C3 /* AIGuidanceGoalVM.swift */; };
+		F1A0C1042F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1032F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift */; };
+		F1A0C1062F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1052F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2255,9 +2257,7 @@
 		EC3A9CBA2BB577E800C6E442 /* QuestionnaireBodyFatManVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireBodyFatManVM.swift; sourceTree = "<group>"; };
 		EC3A9CBC2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireBodyFatItemVM.swift; sourceTree = "<group>"; };
 		EC3F21FD2F722D13001F4C86 /* AIGuidanceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceVC.swift; sourceTree = "<group>"; };
-		F1A0C1012F72400000A1B2C3 /* AIGuidanceGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceGoalVM.swift; sourceTree = "<group>"; };
-		F1A0C1032F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceGoalStageVM.swift; sourceTree = "<group>"; };
-		F1A0C1052F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceCoachStrictnessVM.swift; sourceTree = "<group>"; };
+		EC3F22002F725697001F4C86 /* ElaProExpiredAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProExpiredAlertVM.swift; sourceTree = "<group>"; };
 		EC44393C2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalFuncCopyMealsAlertVM.swift; sourceTree = "<group>"; };
 		EC4732D52EEFBDEB008F67F5 /* MallDetailImageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallDetailImageVM.swift; sourceTree = "<group>"; };
 		EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverSeaMsgVC.swift; sourceTree = "<group>"; };
@@ -2307,6 +2307,7 @@
 		EC4DE7C52F6BEEF0000FB82C /* GuidanceProVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProVC.swift; sourceTree = "<group>"; };
 		EC4E493A2BAD1322008295A2 /* UserInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoModel.swift; sourceTree = "<group>"; };
 		EC4E493C2BAD35D5008295A2 /* UIDevice+iPhoneModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+iPhoneModel.swift"; sourceTree = "<group>"; };
+		EC4E49402F703000008295A2 /* VIPModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VIPModel.swift; sourceTree = "<group>"; };
 		EC52848C2F0CA6BB006C81CE /* HabitExchangeTipsMsgVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeTipsMsgVM.swift; sourceTree = "<group>"; };
 		EC52848E2F0CB300006C81CE /* HabitExchangeTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeTipsAlertVM.swift; sourceTree = "<group>"; };
 		EC5284902F0CD03F006C81CE /* HabitExchangeTipsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeTipsTableViewCell.swift; sourceTree = "<group>"; };
@@ -2839,6 +2840,9 @@
 		ECFACE902BC7F0FD003CDA3A /* PlanDetailNaviVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDetailNaviVM.swift; sourceTree = "<group>"; };
 		ECFACE922BC7F213003CDA3A /* NaviBackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaviBackButton.swift; sourceTree = "<group>"; };
 		F0A1D0012F63E10000AADD11 /* DietPlanFoodsAddAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanFoodsAddAlertVM.swift; sourceTree = "<group>"; };
+		F1A0C1012F72400000A1B2C3 /* AIGuidanceGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceGoalVM.swift; sourceTree = "<group>"; };
+		F1A0C1032F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceGoalStageVM.swift; sourceTree = "<group>"; };
+		F1A0C1052F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceCoachStrictnessVM.swift; sourceTree = "<group>"; };
 		F9B1295DEDB005F6AC14F235 /* Pods-ElaWeekProteinWidgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekProteinWidgetExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaWeekProteinWidgetExtension/Pods-ElaWeekProteinWidgetExtension.release.xcconfig"; sourceTree = "<group>"; };
 		FFE3733779EF5564F1D7097E /* Pods-ElaWeekProteinWidgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekProteinWidgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-ElaWeekProteinWidgetExtension/Pods-ElaWeekProteinWidgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4589,6 +4593,7 @@
 			isa = PBXGroup;
 			children = (
 				EC4E493A2BAD1322008295A2 /* UserInfoModel.swift */,
+				EC4E49402F703000008295A2 /* VIPModel.swift */,
 				A77F95E12D018B670084D4FB /* UserConfigModel.swift */,
 				A79541EA2E0257C900E019C8 /* ConstantModel.swift */,
 				EC9321B32C50D76300FDBBE2 /* FoodsDetailModel.swift */,
@@ -4832,6 +4837,7 @@
 				EC7784312F57A91F03102D21 /* ElaProReadyVM.swift */,
 				EC7784332F57E00103102D21 /* ElaProTransformVM.swift */,
 				EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */,
+				EC3F22002F725697001F4C86 /* ElaProExpiredAlertVM.swift */,
 			);
 			path = VM;
 			sourceTree = "<group>";
@@ -6464,6 +6470,7 @@
 				EC380A2B2BB15FB200B0C58F /* QuestionnaireSurveyMsgItemVM.swift in Sources */,
 				A77F961F2D0689D80084D4FB /* GuideAddFoodsAlertVM.swift in Sources */,
 				A7B706362D83DD5C007B55BD /* FoodsMergeNaturalVM.swift in Sources */,
+				EC3F22012F7256A5001F4C86 /* ElaProExpiredAlertVM.swift in Sources */,
 				ECD627272BC50CBA00CE819F /* WHTabBarVC.swift in Sources */,
 				ECDCE6282C606F35000350C8 /* GoalSetWeeksAlertTopVM.swift in Sources */,
 				A75BAFDE2DB1000500C4DF3C /* HealthKitNaturnalManager.swift in Sources */,
@@ -6820,6 +6827,7 @@
 				EC781CD42BBA99F400752C95 /* QuestionnairePlanFoodsTypeAlertVM.swift in Sources */,
 				A7927AF42CCB803500A8D0A2 /* QuestionnaireNewVC.swift in Sources */,
 				EC4E493B2BAD1322008295A2 /* UserInfoModel.swift in Sources */,
+				EC4E49412F703000008295A2 /* VIPModel.swift in Sources */,
 				EC24EB532BB2BFD1002F21DF /* QuestionnaireSurveyEventVM.swift in Sources */,
 				A714DDC92DC2258E00745F84 /* JournalShareMsgNaturalVM.swift in Sources */,
 				ECB3E0772BD63BCF00CFDDFD /* LogsMealsNaturalMsgVM.swift in Sources */,

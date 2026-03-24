@@ -19,6 +19,7 @@ class AIGuidanceVC: WHBaseViewVC {
     var currentIndex: Int = 0
     private var mountedSteps = Set<FlowStep>()
     private let totalSteps = 3
+    private var isSubmittingAICoachProfile = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,7 +95,7 @@ extension AIGuidanceVC{
         case .goalStage:
             moveToStep(index: 2, animated: true)
         case .coachStrictness:
-            break
+            submitAICoachProfile()
         }
     }
 
@@ -151,6 +152,11 @@ extension AIGuidanceVC{
             nextButton.isEnabled = false
             return
         }
+        if isSubmittingAICoachProfile {
+            nextButton.isHidden = false
+            nextButton.isEnabled = false
+            return
+        }
 
         switch currentStep {
         case .goal:
@@ -188,5 +194,105 @@ extension AIGuidanceVC{
             make.height.equalTo(kFitWidth(44))
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
         }
+    }
+}
+
+extension AIGuidanceVC {
+    func submitAICoachProfile() {
+        if isSubmittingAICoachProfile {
+            return
+        }
+
+        let param = buildAICoachUpsertParameters()
+        isSubmittingAICoachProfile = true
+        updateNextButtonForCurrentStep()
+
+        DLLog(message: "submitAICoachProfile:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_upsert,
+                                          parameters: param as [String : AnyObject],
+                                          isNeedToast: true,
+                                          vc: self) { [weak self] responseObject in
+            guard let self = self else { return }
+            let code = responseObject["code"] as? Int ?? -1
+            guard code == 200 else {
+                let msg = responseObject["message"] as? String ?? "保存失败，请稍后重试"
+                self.handleAICoachSubmitFailure(message: msg)
+                return
+            }
+            self.isSubmittingAICoachProfile = false
+            self.backTapAction()
+        } failure: { [weak self] _ in
+            self?.handleAICoachSubmitFailure(message: nil)
+        }
+    }
+
+    func buildAICoachUpsertParameters() -> [String: Any] {
+        let isMuscleGainGoal = ["4", "5", "7"].contains(QuestinonaireMsgModel.shared.goal)
+        var param: [String: Any] = [
+            "userGoal": isMuscleGainGoal ? 2 : 1
+        ]
+
+        if isMuscleGainGoal {
+            if let muscleGainPhase = buildMuscleGainPhaseValue() {
+                param["muscleGainPhase"] = muscleGainPhase
+            }
+        } else {
+            if let fatLossPhase = buildFatLossPhaseValue() {
+                param["fatLossPhase"] = fatLossPhase
+            }
+        }
+
+        if let intensityPreference = buildAICoachIntensityPreferenceValue() {
+            param["aiCoachIntensityPreference"] = intensityPreference
+        }
+
+        return param
+    }
+
+    func buildMuscleGainPhaseValue() -> Int? {
+        let mapping: [String: Int] = [
+            "gain_prepare": 1,
+            "gain_less_1_month": 2,
+            "gain_1_3_months": 3,
+            "gain_3_12_months": 4,
+            "gain_over_1_year": 5
+        ]
+        return mapping[QuestinonaireMsgModel.shared.aiGuidanceGoalStageType]
+    }
+
+    func buildFatLossPhaseValue() -> Int? {
+        let mapping: [String: Int] = [
+            "fat_prepare": 1,
+            "fat_less_2_weeks": 2,
+            "fat_2_6_weeks": 3,
+            "fat_7_12_weeks": 4,
+            "fat_over_12_weeks": 5
+        ]
+        return mapping[QuestinonaireMsgModel.shared.aiGuidanceGoalStageType]
+    }
+
+    func buildAICoachIntensityPreferenceValue() -> Int? {
+        let mapping: [String: Int] = [
+            "very_relaxed": 1,
+            "relaxed": 2,
+            "normal": 3,
+            "enthusiast": 4,
+            "athlete": 5
+        ]
+        return mapping[QuestinonaireMsgModel.shared.aiGuidanceCoachStrictnessType]
+    }
+
+    func handleAICoachSubmitFailure(message: String?) {
+        isSubmittingAICoachProfile = false
+        updateNextButtonForCurrentStep()
+
+        guard let message = message, !message.isEmpty else {
+            return
+        }
+
+        let alertVc = UIAlertController(title: message, message: nil, preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: "确定", style: .cancel)
+        alertVc.addAction(confirmAction)
+        present(alertVc, animated: true)
     }
 }

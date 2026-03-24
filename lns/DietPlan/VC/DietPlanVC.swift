@@ -10,9 +10,14 @@ import MCToast
 
 class DietPlanVC: WHBaseViewVC {
     
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
     public override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = false
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        
+        appDelegate.getKeyWindow().addSubview(elaExpiredAlertVm)
+        self.elaExpiredAlertVm.showSelf()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -50,6 +55,18 @@ class DietPlanVC: WHBaseViewVC {
             vc.sdate = sdate
             self.navigationController?.pushViewController(vc, animated: true)
         }
+        return vm
+    }()
+    lazy var elaExpiredAlertVm: ElaProExpiredAlertVM = {
+        let vm = ElaProExpiredAlertVM.init(frame: .zero)
+        vm.upgradeBlock = {[weak self] in
+            guard let self = self else { return }
+            self.elaExpiredAlertVm.hiddenSelf()
+            let vc = ElaProVC()
+            vc.showPriceOnly = true
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
         return vm
     }()
 }
@@ -108,7 +125,7 @@ extension DietPlanVC{
 
 extension DietPlanVC{
     func initUI() {
-//        view.addSubview(nonePlanVm)
+        
     }
 }
 

@@ -10,6 +10,7 @@ class ElaProVC: WHBaseViewVC {
     private var currentIndex: Int = 0
     
     var param = [String : Any]()
+    var showPriceOnly = false
     private var agreementAlertVm: ElaProAgreementAlertVM?
     
     lazy var purchaseLoadingMaskView: UIView = {
@@ -30,7 +31,11 @@ class ElaProVC: WHBaseViewVC {
         super.viewDidLoad()
         
         initUI()
-        self.sendDietUpsertRequest()
+        applyInitialDisplayMode()
+        
+        if showPriceOnly == false {
+            self.sendDietUpsertRequest()
+        }
         
         if let nav = navigationController {
             var controllers = nav.viewControllers
@@ -163,6 +168,30 @@ extension ElaProVC{
         } else {
             apply()
         }
+    }
+    
+    private func applyInitialDisplayMode() {
+        if showPriceOnly {
+            currentIndex = 4
+            progressVm.isHidden = true
+            planVm.isHidden = true
+            readyVm.isHidden = true
+            transformVm.isHidden = true
+            priceVm.isHidden = false
+            naviVm.alpha = 1
+            naviVm.backButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
+            naviVm.backButton.frame = CGRect.init(x: SCREEN_WIDHT - kFitWidth(12.5) - kFitWidth(35), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
+            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 4, y: 0), animated: false)
+            updateNextButtonForCurrentStep(animated: false)
+            
+            return
+        }
+        
+        progressVm.isHidden = false
+        planVm.isHidden = false
+        readyVm.isHidden = false
+        transformVm.isHidden = false
+        priceVm.isHidden = false
     }
     
     func initUI() {
