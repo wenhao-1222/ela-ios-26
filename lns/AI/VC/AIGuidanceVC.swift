@@ -15,11 +15,13 @@ class AIGuidanceVC: WHBaseViewVC {
         case goalStage
         case coachStrictness
         case notice
+        case elaProIntro
+        case readyStart
     }
 
     var currentIndex: Int = 0
     private var mountedSteps = Set<FlowStep>()
-    private let totalSteps = 4
+    private let totalSteps = 6
     private var isSubmittingAICoachProfile = false
 
     override func viewDidLoad() {
@@ -33,7 +35,8 @@ class AIGuidanceVC: WHBaseViewVC {
         vm.backButton.isHidden = false
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
-            if self.currentIndex == 0 {
+            let currentStep = flowStep(for: self.currentIndex)
+            if self.currentIndex == 0 || currentStep == .readyStart{
                 self.backTapAction()
                 return
             }
@@ -86,6 +89,14 @@ class AIGuidanceVC: WHBaseViewVC {
         let vm = AIGuidanceNoticeVM.init(frame: .zero)
         return vm
     }()
+    lazy var elaProIntroVm: AIGuidanceElaProIntroVM = {
+        let vm = AIGuidanceElaProIntroVM.init(frame: .zero)
+        return vm
+    }()
+    lazy var readyStartVm: AIGuidanceReadyStartVM = {
+        let vm = AIGuidanceReadyStartVM.init(frame: .zero)
+        return vm
+    }()
 }
 
 extension AIGuidanceVC{
@@ -102,6 +113,10 @@ extension AIGuidanceVC{
         case .coachStrictness:
             moveToStep(index: 3, animated: true)
         case .notice:
+            moveToStep(index: 4, animated: true)
+        case .elaProIntro:
+            moveToStep(index: 5, animated: true)
+        case .readyStart:
             submitAICoachProfile()
         }
     }
@@ -116,6 +131,10 @@ extension AIGuidanceVC{
             return .coachStrictness
         case 3:
             return .notice
+        case 4:
+            return .elaProIntro
+        case 5:
+            return .readyStart
         default:
             return nil
         }
@@ -131,6 +150,10 @@ extension AIGuidanceVC{
             return coachStrictnessVm
         case .notice:
             return noticeVm
+        case .elaProIntro:
+            return elaProIntroVm
+        case .readyStart:
+            return readyStartVm
         }
     }
 
@@ -182,7 +205,15 @@ extension AIGuidanceVC{
         case .notice:
             nextButton.isHidden = false
             nextButton.isEnabled = true
+        case .elaProIntro:
+            nextButton.isHidden = false
+            nextButton.isEnabled = true
+        case .readyStart:
+            nextButton.isHidden = false
+            nextButton.isEnabled = true
         }
+
+        updateNextButtonTitle(for: currentStep)
     }
 
     func updateNavigationForCurrentStep() {
@@ -190,14 +221,23 @@ extension AIGuidanceVC{
             return
         }
 
-        let shouldHideProgress = currentStep == .notice
+        let shouldHideProgress = currentStep == .notice || currentStep == .elaProIntro || currentStep == .readyStart
         naviVm.firstStepVm.isHidden = shouldHideProgress
         naviVm.secondStepVm.isHidden = shouldHideProgress
         naviVm.thirdStepVm.isHidden = shouldHideProgress
+        let isCloseStyle = currentStep == .readyStart
+        let backImageName = isCloseStyle ? "navi_close_icon" : "habit_guide_back_icon"
+        naviVm.backButton.setImage(UIImage(named: backImageName), for: .normal)
 
         if shouldHideProgress == false {
             naviVm.updateStep(steps: stepsArray, currentStep: currentIndex)
         }
+    }
+
+    func updateNextButtonTitle(for step: FlowStep) {
+        let title = step == .readyStart ? "即刻开始" : "下一步"
+        nextButton.setTitle(title, for: .normal)
+        nextButton.setTitle(title, for: .disabled)
     }
 
     func initUI() {
@@ -211,7 +251,7 @@ extension AIGuidanceVC{
         scrollViewBase.isScrollEnabled = false
         scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalSteps), height: SCREEN_HEIGHT)
 
-        installStepViewsIfNeeded(indexes: [0, 1, 2, 3])
+        installStepViewsIfNeeded(indexes: [0, 1, 2, 3, 4, 5])
         setConstrait()
         moveToStep(index: 0, animated: false)
     }

@@ -1350,6 +1350,8 @@
 		F1A0C1042F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1032F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift */; };
 		F1A0C1062F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1052F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift */; };
 		F1A0C1082F72430000A1B2C3 /* AIGuidanceNoticeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */; };
+		F1A0C10A2F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */; };
+		F1A0C10C2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2845,6 +2847,8 @@
 		F1A0C1032F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceGoalStageVM.swift; sourceTree = "<group>"; };
 		F1A0C1052F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceCoachStrictnessVM.swift; sourceTree = "<group>"; };
 		F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceNoticeVM.swift; sourceTree = "<group>"; };
+		F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceElaProIntroVM.swift; sourceTree = "<group>"; };
+		F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceReadyStartVM.swift; sourceTree = "<group>"; };
 		F9B1295DEDB005F6AC14F235 /* Pods-ElaWeekProteinWidgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekProteinWidgetExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaWeekProteinWidgetExtension/Pods-ElaWeekProteinWidgetExtension.release.xcconfig"; sourceTree = "<group>"; };
 		FFE3733779EF5564F1D7097E /* Pods-ElaWeekProteinWidgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekProteinWidgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-ElaWeekProteinWidgetExtension/Pods-ElaWeekProteinWidgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4491,9 +4495,11 @@
 			isa = PBXGroup;
 			children = (
 				F1A0C1052F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift */,
+				F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */,
 				F1A0C1012F72400000A1B2C3 /* AIGuidanceGoalVM.swift */,
 				F1A0C1032F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift */,
 				F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */,
+				F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */,
 			);
 			path = Guidance;
 			sourceTree = "<group>";
@@ -7047,6 +7053,8 @@
 				F1A0C1042F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift in Sources */,
 				F1A0C1062F72420000A1B2C3 /* AIGuidanceCoachStrictnessVM.swift in Sources */,
 				F1A0C1082F72430000A1B2C3 /* AIGuidanceNoticeVM.swift in Sources */,
+				F1A0C10A2F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift in Sources */,
+				F1A0C10C2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift in Sources */,
 				A73626292CFEEADA0038351C /* GoalSetPreviewAlertVM.swift in Sources */,
 				ECBFDFD62C2A77DA0004760A /* UIAlertAction+Exs.swift in Sources */,
 				ECAD70172BB6988B00D8E3E5 /* QuestionnaireBodyFatAlertVM.swift in Sources */,
