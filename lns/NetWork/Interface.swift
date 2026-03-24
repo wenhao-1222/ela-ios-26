@@ -166,11 +166,11 @@ public let URL_clear_logs                   = URL_Type + "plans/log/clear"
 
 //MARK: 会员
 ///会员订阅套餐列表
-public let URL_pro_product                   = URL_Type + "users/membership/product"
+public let URL_pro_product                  = URL_Type + "users/membership/product"
 ///会员订阅 后  向后台发起查询
-public let URL_pro_iap_query                   = URL_Type + "users/apple/iap/order/query"
+public let URL_pro_iap_query                = URL_Type + "users/apple/iap/order/query"
 ///会员VIP信息
-public let URL_pro_info                   = URL_Type + "users/membership/vip_info"
+public let URL_pro_info                     = URL_Type + "users/membership/vip_info"
 //MARK: 餐食
 //添加餐食
 public let URL_meals_add                    = URL_Type + "plans/meals/add"
@@ -188,15 +188,15 @@ public let URL_stat                         = URL_Type + "plans/log/query"
 //最喜欢的食物  TOP5
 public let URL_stat_favorite_foods          = URL_Type + "foods/favorite/top5"
 //图片识别营养成分
-public let URL_foods_ai_identify          = URL_Type + "foods/ai_identify_image"
+public let URL_foods_ai_identify            = URL_Type + "foods/ai_identify_image"
 //日报
-public let URL_daily_nutrition_report     = URL_Type + "plans/log/daily_nutrition_report"
+public let URL_daily_nutrition_report       = URL_Type + "plans/log/daily_nutrition_report"
 //周报
-public let URL_weekly_nutrition_report     = URL_Type + "plans/log/weekly_nutrition_report"
+public let URL_weekly_nutrition_report      = URL_Type + "plans/log/weekly_nutrition_report"
 //日报 好友榜
-public let URL_report_daily_ranking              = URL_Type + "plans/log/daily_nutrition_report_ranking"
+public let URL_report_daily_ranking         = URL_Type + "plans/log/daily_nutrition_report_ranking"
 //周报  好友榜
-public let URL_report_weekly_ranking             = URL_Type + "plans/log/weekly_nutrition_report_ranking"
+public let URL_report_weekly_ranking        = URL_Type + "plans/log/weekly_nutrition_report_ranking"
 
 //MARK: 新问卷 pro
 ///问卷--内容提交

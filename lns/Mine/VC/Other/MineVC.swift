@@ -48,8 +48,8 @@ class MineVC : WHBaseViewVC {
         vm.statVm.tapBlock = {()in
 //            let vc = NaturalStatVC()
 //            let vc = ColorWheelVC()
-//            let vc = AICoachBreathingOrbDemoViewController()
-            let vc = GuidanceProVC()
+            let vc = AICoachBreathingOrbDemoViewController()
+//            let vc = GuidanceProVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.mealVm.tapBlock = {()in
@@ -87,7 +87,8 @@ class MineVC : WHBaseViewVC {
 //            let vc = BodyDataDetailVC()
 //            self.navigationController?.fd_interactivePopDisabled = true
 //            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-            let vc = ElaProVC()
+//            let vc = ElaProVC()
+            let vc = AIGuidanceVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.fastingVm.tapBlock = {()in
