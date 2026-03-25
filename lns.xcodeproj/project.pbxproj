@@ -1287,6 +1287,8 @@
 		ECE399982EA8675E005718C5 /* CoursePayTipsPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */; };
 		ECE3999A2EA87AA7005718C5 /* CoursePDFCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE399992EA87A9E005718C5 /* CoursePDFCell.swift */; };
 		ECE3F9C82EE7BD710032E7C8 /* ServiceCameraCaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE3F9C72EE7BD700032E7C8 /* ServiceCameraCaptureViewController.swift */; };
+		ECEC4EAB2F73777200FB1E56 /* AICoachPreVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */; };
+		ECEC4EAE2F73780300FB1E56 /* AICoachPreDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */; };
 		ECF0BFD32BFC3C6400E5F6F0 /* InviteRewardsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD22BFC3C6400E5F6F0 /* InviteRewardsVC.swift */; };
 		ECF0BFD62BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD52BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift */; };
 		ECF0BFD82BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD72BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift */; };
@@ -2783,6 +2785,8 @@
 		ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePayTipsPopupView.swift; sourceTree = "<group>"; };
 		ECE399992EA87A9E005718C5 /* CoursePDFCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePDFCell.swift; sourceTree = "<group>"; };
 		ECE3F9C72EE7BD700032E7C8 /* ServiceCameraCaptureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCameraCaptureViewController.swift; sourceTree = "<group>"; };
+		ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreVC.swift; sourceTree = "<group>"; };
+		ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDaysVM.swift; sourceTree = "<group>"; };
 		ECF0BFD22BFC3C6400E5F6F0 /* InviteRewardsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsVC.swift; sourceTree = "<group>"; };
 		ECF0BFD52BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsTopVM.swift; sourceTree = "<group>"; };
 		ECF0BFD72BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsCodeVM.swift; sourceTree = "<group>"; };
@@ -3428,6 +3432,7 @@
 				A7BAE5D82D7EAF83000A690A /* AIResultVC.swift */,
 				A7BAE5E82D811F4E000A690A /* PropotionResultVC.swift */,
 				EC3F21FD2F722D13001F4C86 /* AIGuidanceVC.swift */,
+				ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -3435,6 +3440,7 @@
 		A741872C2D794D79006C8858 /* VM */ = {
 			isa = PBXGroup;
 			children = (
+				ECEC4EAC2F7377F200FB1E56 /* Pre */,
 				A741872E2D794D8A006C8858 /* AINaviVM.swift */,
 				A74187322D796564006C8858 /* AITypeVM.swift */,
 				A74187362D79716F006C8858 /* AIBottomFuncVM.swift */,
@@ -5759,6 +5765,14 @@
 			path = VM;
 			sourceTree = "<group>";
 		};
+		ECEC4EAC2F7377F200FB1E56 /* Pre */ = {
+			isa = PBXGroup;
+			children = (
+				ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */,
+			);
+			path = Pre;
+			sourceTree = "<group>";
+		};
 		ECF0BFD12BFC3C3800E5F6F0 /* Invite */ = {
 			isa = PBXGroup;
 			children = (
@@ -6528,6 +6542,7 @@
 				ECA059502F4D9EAA00E257E8 /* DietPlanCreateGoalVM.swift in Sources */,
 				ECF9D1012F500C1100A1B2C3 /* DietPlanCreateHeightVM.swift in Sources */,
 				ECF9D1062F50CF1100A1B2C3 /* DietPlanCreateAllergyVM.swift in Sources */,
+				ECEC4EAE2F73780300FB1E56 /* AICoachPreDaysVM.swift in Sources */,
 				ECF9D10A2F50F11100A1B2C3 /* DietPlanCreateAdviceVM.swift in Sources */,
 				ECF9D10C2F51001100A1B2C3 /* DietPlanCreateMealStyleVM.swift in Sources */,
 				ECF9D1082F50E61100A1B2C3 /* DietPlanCreateBarrierVM.swift in Sources */,
@@ -7280,6 +7295,7 @@
 				ECB848482BF36C0700B554B9 /* UpdatePhoneNewVC.swift in Sources */,
 				A7503A032CF060FE00C2B2B3 /* SportCatogaryItemVM.swift in Sources */,
 				EC38DE992BEF56D4008E7FCE /* MineFuncItemVM.swift in Sources */,
+				ECEC4EAB2F73777200FB1E56 /* AICoachPreVC.swift in Sources */,
 				A77F96352D0C091F0084D4FB /* LXReorderableCollectionViewFlowLayout.m in Sources */,
 				EC87EEFD2BB3EACE00350EB0 /* QuestionnaireSurveyFoodsListVC.swift in Sources */,
 				ECF1AD082F21BBE200AE36D6 /* HabitSettleMentVM.swift in Sources */,

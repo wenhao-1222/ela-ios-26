@@ -92,7 +92,8 @@ class MineVC : WHBaseViewVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.fastingVm.tapBlock = {()in
-            let vc = LogsMealsAlertSetVC()
+//            let vc = LogsMealsAlertSetVC()
+            let vc = AICoachPreVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.orderVm.tapBlock = {()in
