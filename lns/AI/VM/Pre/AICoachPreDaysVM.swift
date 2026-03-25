@@ -116,6 +116,18 @@ extension AICoachPreDaysVM{
         updateMessage()
         hidePopup()
     }
+
+    func dismissPopup() {
+        hidePopup()
+    }
+
+    func isTouchInsideDayItem(_ touchedView: UIView?) -> Bool {
+        guard let touchedView else { return false }
+        for itemView in itemViews where touchedView.isDescendant(of: itemView) {
+            return true
+        }
+        return false
+    }
 }
 
 private extension AICoachPreDaysVM {

@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class AICoachPreVC: WHBaseViewVC {
+class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
 
     private lazy var preDaysVM: AICoachPreDaysVM = {
         let view = AICoachPreDaysVM(frame: .zero)
@@ -53,11 +53,22 @@ class AICoachPreVC: WHBaseViewVC {
 
         return btn
     }()
+
+    private lazy var dismissPopupTapGesture: UITapGestureRecognizer = {
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissPopupTapAction))
+        gesture.cancelsTouchesInView = false
+        gesture.delegate = self
+        return gesture
+    }()
 }
 
 extension AICoachPreVC{
     @objc func nextButtonTapAction() {
         
+    }
+
+    @objc func dismissPopupTapAction() {
+        preDaysVM.dismissPopup()
     }
 }
 
@@ -67,6 +78,7 @@ extension AICoachPreVC{
         initNavi(titleStr: "AI教练")
         view.backgroundColor = .COLOR_BG_F2
         navigationView.backgroundColor = .clear
+        view.addGestureRecognizer(dismissPopupTapGesture)
         view.addSubview(circleImgView)
 
         view.addSubview(preDaysVM)
@@ -101,6 +113,12 @@ extension AICoachPreVC{
             make.height.equalTo(kFitWidth(44))
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
         }
+    }
+}
+
+extension AICoachPreVC {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        return preDaysVM.isTouchInsideDayItem(touch.view) == false
     }
 }
 
