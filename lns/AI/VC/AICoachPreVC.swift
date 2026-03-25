@@ -10,6 +10,8 @@ import SnapKit
 
 class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
 
+    var reportId = ""
+    
     private lazy var preDaysVM: AICoachPreDaysVM = {
         let view = AICoachPreDaysVM(frame: .zero)
         return view
@@ -64,7 +66,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
 
 extension AICoachPreVC{
     @objc func nextButtonTapAction() {
-        
+        self.sendReportDetailRequest()
     }
 
     @objc func dismissPopupTapAction() {
@@ -131,16 +133,20 @@ extension AICoachPreVC{
             self.updatePreDaysUI(dataDict: foodsMsgDict)
         }
     }
-    func sendReportDetailRequest(id:String) {
-        let param = ["id":id]
+    func sendReportDetailRequest() {
+        let param = ["id":reportId]
         WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_detail, parameters: param as [String : AnyObject]) { responseObject in
-            
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendReportDetailRequest:\(foodsMsgDict)")
         }
     }
 }
 
 private extension AICoachPreVC {
     func updatePreDaysUI(dataDict: NSDictionary) {
+        let latestReportDict = dataDict["latestReport"]as? NSDictionary ?? [:]
+        self.reportId = latestReportDict.stringValueForKey(key: "id")
         let userGoal = dataDict["userGoal"] as? Int ?? 0
         let aiCoachIntensityPreference = dataDict["aiCoachIntensityPreference"] as? Int ?? 0
 
