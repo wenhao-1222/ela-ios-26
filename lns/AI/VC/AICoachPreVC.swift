@@ -22,23 +22,46 @@ class AICoachPreVC: WHBaseViewVC {
         sendCoachLaunchRequest()
     }
 
+    lazy var bgImgView: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "ela_pro_ai_pre_bg")
+        img.contentMode = .scaleAspectFit
+        return img
+    }()
+    lazy var circleImgView: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "ela_pro_ai_pre_circle_icon")
+        return img
+    }()
 }
 
 extension AICoachPreVC{
     func initUI() {
+        view.addSubview(bgImgView)
         initNavi(titleStr: "AI教练")
         view.backgroundColor = .COLOR_BG_F2
+        navigationView.backgroundColor = .clear
+        view.addSubview(circleImgView)
 
         view.addSubview(preDaysVM)
+        setConstrait()
+    }
+    func setConstrait() {
+        bgImgView.snp.makeConstraints { make in
+            make.left.top.width.height.equalToSuperview()
+        }
+        circleImgView.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalTo(kFitWidth(133.5))
+            make.width.height.equalTo(kFitWidth(250))
+        }
         preDaysVM.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(getNavigationBarHeight() + kFitWidth(90))
+            make.top.equalTo(circleImgView.snp.bottom).offset(kFitWidth(20))
             make.height.equalTo(preDaysVM.selfHeight)
         }
-        
     }
 }
-
 
 extension AICoachPreVC{
     func sendCoachLaunchRequest() {

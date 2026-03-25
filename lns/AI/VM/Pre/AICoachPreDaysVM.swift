@@ -317,28 +317,12 @@ private extension AICoachPreDayItemView {
 private final class AICoachPreDayStatusPopupView: UIView {
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        bodyView.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.95).cgColor
+        super.traitCollectionDidChange(previousTraitCollection)
+        bubbleBackgroundView.refreshColors()
     }
 
-    private let bodyCornerRadius = kFitWidth(14)
-    private var arrowCenterXConstraint: Constraint?
-
-    private lazy var bodyView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .COLOR_WHITE_65
-        view.layer.cornerRadius = bodyCornerRadius
-        view.layer.cornerCurve = .continuous
-        view.layer.borderWidth = 1.5
-        view.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.95).cgColor
-        view.layer.shadowColor = UIColor.black.withAlphaComponent(0.08).cgColor
-        view.layer.shadowOpacity = 1
-        view.layer.shadowOffset = CGSize(width: 0, height: 6)
-        view.layer.shadowRadius = 16
-        return view
-    }()
-
-    private lazy var arrowView: AICoachPreDayStatusArrowView = {
-        let view = AICoachPreDayStatusArrowView()
+    private lazy var bubbleBackgroundView: AICoachPreDayStatusBubbleView = {
+        let view = AICoachPreDayStatusBubbleView()
         return view
     }()
 
@@ -363,17 +347,13 @@ private final class AICoachPreDayStatusPopupView: UIView {
 
     func update(completeStatus: Int) {
         topStatusView.update(isSelected: true)
-        bottomStatusView.update(isSelected: false)
+        bottomStatusView.update(isSelected: completeStatus == 1 || completeStatus == 2)
 //        topStatusView.update(isSelected: completeStatus == 2)
 //        bottomStatusView.update(isSelected: completeStatus == 1 || completeStatus == 2)
     }
 
     func updateArrowPosition(centerX: CGFloat) {
-        let minX = AICoachPrePopupLayout.arrowWidth * 0.5 + kFitWidth(18)
-        let maxX = AICoachPrePopupLayout.width - AICoachPrePopupLayout.arrowWidth * 0.5 - kFitWidth(18)
-        let targetX = min(max(centerX, minX), maxX)
-        arrowCenterXConstraint?.update(offset: targetX - AICoachPrePopupLayout.width * 0.5)
-        layoutIfNeeded()
+        bubbleBackgroundView.updateArrowPosition(centerX: centerX)
     }
 }
 
@@ -382,26 +362,17 @@ private extension AICoachPreDayStatusPopupView {
     func setupUI() {
         backgroundColor = .clear
 
-        addSubview(arrowView)
-        addSubview(bodyView)
-        bodyView.addSubview(topStatusView)
-        bodyView.addSubview(bottomStatusView)
+        addSubview(bubbleBackgroundView)
+        bubbleBackgroundView.addSubview(topStatusView)
+        bubbleBackgroundView.addSubview(bottomStatusView)
 
-        arrowView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.width.equalTo(AICoachPrePopupLayout.arrowWidth)
-            make.height.equalTo(AICoachPrePopupLayout.arrowHeight)
-            arrowCenterXConstraint = make.centerX.equalToSuperview().constraint
-        }
-
-        bodyView.snp.makeConstraints { make in
-            make.left.right.bottom.equalToSuperview()
-            make.top.equalToSuperview().offset(AICoachPrePopupLayout.arrowHeight - 1)
+        bubbleBackgroundView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
 
         topStatusView.snp.makeConstraints { make in
             make.left.right.equalToSuperview().inset(kFitWidth(14))
-            make.top.equalToSuperview().offset(kFitWidth(16))
+            make.top.equalToSuperview().offset(AICoachPrePopupLayout.arrowHeight + kFitWidth(15))
             make.height.equalTo(kFitWidth(24))
         }
 
@@ -413,43 +384,91 @@ private extension AICoachPreDayStatusPopupView {
     }
 }
 
-private final class AICoachPreDayStatusArrowView: UIView {
+private final class AICoachPreDayStatusBubbleView: UIView {
 
-    override class var layerClass: AnyClass {
-        CAShapeLayer.self
-    }
+    private let shapeLayer = CAShapeLayer()
+    private let cornerRadius = kFitWidth(14)
+    private var arrowCenterX = AICoachPrePopupLayout.width * 0.5
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        guard let shapeLayer = layer as? CAShapeLayer else { return }
-        shapeLayer.fillColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.95).cgColor
+        super.traitCollectionDidChange(previousTraitCollection)
+        refreshColors()
     }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
-        isUserInteractionEnabled = false
+        layer.addSublayer(shapeLayer)
+        refreshColors()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        guard let shapeLayer = layer as? CAShapeLayer else { return }
+    func updateArrowPosition(centerX: CGFloat) {
+        let minX = AICoachPrePopupLayout.arrowWidth * 0.5 + kFitWidth(18)
+        let maxX = AICoachPrePopupLayout.width - AICoachPrePopupLayout.arrowWidth * 0.5 - kFitWidth(18)
+        arrowCenterX = min(max(centerX, minX), maxX)
+        setNeedsLayout()
+    }
 
-        let path = UIBezierPath()
-        path.move(to: CGPoint(x: 0.5, y: bounds.height))
-        path.addLine(to: CGPoint(x: bounds.width * 0.5, y: 0.5))
-        path.addLine(to: CGPoint(x: bounds.width - 0.5, y: bounds.height))
-        path.close()
-
-        shapeLayer.path = path.cgPath
-        shapeLayer.fillColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
+    func refreshColors() {
+        shapeLayer.fillColor = UIColor.COLOR_WHITE_65.cgColor
         shapeLayer.strokeColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.95).cgColor
         shapeLayer.lineWidth = 1.5
-        shapeLayer.shadowColor = UIColor.black.withAlphaComponent(0.05).cgColor
+        shapeLayer.shadowColor = UIColor.black.withAlphaComponent(0.08).cgColor
         shapeLayer.shadowOpacity = 1
-        shapeLayer.shadowOffset = CGSize(width: 0, height: 2)
-        shapeLayer.shadowRadius = 6
+        shapeLayer.shadowOffset = CGSize(width: 0, height: 6)
+        shapeLayer.shadowRadius = 16
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let path = bubblePath(in: bounds)
+        shapeLayer.frame = bounds
+        shapeLayer.path = path.cgPath
+        shapeLayer.shadowPath = path.cgPath
+    }
+
+    private func bubblePath(in rect: CGRect) -> UIBezierPath {
+        let lineWidth = shapeLayer.lineWidth
+        let insetRect = rect.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5)
+        let topY = insetRect.minY + AICoachPrePopupLayout.arrowHeight
+        let leftX = insetRect.minX
+        let rightX = insetRect.maxX
+        let bottomY = insetRect.maxY
+        let radius = min(cornerRadius, (bottomY - topY) * 0.5)
+
+        let arrowHalfWidth = AICoachPrePopupLayout.arrowWidth * 0.5
+        let tipX = min(max(arrowCenterX, leftX + radius + arrowHalfWidth), rightX - radius - arrowHalfWidth)
+        let leftShoulderX = tipX - arrowHalfWidth
+        let rightShoulderX = tipX + arrowHalfWidth
+        let tipY = insetRect.minY + 1
+
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: leftX + radius, y: topY))
+        path.addLine(to: CGPoint(x: leftShoulderX, y: topY))
+        path.addCurve(
+            to: CGPoint(x: tipX, y: tipY),
+            controlPoint1: CGPoint(x: tipX - arrowHalfWidth * 0.62, y: topY),
+            controlPoint2: CGPoint(x: tipX - arrowHalfWidth * 0.28, y: tipY)
+        )
+        path.addCurve(
+            to: CGPoint(x: rightShoulderX, y: topY),
+            controlPoint1: CGPoint(x: tipX + arrowHalfWidth * 0.28, y: tipY),
+            controlPoint2: CGPoint(x: tipX + arrowHalfWidth * 0.62, y: topY)
+        )
+        path.addLine(to: CGPoint(x: rightX - radius, y: topY))
+        path.addArc(withCenter: CGPoint(x: rightX - radius, y: topY + radius), radius: radius, startAngle: -.pi * 0.5, endAngle: 0, clockwise: true)
+        path.addLine(to: CGPoint(x: rightX, y: bottomY - radius))
+        path.addArc(withCenter: CGPoint(x: rightX - radius, y: bottomY - radius), radius: radius, startAngle: 0, endAngle: .pi * 0.5, clockwise: true)
+        path.addLine(to: CGPoint(x: leftX + radius, y: bottomY))
+        path.addArc(withCenter: CGPoint(x: leftX + radius, y: bottomY - radius), radius: radius, startAngle: .pi * 0.5, endAngle: .pi, clockwise: true)
+        path.addLine(to: CGPoint(x: leftX, y: topY + radius))
+        path.addArc(withCenter: CGPoint(x: leftX + radius, y: topY + radius), radius: radius, startAngle: .pi, endAngle: -.pi * 0.5, clockwise: true)
+        path.close()
+        return path
     }
 }
 
