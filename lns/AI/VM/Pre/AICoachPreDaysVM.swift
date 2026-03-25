@@ -10,7 +10,7 @@ import SnapKit
 
 private enum AICoachPrePopupLayout {
     static let width = kFitWidth(164)
-    static let bodyHeight = kFitWidth(94)
+    static let bodyHeight = kFitWidth(84)
     static let arrowWidth = kFitWidth(24)
     static let arrowHeight = kFitWidth(12)
     static let totalHeight = bodyHeight + arrowHeight
@@ -97,7 +97,8 @@ extension AICoachPreDaysVM{
 
         popupView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
-            make.top.equalTo(daysStackView.snp.bottom).offset(kFitWidth(6))
+//            make.top.equalTo(daysStackView.snp.bottom).offset(kFitWidth(-46))
+            make.top.equalTo(kFitWidth(32))
             make.width.equalTo(AICoachPrePopupLayout.width)
             make.height.equalTo(AICoachPrePopupLayout.totalHeight)
         }
@@ -191,7 +192,8 @@ private extension AICoachPreDaysVM {
 
         popupView.snp.remakeConstraints { make in
             make.left.equalTo(popupLeft)
-            make.top.equalTo(itemFrame.maxY + kFitWidth(6))
+//            make.top.equalTo(itemFrame.maxY + kFitWidth(6))
+            make.top.equalTo(kFitWidth(32))
             make.width.equalTo(AICoachPrePopupLayout.width)
             make.height.equalTo(AICoachPrePopupLayout.totalHeight)
         }
@@ -275,7 +277,7 @@ private final class AICoachPreDayItemView: UIView {
             checkImageView.isHidden = false
             titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         default:
-            iconContainerView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_50
+            iconContainerView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
             checkImageView.isHidden = true
             titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214_25
         }
@@ -346,10 +348,8 @@ private final class AICoachPreDayStatusPopupView: UIView {
     }
 
     func update(completeStatus: Int) {
-        topStatusView.update(isSelected: true)
+        topStatusView.update(isSelected:true)
         bottomStatusView.update(isSelected: completeStatus == 1 || completeStatus == 2)
-//        topStatusView.update(isSelected: completeStatus == 2)
-//        bottomStatusView.update(isSelected: completeStatus == 1 || completeStatus == 2)
     }
 
     func updateArrowPosition(centerX: CGFloat) {
@@ -386,9 +386,13 @@ private extension AICoachPreDayStatusPopupView {
 
 private final class AICoachPreDayStatusBubbleView: UIView {
 
-    private let shapeLayer = CAShapeLayer()
+    private let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+    private let tintView = UIView()
+    private let borderLayer = CAShapeLayer()
     private let cornerRadius = kFitWidth(14)
     private var arrowCenterX = AICoachPrePopupLayout.width * 0.5
+    private let blurMaskLayer = CAShapeLayer()
+    private let tintMaskLayer = CAShapeLayer()
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
@@ -398,7 +402,13 @@ private final class AICoachPreDayStatusBubbleView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
-        layer.addSublayer(shapeLayer)
+        addSubview(blurEffectView)
+        addSubview(tintView)
+        layer.addSublayer(borderLayer)
+        blurEffectView.layer.mask = blurMaskLayer
+        tintView.layer.mask = tintMaskLayer
+        blurEffectView.isUserInteractionEnabled = false
+        tintView.isUserInteractionEnabled = false
         refreshColors()
     }
 
@@ -414,25 +424,35 @@ private final class AICoachPreDayStatusBubbleView: UIView {
     }
 
     func refreshColors() {
-        shapeLayer.fillColor = UIColor.COLOR_WHITE_65.cgColor
-        shapeLayer.strokeColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.95).cgColor
-        shapeLayer.lineWidth = 1.5
-        shapeLayer.shadowColor = UIColor.black.withAlphaComponent(0.08).cgColor
-        shapeLayer.shadowOpacity = 1
-        shapeLayer.shadowOffset = CGSize(width: 0, height: 6)
-        shapeLayer.shadowRadius = 16
+        tintView.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.94)
+        borderLayer.fillColor = UIColor.clear.cgColor
+        borderLayer.strokeColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.98).cgColor
+        borderLayer.lineWidth = 2
+        borderLayer.lineJoin = .round
+        borderLayer.lineCap = .round
+        borderLayer.zPosition = 10
+        layer.shadowColor = UIColor.black.withAlphaComponent(0.08).cgColor
+        layer.shadowOpacity = 1
+        layer.shadowOffset = CGSize(width: 0, height: 6)
+        layer.shadowRadius = 16
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
         let path = bubblePath(in: bounds)
-        shapeLayer.frame = bounds
-        shapeLayer.path = path.cgPath
-        shapeLayer.shadowPath = path.cgPath
+        blurEffectView.frame = bounds
+        tintView.frame = bounds
+        blurMaskLayer.frame = bounds
+        blurMaskLayer.path = path.cgPath
+        tintMaskLayer.frame = bounds
+        tintMaskLayer.path = path.cgPath
+        borderLayer.frame = bounds
+        borderLayer.path = path.cgPath
+        layer.shadowPath = path.cgPath
     }
 
     private func bubblePath(in rect: CGRect) -> UIBezierPath {
-        let lineWidth = shapeLayer.lineWidth
+        let lineWidth = borderLayer.lineWidth
         let insetRect = rect.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5)
         let topY = insetRect.minY + AICoachPrePopupLayout.arrowHeight
         let leftX = insetRect.minX

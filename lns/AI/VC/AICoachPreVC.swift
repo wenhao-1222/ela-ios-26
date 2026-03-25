@@ -14,6 +14,11 @@ class AICoachPreVC: WHBaseViewVC {
         let view = AICoachPreDaysVM(frame: .zero)
         return view
     }()
+
+    private lazy var preInfoVM: AICoachPreInfoVM = {
+        let view = AICoachPreInfoVM(frame: .zero)
+        return view
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +38,27 @@ class AICoachPreVC: WHBaseViewVC {
         img.setImgLocal(imgName: "ela_pro_ai_pre_circle_icon")
         return img
     }()
+    lazy var nextButton: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitle("查看报告", for: .normal)
+        btn.setTitleColor(.white, for: .normal)
+        btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+        btn.backgroundColor = .COLOR_BUTTON_DISABLE_BG_THEME
+        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
+        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .disabled)
+        btn.layer.cornerRadius = kFitWidth(22)
+        btn.clipsToBounds = true
+        btn.enablePressEffect()
+        btn.addTarget(self, action: #selector(nextButtonTapAction), for: .touchUpInside)
+
+        return btn
+    }()
+}
+
+extension AICoachPreVC{
+    @objc func nextButtonTapAction() {
+        
+    }
 }
 
 extension AICoachPreVC{
@@ -44,6 +70,9 @@ extension AICoachPreVC{
         view.addSubview(circleImgView)
 
         view.addSubview(preDaysVM)
+        view.addSubview(preInfoVM)
+        view.addSubview(nextButton)
+        
         setConstrait()
     }
     func setConstrait() {
@@ -60,6 +89,18 @@ extension AICoachPreVC{
             make.top.equalTo(circleImgView.snp.bottom).offset(kFitWidth(20))
             make.height.equalTo(preDaysVM.selfHeight)
         }
+
+        preInfoVM.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(preDaysVM.snp.bottom).offset(kFitWidth(16))
+            make.height.equalTo(preInfoVM.selfHeight)
+        }
+        nextButton.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.right.equalTo(kFitWidth(-20))
+            make.height.equalTo(kFitWidth(44))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
+        }
     }
 }
 
@@ -72,11 +113,26 @@ extension AICoachPreVC{
             self.updatePreDaysUI(dataDict: foodsMsgDict)
         }
     }
+    func sendReportDetailRequest(id:String) {
+        let param = ["id":id]
+        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_detail, parameters: param as [String : AnyObject]) { responseObject in
+            
+        }
+    }
 }
 
 private extension AICoachPreVC {
     func updatePreDaysUI(dataDict: NSDictionary) {
+        let userGoal = dataDict["userGoal"] as? Int ?? 0
+        let aiCoachIntensityPreference = dataDict["aiCoachIntensityPreference"] as? Int ?? 0
+
         guard let progressBar = dataDict["progressBar"] as? [NSDictionary], progressBar.isEmpty == false else {
+            DispatchQueue.main.async {
+                self.preInfoVM.configure(
+                    userGoal: userGoal,
+                    aiCoachIntensityPreference: aiCoachIntensityPreference
+                )
+            }
             return
         }
 
@@ -110,6 +166,10 @@ private extension AICoachPreVC {
 
         DispatchQueue.main.async {
             self.preDaysVM.configure(items: items, reportAfterDays: reportAfterDays)
+            self.preInfoVM.configure(
+                userGoal: userGoal,
+                aiCoachIntensityPreference: aiCoachIntensityPreference
+            )
         }
     }
 

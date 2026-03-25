@@ -227,7 +227,8 @@ public let URL_diet_plan_condiment      = URL_Type + "plans/pro/meal_plan/condim
 public let URL_ai_coach_upsert      = URL_Type + "users/pro/ai_coach/profile/upsert"
 ///AI 教练 启动教练
 public let URL_ai_coach_launch      = URL_Type + "users/pro/ai_coach/launch"
-
+///AI教练  报告详情
+public let URL_ai_coach_report_detail      = URL_Type + "users/pro/ai_coach/report/detail"
 
 //MARK: 运动记录
 public let URL_sport_catogary_list          = URL_Type + "users/sport/list"
