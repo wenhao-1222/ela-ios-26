@@ -101,7 +101,7 @@ private extension AICoachReportDemoContentView {
             summaryCard: summaryCard
         )
         let row1 = makeTopChartRow(chartHeight: topRowChartHeight)
-        let row2 = makeBottomChartRow()
+        let row2 = makeBottomChartRow(nutrientChartHeight: topRowChartHeight)
         let actionSection = makeNextPageActionSection()
 
         [headerCard, summaryCard, row1, row2, actionSection].forEach(mainStack.addArrangedSubview)
@@ -377,12 +377,12 @@ private extension AICoachReportDemoContentView {
         return row1
     }
 
-    func makeBottomChartRow() -> UIView {
+    func makeBottomChartRow(nutrientChartHeight: CGFloat) -> UIView {
         let row2 = UIStackView()
         row2.axis = .horizontal
         row2.spacing = chartRowSpacing
         row2.distribution = .fillEqually
-        row2.addArrangedSubview(makeNutrientCard())
+        row2.addArrangedSubview(makeNutrientCard(chartHeight: nutrientChartHeight))
         row2.addArrangedSubview(makeTrainingCard())
         return row2
     }
@@ -441,7 +441,7 @@ private extension AICoachReportDemoContentView {
         return ceil(size.height)
     }
 
-    func makeNutrientCard() -> UIView {
+    func makeNutrientCard(chartHeight: CGFloat) -> UIView {
         let chart = AICoachReportGroupedBarChartView(data: report.nutrientChart)
 
         let footer = UIView()
@@ -452,8 +452,9 @@ private extension AICoachReportDemoContentView {
 
         let legendStack = UIStackView()
         legendStack.axis = .horizontal
-        legendStack.spacing = 8
-        legendStack.distribution = .fillEqually
+        legendStack.alignment = .top
+        legendStack.spacing = 6
+        legendStack.distribution = .fillProportionally
         report.nutrientChart.legendItems.forEach { item in
             legendStack.addArrangedSubview(makeLegendColumn(item))
         }
@@ -468,7 +469,7 @@ private extension AICoachReportDemoContentView {
             make.left.right.bottom.equalToSuperview()
         }
 
-        return makeChartCard(title: "营养素", chartView: chart, footerView: footer, chartHeight: 142)
+        return makeChartCard(title: "营养素", chartView: chart, footerView: footer, chartHeight: chartHeight)
     }
 
     func makeTrainingCard() -> UIView {
@@ -714,11 +715,15 @@ private extension AICoachReportDemoContentView {
         let titleLabel = UILabel()
         titleLabel.font = .systemFont(ofSize: 11.5, weight: .medium)
         titleLabel.textColor = AICoachReportDemoPalette.textSecondary
+        titleLabel.numberOfLines = 1
+        titleLabel.adjustsFontSizeToFitWidth = true
+        titleLabel.minimumScaleFactor = 0.7
         titleLabel.text = item.title
 
         let percentLabel = UILabel()
         percentLabel.font = .systemFont(ofSize: 11.5, weight: .regular)
         percentLabel.textColor = AICoachReportDemoPalette.textSecondary
+        percentLabel.textAlignment = .left
         percentLabel.text = item.percentText
 
         container.addSubview(topRow)
@@ -731,7 +736,8 @@ private extension AICoachReportDemoContentView {
         }
         percentLabel.snp.makeConstraints { make in
             make.top.equalTo(topRow.snp.bottom).offset(6)
-            make.left.right.bottom.equalToSuperview()
+            make.left.equalTo(titleLabel.snp.left)
+            make.right.bottom.equalToSuperview()
         }
 
         return container

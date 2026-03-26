@@ -187,8 +187,8 @@ final class AICoachReportGroupedBarChartView: UIView {
         let chartInsets = UIEdgeInsets(top: 13, left: yAxisWidth + 14, bottom: 36, right: 8)
         let chartRect = rect.inset(by: chartInsets)
         let step = chartRect.width / CGFloat(data.entries.count)
-        let groupWidth = step * 0.66
-        let barWidth = groupWidth / 3.45
+        let groupWidth = min(step * 0.78, step - 2)
+        let barWidth = groupWidth / 3
         let colors = [
             AICoachReportDemoPalette.nutrientPurple,
             AICoachReportDemoPalette.nutrientYellow,
@@ -203,10 +203,10 @@ final class AICoachReportGroupedBarChartView: UIView {
             let labelCenterX = chartRect.minX + CGFloat(index) * step + step / 2
             for valueIndex in 0..<entry.values.count {
                 let barHeight = (entry.values[valueIndex] / max(data.maxValue, 1)) * chartRect.height
-                let x = startX + CGFloat(valueIndex) * (barWidth + 2.4)
+                let x = startX + CGFloat(valueIndex) * barWidth
                 let y = chartRect.maxY - barHeight
                 let barRect = CGRect(x: x, y: y, width: barWidth, height: barHeight)
-                let barPath = UIBezierPath(roundedRect: barRect, cornerRadius: 2.4)
+                let barPath = UIBezierPath(rect: barRect)
                 colors[valueIndex].setFill()
                 barPath.fill()
             }

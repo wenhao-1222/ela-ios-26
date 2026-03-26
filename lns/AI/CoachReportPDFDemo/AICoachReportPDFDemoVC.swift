@@ -358,7 +358,12 @@ private extension AICoachReportPDFDemoVC {
                 endDate: endDate,
                 fallback: fallback.calorieChart
             ),
-            nutrientChart: fallback.nutrientChart,
+            nutrientChart: buildNutrientChart(
+                reportContent: reportContent,
+                startDate: startDate,
+                endDate: endDate,
+                fallback: fallback.nutrientChart
+            ),
             trainingChart: fallback.trainingChart,
             nextPageTitle: fallback.nextPageTitle,
             nextPageItems: fallback.nextPageItems
@@ -500,6 +505,36 @@ private extension AICoachReportPDFDemoVC {
         )
     }
 
+    func buildNutrientChart(
+        reportContent: NSDictionary,
+        startDate: String,
+        endDate: String,
+        fallback: AICoachReportGroupedBarChartData
+    ) -> AICoachReportGroupedBarChartData {
+        let nutrientsPack = reportContent["nutrientsPack"] as? NSDictionary ?? NSDictionary()
+        let axisSlots = makeWeeklyAxisSlots(
+            startDate: startDate,
+            endDate: endDate,
+            fallbackLabels: fallback.entries.map(\.axisLabel)
+        )
+        let nutrientsByDate = makeNutrientValueMap(nutrientsPack: nutrientsPack)
+
+        let entries = axisSlots.map { slot in
+            let values = nutrientsByDate[slot.key] ?? [0, 0, 0]
+            return AICoachReportGroupedBarPoint(axisLabel: slot.label, values: values)
+        }
+
+        let allValues = entries.flatMap(\.values)
+        let axisConfig = makeNutrientAxisConfig(values: allValues, fallback: fallback)
+
+        return AICoachReportGroupedBarChartData(
+            yAxisTexts: axisConfig.yAxisTexts,
+            maxValue: axisConfig.maxValue,
+            entries: entries,
+            legendItems: makeNutrientLegendItems(nutrientsPack: nutrientsPack, fallback: fallback.legendItems)
+        )
+    }
+
     func makeWeeklyAxisSlots(
         startDate: String,
         endDate: String,
@@ -558,6 +593,27 @@ private extension AICoachReportPDFDemoVC {
             calorieByDate[normalizedDate] = CGFloat(item.doubleValueForKey(key: "calories"))
         }
         return calorieByDate
+    }
+
+    func makeNutrientValueMap(nutrientsPack: NSDictionary) -> [String: [CGFloat]] {
+        let weeklyNutrientsData = (nutrientsPack["weeklyNutrientsData"] as? NSArray)?
+            .compactMap { $0 as? NSDictionary } ?? []
+
+        var nutrientsByDate: [String: [CGFloat]] = [:]
+        weeklyNutrientsData.forEach { item in
+            let rawDate = preferredValue(
+                item.stringValueForKey(key: "sdate"),
+                fallback: item.stringValueForKey(key: "ctime")
+            )
+            let normalizedDate = normalizedWeightDataKey(rawDate)
+            guard normalizedDate.isEmpty == false else { return }
+            nutrientsByDate[normalizedDate] = [
+                CGFloat(item.doubleValueForKey(key: "carbohydrate")),
+                CGFloat(item.doubleValueForKey(key: "protein")),
+                CGFloat(item.doubleValueForKey(key: "fat"))
+            ]
+        }
+        return nutrientsByDate
     }
 
     func makeWeightAxisConfig(
@@ -638,6 +694,60 @@ private extension AICoachReportPDFDemoVC {
         let axisMax = step * 3
         let yAxisTexts = stride(from: Int(axisMax), through: 0, by: -Int(step)).map { "\($0)" }
         return (yAxisTexts, axisMax)
+    }
+
+    func makeNutrientAxisConfig(
+        values: [CGFloat],
+        fallback: AICoachReportGroupedBarChartData
+    ) -> (yAxisTexts: [String], maxValue: CGFloat) {
+        guard let maxValue = values.max(), maxValue > 0 else {
+            return (fallback.yAxisTexts, fallback.maxValue)
+        }
+
+        let scaledMax = ceil(maxValue * 1.15)
+        let step = max(ceil(scaledMax / 3 / 10) * 10, 10)
+        let axisMax = step * 3
+        let yAxisTexts = stride(from: Int(axisMax), through: 0, by: -Int(step)).map { "\($0)" }
+        return (yAxisTexts, axisMax)
+    }
+
+    func makeNutrientLegendItems(
+        nutrientsPack: NSDictionary,
+        fallback: [AICoachReportLegendItem]
+    ) -> [AICoachReportLegendItem] {
+        let carbohydrateAvg = nutrientsPack.doubleValueForKey(key: "carbohydrateAvgG")
+        let carbohydratePercent = nutrientsPack.doubleValueForKey(key: "carbohydratePercent")
+        let proteinAvg = nutrientsPack.doubleValueForKey(key: "proteinAvgG")
+        let proteinPercent = nutrientsPack.doubleValueForKey(key: "proteinPercent")
+        let fatAvg = nutrientsPack.doubleValueForKey(key: "fatAvgG")
+        let fatPercent = nutrientsPack.doubleValueForKey(key: "fatPercent")
+
+        let items: [AICoachReportLegendItem] = [
+            .init(
+                title: "碳水 \(formatChartNumber(carbohydrateAvg))g",
+                valueText: "\(formatChartNumber(carbohydrateAvg))g",
+                percentText: "\(formatPercentNumber(carbohydratePercent))%",
+                color: AICoachReportDemoPalette.nutrientPurple
+            ),
+            .init(
+                title: "蛋白质 \(formatChartNumber(proteinAvg))g",
+                valueText: "\(formatChartNumber(proteinAvg))g",
+                percentText: "\(formatPercentNumber(proteinPercent))%",
+                color: AICoachReportDemoPalette.nutrientYellow
+            ),
+            .init(
+                title: "脂肪 \(formatChartNumber(fatAvg))g",
+                valueText: "\(formatChartNumber(fatAvg))g",
+                percentText: "\(formatPercentNumber(fatPercent))%",
+                color: AICoachReportDemoPalette.nutrientOrange
+            )
+        ]
+
+        let hasValidData =
+            carbohydrateAvg > 0 || carbohydratePercent > 0 ||
+            proteinAvg > 0 || proteinPercent > 0 ||
+            fatAvg > 0 || fatPercent > 0
+        return hasValidData ? items : fallback
     }
 
     func makeCalorieFooterRows(

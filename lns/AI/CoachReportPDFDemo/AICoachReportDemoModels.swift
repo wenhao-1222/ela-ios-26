@@ -172,12 +172,12 @@ extension AICoachReportDemoData {
             maxValue: 600,
             entries: [
                 .init(axisLabel: "04/01", values: [580, 420, 470]),
-                .init(axisLabel: "04/01", values: [210, 470, 540]),
-                .init(axisLabel: "04/01", values: [270, 320, 160]),
-                .init(axisLabel: "04/01", values: [250, 440, 300]),
-                .init(axisLabel: "04/01", values: [310, 410, 480]),
-                .init(axisLabel: "04/01", values: [310, 120, 140]),
-                .init(axisLabel: "04/01", values: [340, 400, 510])
+                .init(axisLabel: "04/02", values: [210, 470, 540]),
+                .init(axisLabel: "04/03", values: [270, 320, 160]),
+                .init(axisLabel: "04/04", values: [250, 440, 300]),
+                .init(axisLabel: "04/05", values: [310, 410, 480]),
+                .init(axisLabel: "04/06", values: [310, 120, 140]),
+                .init(axisLabel: "04/07", values: [340, 400, 510])
             ],
             legendItems: [
                 .init(title: "碳水 240g", valueText: "240g", percentText: "9.85%", color: AICoachReportDemoPalette.nutrientPurple),
