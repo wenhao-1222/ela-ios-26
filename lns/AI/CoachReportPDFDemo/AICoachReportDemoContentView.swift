@@ -102,11 +102,18 @@ private extension AICoachReportDemoContentView {
         )
         let row1 = makeTopChartRow(chartHeight: topRowChartHeight)
         let bottomSection = makeBottomSection(nutrientChartHeight: topRowChartHeight)
+        let thirdPageSection = makeThirdPageSection()
 
         [headerCard, summaryCard, row1, bottomSection].forEach(mainStack.addArrangedSubview)
+        if let thirdPageSection {
+            mainStack.addArrangedSubview(thirdPageSection)
+        }
         mainStack.setCustomSpacing(firstPageRow1TopSpacing, after: summaryCard)
         mainStack.setCustomSpacing(firstPageRow1BottomSpacing, after: row1)
         keepTogetherViews = [headerCard, summaryCard, row1, bottomSection]
+        if let thirdPageSection {
+            keepTogetherViews.append(thirdPageSection)
+        }
     }
 
     func makeHeaderCard() -> UIView {
@@ -395,6 +402,58 @@ private extension AICoachReportDemoContentView {
         return section
     }
 
+    func makeThirdPageSection() -> UIView? {
+        var sections: [UIView] = []
+
+        if let weeklyInsightSection = makeInsightPanelSection(
+            title: "本周观察",
+            body: report.weeklyInsightText
+        ) {
+            sections.append(weeklyInsightSection)
+        }
+
+        if let topTaskSection = makeTextSection(
+            title: "下周首要任务",
+            body: report.nextWeekTopTaskText
+        ) {
+            sections.append(topTaskSection)
+        }
+
+        if let moreInsightsSection = makeNumberedListSection(
+            title: "更多观察",
+            items: report.moreInsights
+        ) {
+            sections.append(moreInsightsSection)
+        }
+
+        if let alternativeTasksSection = makeNumberedListSection(
+            title: "备选任务",
+            items: report.alternativeTasks
+        ) {
+            sections.append(alternativeTasksSection)
+        }
+
+        guard sections.isEmpty == false else { return nil }
+
+        let card = AICoachReportDemoCardView()
+        let contentStack = UIStackView()
+        contentStack.axis = .vertical
+        contentStack.spacing = PDFWidth(48)
+
+        sections.forEach(contentStack.addArrangedSubview)
+        card.addSubview(contentStack)
+        contentStack.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(UIEdgeInsets(
+                top: PDFWidth(44),
+                left: PDFWidth(40),
+                bottom: PDFWidth(44),
+                right: PDFWidth(40)
+            ))
+        }
+
+        return card
+    }
+
     func makeWeightCard(chartHeight: CGFloat) -> UIView {
         let chart = AICoachReportLineChartView(data: report.weightChart)
         let footer = makeFooterRows(report.weightChart.footerRows)
@@ -562,6 +621,127 @@ private extension AICoachReportDemoContentView {
         }
 
         return card
+    }
+
+    func makeInsightPanelSection(title: String, body: String) -> UIView? {
+        let trimmedBody = body.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmedBody.isEmpty == false else { return nil }
+
+        let section = UIView()
+        let titleLabel = makeCardTitleLabel(title)
+        let panel = UIView()
+        panel.backgroundColor = AICoachReportDemoPalette.softPanel
+        panel.layer.cornerRadius = PDFWidth(30)
+
+        let bodyLabel = makeSectionBodyLabel(
+            trimmedBody,
+            lineHeightMultiple: 1.5
+        )
+
+        section.addSubview(titleLabel)
+        section.addSubview(panel)
+        panel.addSubview(bodyLabel)
+
+        titleLabel.snp.makeConstraints { make in
+            make.top.left.right.equalToSuperview()
+        }
+        panel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(PDFWidth(26))
+            make.left.right.bottom.equalToSuperview()
+        }
+        bodyLabel.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(UIEdgeInsets(
+                top: PDFWidth(30),
+                left: PDFWidth(28),
+                bottom: PDFWidth(30),
+                right: PDFWidth(28)
+            ))
+        }
+
+        return section
+    }
+
+    func makeTextSection(title: String, body: String) -> UIView? {
+        let trimmedBody = body.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmedBody.isEmpty == false else { return nil }
+
+        let section = UIView()
+        let titleLabel = makeCardTitleLabel(title)
+        let bodyLabel = makeSectionBodyLabel(
+            trimmedBody,
+            lineHeightMultiple: 1.5
+        )
+
+        section.addSubview(titleLabel)
+        section.addSubview(bodyLabel)
+
+        titleLabel.snp.makeConstraints { make in
+            make.top.left.right.equalToSuperview()
+        }
+        bodyLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(PDFWidth(26))
+            make.left.right.bottom.equalToSuperview()
+        }
+
+        return section
+    }
+
+    func makeNumberedListSection(title: String, items: [String]) -> UIView? {
+        let validItems = items
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { $0.isEmpty == false }
+        guard validItems.isEmpty == false else { return nil }
+
+        let section = UIView()
+        let titleLabel = makeCardTitleLabel(title)
+        let listStack = UIStackView()
+        listStack.axis = .vertical
+        listStack.spacing = PDFWidth(18)
+
+        validItems.enumerated().forEach { index, item in
+            listStack.addArrangedSubview(makeNumberedListRow(number: index + 1, text: item))
+        }
+
+        section.addSubview(titleLabel)
+        section.addSubview(listStack)
+
+        titleLabel.snp.makeConstraints { make in
+            make.top.left.right.equalToSuperview()
+        }
+        listStack.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(PDFWidth(26))
+            make.left.right.bottom.equalToSuperview()
+        }
+
+        return section
+    }
+
+    func makeNumberedListRow(number: Int, text: String) -> UIView {
+        let row = UIView()
+
+        let numberLabel = UILabel()
+        numberLabel.font = .systemFont(ofSize: PDFWidth(34), weight: .regular)
+        numberLabel.textColor = AICoachReportDemoPalette.textSecondary
+        numberLabel.text = "\(number)."
+
+        let textLabel = makeSectionBodyLabel(
+            text,
+            textColor: AICoachReportDemoPalette.textSecondary
+        )
+
+        row.addSubview(numberLabel)
+        row.addSubview(textLabel)
+
+        numberLabel.snp.makeConstraints { make in
+            make.top.left.equalToSuperview()
+            make.width.equalTo(PDFWidth(24))
+        }
+        textLabel.snp.makeConstraints { make in
+            make.top.right.bottom.equalToSuperview()
+            make.left.equalTo(numberLabel.snp.right).offset(PDFWidth(8))
+        }
+
+        return row
     }
 
     func makeChartCard(title: String, chartView: UIView, footerView: UIView, chartHeight: CGFloat) -> UIView {
@@ -787,6 +967,35 @@ private extension AICoachReportDemoContentView {
         }
 
         return row
+    }
+
+    func makeSectionBodyLabel(
+        _ text: String,
+        textColor: UIColor = AICoachReportDemoPalette.textPrimary,
+        lineHeightMultiple: CGFloat = 1
+    ) -> UILabel {
+        let label = UILabel()
+        let font = UIFont.systemFont(ofSize: PDFWidth(34), weight: .regular)
+        label.font = font
+        label.textColor = textColor
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        if lineHeightMultiple > 1 {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineHeightMultiple = lineHeightMultiple
+            paragraphStyle.alignment = .left
+            label.attributedText = NSAttributedString(
+                string: text,
+                attributes: [
+                    .font: font,
+                    .foregroundColor: textColor,
+                    .paragraphStyle: paragraphStyle
+                ]
+            )
+        } else {
+            label.text = text
+        }
+        return label
     }
 
     func makeCardTitleLabel(_ text: String) -> UILabel {

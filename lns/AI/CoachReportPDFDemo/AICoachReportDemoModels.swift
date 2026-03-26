@@ -27,6 +27,10 @@ struct AICoachReportDemoData {
     let nutrientChart: AICoachReportGroupedBarChartData
     let trainingChart: AICoachReportTrainingCardData
     let dailyComparisonTable: AICoachReportWeekTableData
+    let weeklyInsightText: String
+    let nextWeekTopTaskText: String
+    let moreInsights: [String]
+    let alternativeTasks: [String]
     let nextPageTitle: String
     let nextPageItems: [String]
 }
@@ -125,6 +129,71 @@ enum AICoachReportDemoPalette {
 }
 
 extension AICoachReportDemoData {
+    static let empty = AICoachReportDemoData(
+        navigationTitle: "AI 教练分析",
+        navigationDateRange: "",
+        reportTitle: "ELA AI教练分析报告",
+        reportDateRange: "日期： -",
+        targetText: "目标： -",
+        completenessText: "数据完整度： 饮食0/7，体重0/7，力量训练0/7",
+        weeklySummaryTitle: "本周概括",
+        weeklySummaryLines: [],
+        confidenceText: "",
+        weeklyPotentialTitle: "本周潜力利用率",
+        weeklyPotentialValue: "-",
+        riskTip: "潜在卡点：-",
+        actionTip: "最小调整动作：-",
+        weightChart: AICoachReportLineChartData(
+            yAxisTexts: [],
+            minValue: 0,
+            maxValue: 0,
+            entries: [],
+            footerRows: [
+                .init(leftText: "本周体重均值： -", rightText: nil),
+                .init(leftText: "周内波动： -", rightText: nil),
+                .init(leftText: "本周体重对比上周 -", rightText: nil)
+            ]
+        ),
+        calorieChart: AICoachReportBarChartData(
+            yAxisTexts: [],
+            maxValue: 0,
+            entries: [],
+            footerRows: [
+                .init(leftText: "本周热量摄入均值： -", rightText: nil),
+                .init(leftText: "周末：-", rightText: "工作日：-"),
+                .init(leftText: "本周热量摄入对比上周 -", rightText: nil)
+            ]
+        ),
+        nutrientChart: AICoachReportGroupedBarChartData(
+            yAxisTexts: [],
+            maxValue: 0,
+            entries: [],
+            legendItems: [
+                .init(title: "碳水 -", valueText: "-", percentText: "-", color: AICoachReportDemoPalette.nutrientPurple),
+                .init(title: "蛋白质 -", valueText: "-", percentText: "-", color: AICoachReportDemoPalette.nutrientYellow),
+                .init(title: "脂肪 -", valueText: "-", percentText: "-", color: AICoachReportDemoPalette.nutrientOrange)
+            ]
+        ),
+        trainingChart: AICoachReportTrainingCardData(
+            title: "力量训练部分",
+            leftItems: [],
+            rightItems: [],
+            bottomLeftText: "本周训练天数： 0 天",
+            bottomRightText: "休息天数： 0 天"
+        ),
+        dailyComparisonTable: AICoachReportWeekTableData(
+            title: "本周每日体重 & 营养素&热量&消耗对照表",
+            columnTitles: ["日期", "体重(kg)", "热量(kcal)", "蛋白(g)", "碳水(g)", "脂肪(g)", "训练标签"],
+            rows: []
+        ),
+        weeklyInsightText: "",
+        nextWeekTopTaskText: "",
+        moreInsights: [],
+        alternativeTasks: [],
+        nextPageTitle: "",
+        nextPageItems: []
+    )
+
     static let mock = AICoachReportDemoData(
         navigationTitle: "AI 教练分析",
         navigationDateRange: "2026/01/26 – 02/01",
@@ -147,11 +216,11 @@ extension AICoachReportDemoData {
             minValue: 40,
             maxValue: 70,
             entries: [
-                .init(axisLabel: "04/01", plottedValue: 46, valueText: "48"),
-                .init(axisLabel: "04/02", plottedValue: 61, valueText: "52"),
-                .init(axisLabel: "04/03", plottedValue: 65, valueText: "64"),
-                .init(axisLabel: "04/04", plottedValue: 58.5, valueText: "68"),
-                .init(axisLabel: "04/05", plottedValue: 48, valueText: "74"),
+                .init(axisLabel: "04/01", plottedValue: 46, valueText: ""),
+                .init(axisLabel: "04/02", plottedValue: 61, valueText: ""),
+                .init(axisLabel: "04/03", plottedValue: 65, valueText: ""),
+                .init(axisLabel: "04/04", plottedValue: 58.5, valueText: ""),
+                .init(axisLabel: "04/05", plottedValue: 48, valueText: ""),
                 .init(axisLabel: "04/06", plottedValue: nil, valueText: ""),
                 .init(axisLabel: "04/07", plottedValue: 46.5, valueText: "")
             ],
@@ -226,6 +295,18 @@ extension AICoachReportDemoData {
                 .init(values: ["04/07", "72.1", "2300", "125", "240", "68", "腿"])
             ]
         ),
+        weeklyInsightText: "蛋白质摄入接近目标，优质蛋白来源丰富且多样化。碳水摄入严重不足，仅为目标的38.4%，显著限制增肌合成效率。",
+        nextWeekTopTaskText: "优先提升复合碳水摄入，在每餐主食中增加高密度碳水来源，如米饭、燕麦、红薯等。每日至少安排3次主食餐，每次生重60–100克大米或等效碳水；训练后立即补充50克以上快碳（如香蕉+米饭）以促进合成。",
+        moreInsights: [
+            "总热量缺口高达1366 kcal/天，长期将阻碍肌肉增长。",
+            "脂肪摄入虽接近目标，但部分来自加工肉和油炸食品，影响恢复质量。",
+            "水果摄入频次高但集中在车厘子等低糖品种，未能有效补碳。"
+        ],
+        alternativeTasks: [
+            "系统性提升热量密度，在现有餐单基础上增加高热量健康食材，如果酱、全脂奶、牛油果。",
+            "优化脂肪来源结构，减少炸鱼块、猪油糕等饱和脂肪，替换为三文鱼、坚果、橄榄油等抗炎脂肪。",
+            "策略性选择高糖水果，用香蕉、芒果、葡萄替代部分车厘子，在加餐中提供快速碳水支持。"
+        ],
         nextPageTitle: "下周行动建议",
         nextPageItems: [
             "早餐增加 1 份主食，优先米饭、燕麦或全麦面包。",

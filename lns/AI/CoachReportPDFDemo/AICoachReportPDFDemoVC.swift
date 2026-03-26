@@ -13,7 +13,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     
     var reportId = ""
     
-    private var report = AICoachReportDemoData.mock
+    private var report = AICoachReportDemoData.empty
     private var pdfFileURL: URL?
     private var hasGeneratedPDF = false
 
@@ -297,7 +297,7 @@ private extension AICoachReportPDFDemoVC {
     }
 
     func buildReport(from dataDict: NSDictionary) -> AICoachReportDemoData {
-        let fallback = AICoachReportDemoData.mock
+        let fallback = AICoachReportDemoData.empty
         let reportContent = dataDict["reportContent"] as? NSDictionary ?? NSDictionary()
 
         let startDate = preferredValue(
@@ -374,6 +374,10 @@ private extension AICoachReportPDFDemoVC {
                 endDate: endDate,
                 fallback: fallback.dailyComparisonTable
             ),
+            weeklyInsightText: sanitizedText(reportContent.stringValueForKey(key: "weeklyInsight")),
+            nextWeekTopTaskText: sanitizedText(reportContent.stringValueForKey(key: "nextWeekTopTask")),
+            moreInsights: sanitizedTextArray(reportContent["moreInsights"]),
+            alternativeTasks: sanitizedTextArray(reportContent["alternativeTasks"]),
             nextPageTitle: fallback.nextPageTitle,
             nextPageItems: fallback.nextPageItems
         )
@@ -385,6 +389,17 @@ private extension AICoachReportPDFDemoVC {
             return trimmedValue
         }
         return fallback.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    func sanitizedText(_ value: String) -> String {
+        value.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    func sanitizedTextArray(_ value: Any?) -> [String] {
+        let items = value as? [Any] ?? []
+        return items
+            .compactMap { ($0 as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { $0.isEmpty == false }
     }
 
     func makeNavigationDateRange(startDate: String, endDate: String, fallback: String) -> String {
