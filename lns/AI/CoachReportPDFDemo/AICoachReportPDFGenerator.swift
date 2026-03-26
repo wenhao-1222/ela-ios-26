@@ -13,13 +13,17 @@ enum AICoachReportPDFGenerator {
 
     static func generate(report: AICoachReportDemoData) throws -> URL {
         let contentWidth = pageSize.width - pageInsets.left - pageInsets.right
-        let contentView = AICoachReportDemoContentView(report: report, contentWidth: contentWidth)
+        let usableHeight = pageSize.height - pageInsets.top - pageInsets.bottom
+        let contentView = AICoachReportDemoContentView(
+            report: report,
+            contentWidth: contentWidth,
+            firstPageUsableHeight: usableHeight
+        )
         let contentHeight = contentView.fittingHeight()
         contentView.frame = CGRect(x: 0, y: 0, width: contentWidth, height: contentHeight)
         contentView.layoutIfNeeded()
 
         let pageBounds = CGRect(origin: .zero, size: pageSize)
-        let usableHeight = pageSize.height - pageInsets.top - pageInsets.bottom
         let pageStartOffsets = contentView.pageStartOffsets(usableHeight: usableHeight)
 
         let fileURL = makeOutputURL()

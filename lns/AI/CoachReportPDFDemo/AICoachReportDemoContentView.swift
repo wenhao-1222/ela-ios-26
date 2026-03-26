@@ -11,12 +11,18 @@ import UIKit
 final class AICoachReportDemoContentView: UIView {
     private let report: AICoachReportDemoData
     private let contentWidth: CGFloat
+    private let firstPageUsableHeight: CGFloat
     private let mainStack = UIStackView()
     private var keepTogetherViews: [UIView] = []
+    private let mainStackInsets = UIEdgeInsets(top: 6, left: 8, bottom: 6, right: 8)
+    private let mainStackSpacing = CGFloat(18)
+    private let chartRowSpacing = CGFloat(16)
+    private let defaultTopRowChartHeight = PDFWidth(913)
 
-    init(report: AICoachReportDemoData, contentWidth: CGFloat) {
+    init(report: AICoachReportDemoData, contentWidth: CGFloat, firstPageUsableHeight: CGFloat) {
         self.report = report
         self.contentWidth = contentWidth
+        self.firstPageUsableHeight = firstPageUsableHeight
         super.init(frame: CGRect(x: 0, y: 0, width: contentWidth, height: 100))
         backgroundColor = AICoachReportDemoPalette.pageBackground
         setupUI()
@@ -80,19 +86,25 @@ final class AICoachReportDemoContentView: UIView {
 private extension AICoachReportDemoContentView {
     func setupUI() {
         mainStack.axis = .vertical
-        mainStack.spacing = 18
+        mainStack.spacing = mainStackSpacing
         addSubview(mainStack)
         mainStack.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 6, left: 8, bottom: 6, right: 8))
+            make.edges.equalToSuperview().inset(mainStackInsets)
         }
 
         let headerCard = makeHeaderCard()
         let summaryCard = makeSummaryCard()
-        let charts = makeChartRows()
+        let topRowChartHeight = calculateTopRowChartHeight(
+            headerCard: headerCard,
+            summaryCard: summaryCard
+        )
+        let row1 = makeTopChartRow(chartHeight: topRowChartHeight)
+        let row2 = makeBottomChartRow()
         let actionSection = makeNextPageActionSection()
 
-        [headerCard, summaryCard, charts, actionSection].forEach(mainStack.addArrangedSubview)
-        keepTogetherViews = [headerCard, summaryCard, charts, actionSection]
+        [headerCard, summaryCard, row1, row2, actionSection].forEach(mainStack.addArrangedSubview)
+        mainStack.setCustomSpacing(chartRowSpacing, after: row1)
+        keepTogetherViews = [headerCard, summaryCard, row1, row2, actionSection]
     }
 
     func makeHeaderCard() -> UIView {
@@ -352,40 +364,77 @@ private extension AICoachReportDemoContentView {
         return row
     }
 
-    func makeChartRows() -> UIView {
-        let wrapper = UIStackView()
-        wrapper.axis = .vertical
-        wrapper.spacing = 16
-
+    func makeTopChartRow(chartHeight: CGFloat) -> UIView {
         let row1 = UIStackView()
         row1.axis = .horizontal
-        row1.spacing = 16
+        row1.spacing = chartRowSpacing
         row1.distribution = .fillEqually
-        row1.addArrangedSubview(makeWeightCard())
-        row1.addArrangedSubview(makeCalorieCard())
+        row1.addArrangedSubview(makeWeightCard(chartHeight: chartHeight))
+        row1.addArrangedSubview(makeCalorieCard(chartHeight: chartHeight))
+        return row1
+    }
 
+    func makeBottomChartRow() -> UIView {
         let row2 = UIStackView()
         row2.axis = .horizontal
-        row2.spacing = 16
+        row2.spacing = chartRowSpacing
         row2.distribution = .fillEqually
         row2.addArrangedSubview(makeNutrientCard())
         row2.addArrangedSubview(makeTrainingCard())
-
-        wrapper.addArrangedSubview(row1)
-        wrapper.addArrangedSubview(row2)
-        return wrapper
+        return row2
     }
 
-    func makeWeightCard() -> UIView {
+    func makeWeightCard(chartHeight: CGFloat) -> UIView {
         let chart = AICoachReportLineChartView(data: report.weightChart)
         let footer = makeFooterRows(report.weightChart.footerRows)
-        return makeChartCard(title: "体重", chartView: chart, footerView: footer, chartHeight: 176)
+        return makeChartCard(title: "体重", chartView: chart, footerView: footer, chartHeight: chartHeight)
     }
 
-    func makeCalorieCard() -> UIView {
+    func makeCalorieCard(chartHeight: CGFloat) -> UIView {
         let chart = AICoachReportBarChartView(data: report.calorieChart)
         let footer = makeFooterRows(report.calorieChart.footerRows)
-        return makeChartCard(title: "热量", chartView: chart, footerView: footer, chartHeight: 176)
+        return makeChartCard(title: "热量", chartView: chart, footerView: footer, chartHeight: chartHeight)
+    }
+
+    func calculateTopRowChartHeight(headerCard: UIView, summaryCard: UIView) -> CGFloat {
+        let stackWidth = contentWidth - mainStackInsets.left - mainStackInsets.right
+        let chartCardWidth = (stackWidth - chartRowSpacing) / 2
+
+        let headerHeight = fittedHeight(for: headerCard, width: stackWidth)
+        let summaryHeight = fittedHeight(for: summaryCard, width: stackWidth)
+
+        let weightFixedHeight = fittedHeight(
+            for: makeWeightCard(chartHeight: 1),
+            width: chartCardWidth
+        ) - 1
+        let calorieFixedHeight = fittedHeight(
+            for: makeCalorieCard(chartHeight: 1),
+            width: chartCardWidth
+        ) - 1
+        let topRowFixedHeight = max(weightFixedHeight, calorieFixedHeight)
+
+        let availableTopRowHeight = firstPageUsableHeight
+            - mainStackInsets.top
+            - headerHeight
+            - mainStackSpacing
+            - summaryHeight
+            - mainStackSpacing
+
+        let preferredHeight = min(defaultTopRowChartHeight, availableTopRowHeight - topRowFixedHeight)
+        return max(1, floor(preferredHeight))
+    }
+
+    func fittedHeight(for view: UIView, width: CGFloat) -> CGFloat {
+        view.frame = CGRect(x: 0, y: 0, width: width, height: 10)
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
+        let targetSize = CGSize(width: width, height: UIView.layoutFittingCompressedSize.height)
+        let size = view.systemLayoutSizeFitting(
+            targetSize,
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        return ceil(size.height)
     }
 
     func makeNutrientCard() -> UIView {
@@ -725,7 +774,7 @@ class AICoachReportDemoCardView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = AICoachReportDemoPalette.cardBackground
-        layer.cornerRadius = 12
+        layer.cornerRadius = PDFWidth(30)
         layer.borderWidth = 1
         layer.borderColor = AICoachReportDemoPalette.border.cgColor
         layer.shadowColor = UIColor.black.cgColor
