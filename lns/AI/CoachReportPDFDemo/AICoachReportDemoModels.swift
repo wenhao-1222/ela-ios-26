@@ -76,6 +76,7 @@ struct AICoachReportLegendItem {
 }
 
 struct AICoachReportTrainingCardData {
+    let title: String
     let leftItems: [AICoachReportTrainingItem]
     let rightItems: [AICoachReportTrainingItem]
     let bottomLeftText: String
@@ -186,6 +187,7 @@ extension AICoachReportDemoData {
             ]
         ),
         trainingChart: AICoachReportTrainingCardData(
+            title: "力量训练部分",
             leftItems: [
                 .init(title: "胸", count: 3, maxCount: 3),
                 .init(title: "肩", count: 2, maxCount: 3),

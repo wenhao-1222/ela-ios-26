@@ -364,7 +364,10 @@ private extension AICoachReportPDFDemoVC {
                 endDate: endDate,
                 fallback: fallback.nutrientChart
             ),
-            trainingChart: fallback.trainingChart,
+            trainingChart: buildTrainingChart(
+                reportContent: reportContent,
+                fallback: fallback.trainingChart
+            ),
             nextPageTitle: fallback.nextPageTitle,
             nextPageItems: fallback.nextPageItems
         )
@@ -535,6 +538,39 @@ private extension AICoachReportPDFDemoVC {
         )
     }
 
+    func buildTrainingChart(
+        reportContent: NSDictionary,
+        fallback: AICoachReportTrainingCardData
+    ) -> AICoachReportTrainingCardData {
+        let fitnessPack = reportContent["fitnessPack"] as? NSDictionary ?? NSDictionary()
+        let bodyPartList = (fitnessPack["bodyPartList"] as? NSArray)?
+            .compactMap { $0 as? NSDictionary } ?? []
+
+        let items = bodyPartList.map { item in
+            AICoachReportTrainingItem(
+                title: item.stringValueForKey(key: "part"),
+                count: Int(item.doubleValueForKey(key: "num").rounded()),
+                maxCount: 1
+            )
+        }.filter { $0.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false }
+
+        let maxCount = max(items.map(\.count).max() ?? 0, 1)
+        let normalizedItems = items.map {
+            AICoachReportTrainingItem(title: $0.title, count: $0.count, maxCount: maxCount)
+        }
+        let columns = splitTrainingItems(normalizedItems)
+        let workoutDays = Int(fitnessPack.doubleValueForKey(key: "workoutDays").rounded())
+        let restDays = Int(fitnessPack.doubleValueForKey(key: "restDays").rounded())
+
+        return AICoachReportTrainingCardData(
+            title: fallback.title,
+            leftItems: columns.left,
+            rightItems: columns.right,
+            bottomLeftText: "本周训练天数： \(workoutDays) 天",
+            bottomRightText: "休息天数： \(restDays) 天"
+        )
+    }
+
     func makeWeeklyAxisSlots(
         startDate: String,
         endDate: String,
@@ -559,6 +595,15 @@ private extension AICoachReportPDFDemoVC {
         return fallbackLabels.enumerated().map { index, label in
             (key: "\(index)", label: label)
         }
+    }
+
+    func splitTrainingItems(_ items: [AICoachReportTrainingItem]) -> (left: [AICoachReportTrainingItem], right: [AICoachReportTrainingItem]) {
+        guard items.isEmpty == false else { return ([], []) }
+        let leftColumnCapacity = 7
+        let leftCount = min(items.count, leftColumnCapacity)
+        let leftItems = Array(items.prefix(leftCount))
+        let rightItems = Array(items.dropFirst(leftCount))
+        return (leftItems, rightItems)
     }
 
     func makeWeightValueMap(weightPack: NSDictionary) -> [String: CGFloat] {

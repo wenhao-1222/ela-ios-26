@@ -475,7 +475,7 @@ private extension AICoachReportDemoContentView {
     func makeTrainingCard() -> UIView {
         let card = AICoachReportDemoCardView()
 
-        let titleLabel = makeCardTitleLabel("力量训练部分")
+        let titleLabel = makeCardTitleLabel(report.trainingChart.title)
         let columnStack = UIStackView()
         columnStack.axis = .horizontal
         columnStack.spacing = 14
@@ -519,6 +519,7 @@ private extension AICoachReportDemoContentView {
         bottomRight.snp.makeConstraints { make in
             make.right.equalTo(columnStack)
             make.centerY.equalTo(bottomLeft)
+            make.left.greaterThanOrEqualTo(bottomLeft.snp.right).offset(12)
         }
 
         return card
