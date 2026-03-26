@@ -13,7 +13,7 @@ class GuidanceDietRecordVM: UIView {
     }
 
     var selectedBlock: (() -> ())?
-    private var selectedIndex = -1
+    var selectedIndex = -1
 
     private let dataArray: [Item] = [
         Item(title: "有，用过其他软件", value: "app"),

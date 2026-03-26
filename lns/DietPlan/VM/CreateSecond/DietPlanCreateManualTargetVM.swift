@@ -14,6 +14,7 @@ class DietPlanCreateManualTargetVM: UIView {
 
     private let maxTargetValue = 9999
     private var keyboardBottomOffset: CGFloat = 0
+    private var lastValidTargetText = ""
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -145,7 +146,9 @@ extension DietPlanCreateManualTargetVM {
     }
 
     func configure(initialValue: String) {
-        textField.text = normalizedTargetText(initialValue)
+        let normalizedValue = normalizedTargetText(initialValue) ?? ""
+        textField.text = normalizedValue
+        lastValidTargetText = normalizedValue
         updateSaveButtonState()
         clearButton.isHidden = textField.text?.isEmpty ?? true
     }
@@ -171,15 +174,21 @@ extension DietPlanCreateManualTargetVM {
 
     @objc func textDidChange() {
         let raw = textField.text ?? ""
-        let filtered = normalizedTargetText(raw)
+        guard let filtered = normalizedTargetText(raw) else {
+            textField.text = lastValidTargetText
+            updateSaveButtonState()
+            return
+        }
         if filtered != raw {
             textField.text = filtered
         }
+        lastValidTargetText = filtered
         updateSaveButtonState()
     }
 
     @objc func clearTapAction() {
         textField.text = ""
+        lastValidTargetText = ""
         updateSaveButtonState()
     }
 
@@ -189,11 +198,11 @@ extension DietPlanCreateManualTargetVM {
     }
 
     @objc func saveAction() {
-        let value = normalizedTargetText(textField.text ?? "")
-        guard !value.isEmpty else {
+        guard let value = normalizedTargetText(textField.text ?? ""), !value.isEmpty else {
             return
         }
         textField.text = value
+        lastValidTargetText = value
         resignInput()
         saveTapBlock?(value)
     }
@@ -237,10 +246,10 @@ extension DietPlanCreateManualTargetVM: UITextFieldDelegate {
 }
 
 private extension DietPlanCreateManualTargetVM {
-    func normalizedTargetText(_ text: String) -> String {
+    func normalizedTargetText(_ text: String) -> String? {
         let digitsOnly = text.filter { $0.isNumber }
         guard !digitsOnly.isEmpty else { return "" }
-        let value = min(Int(digitsOnly) ?? 0, maxTargetValue)
+        guard let value = Int(digitsOnly), value <= maxTargetValue else { return nil }
         return value > 0 ? "\(value)" : ""
     }
 }

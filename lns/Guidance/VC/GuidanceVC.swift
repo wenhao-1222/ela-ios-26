@@ -214,7 +214,8 @@ class GuidanceVC: WHBaseViewVC {
     lazy var dietRecordVm: GuidanceDietRecordVM = {
         let vm = GuidanceDietRecordVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: 0, height: 0))
         vm.selectedBlock = {()in
-            self.moveToStep(index: 2, animated: true)
+            self.updateNextButtonForCurrentStep()
+//            self.moveToStep(index: 2, animated: true)
         }
         return vm
     }()
@@ -240,7 +241,8 @@ class GuidanceVC: WHBaseViewVC {
             QuestinonaireMsgModel.shared.proteinNumber = ""
             QuestinonaireMsgModel.shared.fatsNumber = ""
             self?.updateFlowConfiguration()
-            self?.nextButtonTapAction()
+//            self?.nextButtonTapAction()
+            self?.updateNextButtonForCurrentStep()
         }
         return vm
     }()
@@ -411,7 +413,7 @@ extension GuidanceVC{
         switch currentStep {
         case .progressChart, .fixedTarget, .height, .bodyfat, .takeoutFrequency,
              .mealsAdjust, .exerciseCaloriesRecord, .cardioFrequency,
-             .caloriesResultExplain, .nutritionGoal,.goalBarrier:
+             .caloriesResultExplain, .nutritionGoal,.goalBarrier,.dietRecord:
             moveToStep(index: currentIndex + 1, animated: true)
         case .birthday:
             birthdayVm.getBirthDayData()
@@ -447,7 +449,7 @@ extension GuidanceVC{
                 delayedNextWorkItem = workItem
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.75, execute: workItem)
             }
-        case .sex, .dietRecord, .mealsSummary, .strengthTrainingSummary,  .reminderPrompt:
+        case .sex, .mealsSummary, .strengthTrainingSummary,  .reminderPrompt:
             break
         }
     }
@@ -632,14 +634,14 @@ extension GuidanceVC{
         }
 
         switch currentStep {
-        case .sex, .dietRecord, .mealsSummary, .strengthTrainingSummary, .nutritionGoal, .reminderPrompt:
+        case .sex, .mealsSummary, .strengthTrainingSummary, .nutritionGoal, .reminderPrompt:
             nextButton.isHidden = true
             nextButton.isEnabled = false
         case .progressChart:
             nextButton.isHidden = false
             nextButton.isEnabled = false
         case .fixedTarget:
-            nextButton.isHidden = true
+            nextButton.isHidden = false
             nextButton.isEnabled = fixedTargetVm.hasSelection
         case .birthday, .weight, .height, .removeBarrier:
             nextButton.isHidden = false
@@ -671,6 +673,9 @@ extension GuidanceVC{
         case .goal:
             nextButton.isHidden = false
             nextButton.isEnabled = goalVm.selectIndex >= 0
+        case .dietRecord:
+            nextButton.isHidden = false
+            nextButton.isEnabled = dietRecordVm.selectedIndex >= 0
         case .goalBarrier:
             nextButton.isHidden = false
             nextButton.isEnabled = goalBarrierVm.hasSelection

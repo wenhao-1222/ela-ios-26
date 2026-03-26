@@ -178,6 +178,7 @@ private extension AICoachReportDemoContentView {
             let label = UILabel()
             label.font = .systemFont(ofSize: 12.5, weight: .regular)
             label.textColor = AICoachReportDemoPalette.textSecondary
+            label.numberOfLines = 0
             label.text = line
             textStack.addArrangedSubview(label)
         }
@@ -185,6 +186,7 @@ private extension AICoachReportDemoContentView {
         let confidenceLabel = UILabel()
         confidenceLabel.font = .systemFont(ofSize: 12.5, weight: .medium)
         confidenceLabel.textColor = AICoachReportDemoPalette.textSecondary
+        confidenceLabel.numberOfLines = 0
         confidenceLabel.text = report.confidenceText
         textStack.addArrangedSubview(confidenceLabel)
 
@@ -229,7 +231,7 @@ private extension AICoachReportDemoContentView {
             make.top.equalTo(titleLabel.snp.bottom).offset(11)
             make.right.equalToSuperview().offset(-18)
             make.width.equalTo(248)
-            make.height.equalTo(72)
+            make.bottom.equalToSuperview().offset(-18)
         }
         potentialTitle.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(14)
@@ -238,11 +240,13 @@ private extension AICoachReportDemoContentView {
         potentialValue.snp.makeConstraints { make in
             make.left.equalTo(potentialTitle)
             make.top.equalTo(potentialTitle.snp.bottom).offset(2)
+            make.bottom.lessThanOrEqualToSuperview().offset(-14)
         }
         tipsStack.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(14)
             make.left.equalTo(potentialValue.snp.right).offset(18)
             make.right.equalToSuperview().offset(-13)
+            make.bottom.equalToSuperview().offset(-14)
         }
 
         return card
@@ -618,7 +622,7 @@ private extension AICoachReportDemoContentView {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .medium)
         label.textColor = AICoachReportDemoPalette.textSecondary
-        label.numberOfLines = 1
+        label.numberOfLines = 0
         label.text = text
 
         row.addSubview(dot)

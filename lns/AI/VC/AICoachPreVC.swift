@@ -66,7 +66,10 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
 
 extension AICoachPreVC{
     @objc func nextButtonTapAction() {
-        self.sendReportDetailRequest()
+//        self.sendReportDetailRequest()
+        let vc = AICoachReportPDFDemoVC()
+        vc.reportId = self.reportId
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 
     @objc func dismissPopupTapAction() {
