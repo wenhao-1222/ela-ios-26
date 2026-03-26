@@ -186,20 +186,20 @@ private extension AICoachReportDemoContentView {
     func makeSummaryCard() -> UIView {
         let card = AICoachReportDemoCardView()
         card.snp.makeConstraints { make in
-            make.height.greaterThanOrEqualTo(188)
+            make.height.greaterThanOrEqualTo(PDFWidth(421))
         }
 
         let titleLabel = makeCardTitleLabel(report.weeklySummaryTitle)
         
         let summaryLabel = UILabel()
-        summaryLabel.font = .systemFont(ofSize: 13.5, weight: .regular)
+        summaryLabel.font = .systemFont(ofSize: PDFWidth(32), weight: .regular)
         summaryLabel.textColor = AICoachReportDemoPalette.textPrimary
         summaryLabel.numberOfLines = 0
         summaryLabel.text = makeSummaryBodyText()
 
         let sidePanel = UIView()
-        sidePanel.backgroundColor = UIColor(hex: "F2F2F3")
-        sidePanel.layer.cornerRadius = 16
+        sidePanel.backgroundColor = UIColor(hex: "F2F2F2")
+        sidePanel.layer.cornerRadius = PDFWidth(30)
 
         let panelStack = UIStackView()
         panelStack.axis = .horizontal
@@ -209,14 +209,14 @@ private extension AICoachReportDemoContentView {
         let potentialColumn = UIView()
 
         let potentialTitle = UILabel()
-        potentialTitle.font = .systemFont(ofSize: 11.5, weight: .medium)
+        potentialTitle.font = .systemFont(ofSize: PDFWidth(28), weight: .regular)
         potentialTitle.textColor = AICoachReportDemoPalette.textSecondary
         potentialTitle.textAlignment = .center
         potentialTitle.text = report.weeklyPotentialTitle
 
         let potentialValue = UILabel()
         potentialValue.attributedText = makePotentialValueText(report.weeklyPotentialValue)
-        potentialValue.textAlignment = .center
+        potentialValue.textAlignment = .right
 
         let riskView = makeSummaryPanelTipItem(report.riskTip)
         let actionView = makeSummaryPanelTipItem(report.actionTip)
@@ -257,7 +257,8 @@ private extension AICoachReportDemoContentView {
         }
         potentialValue.snp.makeConstraints { make in
             make.top.equalTo(potentialTitle.snp.bottom).offset(8)
-            make.left.right.equalToSuperview()
+            make.left.equalToSuperview()
+            make.right.equalTo(kFitWidth(-20))
             make.bottom.equalToSuperview()
         }
         riskView.snp.makeConstraints { make in
@@ -304,11 +305,11 @@ private extension AICoachReportDemoContentView {
         let percentSuffix = trimmedText.hasSuffix("%") ? "%" : ""
         let numberText = percentSuffix.isEmpty ? trimmedText : String(trimmedText.dropLast())
         let numberAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 24, weight: .bold),
+            .font: UIFont.systemFont(ofSize: PDFWidth(48), weight: .medium),
             .foregroundColor: AICoachReportDemoPalette.textPrimary
         ]
         let percentAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 11, weight: .semibold),
+            .font: UIFont.systemFont(ofSize: PDFWidth(24), weight: .medium),
             .foregroundColor: AICoachReportDemoPalette.textPrimary
         ]
 
@@ -325,10 +326,10 @@ private extension AICoachReportDemoContentView {
 
         let dot = UIView()
         dot.backgroundColor = AICoachReportDemoPalette.bulletBlue
-        dot.layer.cornerRadius = 2.5
+        dot.layer.cornerRadius = PDFWidth(5)
 
         let label = UILabel()
-        label.font = .systemFont(ofSize: 11.5, weight: .medium)
+        label.font = .systemFont(ofSize: PDFWidth(32), weight: .regular)
         label.textColor = AICoachReportDemoPalette.textPrimary
         label.numberOfLines = 0
         label.text = text
@@ -339,10 +340,10 @@ private extension AICoachReportDemoContentView {
         dot.snp.makeConstraints { make in
             make.left.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(5)
+            make.width.height.equalTo(PDFWidth(10))
         }
         label.snp.makeConstraints { make in
-            make.left.equalTo(dot.snp.right).offset(9)
+            make.left.equalTo(dot.snp.right).offset(PDFWidth(12))
             make.top.bottom.right.equalToSuperview()
         }
 
@@ -711,7 +712,7 @@ private extension AICoachReportDemoContentView {
 
     func makeCardTitleLabel(_ text: String) -> UILabel {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 17, weight: .semibold)
+        label.font = .systemFont(ofSize: PDFWidth(42), weight: .semibold)
         label.textColor = AICoachReportDemoPalette.textPrimary
         label.text = text
         return label

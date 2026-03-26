@@ -103,13 +103,13 @@ enum AICoachReportDemoPalette {
     static let border = UIColor(hex: "DADDE4")
     static let softPanel = UIColor(hex: "F1F1F2")
     static let grid = UIColor(hex: "E7EAF0")
-    static let textPrimary = UIColor(hex: "13161B")
+    static let textPrimary = UIColor(hex: "0f1214")
     static let textSecondary = UIColor(hex: "535761")
     static let textTertiary = UIColor(hex: "8B8F97")
     static let nutrientPurple = UIColor(hex: "8E47F8")
     static let nutrientYellow = UIColor(hex: "F5C51E")
     static let nutrientOrange = UIColor(hex: "FF8A1E")
-    static let bulletBlue = UIColor(hex: "2684FF")
+    static let bulletBlue = UIColor(hex: "007AFF")
 }
 
 extension AICoachReportDemoData {
