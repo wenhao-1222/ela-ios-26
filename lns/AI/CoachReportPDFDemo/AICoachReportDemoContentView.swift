@@ -211,7 +211,7 @@ private extension AICoachReportDemoContentView {
         let potentialTitle = UILabel()
         potentialTitle.font = .systemFont(ofSize: PDFWidth(28), weight: .regular)
         potentialTitle.textColor = AICoachReportDemoPalette.textSecondary
-        potentialTitle.textAlignment = .center
+        potentialTitle.textAlignment = .right
         potentialTitle.text = report.weeklyPotentialTitle
 
         let potentialValue = UILabel()
@@ -230,6 +230,7 @@ private extension AICoachReportDemoContentView {
         panelStack.addArrangedSubview(actionView)
         potentialColumn.addSubview(potentialTitle)
         potentialColumn.addSubview(potentialValue)
+//        potentialColumn.backgroundColor = WHColor_ARC()
 
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(20)
@@ -241,16 +242,17 @@ private extension AICoachReportDemoContentView {
             make.right.equalToSuperview().offset(-20)
         }
         sidePanel.snp.makeConstraints { make in
-            make.top.equalTo(summaryLabel.snp.bottom).offset(20)
-            make.left.equalToSuperview().offset(20)
-            make.right.equalToSuperview().offset(-20)
-            make.bottom.equalToSuperview().offset(-20)
+            make.top.equalTo(summaryLabel.snp.bottom).offset(PDFWidth(40))
+            make.left.equalToSuperview().offset(PDFWidth(50))
+            make.right.equalToSuperview().offset(PDFWidth(-50))
+            make.bottom.equalToSuperview().offset(PDFWidth(-50))
         }
         panelStack.snp.makeConstraints { make in
             make.edges.equalToSuperview().inset(UIEdgeInsets(top: 16, left: 18, bottom: 16, right: 18))
         }
         potentialColumn.snp.makeConstraints { make in
             make.width.equalTo(108)
+            make.left.equalTo(PDFWidth(-50))
         }
         potentialTitle.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
@@ -258,7 +260,7 @@ private extension AICoachReportDemoContentView {
         potentialValue.snp.makeConstraints { make in
             make.top.equalTo(potentialTitle.snp.bottom).offset(8)
             make.left.equalToSuperview()
-            make.right.equalTo(kFitWidth(-20))
+            make.right.equalToSuperview()
             make.bottom.equalToSuperview()
         }
         riskView.snp.makeConstraints { make in
@@ -310,12 +312,12 @@ private extension AICoachReportDemoContentView {
         ]
         let percentAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.systemFont(ofSize: PDFWidth(24), weight: .medium),
+            .baselineOffset: PDFWidth(-2),
             .foregroundColor: AICoachReportDemoPalette.textPrimary
         ]
 
         let attributedText = NSMutableAttributedString(string: numberText, attributes: numberAttributes)
         if percentSuffix.isEmpty == false {
-            attributedText.append(NSAttributedString(string: " ", attributes: numberAttributes))
             attributedText.append(NSAttributedString(string: percentSuffix, attributes: percentAttributes))
         }
         return attributedText
@@ -339,7 +341,7 @@ private extension AICoachReportDemoContentView {
 
         dot.snp.makeConstraints { make in
             make.left.equalToSuperview()
-            make.centerY.equalToSuperview()
+            make.top.equalTo(label.snp.top).offset(PDFWidth(16))
             make.width.height.equalTo(PDFWidth(10))
         }
         label.snp.makeConstraints { make in
