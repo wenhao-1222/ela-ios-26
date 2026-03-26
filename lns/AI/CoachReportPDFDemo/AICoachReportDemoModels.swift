@@ -53,7 +53,7 @@ struct AICoachReportBarChartData {
 
 struct AICoachReportBarPoint {
     let axisLabel: String
-    let value: CGFloat
+    let value: CGFloat?
 }
 
 struct AICoachReportGroupedBarChartData {
@@ -144,9 +144,9 @@ extension AICoachReportDemoData {
                 .init(axisLabel: "04/07", plottedValue: 46.5, valueText: "")
             ],
             footerRows: [
-                .init(leftText: "本周体重均值：74.5 kg", rightText: "周内波动：2.23%"),
-                .init(leftText: "上周体重均值：75 kg", rightText: nil),
-                .init(leftText: "本周体重对比上周下降 1 kg（10%）", rightText: nil)
+                .init(leftText: "本周体重均值：0 kg", rightText: nil),
+                .init(leftText: "周内波动：0%", rightText: nil),
+                .init(leftText: "本周体重对比上周下降 0 kg（0%）", rightText: nil)
             ]
         ),
         calorieChart: AICoachReportBarChartData(
@@ -154,17 +154,17 @@ extension AICoachReportDemoData {
             maxValue: 600,
             entries: [
                 .init(axisLabel: "04/01", value: 420),
-                .init(axisLabel: "04/01", value: 560),
-                .init(axisLabel: "04/01", value: 450),
-                .init(axisLabel: "04/01", value: 320),
-                .init(axisLabel: "04/01", value: 450),
-                .init(axisLabel: "04/01", value: 520),
-                .init(axisLabel: "04/01", value: 350)
+                .init(axisLabel: "04/02", value: 560),
+                .init(axisLabel: "04/03", value: 450),
+                .init(axisLabel: "04/04", value: 320),
+                .init(axisLabel: "04/05", value: 450),
+                .init(axisLabel: "04/06", value: nil),
+                .init(axisLabel: "04/07", value: 350)
             ],
             footerRows: [
-                .init(leftText: "本周热量摄入均值：523 kcal", rightText: nil),
-                .init(leftText: "周末：2000kcal", rightText: "工作日：2550kcal"),
-                .init(leftText: "本周热量摄入对比上周下降 40 kcal（10%）", rightText: nil)
+                .init(leftText: "本周热量摄入均值：0 kcal", rightText: nil),
+                .init(leftText: "周末：0kcal", rightText: "工作日：0kcal"),
+                .init(leftText: "本周热量摄入对比上周下降 0 kcal（0%）", rightText: nil)
             ]
         ),
         nutrientChart: AICoachReportGroupedBarChartData(

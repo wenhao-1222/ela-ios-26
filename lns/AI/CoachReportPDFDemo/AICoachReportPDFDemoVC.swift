@@ -352,7 +352,12 @@ private extension AICoachReportPDFDemoVC {
                 endDate: endDate,
                 fallback: fallback.weightChart
             ),
-            calorieChart: fallback.calorieChart,
+            calorieChart: buildCalorieChart(
+                reportContent: reportContent,
+                startDate: startDate,
+                endDate: endDate,
+                fallback: fallback.calorieChart
+            ),
             nutrientChart: fallback.nutrientChart,
             trainingChart: fallback.trainingChart,
             nextPageTitle: fallback.nextPageTitle,
@@ -438,10 +443,10 @@ private extension AICoachReportPDFDemoVC {
         fallback: AICoachReportLineChartData
     ) -> AICoachReportLineChartData {
         let weightPack = reportContent["weightPack"] as? NSDictionary ?? NSDictionary()
-        let axisSlots = makeWeightAxisSlots(
+        let axisSlots = makeWeeklyAxisSlots(
             startDate: startDate,
             endDate: endDate,
-            fallback: fallback
+            fallbackLabels: fallback.entries.map(\.axisLabel)
         )
         let weightByDate = makeWeightValueMap(weightPack: weightPack)
 
@@ -466,10 +471,39 @@ private extension AICoachReportPDFDemoVC {
         )
     }
 
-    func makeWeightAxisSlots(
+    func buildCalorieChart(
+        reportContent: NSDictionary,
         startDate: String,
         endDate: String,
-        fallback: AICoachReportLineChartData
+        fallback: AICoachReportBarChartData
+    ) -> AICoachReportBarChartData {
+        let caloriesPack = reportContent["caloriesPack"] as? NSDictionary ?? NSDictionary()
+        let axisSlots = makeWeeklyAxisSlots(
+            startDate: startDate,
+            endDate: endDate,
+            fallbackLabels: fallback.entries.map(\.axisLabel)
+        )
+        let calorieByDate = makeCalorieValueMap(caloriesPack: caloriesPack)
+
+        let entries = axisSlots.map { slot in
+            AICoachReportBarPoint(axisLabel: slot.label, value: calorieByDate[slot.key])
+        }
+
+        let validValues = entries.compactMap(\.value)
+        let axisConfig = makeCalorieAxisConfig(values: validValues, fallback: fallback)
+
+        return AICoachReportBarChartData(
+            yAxisTexts: axisConfig.yAxisTexts,
+            maxValue: axisConfig.maxValue,
+            entries: entries,
+            footerRows: makeCalorieFooterRows(caloriesPack: caloriesPack, validValues: validValues, fallback: fallback.footerRows)
+        )
+    }
+
+    func makeWeeklyAxisSlots(
+        startDate: String,
+        endDate: String,
+        fallbackLabels: [String]
     ) -> [(key: String, label: String)] {
         let calendar = Calendar(identifier: .gregorian)
 
@@ -487,8 +521,8 @@ private extension AICoachReportPDFDemoVC {
             }
         }
 
-        return fallback.entries.enumerated().map { index, entry in
-            (key: "\(index)", label: entry.axisLabel)
+        return fallbackLabels.enumerated().map { index, label in
+            (key: "\(index)", label: label)
         }
     }
 
@@ -507,6 +541,23 @@ private extension AICoachReportPDFDemoVC {
             weightByDate[normalizedDate] = CGFloat(item.doubleValueForKey(key: "weight"))
         }
         return weightByDate
+    }
+
+    func makeCalorieValueMap(caloriesPack: NSDictionary) -> [String: CGFloat] {
+        let weeklyCaloriesData = (caloriesPack["weeklyCaloriesData"] as? NSArray)?
+            .compactMap { $0 as? NSDictionary } ?? []
+
+        var calorieByDate: [String: CGFloat] = [:]
+        weeklyCaloriesData.forEach { item in
+            let rawDate = preferredValue(
+                item.stringValueForKey(key: "sdate"),
+                fallback: item.stringValueForKey(key: "ctime")
+            )
+            let normalizedDate = normalizedWeightDataKey(rawDate)
+            guard normalizedDate.isEmpty == false else { return }
+            calorieByDate[normalizedDate] = CGFloat(item.doubleValueForKey(key: "calories"))
+        }
+        return calorieByDate
     }
 
     func makeWeightAxisConfig(
@@ -574,6 +625,63 @@ private extension AICoachReportPDFDemoVC {
         return rows.isEmpty ? fallback : rows
     }
 
+    func makeCalorieAxisConfig(
+        values: [CGFloat],
+        fallback: AICoachReportBarChartData
+    ) -> (yAxisTexts: [String], maxValue: CGFloat) {
+        guard let maxValue = values.max(), maxValue > 0 else {
+            return (fallback.yAxisTexts, fallback.maxValue)
+        }
+
+        let scaledMax = ceil(maxValue * 1.15)
+        let step = max(ceil(scaledMax / 3 / 100) * 100, 100)
+        let axisMax = step * 3
+        let yAxisTexts = stride(from: Int(axisMax), through: 0, by: -Int(step)).map { "\($0)" }
+        return (yAxisTexts, axisMax)
+    }
+
+    func makeCalorieFooterRows(
+        caloriesPack: NSDictionary,
+        validValues: [CGFloat],
+        fallback: [AICoachReportFooterRow]
+    ) -> [AICoachReportFooterRow] {
+        let averageValue = caloriesPack.doubleValueForKey(key: "thisWeekAvgKcal")
+        let weekendValue = caloriesPack.doubleValueForKey(key: "weekendAvgKcal")
+        let workdayValue = caloriesPack.doubleValueForKey(key: "workdayAvgKcal")
+        let deltaKcal = caloriesPack.doubleValueForKey(key: "deltaKcal")
+        let deltaPercent = caloriesPack.doubleValueForKey(key: "deltaPercent")
+        let trendText = caloriesPack.stringValueForKey(key: "trendText").trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let derivedAverage = validValues.isEmpty ? 0 : Double(validValues.reduce(0, +)) / Double(validValues.count)
+        let thisWeekAverage = averageValue > 0 ? averageValue : derivedAverage
+
+        guard thisWeekAverage > 0 else { return fallback }
+
+        var rows: [AICoachReportFooterRow] = [
+            .init(leftText: "本周热量摄入均值：\(formatChartNumber(thisWeekAverage)) kcal", rightText: nil)
+        ]
+
+        if weekendValue > 0 || workdayValue > 0 {
+            rows.append(
+                .init(
+                    leftText: "周末：\(formatChartNumber(weekendValue))kcal",
+                    rightText: "工作日：\(formatChartNumber(workdayValue))kcal"
+                )
+            )
+        }
+
+        let summaryText = calorieTrendSummary(
+            deltaKcal: deltaKcal,
+            deltaPercent: deltaPercent,
+            trendText: trendText
+        )
+        if summaryText.isEmpty == false {
+            rows.append(.init(leftText: summaryText, rightText: nil))
+        }
+
+        return rows.isEmpty ? fallback : rows
+    }
+
     func previousWeekAverage(currentAverage: Double, deltaKg: Double, trendText: String) -> Double {
         if trendText.contains("增加") {
             return max(0, currentAverage - deltaKg)
@@ -593,6 +701,17 @@ private extension AICoachReportPDFDemoVC {
         let deltaText = formatChartNumber(deltaKg)
         let percentText = formatPercentNumber(deltaPercent)
         return "本周体重对比上周\(trendText)\(deltaText) kg（\(percentText)%）"
+    }
+
+    func calorieTrendSummary(deltaKcal: Double, deltaPercent: Double, trendText: String) -> String {
+        if trendText.contains("持平") || abs(deltaKcal) < 0.0001 {
+            return "本周热量摄入对比上周持平"
+        }
+        guard trendText.isEmpty == false else { return "" }
+
+        let deltaText = formatChartNumber(deltaKcal)
+        let percentText = formatPercentNumber(deltaPercent)
+        return "本周热量摄入对比上周\(trendText)\(deltaText) kcal（\(percentText)%）"
     }
 
     func parseReportDate(_ dateString: String) -> Date? {
