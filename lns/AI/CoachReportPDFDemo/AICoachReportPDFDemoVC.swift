@@ -346,7 +346,12 @@ private extension AICoachReportPDFDemoVC {
                 value: reportContent.stringValueForKey(key: "minimalAdjustment"),
                 fallback: fallback.actionTip
             ),
-            weightChart: fallback.weightChart,
+            weightChart: buildWeightChart(
+                reportContent: reportContent,
+                startDate: startDate,
+                endDate: endDate,
+                fallback: fallback.weightChart
+            ),
             calorieChart: fallback.calorieChart,
             nutrientChart: fallback.nutrientChart,
             trainingChart: fallback.trainingChart,
@@ -424,5 +429,246 @@ private extension AICoachReportPDFDemoVC {
             return trimmedValue
         }
         return "\(prefix)\(trimmedValue)"
+    }
+
+    func buildWeightChart(
+        reportContent: NSDictionary,
+        startDate: String,
+        endDate: String,
+        fallback: AICoachReportLineChartData
+    ) -> AICoachReportLineChartData {
+        let weightPack = reportContent["weightPack"] as? NSDictionary ?? NSDictionary()
+        let axisSlots = makeWeightAxisSlots(
+            startDate: startDate,
+            endDate: endDate,
+            fallback: fallback
+        )
+        let weightByDate = makeWeightValueMap(weightPack: weightPack)
+
+        let entries = axisSlots.map { slot in
+            let weightValue = weightByDate[slot.key]
+            return AICoachReportLinePoint(
+                axisLabel: slot.label,
+                plottedValue: weightValue,
+                valueText: weightValue.map { formatChartNumber($0) } ?? ""
+            )
+        }
+
+        let validValues = entries.compactMap(\.plottedValue)
+        let axisConfig = makeWeightAxisConfig(values: validValues, fallback: fallback)
+
+        return AICoachReportLineChartData(
+            yAxisTexts: axisConfig.yAxisTexts,
+            minValue: axisConfig.minValue,
+            maxValue: axisConfig.maxValue,
+            entries: entries,
+            footerRows: makeWeightFooterRows(weightPack: weightPack, validValues: validValues, fallback: fallback.footerRows)
+        )
+    }
+
+    func makeWeightAxisSlots(
+        startDate: String,
+        endDate: String,
+        fallback: AICoachReportLineChartData
+    ) -> [(key: String, label: String)] {
+        let calendar = Calendar(identifier: .gregorian)
+
+        if let start = parseReportDate(startDate) {
+            return (0..<7).compactMap { offset in
+                guard let date = calendar.date(byAdding: .day, value: offset, to: start) else { return nil }
+                return (weightDataKey(from: date), weightAxisLabel(from: date))
+            }
+        }
+
+        if let end = parseReportDate(endDate) {
+            return (0..<7).compactMap { offset in
+                guard let date = calendar.date(byAdding: .day, value: offset - 6, to: end) else { return nil }
+                return (weightDataKey(from: date), weightAxisLabel(from: date))
+            }
+        }
+
+        return fallback.entries.enumerated().map { index, entry in
+            (key: "\(index)", label: entry.axisLabel)
+        }
+    }
+
+    func makeWeightValueMap(weightPack: NSDictionary) -> [String: CGFloat] {
+        let weeklyWeightData = (weightPack["weeklyWeightData"] as? NSArray)?
+            .compactMap { $0 as? NSDictionary } ?? []
+
+        var weightByDate: [String: CGFloat] = [:]
+        weeklyWeightData.forEach { item in
+            let rawDate = preferredValue(
+                item.stringValueForKey(key: "sdate"),
+                fallback: item.stringValueForKey(key: "ctime")
+            )
+            let normalizedDate = normalizedWeightDataKey(rawDate)
+            guard normalizedDate.isEmpty == false else { return }
+            weightByDate[normalizedDate] = CGFloat(item.doubleValueForKey(key: "weight"))
+        }
+        return weightByDate
+    }
+
+    func makeWeightAxisConfig(
+        values: [CGFloat],
+        fallback: AICoachReportLineChartData
+    ) -> (yAxisTexts: [String], minValue: CGFloat, maxValue: CGFloat) {
+        guard let minValue = values.min(), let maxValue = values.max() else {
+            return (fallback.yAxisTexts, fallback.minValue, fallback.maxValue)
+        }
+
+        let range = max(maxValue - minValue, 0.1)
+        let padding = max(range * 0.25, 0.8)
+        let axisMin = floor((minValue - padding) * 10) / 10
+        let axisMax = ceil((maxValue + padding) * 10) / 10
+        let step = (axisMax - axisMin) / 3
+        let yAxisTexts = (0...3).map { index in
+            formatChartNumber(axisMax - CGFloat(index) * step)
+        }
+
+        return (yAxisTexts, axisMin, axisMax)
+    }
+
+    func makeWeightFooterRows(
+        weightPack: NSDictionary,
+        validValues: [CGFloat],
+        fallback: [AICoachReportFooterRow]
+    ) -> [AICoachReportFooterRow] {
+        let averageValue = weightPack.doubleValueForKey(key: "thisWeekAvgKg")
+        let fluctuationValue = weightPack.doubleValueForKey(key: "weeklyWeightFluctuationRate")
+        let deltaKg = weightPack.doubleValueForKey(key: "deltaKg")
+        let deltaPercent = weightPack.doubleValueForKey(key: "deltaPercent")
+        let trendText = weightPack.stringValueForKey(key: "trendText").trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let derivedAverage = validValues.isEmpty ? 0 : Double(validValues.reduce(0, +)) / Double(validValues.count)
+        let thisWeekAverage = averageValue > 0 ? averageValue : derivedAverage
+
+        guard thisWeekAverage > 0 else { return fallback }
+
+        let previousAverage = previousWeekAverage(
+            currentAverage: thisWeekAverage,
+            deltaKg: deltaKg,
+            trendText: trendText
+        )
+        let summaryText = weightTrendSummary(
+            deltaKg: deltaKg,
+            deltaPercent: deltaPercent,
+            trendText: trendText
+        )
+
+        var rows: [AICoachReportFooterRow] = [
+            .init(
+                leftText: "本周体重均值：\(formatChartNumber(thisWeekAverage)) kg",
+                rightText: "周内波动：\(formatPercentNumber(fluctuationValue))%"
+            )
+        ]
+
+        if previousAverage > 0 {
+            rows.append(.init(leftText: "上周体重均值：\(formatChartNumber(previousAverage)) kg", rightText: nil))
+        }
+
+        if summaryText.isEmpty == false {
+            rows.append(.init(leftText: summaryText, rightText: nil))
+        }
+
+        return rows.isEmpty ? fallback : rows
+    }
+
+    func previousWeekAverage(currentAverage: Double, deltaKg: Double, trendText: String) -> Double {
+        if trendText.contains("增加") {
+            return max(0, currentAverage - deltaKg)
+        }
+        if trendText.contains("下降") {
+            return currentAverage + deltaKg
+        }
+        return currentAverage
+    }
+
+    func weightTrendSummary(deltaKg: Double, deltaPercent: Double, trendText: String) -> String {
+        if trendText.contains("无变化") || abs(deltaKg) < 0.0001 {
+            return "本周体重对比上周无变化"
+        }
+        guard trendText.isEmpty == false else { return "" }
+
+        let deltaText = formatChartNumber(deltaKg)
+        let percentText = formatPercentNumber(deltaPercent)
+        return "本周体重对比上周\(trendText)\(deltaText) kg（\(percentText)%）"
+    }
+
+    func parseReportDate(_ dateString: String) -> Date? {
+        let normalizedDate = normalizedWeightDataKey(dateString)
+        guard normalizedDate.isEmpty == false else { return nil }
+
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone.current
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.date(from: normalizedDate)
+    }
+
+    func normalizedWeightDataKey(_ rawDate: String) -> String {
+        let trimmedDate = rawDate.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmedDate.isEmpty == false else { return "" }
+
+        if trimmedDate.count >= 10 {
+            let prefixDate = String(trimmedDate.prefix(10))
+            if parseWeightDateText(prefixDate) != nil {
+                return prefixDate
+            }
+        }
+
+        if parseWeightDateText(trimmedDate) != nil {
+            return trimmedDate
+        }
+
+        return ""
+    }
+
+    func parseWeightDateText(_ dateText: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone.current
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.date(from: dateText)
+    }
+
+    func weightDataKey(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone.current
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: date)
+    }
+
+    func weightAxisLabel(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone.current
+        formatter.dateFormat = "MM/dd"
+        return formatter.string(from: date)
+    }
+
+    func formatChartNumber(_ value: CGFloat) -> String {
+        formatChartNumber(Double(value))
+    }
+
+    func formatChartNumber(_ value: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 1
+        return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
+    }
+
+    func formatPercentNumber(_ value: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 2
+        return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
 }

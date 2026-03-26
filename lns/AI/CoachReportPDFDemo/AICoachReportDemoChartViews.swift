@@ -22,7 +22,7 @@ final class AICoachReportLineChartView: UIView {
     }
 
     override func draw(_ rect: CGRect) {
-        guard let context = UIGraphicsGetCurrentContext(), data.entries.count > 1 else { return }
+        guard let context = UIGraphicsGetCurrentContext(), data.entries.isEmpty == false else { return }
 
         let chartInsets = UIEdgeInsets(top: 14, left: 30, bottom: 24, right: 8)
         let chartRect = rect.inset(by: chartInsets)
@@ -30,47 +30,66 @@ final class AICoachReportLineChartView: UIView {
 
         drawYAxis(in: context, rect: chartRect, labels: data.yAxisTexts)
 
-        let points = data.entries.enumerated().map { index, entry -> CGPoint in
+        let points = data.entries.enumerated().compactMap { index, entry -> (index: Int, point: CGPoint)? in
+            guard let plottedValue = entry.plottedValue else { return nil }
             let x = chartRect.minX + CGFloat(index) * stepX
-            let ratio = (entry.plottedValue - data.minValue) / max(data.maxValue - data.minValue, 1)
+            let ratio = (plottedValue - data.minValue) / max(data.maxValue - data.minValue, 1)
             let y = chartRect.maxY - ratio * chartRect.height
-            return CGPoint(x: x, y: y)
+            return (index, CGPoint(x: x, y: y))
         }
 
-        let fillPath = UIBezierPath()
-        fillPath.move(to: CGPoint(x: points.first?.x ?? chartRect.minX, y: chartRect.maxY))
-        points.forEach { fillPath.addLine(to: $0) }
-        fillPath.addLine(to: CGPoint(x: points.last?.x ?? chartRect.maxX, y: chartRect.maxY))
-        fillPath.close()
+        if points.count > 1 {
+            let fillPath = UIBezierPath()
+            fillPath.move(to: CGPoint(x: points.first?.point.x ?? chartRect.minX, y: chartRect.maxY))
+            points.forEach { fillPath.addLine(to: $0.point) }
+            fillPath.addLine(to: CGPoint(x: points.last?.point.x ?? chartRect.maxX, y: chartRect.maxY))
+            fillPath.close()
 
-        context.saveGState()
-        fillPath.addClip()
-        let colors = [
-            AICoachReportDemoPalette.chartFillBlue.withAlphaComponent(0.72).cgColor,
-            AICoachReportDemoPalette.chartFillBlue.withAlphaComponent(0.12).cgColor
-        ] as CFArray
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0, 1])!
-        context.drawLinearGradient(
-            gradient,
-            start: CGPoint(x: chartRect.midX, y: chartRect.minY),
-            end: CGPoint(x: chartRect.midX, y: chartRect.maxY),
-            options: []
-        )
-        context.restoreGState()
+            context.saveGState()
+            fillPath.addClip()
+            let colors = [
+                AICoachReportDemoPalette.chartFillBlue.withAlphaComponent(0.72).cgColor,
+                AICoachReportDemoPalette.chartFillBlue.withAlphaComponent(0.12).cgColor
+            ] as CFArray
+            let colorSpace = CGColorSpaceCreateDeviceRGB()
+            let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0, 1])!
+            context.drawLinearGradient(
+                gradient,
+                start: CGPoint(x: chartRect.midX, y: chartRect.minY),
+                end: CGPoint(x: chartRect.midX, y: chartRect.maxY),
+                options: []
+            )
+            context.restoreGState()
 
-        let linePath = UIBezierPath()
-        linePath.lineWidth = 2
-        linePath.lineJoinStyle = .round
-        linePath.lineCapStyle = .round
-        if let firstPoint = points.first {
-            linePath.move(to: firstPoint)
+            let linePath = UIBezierPath()
+            linePath.lineWidth = 2
+            linePath.lineJoinStyle = .round
+            linePath.lineCapStyle = .round
+            if let firstPoint = points.first {
+                linePath.move(to: firstPoint.point)
+            }
+            points.forEach { linePath.addLine(to: $0.point) }
+            AICoachReportDemoPalette.themeBlue.setStroke()
+            linePath.stroke()
         }
-        points.forEach { linePath.addLine(to: $0) }
-        AICoachReportDemoPalette.themeBlue.setStroke()
-        linePath.stroke()
 
-        for (index, point) in points.enumerated() {
+        for (index, entry) in data.entries.enumerated() {
+            let x = chartRect.minX + CGFloat(index) * stepX
+            if entry.axisLabel.isEmpty == false {
+                let axisText = entry.axisLabel as NSString
+                axisText.draw(
+                    in: CGRect(x: x - 16, y: chartRect.maxY + 7, width: 32, height: 11),
+                    withAttributes: [
+                        .font: UIFont.systemFont(ofSize: 8.5, weight: .regular),
+                        .foregroundColor: AICoachReportDemoPalette.textTertiary
+                    ]
+                )
+            }
+        }
+
+        for pointItem in points {
+            let entry = data.entries[pointItem.index]
+            let point = pointItem.point
             let pointRect = CGRect(x: point.x - 3, y: point.y - 3, width: 6, height: 6)
             let circle = UIBezierPath(ovalIn: pointRect)
             UIColor.white.setFill()
@@ -79,8 +98,8 @@ final class AICoachReportLineChartView: UIView {
             circle.lineWidth = 1.5
             circle.stroke()
 
-            if data.entries[index].valueText.isEmpty == false {
-                let valueText = data.entries[index].valueText as NSString
+            if entry.valueText.isEmpty == false {
+                let valueText = entry.valueText as NSString
                 valueText.draw(
                     in: CGRect(x: point.x - 12, y: point.y - 18, width: 24, height: 12),
                     withAttributes: [
@@ -90,16 +109,6 @@ final class AICoachReportLineChartView: UIView {
                 )
             }
 
-            if data.entries[index].axisLabel.isEmpty == false {
-                let axisText = data.entries[index].axisLabel as NSString
-                axisText.draw(
-                    in: CGRect(x: point.x - 16, y: chartRect.maxY + 7, width: 32, height: 11),
-                    withAttributes: [
-                        .font: UIFont.systemFont(ofSize: 8.5, weight: .regular),
-                        .foregroundColor: AICoachReportDemoPalette.textTertiary
-                    ]
-                )
-            }
         }
     }
 }

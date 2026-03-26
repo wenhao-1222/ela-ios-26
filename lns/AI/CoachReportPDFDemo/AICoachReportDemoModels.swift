@@ -40,7 +40,7 @@ struct AICoachReportLineChartData {
 
 struct AICoachReportLinePoint {
     let axisLabel: String
-    let plottedValue: CGFloat
+    let plottedValue: CGFloat?
     let valueText: String
 }
 
@@ -136,11 +136,12 @@ extension AICoachReportDemoData {
             maxValue: 70,
             entries: [
                 .init(axisLabel: "04/01", plottedValue: 46, valueText: "48"),
-                .init(axisLabel: "04/01", plottedValue: 61, valueText: "52"),
-                .init(axisLabel: "04/01", plottedValue: 65, valueText: "64"),
-                .init(axisLabel: "04/01", plottedValue: 58.5, valueText: "68"),
-                .init(axisLabel: "04/01", plottedValue: 48, valueText: "74"),
-                .init(axisLabel: "", plottedValue: 46.5, valueText: "")
+                .init(axisLabel: "04/02", plottedValue: 61, valueText: "52"),
+                .init(axisLabel: "04/03", plottedValue: 65, valueText: "64"),
+                .init(axisLabel: "04/04", plottedValue: 58.5, valueText: "68"),
+                .init(axisLabel: "04/05", plottedValue: 48, valueText: "74"),
+                .init(axisLabel: "04/06", plottedValue: nil, valueText: ""),
+                .init(axisLabel: "04/07", plottedValue: 46.5, valueText: "")
             ],
             footerRows: [
                 .init(leftText: "本周体重均值：74.5 kg", rightText: "周内波动：2.23%"),

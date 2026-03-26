@@ -17,7 +17,9 @@ final class AICoachReportDemoContentView: UIView {
     private let mainStackInsets = UIEdgeInsets(top: 6, left: 8, bottom: 6, right: 8)
     private let mainStackSpacing = CGFloat(18)
     private let chartRowSpacing = CGFloat(16)
-    private let defaultTopRowChartHeight = PDFWidth(913)
+    private let defaultTopRowChartHeight = PDFWidth(820)
+    private let firstPageRow1TopSpacing = PDFWidth(40)
+    private let firstPageRow1BottomSpacing = PDFWidth(86)
 
     init(report: AICoachReportDemoData, contentWidth: CGFloat, firstPageUsableHeight: CGFloat) {
         self.report = report
@@ -103,7 +105,8 @@ private extension AICoachReportDemoContentView {
         let actionSection = makeNextPageActionSection()
 
         [headerCard, summaryCard, row1, row2, actionSection].forEach(mainStack.addArrangedSubview)
-        mainStack.setCustomSpacing(chartRowSpacing, after: row1)
+        mainStack.setCustomSpacing(firstPageRow1TopSpacing, after: summaryCard)
+        mainStack.setCustomSpacing(firstPageRow1BottomSpacing, after: row1)
         keepTogetherViews = [headerCard, summaryCard, row1, row2, actionSection]
     }
 
@@ -418,7 +421,8 @@ private extension AICoachReportDemoContentView {
             - headerHeight
             - mainStackSpacing
             - summaryHeight
-            - mainStackSpacing
+            - firstPageRow1TopSpacing
+            - firstPageRow1BottomSpacing
 
         let preferredHeight = min(defaultTopRowChartHeight, availableTopRowHeight - topRowFixedHeight)
         return max(1, floor(preferredHeight))
@@ -464,7 +468,7 @@ private extension AICoachReportDemoContentView {
             make.left.right.bottom.equalToSuperview()
         }
 
-        return makeChartCard(title: "营养素", chartView: chart, footerView: footer, chartHeight: 158)
+        return makeChartCard(title: "营养素", chartView: chart, footerView: footer, chartHeight: 142)
     }
 
     func makeTrainingCard() -> UIView {
@@ -473,7 +477,7 @@ private extension AICoachReportDemoContentView {
         let titleLabel = makeCardTitleLabel("力量训练部分")
         let columnStack = UIStackView()
         columnStack.axis = .horizontal
-        columnStack.spacing = 18
+        columnStack.spacing = 14
         columnStack.distribution = .fillEqually
 
         let leftColumn = makeTrainingColumn(report.trainingChart.leftItems)
@@ -498,18 +502,18 @@ private extension AICoachReportDemoContentView {
         card.addSubview(bottomRight)
 
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(18)
-            make.left.equalToSuperview().offset(18)
+            make.top.equalToSuperview().offset(16)
+            make.left.equalToSuperview().offset(16)
         }
         columnStack.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(17)
-            make.left.equalToSuperview().offset(18)
-            make.right.equalToSuperview().offset(-18)
+            make.top.equalTo(titleLabel.snp.bottom).offset(14)
+            make.left.equalToSuperview().offset(16)
+            make.right.equalToSuperview().offset(-16)
         }
         bottomLeft.snp.makeConstraints { make in
             make.left.equalTo(columnStack)
-            make.top.equalTo(columnStack.snp.bottom).offset(18)
-            make.bottom.equalToSuperview().offset(-18)
+            make.top.equalTo(columnStack.snp.bottom).offset(14)
+            make.bottom.equalToSuperview().offset(-16)
         }
         bottomRight.snp.makeConstraints { make in
             make.right.equalTo(columnStack)
@@ -577,20 +581,20 @@ private extension AICoachReportDemoContentView {
         card.addSubview(footerView)
 
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(18)
-            make.left.equalToSuperview().offset(18)
+            make.top.equalToSuperview().offset(16)
+            make.left.equalToSuperview().offset(16)
         }
         chartView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(12)
-            make.left.equalToSuperview().offset(12)
-            make.right.equalToSuperview().offset(-12)
+            make.top.equalTo(titleLabel.snp.bottom).offset(10)
+            make.left.equalToSuperview().offset(10)
+            make.right.equalToSuperview().offset(-10)
             make.height.equalTo(chartHeight)
         }
         footerView.snp.makeConstraints { make in
-            make.top.equalTo(chartView.snp.bottom).offset(11)
-            make.left.equalToSuperview().offset(18)
-            make.right.equalToSuperview().offset(-18)
-            make.bottom.equalToSuperview().offset(-18)
+            make.top.equalTo(chartView.snp.bottom).offset(10)
+            make.left.equalToSuperview().offset(16)
+            make.right.equalToSuperview().offset(-16)
+            make.bottom.equalToSuperview().offset(-16)
         }
 
         return card
@@ -639,7 +643,7 @@ private extension AICoachReportDemoContentView {
     func makeTrainingColumn(_ items: [AICoachReportTrainingItem]) -> UIView {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = 11
+        stack.spacing = 9
         items.forEach { stack.addArrangedSubview(makeTrainingRow($0)) }
         return stack
     }
