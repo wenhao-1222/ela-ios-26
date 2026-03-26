@@ -80,10 +80,10 @@ final class AICoachReportDemoContentView: UIView {
 private extension AICoachReportDemoContentView {
     func setupUI() {
         mainStack.axis = .vertical
-        mainStack.spacing = 16
+        mainStack.spacing = 18
         addSubview(mainStack)
         mainStack.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 18, left: 10, bottom: 18, right: 10))
+            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 6, left: 8, bottom: 6, right: 8))
         }
 
         let headerCard = makeHeaderCard()
@@ -98,65 +98,86 @@ private extension AICoachReportDemoContentView {
     func makeHeaderCard() -> UIView {
         let card = AICoachReportDemoGradientCardView()
         card.snp.makeConstraints { make in
-            make.height.equalTo(146)
+            make.height.equalTo(PDFWidth(362))
         }
 
         let titleLabel = UILabel()
-        titleLabel.font = .systemFont(ofSize: 19.5, weight: .bold)
+        titleLabel.font = .systemFont(ofSize: PDFWidth(64), weight: .semibold)
         titleLabel.textColor = .white
         titleLabel.text = report.reportTitle
 
         let dateLabel = UILabel()
-        dateLabel.font = .systemFont(ofSize: 13, weight: .medium)
+        dateLabel.font = .systemFont(ofSize: PDFWidth(38), weight: .regular)
         dateLabel.textColor = UIColor.white.withAlphaComponent(0.94)
         dateLabel.text = report.reportDateRange
 
         let bottomRow = UIStackView()
         bottomRow.axis = .horizontal
-        bottomRow.spacing = 22
+        bottomRow.spacing = PDFWidth(55)
         bottomRow.alignment = .center
         bottomRow.distribution = .fillProportionally
 
         let targetLabel = UILabel()
-        targetLabel.font = .systemFont(ofSize: 12.5, weight: .medium)
+        targetLabel.font = .systemFont(ofSize: PDFWidth(38), weight: .regular)
         targetLabel.textColor = UIColor.white.withAlphaComponent(0.94)
+        targetLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         targetLabel.text = report.targetText
 
         let completenessLabel = UILabel()
-        completenessLabel.font = .systemFont(ofSize: 12.5, weight: .medium)
+        completenessLabel.font = .systemFont(ofSize: PDFWidth(38), weight: .regular)
         completenessLabel.textColor = UIColor.white.withAlphaComponent(0.9)
+        completenessLabel.numberOfLines = 1
         completenessLabel.text = report.completenessText
 
-        let logoLabel = UILabel()
-        logoLabel.font = .systemFont(ofSize: 11, weight: .bold)
-        logoLabel.textColor = UIColor.white.withAlphaComponent(0.3)
-        logoLabel.text = "elavatine"
-
+//        let logoLabel = UILabel()
+//        logoLabel.font = .systemFont(ofSize: 11.5, weight: .bold)
+//        logoLabel.textColor = UIColor.white.withAlphaComponent(0.3)
+//        logoLabel.text = "elavatine"
+        
+        let bgIconImg = UIImageView()
+        bgIconImg.setImgLocal(imgName: "ela_pro_ai_bg_icon")
+        bgIconImg.contentMode = .scaleAspectFit
+        
+        let logoImg = UIImageView()
+        logoImg.image = UIImage(named: "ela_icon_img")?.withTintColor(.white.withAlphaComponent(0.4))
+        
         card.addSubview(titleLabel)
         card.addSubview(dateLabel)
         card.addSubview(bottomRow)
-        card.addSubview(logoLabel)
+//        card.addSubview(logoLabel)
+        card.addSubview(bgIconImg)
+        card.addSubview(logoImg)
         bottomRow.addArrangedSubview(targetLabel)
         bottomRow.addArrangedSubview(completenessLabel)
 
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(23)
-            make.left.equalToSuperview().offset(20)
-            make.right.lessThanOrEqualTo(logoLabel.snp.left).offset(-16)
+            make.top.equalToSuperview().offset(PDFWidth(50))
+            make.left.equalToSuperview().offset(PDFWidth(50))
+            make.right.lessThanOrEqualTo(logoImg.snp.left).offset(-18)
         }
         dateLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(13)
+            make.top.equalTo(titleLabel.snp.bottom).offset(PDFWidth(24))
             make.left.equalTo(titleLabel)
-            make.right.lessThanOrEqualToSuperview().offset(-20)
+            make.right.lessThanOrEqualToSuperview().offset(-24)
         }
         bottomRow.snp.makeConstraints { make in
             make.left.equalTo(titleLabel)
-            make.right.equalToSuperview().offset(-20)
-            make.bottom.equalToSuperview().offset(-21)
+            make.right.equalToSuperview().offset(-24)
+            make.bottom.equalToSuperview().offset(-PDFWidth(50))
         }
-        logoLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(26)
-            make.right.equalToSuperview().offset(-19)
+//        logoLabel.snp.makeConstraints { make in
+//            make.top.equalToSuperview().offset(27)
+//            make.right.equalToSuperview().offset(-24)
+//        }
+        bgIconImg.snp.makeConstraints { make in
+            make.right.top.bottom.equalToSuperview()
+            make.width.equalTo(PDFWidth(550))
+        }
+        logoImg.snp.makeConstraints { make in
+            make.right.equalTo(PDFWidth(-48))
+            make.width.equalTo(PDFWidth(233))
+            make.height.equalTo(PDFWidth(42))
+            make.top.equalTo(PDFWidth(70))
         }
 
         return card
@@ -165,91 +186,167 @@ private extension AICoachReportDemoContentView {
     func makeSummaryCard() -> UIView {
         let card = AICoachReportDemoCardView()
         card.snp.makeConstraints { make in
-            make.height.greaterThanOrEqualTo(152)
+            make.height.greaterThanOrEqualTo(188)
         }
 
         let titleLabel = makeCardTitleLabel(report.weeklySummaryTitle)
-
-        let textStack = UIStackView()
-        textStack.axis = .vertical
-        textStack.spacing = 8
-
-        report.weeklySummaryLines.forEach { line in
-            let label = UILabel()
-            label.font = .systemFont(ofSize: 12.5, weight: .regular)
-            label.textColor = AICoachReportDemoPalette.textSecondary
-            label.numberOfLines = 0
-            label.text = line
-            textStack.addArrangedSubview(label)
-        }
-
-        let confidenceLabel = UILabel()
-        confidenceLabel.font = .systemFont(ofSize: 12.5, weight: .medium)
-        confidenceLabel.textColor = AICoachReportDemoPalette.textSecondary
-        confidenceLabel.numberOfLines = 0
-        confidenceLabel.text = report.confidenceText
-        textStack.addArrangedSubview(confidenceLabel)
+        
+        let summaryLabel = UILabel()
+        summaryLabel.font = .systemFont(ofSize: 13.5, weight: .regular)
+        summaryLabel.textColor = AICoachReportDemoPalette.textPrimary
+        summaryLabel.numberOfLines = 0
+        summaryLabel.text = makeSummaryBodyText()
 
         let sidePanel = UIView()
         sidePanel.backgroundColor = UIColor(hex: "F2F2F3")
-        sidePanel.layer.cornerRadius = 13
+        sidePanel.layer.cornerRadius = 16
+
+        let panelStack = UIStackView()
+        panelStack.axis = .horizontal
+        panelStack.alignment = .center
+        panelStack.spacing = 18
+
+        let potentialColumn = UIView()
 
         let potentialTitle = UILabel()
         potentialTitle.font = .systemFont(ofSize: 11.5, weight: .medium)
         potentialTitle.textColor = AICoachReportDemoPalette.textSecondary
+        potentialTitle.textAlignment = .center
         potentialTitle.text = report.weeklyPotentialTitle
 
         let potentialValue = UILabel()
-        potentialValue.font = .systemFont(ofSize: 25, weight: .bold)
-        potentialValue.textColor = AICoachReportDemoPalette.textPrimary
-        potentialValue.text = report.weeklyPotentialValue
+        potentialValue.attributedText = makePotentialValueText(report.weeklyPotentialValue)
+        potentialValue.textAlignment = .center
 
-        let tipsStack = UIStackView()
-        tipsStack.axis = .vertical
-        tipsStack.spacing = 8
-        tipsStack.addArrangedSubview(makeSummaryTipRow(report.riskTip))
-        tipsStack.addArrangedSubview(makeSummaryTipRow(report.actionTip))
+        let riskView = makeSummaryPanelTipItem(report.riskTip)
+        let actionView = makeSummaryPanelTipItem(report.actionTip)
 
         card.addSubview(titleLabel)
-        card.addSubview(textStack)
+        card.addSubview(summaryLabel)
         card.addSubview(sidePanel)
-        sidePanel.addSubview(potentialTitle)
-        sidePanel.addSubview(potentialValue)
-        sidePanel.addSubview(tipsStack)
+        sidePanel.addSubview(panelStack)
+        panelStack.addArrangedSubview(potentialColumn)
+        panelStack.addArrangedSubview(riskView)
+        panelStack.addArrangedSubview(actionView)
+        potentialColumn.addSubview(potentialTitle)
+        potentialColumn.addSubview(potentialValue)
 
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(19)
-            make.left.equalToSuperview().offset(19)
+            make.top.equalToSuperview().offset(20)
+            make.left.equalToSuperview().offset(20)
         }
-        textStack.snp.makeConstraints { make in
+        summaryLabel.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(18)
             make.left.equalTo(titleLabel)
-            make.bottom.equalToSuperview().offset(-18)
-            make.right.equalTo(sidePanel.snp.left).offset(-14)
+            make.right.equalToSuperview().offset(-20)
         }
         sidePanel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(11)
-            make.right.equalToSuperview().offset(-18)
-            make.width.equalTo(248)
-            make.bottom.equalToSuperview().offset(-18)
+            make.top.equalTo(summaryLabel.snp.bottom).offset(20)
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
+            make.bottom.equalToSuperview().offset(-20)
+        }
+        panelStack.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 16, left: 18, bottom: 16, right: 18))
+        }
+        potentialColumn.snp.makeConstraints { make in
+            make.width.equalTo(108)
         }
         potentialTitle.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(14)
-            make.left.equalToSuperview().offset(17)
+            make.top.left.right.equalToSuperview()
         }
         potentialValue.snp.makeConstraints { make in
-            make.left.equalTo(potentialTitle)
-            make.top.equalTo(potentialTitle.snp.bottom).offset(2)
-            make.bottom.lessThanOrEqualToSuperview().offset(-14)
+            make.top.equalTo(potentialTitle.snp.bottom).offset(8)
+            make.left.right.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
-        tipsStack.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(14)
-            make.left.equalTo(potentialValue.snp.right).offset(18)
-            make.right.equalToSuperview().offset(-13)
-            make.bottom.equalToSuperview().offset(-14)
+        riskView.snp.makeConstraints { make in
+            make.width.equalTo(actionView)
+        }
+        actionView.snp.makeConstraints { make in
+            make.width.equalTo(riskView)
         }
 
         return card
+    }
+
+    func makeSummaryBodyText() -> String {
+        let summaryLines = report.weeklySummaryLines
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { $0.isEmpty == false }
+        let summaryText = summaryLines.joined(separator: " ")
+        let confidenceText = report.confidenceText.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if confidenceText.isEmpty {
+            return summaryText
+        }
+        if summaryText.isEmpty {
+            return appendFullStopIfNeeded(confidenceText)
+        }
+        if summaryText.contains(confidenceText) {
+            return appendFullStopIfNeeded(summaryText)
+        }
+        return appendFullStopIfNeeded(summaryText) + " " + appendFullStopIfNeeded(confidenceText)
+    }
+
+    func appendFullStopIfNeeded(_ text: String) -> String {
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmedText.isEmpty == false else { return "" }
+        if let lastCharacter = trimmedText.last,
+           "。！？.!?".contains(lastCharacter) {
+            return trimmedText
+        }
+        return trimmedText + "。"
+    }
+
+    func makePotentialValueText(_ text: String) -> NSAttributedString {
+        let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let percentSuffix = trimmedText.hasSuffix("%") ? "%" : ""
+        let numberText = percentSuffix.isEmpty ? trimmedText : String(trimmedText.dropLast())
+        let numberAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 24, weight: .bold),
+            .foregroundColor: AICoachReportDemoPalette.textPrimary
+        ]
+        let percentAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 11, weight: .semibold),
+            .foregroundColor: AICoachReportDemoPalette.textPrimary
+        ]
+
+        let attributedText = NSMutableAttributedString(string: numberText, attributes: numberAttributes)
+        if percentSuffix.isEmpty == false {
+            attributedText.append(NSAttributedString(string: " ", attributes: numberAttributes))
+            attributedText.append(NSAttributedString(string: percentSuffix, attributes: percentAttributes))
+        }
+        return attributedText
+    }
+
+    func makeSummaryPanelTipItem(_ text: String) -> UIView {
+        let row = UIView()
+
+        let dot = UIView()
+        dot.backgroundColor = AICoachReportDemoPalette.bulletBlue
+        dot.layer.cornerRadius = 2.5
+
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 11.5, weight: .medium)
+        label.textColor = AICoachReportDemoPalette.textPrimary
+        label.numberOfLines = 0
+        label.text = text
+
+        row.addSubview(dot)
+        row.addSubview(label)
+
+        dot.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(5)
+        }
+        label.snp.makeConstraints { make in
+            make.left.equalTo(dot.snp.right).offset(9)
+            make.top.bottom.right.equalToSuperview()
+        }
+
+        return row
     }
 
     func makeChartRows() -> UIView {
@@ -606,35 +703,6 @@ private extension AICoachReportDemoContentView {
         }
         label.snp.makeConstraints { make in
             make.left.equalTo(dot.snp.right).offset(8)
-            make.top.right.bottom.equalToSuperview()
-        }
-
-        return row
-    }
-
-    func makeSummaryTipRow(_ text: String) -> UIView {
-        let row = UIView()
-
-        let dot = UIView()
-        dot.backgroundColor = AICoachReportDemoPalette.bulletBlue
-        dot.layer.cornerRadius = 2
-
-        let label = UILabel()
-        label.font = .systemFont(ofSize: 12, weight: .medium)
-        label.textColor = AICoachReportDemoPalette.textSecondary
-        label.numberOfLines = 0
-        label.text = text
-
-        row.addSubview(dot)
-        row.addSubview(label)
-
-        dot.snp.makeConstraints { make in
-            make.left.equalToSuperview()
-            make.top.equalToSuperview().offset(4)
-            make.width.height.equalTo(4)
-        }
-        label.snp.makeConstraints { make in
-            make.left.equalTo(dot.snp.right).offset(7)
             make.top.right.bottom.equalToSuperview()
         }
 

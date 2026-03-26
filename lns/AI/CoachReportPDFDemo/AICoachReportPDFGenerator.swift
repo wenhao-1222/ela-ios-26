@@ -8,8 +8,8 @@
 import UIKit
 
 enum AICoachReportPDFGenerator {
-    static let pageSize = CGSize(width: 595, height: 1036)
-    private static let pageInsets = UIEdgeInsets(top: 16, left: 10, bottom: 16, right: 10)
+    static let pageSize = CGSize(width: 595, height: 842)
+    private static let pageInsets = UIEdgeInsets(top: 18, left: 24, bottom: 18, right: 24)
 
     static func generate(report: AICoachReportDemoData) throws -> URL {
         let contentWidth = pageSize.width - pageInsets.left - pageInsets.right

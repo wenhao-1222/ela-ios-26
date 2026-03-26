@@ -54,6 +54,14 @@ let kFitHeight: (CGFloat) -> CGFloat = { width in
     return width * SCREEN_HEIGHT / 812.0
 }
 
+let PDFWidth: (CGFloat) -> CGFloat = { width in
+    if UIDevice.current.userInterfaceIdiom == .pad {
+        return width * min(SCREEN_WIDHT / 375.0,SCREEN_HEIGHT / 812.0)
+    }else{
+        return width * SCREEN_WIDHT / (375.0 * 2.56)
+    }
+}
+
 func isIpad() -> Bool {
     return UIDevice.current.userInterfaceIdiom == .pad
 }
