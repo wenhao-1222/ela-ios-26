@@ -101,13 +101,12 @@ private extension AICoachReportDemoContentView {
             summaryCard: summaryCard
         )
         let row1 = makeTopChartRow(chartHeight: topRowChartHeight)
-        let row2 = makeBottomChartRow(nutrientChartHeight: topRowChartHeight)
-        let actionSection = makeNextPageActionSection()
+        let bottomSection = makeBottomSection(nutrientChartHeight: topRowChartHeight)
 
-        [headerCard, summaryCard, row1, row2, actionSection].forEach(mainStack.addArrangedSubview)
+        [headerCard, summaryCard, row1, bottomSection].forEach(mainStack.addArrangedSubview)
         mainStack.setCustomSpacing(firstPageRow1TopSpacing, after: summaryCard)
         mainStack.setCustomSpacing(firstPageRow1BottomSpacing, after: row1)
-        keepTogetherViews = [headerCard, summaryCard, row1, row2, actionSection]
+        keepTogetherViews = [headerCard, summaryCard, row1, bottomSection]
     }
 
     func makeHeaderCard() -> UIView {
@@ -387,6 +386,15 @@ private extension AICoachReportDemoContentView {
         return row2
     }
 
+    func makeBottomSection(nutrientChartHeight: CGFloat) -> UIView {
+        let section = UIStackView()
+        section.axis = .vertical
+        section.spacing = chartRowSpacing
+        section.addArrangedSubview(makeBottomChartRow(nutrientChartHeight: nutrientChartHeight))
+        section.addArrangedSubview(makeDailyComparisonTableCard())
+        return section
+    }
+
     func makeWeightCard(chartHeight: CGFloat) -> UIView {
         let chart = AICoachReportLineChartView(data: report.weightChart)
         let footer = makeFooterRows(report.weightChart.footerRows)
@@ -525,53 +533,35 @@ private extension AICoachReportDemoContentView {
         return card
     }
 
-    func makeNextPageActionSection() -> UIView {
-        let section = UIView()
+    func makeDailyComparisonTableCard() -> UIView {
+        let card = AICoachReportDemoCardView()
+        let titleLabel = makeCardTitleLabel(report.dailyComparisonTable.title)
 
-        let header = UIView()
-        header.backgroundColor = AICoachReportDemoPalette.themeBlue
-        header.layer.cornerRadius = 18
+        let tableStack = UIStackView()
+        tableStack.axis = .vertical
+        tableStack.spacing = 12
 
-        let headerTitle = UILabel()
-        headerTitle.font = .systemFont(ofSize: 17, weight: .semibold)
-        headerTitle.textColor = .white
-        headerTitle.text = report.nextPageTitle
-
-        let body = AICoachReportDemoCardView()
-        body.layer.cornerRadius = 18
-        body.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-
-        let bodyStack = UIStackView()
-        bodyStack.axis = .vertical
-        bodyStack.spacing = 12
-
-        report.nextPageItems.forEach { item in
-            let row = makeBlueBulletRow(item, textColor: AICoachReportDemoPalette.textSecondary)
-            bodyStack.addArrangedSubview(row)
+        tableStack.addArrangedSubview(makeDailyComparisonRow(report.dailyComparisonTable.columnTitles, isHeader: true))
+        report.dailyComparisonTable.rows.forEach { row in
+            tableStack.addArrangedSubview(makeDailyComparisonRow(row.values, isHeader: false))
         }
 
-        section.addSubview(header)
-        section.addSubview(body)
-        header.addSubview(headerTitle)
-        body.addSubview(bodyStack)
+        card.addSubview(titleLabel)
+        card.addSubview(tableStack)
 
-        header.snp.makeConstraints { make in
-            make.top.left.right.equalToSuperview()
-            make.height.equalTo(58)
-        }
-        headerTitle.snp.makeConstraints { make in
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(20)
             make.left.equalToSuperview().offset(20)
-            make.centerY.equalToSuperview()
+            make.right.equalToSuperview().offset(-20)
         }
-        body.snp.makeConstraints { make in
-            make.top.equalTo(header.snp.bottom).offset(-4)
-            make.left.right.bottom.equalToSuperview()
-        }
-        bodyStack.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 26, left: 20, bottom: 24, right: 20))
+        tableStack.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(24)
+            make.left.equalToSuperview().offset(20)
+            make.right.equalToSuperview().offset(-20)
+            make.bottom.equalToSuperview().offset(-22)
         }
 
-        return section
+        return card
     }
 
     func makeChartCard(title: String, chartView: UIView, footerView: UIView, chartHeight: CGFloat) -> UIView {
@@ -640,6 +630,33 @@ private extension AICoachReportDemoContentView {
         }
 
         return stack
+    }
+
+    func makeDailyComparisonRow(_ values: [String], isHeader: Bool) -> UIView {
+        let row = UIStackView()
+        row.axis = .horizontal
+        row.alignment = .fill
+        row.distribution = .fillEqually
+        row.spacing = 14
+        row.snp.makeConstraints { make in
+            make.height.greaterThanOrEqualTo(isHeader ? 28 : 24)
+        }
+
+        values.forEach { value in
+            let label = UILabel()
+            label.font = isHeader
+                ? .systemFont(ofSize: 12.5, weight: .semibold)
+                : .systemFont(ofSize: 12, weight: .regular)
+            label.textColor = AICoachReportDemoPalette.textPrimary
+            label.textAlignment = .left
+            label.numberOfLines = 1
+            label.adjustsFontSizeToFitWidth = true
+            label.minimumScaleFactor = isHeader ? 0.75 : 0.8
+            label.text = value
+            row.addArrangedSubview(label)
+        }
+
+        return row
     }
 
     func makeTrainingColumn(_ items: [AICoachReportTrainingItem]) -> UIView {

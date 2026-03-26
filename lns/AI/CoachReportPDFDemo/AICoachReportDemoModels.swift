@@ -26,6 +26,7 @@ struct AICoachReportDemoData {
     let calorieChart: AICoachReportBarChartData
     let nutrientChart: AICoachReportGroupedBarChartData
     let trainingChart: AICoachReportTrainingCardData
+    let dailyComparisonTable: AICoachReportWeekTableData
     let nextPageTitle: String
     let nextPageItems: [String]
 }
@@ -87,6 +88,16 @@ struct AICoachReportTrainingItem {
     let title: String
     let count: Int
     let maxCount: Int
+}
+
+struct AICoachReportWeekTableData {
+    let title: String
+    let columnTitles: [String]
+    let rows: [AICoachReportWeekTableRow]
+}
+
+struct AICoachReportWeekTableRow {
+    let values: [String]
 }
 
 struct AICoachReportFooterRow {
@@ -201,6 +212,19 @@ extension AICoachReportDemoData {
             ],
             bottomLeftText: "本周训练天数： 5 天",
             bottomRightText: "休息天数： 2 天"
+        ),
+        dailyComparisonTable: AICoachReportWeekTableData(
+            title: "本周每日体重 & 营养素&热量&消耗对照表",
+            columnTitles: ["日期", "体重(kg)", "热量(kcal)", "蛋白(g)", "碳水(g)", "脂肪(g)", "训练标签"],
+            rows: [
+                .init(values: ["04/01", "73.0", "2050", "128", "210", "58", "胸"]),
+                .init(values: ["04/02", "72.8", "2120", "135", "220", "60", "休息"]),
+                .init(values: ["04/03", "72.6", "2060", "122", "205", "57", "腿"]),
+                .init(values: ["04/04", "72.3", "1980", "130", "185", "55", "背"]),
+                .init(values: ["04/05", "72.2", "2850", "140", "360", "78", "胸"]),
+                .init(values: ["04/06", "-", "2750", "92", "330", "90", "休息"]),
+                .init(values: ["04/07", "72.1", "2300", "125", "240", "68", "腿"])
+            ]
         ),
         nextPageTitle: "下周行动建议",
         nextPageItems: [

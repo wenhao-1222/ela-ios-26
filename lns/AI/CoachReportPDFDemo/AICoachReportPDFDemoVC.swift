@@ -368,6 +368,12 @@ private extension AICoachReportPDFDemoVC {
                 reportContent: reportContent,
                 fallback: fallback.trainingChart
             ),
+            dailyComparisonTable: buildDailyComparisonTable(
+                reportContent: reportContent,
+                startDate: startDate,
+                endDate: endDate,
+                fallback: fallback.dailyComparisonTable
+            ),
             nextPageTitle: fallback.nextPageTitle,
             nextPageItems: fallback.nextPageItems
         )
@@ -523,11 +529,14 @@ private extension AICoachReportPDFDemoVC {
         let nutrientsByDate = makeNutrientValueMap(nutrientsPack: nutrientsPack)
 
         let entries = axisSlots.map { slot in
-            let values = nutrientsByDate[slot.key] ?? [0, 0, 0]
-            return AICoachReportGroupedBarPoint(axisLabel: slot.label, values: values)
+            let values = nutrientsByDate[slot.key] ?? [nil, nil, nil]
+            return AICoachReportGroupedBarPoint(
+                axisLabel: slot.label,
+                values: values.map { $0 ?? 0 }
+            )
         }
 
-        let allValues = entries.flatMap(\.values)
+        let allValues = nutrientsByDate.values.flatMap { $0 }.compactMap { $0 }
         let axisConfig = makeNutrientAxisConfig(values: allValues, fallback: fallback)
 
         return AICoachReportGroupedBarChartData(
@@ -568,6 +577,49 @@ private extension AICoachReportPDFDemoVC {
             rightItems: columns.right,
             bottomLeftText: "本周训练天数： \(workoutDays) 天",
             bottomRightText: "休息天数： \(restDays) 天"
+        )
+    }
+
+    func buildDailyComparisonTable(
+        reportContent: NSDictionary,
+        startDate: String,
+        endDate: String,
+        fallback: AICoachReportWeekTableData
+    ) -> AICoachReportWeekTableData {
+        let axisSlots = makeWeeklyAxisSlots(
+            startDate: startDate,
+            endDate: endDate,
+            fallbackLabels: fallback.rows.map { $0.values.first ?? "-" }
+        )
+        let weightPack = reportContent["weightPack"] as? NSDictionary ?? NSDictionary()
+        let caloriesPack = reportContent["caloriesPack"] as? NSDictionary ?? NSDictionary()
+        let nutrientsPack = reportContent["nutrientsPack"] as? NSDictionary ?? NSDictionary()
+        let weekDataPack = reportContent["weekDataPack"] as? NSDictionary ?? NSDictionary()
+
+        let weightByDate = makeWeightValueMap(weightPack: weightPack)
+        let calorieByDate = makeCalorieValueMap(caloriesPack: caloriesPack)
+        let nutrientsByDate = makeNutrientValueMap(nutrientsPack: nutrientsPack)
+        let weekDataByDate = makeWeekDataItemMap(weekDataPack: weekDataPack)
+
+        let rows = axisSlots.map { slot in
+            let weekItem = weekDataByDate[slot.key]
+            let nutrients = nutrientsByDate[slot.key] ?? [nil, nil, nil]
+
+            return AICoachReportWeekTableRow(values: [
+                slot.label,
+                displayText(weekItem?.weight ?? weightByDate[slot.key]),
+                displayText(weekItem?.calories ?? calorieByDate[slot.key]),
+                displayText(weekItem?.protein ?? nutrients[1]),
+                displayText(weekItem?.carbohydrate ?? nutrients[0]),
+                displayText(weekItem?.fat ?? nutrients[2]),
+                displayText(weekItem?.fitnessLabel)
+            ])
+        }
+
+        return AICoachReportWeekTableData(
+            title: fallback.title,
+            columnTitles: fallback.columnTitles,
+            rows: rows
         )
     }
 
@@ -640,11 +692,11 @@ private extension AICoachReportPDFDemoVC {
         return calorieByDate
     }
 
-    func makeNutrientValueMap(nutrientsPack: NSDictionary) -> [String: [CGFloat]] {
+    func makeNutrientValueMap(nutrientsPack: NSDictionary) -> [String: [CGFloat?]] {
         let weeklyNutrientsData = (nutrientsPack["weeklyNutrientsData"] as? NSArray)?
             .compactMap { $0 as? NSDictionary } ?? []
 
-        var nutrientsByDate: [String: [CGFloat]] = [:]
+        var nutrientsByDate: [String: [CGFloat?]] = [:]
         weeklyNutrientsData.forEach { item in
             let rawDate = preferredValue(
                 item.stringValueForKey(key: "sdate"),
@@ -653,12 +705,32 @@ private extension AICoachReportPDFDemoVC {
             let normalizedDate = normalizedWeightDataKey(rawDate)
             guard normalizedDate.isEmpty == false else { return }
             nutrientsByDate[normalizedDate] = [
-                CGFloat(item.doubleValueForKey(key: "carbohydrate")),
-                CGFloat(item.doubleValueForKey(key: "protein")),
-                CGFloat(item.doubleValueForKey(key: "fat"))
+                item["carbohydrate"] == nil ? nil : CGFloat(item.doubleValueForKey(key: "carbohydrate")),
+                item["protein"] == nil ? nil : CGFloat(item.doubleValueForKey(key: "protein")),
+                item["fat"] == nil ? nil : CGFloat(item.doubleValueForKey(key: "fat"))
             ]
         }
         return nutrientsByDate
+    }
+
+    func makeWeekDataItemMap(weekDataPack: NSDictionary) -> [String: (weight: CGFloat?, calories: CGFloat?, protein: CGFloat?, carbohydrate: CGFloat?, fat: CGFloat?, fitnessLabel: String?)] {
+        let weekDataItemList = (weekDataPack["weekDataItemList"] as? NSArray)?
+            .compactMap { $0 as? NSDictionary } ?? []
+
+        var result: [String: (weight: CGFloat?, calories: CGFloat?, protein: CGFloat?, carbohydrate: CGFloat?, fat: CGFloat?, fitnessLabel: String?)] = [:]
+        weekDataItemList.forEach { item in
+            let normalizedDate = normalizedWeightDataKey(item.stringValueForKey(key: "sdate"))
+            guard normalizedDate.isEmpty == false else { return }
+            result[normalizedDate] = (
+                item["weight"] == nil ? nil : CGFloat(item.doubleValueForKey(key: "weight")),
+                item["calories"] == nil ? nil : CGFloat(item.doubleValueForKey(key: "calories")),
+                item["protein"] == nil ? nil : CGFloat(item.doubleValueForKey(key: "protein")),
+                item["carbohydrate"] == nil ? nil : CGFloat(item.doubleValueForKey(key: "carbohydrate")),
+                item["fat"] == nil ? nil : CGFloat(item.doubleValueForKey(key: "fat")),
+                item.stringValueForKey(key: "fitnessLabel")
+            )
+        }
+        return result
     }
 
     func makeWeightAxisConfig(
@@ -944,5 +1016,18 @@ private extension AICoachReportPDFDemoVC {
         formatter.minimumFractionDigits = 0
         formatter.maximumFractionDigits = 2
         return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
+    }
+
+    func displayText(_ value: CGFloat?) -> String {
+        guard let value else { return "-" }
+        return formatChartNumber(value)
+    }
+
+    func displayText(_ value: String?) -> String {
+        let trimmedValue = value?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if trimmedValue.isEmpty || trimmedValue == "缺失" {
+            return "-"
+        }
+        return trimmedValue
     }
 }
