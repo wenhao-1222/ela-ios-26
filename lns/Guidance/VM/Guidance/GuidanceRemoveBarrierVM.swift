@@ -93,15 +93,22 @@ class GuidanceRemoveBarrierVM: UIView {
         return layer
     }()
 
-    lazy var logoLabel: UILabel = {
-        let lab = UILabel()
-        lab.text = "elavatine"
-        lab.textAlignment = .center
-        lab.textColor = .THEME
-        lab.font = .systemFont(ofSize: 30, weight: .bold)
-        return lab
+//    lazy var logoLabel: UILabel = {
+//        let lab = UILabel()
+//        lab.text = "elavatine"
+//        lab.textAlignment = .center
+//        lab.textColor = .THEME
+//        lab.font = .systemFont(ofSize: 30, weight: .bold)
+//        return lab
+//    }()
+    
+    lazy var logoImgView: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "guide_first_page_logo_icon")
+        img.contentMode = .scaleAspectFit
+        
+        return img
     }()
-
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
         lab.text = "会帮助你消除这些阻碍"
@@ -181,7 +188,8 @@ extension GuidanceRemoveBarrierVM {
         addSubview(gradientMaskView)
         gradientMaskView.layer.addSublayer(gradientMaskLayer)
 
-        addSubview(logoLabel)
+//        addSubview(logoLabel)
+        addSubview(logoImgView)
         addSubview(titleLabel)
         addSubview(zhuanyeImg)
         addSubview(zhunayeLabel)
@@ -224,14 +232,21 @@ extension GuidanceRemoveBarrierVM {
             make.edges.equalToSuperview()
         }
 
-        logoLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
+//        logoLabel.snp.makeConstraints { make in
+//            make.centerX.equalToSuperview()
+//            make.top.equalTo(collageContainerView.snp.bottom).offset(kFitWidth(-66))
+//        }
+        
+        logoImgView.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+//            make.top.equalTo(chart.snp.bottom).offset(kFitWidth(50))
             make.top.equalTo(collageContainerView.snp.bottom).offset(kFitWidth(-66))
+            make.width.equalTo(kFitWidth(111))
+//            make.bottom.equalTo(tipsLabel.snp.top).offset(kFitWidth(-50))
         }
-
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(logoLabel.snp.bottom).offset(kFitWidth(18))
+            make.top.equalTo(logoImgView.snp.bottom).offset(kFitWidth(18))
         }
 
         zhuanyeImg.snp.makeConstraints { make in
@@ -263,7 +278,7 @@ extension GuidanceRemoveBarrierVM {
     override func layoutSubviews() {
         super.layoutSubviews()
         gradientMaskLayer.frame = gradientMaskView.bounds
-        let logoTopLocation = max(0, min(1, logoLabel.frame.minY / max(bounds.height, 1)))
+        let logoTopLocation = max(0, min(1, logoImgView.frame.minY / max(bounds.height, 1)))
         gradientMaskLayer.locations = [0, NSNumber(value: Float(logoTopLocation)), 1]
     }
 }

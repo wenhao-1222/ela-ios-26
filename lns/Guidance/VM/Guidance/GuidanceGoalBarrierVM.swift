@@ -34,6 +34,12 @@ class GuidanceGoalBarrierVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        topGradientLayer.frame = topGradientView.bounds
+        bottomGradientLayer.frame = bottomGradientView.bounds
+    }
+
     var hasSelection: Bool {
         return !selectedValues.isEmpty
     }
@@ -65,6 +71,41 @@ class GuidanceGoalBarrierVM: UIView {
         st.axis = .vertical
         st.spacing = kFitWidth(16)
         return st
+    }()
+    lazy var bottomGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
+        return vi
+    }()
+
+    lazy var topGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
+        return vi
+    }()
+
+    lazy var bottomGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
+    }()
+
+    lazy var topGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
     }()
 }
 
@@ -108,8 +149,14 @@ extension GuidanceGoalBarrierVM {
     func initUI() {
         addSubview(titleLabel)
         addSubview(scrollView)
+//        scrollView.addSubview(contentView)
+//        contentView.addSubview(stackView)
+        addSubview(topGradientView)
+        addSubview(bottomGradientView)
         scrollView.addSubview(contentView)
         contentView.addSubview(stackView)
+        topGradientView.layer.addSublayer(topGradientLayer)
+        bottomGradientView.layer.addSublayer(bottomGradientLayer)
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -132,8 +179,21 @@ extension GuidanceGoalBarrierVM {
             make.left.equalTo(kFitWidth(45))
             make.right.equalTo(kFitWidth(-45))
             make.top.equalToSuperview().offset(kFitWidth(40))
-            make.bottom.equalToSuperview().offset(-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(88)))
+            make.bottom.equalToSuperview().offset(-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(35)))
         }
+        
+        topGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(scrollView.snp.top)
+            make.height.equalTo(kFitWidth(36))
+        }
+
+        bottomGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(scrollView.snp.bottom)
+            make.height.equalTo(kFitWidth(72))
+        }
+
 
         dataArray = itemsForCurrentGoal(modelValue: QuestinonaireMsgModel.shared.goal)
         refreshListUI()
