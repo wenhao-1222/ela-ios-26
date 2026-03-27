@@ -178,7 +178,7 @@ class GuidanceVC: WHBaseViewVC {
     }()
     lazy var katchAlertVm : QuestionnaireBodyFatAlertVM = {
         let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
-        vm.titleLabel.text = "为什么不用BMI"
+        vm.titleLabel.text = "为什么不用BMI？"
         vm.contentLabelOne.text = "BMI 主要反映体重和身高的比例，无法区分肌肉和脂肪，因此同样 BMI 的两个人，代谢需求可能差很多。Katch-McArdle 会参考你的瘦体重(去脂体重)，在体脂数据较准确时，通常能更贴近健身人群的代谢情况，给出更个性化的结果。"
         vm.contentLabelTwo.text = ""
         vm.contentLabelThree.text = ""
