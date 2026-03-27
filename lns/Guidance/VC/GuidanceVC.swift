@@ -116,7 +116,7 @@ class GuidanceVC: WHBaseViewVC {
     }
     lazy var naviVm: DietPlanCreateNaviVM = {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
-        vm.backButton.isHidden = false
+        vm.backButton.isHidden = true
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
             if self.isShowingFinishLoading {
@@ -251,7 +251,6 @@ class GuidanceVC: WHBaseViewVC {
     }()
     lazy var birthdayVm: DietPlanCreateYearVM = {
         let vm = DietPlanCreateYearVM.init(frame: CGRect.init(x: SCREEN_WIDHT*4, y: 0, width: 0, height: 0))
-        vm.applyDefaultAge(18)
         return vm
     }()
     lazy var weightVm: DietPlanCreateWeightVM = {
@@ -502,6 +501,10 @@ extension GuidanceVC{
         !isFixedTargetFlowEnabled && step == .nutritionGoal
     }
 
+    func shouldHideBackButton(for step: FlowStep) -> Bool {
+        step == .sex
+    }
+
     func shouldHideNavigation(for step: FlowStep) -> Bool {
         if isShowingFinishLoading || isSummaryStep(step) {
             return true
@@ -591,6 +594,7 @@ extension GuidanceVC{
         let visibleIndex = scrollableIndex(for: targetIndex)
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(visibleIndex), y: 0), animated: animated)
         naviVm.updateStep(steps: stepsArray, currentStep: progressIndex(for: targetIndex))
+        naviVm.backButton.isHidden = shouldHideBackButton(for: targetStep)
         naviVm.backButton.isEnabled = targetIndex > 0 && !shouldDisableBack(for: targetStep)
         naviVm.isHidden = shouldHideNavigation(for: targetStep)
         updateNextButtonForCurrentStep()
@@ -733,6 +737,9 @@ extension GuidanceVC{
         isShowingFinishLoading = false
         finishLoadingVm.hideLoadingView()
         naviVm.isHidden = false
+        if let currentStep = flowStep(for: currentIndex) {
+            naviVm.backButton.isHidden = shouldHideBackButton(for: currentStep)
+        }
         updateNextButtonForCurrentStep()
     }
 
@@ -743,6 +750,7 @@ extension GuidanceVC{
 
         let currentStep = flowStep(for: currentIndex) ?? .reminderPrompt
         naviVm.isHidden = shouldHideNavigation(for: currentStep)
+        naviVm.backButton.isHidden = shouldHideBackButton(for: currentStep)
         naviVm.backButton.isEnabled = currentIndex > 0 && !shouldDisableBack(for: currentStep)
         updateNextButtonForCurrentStep()
     }

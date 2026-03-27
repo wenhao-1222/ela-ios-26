@@ -51,8 +51,8 @@ class DietPlanCreateYearVM: UIView {
         for i in (currentYear-80)...(currentYear-12){
             yearArr.add(i)
             
-            if i < 2000 {
-                defaultIndex = defaultIndex + 1
+            if i == 2000 {
+                defaultIndex = yearArr.count - 1
             }
         }
         
@@ -85,7 +85,10 @@ extension DietPlanCreateYearVM{
         pickerView.addSubview(yearUnitLabel)
         
         setConstrait()
+        _ = yearDataArray
+        pickerView.reloadAllComponents()
         pickerView.selectRow(defaultIndex, inComponent: 0, animated: true)
+        QuestinonaireMsgModel.shared.birthDay = "\(yearDataArray[defaultIndex]as? Int ?? 0)"
     }
     func setConstrait() {
         titleLabel.snp.makeConstraints { make in
