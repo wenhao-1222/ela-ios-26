@@ -46,6 +46,7 @@ class GuidanceVC: WHBaseViewVC {
     private var pendingNutritionGoalPresentation = false
     private var isTransitioningToGuidancePro = false
     private var hasAutoSelectedSkippedCardioFrequency = false
+    private var isBackNavigationLocked = false
     private let defaultStepsArray = [7,7,8]
     private let defaultStepsArrayWithoutCardio = [7,6,8]
     private let fixedTargetStepsArray = [4,5,4]
@@ -120,6 +121,9 @@ class GuidanceVC: WHBaseViewVC {
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
             if self.isShowingFinishLoading {
+                return
+            }
+            if self.isBackNavigationLocked {
                 return
             }
             if self.currentIndex == 0 {
@@ -305,7 +309,8 @@ class GuidanceVC: WHBaseViewVC {
     lazy var exerciseCaloriesRecordVm: GuidanceExerciseCaloriesRecordVM = {
         let vm = GuidanceExerciseCaloriesRecordVM.init(frame: CGRect.init(x: SCREEN_WIDHT*11, y: 0, width: 0, height: 0))
         vm.selectedBlock = { [weak self] in
-            self?.handleExerciseCaloriesRecordSelectionChanged()
+            self?.updateNextButtonForCurrentStep()
+//            self?.handleExerciseCaloriesRecordSelectionChanged()
         }
         return vm
     }()
@@ -345,6 +350,7 @@ class GuidanceVC: WHBaseViewVC {
     }()
     lazy var goalVm : QuestionnaireGoalVM = {
         let vm = QuestionnaireGoalVM.init(frame: CGRect.init(x: SCREEN_WIDHT*16, y: 0, width: 0, height: 0))
+//        vm.updateConstraitForGuidance()
         vm.choiceBlock = { [weak self] in
             self?.goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
             self?.updateNextButtonForCurrentStep()
@@ -512,6 +518,14 @@ extension GuidanceVC{
         return shouldDisableBack(for: step)
     }
 
+    func refreshBackButtonState(for step: FlowStep, index: Int) {
+        naviVm.backButton.isHidden = shouldHideBackButton(for: step)
+        naviVm.backButton.isEnabled = index > 0 &&
+            !shouldDisableBack(for: step) &&
+            !isBackNavigationLocked &&
+            !isShowingFinishLoading
+    }
+
     func updateFlowConfiguration() {
         syncCardioFrequencyFlowState()
         goalVm.applyGuidanceSelectionStyle(isCompact: isFixedTargetFlowEnabled)
@@ -592,10 +606,12 @@ extension GuidanceVC{
         installStepViewsIfNeeded(indexes: [targetIndex, targetIndex + 1, targetIndex + 2])
         currentIndex = targetIndex
         let visibleIndex = scrollableIndex(for: targetIndex)
-        scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(visibleIndex), y: 0), animated: animated)
+        let targetOffset = CGPoint(x: SCREEN_WIDHT * CGFloat(visibleIndex), y: 0)
+        let shouldLockBack = animated && abs(scrollViewBase.contentOffset.x - targetOffset.x) > 0.5
+        isBackNavigationLocked = shouldLockBack
+        scrollViewBase.setContentOffset(targetOffset, animated: animated)
         naviVm.updateStep(steps: stepsArray, currentStep: progressIndex(for: targetIndex))
-        naviVm.backButton.isHidden = shouldHideBackButton(for: targetStep)
-        naviVm.backButton.isEnabled = targetIndex > 0 && !shouldDisableBack(for: targetStep)
+        refreshBackButtonState(for: targetStep, index: targetIndex)
         naviVm.isHidden = shouldHideNavigation(for: targetStep)
         updateNextButtonForCurrentStep()
 
@@ -738,7 +754,7 @@ extension GuidanceVC{
         finishLoadingVm.hideLoadingView()
         naviVm.isHidden = false
         if let currentStep = flowStep(for: currentIndex) {
-            naviVm.backButton.isHidden = shouldHideBackButton(for: currentStep)
+            refreshBackButtonState(for: currentStep, index: currentIndex)
         }
         updateNextButtonForCurrentStep()
     }
@@ -750,8 +766,7 @@ extension GuidanceVC{
 
         let currentStep = flowStep(for: currentIndex) ?? .reminderPrompt
         naviVm.isHidden = shouldHideNavigation(for: currentStep)
-        naviVm.backButton.isHidden = shouldHideBackButton(for: currentStep)
-        naviVm.backButton.isEnabled = currentIndex > 0 && !shouldDisableBack(for: currentStep)
+        refreshBackButtonState(for: currentStep, index: currentIndex)
         updateNextButtonForCurrentStep()
     }
 
@@ -959,6 +974,7 @@ extension GuidanceVC{
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
         scrollViewBase.isScrollEnabled = false
+        scrollViewBase.delegate = self
         updateFlowConfiguration()
         
         installStepViewsIfNeeded(indexes: [0, 1, 2])
@@ -1145,4 +1161,13 @@ extension GuidanceVC:ASAuthorizationControllerDelegate,ASAuthorizationController
         func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
             return self.view.window!
         }
+}
+
+extension GuidanceVC: UIScrollViewDelegate {
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase else { return }
+        isBackNavigationLocked = false
+        guard let currentStep = flowStep(for: currentIndex) else { return }
+        refreshBackButtonState(for: currentStep, index: currentIndex)
+    }
 }

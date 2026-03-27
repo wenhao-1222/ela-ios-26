@@ -117,19 +117,56 @@ extension QuestionnaireBodyFatItemVM{
         imgView.frame = CGRect.init(x: SCREEN_WIDHT*0.5-kFitWidth(16)-kFitWidth(164), y: kFitWidth(0), width: kFitWidth(164), height: kFitWidth(164))
         rectView.frame =  imgView.frame
     }
+
+    func resetToUnselectedStyle() {
+        [imgView, coverView, coverViewForLabel, titleLab, numberLabel, selectImgView].forEach {
+            $0.layer.removeAllAnimations()
+            $0.transform = .identity
+        }
+
+        isSelect = false
+        titleLab.text = "体脂肪"
+        titleLab.frame = CGRect(x: kFitWidth(16), y: kFitWidth(120), width: kFitWidth(200), height: kFitWidth(12))
+        numberLabel.frame = CGRect(x: kFitWidth(16), y: kFitWidth(135), width: numberLabelWidth, height: kFitWidth(20))
+        numberLabel.font = .systemFont(ofSize: 20, weight: .medium)
+        imgView.layer.cornerCurve = .continuous
+        imgView.layer.cornerRadius = kFitWidth(12)
+
+        if isRight {
+            refreshForRight()
+        } else {
+            imgView.frame = CGRect(x: kFitWidth(16), y: 0, width: kFitWidth(164), height: kFitWidth(164))
+            rectView.frame = imgView.frame
+        }
+
+        coverView.alpha = 0
+        coverView.isHidden = true
+        coverViewForLabel.alpha = 1
+        coverViewForLabel.isHidden = false
+        selectImgView.alpha = 0
+    }
+
     func updateUI(dict:NSDictionary,isRight:Bool) {
+        let valueText = "\(dict["data"]as? String ?? "")"
+        let normalFont = UIFont.systemFont(ofSize: 20, weight: .medium)
+        let selectedFont = UIFont.systemFont(ofSize: 28, weight: .medium)
+
         imgView.setImgLocal(imgName: "\(dict["imgUrl"]as? String ?? "")")
-        numberLabel.text = "\(dict["data"]as? String ?? "")"
+        numberLabel.text = valueText
         self.isRight = isRight
         
-        numberLabelWidth = WHUtils().getWidthOfString(string: "\(dict["data"]as? String ?? "")", font: UIFont().DDInFontMedium(fontSize: 20), height: kFitWidth(28))
-        numberLabelWidthSelect = WHUtils().getWidthOfString(string: "\(dict["data"]as? String ?? "")", font: UIFont().DDInFontMedium(fontSize: 28), height: kFitWidth(28))
+        numberLabelWidth = ceil((valueText as NSString).size(withAttributes: [.font: normalFont]).width) + kFitWidth(38)
+        numberLabelWidthSelect = ceil((valueText as NSString).size(withAttributes: [.font: selectedFont]).width) + kFitWidth(54)
         
         if isRight{
             refreshForRight()
         }
+        resetToUnselectedStyle()
     }
     func updateUIIsSelected(isSelect: Bool) {
+        guard self.isSelect != isSelect else { return }
+        self.isSelect = isSelect
+
         if isSelect {
             // ===== 更自然的“按压→回弹”参数（只改时间与系数） =====
             // 整体时长控制
@@ -173,10 +210,11 @@ extension QuestionnaireBodyFatItemVM{
 
             // 选中态文案/数值目标
             let targetTitleFrame = CGRect(x: kFitWidth(48), y: kFitWidth(52), width: kFitWidth(200), height: kFitWidth(12))
+            let targetNumberWidth = min(kFitWidth(146), max(self.numberLabelWidthSelect, kFitWidth(104)))
             let targetNumberFrame = CGRect(
-                x: (kFitWidth(148) - self.numberLabelWidthSelect) * 0.5,
+                x: (kFitWidth(148) - targetNumberWidth) * 0.5,
                 y: kFitWidth(70),
-                width: self.numberLabelWidthSelect,
+                width: targetNumberWidth,
                 height: kFitWidth(28)
             )
 
@@ -281,7 +319,7 @@ extension QuestionnaireBodyFatItemVM{
             } completion: { _ in
                 self.titleLab.text = "体脂肪"
                 self.coverView.isHidden = true
-                self.selectImgView.alpha = 1
+                self.selectImgView.alpha = 0
             }
         }
     }

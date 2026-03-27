@@ -19,7 +19,7 @@ class QuestionnaireGoalVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_BG_F2
         self.isUserInteractionEnabled = true
         self.selfHeight = SCREEN_HEIGHT-frame.origin.y
         
@@ -28,6 +28,13 @@ class QuestionnaireGoalVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        topGradientLayer.frame = topGradientView.bounds
+        bottomGradientLayer.frame = bottomGradientView.bounds
+    }
+
     lazy var dataArray : NSArray = {
         return [["name":"急速减脂","selected":"0","detail":"适合希望短时间内准备摄影写真集，参加活动，前任婚礼等的用户。反弹风险高，建议不超过4周"],
                 ["name":"中高强度减脂","selected":"0","detail":"适合希望达到短期身材目标，参加健美比赛的运动员/健身爱好者等。有一定反弹风险，建议时长：8-16周"],
@@ -47,7 +54,7 @@ class QuestionnaireGoalVM: UIView {
         return lab
     }()
     lazy var tableView : UITableView = {
-        let vi = UITableView.init(frame: CGRect.init(x: 0, y: kFitWidth(152), width: SCREEN_WIDHT, height: self.selfHeight-kFitWidth(152)-kFitWidth(84)-WHUtils().getBottomSafeAreaHeight()), style: .plain)
+        let vi = UITableView.init(frame: CGRect.init(x: 0, y: kFitWidth(152)-kFitWidth(35), width: SCREEN_WIDHT, height: self.selfHeight-kFitWidth(152)+kFitWidth(35)-kFitWidth(84)-WHUtils().getBottomSafeAreaHeight()), style: .plain)
         vi.delegate = self
         vi.dataSource = self
         vi.separatorStyle = .none
@@ -69,6 +76,41 @@ class QuestionnaireGoalVM: UIView {
         vi.isHidden = true
         
         return vi
+    }()
+    lazy var bottomGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
+        return vi
+    }()
+
+    lazy var topGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
+        return vi
+    }()
+
+    lazy var bottomGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
+    }()
+
+    lazy var topGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
     }()
     lazy var nextBtn : UIButton = {
         let btn = UIButton()
@@ -98,8 +140,12 @@ extension QuestionnaireGoalVM{
     func initUI(){
         addSubview(titleLabel)
         addSubview(tableView)
-        addSubview(coverView)
-        addSubview(coverTopView)
+//        addSubview(coverView)
+//        addSubview(coverTopView)
+        addSubview(topGradientView)
+        addSubview(bottomGradientView)
+        topGradientView.layer.addSublayer(topGradientLayer)
+        bottomGradientView.layer.addSublayer(bottomGradientLayer)
 //        addSubview(nextBtn)
         
         setConstrait()
@@ -110,16 +156,28 @@ extension QuestionnaireGoalVM{
             make.top.equalTo(kFitWidth(60))
             make.height.equalTo(kFitWidth(72))
         }
-        coverView.snp.makeConstraints { make in
-            make.left.width.equalToSuperview()
-            make.height.equalTo(kFitWidth(40))
-            make.top.equalTo(tableView.snp.bottom).offset(kFitWidth(-40))
+//        coverView.snp.makeConstraints { make in
+//            make.left.width.equalToSuperview()
+//            make.height.equalTo(kFitWidth(40))
+//            make.top.equalTo(tableView.snp.bottom).offset(kFitWidth(-40))
+//        }
+//        coverTopView.snp.makeConstraints { make in
+//            make.left.width.equalToSuperview()
+//            make.height.equalTo(kFitWidth(40))
+//            make.top.equalTo(self.tableView)
+//        }
+        topGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(tableView.snp.top)
+            make.height.equalTo(kFitWidth(36))
         }
-        coverTopView.snp.makeConstraints { make in
-            make.left.width.equalToSuperview()
-            make.height.equalTo(kFitWidth(40))
-            make.top.equalTo(self.tableView)
+
+        bottomGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(tableView.snp.bottom)
+            make.height.equalTo(kFitWidth(36))
         }
+
     }
     func updateConstrait() {
         applyGuidanceSelectionStyle(isCompact: true)
@@ -127,23 +185,16 @@ extension QuestionnaireGoalVM{
 
     func applyGuidanceSelectionStyle(isCompact: Bool) {
         usesCompactSelectionStyle = isCompact
-        if isCompact {
-        titleLabel.text = "你的目标是什么？"
+        titleLabel.text = "选择你的目标"
         titleLabel.snp.remakeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(35))
+            make.top.equalTo(kFitWidth(35)+WHUtils().getNavigationBarHeight())
 //            make.height.equalTo(kFitWidth(72))
         }
-        tableView.frame = CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight()+kFitWidth(75), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-(WHUtils().getNavigationBarHeight()+kFitWidth(75))-kFitWidth(84)-WHUtils().getBottomSafeAreaHeight())
-        } else {
-            titleLabel.text = "选择你的目标"
-            titleLabel.snp.remakeConstraints { make in
-                make.centerX.lessThanOrEqualToSuperview()
-                make.top.equalTo(kFitWidth(60))
-                make.height.equalTo(kFitWidth(72))
-            }
-            tableView.frame = CGRect.init(x: 0, y: kFitWidth(152), width: SCREEN_WIDHT, height: self.selfHeight-kFitWidth(152)-kFitWidth(84)-WHUtils().getBottomSafeAreaHeight())
-        }
+        tableView.frame = CGRect.init(x: 0,
+                                      y: kFitWidth(35)+WHUtils().getNavigationBarHeight()+kFitWidth(50),
+                                      width: SCREEN_WIDHT,
+                                      height: self.selfHeight-(kFitWidth(35)+WHUtils().getNavigationBarHeight()+kFitWidth(50))-kFitWidth(84)-WHUtils().getBottomSafeAreaHeight())
         tableView.reloadData()
     }
     func refresNextBtnCenter() {
@@ -205,6 +256,14 @@ extension QuestionnaireGoalVM:UITableViewDataSource,UITableViewDelegate{
         QuestinonaireMsgModel.shared.goal = "\(self.selectIndex+1)"
         DLLog(message: "目标：\(QuestinonaireMsgModel.shared.goal)")
         self.choiceBlock?()
+    }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return kFitWidth(35)
+    }
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(35)))
+        vi.backgroundColor = .clear
+        return vi
     }
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.coverTopView.isHidden = false
