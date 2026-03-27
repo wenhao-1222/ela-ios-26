@@ -567,8 +567,10 @@ extension GuidanceVC{
 
     func updateNutritionGoalViewVisibility() {
         guard mountedSteps.contains(.nutritionGoal) else { return }
-        nutritionGoalVm.isHidden = isFixedTargetFlowEnabled
-        fixedTargetNutritionGoalVm.isHidden = !isFixedTargetFlowEnabled
+//        nutritionGoalVm.isHidden = isFixedTargetFlowEnabled
+//        fixedTargetNutritionGoalVm.isHidden = !isFixedTargetFlowEnabled
+        nutritionGoalVm.isHidden = true
+        fixedTargetNutritionGoalVm.isHidden = false
     }
 
     func scrollableIndex(for targetIndex: Int) -> Int {
@@ -620,17 +622,25 @@ extension GuidanceVC{
             removeBarrierVm.startScrollersIfNeeded()
         }
         if targetStep == .nutritionGoal {
-            if isFixedTargetFlowEnabled {
-                fixedTargetNutritionGoalVm.refreshContentFromModel()
-                let focusDelay = animated ? 0.35 : 0
-                DispatchQueue.main.asyncAfter(deadline: .now() + focusDelay) { [weak self] in
-                    guard let self = self,
-                          self.flowStep(for: self.currentIndex) == .nutritionGoal,
-                          self.isFixedTargetFlowEnabled else { return }
-                    self.fixedTargetNutritionGoalVm.focusCarbInput()
-                }
-            } else {
-                nutritionGoalVm.refreshContentFromModel()
+            fixedTargetNutritionGoalVm.applyEditingMode(isEditable: true)
+            fixedTargetNutritionGoalVm.refreshContentFromModel()
+//            if isFixedTargetFlowEnabled {
+//                fixedTargetNutritionGoalVm.refreshContentFromModel()
+//                let focusDelay = animated ? 0.35 : 0
+//                DispatchQueue.main.asyncAfter(deadline: .now() + focusDelay) { [weak self] in
+//                    guard let self = self,
+//                          self.flowStep(for: self.currentIndex) == .nutritionGoal,
+//                          self.isFixedTargetFlowEnabled else { return }
+//                    self.fixedTargetNutritionGoalVm.focusCarbInput()
+//                }
+//            } else {
+//                nutritionGoalVm.refreshContentFromModel()
+//            }
+            let focusDelay = animated ? 0.35 : 0
+            DispatchQueue.main.asyncAfter(deadline: .now() + focusDelay) { [weak self] in
+                guard let self = self,
+                      self.flowStep(for: self.currentIndex) == .nutritionGoal else { return }
+                self.fixedTargetNutritionGoalVm.focusCarbInput()
             }
         }
         if targetStep == .mealsSummary {
@@ -940,7 +950,8 @@ extension GuidanceVC{
         case .goal: return goalVm
         case .goalBarrier: return goalBarrierVm
         case .removeBarrier: return removeBarrierVm
-        case .nutritionGoal: return isFixedTargetFlowEnabled ? fixedTargetNutritionGoalVm : nutritionGoalVm
+//        case .nutritionGoal: return isFixedTargetFlowEnabled ? fixedTargetNutritionGoalVm : nutritionGoalVm
+        case .nutritionGoal: return fixedTargetNutritionGoalVm
         case .reminderPrompt: return reminderPromptVm
         }
     }
@@ -1070,7 +1081,9 @@ extension GuidanceVC{
             QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(calories)"
 
             DispatchQueue.main.async {
-                self.nutritionGoalVm.refreshContentFromModel()
+//                self.nutritionGoalVm.refreshContentFromModel()
+                self.fixedTargetNutritionGoalVm.applyEditingMode(isEditable: true)
+                self.fixedTargetNutritionGoalVm.refreshContentFromModel()
                 self.finishLoadingVm.completeLoading()
             }
         }

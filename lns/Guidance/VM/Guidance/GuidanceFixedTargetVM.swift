@@ -5,6 +5,9 @@
 //  Created by Codex on 2026/3/17.
 //
 
+import UIKit
+import SnapKit
+
 class GuidanceFixedTargetVM: UIView {
 
     struct Item {
@@ -81,7 +84,6 @@ extension GuidanceFixedTargetVM {
     @objc func itemTapAction(_ sender: UIButton) {
         applySelection(index: sender.tag, notify: true)
     }
-
     private func applySelection(index: Int, notify: Bool) {
         selectedIndex = index
 
@@ -107,7 +109,7 @@ extension GuidanceFixedTargetVM {
         addSubview(titleLabel)
         addSubview(stackView)
         addSubview(tipsLabel)
-
+        
         for (index, item) in dataArray.enumerated() {
             let button = FeedBackButton()
             button.tag = index
@@ -139,13 +141,12 @@ extension GuidanceFixedTargetVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(55))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(35))
         }
-
         stackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(85))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(56))
         }
 
         tipsLabel.snp.makeConstraints { make in

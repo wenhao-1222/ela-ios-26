@@ -7,20 +7,26 @@
 
 import UIKit
 import SnapKit
+import MCToast
 
 class GuidanceFixedTargetNutritionGoalVM: UIView {
 
     var saveBlock: (() -> ())?
 
     private let maxCaloriesInputValue = 9999
-    private let maxMacroInputValue = 999
+    private let maxMacroInputValue = 4999
     private var isUpdatingCaloriesProgrammatically = false
-    private var hasManualCaloriesOverride = false
     private var shouldAutoFocusCarbInput = false
     private var autoFocusRetryCount = 0
+    private var titleTopConstraint: Constraint?
+    private var tipsTopConstraint: Constraint?
     private var cardViewTopConstraint: Constraint?
-    private let cardViewDefaultTopOffset = kFitWidth(56)
+    private let titleDefaultTopOffset = WHUtils().getNavigationBarHeight() + kFitWidth(60)
+    private let tipsDefaultTopOffset = WHUtils().getNavigationBarHeight() + kFitWidth(108)
+    private let cardViewDefaultTopOffset = kFitWidth(20)
     private let cardViewKeyboardSpacing = kFitWidth(16)
+    private var isMacroEditingEnabled = false
+    private var hasUserEditedMacros = false
 
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -52,11 +58,22 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
 
     private lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "卡路里和营养素目标"
+//        lab.text = "卡路里和营养素目标"
+        lab.text = "每日营养目标"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .semibold)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
+    }()
+
+    private lazy var tipsButton: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitle("摄入太高/太低？", for: .normal)
+        btn.setTitleColor(.THEME, for: .normal)
+        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
+        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        btn.addTarget(self, action: #selector(tipsTapAction), for: .touchUpInside)
+        return btn
     }()
 
     private lazy var cardView: UIView = {
@@ -71,10 +88,12 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
         let tf = UITextField()
         tf.textColor = .COLOR_TEXT_TITLE_0f1214
         tf.font = UIFont().DDInFontMedium(fontSize: 28)//.systemFont(ofSize: 28, weight: .regular)
-        tf.keyboardType = .numberPad
-        tf.placeholder = "0"
-        tf.delegate = self
-        tf.addTarget(self, action: #selector(caloriesDidChange(_:)), for: .editingChanged)
+        tf.placeholder = "-"
+        tf.isUserInteractionEnabled = false
+        tf.tintColor = .clear
+//        tf.keyboardType = .numberPad
+//        tf.delegate = self
+//        tf.addTarget(self, action: #selector(caloriesDidChange(_:)), for: .editingChanged)
         return tf
     }()
 
@@ -93,10 +112,17 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
         return img
     }()
 
+//    private lazy var caloriesTapAreaButton: UIButton = {
+//        let btn = UIButton(type: .custom)
+//        btn.backgroundColor = .clear
+//        btn.addTarget(self, action: #selector(caloriesTapAreaAction), for: .touchUpInside)
+//        return btn
+//    }()
+
     private lazy var caloriesTapAreaButton: UIButton = {
         let btn = UIButton(type: .custom)
         btn.backgroundColor = .clear
-        btn.addTarget(self, action: #selector(caloriesTapAreaAction), for: .touchUpInside)
+        btn.isUserInteractionEnabled = false
         return btn
     }()
 
@@ -126,7 +152,7 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
 
     private lazy var saveButton: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setTitle("保存目标", for: .normal)
+        btn.setTitle("下一步", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         btn.backgroundColor = .COLOR_BUTTON_DISABLE_BG_THEME
@@ -137,6 +163,14 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
         btn.enablePressEffect()
         btn.addTarget(self, action: #selector(saveTapAction), for: .touchUpInside)
         return btn
+    }()
+
+    private lazy var alertVm: QuestionCustomTipsAlertVM = {
+        let vm = QuestionCustomTipsAlertVM(frame: .zero)
+        vm.isHidden = true
+        vm.titleLabel.text = "摄入太高/太低？"
+        vm.contentLabelOne.text = "Elavatine的计划的重心更偏向于最快达到健身目标，比起日常生活更接近专业运动员的需求，如果你觉得某营养素数值过高或者过低，你可以点击该值并进行手动修改。"
+        return vm
     }()
 }
 
@@ -156,10 +190,21 @@ extension GuidanceFixedTargetNutritionGoalVM {
     }
 
     func refreshContentFromModel() {
-        let carbText = normalizedModelText(QuestinonaireMsgModel.shared.carbohydratesNumber, maxValue: maxMacroInputValue)
-        let proteinText = normalizedModelText(QuestinonaireMsgModel.shared.proteinNumber, maxValue: maxMacroInputValue)
-        let fatText = normalizedModelText(QuestinonaireMsgModel.shared.fatsNumber, maxValue: maxMacroInputValue)
-        let caloriesText = normalizedModelText(QuestinonaireMsgModel.shared.caloriesNumber, maxValue: maxCaloriesInputValue)
+        let carbText = preferredModelText(
+            primary: QuestinonaireMsgModel.shared.carbohydratesNumber,
+            fallback: QuestinonaireMsgModel.shared.carbohydratesNumberFromServer,
+            maxValue: maxMacroInputValue
+        )
+        let proteinText = preferredModelText(
+            primary: QuestinonaireMsgModel.shared.proteinNumber,
+            fallback: QuestinonaireMsgModel.shared.proteinNumberFromServer,
+            maxValue: maxMacroInputValue
+        )
+        let fatText = preferredModelText(
+            primary: QuestinonaireMsgModel.shared.fatsNumber,
+            fallback: QuestinonaireMsgModel.shared.fatsNumberFromServer,
+            maxValue: maxMacroInputValue
+        )
 
         if !carbInputRow.textField.isFirstResponder {
             carbInputRow.updateValue(carbText)
@@ -170,44 +215,66 @@ extension GuidanceFixedTargetNutritionGoalVM {
         if !fatInputRow.textField.isFirstResponder {
             fatInputRow.updateValue(fatText)
         }
-        if !caloriesTextField.isFirstResponder {
-            caloriesTextField.text = caloriesText
-        }
-
-        let storedCalories = Int(caloriesText) ?? 0
+        hasUserEditedMacros = false
+        let caloriesText = preferredModelText(
+            primary: QuestinonaireMsgModel.shared.caloriesNumber,
+            fallback: QuestinonaireMsgModel.shared.caloriesNumberFromServer,
+            maxValue: maxCaloriesInputValue
+        )
         let calculatedCalories = calculateCalories(
             carb: Int(carbText) ?? 0,
             protein: Int(proteinText) ?? 0,
             fat: Int(fatText) ?? 0
         )
-        hasManualCaloriesOverride = storedCalories > 0 && storedCalories != calculatedCalories
-        if !hasManualCaloriesOverride && !caloriesTextField.isFirstResponder {
+//        updateCaloriesText(calculatedCalories > 0 ? "\(calculatedCalories)" : "")
+        if !caloriesText.isEmpty {
+            updateCaloriesText(caloriesText)
+        } else {
             updateCaloriesText(calculatedCalories > 0 ? "\(calculatedCalories)" : "")
         }
         updateSaveButtonState()
     }
 
+    func applyEditingMode(isEditable: Bool) {
+        isMacroEditingEnabled = isEditable
+        if !isEditable {
+            endEditing(true)
+        }
+        carbInputRow.updateEditable(isEditable)
+        proteinInputRow.updateEditable(isEditable)
+        fatInputRow.updateEditable(isEditable)
+        saveButton.setTitle(isEditable ? "保存目标" : "下一步", for: .normal)
+        updateSaveButtonState()
+    }
+
     func focusCarbInput() {
+        guard isMacroEditingEnabled else { return }
         shouldAutoFocusCarbInput = true
         autoFocusRetryCount = 0
         attemptFocusCarbInputIfNeeded()
     }
 
     @objc func saveTapAction() {
+        guard validateInputs(showToast: true) else { return }
         guard syncModelFromInputs() else { return }
         endEditing(true)
         saveBlock?()
     }
 
-    @objc func caloriesDidChange(_ sender: UITextField) {
-        if !isUpdatingCaloriesProgrammatically {
-            hasManualCaloriesOverride = true
-        }
-        updateSaveButtonState()
-    }
+//    @objc func caloriesDidChange(_ sender: UITextField) {
+//        if !isUpdatingCaloriesProgrammatically {
+//            hasManualCaloriesOverride = true
+//        }
+//        updateSaveButtonState()
+//    }
 
-    @objc func caloriesTapAreaAction() {
-        _ = caloriesTextField.becomeFirstResponder()
+//    @objc func caloriesTapAreaAction() {
+//        _ = caloriesTextField.becomeFirstResponder()
+//    }
+
+    @objc func tipsTapAction() {
+        endEditing(true)
+        alertVm.showView()
     }
 
     @objc func keyboardWillChangeFrame(_ notification: Notification) {
@@ -215,19 +282,26 @@ extension GuidanceFixedTargetNutritionGoalVM {
         let keyboardFrameInView = convert(keyboardFrame, from: nil)
         let keyboardMinY = keyboardFrameInView.minY
         layoutIfNeeded()
-        let defaultCardTop = titleLabel.frame.maxY + cardViewDefaultTopOffset
+        let defaultCardTop = tipsButton.frame.maxY + cardViewDefaultTopOffset
         let defaultCardBottom = defaultCardTop + cardView.bounds.height
         let targetBottom = keyboardMinY - cardViewKeyboardSpacing
         let overlap = max(0, defaultCardBottom - targetBottom)
-        updateCardViewTopOffset(cardViewDefaultTopOffset - overlap, notification: notification)
+        let headerShift = min(overlap, kFitWidth(52))
+        updateLayoutOffsets(headerShift: headerShift,
+                            cardOffset: cardViewDefaultTopOffset - overlap + headerShift,
+                            notification: notification)
     }
 
     @objc func keyboardWillHide(_ notification: Notification) {
-        updateCardViewTopOffset(cardViewDefaultTopOffset, notification: notification)
+        updateLayoutOffsets(headerShift: 0,
+                            cardOffset: cardViewDefaultTopOffset,
+                            notification: notification)
     }
 
-    func updateCardViewTopOffset(_ offset: CGFloat, notification: Notification?) {
-        cardViewTopConstraint?.update(offset: offset)
+    func updateLayoutOffsets(headerShift: CGFloat, cardOffset: CGFloat, notification: Notification?) {
+        titleTopConstraint?.update(offset: titleDefaultTopOffset - headerShift)
+        tipsTopConstraint?.update(offset: tipsDefaultTopOffset - headerShift)
+        cardViewTopConstraint?.update(offset: cardOffset)
 
         let duration = notification?.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double ?? 0.25
         let curveRaw = notification?.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt ?? 7
@@ -238,13 +312,13 @@ extension GuidanceFixedTargetNutritionGoalVM {
     }
 
     func handleMacroInputChanged() {
-        hasManualCaloriesOverride = false
+        hasUserEditedMacros = true
         recalculateCaloriesFromMacros()
         updateSaveButtonState()
     }
 
     func recalculateCaloriesFromMacros() {
-        guard !hasManualCaloriesOverride else { return }
+        guard hasUserEditedMacros else { return }
         let calories = calculateCalories(
             carb: inputValue(for: carbInputRow),
             protein: inputValue(for: proteinInputRow),
@@ -261,11 +335,48 @@ extension GuidanceFixedTargetNutritionGoalVM {
     }
 
     func updateSaveButtonState() {
-        let isEnabled = caloriesValue() > 100 &&
-            inputValue(for: carbInputRow) > 10 &&
-            inputValue(for: proteinInputRow) > 10 &&
-            inputValue(for: fatInputRow) > 10
-        saveButton.isEnabled = isEnabled
+        if isMacroEditingEnabled {
+            saveButton.isEnabled = true
+            return
+        }
+        let hasGoalData = caloriesValue() > 0 ||
+            inputValue(for: carbInputRow) > 0 ||
+            inputValue(for: proteinInputRow) > 0 ||
+            inputValue(for: fatInputRow) > 0
+        saveButton.isEnabled = hasGoalData
+    }
+
+    func validateInputs(showToast: Bool) -> Bool {
+        let carb = inputValue(for: carbInputRow)
+        let protein = inputValue(for: proteinInputRow)
+        let fat = inputValue(for: fatInputRow)
+
+        let carbText = carbInputRow.textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        if carbText.isEmpty {
+            if showToast {
+                MCToast.mc_text("请输入碳水化合物数值", respond: .allow)
+            }
+            return false
+        }
+        if carb < 0 || carb > maxMacroInputValue {
+            if showToast {
+                MCToast.mc_text("碳水化合物目标数值范围 0 ~ \(maxMacroInputValue) g", respond: .allow)
+            }
+            return false
+        }
+        if protein < 1 || protein > maxMacroInputValue {
+            if showToast {
+                MCToast.mc_text("蛋白质目标数值范围 1 ~ \(maxMacroInputValue) g", respond: .allow)
+            }
+            return false
+        }
+        if fat < 1 || fat > maxMacroInputValue {
+            if showToast {
+                MCToast.mc_text("脂肪目标数值范围 1 ~ \(maxMacroInputValue) g", respond: .allow)
+            }
+            return false
+        }
+        return true
     }
 
     @discardableResult
@@ -274,13 +385,16 @@ extension GuidanceFixedTargetNutritionGoalVM {
         let carb = inputValue(for: carbInputRow)
         let protein = inputValue(for: proteinInputRow)
         let fat = inputValue(for: fatInputRow)
-        guard calories > 10, carb > 10, protein > 10, fat > 10 else {
+        guard validateInputs(showToast: false), calories > 0 else {
             updateSaveButtonState()
             return false
         }
 
         QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
         QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(calories)"
+        QuestinonaireMsgModel.shared.protein = "\(protein)"
+        QuestinonaireMsgModel.shared.carbohydrates = "\(carb)"
+        QuestinonaireMsgModel.shared.fats = "\(fat)"
         QuestinonaireMsgModel.shared.carbohydratesNumber = "\(carb)"
         QuestinonaireMsgModel.shared.proteinNumber = "\(protein)"
         QuestinonaireMsgModel.shared.fatsNumber = "\(fat)"
@@ -307,6 +421,14 @@ extension GuidanceFixedTargetNutritionGoalVM {
         return "\(numericValue)"
     }
 
+    func preferredModelText(primary: String, fallback: String, maxValue: Int) -> String {
+        let primaryText = normalizedModelText(primary, maxValue: maxValue)
+        if !primaryText.isEmpty {
+            return primaryText
+        }
+        return normalizedModelText(fallback, maxValue: maxValue)
+    }
+
     func isValidNumericInput(currentText: String,
                              range: NSRange,
                              replacementString string: String,
@@ -322,6 +444,10 @@ extension GuidanceFixedTargetNutritionGoalVM {
 
     func attemptFocusCarbInputIfNeeded() {
         guard shouldAutoFocusCarbInput else { return }
+        guard isMacroEditingEnabled else {
+            shouldAutoFocusCarbInput = false
+            return
+        }
         guard window != nil else { return }
         if carbInputRow.textField.isFirstResponder {
             shouldAutoFocusCarbInput = false
@@ -345,7 +471,9 @@ extension GuidanceFixedTargetNutritionGoalVM {
 
     func initUI() {
         addSubview(titleLabel)
+        addSubview(tipsButton)
         addSubview(cardView)
+        addSubview(alertVm)
 
         cardView.addSubview(caloriesTapAreaButton)
         cardView.addSubview(caloriesTextField)
@@ -358,13 +486,18 @@ extension GuidanceFixedTargetNutritionGoalVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(88))
+            titleTopConstraint = make.top.equalTo(titleDefaultTopOffset).constraint
+        }
+
+        tipsButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            tipsTopConstraint = make.top.equalTo(tipsDefaultTopOffset).constraint
         }
 
         cardView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            cardViewTopConstraint = make.top.equalTo(titleLabel.snp.bottom).offset(cardViewDefaultTopOffset).constraint
+            cardViewTopConstraint = make.top.equalTo(tipsButton.snp.bottom).offset(cardViewDefaultTopOffset).constraint
         }
 
         caloriesTapAreaButton.snp.makeConstraints { make in
@@ -414,6 +547,8 @@ extension GuidanceFixedTargetNutritionGoalVM {
             make.top.equalTo(fatInputRow.snp.bottom).offset(kFitWidth(40))
             make.bottom.equalTo(kFitWidth(-24))
         }
+
+        applyEditingMode(isEditable: false)
     }
 }
 
@@ -459,7 +594,7 @@ class GuidanceFixedTargetNutritionInputRowView: UIView, UITextFieldDelegate {
         tf.textColor = .COLOR_TEXT_TITLE_0f1214
         tf.font = .systemFont(ofSize: 16, weight: .medium)
         tf.keyboardType = .numberPad
-        tf.placeholder = "0"
+        tf.placeholder = "输入数值"
         tf.delegate = self
         tf.addTarget(self, action: #selector(textDidChange(_:)), for: .editingChanged)
         return tf
@@ -475,6 +610,15 @@ class GuidanceFixedTargetNutritionInputRowView: UIView, UITextFieldDelegate {
 extension GuidanceFixedTargetNutritionInputRowView {
     func updateValue(_ value: String) {
         textField.text = normalizedInputText(value)
+    }
+
+    func updateEditable(_ isEditable: Bool) {
+        if !isEditable {
+            textField.resignFirstResponder()
+        }
+        textField.isEnabled = isEditable
+        textField.textColor = .COLOR_TEXT_TITLE_0f1214
+        unitLabel.textColor = isEditable ? .COLOR_TEXT_TITLE_0f1214_50 : .COLOR_TEXT_TITLE_0f1214
     }
 
     @objc func textDidChange(_ sender: UITextField) {
