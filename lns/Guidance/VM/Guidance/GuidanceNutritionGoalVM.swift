@@ -45,7 +45,7 @@ class GuidanceNutritionGoalVM: UIView {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 28, weight: .regular)
-        lab.text = "0"
+        lab.text = "-"
         return lab
     }()
 
@@ -59,11 +59,12 @@ class GuidanceNutritionGoalVM: UIView {
 
     lazy var goalIconView: UIImageView = {
         let img = UIImageView()
-        if #available(iOS 13.0, *) {
-            img.image = UIImage(systemName: "target")
-        }
-        img.tintColor = .THEME
-        img.contentMode = .scaleAspectFit
+//        if #available(iOS 13.0, *) {
+//            img.image = UIImage(systemName: "target")
+//        }
+        img.image = UIImage(named: "question_goal_selected")
+//        img.tintColor = .THEME
+//        img.contentMode = .scaleAspectFit
         return img
     }()
 
@@ -202,7 +203,7 @@ class GuidanceNutritionGoalRowView: UIView {
 
 extension GuidanceNutritionGoalRowView {
     func updateValue(_ value: String) {
-        let display = value.isEmpty ? "0" : value
+        let display = value.isEmpty ? "输入数值" : value
         valueLabel.text = "\(display) g"
     }
 

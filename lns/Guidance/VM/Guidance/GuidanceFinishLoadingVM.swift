@@ -36,6 +36,7 @@ class GuidanceFinishLoadingVM: UIView {
         super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         backgroundColor = .COLOR_BG_WHITE
         isUserInteractionEnabled = true
+        alpha = 0
         isHidden = true
         initUI()
     }
@@ -117,16 +118,33 @@ extension GuidanceFinishLoadingVM {
     }
 
     func showLoading(waitForExternalCompletion: Bool = false) {
-        isHidden = false
+        layer.removeAllAnimations()
         progressMode = waitForExternalCompletion ? .waitForExternalCompletion : .autoComplete
         minimumDisplayDuration = waitForExternalCompletion ? 3.0 : 0
         resetProgress()
+        if isHidden {
+            alpha = 0
+            isHidden = false
+        }
+        UIView.animate(withDuration: 0.2,
+                       delay: 0,
+                       options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction]) {
+            self.alpha = 1
+        }
         startFakeProgress()
     }
 
     func hideLoadingView() {
+        guard !isHidden || alpha > 0 else { return }
+        layer.removeAllAnimations()
         stopFakeProgress()
-        isHidden = true
+        UIView.animate(withDuration: 0.16,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction]) {
+            self.alpha = 0
+        } completion: { _ in
+            self.isHidden = true
+        }
     }
 
     private func resetProgress() {

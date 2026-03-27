@@ -450,12 +450,7 @@ extension GuidanceVC{
             } else {
                 nextButton.isEnabled = false
                 delayedNextWorkItem?.cancel()
-                let workItem = DispatchWorkItem { [weak self] in
-                    guard let self = self else { return }
-                    self.startNutritionGoalLoadingFlow()
-                }
-                delayedNextWorkItem = workItem
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.75, execute: workItem)
+                startNutritionGoalLoadingFlow()
             }
         case .sex, .mealsSummary, .strengthTrainingSummary,  .reminderPrompt:
             break
@@ -738,14 +733,20 @@ extension GuidanceVC{
 
     func startNutritionGoalLoadingFlow() {
         guard !isShowingFinishLoading else { return }
+        delayedNextWorkItem?.cancel()
+        delayedNextWorkItem = nil
+        removeBarrierVm.stopScrollers()
         isShowingFinishLoading = true
         pendingNutritionGoalPresentation = true
         naviVm.isHidden = true
         nextButton.isHidden = true
         nextButton.isEnabled = false
         finishLoadingVm.configureLoading(titleText: "计划生成中...")
+        finishLoadingVm.layoutIfNeeded()
         finishLoadingVm.showLoading(waitForExternalCompletion: true)
-        sendGuidanceNutritionGoalRequest()
+        DispatchQueue.main.async { [weak self] in
+            self?.sendGuidanceNutritionGoalRequest()
+        }
     }
 
     func cancelNutritionGoalLoadingFlow() {

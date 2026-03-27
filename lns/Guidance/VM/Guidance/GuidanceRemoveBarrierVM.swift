@@ -179,6 +179,14 @@ extension GuidanceRemoveBarrierVM {
         hasStartedScrolling = true
     }
 
+    func stopScrollers() {
+        scrollerOne.stopScrolling()
+        scrollerTwo.stopScrolling()
+        scrollerThree.stopScrolling()
+        scrollerFour.stopScrolling()
+        hasStartedScrolling = false
+    }
+
     func initUI() {
         addSubview(collageContainerView)
         collageContainerView.addSubview(scrollerOne)
