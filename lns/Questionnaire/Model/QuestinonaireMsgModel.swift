@@ -68,6 +68,9 @@ class QuestinonaireMsgModel{
     var fatsNumber = ""
     var caloriesNumber = ""
     var caloriesNumberFromServer = ""
+    var proteinNumberFromServer = ""
+    var carbohydratesNumberFromServer = ""
+    var fatsNumberFromServer = ""
     
     func printModelMsg() {
         DLLog(message: "性别：\(sex)")

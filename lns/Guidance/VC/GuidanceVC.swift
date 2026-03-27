@@ -174,7 +174,7 @@ class GuidanceVC: WHBaseViewVC {
     }()
     lazy var katchAlertVm : QuestionnaireBodyFatAlertVM = {
         let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
-        vm.titleLabel.text = "为什么不用BMI或身高？"
+        vm.titleLabel.text = "为什么不用BMI"
         vm.contentLabelOne.text = "BMI 主要反映体重和身高的比例，无法区分肌肉和脂肪，因此同样 BMI 的两个人，代谢需求可能差很多。Katch-McArdle 会参考你的瘦体重(去脂体重)，在体脂数据较准确时，通常能更贴近健身人群的代谢情况，给出更个性化的结果。"
         vm.contentLabelTwo.text = ""
         vm.contentLabelThree.text = ""
@@ -236,10 +236,13 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceFixedTargetVM.init(frame: CGRect.init(x: SCREEN_WIDHT*3, y: 0, width: 0, height: 0))
         vm.selectedBlock = { [weak self] in
             QuestinonaireMsgModel.shared.caloriesNumber = ""
-            QuestinonaireMsgModel.shared.caloriesNumberFromServer = ""
             QuestinonaireMsgModel.shared.carbohydrates = ""
             QuestinonaireMsgModel.shared.proteinNumber = ""
             QuestinonaireMsgModel.shared.fatsNumber = ""
+            QuestinonaireMsgModel.shared.caloriesNumberFromServer = ""
+            QuestinonaireMsgModel.shared.carbohydratesNumberFromServer = ""
+            QuestinonaireMsgModel.shared.proteinNumberFromServer = ""
+            QuestinonaireMsgModel.shared.fatsNumberFromServer = ""
             self?.updateFlowConfiguration()
 //            self?.nextButtonTapAction()
             self?.updateNextButtonForCurrentStep()
@@ -1036,10 +1039,10 @@ extension GuidanceVC{
             QuestinonaireMsgModel.shared.proteinNumber = "\(protein)"
             QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
             
-            QuestinonaireMsgModel.shared.carbohydratesNumber = "\(carbohydrate)"
-            QuestinonaireMsgModel.shared.proteinNumber = "\(protein)"
-            QuestinonaireMsgModel.shared.fatsNumber = "\(fat)"
-            QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
+            QuestinonaireMsgModel.shared.carbohydratesNumberFromServer = "\(carbohydrate)"
+            QuestinonaireMsgModel.shared.proteinNumberFromServer = "\(protein)"
+            QuestinonaireMsgModel.shared.fatsNumberFromServer = "\(fat)"
+            QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(calories)"
 
             DispatchQueue.main.async {
                 self.nutritionGoalVm.refreshContentFromModel()

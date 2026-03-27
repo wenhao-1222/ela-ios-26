@@ -829,7 +829,19 @@ extension WHBaseViewVC {
         guard var param = buildPendingGuidanceBaseNutritionParameters() else {
             return nil
         }
-
+        if let calories = Double(QuestinonaireMsgModel.shared.caloriesNumberFromServer) {
+            param["calories"] = NSNumber(value: calories)
+        }
+        if let protein = Double(QuestinonaireMsgModel.shared.proteinNumberFromServer) {
+            param["protein"] = NSNumber(value: protein)
+        }
+        if let carbohydrate = Double(QuestinonaireMsgModel.shared.carbohydratesNumberFromServer) {
+            param["carbohydrate"] = NSNumber(value: carbohydrate)
+        }
+        if let fat = Double(QuestinonaireMsgModel.shared.fatsNumberFromServer) {
+            param["fat"] = NSNumber(value: fat)
+        }
+        
         param["hasDailyIntakeGoal"] = NSNumber(value: 0)
 
         let birthday = model.birthDay.trimmingCharacters(in: .whitespacesAndNewlines)

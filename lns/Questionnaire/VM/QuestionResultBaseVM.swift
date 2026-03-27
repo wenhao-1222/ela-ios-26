@@ -89,7 +89,7 @@ class QuestionResultBaseVM: UIView {
     lazy var tipsButton: UIButton = {
         let btn = UIButton()
 //        btn.setTitle("为什么选择Katch-McArdle公式?", for: .normal)
-        btn.setTitle("为什么不用BMI或身高？", for: .normal)
+        btn.setTitle("为什么不用BMI", for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.setTitleColor(.COLOR_BUTTON_DISABLE_BG_THEME, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)

@@ -753,7 +753,7 @@ private extension AICoachReportPDFDemoVC {
         fallback: AICoachReportLineChartData
     ) -> (yAxisTexts: [String], minValue: CGFloat, maxValue: CGFloat) {
         guard let minValue = values.min(), let maxValue = values.max() else {
-            return (fallback.yAxisTexts, fallback.minValue, fallback.maxValue)
+            return (["80", "60", "40", "20", "0"], 0, 80)
         }
 
         let range = max(maxValue - minValue, 0.1)
