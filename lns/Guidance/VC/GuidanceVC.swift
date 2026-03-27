@@ -812,10 +812,21 @@ extension GuidanceVC{
         guard flowStep(for: currentIndex) == .progressChart else { return }
         let workItem = DispatchWorkItem { [weak self] in
             guard let self = self, self.flowStep(for: self.currentIndex) == .progressChart else { return }
-            self.nextButton.isEnabled = true
+            self.updateNextButtonEnabledState(true, animated: true)
         }
         nextButtonEnableWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: workItem)
+    }
+
+    func updateNextButtonEnabledState(_ isEnabled: Bool, animated: Bool) {
+        guard nextButton.isEnabled != isEnabled else { return }
+        if animated {
+            UIView.transition(with: nextButton, duration: 0.24, options: [.transitionCrossDissolve, .allowAnimatedContent, .beginFromCurrentState]) {
+                self.nextButton.isEnabled = isEnabled
+            }
+            return
+        }
+        nextButton.isEnabled = isEnabled
     }
 
     func estimatedDailyActivityLevel() -> String {
@@ -892,6 +903,8 @@ extension GuidanceVC{
             vc?.changeRootVcToLogin()
         }
 
+//        self.navigationController?.fd_interactivePopDisabled = true
+//        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
         if let navigationController = navigationController {
             navigationController.pushViewController(vc, animated: true)
         } else {

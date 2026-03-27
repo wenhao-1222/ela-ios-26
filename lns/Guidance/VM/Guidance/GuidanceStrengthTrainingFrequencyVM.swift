@@ -112,7 +112,7 @@ extension GuidanceStrengthTrainingFrequencyVM {
             lab.text = item.title
             lab.textAlignment = .center
             lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
-            lab.font = .systemFont(ofSize: 16, weight: .medium)
+            lab.font = .systemFont(ofSize: 20, weight: .medium)
 
             button.addSubview(lab)
             lab.snp.makeConstraints { make in

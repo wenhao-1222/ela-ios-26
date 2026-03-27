@@ -45,6 +45,14 @@ class GuidanceProVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
+        
+        if let nav = navigationController {
+            var controllers = nav.viewControllers
+            if let index = controllers.firstIndex(where: { $0 is GuidanceVC }){
+                controllers.remove(at: index)
+                nav.viewControllers = controllers
+            }
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
