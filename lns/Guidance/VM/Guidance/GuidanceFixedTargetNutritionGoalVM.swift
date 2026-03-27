@@ -335,15 +335,7 @@ extension GuidanceFixedTargetNutritionGoalVM {
     }
 
     func updateSaveButtonState() {
-        if isMacroEditingEnabled {
-            saveButton.isEnabled = true
-            return
-        }
-        let hasGoalData = caloriesValue() > 0 ||
-            inputValue(for: carbInputRow) > 0 ||
-            inputValue(for: proteinInputRow) > 0 ||
-            inputValue(for: fatInputRow) > 0
-        saveButton.isEnabled = hasGoalData
+        saveButton.isEnabled = validateInputs(showToast: false)
     }
 
     func validateInputs(showToast: Bool) -> Bool {
@@ -390,15 +382,20 @@ extension GuidanceFixedTargetNutritionGoalVM {
             return false
         }
 
+        syncNutritionValuesToModel(carb: carb, protein: protein, fat: fat, calories: calories)
+        return true
+    }
+
+    func syncNutritionValuesToModel(carb: Int, protein: Int, fat: Int, calories: Int) {
+        QuestinonaireMsgModel.shared.carbohydratesNumber = "\(carb)"
+        QuestinonaireMsgModel.shared.fatsNumber = "\(fat)"
+        QuestinonaireMsgModel.shared.proteinNumber = "\(protein)"
         QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
-        QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(calories)"
+
+//        QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(calories)"
         QuestinonaireMsgModel.shared.protein = "\(protein)"
         QuestinonaireMsgModel.shared.carbohydrates = "\(carb)"
         QuestinonaireMsgModel.shared.fats = "\(fat)"
-        QuestinonaireMsgModel.shared.carbohydratesNumber = "\(carb)"
-        QuestinonaireMsgModel.shared.proteinNumber = "\(protein)"
-        QuestinonaireMsgModel.shared.fatsNumber = "\(fat)"
-        return true
     }
 
     func caloriesValue() -> Int {

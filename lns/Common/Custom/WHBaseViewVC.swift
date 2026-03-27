@@ -795,6 +795,7 @@ extension WHBaseViewVC {
             return
         }
 
+        DLLog(message: "users/survey/savePart/v2 参数:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_question_survey_savepart_v2,
                                           parameters: param,
                                           isNeedToast: true,
@@ -829,16 +830,16 @@ extension WHBaseViewVC {
         guard var param = buildPendingGuidanceBaseNutritionParameters() else {
             return nil
         }
-        if let calories = Double(QuestinonaireMsgModel.shared.caloriesNumberFromServer) {
+        if let calories = Double(QuestinonaireMsgModel.shared.caloriesNumber) {
             param["calories"] = NSNumber(value: calories)
         }
-        if let protein = Double(QuestinonaireMsgModel.shared.proteinNumberFromServer) {
+        if let protein = Double(QuestinonaireMsgModel.shared.proteinNumber) {
             param["protein"] = NSNumber(value: protein)
         }
-        if let carbohydrate = Double(QuestinonaireMsgModel.shared.carbohydratesNumberFromServer) {
+        if let carbohydrate = Double(QuestinonaireMsgModel.shared.carbohydratesNumber) {
             param["carbohydrate"] = NSNumber(value: carbohydrate)
         }
-        if let fat = Double(QuestinonaireMsgModel.shared.fatsNumberFromServer) {
+        if let fat = Double(QuestinonaireMsgModel.shared.fatsNumber) {
             param["fat"] = NSNumber(value: fat)
         }
         
