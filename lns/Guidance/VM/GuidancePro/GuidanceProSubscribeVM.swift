@@ -38,6 +38,30 @@ class GuidanceProSubscribeVM: UIView {
     }()
 
     private lazy var contentView = UIView()
+    private lazy var footerContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.98)
+        view.layer.shadowColor = UIColor.black.withAlphaComponent(0.08).cgColor
+        view.layer.shadowOpacity = 1
+        view.layer.shadowRadius = 18
+        view.layer.shadowOffset = CGSize(width: 0, height: -8)
+        return view
+    }()
+
+    private lazy var footerDividerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.withAlphaComponent(0.12)
+        return view
+    }()
+
+    private lazy var footerTopFadeView: VerticalFadeView = {
+        let view = VerticalFadeView()
+        view.isUserInteractionEnabled = false
+        view.startColor = UIColor.white.withAlphaComponent(0)
+        view.endColor = UIColor.white.withAlphaComponent(0.98)
+        return view
+    }()
+
     private lazy var closeImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "ela_pro_close_icon"))
         imageView.contentMode = .scaleAspectFit
@@ -92,10 +116,10 @@ class GuidanceProSubscribeVM: UIView {
 
     private lazy var reminderCardView: UIView = {
         let view = UIView()
-        view.backgroundColor = .COLOR_WHITE_65//UIColor.white.withAlphaComponent(0.84)
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.84)
         view.layer.cornerRadius = kFitWidth(12)
-        view.layer.borderWidth = 2
-        view.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.withAlphaComponent(0.08).cgColor
         return view
     }()
 
@@ -162,6 +186,14 @@ class GuidanceProSubscribeVM: UIView {
         label.textColor = .COLOR_TEXT_TITLE_0f1214_50
         label.font = .systemFont(ofSize: 14, weight: .regular)
         return label
+    }()
+
+    private lazy var noteStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [noteIconLabel, noteLabel])
+        stack.axis = .horizontal
+        stack.spacing = kFitWidth(6)
+        stack.alignment = .center
+        return stack
     }()
 
     private lazy var proTitleLabel = makeSectionTitle("ELA PRO 将帮助你：")
@@ -303,12 +335,26 @@ private extension GuidanceProSubscribeVM {
 
     func initUI() {
         addSubview(scrollView)
+        addSubview(footerContainerView)
+        addSubview(closeImageView)
         addSubview(loadingOverlayView)
         scrollView.addSubview(contentView)
         loadingOverlayView.addSubview(loadingIndicatorView)
+        addSubview(footerTopFadeView)
 
         scrollView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.left.right.top.equalToSuperview()
+            make.bottom.equalTo(footerContainerView.snp.top)
+        }
+
+        footerContainerView.snp.makeConstraints { make in
+            make.left.right.bottom.equalToSuperview()
+        }
+
+        footerTopFadeView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(footerContainerView.snp.top)
+            make.height.equalTo(kFitWidth(34))
         }
 
         loadingOverlayView.snp.makeConstraints { make in
@@ -325,36 +371,37 @@ private extension GuidanceProSubscribeVM {
         }
 
         contentView.addSubview(logoImageView)
-        contentView.addSubview(closeImageView)
         contentView.addSubview(starsLeftImgView)
         contentView.addSubview(starsLabel)
         contentView.addSubview(ratingLabel)
         contentView.addSubview(starsRightImgView)
         contentView.addSubview(faqStackView)
         contentView.addSubview(reminderCardView)
-        contentView.addSubview(trialDescLabel)
-        contentView.addSubview(renewalDescLabel)
-        contentView.addSubview(startTrialButton)
-        contentView.addSubview(noteIconLabel)
-        contentView.addSubview(noteLabel)
         contentView.addSubview(proTitleLabel)
         contentView.addSubview(proFeatureContainer)
         contentView.addSubview(freeTitleLabel)
         contentView.addSubview(freeFeatureContainer)
+        contentView.addSubview(renewalDescLabel)
+        
+        freeFeatureContainer.layer.borderColor = UIColor.clear.cgColor
+
+//        footerContainerView.addSubview(footerDividerView)
+        footerContainerView.addSubview(trialDescLabel)
+        footerContainerView.addSubview(startTrialButton)
+        footerContainerView.addSubview(noteStackView)
 
         reminderCardView.addSubview(reminderLabel)
         reminderCardView.addSubview(reminderSwitch)
 
         logoImageView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(28))
-//            make.top.equalToSuperview().offset(kFitWidth(18))
-            make.top.equalTo(statusBarHeight+kFitWidth(110))
+            make.top.equalTo(statusBarHeight + kFitWidth(110))
             make.width.equalTo(kFitWidth(165))
             make.height.equalTo(kFitWidth(29))
         }
         closeImageView.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-15))
-            make.top.equalTo(statusBarHeight+kFitWidth(10))
+            make.top.equalTo(statusBarHeight + kFitWidth(10))
             make.width.height.equalTo(kFitWidth(30))
         }
         starsRightImgView.snp.makeConstraints { make in
@@ -404,39 +451,10 @@ private extension GuidanceProSubscribeVM {
             make.centerY.equalToSuperview()
         }
 
-        trialDescLabel.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(24))
-            make.right.equalTo(kFitWidth(-24))
-            make.top.equalTo(reminderCardView.snp.bottom).offset(kFitWidth(18))
-        }
-
-        renewalDescLabel.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(34))
-            make.right.equalTo(kFitWidth(-34))
-            make.top.equalTo(trialDescLabel.snp.bottom).offset(kFitWidth(14))
-        }
-
-        startTrialButton.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(renewalDescLabel.snp.bottom).offset(kFitWidth(20))
-            make.height.equalTo(kFitWidth(52))
-        }
-
-        noteIconLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview().offset(-kFitWidth(78))
-            make.top.equalTo(startTrialButton.snp.bottom).offset(kFitWidth(16))
-        }
-
-        noteLabel.snp.makeConstraints { make in
-            make.left.equalTo(noteIconLabel.snp.right).offset(kFitWidth(8))
-            make.centerY.equalTo(noteIconLabel)
-        }
-
         proTitleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
-            make.top.equalTo(noteLabel.snp.bottom).offset(kFitWidth(30))
+            make.top.equalTo(renewalDescLabel.snp.bottom).offset(kFitWidth(28))
         }
 
         proFeatureContainer.snp.makeConstraints { make in
@@ -458,6 +476,39 @@ private extension GuidanceProSubscribeVM {
             make.bottom.equalToSuperview().offset(-kFitWidth(24))
         }
 
+        renewalDescLabel.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(24))
+            make.right.equalTo(kFitWidth(-24))
+            make.top.equalTo(reminderCardView.snp.bottom).offset(kFitWidth(18))
+        }
+
+//        footerDividerView.snp.makeConstraints { make in
+//            make.left.equalTo(kFitWidth(16))
+//            make.right.equalTo(kFitWidth(-16))
+//            make.top.equalToSuperview()
+//            make.height.equalTo(1)
+//        }
+
+        trialDescLabel.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(24))
+            make.right.equalTo(kFitWidth(-24))
+            make.top.equalTo(kFitWidth(8))
+//            make.top.equalTo(footerDividerView.snp.bottom).offset(kFitWidth(14))
+        }
+
+        startTrialButton.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.right.equalTo(kFitWidth(-20))
+            make.top.equalTo(trialDescLabel.snp.bottom).offset(kFitWidth(12))
+            make.height.equalTo(kFitWidth(52))
+        }
+
+        noteStackView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(startTrialButton.snp.bottom).offset(kFitWidth(12))
+            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-kFitWidth(10))
+        }
+
         buildFAQs()
         buildFeatureRows()
     }
@@ -476,17 +527,19 @@ private extension GuidanceProSubscribeVM {
 
     func buildFeatureRows() {
         let proItems = [
-            ("定制饮食计划", "按你的目标与饮食模式定制，直接照着执行"),
-            ("整理购物清单", "为你食谱提前列好未来一周所需食材"),
-            ("去除广告", "专心记录饮食，不被干扰"),
-            ("解锁AI识别上限", "放开使用AI食物与营养成分表识别"),
-            ("优先体验新功能", "新功能上线的第一时间体验")
+            ("list.bullet.clipboard", "定制饮食计划", "按你的目标与饮食模式定制，直接照着执行"),
+            ("cart", "整理购物清单", "为你食谱提前列好未来一周所需食材"),
+            ("slash.circle", "去除广告", "专心记录饮食，不被干扰"),
+            ("viewfinder.circle", "解锁AI识别上限", "放开使用AI食物与营养成分表识别"),
+            ("sparkles", "优先体验新功能", "新功能上线的第一时间体验")
         ]
 
-        let freeItems: [(String, String?)] = [
-            ("日常饮食记录", nil),
-            ("身体数据记录", nil),
-            ("有氧训练记录", nil)
+        let freeItems: [(String, String, String?)] = [
+            ("fork.knife.circle", "日常饮食记录", nil),
+            ("figure.stand", "身体数据记录", nil),
+            ("figure.walk.circle", "有氧训练记录", nil),
+            ("dumbbell", "力量训练标签", nil),
+            ("target", "目标打卡养成", nil)
         ]
 
         addFeatureRows(proItems, to: proFeatureContainer, accentColor: UIColor(hex: 0xEAF3FF))
@@ -499,13 +552,13 @@ private extension GuidanceProSubscribeVM {
         let questionLabel = UILabel()
         questionLabel.text = question
         questionLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        questionLabel.font = .systemFont(ofSize: 16, weight: .regular)
+        questionLabel.font = .systemFont(ofSize: 13, weight: .medium)
         questionLabel.numberOfLines = 0
 
         let answerLabel = UILabel()
         answerLabel.text = answer
         answerLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        answerLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        answerLabel.font = .systemFont(ofSize: 12, weight: .regular)
         answerLabel.numberOfLines = 0
 
         view.addSubview(questionLabel)
@@ -528,25 +581,25 @@ private extension GuidanceProSubscribeVM {
         let label = UILabel()
         label.text = text
         label.textColor = .COLOR_TEXT_TITLE_0f1214
-        label.font = .systemFont(ofSize: 16, weight: .semibold)
+        label.font = .systemFont(ofSize: 15, weight: .semibold)
         return label
     }
 
     func makeFeatureContainer() -> UIView {
         let view = UIView()
-        view.backgroundColor = UIColor.white.withAlphaComponent(0.72)
+        view.backgroundColor = UIColor.white.withAlphaComponent(0.84)
         view.layer.cornerRadius = kFitWidth(16)
         view.layer.borderWidth = 1
-        view.layer.borderColor = UIColor.white.withAlphaComponent(0.78).cgColor
+        view.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.withAlphaComponent(0.08).cgColor
         view.clipsToBounds = true
         return view
     }
 
-    func addFeatureRows(_ items: [(String, String?)], to container: UIView, accentColor: UIColor) {
+    func addFeatureRows(_ items: [(String, String, String?)], to container: UIView, accentColor: UIColor) {
         var previousRow: UIView?
 
         for (index, item) in items.enumerated() {
-            let row = makeFeatureRow(title: item.0, desc: item.1, accentColor: accentColor)
+            let row = makeFeatureRow(iconName: item.0, title: item.1, desc: item.2, accentColor: accentColor)
             container.addSubview(row)
 
             row.snp.makeConstraints { make in
@@ -565,23 +618,30 @@ private extension GuidanceProSubscribeVM {
         }
     }
 
-    func makeFeatureRow(title: String, desc: String?, accentColor: UIColor) -> UIView {
+    func makeFeatureRow(iconName: String, title: String, desc: String?, accentColor: UIColor) -> UIView {
         let view = UIView()
 
         let iconView = UIView()
         iconView.backgroundColor = accentColor
         iconView.layer.cornerRadius = kFitWidth(14)
+        iconView.layer.borderWidth = 1
+        iconView.layer.borderColor = UIColor.white.withAlphaComponent(0.8).cgColor
+
+        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+        let iconImageView = UIImageView(image: UIImage(systemName: iconName, withConfiguration: symbolConfig))
+        iconImageView.contentMode = .scaleAspectFit
+        iconImageView.tintColor = .COLOR_TEXT_TITLE_0f1214
 
         let titleLabel = UILabel()
         titleLabel.text = title
         titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        titleLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        titleLabel.font = .systemFont(ofSize: 15, weight: .medium)
         titleLabel.numberOfLines = 0
 
         let descLabel = UILabel()
         descLabel.text = desc
         descLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        descLabel.font = .systemFont(ofSize: 14, weight: .regular)
+        descLabel.font = .systemFont(ofSize: 12, weight: .regular)
         descLabel.numberOfLines = 0
         descLabel.isHidden = desc == nil
 
@@ -589,6 +649,7 @@ private extension GuidanceProSubscribeVM {
         divider.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.withAlphaComponent(0.15)
 
         view.addSubview(iconView)
+        iconView.addSubview(iconImageView)
         view.addSubview(titleLabel)
         view.addSubview(descLabel)
         view.addSubview(divider)
@@ -597,6 +658,11 @@ private extension GuidanceProSubscribeVM {
             make.left.equalTo(kFitWidth(14))
             make.top.equalTo(kFitWidth(18))
             make.width.height.equalTo(kFitWidth(28))
+        }
+
+        iconImageView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.height.lessThanOrEqualTo(kFitWidth(16))
         }
 
         titleLabel.snp.makeConstraints { make in
@@ -642,5 +708,40 @@ private extension UIColor {
         let green = CGFloat((hex >> 8) & 0xFF) / 255.0
         let blue = CGFloat(hex & 0xFF) / 255.0
         self.init(red: red, green: green, blue: blue, alpha: alpha)
+    }
+}
+
+private final class VerticalFadeView: UIView {
+
+    var startColor: UIColor = .clear {
+        didSet { updateGradient() }
+    }
+
+    var endColor: UIColor = .white {
+        didSet { updateGradient() }
+    }
+
+    private let gradientLayer = CAGradientLayer()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        layer.addSublayer(gradientLayer)
+        updateGradient()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer.frame = bounds
+    }
+
+    private func updateGradient() {
+        gradientLayer.colors = [startColor.cgColor, endColor.cgColor]
+        gradientLayer.locations = [0, 1]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
     }
 }
