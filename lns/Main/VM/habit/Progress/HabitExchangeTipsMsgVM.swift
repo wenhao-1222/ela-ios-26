@@ -79,7 +79,7 @@ extension HabitExchangeTipsMsgVM{
         whiteView.addSubview(showMoreLabel)
         
         setConstrait()
-        tipsLabel.setLineHeight(textString: "2021年监测结果显示，仅在农村义务教育学生营养改善计划的重点监测抽样范围内，6至15岁学生消瘦率仍为9.8%，贫血率为12.0%，营养缺口依然真实存在，针对性的支持仍有必要。",lineHeight: kFitWidth(20))
+        tipsLabel.setLineHeight(textString: "2021年监测结果显示，仅在农村义务教育学生营养改善计划的重点监测抽样范围内，6至15岁学生消瘦率仍为9.8%，贫血率为12.0%，营养缺口依然真实存在，针对性的支持仍有必要。",lineHeight: tipsLabel.font.lineHeight)
         showMoreLabel.setLineHeight(textString: "查看更多",lineHeight: kFitWidth(20))
     }
     func setConstrait() {

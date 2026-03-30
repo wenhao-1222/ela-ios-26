@@ -15,9 +15,9 @@ class DietPlanVC: WHBaseViewVC {
     public override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = false
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
-        
-        appDelegate.getKeyWindow().addSubview(elaExpiredAlertVm)
-        self.elaExpiredAlertVm.showSelf()
+
+//        appDelegate.getKeyWindow().addSubview(elaExpiredAlertVm)
+//        self.elaExpiredAlertVm.showSelf()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -47,9 +47,13 @@ class DietPlanVC: WHBaseViewVC {
         vm.buyListButton.addTarget(self, action: #selector(openBuyListSelectionAction), for: .touchUpInside)
         vm.sauceButton.addTarget(self, action: #selector(condimentAction), for: .touchUpInside)
         vm.mealChangeTapBlock = { [weak self] mealId,id in
-            self?.openMealChangeList(mealId: mealId,id: id)
+            guard let self = self else { return }
+            guard self.ensureValidVipForMealAction() else { return }
+            self.openMealChangeList(mealId: mealId,id: id)
         }
-        vm.mealTapBlock = {(meal,sdate) in
+        vm.mealTapBlock = { [weak self] (meal,sdate) in
+            guard let self = self else { return }
+            guard self.ensureValidVipForMealAction() else { return }
             let vc = DietPlanFoodsDetailVC()
             vc.mealId = meal.mealId
             vc.sdate = sdate
@@ -72,6 +76,21 @@ class DietPlanVC: WHBaseViewVC {
 }
 
 extension DietPlanVC{
+    func ensureValidVipForMealAction() -> Bool {
+        guard UserInfoModel.shared.vipModel.status == .valid else {
+            showElaExpiredAlertIfNeeded()
+            return false
+        }
+        return true
+    }
+
+    func showElaExpiredAlertIfNeeded() {
+        if elaExpiredAlertVm.superview == nil {
+            appDelegate.getKeyWindow().addSubview(elaExpiredAlertVm)
+        }
+        elaExpiredAlertVm.showSelf()
+    }
+
     //前往问卷
     @objc func createDietPlanAction() {
         self.navigationController?.fd_interactivePopDisabled = true

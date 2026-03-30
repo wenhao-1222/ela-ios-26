@@ -1201,6 +1201,7 @@ extension JournalVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             UserDefaults.set(value: WHUtils.getJSONStringFromArray(array: dataArr), forKey: .hidsoryFoodsAdd)
+            
         }
     }
     

@@ -35,13 +35,13 @@ extension HabitRuleTableViewCell{
     func updateUI(contentStr:String,isTitle:Bool = false,bottomGap:CGFloat) {
         titleLab.textColor = isTitle ? .COLOR_TEXT_TITLE_0f1214 :
             .COLOR_TEXT_TITLE_0f1214_50
-        titleLab.font = isTitle ? .systemFont(ofSize: 17, weight: .medium) :
-            .systemFont(ofSize: 12, weight: .regular)
-        if isTitle{
-            titleLab.setLineHeight(textString: contentStr,lineHeight: kFitWidth(26))
-        }else{
-            titleLab.setLineHeight(textString: contentStr,lineHeight: kFitWidth(18))
-        }
+        titleLab.font = isTitle ? .systemFont(ofSize: 17, weight: .semibold) :
+            .systemFont(ofSize: 13, weight: .regular)
+//        if isTitle{
+            titleLab.setLineHeight(textString: contentStr,lineHeight: titleLab.font.lineHeight)
+//        }else{
+//            titleLab.setLineHeight(textString: contentStr,lineHeight: titleLab.font.lineHeight * 1.5)
+//        }
         setNeedsDisplay()
     }
 }
