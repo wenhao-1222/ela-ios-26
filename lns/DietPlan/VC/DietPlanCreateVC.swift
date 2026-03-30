@@ -24,6 +24,9 @@ class DietPlanCreateVC: WHBaseViewVC {
     private var shouldSkipSexStep: Bool {
         UserInfoModel.shared.gender == "1" || UserInfoModel.shared.gender == "2"
     }
+    private var shouldSkipBirthdayStep: Bool {
+        !UserInfoModel.shared.birthDay.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = true
@@ -41,7 +44,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
-        syncSexFromUserProfileIfNeeded(applyDefaultValues: true)
+        syncProfileFromUserInfoIfNeeded(applyDefaultValues: true)
         observeDraftChanges()
         restoreDraftIfNeeded()
     }
@@ -57,9 +60,10 @@ class DietPlanCreateVC: WHBaseViewVC {
                 self.backTapAction()
                 return
             }
+            let previousIndex = self.currentIndex
             self.currentIndex = self.previousStepIndex(from: self.currentIndex)
             let targetOffsetX = SCREEN_WIDHT * CGFloat(self.currentIndex)
-            let shouldAnimate = !(self.shouldSkipSexStep && self.currentIndex == 0)
+            let shouldAnimate = self.shouldAnimateStepTransition(from: previousIndex, to: self.currentIndex)
             self.scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: shouldAnimate)
             self.updateNextButtonForCurrentStep(animated: true)
             self.persistDraftIfNeeded()
@@ -221,7 +225,7 @@ class DietPlanCreateVC: WHBaseViewVC {
 
 extension DietPlanCreateVC{
     @objc func nextButtonTapAction() {
-        if currentIndex == 6, let payload = targetWeightVm.buildTargetWeightAlertPayload() {
+        if currentIndex == displayStepIndex(for: 6), let payload = targetWeightVm.buildTargetWeightAlertPayload() {
             targetWeightAlertVm.showView(type: payload.type, confirmBlock: { [weak self] in
                 guard let self = self else { return }
                 self.targetWeightVm.applyRecommendedTargetWeight(payload.recommendedWeight)
@@ -242,43 +246,48 @@ extension DietPlanCreateVC{
 
         let nextIndex = nextStepIndex(from: currentIndex)
         
-        if nextIndex == 5 {
+        if nextIndex == displayStepIndex(for: 5) {
             weightVm.getWeightValue()
             targetWeightVm.applyInitialValue()
-            birthdayVm.getBirthDayData()
+            if !shouldSkipBirthdayStep {
+                birthdayVm.getBirthDayData()
+            }
         }
-        if currentIndex == 6{
+        if currentIndex == displayStepIndex(for: 6){
             //目标体重如果是维持，则跳过 第8步“达成目标对你有多重要？”   和  第9步“你希望多快达成目标？”
             skipStepsOne = shouldSkipImportantAndPaceSteps() ? 2 : 0
         }
-        if currentIndex == 7 {
+        if currentIndex == displayStepIndex(for: 7) {
             sendBasicRequest()
         }
         
         let targetOffsetX = SCREEN_WIDHT * CGFloat(nextIndex)
         let finalOffsetX = min(targetOffsetX, maxOffsetX)
+        let previousIndex = currentIndex
         currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
-        let shouldAnimate = !(shouldSkipSexStep && currentIndex == 2 && nextIndex == 2)
+        let shouldAnimate = shouldAnimateStepTransition(from: previousIndex, to: currentIndex)
         scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: shouldAnimate)
         updateNextButtonForCurrentStep(animated: true)
         persistDraftIfNeeded()
     }
 
     func moveFromSexToNextStep() {
-        guard currentIndex == 1 else { return }
+        guard currentIndex == displayStepIndex(for: 1) else { return }
         let nextIndex = nextStepIndex(from: currentIndex)
         let targetOffsetX = SCREEN_WIDHT * CGFloat(nextIndex)
         let maxOffsetX = max(scrollViewBase.contentSize.width - scrollViewBase.bounds.width, 0)
         let finalOffsetX = min(targetOffsetX, maxOffsetX)
+        let previousIndex = currentIndex
         currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
-        scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: true)
+        let shouldAnimate = shouldAnimateStepTransition(from: previousIndex, to: currentIndex)
+        scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: shouldAnimate)
         updateNextButtonForCurrentStep(animated: true)
         self.bodyfatVm.updateScrollView()
         persistDraftIfNeeded()
     }
 
     func updateNextButtonForCurrentStep(animated: Bool) {
-        let shouldHideButton = (currentIndex == 1 && !shouldSkipSexStep)
+        let shouldHideButton = (currentIndex == displayStepIndex(for: 1) && !shouldSkipSexStep)
         let moveY = kFitWidth(90) + WHUtils().getBottomSafeAreaHeight()
         let targetTransform = shouldHideButton ? CGAffineTransform(translationX: 0, y: moveY) : .identity
         let targetAlpha: CGFloat = shouldHideButton ? 0 : 1
@@ -287,7 +296,7 @@ extension DietPlanCreateVC{
             self.nextButton.alpha = targetAlpha
         }
         nextButton.isUserInteractionEnabled = !shouldHideButton
-        naviVm.updateStep(steps: self.stepsArray, currentStep: displayStepIndex(for: currentIndex))
+        naviVm.updateStep(steps: self.stepsArray, currentStep: currentIndex)
 
         if animated {
             UIView.animate(withDuration: 0.25) {
@@ -308,37 +317,38 @@ extension DietPlanCreateVC{
             self.openInteractivePopGesture()
         }
         
+        let introIndexOffset = skippedIntroStepIndexes.count
         let skipStepN = skipStepsNine ? 1 : 0
         let mealStyleIndex = skipMealStyle ? 1 : 0
-        let ketoIndex = 15-skipStepsOne-skipStepN-mealStyleIndex
-        let flavorIndex = 16-skipStepsOne-skipStepN-(skipKetoHistory ? 1 : 0)-mealStyleIndex
+        let ketoIndex = 15-skipStepsOne-skipStepN-mealStyleIndex-introIndexOffset
+        let flavorIndex = 16-skipStepsOne-skipStepN-(skipKetoHistory ? 1 : 0)-mealStyleIndex-introIndexOffset
         
         switch currentIndex {
         case 0:
             nextButton.isEnabled = isGoalStepEnabled
-        case 1:
+        case let idx where idx == displayStepIndex(for: 1) && !shouldSkipSexStep:
             nextButton.isEnabled = false
-        case 5:
+        case 5-introIndexOffset:
             nextButton.isEnabled = bodyfatVm.selectIndex >= 0
-        case 6:
+        case 6-introIndexOffset:
             targetWeightVm.tipsLabel.alpha = 0
             targetWeightVm.valueChanged = false
             nextButton.isEnabled = !QuestinonaireMsgModel.shared.targetWeight.isEmpty
-        case 7:
+        case 7-introIndexOffset:
             nextButton.isEnabled = eventsVm.selectedIndex >= 0
-        case 8-skipStepsOne:
+        case 8-skipStepsOne-introIndexOffset:
             nextButton.isEnabled = importantVm.selectedIndex >= 0
-        case 10-skipStepsOne-skipStepN:
+        case 10-skipStepsOne-skipStepN-introIndexOffset:
             nextButton.isEnabled = allergyVm.selectedIndex >= 0
-        case 11-skipStepsOne-skipStepN:
+        case 11-skipStepsOne-skipStepN-introIndexOffset:
             nextButton.isEnabled = barrierVm.selectedIndex >= 0
-        case 13-skipStepsOne-skipStepN:
+        case 13-skipStepsOne-skipStepN-introIndexOffset:
             if skipMealStyle{
                 nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
             }else{
                 nextButton.isEnabled = mealStyleVm.selectedIndex >= 0
             }
-        case 14-skipStepsOne-skipStepN-mealStyleIndex:
+        case 14-skipStepsOne-skipStepN-mealStyleIndex-introIndexOffset:
             nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
         case ketoIndex:
             nextButton.isEnabled = skipKetoHistory ? (flavorVM.selectedIndex >= 0) : (ketoHistoryVm.selectedIndex >= 0)
@@ -350,16 +360,13 @@ extension DietPlanCreateVC{
     }
 
     func nextStepIndex(from index: Int) -> Int {
-        if shouldSkipSexStep && index == 0 {
-            return 2
-        }
-        if index == 6 && shouldSkipImportantAndPaceSteps() {
+        if index == displayStepIndex(for: 6) && shouldSkipImportantAndPaceSteps() {
 //            return 10
         }
 //        if index == 7{
 //            DLLog(message: "日常活动量选择------")
 //        }
-        if index == 8 {
+        if index == displayStepIndex(for: 8) {
             //8. 达成目标对你有多重要？
             //以下处理，只有当目标体重  非维持时，即显示 “达成目标对你有多重要？”时。否则 跳过这里的判断
             if !shouldSkipImportantAndPaceSteps(){
@@ -373,10 +380,10 @@ extension DietPlanCreateVC{
                     paceVm.isHidden = true
                     skipStepsNine = true
                     if skipMealStyle {
-                        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*15, height: 0)
+                        scrollViewBase.contentSize = CGSize.init(width: contentWidth(forBasePageCount: 15), height: 0)
                         self.stepsArray = self.displayedStepsArray(for: [5,5,5])
                     }else{
-                        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*16, height: 0)
+                        scrollViewBase.contentSize = CGSize.init(width: contentWidth(forBasePageCount: 16), height: 0)
                         self.stepsArray = self.displayedStepsArray(for: [5,5,6])
                     }
 //                    scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*16, height: 0)
@@ -394,15 +401,15 @@ extension DietPlanCreateVC{
                     if skipStepsNine{//如果之前选择的是 4
                         paceVm.isHidden = false
                         if skipMealStyle {
-                            scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*16, height: 0)
+                            scrollViewBase.contentSize = CGSize.init(width: contentWidth(forBasePageCount: 16), height: 0)
                             self.stepsArray = self.displayedStepsArray(for: [5,5,6])
                         }else{
-                            scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17, height: 0)
+                            scrollViewBase.contentSize = CGSize.init(width: contentWidth(forBasePageCount: 17), height: 0)
                             self.stepsArray = self.displayedStepsArray(for: [5,6,6])
                         }
 //                        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17, height: 0)
 //                        self.stepsArray = skipMealStyle ? [5,6,5] : [5,6,6]
-                        let firstCenterX = (SCREEN_WIDHT * 10.5)
+                        let firstCenterX = pageCenterX(forOriginalPage: 10.5)
                         allergyVm.center = CGPoint(x: firstCenterX, y: SCREEN_HEIGHT*0.5)
                         barrierVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT, y: SCREEN_HEIGHT*0.5)
                         adviceVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*2, y: SCREEN_HEIGHT*0.5)
@@ -420,13 +427,25 @@ extension DietPlanCreateVC{
     }
 
     func previousStepIndex(from index: Int) -> Int {
-        if shouldSkipSexStep && index == 2 {
-            return 0
-        }
 //        if index == 10 && shouldSkipImportantAndPaceSteps() {
 //            return 6
 //        }
         return index - 1
+    }
+
+    func shouldAnimateStepTransition(from previousIndex: Int, to nextIndex: Int) -> Bool {
+        if abs(nextIndex - previousIndex) <= 1 {
+            return true
+        }
+
+        let lowerBound = min(previousIndex, nextIndex) + 1
+        let upperBound = max(previousIndex, nextIndex)
+        let skippedSet = Set(skippedIntroStepIndexes)
+        let crossedIndexes = Array(lowerBound..<upperBound)
+        guard !crossedIndexes.isEmpty else {
+            return false
+        }
+        return crossedIndexes.allSatisfy { skippedSet.contains($0) }
     }
 
     func shouldSkipImportantAndPaceSteps() -> Bool {
@@ -455,7 +474,7 @@ extension DietPlanCreateVC{
             self.stepsArray = displayedStepsArray(for: isSkip ? [5,5,5] : [5,6,6])
         }
 //        self.stepsArray = isSkip ? [5,5,5] : [5,6,6]
-        let firstCenterX = isSkip ? (SCREEN_WIDHT * 8.5) : (SCREEN_WIDHT * 10.5)
+        let firstCenterX = pageCenterX(forOriginalPage: isSkip ? 8.5 : 10.5)
         allergyVm.center = CGPoint(x: firstCenterX, y: SCREEN_HEIGHT*0.5)
         barrierVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT, y: SCREEN_HEIGHT*0.5)
         adviceVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*2, y: SCREEN_HEIGHT*0.5)
@@ -467,11 +486,11 @@ extension DietPlanCreateVC{
         if isSkip{
             importantVm.isHidden = true
             paceVm.isHidden = true
-            scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*15-off, height: 0)
+            scrollViewBase.contentSize = CGSize.init(width: contentWidth(forBasePageCount: 15)-off, height: 0)
         }else{
             importantVm.isHidden = false
             paceVm.isHidden = false
-            scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17-off, height: 0)
+            scrollViewBase.contentSize = CGSize.init(width: contentWidth(forBasePageCount: 17)-off, height: 0)
         }
         updateKetoHistorySkipIfNeeded()
         return isSkip
@@ -592,12 +611,17 @@ extension DietPlanCreateVC{
             if self.hasRestoredDraft {
                 return
             }
+            if self.shouldSkipBirthdayStep {
+                return
+            }
             self.birthdayVm.pickerView.selectRow(self.birthdayVm.defaultIndex, inComponent: 0, animated: true)
         })
         
         scrollViewBase.isPagingEnabled = true
-        scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*17, height: 0)
+        applyIntroStepOffsetLayout()
+        scrollViewBase.contentSize = CGSize.init(width: contentWidth(forBasePageCount: 17), height: 0)
         sexVm.isHidden = shouldSkipSexStep
+        birthdayVm.isHidden = shouldSkipBirthdayStep
 
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
@@ -813,13 +837,10 @@ extension DietPlanCreateVC{
         
         let savedIndex = draftInt(draft["currentIndex"], fallback: 0)
         let maxIndex = max(Int(round((scrollViewBase.contentSize.width / SCREEN_WIDHT) - 1)), 0)
-        currentIndex = min(max(savedIndex, 0), maxIndex)
-        if shouldSkipSexStep && currentIndex == 1 {
-            currentIndex = 2
-        }
+        currentIndex = min(max(displayStepIndex(for: savedIndex), 0), maxIndex)
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0), animated: false)
         updateNextButtonForCurrentStep(animated: false)
-        syncSexFromUserProfileIfNeeded(applyDefaultValues: false)
+        syncProfileFromUserInfoIfNeeded(applyDefaultValues: false)
     }
     
     func clearDraftIfNeeded() {
@@ -915,7 +936,7 @@ private extension DietPlanCreateVC {
     
     func buildDraftPayload() -> [String: Any] {
         return [
-            "currentIndex": currentIndex,
+            "currentIndex": persistedStepIndex(forVisibleIndex: currentIndex),
             "skipStepsOne": skipStepsOne,
             "skipStepsNine": skipStepsNine,
             "skipMealStyle": skipMealStyle,
@@ -1016,10 +1037,10 @@ private extension DietPlanCreateVC {
         if isSkip {
             paceVm.isHidden = true
             if skipMealStyle {
-                scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 15, height: 0)
+                scrollViewBase.contentSize = CGSize(width: contentWidth(forBasePageCount: 15), height: 0)
                 stepsArray = displayedStepsArray(for: [5,5,5])
             } else {
-                scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 16, height: 0)
+                scrollViewBase.contentSize = CGSize(width: contentWidth(forBasePageCount: 16), height: 0)
                 stepsArray = displayedStepsArray(for: [5,5,6])
             }
             let firstCenterX = paceVm.center.x
@@ -1033,13 +1054,13 @@ private extension DietPlanCreateVC {
         } else {
             paceVm.isHidden = false
             if skipMealStyle {
-                scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 16, height: 0)
+                scrollViewBase.contentSize = CGSize(width: contentWidth(forBasePageCount: 16), height: 0)
                 stepsArray = displayedStepsArray(for: [5,5,6])
             } else {
-                scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 17, height: 0)
+                scrollViewBase.contentSize = CGSize(width: contentWidth(forBasePageCount: 17), height: 0)
                 stepsArray = displayedStepsArray(for: [5,6,6])
             }
-            let firstCenterX = SCREEN_WIDHT * 10.5
+            let firstCenterX = pageCenterX(forOriginalPage: 10.5)
             allergyVm.center = CGPoint(x: firstCenterX, y: SCREEN_HEIGHT * 0.5)
             barrierVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT, y: SCREEN_HEIGHT * 0.5)
             adviceVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 2, y: SCREEN_HEIGHT * 0.5)
@@ -1052,30 +1073,99 @@ private extension DietPlanCreateVC {
     }
 
     func displayedStepsArray(for baseSteps: [Int]) -> [Int] {
-        guard shouldSkipSexStep, !baseSteps.isEmpty else { return baseSteps }
+        guard !skippedIntroStepIndexes.isEmpty, !baseSteps.isEmpty else { return baseSteps }
         var adjusted = baseSteps
-        adjusted[0] = max(1, adjusted[0] - 1)
+        adjusted[0] = max(1, adjusted[0] - skippedIntroStepIndexes.count)
         return adjusted
     }
 
     func displayStepIndex(for actualIndex: Int) -> Int {
-        guard shouldSkipSexStep, actualIndex > 0 else { return actualIndex }
-        return max(0, actualIndex - 1)
+        guard actualIndex > 0 else { return actualIndex }
+        let skippedCount = skippedIntroStepIndexes.filter { $0 < actualIndex }.count
+        return max(0, actualIndex - skippedCount)
     }
 
-    func syncSexFromUserProfileIfNeeded(applyDefaultValues: Bool) {
-        guard shouldSkipSexStep else { return }
-        let gender = UserInfoModel.shared.gender
-        QuestinonaireMsgModel.shared.sex = gender
-        applySexSelectionUI()
-
-        guard applyDefaultValues else { return }
-
-        if QuestinonaireMsgModel.shared.height.isEmpty {
-            heightVm.applyDefaultHeight(gender == "1" ? 170 : 160)
+    var skippedIntroStepIndexes: [Int] {
+        var indexes: [Int] = []
+        if shouldSkipSexStep {
+            indexes.append(1)
         }
-        if QuestinonaireMsgModel.shared.weight.isEmpty {
-            weightVm.applyDefaultWeight(integer: gender == "1" ? 70 : 50)
+        if shouldSkipBirthdayStep {
+            indexes.append(2)
+        }
+        return indexes
+    }
+
+    func applyIntroStepOffsetLayout() {
+        setPageOriginX(goalVm, originalIndex: 0)
+        setPageOriginX(sexVm, originalIndex: 1)
+        setPageOriginX(birthdayVm, originalIndex: 2)
+        setPageOriginX(heightVm, originalIndex: 3)
+        setPageOriginX(weightVm, originalIndex: 4)
+        setPageOriginX(bodyfatVm, originalIndex: 5)
+        setPageOriginX(targetWeightVm, originalIndex: 6)
+        setPageOriginX(eventsVm, originalIndex: 7)
+        setPageOriginX(importantVm, originalIndex: 8)
+        setPageOriginX(paceVm, originalIndex: 9)
+        setPageOriginX(allergyVm, originalIndex: 10)
+        setPageOriginX(barrierVm, originalIndex: 11)
+        setPageOriginX(adviceVm, originalIndex: 12)
+        setPageOriginX(mealStyleVm, originalIndex: 13)
+        setPageOriginX(eatStyleVm, originalIndex: 14)
+        setPageOriginX(ketoHistoryVm, originalIndex: 15)
+        setPageOriginX(flavorVM, originalIndex: 16)
+    }
+
+    func setPageOriginX(_ view: UIView, originalIndex: Int) {
+        var frame = view.frame
+        frame.origin.x = SCREEN_WIDHT * CGFloat(displayStepIndex(for: originalIndex))
+        view.frame = frame
+    }
+
+    func contentWidth(forBasePageCount pageCount: Int) -> CGFloat {
+        SCREEN_WIDHT * CGFloat(max(1, pageCount - skippedIntroStepIndexes.count))
+    }
+
+    func pageCenterX(forOriginalPage page: CGFloat) -> CGFloat {
+        SCREEN_WIDHT * (page - CGFloat(skippedIntroStepIndexes.count))
+    }
+
+    func persistedStepIndex(forVisibleIndex visibleIndex: Int) -> Int {
+        var originalIndex = visibleIndex
+        if shouldSkipSexStep && visibleIndex >= 1 {
+            originalIndex += 1
+        }
+        let birthdayVisibleIndex = shouldSkipSexStep ? 1 : 2
+        if shouldSkipBirthdayStep && visibleIndex >= birthdayVisibleIndex {
+            originalIndex += 1
+        }
+        return originalIndex
+    }
+
+    func syncProfileFromUserInfoIfNeeded(applyDefaultValues: Bool) {
+        if shouldSkipSexStep {
+            let gender = UserInfoModel.shared.gender
+            QuestinonaireMsgModel.shared.sex = gender
+            applySexSelectionUI()
+
+            if applyDefaultValues {
+                if QuestinonaireMsgModel.shared.height.isEmpty {
+                    heightVm.applyDefaultHeight(gender == "1" ? 170 : 160)
+                }
+                if QuestinonaireMsgModel.shared.weight.isEmpty {
+                    weightVm.applyDefaultWeight(integer: gender == "1" ? 70 : 50)
+                }
+            }
+        }
+
+        if shouldSkipBirthdayStep {
+            let profileBirthday = UserInfoModel.shared.birthDay.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !profileBirthday.isEmpty {
+                let birthYear = profileBirthday.contains("-")
+                ? Date().changeDateFormatter(dateString: profileBirthday, formatter: "yyyy-MM-dd", targetFormatter: "yyyy")
+                : profileBirthday
+                QuestinonaireMsgModel.shared.birthDay = birthYear
+            }
         }
     }
     

@@ -108,8 +108,8 @@ extension DietPlanVC{
     @objc func createSecondPlanAction() {
         self.navigationController?.fd_interactivePopDisabled = true
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-        let vc = DietPlanCreateSecondVC()
-//        let vc = DietPlanCreateVC()
+//        let vc = DietPlanCreateSecondVC()
+        let vc = DietPlanCreateVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     //购物清单
