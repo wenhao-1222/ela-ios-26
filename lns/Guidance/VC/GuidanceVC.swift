@@ -227,6 +227,9 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuideTotalFirstVM.init(frame: CGRect.init(x: SCREEN_WIDHT*2, y: 0, width: 0, height: 0))
         vm.shouldAutoStartChartAnimation = false
         vm.updateConstraitForGuidance()
+        vm.chart.legendFadeWillStart = { [weak self] in
+            self?.animateProgressChartNextButtonFadeIn()
+        }
         vm.chart.gradientAnimationDidFinish = { [weak self] in
             self?.handleProgressChartAnimationFinished()
         }
@@ -613,6 +616,7 @@ extension GuidanceVC{
         updateNextButtonForCurrentStep()
 
         if targetStep == .progressChart {
+            resetProgressChartNextButtonPresentation()
             progressChartVm.chart.startGradientAnimation()
         }
         if targetStep == .goalBarrier {
@@ -665,48 +669,63 @@ extension GuidanceVC{
         case .sex, .mealsSummary, .strengthTrainingSummary, .nutritionGoal, .reminderPrompt:
             nextButton.isHidden = true
             nextButton.isEnabled = false
+            nextButton.alpha = 1
         case .progressChart:
             nextButton.isHidden = false
             nextButton.isEnabled = false
+            nextButton.alpha = progressChartVm.chart.areLegendLabelsVisible ? 1 : 0
         case .fixedTarget:
             nextButton.isHidden = false
             nextButton.isEnabled = fixedTargetVm.hasSelection
+            nextButton.alpha = 1
         case .birthday, .weight, .height, .removeBarrier:
             nextButton.isHidden = false
             nextButton.isEnabled = true
+            nextButton.alpha = 1
         case .bodyfat:
             nextButton.isHidden = false
             nextButton.isEnabled = bodyfatVm.selectIndex >= 0
+            nextButton.alpha = 1
         case .takeoutFrequency:
             nextButton.isHidden = false
             nextButton.isEnabled = takeoutFrequencyVm.hasSelection
+            nextButton.alpha = 1
         case .mealsPerDay:
             nextButton.isHidden = false
             nextButton.isEnabled = mealsPerDayVm.hasSelection
+            nextButton.alpha = 1
         case .mealsAdjust:
             nextButton.isHidden = false
             nextButton.isEnabled = mealsAdjustVm.hasSelection
+            nextButton.alpha = 1
         case .exerciseCaloriesRecord:
             nextButton.isHidden = false
             nextButton.isEnabled = exerciseCaloriesRecordVm.hasSelection
+            nextButton.alpha = 1
         case .cardioFrequency:
             nextButton.isHidden = false
             nextButton.isEnabled = cardioFrequencyVm.hasSelection
+            nextButton.alpha = 1
         case .strengthTrainingFrequency:
             nextButton.isHidden = false
             nextButton.isEnabled = strengthTrainingFrequencyVm.hasSelection
+            nextButton.alpha = 1
         case .caloriesResultBase, .caloriesResultExplain:
             nextButton.isHidden = false
             nextButton.isEnabled = true
+            nextButton.alpha = 1
         case .goal:
             nextButton.isHidden = false
             nextButton.isEnabled = goalVm.selectIndex >= 0
+            nextButton.alpha = 1
         case .dietRecord:
             nextButton.isHidden = false
             nextButton.isEnabled = dietRecordVm.selectedIndex >= 0
+            nextButton.alpha = 1
         case .goalBarrier:
             nextButton.isHidden = false
             nextButton.isEnabled = goalBarrierVm.hasSelection
+            nextButton.alpha = 1
         }
     }
 
@@ -816,6 +835,22 @@ extension GuidanceVC{
         }
         nextButtonEnableWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: workItem)
+    }
+
+    func resetProgressChartNextButtonPresentation() {
+        guard flowStep(for: currentIndex) == .progressChart else { return }
+        nextButton.isHidden = false
+        nextButton.isEnabled = false
+        nextButton.alpha = 0
+    }
+
+    func animateProgressChartNextButtonFadeIn() {
+        guard flowStep(for: currentIndex) == .progressChart else { return }
+        guard nextButton.isHidden == false else { return }
+        guard nextButton.alpha < 1 else { return }
+        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState]) {
+            self.nextButton.alpha = 1
+        }
     }
 
     func updateNextButtonEnabledState(_ isEnabled: Bool, animated: Bool) {

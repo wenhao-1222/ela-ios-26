@@ -402,6 +402,5 @@ extension GuideTotalFirstVM{
         layoutIfNeeded()
         chart.layoutIfNeeded()
         chart.startGradientAnimation()
-        chart.startProgressAnimation()
     }
 }

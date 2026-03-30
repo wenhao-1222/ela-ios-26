@@ -45,6 +45,8 @@ class ProgressChartView: UIView {
     var animationProgress: CGFloat = 0.0
     var displayLink: CADisplayLink?
     var gradientAnimationDidFinish: (() -> Void)?
+    var legendFadeWillStart: (() -> Void)?
+    private(set) var areLegendLabelsVisible = false
     
    /// 设置记录折线的渐变色
    func setRecordedLineGradient(start: UIColor, end: UIColor) {
@@ -64,6 +66,13 @@ class ProgressChartView: UIView {
         animationProgress = 0.0
         displayLink?.invalidate()
         animationProgress = 0.0
+        progress = 0
+        areLegendLabelsVisible = false
+        recordedLabel.alpha = 0
+        unrecordedLabel.alpha = 0
+        UIView.animate(withDuration: duration, delay: 0.02, options: .curveLinear) {
+            self.progress = 1
+        }
         displayLink = CADisplayLink(target: self, selector: #selector(updateGradientProgress))
         displayLink?.add(to: .main, forMode: .common)
     }
@@ -77,6 +86,7 @@ class ProgressChartView: UIView {
 //            animationProgress = 1.0
             displayLink?.invalidate()
             displayLink = nil
+            startLegendFadeAnimation()
             gradientAnimationDidFinish?()
         }
         setNeedsDisplay() // 触发 draw(_:)
@@ -136,19 +146,8 @@ class ProgressChartView: UIView {
         monthLabel.textColor = axisTextColor
         recordedLabel.alpha = 0
         unrecordedLabel.alpha = 0
+        areLegendLabelsVisible = false
 
-        // 动画
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//            self.animateLines()
-        UIView.animate(withDuration: 1.2, delay: 0.02, options: .curveLinear) {
-                self.progress = 1
-            } completion: { _ in
-                UIView.animate(withDuration: 0.3) {
-                    self.recordedLabel.alpha = 1
-                    self.unrecordedLabel.alpha = 1
-                }
-            }
-//        }
     }
 
     override func layoutSubviews() {
@@ -461,14 +460,23 @@ class ProgressChartView: UIView {
         progress = 0
         recordedLabel.alpha = 0
         unrecordedLabel.alpha = 0
+        areLegendLabelsVisible = false
         
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveLinear) {
             self.progress = 1
         } completion: { _ in
-            UIView.animate(withDuration: 0.3) {
-                self.recordedLabel.alpha = 1
-                self.unrecordedLabel.alpha = 1
-            }
+            self.startLegendFadeAnimation()
+        }
+    }
+    
+    private func startLegendFadeAnimation() {
+        guard areLegendLabelsVisible == false else { return }
+        legendFadeWillStart?()
+        UIView.animate(withDuration: 0.3) {
+            self.recordedLabel.alpha = 1
+            self.unrecordedLabel.alpha = 1
+        } completion: { _ in
+            self.areLegendLabelsVisible = true
         }
     }
     private func animateLines() {
