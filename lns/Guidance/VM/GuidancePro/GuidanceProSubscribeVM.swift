@@ -118,8 +118,8 @@ class GuidanceProSubscribeVM: UIView {
         let view = UIView()
         view.backgroundColor = UIColor.white.withAlphaComponent(0.84)
         view.layer.cornerRadius = kFitWidth(12)
-        view.layer.borderWidth = 1
-        view.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.withAlphaComponent(0.08).cgColor
+        view.layer.borderWidth = kFitWidth(2)
+        view.layer.borderColor = UIColor.white.cgColor
         return view
     }()
 
@@ -141,21 +141,24 @@ class GuidanceProSubscribeVM: UIView {
 
     private lazy var trialDescLabel: UILabel = {
         let label = UILabel()
-        label.text = "免费试用3天，随后以186/年价格续费，仅0.51元/天。"
+//        label.text = "免费试用3天，随后以186/年价格续费，仅0.51元/天。"
         label.textColor = .COLOR_TEXT_TITLE_0f1214_50
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.textAlignment = .center
         label.numberOfLines = 0
+        label.setLineHeight(textString: "免费试用3天，随后以186/年价格续费，仅0.51元/天。", lineHeight: label.font.lineHeight * 1.1)
         return label
     }()
 
     private lazy var renewalDescLabel: UILabel = {
         let label = UILabel()
-        label.text = "订阅计划会自动续订。请通过 App Store 取消订阅。\n除非你取消，否则免费试用结束后将开始收费。"
+//        label.text = "订阅计划会自动续订。请通过 App Store 取消订阅。\n除非你取消，否则免费试用结束后将开始收费。"
         label.textColor = .COLOR_TEXT_TITLE_0f1214_50
         label.font = .systemFont(ofSize: 12, weight: .regular)
         label.textAlignment = .center
         label.numberOfLines = 0
+        
+        label.setLineHeight(textString: "订阅计划会自动续订。请通过 App Store 取消订阅。\n除非你取消，否则免费试用结束后将开始收费。", lineHeight: label.font.lineHeight * 1.1)
         return label
     }()
 
@@ -589,8 +592,10 @@ private extension GuidanceProSubscribeVM {
         let view = UIView()
         view.backgroundColor = UIColor.white.withAlphaComponent(0.84)
         view.layer.cornerRadius = kFitWidth(16)
-        view.layer.borderWidth = 1
-        view.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.withAlphaComponent(0.08).cgColor
+//        view.layer.borderWidth = 1
+//        view.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.withAlphaComponent(0.08).cgColor
+        view.layer.borderWidth = kFitWidth(2)
+        view.layer.borderColor = UIColor.white.cgColor
         view.clipsToBounds = true
         return view
     }
@@ -598,8 +603,13 @@ private extension GuidanceProSubscribeVM {
     func addFeatureRows(_ items: [(String, String, String?)], to container: UIView, accentColor: UIColor) {
         var previousRow: UIView?
 
+        let hasLine = container == proFeatureContainer
         for (index, item) in items.enumerated() {
-            let row = makeFeatureRow(iconName: item.0, title: item.1, desc: item.2, accentColor: accentColor)
+            let row = makeFeatureRow(iconName: item.0,
+                                     title: item.1,
+                                     desc: item.2,
+                                     accentColor: accentColor,
+                                     hasLine: hasLine)
             container.addSubview(row)
 
             row.snp.makeConstraints { make in
@@ -618,24 +628,28 @@ private extension GuidanceProSubscribeVM {
         }
     }
 
-    func makeFeatureRow(iconName: String, title: String, desc: String?, accentColor: UIColor) -> UIView {
+    func makeFeatureRow(iconName: String,
+                        title: String,
+                        desc: String?,
+                        accentColor: UIColor,
+                        hasLine:Bool=true) -> UIView {
         let view = UIView()
 
         let iconView = UIView()
         iconView.backgroundColor = accentColor
-        iconView.layer.cornerRadius = kFitWidth(14)
-        iconView.layer.borderWidth = 1
-        iconView.layer.borderColor = UIColor.white.withAlphaComponent(0.8).cgColor
+        iconView.layer.cornerRadius = kFitWidth(15)
+//        iconView.layer.borderWidth = 1
+//        iconView.layer.borderColor = UIColor.white.withAlphaComponent(0.8).cgColor
 
         let symbolConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
         let iconImageView = UIImageView(image: UIImage(systemName: iconName, withConfiguration: symbolConfig))
         iconImageView.contentMode = .scaleAspectFit
-        iconImageView.tintColor = .COLOR_TEXT_TITLE_0f1214
+//        iconImageView.tintColor = .COLOR_TEXT_TITLE_0f1214
 
         let titleLabel = UILabel()
         titleLabel.text = title
         titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        titleLabel.font = .systemFont(ofSize: 15, weight: .medium)
+        titleLabel.font = .systemFont(ofSize: 14, weight: .medium)
         titleLabel.numberOfLines = 0
 
         let descLabel = UILabel()
@@ -646,7 +660,11 @@ private extension GuidanceProSubscribeVM {
         descLabel.isHidden = desc == nil
 
         let divider = UIView()
-        divider.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.withAlphaComponent(0.15)
+        if hasLine {
+            divider.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.withAlphaComponent(0.15)
+        }else{
+            divider.backgroundColor = UIColor.clear        }
+        
 
         view.addSubview(iconView)
         iconView.addSubview(iconImageView)
@@ -656,15 +674,16 @@ private extension GuidanceProSubscribeVM {
 
         iconView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(14))
-            make.top.equalTo(kFitWidth(18))
-            make.width.height.equalTo(kFitWidth(28))
+//            make.top.equalTo(kFitWidth(18))
+            make.centerY.lessThanOrEqualToSuperview()
+            make.width.height.equalTo(kFitWidth(30))
         }
 
         iconImageView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.width.height.lessThanOrEqualTo(kFitWidth(16))
+            make.width.height.lessThanOrEqualTo(kFitWidth(15))
         }
-
+        
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(iconView.snp.right).offset(kFitWidth(12))
             make.right.equalTo(kFitWidth(-16))
@@ -672,12 +691,20 @@ private extension GuidanceProSubscribeVM {
         }
 
         if desc == nil {
+            divider.isHidden = true
+            
             divider.snp.makeConstraints { make in
                 make.left.equalTo(titleLabel)
                 make.right.equalToSuperview()
                 make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(14))
                 make.height.equalTo(1)
                 make.bottom.equalToSuperview()
+            }
+            titleLabel.snp.remakeConstraints { make in
+                make.left.equalTo(iconView.snp.right).offset(kFitWidth(12))
+                make.right.equalTo(kFitWidth(-16))
+                make.top.equalTo(kFitWidth(17))
+                make.bottom.equalTo(kFitWidth(-17))
             }
         } else {
             descLabel.snp.makeConstraints { make in
