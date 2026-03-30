@@ -15,6 +15,8 @@ class GuidanceProSubscribeVM: UIView {
     var closeTapBlock: (() -> Void)?
 
     private var isSyncingReminderSwitchState = false
+    private var hasFreeTrialPermission = true
+    private var startTrialButtonNormalTitle = "0元 开启体验"
 
     private lazy var loadingOverlayView: UIView = {
         let view = UIView()
@@ -74,7 +76,9 @@ class GuidanceProSubscribeVM: UIView {
     }()
     
     private lazy var logoImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "guidance_pro_intro_img"))
+        let imageView = UIImageView(image: UIImage(named: "ela_pro_expired_alert_icon"))
+        //ela_pro_expired_alert_icon
+        //guidance_pro_intro_img
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -146,7 +150,7 @@ class GuidanceProSubscribeVM: UIView {
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.setLineHeight(textString: "免费试用3天，随后以186/年价格续费，仅0.51元/天。", lineHeight: label.font.lineHeight * 1.1)
+        label.setLineHeight(textString: "免费试用3天，随后以168/年价格续费，仅0.46元/天。", lineHeight: label.font.lineHeight * 1.1)
         return label
     }()
 
@@ -222,6 +226,25 @@ class GuidanceProSubscribeVM: UIView {
 }
 
 extension GuidanceProSubscribeVM {
+    func updateFreeTrialPermission(_ hasPermission: Bool) {
+        hasFreeTrialPermission = hasPermission
+        startTrialButtonNormalTitle = hasPermission ? "0元 开启体验" : "开启体验"
+
+//        reminderCardView.isHidden = !hasPermission
+        noteStackView.isHidden = !hasPermission
+
+        trialDescLabel.text = hasPermission
+        ? "免费试用3天，随后以168/年价格续费，仅0.46元/天。"
+        : "订阅价格为168/年，仅0.46元/天。"
+        renewalDescLabel.text = hasPermission
+        ? "订阅计划会自动续订。请通过 App Store 取消订阅。\n除非你取消，否则免费试用结束后将开始收费。"
+        : "订阅计划会自动续订。请通过 App Store 取消订阅。\n如果你不需要，可在当前订阅周期结束前取消。"
+        startTrialButton.setTitle(startTrialButtonNormalTitle, for: .normal)
+
+        rebuildFAQs()
+        updateDynamicLayoutForTrialPermission()
+    }
+
     func setLoading(_ isLoading: Bool) {
         loadingOverlayView.isHidden = !isLoading
         isUserInteractionEnabled = !isLoading
@@ -234,7 +257,7 @@ extension GuidanceProSubscribeVM {
         }
 
         startTrialButton.isEnabled = !isLoading
-        startTrialButton.setTitle(isLoading ? "处理中..." : "0元 开启体验", for: .normal)
+        startTrialButton.setTitle(isLoading ? "处理中..." : startTrialButtonNormalTitle, for: .normal)
     }
     @objc func closeTapAction() {
         self.closeTapBlock?()
@@ -512,20 +535,85 @@ private extension GuidanceProSubscribeVM {
             make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-kFitWidth(10))
         }
 
-        buildFAQs()
+        rebuildFAQs()
         buildFeatureRows()
+        updateFreeTrialPermission(true)
     }
 
-    func buildFAQs() {
-        let faqItems = [
-            ("Q：试用期间会扣费吗？", "A：不会扣费。"),
-            ("Q：开始体验后可以取消吗？", "A：当然可以。在试用期结束前随时可取消，不会扣除任何费用。"),
-            ("Q：如何取消试用？", "A：非常简单！进入手机设置，随后点击你的头像，点击订阅后选择elavatine，再次点击“取消订阅”即可。")
-        ]
+    func updateDynamicLayoutForTrialPermission() {
+        reminderCardView.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(faqStackView.snp.bottom).offset(kFitWidth(30))
+            make.height.equalTo(kFitWidth(60))
+        }
+
+        renewalDescLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(24))
+            make.right.equalTo(kFitWidth(-24))
+            make.top.equalTo(reminderCardView.snp.bottom).offset(kFitWidth(18))
+        }
+
+        proTitleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(renewalDescLabel.snp.bottom).offset(kFitWidth(28))
+        }
+
+        startTrialButton.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.right.equalTo(kFitWidth(-20))
+            make.top.equalTo(trialDescLabel.snp.bottom).offset(kFitWidth(12))
+            make.height.equalTo(kFitWidth(52))
+            if hasFreeTrialPermission {
+                make.bottom.equalTo(noteStackView.snp.top).offset(-kFitWidth(12))
+            } else {
+                make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-kFitWidth(18))
+            }
+        }
+
+        noteStackView.snp.remakeConstraints { make in
+            make.centerX.equalToSuperview()
+            if hasFreeTrialPermission {
+                make.top.equalTo(startTrialButton.snp.bottom).offset(kFitWidth(12))
+                make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-kFitWidth(10))
+            } else {
+                make.top.equalTo(startTrialButton.snp.bottom)
+                make.height.equalTo(0)
+                make.bottom.equalTo(startTrialButton.snp.bottom)
+            }
+        }
+
+        layoutIfNeeded()
+    }
+
+    func rebuildFAQs() {
+        faqStackView.arrangedSubviews.forEach { view in
+            faqStackView.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+
+        let faqItems = faqItemsForCurrentPermission()
 
         faqItems.forEach { title, answer in
             faqStackView.addArrangedSubview(makeFAQView(question: title, answer: answer))
         }
+    }
+
+    func faqItemsForCurrentPermission() -> [(String, String)] {
+        if hasFreeTrialPermission {
+            return [
+                ("Q：试用期间会扣费吗？", "A：不会扣费。"),
+                ("Q：开始体验后可以取消吗？", "A：当然可以。在试用期结束前随时可取消，不会扣除任何费用。"),
+                ("Q：如何取消试用？", "A：非常简单！进入手机设置，随后点击你的头像，点击订阅后选择elavatine，再次点击“取消订阅”即可。")
+            ]
+        }
+
+        return [
+            ("Q：开始订阅后会立即扣费吗？", "A：会按照当前订阅价格收取费用。"),
+            ("Q：开始体验后可以取消吗？", "A：当然可以。你可以在当前订阅周期结束前随时取消。"),
+            ("Q：如何取消订阅？", "A：非常简单！进入手机设置，随后点击你的头像，点击订阅后选择elavatine，再次点击“取消订阅”即可。")
+        ]
     }
 
     func buildFeatureRows() {

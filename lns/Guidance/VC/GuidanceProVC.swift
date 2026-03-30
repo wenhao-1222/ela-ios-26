@@ -28,6 +28,7 @@ class GuidanceProVC: WHBaseViewVC {
     private let subscribeContentVM = GuidanceProSubscribeVM()
     private var currentStep: ContentStep = .intro
     private var isPurchasing = false
+    var hasFreeTrialPermission = true
 
     private lazy var nextButton: UIButton = {
         let button = UIButton(type: .custom)
@@ -124,6 +125,7 @@ private extension GuidanceProVC {
         subscribeContentVM.startTrialTapBlock = { [weak self] in
             self?.startSubscriptionFlow()
         }
+        subscribeContentVM.updateFreeTrialPermission(hasFreeTrialPermission)
 
         trialContentVM.isHidden = true
         trialContentVM.alpha = 0
@@ -141,7 +143,11 @@ private extension GuidanceProVC {
     @objc func nextButtonTapAction() {
         switch currentStep {
         case .intro:
-            showTrialContent()
+            if hasFreeTrialPermission {
+                showTrialContent()
+            } else {
+                showSubscribeContent()
+            }
         case .trial:
             showPromiseContent()
         case .promise:
@@ -152,6 +158,10 @@ private extension GuidanceProVC {
     }
 
     func showTrialContent() {
+        guard hasFreeTrialPermission else {
+            showSubscribeContent()
+            return
+        }
         guard currentStep == .intro else { return }
 
         currentStep = .trial
@@ -167,11 +177,25 @@ private extension GuidanceProVC {
     }
 
     func showSubscribeContent() {
-        guard currentStep == .promise else { return }
+        let previousStep = currentStep
+        guard previousStep == .promise || previousStep == .intro else { return }
 
         currentStep = .subscribe
         nextButton.isHidden = true
-        transition(from: promiseContentVM, to: subscribeContentVM)
+        topContentVM.stopBubbleFloatingAnimation()
+
+        if !hasFreeTrialPermission && !trialContentVM.isHidden {
+            trialContentVM.isHidden = true
+            trialContentVM.alpha = 0
+        }
+
+        if !hasFreeTrialPermission && !promiseContentVM.isHidden {
+            promiseContentVM.isHidden = true
+            promiseContentVM.alpha = 0
+        }
+
+        let fromView = previousStep == .promise ? promiseContentVM : topContentVM
+        transition(from: fromView, to: subscribeContentVM)
     }
 
     func transition(from currentView: UIView, to nextView: UIView) {
@@ -203,7 +227,7 @@ private extension GuidanceProVC {
 
         ElaProIAPManager.shared.updateProductIDs(
             month: ElaProIAPConfig.monthProductID,
-            annual: "annual_yeal_new",
+            annual: GuidanceVC.guidanceProAnnualSubscriptionProductID,
             lifetime: ElaProIAPConfig.lifetimeProductID
         )
 

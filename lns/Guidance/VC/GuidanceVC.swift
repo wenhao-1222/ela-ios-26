@@ -12,6 +12,8 @@ import UserNotifications
 import IQKeyboardManagerSwift
 
 class GuidanceVC: WHBaseViewVC {
+
+    static let guidanceProAnnualSubscriptionProductID = "annual_yeal_new"
     
     enum FlowStep: Hashable {
         case sex
@@ -45,6 +47,8 @@ class GuidanceVC: WHBaseViewVC {
     private var isShowingFinishLoading = false
     private var pendingNutritionGoalPresentation = false
     private var isTransitioningToGuidancePro = false
+    private var cachedGuidanceProHasFreeTrialPermission = true
+    private var hasPrefetchedGuidanceProSubscriptionHistory = false
     private var hasAutoSelectedSkippedCardioFrequency = false
     private var isBackNavigationLocked = false
     private let defaultStepsArray = [7,7,8]
@@ -110,6 +114,7 @@ class GuidanceVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
+        prefetchGuidanceProSubscriptionHistoryIfNeeded()
     }
     
     deinit {
@@ -934,6 +939,7 @@ extension GuidanceVC{
         isTransitioningToGuidancePro = true
 
         let vc = GuidanceProVC()
+        vc.hasFreeTrialPermission = cachedGuidanceProHasFreeTrialPermission
         vc.nextBlock = { [weak vc] in
             vc?.changeRootVcToLogin()
         }
@@ -945,6 +951,15 @@ extension GuidanceVC{
         } else {
             vc.modalPresentationStyle = .fullScreen
             present(vc, animated: true)
+        }
+    }
+
+    func prefetchGuidanceProSubscriptionHistoryIfNeeded() {
+        guard !hasPrefetchedGuidanceProSubscriptionHistory else { return }
+        hasPrefetchedGuidanceProSubscriptionHistory = true
+
+        ElaProIAPManager.shared.checkHasSubscribedHistory(productID: Self.guidanceProAnnualSubscriptionProductID) { [weak self] hasSubscribedBefore in
+            self?.cachedGuidanceProHasFreeTrialPermission = !hasSubscribedBefore
         }
     }
 

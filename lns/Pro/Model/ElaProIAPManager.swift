@@ -178,6 +178,26 @@ final class ElaProIAPManager: NSObject {
     func purchaseLifetime(completion: @escaping (Result<SKPaymentTransaction, Error>) -> Void) {
         purchase(productID: ElaProIAPConfig.lifetimeProductID, completion: completion)
     }
+
+    func checkHasSubscribedHistory(productID: String, completion: @escaping (Bool) -> Void) {
+        let trimmedProductID = productID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedProductID.isEmpty else {
+            completion(false)
+            return
+        }
+
+        guard #available(iOS 15.0, *) else {
+            completion(false)
+            return
+        }
+
+        Task {
+            let hasSubscribed = await self.hasSubscribedHistoryStoreKit2(productID: trimmedProductID)
+            DispatchQueue.main.async {
+                completion(hasSubscribed)
+            }
+        }
+    }
     
     func localizedPriceString(for product: SKProduct) -> String {
         let formatter = NumberFormatter()
@@ -295,6 +315,17 @@ final class ElaProIAPManager: NSObject {
         purchaseCompletion = nil
         purchasingProductID = nil
         completion?(result)
+    }
+
+    @available(iOS 15.0, *)
+    private func hasSubscribedHistoryStoreKit2(productID: String) async -> Bool {
+        for await result in Transaction.all {
+            guard case .verified(let transaction) = result else { continue }
+            if transaction.productID == productID {
+                return true
+            }
+        }
+        return false
     }
     
     private func applyLocalTemporaryUnlock(transaction: SKPaymentTransaction) -> Date {
