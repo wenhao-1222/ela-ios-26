@@ -488,9 +488,8 @@ private final class GuidanceMealsAdjustItemView: UIView {
         )
 
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.minimumLineHeight = kFitWidth(22)
-        paragraphStyle.maximumLineHeight = kFitWidth(22)
-//        paragraphStyle.paragraphSpacing = kFitWidth(2)
+        paragraphStyle.minimumLineHeight = kFitWidth(16)
+        paragraphStyle.maximumLineHeight = kFitWidth(16)
         attributed.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: content.count))
 
         return attributed

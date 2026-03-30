@@ -23,6 +23,7 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
     private var cardViewTopConstraint: Constraint?
     private let titleDefaultTopOffset = WHUtils().getNavigationBarHeight() + kFitWidth(60)
     private let tipsDefaultTopOffset = WHUtils().getNavigationBarHeight() + kFitWidth(108)
+    private let titleMinimumTopOffset = WHUtils().getNavigationBarHeight() + kFitWidth(12)
     private let cardViewDefaultTopOffset = kFitWidth(20)
     private let cardViewKeyboardSpacing = kFitWidth(16)
     private var isMacroEditingEnabled = false
@@ -283,11 +284,12 @@ extension GuidanceFixedTargetNutritionGoalVM {
         let keyboardFrameInView = convert(keyboardFrame, from: nil)
         let keyboardMinY = keyboardFrameInView.minY
         layoutIfNeeded()
-        let defaultCardTop = tipsButton.frame.maxY + cardViewDefaultTopOffset
-        let defaultCardBottom = defaultCardTop + cardView.bounds.height
         let targetBottom = keyboardMinY - cardViewKeyboardSpacing
-        let overlap = max(0, defaultCardBottom - targetBottom)
-        let headerShift = min(overlap, kFitWidth(52))
+        let anchorView = currentKeyboardAnchorView() ?? cardView
+        let anchorFrame = convert(anchorView.bounds, from: anchorView)
+        let overlap = max(0, anchorFrame.maxY - targetBottom)
+        let maxHeaderShift = max(0, titleLabel.frame.minY - titleMinimumTopOffset)
+        let headerShift = min(overlap, maxHeaderShift)
         updateLayoutOffsets(headerShift: headerShift,
                             cardOffset: cardViewDefaultTopOffset - overlap + headerShift,
                             notification: notification)
@@ -466,6 +468,13 @@ extension GuidanceFixedTargetNutritionGoalVM {
             self?.attemptFocusCarbInputIfNeeded()
         }
     }
+    
+    func currentKeyboardAnchorView() -> UIView? {
+        if let responder = cardView.findFirstResponderView() {
+            return responder
+        }
+        return nil
+    }
 
     func initUI() {
         addSubview(titleLabel)
@@ -547,6 +556,20 @@ extension GuidanceFixedTargetNutritionGoalVM {
         }
 
         applyEditingMode(isEditable: false)
+    }
+}
+
+private extension UIView {
+    func findFirstResponderView() -> UIView? {
+        if isFirstResponder {
+            return self
+        }
+        for subview in subviews {
+            if let responder = subview.findFirstResponderView() {
+                return responder
+            }
+        }
+        return nil
     }
 }
 

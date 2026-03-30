@@ -11,17 +11,29 @@ import SnapKit
 class GuidanceNutritionGoalVM: UIView {
 
     var saveBlock: (() -> ())?
+    private var titleTopConstraint: Constraint?
+    private var cardViewTopConstraint: Constraint?
+    private let titleDefaultTopOffset = WHUtils().getNavigationBarHeight() + kFitWidth(88)
+    private let titleMinimumTopOffset = WHUtils().getNavigationBarHeight() + kFitWidth(12)
+    private let cardViewDefaultTopOffset = kFitWidth(56)
+    private let cardViewKeyboardSpacing = kFitWidth(16)
 
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         backgroundColor = .COLOR_BG_F2
         isUserInteractionEnabled = true
         initUI()
+        registerKeyboardNotifications()
         refreshContentFromModel()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     lazy var titleLabel: UILabel = {
@@ -91,6 +103,50 @@ extension GuidanceNutritionGoalVM {
     @objc func saveTapAction() {
         saveBlock?()
     }
+    
+    func registerKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame(_:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    @objc func keyboardWillChangeFrame(_ notification: Notification) {
+        guard let keyboardFrame = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else { return }
+        let keyboardFrameInView = convert(keyboardFrame, from: nil)
+        let keyboardMinY = keyboardFrameInView.minY
+        layoutIfNeeded()
+        guard let anchorView = currentKeyboardAnchorView() else {
+            updateLayoutOffsets(headerShift: 0, cardOffset: cardViewDefaultTopOffset, notification: notification)
+            return
+        }
+        let anchorFrame = convert(anchorView.bounds, from: anchorView)
+        let targetBottom = keyboardMinY - cardViewKeyboardSpacing
+        let overlap = max(0, anchorFrame.maxY - targetBottom)
+        let maxHeaderShift = max(0, titleLabel.frame.minY - titleMinimumTopOffset)
+        let headerShift = min(overlap, maxHeaderShift)
+        updateLayoutOffsets(headerShift: headerShift,
+                            cardOffset: cardViewDefaultTopOffset - overlap + headerShift,
+                            notification: notification)
+    }
+
+    @objc func keyboardWillHide(_ notification: Notification) {
+        updateLayoutOffsets(headerShift: 0, cardOffset: cardViewDefaultTopOffset, notification: notification)
+    }
+
+    func updateLayoutOffsets(headerShift: CGFloat, cardOffset: CGFloat, notification: Notification?) {
+        titleTopConstraint?.update(offset: titleDefaultTopOffset - headerShift)
+        cardViewTopConstraint?.update(offset: cardOffset)
+
+        let duration = notification?.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double ?? 0.25
+        let curveRaw = notification?.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? UInt ?? 7
+        let options = UIView.AnimationOptions(rawValue: curveRaw << 16)
+        UIView.animate(withDuration: duration, delay: 0, options: [options, .beginFromCurrentState]) {
+            self.layoutIfNeeded()
+        }
+    }
+
+    func currentKeyboardAnchorView() -> UIView? {
+        cardView.findFirstResponderView()
+    }
 
     func refreshContentFromModel() {
         caloriesLabel.text = QuestinonaireMsgModel.shared.caloriesNumber.isEmpty ? "0" : QuestinonaireMsgModel.shared.caloriesNumber
@@ -113,13 +169,13 @@ extension GuidanceNutritionGoalVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(88))
+            titleTopConstraint = make.top.equalTo(titleDefaultTopOffset).constraint
         }
 
         cardView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(56))
+            cardViewTopConstraint = make.top.equalTo(titleLabel.snp.bottom).offset(cardViewDefaultTopOffset).constraint
         }
 
         caloriesLabel.snp.makeConstraints { make in
@@ -162,6 +218,20 @@ extension GuidanceNutritionGoalVM {
             make.top.equalTo(fatRow.snp.bottom).offset(kFitWidth(40))
             make.bottom.equalTo(kFitWidth(-24))
         }
+    }
+}
+
+private extension UIView {
+    func findFirstResponderView() -> UIView? {
+        if isFirstResponder {
+            return self
+        }
+        for subview in subviews {
+            if let responder = subview.findFirstResponderView() {
+                return responder
+            }
+        }
+        return nil
     }
 }
 

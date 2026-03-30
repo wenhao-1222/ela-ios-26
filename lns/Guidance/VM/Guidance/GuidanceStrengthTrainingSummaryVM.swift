@@ -104,11 +104,11 @@ extension GuidanceStrengthTrainingSummaryVM {
         titleLabel.text = content.title
         primaryMessageLabel.setLineHeight(
             textString: content.primaryMessage,
-            lineHeight: primaryMessageLabel.font.lineHeight * 1.2
+            lineHeight: primaryMessageLabel.font.lineHeight * 1
         )
         secondaryMessageLabel.setLineHeight(
             textString: content.secondaryMessage,
-            lineHeight: secondaryMessageLabel.font.lineHeight * 1.2
+            lineHeight: secondaryMessageLabel.font.lineHeight * 1
         )
         footerLabel.attributedText = footerAttributedText()
     }
@@ -169,8 +169,8 @@ extension GuidanceStrengthTrainingSummaryVM {
             )
         }
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.minimumLineHeight = kFitWidth(19)
-        paragraphStyle.maximumLineHeight = kFitWidth(19)
+        paragraphStyle.minimumLineHeight = kFitWidth(14)
+        paragraphStyle.maximumLineHeight = kFitWidth(14)
         attributed.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: fullText.count))
         return attributed
     }

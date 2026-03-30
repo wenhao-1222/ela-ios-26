@@ -83,8 +83,9 @@ extension GuidanceMealsSummaryVM {
 
     func refreshContentFromModel() {
         let content = contentForMealsPerDayType(QuestinonaireMsgModel.shared.guidanceMealsPerDayType)
-        titleLabel.text = content.title
-        messageLabel.setLineHeight(textString: content.message, lineHeight: messageLabel.font.lineHeight * 1.55)
+//        titleLabel.text = content.title
+        titleLabel.setLineHeight(textString: content.title, lineHeight: titleLabel.font.lineHeight * 1.1)
+        messageLabel.setLineHeight(textString: content.message, lineHeight: messageLabel.font.lineHeight * 1.1)
     }
 
     private func contentForMealsPerDayType(_ type: String) -> DisplayContent {
