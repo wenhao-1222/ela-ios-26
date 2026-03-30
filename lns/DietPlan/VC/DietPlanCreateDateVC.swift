@@ -423,6 +423,10 @@ extension DietPlanCreateDateVC{
             guard let self = self else { return }
             let code = responseObject["code"] as? Int ?? -1
             guard code == 200 else {
+                if code == 403 {
+                    self.handleCreatePlanVipUpgradeRequired()
+                    return
+                }
                 let msg = responseObject["message"] as? String ?? "创建失败，请稍后重试"
                 self.createPlanLoadingVm.completeFailure { [weak self] in
                     guard let self = self else { return }
@@ -453,6 +457,20 @@ extension DietPlanCreateDateVC{
                     MCToast.mc_text("创建失败，请稍后重试")
                 }
             }
+        }
+    }
+
+    func handleCreatePlanVipUpgradeRequired() {
+        createPlanLoadingVm.completeFailure { [weak self] in
+            guard let self = self else { return }
+            self.isSubmittingCreatePlan = false
+            self.updateNextButtonState()
+            self.presentAlertVc(confirmBtn: "去升级", message: "", title: "此功能需要升级Ela Pro", cancelBtn: "取消", handler: { [weak self] _ in
+                guard let self = self else { return }
+                let vc = ElaProVC()
+                vc.showPriceOnly = true
+                self.navigationController?.pushViewController(vc, animated: true)
+            }, viewController: self)
         }
     }
 }

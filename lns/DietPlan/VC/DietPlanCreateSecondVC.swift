@@ -11,6 +11,10 @@ import MCToast
 class DietPlanCreateSecondVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
+    private var shouldShowSexStep: Bool {
+        let gender = UserInfoModel.shared.gender.trimmingCharacters(in: .whitespacesAndNewlines)
+        return gender != "1" && gender != "2"
+    }
     private var isDateStepEnabled = false
     private var isShowingManualTargetEditor = false
     private var shouldPreserveManualTargetCalories = false
@@ -58,7 +62,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         return vm
     }()
     lazy var stepsArray: [Int] = {
-        return [3,3,4]
+        return shouldShowSexStep ? [4,3,4] : [3,3,4]
     }()
     lazy var nextButton: UIButton = {
         let btn = UIButton(type: .custom)
@@ -84,8 +88,16 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var sexVm: DietPlanCreateSexVM = {
+        let vm = DietPlanCreateSexVM(frame: CGRect(x: SCREEN_WIDHT, y: 0, width: 0, height: 0))
+        vm.sexManButton.removeTarget(vm, action: #selector(DietPlanCreateSexVM.manTapAction), for: .touchUpInside)
+        vm.sexFeManButton.removeTarget(vm, action: #selector(DietPlanCreateSexVM.femanTapAction), for: .touchUpInside)
+        vm.sexManButton.addTarget(self, action: #selector(handleSecretSexManTap), for: .touchUpInside)
+        vm.sexFeManButton.addTarget(self, action: #selector(handleSecretSexWomanTap), for: .touchUpInside)
+        return vm
+    }()
     lazy var weightVm: DietPlanCreateWeightVM = {
-        let vm = DietPlanCreateWeightVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateWeightVM.init(frame: CGRect.init(x: SCREEN_WIDHT * CGFloat(visibleStepIndex(forBaseIndex: 1)), y: 0, width: 0, height: 0))
         vm.titleLabel.text = "你的最新体重是？"
         vm.weightChangedBlock = { [weak self] weight in
             self?.targetWeightVm.syncWithCurrentWeight(weight, syncTarget: false)
@@ -93,12 +105,12 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         return vm
     }()
     lazy var targetWeightVm: DietPlanCreateTargetWeightVM = {
-        let vm = DietPlanCreateTargetWeightVM(frame: CGRect(x: SCREEN_WIDHT * 2, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateTargetWeightVM(frame: CGRect(x: SCREEN_WIDHT * CGFloat(visibleStepIndex(forBaseIndex: 2)), y: 0, width: 0, height: 0))
         vm.titleLabel.text = "你的目标体重需要改变吗？"
         return vm
     }()
     lazy var eventsVm: DietPlanCreateEventsVM = {
-        let vm = DietPlanCreateEventsVM.init(frame: CGRect(x: SCREEN_WIDHT * 3, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateEventsVM.init(frame: CGRect(x: SCREEN_WIDHT * CGFloat(visibleStepIndex(forBaseIndex: 3)), y: 0, width: 0, height: 0))
         vm.titleLabel.text = "你的每日活动量有变动吗？"
         vm.selectedBlock = {[weak self] in
             self?.syncNextButtonEnableStatus()
@@ -106,19 +118,19 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         return vm
     }()
     lazy var paceVm: DietPlanCreatePaceSecondVM = {
-        let vm = DietPlanCreatePaceSecondVM(frame: CGRect(x: SCREEN_WIDHT * 4, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreatePaceSecondVM(frame: CGRect(x: SCREEN_WIDHT * CGFloat(visibleStepIndex(forBaseIndex: 4)), y: 0, width: 0, height: 0))
 //        vm.titleLabel.text = "你的增肌节奏需要改变吗？"
         return vm
     }()
     lazy var recommendIntakeVm: DietPlanCreateRecommendIntakeVM = {
-        let vm = DietPlanCreateRecommendIntakeVM(frame: CGRect(x: SCREEN_WIDHT * 5, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateRecommendIntakeVM(frame: CGRect(x: SCREEN_WIDHT * CGFloat(visibleStepIndex(forBaseIndex: 5)), y: 0, width: 0, height: 0))
         vm.editTargetBlock = { [weak self] in
             self?.showManualTargetEditor()
         }
         return vm
     }()
     lazy var eatStyleVm: DietPlanCreateEatStyleSecondVM = {
-        let vm = DietPlanCreateEatStyleSecondVM(frame: CGRect(x: SCREEN_WIDHT * 6, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateEatStyleSecondVM(frame: CGRect(x: SCREEN_WIDHT * CGFloat(visibleStepIndex(forBaseIndex: 6)), y: 0, width: 0, height: 0))
         vm.selectedBlock = { [weak self] in
             self?.syncNextButtonEnableStatus()
         }
@@ -132,21 +144,21 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
 //        return vm
 //    }()
     lazy var allergyVm: DietPlanCreateAllergyVM = {
-        let vm = DietPlanCreateAllergyVM(frame: CGRect(x: SCREEN_WIDHT * 7, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateAllergyVM(frame: CGRect(x: SCREEN_WIDHT * CGFloat(visibleStepIndex(forBaseIndex: 7)), y: 0, width: 0, height: 0))
         vm.selectedBlock = {[weak self] in
             self?.syncNextButtonEnableStatus()
         }
         return vm
     }()
     lazy var specialAdjustmentVm: DietPlanCreateSpecialAdjustmentVM = {
-        let vm = DietPlanCreateSpecialAdjustmentVM(frame: CGRect(x: SCREEN_WIDHT * 8, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateSpecialAdjustmentVM(frame: CGRect(x: SCREEN_WIDHT * CGFloat(visibleStepIndex(forBaseIndex: 8)), y: 0, width: 0, height: 0))
         vm.selectedBlock = { [weak self] in
             self?.syncNextButtonEnableStatus()
         }
         return vm
     }()
     lazy var mealModeVm: DietPlanCreateMealModeSecondVM = {
-        let vm = DietPlanCreateMealModeSecondVM(frame: CGRect(x: SCREEN_WIDHT * 9, y: 0, width: 0, height: 0))
+        let vm = DietPlanCreateMealModeSecondVM(frame: CGRect(x: SCREEN_WIDHT * CGFloat(visibleStepIndex(forBaseIndex: 9)), y: 0, width: 0, height: 0))
         vm.selectedBlock = { [weak self] in
             self?.syncNextButtonEnableStatus()
         }
@@ -170,6 +182,14 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
 }
 
 extension DietPlanCreateSecondVC{
+    @objc func handleSecretSexManTap() {
+        applySecretSexSelection(gender: "1")
+    }
+
+    @objc func handleSecretSexWomanTap() {
+        applySecretSexSelection(gender: "2")
+    }
+
     @objc func nextButtonTapAction() {
         goToNextStep()
     }
@@ -182,15 +202,15 @@ extension DietPlanCreateSecondVC{
             return
         }
 
-        if currentIndex == 5 {
+        if currentIndex == visibleStepIndex(forBaseIndex: 5) {
             syncCaloriesNumberForRecommendStepIfNeeded()
             
         }
         let nextIndex = nextStepIndex(from: currentIndex)
-        if currentIndex == 3 {
+        if currentIndex == visibleStepIndex(forBaseIndex: 3) {
             sendBasicRequest()
         }
-        if currentIndex == 6{
+        if currentIndex == visibleStepIndex(forBaseIndex: 6){
             mealModeVm.refreshOptions(caloriesText: QuestinonaireMsgModel.shared.caloriesNumber)
         }
         let targetOffsetX = SCREEN_WIDHT * CGFloat(nextIndex)
@@ -227,16 +247,24 @@ extension DietPlanCreateSecondVC{
             nextButton.isEnabled = false
             return
         }
+        let sexIndex = shouldShowSexStep ? 1 : -1
+        let eatStyleIndex = visibleStepIndex(forBaseIndex: 6)
+        let allergyIndex = visibleStepIndex(forBaseIndex: 7)
+        let adjustmentIndex = visibleStepIndex(forBaseIndex: 8)
+        let mealModeIndex = visibleStepIndex(forBaseIndex: 9)
+
         switch currentIndex {
         case 0:
             nextButton.isEnabled = isDateStepEnabled
-        case 6:
+        case let idx where idx == sexIndex:
+            nextButton.isEnabled = !QuestinonaireMsgModel.shared.sex.isEmpty
+        case let idx where idx == eatStyleIndex:
             nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
-        case 7:
+        case let idx where idx == allergyIndex:
             nextButton.isEnabled = allergyVm.selectedIndex >= 0
-        case 8:
+        case let idx where idx == adjustmentIndex:
             nextButton.isEnabled = specialAdjustmentVm.selectedIndex >= 0
-        case 9:
+        case let idx where idx == mealModeIndex:
             nextButton.isEnabled = mealModeVm.selectedIndex >= 0
         default:
             nextButton.isEnabled = true
@@ -320,6 +348,7 @@ extension DietPlanCreateSecondVC{
         scrollViewBase.isScrollEnabled = false
         
         scrollViewBase.addSubview(dateVm)
+        scrollViewBase.addSubview(sexVm)
         scrollViewBase.addSubview(weightVm)
         scrollViewBase.addSubview(targetWeightVm)
         scrollViewBase.addSubview(eventsVm)
@@ -329,7 +358,8 @@ extension DietPlanCreateSecondVC{
         scrollViewBase.addSubview(allergyVm)
         scrollViewBase.addSubview(specialAdjustmentVm)
         scrollViewBase.addSubview(mealModeVm)
-        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT*10, height: 0)
+        sexVm.isHidden = !shouldShowSexStep
+        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalVisibleStepCount), height: 0)
         
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
@@ -431,8 +461,12 @@ extension DietPlanCreateSecondVC{
             guard let self = self else { return }
             let code = responseObject["code"] as? Int ?? -1
             guard code == 200 else {
-                let msg = responseObject["message"] as? String ?? "创建失败，请稍后重试"
-                self.handleFinalFlowFailure(message: msg)
+                if code == 403 {
+                    self.handleFinalFlowVipUpgradeRequired()
+                } else {
+                    let msg = responseObject["message"] as? String ?? "创建失败，请稍后重试"
+                    self.handleFinalFlowFailure(message: msg)
+                }
                 return
             }
 
@@ -488,6 +522,10 @@ extension DietPlanCreateSecondVC {
     }
 
     func applyRestoredQuestionnaireDataToCurrentSteps() {
+        if shouldShowSexStep {
+            updateSecretSexSelectionUI()
+        }
+
         if hasRestoredDateRangeFromResponse {
             dateVm.restoreDateRange(start: QuestinonaireMsgModel.shared.chartStartDate,
                                     end: QuestinonaireMsgModel.shared.chartEndDate)
@@ -823,6 +861,63 @@ extension DietPlanCreateSecondVC {
             if let message = message, !message.isEmpty {
                 MCToast.mc_text(message)
             }
+        }
+    }
+
+    func handleFinalFlowVipUpgradeRequired() {
+        createPlanLoadingVm.completeFailure { [weak self] in
+            guard let self = self else { return }
+            self.isSubmittingFinalFlow = false
+            self.syncNextButtonEnableStatus()
+            self.presentAlertVc(confirmBtn: "去升级", message: "", title: "此功能需要升级Ela Pro", cancelBtn: "取消", handler: { [weak self] _ in
+                guard let self = self else { return }
+                let vc = ElaProVC()
+                vc.showPriceOnly = true
+                self.navigationController?.pushViewController(vc, animated: true)
+            }, viewController: self)
+        }
+    }
+
+    func visibleStepIndex(forBaseIndex baseIndex: Int) -> Int {
+        return shouldShowSexStep && baseIndex >= 1 ? (baseIndex + 1) : baseIndex
+    }
+
+    var totalVisibleStepCount: Int {
+        return shouldShowSexStep ? 11 : 10
+    }
+
+    func applySecretSexSelection(gender: String) {
+        QuestinonaireMsgModel.shared.sex = gender
+        updateSecretSexSelectionUI()
+        syncNextButtonEnableStatus()
+    }
+
+    func updateSecretSexSelectionUI() {
+        let selectedGender = QuestinonaireMsgModel.shared.sex
+        if selectedGender == "1" {
+            sexVm.sexManButton.backgroundColor = .THEME
+            sexVm.sexManIcon.setImgLocal(imgName: "sex_icon_man")
+            sexVm.sexManLabel.textColor = .COLOR_TEXT_WHITE
+
+            sexVm.sexFeManButton.backgroundColor = .COLOR_BG_BLACK_04
+            sexVm.sexFeManIcon.setImgLocal(imgName: "sex_icon_feman_normal")
+            sexVm.sexFeManLabel.textColor = WHColor_16(colorStr: "595959")
+        } else if selectedGender == "2" {
+            sexVm.sexManButton.backgroundColor = .COLOR_BG_BLACK_04
+            sexVm.sexManIcon.setImgLocal(imgName: "sex_icon_man_normal")
+            sexVm.sexManLabel.textColor = WHColor_16(colorStr: "595959")
+
+            sexVm.sexFeManButton.backgroundColor = UIColor(named: "color_sex_femal") ?? .THEME
+            sexVm.sexFeManIcon.setImgLocal(imgName: "sex_icon_feman")
+            sexVm.sexFeManLabel.textColor = .COLOR_TEXT_WHITE
+        } else {
+            sexVm.sexManButton.backgroundColor = .COLOR_BG_BLACK_04
+            sexVm.sexManIcon.setImgLocal(imgName: "sex_icon_man_normal")
+            sexVm.sexManLabel.textColor = WHColor_16(colorStr: "595959")
+
+            sexVm.sexFeManButton.backgroundColor = .COLOR_BG_BLACK_04
+            sexVm.sexFeManIcon.setImgLocal(imgName: "sex_icon_feman_normal")
+            sexVm.sexFeManLabel.textColor = WHColor_16(colorStr: "595959")
         }
     }
 }

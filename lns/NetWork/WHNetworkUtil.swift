@@ -250,7 +250,7 @@ class WHNetworkUtil: SessionManager {
                     switch response.result{
                     case .success:
                         if let value = response.result.value as? [String : AnyObject]{
-                            if urlString == URL_community_forum_notice_list || urlString == URL_community_comment_list_push || urlString ==  URL_forum_add || urlString == URL_Uer_Cancel_pre || urlString == URL_user_habit_leaderboard || urlString == URL_user_habit_claimStreakReward{
+                            if urlString == URL_community_forum_notice_list || urlString == URL_community_comment_list_push || urlString ==  URL_forum_add || urlString == URL_Uer_Cancel_pre || urlString == URL_user_habit_leaderboard || urlString == URL_user_habit_claimStreakReward || urlString == URL_diet_plan_create{
                                 MCToast.mc_remove()
                                 DispatchQueue.main.async {
                                     success(value)

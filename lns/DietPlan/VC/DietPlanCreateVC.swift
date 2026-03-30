@@ -120,6 +120,7 @@ class DietPlanCreateVC: WHBaseViewVC {
         vm.selectStateChangeBlock = {[weak self] _ in
             self?.syncNextButtonEnableStatus()
         }
+        
         vm.showTipsBlock = {()in
             self.bodyFatAlertVm.showView()
         }
@@ -889,9 +890,13 @@ extension DietPlanCreateVC{
             self.isUploadingDietProfile = false
         }
         
-        let vc = ElaProVC()
-        vc.param = param
-        self.navigationController?.pushViewController(vc, animated: true)
+        if VIPModel().isValidVip{
+            self.backTapAction()
+        }else{
+            let vc = ElaProVC()
+            vc.param = param
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
     }
     func sendBasicRequest() {
         let param = ["gender":"\(QuestinonaireMsgModel.shared.sex)",
