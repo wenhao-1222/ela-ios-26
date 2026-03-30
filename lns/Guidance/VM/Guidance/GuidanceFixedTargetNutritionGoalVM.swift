@@ -59,7 +59,8 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
     private lazy var titleLabel: UILabel = {
         let lab = UILabel()
 //        lab.text = "卡路里和营养素目标"
-        lab.text = "每日营养目标"
+//        lab.text = "每日营养目标"
+        lab.text = "输入你的每日营养目标"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)

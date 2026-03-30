@@ -160,6 +160,19 @@ class FirstLaunchVC: WHBaseViewVC {
 }
 
 extension FirstLaunchVC{
+    private func fadeInConfirmButton(duration: TimeInterval = 0.55,
+                                     delay: TimeInterval = 0,
+                                     completion: ((Bool) -> Void)? = nil) {
+        confirmButton.alpha = 0
+        UIView.animate(withDuration: duration,
+                       delay: delay,
+                       options: [.curveEaseInOut, .beginFromCurrentState]) {
+            self.confirmButton.alpha = 1
+        } completion: { finished in
+            completion?(finished)
+        }
+    }
+    
     private func showFinalState() {
         view.layoutIfNeeded()
 
@@ -181,7 +194,10 @@ extension FirstLaunchVC{
 
         secondLogoImgView.alpha = 1
         secondLabel.alpha = 1
-        confirmButton.alpha = 1
+//        confirmButton.alpha = 1
+        UIView.animate(withDuration: 0.75, delay: 0.75) {
+            self.confirmButton.alpha = 1
+        }
     }
 
     @objc func showAnimation() {
@@ -535,11 +551,8 @@ extension FirstLaunchVC{
 //            UIView.animate(withDuration: 0.35, delay: 0.25) {
 //                self.secondLabel.alpha = 1
 //            }
-            UIView.animate(withDuration: 0.55, delay: 2.0) {
-                self.confirmButton.alpha = 1
-            }completion: { _ in
+            self.fadeInConfirmButton(duration: 0.55, delay: 2.0) { _ in
                 self.bgImgViewTwo.isUserInteractionEnabled = true
-                
             }
         })
     }
@@ -564,9 +577,7 @@ extension FirstLaunchVC{
                 self.secondLabel.alpha = 1
 //                self.bgImgView.alpha = 0
             }
-            UIView.animate(withDuration: 0.55, delay: 1.5) {
-                self.confirmButton.alpha = 1
-            }completion: { _ in
+            self.fadeInConfirmButton(duration: 0.55, delay: 1.5) { _ in
                 self.bgImgViewTwo.isUserInteractionEnabled = true
                 self.bgImgView.isHidden = true
             }
