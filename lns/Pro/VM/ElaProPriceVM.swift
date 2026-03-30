@@ -783,22 +783,21 @@ extension ElaProPriceVM{
         monthPriceText = preferredRemoteText(monthRemoteProduct?.displayPriceText) ?? monthPriceText
         annualPriceText = preferredRemoteText(annualRemoteProduct?.displayPriceText) ?? annualPriceText
         lifetimePriceText = preferredRemoteText(lifetimeRemoteProduct?.displayPriceText) ?? lifetimePriceText
-        
-        if products.count == 3{
-            cardContainer.snp.remakeConstraints { make in
-                make.left.equalTo(kFitWidth(16))
-                make.right.equalTo(kFitWidth(-16))
-                make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
-                make.height.equalTo(kFitWidth(141))
-            }
-        }else{
+//        if products.count == 3{
+//            cardContainer.snp.remakeConstraints { make in
+//                make.left.equalTo(kFitWidth(16))
+//                make.right.equalTo(kFitWidth(-16))
+//                make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
+//                make.height.equalTo(kFitWidth(141))
+//            }
+//        }else{
             cardContainer.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(48))
                 make.right.equalTo(kFitWidth(-48))
                 make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
                 make.height.equalTo(kFitWidth(167))
             }
-        }
+//        }
     }
 
     private func remoteProduct(from products: [RemotePlanProduct], type: PlanType) -> RemotePlanProduct? {

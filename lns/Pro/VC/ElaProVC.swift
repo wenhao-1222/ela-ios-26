@@ -178,10 +178,12 @@ extension ElaProVC{
             readyVm.isHidden = true
             transformVm.isHidden = true
             priceVm.isHidden = false
+            priceVm.frame.origin.x = 0
             naviVm.alpha = 1
             naviVm.backButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
             naviVm.backButton.frame = CGRect.init(x: SCREEN_WIDHT - kFitWidth(12.5) - kFitWidth(35), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
-            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 4, y: 0), animated: false)
+            scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT, height: 0)
+            scrollViewBase.setContentOffset(.zero, animated: false)
             updateNextButtonForCurrentStep(animated: false)
             
             return

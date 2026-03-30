@@ -50,6 +50,7 @@ class CameraViewController: WHBaseViewVC {
     // 后台/中断/错误通知的观察者
     private var backgroundObserver: NSObjectProtocol?
     private var foregroundObserver: NSObjectProtocol?
+    private var isShowingQuotaUpgradeAlert = false
     
     // ————— 你的视图模型 / 其他 UI 组件 —————
     lazy var overLayImgView: UIImageView = {
@@ -724,7 +725,10 @@ extension CameraViewController {
             return
         }
         if code == 404{
-            MCToast.mc_text("今日识别次数已用完，请明天再来\n（识图功能测试期间，每天可使用 10 次）")
+            if handleIdentifyQuotaExhaustedIfNeeded() {
+                return
+            }
+            MCToast.mc_text("今日识别次数已用完，请明天再来\n（识图功能测试期间，每天可使用 5 次）")
             return
         }
         if code == 503{//AI识别功能维护中
@@ -877,16 +881,65 @@ extension CameraViewController {
             self.funcVm.refreshShowStatus(isShow: true)
         }
         else {
+            let hasHandledQuotaExhausted = dataObj.stringValueForKey(key: "balance") == "0" && handleIdentifyQuotaExhaustedIfNeeded()
+            if hasHandledQuotaExhausted {
+                return
+            }
             self.captureResultVm.completeWithFailure(failType:"0")
             self.failAlertVm.updateForFailReason()
             self.failAlertVm.showView()
             
             // 显示AI识别剩余次数提示
             if dataObj.stringValueForKey(key: "balance") == "3"{
-                MCToast.mc_text("今日识别次数还剩 3 次\n（识图功能测试期间，每天可使用 10 次）")
+                MCToast.mc_text("今日识别次数还剩 3 次\n（识图功能测试期间，每天可使用 5 次）")
             }else if dataObj.stringValueForKey(key: "balance") == "0"{
-                MCToast.mc_text("今日识别次数已用完，请明天再来\n（识图功能测试期间，每天可使用 10 次）")
+                MCToast.mc_text("今日识别次数已用完，请明天再来\n（识图功能测试期间，每天可使用 5 次）")
             }
+        }
+    }
+
+    @discardableResult
+    func handleIdentifyQuotaExhaustedIfNeeded() -> Bool {
+        guard UserInfoModel.shared.vipModel.status != .valid else {
+            return false
+        }
+        guard !isShowingQuotaUpgradeAlert else {
+            return true
+        }
+
+        isShowingQuotaUpgradeAlert = true
+        captureResultVm.rippleView.stopAnimation()
+        captureResultVm.hiddenView()
+        failAlertVm.hiddenView()
+        naviVm.refreshShowStatus(isShow: true)
+        typeVm.refreshShowStatus(isShow: true)
+        funcVm.refreshShowStatus(isShow: true)
+
+        presentAlertVc(confirmBtn: "去开通",
+                       message: "为了保证识别体验，AI 功能会占用较多资源。如需继续使用，请开通 ELA Pro。",
+                       title: "今日免费 AI 额度已用完",
+                       cancelBtn: "取消",
+                       handler: { [weak self] _ in
+            guard let self = self else { return }
+            self.isShowingQuotaUpgradeAlert = false
+            self.showElaProPriceOnlyVC()
+        },
+                       cancelHandler: { [weak self] _ in
+            self?.isShowingQuotaUpgradeAlert = false
+        },
+                       viewController: self)
+        return true
+    }
+
+    func showElaProPriceOnlyVC() {
+        let vc = ElaProVC()
+        vc.showPriceOnly = true
+        guard let navigationController = navigationController else { return }
+        navigationController.pushViewController(vc, animated: true)
+        DispatchQueue.main.async {
+            var controllers = navigationController.viewControllers
+            controllers.removeAll { $0 is CameraViewController }
+            navigationController.viewControllers = controllers
         }
     }
 }
