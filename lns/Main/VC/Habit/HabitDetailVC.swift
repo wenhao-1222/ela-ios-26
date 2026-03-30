@@ -20,7 +20,7 @@ class HabitDetailVC: WHBaseViewVC {
     }
     
     lazy var tableView: UITableView = {
-        let vi = UITableView.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight()+kFitWidth(20), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight()-getBottomSafeAreaHeight()-kFitWidth(30)), style: .grouped)
+        let vi = UITableView.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight()+kFitWidth(10), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight()), style: .plain)
         vi.backgroundColor = .clear
         
         vi.register(HabitDetailTableViewCell.classForCoder(), forCellReuseIdentifier: "HabitDetailTableViewCell")
@@ -28,6 +28,8 @@ class HabitDetailVC: WHBaseViewVC {
         vi.alpha = 0
         vi.delegate = self
         vi.dataSource = self
+        vi.showsVerticalScrollIndicator = false
+        vi.contentInset = UIEdgeInsets(top: kFitWidth(10), left: 0, bottom: kFitWidth(16)+getBottomSafeAreaHeight(), right: 0)
         vi.bounces = false
         
         vi.contentInsetAdjustmentBehavior = .never
@@ -50,49 +52,38 @@ extension HabitDetailVC:UITableViewDelegate,UITableViewDataSource{
         return 1
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataSourceArray.count
+        return dataSourceArray.count//min(2,dataSourceArray.count)
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HabitDetailTableViewCell") as? HabitDetailTableViewCell
         
         let dict = self.dataSourceArray[indexPath.row]as? NSDictionary ?? [:]
-        cell?.updateUI(dict: dict)
+        let isFirst = indexPath.row == 0
+        let isLast = indexPath.row == dataSourceArray.count - 1
+        cell?.updateUI(dict: dict, isFirst: isFirst, isLast: isLast)
+//        cell?.updateUI(dict: dict, isFirst: isFirst, isLast: isLast)
         
         return cell ?? HabitDetailTableViewCell()
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return kFitWidth(54)
+        return kFitWidth(58)
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headView = UIView(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(16)))
-        headView.backgroundColor = .COLOR_BG_F2
-        
-        let whiteView = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: 0, width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(16)))
-        whiteView.backgroundColor = .COLOR_CARD_BG_WHITE
-        whiteView.addClipCorner(corners: [.topLeft,.topRight], radius: kFitWidth(12))
-        
-        headView.addSubview(whiteView)
-        
-        return headView
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
     }
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return kFitWidth(16)
+        return 0.01
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let headView = UIView(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(16)))
-        headView.backgroundColor = .COLOR_BG_F2
-        
-        let whiteView = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(-2), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(18)))
-        whiteView.backgroundColor = .COLOR_CARD_BG_WHITE
-        whiteView.addClipCorner(corners: [.bottomLeft,.bottomRight], radius: kFitWidth(12))
-        
-        headView.addSubview(whiteView)
-        
-        return headView
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
     }
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return kFitWidth(16)
+        return 0.01
     }
 }
 
