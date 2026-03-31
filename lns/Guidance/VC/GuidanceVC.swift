@@ -601,8 +601,53 @@ extension GuidanceVC{
         }
     }
 
+    func shouldUseDirectStepTransition(from sourceIndex: Int, to targetIndex: Int, animated: Bool) -> Bool {
+        guard animated, sourceIndex != targetIndex, abs(sourceIndex - targetIndex) > 1 else { return false }
+        let lower = min(sourceIndex, targetIndex) + 1
+        let upper = max(sourceIndex, targetIndex)
+        guard lower < upper else { return false }
+
+        let intermediateSteps = activeFlow[lower..<upper]
+        return !intermediateSteps.isEmpty && intermediateSteps.allSatisfy { isSummaryStep($0) }
+    }
+
+    func performDirectStepTransition(from sourceIndex: Int, to targetIndex: Int) {
+        guard let sourceStep = flowStep(for: sourceIndex),
+              let targetStep = flowStep(for: targetIndex),
+              let sourceView = stepView(for: sourceStep),
+              let targetView = stepView(for: targetStep) else {
+            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: false)
+            isBackNavigationLocked = false
+            return
+        }
+
+        let sourceFrame = CGRect(x: SCREEN_WIDHT * CGFloat(sourceIndex), y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+        let targetFrame = CGRect(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+        let visibleFrame = CGRect(x: SCREEN_WIDHT * CGFloat(sourceIndex), y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+        let direction: CGFloat = targetIndex < sourceIndex ? -1 : 1
+
+        sourceView.frame = visibleFrame
+        targetView.frame = visibleFrame.offsetBy(dx: direction * SCREEN_WIDHT, dy: 0)
+        scrollViewBase.bringSubviewToFront(sourceView)
+        scrollViewBase.bringSubviewToFront(targetView)
+
+        UIView.animate(withDuration: 0.28,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction]) {
+            sourceView.frame = visibleFrame.offsetBy(dx: -direction * SCREEN_WIDHT, dy: 0)
+            targetView.frame = visibleFrame
+        } completion: { _ in
+            sourceView.frame = sourceFrame
+            targetView.frame = targetFrame
+            self.scrollViewBase.setContentOffset(CGPoint(x: targetFrame.minX, y: 0), animated: false)
+            self.isBackNavigationLocked = false
+            self.refreshBackButtonState(for: targetStep, index: targetIndex)
+        }
+    }
+
     func moveToStep(index: Int, animated: Bool) {
         updateFlowConfiguration()
+        let sourceIndex = currentIndex
         let targetIndex = max(0, min(index, totalSteps - 1))
         guard let targetStep = flowStep(for: targetIndex) else { return }
         if flowStep(for: currentIndex) == .nutritionGoal {
@@ -612,13 +657,19 @@ extension GuidanceVC{
         currentIndex = targetIndex
         let visibleIndex = scrollableIndex(for: targetIndex)
         let targetOffset = CGPoint(x: SCREEN_WIDHT * CGFloat(visibleIndex), y: 0)
-        let shouldLockBack = animated && abs(scrollViewBase.contentOffset.x - targetOffset.x) > 0.5
+        let shouldUseDirectTransition = shouldUseDirectStepTransition(from: sourceIndex, to: targetIndex, animated: animated)
+        let shouldLockBack = (animated || shouldUseDirectTransition) && abs(scrollViewBase.contentOffset.x - targetOffset.x) > 0.5
         isBackNavigationLocked = shouldLockBack
-        scrollViewBase.setContentOffset(targetOffset, animated: animated)
         naviVm.updateStep(steps: stepsArray, currentStep: progressIndex(for: targetIndex))
         refreshBackButtonState(for: targetStep, index: targetIndex)
         naviVm.isHidden = shouldHideNavigation(for: targetStep)
         updateNextButtonForCurrentStep()
+
+        if shouldUseDirectTransition {
+            performDirectStepTransition(from: sourceIndex, to: targetIndex)
+        } else {
+            scrollViewBase.setContentOffset(targetOffset, animated: animated)
+        }
 
         if targetStep == .progressChart {
             resetProgressChartNextButtonPresentation()
