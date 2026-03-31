@@ -11,6 +11,8 @@ import SnapKit
 class GuidanceFinishLoadingVM: UIView {
 
     var progressCompleteBlock: (() -> ())?
+    var progressTempo: CGFloat = 3.3
+    var totalDurationScale: CGFloat = 0.93
 
     private enum ProgressMode {
         case autoComplete
@@ -20,6 +22,7 @@ class GuidanceFinishLoadingVM: UIView {
     private var progressTimer: Timer?
     private var displayedProgress: CGFloat = 0
     private var progressWidthConstraint: Constraint?
+    private var wavePhase: CGFloat = 0
     private var finishHoldRemaining: TimeInterval = 0
     private var lastTickTime: CFTimeInterval = CACurrentMediaTime()
     private var hasNotifiedComplete = false
@@ -151,6 +154,7 @@ extension GuidanceFinishLoadingVM {
         delayedCompletionWorkItem?.cancel()
         delayedCompletionWorkItem = nil
         displayedProgress = 0
+        wavePhase = 0
         finishHoldRemaining = 0
         hasNotifiedComplete = false
         externalCompletionRequested = false
@@ -170,7 +174,8 @@ extension GuidanceFinishLoadingVM {
     private func startFakeProgress() {
         stopFakeProgress()
         lastTickTime = CACurrentMediaTime()
-        progressTimer = Timer.scheduledTimer(withTimeInterval: 0.06, repeats: true) { [weak self] _ in
+        let interval = max(0.03, 0.08 / Double(max(progressTempo, 0.2)))
+        progressTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             self?.tickFakeProgress()
         }
         if let timer = progressTimer {
@@ -188,22 +193,12 @@ extension GuidanceFinishLoadingVM {
         let dt = min(max(now - lastTickTime, 0.016), 0.2)
         lastTickTime = now
         let elapsed = now - loadingStartTime
+        let speedMultiplier = effectiveSpeedMultiplier()
 
         if progressMode == .waitForExternalCompletion && !externalCompletionRequested {
-            let baseSpeed: CGFloat
-            switch displayedProgress {
-            case 0..<35:
-                baseSpeed = 29
-            case 35..<60:
-                baseSpeed = 15
-            case 60..<78:
-                baseSpeed = 8
-            default:
-                baseSpeed = 4
-            }
-
             let waitCap = waitingCapProgress(for: elapsed)
-            displayedProgress = min(displayedProgress + CGFloat(dt) * baseSpeed, waitCap)
+            let nextProgress = min(displayedProgress + nextProgressDelta(dt: dt), waitCap)
+            displayedProgress = nextProgress
             updateProgressUI(animated: true)
             return
         }
@@ -211,31 +206,14 @@ extension GuidanceFinishLoadingVM {
         if progressMode == .waitForExternalCompletion && externalCompletionRequested {
             if elapsed < minimumDisplayDuration {
                 let holdCap = completionHoldCapProgress(for: elapsed)
-                let baseSpeed: CGFloat
-                switch displayedProgress {
-                case 0..<45:
-                    baseSpeed = 22
-                case 45..<75:
-                    baseSpeed = 12
-                default:
-                    baseSpeed = 6
-                }
-                displayedProgress = min(displayedProgress + CGFloat(dt) * baseSpeed, holdCap)
+                let nextProgress = min(displayedProgress + nextProgressDelta(dt: dt), holdCap)
+                displayedProgress = nextProgress
                 updateProgressUI(animated: true)
                 return
             }
 
-            let finalSpeed: CGFloat
-            switch displayedProgress {
-            case 0..<90:
-                finalSpeed = 34
-            case 90..<97:
-                finalSpeed = 22
-            default:
-                finalSpeed = 12
-            }
-
-            displayedProgress = min(displayedProgress + CGFloat(dt) * finalSpeed, 100)
+            let completionBoost = max(1.25, speedMultiplier * 1.15)
+            displayedProgress = min(displayedProgress + nextProgressDelta(dt: dt, multiplier: completionBoost), 100)
             updateProgressUI(animated: true)
             if displayedProgress >= 100 {
                 stopFakeProgress()
@@ -246,7 +224,7 @@ extension GuidanceFinishLoadingVM {
 
         if displayedProgress >= 99 {
             if finishHoldRemaining <= 0 {
-                finishHoldRemaining = 0.45
+                finishHoldRemaining = Double.random(in: 0.45...1.1) / Double(max(progressTempo, 0.2) * speedMultiplier)
             }
             finishHoldRemaining -= dt
             if finishHoldRemaining <= 0 {
@@ -260,23 +238,44 @@ extension GuidanceFinishLoadingVM {
             return
         }
 
-        let baseSpeed: CGFloat
-        switch displayedProgress {
-        case 0..<35:
-            baseSpeed = 30
-        case 35..<65:
-            baseSpeed = 18
-        case 65..<85:
-            baseSpeed = 11
-        case 85..<95:
-            baseSpeed = 6
-        default:
-            baseSpeed = 3
-        }
-
-        let jitter = CGFloat.random(in: -0.12...0.18)
-        displayedProgress = min(displayedProgress + CGFloat(dt) * max(1, baseSpeed + jitter * 10), 99)
+        displayedProgress = min(displayedProgress + nextProgressDelta(dt: dt), 99)
         updateProgressUI(animated: true)
+    }
+
+    private func effectiveSpeedMultiplier() -> CGFloat {
+        return 1.0 / max(totalDurationScale, 0.2)
+    }
+
+    private func nextProgressDelta(dt: CFTimeInterval, multiplier: CGFloat = 1) -> CGFloat {
+        let baseSpeed = baseSpeedFor(progress: displayedProgress)
+        let speed = baseSpeed * multiplier
+        wavePhase += CGFloat(dt) * (2.0 + speed * 0.07)
+        let waveFactor = 0.74 + 0.34 * CGFloat(sin(Double(wavePhase)))
+        let jitter = CGFloat.random(in: -0.18...0.24)
+        let factor = max(0.2, waveFactor + jitter)
+
+        var delta = CGFloat(dt) * speed * factor
+        let maxDelta = CGFloat(dt) * speed * 1.35
+        delta = min(delta, maxDelta)
+        return delta
+    }
+
+    private func baseSpeedFor(progress: CGFloat) -> CGFloat {
+        let tempo = max(progressTempo, 0.2) * effectiveSpeedMultiplier()
+        switch progress {
+        case 0..<20:
+            return 6.0 * tempo
+        case 20..<45:
+            return 5.2 * tempo
+        case 45..<70:
+            return 4.0 * tempo
+        case 70..<85:
+            return 2.3 * tempo
+        case 85..<95:
+            return 1.7 * tempo
+        default:
+            return 1 * tempo
+        }
     }
 
     private func waitingCapProgress(for elapsed: TimeInterval) -> CGFloat {
