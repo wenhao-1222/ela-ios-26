@@ -792,7 +792,7 @@ extension GuidanceVC{
         UserInfoModel.shared.showNotifiAuthoriAlertVM = false
         if isFixedTargetFlowEnabled {
             QuestinonaireMsgModel.shared.surveytype = "custom_v2"
-            showGuidanceProVCForSubscription()
+            startFinalGuidanceSubmissionFlow()
             return
         }
         QuestinonaireMsgModel.shared.surveytype = "part_v2"
@@ -808,7 +808,7 @@ extension GuidanceVC{
         nextButton.isEnabled = false
         if isFixedTargetFlowEnabled {
             finishLoadingVm.configureLoading(
-                titleText: "正在根据你的选择优化设置…",
+                titleText: "计划生成中...",
                 completionTitleText: "已完成",
                 completionNotifyDelay: 0.35
             )
