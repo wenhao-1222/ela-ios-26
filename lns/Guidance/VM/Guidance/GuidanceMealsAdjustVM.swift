@@ -20,6 +20,7 @@ class GuidanceMealsAdjustVM: UIView {
     var selectedBlock: (() -> ())?
     private(set) var selectedIndex = -1
     private var itemViews: [GuidanceMealsAdjustItemView] = []
+    private var hasAppliedInitialCenteredSelection = false
 
     private let dataArray: [Item] = [
         Item(
@@ -86,6 +87,10 @@ class GuidanceMealsAdjustVM: UIView {
         super.layoutSubviews()
         topGradientLayer.frame = topGradientView.bounds
         bottomGradientLayer.frame = bottomGradientView.bounds
+        if !hasAppliedInitialCenteredSelection, selectedIndex >= 0 {
+            hasAppliedInitialCenteredSelection = true
+            centerSelectedItemIfNeeded(animated: false)
+        }
     }
 
     var hasSelection: Bool {
@@ -228,6 +233,8 @@ extension GuidanceMealsAdjustVM {
         } else {
             QuestinonaireMsgModel.shared.guidanceMealsAdjustType = ""
         }
+
+        centerSelectedItemIfNeeded(animated: notify)
     }
 
     @objc func itemTapAction(_ sender: UITapGestureRecognizer) {
@@ -253,7 +260,7 @@ extension GuidanceMealsAdjustVM {
             let itemView = GuidanceMealsAdjustItemView()
             itemView.tag = index
             itemView.update(item: item)
-            let tap = UITapGestureRecognizer(target: self, action: #selector(itemTapAction(_:)))
+            let tap = FeedBackTapGestureRecognizer(target: self, action: #selector(itemTapAction(_:)))
             itemView.addGestureRecognizer(tap)
             stackView.addArrangedSubview(itemView)
             itemViews.append(itemView)
@@ -307,6 +314,26 @@ extension GuidanceMealsAdjustVM {
 
         updateGradientVisibility()
     }
+    private func centerSelectedItemIfNeeded(animated: Bool) {
+        guard selectedIndex >= 0, selectedIndex < itemViews.count else { return }
+
+        let targetView = itemViews[selectedIndex]
+        scrollView.layoutIfNeeded()
+        contentView.layoutIfNeeded()
+        layoutIfNeeded()
+
+        let targetFrame = targetView.convert(targetView.bounds, to: contentView)
+        let visibleHeight = scrollView.bounds.height
+        guard visibleHeight > 0 else { return }
+
+        let desiredOffsetY = targetFrame.midY - visibleHeight * 0.5
+        let minOffsetY = -scrollView.adjustedContentInset.top
+        let maxOffsetY = max(scrollView.contentSize.height - visibleHeight + scrollView.adjustedContentInset.bottom, minOffsetY)
+        let clampedOffsetY = min(max(desiredOffsetY, minOffsetY), maxOffsetY)
+
+        scrollView.setContentOffset(CGPoint(x: 0, y: clampedOffsetY), animated: animated)
+        updateGradientVisibility()
+    }
 }
 
 extension GuidanceMealsAdjustVM: UIScrollViewDelegate {}
@@ -314,6 +341,8 @@ extension GuidanceMealsAdjustVM: UIScrollViewDelegate {}
 private final class GuidanceMealsAdjustItemView: UIView {
     private var normalBorderColor = UIColor.clear.cgColor
     private var selectedBorderColor = UIColor.THEME.cgColor
+    private var isSelectedState = false
+    private var isPressedState = false
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -396,13 +425,13 @@ private final class GuidanceMealsAdjustItemView: UIView {
         disadvantageTitleLabel.snp.makeConstraints { make in
             make.left.equalTo(advantageTitleLabel)
             make.width.equalTo(advantageTitleLabel)
-            make.top.equalTo(advantageLabel.snp.bottom).offset(kFitWidth(8))
+            make.top.equalTo(advantageLabel.snp.bottom).offset(kFitWidth(14))
         }
 
         groupTitleLabel.snp.makeConstraints { make in
             make.left.equalTo(advantageTitleLabel)
             make.width.equalTo(advantageTitleLabel)
-            make.top.equalTo(disadvantageLabel.snp.bottom).offset(kFitWidth(12))
+            make.top.equalTo(disadvantageLabel.snp.bottom).offset(kFitWidth(14))
         }
 
         advantageLabel.snp.makeConstraints { make in
@@ -432,10 +461,58 @@ private final class GuidanceMealsAdjustItemView: UIView {
     }
 
     func updateSelection(isSelected: Bool) {
-        backgroundColor = isSelected ? .white : .COLOR_TEXT_TITLE_0f1214_05
-        layer.borderColor = isSelected ? selectedBorderColor : normalBorderColor
+        isSelectedState = isSelected
+        updateAppearance(animated: false)
         let titleColor: UIColor = isSelected ? .THEME : .COLOR_TEXT_TITLE_0f1214
         titleLabel.attributedText = attributedTitle(for: titleLabel.attributedText?.string ?? "", color: titleColor)
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        isPressedState = true
+        updateAppearance(animated: true)
+        super.touchesBegan(touches, with: event)
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        isPressedState = false
+        updateAppearance(animated: true)
+        super.touchesEnded(touches, with: event)
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        isPressedState = false
+        updateAppearance(animated: true)
+        super.touchesCancelled(touches, with: event)
+    }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let point = touches.first?.location(in: self) {
+            let shouldPress = bounds.insetBy(dx: -12, dy: -12).contains(point)
+            if shouldPress != isPressedState {
+                isPressedState = shouldPress
+                updateAppearance(animated: true)
+            }
+        }
+        super.touchesMoved(touches, with: event)
+    }
+
+    private func updateAppearance(animated: Bool) {
+        let applyChanges = {
+            self.backgroundColor = self.isSelectedState ? .white : .COLOR_TEXT_TITLE_0f1214_05
+            self.layer.borderColor = self.isSelectedState ? self.selectedBorderColor : self.normalBorderColor
+            self.transform = self.isPressedState ? CGAffineTransform(scaleX: 0.985, y: 0.985) : .identity
+            self.alpha = self.isPressedState ? 0.92 : 1
+        }
+
+        if animated {
+            UIView.animate(withDuration: 0.12,
+                           delay: 0,
+                           options: [.curveEaseOut, .beginFromCurrentState]) {
+                applyChanges()
+            }
+        } else {
+            applyChanges()
+        }
     }
 
     private func attributedTitle(for title: String, color: UIColor) -> NSAttributedString {

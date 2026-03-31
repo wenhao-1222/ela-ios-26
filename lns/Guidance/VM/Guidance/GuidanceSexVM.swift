@@ -201,6 +201,8 @@ extension GuidanceSexVM{
         loginLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(40))
+            make.height.equalTo(kFitWidth(32))
+//            make.width.equalTo(kFitWidth(200))
         }
     }
 }

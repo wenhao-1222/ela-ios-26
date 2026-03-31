@@ -23,7 +23,7 @@ class GuidanceCardioFrequencyVM: UIView {
         Item(title: "每周 6+ 次", value: "6-7")
     ]
 
-    private var itemButtons: [FeedBackButton] = []
+    private var itemButtons: [UIButton] = []
     private var titleLabels: [UILabel] = []
 
     override init(frame: CGRect) {
@@ -110,12 +110,11 @@ extension GuidanceCardioFrequencyVM {
         addSubview(stackView)
 
         for (index, item) in dataArray.enumerated() {
-            let button = FeedBackButton()
+            let button = UIButton(type: .custom)
             button.tag = index
             button.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
             button.layer.cornerRadius = kFitWidth(30)
             button.clipsToBounds = true
-            button.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT), for: .highlighted)
             button.addTarget(self, action: #selector(itemTapAction(_:)), for: .touchUpInside)
 
             let lab = UILabel()

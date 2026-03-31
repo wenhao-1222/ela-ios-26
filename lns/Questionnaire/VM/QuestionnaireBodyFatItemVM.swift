@@ -129,6 +129,7 @@ extension QuestionnaireBodyFatItemVM{
         titleLab.frame = CGRect(x: kFitWidth(16), y: kFitWidth(120), width: kFitWidth(200), height: kFitWidth(12))
         numberLabel.frame = CGRect(x: kFitWidth(16), y: kFitWidth(135), width: numberLabelWidth, height: kFitWidth(20))
         numberLabel.font = .systemFont(ofSize: 20, weight: .medium)
+        numberLabel.textAlignment = .left
         imgView.layer.cornerCurve = .continuous
         imgView.layer.cornerRadius = kFitWidth(12)
 
@@ -222,6 +223,7 @@ extension QuestionnaireBodyFatItemVM{
             selectImgView.alpha = 0
             selectImgView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
             numberLabel.font = .systemFont(ofSize: 28, weight: .medium)
+            numberLabel.textAlignment = .center
 
             // ===== 主体：先“按压”再回弹多次（duang duang duang）=====
             UIView.animateKeyframes(withDuration: mainDuration,
@@ -302,6 +304,7 @@ extension QuestionnaireBodyFatItemVM{
             imgView.layer.cornerCurve = .continuous
             imgView.layer.cornerRadius = kFitWidth(12)
             numberLabel.font = .systemFont(ofSize: 20, weight: .medium)
+            numberLabel.textAlignment = .left
 
             if isRight {
                 self.refreshForRight()
