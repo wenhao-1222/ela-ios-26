@@ -21,5 +21,7 @@ public let  NOTIFI_NAME_GUIDE = NSNotification.Name(rawValue: "onboarding_flow_s
 public let  NOTIFI_NAME_REFRESH_TODAY_JOUNAL = NSNotification.Name(rawValue: "refresh_today_logs_data")
 //支付成功后，刷新课程列表
 public let  NOTIFI_NAME_REFRESH_COURSE_STATUS = NSNotification.Name(rawValue: "refresh_course_status")
+// Ela Pro 订阅成功后，刷新食谱页
+public let  NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS = NSNotification.Name(rawValue: "refresh_diet_plan_status")
 ///添加地址成功
 public let  NOTIFI_NAME_ADD_ADDRESS = NSNotification.Name(rawValue: "add_address")

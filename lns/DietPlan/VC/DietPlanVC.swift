@@ -12,6 +12,10 @@ class DietPlanVC: WHBaseViewVC {
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
+    }
+    
     public override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = false
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
@@ -29,6 +33,10 @@ class DietPlanVC: WHBaseViewVC {
         super.viewDidLoad()
         
         initUI()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshDietPlanAfterSubscriptionSuccess),
+                                               name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS,
+                                               object: nil)
         sendDietPlanMsgRequest()
     }
     lazy var emptyVm: PlanMainEmptyVM = {
@@ -76,6 +84,10 @@ class DietPlanVC: WHBaseViewVC {
 }
 
 extension DietPlanVC{
+    @objc func refreshDietPlanAfterSubscriptionSuccess() {
+        sendDietPlanMsgRequest()
+    }
+    
     func ensureValidVipForMealAction() -> Bool {
         guard UserInfoModel.shared.vipModel.status == .valid else {
             showElaExpiredAlertIfNeeded()
@@ -101,6 +113,7 @@ extension DietPlanVC{
     }
     //第一次创建计划，只选择时间
     @objc func createPlanAction() {
+        guard self.ensureValidVipForMealAction() else { return }
         let vc = DietPlanCreateDateVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }

@@ -890,7 +890,7 @@ extension DietPlanCreateVC{
             self.isUploadingDietProfile = false
         }
         
-        if VIPModel().isValidVip{
+        if UserInfoModel.shared.vipModel.status == .valid{
             self.backTapAction()
         }else{
             let vc = ElaProVC()

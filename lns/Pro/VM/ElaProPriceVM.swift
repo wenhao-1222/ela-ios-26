@@ -633,7 +633,7 @@ extension ElaProPriceVM{
                 case .success(let transaction):
                     ElaProIAPManager.shared.handlePurchaseSuccessPostAction(transaction: transaction)
                     MCToast.mc_text(purchasingPlan == .lifetime ? "购买成功" : "订阅成功")
-//                    self.purchaseSuccessBlock?()
+                    self.purchaseSuccessBlock?()
                 case .failure(let error):
                     if let iapError = error as? ElaProIAPError {
                         MCToast.mc_text(iapError.localizedDescription)
@@ -1436,7 +1436,7 @@ extension ElaProPriceVM{
     func makeBenefitRow(title: String, desc: String,dotImg:String) -> UIView {
         let row = UIView()
         let dot = UIImageView()
-        dot.backgroundColor = UIColor.white.withAlphaComponent(0.9)
+//        dot.backgroundColor = UIColor.white.withAlphaComponent(0.9)
         dot.layer.cornerRadius = kFitWidth(14)
         dot.clipsToBounds = true
         dot.image = UIImage(named: dotImg)
@@ -1479,7 +1479,7 @@ extension ElaProPriceVM{
         let row = UIView()
         
         let dot = UIImageView()
-        dot.backgroundColor = UIColor.white.withAlphaComponent(0.9)
+//        dot.backgroundColor = UIColor.white.withAlphaComponent(0.9)
         dot.layer.cornerRadius = kFitWidth(14)
         dot.clipsToBounds = true
         dot.image = UIImage(named: dotImg)

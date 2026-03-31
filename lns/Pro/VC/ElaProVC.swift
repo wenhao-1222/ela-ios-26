@@ -99,7 +99,7 @@ class ElaProVC: WHBaseViewVC {
     lazy var priceVm: ElaProPriceVM = {
         let vm = ElaProPriceVM.init(frame: CGRect(x: SCREEN_WIDHT * 4, y: 0, width: 0, height: 0))
         vm.purchaseSuccessBlock = { [weak self] in
-            self?.backTapAction()
+            self?.handlePurchaseSuccess()
         }
         vm.protocalTapBlock = { [weak self] in
             self?.showAgreementAlert()
@@ -254,6 +254,39 @@ extension ElaProVC{
             purchaseLoadingIndicator.startAnimating()
         } else {
             purchaseLoadingIndicator.stopAnimating()
+        }
+    }
+    
+    private func handlePurchaseSuccess() {
+        applyTemporaryValidVipStatus()
+        requestLatestVipInfo()
+        NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
+        backTapAction()
+    }
+    
+    private func applyTemporaryValidVipStatus() {
+        let currentVipModel = UserInfoModel.shared.vipModel
+        let tempVipModel = VIPModel()
+        tempVipModel.uid = currentVipModel.uid.isEmpty ? UserInfoModel.shared.uId : currentVipModel.uid
+        tempVipModel.startTime = currentVipModel.startTime
+        tempVipModel.expireTime = currentVipModel.expireTime
+        tempVipModel.ctime = currentVipModel.ctime
+        tempVipModel.etime = currentVipModel.etime
+        tempVipModel.isLifetime = currentVipModel.isLifetime
+        tempVipModel.vipType = currentVipModel.vipType == .none ? .year : currentVipModel.vipType
+        tempVipModel.status = .valid
+        UserInfoModel.shared.vipModel = tempVipModel
+    }
+    
+    private func requestLatestVipInfo() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            let vipModel = VIPModel().initWithDict(dict: dataDict)
+            UserInfoModel.shared.vipModel = vipModel
+            DLLog(message: "ElaProVC requestLatestVipInfo:\(dataDict)")
+            DLLog(message: "ElaProVC requestLatestVipInfo model: uid=\(vipModel.uid), vipType=\(vipModel.vipType.rawValue), status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime), expireTime=\(vipModel.expireTime)")
+            NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
         }
     }
 }
