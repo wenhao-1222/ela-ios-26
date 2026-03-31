@@ -44,6 +44,12 @@ enum ElaProIAPError: LocalizedError {
     }
 }
 
+enum ElaProSubscriptionHistoryState {
+    case subscribed
+    case notSubscribed
+    case unknown
+}
+
 final class ElaProIAPManager: NSObject {
     static let shared = ElaProIAPManager()
     static let localEntitlementUpdatedNotification = NSNotification.Name("ela_pro_local_entitlement_updated")
@@ -179,22 +185,23 @@ final class ElaProIAPManager: NSObject {
         purchase(productID: ElaProIAPConfig.lifetimeProductID, completion: completion)
     }
 
-    func checkHasSubscribedHistory(productID: String, completion: @escaping (Bool) -> Void) {
+    func checkSubscriptionHistoryState(productID: String,
+                                       completion: @escaping (ElaProSubscriptionHistoryState) -> Void) {
         let trimmedProductID = productID.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedProductID.isEmpty else {
-            completion(false)
+            completion(.unknown)
             return
         }
 
         guard #available(iOS 15.0, *) else {
-            completion(false)
+            completion(.unknown)
             return
         }
 
         Task {
-            let hasSubscribed = await self.hasSubscribedHistoryStoreKit2(productID: trimmedProductID)
+            let state = await self.subscriptionHistoryStateStoreKit2(productID: trimmedProductID)
             DispatchQueue.main.async {
-                completion(hasSubscribed)
+                completion(state)
             }
         }
     }
@@ -318,14 +325,32 @@ final class ElaProIAPManager: NSObject {
     }
 
     @available(iOS 15.0, *)
-    private func hasSubscribedHistoryStoreKit2(productID: String) async -> Bool {
-        for await result in Transaction.all {
-            guard case .verified(let transaction) = result else { continue }
-            if transaction.productID == productID {
-                return true
+    private func subscriptionHistoryStateStoreKit2(productID: String) async -> ElaProSubscriptionHistoryState {
+        do {
+            let products = try await Product.products(for: [productID])
+            guard let product = products.first(where: { $0.id == productID }) else {
+                return .unknown
             }
+
+            if let subscription = product.subscription,
+               await subscription.isEligibleForIntroOffer {
+                return .notSubscribed
+            }
+
+            if let latestResult = await Transaction.latest(for: productID) {
+                switch latestResult {
+                case .verified(let transaction):
+                    return transaction.productID == productID ? .subscribed : .unknown
+                case .unverified:
+                    return .unknown
+                }
+            }
+
+            return .unknown
+        } catch {
+            DLLog(message: "[ElaProIAP][HISTORY] check failed: \(error.localizedDescription)")
+            return .unknown
         }
-        return false
     }
     
     private func applyLocalTemporaryUnlock(transaction: SKPaymentTransaction) -> Date {

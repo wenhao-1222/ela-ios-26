@@ -958,8 +958,13 @@ extension GuidanceVC{
         guard !hasPrefetchedGuidanceProSubscriptionHistory else { return }
         hasPrefetchedGuidanceProSubscriptionHistory = true
 
-        ElaProIAPManager.shared.checkHasSubscribedHistory(productID: Self.guidanceProAnnualSubscriptionProductID) { [weak self] hasSubscribedBefore in
-            self?.cachedGuidanceProHasFreeTrialPermission = !hasSubscribedBefore
+        ElaProIAPManager.shared.checkSubscriptionHistoryState(productID: Self.guidanceProAnnualSubscriptionProductID) { [weak self] state in
+            switch state {
+            case .subscribed:
+                self?.cachedGuidanceProHasFreeTrialPermission = false
+            case .notSubscribed, .unknown:
+                self?.cachedGuidanceProHasFreeTrialPermission = true
+            }
         }
     }
 
