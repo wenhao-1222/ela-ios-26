@@ -618,6 +618,7 @@ extension GuidanceVC{
               let targetView = stepView(for: targetStep) else {
             scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: false)
             isBackNavigationLocked = false
+            handleStepDidBecomeVisible(flowStep(for: targetIndex))
             return
         }
 
@@ -642,6 +643,16 @@ extension GuidanceVC{
             self.scrollViewBase.setContentOffset(CGPoint(x: targetFrame.minX, y: 0), animated: false)
             self.isBackNavigationLocked = false
             self.refreshBackButtonState(for: targetStep, index: targetIndex)
+            self.handleStepDidBecomeVisible(targetStep)
+        }
+    }
+
+    func handleStepDidBecomeVisible(_ step: FlowStep?) {
+        guard let step = step else { return }
+        if step == .removeBarrier {
+            removeBarrierVm.startScrollersIfNeeded()
+        } else {
+            removeBarrierVm.stopScrollers()
         }
     }
 
@@ -669,6 +680,10 @@ extension GuidanceVC{
             performDirectStepTransition(from: sourceIndex, to: targetIndex)
         } else {
             scrollViewBase.setContentOffset(targetOffset, animated: animated)
+            if !animated {
+                isBackNavigationLocked = false
+                handleStepDidBecomeVisible(targetStep)
+            }
         }
 
         if targetStep == .progressChart {
@@ -678,29 +693,17 @@ extension GuidanceVC{
         if targetStep == .goalBarrier {
             goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
         }
-        if targetStep == .removeBarrier {
-            removeBarrierVm.startScrollersIfNeeded()
-        }
         if targetStep == .nutritionGoal {
             fixedTargetNutritionGoalVm.applyEditingMode(isEditable: true)
             fixedTargetNutritionGoalVm.refreshContentFromModel()
-//            if isFixedTargetFlowEnabled {
-//                fixedTargetNutritionGoalVm.refreshContentFromModel()
-//                let focusDelay = animated ? 0.35 : 0
-//                DispatchQueue.main.asyncAfter(deadline: .now() + focusDelay) { [weak self] in
-//                    guard let self = self,
-//                          self.flowStep(for: self.currentIndex) == .nutritionGoal,
-//                          self.isFixedTargetFlowEnabled else { return }
-//                    self.fixedTargetNutritionGoalVm.focusCarbInput()
-//                }
-//            } else {
-//                nutritionGoalVm.refreshContentFromModel()
-//            }
-            let focusDelay = animated ? 0.35 : 0
-            DispatchQueue.main.asyncAfter(deadline: .now() + focusDelay) { [weak self] in
-                guard let self = self,
-                      self.flowStep(for: self.currentIndex) == .nutritionGoal else { return }
-                self.fixedTargetNutritionGoalVm.focusCarbInput()
+            if isFixedTargetFlowEnabled {
+                let focusDelay = animated ? 0.35 : 0
+                DispatchQueue.main.asyncAfter(deadline: .now() + focusDelay) { [weak self] in
+                    guard let self = self,
+                          self.flowStep(for: self.currentIndex) == .nutritionGoal,
+                          self.isFixedTargetFlowEnabled else { return }
+                    self.fixedTargetNutritionGoalVm.focusCarbInput()
+                }
             }
         }
         if targetStep == .mealsSummary {
@@ -1302,5 +1305,6 @@ extension GuidanceVC: UIScrollViewDelegate {
         isBackNavigationLocked = false
         guard let currentStep = flowStep(for: currentIndex) else { return }
         refreshBackButtonState(for: currentStep, index: currentIndex)
+        handleStepDidBecomeVisible(currentStep)
     }
 }
