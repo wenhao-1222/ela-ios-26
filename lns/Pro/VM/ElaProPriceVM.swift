@@ -214,12 +214,13 @@ class ElaProPriceVM: UIView {
         vi.clipsToBounds = true
         return vi
     }()
-    lazy var benefitOne = makeBenefitRow(title: "定制每周食谱", desc: "每天不重样，照着吃就行")
-    lazy var benefitTwo = makeBenefitRow(title: "消除选择困难", desc: "不用每天纠结吃什么")
-    lazy var benefitThree = makeBenefitRow(title: "平衡家庭与健康饮食", desc: "和家人同桌，也能精准对齐目标")
-    lazy var benefitFour = makeBenefitRow(title: "节省外卖支出", desc: "每月省下上千元外卖费用")
-    lazy var benefitFive = makeBenefitRow(title: "整理购物清单", desc: "提前列好未来一周所需食材")
-    lazy var benefitSix = makeBenefitRow(title: "快速记录", desc: "无需手动搜索，一键把每餐加入日志")
+    
+    lazy var benefitOne = makeBenefitRow(title: "定制每周食谱", desc: "每天不重样，照着吃就行",dotImg: "survey_subscription_mealplan_ic_01")
+    lazy var benefitTwo = makeBenefitRow(title: "消除选择困难", desc: "不用每天纠结吃什么",dotImg: "survey_subscription_mealplan_ic_02")
+    lazy var benefitThree = makeBenefitRow(title: "平衡家庭与健康饮食", desc: "和家人同桌，也能精准对齐目标",dotImg: "survey_subscription_mealplan_ic_03")
+    lazy var benefitFour = makeBenefitRow(title: "节省外卖支出", desc: "每月省下上千元外卖费用",dotImg: "survey_subscription_mealplan_ic_04")
+    lazy var benefitFive = makeBenefitRow(title: "整理购物清单", desc: "提前列好未来一周所需食材",dotImg: "survey_subscription_mealplan_ic_05")
+    lazy var benefitSix = makeBenefitRow(title: "快速记录", desc: "无需手动搜索，一键把每餐加入日志",dotImg: "survey_subscription_mealplan_ic_06")
     lazy var dividerOne = makeDivider()
     lazy var dividerTwo = makeDivider()
     lazy var dividerThree = makeDivider()
@@ -236,10 +237,10 @@ class ElaProPriceVM: UIView {
         let vi = UIView()
         return vi
     }()
-    lazy var aiOne = makeBenefitRow(title: "每周复盘", desc: "结合饮食训练变化，系统复盘进度")
-    lazy var aiTwo = makeBenefitRow(title: "卡点预警", desc: "多维数据早发现，瓶颈前先介入")
-    lazy var aiThree = makeBenefitRow(title: "体重去噪", desc: "分清真实进度，减少结果焦虑")
-    lazy var aiFour = makeBenefitRow(title: "持续微调", desc: "越用越懂你，你只需照做")
+    lazy var aiOne = makeBenefitRow(title: "每周复盘", desc: "结合饮食训练变化，系统复盘进度",dotImg: "survey_subscription_coach_ic_01")
+    lazy var aiTwo = makeBenefitRow(title: "卡点预警", desc: "多维数据早发现，瓶颈前先介入",dotImg: "survey_subscription_coach_ic_02")
+    lazy var aiThree = makeBenefitRow(title: "体重去噪", desc: "分清真实进度，减少结果焦虑",dotImg: "survey_subscription_coach_ic_03")
+    lazy var aiFour = makeBenefitRow(title: "持续微调", desc: "越用越懂你，你只需照做",dotImg: "survey_subscription_coach_ic_04")
     lazy var aiDividerOne = makeDivider()
     lazy var aiDividerTwo = makeDivider()
     lazy var aiDividerThree = makeDivider()
@@ -254,8 +255,9 @@ class ElaProPriceVM: UIView {
         let vi = UIView()
         return vi
     }()
-    lazy var moreOne = makeSimpleRow(title: "无广告")
-    lazy var moreTwo = makeSimpleRow(title: "解锁AI识图上限")
+    //survey_subscription_more_ic_01
+    lazy var moreOne = makeSimpleRow(title: "无广告",dotImg: "survey_subscription_more_ic_01")
+    lazy var moreTwo = makeSimpleRow(title: "解锁AI识图上限",dotImg: "survey_subscription_more_ic_02")
     lazy var moreDividerOne = makeDivider()
     lazy var bottomBar: UIView = {
         let vi = UIView()
@@ -1431,12 +1433,13 @@ extension ElaProPriceVM{
         }
     }
     
-    func makeBenefitRow(title: String, desc: String) -> UIView {
+    func makeBenefitRow(title: String, desc: String,dotImg:String) -> UIView {
         let row = UIView()
         let dot = UIImageView()
         dot.backgroundColor = UIColor.white.withAlphaComponent(0.9)
         dot.layer.cornerRadius = kFitWidth(14)
         dot.clipsToBounds = true
+        dot.image = UIImage(named: dotImg)
         
         let titleLab = UILabel()
         titleLab.text = title
@@ -1472,13 +1475,14 @@ extension ElaProPriceVM{
         return row
     }
     
-    func makeSimpleRow(title: String) -> UIView {
+    func makeSimpleRow(title: String,dotImg:String) -> UIView {
         let row = UIView()
         
         let dot = UIImageView()
         dot.backgroundColor = UIColor.white.withAlphaComponent(0.9)
         dot.layer.cornerRadius = kFitWidth(14)
         dot.clipsToBounds = true
+        dot.image = UIImage(named: dotImg)
         
         let titleLab = UILabel()
         titleLab.text = title

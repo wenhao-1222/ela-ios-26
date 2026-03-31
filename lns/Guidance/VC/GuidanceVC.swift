@@ -808,12 +808,12 @@ extension GuidanceVC{
         nextButton.isEnabled = false
         if isFixedTargetFlowEnabled {
             finishLoadingVm.configureLoading(
-                titleText: "计划生成中...",
+                titleText: "正在保存你的设置...",
                 completionTitleText: "已完成",
                 completionNotifyDelay: 0.35
             )
         } else {
-            finishLoadingVm.configureLoading(titleText: "正在保存你的设置...")
+            finishLoadingVm.configureLoading(titleText: "计划生成中...")
         }
         finishLoadingVm.showLoading(waitForExternalCompletion: true)
         submitCompletedGuidanceFlow()

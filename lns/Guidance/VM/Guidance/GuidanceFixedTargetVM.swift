@@ -49,7 +49,7 @@ class GuidanceFixedTargetVM: UIView {
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.setLineHeight(textString: "你已经有固定的\n每日摄入目标了吗？", lineHeight: lab.font.lineHeight * 1.2)
+        lab.setLineHeight(textString: "你已经有固定的\n饮食目标吗？", lineHeight: lab.font.lineHeight * 1.2)
         return lab
     }()
 

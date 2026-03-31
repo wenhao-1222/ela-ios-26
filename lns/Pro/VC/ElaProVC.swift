@@ -32,10 +32,10 @@ class ElaProVC: WHBaseViewVC {
         
         initUI()
         applyInitialDisplayMode()
-        
-        if showPriceOnly == false {
-            self.sendDietUpsertRequest()
-        }
+//        
+//        if showPriceOnly == false {
+//            self.sendDietUpsertRequest()
+//        }
         
         if let nav = navigationController {
             var controllers = nav.viewControllers

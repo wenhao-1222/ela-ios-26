@@ -164,32 +164,32 @@ extension ElaProReadyVM {
         var result: [ReadyItem] = []
         result.append(ReadyItem(
             title: "精准无猜测",
-            desc: "我们将菜谱内每个食材精细到“克”级别，而不仅仅是提供一道菜名，把效果和达成目标放在第一位。",
-            highlights: []
+            desc: "我们将菜谱内每个食材精细到“克”级别，而不仅仅是提供一道菜名，始终将效果和达成目标放在第一位。",
+            highlights: ["精细到“克”级别","效果和达成目标"]
         ))
         
         result.append(ReadyItem(
             title: "定制化饮食策略",
             desc: strategyText(),
-            highlights: []//strategyHighlights()
+            highlights: strategyHighlights()
         ))
         
         result.append(ReadyItem(
             title: "节省外食成本",
-            desc: "我们为你定制的食谱能帮你用外食 20% 左右的价格达到营养目标，一年下来可节省超过 40,000 元。",
-            highlights: []
+            desc: "我们为你定制的食谱能帮你以外食 20% 左右的价格达到营养目标，一年下来可节省超过 40,000 元。（按包含 40g 蛋白质的轻食外卖均价 30 到 40 元，一天 3 到 5 餐取中间值估算）",
+            highlights: ["外食 20% 左右的价格","节省超过 40,000 元。"]
         ))
         
         result.append(ReadyItem(
             title: "食材生熟重对照",
             desc: "和家人吃饭用熟重分餐，自己单独备餐按生重准备，适配各种用餐场景。",
-            highlights: []
+            highlights: ["熟重分餐","生重准备"]
         ))
         
         result.append(ReadyItem(
             title: "灵活贴近日常",
-            desc: "每一餐都为你准备了多种备选，可自由替换。突然加班、聚餐，或临时不想做饭？你也可以跳过该餐，按我们给你的当天营养目标继续对齐进度。",
-            highlights: []
+            desc: "每一餐都为你准备了多种备选，可自由替换。\n突然加班、聚餐，或临时不想做饭？你也可以跳过该餐，按我们给你的当天营养目标继续保持进度。",
+            highlights: ["自由替换","跳过该餐","继续保持进度"]
         ))
         
         if selectedSpecialAdjustment != nil {
@@ -197,7 +197,7 @@ extension ElaProReadyVM {
             result.append(ReadyItem(
                 title: "为你做出特殊调整",
                 desc: specialText(special),
-                highlights: []//specialHighlights(special)
+                highlights: specialHighlights(special)
             ))
         }
         
@@ -207,44 +207,44 @@ extension ElaProReadyVM {
     private func strategyText() -> String {
         switch selectedStrategy {
         case .balanced:
-            return "我们为你搭配了餐食计划包，会更接近你的日常饮食习惯，为你在每一餐节省用餐决策成本并提供专业支持。"
+            return "我们为你搭配的餐食计划将更接近你的日常饮食习惯，为你节省每一餐的决策成本，并提供专业支持。"
         case .highProtein:
-            return "我们为你搭配了餐食计划，包含约 40% 的蛋白质来源，无需担心吃不够目标。"
+            return "我们为你搭配的餐食计划包含约 40% 的蛋白质，无需担心吃不到目标。"
         case .keto:
-            return "我们为你搭配了餐食计划，包含约 65% 优质脂肪，帮助你更快进入生酮状态。"
+            return "我们为你搭配的餐食计划包含约 65% 的优质脂肪，帮助你更快进入生酮状态。"
         case .lowCarb:
-            return "我们为你安排了很多高营养密度食物，帮助你在低碳的情况下仍然尽量保证饱腹感。"
+            return "我们为你安排了丰富的高营养密度食物，帮助你在低碳的情况下依然保证饱腹感。"
         }
     }
     
     private func strategyHighlights() -> [String] {
         switch selectedStrategy {
         case .balanced:
-            return ["日常饮食习惯", "节省用餐决策成本", "专业支持"]
+            return ["更接近你的日常饮食习惯", "节省每一餐的决策成本"]
         case .highProtein:
-            return ["40%", "蛋白质来源", "吃不够目标"]
+            return ["约 40% 的蛋白质"]
         case .keto:
-            return ["65%", "优质脂肪", "生酮状态"]
+            return ["约 65% 优质脂肪", "更快进入生酮状态"]
         case .lowCarb:
-            return ["高营养密度", "保证饱腹感"]
+            return ["保证饱腹感"]
         }
     }
     
     private func specialText(_ special: SpecialAdjustment) -> String {
         switch special {
         case .lowerUricAcid:
-            return "我们会优先选择中低嘌呤食材，让你在对齐健身目标的同时，帮助降低尿酸。"
+            return "我们会优先选择中低嘌呤食材，让你在对齐健身目标的同时，辅助降低尿酸。"
         case .lowerBloodLipids:
-            return "我们会为你定制更利于血脂管理的搭配，帮助你更稳地维持在理想状态。"
+            return "我们会为你定制更利于血脂管理的搭配，帮助你更平稳地维持在理想状态。"
         }
     }
     
     private func specialHighlights(_ special: SpecialAdjustment) -> [String] {
         switch special {
         case .lowerUricAcid:
-            return ["中低嘌呤", "降低尿酸"]
+            return ["中低嘌呤食材"]
         case .lowerBloodLipids:
-            return ["血脂管理", "理想状态"]
+            return ["更平稳的维持"]
         }
     }
     

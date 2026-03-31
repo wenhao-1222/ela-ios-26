@@ -894,7 +894,7 @@ extension DietPlanCreateVC{
             self.backTapAction()
         }else{
             let vc = ElaProVC()
-            vc.param = param
+//            vc.param = param
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }

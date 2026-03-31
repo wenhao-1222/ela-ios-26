@@ -108,6 +108,10 @@ class DietPlanCreateBarrierVM: UIView {
 }
 
 extension DietPlanCreateBarrierVM {
+    private var uncertainIndex: Int? {
+        dataArray.firstIndex(of: "不确定")
+    }
+
     func initUI() {
         addSubview(titleLabel)
         addSubview(scrollView)
@@ -169,6 +173,8 @@ extension DietPlanCreateBarrierVM {
     }
 
     func refreshListUI() {
+        normalizeSelectionState()
+
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         itemViews.removeAll()
 
@@ -192,22 +198,46 @@ extension DietPlanCreateBarrierVM {
         }
 
         let wasSelected = selectedIndexes.contains(index)
-        if wasSelected {
-            selectedIndexes.remove(index)
+        if let uncertainIndex, index == uncertainIndex {
+            selectedIndexes = wasSelected ? [] : [uncertainIndex]
         } else {
-            selectedIndexes.insert(index)
+            selectedIndexes.remove(uncertainIndex ?? -1)
+            if wasSelected {
+                selectedIndexes.remove(index)
+            } else {
+                selectedIndexes.insert(index)
+            }
+        }
+
+        normalizeSelectionState()
+        refreshSelectionUI()
+        selectedBlock?()
+    }
+
+    private func normalizeSelectionState() {
+        guard let uncertainIndex else {
+            selectedIndex = selectedIndexes.sorted().first ?? -1
+            syncSelectedBarrierText()
+            return
+        }
+
+        if selectedIndexes.contains(uncertainIndex) && selectedIndexes.count > 1 {
+            selectedIndexes = [uncertainIndex]
         }
 
         selectedIndex = selectedIndexes.sorted().first ?? -1
-        itemViews[index].updateUI(title: dataArray[index], isSelected: !wasSelected)
+        syncSelectedBarrierText()
+    }
 
-        if selectedIndexes.isEmpty {
-            QuestinonaireMsgModel.shared.foodBarrier = ""
-        } else {
-            let titles = selectedIndexes.sorted().map { dataArray[$0] }
-            QuestinonaireMsgModel.shared.foodBarrier = titles.joined(separator: ",")
+    private func refreshSelectionUI() {
+        for (index, itemView) in itemViews.enumerated() {
+            itemView.updateUI(title: dataArray[index], isSelected: selectedIndexes.contains(index))
         }
-        selectedBlock?()
+    }
+
+    private func syncSelectedBarrierText() {
+        let titles = selectedIndexes.sorted().map { dataArray[$0] }
+        QuestinonaireMsgModel.shared.foodBarrier = titles.joined(separator: ",")
     }
 
     // 后台 dietBarriers 枚举映射：
