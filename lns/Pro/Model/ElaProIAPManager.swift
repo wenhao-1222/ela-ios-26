@@ -13,9 +13,9 @@ enum ElaProIAPConfig {
     // App Store Connect: 订阅群组「Pro」，订阅群组 ID「21956560」
     static let subscriptionGroupName = "Pro"
     static let subscriptionGroupID = "21956560"
-    static var monthProductID = "month_continue"
-    static var annualProductID = "annual"
-    static var lifetimeProductID = "LifetimePro"
+    static var monthProductID = ""
+    static var annualProductID = ""
+    static var lifetimeProductID = ""
 }
 
 enum ElaProIAPError: LocalizedError {
@@ -99,10 +99,15 @@ final class ElaProIAPManager: NSObject {
     }
     
     func fetchAnnualProduct(completion: @escaping (Result<SKProduct, Error>) -> Void) {
-        fetchProducts(ids: [ElaProIAPConfig.annualProductID], forceRefresh: false) { result in
+        let annualID = ElaProIAPConfig.annualProductID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !annualID.isEmpty else {
+            completion(.failure(ElaProIAPError.productUnavailable))
+            return
+        }
+        fetchProducts(ids: [annualID], forceRefresh: false) { result in
             switch result {
             case .success(let products):
-                if let product = products.first(where: { $0.productIdentifier == ElaProIAPConfig.annualProductID }) {
+                if let product = products.first(where: { $0.productIdentifier == annualID }) {
                     self.logProductInfo(product, source: "annualProductID")
                     completion(.success(product))
                 } else {
@@ -115,10 +120,15 @@ final class ElaProIAPManager: NSObject {
     }
     
     func fetchMonthProduct(completion: @escaping (Result<SKProduct, Error>) -> Void) {
-        fetchProducts(ids: [ElaProIAPConfig.monthProductID], forceRefresh: false) { result in
+        let monthID = ElaProIAPConfig.monthProductID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !monthID.isEmpty else {
+            completion(.failure(ElaProIAPError.productUnavailable))
+            return
+        }
+        fetchProducts(ids: [monthID], forceRefresh: false) { result in
             switch result {
             case .success(let products):
-                if let product = products.first(where: { $0.productIdentifier == ElaProIAPConfig.monthProductID }) {
+                if let product = products.first(where: { $0.productIdentifier == monthID }) {
                     self.logProductInfo(product, source: "monthProductID")
                     completion(.success(product))
                 } else {
@@ -136,7 +146,13 @@ final class ElaProIAPManager: NSObject {
             ElaProIAPConfig.monthProductID,
             ElaProIAPConfig.annualProductID,
             ElaProIAPConfig.lifetimeProductID
-        ])
+        ]).filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+        
+        guard !requestedProductIDs.isEmpty else {
+            completion(.failure(ElaProIAPError.productUnavailable))
+            return
+        }
+        
         fetchProducts(ids: requestedProductIDs,
                       forceRefresh: false) { result in
             if case .success(let products) = result {
@@ -158,10 +174,15 @@ final class ElaProIAPManager: NSObject {
     }
 
     func fetchLifetimeProduct(completion: @escaping (Result<SKProduct, Error>) -> Void) {
-        fetchProducts(ids: [ElaProIAPConfig.lifetimeProductID], forceRefresh: false) { result in
+        let lifetimeID = ElaProIAPConfig.lifetimeProductID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !lifetimeID.isEmpty else {
+            completion(.failure(ElaProIAPError.productUnavailable))
+            return
+        }
+        fetchProducts(ids: [lifetimeID], forceRefresh: false) { result in
             switch result {
             case .success(let products):
-                if let product = products.first(where: { $0.productIdentifier == ElaProIAPConfig.lifetimeProductID }) {
+                if let product = products.first(where: { $0.productIdentifier == lifetimeID }) {
                     self.logProductInfo(product, source: "lifetimeProductID")
                     completion(.success(product))
                 } else {
@@ -219,7 +240,6 @@ final class ElaProIAPManager: NSObject {
         let monthID = month.trimmingCharacters(in: .whitespacesAndNewlines)
         let annualID = annual.trimmingCharacters(in: .whitespacesAndNewlines)
         let lifetimeID = lifetime.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !monthID.isEmpty, !annualID.isEmpty, !lifetimeID.isEmpty else { return }
         
         ElaProIAPConfig.monthProductID = monthID
         ElaProIAPConfig.annualProductID = annualID
@@ -265,7 +285,11 @@ final class ElaProIAPManager: NSObject {
     private func fetchProducts(ids: [String],
                                forceRefresh: Bool,
                                completion: @escaping (Result<[SKProduct], Error>) -> Void) {
-        let idSet = Set(ids)
+        let idSet = Set(ids.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty })
+        guard !idSet.isEmpty else {
+            completion(.failure(ElaProIAPError.productUnavailable))
+            return
+        }
         if !forceRefresh, idSet.allSatisfy({ cachedProducts[$0] != nil }) {
             completion(.success(idSet.compactMap { cachedProducts[$0] }))
             return
@@ -282,6 +306,12 @@ final class ElaProIAPManager: NSObject {
     
     private func purchase(productID: String,
                           completion: @escaping (Result<SKPaymentTransaction, Error>) -> Void) {
+        let trimmedProductID = productID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedProductID.isEmpty else {
+            completion(.failure(ElaProIAPError.productUnavailable))
+            return
+        }
+        
         guard SKPaymentQueue.canMakePayments() else {
             completion(.failure(ElaProIAPError.paymentsDisabled))
             return
@@ -292,16 +322,16 @@ final class ElaProIAPManager: NSObject {
             return
         }
         
-        fetchProducts(ids: [productID], forceRefresh: false) { [weak self] result in
+        fetchProducts(ids: [trimmedProductID], forceRefresh: false) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let products):
-                guard let product = products.first(where: { $0.productIdentifier == productID }) else {
+                guard let product = products.first(where: { $0.productIdentifier == trimmedProductID }) else {
                     completion(.failure(ElaProIAPError.productUnavailable))
                     return
                 }
                 self.purchaseCompletion = completion
-                self.purchasingProductID = productID
+                self.purchasingProductID = trimmedProductID
                 
                 let payment = SKMutablePayment(product: product)
                 SKPaymentQueue.default().add(payment)

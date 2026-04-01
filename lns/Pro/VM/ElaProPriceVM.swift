@@ -30,14 +30,18 @@ class ElaProPriceVM: UIView {
         
         init(dict: NSDictionary) {
             type = Int(dict.stringValueForKey(key: "type")) ?? 0
-            iosProductId = dict.stringValueForKey(key: "iosProductId")
+            let directProductId = dict.stringValueForKey(key: "productId")
+            let iOSProductId = dict.stringValueForKey(key: "iosProductId")
+            iosProductId = directProductId.isEmpty ? iOSProductId : directProductId
             name = dict.stringValueForKey(key: "name")
             originalPrice = dict.stringValueForKey(key: "originalPrice")
             price = dict.stringValueForKey(key: "price")
             promotionDesc = dict.stringValueForKey(key: "promotionDesc")
             promotionLabel = dict.stringValueForKey(key: "promotionLabel")
-            dayAvgPriceLabel = dict.stringValueForKey(key: "dayAvgPriceLable")
-            monthAvgPriceLabel = dict.stringValueForKey(key: "monthAvgPriceLable")
+            let dayAvg = dict.stringValueForKey(key: "dayAvgPriceLabel")
+            dayAvgPriceLabel = dayAvg.isEmpty ? dict.stringValueForKey(key: "dayAvgPriceLable") : dayAvg
+            let monthAvg = dict.stringValueForKey(key: "monthAvgPriceLabel")
+            monthAvgPriceLabel = monthAvg.isEmpty ? dict.stringValueForKey(key: "monthAvgPriceLable") : monthAvg
         }
         
         var displayPriceText: String? {
@@ -175,6 +179,7 @@ class ElaProPriceVM: UIView {
         lab.textColor = subTextColor
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.textAlignment = .center
+        lab.isHidden = true
         return lab
     }()
     lazy var renewalDashView: UIView = {
@@ -678,7 +683,7 @@ extension ElaProPriceVM{
                     if let annual = products.first(where: { $0.productIdentifier == ElaProIAPConfig.annualProductID }) {
                         self.annualProduct = annual
                         self.annualTagText = self.preferredRemoteText(self.annualRemoteProduct?.promotionLabel) ?? self.promoTagText(for: annual)
-                        self.annualSubTitleText = self.preferredRemoteText(self.annualRemoteProduct?.monthAvgPriceLabel) ?? self.buildMonthlyText(for: annual)
+                        self.annualSubTitleText = self.preferredRemoteText(self.annualRemoteProduct?.monthAvgPriceLabel) ?? "" //self.buildMonthlyText(for: annual)
                         if let intro = annual.introductoryPrice {
                             self.annualPriceText = self.localizedPriceString(decimal: intro.price, locale: intro.priceLocale)
                             self.annualOriginPriceText = self.preferredRemoteText(self.annualRemoteProduct?.originalPrice) ?? self.recurringPriceText(for: annual)
@@ -785,21 +790,12 @@ extension ElaProPriceVM{
         monthPriceText = preferredRemoteText(monthRemoteProduct?.displayPriceText) ?? monthPriceText
         annualPriceText = preferredRemoteText(annualRemoteProduct?.displayPriceText) ?? annualPriceText
         lifetimePriceText = preferredRemoteText(lifetimeRemoteProduct?.displayPriceText) ?? lifetimePriceText
-//        if products.count == 3{
-//            cardContainer.snp.remakeConstraints { make in
-//                make.left.equalTo(kFitWidth(16))
-//                make.right.equalTo(kFitWidth(-16))
-//                make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
-//                make.height.equalTo(kFitWidth(141))
-//            }
-//        }else{
-            cardContainer.snp.remakeConstraints { make in
-                make.left.equalTo(kFitWidth(48))
-                make.right.equalTo(kFitWidth(-48))
-                make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
-                make.height.equalTo(kFitWidth(105))
-            }
-//        }
+        cardContainer.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(48))
+            make.right.equalTo(kFitWidth(-48))
+            make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
+            make.height.equalTo(kFitWidth(155))
+        }
     }
 
     private func remoteProduct(from products: [RemotePlanProduct], type: PlanType) -> RemotePlanProduct? {
@@ -846,14 +842,14 @@ extension ElaProPriceVM{
 
     private func requestedProductIDs() -> [String] {
         var productIDs: [String] = []
-        if isPlanVisible(.month) {
-            productIDs.append(ElaProIAPConfig.monthProductID)
+        if isPlanVisible(.month), let monthID = preferredRemoteText(monthRemoteProduct?.iosProductId) {
+            productIDs.append(monthID)
         }
-        if isPlanVisible(.annual) {
-            productIDs.append(ElaProIAPConfig.annualProductID)
+        if isPlanVisible(.annual), let annualID = preferredRemoteText(annualRemoteProduct?.iosProductId) {
+            productIDs.append(annualID)
         }
-        if isPlanVisible(.lifetime) {
-            productIDs.append(ElaProIAPConfig.lifetimeProductID)
+        if isPlanVisible(.lifetime), let lifetimeID = preferredRemoteText(lifetimeRemoteProduct?.iosProductId) {
+            productIDs.append(lifetimeID)
         }
         return productIDs
     }
@@ -1567,9 +1563,9 @@ extension ElaProPriceVM{
             }
             
             self.applyRemoteProducts(products)
-            let monthID = self.preferredRemoteText(self.monthRemoteProduct?.iosProductId) ?? ElaProIAPConfig.monthProductID
-            let annualID = self.preferredRemoteText(self.annualRemoteProduct?.iosProductId) ?? ElaProIAPConfig.annualProductID
-            let lifetimeID = self.preferredRemoteText(self.lifetimeRemoteProduct?.iosProductId) ?? ElaProIAPConfig.lifetimeProductID
+            let monthID = self.preferredRemoteText(self.monthRemoteProduct?.iosProductId) ?? ""
+            let annualID = self.preferredRemoteText(self.annualRemoteProduct?.iosProductId) ?? ""
+            let lifetimeID = self.preferredRemoteText(self.lifetimeRemoteProduct?.iosProductId) ?? ""
             
             ElaProIAPManager.shared.updateProductIDs(month: monthID, annual: annualID, lifetime: lifetimeID)
             self.refreshPlanCards()

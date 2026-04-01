@@ -13,7 +13,6 @@ import IQKeyboardManagerSwift
 
 class GuidanceVC: WHBaseViewVC {
 
-    static let guidanceProAnnualSubscriptionProductID = "annual_yeal_new"
     
     enum FlowStep: Hashable {
         case sex
@@ -1012,7 +1011,13 @@ extension GuidanceVC{
         guard !hasPrefetchedGuidanceProSubscriptionHistory else { return }
         hasPrefetchedGuidanceProSubscriptionHistory = true
 
-        ElaProIAPManager.shared.checkSubscriptionHistoryState(productID: Self.guidanceProAnnualSubscriptionProductID) { [weak self] state in
+        let annualProductID = ElaProIAPConfig.annualProductID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !annualProductID.isEmpty else {
+            cachedGuidanceProHasFreeTrialPermission = true
+            return
+        }
+
+        ElaProIAPManager.shared.checkSubscriptionHistoryState(productID: annualProductID) { [weak self] state in
             switch state {
             case .subscribed:
                 self?.cachedGuidanceProHasFreeTrialPermission = false

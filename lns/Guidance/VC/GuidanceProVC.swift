@@ -225,12 +225,6 @@ private extension GuidanceProVC {
         isPurchasing = true
         subscribeContentVM.setLoading(true)
 
-        ElaProIAPManager.shared.updateProductIDs(
-            month: ElaProIAPConfig.monthProductID,
-            annual: GuidanceVC.guidanceProAnnualSubscriptionProductID,
-            lifetime: ElaProIAPConfig.lifetimeProductID
-        )
-
         ElaProIAPManager.shared.purchaseAnnual { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }

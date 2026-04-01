@@ -5,6 +5,8 @@
 //  Created by LNS2 on 2026/3/4.
 //
 
+import SnapKit
+
 class ElaProPriceCardView: UIView {
     private let blueColor = UIColor.THEME
     private let borderColor = UIColor(named: "color_white_20_pro_border")
@@ -12,21 +14,25 @@ class ElaProPriceCardView: UIView {
     private let subColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
     private let borderLayer = CAShapeLayer()
     private var isCardSelected = false
+    private var titleTopConstraint: Constraint?
+    private var priceCenterYConstraint: Constraint?
+    private var priceBottomConstraint: Constraint?
+    private var originBottomConstraint: Constraint?
     
     lazy var tagLabel: UILabel = {
         let lab = UILabel()
-        lab.font = .systemFont(ofSize: 12, weight: .medium)
+        lab.font = .systemFont(ofSize: 13, weight: .semibold)
         lab.textColor = .white
         lab.textAlignment = .center
         lab.backgroundColor = blueColor
-        lab.layer.cornerRadius = kFitWidth(11.5)
+        lab.layer.cornerRadius = kFitWidth(12.5)
         lab.clipsToBounds = true
         return lab
     }()
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
         lab.textAlignment = .center
-        lab.font = .systemFont(ofSize: 14, weight: .medium)
+        lab.font = .systemFont(ofSize: 15, weight: .semibold)
         lab.textColor = titleColor
         return lab
     }()
@@ -40,7 +46,7 @@ class ElaProPriceCardView: UIView {
     lazy var priceLabel: UILabel = {
         let lab = UILabel()
         lab.textAlignment = .center
-        lab.font = .systemFont(ofSize: 26, weight: .semibold)
+        lab.font = .systemFont(ofSize: 28, weight: .semibold)
         lab.textColor = blueColor
         return lab
     }()
@@ -55,7 +61,7 @@ class ElaProPriceCardView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = UIColor(named: "color_white_20_pro")
-        layer.cornerRadius = kFitWidth(12)
+        layer.cornerRadius = kFitWidth(16)
         clipsToBounds = false
         
         borderLayer.fillColor = UIColor.clear.cgColor
@@ -71,34 +77,36 @@ class ElaProPriceCardView: UIView {
         
         tagLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(kFitWidth(-11.5))
-            make.height.equalTo(kFitWidth(23))
-            make.width.greaterThanOrEqualTo(kFitWidth(65))
+            make.top.equalTo(kFitWidth(-12.5))
+            make.height.equalTo(kFitWidth(25))
+            make.width.greaterThanOrEqualTo(kFitWidth(90))
         }
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(kFitWidth(25))
-            make.left.greaterThanOrEqualTo(kFitWidth(8))
-            make.right.lessThanOrEqualTo(kFitWidth(-8))
+            self.titleTopConstraint = make.top.equalTo(kFitWidth(28)).constraint
+            make.left.greaterThanOrEqualTo(kFitWidth(10))
+            make.right.lessThanOrEqualTo(kFitWidth(-10))
             make.height.equalTo(kFitWidth(21))
         }
         subTitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(2))
-            make.left.greaterThanOrEqualTo(kFitWidth(8))
-            make.right.lessThanOrEqualTo(kFitWidth(-8))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(6))
+            make.left.greaterThanOrEqualTo(kFitWidth(10))
+            make.right.lessThanOrEqualTo(kFitWidth(-10))
         }
         priceLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(kFitWidth(-45))
-//            make.bottom.equalTo(originLabel.snp.top).offset(kFitWidth(-9))
+            self.priceCenterYConstraint = make.centerY.equalToSuperview().offset(kFitWidth(22)).constraint
+            self.priceBottomConstraint = make.bottom.equalTo(kFitWidth(-42)).constraint
         }
         originLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(kFitWidth(-25))
-            make.left.greaterThanOrEqualTo(kFitWidth(8))
-            make.right.lessThanOrEqualTo(kFitWidth(-8))
+            self.originBottomConstraint = make.bottom.equalTo(kFitWidth(-24)).constraint
+            make.left.greaterThanOrEqualTo(kFitWidth(10))
+            make.right.lessThanOrEqualTo(kFitWidth(-10))
         }
+        
+        priceBottomConstraint?.deactivate()
     }
     
     required init?(coder: NSCoder) {
@@ -114,8 +122,8 @@ class ElaProPriceCardView: UIView {
     private func updateBorderPath() {
         guard bounds.width > 0, bounds.height > 0 else { return }
         
-        let lineWidth: CGFloat = kFitWidth(1.5)//isCardSelected ? kFitWidth(1.5) : 1
-        let radius = min(kFitWidth(12), min(bounds.width, bounds.height) * 0.5)
+        let lineWidth: CGFloat = kFitWidth(1.5)
+        let radius = min(kFitWidth(16), min(bounds.width, bounds.height) * 0.5)
         let insetRect = bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5)
         let topY = insetRect.minY
         let leftX = insetRect.minX
@@ -202,6 +210,25 @@ class ElaProPriceCardView: UIView {
         }
         
         isCardSelected = selected
+        updateLayoutForCurrentContent()
         setNeedsLayout()
+    }
+    
+    private func updateLayoutForCurrentContent() {
+        let hasTag = !tagLabel.isHidden
+        let hasSubTitle = !subTitleLabel.isHidden
+        let hasOriginPrice = !originLabel.isHidden
+        
+//        titleTopConstraint?.update(offset: hasTag ? kFitWidth(42) : kFitWidth(28))
+        
+        if hasOriginPrice {
+            priceCenterYConstraint?.deactivate()
+            priceBottomConstraint?.activate()
+            originBottomConstraint?.update(offset: kFitWidth(-24))
+        } else {
+            priceBottomConstraint?.deactivate()
+            priceCenterYConstraint?.activate()
+            priceCenterYConstraint?.update(offset: hasSubTitle ? kFitWidth(16) : kFitWidth(22))
+        }
     }
 }
