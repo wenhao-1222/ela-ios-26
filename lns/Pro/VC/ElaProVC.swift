@@ -13,6 +13,7 @@ class ElaProVC: WHBaseViewVC {
     var showPriceOnly = false
     var popToRootOnClose = false
     var enterAICoachPreOnClose = false
+    var enterAICoachPreOnPurchaseSuccess = false
     private var agreementAlertVm: ElaProAgreementAlertVM?
     
     lazy var purchaseLoadingMaskView: UIView = {
@@ -268,6 +269,11 @@ extension ElaProVC{
         applyTemporaryValidVipStatus()
         requestLatestVipInfo()
         NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
+        if enterAICoachPreOnPurchaseSuccess {
+            let vc = AICoachPreVC()
+            navigationController?.pushViewController(vc, animated: true)
+            return
+        }
         handleCloseAction()
     }
     

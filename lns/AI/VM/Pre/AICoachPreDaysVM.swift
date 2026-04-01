@@ -30,10 +30,10 @@ class AICoachPreDaysVM: UIView, UIGestureRecognizerDelegate {
         let completeStatus: Int
     }
 
-    let selfHeight = kFitHeight(135)
+    let selfHeight = kFitHeight(152)
 
     private var dayItems: [DayItem] = []
-    private var reportAfterDays = 4
+    private var reportAfterDays = 7
     private var itemViews: [AICoachPreDayItemView] = []
     private var selectedPopupIndex: Int?
 
@@ -65,6 +65,8 @@ class AICoachPreDaysVM: UIView, UIGestureRecognizerDelegate {
         label.textAlignment = .center
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
+        label.setContentHuggingPriority(.required, for: .vertical)
         return label
     }()
 
@@ -133,14 +135,14 @@ extension AICoachPreDaysVM{
 private extension AICoachPreDaysVM {
     func applyDefaultContent() {
         configure(items: [
-            DayItem(title: "一", state: .completed, completeStatus: 1),
-            DayItem(title: "二", state: .completed, completeStatus: 1),
-            DayItem(title: "三", state: .current, completeStatus: 2),
-            DayItem(title: "四", state: .pending, completeStatus: 0),
-            DayItem(title: "五", state: .pending, completeStatus: 0),
-            DayItem(title: "六", state: .pending, completeStatus: 0),
-            DayItem(title: "日", state: .pending, completeStatus: 0)
-        ], reportAfterDays: 4)
+            DayItem(title: "", state: .completed, completeStatus: 0),
+            DayItem(title: "", state: .completed, completeStatus: 0),
+            DayItem(title: "", state: .current, completeStatus: 0),
+            DayItem(title: "", state: .pending, completeStatus: 0),
+            DayItem(title: "", state: .pending, completeStatus: 0),
+            DayItem(title: "", state: .pending, completeStatus: 0),
+            DayItem(title: "", state: .pending, completeStatus: 0)
+        ], reportAfterDays: 7)
     }
 
     func reloadDaysUI() {

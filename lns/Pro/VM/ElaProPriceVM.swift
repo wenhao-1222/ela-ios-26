@@ -1163,15 +1163,17 @@ extension ElaProPriceVM{
 //        }
         
         agreeButton.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(84))
+//            make.left.equalTo(kFitWidth(84))
+            make.right.equalTo(agreementLabel.snp.left).offset(kFitWidth(-10))
             make.top.equalTo(confirmButton.snp.bottom).offset(kFitWidth(17))
             make.width.height.equalTo(kFitWidth(16))
         }
         
         agreementLabel.snp.makeConstraints { make in
             make.centerY.equalTo(agreeButton)
-            make.left.equalTo(agreeButton.snp.right).offset(kFitWidth(10))
+//            make.left.equalTo(agreeButton.snp.right).offset(kFitWidth(10))
             make.right.lessThanOrEqualTo(kFitWidth(-20))
+            make.centerX.lessThanOrEqualToSuperview().offset(kFitWidth(25))
         }
 
         agreementConfirmCloseButton.snp.makeConstraints { make in

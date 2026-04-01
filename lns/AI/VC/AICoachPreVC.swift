@@ -27,8 +27,11 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         super.viewDidLoad()
 
         initUI()
-        self.updatePreDaysUI(dataDict: dataDict)
-        sendCoachLaunchRequest()
+        if dataDict.stringValueForKey(key: "has7CompleteDays").count > 0{
+            self.updatePreDaysUI(dataDict: dataDict)
+        }else{
+            sendCoachLaunchRequest()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -108,7 +111,7 @@ extension AICoachPreVC{
             make.left.top.width.height.equalToSuperview()
         }
         circleImgView.snp.makeConstraints { make in
-            make.centerX.lessThanOrEqualToSuperview()
+            make.centerX.equalToSuperview()
             make.top.equalTo(kFitWidth(133.5))
             make.width.height.equalTo(kFitWidth(250))
         }
@@ -168,6 +171,7 @@ private extension AICoachPreVC {
     }
 
     func updatePreDaysUI(dataDict: NSDictionary) {
+        nextButton.isHidden = dataDict.stringValueForKey(key: "has7CompleteDays") == "0"
         let latestReportDict = dataDict["latestReport"]as? NSDictionary ?? [:]
         self.reportId = latestReportDict.stringValueForKey(key: "id")
         let userGoal = dataDict["userGoal"] as? Int ?? 0

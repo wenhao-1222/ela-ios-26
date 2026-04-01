@@ -14,6 +14,7 @@ class MineVC : WHBaseViewVC {
     
     var bottomGap = kFitWidth(20)
     var isAiCoachSurveyFinished = "-1"//是否做过AI教练问卷    0  未做过   1  做过     -1 本地状态：还未请求数据
+    var isVip = "-1"  //0  非VIP   1  VIP     -1 本地状态：还未请求数据
     var aiCoachDict = NSDictionary()
     
     override func viewWillAppear(_ animated: Bool) {
@@ -161,22 +162,34 @@ extension MineVC{
         self.navigationController?.pushViewController(vc, animated: true)
     }
     func gotoAicoachAction() {
-        if isAiCoachSurveyFinished == "0"{
+        if isVip == "0"{//非VIP ，重新做问卷，走付费墙
             let vc = AIGuidanceVC()
             self.navigationController?.pushViewController(vc, animated: true)
-        }else if isAiCoachSurveyFinished == "1"{
+        }else if isVip == "1"{//VIp 直接进AI教练 PDF  报告页
+            let vc = AICoachPreVC()
+            vc.dataDict = aiCoachDict
+            self.navigationController?.pushViewController(vc, animated: true)
+        }else{
+            
+        }
+        
+        
+//        if isAiCoachSurveyFinished == "0"{
+//            let vc = AIGuidanceVC()
+//            self.navigationController?.pushViewController(vc, animated: true)
+//        }else if isAiCoachSurveyFinished == "1"{
 //            if VIPModel().isValidVip{
-                let vc = ElaProVC()
-                vc.showPriceOnly = true
-                self.navigationController?.pushViewController(vc, animated: true)
+//                let vc = ElaProVC()
+//                vc.showPriceOnly = true
+//                self.navigationController?.pushViewController(vc, animated: true)
 //            }else{
 //                let vc = AICoachPreVC()
 //                vc.dataDict = aiCoachDict
 //                self.navigationController?.pushViewController(vc, animated: true)
 //            }
-        }else{
-            
-        }
+//        }else{
+//            
+//        }
     }
 }
 
@@ -252,6 +265,7 @@ extension MineVC{
              */
             
             self.isAiCoachSurveyFinished = foodsMsgDict.stringValueForKey(key: "isAiCoachSurveyFinished")
+            self.isVip = foodsMsgDict.stringValueForKey(key: "isVip")
         }
     }
 }
