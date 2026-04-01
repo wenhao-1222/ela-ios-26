@@ -22,6 +22,7 @@ class DietPlanVC: WHBaseViewVC {
 
 //        appDelegate.getKeyWindow().addSubview(elaExpiredAlertVm)
 //        self.elaExpiredAlertVm.showSelf()
+        sendProVipMsgRequest()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -207,6 +208,17 @@ extension DietPlanVC{
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendDietPlanMsgRequest:\(dataObj)")
             self.applyDietPlanResponse(dataObj)
+        }
+    }
+    func sendProVipMsgRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            let vipModel = VIPModel().initWithDict(dict: dataDict)
+            UserInfoModel.shared.vipModel = vipModel
+            DLLog(message: "sendProVipMsgRequest:\(dataDict)")
+            DLLog(message: "sendProVipMsgRequest model: uid=\(vipModel.uid), vipType=\(vipModel.vipType.rawValue), status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime)  ,expireTime=\(vipModel.expireTime)")
+            
         }
     }
 }

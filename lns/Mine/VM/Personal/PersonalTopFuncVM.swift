@@ -8,7 +8,7 @@
 
 class PersonalTopFuncVM: UIView {
     
-    let selfHeight = kFitWidth(50)*5
+    let selfHeight = kFitWidth(50)*7
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: kFitWidth(16), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
@@ -23,8 +23,15 @@ class PersonalTopFuncVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    lazy var planVm: PersonalTopFuncItemVM = {
+    lazy var elaproVm: PersonalTopFuncItemVM = {
         let vm = PersonalTopFuncItemVM.init(frame: .zero)
+        vm.titleLab.text = ""
+        vm.iconImgView.setImgLocal(imgName: "mine_func_ela_pro")
+        vm.titleImgView.isHidden = false
+        return vm
+    }()
+    lazy var planVm: PersonalTopFuncItemVM = {
+        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.elaproVm.frame.maxY, width: 0, height: 0))
         vm.titleLab.text = "我的计划"
         vm.iconImgView.setImgLocal(imgName: "mine_func_plan")
         return vm
@@ -41,8 +48,14 @@ class PersonalTopFuncVM: UIView {
         vm.iconImgView.setImgLocal(imgName: "mine_func_fasting")
         return vm
     }()
-    lazy var orderVm: PersonalTopFuncItemVM = {
+    lazy var communityVm: PersonalTopFuncItemVM = {
         let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.fastingVm.frame.maxY, width: 0, height: 0))
+        vm.titleLab.text = "课程干货"
+        vm.iconImgView.setImgLocal(imgName: "mine_func_community")
+        return vm
+    }()
+    lazy var orderVm: PersonalTopFuncItemVM = {
+        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.communityVm.frame.maxY, width: 0, height: 0))
         vm.titleLab.text = "我的订单"
         vm.iconImgView.setImgLocal(imgName: "mine_func_order_list")
         return vm
@@ -58,9 +71,11 @@ class PersonalTopFuncVM: UIView {
 
 extension PersonalTopFuncVM{
     func initUI() {
+        addSubview(elaproVm)
         addSubview(planVm)
         addSubview(bodyDataVm)
         addSubview(fastingVm)
+        addSubview(communityVm)
         addSubview(orderVm)
         addSubview(honorVm)
     }

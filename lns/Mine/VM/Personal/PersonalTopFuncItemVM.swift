@@ -50,6 +50,14 @@ class PersonalTopFuncItemVM: UIView {
         
         return lab
     }()
+    lazy var titleImgView: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "ela_pro_expired_alert_icon")
+        img.isHidden = true
+        img.contentMode = .scaleAspectFit
+        
+        return img
+    }()
     lazy var redView: UIView = {
         let vi = UIView()
         vi.backgroundColor = .systemRed
@@ -98,6 +106,7 @@ extension PersonalTopFuncItemVM{
     func initUI() {
         addSubview(iconImgView)
         addSubview(titleLab)
+        addSubview(titleImgView)
         addSubview(arrowImgView)
         addSubview(redView)
         addSubview(unreadNumLabel)
@@ -137,6 +146,12 @@ extension PersonalTopFuncItemVM{
             make.right.equalTo(kFitWidth(-16))
             make.bottom.equalToSuperview()
             make.height.equalTo(kFitWidth(0.5))
+        }
+        titleImgView.snp.makeConstraints { make in
+            make.left.equalTo(titleLab)
+            make.centerY.equalToSuperview()
+            make.width.equalTo(kFitWidth(60.5))
+            make.height.equalTo(kFitWidth(21))
         }
     }
 }

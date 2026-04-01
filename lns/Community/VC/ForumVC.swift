@@ -136,6 +136,7 @@ extension ForumVC{
 extension ForumVC{
     func initUI(){
         view.addSubview(scrollViewBase)
+        
         if !isIpad(){
             view.addSubview(tabbarCoverView)
         }

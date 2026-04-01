@@ -84,16 +84,16 @@ class MineVC : WHBaseViewVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.bodyDataVm.tapBlock = {()in
-//            let vc = BodyDataDetailVC()
+            let vc = BodyDataDetailVC()
 //            self.navigationController?.fd_interactivePopDisabled = true
 //            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
 //            let vc = ElaProVC()
-            let vc = AIGuidanceVC()
+//            let vc = AIGuidanceVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.fastingVm.tapBlock = {()in
-//            let vc = LogsMealsAlertSetVC()
-            let vc = AICoachPreVC()
+            let vc = LogsMealsAlertSetVC()
+//            let vc = AICoachPreVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.orderVm.tapBlock = {()in
@@ -104,6 +104,13 @@ class MineVC : WHBaseViewVC {
         vm.honorVm.tapBlock = {()in
             let vc = HonorVC()
             self.navigationController?.pushViewController(vc, animated: true)
+        }
+        vm.communityVm.tapBlock = {()in
+            let vc = ForumVC()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        vm.elaproVm.tapBlock = {()in
+                
         }
         return vm
     }()
