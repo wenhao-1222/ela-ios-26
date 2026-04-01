@@ -12,7 +12,7 @@ class AIGuidanceNoticeVM: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        backgroundColor = .white
+        backgroundColor = .clear
         isUserInteractionEnabled = true
 
         initUI()
@@ -21,13 +21,6 @@ class AIGuidanceNoticeVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    private lazy var backgroundImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "ela_pro_ai_bg"))
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        return imageView
-    }()
 
     private lazy var iconImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "ela_pro_ai_attention_icon"))
@@ -48,7 +41,7 @@ class AIGuidanceNoticeVM: UIView {
         let label = UILabel()
         label.text = "在开始使用 AI 教练之前"
         label.textColor = .COLOR_TEXT_TITLE_0f1214
-        label.font = .systemFont(ofSize: 20, weight: .regular)
+        label.font = .systemFont(ofSize: 16, weight: .regular)
         label.textAlignment = .center
         return label
     }()
@@ -58,14 +51,14 @@ class AIGuidanceNoticeVM: UIView {
         label.numberOfLines = 0
         label.textAlignment = .center
         label.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        label.font = .systemFont(ofSize: 15, weight: .regular)
+        label.font = .systemFont(ofSize: 14, weight: .regular)
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.5
         paragraphStyle.alignment = .center
 
         label.attributedText = NSAttributedString(
-            string: "请尽量把每天的饮食、体重、力量训练记录完整\n数据越完整，AI 教练给到你的反馈就越精准",
+            string: "请尽量把每天的饮食、体重、力量训练记录完整数据越完整，AI 教练给到你的反馈就越精准",
             attributes: [
                 .font: label.font as Any,
                 .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
@@ -78,15 +71,10 @@ class AIGuidanceNoticeVM: UIView {
 
 private extension AIGuidanceNoticeVM {
     func initUI() {
-        addSubview(backgroundImageView)
         addSubview(iconImageView)
         addSubview(titleLabel)
         addSubview(subtitleLabel)
         addSubview(detailLabel)
-
-        backgroundImageView.snp.makeConstraints { make in
-            make.left.right.top.bottom.equalToSuperview()
-        }
 
         iconImageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -109,8 +97,8 @@ private extension AIGuidanceNoticeVM {
         }
 
         detailLabel.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(40))
-            make.right.equalTo(kFitWidth(-40))
+            make.left.equalTo(kFitWidth(32))
+            make.right.equalTo(kFitWidth(-32))
             make.top.equalTo(subtitleLabel.snp.bottom).offset(kFitWidth(9))
         }
     }

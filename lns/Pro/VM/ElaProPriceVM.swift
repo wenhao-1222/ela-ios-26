@@ -797,7 +797,7 @@ extension ElaProPriceVM{
                 make.left.equalTo(kFitWidth(48))
                 make.right.equalTo(kFitWidth(-48))
                 make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
-                make.height.equalTo(kFitWidth(167))
+                make.height.equalTo(kFitWidth(105))
             }
 //        }
     }
@@ -1230,7 +1230,7 @@ extension ElaProPriceVM{
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
             make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
-            make.height.equalTo(kFitWidth(141))
+            make.height.equalTo(kFitWidth(155))
         }
         
         let cardGap = kFitWidth(14)

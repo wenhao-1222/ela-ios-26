@@ -24,6 +24,14 @@ class AIGuidanceVC: WHBaseViewVC {
     private let totalSteps = 6
     private var isSubmittingAICoachProfile = false
 
+    private lazy var sharedBackgroundImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "ela_pro_ai_bg"))
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.isHidden = true
+        return imageView
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -127,10 +135,17 @@ extension AIGuidanceVC{
         case .notice:
             moveToStep(index: 4, animated: true)
         case .elaProIntro:
-            moveToStep(index: 5, animated: true)
+            if UserInfoModel.shared.vipModel.isValidVip {
+                submitAICoachProfile { [weak self] in
+                    self?.enterAICoachPrePage()
+                }
+            } else {
+                moveToStep(index: 5, animated: true)
+            }
         case .readyStart:
-            guard ensureValidVipBeforeReadyStart() else { return }
-            submitAICoachProfile()
+            submitAICoachProfile { [weak self] in
+                self?.enterElaProPage()
+            }
         }
     }
 
@@ -242,6 +257,8 @@ extension AIGuidanceVC{
             return
         }
 
+        sharedBackgroundImageView.isHidden = !(currentStep == .notice || currentStep == .elaProIntro || currentStep == .readyStart)
+
         let shouldHideProgress = currentStep == .notice || currentStep == .elaProIntro || currentStep == .readyStart
         naviVm.firstStepVm.isHidden = shouldHideProgress
         naviVm.secondStepVm.isHidden = shouldHideProgress
@@ -263,6 +280,7 @@ extension AIGuidanceVC{
 
     func initUI() {
         view.backgroundColor = .COLOR_BG_F2
+        view.addSubview(sharedBackgroundImageView)
         view.addSubview(scrollViewBase)
         view.addSubview(naviVm)
         view.addSubview(nextButton)
@@ -278,6 +296,10 @@ extension AIGuidanceVC{
     }
 
     func setConstrait() {
+        sharedBackgroundImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
@@ -288,18 +310,19 @@ extension AIGuidanceVC{
 }
 
 extension AIGuidanceVC {
-    func ensureValidVipBeforeReadyStart() -> Bool {
-        guard UserInfoModel.shared.vipModel.isValidVip else {
-            let vc = ElaProVC()
-            vc.showPriceOnly = true
-            vc.popToRootOnClose = true
-            navigationController?.pushViewController(vc, animated: true)
-            return false
-        }
-        return true
+    func enterElaProPage() {
+        let vc = ElaProVC()
+        vc.showPriceOnly = true
+        vc.enterAICoachPreOnClose = true
+        navigationController?.pushViewController(vc, animated: true)
     }
-    
-    func submitAICoachProfile() {
+
+    func enterAICoachPrePage() {
+        let vc = AICoachPreVC()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func submitAICoachProfile(completion: (() -> Void)? = nil) {
         if isSubmittingAICoachProfile {
             return
         }
@@ -321,7 +344,8 @@ extension AIGuidanceVC {
                 return
             }
             self.isSubmittingAICoachProfile = false
-            self.backTapAction()
+            self.updateNextButtonForCurrentStep()
+            completion?()
         } failure: { [weak self] _ in
             self?.handleAICoachSubmitFailure(message: nil)
         }

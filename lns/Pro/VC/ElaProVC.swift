@@ -12,6 +12,7 @@ class ElaProVC: WHBaseViewVC {
     var param = [String : Any]()
     var showPriceOnly = false
     var popToRootOnClose = false
+    var enterAICoachPreOnClose = false
     private var agreementAlertVm: ElaProAgreementAlertVM?
     
     lazy var purchaseLoadingMaskView: UIView = {
@@ -271,6 +272,11 @@ extension ElaProVC{
     }
     
     private func handleCloseAction() {
+        if enterAICoachPreOnClose {
+            let vc = AICoachPreVC()
+            navigationController?.pushViewController(vc, animated: true)
+            return
+        }
         if popToRootOnClose {
             navigationController?.popToRootViewController(animated: true)
         } else {

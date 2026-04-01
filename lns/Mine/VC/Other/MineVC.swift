@@ -165,15 +165,15 @@ extension MineVC{
             let vc = AIGuidanceVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }else if isAiCoachSurveyFinished == "1"{
-            if VIPModel().isValidVip{
+//            if VIPModel().isValidVip{
                 let vc = ElaProVC()
                 vc.showPriceOnly = true
                 self.navigationController?.pushViewController(vc, animated: true)
-            }else{
-                let vc = AICoachPreVC()
-                vc.dataDict = aiCoachDict
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
+//            }else{
+//                let vc = AICoachPreVC()
+//                vc.dataDict = aiCoachDict
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            }
         }else{
             
         }

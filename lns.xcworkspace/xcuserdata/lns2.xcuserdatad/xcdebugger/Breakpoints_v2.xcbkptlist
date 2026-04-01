@@ -61,7 +61,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "155"
             endingLineNumber = "155"
-            landmarkName = "updatePreDaysUI(dataDict:)"
+            landmarkName = "sendReportDetailRequest()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -77,9 +77,10 @@ class ElaProPriceCardView: UIView {
         }
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(kFitWidth(18))
+            make.top.equalTo(kFitWidth(25))
             make.left.greaterThanOrEqualTo(kFitWidth(8))
             make.right.lessThanOrEqualTo(kFitWidth(-8))
+            make.height.equalTo(kFitWidth(21))
         }
         subTitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -89,12 +90,12 @@ class ElaProPriceCardView: UIView {
         }
         priceLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(kFitWidth(-32))
+            make.bottom.equalTo(kFitWidth(-45))
 //            make.bottom.equalTo(originLabel.snp.top).offset(kFitWidth(-9))
         }
         originLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(kFitWidth(-7))
+            make.bottom.equalTo(kFitWidth(-25))
             make.left.greaterThanOrEqualTo(kFitWidth(8))
             make.right.lessThanOrEqualTo(kFitWidth(-8))
         }

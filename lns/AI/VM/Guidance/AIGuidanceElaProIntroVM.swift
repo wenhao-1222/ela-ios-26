@@ -12,7 +12,7 @@ class AIGuidanceElaProIntroVM: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        backgroundColor = .white
+        backgroundColor = .clear
         isUserInteractionEnabled = true
 
         initUI()
@@ -21,13 +21,6 @@ class AIGuidanceElaProIntroVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    private lazy var backgroundImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "ela_pro_ai_bg"))
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        return imageView
-    }()
 
     private lazy var logoImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "guidance_pro_intro_img"))
@@ -46,9 +39,21 @@ class AIGuidanceElaProIntroVM: UIView {
     private lazy var subtitleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.text = "你以往的饮食、训练与身体变化，系统化复盘进度"
-        label.textColor = .COLOR_TEXT_TITLE_0f1214
-        label.font = .systemFont(ofSize: 20, weight: .regular)
+//        label.text = "你以往的饮食、训练与身体变化，系统化复盘进度"
+//        label.textColor = .COLOR_TEXT_TITLE_0f1214
+        label.font = .systemFont(ofSize: 16, weight: .regular)
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.5
+
+        label.attributedText = NSAttributedString(
+            string: "你以往的饮食、训练与身体变化，系统化复盘进度",
+            attributes: [
+                .font: label.font as Any,
+                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+                .paragraphStyle: paragraphStyle
+            ]
+        )
         return label
     }()
 
@@ -85,17 +90,12 @@ class AIGuidanceElaProIntroVM: UIView {
 
 private extension AIGuidanceElaProIntroVM {
     func initUI() {
-        addSubview(backgroundImageView)
         addSubview(logoImageView)
         addSubview(titleLabel)
         addSubview(subtitleLabel)
         addSubview(pointOneLabel)
         addSubview(pointTwoLabel)
         addSubview(pointThreeLabel)
-
-        backgroundImageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
 
         logoImageView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))
@@ -136,15 +136,23 @@ private extension AIGuidanceElaProIntroVM {
     }
 
     func makeBulletText(normalText: String, boldTexts: [String]) -> NSAttributedString {
+        let bullet = "•"
+        let bulletSpacing = "  "
+        let bulletPrefix = bullet + bulletSpacing
+        let bulletFont = UIFont.systemFont(ofSize: 15, weight: .medium)
+        let contentFont = UIFont.systemFont(ofSize: 15, weight: .regular)
+        let bulletIndent = (bulletPrefix as NSString).size(withAttributes: [.font: contentFont]).width
+
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.45
-        paragraphStyle.firstLineHeadIndent = kFitWidth(16)
-        paragraphStyle.headIndent = kFitWidth(16)
+        paragraphStyle.firstLineHeadIndent = 0
+        paragraphStyle.headIndent = bulletIndent
+        paragraphStyle.tabStops = [NSTextTab(textAlignment: .left, location: bulletIndent)]
 
         let attributed = NSMutableAttributedString(
-            string: "•  \(normalText)",
+            string: "\(bullet)\t\(normalText)",
             attributes: [
-                .font: UIFont.systemFont(ofSize: 15, weight: .regular),
+                .font: contentFont,
                 .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
                 .paragraphStyle: paragraphStyle
             ]
@@ -152,8 +160,8 @@ private extension AIGuidanceElaProIntroVM {
 
         attributed.addAttributes([
             .foregroundColor: UIColor.THEME,
-            .font: UIFont.systemFont(ofSize: 15, weight: .medium)
-        ], range: NSRange(location: 0, length: 1))
+            .font: bulletFont
+        ], range: NSRange(location: 0, length: (bullet as NSString).length))
 
         for boldText in boldTexts {
             let nsString = attributed.string as NSString

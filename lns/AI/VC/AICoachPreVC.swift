@@ -27,8 +27,17 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         super.viewDidLoad()
 
         initUI()
-//        sendCoachLaunchRequest()
         self.updatePreDaysUI(dataDict: dataDict)
+        sendCoachLaunchRequest()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        trimNavigationStackToRootAndSelfIfNeeded()
+    }
+
+    override func backTapAction() {
+        navigationController?.popToRootViewController(animated: true)
     }
 
     lazy var bgImgView: UIImageView = {
@@ -149,6 +158,15 @@ extension AICoachPreVC{
 }
 
 private extension AICoachPreVC {
+    func trimNavigationStackToRootAndSelfIfNeeded() {
+        guard let navigationController = navigationController else { return }
+        guard navigationController.topViewController === self else { return }
+        guard let rootViewController = navigationController.viewControllers.first else { return }
+        if navigationController.viewControllers.count > 2 {
+            navigationController.setViewControllers([rootViewController, self], animated: false)
+        }
+    }
+
     func updatePreDaysUI(dataDict: NSDictionary) {
         let latestReportDict = dataDict["latestReport"]as? NSDictionary ?? [:]
         self.reportId = latestReportDict.stringValueForKey(key: "id")
