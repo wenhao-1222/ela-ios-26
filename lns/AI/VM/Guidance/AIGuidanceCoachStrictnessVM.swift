@@ -45,6 +45,17 @@ class AIGuidanceCoachStrictnessVM: UIView {
         topGradientLayer.frame = topGradientView.bounds
         bottomGradientLayer.frame = bottomGradientView.bounds
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        bottomGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+    }
 
     var hasSelection: Bool {
         return selectedIndex >= 0
@@ -158,7 +169,7 @@ extension AIGuidanceCoachStrictnessVM {
                      detail: "更看重习惯养成，不追求效率。出现偏差时，我会按你的执行力把方案变得更易坚持，尽量把偏离缩小。",
                      value: "very_relaxed"),
                 Item(title: "放松",
-                     detail: "更看重习惯养成，不追求效率。出现偏差时，我会按你的执行力把方案变得更易坚持，尽量把偏离缩小。",
+                     detail: "增肌效率要求偏低到中等。进度跑偏时会给出解决方案，也可能根据你的习惯与生活节奏适度调整目标。",
                      value: "relaxed"),
                 Item(title: "正常",
                      detail: "增肌效率要求中等，允许少量波动。每周只给你 1 个最关键的执行重点，确保稳步进步。",
@@ -344,8 +355,9 @@ extension AIGuidanceCoachStrictnessItemView {
 
     func setSelectedState(_ isSelected: Bool) {
         layer.borderWidth = isSelected ? kFitWidth(1.5) : 0
+        titleLabel.textColor = isSelected ? .THEME : .COLOR_TEXT_TITLE_0f1214
         layer.borderColor = isSelected ? UIColor.THEME.cgColor : UIColor.clear.cgColor
-        backgroundColor = isSelected ? UIColor.THEME.withAlphaComponent(0.06) : .COLOR_BG_BLACK_04
+        backgroundColor = isSelected ? UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1) : .COLOR_TEXT_TITLE_0f1214_05
     }
 
     func initUI() {

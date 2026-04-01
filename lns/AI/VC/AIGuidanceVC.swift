@@ -29,6 +29,18 @@ class AIGuidanceVC: WHBaseViewVC {
 
         initUI()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updatePopGestureState()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        fd_interactivePopDisabled = false
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
 
     lazy var naviVm: DietPlanCreateNaviVM = {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
@@ -117,6 +129,7 @@ extension AIGuidanceVC{
         case .elaProIntro:
             moveToStep(index: 5, animated: true)
         case .readyStart:
+            guard ensureValidVipBeforeReadyStart() else { return }
             submitAICoachProfile()
         }
     }
@@ -177,8 +190,16 @@ extension AIGuidanceVC{
         let targetIndex = max(0, min(index, totalSteps - 1))
         currentIndex = targetIndex
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: animated)
+        updatePopGestureState()
         updateNavigationForCurrentStep()
         updateNextButtonForCurrentStep()
+    }
+    
+    func updatePopGestureState() {
+        let shouldEnablePop = currentIndex == 0
+        fd_interactivePopDisabled = !shouldEnablePop
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = shouldEnablePop
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = shouldEnablePop
     }
 
     func updateNextButtonForCurrentStep() {
@@ -267,6 +288,17 @@ extension AIGuidanceVC{
 }
 
 extension AIGuidanceVC {
+    func ensureValidVipBeforeReadyStart() -> Bool {
+        guard UserInfoModel.shared.vipModel.isValidVip else {
+            let vc = ElaProVC()
+            vc.showPriceOnly = true
+            vc.popToRootOnClose = true
+            navigationController?.pushViewController(vc, animated: true)
+            return false
+        }
+        return true
+    }
+    
     func submitAICoachProfile() {
         if isSubmittingAICoachProfile {
             return

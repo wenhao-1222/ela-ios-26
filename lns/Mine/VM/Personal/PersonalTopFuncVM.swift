@@ -8,9 +8,21 @@
 
 class PersonalTopFuncVM: UIView {
     
-    let selfHeight = kFitWidth(50)*7
+    private let itemHeight = kFitWidth(50)
+    private let shouldShowElaPro: Bool
+    var selfHeight: CGFloat {
+        itemHeight * CGFloat(shouldShowElaPro ? 7 : 6)
+    }
+    
+    private func itemY(at index: Int) -> CGFloat {
+        itemHeight * CGFloat(index)
+    }
     
     override init(frame: CGRect) {
+        let shouldShowElaPro = UserInfoModel.shared.vipModel.isValidVip
+        let itemHeight = kFitWidth(50)
+        let selfHeight = itemHeight * CGFloat(shouldShowElaPro ? 7 : 6)
+        self.shouldShowElaPro = shouldShowElaPro
         super.init(frame: CGRect.init(x: kFitWidth(16), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
         self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
@@ -31,37 +43,37 @@ class PersonalTopFuncVM: UIView {
         return vm
     }()
     lazy var planVm: PersonalTopFuncItemVM = {
-        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.elaproVm.frame.maxY, width: 0, height: 0))
+        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.itemY(at: shouldShowElaPro ? 1 : 0), width: 0, height: 0))
         vm.titleLab.text = "我的计划"
         vm.iconImgView.setImgLocal(imgName: "mine_func_plan")
         return vm
     }()
     lazy var bodyDataVm: PersonalTopFuncItemVM = {
-        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.planVm.frame.maxY, width: 0, height: 0))
+        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.itemY(at: shouldShowElaPro ? 2 : 1), width: 0, height: 0))
         vm.titleLab.text = "体重维度"//"身体数据"
         vm.iconImgView.setImgLocal(imgName: "mine_boday_data")
         return vm
     }()
     lazy var fastingVm: PersonalTopFuncItemVM = {
-        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.bodyDataVm.frame.maxY, width: 0, height: 0))
+        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.itemY(at: shouldShowElaPro ? 3 : 2), width: 0, height: 0))
         vm.titleLab.text = "轻断食"
         vm.iconImgView.setImgLocal(imgName: "mine_func_fasting")
         return vm
     }()
     lazy var communityVm: PersonalTopFuncItemVM = {
-        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.fastingVm.frame.maxY, width: 0, height: 0))
+        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.itemY(at: shouldShowElaPro ? 4 : 3), width: 0, height: 0))
         vm.titleLab.text = "课程干货"
         vm.iconImgView.setImgLocal(imgName: "mine_func_community")
         return vm
     }()
     lazy var orderVm: PersonalTopFuncItemVM = {
-        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.communityVm.frame.maxY, width: 0, height: 0))
+        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.itemY(at: shouldShowElaPro ? 5 : 4), width: 0, height: 0))
         vm.titleLab.text = "我的订单"
         vm.iconImgView.setImgLocal(imgName: "mine_func_order_list")
         return vm
     }()
     lazy var honorVm: PersonalTopFuncItemVM = {
-        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.orderVm.frame.maxY, width: 0, height: 0))
+        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.itemY(at: shouldShowElaPro ? 6 : 5), width: 0, height: 0))
         vm.titleLab.text = "我的荣誉"
         vm.iconImgView.setImgLocal(imgName: "mine_func_honor")
         vm.lineView.isHidden =  true
@@ -71,7 +83,9 @@ class PersonalTopFuncVM: UIView {
 
 extension PersonalTopFuncVM{
     func initUI() {
-        addSubview(elaproVm)
+        if shouldShowElaPro {
+            addSubview(elaproVm)
+        }
         addSubview(planVm)
         addSubview(bodyDataVm)
         addSubview(fastingVm)

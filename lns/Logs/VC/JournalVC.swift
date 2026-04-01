@@ -1238,7 +1238,7 @@ extension JournalVC{
             let vipModel = VIPModel().initWithDict(dict: dataDict)
             UserInfoModel.shared.vipModel = vipModel
             DLLog(message: "sendProVipMsgRequest:\(dataDict)")
-            DLLog(message: "sendProVipMsgRequest model: uid=\(vipModel.uid), vipType=\(vipModel.vipType.rawValue), status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime)  ,expireTime=\(vipModel.expireTime)")
+            DLLog(message: "sendProVipMsgRequest model: uid=\(vipModel.uid),status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime)  ,expireTime=\(vipModel.expireTime)")
             
         }
     }

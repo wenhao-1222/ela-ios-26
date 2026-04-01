@@ -11,6 +11,7 @@ import SnapKit
 class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
 
     var reportId = ""
+    var dataDict = NSDictionary()
     
     private lazy var preDaysVM: AICoachPreDaysVM = {
         let view = AICoachPreDaysVM(frame: .zero)
@@ -26,7 +27,8 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         super.viewDidLoad()
 
         initUI()
-        sendCoachLaunchRequest()
+//        sendCoachLaunchRequest()
+        self.updatePreDaysUI(dataDict: dataDict)
     }
 
     lazy var bgImgView: UIImageView = {
@@ -170,12 +172,12 @@ private extension AICoachPreVC {
         }
 
         let firstIncompleteIndex = sortedProgressBar.firstIndex {
-            ($0["completeStatus"] as? Int ?? 0) == 0
+            ($0["completeStatus"] as? Int ?? ($0["completeStatus"] as? String ?? "0").intValue) == 0
         }
 
         let items = sortedProgressBar.enumerated().map { index, item -> AICoachPreDaysVM.DayItem in
             let dateString = item["date"] as? String ?? ""
-            let completeStatus = item["completeStatus"] as? Int ?? 0
+            let completeStatus = item["completeStatus"] as? Int ?? (item["completeStatus"] as? String ?? "0").intValue
             let state: AICoachPreDaysVM.DayState
 
             if completeStatus == 1 || completeStatus == 2 {

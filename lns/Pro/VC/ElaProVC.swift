@@ -11,6 +11,7 @@ class ElaProVC: WHBaseViewVC {
     
     var param = [String : Any]()
     var showPriceOnly = false
+    var popToRootOnClose = false
     private var agreementAlertVm: ElaProAgreementAlertVM?
     
     lazy var purchaseLoadingMaskView: UIView = {
@@ -46,6 +47,18 @@ class ElaProVC: WHBaseViewVC {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.fd_interactivePopDisabled = true
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.fd_interactivePopDisabled = false
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+    }
+    
     lazy var naviVm: DietPlanCreateNaviVM = {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
 //        vm.alpha = 0
@@ -54,14 +67,7 @@ class ElaProVC: WHBaseViewVC {
         vm.thirdStepVm.isHidden = true
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
-//            if self.currentIndex == 0 {
-                self.backTapAction()
-//            }
-//            else {
-//                self.currentIndex -= 1
-//                self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(self.currentIndex), y: 0), animated: true)
-//                self.updateNextButtonForCurrentStep(animated: true)
-//            }
+            self.handleCloseAction()
         }
         return vm
     }()
@@ -261,7 +267,15 @@ extension ElaProVC{
         applyTemporaryValidVipStatus()
         requestLatestVipInfo()
         NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
-        backTapAction()
+        handleCloseAction()
+    }
+    
+    private func handleCloseAction() {
+        if popToRootOnClose {
+            navigationController?.popToRootViewController(animated: true)
+        } else {
+            backTapAction()
+        }
     }
     
     private func applyTemporaryValidVipStatus() {
@@ -273,7 +287,7 @@ extension ElaProVC{
         tempVipModel.ctime = currentVipModel.ctime
         tempVipModel.etime = currentVipModel.etime
         tempVipModel.isLifetime = currentVipModel.isLifetime
-        tempVipModel.vipType = currentVipModel.vipType == .none ? .year : currentVipModel.vipType
+//        tempVipModel.vipType = currentVipModel.vipType == .none ? .year : currentVipModel.vipType
         tempVipModel.status = .valid
         UserInfoModel.shared.vipModel = tempVipModel
     }
@@ -285,7 +299,7 @@ extension ElaProVC{
             let vipModel = VIPModel().initWithDict(dict: dataDict)
             UserInfoModel.shared.vipModel = vipModel
             DLLog(message: "ElaProVC requestLatestVipInfo:\(dataDict)")
-            DLLog(message: "ElaProVC requestLatestVipInfo model: uid=\(vipModel.uid), vipType=\(vipModel.vipType.rawValue), status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime), expireTime=\(vipModel.expireTime)")
+            DLLog(message: "ElaProVC requestLatestVipInfo model: uid=\(vipModel.uid), status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime), expireTime=\(vipModel.expireTime)")
             NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
         }
     }

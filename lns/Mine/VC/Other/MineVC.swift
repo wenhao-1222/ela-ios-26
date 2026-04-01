@@ -13,6 +13,8 @@ import AliyunPlayer
 class MineVC : WHBaseViewVC {
     
     var bottomGap = kFitWidth(20)
+    var isAiCoachSurveyFinished = "-1"//是否做过AI教练问卷    0  未做过   1  做过     -1 本地状态：还未请求数据
+    var aiCoachDict = NSDictionary()
     
     override func viewWillAppear(_ animated: Bool) {
         self.personalTopVm.updateUI()
@@ -26,6 +28,7 @@ class MineVC : WHBaseViewVC {
     public override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = false
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        sendCoachLaunchRequest()
     }
     
     override func viewDidLoad() {
@@ -84,12 +87,9 @@ class MineVC : WHBaseViewVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.bodyDataVm.tapBlock = {()in
-            let vc = BodyDataDetailVC()
-//            self.navigationController?.fd_interactivePopDisabled = true
-//            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-//            let vc = ElaProVC()
-//            let vc = AIGuidanceVC()
-            self.navigationController?.pushViewController(vc, animated: true)
+            self.gotoAicoachAction()
+//            let vc = BodyDataDetailVC()
+//            self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.fastingVm.tapBlock = {()in
             let vc = LogsMealsAlertSetVC()
@@ -160,6 +160,24 @@ extension MineVC{
         let vc = PlanListVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
+    func gotoAicoachAction() {
+        if isAiCoachSurveyFinished == "0"{
+            let vc = AIGuidanceVC()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }else if isAiCoachSurveyFinished == "1"{
+            if VIPModel().isValidVip{
+                let vc = ElaProVC()
+                vc.showPriceOnly = true
+                self.navigationController?.pushViewController(vc, animated: true)
+            }else{
+                let vc = AICoachPreVC()
+                vc.dataDict = aiCoachDict
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+        }else{
+            
+        }
+    }
 }
 
 extension MineVC{
@@ -218,6 +236,22 @@ extension MineVC{
             DLLog(message: "sendForumMsgNuberRequest:\(dataObj)")
 //            self.funcBottomVm.updateForumUnReadNum(unReadNum: "3")
             self.funcBottomVm.updateForumUnReadNum(unReadNum: dataObj.stringValueForKey(key: "unreadCount"))
+        }
+    }
+    func sendCoachLaunchRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_launch, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendCoachLaunchRequest:\(foodsMsgDict)")
+            
+            /*   未购买会员，未做AI问卷
+             {
+                 isAiCoachSurveyFinished = 0;
+                 isVip = 0;
+             }
+             */
+            
+            self.isAiCoachSurveyFinished = foodsMsgDict.stringValueForKey(key: "isAiCoachSurveyFinished")
         }
     }
 }

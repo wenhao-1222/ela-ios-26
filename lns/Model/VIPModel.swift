@@ -23,7 +23,7 @@ enum VIP_STATUS: Int {
 class VIPModel: NSObject {
     
     var uid = ""
-    var vipType = VIP_TYPE.none
+//    var vipType = VIP_TYPE.none
     var startTime = ""
     var expireTime = ""
     var status: VIP_STATUS?
@@ -33,12 +33,13 @@ class VIPModel: NSObject {
     var ctime = ""
     var etime = ""
     
-    var isVip: Bool {
-        return self.vipType != .none
-    }
+//    var isVip: Bool {
+//        return self.vipType != .none
+//    }
     
     var isValidVip: Bool {
-        return self.isVip && self.status == .valid
+        return self.status == .valid
+//        return self.isVip && self.status == .valid
     }
     
     func initWithDict(dict:NSDictionary) -> VIPModel {
@@ -49,14 +50,14 @@ class VIPModel: NSObject {
         model.ctime = dict.stringValueForKey(key: "ctime")
         model.etime = dict.stringValueForKey(key: "etime")
         
-        let vipTypeValue = Int(dict.stringValueForKey(key: "vipType")) ?? 0
-        model.vipType = VIP_TYPE(rawValue: vipTypeValue) ?? .none
+//        let vipTypeValue = Int(dict.stringValueForKey(key: "vipType")) ?? 0
+//        model.vipType = VIP_TYPE(rawValue: vipTypeValue) ?? .none
         
         let statusValue = Int(dict.stringValueForKey(key: "status")) ?? 0
         model.status = VIP_STATUS(rawValue: statusValue)
         
         let lifetimeValue = dict.stringValueForKey(key: "isLifetime")
-        model.isLifetime = lifetimeValue == "1" || model.vipType == .lifetime
+//        model.isLifetime = lifetimeValue == "1" || model.vipType == .lifetime
         
         if model.isLifetime {
             model.expireTime = ""
