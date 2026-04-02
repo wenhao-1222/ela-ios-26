@@ -69,7 +69,12 @@ class ElaProVC: WHBaseViewVC {
         vm.thirdStepVm.isHidden = true
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
-            self.handleCloseAction()
+//            self.handleCloseAction()
+            if self.currentIndex == 0 || self.currentIndex == 4 {
+                self.handleCloseAction()
+                return
+            }
+            self.showPreviousContentStep()
         }
         return vm
     }()
@@ -136,26 +141,60 @@ extension ElaProVC{
     @objc func nextButtonTapAction() {
         if currentIndex == 1 {
             currentIndex = 2
-            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 2, y: 0), animated: true)
-            updateNextButtonForCurrentStep(animated: true)
-            UIView.animate(withDuration: 0.35, delay: 0) {
-                self.naviVm.alpha = 1
-            }
+            showStep(for: currentIndex, animated: true)
         } else if currentIndex == 2 {
             currentIndex = 3
-            self.naviVm.alpha = 1
-            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 3, y: 0), animated: true)
-            updateNextButtonForCurrentStep(animated: true)
+            showStep(for: currentIndex, animated: true)
         } else if currentIndex == 3 {
             currentIndex = 4
-//            self.naviVm.backButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
-            self.naviVm.backButton.setImage(UIImage(named: "ela_pro_close_icon"), for: .normal)
-            self.naviVm.backButton.frame = CGRect.init(x: SCREEN_WIDHT - kFitWidth(12.5) - kFitWidth(35), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
-            UIView.animate(withDuration: 0.35, delay: 0) {
-                self.naviVm.alpha = 1
+            showStep(for: currentIndex, animated: true)
+        }
+    }
+
+    private func showPreviousContentStep() {
+        let previousIndex = max(currentIndex - 1, 1)
+        currentIndex = previousIndex
+        showStep(for: currentIndex, animated: true)
+    }
+
+    private func showStep(for index: Int, animated: Bool) {
+        updateNavigationStyle(for: index, animated: animated)
+
+        switch index {
+        case 1:
+            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: animated)
+        case 2:
+            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 2, y: 0), animated: animated)
+        case 3:
+            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 3, y: 0), animated: animated)
+        case 4:
+            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 4, y: 0), animated: animated)
+        default:
+            scrollViewBase.setContentOffset(.zero, animated: animated)
+        }
+
+        updateNextButtonForCurrentStep(animated: animated)
+    }
+
+    private func updateNavigationStyle(for index: Int, animated: Bool) {
+        let applyStyle = {
+            if index == 4 {
+//                self.naviVm.backButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
+                self.naviVm.backButton.setImage(UIImage(named: "ela_pro_close_icon"), for: .normal)
+                self.naviVm.backButton.frame = CGRect.init(x: SCREEN_WIDHT - kFitWidth(12.5) - kFitWidth(35), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
+            } else {
+                self.naviVm.backButton.setImage(UIImage(named: "habit_guide_back_icon"), for: .normal)
+                self.naviVm.backButton.frame = CGRect.init(x: kFitWidth(12.5), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
             }
-            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 4, y: 0), animated: true)
-            updateNextButtonForCurrentStep(animated: true)
+            self.naviVm.alpha = (index == 0) ? 0 : 1
+        }
+
+        if animated {
+            UIView.animate(withDuration: 0.35, delay: 0) {
+                applyStyle()
+            }
+        } else {
+            applyStyle()
         }
     }
     
@@ -194,6 +233,7 @@ extension ElaProVC{
             naviVm.backButton.frame = CGRect.init(x: SCREEN_WIDHT - kFitWidth(12.5) - kFitWidth(35), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
             scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT, height: 0)
             scrollViewBase.setContentOffset(.zero, animated: false)
+            updateNavigationStyle(for: currentIndex, animated: false)
             updateNextButtonForCurrentStep(animated: false)
             
             return
@@ -204,6 +244,7 @@ extension ElaProVC{
         readyVm.isHidden = false
         transformVm.isHidden = false
         priceVm.isHidden = false
+        updateNavigationStyle(for: currentIndex, animated: false)
     }
     
     func initUI() {
