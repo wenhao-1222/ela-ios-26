@@ -8,7 +8,7 @@
 
 class DietPlanCreateItemVM: UIView {
     
-    let selfHeight = kFitWidth(84)
+    let selfHeight = kFitWidth(60)
     var tapBlock:(()->())?
     
     override init(frame:CGRect){
@@ -67,8 +67,9 @@ extension DietPlanCreateItemVM{
         bgView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(45))
             make.right.equalTo(kFitWidth(-45))
-            make.top.equalTo(kFitWidth(6))
-            make.bottom.equalTo(kFitWidth(-6))
+            make.top.bottom.equalToSuperview()
+//            make.top.equalTo(kFitWidth(6))
+//            make.bottom.equalTo(kFitWidth(-6))
         }
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))

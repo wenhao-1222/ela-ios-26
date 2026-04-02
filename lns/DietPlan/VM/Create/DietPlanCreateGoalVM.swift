@@ -41,12 +41,12 @@ class DietPlanCreateGoalVM: UIView {
     lazy var itemViews: [DietPlanCreateItemVM] = {
         return []
     }()
-    lazy var titleLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var titleLabel: UILabel = {
+        let lab = UILabel()
         lab.numberOfLines = 2
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
+        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
         
         return lab
     }()
@@ -63,7 +63,7 @@ class DietPlanCreateGoalVM: UIView {
     lazy var stackView: UIStackView = {
         let st = UIStackView()
         st.axis = .vertical
-        st.spacing = kFitWidth(4)
+        st.spacing = kFitWidth(12)
         return st
     }()
     lazy var bottomGradientView: UIView = {
@@ -119,22 +119,18 @@ extension DietPlanCreateGoalVM{
         
         setConstrait()
         refreshListUI()
-        
-        titleLabel.setLineHeight(
-            textString: "你希望通过饮食计划\n达到什么目标？",
-            lineHeight: (titleLabel.font.lineHeight) * 1
-        )
+        updateTitleLabel()
     }
     func setConstrait() {
         let bottomSafe = WHUtils().getBottomSafeAreaHeight()
-        let nextButtonTopOffset = bottomSafe + kFitWidth(58)
+        let nextButtonTopOffset = bottomSafe > 0 ? (bottomSafe + kFitWidth(44)) : kFitWidth(58)
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(55))
+            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(41))
         }
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom)//.offset(kFitWidth(28))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(25))
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
         }
@@ -177,10 +173,33 @@ extension DietPlanCreateGoalVM{
             }
             stackView.addArrangedSubview(itemVm)
             itemVm.snp.makeConstraints { make in
-                make.height.equalTo(itemVm.selfHeight)
+//                make.height.equalTo(itemVm.selfHeight)
+                make.height.equalTo(kFitWidth(60))
             }
             itemViews.append(itemVm)
         }
+    }
+
+    private func updateTitleLabel() {
+        let text = "你希望通过饮食计划\n达到什么目标？"
+        let targetLineHeight = titleLabel.font.lineHeight * 1.2
+        let baselineOffset = (targetLineHeight - titleLabel.font.lineHeight) / 2
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = titleLabel.textAlignment
+        paragraphStyle.lineBreakMode = .byWordWrapping
+        paragraphStyle.minimumLineHeight = targetLineHeight
+        paragraphStyle.maximumLineHeight = targetLineHeight
+
+        titleLabel.attributedText = NSAttributedString(
+            string: text,
+            attributes: [
+                .font: titleLabel.font as Any,
+                .foregroundColor: titleLabel.textColor as Any,
+                .paragraphStyle: paragraphStyle,
+                .baselineOffset: baselineOffset
+            ]
+        )
     }
     
     func selectItem(index:Int) {

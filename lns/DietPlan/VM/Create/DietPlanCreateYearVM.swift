@@ -93,11 +93,12 @@ extension DietPlanCreateYearVM{
     func setConstrait() {
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(55))
+            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(76))
         }
         pickerView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(kFitWidth(231))
+//            make.top.equalTo(kFitWidth(231))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(127))
             make.width.equalTo(kFitWidth(343))
             make.height.equalTo(kFitWidth(252))
         }

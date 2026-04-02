@@ -24,9 +24,11 @@ class DietPlanCreateVC: WHBaseViewVC {
     private var shouldSkipSexStep: Bool {
         UserInfoModel.shared.gender == "1" || UserInfoModel.shared.gender == "2"
     }
-    private var shouldSkipBirthdayStep: Bool {
-        !UserInfoModel.shared.birthDay.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-    }
+    private var shouldSkipBirthdayStep = false
+//    private var shouldSkipBirthdayStep: Bool {
+//        
+//        !UserInfoModel.shared.birthDay.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+//    }
     
     override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = true
@@ -90,12 +92,12 @@ class DietPlanCreateVC: WHBaseViewVC {
         vm.manTapBlock = {[weak self] in
             self?.heightVm.applyDefaultHeight(170)
             self?.weightVm.applyDefaultWeight(integer: 70)
-            self?.moveFromSexToNextStep()
+            self?.syncNextButtonEnableStatus()
         }
         vm.femanTapBlock = {[weak self] in
             self?.heightVm.applyDefaultHeight(160)
             self?.weightVm.applyDefaultWeight(integer: 50)
-            self?.moveFromSexToNextStep()
+            self?.syncNextButtonEnableStatus()
         }
         
         return vm
@@ -214,7 +216,7 @@ class DietPlanCreateVC: WHBaseViewVC {
         btn.backgroundColor = .COLOR_BUTTON_DISABLE_BG_THEME
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .disabled)
-        btn.layer.cornerRadius = kFitWidth(24)
+        btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
         btn.isEnabled = false
         btn.enablePressEffect()
@@ -288,7 +290,7 @@ extension DietPlanCreateVC{
     }
 
     func updateNextButtonForCurrentStep(animated: Bool) {
-        let shouldHideButton = (currentIndex == displayStepIndex(for: 1) && !shouldSkipSexStep)
+        let shouldHideButton = false
         let moveY = kFitWidth(90) + WHUtils().getBottomSafeAreaHeight()
         let targetTransform = shouldHideButton ? CGAffineTransform(translationX: 0, y: moveY) : .identity
         let targetAlpha: CGFloat = shouldHideButton ? 0 : 1
@@ -328,7 +330,7 @@ extension DietPlanCreateVC{
         case 0:
             nextButton.isEnabled = isGoalStepEnabled
         case let idx where idx == displayStepIndex(for: 1) && !shouldSkipSexStep:
-            nextButton.isEnabled = false
+            nextButton.isEnabled = !QuestinonaireMsgModel.shared.sex.isEmpty
         case 5-introIndexOffset:
             nextButton.isEnabled = bodyfatVm.selectIndex >= 0
         case 6-introIndexOffset:
@@ -624,12 +626,22 @@ extension DietPlanCreateVC{
         sexVm.isHidden = shouldSkipSexStep
         birthdayVm.isHidden = shouldSkipBirthdayStep
 
-        nextButton.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.right.equalTo(kFitWidth(-20))
-            make.height.equalTo(kFitWidth(48))
-            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
+        if WHUtils().getBottomSafeAreaHeight() > 0{
+            nextButton.snp.makeConstraints { make in
+                make.left.equalTo(kFitWidth(20))
+                make.right.equalTo(kFitWidth(-20))
+                make.height.equalTo(kFitWidth(44))
+                make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight())
+            }
+        }else{
+            nextButton.snp.makeConstraints { make in
+                make.left.equalTo(kFitWidth(20))
+                make.right.equalTo(kFitWidth(-20))
+                make.height.equalTo(kFitWidth(44))
+                make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
+            }
         }
+        
         updateNextButtonForCurrentStep(animated: false)
     }
 }
