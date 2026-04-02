@@ -14,6 +14,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     private var isRestoringDraft = false
     private var shouldSkipDraftPersistence = false
     private var hasRestoredDraft = false
+    private var shouldResumeFromEatStyleForNonVip = false
     
     var skipStepsOne = 0
     var skipStepsNine = false//是否跳过第九步  此处是由第八步决定
@@ -848,9 +849,12 @@ extension DietPlanCreateVC{
         }
         updateKetoHistorySkipIfNeeded()
         
+        shouldResumeFromEatStyleForNonVip = draftBool(draft["shouldResumeFromEatStyleForNonVip"])
         let savedIndex = draftInt(draft["currentIndex"], fallback: 0)
         let maxIndex = max(Int(round((scrollViewBase.contentSize.width / SCREEN_WIDHT) - 1)), 0)
-        currentIndex = min(max(displayStepIndex(for: savedIndex), 0), maxIndex)
+        let shouldForceResumeFromEatStyle = shouldResumeFromEatStyleForNonVip && UserInfoModel.shared.vipModel.status != .valid
+        let targetIndex = shouldForceResumeFromEatStyle ? eatStyleVisibleIndex() : displayStepIndex(for: savedIndex)
+        currentIndex = min(max(targetIndex, 0), maxIndex)
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0), animated: false)
         updateNextButtonForCurrentStep(animated: false)
         syncProfileFromUserInfoIfNeeded(applyDefaultValues: false)
@@ -893,8 +897,6 @@ extension DietPlanCreateVC{
         if ketoHistoryVm.selectedIndex + 1 <= 0{
             param.removeValue(forKey: "dietMethodExperience")
         }
-        shouldSkipDraftPersistence = true
-        clearDraftIfNeeded()
         
         DLLog(message: "sendDietUpsertRequest:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_diet_upsert, parameters: param as [String : AnyObject]) { responseObject in
@@ -903,9 +905,15 @@ extension DietPlanCreateVC{
         }
         
         if UserInfoModel.shared.vipModel.status == .valid{
+            shouldSkipDraftPersistence = true
+            clearDraftIfNeeded()
             self.backTapAction()
         }else{
+            shouldResumeFromEatStyleForNonVip = true
+            shouldSkipDraftPersistence = false
+            persistDraftIfNeeded()
             let vc = ElaProVC()
+            vc.shouldClearDietPlanCreateDraftOnPurchaseSuccess = true
 //            vc.param = param
             self.navigationController?.pushViewController(vc, animated: true)
         }
@@ -958,6 +966,7 @@ private extension DietPlanCreateVC {
             "skipStepsNine": skipStepsNine,
             "skipMealStyle": skipMealStyle,
             "skipKetoHistory": skipKetoHistory,
+            "shouldResumeFromEatStyleForNonVip": shouldResumeFromEatStyleForNonVip,
             "goalSelectedIndexes": Array(goalVm.selectedIndexes).sorted(),
             "sex": QuestinonaireMsgModel.shared.sex,
             "birthDay": QuestinonaireMsgModel.shared.birthDay,
@@ -1147,6 +1156,10 @@ private extension DietPlanCreateVC {
         SCREEN_WIDHT * (page - CGFloat(skippedIntroStepIndexes.count))
     }
 
+    func eatStyleVisibleIndex() -> Int {
+        Int(round(eatStyleVm.frame.minX / SCREEN_WIDHT))
+    }
+
     func persistedStepIndex(forVisibleIndex visibleIndex: Int) -> Int {
         var originalIndex = visibleIndex
         if shouldSkipSexStep && visibleIndex >= 1 {
@@ -1267,5 +1280,16 @@ private extension DietPlanCreateVC {
             return indexes
         }
         return Set(rawIndexes.filter { $0 >= 0 && $0 < dataArray.count })
+    }
+
+}
+
+extension DietPlanCreateVC {
+    static func clearStoredDraftForCurrentUser() {
+        let uid = UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !uid.isEmpty else {
+            return
+        }
+        UserDefaults.standard.removeObject(forKey: "diet_plan_create_draft_" + uid)
     }
 }

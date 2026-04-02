@@ -14,6 +14,7 @@ class ElaProVC: WHBaseViewVC {
     var popToRootOnClose = false
     var enterAICoachPreOnClose = false
     var enterAICoachPreOnPurchaseSuccess = false
+    var shouldClearDietPlanCreateDraftOnPurchaseSuccess = false
     private var agreementAlertVm: ElaProAgreementAlertVM?
     
     lazy var purchaseLoadingMaskView: UIView = {
@@ -159,7 +160,8 @@ extension ElaProVC{
 
     private func showStep(for index: Int, animated: Bool) {
         updateNavigationStyle(for: index, animated: animated)
-
+        
+        self.naviVm.backButton.isHidden = currentIndex <= 1
         switch index {
         case 1:
             scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: animated)
@@ -177,24 +179,49 @@ extension ElaProVC{
     }
 
     private func updateNavigationStyle(for index: Int, animated: Bool) {
-        let applyStyle = {
+        let leftFrame = CGRect.init(x: kFitWidth(12.5), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
+        let rightFrame = CGRect.init(x: SCREEN_WIDHT - kFitWidth(12.5) - kFitWidth(35), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
+        let navAlpha: CGFloat = (index == 0) ? 0 : 1
+
+        let applyStaticStyle = {
             if index == 4 {
 //                self.naviVm.backButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
                 self.naviVm.backButton.setImage(UIImage(named: "ela_pro_close_icon"), for: .normal)
-                self.naviVm.backButton.frame = CGRect.init(x: SCREEN_WIDHT - kFitWidth(12.5) - kFitWidth(35), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
+                self.naviVm.backButton.frame = rightFrame
             } else {
                 self.naviVm.backButton.setImage(UIImage(named: "habit_guide_back_icon"), for: .normal)
-                self.naviVm.backButton.frame = CGRect.init(x: kFitWidth(12.5), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
+                self.naviVm.backButton.frame = leftFrame
             }
-            self.naviVm.alpha = (index == 0) ? 0 : 1
+            self.naviVm.alpha = navAlpha
         }
 
-        if animated {
-            UIView.animate(withDuration: 0.35, delay: 0) {
-                applyStyle()
+        if animated == false {
+            applyStaticStyle()
+            self.naviVm.backButton.alpha = 1
+            return
+        }
+
+        if index == 4 {
+            UIView.animate(withDuration: 0.18, delay: 0, options: [.curveEaseIn]) {
+                self.naviVm.backButton.alpha = 0
+                self.naviVm.alpha = navAlpha
+            } completion: { _ in
+//                self.naviVm.backButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
+                self.naviVm.backButton.setImage(UIImage(named: "ela_pro_close_icon"), for: .normal)
+                self.naviVm.backButton.frame = rightFrame
+                UIView.animate(withDuration: 0.18, delay: 0, options: [.curveEaseOut]) {
+                    self.naviVm.backButton.alpha = 1
+                    self.naviVm.alpha = navAlpha
+                }
             }
-        } else {
-            applyStyle()
+            return
+        }
+
+        applyStaticStyle()
+        self.naviVm.backButton.alpha = 0
+        UIView.animate(withDuration: 0.18, delay: 0, options: [.curveEaseOut]) {
+            self.naviVm.backButton.alpha = 1
+            self.naviVm.alpha = navAlpha
         }
     }
     
@@ -310,6 +337,9 @@ extension ElaProVC{
     
     private func handlePurchaseSuccess() {
         applyTemporaryValidVipStatus()
+        if shouldClearDietPlanCreateDraftOnPurchaseSuccess {
+            DietPlanCreateVC.clearStoredDraftForCurrentUser()
+        }
         requestLatestVipInfo()
         NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
         if enterAICoachPreOnPurchaseSuccess {
