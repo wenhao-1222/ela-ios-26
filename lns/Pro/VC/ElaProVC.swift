@@ -143,12 +143,13 @@ extension ElaProVC{
             }
         } else if currentIndex == 2 {
             currentIndex = 3
-            self.naviVm.alpha = 0
+            self.naviVm.alpha = 1
             scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 3, y: 0), animated: true)
             updateNextButtonForCurrentStep(animated: true)
         } else if currentIndex == 3 {
             currentIndex = 4
-            self.naviVm.backButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
+//            self.naviVm.backButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
+            self.naviVm.backButton.setImage(UIImage(named: "ela_pro_close_icon"), for: .normal)
             self.naviVm.backButton.frame = CGRect.init(x: SCREEN_WIDHT - kFitWidth(12.5) - kFitWidth(35), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
             UIView.animate(withDuration: 0.35, delay: 0) {
                 self.naviVm.alpha = 1
@@ -188,7 +189,8 @@ extension ElaProVC{
             priceVm.isHidden = false
             priceVm.frame.origin.x = 0
             naviVm.alpha = 1
-            naviVm.backButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
+            naviVm.backButton.setImage(UIImage(named: "ela_pro_close_icon"), for: .normal)
+//            naviVm.backButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
             naviVm.backButton.frame = CGRect.init(x: SCREEN_WIDHT - kFitWidth(12.5) - kFitWidth(35), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
             scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT, height: 0)
             scrollViewBase.setContentOffset(.zero, animated: false)

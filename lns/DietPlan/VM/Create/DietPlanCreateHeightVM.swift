@@ -12,6 +12,8 @@ class DietPlanCreateHeightVM: UIView {
     var currentValue: Int = 170
     private var hasAppliedInitialValue = false
     private let feedbackGenerator = UISelectionFeedbackGenerator()
+    private let rulerStepHeight = kFitWidth(7)
+    private var linkedRulerScrollView: UIScrollView?
 
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -29,7 +31,7 @@ class DietPlanCreateHeightVM: UIView {
         let lab = UILabel()
         lab.text = "你的身高是?"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 48 / 2.0, weight: .medium)
+        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
 
         return lab
     }()
@@ -48,6 +50,15 @@ class DietPlanCreateHeightVM: UIView {
         vi.backgroundColor = .clear
         vi.rulerBackgroundColor = .clear
         return vi
+    }()
+
+    lazy var rulerPanProxyView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleProxyPan(_:)))
+        panGesture.maximumNumberOfTouches = 1
+        view.addGestureRecognizer(panGesture)
+        return view
     }()
 
     lazy var topMaskView: UIView = {
@@ -98,6 +109,7 @@ extension DietPlanCreateHeightVM {
     func initUI() {
         addSubview(titleLabel)
         addSubview(numberLabel)
+        addSubview(rulerPanProxyView)
         addSubview(rulerView)
         addSubview(topMaskView)
         addSubview(bottomMaskView)
@@ -132,13 +144,19 @@ extension DietPlanCreateHeightVM {
     func setConstrait() {
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(55))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(76))
         }
 
         numberLabel.snp.makeConstraints { make in
 //            make.left.equalTo(kFitWidth(59))
             make.centerY.equalTo(rulerView)
             make.right.lessThanOrEqualTo(rulerView.snp.left).offset(kFitWidth(-30))
+        }
+
+        rulerPanProxyView.snp.makeConstraints { make in
+            make.top.bottom.equalTo(rulerView)
+            make.left.equalToSuperview()
+            make.right.equalTo(rulerView.snp.left)
         }
 
         rulerView.snp.makeConstraints { make in
@@ -179,6 +197,7 @@ extension DietPlanCreateHeightVM {
         super.layoutSubviews()
         topMaskLayer.frame = topMaskView.bounds
         bottomMaskLayer.frame = bottomMaskView.bounds
+        linkedRulerScrollView = resolveRulerScrollView()
         if !hasAppliedInitialValue {
             hasAppliedInitialValue = true
             DispatchQueue.main.async {
@@ -186,6 +205,38 @@ extension DietPlanCreateHeightVM {
                 QuestinonaireMsgModel.shared.height = "\(self.currentValue)"
                 self.updateHeightText(value: self.currentValue)
             }
+        }
+    }
+
+    private func resolveRulerScrollView() -> UIScrollView? {
+        if let linkedRulerScrollView {
+            return linkedRulerScrollView
+        }
+        return rulerView.subviews.first(where: { $0 is UIScrollView }) as? UIScrollView
+    }
+
+    private func clampRulerOffset(_ offsetY: CGFloat, scrollView: UIScrollView) -> CGFloat {
+        let minOffset = CGFloat(rulerView.lockMin / max(rulerView.unitValue, 1)) * rulerStepHeight
+        let maxOffset = CGFloat(rulerView.lockMax / max(rulerView.unitValue, 1)) * rulerStepHeight
+        return min(max(offsetY, minOffset), maxOffset)
+    }
+
+    @objc
+    private func handleProxyPan(_ gesture: UIPanGestureRecognizer) {
+        guard let scrollView = resolveRulerScrollView() else { return }
+
+        switch gesture.state {
+        case .began, .changed:
+            let translation = gesture.translation(in: rulerPanProxyView)
+            let targetOffsetY = clampRulerOffset(scrollView.contentOffset.y - translation.y, scrollView: scrollView)
+            scrollView.setContentOffset(CGPoint(x: 0, y: targetOffsetY), animated: false)
+            gesture.setTranslation(.zero, in: rulerPanProxyView)
+        case .ended, .cancelled, .failed:
+            let snappedIndex = round(scrollView.contentOffset.y / rulerStepHeight)
+            let snappedOffsetY = clampRulerOffset(snappedIndex * rulerStepHeight, scrollView: scrollView)
+            scrollView.setContentOffset(CGPoint(x: 0, y: snappedOffsetY), animated: true)
+        default:
+            break
         }
     }
 }

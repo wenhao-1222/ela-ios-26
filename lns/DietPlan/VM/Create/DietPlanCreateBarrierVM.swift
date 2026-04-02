@@ -48,7 +48,7 @@ class DietPlanCreateBarrierVM: UIView {
         lab.numberOfLines = 2
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
+        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
         return lab
     }()
 
@@ -66,7 +66,7 @@ class DietPlanCreateBarrierVM: UIView {
     lazy var stackView: UIStackView = {
         let st = UIStackView()
         st.axis = .vertical
-        st.spacing = kFitWidth(4)
+        st.spacing = kFitWidth(12)
         return st
     }()
 
@@ -125,9 +125,31 @@ extension DietPlanCreateBarrierVM {
         setConstraint()
         refreshListUI()
 
+//        updateTitleLabel()
         titleLabel.setLineHeight(
             textString: "你在以往控制饮食时\n最大的阻碍是？",
-            lineHeight: titleLabel.font.lineHeight * 1.2
+            lineHeight: titleLabel.font.lineHeight * 0.8
+        )
+    }
+    private func updateTitleLabel() {
+        let text = "你在以往控制饮食时\n最大的阻碍是？"
+        let targetLineHeight = titleLabel.font.lineHeight// * 1.2
+        let baselineOffset = (targetLineHeight - titleLabel.font.lineHeight) / 2
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = titleLabel.textAlignment
+        paragraphStyle.lineBreakMode = .byWordWrapping
+        paragraphStyle.minimumLineHeight = targetLineHeight
+        paragraphStyle.maximumLineHeight = targetLineHeight
+
+        titleLabel.attributedText = NSAttributedString(
+            string: text,
+            attributes: [
+                .font: titleLabel.font as Any,
+                .foregroundColor: titleLabel.textColor as Any,
+                .paragraphStyle: paragraphStyle,
+                .baselineOffset: baselineOffset
+            ]
         )
     }
 
@@ -137,11 +159,11 @@ extension DietPlanCreateBarrierVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(55))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(41))
         }
 
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom)//.offset(kFitWidth(28))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(35))
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
         }

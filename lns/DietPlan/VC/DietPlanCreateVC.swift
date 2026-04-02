@@ -521,7 +521,7 @@ extension DietPlanCreateVC{
         }
         ketoHistoryVm.titleLabel.setLineHeight(
             textString: titleText,
-            lineHeight: ketoHistoryVm.titleLabel.font.lineHeight * 1
+            lineHeight: ketoHistoryVm.titleLabel.font.lineHeight * 0.8
         )
     }
 

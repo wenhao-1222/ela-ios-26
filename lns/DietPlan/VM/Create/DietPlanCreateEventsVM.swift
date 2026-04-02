@@ -45,7 +45,7 @@ class DietPlanCreateEventsVM: UIView {
         let lab = UILabel()
         lab.text = "你的日常活动量是多少？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
+        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
         return lab
     }()
 

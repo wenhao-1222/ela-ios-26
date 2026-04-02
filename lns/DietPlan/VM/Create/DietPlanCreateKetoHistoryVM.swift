@@ -32,7 +32,7 @@ class DietPlanCreateKetoHistoryVM: UIView {
         lab.numberOfLines = 2
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
+        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
         return lab
     }()
 
@@ -49,10 +49,10 @@ extension DietPlanCreateKetoHistoryVM {
         addSubview(titleLabel)
         addSubview(stackView)
 
-        titleLabel.setLineHeight(
-            textString: "你之前有尝试过\n高蛋白/低碳/生酮饮食吗？",
-            lineHeight: titleLabel.font.lineHeight * 1
-        )
+//        titleLabel.setLineHeight(
+//            textString: "你之前有尝试过\n高蛋白/低碳/生酮饮食吗？",
+//            lineHeight: titleLabel.font.lineHeight * 0.8
+//        )
 
         for (index, text) in optionTitles.enumerated() {
             let card = UIView()
@@ -89,13 +89,13 @@ extension DietPlanCreateKetoHistoryVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(55))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(41))
         }
 
         stackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(44))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(60))
         }
     }
 

@@ -42,7 +42,7 @@ class DietPlanCreateEatStyleVM: UIView {
         lab.text = "选择你的饮食风格"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
+        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
         return lab
     }()
 

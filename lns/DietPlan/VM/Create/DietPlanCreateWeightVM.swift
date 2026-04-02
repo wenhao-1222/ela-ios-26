@@ -26,7 +26,7 @@ class DietPlanCreateWeightVM: UIView {
         let lab = UILabel()
         lab.text = "你的体重是?"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 48 / 2.0, weight: .medium)
+        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
 
         return lab
     }()
@@ -110,12 +110,12 @@ extension DietPlanCreateWeightVM {
     func setConstrait() {
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(55))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(76))
         }
         pickerView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
 //            make.top.equalTo(kFitWidth(231))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(42))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(127))
             make.width.equalTo(kFitWidth(343))
             make.height.equalTo(kFitWidth(252))
         }

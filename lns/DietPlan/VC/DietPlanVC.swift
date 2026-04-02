@@ -109,7 +109,8 @@ extension DietPlanVC{
         self.navigationController?.fd_interactivePopDisabled = true
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
         
-        let vc = DietPlanCreateVC()
+//        let vc = DietPlanCreateVC()
+        let vc = ElaProVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     //第一次创建计划，只选择时间

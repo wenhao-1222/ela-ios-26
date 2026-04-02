@@ -310,7 +310,7 @@ extension ElaProReadyVM {
 
 private final class ElaProReadyItemCardView: UIView {
     private let titleColor = UIColor.COLOR_TEXT_TITLE_0f1214
-    private let descColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
+    private let descColor = UIColor.COLOR_TEXT_TITLE_0f1214_60
     
     private lazy var iconView: UIImageView = {
         let img = UIImageView()
@@ -375,24 +375,24 @@ private final class ElaProReadyItemCardView: UIView {
         titleLabel.text = title
         let attr = NSMutableAttributedString(string: desc)
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineHeightMultiple = 1.5
+        paragraphStyle.lineHeightMultiple = 1.3
         attr.addAttributes([
             .foregroundColor: descColor,
             .font: UIFont.systemFont(ofSize: 13, weight: .regular),
             .paragraphStyle: paragraphStyle
         ], range: NSRange(location: 0, length: desc.count))
         
-//        for keyword in highlights where !keyword.isEmpty {
-//            var searchRange = desc.startIndex..<desc.endIndex
-//            while let range = desc.range(of: keyword, options: [], range: searchRange) {
-//                let nsRange = NSRange(range, in: desc)
-//                attr.addAttributes([
-//                    .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
-//                    .font: UIFont.systemFont(ofSize: 16, weight: .semibold)
-//                ], range: nsRange)
-//                searchRange = range.upperBound..<desc.endIndex
-//            }
-//        }
+        for keyword in highlights where !keyword.isEmpty {
+            var searchRange = desc.startIndex..<desc.endIndex
+            while let range = desc.range(of: keyword, options: [], range: searchRange) {
+                let nsRange = NSRange(range, in: desc)
+                attr.addAttributes([
+                    .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+                    .font: UIFont.systemFont(ofSize: 12, weight: .medium)
+                ], range: nsRange)
+                searchRange = range.upperBound..<desc.endIndex
+            }
+        }
         
         descLabel.attributedText = attr
     }

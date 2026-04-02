@@ -126,7 +126,7 @@ class DietPlanCreatePaceVM: UIView {
         let lab = UILabel()
         lab.text = "你想以什么节奏推进目标？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
+        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
         return lab
     }()
 
@@ -262,12 +262,12 @@ extension DietPlanCreatePaceVM {
     func setConstraint() {
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(55))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
         }
 
         levelLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(86))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(60))
         }
 
         sliderView.snp.makeConstraints { make in

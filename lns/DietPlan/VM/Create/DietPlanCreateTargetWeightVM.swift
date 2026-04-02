@@ -45,7 +45,7 @@ class DietPlanCreateTargetWeightVM: UIView {
         let lab = UILabel()
         lab.text = "你的目标体重是?"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
+        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
         return lab
     }()
 
@@ -130,12 +130,12 @@ extension DietPlanCreateTargetWeightVM {
     func setConstraint() {
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(55))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(72))
         }
 
         targetWeightLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(98))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(82))
             make.height.equalTo(kFitWidth(66))
         }
 

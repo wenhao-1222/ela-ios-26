@@ -39,7 +39,7 @@ class DietPlanCreateAllergyVM: UIView {
         let lab = UILabel()
         lab.text = "你是否有过敏或忌口？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
+        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
         return lab
     }()
 
@@ -57,7 +57,7 @@ class DietPlanCreateAllergyVM: UIView {
     lazy var stackView: UIStackView = {
         let st = UIStackView()
         st.axis = .vertical
-        st.spacing = kFitWidth(4)
+        st.spacing = kFitWidth(12)
         return st
     }()
     
@@ -119,11 +119,11 @@ extension DietPlanCreateAllergyVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(55))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
         }
 
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom)//.offset(kFitWidth(28))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(35))
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
         }
