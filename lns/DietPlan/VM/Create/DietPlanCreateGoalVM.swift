@@ -122,7 +122,7 @@ extension DietPlanCreateGoalVM{
         
         titleLabel.setLineHeight(
             textString: "你希望通过饮食计划\n达到什么目标？",
-            lineHeight: (titleLabel.font.lineHeight) * 1.2
+            lineHeight: (titleLabel.font.lineHeight) * 1
         )
     }
     func setConstrait() {
