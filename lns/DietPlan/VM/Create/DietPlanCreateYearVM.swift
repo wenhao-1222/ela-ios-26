@@ -24,7 +24,7 @@ class DietPlanCreateYearVM: UIView {
         let lab = LineHeightLabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.text = "出生年份"
+        lab.text = "你的出生年份？"
         
         return lab
     }()

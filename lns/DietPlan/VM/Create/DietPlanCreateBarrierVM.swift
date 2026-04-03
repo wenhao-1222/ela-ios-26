@@ -43,10 +43,11 @@ class DietPlanCreateBarrierVM: UIView {
         bottomGradientLayer.frame = bottomGradientView.bounds
     }
 
-    lazy var titleLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var titleLabel: UILabel = {
+        let lab = UILabel()
         lab.numberOfLines = 2
         lab.textAlignment = .center
+        lab.text = "你在以往控制饮食时\n最大的阻碍是？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
         return lab
@@ -126,10 +127,10 @@ extension DietPlanCreateBarrierVM {
         refreshListUI()
 
 //        updateTitleLabel()
-        titleLabel.setLineHeight(
-            textString: "你在以往控制饮食时\n最大的阻碍是？",
-            lineHeight: titleLabel.font.lineHeight * 0.8
-        )
+//        titleLabel.setLineHeight(
+//            textString: "你在以往控制饮食时\n最大的阻碍是？",
+//            lineHeight: titleLabel.font.lineHeight * 0.8
+//        )
     }
     private func updateTitleLabel() {
         let text = "你在以往控制饮食时\n最大的阻碍是？"

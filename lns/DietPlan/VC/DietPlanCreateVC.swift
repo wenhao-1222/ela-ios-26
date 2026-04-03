@@ -520,10 +520,11 @@ extension DietPlanCreateVC{
         default:
             titleText = "你之前有尝试过\n高蛋白/低碳/生酮饮食吗？"
         }
-        ketoHistoryVm.titleLabel.setLineHeight(
-            textString: titleText,
-            lineHeight: ketoHistoryVm.titleLabel.font.lineHeight * 0.8
-        )
+        ketoHistoryVm.titleLabel.text = titleText
+//        ketoHistoryVm.titleLabel.setLineHeight(
+//            textString: titleText,
+//            lineHeight: ketoHistoryVm.titleLabel.font.lineHeight * 0.8
+//        )
     }
 
     func updateKetoHistorySkipIfNeeded() {

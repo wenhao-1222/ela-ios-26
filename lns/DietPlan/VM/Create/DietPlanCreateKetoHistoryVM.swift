@@ -27,8 +27,8 @@ class DietPlanCreateKetoHistoryVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    lazy var titleLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var titleLabel: UILabel = {
+        let lab = UILabel()
         lab.numberOfLines = 2
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214

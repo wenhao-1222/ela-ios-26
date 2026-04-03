@@ -299,10 +299,20 @@ extension DietPlanCreateAdviceVM {
 
     func makeCardDesc(_ text: String) -> UILabel {
         let lab = UILabel()
-        lab.text = text
         lab.numberOfLines = 0
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 13, weight: .regular)
+        
+        let attr = NSMutableAttributedString(string: text)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.3
+        attr.addAttributes([
+            .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
+            .font: UIFont.systemFont(ofSize: 13, weight: .regular),
+            .paragraphStyle: paragraphStyle
+        ], range: NSRange(location: 0, length: text.count))
+        
+        lab.attributedText = attr
+        
         return lab
     }
 

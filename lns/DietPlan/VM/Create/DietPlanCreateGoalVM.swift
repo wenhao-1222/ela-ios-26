@@ -44,6 +44,7 @@ class DietPlanCreateGoalVM: UIView {
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
         lab.numberOfLines = 2
+        lab.text = "你希望通过饮食计划\n达到什么目标？"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
@@ -119,7 +120,7 @@ extension DietPlanCreateGoalVM{
         
         setConstrait()
         refreshListUI()
-        updateTitleLabel()
+//        updateTitleLabel()
     }
     func setConstrait() {
         let bottomSafe = WHUtils().getBottomSafeAreaHeight()
