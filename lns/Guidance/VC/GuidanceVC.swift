@@ -45,6 +45,7 @@ class GuidanceVC: WHBaseViewVC {
     private var delayedNextWorkItem: DispatchWorkItem?
     private var isShowingFinishLoading = false
     private var pendingNutritionGoalPresentation = false
+    private var isShowingStandaloneNutritionGoal = false
     private var isTransitioningToGuidancePro = false
     private var cachedGuidanceProHasFreeTrialPermission = true
     private var hasPrefetchedGuidanceProSubscriptionHistory = false
@@ -53,6 +54,8 @@ class GuidanceVC: WHBaseViewVC {
     private var isBackNavigationLocked = false
     private let defaultStepsArray = [7,7,8]
     private let defaultStepsArrayWithoutCardio = [7,6,8]
+    private let defaultStepsArrayUncertain = [7,7,7]
+    private let defaultStepsArrayWithoutCardioUncertain = [7,6,7]
     private let fixedTargetStepsArray = [4,5,4]
     private let defaultFlow: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
@@ -61,12 +64,26 @@ class GuidanceVC: WHBaseViewVC {
         .strengthTrainingFrequency, .strengthTrainingSummary, .caloriesResultBase, .caloriesResultExplain,
         .goal, .goalBarrier, .removeBarrier, .nutritionGoal, .reminderPrompt
     ]
+    private let defaultFlowUncertain: [FlowStep] = [
+        .sex, .dietRecord, .progressChart, .fixedTarget,
+        .birthday, .weight, .height, .bodyfat, .takeoutFrequency,
+        .mealsPerDay, .mealsSummary, .mealsAdjust, .exerciseCaloriesRecord, .cardioFrequency,
+        .strengthTrainingFrequency, .strengthTrainingSummary, .caloriesResultBase, .caloriesResultExplain,
+        .goal, .goalBarrier, .removeBarrier, .reminderPrompt
+    ]
     private let defaultFlowNoCardioFrequency: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
         .birthday, .weight, .height, .bodyfat, .takeoutFrequency,
         .mealsPerDay, .mealsSummary, .mealsAdjust, .exerciseCaloriesRecord,
         .strengthTrainingFrequency, .strengthTrainingSummary, .caloriesResultBase, .caloriesResultExplain,
         .goal, .goalBarrier, .removeBarrier, .nutritionGoal, .reminderPrompt
+    ]
+    private let defaultFlowNoCardioFrequencyUncertain: [FlowStep] = [
+        .sex, .dietRecord, .progressChart, .fixedTarget,
+        .birthday, .weight, .height, .bodyfat, .takeoutFrequency,
+        .mealsPerDay, .mealsSummary, .mealsAdjust, .exerciseCaloriesRecord,
+        .strengthTrainingFrequency, .strengthTrainingSummary, .caloriesResultBase, .caloriesResultExplain,
+        .goal, .goalBarrier, .removeBarrier, .reminderPrompt
     ]
     private let fixedTargetFlow: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
@@ -77,12 +94,18 @@ class GuidanceVC: WHBaseViewVC {
     private var isFixedTargetFlowEnabled: Bool {
         QuestinonaireMsgModel.shared.guidanceFixedTargetType == "fixed"
     }
+    private var isUncertainFixedTargetSelection: Bool {
+        QuestinonaireMsgModel.shared.guidanceFixedTargetType == "uncertain"
+    }
     private var shouldSkipCardioFrequencyStep: Bool {
         !isFixedTargetFlowEnabled && QuestinonaireMsgModel.shared.guidanceExerciseCaloriesRecordType == "yes"
     }
     private var activeFlow: [FlowStep] {
         if isFixedTargetFlowEnabled {
             return fixedTargetFlow
+        }
+        if isUncertainFixedTargetSelection {
+            return shouldSkipCardioFrequencyStep ? defaultFlowNoCardioFrequencyUncertain : defaultFlowUncertain
         }
         if shouldSkipCardioFrequencyStep {
             return defaultFlowNoCardioFrequency
@@ -394,11 +417,10 @@ class GuidanceVC: WHBaseViewVC {
     lazy var reminderPromptVm: GuidanceReminderPromptVM = {
         let vm = GuidanceReminderPromptVM.init(frame: CGRect(x: SCREEN_WIDHT * 20, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vm.enableReminderBlock = { [weak self] in
-            self?.requestReminderPermissionIfNeeded()
+            self?.handleReminderPromptCompletion(requestPermission: true)
         }
         vm.skipBlock = { [weak self] in
-            self?.finishGuidanceFlow()
-//            self?.finishLoadingVm.showLoading(waitForExternalCompletion: false)
+            self?.handleReminderPromptCompletion(requestPermission: false)
         }
         return vm
     }()
@@ -411,7 +433,11 @@ class GuidanceVC: WHBaseViewVC {
                 self.isShowingFinishLoading = false
                 self.finishLoadingVm.hideLoadingView()
                 self.naviVm.isHidden = false
-                self.moveToStep(index: self.indexOfStep(.nutritionGoal) ?? self.currentIndex, animated: true)
+                if self.isUncertainFixedTargetSelection {
+                    self.showStandaloneNutritionGoal()
+                } else {
+                    self.moveToStep(index: self.indexOfStep(.nutritionGoal) ?? self.currentIndex, animated: true)
+                }
                 return
             }
             self.isShowingFinishLoading = false
@@ -545,6 +571,8 @@ extension GuidanceVC{
         goalVm.applyGuidanceSelectionStyle(isCompact: isFixedTargetFlowEnabled)
         if isFixedTargetFlowEnabled {
             stepsArray = fixedTargetStepsArray
+        } else if isUncertainFixedTargetSelection {
+            stepsArray = shouldSkipCardioFrequencyStep ? defaultStepsArrayWithoutCardioUncertain : defaultStepsArrayUncertain
         } else {
             stepsArray = shouldSkipCardioFrequencyStep ? defaultStepsArrayWithoutCardio : defaultStepsArray
         }
@@ -586,10 +614,8 @@ extension GuidanceVC{
 
     func updateNutritionGoalViewVisibility() {
         guard mountedSteps.contains(.nutritionGoal) else { return }
-//        nutritionGoalVm.isHidden = isFixedTargetFlowEnabled
-//        fixedTargetNutritionGoalVm.isHidden = !isFixedTargetFlowEnabled
-        nutritionGoalVm.isHidden = true
-        fixedTargetNutritionGoalVm.isHidden = false
+        nutritionGoalVm.isHidden = isFixedTargetFlowEnabled
+        fixedTargetNutritionGoalVm.isHidden = !isFixedTargetFlowEnabled
     }
 
     func scrollableIndex(for targetIndex: Int) -> Int {
@@ -671,10 +697,11 @@ extension GuidanceVC{
 
     func moveToStep(index: Int, animated: Bool) {
         updateFlowConfiguration()
+        hideStandaloneNutritionGoalIfNeeded()
         let sourceIndex = currentIndex
         let targetIndex = max(0, min(index, totalSteps - 1))
         guard let targetStep = flowStep(for: targetIndex) else { return }
-        if flowStep(for: currentIndex) == .nutritionGoal {
+        if flowStep(for: currentIndex) == .nutritionGoal, isFixedTargetFlowEnabled {
             fixedTargetNutritionGoalVm.endEditing(true)
         }
         installStepViewsIfNeeded(indexes: [targetIndex, targetIndex + 1, targetIndex + 2])
@@ -707,9 +734,9 @@ extension GuidanceVC{
             goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
         }
         if targetStep == .nutritionGoal {
-            fixedTargetNutritionGoalVm.applyEditingMode(isEditable: true)
-            fixedTargetNutritionGoalVm.refreshContentFromModel()
             if isFixedTargetFlowEnabled {
+                fixedTargetNutritionGoalVm.applyEditingMode(isEditable: true)
+                fixedTargetNutritionGoalVm.refreshContentFromModel()
                 let focusDelay = animated ? 0.35 : 0
                 DispatchQueue.main.asyncAfter(deadline: .now() + focusDelay) { [weak self] in
                     guard let self = self,
@@ -717,6 +744,8 @@ extension GuidanceVC{
                           self.isFixedTargetFlowEnabled else { return }
                     self.fixedTargetNutritionGoalVm.focusCarbInput()
                 }
+            } else {
+                nutritionGoalVm.refreshContentFromModel()
             }
         }
         if targetStep == .mealsSummary {
@@ -801,6 +830,19 @@ extension GuidanceVC{
         }
     }
 
+    func handleReminderPromptCompletion(requestPermission: Bool) {
+        if requestPermission {
+            requestReminderPermissionIfNeeded()
+            return
+        }
+
+        if isUncertainFixedTargetSelection {
+            startNutritionGoalLoadingFlow()
+        } else {
+            finishGuidanceFlow()
+        }
+    }
+
     func finishGuidanceFlow() {
         UserInfoModel.shared.showNotifiAuthoriAlertVM = false
         if isFixedTargetFlowEnabled {
@@ -837,6 +879,7 @@ extension GuidanceVC{
         delayedNextWorkItem?.cancel()
         delayedNextWorkItem = nil
         removeBarrierVm.stopScrollers()
+        hideStandaloneNutritionGoalIfNeeded()
         isShowingFinishLoading = true
         pendingNutritionGoalPresentation = true
         naviVm.isHidden = true
@@ -846,8 +889,50 @@ extension GuidanceVC{
         finishLoadingVm.layoutIfNeeded()
         finishLoadingVm.showLoading(waitForExternalCompletion: true)
         DispatchQueue.main.async { [weak self] in
-            self?.sendGuidanceNutritionGoalRequest()
+            guard let self = self else { return }
+            if self.isUncertainFixedTargetSelection {
+                self.requestGuidanceBasicConsumption { [weak self] success in
+                    guard let self = self else { return }
+                    guard success else {
+                        DispatchQueue.main.async {
+                            self.cancelNutritionGoalLoadingFlow()
+                            self.presentAlertVc(confirmBtn: "刷新", message: "", title: "当前网络不稳定", cancelBtn: nil, handler: { _ in
+                                self.startNutritionGoalLoadingFlow()
+                            }, viewController: self)
+                        }
+                        return
+                    }
+                    self.sendGuidanceNutritionGoalRequest()
+                }
+            } else {
+                self.sendGuidanceNutritionGoalRequest()
+            }
         }
+    }
+
+    func showStandaloneNutritionGoal() {
+        isShowingStandaloneNutritionGoal = true
+        nutritionGoalVm.refreshContentFromModel()
+
+        if nutritionGoalVm.superview !== view {
+            nutritionGoalVm.removeFromSuperview()
+            view.addSubview(nutritionGoalVm)
+            nutritionGoalVm.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+            }
+        }
+
+        nutritionGoalVm.isHidden = false
+        view.bringSubviewToFront(nutritionGoalVm)
+        nextButton.isHidden = true
+        nextButton.isEnabled = false
+        naviVm.isHidden = true
+    }
+
+    func hideStandaloneNutritionGoalIfNeeded() {
+        guard isShowingStandaloneNutritionGoal else { return }
+        isShowingStandaloneNutritionGoal = false
+//        nutritionGoalVm.isHidden = true
     }
 
     func cancelNutritionGoalLoadingFlow() {
@@ -883,17 +968,29 @@ extension GuidanceVC{
                 }
             case .authorized, .provisional, .ephemeral:
                 DispatchQueue.main.async {
-                    self.finishGuidanceFlow()
+                    if self.isUncertainFixedTargetSelection {
+                        self.startNutritionGoalLoadingFlow()
+                    } else {
+                        self.finishGuidanceFlow()
+                    }
                 }
             case .notDetermined:
                 UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in
                     DispatchQueue.main.async {
-                        self.finishGuidanceFlow()
+                        if self.isUncertainFixedTargetSelection {
+                            self.startNutritionGoalLoadingFlow()
+                        } else {
+                            self.finishGuidanceFlow()
+                        }
                     }
                 }
             @unknown default:
                 DispatchQueue.main.async {
-                    self.finishGuidanceFlow()
+                    if self.isUncertainFixedTargetSelection {
+                        self.startNutritionGoalLoadingFlow()
+                    } else {
+                        self.finishGuidanceFlow()
+                    }
                 }
             }
         }
@@ -985,6 +1082,7 @@ extension GuidanceVC{
     }
     
     func saveGuidanceNutritionGoals() {
+        hideStandaloneNutritionGoalIfNeeded()
         if isFixedTargetFlowEnabled, let goalBarrierIndex = indexOfStep(.goalBarrier) {
             moveToStep(index: goalBarrierIndex, animated: true)
             return
@@ -1133,8 +1231,7 @@ extension GuidanceVC{
         case .goal: return goalVm
         case .goalBarrier: return goalBarrierVm
         case .removeBarrier: return removeBarrierVm
-//        case .nutritionGoal: return isFixedTargetFlowEnabled ? fixedTargetNutritionGoalVm : nutritionGoalVm
-        case .nutritionGoal: return fixedTargetNutritionGoalVm
+        case .nutritionGoal: return isFixedTargetFlowEnabled ? fixedTargetNutritionGoalVm : nutritionGoalVm
         case .reminderPrompt: return reminderPromptVm
         }
     }
@@ -1197,6 +1294,15 @@ extension GuidanceVC{
     }
 
     func sendBasicRequest(continueTo step: FlowStep = .caloriesResultBase) {
+        requestGuidanceBasicConsumption { [weak self] success in
+            guard let self = self, success else { return }
+            DispatchQueue.main.async {
+                self.moveToStep(index: self.indexOfStep(step) ?? self.currentIndex, animated: true)
+            }
+        }
+    }
+
+    func requestGuidanceBasicConsumption(completion: ((Bool) -> Void)? = nil) {
 //        QuestinonaireMsgModel.shared.events = estimatedDailyActivityLevel()
         let param = [
             "gender": "\(QuestinonaireMsgModel.shared.sex)",
@@ -1214,8 +1320,10 @@ extension GuidanceVC{
             QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
             DispatchQueue.main.async {
                 self.caloriesResultBaseVm.caloriesTextField.text = caloriesText
-                self.moveToStep(index: self.indexOfStep(step) ?? self.currentIndex, animated: true)
+                completion?(true)
             }
+        } failure: { _ in
+            completion?(false)
         }
     }
 
@@ -1264,9 +1372,12 @@ extension GuidanceVC{
             QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(calories)"
 
             DispatchQueue.main.async {
-//                self.nutritionGoalVm.refreshContentFromModel()
-                self.fixedTargetNutritionGoalVm.applyEditingMode(isEditable: true)
-                self.fixedTargetNutritionGoalVm.refreshContentFromModel()
+                if self.isFixedTargetFlowEnabled {
+                    self.fixedTargetNutritionGoalVm.applyEditingMode(isEditable: true)
+                    self.fixedTargetNutritionGoalVm.refreshContentFromModel()
+                } else {
+                    self.nutritionGoalVm.refreshContentFromModel()
+                }
                 self.finishLoadingVm.completeLoading()
             }
         }

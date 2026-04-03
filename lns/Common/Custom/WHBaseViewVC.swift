@@ -791,7 +791,7 @@ extension WHBaseViewVC {
                                            failure: ((String?) -> Void)? = nil) {
         guard let param = buildPendingGuidancePartSurveyV2Parameters() else {
             MCToast.mc_remove()
-            failure?("请先完善引导信息")
+//            failure?("请先完善引导信息")
             return
         }
 
