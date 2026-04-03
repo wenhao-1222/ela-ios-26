@@ -352,6 +352,7 @@
 		A75590292CC780BC00642659 /* GoalSetCircleTemplateVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75590282CC780AB00642659 /* GoalSetCircleTemplateVM.swift */; };
 		A755902B2CC7841800642659 /* GoalSetCircleTemplateAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A755902A2CC7841600642659 /* GoalSetCircleTemplateAlertVM.swift */; };
 		A755BBA62DE837B7000E1B3D /* JournalNaturalDetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A755BBA52DE837AA000E1B3D /* JournalNaturalDetailCell.swift */; };
+		A755BBA82F8E0A6D000E1B3D /* JournalAICoachTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A755BBA72F8E0A63000E1B3D /* JournalAICoachTableViewCell.swift */; };
 		A755ED5A2DF2F16E00005C3A /* GuideTotalSecondVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A755ED592DF2F16A00005C3A /* GuideTotalSecondVM.swift */; };
 		A755ED5D2DF68DFE00005C3A /* GuideTotalThirdVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A755ED5C2DF68DFA00005C3A /* GuideTotalThirdVM.swift */; };
 		A755ED5F2DF691DE00005C3A /* GuideTotalProgressVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A755ED5E2DF691D600005C3A /* GuideTotalProgressVM.swift */; };
@@ -1801,6 +1802,7 @@
 		A75590282CC780AB00642659 /* GoalSetCircleTemplateVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSetCircleTemplateVM.swift; sourceTree = "<group>"; };
 		A755902A2CC7841600642659 /* GoalSetCircleTemplateAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalSetCircleTemplateAlertVM.swift; sourceTree = "<group>"; };
 		A755BBA52DE837AA000E1B3D /* JournalNaturalDetailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalNaturalDetailCell.swift; sourceTree = "<group>"; };
+		A755BBA72F8E0A63000E1B3D /* JournalAICoachTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalAICoachTableViewCell.swift; sourceTree = "<group>"; };
 		A755ED592DF2F16A00005C3A /* GuideTotalSecondVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalSecondVM.swift; sourceTree = "<group>"; };
 		A755ED5C2DF68DFA00005C3A /* GuideTotalThirdVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalThirdVM.swift; sourceTree = "<group>"; };
 		A755ED5E2DF691D600005C3A /* GuideTotalProgressVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProgressVM.swift; sourceTree = "<group>"; };
@@ -4280,6 +4282,7 @@
 				A72F5FF22DB7623C0098C782 /* JournalRemarkViewCell.swift */,
 				A7BFEA322E5EEFA100FD45A1 /* JournalRemarkTableViewCell.swift */,
 				A755BBA52DE837AA000E1B3D /* JournalNaturalDetailCell.swift */,
+				A755BBA72F8E0A63000E1B3D /* JournalAICoachTableViewCell.swift */,
 				ECCCA7CF2BECB76A00696807 /* NewQuestionnaireTypeVM.swift */,
 				ECD04BAE2BEDE32800B8069B /* JounalCollectionViewCell.swift */,
 				ECD04BB02BEDF74F00B8069B /* JournalCollectionView.swift */,
@@ -7491,6 +7494,7 @@
 				EC4DE2DB2BCE72390090A7BD /* PlanShareTopVM.swift in Sources */,
 				A71C548F2E6AD2BD00FB797D /* MarketListHeroCell.swift in Sources */,
 				A7BFEA332E5EEFA400FD45A1 /* JournalRemarkTableViewCell.swift in Sources */,
+				A755BBA82F8E0A6D000E1B3D /* JournalAICoachTableViewCell.swift in Sources */,
 				A733236D2D93E6A90065BF0A /* NotificationNames.swift in Sources */,
 				A72401412E55A8F2005DB615 /* PersonalTopFuncItemVM.swift in Sources */,
 				ECF0BFD62BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift in Sources */,

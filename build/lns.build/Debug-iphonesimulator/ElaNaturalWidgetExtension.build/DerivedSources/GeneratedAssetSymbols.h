@@ -240,11 +240,11 @@ static NSString * const ACColorNameWidgetBgColor AC_SWIFT_PRIVATE = @"widget_bg_
 /// The "widget_text_color" asset catalog color resource.
 static NSString * const ACColorNameWidgetTextColor AC_SWIFT_PRIVATE = @"widget_text_color";
 
+/// The "DietPlanImage1" asset catalog image resource.
+static NSString * const ACImageNameDietPlanImage1 AC_SWIFT_PRIVATE = @"DietPlanImage1";
+
 /// The "Image" asset catalog image resource.
 static NSString * const ACImageNameImage AC_SWIFT_PRIVATE = @"Image";
-
-/// The "Image 1" asset catalog image resource.
-static NSString * const ACImageNameImage1 AC_SWIFT_PRIVATE = @"Image 1";
 
 /// The "ai_alert_close_icon" asset catalog image resource.
 static NSString * const ACImageNameAiAlertCloseIcon AC_SWIFT_PRIVATE = @"ai_alert_close_icon";
@@ -269,6 +269,12 @@ static NSString * const ACImageNameAiCameraFlashIcon AC_SWIFT_PRIVATE = @"ai_cam
 
 /// The "ai_camera_flash_normal_icon" asset catalog image resource.
 static NSString * const ACImageNameAiCameraFlashNormalIcon AC_SWIFT_PRIVATE = @"ai_camera_flash_normal_icon";
+
+/// The "ai_coach_icon" asset catalog image resource.
+static NSString * const ACImageNameAiCoachIcon AC_SWIFT_PRIVATE = @"ai_coach_icon";
+
+/// The "ai_coach_pro_icon" asset catalog image resource.
+static NSString * const ACImageNameAiCoachProIcon AC_SWIFT_PRIVATE = @"ai_coach_pro_icon";
 
 /// The "ai_identify_fail_img" asset catalog image resource.
 static NSString * const ACImageNameAiIdentifyFailImg AC_SWIFT_PRIVATE = @"ai_identify_fail_img";
@@ -654,11 +660,47 @@ static NSString * const ACImageNameElaPricePerBg AC_SWIFT_PRIVATE = @"ela_price_
 /// The "ela_pro_2_bg" asset catalog image resource.
 static NSString * const ACImageNameElaPro2Bg AC_SWIFT_PRIVATE = @"ela_pro_2_bg";
 
+/// The "ela_pro_3_guidance_icon" asset catalog image resource.
+static NSString * const ACImageNameElaPro3GuidanceIcon AC_SWIFT_PRIVATE = @"ela_pro_3_guidance_icon";
+
+/// The "ela_pro_3_guidance_img" asset catalog image resource.
+static NSString * const ACImageNameElaPro3GuidanceImg AC_SWIFT_PRIVATE = @"ela_pro_3_guidance_img";
+
 /// The "ela_pro_4_bg" asset catalog image resource.
 static NSString * const ACImageNameElaPro4Bg AC_SWIFT_PRIVATE = @"ela_pro_4_bg";
 
+/// The "ela_pro_ai_attention_icon" asset catalog image resource.
+static NSString * const ACImageNameElaProAiAttentionIcon AC_SWIFT_PRIVATE = @"ela_pro_ai_attention_icon";
+
+/// The "ela_pro_ai_bg" asset catalog image resource.
+static NSString * const ACImageNameElaProAiBg AC_SWIFT_PRIVATE = @"ela_pro_ai_bg";
+
+/// The "ela_pro_ai_bg_icon" asset catalog image resource.
+static NSString * const ACImageNameElaProAiBgIcon AC_SWIFT_PRIVATE = @"ela_pro_ai_bg_icon";
+
+/// The "ela_pro_ai_end_icon" asset catalog image resource.
+static NSString * const ACImageNameElaProAiEndIcon AC_SWIFT_PRIVATE = @"ela_pro_ai_end_icon";
+
+/// The "ela_pro_ai_pre_bg" asset catalog image resource.
+static NSString * const ACImageNameElaProAiPreBg AC_SWIFT_PRIVATE = @"ela_pro_ai_pre_bg";
+
+/// The "ela_pro_ai_pre_circle_icon" asset catalog image resource.
+static NSString * const ACImageNameElaProAiPreCircleIcon AC_SWIFT_PRIVATE = @"ela_pro_ai_pre_circle_icon";
+
 /// The "ela_pro_bg" asset catalog image resource.
 static NSString * const ACImageNameElaProBg AC_SWIFT_PRIVATE = @"ela_pro_bg";
+
+/// The "ela_pro_close_icon" asset catalog image resource.
+static NSString * const ACImageNameElaProCloseIcon AC_SWIFT_PRIVATE = @"ela_pro_close_icon";
+
+/// The "ela_pro_expired_alert_bg" asset catalog image resource.
+static NSString * const ACImageNameElaProExpiredAlertBg AC_SWIFT_PRIVATE = @"ela_pro_expired_alert_bg";
+
+/// The "ela_pro_expired_alert_icon" asset catalog image resource.
+static NSString * const ACImageNameElaProExpiredAlertIcon AC_SWIFT_PRIVATE = @"ela_pro_expired_alert_icon";
+
+/// The "ela_pro_guidance_icon" asset catalog image resource.
+static NSString * const ACImageNameElaProGuidanceIcon AC_SWIFT_PRIVATE = @"ela_pro_guidance_icon";
 
 /// The "ela_pro_icon" asset catalog image resource.
 static NSString * const ACImageNameElaProIcon AC_SWIFT_PRIVATE = @"ela_pro_icon";
@@ -987,6 +1029,18 @@ static NSString * const ACImageNameGoalCircleQuestion AC_SWIFT_PRIVATE = @"goal_
 /// The "goal_zhineng_icon" asset catalog image resource.
 static NSString * const ACImageNameGoalZhinengIcon AC_SWIFT_PRIVATE = @"goal_zhineng_icon";
 
+/// The "guidance_pro_intro_img" asset catalog image resource.
+static NSString * const ACImageNameGuidanceProIntroImg AC_SWIFT_PRIVATE = @"guidance_pro_intro_img";
+
+/// The "guidance_pro_promise_img" asset catalog image resource.
+static NSString * const ACImageNameGuidanceProPromiseImg AC_SWIFT_PRIVATE = @"guidance_pro_promise_img";
+
+/// The "guidance_pro_subscribe_img" asset catalog image resource.
+static NSString * const ACImageNameGuidanceProSubscribeImg AC_SWIFT_PRIVATE = @"guidance_pro_subscribe_img";
+
+/// The "guidance_pro_trial_img" asset catalog image resource.
+static NSString * const ACImageNameGuidanceProTrialImg AC_SWIFT_PRIVATE = @"guidance_pro_trial_img";
+
 /// The "guide_back_button" asset catalog image resource.
 static NSString * const ACImageNameGuideBackButton AC_SWIFT_PRIVATE = @"guide_back_button";
 
@@ -1047,8 +1101,14 @@ static NSString * const ACImageNameGuideSecondImgCover AC_SWIFT_PRIVATE = @"guid
 /// The "guide_second_jijian" asset catalog image resource.
 static NSString * const ACImageNameGuideSecondJijian AC_SWIFT_PRIVATE = @"guide_second_jijian";
 
+/// The "guide_second_jijian_gray" asset catalog image resource.
+static NSString * const ACImageNameGuideSecondJijianGray AC_SWIFT_PRIVATE = @"guide_second_jijian_gray";
+
 /// The "guide_second_zhuanye" asset catalog image resource.
 static NSString * const ACImageNameGuideSecondZhuanye AC_SWIFT_PRIVATE = @"guide_second_zhuanye";
+
+/// The "guide_second_zhuanye_gray" asset catalog image resource.
+static NSString * const ACImageNameGuideSecondZhuanyeGray AC_SWIFT_PRIVATE = @"guide_second_zhuanye_gray";
 
 /// The "guide_third_add_icon" asset catalog image resource.
 static NSString * const ACImageNameGuideThirdAddIcon AC_SWIFT_PRIVATE = @"guide_third_add_icon";
@@ -1425,8 +1485,14 @@ static NSString * const ACImageNameMineFuncArrow AC_SWIFT_PRIVATE = @"mine_func_
 /// The "mine_func_arrow_icon" asset catalog image resource.
 static NSString * const ACImageNameMineFuncArrowIcon AC_SWIFT_PRIVATE = @"mine_func_arrow_icon";
 
+/// The "mine_func_community" asset catalog image resource.
+static NSString * const ACImageNameMineFuncCommunity AC_SWIFT_PRIVATE = @"mine_func_community";
+
 /// The "mine_func_create_plan" asset catalog image resource.
 static NSString * const ACImageNameMineFuncCreatePlan AC_SWIFT_PRIVATE = @"mine_func_create_plan";
+
+/// The "mine_func_ela_pro" asset catalog image resource.
+static NSString * const ACImageNameMineFuncElaPro AC_SWIFT_PRIVATE = @"mine_func_ela_pro";
 
 /// The "mine_func_fasting" asset catalog image resource.
 static NSString * const ACImageNameMineFuncFasting AC_SWIFT_PRIVATE = @"mine_func_fasting";
@@ -1814,6 +1880,42 @@ static NSString * const ACImageNameStreakIconGray5 AC_SWIFT_PRIVATE = @"streak_i
 
 /// The "streak_icon_gray_6" asset catalog image resource.
 static NSString * const ACImageNameStreakIconGray6 AC_SWIFT_PRIVATE = @"streak_icon_gray_6";
+
+/// The "survey_subscription_coach_ic_01" asset catalog image resource.
+static NSString * const ACImageNameSurveySubscriptionCoachIc01 AC_SWIFT_PRIVATE = @"survey_subscription_coach_ic_01";
+
+/// The "survey_subscription_coach_ic_02" asset catalog image resource.
+static NSString * const ACImageNameSurveySubscriptionCoachIc02 AC_SWIFT_PRIVATE = @"survey_subscription_coach_ic_02";
+
+/// The "survey_subscription_coach_ic_03" asset catalog image resource.
+static NSString * const ACImageNameSurveySubscriptionCoachIc03 AC_SWIFT_PRIVATE = @"survey_subscription_coach_ic_03";
+
+/// The "survey_subscription_coach_ic_04" asset catalog image resource.
+static NSString * const ACImageNameSurveySubscriptionCoachIc04 AC_SWIFT_PRIVATE = @"survey_subscription_coach_ic_04";
+
+/// The "survey_subscription_mealplan_ic_01" asset catalog image resource.
+static NSString * const ACImageNameSurveySubscriptionMealplanIc01 AC_SWIFT_PRIVATE = @"survey_subscription_mealplan_ic_01";
+
+/// The "survey_subscription_mealplan_ic_02" asset catalog image resource.
+static NSString * const ACImageNameSurveySubscriptionMealplanIc02 AC_SWIFT_PRIVATE = @"survey_subscription_mealplan_ic_02";
+
+/// The "survey_subscription_mealplan_ic_03" asset catalog image resource.
+static NSString * const ACImageNameSurveySubscriptionMealplanIc03 AC_SWIFT_PRIVATE = @"survey_subscription_mealplan_ic_03";
+
+/// The "survey_subscription_mealplan_ic_04" asset catalog image resource.
+static NSString * const ACImageNameSurveySubscriptionMealplanIc04 AC_SWIFT_PRIVATE = @"survey_subscription_mealplan_ic_04";
+
+/// The "survey_subscription_mealplan_ic_05" asset catalog image resource.
+static NSString * const ACImageNameSurveySubscriptionMealplanIc05 AC_SWIFT_PRIVATE = @"survey_subscription_mealplan_ic_05";
+
+/// The "survey_subscription_mealplan_ic_06" asset catalog image resource.
+static NSString * const ACImageNameSurveySubscriptionMealplanIc06 AC_SWIFT_PRIVATE = @"survey_subscription_mealplan_ic_06";
+
+/// The "survey_subscription_more_ic_01" asset catalog image resource.
+static NSString * const ACImageNameSurveySubscriptionMoreIc01 AC_SWIFT_PRIVATE = @"survey_subscription_more_ic_01";
+
+/// The "survey_subscription_more_ic_02" asset catalog image resource.
+static NSString * const ACImageNameSurveySubscriptionMoreIc02 AC_SWIFT_PRIVATE = @"survey_subscription_more_ic_02";
 
 /// The "tabbar_center_icon" asset catalog image resource.
 static NSString * const ACImageNameTabbarCenterIcon AC_SWIFT_PRIVATE = @"tabbar_center_icon";

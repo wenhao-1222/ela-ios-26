@@ -781,21 +781,21 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
-			<string>ACImageNameImage</string>
+			<string>ACImageNameDietPlanImage1</string>
 			<key>relativePath</key>
-			<string>./common/Image.imageset</string>
+			<string>./dietplan/DietPlanImage1.imageset</string>
 			<key>swiftSymbol</key>
-			<string>image</string>
+			<string>dietPlanImage1</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
-			<string>ACImageNameImage1</string>
+			<string>ACImageNameImage</string>
 			<key>relativePath</key>
-			<string>./dietplan/Image 1.imageset</string>
+			<string>./common/Image.imageset</string>
 			<key>swiftSymbol</key>
-			<string>image1</string>
+			<string>image</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>
@@ -876,6 +876,26 @@
 			<string>./ai/ai_camera_flash_normal_icon.imageset</string>
 			<key>swiftSymbol</key>
 			<string>aiCameraFlashNormalIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameAiCoachIcon</string>
+			<key>relativePath</key>
+			<string>./aicoach/ai_coach_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>aiCoachIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameAiCoachProIcon</string>
+			<key>relativePath</key>
+			<string>./aicoach/ai_coach_pro_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>aiCoachProIcon</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>
@@ -2161,6 +2181,26 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameElaPro3GuidanceIcon</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_3_guidance_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaPro3GuidanceIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaPro3GuidanceImg</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_3_guidance_img.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaPro3GuidanceImg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameElaPro4Bg</string>
 			<key>relativePath</key>
 			<string>./pro/ela_pro_4_bg.imageset</string>
@@ -2171,11 +2211,111 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameElaProAiAttentionIcon</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_ai_attention_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProAiAttentionIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProAiBg</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_ai_bg.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProAiBg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProAiBgIcon</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_ai_bg_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProAiBgIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProAiEndIcon</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_ai_end_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProAiEndIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProAiPreBg</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_ai_pre_bg.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProAiPreBg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProAiPreCircleIcon</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_ai_pre_circle_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProAiPreCircleIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameElaProBg</string>
 			<key>relativePath</key>
 			<string>./pro/ela_pro_bg.imageset</string>
 			<key>swiftSymbol</key>
 			<string>elaProBg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProCloseIcon</string>
+			<key>relativePath</key>
+			<string>./common/ela_pro_close_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProCloseIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProExpiredAlertBg</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_expired_alert_bg.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProExpiredAlertBg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProExpiredAlertIcon</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_expired_alert_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProExpiredAlertIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProGuidanceIcon</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_guidance_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProGuidanceIcon</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>
@@ -3271,6 +3411,46 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameGuidanceProIntroImg</string>
+			<key>relativePath</key>
+			<string>./pro/guidance_pro_intro_img.imageset</string>
+			<key>swiftSymbol</key>
+			<string>guidanceProIntroImg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameGuidanceProPromiseImg</string>
+			<key>relativePath</key>
+			<string>./pro/guidance_pro_promise_img.imageset</string>
+			<key>swiftSymbol</key>
+			<string>guidanceProPromiseImg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameGuidanceProSubscribeImg</string>
+			<key>relativePath</key>
+			<string>./pro/guidance_pro_subscribe_img.imageset</string>
+			<key>swiftSymbol</key>
+			<string>guidanceProSubscribeImg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameGuidanceProTrialImg</string>
+			<key>relativePath</key>
+			<string>./pro/guidance_pro_trial_img.imageset</string>
+			<key>swiftSymbol</key>
+			<string>guidanceProTrialImg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameGuideBackButton</string>
 			<key>relativePath</key>
 			<string>./guide/guide_back_button.imageset</string>
@@ -3471,11 +3651,31 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameGuideSecondJijianGray</string>
+			<key>relativePath</key>
+			<string>./guide/guide_second_jijian_gray.imageset</string>
+			<key>swiftSymbol</key>
+			<string>guideSecondJijianGray</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameGuideSecondZhuanye</string>
 			<key>relativePath</key>
 			<string>./guide/guide_second_zhuanye.imageset</string>
 			<key>swiftSymbol</key>
 			<string>guideSecondZhuanye</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameGuideSecondZhuanyeGray</string>
+			<key>relativePath</key>
+			<string>./guide/guide_second_zhuanye_gray.imageset</string>
+			<key>swiftSymbol</key>
+			<string>guideSecondZhuanyeGray</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>
@@ -4731,11 +4931,31 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameMineFuncCommunity</string>
+			<key>relativePath</key>
+			<string>./mine/mine_func_community.imageset</string>
+			<key>swiftSymbol</key>
+			<string>mineFuncCommunity</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameMineFuncCreatePlan</string>
 			<key>relativePath</key>
 			<string>./mine/mine_func_create_plan.imageset</string>
 			<key>swiftSymbol</key>
 			<string>mineFuncCreatePlan</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameMineFuncElaPro</string>
+			<key>relativePath</key>
+			<string>./mine/mine_func_ela_pro.imageset</string>
+			<key>swiftSymbol</key>
+			<string>mineFuncElaPro</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>
@@ -6026,6 +6246,126 @@
 			<string>./winner_streak/streak_icon_gray_6.imageset</string>
 			<key>swiftSymbol</key>
 			<string>streakIconGray6</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSurveySubscriptionCoachIc01</string>
+			<key>relativePath</key>
+			<string>./pro/icon/survey_subscription_coach_ic_01.imageset</string>
+			<key>swiftSymbol</key>
+			<string>surveySubscriptionCoachIc01</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSurveySubscriptionCoachIc02</string>
+			<key>relativePath</key>
+			<string>./pro/icon/survey_subscription_coach_ic_02.imageset</string>
+			<key>swiftSymbol</key>
+			<string>surveySubscriptionCoachIc02</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSurveySubscriptionCoachIc03</string>
+			<key>relativePath</key>
+			<string>./pro/icon/survey_subscription_coach_ic_03.imageset</string>
+			<key>swiftSymbol</key>
+			<string>surveySubscriptionCoachIc03</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSurveySubscriptionCoachIc04</string>
+			<key>relativePath</key>
+			<string>./pro/icon/survey_subscription_coach_ic_04.imageset</string>
+			<key>swiftSymbol</key>
+			<string>surveySubscriptionCoachIc04</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSurveySubscriptionMealplanIc01</string>
+			<key>relativePath</key>
+			<string>./pro/icon/survey_subscription_mealplan_ic_01.imageset</string>
+			<key>swiftSymbol</key>
+			<string>surveySubscriptionMealplanIc01</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSurveySubscriptionMealplanIc02</string>
+			<key>relativePath</key>
+			<string>./pro/icon/survey_subscription_mealplan_ic_02.imageset</string>
+			<key>swiftSymbol</key>
+			<string>surveySubscriptionMealplanIc02</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSurveySubscriptionMealplanIc03</string>
+			<key>relativePath</key>
+			<string>./pro/icon/survey_subscription_mealplan_ic_03.imageset</string>
+			<key>swiftSymbol</key>
+			<string>surveySubscriptionMealplanIc03</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSurveySubscriptionMealplanIc04</string>
+			<key>relativePath</key>
+			<string>./pro/icon/survey_subscription_mealplan_ic_04.imageset</string>
+			<key>swiftSymbol</key>
+			<string>surveySubscriptionMealplanIc04</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSurveySubscriptionMealplanIc05</string>
+			<key>relativePath</key>
+			<string>./pro/icon/survey_subscription_mealplan_ic_05.imageset</string>
+			<key>swiftSymbol</key>
+			<string>surveySubscriptionMealplanIc05</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSurveySubscriptionMealplanIc06</string>
+			<key>relativePath</key>
+			<string>./pro/icon/survey_subscription_mealplan_ic_06.imageset</string>
+			<key>swiftSymbol</key>
+			<string>surveySubscriptionMealplanIc06</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSurveySubscriptionMoreIc01</string>
+			<key>relativePath</key>
+			<string>./pro/icon/survey_subscription_more_ic_01.imageset</string>
+			<key>swiftSymbol</key>
+			<string>surveySubscriptionMoreIc01</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSurveySubscriptionMoreIc02</string>
+			<key>relativePath</key>
+			<string>./pro/icon/survey_subscription_more_ic_02.imageset</string>
+			<key>swiftSymbol</key>
+			<string>surveySubscriptionMoreIc02</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>

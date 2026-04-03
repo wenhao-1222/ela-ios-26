@@ -83,6 +83,8 @@ class UserInfoModel {
     var hidden_survery_button_status = true
     //是否显示喝水功能
     var show_water_status = true
+    //是否显示AI教练入口
+    var show_ai_coach_status = true
     ///是否显示下一餐饮食建议
     var show_next_advice = true
     //体重单位  1  kg   2  斤   3 磅
@@ -216,6 +218,9 @@ extension UserInfoModel{
         self.statSportDataToTarget = dict.stringValueForKey(key: "target_include_sport_calories")
         WidgetUtils().saveSportInTargetStatus(status: dict.stringValueForKey(key: "target_include_sport_calories"))
         self.show_water_status = dict.stringValueForKey(key: "drinking_water_status") == "1" ? true : false
+        if dict.allKeys.contains(where: { "\($0)" == "ai_coach_status" }) {
+            self.show_ai_coach_status = dict.stringValueForKey(key: "ai_coach_status") == "1" ? true : false
+        }
         self.show_next_advice = dict.stringValueForKey(key: "next_meal_advice_status") == "1" ? true : false
 //        NotificationCenter.default.post(name: NOTIFI_NAME_SHORTCUTITEMS, object: nil)
 //        self.setABTestModel(dict: WHUtils.getDictionaryFromJSONString(jsonString: dict.stringValueForKey(key: "params")))

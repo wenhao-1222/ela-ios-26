@@ -262,11 +262,11 @@ extension ColorResource {
 @available(iOS 11.0, macOS 10.7, tvOS 11.0, *)
 extension ImageResource {
 
+    /// The "DietPlanImage1" asset catalog image resource.
+    static let dietPlanImage1 = ImageResource(name: "DietPlanImage1", bundle: resourceBundle)
+
     /// The "Image" asset catalog image resource.
     static let image = ImageResource(name: "Image", bundle: resourceBundle)
-
-    /// The "Image 1" asset catalog image resource.
-    static let image1 = ImageResource(name: "Image 1", bundle: resourceBundle)
 
     /// The "ai_alert_close_icon" asset catalog image resource.
     static let aiAlertCloseIcon = ImageResource(name: "ai_alert_close_icon", bundle: resourceBundle)
@@ -291,6 +291,12 @@ extension ImageResource {
 
     /// The "ai_camera_flash_normal_icon" asset catalog image resource.
     static let aiCameraFlashNormalIcon = ImageResource(name: "ai_camera_flash_normal_icon", bundle: resourceBundle)
+
+    /// The "ai_coach_icon" asset catalog image resource.
+    static let aiCoachIcon = ImageResource(name: "ai_coach_icon", bundle: resourceBundle)
+
+    /// The "ai_coach_pro_icon" asset catalog image resource.
+    static let aiCoachProIcon = ImageResource(name: "ai_coach_pro_icon", bundle: resourceBundle)
 
     /// The "ai_identify_fail_img" asset catalog image resource.
     static let aiIdentifyFailImg = ImageResource(name: "ai_identify_fail_img", bundle: resourceBundle)
@@ -676,11 +682,47 @@ extension ImageResource {
     /// The "ela_pro_2_bg" asset catalog image resource.
     static let elaPro2Bg = ImageResource(name: "ela_pro_2_bg", bundle: resourceBundle)
 
+    /// The "ela_pro_3_guidance_icon" asset catalog image resource.
+    static let elaPro3GuidanceIcon = ImageResource(name: "ela_pro_3_guidance_icon", bundle: resourceBundle)
+
+    /// The "ela_pro_3_guidance_img" asset catalog image resource.
+    static let elaPro3GuidanceImg = ImageResource(name: "ela_pro_3_guidance_img", bundle: resourceBundle)
+
     /// The "ela_pro_4_bg" asset catalog image resource.
     static let elaPro4Bg = ImageResource(name: "ela_pro_4_bg", bundle: resourceBundle)
 
+    /// The "ela_pro_ai_attention_icon" asset catalog image resource.
+    static let elaProAiAttentionIcon = ImageResource(name: "ela_pro_ai_attention_icon", bundle: resourceBundle)
+
+    /// The "ela_pro_ai_bg" asset catalog image resource.
+    static let elaProAiBg = ImageResource(name: "ela_pro_ai_bg", bundle: resourceBundle)
+
+    /// The "ela_pro_ai_bg_icon" asset catalog image resource.
+    static let elaProAiBgIcon = ImageResource(name: "ela_pro_ai_bg_icon", bundle: resourceBundle)
+
+    /// The "ela_pro_ai_end_icon" asset catalog image resource.
+    static let elaProAiEndIcon = ImageResource(name: "ela_pro_ai_end_icon", bundle: resourceBundle)
+
+    /// The "ela_pro_ai_pre_bg" asset catalog image resource.
+    static let elaProAiPreBg = ImageResource(name: "ela_pro_ai_pre_bg", bundle: resourceBundle)
+
+    /// The "ela_pro_ai_pre_circle_icon" asset catalog image resource.
+    static let elaProAiPreCircleIcon = ImageResource(name: "ela_pro_ai_pre_circle_icon", bundle: resourceBundle)
+
     /// The "ela_pro_bg" asset catalog image resource.
     static let elaProBg = ImageResource(name: "ela_pro_bg", bundle: resourceBundle)
+
+    /// The "ela_pro_close_icon" asset catalog image resource.
+    static let elaProCloseIcon = ImageResource(name: "ela_pro_close_icon", bundle: resourceBundle)
+
+    /// The "ela_pro_expired_alert_bg" asset catalog image resource.
+    static let elaProExpiredAlertBg = ImageResource(name: "ela_pro_expired_alert_bg", bundle: resourceBundle)
+
+    /// The "ela_pro_expired_alert_icon" asset catalog image resource.
+    static let elaProExpiredAlertIcon = ImageResource(name: "ela_pro_expired_alert_icon", bundle: resourceBundle)
+
+    /// The "ela_pro_guidance_icon" asset catalog image resource.
+    static let elaProGuidanceIcon = ImageResource(name: "ela_pro_guidance_icon", bundle: resourceBundle)
 
     /// The "ela_pro_icon" asset catalog image resource.
     static let elaProIcon = ImageResource(name: "ela_pro_icon", bundle: resourceBundle)
@@ -1009,6 +1051,18 @@ extension ImageResource {
     /// The "goal_zhineng_icon" asset catalog image resource.
     static let goalZhinengIcon = ImageResource(name: "goal_zhineng_icon", bundle: resourceBundle)
 
+    /// The "guidance_pro_intro_img" asset catalog image resource.
+    static let guidanceProIntroImg = ImageResource(name: "guidance_pro_intro_img", bundle: resourceBundle)
+
+    /// The "guidance_pro_promise_img" asset catalog image resource.
+    static let guidanceProPromiseImg = ImageResource(name: "guidance_pro_promise_img", bundle: resourceBundle)
+
+    /// The "guidance_pro_subscribe_img" asset catalog image resource.
+    static let guidanceProSubscribeImg = ImageResource(name: "guidance_pro_subscribe_img", bundle: resourceBundle)
+
+    /// The "guidance_pro_trial_img" asset catalog image resource.
+    static let guidanceProTrialImg = ImageResource(name: "guidance_pro_trial_img", bundle: resourceBundle)
+
     /// The "guide_back_button" asset catalog image resource.
     static let guideBackButton = ImageResource(name: "guide_back_button", bundle: resourceBundle)
 
@@ -1069,8 +1123,14 @@ extension ImageResource {
     /// The "guide_second_jijian" asset catalog image resource.
     static let guideSecondJijian = ImageResource(name: "guide_second_jijian", bundle: resourceBundle)
 
+    /// The "guide_second_jijian_gray" asset catalog image resource.
+    static let guideSecondJijianGray = ImageResource(name: "guide_second_jijian_gray", bundle: resourceBundle)
+
     /// The "guide_second_zhuanye" asset catalog image resource.
     static let guideSecondZhuanye = ImageResource(name: "guide_second_zhuanye", bundle: resourceBundle)
+
+    /// The "guide_second_zhuanye_gray" asset catalog image resource.
+    static let guideSecondZhuanyeGray = ImageResource(name: "guide_second_zhuanye_gray", bundle: resourceBundle)
 
     /// The "guide_third_add_icon" asset catalog image resource.
     static let guideThirdAddIcon = ImageResource(name: "guide_third_add_icon", bundle: resourceBundle)
@@ -1447,8 +1507,14 @@ extension ImageResource {
     /// The "mine_func_arrow_icon" asset catalog image resource.
     static let mineFuncArrowIcon = ImageResource(name: "mine_func_arrow_icon", bundle: resourceBundle)
 
+    /// The "mine_func_community" asset catalog image resource.
+    static let mineFuncCommunity = ImageResource(name: "mine_func_community", bundle: resourceBundle)
+
     /// The "mine_func_create_plan" asset catalog image resource.
     static let mineFuncCreatePlan = ImageResource(name: "mine_func_create_plan", bundle: resourceBundle)
+
+    /// The "mine_func_ela_pro" asset catalog image resource.
+    static let mineFuncElaPro = ImageResource(name: "mine_func_ela_pro", bundle: resourceBundle)
 
     /// The "mine_func_fasting" asset catalog image resource.
     static let mineFuncFasting = ImageResource(name: "mine_func_fasting", bundle: resourceBundle)
@@ -1836,6 +1902,42 @@ extension ImageResource {
 
     /// The "streak_icon_gray_6" asset catalog image resource.
     static let streakIconGray6 = ImageResource(name: "streak_icon_gray_6", bundle: resourceBundle)
+
+    /// The "survey_subscription_coach_ic_01" asset catalog image resource.
+    static let surveySubscriptionCoachIc01 = ImageResource(name: "survey_subscription_coach_ic_01", bundle: resourceBundle)
+
+    /// The "survey_subscription_coach_ic_02" asset catalog image resource.
+    static let surveySubscriptionCoachIc02 = ImageResource(name: "survey_subscription_coach_ic_02", bundle: resourceBundle)
+
+    /// The "survey_subscription_coach_ic_03" asset catalog image resource.
+    static let surveySubscriptionCoachIc03 = ImageResource(name: "survey_subscription_coach_ic_03", bundle: resourceBundle)
+
+    /// The "survey_subscription_coach_ic_04" asset catalog image resource.
+    static let surveySubscriptionCoachIc04 = ImageResource(name: "survey_subscription_coach_ic_04", bundle: resourceBundle)
+
+    /// The "survey_subscription_mealplan_ic_01" asset catalog image resource.
+    static let surveySubscriptionMealplanIc01 = ImageResource(name: "survey_subscription_mealplan_ic_01", bundle: resourceBundle)
+
+    /// The "survey_subscription_mealplan_ic_02" asset catalog image resource.
+    static let surveySubscriptionMealplanIc02 = ImageResource(name: "survey_subscription_mealplan_ic_02", bundle: resourceBundle)
+
+    /// The "survey_subscription_mealplan_ic_03" asset catalog image resource.
+    static let surveySubscriptionMealplanIc03 = ImageResource(name: "survey_subscription_mealplan_ic_03", bundle: resourceBundle)
+
+    /// The "survey_subscription_mealplan_ic_04" asset catalog image resource.
+    static let surveySubscriptionMealplanIc04 = ImageResource(name: "survey_subscription_mealplan_ic_04", bundle: resourceBundle)
+
+    /// The "survey_subscription_mealplan_ic_05" asset catalog image resource.
+    static let surveySubscriptionMealplanIc05 = ImageResource(name: "survey_subscription_mealplan_ic_05", bundle: resourceBundle)
+
+    /// The "survey_subscription_mealplan_ic_06" asset catalog image resource.
+    static let surveySubscriptionMealplanIc06 = ImageResource(name: "survey_subscription_mealplan_ic_06", bundle: resourceBundle)
+
+    /// The "survey_subscription_more_ic_01" asset catalog image resource.
+    static let surveySubscriptionMoreIc01 = ImageResource(name: "survey_subscription_more_ic_01", bundle: resourceBundle)
+
+    /// The "survey_subscription_more_ic_02" asset catalog image resource.
+    static let surveySubscriptionMoreIc02 = ImageResource(name: "survey_subscription_more_ic_02", bundle: resourceBundle)
 
     /// The "tabbar_center_icon" asset catalog image resource.
     static let tabbarCenterIcon = ImageResource(name: "tabbar_center_icon", bundle: resourceBundle)
@@ -4030,19 +4132,19 @@ extension SwiftUI.ShapeStyle where Self == SwiftUI.Color {
 @available(macCatalyst, unavailable)
 extension AppKit.NSImage {
 
-    /// The "Image" asset catalog image.
-    static var image: AppKit.NSImage {
+    /// The "DietPlanImage1" asset catalog image.
+    static var dietPlanImage1: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
-        .init(resource: .image)
+        .init(resource: .dietPlanImage1)
 #else
         .init()
 #endif
     }
 
-    /// The "Image 1" asset catalog image.
-    static var image1: AppKit.NSImage {
+    /// The "Image" asset catalog image.
+    static var image: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
-        .init(resource: .image1)
+        .init(resource: .image)
 #else
         .init()
 #endif
@@ -4115,6 +4217,24 @@ extension AppKit.NSImage {
     static var aiCameraFlashNormalIcon: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .aiCameraFlashNormalIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_coach_icon" asset catalog image.
+    static var aiCoachIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .aiCoachIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_coach_pro_icon" asset catalog image.
+    static var aiCoachProIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .aiCoachProIcon)
 #else
         .init()
 #endif
@@ -5272,6 +5392,24 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "ela_pro_3_guidance_icon" asset catalog image.
+    static var elaPro3GuidanceIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaPro3GuidanceIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_3_guidance_img" asset catalog image.
+    static var elaPro3GuidanceImg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaPro3GuidanceImg)
+#else
+        .init()
+#endif
+    }
+
     /// The "ela_pro_4_bg" asset catalog image.
     static var elaPro4Bg: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
@@ -5281,10 +5419,100 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "ela_pro_ai_attention_icon" asset catalog image.
+    static var elaProAiAttentionIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProAiAttentionIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ai_bg" asset catalog image.
+    static var elaProAiBg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProAiBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ai_bg_icon" asset catalog image.
+    static var elaProAiBgIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProAiBgIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ai_end_icon" asset catalog image.
+    static var elaProAiEndIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProAiEndIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ai_pre_bg" asset catalog image.
+    static var elaProAiPreBg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProAiPreBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ai_pre_circle_icon" asset catalog image.
+    static var elaProAiPreCircleIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProAiPreCircleIcon)
+#else
+        .init()
+#endif
+    }
+
     /// The "ela_pro_bg" asset catalog image.
     static var elaProBg: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .elaProBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_close_icon" asset catalog image.
+    static var elaProCloseIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProCloseIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_expired_alert_bg" asset catalog image.
+    static var elaProExpiredAlertBg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProExpiredAlertBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_expired_alert_icon" asset catalog image.
+    static var elaProExpiredAlertIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProExpiredAlertIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_guidance_icon" asset catalog image.
+    static var elaProGuidanceIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProGuidanceIcon)
 #else
         .init()
 #endif
@@ -6271,6 +6499,42 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "guidance_pro_intro_img" asset catalog image.
+    static var guidanceProIntroImg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .guidanceProIntroImg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "guidance_pro_promise_img" asset catalog image.
+    static var guidanceProPromiseImg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .guidanceProPromiseImg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "guidance_pro_subscribe_img" asset catalog image.
+    static var guidanceProSubscribeImg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .guidanceProSubscribeImg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "guidance_pro_trial_img" asset catalog image.
+    static var guidanceProTrialImg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .guidanceProTrialImg)
+#else
+        .init()
+#endif
+    }
+
     /// The "guide_back_button" asset catalog image.
     static var guideBackButton: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
@@ -6451,10 +6715,28 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "guide_second_jijian_gray" asset catalog image.
+    static var guideSecondJijianGray: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .guideSecondJijianGray)
+#else
+        .init()
+#endif
+    }
+
     /// The "guide_second_zhuanye" asset catalog image.
     static var guideSecondZhuanye: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .guideSecondZhuanye)
+#else
+        .init()
+#endif
+    }
+
+    /// The "guide_second_zhuanye_gray" asset catalog image.
+    static var guideSecondZhuanyeGray: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .guideSecondZhuanyeGray)
 #else
         .init()
 #endif
@@ -7585,10 +7867,28 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "mine_func_community" asset catalog image.
+    static var mineFuncCommunity: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .mineFuncCommunity)
+#else
+        .init()
+#endif
+    }
+
     /// The "mine_func_create_plan" asset catalog image.
     static var mineFuncCreatePlan: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .mineFuncCreatePlan)
+#else
+        .init()
+#endif
+    }
+
+    /// The "mine_func_ela_pro" asset catalog image.
+    static var mineFuncElaPro: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .mineFuncElaPro)
 #else
         .init()
 #endif
@@ -8755,6 +9055,114 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "survey_subscription_coach_ic_01" asset catalog image.
+    static var surveySubscriptionCoachIc01: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .surveySubscriptionCoachIc01)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_coach_ic_02" asset catalog image.
+    static var surveySubscriptionCoachIc02: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .surveySubscriptionCoachIc02)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_coach_ic_03" asset catalog image.
+    static var surveySubscriptionCoachIc03: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .surveySubscriptionCoachIc03)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_coach_ic_04" asset catalog image.
+    static var surveySubscriptionCoachIc04: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .surveySubscriptionCoachIc04)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_mealplan_ic_01" asset catalog image.
+    static var surveySubscriptionMealplanIc01: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .surveySubscriptionMealplanIc01)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_mealplan_ic_02" asset catalog image.
+    static var surveySubscriptionMealplanIc02: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .surveySubscriptionMealplanIc02)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_mealplan_ic_03" asset catalog image.
+    static var surveySubscriptionMealplanIc03: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .surveySubscriptionMealplanIc03)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_mealplan_ic_04" asset catalog image.
+    static var surveySubscriptionMealplanIc04: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .surveySubscriptionMealplanIc04)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_mealplan_ic_05" asset catalog image.
+    static var surveySubscriptionMealplanIc05: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .surveySubscriptionMealplanIc05)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_mealplan_ic_06" asset catalog image.
+    static var surveySubscriptionMealplanIc06: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .surveySubscriptionMealplanIc06)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_more_ic_01" asset catalog image.
+    static var surveySubscriptionMoreIc01: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .surveySubscriptionMoreIc01)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_more_ic_02" asset catalog image.
+    static var surveySubscriptionMoreIc02: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .surveySubscriptionMoreIc02)
+#else
+        .init()
+#endif
+    }
+
     /// The "tabbar_center_icon" asset catalog image.
     static var tabbarCenterIcon: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
@@ -9681,19 +10089,19 @@ extension AppKit.NSImage {
 @available(watchOS, unavailable)
 extension UIKit.UIImage {
 
-    /// The "Image" asset catalog image.
-    static var image: UIKit.UIImage {
+    /// The "DietPlanImage1" asset catalog image.
+    static var dietPlanImage1: UIKit.UIImage {
 #if !os(watchOS)
-        .init(resource: .image)
+        .init(resource: .dietPlanImage1)
 #else
         .init()
 #endif
     }
 
-    /// The "Image 1" asset catalog image.
-    static var image1: UIKit.UIImage {
+    /// The "Image" asset catalog image.
+    static var image: UIKit.UIImage {
 #if !os(watchOS)
-        .init(resource: .image1)
+        .init(resource: .image)
 #else
         .init()
 #endif
@@ -9766,6 +10174,24 @@ extension UIKit.UIImage {
     static var aiCameraFlashNormalIcon: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .aiCameraFlashNormalIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_coach_icon" asset catalog image.
+    static var aiCoachIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .aiCoachIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_coach_pro_icon" asset catalog image.
+    static var aiCoachProIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .aiCoachProIcon)
 #else
         .init()
 #endif
@@ -10923,6 +11349,24 @@ extension UIKit.UIImage {
 #endif
     }
 
+    /// The "ela_pro_3_guidance_icon" asset catalog image.
+    static var elaPro3GuidanceIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaPro3GuidanceIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_3_guidance_img" asset catalog image.
+    static var elaPro3GuidanceImg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaPro3GuidanceImg)
+#else
+        .init()
+#endif
+    }
+
     /// The "ela_pro_4_bg" asset catalog image.
     static var elaPro4Bg: UIKit.UIImage {
 #if !os(watchOS)
@@ -10932,10 +11376,100 @@ extension UIKit.UIImage {
 #endif
     }
 
+    /// The "ela_pro_ai_attention_icon" asset catalog image.
+    static var elaProAiAttentionIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProAiAttentionIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ai_bg" asset catalog image.
+    static var elaProAiBg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProAiBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ai_bg_icon" asset catalog image.
+    static var elaProAiBgIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProAiBgIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ai_end_icon" asset catalog image.
+    static var elaProAiEndIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProAiEndIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ai_pre_bg" asset catalog image.
+    static var elaProAiPreBg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProAiPreBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ai_pre_circle_icon" asset catalog image.
+    static var elaProAiPreCircleIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProAiPreCircleIcon)
+#else
+        .init()
+#endif
+    }
+
     /// The "ela_pro_bg" asset catalog image.
     static var elaProBg: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .elaProBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_close_icon" asset catalog image.
+    static var elaProCloseIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProCloseIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_expired_alert_bg" asset catalog image.
+    static var elaProExpiredAlertBg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProExpiredAlertBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_expired_alert_icon" asset catalog image.
+    static var elaProExpiredAlertIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProExpiredAlertIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_guidance_icon" asset catalog image.
+    static var elaProGuidanceIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProGuidanceIcon)
 #else
         .init()
 #endif
@@ -11922,6 +12456,42 @@ extension UIKit.UIImage {
 #endif
     }
 
+    /// The "guidance_pro_intro_img" asset catalog image.
+    static var guidanceProIntroImg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .guidanceProIntroImg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "guidance_pro_promise_img" asset catalog image.
+    static var guidanceProPromiseImg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .guidanceProPromiseImg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "guidance_pro_subscribe_img" asset catalog image.
+    static var guidanceProSubscribeImg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .guidanceProSubscribeImg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "guidance_pro_trial_img" asset catalog image.
+    static var guidanceProTrialImg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .guidanceProTrialImg)
+#else
+        .init()
+#endif
+    }
+
     /// The "guide_back_button" asset catalog image.
     static var guideBackButton: UIKit.UIImage {
 #if !os(watchOS)
@@ -12102,10 +12672,28 @@ extension UIKit.UIImage {
 #endif
     }
 
+    /// The "guide_second_jijian_gray" asset catalog image.
+    static var guideSecondJijianGray: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .guideSecondJijianGray)
+#else
+        .init()
+#endif
+    }
+
     /// The "guide_second_zhuanye" asset catalog image.
     static var guideSecondZhuanye: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .guideSecondZhuanye)
+#else
+        .init()
+#endif
+    }
+
+    /// The "guide_second_zhuanye_gray" asset catalog image.
+    static var guideSecondZhuanyeGray: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .guideSecondZhuanyeGray)
 #else
         .init()
 #endif
@@ -13236,10 +13824,28 @@ extension UIKit.UIImage {
 #endif
     }
 
+    /// The "mine_func_community" asset catalog image.
+    static var mineFuncCommunity: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .mineFuncCommunity)
+#else
+        .init()
+#endif
+    }
+
     /// The "mine_func_create_plan" asset catalog image.
     static var mineFuncCreatePlan: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .mineFuncCreatePlan)
+#else
+        .init()
+#endif
+    }
+
+    /// The "mine_func_ela_pro" asset catalog image.
+    static var mineFuncElaPro: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .mineFuncElaPro)
 #else
         .init()
 #endif
@@ -14401,6 +15007,114 @@ extension UIKit.UIImage {
     static var streakIconGray6: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .streakIconGray6)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_coach_ic_01" asset catalog image.
+    static var surveySubscriptionCoachIc01: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .surveySubscriptionCoachIc01)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_coach_ic_02" asset catalog image.
+    static var surveySubscriptionCoachIc02: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .surveySubscriptionCoachIc02)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_coach_ic_03" asset catalog image.
+    static var surveySubscriptionCoachIc03: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .surveySubscriptionCoachIc03)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_coach_ic_04" asset catalog image.
+    static var surveySubscriptionCoachIc04: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .surveySubscriptionCoachIc04)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_mealplan_ic_01" asset catalog image.
+    static var surveySubscriptionMealplanIc01: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .surveySubscriptionMealplanIc01)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_mealplan_ic_02" asset catalog image.
+    static var surveySubscriptionMealplanIc02: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .surveySubscriptionMealplanIc02)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_mealplan_ic_03" asset catalog image.
+    static var surveySubscriptionMealplanIc03: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .surveySubscriptionMealplanIc03)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_mealplan_ic_04" asset catalog image.
+    static var surveySubscriptionMealplanIc04: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .surveySubscriptionMealplanIc04)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_mealplan_ic_05" asset catalog image.
+    static var surveySubscriptionMealplanIc05: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .surveySubscriptionMealplanIc05)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_mealplan_ic_06" asset catalog image.
+    static var surveySubscriptionMealplanIc06: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .surveySubscriptionMealplanIc06)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_more_ic_01" asset catalog image.
+    static var surveySubscriptionMoreIc01: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .surveySubscriptionMoreIc01)
+#else
+        .init()
+#endif
+    }
+
+    /// The "survey_subscription_more_ic_02" asset catalog image.
+    static var surveySubscriptionMoreIc02: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .surveySubscriptionMoreIc02)
 #else
         .init()
 #endif

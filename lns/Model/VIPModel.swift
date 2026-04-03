@@ -15,9 +15,10 @@ enum VIP_TYPE: Int {
 }
 
 enum VIP_STATUS: Int {
-    case valid = 1
-    case expired = 2
-    case banned = 3
+    case invalid = 0  //从来没买过
+    case valid = 1    //有效会员
+    case expired = 2  //会员已过期
+    case banned = 3   //会员权益已封禁
 }
 
 class VIPModel: NSObject {
@@ -54,7 +55,11 @@ class VIPModel: NSObject {
 //        model.vipType = VIP_TYPE(rawValue: vipTypeValue) ?? .none
         
         let statusValue = Int(dict.stringValueForKey(key: "status")) ?? 0
-        model.status = VIP_STATUS(rawValue: statusValue)
+        if statusValue > 0 {
+            model.status = VIP_STATUS(rawValue: statusValue)
+        }else{
+            model.status = .invalid
+        }
         
         let lifetimeValue = dict.stringValueForKey(key: "isLifetime")
 //        model.isLifetime = lifetimeValue == "1" || model.vipType == .lifetime

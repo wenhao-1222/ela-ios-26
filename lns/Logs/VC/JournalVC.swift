@@ -27,6 +27,10 @@ class JournalVC: WHBaseViewVC {
     var logsGuideStep = 0
     private var needsInitialScrollToToday = true
     
+    var isAiCoachSurveyFinished = "-1"//是否做过AI教练问卷    0  未做过   1  做过     -1 本地状态：还未请求数据
+    var isVip = "-1"  //0  非VIP   1  VIP     -1 本地状态：还未请求数据
+    var aiCoachDict = NSDictionary()
+    
 //    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
 //        self.naviVm.bgView.addShadow(opacity: 0.05)
 //    }
@@ -143,6 +147,7 @@ class JournalVC: WHBaseViewVC {
         sendNutritionsDefaultCircleRequest()
         getActivityListRequest()
         sendProVipMsgRequest()
+        sendCoachLaunchRequest()
 //        BodyDataUploadManager().dealOldSqlData()
         
         initUI()
@@ -605,6 +610,48 @@ extension JournalVC{
         let vc = PlanListVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
+    func gotoAicoachAction() {
+        if isAiCoachSurveyFinished == "1"{//做过问卷
+            if VIPModel().status == .valid{
+                
+            }else if VIPModel().status == .expired{
+                
+            }
+        }else if isAiCoachSurveyFinished == "0"{//未做过问卷
+            
+        }else {
+            self.sendCoachLaunchRequest()
+        }
+        
+        if !VIPModel().isValidVip{//非VIP ，重新做问卷，走付费墙
+            let vc = AIGuidanceVC()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }else if VIPModel().isValidVip{//VIp 直接进AI教练 PDF  报告页
+            let vc = AICoachPreVC()
+//            vc.dataDict = aiCoachDict
+            self.navigationController?.pushViewController(vc, animated: true)
+        }else{
+            
+        }
+        
+        
+//        if isAiCoachSurveyFinished == "0"{
+//            let vc = AIGuidanceVC()
+//            self.navigationController?.pushViewController(vc, animated: true)
+//        }else if isAiCoachSurveyFinished == "1"{
+//            if VIPModel().isValidVip{
+//                let vc = ElaProVC()
+//                vc.showPriceOnly = true
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            }else{
+//                let vc = AICoachPreVC()
+//                vc.dataDict = aiCoachDict
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            }
+//        }else{
+//
+//        }
+    }
     @objc func editStatus() {
         self.isEdit = true
         self.naviEditStatusVm.delButton.isHidden = true
@@ -995,7 +1042,7 @@ extension JournalVC:UICollectionViewDelegate,UICollectionViewDataSource{
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JounalCollectionCell", for: indexPath)as? JounalCollectionCell
-//        cell?.isVisible = isCellVisible(indexPath: indexPath)
+        //        cell?.isVisible = isCellVisible(indexPath: indexPath)
         
         let day = daySourceArray[indexPath.row]as? String ?? "\(Date().nextDay(days: 0))"
         cell?.setQueryDate(date: day,isEdit: self.isEdit)
@@ -1006,14 +1053,14 @@ extension JournalVC:UICollectionViewDelegate,UICollectionViewDataSource{
                 self.naviVm.changeBgAlpha(offsetY: offsetY)
                 self.naviEditStatusVm.changeBgAlpha(offsetY: offsetY)
             }
-//            if self.offsetYArray.count > indexPath.row{
-//                self.offsetYArray[indexPath.row] = offsetY
-//            }
+            //            if self.offsetYArray.count > indexPath.row{
+            //                self.offsetYArray[indexPath.row] = offsetY
+            //            }
         }
         cell?.updateFitnessBlock = {(fitnessType)in
-//            if fitnessType == "[]"{
-//                return
-//            }
+            //            if fitnessType == "[]"{
+            //                return
+            //            }
             if self.queryDay == day{
                 if fitnessType.count > 0 {
                     self.naviVm.fitnessLabel.text = fitnessType.mc_clipFromPrefix(to: 1)
@@ -1021,6 +1068,9 @@ extension JournalVC:UICollectionViewDelegate,UICollectionViewDataSource{
                     self.naviVm.fitnessLabel.text = "-"
                 }
             }
+        }
+        cell?.aiCoachTapBlock = {()in
+            self.gotoAicoachAction()
         }
         
         return cell ?? JounalCollectionCell()
@@ -1240,6 +1290,24 @@ extension JournalVC{
             DLLog(message: "sendProVipMsgRequest:\(dataDict)")
             DLLog(message: "sendProVipMsgRequest model: uid=\(vipModel.uid),status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime)  ,expireTime=\(vipModel.expireTime)")
             
+        }
+    }
+    func sendCoachLaunchRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_launch, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendCoachLaunchRequest:\(foodsMsgDict)")
+            
+            /*   未购买会员，未做AI问卷
+             {
+                 isAiCoachSurveyFinished = 0;
+                 isVip = 0;
+             }
+             */
+            
+            self.isAiCoachSurveyFinished = foodsMsgDict.stringValueForKey(key: "isAiCoachSurveyFinished")
+            self.isVip = foodsMsgDict.stringValueForKey(key: "isVip")
+            self.aiCoachDict = foodsMsgDict
         }
     }
 }

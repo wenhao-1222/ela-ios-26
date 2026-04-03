@@ -39,6 +39,7 @@ class JounalCollectionCell: UICollectionViewCell {
     
     var offsetChangeBlock:((CGFloat)->())?
     var updateFitnessBlock:((String)->())?
+    var aiCoachTapBlock:(()->())?
     
 //    /// 最大收缩偏移
 //    private let maxShrinkOffset: CGFloat = kFitWidth(120)
@@ -176,6 +177,7 @@ class JounalCollectionCell: UICollectionViewCell {
 //        vi.register(JournalRemarkViewCell.classForCoder(), forCellReuseIdentifier: "JournalRemarkViewCell")
         vi.register(JournalRemarkTableViewCell.classForCoder(), forCellReuseIdentifier: "JournalRemarkTableViewCell")
         vi.register(JournalNaturalDetailCell.classForCoder(), forCellReuseIdentifier: "JournalNaturalDetailCell")
+        vi.register(JournalAICoachTableViewCell.classForCoder(), forCellReuseIdentifier: "JournalAICoachTableViewCell")
         vi.contentInsetAdjustmentBehavior = .never
         if #available(iOS 15.0, *) {
             vi.sectionHeaderTopPadding = 0
@@ -208,7 +210,7 @@ class JounalCollectionCell: UICollectionViewCell {
             msgDict.setValue("\(text)", forKey: "notes")
             self.currentDayMsg = msgDict
 //            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .none)
-            let remarkSection = UserInfoModel.shared.show_water_status ? 2 : 1
+            let remarkSection = self.remarkSectionIndex
             self.tableView.reloadRows(at: [IndexPath(row: 0, section: remarkSection)], with: .none)
             self.logsModel.isUpload = false
             LogsSQLiteManager.getInstance().insertNotes(sDate: self.queryDay, notestr: text)
@@ -710,6 +712,26 @@ extension JounalCollectionCell{
 }
 
 extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
+    private var hasAICoachSection: Bool {
+        UserInfoModel.shared.show_ai_coach_status
+    }
+    
+    private var mealsSectionIndex: Int {
+        hasAICoachSection ? 1 : 0
+    }
+    
+    private var waterSectionIndex: Int? {
+        UserInfoModel.shared.show_water_status ? mealsSectionIndex + 1 : nil
+    }
+    
+    private var remarkSectionIndex: Int {
+        mealsSectionIndex + 1 + (UserInfoModel.shared.show_water_status ? 1 : 0)
+    }
+    
+    private var naturalDetailSectionIndex: Int {
+        remarkSectionIndex + (UserInfoModel.shared.abTestModel.diet_log_note == .A ? 1 : 0)
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "closeEditStatus"), object: nil)
         self.goalVm.winnerPopView.closeSelfAction()
@@ -734,6 +756,10 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
         var sectionNum = 1
         
+        if hasAICoachSection {
+            sectionNum += 1
+        }
+        
         if UserInfoModel.shared.show_water_status{
             sectionNum += 1
         }
@@ -747,14 +773,23 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
         return sectionNum
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
+        if hasAICoachSection && section == 0 {
+            return 1
+        } else if section == mealsSectionIndex {
             return UserInfoModel.shared.mealsNumber
         }else{
             return 1
         }
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
+        if hasAICoachSection && indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "JournalAICoachTableViewCell") as? JournalAICoachTableViewCell
+            cell?.updateUI(showPro: UserInfoModel.shared.vipModel.isValidVip == false)
+            cell?.tapBlock = { [weak self] in
+                self?.handleAICoachTap()
+            }
+            return cell ?? JournalAICoachTableViewCell()
+        } else if indexPath.section == mealsSectionIndex {
             let cell = tableView.dequeueReusableCell(withIdentifier: "JournalTableViewCell") as? JournalTableViewCell
             
             if self.mealsArray.count > 0 && self.mealsArray.count > indexPath.row{
@@ -809,7 +844,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
             }
             return cell ?? JournalTableViewCell()
         }else{
-            if indexPath.section == 1{
+            if indexPath.section == waterSectionIndex{
                 if UserInfoModel.shared.show_water_status{
                     let cell = tableView.dequeueReusableCell(withIdentifier: "JournalWaterViewCell")as? JournalWaterViewCell
                     cell?.updateUI(num: self.currentDayMsg.stringValueForKey(key: "waterNum"))
@@ -820,7 +855,9 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                         vc.totalNum = 0
                         vc.numChangeBlock = {(waterNum)in
                             self.currentDayMsg.setValue(waterNum, forKey: "waterNum")
-                            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .fade)
+                            if let waterSectionIndex = self.waterSectionIndex {
+                                self.tableView.reloadRows(at: [IndexPath(row: 0, section: waterSectionIndex)], with: .fade)
+                            }
                         }
                         self.controller.navigationController?.pushViewController(vc, animated: true)
                     }
@@ -830,7 +867,9 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                         vc.totalNum = self.currentDayMsg.stringValueForKey(key: "waterNum").intValue
                         vc.numChangeBlock = {(waterNum)in
                             self.currentDayMsg.setValue(waterNum, forKey: "waterNum")
-                            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .fade)
+                            if let waterSectionIndex = self.waterSectionIndex {
+                                self.tableView.reloadRows(at: [IndexPath(row: 0, section: waterSectionIndex)], with: .fade)
+                            }
                         }
                         self.controller.navigationController?.pushViewController(vc, animated: true)
                     }
@@ -840,74 +879,20 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                         LogsSQLiteManager.getInstance().insertWater(sDate: self.queryDay, waterNum: "0")
                     }
                     return cell ?? JournalWaterViewCell()
-                }else if UserInfoModel.shared.abTestModel.diet_log_note == .A{
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "JournalRemarkTableViewCell") as? JournalRemarkTableViewCell
-                    cell?.updateContent(remark: self.currentDayMsg.stringValueForKey(key: "notes"),
-                                        notesTag: self.currentDayMsg.stringValueForKey(key: "notesTag"),
-                                        queryDay: self.queryDay)
-                    
-                    cell?.remarkBlock = {()in
-                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "cancelEditStatus"), object: nil)
-                        self.remarkAlertVm.showView()
-                    }
-//                    
-//                    cell?.detalBlock = {()in
-//                        self.naturalDetailTapAction()
-//                    }
-//                    
-                    return cell ?? JournalRemarkTableViewCell()
-                }else{
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "JournalNaturalDetailCell") as? JournalNaturalDetailCell
-                    cell?.detalBlock = {()in
-                        self.naturalDetailTapAction()
-                    }
-                    cell?.detalOldBlock = {()in
-                        self.naturalDetailOldTapAction()
-                    }
-                    
-                    return cell ?? JournalNaturalDetailCell()
                 }
-            }else if indexPath.section == 2{
-                if UserInfoModel.shared.abTestModel.diet_log_note == .A{
-                    if UserInfoModel.shared.show_water_status {
-                        let cell = tableView.dequeueReusableCell(withIdentifier: "JournalRemarkTableViewCell") as? JournalRemarkTableViewCell
-                        cell?.updateContent(remark: self.currentDayMsg.stringValueForKey(key: "notes"),
-                                            notesTag: self.currentDayMsg.stringValueForKey(key: "notesTag"),
-                                            queryDay: self.queryDay)
-
-                        cell?.remarkBlock = {()in
-                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "cancelEditStatus"), object: nil)
-                            self.remarkAlertVm.showView()
-                        }
-//                        
-//                        cell?.detalBlock = {()in
-//                            self.naturalDetailTapAction()
-//                        }
-                        
-                        return cell ?? JournalRemarkTableViewCell()
-                    }else{
-                        let cell = tableView.dequeueReusableCell(withIdentifier: "JournalNaturalDetailCell") as? JournalNaturalDetailCell
-                        cell?.detalBlock = {()in
-                            self.naturalDetailTapAction()
-                        }
-                        cell?.detalOldBlock = {()in
-                            self.naturalDetailOldTapAction()
-                        }
-                        
-                        return cell ?? JournalNaturalDetailCell()
-                    }
-                }else{
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "JournalNaturalDetailCell") as? JournalNaturalDetailCell
-                    cell?.detalBlock = {()in
-                        self.naturalDetailTapAction()
-                    }
-                    cell?.detalOldBlock = {()in
-                        self.naturalDetailOldTapAction()
-                    }
-                    
-                    return cell ?? JournalNaturalDetailCell()
+            }
+            if UserInfoModel.shared.abTestModel.diet_log_note == .A && indexPath.section == remarkSectionIndex {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "JournalRemarkTableViewCell") as? JournalRemarkTableViewCell
+                cell?.updateContent(remark: self.currentDayMsg.stringValueForKey(key: "notes"),
+                                    notesTag: self.currentDayMsg.stringValueForKey(key: "notesTag"),
+                                    queryDay: self.queryDay)
+                
+                cell?.remarkBlock = {()in
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "cancelEditStatus"), object: nil)
+                    self.remarkAlertVm.showView()
                 }
-            }else{
+                return cell ?? JournalRemarkTableViewCell()
+            } else if indexPath.section == naturalDetailSectionIndex {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "JournalNaturalDetailCell") as? JournalNaturalDetailCell
                 cell?.detalBlock = {()in
                     self.naturalDetailTapAction()
@@ -918,10 +903,17 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                 
                 return cell ?? JournalNaturalDetailCell()
             }
+            
+            let cell = UITableViewCell()
+            cell.backgroundColor = .clear
+            cell.selectionStyle = .none
+            return cell
         }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 {
+        if hasAICoachSection && indexPath.section == 0 {
+            return kFitWidth(76)
+        } else if indexPath.section == mealsSectionIndex {
             if self.mealsArray.count > 0 && self.mealsArray.count > indexPath.row{
                 let foodsArr = self.mealsArray[indexPath.row]as? NSArray ?? []
                 if foodsArr.count > 0 {
@@ -972,7 +964,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
 //        }else{
 //            return nil
 //        }
-        if section == 0 && isEdit {
+        if section == mealsSectionIndex && isEdit {
             return editSelectAllVm
         }
         return nil
@@ -983,13 +975,21 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
 //        }else{
 //            return 0
 //        }
-        if section == 0 && isEdit {
+        if section == mealsSectionIndex && isEdit {
             return editSelectAllVm.frame.height
         }
         return CGFloat.leastNormalMagnitude
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        if hasAICoachSection && indexPath.section == 0 {
+            handleAICoachTap()
+        }
+    }
+}
+
+extension JounalCollectionCell {
+    func handleAICoachTap() {
+        aiCoachTapBlock?()
     }
 }
 
@@ -1569,4 +1569,3 @@ extension JounalCollectionCell{
         return view
     }
 }
-

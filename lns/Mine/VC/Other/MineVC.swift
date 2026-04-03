@@ -13,9 +13,9 @@ import AliyunPlayer
 class MineVC : WHBaseViewVC {
     
     var bottomGap = kFitWidth(20)
-    var isAiCoachSurveyFinished = "-1"//是否做过AI教练问卷    0  未做过   1  做过     -1 本地状态：还未请求数据
-    var isVip = "-1"  //0  非VIP   1  VIP     -1 本地状态：还未请求数据
-    var aiCoachDict = NSDictionary()
+//    var isAiCoachSurveyFinished = "-1"//是否做过AI教练问卷    0  未做过   1  做过     -1 本地状态：还未请求数据
+//    var isVip = "-1"  //0  非VIP   1  VIP     -1 本地状态：还未请求数据
+//    var aiCoachDict = NSDictionary()
     
     override func viewWillAppear(_ animated: Bool) {
         self.personalTopVm.updateUI()
@@ -29,7 +29,7 @@ class MineVC : WHBaseViewVC {
     public override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.fd_interactivePopDisabled = false
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
-        sendCoachLaunchRequest()
+//        sendCoachLaunchRequest()
     }
     
     override func viewDidLoad() {
@@ -88,9 +88,9 @@ class MineVC : WHBaseViewVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.bodyDataVm.tapBlock = {()in
-            self.gotoAicoachAction()
-//            let vc = BodyDataDetailVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
+//            self.gotoAicoachAction()
+            let vc = BodyDataDetailVC()
+            self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.fastingVm.tapBlock = {()in
             let vc = LogsMealsAlertSetVC()
@@ -162,31 +162,13 @@ extension MineVC{
         self.navigationController?.pushViewController(vc, animated: true)
     }
     func gotoAicoachAction() {
-        if isVip == "0"{//非VIP ，重新做问卷，走付费墙
-            let vc = AIGuidanceVC()
-            self.navigationController?.pushViewController(vc, animated: true)
-        }else if isVip == "1"{//VIp 直接进AI教练 PDF  报告页
-            let vc = AICoachPreVC()
-            vc.dataDict = aiCoachDict
-            self.navigationController?.pushViewController(vc, animated: true)
-        }else{
-            
-        }
-        
-        
-//        if isAiCoachSurveyFinished == "0"{
+//        if isVip == "0"{//非VIP ，重新做问卷，走付费墙
 //            let vc = AIGuidanceVC()
 //            self.navigationController?.pushViewController(vc, animated: true)
-//        }else if isAiCoachSurveyFinished == "1"{
-//            if VIPModel().isValidVip{
-//                let vc = ElaProVC()
-//                vc.showPriceOnly = true
-//                self.navigationController?.pushViewController(vc, animated: true)
-//            }else{
-//                let vc = AICoachPreVC()
-//                vc.dataDict = aiCoachDict
-//                self.navigationController?.pushViewController(vc, animated: true)
-//            }
+//        }else if isVip == "1"{//VIp 直接进AI教练 PDF  报告页
+//            let vc = AICoachPreVC()
+//            vc.dataDict = aiCoachDict
+//            self.navigationController?.pushViewController(vc, animated: true)
 //        }else{
 //            
 //        }
@@ -251,21 +233,21 @@ extension MineVC{
             self.funcBottomVm.updateForumUnReadNum(unReadNum: dataObj.stringValueForKey(key: "unreadCount"))
         }
     }
-    func sendCoachLaunchRequest() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_launch, parameters: nil) { responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendCoachLaunchRequest:\(foodsMsgDict)")
-            
-            /*   未购买会员，未做AI问卷
-             {
-                 isAiCoachSurveyFinished = 0;
-                 isVip = 0;
-             }
-             */
-            
-            self.isAiCoachSurveyFinished = foodsMsgDict.stringValueForKey(key: "isAiCoachSurveyFinished")
-            self.isVip = foodsMsgDict.stringValueForKey(key: "isVip")
-        }
-    }
+//    func sendCoachLaunchRequest() {
+//        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_launch, parameters: nil) { responseObject in
+//            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+//            let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
+//            DLLog(message: "sendCoachLaunchRequest:\(foodsMsgDict)")
+//            
+//            /*   未购买会员，未做AI问卷
+//             {
+//                 isAiCoachSurveyFinished = 0;
+//                 isVip = 0;
+//             }
+//             */
+//            
+//            self.isAiCoachSurveyFinished = foodsMsgDict.stringValueForKey(key: "isAiCoachSurveyFinished")
+//            self.isVip = foodsMsgDict.stringValueForKey(key: "isVip")
+//        }
+//    }
 }
