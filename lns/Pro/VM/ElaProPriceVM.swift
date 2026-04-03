@@ -56,6 +56,8 @@ class ElaProPriceVM: UIView {
     var purchaseSuccessBlock: (() -> ())?
     var protocalTapBlock: (() -> ())?
     var purchaseLoadingStateChangeBlock: ((Bool) -> ())?
+    var bizType = ""
+    var isPurchased = ""
     
     private let selectedBlue = WHColor_16(colorStr: "1677F2")
     private let normalTextColor = UIColor.COLOR_TEXT_TITLE_0f1214
@@ -88,6 +90,7 @@ class ElaProPriceVM: UIView {
     private var isPurchasing = false
     private var shouldSyncRenewalSwitchAfterSettings = false
     private var isAgreementConfirmVisible = false
+    private var hasStartedLoading = false
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -97,7 +100,6 @@ class ElaProPriceVM: UIView {
         initUI()
         observeAppBecomeActive()
         refreshPlanCards()
-        sendProProductListRequest()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -1550,15 +1552,30 @@ extension ElaProPriceVM{
 }
 
 extension ElaProPriceVM{
+    func startLoadingIfNeeded() {
+        guard !hasStartedLoading else { return }
+        hasStartedLoading = true
+        sendProProductListRequest()
+    }
+
     func sendProProductListRequest() {
+        var parameters = [String: Any]()
+        if !bizType.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            parameters["bizType"] = bizType
+        }
+        if !isPurchased.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            parameters["isPurchased"] = isPurchased
+        }
+
+        DLLog(message: "sendProProductListRequest params:\(parameters)")
         WHNetworkUtil.shareManager().POST(urlString: URL_pro_product,
-                                          parameters: nil,
+                                          parameters: parameters.isEmpty ? nil : parameters as [String: AnyObject],
                                           success: { [weak self] responseObject in
             guard let self = self else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
-            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendProProductListRequest:\(dataDict)")
-            let rawProducts = (dataDict["products"] as? NSArray) ?? (dataDict["product"] as? NSArray) ?? []
+            let rawProducts = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendProProductListRequest:\(rawProducts)")
+//            let rawProducts = (dataDict["products"] as? NSArray) ?? (dataDict["product"] as? NSArray) ?? []
             let products = rawProducts.compactMap { item -> RemotePlanProduct? in
                 guard let dict = item as? NSDictionary else { return nil }
                 return RemotePlanProduct(dict: dict)

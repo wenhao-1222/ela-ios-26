@@ -313,6 +313,7 @@ extension AIGuidanceVC {
     func enterElaProPage() {
         let vc = ElaProVC()
         vc.showPriceOnly = true
+        vc.priceBizType = "2"
         vc.popToRootOnClose = true
         vc.enterAICoachPreOnPurchaseSuccess = true
         navigationController?.pushViewController(vc, animated: true)

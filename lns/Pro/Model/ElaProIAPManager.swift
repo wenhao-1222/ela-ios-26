@@ -14,7 +14,7 @@ enum ElaProIAPConfig {
     static let subscriptionGroupName = "Pro"
     static let subscriptionGroupID = "21956560"
     static var monthProductID = ""
-    static var annualProductID = ""
+    static var annualProductID = "annual_yeal_new"
     static var lifetimeProductID = ""
 }
 
@@ -210,18 +210,22 @@ final class ElaProIAPManager: NSObject {
                                        completion: @escaping (ElaProSubscriptionHistoryState) -> Void) {
         let trimmedProductID = productID.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedProductID.isEmpty else {
+            DLLog(message: "[ElaProIAP][HISTORY] skip check: empty productID")
             completion(.unknown)
             return
         }
 
         guard #available(iOS 15.0, *) else {
+            DLLog(message: "[ElaProIAP][HISTORY] skip check: StoreKit2 unavailable, productID=\(trimmedProductID)")
             completion(.unknown)
             return
         }
 
+        DLLog(message: "[ElaProIAP][HISTORY] start check, productID=\(trimmedProductID)")
         Task {
             let state = await self.subscriptionHistoryStateStoreKit2(productID: trimmedProductID)
             DispatchQueue.main.async {
+                DLLog(message: "[ElaProIAP][HISTORY] finish check, productID=\(trimmedProductID), state=\(self.debugDescription(for: state))")
                 completion(state)
             }
         }
@@ -357,29 +361,47 @@ final class ElaProIAPManager: NSObject {
     @available(iOS 15.0, *)
     private func subscriptionHistoryStateStoreKit2(productID: String) async -> ElaProSubscriptionHistoryState {
         do {
+            DLLog(message: "[ElaProIAP][HISTORY] load products from StoreKit2, productID=\(productID)")
             let products = try await Product.products(for: [productID])
             guard let product = products.first(where: { $0.id == productID }) else {
+                DLLog(message: "[ElaProIAP][HISTORY] product not found, productID=\(productID)")
                 return .unknown
             }
 
             if let subscription = product.subscription,
                await subscription.isEligibleForIntroOffer {
+                DLLog(message: "[ElaProIAP][HISTORY] intro offer eligible, productID=\(productID), state=notSubscribed")
                 return .notSubscribed
             }
 
             if let latestResult = await Transaction.latest(for: productID) {
                 switch latestResult {
                 case .verified(let transaction):
-                    return transaction.productID == productID ? .subscribed : .unknown
+                    let state: ElaProSubscriptionHistoryState = transaction.productID == productID ? .subscribed : .unknown
+                    DLLog(message: "[ElaProIAP][HISTORY] latest verified transaction, queryProductID=\(productID), transactionProductID=\(transaction.productID), transactionID=\(transaction.id), state=\(debugDescription(for: state))")
+                    return state
                 case .unverified:
+                    DLLog(message: "[ElaProIAP][HISTORY] latest transaction unverified, productID=\(productID)")
                     return .unknown
                 }
             }
 
+            DLLog(message: "[ElaProIAP][HISTORY] no intro eligibility and no latest transaction, productID=\(productID), state=unknown")
             return .unknown
         } catch {
             DLLog(message: "[ElaProIAP][HISTORY] check failed: \(error.localizedDescription)")
             return .unknown
+        }
+    }
+
+    private func debugDescription(for state: ElaProSubscriptionHistoryState) -> String {
+        switch state {
+        case .subscribed:
+            return "subscribed"
+        case .notSubscribed:
+            return "notSubscribed"
+        case .unknown:
+            return "unknown"
         }
     }
     

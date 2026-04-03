@@ -1174,6 +1174,7 @@
 		ECBF8C172BC230A30095C4B0 /* D-DIN-PRO-800-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = ECBF8C102BC230A30095C4B0 /* D-DIN-PRO-800-ExtraBold.otf */; };
 		ECBF8C182BC230A30095C4B0 /* D-DIN-PRO-900-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = ECBF8C112BC230A30095C4B0 /* D-DIN-PRO-900-Heavy.otf */; };
 		ECBF8C1A2BC231B70095C4B0 /* UIFont+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBF8C192BC231B70095C4B0 /* UIFont+Exs.swift */; };
+		ECBFC5202F7F8511005E3B48 /* GuidanceProPurchasedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC51F2F7F850D005E3B48 /* GuidanceProPurchasedVC.swift */; };
 		ECBFDFD62C2A77DA0004760A /* UIAlertAction+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFDFD52C2A77DA0004760A /* UIAlertAction+Exs.swift */; };
 		ECC050612C65B1F10029A47F /* LogsSQLiteUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC050602C65B1F10029A47F /* LogsSQLiteUploadManager.swift */; };
 		ECC24F912C4A16610012D0FD /* CreateMealsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC24F902C4A16610012D0FD /* CreateMealsVC.swift */; };
@@ -2648,6 +2649,7 @@
 		ECBF8C102BC230A30095C4B0 /* D-DIN-PRO-800-ExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "D-DIN-PRO-800-ExtraBold.otf"; sourceTree = "<group>"; };
 		ECBF8C112BC230A30095C4B0 /* D-DIN-PRO-900-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "D-DIN-PRO-900-Heavy.otf"; sourceTree = "<group>"; };
 		ECBF8C192BC231B70095C4B0 /* UIFont+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Exs.swift"; sourceTree = "<group>"; };
+		ECBFC51F2F7F850D005E3B48 /* GuidanceProPurchasedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPurchasedVC.swift; sourceTree = "<group>"; };
 		ECBFDFD52C2A77DA0004760A /* UIAlertAction+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertAction+Exs.swift"; sourceTree = "<group>"; };
 		ECC050602C65B1F10029A47F /* LogsSQLiteUploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsSQLiteUploadManager.swift; sourceTree = "<group>"; };
 		ECC24F902C4A16610012D0FD /* CreateMealsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMealsVC.swift; sourceTree = "<group>"; };
@@ -4895,6 +4897,7 @@
 			children = (
 				EC78C2AC2F691F0300681507 /* GuidanceVC.swift */,
 				EC4DE7C52F6BEEF0000FB82C /* GuidanceProVC.swift */,
+				ECBFC51F2F7F850D005E3B48 /* GuidanceProPurchasedVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -6928,6 +6931,7 @@
 				A790DD092E7169490036D5B5 /* SpecAnchorPopup.swift in Sources */,
 				EC7784292F568CBB003102D2 /* ElaProPriceVM.swift in Sources */,
 				EC77842B2F56900003102D21 /* ElaProProgressVM.swift in Sources */,
+				ECBFC5202F7F8511005E3B48 /* GuidanceProPurchasedVC.swift in Sources */,
 				EC77842E2F5698AC03102D21 /* ElaProPlanVM.swift in Sources */,
 				EC7784322F57A92103102D21 /* ElaProReadyVM.swift in Sources */,
 				EC7784342F57E00403102D21 /* ElaProTransformVM.swift in Sources */,

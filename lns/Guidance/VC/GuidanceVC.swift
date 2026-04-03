@@ -48,6 +48,7 @@ class GuidanceVC: WHBaseViewVC {
     private var isTransitioningToGuidancePro = false
     private var cachedGuidanceProHasFreeTrialPermission = true
     private var hasPrefetchedGuidanceProSubscriptionHistory = false
+    private var hasResolvedGuidanceProSubscriptionHistory = false
     private var hasAutoSelectedSkippedCardioFrequency = false
     private var isBackNavigationLocked = false
     private let defaultStepsArray = [7,7,8]
@@ -455,9 +456,12 @@ extension GuidanceVC{
             if isFixedTargetFlowEnabled {
                 moveToStep(index: currentIndex + 1, animated: true)
             } else {
-                nextButton.isEnabled = false
                 delayedNextWorkItem?.cancel()
-                startNutritionGoalLoadingFlow()
+                if let reminderPromptIndex = indexOfStep(.reminderPrompt) {
+                    moveToStep(index: reminderPromptIndex, animated: true)
+                } else {
+                    moveToStep(index: currentIndex + 1, animated: true)
+                }
             }
         case .sex, .mealsSummary, .strengthTrainingSummary,  .reminderPrompt:
             break
@@ -493,10 +497,18 @@ extension GuidanceVC{
         var targetIndex = index - 1
         while targetIndex >= 0,
               let step = flowStep(for: targetIndex),
-              isSummaryStep(step) {
+              (isSummaryStep(step) || shouldSkipBackwardStep(step)) {
             targetIndex -= 1
         }
         return max(0, targetIndex)
+    }
+
+    func shouldSkipBackwardStep(_ step: FlowStep) -> Bool {
+        !isFixedTargetFlowEnabled && step == .nutritionGoal
+    }
+
+    func shouldSkipForwardTransitionStep(_ step: FlowStep) -> Bool {
+        !isFixedTargetFlowEnabled && step == .nutritionGoal
     }
 
     func progressIndex(for flowIndex: Int) -> Int {
@@ -607,7 +619,9 @@ extension GuidanceVC{
         guard lower < upper else { return false }
 
         let intermediateSteps = activeFlow[lower..<upper]
-        return !intermediateSteps.isEmpty && intermediateSteps.allSatisfy { isSummaryStep($0) }
+        return !intermediateSteps.isEmpty && intermediateSteps.allSatisfy {
+            isSummaryStep($0) || shouldSkipForwardTransitionStep($0)
+        }
     }
 
     func performDirectStepTransition(from sourceIndex: Int, to targetIndex: Int) {
@@ -988,13 +1002,75 @@ extension GuidanceVC{
 
     func showGuidanceProVCForSubscription() {
         guard !isTransitioningToGuidancePro else { return }
-
         isTransitioningToGuidancePro = true
+        DLLog(message: "[GuidancePro][Route] request subscription page, hasResolved=\(hasResolvedGuidanceProSubscriptionHistory), cachedHasFreeTrial=\(cachedGuidanceProHasFreeTrialPermission)")
 
-        let vc = GuidanceProVC()
-        vc.hasFreeTrialPermission = cachedGuidanceProHasFreeTrialPermission
-        vc.nextBlock = { [weak vc] in
-            vc?.changeRootVcToLogin()
+        if hasResolvedGuidanceProSubscriptionHistory {
+            presentGuidanceProSubscriptionVC(hasSubscribedHistory: !cachedGuidanceProHasFreeTrialPermission)
+            return
+        }
+
+        resolveGuidanceProSubscriptionHistoryState { [weak self] hasSubscribedHistory in
+            self?.presentGuidanceProSubscriptionVC(hasSubscribedHistory: hasSubscribedHistory)
+        }
+    }
+
+    func prefetchGuidanceProSubscriptionHistoryIfNeeded() {
+        guard !hasPrefetchedGuidanceProSubscriptionHistory else { return }
+        hasPrefetchedGuidanceProSubscriptionHistory = true
+        DLLog(message: "[GuidancePro][Route] prefetch subscription history")
+
+        resolveGuidanceProSubscriptionHistoryState(completion: nil)
+    }
+
+    func resolveGuidanceProSubscriptionHistoryState(completion: ((Bool) -> Void)?) {
+        let annualProductID = ElaProIAPConfig.annualProductID.trimmingCharacters(in: .whitespacesAndNewlines)
+        DLLog(message: "[GuidancePro][Route] resolve subscription history, annualProductID=\(annualProductID)")
+        guard !annualProductID.isEmpty else {
+            cachedGuidanceProHasFreeTrialPermission = true
+            hasResolvedGuidanceProSubscriptionHistory = true
+            DLLog(message: "[GuidancePro][Route] annualProductID empty, default hasFreeTrial=true")
+            completion?(false)
+            return
+        }
+
+        ElaProIAPManager.shared.checkSubscriptionHistoryState(productID: annualProductID) { [weak self] state in
+            guard let self = self else { return }
+            self.hasResolvedGuidanceProSubscriptionHistory = true
+            switch state {
+            case .subscribed:
+                self.cachedGuidanceProHasFreeTrialPermission = false
+                DLLog(message: "[GuidancePro][Route] subscription history result=subscribed, route=GuidanceProPurchasedVC")
+                completion?(true)
+            case .notSubscribed:
+                self.cachedGuidanceProHasFreeTrialPermission = true
+                DLLog(message: "[GuidancePro][Route] subscription history result=notSubscribed, route=GuidanceProVC")
+                completion?(false)
+            case .unknown:
+                self.cachedGuidanceProHasFreeTrialPermission = true
+                DLLog(message: "[GuidancePro][Route] subscription history result=unknown, route=GuidanceProVC")
+                completion?(false)
+            }
+        }
+    }
+
+    func presentGuidanceProSubscriptionVC(hasSubscribedHistory: Bool) {
+        let vc: WHBaseViewVC
+        if hasSubscribedHistory {
+            let purchasedVC = GuidanceProPurchasedVC()
+            purchasedVC.nextBlock = { [weak purchasedVC] in
+                purchasedVC?.changeRootVcToLogin()
+            }
+            DLLog(message: "[GuidancePro][Route] push GuidanceProPurchasedVC")
+            vc = purchasedVC
+        } else {
+            let proVC = GuidanceProVC()
+            proVC.hasFreeTrialPermission = cachedGuidanceProHasFreeTrialPermission
+            proVC.nextBlock = { [weak proVC] in
+                proVC?.changeRootVcToLogin()
+            }
+            DLLog(message: "[GuidancePro][Route] push GuidanceProVC, hasFreeTrialPermission=\(cachedGuidanceProHasFreeTrialPermission)")
+            vc = proVC
         }
 
 //        self.navigationController?.fd_interactivePopDisabled = true
@@ -1004,26 +1080,6 @@ extension GuidanceVC{
         } else {
             vc.modalPresentationStyle = .fullScreen
             present(vc, animated: true)
-        }
-    }
-
-    func prefetchGuidanceProSubscriptionHistoryIfNeeded() {
-        guard !hasPrefetchedGuidanceProSubscriptionHistory else { return }
-        hasPrefetchedGuidanceProSubscriptionHistory = true
-
-        let annualProductID = ElaProIAPConfig.annualProductID.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !annualProductID.isEmpty else {
-            cachedGuidanceProHasFreeTrialPermission = true
-            return
-        }
-
-        ElaProIAPManager.shared.checkSubscriptionHistoryState(productID: annualProductID) { [weak self] state in
-            switch state {
-            case .subscribed:
-                self?.cachedGuidanceProHasFreeTrialPermission = false
-            case .notSubscribed, .unknown:
-                self?.cachedGuidanceProHasFreeTrialPermission = true
-            }
         }
     }
 
