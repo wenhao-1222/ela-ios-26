@@ -22,6 +22,12 @@ enum VIP_STATUS: Int {
 }
 
 class VIPModel: NSObject {
+    static let shared = VIPModel()
+    
+    private override init() {
+        super.init()
+        reset()
+    }
     
     var uid = ""
 //    var vipType = VIP_TYPE.none
@@ -43,31 +49,48 @@ class VIPModel: NSObject {
 //        return self.isVip && self.status == .valid
     }
     
-    func initWithDict(dict:NSDictionary) -> VIPModel {
-        let model = VIPModel()
-        model.uid = dict.stringValueForKey(key: "uid")
-        model.startTime = dict.stringValueForKey(key: "startTime")
-        model.expireTime = dict.stringValueForKey(key: "expireTime")
-        model.ctime = dict.stringValueForKey(key: "ctime")
-        model.etime = dict.stringValueForKey(key: "etime")
+    func reset() {
+        uid = ""
+        startTime = ""
+        expireTime = ""
+        status = .invalid
+        isLifetime = false
+        ctime = ""
+        etime = ""
+    }
+    
+    @discardableResult
+    func update(with dict:NSDictionary) -> VIPModel {
+        reset()
+        
+        uid = dict.stringValueForKey(key: "uid")
+        startTime = dict.stringValueForKey(key: "startTime")
+        expireTime = dict.stringValueForKey(key: "expireTime")
+        ctime = dict.stringValueForKey(key: "ctime")
+        etime = dict.stringValueForKey(key: "etime")
         
 //        let vipTypeValue = Int(dict.stringValueForKey(key: "vipType")) ?? 0
-//        model.vipType = VIP_TYPE(rawValue: vipTypeValue) ?? .none
+//        vipType = VIP_TYPE(rawValue: vipTypeValue) ?? .none
         
         let statusValue = Int(dict.stringValueForKey(key: "status")) ?? 0
         if statusValue > 0 {
-            model.status = VIP_STATUS(rawValue: statusValue)
+            status = VIP_STATUS(rawValue: statusValue)
         }else{
-            model.status = .invalid
+            status = .invalid
         }
         
         let lifetimeValue = dict.stringValueForKey(key: "isLifetime")
-//        model.isLifetime = lifetimeValue == "1" || model.vipType == .lifetime
+//        isLifetime = lifetimeValue == "1" || vipType == .lifetime
+        _ = lifetimeValue
         
-        if model.isLifetime {
-            model.expireTime = ""
+        if isLifetime {
+            expireTime = ""
         }
         
-        return model
+        return self
+    }
+    
+    func initWithDict(dict:NSDictionary) -> VIPModel {
+        return update(with: dict)
     }
 }

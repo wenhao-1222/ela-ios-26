@@ -784,7 +784,6 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if hasAICoachSection && indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "JournalAICoachTableViewCell") as? JournalAICoachTableViewCell
-            cell?.updateUI(showPro: UserInfoModel.shared.vipModel.isValidVip == false)
             cell?.tapBlock = { [weak self] in
                 self?.handleAICoachTap()
             }

@@ -453,6 +453,19 @@ class JournalVC: WHBaseViewVC {
         }
         return vm
     }()
+    lazy var elaExpiredAlertVm: ElaProExpiredAlertVM = {
+        let vm = ElaProExpiredAlertVM.init(frame: .zero)
+        vm.upgradeBlock = {[weak self] in
+            guard let self = self else { return }
+            self.elaExpiredAlertVm.hiddenSelf()
+            let vc = ElaProVC()
+            vc.showPriceOnly = true
+            vc.priceBizType = "3"
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        return vm
+    }()
 }
 
 extension JournalVC{
@@ -612,45 +625,21 @@ extension JournalVC{
     }
     func gotoAicoachAction() {
         if isAiCoachSurveyFinished == "1"{//做过问卷
-            if VIPModel().status == .valid{
-                
-            }else if VIPModel().status == .expired{
-                
+            if VIPModel.shared.status == .valid{
+                let vc = AICoachPreVC()
+                self.navigationController?.pushViewController(vc, animated: true)
+            }else if VIPModel.shared.status == .invalid{
+                let vc = AIGuidanceVC()
+                self.navigationController?.pushViewController(vc, animated: true)
+            }else{
+                elaExpiredAlertVm.showSelf()
             }
         }else if isAiCoachSurveyFinished == "0"{//未做过问卷
-            
+            let vc = AIGuidanceVC()
+            self.navigationController?.pushViewController(vc, animated: true)
         }else {
             self.sendCoachLaunchRequest()
         }
-        
-        if !VIPModel().isValidVip{//非VIP ，重新做问卷，走付费墙
-            let vc = AIGuidanceVC()
-            self.navigationController?.pushViewController(vc, animated: true)
-        }else if VIPModel().isValidVip{//VIp 直接进AI教练 PDF  报告页
-            let vc = AICoachPreVC()
-//            vc.dataDict = aiCoachDict
-            self.navigationController?.pushViewController(vc, animated: true)
-        }else{
-            
-        }
-        
-        
-//        if isAiCoachSurveyFinished == "0"{
-//            let vc = AIGuidanceVC()
-//            self.navigationController?.pushViewController(vc, animated: true)
-//        }else if isAiCoachSurveyFinished == "1"{
-//            if VIPModel().isValidVip{
-//                let vc = ElaProVC()
-//                vc.showPriceOnly = true
-//                self.navigationController?.pushViewController(vc, animated: true)
-//            }else{
-//                let vc = AICoachPreVC()
-//                vc.dataDict = aiCoachDict
-//                self.navigationController?.pushViewController(vc, animated: true)
-//            }
-//        }else{
-//
-//        }
     }
     @objc func editStatus() {
         self.isEdit = true
@@ -1025,6 +1014,7 @@ extension JournalVC{
             appDelegate.getKeyWindow().addSubview(self.addFoodsAlertVm)
             appDelegate.getKeyWindow().addSubview(self.notifiAuthoriAlertVm)
             appDelegate.getKeyWindow().addSubview(self.activityAlertVm)
+            appDelegate.getKeyWindow().addSubview(self.elaExpiredAlertVm)
         })
     }
 }
@@ -1285,8 +1275,7 @@ extension JournalVC{
         WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            let vipModel = VIPModel().initWithDict(dict: dataDict)
-            UserInfoModel.shared.vipModel = vipModel
+            let vipModel = VIPModel.shared.update(with: dataDict)
             DLLog(message: "sendProVipMsgRequest:\(dataDict)")
             DLLog(message: "sendProVipMsgRequest model: uid=\(vipModel.uid),status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime)  ,expireTime=\(vipModel.expireTime)")
             

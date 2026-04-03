@@ -169,7 +169,7 @@ class UserInfoModel {
     var abTestModel = ABTESTMODEL()
     
     var addressModel = AddressModel()
-    var vipModel = VIPModel()
+    let vipModel = VIPModel.shared
 }
 
 extension UserInfoModel{
@@ -337,7 +337,7 @@ extension UserInfoModel{
         
         self.isBindWeChat = false
         self.isBindAppId = false
-        self.vipModel = VIPModel()
+        self.vipModel.reset()
         UserDefaults.set(value: [:], forKey: .jounal_meal_advice)
         
         UserDefaults.setHabitRankListVMDataArray([])
@@ -422,7 +422,7 @@ extension UserInfoModel{
     func logoutClearMsg() {
         LogsMealsAlertSetManage().removeAllNotifi()
         clearDietPlanCreateDraftCache()
-        self.vipModel = VIPModel()
+        self.vipModel.reset()
 //        UserInfoModel.shared.clearMsg()
 //
 //        UserDefaults.standard.setValue("", forKey: token)

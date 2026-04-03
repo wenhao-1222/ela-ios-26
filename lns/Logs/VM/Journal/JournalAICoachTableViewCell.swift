@@ -68,10 +68,6 @@ class JournalAICoachTableViewCell: UITableViewCell {
 }
 
 extension JournalAICoachTableViewCell {
-    func updateUI(showPro: Bool = true) {
-        proImgView.isHidden = !showPro
-    }
-    
     @objc func tapAction() {
         tapBlock?()
     }

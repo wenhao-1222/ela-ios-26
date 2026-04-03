@@ -367,25 +367,17 @@ extension ElaProVC{
     }
     
     private func applyTemporaryValidVipStatus() {
-        let currentVipModel = UserInfoModel.shared.vipModel
-        let tempVipModel = VIPModel()
-        tempVipModel.uid = currentVipModel.uid.isEmpty ? UserInfoModel.shared.uId : currentVipModel.uid
-        tempVipModel.startTime = currentVipModel.startTime
-        tempVipModel.expireTime = currentVipModel.expireTime
-        tempVipModel.ctime = currentVipModel.ctime
-        tempVipModel.etime = currentVipModel.etime
-        tempVipModel.isLifetime = currentVipModel.isLifetime
-//        tempVipModel.vipType = currentVipModel.vipType == .none ? .year : currentVipModel.vipType
-        tempVipModel.status = .valid
-        UserInfoModel.shared.vipModel = tempVipModel
+        let vipModel = UserInfoModel.shared.vipModel
+        vipModel.uid = vipModel.uid.isEmpty ? UserInfoModel.shared.uId : vipModel.uid
+//        vipModel.vipType = vipModel.vipType == .none ? .year : vipModel.vipType
+        vipModel.status = .valid
     }
     
     private func requestLatestVipInfo() {
         WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            let vipModel = VIPModel().initWithDict(dict: dataDict)
-            UserInfoModel.shared.vipModel = vipModel
+            let vipModel = VIPModel.shared.update(with: dataDict)
             DLLog(message: "ElaProVC requestLatestVipInfo:\(dataDict)")
             DLLog(message: "ElaProVC requestLatestVipInfo model: uid=\(vipModel.uid), status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime), expireTime=\(vipModel.expireTime)")
             NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
