@@ -36,6 +36,7 @@ class AICoachPreDaysVM: UIView, UIGestureRecognizerDelegate {
     private var reportAfterDays = 7
     private var itemViews: [AICoachPreDayItemView] = []
     private var selectedPopupIndex: Int?
+    private var isFirstReport = true
 
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
@@ -111,9 +112,10 @@ extension AICoachPreDaysVM{
         addGestureRecognizer(tapGesture)
     }
 
-    func configure(items: [DayItem], reportAfterDays: Int) {
+    func configure(items: [DayItem], reportAfterDays: Int,isFirstReport:Bool) {
         self.dayItems = items
         self.reportAfterDays = reportAfterDays
+        self.isFirstReport = isFirstReport
         reloadDaysUI()
         updateMessage()
         hidePopup()
@@ -142,7 +144,7 @@ private extension AICoachPreDaysVM {
             DayItem(title: "", state: .pending, completeStatus: 0),
             DayItem(title: "", state: .pending, completeStatus: 0),
             DayItem(title: "", state: .pending, completeStatus: 0)
-        ], reportAfterDays: 7)
+        ], reportAfterDays: 7, isFirstReport: isFirstReport)
     }
 
     func reloadDaysUI() {
@@ -174,7 +176,16 @@ private extension AICoachPreDaysVM {
 
          后续出报告：你最新的教练报告已经准备好了，快去查看！
          */
-        let fullText = "请完整记录饮食和力量训练，教练将会在 \(reportAfterDays) 天后\n给你发送下一份反馈报告"
+        var fullText = "为了让反馈更精准，我还需要更多时间来了解你。请继续保持记录饮食和体重，我预计会在\(reportAfterDays) 天后为你生成第一份反馈报告！"
+        
+        if reportAfterDays == 0 {// 报告已能生成
+            if isFirstReport{
+                fullText = "你的首份教练报告已经准备好了，快去查看！"
+            }else{
+                fullText = "你最新的教练报告已经准备好了，快去查看！"
+            }
+        }
+        
         let attributedText = NSMutableAttributedString(
             string: fullText,
             attributes: [

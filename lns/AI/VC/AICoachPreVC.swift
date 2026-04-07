@@ -174,6 +174,10 @@ private extension AICoachPreVC {
         nextButton.isHidden = dataDict.stringValueForKey(key: "has7CompleteDays") == "0"
         let latestReportDict = dataDict["latestReport"]as? NSDictionary ?? [:]
         self.reportId = latestReportDict.stringValueForKey(key: "id")
+        let reportStatus = latestReportDict.stringValueForKey(key: "reportStatus").intValue
+        let remainingDays = max(0, dataDict.stringValueForKey(key: "remainingDays").intValue)
+        let isFirstReport = dataDict.floatValueForKey(key: "reportCount") <= 1//是否为首报
+        
         let userGoal = dataDict["userGoal"] as? Int ?? 0
         let aiCoachIntensityPreference = dataDict["aiCoachIntensityPreference"] as? Int ?? 0
 
@@ -193,34 +197,33 @@ private extension AICoachPreVC {
             return leftDate < rightDate
         }
 
-        let firstIncompleteIndex = sortedProgressBar.firstIndex {
-            ($0["completeStatus"] as? Int ?? ($0["completeStatus"] as? String ?? "0").intValue) == 0
-        }
-
         let items = sortedProgressBar.enumerated().map { index, item -> AICoachPreDaysVM.DayItem in
             let dateString = item["date"] as? String ?? ""
             let completeStatus = item["completeStatus"] as? Int ?? (item["completeStatus"] as? String ?? "0").intValue
-            let state: AICoachPreDaysVM.DayState
-
-            if completeStatus == 1 || completeStatus == 2 {
-                state = .completed
-            } else if index == firstIncompleteIndex {
-                state = .current
-            } else {
-                state = .pending
-            }
+            let state = dayState(for: reportStatus, index: index, totalCount: sortedProgressBar.count)
 
             return .init(title: weekdayShortText(from: dateString), state: state, completeStatus: completeStatus)
         }
 
-        let reportAfterDays = items.filter { $0.state == .pending }.count
-
         DispatchQueue.main.async {
-            self.preDaysVM.configure(items: items, reportAfterDays: reportAfterDays)
+            self.preDaysVM.configure(items: items,
+                                     reportAfterDays: remainingDays,
+                                     isFirstReport:isFirstReport)
             self.preInfoVM.configure(
                 userGoal: userGoal,
                 aiCoachIntensityPreference: aiCoachIntensityPreference
             )
+        }
+    }
+
+    func dayState(for reportStatus: Int, index: Int, totalCount: Int) -> AICoachPreDaysVM.DayState {
+        switch reportStatus {
+        case 2, 4:
+            return .completed
+        case 1:
+            return index == max(totalCount - 1, 0) ? .current : .completed
+        default:
+            return index == max(totalCount - 1, 0) ? .current : .pending
         }
     }
 
