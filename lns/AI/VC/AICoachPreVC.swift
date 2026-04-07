@@ -12,6 +12,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
 
     var reportId = ""
     var dataDict = NSDictionary()
+    private var reportList: [AICoachReportListItem] = []
     
     private lazy var preDaysVM: AICoachPreDaysVM = {
         let view = AICoachPreDaysVM(frame: .zero)
@@ -32,6 +33,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         }else{
             sendCoachLaunchRequest()
         }
+        sendReportListRequest()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -83,6 +85,7 @@ extension AICoachPreVC{
 //        self.sendReportDetailRequest()
         let vc = AICoachReportPDFDemoVC()
         vc.reportId = self.reportId
+        vc.reportList = reportList
         self.navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -156,6 +159,15 @@ extension AICoachPreVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendReportDetailRequest:\(foodsMsgDict)")
+        }
+    }
+    func sendReportListRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_list, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataArray = self.getArrayFromJSONString(jsonString: dataString ?? "")
+            self.reportList = AICoachReportDateTextBuilder.buildList(from: dataArray)
+            
+            DLLog(message: "sendReportListRequest:\(dataArray)")
         }
     }
 }

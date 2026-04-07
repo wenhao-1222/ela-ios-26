@@ -8,12 +8,14 @@
 import UIKit
 
 enum AICoachReportPDFGenerator {
-    static let pageSize = CGSize(width: 595, height: 842)
-    private static let pageInsets = UIEdgeInsets(top: 18, left: 24, bottom: 18, right: 24)
+    static let pageSize = CGSize(width: 1920, height: 2880)
+    private static let layoutPageSize = CGSize(width: 960, height: 1440)
+    private static let layoutPageInsets = UIEdgeInsets(top: 28, left: 28, bottom: 36, right: 28)
+    private static let renderScale = pageSize.width / layoutPageSize.width
 
     static func generate(report: AICoachReportDemoData) throws -> URL {
-        let contentWidth = pageSize.width - pageInsets.left - pageInsets.right
-        let usableHeight = pageSize.height - pageInsets.top - pageInsets.bottom
+        let contentWidth = layoutPageSize.width - layoutPageInsets.left - layoutPageInsets.right
+        let usableHeight = layoutPageSize.height - layoutPageInsets.top - layoutPageInsets.bottom
         let contentView = AICoachReportDemoContentView(
             report: report,
             contentWidth: contentWidth,
@@ -38,20 +40,21 @@ enum AICoachReportPDFGenerator {
 
                 context.beginPage()
                 let cgContext = context.cgContext
-                cgContext.setFillColor(AICoachReportDemoPalette.pageBackground.cgColor)
+                cgContext.setFillColor(UIColor.white.cgColor)
                 cgContext.fill(pageBounds)
 
                 cgContext.saveGState()
                 cgContext.clip(to: CGRect(
-                    x: pageInsets.left,
-                    y: pageInsets.top,
-                    width: contentWidth,
-                    height: visibleHeight
+                    x: layoutPageInsets.left * renderScale,
+                    y: layoutPageInsets.top * renderScale,
+                    width: contentWidth * renderScale,
+                    height: visibleHeight * renderScale
                 ))
                 cgContext.translateBy(
-                    x: pageInsets.left,
-                    y: pageInsets.top - pageStartOffset
+                    x: layoutPageInsets.left * renderScale,
+                    y: layoutPageInsets.top * renderScale - pageStartOffset * renderScale
                 )
+                cgContext.scaleBy(x: renderScale, y: renderScale)
                 contentView.layer.render(in: cgContext)
                 cgContext.restoreGState()
             }

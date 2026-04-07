@@ -58,7 +58,7 @@ let PDFWidth: (CGFloat) -> CGFloat = { width in
     if UIDevice.current.userInterfaceIdiom == .pad {
         return width * min(SCREEN_WIDHT / 375.0,SCREEN_HEIGHT / 812.0)
     }else{
-        return width * SCREEN_WIDHT / (375.0 * 2.56)
+        return width * SCREEN_WIDHT / (375.0 * 2.37)
     }
 }
 

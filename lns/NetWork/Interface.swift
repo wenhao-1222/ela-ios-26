@@ -229,6 +229,9 @@ public let URL_ai_coach_upsert      = URL_Type + "users/pro/ai_coach/profile/ups
 public let URL_ai_coach_launch      = URL_Type + "users/pro/ai_coach/launch"
 ///AI教练  报告详情
 public let URL_ai_coach_report_detail      = URL_Type + "users/pro/ai_coach/report/detail"
+///AI教练  报告列表
+public let URL_ai_coach_report_list       = URL_Type + "users/pro/ai_coach/report/list"
+
 
 //MARK: 运动记录
 public let URL_sport_catogary_list          = URL_Type + "users/sport/list"

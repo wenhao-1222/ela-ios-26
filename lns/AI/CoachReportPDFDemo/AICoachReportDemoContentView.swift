@@ -14,19 +14,19 @@ final class AICoachReportDemoContentView: UIView {
     private let firstPageUsableHeight: CGFloat
     private let mainStack = UIStackView()
     private var keepTogetherViews: [UIView] = []
-    private let mainStackInsets = UIEdgeInsets(top: 6, left: 8, bottom: 6, right: 8)
+    private let mainStackInsets = UIEdgeInsets(top: PDFWidth(35), left: PDFWidth(35), bottom: PDFWidth(35), right: PDFWidth(35))
     private let mainStackSpacing = CGFloat(18)
     private let chartRowSpacing = CGFloat(16)
     private let defaultTopRowChartHeight = PDFWidth(820)
     private let firstPageRow1TopSpacing = PDFWidth(40)
-    private let firstPageRow1BottomSpacing = PDFWidth(86)
+    private let firstPageRowSpacing = CGFloat(16)
 
     init(report: AICoachReportDemoData, contentWidth: CGFloat, firstPageUsableHeight: CGFloat) {
         self.report = report
         self.contentWidth = contentWidth
         self.firstPageUsableHeight = firstPageUsableHeight
         super.init(frame: CGRect(x: 0, y: 0, width: contentWidth, height: 100))
-        backgroundColor = AICoachReportDemoPalette.pageBackground
+        backgroundColor = .white
         setupUI()
     }
 
@@ -96,21 +96,22 @@ private extension AICoachReportDemoContentView {
 
         let headerCard = makeHeaderCard()
         let summaryCard = makeSummaryCard()
-        let topRowChartHeight = calculateTopRowChartHeight(
+        let chartHeight = calculateFirstPageChartHeight(
             headerCard: headerCard,
             summaryCard: summaryCard
         )
-        let row1 = makeTopChartRow(chartHeight: topRowChartHeight)
-        let bottomSection = makeBottomSection(nutrientChartHeight: topRowChartHeight)
+        let row1 = makeTopChartRow(chartHeight: chartHeight)
+        let row2 = makeBottomChartRow(nutrientChartHeight: chartHeight)
+        let dailyComparisonTableCard = makeDailyComparisonTableCard()
         let thirdPageSection = makeThirdPageSection()
 
-        [headerCard, summaryCard, row1, bottomSection].forEach(mainStack.addArrangedSubview)
+        [headerCard, summaryCard, row1, row2, dailyComparisonTableCard].forEach(mainStack.addArrangedSubview)
         if let thirdPageSection {
             mainStack.addArrangedSubview(thirdPageSection)
         }
         mainStack.setCustomSpacing(firstPageRow1TopSpacing, after: summaryCard)
-        mainStack.setCustomSpacing(firstPageRow1BottomSpacing, after: row1)
-        keepTogetherViews = [headerCard, summaryCard, row1, bottomSection]
+        mainStack.setCustomSpacing(firstPageRowSpacing, after: row1)
+        keepTogetherViews = [headerCard, summaryCard, row1, row2, dailyComparisonTableCard]
         if let thirdPageSection {
             keepTogetherViews.append(thirdPageSection)
         }
@@ -393,15 +394,6 @@ private extension AICoachReportDemoContentView {
         return row2
     }
 
-    func makeBottomSection(nutrientChartHeight: CGFloat) -> UIView {
-        let section = UIStackView()
-        section.axis = .vertical
-        section.spacing = chartRowSpacing
-        section.addArrangedSubview(makeBottomChartRow(nutrientChartHeight: nutrientChartHeight))
-        section.addArrangedSubview(makeDailyComparisonTableCard())
-        return section
-    }
-
     func makeThirdPageSection() -> UIView? {
         var sections: [UIView] = []
 
@@ -466,33 +458,68 @@ private extension AICoachReportDemoContentView {
         return makeChartCard(title: "热量", chartView: chart, footerView: footer, chartHeight: chartHeight)
     }
 
-    func calculateTopRowChartHeight(headerCard: UIView, summaryCard: UIView) -> CGFloat {
+    func calculateFirstPageChartHeight(headerCard: UIView, summaryCard: UIView) -> CGFloat {
         let stackWidth = contentWidth - mainStackInsets.left - mainStackInsets.right
         let chartCardWidth = (stackWidth - chartRowSpacing) / 2
 
         let headerHeight = fittedHeight(for: headerCard, width: stackWidth)
         let summaryHeight = fittedHeight(for: summaryCard, width: stackWidth)
 
-        let weightFixedHeight = fittedHeight(
-            for: makeWeightCard(chartHeight: 1),
+        let row1FixedHeight = max(
+            fittedHeight(
+                for: makeWeightCard(chartHeight: 1),
+                width: chartCardWidth
+            ) - 1,
+            fittedHeight(
+                for: makeCalorieCard(chartHeight: 1),
+                width: chartCardWidth
+            ) - 1
+        )
+        let nutrientFixedHeight = fittedHeight(
+            for: makeNutrientCard(chartHeight: 1),
             width: chartCardWidth
         ) - 1
-        let calorieFixedHeight = fittedHeight(
-            for: makeCalorieCard(chartHeight: 1),
+        let trainingHeight = fittedHeight(
+            for: makeTrainingCard(),
             width: chartCardWidth
-        ) - 1
-        let topRowFixedHeight = max(weightFixedHeight, calorieFixedHeight)
+        )
 
-        let availableTopRowHeight = firstPageUsableHeight
+        let availableChartRowsHeight = firstPageUsableHeight
             - mainStackInsets.top
+            - mainStackInsets.bottom
             - headerHeight
             - mainStackSpacing
             - summaryHeight
             - firstPageRow1TopSpacing
-            - firstPageRow1BottomSpacing
+            - firstPageRowSpacing
 
-        let preferredHeight = min(defaultTopRowChartHeight, availableTopRowHeight - topRowFixedHeight)
-        return max(1, floor(preferredHeight))
+        let preferredHeight = defaultTopRowChartHeight
+        var low = CGFloat(1)
+        var high = preferredHeight
+        var bestHeight = low
+
+        func fits(_ chartHeight: CGFloat) -> Bool {
+            let row1Height = row1FixedHeight + chartHeight
+            let nutrientCardHeight = nutrientFixedHeight + chartHeight
+            let row2Height = max(nutrientCardHeight, trainingHeight)
+            return row1Height + row2Height <= availableChartRowsHeight
+        }
+
+        if fits(high) {
+            return floor(high)
+        }
+
+        while high - low > 1 {
+            let mid = floor((low + high) / 2)
+            if fits(mid) {
+                bestHeight = mid
+                low = mid
+            } else {
+                high = mid
+            }
+        }
+
+        return max(1, floor(bestHeight))
     }
 
     func fittedHeight(for view: UIView, width: CGFloat) -> CGFloat {

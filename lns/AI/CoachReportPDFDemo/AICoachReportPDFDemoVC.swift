@@ -12,6 +12,7 @@ import UIKit
 final class AICoachReportPDFDemoVC: WHBaseViewVC {
     
     var reportId = ""
+    var reportList: [AICoachReportListItem] = []
     
     private var report = AICoachReportDemoData.empty
     private var pdfFileURL: URL?
@@ -64,7 +65,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         btn.imagePosition(style: .right, spacing: kFitWidth(4))
         btn.enablePressEffect()
-//        btn.addTarget(self, action: #selector(typeAction), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(dateButtonTapAction), for: .touchUpInside)
         
         return btn
     }()
@@ -110,7 +111,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         label.text = "正在生成PDF..."
         return label
     }()
-
+    
     private lazy var downloadButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = AICoachReportDemoPalette.themeBlue
@@ -123,12 +124,23 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         return button
     }()
 
+    private lazy var reportDateAlertVM: AICoachReportDateAlertVM = {
+        let vm = AICoachReportDateAlertVM(frame: .zero)
+        vm.confirmBlock = { [weak self] item in
+            self?.handleReportSelection(item)
+        }
+        return vm
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupUI()
         refreshTopBar()
-        self.sendReportDetailRequest()
+        sendReportListRequest()
+        if reportId.isEmpty == false {
+            sendReportDetailRequest()
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -162,6 +174,7 @@ private extension AICoachReportPDFDemoVC {
         bottomBar.addSubview(downloadButton)
         view.addSubview(loadingIndicator)
         view.addSubview(loadingLabel)
+        view.addSubview(reportDateAlertVM)
 
         topContainerView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
@@ -230,10 +243,15 @@ private extension AICoachReportPDFDemoVC {
             make.top.equalTo(loadingIndicator.snp.bottom).offset(12)
             make.centerX.equalTo(pdfView)
         }
+
+        reportDateAlertVM.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
 
     func generateAndLoadPDF() {
         loadingIndicator.startAnimating()
+        loadingLabel.text = "正在生成PDF..."
         loadingLabel.isHidden = false
 
         DispatchQueue.main.async {
@@ -270,10 +288,20 @@ private extension AICoachReportPDFDemoVC {
         }
         present(activityVC, animated: true)
     }
+
+    @objc func dateButtonTapAction() {
+        guard reportList.isEmpty == false else {
+            sendReportListRequest()
+            return
+        }
+        reportDateAlertVM.update(items: reportList, selectedReportId: reportId)
+        reportDateAlertVM.showSelf()
+    }
 }
 
 extension AICoachReportPDFDemoVC{
     func sendReportDetailRequest() {
+        guard reportId.isEmpty == false else { return }
         let param = ["id":reportId]
         WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_detail, parameters: param as [String : AnyObject]) { [weak self] responseObject in
             guard let self else { return }
@@ -285,12 +313,31 @@ extension AICoachReportPDFDemoVC{
             }
         }
     }
+
+    func sendReportListRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_list, parameters: nil) { [weak self] responseObject in
+            guard let self else { return }
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataArray = self.getArrayFromJSONString(jsonString: dataString ?? "")
+            let parsedList = AICoachReportDateTextBuilder.buildList(from: dataArray)
+
+            DispatchQueue.main.async {
+                self.reportList = parsedList
+                if self.reportId.isEmpty, let firstItem = parsedList.first {
+                    self.reportId = firstItem.reportId
+                    self.sendReportDetailRequest()
+                }
+                self.reportDateAlertVM.update(items: parsedList, selectedReportId: self.reportId)
+            }
+        }
+    }
 }
 
 private extension AICoachReportPDFDemoVC {
     func applyReportDetailData(_ dataDict: NSDictionary) {
         report = buildReport(from: dataDict)
         refreshTopBar()
+        reportDateAlertVM.update(items: reportList, selectedReportId: reportId)
         if hasGeneratedPDF {
             generateAndLoadPDF()
         }
@@ -403,10 +450,8 @@ private extension AICoachReportPDFDemoVC {
     }
 
     func makeNavigationDateRange(startDate: String, endDate: String, fallback: String) -> String {
-        let startText = formatDate(startDate, targetFormatter: "yyyy/MM/dd")
-        let endText = formatDate(endDate, targetFormatter: "yyyy/MM/dd")
-        guard startText.isEmpty == false, endText.isEmpty == false else { return fallback }
-        return "\(startText) – \(endText)"
+        let rangeText = AICoachReportDateTextBuilder.navigationDateRangeText(startDate: startDate, endDate: endDate)
+        return rangeText.isEmpty ? fallback : rangeText
     }
 
     func makeReportDateRange(startDate: String, endDate: String, fallback: String) -> String {
@@ -420,6 +465,19 @@ private extension AICoachReportPDFDemoVC {
         let trimmedDate = dateString.trimmingCharacters(in: .whitespacesAndNewlines)
         guard trimmedDate.isEmpty == false else { return "" }
         return Date().changeDateFormatter(dateString: trimmedDate, formatter: "yyyy-MM-dd", targetFormatter: targetFormatter)
+    }
+
+    func handleReportSelection(_ item: AICoachReportListItem) {
+        guard item.reportId.isEmpty == false else { return }
+        guard item.reportId != reportId else { return }
+
+        reportId = item.reportId
+        downloadButton.isEnabled = false
+        pdfView.document = nil
+        loadingLabel.text = "正在加载报告..."
+        loadingLabel.isHidden = false
+        loadingIndicator.startAnimating()
+        sendReportDetailRequest()
     }
 
     func makeSummaryInfo(

@@ -8,6 +8,20 @@
 import Foundation
 import UIKit
 
+struct AICoachReportListItem: Equatable {
+    let reportId: String
+    let startDate: String
+    let endDate: String
+
+    var navigationDateRangeText: String {
+        AICoachReportDateTextBuilder.navigationDateRangeText(startDate: startDate, endDate: endDate)
+    }
+
+    var pickerDateRangeText: String {
+        AICoachReportDateTextBuilder.pickerDateRangeText(startDate: startDate, endDate: endDate)
+    }
+}
+
 struct AICoachReportDemoData {
     let navigationTitle: String
     let navigationDateRange: String
@@ -107,6 +121,48 @@ struct AICoachReportWeekTableRow {
 struct AICoachReportFooterRow {
     let leftText: String
     let rightText: String?
+}
+
+enum AICoachReportDateTextBuilder {
+    static func buildList(from array: NSArray) -> [AICoachReportListItem] {
+        let dictArray = array.compactMap { $0 as? NSDictionary }
+        return dictArray.compactMap { dict in
+            let reportId = dict.stringValueForKey(key: "id")
+            guard reportId.isEmpty == false else { return nil }
+            return AICoachReportListItem(
+                reportId: reportId,
+                startDate: dict.stringValueForKey(key: "startDate"),
+                endDate: dict.stringValueForKey(key: "endDate")
+            )
+        }
+    }
+
+    static func navigationDateRangeText(startDate: String, endDate: String) -> String {
+        compactRangeText(startDate: startDate, endDate: endDate)
+    }
+
+    static func pickerDateRangeText(startDate: String, endDate: String) -> String {
+        compactRangeText(startDate: startDate, endDate: endDate)
+    }
+
+    private static func compactRangeText(startDate: String, endDate: String) -> String {
+        let startText = format(dateString: startDate, targetFormatter: "yyyy/MM/dd")
+        let endFullText = format(dateString: endDate, targetFormatter: "yyyy/MM/dd")
+        let endMonthDayText = format(dateString: endDate, targetFormatter: "MM/dd")
+
+        guard startText.isEmpty == false, endFullText.isEmpty == false else { return "" }
+
+        let startYear = String(startDate.prefix(4))
+        let endYear = String(endDate.prefix(4))
+        let endText = (startYear == endYear && endMonthDayText.isEmpty == false) ? endMonthDayText : endFullText
+        return "\(startText) – \(endText)"
+    }
+
+    private static func format(dateString: String, targetFormatter: String) -> String {
+        let trimmedDate = dateString.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmedDate.isEmpty == false else { return "" }
+        return Date().changeDateFormatter(dateString: trimmedDate, formatter: "yyyy-MM-dd", targetFormatter: targetFormatter)
+    }
 }
 
 enum AICoachReportDemoPalette {
