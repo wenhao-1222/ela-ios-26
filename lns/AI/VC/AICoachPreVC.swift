@@ -13,6 +13,9 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     var reportId = ""
     var dataDict = NSDictionary()
     private var reportList: [AICoachReportListItem] = []
+    private var userGoal: Int = 0
+    private var aiCoachIntensityPreference: Int = 0
+    private var isUpdatingAICoachProfile = false
     
     private lazy var preDaysVM: AICoachPreDaysVM = {
         let view = AICoachPreDaysVM(frame: .zero)
@@ -21,6 +24,17 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
 
     private lazy var preInfoVM: AICoachPreInfoVM = {
         let view = AICoachPreInfoVM(frame: .zero)
+        view.rowTapBlock = { [weak self] field in
+            self?.showInfoSelectPopup(for: field)
+        }
+        return view
+    }()
+
+    private lazy var infoSelectPopupVM: AICoachPreInfoSelectPopupVM = {
+        let view = AICoachPreInfoSelectPopupVM(frame: .zero)
+        view.confirmBlock = { [weak self] field, value in
+            self?.updateAICoachProfile(field: field, value: value)
+        }
         return view
     }()
     
@@ -106,6 +120,7 @@ extension AICoachPreVC{
         view.addSubview(preDaysVM)
         view.addSubview(preInfoVM)
         view.addSubview(nextButton)
+        view.addSubview(infoSelectPopupVM)
         
         setConstrait()
     }
@@ -134,6 +149,10 @@ extension AICoachPreVC{
             make.right.equalTo(kFitWidth(-20))
             make.height.equalTo(kFitWidth(44))
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
+        }
+
+        infoSelectPopupVM.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
 }
@@ -192,6 +211,8 @@ private extension AICoachPreVC {
         
         let userGoal = dataDict["userGoal"] as? Int ?? 0
         let aiCoachIntensityPreference = dataDict["aiCoachIntensityPreference"] as? Int ?? 0
+        self.userGoal = userGoal
+        self.aiCoachIntensityPreference = aiCoachIntensityPreference
 
         guard let progressBar = dataDict["progressBar"] as? [NSDictionary], progressBar.isEmpty == false else {
             DispatchQueue.main.async {
@@ -251,5 +272,66 @@ private extension AICoachPreVC {
         case 7: return "六"
         default: return ""
         }
+    }
+
+    func showInfoSelectPopup(for field: AICoachPreInfoEditableField) {
+        guard isUpdatingAICoachProfile == false else { return }
+        let selectedValue = field == .goal ? userGoal : aiCoachIntensityPreference
+        infoSelectPopupVM.update(field: field, selectedValue: selectedValue)
+        infoSelectPopupVM.showSelf()
+    }
+
+    func updateAICoachProfile(field: AICoachPreInfoEditableField, value: Int) {
+        let newUserGoal = field == .goal ? value : userGoal
+        let newIntensityPreference = field == .intensity ? value : aiCoachIntensityPreference
+
+        guard newUserGoal != userGoal || newIntensityPreference != aiCoachIntensityPreference else {
+            return
+        }
+
+        let param = buildAICoachUpsertParameters(userGoal: newUserGoal,
+                                                 aiCoachIntensityPreference: newIntensityPreference)
+        guard param.isEmpty == false else { return }
+
+        isUpdatingAICoachProfile = true
+        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_upsert,
+                                          parameters: param as [String : AnyObject],
+                                          isNeedToast: true,
+                                          vc: self) { [weak self] responseObject in
+            guard let self = self else { return }
+            let code = responseObject["code"] as? Int ?? -1
+            guard code == 200 else {
+                let message = responseObject["message"] as? String ?? "保存失败，请稍后重试"
+                self.handleProfileUpdateFailure(message: message)
+                return
+            }
+
+            self.isUpdatingAICoachProfile = false
+            self.userGoal = newUserGoal
+            self.aiCoachIntensityPreference = newIntensityPreference
+            self.preInfoVM.configure(userGoal: newUserGoal,
+                                     aiCoachIntensityPreference: newIntensityPreference)
+        } failure: { [weak self] _ in
+            self?.handleProfileUpdateFailure(message: "保存失败，请稍后重试")
+        }
+    }
+
+    func buildAICoachUpsertParameters(userGoal: Int,
+                                      aiCoachIntensityPreference: Int) -> [String: Any] {
+        var param: [String: Any] = [:]
+        if (1...2).contains(userGoal) {
+            param["userGoal"] = userGoal
+        }
+        if (1...5).contains(aiCoachIntensityPreference) {
+            param["aiCoachIntensityPreference"] = aiCoachIntensityPreference
+        }
+        return param
+    }
+
+    func handleProfileUpdateFailure(message: String) {
+        isUpdatingAICoachProfile = false
+        let alertVc = UIAlertController(title: message, message: nil, preferredStyle: .alert)
+        alertVc.addAction(UIAlertAction(title: "确定", style: .cancel))
+        present(alertVc, animated: true)
     }
 }

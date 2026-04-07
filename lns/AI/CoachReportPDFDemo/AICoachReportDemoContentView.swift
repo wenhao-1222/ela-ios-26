@@ -226,6 +226,7 @@ private extension AICoachReportDemoContentView {
         let panelStack = UIStackView()
         panelStack.axis = .horizontal
         panelStack.alignment = .center
+        panelStack.distribution = .fill
         panelStack.spacing = 18
 
         let potentialColumn = UIView()
@@ -233,7 +234,7 @@ private extension AICoachReportDemoContentView {
         let potentialTitle = UILabel()
         potentialTitle.font = .systemFont(ofSize: PDFWidth(28), weight: .regular)
         potentialTitle.textColor = AICoachReportDemoPalette.textSecondary
-        potentialTitle.textAlignment = .right
+        potentialTitle.textAlignment = .center
         potentialTitle.text = report.weeklyPotentialTitle
 
         let potentialValue = UILabel()
@@ -273,8 +274,7 @@ private extension AICoachReportDemoContentView {
             make.edges.equalToSuperview().inset(UIEdgeInsets(top: 16, left: 18, bottom: 16, right: 18))
         }
         potentialColumn.snp.makeConstraints { make in
-            make.width.equalTo(108)
-            make.left.equalTo(PDFWidth(-50))
+            make.width.equalTo(riskView.snp.width).multipliedBy(0.7)
         }
         potentialTitle.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
@@ -288,10 +288,6 @@ private extension AICoachReportDemoContentView {
         riskView.snp.makeConstraints { make in
             make.width.equalTo(actionView)
         }
-        actionView.snp.makeConstraints { make in
-            make.width.equalTo(riskView)
-        }
-
         return card
     }
 

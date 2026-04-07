@@ -49,17 +49,11 @@ class JournalAICoachTableViewCell: UITableViewCell {
         lab.font = .systemFont(ofSize: 16, weight: .medium)
         return lab
     }()
-    lazy var proBgView: UIView = {
-        let vi = UIView()
-        vi.backgroundColor = .THEME
-        vi.layer.cornerRadius = kFitWidth(12)
-        vi.layer.maskedCorners = [.layerMinXMaxYCorner]//,.layerMaxXMinYCorner]
-        return vi
-    }()
     lazy var proImgView: UIImageView = {
         let imgView = UIImageView()
         imgView.contentMode = .scaleAspectFit
         imgView.setImgLocal(imgName: "ai_coach_pro_icon")
+        imgView.alpha = 0
         return imgView
     }()
     
@@ -80,7 +74,9 @@ class JournalAICoachTableViewCell: UITableViewCell {
 
 extension JournalAICoachTableViewCell {
     func update(isVip: Bool) {
-        proImgView.isHidden = isVip
+        UIView.animate(withDuration: 0.35) {
+            self.proImgView.alpha = isVip ? 0 : 1
+        }
     }
 
     @objc private func handlePressDown() {
@@ -110,7 +106,6 @@ extension JournalAICoachTableViewCell {
         contentView.addSubview(whiteView)
         whiteView.addSubview(iconImgView)
         whiteView.addSubview(titleLabel)
-//        whiteView.addSubview(proBgView)
         whiteView.addSubview(proImgView)
         whiteView.addSubview(tapButton)
         
@@ -132,16 +127,6 @@ extension JournalAICoachTableViewCell {
             make.left.equalTo(iconImgView.snp.right).offset(kFitWidth(8))
             make.centerY.equalToSuperview()
         }
-//        proBgView.snp.makeConstraints { make in
-//            make.right.top.equalToSuperview()
-//            make.height.equalTo(kFitWidth(13))
-//            make.width.equalTo(kFitWidth(30))
-//        }
-//        proImgView.snp.makeConstraints { make in
-//            make.center.lessThanOrEqualToSuperview()
-//            make.width.equalTo(kFitWidth(15))
-//            make.height.equalTo(kFitWidth(6))
-//        }
         proImgView.snp.makeConstraints { make in
             make.right.top.equalToSuperview()
             make.width.equalTo(kFitWidth(30))

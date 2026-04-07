@@ -42,11 +42,12 @@ class AlertVMCommon: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        updateWhiteViewCornerMask()
         updateWhiteViewBorderFrame()
     }
 
     // MARK: - UI
-    private lazy var bgView: UIView = {
+    lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
@@ -56,7 +57,7 @@ class AlertVMCommon: UIView {
         return v
     }()
     
-    private lazy var whiteView: UIView = {
+    lazy var whiteView: UIView = {
         // 先用默认高度创建，后面 dealData() 会重算高度并设置 frame
         let vi = UIView(frame: CGRect(x: 0, y: SCREEN_HEIGHT - whiteViewHeight, width: SCREEN_WIDHT, height: whiteViewHeight))
 //        vi.backgroundColor = .COLOR_CARD_BG_WHITE_ALERT
@@ -77,7 +78,7 @@ class AlertVMCommon: UIView {
         return vi
     }()
     
-    private lazy var whiteBlurView: UIVisualEffectView = {
+    lazy var whiteBlurView: UIVisualEffectView = {
         let effect = UIBlurEffect(style: .systemMaterial)
         let view = UIVisualEffectView(effect: effect)
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -92,7 +93,7 @@ class AlertVMCommon: UIView {
         layer.locations = [0, 1]
         return layer
     }()
-    private let whiteBorderMaskLayer: CAShapeLayer = {
+    let whiteBorderMaskLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         layer.fillColor = UIColor.clear.cgColor
         layer.strokeColor = UIColor.black.cgColor
@@ -174,6 +175,22 @@ extension AlertVMCommon{
             make.bottom.equalTo(kFitWidth(-5)-WHUtils().getBottomSafeAreaHeight())
         }
     }
+    
+    func updateWhiteViewLayout() {
+        let currentTransform = whiteView.transform
+        let shouldRestoreTransform = isHidden == false
+        whiteView.transform = .identity
+        whiteView.frame = CGRect(x: 0,
+                                 y: SCREEN_HEIGHT - whiteViewHeight,
+                                 width: SCREEN_WIDHT,
+                                 height: whiteViewHeight)
+        updateWhiteViewCornerMask()
+        updateWhiteViewBorderFrame()
+        if shouldRestoreTransform {
+            whiteView.transform = currentTransform
+        }
+    }
+    
     private func setupWhiteViewBorder() {
         //color_text_white_d234_50
         if traitCollection.userInterfaceStyle == .dark{
@@ -196,6 +213,10 @@ extension AlertVMCommon{
         let pathRect = whiteView.bounds.insetBy(dx: inset, dy: inset)
         whiteBorderMaskLayer.path = UIBezierPath(roundedRect: pathRect,
                                                  cornerRadius: whiteViewTopRadius - inset).cgPath
+    }
+    
+    private func updateWhiteViewCornerMask() {
+        whiteView.addClipCorner(corners: [.topLeft, .topRight], radius: whiteViewTopRadius)
     }
 }
 

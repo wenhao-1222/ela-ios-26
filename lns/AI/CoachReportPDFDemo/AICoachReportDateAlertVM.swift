@@ -251,7 +251,7 @@ extension AICoachReportDateAlertVM {
 
         if items.isEmpty {
             label.text = "暂无报告"
-            label.textColor = .COLOR_TEXT_TITLE_0f1214_50
+//            label.textColor = .COLOR_TEXT_TITLE_0f1214_50
             label.font = .systemFont(ofSize: 17, weight: .regular)
             return label
         }
@@ -259,8 +259,9 @@ extension AICoachReportDateAlertVM {
         let item = items[row]
         let isSelected = row == selectedIndex
         label.text = item.pickerDateRangeText
+        label.font = .systemFont(ofSize: 16, weight: .semibold)
 //        label.textColor = isSelected ? .THEME : .COLOR_TEXT_TITLE_0f1214_50
-        label.font = .systemFont(ofSize: 16, weight: isSelected ? .semibold : .regular)
+//        label.font = .systemFont(ofSize: 16, weight: isSelected ? .semibold : .regular)
 //        if isSelected {
             setUpPickerStyleRowStyle(row: row, component: component)
 //        }
@@ -270,8 +271,8 @@ extension AICoachReportDateAlertVM {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         guard items.indices.contains(row) else { return }
         selectedIndex = row
-        pickerView.reloadAllComponents()
-        setUpPickerStyleRowStyle(row: row, component: component)
+//        pickerView.reloadAllComponents()
+//        setUpPickerStyleRowStyle(row: row, component: component)
     }
 
     func setUpPickerStyleRowStyle(row:Int,component:Int) {
@@ -279,7 +280,7 @@ extension AICoachReportDateAlertVM {
             let label = self.pickerView.view(forRow: row, forComponent: component) as? UILabel
             if label != nil {
                 label?.textColor = .THEME
-                label?.font = .systemFont(ofSize: 17, weight: .semibold)
+//                label?.font = .systemFont(ofSize: 17, weight: .semibold)
             }
         })
     }

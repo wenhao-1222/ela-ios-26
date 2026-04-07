@@ -11,6 +11,7 @@ import SnapKit
 class AICoachPreInfoVM: UIView {
 
     let selfHeight = kFitHeight(110)
+    var rowTapBlock: ((AICoachPreInfoEditableField) -> Void)?
 
     private lazy var cardView: UIView = {
         let view = UIView()
@@ -44,8 +45,8 @@ class AICoachPreInfoVM: UIView {
 
 extension AICoachPreInfoVM {
     func configure(userGoal: Int, aiCoachIntensityPreference: Int) {
-        goalRowView.updateValue(text: goalText(for: userGoal))
-        intensityRowView.updateValue(text: intensityText(for: aiCoachIntensityPreference))
+        goalRowView.updateValue(text: AICoachPreInfoEditableField.goal.displayText(for: userGoal))
+        intensityRowView.updateValue(text: AICoachPreInfoEditableField.intensity.displayText(for: aiCoachIntensityPreference))
     }
 }
 
@@ -55,6 +56,12 @@ private extension AICoachPreInfoVM {
         cardView.addSubview(goalRowView)
         cardView.addSubview(separatorLine)
         cardView.addSubview(intensityRowView)
+        goalRowView.tapBlock = { [weak self] in
+            self?.rowTapBlock?(.goal)
+        }
+        intensityRowView.tapBlock = { [weak self] in
+            self?.rowTapBlock?(.intensity)
+        }
 
         cardView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
@@ -79,30 +86,12 @@ private extension AICoachPreInfoVM {
             make.height.equalTo(kFitWidth(54))
         }
     }
-
-    func goalText(for userGoal: Int) -> String {
-        switch userGoal {
-        case 1: return "减脂"
-        case 2: return "增肌"
-        default: return "--"
-        }
-    }
-
-    func intensityText(for preference: Int) -> String {
-        switch preference {
-        case 1: return "非常放松"
-        case 2: return "放松"
-        case 3: return "正常"
-        case 4: return "健身爱好者"
-        case 5: return "职业运动员"
-        default: return "--"
-        }
-    }
 }
 
 private final class AICoachPreInfoRowView: UIView {
 
     private let title: String
+    var tapBlock: (() -> Void)?
 
     init(title: String) {
         self.title = title
@@ -137,6 +126,13 @@ private final class AICoachPreInfoRowView: UIView {
         return imageView
     }()
 
+    private lazy var tapButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.backgroundColor = .clear
+        button.addTarget(self, action: #selector(tapAction), for: .touchUpInside)
+        return button
+    }()
+
     func updateValue(text: String) {
         valueLabel.text = text
     }
@@ -147,6 +143,7 @@ private extension AICoachPreInfoRowView {
         addSubview(titleLabel)
         addSubview(valueLabel)
         addSubview(arrowImageView)
+        addSubview(tapButton)
 
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
@@ -165,5 +162,13 @@ private extension AICoachPreInfoRowView {
             make.right.equalTo(arrowImageView.snp.left).offset(kFitWidth(-10))
             make.centerY.equalToSuperview()
         }
+
+        tapButton.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+
+    @objc func tapAction() {
+        tapBlock?()
     }
 }

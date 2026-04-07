@@ -238,7 +238,7 @@ extension AICoachReportDemoData {
             bottomRightText: "休息天数： 0 天"
         ),
         dailyComparisonTable: AICoachReportWeekTableData(
-            title: "本周每日体重 & 营养素&热量&消耗对照表",
+            title: "本周记录总览",
             columnTitles: ["日期", "体重(kg)", "热量(kcal)", "蛋白(g)", "碳水(g)", "脂肪(g)", "训练标签"],
             rows: []
         ),
@@ -339,7 +339,7 @@ extension AICoachReportDemoData {
             bottomRightText: "休息天数： 2 天"
         ),
         dailyComparisonTable: AICoachReportWeekTableData(
-            title: "本周每日体重 & 营养素&热量&消耗对照表",
+            title: "本周记录总览",
             columnTitles: ["日期", "体重(kg)", "热量(kcal)", "蛋白(g)", "碳水(g)", "脂肪(g)", "训练标签"],
             rows: [
                 .init(values: ["04/01", "73.0", "2050", "128", "210", "58", "胸"]),
