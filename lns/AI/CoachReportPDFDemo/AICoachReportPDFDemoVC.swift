@@ -137,6 +137,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         view.backgroundColor = .white
         setupUI()
         refreshTopBar()
+        updateDateButtonInteraction(isEnabled: false)
         sendReportListRequest()
         if reportId.isEmpty == false {
             sendReportDetailRequest()
@@ -250,6 +251,7 @@ private extension AICoachReportPDFDemoVC {
     }
 
     func generateAndLoadPDF() {
+        updateDateButtonInteraction(isEnabled: false)
         loadingIndicator.startAnimating()
         loadingLabel.text = "正在生成PDF..."
         loadingLabel.isHidden = false
@@ -262,9 +264,11 @@ private extension AICoachReportPDFDemoVC {
                 self.downloadButton.isEnabled = true
                 self.loadingIndicator.stopAnimating()
                 self.loadingLabel.isHidden = true
+                self.updateDateButtonInteraction(isEnabled: true)
             } catch {
                 self.loadingIndicator.stopAnimating()
                 self.loadingLabel.text = "PDF 生成失败"
+                self.updateDateButtonInteraction(isEnabled: true)
             }
         }
     }
@@ -272,6 +276,7 @@ private extension AICoachReportPDFDemoVC {
     func loadPDF(from url: URL) {
         guard let document = PDFDocument(url: url) else {
             loadingLabel.text = "PDF 加载失败"
+            updateDateButtonInteraction(isEnabled: true)
             return
         }
         pdfView.document = document
@@ -290,6 +295,7 @@ private extension AICoachReportPDFDemoVC {
     }
 
     @objc func dateButtonTapAction() {
+        guard dateButton.isUserInteractionEnabled else { return }
         guard reportList.isEmpty == false else {
             sendReportListRequest()
             return
@@ -302,6 +308,7 @@ private extension AICoachReportPDFDemoVC {
 extension AICoachReportPDFDemoVC{
     func sendReportDetailRequest() {
         guard reportId.isEmpty == false else { return }
+        updateDateButtonInteraction(isEnabled: false)
         let param = ["id":reportId]
         WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_detail, parameters: param as [String : AnyObject]) { [weak self] responseObject in
             guard let self else { return }
@@ -465,6 +472,11 @@ private extension AICoachReportPDFDemoVC {
         let trimmedDate = dateString.trimmingCharacters(in: .whitespacesAndNewlines)
         guard trimmedDate.isEmpty == false else { return "" }
         return Date().changeDateFormatter(dateString: trimmedDate, formatter: "yyyy-MM-dd", targetFormatter: targetFormatter)
+    }
+
+    func updateDateButtonInteraction(isEnabled: Bool) {
+        dateButton.isUserInteractionEnabled = isEnabled
+        dateButton.alpha = isEnabled ? 1 : 0.6
     }
 
     func handleReportSelection(_ item: AICoachReportListItem) {
@@ -724,8 +736,7 @@ private extension AICoachReportPDFDemoVC {
 
     func splitTrainingItems(_ items: [AICoachReportTrainingItem]) -> (left: [AICoachReportTrainingItem], right: [AICoachReportTrainingItem]) {
         guard items.isEmpty == false else { return ([], []) }
-        let leftColumnCapacity = 7
-        let leftCount = min(items.count, leftColumnCapacity)
+        let leftCount = Int(ceil(Double(items.count) / 2.0))
         let leftItems = Array(items.prefix(leftCount))
         let rightItems = Array(items.dropFirst(leftCount))
         return (leftItems, rightItems)

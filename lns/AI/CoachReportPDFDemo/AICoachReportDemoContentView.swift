@@ -238,7 +238,7 @@ private extension AICoachReportDemoContentView {
 
         let potentialValue = UILabel()
         potentialValue.attributedText = makePotentialValueText(report.weeklyPotentialValue)
-        potentialValue.textAlignment = .right
+        potentialValue.textAlignment = .center
 
         let riskView = makeSummaryPanelTipItem(report.riskTip)
         let actionView = makeSummaryPanelTipItem(report.actionTip)
@@ -570,6 +570,10 @@ private extension AICoachReportDemoContentView {
         let card = AICoachReportDemoCardView()
 
         let titleLabel = makeCardTitleLabel(report.trainingChart.title)
+        let contentStack = UIStackView()
+        contentStack.axis = .vertical
+        contentStack.spacing = 14
+
         let columnStack = UIStackView()
         columnStack.axis = .horizontal
         columnStack.spacing = 14
@@ -591,30 +595,32 @@ private extension AICoachReportDemoContentView {
         bottomRight.textAlignment = .right
         bottomRight.text = report.trainingChart.bottomRightText
 
-        card.addSubview(titleLabel)
-        card.addSubview(columnStack)
-        card.addSubview(bottomLeft)
-        card.addSubview(bottomRight)
+        let footerRow = UIStackView()
+        footerRow.axis = .horizontal
+        footerRow.alignment = .center
+        footerRow.distribution = .fill
+        footerRow.spacing = 12
+        footerRow.addArrangedSubview(bottomLeft)
+        footerRow.addArrangedSubview(bottomRight)
 
+        let spacer = UIView()
+        spacer.setContentHuggingPriority(.defaultLow, for: .vertical)
+        spacer.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+
+        card.addSubview(contentStack)
+        contentStack.addArrangedSubview(titleLabel)
+        contentStack.addArrangedSubview(columnStack)
+        contentStack.addArrangedSubview(spacer)
+        contentStack.addArrangedSubview(footerRow)
+
+        contentStack.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
+        }
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(16)
-            make.left.equalToSuperview().offset(16)
+            make.left.right.equalToSuperview()
         }
-        columnStack.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(14)
-            make.left.equalToSuperview().offset(16)
-            make.right.equalToSuperview().offset(-16)
-        }
-        bottomLeft.snp.makeConstraints { make in
-            make.left.equalTo(columnStack)
-            make.top.equalTo(columnStack.snp.bottom).offset(14)
-            make.bottom.equalToSuperview().offset(-16)
-        }
-        bottomRight.snp.makeConstraints { make in
-            make.right.equalTo(columnStack)
-            make.centerY.equalTo(bottomLeft)
-            make.left.greaterThanOrEqualTo(bottomLeft.snp.right).offset(12)
-        }
+        bottomRight.setContentCompressionResistancePriority(.required, for: .horizontal)
+        bottomRight.setContentHuggingPriority(.required, for: .horizontal)
 
         return card
     }
