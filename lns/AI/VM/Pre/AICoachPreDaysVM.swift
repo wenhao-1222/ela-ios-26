@@ -165,7 +165,16 @@ private extension AICoachPreDaysVM {
     }
 
     func updateMessage() {
-        let fullText = "请完整记录饮食和力量训练，教练将会在 \(reportAfterDays) 天后\n给你发送第一份反馈报告"
+        //
+        /*
+         首报之前的文案：
+         为了让反馈更精准，我还需要更多时间来了解你。请继续保持记录饮食和体重，我预计会在x 天后为你生成第一份反馈报告！
+         
+         首次出报告：你的首份教练报告已经准备好了，快去查看！
+
+         后续出报告：你最新的教练报告已经准备好了，快去查看！
+         */
+        let fullText = "请完整记录饮食和力量训练，教练将会在 \(reportAfterDays) 天后\n给你发送下一份反馈报告"
         let attributedText = NSMutableAttributedString(
             string: fullText,
             attributes: [

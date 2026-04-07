@@ -176,14 +176,14 @@ extension DietPlanVC{
         let mealPlanItemList = dataObj["mealPlanItemList"] as? NSArray ?? []
         let status = dataObj.stringValueForKey(key: "status")
         
-//        if status == "1" {//无问卷
+        if status == "1" {//无问卷
             if emptyVm.superview == nil {
                 removeStateViews()
                 view.addSubview(emptyVm)
             }
             return
-//        }
-        /*
+        }
+        
         if status == "2" {//做过问卷，未生成计划
             if nonePlanVm.superview == nil {
                 removeStateViews()
@@ -196,13 +196,13 @@ extension DietPlanVC{
             removeStateViews()
             view.addSubview(listVm)
         }
-//        if status == "3"{//有问卷，计划过期   buyListButton不可点
-//            listVm.buyListButton.isEnabled = false
-//        }else{//有问卷，计划且在有效期内
-//            listVm.buyListButton.isEnabled = true
-//        }
+        if status == "3"{//有问卷，计划过期   buyListButton不可点
+            listVm.buyListButton.isEnabled = false
+        }else{//有问卷，计划且在有效期内
+            listVm.buyListButton.isEnabled = true
+        }
         listVm.updatePlanList(mealPlanItemList: mealPlanItemList, preservingScrollOffset: preservingListOffset)
-         */
+         
     }
     
     func sendDietPlanMsgRequest() {

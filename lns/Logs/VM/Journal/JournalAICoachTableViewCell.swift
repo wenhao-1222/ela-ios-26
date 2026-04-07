@@ -21,6 +21,11 @@ class JournalAICoachTableViewCell: UITableViewCell {
         selectionStyle = .none
         initUI()
     }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        whiteView.transform = .identity
+    }
     
     lazy var whiteView: UIView = {
         let vi = UIView()
@@ -62,14 +67,41 @@ class JournalAICoachTableViewCell: UITableViewCell {
         let btn = UIButton()
         btn.backgroundColor = .clear
         btn.enablePressEffect(style: UIImpactFeedbackGenerator(style: .soft), weight: 1)
+        btn.addTarget(self, action: #selector(handlePressDown), for: .touchDown)
+        btn.addTarget(self, action: #selector(handlePressDown), for: .touchDragEnter)
+        btn.addTarget(self, action: #selector(handlePressUp), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(handlePressUp), for: .touchUpOutside)
+        btn.addTarget(self, action: #selector(handlePressUp), for: .touchCancel)
+        btn.addTarget(self, action: #selector(handlePressUp), for: .touchDragExit)
         btn.addTarget(self, action: #selector(tapAction), for: .touchUpInside)
         return btn
     }()
 }
 
 extension JournalAICoachTableViewCell {
+    func update(isVip: Bool) {
+        proImgView.isHidden = isVip
+    }
+
+    @objc private func handlePressDown() {
+        updateWhiteViewPressState(isPressed: true)
+    }
+
+    @objc private func handlePressUp() {
+        updateWhiteViewPressState(isPressed: false)
+    }
+
     @objc func tapAction() {
         tapBlock?()
+    }
+
+    private func updateWhiteViewPressState(isPressed: Bool) {
+        let transform: CGAffineTransform = isPressed ? CGAffineTransform(scaleX: 0.98, y: 0.98) : .identity
+        UIView.animate(withDuration: 0.1,
+                       delay: 0,
+                       options: [.curveEaseOut, .beginFromCurrentState]) {
+            self.whiteView.transform = transform
+        }
     }
 }
 
