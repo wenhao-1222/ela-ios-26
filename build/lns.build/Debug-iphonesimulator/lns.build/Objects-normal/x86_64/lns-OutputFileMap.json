@@ -3586,6 +3586,16 @@
     "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/ElaLaunchVC.swiftdeps",
     "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/ElaLaunchVC~partial.swiftmodule"
   },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VC/GuidanceProPurchasedVC.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceProPurchasedVC.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceProPurchasedVC.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceProPurchasedVC.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceProPurchasedVC.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceProPurchasedVC.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceProPurchasedVC.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceProPurchasedVC.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceProPurchasedVC~partial.swiftmodule"
+  },
   "/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VC/GuidanceProVC.swift" : {
     "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceProVC.swiftconstvalues",
     "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceProVC.d",

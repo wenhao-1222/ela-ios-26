@@ -16,6 +16,10 @@ private enum AICoachPrePopupLayout {
     static let totalHeight = bodyHeight + arrowHeight
 }
 
+private enum AICoachPreDaySweepAnimation {
+    static let duration: CFTimeInterval = 2.82
+}
+
 class AICoachPreDaysVM: UIView, UIGestureRecognizerDelegate {
 
     enum DayState {
@@ -119,6 +123,7 @@ extension AICoachPreDaysVM{
         reloadDaysUI()
         updateMessage()
         hidePopup()
+        updateSweepAnimationIfNeeded()
     }
 
     func dismissPopup() {
@@ -163,6 +168,19 @@ private extension AICoachPreDaysVM {
             }
             daysStackView.addArrangedSubview(itemView)
             itemViews.append(itemView)
+        }
+    }
+
+    func updateSweepAnimationIfNeeded() {
+        let shouldAnimate = reportAfterDays == 0
+        layoutIfNeeded()
+
+        for itemView in itemViews {
+            if shouldAnimate {
+                itemView.startIconSweepAnimation()
+            } else {
+                itemView.stopIconSweepAnimation()
+            }
         }
     }
 
@@ -267,6 +285,8 @@ extension AICoachPreDaysVM {
 private final class AICoachPreDayItemView: UIView {
 
     var tapBlock: (() -> Void)?
+    private let iconSweepLayer = CAGradientLayer()
+    private var isIconSweepAnimating = false
 
     private lazy var iconContainerView: UIView = {
         let view = UIView()
@@ -292,6 +312,7 @@ private final class AICoachPreDayItemView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        setupIconSweepLayer()
     }
 
     required init?(coder: NSCoder) {
@@ -316,9 +337,63 @@ private final class AICoachPreDayItemView: UIView {
             titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214_25
         }
     }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateIconSweepLayerFrame()
+    }
+
+    func startIconSweepAnimation() {
+        guard isIconSweepAnimating == false else { return }
+        isIconSweepAnimating = true
+        layoutIfNeeded()
+        updateIconSweepLayerFrame()
+
+        if iconSweepLayer.superlayer == nil {
+            iconContainerView.layer.addSublayer(iconSweepLayer)
+        }
+
+        let translation = iconContainerView.bounds.width * 2.1
+        iconSweepLayer.transform = CATransform3DMakeTranslation(-translation, 0, 0)
+
+        let moveAnimation = CABasicAnimation(keyPath: "transform.translation.x")
+        moveAnimation.fromValue = -translation
+        moveAnimation.toValue = translation
+        moveAnimation.duration = AICoachPreDaySweepAnimation.duration
+        moveAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        moveAnimation.repeatCount = .infinity
+        moveAnimation.isRemovedOnCompletion = false
+        iconSweepLayer.add(moveAnimation, forKey: "ai.pre.days.iconSweep")
+    }
+
+    func stopIconSweepAnimation() {
+        isIconSweepAnimating = false
+        iconSweepLayer.removeAnimation(forKey: "ai.pre.days.iconSweep")
+        iconSweepLayer.transform = CATransform3DIdentity
+        iconSweepLayer.removeFromSuperlayer()
+    }
 }
 
 private extension AICoachPreDayItemView {
+    func setupIconSweepLayer() {
+        iconSweepLayer.startPoint = CGPoint(x: 0, y: 0.35)
+        iconSweepLayer.endPoint = CGPoint(x: 1, y: 0.65)
+        iconSweepLayer.colors = [
+            UIColor.white.withAlphaComponent(0).cgColor,
+            UIColor.white.withAlphaComponent(0.18).cgColor,
+            UIColor.white.withAlphaComponent(0.52).cgColor,
+            UIColor.white.withAlphaComponent(0.18).cgColor,
+            UIColor.white.withAlphaComponent(0).cgColor
+        ]
+        iconSweepLayer.locations = [0, 0.38, 0.5, 0.62, 1]
+    }
+
+    func updateIconSweepLayerFrame() {
+        let bounds = iconContainerView.bounds
+        guard bounds.isEmpty == false else { return }
+        iconSweepLayer.frame = bounds.insetBy(dx: -bounds.width, dy: 0)
+    }
+
     func setupUI() {
         addSubview(iconContainerView)
         addSubview(titleLabel)
