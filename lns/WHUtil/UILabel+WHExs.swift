@@ -77,6 +77,41 @@ extension UILabel{
         self.attributedText = attributedString
         self.sizeToFit() // 自动计算高度，包括行高
     }
+    /// 按倍数设置行高，适合需要跟随字体变化统一调整文案行高的场景
+    func setLineHeightMultiple(attr: NSAttributedString? = nil, textString: String? = nil, lineHeightMultiple: CGFloat) {
+        let sourceAttributedText = attr ?? self.attributedText
+        let sourceText = textString ?? self.text ?? sourceAttributedText?.string ?? ""
+        guard sourceText.isEmpty == false else { return }
+
+        let attributedString: NSMutableAttributedString
+        if let sourceAttributedText {
+            attributedString = NSMutableAttributedString(attributedString: sourceAttributedText)
+        } else {
+            attributedString = NSMutableAttributedString(string: sourceText, attributes: [
+                .font: self.font as Any,
+                .foregroundColor: self.textColor as Any
+            ])
+        }
+
+        let range = NSRange(location: 0, length: attributedString.length)
+        attributedString.enumerateAttributes(in: range, options: []) { attributes, subRange, _ in
+            let paragraphStyle = (attributes[.paragraphStyle] as? NSParagraphStyle)?.mutableCopy() as? NSMutableParagraphStyle ?? NSMutableParagraphStyle()
+            paragraphStyle.lineHeightMultiple = lineHeightMultiple
+            paragraphStyle.alignment = self.textAlignment
+            paragraphStyle.lineBreakMode = self.lineBreakMode
+            attributedString.addAttribute(.paragraphStyle, value: paragraphStyle, range: subRange)
+
+            if attributes[.font] == nil, let font = self.font {
+                attributedString.addAttribute(.font, value: font, range: subRange)
+            }
+            if attributes[.foregroundColor] == nil, let textColor = self.textColor {
+                attributedString.addAttribute(.foregroundColor, value: textColor, range: subRange)
+            }
+        }
+
+        self.attributedText = attributedString
+        self.sizeToFit()
+    }
     /// 设置字间距（kern）
     /// - Parameters:
     ///   - spacing: 字符间距（单位：point）

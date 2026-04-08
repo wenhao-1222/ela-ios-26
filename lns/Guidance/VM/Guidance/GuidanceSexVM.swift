@@ -10,6 +10,7 @@ class GuidanceSexVM: UIView {
     var manTapBlock:(()->())?
     var femanTapBlock:(()->())?
     var loginTapBlock:(()->())?
+    var showTipsBlock:(()->())?
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -24,10 +25,21 @@ class GuidanceSexVM: UIView {
     lazy var titleLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
+        lab.font = .systemFont(ofSize: 22, weight: .medium)
         lab.text = "你的性别是？"
         
         return lab
+    }()
+    lazy var tipsButton : UIButton = {
+        let btn = UIButton()
+        btn.setTitle("荷尔蒙：无法被忽略的变量", for: .normal)
+        btn.setTitleColor(.THEME, for: .normal)
+        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
+        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        
+        btn.addTarget(self, action: #selector(showTipsAction), for: .touchUpInside)
+        
+        return btn
     }()
     lazy var sexManButton: FeedBackButton = {
         let btn = FeedBackButton()
@@ -107,6 +119,11 @@ extension GuidanceSexVM{
     @objc func loginAction(){
         self.loginTapBlock?()
     }
+    @objc func showTipsAction(){
+        if self.showTipsBlock != nil{
+            self.showTipsBlock!()
+        }
+    }
     @objc func manTapAction(){
         if QuestinonaireMsgModel.shared.sex == "2"{
             QuestinonaireMsgModel.shared.clearMsg()
@@ -148,6 +165,7 @@ extension GuidanceSexVM{
 extension GuidanceSexVM{
     func initUI() {
         addSubview(titleLabel)
+        addSubview(tipsButton)
         addSubview(sexManButton)
         sexManButton.addSubview(sexManIcon)
         sexManButton.addSubview(sexManLabel)
@@ -164,12 +182,18 @@ extension GuidanceSexVM{
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.height.equalTo(kFitWidth(36))
-            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(35))
+            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(59))
+        }
+        tipsButton.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
+            make.centerX.lessThanOrEqualToSuperview()
+            make.width.equalTo(kFitWidth(200))
+            make.height.equalTo(kFitWidth(21))
         }
         sexManButton.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
 //            make.top.equalTo(kFitWidth(232))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(81))
+            make.top.equalTo(tipsButton.snp.bottom).offset(kFitWidth(119))
             make.width.equalTo(SCREEN_WIDHT-kFitWidth(32))
             make.height.equalTo(kFitWidth(80))
         }

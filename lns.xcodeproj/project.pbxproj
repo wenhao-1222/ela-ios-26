@@ -959,6 +959,7 @@
 		EC78754F2BDB46E20050D7E8 /* NaturalCaloriSourceVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78754E2BDB46E20050D7E8 /* NaturalCaloriSourceVM.swift */; };
 		EC78C2AD2F691F0500681507 /* GuidanceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2AC2F691F0300681507 /* GuidanceVC.swift */; };
 		EC78C2AF2F69222300681507 /* GuidanceSexVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2AE2F69221900681507 /* GuidanceSexVM.swift */; };
+		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
 		EC78C2B22F6932A600681507 /* GuidanceDietRecordVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2B12F6932A600681507 /* GuidanceDietRecordVM.swift */; };
 		EC78C2B42F69396E00681507 /* GuidanceFixedTargetVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2B32F69396200681507 /* GuidanceFixedTargetVM.swift */; };
 		EC78C2B62F6946B000681507 /* GuidanceTakeoutFrequencyVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2B52F6946A900681507 /* GuidanceTakeoutFrequencyVM.swift */; };
@@ -2441,6 +2442,7 @@
 		EC78754E2BDB46E20050D7E8 /* NaturalCaloriSourceVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalCaloriSourceVM.swift; sourceTree = "<group>"; };
 		EC78C2AC2F691F0300681507 /* GuidanceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceVC.swift; sourceTree = "<group>"; };
 		EC78C2AE2F69221900681507 /* GuidanceSexVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexVM.swift; sourceTree = "<group>"; };
+		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
 		EC78C2B12F6932A600681507 /* GuidanceDietRecordVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordVM.swift; sourceTree = "<group>"; };
 		EC78C2B32F69396200681507 /* GuidanceFixedTargetVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceFixedTargetVM.swift; sourceTree = "<group>"; };
 		EC78C2B52F6946A900681507 /* GuidanceTakeoutFrequencyVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceTakeoutFrequencyVM.swift; sourceTree = "<group>"; };
@@ -4364,6 +4366,7 @@
 				EC78C2C32F69C8E700681507 /* GuidanceStrengthTrainingSummaryVM.swift */,
 				EC78C2B52F6946A900681507 /* GuidanceTakeoutFrequencyVM.swift */,
 				EC78C2AE2F69221900681507 /* GuidanceSexVM.swift */,
+				F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */,
 			);
 			path = Guidance;
 			sourceTree = "<group>";
@@ -6836,6 +6839,7 @@
 				EC78C2C42F69C8F000681507 /* GuidanceStrengthTrainingSummaryVM.swift in Sources */,
 				EC78C2B62F6946B000681507 /* GuidanceTakeoutFrequencyVM.swift in Sources */,
 				EC78C2AF2F69222300681507 /* GuidanceSexVM.swift in Sources */,
+				F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */,
 				A7B772FC2D3A6688006B12C4 /* UINavigationController+FDFullscreenPopGesture.m in Sources */,
 				ECD0FEFD2BABD25B001232C9 /* YYTextRubyAnnotation.m in Sources */,
 				ECB3E03D2BD2353700CFDDFD /* DataDetailShareLineChartView.swift in Sources */,
