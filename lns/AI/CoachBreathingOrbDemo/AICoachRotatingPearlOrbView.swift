@@ -4,7 +4,6 @@
 //
 //  Created by Codex on 2026/4/8.
 //
-
 import UIKit
 import AVFoundation
 
@@ -18,51 +17,67 @@ final class AICoachRotatingPearlOrbView: UIView {
     private static let assetName = "AICoachPearlOrbReferenceCrop"
     private static let assetExtension = "mp4"
     private static let fallbackLoopDuration: Double = 20.0
-    private static let maskInsetRatio: CGFloat = 2.35 / 142.0
-    private static let contentOverscanRatio: CGFloat = 4.0 / 142.0
-    private static let breathingAnimationKey = "aiCoach.orb.breathing"
-    private static let breathingDuration: CFTimeInterval = 3.6
-    private static let breathingMinScale: CGFloat = 0.985
-    private static let breathingMaxScale: CGFloat = 1.02
+
+    // Cut a little bit deeper into the source edge, and overscan the video layer,
+    // so the dark matte pixels from the source MP4 stay outside the visible circle.
+    private static let maskInsetRatio: CGFloat = 7.0 / 142.0
+    private static let overscanRatio: CGFloat = 1.08
+
+    // Display-time crossfade. The actual source overlap is scaled by playback rate.
+    private static let displayCrossfadeDuration: Double = 0.55
 
     private let orbMaskLayer = CAShapeLayer()
-    private let playerLayer = AVPlayerLayer()
+    private let playerLayers = [AVPlayerLayer(), AVPlayerLayer()]
+    private var players = [AVPlayer(), AVPlayer()]
+    private var timeObservers: [Any?] = [nil, nil]
 
-    private var queuePlayer: AVQueuePlayer?
-    private var looper: AVPlayerLooper?
     private var sourceLoopDuration: Double = 20.0
+    private var playbackRate: Float = 1.0
+    private var activeIndex = 0
+    private var isCrossfading = false
+    private var hasStarted = false
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureView()
-        configurePlayer()
+        configurePlayers()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         configureView()
-        configurePlayer()
+        configurePlayers()
+    }
+
+    deinit {
+        for (index, observer) in timeObservers.enumerated() {
+            if let observer {
+                players[index].removeTimeObserver(observer)
+            }
+        }
+        players.forEach { player in
+            player.pause()
+            player.replaceCurrentItem(with: nil)
+        }
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        layoutPlayerAndMask()
+        layoutLayersAndMask()
     }
 
     override func didMoveToWindow() {
         super.didMoveToWindow()
-        if window == nil {
-            queuePlayer?.pause()
-            stopBreathingAnimation()
-        } else {
-            updatePlaybackRate()
-            startBreathingAnimationIfNeeded()
+        guard window != nil else {
+            players.forEach { $0.pause() }
+            return
         }
-    }
 
-    deinit {
-        queuePlayer?.pause()
-        looper = nil
+        if hasStarted {
+            updatePlaybackRate()
+        } else {
+            startPlaybackFromBeginning()
+        }
     }
 }
 
@@ -71,86 +86,173 @@ private extension AICoachRotatingPearlOrbView {
         backgroundColor = .clear
         isOpaque = false
 
-        playerLayer.backgroundColor = UIColor.clear.cgColor
-        playerLayer.videoGravity = .resizeAspectFill
-        layer.addSublayer(playerLayer)
+        for (index, playerLayer) in playerLayers.enumerated() {
+            playerLayer.backgroundColor = UIColor.clear.cgColor
+            playerLayer.videoGravity = .resizeAspectFill
+            playerLayer.opacity = (index == activeIndex) ? 1.0 : 0.0
+            layer.addSublayer(playerLayer)
+        }
 
         orbMaskLayer.fillColor = UIColor.black.cgColor
         orbMaskLayer.contentsScale = UIScreen.main.scale
         layer.mask = orbMaskLayer
     }
 
-    func configurePlayer() {
+    func configurePlayers() {
         guard let url = referenceVideoURL() else {
             assertionFailure("Missing \(Self.assetName).\(Self.assetExtension) in the app bundle.")
             return
         }
 
         let asset = AVURLAsset(url: url)
-        let seconds = asset.duration.seconds
-        if seconds.isFinite, seconds > 0 {
-            sourceLoopDuration = seconds
+        let durationSeconds = asset.duration.seconds
+        if durationSeconds.isFinite, durationSeconds > 0 {
+            sourceLoopDuration = durationSeconds
         }
 
-        let item = AVPlayerItem(asset: asset)
-        let player = AVQueuePlayer()
-        player.actionAtItemEnd = .none
-        player.isMuted = true
-        player.automaticallyWaitsToMinimizeStalling = false
+        for index in 0 ..< players.count {
+            let item = AVPlayerItem(asset: asset)
+            item.preferredForwardBufferDuration = 0
 
-        looper = AVPlayerLooper(player: player, templateItem: item)
-        queuePlayer = player
-        playerLayer.player = player
+            let player = players[index]
+            player.replaceCurrentItem(with: item)
+            player.isMuted = true
+            player.actionAtItemEnd = .pause
+            player.automaticallyWaitsToMinimizeStalling = false
+            player.preventsDisplaySleepDuringVideoPlayback = false
+
+            playerLayers[index].player = player
+
+            let observer = player.addPeriodicTimeObserver(
+                forInterval: CMTime(value: 1, timescale: 60),
+                queue: .main
+            ) { [weak self] _ in
+                self?.handlePlaybackTick(for: index)
+            }
+            timeObservers[index] = observer
+        }
+
         updatePlaybackRate()
     }
 
-    func layoutPlayerAndMask() {
+    func layoutLayersAndMask() {
         let side = min(bounds.width, bounds.height)
-        let renderFrame = CGRect(
+        let visibleFrame = CGRect(
             x: (bounds.width - side) * 0.5,
             y: (bounds.height - side) * 0.5,
             width: side,
             height: side
+        )
+
+        let overscannedSide = side * Self.overscanRatio
+        let playerFrame = CGRect(
+            x: visibleFrame.midX - overscannedSide * 0.5,
+            y: visibleFrame.midY - overscannedSide * 0.5,
+            width: overscannedSide,
+            height: overscannedSide
         ).integral
 
-        // The source mp4 has a dark matte at the edge, so slightly overscan the
-        // video under the circular mask to keep that fringe out of view.
-        let overscan = side * Self.contentOverscanRatio
-        playerLayer.frame = renderFrame.insetBy(dx: -overscan, dy: -overscan)
+        playerLayers.forEach { $0.frame = playerFrame }
 
         let inset = side * Self.maskInsetRatio
         orbMaskLayer.frame = bounds
-        orbMaskLayer.path = UIBezierPath(ovalIn: renderFrame.insetBy(dx: inset, dy: inset)).cgPath
+        orbMaskLayer.path = UIBezierPath(ovalIn: visibleFrame.insetBy(dx: inset, dy: inset)).cgPath
+    }
+
+    func startPlaybackFromBeginning() {
+        hasStarted = true
+        isCrossfading = false
+        activeIndex = 0
+
+        playerLayers[0].opacity = 1.0
+        playerLayers[1].opacity = 0.0
+
+        let inactive = players[1]
+        inactive.pause()
+        inactive.seek(to: .zero, toleranceBefore: .zero, toleranceAfter: .zero)
+
+        let active = players[0]
+        active.seek(to: .zero, toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] _ in
+            self?.updatePlaybackRate()
+        }
     }
 
     func updatePlaybackRate() {
-        guard let player = queuePlayer else { return }
+        let desiredDuration = max(rotationDuration, 0.1)
+        playbackRate = Float(sourceLoopDuration / desiredDuration)
+
         guard window != nil else {
-            player.pause()
+            players.forEach { $0.pause() }
             return
         }
 
-        let desiredDuration = max(rotationDuration, 0.1)
-        let rate = Float(sourceLoopDuration / desiredDuration)
-        player.playImmediately(atRate: rate)
+        let activePlayer = players[activeIndex]
+        activePlayer.playImmediately(atRate: playbackRate)
+
+        if isCrossfading {
+            players[1 - activeIndex].playImmediately(atRate: playbackRate)
+        }
     }
 
-    func startBreathingAnimationIfNeeded() {
-        guard layer.animation(forKey: Self.breathingAnimationKey) == nil else { return }
+    func handlePlaybackTick(for playerIndex: Int) {
+        guard window != nil else { return }
+        guard playerIndex == activeIndex else { return }
+        guard !isCrossfading else { return }
 
-        let animation = CABasicAnimation(keyPath: "transform.scale")
-        animation.fromValue = Self.breathingMinScale
-        animation.toValue = Self.breathingMaxScale
-        animation.duration = Self.breathingDuration
-        animation.autoreverses = true
-        animation.repeatCount = .infinity
-        animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-        animation.isRemovedOnCompletion = false
-        layer.add(animation, forKey: Self.breathingAnimationKey)
+        let currentSeconds = players[playerIndex].currentTime().seconds
+        guard currentSeconds.isFinite else { return }
+
+        let displayOverlap = Self.displayCrossfadeDuration
+        let sourceOverlap = min(
+            sourceLoopDuration * 0.25,
+            max(0.08, displayOverlap * Double(max(playbackRate, 0.01)))
+        )
+        let triggerTime = sourceLoopDuration - sourceOverlap
+
+        if currentSeconds >= triggerTime {
+            beginCrossfade(displayDuration: displayOverlap)
+        }
     }
 
-    func stopBreathingAnimation() {
-        layer.removeAnimation(forKey: Self.breathingAnimationKey)
+    func beginCrossfade(displayDuration: Double) {
+        guard !isCrossfading else { return }
+        isCrossfading = true
+
+        let outgoingIndex = activeIndex
+        let incomingIndex = 1 - outgoingIndex
+
+        let outgoingPlayer = players[outgoingIndex]
+        let incomingPlayer = players[incomingIndex]
+        let outgoingLayer = playerLayers[outgoingIndex]
+        let incomingLayer = playerLayers[incomingIndex]
+
+        incomingLayer.opacity = 0.0
+        layer.insertSublayer(incomingLayer, above: outgoingLayer)
+
+        incomingPlayer.pause()
+        incomingPlayer.seek(to: .zero, toleranceBefore: .zero, toleranceAfter: .zero) { [weak self] _ in
+            guard let self else { return }
+            incomingPlayer.playImmediately(atRate: self.playbackRate)
+
+            CATransaction.begin()
+            CATransaction.setDisableActions(false)
+            CATransaction.setAnimationDuration(displayDuration)
+            CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .linear))
+            incomingLayer.opacity = 1.0
+            outgoingLayer.opacity = 0.0
+            CATransaction.commit()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + displayDuration) { [weak self] in
+                guard let self else { return }
+
+                outgoingPlayer.pause()
+                outgoingPlayer.seek(to: .zero, toleranceBefore: .zero, toleranceAfter: .zero)
+                outgoingLayer.opacity = 0.0
+
+                self.activeIndex = incomingIndex
+                self.isCrossfading = false
+            }
+        }
     }
 
     func referenceVideoURL() -> URL? {
