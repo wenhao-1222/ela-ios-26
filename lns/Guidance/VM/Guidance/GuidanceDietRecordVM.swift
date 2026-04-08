@@ -11,7 +11,8 @@ class GuidanceDietRecordVM: UIView {
         let title: String
         let value: String
     }
-
+    
+    var showTipsBlock:(()->())?
     var selectedBlock: (() -> ())?
     var selectedIndex = -1
 
@@ -40,11 +41,23 @@ class GuidanceDietRecordVM: UIView {
     lazy var titleLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
 //        lab.numberOfLines = 2
+        lab.text = "你之前有记录过饮食吗？"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.setLineHeight(textString: "你之前有记录过饮食吗？", lineHeight: lab.font.lineHeight * 1.2)
+        lab.font = .systemFont(ofSize: 22, weight: .medium)
+//        lab.setLineHeight(textString: "你之前有记录过饮食吗？", lineHeight: lab.font.lineHeight * 1.2)
         return lab
+    }()
+    lazy var tipsButton : UIButton = {
+        let btn = UIButton()
+        btn.setTitle("必须严苛记录才有效吗？", for: .normal)
+        btn.setTitleColor(.THEME, for: .normal)
+        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
+        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        
+        btn.addTarget(self, action: #selector(showTipsAction), for: .touchUpInside)
+        
+        return btn
     }()
 
     lazy var stackView: UIStackView = {
@@ -56,6 +69,11 @@ class GuidanceDietRecordVM: UIView {
 }
 
 extension GuidanceDietRecordVM {
+    @objc func showTipsAction(){
+        if self.showTipsBlock != nil{
+            self.showTipsBlock!()
+        }
+    }
     func refreshSelectionFromModel() {
         let selectedValue = QuestinonaireMsgModel.shared.guidanceDietRecordType
         if let index = dataArray.firstIndex(where: { $0.value == selectedValue }) {
@@ -92,6 +110,7 @@ extension GuidanceDietRecordVM {
 extension GuidanceDietRecordVM {
     func initUI() {
         addSubview(titleLabel)
+        addSubview(tipsButton)
         addSubview(stackView)
 
         for (index, item) in dataArray.enumerated() {
@@ -125,13 +144,19 @@ extension GuidanceDietRecordVM {
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.height.equalTo(kFitWidth(36))
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(35))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
+        }
+        tipsButton.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
+            make.centerX.lessThanOrEqualToSuperview()
+            make.width.equalTo(kFitWidth(200))
+            make.height.equalTo(kFitWidth(21))
         }
 
         stackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(76))
+            make.top.equalTo(tipsButton.snp.bottom).offset(kFitWidth(142))
         }
     }
 }

@@ -216,6 +216,10 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceSexTipsAlertVM(frame: .zero)
         return vm
     }()
+    lazy var dietRecordTipsAlertVm: GuidanceDietRecordTipsAlertVM = {
+        let vm = GuidanceDietRecordTipsAlertVM(frame: .zero)
+        return vm
+    }()
     lazy var nextButton: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("下一步", for: .normal)
@@ -255,6 +259,9 @@ class GuidanceVC: WHBaseViewVC {
         vm.selectedBlock = {()in
             self.updateNextButtonForCurrentStep()
 //            self.moveToStep(index: 2, animated: true)
+        }
+        vm.showTipsBlock = { [weak self] in
+            self?.dietRecordTipsAlertVm.showView()
         }
         return vm
     }()
@@ -1269,6 +1276,7 @@ extension GuidanceVC{
         view.addSubview(bodyFatAlertVm)
         view.addSubview(katchAlertVm)
         view.addSubview(sexTipsAlertVm)
+        view.addSubview(dietRecordTipsAlertVm)
         view.addSubview(finishLoadingVm)
         
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)

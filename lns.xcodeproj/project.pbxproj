@@ -959,7 +959,6 @@
 		EC78754F2BDB46E20050D7E8 /* NaturalCaloriSourceVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78754E2BDB46E20050D7E8 /* NaturalCaloriSourceVM.swift */; };
 		EC78C2AD2F691F0500681507 /* GuidanceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2AC2F691F0300681507 /* GuidanceVC.swift */; };
 		EC78C2AF2F69222300681507 /* GuidanceSexVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2AE2F69221900681507 /* GuidanceSexVM.swift */; };
-		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
 		EC78C2B22F6932A600681507 /* GuidanceDietRecordVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2B12F6932A600681507 /* GuidanceDietRecordVM.swift */; };
 		EC78C2B42F69396E00681507 /* GuidanceFixedTargetVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2B32F69396200681507 /* GuidanceFixedTargetVM.swift */; };
 		EC78C2B62F6946B000681507 /* GuidanceTakeoutFrequencyVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC78C2B52F6946A900681507 /* GuidanceTakeoutFrequencyVM.swift */; };
@@ -1178,7 +1177,7 @@
 		ECBF8C182BC230A30095C4B0 /* D-DIN-PRO-900-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = ECBF8C112BC230A30095C4B0 /* D-DIN-PRO-900-Heavy.otf */; };
 		ECBF8C1A2BC231B70095C4B0 /* UIFont+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBF8C192BC231B70095C4B0 /* UIFont+Exs.swift */; };
 		ECBFC5202F7F8511005E3B48 /* GuidanceProPurchasedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC51F2F7F850D005E3B48 /* GuidanceProPurchasedVC.swift */; };
-		ECBFC6562F85FDCA005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = ECBFC6552F85FDCA005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */; };
+		ECBFC6582F8627E6005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = ECBFC6572F8627E6005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */; };
 		ECBFDFD62C2A77DA0004760A /* UIAlertAction+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFDFD52C2A77DA0004760A /* UIAlertAction+Exs.swift */; };
 		ECC050612C65B1F10029A47F /* LogsSQLiteUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC050602C65B1F10029A47F /* LogsSQLiteUploadManager.swift */; };
 		ECC24F912C4A16610012D0FD /* CreateMealsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC24F902C4A16610012D0FD /* CreateMealsVC.swift */; };
@@ -1363,6 +1362,8 @@
 		F1A0C1082F72430000A1B2C3 /* AIGuidanceNoticeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */; };
 		F1A0C10A2F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */; };
 		F1A0C10C2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */; };
+		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
+		F2B0C2012F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2442,7 +2443,6 @@
 		EC78754E2BDB46E20050D7E8 /* NaturalCaloriSourceVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalCaloriSourceVM.swift; sourceTree = "<group>"; };
 		EC78C2AC2F691F0300681507 /* GuidanceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceVC.swift; sourceTree = "<group>"; };
 		EC78C2AE2F69221900681507 /* GuidanceSexVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexVM.swift; sourceTree = "<group>"; };
-		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
 		EC78C2B12F6932A600681507 /* GuidanceDietRecordVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordVM.swift; sourceTree = "<group>"; };
 		EC78C2B32F69396200681507 /* GuidanceFixedTargetVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceFixedTargetVM.swift; sourceTree = "<group>"; };
 		EC78C2B52F6946A900681507 /* GuidanceTakeoutFrequencyVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceTakeoutFrequencyVM.swift; sourceTree = "<group>"; };
@@ -2658,7 +2658,7 @@
 		ECBF8C112BC230A30095C4B0 /* D-DIN-PRO-900-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "D-DIN-PRO-900-Heavy.otf"; sourceTree = "<group>"; };
 		ECBF8C192BC231B70095C4B0 /* UIFont+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Exs.swift"; sourceTree = "<group>"; };
 		ECBFC51F2F7F850D005E3B48 /* GuidanceProPurchasedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPurchasedVC.swift; sourceTree = "<group>"; };
-		ECBFC6552F85FDCA005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = AICoachPearlOrbReferenceCrop.mp4; sourceTree = "<group>"; };
+		ECBFC6572F8627E6005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = AICoachPearlOrbReferenceCrop.mp4; sourceTree = "<group>"; };
 		ECBFDFD52C2A77DA0004760A /* UIAlertAction+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertAction+Exs.swift"; sourceTree = "<group>"; };
 		ECC050602C65B1F10029A47F /* LogsSQLiteUploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsSQLiteUploadManager.swift; sourceTree = "<group>"; };
 		ECC24F902C4A16610012D0FD /* CreateMealsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMealsVC.swift; sourceTree = "<group>"; };
@@ -2871,6 +2871,8 @@
 		F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceNoticeVM.swift; sourceTree = "<group>"; };
 		F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceElaProIntroVM.swift; sourceTree = "<group>"; };
 		F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceReadyStartVM.swift; sourceTree = "<group>"; };
+		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
+		F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordTipsAlertVM.swift; sourceTree = "<group>"; };
 		F9B1295DEDB005F6AC14F235 /* Pods-ElaWeekProteinWidgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekProteinWidgetExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaWeekProteinWidgetExtension/Pods-ElaWeekProteinWidgetExtension.release.xcconfig"; sourceTree = "<group>"; };
 		FFE3733779EF5564F1D7097E /* Pods-ElaWeekProteinWidgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekProteinWidgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-ElaWeekProteinWidgetExtension/Pods-ElaWeekProteinWidgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4350,6 +4352,7 @@
 			isa = PBXGroup;
 			children = (
 				EC78C2B12F6932A600681507 /* GuidanceDietRecordVM.swift */,
+				F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */,
 				EC78C2BF2F69A1C300681507 /* GuidanceCardioFrequencyVM.swift */,
 				EC78C2BD2F698FFA00681507 /* GuidanceExerciseCaloriesRecordVM.swift */,
 				EC78C2B32F69396200681507 /* GuidanceFixedTargetVM.swift */,
@@ -5313,7 +5316,7 @@
 		ECBF8C0B2BC230990095C4B0 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				ECBFC6552F85FDCA005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */,
+				ECBFC6572F8627E6005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */,
 				ECC8DC002BFEE9B700C97240 /* lch_bg.png */,
 				ECC8DC022BFEEA4400C97240 /* lch_slogan.png */,
 				ECBF8C122BC230A30095C4B0 /* D-DIN PRO */,
@@ -6134,10 +6137,10 @@
 			files = (
 				EC6978E82BABBD82000B933A /* Assets.xcassets in Resources */,
 				ECBF8C162BC230A30095C4B0 /* D-DIN-PRO-700-Bold.otf in Resources */,
-				ECBFC6562F85FDCA005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 in Resources */,
 				A735A7802D5DDA7C006CE140 /* icon_play@2x.png in Resources */,
 				A735A7822D5DDA7C006CE140 /* icon_video_loading@2x.png in Resources */,
 				A735A7C12D5DE3F5006CE140 /* fail@2x.png in Resources */,
+				ECBFC6582F8627E6005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 in Resources */,
 				A7454B2E2E73B6AF0064076C /* pca-code.json in Resources */,
 				A71C547E2E6A782300FB797D /* license.crt in Resources */,
 				A735A7C32D5DE3F5006CE140 /* jf_loading@2x.png in Resources */,
@@ -6823,6 +6826,7 @@
 				A71D33182E14D191008D27E4 /* PaddingLabel.swift in Sources */,
 				A775EA362E26286C001DE90A /* DeviceUUIDManager.swift in Sources */,
 				EC78C2B22F6932A600681507 /* GuidanceDietRecordVM.swift in Sources */,
+				F2B0C2012F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift in Sources */,
 				EC78C2C02F69A1C800681507 /* GuidanceCardioFrequencyVM.swift in Sources */,
 				EC78C2BE2F69900100681507 /* GuidanceExerciseCaloriesRecordVM.swift in Sources */,
 				EC78C2B42F69396E00681507 /* GuidanceFixedTargetVM.swift in Sources */,
