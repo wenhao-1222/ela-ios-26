@@ -10,6 +10,7 @@ class GuidanceRemoveBarrierVM: UIView {
     private let collageHeight = kFitWidth(524)
     private let leftSpeed: CGFloat = 20
     private let rightSpeed: CGFloat = 45
+    private let scrollerInitialProgresses: [CGFloat] = [0.2, 0.45, 0.2, 0.49]
     private var hasStartedScrolling = false
 
     override init(frame: CGRect) {
@@ -44,7 +45,8 @@ class GuidanceRemoveBarrierVM: UIView {
             frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(131)),
             imageName: "guide_second_img_1",
             direction: .left,
-            speed: leftSpeed
+            speed: leftSpeed,
+            initialProgress: scrollerInitialProgresses[0]
         )
         return scro
     }()
@@ -54,7 +56,8 @@ class GuidanceRemoveBarrierVM: UIView {
             frame: CGRect(x: 0, y: kFitWidth(131), width: SCREEN_WIDHT, height: kFitWidth(131)),
             imageName: "guide_second_img_2",
             direction: .left,
-            speed: rightSpeed
+            speed: rightSpeed,
+            initialProgress: scrollerInitialProgresses[1]
         )
         return scro
     }()
@@ -64,7 +67,8 @@ class GuidanceRemoveBarrierVM: UIView {
             frame: CGRect(x: 0, y: kFitWidth(262), width: SCREEN_WIDHT, height: kFitWidth(131)),
             imageName: "guide_second_img_3",
             direction: .left,
-            speed: leftSpeed
+            speed: leftSpeed,
+            initialProgress: scrollerInitialProgresses[2]
         )
         return scro
     }()
@@ -74,7 +78,8 @@ class GuidanceRemoveBarrierVM: UIView {
             frame: CGRect(x: 0, y: kFitWidth(393), width: SCREEN_WIDHT, height: kFitWidth(131)),
             imageName: "guide_second_img_4",
             direction: .left,
-            speed: rightSpeed
+            speed: rightSpeed,
+            initialProgress: scrollerInitialProgresses[3]
         )
         return scro
     }()

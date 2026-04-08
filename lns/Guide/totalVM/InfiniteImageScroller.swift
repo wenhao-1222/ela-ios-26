@@ -23,6 +23,8 @@ public class InfiniteImageScroller: UIView {
     private let imageView2 = UIImageView()
     private var displayLink: CADisplayLink?
     private var imageWidth: CGFloat = 0
+    private let initialProgress: CGFloat
+    private var scrollProgress: CGFloat
 
     // MARK: - 初始化
     /// - Parameters:
@@ -30,13 +32,18 @@ public class InfiniteImageScroller: UIView {
     ///   - imageName: 要滚动的图片名称
     ///   - direction: 滚动方向（.left 或 .right）
     ///   - speed: 滚动速度（pt/s）
+    ///   - initialProgress: 初始滚动进度，按单张图片宽度比例计算，`0...1` 表示从图片哪个位置开始
     public init(frame: CGRect,
                 imageName: String,
                 direction: ScrollDirection = .left,
-                speed: CGFloat = 50)
+                speed: CGFloat = 50,
+                initialProgress: CGFloat = 0)
     {
         self.direction = direction
         self.speed = speed
+        let normalizedProgress = Self.normalizedProgress(initialProgress)
+        self.initialProgress = normalizedProgress
+        self.scrollProgress = normalizedProgress
         super.init(frame: frame)
         setupImageViews(imageName: imageName)
     }
@@ -51,13 +58,10 @@ public class InfiniteImageScroller: UIView {
         // 确保 imageView 高度与容器相同，宽度按图片宽度
         let imgSize = imageView1.image?.size
         imageWidth = (imgSize?.width ?? 0) / (imgSize?.height ?? 1) * self.bounds.height
-//        imageWidth = imageView1.image?.size.width ?? 0
-        let height = bounds.height
-        imageView1.frame = CGRect(x: 0, y: 0, width: imageWidth, height: height)
-        imageView2.frame = CGRect(x: direction == .left ? imageWidth : -imageWidth,
-                                  y: 0,
-                                  width: imageWidth,
-                                  height: height)
+        if displayLink == nil {
+            scrollProgress = initialProgress
+        }
+        applyImageFrames()
     }
 
     // MARK: - 私有方法
@@ -76,27 +80,11 @@ public class InfiniteImageScroller: UIView {
     }
 
     @objc private func step(_ link: CADisplayLink) {
-        let delta = CGFloat(link.duration) * speed * (direction == .left ? -1 : 1)
-        // 更新两个 imageView 的 x
-        imageView1.frame.origin.x += delta
-        imageView2.frame.origin.x += delta
-
-        // 当某个 imageView 完全移出可见区域时，将它移到另一个 imageView 的另一侧
-        if direction == .left {
-            if imageView1.frame.maxX <= 0 {
-                imageView1.frame.origin.x = imageView2.frame.maxX
-            }
-            if imageView2.frame.maxX <= 0 {
-                imageView2.frame.origin.x = imageView1.frame.maxX
-            }
-        } else {
-            if imageView1.frame.minX >= bounds.width {
-                imageView1.frame.origin.x = imageView2.frame.minX - imageWidth
-            }
-            if imageView2.frame.minX >= bounds.width {
-                imageView2.frame.origin.x = imageView1.frame.minX - imageWidth
-            }
-        }
+        guard imageWidth > 0 else { return }
+        let deltaProgress = CGFloat(link.duration) * speed / imageWidth
+        let progressDelta = direction == .left ? deltaProgress : -deltaProgress
+        scrollProgress = Self.normalizedProgress(scrollProgress + progressDelta)
+        applyImageFrames()
     }
 
     // MARK: - 公有方法
@@ -126,5 +114,19 @@ public class InfiniteImageScroller: UIView {
 
     deinit {
         stopScrolling()
+    }
+}
+
+private extension InfiniteImageScroller {
+    static func normalizedProgress(_ progress: CGFloat) -> CGFloat {
+        let normalized = progress.truncatingRemainder(dividingBy: 1)
+        return normalized >= 0 ? normalized : normalized + 1
+    }
+
+    func applyImageFrames() {
+        let height = bounds.height
+        let offset = imageWidth * scrollProgress
+        imageView1.frame = CGRect(x: -offset, y: 0, width: imageWidth, height: height)
+        imageView2.frame = CGRect(x: imageView1.frame.maxX, y: 0, width: imageWidth, height: height)
     }
 }
