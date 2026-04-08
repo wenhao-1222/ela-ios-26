@@ -12,7 +12,8 @@ class GuidanceExerciseCaloriesRecordVM: UIView {
         let desc: String
         let value: String
     }
-
+    
+    var showTipsBlock:(()->())?
     var selectedBlock: (() -> ())?
     private(set) var selectedIndex = -1
 
@@ -42,14 +43,27 @@ class GuidanceExerciseCaloriesRecordVM: UIView {
         return selectedIndex >= 0
     }
 
-    lazy var titleLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var titleLabel: UILabel = {
+        let lab = UILabel()
         lab.numberOfLines = 2
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.setLineHeight(textString: "你平时是否会\n记录运动消耗热量？", lineHeight: lab.font.lineHeight * 1.1)
+        lab.font = .systemFont(ofSize: 22, weight: .medium)
+        lab.text = "你平时是否会\n记录运动消耗热量？"
+        lab.setLineHeightMultiple(textString: lab.text, lineHeightMultiple: 1.2)
+//        lab.setLineHeight(textString: "你平时是否会\n记录运动消耗热量？", lineHeight: lab.font.lineHeight * 1.1)
         return lab
+    }()
+    lazy var tipsButton : UIButton = {
+        let btn = UIButton()
+        btn.setTitle("运动消耗的陷阱", for: .normal)
+        btn.setTitleColor(.THEME, for: .normal)
+        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
+        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        
+        btn.addTarget(self, action: #selector(showTipsAction), for: .touchUpInside)
+        
+        return btn
     }()
 
     lazy var stackView: UIStackView = {
@@ -93,11 +107,17 @@ extension GuidanceExerciseCaloriesRecordVM {
             QuestinonaireMsgModel.shared.guidanceExerciseCaloriesRecordType = ""
         }
     }
+    @objc func showTipsAction(){
+        if self.showTipsBlock != nil{
+            self.showTipsBlock!()
+        }
+    }
 }
 
 extension GuidanceExerciseCaloriesRecordVM {
     func initUI() {
         addSubview(titleLabel)
+        addSubview(tipsButton)
         addSubview(stackView)
 
         for (index, item) in dataArray.enumerated() {
@@ -145,13 +165,19 @@ extension GuidanceExerciseCaloriesRecordVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(35))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
+        }
+        tipsButton.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
+            make.centerX.lessThanOrEqualToSuperview()
+            make.width.equalTo(kFitWidth(200))
+            make.height.equalTo(kFitWidth(21))
         }
 
         stackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(45))
+            make.top.equalTo(tipsButton.snp.bottom).offset(kFitWidth(142))
         }
     }
 }

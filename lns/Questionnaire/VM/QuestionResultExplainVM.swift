@@ -24,7 +24,7 @@ class QuestionResultExplainVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     lazy var titleLabel: UILabel = {
-        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(24), y: kFitWidth(112), width: kFitWidth(340), height: kFitWidth(80)))
+        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(24), y: WHUtils().getNavigationBarHeight()+kFitWidth(110), width: kFitWidth(340), height: kFitWidth(80)))
         if isIpad(){
             lab.frame = CGRect.init(x: kFitWidth(24), y: kFitWidth(112), width: SCREEN_WIDHT-kFitWidth(48), height: kFitWidth(80))
         }

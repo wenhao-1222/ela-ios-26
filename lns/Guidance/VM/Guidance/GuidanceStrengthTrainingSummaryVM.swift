@@ -54,8 +54,8 @@ class GuidanceStrengthTrainingSummaryVM: UIView {
         return lab
     }()
 
-    lazy var primaryMessageLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var primaryMessageLabel: UILabel = {
+        let lab = UILabel()
         lab.numberOfLines = 0
         lab.textAlignment = .left
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
@@ -63,8 +63,8 @@ class GuidanceStrengthTrainingSummaryVM: UIView {
         return lab
     }()
 
-    lazy var secondaryMessageLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var secondaryMessageLabel: UILabel = {
+        let lab = UILabel()
         lab.numberOfLines = 0
         lab.textAlignment = .left
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
@@ -102,14 +102,18 @@ extension GuidanceStrengthTrainingSummaryVM {
     func refreshContentFromModel() {
         let content = contentForStrengthType(QuestinonaireMsgModel.shared.guidanceStrengthTrainingFrequencyType)
         titleLabel.text = content.title
-        primaryMessageLabel.setLineHeight(
-            textString: content.primaryMessage,
-            lineHeight: primaryMessageLabel.font.lineHeight * 1
-        )
-        secondaryMessageLabel.setLineHeight(
-            textString: content.secondaryMessage,
-            lineHeight: secondaryMessageLabel.font.lineHeight * 1
-        )
+        primaryMessageLabel.text = content.primaryMessage
+        secondaryMessageLabel.text = content.secondaryMessage
+        primaryMessageLabel.setLineHeightMultiple(lineHeightMultiple: 1.2)
+        secondaryMessageLabel.setLineHeightMultiple(lineHeightMultiple: 1.2)
+//        primaryMessageLabel.setLineHeight(
+//            textString: content.primaryMessage,
+//            lineHeight: primaryMessageLabel.font.lineHeight * 1
+//        )
+//        secondaryMessageLabel.setLineHeight(
+//            textString: content.secondaryMessage,
+//            lineHeight: secondaryMessageLabel.font.lineHeight * 1
+//        )
         footerLabel.attributedText = footerAttributedText()
     }
 
@@ -169,8 +173,9 @@ extension GuidanceStrengthTrainingSummaryVM {
             )
         }
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.minimumLineHeight = kFitWidth(14)
-        paragraphStyle.maximumLineHeight = kFitWidth(14)
+//        paragraphStyle.minimumLineHeight = kFitWidth(14)
+//        paragraphStyle.maximumLineHeight = kFitWidth(14)
+        paragraphStyle.lineHeightMultiple = 1.2
         attributed.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: fullText.count))
         return attributed
     }
@@ -198,6 +203,7 @@ extension GuidanceStrengthTrainingSummaryVM {
 
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(kFitWidth(30))
+            make.height.equalTo(kFitWidth(36))
             make.centerX.equalToSuperview()
         }
 

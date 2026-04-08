@@ -28,7 +28,7 @@ class GuidanceReminderPromptVM: UIView {
         lab.text = "我们发现"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .semibold)
+        lab.font = .systemFont(ofSize: 22, weight: .medium)
         return lab
     }()
 
@@ -37,7 +37,7 @@ class GuidanceReminderPromptVM: UIView {
         lab.numberOfLines = 2
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 16, weight: .regular)
+        lab.font = .systemFont(ofSize: 16, weight: .medium)
         return lab
     }()
 
@@ -46,27 +46,19 @@ class GuidanceReminderPromptVM: UIView {
         lab.text = "你可以随时在设置里进行调整"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        lab.font = .systemFont(ofSize: 14, weight: .regular)
+        lab.font = .systemFont(ofSize: 12, weight: .regular)
         return lab
     }()
 
     lazy var placeholderImageView: UIImageView = {
         let img = UIImageView()
-        img.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
+//        img.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
         img.contentMode = .scaleAspectFill
         img.clipsToBounds = true
+        img.setImgLocal(imgName: "guide_reminder_icon")
         return img
     }()
-
-    lazy var placeholderLabel: UILabel = {
-        let lab = UILabel()
-        lab.text = "缺图后补"
-        lab.textAlignment = .center
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 18, weight: .medium)
-        return lab
-    }()
-
+    
     lazy var enableButton: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("打开提醒", for: .normal)
@@ -102,7 +94,7 @@ extension GuidanceReminderPromptVM {
     func initUI() {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        paragraphStyle.lineSpacing = kFitWidth(8)
+        paragraphStyle.lineSpacing = kFitWidth(2)
         let subtitleText = NSMutableAttributedString(
             string: "开启个性化提醒的用户\n达成饮食计划目标的概率高出 46%",
             attributes: [
@@ -122,36 +114,31 @@ extension GuidanceReminderPromptVM {
         addSubview(subtitleLabel)
         addSubview(tipsLabel)
         addSubview(placeholderImageView)
-        placeholderImageView.addSubview(placeholderLabel)
         addSubview(enableButton)
         addSubview(skipButton)
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(56))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
         }
 
         subtitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(28))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
         }
 
         tipsLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(subtitleLabel.snp.bottom).offset(kFitWidth(28))
+            make.top.equalTo(subtitleLabel.snp.bottom).offset(kFitWidth(12))
         }
 
         placeholderImageView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(tipsLabel.snp.bottom).offset(kFitWidth(38))
-            make.height.equalTo(kFitWidth(310))
+            make.left.equalTo(kFitWidth(25))
+            make.right.equalTo(kFitWidth(-25))
+            make.top.equalTo(tipsLabel.snp.bottom).offset(kFitWidth(45))
+            make.height.equalTo(kFitWidth(325))
         }
-
-        placeholderLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
-
+        
         enableButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))

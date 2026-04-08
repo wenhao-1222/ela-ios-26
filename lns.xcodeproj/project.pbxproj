@@ -1180,6 +1180,7 @@
 		ECBFC6582F8627E6005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = ECBFC6572F8627E6005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */; };
 		ECBFC65A2F862D00005E3B48 /* DietPlanCreateWeightAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC6592F862CFE005E3B48 /* DietPlanCreateWeightAlertVM.swift */; };
 		ECBFC65C2F8630B9005E3B48 /* GuidanceTakeoutFrequencyTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC65B2F8630B4005E3B48 /* GuidanceTakeoutFrequencyTipsAlertVM.swift */; };
+		ECBFC65E2F8643FB005E3B48 /* GuidanceExerciseCaloriesRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC65D2F8643F6005E3B48 /* GuidanceExerciseCaloriesRecordTipsAlertVM.swift */; };
 		ECBFDFD62C2A77DA0004760A /* UIAlertAction+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFDFD52C2A77DA0004760A /* UIAlertAction+Exs.swift */; };
 		ECC050612C65B1F10029A47F /* LogsSQLiteUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC050602C65B1F10029A47F /* LogsSQLiteUploadManager.swift */; };
 		ECC24F912C4A16610012D0FD /* CreateMealsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC24F902C4A16610012D0FD /* CreateMealsVC.swift */; };
@@ -2663,6 +2664,7 @@
 		ECBFC6572F8627E6005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = AICoachPearlOrbReferenceCrop.mp4; sourceTree = "<group>"; };
 		ECBFC6592F862CFE005E3B48 /* DietPlanCreateWeightAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateWeightAlertVM.swift; sourceTree = "<group>"; };
 		ECBFC65B2F8630B4005E3B48 /* GuidanceTakeoutFrequencyTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceTakeoutFrequencyTipsAlertVM.swift; sourceTree = "<group>"; };
+		ECBFC65D2F8643F6005E3B48 /* GuidanceExerciseCaloriesRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceExerciseCaloriesRecordTipsAlertVM.swift; sourceTree = "<group>"; };
 		ECBFDFD52C2A77DA0004760A /* UIAlertAction+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertAction+Exs.swift"; sourceTree = "<group>"; };
 		ECC050602C65B1F10029A47F /* LogsSQLiteUploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsSQLiteUploadManager.swift; sourceTree = "<group>"; };
 		ECC24F902C4A16610012D0FD /* CreateMealsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMealsVC.swift; sourceTree = "<group>"; };
@@ -4359,6 +4361,7 @@
 				F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */,
 				EC78C2BF2F69A1C300681507 /* GuidanceCardioFrequencyVM.swift */,
 				EC78C2BD2F698FFA00681507 /* GuidanceExerciseCaloriesRecordVM.swift */,
+				ECBFC65D2F8643F6005E3B48 /* GuidanceExerciseCaloriesRecordTipsAlertVM.swift */,
 				EC78C2B32F69396200681507 /* GuidanceFixedTargetVM.swift */,
 				ECE1F1012F6C100000681507 /* GuidanceFixedTargetNutritionGoalVM.swift */,
 				EC78C2CB2F6B1D9700681507 /* GuidanceFinishLoadingVM.swift */,
@@ -6991,6 +6994,7 @@
 				A71C54932E6ADE1C00FB797D /* GlassToggleRow.swift in Sources */,
 				ECB7C2A02C37A5BB000E83C2 /* FoodsAddIconVM.swift in Sources */,
 				EC4DE2802BC8D0B30090A7BD /* PlanDetailTopVM.swift in Sources */,
+				ECBFC65E2F8643FB005E3B48 /* GuidanceExerciseCaloriesRecordTipsAlertVM.swift in Sources */,
 				A76BE7CD2CF416E20058F459 /* SportHistoryModel.swift in Sources */,
 				ECF745D72BDA32960076DDB9 /* FoodsCreateItemVM.swift in Sources */,
 				A79541E32E02524B00E019C8 /* GoalCircleDaysVM.swift in Sources */,
