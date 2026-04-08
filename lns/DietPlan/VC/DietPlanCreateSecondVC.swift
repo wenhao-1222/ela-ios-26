@@ -477,9 +477,9 @@ extension DietPlanCreateSecondVC{
             self.createPlanLoadingVm.completeSuccess { [weak self] in
                 guard let self = self else { return }
                 self.isSubmittingFinalFlow = false
-                self.navigationController?.tabBarController?.selectedIndex = 1
+                self.navigationController?.tabBarController?.selectedIndex = 2
                 self.navigationController?.popToRootViewController(animated: true)
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "activePlan"), object: nil)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
             }
         } failure: { [weak self] isError in
             guard let self = self else { return }

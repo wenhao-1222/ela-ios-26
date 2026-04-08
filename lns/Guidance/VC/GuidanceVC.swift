@@ -233,6 +233,10 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceExerciseCaloriesRecordTipsAlertVM.init(frame: .zero)
         return vm
     }()
+    lazy var goalTipsAlertVm: GuidanceNutritionGoalTipsAlertVM = {
+        let vm = GuidanceNutritionGoalTipsAlertVM.init(frame: .zero)
+        return vm
+    }()
     lazy var nextButton: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("下一步", for: .normal)
@@ -439,6 +443,9 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceNutritionGoalVM.init(frame: CGRect(x: SCREEN_WIDHT * 19, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vm.saveBlock = { [weak self] in
             self?.saveGuidanceNutritionGoals()
+        }
+        vm.tipsTapBlock = {()in
+            self.goalTipsAlertVm.showView()
         }
         return vm
     }()
@@ -960,6 +967,7 @@ extension GuidanceVC{
 
         nutritionGoalVm.isHidden = false
         view.bringSubviewToFront(nutritionGoalVm)
+        view.bringSubviewToFront(goalTipsAlertVm)
         nextButton.isHidden = true
         nextButton.isEnabled = false
         naviVm.isHidden = true
@@ -1302,6 +1310,7 @@ extension GuidanceVC{
         view.addSubview(weightTipsAlertVm)
         view.addSubview(takeoutTipsAlertVm)
         view.addSubview(caloriesRecordTipsAlertVm)
+        view.addSubview(goalTipsAlertVm)
         view.addSubview(finishLoadingVm)
         
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
