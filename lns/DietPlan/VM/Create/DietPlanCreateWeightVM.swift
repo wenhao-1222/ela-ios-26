@@ -9,6 +9,7 @@
 
 class DietPlanCreateWeightVM: UIView {
     var weightChangedBlock: ((Double) -> Void)?
+    var showTipsBlock:(()->())?
     
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -24,11 +25,22 @@ class DietPlanCreateWeightVM: UIView {
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "你的体重是?"
+        lab.text = "你现在的体重是?"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
 
         return lab
+    }()
+    lazy var tipsButton : UIButton = {
+        let btn = UIButton()
+        btn.setTitle("什么时候称更准？", for: .normal)
+        btn.setTitleColor(.THEME, for: .normal)
+        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
+        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        
+        btn.addTarget(self, action: #selector(showTipsAction), for: .touchUpInside)
+        
+        return btn
     }()
     
     lazy var numberIntArray : NSArray = {
@@ -74,6 +86,11 @@ class DietPlanCreateWeightVM: UIView {
 }
 
 extension DietPlanCreateWeightVM{
+    @objc func showTipsAction(){
+        if self.showTipsBlock != nil{
+            self.showTipsBlock!()
+        }
+    }
     func applyDefaultWeight(integer: Int, decimal: Int = 0) {
         let integerIndex = max(0, min(numberIntArray.count - 1, integer - 30))
         let decimalIndex = max(0, min(numberDemicalArray.count - 1, decimal))
@@ -97,6 +114,7 @@ extension DietPlanCreateWeightVM{
 extension DietPlanCreateWeightVM {
     func initUI() {
         addSubview(titleLabel)
+        addSubview(tipsButton)
         addSubview(pickerView)
         
         pickerView.addSubview(demicalLab)
@@ -110,12 +128,18 @@ extension DietPlanCreateWeightVM {
     func setConstrait() {
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(76))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
+        }
+        tipsButton.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
+            make.centerX.lessThanOrEqualToSuperview()
+            make.width.equalTo(kFitWidth(200))
+            make.height.equalTo(kFitWidth(21))
         }
         pickerView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
 //            make.top.equalTo(kFitWidth(231))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(127))
+            make.top.equalTo(tipsButton.snp.bottom).offset(kFitWidth(119))
             make.width.equalTo(kFitWidth(343))
             make.height.equalTo(kFitWidth(252))
         }

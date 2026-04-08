@@ -48,8 +48,8 @@ class GuidanceMealsPerDayVM: UIView {
         lab.numberOfLines = 2
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.setLineHeight(textString: "你习惯每天吃几餐？", lineHeight: lab.font.lineHeight * 1.2)
+        lab.font = .systemFont(ofSize: 22, weight: .medium)
+        lab.setLineHeight(textString: "你的日常进餐频率是？", lineHeight: lab.font.lineHeight * 1.2)
         return lab
     }()
 
@@ -130,13 +130,13 @@ extension GuidanceMealsPerDayVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(35))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
         }
 
         stackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(64))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(99))
         }
     }
 }

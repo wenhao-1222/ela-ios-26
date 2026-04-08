@@ -19,8 +19,8 @@ class GuidanceFixedTargetVM: UIView {
     private(set) var selectedIndex = -1
 
     private let dataArray: [Item] = [
-        Item(title: "还不确定", value: "uncertain"),
-        Item(title: "有固定目标", value: "fixed")
+        Item(title: "还没有，需要建议", value: "uncertain"),
+        Item(title: "已有明确目标", value: "fixed")
     ]
 
     private var itemButtons: [UIButton] = []
@@ -43,13 +43,15 @@ class GuidanceFixedTargetVM: UIView {
         return selectedIndex >= 0
     }
 
-    lazy var titleLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var titleLabel: UILabel = {
+        let lab = UILabel()
         lab.numberOfLines = 2
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.setLineHeight(textString: "你现在有固定的\n饮食目标吗？", lineHeight: lab.font.lineHeight * 1.2)
+        lab.font = .systemFont(ofSize: 22, weight: .medium)
+        lab.text = "你已经有\n明确的营养目标了吗？"
+        lab.setLineHeightMultiple(textString: lab.text, lineHeightMultiple: 1.18)
+//        lab.setLineHeight(textString: "你已经有\n明确的营养目标了吗？", lineHeight: lab.font.lineHeight * 1.2)
 //        lab.setLineHeight(textString: "你已经有固定的\n饮食目标吗？", lineHeight: lab.font.lineHeight * 1.2)
         return lab
     }()
@@ -61,13 +63,15 @@ class GuidanceFixedTargetVM: UIView {
         return st
     }()
 
-    lazy var tipsLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var tipsLabel: UILabel = {
+        let lab = UILabel()
         lab.numberOfLines = 2
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.text = "我们会根据你的实际情况\n为你定制更高效的使用方式"
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.setLineHeight(textString: "我们会根据你的实际情况\n为你定制更高效的使用方式", lineHeight: lab.font.lineHeight * 1.35)
+//        lab.setLineHeight(textString: "我们会根据你的实际情况\n为你定制更高效的使用方式", lineHeight: lab.font.lineHeight * 1.35)
+        lab.setLineHeightMultiple(textString: lab.text, lineHeightMultiple: 1.2)
         return lab
     }()
 }
@@ -141,18 +145,18 @@ extension GuidanceFixedTargetVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(35))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
         }
         stackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(56))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(150))
         }
 
         tipsLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
 //            make.top.equalTo(stackView.snp.bottom).offset(kFitWidth(140))
-            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(144))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(136))
         }
     }
 }

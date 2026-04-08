@@ -20,11 +20,14 @@ class DietPlanCreateYearVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    lazy var titleLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var titleLabel: UILabel = {
+        let lab = UILabel()
+        lab.numberOfLines = 2
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.text = "你的出生年份？"
+        lab.font = .systemFont(ofSize: 22, weight: .medium)
+        lab.text = "记录你的出生年月\n让预测更准确"
+        lab.textAlignment = .center
+        lab.setLineHeightMultiple(textString: lab.text, lineHeightMultiple: 1.2)
         
         return lab
     }()
@@ -93,7 +96,7 @@ extension DietPlanCreateYearVM{
     func setConstrait() {
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(76))
+            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(60))
         }
         pickerView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()

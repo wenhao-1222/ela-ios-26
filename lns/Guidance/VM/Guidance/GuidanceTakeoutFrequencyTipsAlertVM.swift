@@ -1,14 +1,15 @@
 //
-//  QuestionnaireBodyFatAlertVM.swift
+//  GuidanceTakeoutFrequencyTipsAlertVM.swift
 //  lns
 //
-//  Created by LNS2 on 2024/3/29.
+//  Created by LNS2 on 2026/4/8.
 //
+
 
 import Foundation
 import UIKit
 
-class QuestionnaireBodyFatAlertVM: UIView {
+class GuidanceTakeoutFrequencyTipsAlertVM: UIView {
     
     var selfHeight = kFitWidth(0)
     
@@ -76,48 +77,48 @@ class QuestionnaireBodyFatAlertVM: UIView {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .medium)
         lab.adjustsFontSizeToFitWidth = true
-        lab.text = "为什么测量值通常偏低？"
+        lab.text = "外食的“热量认知偏差”"
         lab.textAlignment = .center
         
         return lab
     }()
     lazy var contentLabelOne : UILabel = {
         let label = UILabel()
-        label.text = "许多人倾向于低估自己的体脂肪百分比，这部分原因在于常用的测量方法（如电阻体脂仪和体脂秤）可能不够准确。这些设备通常使用电阻测量来估算体脂百分比，但结果易受水分、饮食和其他因素的影响，从而可能给出低于实际的读数。"
+        label.text = "研究分析发现，每周外食超过 2 次的人，整体饮食质量通常更低，相关饮食指标也更差。快餐消费者也普遍会低估所购餐食的热量，而且餐量越大，低估越明显。[1]"
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true
         label.setLineHeightMultiple(textString: label.text, lineHeightMultiple: 1.18)
-        label.textColor = .COLOR_TEXT_TITLE_0f1214_60//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+        label.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         
         return label
     }()
     lazy var contentLabelTwo : UILabel = {
         let label = UILabel()
-        label.text = "在评估体脂肪时，更准确的方法包括水下称重和DEXA扫描，但这些方法通常更昂贵，且不那么容易获得。因此，人们根据不太准确的测量方法形成的体脂肪观念可能与实际情况有所偏差。\n我们的对比图旨在提供一个更为准确的体脂肪参考。"
+        label.text = "外食/外卖的频率越高，潜在影响通常越大，因此更需要注意食物的选择与分量控制。[2]"
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.numberOfLines = 0
         label.setLineHeightMultiple(textString: label.text, lineHeightMultiple: 1.18)
         label.adjustsFontSizeToFitWidth = true
-        label.textColor = .COLOR_TEXT_TITLE_0f1214_60//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+        label.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         
         return label
     }()
     
     lazy var contentLabelThree : UILabel = {
         let label = UILabel()
-        label.text = "请以这些信息作为指导，尝试更准确地评估你的体脂肪水平。"
+        label.text = "[1] Lachat et al., Obes Rev, 2012  \n[2] Block et al., BMJ, 2013"
         label.setLineHeightMultiple(textString: label.text, lineHeightMultiple: 1.18)
-        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.font = .systemFont(ofSize: 12, weight: .regular)
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true
-        label.textColor = .COLOR_TEXT_TITLE_0f1214_60//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
+        label.textColor = .COLOR_TEXT_TITLE_0f1214_50//WHColorWithAlpha(colorStr: "000000", alpha: 0.65)
         
         return label
     }()
     lazy var lineView : UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        vi.backgroundColor = .COLOR_LINE_F0//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         
         return vi
     }()
@@ -134,7 +135,7 @@ class QuestionnaireBodyFatAlertVM: UIView {
     }()
 }
 
-extension QuestionnaireBodyFatAlertVM{
+extension GuidanceTakeoutFrequencyTipsAlertVM{
     func showView() {
         self.isHidden = false
         bgView.isUserInteractionEnabled = false
@@ -173,7 +174,7 @@ extension QuestionnaireBodyFatAlertVM{
     }
 }
 
-extension QuestionnaireBodyFatAlertVM{
+extension GuidanceTakeoutFrequencyTipsAlertVM{
     func initUI(){
         addSubview(bgView)
         addSubview(whiteView)
@@ -195,21 +196,21 @@ extension QuestionnaireBodyFatAlertVM{
         }
         titleLabel.snp.makeConstraints { make in
             make.left.width.equalToSuperview()
-            make.top.equalTo(kFitWidth(24))
-            make.height.equalTo(kFitWidth(18))
+            make.top.equalTo(kFitWidth(20))
+            make.height.equalTo(kFitWidth(27))
         }
         contentLabelOne.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(kFitWidth(62))
+            make.top.equalTo(kFitWidth(67))
         }
         contentLabelTwo.snp.makeConstraints { make in
             make.left.right.equalTo(contentLabelOne)
-            make.top.equalTo(contentLabelOne.snp.bottom).offset(kFitWidth(12))
+            make.top.equalTo(contentLabelOne.snp.bottom).offset(kFitWidth(20))
         }
         contentLabelThree.snp.makeConstraints { make in
             make.left.right.equalTo(contentLabelOne)
-            make.top.equalTo(contentLabelTwo.snp.bottom).offset(kFitWidth(12))
+            make.top.equalTo(contentLabelTwo.snp.bottom).offset(kFitWidth(20))
         }
         lineView.snp.makeConstraints { make in
             make.left.width.equalToSuperview()

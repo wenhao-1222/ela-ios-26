@@ -135,7 +135,7 @@ class GuideTotalFirstVM: UIView {
         lab.textAlignment = .left
         lab.numberOfLines = 1
         lab.lineBreakMode = .byWordWrapping
-        lab.font = .systemFont(ofSize: 11, weight: .regular)
+        lab.font = .systemFont(ofSize: 10, weight: .regular)
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         
         return lab

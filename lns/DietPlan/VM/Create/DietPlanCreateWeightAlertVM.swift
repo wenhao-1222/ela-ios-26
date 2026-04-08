@@ -1,15 +1,16 @@
 //
-//  GuidanceDietRecordTipsAlertVM.swift
+//  DietPlanCreateWeightAlertVM.swift
 //  lns
 //
-//  Created by Codex on 2026/4/8.
+//  Created by LNS2 on 2026/4/8.
 //
+
 
 import Foundation
 import UIKit
 import SnapKit
 
-class GuidanceDietRecordTipsAlertVM: UIView {
+class DietPlanCreateWeightAlertVM: UIView {
 
     private var availableCardHeight: CGFloat {
         let topInset = WHUtils().getNavigationBarHeight() + kFitWidth(12)
@@ -84,7 +85,7 @@ class GuidanceDietRecordTipsAlertVM: UIView {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 18, weight: .medium)
-        lab.text = "必须严苛记录才有效吗？"
+        lab.text = "什么时候称更准？"
         lab.textAlignment = .center
         lab.numberOfLines = 1
         lab.adjustsFontSizeToFitWidth = true
@@ -115,24 +116,10 @@ class GuidanceDietRecordTipsAlertVM: UIView {
     }()
 
     private lazy var contentLabelOne: UILabel = {
-        let label = makeBodyLabel("在体重管理研究里，饮食记录一直是最核心的行为之一。对需要减重或维持减重结果的人来说，记录食物摄入能改善结果。[1]")
+        let label = makeBodyLabel("建议固定在早上起床排空后、进食饮水前称重。食物、水分和排便情况都会让体重短期波动，影响判断。")
         label.setLineHeightMultiple(textString: label.text, lineHeightMultiple: 1.2)
         return label
     }()
-
-    private lazy var contentLabelTwo: UILabel = {
-        let label = makeBodyLabel("但研究也发现，记录方式并不是越严苛越好，高强度和低强度的记录策略都可能有效，目前并没有一个适用于所有人的唯一最佳强度。[2]")
-        label.setLineHeightMultiple(textString: label.text, lineHeightMultiple: 1.2)
-        return label
-    }()
-
-    private lazy var referenceLabel: UILabel = {
-        let label = makeBodyLabel("[1] USDA NESR, Diet Self-Monitoring\n[2] Raber et al., PHN 2021")
-        label.font = .systemFont(ofSize: 12, weight: .regular)
-        label.setLineHeightMultiple(textString: label.text, lineHeightMultiple: 1.2)
-        return label
-    }()
-
     private lazy var lineView: UIView = {
         let vi = UIView()
         vi.backgroundColor = .COLOR_LINE_F0
@@ -152,7 +139,7 @@ class GuidanceDietRecordTipsAlertVM: UIView {
     private var whiteViewHeightConstraint: Constraint?
 }
 
-extension GuidanceDietRecordTipsAlertVM {
+extension DietPlanCreateWeightAlertVM {
     func showView() {
         updateCardLayout()
         isHidden = false
@@ -191,7 +178,7 @@ extension GuidanceDietRecordTipsAlertVM {
     }
 }
 
-extension GuidanceDietRecordTipsAlertVM {
+extension DietPlanCreateWeightAlertVM {
     func initUI() {
         addSubview(bgView)
         addSubview(whiteView)
@@ -203,11 +190,8 @@ extension GuidanceDietRecordTipsAlertVM {
         whiteView.addSubview(confirmBtn)
 
         contentStackView.addArrangedSubview(contentLabelOne)
-        contentStackView.addArrangedSubview(contentLabelTwo)
-        contentStackView.addArrangedSubview(referenceLabel)
-
+        
         contentStackView.setCustomSpacing(kFitWidth(20), after: contentLabelOne)
-        contentStackView.setCustomSpacing(kFitWidth(20), after: contentLabelTwo)
 
         setConstrait()
         updateCardLayout()

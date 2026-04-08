@@ -144,7 +144,7 @@ extension DietPlanCreateHeightVM {
     func setConstrait() {
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(76))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(60))
         }
 
         numberLabel.snp.makeConstraints { make in
@@ -160,8 +160,9 @@ extension DietPlanCreateHeightVM {
         }
 
         rulerView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(42))
+//            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(90))
 //            make.centerX.equalToSuperview().offset(kFitWidth(56))
+            make.bottom.equalTo(kFitWidth(-159)-WHUtils().getBottomSafeAreaHeight())
             make.left.equalTo(SCREEN_WIDHT*0.5)
             make.width.equalTo(kFitWidth(200))
             make.height.equalTo(kFitWidth(420))

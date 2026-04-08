@@ -97,34 +97,37 @@ class GuidanceMealsAdjustVM: UIView {
         return selectedIndex >= 0
     }
 
-    lazy var titleLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
-        lab.numberOfLines = 2
+    lazy var titleLabel: UILabel = {
+        let lab = UILabel()
+//        lab.numberOfLines = 2
         lab.textAlignment = .center
+        lab.text = "不过如果你想做出调整"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.setLineHeight(textString: "不过如果你想做出调整", lineHeight: lab.font.lineHeight * 1.2)
+        lab.font = .systemFont(ofSize: 22, weight: .medium)
+//        lab.setLineHeight(textString: "不过如果你想做出调整", lineHeight: lab.font.lineHeight * 1.2)
         return lab
     }()
 
-    lazy var subTitleLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var subTitleLabel: UILabel = {
+        let lab = UILabel()
         lab.numberOfLines = 2
         lab.textAlignment = .center
+        lab.text = "我们也会根据你的习惯，适配你的使用体验"
+        lab.adjustsFontSizeToFitWidth = true
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.setLineHeight(textString: "我们也会根据你的习惯，适配你的使用体验", lineHeight: lab.font.lineHeight * 1.35)
+//        lab.setLineHeight(textString: "我们也会根据你的习惯，适配你的使用体验", lineHeight: lab.font.lineHeight * 1.35)
         return lab
     }()
 
-    lazy var tipLabel: UILabel = {
-        let lab = UILabel()
-        lab.textAlignment = .center
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        lab.font = .systemFont(ofSize: 12, weight: .regular)
-        lab.text = "你可以随时在设置里更改"
-        return lab
-    }()
+//    lazy var tipLabel: UILabel = {
+//        let lab = UILabel()
+//        lab.textAlignment = .center
+//        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+//        lab.font = .systemFont(ofSize: 12, weight: .regular)
+//        lab.text = "你可以随时在设置里更改"
+//        return lab
+//    }()
 
     lazy var scrollView: UIScrollView = {
         let vi = UIScrollView()
@@ -247,7 +250,7 @@ extension GuidanceMealsAdjustVM {
     func initUI() {
         addSubview(titleLabel)
         addSubview(subTitleLabel)
-        addSubview(tipLabel)
+//        addSubview(tipLabel)
         addSubview(scrollView)
         addSubview(topGradientView)
         addSubview(bottomGradientView)
@@ -269,23 +272,23 @@ extension GuidanceMealsAdjustVM {
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.height.equalTo(kFitWidth(36))
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(35))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
         }
 
         subTitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(7))
         }
 
-        tipLabel.snp.makeConstraints { make in
-//            make.centerX.equalToSuperview()
-            make.left.equalTo(kFitWidth(16))
-            make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(38))
-        }
+//        tipLabel.snp.makeConstraints { make in
+////            make.centerX.equalToSuperview()
+//            make.left.equalTo(kFitWidth(16))
+//            make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(38))
+//        }
 
         scrollView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(tipLabel.snp.bottom).offset(kFitWidth(13))
+            make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(70))
             make.bottom.equalToSuperview().offset(-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(68)))
         }
 
@@ -369,13 +372,13 @@ private final class GuidanceMealsAdjustItemView: UIView {
         let lab = UILabel()
         lab.textAlignment = .right
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 14, weight: .medium)
+        lab.font = .systemFont(ofSize: 12, weight: .regular)
         return lab
     }()
 
-    private lazy var advantageTitleLabel: UILabel = makeSectionTitleLabel(text: "优点:")
-    private lazy var disadvantageTitleLabel: UILabel = makeSectionTitleLabel(text: "缺点:")
-    private lazy var groupTitleLabel: UILabel = makeSectionTitleLabel(text: "群体:")
+    private lazy var advantageTitleLabel: UILabel = makeSectionTitleLabel(text: "优点：")
+    private lazy var disadvantageTitleLabel: UILabel = makeSectionTitleLabel(text: "缺点：")
+    private lazy var groupTitleLabel: UILabel = makeSectionTitleLabel(text: "群体：")
     private lazy var advantageLabel: LineHeightLabel = makeBodyLabel()
     private lazy var disadvantageLabel: LineHeightLabel = makeBodyLabel()
     private lazy var groupLabel: LineHeightLabel = makeBodyLabel()
@@ -384,15 +387,15 @@ private final class GuidanceMealsAdjustItemView: UIView {
         let lab = UILabel()
         lab.text = text
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 14, weight: .medium)
+        lab.font = .systemFont(ofSize: 13, weight: .regular)
         return lab
     }
 
     private func makeBodyLabel() -> LineHeightLabel {
         let lab = LineHeightLabel()
         lab.numberOfLines = 0
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 14, weight: .regular)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.font = .systemFont(ofSize: 13, weight: .regular)
         return lab
     }
 
@@ -418,7 +421,7 @@ private final class GuidanceMealsAdjustItemView: UIView {
 
         advantageTitleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
-            make.width.equalTo(kFitWidth(46))
+//            make.width.equalTo(kFitWidth(46))
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(16))
         }
 
@@ -435,7 +438,7 @@ private final class GuidanceMealsAdjustItemView: UIView {
         }
 
         advantageLabel.snp.makeConstraints { make in
-            make.left.equalTo(groupTitleLabel.snp.right)//.offset(kFitWidth(10))
+            make.left.equalTo(groupTitleLabel.snp.right).offset(kFitWidth(5))
             make.right.equalTo(kFitWidth(-16))
             make.firstBaseline.equalTo(advantageTitleLabel.snp.firstBaseline)
         }
@@ -455,6 +458,10 @@ private final class GuidanceMealsAdjustItemView: UIView {
     func update(item: GuidanceMealsAdjustVM.Item) {
         titleLabel.attributedText = attributedTitle(for: item.title, color: .COLOR_TEXT_TITLE_0f1214)
         fitLabel.text = "增肌：\(item.bulking) | 减脂：\(item.cutting)"
+//        advantageLabel.text = item.advantages
+//        disadvantageLabel.text = item.disadvantages
+//        advantageLabel.setLineHeightMultiple(textString: item.advantages, lineHeightMultiple: 1.2)
+//        disadvantageLabel.setLineHeightMultiple(textString: item.disadvantages, lineHeightMultiple: 1.2)
         advantageLabel.attributedText = attributedSection(items: item.advantages)
         disadvantageLabel.attributedText = attributedSection(items: item.disadvantages)
         groupLabel.attributedText = attributedGroup(text: item.targetGroup)
@@ -520,7 +527,7 @@ private final class GuidanceMealsAdjustItemView: UIView {
         let attributed = NSMutableAttributedString(
             string: title,
             attributes: [
-                .font: UIFont.systemFont(ofSize: 18, weight: .semibold),
+                .font: UIFont.systemFont(ofSize: 16, weight: .medium),
                 .foregroundColor: color
             ]
         )

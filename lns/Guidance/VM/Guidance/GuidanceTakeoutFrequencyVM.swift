@@ -12,6 +12,7 @@ class GuidanceTakeoutFrequencyVM: UIView {
         let value: String
     }
 
+    var showTipsBlock:(()->())?
     var selectedBlock: (() -> ())?
     private(set) var selectedIndex = -1
 
@@ -48,24 +49,37 @@ class GuidanceTakeoutFrequencyVM: UIView {
         return selectedIndex >= 0
     }
 
-    lazy var titleLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var titleLabel: UILabel = {
+        let lab = UILabel()
         lab.numberOfLines = 2
         lab.textAlignment = .center
+        lab.text = "你平均每周\n有几餐会外食或点外卖？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.setLineHeight(textString: "你平均每周会点几次外卖？", lineHeight: lab.font.lineHeight * 1.2)
+        lab.font = .systemFont(ofSize: 22, weight: .medium)
+        lab.setLineHeightMultiple(textString: lab.text, lineHeightMultiple: 1.18)
+//        lab.setLineHeight(textString: "你平均每周\n有几餐会外食或点外卖？", lineHeight: lab.font.lineHeight * 1.2)
         return lab
     }()
-
-    lazy var subTitleLabel: UILabel = {
-        let lab = UILabel()
-        lab.textAlignment = .center
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        lab.font = .systemFont(ofSize: 12, weight: .regular)
-        lab.text = "不计咖啡/奶茶"
-        return lab
+    
+    lazy var tipsButton : UIButton = {
+        let btn = UIButton()
+        btn.setTitle("外食的“热量认知偏差”", for: .normal)
+        btn.setTitleColor(.THEME, for: .normal)
+        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
+        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        
+        btn.addTarget(self, action: #selector(showTipsAction), for: .touchUpInside)
+        
+        return btn
     }()
+//    lazy var subTitleLabel: UILabel = {
+//        let lab = UILabel()
+//        lab.textAlignment = .center
+//        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+//        lab.font = .systemFont(ofSize: 12, weight: .regular)
+//        lab.text = "不计咖啡/奶茶"
+//        return lab
+//    }()
 
     lazy var stackView: UIStackView = {
         let st = UIStackView()
@@ -140,12 +154,18 @@ extension GuidanceTakeoutFrequencyVM {
             QuestinonaireMsgModel.shared.guidanceTakeoutFrequencyType = ""
         }
     }
+    @objc func showTipsAction(){
+        if self.showTipsBlock != nil{
+            self.showTipsBlock!()
+        }
+    }
 }
 
 extension GuidanceTakeoutFrequencyVM {
     func initUI() {
         addSubview(titleLabel)
-        addSubview(subTitleLabel)
+//        addSubview(subTitleLabel)
+        addSubview(tipsButton)
         addSubview(stackView)
 //        addSubview(topGradientView)
 //        addSubview(bottomGradientView)
@@ -182,18 +202,24 @@ extension GuidanceTakeoutFrequencyVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(35))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(57))
+        }
+        tipsButton.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
+            make.centerX.lessThanOrEqualToSuperview()
+            make.width.equalTo(kFitWidth(200))
+            make.height.equalTo(kFitWidth(21))
         }
 
-        subTitleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
-        }
+//        subTitleLabel.snp.makeConstraints { make in
+//            make.centerX.equalToSuperview()
+//            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
+//        }
 
         stackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(50))
+            make.top.equalTo(tipsButton.snp.bottom).offset(kFitWidth(46))
         }
 //        topGradientView.snp.makeConstraints { make in
 //            make.left.right.equalToSuperview()

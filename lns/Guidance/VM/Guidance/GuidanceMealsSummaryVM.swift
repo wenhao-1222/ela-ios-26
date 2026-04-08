@@ -49,12 +49,12 @@ class GuidanceMealsSummaryVM: UIView {
         let lab = UILabel()
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .semibold)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
     }()
 
-    lazy var messageLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var messageLabel: UILabel = {
+        let lab = UILabel()
         lab.numberOfLines = 0
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
@@ -85,7 +85,8 @@ extension GuidanceMealsSummaryVM {
         let content = contentForMealsPerDayType(QuestinonaireMsgModel.shared.guidanceMealsPerDayType)
 //        titleLabel.text = content.title
         titleLabel.setLineHeight(textString: content.title, lineHeight: titleLabel.font.lineHeight * 1.1)
-        messageLabel.setLineHeight(textString: content.message, lineHeight: messageLabel.font.lineHeight * 1.1)
+//        messageLabel.setLineHeight(textString: content.message, lineHeight: messageLabel.font.lineHeight * 1.1)
+        messageLabel.setLineHeightMultiple(textString: content.message, lineHeightMultiple: 1.2)
     }
 
     private func contentForMealsPerDayType(_ type: String) -> DisplayContent {

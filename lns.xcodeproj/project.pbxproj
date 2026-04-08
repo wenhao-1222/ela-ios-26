@@ -1178,6 +1178,8 @@
 		ECBF8C1A2BC231B70095C4B0 /* UIFont+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBF8C192BC231B70095C4B0 /* UIFont+Exs.swift */; };
 		ECBFC5202F7F8511005E3B48 /* GuidanceProPurchasedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC51F2F7F850D005E3B48 /* GuidanceProPurchasedVC.swift */; };
 		ECBFC6582F8627E6005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = ECBFC6572F8627E6005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */; };
+		ECBFC65A2F862D00005E3B48 /* DietPlanCreateWeightAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC6592F862CFE005E3B48 /* DietPlanCreateWeightAlertVM.swift */; };
+		ECBFC65C2F8630B9005E3B48 /* GuidanceTakeoutFrequencyTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC65B2F8630B4005E3B48 /* GuidanceTakeoutFrequencyTipsAlertVM.swift */; };
 		ECBFDFD62C2A77DA0004760A /* UIAlertAction+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFDFD52C2A77DA0004760A /* UIAlertAction+Exs.swift */; };
 		ECC050612C65B1F10029A47F /* LogsSQLiteUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC050602C65B1F10029A47F /* LogsSQLiteUploadManager.swift */; };
 		ECC24F912C4A16610012D0FD /* CreateMealsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC24F902C4A16610012D0FD /* CreateMealsVC.swift */; };
@@ -2659,6 +2661,8 @@
 		ECBF8C192BC231B70095C4B0 /* UIFont+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Exs.swift"; sourceTree = "<group>"; };
 		ECBFC51F2F7F850D005E3B48 /* GuidanceProPurchasedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPurchasedVC.swift; sourceTree = "<group>"; };
 		ECBFC6572F8627E6005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = AICoachPearlOrbReferenceCrop.mp4; sourceTree = "<group>"; };
+		ECBFC6592F862CFE005E3B48 /* DietPlanCreateWeightAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateWeightAlertVM.swift; sourceTree = "<group>"; };
+		ECBFC65B2F8630B4005E3B48 /* GuidanceTakeoutFrequencyTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceTakeoutFrequencyTipsAlertVM.swift; sourceTree = "<group>"; };
 		ECBFDFD52C2A77DA0004760A /* UIAlertAction+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertAction+Exs.swift"; sourceTree = "<group>"; };
 		ECC050602C65B1F10029A47F /* LogsSQLiteUploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsSQLiteUploadManager.swift; sourceTree = "<group>"; };
 		ECC24F902C4A16610012D0FD /* CreateMealsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMealsVC.swift; sourceTree = "<group>"; };
@@ -4368,6 +4372,7 @@
 				EC78C2C12F69B4FD00681507 /* GuidanceStrengthTrainingFrequencyVM.swift */,
 				EC78C2C32F69C8E700681507 /* GuidanceStrengthTrainingSummaryVM.swift */,
 				EC78C2B52F6946A900681507 /* GuidanceTakeoutFrequencyVM.swift */,
+				ECBFC65B2F8630B4005E3B48 /* GuidanceTakeoutFrequencyTipsAlertVM.swift */,
 				EC78C2AE2F69221900681507 /* GuidanceSexVM.swift */,
 				F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */,
 			);
@@ -5088,6 +5093,7 @@
 				EC8B56052F4E8E9F002F2C16 /* DietPlanCreateYearVM.swift */,
 				ECF9D1022F500C1100A1B2C3 /* DietPlanCreateHeightVM.swift */,
 				EC8B56072F4EAA5C002F2C16 /* DietPlanCreateWeightVM.swift */,
+				ECBFC6592F862CFE005E3B48 /* DietPlanCreateWeightAlertVM.swift */,
 				EC8B56092F4EBC24002F2C16 /* DietPlanCreateBodyfatVM.swift */,
 				ECA8BF072F512A10007E240E /* DietPlanCreateTargetWeightVM.swift */,
 				EC8B560B2F4ED110002F2C16 /* DietPlanCreateEventsVM.swift */,
@@ -6561,6 +6567,7 @@
 				EC6F55E72F680B7200EB18A5 /* DietPlanCreateSpecialAdjustmentVM.swift in Sources */,
 				EC6F55E92F69160000EB18A5 /* DietPlanCreateMealModeSecondVM.swift in Sources */,
 				EC24EB492BB278F8002F21DF /* RullerView.m in Sources */,
+				ECBFC65C2F8630B9005E3B48 /* GuidanceTakeoutFrequencyTipsAlertVM.swift in Sources */,
 				A795CA8B2CE451550090D89C /* ForumCommentFuncAlertItemVM.swift in Sources */,
 				EC029B8F2EAA188700834AD5 /* LiquidGlassShadow.swift in Sources */,
 				ECAE25E22BF1DB3E007D4B57 /* FoodsMsgDetailsVC.swift in Sources */,
@@ -7281,6 +7288,7 @@
 				EC61ABD02F0380BC008FA297 /* HabitRuleFitnessAlertVM.swift in Sources */,
 				A7C72B5C2E123CB5001EA74D /* FriendListVC.swift in Sources */,
 				A735A76F2D5DDA7C006CE140 /* Hero.swift in Sources */,
+				ECBFC65A2F862D00005E3B48 /* DietPlanCreateWeightAlertVM.swift in Sources */,
 				A735A7702D5DDA7C006CE140 /* HeroBrowserHostedCellProtocol.swift in Sources */,
 				A735A7712D5DDA7C006CE140 /* HeroBrowserLocalImageViewModule.swift in Sources */,
 				A735A7722D5DDA7C006CE140 /* HeroCircularProgressView.swift in Sources */,
