@@ -25,6 +25,9 @@ class JournalAICoachTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         whiteView.transform = .identity
+        proImgView.layer.removeAllAnimations()
+        proImgView.alpha = 0
+        proImgView.isHidden = true
     }
     
     lazy var whiteView: UIView = {
@@ -54,6 +57,7 @@ class JournalAICoachTableViewCell: UITableViewCell {
         imgView.contentMode = .scaleAspectFit
         imgView.setImgLocal(imgName: "ai_coach_pro_icon")
         imgView.alpha = 0
+        imgView.isHidden = true
         return imgView
     }()
     
@@ -74,8 +78,15 @@ class JournalAICoachTableViewCell: UITableViewCell {
 
 extension JournalAICoachTableViewCell {
     func update(isVip: Bool) {
+        proImgView.layer.removeAllAnimations()
+        proImgView.alpha = 0
+        proImgView.isHidden = true
+
+        guard !isVip else { return }
+
+        proImgView.isHidden = false
         UIView.animate(withDuration: 0.35) {
-            self.proImgView.alpha = isVip ? 0 : 1
+            self.proImgView.alpha = 1
         }
     }
 

@@ -161,7 +161,7 @@ private extension AICoachPreDaysVM {
 
         for (index, item) in dayItems.enumerated() {
             let itemView = AICoachPreDayItemView()
-            itemView.update(item: item)
+            itemView.update(item: item,isFirstReport:self.isFirstReport)
             itemView.tapBlock = { [weak self, weak itemView] in
                 guard let self, let itemView else { return }
                 self.dayItemTapAction(index: index, sourceView: itemView)
@@ -319,7 +319,13 @@ private final class AICoachPreDayItemView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(item: AICoachPreDaysVM.DayItem) {
+    func update(item: AICoachPreDaysVM.DayItem,isFirstReport:Bool=false) {
+        if isFirstReport{
+            titleLabel.text = ""
+            iconContainerView.backgroundColor = .THEME
+            checkImageView.isHidden = false
+            return
+        }
         titleLabel.text = item.title
 
         switch item.completeStatus {

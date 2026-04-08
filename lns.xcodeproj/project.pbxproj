@@ -674,6 +674,7 @@
 		D0B200012F6A100000000001 /* AICoachBreathingOrbPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200112F6A100000000001 /* AICoachBreathingOrbPalette.swift */; };
 		D0B200022F6A100000000001 /* AICoachBreathingOrbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200122F6A100000000001 /* AICoachBreathingOrbView.swift */; };
 		D0B200032F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200132F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift */; };
+		D0B200042F6A100000000001 /* AICoachRotatingPearlOrbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200142F6A100000000001 /* AICoachRotatingPearlOrbView.swift */; };
 		EC000E6A2EA78F6000E2C60A /* CoursePayPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC000E692EA78F5900E2C60A /* CoursePayPopupView.swift */; };
 		EC029B8F2EAA188700834AD5 /* LiquidGlassShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B8E2EAA188600834AD5 /* LiquidGlassShadow.swift */; };
 		EC029B912EAA2F3A00834AD5 /* GradientGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B902EAA2F3A00834AD5 /* GradientGlassView.swift */; };
@@ -1176,6 +1177,7 @@
 		ECBF8C182BC230A30095C4B0 /* D-DIN-PRO-900-Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = ECBF8C112BC230A30095C4B0 /* D-DIN-PRO-900-Heavy.otf */; };
 		ECBF8C1A2BC231B70095C4B0 /* UIFont+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBF8C192BC231B70095C4B0 /* UIFont+Exs.swift */; };
 		ECBFC5202F7F8511005E3B48 /* GuidanceProPurchasedVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC51F2F7F850D005E3B48 /* GuidanceProPurchasedVC.swift */; };
+		ECBFC6562F85FDCA005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = ECBFC6552F85FDCA005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */; };
 		ECBFDFD62C2A77DA0004760A /* UIAlertAction+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFDFD52C2A77DA0004760A /* UIAlertAction+Exs.swift */; };
 		ECC050612C65B1F10029A47F /* LogsSQLiteUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC050602C65B1F10029A47F /* LogsSQLiteUploadManager.swift */; };
 		ECC24F912C4A16610012D0FD /* CreateMealsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC24F902C4A16610012D0FD /* CreateMealsVC.swift */; };
@@ -2140,6 +2142,7 @@
 		D0B200112F6A100000000001 /* AICoachBreathingOrbPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachBreathingOrbPalette.swift; sourceTree = "<group>"; };
 		D0B200122F6A100000000001 /* AICoachBreathingOrbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachBreathingOrbView.swift; sourceTree = "<group>"; };
 		D0B200132F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachBreathingOrbDemoViewController.swift; sourceTree = "<group>"; };
+		D0B200142F6A100000000001 /* AICoachRotatingPearlOrbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachRotatingPearlOrbView.swift; sourceTree = "<group>"; };
 		DB3B3C07E8D8819AF777A82A /* Pods-ElaNaturalWidgetCaloriesFourMealsExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalWidgetCaloriesFourMealsExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaNaturalWidgetCaloriesFourMealsExtension/Pods-ElaNaturalWidgetCaloriesFourMealsExtension.release.xcconfig"; sourceTree = "<group>"; };
 		DD8104AF7D11321922808F22 /* Pods-ElaNaturalFiveMealsWidgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalFiveMealsWidgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-ElaNaturalFiveMealsWidgetExtension/Pods-ElaNaturalFiveMealsWidgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		E4FBFB54E8CC7241D44272E4 /* Pods_ElaWeekCaloriesWidgetExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ElaWeekCaloriesWidgetExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2653,6 +2656,7 @@
 		ECBF8C112BC230A30095C4B0 /* D-DIN-PRO-900-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "D-DIN-PRO-900-Heavy.otf"; sourceTree = "<group>"; };
 		ECBF8C192BC231B70095C4B0 /* UIFont+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Exs.swift"; sourceTree = "<group>"; };
 		ECBFC51F2F7F850D005E3B48 /* GuidanceProPurchasedVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPurchasedVC.swift; sourceTree = "<group>"; };
+		ECBFC6552F85FDCA005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = AICoachPearlOrbReferenceCrop.mp4; sourceTree = "<group>"; };
 		ECBFDFD52C2A77DA0004760A /* UIAlertAction+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertAction+Exs.swift"; sourceTree = "<group>"; };
 		ECC050602C65B1F10029A47F /* LogsSQLiteUploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsSQLiteUploadManager.swift; sourceTree = "<group>"; };
 		ECC24F902C4A16610012D0FD /* CreateMealsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMealsVC.swift; sourceTree = "<group>"; };
@@ -4198,6 +4202,7 @@
 				D0B200112F6A100000000001 /* AICoachBreathingOrbPalette.swift */,
 				D0B200122F6A100000000001 /* AICoachBreathingOrbView.swift */,
 				D0B200132F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift */,
+				D0B200142F6A100000000001 /* AICoachRotatingPearlOrbView.swift */,
 			);
 			path = CoachBreathingOrbDemo;
 			sourceTree = "<group>";
@@ -5305,6 +5310,7 @@
 		ECBF8C0B2BC230990095C4B0 /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				ECBFC6552F85FDCA005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 */,
 				ECC8DC002BFEE9B700C97240 /* lch_bg.png */,
 				ECC8DC022BFEEA4400C97240 /* lch_slogan.png */,
 				ECBF8C122BC230A30095C4B0 /* D-DIN PRO */,
@@ -6125,6 +6131,7 @@
 			files = (
 				EC6978E82BABBD82000B933A /* Assets.xcassets in Resources */,
 				ECBF8C162BC230A30095C4B0 /* D-DIN-PRO-700-Bold.otf in Resources */,
+				ECBFC6562F85FDCA005E3B48 /* AICoachPearlOrbReferenceCrop.mp4 in Resources */,
 				A735A7802D5DDA7C006CE140 /* icon_play@2x.png in Resources */,
 				A735A7822D5DDA7C006CE140 /* icon_video_loading@2x.png in Resources */,
 				A735A7C12D5DE3F5006CE140 /* fail@2x.png in Resources */,
@@ -6337,6 +6344,7 @@
 				D0B200012F6A100000000001 /* AICoachBreathingOrbPalette.swift in Sources */,
 				D0B200022F6A100000000001 /* AICoachBreathingOrbView.swift in Sources */,
 				D0B200032F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift in Sources */,
+				D0B200042F6A100000000001 /* AICoachRotatingPearlOrbView.swift in Sources */,
 				A735A7B12D5DE3F5006CE140 /* JFPopupAction.swift in Sources */,
 				A735A7B22D5DE3F5006CE140 /* JFPopupController.swift in Sources */,
 				A735A7B32D5DE3F5006CE140 /* JFPopupAnimation.swift in Sources */,

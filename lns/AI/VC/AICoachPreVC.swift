@@ -65,10 +65,11 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         img.contentMode = .scaleAspectFit
         return img
     }()
-    lazy var circleImgView: UIImageView = {
-        let img = UIImageView()
-        img.setImgLocal(imgName: "ela_pro_ai_pre_circle_icon")
-        return img
+    lazy var circleImgView: AICoachRotatingPearlOrbView = {
+        let orbView = AICoachRotatingPearlOrbView()
+        orbView.backgroundColor = .clear
+        orbView.rotationDuration = 20.0
+        return orbView
     }()
     lazy var nextButton: UIButton = {
         let btn = UIButton(type: .custom)
