@@ -220,7 +220,7 @@ private extension AICoachReportDemoContentView {
         summaryLabel.text = makeSummaryBodyText()
 
         let sidePanel = UIView()
-        sidePanel.backgroundColor = WHColor_ARC()//UIColor(hex: "F2F2F2")
+        sidePanel.backgroundColor = UIColor(hex: "F2F2F2")
         sidePanel.layer.cornerRadius = PDFWidth(30)
 
         let panelStack = UIStackView()
@@ -256,13 +256,13 @@ private extension AICoachReportDemoContentView {
 //        potentialColumn.backgroundColor = WHColor_ARC()
 
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(20)
-            make.left.equalToSuperview().offset(20)
+            make.top.equalToSuperview().offset(PDFWidth(50))
+            make.left.equalToSuperview().offset(PDFWidth(50))
         }
         summaryLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(18)
+            make.top.equalTo(titleLabel.snp.bottom).offset(PDFWidth(30))
             make.left.equalTo(titleLabel)
-            make.right.equalToSuperview().offset(-20)
+            make.right.equalToSuperview().offset(PDFWidth(-50))
         }
         sidePanel.snp.makeConstraints { make in
             make.top.equalTo(summaryLabel.snp.bottom).offset(PDFWidth(40))
