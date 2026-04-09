@@ -93,7 +93,7 @@ extension GuidanceDietRecordVM {
         for (idx, button) in itemButtons.enumerated() {
             let isSelected = idx == index
             button.backgroundColor = isSelected ? .THEME : .COLOR_BG_BLACK_04
-            titleLabels[idx].textColor = isSelected ? .COLOR_TEXT_WHITE : .COLOR_TEXT_TITLE_0f1214_50
+            titleLabels[idx].textColor = isSelected ? .COLOR_TEXT_WHITE : .COLOR_TEXT_TITLE_0f1214
         }
 
         if index >= 0 && index < dataArray.count {

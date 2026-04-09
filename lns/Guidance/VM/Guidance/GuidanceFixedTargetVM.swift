@@ -48,7 +48,7 @@ class GuidanceFixedTargetVM: UIView {
         lab.numberOfLines = 2
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 22, weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.text = "你已经有\n明确的营养目标了吗？"
 //        lab.setLineHeightMultiple(textString: lab.text, lineHeightMultiple: 1.18)
 //        lab.setLineHeight(textString: "你已经有\n明确的营养目标了吗？", lineHeight: lab.font.lineHeight * 1.2)
@@ -95,7 +95,7 @@ extension GuidanceFixedTargetVM {
         for (idx, button) in itemButtons.enumerated() {
             let isSelected = idx == index
             button.backgroundColor = isSelected ? .THEME : .COLOR_BG_BLACK_04
-            titleLabels[idx].textColor = isSelected ? .COLOR_TEXT_WHITE : .COLOR_TEXT_TITLE_0f1214_50
+            titleLabels[idx].textColor = isSelected ? .COLOR_TEXT_WHITE : .COLOR_TEXT_TITLE_0f1214
         }
 
         if index >= 0 && index < dataArray.count {
@@ -126,7 +126,7 @@ extension GuidanceFixedTargetVM {
             let lab = UILabel()
             lab.text = item.title
             lab.textAlignment = .center
-            lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+            lab.textColor = .COLOR_TEXT_TITLE_0f1214
             lab.font = .systemFont(ofSize: 20, weight: .medium)
 
             button.addSubview(lab)

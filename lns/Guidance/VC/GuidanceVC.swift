@@ -237,6 +237,15 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceNutritionGoalTipsAlertVM.init(frame: .zero)
         return vm
     }()
+    
+
+    lazy var fixGoalTipsAlertVm: QuestionCustomTipsAlertVM = {
+        let vm = QuestionCustomTipsAlertVM(frame: .zero)
+        vm.isHidden = true
+        vm.titleLabel.text = "身体是动态的，目标也应如此"
+        vm.contentLabelOne.text = "我们必须诚实地告诉你，无论是自己计算，还是通过 Elavatine 结合科学研究及运动员长期实践经验得出的目标计算公式，都无法保证初始目标能 100% 贴合你的真实身体需求。你的日训练风格、站立、坐立习惯，以及代谢适应能力等，都有可能会在未来影响你所需的摄入量。\n\n但请不必担心，你完全可以通过观察体重增减与体型变化，自己逐渐调整摄入量或营养比例。\n\n如果你需要更专业的支持，ELA AI 教练也可以帮助你更快地找到最适合你的摄入目标并持续调整。"
+        return vm
+    }()
     lazy var nextButton: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("下一步", for: .normal)
@@ -454,6 +463,9 @@ class GuidanceVC: WHBaseViewVC {
         vm.saveBlock = { [weak self] in
             self?.nextButtonTapAction()
 //            self?.saveGuidanceNutritionGoals()
+        }
+        vm.tipsTapBlock = {()in
+            self.fixGoalTipsAlertVm.showView()
         }
         return vm
     }()
@@ -778,14 +790,11 @@ extension GuidanceVC{
         }
         if targetStep == .nutritionGoal {
             if isFixedTargetFlowEnabled {
-                fixedTargetNutritionGoalVm.applyEditingMode(isEditable: true)
-                fixedTargetNutritionGoalVm.refreshContentFromModel()
                 let focusDelay = animated ? 0.35 : 0
                 DispatchQueue.main.asyncAfter(deadline: .now() + focusDelay) { [weak self] in
                     guard let self = self,
                           self.flowStep(for: self.currentIndex) == .nutritionGoal,
                           self.isFixedTargetFlowEnabled else { return }
-                    self.fixedTargetNutritionGoalVm.focusCarbInput()
                 }
             } else {
                 nutritionGoalVm.refreshContentFromModel()
@@ -1311,6 +1320,7 @@ extension GuidanceVC{
         view.addSubview(takeoutTipsAlertVm)
         view.addSubview(caloriesRecordTipsAlertVm)
         view.addSubview(goalTipsAlertVm)
+        view.addSubview(fixGoalTipsAlertVm)
         view.addSubview(finishLoadingVm)
         
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
@@ -1423,8 +1433,8 @@ extension GuidanceVC{
 
             DispatchQueue.main.async {
                 if self.isFixedTargetFlowEnabled {
-                    self.fixedTargetNutritionGoalVm.applyEditingMode(isEditable: true)
-                    self.fixedTargetNutritionGoalVm.refreshContentFromModel()
+//                    self.fixedTargetNutritionGoalVm.applyEditingMode(isEditable: true)
+//                    self.fixedTargetNutritionGoalVm.refreshContentFromModel()
                 } else {
                     self.nutritionGoalVm.refreshContentFromModel()
                 }

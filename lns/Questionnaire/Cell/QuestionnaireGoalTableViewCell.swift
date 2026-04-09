@@ -98,7 +98,7 @@ extension QuestionnaireGoalTableViewCell{
             bottomView.isHidden = false
             borderRectView.isHidden = true
             bottomView.backgroundColor = isSelected ? .THEME : .COLOR_BG_BLACK_04
-            titleLabel.textColor = isSelected ? .white : .COLOR_TEXT_TITLE_0f1214_50
+            titleLabel.textColor = isSelected ? .white : .COLOR_TEXT_TITLE_0f1214
         } else if isSelected{
             bottomView.isHidden = true
             borderRectView.isHidden = false
