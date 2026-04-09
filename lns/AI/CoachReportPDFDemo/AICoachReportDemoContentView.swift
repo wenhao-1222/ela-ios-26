@@ -220,7 +220,7 @@ private extension AICoachReportDemoContentView {
         summaryLabel.text = makeSummaryBodyText()
 
         let sidePanel = UIView()
-        sidePanel.backgroundColor = UIColor(hex: "F2F2F2")
+        sidePanel.backgroundColor = WHColor_ARC()//UIColor(hex: "F2F2F2")
         sidePanel.layer.cornerRadius = PDFWidth(30)
 
         let panelStack = UIStackView()

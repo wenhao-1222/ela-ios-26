@@ -1276,114 +1276,121 @@ class LogsSQLiteManager {
     
     func saveServerDataToDB(dataArray:NSArray) {
         DispatchQueue.global(qos: .userInitiated).async { [self] in
-            for i in 0..<dataArray.count{
-                let dict = dataArray[i]as? NSDictionary ?? [:]
-                var serverETime = dict.stringValueForKey(key: "etime")
-                serverETime = serverETime.replacingOccurrences(of: "T", with: " ")
-                let sDate = dict.stringValueForKey(key: "sdate")
-                
-                let waterDict = dict["dietLogWater"]as? NSDictionary ?? [:]
-                let serverWaterETime = waterDict.stringValueForKey(key: "etime").replacingOccurrences(of: "T", with: " ")
-                
-                let circleTag = dict.stringValueForKey(key: "carbLabel")
-                var fitnessLabelArray = NSMutableArray(array: dict["fitnessLabelArray"]as? NSArray ?? [])
-                for i in 0..<fitnessLabelArray.count{
-                    let str = fitnessLabelArray[i]as? String ?? ""
-                    if str == "[]" || str == "-"{
-                        fitnessLabelArray.removeObject(at: i)
-                        break
-                    }
-                }
-                let fitnessTag = fitnessLabelArray.count > 0 ? WHUtils.getJSONStringFromArray(array: fitnessLabelArray) : ""//dict.stringValueForKey(key: "fitnessLabel")
-                
-                var notesTag = dict.stringValueForKey(key: "notesLabel")
-                if let notesLabelArr = dict["notesLabel"] as? NSArray{
-                    notesTag = WHUtils.getJSONStringFromArray(array: notesLabelArr)
-                }
-                
-                var foodsString = WHUtils.getJSONStringFromArray(array: dict["foods"]as? NSArray ?? [])
-                foodsString = foodsString.replacingOccurrences(of: "'", with: "’")
-                if queryTable(sDate: sDate){//如果存在数据
-//                    DLLog(message: "存在数据")
-                    let model = LogsSQLiteManager.getInstance().getLogsByDate(sDate: sDate)!
-                    
-                    if Date().judgeMin(firstTime: model.etime, secondTime: serverETime){
-                        do {
-                            let sql = logs.filter(sdate == sDate).filter(uid == UserInfoModel.shared.uId)
-                            try db?.run(sql.update(self.foods<-foodsString,
-                                                   self.calori<-dict.stringValueForKey(key: "calories"),
-                                                   self.protein<-dict.stringValueForKey(key: "protein"),
-                                                   self.carbohydrate<-dict.stringValueForKey(key: "carbohydrate"),
-                                                   self.fat<-dict.stringValueForKey(key: "fat"),
-                                                   self.caloriTarget<-dict.stringValueForKey(key: "caloriesden"),
-                                                   self.proteinTarget<-dict.stringValueForKey(key: "proteinden"),
-                                                   self.carbohydrateTarget<-dict.stringValueForKey(key: "carbohydrateden"),
-                                                   self.etime <- (dict.stringValueForKey(key: "etime").pregReplace(pattern: "T", with: " ")),
-                                                   self.isUploadString<-"1",
-                                                   self.fatTarget<-dict.stringValueForKey(key: "fatden"),
-                                                   self.water_num<-waterDict.stringValueForKey(key: "qty"),
-                                                   self.water_upload<-"1",
-                                                   self.notes<-dict.stringValueForKey(key: "notes"),
-                                                   self.notes_tag<-dict.stringValueForKey(key: "notesLabel"),
-                                                   self.water_etime<-serverWaterETime,
-                                                   self.circle_tag<-circleTag,
-                                                   self.fitness_tag<-fitnessTag,
-                                                   self.notes_tag<-notesTag))
-//                            DLLog(message:"更新日志成功 \(sDate)")
-                        } catch {
-                            DLLog(message:"更新日志失败 \(sDate)")
-                            do {
-                                try db?.execute("UPDATE logs SET"
-                                                + " etime = '\(dict.stringValueForKey(key: "etime").pregReplace(pattern: "T", with: " "))'"
-                                                + ", foods = '\(foodsString)'"
-                                                + ", calori = '\(dict.stringValueForKey(key: "calories"))'"
-                                                + ", protein = '\(dict.stringValueForKey(key: "protein"))'"
-                                                + ", carbohydrate = '\(dict.stringValueForKey(key: "carbohydrate"))'"
-                                                + ", fat = '\(dict.stringValueForKey(key: "fat"))'"
-                                                + ", caloriTarget = '\(dict.stringValueForKey(key: "caloriesden"))'"
-                                                + ", proteinTarget = '\(dict.stringValueForKey(key: "proteinden"))'"
-                                                + ", carbohydrateTarget = '\(dict.stringValueForKey(key: "carbohydrateden"))'"
-                                                + ", fatTarget = '\(dict.stringValueForKey(key: "fatden"))'"
-                                                + ", isUploadString = '1'"
-                                                + ", water_num = '\(waterDict.stringValueForKey(key: "qty"))'"
-                                                + ", water_upload = '1'"
-                                                + ", water_etime = '\(serverWaterETime)'"
-                                                + ", circle_tag = '\(circleTag)'"
-                                                + ", fitness_tag = '\(fitnessTag)'"
-                                                + ", notes_tag = '\(notesTag)'"
-                                                + " WHERE ((uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sDate)'));")
-                                DLLog(message: "SQL语句更新  ----  success")
-                            }catch{
-                                DLLog(message: "SQL语句更新  ----  执行失败")
+            guard let db = db else { return }
+
+            DLLog(message: "saveServerDataToDB start count:\(dataArray.count)")
+
+            do {
+                try db.transaction {
+                    for i in 0..<dataArray.count{
+                        autoreleasepool {
+                            let dict = dataArray[i]as? NSDictionary ?? [:]
+                            var serverETime = dict.stringValueForKey(key: "etime")
+                            serverETime = serverETime.replacingOccurrences(of: "T", with: " ")
+                            let sDate = dict.stringValueForKey(key: "sdate")
+                            
+                            let waterDict = dict["dietLogWater"]as? NSDictionary ?? [:]
+                            let serverWaterETime = waterDict.stringValueForKey(key: "etime").replacingOccurrences(of: "T", with: " ")
+                            
+                            let circleTag = dict.stringValueForKey(key: "carbLabel")
+                            var fitnessLabelArray = NSMutableArray(array: dict["fitnessLabelArray"]as? NSArray ?? [])
+                            for i in 0..<fitnessLabelArray.count{
+                                let str = fitnessLabelArray[i]as? String ?? ""
+                                if str == "[]" || str == "-"{
+                                    fitnessLabelArray.removeObject(at: i)
+                                    break
+                                }
+                            }
+                            let fitnessTag = fitnessLabelArray.count > 0 ? WHUtils.getJSONStringFromArray(array: fitnessLabelArray) : ""
+                            
+                            var notesTag = dict.stringValueForKey(key: "notesLabel")
+                            if let notesLabelArr = dict["notesLabel"] as? NSArray{
+                                notesTag = WHUtils.getJSONStringFromArray(array: notesLabelArr)
+                            }
+                            
+                            var foodsString = WHUtils.getJSONStringFromArray(array: dict["foods"]as? NSArray ?? [])
+                            foodsString = foodsString.replacingOccurrences(of: "'", with: "’")
+                            if queryTable(sDate: sDate){//如果存在数据
+                                let model = LogsSQLiteManager.getInstance().getLogsByDate(sDate: sDate)!
+                                
+                                if Date().judgeMin(firstTime: model.etime, secondTime: serverETime){
+                                    do {
+                                        let sql = logs.filter(sdate == sDate).filter(uid == UserInfoModel.shared.uId)
+                                        try db.run(sql.update(self.foods<-foodsString,
+                                                              self.calori<-dict.stringValueForKey(key: "calories"),
+                                                              self.protein<-dict.stringValueForKey(key: "protein"),
+                                                              self.carbohydrate<-dict.stringValueForKey(key: "carbohydrate"),
+                                                              self.fat<-dict.stringValueForKey(key: "fat"),
+                                                              self.caloriTarget<-dict.stringValueForKey(key: "caloriesden"),
+                                                              self.proteinTarget<-dict.stringValueForKey(key: "proteinden"),
+                                                              self.carbohydrateTarget<-dict.stringValueForKey(key: "carbohydrateden"),
+                                                              self.etime <- (dict.stringValueForKey(key: "etime").pregReplace(pattern: "T", with: " ")),
+                                                              self.isUploadString<-"1",
+                                                              self.fatTarget<-dict.stringValueForKey(key: "fatden"),
+                                                              self.water_num<-waterDict.stringValueForKey(key: "qty"),
+                                                              self.water_upload<-"1",
+                                                              self.notes<-dict.stringValueForKey(key: "notes"),
+                                                              self.notes_tag<-dict.stringValueForKey(key: "notesLabel"),
+                                                              self.water_etime<-serverWaterETime,
+                                                              self.circle_tag<-circleTag,
+                                                              self.fitness_tag<-fitnessTag,
+                                                              self.notes_tag<-notesTag))
+                                    } catch {
+                                        DLLog(message:"更新日志失败 \(sDate)")
+                                        do {
+                                            try db.execute("UPDATE logs SET"
+                                                           + " etime = '\(dict.stringValueForKey(key: "etime").pregReplace(pattern: "T", with: " "))'"
+                                                           + ", foods = '\(foodsString)'"
+                                                           + ", calori = '\(dict.stringValueForKey(key: "calories"))'"
+                                                           + ", protein = '\(dict.stringValueForKey(key: "protein"))'"
+                                                           + ", carbohydrate = '\(dict.stringValueForKey(key: "carbohydrate"))'"
+                                                           + ", fat = '\(dict.stringValueForKey(key: "fat"))'"
+                                                           + ", caloriTarget = '\(dict.stringValueForKey(key: "caloriesden"))'"
+                                                           + ", proteinTarget = '\(dict.stringValueForKey(key: "proteinden"))'"
+                                                           + ", carbohydrateTarget = '\(dict.stringValueForKey(key: "carbohydrateden"))'"
+                                                           + ", fatTarget = '\(dict.stringValueForKey(key: "fatden"))'"
+                                                           + ", isUploadString = '1'"
+                                                           + ", water_num = '\(waterDict.stringValueForKey(key: "qty"))'"
+                                                           + ", water_upload = '1'"
+                                                           + ", water_etime = '\(serverWaterETime)'"
+                                                           + ", circle_tag = '\(circleTag)'"
+                                                           + ", fitness_tag = '\(fitnessTag)'"
+                                                           + ", notes_tag = '\(notesTag)'"
+                                                           + " WHERE ((uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sDate)'));")
+                                        }catch{
+                                            DLLog(message: "SQL语句更新  ----  执行失败")
+                                        }
+                                    }
+                                }
+                            }else{//如果不存在数据
+                                insertLogs(sDate: sDate,
+                                           calori: dict.stringValueForKey(key: "calories"),
+                                           protein: dict.stringValueForKey(key: "protein"),
+                                           carbohydrates: dict.stringValueForKey(key: "carbohydrate"),
+                                           fats: dict.stringValueForKey(key: "fat"),
+                                           notes: dict.stringValueForKey(key: "notes"),
+                                           foods: foodsString,
+                                           caloriTar: dict.stringValueForKey(key: "caloriesden"),
+                                           proteinTar: dict.stringValueForKey(key: "proteinden"),
+                                           carboTar: dict.stringValueForKey(key: "carbohydrateden"),
+                                           fatsTar: dict.stringValueForKey(key: "fatden"),
+                                           upload: true,
+                                           eTime: (dict.stringValueForKey(key: "etime").pregReplace(pattern: "T", with: " ")),
+                                           waterNum: waterDict.stringValueForKey(key: "qty"),
+                                           waterUpload: "1",
+                                           waterEtime: serverWaterETime,
+                                           circleTag: circleTag,
+                                           fitnessTag: fitnessTag,
+                                           notesTag: notesTag)
                             }
                         }
-                    }else{
-                        DLLog(message: "不需要更新") 
                     }
-                }else{//如果不存在数据
-//                    DLLog(message: "不存在数据")
-                    DLLog(message: "sendLogsAllDataRequest:\(dict)")
-                    insertLogs(sDate: sDate,
-                               calori: dict.stringValueForKey(key: "calories"),
-                               protein: dict.stringValueForKey(key: "protein"),
-                               carbohydrates: dict.stringValueForKey(key: "carbohydrate"),
-                               fats: dict.stringValueForKey(key: "fat"),
-                               notes: dict.stringValueForKey(key: "notes"),
-                               foods: foodsString,
-                               caloriTar: dict.stringValueForKey(key: "caloriesden"),
-                               proteinTar: dict.stringValueForKey(key: "proteinden"),
-                               carboTar: dict.stringValueForKey(key: "carbohydrateden"),
-                               fatsTar: dict.stringValueForKey(key: "fatden"),
-                               upload: true,
-                               eTime: (dict.stringValueForKey(key: "etime").pregReplace(pattern: "T", with: " ")),
-                               waterNum: waterDict.stringValueForKey(key: "qty"),
-                               waterUpload: "1",
-                               waterEtime: serverWaterETime,
-                               circleTag: circleTag,
-                               fitnessTag: fitnessTag,
-                               notesTag: notesTag)
                 }
+            } catch {
+                DLLog(message: "saveServerDataToDB transaction failed: \(error)")
             }
+
+            DLLog(message: "saveServerDataToDB finish count:\(dataArray.count)")
             UserDefaults.standard.setValue("1", forKey: "\(UserInfoModel.shared.uId)LogsData")
         }
     }

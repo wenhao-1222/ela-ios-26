@@ -98,13 +98,16 @@ class WHUtils: NSObject {
         if jsonString == "" || jsonString.isBlank || !jsonString.contains("["){
             return []
         }
-        
-        let jsonData:Data = jsonString.data(using: .utf8)!
-        let array = try? JSONSerialization.jsonObject(with: jsonData, options: .mutableContainers)
-        if array != nil {
-            return array as! NSArray
+
+        guard let jsonData = jsonString.data(using: .utf8) else {
+            return []
         }
-        return array as! NSArray
+
+        guard let array = try? JSONSerialization.jsonObject(with: jsonData, options: .mutableContainers) as? NSArray else {
+            return []
+        }
+
+        return array
     }
     //JSONString转换为字典
     static func getDictionaryFromJSONString(jsonString:String) ->NSDictionary{
