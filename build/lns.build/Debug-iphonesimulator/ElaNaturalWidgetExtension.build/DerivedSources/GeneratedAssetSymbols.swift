@@ -1105,6 +1105,9 @@ extension ImageResource {
     /// The "guide_img_step_7_circle" asset catalog image resource.
     static let guideImgStep7Circle = ImageResource(name: "guide_img_step_7_circle", bundle: resourceBundle)
 
+    /// The "guide_reminder_icon" asset catalog image resource.
+    static let guideReminderIcon = ImageResource(name: "guide_reminder_icon", bundle: resourceBundle)
+
     /// The "guide_second_img_1" asset catalog image resource.
     static let guideSecondImg1 = ImageResource(name: "guide_second_img_1", bundle: resourceBundle)
 
@@ -6656,6 +6659,15 @@ extension AppKit.NSImage {
     static var guideImgStep7Circle: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .guideImgStep7Circle)
+#else
+        .init()
+#endif
+    }
+
+    /// The "guide_reminder_icon" asset catalog image.
+    static var guideReminderIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .guideReminderIcon)
 #else
         .init()
 #endif
@@ -12613,6 +12625,15 @@ extension UIKit.UIImage {
     static var guideImgStep7Circle: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .guideImgStep7Circle)
+#else
+        .init()
+#endif
+    }
+
+    /// The "guide_reminder_icon" asset catalog image.
+    static var guideReminderIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .guideReminderIcon)
 #else
         .init()
 #endif

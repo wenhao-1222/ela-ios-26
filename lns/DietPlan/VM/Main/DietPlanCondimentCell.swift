@@ -34,7 +34,7 @@ class DietPlanCondimentCell: UICollectionViewCell {
 
     private let condimentImageView: UIImageView = {
         let view = UIImageView()
-        view.contentMode = .scaleAspectFill
+        view.contentMode = .scaleAspectFit
         view.clipsToBounds = true
         return view
     }()
@@ -42,7 +42,7 @@ class DietPlanCondimentCell: UICollectionViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .COLOR_TEXT_TITLE_0f1214
-        label.font = .systemFont(ofSize: 16, weight: .semibold)
+        label.font = .systemFont(ofSize: 14, weight: .medium)
         label.numberOfLines = 2
         label.lineBreakMode = .byTruncatingTail
         return label

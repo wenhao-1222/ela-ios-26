@@ -8,9 +8,19 @@
 import SnapKit
 
 class PlanMainMealCardCell: UICollectionViewCell {
+    private struct RenderState: Equatable {
+        let typeText: String
+        let imageUrl: String
+        let nameText: String
+        let macroText: String
+        let kcalText: String
+        let isLarge: Bool
+    }
+    
     var changeButtonTapBlock: (() -> Void)?
     private var imageHeightConstraint: Constraint?
     private var imageLoadToken = ""
+    private var renderState: RenderState?
     private var skeletonStartTime: TimeInterval = 0
     private let minSkeletonDisplayDuration: TimeInterval = 0.35
 //    private let imageSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
@@ -97,6 +107,7 @@ class PlanMainMealCardCell: UICollectionViewCell {
         super.prepareForReuse()
         changeButtonTapBlock = nil
         imageLoadToken = ""
+        renderState = nil
         mealImgView.image = nil
         mealImgView.removeSkeletonImmediately()
     }
@@ -107,15 +118,38 @@ class PlanMainMealCardCell: UICollectionViewCell {
                   macroText: String,
                   kcalText: String,
                   isLarge: Bool) {
+        let newRenderState = RenderState(typeText: typeText,
+                                         imageUrl: imageUrl,
+                                         nameText: nameText,
+                                         macroText: macroText,
+                                         kcalText: kcalText,
+                                         isLarge: isLarge)
+        let previousRenderState = renderState
+        renderState = newRenderState
+        
         typeLabel.text = typeText
         nameLabel.text = "\(nameText)金佛"
         macroLabel.text = macroText
         kcalLabel.text = kcalText
         
+        imageHeightConstraint?.update(offset: isLarge ? kFitWidth(192) : kFitWidth(93))
+        
+        if previousRenderState == newRenderState, mealImgView.image != nil {
+            mealImgView.removeSkeletonImmediately()
+            return
+        }
+        
         let placeHolderName = isLarge ? "DietPlanImage1" : "Image"
         let placeHolder = UIImage(named: placeHolderName)
+        let shouldReuseCurrentImage = previousRenderState?.imageUrl == imageUrl && mealImgView.image != nil
         
-        if imageUrl.count > 0{
+        if imageUrl.count > 0 {
+            if shouldReuseCurrentImage {
+                imageLoadToken = ""
+                mealImgView.removeSkeletonImmediately()
+                return
+            }
+            
             imageLoadToken = UUID().uuidString
             let currentToken = imageLoadToken
 
@@ -145,7 +179,6 @@ class PlanMainMealCardCell: UICollectionViewCell {
                               },
                               completion: nil)
         }
-        imageHeightConstraint?.update(offset: isLarge ? kFitWidth(192) : kFitWidth(93))
     }
 }
 

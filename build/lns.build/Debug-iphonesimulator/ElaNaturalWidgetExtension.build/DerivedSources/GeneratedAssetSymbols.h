@@ -1083,6 +1083,9 @@ static NSString * const ACImageNameGuideImgStep7 AC_SWIFT_PRIVATE = @"guide_img_
 /// The "guide_img_step_7_circle" asset catalog image resource.
 static NSString * const ACImageNameGuideImgStep7Circle AC_SWIFT_PRIVATE = @"guide_img_step_7_circle";
 
+/// The "guide_reminder_icon" asset catalog image resource.
+static NSString * const ACImageNameGuideReminderIcon AC_SWIFT_PRIVATE = @"guide_reminder_icon";
+
 /// The "guide_second_img_1" asset catalog image resource.
 static NSString * const ACImageNameGuideSecondImg1 AC_SWIFT_PRIVATE = @"guide_second_img_1";
 

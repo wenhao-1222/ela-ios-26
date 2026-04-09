@@ -3,9 +3,11 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportDemoContentView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportPDFGenerator.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportPDFDemoVC.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportDateAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachBreathingOrbPalette.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachBreathingOrbView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachBreathingOrbDemoViewController.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachRotatingPearlOrbView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFPopup/JFPopup/Classes/General/ActionSheet/JFPopupAction.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFPopup/JFPopup/Classes/Core/JFPopupController.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFPopup/JFPopup/Classes/Core/JFPopupAnimation.swift
@@ -205,6 +207,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/CreateSecond/DietPlanCreateEatStyleSecondVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/CreateSecond/DietPlanCreateSpecialAdjustmentVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/CreateSecond/DietPlanCreateMealModeSecondVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceTakeoutFrequencyTipsAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/Comment/ForumCommentFuncAlertItemVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/ForumMain/LiquidGlassShadow.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VC/FoodsMsgDetailsVC.swift
@@ -229,6 +232,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Create/DietPlanCreateAllergyVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/AICoachPreDaysVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/AICoachPreInfoVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/AICoachPreInfoSelectPopupVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Create/DietPlanCreateAdviceVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Create/DietPlanCreateMealStyleVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Create/DietPlanCreateBarrierVM.swift
@@ -450,6 +454,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/naturalStat/PaddingLabel.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/NetWork/DeviceUUIDManager.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceDietRecordVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceDietRecordTipsAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceCardioFrequencyVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceExerciseCaloriesRecordVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceFixedTargetVM.swift
@@ -466,6 +471,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceStrengthTrainingSummaryVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceTakeoutFrequencyVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceSexVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceSexTipsAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/data/DataDetailShareLineChartView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Foods/FoodsCreateSpecAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/data/MainDataLineChartYXaisView.swift
@@ -598,6 +604,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Other/GlassToggleRow.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Foods/FoodsAddIconVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/plan/PlanDetailTopVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceExerciseCaloriesRecordTipsAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/Model/Sport/SportHistoryModel.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Foods/FoodsCreateItemVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/Circle/GoalCircleDaysVM.swift
@@ -680,6 +687,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/sport/SportHistoryTableViewCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/plan/PlanDetailNaviVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/RankingList/FriendListSearchVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceNutritionGoalTipsAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/VC/PropotionResultVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/data/DataAddItemVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Common/Custom/WHCommonH5VC.swift
@@ -882,6 +890,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/habit/Progress/HabitRuleFitnessAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VC/RankingList/FriendListVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/Base/Hero.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Create/DietPlanCreateWeightAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/View/HeroBrowserHostedCellProtocol.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/ViewModule/HeroBrowserLocalImageViewModule.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/View/HeroCircularProgressView.swift

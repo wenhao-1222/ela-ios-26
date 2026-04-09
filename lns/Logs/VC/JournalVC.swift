@@ -1282,21 +1282,21 @@ extension JournalVC{
         }
     }
     func sendCoachLaunchRequest() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_launch, parameters: nil) { responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendCoachLaunchRequest:\(foodsMsgDict)")
-            
-            /*   未购买会员，未做AI问卷
-             {
-                 isAiCoachSurveyFinished = 0;
-                 isVip = 0;
-             }
-             */
-            
-            self.isAiCoachSurveyFinished = foodsMsgDict.stringValueForKey(key: "isAiCoachSurveyFinished")
-            self.isVip = foodsMsgDict.stringValueForKey(key: "isVip")
-            self.aiCoachDict = foodsMsgDict
-        }
+//        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_launch, parameters: nil) { responseObject in
+//            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+//            let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
+//            DLLog(message: "sendCoachLaunchRequest:\(foodsMsgDict)")
+//            
+//            /*   未购买会员，未做AI问卷
+//             {
+//                 isAiCoachSurveyFinished = 0;
+//                 isVip = 0;
+//             }
+//             */
+//            
+//            self.isAiCoachSurveyFinished = foodsMsgDict.stringValueForKey(key: "isAiCoachSurveyFinished")
+//            self.isVip = foodsMsgDict.stringValueForKey(key: "isVip")
+//            self.aiCoachDict = foodsMsgDict
+//        }
     }
 }

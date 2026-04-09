@@ -79,11 +79,6 @@ extension UIImageView{
                 
                 let resource = KF.ImageResource(downloadURL: resourceUrl, cacheKey: urlString)
                 DLLog(message: "图片加载地址 私有桶链接：\(signUrl)")
-//                guard let imgUrl = URL(string: signUrl) else { return }
-//                self.kf.setImage(with: resource, placeholder: placeHolder, options: optionsInfo)
-//                self.kf.setImage(with: resource, placeholder: placeHolder, options: optionsInfo) { _ in
-//                    completeHandler()
-//                }
                 setImageOnMain {
                     self.kf.setImage(with: resource, placeholder: placeHolder, options: optionsInfo) { _ in
                         completeHandler()
@@ -92,7 +87,6 @@ extension UIImageView{
             }
         }else{
             guard let imgUrl = URL(string: signUrl) else { return }
-//            self.kf.setImage(with: imgUrl, placeholder: nil, options: optionsInfo)
             setImageOnMain {
                 self.kf.setImage(with: imgUrl, placeholder: nil, options: optionsInfo) { _ in
                     completeHandler()
@@ -113,7 +107,7 @@ extension UIImageView{
             case .success(let value):
                 // 获取到缓存图片
                 if let image = value.image{
-//                    DLLog(message: "setImgUrl(urlString:   找到了缓存的图片  \(image)  --- \(urlString)")
+                    DLLog(message: "setImgUrl(urlString:   找到了缓存的图片  \(image)  --- \(urlString)")
                     DispatchQueue.main.async {
     //                    imageView.image = image
                         self.image = image
@@ -125,7 +119,7 @@ extension UIImageView{
                     })
                 }
             case .failure(let error):
-//                DLLog(message: "setImgUrl(urlString:\(error)  --- \(urlString)")
+                DLLog(message: "setImgUrl(urlString:\(error)  --- \(urlString)")
                 self.loadImg(urlString: urlString, placeHolder: placeHolder, completeHandler: {
                     completeHandler()
                 })

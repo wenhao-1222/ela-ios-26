@@ -5,10 +5,13 @@
 //  Created by LNS2 on 2026/3/12.
 //
 
+import MCToast
 
 class DietPlanBuyListVC: WHBaseViewVC {
     
     var selectedDates = [String]()
+    var createDateStrings = [String]()
+    var showCreateButton = false
     var foodsArray = NSMutableArray()
     
     override func viewDidLoad() {
@@ -27,20 +30,20 @@ class DietPlanBuyListVC: WHBaseViewVC {
         topGradientLayer.frame = topGradientView.bounds
         bottomGradientLayer.frame = bottomGradientView.bounds
     }
-    lazy var listAddButton: UIButton = {
-        let btn = UIButton()
-        btn.layer.cornerRadius = kFitWidth(12)
-        btn.setTitle("+ 新购物清单", for: .normal)
-        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
-        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
-        btn.clipsToBounds = true
-        btn.enablePressEffect()
-        btn.backgroundColor = .COLOR_CARD_BG_WHITE
-        
-        btn.addTarget(self, action: #selector(addFoodsAction), for: .touchUpInside)
-        
-        return btn
-    }()
+//    lazy var listAddButton: UIButton = {
+//        let btn = UIButton()
+//        btn.layer.cornerRadius = kFitWidth(12)
+//        btn.setTitle("+ 新购物清单", for: .normal)
+//        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+//        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
+//        btn.clipsToBounds = true
+//        btn.enablePressEffect()
+//        btn.backgroundColor = .COLOR_CARD_BG_WHITE
+//        
+//        btn.addTarget(self, action: #selector(addFoodsAction), for: .touchUpInside)
+//        
+//        return btn
+//    }()
     lazy var timeLabel: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 17, weight: .medium)
@@ -98,14 +101,33 @@ class DietPlanBuyListVC: WHBaseViewVC {
         layer.locations = [0, 1]
         return layer
     }()
+    lazy var createButton: FeedBackButton = {
+        let btn = FeedBackButton()
+        btn.setTitle("新建", for: .normal)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT, for: .highlighted)
+        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        btn.addTarget(self, action: #selector(openCreateBuyListDatePage), for: .touchUpInside)
+        btn.isHidden = !showCreateButton
+        return btn
+    }()
 }
 
 extension DietPlanBuyListVC{
     func initUI() {
         initNavi(titleStr: "购物清单")
         view.backgroundColor = .COLOR_BG_F2
+        if showCreateButton {
+            navigationView.addSubview(createButton)
+            createButton.snp.makeConstraints { make in
+                make.right.equalTo(kFitWidth(-10))
+                make.width.equalTo(kFitWidth(60))
+                make.height.equalTo(kFitWidth(44))
+                make.centerY.lessThanOrEqualTo(self.naviTitleLabel)
+            }
+        }
         
-        view.addSubview(listAddButton)
+//        view.addSubview(listAddButton)
         view.addSubview(tableView)
         view.addSubview(topGradientView)
         view.addSubview(bottomGradientView)
@@ -120,15 +142,16 @@ extension DietPlanBuyListVC{
         }
     }
     func setConstrait() {
-        listAddButton.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(16))
-            make.right.equalTo(kFitWidth(-16))
-            make.height.equalTo(kFitWidth(58))
-            make.top.equalTo(kFitWidth(20)+self.getNavigationBarHeight())
-        }
+//        listAddButton.snp.makeConstraints { make in
+//            make.left.equalTo(kFitWidth(16))
+//            make.right.equalTo(kFitWidth(-16))
+//            make.height.equalTo(kFitWidth(58))
+//            make.top.equalTo(kFitWidth(20)+self.getNavigationBarHeight())
+//        }
         timeLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
-            make.top.equalTo(listAddButton.snp.bottom).offset(kFitWidth(25))
+//            make.top.equalTo(listAddButton.snp.bottom).offset(kFitWidth(25))
+            make.top.equalTo(kFitWidth(20)+self.getNavigationBarHeight())
             make.height.equalTo(kFitWidth(25))
         }
         tableView.snp.makeConstraints { make in
@@ -153,6 +176,38 @@ extension DietPlanBuyListVC{
     @objc func addFoodsAction() {
         self.backTapAction()
     }
+    
+    @objc func openCreateBuyListDatePage() {
+        guard !createDateStrings.isEmpty else {
+            MCToast.mc_text("当前没有可用的购物清单日期")
+            return
+        }
+        let vc = DietPlanBuyListDateVC(dateStrings: createDateStrings) { [weak self] selectedDates in
+            self?.applySelectedDatesAndRefresh(selectedDates)
+        }
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func applySelectedDatesAndRefresh(_ selectedDates: [String]) {
+        guard !selectedDates.isEmpty else { return }
+        self.selectedDates = selectedDates
+        updateTimeLabel(with: selectedDates)
+        createBuyListRequest()
+    }
+    
+    func updateTimeLabel(with selectedDates: [String]) {
+        guard let firstDate = selectedDates.first, let lastDate = selectedDates.last else {
+            timeLabel.text = nil
+            return
+        }
+        
+        if firstDate == lastDate {
+            timeLabel.text = firstDate
+        } else {
+            timeLabel.text = "\(firstDate) 至 \(lastDate)"
+        }
+    }
+    
     func updateSelectStatus(indexPath: IndexPath) {
         if self.foodsArray.count > indexPath.row{
             let dict = NSMutableDictionary(dictionary: self.foodsArray[indexPath.row]as? NSDictionary ?? [:])
@@ -218,6 +273,7 @@ extension DietPlanBuyListVC{
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "createBuyListRequest:\(dataObj)")
             
+            self.updateTimeLabel(with: self.selectedDates)
             self.foodsArray = NSMutableArray(array: dataObj["shoppingList"]as? NSArray ?? [])
             self.tableView.reloadData()
         }

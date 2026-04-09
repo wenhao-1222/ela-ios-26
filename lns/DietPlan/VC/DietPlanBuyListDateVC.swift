@@ -34,6 +34,15 @@ class DietPlanBuyListDateVC: WHBaseViewVC {
         return formatter
     }()
     
+    private lazy var requestDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone.current
+        return formatter
+    }()
+    
     private lazy var displayDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "MM月dd日"
@@ -50,16 +59,6 @@ class DietPlanBuyListDateVC: WHBaseViewVC {
         label.font = .systemFont(ofSize: 24, weight: .semibold)
         label.textAlignment = .center
         label.numberOfLines = 1
-        return label
-    }()
-    
-    private lazy var subTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "我的购物清单"
-        label.textColor = .THEME
-        label.font = .systemFont(ofSize: 18, weight: .regular)
-        label.textAlignment = .center
-        
         return label
     }()
     
@@ -169,18 +168,32 @@ private extension DietPlanBuyListDateVC {
     @objc func nextButtonTapAction() {
         let selectedDates = dateOptions.filter({ $0.isSelected }).map(\.sdate)
         guard !selectedDates.isEmpty else { return }
+        
+        if let onConfirm = onConfirm {
+            onConfirm(selectedDates)
+            self.navigationController?.popViewController(animated: true)
+            return
+        }
+        
         let vc = DietPlanBuyListVC()
         vc.selectedDates = selectedDates
         self.navigationController?.pushViewController(vc, animated: true)
     }
+    
     @objc func buyListTapAction() {
+        if onConfirm != nil {
+            self.navigationController?.popViewController(animated: true)
+            return
+        }
+        
         let vc = DietPlanBuyListVC()
+        vc.showCreateButton = true
+        vc.createDateStrings = sourceDateStrings
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
     func initUI() {
         view.addSubview(titleLabel)
-//        view.addSubview(subTitleLabel)
         view.addSubview(buylistButton)
         view.addSubview(tableView)
         view.addSubview(nextButton)
@@ -195,11 +208,6 @@ private extension DietPlanBuyListDateVC {
             make.right.equalTo(kFitWidth(-20))
             make.height.equalTo(kFitWidth(34))
         }
-//        subTitleLabel.snp.makeConstraints { make in
-//            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(20))
-//            make.left.right.equalTo(titleLabel)
-//            make.height.equalTo(kFitWidth(28))
-//        }
         buylistButton.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(20))
             make.left.right.equalTo(titleLabel)
@@ -273,6 +281,13 @@ private extension DietPlanBuyListDateVC {
     func updateNextButtonState() {
         nextButton.isEnabled = dateOptions.contains(where: { $0.isSelected })
     }
+    
+    func hasValidHistoryBuyList(_ dataObj: NSDictionary) -> Bool {
+        let foodsArray = dataObj["shoppingList"] as? NSArray ?? []
+        let endDate = dataObj.stringValueForKey(key: "endDate")
+        let today = requestDateFormatter.string(from: Date())
+        return foodsArray.count > 0 && endDate.count > 0 && Date().daysDifference(from: endDate) ?? 0 <= 0//endDate <= today
+    }
 }
 
 extension DietPlanBuyListDateVC: UITableViewDataSource, UITableViewDelegate {
@@ -321,10 +336,12 @@ extension DietPlanBuyListDateVC{
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendBuyListRequest:\(dataObj)")
             
-            let foodsArray = NSMutableArray(array: dataObj["shoppingList"]as? NSArray ?? [])
-            if foodsArray.count > 0{
+            if self.hasValidHistoryBuyList(dataObj) {
                 self.buylistButton.isEnabled = true
                 self.buylistButton.isHidden = false
+            } else {
+                self.buylistButton.isEnabled = false
+                self.buylistButton.isHidden = true
             }
         }
     }

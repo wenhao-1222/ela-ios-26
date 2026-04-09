@@ -11,6 +11,17 @@ import MCToast
 class DietPlanVC: WHBaseViewVC {
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    var buylistData = NSArray()
+    var buylistEndDate = ""
+    
+    private lazy var buyListDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone.current
+        return formatter
+    }()
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
@@ -23,6 +34,7 @@ class DietPlanVC: WHBaseViewVC {
 //        appDelegate.getKeyWindow().addSubview(elaExpiredAlertVm)
 //        self.elaExpiredAlertVm.showSelf()
         sendProVipMsgRequest()
+        sendBuyListRequest()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -130,13 +142,11 @@ extension DietPlanVC{
     }
     //购物清单
     @objc func openBuyListSelectionAction() {
-        let availableDates = listVm.buyListDateStringsFromToday()
-        guard !availableDates.isEmpty else {
-            MCToast.mc_text("当前没有可用的购物清单日期")
-            return
+        if self.buylistData.count > 0 && Date().daysDifference(from: self.buylistEndDate) ?? 0 <= 0{
+            self.openHistoryBuyListDetailPage()
+        } else {
+            self.openBuyListDateSelectionPage()
         }
-        let vc = DietPlanBuyListDateVC(dateStrings: availableDates)
-        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     //酱料
@@ -156,6 +166,30 @@ extension DietPlanVC{
             self?.applyDietPlanResponse(dataObj, preservingListOffset: true)
         }
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func openBuyListDateSelectionPage() {
+        let availableDates = listVm.buyListDateStringsFromToday()
+        guard !availableDates.isEmpty else {
+            MCToast.mc_text("当前没有可用的购物清单日期")
+            return
+        }
+        let vc = DietPlanBuyListDateVC(dateStrings: availableDates)
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func openHistoryBuyListDetailPage() {
+        let vc = DietPlanBuyListVC()
+        vc.showCreateButton = true
+        vc.createDateStrings = listVm.buyListDateStringsFromToday()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func hasValidHistoryBuyList(_ dataObj: NSDictionary) -> Bool {
+        let foodsArray = dataObj["shoppingList"] as? NSArray ?? []
+        let endDate = dataObj.stringValueForKey(key: "endDate")
+        let today = buyListDateFormatter.string(from: Date())
+        return foodsArray.count > 0 && endDate.count > 0 && endDate <= today
     }
 }
 
@@ -221,6 +255,15 @@ extension DietPlanVC{
             DLLog(message: "sendProVipMsgRequest:\(dataDict)")
             DLLog(message: "sendProVipMsgRequest model: uid=\(vipModel.uid), status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime)  ,expireTime=\(vipModel.expireTime)")
             
+        }
+    }
+    func sendBuyListRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_shopping_list, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendBuyListRequest:\(dataObj)")
+            self.buylistData = dataObj["shoppingList"]as? NSArray ?? []
+            self.buylistEndDate = dataObj.stringValueForKey(key: "endDate")
         }
     }
 }

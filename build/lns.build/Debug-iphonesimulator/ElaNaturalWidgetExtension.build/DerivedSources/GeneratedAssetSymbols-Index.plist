@@ -3591,6 +3591,16 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameGuideReminderIcon</string>
+			<key>relativePath</key>
+			<string>./guide/guide_reminder_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>guideReminderIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameGuideSecondImg1</string>
 			<key>relativePath</key>
 			<string>./guide/guide_second_img_1.imageset</string>

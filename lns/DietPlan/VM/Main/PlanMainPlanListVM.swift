@@ -24,6 +24,8 @@ struct PlanMainMealItem {
     let fat: Double
 }
 
+extension PlanMainMealItem: Equatable {}
+
 private struct PlanMainMealDaySection {
     let sdate: String
     let totalCalories: Double
@@ -31,6 +33,18 @@ private struct PlanMainMealDaySection {
     let totalCarbohydrate: Double
     let totalFat: Double
     let meals: [PlanMainMealItem]
+}
+
+extension PlanMainMealDaySection: Equatable {}
+
+private struct PlanMainPlanListUpdateDiff {
+    let requiresFullReload: Bool
+    let changedIndexPaths: [IndexPath]
+    let headerOnlySections: Set<Int>
+    
+    var isNoop: Bool {
+        !requiresFullReload && changedIndexPaths.isEmpty && headerOnlySections.isEmpty
+    }
 }
 
 class PlanMainPlanListVM: UIView {
@@ -163,19 +177,51 @@ class PlanMainPlanListVM: UIView {
 extension PlanMainPlanListVM {
     func updatePlanList(mealPlanItemList: NSArray, preservingScrollOffset: Bool = false) {
         let currentOffset = collectionView.contentOffset
-        mealDaySections = parseSections(mealPlanItemList)
+        let newSections = parseSections(mealPlanItemList)
+        let updateDiff = diffForPlanSections(from: mealDaySections, to: newSections)
+        mealDaySections = newSections
         updateBuyListButtonState()
+        
+        if updateDiff.isNoop {
+            if preservingScrollOffset {
+                restoreCollectionViewOffset(currentOffset)
+            }
+            return
+        }
+        
+        if updateDiff.requiresFullReload {
+            if preservingScrollOffset {
+                UIView.performWithoutAnimation {
+                    collectionView.reloadData()
+                    collectionView.layoutIfNeeded()
+                }
+                restoreCollectionViewOffset(currentOffset)
+                return
+            }
+            
+            collectionView.reloadData()
+            return
+        }
         
         if preservingScrollOffset {
             UIView.performWithoutAnimation {
-                collectionView.reloadData()
+                if !updateDiff.changedIndexPaths.isEmpty {
+                    collectionView.reloadItems(at: updateDiff.changedIndexPaths)
+                }
                 collectionView.layoutIfNeeded()
             }
+            refreshVisibleHeaders(in: updateDiff.headerOnlySections)
             restoreCollectionViewOffset(currentOffset)
             return
         }
         
-        collectionView.reloadData()
+        UIView.performWithoutAnimation {
+            if !updateDiff.changedIndexPaths.isEmpty {
+                collectionView.reloadItems(at: updateDiff.changedIndexPaths)
+            }
+            collectionView.layoutIfNeeded()
+        }
+        refreshVisibleHeaders(in: updateDiff.headerOnlySections)
     }
     
     func buyListDateStringsFromToday() -> [String] {
@@ -234,6 +280,62 @@ extension PlanMainPlanListVM{
 }
 
 private extension PlanMainPlanListVM {
+    func diffForPlanSections(from oldSections: [PlanMainMealDaySection],
+                             to newSections: [PlanMainMealDaySection]) -> PlanMainPlanListUpdateDiff {
+        guard !oldSections.isEmpty else {
+            return PlanMainPlanListUpdateDiff(requiresFullReload: true,
+                                              changedIndexPaths: [],
+                                              headerOnlySections: [])
+        }
+        
+        guard oldSections.count == newSections.count else {
+            return PlanMainPlanListUpdateDiff(requiresFullReload: true,
+                                              changedIndexPaths: [],
+                                              headerOnlySections: [])
+        }
+        
+        var changedIndexPaths: [IndexPath] = []
+        var headerOnlySections = Set<Int>()
+        
+        for sectionIndex in newSections.indices {
+            let oldSection = oldSections[sectionIndex]
+            let newSection = newSections[sectionIndex]
+            
+            guard oldSection.meals.count == newSection.meals.count else {
+                return PlanMainPlanListUpdateDiff(requiresFullReload: true,
+                                                  changedIndexPaths: [],
+                                                  headerOnlySections: [])
+            }
+            
+            if oldSection.sdate != newSection.sdate ||
+                oldSection.totalCalories != newSection.totalCalories ||
+                oldSection.totalProtein != newSection.totalProtein ||
+                oldSection.totalCarbohydrate != newSection.totalCarbohydrate ||
+                oldSection.totalFat != newSection.totalFat {
+                headerOnlySections.insert(sectionIndex)
+            }
+            
+            for itemIndex in newSection.meals.indices where oldSection.meals[itemIndex] != newSection.meals[itemIndex] {
+                changedIndexPaths.append(IndexPath(item: itemIndex, section: sectionIndex))
+            }
+        }
+        
+        return PlanMainPlanListUpdateDiff(requiresFullReload: false,
+                                          changedIndexPaths: changedIndexPaths,
+                                          headerOnlySections: headerOnlySections)
+    }
+    
+    func refreshVisibleHeaders(in sections: Set<Int>) {
+        guard !sections.isEmpty else { return }
+        
+        for section in sections {
+            let indexPath = IndexPath(item: 0, section: section)
+            guard let headerView = collectionView.supplementaryView(forElementKind: UICollectionView.elementKindSectionHeader,
+                                                                    at: indexPath) as? PlanMainDayHeaderView else { continue }
+            headerView.updateUI(section: mealDaySections[section])
+        }
+    }
+    
     func restoreCollectionViewOffset(_ targetOffset: CGPoint) {
         let adjustedInset = collectionView.adjustedContentInset
         let minX = -adjustedInset.left
