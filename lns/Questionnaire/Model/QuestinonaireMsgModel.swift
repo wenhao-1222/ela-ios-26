@@ -87,7 +87,7 @@ class QuestinonaireMsgModel{
         DLLog(message: "食物偏好：\(foodTasteType)")
         DLLog(message: "饮食历史：\(dietHistoryType)")
         DLLog(message: "活动量：\(events)")
-        DLLog(message: "体脂肪：\(bodyFat)")
+        DLLog(message: "体脂率：\(bodyFat)")
         DLLog(message: "每日餐数：\(mealsPerDay)")
         DLLog(message: "目标重要性：\(goalImportance)")
         DLLog(message: "饮食风格：\(dietType)")

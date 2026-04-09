@@ -47,9 +47,10 @@ class GuidanceMealsPerDayVM: UIView {
         let lab = LineHeightLabel()
         lab.numberOfLines = 2
         lab.textAlignment = .center
+        lab.text = "你的日常进餐频率是？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 22, weight: .medium)
-        lab.setLineHeight(textString: "你的日常进餐频率是？", lineHeight: lab.font.lineHeight * 1.2)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
+//        lab.setLineHeight(textString: "你的日常进餐频率是？", lineHeight: lab.font.lineHeight * 1.2)
         return lab
     }()
 
@@ -80,8 +81,9 @@ extension GuidanceMealsPerDayVM {
 
         for (idx, button) in itemButtons.enumerated() {
             let isSelected = idx == index
+            let textColor: UIColor = isSelected ? .COLOR_TEXT_WHITE : .COLOR_TEXT_TITLE_0f1214
             button.backgroundColor = isSelected ? .THEME : .COLOR_TEXT_TITLE_0f1214_05
-            titleLabels[idx].textColor = isSelected ? .COLOR_TEXT_WHITE : .COLOR_TEXT_TITLE_0f1214_50
+            updateItemLabel(titleLabels[idx], text: dataArray[idx].title, color: textColor)
         }
 
         if index >= 0 && index < dataArray.count {
@@ -109,10 +111,9 @@ extension GuidanceMealsPerDayVM {
             button.addTarget(self, action: #selector(itemTapAction(_:)), for: .touchUpInside)
 
             let lab = UILabel()
-            lab.text = item.title
             lab.textAlignment = .center
-            lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
             lab.font = .systemFont(ofSize: 20, weight: .medium)
+            updateItemLabel(lab, text: item.title, color: .COLOR_TEXT_TITLE_0f1214)
 
             button.addSubview(lab)
             lab.snp.makeConstraints { make in
@@ -138,5 +139,36 @@ extension GuidanceMealsPerDayVM {
             make.right.equalTo(kFitWidth(-20))
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(99))
         }
+    }
+}
+
+private extension GuidanceMealsPerDayVM {
+    func updateItemLabel(_ label: UILabel, text: String, color: UIColor) {
+        label.attributedText = makeItemAttributedText(text: text, color: color)
+    }
+
+    func makeItemAttributedText(text: String, color: UIColor) -> NSAttributedString {
+        let fontSize: CGFloat = 20
+        let attr = NSMutableAttributedString(
+            string: text,
+            attributes: [
+                .font: UIFont.systemFont(ofSize: fontSize, weight: .medium),
+                .foregroundColor: color
+            ]
+        )
+
+        guard let regex = try? NSRegularExpression(pattern: "\\d+", options: []) else {
+            return attr
+        }
+
+        let nsText = text as NSString
+        let numberFont = UIFont().DDInFontMedium(fontSize: fontSize)
+        regex.matches(in: text, options: [], range: NSRange(location: 0, length: nsText.length)).forEach {
+            attr.addAttributes([
+                .font: numberFont,
+                .foregroundColor: color
+            ], range: $0.range)
+        }
+        return attr
     }
 }

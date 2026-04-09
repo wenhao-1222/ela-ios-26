@@ -29,7 +29,7 @@ class QuestionResultExplainVM: UIView {
             lab.frame = CGRect.init(x: kFitWidth(24), y: kFitWidth(112), width: SCREEN_WIDHT-kFitWidth(48), height: kFitWidth(80))
         }
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 22, weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.text = "接下来我们将根据你的目标计算缺口/盈余，和营养素的配比。"
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping

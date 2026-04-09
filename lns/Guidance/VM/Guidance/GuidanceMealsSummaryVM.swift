@@ -45,8 +45,8 @@ class GuidanceMealsSummaryVM: UIView {
         return vi
     }()
 
-    lazy var titleLabel: UILabel = {
-        let lab = UILabel()
+    lazy var titleLabel: LineHeightLabel = {
+        let lab = LineHeightLabel()
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
@@ -83,10 +83,20 @@ extension GuidanceMealsSummaryVM {
 
     func refreshContentFromModel() {
         let content = contentForMealsPerDayType(QuestinonaireMsgModel.shared.guidanceMealsPerDayType)
-//        titleLabel.text = content.title
-        titleLabel.setLineHeight(textString: content.title, lineHeight: titleLabel.font.lineHeight * 1.1)
-//        messageLabel.setLineHeight(textString: content.message, lineHeight: messageLabel.font.lineHeight * 1.1)
-        messageLabel.setLineHeightMultiple(textString: content.message, lineHeightMultiple: 1.2)
+        titleLabel.customLineHeight = titleLabel.font.lineHeight * 1.1
+        titleLabel.attributedText = makeAttributedText(
+            text: content.title,
+            font: titleLabel.font,
+            textColor: titleLabel.textColor
+        )
+        messageLabel.setLineHeightMultiple(
+            attr: makeAttributedText(
+                text: content.message,
+                font: messageLabel.font,
+                textColor: messageLabel.textColor
+            ),
+            lineHeightMultiple: 1.2
+        )
     }
 
     private func contentForMealsPerDayType(_ type: String) -> DisplayContent {
@@ -94,6 +104,7 @@ extension GuidanceMealsSummaryVM {
         case "2":
             return DisplayContent(
                 title: "每天 1-2 餐",
+                
                 message: "每天吃1-2餐能够在最短的时间内解决饮食，但是可能会造成比较高的血糖和胃口波动。当然，只要你觉得舒服好坚持，就是最适合你的安排。"
             )
         case "3":
@@ -122,6 +133,33 @@ extension GuidanceMealsSummaryVM {
                 message: "每天 3 餐是最通用省心的安排，更符合大多数人的作息，也能稳稳推进你的健身目标。"
             )
         }
+    }
+}
+
+private extension GuidanceMealsSummaryVM {
+    func makeAttributedText(text: String, font: UIFont, textColor: UIColor) -> NSAttributedString {
+        let attr = NSMutableAttributedString(
+            string: text,
+            attributes: [
+                .font: font,
+                .foregroundColor: textColor
+            ]
+        )
+
+        guard let regex = try? NSRegularExpression(pattern: "\\d+", options: []) else {
+            return attr
+        }
+
+        let nsText = text as NSString
+        let numberFont = UIFont().DDInFontMedium(fontSize: font.pointSize)
+        regex.matches(in: text, options: [], range: NSRange(location: 0, length: nsText.length)).forEach {
+            attr.addAttributes([
+                .font: numberFont,
+                .foregroundColor: textColor
+            ], range: $0.range)
+        }
+
+        return attr
     }
 }
 

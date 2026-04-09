@@ -44,7 +44,7 @@ class GuidanceDietRecordVM: UIView {
         lab.text = "你之前有记录过饮食吗？"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 22, weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
 //        lab.setLineHeight(textString: "你之前有记录过饮食吗？", lineHeight: lab.font.lineHeight * 1.2)
         return lab
     }()
@@ -124,7 +124,7 @@ extension GuidanceDietRecordVM {
             let lab = UILabel()
             lab.text = item.title
             lab.textAlignment = .center
-            lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+            lab.textColor = .COLOR_TEXT_TITLE_0f1214
             lab.font = .systemFont(ofSize: 20, weight: .medium)
 
             button.addSubview(lab)

@@ -59,7 +59,7 @@ class DietPlanCreateBodyfatVM: UIView {
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "选择你的体脂肪"
+        lab.text = "选择你的体脂率"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
@@ -67,7 +67,7 @@ class DietPlanCreateBodyfatVM: UIView {
 
     lazy var tipsButton: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setTitle("体脂肪误差：为什么测量值通常偏低？", for: .normal)
+        btn.setTitle("体脂率误差：为什么测量值通常偏低？", for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)

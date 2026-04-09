@@ -101,11 +101,27 @@ extension GuidanceStrengthTrainingSummaryVM {
 
     func refreshContentFromModel() {
         let content = contentForStrengthType(QuestinonaireMsgModel.shared.guidanceStrengthTrainingFrequencyType)
-        titleLabel.text = content.title
-        primaryMessageLabel.text = content.primaryMessage
-        secondaryMessageLabel.text = content.secondaryMessage
-        primaryMessageLabel.setLineHeightMultiple(lineHeightMultiple: 1.2)
-        secondaryMessageLabel.setLineHeightMultiple(lineHeightMultiple: 1.2)
+        titleLabel.attributedText = makeAttributedText(
+            text: content.title,
+            font: titleLabel.font,
+            textColor: titleLabel.textColor
+        )
+        primaryMessageLabel.setLineHeightMultiple(
+            attr: makeAttributedText(
+                text: content.primaryMessage,
+                font: primaryMessageLabel.font,
+                textColor: primaryMessageLabel.textColor
+            ),
+            lineHeightMultiple: 1.2
+        )
+        secondaryMessageLabel.setLineHeightMultiple(
+            attr: makeAttributedText(
+                text: content.secondaryMessage,
+                font: secondaryMessageLabel.font,
+                textColor: secondaryMessageLabel.textColor
+            ),
+            lineHeightMultiple: 1.2
+        )
 //        primaryMessageLabel.setLineHeight(
 //            textString: content.primaryMessage,
 //            lineHeight: primaryMessageLabel.font.lineHeight * 1
@@ -179,6 +195,33 @@ extension GuidanceStrengthTrainingSummaryVM {
         paragraphStyle.lineSpacing = kFitWidth(4)
         attributed.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: fullText.count))
         return attributed
+    }
+}
+
+private extension GuidanceStrengthTrainingSummaryVM {
+    func makeAttributedText(text: String, font: UIFont, textColor: UIColor) -> NSAttributedString {
+        let attr = NSMutableAttributedString(
+            string: text,
+            attributes: [
+                .font: font,
+                .foregroundColor: textColor
+            ]
+        )
+
+        guard let regex = try? NSRegularExpression(pattern: "\\d+", options: []) else {
+            return attr
+        }
+
+        let nsText = text as NSString
+        let numberFont = UIFont().DDInFontMedium(fontSize: font.pointSize)
+        regex.matches(in: text, options: [], range: NSRange(location: 0, length: nsText.length)).forEach {
+            attr.addAttributes([
+                .font: numberFont,
+                .foregroundColor: textColor
+            ], range: $0.range)
+        }
+
+        return attr
     }
 }
 

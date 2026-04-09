@@ -64,7 +64,7 @@ class GuideTotalFirstVM: UIView {
         let lab = UILabel.init(frame: CGRect.init(x: 0, y: statusBarHeight+kFitWidth(20), width: SCREEN_WIDHT, height: kFitHeight(37)))
 //        lab.text = "欢迎来到Elavatine"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 22, weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.textAlignment = .center
         
         return lab

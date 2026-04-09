@@ -83,7 +83,7 @@ class QuestionnaireBodyFatAlertVM: UIView {
     }()
     lazy var contentLabelOne : UILabel = {
         let label = UILabel()
-        label.text = "许多人倾向于低估自己的体脂肪百分比，这部分原因在于常用的测量方法（如电阻体脂仪和体脂秤）可能不够准确。这些设备通常使用电阻测量来估算体脂百分比，但结果易受水分、饮食和其他因素的影响，从而可能给出低于实际的读数。"
+        label.text = "许多人倾向于低估自己的体脂率百分比，这部分原因在于常用的测量方法（如电阻体脂仪和体脂秤）可能不够准确。这些设备通常使用电阻测量来估算体脂百分比，但结果易受水分、饮食和其他因素的影响，从而可能给出低于实际的读数。"
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true
@@ -94,7 +94,7 @@ class QuestionnaireBodyFatAlertVM: UIView {
     }()
     lazy var contentLabelTwo : UILabel = {
         let label = UILabel()
-        label.text = "在评估体脂肪时，更准确的方法包括水下称重和DEXA扫描，但这些方法通常更昂贵，且不那么容易获得。因此，人们根据不太准确的测量方法形成的体脂肪观念可能与实际情况有所偏差。\n我们的对比图旨在提供一个更为准确的体脂肪参考。"
+        label.text = "在评估体脂率时，更准确的方法包括水下称重和DEXA扫描，但这些方法通常更昂贵，且不那么容易获得。因此，人们根据不太准确的测量方法形成的体脂率观念可能与实际情况有所偏差。\n我们的对比图旨在提供一个更为准确的体脂率参考。"
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.numberOfLines = 0
         label.setLineHeightMultiple(textString: label.text, lineHeightMultiple: 1.18)
@@ -106,7 +106,7 @@ class QuestionnaireBodyFatAlertVM: UIView {
     
     lazy var contentLabelThree : UILabel = {
         let label = UILabel()
-        label.text = "请以这些信息作为指导，尝试更准确地评估你的体脂肪水平。"
+        label.text = "请以这些信息作为指导，尝试更准确地评估你的体脂率水平。"
         label.setLineHeightMultiple(textString: label.text, lineHeightMultiple: 1.18)
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.numberOfLines = 0

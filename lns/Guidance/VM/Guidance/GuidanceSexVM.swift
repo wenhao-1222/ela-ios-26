@@ -25,7 +25,7 @@ class GuidanceSexVM: UIView {
     lazy var titleLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 22, weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.text = "你的性别是？"
         
         return lab

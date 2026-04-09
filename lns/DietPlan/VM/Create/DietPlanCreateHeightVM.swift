@@ -31,7 +31,7 @@ class DietPlanCreateHeightVM: UIView {
         let lab = UILabel()
         lab.text = "你的身高是?"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
 
         return lab
     }()
@@ -186,7 +186,7 @@ extension DietPlanCreateHeightVM {
     func updateHeightText(value: Int) {
         let text = NSMutableAttributedString(string: "\(value)")
         let unit = NSMutableAttributedString(string: " 厘米")
-        text.yy_font = .systemFont(ofSize: 40, weight: .medium)
+        text.yy_font = UIFont().DDInFontMedium(fontSize: 44)//.systemFont(ofSize: 40, weight: .medium)
         text.yy_color = .THEME
         unit.yy_font = .systemFont(ofSize: 12, weight: .regular)
         unit.yy_color = .COLOR_TEXT_TITLE_0f1214

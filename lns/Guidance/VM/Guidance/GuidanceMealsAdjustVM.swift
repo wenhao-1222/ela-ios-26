@@ -103,7 +103,7 @@ class GuidanceMealsAdjustVM: UIView {
         lab.textAlignment = .center
         lab.text = "不过如果你想做出调整"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 22, weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
 //        lab.setLineHeight(textString: "不过如果你想做出调整", lineHeight: lab.font.lineHeight * 1.2)
         return lab
     }()
@@ -263,7 +263,8 @@ extension GuidanceMealsAdjustVM {
             let itemView = GuidanceMealsAdjustItemView()
             itemView.tag = index
             itemView.update(item: item)
-            let tap = FeedBackTapGestureRecognizer(target: self, action: #selector(itemTapAction(_:)))
+//            let tap = FeedBackTapGestureRecognizer(target: self, action: #selector(itemTapAction(_:)))
+            let tap = UITapGestureRecognizer(target: self, action: #selector(itemTapAction(_:)))
             itemView.addGestureRecognizer(tap)
             stackView.addArrangedSubview(itemView)
             itemViews.append(itemView)
@@ -550,6 +551,13 @@ private final class GuidanceMealsAdjustItemView: UIView {
             )
         }
 
+        applyNumberFont(
+            on: attributed,
+            text: title,
+            fontSize: 16,
+            color: color
+        )
+
         return attributed
     }
 
@@ -575,7 +583,28 @@ private final class GuidanceMealsAdjustItemView: UIView {
         paragraphStyle.minimumLineHeight = kFitWidth(16)
         paragraphStyle.maximumLineHeight = kFitWidth(16)
         attributed.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: content.count))
+        applyNumberFont(
+            on: attributed,
+            text: content,
+            fontSize: 13,
+            color: .COLOR_TEXT_TITLE_0f1214_50
+        )
 
         return attributed
+    }
+
+    private func applyNumberFont(on attributed: NSMutableAttributedString, text: String, fontSize: CGFloat, color: UIColor) {
+        guard let regex = try? NSRegularExpression(pattern: "\\d+", options: []) else {
+            return
+        }
+
+        let nsText = text as NSString
+        let numberFont = UIFont().DDInFontMedium(fontSize: fontSize)
+        regex.matches(in: text, options: [], range: NSRange(location: 0, length: nsText.length)).forEach {
+            attributed.addAttributes([
+                .font: numberFont,
+                .foregroundColor: color
+            ], range: $0.range)
+        }
     }
 }

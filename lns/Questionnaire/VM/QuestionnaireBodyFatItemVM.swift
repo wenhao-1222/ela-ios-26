@@ -21,6 +21,7 @@ class QuestionnaireBodyFatItemVM: UIView {
     private let feedbackWeight: CGFloat = 0.9
     private var lastFeedbackTime: TimeInterval = 0
     private let minimumFeedbackInterval: TimeInterval = 0.1
+    private var currentValueText = ""
 
     
     var tapBlock:(()->())?
@@ -60,7 +61,7 @@ class QuestionnaireBodyFatItemVM: UIView {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_WHITE
         lab.font = .systemFont(ofSize: 12, weight: .regular)
-        lab.text = "体脂肪"
+        lab.text = "体脂率"
         
         return lab
     }()
@@ -68,7 +69,6 @@ class QuestionnaireBodyFatItemVM: UIView {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_WHITE
         lab.font = .systemFont(ofSize: 20, weight: .medium)
-//        lab.text = "体脂肪"
         lab.textAlignment = .left
         lab.adjustsFontSizeToFitWidth = true
         
@@ -125,11 +125,11 @@ extension QuestionnaireBodyFatItemVM{
         }
 
         isSelect = false
-        titleLab.text = "体脂肪"
+        titleLab.text = "体脂率"
         titleLab.frame = CGRect(x: kFitWidth(16), y: kFitWidth(120), width: kFitWidth(200), height: kFitWidth(12))
         numberLabel.frame = CGRect(x: kFitWidth(16), y: kFitWidth(135), width: numberLabelWidth, height: kFitWidth(20))
-        numberLabel.font = .systemFont(ofSize: 20, weight: .medium)
         numberLabel.textAlignment = .left
+        applyValueText(fontSize: 20)
         imgView.layer.cornerCurve = .continuous
         imgView.layer.cornerRadius = kFitWidth(12)
 
@@ -149,15 +149,13 @@ extension QuestionnaireBodyFatItemVM{
 
     func updateUI(dict:NSDictionary,isRight:Bool) {
         let valueText = "\(dict["data"]as? String ?? "")"
-        let normalFont = UIFont.systemFont(ofSize: 20, weight: .medium)
-        let selectedFont = UIFont.systemFont(ofSize: 28, weight: .medium)
+        currentValueText = valueText
 
         imgView.setImgLocal(imgName: "\(dict["imgUrl"]as? String ?? "")")
-        numberLabel.text = valueText
         self.isRight = isRight
         
-        numberLabelWidth = ceil((valueText as NSString).size(withAttributes: [.font: normalFont]).width) + kFitWidth(38)
-        numberLabelWidthSelect = ceil((valueText as NSString).size(withAttributes: [.font: selectedFont]).width) + kFitWidth(54)
+        numberLabelWidth = measuredValueTextWidth(fontSize: 20) + kFitWidth(38)
+        numberLabelWidthSelect = measuredValueTextWidth(fontSize: 28) + kFitWidth(54)
         
         if isRight{
             refreshForRight()
@@ -175,17 +173,17 @@ extension QuestionnaireBodyFatItemVM{
             let checkDuration: TimeInterval  = 0.54   // 勾选小圆弹出时长
 
             // 回弹系数（按压→峰→谷→峰→谷→微峰→落定），幅度逐次衰减
-            let valley0: CGFloat = 0.965  // 先“按压”一下（<1）
-            let peak1:  CGFloat = 1.070  // 第一次回弹峰
-            let valley1: CGFloat = 0.985  // 第一次回弹谷
-            let peak2:  CGFloat = 1.028  // 第二次回弹峰
-            let valley2: CGFloat = 0.996  // 第二次回弹谷
-            let peak3:  CGFloat = 1.008  // 微小回弹峰
+            let valley0: CGFloat = 1//0.965  // 先“按压”一下（<1）
+            let peak1:  CGFloat = 1//1.070  // 第一次回弹峰
+            let valley1: CGFloat = 1//0.985  // 第一次回弹谷
+            let peak2:  CGFloat = 1//1.028  // 第二次回弹峰
+            let valley2: CGFloat = 1//0.996  // 第二次回弹谷
+            let peak3:  CGFloat = 1//1.008  // 微小回弹峰
             let settle: CGFloat = 1.000  // 落定
 
             // 勾选抖动幅度（更克制）
-            let checkPeak:   CGFloat = 1.08
-            let checkValley: CGFloat = 0.96
+            let checkPeak:   CGFloat = 1//1.08
+            let checkValley: CGFloat = 1//0.96
 
             // —— 目标几何（保持你现有逻辑）—— //
             let leftGap = isRight ? (SCREEN_WIDHT*0.5 - kFitWidth(24) - kFitWidth(148)) : kFitWidth(24)
@@ -196,7 +194,7 @@ extension QuestionnaireBodyFatItemVM{
                 $0.transform = .identity
             }
 
-            titleLab.text = "已选择体脂肪"
+            titleLab.text = "已选择体脂率"
             imgView.layer.cornerCurve = .continuous
             imgView.layer.cornerRadius = kFitWidth(8)
 
@@ -222,8 +220,8 @@ extension QuestionnaireBodyFatItemVM{
             // 勾选初始
             selectImgView.alpha = 0
             selectImgView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-            numberLabel.font = .systemFont(ofSize: 28, weight: .medium)
             numberLabel.textAlignment = .center
+            applyValueText(fontSize: 28)
 
             // ===== 主体：先“按压”再回弹多次（duang duang duang）=====
             UIView.animateKeyframes(withDuration: mainDuration,
@@ -246,26 +244,26 @@ extension QuestionnaireBodyFatItemVM{
                     self.titleLab.frame = targetTitleFrame
                     self.numberLabel.frame = targetNumberFrame
                 }
-                // 38%~58%：落到谷1 (0.985)
-                UIView.addKeyframe(withRelativeStartTime: 0.22, relativeDuration: 0.16) {
-                    self.imgView.transform = CGAffineTransform(scaleX: valley1, y: valley1)
-                }
-                // 58%~76%：峰2 (1.028)
-                UIView.addKeyframe(withRelativeStartTime: 0.38, relativeDuration: 0.14) {
-                    self.imgView.transform = CGAffineTransform(scaleX: peak2, y: peak2)
-                }
-                // 76%~90%：谷2 (0.996)
-                UIView.addKeyframe(withRelativeStartTime: 0.52, relativeDuration: 0.1) {
-                    self.imgView.transform = CGAffineTransform(scaleX: valley2, y: valley2)
-                }
-                // 90%~96%：微峰 (1.008)
-                UIView.addKeyframe(withRelativeStartTime: 0.62, relativeDuration: 0.06) {
-                    self.imgView.transform = CGAffineTransform(scaleX: peak3, y: peak3)
-                }
-                // 96%~100%：落定 (1.000)
-                UIView.addKeyframe(withRelativeStartTime: 0.68, relativeDuration: 0.1) {
-                    self.imgView.transform = CGAffineTransform(scaleX: settle, y: settle)
-                }
+//                // 38%~58%：落到谷1 (0.985)
+//                UIView.addKeyframe(withRelativeStartTime: 0.22, relativeDuration: 0.16) {
+//                    self.imgView.transform = CGAffineTransform(scaleX: valley1, y: valley1)
+//                }
+//                // 58%~76%：峰2 (1.028)
+//                UIView.addKeyframe(withRelativeStartTime: 0.38, relativeDuration: 0.14) {
+//                    self.imgView.transform = CGAffineTransform(scaleX: peak2, y: peak2)
+//                }
+//                // 76%~90%：谷2 (0.996)
+//                UIView.addKeyframe(withRelativeStartTime: 0.52, relativeDuration: 0.1) {
+//                    self.imgView.transform = CGAffineTransform(scaleX: valley2, y: valley2)
+//                }
+//                // 90%~96%：微峰 (1.008)
+//                UIView.addKeyframe(withRelativeStartTime: 0.62, relativeDuration: 0.06) {
+//                    self.imgView.transform = CGAffineTransform(scaleX: peak3, y: peak3)
+//                }
+//                // 96%~100%：落定 (1.000)
+//                UIView.addKeyframe(withRelativeStartTime: 0.68, relativeDuration: 0.1) {
+//                    self.imgView.transform = CGAffineTransform(scaleX: settle, y: settle)
+//                }
             } completion: { _ in
                 self.coverViewForLabel.isHidden = true
             }
@@ -303,8 +301,8 @@ extension QuestionnaireBodyFatItemVM{
 
             imgView.layer.cornerCurve = .continuous
             imgView.layer.cornerRadius = kFitWidth(12)
-            numberLabel.font = .systemFont(ofSize: 20, weight: .medium)
             numberLabel.textAlignment = .left
+            applyValueText(fontSize: 20)
 
             if isRight {
                 self.refreshForRight()
@@ -320,11 +318,49 @@ extension QuestionnaireBodyFatItemVM{
                 self.numberLabel.frame = CGRect(x: kFitWidth(16), y: kFitWidth(135), width: self.numberLabelWidth, height: kFitWidth(20))
                 self.selectImgView.alpha = 0
             } completion: { _ in
-                self.titleLab.text = "体脂肪"
+                self.titleLab.text = "体脂率"
                 self.coverView.isHidden = true
                 self.selectImgView.alpha = 0
             }
         }
+    }
+}
+
+private extension QuestionnaireBodyFatItemVM {
+    func applyValueText(fontSize: CGFloat) {
+        numberLabel.attributedText = makeValueAttributedText(fontSize: fontSize)
+    }
+
+    func measuredValueTextWidth(fontSize: CGFloat) -> CGFloat {
+        let rect = makeValueAttributedText(fontSize: fontSize).boundingRect(
+            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: kFitWidth(40)),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            context: nil
+        )
+        return ceil(rect.width)
+    }
+
+    func makeValueAttributedText(fontSize: CGFloat) -> NSAttributedString {
+        let baseFont = UIFont.systemFont(ofSize: fontSize, weight: .medium)
+        let text = currentValueText
+        let attr = NSMutableAttributedString(
+            string: text,
+            attributes: [
+                .font: baseFont,
+                .foregroundColor: UIColor.COLOR_TEXT_WHITE
+            ]
+        )
+
+        guard let regex = try? NSRegularExpression(pattern: "\\d+", options: []) else {
+            return attr
+        }
+
+        let nsText = text as NSString
+        let digitFont = UIFont().DDInFontMedium(fontSize: fontSize)
+        regex.matches(in: text, options: [], range: NSRange(location: 0, length: nsText.length)).forEach {
+            attr.addAttribute(.font, value: digitFont, range: $0.range)
+        }
+        return attr
     }
 }
 

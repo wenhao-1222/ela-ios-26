@@ -70,7 +70,7 @@ class ProgressChartView: UIView {
         areLegendLabelsVisible = false
         recordedLabel.alpha = 0
         unrecordedLabel.alpha = 0
-        UIView.animate(withDuration: duration, delay: 0.02, options: .curveLinear) {
+        UIView.animate(withDuration: duration, delay: 0.02, options: .curveEaseInOut) {
             self.progress = 1
         }
         displayLink = CADisplayLink(target: self, selector: #selector(updateGradientProgress))
@@ -80,9 +80,10 @@ class ProgressChartView: UIView {
     @objc private func updateGradientProgress() {
 //        animationProgress += 0.02
         guard gradientDuration > 0 else { return }
-                let elapsed = CACurrentMediaTime() - gradientStartTime
-                animationProgress = min(CGFloat(elapsed / gradientDuration), 1.0)
-        if animationProgress >= 1.0 {
+        let elapsed = CACurrentMediaTime() - gradientStartTime
+        let normalizedProgress = min(CGFloat(elapsed / gradientDuration), 1.0)
+        animationProgress = easeInEaseOutProgress(normalizedProgress)
+        if normalizedProgress >= 1.0 {
 //            animationProgress = 1.0
             displayLink?.invalidate()
             displayLink = nil
@@ -90,6 +91,13 @@ class ProgressChartView: UIView {
             gradientAnimationDidFinish?()
         }
         setNeedsDisplay() // 触发 draw(_:)
+    }
+
+    private func easeInEaseOutProgress(_ progress: CGFloat) -> CGFloat {
+        let clampedProgress = min(max(progress, 0), 1)
+        return clampedProgress < 0.5
+            ? 2 * clampedProgress * clampedProgress
+            : 1 - pow(-2 * clampedProgress + 2, 2) / 2
     }
     private var progress: CGFloat = 0 {
 //        didSet { setNeedsDisplay() }

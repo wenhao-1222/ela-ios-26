@@ -37,7 +37,7 @@ class QuestionnaireSurveyBodyFatVM: UIView {
     }()
     lazy var titleVm : QuestionnaireSurveyTopVM = {
         let vm = QuestionnaireSurveyTopVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
-        vm.titleLabel.text = "你的体脂肪"
+        vm.titleLabel.text = "你的体脂率"
         
         return vm
     }()
@@ -49,7 +49,7 @@ class QuestionnaireSurveyBodyFatVM: UIView {
     }()
     lazy var tipsLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "如果你不清楚自己的体脂肪的请参考图片"
+        lab.text = "如果你不清楚自己的体脂率的请参考图片"
         lab.textColor = .white
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         
