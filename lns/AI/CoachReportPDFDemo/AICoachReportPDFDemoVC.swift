@@ -69,6 +69,18 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         
         return btn
     }()
+    lazy var downloadButton : GJVerButton = {
+        let btn = GJVerButton.init(frame: CGRect.init(x: kFitWidth(40), y: getNavigationBarHeight(), width: SCREEN_WIDHT-kFitWidth(80), height: kFitWidth(27)))
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        btn.backgroundColor = .clear
+        btn.layer.cornerRadius = kFitWidth(8)
+        btn.clipsToBounds = true
+        btn.setImage(UIImage(named: "ai_coach_download_icon"), for: .normal)
+        btn.enablePressEffect()
+        btn.addTarget(self, action: #selector(downloadAction), for: .touchUpInside)
+        
+        return btn
+    }()
     private lazy var dividerBand: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(hex: "F2F2F3")
@@ -112,15 +124,17 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         return label
     }()
     
-    private lazy var downloadButton: UIButton = {
+    private lazy var adviceButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = AICoachReportDemoPalette.themeBlue
         button.layer.cornerRadius = 28
-        button.setTitle("下载", for: .normal)
+//        button.setTitle("下载", for: .normal)
+        button.setTitle("下周摄入建议", for: .normal)
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 21, weight: .medium)
-        button.addTarget(self, action: #selector(downloadAction), for: .touchUpInside)
-        button.isEnabled = false
+        button.enablePressEffect()
+        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+        button.addTarget(self, action: #selector(adviceAction), for: .touchUpInside)
+
         return button
     }()
 
@@ -141,6 +155,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         sendReportListRequest()
         if reportId.isEmpty == false {
             sendReportDetailRequest()
+            sendRecommendRequest()
         }
     }
 
@@ -166,13 +181,14 @@ private extension AICoachReportPDFDemoVC {
         topContainerView.addSubview(backArrowButton)
         topContainerView.addSubview(titleLabel)
         topContainerView.addSubview(dateButton)
+        topContainerView.addSubview(downloadButton)
 //        topContainerView.addSubview(dateLabel)
 //        topContainerView.addSubview(arrowImageView)
         view.addSubview(dividerBand)
         view.addSubview(pdfView)
         view.addSubview(bottomBar)
         bottomBar.addSubview(bottomSeparator)
-        bottomBar.addSubview(downloadButton)
+        bottomBar.addSubview(adviceButton)
         view.addSubview(loadingIndicator)
         view.addSubview(loadingLabel)
         view.addSubview(reportDateAlertVM)
@@ -192,6 +208,11 @@ private extension AICoachReportPDFDemoVC {
             make.top.equalToSuperview().offset(statusBarHeight)
             make.height.equalTo(kFitWidth(44))
             make.centerX.equalToSuperview()
+        }
+        downloadButton.snp.makeConstraints { make in
+            make.centerY.lessThanOrEqualTo(titleLabel)
+            make.right.equalTo(kFitWidth(-12))
+            make.width.height.equalTo(kFitWidth(30))
         }
 
 //        dateLabel.snp.makeConstraints { make in
@@ -228,7 +249,7 @@ private extension AICoachReportPDFDemoVC {
             make.height.equalTo(1)
         }
 
-        downloadButton.snp.makeConstraints { make in
+        adviceButton.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(20)
             make.right.equalToSuperview().offset(-20)
             make.top.equalToSuperview().offset(18)
@@ -284,6 +305,9 @@ private extension AICoachReportPDFDemoVC {
         pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
     }
 
+    @objc func adviceAction() {
+        DLLog(message: "下周建议")
+    }
     @objc func downloadAction() {
         guard let pdfFileURL else { return }
         let activityVC = UIActivityViewController(activityItems: [pdfFileURL], applicationActivities: nil)
@@ -318,6 +342,16 @@ extension AICoachReportPDFDemoVC{
             DispatchQueue.main.async {
                 self.applyReportDetailData(foodsMsgDict)
             }
+        }
+    }
+    func sendRecommendRequest() {
+        guard reportId.isEmpty == false else { return }
+        let param = ["id":reportId]
+        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_recommend, parameters: param as [String : AnyObject]) { [weak self] responseObject in
+            guard let self else { return }
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendRecommendRequest:\(foodsMsgDict)")
         }
     }
 
@@ -475,6 +509,8 @@ private extension AICoachReportPDFDemoVC {
     }
 
     func updateDateButtonInteraction(isEnabled: Bool) {
+        downloadButton.isUserInteractionEnabled = isEnabled
+        downloadButton.alpha = isEnabled ? 1 : 0.5
         dateButton.isUserInteractionEnabled = isEnabled
         dateButton.alpha = isEnabled ? 1 : 0.6
     }

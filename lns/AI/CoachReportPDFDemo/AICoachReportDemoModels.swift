@@ -166,10 +166,10 @@ enum AICoachReportDateTextBuilder {
 }
 
 enum AICoachReportDemoPalette {
-    static let themeBlue = UIColor(hex: "177CF5")
-    static let themeBlueDark = UIColor(hex: "1275F0")
+    static let themeBlue = UIColor(hex: "007AFF")
+    static let themeBlueDark = UIColor(hex: "007AFF")
     static let themeBlueLight = UIColor(hex: "DCEBFF")
-    static let chartFillBlue = UIColor(hex: "D5E8FF")
+    static let chartFillBlue = UIColor(hex: "007AFF")
     static let pageBackground = UIColor(hex: "F5F5F7")
     static let cardBackground = UIColor.white
     static let border = UIColor(hex: "DADDE4")

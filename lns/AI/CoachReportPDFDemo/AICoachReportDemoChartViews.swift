@@ -52,21 +52,15 @@ final class AICoachReportLineChartView: UIView {
             fillPath.addLine(to: CGPoint(x: points.last?.point.x ?? chartRect.maxX, y: chartRect.maxY))
             fillPath.close()
 
-            context.saveGState()
-            fillPath.addClip()
-            let colors = [
-                AICoachReportDemoPalette.chartFillBlue.withAlphaComponent(0.72).cgColor,
-                AICoachReportDemoPalette.chartFillBlue.withAlphaComponent(0.12).cgColor
-            ] as CFArray
-            let colorSpace = CGColorSpaceCreateDeviceRGB()
-            let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0, 1])!
-            context.drawLinearGradient(
-                gradient,
-                start: CGPoint(x: chartRect.midX, y: chartRect.minY),
-                end: CGPoint(x: chartRect.midX, y: chartRect.maxY),
-                options: []
+            drawVerticalGradient(
+                in: context,
+                path: fillPath,
+                rect: chartRect,
+                colors: [
+                    AICoachReportDemoPalette.chartFillBlue.withAlphaComponent(0.4).cgColor,
+                    AICoachReportDemoPalette.chartFillBlue.withAlphaComponent(0.0).cgColor
+                ]
             )
-            context.restoreGState()
 
             let linePath = UIBezierPath()
             linePath.lineWidth = 2
@@ -76,8 +70,15 @@ final class AICoachReportLineChartView: UIView {
                 linePath.move(to: firstPoint.point)
             }
             points.forEach { linePath.addLine(to: $0.point) }
-            AICoachReportDemoPalette.themeBlue.setStroke()
-            linePath.stroke()
+            drawVerticalGradientStroke(
+                in: context,
+                path: linePath,
+                rect: chartRect,
+                colors: [
+                    AICoachReportDemoPalette.themeBlueDark.cgColor,
+                    AICoachReportDemoPalette.themeBlue.cgColor
+                ]
+            )
         }
 
         for (index, entry) in data.entries.enumerated() {
@@ -116,6 +117,54 @@ final class AICoachReportLineChartView: UIView {
 
         }
     }
+}
+
+private func drawVerticalGradient(
+    in context: CGContext,
+    path: UIBezierPath,
+    rect: CGRect,
+    colors: [CGColor]
+) {
+    guard let gradient = CGGradient(
+        colorsSpace: CGColorSpaceCreateDeviceRGB(),
+        colors: colors as CFArray,
+        locations: [0, 1]
+    ) else { return }
+
+    context.saveGState()
+    path.addClip()
+    context.drawLinearGradient(
+        gradient,
+        start: CGPoint(x: rect.midX, y: rect.minY),
+        end: CGPoint(x: rect.midX, y: rect.maxY),
+        options: []
+    )
+    context.restoreGState()
+}
+
+private func drawVerticalGradientStroke(
+    in context: CGContext,
+    path: UIBezierPath,
+    rect: CGRect,
+    colors: [CGColor]
+) {
+    guard let gradient = CGGradient(
+        colorsSpace: CGColorSpaceCreateDeviceRGB(),
+        colors: colors as CFArray,
+        locations: [0, 1]
+    ) else { return }
+
+    context.saveGState()
+    context.addPath(path.cgPath)
+    context.replacePathWithStrokedPath()
+    context.clip()
+    context.drawLinearGradient(
+        gradient,
+        start: CGPoint(x: rect.midX, y: rect.minY),
+        end: CGPoint(x: rect.midX, y: rect.maxY),
+        options: []
+    )
+    context.restoreGState()
 }
 
 final class AICoachReportBarChartView: UIView {

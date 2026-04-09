@@ -120,7 +120,8 @@ class LNSLoginVC : WHBaseViewVC {
     }()
     lazy var tipsLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "未经你的同意，我们绝不会公开任何信息"
+//        lab.text = "未经你的同意，我们绝不会公开任何信息"
+        lab.text = "我们将严格保护你的隐私安全"
         lab.font = .systemFont(ofSize: 12, weight: .regular)
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
         
