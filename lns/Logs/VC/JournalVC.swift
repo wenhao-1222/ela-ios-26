@@ -27,14 +27,6 @@ class JournalVC: WHBaseViewVC {
     var logsGuideStep = 0
     private var needsInitialScrollToToday = true
     
-    var isAiCoachSurveyFinished = "-1"//是否做过AI教练问卷    0  未做过   1  做过     -1 本地状态：还未请求数据
-    var isVip = "-1"  //0  非VIP   1  VIP     -1 本地状态：还未请求数据
-    var aiCoachDict = NSDictionary()
-    
-//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-//        self.naviVm.bgView.addShadow(opacity: 0.05)
-//    }
-    
     lazy var tabbarCoverView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getTabbarHeight(), width: SCREEN_WIDHT, height: getTabbarHeight()))
         vi.backgroundColor = .clear
@@ -147,11 +139,9 @@ class JournalVC: WHBaseViewVC {
         sendNutritionsDefaultCircleRequest()
         getActivityListRequest()
         sendProVipMsgRequest()
-        sendCoachLaunchRequest()
 //        BodyDataUploadManager().dealOldSqlData()
         
         initUI()
-        
         
         NotificationCenter.default.addObserver(self, selector: #selector(showAddFoodsAlert), name: NOTIFI_NAME_REPORT_ADD_FOODS, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(judegeToDay), name: NOTIFI_NAME_DID_BECOME_ACTIVE, object: nil)
@@ -624,7 +614,7 @@ extension JournalVC{
         self.navigationController?.pushViewController(vc, animated: true)
     }
     func gotoAicoachAction() {
-        if isAiCoachSurveyFinished == "1"{//做过问卷
+        if VIPModel.shared.isAiCoachSurveyFinished{//做过问卷
             if VIPModel.shared.status == .valid{
                 let vc = AICoachPreVC()
                 self.navigationController?.pushViewController(vc, animated: true)
@@ -634,11 +624,9 @@ extension JournalVC{
             }else{
                 elaExpiredAlertVm.showSelf()
             }
-        }else if isAiCoachSurveyFinished == "0"{//未做过问卷
+        }else {//未做过问卷
             let vc = AIGuidanceVC()
             self.navigationController?.pushViewController(vc, animated: true)
-        }else {
-            self.sendCoachLaunchRequest()
         }
     }
     @objc func editStatus() {
@@ -1280,23 +1268,5 @@ extension JournalVC{
             DLLog(message: "sendProVipMsgRequest model: uid=\(vipModel.uid),status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime)  ,expireTime=\(vipModel.expireTime)")
             
         }
-    }
-    func sendCoachLaunchRequest() {
-//        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_launch, parameters: nil) { responseObject in
-//            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-//            let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
-//            DLLog(message: "sendCoachLaunchRequest:\(foodsMsgDict)")
-//            
-//            /*   未购买会员，未做AI问卷
-//             {
-//                 isAiCoachSurveyFinished = 0;
-//                 isVip = 0;
-//             }
-//             */
-//            
-//            self.isAiCoachSurveyFinished = foodsMsgDict.stringValueForKey(key: "isAiCoachSurveyFinished")
-//            self.isVip = foodsMsgDict.stringValueForKey(key: "isVip")
-//            self.aiCoachDict = foodsMsgDict
-//        }
     }
 }

@@ -40,6 +40,8 @@ class VIPModel: NSObject {
     var ctime = ""
     var etime = ""
     
+    var isAiCoachSurveyFinished = false
+    
 //    var isVip: Bool {
 //        return self.vipType != .none
 //    }
@@ -55,6 +57,7 @@ class VIPModel: NSObject {
         expireTime = ""
         status = .invalid
         isLifetime = false
+        isAiCoachSurveyFinished = false
         ctime = ""
         etime = ""
     }
@@ -68,6 +71,7 @@ class VIPModel: NSObject {
         expireTime = dict.stringValueForKey(key: "expireTime")
         ctime = dict.stringValueForKey(key: "ctime")
         etime = dict.stringValueForKey(key: "etime")
+        isAiCoachSurveyFinished = dict.stringValueForKey(key: "isAiCoachSurveyFinished") == "1"
         
 //        let vipTypeValue = Int(dict.stringValueForKey(key: "vipType")) ?? 0
 //        vipType = VIP_TYPE(rawValue: vipTypeValue) ?? .none

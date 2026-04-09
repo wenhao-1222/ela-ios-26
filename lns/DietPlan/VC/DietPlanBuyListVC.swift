@@ -105,7 +105,7 @@ class DietPlanBuyListVC: WHBaseViewVC {
         let btn = FeedBackButton()
         btn.setTitle("新建", for: .normal)
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
-        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT, for: .highlighted)
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_30, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
         btn.addTarget(self, action: #selector(openCreateBuyListDatePage), for: .touchUpInside)
         btn.isHidden = !showCreateButton
