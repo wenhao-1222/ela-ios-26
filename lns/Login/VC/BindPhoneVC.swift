@@ -65,6 +65,7 @@ class BindPhoneVC: WHBaseViewVC {
     lazy var inviteCodeButton: FeedBackButton = {
         let btn = FeedBackButton()
         btn.setTitle("我有邀请码", for:.normal)
+        btn.isHidden = true
         btn.setTitleColor(.THEME, for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)

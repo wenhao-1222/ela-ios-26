@@ -361,11 +361,11 @@ extension LoginCodeVerifyVM{
             let respData = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             
             if respData["registered"] as? String ?? "" == "no"{
-                self.inviteCodeButton.isHidden = false
+//                self.inviteCodeButton.isHidden = false
                 self.getCodeRequest()
             }else{
                 if respData.stringValueForKey(key: "state") == "1" {
-                    self.inviteCodeButton.isHidden = true
+//                    self.inviteCodeButton.isHidden = true
                     self.verifyCodeView.hideTextField.becomeFirstResponder()
                     self.getCodeRequest()
                 }else{

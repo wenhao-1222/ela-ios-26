@@ -17,6 +17,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     private var report = AICoachReportDemoData.empty
     private var pdfFileURL: URL?
     private var hasGeneratedPDF = false
+    private var bottomBarHeightConstraint: Constraint?
 
     private lazy var topContainerView: UIView = {
         let view = UIView()
@@ -241,7 +242,7 @@ private extension AICoachReportPDFDemoVC {
 
         bottomBar.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
-            make.height.equalTo(getBottomSafeAreaHeight() + 96)
+            bottomBarHeightConstraint = make.height.equalTo(getBottomSafeAreaHeight() + 96).constraint
         }
 
         bottomSeparator.snp.makeConstraints { make in
@@ -366,7 +367,10 @@ extension AICoachReportPDFDemoVC{
                 self.reportList = parsedList
                 if self.reportId.isEmpty, let firstItem = parsedList.first {
                     self.reportId = firstItem.reportId
+                    self.updateBottomBarVisibility()
                     self.sendReportDetailRequest()
+                } else {
+                    self.updateBottomBarVisibility()
                 }
                 self.reportDateAlertVM.update(items: parsedList, selectedReportId: self.reportId)
             }
@@ -515,11 +519,19 @@ private extension AICoachReportPDFDemoVC {
         dateButton.alpha = isEnabled ? 1 : 0.6
     }
 
+    func updateBottomBarVisibility() {
+        let shouldShowBottomBar = reportList.first?.reportId == reportId || reportList.isEmpty
+        bottomBar.isHidden = !shouldShowBottomBar
+        bottomBarHeightConstraint?.update(offset: shouldShowBottomBar ? getBottomSafeAreaHeight() + 96 : 0)
+        view.layoutIfNeeded()
+    }
+
     func handleReportSelection(_ item: AICoachReportListItem) {
         guard item.reportId.isEmpty == false else { return }
         guard item.reportId != reportId else { return }
 
         reportId = item.reportId
+        updateBottomBarVisibility()
         downloadButton.isEnabled = false
         pdfView.document = nil
         loadingLabel.text = "正在加载报告..."

@@ -153,11 +153,11 @@ class LNSLoginVC : WHBaseViewVC {
         let vm = InviteCodeAlertVM.init(frame: .zero)
         vm.confirmBlock = {(code)in
             self.codeVm.invideCode = code
-            if code.count > 0 {
-                self.codeVm.inviteCodeButton.setTitle("邀请码：\(code)", for: .normal)
-            }else{
-                self.codeVm.inviteCodeButton.setTitle("我有邀请码", for: .normal)
-            }
+//            if code.count > 0 {
+//                self.codeVm.inviteCodeButton.setTitle("邀请码：\(code)", for: .normal)
+//            }else{
+//                self.codeVm.inviteCodeButton.setTitle("我有邀请码", for: .normal)
+//            }
         }
         return vm
     }()
