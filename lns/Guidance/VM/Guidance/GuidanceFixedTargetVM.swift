@@ -50,7 +50,7 @@ class GuidanceFixedTargetVM: UIView {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 22, weight: .medium)
         lab.text = "你已经有\n明确的营养目标了吗？"
-        lab.setLineHeightMultiple(textString: lab.text, lineHeightMultiple: 1.18)
+//        lab.setLineHeightMultiple(textString: lab.text, lineHeightMultiple: 1.18)
 //        lab.setLineHeight(textString: "你已经有\n明确的营养目标了吗？", lineHeight: lab.font.lineHeight * 1.2)
 //        lab.setLineHeight(textString: "你已经有固定的\n饮食目标吗？", lineHeight: lab.font.lineHeight * 1.2)
         return lab
@@ -119,7 +119,7 @@ extension GuidanceFixedTargetVM {
             let button = UIButton(type: .custom)
             button.tag = index
             button.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
-            button.layer.cornerRadius = kFitWidth(30)
+            button.layer.cornerRadius = kFitWidth(40)
             button.clipsToBounds = true
             button.addTarget(self, action: #selector(itemTapAction(_:)), for: .touchUpInside)
 
@@ -135,7 +135,7 @@ extension GuidanceFixedTargetVM {
             }
 
             button.snp.makeConstraints { make in
-                make.height.equalTo(kFitWidth(60))
+                make.height.equalTo(kFitWidth(80))
             }
 
             stackView.addArrangedSubview(button)

@@ -125,7 +125,7 @@ extension GuidanceDietRecordVM {
             lab.text = item.title
             lab.textAlignment = .center
             lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
-            lab.font = .systemFont(ofSize: 18, weight: .semibold)
+            lab.font = .systemFont(ofSize: 20, weight: .medium)
 
             button.addSubview(lab)
             lab.snp.makeConstraints { make in
@@ -143,7 +143,7 @@ extension GuidanceDietRecordVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.height.equalTo(kFitWidth(36))
+//            make.height.equalTo(kFitWidth(36))
             make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
         }
         tipsButton.snp.makeConstraints { make in

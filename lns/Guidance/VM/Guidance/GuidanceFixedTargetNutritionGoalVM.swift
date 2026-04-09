@@ -61,16 +61,16 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
         let lab = UILabel()
 //        lab.text = "卡路里和营养素目标"
 //        lab.text = "每日营养目标"
-        lab.text = "输入你的每日营养目标"
+        lab.text = "你的卡路里和营养素目标"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
+        lab.font = .systemFont(ofSize: 22, weight: .medium)
         return lab
     }()
 
     private lazy var tipsButton: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setTitle("摄入太高/太低？", for: .normal)
+        btn.setTitle("身体是动态的，目标也应如此", for: .normal)
         btn.setTitleColor(.THEME, for: .normal)
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
@@ -113,14 +113,7 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
         img.contentMode = .scaleAspectFit
         return img
     }()
-
-//    private lazy var caloriesTapAreaButton: UIButton = {
-//        let btn = UIButton(type: .custom)
-//        btn.backgroundColor = .clear
-//        btn.addTarget(self, action: #selector(caloriesTapAreaAction), for: .touchUpInside)
-//        return btn
-//    }()
-
+    
     private lazy var caloriesTapAreaButton: UIButton = {
         let btn = UIButton(type: .custom)
         btn.backgroundColor = .clear
@@ -170,8 +163,8 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
     private lazy var alertVm: QuestionCustomTipsAlertVM = {
         let vm = QuestionCustomTipsAlertVM(frame: .zero)
         vm.isHidden = true
-        vm.titleLabel.text = "摄入太高/太低？"
-        vm.contentLabelOne.text = "Elavatine的计划的重心更偏向于最快达到健身目标，比起日常生活更接近专业运动员的需求，如果你觉得某营养素数值过高或者过低，你可以点击该值并进行手动修改。"
+        vm.titleLabel.text = "身体是动态的，目标也应如此"
+        vm.contentLabelOne.text = "我们必须诚实地告诉你，无论是自己计算，还是通过 Elavatine 结合科学研究及运动员长期实践经验得出的目标计算公式，都无法保证初始目标能 100% 贴合你的真实身体需求。你的日训练风格、站立、坐立习惯，以及代谢适应能力等，都有可能会在未来影响你所需的摄入量。\n\n但请不必担心，你完全可以通过观察体重增减与体型变化，自己逐渐调整摄入量或营养比例。\n\n如果你需要更专业的支持，ELA AI 教练也可以帮助你更快地找到最适合你的摄入目标并持续调整。"
         return vm
     }()
 }

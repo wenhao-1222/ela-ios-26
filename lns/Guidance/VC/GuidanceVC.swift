@@ -771,7 +771,7 @@ extension GuidanceVC{
 
         if targetStep == .progressChart {
             resetProgressChartNextButtonPresentation()
-            progressChartVm.chart.startGradientAnimation()
+            progressChartVm.chart.startGradientAnimation(duration: 2.4)
         }
         if targetStep == .goalBarrier {
             goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
@@ -911,7 +911,7 @@ extension GuidanceVC{
                 completionNotifyDelay: 0.35
             )
         } else {
-            finishLoadingVm.configureLoading(titleText: "计划生成中...")
+            finishLoadingVm.configureLoading(titleText: "目标生成中...")
         }
         finishLoadingVm.showLoading(waitForExternalCompletion: true)
         submitCompletedGuidanceFlow()
@@ -928,7 +928,7 @@ extension GuidanceVC{
         naviVm.isHidden = true
         nextButton.isHidden = true
         nextButton.isEnabled = false
-        finishLoadingVm.configureLoading(titleText: "计划生成中...")
+        finishLoadingVm.configureLoading(titleText: "目标生成中...")
         finishLoadingVm.layoutIfNeeded()
         finishLoadingVm.showLoading(waitForExternalCompletion: true)
         DispatchQueue.main.async { [weak self] in

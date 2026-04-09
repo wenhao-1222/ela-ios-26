@@ -50,7 +50,7 @@ class GuidanceExerciseCaloriesRecordVM: UIView {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 22, weight: .medium)
         lab.text = "你平时是否会\n记录运动消耗热量？"
-        lab.setLineHeightMultiple(textString: lab.text, lineHeightMultiple: 1.2)
+//        lab.setLineHeightMultiple(textString: lab.text, lineHeightMultiple: 1.2)
 //        lab.setLineHeight(textString: "你平时是否会\n记录运动消耗热量？", lineHeight: lab.font.lineHeight * 1.1)
         return lab
     }()
@@ -124,7 +124,7 @@ extension GuidanceExerciseCaloriesRecordVM {
             let button = UIButton(type: .custom)
             button.tag = index
             button.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
-            button.layer.cornerRadius = kFitWidth(36)
+            button.layer.cornerRadius = kFitWidth(40)
             button.clipsToBounds = true
             button.addTarget(self, action: #selector(itemTapAction(_:)), for: .touchUpInside)
 
@@ -154,7 +154,7 @@ extension GuidanceExerciseCaloriesRecordVM {
             }
 
             button.snp.makeConstraints { make in
-                make.height.equalTo(kFitWidth(72))
+                make.height.equalTo(kFitWidth(80))
             }
 
             stackView.addArrangedSubview(button)

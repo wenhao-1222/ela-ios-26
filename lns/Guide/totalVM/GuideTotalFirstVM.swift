@@ -62,9 +62,9 @@ class GuideTotalFirstVM: UIView {
     }
     lazy var titleLab: UILabel = {
         let lab = UILabel.init(frame: CGRect.init(x: 0, y: statusBarHeight+kFitWidth(20), width: SCREEN_WIDHT, height: kFitHeight(37)))
-        lab.text = "欢迎来到Elavatine"
+//        lab.text = "欢迎来到Elavatine"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 25, weight: .semibold)
+        lab.font = .systemFont(ofSize: 22, weight: .medium)
         lab.textAlignment = .center
         
         return lab
@@ -208,9 +208,9 @@ extension GuideTotalFirstVM{
         tipsLabel3.text = tipsLines[2]
         
         NSLayoutConstraint.activate([
-           chart.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: kFitWidth(15)),
-           chart.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: kFitWidth(-15)),
-           chart.topAnchor.constraint(equalTo: titleLab.bottomAnchor, constant: kFitWidth(147)),
+           chart.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: kFitWidth(25)),
+           chart.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: kFitWidth(-25)),
+           chart.topAnchor.constraint(equalTo: titleLab.bottomAnchor, constant: kFitWidth(117)),
 //           chart.centerYAnchor.constraint(equalTo: self.centerYAnchor),
            chart.heightAnchor.constraint(equalTo: chart.widthAnchor, multiplier: 1/1.36)
        ])
@@ -258,7 +258,7 @@ extension GuideTotalFirstVM{
         }
         tipsLabel1.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(logoImgView.snp.bottom).offset(kFitWidth(50))
+            make.top.equalTo(logoImgView.snp.bottom).offset(kFitWidth(35))
 //            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(30))
             make.width.equalTo(widths[0])
         }
@@ -274,7 +274,7 @@ extension GuideTotalFirstVM{
         }
         logoImgView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(chart.snp.bottom).offset(kFitWidth(50))
+            make.top.equalTo(chart.snp.bottom).offset(kFitWidth(35))
             make.width.equalTo(kFitWidth(111))
 //            make.bottom.equalTo(tipsLabel.snp.top).offset(kFitWidth(-50))
         }
@@ -286,15 +286,15 @@ extension GuideTotalFirstVM{
     
     func updateConstraitForGuidance() {
         titleLab.numberOfLines = 2
-        
-        titleLab.setLineHeight(textString: "Elavatine能够帮助你\n用更短的时间达到目标", lineHeight: titleLab.font.lineHeight * 1.2)
+        titleLab.text = "Elavatine能够帮助你\n用更短的时间达到目标"
+//        titleLab.setLineHeight(textString: "Elavatine能够帮助你\n用更短的时间达到目标", lineHeight: titleLab.font.lineHeight * 1.2)
         titleLab.snp.remakeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(35))
+            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(59))
         }
         downImgIcon.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(30))
-            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(54))
+            make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(52))
             make.width.equalTo(kFitWidth(14))
             make.height.equalTo(kFitWidth(20))
         }
@@ -401,6 +401,6 @@ extension GuideTotalFirstVM{
         // Ensure the chart has correct bounds before starting animations
         layoutIfNeeded()
         chart.layoutIfNeeded()
-        chart.startGradientAnimation()
+        chart.startGradientAnimation(duration: 2.4)
     }
 }

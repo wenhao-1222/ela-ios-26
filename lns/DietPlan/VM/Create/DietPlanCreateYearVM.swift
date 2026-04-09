@@ -22,12 +22,12 @@ class DietPlanCreateYearVM: UIView {
     }
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.numberOfLines = 2
+//        lab.numberOfLines = 2
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 22, weight: .medium)
-        lab.text = "记录你的出生年月\n让预测更准确"
+        lab.text = "出生年份"
         lab.textAlignment = .center
-        lab.setLineHeightMultiple(textString: lab.text, lineHeightMultiple: 1.2)
+//        lab.setLineHeightMultiple(textString: lab.text, lineHeightMultiple: 1.2)
         
         return lab
     }()

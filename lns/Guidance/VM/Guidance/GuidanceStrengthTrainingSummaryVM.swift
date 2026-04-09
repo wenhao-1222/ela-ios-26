@@ -85,11 +85,11 @@ class GuidanceStrengthTrainingSummaryVM: UIView {
         return btn
     }()
 
-    lazy var footerLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var footerLabel: UILabel = {
+        let lab = UILabel()
         lab.numberOfLines = 0
         lab.textAlignment = .left
-        lab.font = .systemFont(ofSize: 14, weight: .regular)
+        lab.font = .systemFont(ofSize: 12, weight: .medium)
         return lab
     }()
 }
@@ -175,7 +175,8 @@ extension GuidanceStrengthTrainingSummaryVM {
         let paragraphStyle = NSMutableParagraphStyle()
 //        paragraphStyle.minimumLineHeight = kFitWidth(14)
 //        paragraphStyle.maximumLineHeight = kFitWidth(14)
-        paragraphStyle.lineHeightMultiple = 1.2
+//        paragraphStyle.lineHeightMultiple = 1
+        paragraphStyle.lineSpacing = kFitWidth(4)
         attributed.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: fullText.count))
         return attributed
     }

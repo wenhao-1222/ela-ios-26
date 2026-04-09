@@ -25,7 +25,7 @@ class DietPlanCreateWeightVM: UIView {
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "你现在的体重是?"
+        lab.text = "你的体重是?"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
 

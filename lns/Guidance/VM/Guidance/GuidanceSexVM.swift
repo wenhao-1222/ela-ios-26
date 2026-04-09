@@ -193,7 +193,7 @@ extension GuidanceSexVM{
         sexManButton.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
 //            make.top.equalTo(kFitWidth(232))
-            make.top.equalTo(tipsButton.snp.bottom).offset(kFitWidth(119))
+            make.top.equalTo(tipsButton.snp.bottom).offset(kFitWidth(158))
             make.width.equalTo(SCREEN_WIDHT-kFitWidth(32))
             make.height.equalTo(kFitWidth(80))
         }

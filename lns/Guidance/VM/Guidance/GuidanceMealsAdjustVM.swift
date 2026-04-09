@@ -288,7 +288,7 @@ extension GuidanceMealsAdjustVM {
 
         scrollView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(70))
+            make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(20))
             make.bottom.equalToSuperview().offset(-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(68)))
         }
 

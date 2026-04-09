@@ -32,6 +32,7 @@ class GuideTotalProgressVM: UIView {
 //        img.setImgLocal(imgName: "guide_back_button")
         img.image = UIImage(named: "guide_back_button")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         img.isUserInteractionEnabled = true
+        img.alpha = 0
         
         return img
     }()
@@ -70,6 +71,15 @@ extension GuideTotalProgressVM{
 
 extension GuideTotalProgressVM{
     func setStep(step: Int, animated: Bool = true, duration: TimeInterval = 0.25) {
+        if step <= 0{
+            self.backImg.alpha = 0
+        }else{
+            UIView.animate(withDuration: 0.35) {
+                self.backImg.alpha = 1
+            }
+        }
+        
+        
         let targetWidth = stepWidth * CGFloat(step + 1)
         
         if animated {
