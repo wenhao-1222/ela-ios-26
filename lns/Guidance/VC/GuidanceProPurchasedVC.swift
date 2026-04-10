@@ -125,15 +125,22 @@ private extension GuidanceProPurchasedVC {
 //            make.height.equalTo(SCREEN_HEIGHT * 0.46)
 //        }
 
+//        contentContainerView.snp.makeConstraints { make in
+//            make.left.right.equalToSuperview()
+//            make.top.equalTo(kFitWidth(126) + statusBarHeight)
+//            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
+//        }
         contentContainerView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(kFitWidth(126) + statusBarHeight)
+            make.top.equalTo(statusBarHeight)
+//            make.top.equalTo(kFitWidth(126) + statusBarHeight)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
 
         topContentVM.snp.makeConstraints { make in
-            make.left.right.top.equalToSuperview()
-            make.height.equalTo(kFitWidth(434))
+//            make.left.right.top.equalToSuperview()
+//            make.height.equalTo(kFitWidth(434))
+            make.edges.equalToSuperview()
         }
 
         priceVm.snp.makeConstraints { make in

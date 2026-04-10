@@ -38,7 +38,7 @@ class GuidanceProTopVM: UIView {
     private lazy var subtitleLabel: UILabel = {
         let label = UILabel()
         label.text = "帮助你更精确地执行"
-        label.textColor = .COLOR_TEXT_TITLE_0f1214
+        label.textColor = .COLOR_TEXT_TITLE_0f1214_50
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.textAlignment = .center
         return label
@@ -110,7 +110,7 @@ private extension GuidanceProTopVM {
 
         bubbleImageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview()
+            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(6))
             make.width.equalTo(kFitWidth(300))
             make.height.equalTo(kFitWidth(415))
         }
@@ -123,9 +123,10 @@ private extension GuidanceProTopVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(80))
+            make.top.equalTo(elaproImg.snp.bottom).offset(kFitWidth(10))
             make.left.greaterThanOrEqualTo(kFitWidth(24))
             make.right.lessThanOrEqualTo(kFitWidth(-24))
+            make.height.equalTo(kFitWidth(39))
         }
 
         subtitleLabel.snp.makeConstraints { make in
@@ -133,7 +134,7 @@ private extension GuidanceProTopVM {
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(6))
             make.left.greaterThanOrEqualTo(kFitWidth(24))
             make.right.lessThanOrEqualTo(kFitWidth(-24))
-            make.bottom.equalToSuperview()
+//            make.bottom.equalToSuperview()
         }
     }
 }

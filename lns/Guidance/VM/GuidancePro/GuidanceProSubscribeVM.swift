@@ -643,13 +643,13 @@ private extension GuidanceProSubscribeVM {
         let questionLabel = UILabel()
         questionLabel.text = question
         questionLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        questionLabel.font = .systemFont(ofSize: 13, weight: .medium)
+        questionLabel.font = .systemFont(ofSize: 11, weight: .regular)
         questionLabel.numberOfLines = 0
 
         let answerLabel = UILabel()
         answerLabel.text = answer
         answerLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        answerLabel.font = .systemFont(ofSize: 12, weight: .regular)
+        answerLabel.font = .systemFont(ofSize: 12, weight: .medium)
         answerLabel.numberOfLines = 0
 
         view.addSubview(questionLabel)

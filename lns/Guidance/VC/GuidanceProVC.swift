@@ -11,11 +11,16 @@ import MCToast
 
 class GuidanceProVC: WHBaseViewVC {
 
-    private enum ContentStep {
+    enum ContentStep {
         case intro
         case trial
         case promise
         case subscribe
+    }
+
+    enum TransitionDirection {
+        case forward
+        case backward
     }
 
     var nextBlock: (() -> Void)?
@@ -29,7 +34,16 @@ class GuidanceProVC: WHBaseViewVC {
     private var currentStep: ContentStep = .intro
     private var isPurchasing = false
     var hasFreeTrialPermission = true
-
+    
+    lazy var backButton: UIButton = {
+        let img = UIButton.init(type: .custom)
+        img.frame = CGRect.init(x: kFitWidth(12.5), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
+        img.alpha = 0
+        img.setImage(UIImage(named: "habit_guide_back_icon"), for: .normal)
+        img.addTarget(self, action: #selector(backAction), for: .touchUpInside)
+        
+        return img
+    }()
     private lazy var nextButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("下一步", for: .normal)
@@ -70,15 +84,14 @@ class GuidanceProVC: WHBaseViewVC {
         topContentVM.stopBubbleFloatingAnimation()
     }
 }
-
-private extension GuidanceProVC {
+extension GuidanceProVC {
     func initUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .clear
         addELAFlowingBackground()
-        scrollViewBase.removeFromSuperview()
-
+        
 //        view.addSubview(topBackgroundView)
         view.addSubview(contentContainerView)
+        view.addSubview(backButton)
         view.addSubview(nextButton)
 
         contentContainerView.addSubview(topContentVM)
@@ -99,18 +112,21 @@ private extension GuidanceProVC {
         }
 
         topContentVM.snp.makeConstraints { make in
-            make.left.right.top.equalToSuperview()
-            make.height.equalTo(kFitWidth(434))
+//            make.left.right.top.equalToSuperview()
+//            make.height.equalTo(kFitWidth(434))
+            make.edges.equalToSuperview()
         }
 
         trialContentVM.snp.makeConstraints { make in
-            make.left.right.top.equalToSuperview()
-            make.height.equalTo(kFitWidth(520))
+//            make.left.right.top.equalToSuperview()
+//            make.height.equalTo(kFitWidth(520))
+            make.edges.equalToSuperview()
         }
 
         promiseContentVM.snp.makeConstraints { make in
-            make.left.right.top.equalToSuperview()
-            make.height.equalTo(kFitWidth(520))
+//            make.left.right.top.equalToSuperview()
+//            make.height.equalTo(kFitWidth(520))
+            make.edges.equalToSuperview()
         }
 
         subscribeContentVM.snp.makeConstraints { make in
@@ -140,6 +156,8 @@ private extension GuidanceProVC {
             guard let self = self, !self.isPurchasing else { return }
             self.nextBlock?()
         }
+
+        updateBackButtonVisibility(animated: false)
     }
 
     @objc func nextButtonTapAction() {
@@ -159,6 +177,11 @@ private extension GuidanceProVC {
         }
     }
 
+    @objc func backAction() {
+        guard !isPurchasing else { return }
+        showPreviousContent()
+    }
+
     func showTrialContent() {
         guard hasFreeTrialPermission else {
             showSubscribeContent()
@@ -168,14 +191,18 @@ private extension GuidanceProVC {
 
         currentStep = .trial
         topContentVM.stopBubbleFloatingAnimation()
-        transition(from: topContentVM, to: trialContentVM)
+        nextButton.isHidden = false
+        updateBackButtonVisibility(animated: true)
+        transition(from: topContentVM, to: trialContentVM, direction: .forward)
     }
 
     func showPromiseContent() {
         guard currentStep == .trial else { return }
 
         currentStep = .promise
-        transition(from: trialContentVM, to: promiseContentVM)
+        nextButton.isHidden = false
+        updateBackButtonVisibility(animated: true)
+        transition(from: trialContentVM, to: promiseContentVM, direction: .forward)
     }
 
     func showSubscribeContent() {
@@ -185,6 +212,7 @@ private extension GuidanceProVC {
         currentStep = .subscribe
         nextButton.isHidden = true
         topContentVM.stopBubbleFloatingAnimation()
+        updateBackButtonVisibility(animated: true)
 
         if !hasFreeTrialPermission && !trialContentVM.isHidden {
             trialContentVM.isHidden = true
@@ -197,26 +225,119 @@ private extension GuidanceProVC {
         }
 
         let fromView = previousStep == .promise ? promiseContentVM : topContentVM
-        transition(from: fromView, to: subscribeContentVM)
+        transition(from: fromView, to: subscribeContentVM, direction: .forward)
     }
 
-    func transition(from currentView: UIView, to nextView: UIView) {
-        nextView.isHidden = false
-        nextView.alpha = 0
-        nextView.transform = CGAffineTransform(translationX: kFitWidth(28), y: 0)
+    func showPreviousContent() {
+        guard let previousStep = previousStep(for: currentStep) else { return }
+
+        let fromView = view(for: currentStep)
+        let toView = view(for: previousStep)
+
+        currentStep = previousStep
+        nextButton.isHidden = false
+        updateBackButtonVisibility(animated: true)
+        transition(from: fromView, to: toView, direction: .backward)
+    }
+
+    func previousStep(for step: ContentStep) -> ContentStep? {
+        switch step {
+        case .intro:
+            return nil
+        case .trial:
+            return .intro
+        case .promise:
+            return .trial
+        case .subscribe:
+            return hasFreeTrialPermission ? .promise : .intro
+        }
+    }
+
+    func view(for step: ContentStep) -> UIView {
+        switch step {
+        case .intro:
+            return topContentVM
+        case .trial:
+            return trialContentVM
+        case .promise:
+            return promiseContentVM
+        case .subscribe:
+            return subscribeContentVM
+        }
+    }
+
+    func updateBackButtonVisibility(animated: Bool) {
+        let shouldShow = currentStep == .trial || currentStep == .promise
+        backButton.isUserInteractionEnabled = shouldShow
+
+        if animated == false {
+            backButton.isHidden = !shouldShow
+            backButton.alpha = shouldShow ? 1 : 0
+            return
+        }
+
+        if shouldShow {
+            backButton.isHidden = false
+            UIView.animate(
+                withDuration: 0.22,
+                delay: 0,
+                options: [.curveEaseInOut, .beginFromCurrentState]
+            ) {
+                self.backButton.alpha = 1
+            }
+            return
+        }
+
+        guard backButton.isHidden == false else {
+            backButton.alpha = 0
+            return
+        }
 
         UIView.animate(
-            withDuration: 0.32,
+            withDuration: 0.22,
             delay: 0,
             options: [.curveEaseInOut, .beginFromCurrentState]
         ) {
+            self.backButton.alpha = 0
+        } completion: { _ in
+            self.backButton.isHidden = true
+        }
+    }
+
+    func transition(from currentView: UIView, to nextView: UIView, direction: TransitionDirection) {
+        let offset = kFitWidth(28)
+        let nextTranslationX = direction == .forward ? offset : -offset
+        let currentTranslationX = direction == .forward ? -offset : offset
+
+        nextView.isHidden = false
+        nextView.alpha = 0
+        nextView.transform = CGAffineTransform(translationX: nextTranslationX, y: 0)
+
+//        UIView.animate(
+//            withDuration: 0.15,
+//            delay: 0,
+//            options: [.curveEaseInOut, .beginFromCurrentState]
+//        ) {
+//            currentView.alpha = 0
+//            currentView.transform = CGAffineTransform(translationX: currentTranslationX, y: 0)
+//        } completion: { _ in
+//            currentView.isHidden = true
+//            currentView.alpha = 1
+//            currentView.transform = .identity
+//        }
+        
+        UIView.animate(
+            withDuration: 0.32,
+            delay: 0.05,
+            options: [.curveEaseInOut, .beginFromCurrentState]
+        ) {
             currentView.alpha = 0
-            currentView.transform = CGAffineTransform(translationX: -kFitWidth(28), y: 0)
+            currentView.transform = CGAffineTransform(translationX: currentTranslationX, y: 0)
             nextView.alpha = 1
             nextView.transform = .identity
         } completion: { _ in
             currentView.isHidden = true
-            currentView.alpha = 1
+//            currentView.alpha = 1
             currentView.transform = .identity
         }
     }

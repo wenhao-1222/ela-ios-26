@@ -35,12 +35,12 @@ public final class ELAFlowingGradientBackgroundView: UIView {
 
         /// 你发的浅色背景图
         public static let light = Style(
-            topColor: UIColor(red: 158.0 / 255.0, green: 195.0 / 255.0, blue: 250.0 / 255.0, alpha: 1.0),
-            midColor: UIColor(red: 224.0 / 255.0, green: 232.0 / 255.0, blue: 248.0 / 255.0, alpha: 1.0),
-            bottomColor: UIColor(red: 242.0 / 255.0, green: 242.0 / 255.0, blue: 242.0 / 255.0, alpha: 1.0),
-            leftGlowColor: UIColor(red: 123.0 / 255.0, green: 176.0 / 255.0, blue: 1.0, alpha: 0.16),
-            rightGlowColor: UIColor(red: 190.0 / 255.0, green: 214.0 / 255.0, blue: 1.0, alpha: 0.12),
-            centerGlowColor: UIColor.white.withAlphaComponent(0.10)
+            topColor: UIColor(red: 138.0 / 255.0, green: 178.0 / 255.0, blue: 242.0 / 255.0, alpha: 1.0),
+            midColor: UIColor(red: 204.0 / 255.0, green: 219.0 / 255.0, blue: 244.0 / 255.0, alpha: 1.0),
+            bottomColor: UIColor(red: 228.0 / 255.0, green: 234.0 / 255.0, blue: 242.0 / 255.0, alpha: 1.0),
+            leftGlowColor: UIColor(red: 102.0 / 255.0, green: 162.0 / 255.0, blue: 1.0, alpha: 0.28),
+            rightGlowColor: UIColor(red: 168.0 / 255.0, green: 204.0 / 255.0, blue: 1.0, alpha: 0.22),
+            centerGlowColor: UIColor.white.withAlphaComponent(0.16)
         )
 
         /// 你发的暗色背景图
@@ -108,19 +108,19 @@ public final class ELAFlowingGradientBackgroundView: UIView {
 
         leftGlow.colors = [
             style.leftGlowColor.cgColor,
-            style.leftGlowColor.withAlphaComponent(0.05).cgColor,
+            style.leftGlowColor.withAlphaComponent(0.10).cgColor,
             UIColor.clear.cgColor
         ]
 
         rightGlow.colors = [
             style.rightGlowColor.cgColor,
-            style.rightGlowColor.withAlphaComponent(0.04).cgColor,
+            style.rightGlowColor.withAlphaComponent(0.08).cgColor,
             UIColor.clear.cgColor
         ]
 
         centerGlow.colors = [
             style.centerGlowColor.cgColor,
-            style.centerGlowColor.withAlphaComponent(0.03).cgColor,
+            style.centerGlowColor.withAlphaComponent(0.06).cgColor,
             UIColor.clear.cgColor
         ]
     }
@@ -185,35 +185,35 @@ public final class ELAFlowingGradientBackgroundView: UIView {
 
         animate(
             glow: leftGlow,
-            x: 12,
-            y: 10,
-            scale: 1.05,
+            x: 28,
+            y: 18,
+            scale: 1.12,
             opacityFrom: 1.0,
-            opacityTo: 0.82,
-            duration: 20,
+            opacityTo: 0.68,
+            duration: 12,
             delay: 0
         )
 
         animate(
             glow: rightGlow,
-            x: -10,
-            y: 8,
-            scale: 1.04,
-            opacityFrom: 0.95,
-            opacityTo: 0.78,
-            duration: 24,
-            delay: 1.6
+            x: -24,
+            y: 16,
+            scale: 1.10,
+            opacityFrom: 0.98,
+            opacityTo: 0.64,
+            duration: 14,
+            delay: 0.9
         )
 
         animate(
             glow: centerGlow,
             x: 0,
-            y: 12,
-            scale: 1.03,
-            opacityFrom: 0.75,
-            opacityTo: 0.55,
-            duration: 22,
-            delay: 0.8
+            y: 22,
+            scale: 1.08,
+            opacityFrom: 0.88,
+            opacityTo: 0.52,
+            duration: 13,
+            delay: 0.5
         )
     }
 
@@ -225,17 +225,17 @@ public final class ELAFlowingGradientBackgroundView: UIView {
 
     private func animateBaseGradient() {
         let startPoint = CABasicAnimation(keyPath: "startPoint")
-        startPoint.fromValue = CGPoint(x: 0.08, y: -0.02)
-        startPoint.toValue = CGPoint(x: 0.16, y: 0.05)
-        startPoint.duration = 20
+        startPoint.fromValue = CGPoint(x: 0.02, y: -0.08)
+        startPoint.toValue = CGPoint(x: 0.24, y: 0.10)
+        startPoint.duration = 12
         startPoint.autoreverses = true
         startPoint.repeatCount = .infinity
         startPoint.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
 
         let endPoint = CABasicAnimation(keyPath: "endPoint")
-        endPoint.fromValue = CGPoint(x: 0.80, y: 1.0)
-        endPoint.toValue = CGPoint(x: 0.92, y: 1.02)
-        endPoint.duration = 20
+        endPoint.fromValue = CGPoint(x: 0.74, y: 0.96)
+        endPoint.toValue = CGPoint(x: 0.98, y: 1.10)
+        endPoint.duration = 12
         endPoint.autoreverses = true
         endPoint.repeatCount = .infinity
         endPoint.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
