@@ -91,7 +91,7 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        topBackgroundView.startAnimatingIfNeeded()
+//        topBackgroundView.startAnimatingIfNeeded()
 //        if currentStep == .intro {
 //            topContentVM.startBubbleFloatingAnimationIfNeeded()
 //        }
@@ -99,7 +99,7 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        topBackgroundView.pauseAnimating()
+//        topBackgroundView.pauseAnimating()
         topContentVM.stopBubbleFloatingAnimation()
     }
 }
@@ -107,9 +107,10 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
 private extension GuidanceProPurchasedVC {
     func initUI() {
         view.backgroundColor = .white
+        addELAFlowingBackground()
         scrollViewBase.removeFromSuperview()
 
-        view.addSubview(topBackgroundView)
+//        view.addSubview(topBackgroundView)
         view.addSubview(contentContainerView)
         view.addSubview(priceVm)
         view.addSubview(nextButton)
@@ -119,10 +120,10 @@ private extension GuidanceProPurchasedVC {
 
         contentContainerView.addSubview(topContentVM)
 
-        topBackgroundView.snp.makeConstraints { make in
-            make.left.right.top.equalToSuperview()
-            make.height.equalTo(SCREEN_HEIGHT * 0.46)
-        }
+//        topBackgroundView.snp.makeConstraints { make in
+//            make.left.right.top.equalToSuperview()
+//            make.height.equalTo(SCREEN_HEIGHT * 0.46)
+//        }
 
         contentContainerView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()

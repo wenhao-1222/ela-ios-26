@@ -36,6 +36,7 @@ class GuidanceVC: WHBaseViewVC {
         case goal
         case goalBarrier
         case removeBarrier
+        case elaProTransition
         case nutritionGoal
         case reminderPrompt
     }
@@ -52,43 +53,43 @@ class GuidanceVC: WHBaseViewVC {
     private var hasResolvedGuidanceProSubscriptionHistory = false
     private var hasAutoSelectedSkippedCardioFrequency = false
     private var isBackNavigationLocked = false
-    private let defaultStepsArray = [7,7,8]
-    private let defaultStepsArrayWithoutCardio = [7,6,8]
-    private let defaultStepsArrayUncertain = [7,7,7]
-    private let defaultStepsArrayWithoutCardioUncertain = [7,6,7]
-    private let fixedTargetStepsArray = [4,5,4]
+    private let defaultStepsArray = [7,7,9]
+    private let defaultStepsArrayWithoutCardio = [7,6,9]
+    private let defaultStepsArrayUncertain = [7,7,8]
+    private let defaultStepsArrayWithoutCardioUncertain = [7,6,8]
+    private let fixedTargetStepsArray = [4,5,5]
     private let defaultFlow: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
         .birthday, .weight, .height, .bodyfat, .takeoutFrequency,
         .mealsPerDay, .mealsSummary, .mealsAdjust, .exerciseCaloriesRecord, .cardioFrequency,
         .strengthTrainingFrequency, .strengthTrainingSummary, .caloriesResultBase, .caloriesResultExplain,
-        .goal, .goalBarrier, .removeBarrier, .nutritionGoal, .reminderPrompt
+        .goal, .goalBarrier, .removeBarrier, .elaProTransition, .nutritionGoal, .reminderPrompt
     ]
     private let defaultFlowUncertain: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
         .birthday, .weight, .height, .bodyfat, .takeoutFrequency,
         .mealsPerDay, .mealsSummary, .mealsAdjust, .exerciseCaloriesRecord, .cardioFrequency,
         .strengthTrainingFrequency, .strengthTrainingSummary, .caloriesResultBase, .caloriesResultExplain,
-        .goal, .goalBarrier, .removeBarrier, .reminderPrompt
+        .goal, .goalBarrier, .removeBarrier, .elaProTransition, .reminderPrompt
     ]
     private let defaultFlowNoCardioFrequency: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
         .birthday, .weight, .height, .bodyfat, .takeoutFrequency,
         .mealsPerDay, .mealsSummary, .mealsAdjust, .exerciseCaloriesRecord,
         .strengthTrainingFrequency, .strengthTrainingSummary, .caloriesResultBase, .caloriesResultExplain,
-        .goal, .goalBarrier, .removeBarrier, .nutritionGoal, .reminderPrompt
+        .goal, .goalBarrier, .removeBarrier, .elaProTransition, .nutritionGoal, .reminderPrompt
     ]
     private let defaultFlowNoCardioFrequencyUncertain: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
         .birthday, .weight, .height, .bodyfat, .takeoutFrequency,
         .mealsPerDay, .mealsSummary, .mealsAdjust, .exerciseCaloriesRecord,
         .strengthTrainingFrequency, .strengthTrainingSummary, .caloriesResultBase, .caloriesResultExplain,
-        .goal, .goalBarrier, .removeBarrier, .reminderPrompt
+        .goal, .goalBarrier, .removeBarrier, .elaProTransition, .reminderPrompt
     ]
     private let fixedTargetFlow: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
         .strengthTrainingFrequency, .strengthTrainingSummary, .mealsPerDay, .mealsSummary, .mealsAdjust, .goal,
-        .nutritionGoal, .goalBarrier, .removeBarrier, .reminderPrompt
+        .nutritionGoal, .goalBarrier, .removeBarrier, .elaProTransition, .reminderPrompt
     ]
     private var mountedSteps = Set<FlowStep>()
     private var isFixedTargetFlowEnabled: Bool {
@@ -448,8 +449,12 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceRemoveBarrierVM.init(frame: CGRect(x: SCREEN_WIDHT * 18, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         return vm
     }()
+    lazy var elaProTransitionVm: GuidanceElaProTransitionVM = {
+        let vm = GuidanceElaProTransitionVM(frame: CGRect(x: SCREEN_WIDHT * 19, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        return vm
+    }()
     lazy var nutritionGoalVm: GuidanceNutritionGoalVM = {
-        let vm = GuidanceNutritionGoalVM.init(frame: CGRect(x: SCREEN_WIDHT * 19, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        let vm = GuidanceNutritionGoalVM.init(frame: CGRect(x: SCREEN_WIDHT * 20, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vm.saveBlock = { [weak self] in
             self?.saveGuidanceNutritionGoals()
         }
@@ -459,7 +464,7 @@ class GuidanceVC: WHBaseViewVC {
         return vm
     }()
     lazy var fixedTargetNutritionGoalVm: GuidanceFixedTargetNutritionGoalVM = {
-        let vm = GuidanceFixedTargetNutritionGoalVM.init(frame: CGRect(x: SCREEN_WIDHT * 19, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        let vm = GuidanceFixedTargetNutritionGoalVM.init(frame: CGRect(x: SCREEN_WIDHT * 20, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vm.saveBlock = { [weak self] in
             self?.nextButtonTapAction()
 //            self?.saveGuidanceNutritionGoals()
@@ -470,7 +475,7 @@ class GuidanceVC: WHBaseViewVC {
         return vm
     }()
     lazy var reminderPromptVm: GuidanceReminderPromptVM = {
-        let vm = GuidanceReminderPromptVM.init(frame: CGRect(x: SCREEN_WIDHT * 20, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        let vm = GuidanceReminderPromptVM.init(frame: CGRect(x: SCREEN_WIDHT * 21, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vm.enableReminderBlock = { [weak self] in
             self?.handleReminderPromptCompletion(requestPermission: true)
         }
@@ -509,7 +514,7 @@ extension GuidanceVC{
 
         switch currentStep {
         case .progressChart, .fixedTarget, .height, .bodyfat, .takeoutFrequency,
-             .mealsAdjust, .exerciseCaloriesRecord, .cardioFrequency,
+             .mealsAdjust, .exerciseCaloriesRecord, .cardioFrequency, .elaProTransition,
              .caloriesResultExplain, .nutritionGoal,.goalBarrier,.dietRecord:
             moveToStep(index: currentIndex + 1, animated: true)
         case .birthday:
@@ -534,16 +539,8 @@ extension GuidanceVC{
             caloriesResultBaseVm.caloriesTextField.resignFirstResponder()
             moveToStep(index: currentIndex + 1, animated: true)
         case .removeBarrier:
-            if isFixedTargetFlowEnabled {
-                moveToStep(index: currentIndex + 1, animated: true)
-            } else {
-                delayedNextWorkItem?.cancel()
-                if let reminderPromptIndex = indexOfStep(.reminderPrompt) {
-                    moveToStep(index: reminderPromptIndex, animated: true)
-                } else {
-                    moveToStep(index: currentIndex + 1, animated: true)
-                }
-            }
+            delayedNextWorkItem?.cancel()
+            moveToStep(index: currentIndex + 1, animated: true)
         case .sex, .mealsSummary, .strengthTrainingSummary,  .reminderPrompt:
             break
         }
@@ -831,7 +828,7 @@ extension GuidanceVC{
             nextButton.isHidden = false
             nextButton.isEnabled = fixedTargetVm.hasSelection
             nextButton.alpha = 1
-        case .birthday, .weight, .height, .removeBarrier:
+        case .birthday, .weight, .height, .removeBarrier, .elaProTransition:
             nextButton.isHidden = false
             nextButton.isEnabled = true
             nextButton.alpha = 1
@@ -1284,6 +1281,7 @@ extension GuidanceVC{
         case .goal: return goalVm
         case .goalBarrier: return goalBarrierVm
         case .removeBarrier: return removeBarrierVm
+        case .elaProTransition: return elaProTransitionVm
         case .nutritionGoal: return isFixedTargetFlowEnabled ? fixedTargetNutritionGoalVm : nutritionGoalVm
         case .reminderPrompt: return reminderPromptVm
         }

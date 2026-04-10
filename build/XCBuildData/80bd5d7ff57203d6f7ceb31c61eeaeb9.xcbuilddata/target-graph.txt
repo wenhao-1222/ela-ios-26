@@ -1,0 +1,6 @@
+Target dependency graph (3 targets)
+Target 'lns' in project 'lns'
+➜ Explicit dependency on target 'ElaNaturalWidgetExtension' in project 'lns'
+➜ Explicit dependency on target 'ElaWidgetButtonExtension' in project 'lns'
+Target 'ElaWidgetButtonExtension' in project 'lns' (no dependencies)
+Target 'ElaNaturalWidgetExtension' in project 'lns' (no dependencies)

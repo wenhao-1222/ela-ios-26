@@ -1182,6 +1182,7 @@
 		ECBFC65C2F8630B9005E3B48 /* GuidanceTakeoutFrequencyTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC65B2F8630B4005E3B48 /* GuidanceTakeoutFrequencyTipsAlertVM.swift */; };
 		ECBFC65E2F8643FB005E3B48 /* GuidanceExerciseCaloriesRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC65D2F8643F6005E3B48 /* GuidanceExerciseCaloriesRecordTipsAlertVM.swift */; };
 		ECBFC6602F86516D005E3B48 /* GuidanceNutritionGoalTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC65F2F865169005E3B48 /* GuidanceNutritionGoalTipsAlertVM.swift */; };
+		ECBFC6FE2F88A22F005E3B48 /* ELAFlowingGradientBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFC6FD2F88A22F005E3B48 /* ELAFlowingGradientBackgroundView.swift */; };
 		ECBFDFD62C2A77DA0004760A /* UIAlertAction+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECBFDFD52C2A77DA0004760A /* UIAlertAction+Exs.swift */; };
 		ECC050612C65B1F10029A47F /* LogsSQLiteUploadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC050602C65B1F10029A47F /* LogsSQLiteUploadManager.swift */; };
 		ECC24F912C4A16610012D0FD /* CreateMealsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC24F902C4A16610012D0FD /* CreateMealsVC.swift */; };
@@ -1368,6 +1369,7 @@
 		F1A0C10C2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */; };
 		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
 		F2B0C2012F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */; };
+		F2B0C3012F80100100A1B2C3 /* GuidanceElaProTransitionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2667,6 +2669,7 @@
 		ECBFC65B2F8630B4005E3B48 /* GuidanceTakeoutFrequencyTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceTakeoutFrequencyTipsAlertVM.swift; sourceTree = "<group>"; };
 		ECBFC65D2F8643F6005E3B48 /* GuidanceExerciseCaloriesRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceExerciseCaloriesRecordTipsAlertVM.swift; sourceTree = "<group>"; };
 		ECBFC65F2F865169005E3B48 /* GuidanceNutritionGoalTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceNutritionGoalTipsAlertVM.swift; sourceTree = "<group>"; };
+		ECBFC6FD2F88A22F005E3B48 /* ELAFlowingGradientBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ELAFlowingGradientBackgroundView.swift; sourceTree = "<group>"; };
 		ECBFDFD52C2A77DA0004760A /* UIAlertAction+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAlertAction+Exs.swift"; sourceTree = "<group>"; };
 		ECC050602C65B1F10029A47F /* LogsSQLiteUploadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsSQLiteUploadManager.swift; sourceTree = "<group>"; };
 		ECC24F902C4A16610012D0FD /* CreateMealsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateMealsVC.swift; sourceTree = "<group>"; };
@@ -2881,6 +2884,7 @@
 		F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceReadyStartVM.swift; sourceTree = "<group>"; };
 		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordTipsAlertVM.swift; sourceTree = "<group>"; };
+		F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceElaProTransitionVM.swift; sourceTree = "<group>"; };
 		F9B1295DEDB005F6AC14F235 /* Pods-ElaWeekProteinWidgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekProteinWidgetExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaWeekProteinWidgetExtension/Pods-ElaWeekProteinWidgetExtension.release.xcconfig"; sourceTree = "<group>"; };
 		FFE3733779EF5564F1D7097E /* Pods-ElaWeekProteinWidgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekProteinWidgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-ElaWeekProteinWidgetExtension/Pods-ElaWeekProteinWidgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4352,6 +4356,7 @@
 				EC1D07A72F6D3585002A90EA /* GuidanceProSubscribeVM.swift */,
 				EC1D07A12F6D1A0F002A90EA /* GuidanceProTopVM.swift */,
 				EC1D07A32F6D2468002A90EA /* GuidanceProTrialVM.swift */,
+				ECBFC6FD2F88A22F005E3B48 /* ELAFlowingGradientBackgroundView.swift */,
 			);
 			path = GuidancePro;
 			sourceTree = "<group>";
@@ -4371,6 +4376,7 @@
 				EC78C2BB2F69776500681507 /* GuidanceMealsAdjustVM.swift */,
 				EC78C2B72F69522400681507 /* GuidanceMealsPerDayVM.swift */,
 				EC78C2B92F69669B00681507 /* GuidanceMealsSummaryVM.swift */,
+				F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */,
 				EC78C2CD2F6B2E7000681507 /* GuidanceNutritionGoalVM.swift */,
 				ECBFC65F2F865169005E3B48 /* GuidanceNutritionGoalTipsAlertVM.swift */,
 				EC78C2C92F6B15F800681507 /* GuidanceReminderPromptVM.swift */,
@@ -6849,6 +6855,7 @@
 				EC78C2BC2F69776B00681507 /* GuidanceMealsAdjustVM.swift in Sources */,
 				EC78C2B82F69522A00681507 /* GuidanceMealsPerDayVM.swift in Sources */,
 				EC78C2BA2F6966A100681507 /* GuidanceMealsSummaryVM.swift in Sources */,
+				F2B0C3012F80100100A1B2C3 /* GuidanceElaProTransitionVM.swift in Sources */,
 				EC78C2CE2F6B2E7900681507 /* GuidanceNutritionGoalVM.swift in Sources */,
 				EC78C2CA2F6B160000681507 /* GuidanceReminderPromptVM.swift in Sources */,
 				EC78C2C82F6B040000681507 /* GuidanceRemoveBarrierVM.swift in Sources */,
@@ -7539,6 +7546,7 @@
 				A71C548F2E6AD2BD00FB797D /* MarketListHeroCell.swift in Sources */,
 				A7BFEA332E5EEFA400FD45A1 /* JournalRemarkTableViewCell.swift in Sources */,
 				A755BBA82F8E0A6D000E1B3D /* JournalAICoachTableViewCell.swift in Sources */,
+				ECBFC6FE2F88A22F005E3B48 /* ELAFlowingGradientBackgroundView.swift in Sources */,
 				A733236D2D93E6A90065BF0A /* NotificationNames.swift in Sources */,
 				A72401412E55A8F2005DB615 /* PersonalTopFuncItemVM.swift in Sources */,
 				ECF0BFD62BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift in Sources */,

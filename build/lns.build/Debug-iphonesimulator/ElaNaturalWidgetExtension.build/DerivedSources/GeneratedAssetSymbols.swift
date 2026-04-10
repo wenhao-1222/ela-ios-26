@@ -292,6 +292,9 @@ extension ImageResource {
     /// The "ai_camera_flash_normal_icon" asset catalog image resource.
     static let aiCameraFlashNormalIcon = ImageResource(name: "ai_camera_flash_normal_icon", bundle: resourceBundle)
 
+    /// The "ai_coach_download_icon" asset catalog image resource.
+    static let aiCoachDownloadIcon = ImageResource(name: "ai_coach_download_icon", bundle: resourceBundle)
+
     /// The "ai_coach_icon" asset catalog image resource.
     static let aiCoachIcon = ImageResource(name: "ai_coach_icon", bundle: resourceBundle)
 
@@ -720,6 +723,9 @@ extension ImageResource {
 
     /// The "ela_pro_expired_alert_icon" asset catalog image resource.
     static let elaProExpiredAlertIcon = ImageResource(name: "ela_pro_expired_alert_icon", bundle: resourceBundle)
+
+    /// The "ela_pro_guidance_1_icon" asset catalog image resource.
+    static let elaProGuidance1Icon = ImageResource(name: "ela_pro_guidance_1_icon", bundle: resourceBundle)
 
     /// The "ela_pro_guidance_icon" asset catalog image resource.
     static let elaProGuidanceIcon = ImageResource(name: "ela_pro_guidance_icon", bundle: resourceBundle)
@@ -4225,6 +4231,15 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "ai_coach_download_icon" asset catalog image.
+    static var aiCoachDownloadIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .aiCoachDownloadIcon)
+#else
+        .init()
+#endif
+    }
+
     /// The "ai_coach_icon" asset catalog image.
     static var aiCoachIcon: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
@@ -5507,6 +5522,15 @@ extension AppKit.NSImage {
     static var elaProExpiredAlertIcon: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .elaProExpiredAlertIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_guidance_1_icon" asset catalog image.
+    static var elaProGuidance1Icon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProGuidance1Icon)
 #else
         .init()
 #endif
@@ -10191,6 +10215,15 @@ extension UIKit.UIImage {
 #endif
     }
 
+    /// The "ai_coach_download_icon" asset catalog image.
+    static var aiCoachDownloadIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .aiCoachDownloadIcon)
+#else
+        .init()
+#endif
+    }
+
     /// The "ai_coach_icon" asset catalog image.
     static var aiCoachIcon: UIKit.UIImage {
 #if !os(watchOS)
@@ -11473,6 +11506,15 @@ extension UIKit.UIImage {
     static var elaProExpiredAlertIcon: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .elaProExpiredAlertIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_guidance_1_icon" asset catalog image.
+    static var elaProGuidance1Icon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProGuidance1Icon)
 #else
         .init()
 #endif

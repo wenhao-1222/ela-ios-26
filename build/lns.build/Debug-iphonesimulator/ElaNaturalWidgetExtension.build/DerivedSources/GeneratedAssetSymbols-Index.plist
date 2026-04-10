@@ -881,6 +881,16 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameAiCoachDownloadIcon</string>
+			<key>relativePath</key>
+			<string>./aicoach/ai_coach_download_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>aiCoachDownloadIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameAiCoachIcon</string>
 			<key>relativePath</key>
 			<string>./aicoach/ai_coach_icon.imageset</string>
@@ -2306,6 +2316,16 @@
 			<string>./pro/ela_pro_expired_alert_icon.imageset</string>
 			<key>swiftSymbol</key>
 			<string>elaProExpiredAlertIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProGuidance1Icon</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_guidance_1_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProGuidance1Icon</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>

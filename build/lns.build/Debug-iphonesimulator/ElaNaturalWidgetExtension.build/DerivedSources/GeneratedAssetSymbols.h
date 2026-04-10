@@ -270,6 +270,9 @@ static NSString * const ACImageNameAiCameraFlashIcon AC_SWIFT_PRIVATE = @"ai_cam
 /// The "ai_camera_flash_normal_icon" asset catalog image resource.
 static NSString * const ACImageNameAiCameraFlashNormalIcon AC_SWIFT_PRIVATE = @"ai_camera_flash_normal_icon";
 
+/// The "ai_coach_download_icon" asset catalog image resource.
+static NSString * const ACImageNameAiCoachDownloadIcon AC_SWIFT_PRIVATE = @"ai_coach_download_icon";
+
 /// The "ai_coach_icon" asset catalog image resource.
 static NSString * const ACImageNameAiCoachIcon AC_SWIFT_PRIVATE = @"ai_coach_icon";
 
@@ -698,6 +701,9 @@ static NSString * const ACImageNameElaProExpiredAlertBg AC_SWIFT_PRIVATE = @"ela
 
 /// The "ela_pro_expired_alert_icon" asset catalog image resource.
 static NSString * const ACImageNameElaProExpiredAlertIcon AC_SWIFT_PRIVATE = @"ela_pro_expired_alert_icon";
+
+/// The "ela_pro_guidance_1_icon" asset catalog image resource.
+static NSString * const ACImageNameElaProGuidance1Icon AC_SWIFT_PRIVATE = @"ela_pro_guidance_1_icon";
 
 /// The "ela_pro_guidance_icon" asset catalog image resource.
 static NSString * const ACImageNameElaProGuidanceIcon AC_SWIFT_PRIVATE = @"ela_pro_guidance_icon";
