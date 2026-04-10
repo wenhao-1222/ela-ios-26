@@ -50,7 +50,7 @@ class GuidanceProVC: WHBaseViewVC {
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         button.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-        button.layer.cornerRadius = kFitWidth(22)
+        button.layer.cornerRadius = kFitWidth(24)
         button.clipsToBounds = true
         button.enablePressEffect()
         button.addTarget(self, action: #selector(nextButtonTapAction), for: .touchUpInside)
@@ -133,11 +133,17 @@ extension GuidanceProVC {
             make.edges.equalToSuperview()
         }
 
+//        nextButton.snp.makeConstraints { make in
+//            make.left.equalTo(kFitWidth(20))
+//            make.right.equalTo(kFitWidth(-20))
+//            make.height.equalTo(kFitWidth(44))
+//            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-kFitWidth(22))
+//        }
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.height.equalTo(kFitWidth(44))
-            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-kFitWidth(22))
+            make.height.equalTo(kFitWidth(48))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
         }
 
         subscribeContentVM.startTrialTapBlock = { [weak self] in

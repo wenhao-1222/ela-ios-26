@@ -57,6 +57,7 @@ class ElaProPriceVM: UIView {
     var protocalTapBlock: (() -> ())?
     var purchaseLoadingStateChangeBlock: ((Bool) -> ())?
     var bizType = ""
+    var purchaseQueryBizType = "3"
     var isPurchased = ""
     
     private let selectedBlue = WHColor_16(colorStr: "1677F2")
@@ -638,7 +639,8 @@ extension ElaProPriceVM{
                 
                 switch result {
                 case .success(let transaction):
-                    ElaProIAPManager.shared.handlePurchaseSuccessPostAction(transaction: transaction)
+                    ElaProIAPManager.shared.handlePurchaseSuccessPostAction(transaction: transaction,
+                                                                           queryBizType: self.purchaseQueryBizType)
                     MCToast.mc_text(purchasingPlan == .lifetime ? "购买成功" : "订阅成功")
                     self.purchaseSuccessBlock?()
                 case .failure(let error):

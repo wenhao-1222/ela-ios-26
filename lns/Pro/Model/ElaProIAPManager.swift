@@ -53,6 +53,12 @@ enum ElaProSubscriptionHistoryState {
 final class ElaProIAPManager: NSObject {
     static let shared = ElaProIAPManager()
     static let localEntitlementUpdatedNotification = NSNotification.Name("ela_pro_local_entitlement_updated")
+
+    private enum PurchaseQueryBizType: String {
+        case pendingBind = "1"
+        case aiGuidance = "2"
+        case standard = "3"
+    }
     
     private var productsRequest: SKProductsRequest?
     private var cachedProducts: [String: SKProduct] = [:]
@@ -251,13 +257,15 @@ final class ElaProIAPManager: NSObject {
         cachedProducts.removeAll()
     }
     
-    func handlePurchaseSuccessPostAction(transaction: SKPaymentTransaction) {
+    func handlePurchaseSuccessPostAction(transaction: SKPaymentTransaction,
+                                         queryBizType: String = PurchaseQueryBizType.standard.rawValue) {
         let expireAt = applyLocalTemporaryUnlock(transaction: transaction)
         let payload = makePurchaseVerifyPayload(transaction: transaction, localUnlockExpireAt: expireAt)
         cachePendingVerifyPayload(payload: payload)
         storePendingTransactionID(transaction.transactionIdentifier)
         if canBindPurchaseToCurrentUser() {
-            bindPendingPurchaseIfNeeded()
+            let resolvedQueryBizType = resolveQueryBizType(queryBizType, defaultType: .standard)
+            bindPendingPurchaseIfNeeded(queryBizType: resolvedQueryBizType)
         } else {
             DLLog(message: "[ElaProIAP][QUERY] deferred until login: user not ready")
         }
@@ -269,7 +277,8 @@ final class ElaProIAPManager: NSObject {
         return UserDefaults.standard.bool(forKey: LocalUnlockKeys.isUnlocked)
     }
 
-    func bindPendingPurchaseIfNeeded(completion: ((Bool) -> Void)? = nil) {
+    func bindPendingPurchaseIfNeeded(queryBizType: String = PurchaseQueryBizType.pendingBind.rawValue,
+                                     completion: ((Bool) -> Void)? = nil) {
         guard canBindPurchaseToCurrentUser() else {
             completion?(false)
             return
@@ -281,7 +290,8 @@ final class ElaProIAPManager: NSObject {
             return
         }
 
-        queryPurchaseOrder(transactionID: transactionID) { success in
+        let resolvedQueryBizType = resolveQueryBizType(queryBizType, defaultType: .pendingBind)
+        queryPurchaseOrder(transactionID: transactionID, bizType: resolvedQueryBizType) { success in
             completion?(success)
         }
     }
@@ -480,16 +490,19 @@ final class ElaProIAPManager: NSObject {
         UserDefaults.standard.set(json, forKey: LocalUnlockKeys.pendingVerifyPayload)
     }
     
-    private func queryPurchaseOrder(transactionID: String, completion: ((Bool) -> Void)? = nil) {
+    private func queryPurchaseOrder(transactionID: String,
+                                    bizType: String,
+                                    completion: ((Bool) -> Void)? = nil) {
         let params: [String: AnyObject] = [
-            "transactionId": transactionID as AnyObject
+            "transactionId": transactionID as AnyObject,
+            "bizType": bizType as AnyObject
         ]
         
         WHNetworkUtil.shareManager().POST(urlString: URL_pro_iap_query,
                                           parameters: params,
                                           success: { responseObject in
             let code = responseObject["code"] as? Int ?? -1
-            DLLog(message: "[ElaProIAP][QUERY] success: \(responseObject)")
+            DLLog(message: "[ElaProIAP][QUERY] success: \(responseObject), transactionId=\(transactionID), bizType=\(bizType)")
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "[ElaProIAP][QUERY] success:\(dataDict)")
@@ -500,9 +513,18 @@ final class ElaProIAPManager: NSObject {
                 completion?(false)
             }
         }, failure: { failed in
-            DLLog(message: "[ElaProIAP][QUERY] failure: \(failed), tractionId=\(transactionID)")
+            DLLog(message: "[ElaProIAP][QUERY] failure: \(failed), tractionId=\(transactionID), bizType=\(bizType)")
             completion?(false)
         })
+    }
+
+    private func resolveQueryBizType(_ queryBizType: String,
+                                     defaultType: PurchaseQueryBizType) -> String {
+        let trimmedBizType = queryBizType.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let type = PurchaseQueryBizType(rawValue: trimmedBizType) else {
+            return defaultType.rawValue
+        }
+        return type.rawValue
     }
 
     private func canBindPurchaseToCurrentUser() -> Bool {

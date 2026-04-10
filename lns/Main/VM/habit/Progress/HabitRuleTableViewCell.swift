@@ -37,8 +37,21 @@ extension HabitRuleTableViewCell{
             .COLOR_TEXT_TITLE_0f1214_50
         titleLab.font = isTitle ? .systemFont(ofSize: 17, weight: .semibold) :
             .systemFont(ofSize: 13, weight: .regular)
-//        if isTitle{
+        
+        let tipString = "（不影响排行榜）"
+        if contentStr.contains(tipString){
+            let range = NSRange.init(location: 6, length: tipString.count)
+            let attr = NSMutableAttributedString(string: contentStr)
+            attr.addAttribute(.font, value: UIFont.systemFont(ofSize: 12, weight: .regular), range: range)
+            attr.addAttribute(.foregroundColor, value: UIColor.COLOR_TEXT_TITLE_0f1214_50, range: range)
+            titleLab.attributedText = attr
+        }else{
             titleLab.setLineHeight(textString: contentStr,lineHeight: titleLab.font.lineHeight)
+        }
+        
+        
+//        if isTitle{
+//            titleLab.setLineHeight(textString: contentStr,lineHeight: titleLab.font.lineHeight)
 //        }else{
 //            titleLab.setLineHeight(textString: contentStr,lineHeight: titleLab.font.lineHeight * 1.5)
 //        }

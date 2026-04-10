@@ -81,11 +81,12 @@ class DateChoiceAlertVM: UIView {
         let btn = UIButton(type: .custom)
         btn.setTitle("确认", for: .normal)
         btn.setTitleColor(.white, for: .normal)
-        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_GRAY, for: .highlighted)
+//        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_GRAY, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
         btn.backgroundColor = .THEME
         btn.layer.cornerRadius = kFitWidth(28)
         btn.clipsToBounds = true
+        btn.enablePressEffect()
         btn.addTarget(self, action: #selector(confirmAction), for: .touchUpInside)
         return btn
     }()

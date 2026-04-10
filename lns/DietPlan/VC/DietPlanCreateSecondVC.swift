@@ -869,7 +869,7 @@ extension DietPlanCreateSecondVC {
             guard let self = self else { return }
             self.isSubmittingFinalFlow = false
             self.syncNextButtonEnableStatus()
-            self.presentAlertVc(confirmBtn: "去升级", message: "", title: "此功能需要升级Ela Pro", cancelBtn: "取消", handler: { [weak self] _ in
+            self.presentAlertVc(confirmBtn: "去升级", message: "", title: "升级ELA PRO，解锁完整体验", cancelBtn: "取消", handler: { [weak self] _ in
                 guard let self = self else { return }
                 let vc = ElaProVC()
                 vc.showPriceOnly = true
