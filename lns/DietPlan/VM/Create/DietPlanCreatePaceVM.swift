@@ -126,14 +126,14 @@ class DietPlanCreatePaceVM: UIView {
         let lab = UILabel()
         lab.text = "你想以什么节奏推进目标？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
     }()
 
     lazy var levelLabel: UILabel = {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 24, weight: .medium)
+        lab.font = .systemFont(ofSize: 18, weight: .medium)
         lab.textAlignment = .center
         return lab
     }()
@@ -410,9 +410,19 @@ private extension DietPlanCreatePaceVM {
         chartLineLayer.strokeColor = level.lineColor.cgColor
 
         recomputeSpec(rateKgPerWeek: rateKgPerWeek)
+        
+        let attr = NSMutableAttributedString(string: formatWeight(startWeight))
+        attr.addAttribute(.font, value: UIFont().DDInFontRegular(fontSize: 14), range: NSRange(location: 0, length: formatWeight(startWeight).count))
+        attr.append(NSAttributedString(string: "公斤"))
+        startWeightLabel.attributedText = attr
 
-        startWeightLabel.text = "\(formatWeight(startWeight)) 公斤"
-        endWeightLabel.text = "\(formatWeight(endLabelDisplayWeight())) 公斤"
+        let attrEnd = NSMutableAttributedString(string: formatWeight(endLabelDisplayWeight()))
+        attrEnd.addAttribute(.font, value: UIFont().DDInFontRegular(fontSize: 14), range: NSRange(location: 0, length: formatWeight(endLabelDisplayWeight()).count))
+        attrEnd.append(NSAttributedString(string: "公斤"))
+        endWeightLabel.attributedText = attrEnd
+        
+//        startWeightLabel.text = "\(formatWeight(startWeight)) 公斤"
+//        endWeightLabel.text = "\(formatWeight(endLabelDisplayWeight())) 公斤"
         updateTickLabels()
         redrawChartPath(animated: animated)
     }
@@ -584,9 +594,26 @@ private extension DietPlanCreatePaceVM {
             formatter.dateFormat = "M月"
         }
 
-        tickLeftLabel.text = formatter.string(from: startDate)
-        tickMidLabel.text = formatter.string(from: midDate)
-        tickRightLabel.text = formatter.string(from: endDate)
+//        tickLeftLabel.text = formatter.string(from: startDate)
+//        tickMidLabel.text = formatter.string(from: midDate)
+//        tickRightLabel.text = formatter.string(from: endDate)
+        
+        
+        tickLeftLabel.attributedText = makeAttributedText(
+            text: formatter.string(from: startDate),
+            font: tickLeftLabel.font,
+            textColor: tickLeftLabel.textColor
+        )
+        tickMidLabel.attributedText = makeAttributedText(
+            text: formatter.string(from: midDate),
+            font: tickMidLabel.font,
+            textColor: tickMidLabel.textColor
+        )
+        tickRightLabel.attributedText = makeAttributedText(
+            text: formatter.string(from: endDate),
+            font: tickRightLabel.font,
+            textColor: tickRightLabel.textColor
+        )
     }
 
     func chartDateRange() -> (Date, Date) {

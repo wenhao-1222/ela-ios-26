@@ -45,7 +45,7 @@ class DietPlanCreateEventsVM: UIView {
         let lab = UILabel()
         lab.text = "你的日常活动量是多少？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
     }()
 
@@ -115,7 +115,7 @@ extension DietPlanCreateEventsVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(55))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
         }
 
         tableView.snp.makeConstraints { make in

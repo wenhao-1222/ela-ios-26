@@ -157,7 +157,7 @@ final class DietPlanTargetWeightRulerView: UIView, UIScrollViewDelegate {
             if isMajor {
                 let label = UILabel(frame: CGRect(x: x - kFitWidth(18), y: tickView.frame.maxY+kFitWidth(8), width: kFitWidth(36), height: kFitWidth(24)))
                 label.textAlignment = .center
-                label.font = .systemFont(ofSize: 14, weight: .medium)
+                label.font = UIFont().DDInFontMedium(fontSize: 15)//.systemFont(ofSize: 14, weight: .medium)
                 label.textColor = .COLOR_TEXT_TITLE_0f1214_50
                 let value = minValue + Double(i) * stepValue
                 label.text = "\(Int(round(value)))"

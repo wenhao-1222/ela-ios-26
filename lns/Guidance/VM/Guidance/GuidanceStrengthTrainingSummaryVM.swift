@@ -198,33 +198,6 @@ extension GuidanceStrengthTrainingSummaryVM {
     }
 }
 
-private extension GuidanceStrengthTrainingSummaryVM {
-    func makeAttributedText(text: String, font: UIFont, textColor: UIColor) -> NSAttributedString {
-        let attr = NSMutableAttributedString(
-            string: text,
-            attributes: [
-                .font: font,
-                .foregroundColor: textColor
-            ]
-        )
-
-        guard let regex = try? NSRegularExpression(pattern: "\\d+", options: []) else {
-            return attr
-        }
-
-        let nsText = text as NSString
-        let numberFont = UIFont().DDInFontMedium(fontSize: font.pointSize)
-        regex.matches(in: text, options: [], range: NSRange(location: 0, length: nsText.length)).forEach {
-            attr.addAttributes([
-                .font: numberFont,
-                .foregroundColor: textColor
-            ], range: $0.range)
-        }
-
-        return attr
-    }
-}
-
 extension GuidanceStrengthTrainingSummaryVM {
     func initUI() {
         addSubview(bgImgView)

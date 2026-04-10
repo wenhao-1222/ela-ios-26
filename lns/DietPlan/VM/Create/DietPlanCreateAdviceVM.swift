@@ -20,6 +20,17 @@ class DietPlanCreateAdviceVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+        bottomGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         topGradientLayer.frame = topGradientView.bounds
@@ -49,7 +60,7 @@ class DietPlanCreateAdviceVM: UIView {
         let lab = UILabel()
         lab.text = "可以很大降低规律饮食的难度"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 17, weight: .regular)
+        lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.textAlignment = .center
         return lab
     }()
@@ -159,6 +170,10 @@ extension DietPlanCreateAdviceVM {
         contentView.addSubview(referenceDashView)
         contentView.addSubview(referenceTitleLabel)
         contentView.addSubview(referenceDescLabel)
+        
+        icon1.setImgLocal(imgName: "diet_surve_icon_1")
+        icon2.setImgLocal(imgName: "diet_surve_icon_2")
+        icon3.setImgLocal(imgName: "diet_surve_icon_3")
 
         [icon1, card1Title, card1Desc].forEach { card1.addSubview($0) }
         [icon2, card2Title, card2Desc].forEach { card2.addSubview($0) }
@@ -255,11 +270,11 @@ extension DietPlanCreateAdviceVM {
         icon.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.top.equalTo(kFitWidth(16))
-            make.width.height.equalTo(kFitWidth(24))
+            make.width.height.equalTo(kFitWidth(20))
         }
 
         title.snp.makeConstraints { make in
-            make.left.equalTo(icon.snp.right).offset(kFitWidth(10))
+            make.left.equalTo(icon.snp.right).offset(kFitWidth(7))
             make.right.equalTo(kFitWidth(-16))
             make.centerY.equalTo(icon)
         }
@@ -283,9 +298,9 @@ extension DietPlanCreateAdviceVM {
     func makeDotIcon() -> UIImageView {
         let img = UIImageView()
         img.contentMode = .scaleAspectFit
-        img.backgroundColor = WHColor_16(colorStr: "D0D0D0")
-        img.layer.cornerRadius = kFitWidth(12)
-        img.clipsToBounds = true
+//        img.backgroundColor = WHColor_16(colorStr: "D0D0D0")
+//        img.layer.cornerRadius = kFitWidth(12)
+//        img.clipsToBounds = true
         return img
     }
 
@@ -300,15 +315,15 @@ extension DietPlanCreateAdviceVM {
     func makeCardDesc(_ text: String) -> UILabel {
         let lab = UILabel()
         lab.numberOfLines = 0
-        lab.font = .systemFont(ofSize: 13, weight: .regular)
+//        lab.font = .systemFont(ofSize: 13, weight: .regular)
         
+//        let attr = NSMutableAttributedString(attributedString: makeAttributedText(text: text, font: UIFont.systemFont(ofSize: 13, weight: .regular), textColor: UIColor.COLOR_TEXT_TITLE_0f1214_50))
         let attr = NSMutableAttributedString(string: text)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.3
-        attr.addAttributes([
-            .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
-            .font: UIFont.systemFont(ofSize: 13, weight: .regular),
-            .paragraphStyle: paragraphStyle
+        attr.addAttributes([.paragraphStyle: paragraphStyle,
+                            .font:UIFont.systemFont(ofSize: 13, weight: .regular),
+                            .foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50
         ], range: NSRange(location: 0, length: text.count))
         
         lab.attributedText = attr

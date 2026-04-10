@@ -45,7 +45,7 @@ class DietPlanCreateTargetWeightVM: UIView {
         let lab = UILabel()
         lab.text = "你的目标体重是?"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
     }()
 
@@ -94,7 +94,7 @@ class DietPlanCreateTargetWeightVM: UIView {
     lazy var currentWeightValueLabel: UILabel = {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 14, weight: .medium)
+        lab.font = UIFont().DDInFontMedium(fontSize: 15)//.systemFont(ofSize: 14, weight: .medium)
         lab.textAlignment = .right
         return lab
     }()
@@ -212,7 +212,7 @@ extension DietPlanCreateTargetWeightVM {
 
     func updateTargetWeightText(value: Double) {
         let text = NSMutableAttributedString(string: formatOneDecimal(value))
-        text.yy_font = .systemFont(ofSize: 40, weight: .medium)
+        text.yy_font = UIFont().DDInFontMedium(fontSize: 42)
         text.yy_color = .THEME
 
         let unitText = NSMutableAttributedString(string: " 公斤")

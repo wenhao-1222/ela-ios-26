@@ -25,7 +25,7 @@ class QuestionnaireBirthdayVM: UIView {
     }
     lazy var tipsLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "记录你的出生年份\n让预测更准确"
+        lab.text = "记录你的出生年份\n让计算更准确"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.numberOfLines = 2

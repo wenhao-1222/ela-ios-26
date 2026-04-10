@@ -42,7 +42,7 @@ class DietPlanCreateEatStyleVM: UIView {
         lab.text = "选择你的饮食风格"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
     }()
 
@@ -82,11 +82,11 @@ extension DietPlanCreateEatStyleVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(72))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
         }
 
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(48))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(60))
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(12)))
         }

@@ -32,7 +32,7 @@ class DietPlanCreateKetoHistoryVM: UIView {
         lab.numberOfLines = 2
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
     }()
 
@@ -58,8 +58,8 @@ extension DietPlanCreateKetoHistoryVM {
             let card = UIView()
             card.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05//WHColor_16(colorStr: "E8E8EA")
             card.layer.cornerRadius = kFitWidth(24)
-            card.layer.borderWidth = kFitWidth(2)
-            card.layer.borderColor = UIColor.clear.cgColor
+//            card.layer.borderWidth = kFitWidth(2)
+//            card.layer.borderColor = UIColor.clear.cgColor
             card.clipsToBounds = true
             card.tag = index
 
@@ -68,7 +68,7 @@ extension DietPlanCreateKetoHistoryVM {
 
             let lab = UILabel()
             lab.text = text
-            lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+            lab.textColor = .COLOR_TEXT_TITLE_0f1214
             lab.font = .systemFont(ofSize: 20, weight: .medium)
             lab.textAlignment = .center
 
@@ -112,12 +112,12 @@ extension DietPlanCreateKetoHistoryVM {
         selectedIndex = index
 
         if oldIndex >= 0 {
-            itemViews[oldIndex].layer.borderColor = UIColor.clear.cgColor
-            titleLabels[oldIndex].textColor = .COLOR_TEXT_TITLE_0f1214_50
+            itemViews[oldIndex].backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_05
+            titleLabels[oldIndex].textColor = .COLOR_TEXT_TITLE_0f1214
         }
 
-        itemViews[index].layer.borderColor = UIColor.THEME.cgColor
-        titleLabels[index].textColor = .THEME//.COLOR_TEXT_TITLE_0f1214
+        itemViews[index].backgroundColor = UIColor.THEME
+        titleLabels[index].textColor = .white//.COLOR_TEXT_TITLE_0f1214
 
         QuestinonaireMsgModel.shared.dietHistoryType = "\(index)"
         selectedBlock?()

@@ -231,9 +231,9 @@ extension GuidanceSexTipsAlertVM {
         contentStackView.addArrangedSubview(referenceLabel)
 
         contentStackView.setCustomSpacing(kFitWidth(20), after: introLabel)
-        contentStackView.setCustomSpacing(kFitWidth(16), after: maleTitleLabel)
+        contentStackView.setCustomSpacing(kFitWidth(8), after: maleTitleLabel)
         contentStackView.setCustomSpacing(kFitWidth(20), after: maleContentLabel)
-        contentStackView.setCustomSpacing(kFitWidth(16), after: femaleTitleLabel)
+        contentStackView.setCustomSpacing(kFitWidth(8), after: femaleTitleLabel)
         contentStackView.setCustomSpacing(kFitWidth(20), after: femaleContentLabel)
         contentStackView.setCustomSpacing(kFitWidth(20), after: endingLabel)
 

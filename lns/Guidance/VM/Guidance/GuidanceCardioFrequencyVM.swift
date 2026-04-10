@@ -88,7 +88,7 @@ extension GuidanceCardioFrequencyVM {
         for (idx, button) in itemButtons.enumerated() {
             let isSelected = idx == index
             button.backgroundColor = isSelected ? .THEME : .COLOR_TEXT_TITLE_0f1214_05
-            titleLabels[idx].textColor = isSelected ? .COLOR_TEXT_WHITE : .COLOR_TEXT_TITLE_0f1214_50
+            titleLabels[idx].textColor = isSelected ? .COLOR_TEXT_WHITE : .COLOR_TEXT_TITLE_0f1214
         }
 
         if index >= 0 && index < dataArray.count {
@@ -120,7 +120,7 @@ extension GuidanceCardioFrequencyVM {
             let lab = UILabel()
             lab.text = item.title
             lab.textAlignment = .center
-            lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+            lab.textColor = .COLOR_TEXT_TITLE_0f1214
             lab.font = .systemFont(ofSize: 20, weight: .medium)
 
             button.addSubview(lab)

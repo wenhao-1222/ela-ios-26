@@ -49,7 +49,7 @@ class DietPlanCreateBarrierVM: UIView {
         lab.textAlignment = .center
         lab.text = "你在以往控制饮食时\n最大的阻碍是？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
     }()
 

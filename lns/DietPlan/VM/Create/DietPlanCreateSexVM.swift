@@ -11,6 +11,7 @@ class DietPlanCreateSexVM: UIView {
     
     var manTapBlock:(()->())?
     var femanTapBlock:(()->())?
+    var showTipsBlock:(()->())?
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -22,13 +23,24 @@ class DietPlanCreateSexVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    lazy var titleLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
+    lazy var titleLabel: UILabel = {
+        let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
-        lab.text = "你的性别？"
+        lab.text = "你的性别是？"
         
         return lab
+    }()
+    lazy var tipsButton : UIButton = {
+        let btn = UIButton()
+        btn.setTitle("荷尔蒙：无法被忽略的变量", for: .normal)
+        btn.setTitleColor(.THEME, for: .normal)
+        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
+        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        
+        btn.addTarget(self, action: #selector(showTipsAction), for: .touchUpInside)
+        
+        return btn
     }()
     lazy var sexManButton: FeedBackButton = {
         let btn = FeedBackButton()
@@ -119,30 +131,41 @@ extension DietPlanCreateSexVM{
             self.femanTapBlock!()
         }
     }
+    @objc func showTipsAction(){
+        self.showTipsBlock?()
+    }
 }
 
 extension DietPlanCreateSexVM{
     func initUI() {
         addSubview(titleLabel)
+        addSubview(tipsButton)
         addSubview(sexManButton)
         sexManButton.addSubview(sexManIcon)
         sexManButton.addSubview(sexManLabel)
         addSubview(sexFeManButton)
         sexFeManButton.addSubview(sexFeManIcon)
         sexFeManButton.addSubview(sexFeManLabel)
-    
+        
         setConstrait()
     }
     
     func setConstrait() {
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(76))
+            make.height.equalTo(kFitWidth(36))
+            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(59))
+        }
+        tipsButton.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
+            make.centerX.lessThanOrEqualToSuperview()
+            make.width.equalTo(kFitWidth(200))
+            make.height.equalTo(kFitWidth(21))
         }
         sexManButton.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
 //            make.top.equalTo(kFitWidth(232))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(127))
+            make.top.equalTo(tipsButton.snp.bottom).offset(kFitWidth(158))
             make.width.equalTo(SCREEN_WIDHT-kFitWidth(32))
             make.height.equalTo(kFitWidth(80))
         }
@@ -173,3 +196,57 @@ extension DietPlanCreateSexVM{
         }
     }
 }
+
+//
+//extension DietPlanCreateSexVM{
+//    func initUI() {
+//        addSubview(titleLabel)
+//        addSubview(sexManButton)
+//        sexManButton.addSubview(sexManIcon)
+//        sexManButton.addSubview(sexManLabel)
+//        addSubview(sexFeManButton)
+//        sexFeManButton.addSubview(sexFeManIcon)
+//        sexFeManButton.addSubview(sexFeManLabel)
+//    
+//        setConstrait()
+//    }
+//    
+//    func setConstrait() {
+//        titleLabel.snp.makeConstraints { make in
+//            make.centerX.equalToSuperview()
+//            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(76))
+//        }
+//        sexManButton.snp.makeConstraints { make in
+//            make.centerX.lessThanOrEqualToSuperview()
+////            make.top.equalTo(kFitWidth(232))
+//            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(127))
+//            make.width.equalTo(SCREEN_WIDHT-kFitWidth(32))
+//            make.height.equalTo(kFitWidth(80))
+//        }
+//        sexManIcon.snp.makeConstraints { make in
+//            make.left.equalTo((SCREEN_WIDHT-kFitWidth(32))*0.5-kFitWidth(26))
+//            make.centerY.lessThanOrEqualToSuperview()
+//            make.width.height.equalTo(kFitWidth(24))
+//        }
+//        sexManLabel.snp.makeConstraints { make in
+////            make.left.equalTo(kFitWidth(177))
+//            make.left.equalTo(sexManIcon.snp.right).offset(kFitWidth(8))
+//            make.centerY.lessThanOrEqualToSuperview()
+//        }
+//        sexFeManButton.snp.makeConstraints { make in
+//            make.width.height.equalTo(sexManButton)
+//            make.centerX.lessThanOrEqualToSuperview()
+//            make.top.equalTo(sexManButton.snp.bottom).offset(kFitWidth(12))
+//        }
+//        sexFeManIcon.snp.makeConstraints { make in
+//            make.left.equalTo((SCREEN_WIDHT-kFitWidth(32))*0.5-kFitWidth(26))
+//            make.centerY.lessThanOrEqualToSuperview()
+//            make.width.height.equalTo(kFitWidth(24))
+//        }
+//        sexFeManLabel.snp.makeConstraints { make in
+////            make.left.equalTo(kFitWidth(177))
+//            make.left.equalTo(sexFeManIcon.snp.right).offset(kFitWidth(8))
+//            make.centerY.lessThanOrEqualToSuperview()
+//        }
+//    }
+//}

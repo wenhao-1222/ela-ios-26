@@ -37,7 +37,7 @@ class DietPlanCreateImportantVM: UIView {
         let lab = UILabel()
         lab.text = "达成目标对你有多重要？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: kFitWidth(22), weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab
     }()
 

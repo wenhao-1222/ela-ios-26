@@ -100,6 +100,9 @@ class DietPlanCreateVC: WHBaseViewVC {
             self?.weightVm.applyDefaultWeight(integer: 50)
             self?.syncNextButtonEnableStatus()
         }
+        vm.showTipsBlock = {()in
+            self.sexTipsAlertVm.showView()
+        }
         
         return vm
     }()
@@ -115,6 +118,9 @@ class DietPlanCreateVC: WHBaseViewVC {
         let vm = DietPlanCreateWeightVM.init(frame: CGRect.init(x: SCREEN_WIDHT*4, y: 0, width: 0, height: 0))
         vm.weightChangedBlock = { [weak self] weight in
             self?.targetWeightVm.syncWithCurrentWeight(weight)
+        }
+        vm.showTipsBlock = {()in
+            self.weightTipsAlertVm.showView()
         }
         return vm
     }()
@@ -224,6 +230,15 @@ class DietPlanCreateVC: WHBaseViewVC {
         btn.addTarget(self, action: #selector(nextButtonTapAction), for: .touchUpInside)
 
         return btn
+    }()
+    lazy var sexTipsAlertVm: GuidanceSexTipsAlertVM = {
+        let vm = GuidanceSexTipsAlertVM(frame: .zero)
+        return vm
+    }()
+    lazy var weightTipsAlertVm: DietPlanCreateWeightAlertVM = {
+        let vm = DietPlanCreateWeightAlertVM.init(frame: .zero)
+        
+        return vm
     }()
 }
 
@@ -589,6 +604,8 @@ extension DietPlanCreateVC{
         
         view.addSubview(bodyFatAlertVm)
         view.addSubview(targetWeightAlertVm)
+        view.addSubview(sexTipsAlertVm)
+        view.addSubview(weightTipsAlertVm)
         
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
