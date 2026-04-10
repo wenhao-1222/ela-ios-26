@@ -59,9 +59,9 @@ class GuidanceProVC: WHBaseViewVC {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         topBackgroundView.startAnimatingIfNeeded()
-        if currentStep == .intro {
-            topContentVM.startBubbleFloatingAnimationIfNeeded()
-        }
+//        if currentStep == .intro {
+//            topContentVM.startBubbleFloatingAnimationIfNeeded()
+//        }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -92,7 +92,8 @@ private extension GuidanceProVC {
 
         contentContainerView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(kFitWidth(126) + statusBarHeight)
+            make.top.equalTo(statusBarHeight)
+//            make.top.equalTo(kFitWidth(126) + statusBarHeight)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
 

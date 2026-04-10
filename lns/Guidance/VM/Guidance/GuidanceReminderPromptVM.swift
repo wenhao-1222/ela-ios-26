@@ -8,6 +8,11 @@
 import UIKit
 
 class GuidanceReminderPromptVM: UIView {
+    
+    private enum BubbleAnimationKey {
+        static let sway = "guidance.pro.bubble.sway"
+        static let drift = "guidance.pro.bubble.drift"
+    }
 
     var enableReminderBlock: (() -> ())?
     var skipBlock: (() -> ())?
@@ -17,6 +22,8 @@ class GuidanceReminderPromptVM: UIView {
         backgroundColor = .COLOR_BG_WHITE
         isUserInteractionEnabled = true
         initUI()
+        
+        startBubbleFloatingAnimationIfNeeded()
     }
 
     required init?(coder: NSCoder) {
@@ -50,7 +57,7 @@ class GuidanceReminderPromptVM: UIView {
         return lab
     }()
 
-    lazy var placeholderImageView: UIImageView = {
+    lazy var bubbleImageView: UIImageView = {
         let img = UIImageView()
 //        img.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
         img.contentMode = .scaleAspectFill
@@ -80,6 +87,52 @@ class GuidanceReminderPromptVM: UIView {
         btn.addTarget(self, action: #selector(skipTapAction), for: .touchUpInside)
         return btn
     }()
+}
+
+extension GuidanceReminderPromptVM {
+    func startBubbleFloatingAnimationIfNeeded() {
+        guard bubbleImageView.layer.animation(forKey: BubbleAnimationKey.sway) == nil else { return }
+
+        let swayAnimation = CAKeyframeAnimation(keyPath: "transform.rotation.z")
+        swayAnimation.values = [-0.05, 0.028, -0.02, 0.05, -0.05]
+        swayAnimation.keyTimes = [0.0, 0.26, 0.52, 0.78, 1.0]
+        swayAnimation.duration = 4.8
+        swayAnimation.repeatCount = .infinity
+        swayAnimation.timingFunctions = [
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeInEaseOut)
+        ]
+        swayAnimation.isAdditive = true
+
+        let driftAnimation = CAKeyframeAnimation(keyPath: "transform.translation")
+        driftAnimation.values = [
+            NSValue(cgSize: CGSize(width: -4, height: 0)),
+            NSValue(cgSize: CGSize(width: 2, height: -3)),
+            NSValue(cgSize: CGSize(width: 4, height: -1)),
+            NSValue(cgSize: CGSize(width: -2, height: 2)),
+            NSValue(cgSize: CGSize(width: -4, height: 0))
+        ]
+        driftAnimation.keyTimes = [0.0, 0.26, 0.52, 0.78, 1.0]
+        driftAnimation.duration = 5.6
+        driftAnimation.repeatCount = .infinity
+        driftAnimation.timingFunctions = [
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeInEaseOut),
+            CAMediaTimingFunction(name: .easeInEaseOut)
+        ]
+        driftAnimation.isAdditive = true
+
+        bubbleImageView.layer.add(swayAnimation, forKey: BubbleAnimationKey.sway)
+        bubbleImageView.layer.add(driftAnimation, forKey: BubbleAnimationKey.drift)
+    }
+
+    func stopBubbleFloatingAnimation() {
+        bubbleImageView.layer.removeAnimation(forKey: BubbleAnimationKey.sway)
+        bubbleImageView.layer.removeAnimation(forKey: BubbleAnimationKey.drift)
+    }
 }
 
 extension GuidanceReminderPromptVM {
@@ -113,7 +166,7 @@ extension GuidanceReminderPromptVM {
         addSubview(titleLabel)
         addSubview(subtitleLabel)
         addSubview(tipsLabel)
-        addSubview(placeholderImageView)
+        addSubview(bubbleImageView)
         addSubview(enableButton)
         addSubview(skipButton)
 
@@ -132,7 +185,7 @@ extension GuidanceReminderPromptVM {
             make.top.equalTo(subtitleLabel.snp.bottom).offset(kFitWidth(12))
         }
 
-        placeholderImageView.snp.makeConstraints { make in
+        bubbleImageView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(25))
             make.right.equalTo(kFitWidth(-25))
             make.top.equalTo(tipsLabel.snp.bottom).offset(kFitWidth(45))
@@ -143,7 +196,7 @@ extension GuidanceReminderPromptVM {
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
             make.height.equalTo(kFitWidth(48))
-            make.top.equalTo(placeholderImageView.snp.bottom).offset(kFitWidth(34))
+            make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(34))
         }
 
         skipButton.snp.makeConstraints { make in

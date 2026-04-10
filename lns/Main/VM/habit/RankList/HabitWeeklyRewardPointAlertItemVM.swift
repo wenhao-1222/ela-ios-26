@@ -48,15 +48,15 @@ extension HabitWeeklyRewardPointAlertItemVM{
         let attr = NSMutableAttributedString(string: "周结算奖励：冠军 ", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
            .font:UIFont.systemFont(ofSize: 12, weight: .regular)])
         attr.append(NSAttributedString(string: "+\(dict.stringValueForKey(key: "champion"))", attributes: [.foregroundColor:UIColor.THEME,
-            .font:UIFont.systemFont(ofSize: 13, weight: .medium)]))
+           .font:UIFont().DDInFontMedium(fontSize: 13)]))
         attr.append(NSAttributedString(string: " 分｜亚军 ", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
           .font:UIFont.systemFont(ofSize: 12, weight: .regular)]))
         attr.append(NSAttributedString(string: "+\(dict.stringValueForKey(key: "runnerUp"))", attributes: [.foregroundColor:UIColor.THEME,
-             .font:UIFont.systemFont(ofSize: 13, weight: .medium)]))
+             .font:UIFont().DDInFontMedium(fontSize: 13)]))
         attr.append(NSAttributedString(string: " 分｜季军 ", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
               .font:UIFont.systemFont(ofSize: 12, weight: .regular)]))
         attr.append(NSAttributedString(string: "+\(dict.stringValueForKey(key: "thirdPlace"))", attributes: [.foregroundColor:UIColor.THEME,
-             .font:UIFont.systemFont(ofSize: 13, weight: .medium)]))
+             .font:UIFont().DDInFontMedium(fontSize: 13)]))
         attr.append(NSAttributedString(string: " 分", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
       .font:UIFont.systemFont(ofSize: 12, weight: .regular)]))
         pointLabel.attributedText = attr

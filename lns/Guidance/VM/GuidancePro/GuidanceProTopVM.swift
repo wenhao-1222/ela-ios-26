@@ -16,14 +16,19 @@ class GuidanceProTopVM: UIView {
     }
 
     private lazy var bubbleImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "ela_pro_guidance_icon"))
+        let imageView = UIImageView(image: UIImage(named: "ela_pro_guidance_1_icon"))
         imageView.contentMode = .scaleAspectFit
         return imageView
+    }()
+    lazy var elaproImg: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "ela_pro_expired_alert_icon")
+        return img
     }()
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "现已全新推出"
+        label.text = "将给你更完整的支持"
         label.textColor = .COLOR_TEXT_TITLE_0f1214
         label.font = .systemFont(ofSize: 24, weight: .medium)
         label.textAlignment = .center
@@ -32,7 +37,7 @@ class GuidanceProTopVM: UIView {
 
     private lazy var subtitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "比免费版更强劲的功能"
+        label.text = "帮助你更精确地执行"
         label.textColor = .COLOR_TEXT_TITLE_0f1214
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.textAlignment = .center
@@ -99,25 +104,33 @@ extension GuidanceProTopVM {
 private extension GuidanceProTopVM {
     func initUI() {
         addSubview(bubbleImageView)
+        addSubview(elaproImg)
         addSubview(titleLabel)
         addSubview(subtitleLabel)
 
         bubbleImageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(250))
+            make.width.equalTo(kFitWidth(300))
+            make.height.equalTo(kFitWidth(415))
+        }
+        elaproImg.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.width.equalTo(kFitWidth(108))
+            make.height.equalTo(kFitWidth(19))
+            make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(50))
         }
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(104))
+            make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(80))
             make.left.greaterThanOrEqualTo(kFitWidth(24))
             make.right.lessThanOrEqualTo(kFitWidth(-24))
         }
 
         subtitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(24))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(6))
             make.left.greaterThanOrEqualTo(kFitWidth(24))
             make.right.lessThanOrEqualTo(kFitWidth(-24))
             make.bottom.equalToSuperview()

@@ -92,9 +92,9 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         topBackgroundView.startAnimatingIfNeeded()
-        if currentStep == .intro {
-            topContentVM.startBubbleFloatingAnimationIfNeeded()
-        }
+//        if currentStep == .intro {
+//            topContentVM.startBubbleFloatingAnimationIfNeeded()
+//        }
     }
 
     override func viewDidDisappear(_ animated: Bool) {
