@@ -47,7 +47,7 @@ class GuidanceMealsPerDayVM: UIView {
         let lab = LineHeightLabel()
         lab.numberOfLines = 2
         lab.textAlignment = .center
-        lab.text = "你的日常进餐频率是？"
+        lab.text = "你的每天进餐频率是？"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
 //        lab.setLineHeight(textString: "你的日常进餐频率是？", lineHeight: lab.font.lineHeight * 1.2)

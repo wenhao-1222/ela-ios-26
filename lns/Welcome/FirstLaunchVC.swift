@@ -149,7 +149,8 @@ class FirstLaunchVC: WHBaseViewVC {
         btn.setTitle("我准备好了", for: .normal)
         btn.setTitleColor(WHColor_16(colorStr: "0F1214"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
-        btn.alpha = 0
+        btn.layer.opacity = 0
+//        btn.isUserInteractionEnabled = false
         
         btn.enablePressEffect()
         
@@ -163,11 +164,18 @@ extension FirstLaunchVC{
     private func fadeInConfirmButton(duration: TimeInterval = 0.55,
                                      delay: TimeInterval = 0,
                                      completion: ((Bool) -> Void)? = nil) {
-        confirmButton.alpha = 0
+        confirmButton.layer.removeAllAnimations()
+        confirmButton.layer.opacity = 0
+//        confirmButton.isUserInteractionEnabled = true
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+//            self.confirmButton.isUserInteractionEnabled = true
+//        }
+
         UIView.animate(withDuration: duration,
                        delay: delay,
                        options: [.curveEaseInOut, .beginFromCurrentState]) {
-            self.confirmButton.alpha = 1
+            self.confirmButton.layer.opacity = 1
         } completion: { finished in
             completion?(finished)
         }
@@ -194,10 +202,7 @@ extension FirstLaunchVC{
 
         secondLogoImgView.alpha = 1
         secondLabel.alpha = 1
-//        confirmButton.alpha = 1
-        UIView.animate(withDuration: 0.75, delay: 0.75) {
-            self.confirmButton.alpha = 1
-        }
+        fadeInConfirmButton(duration: 0.75, delay: 0.75)
     }
 
     @objc func showAnimation() {
