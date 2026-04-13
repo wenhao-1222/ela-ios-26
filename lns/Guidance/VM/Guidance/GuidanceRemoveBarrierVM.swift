@@ -264,7 +264,7 @@ extension GuidanceRemoveBarrierVM {
 
         zhuanyeImg.snp.makeConstraints { make in
             make.centerX.equalTo(SCREEN_WIDHT * 0.25)
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(64))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(40))
             make.width.equalTo(kFitWidth(157))
             make.height.equalTo(kFitWidth(45))
         }

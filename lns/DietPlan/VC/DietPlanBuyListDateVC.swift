@@ -261,6 +261,9 @@ private extension DietPlanBuyListDateVC {
         if calendar.isDateInToday(date) {
             return "今天"
         }
+        if calendar.isDateInTomorrow(date) {
+            return "明天"
+        }
         return "\(displayDateFormatter.string(from: date))，\(weekdayText(from: date))"
     }
     

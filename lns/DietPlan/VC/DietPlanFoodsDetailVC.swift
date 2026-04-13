@@ -123,9 +123,7 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
         view.showsVerticalScrollIndicator = false
         view.alwaysBounceVertical = true
         view.contentInsetAdjustmentBehavior = .never
-        view.layer.cornerRadius = kFitWidth(24)
-        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        view.clipsToBounds = true
+        view.delegate = self
         view.backgroundColor = .clear
         return view
     }()
@@ -133,7 +131,7 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
     private lazy var scrollBackgroundView: UIView = {
         let view = UIView()
         view.isUserInteractionEnabled = false
-        view.layer.cornerRadius = kFitWidth(24)
+        view.layer.cornerRadius = kFitWidth(20)
         view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         view.clipsToBounds = true
         return view
@@ -167,7 +165,7 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .COLOR_TEXT_TITLE_0f1214
-        label.font = .systemFont(ofSize: 24, weight: .bold)
+        label.font = .systemFont(ofSize: 20, weight: .medium)
         label.numberOfLines = 0
         return label
     }()
@@ -280,11 +278,11 @@ extension DietPlanFoodsDetailVC {
     func initUI() {
         view.backgroundColor = .COLOR_BG_F2
         
-        view.addSubview(topImageView)
-        view.addSubview(scrollBackgroundView)
         view.addSubview(scrollView)
-        view.addSubview(scrollTopOverlayView)
         scrollView.addSubview(scrollContentView)
+        scrollContentView.addSubview(topImageView)
+        scrollContentView.addSubview(scrollBackgroundView)
+        scrollContentView.addSubview(scrollTopOverlayView)
         scrollContentView.addSubview(contentCardView)
         view.addSubview(bottomActionContainer)
         bottomActionContainer.addSubview(chooseButton)
@@ -334,30 +332,32 @@ extension DietPlanFoodsDetailVC {
             make.bottom.equalTo(-(getBottomSafeAreaHeight() + kFitWidth(12)))
         }
         
+        scrollView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalToSuperview()
+            make.bottom.equalTo(bottomActionContainer.snp.top)
+        }
+
+        scrollContentView.snp.makeConstraints { make in
+            make.edges.equalTo(scrollView.contentLayoutGuide)
+            make.width.equalTo(scrollView.frameLayoutGuide)
+        }
+        
         scrollBackgroundView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(topImageView.snp.bottom).offset(-kFitWidth(24))
-            make.bottom.equalTo(bottomActionContainer.snp.top)
-        }
-        
-        scrollView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview()
-            make.top.equalTo(topImageView.snp.bottom).offset(-kFitWidth(24))
-            make.bottom.equalTo(bottomActionContainer.snp.top)
+            make.bottom.equalToSuperview()
         }
         
         scrollTopOverlayView.snp.makeConstraints { make in
-            make.left.right.top.equalTo(scrollView)
+            make.left.right.equalTo(scrollBackgroundView)
+            make.top.equalTo(scrollBackgroundView)
             make.height.equalTo(kFitWidth(28))
         }
         
-        scrollContentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.width.equalTo(scrollView)
-        }
-        
         contentCardView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.left.right.bottom.equalToSuperview()
+            make.top.equalTo(topImageView.snp.bottom).offset(-kFitWidth(24))
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -418,6 +418,32 @@ extension DietPlanFoodsDetailVC {
         
         initNavi(titleStr: "", naviBgColor: .clear)
         navigationView.backgroundColor = .clear
+        navigationView.isHidden = true
+        backArrowButton.removeFromSuperview()
+        view.addSubview(backArrowButton)
+        backArrowButton.snp.remakeConstraints { make in
+            make.width.height.equalTo(kFitWidth(44))
+            make.top.equalTo(statusBarHeight)
+            make.left.equalTo(kFitWidth(2))
+        }
+    }
+}
+
+extension DietPlanFoodsDetailVC: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView === self.scrollView else { return }
+        
+        let offsetY = scrollView.contentOffset.y
+        if offsetY < 0 {
+            let fixedTransform = CGAffineTransform(translationX: 0, y: offsetY)
+            topImageView.transform = fixedTransform
+            scrollBackgroundView.transform = fixedTransform
+            scrollTopOverlayView.transform = fixedTransform
+        } else {
+            topImageView.transform = .identity
+            scrollBackgroundView.transform = .identity
+            scrollTopOverlayView.transform = .identity
+        }
     }
 }
 
