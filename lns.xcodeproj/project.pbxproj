@@ -1201,8 +1201,6 @@
 		ECD041A82C0F0CEE0073BFB8 /* TutorialTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD041A72C0F0CEE0073BFB8 /* TutorialTableViewCell.swift */; };
 		ECD041AB2C0F0DF30073BFB8 /* TutorialTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD041AA2C0F0DF30073BFB8 /* TutorialTableHeaderView.swift */; };
 		ECD041AD2C0F1B720073BFB8 /* TutorialAttr.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD041AC2C0F1B720073BFB8 /* TutorialAttr.swift */; };
-		ECD04BAD2BEDE20100B8069B /* JournalNewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD04BAC2BEDE20100B8069B /* JournalNewVC.swift */; };
-		ECD04BAF2BEDE32800B8069B /* JounalCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD04BAE2BEDE32800B8069B /* JounalCollectionViewCell.swift */; };
 		ECD04BB12BEDF74F00B8069B /* JournalCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD04BB02BEDF74F00B8069B /* JournalCollectionView.swift */; };
 		ECD04BB32BEE025000B8069B /* JounalCollectionViewMealsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD04BB22BEE025000B8069B /* JounalCollectionViewMealsVM.swift */; };
 		ECD04BB52BEE0DD400B8069B /* JournalFoodsTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD04BB42BEE0DD400B8069B /* JournalFoodsTableView.swift */; };
@@ -2688,8 +2686,6 @@
 		ECD041A72C0F0CEE0073BFB8 /* TutorialTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialTableViewCell.swift; sourceTree = "<group>"; };
 		ECD041AA2C0F0DF30073BFB8 /* TutorialTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialTableHeaderView.swift; sourceTree = "<group>"; };
 		ECD041AC2C0F1B720073BFB8 /* TutorialAttr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialAttr.swift; sourceTree = "<group>"; };
-		ECD04BAC2BEDE20100B8069B /* JournalNewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalNewVC.swift; sourceTree = "<group>"; };
-		ECD04BAE2BEDE32800B8069B /* JounalCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JounalCollectionViewCell.swift; sourceTree = "<group>"; };
 		ECD04BB02BEDF74F00B8069B /* JournalCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalCollectionView.swift; sourceTree = "<group>"; };
 		ECD04BB22BEE025000B8069B /* JounalCollectionViewMealsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JounalCollectionViewMealsVM.swift; sourceTree = "<group>"; };
 		ECD04BB42BEE0DD400B8069B /* JournalFoodsTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalFoodsTableView.swift; sourceTree = "<group>"; };
@@ -4312,7 +4308,6 @@
 				A755BBA52DE837AA000E1B3D /* JournalNaturalDetailCell.swift */,
 				A755BBA72F8E0A63000E1B3D /* JournalAICoachTableViewCell.swift */,
 				ECCCA7CF2BECB76A00696807 /* NewQuestionnaireTypeVM.swift */,
-				ECD04BAE2BEDE32800B8069B /* JounalCollectionViewCell.swift */,
 				ECD04BB02BEDF74F00B8069B /* JournalCollectionView.swift */,
 				ECD04BB42BEE0DD400B8069B /* JournalFoodsTableView.swift */,
 				ECD04BB22BEE025000B8069B /* JounalCollectionViewMealsVM.swift */,
@@ -5695,7 +5690,6 @@
 				A7C72B532E1223B7001EA74D /* RankingList */,
 				ECD0FF352BABE03A001232C9 /* LogsVC.swift */,
 				EC8D210D2C64C42000E68B59 /* JournalVC.swift */,
-				ECD04BAC2BEDE20100B8069B /* JournalNewVC.swift */,
 				ECD89EF52BDF9B3800EF89A6 /* JournalShareVC.swift */,
 				EC1440582C3E55D100566E9F /* JournalShareNewVC.swift */,
 				A7942C4B2DCDEC0200C4816D /* JournalReportVC.swift */,
@@ -6877,7 +6871,6 @@
 				ECF0BFD32BFC3C6400E5F6F0 /* InviteRewardsVC.swift in Sources */,
 				ECE3F9C82EE7BD710032E7C8 /* ServiceCameraCaptureViewController.swift in Sources */,
 				ECD5493D2C770AB4009E7E6B /* Widget+Date+Exs.swift in Sources */,
-				ECD04BAD2BEDE20100B8069B /* JournalNewVC.swift in Sources */,
 				ECD0FF012BABD25B001232C9 /* UIPasteboard+YYText.m in Sources */,
 				EC38DE932BEF4BF6008E7FCE /* MineTopVM.swift in Sources */,
 				A78FE20E2CD4830200661F7D /* ForumListTableViewCell.swift in Sources */,
@@ -7260,7 +7253,6 @@
 				ECD0FF072BABD25B001232C9 /* YYLabel.m in Sources */,
 				ECF745D52BDA31B70076DDB9 /* FoodsCreateVC.swift in Sources */,
 				ECF9706A2F2854FD00BEA528 /* RankUpConfetti3DView.swift in Sources */,
-				ECD04BAF2BEDE32800B8069B /* JounalCollectionViewCell.swift in Sources */,
 				A7D3B2172CBE32810016B2B5 /* LogsMealsAlertSetVC.swift in Sources */,
 				ECB3E0732BD62AAF00CFDDFD /* LogsNaturalGoalCircleVM.swift in Sources */,
 				A7B6ACA52DD5C8F300333D5D /* JournalReportWeekCalendarCell.swift in Sources */,

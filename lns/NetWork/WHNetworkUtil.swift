@@ -301,13 +301,18 @@ class WHNetworkUtil: SessionManager {
                                 UserInfoModel.shared.uId = ""
                                 UserInfoModel.shared.token = ""
                                 QuestinonaireMsgModel.shared.surveytype = ""
-                                UserInfoModel.shared.logoutClearMsg()
+                                // 401 代表当前账号在别的设备登录，当前设备需要强制退回到登录前页面。
+                                // 这里额外传 `teardownTabBarControllers: true`，
+                                // 目的是在切 root 之前，主动释放旧的 tabbar 页面和它们持有的界面层级，
+                                // 避免旧页面残留后继续响应通知，造成重复请求 / 重复提交。
+                                UserInfoModel.shared.logoutClearMsg(teardownTabBarControllers: true)
                                 
                                 DispatchQueue.main.async {
                                     let errorTitle = "\(value["message"] as? String ?? "账号登录过期，请重新登录！")"
                                     let alertVc = UIAlertController(title: "\(errorTitle)", message: "", preferredStyle: .alert)
                                     let cancelAction = UIAlertAction(title: "确定", style: .default) { action in
 //                                        hasTap = true
+                                        // 弹窗确认这里仍然保持原来的跳转行为，不额外改动业务流程。
                                         WHBaseViewVC().changeRootVcToWelcome()
                                     }
                                     alertVc.addAction(cancelAction)
@@ -523,4 +528,3 @@ extension WHNetworkUtil{
         }
     }
 }
-

@@ -223,7 +223,12 @@ class WHBaseViewVC: ViewController {
         let newRootVC = LLNaviViewController(rootViewController: LNSLoginVC())
         appDelegate.switchRootViewController(to: newRootVC)
     }
-    func changeRootVcToWelcome() {
+    /// 切回欢迎页 / 登录前页面。
+    ///
+    /// `teardownTabBarControllers` 默认是 `false`，保持原有行为不变；
+    /// 只有在 401 多设备登录导致的强制下线场景，才会传 `true`，
+    /// 让 `AppDelegate` 在切 root 前，先主动清理旧的 tabbar 页面层级。
+    func changeRootVcToWelcome(teardownTabBarControllers: Bool = false) {
         let agreeProtocal = UserDefaults.standard.value(forKey: "agreeProtocal") as? String ?? ""
         let navVc: UINavigationController
         if agreeProtocal.count == 0 {
@@ -231,7 +236,7 @@ class WHBaseViewVC: ViewController {
         } else {
             navVc = UINavigationController(rootViewController: FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true))
         }
-        appDelegate.switchRootViewController(to: navVc)
+        appDelegate.switchRootViewController(to: navVc, teardownTabBarControllers: teardownTabBarControllers)
     }
     @objc func backTapAction(){
         if (self.navigationController != nil) {

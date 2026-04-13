@@ -701,13 +701,29 @@ extension AppDelegate{
 
 //MARK: 自定义方法
 extension AppDelegate{
-    func switchRootViewController(to newRootVC: UIViewController) {
+    /// 统一切换根控制器。
+    /// - Parameters:
+    ///   - newRootVC: 即将展示的新 root controller。
+    ///   - teardownTabBarControllers: 是否在切 root 之前，主动释放旧的 tabbar 体系页面。
+    ///
+    /// 这里默认不做额外清理，保持项目里原有的切 root 行为完全不变。
+    /// 只有在 401 / 多设备登录这类“必须强制回到登录前页面”的场景下，
+    /// 才会传 `true`，先把旧 tabbar 及其子控制器打散，再切到新的 root。
+    ///
+    /// 这样做的目的，是避免旧 tabbar 页面因为通知、window 浮层或导航栈引用而没有及时释放，
+    /// 继续在后台响应事件，导致出现重复请求、重复提交之类的灵异问题。
+    func switchRootViewController(to newRootVC: UIViewController, teardownTabBarControllers: Bool = false) {
         UserInfoModel.shared.noUidResponseNum = 0
+        let keyWindow = getKeyWindow()
+        if teardownTabBarControllers {
+            teardownTabBarControllersIfNeeded(in: keyWindow)
+        }
         let transtition = CATransition()
         transtition.duration = 0.3
         transtition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        UIApplication.shared.keyWindow?.layer.add(transtition, forKey: "animation")
-        UIApplication.shared.keyWindow?.rootViewController = newRootVC
+        keyWindow.layer.add(transtition, forKey: "animation")
+        keyWindow.rootViewController = newRootVC
+        keyWindow.makeKeyAndVisible()
     }
     func getKeyWindow() -> UIWindow{
 //        if let keyWindow = UIApplication.shared.connectedScenes
@@ -727,6 +743,99 @@ extension AppDelegate{
         let keyWindow = UIApplication.shared.keyWindow ?? self.window // 在 iOS 13 以下，可以继续使用 keyWindow
         
         return keyWindow ?? self.window!
+    }
+    
+    /// 在“401 多设备登录，强制回到登录前页面”时，主动清理当前 window 上的 tabbar 页面体系。
+    ///
+    /// 这里做两件事：
+    /// 1. 先找到当前 root 下真正承载业务页面的 `UITabBarController`
+    /// 2. 再移除挂在 `keyWindow` 上的业务浮层，并把 tabbar / navigation / child controller 层级打散
+    ///
+    /// 之所以只清理 tabbar 页面，是因为这次问题集中出现在“用户已登录并停留在主业务区”之后，
+    /// 一旦 401 发生，这部分旧页面已经不应该再继续存活。
+    private func teardownTabBarControllersIfNeeded(in window: UIWindow) {
+        guard let rootViewController = window.rootViewController,
+              let tabBarController = findTabBarController(from: rootViewController) else {
+            return
+        }
+
+        // 先移除直接挂在 keyWindow 上、但不属于 tabbar 根视图的业务浮层。
+        // 这样做是为了避免旧页面虽然已经切 root，但 window 上仍然挂着它们创建的 view，
+        // 这些 view 反过来继续持有 controller 或 block，导致页面无法正常释放。
+        for subview in window.subviews where subview !== tabBarController.view {
+            subview.removeFromSuperview()
+        }
+
+        // 再递归打散 tabbar 内部的控制器引用关系，尽量让旧页面在本次 runloop 后就进入释放流程。
+        prepareViewControllerForRelease(tabBarController)
+        tabBarController.selectedViewController = nil
+        tabBarController.viewControllers = []
+    }
+    
+    /// 递归释放 controller 树中与展示相关的强引用关系。
+    ///
+    /// 这里不做任何业务状态修改，只处理界面层级：
+    /// - dismiss 已经 present 的页面
+    /// - 清空 navigationController 的栈
+    /// - 移除 child controller
+    /// - 结束当前正在编辑的输入状态
+    ///
+    /// 这样可以最大程度减少旧 tabbar 页面在切 root 后继续残留的概率。
+    private func prepareViewControllerForRelease(_ viewController: UIViewController) {
+        if let presentedViewController = viewController.presentedViewController {
+            prepareViewControllerForRelease(presentedViewController)
+            presentedViewController.dismiss(animated: false)
+        }
+
+        if let tabBarController = viewController as? UITabBarController {
+            for child in tabBarController.viewControllers ?? [] {
+                prepareViewControllerForRelease(child)
+            }
+        }
+
+        if let navigationController = viewController as? UINavigationController {
+            for child in navigationController.viewControllers {
+                prepareViewControllerForRelease(child)
+            }
+            navigationController.setViewControllers([], animated: false)
+        }
+
+        for child in viewController.children {
+            prepareViewControllerForRelease(child)
+            child.willMove(toParent: nil)
+            child.view.removeFromSuperview()
+            child.removeFromParent()
+        }
+
+        viewController.view.endEditing(true)
+    }
+    
+    /// 从当前 root controller 树里找到业务主区使用的 `UITabBarController`。
+    ///
+    /// 项目里 tabbar 可能被 navigationController、presented controller 或 child controller 包住，
+    /// 所以这里用递归方式查找，而不是简单假设 `window.rootViewController` 就一定是 tabbar。
+    private func findTabBarController(from viewController: UIViewController?) -> UITabBarController? {
+        guard let viewController = viewController else { return nil }
+        if let tabBarController = viewController as? UITabBarController {
+            return tabBarController
+        }
+        if let navigationController = viewController as? UINavigationController {
+            for child in navigationController.viewControllers.reversed() {
+                if let tabBarController = findTabBarController(from: child) {
+                    return tabBarController
+                }
+            }
+        }
+        if let presentedViewController = viewController.presentedViewController,
+           let tabBarController = findTabBarController(from: presentedViewController) {
+            return tabBarController
+        }
+        for child in viewController.children {
+            if let tabBarController = findTabBarController(from: child) {
+                return tabBarController
+            }
+        }
+        return nil
     }
 }
 

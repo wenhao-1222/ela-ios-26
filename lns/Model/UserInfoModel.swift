@@ -419,7 +419,12 @@ extension UserInfoModel{
         }
     }
     ///退出登录，清除本地个人信息，保留日志和身体数据
-    func logoutClearMsg() {
+    ///
+    /// `teardownTabBarControllers` 是这次为 401 / 多设备登录补的开关。
+    /// 默认仍然是 `false`，表示走项目里原来的退出清理流程；
+    /// 当 401 强制下线时传 `true`，会在切回欢迎页之前，额外释放旧的 tabbar 页面层级，
+    /// 避免这些旧页面因为引用残留继续响应通知或继续发请求。
+    func logoutClearMsg(teardownTabBarControllers: Bool = false) {
         LogsMealsAlertSetManage().removeAllNotifi()
         clearDietPlanCreateDraftCache()
         self.vipModel.reset()
@@ -436,7 +441,8 @@ extension UserInfoModel{
 //
 //        WidgetUtils().saveUserInfo(uId: "", uToken: "")
         UserDefaults.removeAllBodyDataLoadFlag(uid: UserInfoModel.shared.uId)
-        WHBaseViewVC().changeRootVcToWelcome()
+        // 这里把释放 tabbar 的开关继续往下传，真正的 controller 清理在切 root 前完成。
+        WHBaseViewVC().changeRootVcToWelcome(teardownTabBarControllers: teardownTabBarControllers)
         LogsSQLiteUploadManager().clearNaturalData()
         BodyDataSQLiteManager.getInstance().deleteAllData()
         LogsSQLiteManager.getInstance().deleteAllData()
