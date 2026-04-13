@@ -9,11 +9,17 @@ import UIKit
 import SnapKit
 
 private enum AICoachPrePopupLayout {
-    static let width = kFitWidth(164)
-    static let bodyHeight = kFitWidth(84)
+    static let minWidth = kFitWidth(164)
+    static let horizontalPadding = kFitWidth(14)
+    static let topPadding = kFitWidth(15)
+    static let bottomPadding = kFitWidth(15)
+    static let rowSpacing = kFitWidth(10)
+    static let rowIconSize = kFitWidth(18)
+    static let rowLabelSpacing = kFitWidth(8)
     static let arrowWidth = kFitWidth(24)
     static let arrowHeight = kFitWidth(12)
-    static let totalHeight = bodyHeight + arrowHeight
+    static let sideMargin = kFitWidth(12)
+    static let minHeight = arrowHeight + topPadding + bottomPadding + kFitWidth(58)
 }
 
 private enum AICoachPreDaySweepAnimation {
@@ -41,6 +47,7 @@ class AICoachPreDaysVM: UIView, UIGestureRecognizerDelegate {
     private var itemViews: [AICoachPreDayItemView] = []
     private var selectedPopupIndex: Int?
     private var isFirstReport = true
+    private var completeDays = 0
 
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
@@ -106,8 +113,8 @@ extension AICoachPreDaysVM{
             make.left.equalTo(kFitWidth(16))
 //            make.top.equalTo(daysStackView.snp.bottom).offset(kFitWidth(-46))
             make.top.equalTo(kFitWidth(32))
-            make.width.equalTo(AICoachPrePopupLayout.width)
-            make.height.equalTo(AICoachPrePopupLayout.totalHeight)
+            make.width.equalTo(AICoachPrePopupLayout.minWidth)
+            make.height.equalTo(AICoachPrePopupLayout.minHeight)
         }
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(backgroundTapAction))
@@ -116,10 +123,15 @@ extension AICoachPreDaysVM{
         addGestureRecognizer(tapGesture)
     }
 
-    func configure(items: [DayItem], reportAfterDays: Int,isFirstReport:Bool) {
+    /// reportAfterDays ：距离生成报告还有多少天，isFirstReport：是否为首报，has7CompleteDays：是否达成首报的条件
+    func configure(items: [DayItem],
+                   reportAfterDays: Int,
+                   isFirstReport:Bool,
+                   completeDays:Int) {
         self.dayItems = items
         self.reportAfterDays = reportAfterDays
         self.isFirstReport = isFirstReport
+        self.completeDays = completeDays
         reloadDaysUI()
         updateMessage()
         hidePopup()
@@ -149,7 +161,7 @@ private extension AICoachPreDaysVM {
             DayItem(title: "", state: .pending, completeStatus: 0),
             DayItem(title: "", state: .pending, completeStatus: 0),
             DayItem(title: "", state: .pending, completeStatus: 0)
-        ], reportAfterDays: 7, isFirstReport: isFirstReport)
+        ], reportAfterDays: 7, isFirstReport: isFirstReport, completeDays: completeDays)
     }
 
     func reloadDaysUI() {
@@ -158,10 +170,9 @@ private extension AICoachPreDaysVM {
             daysStackView.removeArrangedSubview(subView)
             subView.removeFromSuperview()
         }
-
         for (index, item) in dayItems.enumerated() {
             let itemView = AICoachPreDayItemView()
-            itemView.update(item: item,isFirstReport:self.isFirstReport)
+            itemView.update(item: item,isFirstReport:self.isFirstReport,completeDays:self.completeDays,index: index)
             itemView.tapBlock = { [weak self, weak itemView] in
                 guard let self, let itemView else { return }
                 self.dayItemTapAction(index: index, sourceView: itemView)
@@ -239,20 +250,25 @@ private extension AICoachPreDaysVM {
         popupView.update(completeStatus: dayItems[index].completeStatus)
 
         let itemFrame = sourceView.convert(sourceView.bounds, to: self)
-        let popupWidth = AICoachPrePopupLayout.width
-        let popupLeft = min(max(itemFrame.midX - popupWidth * 0.5, kFitWidth(12)), bounds.width - popupWidth - kFitWidth(12))
+        let popupSize = popupView.preferredSize(maxWidth: bounds.width - AICoachPrePopupLayout.sideMargin * 2)
+        let popupLeft = min(max(itemFrame.midX - popupSize.width * 0.5, AICoachPrePopupLayout.sideMargin),
+                            bounds.width - popupSize.width - AICoachPrePopupLayout.sideMargin)
 
         popupView.snp.remakeConstraints { make in
             make.left.equalTo(popupLeft)
 //            make.top.equalTo(itemFrame.maxY + kFitWidth(6))
             make.top.equalTo(kFitWidth(32))
-            make.width.equalTo(AICoachPrePopupLayout.width)
-            make.height.equalTo(AICoachPrePopupLayout.totalHeight)
+            make.width.equalTo(popupSize.width)
+            make.height.equalTo(popupSize.height)
         }
 
         popupView.updateArrowPosition(centerX: itemFrame.midX - popupLeft)
         bringSubviewToFront(popupView)
         popupView.isHidden = false
+        popupView.alpha = 0
+        UIView.animate(withDuration: 0.35) {
+            self.popupView.alpha = 1
+        }
     }
 
     @objc
@@ -262,7 +278,13 @@ private extension AICoachPreDaysVM {
 
     func hidePopup() {
         selectedPopupIndex = nil
-        popupView.isHidden = true
+        UIView.animate(withDuration: 0.35) {
+            self.popupView.alpha = 0
+        } completion: { _ in
+            self.popupView.isHidden = true
+        }
+
+//        popupView.isHidden = true
     }
 }
 
@@ -319,11 +341,18 @@ private final class AICoachPreDayItemView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(item: AICoachPreDaysVM.DayItem,isFirstReport:Bool=false) {
+    func update(item: AICoachPreDaysVM.DayItem,isFirstReport:Bool=false,completeDays:Int,index:Int) {
         if isFirstReport{
             titleLabel.text = ""
-            iconContainerView.backgroundColor = .THEME
-            checkImageView.isHidden = false
+            if completeDays >= 7{
+                iconContainerView.backgroundColor = .THEME
+                checkImageView.isHidden = false
+            }else{
+                checkImageView.isHidden = item.completeStatus == 0
+                iconContainerView.backgroundColor = ((item.completeStatus > 0) ? UIColor.THEME : UIColor.COLOR_TEXT_TITLE_0f1214_05)
+//                checkImageView.isHidden = completeDays < index
+//                iconContainerView.backgroundColor = completeDays >= index ? .THEME : UIColor.COLOR_TEXT_TITLE_0f1214_05
+            }
             return
         }
         titleLabel.text = item.title
@@ -334,7 +363,7 @@ private final class AICoachPreDayItemView: UIView {
             checkImageView.isHidden = false
             titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         case 1:
-            iconContainerView.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
+            iconContainerView.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_05
             checkImageView.isHidden = false
             titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         default:
@@ -412,7 +441,8 @@ private extension AICoachPreDayItemView {
 
         checkImageView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(15))
+            make.width.equalTo(kFitWidth(14))
+            make.height.equalTo(kFitWidth(9))
         }
 
         titleLabel.snp.makeConstraints { make in
@@ -432,6 +462,8 @@ private extension AICoachPreDayItemView {
 }
 
 private final class AICoachPreDayStatusPopupView: UIView {
+
+    private let statusTitles = ["已记录饮食+体重", "已记录饮食"]
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
@@ -470,6 +502,30 @@ private final class AICoachPreDayStatusPopupView: UIView {
     func updateArrowPosition(centerX: CGFloat) {
         bubbleBackgroundView.updateArrowPosition(centerX: centerX)
     }
+
+    func preferredSize(maxWidth: CGFloat) -> CGSize {
+        let safeMaxWidth = max(maxWidth, AICoachPrePopupLayout.minWidth)
+        let textFont = UIFont.systemFont(ofSize: 14, weight: .regular)
+        let requiredTextWidth = statusTitles.reduce(CGFloat.zero) { partialResult, text in
+            let textWidth = ceil((text as NSString).boundingRect(
+                with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude),
+                options: [.usesLineFragmentOrigin, .usesFontLeading],
+                attributes: [.font: textFont],
+                context: nil
+            ).width)
+            return max(partialResult, textWidth)
+        }
+        let preferredWidth = AICoachPrePopupLayout.horizontalPadding * 2 +
+        AICoachPrePopupLayout.rowIconSize +
+        AICoachPrePopupLayout.rowLabelSpacing +
+        requiredTextWidth
+        let finalWidth = min(max(AICoachPrePopupLayout.minWidth, preferredWidth), safeMaxWidth)
+        let targetSize = CGSize(width: finalWidth, height: UIView.layoutFittingCompressedSize.height)
+        let fittedHeight = systemLayoutSizeFitting(targetSize,
+                                                   withHorizontalFittingPriority: .required,
+                                                   verticalFittingPriority: .fittingSizeLevel).height
+        return CGSize(width: finalWidth, height: max(AICoachPrePopupLayout.minHeight, ceil(fittedHeight)))
+    }
 }
 
 private extension AICoachPreDayStatusPopupView {
@@ -487,14 +543,13 @@ private extension AICoachPreDayStatusPopupView {
 
         topStatusView.snp.makeConstraints { make in
             make.left.right.equalToSuperview().inset(kFitWidth(14))
-            make.top.equalToSuperview().offset(AICoachPrePopupLayout.arrowHeight + kFitWidth(15))
-            make.height.equalTo(kFitWidth(24))
+            make.top.equalToSuperview().offset(AICoachPrePopupLayout.arrowHeight + AICoachPrePopupLayout.topPadding)
         }
 
         bottomStatusView.snp.makeConstraints { make in
             make.left.right.equalToSuperview().inset(kFitWidth(14))
-            make.top.equalTo(topStatusView.snp.bottom).offset(kFitWidth(10))
-            make.height.equalTo(kFitWidth(24))
+            make.top.equalTo(topStatusView.snp.bottom).offset(AICoachPrePopupLayout.rowSpacing)
+            make.bottom.equalToSuperview().offset(-AICoachPrePopupLayout.bottomPadding)
         }
     }
 }
@@ -505,7 +560,7 @@ private final class AICoachPreDayStatusBubbleView: UIView {
     private let tintView = UIView()
     private let borderLayer = CAShapeLayer()
     private let cornerRadius = kFitWidth(14)
-    private var arrowCenterX = AICoachPrePopupLayout.width * 0.5
+    private var arrowCenterX = AICoachPrePopupLayout.minWidth * 0.5
     private let blurMaskLayer = CAShapeLayer()
     private let tintMaskLayer = CAShapeLayer()
 
@@ -532,9 +587,7 @@ private final class AICoachPreDayStatusBubbleView: UIView {
     }
 
     func updateArrowPosition(centerX: CGFloat) {
-        let minX = AICoachPrePopupLayout.arrowWidth * 0.5 + kFitWidth(18)
-        let maxX = AICoachPrePopupLayout.width - AICoachPrePopupLayout.arrowWidth * 0.5 - kFitWidth(18)
-        arrowCenterX = min(max(centerX, minX), maxX)
+        arrowCenterX = centerX
         setNeedsLayout()
     }
 
@@ -642,6 +695,8 @@ private final class AICoachPreDayStatusRowView: UIView {
         label.text = title
         label.textColor = .COLOR_TEXT_TITLE_0f1214
         label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
 
@@ -659,8 +714,10 @@ private extension AICoachPreDayStatusRowView {
         iconContainerView.addSubview(checkImageView)
 
         iconContainerView.snp.makeConstraints { make in
-            make.left.centerY.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(18))
+            make.left.equalToSuperview()
+            make.top.equalToSuperview().offset(kFitWidth(3))
+            make.width.height.equalTo(AICoachPrePopupLayout.rowIconSize)
+            make.bottom.lessThanOrEqualToSuperview().offset(-kFitWidth(3))
         }
 
         checkImageView.snp.makeConstraints { make in
@@ -669,8 +726,8 @@ private extension AICoachPreDayStatusRowView {
         }
 
         titleLabel.snp.makeConstraints { make in
-            make.left.equalTo(iconContainerView.snp.right).offset(kFitWidth(8))
-            make.centerY.equalToSuperview()
+            make.left.equalTo(iconContainerView.snp.right).offset(AICoachPrePopupLayout.rowLabelSpacing)
+            make.top.bottom.equalToSuperview()
             make.right.equalToSuperview()
         }
 

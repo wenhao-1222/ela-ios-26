@@ -313,6 +313,7 @@ class GuidanceVC: WHBaseViewVC {
         vm.selectedBlock = { [weak self] in
             QuestinonaireMsgModel.shared.caloriesNumber = ""
             QuestinonaireMsgModel.shared.carbohydrates = ""
+            QuestinonaireMsgModel.shared.carbohydratesNumber = ""
             QuestinonaireMsgModel.shared.proteinNumber = ""
             QuestinonaireMsgModel.shared.fatsNumber = ""
             QuestinonaireMsgModel.shared.caloriesNumberFromServer = ""
@@ -1130,6 +1131,83 @@ extension GuidanceVC{
             return "6"
         }
     }
+
+    private func normalizedNutritionGoalText(_ text: String) -> String {
+        let normalizedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if normalizedText == "-" {
+            return ""
+        }
+        return normalizedText
+    }
+
+    private func resolvedNutritionGoalText(primary: String, fallback: String) -> String {
+        let primaryText = normalizedNutritionGoalText(primary)
+        if !primaryText.isEmpty {
+            return primaryText
+        }
+        return normalizedNutritionGoalText(fallback)
+    }
+
+    private func resolvedNutritionGoalInt(primary: String, fallback: String) -> Int? {
+        let resolvedText = resolvedNutritionGoalText(primary: primary, fallback: fallback)
+        if let intValue = Int(resolvedText), intValue > 0 {
+            return intValue
+        }
+        if let doubleValue = Double(resolvedText), doubleValue > 0 {
+            return Int(doubleValue.rounded())
+        }
+        return nil
+    }
+
+    private func resolvedNutritionGoalRequestCaloriesText() -> String? {
+        guard let calories = resolvedNutritionGoalInt(primary: QuestinonaireMsgModel.shared.caloriesNumber,
+                                                      fallback: QuestinonaireMsgModel.shared.caloriesNumberFromServer) else {
+            return nil
+        }
+        return "\(calories)"
+    }
+
+    private func parsedNutritionGoalValue(from data: NSDictionary, key: String) -> Int? {
+        let rawValue = data[key]
+        if let intValue = rawValue as? Int {
+            return intValue
+        }
+        let doubleValue = data.doubleValueForKey(key: key)
+        if rawValue != nil || doubleValue > 0 {
+            return Int(doubleValue.rounded())
+        }
+        if let stringValue = rawValue as? String,
+           let intValue = Int(stringValue.trimmingCharacters(in: .whitespacesAndNewlines)) {
+            return intValue
+        }
+        return nil
+    }
+
+    private func parsedValidNutritionGoalPayload(from data: NSDictionary) -> (carbohydrate: Int, fat: Int, protein: Int, calories: Int)? {
+        guard
+            let carbohydrate = parsedNutritionGoalValue(from: data, key: "carbohydrate"),
+            let fat = parsedNutritionGoalValue(from: data, key: "fat"),
+            let protein = parsedNutritionGoalValue(from: data, key: "protein"),
+            let calories = parsedNutritionGoalValue(from: data, key: "calories")
+        else {
+            return nil
+        }
+
+        guard carbohydrate >= 0, fat > 0, protein > 0, calories > 0 else {
+            return nil
+        }
+
+        return (carbohydrate, fat, protein, calories)
+    }
+
+    private func presentNutritionGoalRequestErrorAlert() {
+        DispatchQueue.main.async {
+            self.cancelNutritionGoalLoadingFlow()
+            self.presentAlertVc(confirmBtn: "刷新", message: "", title: "营养目标生成失败，请稍后重试", cancelBtn: nil, handler: { _ in
+                self.startNutritionGoalLoadingFlow()
+            }, viewController: self)
+        }
+    }
     
     func saveGuidanceNutritionGoals() {
         hideStandaloneNutritionGoalIfNeeded()
@@ -1374,18 +1452,34 @@ extension GuidanceVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
             DLLog(message: "sendBasicRequest(guidance):\(dataString ?? "")")
             let caloriesText = (dataString ?? "0").trimmingCharacters(in: .whitespacesAndNewlines)
-            QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
-            QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
+            guard let calories = Int(caloriesText), calories > 0 else {
+                DLLog(message: "sendBasicRequest(guidance) invalid calories response:\(caloriesText)")
+                DispatchQueue.main.async {
+                    completion?(false)
+                }
+                return
+            }
+//            QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
+//            QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
+            QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
+            QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(calories)"
             DispatchQueue.main.async {
-                self.caloriesResultBaseVm.caloriesTextField.text = caloriesText
+                self.caloriesResultBaseVm.caloriesTextField.text = "\(calories)"
                 completion?(true)
             }
         } failure: { _ in
-            completion?(false)
+            DispatchQueue.main.async {
+                completion?(false)
+            }
         }
     }
 
     func sendGuidanceNutritionGoalRequest() {
+        guard let caloriesText = resolvedNutritionGoalRequestCaloriesText() else {
+            DLLog(message: "sendGuidanceNutritionGoalRequest invalid calories before request. caloriesNumber=\(QuestinonaireMsgModel.shared.caloriesNumber), caloriesNumberFromServer=\(QuestinonaireMsgModel.shared.caloriesNumberFromServer)")
+            presentNutritionGoalRequestErrorAlert()
+            return
+        }
         let param = [
             "gender": "\(QuestinonaireMsgModel.shared.sex)",
             "birthday": "\(QuestinonaireMsgModel.shared.birthDay)",
@@ -1393,19 +1487,15 @@ extension GuidanceVC{
             "goal": "\(QuestinonaireMsgModel.shared.goal)",
             "dailyact": "\(QuestinonaireMsgModel.shared.events)",
             "bodyfat": "\(QuestinonaireMsgModel.shared.bodyFat)",
-            "calories": QuestinonaireMsgModel.shared.caloriesNumber == "" ? QuestinonaireMsgModel.shared.caloriesNumberFromServer : QuestinonaireMsgModel.shared.caloriesNumber
+//            "calories": QuestinonaireMsgModel.shared.caloriesNumber == "" ? QuestinonaireMsgModel.shared.caloriesNumberFromServer : QuestinonaireMsgModel.shared.caloriesNumber
+            "calories": caloriesText
         ]
         DLLog(message: "sendGuidanceNutritionGoalRequest:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_question_survey_part_save, parameters: param as [String:AnyObject]) { [weak self] responseObject in
             guard let self = self else { return }
             let code = responseObject["code"]as? Int ?? -1
             if (code != 200) {
-                DispatchQueue.main.async {
-                    self.cancelNutritionGoalLoadingFlow()
-                    self.presentAlertVc(confirmBtn: "刷新", message: "", title: "当前网络不稳定", cancelBtn: nil, handler: { _ in
-                        self.startNutritionGoalLoadingFlow()
-                    }, viewController: self)
-                }
+                self.presentNutritionGoalRequestErrorAlert()
                 return
             }
 
@@ -1413,21 +1503,30 @@ extension GuidanceVC{
             let data = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendGuidanceNutritionGoalRequest:\(data)")
 
-            let carbohydrate = data["carbohydrate"] as? Int ?? Int(data.doubleValueForKey(key: "carbohydrate"))
-            let fat = data["fat"] as? Int ?? Int(data.doubleValueForKey(key: "fat"))
-            let protein = data["protein"] as? Int ?? Int(data.doubleValueForKey(key: "protein"))
-            let calories = data["calories"] as? Int ?? Int(data.doubleValueForKey(key: "calories"))
+//            let carbohydrate = data["carbohydrate"] as? Int ?? Int(data.doubleValueForKey(key: "carbohydrate"))
+//            let fat = data["fat"] as? Int ?? Int(data.doubleValueForKey(key: "fat"))
+//            let protein = data["protein"] as? Int ?? Int(data.doubleValueForKey(key: "protein"))
+//            let calories = data["calories"] as? Int ?? Int(data.doubleValueForKey(key: "calories"))
+            guard let nutritionGoalPayload = self.parsedValidNutritionGoalPayload(from: data) else {
+                DLLog(message: "sendGuidanceNutritionGoalRequest invalid payload:\(data)")
+                self.presentNutritionGoalRequestErrorAlert()
+                return
+            }
 
             QuestinonaireMsgModel.shared.surveytype = "part"
-            QuestinonaireMsgModel.shared.carbohydratesNumber = "\(carbohydrate)"
-            QuestinonaireMsgModel.shared.fatsNumber = "\(fat)"
-            QuestinonaireMsgModel.shared.proteinNumber = "\(protein)"
-            QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
+            QuestinonaireMsgModel.shared.carbohydrates = "\(nutritionGoalPayload.carbohydrate)"
+            QuestinonaireMsgModel.shared.protein = "\(nutritionGoalPayload.protein)"
+            QuestinonaireMsgModel.shared.fats = "\(nutritionGoalPayload.fat)"
+            QuestinonaireMsgModel.shared.calories = "\(nutritionGoalPayload.calories)"
+            QuestinonaireMsgModel.shared.carbohydratesNumber = "\(nutritionGoalPayload.carbohydrate)"
+            QuestinonaireMsgModel.shared.fatsNumber = "\(nutritionGoalPayload.fat)"
+            QuestinonaireMsgModel.shared.proteinNumber = "\(nutritionGoalPayload.protein)"
+            QuestinonaireMsgModel.shared.caloriesNumber = "\(nutritionGoalPayload.calories)"
             
-            QuestinonaireMsgModel.shared.carbohydratesNumberFromServer = "\(carbohydrate)"
-            QuestinonaireMsgModel.shared.proteinNumberFromServer = "\(protein)"
-            QuestinonaireMsgModel.shared.fatsNumberFromServer = "\(fat)"
-            QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(calories)"
+            QuestinonaireMsgModel.shared.carbohydratesNumberFromServer = "\(nutritionGoalPayload.carbohydrate)"
+            QuestinonaireMsgModel.shared.proteinNumberFromServer = "\(nutritionGoalPayload.protein)"
+            QuestinonaireMsgModel.shared.fatsNumberFromServer = "\(nutritionGoalPayload.fat)"
+            QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(nutritionGoalPayload.calories)"
 
             DispatchQueue.main.async {
                 if self.isFixedTargetFlowEnabled {
@@ -1438,6 +1537,8 @@ extension GuidanceVC{
                 }
                 self.finishLoadingVm.completeLoading()
             }
+        } failure: { [weak self] _ in
+            self?.presentNutritionGoalRequestErrorAlert()
         }
     }
 

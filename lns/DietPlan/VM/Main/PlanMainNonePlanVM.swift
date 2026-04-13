@@ -160,7 +160,8 @@ extension PlanMainNonePlanVM{
         }
         tipsLabel.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
-            make.centerY.lessThanOrEqualToSuperview().offset(kFitWidth(75))
+//            make.centerY.lessThanOrEqualToSuperview().offset(kFitWidth(75))
+            make.top.equalTo(kFitWidth(280))
         }
     }
 }

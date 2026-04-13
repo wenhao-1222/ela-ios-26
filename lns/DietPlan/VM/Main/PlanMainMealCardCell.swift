@@ -8,6 +8,9 @@
 import SnapKit
 
 class PlanMainMealCardCell: UICollectionViewCell {
+    private static let loadedImageCache = NSCache<NSString, UIImage>()
+    private static var loadedImageURLs = Set<String>()
+
     private struct RenderState: Equatable {
         let typeText: String
         let imageUrl: String
@@ -128,7 +131,7 @@ class PlanMainMealCardCell: UICollectionViewCell {
         renderState = newRenderState
         
         typeLabel.text = typeText
-        nameLabel.text = "\(nameText)金佛"
+        nameLabel.text = "\(nameText)"
         macroLabel.text = macroText
         kcalLabel.text = kcalText
         
@@ -142,6 +145,8 @@ class PlanMainMealCardCell: UICollectionViewCell {
         let placeHolderName = isLarge ? "DietPlanImage1" : "Image"
         let placeHolder = UIImage(named: placeHolderName)
         let shouldReuseCurrentImage = previousRenderState?.imageUrl == imageUrl && mealImgView.image != nil
+        let cachedLoadedImage = Self.loadedImageCache.object(forKey: imageUrl as NSString)
+        let hasLoadedBefore = Self.loadedImageURLs.contains(imageUrl)
         
         if imageUrl.count > 0 {
             if shouldReuseCurrentImage {
@@ -149,17 +154,37 @@ class PlanMainMealCardCell: UICollectionViewCell {
                 mealImgView.removeSkeletonImmediately()
                 return
             }
+
+            if let cachedLoadedImage = cachedLoadedImage {
+                imageLoadToken = ""
+                mealImgView.image = cachedLoadedImage
+                mealImgView.removeSkeletonImmediately()
+                return
+            }
             
             imageLoadToken = UUID().uuidString
             let currentToken = imageLoadToken
+            let shouldShowSkeleton = !hasLoadedBefore
 
             mealImgView.removeSkeletonImmediately()
-            mealImgView.showSkeleton(cfg)
-            skeletonStartTime = Date().timeIntervalSince1970
+            if shouldShowSkeleton {
+                mealImgView.showSkeleton(cfg)
+                skeletonStartTime = Date().timeIntervalSince1970
+            } else {
+                mealImgView.image = placeHolder
+            }
 
-            mealImgView.setImgUrlWithComplete(urlString: imageUrl, placeHolder: nil) { [weak self] in
+            mealImgView.setImgUrlWithComplete(urlString: imageUrl, placeHolder: placeHolder) { [weak self] in
                 guard let self = self else { return }
                 guard self.imageLoadToken == currentToken else { return }
+                if let image = self.mealImgView.image {
+                    Self.loadedImageCache.setObject(image, forKey: imageUrl as NSString)
+                    Self.loadedImageURLs.insert(imageUrl)
+                }
+                guard shouldShowSkeleton else {
+                    self.mealImgView.removeSkeletonImmediately()
+                    return
+                }
                 let elapsed = Date().timeIntervalSince1970 - self.skeletonStartTime
                 let delay = max(0, self.minSkeletonDisplayDuration - elapsed)
                 DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in

@@ -172,7 +172,13 @@ final class SystemNavigationController: UINavigationController, UIGestureRecogni
     }
 
     // MARK: - UIGestureRecognizerDelegate
-    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool { viewControllers.count > 1 }
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard viewControllers.count > 1 else { return false }
+        if let topVC = topViewController as? WHBaseViewVC {
+            return topVC.canEdgeBack
+        }
+        return true
+    }
 }
 
 // MARK: - TabBar 垂直显隐工具

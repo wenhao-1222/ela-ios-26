@@ -217,6 +217,18 @@ private extension AICoachPreVC {
 
         guard let progressBar = dataDict["progressBar"] as? [NSDictionary], progressBar.isEmpty == false else {
             DispatchQueue.main.async {
+                var items:[AICoachPreDaysVM.DayItem] = []
+                for i in 0..<7{
+                    if i < dataDict.stringValueForKey(key: "completeDays").intValue{
+                        items.append(AICoachPreDaysVM.DayItem(title: "", state: .completed, completeStatus: 2))
+                    }else{
+                        items.append(AICoachPreDaysVM.DayItem(title: "", state: .pending, completeStatus: 0))
+                    }
+                }
+                self.preDaysVM.configure(items: items,
+                                         reportAfterDays: remainingDays,
+                                         isFirstReport:isFirstReport,
+                                         completeDays: dataDict.stringValueForKey(key: "completeDays").intValue)
                 self.preInfoVM.configure(
                     userGoal: userGoal,
                     aiCoachIntensityPreference: aiCoachIntensityPreference
@@ -242,7 +254,8 @@ private extension AICoachPreVC {
         DispatchQueue.main.async {
             self.preDaysVM.configure(items: items,
                                      reportAfterDays: remainingDays,
-                                     isFirstReport:isFirstReport)
+                                     isFirstReport:isFirstReport,
+                                     completeDays: dataDict.stringValueForKey(key: "completeDays").intValue)
             self.preInfoVM.configure(
                 userGoal: userGoal,
                 aiCoachIntensityPreference: aiCoachIntensityPreference

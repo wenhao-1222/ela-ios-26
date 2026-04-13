@@ -12,8 +12,9 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
     private var shouldShowSexStep: Bool {
-        let gender = UserInfoModel.shared.gender.trimmingCharacters(in: .whitespacesAndNewlines)
-        return gender != "1" && gender != "2"
+        //2026年04月13日16:32:18    第二次问卷不要显示性别，从第一次的用户画像中拿性别
+//        let gender = UserInfoModel.shared.gender.trimmingCharacters(in: .whitespacesAndNewlines)
+        return false///gender != "1" && gender != "2"
     }
     private var isDateStepEnabled = false
     private var isShowingManualTargetEditor = false
@@ -32,17 +33,28 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
     }()
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.fd_interactivePopDisabled = true
+        self.navigationController?.fd_interactivePopDisabled = true
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        self.enableInteractivePopGesture()
+    }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        self.fd_interactivePopDisabled = false
         navigationController?.fd_interactivePopDisabled = false
         navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.openInteractivePopGesture()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        canEdgeBack = false
         initUI()
         sendDietMsgRequest()
     }
@@ -257,7 +269,7 @@ extension DietPlanCreateSecondVC{
         case 0:
             nextButton.isEnabled = isDateStepEnabled
         case let idx where idx == sexIndex:
-            nextButton.isEnabled = !QuestinonaireMsgModel.shared.sex.isEmpty
+            nextButton.isEnabled = !QuestinonaireMsgModel.shared.dietSex.isEmpty
         case let idx where idx == eatStyleIndex:
             nextButton.isEnabled = eatStyleVm.selectedIndex >= 0
         case let idx where idx == allergyIndex:
@@ -427,7 +439,7 @@ extension DietPlanCreateSecondVC{
     }
     
     func sendBasicRequest() {
-        let param = ["gender":"\(QuestinonaireMsgModel.shared.sex)",
+        let param = ["gender":"\(QuestinonaireMsgModel.shared.dietSex)",
                      "dailyact":"\(QuestinonaireMsgModel.shared.events)",
                      "bodyfat":"\(QuestinonaireMsgModel.shared.bodyFat)",
                      "weight":"\(QuestinonaireMsgModel.shared.weight)"]
@@ -492,7 +504,7 @@ extension DietPlanCreateSecondVC {
     func applyDietQuestionnaireData(_ data: NSDictionary) {
         let model = QuestinonaireMsgModel.shared
 
-        model.sex = stringValue(from: data["gender"])
+        model.dietSex = stringValue(from: data["gender"])
         model.birthDay = birthYear(from: data["birthday"])
         model.goal = mapUserGoals(from: intArrayValue(from: data["userGoal"]))
         model.height = stringValue(from: data["height"])
@@ -640,7 +652,7 @@ extension DietPlanCreateSecondVC {
         var param: [String: Any] = [
             "userGoal": buildUserGoalsForRequest(from: model.goal),
             "birthday": model.birthDay,
-            "gender": model.sex,
+            "gender": model.dietSex,
             "currentWeight": model.weight,
             "targetWeight": model.targetWeight,
             "height": model.height,
@@ -887,13 +899,13 @@ extension DietPlanCreateSecondVC {
     }
 
     func applySecretSexSelection(gender: String) {
-        QuestinonaireMsgModel.shared.sex = gender
+        QuestinonaireMsgModel.shared.dietSex = gender
         updateSecretSexSelectionUI()
         syncNextButtonEnableStatus()
     }
 
     func updateSecretSexSelectionUI() {
-        let selectedGender = QuestinonaireMsgModel.shared.sex
+        let selectedGender = QuestinonaireMsgModel.shared.dietSex
         if selectedGender == "1" {
             sexVm.sexManButton.backgroundColor = .THEME
             sexVm.sexManIcon.setImgLocal(imgName: "sex_icon_man")

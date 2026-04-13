@@ -37,7 +37,8 @@ class DietPlanCreateAllergyVM: UIView {
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "你是否有过敏或忌口？"
+//        lab.text = "你是否有过敏或忌口？"
+        lab.text = "再次确认你的忌口食物"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         return lab

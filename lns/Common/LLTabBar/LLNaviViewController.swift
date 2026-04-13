@@ -125,6 +125,9 @@ class LLNaviViewController: UINavigationController,UIGestureRecognizerDelegate,U
             if self.viewControllers.count == 1{
                 return false
             }
+            if let topVC = self.topViewController as? WHBaseViewVC {
+                return topVC.canEdgeBack
+            }
         }
         return true
     }
@@ -141,5 +144,4 @@ class LLNaviViewController: UINavigationController,UIGestureRecognizerDelegate,U
         }
     }
 }
-
 

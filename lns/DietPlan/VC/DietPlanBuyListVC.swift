@@ -44,6 +44,16 @@ class DietPlanBuyListVC: WHBaseViewVC {
 //        
 //        return btn
 //    }()
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        bottomGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+    }
     lazy var timeLabel: UILabel = {
         let lab = UILabel()
         lab.font = .systemFont(ofSize: 17, weight: .medium)
@@ -116,6 +126,7 @@ class DietPlanBuyListVC: WHBaseViewVC {
 extension DietPlanBuyListVC{
     func initUI() {
         initNavi(titleStr: "购物清单")
+        self.navigationView.backgroundColor = .COLOR_BG_F2
         view.backgroundColor = .COLOR_BG_F2
         if showCreateButton {
             navigationView.addSubview(createButton)

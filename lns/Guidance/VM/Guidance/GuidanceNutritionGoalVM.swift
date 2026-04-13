@@ -145,6 +145,20 @@ class GuidanceNutritionGoalVM: UIView {
 }
 
 extension GuidanceNutritionGoalVM{
+    private func resolvedGoalText(primary: String, fallback: String) -> String {
+        let primaryText = primary.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !primaryText.isEmpty && primaryText != "-" {
+            return primaryText
+        }
+
+        let fallbackText = fallback.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !fallbackText.isEmpty && fallbackText != "-" {
+            return fallbackText
+        }
+
+        return ""
+    }
+
     @objc func tipsTapAction(){
         self.carVm.textField.resignFirstResponder()
         self.proteinVm.textField.resignFirstResponder()
@@ -205,14 +219,45 @@ extension GuidanceNutritionGoalVM{
         labelOne.textColor = .COLOR_TEXT_TITLE_0f1214
     }
     func refreshContentFromModel() {
-        self.carNumber = QuestinonaireMsgModel.shared.carbohydratesNumber.intValue
-        self.proteinNumber = QuestinonaireMsgModel.shared.proteinNumber.intValue
-        self.fatNumber = QuestinonaireMsgModel.shared.fatsNumber.intValue
+//        self.carNumber = QuestinonaireMsgModel.shared.carbohydratesNumber.intValue
+//        self.proteinNumber = QuestinonaireMsgModel.shared.proteinNumber.intValue
+//        self.fatNumber = QuestinonaireMsgModel.shared.fatsNumber.intValue
+//
+//        carVm.textField.text = QuestinonaireMsgModel.shared.carbohydratesNumber
+//        proteinVm.textField.text = QuestinonaireMsgModel.shared.proteinNumber
+//        fatVm.textField.text = QuestinonaireMsgModel.shared.fatsNumber
+//        labelOne.text = QuestinonaireMsgModel.shared.caloriesNumber
+        let carbohydrateText = resolvedGoalText(primary: QuestinonaireMsgModel.shared.carbohydratesNumber,
+                                                fallback: QuestinonaireMsgModel.shared.carbohydratesNumberFromServer)
+        let proteinText = resolvedGoalText(primary: QuestinonaireMsgModel.shared.proteinNumber,
+                                           fallback: QuestinonaireMsgModel.shared.proteinNumberFromServer)
+        let fatText = resolvedGoalText(primary: QuestinonaireMsgModel.shared.fatsNumber,
+                                       fallback: QuestinonaireMsgModel.shared.fatsNumberFromServer)
+        let caloriesText = resolvedGoalText(primary: QuestinonaireMsgModel.shared.caloriesNumber,
+                                            fallback: QuestinonaireMsgModel.shared.caloriesNumberFromServer)
+
+        // 请求成功后，如果本地展示字段被提前清空，优先回填服务端缓存值，避免页面出现空白。
+        if QuestinonaireMsgModel.shared.carbohydratesNumber.isEmpty {
+            QuestinonaireMsgModel.shared.carbohydratesNumber = carbohydrateText
+        }
+        if QuestinonaireMsgModel.shared.proteinNumber.isEmpty {
+            QuestinonaireMsgModel.shared.proteinNumber = proteinText
+        }
+        if QuestinonaireMsgModel.shared.fatsNumber.isEmpty {
+            QuestinonaireMsgModel.shared.fatsNumber = fatText
+        }
+        if QuestinonaireMsgModel.shared.caloriesNumber.isEmpty {
+            QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
+        }
+
+        self.carNumber = carbohydrateText.intValue
+        self.proteinNumber = proteinText.intValue
+        self.fatNumber = fatText.intValue
         
-        carVm.textField.text = QuestinonaireMsgModel.shared.carbohydratesNumber
-        proteinVm.textField.text = QuestinonaireMsgModel.shared.proteinNumber
-        fatVm.textField.text = QuestinonaireMsgModel.shared.fatsNumber
-        labelOne.text = QuestinonaireMsgModel.shared.caloriesNumber
+        carVm.textField.text = carbohydrateText.isEmpty ? nil : carbohydrateText
+        proteinVm.textField.text = proteinText.isEmpty ? nil : proteinText
+        fatVm.textField.text = fatText.isEmpty ? nil : fatText
+        labelOne.text = caloriesText.isEmpty ? "-" : caloriesText
         self.calculateNumber()
     }
 }

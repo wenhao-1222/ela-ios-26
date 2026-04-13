@@ -3461,6 +3461,7 @@
 				A7BAE5E82D811F4E000A690A /* PropotionResultVC.swift */,
 				EC3F21FD2F722D13001F4C86 /* AIGuidanceVC.swift */,
 				ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */,
+				C0A100152E8F000100000001 /* AICoachReportPDFDemoVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -4202,7 +4203,6 @@
 				C0A100122E8F000100000001 /* AICoachReportDemoChartViews.swift */,
 				C0A100132E8F000100000001 /* AICoachReportDemoContentView.swift */,
 				C0A100142E8F000100000001 /* AICoachReportPDFGenerator.swift */,
-				C0A100152E8F000100000001 /* AICoachReportPDFDemoVC.swift */,
 				C0A100162F91000100000001 /* AICoachReportDateAlertVM.swift */,
 			);
 			path = CoachReportPDFDemo;

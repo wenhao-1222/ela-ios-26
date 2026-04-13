@@ -18,6 +18,22 @@ class DietPlanCondimentVC: WHBaseViewVC {
             self.sendSauceListRequest()
         })
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        topGradientLayer.frame = topGradientView.bounds
+        bottomGradientLayer.frame = bottomGradientView.bounds
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        bottomGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+    }
 
     private lazy var tipDotView: UIView = {
         let view = UIView()
@@ -52,16 +68,54 @@ class DietPlanCondimentVC: WHBaseViewVC {
         view.register(DietPlanCondimentCell.self, forCellWithReuseIdentifier: DietPlanCondimentCell.reuseId)
         return view
     }()
+    
+    lazy var bottomGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
+        return vi
+    }()
+    lazy var topGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
+        return vi
+    }()
+    lazy var bottomGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
+    }()
+    lazy var topGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
+    }()
 }
 
 extension DietPlanCondimentVC{
     func initUI() {
         initNavi(titleStr: "酱料")
+        self.navigationView.backgroundColor = .COLOR_BG_F2
         view.backgroundColor = .COLOR_BG_F2
 
         view.addSubview(tipDotView)
         view.addSubview(tipLabel)
         view.addSubview(collectionView)
+        view.addSubview(topGradientView)
+        view.addSubview(bottomGradientView)
+        bottomGradientView.layer.addSublayer(bottomGradientLayer)
+        topGradientView.layer.addSublayer(topGradientLayer)
 
         tipDotView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
@@ -75,7 +129,17 @@ extension DietPlanCondimentVC{
         }
         collectionView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(tipLabel.snp.bottom).offset(kFitWidth(24))
+            make.top.equalTo(tipLabel.snp.bottom)//.offset(kFitWidth(24))
+        }
+        topGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(collectionView.snp.top)//.offset(kFitWidth(-10))
+            make.height.equalTo(kFitWidth(15))
+        }
+        bottomGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.height.equalTo(kFitWidth(35)+self.getTopSafeAreaHeight())
         }
     }
 }
@@ -95,6 +159,9 @@ extension DietPlanCondimentVC{
 }
 
 extension DietPlanCondimentVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSizeMake(SCREEN_WIDHT, kFitWidth(30))
+    }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if isLoading {
             return 6

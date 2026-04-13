@@ -19,6 +19,7 @@ class QuestinonaireMsgModel{
     var surveytype = ""
     
     var sex = ""//性别  1 男  2  女
+    var dietSex = ""//性别  1 男  2  女
     var birthDay = ""//出生年份
     var goal = ""//目标
     var height = ""//身高
@@ -138,6 +139,7 @@ class QuestinonaireMsgModel{
         self.name = ""
         self.sex = ""
         self.birthDay = ""
+        self.dietSex = ""
         self.goal = ""
         self.height = ""
         self.weight = ""

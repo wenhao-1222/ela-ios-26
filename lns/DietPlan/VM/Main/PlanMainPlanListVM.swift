@@ -67,6 +67,7 @@ class PlanMainPlanListVM: UIView {
         formatter.timeZone = TimeZone.current
         return formatter
     }()
+    let imageSize = CGSize(width: kFitWidth(30), height: kFitWidth(30))
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-WHUtils().getTabbarHeight()))
@@ -77,6 +78,18 @@ class PlanMainPlanListVM: UIView {
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        let normalImage = resizedImage(named: "dietplan_buy_list_icon", size: imageSize) ?? UIImage(named: "dietplan_buy_list_icon")
+        let disabledImage = resizedImage(named: "dietplan_buy_list_disable_icon", size: imageSize) ?? UIImage(named: "dietplan_buy_list_disable_icon")
+        buyListButton.setImage(normalImage, for: .normal)
+        buyListButton.setImage(disabledImage, for: .disabled)
+        
+        let sauceImg = resizedImage(named: "dietplan_sauce_icon", size: imageSize) ?? UIImage(named: "dietplan_sauce_icon")
+        sauceButton.setImage(sauceImg, for: .normal)
+        
+        let createImg = resizedImage(named: "dietplan_create_icon", size: imageSize) ?? UIImage(named: "dietplan_create_icon")
+        createPlanButton.setImage(createImg, for: .normal)
     }
 //    override func layoutSubviews() {
 //        super.layoutSubviews()
@@ -114,7 +127,7 @@ class PlanMainPlanListVM: UIView {
                            y: createPlanButton.frame.minY,
                            width: createPlanButton.frame.width,
                            height: createPlanButton.frame.height)
-        let imageSize = CGSize(width: kFitWidth(30), height: kFitWidth(30))
+        
         let btn = makeRecipeActionButton(title: "购物清单",
                                          imageName: "dietplan_buy_list_icon",
                                          imageSize: imageSize,
@@ -156,22 +169,6 @@ class PlanMainPlanListVM: UIView {
                       withReuseIdentifier: planMainHeaderReuseId)
         return view
     }()
-//    lazy var topGradientView: UIView = {
-//        let vi = UIView()
-//        vi.isUserInteractionEnabled = false
-//        return vi
-//    }()
-//    lazy var topGradientLayer: CAGradientLayer = {
-//        let layer = CAGradientLayer()
-//        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
-//        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
-//        layer.colors = [
-//            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
-//            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
-//        ]
-//        layer.locations = [0, 1]
-//        return layer
-//    }()
 }
 
 extension PlanMainPlanListVM {
@@ -481,12 +478,12 @@ extension PlanMainPlanListVM: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let contentWidth = collectionView.bounds.width - sectionInset.left - sectionInset.right
+        let contentWidth = floor(collectionView.bounds.width - sectionInset.left - sectionInset.right)
         if isLargeCard(for: indexPath) {
             return CGSize(width: contentWidth, height: kFitWidth(308))
         }
         
-        let width = (contentWidth - itemSpacing) * 0.5
+        let width = floor((contentWidth - itemSpacing) * 0.5)
         return CGSize(width: width, height: kFitWidth(234))
     }
 }
