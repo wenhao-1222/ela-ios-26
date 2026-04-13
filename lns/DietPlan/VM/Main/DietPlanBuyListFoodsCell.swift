@@ -9,6 +9,9 @@
 class DietPlanBuyListFoodsCell: UITableViewCell {
     static let reuseId = "DietPlanBuyListFoodsCell"
     
+    private let checkedImageName = "circle_today_select_icon"
+    private let uncheckedImageName = "question_foods_normal_icon"
+    
     private let cardView: UIView = {
         let view = UIView()
         view.backgroundColor = .COLOR_CARD_BG_WHITE
@@ -77,11 +80,25 @@ class DietPlanBuyListFoodsCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        titleLabel.text = nil
+        weightLabel.text = nil
+        checkImageView.layer.removeAllAnimations()
+        checkImageView.transform = .identity
+        checkImageView.alpha = 1
+        checkImageView.setCheckState(false,
+                                     checkedImageName: checkedImageName,
+                                     uncheckedImageName: uncheckedImageName,
+                                     animated: false)
+    }
+    
     func updateUI(title: String,weight: String, isSelected: Bool) {
         titleLabel.text = title
         weightLabel.text = weight
         checkImageView.setCheckState(isSelected,
-                              checkedImageName: "circle_today_select_icon",
-                              uncheckedImageName: "question_foods_normal_icon")
+                                     checkedImageName: checkedImageName,
+                                     uncheckedImageName: uncheckedImageName,
+                                     animated: false)
     }
 }
