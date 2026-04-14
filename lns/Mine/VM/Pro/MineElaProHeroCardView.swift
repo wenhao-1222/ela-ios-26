@@ -36,7 +36,7 @@ class MineElaProHeroCardView: UIView {
     
     private lazy var myPlanButton: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setTitle("我的计划", for: .normal)
+        btn.setTitle("我的订阅", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 10, weight: .regular)
         btn.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_35

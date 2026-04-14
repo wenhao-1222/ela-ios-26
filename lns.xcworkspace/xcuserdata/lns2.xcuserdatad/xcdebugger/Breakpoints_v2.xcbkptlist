@@ -17,5 +17,49 @@
             stopOnStyle = "0">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "651A6217-2DE0-4FE8-8580-5804E76BB3B9"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "lns/Mine/VC/Pro/MineSubscriptionPlanVC.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "255"
+            endingLineNumber = "255">
+            <Locations>
+               <Location
+                  uuid = "651A6217-2DE0-4FE8-8580-5804E76BB3B9 - e588a6e675e8891c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "lns.MineSubscriptionPlanVC.openManageSubscriptionsFallback() -&gt; ()"
+                  moduleName = "lns.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Pro/MineSubscriptionPlanVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "255"
+                  endingLineNumber = "255">
+               </Location>
+               <Location
+                  uuid = "651A6217-2DE0-4FE8-8580-5804E76BB3B9 - e588a6e675e8891c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "lns.MineSubscriptionPlanVC.openManageSubscriptionsFallback() -&gt; ()"
+                  moduleName = "lns.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Pro/MineSubscriptionPlanVC.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "255"
+                  endingLineNumber = "255">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

@@ -68,7 +68,7 @@ class MineElaProVC: WHBaseViewVC {
     private lazy var heroCardView: MineElaProHeroCardView = {
         let vi = MineElaProHeroCardView()
         vi.planTapBlock = { [weak self] in
-            let vc = PlanListVC()
+            let vc = MineSubscriptionPlanVC()
             self?.navigationController?.pushViewController(vc, animated: true)
         }
         return vi
@@ -90,6 +90,17 @@ class MineElaProVC: WHBaseViewVC {
         super.viewDidLayoutSubviews()
         topGradientLayer.frame = topGradientView.bounds
         bottomGradientLayer.frame = bottomGradientView.bounds
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        bottomGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
     }
     
     lazy var bottomGradientView: UIView = {

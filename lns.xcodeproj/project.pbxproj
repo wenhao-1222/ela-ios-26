@@ -1368,6 +1368,8 @@
 		F1A0C1082F72430000A1B2C3 /* AIGuidanceNoticeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */; };
 		F1A0C10A2F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */; };
 		F1A0C10C2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */; };
+		F1A700052F90000100AABBCC /* MineManageSubscriptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700062F90000100AABBCC /* MineManageSubscriptionVC.swift */; };
+		F1A700032F90000100AABBCC /* MineSubscriptionPlanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700042F90000100AABBCC /* MineSubscriptionPlanVC.swift */; };
 		F1A700012F90000100AABBCC /* MineElaProVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700022F90000100AABBCC /* MineElaProVC.swift */; };
 		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
 		F2B0C2012F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */; };
@@ -2885,7 +2887,9 @@
 		F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceNoticeVM.swift; sourceTree = "<group>"; };
 		F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceElaProIntroVM.swift; sourceTree = "<group>"; };
 		F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceReadyStartVM.swift; sourceTree = "<group>"; };
+		F1A700062F90000100AABBCC /* MineManageSubscriptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineManageSubscriptionVC.swift; sourceTree = "<group>"; };
 		F1A700022F90000100AABBCC /* MineElaProVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProVC.swift; sourceTree = "<group>"; };
+		F1A700042F90000100AABBCC /* MineSubscriptionPlanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineSubscriptionPlanVC.swift; sourceTree = "<group>"; };
 		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceElaProTransitionVM.swift; sourceTree = "<group>"; };
@@ -4336,7 +4340,9 @@
 		EC1A1F742F7CB6E00012CCB0 /* Pro */ = {
 			isa = PBXGroup;
 			children = (
+				F1A700062F90000100AABBCC /* MineManageSubscriptionVC.swift */,
 				F1A700022F90000100AABBCC /* MineElaProVC.swift */,
+				F1A700042F90000100AABBCC /* MineSubscriptionPlanVC.swift */,
 			);
 			path = Pro;
 			sourceTree = "<group>";
@@ -6513,7 +6519,9 @@
 				EC9321AE2C50C80D00FDBBE2 /* MealsNameVM.swift in Sources */,
 				ECF0BFE02BFC9D0200E5F6F0 /* WithDrawVC.swift in Sources */,
 				EC1B59DF2EE668A900FE3E9A /* ActivityAlertVC.swift in Sources */,
+				F1A700052F90000100AABBCC /* MineManageSubscriptionVC.swift in Sources */,
 				F1A700012F90000100AABBCC /* MineElaProVC.swift in Sources */,
+				F1A700032F90000100AABBCC /* MineSubscriptionPlanVC.swift in Sources */,
 				A78B04962CB3D7D600426112 /* GoalSetCircleVM.swift in Sources */,
 				EC3A9CA62BB50EB800C6E442 /* QuestionnaireProgressVM.swift in Sources */,
 				ECA1E2EE2C00818B00C31B77 /* Character+Exs.swift in Sources */,

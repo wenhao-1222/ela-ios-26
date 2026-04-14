@@ -114,6 +114,9 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         vm.weightChangedBlock = { [weak self] weight in
             self?.targetWeightVm.syncWithCurrentWeight(weight, syncTarget: false)
         }
+        vm.showTipsBlock = {()in
+            self.weightTipsAlertVm.showView()
+        }
         return vm
     }()
     lazy var targetWeightVm: DietPlanCreateTargetWeightVM = {
@@ -189,6 +192,11 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     private lazy var createPlanLoadingVm: DietPlanFakeProgressLoadingVM = {
         let vm = DietPlanFakeProgressLoadingVM(frame: .zero)
         vm.updateConfig(createPlanLoadingConfig)
+        return vm
+    }()
+    lazy var weightTipsAlertVm: DietPlanCreateWeightAlertVM = {
+        let vm = DietPlanCreateWeightAlertVM.init(frame: .zero)
+        
         return vm
     }()
 }
@@ -354,6 +362,7 @@ extension DietPlanCreateSecondVC{
         view.addSubview(naviVm)
         view.addSubview(nextButton)
         view.addSubview(manualTargetVm)
+        view.addSubview(weightTipsAlertVm)
         
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
