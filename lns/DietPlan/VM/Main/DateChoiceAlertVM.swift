@@ -26,7 +26,12 @@ class DateChoiceAlertVM: UIView {
             titleLabel.text = pickerTitle
         }
     }
-    
+    private lazy var calendar: Calendar = {
+        var cal = Calendar(identifier: .gregorian)
+        cal.locale = Locale(identifier: "en_US_POSIX")
+        cal.timeZone = TimeZone.current
+        return cal
+    }()
     // MARK: - Private - UI
     
     private var whiteViewHeight: CGFloat = kFitWidth(430) + WHUtils().getBottomSafeAreaHeight()
@@ -467,6 +472,12 @@ class DateChoiceAlertVM: UIView {
     }
     
     private func pickerDisplayString(for date: Date) -> String {
+        if calendar.isDateInToday(date) {
+            return "今天"
+        }
+        if calendar.isDateInTomorrow(date) {
+            return "明天"
+        }
         return "\(pickerTextFormatter.string(from: date)) \(weekdayString(from: date))"
     }
 }

@@ -66,6 +66,13 @@ class DietPlanBuyListVC: WHBaseViewVC {
         
         return lab
     }()
+    lazy var tipsLab: UILabel = {
+        let lab = UILabel()
+        lab.text = "请勾选你已购买的食材"
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.font = .systemFont(ofSize: 13, weight: .regular)
+        return lab
+    }()
     
     private lazy var tableView: UITableView = {
         let table = UITableView(frame: .zero, style: .plain)
@@ -143,6 +150,7 @@ extension DietPlanBuyListVC{
         view.addSubview(topGradientView)
         view.addSubview(bottomGradientView)
         view.addSubview(timeLabel)
+        view.addSubview(tipsLab)
         bottomGradientView.layer.addSublayer(bottomGradientLayer)
         topGradientView.layer.addSublayer(topGradientLayer)
         
@@ -162,12 +170,17 @@ extension DietPlanBuyListVC{
         timeLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
 //            make.top.equalTo(listAddButton.snp.bottom).offset(kFitWidth(25))
-            make.top.equalTo(kFitWidth(20)+self.getNavigationBarHeight())
+            make.top.equalTo(kFitWidth(15)+self.getNavigationBarHeight())
             make.height.equalTo(kFitWidth(25))
         }
+        tipsLab.snp.makeConstraints { make in
+            make.left.equalTo(timeLabel)
+            make.top.equalTo(timeLabel.snp.bottom).offset(kFitWidth(6))
+        }
+        
         tableView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(timeLabel.snp.bottom)//.offset(kFitWidth(10))
+            make.top.equalTo(tipsLab.snp.bottom)//.offset(kFitWidth(10))
             make.bottom.equalToSuperview()
         }
         topGradientView.snp.makeConstraints { make in
@@ -213,9 +226,32 @@ extension DietPlanBuyListVC{
         }
         
         if firstDate == lastDate {
-            timeLabel.text = firstDate
+            timeLabel.text = Date().changeDateFormatter(dateString: firstDate,
+                                                        formatter: "yyyy-MM-dd",
+                                                        targetFormatter: "MM月dd日")
         } else {
-            timeLabel.text = "\(firstDate) 至 \(lastDate)"
+            let firstStr = Date().changeDateFormatter(dateString: firstDate,
+                                                      formatter: "yyyy-MM-dd",
+                                                      targetFormatter: "MM月dd日")
+            let lastStr = Date().changeDateFormatter(dateString: lastDate,
+                                                     formatter: "yyyy-MM-dd",
+                                                     targetFormatter: "MM月dd日")
+            timeLabel.text = "\(firstStr) 至 \(lastStr)"
+        }
+    }
+    func updateTimeLabel(firstDate:String,lastDate:String) {
+        if firstDate == lastDate {
+            timeLabel.text = Date().changeDateFormatter(dateString: firstDate,
+                                                        formatter: "yyyy-MM-dd",
+                                                        targetFormatter: "MM月dd日")
+        } else {
+            let firstStr = Date().changeDateFormatter(dateString: firstDate,
+                                                      formatter: "yyyy-MM-dd",
+                                                      targetFormatter: "MM月dd日")
+            let lastStr = Date().changeDateFormatter(dateString: lastDate,
+                                                     formatter: "yyyy-MM-dd",
+                                                     targetFormatter: "MM月dd日")
+            timeLabel.text = "\(firstStr) 至 \(lastStr)"
         }
     }
     
@@ -297,13 +333,15 @@ extension DietPlanBuyListVC{
             
             let startDate = dataObj.stringValueForKey(key: "startDate")
             let endDate = dataObj.stringValueForKey(key: "endDate")
-            if startDate.count > 0 && endDate.count > 0{
-                self.timeLabel.text = "\(startDate) 至 \(endDate)"
-            }else if startDate.count > 0{
-                self.timeLabel.text = "\(startDate)"
-            }else if endDate.count > 0{
-                self.timeLabel.text = "\(endDate)"
-            }
+//            if startDate.count > 0 && endDate.count > 0{
+//                self.timeLabel.text = "\(startDate) 至 \(endDate)"
+//            }else if startDate.count > 0{
+//                self.timeLabel.text = "\(startDate)"
+//            }else if endDate.count > 0{
+//                self.timeLabel.text = "\(endDate)"
+//            }
+            
+            self.updateTimeLabel(firstDate: startDate, lastDate: endDate)
             
             self.foodsArray = NSMutableArray(array: dataObj["shoppingList"]as? NSArray ?? [])
             self.tableView.reloadData()

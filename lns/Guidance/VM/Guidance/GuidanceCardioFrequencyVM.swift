@@ -47,7 +47,7 @@ class GuidanceCardioFrequencyVM: UIView {
         let lab = LineHeightLabel()
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 22, weight: .medium)
+        lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.setLineHeight(textString: "你日常会做有氧吗？", lineHeight: lab.font.lineHeight * 1.2)
         return lab
     }()
@@ -118,11 +118,17 @@ extension GuidanceCardioFrequencyVM {
             button.addTarget(self, action: #selector(itemTapAction(_:)), for: .touchUpInside)
 
             let lab = UILabel()
-            lab.text = item.title
+//            lab.text = item.title
             lab.textAlignment = .center
             lab.textColor = .COLOR_TEXT_TITLE_0f1214
             lab.font = .systemFont(ofSize: 20, weight: .medium)
 
+            lab.attributedText = makeAttributedText(
+                text: item.title,
+                font: lab.font,
+                textColor: lab.textColor
+            )
+            
             button.addSubview(lab)
             lab.snp.makeConstraints { make in
                 make.center.equalToSuperview()

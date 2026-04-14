@@ -109,6 +109,27 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
     private var detailFoodsSource = NSArray()
     private let scrollContentGradientLayer = CAGradientLayer()
     private let scrollTopOverlayGradientLayer = CAGradientLayer()
+    private let imageSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_GRAY_E8,
+                                                     highlightColorLight: .COLOR_GRAY_D6D6D6,
+                                                     cornerRadius: 0,
+                                                     shimmerWidth: 0.24,
+                                                     shimmerDuration: 1.0,
+                                                     skeletonFadeInDuration: 0.0,
+                                                     contentFadeInDuration: 0.18)
+    private let blockSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_GRAY_E8,
+                                                     highlightColorLight: .COLOR_GRAY_D6D6D6,
+                                                     cornerRadius: kFitWidth(8),
+                                                     shimmerWidth: 0.2,
+                                                     shimmerDuration: 1.0,
+                                                     skeletonFadeInDuration: 0.0,
+                                                     contentFadeInDuration: 0.18)
+    private let buttonSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_GRAY_E8,
+                                                      highlightColorLight: .COLOR_GRAY_D6D6D6,
+                                                      cornerRadius: kFitWidth(26),
+                                                      shimmerWidth: 0.22,
+                                                      shimmerDuration: 1.0,
+                                                      skeletonFadeInDuration: 0.0,
+                                                      contentFadeInDuration: 0.18)
     
     private lazy var topImageView: UIImageView = {
         let imageView = UIImageView()
@@ -125,6 +146,13 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
         view.contentInsetAdjustmentBehavior = .never
         view.delegate = self
         view.backgroundColor = .clear
+        return view
+    }()
+
+    private lazy var loadingContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.isUserInteractionEnabled = false
         return view
     }()
     
@@ -253,6 +281,12 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
         button.addTarget(self, action: #selector(buttonTapAction), for: .touchUpInside)
         return button
     }()
+
+    private lazy var chooseButtonSkeletonView: UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+        return view
+    }()
     
     private lazy var foodsAddAlertVm: DietPlanFoodsAddAlertVM = {
         let vm = DietPlanFoodsAddAlertVM(frame: .zero)
@@ -261,10 +295,14 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         initUI()
+        showLoadingSkeletonIfNeeded()
         preloadFoodsAddAlertSelectionIfNeeded()
-        sendFoodsDetaiLRequest()
+        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
+            self.sendFoodsDetaiLRequest()
+        })
+
     }
     
     override func viewDidLayoutSubviews() {
@@ -279,6 +317,7 @@ extension DietPlanFoodsDetailVC {
         view.backgroundColor = .COLOR_BG_F2
         
         view.addSubview(scrollView)
+        view.addSubview(loadingContainerView)
         scrollView.addSubview(scrollContentView)
         scrollContentView.addSubview(topImageView)
         scrollContentView.addSubview(scrollBackgroundView)
@@ -286,6 +325,7 @@ extension DietPlanFoodsDetailVC {
         scrollContentView.addSubview(contentCardView)
         view.addSubview(bottomActionContainer)
         bottomActionContainer.addSubview(chooseButton)
+        bottomActionContainer.addSubview(chooseButtonSkeletonView)
         
         scrollContentGradientLayer.colors = [
             UIColor.white.cgColor,
@@ -338,9 +378,17 @@ extension DietPlanFoodsDetailVC {
             make.bottom.equalTo(bottomActionContainer.snp.top)
         }
 
+        loadingContainerView.snp.makeConstraints { make in
+            make.edges.equalTo(scrollView)
+        }
+
         scrollContentView.snp.makeConstraints { make in
             make.edges.equalTo(scrollView.contentLayoutGuide)
             make.width.equalTo(scrollView.frameLayoutGuide)
+        }
+
+        chooseButtonSkeletonView.snp.makeConstraints { make in
+            make.edges.equalTo(chooseButton)
         }
         
         scrollBackgroundView.snp.makeConstraints { make in
@@ -426,6 +474,8 @@ extension DietPlanFoodsDetailVC {
             make.top.equalTo(statusBarHeight)
             make.left.equalTo(kFitWidth(2))
         }
+
+        setupLoadingUI()
     }
 }
 
@@ -482,10 +532,11 @@ extension DietPlanFoodsDetailVC {
             
             DLLog(message: "sendFoodsDetaiLRequest:\(dataObj)")
             self.updateUI(dataObj)
-        } failure: { isError in
+        } failure: { [weak self] isError in
             if isError {
                 MCToast.mc_text("获取食谱详情失败，请稍后重试")
             }
+            self?.hideLoadingSkeletonIfNeeded()
         }
     }
     
@@ -533,6 +584,122 @@ private extension DietPlanFoodsDetailVC {
         stepsTitleLabel.isHidden = notesText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         notesLabel.isHidden = stepsTitleLabel.isHidden
         view.layoutIfNeeded()
+        hideLoadingSkeletonIfNeeded()
+    }
+
+    func setupLoadingUI() {
+        let loadingImageSkeletonView = makeLoadingBlock(config: imageSkeletonConfig)
+        let loadingCardView = UIView()
+        loadingCardView.backgroundColor = .white
+        loadingCardView.layer.cornerRadius = kFitWidth(24)
+        loadingCardView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        loadingCardView.clipsToBounds = true
+
+        let loadingTitleSkeletonView = makeLoadingBlock(cornerRadius: kFitWidth(10))
+        let loadingIngredientsTitleSkeletonView = makeLoadingBlock()
+        let loadingFoodsContainerView = UIView()
+        let loadingFoodRowHeight = kFitWidth(37)
+        let loadingTitleHeight = singleLineSkeletonHeight(for: titleLabel)
+        let loadingSectionTitleHeight = singleLineSkeletonHeight(for: ingredientsTitleLabel)
+        let loadingFoodTextHeight = singleLineHeight(for: .systemFont(ofSize: 13, weight: .regular))
+        (0..<4).forEach { index in
+            let rowView = makeLoadingFoodRow(showSeparator: index < 3,
+                                             textHeight: loadingFoodTextHeight)
+            loadingFoodsContainerView.addSubview(rowView)
+            rowView.snp.makeConstraints { make in
+                make.left.right.equalToSuperview()
+                make.top.equalToSuperview().offset(CGFloat(index) * loadingFoodRowHeight)
+                make.height.equalTo(loadingFoodRowHeight)
+            }
+        }
+
+        let loadingStepsTitleSkeletonView = makeLoadingBlock()
+        let loadingStepsSkeletonView = makeLoadingBlock(cornerRadius: kFitWidth(12))
+
+        loadingContainerView.addSubview(loadingImageSkeletonView)
+        loadingContainerView.addSubview(loadingCardView)
+
+        [loadingTitleSkeletonView,
+         loadingIngredientsTitleSkeletonView,
+         loadingFoodsContainerView,
+         loadingStepsTitleSkeletonView,
+         loadingStepsSkeletonView].forEach {
+            loadingCardView.addSubview($0)
+        }
+
+        loadingImageSkeletonView.snp.makeConstraints { make in
+            make.left.right.top.equalToSuperview()
+            make.height.equalTo(imageHeight)
+        }
+
+        loadingCardView.snp.makeConstraints { make in
+            make.left.right.bottom.equalToSuperview()
+            make.top.equalTo(loadingImageSkeletonView.snp.bottom).offset(-kFitWidth(24))
+        }
+
+        loadingTitleSkeletonView.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.top.equalTo(kFitWidth(24))
+            make.width.equalTo(kFitWidth(180))
+            make.height.equalTo(loadingTitleHeight)
+        }
+
+        loadingIngredientsTitleSkeletonView.snp.makeConstraints { make in
+            make.left.equalTo(loadingTitleSkeletonView)
+            make.top.equalTo(loadingTitleSkeletonView.snp.bottom).offset(kFitWidth(20))
+            make.width.equalTo(kFitWidth(40))
+            make.height.equalTo(loadingSectionTitleHeight)
+        }
+
+        loadingFoodsContainerView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview().inset(kFitWidth(16))
+            make.top.equalTo(loadingIngredientsTitleSkeletonView.snp.bottom).offset(kFitWidth(14))
+            make.height.equalTo(loadingFoodRowHeight * 4)
+        }
+
+        loadingStepsTitleSkeletonView.snp.makeConstraints { make in
+            make.left.equalTo(loadingTitleSkeletonView)
+            make.top.equalTo(loadingFoodsContainerView.snp.bottom).offset(kFitWidth(22))
+            make.width.equalTo(kFitWidth(40))
+            make.height.equalTo(loadingSectionTitleHeight)
+        }
+
+        loadingStepsSkeletonView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview().inset(kFitWidth(16))
+            make.top.equalTo(loadingStepsTitleSkeletonView.snp.bottom).offset(kFitWidth(14))
+            make.bottom.equalTo(kFitWidth(-24))
+            make.height.greaterThanOrEqualTo(kFitWidth(220))
+        }
+    }
+
+    func showLoadingSkeletonIfNeeded() {
+        loadingContainerView.alpha = 1
+        chooseButtonSkeletonView.alpha = 1
+        scrollView.alpha = 0.02
+        chooseButton.alpha = 0.02
+        scrollView.isScrollEnabled = false
+        chooseButton.isUserInteractionEnabled = false
+        chooseButtonSkeletonView.showSkeleton(buttonSkeletonConfig)
+    }
+
+    func hideLoadingSkeletonIfNeeded() {
+        chooseButton.isUserInteractionEnabled = true
+        scrollView.isScrollEnabled = true
+        guard loadingContainerView.superview != nil || chooseButtonSkeletonView.superview != nil else {
+            scrollView.alpha = 1
+            chooseButton.alpha = 1
+            return
+        }
+
+        UIView.animate(withDuration: 0.2, animations: {
+            self.loadingContainerView.alpha = 0
+            self.chooseButtonSkeletonView.alpha = 0
+            self.scrollView.alpha = 1
+            self.chooseButton.alpha = 1
+        }, completion: { _ in
+            self.loadingContainerView.removeFromSuperview()
+            self.chooseButtonSkeletonView.removeFromSuperview()
+        })
     }
     
     func parseFoods(_ foodsArray: NSArray?) -> [DietPlanFoodsDetailFoodItem] {
@@ -650,6 +817,64 @@ private extension DietPlanFoodsDetailVC {
         
         return rowView
     }
+
+    func makeLoadingBlock(config: SkeletonConfig? = nil,
+                          size: CGSize? = nil,
+                          cornerRadius: CGFloat? = nil,
+                          in containerView: UIView? = nil) -> UIView {
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+
+        if let containerView = containerView {
+            containerView.addSubview(view)
+        }
+
+        var skeletonConfig = config ?? blockSkeletonConfig
+        if let cornerRadius = cornerRadius {
+            skeletonConfig.cornerRadius = cornerRadius
+        }
+        if let size = size {
+            view.snp.makeConstraints { make in
+                make.size.equalTo(size)
+            }
+        }
+        view.showSkeleton(skeletonConfig)
+        return view
+    }
+
+    func makeLoadingFoodRow(showSeparator: Bool, textHeight: CGFloat) -> UIView {
+        let rowView = UIView()
+
+        let nameSkeletonView = makeLoadingBlock()
+        let amountSkeletonView = makeLoadingBlock()
+        rowView.addSubview(nameSkeletonView)
+        rowView.addSubview(amountSkeletonView)
+
+        nameSkeletonView.snp.makeConstraints { make in
+            make.left.equalToSuperview()
+            make.centerY.equalToSuperview()
+            make.width.equalTo(kFitWidth(110))
+            make.height.equalTo(textHeight)
+        }
+
+        amountSkeletonView.snp.makeConstraints { make in
+            make.right.equalToSuperview()
+            make.centerY.equalToSuperview()
+            make.width.equalTo(kFitWidth(58))
+            make.height.equalTo(textHeight)
+        }
+
+        if showSeparator {
+            let separator = DietPlanDashedSeparatorView()
+            rowView.addSubview(separator)
+            separator.snp.makeConstraints { make in
+                make.left.right.bottom.equalToSuperview()
+                make.height.equalTo(1)
+            }
+        }
+
+        return rowView
+    }
     
     func makeSectionTitleLabel(text: String) -> UILabel {
         let label = UILabel()
@@ -657,6 +882,14 @@ private extension DietPlanFoodsDetailVC {
         label.textColor = .COLOR_TEXT_TITLE_0f1214
         label.font = .systemFont(ofSize: 14, weight: .medium)
         return label
+    }
+
+    func singleLineSkeletonHeight(for label: UILabel) -> CGFloat {
+        singleLineHeight(for: label.font)
+    }
+
+    func singleLineHeight(for font: UIFont) -> CGFloat {
+        ceil(font.lineHeight)
     }
     
     func makeNotesAttributedText(_ text: String) -> NSAttributedString {

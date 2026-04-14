@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import StoreKit
 import SnapKit
 import UserNotifications
 
@@ -17,6 +18,8 @@ class GuidanceProSubscribeVM: UIView {
     private var isSyncingReminderSwitchState = false
     private var hasFreeTrialPermission = true
     private var startTrialButtonNormalTitle = "0元 开启体验"
+    private var annualPriceDescription = "168/年"
+    private var dailyPriceDescription = "0.46元/天"
 
     private lazy var loadingOverlayView: UIView = {
         let view = UIView()
@@ -233,9 +236,7 @@ extension GuidanceProSubscribeVM {
 //        reminderCardView.isHidden = !hasPermission
         noteStackView.isHidden = !hasPermission
 
-        trialDescLabel.text = hasPermission
-        ? "免费试用3天，随后以168/年价格续费，仅0.46元/天。"
-        : "订阅价格为168/年，仅0.46元/天。"
+        updateTrialDescription()
         renewalDescLabel.text = hasPermission
         ? "订阅计划会自动续订。请通过 App Store 取消订阅。\n除非你取消，否则免费试用结束后将开始收费。"
         : "订阅计划会自动续订。请通过 App Store 取消订阅。\n如果你不需要，可在当前订阅周期结束前取消。"
@@ -259,6 +260,13 @@ extension GuidanceProSubscribeVM {
         startTrialButton.isEnabled = !isLoading
         startTrialButton.setTitle(isLoading ? "处理中..." : startTrialButtonNormalTitle, for: .normal)
     }
+
+    func updateAnnualProduct(_ product: SKProduct) {
+        annualPriceDescription = recurringPriceDescription(for: product)
+        dailyPriceDescription = dailyPriceText(for: product)
+        updateTrialDescription()
+    }
+
     @objc func closeTapAction() {
         self.closeTapBlock?()
     }
@@ -331,6 +339,92 @@ private extension GuidanceProSubscribeVM {
         isSyncingReminderSwitchState = true
         reminderSwitch.setOn(isOn, animated: animated)
         isSyncingReminderSwitchState = false
+    }
+
+    func updateTrialDescription() {
+        let text = hasFreeTrialPermission
+        ? "免费试用3天，随后以\(annualPriceDescription)价格续费，仅\(dailyPriceDescription)。"
+        : "订阅价格为\(annualPriceDescription)，仅\(dailyPriceDescription)。"
+        trialDescLabel.text = text
+        trialDescLabel.setLineHeight(textString: text, lineHeight: trialDescLabel.font.lineHeight * 1.1)
+    }
+
+    func recurringPriceDescription(for product: SKProduct) -> String {
+        let period = periodText(from: product.subscriptionPeriod)
+        if isChineseYuanLocale(product.priceLocale) {
+            return "\(decimalText(for: product.price))/\(period)"
+        }
+        return ElaProIAPManager.shared.localizedPriceString(for: product) + "/\(period)"
+    }
+
+    func dailyPriceText(for product: SKProduct) -> String {
+        let days = max(daysCount(from: product.subscriptionPeriod), 1)
+        let daily = product.price.dividing(by: NSDecimalNumber(value: days))
+        if isChineseYuanLocale(product.priceLocale) {
+            return "\(decimalText(for: daily))元/天"
+        }
+        return "\(localizedPriceString(decimal: daily, locale: product.priceLocale))/天"
+    }
+
+    func localizedPriceString(decimal: NSDecimalNumber, locale: Locale) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = locale
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = max(2, formatter.maximumFractionDigits)
+        return formatter.string(from: decimal) ?? "\(decimal)"
+    }
+
+    func decimalText(for value: NSDecimalNumber) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 2
+        return formatter.string(from: value) ?? "\(value)"
+    }
+
+    func periodText(from period: SKProductSubscriptionPeriod?) -> String {
+        guard let period = period else { return "年" }
+        let unitText: String
+        switch period.unit {
+        case .day:
+            unitText = "天"
+        case .week:
+            unitText = "周"
+        case .month:
+            unitText = "月"
+        case .year:
+            unitText = "年"
+        @unknown default:
+            unitText = "期"
+        }
+
+        if period.numberOfUnits <= 1 {
+            return unitText
+        }
+        return "\(period.numberOfUnits)\(unitText)"
+    }
+
+    func daysCount(from period: SKProductSubscriptionPeriod?) -> Int {
+        guard let period = period else { return 365 }
+        let units = max(period.numberOfUnits, 1)
+        switch period.unit {
+        case .day:
+            return units
+        case .week:
+            return units * 7
+        case .month:
+            return units * 30
+        case .year:
+            return units * 365
+        @unknown default:
+            return 365
+        }
+    }
+
+    func isChineseYuanLocale(_ locale: Locale) -> Bool {
+        guard let currencyCode = locale.currencyCode?.uppercased() else { return false }
+        return currencyCode == "CNY" || currencyCode == "CNH" || currencyCode == "RMB"
     }
 
     func presentNotificationPermissionAlert() {

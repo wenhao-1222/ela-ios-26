@@ -160,7 +160,7 @@ class ElaProExpiredAlertVM: UIView {
         let btn = UIButton()
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
-        btn.setTitle("升级ela pro", for: .normal)
+        btn.setTitle("升级ELA PRO", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         btn.backgroundColor = .THEME

@@ -33,7 +33,21 @@ class VIPModel: NSObject {
 //    var vipType = VIP_TYPE.none
     var startTime = ""
     var expireTime = ""
-    var status: VIP_STATUS?
+    private var storedStatus: VIP_STATUS?
+    var status: VIP_STATUS? {
+        get {
+            // 订阅/续费成功后，先信任本地已解锁状态，避免服务端会员态未及时同步时拦住权益页。
+            if storedStatus != .valid,
+               storedStatus != .banned,
+               ElaProIAPManager.shared.isLocalProUnlocked() {
+                return .valid
+            }
+            return storedStatus
+        }
+        set {
+            storedStatus = newValue
+        }
+    }
     var isLifetime = false
     
     // 后台当前也会返回这两个时间，先一起保留，避免后续再补字段
@@ -47,7 +61,7 @@ class VIPModel: NSObject {
 //    }
     
     var isValidVip: Bool {
-        return self.status == .valid
+        return status == .valid
 //        return self.isVip && self.status == .valid
     }
     

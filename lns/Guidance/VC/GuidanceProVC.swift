@@ -150,6 +150,7 @@ extension GuidanceProVC {
             self?.startSubscriptionFlow()
         }
         subscribeContentVM.updateFreeTrialPermission(hasFreeTrialPermission)
+        fetchAnnualDisplayProduct()
 
         trialContentVM.isHidden = true
         trialContentVM.alpha = 0
@@ -345,6 +346,16 @@ extension GuidanceProVC {
             currentView.isHidden = true
 //            currentView.alpha = 1
             currentView.transform = .identity
+        }
+    }
+
+    func fetchAnnualDisplayProduct() {
+        ElaProIAPManager.shared.fetchAnnualProduct { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                guard case .success(let product) = result else { return }
+                self.subscribeContentVM.updateAnnualProduct(product)
+            }
         }
     }
 

@@ -159,6 +159,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     }()
     lazy var allergyVm: DietPlanCreateAllergyVM = {
         let vm = DietPlanCreateAllergyVM(frame: CGRect(x: SCREEN_WIDHT * 10, y: 0, width: 0, height: 0))
+        vm.titleLabel.text = "你是否有过敏或忌口？"
         vm.selectedBlock = {[weak self] in
             self?.syncNextButtonEnableStatus()
         }

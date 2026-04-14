@@ -252,7 +252,7 @@ private extension DietPlanBuyListDateVC {
         var seen = Set<String>()
         for (sdate, date) in sorted where !seen.contains(sdate) {
             seen.insert(sdate)
-            options.append(DietPlanBuyListDateOption(sdate: sdate, date: date, isSelected: true))
+            options.append(DietPlanBuyListDateOption(sdate: sdate, date: date, isSelected: false))
         }
         return options
     }

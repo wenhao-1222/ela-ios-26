@@ -139,6 +139,7 @@ extension UIView {
 
 
 extension UIView{
+    ///对内容中的数字做特殊处理
     func makeAttributedText(text: String, font: UIFont, textColor: UIColor) -> NSAttributedString {
         let attr = NSMutableAttributedString(
             string: text,

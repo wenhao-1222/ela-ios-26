@@ -737,18 +737,20 @@ extension ElaProPriceVM{
         case .month:
             labelBgImgView.isHidden = true
             if let monthProduct = monthProduct {
-                dailyPriceLabel.text = preferredRemoteText(monthRemoteProduct?.dayAvgPriceLabel) ?? buildDailyText(for: monthProduct)
+                dailyPriceLabel.text = preferredDayAvgText(remoteText: monthRemoteProduct?.dayAvgPriceLabel,
+                                                           product: monthProduct) ?? defaultDailyPlaceholder()
                 tipsLabel.text = preferredRemoteText(monthRemoteProduct?.promotionDesc) ?? buildSubscriptionTips(for: monthProduct,
                                                                                                                   currentPriceText: monthPriceText,
                                                                                                                   originPriceText: monthOriginPriceText)
             } else {
-                dailyPriceLabel.text = preferredRemoteText(monthRemoteProduct?.dayAvgPriceLabel) ?? "--元/天"
+                dailyPriceLabel.text = preferredRemoteText(monthRemoteProduct?.dayAvgPriceLabel) ?? defaultDailyPlaceholder()
                 tipsLabel.text = preferredRemoteText(monthRemoteProduct?.promotionDesc) ?? "价格加载中..."
             }
         case .annual:
-            let annualDailyText = preferredRemoteText(annualRemoteProduct?.dayAvgPriceLabel) ?? annualProduct.map { buildDailyText(for: $0) }
+            let annualDailyText = preferredDayAvgText(remoteText: annualRemoteProduct?.dayAvgPriceLabel,
+                                                      product: annualProduct)
             labelBgImgView.isHidden = (annualDailyText?.isEmpty ?? true)
-            dailyPriceLabel.text = annualDailyText ?? "--元/天"
+            dailyPriceLabel.text = annualDailyText ?? defaultDailyPlaceholder()
             if let annualProduct = annualProduct {
                 tipsLabel.text = preferredRemoteText(annualRemoteProduct?.promotionDesc) ?? buildSubscriptionTips(for: annualProduct,
                                                                                                                    currentPriceText: annualPriceText,
@@ -762,7 +764,7 @@ extension ElaProPriceVM{
                 dailyPriceLabel.text = buildDailyText(for: lifetimeProduct, days: 365)
                 tipsLabel.text = preferredRemoteText(lifetimeRemoteProduct?.promotionDesc) ?? "买断价\(lifetimePriceText)，一次购买长期可用"
             } else {
-                dailyPriceLabel.text = "--元/天"
+                dailyPriceLabel.text = defaultDailyPlaceholder()
                 tipsLabel.text = preferredRemoteText(lifetimeRemoteProduct?.promotionDesc) ?? "价格加载中..."
             }
         }
@@ -773,6 +775,22 @@ extension ElaProPriceVM{
             return nil
         }
         return text
+    }
+
+    private func preferredDayAvgText(remoteText: String?, product: SKProduct?) -> String? {
+        let remote = preferredRemoteText(remoteText)
+        guard let product = product else { return remote }
+        let localized = buildDailyText(for: product)
+        guard shouldUseRemoteDayAvgText(for: product) else { return localized }
+        return remote ?? localized
+    }
+
+    private func shouldUseRemoteDayAvgText(for product: SKProduct) -> Bool {
+        return isChineseYuanLocale(product.priceLocale)
+    }
+
+    private func defaultDailyPlaceholder() -> String {
+        return "--/天"
     }
 
     private func applyRemoteProducts(_ products: [RemotePlanProduct]) {
@@ -925,21 +943,24 @@ extension ElaProPriceVM{
     func buildDailyText(for product: SKProduct, days: Int) -> String {
         let safeDays = max(days, 1)
         let daily = product.price.dividing(by: NSDecimalNumber(value: safeDays))
-        return buildDailyText(decimal: daily)
+        return buildDailyText(decimal: daily, locale: product.priceLocale)
     }
     
     func buildDailyText(for product: SKProduct) -> String {
         if let intro = product.introductoryPrice {
             let days = daysCount(from: intro.subscriptionPeriod)
             let daily = intro.price.dividing(by: NSDecimalNumber(value: max(days, 1)))
-            return buildDailyText(decimal: daily)
+            return buildDailyText(decimal: daily, locale: intro.priceLocale)
         }
         
         let days = daysCount(from: product.subscriptionPeriod)
         return buildDailyText(for: product, days: days)
     }
     
-    func buildDailyText(decimal: NSDecimalNumber) -> String {
+    func buildDailyText(decimal: NSDecimalNumber, locale: Locale? = nil) -> String {
+        if let locale = locale, !isChineseYuanLocale(locale) {
+            return "\(localizedPriceString(decimal: decimal, locale: locale))/天"
+        }
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.minimumFractionDigits = 0
@@ -1043,6 +1064,11 @@ extension ElaProPriceVM{
         @unknown default:
             return units
         }
+    }
+
+    func isChineseYuanLocale(_ locale: Locale) -> Bool {
+        guard let currencyCode = locale.currencyCode?.uppercased() else { return false }
+        return currencyCode == "CNY" || currencyCode == "CNH" || currencyCode == "RMB"
     }
 
     func initUI() {
