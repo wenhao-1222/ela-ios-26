@@ -19,6 +19,7 @@ class MineVC : WHBaseViewVC {
     
     override func viewWillAppear(_ animated: Bool) {
         self.personalTopVm.updateUI()
+        self.funcTopVm.updateUI()
         sendUserCenterRequest()
         getUserConfigRequest()
         sendForumMsgNuberRequest()
@@ -82,6 +83,9 @@ class MineVC : WHBaseViewVC {
     //MARK: 我的计划、身体数据、订单、个性化
     lazy var funcTopVm: PersonalTopFuncVM = {
         let vm = PersonalTopFuncVM.init(frame: CGRect.init(x: 0, y: self.personalTopVm.frame.maxY+kFitWidth(6), width: 0, height: 0))
+        vm.frameChangeBlock = { [weak self] in
+            self?.updateMineLayout()
+        }
         vm.planVm.tapBlock = {()in
             let vc = PlanListVC()
 //            let vc = AICoachReportPDFDemoVC()
@@ -177,6 +181,14 @@ extension MineVC{
 }
 
 extension MineVC{
+    func updateMineLayout() {
+        settingVm.frame = CGRect.init(x: settingVm.frame.origin.x, y: funcTopVm.frame.maxY+kFitWidth(20), width: settingVm.frame.width, height: settingVm.frame.height)
+        funcBottomVm.frame = CGRect.init(x: funcBottomVm.frame.origin.x, y: settingVm.frame.maxY+kFitWidth(20), width: funcBottomVm.frame.width, height: funcBottomVm.frame.height)
+        scrollViewBase.contentSize = CGSize.init(width: 0, height: self.funcBottomVm.frame.maxY+getTabbarHeight()+self.bottomGap)
+    }
+}
+
+extension MineVC{
     
     func initUI(){
         view.addSubview(scrollViewBase)
@@ -205,6 +217,7 @@ extension MineVC{
             UserInfoModel.shared.updateMsg(dict: dataObj)
             self.funcBottomVm.updateUI()
             self.personalTopVm.updateUI()
+            self.funcTopVm.updateUI()
         }
     }
     func sendServiceWelcomeRequest() {

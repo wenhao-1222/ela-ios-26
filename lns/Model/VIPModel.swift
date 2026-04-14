@@ -66,6 +66,10 @@ class VIPModel: NSObject {
 //        return self.isVip && self.status == .valid
     }
     
+    var isMembershipStatusValid: Bool {
+        return storedStatus == .valid
+    }
+    
     func reset() {
         uid = ""
         vipType = .none

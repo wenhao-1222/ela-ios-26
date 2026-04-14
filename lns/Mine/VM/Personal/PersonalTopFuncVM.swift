@@ -9,7 +9,8 @@
 class PersonalTopFuncVM: UIView {
     
     private let itemHeight = kFitWidth(50)
-    private let shouldShowElaPro: Bool
+    private var shouldShowElaPro = false
+    var frameChangeBlock:(()->())?
     var selfHeight: CGFloat {
         itemHeight * CGFloat(shouldShowElaPro ? 7 : 6)
     }
@@ -19,7 +20,7 @@ class PersonalTopFuncVM: UIView {
     }
     
     override init(frame: CGRect) {
-        let shouldShowElaPro = UserInfoModel.shared.vipModel.isValidVip
+        let shouldShowElaPro = UserInfoModel.shared.vipModel.isMembershipStatusValid
         let itemHeight = kFitWidth(50)
         let selfHeight = itemHeight * CGFloat(shouldShowElaPro ? 7 : 6)
         self.shouldShowElaPro = shouldShowElaPro
@@ -83,14 +84,34 @@ class PersonalTopFuncVM: UIView {
 
 extension PersonalTopFuncVM{
     func initUI() {
-        if shouldShowElaPro {
-            addSubview(elaproVm)
-        }
+        addSubview(elaproVm)
         addSubview(planVm)
         addSubview(bodyDataVm)
         addSubview(fastingVm)
         addSubview(communityVm)
         addSubview(orderVm)
         addSubview(honorVm)
+        
+        updateUI(notifyFrameChange: false)
+    }
+    
+    func updateUI(notifyFrameChange: Bool = true) {
+        shouldShowElaPro = UserInfoModel.shared.vipModel.isMembershipStatusValid
+        
+        let selfFrame = self.frame
+        self.frame = CGRect.init(x: selfFrame.origin.x, y: selfFrame.origin.y, width: selfFrame.width, height: selfHeight)
+        
+        elaproVm.isHidden = !shouldShowElaPro
+        elaproVm.frame.origin.y = itemY(at: 0)
+        planVm.frame.origin.y = itemY(at: shouldShowElaPro ? 1 : 0)
+        bodyDataVm.frame.origin.y = itemY(at: shouldShowElaPro ? 2 : 1)
+        fastingVm.frame.origin.y = itemY(at: shouldShowElaPro ? 3 : 2)
+        communityVm.frame.origin.y = itemY(at: shouldShowElaPro ? 4 : 3)
+        orderVm.frame.origin.y = itemY(at: shouldShowElaPro ? 5 : 4)
+        honorVm.frame.origin.y = itemY(at: shouldShowElaPro ? 6 : 5)
+        
+        if notifyFrameChange {
+            frameChangeBlock?()
+        }
     }
 }

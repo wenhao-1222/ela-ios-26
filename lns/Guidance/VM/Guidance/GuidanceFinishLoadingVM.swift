@@ -141,7 +141,7 @@ extension GuidanceFinishLoadingVM {
         guard !isHidden || alpha > 0 else { return }
         layer.removeAllAnimations()
         stopFakeProgress()
-        UIView.animate(withDuration: 0.16,
+        UIView.animate(withDuration: 0.25,
                        delay: 0,
                        options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction]) {
             self.alpha = 0

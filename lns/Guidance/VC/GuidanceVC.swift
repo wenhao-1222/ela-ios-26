@@ -891,6 +891,7 @@ extension GuidanceVC{
         } else {
             finishGuidanceFlow()
         }
+        self.reminderPromptVm.alpha = 0
     }
 
     func finishGuidanceFlow() {
@@ -973,6 +974,12 @@ extension GuidanceVC{
         }
 
         nutritionGoalVm.isHidden = false
+        nutritionGoalVm.alpha = 0
+        UIView.animate(withDuration: 0.1,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction]) {
+            self.nutritionGoalVm.alpha = 1
+        }
         view.bringSubviewToFront(nutritionGoalVm)
         view.bringSubviewToFront(goalTipsAlertVm)
         nextButton.isHidden = true
