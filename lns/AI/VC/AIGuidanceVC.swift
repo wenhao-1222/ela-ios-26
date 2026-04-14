@@ -28,9 +28,12 @@ class AIGuidanceVC: WHBaseViewVC {
         let imageView = UIImageView(image: UIImage(named: "ela_pro_ai_bg"))
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        imageView.alpha = 0
         imageView.isHidden = true
         return imageView
     }()
+
+    private let sharedBackgroundTransitionDuration: TimeInterval = 0.25
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -203,10 +206,11 @@ extension AIGuidanceVC{
 
     func moveToStep(index: Int, animated: Bool) {
         let targetIndex = max(0, min(index, totalSteps - 1))
+        let previousStep = flowStep(for: currentIndex)
         currentIndex = targetIndex
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: animated)
         updatePopGestureState()
-        updateNavigationForCurrentStep()
+        updateNavigationForCurrentStep(from: previousStep, animated: animated)
         updateNextButtonForCurrentStep()
     }
     
@@ -252,14 +256,17 @@ extension AIGuidanceVC{
         updateNextButtonTitle(for: currentStep)
     }
 
-    func updateNavigationForCurrentStep() {
+    func updateNavigationForCurrentStep(from previousStep: FlowStep? = nil, animated: Bool = false) {
         guard let currentStep = flowStep(for: currentIndex) else {
             return
         }
 
-        sharedBackgroundImageView.isHidden = !(currentStep == .notice || currentStep == .elaProIntro || currentStep == .readyStart)
+        let shouldShowBackground = usesSharedBackground(for: currentStep)
+        let previousShouldShowBackground = previousStep.map { usesSharedBackground(for: $0) } ?? shouldShowBackground
+        updateSharedBackgroundVisibility(shouldShow: shouldShowBackground,
+                                         animated: animated && previousShouldShowBackground != shouldShowBackground)
 
-        let shouldHideProgress = currentStep == .notice || currentStep == .elaProIntro || currentStep == .readyStart
+        let shouldHideProgress = shouldShowBackground
         naviVm.firstStepVm.isHidden = shouldHideProgress
         naviVm.secondStepVm.isHidden = shouldHideProgress
         naviVm.thirdStepVm.isHidden = shouldHideProgress
@@ -269,6 +276,40 @@ extension AIGuidanceVC{
 
         if shouldHideProgress == false {
             naviVm.updateStep(steps: stepsArray, currentStep: currentIndex)
+        }
+    }
+
+    func usesSharedBackground(for step: FlowStep) -> Bool {
+        step == .notice || step == .elaProIntro || step == .readyStart
+    }
+
+    func updateSharedBackgroundVisibility(shouldShow: Bool, animated: Bool) {
+        sharedBackgroundImageView.layer.removeAllAnimations()
+
+        guard animated else {
+            sharedBackgroundImageView.alpha = shouldShow ? 1 : 0
+            sharedBackgroundImageView.isHidden = !shouldShow
+            return
+        }
+
+        sharedBackgroundImageView.isHidden = false
+        if shouldShow {
+            sharedBackgroundImageView.alpha = 0
+            UIView.animate(withDuration: sharedBackgroundTransitionDuration,
+                           delay: 0,
+                           options: [.curveEaseInOut, .beginFromCurrentState]) {
+                self.sharedBackgroundImageView.alpha = 1
+            }
+        } else {
+            sharedBackgroundImageView.alpha = 1
+            UIView.animate(withDuration: sharedBackgroundTransitionDuration,
+                           delay: 0,
+                           options: [.curveEaseInOut, .beginFromCurrentState]) {
+                self.sharedBackgroundImageView.alpha = 0
+            } completion: { [weak self] _ in
+                guard let self = self else { return }
+                self.sharedBackgroundImageView.isHidden = true
+            }
         }
     }
 

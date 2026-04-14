@@ -923,19 +923,13 @@ extension DietPlanCreateVC{
             self.isUploadingDietProfile = false
         }
         
-        if UserInfoModel.shared.vipModel.status == .valid{
-            shouldSkipDraftPersistence = true
-            clearDraftIfNeeded()
-            self.backTapAction()
-        }else{
-            shouldResumeFromEatStyleForNonVip = true
-            shouldSkipDraftPersistence = false
-            persistDraftIfNeeded()
-            let vc = ElaProVC()
-            vc.shouldClearDietPlanCreateDraftOnPurchaseSuccess = true
+        shouldResumeFromEatStyleForNonVip = true
+        shouldSkipDraftPersistence = false
+        persistDraftIfNeeded()
+        let vc = ElaProVC()
+        vc.shouldClearDietPlanCreateDraftOnPurchaseSuccess = true
 //            vc.param = param
-            self.navigationController?.pushViewController(vc, animated: true)
-        }
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     func sendBasicRequest() {
         let param = ["gender":"\(QuestinonaireMsgModel.shared.sex)",

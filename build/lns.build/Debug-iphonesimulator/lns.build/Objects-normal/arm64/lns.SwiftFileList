@@ -2,7 +2,8 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportDemoChartViews.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportDemoContentView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportPDFGenerator.swift
-/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportPDFDemoVC.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Pro/MineElaProSectionBlockView.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/AI/VC/AICoachReportPDFDemoVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportDateAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachBreathingOrbPalette.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachBreathingOrbView.swift
@@ -130,6 +131,9 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Meals/MealsNameVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Invite/WithDrawVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VC/ActivityAlertVC.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Pro/MineManageSubscriptionVC.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Pro/MineElaProVC.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Pro/MineSubscriptionPlanVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/goal/GoalSetCircleVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Questionnaire/VM/QuestionnaireProgressVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/WHUtil/Character+Exs.swift
@@ -484,7 +488,6 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Invite/InviteRewardsVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Service/ServiceCameraCaptureViewController.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/WidgetUtils/Widget+Date+Exs.swift
-/Users/lns2/Desktop/lnsapp-ios/lns/Logs/VC/JournalNewVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Mine/MineTopVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/ForumMain/ForumListTableViewCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VideoCompressHelper.swift
@@ -541,6 +544,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/JRBaseKit/Classes/Size+Extenison.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Questionnaire/VM/QuestionnaireBodyFatItemVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Guide/GuideMineCreatePlanAlertVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Pro/MineElaProFeatureRowView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Foods/FoodsListTypeVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/QuestionnaireSurvey/VM/QuestionnaireSurveyBodyFatVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Invite/InviteRewardsRuleAlertTitleVm.swift
@@ -631,6 +635,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/QuestionnaireSurvey/VM/QuestionDaylyMealsTableViewCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Questionnaire/VM/QuestionResultExplainVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/NetWork/NotificationManager.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Pro/MineElaProHeroCardView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Journal/JournalFitnessTypeAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/sport/SportHealthDataUpdateAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/Main/FoodsDetailCaloriVM.swift
@@ -853,7 +858,6 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/plan/PlanDetailFoodsTableViewCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VC/FoodsCreateVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/habit/Settle/RankUpConfetti3DView.swift
-/Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Journal/JounalCollectionViewCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Setting/LogsMealsAlertSetVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Journal/LogsNaturalGoalCircleVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Report/Week/JournalReportWeekCalendarCell.swift
@@ -1111,6 +1115,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/Market/List/MarketListHeroCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Journal/JournalRemarkTableViewCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Journal/JournalAICoachTableViewCell.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/GuidancePro/ELAFlowingGradientBackgroundView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/NotificationNames.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Personal/PersonalTopFuncItemVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Invite/InviteRewardsTopVM.swift

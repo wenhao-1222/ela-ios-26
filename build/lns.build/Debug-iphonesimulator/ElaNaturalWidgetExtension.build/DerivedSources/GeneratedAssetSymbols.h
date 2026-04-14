@@ -588,6 +588,15 @@ static NSString * const ACImageNameDateFliterCancelImg AC_SWIFT_PRIVATE = @"date
 /// The "date_fliter_confirm_img" asset catalog image resource.
 static NSString * const ACImageNameDateFliterConfirmImg AC_SWIFT_PRIVATE = @"date_fliter_confirm_img";
 
+/// The "diet_surve_icon_1" asset catalog image resource.
+static NSString * const ACImageNameDietSurveIcon1 AC_SWIFT_PRIVATE = @"diet_surve_icon_1";
+
+/// The "diet_surve_icon_2" asset catalog image resource.
+static NSString * const ACImageNameDietSurveIcon2 AC_SWIFT_PRIVATE = @"diet_surve_icon_2";
+
+/// The "diet_surve_icon_3" asset catalog image resource.
+static NSString * const ACImageNameDietSurveIcon3 AC_SWIFT_PRIVATE = @"diet_surve_icon_3";
+
 /// The "dietplan_bg_img" asset catalog image resource.
 static NSString * const ACImageNameDietplanBgImg AC_SWIFT_PRIVATE = @"dietplan_bg_img";
 
@@ -666,9 +675,6 @@ static NSString * const ACImageNameElaPro2Bg AC_SWIFT_PRIVATE = @"ela_pro_2_bg";
 /// The "ela_pro_3_guidance_icon" asset catalog image resource.
 static NSString * const ACImageNameElaPro3GuidanceIcon AC_SWIFT_PRIVATE = @"ela_pro_3_guidance_icon";
 
-/// The "ela_pro_3_guidance_img" asset catalog image resource.
-static NSString * const ACImageNameElaPro3GuidanceImg AC_SWIFT_PRIVATE = @"ela_pro_3_guidance_img";
-
 /// The "ela_pro_4_bg" asset catalog image resource.
 static NSString * const ACImageNameElaPro4Bg AC_SWIFT_PRIVATE = @"ela_pro_4_bg";
 
@@ -695,6 +701,12 @@ static NSString * const ACImageNameElaProBg AC_SWIFT_PRIVATE = @"ela_pro_bg";
 
 /// The "ela_pro_close_icon" asset catalog image resource.
 static NSString * const ACImageNameElaProCloseIcon AC_SWIFT_PRIVATE = @"ela_pro_close_icon";
+
+/// The "ela_pro_equity_bg" asset catalog image resource.
+static NSString * const ACImageNameElaProEquityBg AC_SWIFT_PRIVATE = @"ela_pro_equity_bg";
+
+/// The "ela_pro_equity_icon" asset catalog image resource.
+static NSString * const ACImageNameElaProEquityIcon AC_SWIFT_PRIVATE = @"ela_pro_equity_icon";
 
 /// The "ela_pro_expired_alert_bg" asset catalog image resource.
 static NSString * const ACImageNameElaProExpiredAlertBg AC_SWIFT_PRIVATE = @"ela_pro_expired_alert_bg";

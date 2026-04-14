@@ -1941,6 +1941,36 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameDietSurveIcon1</string>
+			<key>relativePath</key>
+			<string>./dietplan/diet_surve_icon_1.imageset</string>
+			<key>swiftSymbol</key>
+			<string>dietSurveIcon1</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameDietSurveIcon2</string>
+			<key>relativePath</key>
+			<string>./dietplan/diet_surve_icon_2.imageset</string>
+			<key>swiftSymbol</key>
+			<string>dietSurveIcon2</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameDietSurveIcon3</string>
+			<key>relativePath</key>
+			<string>./dietplan/diet_surve_icon_3.imageset</string>
+			<key>swiftSymbol</key>
+			<string>dietSurveIcon3</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameDietplanBgImg</string>
 			<key>relativePath</key>
 			<string>./dietplan/dietplan_bg_img.imageset</string>
@@ -2201,16 +2231,6 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
-			<string>ACImageNameElaPro3GuidanceImg</string>
-			<key>relativePath</key>
-			<string>./pro/ela_pro_3_guidance_img.imageset</string>
-			<key>swiftSymbol</key>
-			<string>elaPro3GuidanceImg</string>
-		</dict>
-		<dict>
-			<key>catalogPath</key>
-			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
-			<key>objcSymbol</key>
 			<string>ACImageNameElaPro4Bg</string>
 			<key>relativePath</key>
 			<string>./pro/ela_pro_4_bg.imageset</string>
@@ -2296,6 +2316,26 @@
 			<string>./common/ela_pro_close_icon.imageset</string>
 			<key>swiftSymbol</key>
 			<string>elaProCloseIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProEquityBg</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_equity_bg.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProEquityBg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProEquityIcon</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_equity_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProEquityIcon</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>

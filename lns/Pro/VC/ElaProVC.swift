@@ -148,12 +148,22 @@ extension ElaProVC{
             currentIndex = 2
             showStep(for: currentIndex, animated: true)
         } else if currentIndex == 2 {
-            currentIndex = 3
-            showStep(for: currentIndex, animated: true)
+            handleReadyStepNextAction()
         } else if currentIndex == 3 {
             currentIndex = 4
             showStep(for: currentIndex, animated: true)
         }
+    }
+
+    private func handleReadyStepNextAction() {
+        if UserInfoModel.shared.vipModel.status == .valid {
+            DietPlanCreateVC.clearStoredDraftForCurrentUser()
+            navigationController?.popToRootViewController(animated: true)
+            return
+        }
+
+        currentIndex = 3
+        showStep(for: currentIndex, animated: true)
     }
 
     private func showPreviousContentStep() {

@@ -199,6 +199,10 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         
         return vm
     }()
+    lazy var manualTargetLimitAlertVm: DietPlanManualTargetLimitAlertVM = {
+        let vm = DietPlanManualTargetLimitAlertVM(frame: .zero)
+        return vm
+    }()
 }
 
 extension DietPlanCreateSecondVC{
@@ -341,6 +345,13 @@ extension DietPlanCreateSecondVC{
     }
 
     func saveManualTarget(_ value: String) {
+        if let alertType = manualTargetAlertType(for: value) {
+            manualTargetLimitAlertVm.update(type: alertType)
+            view.bringSubviewToFront(manualTargetLimitAlertVm)
+            manualTargetLimitAlertVm.showSelf()
+            return
+        }
+
         self.currentIndex = self.previousStepIndex(from: self.currentIndex)
         let targetOffsetX = SCREEN_WIDHT * CGFloat(self.currentIndex)
         self.scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: false)
@@ -353,6 +364,43 @@ extension DietPlanCreateSecondVC{
         }
         hideManualTargetEditor(isBack: false)
     }
+
+    func manualTargetAlertType(for value: String) -> ManualTargetLimitAlertType? {
+        guard let calories = Int(value) else {
+            return nil
+        }
+
+        if calories > 5000 {
+            return .tooHigh
+        }
+
+        let gender = resolvedDietTargetGender()
+        if calories < gender.minimumCalories {
+            return .tooLow(gender: gender, minimumCalories: gender.minimumCalories)
+        }
+
+        return nil
+    }
+
+    func resolvedDietTargetGender() -> DietTargetGender {
+        let questionnaireGender = QuestinonaireMsgModel.shared.dietSex.trimmingCharacters(in: .whitespacesAndNewlines)
+        if questionnaireGender == "1" {
+            return .male
+        }
+        if questionnaireGender == "2" {
+            return .female
+        }
+
+        let profileGender = UserInfoModel.shared.gender.trimmingCharacters(in: .whitespacesAndNewlines)
+        if profileGender == "1" {
+            return .male
+        }
+        if profileGender == "2" {
+            return .female
+        }
+
+        return .unknown
+    }
 }
 
 extension DietPlanCreateSecondVC{
@@ -363,6 +411,7 @@ extension DietPlanCreateSecondVC{
         view.addSubview(nextButton)
         view.addSubview(manualTargetVm)
         view.addSubview(weightTipsAlertVm)
+        view.addSubview(manualTargetLimitAlertVm)
         
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear

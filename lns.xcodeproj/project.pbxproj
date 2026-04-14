@@ -764,6 +764,7 @@
 		EC31C27A2F8E135E00F435BF /* MineElaProHeroCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C2792F8E135D00F435BF /* MineElaProHeroCardView.swift */; };
 		EC31C27C2F8E138200F435BF /* MineElaProSectionBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C27B2F8E138200F435BF /* MineElaProSectionBlockView.swift */; };
 		EC31C27E2F8E139600F435BF /* MineElaProFeatureRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C27D2F8E139600F435BF /* MineElaProFeatureRowView.swift */; };
+		EC31C3322F8E456B00F435BF /* DietPlanManualTargetLimitAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C3312F8E456A00F435BF /* DietPlanManualTargetLimitAlertVM.swift */; };
 		EC356CCD2C6C856E0023C0BA /* WidgetUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */; };
 		EC356CD52C6C99D00023C0BA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F62C19915800E46713 /* WidgetKit.framework */; };
 		EC356CD62C6C99D00023C0BA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F82C19915800E46713 /* SwiftUI.framework */; };
@@ -1368,9 +1369,9 @@
 		F1A0C1082F72430000A1B2C3 /* AIGuidanceNoticeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */; };
 		F1A0C10A2F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */; };
 		F1A0C10C2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */; };
-		F1A700052F90000100AABBCC /* MineManageSubscriptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700062F90000100AABBCC /* MineManageSubscriptionVC.swift */; };
-		F1A700032F90000100AABBCC /* MineSubscriptionPlanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700042F90000100AABBCC /* MineSubscriptionPlanVC.swift */; };
 		F1A700012F90000100AABBCC /* MineElaProVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700022F90000100AABBCC /* MineElaProVC.swift */; };
+		F1A700032F90000100AABBCC /* MineSubscriptionPlanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700042F90000100AABBCC /* MineSubscriptionPlanVC.swift */; };
+		F1A700052F90000100AABBCC /* MineManageSubscriptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700062F90000100AABBCC /* MineManageSubscriptionVC.swift */; };
 		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
 		F2B0C2012F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */; };
 		F2B0C3012F80100100A1B2C3 /* GuidanceElaProTransitionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */; };
@@ -2252,6 +2253,7 @@
 		EC31C2792F8E135D00F435BF /* MineElaProHeroCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProHeroCardView.swift; sourceTree = "<group>"; };
 		EC31C27B2F8E138200F435BF /* MineElaProSectionBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProSectionBlockView.swift; sourceTree = "<group>"; };
 		EC31C27D2F8E139600F435BF /* MineElaProFeatureRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProFeatureRowView.swift; sourceTree = "<group>"; };
+		EC31C3312F8E456A00F435BF /* DietPlanManualTargetLimitAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanManualTargetLimitAlertVM.swift; sourceTree = "<group>"; };
 		EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetUtils.swift; sourceTree = "<group>"; };
 		EC356CD42C6C99D00023C0BA /* ElaNaturalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ElaNaturalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC356CD82C6C99D00023C0BA /* ElaNaturalWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetBundle.swift; sourceTree = "<group>"; };
@@ -2887,9 +2889,9 @@
 		F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceNoticeVM.swift; sourceTree = "<group>"; };
 		F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceElaProIntroVM.swift; sourceTree = "<group>"; };
 		F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceReadyStartVM.swift; sourceTree = "<group>"; };
-		F1A700062F90000100AABBCC /* MineManageSubscriptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineManageSubscriptionVC.swift; sourceTree = "<group>"; };
 		F1A700022F90000100AABBCC /* MineElaProVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProVC.swift; sourceTree = "<group>"; };
 		F1A700042F90000100AABBCC /* MineSubscriptionPlanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineSubscriptionPlanVC.swift; sourceTree = "<group>"; };
+		F1A700062F90000100AABBCC /* MineManageSubscriptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineManageSubscriptionVC.swift; sourceTree = "<group>"; };
 		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceElaProTransitionVM.swift; sourceTree = "<group>"; };
@@ -4890,6 +4892,7 @@
 				EC6F55E42F6804C400EB18A5 /* DietPlanCreateEatStyleSecondVM.swift */,
 				EC6F55E62F680B6900EB18A5 /* DietPlanCreateSpecialAdjustmentVM.swift */,
 				EC6F55E82F6915F900EB18A5 /* DietPlanCreateMealModeSecondVM.swift */,
+				EC31C3312F8E456A00F435BF /* DietPlanManualTargetLimitAlertVM.swift */,
 			);
 			path = CreateSecond;
 			sourceTree = "<group>";
@@ -7632,6 +7635,7 @@
 				EC87EEF92BB3E29A00350EB0 /* QuestionnaireSurveyFoodsVM.swift in Sources */,
 				EC5E12602C801C6700F5828A /* NSDictionary+Widget+Exs.swift in Sources */,
 				EC16B4C52C6374B500DEDD25 /* WHLoadingView.swift in Sources */,
+				EC31C3322F8E456B00F435BF /* DietPlanManualTargetLimitAlertVM.swift in Sources */,
 				A7103E5D2CD0B1B800249E3B /* QuestionPartNewVC.swift in Sources */,
 				ECE399982EA8675E005718C5 /* CoursePayTipsPopupView.swift in Sources */,
 				ECBA93502C93EDDE00117888 /* NaturalStatCalendarCollectionCellItemLeftVM.swift in Sources */,

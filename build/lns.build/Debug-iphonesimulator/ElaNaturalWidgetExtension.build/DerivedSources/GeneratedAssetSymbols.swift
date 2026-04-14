@@ -610,6 +610,15 @@ extension ImageResource {
     /// The "date_fliter_confirm_img" asset catalog image resource.
     static let dateFliterConfirmImg = ImageResource(name: "date_fliter_confirm_img", bundle: resourceBundle)
 
+    /// The "diet_surve_icon_1" asset catalog image resource.
+    static let dietSurveIcon1 = ImageResource(name: "diet_surve_icon_1", bundle: resourceBundle)
+
+    /// The "diet_surve_icon_2" asset catalog image resource.
+    static let dietSurveIcon2 = ImageResource(name: "diet_surve_icon_2", bundle: resourceBundle)
+
+    /// The "diet_surve_icon_3" asset catalog image resource.
+    static let dietSurveIcon3 = ImageResource(name: "diet_surve_icon_3", bundle: resourceBundle)
+
     /// The "dietplan_bg_img" asset catalog image resource.
     static let dietplanBgImg = ImageResource(name: "dietplan_bg_img", bundle: resourceBundle)
 
@@ -688,9 +697,6 @@ extension ImageResource {
     /// The "ela_pro_3_guidance_icon" asset catalog image resource.
     static let elaPro3GuidanceIcon = ImageResource(name: "ela_pro_3_guidance_icon", bundle: resourceBundle)
 
-    /// The "ela_pro_3_guidance_img" asset catalog image resource.
-    static let elaPro3GuidanceImg = ImageResource(name: "ela_pro_3_guidance_img", bundle: resourceBundle)
-
     /// The "ela_pro_4_bg" asset catalog image resource.
     static let elaPro4Bg = ImageResource(name: "ela_pro_4_bg", bundle: resourceBundle)
 
@@ -717,6 +723,12 @@ extension ImageResource {
 
     /// The "ela_pro_close_icon" asset catalog image resource.
     static let elaProCloseIcon = ImageResource(name: "ela_pro_close_icon", bundle: resourceBundle)
+
+    /// The "ela_pro_equity_bg" asset catalog image resource.
+    static let elaProEquityBg = ImageResource(name: "ela_pro_equity_bg", bundle: resourceBundle)
+
+    /// The "ela_pro_equity_icon" asset catalog image resource.
+    static let elaProEquityIcon = ImageResource(name: "ela_pro_equity_icon", bundle: resourceBundle)
 
     /// The "ela_pro_expired_alert_bg" asset catalog image resource.
     static let elaProExpiredAlertBg = ImageResource(name: "ela_pro_expired_alert_bg", bundle: resourceBundle)
@@ -5185,6 +5197,33 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "diet_surve_icon_1" asset catalog image.
+    static var dietSurveIcon1: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .dietSurveIcon1)
+#else
+        .init()
+#endif
+    }
+
+    /// The "diet_surve_icon_2" asset catalog image.
+    static var dietSurveIcon2: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .dietSurveIcon2)
+#else
+        .init()
+#endif
+    }
+
+    /// The "diet_surve_icon_3" asset catalog image.
+    static var dietSurveIcon3: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .dietSurveIcon3)
+#else
+        .init()
+#endif
+    }
+
     /// The "dietplan_bg_img" asset catalog image.
     static var dietplanBgImg: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
@@ -5419,15 +5458,6 @@ extension AppKit.NSImage {
 #endif
     }
 
-    /// The "ela_pro_3_guidance_img" asset catalog image.
-    static var elaPro3GuidanceImg: AppKit.NSImage {
-#if !targetEnvironment(macCatalyst)
-        .init(resource: .elaPro3GuidanceImg)
-#else
-        .init()
-#endif
-    }
-
     /// The "ela_pro_4_bg" asset catalog image.
     static var elaPro4Bg: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
@@ -5504,6 +5534,24 @@ extension AppKit.NSImage {
     static var elaProCloseIcon: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .elaProCloseIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_equity_bg" asset catalog image.
+    static var elaProEquityBg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProEquityBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_equity_icon" asset catalog image.
+    static var elaProEquityIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProEquityIcon)
 #else
         .init()
 #endif
@@ -11169,6 +11217,33 @@ extension UIKit.UIImage {
 #endif
     }
 
+    /// The "diet_surve_icon_1" asset catalog image.
+    static var dietSurveIcon1: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .dietSurveIcon1)
+#else
+        .init()
+#endif
+    }
+
+    /// The "diet_surve_icon_2" asset catalog image.
+    static var dietSurveIcon2: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .dietSurveIcon2)
+#else
+        .init()
+#endif
+    }
+
+    /// The "diet_surve_icon_3" asset catalog image.
+    static var dietSurveIcon3: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .dietSurveIcon3)
+#else
+        .init()
+#endif
+    }
+
     /// The "dietplan_bg_img" asset catalog image.
     static var dietplanBgImg: UIKit.UIImage {
 #if !os(watchOS)
@@ -11403,15 +11478,6 @@ extension UIKit.UIImage {
 #endif
     }
 
-    /// The "ela_pro_3_guidance_img" asset catalog image.
-    static var elaPro3GuidanceImg: UIKit.UIImage {
-#if !os(watchOS)
-        .init(resource: .elaPro3GuidanceImg)
-#else
-        .init()
-#endif
-    }
-
     /// The "ela_pro_4_bg" asset catalog image.
     static var elaPro4Bg: UIKit.UIImage {
 #if !os(watchOS)
@@ -11488,6 +11554,24 @@ extension UIKit.UIImage {
     static var elaProCloseIcon: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .elaProCloseIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_equity_bg" asset catalog image.
+    static var elaProEquityBg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProEquityBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_equity_icon" asset catalog image.
+    static var elaProEquityIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProEquityIcon)
 #else
         .init()
 #endif

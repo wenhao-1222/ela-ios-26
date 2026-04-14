@@ -53,7 +53,8 @@ class DietPlanCreateRecommendIntakeVM: UIView {
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 12, weight: .regular)
-        lab.text = "(千卡) kcal"
+        lab.text = "千卡(kcal) "
+//        lab.text = "kcal"
         return lab
     }()
 
@@ -94,10 +95,11 @@ extension DietPlanCreateRecommendIntakeVM {
         cardView.addSubview(targetDescLabel)
         cardView.addSubview(editButton)
 
-        titleLabel.setLineHeight(
-            textString: "根据你的情况\n我们建议每天摄入",
-            lineHeight: titleLabel.font.lineHeight * 1.15
-        )
+        titleLabel.text = "根据你的情况\n我们建议每天摄入"
+//        titleLabel.setLineHeight(
+//            textString: "根据你的情况\n我们建议每天摄入",
+//            lineHeight: titleLabel.font.lineHeight //* 1.15
+//        )
 
         setConstraint()
         refreshContent()
