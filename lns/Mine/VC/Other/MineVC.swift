@@ -111,7 +111,8 @@ class MineVC : WHBaseViewVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.elaproVm.tapBlock = {()in
-                
+            let vc = MineElaProVC()
+            self.navigationController?.pushViewController(vc, animated: true)
         }
         return vm
     }()

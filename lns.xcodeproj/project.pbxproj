@@ -761,6 +761,9 @@
 		EC312A9E2EFCE2AC0026F005 /* HabitExchangeMsgVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC312A9D2EFCE2A60026F005 /* HabitExchangeMsgVM.swift */; };
 		EC312AA02EFCE8780026F005 /* HabitExchangeAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC312A9F2EFCE8740026F005 /* HabitExchangeAlertVM.swift */; };
 		EC312AA22EFCE93E0026F005 /* AlertVMCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC312AA12EFCE9330026F005 /* AlertVMCommon.swift */; };
+		EC31C27A2F8E135E00F435BF /* MineElaProHeroCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C2792F8E135D00F435BF /* MineElaProHeroCardView.swift */; };
+		EC31C27C2F8E138200F435BF /* MineElaProSectionBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C27B2F8E138200F435BF /* MineElaProSectionBlockView.swift */; };
+		EC31C27E2F8E139600F435BF /* MineElaProFeatureRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C27D2F8E139600F435BF /* MineElaProFeatureRowView.swift */; };
 		EC356CCD2C6C856E0023C0BA /* WidgetUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */; };
 		EC356CD52C6C99D00023C0BA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F62C19915800E46713 /* WidgetKit.framework */; };
 		EC356CD62C6C99D00023C0BA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F82C19915800E46713 /* SwiftUI.framework */; };
@@ -1365,6 +1368,7 @@
 		F1A0C1082F72430000A1B2C3 /* AIGuidanceNoticeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */; };
 		F1A0C10A2F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */; };
 		F1A0C10C2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */; };
+		F1A700012F90000100AABBCC /* MineElaProVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700022F90000100AABBCC /* MineElaProVC.swift */; };
 		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
 		F2B0C2012F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */; };
 		F2B0C3012F80100100A1B2C3 /* GuidanceElaProTransitionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */; };
@@ -2243,6 +2247,9 @@
 		EC312A9D2EFCE2A60026F005 /* HabitExchangeMsgVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeMsgVM.swift; sourceTree = "<group>"; };
 		EC312A9F2EFCE8740026F005 /* HabitExchangeAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeAlertVM.swift; sourceTree = "<group>"; };
 		EC312AA12EFCE9330026F005 /* AlertVMCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertVMCommon.swift; sourceTree = "<group>"; };
+		EC31C2792F8E135D00F435BF /* MineElaProHeroCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProHeroCardView.swift; sourceTree = "<group>"; };
+		EC31C27B2F8E138200F435BF /* MineElaProSectionBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProSectionBlockView.swift; sourceTree = "<group>"; };
+		EC31C27D2F8E139600F435BF /* MineElaProFeatureRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProFeatureRowView.swift; sourceTree = "<group>"; };
 		EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetUtils.swift; sourceTree = "<group>"; };
 		EC356CD42C6C99D00023C0BA /* ElaNaturalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ElaNaturalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC356CD82C6C99D00023C0BA /* ElaNaturalWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetBundle.swift; sourceTree = "<group>"; };
@@ -2878,6 +2885,7 @@
 		F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceNoticeVM.swift; sourceTree = "<group>"; };
 		F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceElaProIntroVM.swift; sourceTree = "<group>"; };
 		F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceReadyStartVM.swift; sourceTree = "<group>"; };
+		F1A700022F90000100AABBCC /* MineElaProVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProVC.swift; sourceTree = "<group>"; };
 		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceElaProTransitionVM.swift; sourceTree = "<group>"; };
@@ -4328,6 +4336,7 @@
 		EC1A1F742F7CB6E00012CCB0 /* Pro */ = {
 			isa = PBXGroup;
 			children = (
+				F1A700022F90000100AABBCC /* MineElaProVC.swift */,
 			);
 			path = Pro;
 			sourceTree = "<group>";
@@ -4448,6 +4457,16 @@
 				EC8FF3EE2C92C301003A7E0B /* Calendar */,
 			);
 			path = naturalStat;
+			sourceTree = "<group>";
+		};
+		EC31C2782F8E135900F435BF /* Pro */ = {
+			isa = PBXGroup;
+			children = (
+				EC31C2792F8E135D00F435BF /* MineElaProHeroCardView.swift */,
+				EC31C27B2F8E138200F435BF /* MineElaProSectionBlockView.swift */,
+				EC31C27D2F8E139600F435BF /* MineElaProFeatureRowView.swift */,
+			);
+			path = Pro;
 			sourceTree = "<group>";
 		};
 		EC356CD72C6C99D00023C0BA /* ElaNaturalWidget */ = {
@@ -5798,6 +5817,7 @@
 		ECD0FF312BABE015001232C9 /* VM */ = {
 			isa = PBXGroup;
 			children = (
+				EC31C2782F8E135900F435BF /* Pro */,
 				ECB80C4E2F148EE100F429DB /* Honor */,
 				A740EEE92E72BB9800B6ABAA /* Address */,
 				A72401392E5595CB005DB615 /* Personal */,
@@ -6357,6 +6377,7 @@
 				C0A100022E8F000100000001 /* AICoachReportDemoChartViews.swift in Sources */,
 				C0A100032E8F000100000001 /* AICoachReportDemoContentView.swift in Sources */,
 				C0A100042E8F000100000001 /* AICoachReportPDFGenerator.swift in Sources */,
+				EC31C27C2F8E138200F435BF /* MineElaProSectionBlockView.swift in Sources */,
 				C0A100052E8F000100000001 /* AICoachReportPDFDemoVC.swift in Sources */,
 				C0A100062F91000100000001 /* AICoachReportDateAlertVM.swift in Sources */,
 				D0B200012F6A100000000001 /* AICoachBreathingOrbPalette.swift in Sources */,
@@ -6492,6 +6513,7 @@
 				EC9321AE2C50C80D00FDBBE2 /* MealsNameVM.swift in Sources */,
 				ECF0BFE02BFC9D0200E5F6F0 /* WithDrawVC.swift in Sources */,
 				EC1B59DF2EE668A900FE3E9A /* ActivityAlertVC.swift in Sources */,
+				F1A700012F90000100AABBCC /* MineElaProVC.swift in Sources */,
 				A78B04962CB3D7D600426112 /* GoalSetCircleVM.swift in Sources */,
 				EC3A9CA62BB50EB800C6E442 /* QuestionnaireProgressVM.swift in Sources */,
 				ECA1E2EE2C00818B00C31B77 /* Character+Exs.swift in Sources */,
@@ -6930,6 +6952,7 @@
 				A735A7902D5DDBAB006CE140 /* Size+Extenison.swift in Sources */,
 				EC3A9CBD2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift in Sources */,
 				ECF581E42C32ACF100FE0937 /* GuideMineCreatePlanAlertVM.swift in Sources */,
+				EC31C27E2F8E139600F435BF /* MineElaProFeatureRowView.swift in Sources */,
 				ECF745CB2BDA008D0076DDB9 /* FoodsListTypeVM.swift in Sources */,
 				EC24EB552BB2C8AD002F21DF /* QuestionnaireSurveyBodyFatVM.swift in Sources */,
 				ECF0BFDE2BFC73E800E5F6F0 /* InviteRewardsRuleAlertTitleVm.swift in Sources */,
@@ -7023,6 +7046,7 @@
 				EC87EEF52BB3C72A00350EB0 /* QuestionDaylyMealsTableViewCell.swift in Sources */,
 				A7103E5B2CD0AE5800249E3B /* QuestionResultExplainVM.swift in Sources */,
 				EC23C7CE2EDD308B004C519D /* NotificationManager.swift in Sources */,
+				EC31C27A2F8E135E00F435BF /* MineElaProHeroCardView.swift in Sources */,
 				A71D33142E13A743008D27E4 /* JournalFitnessTypeAlertVM.swift in Sources */,
 				A71DA3482D10000500FCC6CA /* SportHealthDataUpdateAlertVM.swift in Sources */,
 				ECB3E0852BD77AEF00CFDDFD /* FoodsDetailCaloriVM.swift in Sources */,
