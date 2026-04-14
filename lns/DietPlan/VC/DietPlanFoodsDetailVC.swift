@@ -299,9 +299,9 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
         initUI()
         showLoadingSkeletonIfNeeded()
         preloadFoodsAddAlertSelectionIfNeeded()
-        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
+//        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
             self.sendFoodsDetaiLRequest()
-        })
+//        })
 
     }
     

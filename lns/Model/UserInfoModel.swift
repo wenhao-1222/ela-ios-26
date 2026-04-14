@@ -52,6 +52,7 @@ class UserInfoModel {
     var uId = ""
     var registDate = Date().nextDay(days: 0)
     var birthDay = ""
+    var birthYear = ""
     var gender = ""
     var sex = ""
     var headimgurl = ""

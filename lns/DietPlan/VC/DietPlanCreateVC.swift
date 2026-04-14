@@ -712,7 +712,7 @@ extension DietPlanCreateVC{
         
         let model = QuestinonaireMsgModel.shared
         model.sex = draftString(draft["sex"])
-        model.birthDay = draftString(draft["birthDay"])
+        model.birthYear = draftString(draft["birthYear"])
         model.goal = draftString(draft["goal"])
         model.height = draftString(draft["height"])
         model.weight = draftString(draft["weight"])
@@ -740,7 +740,7 @@ extension DietPlanCreateVC{
         applySexSelectionUI()
         bodyfatVm.updateScrollView()
         
-        if let birthYear = Int(model.birthDay) {
+        if let birthYear = Int(model.birthYear) {
             let yearArray = birthdayVm.yearDataArray.compactMap { $0 as? Int }
             if let yearIndex = yearArray.firstIndex(of: birthYear) {
                 birthdayVm.pickerView.selectRow(yearIndex, inComponent: 0, animated: false)
@@ -894,7 +894,7 @@ extension DietPlanCreateVC{
         let flavorPreferences = flavorVM.selectedIndex == 4 ? 1 : (flavorVM.selectedIndex + 1)
         let goalImportance = importantVm.selectedIndex < 0 ? 4 : (importantVm.selectedIndex == 3 ? 1 : importantVm.selectedIndex + 1)
         var param = ["userGoal":goalVm.buildUserGoal(),
-                     "birthday":QuestinonaireMsgModel.shared.birthDay,
+                     "birthYear":QuestinonaireMsgModel.shared.birthYear,
                      "gender":QuestinonaireMsgModel.shared.sex,
                      "currentWeight":QuestinonaireMsgModel.shared.weight,
                      "targetWeight":QuestinonaireMsgModel.shared.targetWeight,
@@ -988,7 +988,7 @@ private extension DietPlanCreateVC {
             "shouldResumeFromEatStyleForNonVip": shouldResumeFromEatStyleForNonVip,
             "goalSelectedIndexes": Array(goalVm.selectedIndexes).sorted(),
             "sex": QuestinonaireMsgModel.shared.sex,
-            "birthDay": QuestinonaireMsgModel.shared.birthDay,
+            "birthYear": QuestinonaireMsgModel.shared.birthYear,
             "goal": QuestinonaireMsgModel.shared.goal,
             "height": QuestinonaireMsgModel.shared.height,
             "weight": QuestinonaireMsgModel.shared.weight,
@@ -1020,7 +1020,7 @@ private extension DietPlanCreateVC {
         }
         let hasText = [
             draftString(draft["sex"]),
-            draftString(draft["birthDay"]),
+            draftString(draft["birthYear"]),
             draftString(draft["goal"]),
             draftString(draft["height"]),
             draftString(draft["weight"]),
@@ -1208,12 +1208,12 @@ private extension DietPlanCreateVC {
         }
 
         if shouldSkipBirthdayStep {
-            let profileBirthday = UserInfoModel.shared.birthDay.trimmingCharacters(in: .whitespacesAndNewlines)
+            let profileBirthday = UserInfoModel.shared.birthYear.trimmingCharacters(in: .whitespacesAndNewlines)
             if !profileBirthday.isEmpty {
                 let birthYear = profileBirthday.contains("-")
                 ? Date().changeDateFormatter(dateString: profileBirthday, formatter: "yyyy-MM-dd", targetFormatter: "yyyy")
                 : profileBirthday
-                QuestinonaireMsgModel.shared.birthDay = birthYear
+                QuestinonaireMsgModel.shared.birthYear = birthYear
             }
         }
     }

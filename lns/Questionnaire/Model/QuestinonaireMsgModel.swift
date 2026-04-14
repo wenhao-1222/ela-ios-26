@@ -21,6 +21,7 @@ class QuestinonaireMsgModel{
     var sex = ""//性别  1 男  2  女
     var dietSex = ""//性别  1 男  2  女
     var birthDay = ""//出生年份
+    var birthYear = ""//出生年份
     var goal = ""//目标
     var height = ""//身高
     var weight = ""//体重

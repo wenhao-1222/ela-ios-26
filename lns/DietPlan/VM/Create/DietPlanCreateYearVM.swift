@@ -71,14 +71,14 @@ extension DietPlanCreateYearVM{
               let index = yearArray.firstIndex(of: targetYear) else { return }
         defaultIndex = index
         pickerView.selectRow(index, inComponent: 0, animated: false)
-        QuestinonaireMsgModel.shared.birthDay = "\(targetYear)"
+        QuestinonaireMsgModel.shared.birthYear = "\(targetYear)"
     }
     
     func getBirthDayData() {
         let index = pickerView.selectedRow(inComponent: 0)
-        QuestinonaireMsgModel.shared.birthDay = "\(yearDataArray[index]as? Int ?? 0)"
+        QuestinonaireMsgModel.shared.birthYear = "\(yearDataArray[index]as? Int ?? 0)"
         
-        DLLog(message: "出生年份：\(QuestinonaireMsgModel.shared.birthDay)")
+        DLLog(message: "出生年份：\(QuestinonaireMsgModel.shared.birthYear)")
     }
 }
 
@@ -92,7 +92,7 @@ extension DietPlanCreateYearVM{
         _ = yearDataArray
         pickerView.reloadAllComponents()
         pickerView.selectRow(defaultIndex, inComponent: 0, animated: true)
-        QuestinonaireMsgModel.shared.birthDay = "\(yearDataArray[defaultIndex]as? Int ?? 0)"
+        QuestinonaireMsgModel.shared.birthYear = "\(yearDataArray[defaultIndex]as? Int ?? 0)"
     }
     func setConstrait() {
         titleLabel.snp.makeConstraints { make in
@@ -141,8 +141,8 @@ extension DietPlanCreateYearVM:UIPickerViewDataSource,UIPickerViewDelegate{
         return titleLabel!
     }
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        QuestinonaireMsgModel.shared.birthDay = "\(yearDataArray[row]as? Int ?? 0)"
-        DLLog(message: "生日：\(QuestinonaireMsgModel.shared.birthDay)")
+        QuestinonaireMsgModel.shared.birthYear = "\(yearDataArray[row]as? Int ?? 0)"
+        DLLog(message: "生日：\(QuestinonaireMsgModel.shared.birthYear)")
    }
     func setUpPickerStyleRowStyle(row:Int,component:Int) {
 //        var contentView = UIView()
