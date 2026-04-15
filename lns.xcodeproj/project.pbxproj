@@ -765,6 +765,7 @@
 		EC31C27C2F8E138200F435BF /* MineElaProSectionBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C27B2F8E138200F435BF /* MineElaProSectionBlockView.swift */; };
 		EC31C27E2F8E139600F435BF /* MineElaProFeatureRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C27D2F8E139600F435BF /* MineElaProFeatureRowView.swift */; };
 		EC31C3322F8E456B00F435BF /* DietPlanManualTargetLimitAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C3312F8E456A00F435BF /* DietPlanManualTargetLimitAlertVM.swift */; };
+		EC31C3342F8F360C00F435BF /* PlanMainDayHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C3332F8F360B00F435BF /* PlanMainDayHeaderView.swift */; };
 		EC356CCD2C6C856E0023C0BA /* WidgetUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */; };
 		EC356CD52C6C99D00023C0BA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F62C19915800E46713 /* WidgetKit.framework */; };
 		EC356CD62C6C99D00023C0BA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F82C19915800E46713 /* SwiftUI.framework */; };
@@ -2254,6 +2255,7 @@
 		EC31C27B2F8E138200F435BF /* MineElaProSectionBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProSectionBlockView.swift; sourceTree = "<group>"; };
 		EC31C27D2F8E139600F435BF /* MineElaProFeatureRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProFeatureRowView.swift; sourceTree = "<group>"; };
 		EC31C3312F8E456A00F435BF /* DietPlanManualTargetLimitAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanManualTargetLimitAlertVM.swift; sourceTree = "<group>"; };
+		EC31C3332F8F360B00F435BF /* PlanMainDayHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMainDayHeaderView.swift; sourceTree = "<group>"; };
 		EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetUtils.swift; sourceTree = "<group>"; };
 		EC356CD42C6C99D00023C0BA /* ElaNaturalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ElaNaturalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC356CD82C6C99D00023C0BA /* ElaNaturalWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetBundle.swift; sourceTree = "<group>"; };
@@ -5159,6 +5161,7 @@
 				EC6F55DB2F67A2A200EB18A5 /* DietPlanCondimentCell.swift */,
 				EC6ED3082F63BF4600DF53D6 /* DietPlanFoodsChangeCell.swift */,
 				F0A1D0012F63E10000AADD11 /* DietPlanFoodsAddAlertVM.swift */,
+				EC31C3332F8F360B00F435BF /* PlanMainDayHeaderView.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -7021,6 +7024,7 @@
 				A71A53A12CDB0ABD009FDAF9 /* ForumShareVM.swift in Sources */,
 				ECB3E07B2BD651B000CFDDFD /* WHUtils.swift in Sources */,
 				A7103E592CD08BE600249E3B /* QuestionResultBaseVM.swift in Sources */,
+				EC31C3342F8F360C00F435BF /* PlanMainDayHeaderView.swift in Sources */,
 				A778EEF72D8A6243002548D4 /* AILimitationTipsAlertVm.swift in Sources */,
 				ECD0FF082BABD25B001232C9 /* YYTextView.m in Sources */,
 				A751E1FC2E70292600AAD4DD /* SpecSelectionView.swift in Sources */,

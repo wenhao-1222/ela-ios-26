@@ -208,7 +208,7 @@ private extension AICoachPreVC {
         self.reportId = latestReportDict.stringValueForKey(key: "id")
         let reportStatus = latestReportDict.stringValueForKey(key: "reportStatus").intValue
         var remainingDays = max(0, dataDict.stringValueForKey(key: "remainingDays").intValue)
-        let isFirstReport = dataDict.floatValueForKey(key: "reportCount") <= 1//是否为首报
+        var isFirstReport = dataDict.floatValueForKey(key: "reportCount") <= 1//是否为首报
         
         let userGoal = dataDict["userGoal"] as? Int ?? 0
         let aiCoachIntensityPreference = dataDict["aiCoachIntensityPreference"] as? Int ?? 0
@@ -236,6 +236,14 @@ private extension AICoachPreVC {
                 )
             }
             return
+        }
+        
+        //首报
+        if isFirstReport{
+            //已查看的状态   progressBar 有值
+            if latestReportDict.stringValueForKey(key: "reportStatus") == "4"{
+                isFirstReport = false
+            }
         }
 
         let sortedProgressBar = progressBar.sorted { left, right in

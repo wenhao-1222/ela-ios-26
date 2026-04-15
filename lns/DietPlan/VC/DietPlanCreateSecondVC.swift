@@ -135,6 +135,9 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     lazy var paceVm: DietPlanCreatePaceSecondVM = {
         let vm = DietPlanCreatePaceSecondVM(frame: CGRect(x: SCREEN_WIDHT * CGFloat(visibleStepIndex(forBaseIndex: 4)), y: 0, width: 0, height: 0))
 //        vm.titleLabel.text = "你的增肌节奏需要改变吗？"
+        vm.selectedBlock = {()in
+            self.recommendIntakeVm.refreshContent()
+        }
         return vm
     }()
     lazy var recommendIntakeVm: DietPlanCreateRecommendIntakeVM = {
