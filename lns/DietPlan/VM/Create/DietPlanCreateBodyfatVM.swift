@@ -121,6 +121,24 @@ extension DietPlanCreateBodyfatVM {
         showTipsBlock?()
     }
 
+    func restoreSelection(modelValue: String) {
+        let normalizedValue = modelValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        let array = QuestinonaireMsgModel.shared.sex == "1" ? dataArray : dataFemanArray
+
+        guard let index = array.firstIndex(where: { ($0["data"] ?? "") == normalizedValue }) else {
+            selectIndex = -1
+            refreshSelectStatus()
+            QuestinonaireMsgModel.shared.bodyFat = normalizedValue
+            selectStateChangeBlock?(false)
+            return
+        }
+
+        selectIndex = index
+        refreshSelectStatus()
+        updateBodyFatValue(index: index)
+        selectStateChangeBlock?(true)
+    }
+
     func refreshSelectStatus() {
         for (index, itemView) in itemViews.enumerated() {
             itemView.updateUIIsSelected(isSelect: index == selectIndex)

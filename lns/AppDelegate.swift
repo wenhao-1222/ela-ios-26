@@ -40,6 +40,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 //        UserDefaults.standard.setValue("ca2e5d3997158d80b06ade0d4588fe55", forKey: userId)
 //        UserInfoModel.shared.uId = "ca2e5d3997158d80b06ade0d4588fe55"
 //        UserInfoModel.shared.token = "strdfJcdfldhpk30"
+        /*
+         0786fc6c4e32277115529f473b4ac699
+         IMipt2g46BsGe2Pf
+         */
         let launchWindow: UIWindow
         if let existingWindow = window {
             launchWindow = existingWindow

@@ -70,6 +70,7 @@ final class ElaProIAPManager: NSObject {
     
     private enum LocalUnlockKeys {
         static let isUnlocked = "ela_pro_local_is_unlocked"
+        static let uid = "ela_pro_local_uid"
         static let productID = "ela_pro_local_product_id"
         static let transactionID = "ela_pro_local_transaction_id"
         static let unlockAtMs = "ela_pro_local_unlock_at_ms"
@@ -274,7 +275,19 @@ final class ElaProIAPManager: NSObject {
 
     func isLocalProUnlocked() -> Bool {
         clearExpiredLocalUnlockIfNeeded()
-        return UserDefaults.standard.bool(forKey: LocalUnlockKeys.isUnlocked)
+        let defaults = UserDefaults.standard
+        guard defaults.bool(forKey: LocalUnlockKeys.isUnlocked) else {
+            return false
+        }
+        return isLocalUnlockBoundToCurrentUser(defaults: defaults)
+    }
+
+    func clearLocalEntitlementCache() {
+        let defaults = UserDefaults.standard
+        let shouldNotify = defaults.bool(forKey: LocalUnlockKeys.isUnlocked)
+        clearLocalUnlock(defaults: defaults, shouldNotify: shouldNotify)
+        defaults.removeObject(forKey: LocalUnlockKeys.pendingVerifyPayload)
+        clearPendingTransactionIDCache(defaults: defaults)
     }
 
     func bindPendingPurchaseIfNeeded(queryBizType: String = PurchaseQueryBizType.pendingBind.rawValue,
@@ -422,6 +435,7 @@ final class ElaProIAPManager: NSObject {
         let defaults = UserDefaults.standard
         
         defaults.set(true, forKey: LocalUnlockKeys.isUnlocked)
+        defaults.set(currentUserID(), forKey: LocalUnlockKeys.uid)
         defaults.set(productID, forKey: LocalUnlockKeys.productID)
         defaults.set(transaction.transactionIdentifier ?? "", forKey: LocalUnlockKeys.transactionID)
         defaults.set(Int64(now.timeIntervalSince1970 * 1000), forKey: LocalUnlockKeys.unlockAtMs)
@@ -440,13 +454,7 @@ final class ElaProIAPManager: NSObject {
         let nowMs = Int64(Date().timeIntervalSince1970 * 1000)
         guard nowMs >= expireAtMs else { return }
         
-        defaults.set(false, forKey: LocalUnlockKeys.isUnlocked)
-        defaults.removeObject(forKey: LocalUnlockKeys.productID)
-        defaults.removeObject(forKey: LocalUnlockKeys.transactionID)
-        defaults.removeObject(forKey: LocalUnlockKeys.unlockAtMs)
-        defaults.removeObject(forKey: LocalUnlockKeys.expireAtMs)
-        defaults.removeObject(forKey: LocalUnlockKeys.source)
-        NotificationCenter.default.post(name: Self.localEntitlementUpdatedNotification, object: nil)
+        clearLocalUnlock(defaults: defaults, shouldNotify: true)
     }
     
     private func localUnlockDuration(productID: String) -> TimeInterval {
@@ -575,19 +583,50 @@ final class ElaProIAPManager: NSObject {
         return transactionID
     }
 
-    private func clearPendingTransactionAfterBindSuccess(transactionID: String) {
+    private func clearPendingTransactionAfterBindSuccess(transactionID _: String) {
+        let defaults = UserDefaults.standard
+        clearPendingTransactionIDCache(defaults: defaults)
+        defaults.removeObject(forKey: LocalUnlockKeys.pendingVerifyPayload)
+    }
+
+    private func currentUserID() -> String {
+        return UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func isLocalUnlockBoundToCurrentUser(defaults: UserDefaults) -> Bool {
+        let currentUID = currentUserID()
+        guard !currentUID.isEmpty else {
+            return false
+        }
+        let storedUID = defaults.string(forKey: LocalUnlockKeys.uid)?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        guard !storedUID.isEmpty else {
+            return false
+        }
+        return storedUID == currentUID
+    }
+
+    private func clearLocalUnlock(defaults: UserDefaults, shouldNotify: Bool) {
+        defaults.set(false, forKey: LocalUnlockKeys.isUnlocked)
+        defaults.removeObject(forKey: LocalUnlockKeys.uid)
+        defaults.removeObject(forKey: LocalUnlockKeys.productID)
+        defaults.removeObject(forKey: LocalUnlockKeys.transactionID)
+        defaults.removeObject(forKey: LocalUnlockKeys.unlockAtMs)
+        defaults.removeObject(forKey: LocalUnlockKeys.expireAtMs)
+        defaults.removeObject(forKey: LocalUnlockKeys.source)
+        if shouldNotify {
+            NotificationCenter.default.post(name: Self.localEntitlementUpdatedNotification, object: nil)
+        }
+    }
+
+    private func clearPendingTransactionIDCache(defaults: UserDefaults) {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: KeychainKeys.pendingTransactionService,
             kSecAttrAccount as String: KeychainKeys.pendingTransactionAccount
         ]
         SecItemDelete(query as CFDictionary)
-
-        let defaults = UserDefaults.standard
-        if defaults.string(forKey: LocalUnlockKeys.transactionID) == transactionID {
-            defaults.removeObject(forKey: LocalUnlockKeys.transactionID)
-        }
-        defaults.removeObject(forKey: LocalUnlockKeys.pendingVerifyPayload)
+        defaults.removeObject(forKey: LocalUnlockKeys.transactionID)
     }
     
     private func uploadPurchaseVerifyPayloadTODO(payload: [String: Any]) {

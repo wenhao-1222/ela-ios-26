@@ -9,7 +9,7 @@ import Foundation
 
 class MaterialSexAlertVM: FeedBackView {
     
-    let sexArray = ["男","女","保密"]
+    let sexArray = ["男","女"]//["男","女","保密"]
     var gender = "1"
     var sex = "男"
     var confirmBlock:((String)->())?

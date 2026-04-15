@@ -35,6 +35,7 @@ class DietPlanVC: WHBaseViewVC {
 //        self.elaExpiredAlertVm.showSelf()
         sendProVipMsgRequest()
         sendBuyListRequest()
+        sendUserCenterRequest()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -271,6 +272,17 @@ extension DietPlanVC{
             DLLog(message: "sendBuyListRequest:\(dataObj)")
             self.buylistData = dataObj["shoppingList"]as? NSArray ?? []
             self.buylistEndDate = dataObj.stringValueForKey(key: "endDate")
+        }
+    }
+    func sendUserCenterRequest() {
+        let param = ["uid":"\(UserInfoModel.shared.uId)"]
+        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { responseObject in
+//            DLLog(message: "sendUserCenterRequest:\(responseObject)")
+            
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            
+            UserInfoModel.shared.updateMsg(dict: dataObj)
         }
     }
 }

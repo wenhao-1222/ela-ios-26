@@ -17,11 +17,11 @@ class GuidanceTakeoutFrequencyVM: UIView {
     private(set) var selectedIndex = -1
 
     private let dataArray: [Item] = [
-        Item(title: "0 次", value: "0"),
-        Item(title: "1 到 3 次", value: "1-3"),
-        Item(title: "4 到 7 次", value: "4-7"),
-        Item(title: "8 到 14 次", value: "8-14"),
-        Item(title: "15 次及以上", value: "15+")
+        Item(title: "0 餐", value: "0"),
+        Item(title: "1 到 3 餐", value: "1-3"),
+        Item(title: "4 到 7 餐", value: "4-7"),
+        Item(title: "8 到 14 餐", value: "8-14"),
+        Item(title: "15 餐及以上", value: "15+")
     ]
 
     private var itemButtons: [UIButton] = []

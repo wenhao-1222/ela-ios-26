@@ -322,6 +322,7 @@ extension UserInfoModel{
     }
     func clearMsg() {
         clearDietPlanCreateDraftCache()
+        ElaProIAPManager.shared.clearLocalEntitlementCache()
         self.birthDay = ""
         self.gender = ""
         self.isAppStoreMark = "0"
@@ -428,6 +429,7 @@ extension UserInfoModel{
     func logoutClearMsg(teardownTabBarControllers: Bool = false) {
         LogsMealsAlertSetManage().removeAllNotifi()
         clearDietPlanCreateDraftCache()
+        ElaProIAPManager.shared.clearLocalEntitlementCache()
         self.vipModel.reset()
 //        UserInfoModel.shared.clearMsg()
 //

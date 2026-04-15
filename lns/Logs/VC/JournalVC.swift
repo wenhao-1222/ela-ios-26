@@ -320,6 +320,7 @@ class JournalVC: WHBaseViewVC {
     lazy var dateFilterAlertVm : DataAddDateAlertVM = {
         let vm = DataAddDateAlertVM.init(frame: .zero)
         vm.isWeekDay = false
+        vm.datePicker.minimumDate = Date().changeDateStringToDate(dateString: "2023-01-01")
         vm.confirmBlock = {(weekDay)in
             self.queryDay = self.dateFilterAlertVm.dateStringYear
             self.getQueryDayIndex()
