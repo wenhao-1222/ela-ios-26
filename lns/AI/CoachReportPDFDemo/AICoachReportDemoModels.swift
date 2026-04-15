@@ -22,6 +22,120 @@ struct AICoachReportListItem: Equatable {
     }
 }
 
+enum AICoachReportRecommendationStatus: Int {
+    case decrease = -1
+    case maintain = 0
+    case increase = 1
+
+    var defaultTitleText: String {
+        switch self {
+        case .decrease:
+            return "降低摄入"
+        case .maintain:
+            return "维持当前目标"
+        case .increase:
+            return "提高摄入"
+        }
+    }
+
+    var iconName: String? {
+        switch self {
+        case .decrease:
+            return "ai_coach_recommend_down_icon"
+        case .maintain:
+            return nil
+        case .increase:
+            return "ai_coach_recommend_up_icon"
+        }
+    }
+}
+
+struct AICoachReportNextWeekRecommendation {
+    let buttonNum: Int
+    let status: AICoachReportRecommendationStatus
+    let titleText: String
+    let caloriesText: String
+    let carbohydrateText: String
+    let proteinText: String
+    let fatText: String
+    let isValid: Bool
+
+    var primaryButtonTitle: String {
+        status == .maintain ? "知道了" : "更新目标"
+    }
+
+    var secondaryButtonTitle: String? {
+        buttonNum == 2 ? "更新目标与食谱" : nil
+    }
+
+    static let empty = AICoachReportNextWeekRecommendation(
+        buttonNum: 1,
+        status: .maintain,
+        titleText: "",
+        caloriesText: "--",
+        carbohydrateText: "--",
+        proteinText: "--",
+        fatText: "--",
+        isValid: false
+    )
+}
+
+enum AICoachReportRecommendationBuilder {
+    static func build(from dataDict: NSDictionary) -> AICoachReportNextWeekRecommendation {
+        let payload = recommendationPayload(from: dataDict)
+        let hasStatus = payload["nextWeekRecommendationStatus"] is NSNumber || payload["nextWeekRecommendationStatus"] is NSString || payload["nextWeekRecommendationStatus"] is String
+        let hasTitle = payload.stringValueForKey(key: "nextWeekRecommendationText").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
+        let hasValue = hasValue(for: "calories", in: payload)
+            || hasValue(for: "carbohydrate", in: payload)
+            || hasValue(for: "protein", in: payload)
+            || hasValue(for: "fat", in: payload)
+        let isValid = payload.count > 0 && (hasStatus || hasTitle || hasValue)
+
+        let status = AICoachReportRecommendationStatus(rawValue: Int(payload.doubleValueForKey(key: "nextWeekRecommendationStatus"))) ?? .maintain
+        let titleText = preferredRecommendationTitle(from: payload, fallback: status.defaultTitleText)
+
+        return AICoachReportNextWeekRecommendation(
+            buttonNum: max(Int(payload.doubleValueForKey(key: "buttonNum")), 1),
+            status: status,
+            titleText: titleText,
+            caloriesText: numberText(for: "calories", in: payload),
+            carbohydrateText: numberText(for: "carbohydrate", in: payload),
+            proteinText: numberText(for: "protein", in: payload),
+            fatText: numberText(for: "fat", in: payload),
+            isValid: isValid
+        )
+    }
+
+    private static func recommendationPayload(from dataDict: NSDictionary) -> NSDictionary {
+        if let payload = dataDict["data"] as? NSDictionary {
+            return payload
+        }
+        if let payload = dataDict["data"] as? [String: Any] {
+            return payload as NSDictionary
+        }
+        return dataDict
+    }
+
+    private static func preferredRecommendationTitle(from dict: NSDictionary, fallback: String) -> String {
+        let text = dict.stringValueForKey(key: "nextWeekRecommendationText").trimmingCharacters(in: .whitespacesAndNewlines)
+        return text.isEmpty ? fallback : text
+    }
+
+    private static func hasValue(for key: String, in dict: NSDictionary) -> Bool {
+        guard let rawValue = dict[key], (rawValue is NSNull) == false else { return false }
+        if let stringValue = rawValue as? String {
+            return stringValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
+        }
+        return true
+    }
+
+    private static func numberText(for key: String, in dict: NSDictionary) -> String {
+        guard hasValue(for: key, in: dict) else { return "--" }
+        let value = dict.doubleValueForKey(key: key)
+        return WHUtils.convertStringToStringNoDigit("\(value.rounded())") ?? "\(Int(value.rounded()))"
+    }
+}
+
 struct AICoachReportDemoData {
     let navigationTitle: String
     let navigationDateRange: String

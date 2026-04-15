@@ -23,7 +23,7 @@ class AIGuidanceElaProIntroVM: UIView {
     }
 
     private lazy var logoImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "guidance_pro_intro_img"))
+        let imageView = UIImageView(image: UIImage(named: "ela_pro_expired_alert_icon"))
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()

@@ -671,6 +671,7 @@
 		C0A100042E8F000100000001 /* AICoachReportPDFGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100142E8F000100000001 /* AICoachReportPDFGenerator.swift */; };
 		C0A100052E8F000100000001 /* AICoachReportPDFDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100152E8F000100000001 /* AICoachReportPDFDemoVC.swift */; };
 		C0A100062F91000100000001 /* AICoachReportDateAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100162F91000100000001 /* AICoachReportDateAlertVM.swift */; };
+		C0A100072F92000100000001 /* AICoachReportAdviceAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100172F92000100000001 /* AICoachReportAdviceAlertVM.swift */; };
 		D0B200012F6A100000000001 /* AICoachBreathingOrbPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200112F6A100000000001 /* AICoachBreathingOrbPalette.swift */; };
 		D0B200022F6A100000000001 /* AICoachBreathingOrbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200122F6A100000000001 /* AICoachBreathingOrbView.swift */; };
 		D0B200032F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B200132F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift */; };
@@ -2152,6 +2153,7 @@
 		C0A100142E8F000100000001 /* AICoachReportPDFGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportPDFGenerator.swift; sourceTree = "<group>"; };
 		C0A100152E8F000100000001 /* AICoachReportPDFDemoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportPDFDemoVC.swift; sourceTree = "<group>"; };
 		C0A100162F91000100000001 /* AICoachReportDateAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportDateAlertVM.swift; sourceTree = "<group>"; };
+		C0A100172F92000100000001 /* AICoachReportAdviceAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportAdviceAlertVM.swift; sourceTree = "<group>"; };
 		CAEB3A5694EA2B884C5946E3 /* Pods_ElaNaturalThreeMealsWidgetExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ElaNaturalThreeMealsWidgetExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDFD4BE5993CA839312C9118 /* Pods-ElaNaturalFiveMealsWidgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalFiveMealsWidgetExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaNaturalFiveMealsWidgetExtension/Pods-ElaNaturalFiveMealsWidgetExtension.release.xcconfig"; sourceTree = "<group>"; };
 		D0B200112F6A100000000001 /* AICoachBreathingOrbPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachBreathingOrbPalette.swift; sourceTree = "<group>"; };
@@ -4222,6 +4224,7 @@
 				C0A100132E8F000100000001 /* AICoachReportDemoContentView.swift */,
 				C0A100142E8F000100000001 /* AICoachReportPDFGenerator.swift */,
 				C0A100162F91000100000001 /* AICoachReportDateAlertVM.swift */,
+				C0A100172F92000100000001 /* AICoachReportAdviceAlertVM.swift */,
 			);
 			path = CoachReportPDFDemo;
 			sourceTree = "<group>";
@@ -6395,6 +6398,7 @@
 				EC31C27C2F8E138200F435BF /* MineElaProSectionBlockView.swift in Sources */,
 				C0A100052E8F000100000001 /* AICoachReportPDFDemoVC.swift in Sources */,
 				C0A100062F91000100000001 /* AICoachReportDateAlertVM.swift in Sources */,
+				C0A100072F92000100000001 /* AICoachReportAdviceAlertVM.swift in Sources */,
 				D0B200012F6A100000000001 /* AICoachBreathingOrbPalette.swift in Sources */,
 				D0B200022F6A100000000001 /* AICoachBreathingOrbView.swift in Sources */,
 				D0B200032F6A100000000001 /* AICoachBreathingOrbDemoViewController.swift in Sources */,

@@ -81,7 +81,6 @@ class GuidanceProSubscribeVM: UIView {
     private lazy var logoImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "ela_pro_expired_alert_icon"))
         //ela_pro_expired_alert_icon
-        //guidance_pro_intro_img
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()

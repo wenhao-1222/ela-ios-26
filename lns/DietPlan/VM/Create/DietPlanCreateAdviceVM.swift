@@ -58,7 +58,7 @@ class DietPlanCreateAdviceVM: UIView {
 
     lazy var subTitleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "可以很大降低规律饮食的难度"
+        lab.text = "能大幅降低规律饮食的难度"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.textAlignment = .center
@@ -124,9 +124,9 @@ class DietPlanCreateAdviceVM: UIView {
     lazy var card2Title: UILabel = makeCardTitle("规律睡眠，避免过度疲劳")
     lazy var card3Title: UILabel = makeCardTitle("使用食谱内的购物清单提前备餐")
 
-    lazy var card1Desc: UILabel = makeCardDesc("压力会放大对高刺激食物的渴求。TSST 压力任务后，皮质醇反应更强的人，随后摄入 854 vs 586 kcal，约多 46%。")
-    lazy var card2Desc: UILabel = makeCardDesc("睡眠不足会让你更容易饿。受控实验里，连续2晚睡4小时，瘦素下降18%，对高碳水食物的食欲上升33%到45%。")
-    lazy var card3Desc: UILabel = makeCardDesc("训练后食欲和食物奖励感更强，临时做选择更容易选高热量。40分钟有氧后，对高脂食物的隐性想要 15.3→21.8，约+42%。")
+    lazy var card1Desc: UILabel = makeCardDesc("压力会放大人体对高刺激食物的渴求。在 TSST 压力测试实验中，压力激素反应更强的人，其随后的食物总摄入量比对照组高出约 46%。")
+    lazy var card2Desc: UILabel = makeCardDesc("睡眠不足会让人更容易感到饥饿。在受控实验中，连续熬夜 2 晚后，人体内的瘦素水平会下降 18%，对高碳水食物的食欲则会上升 33% 到 45%。")
+    lazy var card3Desc: UILabel = makeCardDesc("运动训练后，食欲和对食物的渴望通常会变强，此时临时挑选食物更容易倾向于高热量选项。数据显示在完成一次 40 分钟的有氧运动后，人们对高脂食物的潜在欲望比对照组提高了约 42%。")
 
     lazy var referenceDashView: UIView = {
         let vi = UIView()

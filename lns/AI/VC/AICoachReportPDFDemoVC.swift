@@ -6,6 +6,7 @@
 //
 
 import PDFKit
+import MCToast
 import SnapKit
 import UIKit
 
@@ -15,6 +16,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     var reportList: [AICoachReportListItem] = []
     
     private var report = AICoachReportDemoData.empty
+    private var nextWeekRecommendation = AICoachReportNextWeekRecommendation.empty
     private var pdfFileURL: URL?
     private var hasGeneratedPDF = false
     private var bottomBarHeightConstraint: Constraint?
@@ -147,12 +149,24 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         return vm
     }()
 
+    private lazy var adviceAlertVM: AICoachReportAdviceAlertVM = {
+        let vm = AICoachReportAdviceAlertVM(frame: .zero)
+        vm.primaryActionBlock = { [weak self] _ in
+            self?.adviceAlertVM.hiddenSelf()
+        }
+        return vm
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        if #available(iOS 13.0, *) {
+            overrideUserInterfaceStyle = .light
+        }
         view.backgroundColor = .white
         setupUI()
         refreshTopBar()
         updateDateButtonInteraction(isEnabled: false)
+        updateAdviceButtonState()
         sendReportListRequest()
         if reportId.isEmpty == false {
             sendReportDetailRequest()
@@ -193,6 +207,7 @@ private extension AICoachReportPDFDemoVC {
         view.addSubview(loadingIndicator)
         view.addSubview(loadingLabel)
         view.addSubview(reportDateAlertVM)
+        view.addSubview(adviceAlertVM)
 
         topContainerView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
@@ -270,6 +285,10 @@ private extension AICoachReportPDFDemoVC {
         reportDateAlertVM.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+
+        adviceAlertVM.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
 
     func generateAndLoadPDF() {
@@ -307,7 +326,12 @@ private extension AICoachReportPDFDemoVC {
     }
 
     @objc func adviceAction() {
-        DLLog(message: "下周建议")
+        guard nextWeekRecommendation.isValid else {
+            MCToast.mc_text("暂无建议")
+            return
+        }
+        adviceAlertVM.update(data: nextWeekRecommendation)
+        adviceAlertVM.showSelf()
     }
     @objc func downloadAction() {
         guard let pdfFileURL else { return }
@@ -347,12 +371,21 @@ extension AICoachReportPDFDemoVC{
     }
     func sendRecommendRequest() {
         guard reportId.isEmpty == false else { return }
+        nextWeekRecommendation = .empty
+        DispatchQueue.main.async {
+            self.updateAdviceButtonState()
+        }
         let param = ["id":reportId]
         WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_recommend, parameters: param as [String : AnyObject]) { [weak self] responseObject in
             guard let self else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendRecommendRequest:\(foodsMsgDict)")
+            let recommendation = AICoachReportRecommendationBuilder.build(from: foodsMsgDict)
+            DispatchQueue.main.async {
+                self.nextWeekRecommendation = recommendation
+                self.updateAdviceButtonState()
+            }
         }
     }
 
@@ -369,6 +402,7 @@ extension AICoachReportPDFDemoVC{
                     self.reportId = firstItem.reportId
                     self.updateBottomBarVisibility()
                     self.sendReportDetailRequest()
+                    self.sendRecommendRequest()
                 } else {
                     self.updateBottomBarVisibility()
                 }
@@ -526,11 +560,19 @@ private extension AICoachReportPDFDemoVC {
         view.layoutIfNeeded()
     }
 
+    func updateAdviceButtonState() {
+        let isEnabled = nextWeekRecommendation.isValid
+        adviceButton.isEnabled = isEnabled
+        adviceButton.alpha = isEnabled ? 1 : 0.5
+    }
+
     func handleReportSelection(_ item: AICoachReportListItem) {
         guard item.reportId.isEmpty == false else { return }
         guard item.reportId != reportId else { return }
 
         reportId = item.reportId
+        nextWeekRecommendation = .empty
+        updateAdviceButtonState()
         updateBottomBarVisibility()
         downloadButton.isEnabled = false
         pdfView.document = nil
@@ -538,6 +580,7 @@ private extension AICoachReportPDFDemoVC {
         loadingLabel.isHidden = false
         loadingIndicator.startAnimating()
         sendReportDetailRequest()
+        sendRecommendRequest()
     }
 
     func makeSummaryInfo(
