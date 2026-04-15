@@ -22,7 +22,7 @@ class MineVC : WHBaseViewVC {
         self.funcTopVm.updateUI()
         sendUserCenterRequest()
         getUserConfigRequest()
-        sendForumMsgNuberRequest()
+//        sendForumMsgNuberRequest()
         //2026年02月04日13:41:23   个性化设置新功能红点不再显示
 //        settingVm.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
@@ -111,7 +111,8 @@ class MineVC : WHBaseViewVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.communityVm.tapBlock = {()in
-            let vc = ForumVC()
+//            let vc = ForumVC()
+            let vc = CourseVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.elaproVm.tapBlock = {()in
@@ -215,7 +216,7 @@ extension MineVC{
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             
             UserInfoModel.shared.updateMsg(dict: dataObj)
-            self.funcBottomVm.updateUI()
+//            self.funcBottomVm.updateUI()
             self.personalTopVm.updateUI()
             self.funcTopVm.updateUI()
         }
@@ -247,21 +248,4 @@ extension MineVC{
             self.funcBottomVm.updateForumUnReadNum(unReadNum: dataObj.stringValueForKey(key: "unreadCount"))
         }
     }
-//    func sendCoachLaunchRequest() {
-//        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_launch, parameters: nil) { responseObject in
-//            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-//            let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
-//            DLLog(message: "sendCoachLaunchRequest:\(foodsMsgDict)")
-//            
-//            /*   未购买会员，未做AI问卷
-//             {
-//                 isAiCoachSurveyFinished = 0;
-//                 isVip = 0;
-//             }
-//             */
-//            
-//            self.isAiCoachSurveyFinished = foodsMsgDict.stringValueForKey(key: "isAiCoachSurveyFinished")
-//            self.isVip = foodsMsgDict.stringValueForKey(key: "isVip")
-//        }
-//    }
 }

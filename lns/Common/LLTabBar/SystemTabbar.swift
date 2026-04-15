@@ -335,7 +335,7 @@ extension SystemTabbar {
     }
 
     @objc private func mineServiceMsgNotification() {
-        setMineRedDotHidden(false)
+//        setMineRedDotHidden(false)
     }
 
     @objc private func mineServiceMsgReadNotification() {

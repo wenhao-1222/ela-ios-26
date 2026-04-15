@@ -30,7 +30,7 @@ class CourseListVM : UIView{
         }else{
             selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()
         }
-        super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
+        super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
 //        super.init(frame: CGRect.init(x: 0, y: WHUtils().getNavigationBarHeight(), width: SCREEN_WIDHT, height: selfHeight))
         self.backgroundColor = .clear
         initUI()

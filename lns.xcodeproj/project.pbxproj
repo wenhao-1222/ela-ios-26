@@ -766,6 +766,7 @@
 		EC31C27E2F8E139600F435BF /* MineElaProFeatureRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C27D2F8E139600F435BF /* MineElaProFeatureRowView.swift */; };
 		EC31C3322F8E456B00F435BF /* DietPlanManualTargetLimitAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C3312F8E456A00F435BF /* DietPlanManualTargetLimitAlertVM.swift */; };
 		EC31C3342F8F360C00F435BF /* PlanMainDayHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C3332F8F360B00F435BF /* PlanMainDayHeaderView.swift */; };
+		EC31C3362F8F38BA00F435BF /* CourseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C3352F8F38B500F435BF /* CourseVC.swift */; };
 		EC356CCD2C6C856E0023C0BA /* WidgetUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */; };
 		EC356CD52C6C99D00023C0BA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F62C19915800E46713 /* WidgetKit.framework */; };
 		EC356CD62C6C99D00023C0BA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F82C19915800E46713 /* SwiftUI.framework */; };
@@ -2256,6 +2257,7 @@
 		EC31C27D2F8E139600F435BF /* MineElaProFeatureRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProFeatureRowView.swift; sourceTree = "<group>"; };
 		EC31C3312F8E456A00F435BF /* DietPlanManualTargetLimitAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanManualTargetLimitAlertVM.swift; sourceTree = "<group>"; };
 		EC31C3332F8F360B00F435BF /* PlanMainDayHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMainDayHeaderView.swift; sourceTree = "<group>"; };
+		EC31C3352F8F38B500F435BF /* CourseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseVC.swift; sourceTree = "<group>"; };
 		EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetUtils.swift; sourceTree = "<group>"; };
 		EC356CD42C6C99D00023C0BA /* ElaNaturalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ElaNaturalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC356CD82C6C99D00023C0BA /* ElaNaturalWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetBundle.swift; sourceTree = "<group>"; };
@@ -4991,6 +4993,7 @@
 			isa = PBXGroup;
 			children = (
 				ECD0FF392BABE04B001232C9 /* MineVC.swift */,
+				EC31C3352F8F38B500F435BF /* CourseVC.swift */,
 				A71C54902E6ADB6400FB797D /* WidgetTestVC.swift */,
 				A71C54922E6ADE1C00FB797D /* GlassToggleRow.swift */,
 				A72401372E559184005DB615 /* PersonalVC.swift */,
@@ -7008,6 +7011,7 @@
 				ECBFC5202F7F8511005E3B48 /* GuidanceProPurchasedVC.swift in Sources */,
 				EC77842E2F5698AC03102D21 /* ElaProPlanVM.swift in Sources */,
 				EC7784322F57A92103102D21 /* ElaProReadyVM.swift in Sources */,
+				EC31C3362F8F38BA00F435BF /* CourseVC.swift in Sources */,
 				EC7784342F57E00403102D21 /* ElaProTransformVM.swift in Sources */,
 				EC7784302F56A3A103102D21 /* ElaProIAPManager.swift in Sources */,
 				ECAE25E62BF20F37007D4B57 /* NSDictionary+Exs.swift in Sources */,

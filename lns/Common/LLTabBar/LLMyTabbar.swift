@@ -31,7 +31,7 @@ class LLMyTabbar: UIView {
 //        NotificationCenter.default.addObserver(self, selector: #selector(gotoLogsNotification), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(gotoDietPlanNotification), name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(mineServiceMsgNotification), name: NSNotification.Name(rawValue: "serviceMsgUnRead"), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(mineServiceMsgNotification), name: NSNotification.Name(rawValue: "serviceMsgUnRead"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(mineServiceMsgReadNotification), name: NSNotification.Name(rawValue: "serviceMsgRead"), object: nil)
         
     }

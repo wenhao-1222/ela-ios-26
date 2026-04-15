@@ -8,7 +8,7 @@
 
 class PersonalBottomFuncVM: UIView {
     
-    var selfHeight = kFitWidth(50)*3
+    var selfHeight = kFitWidth(50)*2
     
     var frameChangeBlock : (()->())?
     
@@ -57,8 +57,8 @@ extension PersonalBottomFuncVM{
     func initUI() {
         addSubview(contactVm)
         addSubview(tutorialsVm)
-        addSubview(msgVm)
-        addSubview(inviteVm)
+//        addSubview(msgVm)
+//        addSubview(inviteVm)
     }
 }
 

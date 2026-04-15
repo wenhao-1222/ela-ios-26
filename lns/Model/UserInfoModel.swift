@@ -205,11 +205,11 @@ extension UserInfoModel{
        
         self.setMobMsg(dict: dict)
         
-        if self.msgUnRead == true{
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "serviceMsgUnRead"), object: nil)
-        }else{
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "serviceMsgRead"), object: nil)
-        }
+//        if self.msgUnRead == true{
+//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "serviceMsgUnRead"), object: nil)
+//        }else{
+//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "serviceMsgRead"), object: nil)
+//        }
         
         UserDefaults.standard.set(dict["phone"]as? String ?? "", forKey: userPhone)
     }
