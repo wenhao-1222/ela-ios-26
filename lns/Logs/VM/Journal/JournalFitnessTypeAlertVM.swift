@@ -342,15 +342,9 @@ extension JournalFitnessTypeAlertVM {
     func judgeTypeCount(vm: PlanCreateSynDaysVM) {
         if vm.isSelect {
             if vm.days == "休" {
-                selectFitnessType.removeAll()
-            }
-            if selectFitnessType.count >= 2 {
-                // 允许两个，超过则队列式替换
-                selectFitnessType.removeFirst()
-                if !selectFitnessType.contains(vm.days) {
-                    selectFitnessType.append(vm.days)
-                }
+                selectFitnessType = [vm.days]
             } else {
+                selectFitnessType.removeAll { $0 == "休" }
                 if !selectFitnessType.contains(vm.days) {
                     selectFitnessType.append(vm.days)
                 }

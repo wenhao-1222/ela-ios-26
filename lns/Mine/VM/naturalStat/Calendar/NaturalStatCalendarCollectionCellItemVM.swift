@@ -120,15 +120,27 @@ extension NaturalStatCalendarCollectionCellItemVM{
         if fitnessArray.count > 0 {
             fitnessLabel.isHidden = false
             var fitnessString = ""
-            for i in 0..<fitnessArray.count{
-                let str = "\(fitnessArray[i]as? String ?? "")"
-                if str != "-"{
-                    fitnessString = fitnessString + str.mc_clipFromPrefix(to: 1)
-                    if i < fitnessArray.count - 1 {
-                        fitnessString = fitnessString + "+"
+            if fitnessArray.count > 3{
+                fitnessString = "多部位"
+            }else if fitnessArray.count == 3{
+                for i in 0..<fitnessArray.count{
+                    let str = "\(fitnessArray[i]as? String ?? "")"
+                    if str != "-"{
+                        fitnessString = fitnessString + str.mc_clipFromPrefix(to: 1)
+                    }
+                }
+            }else{
+                for i in 0..<fitnessArray.count{
+                    let str = "\(fitnessArray[i]as? String ?? "")"
+                    if str != "-"{
+                        fitnessString = fitnessString + str.mc_clipFromPrefix(to: 1)
+                        if i < fitnessArray.count - 1 {
+                            fitnessString = fitnessString + "+"
+                        }
                     }
                 }
             }
+            
             fitnessLabel.text = fitnessString
         }
     }
