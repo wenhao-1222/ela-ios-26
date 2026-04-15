@@ -10,6 +10,7 @@ import MCToast
 import SnapKit
 
 class DietPlanFoodsAddAlertVM: UIView {
+    private static let saveQueue = DispatchQueue(label: "com.lns.dietplan.foods.add.save")
     
     var whiteViewHeight = kFitWidth(256) + WHUtils().getBottomSafeAreaHeight()
     var daysArray = NSMutableArray()
@@ -565,7 +566,7 @@ private extension DietPlanFoodsAddAlertVM {
     }
     
     func saveDataToSqlDB(mealsArr: NSArray, sDate: String, mealIndex: Int) {
-        DispatchQueue.global(qos: .userInitiated).async {
+        Self.saveQueue.async {
             var caloriTotal = Double(0)
             var carboTotal = Double(0)
             var proteinTotal = Double(0)
@@ -598,14 +599,15 @@ private extension DietPlanFoodsAddAlertVM {
                                                        fatsNum: "\(fatTotal)")
             LogsSQLiteManager.getInstance().updateMealsTime(foodsArray: mealsArr, sDate: sDate)
             LogsSQLiteManager.getInstance().updateUploadStatus(sDate: sDate, update: false)
-            LogsSQLiteUploadManager().uploadLogsBySDate(sdate: sDate)
+            // Batch rapid local saves for the same day, then upload once to avoid optimistic lock conflicts.
+            LogsSQLiteUploadManager().scheduleUploadLogsBySDate(sdate: sDate)
             LogsMealsAlertSetManage().refreshClockAlertMsg()
             
             DispatchQueue.main.async {
                 WidgetUtils().reloadWidgetData()
                 self.updateBlock?(sDate, mealIndex)
                 self.navigateToLogsRoot(sDate: sDate)
-                MCToast.mc_text("已添加到日志")
+//                MCToast.mc_text("已添加到日志")
             }
         }
     }

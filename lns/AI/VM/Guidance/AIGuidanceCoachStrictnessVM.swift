@@ -26,8 +26,6 @@ class AIGuidanceCoachStrictnessVM: UIView {
     private var currentGoalKind: GoalKind = .gain
     private var dataArray: [Item] = []
 
-    private var itemViews: [AIGuidanceCoachStrictnessItemView] = []
-
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         backgroundColor = .clear
@@ -79,24 +77,16 @@ class AIGuidanceCoachStrictnessVM: UIView {
         return lab
     }()
 
-    lazy var scrollView: UIScrollView = {
-        let sv = UIScrollView()
-        sv.showsVerticalScrollIndicator = false
-        sv.alwaysBounceVertical = true
-        sv.contentInsetAdjustmentBehavior = .never
-        return sv
-    }()
-
-    lazy var contentView: UIView = {
-        let vi = UIView()
+    lazy var tableView: UITableView = {
+        let vi = UITableView(frame: .zero, style: .plain)
+        vi.delegate = self
+        vi.dataSource = self
+        vi.separatorStyle = .none
+        vi.backgroundColor = .clear
+        vi.showsVerticalScrollIndicator = false
+        vi.contentInsetAdjustmentBehavior = .never
+        vi.register(AIGuidanceCoachStrictnessTableViewCell.classForCoder(), forCellReuseIdentifier: "AIGuidanceCoachStrictnessTableViewCell")
         return vi
-    }()
-
-    lazy var stackView: UIStackView = {
-        let st = UIStackView()
-        st.axis = .vertical
-        st.spacing = kFitWidth(16)
-        return st
     }()
     lazy var bottomGradientView: UIView = {
         let vi = UIView()
@@ -203,36 +193,7 @@ extension AIGuidanceCoachStrictnessVM {
     }
 
     func refreshListUI() {
-        if itemViews.count != dataArray.count {
-            rebuildViews()
-        }
-
-        for (index, item) in dataArray.enumerated() {
-            itemViews[index].update(item: item, isSelected: index == selectedIndex)
-        }
-    }
-
-    func rebuildViews() {
-        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        itemViews.removeAll()
-
-        for (index, item) in dataArray.enumerated() {
-            let itemView = AIGuidanceCoachStrictnessItemView()
-            itemView.tag = index
-            itemView.update(item: item, isSelected: false)
-            let tap = UITapGestureRecognizer(target: self, action: #selector(itemTapAction(_:)))
-            itemView.addGestureRecognizer(tap)
-
-            stackView.addArrangedSubview(itemView)
-            itemViews.append(itemView)
-        }
-    }
-
-    @objc func itemTapAction(_ tap: UITapGestureRecognizer) {
-        guard let view = tap.view else {
-            return
-        }
-        applySelection(index: view.tag, notify: true)
+        tableView.reloadData()
     }
 
     func applySelection(index: Int, notify: Bool) {
@@ -240,16 +201,45 @@ extension AIGuidanceCoachStrictnessVM {
             return
         }
 
+        if selectedIndex == index {
+            return
+        }
+
         selectedIndex = index
         QuestinonaireMsgModel.shared.aiGuidanceCoachStrictnessType = dataArray[index].value
 
-        for idx in itemViews.indices {
-            itemViews[idx].setSelectedState(idx == index)
+        UIView.performWithoutAnimation {
+            self.tableView.reloadData()
+            self.tableView.beginUpdates()
+            self.tableView.endUpdates()
         }
 
         if notify {
             selectedBlock?()
         }
+    }
+
+    func expandedCardHeight(for item: Item) -> CGFloat {
+        let detailWidth = SCREEN_WIDHT - kFitWidth(72)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.5
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 14, weight: .regular),
+            .paragraphStyle: paragraphStyle
+        ]
+        let detailHeight = ceil((item.detail as NSString).boundingRect(with: CGSize(width: detailWidth, height: .greatestFiniteMagnitude),
+                                                                       options: [.usesLineFragmentOrigin, .usesFontLeading],
+                                                                       attributes: attributes,
+                                                                       context: nil).height)
+        let contentHeight = max(kFitWidth(132), max(kFitWidth(68), kFitWidth(56) + detailHeight) + kFitWidth(20))
+        return contentHeight
+    }
+
+    func expandedRowHeight(for index: Int) -> CGFloat {
+        guard index >= 0 && index < dataArray.count else {
+            return kFitWidth(72)
+        }
+        return expandedCardHeight(for: dataArray[index]) + kFitWidth(12)
     }
 }
 
@@ -257,9 +247,7 @@ extension AIGuidanceCoachStrictnessVM {
     func initUI() {
         addSubview(titleLabel)
         addSubview(subtitleLabel)
-        addSubview(scrollView)
-        scrollView.addSubview(contentView)
-        contentView.addSubview(stackView)
+        addSubview(tableView)
         
         addSubview(topGradientView)
         addSubview(bottomGradientView)
@@ -276,76 +264,157 @@ extension AIGuidanceCoachStrictnessVM {
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
         }
 
-        scrollView.snp.makeConstraints { make in
+        tableView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(subtitleLabel.snp.bottom).offset(kFitWidth(16))
             make.bottom.equalTo(-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(74)))
         }
-
-        contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.width.equalToSuperview()
-        }
-
-        stackView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.right.equalTo(kFitWidth(-20))
-            make.top.equalToSuperview().offset(kFitWidth(20))
-            make.bottom.equalToSuperview().offset(-kFitWidth(20))
-        }
         topGradientView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(scrollView.snp.top)
+            make.top.equalTo(tableView.snp.top)
             make.height.equalTo(kFitWidth(35))
         }
 
         bottomGradientView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.bottom.equalTo(scrollView)
+            make.bottom.equalTo(tableView)
             make.height.equalTo(kFitWidth(35))
-//            make.top.equalTo(scrollView.snp.bottom).offset(kFitWidth(-56))
         }
     }
 }
 
-class AIGuidanceCoachStrictnessItemView: UIView {
+extension AIGuidanceCoachStrictnessVM: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        dataArray.count
+    }
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "AIGuidanceCoachStrictnessTableViewCell", for: indexPath) as? AIGuidanceCoachStrictnessTableViewCell
+        let item = dataArray[indexPath.row]
+        cell?.update(item: item,
+                     isSelected: selectedIndex == indexPath.row,
+                     expandedCardHeight: expandedCardHeight(for: item))
+        return cell ?? AIGuidanceCoachStrictnessTableViewCell()
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if selectedIndex == indexPath.row {
+            return expandedRowHeight(for: indexPath.row)
+        }
+        return kFitWidth(72)
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if selectedIndex == indexPath.row {
+            return
+        }
+//        applySelection(index: indexPath.row, notify: true)
+        selectedIndex = indexPath.row
+        QuestinonaireMsgModel.shared.aiGuidanceCoachStrictnessType = dataArray[indexPath.row].value
+        self.tableView.reloadData()
+        tableView.beginUpdates()
+        tableView.reloadRows(at: [indexPath], with: .fade)
+        tableView.endUpdates()
+        
+        selectedBlock?()
+    }
+}
+
+class AIGuidanceCoachStrictnessTableViewCell: FeedBackTableViewCell {
+    private let generator = UIImpactFeedbackGenerator(style: .rigid)
+    private var currentSelectedState = false
+    private var borderHeightConstraint: Constraint?
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .clear
+        selectionStyle = .none
+        generator.prepare()
         initUI()
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+
+        if highlighted {
+            bottomView.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT
+        } else if !currentSelectedState {
+            bottomView.backgroundColor = .COLOR_BG_BLACK_04
+        }
     }
+
+    lazy var bottomView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = .COLOR_BG_BLACK_04
+        vi.clipsToBounds = true
+        vi.layer.cornerRadius = kFitWidth(30)
+        return vi
+    }()
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 18, weight: .semibold)
+        lab.font = .systemFont(ofSize: 20, weight: .medium)
+        return lab
+    }()
+
+    lazy var borderRectView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = .COLOR_BG_WHITE
+        vi.layer.cornerRadius = kFitWidth(30)
+        vi.clipsToBounds = true
+        vi.layer.borderWidth = kFitWidth(0.5)
+        vi.layer.borderColor = UIColor.THEME.cgColor
+        vi.isHidden = true
+        return vi
+    }()
+
+    lazy var selectedTitleLabel: UILabel = {
+        let lab = UILabel()
+        lab.textColor = .THEME
+        lab.font = .systemFont(ofSize: 20, weight: .medium)
         return lab
     }()
 
     lazy var detailLabel: UILabel = {
         let lab = UILabel()
         lab.numberOfLines = 0
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 14, weight: .regular)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         return lab
     }()
-}
 
-extension AIGuidanceCoachStrictnessItemView {
-    func update(item: AIGuidanceCoachStrictnessVM.Item, isSelected: Bool) {
+    lazy var selectedImageView: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "question_goal_selected")
+        return img
+    }()
+
+    func update(item: AIGuidanceCoachStrictnessVM.Item, isSelected: Bool, expandedCardHeight: CGFloat) {
+        currentSelectedState = isSelected
         titleLabel.text = item.title
+        selectedTitleLabel.text = item.title
         detailLabel.attributedText = detailAttributedText(item.detail)
-        setSelectedState(isSelected)
+        borderHeightConstraint?.update(offset: expandedCardHeight)
+
+        if isSelected {
+            bottomView.isHidden = true
+            borderRectView.isHidden = false
+        } else {
+            bottomView.isHidden = false
+            borderRectView.isHidden = true
+            bottomView.backgroundColor = .COLOR_BG_BLACK_04
+            titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+        }
     }
 
     func detailAttributedText(_ text: String) -> NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.5
-
         return NSAttributedString(string: text, attributes: [
             .font: detailLabel.font as Any,
             .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
@@ -353,30 +422,72 @@ extension AIGuidanceCoachStrictnessItemView {
         ])
     }
 
-    func setSelectedState(_ isSelected: Bool) {
-        layer.borderWidth = isSelected ? kFitWidth(1.5) : 0
-        titleLabel.textColor = isSelected ? .THEME : .COLOR_TEXT_TITLE_0f1214
-        layer.borderColor = isSelected ? UIColor.THEME.cgColor : UIColor.clear.cgColor
-        backgroundColor = isSelected ? UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(1) : .COLOR_TEXT_TITLE_0f1214_05
-    }
-
     func initUI() {
-        backgroundColor = .COLOR_BG_BLACK_04
-        layer.cornerRadius = kFitWidth(16)
-        clipsToBounds = true
+        contentView.addSubview(bottomView)
+        bottomView.addSubview(titleLabel)
 
-        addSubview(titleLabel)
-        addSubview(detailLabel)
+        contentView.addSubview(borderRectView)
+        borderRectView.addSubview(selectedTitleLabel)
+        borderRectView.addSubview(detailLabel)
+        borderRectView.addSubview(selectedImageView)
+
+        bottomView.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalToSuperview()
+            make.width.equalTo(SCREEN_WIDHT - kFitWidth(32))
+            make.height.equalTo(kFitWidth(60))
+        }
 
         titleLabel.snp.makeConstraints { make in
-            make.left.top.equalTo(kFitWidth(16))
-            make.right.equalTo(kFitWidth(-16))
+            make.center.lessThanOrEqualToSuperview()
+        }
+
+        borderRectView.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalToSuperview()
+            make.width.equalTo(SCREEN_WIDHT - kFitWidth(32))
+            borderHeightConstraint = make.height.equalTo(kFitWidth(132)).constraint
+        }
+
+        selectedTitleLabel.snp.makeConstraints { make in
+            make.left.top.equalTo(kFitWidth(20))
+            make.right.lessThanOrEqualTo(selectedImageView.snp.left).offset(kFitWidth(-12))
+        }
+
+        selectedImageView.snp.makeConstraints { make in
+            make.right.equalTo(kFitWidth(-20))
+            make.top.equalTo(kFitWidth(20))
+            make.width.height.equalTo(kFitWidth(48))
         }
 
         detailLabel.snp.makeConstraints { make in
-            make.left.right.equalTo(titleLabel)
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(8))
-            make.bottom.equalToSuperview().offset(-kFitWidth(16))
+            make.left.equalTo(kFitWidth(20))
+            make.right.equalTo(kFitWidth(-20))
+            make.top.equalTo(selectedTitleLabel.snp.bottom).offset(kFitWidth(12))
+            make.bottom.lessThanOrEqualToSuperview().offset(-kFitWidth(20))
+        }
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        UIView.animate(withDuration: 0.1) {
+            self.transform = CGAffineTransform(scaleX: 0.99, y: 0.99)
+        }
+        generator.impactOccurred()
+        generator.prepare()
+    }
+
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        UIView.animate(withDuration: 0.1) {
+            self.transform = .identity
+        }
+    }
+
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        UIView.animate(withDuration: 0.1) {
+            self.transform = .identity
         }
     }
 }

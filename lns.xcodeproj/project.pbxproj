@@ -1372,6 +1372,7 @@
 		F1A0C1082F72430000A1B2C3 /* AIGuidanceNoticeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */; };
 		F1A0C10A2F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */; };
 		F1A0C10C2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */; };
+		F1A0C10E2F73A10000A1B2C3 /* AIGuidanceIntroVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A0C10D2F73A10000A1B2C3 /* AIGuidanceIntroVM.swift */; };
 		F1A700012F90000100AABBCC /* MineElaProVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700022F90000100AABBCC /* MineElaProVC.swift */; };
 		F1A700032F90000100AABBCC /* MineSubscriptionPlanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700042F90000100AABBCC /* MineSubscriptionPlanVC.swift */; };
 		F1A700052F90000100AABBCC /* MineManageSubscriptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700062F90000100AABBCC /* MineManageSubscriptionVC.swift */; };
@@ -2895,6 +2896,7 @@
 		F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceNoticeVM.swift; sourceTree = "<group>"; };
 		F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceElaProIntroVM.swift; sourceTree = "<group>"; };
 		F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceReadyStartVM.swift; sourceTree = "<group>"; };
+		F1A0C10D2F73A10000A1B2C3 /* AIGuidanceIntroVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceIntroVM.swift; sourceTree = "<group>"; };
 		F1A700022F90000100AABBCC /* MineElaProVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineElaProVC.swift; sourceTree = "<group>"; };
 		F1A700042F90000100AABBCC /* MineSubscriptionPlanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineSubscriptionPlanVC.swift; sourceTree = "<group>"; };
 		F1A700062F90000100AABBCC /* MineManageSubscriptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineManageSubscriptionVC.swift; sourceTree = "<group>"; };
@@ -4582,6 +4584,7 @@
 				F1A0C1092F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift */,
 				F1A0C1012F72400000A1B2C3 /* AIGuidanceGoalVM.swift */,
 				F1A0C1032F72410000A1B2C3 /* AIGuidanceGoalStageVM.swift */,
+				F1A0C10D2F73A10000A1B2C3 /* AIGuidanceIntroVM.swift */,
 				F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */,
 				F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */,
 			);
@@ -7179,6 +7182,7 @@
 				F1A0C1082F72430000A1B2C3 /* AIGuidanceNoticeVM.swift in Sources */,
 				F1A0C10A2F72440000A1B2C3 /* AIGuidanceElaProIntroVM.swift in Sources */,
 				F1A0C10C2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift in Sources */,
+				F1A0C10E2F73A10000A1B2C3 /* AIGuidanceIntroVM.swift in Sources */,
 				A73626292CFEEADA0038351C /* GoalSetPreviewAlertVM.swift in Sources */,
 				ECBFDFD62C2A77DA0004760A /* UIAlertAction+Exs.swift in Sources */,
 				ECAD70172BB6988B00D8E3E5 /* QuestionnaireBodyFatAlertVM.swift in Sources */,

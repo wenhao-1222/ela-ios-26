@@ -615,20 +615,20 @@ extension JournalVC{
         self.navigationController?.pushViewController(vc, animated: true)
     }
     func gotoAicoachAction() {
-        if VIPModel.shared.isAiCoachSurveyFinished{//做过问卷
-            if VIPModel.shared.status == .valid{
-                let vc = AICoachPreVC()
-                self.navigationController?.pushViewController(vc, animated: true)
-            }else if VIPModel.shared.status == .invalid{
-                let vc = AIGuidanceVC()
-                self.navigationController?.pushViewController(vc, animated: true)
-            }else{
-                elaExpiredAlertVm.showSelf()
-            }
-        }else {//未做过问卷
+//        if VIPModel.shared.isAiCoachSurveyFinished{//做过问卷
+//            if VIPModel.shared.status == .valid{
+//                let vc = AICoachPreVC()
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            }else if VIPModel.shared.status == .invalid{
+//                let vc = AIGuidanceVC()
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            }else{
+//                elaExpiredAlertVm.showSelf()
+//            }
+//        }else {//未做过问卷
             let vc = AIGuidanceVC()
             self.navigationController?.pushViewController(vc, animated: true)
-        }
+//        }
     }
     @objc func editStatus() {
         self.isEdit = true

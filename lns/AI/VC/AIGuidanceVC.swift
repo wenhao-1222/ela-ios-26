@@ -34,6 +34,7 @@ class AIGuidanceVC: WHBaseViewVC {
     }()
 
     private let sharedBackgroundTransitionDuration: TimeInterval = 0.25
+    private let introViewFadeDuration: TimeInterval = 0.25
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,6 +85,13 @@ class AIGuidanceVC: WHBaseViewVC {
         btn.addTarget(self, action: #selector(nextButtonTapAction), for: .touchUpInside)
 
         return btn
+    }()
+    lazy var introVm: AIGuidanceIntroVM = {
+        let vm = AIGuidanceIntroVM(frame: .zero)
+        vm.startBlock = { [weak self] in
+            self?.dismissIntroVm()
+        }
+        return vm
     }()
     lazy var goalVm: AIGuidanceGoalVM = {
         let vm = AIGuidanceGoalVM.init(frame: .zero)
@@ -319,12 +327,24 @@ extension AIGuidanceVC{
         nextButton.setTitle(title, for: .disabled)
     }
 
+    func dismissIntroVm() {
+        introVm.isUserInteractionEnabled = false
+        UIView.animate(withDuration: introViewFadeDuration,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState]) {
+            self.introVm.alpha = 0
+        } completion: { [weak self] _ in
+            self?.introVm.removeFromSuperview()
+        }
+    }
+
     func initUI() {
         view.backgroundColor = .COLOR_BG_F2
         view.addSubview(sharedBackgroundImageView)
         view.addSubview(scrollViewBase)
         view.addSubview(naviVm)
         view.addSubview(nextButton)
+        view.addSubview(introVm)
 
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
@@ -346,6 +366,10 @@ extension AIGuidanceVC{
             make.right.equalTo(kFitWidth(-20))
             make.height.equalTo(kFitWidth(44))
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
+        }
+
+        introVm.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
 }

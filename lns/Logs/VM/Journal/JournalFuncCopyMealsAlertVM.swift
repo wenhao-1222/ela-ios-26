@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 class JournalFuncCopyMealsAlertVM: UIView {
+    private static let saveQueue = DispatchQueue(label: "com.lns.logs.copy.meals.save")
     
     var whiteViewHeight = kFitWidth(256)+WHUtils().getBottomSafeAreaHeight()
     var daysArray = NSArray()
@@ -409,7 +410,7 @@ extension JournalFuncCopyMealsAlertVM{
         return resultFoodsArray
     }
     func saveDataToSqlDB(mealsArr:NSArray){
-        DispatchQueue.global(qos: .userInitiated).async {
+        Self.saveQueue.async {
             var caloriTotal = Double(0)
             var carboTotal = Double(0)
             var proteinTotal = Double(0)
@@ -455,7 +456,7 @@ extension JournalFuncCopyMealsAlertVM{
                                                        fatsNum: "\(fatTotal)")
             LogsSQLiteManager.getInstance().updateMealsTime(foodsArray: mealsArr, sDate: self.queryDay)
             LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
-            LogsSQLiteUploadManager().uploadLogsBySDate(sdate: self.queryDay)
+            LogsSQLiteUploadManager().scheduleUploadLogsBySDate(sdate: self.queryDay)
             LogsMealsAlertSetManage().refreshClockAlertMsg()
 //            LogsSQLiteUploadManager().sendUpdateLogsMealsTimeRequest(sDate: self.queryDay)
             if self.updateBlock != nil{

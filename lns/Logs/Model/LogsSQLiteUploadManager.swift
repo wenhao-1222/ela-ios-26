@@ -9,6 +9,11 @@ import Foundation
 import WidgetKit
 
 class LogsSQLiteUploadManager {
+    private static let uploadSyncQueue = DispatchQueue(label: "com.lns.logs.upload.sync")
+    private static var pendingUploadWorkItems: [String: DispatchWorkItem] = [:]
+    private static var uploadingDates = Set<String>()
+    private static var queuedDates = Set<String>()
+    
     ///检查本地日志   饮水量上传状态
     func checkWaterDataUploadStatus() {
         let logsWaterDataArray = LogsSQLiteManager.getInstance().queryTableAllWaterData()
@@ -32,14 +37,70 @@ class LogsSQLiteUploadManager {
         }
     }
     
-    func uploadLogsBySDate(sdate:String) {
+    func scheduleUploadLogsBySDate(sdate: String, delay: TimeInterval = 1.0) {
+        Self.uploadSyncQueue.async {
+            Self.queuedDates.insert(sdate)
+            Self.pendingUploadWorkItems[sdate]?.cancel()
+            
+            let workItem = DispatchWorkItem { [self] in
+                self.startQueuedUploadIfNeededOnSyncQueue(sdate: sdate)
+            }
+            
+            Self.pendingUploadWorkItems[sdate] = workItem
+            Self.uploadSyncQueue.asyncAfter(deadline: .now() + delay, execute: workItem)
+        }
+    }
+    
+    func uploadLogsBySDate(sdate:String, completion: (() -> Void)? = nil) {
         let logsDict = LogsSQLiteManager.getInstance().queryLogsData(sdata: sdate)
         if logsDict["isUpload"]as? Bool ?? true == false{
-            dealLogsDataForUpload(dict: logsDict)
+            dealLogsDataForUpload(dict: logsDict, completion: completion)
+        } else {
+            completion?()
         }
     }
 
-    func dealLogsDataForUpload(dict:NSDictionary) {
+    private func startQueuedUploadIfNeededOnSyncQueue(sdate: String) {
+        Self.pendingUploadWorkItems.removeValue(forKey: sdate)
+        
+        guard Self.queuedDates.contains(sdate) else {
+            return
+        }
+        
+        guard Self.uploadingDates.contains(sdate) == false else {
+            return
+        }
+        
+        Self.queuedDates.remove(sdate)
+        Self.uploadingDates.insert(sdate)
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.uploadLogsBySDate(sdate: sdate) {
+                self.finishQueuedUpload(sdate: sdate)
+            }
+        }
+    }
+    
+    private func finishQueuedUpload(sdate: String) {
+        Self.uploadSyncQueue.async {
+            Self.uploadingDates.remove(sdate)
+            
+            guard Self.queuedDates.contains(sdate) else {
+                return
+            }
+            
+            Self.pendingUploadWorkItems[sdate]?.cancel()
+            
+            let workItem = DispatchWorkItem { [self] in
+                self.startQueuedUploadIfNeededOnSyncQueue(sdate: sdate)
+            }
+            
+            Self.pendingUploadWorkItems[sdate] = workItem
+            Self.uploadSyncQueue.asyncAfter(deadline: .now() + 0.2, execute: workItem)
+        }
+    }
+
+    func dealLogsDataForUpload(dict:NSDictionary, completion: (() -> Void)? = nil) {
         let serialQueue = DispatchQueue(label: "com.logs.calculate")
          
         let uploadDict = NSMutableDictionary(dictionary: dict)
@@ -96,7 +157,7 @@ class LogsSQLiteUploadManager {
         serialQueue.async {
             DLLog(message: "checkDataUploadStatus  上传 第二步")
             DispatchQueue.main.sync {
-                self.sendUpdateLogsRequest(dict: uploadDict, meals: mealsArray)
+                self.sendUpdateLogsRequest(dict: uploadDict, meals: mealsArray, completion: completion)
                 NutritionDefaultModel.shared.getDefaultGoal(weekDay: Date().getWeekdayIndex(from: Date().nextDay(days: 0)))
                 if uploadDict.stringValueForKey(key: "sdate") == Date().nextDay(days: 0){
                     self.saveNaturalData(dict: uploadDict,isServerData:false)
@@ -128,7 +189,7 @@ class LogsSQLiteUploadManager {
             DLLog(message: "sendUpdateLogsMealsTimeRequest:\(responseObject)")
         }
     }
-    func sendUpdateLogsRequest(dict:NSDictionary,meals:NSArray) {
+    func sendUpdateLogsRequest(dict:NSDictionary,meals:NSArray, completion: (() -> Void)? = nil) {
         let logsDict = NSMutableDictionary(dictionary: LogsSQLiteManager.getInstance().getMealsTimeForUpload(sDate: "\(dict.stringValueForKey(key: "sdate"))"))
         
         logsDict.setValue("\(dict.stringValueForKey(key: "sdate"))", forKey: "sdate")
@@ -163,6 +224,9 @@ class LogsSQLiteUploadManager {
             self.sendNextMealAdviceRequest(logsDict: logsDict, sn: sn)
             LogsSQLiteManager.getInstance().updateUploadStatus(sDate: dict.stringValueForKey(key: "sdate"), update: true)
             LogsSQLiteManager.getInstance().updateLogsEtime(sDate: dict.stringValueForKey(key: "sdate"), endTime: dataObj["etime"]as? String ?? "\(Date().currentSeconds)")
+            completion?()
+        } failure: { _ in
+            completion?()
         }
     }
     ///获取下餐饮食建议
