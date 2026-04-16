@@ -110,7 +110,7 @@ private extension AIGuidanceReadyStartVM {
 
         heroImageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(17))
+            make.top.equalTo(statusBarHeight + kFitWidth(46))
             make.width.equalTo(kFitWidth(299))
             make.height.equalTo(kFitWidth(415))
         }

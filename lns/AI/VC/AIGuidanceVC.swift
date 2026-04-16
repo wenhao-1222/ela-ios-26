@@ -146,13 +146,13 @@ extension AIGuidanceVC{
         case .notice:
             moveToStep(index: 4, animated: true)
         case .elaProIntro:
-            if UserInfoModel.shared.vipModel.isValidVip {
-                submitAICoachProfile { [weak self] in
-                    self?.enterAICoachPrePage()
-                }
-            } else {
+//            if UserInfoModel.shared.vipModel.isValidVip {
+//                submitAICoachProfile { [weak self] in
+//                    self?.enterAICoachPrePage()
+//                }
+//            } else {
                 moveToStep(index: 5, animated: true)
-            }
+//            }
         case .readyStart:
             submitAICoachProfile { [weak self] in
                 self?.enterElaProPage()
@@ -323,6 +323,7 @@ extension AIGuidanceVC{
 
     func updateNextButtonTitle(for step: FlowStep) {
         let title = step == .readyStart ? "即刻开始" : "下一步"
+        naviVm.backButton.isHidden = step == .readyStart ? true : false
         nextButton.setTitle(title, for: .normal)
         nextButton.setTitle(title, for: .disabled)
     }
@@ -379,6 +380,7 @@ extension AIGuidanceVC {
         let vc = ElaProVC()
         vc.showPriceOnly = true
         vc.priceBizType = "2"
+        vc.priceDisplayMode = .aiGuidance
         vc.popToRootOnClose = true
         vc.enterAICoachPreOnPurchaseSuccess = true
         navigationController?.pushViewController(vc, animated: true)

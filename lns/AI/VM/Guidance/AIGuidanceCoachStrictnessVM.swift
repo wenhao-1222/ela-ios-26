@@ -318,6 +318,15 @@ extension AIGuidanceCoachStrictnessVM: UITableViewDataSource, UITableViewDelegat
         
         selectedBlock?()
     }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return kFitWidth(35)
+    }
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(35)))
+        vi.backgroundColor = .clear
+        
+        return vi
+    }
 }
 
 class AIGuidanceCoachStrictnessTableViewCell: FeedBackTableViewCell {
@@ -455,8 +464,8 @@ class AIGuidanceCoachStrictnessTableViewCell: FeedBackTableViewCell {
         }
 
         selectedImageView.snp.makeConstraints { make in
-            make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(kFitWidth(20))
+            make.right.equalTo(kFitWidth(-15))
+            make.top.equalTo(kFitWidth(15))
             make.width.height.equalTo(kFitWidth(48))
         }
 

@@ -16,6 +16,12 @@ class ElaProPriceVM: UIView {
         case annual
         case lifetime
     }
+
+    enum DisplayMode {
+        case `default`
+        case aiGuidance
+        case guidance
+    }
     
     private struct RemotePlanProduct {
         let type: Int
@@ -52,6 +58,23 @@ class ElaProPriceVM: UIView {
             return "¥\(price)"
         }
     }
+
+    private struct FeatureContent {
+        let title: String
+        let desc: String?
+        let iconName: String?
+        let systemIconName: String?
+
+        init(title: String,
+             desc: String? = nil,
+             iconName: String? = nil,
+             systemIconName: String? = nil) {
+            self.title = title
+            self.desc = desc
+            self.iconName = iconName
+            self.systemIconName = systemIconName
+        }
+    }
     
     var purchaseSuccessBlock: (() -> ())?
     var protocalTapBlock: (() -> ())?
@@ -59,6 +82,11 @@ class ElaProPriceVM: UIView {
     var bizType = ""
     var purchaseQueryBizType = "3"
     var isPurchased = ""
+    var displayMode: DisplayMode = .default {
+        didSet {
+            applyDisplayMode()
+        }
+    }
     
     private let selectedBlue = WHColor_16(colorStr: "1677F2")
     private let normalTextColor = UIColor.COLOR_TEXT_TITLE_0f1214
@@ -101,6 +129,7 @@ class ElaProPriceVM: UIView {
         initUI()
         observeAppBecomeActive()
         refreshPlanCards()
+        applyDisplayMode()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -1458,6 +1487,294 @@ extension ElaProPriceVM{
             make.top.equalTo(moreDividerOne.snp.bottom)
             make.height.equalTo(kFitWidth(55))
             make.bottom.equalToSuperview()
+        }
+    }
+
+    private func applyDisplayMode() {
+        guard subviews.isEmpty == false else { return }
+
+        switch displayMode {
+        case .default:
+            configureDefaultDisplayMode()
+        case .aiGuidance:
+            configureAIGuidanceDisplayMode()
+        case .guidance:
+            configureGuidanceDisplayMode()
+        }
+
+        layoutIfNeeded()
+    }
+
+    private func configureDefaultDisplayMode() {
+        benefitTitleLabel.text = "ELA PRO 将帮助你："
+        benefitTitleLabel.font = .systemFont(ofSize: 14, weight: .semibold)
+        aiTitleLabel.text = "解锁ELA AI教练："
+        aiTitleLabel.font = .systemFont(ofSize: 22, weight: .semibold)
+        moreTitleLabel.text = "和更多："
+        moreTitleLabel.font = .systemFont(ofSize: 22, weight: .semibold)
+
+        configureBenefitRows([
+            FeatureContent(title: "定制每周食谱", desc: "每天不重样，照着吃就行", iconName: "survey_subscription_mealplan_ic_01"),
+            FeatureContent(title: "消除选择困难", desc: "不用每天纠结吃什么", iconName: "survey_subscription_mealplan_ic_02"),
+            FeatureContent(title: "平衡家庭与健康饮食", desc: "和家人同桌，也能精准对齐目标", iconName: "survey_subscription_mealplan_ic_03"),
+            FeatureContent(title: "节省外卖支出", desc: "每月省下上千元外卖费用", iconName: "survey_subscription_mealplan_ic_04"),
+            FeatureContent(title: "整理购物清单", desc: "提前列好未来一周所需食材", iconName: "survey_subscription_mealplan_ic_05"),
+            FeatureContent(title: "快速记录", desc: "无需手动搜索，一键把每餐加入日志", iconName: "survey_subscription_mealplan_ic_06")
+        ])
+        configureAIRows([
+            FeatureContent(title: "每周复盘", desc: "结合饮食训练变化，系统复盘进度", iconName: "survey_subscription_coach_ic_01"),
+            FeatureContent(title: "卡点预警", desc: "多维数据早发现，瓶颈前先介入", iconName: "survey_subscription_coach_ic_02"),
+            FeatureContent(title: "体重去噪", desc: "分清真实进度，减少结果焦虑", iconName: "survey_subscription_coach_ic_03"),
+            FeatureContent(title: "持续微调", desc: "越用越懂你，你只需照做", iconName: "survey_subscription_coach_ic_04")
+        ])
+        configureMoreRows([
+            FeatureContent(title: "无广告", iconName: "survey_subscription_more_ic_01"),
+            FeatureContent(title: "解锁AI识图上限", iconName: "survey_subscription_more_ic_02")
+        ])
+
+        aiTitleLabel.isHidden = false
+        aiContainer.isHidden = false
+        applyContainerStyle(benefitContainer, highlighted: true)
+        applyContainerStyle(aiContainer, highlighted: false)
+        applyContainerStyle(moreContainer, highlighted: false)
+        remakeSectionConstraintsForDefaultOrder()
+    }
+
+    private func configureAIGuidanceDisplayMode() {
+        let titleFont = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        benefitTitleLabel.text = "ELA PRO 将帮助你："
+        benefitTitleLabel.font = titleFont
+        aiTitleLabel.text = "以及ELA 智能饮食计划："
+        aiTitleLabel.font = titleFont
+        moreTitleLabel.text = "和更多："
+        moreTitleLabel.font = titleFont
+
+        configureBenefitRows([
+            FeatureContent(title: "定制每周食谱", desc: "每天不重样，照着吃就行", iconName: "survey_subscription_mealplan_ic_01"),
+            FeatureContent(title: "消除选择困难", desc: "不用每天纠结吃什么", iconName: "survey_subscription_mealplan_ic_02"),
+            FeatureContent(title: "平衡家庭与健康饮食", desc: "和家人同桌，也能精准对齐目标", iconName: "survey_subscription_mealplan_ic_03"),
+            FeatureContent(title: "节省外卖支出", desc: "每月省下上千元外卖费用", iconName: "survey_subscription_mealplan_ic_04"),
+            FeatureContent(title: "整理购物清单", desc: "提前列好未来一周所需食材", iconName: "survey_subscription_mealplan_ic_05"),
+            FeatureContent(title: "快速记录", desc: "无需手动搜索，一键把每餐加入日志", iconName: "survey_subscription_mealplan_ic_06")
+        ])
+        configureAIRows([
+            FeatureContent(title: "每周复盘", desc: "结合饮食训练变化，系统复盘进度", iconName: "survey_subscription_coach_ic_01"),
+            FeatureContent(title: "卡点预警", desc: "多维数据早发现，瓶颈前先介入", iconName: "survey_subscription_coach_ic_02"),
+            FeatureContent(title: "体重去噪", desc: "分清真实进度，减少结果焦虑", iconName: "survey_subscription_coach_ic_03"),
+            FeatureContent(title: "持续微调", desc: "越用越懂你，你只需照做", iconName: "survey_subscription_coach_ic_04")
+        ])
+        configureMoreRows([
+            FeatureContent(title: "无广告", iconName: "survey_subscription_more_ic_01"),
+            FeatureContent(title: "解锁AI识图上限", iconName: "survey_subscription_more_ic_02")
+        ])
+
+        aiTitleLabel.isHidden = false
+        aiContainer.isHidden = false
+        applyContainerStyle(aiContainer, highlighted: true)
+        applyContainerStyle(benefitContainer, highlighted: false)
+        applyContainerStyle(moreContainer, highlighted: false)
+        remakeSectionConstraintsForAIGuidanceOrder()
+    }
+
+    private func configureGuidanceDisplayMode() {
+        let titleFont = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        benefitTitleLabel.text = "ELA PRO 将帮助你："
+        benefitTitleLabel.font = titleFont
+        moreTitleLabel.text = "以及现有的免费功能："
+        moreTitleLabel.font = titleFont
+
+        configureBenefitRows([
+            FeatureContent(title: "解锁AI教练", desc: "结合饮食记录与体重变化调整目标", iconName: "survey_subscription_coach_ic_01"),
+            FeatureContent(title: "定制饮食计划", desc: "按你的目标与饮食模式定制，直接照着执行", iconName: "survey_subscription_mealplan_ic_01"),
+            FeatureContent(title: "整理购物清单", desc: "为你食谱提前列好未来一周所需食材", iconName: "survey_subscription_mealplan_ic_05"),
+            FeatureContent(title: "去除广告", desc: "专心记录饮食，不被干扰", iconName: "survey_subscription_more_ic_01"),
+            FeatureContent(title: "解锁AI识别上限", desc: "放开使用AI食物与营养成分表识别", iconName: "survey_subscription_more_ic_02"),
+            FeatureContent(title: "优先体验新功能", desc: "新功能上线时第一时间体验", systemIconName: "sparkles")
+        ])
+        configureMoreRows([
+            FeatureContent(title: "日常饮食记录", systemIconName: "plus.square"),
+            FeatureContent(title: "身体数据记录", systemIconName: "chart.line.uptrend.xyaxis")
+        ])
+
+        aiTitleLabel.isHidden = true
+        aiContainer.isHidden = true
+        applyContainerStyle(benefitContainer, highlighted: true)
+        applyContainerStyle(moreContainer, highlighted: true)
+        remakeSectionConstraintsForGuidanceOrder()
+    }
+
+    private func remakeSectionConstraintsForDefaultOrder() {
+        benefitTitleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.top.equalTo(renewalNoticeLabel.snp.bottom).offset(kFitWidth(35))
+        }
+
+        benefitContainer.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(benefitTitleLabel.snp.bottom).offset(kFitWidth(14))
+        }
+
+        aiTitleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.top.equalTo(benefitContainer.snp.bottom).offset(kFitWidth(24))
+        }
+
+        aiContainer.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(aiTitleLabel.snp.bottom).offset(kFitWidth(20))
+        }
+
+        moreTitleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.top.equalTo(aiContainer.snp.bottom).offset(kFitWidth(25))
+        }
+
+        moreContainer.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(moreTitleLabel.snp.bottom).offset(kFitWidth(20))
+            make.bottom.equalToSuperview().offset(kFitWidth(-20))
+        }
+    }
+
+    private func remakeSectionConstraintsForAIGuidanceOrder() {
+        benefitTitleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.top.equalTo(renewalNoticeLabel.snp.bottom).offset(kFitWidth(35))
+        }
+
+        aiContainer.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(benefitTitleLabel.snp.bottom).offset(kFitWidth(14))
+        }
+
+        aiTitleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.top.equalTo(aiContainer.snp.bottom).offset(kFitWidth(24))
+        }
+
+        benefitContainer.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(aiTitleLabel.snp.bottom).offset(kFitWidth(14))
+        }
+
+        moreTitleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.top.equalTo(benefitContainer.snp.bottom).offset(kFitWidth(25))
+        }
+
+        moreContainer.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(moreTitleLabel.snp.bottom).offset(kFitWidth(20))
+            make.bottom.equalToSuperview().offset(kFitWidth(-20))
+        }
+    }
+
+    private func remakeSectionConstraintsForGuidanceOrder() {
+        benefitTitleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.top.equalTo(renewalNoticeLabel.snp.bottom).offset(kFitWidth(35))
+        }
+
+        benefitContainer.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(benefitTitleLabel.snp.bottom).offset(kFitWidth(14))
+        }
+
+        moreTitleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.top.equalTo(benefitContainer.snp.bottom).offset(kFitWidth(25))
+        }
+
+        moreContainer.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(moreTitleLabel.snp.bottom).offset(kFitWidth(14))
+            make.bottom.equalToSuperview().offset(kFitWidth(-20))
+        }
+    }
+
+    private func configureBenefitRows(_ contents: [FeatureContent]) {
+        let rows = [benefitOne, benefitTwo, benefitThree, benefitFour, benefitFive, benefitSix]
+        for (index, row) in rows.enumerated() {
+            guard index < contents.count else { continue }
+            configureBenefitRow(row, with: contents[index])
+        }
+    }
+
+    private func configureAIRows(_ contents: [FeatureContent]) {
+        let rows = [aiOne, aiTwo, aiThree, aiFour]
+        for (index, row) in rows.enumerated() {
+            guard index < contents.count else { continue }
+            configureBenefitRow(row, with: contents[index])
+        }
+    }
+
+    private func configureMoreRows(_ contents: [FeatureContent]) {
+        let rows = [moreOne, moreTwo]
+        for (index, row) in rows.enumerated() {
+            guard index < contents.count else { continue }
+            configureSimpleRow(row, with: contents[index])
+        }
+    }
+
+    private func configureBenefitRow(_ row: UIView, with content: FeatureContent) {
+        let labels = row.subviews.compactMap { $0 as? UILabel }
+        labels.first?.text = content.title
+        if labels.count > 1 {
+            labels[1].text = content.desc
+        }
+
+        if let iconView = row.subviews.first(where: { $0 is UIImageView }) as? UIImageView {
+            iconView.contentMode = .scaleAspectFit
+            iconView.tintColor = normalTextColor
+            iconView.image = resolvedFeatureImage(iconName: content.iconName, systemIconName: content.systemIconName)
+        }
+    }
+
+    private func configureSimpleRow(_ row: UIView, with content: FeatureContent) {
+        let labels = row.subviews.compactMap { $0 as? UILabel }
+        labels.first?.text = content.title
+
+        if let iconView = row.subviews.first(where: { $0 is UIImageView }) as? UIImageView {
+            iconView.contentMode = .scaleAspectFit
+            iconView.tintColor = normalTextColor
+            iconView.image = resolvedFeatureImage(iconName: content.iconName, systemIconName: content.systemIconName)
+        }
+    }
+
+    private func resolvedFeatureImage(iconName: String?, systemIconName: String?) -> UIImage? {
+        if let iconName, let image = UIImage(named: iconName) {
+            return image
+        }
+
+        if let systemIconName {
+            let configuration = UIImage.SymbolConfiguration(pointSize: kFitWidth(18), weight: .medium)
+            return UIImage(systemName: systemIconName, withConfiguration: configuration)
+        }
+
+        return nil
+    }
+
+    private func applyContainerStyle(_ view: UIView, highlighted: Bool) {
+        if highlighted {
+            view.backgroundColor = UIColor(named: "color_white_20_pro")
+            view.layer.cornerRadius = kFitWidth(12)
+            view.layer.borderWidth = kFitWidth(1.5)
+            view.layer.borderColor = UIColor(named: "color_white_20_pro_border")?.cgColor
+            view.clipsToBounds = true
+        } else {
+            view.backgroundColor = .clear
+            view.layer.cornerRadius = 0
+            view.layer.borderWidth = 0
+            view.layer.borderColor = UIColor.clear.cgColor
+            view.clipsToBounds = false
         }
     }
     

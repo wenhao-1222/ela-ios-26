@@ -23,68 +23,39 @@ class AIGuidanceElaProIntroVM: UIView {
     }
 
     private lazy var logoImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "ela_pro_expired_alert_icon"))
+        let imageView = UIImageView(image: UIImage(named: "ai_ela_icon"))
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ai教练会基于"
-        label.textColor = .COLOR_TEXT_TITLE_0f1214
-        label.font = .systemFont(ofSize: 24, weight: .medium)
+        label.numberOfLines = 0
+        label.attributedText = makeTitleText("基于你的饮食训练与身体变化\n系统化复盘进度")
         return label
     }()
 
-    private lazy var subtitleLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-//        label.text = "你以往的饮食、训练与身体变化，系统化复盘进度"
-//        label.textColor = .COLOR_TEXT_TITLE_0f1214
-        label.font = .systemFont(ofSize: 16, weight: .regular)
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineHeightMultiple = 1.5
-
-        label.attributedText = NSAttributedString(
-            string: "你以往的饮食、训练与身体变化，系统化复盘进度",
-            attributes: [
-                .font: label.font as Any,
-                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
-                .paragraphStyle: paragraphStyle
-            ]
-        )
-        return label
-    }()
-
-    private lazy var pointOneLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.attributedText = makeBulletText(
-            normalText: "从多维数据里提前发现你还没意识到的卡点，在瓶颈期出现之前就先介入，并给出下一步最小动作。",
-            boldTexts: ["提前发现", "最小动作"]
-        )
-        return label
-    }()
-
-    private lazy var pointTwoLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.attributedText = makeBulletText(
-            normalText: "区分哪些体重波动是真正的进度阻碍，哪些只是短期噪音，避免结果焦虑。",
-            boldTexts: ["进度阻碍", "短期噪音"]
-        )
-        return label
-    }()
-
-    private lazy var pointThreeLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.attributedText = makeBulletText(
-            normalText: "随着使用去更加解你的身体反应，持续优化方案并快速微调，让你只需执行。",
-            boldTexts: ["身体反应", "快速微调"]
-        )
-        return label
+    private lazy var featureStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            FeatureItemView(
+                iconImageName: "ai_guidance_intro_target_icon",
+                title: "精准突破瓶颈",
+                detail: "从多维数据里提前发现卡点，在瓶颈期出现前就先介入，并给出可执行的动作。"
+            ),
+            FeatureItemView(
+                iconImageName: "ai_guidance_intro_meditation_icon",
+                title: "告别结果焦虑",
+                detail: "帮你区分哪些体重波动是真正的进度阻碍，哪些只是短期噪音，拒绝盲目内耗。"
+            ),
+            FeatureItemView(
+                iconImageName: "ai_guidance_intro_chart_icon",
+                title: "持续动态优化",
+                detail: "随着使用更加了解你的身体反应，持续为你优化方案，你只管执行。"
+            )
+        ])
+        stackView.axis = .vertical
+        stackView.spacing = kFitWidth(26)
+        return stackView
     }()
 }
 
@@ -92,88 +63,124 @@ private extension AIGuidanceElaProIntroVM {
     func initUI() {
         addSubview(logoImageView)
         addSubview(titleLabel)
-        addSubview(subtitleLabel)
-        addSubview(pointOneLabel)
-        addSubview(pointTwoLabel)
-        addSubview(pointThreeLabel)
+        addSubview(featureStackView)
 
         logoImageView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(24))
+            make.left.equalTo(kFitWidth(28))
             make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(105))
-//            make.width.equalTo(kFitWidth(139))
-//            make.height.equalTo(kFitWidth(36))
-            make.width.equalTo(kFitWidth(165))
-            make.height.equalTo(kFitWidth(29))
+            make.width.equalTo(kFitWidth(112))
+            make.height.equalTo(kFitWidth(40))
         }
 
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(32))
+            make.right.equalTo(kFitWidth(-32))
             make.top.equalTo(logoImageView.snp.bottom).offset(kFitWidth(45))
-            make.right.equalTo(kFitWidth(-32))
         }
 
-        subtitleLabel.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(32))
-            make.right.equalTo(kFitWidth(-32))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
-        }
-
-        pointOneLabel.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(32))
-            make.right.equalTo(kFitWidth(-32))
-            make.top.equalTo(subtitleLabel.snp.bottom).offset(kFitWidth(35))
-        }
-
-        pointTwoLabel.snp.makeConstraints { make in
-            make.left.right.equalTo(pointOneLabel)
-            make.top.equalTo(pointOneLabel.snp.bottom).offset(kFitWidth(16))
-        }
-
-        pointThreeLabel.snp.makeConstraints { make in
-            make.left.right.equalTo(pointOneLabel)
-            make.top.equalTo(pointTwoLabel.snp.bottom).offset(kFitWidth(16))
+        featureStackView.snp.makeConstraints { make in
+            make.left.equalTo(titleLabel)
+            make.right.equalTo(titleLabel)
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(25))
+            make.bottom.lessThanOrEqualTo(safeAreaLayoutGuide.snp.bottom).offset(-kFitWidth(110))
         }
     }
 
-    func makeBulletText(normalText: String, boldTexts: [String]) -> NSAttributedString {
-        let bullet = "•"
-        let bulletSpacing = "  "
-        let bulletPrefix = bullet + bulletSpacing
-        let bulletFont = UIFont.systemFont(ofSize: 15, weight: .medium)
-        let contentFont = UIFont.systemFont(ofSize: 15, weight: .regular)
-        let bulletIndent = (bulletPrefix as NSString).size(withAttributes: [.font: contentFont]).width
-
+    func makeTitleText(_ text: String) -> NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineHeightMultiple = 1.45
-        paragraphStyle.firstLineHeadIndent = 0
-        paragraphStyle.headIndent = bulletIndent
-        paragraphStyle.tabStops = [NSTextTab(textAlignment: .left, location: bulletIndent)]
+        paragraphStyle.lineSpacing = kFitWidth(8)
 
-        let attributed = NSMutableAttributedString(
-            string: "\(bullet)\t\(normalText)",
+        return NSAttributedString(
+            string: text,
             attributes: [
-                .font: contentFont,
-                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                .font: UIFont.systemFont(ofSize: 22, weight: .medium),
+                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
                 .paragraphStyle: paragraphStyle
             ]
         )
+    }
+}
 
-        attributed.addAttributes([
-            .foregroundColor: UIColor.THEME,
-            .font: bulletFont
-        ], range: NSRange(location: 0, length: (bullet as NSString).length))
+private final class FeatureItemView: UIView {
 
-        for boldText in boldTexts {
-            let nsString = attributed.string as NSString
-            let range = nsString.range(of: boldText)
-            if range.location != NSNotFound {
-                attributed.addAttributes([
-                    .font: UIFont.systemFont(ofSize: 15, weight: .semibold),
-                    .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214
-                ], range: range)
-            }
+    private let iconImageName: String
+    private let titleText: String
+    private let detailText: String
+
+    init(iconImageName: String, title: String, detail: String) {
+        self.iconImageName = iconImageName
+        self.titleText = title
+        self.detailText = detail
+        super.init(frame: .zero)
+        setupUI()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private lazy var iconImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: iconImageName))
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = titleText
+        label.textColor = .COLOR_TEXT_TITLE_0f1214
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        return label
+    }()
+
+    private lazy var detailLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.attributedText = makeDetailText(detailText)
+        return label
+    }()
+
+    private lazy var headerStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [iconImageView, titleLabel])
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = kFitWidth(8)
+        return stackView
+    }()
+
+    private func setupUI() {
+        backgroundColor = .clear
+
+        addSubview(headerStackView)
+        addSubview(detailLabel)
+
+        iconImageView.snp.makeConstraints { make in
+            make.width.height.equalTo(kFitWidth(24))
         }
 
-        return attributed
+        headerStackView.snp.makeConstraints { make in
+            make.left.top.right.equalToSuperview()
+        }
+
+        detailLabel.snp.makeConstraints { make in
+            make.left.equalToSuperview().offset(kFitWidth(31))
+            make.right.equalToSuperview()
+            make.top.equalTo(headerStackView.snp.bottom).offset(kFitWidth(10))
+            make.bottom.equalToSuperview()
+        }
+    }
+
+    private func makeDetailText(_ text: String) -> NSAttributedString {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = kFitWidth(5)
+
+        return NSAttributedString(
+            string: text,
+            attributes: [
+                .font: UIFont.systemFont(ofSize: 14, weight: .regular),
+                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,//.withAlphaComponent(0.78),
+                .paragraphStyle: paragraphStyle
+            ]
+        )
     }
 }

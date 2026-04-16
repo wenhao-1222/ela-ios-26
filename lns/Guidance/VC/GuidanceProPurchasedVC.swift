@@ -27,6 +27,7 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
         let vm = ElaProPriceVM(frame: .zero)
         vm.bizType = "1"
         vm.isPurchased = "1"
+        vm.displayMode = .guidance
         vm.purchaseSuccessBlock = { [weak self] in
             self?.nextBlock?()
         }

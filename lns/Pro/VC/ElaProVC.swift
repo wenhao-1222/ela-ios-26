@@ -12,6 +12,7 @@ class ElaProVC: WHBaseViewVC {
     var param = [String : Any]()
     var showPriceOnly = false
     var priceBizType = "3"
+    var priceDisplayMode: ElaProPriceVM.DisplayMode = .default
     var popToRootOnClose = false
     var enterAICoachPreOnClose = false
     var enterAICoachPreOnPurchaseSuccess = false
@@ -116,6 +117,7 @@ class ElaProVC: WHBaseViewVC {
         let vm = ElaProPriceVM.init(frame: CGRect(x: SCREEN_WIDHT * 4, y: 0, width: 0, height: 0))
         vm.bizType = self.priceBizType
         vm.purchaseQueryBizType = self.priceBizType == "2" ? "2" : "3"
+        vm.displayMode = self.priceDisplayMode
         vm.purchaseSuccessBlock = { [weak self] in
             self?.handlePurchaseSuccess()
         }

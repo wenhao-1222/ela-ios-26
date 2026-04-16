@@ -22,6 +22,7 @@ class QuestionnaireBodyFatItemVM: UIView {
     private var lastFeedbackTime: TimeInterval = 0
     private let minimumFeedbackInterval: TimeInterval = 0.1
     private var currentValueText = ""
+    private var selectionAnimationToken: Int = 0
 
     
     var tapBlock:(()->())?
@@ -164,28 +165,12 @@ extension QuestionnaireBodyFatItemVM{
     }
     func updateUIIsSelected(isSelect: Bool) {
         guard self.isSelect != isSelect else { return }
+        selectionAnimationToken += 1
+        let animationToken = selectionAnimationToken
         self.isSelect = isSelect
 
         if isSelect {
-            // ===== 更自然的“按压→回弹”参数（只改时间与系数） =====
-            // 整体时长控制
-            let mainDuration: TimeInterval   = 0.78   // 主体弹性总时长
-            let checkDuration: TimeInterval  = 0.54   // 勾选小圆弹出时长
-
-            // 回弹系数（按压→峰→谷→峰→谷→微峰→落定），幅度逐次衰减
-            let valley0: CGFloat = 1//0.965  // 先“按压”一下（<1）
-            let peak1:  CGFloat = 1//1.070  // 第一次回弹峰
-            let valley1: CGFloat = 1//0.985  // 第一次回弹谷
-            let peak2:  CGFloat = 1//1.028  // 第二次回弹峰
-            let valley2: CGFloat = 1//0.996  // 第二次回弹谷
-            let peak3:  CGFloat = 1//1.008  // 微小回弹峰
-            let settle: CGFloat = 1.000  // 落定
-
-            // 勾选抖动幅度（更克制）
-            let checkPeak:   CGFloat = 1//1.08
-            let checkValley: CGFloat = 1//0.96
-
-            // —— 目标几何（保持你现有逻辑）—— //
+            let animationDuration: TimeInterval = 0.24
             let leftGap = isRight ? (SCREEN_WIDHT*0.5 - kFitWidth(24) - kFitWidth(148)) : kFitWidth(24)
             let finalFrame = CGRect(x: leftGap, y: kFitWidth(8), width: kFitWidth(148), height: kFitWidth(148))
 
@@ -200,12 +185,8 @@ extension QuestionnaireBodyFatItemVM{
 
             coverView.isHidden = false
             coverViewForLabel.isHidden = false
-            let firstGap = kFitWidth(4)
-            UIView.animate(withDuration: 0.08, delay: 0, options: .curveEaseInOut, animations: {
-//                self.imgView.frame = CGRect(x: leftGap+firstGap, y: kFitWidth(8)+firstGap, width: kFitWidth(148)-firstGap*2, height: kFitWidth(148)-firstGap*2)
-                self.coverViewForLabel.alpha = 1
-                self.coverView.alpha = 0
-            })
+            coverViewForLabel.alpha = 1
+            coverView.alpha = 0
 
             // 选中态文案/数值目标
             let targetTitleFrame = CGRect(x: kFitWidth(48), y: kFitWidth(52), width: kFitWidth(200), height: kFitWidth(12))
@@ -223,73 +204,28 @@ extension QuestionnaireBodyFatItemVM{
             numberLabel.textAlignment = .center
             applyValueText(fontSize: 28)
 
-            // ===== 主体：先“按压”再回弹多次（duang duang duang）=====
-            UIView.animateKeyframes(withDuration: mainDuration,
-                                    delay: 0,
-                                    options: [.calculationModeCubic, .beginFromCurrentState, .allowUserInteraction]) {
-
-                // 0%~16%：按压 (0.965)
-                UIView.addKeyframe(withRelativeStartTime: 0.00, relativeDuration: 0.04) {
-                    self.imgView.transform = CGAffineTransform(scaleX: valley0, y: valley0)
-                    self.coverView.alpha = 0
-                    self.coverViewForLabel.alpha = 1
-                    self.titleLab.frame = targetTitleFrame
-                    self.numberLabel.frame = targetNumberFrame
-                }
-                // 16%~38%：回弹到峰1 (1.070) + 同步文案布局变更
-                UIView.addKeyframe(withRelativeStartTime: 0.04, relativeDuration: 0.18) {
-                    self.imgView.transform = CGAffineTransform(scaleX: peak1, y: peak1)
-                    self.coverView.alpha = 1
-                    self.coverViewForLabel.alpha = 0
-                    self.titleLab.frame = targetTitleFrame
-                    self.numberLabel.frame = targetNumberFrame
-                }
-//                // 38%~58%：落到谷1 (0.985)
-//                UIView.addKeyframe(withRelativeStartTime: 0.22, relativeDuration: 0.16) {
-//                    self.imgView.transform = CGAffineTransform(scaleX: valley1, y: valley1)
-//                }
-//                // 58%~76%：峰2 (1.028)
-//                UIView.addKeyframe(withRelativeStartTime: 0.38, relativeDuration: 0.14) {
-//                    self.imgView.transform = CGAffineTransform(scaleX: peak2, y: peak2)
-//                }
-//                // 76%~90%：谷2 (0.996)
-//                UIView.addKeyframe(withRelativeStartTime: 0.52, relativeDuration: 0.1) {
-//                    self.imgView.transform = CGAffineTransform(scaleX: valley2, y: valley2)
-//                }
-//                // 90%~96%：微峰 (1.008)
-//                UIView.addKeyframe(withRelativeStartTime: 0.62, relativeDuration: 0.06) {
-//                    self.imgView.transform = CGAffineTransform(scaleX: peak3, y: peak3)
-//                }
-//                // 96%~100%：落定 (1.000)
-//                UIView.addKeyframe(withRelativeStartTime: 0.68, relativeDuration: 0.1) {
-//                    self.imgView.transform = CGAffineTransform(scaleX: settle, y: settle)
-//                }
+            UIView.animate(withDuration: animationDuration,
+                           delay: 0,
+                           options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction]) {
+                self.imgView.frame = finalFrame
+                self.coverView.alpha = 1
+                self.coverViewForLabel.alpha = 0
+                self.titleLab.frame = targetTitleFrame
+                self.numberLabel.frame = targetNumberFrame
             } completion: { _ in
+                guard animationToken == self.selectionAnimationToken, self.isSelect else { return }
                 self.coverViewForLabel.isHidden = true
             }
 
-            // ===== 勾选“圆圈”：更克制的弹入（先轻压再回弹）=====
-            UIView.animateKeyframes(withDuration: checkDuration,
-                                    delay: 0.06,
-                                    options: [.calculationModeCubic, .beginFromCurrentState, .allowUserInteraction]) {
-                // 0%~35%：到峰
-                UIView.addKeyframe(withRelativeStartTime: 0.00, relativeDuration: 0.35) {
-                    self.selectImgView.alpha = 1
-                    self.selectImgView.transform = CGAffineTransform(scaleX: checkPeak, y: checkPeak)
-                }
-                // 35%~70%：回到谷
-                UIView.addKeyframe(withRelativeStartTime: 0.35, relativeDuration: 0.35) {
-                    self.selectImgView.transform = CGAffineTransform(scaleX: checkValley, y: checkValley)
-                }
-                // 70%~100%：落定
-                UIView.addKeyframe(withRelativeStartTime: 0.70, relativeDuration: 0.30) {
-                    self.selectImgView.transform = .identity
-                }
-            }
-
-            // 最终几何（保持你的 finalFrame）
-            UIView.animate(withDuration: 0.10, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState]) {
-                self.imgView.frame = finalFrame
+            UIView.animate(withDuration: animationDuration,
+                           delay: 0.04,
+                           options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction]) {
+                self.selectImgView.alpha = 1
+                self.selectImgView.transform = .identity
+            } completion: { _ in
+                guard animationToken == self.selectionAnimationToken, self.isSelect else { return }
+                self.selectImgView.alpha = 1
+                self.selectImgView.transform = .identity
             }
 
         }else {
@@ -318,6 +254,7 @@ extension QuestionnaireBodyFatItemVM{
                 self.numberLabel.frame = CGRect(x: kFitWidth(16), y: kFitWidth(135), width: self.numberLabelWidth, height: kFitWidth(20))
                 self.selectImgView.alpha = 0
             } completion: { _ in
+                guard animationToken == self.selectionAnimationToken, !self.isSelect else { return }
                 self.titleLab.text = "体脂率"
                 self.coverView.isHidden = true
                 self.selectImgView.alpha = 0
