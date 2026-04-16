@@ -9,20 +9,39 @@ import MCToast
 
 class DietPlanBuyListVC: WHBaseViewVC {
     
+    private let skeletonRowCount = 12
+    private let timeSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_GRAY_E8,
+                                                    highlightColorLight: .COLOR_GRAY_D6D6D6,
+                                                    cornerRadius: kFitWidth(7),
+                                                    shimmerWidth: 0.2,
+                                                    shimmerDuration: 1.0,
+                                                    skeletonFadeInDuration: 0.0,
+                                                    contentFadeInDuration: 0.18)
+    private let tipsSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_GRAY_E8,
+                                                    highlightColorLight: .COLOR_GRAY_D6D6D6,
+                                                    cornerRadius: kFitWidth(6),
+                                                    shimmerWidth: 0.2,
+                                                    shimmerDuration: 1.0,
+                                                    skeletonFadeInDuration: 0.0,
+                                                    contentFadeInDuration: 0.18)
     var selectedDates = [String]()
     var createDateStrings = [String]()
     var showCreateButton = false
     var foodsArray = NSMutableArray()
+    private var isLoading = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         initUI()
-        if selectedDates.count > 0 {
-            createBuyListRequest()
-        }else{
-            sendBuyListRequest()
-        }
+        beginLoading()
+        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
+            if self.selectedDates.count > 0 {
+                self.createBuyListRequest()
+            }else{
+                self.sendBuyListRequest()
+            }
+        })
     }
     
     override func viewDidLayoutSubviews() {
@@ -216,6 +235,7 @@ extension DietPlanBuyListVC{
         guard !selectedDates.isEmpty else { return }
         self.selectedDates = selectedDates
         updateTimeLabel(with: selectedDates)
+        beginLoading()
         createBuyListRequest()
     }
     
@@ -274,21 +294,29 @@ extension DietPlanBuyListVC{
 
 extension DietPlanBuyListVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        foodsArray.count
+        isLoading ? skeletonRowCount : foodsArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: DietPlanBuyListFoodsCell.reuseId, for: indexPath) as? DietPlanBuyListFoodsCell ?? DietPlanBuyListFoodsCell()
+        cell.isUserInteractionEnabled = !isLoading
+
+        if isLoading {
+            cell.updateUI(title: "", weight: "", isSelected: false, isLoading: true)
+            return cell
+        }
         
         let dict = foodsArray[indexPath.row]as? NSDictionary ?? [:]
         cell.updateUI(title: dict.stringValueForKey(key: "fname"),
                       weight: "\(dict.stringValueForKey(key: "qty")) \(dict.stringValueForKey(key: "spec"))",
-                      isSelected: dict.stringValueForKey(key: "checked") == "1")
+                      isSelected: dict.stringValueForKey(key: "checked") == "1",
+                      isLoading: false)
         
         return cell
     }
 //    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard !isLoading else { return }
         self.updateSelectStatus(indexPath: indexPath)
     }
     
@@ -320,9 +348,12 @@ extension DietPlanBuyListVC{
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "createBuyListRequest:\(dataObj)")
             
+            self.prepareTimeLabelFadeInIfNeeded()
+            self.prepareTipsLabelFadeInIfNeeded()
             self.updateTimeLabel(with: self.selectedDates)
-            self.foodsArray = NSMutableArray(array: dataObj["shoppingList"]as? NSArray ?? [])
-            self.tableView.reloadData()
+            self.timeLabel.hideSkeletonWithCrossfade()
+            self.tipsLab.hideSkeletonWithCrossfade()
+            self.finishLoading(with: dataObj["shoppingList"]as? NSArray ?? [])
         }
     }
     func sendBuyListRequest() {
@@ -341,10 +372,12 @@ extension DietPlanBuyListVC{
 //                self.timeLabel.text = "\(endDate)"
 //            }
             
+            self.prepareTimeLabelFadeInIfNeeded()
+            self.prepareTipsLabelFadeInIfNeeded()
             self.updateTimeLabel(firstDate: startDate, lastDate: endDate)
-            
-            self.foodsArray = NSMutableArray(array: dataObj["shoppingList"]as? NSArray ?? [])
-            self.tableView.reloadData()
+            self.timeLabel.hideSkeletonWithCrossfade()
+            self.tipsLab.hideSkeletonWithCrossfade()
+            self.finishLoading(with: dataObj["shoppingList"]as? NSArray ?? [])
         }
     }
     func sendFoodsCheckRequest(check:String,id:String) {
@@ -353,5 +386,37 @@ extension DietPlanBuyListVC{
         WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_shopping_list_check, parameters: param as [String : AnyObject]) { responseObject in
             
         }
+    }
+
+    func beginLoading() {
+        isLoading = true
+        tableView.allowsSelection = false
+        if !timeLabel.isSkeletonActive {
+            if timeLabel.text?.isEmpty != false {
+                timeLabel.text = "                                                "
+            }
+            timeLabel.showSkeleton(timeSkeletonConfig)
+        }
+        if !tipsLab.isSkeletonActive {
+            tipsLab.showSkeleton(tipsSkeletonConfig)
+        }
+        tableView.reloadForSkeleton()
+    }
+
+    func finishLoading(with list: NSArray) {
+        isLoading = false
+        tableView.allowsSelection = true
+        foodsArray = NSMutableArray(array: list)
+        tableView.reloadData()
+    }
+
+    func prepareTimeLabelFadeInIfNeeded() {
+        guard timeLabel.isSkeletonActive else { return }
+        timeLabel.alpha = 0
+    }
+
+    func prepareTipsLabelFadeInIfNeeded() {
+        guard tipsLab.isSkeletonActive else { return }
+        tipsLab.alpha = 0
     }
 }

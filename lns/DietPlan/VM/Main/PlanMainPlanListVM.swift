@@ -53,6 +53,7 @@ class PlanMainPlanListVM: UIView {
     private let sectionInset = UIEdgeInsets(top: 0, left: kFitWidth(16), bottom: kFitWidth(24), right: kFitWidth(16))
     private let itemSpacing = kFitWidth(12)
     private var mealDaySections: [PlanMainMealDaySection] = []
+    private var hasAutoScrolledToToday = false
     private lazy var buyListCalendar: Calendar = {
         var cal = Calendar(identifier: .gregorian)
         cal.locale = Locale(identifier: "en_US_POSIX")
@@ -196,6 +197,8 @@ extension PlanMainPlanListVM {
             }
             
             collectionView.reloadData()
+            collectionView.layoutIfNeeded()
+            autoScrollToTodayIfNeeded()
             return
         }
         
@@ -347,6 +350,34 @@ private extension PlanMainPlanListVM {
     func parsedBuyListDate(from sdate: String) -> Date? {
         guard let date = buyListDateFormatter.date(from: sdate) else { return nil }
         return buyListCalendar.startOfDay(for: date)
+    }
+
+    func autoScrollToTodayIfNeeded() {
+        guard !hasAutoScrolledToToday else { return }
+        guard let section = todaySectionIndex() else { return }
+        
+        hasAutoScrolledToToday = true
+        collectionView.layoutIfNeeded()
+        
+        let headerIndexPath = IndexPath(item: 0, section: section)
+        if let attributes = collectionView.layoutAttributesForSupplementaryElement(ofKind: UICollectionView.elementKindSectionHeader,
+                                                                                   at: headerIndexPath) {
+            let targetY = max(attributes.frame.minY - collectionView.adjustedContentInset.top, -collectionView.adjustedContentInset.top)
+            collectionView.setContentOffset(CGPoint(x: collectionView.contentOffset.x, y: targetY), animated: false)
+            return
+        }
+        
+        if mealDaySections[section].meals.isEmpty == false {
+            collectionView.scrollToItem(at: IndexPath(item: 0, section: section), at: .top, animated: false)
+        }
+    }
+
+    func todaySectionIndex() -> Int? {
+        let today = buyListCalendar.startOfDay(for: Date())
+        return mealDaySections.firstIndex { section in
+            guard let date = parsedBuyListDate(from: section.sdate) else { return false }
+            return date == today
+        }
     }
     
     func updateBuyListButtonState() {

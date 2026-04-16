@@ -11,6 +11,20 @@ class DietPlanBuyListFoodsCell: UITableViewCell {
     
     private let checkedImageName = "circle_today_select_icon"
     private let uncheckedImageName = "question_foods_normal_icon"
+    private let textSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_GRAY_E8,
+                                                    highlightColorLight: .COLOR_GRAY_D6D6D6,
+                                                    cornerRadius: kFitWidth(6),
+                                                    shimmerWidth: 0.2,
+                                                    shimmerDuration: 1.0,
+                                                    skeletonFadeInDuration: 0.0,
+                                                    contentFadeInDuration: 0.18)
+    private let checkSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_GRAY_E8,
+                                                     highlightColorLight: .COLOR_GRAY_D6D6D6,
+                                                     cornerRadius: kFitWidth(10.5),
+                                                     shimmerWidth: 0.2,
+                                                     shimmerDuration: 1.0,
+                                                     skeletonFadeInDuration: 0.0,
+                                                     contentFadeInDuration: 0.18)
     
     private let cardView: UIView = {
         let view = UIView()
@@ -66,7 +80,7 @@ class DietPlanBuyListFoodsCell: UITableViewCell {
         }
         weightLabel.snp.makeConstraints { make in
             make.left.equalTo(titleLabel)
-            make.top.equalTo(titleLabel.snp.bottom)
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(2))
             make.height.equalTo(kFitWidth(18))
         }
         checkImageView.snp.makeConstraints { make in
@@ -84,6 +98,9 @@ class DietPlanBuyListFoodsCell: UITableViewCell {
         super.prepareForReuse()
         titleLabel.text = nil
         weightLabel.text = nil
+        [titleLabel, weightLabel, checkImageView].forEach {
+            $0.alpha = 1
+        }
         checkImageView.layer.removeAllAnimations()
         checkImageView.transform = .identity
         checkImageView.alpha = 1
@@ -93,12 +110,32 @@ class DietPlanBuyListFoodsCell: UITableViewCell {
                                      animated: false)
     }
     
-    func updateUI(title: String,weight: String, isSelected: Bool) {
+    func updateUI(title: String,weight: String, isSelected: Bool, isLoading: Bool) {
+        if isLoading {
+            titleLabel.text = "                                    "
+            weightLabel.text = "                      "
+            checkImageView.image = nil
+            [titleLabel, weightLabel].forEach { $0.showSkeleton(textSkeletonConfig) }
+            checkImageView.showSkeleton(checkSkeletonConfig)
+            return
+        }
+
+        prepareContentFadeInIfNeeded()
         titleLabel.text = title
         weightLabel.text = weight
         checkImageView.setCheckState(isSelected,
                                      checkedImageName: checkedImageName,
                                      uncheckedImageName: uncheckedImageName,
                                      animated: false)
+        [titleLabel, weightLabel, checkImageView].forEach { $0.hideSkeletonWithCrossfade() }
+    }
+}
+
+private extension DietPlanBuyListFoodsCell {
+    func prepareContentFadeInIfNeeded() {
+        [titleLabel, weightLabel, checkImageView].forEach { view in
+            guard view.isSkeletonActive else { return }
+            view.alpha = 0
+        }
     }
 }

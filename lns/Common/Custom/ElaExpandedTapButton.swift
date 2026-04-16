@@ -1,7 +1,7 @@
 //
 //  ElaExpandedTapButton.swift
 //  lns
-//
+//  扩大点击范围
 //  Created by LNS2 on 2026/3/9.
 //
 

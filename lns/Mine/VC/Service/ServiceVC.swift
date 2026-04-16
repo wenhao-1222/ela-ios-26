@@ -37,8 +37,8 @@ class ServiceVC: WHBaseViewVC {
     lazy var adviceItemVm: ServiceTypeItemVM = {
         let vm = ServiceTypeItemVM.init(frame: CGRect.init(x: 0, y: self.marketItemVm.frame.maxY, width: 0, height: 0))
         vm.iconImgView.setImgLocal(imgName: "service_type_market")
-        vm.titleLab.text = "产品建议"
-        vm.detailLab.text = "功能体验不好，想提建议"
+        vm.titleLab.text = "意见反馈"
+        vm.detailLab.text = "功能建议与问题反馈"
         
         vm.tapBlock = {()in
             let vc = ServiceContactVC()

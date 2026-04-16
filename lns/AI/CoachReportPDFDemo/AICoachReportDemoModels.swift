@@ -61,11 +61,15 @@ struct AICoachReportNextWeekRecommendation {
     let isValid: Bool
 
     var primaryButtonTitle: String {
-        status == .maintain ? "知道了" : "更新目标"
+        if status == .maintain {
+            return "知道了"
+        }
+        return buttonNum == 2 ? "更新目标与食谱" : "更新目标"
     }
 
     var secondaryButtonTitle: String? {
-        buttonNum == 2 ? "更新目标与食谱" : nil
+        guard status != .maintain, buttonNum == 2 else { return nil }
+        return "仅更新目标"
     }
 
     static let empty = AICoachReportNextWeekRecommendation(

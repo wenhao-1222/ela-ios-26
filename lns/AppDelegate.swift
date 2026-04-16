@@ -43,6 +43,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         /*
          0786fc6c4e32277115529f473b4ac699
          IMipt2g46BsGe2Pf
+         
+         411afa4ea9beaaf1c42517acefb4625d
+         RtorVl9Uu13MWjuU
          */
         let launchWindow: UIWindow
         if let existingWindow = window {

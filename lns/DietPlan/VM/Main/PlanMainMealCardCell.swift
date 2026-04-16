@@ -89,8 +89,9 @@ class PlanMainMealCardCell: UICollectionViewCell {
         return label
     }()
     
-    private let changeButton: UIButton = {
-        let button = UIButton(type: .custom)
+    private let changeButton: ElaExpandedTapButton = {
+        let button = ElaExpandedTapButton(type: .custom)
+        button.hitTestEdgeInsets = .init(top: -30, left: -30, bottom: -30, right: -30)
         if let icon = UIImage(named: "dietplan_plan_change_icon"){//}.withRenderingMode(.alwaysTemplate) {
             button.setImage(icon, for: .normal)
         }

@@ -86,55 +86,55 @@ class MineElaProVC: WHBaseViewVC {
         initUI()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        topGradientLayer.frame = topGradientView.bounds
-        bottomGradientLayer.frame = bottomGradientView.bounds
-    }
+//    override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        topGradientLayer.frame = topGradientView.bounds
+//        bottomGradientLayer.frame = bottomGradientView.bounds
+//    }
     
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        bottomGradientLayer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
-            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
-        ]
-        topGradientLayer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
-        ]
-    }
+//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+//        bottomGradientLayer.colors = [
+//            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+//            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+//        ]
+//        topGradientLayer.colors = [
+//            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+//            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+//        ]
+//    }
     
-    lazy var bottomGradientView: UIView = {
-        let vi = UIView()
-        vi.isUserInteractionEnabled = false
-        return vi
-    }()
-    lazy var topGradientView: UIView = {
-        let vi = UIView()
-        vi.isUserInteractionEnabled = false
-        return vi
-    }()
-    lazy var bottomGradientLayer: CAGradientLayer = {
-        let layer = CAGradientLayer()
-        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
-        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
-        layer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
-            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
-        ]
-        layer.locations = [0, 1]
-        return layer
-    }()
-    lazy var topGradientLayer: CAGradientLayer = {
-        let layer = CAGradientLayer()
-        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
-        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
-        layer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
-        ]
-        layer.locations = [0, 1]
-        return layer
-    }()
+//    lazy var bottomGradientView: UIView = {
+//        let vi = UIView()
+//        vi.isUserInteractionEnabled = false
+//        return vi
+//    }()
+//    lazy var topGradientView: UIView = {
+//        let vi = UIView()
+//        vi.isUserInteractionEnabled = false
+//        return vi
+//    }()
+//    lazy var bottomGradientLayer: CAGradientLayer = {
+//        let layer = CAGradientLayer()
+//        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+//        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+//        layer.colors = [
+//            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+//            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+//        ]
+//        layer.locations = [0, 1]
+//        return layer
+//    }()
+//    lazy var topGradientLayer: CAGradientLayer = {
+//        let layer = CAGradientLayer()
+//        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+//        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+//        layer.colors = [
+//            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+//            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+//        ]
+//        layer.locations = [0, 1]
+//        return layer
+//    }()
 }
 
 private extension MineElaProVC {
@@ -146,10 +146,10 @@ private extension MineElaProVC {
         view.addSubview(scrollViewBase)
         scrollViewBase.addSubview(contentView)
         
-        view.addSubview(topGradientView)
-        view.addSubview(bottomGradientView)
-        bottomGradientView.layer.addSublayer(bottomGradientLayer)
-        topGradientView.layer.addSublayer(topGradientLayer)
+//        view.addSubview(topGradientView)
+//        view.addSubview(bottomGradientView)
+//        bottomGradientView.layer.addSublayer(bottomGradientLayer)
+//        topGradientView.layer.addSublayer(topGradientLayer)
         
         contentView.addSubview(heroCardView)
         contentView.addSubview(coachSectionView)
@@ -183,16 +183,16 @@ private extension MineElaProVC {
             make.left.right.equalTo(heroCardView)
             make.bottom.equalToSuperview().offset(-(WHUtils().getBottomSafeAreaHeight() + kFitWidth(20)))
         }
-        topGradientView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview()
-            make.top.equalTo(scrollViewBase.snp.top)
-            make.height.equalTo(kFitWidth(35))
-        }
-        bottomGradientView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview()
-            make.bottom.equalTo(scrollViewBase)
-            make.height.equalTo(kFitWidth(35))
-//            make.top.equalTo(scrollView.snp.bottom).offset(kFitWidth(-35))
-        }
+//        topGradientView.snp.makeConstraints { make in
+//            make.left.right.equalToSuperview()
+//            make.top.equalTo(scrollViewBase.snp.top)
+//            make.height.equalTo(kFitWidth(35))
+//        }
+//        bottomGradientView.snp.makeConstraints { make in
+//            make.left.right.equalToSuperview()
+//            make.bottom.equalTo(scrollViewBase)
+//            make.height.equalTo(kFitWidth(35))
+////            make.top.equalTo(scrollView.snp.bottom).offset(kFitWidth(-35))
+//        }
     }
 }

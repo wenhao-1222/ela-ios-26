@@ -71,7 +71,7 @@ class AICoachPreDaysVM: UIView, UIGestureRecognizerDelegate {
         return stackView
     }()
 
-    private lazy var messageLabel: UILabel = {
+    lazy var messageLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.textAlignment = .center

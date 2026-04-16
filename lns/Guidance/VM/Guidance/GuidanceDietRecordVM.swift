@@ -41,7 +41,7 @@ class GuidanceDietRecordVM: UIView {
     lazy var titleLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
 //        lab.numberOfLines = 2
-        lab.text = "你之前有记录过饮食吗？"
+        lab.text = "你以前有记录过饮食吗？"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)

@@ -66,7 +66,7 @@ private extension AIGuidanceElaProIntroVM {
         addSubview(featureStackView)
 
         logoImageView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(28))
+            make.left.equalTo(kFitWidth(32))
             make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(105))
             make.width.equalTo(kFitWidth(112))
             make.height.equalTo(kFitWidth(40))
@@ -88,7 +88,7 @@ private extension AIGuidanceElaProIntroVM {
 
     func makeTitleText(_ text: String) -> NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = kFitWidth(8)
+        paragraphStyle.lineSpacing = kFitWidth(4)
 
         return NSAttributedString(
             string: text,

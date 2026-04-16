@@ -55,7 +55,7 @@ class AIGuidanceGoalVM: UIView {
     lazy var stackView: UIStackView = {
         let st = UIStackView()
         st.axis = .vertical
-        st.spacing = kFitWidth(16)
+        st.spacing = kFitWidth(12)
         return st
     }()
 }
@@ -83,7 +83,7 @@ extension AIGuidanceGoalVM {
         for (idx, button) in itemButtons.enumerated() {
             let isSelected = idx == index
             button.backgroundColor = isSelected ? .THEME : .COLOR_BG_BLACK_04
-            titleLabels[idx].textColor = isSelected ? .COLOR_TEXT_WHITE : .COLOR_TEXT_TITLE_0f1214_50
+            titleLabels[idx].textColor = isSelected ? .COLOR_TEXT_WHITE : .COLOR_TEXT_TITLE_0f1214
         }
 
         if index >= 0 && index < dataArray.count {
@@ -105,7 +105,7 @@ extension AIGuidanceGoalVM {
         for (index, item) in dataArray.enumerated() {
             let button = FeedBackButton()
             button.tag = index
-            button.backgroundColor = .COLOR_BG_BLACK_04
+            button.backgroundColor = .COLOR_TEXT_TITLE_0f1214_10
             button.layer.cornerRadius = kFitWidth(30)
             button.clipsToBounds = true
             button.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT), for: .highlighted)
@@ -114,7 +114,7 @@ extension AIGuidanceGoalVM {
             let lab = UILabel()
             lab.text = item.title
             lab.textAlignment = .center
-            lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+            lab.textColor = .COLOR_TEXT_TITLE_0f1214
             lab.font = .systemFont(ofSize: 20, weight: .medium)
 
             button.addSubview(lab)
@@ -133,13 +133,13 @@ extension AIGuidanceGoalVM {
 
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(92))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
         }
 
         stackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(84))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(175))
         }
     }
 }

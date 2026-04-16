@@ -20,6 +20,9 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     private var pdfFileURL: URL?
     private var hasGeneratedPDF = false
     private var bottomBarHeightConstraint: Constraint?
+    private var downloadButtonWidthConstraint: Constraint?
+    private var isTopBarInteractionEnabled = false
+    private var isDownloadInProgress = false
 
     private lazy var topContainerView: UIView = {
         let view = UIView()
@@ -78,6 +81,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         btn.backgroundColor = .clear
         btn.layer.cornerRadius = kFitWidth(8)
         btn.clipsToBounds = true
+        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.setImage(UIImage(named: "ai_coach_download_icon"), for: .normal)
         btn.enablePressEffect()
         btn.addTarget(self, action: #selector(downloadAction), for: .touchUpInside)
@@ -154,6 +158,9 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         vm.primaryActionBlock = { [weak self] _ in
             self?.adviceAlertVM.hiddenSelf()
         }
+        vm.secondaryActionBlock = { [weak self] _ in
+            self?.adviceAlertVM.hiddenSelf()
+        }
         return vm
     }()
 
@@ -165,7 +172,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         view.backgroundColor = .white
         setupUI()
         refreshTopBar()
-        updateDateButtonInteraction(isEnabled: false)
+        updateTopBarInteraction(isEnabled: false)
         updateAdviceButtonState()
         sendReportListRequest()
         if reportId.isEmpty == false {
@@ -228,7 +235,8 @@ private extension AICoachReportPDFDemoVC {
         downloadButton.snp.makeConstraints { make in
             make.centerY.lessThanOrEqualTo(titleLabel)
             make.right.equalTo(kFitWidth(-12))
-            make.width.height.equalTo(kFitWidth(30))
+            make.height.equalTo(kFitWidth(30))
+            downloadButtonWidthConstraint = make.width.equalTo(kFitWidth(30)).constraint
         }
 
 //        dateLabel.snp.makeConstraints { make in
@@ -292,7 +300,7 @@ private extension AICoachReportPDFDemoVC {
     }
 
     func generateAndLoadPDF() {
-        updateDateButtonInteraction(isEnabled: false)
+        updateTopBarInteraction(isEnabled: false)
         loadingIndicator.startAnimating()
         loadingLabel.text = "正在生成PDF..."
         loadingLabel.isHidden = false
@@ -302,14 +310,13 @@ private extension AICoachReportPDFDemoVC {
                 let fileURL = try AICoachReportPDFGenerator.generate(report: self.report)
                 self.pdfFileURL = fileURL
                 self.loadPDF(from: fileURL)
-                self.downloadButton.isEnabled = true
                 self.loadingIndicator.stopAnimating()
                 self.loadingLabel.isHidden = true
-                self.updateDateButtonInteraction(isEnabled: true)
+                self.updateTopBarInteraction(isEnabled: true)
             } catch {
                 self.loadingIndicator.stopAnimating()
                 self.loadingLabel.text = "PDF 生成失败"
-                self.updateDateButtonInteraction(isEnabled: true)
+                self.updateTopBarInteraction(isEnabled: true)
             }
         }
     }
@@ -317,7 +324,7 @@ private extension AICoachReportPDFDemoVC {
     func loadPDF(from url: URL) {
         guard let document = PDFDocument(url: url) else {
             loadingLabel.text = "PDF 加载失败"
-            updateDateButtonInteraction(isEnabled: true)
+            updateTopBarInteraction(isEnabled: true)
             return
         }
         pdfView.document = document
@@ -334,8 +341,15 @@ private extension AICoachReportPDFDemoVC {
         adviceAlertVM.showSelf()
     }
     @objc func downloadAction() {
-        guard let pdfFileURL else { return }
+        guard isDownloadInProgress == false, let pdfFileURL else { return }
+        guard presentedViewController == nil else { return }
+        setDownloadLoading(true)
         let activityVC = UIActivityViewController(activityItems: [pdfFileURL], applicationActivities: nil)
+        activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
+            DispatchQueue.main.async {
+                self?.setDownloadLoading(false)
+            }
+        }
         if let popover = activityVC.popoverPresentationController {
             popover.sourceView = downloadButton
             popover.sourceRect = downloadButton.bounds
@@ -357,7 +371,7 @@ private extension AICoachReportPDFDemoVC {
 extension AICoachReportPDFDemoVC{
     func sendReportDetailRequest() {
         guard reportId.isEmpty == false else { return }
-        updateDateButtonInteraction(isEnabled: false)
+        updateTopBarInteraction(isEnabled: false)
         let param = ["id":reportId]
         WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_detail, parameters: param as [String : AnyObject]) { [weak self] responseObject in
             guard let self else { return }
@@ -546,11 +560,35 @@ private extension AICoachReportPDFDemoVC {
         return Date().changeDateFormatter(dateString: trimmedDate, formatter: "yyyy-MM-dd", targetFormatter: targetFormatter)
     }
 
-    func updateDateButtonInteraction(isEnabled: Bool) {
-        downloadButton.isUserInteractionEnabled = isEnabled
-        downloadButton.alpha = isEnabled ? 1 : 0.5
-        dateButton.isUserInteractionEnabled = isEnabled
-        dateButton.alpha = isEnabled ? 1 : 0.6
+    func updateTopBarInteraction(isEnabled: Bool) {
+        isTopBarInteractionEnabled = isEnabled
+        refreshTopBarButtonState()
+    }
+
+    func setDownloadLoading(_ isLoading: Bool) {
+        isDownloadInProgress = isLoading
+        downloadButton.transform = .identity
+        downloadButton.setTitle(isLoading ? "下载中" : nil, for: .normal)
+        downloadButton.setImage(isLoading ? nil : UIImage(named: "ai_coach_download_icon"), for: .normal)
+        downloadButton.contentEdgeInsets = isLoading
+            ? UIEdgeInsets(top: 0, left: kFitWidth(8), bottom: 0, right: kFitWidth(8))
+            : .zero
+        downloadButtonWidthConstraint?.update(offset: isLoading ? kFitWidth(70) : kFitWidth(30))
+        view.layoutIfNeeded()
+        refreshTopBarButtonState()
+    }
+
+    func refreshTopBarButtonState() {
+        let isDateEnabled = isTopBarInteractionEnabled && !isDownloadInProgress
+        let isDownloadEnabled = isDateEnabled && pdfFileURL != nil
+
+        downloadButton.isEnabled = isDownloadEnabled
+        downloadButton.isUserInteractionEnabled = isDownloadEnabled
+        downloadButton.alpha = isDownloadInProgress ? 1 : (isDownloadEnabled ? 1 : 0.5)
+
+        dateButton.isEnabled = isDateEnabled
+        dateButton.isUserInteractionEnabled = isDateEnabled
+        dateButton.alpha = isDateEnabled ? 1 : 0.6
     }
 
     func updateBottomBarVisibility() {
@@ -574,7 +612,8 @@ private extension AICoachReportPDFDemoVC {
         nextWeekRecommendation = .empty
         updateAdviceButtonState()
         updateBottomBarVisibility()
-        downloadButton.isEnabled = false
+        pdfFileURL = nil
+        setDownloadLoading(false)
         pdfView.document = nil
         loadingLabel.text = "正在加载报告..."
         loadingLabel.isHidden = false

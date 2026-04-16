@@ -205,6 +205,14 @@ private extension AICoachPreVC {
     func updatePreDaysUI(dataDict: NSDictionary) {
         nextButton.isHidden = dataDict.stringValueForKey(key: "has7CompleteDays") == "0"
         let latestReportDict = dataDict["latestReport"]as? NSDictionary ?? [:]
+        
+        //报告生成中
+        if latestReportDict.stringValueForKey(key: "reportStatus") == "1"{
+            nextButton.setTitle("数据处理中，预计时间30min", for: .normal)
+            nextButton.isEnabled = false
+            preDaysVM.messageLabel.isHidden = true
+        }
+        
         self.reportId = latestReportDict.stringValueForKey(key: "id")
         let reportStatus = latestReportDict.stringValueForKey(key: "reportStatus").intValue
         var remainingDays = max(0, dataDict.stringValueForKey(key: "remainingDays").intValue)

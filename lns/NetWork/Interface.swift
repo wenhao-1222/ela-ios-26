@@ -231,6 +231,8 @@ public let URL_ai_coach_launch      = URL_Type + "users/pro/ai_coach/launch"
 public let URL_ai_coach_report_detail      = URL_Type + "users/pro/ai_coach/report/detail"
 ///下周摄入建议
 public let URL_ai_coach_report_recommend   = URL_Type + "users/pro/ai_coach/report/nutritionIntakeRecommendationForNextWeek"
+///下周摄入建议    更新目标
+public let URL_ai_coach_report_recommend_update = URL_Type + "plans/pro/ai_coach/report/updateDefaultNutritionGoal"
 ///AI教练  报告列表
 public let URL_ai_coach_report_list       = URL_Type + "users/pro/ai_coach/report/list"
 

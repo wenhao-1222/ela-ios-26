@@ -397,11 +397,11 @@ class AIGuidanceCoachStrictnessTableViewCell: FeedBackTableViewCell {
         return lab
     }()
 
-    lazy var selectedImageView: UIImageView = {
-        let img = UIImageView()
-        img.setImgLocal(imgName: "question_goal_selected")
-        return img
-    }()
+//    lazy var selectedImageView: UIImageView = {
+//        let img = UIImageView()
+//        img.setImgLocal(imgName: "question_goal_selected")
+//        return img
+//    }()
 
     func update(item: AIGuidanceCoachStrictnessVM.Item, isSelected: Bool, expandedCardHeight: CGFloat) {
         currentSelectedState = isSelected
@@ -438,7 +438,7 @@ class AIGuidanceCoachStrictnessTableViewCell: FeedBackTableViewCell {
         contentView.addSubview(borderRectView)
         borderRectView.addSubview(selectedTitleLabel)
         borderRectView.addSubview(detailLabel)
-        borderRectView.addSubview(selectedImageView)
+//        borderRectView.addSubview(selectedImageView)
 
         bottomView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
@@ -460,14 +460,15 @@ class AIGuidanceCoachStrictnessTableViewCell: FeedBackTableViewCell {
 
         selectedTitleLabel.snp.makeConstraints { make in
             make.left.top.equalTo(kFitWidth(20))
-            make.right.lessThanOrEqualTo(selectedImageView.snp.left).offset(kFitWidth(-12))
+            make.right.equalTo(kFitWidth(-20))
+//            make.right.lessThanOrEqualTo(selectedImageView.snp.left).offset(kFitWidth(-12))
         }
 
-        selectedImageView.snp.makeConstraints { make in
-            make.right.equalTo(kFitWidth(-15))
-            make.top.equalTo(kFitWidth(15))
-            make.width.height.equalTo(kFitWidth(48))
-        }
+//        selectedImageView.snp.makeConstraints { make in
+//            make.right.equalTo(kFitWidth(-15))
+//            make.top.equalTo(kFitWidth(15))
+//            make.width.height.equalTo(kFitWidth(48))
+//        }
 
         detailLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))

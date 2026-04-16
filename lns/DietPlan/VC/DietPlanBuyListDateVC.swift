@@ -70,7 +70,7 @@ class DietPlanBuyListDateVC: WHBaseViewVC {
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME, for: .highlighted)
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
         btn.isEnabled = false
-        btn.isHidden = true
+        btn.alpha = 0
         
         btn.addTarget(self, action: #selector(buyListTapAction), for: .touchUpInside)
         
@@ -341,10 +341,14 @@ extension DietPlanBuyListDateVC{
             
             if self.hasValidHistoryBuyList(dataObj) {
                 self.buylistButton.isEnabled = true
-                self.buylistButton.isHidden = false
+                UIView.animate(withDuration: 0.35, animations: {
+                    self.buylistButton.alpha = 1
+                })
             } else {
                 self.buylistButton.isEnabled = false
-                self.buylistButton.isHidden = true
+                UIView.animate(withDuration: 0.35, animations: {
+                    self.buylistButton.alpha = 0
+                })
             }
         }
     }

@@ -283,7 +283,7 @@ extension DietPlanCreateDateVC {
             button.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
             return
         }
-        let text = "\(displayFormatter.string(from: date)) \(weekdayText(from: date))"
+        let text = relativeDisplayText(for: date) ?? "\(displayFormatter.string(from: date)) \(weekdayText(from: date))"
         button.setTitle(text, for: .normal)
         button.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
     }
@@ -340,6 +340,20 @@ extension DietPlanCreateDateVC {
         case 7: return "周六"
         default: return ""
         }
+    }
+
+    func relativeDisplayText(for date: Date) -> String? {
+        let normalizedDate = startOfDay(date)
+        let today = startSelectableMinDate()
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)
+
+        if normalizedDate == today {
+            return "今天"
+        }
+        if normalizedDate == tomorrow {
+            return "明天"
+        }
+        return nil
     }
     
     func clampDate(_ date: Date, min minDate: Date, max maxDate: Date) -> Date {

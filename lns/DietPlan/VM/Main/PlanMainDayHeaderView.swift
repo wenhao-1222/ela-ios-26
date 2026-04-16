@@ -112,6 +112,14 @@ private extension PlanMainDayHeaderView {
         guard let date = inputFormatter.date(from: sdate) else {
             return sdate
         }
+
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) {
+            return "今天"
+        }
+        if calendar.isDateInTomorrow(date) {
+            return "明天"
+        }
         
         let dayFormatter = DateFormatter()
         dayFormatter.dateFormat = "M月d日"
