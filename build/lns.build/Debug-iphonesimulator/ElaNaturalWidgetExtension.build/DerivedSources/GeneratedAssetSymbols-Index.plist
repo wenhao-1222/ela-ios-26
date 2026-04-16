@@ -911,6 +911,86 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameAiCoachRecommendDownIcon</string>
+			<key>relativePath</key>
+			<string>./aicoach/ai_coach_recommend_down_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>aiCoachRecommendDownIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameAiCoachRecommendMaintainTarget</string>
+			<key>relativePath</key>
+			<string>./aicoach/ai_coach_recommend_maintain_target.imageset</string>
+			<key>swiftSymbol</key>
+			<string>aiCoachRecommendMaintainTarget</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameAiCoachRecommendUpIcon</string>
+			<key>relativePath</key>
+			<string>./aicoach/ai_coach_recommend_up_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>aiCoachRecommendUpIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameAiElaIcon</string>
+			<key>relativePath</key>
+			<string>./aicoach/ai_ela_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>aiElaIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameAiGuidanceIntroBg</string>
+			<key>relativePath</key>
+			<string>./aicoach/ai_guidance_intro_bg.imageset</string>
+			<key>swiftSymbol</key>
+			<string>aiGuidanceIntroBg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameAiGuidanceIntroChartIcon</string>
+			<key>relativePath</key>
+			<string>./aicoach/ai_guidance_intro_chart_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>aiGuidanceIntroChartIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameAiGuidanceIntroMeditationIcon</string>
+			<key>relativePath</key>
+			<string>./aicoach/ai_guidance_intro_meditation_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>aiGuidanceIntroMeditationIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameAiGuidanceIntroTargetIcon</string>
+			<key>relativePath</key>
+			<string>./aicoach/ai_guidance_intro_target_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>aiGuidanceIntroTargetIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameAiIdentifyFailImg</string>
 			<key>relativePath</key>
 			<string>./ai/ai_identify_fail_img.imageset</string>
@@ -3466,16 +3546,6 @@
 			<string>./main/goal_zhineng_icon.imageset</string>
 			<key>swiftSymbol</key>
 			<string>goalZhinengIcon</string>
-		</dict>
-		<dict>
-			<key>catalogPath</key>
-			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
-			<key>objcSymbol</key>
-			<string>ACImageNameGuidanceProIntroImg</string>
-			<key>relativePath</key>
-			<string>./pro/guidance_pro_intro_img.imageset</string>
-			<key>swiftSymbol</key>
-			<string>guidanceProIntroImg</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>
@@ -6261,6 +6331,16 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameStreakIcon7</string>
+			<key>relativePath</key>
+			<string>./winner_streak/streak_icon_7.imageset</string>
+			<key>swiftSymbol</key>
+			<string>streakIcon7</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameStreakIconGray1</string>
 			<key>relativePath</key>
 			<string>./winner_streak/streak_icon_gray_1.imageset</string>
@@ -6316,6 +6396,16 @@
 			<string>./winner_streak/streak_icon_gray_6.imageset</string>
 			<key>swiftSymbol</key>
 			<string>streakIconGray6</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameStreakIconGray7</string>
+			<key>relativePath</key>
+			<string>./winner_streak/streak_icon_gray_7.imageset</string>
+			<key>swiftSymbol</key>
+			<string>streakIconGray7</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>

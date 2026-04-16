@@ -47,6 +47,7 @@ class HabitGuideFourVM: UIView {
         lab.adjustsFontSizeToFitWidth = true
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 25, weight: .semibold)
+        lab.text = "我们相信你能\n改变不仅限于自己"
         return lab
     }()
     lazy var detailLab: LineHeightLabel = {
@@ -70,7 +71,7 @@ extension HabitGuideFourVM{
         
         setConstrait()
         titleLab.setLineHeight(textString: "我们相信你能\n改变不仅限于自己",
-                                lineHeight: (titleLab.font.lineHeight) * 1)
+                               lineHeight: (titleLab.font.lineHeight) * 0.8)
         detailLab.setLineHeight(textString: "积分每到达一定分数，我们将代表你向贫困山区捐赠一份营养餐",
                                 lineHeight: (detailLab.font.lineHeight) * 1.2)
     }

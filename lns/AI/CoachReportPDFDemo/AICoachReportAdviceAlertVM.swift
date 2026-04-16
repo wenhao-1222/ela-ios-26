@@ -10,13 +10,19 @@ import UIKit
 
 final class AICoachReportAdviceAlertVM: UIView {
 
+    enum ActionKind {
+        case primary
+        case secondary
+    }
+
     private let maintainImageAspectRatio: CGFloat = 140.0 / 1292.0
     private let whiteViewTopRadius = kFitWidth(50)
 
-    var primaryActionBlock: ((AICoachReportNextWeekRecommendation) -> Void)?
-    var secondaryActionBlock: ((AICoachReportNextWeekRecommendation) -> Void)?
+    var primaryActionBlock: ((AICoachReportNextWeekRecommendation, @escaping (Bool) -> Void) -> Void)?
+    var secondaryActionBlock: ((AICoachReportNextWeekRecommendation, @escaping (Bool) -> Void) -> Void)?
 
     private var recommendation = AICoachReportNextWeekRecommendation.empty
+    private var activeActionKind: ActionKind?
     private var whiteViewHeightConstraint: Constraint?
 
     private var maintainImageHeight: CGFloat {
@@ -208,7 +214,7 @@ final class AICoachReportAdviceAlertVM: UIView {
     }()
 
     private lazy var buttonStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [secondaryButton, primaryButton])
+        let stackView = UIStackView(arrangedSubviews: [primaryButton, secondaryButton])
         stackView.axis = .horizontal
         stackView.alignment = .fill
         stackView.distribution = .fillEqually
@@ -222,6 +228,7 @@ extension AICoachReportAdviceAlertVM {
         recommendation = data
         let isMaintain = data.status == .maintain
         let secondaryTitle = data.secondaryButtonTitle
+        resetButtonStates()
 
         titleLabel.text = isMaintain ? "下周建议" : "下周建议： \(data.titleText)"
         primaryButton.setTitle(data.primaryButtonTitle, for: .normal)
@@ -247,6 +254,7 @@ extension AICoachReportAdviceAlertVM {
     func showSelf() {
         guard recommendation.isValid else { return }
 
+        resetButtonStates()
         isHidden = false
         bgView.isUserInteractionEnabled = false
         whiteView.transform = CGAffineTransform(translationX: 0, y: whiteViewHeight)
@@ -273,6 +281,7 @@ extension AICoachReportAdviceAlertVM {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: self.whiteViewHeight)
             self.bgView.alpha = 0
         } completion: { _ in
+            self.resetButtonStates()
             self.isHidden = true
         }
     }
@@ -385,14 +394,94 @@ private extension AICoachReportAdviceAlertVM {
     }
 
     @objc func primaryButtonAction() {
-        primaryActionBlock?(recommendation)
+        if recommendation.status == .maintain {
+            primaryActionBlock?(recommendation, { _ in })
+            return
+        }
+        performAction(kind: .primary)
     }
 
     @objc func secondaryButtonAction() {
-        secondaryActionBlock?(recommendation)
+        performAction(kind: .secondary)
     }
 
     @objc func nothingToDo() {}
+
+    func performAction(kind: ActionKind) {
+        guard activeActionKind == nil else { return }
+
+        let actionBlock: ((AICoachReportNextWeekRecommendation, @escaping (Bool) -> Void) -> Void)?
+        switch kind {
+        case .primary:
+            actionBlock = primaryActionBlock
+        case .secondary:
+            actionBlock = secondaryActionBlock
+        }
+
+        guard let actionBlock else { return }
+        activeActionKind = kind
+        updateButtonInteraction(isProcessing: true, activeKind: kind)
+        button(for: kind).showLoadingIndicator(color: indicatorColor(for: kind))
+
+        actionBlock(recommendation) { [weak self] isSuccess in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                if isSuccess {
+                    self.handleActionSuccess(kind: kind)
+                } else {
+                    self.handleActionFailure(kind: kind)
+                }
+            }
+        }
+    }
+
+    func handleActionSuccess(kind: ActionKind) {
+        button(for: kind).showSuccessIndicator(tintColor: indicatorColor(for: kind)) { [weak self] in
+            guard let self else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+                self.hiddenSelf()
+            }
+        }
+    }
+
+    func handleActionFailure(kind: ActionKind) {
+        button(for: kind).hideLoadingIndicator()
+        activeActionKind = nil
+        updateButtonInteraction(isProcessing: false, activeKind: nil)
+    }
+
+    func resetButtonStates() {
+        activeActionKind = nil
+        primaryButton.resetStatusIndicators()
+        secondaryButton.resetStatusIndicators()
+        updateButtonInteraction(isProcessing: false, activeKind: nil)
+    }
+
+    func updateButtonInteraction(isProcessing: Bool, activeKind: ActionKind?) {
+        closeButton.isUserInteractionEnabled = !isProcessing
+        bgView.isUserInteractionEnabled = !isProcessing && isHidden == false
+
+        primaryButton.isEnabled = !isProcessing
+        secondaryButton.isEnabled = !isProcessing
+        primaryButton.isUserInteractionEnabled = !isProcessing
+        secondaryButton.isUserInteractionEnabled = !isProcessing && !secondaryButton.isHidden
+
+        primaryButton.alpha = buttonAlpha(for: .primary, isProcessing: isProcessing, activeKind: activeKind)
+        secondaryButton.alpha = secondaryButton.isHidden ? 0 : buttonAlpha(for: .secondary, isProcessing: isProcessing, activeKind: activeKind)
+    }
+
+    func buttonAlpha(for kind: ActionKind, isProcessing: Bool, activeKind: ActionKind?) -> CGFloat {
+        guard isProcessing else { return 1 }
+        return activeKind == kind ? 1 : 0.55
+    }
+
+    func indicatorColor(for kind: ActionKind) -> UIColor {
+        kind == .primary ? .white : AICoachReportDemoPalette.themeBlue
+    }
+
+    func button(for kind: ActionKind) -> UIButton {
+        kind == .primary ? primaryButton : secondaryButton
+    }
 
     func setupWhiteViewBorder() {
         if traitCollection.userInterfaceStyle == .dark {

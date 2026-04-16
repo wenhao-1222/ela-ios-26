@@ -56,6 +56,7 @@ class HabitTodayGoalVM: UIView {
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.setBackgroundImage(UIImage.init(named: "tips_gray_icon"), for: .normal)
         btn.addTarget(self, action: #selector(tipsTapAction), for: .touchUpInside)
+        btn.alpha = 0
         return btn
     }()
     lazy var alertTapView: UIView = {
@@ -150,6 +151,7 @@ extension HabitTodayGoalVM{
             
             UIView.animate(withDuration: 0.25) {
                 self.remainTimeLabel.alpha = 0
+                self.alertButton.alpha = 0
             }
             self.timer?.invalidate()
             self.timer = nil
@@ -165,6 +167,7 @@ extension HabitTodayGoalVM{
         if self.remainTimeLabel.alpha < 1{
             UIView.animate(withDuration: 0.5) {
                 self.remainTimeLabel.alpha = 1
+                self.alertButton.alpha = 1
             }
         }
     }

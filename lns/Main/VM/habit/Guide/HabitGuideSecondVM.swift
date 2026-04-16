@@ -55,12 +55,13 @@ class HabitGuideSecondVM: UIView {
         let lab = UILabel()
         lab.adjustsFontSizeToFitWidth = true
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.text = "在未达到理想身材的人群中\n有80%是因为无法坚持"
         
-        let attr = NSMutableAttributedString(string: "80",
-                                             attributes: [.font:UIFont.systemFont(ofSize: 21, weight: .heavy)])
-        attr.append(NSAttributedString(string: "%的人没能达到理想身材，原因是无法坚持",
-                                       attributes: [.font:UIFont.systemFont(ofSize: 16, weight: .regular)]))
-        lab.attributedText = attr
+//        let attr = NSMutableAttributedString(string: "80",
+//                                             attributes: [.font:UIFont.systemFont(ofSize: 21, weight: .heavy)])
+//        attr.append(NSAttributedString(string: "%的人没能达到理想身材，原因是无法坚持",
+//                                       attributes: [.font:UIFont.systemFont(ofSize: 16, weight: .regular)]))
+//        lab.attributedText = attr
         
         return lab
     }()
@@ -105,15 +106,15 @@ extension HabitGuideSecondVM{
         
         setConstrait()
         
-        titleLab.setLineHeight(textString: "80%未达到理想身材\n是因为无法坚持",
+        titleLab.setLineHeight(textString: "在未达到理想身材的人群中\n有80%是因为无法坚持",
                                lineHeight: (titleLab.font.lineHeight) * 1.2)
         detailLabel.setLineHeight(
             textString: "我们会通过帮助你养成习惯，提高规律饮食的自动化程度，进而提升执行力及坚持率。",
-            lineHeight: (detailLabel.font.lineHeight) * 1.2
+            lineHeight: (detailLabel.font.lineHeight) * 1
         )
         tipsLab.setLineHeight(
             textString: "Wing RR, Phelan S. Long-term weight loss maintenance, American Journal of Clinical Nutrition, 2005。",
-            lineHeight: (tipsLab.font.lineHeight) * 1.2
+            lineHeight: (tipsLab.font.lineHeight) * 1
         )
     }
     func setConstrait() {
@@ -156,7 +157,8 @@ extension HabitGuideSecondVM{
         tipsLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))
             make.right.equalTo(kFitWidth(-24))
-            make.bottom.equalTo(kFitWidth(-30)-WHUtils().getBottomSafeAreaHeight())
+            make.top.equalTo(detailLabel.snp.bottom).offset(kFitWidth(34))
+//            make.bottom.equalTo(kFitWidth(-30)-WHUtils().getBottomSafeAreaHeight())
         }
     }
 }

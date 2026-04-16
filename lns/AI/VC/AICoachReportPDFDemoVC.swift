@@ -19,6 +19,8 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     private var nextWeekRecommendation = AICoachReportNextWeekRecommendation.empty
     private var pdfFileURL: URL?
     private var hasGeneratedPDF = false
+    private var isPDFLoaded = false
+    private var shouldShowAdviceEntryForCurrentReport = false
     private var bottomBarHeightConstraint: Constraint?
     private var downloadButtonWidthConstraint: Constraint?
     private var isTopBarInteractionEnabled = false
@@ -155,11 +157,15 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
 
     private lazy var adviceAlertVM: AICoachReportAdviceAlertVM = {
         let vm = AICoachReportAdviceAlertVM(frame: .zero)
-        vm.primaryActionBlock = { [weak self] _ in
-            self?.adviceAlertVM.hiddenSelf()
+        vm.primaryActionBlock = { [weak self] recommendation, completion in
+            self?.handleAdviceAlertAction(recommendation: recommendation,
+                                          isOverrideMealPlan: 0,
+                                          completion: completion)
         }
-        vm.secondaryActionBlock = { [weak self] _ in
-            self?.adviceAlertVM.hiddenSelf()
+        vm.secondaryActionBlock = { [weak self] recommendation, completion in
+            self?.handleAdviceAlertAction(recommendation: recommendation,
+                                          isOverrideMealPlan: 1,
+                                          completion: completion)
         }
         return vm
     }()
@@ -173,7 +179,8 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         setupUI()
         refreshTopBar()
         updateTopBarInteraction(isEnabled: false)
-        updateAdviceButtonState()
+        updateBottomBarVisibility()
+        updateAdviceButtonState(animated: false)
         sendReportListRequest()
         if reportId.isEmpty == false {
             sendReportDetailRequest()
@@ -297,9 +304,15 @@ private extension AICoachReportPDFDemoVC {
         adviceAlertVM.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+
+        bottomBar.isHidden = true
+        adviceButton.isHidden = true
+        adviceButton.alpha = 0
     }
 
     func generateAndLoadPDF() {
+        isPDFLoaded = false
+        updateAdviceButtonState(animated: false)
         updateTopBarInteraction(isEnabled: false)
         loadingIndicator.startAnimating()
         loadingLabel.text = "正在生成PDF..."
@@ -330,6 +343,8 @@ private extension AICoachReportPDFDemoVC {
         pdfView.document = document
         pdfView.minScaleFactor = pdfView.scaleFactorForSizeToFit
         pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
+        isPDFLoaded = true
+        updateAdviceButtonState()
     }
 
     @objc func adviceAction() {
@@ -592,16 +607,136 @@ private extension AICoachReportPDFDemoVC {
     }
 
     func updateBottomBarVisibility() {
-        let shouldShowBottomBar = reportList.first?.reportId == reportId || reportList.isEmpty
-        bottomBar.isHidden = !shouldShowBottomBar
-        bottomBarHeightConstraint?.update(offset: shouldShowBottomBar ? getBottomSafeAreaHeight() + 96 : 0)
-        view.layoutIfNeeded()
+        shouldShowAdviceEntryForCurrentReport = reportList.first?.reportId == reportId || reportList.isEmpty
+        updateAdviceButtonState(animated: false)
     }
 
-    func updateAdviceButtonState() {
+    func updateAdviceButtonState(animated: Bool = true) {
         let isEnabled = nextWeekRecommendation.isValid
         adviceButton.isEnabled = isEnabled
-        adviceButton.alpha = isEnabled ? 1 : 0.5
+        let shouldShowButton = shouldShowAdviceEntryForCurrentReport && isPDFLoaded && isEnabled
+        let targetHeight = shouldShowButton ? getBottomSafeAreaHeight() + 96 : 0
+
+        if shouldShowButton {
+            adviceButton.alpha = 0.5
+        }
+
+        guard animated else {
+            bottomBarHeightConstraint?.update(offset: targetHeight)
+            bottomBar.isHidden = !shouldShowButton
+            adviceButton.isHidden = !shouldShowButton
+            adviceButton.alpha = shouldShowButton ? 1 : 0
+            view.layoutIfNeeded()
+            return
+        }
+
+        if shouldShowButton {
+            let needsFadeIn = bottomBar.isHidden || adviceButton.isHidden || adviceButton.alpha < 1
+            bottomBar.isHidden = false
+            adviceButton.isHidden = false
+            if needsFadeIn {
+                adviceButton.alpha = 0
+            }
+            bottomBarHeightConstraint?.update(offset: targetHeight)
+            UIView.animate(withDuration: 0.25,
+                           delay: 0,
+                           options: [.curveEaseInOut, .allowUserInteraction]) {
+                self.view.layoutIfNeeded()
+                self.adviceButton.alpha = 1
+            }
+        } else {
+            guard bottomBar.isHidden == false || adviceButton.isHidden == false else {
+                bottomBarHeightConstraint?.update(offset: targetHeight)
+                view.layoutIfNeeded()
+                return
+            }
+            bottomBarHeightConstraint?.update(offset: targetHeight)
+            UIView.animate(withDuration: 0.2,
+                           delay: 0,
+                           options: [.curveEaseInOut, .allowUserInteraction]) {
+                self.view.layoutIfNeeded()
+                self.adviceButton.alpha = 0
+            } completion: { _ in
+                self.adviceButton.isHidden = true
+                self.bottomBar.isHidden = true
+            }
+        }
+    }
+
+    func handleAdviceAlertAction(
+        recommendation: AICoachReportNextWeekRecommendation,
+        isOverrideMealPlan: Int,
+        completion: @escaping (Bool) -> Void
+    ) {
+        guard recommendation.status != .maintain else {
+            adviceAlertVM.hiddenSelf()
+            completion(false)
+            return
+        }
+
+        guard let calories = recommendation.caloriesValue,
+              let carbohydrate = recommendation.carbohydrateValue,
+              let protein = recommendation.proteinValue,
+              let fat = recommendation.fatValue else {
+            completion(false)
+            return
+        }
+
+        let roundedCalories = Int(calories.rounded())
+        let roundedCarbohydrate = Int(carbohydrate.rounded())
+        let roundedProtein = Int(protein.rounded())
+        let roundedFat = Int(fat.rounded())
+
+        let caloriesText = "\(roundedCalories)"
+        let carbohydrateText = "\(roundedCarbohydrate)"
+        let proteinText = "\(roundedProtein)"
+        let fatText = "\(roundedFat)"
+
+        let param: [String: AnyObject] = [
+            "isOverrideMealPlan": NSNumber(value: isOverrideMealPlan),
+            "calories": NSNumber(value: roundedCalories),
+            "carbohydrate": NSNumber(value: roundedCarbohydrate),
+            "protein": NSNumber(value: roundedProtein),
+            "fat": NSNumber(value: roundedFat)
+        ]
+
+        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_recommend_update,
+                                          parameters: param) { [weak self] _ in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                QuestinonaireMsgModel.shared.calories = caloriesText
+                QuestinonaireMsgModel.shared.carbohydrates = carbohydrateText
+                QuestinonaireMsgModel.shared.protein = proteinText
+                QuestinonaireMsgModel.shared.fats = fatText
+                QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
+                QuestinonaireMsgModel.shared.carbohydratesNumber = carbohydrateText
+                QuestinonaireMsgModel.shared.proteinNumber = proteinText
+                QuestinonaireMsgModel.shared.fatsNumber = fatText
+                QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
+                QuestinonaireMsgModel.shared.carbohydratesNumberFromServer = carbohydrateText
+                QuestinonaireMsgModel.shared.proteinNumberFromServer = proteinText
+                QuestinonaireMsgModel.shared.fatsNumberFromServer = fatText
+
+                NutritionDefaultModel.shared.saveGoals(dict: [
+                    "calories": caloriesText,
+                    "carbohydrates": carbohydrateText,
+                    "proteins": proteinText,
+                    "fats": fatText
+                ])
+                LogsSQLiteManager.getInstance().refreshDataTarget(sDate: Date().nextDay(days: 0),
+                                                                  caloriTar: QuestinonaireMsgModel.shared.calories,
+                                                                  proteinTar: QuestinonaireMsgModel.shared.protein,
+                                                                  carboTar: QuestinonaireMsgModel.shared.carbohydrates,
+                                                                  fatsTar: QuestinonaireMsgModel.shared.fats)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+//                self.sendRecommendRequest()
+                completion(true)
+            }
+        } failure: { _ in
+            DispatchQueue.main.async {
+                completion(false)
+            }
+        }
     }
 
     func handleReportSelection(_ item: AICoachReportListItem) {
@@ -609,8 +744,9 @@ private extension AICoachReportPDFDemoVC {
         guard item.reportId != reportId else { return }
 
         reportId = item.reportId
+        isPDFLoaded = false
         nextWeekRecommendation = .empty
-        updateAdviceButtonState()
+        updateAdviceButtonState(animated: false)
         updateBottomBarVisibility()
         pdfFileURL = nil
         setDownloadLoading(false)

@@ -116,6 +116,16 @@
     "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachRotatingPearlOrbView.swiftdeps",
     "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachRotatingPearlOrbView~partial.swiftmodule"
   },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportAdviceAlertVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportAdviceAlertVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportAdviceAlertVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportAdviceAlertVM.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportAdviceAlertVM.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportAdviceAlertVM.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportAdviceAlertVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportAdviceAlertVM.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportAdviceAlertVM~partial.swiftmodule"
+  },
   "/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportDateAlertVM.swift" : {
     "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportDateAlertVM.swiftconstvalues",
     "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportDateAlertVM.d",
@@ -375,6 +385,16 @@
     "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AIGuidanceGoalVM.o",
     "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AIGuidanceGoalVM.swiftdeps",
     "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AIGuidanceGoalVM~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Guidance/AIGuidanceIntroVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AIGuidanceIntroVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AIGuidanceIntroVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AIGuidanceIntroVM.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AIGuidanceIntroVM.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AIGuidanceIntroVM.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AIGuidanceIntroVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AIGuidanceIntroVM.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AIGuidanceIntroVM~partial.swiftmodule"
   },
   "/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Guidance/AIGuidanceNoticeVM.swift" : {
     "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AIGuidanceNoticeVM.swiftconstvalues",
@@ -3506,6 +3526,16 @@
     "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanCreateSpecialAdjustmentVM.swiftdeps",
     "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanCreateSpecialAdjustmentVM~partial.swiftmodule"
   },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/CreateSecond/DietPlanManualTargetLimitAlertVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanManualTargetLimitAlertVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanManualTargetLimitAlertVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanManualTargetLimitAlertVM.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanManualTargetLimitAlertVM.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanManualTargetLimitAlertVM.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanManualTargetLimitAlertVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanManualTargetLimitAlertVM.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanManualTargetLimitAlertVM~partial.swiftmodule"
+  },
   "/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Main/DateChoiceAlertVM.swift" : {
     "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DateChoiceAlertVM.swiftconstvalues",
     "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DateChoiceAlertVM.d",
@@ -3575,6 +3605,16 @@
     "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanFoodsChangeCell.o",
     "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanFoodsChangeCell.swiftdeps",
     "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/DietPlanFoodsChangeCell~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Main/PlanMainDayHeaderView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PlanMainDayHeaderView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PlanMainDayHeaderView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PlanMainDayHeaderView.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PlanMainDayHeaderView.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PlanMainDayHeaderView.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PlanMainDayHeaderView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PlanMainDayHeaderView.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PlanMainDayHeaderView~partial.swiftmodule"
   },
   "/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Main/PlanMainEmptyVM.swift" : {
     "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PlanMainEmptyVM.swiftconstvalues",
@@ -8175,6 +8215,16 @@
     "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/BViewController.o",
     "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/BViewController.swiftdeps",
     "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/BViewController~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Other/CourseVC.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CourseVC.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CourseVC.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CourseVC.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CourseVC.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CourseVC.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CourseVC.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CourseVC.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CourseVC~partial.swiftmodule"
   },
   "/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Other/FitnessTipsVC.swift" : {
     "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/FitnessTipsVC.swiftconstvalues",

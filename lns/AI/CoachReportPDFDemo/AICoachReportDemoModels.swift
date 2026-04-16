@@ -54,6 +54,10 @@ struct AICoachReportNextWeekRecommendation {
     let buttonNum: Int
     let status: AICoachReportRecommendationStatus
     let titleText: String
+    let caloriesValue: Double?
+    let carbohydrateValue: Double?
+    let proteinValue: Double?
+    let fatValue: Double?
     let caloriesText: String
     let carbohydrateText: String
     let proteinText: String
@@ -64,18 +68,22 @@ struct AICoachReportNextWeekRecommendation {
         if status == .maintain {
             return "知道了"
         }
-        return buttonNum == 2 ? "更新目标与食谱" : "更新目标"
+        return buttonNum == 2 ? "仅更新目标" : "更新目标"
     }
 
     var secondaryButtonTitle: String? {
         guard status != .maintain, buttonNum == 2 else { return nil }
-        return "仅更新目标"
+        return "更新目标与食谱"
     }
 
     static let empty = AICoachReportNextWeekRecommendation(
         buttonNum: 1,
         status: .maintain,
         titleText: "",
+        caloriesValue: nil,
+        carbohydrateValue: nil,
+        proteinValue: nil,
+        fatValue: nil,
         caloriesText: "--",
         carbohydrateText: "--",
         proteinText: "--",
@@ -97,15 +105,23 @@ enum AICoachReportRecommendationBuilder {
 
         let status = AICoachReportRecommendationStatus(rawValue: Int(payload.doubleValueForKey(key: "nextWeekRecommendationStatus"))) ?? .maintain
         let titleText = preferredRecommendationTitle(from: payload, fallback: status.defaultTitleText)
+        let caloriesValue = numericValue(for: "calories", in: payload)
+        let carbohydrateValue = numericValue(for: "carbohydrate", in: payload)
+        let proteinValue = numericValue(for: "protein", in: payload)
+        let fatValue = numericValue(for: "fat", in: payload)
 
         return AICoachReportNextWeekRecommendation(
             buttonNum: max(Int(payload.doubleValueForKey(key: "buttonNum")), 1),
             status: status,
             titleText: titleText,
-            caloriesText: numberText(for: "calories", in: payload),
-            carbohydrateText: numberText(for: "carbohydrate", in: payload),
-            proteinText: numberText(for: "protein", in: payload),
-            fatText: numberText(for: "fat", in: payload),
+            caloriesValue: caloriesValue,
+            carbohydrateValue: carbohydrateValue,
+            proteinValue: proteinValue,
+            fatValue: fatValue,
+            caloriesText: numberText(for: caloriesValue),
+            carbohydrateText: numberText(for: carbohydrateValue),
+            proteinText: numberText(for: proteinValue),
+            fatText: numberText(for: fatValue),
             isValid: isValid
         )
     }
@@ -133,9 +149,13 @@ enum AICoachReportRecommendationBuilder {
         return true
     }
 
-    private static func numberText(for key: String, in dict: NSDictionary) -> String {
-        guard hasValue(for: key, in: dict) else { return "--" }
-        let value = dict.doubleValueForKey(key: key)
+    private static func numericValue(for key: String, in dict: NSDictionary) -> Double? {
+        guard hasValue(for: key, in: dict) else { return nil }
+        return dict.doubleValueForKey(key: key)
+    }
+
+    private static func numberText(for value: Double?) -> String {
+        guard let value else { return "--" }
         return WHUtils.convertStringToStringNoDigit("\(value.rounded())") ?? "\(Int(value.rounded()))"
     }
 }

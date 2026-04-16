@@ -301,6 +301,30 @@ extension ImageResource {
     /// The "ai_coach_pro_icon" asset catalog image resource.
     static let aiCoachProIcon = ImageResource(name: "ai_coach_pro_icon", bundle: resourceBundle)
 
+    /// The "ai_coach_recommend_down_icon" asset catalog image resource.
+    static let aiCoachRecommendDownIcon = ImageResource(name: "ai_coach_recommend_down_icon", bundle: resourceBundle)
+
+    /// The "ai_coach_recommend_maintain_target" asset catalog image resource.
+    static let aiCoachRecommendMaintainTarget = ImageResource(name: "ai_coach_recommend_maintain_target", bundle: resourceBundle)
+
+    /// The "ai_coach_recommend_up_icon" asset catalog image resource.
+    static let aiCoachRecommendUpIcon = ImageResource(name: "ai_coach_recommend_up_icon", bundle: resourceBundle)
+
+    /// The "ai_ela_icon" asset catalog image resource.
+    static let aiElaIcon = ImageResource(name: "ai_ela_icon", bundle: resourceBundle)
+
+    /// The "ai_guidance_intro_bg" asset catalog image resource.
+    static let aiGuidanceIntroBg = ImageResource(name: "ai_guidance_intro_bg", bundle: resourceBundle)
+
+    /// The "ai_guidance_intro_chart_icon" asset catalog image resource.
+    static let aiGuidanceIntroChartIcon = ImageResource(name: "ai_guidance_intro_chart_icon", bundle: resourceBundle)
+
+    /// The "ai_guidance_intro_meditation_icon" asset catalog image resource.
+    static let aiGuidanceIntroMeditationIcon = ImageResource(name: "ai_guidance_intro_meditation_icon", bundle: resourceBundle)
+
+    /// The "ai_guidance_intro_target_icon" asset catalog image resource.
+    static let aiGuidanceIntroTargetIcon = ImageResource(name: "ai_guidance_intro_target_icon", bundle: resourceBundle)
+
     /// The "ai_identify_fail_img" asset catalog image resource.
     static let aiIdentifyFailImg = ImageResource(name: "ai_identify_fail_img", bundle: resourceBundle)
 
@@ -1068,9 +1092,6 @@ extension ImageResource {
 
     /// The "goal_zhineng_icon" asset catalog image resource.
     static let goalZhinengIcon = ImageResource(name: "goal_zhineng_icon", bundle: resourceBundle)
-
-    /// The "guidance_pro_intro_img" asset catalog image resource.
-    static let guidanceProIntroImg = ImageResource(name: "guidance_pro_intro_img", bundle: resourceBundle)
 
     /// The "guidance_pro_promise_img" asset catalog image resource.
     static let guidanceProPromiseImg = ImageResource(name: "guidance_pro_promise_img", bundle: resourceBundle)
@@ -1906,6 +1927,9 @@ extension ImageResource {
     /// The "streak_icon_6" asset catalog image resource.
     static let streakIcon6 = ImageResource(name: "streak_icon_6", bundle: resourceBundle)
 
+    /// The "streak_icon_7" asset catalog image resource.
+    static let streakIcon7 = ImageResource(name: "streak_icon_7", bundle: resourceBundle)
+
     /// The "streak_icon_gray_1" asset catalog image resource.
     static let streakIconGray1 = ImageResource(name: "streak_icon_gray_1", bundle: resourceBundle)
 
@@ -1923,6 +1947,9 @@ extension ImageResource {
 
     /// The "streak_icon_gray_6" asset catalog image resource.
     static let streakIconGray6 = ImageResource(name: "streak_icon_gray_6", bundle: resourceBundle)
+
+    /// The "streak_icon_gray_7" asset catalog image resource.
+    static let streakIconGray7 = ImageResource(name: "streak_icon_gray_7", bundle: resourceBundle)
 
     /// The "survey_subscription_coach_ic_01" asset catalog image resource.
     static let surveySubscriptionCoachIc01 = ImageResource(name: "survey_subscription_coach_ic_01", bundle: resourceBundle)
@@ -4270,6 +4297,78 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "ai_coach_recommend_down_icon" asset catalog image.
+    static var aiCoachRecommendDownIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .aiCoachRecommendDownIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_coach_recommend_maintain_target" asset catalog image.
+    static var aiCoachRecommendMaintainTarget: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .aiCoachRecommendMaintainTarget)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_coach_recommend_up_icon" asset catalog image.
+    static var aiCoachRecommendUpIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .aiCoachRecommendUpIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_ela_icon" asset catalog image.
+    static var aiElaIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .aiElaIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_guidance_intro_bg" asset catalog image.
+    static var aiGuidanceIntroBg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .aiGuidanceIntroBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_guidance_intro_chart_icon" asset catalog image.
+    static var aiGuidanceIntroChartIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .aiGuidanceIntroChartIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_guidance_intro_meditation_icon" asset catalog image.
+    static var aiGuidanceIntroMeditationIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .aiGuidanceIntroMeditationIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_guidance_intro_target_icon" asset catalog image.
+    static var aiGuidanceIntroTargetIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .aiGuidanceIntroTargetIcon)
+#else
+        .init()
+#endif
+    }
+
     /// The "ai_identify_fail_img" asset catalog image.
     static var aiIdentifyFailImg: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
@@ -6569,15 +6668,6 @@ extension AppKit.NSImage {
     static var goalZhinengIcon: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .goalZhinengIcon)
-#else
-        .init()
-#endif
-    }
-
-    /// The "guidance_pro_intro_img" asset catalog image.
-    static var guidanceProIntroImg: AppKit.NSImage {
-#if !targetEnvironment(macCatalyst)
-        .init(resource: .guidanceProIntroImg)
 #else
         .init()
 #endif
@@ -9085,6 +9175,15 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "streak_icon_7" asset catalog image.
+    static var streakIcon7: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .streakIcon7)
+#else
+        .init()
+#endif
+    }
+
     /// The "streak_icon_gray_1" asset catalog image.
     static var streakIconGray1: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
@@ -9134,6 +9233,15 @@ extension AppKit.NSImage {
     static var streakIconGray6: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .streakIconGray6)
+#else
+        .init()
+#endif
+    }
+
+    /// The "streak_icon_gray_7" asset catalog image.
+    static var streakIconGray7: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .streakIconGray7)
 #else
         .init()
 #endif
@@ -10285,6 +10393,78 @@ extension UIKit.UIImage {
     static var aiCoachProIcon: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .aiCoachProIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_coach_recommend_down_icon" asset catalog image.
+    static var aiCoachRecommendDownIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .aiCoachRecommendDownIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_coach_recommend_maintain_target" asset catalog image.
+    static var aiCoachRecommendMaintainTarget: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .aiCoachRecommendMaintainTarget)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_coach_recommend_up_icon" asset catalog image.
+    static var aiCoachRecommendUpIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .aiCoachRecommendUpIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_ela_icon" asset catalog image.
+    static var aiElaIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .aiElaIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_guidance_intro_bg" asset catalog image.
+    static var aiGuidanceIntroBg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .aiGuidanceIntroBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_guidance_intro_chart_icon" asset catalog image.
+    static var aiGuidanceIntroChartIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .aiGuidanceIntroChartIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_guidance_intro_meditation_icon" asset catalog image.
+    static var aiGuidanceIntroMeditationIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .aiGuidanceIntroMeditationIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ai_guidance_intro_target_icon" asset catalog image.
+    static var aiGuidanceIntroTargetIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .aiGuidanceIntroTargetIcon)
 #else
         .init()
 #endif
@@ -12589,15 +12769,6 @@ extension UIKit.UIImage {
     static var goalZhinengIcon: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .goalZhinengIcon)
-#else
-        .init()
-#endif
-    }
-
-    /// The "guidance_pro_intro_img" asset catalog image.
-    static var guidanceProIntroImg: UIKit.UIImage {
-#if !os(watchOS)
-        .init(resource: .guidanceProIntroImg)
 #else
         .init()
 #endif
@@ -15105,6 +15276,15 @@ extension UIKit.UIImage {
 #endif
     }
 
+    /// The "streak_icon_7" asset catalog image.
+    static var streakIcon7: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .streakIcon7)
+#else
+        .init()
+#endif
+    }
+
     /// The "streak_icon_gray_1" asset catalog image.
     static var streakIconGray1: UIKit.UIImage {
 #if !os(watchOS)
@@ -15154,6 +15334,15 @@ extension UIKit.UIImage {
     static var streakIconGray6: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .streakIconGray6)
+#else
+        .init()
+#endif
+    }
+
+    /// The "streak_icon_gray_7" asset catalog image.
+    static var streakIconGray7: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .streakIconGray7)
 #else
         .init()
 #endif

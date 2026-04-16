@@ -8,6 +8,7 @@
 import UIKit
 
 private var spinnerKey: UInt8 = 0
+private var successImageViewKey: UInt8 = 0
 private var generator = UIImpactFeedbackGenerator(style: .rigid)
 private var generatorWeight = 0.6
 private var lastFeedbackTime: TimeInterval = 0
@@ -21,13 +22,14 @@ private func triggerImpact(_ generator: UIImpactFeedbackGenerator, intensity: CG
 }
 
 extension UIButton {
-    func showLoadingIndicator() {
+    func showLoadingIndicator(color: UIColor = .white) {
         isUserInteractionEnabled = false
         self.titleLabel?.alpha = 0
+        self.imageView?.alpha = 0
+        removeSuccessIndicator()
         var spinner = objc_getAssociatedObject(self, &spinnerKey) as? UIActivityIndicatorView
         if spinner == nil {
             spinner = UIActivityIndicatorView(style: .medium)
-            spinner?.color = .white
             spinner!.translatesAutoresizingMaskIntoConstraints = false
             addSubview(spinner!)
             NSLayoutConstraint.activate([
@@ -36,16 +38,78 @@ extension UIButton {
             ])
             objc_setAssociatedObject(self, &spinnerKey, spinner, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
+        spinner?.color = color
         spinner!.startAnimating()
     }
 
     func hideLoadingIndicator() {
         isUserInteractionEnabled = true
         self.titleLabel?.alpha = 1
+        self.imageView?.alpha = 1
         if let spinner = objc_getAssociatedObject(self, &spinnerKey) as? UIActivityIndicatorView {
             spinner.stopAnimating()
             spinner.removeFromSuperview()
             objc_setAssociatedObject(self, &spinnerKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+
+    func showSuccessIndicator(tintColor: UIColor = .white, completion: (() -> Void)? = nil) {
+        hideLoadingIndicator()
+        isUserInteractionEnabled = false
+        titleLabel?.alpha = 0
+        imageView?.alpha = 0
+
+        let checkImageView: UIImageView
+        if let existingView = objc_getAssociatedObject(self, &successImageViewKey) as? UIImageView {
+            checkImageView = existingView
+        } else {
+            let imageView = UIImageView()
+            imageView.translatesAutoresizingMaskIntoConstraints = false
+            imageView.contentMode = .scaleAspectFit
+            addSubview(imageView)
+            NSLayoutConstraint.activate([
+                imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                imageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+                imageView.widthAnchor.constraint(equalToConstant: 18),
+                imageView.heightAnchor.constraint(equalToConstant: 18)
+            ])
+            objc_setAssociatedObject(self, &successImageViewKey, imageView, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            checkImageView = imageView
+        }
+
+        if #available(iOS 13.0, *) {
+            checkImageView.image = UIImage(systemName: "checkmark")
+        } else {
+            checkImageView.image = nil
+        }
+        checkImageView.tintColor = tintColor
+        checkImageView.alpha = 0
+        checkImageView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+
+        UIView.animate(withDuration: 0.28,
+                       delay: 0,
+                       usingSpringWithDamping: 0.6,
+                       initialSpringVelocity: 0.8,
+                       options: [.curveEaseOut, .allowUserInteraction]) {
+            checkImageView.alpha = 1
+            checkImageView.transform = .identity
+        } completion: { _ in
+            completion?()
+        }
+    }
+
+    func resetStatusIndicators() {
+        hideLoadingIndicator()
+        removeSuccessIndicator()
+        titleLabel?.alpha = 1
+        imageView?.alpha = 1
+        transform = .identity
+    }
+
+    private func removeSuccessIndicator() {
+        if let successImageView = objc_getAssociatedObject(self, &successImageViewKey) as? UIImageView {
+            successImageView.removeFromSuperview()
+            objc_setAssociatedObject(self, &successImageViewKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 }

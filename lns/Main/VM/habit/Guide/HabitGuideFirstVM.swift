@@ -31,13 +31,13 @@ class HabitGuideFirstVM: UIView {
         
         return img
     }()
-    lazy var detailLabelOne: UILabel = {
-        let lab = UILabel()
-        lab.text = "Hello"
-        lab.font = .systemFont(ofSize: 50, weight: .semibold)
-        
-        return lab
-    }()
+//    lazy var detailLabelOne: UILabel = {
+//        let lab = UILabel()
+//        lab.text = "Hello"
+//        lab.font = .systemFont(ofSize: 50, weight: .semibold)
+//        
+//        return lab
+//    }()
     lazy var detailLabelTwo: UILabel = {
         let lab = UILabel()
         lab.text = "欢迎来到自律习惯养成"
@@ -61,7 +61,7 @@ extension HabitGuideFirstVM {
 extension HabitGuideFirstVM{
     func initUI() {
         addSubview(bgImgView)
-        addSubview(detailLabelOne)
+//        addSubview(detailLabelOne)
         addSubview(detailLabelTwo)
         addSubview(iconImgView)
         
@@ -71,13 +71,15 @@ extension HabitGuideFirstVM{
         bgImgView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        detailLabelOne.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(40))
-            make.top.equalTo(kFitWidth(280))
-        }
+//        detailLabelOne.snp.makeConstraints { make in
+//            make.left.equalTo(kFitWidth(40))
+//            make.top.equalTo(kFitWidth(280))
+//        }
         detailLabelTwo.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(40))
-            make.top.equalTo(detailLabelOne.snp.bottom).offset(kFitWidth(20))
+//            make.left.equalTo(kFitWidth(40))
+//            make.top.equalTo(detailLabelOne.snp.bottom).offset(kFitWidth(20))
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalTo(statusBarHeight+kFitWidth(280))
         }
         iconImgView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
@@ -91,16 +93,16 @@ extension HabitGuideFirstVM {
     /// Prepares subviews for entrance animation
     func prepareEntranceAnimation() {
         self.isUserInteractionEnabled = false
-        detailLabelOne.alpha = 0
+//        detailLabelOne.alpha = 0
         detailLabelTwo.alpha = 0
     }
 
     /// Sequentially fades in the title and image views
     func startEntranceAnimation() {
         self.isUserInteractionEnabled = false
-        UIView.animate(withDuration: 0.55, delay: 0.05,options: .curveLinear) {
-            self.detailLabelOne.alpha = 1
-        }completion: { _ in
+//        UIView.animate(withDuration: 0.55, delay: 0.05,options: .curveLinear) {
+//            self.detailLabelOne.alpha = 1
+//        }completion: { _ in
             UIView.animate(withDuration: 0.65, delay: 0.35,options: .curveLinear) {
                 self.detailLabelTwo.alpha = 1
             }completion: { _ in
@@ -108,6 +110,6 @@ extension HabitGuideFirstVM {
                     self.isUserInteractionEnabled = true
                 })
             }
-        }
+//        }
     }
 }

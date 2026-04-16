@@ -279,6 +279,30 @@ static NSString * const ACImageNameAiCoachIcon AC_SWIFT_PRIVATE = @"ai_coach_ico
 /// The "ai_coach_pro_icon" asset catalog image resource.
 static NSString * const ACImageNameAiCoachProIcon AC_SWIFT_PRIVATE = @"ai_coach_pro_icon";
 
+/// The "ai_coach_recommend_down_icon" asset catalog image resource.
+static NSString * const ACImageNameAiCoachRecommendDownIcon AC_SWIFT_PRIVATE = @"ai_coach_recommend_down_icon";
+
+/// The "ai_coach_recommend_maintain_target" asset catalog image resource.
+static NSString * const ACImageNameAiCoachRecommendMaintainTarget AC_SWIFT_PRIVATE = @"ai_coach_recommend_maintain_target";
+
+/// The "ai_coach_recommend_up_icon" asset catalog image resource.
+static NSString * const ACImageNameAiCoachRecommendUpIcon AC_SWIFT_PRIVATE = @"ai_coach_recommend_up_icon";
+
+/// The "ai_ela_icon" asset catalog image resource.
+static NSString * const ACImageNameAiElaIcon AC_SWIFT_PRIVATE = @"ai_ela_icon";
+
+/// The "ai_guidance_intro_bg" asset catalog image resource.
+static NSString * const ACImageNameAiGuidanceIntroBg AC_SWIFT_PRIVATE = @"ai_guidance_intro_bg";
+
+/// The "ai_guidance_intro_chart_icon" asset catalog image resource.
+static NSString * const ACImageNameAiGuidanceIntroChartIcon AC_SWIFT_PRIVATE = @"ai_guidance_intro_chart_icon";
+
+/// The "ai_guidance_intro_meditation_icon" asset catalog image resource.
+static NSString * const ACImageNameAiGuidanceIntroMeditationIcon AC_SWIFT_PRIVATE = @"ai_guidance_intro_meditation_icon";
+
+/// The "ai_guidance_intro_target_icon" asset catalog image resource.
+static NSString * const ACImageNameAiGuidanceIntroTargetIcon AC_SWIFT_PRIVATE = @"ai_guidance_intro_target_icon";
+
 /// The "ai_identify_fail_img" asset catalog image resource.
 static NSString * const ACImageNameAiIdentifyFailImg AC_SWIFT_PRIVATE = @"ai_identify_fail_img";
 
@@ -1046,9 +1070,6 @@ static NSString * const ACImageNameGoalCircleQuestion AC_SWIFT_PRIVATE = @"goal_
 
 /// The "goal_zhineng_icon" asset catalog image resource.
 static NSString * const ACImageNameGoalZhinengIcon AC_SWIFT_PRIVATE = @"goal_zhineng_icon";
-
-/// The "guidance_pro_intro_img" asset catalog image resource.
-static NSString * const ACImageNameGuidanceProIntroImg AC_SWIFT_PRIVATE = @"guidance_pro_intro_img";
 
 /// The "guidance_pro_promise_img" asset catalog image resource.
 static NSString * const ACImageNameGuidanceProPromiseImg AC_SWIFT_PRIVATE = @"guidance_pro_promise_img";
@@ -1884,6 +1905,9 @@ static NSString * const ACImageNameStreakIcon5 AC_SWIFT_PRIVATE = @"streak_icon_
 /// The "streak_icon_6" asset catalog image resource.
 static NSString * const ACImageNameStreakIcon6 AC_SWIFT_PRIVATE = @"streak_icon_6";
 
+/// The "streak_icon_7" asset catalog image resource.
+static NSString * const ACImageNameStreakIcon7 AC_SWIFT_PRIVATE = @"streak_icon_7";
+
 /// The "streak_icon_gray_1" asset catalog image resource.
 static NSString * const ACImageNameStreakIconGray1 AC_SWIFT_PRIVATE = @"streak_icon_gray_1";
 
@@ -1901,6 +1925,9 @@ static NSString * const ACImageNameStreakIconGray5 AC_SWIFT_PRIVATE = @"streak_i
 
 /// The "streak_icon_gray_6" asset catalog image resource.
 static NSString * const ACImageNameStreakIconGray6 AC_SWIFT_PRIVATE = @"streak_icon_gray_6";
+
+/// The "streak_icon_gray_7" asset catalog image resource.
+static NSString * const ACImageNameStreakIconGray7 AC_SWIFT_PRIVATE = @"streak_icon_gray_7";
 
 /// The "survey_subscription_coach_ic_01" asset catalog image resource.
 static NSString * const ACImageNameSurveySubscriptionCoachIc01 AC_SWIFT_PRIVATE = @"survey_subscription_coach_ic_01";
