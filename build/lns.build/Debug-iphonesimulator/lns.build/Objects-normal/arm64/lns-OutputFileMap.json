@@ -4986,6 +4986,16 @@
     "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalCollectionView.swiftdeps",
     "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalCollectionView~partial.swiftmodule"
   },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Journal/JournalElaProAnnouncementAlertVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalElaProAnnouncementAlertVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalElaProAnnouncementAlertVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalElaProAnnouncementAlertVM.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalElaProAnnouncementAlertVM.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalElaProAnnouncementAlertVM.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalElaProAnnouncementAlertVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalElaProAnnouncementAlertVM.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalElaProAnnouncementAlertVM~partial.swiftmodule"
+  },
   "/Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Journal/JournalFitnessTypeAlertVM.swift" : {
     "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalFitnessTypeAlertVM.swiftconstvalues",
     "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalFitnessTypeAlertVM.d",

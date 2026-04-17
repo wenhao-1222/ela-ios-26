@@ -1287,6 +1287,9 @@ static NSString * const ACImageNameImgCloseIcon AC_SWIFT_PRIVATE = @"img_close_i
 /// The "invite_rewards_code_bg" asset catalog image resource.
 static NSString * const ACImageNameInviteRewardsCodeBg AC_SWIFT_PRIVATE = @"invite_rewards_code_bg";
 
+/// The "journal_ela_pro_announcement_bg" asset catalog image resource.
+static NSString * const ACImageNameJournalElaProAnnouncementBg AC_SWIFT_PRIVATE = @"journal_ela_pro_announcement_bg";
+
 /// The "journal_share_calories_icon" asset catalog image resource.
 static NSString * const ACImageNameJournalShareCaloriesIcon AC_SWIFT_PRIVATE = @"journal_share_calories_icon";
 

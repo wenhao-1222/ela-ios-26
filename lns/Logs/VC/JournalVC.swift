@@ -457,6 +457,10 @@ class JournalVC: WHBaseViewVC {
         
         return vm
     }()
+    lazy var journalElaProAnnouncementAlertVm: JournalElaProAnnouncementAlertVM = {
+        let vm = JournalElaProAnnouncementAlertVM(frame: .zero)
+        return vm
+    }()
 }
 
 extension JournalVC{
@@ -850,120 +854,6 @@ extension JournalVC{
 }
 
 extension JournalVC{
-    func sendUserCenterRequest() {
-        let param = ["uid":"\(UserInfoModel.shared.uId)"]
-        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            
-            UserInfoModel.shared.updateMsg(dict: dataObj)
-            
-            let forumLocalId = UserDefaults.getString(forKey: .forumLocalId)
-            if forumLocalId != nil && forumLocalId?.contains(UserInfoModel.shared.phone) == true{
-                ForumPublishManager.shared.forumLocalId = forumLocalId ?? ""
-            }else{
-                ForumPublishManager.shared.forumLocalId = ""
-            }
-            
-//            if Date().judgeMin(firstTime: UserInfoModel.shared.registDate, secondTime: "2025-02-01",formatter: "yyyy-MM-dd") == false{
-//                UIApplication.shared.windows.first?.addSubview(self.guideAddFoodsAlertVm)
-////                self.guideAddFoodsAlertVm.showView()
-//            }else{
-//                UserDefaults.standard.setValue("1", forKey: guide_foods_add)
-//            }
-            
-            if UserInfoModel.shared.isAppStoreMark == "0" && UserInfoModel.shared.phone != "11111111111"{
-                let launchInt = UserDefaults.standard.value(forKey: launchNum) as? Int ?? 0
-                if launchInt == 4 || launchInt == 10 || launchInt == 20 || launchInt == 50 {
-                    self.appMarkAlertVm()
-                }
-            }
-        }
-    }
-    func sendUserCenterForMineRedView() {
-        let param = ["uid":"\(UserInfoModel.shared.uId)"]
-        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            
-            UserInfoModel.shared.updateMsg(dict: dataObj)
-//
-            let streakDict = dataObj["streak"]as? NSDictionary ?? [:]
-            
-            let indexPath = IndexPath(row: self.selecteIndex, section: 0)
-            let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
-            cell?.goalVm.winnerVm.updateUI(dict: streakDict)
-            cell?.goalVm.winnerPopView.updateUI(dict: streakDict)
-            
-//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadStreakMsg"), object: nil)
-        }
-    }
-    func sendVersionRequest()  {
-        WHNetworkUtil.shareManager().POST(urlString: URL_app_version_new, parameters: nil) { responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
-        
-            DLLog(message: "sendVersionRequest:\(dict)")
-            
-            let latest_ver_code = dict.stringValueForKey(key: "latest_ver_code")
-            let buildVersion = Bundle.main.infoDictionary!["CFBundleVersion"] as! String
-            
-            if dict.stringValueForKey(key: "pop_window") == "1" && buildVersion != latest_ver_code{
-                let versionName = dict.stringValueForKey(key: "latest_ver_name")
-                let release_logs = dict.stringValueForKey(key: "release_log")
-                let releaseLogArray = WHUtils.getArrayFromJSONString(jsonString: release_logs)
-                var releaseString = ""
-                
-                for i in 0..<releaseLogArray.count{
-                    let str = releaseLogArray[i]as? String ?? ""
-                    releaseString.append(str)
-                    if i < releaseLogArray.count - 1{
-                        releaseString.append("\n")
-                    }
-                }
-                if dict.stringValueForKey(key: "force_upgrade") == "1"{
-                    self.presentAlertVc(confirmBtn: "去更新", message: releaseString, title: "最新版本 V\(versionName)", cancelBtn: nil,textAlignLeft: true, handler: { action in
-                        let urlString = "itms-apps://itunes.apple.com/app/id6503123667"
-                        self.openUrl(urlString: urlString)
-                    }, viewController: self)
-                }else{
-                    self.presentAlertVc(confirmBtn: "去更新", message: releaseString, title: "最新版本 V\(versionName)", cancelBtn: "取消",textAlignLeft: true, handler: { action in
-                        let urlString = "itms-apps://itunes.apple.com/app/id6503123667"
-                        self.openUrl(urlString: urlString)
-                    }, viewController: self)
-                }
-            }
-        }
-    }
-    func sendSaveMaterialAppMarkRequest() {
-        let param = ["appstorerated":"1"]
-        UserInfoModel.shared.isAppStoreMark = "1"
-       WHNetworkUtil.shareManager().POST(urlString: URL_User_Material_Update, parameters: param as [String : AnyObject]) { responseObject in
-            DLLog(message: "\(responseObject)")
-           
-        }
-    }
-    
-    func sendSaveRegistIdRequest() {
-        if JPUSHService.registrationID().count > 0 {
-            let param = ["jpush_regid_ios":"\(JPUSHService.registrationID())"]
-            DLLog(message: "sendSaveRegistIdRequest(param):\(param)")
-           WHNetworkUtil.shareManager().POST(urlString: URL_User_Material_Update, parameters: param as [String : AnyObject]) { responseObject in
-                DLLog(message: "sendSaveRegistIdRequest:\(responseObject)")
-            }
-        }
-    }
-    func sendNutritionsDefaultRequest() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_get_default_nutrition, parameters: nil) { responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
-//            DLLog(message: "sendNutritionsDefaultRequest:\(dataArray)")
-            UserDefaults.set(value: WHUtils.getJSONStringFromArray(array: dataArray), forKey: .nutritionDefaultArray)
-        }
-    }
-}
-
-extension JournalVC{
     func initUI(){
         view.backgroundColor = .COLOR_BG_F5
         view.addSubview(naviVm)
@@ -1004,6 +894,7 @@ extension JournalVC{
             appDelegate.getKeyWindow().addSubview(self.notifiAuthoriAlertVm)
             appDelegate.getKeyWindow().addSubview(self.activityAlertVm)
             appDelegate.getKeyWindow().addSubview(self.elaExpiredAlertVm)
+            appDelegate.getKeyWindow().addSubview(self.journalElaProAnnouncementAlertVm)
         })
     }
 }
@@ -1139,6 +1030,13 @@ extension JournalVC{
             UserInfoModel.shared.updateUserConfig(dict: dataObj)
             
             LogsMealsAlertSetManage().refreshClockAlertMsg()
+            
+            if dataObj.stringValueForKey(key: "is_ela_pro_notified") == "0"{
+                //后台返回，如果需要显示弹窗
+                //返回0 的时候，需要弹窗，可能为空，为null，
+                //返回1的时候，代表已经弹过，不需要弹了
+                self.journalElaProAnnouncementAlertVm.showSelf()
+            }
         }
     }
     func getPostAllowedListRequest() {
@@ -1268,6 +1166,120 @@ extension JournalVC{
             DLLog(message: "sendProVipMsgRequest:\(dataDict)")
             DLLog(message: "sendProVipMsgRequest model: uid=\(vipModel.uid),status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime)  ,expireTime=\(vipModel.expireTime)")
             
+        }
+    }
+}
+
+extension JournalVC{
+    func sendUserCenterRequest() {
+        let param = ["uid":"\(UserInfoModel.shared.uId)"]
+        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            
+            UserInfoModel.shared.updateMsg(dict: dataObj)
+            
+            let forumLocalId = UserDefaults.getString(forKey: .forumLocalId)
+            if forumLocalId != nil && forumLocalId?.contains(UserInfoModel.shared.phone) == true{
+                ForumPublishManager.shared.forumLocalId = forumLocalId ?? ""
+            }else{
+                ForumPublishManager.shared.forumLocalId = ""
+            }
+            
+//            if Date().judgeMin(firstTime: UserInfoModel.shared.registDate, secondTime: "2025-02-01",formatter: "yyyy-MM-dd") == false{
+//                UIApplication.shared.windows.first?.addSubview(self.guideAddFoodsAlertVm)
+////                self.guideAddFoodsAlertVm.showView()
+//            }else{
+//                UserDefaults.standard.setValue("1", forKey: guide_foods_add)
+//            }
+            
+            if UserInfoModel.shared.isAppStoreMark == "0" && UserInfoModel.shared.phone != "11111111111"{
+                let launchInt = UserDefaults.standard.value(forKey: launchNum) as? Int ?? 0
+                if launchInt == 4 || launchInt == 10 || launchInt == 20 || launchInt == 50 {
+                    self.appMarkAlertVm()
+                }
+            }
+        }
+    }
+    func sendUserCenterForMineRedView() {
+        let param = ["uid":"\(UserInfoModel.shared.uId)"]
+        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            
+            UserInfoModel.shared.updateMsg(dict: dataObj)
+//
+            let streakDict = dataObj["streak"]as? NSDictionary ?? [:]
+            
+            let indexPath = IndexPath(row: self.selecteIndex, section: 0)
+            let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
+            cell?.goalVm.winnerVm.updateUI(dict: streakDict)
+            cell?.goalVm.winnerPopView.updateUI(dict: streakDict)
+            
+//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadStreakMsg"), object: nil)
+        }
+    }
+    func sendVersionRequest()  {
+        WHNetworkUtil.shareManager().POST(urlString: URL_app_version_new, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
+        
+            DLLog(message: "sendVersionRequest:\(dict)")
+            
+            let latest_ver_code = dict.stringValueForKey(key: "latest_ver_code")
+            let buildVersion = Bundle.main.infoDictionary!["CFBundleVersion"] as! String
+            
+            if dict.stringValueForKey(key: "pop_window") == "1" && buildVersion != latest_ver_code{
+                let versionName = dict.stringValueForKey(key: "latest_ver_name")
+                let release_logs = dict.stringValueForKey(key: "release_log")
+                let releaseLogArray = WHUtils.getArrayFromJSONString(jsonString: release_logs)
+                var releaseString = ""
+                
+                for i in 0..<releaseLogArray.count{
+                    let str = releaseLogArray[i]as? String ?? ""
+                    releaseString.append(str)
+                    if i < releaseLogArray.count - 1{
+                        releaseString.append("\n")
+                    }
+                }
+                if dict.stringValueForKey(key: "force_upgrade") == "1"{
+                    self.presentAlertVc(confirmBtn: "去更新", message: releaseString, title: "最新版本 V\(versionName)", cancelBtn: nil,textAlignLeft: true, handler: { action in
+                        let urlString = "itms-apps://itunes.apple.com/app/id6503123667"
+                        self.openUrl(urlString: urlString)
+                    }, viewController: self)
+                }else{
+                    self.presentAlertVc(confirmBtn: "去更新", message: releaseString, title: "最新版本 V\(versionName)", cancelBtn: "取消",textAlignLeft: true, handler: { action in
+                        let urlString = "itms-apps://itunes.apple.com/app/id6503123667"
+                        self.openUrl(urlString: urlString)
+                    }, viewController: self)
+                }
+            }
+        }
+    }
+    func sendSaveMaterialAppMarkRequest() {
+        let param = ["appstorerated":"1"]
+        UserInfoModel.shared.isAppStoreMark = "1"
+       WHNetworkUtil.shareManager().POST(urlString: URL_User_Material_Update, parameters: param as [String : AnyObject]) { responseObject in
+            DLLog(message: "\(responseObject)")
+           
+        }
+    }
+    
+    func sendSaveRegistIdRequest() {
+        if JPUSHService.registrationID().count > 0 {
+            let param = ["jpush_regid_ios":"\(JPUSHService.registrationID())"]
+            DLLog(message: "sendSaveRegistIdRequest(param):\(param)")
+           WHNetworkUtil.shareManager().POST(urlString: URL_User_Material_Update, parameters: param as [String : AnyObject]) { responseObject in
+                DLLog(message: "sendSaveRegistIdRequest:\(responseObject)")
+            }
+        }
+    }
+    func sendNutritionsDefaultRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_get_default_nutrition, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
+//            DLLog(message: "sendNutritionsDefaultRequest:\(dataArray)")
+            UserDefaults.set(value: WHUtils.getJSONStringFromArray(array: dataArray), forKey: .nutritionDefaultArray)
         }
     }
 }

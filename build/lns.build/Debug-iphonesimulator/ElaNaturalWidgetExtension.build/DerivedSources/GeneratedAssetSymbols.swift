@@ -1309,6 +1309,9 @@ extension ImageResource {
     /// The "invite_rewards_code_bg" asset catalog image resource.
     static let inviteRewardsCodeBg = ImageResource(name: "invite_rewards_code_bg", bundle: resourceBundle)
 
+    /// The "journal_ela_pro_announcement_bg" asset catalog image resource.
+    static let journalElaProAnnouncementBg = ImageResource(name: "journal_ela_pro_announcement_bg", bundle: resourceBundle)
+
     /// The "journal_share_calories_icon" asset catalog image resource.
     static let journalShareCaloriesIcon = ImageResource(name: "journal_share_calories_icon", bundle: resourceBundle)
 
@@ -7316,6 +7319,15 @@ extension AppKit.NSImage {
     static var inviteRewardsCodeBg: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .inviteRewardsCodeBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "journal_ela_pro_announcement_bg" asset catalog image.
+    static var journalElaProAnnouncementBg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .journalElaProAnnouncementBg)
 #else
         .init()
 #endif
@@ -13417,6 +13429,15 @@ extension UIKit.UIImage {
     static var inviteRewardsCodeBg: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .inviteRewardsCodeBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "journal_ela_pro_announcement_bg" asset catalog image.
+    static var journalElaProAnnouncementBg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .journalElaProAnnouncementBg)
 #else
         .init()
 #endif

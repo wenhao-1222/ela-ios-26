@@ -719,17 +719,51 @@ extension CameraViewController {
     }
     
     func dealNetResutl(responseObject:NSDictionary) {
+        DLLog(message: "responseObject;\(responseObject)")
         let code = responseObject["code"] as? Int ?? -1
         self.captureResultVm.closeImgView.isUserInteractionEnabled = true
         if code == -1 {
             return
         }
-        if code == 404{
+        if code == 404 || code == 402{
+            //
             if handleIdentifyQuotaExhaustedIfNeeded() {
                 return
             }
-            MCToast.mc_text("今日识别次数已用完，请明天再来\n（识图功能测试期间，每天可使用 5 次）")
+//            MCToast.mc_text("今日识别次数已用完，请明天再来\n（识图功能测试期间，每天可使用 5 次）")
+            
             return
+        }
+        //非会员识图额度用完
+        isShowingQuotaUpgradeAlert = true
+        captureResultVm.rippleView.stopAnimation()
+        captureResultVm.hiddenView()
+        failAlertVm.hiddenView()
+        naviVm.refreshShowStatus(isShow: true)
+        typeVm.refreshShowStatus(isShow: true)
+        funcVm.refreshShowStatus(isShow: true)
+
+        if code == 401{
+            //会员用户识图额度用完
+//            MCToast.mc_text("当前请求较多，请稍后重试")
+            self.presentAlertVc(confirmBtn: "确定", message: "当前请求较多，请稍后重试", title: "系统繁忙", cancelBtn: nil, handler: { action in
+                
+            }, viewController: self)
+        }
+        if code == 402{
+            presentAlertVc(confirmBtn: "去开通",
+                           message: "AI 识别消耗的资源较多，因此免费额度有限。你可以明天再来，或开通 ELA Pro 畅用 AI识别。",
+                           title: "今日免费 AI 额度已用完",
+                           cancelBtn: "取消",
+                           handler: { [weak self] _ in
+                guard let self = self else { return }
+                self.isShowingQuotaUpgradeAlert = false
+                self.showElaProPriceOnlyVC()
+            },
+                           cancelHandler: { [weak self] _ in
+                self?.isShowingQuotaUpgradeAlert = false
+            },
+                           viewController: self)
         }
         if code == 503{//AI识别功能维护中
             ConstantModel.shared.ai_identify_image_status = false
@@ -831,6 +865,7 @@ extension CameraViewController {
                 }
             }
             
+            DLLog(message: "responseObject:\(responseObject)")
             if currentModel.cancelStatus == .normal {
                 self.dealNetResutl(responseObject: responseObject as NSDictionary)
             } else if currentModel.cancelStatus == .showAlert {
@@ -890,11 +925,11 @@ extension CameraViewController {
             self.failAlertVm.showView()
             
             // 显示AI识别剩余次数提示
-            if dataObj.stringValueForKey(key: "balance") == "3"{
-                MCToast.mc_text("今日识别次数还剩 3 次\n（识图功能测试期间，每天可使用 5 次）")
-            }else if dataObj.stringValueForKey(key: "balance") == "0"{
-                MCToast.mc_text("今日识别次数已用完，请明天再来\n（识图功能测试期间，每天可使用 5 次）")
-            }
+//            if dataObj.stringValueForKey(key: "balance") == "3"{
+//                MCToast.mc_text("今日识别次数还剩 3 次\n（识图功能测试期间，每天可使用 5 次）")
+//            }else if dataObj.stringValueForKey(key: "balance") == "0"{
+//                MCToast.mc_text("今日识别次数已用完，请明天再来\n（识图功能测试期间，每天可使用 5 次）")
+//            }
         }
     }
 
@@ -916,7 +951,7 @@ extension CameraViewController {
         funcVm.refreshShowStatus(isShow: true)
 
         presentAlertVc(confirmBtn: "去开通",
-                       message: "为了保证识别体验，AI 功能会占用较多资源。如需继续使用，请开通 ELA Pro。",
+                       message: "AI 识别消耗的资源较多，因此免费额度有限。你可以明天再来，或开通 ELA Pro 畅用 AI识别。",
                        title: "今日免费 AI 额度已用完",
                        cancelBtn: "取消",
                        handler: { [weak self] _ in
@@ -933,6 +968,7 @@ extension CameraViewController {
 
     func showElaProPriceOnlyVC() {
         let vc = ElaProVC()
+//        vc.priceBizType = ""
         vc.showPriceOnly = true
         guard let navigationController = navigationController else { return }
         navigationController.pushViewController(vc, animated: true)

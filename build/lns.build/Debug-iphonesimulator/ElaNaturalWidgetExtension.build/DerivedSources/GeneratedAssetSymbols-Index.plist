@@ -4271,6 +4271,16 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameJournalElaProAnnouncementBg</string>
+			<key>relativePath</key>
+			<string>./common/journal_ela_pro_announcement_bg.imageset</string>
+			<key>swiftSymbol</key>
+			<string>journalElaProAnnouncementBg</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameJournalShareCaloriesIcon</string>
 			<key>relativePath</key>
 			<string>./logs/journal_share_calories_icon.imageset</string>
