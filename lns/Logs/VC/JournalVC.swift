@@ -1163,6 +1163,9 @@ extension JournalVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             let vipModel = VIPModel.shared.update(with: dataDict)
+            
+            UserDefaults.set(value: "\(dataDict.stringValueForKey(key: "status"))", forKey: UserDefaults.AccountKeys.vipStatus)
+            
             DLLog(message: "sendProVipMsgRequest:\(dataDict)")
             DLLog(message: "sendProVipMsgRequest model: uid=\(vipModel.uid),status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime)  ,expireTime=\(vipModel.expireTime)")
             

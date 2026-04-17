@@ -341,7 +341,7 @@ extension UserInfoModel{
         self.isBindAppId = false
         self.vipModel.reset()
         UserDefaults.set(value: [:], forKey: .jounal_meal_advice)
-        
+        UserDefaults.set(value: "0", forKey: .vipStatus)
         UserDefaults.setHabitRankListVMDataArray([])
     }
     

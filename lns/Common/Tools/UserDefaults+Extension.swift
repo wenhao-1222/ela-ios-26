@@ -53,6 +53,7 @@ public extension UserDefaults {
         case tier
         case tier_weekStartDate//自律习惯，结算页面是否展示过   这里记录的是当周的开始日期  eg.20260126
         case rank_list_guide//自律习惯引导是否展示过
+        case vipStatus //会员状态
     }
 }
 

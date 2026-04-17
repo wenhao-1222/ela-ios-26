@@ -19,7 +19,7 @@ class ElaLaunchVC: WHBaseViewVC {
         let uId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
         let token = UserDefaults.standard.value(forKey: token) as? String ?? ""
         
-        if uId.count > 0 && token.count > 0{
+        if uId.count > 0 && token.count > 0 && !isVip{
             loadSplashImage()
         }else{
             self.peacockImgView.isHidden = true
@@ -27,22 +27,20 @@ class ElaLaunchVC: WHBaseViewVC {
             UIView.animate(withDuration: 0.5, delay: 0.25,options: .curveLinear) {
                 self.logoImgView.alpha = 1
                 self.logoLabel.alpha = 1
+                self.elaProIconImg.alpha = 1
             }
         }
-        
-//        UIView.animate(withDuration: 0.5, delay: 0.25,options: .curveLinear) {
-//            self.logoImgView.alpha = 1
-//            self.logoLabel.alpha = 1
-//            self.peacockImgView.alpha = 1
-//            self.tapButton.alpha = 1
-//        }
+        let delayTime = isVip ? 0 : 2.6
         DLLog(message: "ElaLaunchVC start：\(Date().currentSeconds)   - \(Date().timeStampMill)")
-        DispatchQueue.main.asyncAfter(deadline: .now()+2.6, execute: {
-//            DispatchQueue.main.asyncAfter(deadline: .now()+3.6, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now()+delayTime, execute: {
             DLLog(message: "ElaLaunchVC end:\(Date().currentSeconds)   - \(Date().timeStampMill)")
             self.lchBlock?()
         })
     }
+    var isVip : Bool = {
+        let status = UserDefaults.getString(forKey: .vipStatus)
+        return status == "1"
+    }()
     lazy var bgImgView: UIImageView = {
         let img = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
 //        img.setImgLocal(imgName: "lch_bg")
@@ -53,24 +51,35 @@ class ElaLaunchVC: WHBaseViewVC {
     }()
     lazy var logoImgView: UIImageView = {
         let img = UIImageView()
+        
         img.setImgLocal(imgName: "welcome_logo_icon")
         img.contentMode = .scaleAspectFit
         img.alpha = 0
         
         return img
     }()
+    //welcome_ela_icon
+    
     lazy var logoLabel: UILabel = {
         let lab = UILabel()
-//        lab.text = "你身边的专业健康指导"
-//        lab.text = "专业饮食记录方案"
-//        lab.text = "专业健身饮食记录"
-//        lab.text = "专业饮食记录平台"
-        lab.text = "专业饮食记录系统"
-        lab.textColor = .white
+        if isVip{
+            lab.text = "专  业  饮  食  记  录  系  统"
+            lab.font = .systemFont(ofSize: 13, weight: .medium)
+            lab.textColor = .white.withAlphaComponent(0.5)
+        }else{
+            lab.text = "专业饮食记录系统"
+            lab.font = .systemFont(ofSize: 20, weight: .medium)
+            lab.textColor = .white
+        }
         lab.alpha = 0
-        lab.font = .systemFont(ofSize: 20, weight: .medium)
         
         return lab
+    }()
+    lazy var elaProIconImg: UIImageView = {
+        let img = UIImageView()
+        img.setImgLocal(imgName: "welcome_ela_icon")
+        img.alpha = 0
+        return img
     }()
     lazy var peacockImgView: UIImageView = {
         let img = UIImageView()
@@ -97,6 +106,7 @@ extension ElaLaunchVC{
         view.backgroundColor = .THEME
         view.addSubview(bgImgView)
         view.addSubview(logoImgView)
+        view.addSubview(elaProIconImg)
         view.addSubview(logoLabel)
         view.addSubview(peacockImgView)
         view.addSubview(tapButton)
@@ -105,7 +115,30 @@ extension ElaLaunchVC{
 //        let tap = UITapGestureRecognizer(target: self, action: #selector(adTap))
 //        peacockImgView.addGestureRecognizer(tap)
 
-        setConstrait()
+        if isVip{
+            setConstraitForVip()
+        }else{
+            setConstrait()
+        }
+    }
+    func setConstraitForVip() {
+        logoImgView.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(210))
+            make.width.equalTo(kFitWidth(259))
+            make.height.equalTo(kFitWidth(45))
+        }
+        elaProIconImg.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+            make.top.equalTo(logoImgView.snp.bottom).offset(kFitWidth(29))
+            make.width.equalTo(kFitWidth(114))
+            make.height.equalTo(kFitWidth(20))
+        }
+        logoLabel.snp.makeConstraints { make in
+            make.centerX.lessThanOrEqualToSuperview()
+//            make.top.equalTo(logoImgView.snp.bottom)
+            make.bottom.equalTo(-getBottomSafeAreaHeight()-kFitWidth(20))
+        }
     }
     func setConstrait() {
         peacockImgView.snp.makeConstraints { make in
@@ -120,13 +153,13 @@ extension ElaLaunchVC{
         }
         logoImgView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(200)
-            make.width.equalTo(280)
-            make.height.equalTo(80)
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(217))
+            make.width.equalTo(kFitWidth(259))
+            make.height.equalTo(kFitWidth(45))
         }
         logoLabel.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(logoImgView.snp.bottom)
+            make.top.equalTo(logoImgView.snp.bottom).offset(kFitWidth(10))
         }
     }
     func loadSplashImage() {

@@ -345,9 +345,9 @@ extension WelcomeVC{
             make.left.top.width.height.equalToSuperview()
         }
         logoImgView.snp.makeConstraints { make in
-            make.top.equalTo(getNavigationBarHeight()+kFitWidth(32))
-            make.width.equalTo(kFitWidth(280))
-            make.height.equalTo(kFitWidth(80))
+            make.top.equalTo(getNavigationBarHeight()+kFitWidth(48))
+            make.width.equalTo(kFitWidth(259))
+            make.height.equalTo(kFitWidth(45))
             make.centerX.lessThanOrEqualToSuperview()
         }
 //        logoLabel.snp.makeConstraints { make in
