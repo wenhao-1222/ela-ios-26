@@ -214,7 +214,7 @@ extension AIGuidanceGoalStageVM {
         stackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(60))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(100))
         }
     }
 }
