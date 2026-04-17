@@ -104,7 +104,6 @@ extension AITipsContentCell{
         contentLab.snp.makeConstraints { make in
 //            make.left.top.equalTo(kFitWidth(12))
 //            make.right.bottom.equalTo(kFitWidth(-12))
-            make.height.equalTo(kFitWidth(112))
             make.left.equalTo(kFitWidth(12))
             make.right.equalTo(kFitWidth(-12))
             make.top.bottom.equalToSuperview()

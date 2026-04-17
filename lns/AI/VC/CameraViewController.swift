@@ -536,8 +536,12 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
     }
     
     @objc private func capturePhoto() {
-       guard captureSession?.isRunning == true,
-       let connection = photoOutput.connection(with: .video),
+        let isSessionRunning = captureSession?.isRunning == true
+        let connection = photoOutput?.connection(with: .video)
+        DLLog(message: "capturePhoto tapped, sessionRunning: \(isSessionRunning), connectionEnabled: \(connection?.isEnabled ?? false), connectionActive: \(connection?.isActive ?? false)")
+        
+       guard isSessionRunning,
+       let connection,
            connection.isEnabled,
            connection.isActive else {
             restartCaptureSession()
@@ -566,6 +570,7 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
             return
         }
         
+        DLLog(message: "photoOutput image decoded, byteCount: \(imageData.count), imageSize: \(image.size)")
         image = image.fixOrientation()
         captureResultVm.showView(img: image)
         naviVm.refreshShowStatus(isShow: false)
@@ -575,10 +580,13 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
         
         // 转换坐标系并进行裁剪
         let cropRect = convertCropRectToImageCoordinates(image: image)
+        DLLog(message: "photoOutput cropRect: \(cropRect), cgImageSize: \(String(describing: image.cgImage.map { CGSize(width: $0.width, height: $0.height) }))")
         if let croppedImage = image.cgImage?.cropping(to: cropRect) {
             let finalImage = UIImage(cgImage: croppedImage)
+            DLLog(message: "photoOutput croppedImage success, finalSize: \(finalImage.size)")
             self.sendImgForAiRequest(img: finalImage)
         } else {
+            DLLog(message: "photoOutput croppedImage failed, fallback original image")
             self.sendImgForAiRequest(img: image)
         }
     }
@@ -808,7 +816,12 @@ extension CameraViewController {
     }
     
     func sendImgForAiRequest(img: UIImage) {
-        guard let imageData = WH_DESUtils.compressImage(toData: img) else { return }
+        DLLog(message: "sendImgForAiRequest start, imageSize: \(img.size)")
+        guard let imageData = WH_DESUtils.compressImage(toData: img) else {
+            DLLog(message: "sendImgForAiRequest abort, compressImage returned nil")
+            return
+        }
+        DLLog(message: "sendImgForAiRequest compressed, byteCount: \(imageData.count)")
         self.captureResultVm.startSimulation()
         self.overLayImgViewIngredient.setImgLocal(imgName: "ai_camera_box_ingredient_tran")
         self.foodsImg = img
@@ -820,6 +833,7 @@ extension CameraViewController {
                                       put: putTask) { bytesSent, totalByteSent, totalByteExpectedToSend in
             // 上传进度
         } completion: { text, value in
+            DLLog(message: "sendImgForAiRequest upload completion, success: \(value), text: \(text)")
             if value == true {
                 DLLog(message: "\(text)")
                 self.sendAiIdentifyRequest(imgUrl: "\(text)")

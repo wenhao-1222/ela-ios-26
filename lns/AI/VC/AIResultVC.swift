@@ -38,13 +38,13 @@ class AIResultVC: WHBaseViewVC {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        if msgDict.stringValueForKey(key: "balance") == "3"{
-            MCToast.mc_text("今日识别次数还剩 3 次\n（识图功能测试期间，每天可使用 10 次）")
-        }else if msgDict.stringValueForKey(key: "balance") == "0"{
-            MCToast.mc_text("今日识别次数已用完，请明天再来\n（识图功能测试期间，每天可使用 10 次）")
-        }
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        if msgDict.stringValueForKey(key: "balance") == "3"{
+//            MCToast.mc_text("今日识别次数还剩 3 次\n（识图功能测试期间，每天可使用 10 次）")
+//        }else if msgDict.stringValueForKey(key: "balance") == "0"{
+//            MCToast.mc_text("今日识别次数已用完，请明天再来\n（识图功能测试期间，每天可使用 10 次）")
+//        }
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
