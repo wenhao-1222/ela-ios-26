@@ -12,6 +12,7 @@ class DietPlanCreateAllergyVM: UIView {
     var selectedBlock: (() -> ())?
 
     private let fullDataArray: [String] = ["无", "花生", "坚果", "乳制品", "豆制品", "海鲜", "猪肉"]
+    private let uricAcidDefaultTitles: [String] = ["豆制品", "海鲜"]
     var dataArray: [String] = ["无", "花生", "坚果", "乳制品", "豆制品", "海鲜", "猪肉"]
 
     private var itemViews: [DietPlanCreateItemVM] = []
@@ -180,12 +181,7 @@ extension DietPlanCreateAllergyVM {
             return oldDataArray[index]
         }
 
-        let shouldExcludePurine = QuestinonaireMsgModel.shared.goal.contains("降低尿酸")
-        if shouldExcludePurine {
-            dataArray = fullDataArray.filter { $0 != "豆制品" && $0 != "海鲜" }
-        } else {
-            dataArray = fullDataArray
-        }
+        dataArray = fullDataArray
 
         var newSelectedIndexes: Set<Int> = []
         for title in oldSelectedTitles {
@@ -193,18 +189,10 @@ extension DietPlanCreateAllergyVM {
                 newSelectedIndexes.insert(newIndex)
             }
         }
-        selectedIndexes = newSelectedIndexes
-        selectedIndex = selectedIndexes.sorted().first ?? -1
-
-        if selectedIndexes.isEmpty {
-            QuestinonaireMsgModel.shared.foodAllergy = ""
-        } else {
-            let selectedTitles = selectedIndexes.sorted().map { dataArray[$0] }
-            QuestinonaireMsgModel.shared.foodAllergy = selectedTitles.joined(separator: ",")
+        if shouldApplyLowerUricAcidDefaultSelection {
+            newSelectedIndexes = mergedIndexesByAddingTitles(uricAcidDefaultTitles, to: newSelectedIndexes)
         }
-
-        refreshListUI()
-        selectedBlock?()
+        applySelectionState(newSelectedIndexes, notify: true, forceNotify: true)
     }
 
     func restoreSelection(modelValue: String) {
@@ -223,18 +211,11 @@ extension DietPlanCreateAllergyVM {
                 }
             }
         }
-
-        selectedIndexes = restoredIndexes
-        selectedIndex = selectedIndexes.sorted().first ?? -1
-
-        if selectedIndexes.isEmpty {
-            QuestinonaireMsgModel.shared.foodAllergy = ""
-        } else {
-            let restoredTitles = selectedIndexes.sorted().map { dataArray[$0] }
-            QuestinonaireMsgModel.shared.foodAllergy = restoredTitles.joined(separator: ",")
+        
+        if shouldApplyLowerUricAcidDefaultSelection {
+            restoredIndexes = mergedIndexesByAddingTitles(uricAcidDefaultTitles, to: restoredIndexes)
         }
-
-        refreshListUI()
+        applySelectionState(restoredIndexes, notify: false)
     }
 
     func selectItem(index: Int) {
@@ -243,46 +224,58 @@ extension DietPlanCreateAllergyVM {
         }
         
         let oldSelectedIndexes = selectedIndexes
+        var newSelectedIndexes = selectedIndexes
         
         if index == 0 {
-            if selectedIndexes.contains(0) {
-                selectedIndexes.remove(0)
+            if newSelectedIndexes.contains(0) {
+                newSelectedIndexes.remove(0)
             } else {
-                selectedIndexes.removeAll()
-                selectedIndexes.insert(0)
+                newSelectedIndexes.removeAll()
+                newSelectedIndexes.insert(0)
             }
         } else {
-            if selectedIndexes.contains(index) {
-                selectedIndexes.remove(index)
+            if newSelectedIndexes.contains(index) {
+                newSelectedIndexes.remove(index)
             } else {
-                selectedIndexes.remove(0)
-                selectedIndexes.insert(index)
+                newSelectedIndexes.remove(0)
+                newSelectedIndexes.insert(index)
             }
         }
-        
-        selectedIndex = selectedIndexes.sorted().first ?? -1
-        
-        for (i, itemView) in itemViews.enumerated() {
-            let oldIsSelected = oldSelectedIndexes.contains(i)
-            let newIsSelected = selectedIndexes.contains(i)
-            guard oldIsSelected != newIsSelected else {
-                continue
+
+        if newSelectedIndexes == oldSelectedIndexes {
+            return
+        }
+        applySelectionState(newSelectedIndexes,
+                            previousSelectedIndexes: oldSelectedIndexes,
+                            notify: true,
+                            shouldRefreshAll: false)
+    }
+
+    func applyDefaultSelectionsForLowerUricAcidIfNeeded(notify: Bool = false) {
+        guard shouldApplyLowerUricAcidDefaultSelection else {
+            syncFoodAllergyModel()
+            if notify {
+                selectedBlock?()
             }
-            itemView.updateUI(title: dataArray[i], isSelected: newIsSelected)
+            return
         }
-        
-        if selectedIndexes.isEmpty {
-            QuestinonaireMsgModel.shared.foodAllergy = ""
-        } else {
-            let selectedTitles = selectedIndexes.sorted().map { dataArray[$0] }
-            QuestinonaireMsgModel.shared.foodAllergy = selectedTitles.joined(separator: ",")
+        let mergedIndexes = mergedIndexesByAddingTitles(uricAcidDefaultTitles, to: selectedIndexes)
+        applySelectionState(mergedIndexes, notify: notify)
+    }
+
+    func enforceHighUricSelectionsIfNeeded(notify: Bool = false) {
+        guard hasHighUricAcidAdjustment else {
+            return
         }
-        selectedBlock?()
+        let mergedIndexes = mergedIndexesByAddingTitles(uricAcidDefaultTitles, to: selectedIndexes)
+        applySelectionState(mergedIndexes, notify: notify)
     }
 
     // 后台 foodRestrictions 枚举映射：
     // 1花生 2坚果 3乳制品 4豆制品 5海鲜 6猪肉
-    // 规则补充：若目标包含“降低尿酸”，强制包含[4,5]，再叠加用户选择（即使选择“无”）
+    // 规则补充：
+    // 1. 若目标包含“降低尿酸”，保留既有后台低嘌呤补充限制
+    // 2. 若针对性饮食调整勾选“高尿酸”，强制包含[4,5]
     func buildFoodRestrictions() -> [Int] {
         let selectedTitles = QuestinonaireMsgModel.shared.foodAllergy
             .split(separator: ",")
@@ -311,9 +304,80 @@ extension DietPlanCreateAllergyVM {
             values.insert(13)
             values.insert(14)
         }
+        if hasHighUricAcidAdjustment {
+            values.insert(4)
+            values.insert(5)
+        }
         if !selectedTitles.contains("无") {
             selectedTitles.compactMap { mapping[$0] }.forEach { values.insert($0) }
         }
         return values.sorted()
+    }
+
+    private var shouldApplyLowerUricAcidDefaultSelection: Bool {
+        return QuestinonaireMsgModel.shared.goal.contains("降低尿酸")
+    }
+
+    private var hasHighUricAcidAdjustment: Bool {
+        return QuestinonaireMsgModel.shared.specialAdjustmentType
+            .split(whereSeparator: { ",，".contains($0) })
+            .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
+            .contains("1")
+    }
+
+    private func mergedIndexesByAddingTitles(_ titles: [String], to baseIndexes: Set<Int>) -> Set<Int> {
+        var result = baseIndexes
+        var insertedRestriction = false
+        for title in titles {
+            guard let index = dataArray.firstIndex(of: title) else {
+                continue
+            }
+            result.insert(index)
+            insertedRestriction = true
+        }
+        if insertedRestriction, let noneIndex = dataArray.firstIndex(of: "无") {
+            result.remove(noneIndex)
+        }
+        return result
+    }
+
+    private func applySelectionState(_ newSelectedIndexes: Set<Int>,
+                                     previousSelectedIndexes: Set<Int>? = nil,
+                                     notify: Bool,
+                                     forceNotify: Bool = false,
+                                     shouldRefreshAll: Bool = true) {
+        let oldSelectedIndexes = previousSelectedIndexes ?? selectedIndexes
+        let didChange = newSelectedIndexes != oldSelectedIndexes
+        selectedIndexes = newSelectedIndexes
+        selectedIndex = selectedIndexes.sorted().first ?? -1
+        syncFoodAllergyModel()
+        if shouldRefreshAll || itemViews.count != dataArray.count {
+            refreshListUI()
+        } else {
+            updateChangedItemViews(from: oldSelectedIndexes, to: newSelectedIndexes)
+        }
+        if notify, didChange || forceNotify {
+            selectedBlock?()
+        }
+    }
+
+    private func updateChangedItemViews(from oldSelectedIndexes: Set<Int>, to newSelectedIndexes: Set<Int>) {
+        for (index, itemView) in itemViews.enumerated() {
+            let oldIsSelected = oldSelectedIndexes.contains(index)
+            let newIsSelected = newSelectedIndexes.contains(index)
+            guard oldIsSelected != newIsSelected else {
+                continue
+            }
+            itemView.updateUI(title: dataArray[index], isSelected: newIsSelected)
+        }
+    }
+
+    private func syncFoodAllergyModel() {
+        if selectedIndexes.isEmpty {
+            QuestinonaireMsgModel.shared.foodAllergy = ""
+        } else {
+            let selectedTitles = selectedIndexes.sorted().map { dataArray[$0] }
+            QuestinonaireMsgModel.shared.foodAllergy = selectedTitles.joined(separator: ",")
+        }
     }
 }

@@ -22,6 +22,7 @@ class ElaProReadyVM: UIView {
     }
     
     private struct ReadyItem {
+        let icon:String
         let title: String
         let desc: String
         let highlights: [String]
@@ -163,30 +164,35 @@ extension ElaProReadyVM {
     private func buildItems() -> [ReadyItem] {
         var result: [ReadyItem] = []
         result.append(ReadyItem(
+            icon: "ela_pro_ready_icon_1",
             title: "精准无猜测",
             desc: "我们将菜谱内每个食材精细到“克”级别，而不仅仅是提供一道菜名，始终将效果和达成目标放在第一位。",
             highlights: ["精细到“克”级别","效果和达成目标"]
         ))
         
         result.append(ReadyItem(
+            icon: "ela_pro_ready_icon_2",
             title: "定制化饮食策略",
             desc: strategyText(),
             highlights: strategyHighlights()
         ))
         
         result.append(ReadyItem(
+            icon: "ela_pro_ready_icon_3",
             title: "节省外食成本",
             desc: "我们为你定制的食谱能帮你以外食 20% 左右的价格达到营养目标，一年下来可节省超过 40,000 元。（按包含 40g 蛋白质的轻食外卖均价 30 到 40 元，一天 3 到 5 餐取中间值估算）",
             highlights: ["外食 20% 左右的价格","节省超过 40,000 元。"]
         ))
         
         result.append(ReadyItem(
+            icon: "ela_pro_ready_icon_4",
             title: "食材生熟重对照",
             desc: "和家人吃饭用熟重分餐，自己单独备餐按生重准备，适配各种用餐场景。",
             highlights: ["熟重分餐","生重准备"]
         ))
         
         result.append(ReadyItem(
+            icon: "ela_pro_ready_icon_5",
             title: "灵活贴近日常",
             desc: "每一餐都为你准备了多种备选，可自由替换。\n突然加班、聚餐，或临时不想做饭？你也可以跳过该餐，按我们给你的当天营养目标继续保持进度。",
             highlights: ["自由替换","跳过该餐","继续保持进度"]
@@ -195,6 +201,7 @@ extension ElaProReadyVM {
         if selectedSpecialAdjustment != nil {
         let special = SpecialAdjustment.lowerUricAcid
             result.append(ReadyItem(
+                icon: "ela_pro_ready_icon_6",
                 title: "为你做出特殊调整",
                 desc: specialText(special),
                 highlights: specialHighlights(special)
@@ -257,7 +264,7 @@ extension ElaProReadyVM {
         
         for item in items {
             let card = ElaProReadyItemCardView()
-            card.configure(title: item.title, desc: item.desc, highlights: item.highlights)
+            card.configure(icon: item.icon,title: item.title, desc: item.desc, highlights: item.highlights)
             stackView.addArrangedSubview(card)
         }
     }
@@ -305,95 +312,5 @@ extension ElaProReadyVM {
             make.right.equalTo(kFitWidth(-20))
             make.bottom.equalToSuperview().offset(kFitWidth(-20))
         }
-    }
-}
-
-private final class ElaProReadyItemCardView: UIView {
-    private let titleColor = UIColor.COLOR_TEXT_TITLE_0f1214
-    private let descColor = UIColor.COLOR_TEXT_TITLE_0f1214_60
-    
-    private lazy var iconView: UIImageView = {
-        let img = UIImageView()
-        img.backgroundColor = WHColor_16(colorStr: "CFCFD2")
-        img.layer.cornerRadius = kFitWidth(10)
-        img.clipsToBounds = true
-        img.contentMode = .scaleAspectFit
-        return img
-    }()
-    
-    private lazy var titleLabel: UILabel = {
-        let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 14, weight: .medium)
-        lab.numberOfLines = 1
-        return lab
-    }()
-    
-    private lazy var descLabel: UILabel = {
-        let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        lab.font = .systemFont(ofSize: 13, weight: .regular)
-        lab.numberOfLines = 0
-        return lab
-    }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = .COLOR_CARD_BG_WHITE//UIColor.white.withAlphaComponent(0.72)
-        layer.cornerRadius = kFitWidth(12)
-        clipsToBounds = true
-        
-        addSubview(iconView)
-        addSubview(titleLabel)
-        addSubview(descLabel)
-        
-        iconView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(16))
-            make.top.equalTo(kFitWidth(16))
-            make.width.height.equalTo(kFitWidth(20))
-        }
-        
-        titleLabel.snp.makeConstraints { make in
-            make.left.equalTo(iconView.snp.right).offset(kFitWidth(7))
-            make.right.equalTo(kFitWidth(-16))
-            make.centerY.equalTo(iconView)
-        }
-        
-        descLabel.snp.makeConstraints { make in
-            make.left.equalTo(iconView)
-            make.right.equalTo(kFitWidth(-16))
-            make.top.equalTo(iconView.snp.bottom).offset(kFitWidth(12))
-            make.bottom.equalTo(kFitWidth(-16))
-        }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configure(title: String, desc: String, highlights: [String]) {
-        titleLabel.text = title
-        let attr = NSMutableAttributedString(string: desc)
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineHeightMultiple = 1.3
-        attr.addAttributes([
-            .foregroundColor: descColor,
-            .font: UIFont.systemFont(ofSize: 13, weight: .regular),
-            .paragraphStyle: paragraphStyle
-        ], range: NSRange(location: 0, length: desc.count))
-        
-        for keyword in highlights where !keyword.isEmpty {
-            var searchRange = desc.startIndex..<desc.endIndex
-            while let range = desc.range(of: keyword, options: [], range: searchRange) {
-                let nsRange = NSRange(range, in: desc)
-                attr.addAttributes([
-                    .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
-                    .font: UIFont.systemFont(ofSize: 12, weight: .medium)
-                ], range: nsRange)
-                searchRange = range.upperBound..<desc.endIndex
-            }
-        }
-        
-        descLabel.attributedText = attr
     }
 }

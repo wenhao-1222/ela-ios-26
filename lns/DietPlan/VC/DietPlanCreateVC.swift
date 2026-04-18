@@ -805,6 +805,7 @@ extension DietPlanCreateVC{
         allergyVm.selectedIndex = allergyIndexes.sorted().first ?? -1
         allergyVm.refreshListUI()
         model.foodAllergy = allergyIndexes.sorted().map { allergyVm.dataArray[$0] }.joined(separator: ",")
+        allergyVm.applyDefaultSelectionsForLowerUricAcidIfNeeded()
         
         let barrierIndexes = restoredIndexes(
             csvText: model.foodBarrier,

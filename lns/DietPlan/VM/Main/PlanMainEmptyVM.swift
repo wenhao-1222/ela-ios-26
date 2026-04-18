@@ -102,8 +102,8 @@ extension PlanMainEmptyVM{
         centerImgView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
             make.top.equalTo(iconImgView.snp.bottom).offset(kFitWidth(21)*p)
-            make.width.equalTo(kFitWidth(254.5))
-            make.height.equalTo(kFitWidth(402.5))
+            make.width.equalTo(kFitWidth(255))
+            make.height.equalTo(kFitWidth(403))
         }
         startButton.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()

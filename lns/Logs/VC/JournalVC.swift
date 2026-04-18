@@ -1198,7 +1198,7 @@ extension JournalVC{
             
             if UserInfoModel.shared.isAppStoreMark == "0" && UserInfoModel.shared.phone != "11111111111"{
                 let launchInt = UserDefaults.standard.value(forKey: launchNum) as? Int ?? 0
-                if launchInt == 4 || launchInt == 10 || launchInt == 20 || launchInt == 50 {
+                if launchInt == 5 || launchInt == 10 || launchInt == 20 || launchInt == 50 {
                     self.appMarkAlertVm()
                 }
             }

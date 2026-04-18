@@ -784,6 +784,9 @@ extension ImageResource {
     /// The "ela_pro_progress_bg" asset catalog image resource.
     static let elaProProgressBg = ImageResource(name: "ela_pro_progress_bg", bundle: resourceBundle)
 
+    /// The "ela_pro_tips_label_icon" asset catalog image resource.
+    static let elaProTipsLabelIcon = ImageResource(name: "ela_pro_tips_label_icon", bundle: resourceBundle)
+
     /// The "ela_tag_label_left_icon" asset catalog image resource.
     static let elaTagLabelLeftIcon = ImageResource(name: "ela_tag_label_left_icon", bundle: resourceBundle)
 
@@ -2286,6 +2289,9 @@ extension ImageResource {
 
     /// The "video_play_icon_landscap_1" asset catalog image resource.
     static let videoPlayIconLandscap1 = ImageResource(name: "video_play_icon_landscap_1", bundle: resourceBundle)
+
+    /// The "welcome_ela_icon" asset catalog image resource.
+    static let welcomeElaIcon = ImageResource(name: "welcome_ela_icon", bundle: resourceBundle)
 
     /// The "welcome_logo_icon" asset catalog image resource.
     static let welcomeLogoIcon = ImageResource(name: "welcome_logo_icon", bundle: resourceBundle)
@@ -5744,6 +5750,15 @@ extension AppKit.NSImage {
     static var elaProProgressBg: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .elaProProgressBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_tips_label_icon" asset catalog image.
+    static var elaProTipsLabelIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProTipsLabelIcon)
 #else
         .init()
 #endif
@@ -10258,6 +10273,15 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "welcome_ela_icon" asset catalog image.
+    static var welcomeElaIcon: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .welcomeElaIcon)
+#else
+        .init()
+#endif
+    }
+
     /// The "welcome_logo_icon" asset catalog image.
     static var welcomeLogoIcon: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
@@ -11854,6 +11878,15 @@ extension UIKit.UIImage {
     static var elaProProgressBg: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .elaProProgressBg)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_tips_label_icon" asset catalog image.
+    static var elaProTipsLabelIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProTipsLabelIcon)
 #else
         .init()
 #endif
@@ -16363,6 +16396,15 @@ extension UIKit.UIImage {
     static var videoPlayIconLandscap1: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .videoPlayIconLandscap1)
+#else
+        .init()
+#endif
+    }
+
+    /// The "welcome_ela_icon" asset catalog image.
+    static var welcomeElaIcon: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .welcomeElaIcon)
 #else
         .init()
 #endif

@@ -12,7 +12,13 @@ class DietPlanCreateSpecialAdjustmentVM: UIView {
         let modelValue: String
     }
 
-    var selectedIndex = -1
+    var selectedIndexes = Set<Int>()
+    var selectedIndex: Int {
+        return selectedIndexes.sorted().first ?? -1
+    }
+    var hasSelection: Bool {
+        return !selectedIndexes.isEmpty
+    }
     var selectedBlock: (() -> ())?
 
     private var cardViews: [UIView] = []
@@ -158,37 +164,86 @@ extension DietPlanCreateSpecialAdjustmentVM {
             titleLabels.append(titleLab)
 //            iconViews.append(iconWrapView)
             checkImageViews.append(checkImageView)
-            applyCardStyle(index: index, isSelected: selectedIndex == index)
+            applyCardStyle(index: index, isSelected: selectedIndexes.contains(index))
         }
     }
 
     func restoreSelection(modelValue: String) {
-        guard let index = dataArray.firstIndex(where: { $0.modelValue == modelValue }) else {
+        let values = splitModelValues(modelValue)
+        if values.isEmpty {
             return
         }
-        select(index: index, notify: false)
+        if values.contains("3"), let noneIndex = dataArray.firstIndex(where: { $0.modelValue == "3" }) {
+            applySelection(Set([noneIndex]), notify: false)
+            return
+        }
+        let restoredIndexes = Set(dataArray.enumerated().compactMap { index, item in
+            values.contains(item.modelValue) ? index : nil
+        })
+        guard !restoredIndexes.isEmpty else {
+            return
+        }
+        applySelection(restoredIndexes, notify: false)
     }
 
-    func select(index: Int, notify: Bool) {
+    func toggleSelection(index: Int, notify: Bool) {
         guard index >= 0 && index < dataArray.count else {
             return
         }
-        if selectedIndex == index && notify {
+
+        var newSelection = selectedIndexes
+        let tappedItem = dataArray[index]
+        let noneIndex = dataArray.firstIndex(where: { $0.modelValue == "3" })
+
+        if tappedItem.modelValue == "3" {
+            if newSelection == Set([index]) && notify {
+                return
+            }
+            newSelection = Set([index])
+        } else {
+            if newSelection.contains(index) {
+                if newSelection.count == 1 && notify {
+                    return
+                }
+                newSelection.remove(index)
+            } else {
+                if let noneIndex {
+                    newSelection.remove(noneIndex)
+                }
+                newSelection.insert(index)
+            }
+        }
+        applySelection(newSelection, notify: notify)
+    }
+
+    func applySelection(_ newSelection: Set<Int>, notify: Bool) {
+        if newSelection == selectedIndexes {
             return
         }
+        selectedIndexes = newSelection
+        QuestinonaireMsgModel.shared.specialAdjustmentType = selectedModelValue()
 
-        let oldIndex = selectedIndex
-        selectedIndex = index
-        QuestinonaireMsgModel.shared.specialAdjustmentType = dataArray[index].modelValue
-
-        if oldIndex >= 0 {
-            applyCardStyle(index: oldIndex, isSelected: false)
+        for index in dataArray.indices {
+            applyCardStyle(index: index, isSelected: selectedIndexes.contains(index))
         }
-        applyCardStyle(index: index, isSelected: true)
 
         if notify {
             selectedBlock?()
         }
+    }
+
+    func selectedModelValue() -> String {
+        return dataArray.enumerated()
+            .filter { selectedIndexes.contains($0.offset) }
+            .map { $0.element.modelValue }
+            .joined(separator: ",")
+    }
+
+    func splitModelValues(_ text: String) -> [String] {
+        return text
+            .split(whereSeparator: { ",，".contains($0) })
+            .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
     }
 
     func applyCardStyle(index: Int, isSelected: Bool) {
@@ -210,6 +265,6 @@ extension DietPlanCreateSpecialAdjustmentVM {
         guard let view = tap.view else {
             return
         }
-        select(index: view.tag, notify: true)
+        toggleSelection(index: view.tag, notify: true)
     }
 }

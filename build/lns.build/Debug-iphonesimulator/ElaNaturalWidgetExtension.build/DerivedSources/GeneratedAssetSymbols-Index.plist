@@ -2521,6 +2521,16 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameElaProTipsLabelIcon</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_tips_label_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProTipsLabelIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameElaTagLabelLeftIcon</string>
 			<key>relativePath</key>
 			<string>./pro/ela_tag_label_left_icon.imageset</string>
@@ -7526,6 +7536,16 @@
 			<string>./forum/video_play_icon_landscap_1.imageset</string>
 			<key>swiftSymbol</key>
 			<string>videoPlayIconLandscap1</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameWelcomeElaIcon</string>
+			<key>relativePath</key>
+			<string>./questionSurvey/welcome_ela_icon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>welcomeElaIcon</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>

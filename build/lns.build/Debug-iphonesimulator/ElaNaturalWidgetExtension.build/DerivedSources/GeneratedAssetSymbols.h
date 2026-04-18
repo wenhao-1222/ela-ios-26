@@ -762,6 +762,9 @@ static NSString * const ACImageNameElaProIcon24 AC_SWIFT_PRIVATE = @"ela_pro_ico
 /// The "ela_pro_progress_bg" asset catalog image resource.
 static NSString * const ACImageNameElaProProgressBg AC_SWIFT_PRIVATE = @"ela_pro_progress_bg";
 
+/// The "ela_pro_tips_label_icon" asset catalog image resource.
+static NSString * const ACImageNameElaProTipsLabelIcon AC_SWIFT_PRIVATE = @"ela_pro_tips_label_icon";
+
 /// The "ela_tag_label_left_icon" asset catalog image resource.
 static NSString * const ACImageNameElaTagLabelLeftIcon AC_SWIFT_PRIVATE = @"ela_tag_label_left_icon";
 
@@ -2264,6 +2267,9 @@ static NSString * const ACImageNameVideoPlayIconLandscap AC_SWIFT_PRIVATE = @"vi
 
 /// The "video_play_icon_landscap_1" asset catalog image resource.
 static NSString * const ACImageNameVideoPlayIconLandscap1 AC_SWIFT_PRIVATE = @"video_play_icon_landscap_1";
+
+/// The "welcome_ela_icon" asset catalog image resource.
+static NSString * const ACImageNameWelcomeElaIcon AC_SWIFT_PRIVATE = @"welcome_ela_icon";
 
 /// The "welcome_logo_icon" asset catalog image resource.
 static NSString * const ACImageNameWelcomeLogoIcon AC_SWIFT_PRIVATE = @"welcome_logo_icon";

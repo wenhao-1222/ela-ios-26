@@ -772,6 +772,7 @@
 		EC31C4332F920FE700F435BF /* AICoachPreDayStatusBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4322F920FE600F435BF /* AICoachPreDayStatusBubbleView.swift */; };
 		EC31C4352F920FFA00F435BF /* AICoachPreDayStatusRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4342F920FF900F435BF /* AICoachPreDayStatusRowView.swift */; };
 		EC31C4372F92102500F435BF /* AICoachPreDayItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4362F92102400F435BF /* AICoachPreDayItemView.swift */; };
+		EC31C4392F92285600F435BF /* ElaProReadyItemCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4382F92285600F435BF /* ElaProReadyItemCardView.swift */; };
 		EC356CCD2C6C856E0023C0BA /* WidgetUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */; };
 		EC356CD52C6C99D00023C0BA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F62C19915800E46713 /* WidgetKit.framework */; };
 		EC356CD62C6C99D00023C0BA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F82C19915800E46713 /* SwiftUI.framework */; };
@@ -2270,6 +2271,7 @@
 		EC31C4322F920FE600F435BF /* AICoachPreDayStatusBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDayStatusBubbleView.swift; sourceTree = "<group>"; };
 		EC31C4342F920FF900F435BF /* AICoachPreDayStatusRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDayStatusRowView.swift; sourceTree = "<group>"; };
 		EC31C4362F92102400F435BF /* AICoachPreDayItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDayItemView.swift; sourceTree = "<group>"; };
+		EC31C4382F92285600F435BF /* ElaProReadyItemCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProReadyItemCardView.swift; sourceTree = "<group>"; };
 		EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetUtils.swift; sourceTree = "<group>"; };
 		EC356CD42C6C99D00023C0BA /* ElaNaturalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ElaNaturalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC356CD82C6C99D00023C0BA /* ElaNaturalWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetBundle.swift; sourceTree = "<group>"; };
@@ -4944,6 +4946,7 @@
 				EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */,
 				EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */,
 				EC7784312F57A91F03102D21 /* ElaProReadyVM.swift */,
+				EC31C4382F92285600F435BF /* ElaProReadyItemCardView.swift */,
 				EC7784332F57E00103102D21 /* ElaProTransformVM.swift */,
 				EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */,
 				EC3F22002F725697001F4C86 /* ElaProExpiredAlertVM.swift */,
@@ -6997,6 +7000,7 @@
 				ECF745CB2BDA008D0076DDB9 /* FoodsListTypeVM.swift in Sources */,
 				EC24EB552BB2C8AD002F21DF /* QuestionnaireSurveyBodyFatVM.swift in Sources */,
 				ECF0BFDE2BFC73E800E5F6F0 /* InviteRewardsRuleAlertTitleVm.swift in Sources */,
+				EC31C4392F92285600F435BF /* ElaProReadyItemCardView.swift in Sources */,
 				A798F5392CA1316C00B8327E /* LogsMealsSetAlertVM.swift in Sources */,
 				A70A1F862E6EBAF400B506DC /* MallDetailBannerVM.swift in Sources */,
 				ECDCE62A2C60B60B000350C8 /* NutritionDefaultModel.swift in Sources */,

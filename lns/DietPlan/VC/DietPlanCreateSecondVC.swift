@@ -185,6 +185,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     lazy var specialAdjustmentVm: DietPlanCreateSpecialAdjustmentVM = {
         let vm = DietPlanCreateSpecialAdjustmentVM(frame: CGRect(x: SCREEN_WIDHT * CGFloat(visibleStepIndex(forBaseIndex: 9)), y: 0, width: 0, height: 0))
         vm.selectedBlock = { [weak self] in
+            self?.allergyVm.enforceHighUricSelectionsIfNeeded()
             self?.syncNextButtonEnableStatus()
         }
         return vm
@@ -316,7 +317,7 @@ extension DietPlanCreateSecondVC{
         case let idx where idx == allergyIndex:
             nextButton.isEnabled = allergyVm.selectedIndex >= 0
         case let idx where idx == adjustmentIndex:
-            nextButton.isEnabled = specialAdjustmentVm.selectedIndex >= 0
+            nextButton.isEnabled = specialAdjustmentVm.hasSelection
         case let idx where idx == mealModeIndex:
             nextButton.isEnabled = mealModeVm.selectedIndex >= 0
         default:
@@ -593,8 +594,8 @@ extension DietPlanCreateSecondVC{
 extension DietPlanCreateSecondVC {
     func applyDietQuestionnaireData(_ data: NSDictionary) {
         let model = QuestinonaireMsgModel.shared
-
-        model.sex = stringValue(from: data["gender"])
+//        UserInfoModel.shared.gender
+//        model.sex = stringValue(from: data["gender"])
         model.birthDay = birthYear(from: data["birthday"])
         model.goal = mapUserGoals(from: intArrayValue(from: data["userGoal"]))
         model.height = stringValue(from: data["height"])
@@ -664,10 +665,13 @@ extension DietPlanCreateSecondVC {
         allergyVm.applyGoalFilter()
         if !QuestinonaireMsgModel.shared.foodAllergy.isEmpty {
             allergyVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.foodAllergy)
+        } else {
+            allergyVm.applyDefaultSelectionsForLowerUricAcidIfNeeded()
         }
         if !QuestinonaireMsgModel.shared.specialAdjustmentType.isEmpty {
             specialAdjustmentVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.specialAdjustmentType)
         }
+        allergyVm.enforceHighUricSelectionsIfNeeded()
         if !QuestinonaireMsgModel.shared.dietType.isEmpty {
             eatStyleVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.dietType)
         }
@@ -816,14 +820,19 @@ extension DietPlanCreateSecondVC {
     }
 
     func buildDietAdjustmentTypesForRequest(from text: String) -> [Int] {
-        switch text {
-        case "1":
-            return [8]
-        case "2":
-            return [7]
-        default:
+        let values = Set(splitCSVText(text))
+        if values.contains("3") {
             return [0]
         }
+
+        var result: [Int] = []
+        if values.contains("1") {
+            result.append(8)
+        }
+        if values.contains("2") {
+            result.append(7)
+        }
+        return result.isEmpty ? [0] : result
     }
 
     func splitCSVText(_ text: String) -> [String] {
@@ -943,22 +952,22 @@ extension DietPlanCreateSecondVC {
             return ""
         }
         let combined = normalized.lowercased()
-        if combined.contains("尿酸") {
-            return "1"
-        }
-        if combined.contains("血脂") {
-            return "2"
-        }
         let tokens = normalized
             .split(whereSeparator: { ",|， ".contains($0) })
             .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
-        if tokens.contains("8") {
+        let hasUricAdjustment = combined.contains("尿酸") || tokens.contains("8")
+        let hasBloodLipidAdjustment = combined.contains("血脂") || tokens.contains("7")
+
+        switch (hasUricAdjustment, hasBloodLipidAdjustment) {
+        case (true, true):
+            return "1,2"
+        case (true, false):
             return "1"
-        }
-        if tokens.contains("7") {
+        case (false, true):
             return "2"
+        default:
+            return ""
         }
-        return ""
     }
 
     func handleFinalFlowFailure(message: String?) {

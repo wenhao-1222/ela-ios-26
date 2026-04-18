@@ -136,6 +136,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Pro/MineElaProVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Pro/MineSubscriptionPlanVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/goal/GoalSetCircleVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/AICoachPreDayStatusPopupView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Questionnaire/VM/QuestionnaireProgressVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/WHUtil/Character+Exs.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/Cache/ResourceLoaderDelegate.swift
@@ -327,6 +328,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/RankingList/FriendListTableViewCell.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/RankingList/FriendRankingDailyListVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Welcome/VM/WelcomeProtocalVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/AICoachPreDayStatusRowView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VC/Plan/PlanDetailVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/WHUtil/UIVisualEffectView+Exs.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VC/DietPlanFoodsChangeListVC.swift
@@ -1035,6 +1037,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/Soup/Sources/SimpleDictionary.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/Soup/Sources/TokenQueue.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Main/DietPlanFoodsChangeCell.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/AICoachPreDayItemView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Main/VC/Habit/HabitVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/Soup/Sources/DataNode.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/Soup/Sources/Validate.swift
@@ -1136,6 +1139,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/naturalStat/NaturalStatTimeMonthFilterAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Questionnaire/VM/QuestionnaireBirthdayVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/ForumPublishManager.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/AICoachPreDayStatusBubbleView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/Course/Order/CoursePayOrderPayTypeVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/QuestionnaireSurvey/VM/QuestionnaireSurveyLoseFatVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/ForumMain/ForumNaviTypeLiquidVM.swift

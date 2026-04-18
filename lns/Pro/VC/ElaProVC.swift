@@ -35,7 +35,7 @@ class ElaProVC: WHBaseViewVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        canEdgeBack = false
         initUI()
         applyInitialDisplayMode()
         priceVm.startLoadingIfNeeded()
@@ -55,14 +55,20 @@ class ElaProVC: WHBaseViewVC {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.fd_interactivePopDisabled = true
         navigationController?.fd_interactivePopDisabled = true
         navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        self.enableInteractivePopGesture()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        self.fd_interactivePopDisabled = false
         navigationController?.fd_interactivePopDisabled = false
         navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        self.openInteractivePopGesture()
     }
     
     lazy var naviVm: DietPlanCreateNaviVM = {
@@ -158,11 +164,11 @@ extension ElaProVC{
     }
 
     private func handleReadyStepNextAction() {
-        if UserInfoModel.shared.vipModel.status == .valid {
-            DietPlanCreateVC.clearStoredDraftForCurrentUser()
-            navigationController?.popToRootViewController(animated: true)
-            return
-        }
+//        if UserInfoModel.shared.vipModel.status == .valid {
+//            DietPlanCreateVC.clearStoredDraftForCurrentUser()
+//            navigationController?.popToRootViewController(animated: true)
+//            return
+//        }
 
         currentIndex = 3
         showStep(for: currentIndex, animated: true)
