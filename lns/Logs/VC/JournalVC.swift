@@ -449,6 +449,8 @@ class JournalVC: WHBaseViewVC {
         vm.upgradeBlock = {[weak self] in
             guard let self = self else { return }
             self.elaExpiredAlertVm.hiddenSelf()
+            self.navigationController?.fd_interactivePopDisabled = true
+            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
             let vc = ElaProVC()
             vc.showPriceOnly = true
             vc.priceBizType = "3"
@@ -624,12 +626,16 @@ extension JournalVC{
                 let vc = AICoachPreVC()
                 self.navigationController?.pushViewController(vc, animated: true)
             }else if VIPModel.shared.status == .invalid{
+        self.navigationController?.fd_interactivePopDisabled = true
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
                 let vc = AIGuidanceVC()
                 self.navigationController?.pushViewController(vc, animated: true)
             }else{
                 elaExpiredAlertVm.showSelf()
             }
         }else {//未做过问卷
+        self.navigationController?.fd_interactivePopDisabled = true
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
             let vc = AIGuidanceVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }

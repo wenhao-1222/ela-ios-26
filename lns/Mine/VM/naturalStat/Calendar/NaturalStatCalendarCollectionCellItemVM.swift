@@ -122,6 +122,8 @@ extension NaturalStatCalendarCollectionCellItemVM{
             var fitnessString = ""
             if fitnessArray.count > 3{
                 fitnessString = "多部位"
+            }else if fitnessArray.count == 1{
+                fitnessString = "\(fitnessArray[0]as? String ?? "")"
             }else if fitnessArray.count == 3{
                 for i in 0..<fitnessArray.count{
                     let str = "\(fitnessArray[i]as? String ?? "")"

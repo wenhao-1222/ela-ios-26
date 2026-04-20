@@ -39,6 +39,7 @@ class AIGuidanceVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        canEdgeBack = false
         initUI()
     }
     
@@ -46,10 +47,14 @@ class AIGuidanceVC: WHBaseViewVC {
         super.viewWillAppear(animated)
         updatePopGestureState()
     }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updatePopGestureState()
+    }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        fd_interactivePopDisabled = false
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        navigationController?.fd_interactivePopDisabled = false
         navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
@@ -223,10 +228,11 @@ extension AIGuidanceVC{
     }
     
     func updatePopGestureState() {
-        let shouldEnablePop = currentIndex == 0
-        fd_interactivePopDisabled = !shouldEnablePop
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = shouldEnablePop
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = shouldEnablePop
+        canEdgeBack = false
+        fd_interactivePopDisabled = true
+        navigationController?.fd_interactivePopDisabled = true
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
 
     func updateNextButtonForCurrentStep() {
