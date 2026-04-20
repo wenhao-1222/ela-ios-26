@@ -754,13 +754,13 @@ extension CameraViewController {
         if code == 401{
             //会员用户识图额度用完
 //            MCToast.mc_text("当前请求较多，请稍后重试")
-            self.presentAlertVc(confirmBtn: "确定", message: "当前请求较多，请稍后重试", title: "系统繁忙", cancelBtn: nil, handler: { action in
+            self.presentAlertVc(confirmBtn: "确定", message: "\(responseObject["message"] as? String ?? "当前请求较多，请稍后重试")", title: "系统繁忙", cancelBtn: nil, handler: { action in
                 
             }, viewController: self)
-        }
-        if code == 402{
+            return
+        }else if code == 402{
             presentAlertVc(confirmBtn: "去开通",
-                           message: "AI 识别消耗的资源较多，因此免费额度有限。你可以明天再来，或开通 ELA Pro 畅用 AI识别。",
+                           message: "\(responseObject["message"] as? String ?? "AI 识别消耗的资源较多，因此免费额度有限。你可以明天再来，或开通 ELA Pro 畅用 AI识别。")",
                            title: "今日免费 AI 额度已用完",
                            cancelBtn: "取消",
                            handler: { [weak self] _ in
@@ -772,8 +772,7 @@ extension CameraViewController {
                 self?.isShowingQuotaUpgradeAlert = false
             },
                            viewController: self)
-        }
-        if code == 503{//AI识别功能维护中
+        }else if code == 503{//AI识别功能维护中
             ConstantModel.shared.ai_identify_image_status = false
             self.presentAlertVc(confirmBtn: "确定",
                                 message: "",
@@ -783,8 +782,7 @@ extension CameraViewController {
                 self.stopCapture()
                 self.backTapAction()
             }, viewController: self)
-        }
-        if code == 400 {
+        }else if code == 400 {
             self.captureResultVm.rippleView.stopAnimation()
             self.captureResultVm.progressView.isHidden = true
             self.captureResultVm.progressLabel.isHidden = true
@@ -798,8 +796,7 @@ extension CameraViewController {
                 self.backTapAction()
             }, viewController: self)
             return
-        }
-        if code == 200 {
+        }else if code == 200 {
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendAiIdentifyRequest:\(String(describing: dataDict))")
@@ -965,7 +962,7 @@ extension CameraViewController {
         funcVm.refreshShowStatus(isShow: true)
 
         presentAlertVc(confirmBtn: "去开通",
-                       message: "AI 识别消耗的资源较多，因此免费额度有限。你可以明天再来，或开通 ELA Pro 畅用 AI识别。",
+                       message:"AI 识别消耗的资源较多，因此免费额度有限。你可以明天再来，或开通 ELA Pro 畅用 AI识别。",
                        title: "今日免费 AI 额度已用完",
                        cancelBtn: "取消",
                        handler: { [weak self] _ in

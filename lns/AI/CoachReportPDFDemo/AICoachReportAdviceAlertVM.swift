@@ -191,9 +191,11 @@ final class AICoachReportAdviceAlertVM: UIView {
 
     private lazy var primaryButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = AICoachReportDemoPalette.themeBlue
-        button.layer.cornerRadius = kFitWidth(28)
-        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = UIColor.white.withAlphaComponent(0.6)
+        button.layer.cornerRadius = kFitWidth(22)
+        button.layer.borderWidth = 1
+        button.layer.borderColor = AICoachReportDemoPalette.themeBlue.cgColor
+        button.setTitleColor(AICoachReportDemoPalette.themeBlue, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         button.enablePressEffect()
         button.addTarget(self, action: #selector(primaryButtonAction), for: .touchUpInside)
@@ -202,11 +204,9 @@ final class AICoachReportAdviceAlertVM: UIView {
 
     private lazy var secondaryButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor.white.withAlphaComponent(0.6)
-        button.layer.cornerRadius = kFitWidth(28)
-        button.layer.borderWidth = 1
-        button.layer.borderColor = AICoachReportDemoPalette.themeBlue.cgColor
-        button.setTitleColor(AICoachReportDemoPalette.themeBlue, for: .normal)
+        button.backgroundColor = AICoachReportDemoPalette.themeBlue
+        button.layer.cornerRadius = kFitWidth(22)
+        button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         button.enablePressEffect()
         button.addTarget(self, action: #selector(secondaryButtonAction), for: .touchUpInside)
@@ -383,11 +383,11 @@ private extension AICoachReportAdviceAlertVM {
         }
 
         primaryButton.snp.makeConstraints { make in
-            make.height.equalTo(kFitWidth(56))
+            make.height.equalTo(kFitWidth(44))
         }
 
         secondaryButton.snp.makeConstraints { make in
-            make.height.equalTo(kFitWidth(56))
+            make.height.equalTo(kFitWidth(44))
         }
 
         setupWhiteViewBorder()
