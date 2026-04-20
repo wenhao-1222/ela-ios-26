@@ -46,7 +46,6 @@ class HabitRankListVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
     lazy var tableView: UITableView = {
 //        let vi = UITableView(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight), style: .plain)
         let vi = UITableView(frame: CGRect.init(x: 0, y: self.headCupVm.frame.maxY-kFitWidth(12), width: SCREEN_WIDHT, height: selfHeight-self.headCupVm.selfHeight+kFitWidth(12)), style: .grouped)
@@ -87,7 +86,7 @@ class HabitRankListVM: UIView {
     }()
     lazy var headCupVm: HabitRankListHeadCupVM = {
         let vm = HabitRankListHeadCupVM.init(frame: .zero)
-        
+        vm.backgroundColor = .clear
         vm.pointTapBlock = {()in
             self.rewardPointAlertVm.showSelf()
         }

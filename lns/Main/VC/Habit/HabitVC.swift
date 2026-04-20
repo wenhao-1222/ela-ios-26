@@ -26,6 +26,15 @@ class HabitVC: WHBaseViewVC {
         }
         return vm
     }()
+    
+    lazy var bgImgView: UIImageView = {
+        let img = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        img.setImgLocal(imgName: "habit_ranklist_bg_img")
+        img.contentMode = .scaleAspectFit
+        img.alpha = 0
+        
+        return img
+    }()
     lazy var progressVm: HabitProgressVM = {
         let vm = HabitProgressVM.init(frame: CGRect.init(x: 0, y: self.topTypeVm.frame.maxY, width: 0, height: 0))
 //        let vm = HabitProgressVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
@@ -82,10 +91,10 @@ extension HabitVC{
 
 extension HabitVC{
     func initUI() {
+        view.addSubview(bgImgView)
         initNavi(titleStr: "自律习惯养成")
-        self.navigationView.backgroundColor = .COLOR_BG_F2
+        self.navigationView.backgroundColor = .clear
         view.backgroundColor = .COLOR_BG_F2
-        
         view.addSubview(topTypeVm)
         
         view.addSubview(scrollViewBase)
@@ -95,6 +104,7 @@ extension HabitVC{
         }
         
         scrollViewBase.frame = CGRect.init(x: 0, y: self.topTypeVm.frame.maxY, width: SCREEN_WIDHT, height: SCREEN_HEIGHT - self.topTypeVm.frame.maxY)
+        scrollViewBase.backgroundColor = .clear
         scrollViewBase.addSubview(progressVm)
         scrollViewBase.addSubview(rankListVm)
         scrollViewBase.isPagingEnabled = true
@@ -121,6 +131,12 @@ extension HabitVC{
 
         topTypeVm.changeType(isLeft: !isShowingRank)
         rankListVm.updateVisibility(isVisible: isShowingRank)
+        
+        UIView.animate(withDuration: 0.25, delay: 0) {
+//            self.navigationView.backgroundColor = .COLOR_BG_F2
+//            self.view.backgroundColor = .COLOR_BG_F2
+            self.bgImgView.alpha = isShowingRank ? 1 : 0
+        }
         if !isShowingRank {
             progressVm.triggerPointAnimationIfNeeded()
         }
