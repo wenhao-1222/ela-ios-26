@@ -23,7 +23,8 @@ class UpdatePhoneVC: WHBaseViewVC {
     }
     lazy var tipsLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "我们要对你绑定的手机号进行验证"
+//        lab.text = "我们要对你绑定的手机号进行验证"
+        lab.text = "请验证你的原手机号"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 16, weight: .regular)
         

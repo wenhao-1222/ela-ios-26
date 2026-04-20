@@ -184,7 +184,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 //        }
     }
 //    func application(_ application: UIApplication, viewControllerWithRestorationIdentifierPath identifierComponents: [String], coder: NSCoder) -> UIViewController? {
-//        
+//
 //    }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -223,7 +223,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         
 //        if handleUrlStr.contains("elavatinelns://mealsIndex"){
 //            WidgetMsgModel.shared.mealsIndex = Int(handleUrlStr.mc_cutToSuffix(from: handleUrlStr.count - 1)) ?? 1
-//            
+//
 //            if UserInfoModel.shared.uId.count > 1 {
 //                DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
 //                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
@@ -370,7 +370,7 @@ extension AppDelegate{
 //        IQKeyboardManager.shared.toolbarManageBehaviour = .bySubviews
     }
     func initUMCommon() {
-        #if DEBUG 
+        #if DEBUG
             UMConfigure.initWithAppkey("666fe76a940d5a4c496f7003", channel: "DEBUG")
         UMConfigure.setLogEnabled(true)
         #else
@@ -720,6 +720,13 @@ extension AppDelegate{
     /// 这样做的目的，是避免旧 tabbar 页面因为通知、window 浮层或导航栈引用而没有及时释放，
     /// 继续在后台响应事件，导致出现重复请求、重复提交之类的灵异问题。
     func switchRootViewController(to newRootVC: UIViewController, teardownTabBarControllers: Bool = false) {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { [weak self] in
+                self?.switchRootViewController(to: newRootVC, teardownTabBarControllers: teardownTabBarControllers)
+            }
+            return
+        }
+
         UserInfoModel.shared.noUidResponseNum = 0
         let keyWindow = getKeyWindow()
         if teardownTabBarControllers {
@@ -739,7 +746,7 @@ extension AppDelegate{
 //            .first?.first {
 //            return keyWindow
 //        }
-//        
+//
         if #available(iOS 13.0, *){
             for window in UIApplication.shared.windows {
                 if window.isKeyWindow {
@@ -766,6 +773,8 @@ extension AppDelegate{
             return
         }
 
+        let viewControllersToRelease = tabBarController.viewControllers ?? []
+
         // 先移除直接挂在 keyWindow 上、但不属于 tabbar 根视图的业务浮层。
         // 这样做是为了避免旧页面虽然已经切 root，但 window 上仍然挂着它们创建的 view，
         // 这些 view 反过来继续持有 controller 或 block，导致页面无法正常释放。
@@ -773,10 +782,15 @@ extension AppDelegate{
             subview.removeFromSuperview()
         }
 
-        // 再递归打散 tabbar 内部的控制器引用关系，尽量让旧页面在本次 runloop 后就进入释放流程。
-        prepareViewControllerForRelease(tabBarController)
-        tabBarController.selectedViewController = nil
+        // 先清空 tabbar 自己维护的 controller 列表，避免 UIKit 在同步 selected 状态时
+        // 还拿着一份即将被拆掉的旧 controller 引用，触发 “selected controller 不在列表中” 的断言。
         tabBarController.viewControllers = []
+
+        // 再递归打散旧 controller 树，尽量让旧页面在本次 runloop 后就进入释放流程。
+        for viewController in viewControllersToRelease {
+            prepareViewControllerForRelease(viewController)
+        }
+        prepareViewControllerForRelease(tabBarController)
     }
     
     /// 递归释放 controller 树中与展示相关的强引用关系。

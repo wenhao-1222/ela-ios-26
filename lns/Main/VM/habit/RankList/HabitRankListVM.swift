@@ -29,6 +29,9 @@ class HabitRankListVM: UIView {
     private var pendingSettlementDict: NSDictionary?
     private var headTierName: String?
     
+    private var rankMoveAnimator: UIViewPropertyAnimator?
+    private var isRankMoveAnimating = false
+    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
         self.backgroundColor = .clear
@@ -322,6 +325,43 @@ extension HabitRankListVM{
 
         return dict.stringValueForKey(key: "uid")
     }
+    private func currentUserEntry(in leaderboard: NSArray) -> NSDictionary? {
+        guard let index = indexOfCurrentUser(in: leaderboard),
+              index >= 0,
+              index < leaderboard.count else {
+            return nil
+        }
+
+        return leaderboard.object(at: index) as? NSDictionary
+    }
+    private func transitionDisplayArray(for leaderboard: NSArray,
+                                        previousIndex: Int?,
+                                        newIndex: Int?,
+                                        preservedSelfEntry: NSDictionary?) -> NSArray {
+        guard leaderboard.count > 0,
+              let mutable = leaderboard.mutableCopy() as? NSMutableArray else {
+            return leaderboard
+        }
+
+        guard let newIndex,
+              newIndex >= 0,
+              newIndex < mutable.count else {
+            return leaderboard
+        }
+
+        let selfEntry = preservedSelfEntry ?? (mutable.object(at: newIndex) as? NSDictionary ?? [:])
+        mutable.removeObject(at: newIndex)
+
+        let targetIndex: Int
+        if let previousIndex, previousIndex >= 0 {
+            targetIndex = max(0, min(previousIndex, mutable.count))
+        } else {
+            targetIndex = max(0, min(newIndex, mutable.count))
+        }
+
+        mutable.insert(selfEntry, at: targetIndex)
+        return mutable
+    }
     private func initialDisplayArray(for leaderboard: NSArray, previousIndex: Int?, newIndex: Int?, shouldAnimate: Bool) -> NSArray {
         guard shouldAnimate,
               let previousIndex,
@@ -340,34 +380,82 @@ extension HabitRankListVM{
 
         return mutable
     }
+//    private func performSelfRankMove(from oldIndex: Int?, to newIndex: Int?) {
+//        DLLog(message: "移动前后Index: \(oldIndex ?? -1) -- \(newIndex ?? -1)")
+//        guard let oldIndex  else { return }
+//        
+//        DispatchQueue.main.async {
+//            let fromIndexPath = IndexPath(row: 0, section: oldIndex)
+//
+//            self.tableView.layoutIfNeeded()
+//
+//            // ✅ 用 rect + clamp 算 offset，避免 scrollToRow 在估算高度时产生空白
+//            guard oldIndex < self.displayedDataArray.count else { return }
+//            let fromRect = self.tableView.rectForRow(at: fromIndexPath)
+//            let offset = self.endContentOffsetToShow(rect: fromRect, position: .middle)
+//            self.tableView.setContentOffset(offset, animated: false)
+//            self.tableView.layoutIfNeeded()
+//        }
+//        guard let newIndex, oldIndex != newIndex else { return }
+//        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+//            self.waitUntilAvatarReadyForHighlight(at: oldIndex, timeout: 1.0) { [weak self] avatarImage in
+//                guard let self = self else { return }
+//                self.animateHighlightMove3Stage(from: oldIndex,
+//                                                to: newIndex,
+//                                                extraVertical: 0,
+//                                                avatarOverride: avatarImage)
+//            }
+//        })
+//    }
     private func performSelfRankMove(from oldIndex: Int?, to newIndex: Int?) {
-        DLLog(message: "移动前后Index: \(oldIndex ?? -1) -- \(newIndex ?? -1)")
-        guard let oldIndex  else { return }
-        
+        DLLog(message: "移动前后Index: \(oldIndex ?? -1) 到 \(newIndex ?? -1)")
+        guard let oldIndex = oldIndex else { return }
+
         DispatchQueue.main.async {
+            guard oldIndex >= 0,
+                  oldIndex < self.displayedDataArray.count else {
+                return
+            }
+
+            self.tableView.layoutIfNeeded()
+
             let fromIndexPath = IndexPath(row: 0, section: oldIndex)
-
-            self.tableView.layoutIfNeeded()
-
-            // ✅ 用 rect + clamp 算 offset，避免 scrollToRow 在估算高度时产生空白
-            guard oldIndex < self.displayedDataArray.count else { return }
             let fromRect = self.tableView.rectForRow(at: fromIndexPath)
-            let offset = self.endContentOffsetToShow(rect: fromRect, position: .middle)
-            self.tableView.setContentOffset(offset, animated: false)
-            self.tableView.layoutIfNeeded()
-        }
-        guard let newIndex, oldIndex != newIndex else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
-            self.waitUntilAvatarReadyForHighlight(at: oldIndex, timeout: 1.0) { [weak self] avatarImage in
-                guard let self = self else { return }
+            let startOffset = self.endContentOffsetToShow(rect: fromRect, position: .middle)
+
+            UIView.performWithoutAnimation {
+                self.tableView.setContentOffset(startOffset, animated: false)
+                self.tableView.layoutIfNeeded()
+            }
+
+            guard let newIndex = newIndex,
+                  newIndex >= 0,
+                  newIndex < self.dataSourceArray.count,
+                  oldIndex != newIndex else {
+                UIView.performWithoutAnimation {
+                    self.displayedDataArray = self.dataSourceArray
+                    self.tableView.reloadData()
+                    self.tableView.layoutIfNeeded()
+                }
+                return
+            }
+
+            let avatarImage = (self.tableView.cellForRow(at: fromIndexPath) as? HabitRankTableViewCell)?.currentAvatarImage()
+
+//            DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
+//                self.animateHighlightMove3Stage(from: oldIndex,
+//                                                to: newIndex,
+//                                                extraVertical: 0,
+//                                                avatarOverride: avatarImage)
+//            })
+            DispatchQueue.main.async {
                 self.animateHighlightMove3Stage(from: oldIndex,
                                                 to: newIndex,
                                                 extraVertical: 0,
                                                 avatarOverride: avatarImage)
             }
-        })
+        }
     }
-    
     private func waitUntilAvatarReadyForHighlight(at index: Int,
                                                    timeout: TimeInterval = 1.0,
                                                    completion: @escaping (UIImage?) -> Void) {
@@ -411,13 +499,14 @@ extension HabitRankListVM{
 }
 
 extension HabitRankListVM{
+    //MARK: 造假数据
     private func prepareLeaderboardData(from array: NSArray) -> NSArray {
         return array
 //        var entries = array.compactMap { $0 as? NSDictionary }
 //        var placeholderIndex = 1
 //
 //        while entries.count < 20 {
-//            let randomScore = Int.random(in: 1...13)
+//            let randomScore = Int.random(in: 1...8)
 //            let placeholder: NSDictionary = [
 //                "headimgurl": "",
 //                "nickname": "Tester \(placeholderIndex)",
@@ -438,149 +527,325 @@ extension HabitRankListVM{
 
 extension HabitRankListVM {
     /// ⭐️ 三段式（不贴边、不回头）：Lift → Move+Scroll → Drop
+//    private func animateHighlightMove3Stage(from oldIndex: Int,
+//                                            to newIndex: Int,
+//                                            extraVertical: CGFloat = 20,
+//                                            avatarOverride: UIImage? = nil) {
+//
+//        let fromIndexPath = IndexPath(row: 0, section: oldIndex)
+//        let toIndexPath   = IndexPath(row: 0, section: newIndex)
+//
+//        guard
+//            oldIndex != newIndex,
+//            displayedDataArray.count > 0,
+//            oldIndex >= 0, oldIndex < displayedDataArray.count,
+//            newIndex >= 0, newIndex < displayedDataArray.count,
+//            let fromCell = tableView.cellForRow(at: fromIndexPath),
+//            let container = tableView.superview
+//        else { return }
+//
+//        tableView.layoutIfNeeded()
+//
+//        // ✅ overlay：裁剪区域 = tableView 可视区域
+//        let overlay = UIView(frame: tableView.frame)
+//        overlay.backgroundColor = .clear
+//        overlay.isUserInteractionEnabled = false
+//        overlay.clipsToBounds = true
+//        container.addSubview(overlay)
+//
+//        // ✅ 高亮卡片（外扩上下 extraVertical）
+////        let highlightView = makeHighlightSnapshotView(from: fromCell, extraVertical: extraVertical)
+//        let highlightView: UIView
+//        if let habitCell = fromCell as? HabitRankTableViewCell {
+//            highlightView = makeHighlightMirrorCellView(from: oldIndex,
+//                                                        fromCell: habitCell,
+//                                                        extraVertical: extraVertical,
+//                                                        avatarOverride: avatarOverride)
+//        } else {
+//            highlightView = makeHighlightSnapshotView(from: fromCell, extraVertical: extraVertical)
+//        }
+//
+//        let startOffset = tableView.contentOffset
+//        let startCellFrameInOverlay = tableView.convert(fromCell.frame, to: overlay)
+//        var startFrame = startCellFrameInOverlay.insetBy(dx: 0, dy: -extraVertical)
+//        startFrame = clamp(frame: startFrame, inside: overlay.bounds, margin: 2)
+//
+//        highlightView.frame = startFrame
+//        overlay.addSubview(highlightView)
+//
+//        // 隐藏源 cell（⚠️记得在 cellForRowAt 里强制 cell.isHidden=false 防复用）
+//        fromCell.isHidden = true
+//
+//        // 目标 rect（content 坐标）
+//        let targetRectInContent = tableView.rectForRow(at: toIndexPath)
+//
+//        // ✅ 关键：算一个 endOffset，让“扩高后的高亮卡片”也能完整显示在可视区
+//        let endOffset = endContentOffsetToFullyShow(rect: targetRectInContent,
+//                                                    extraVertical: extraVertical)
+//
+//        // endFrame（overlay 坐标）= contentRect - endOffset
+//        var endFrame = targetRectInContent.offsetBy(dx: -endOffset.x, dy: -endOffset.y)
+//        endFrame = endFrame.insetBy(dx: 0, dy: -extraVertical)
+//        endFrame.size.width = startFrame.size.width
+//        endFrame.origin.x = startFrame.origin.x
+//        endFrame = clamp(frame: endFrame, inside: overlay.bounds, margin: 2)
+//
+//        // 动画期间禁用交互，避免用户滚动打断
+//        tableView.isUserInteractionEnabled = false
+//        tableView.isScrollEnabled = false
+//
+//        // 时长：滚动越远段2越长
+//        let distance = abs(endOffset.y - startOffset.y)
+//        let liftDuration: TimeInterval = 0.16
+//        let moveDuration: TimeInterval = (distance < 30) ? 0.22 : min(max(distance / 900.0, 0.45), 0.95)
+//        let dropDuration: TimeInterval = 0.16
+//
+//        // --- 段1：Lift（只放大，不“跑到边缘”）
+//        UIView.animate(withDuration: liftDuration,
+//                       delay: 0,
+//                       usingSpringWithDamping: 0.85,
+//                       initialSpringVelocity: 0.6,
+//                       options: [.curveEaseInOut, .beginFromCurrentState]) {
+//            highlightView.transform = CGAffineTransform(scaleX: 1.03, y: 1.03)
+//        } completion: { _ in
+//
+//            // --- 段2：Move + Scroll（同时从 start -> end，路径直达，不回头）
+////            let moveAnimator = UIViewPropertyAnimator(duration: moveDuration, curve: .easeInOut) {
+////                self.tableView.contentOffset = endOffset
+////                highlightView.frame = endFrame
+////            }
+////
+////            moveAnimator.addCompletion { _ in
+//            // --- 段2：Move + Scroll（系统滚动更稳，避免远距离出现空白）
+//            CATransaction.begin()
+//            CATransaction.setAnimationDuration(moveDuration)
+//            CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeInEaseOut))
+//            CATransaction.setCompletionBlock {
+//
+//                // --- 段3：Drop（只回到正常 scale，不改位置）
+//                UIView.animate(withDuration: dropDuration,
+//                               delay: 0,
+//                               usingSpringWithDamping: 0.85,
+//                               initialSpringVelocity: 0.7,
+//                               options: [.curveEaseInOut, .beginFromCurrentState]) {
+//                    highlightView.transform = .identity
+//                } completion: { _ in
+//
+//                    // ✅ 动画结束：数据归位 + moveSection + 刷新
+//                    let item = self.displayedDataArray.object(at: oldIndex)
+//                    let mutable = self.displayedDataArray.mutableCopy() as! NSMutableArray
+//                    mutable.removeObject(at: oldIndex)
+//                    mutable.insert(item, at: newIndex)
+//                    self.displayedDataArray = mutable
+//
+//                    UIView.performWithoutAnimation {
+//                        self.tableView.performBatchUpdates({
+//                            self.tableView.moveSection(oldIndex, toSection: newIndex)
+//                        }, completion: { _ in
+//                            // 固定最终滚动位置，避免 batchUpdates 后抖动/空白
+//                            self.tableView.setContentOffset(endOffset, animated: false)
+//
+//                            // 只刷新受影响区间（比 reloadData 更稳更轻）
+//                            let lo = min(oldIndex, newIndex)
+//                            let hi = max(oldIndex, newIndex)
+//                            self.tableView.reloadSections(IndexSet(integersIn: lo...hi), with: .none)
+//
+//                            // 还原
+//                            fromCell.isHidden = false
+//                            overlay.removeFromSuperview()
+//
+//                            self.tableView.isScrollEnabled = true
+//                            self.tableView.isUserInteractionEnabled = true
+//                        })
+//                    }
+//                }
+//            }
+//
+////            moveAnimator.startAnimation()
+//            self.tableView.setContentOffset(endOffset, animated: true)
+//            UIView.animate(withDuration: moveDuration,
+//                           delay: 0,
+//                           options: [.curveEaseInOut, .beginFromCurrentState]) {
+//                highlightView.frame = endFrame
+//            }
+//            CATransaction.commit()
+//        }
+//    }
     private func animateHighlightMove3Stage(from oldIndex: Int,
                                             to newIndex: Int,
-                                            extraVertical: CGFloat = 20,
+                                            extraVertical: CGFloat = 0,
                                             avatarOverride: UIImage? = nil) {
 
-        let fromIndexPath = IndexPath(row: 0, section: oldIndex)
-        let toIndexPath   = IndexPath(row: 0, section: newIndex)
+        guard oldIndex != newIndex,
+              displayedDataArray.count > 0,
+              oldIndex >= 0,
+              oldIndex < displayedDataArray.count,
+              newIndex >= 0,
+              newIndex < displayedDataArray.count,
+              let container = tableView.superview else {
+            UIView.performWithoutAnimation {
+                self.displayedDataArray = self.dataSourceArray
+                self.tableView.reloadData()
+                self.tableView.layoutIfNeeded()
+            }
+            return
+        }
 
-        guard
-            oldIndex != newIndex,
-            displayedDataArray.count > 0,
-            oldIndex >= 0, oldIndex < displayedDataArray.count,
-            newIndex >= 0, newIndex < displayedDataArray.count,
-            let fromCell = tableView.cellForRow(at: fromIndexPath),
-            let container = tableView.superview
-        else { return }
+        guard !isRankMoveAnimating else { return }
 
         tableView.layoutIfNeeded()
 
-        // ✅ overlay：裁剪区域 = tableView 可视区域
+        let fromIndexPath = IndexPath(row: 0, section: oldIndex)
+        let toIndexPath = IndexPath(row: 0, section: newIndex)
+
+        guard let fromCell = tableView.cellForRow(at: fromIndexPath) as? HabitRankTableViewCell else {
+            UIView.performWithoutAnimation {
+                self.displayedDataArray = self.dataSourceArray
+                self.tableView.reloadData()
+                self.tableView.layoutIfNeeded()
+            }
+            return
+        }
+
+        isRankMoveAnimating = true
+
+        let finalDataArray = dataSourceArray.copy() as? NSArray ?? dataSourceArray
+
+        let startOffset = tableView.contentOffset
+        let targetRect = tableView.rectForRow(at: toIndexPath)
+        let endOffset = endContentOffsetToFullyShow(rect: targetRect, extraVertical: extraVertical)
+
         let overlay = UIView(frame: tableView.frame)
         overlay.backgroundColor = .clear
         overlay.isUserInteractionEnabled = false
         overlay.clipsToBounds = true
         container.addSubview(overlay)
 
-        // ✅ 高亮卡片（外扩上下 extraVertical）
-//        let highlightView = makeHighlightSnapshotView(from: fromCell, extraVertical: extraVertical)
-        let highlightView: UIView
-        if let habitCell = fromCell as? HabitRankTableViewCell {
-            highlightView = makeHighlightMirrorCellView(from: oldIndex,
-                                                        fromCell: habitCell,
-                                                        extraVertical: extraVertical,
-                                                        avatarOverride: avatarOverride)
-        } else {
-            highlightView = makeHighlightSnapshotView(from: fromCell, extraVertical: extraVertical)
+        var hiddenCells: [UITableViewCell] = []
+        var shiftedSnapshots: [(view: UIView, endFrame: CGRect)] = []
+
+        let hideCell: (UITableViewCell) -> Void = { cell in
+            if !hiddenCells.contains(where: { $0 === cell }) {
+                cell.isHidden = true
+                hiddenCells.append(cell)
+            }
         }
 
-        let startOffset = tableView.contentOffset
-        let startCellFrameInOverlay = tableView.convert(fromCell.frame, to: overlay)
-        var startFrame = startCellFrameInOverlay.insetBy(dx: 0, dy: -extraVertical)
-        startFrame = clamp(frame: startFrame, inside: overlay.bounds, margin: 2)
+        let lower = min(oldIndex, newIndex)
+        let upper = max(oldIndex, newIndex)
+        for sourceSection in lower...upper {
+            guard sourceSection != oldIndex else {
+                continue
+            }
 
-        highlightView.frame = startFrame
-        overlay.addSubview(highlightView)
+            let targetSection: Int
+            if oldIndex < newIndex {
+                targetSection = sourceSection - 1
+            } else {
+                targetSection = sourceSection + 1
+            }
 
-        // 隐藏源 cell（⚠️记得在 cellForRowAt 里强制 cell.isHidden=false 防复用）
-        fromCell.isHidden = true
+            guard targetSection >= 0,
+                  targetSection < displayedDataArray.count else {
+                continue
+            }
 
-        // 目标 rect（content 坐标）
-        let targetRectInContent = tableView.rectForRow(at: toIndexPath)
+            let indexPath = IndexPath(row: 0, section: sourceSection)
+            let cell = tableView.cellForRow(at: indexPath) as? HabitRankTableViewCell
+            let startFrame = frameForRankRow(section: sourceSection,
+                                             contentOffset: startOffset,
+                                             extraVertical: 0)
+            let endFrame = frameForRankRow(section: targetSection,
+                                           contentOffset: endOffset,
+                                           extraVertical: 0)
 
-        // ✅ 关键：算一个 endOffset，让“扩高后的高亮卡片”也能完整显示在可视区
-        let endOffset = endContentOffsetToFullyShow(rect: targetRectInContent,
-                                                    extraVertical: extraVertical)
+            let snapshot = makeRankMirrorView(dataIndex: sourceSection,
+                                              displayRank: targetSection + 1,
+                                              baseCell: cell,
+                                              extraVertical: 0,
+                                              avatarOverride: cell?.currentAvatarImage(),
+                                              elevated: false)
 
-        // endFrame（overlay 坐标）= contentRect - endOffset
-        var endFrame = targetRectInContent.offsetBy(dx: -endOffset.x, dy: -endOffset.y)
-        endFrame = endFrame.insetBy(dx: 0, dy: -extraVertical)
-        endFrame.size.width = startFrame.size.width
-        endFrame.origin.x = startFrame.origin.x
-        endFrame = clamp(frame: endFrame, inside: overlay.bounds, margin: 2)
+            snapshot.frame = startFrame
+            overlay.addSubview(snapshot)
 
-        // 动画期间禁用交互，避免用户滚动打断
+            if let cell = cell {
+                hideCell(cell)
+            }
+            shiftedSnapshots.append((view: snapshot, endFrame: endFrame))
+        }
+
+        let movingStartFrame = frameForRankRow(section: oldIndex,
+                                               contentOffset: startOffset,
+                                               extraVertical: extraVertical)
+
+        let movingEndFrame = frameForRankRow(section: newIndex,
+                                             contentOffset: endOffset,
+                                             extraVertical: extraVertical)
+
+        let movingView = makeRankMirrorView(dataIndex: oldIndex,
+                                            displayRank: newIndex + 1,
+                                            baseCell: fromCell,
+                                            extraVertical: extraVertical,
+                                            avatarOverride: avatarOverride ?? fromCell.currentAvatarImage(),
+                                            elevated: true)
+
+        movingView.frame = movingStartFrame
+        overlay.addSubview(movingView)
+        overlay.bringSubviewToFront(movingView)
+
+        hideCell(fromCell)
+
         tableView.isUserInteractionEnabled = false
         tableView.isScrollEnabled = false
 
-        // 时长：滚动越远段2越长
-        let distance = abs(endOffset.y - startOffset.y)
-        let liftDuration: TimeInterval = 0.16
-        let moveDuration: TimeInterval = (distance < 30) ? 0.22 : min(max(distance / 900.0, 0.45), 0.95)
-        let dropDuration: TimeInterval = 0.16
+        let duration = rankMoveDuration(startFrame: movingStartFrame,
+                                        endFrame: movingEndFrame,
+                                        startOffset: startOffset,
+                                        endOffset: endOffset)
 
-        // --- 段1：Lift（只放大，不“跑到边缘”）
-        UIView.animate(withDuration: liftDuration,
-                       delay: 0,
-                       usingSpringWithDamping: 0.85,
-                       initialSpringVelocity: 0.6,
-                       options: [.curveEaseInOut, .beginFromCurrentState]) {
-            highlightView.transform = CGAffineTransform(scaleX: 1.03, y: 1.03)
-        } completion: { _ in
+        let timing = UISpringTimingParameters(dampingRatio: 1.0,
+                                               initialVelocity: CGVector(dx: 0, dy: 0))
 
-            // --- 段2：Move + Scroll（同时从 start -> end，路径直达，不回头）
-//            let moveAnimator = UIViewPropertyAnimator(duration: moveDuration, curve: .easeInOut) {
-//                self.tableView.contentOffset = endOffset
-//                highlightView.frame = endFrame
-//            }
-//
-//            moveAnimator.addCompletion { _ in
-            // --- 段2：Move + Scroll（系统滚动更稳，避免远距离出现空白）
-            CATransaction.begin()
-            CATransaction.setAnimationDuration(moveDuration)
-            CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: .easeInEaseOut))
-            CATransaction.setCompletionBlock {
+        let animator = UIViewPropertyAnimator(duration: duration, timingParameters: timing)
+        rankMoveAnimator = animator
 
-                // --- 段3：Drop（只回到正常 scale，不改位置）
-                UIView.animate(withDuration: dropDuration,
-                               delay: 0,
-                               usingSpringWithDamping: 0.85,
-                               initialSpringVelocity: 0.7,
-                               options: [.curveEaseInOut, .beginFromCurrentState]) {
-                    highlightView.transform = .identity
-                } completion: { _ in
+        animator.addAnimations {
+            self.tableView.setContentOffset(endOffset, animated: false)
+            movingView.frame = movingEndFrame
 
-                    // ✅ 动画结束：数据归位 + moveSection + 刷新
-                    let item = self.displayedDataArray.object(at: oldIndex)
-                    let mutable = self.displayedDataArray.mutableCopy() as! NSMutableArray
-                    mutable.removeObject(at: oldIndex)
-                    mutable.insert(item, at: newIndex)
-                    self.displayedDataArray = mutable
-
-                    UIView.performWithoutAnimation {
-                        self.tableView.performBatchUpdates({
-                            self.tableView.moveSection(oldIndex, toSection: newIndex)
-                        }, completion: { _ in
-                            // 固定最终滚动位置，避免 batchUpdates 后抖动/空白
-                            self.tableView.setContentOffset(endOffset, animated: false)
-
-                            // 只刷新受影响区间（比 reloadData 更稳更轻）
-                            let lo = min(oldIndex, newIndex)
-                            let hi = max(oldIndex, newIndex)
-                            self.tableView.reloadSections(IndexSet(integersIn: lo...hi), with: .none)
-
-                            // 还原
-                            fromCell.isHidden = false
-                            overlay.removeFromSuperview()
-
-                            self.tableView.isScrollEnabled = true
-                            self.tableView.isUserInteractionEnabled = true
-                        })
-                    }
-                }
+            for item in shiftedSnapshots {
+                item.view.frame = item.endFrame
             }
-
-//            moveAnimator.startAnimation()
-            self.tableView.setContentOffset(endOffset, animated: true)
-            UIView.animate(withDuration: moveDuration,
-                           delay: 0,
-                           options: [.curveEaseInOut, .beginFromCurrentState]) {
-                highlightView.frame = endFrame
-            }
-            CATransaction.commit()
         }
+
+        animator.addCompletion { [weak self] _ in
+            guard let self = self else { return }
+
+            for cell in hiddenCells {
+                cell.isHidden = false
+                cell.alpha = 1
+                cell.contentView.alpha = 1
+            }
+
+            UIView.performWithoutAnimation {
+                self.displayedDataArray = finalDataArray
+                self.tableView.reloadData()
+                self.tableView.layoutIfNeeded()
+                self.tableView.setContentOffset(endOffset, animated: false)
+                self.tableView.layoutIfNeeded()
+            }
+
+            overlay.removeFromSuperview()
+
+            self.tableView.isScrollEnabled = true
+            self.tableView.isUserInteractionEnabled = true
+
+            self.rankMoveAnimator = nil
+            self.isRankMoveAnimating = false
+        }
+
+        animator.startAnimation(afterDelay: 0.1)
     }
     private func safeSnapshot(of view: UIView) -> UIView {
 
@@ -595,7 +860,126 @@ extension HabitRankListVM {
 
         return UIImageView(image: image)
     }
+    private func frameForRankRow(section: Int,
+                                 contentOffset: CGPoint,
+                                 extraVertical: CGFloat,
+                                 forcedX: CGFloat? = nil,
+                                 forcedWidth: CGFloat? = nil) -> CGRect {
 
+        let maxSection = max(displayedDataArray.count - 1, 0)
+        let safeSection = max(0, min(section, maxSection))
+        let rect = tableView.rectForRow(at: IndexPath(row: 0, section: safeSection))
+
+        var frame = CGRect(x: rect.minX - contentOffset.x,
+                           y: rect.minY - contentOffset.y - extraVertical,
+                           width: rect.width,
+                           height: rect.height + extraVertical * 2)
+
+        if let forcedX = forcedX {
+            frame.origin.x = forcedX
+        }
+
+        if let forcedWidth = forcedWidth {
+            frame.size.width = forcedWidth
+        }
+
+        return frame
+    }
+
+    private func rankMoveDuration(startFrame: CGRect,
+                                  endFrame: CGRect,
+                                  startOffset: CGPoint,
+                                  endOffset: CGPoint) -> TimeInterval {
+
+        let visualDistance = abs(endFrame.midY - startFrame.midY)
+        let scrollDistance = abs(endOffset.y - startOffset.y)
+        let distance = max(visualDistance, scrollDistance)
+
+        let visibleHeight = max(tableView.bounds.height, 1)
+        let normalized = min(distance / visibleHeight, 1)
+
+        let duration = 0.34 + TimeInterval(normalized) * 0.28
+        return min(max(duration, 0.34), 0.72)
+    }
+
+    private func makeRankMirrorView(dataIndex: Int,
+                                    displayRank: Int,
+                                    baseCell: HabitRankTableViewCell?,
+                                    extraVertical: CGFloat,
+                                    avatarOverride: UIImage?,
+                                    elevated: Bool) -> UIView {
+
+        guard displayedDataArray.count > 0 else {
+            return UIView(frame: .zero)
+        }
+
+        let maxIndex = displayedDataArray.count - 1
+        let safeIndex = max(0, min(dataIndex, maxIndex))
+        let dict = displayedDataArray.object(at: safeIndex) as? NSDictionary ?? [:]
+
+        let cellWidth = baseCell?.bounds.width ?? tableView.bounds.width
+        let cellHeight = baseCell?.bounds.height ?? kFitWidth(70)
+
+        let mirror = HabitRankTableViewCell(style: .default, reuseIdentifier: nil)
+        mirror.frame = CGRect(x: 0, y: 0, width: cellWidth, height: cellHeight)
+        mirror.isUserInteractionEnabled = false
+
+        mirror.configure(rank: "\(displayRank)",
+                         avatar: dict.stringValueForKey(key: "headimgurl"),
+                         name: dict.stringValueForKey(key: "nickname"),
+                         fireCount: dict.stringValueForKey(key: "donateCount").intValue,
+                         score: dict.stringValueForKey(key: "rankPointBalance"),
+                         needAvatarTransition: false,
+                         isCurrentUser: isCurrentUser(dict))
+
+        if let image = avatarOverride ?? baseCell?.currentAvatarImage() {
+            mirror.applyAvatarImage(image)
+        }
+
+        mirror.setNeedsLayout()
+        mirror.layoutIfNeeded()
+        mirror.contentView.setNeedsLayout()
+        mirror.contentView.layoutIfNeeded()
+
+        guard elevated || extraVertical > 0 else {
+            return mirror
+        }
+
+        let innerHeight = cellHeight + extraVertical * 2
+
+        let inner = UIView(frame: CGRect(x: 0,
+                                         y: 0,
+                                         width: cellWidth,
+                                         height: innerHeight))
+        inner.backgroundColor = .COLOR_CELL_HIGHLIGHT_BG
+        inner.layer.cornerRadius = 12
+        inner.clipsToBounds = true
+        inner.isUserInteractionEnabled = false
+
+        mirror.frame = CGRect(x: 0,
+                              y: extraVertical,
+                              width: cellWidth,
+                              height: cellHeight)
+        inner.addSubview(mirror)
+
+        let outer = UIView(frame: inner.bounds)
+        outer.backgroundColor = .clear
+        outer.isUserInteractionEnabled = false
+        outer.layer.cornerRadius = 12
+
+        if elevated {
+            outer.layer.shadowColor = UIColor.black.cgColor
+            outer.layer.shadowOpacity = 0.16
+            outer.layer.shadowRadius = 10
+            outer.layer.shadowOffset = CGSize(width: 0, height: 5)
+            outer.layer.shadowPath = UIBezierPath(roundedRect: outer.bounds, cornerRadius: 12).cgPath
+            outer.layer.shouldRasterize = true
+            outer.layer.rasterizationScale = UIScreen.main.scale
+        }
+
+        outer.addSubview(inner)
+        return outer
+    }
 }
 
 extension HabitRankListVM{
@@ -755,7 +1139,9 @@ extension HabitRankListVM{
 
 extension HabitRankListVM{
     func sendDataRequest(animateSelfChange: Bool = false){
-        let previousSelfIndex = animateSelfChange ? indexOfCurrentUser(in: dataSourceArray) : nil
+        let previousLeaderboard = displayedDataArray.count > 0 ? displayedDataArray : dataSourceArray
+        let previousSelfIndex = indexOfCurrentUser(in: previousLeaderboard)
+        let preservedSelfEntry = animateSelfChange ? currentUserEntry(in: previousLeaderboard) : nil
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
             
             let code = responseObject["code"]as? Int ?? -1
@@ -777,22 +1163,23 @@ extension HabitRankListVM{
                     self.cacheLeaderboard(self.dataSourceArray)
                     let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
                     
-                    self.displayedDataArray = self.initialDisplayArray(
-                        for: self.dataSourceArray,
-                        previousIndex: previousSelfIndex,
-                        newIndex: newIndex,
-                        shouldAnimate: animateSelfChange
-                    )
                     if animateSelfChange {
                         self.promotionLine = dataDict.stringValueForKey(key: "promotionLine").intValue
                         self.relegationLine = dataDict.stringValueForKey(key: "relegationLine").intValue
+                        self.displayedDataArray = self.transitionDisplayArray(for: self.dataSourceArray,
+                                                                             previousIndex: previousSelfIndex,
+                                                                             newIndex: newIndex,
+                                                                             preservedSelfEntry: preservedSelfEntry)
                         self.tableView.reloadData()
                         self.tableView.layoutIfNeeded()
                         self.performSelfRankMove(from: previousSelfIndex, to: newIndex)
                     }else{
+                        self.displayedDataArray = self.dataSourceArray
                         self.tableView.reloadData()
-                        guard let oldIndex = previousSelfIndex else { return  }
-                        let fromIndexPath = IndexPath(row: 0, section: oldIndex)
+                        guard let oldIndex = previousSelfIndex,
+                              self.displayedDataArray.count > 0 else { return  }
+                        let targetSection = min(max(0, oldIndex), self.displayedDataArray.count - 1)
+                        let fromIndexPath = IndexPath(row: 0, section: targetSection)
                         
                         self.tableView.layoutIfNeeded()
                         self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: true)
@@ -817,6 +1204,9 @@ extension HabitRankListVM{
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
             let code = responseObject["code"]as? Int ?? -1
             if code == 200 {
+                let previousLeaderboard = self.displayedDataArray.count > 0 ? self.displayedDataArray : self.dataSourceArray
+                let previousSelfIndex = self.indexOfCurrentUser(in: previousLeaderboard)
+                let preservedSelfEntry = self.currentUserEntry(in: previousLeaderboard)
                 let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
                 let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
                 DLLog(message: "sendDataRequest:\(dataDict)")
@@ -835,6 +1225,32 @@ extension HabitRankListVM{
                                     thirdPlace: weeklyRewardPoint.stringValueForKey(key: "thirdPlace"),
                                      secondsToWeekEnd:dataDict.stringValueForKey(key: "secondsToWeekEnd").intValue)
                 }
+                if (dataDict["leaderboard"]as? NSArray ?? []).count > 0 {
+                    self.promotionLine = dataDict.stringValueForKey(key: "promotionLine").intValue
+                    self.relegationLine = dataDict.stringValueForKey(key: "relegationLine").intValue
+                    self.dataSourceArray = self.prepareLeaderboardData(from: dataDict["leaderboard"]as? NSArray ?? [])
+                    self.cacheLeaderboard(self.dataSourceArray)
+                    let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
+                    self.displayedDataArray = self.transitionDisplayArray(for: self.dataSourceArray,
+                                                                         previousIndex: previousSelfIndex,
+                                                                         newIndex: newIndex,
+                                                                         preservedSelfEntry: preservedSelfEntry)
+                    self.tableView.reloadData()
+                    self.tableView.layoutIfNeeded()
+                }else{
+                    self.dataSourceArray = NSArray()
+                    self.displayedDataArray = self.dataSourceArray
+                    self.tableView.reloadData()
+                    return
+                }
+                guard let oldIndex = previousSelfIndex,
+                      self.displayedDataArray.count > 0 else { return  }
+                let targetSection = min(max(0, oldIndex), self.displayedDataArray.count - 1)
+                let fromIndexPath = IndexPath(row: 0, section: targetSection)
+                
+                self.tableView.layoutIfNeeded()
+                self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: true)
+                self.tableView.layoutIfNeeded()
             }
         }
     }
