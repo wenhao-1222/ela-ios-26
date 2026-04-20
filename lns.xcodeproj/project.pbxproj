@@ -773,6 +773,7 @@
 		EC31C4352F920FFA00F435BF /* AICoachPreDayStatusRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4342F920FF900F435BF /* AICoachPreDayStatusRowView.swift */; };
 		EC31C4372F92102500F435BF /* AICoachPreDayItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4362F92102400F435BF /* AICoachPreDayItemView.swift */; };
 		EC31C4392F92285600F435BF /* ElaProReadyItemCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4382F92285600F435BF /* ElaProReadyItemCardView.swift */; };
+		EC31C7592F95F51100F435BF /* CoachAnimationV3View.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C7582F95F51000F435BF /* CoachAnimationV3View.swift */; };
 		EC356CCD2C6C856E0023C0BA /* WidgetUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */; };
 		EC356CD52C6C99D00023C0BA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F62C19915800E46713 /* WidgetKit.framework */; };
 		EC356CD62C6C99D00023C0BA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F82C19915800E46713 /* SwiftUI.framework */; };
@@ -2272,6 +2273,7 @@
 		EC31C4342F920FF900F435BF /* AICoachPreDayStatusRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDayStatusRowView.swift; sourceTree = "<group>"; };
 		EC31C4362F92102400F435BF /* AICoachPreDayItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDayItemView.swift; sourceTree = "<group>"; };
 		EC31C4382F92285600F435BF /* ElaProReadyItemCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProReadyItemCardView.swift; sourceTree = "<group>"; };
+		EC31C7582F95F51000F435BF /* CoachAnimationV3View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachAnimationV3View.swift; sourceTree = "<group>"; };
 		EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetUtils.swift; sourceTree = "<group>"; };
 		EC356CD42C6C99D00023C0BA /* ElaNaturalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ElaNaturalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC356CD82C6C99D00023C0BA /* ElaNaturalWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetBundle.swift; sourceTree = "<group>"; };
@@ -5878,6 +5880,7 @@
 				EC31C4342F920FF900F435BF /* AICoachPreDayStatusRowView.swift */,
 				EC31C4362F92102400F435BF /* AICoachPreDayItemView.swift */,
 				ECEC4EB32F73A11200FB1E56 /* AICoachPreInfoSelectPopupVM.swift */,
+				EC31C7582F95F51000F435BF /* CoachAnimationV3View.swift */,
 			);
 			path = Pre;
 			sourceTree = "<group>";
@@ -6915,6 +6918,7 @@
 				EC78C2BC2F69776B00681507 /* GuidanceMealsAdjustVM.swift in Sources */,
 				EC78C2B82F69522A00681507 /* GuidanceMealsPerDayVM.swift in Sources */,
 				EC78C2BA2F6966A100681507 /* GuidanceMealsSummaryVM.swift in Sources */,
+				EC31C7592F95F51100F435BF /* CoachAnimationV3View.swift in Sources */,
 				F2B0C3012F80100100A1B2C3 /* GuidanceElaProTransitionVM.swift in Sources */,
 				EC78C2CE2F6B2E7900681507 /* GuidanceNutritionGoalVM.swift in Sources */,
 				EC78C2CA2F6B160000681507 /* GuidanceReminderPromptVM.swift in Sources */,

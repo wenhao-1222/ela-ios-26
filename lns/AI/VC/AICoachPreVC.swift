@@ -65,10 +65,9 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         img.contentMode = .scaleAspectFit
         return img
     }()
-    lazy var circleImgView: AICoachRotatingPearlOrbView = {
-        let orbView = AICoachRotatingPearlOrbView()
+    lazy var circleImgView: CoachAnimationV3View = {
+        let orbView = CoachAnimationV3View(diameter: kFitWidth(250))
         orbView.backgroundColor = .clear
-        orbView.rotationDuration = 20.0
         return orbView
     }()
     lazy var nextButton: UIButton = {
