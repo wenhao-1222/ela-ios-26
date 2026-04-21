@@ -369,7 +369,7 @@ extension AICoachReportDemoData {
             ]
         ),
         trainingChart: AICoachReportTrainingCardData(
-            title: "力量训练部分",
+            title: "力量训练",
             leftItems: [],
             rightItems: [],
             bottomLeftText: "本周训练天数： 0 天",
@@ -377,7 +377,7 @@ extension AICoachReportDemoData {
         ),
         dailyComparisonTable: AICoachReportWeekTableData(
             title: "本周记录总览",
-            columnTitles: ["日期", "体重(kg)", "热量(kcal)", "蛋白(g)", "碳水(g)", "脂肪(g)", "训练标签"],
+            columnTitles: ["日期", "体重(kg)", "热量(kcal)", "蛋白(g)", "碳水(g)", "脂肪(g)", "力量训练"],
             rows: []
         ),
         weeklyInsightText: "",
@@ -461,7 +461,7 @@ extension AICoachReportDemoData {
             ]
         ),
         trainingChart: AICoachReportTrainingCardData(
-            title: "力量训练部分",
+            title: "力量训练",
             leftItems: [
                 .init(title: "胸", count: 3, maxCount: 3),
                 .init(title: "肩", count: 2, maxCount: 3),
@@ -473,19 +473,19 @@ extension AICoachReportDemoData {
                 .init(title: "腿", count: 3, maxCount: 3),
                 .init(title: "推", count: 2, maxCount: 3)
             ],
-            bottomLeftText: "本周训练天数： 5 天",
-            bottomRightText: "休息天数： 2 天"
+            bottomLeftText: "本周训练天数： 0 天",
+            bottomRightText: "休息天数： 0 天"
         ),
         dailyComparisonTable: AICoachReportWeekTableData(
             title: "本周记录总览",
-            columnTitles: ["日期", "体重(kg)", "热量(kcal)", "蛋白(g)", "碳水(g)", "脂肪(g)", "训练标签"],
+            columnTitles: ["日期", "体重(kg)", "热量(kcal)", "蛋白(g)", "碳水(g)", "脂肪(g)", "力量训练"],
             rows: [
                 .init(values: ["04/01", "73.0", "2050", "128", "210", "58", "胸"]),
                 .init(values: ["04/02", "72.8", "2120", "135", "220", "60", "休息"]),
                 .init(values: ["04/03", "72.6", "2060", "122", "205", "57", "腿"]),
                 .init(values: ["04/04", "72.3", "1980", "130", "185", "55", "背"]),
                 .init(values: ["04/05", "72.2", "2850", "140", "360", "78", "胸"]),
-                .init(values: ["04/06", "-", "2750", "92", "330", "90", "休息"]),
+                .init(values: ["04/06", "-", "2750", "92", "330", "90", "休"]),
                 .init(values: ["04/07", "72.1", "2300", "125", "240", "68", "腿"])
             ]
         ),

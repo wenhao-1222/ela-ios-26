@@ -105,8 +105,8 @@ extension GuidanceProVC {
 //        }
 
         contentContainerView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview()
-            make.top.equalTo(statusBarHeight)
+            make.left.top.right.equalToSuperview()
+//            make.top.equalTo(statusBarHeight)
 //            make.top.equalTo(kFitWidth(126) + statusBarHeight)
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }

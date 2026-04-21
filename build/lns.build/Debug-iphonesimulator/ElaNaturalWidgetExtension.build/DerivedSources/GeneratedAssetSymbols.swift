@@ -784,6 +784,24 @@ extension ImageResource {
     /// The "ela_pro_progress_bg" asset catalog image resource.
     static let elaProProgressBg = ImageResource(name: "ela_pro_progress_bg", bundle: resourceBundle)
 
+    /// The "ela_pro_ready_icon_1" asset catalog image resource.
+    static let elaProReadyIcon1 = ImageResource(name: "ela_pro_ready_icon_1", bundle: resourceBundle)
+
+    /// The "ela_pro_ready_icon_2" asset catalog image resource.
+    static let elaProReadyIcon2 = ImageResource(name: "ela_pro_ready_icon_2", bundle: resourceBundle)
+
+    /// The "ela_pro_ready_icon_3" asset catalog image resource.
+    static let elaProReadyIcon3 = ImageResource(name: "ela_pro_ready_icon_3", bundle: resourceBundle)
+
+    /// The "ela_pro_ready_icon_4" asset catalog image resource.
+    static let elaProReadyIcon4 = ImageResource(name: "ela_pro_ready_icon_4", bundle: resourceBundle)
+
+    /// The "ela_pro_ready_icon_5" asset catalog image resource.
+    static let elaProReadyIcon5 = ImageResource(name: "ela_pro_ready_icon_5", bundle: resourceBundle)
+
+    /// The "ela_pro_ready_icon_6" asset catalog image resource.
+    static let elaProReadyIcon6 = ImageResource(name: "ela_pro_ready_icon_6", bundle: resourceBundle)
+
     /// The "ela_pro_tips_label_icon" asset catalog image resource.
     static let elaProTipsLabelIcon = ImageResource(name: "ela_pro_tips_label_icon", bundle: resourceBundle)
 
@@ -1230,6 +1248,9 @@ extension ImageResource {
 
     /// The "habit_rank_up_icon" asset catalog image resource.
     static let habitRankUpIcon = ImageResource(name: "habit_rank_up_icon", bundle: resourceBundle)
+
+    /// The "habit_ranklist_bg_img" asset catalog image resource.
+    static let habitRanklistBgImg = ImageResource(name: "habit_ranklist_bg_img", bundle: resourceBundle)
 
     /// The "habit_ranklist_empty_img" asset catalog image resource.
     static let habitRanklistEmptyImg = ImageResource(name: "habit_ranklist_empty_img", bundle: resourceBundle)
@@ -5755,6 +5776,60 @@ extension AppKit.NSImage {
 #endif
     }
 
+    /// The "ela_pro_ready_icon_1" asset catalog image.
+    static var elaProReadyIcon1: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProReadyIcon1)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ready_icon_2" asset catalog image.
+    static var elaProReadyIcon2: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProReadyIcon2)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ready_icon_3" asset catalog image.
+    static var elaProReadyIcon3: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProReadyIcon3)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ready_icon_4" asset catalog image.
+    static var elaProReadyIcon4: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProReadyIcon4)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ready_icon_5" asset catalog image.
+    static var elaProReadyIcon5: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProReadyIcon5)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ready_icon_6" asset catalog image.
+    static var elaProReadyIcon6: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .elaProReadyIcon6)
+#else
+        .init()
+#endif
+    }
+
     /// The "ela_pro_tips_label_icon" asset catalog image.
     static var elaProTipsLabelIcon: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
@@ -7091,6 +7166,15 @@ extension AppKit.NSImage {
     static var habitRankUpIcon: AppKit.NSImage {
 #if !targetEnvironment(macCatalyst)
         .init(resource: .habitRankUpIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "habit_ranklist_bg_img" asset catalog image.
+    static var habitRanklistBgImg: AppKit.NSImage {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .habitRanklistBgImg)
 #else
         .init()
 #endif
@@ -11883,6 +11967,60 @@ extension UIKit.UIImage {
 #endif
     }
 
+    /// The "ela_pro_ready_icon_1" asset catalog image.
+    static var elaProReadyIcon1: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProReadyIcon1)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ready_icon_2" asset catalog image.
+    static var elaProReadyIcon2: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProReadyIcon2)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ready_icon_3" asset catalog image.
+    static var elaProReadyIcon3: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProReadyIcon3)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ready_icon_4" asset catalog image.
+    static var elaProReadyIcon4: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProReadyIcon4)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ready_icon_5" asset catalog image.
+    static var elaProReadyIcon5: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProReadyIcon5)
+#else
+        .init()
+#endif
+    }
+
+    /// The "ela_pro_ready_icon_6" asset catalog image.
+    static var elaProReadyIcon6: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .elaProReadyIcon6)
+#else
+        .init()
+#endif
+    }
+
     /// The "ela_pro_tips_label_icon" asset catalog image.
     static var elaProTipsLabelIcon: UIKit.UIImage {
 #if !os(watchOS)
@@ -13219,6 +13357,15 @@ extension UIKit.UIImage {
     static var habitRankUpIcon: UIKit.UIImage {
 #if !os(watchOS)
         .init(resource: .habitRankUpIcon)
+#else
+        .init()
+#endif
+    }
+
+    /// The "habit_ranklist_bg_img" asset catalog image.
+    static var habitRanklistBgImg: UIKit.UIImage {
+#if !os(watchOS)
+        .init(resource: .habitRanklistBgImg)
 #else
         .init()
 #endif

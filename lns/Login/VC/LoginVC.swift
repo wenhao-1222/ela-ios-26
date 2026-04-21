@@ -170,6 +170,7 @@ extension LoginVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let respData = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             
+            DLLog(message: "\(respData)")
             if respData["registered"] as? String ?? "" == "no"{
                 self.notRegistVm.showView()
             }else{

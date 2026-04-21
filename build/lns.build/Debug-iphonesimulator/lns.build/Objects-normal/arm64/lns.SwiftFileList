@@ -6,10 +6,6 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/VC/AICoachReportPDFDemoVC.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportDateAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportAdviceAlertVM.swift
-/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachBreathingOrbPalette.swift
-/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachBreathingOrbView.swift
-/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachBreathingOrbDemoViewController.swift
-/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachRotatingPearlOrbView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFPopup/JFPopup/Classes/General/ActionSheet/JFPopupAction.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFPopup/JFPopup/Classes/Core/JFPopupController.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFPopup/JFPopup/Classes/Core/JFPopupAnimation.swift
@@ -471,6 +467,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceMealsAdjustVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceMealsPerDayVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceMealsSummaryVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/CoachAnimationV3View.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceElaProTransitionVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceNutritionGoalVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Guidance/VM/Guidance/GuidanceReminderPromptVM.swift
@@ -551,6 +548,7 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Foods/FoodsListTypeVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/QuestionnaireSurvey/VM/QuestionnaireSurveyBodyFatVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Invite/InviteRewardsRuleAlertTitleVm.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/Pro/VM/ElaProReadyItemCardView.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Setting/LogsMealsSetAlertVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/Market/Detail/MallDetailBannerVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/Model/NutritionDefaultModel.swift

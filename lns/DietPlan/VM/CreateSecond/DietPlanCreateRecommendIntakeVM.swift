@@ -164,19 +164,26 @@ extension DietPlanCreateRecommendIntakeVM {
             return "预计每月保持稳定"
         }
 
-        let monthlyRate: Double
+//        let monthlyRate: Double
+        let displayValue :String
+        var displayTi = "预计每月"
         switch QuestinonaireMsgModel.shared.paceLevel {
-        case "1", "slight":
-            monthlyRate = 1.0
-        case "3", "major":
-            monthlyRate = 2.8
+        case "1", "slight"://最慢档
+//            monthlyRate = 1.0
+            displayValue = "0.5"
+        case "3", "major"://最快档
+//            monthlyRate = 2.8
+            displayValue = "0.5"
+            displayTi = "预计每周"
         default:
-            monthlyRate = 2.0
+//            monthlyRate = 2.0
+            displayValue = "1"
         }
+        return delta < 0 ? "\(displayTi)减少 \(displayValue)kg" : "\(displayTi)增加 \(displayValue)kg"
 
-        let displayValue = min(abs(delta), monthlyRate)
-        let displayText = formatRate(displayValue)
-        return delta < 0 ? "预计每月减少 \(displayText)kg" : "预计每月增加 \(displayText)kg"
+//        let displayValue = min(abs(delta), monthlyRate)
+//        let displayText = formatRate(displayValue)
+//        return delta < 0 ? "预计每月减少 \(displayText)kg" : "预计每月增加 \(displayText)kg"
     }
 
     func formatRate(_ value: Double) -> String {

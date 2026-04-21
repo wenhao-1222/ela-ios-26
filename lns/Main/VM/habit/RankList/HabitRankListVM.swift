@@ -115,6 +115,13 @@ class HabitRankListVM: UIView {
     }()
 }
 
+private typealias RankMirrorBundle = (
+    container: UIView,
+    cardView: UIView?,
+    shadowHostView: UIView?,
+    mirrorCell: HabitRankTableViewCell
+)
+
 extension HabitRankListVM{
     func updateUI(dict:NSDictionary) {
         if dict.stringValueForKey(key: "weekStartDate").count > 0 &&
@@ -500,27 +507,27 @@ extension HabitRankListVM{
 extension HabitRankListVM{
     //MARK: 造假数据
     private func prepareLeaderboardData(from array: NSArray) -> NSArray {
-        return array
-//        var entries = array.compactMap { $0 as? NSDictionary }
-//        var placeholderIndex = 1
-//
-//        while entries.count < 20 {
-//            let randomScore = Int.random(in: 1...8)
-//            let placeholder: NSDictionary = [
-//                "headimgurl": "",
-//                "nickname": "Tester \(placeholderIndex)",
-//                "donateCount": 0,
-//                "rankPointBalance": "\(randomScore)"
-//            ]
-//            entries.append(placeholder)
-//            placeholderIndex += 1
-//        }
-//
-//        let sortedEntries = entries.sorted {
-//            $0.stringValueForKey(key: "rankPointBalance").intValue > $1.stringValueForKey(key: "rankPointBalance").intValue
-//        }
-//
-//        return Array(sortedEntries.prefix(20)) as NSArray
+//        return array
+        var entries = array.compactMap { $0 as? NSDictionary }
+        var placeholderIndex = 1
+
+        while entries.count < 20 {
+            let randomScore = Int.random(in: 1...8)
+            let placeholder: NSDictionary = [
+                "headimgurl": "",
+                "nickname": "Tester \(placeholderIndex)",
+                "donateCount": 0,
+                "rankPointBalance": "\(randomScore)"
+            ]
+            entries.append(placeholder)
+            placeholderIndex += 1
+        }
+
+        let sortedEntries = entries.sorted {
+            $0.stringValueForKey(key: "rankPointBalance").intValue > $1.stringValueForKey(key: "rankPointBalance").intValue
+        }
+
+        return Array(sortedEntries.prefix(20)) as NSArray
     }
 }
 
@@ -759,19 +766,20 @@ extension HabitRankListVM {
                                            extraVertical: 0)
 
             let snapshot = makeRankMirrorView(dataIndex: sourceSection,
-                                              displayRank: targetSection + 1,
+                                              displayRank: sourceSection + 1,
                                               baseCell: cell,
                                               extraVertical: 0,
                                               avatarOverride: cell?.currentAvatarImage(),
+                                              wrapped: false,
                                               elevated: false)
 
-            snapshot.frame = startFrame
-            overlay.addSubview(snapshot)
+            snapshot.container.frame = startFrame
+            overlay.addSubview(snapshot.container)
 
             if let cell = cell {
                 hideCell(cell)
             }
-            shiftedSnapshots.append((view: snapshot, endFrame: endFrame))
+            shiftedSnapshots.append((view: snapshot.container, endFrame: endFrame))
         }
 
         let movingStartFrame = frameForRankRow(section: oldIndex,
@@ -782,13 +790,15 @@ extension HabitRankListVM {
                                              contentOffset: endOffset,
                                              extraVertical: extraVertical)
 
-        let movingView = makeRankMirrorView(dataIndex: oldIndex,
-                                            displayRank: newIndex + 1,
-                                            baseCell: fromCell,
-                                            extraVertical: extraVertical,
-                                            avatarOverride: avatarOverride ?? fromCell.currentAvatarImage(),
-                                            elevated: true)
+        let movingBundle = makeRankMirrorView(dataIndex: oldIndex,
+                                              displayRank: oldIndex + 1,
+                                              baseCell: fromCell,
+                                              extraVertical: extraVertical,
+                                              avatarOverride: avatarOverride ?? fromCell.currentAvatarImage(),
+                                              wrapped: true,
+                                              elevated: false)
 
+        let movingView = movingBundle.container
         movingView.frame = movingStartFrame
         overlay.addSubview(movingView)
         overlay.bringSubviewToFront(movingView)
@@ -798,27 +808,27 @@ extension HabitRankListVM {
         tableView.isUserInteractionEnabled = false
         tableView.isScrollEnabled = false
 
-        let duration = rankMoveDuration(startFrame: movingStartFrame,
-                                        endFrame: movingEndFrame,
-                                        startOffset: startOffset,
-                                        endOffset: endOffset)
+        let moveDuration = rankMoveDuration(startFrame: movingStartFrame,
+                                            endFrame: movingEndFrame,
+                                            startOffset: startOffset,
+                                            endOffset: endOffset)
+        let rankRefreshDuration: TimeInterval = 0.28
+        let liftDuration: TimeInterval = 0.18
+        let landingDuration: TimeInterval = 0.18
+        let liftedTransform = CGAffineTransform(translationX: 0, y: -kFitWidth(6))
+            .scaledBy(x: 1.02, y: 1.02)
 
-        let timing = UISpringTimingParameters(dampingRatio: 1.0,
-                                               initialVelocity: CGVector(dx: 0, dy: 0))
-
-        let animator = UIViewPropertyAnimator(duration: duration, timingParameters: timing)
-        rankMoveAnimator = animator
-
-        animator.addAnimations {
-            self.tableView.setContentOffset(endOffset, animated: false)
-            movingView.frame = movingEndFrame
-
-            for item in shiftedSnapshots {
-                item.view.frame = item.endFrame
-            }
+        let updateLiftedStyle: (Bool) -> Void = { lifted in
+            let targetCornerRadius = lifted ? CGFloat(0) : kFitWidth(12)
+            movingBundle.cardView?.layer.cornerRadius = targetCornerRadius
+            movingBundle.shadowHostView?.layer.cornerRadius = targetCornerRadius
+            movingBundle.shadowHostView?.layer.shadowColor = UIColor.black.cgColor
+            movingBundle.shadowHostView?.layer.shadowRadius = lifted ? 12 : 8
+            movingBundle.shadowHostView?.layer.shadowOffset = lifted ? CGSize(width: 0, height: 8) : CGSize(width: 0, height: 4)
+            movingBundle.shadowHostView?.layer.shadowOpacity = lifted ? 0.2 : 0
         }
 
-        animator.addCompletion { [weak self] _ in
+        let finishAnimation: () -> Void = { [weak self] in
             guard let self = self else { return }
 
             for cell in hiddenCells {
@@ -835,7 +845,15 @@ extension HabitRankListVM {
                 self.tableView.layoutIfNeeded()
             }
 
-            overlay.removeFromSuperview()
+            self.animateVisibleRankRefresh()
+
+            UIView.animate(withDuration: 0.18,
+                           delay: 0,
+                           options: [.curveEaseOut, .beginFromCurrentState]) {
+                overlay.alpha = 0
+            } completion: { _ in
+                overlay.removeFromSuperview()
+            }
 
             self.tableView.isScrollEnabled = true
             self.tableView.isUserInteractionEnabled = true
@@ -844,7 +862,52 @@ extension HabitRankListVM {
             self.isRankMoveAnimating = false
         }
 
-        animator.startAnimation(afterDelay: 0.1)
+        let startMoveStage: () -> Void = { [weak self] in
+            guard let self = self else { return }
+
+            let timing = UISpringTimingParameters(dampingRatio: 1.0,
+                                                  initialVelocity: CGVector(dx: 0, dy: 0))
+            let animator = UIViewPropertyAnimator(duration: moveDuration, timingParameters: timing)
+            self.rankMoveAnimator = animator
+
+            animator.addAnimations {
+                self.tableView.setContentOffset(endOffset, animated: false)
+                movingView.frame = movingEndFrame
+
+                for item in shiftedSnapshots {
+                    item.view.frame = item.endFrame
+                }
+            }
+
+            animator.addCompletion { _ in
+                UIView.animate(withDuration: landingDuration,
+                               delay: 0,
+                               options: [.curveEaseOut, .beginFromCurrentState]) {
+                    movingView.transform = .identity
+                    updateLiftedStyle(false)
+                } completion: { _ in
+                    finishAnimation()
+                }
+            }
+
+            animator.startAnimation()
+        }
+
+        let startLiftStage: () -> Void = {
+            UIView.animate(withDuration: liftDuration,
+                           delay: 0,
+                           options: [.curveEaseOut, .beginFromCurrentState]) {
+                movingView.transform = liftedTransform
+                updateLiftedStyle(true)
+            } completion: { _ in
+                startMoveStage()
+            }
+        }
+
+        movingBundle.mirrorCell.animateRankTransition(to: newIndex + 1,
+                                                      duration: rankRefreshDuration) {
+            startLiftStage()
+        }
     }
     private func safeSnapshot(of view: UIView) -> UIView {
 
@@ -906,10 +969,11 @@ extension HabitRankListVM {
                                     baseCell: HabitRankTableViewCell?,
                                     extraVertical: CGFloat,
                                     avatarOverride: UIImage?,
-                                    elevated: Bool) -> UIView {
-
+                                    wrapped: Bool,
+                                    elevated: Bool) -> RankMirrorBundle {
         guard displayedDataArray.count > 0 else {
-            return UIView(frame: .zero)
+            let mirror = HabitRankTableViewCell(style: .default, reuseIdentifier: nil)
+            return (mirror, nil, nil, mirror)
         }
 
         let maxIndex = displayedDataArray.count - 1
@@ -940,8 +1004,8 @@ extension HabitRankListVM {
         mirror.contentView.setNeedsLayout()
         mirror.contentView.layoutIfNeeded()
 
-        guard elevated || extraVertical > 0 else {
-            return mirror
+        guard wrapped || elevated || extraVertical > 0 else {
+            return (mirror, nil, nil, mirror)
         }
 
         let innerHeight = cellHeight + extraVertical * 2
@@ -951,7 +1015,7 @@ extension HabitRankListVM {
                                          width: cellWidth,
                                          height: innerHeight))
         inner.backgroundColor = .COLOR_CELL_HIGHLIGHT_BG
-        inner.layer.cornerRadius = 12
+        inner.layer.cornerRadius = kFitWidth(12)
         inner.clipsToBounds = true
         inner.isUserInteractionEnabled = false
 
@@ -964,20 +1028,29 @@ extension HabitRankListVM {
         let outer = UIView(frame: inner.bounds)
         outer.backgroundColor = .clear
         outer.isUserInteractionEnabled = false
-        outer.layer.cornerRadius = 12
-
-        if elevated {
-            outer.layer.shadowColor = UIColor.black.cgColor
-            outer.layer.shadowOpacity = 0.16
-            outer.layer.shadowRadius = 10
-            outer.layer.shadowOffset = CGSize(width: 0, height: 5)
-            outer.layer.shadowPath = UIBezierPath(roundedRect: outer.bounds, cornerRadius: 12).cgPath
-            outer.layer.shouldRasterize = true
-            outer.layer.rasterizationScale = UIScreen.main.scale
-        }
+        outer.layer.cornerRadius = kFitWidth(12)
+        outer.layer.shadowColor = UIColor.black.cgColor
+        outer.layer.shadowOpacity = elevated ? 0.16 : 0
+        outer.layer.shadowRadius = elevated ? 10 : 8
+        outer.layer.shadowOffset = elevated ? CGSize(width: 0, height: 5) : CGSize(width: 0, height: 4)
 
         outer.addSubview(inner)
-        return outer
+        return (outer, inner, outer, mirror)
+    }
+
+    private func animateVisibleRankRefresh() {
+        let visibleRankCells = tableView.visibleCells
+            .compactMap { $0 as? HabitRankTableViewCell }
+            .sorted { lhs, rhs in
+                let lhsSection = tableView.indexPath(for: lhs)?.section ?? 0
+                let rhsSection = tableView.indexPath(for: rhs)?.section ?? 0
+                return lhsSection < rhsSection
+            }
+
+        for (index, cell) in visibleRankCells.enumerated() {
+            let delay = min(TimeInterval(index) * 0.035, 0.18)
+            cell.animateRankRefreshReveal(delay: delay)
+        }
     }
 }
 

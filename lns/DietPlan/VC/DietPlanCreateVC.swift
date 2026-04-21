@@ -47,9 +47,18 @@ class DietPlanCreateVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
+//        let profileGender = normalizedProfileGender()
+//        let questionnaireGender = normalizedGenderValue(QuestinonaireMsgModel.shared.sex)
+//        return profileGender != "" && profileGender != questionnaireGender
+        
         syncProfileFromUserInfoIfNeeded(applyDefaultValues: true)
         observeDraftChanges()
-        restoreDraftIfNeeded()
+        
+        if (UserInfoModel.shared.gender == "1" || UserInfoModel.shared.gender == "2") && UserInfoModel.shared.gender != QuestinonaireMsgModel.shared.sex{
+            
+        }else{
+            restoreDraftIfNeeded()
+        }
     }
     
     deinit {

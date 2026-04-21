@@ -76,46 +76,6 @@
     "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
     "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
   },
-  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachBreathingOrbDemoViewController.swift" : {
-    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbDemoViewController.swiftconstvalues",
-    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbDemoViewController.d",
-    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbDemoViewController.dia",
-    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbDemoViewController.o",
-    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbDemoViewController.bc",
-    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbDemoViewController.o",
-    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbDemoViewController.swiftdeps",
-    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbDemoViewController~partial.swiftmodule"
-  },
-  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachBreathingOrbPalette.swift" : {
-    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbPalette.swiftconstvalues",
-    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbPalette.d",
-    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbPalette.dia",
-    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbPalette.o",
-    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbPalette.bc",
-    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbPalette.o",
-    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbPalette.swiftdeps",
-    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbPalette~partial.swiftmodule"
-  },
-  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachBreathingOrbView.swift" : {
-    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbView.swiftconstvalues",
-    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbView.d",
-    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbView.dia",
-    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbView.o",
-    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbView.bc",
-    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbView.o",
-    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbView.swiftdeps",
-    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbView~partial.swiftmodule"
-  },
-  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachBreathingOrbDemo/AICoachRotatingPearlOrbView.swift" : {
-    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachRotatingPearlOrbView.swiftconstvalues",
-    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachRotatingPearlOrbView.d",
-    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachRotatingPearlOrbView.dia",
-    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachRotatingPearlOrbView.o",
-    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachRotatingPearlOrbView.bc",
-    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachRotatingPearlOrbView.o",
-    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachRotatingPearlOrbView.swiftdeps",
-    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachRotatingPearlOrbView~partial.swiftmodule"
-  },
   "/Users/lns2/Desktop/lnsapp-ios/lns/AI/CoachReportPDFDemo/AICoachReportAdviceAlertVM.swift" : {
     "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportAdviceAlertVM.swiftconstvalues",
     "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportAdviceAlertVM.d",
@@ -485,6 +445,16 @@
     "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachPreInfoVM.o",
     "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachPreInfoVM.swiftdeps",
     "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachPreInfoVM~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/CoachAnimationV3View.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CoachAnimationV3View.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CoachAnimationV3View.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CoachAnimationV3View.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CoachAnimationV3View.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CoachAnimationV3View.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CoachAnimationV3View.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CoachAnimationV3View.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CoachAnimationV3View~partial.swiftmodule"
   },
   "/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/RippleAnimationView.swift" : {
     "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/RippleAnimationView.swiftconstvalues",
@@ -10045,6 +10015,16 @@
     "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProProgressVM.o",
     "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProProgressVM.swiftdeps",
     "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProProgressVM~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Pro/VM/ElaProReadyItemCardView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProReadyItemCardView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProReadyItemCardView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProReadyItemCardView.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProReadyItemCardView.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProReadyItemCardView.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProReadyItemCardView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProReadyItemCardView.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProReadyItemCardView~partial.swiftmodule"
   },
   "/Users/lns2/Desktop/lnsapp-ios/lns/Pro/VM/ElaProReadyVM.swift" : {
     "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProReadyVM.swiftconstvalues",

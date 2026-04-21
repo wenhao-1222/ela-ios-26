@@ -476,7 +476,7 @@ private extension AICoachReportAdviceAlertVM {
     }
 
     func indicatorColor(for kind: ActionKind) -> UIColor {
-        kind == .primary ? .white : AICoachReportDemoPalette.themeBlue
+        kind == .primary ? AICoachReportDemoPalette.themeBlue : .white
     }
 
     func button(for kind: ActionKind) -> UIButton {

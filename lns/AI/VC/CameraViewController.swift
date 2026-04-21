@@ -863,6 +863,7 @@ extension CameraViewController {
             parameters: param as [String : AnyObject],
             isNeedToast: true,
             vc: self,
+            timeOut: 10,
             taskId: taskId
         ) { responseObject in
             var currentModel = self.taskModels[0]
@@ -883,6 +884,8 @@ extension CameraViewController {
                 currentModel.resultObj = responseObject as NSDictionary
                 self.taskModels[modelIndex] = currentModel
             }
+        }failure: { responseObject in
+            self.dealNetResutl(responseObject: ["code":502])
         }
     }
     

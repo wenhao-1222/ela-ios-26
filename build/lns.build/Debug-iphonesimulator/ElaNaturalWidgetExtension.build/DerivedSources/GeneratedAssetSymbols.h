@@ -762,6 +762,24 @@ static NSString * const ACImageNameElaProIcon24 AC_SWIFT_PRIVATE = @"ela_pro_ico
 /// The "ela_pro_progress_bg" asset catalog image resource.
 static NSString * const ACImageNameElaProProgressBg AC_SWIFT_PRIVATE = @"ela_pro_progress_bg";
 
+/// The "ela_pro_ready_icon_1" asset catalog image resource.
+static NSString * const ACImageNameElaProReadyIcon1 AC_SWIFT_PRIVATE = @"ela_pro_ready_icon_1";
+
+/// The "ela_pro_ready_icon_2" asset catalog image resource.
+static NSString * const ACImageNameElaProReadyIcon2 AC_SWIFT_PRIVATE = @"ela_pro_ready_icon_2";
+
+/// The "ela_pro_ready_icon_3" asset catalog image resource.
+static NSString * const ACImageNameElaProReadyIcon3 AC_SWIFT_PRIVATE = @"ela_pro_ready_icon_3";
+
+/// The "ela_pro_ready_icon_4" asset catalog image resource.
+static NSString * const ACImageNameElaProReadyIcon4 AC_SWIFT_PRIVATE = @"ela_pro_ready_icon_4";
+
+/// The "ela_pro_ready_icon_5" asset catalog image resource.
+static NSString * const ACImageNameElaProReadyIcon5 AC_SWIFT_PRIVATE = @"ela_pro_ready_icon_5";
+
+/// The "ela_pro_ready_icon_6" asset catalog image resource.
+static NSString * const ACImageNameElaProReadyIcon6 AC_SWIFT_PRIVATE = @"ela_pro_ready_icon_6";
+
 /// The "ela_pro_tips_label_icon" asset catalog image resource.
 static NSString * const ACImageNameElaProTipsLabelIcon AC_SWIFT_PRIVATE = @"ela_pro_tips_label_icon";
 
@@ -1208,6 +1226,9 @@ static NSString * const ACImageNameHabitRankTimeIcon AC_SWIFT_PRIVATE = @"habit_
 
 /// The "habit_rank_up_icon" asset catalog image resource.
 static NSString * const ACImageNameHabitRankUpIcon AC_SWIFT_PRIVATE = @"habit_rank_up_icon";
+
+/// The "habit_ranklist_bg_img" asset catalog image resource.
+static NSString * const ACImageNameHabitRanklistBgImg AC_SWIFT_PRIVATE = @"habit_ranklist_bg_img";
 
 /// The "habit_ranklist_empty_img" asset catalog image resource.
 static NSString * const ACImageNameHabitRanklistEmptyImg AC_SWIFT_PRIVATE = @"habit_ranklist_empty_img";

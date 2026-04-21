@@ -82,10 +82,6 @@
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/AICoachReportPDFDemoVC.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/AICoachReportDateAlertVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/AICoachReportAdviceAlertVM.o
-/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/AICoachBreathingOrbPalette.o
-/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/AICoachBreathingOrbView.o
-/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/AICoachBreathingOrbDemoViewController.o
-/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/AICoachRotatingPearlOrbView.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/JFPopupAction.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/JFPopupController.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/JFPopupAnimation.o
@@ -547,6 +543,7 @@
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceMealsAdjustVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceMealsPerDayVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceMealsSummaryVM.o
+/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/CoachAnimationV3View.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceElaProTransitionVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceNutritionGoalVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuidanceReminderPromptVM.o
@@ -627,6 +624,7 @@
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/FoodsListTypeVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/QuestionnaireSurveyBodyFatVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/InviteRewardsRuleAlertTitleVm.o
+/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/ElaProReadyItemCardView.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/LogsMealsSetAlertVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/MallDetailBannerVM.o
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/NutritionDefaultModel.o

@@ -28,7 +28,7 @@ class NetworkMonitor {
     private let maxPendingTime: TimeInterval = 30.0 // 最多挂起30秒
 
     // 不允许自动重试的接口关键词
-    private let nonRetryRequestKeywords = ["pay"]//["login", "pay", "支付", "登录"]
+    private let nonRetryRequestKeywords = ["pay","ai_identify_image"]//["login", "pay", "支付", "登录"]
 
     private init() {
         reachabilityManager = NetworkReachabilityManager()

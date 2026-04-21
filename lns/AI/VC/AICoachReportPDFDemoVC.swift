@@ -343,6 +343,7 @@ private extension AICoachReportPDFDemoVC {
         pdfView.document = document
         pdfView.minScaleFactor = pdfView.scaleFactorForSizeToFit
         pdfView.scaleFactor = pdfView.scaleFactorForSizeToFit
+        pdfView.maxScaleFactor = pdfView.minScaleFactor * 4
         isPDFLoaded = true
         updateAdviceButtonState()
     }

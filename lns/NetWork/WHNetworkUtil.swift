@@ -24,7 +24,7 @@ class WHNetworkUtil: SessionManager {
         
         let configration = URLSessionConfiguration.default
         configration.httpAdditionalHeaders = header
-        configration.timeoutIntervalForRequest = 5
+        configration.timeoutIntervalForRequest = 10
         
         let manager = SessionManager.default
         manager.delegate.sessionDidReceiveChallenge = {

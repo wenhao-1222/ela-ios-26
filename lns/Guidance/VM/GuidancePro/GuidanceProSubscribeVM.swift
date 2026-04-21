@@ -23,7 +23,7 @@ class GuidanceProSubscribeVM: UIView {
 
     private lazy var loadingOverlayView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white.withAlphaComponent(0.72)
+        view.backgroundColor = UIColor.COLOR_BG_WHITE.withAlphaComponent(0.72)
         view.isHidden = true
         return view
     }()

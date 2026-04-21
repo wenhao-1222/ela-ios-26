@@ -84,6 +84,7 @@ class HabitRankListHeadCupVM: UIView {
     lazy var timeImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "habit_rank_time_icon")
+        img.alpha = 0
         
         return img
     }()
@@ -196,6 +197,7 @@ extension HabitRankListHeadCupVM{
             
             UIView.animate(withDuration: 0.25) {
                 self.timeCountLabel.alpha = 0
+                self.timeImgView.alpha = 0
             }
             self.timer?.invalidate()
             self.timer = nil
@@ -217,6 +219,7 @@ extension HabitRankListHeadCupVM{
         if self.timeCountLabel.alpha < 1{
             UIView.animate(withDuration: 0.5) {
                 self.timeCountLabel.alpha = 1
+                self.timeImgView.alpha = 1
             }
         }
     }

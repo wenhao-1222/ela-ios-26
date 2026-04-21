@@ -24,8 +24,7 @@ private func triggerImpact(_ generator: UIImpactFeedbackGenerator, intensity: CG
 extension UIButton {
     func showLoadingIndicator(color: UIColor = .white) {
         isUserInteractionEnabled = false
-        self.titleLabel?.alpha = 0
-        self.imageView?.alpha = 0
+        setStatusContentHidden(true)
         removeSuccessIndicator()
         var spinner = objc_getAssociatedObject(self, &spinnerKey) as? UIActivityIndicatorView
         if spinner == nil {
@@ -44,8 +43,7 @@ extension UIButton {
 
     func hideLoadingIndicator() {
         isUserInteractionEnabled = true
-        self.titleLabel?.alpha = 1
-        self.imageView?.alpha = 1
+        setStatusContentHidden(false)
         if let spinner = objc_getAssociatedObject(self, &spinnerKey) as? UIActivityIndicatorView {
             spinner.stopAnimating()
             spinner.removeFromSuperview()
@@ -56,8 +54,7 @@ extension UIButton {
     func showSuccessIndicator(tintColor: UIColor = .white, completion: (() -> Void)? = nil) {
         hideLoadingIndicator()
         isUserInteractionEnabled = false
-        titleLabel?.alpha = 0
-        imageView?.alpha = 0
+        setStatusContentHidden(true)
 
         let checkImageView: UIImageView
         if let existingView = objc_getAssociatedObject(self, &successImageViewKey) as? UIImageView {
@@ -78,7 +75,8 @@ extension UIButton {
         }
 
         if #available(iOS 13.0, *) {
-            checkImageView.image = UIImage(systemName: "checkmark")
+            let config = UIImage.SymbolConfiguration(pointSize: 17, weight: .bold)
+            checkImageView.image = UIImage(systemName: "checkmark", withConfiguration: config)
         } else {
             checkImageView.image = nil
         }
@@ -101,8 +99,7 @@ extension UIButton {
     func resetStatusIndicators() {
         hideLoadingIndicator()
         removeSuccessIndicator()
-        titleLabel?.alpha = 1
-        imageView?.alpha = 1
+        setStatusContentHidden(false)
         transform = .identity
     }
 
@@ -111,6 +108,15 @@ extension UIButton {
             successImageView.removeFromSuperview()
             objc_setAssociatedObject(self, &successImageViewKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
+    }
+
+    private func setStatusContentHidden(_ isHidden: Bool) {
+        titleLabel?.isHidden = isHidden
+        imageView?.isHidden = isHidden
+        titleLabel?.alpha = isHidden ? 0 : 1
+        imageView?.alpha = isHidden ? 0 : 1
+        setNeedsLayout()
+        layoutIfNeeded()
     }
 }
 

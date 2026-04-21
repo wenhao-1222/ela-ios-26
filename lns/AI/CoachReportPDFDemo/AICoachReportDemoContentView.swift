@@ -570,15 +570,10 @@ private extension AICoachReportDemoContentView {
         contentStack.axis = .vertical
         contentStack.spacing = 14
 
-        let columnStack = UIStackView()
-        columnStack.axis = .horizontal
-        columnStack.spacing = 14
-        columnStack.distribution = .fillEqually
-
-        let leftColumn = makeTrainingColumn(report.trainingChart.leftItems)
-        let rightColumn = makeTrainingColumn(report.trainingChart.rightItems)
-        columnStack.addArrangedSubview(leftColumn)
-        columnStack.addArrangedSubview(rightColumn)
+        let rowsStack = makeTrainingRows(
+            leftItems: report.trainingChart.leftItems,
+            rightItems: report.trainingChart.rightItems
+        )
 
         let bottomLeft = UILabel()
         bottomLeft.font = .systemFont(ofSize: 12.5, weight: .medium)
@@ -605,7 +600,7 @@ private extension AICoachReportDemoContentView {
 
         card.addSubview(contentStack)
         contentStack.addArrangedSubview(titleLabel)
-        contentStack.addArrangedSubview(columnStack)
+        contentStack.addArrangedSubview(rowsStack)
         contentStack.addArrangedSubview(spacer)
         contentStack.addArrangedSubview(footerRow)
 
@@ -619,6 +614,41 @@ private extension AICoachReportDemoContentView {
         bottomRight.setContentHuggingPriority(.required, for: .horizontal)
 
         return card
+    }
+
+    func makeTrainingRows(
+        leftItems: [AICoachReportTrainingItem],
+        rightItems: [AICoachReportTrainingItem]
+    ) -> UIView {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 9
+
+        let rowCount = max(leftItems.count, rightItems.count)
+        guard rowCount > 0 else { return stack }
+
+        for index in 0..<rowCount {
+            let rowStack = UIStackView()
+            rowStack.axis = .horizontal
+            rowStack.spacing = 14
+            rowStack.distribution = .fillEqually
+
+            if index < leftItems.count {
+                rowStack.addArrangedSubview(makeTrainingRow(leftItems[index]))
+            } else {
+                rowStack.addArrangedSubview(UIView())
+            }
+
+            if index < rightItems.count {
+                rowStack.addArrangedSubview(makeTrainingRow(rightItems[index]))
+            } else {
+                rowStack.addArrangedSubview(UIView())
+            }
+
+            stack.addArrangedSubview(rowStack)
+        }
+
+        return stack
     }
 
     func makeDailyComparisonTableCard() -> UIView {
@@ -868,21 +898,19 @@ private extension AICoachReportDemoContentView {
         return row
     }
 
-    func makeTrainingColumn(_ items: [AICoachReportTrainingItem]) -> UIView {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = 9
-        items.forEach { stack.addArrangedSubview(makeTrainingRow($0)) }
-        return stack
-    }
-
     func makeTrainingRow(_ item: AICoachReportTrainingItem) -> UIView {
         let row = UIView()
 
         let nameLabel = UILabel()
         nameLabel.font = .systemFont(ofSize: 12.5, weight: .semibold)
         nameLabel.textColor = AICoachReportDemoPalette.textSecondary
+        nameLabel.textAlignment = .left
+        nameLabel.numberOfLines = 1
+        nameLabel.lineBreakMode = .byTruncatingTail
+        nameLabel.setContentHuggingPriority(.required, for: .horizontal)
+        nameLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         nameLabel.text = item.title
+        let reservedNameWidth = ceil(("小腿" as NSString).size(withAttributes: [.font: nameLabel.font as Any]).width)
 
         let barTrack = UIView()
         barTrack.backgroundColor = .clear
@@ -894,6 +922,9 @@ private extension AICoachReportDemoContentView {
         let countLabel = UILabel()
         countLabel.font = .systemFont(ofSize: 12.5, weight: .medium)
         countLabel.textColor = AICoachReportDemoPalette.textSecondary
+        countLabel.textAlignment = .right
+        countLabel.setContentHuggingPriority(.required, for: .horizontal)
+        countLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         countLabel.text = "\(item.count)"
 
         row.addSubview(nameLabel)
@@ -903,16 +934,15 @@ private extension AICoachReportDemoContentView {
 
         nameLabel.snp.makeConstraints { make in
             make.left.top.bottom.equalToSuperview()
-            make.width.equalTo(14)
+            make.width.equalTo(reservedNameWidth)
         }
         countLabel.snp.makeConstraints { make in
-            make.left.equalTo(barTrack.snp.right).offset(9)
             make.centerY.equalToSuperview()
-            make.right.lessThanOrEqualToSuperview()
+            make.right.equalToSuperview()
         }
         barTrack.snp.makeConstraints { make in
             make.left.equalTo(nameLabel.snp.right).offset(10)
-            make.width.equalTo(76)
+            make.right.equalTo(countLabel.snp.left).offset(-9)
             make.centerY.equalToSuperview()
             make.height.equalTo(4)
         }

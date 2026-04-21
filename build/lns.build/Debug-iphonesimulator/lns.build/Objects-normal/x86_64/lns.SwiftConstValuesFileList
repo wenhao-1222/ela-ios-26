@@ -6,10 +6,6 @@
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportPDFDemoVC.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportDateAlertVM.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachReportAdviceAlertVM.swiftconstvalues
-/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbPalette.swiftconstvalues
-/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbView.swiftconstvalues
-/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachBreathingOrbDemoViewController.swiftconstvalues
-/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AICoachRotatingPearlOrbView.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JFPopupAction.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JFPopupController.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JFPopupAnimation.swiftconstvalues
@@ -471,6 +467,7 @@
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GuidanceMealsAdjustVM.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GuidanceMealsPerDayVM.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GuidanceMealsSummaryVM.swiftconstvalues
+/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CoachAnimationV3View.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GuidanceElaProTransitionVM.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GuidanceNutritionGoalVM.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GuidanceReminderPromptVM.swiftconstvalues
@@ -551,6 +548,7 @@
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/FoodsListTypeVM.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/QuestionnaireSurveyBodyFatVM.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/InviteRewardsRuleAlertTitleVm.swiftconstvalues
+/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProReadyItemCardView.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/LogsMealsSetAlertVM.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MallDetailBannerVM.swiftconstvalues
 /Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/NutritionDefaultModel.swiftconstvalues

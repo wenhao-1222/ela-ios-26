@@ -31,7 +31,7 @@ class HabitVC: WHBaseViewVC {
         let img = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         img.setImgLocal(imgName: "habit_ranklist_bg_img")
         img.contentMode = .scaleAspectFit
-        img.alpha = 0
+//        img.alpha = 0
         
         return img
     }()
@@ -132,11 +132,9 @@ extension HabitVC{
         topTypeVm.changeType(isLeft: !isShowingRank)
         rankListVm.updateVisibility(isVisible: isShowingRank)
         
-        UIView.animate(withDuration: 0.25, delay: 0) {
-//            self.navigationView.backgroundColor = .COLOR_BG_F2
-//            self.view.backgroundColor = .COLOR_BG_F2
-            self.bgImgView.alpha = isShowingRank ? 1 : 0
-        }
+//        UIView.animate(withDuration: 0.25, delay: 0) {
+//            self.bgImgView.alpha = isShowingRank ? 1 : 0
+//        }
         if !isShowingRank {
             progressVm.triggerPointAnimationIfNeeded()
         }

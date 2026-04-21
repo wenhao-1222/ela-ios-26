@@ -11,10 +11,7 @@ import MCToast
 class DietPlanCreateSecondVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
-    private var shouldShowSexStep: Bool {
-        let gender = normalizedProfileGender()
-        return gender != "1" && gender != "2"
-    }
+    private var shouldShowSexStep = false
     private var isDateStepEnabled = false
     private var isShowingManualTargetEditor = false
     private var shouldPreserveManualTargetCalories = false
@@ -54,6 +51,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         canEdgeBack = false
+        shouldShowSexStep = resolvedShouldShowSexStep()
         initUI()
         sendDietMsgRequest()
     }
@@ -72,9 +70,9 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         }
         return vm
     }()
-    lazy var stepsArray: [Int] = {
+    var stepsArray: [Int] {
         return shouldShowSexStep ? [5,3,4] : [4,3,4]
-    }()
+    }
     lazy var nextButton: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("下一步", for: .normal)
@@ -431,6 +429,53 @@ extension DietPlanCreateSecondVC{
 
         return .unknown
     }
+
+    func resolvedShouldShowSexStep() -> Bool {
+        let profileGender = normalizedProfileGender()
+        let questionnaireGender = normalizedGenderValue(QuestinonaireMsgModel.shared.sex)
+        return profileGender != "" && profileGender != questionnaireGender
+    }
+
+    func updateShouldShowSexStepIfNeeded(_ shouldShow: Bool) {
+        guard shouldShowSexStep != shouldShow else {
+            return
+        }
+        shouldShowSexStep = shouldShow
+        guard isViewLoaded else {
+            return
+        }
+        refreshVisibleStepLayout()
+    }
+
+    func refreshVisibleStepLayout() {
+        updateStepFrame(dateVm, index: 0)
+        updateStepFrame(sexVm, index: 1)
+        updateStepFrame(weightVm, index: visibleStepIndex(forBaseIndex: 1))
+        updateStepFrame(targetWeightVm, index: visibleStepIndex(forBaseIndex: 2))
+        updateStepFrame(bodyfatVm, index: visibleStepIndex(forBaseIndex: 3))
+        updateStepFrame(eventsVm, index: visibleStepIndex(forBaseIndex: 4))
+        updateStepFrame(paceVm, index: visibleStepIndex(forBaseIndex: 5))
+        updateStepFrame(recommendIntakeVm, index: visibleStepIndex(forBaseIndex: 6))
+        updateStepFrame(eatStyleVm, index: visibleStepIndex(forBaseIndex: 7))
+        updateStepFrame(allergyVm, index: visibleStepIndex(forBaseIndex: 8))
+        updateStepFrame(specialAdjustmentVm, index: visibleStepIndex(forBaseIndex: 9))
+        updateStepFrame(mealModeVm, index: visibleStepIndex(forBaseIndex: 10))
+
+        sexVm.isHidden = !shouldShowSexStep
+        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalVisibleStepCount), height: 0)
+
+        let maxIndex = max(totalVisibleStepCount - 1, 0)
+        currentIndex = min(currentIndex, maxIndex)
+
+        let maxOffsetX = max(scrollViewBase.contentSize.width - scrollViewBase.bounds.width, 0)
+        let targetOffsetX = min(SCREEN_WIDHT * CGFloat(currentIndex), maxOffsetX)
+        scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: false)
+        updateNextButtonForCurrentStep(animated: false)
+    }
+
+    func updateStepFrame(_ stepView: UIView, index: Int) {
+        stepView.frame.origin.x = SCREEN_WIDHT * CGFloat(index)
+    }
 }
 
 extension DietPlanCreateSecondVC{
@@ -461,9 +506,6 @@ extension DietPlanCreateSecondVC{
         scrollViewBase.addSubview(allergyVm)
         scrollViewBase.addSubview(specialAdjustmentVm)
         scrollViewBase.addSubview(mealModeVm)
-        sexVm.isHidden = !shouldShowSexStep
-        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalVisibleStepCount), height: 0)
-        
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
@@ -471,7 +513,7 @@ extension DietPlanCreateSecondVC{
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
         }
 
-        updateNextButtonForCurrentStep(animated: false)
+        refreshVisibleStepLayout()
     }
 }
 
@@ -594,8 +636,7 @@ extension DietPlanCreateSecondVC{
 extension DietPlanCreateSecondVC {
     func applyDietQuestionnaireData(_ data: NSDictionary) {
         let model = QuestinonaireMsgModel.shared
-//        UserInfoModel.shared.gender
-//        model.sex = stringValue(from: data["gender"])
+        model.sex = normalizedGenderValue(stringValue(from: data["gender"]))
         model.birthDay = birthYear(from: data["birthday"])
         model.goal = mapUserGoals(from: intArrayValue(from: data["userGoal"]))
         model.height = stringValue(from: data["height"])
@@ -620,6 +661,7 @@ extension DietPlanCreateSecondVC {
             hasRestoredDateRangeFromResponse = true
         }
 
+        updateShouldShowSexStepIfNeeded(resolvedShouldShowSexStep())
         applyRestoredQuestionnaireDataToCurrentSteps()
         model.printModelMsg()
     }

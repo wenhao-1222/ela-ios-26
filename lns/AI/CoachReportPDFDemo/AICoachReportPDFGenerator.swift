@@ -8,10 +8,14 @@
 import UIKit
 
 enum AICoachReportPDFGenerator {
-    static let pageSize = CGSize(width: 1920, height: 2880)
     private static let layoutPageSize = CGSize(width: 960, height: 1440)
     private static let layoutPageInsets = UIEdgeInsets(top: 28, left: 28, bottom: 36, right: 28)
-    private static let renderScale = pageSize.width / layoutPageSize.width
+    // 以更高分辨率栅格化页面，避免 PDFView 放大后过快暴露底图像素感。
+    private static let renderScale: CGFloat = 4
+    static let pageSize = CGSize(
+        width: layoutPageSize.width * renderScale,
+        height: layoutPageSize.height * renderScale
+    )
 
     static func generate(report: AICoachReportDemoData) throws -> URL {
         let contentWidth = layoutPageSize.width - layoutPageInsets.left - layoutPageInsets.right
@@ -42,6 +46,8 @@ enum AICoachReportPDFGenerator {
                 let cgContext = context.cgContext
                 cgContext.setFillColor(UIColor.white.cgColor)
                 cgContext.fill(pageBounds)
+                cgContext.interpolationQuality = .high
+                cgContext.setShouldAntialias(true)
 
                 cgContext.saveGState()
                 cgContext.clip(to: CGRect(

@@ -14,6 +14,7 @@ class HabitRankTableViewCell: UITableViewCell {
     static let identifier = "HabitRankTableViewCell"
     private var avatarRequestID = UUID()
     private var currentAvatarURL = ""
+    private var currentDisplayedRank = 0
 
     // MARK: - UI
     
@@ -30,6 +31,12 @@ class HabitRankTableViewCell: UITableViewCell {
         img.setImgLocal(imgName: "habit_ranklist_one")
         
         return img
+    }()
+    private let rankContainerView: UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+        view.backgroundColor = .clear
+        return view
     }()
     private let rankLabel: UILabel = {
         let label = UILabel()
@@ -108,6 +115,11 @@ class HabitRankTableViewCell: UITableViewCell {
         currentAvatarURL = ""
         avatarImageView.kf.cancelDownloadTask()
         avatarImageView.image = nil
+        rankContainerView.alpha = 1
+        rankContainerView.transform = .identity
+        rankContainerView.layer.sublayers?
+            .filter { $0.name == "HabitRankSweepLayer" }
+            .forEach { $0.removeFromSuperlayer() }
     }
 
     // MARK: - Setup
@@ -118,8 +130,9 @@ class HabitRankTableViewCell: UITableViewCell {
         contentView.backgroundColor = .COLOR_CARD_BG_WHITE
 
         contentView.addSubview(bgView)
-        bgView.addSubview(degreeImgView)
-        bgView.addSubview(rankLabel)
+        bgView.addSubview(rankContainerView)
+        rankContainerView.addSubview(degreeImgView)
+        rankContainerView.addSubview(rankLabel)
         bgView.addSubview(avatarImageView)
         bgView.addSubview(nameStackView)
         bgView.addSubview(scoreLabel)
@@ -134,15 +147,19 @@ class HabitRankTableViewCell: UITableViewCell {
             make.left.top.width.bottom.equalToSuperview()
 //            make.bottom.equalTo(kFitWidth(-25))
         }
+        rankContainerView.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(13))
+            make.centerY.equalToSuperview()
+            make.width.equalTo(kFitWidth(46))
+            make.height.equalTo(kFitWidth(32))
+        }
         degreeImgView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.centerY.lessThanOrEqualToSuperview()
+            make.center.equalToSuperview()
             make.width.equalTo(kFitWidth(24))
             make.height.equalTo(kFitWidth(30))
         }
         rankLabel.snp.makeConstraints { make in
-            make.left.equalToSuperview().offset(kFitWidth(27))
-            make.centerY.equalToSuperview()
+            make.edges.equalToSuperview()
         }
 
         avatarImageView.snp.makeConstraints { make in
@@ -184,7 +201,7 @@ class HabitRankTableViewCell: UITableViewCell {
         currentAvatarURL = avatar
 
         let rankInt = rank.intValue
-        rankLabel.text = "\(rankInt)"
+        applyRankDisplay(rankInt)
 
         loadAvatar(urlString: avatar,
                    needTransition: needAvatarTransition,
@@ -202,7 +219,73 @@ class HabitRankTableViewCell: UITableViewCell {
         }
         
         bgView.backgroundColor = isCurrentUser ? .COLOR_CELL_HIGHLIGHT_BG : .clear
-        switch rankInt {
+    }
+    func currentAvatarImage() -> UIImage? {
+        return avatarImageView.image
+    }
+
+    func applyAvatarImage(_ image: UIImage?) {
+        avatarImageView.image = image
+    }
+
+    func animateRankTransition(to rank: Int,
+                               duration: TimeInterval = 0.28,
+                               completion: (() -> Void)? = nil) {
+        guard rank != currentDisplayedRank else {
+            completion?()
+            return
+        }
+
+        addRankSweepLayer(duration: duration)
+
+        UIView.animate(withDuration: 0.14,
+                       delay: 0,
+                       options: [.curveEaseOut, .beginFromCurrentState]) {
+            self.rankContainerView.transform = CGAffineTransform(scaleX: 1.14, y: 1.14)
+                .translatedBy(x: 0, y: -1)
+        }
+
+        UIView.transition(with: rankContainerView,
+                          duration: duration,
+                          options: [.transitionCrossDissolve, .curveEaseInOut, .beginFromCurrentState, .showHideTransitionViews]) {
+            self.applyRankDisplay(rank)
+        } completion: { _ in
+            UIView.animate(withDuration: 0.18,
+                           delay: 0,
+                           options: [.curveEaseOut, .beginFromCurrentState]) {
+                self.rankContainerView.transform = .identity
+            } completion: { _ in
+                completion?()
+            }
+        }
+    }
+
+    func animateRankRefreshReveal(delay: TimeInterval = 0,
+                                  duration: TimeInterval = 0.24) {
+        rankContainerView.alpha = 0
+        rankContainerView.transform = CGAffineTransform(scaleX: 0.92, y: 0.92)
+            .translatedBy(x: 0, y: 2)
+        addRankSweepLayer(duration: duration, beginTimeDelay: delay)
+
+        UIView.animate(withDuration: duration,
+                       delay: delay,
+                       options: [.curveEaseOut, .beginFromCurrentState]) {
+            self.rankContainerView.alpha = 1
+            self.rankContainerView.transform = .identity
+        }
+    }
+
+    func setRankVisualAlpha(_ alpha: CGFloat) {
+        rankContainerView.alpha = alpha
+    }
+}
+
+private extension HabitRankTableViewCell {
+    func applyRankDisplay(_ rank: Int) {
+        currentDisplayedRank = rank
+        rankLabel.text = "\(rank)"
+
+        switch rank {
         case 1:
             degreeImgView.isHidden = false
             rankLabel.isHidden = true
@@ -221,16 +304,44 @@ class HabitRankTableViewCell: UITableViewCell {
             degreeImgView.image = nil
         }
     }
-    func currentAvatarImage() -> UIImage? {
-        return avatarImageView.image
+
+    func addRankSweepLayer(duration: TimeInterval,
+                           beginTimeDelay: TimeInterval = 0) {
+        rankContainerView.layer.sublayers?
+            .filter { $0.name == "HabitRankSweepLayer" }
+            .forEach { $0.removeFromSuperlayer() }
+
+        let sweepLayer = CAGradientLayer()
+        sweepLayer.name = "HabitRankSweepLayer"
+        sweepLayer.frame = rankContainerView.bounds.insetBy(dx: -kFitWidth(10), dy: 0)
+        sweepLayer.colors = [
+            UIColor.white.withAlphaComponent(0).cgColor,
+            UIColor.white.withAlphaComponent(0.9).cgColor,
+            UIColor.white.withAlphaComponent(0).cgColor
+        ]
+        sweepLayer.locations = [0, 0.5, 1]
+        sweepLayer.startPoint = CGPoint(x: 0, y: 0.5)
+        sweepLayer.endPoint = CGPoint(x: 1, y: 0.5)
+        sweepLayer.compositingFilter = "screenBlendMode"
+        rankContainerView.layer.addSublayer(sweepLayer)
+
+        let travel = rankContainerView.bounds.width + sweepLayer.bounds.width
+        let animation = CABasicAnimation(keyPath: "transform.translation.x")
+        animation.fromValue = -travel * 0.5
+        animation.toValue = travel * 0.5
+        animation.duration = duration
+        animation.beginTime = CACurrentMediaTime() + beginTimeDelay
+        animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        animation.fillMode = .forwards
+        animation.isRemovedOnCompletion = false
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            sweepLayer.removeFromSuperlayer()
+        }
+        sweepLayer.add(animation, forKey: "rank.sweep")
+        CATransaction.commit()
     }
 
-    func applyAvatarImage(_ image: UIImage?) {
-        avatarImageView.image = image
-    }
-}
-
-private extension HabitRankTableViewCell {
     func loadAvatar(urlString: String,
                     needTransition: Bool,
                     keepCurrentImage: Bool) {

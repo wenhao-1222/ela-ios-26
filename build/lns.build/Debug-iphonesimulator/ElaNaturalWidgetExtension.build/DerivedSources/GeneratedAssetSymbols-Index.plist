@@ -2521,6 +2521,66 @@
 			<key>catalogPath</key>
 			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
 			<key>objcSymbol</key>
+			<string>ACImageNameElaProReadyIcon1</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_ready_icon_1.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProReadyIcon1</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProReadyIcon2</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_ready_icon_2.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProReadyIcon2</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProReadyIcon3</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_ready_icon_3.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProReadyIcon3</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProReadyIcon4</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_ready_icon_4.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProReadyIcon4</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProReadyIcon5</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_ready_icon_5.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProReadyIcon5</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameElaProReadyIcon6</string>
+			<key>relativePath</key>
+			<string>./pro/ela_pro_ready_icon_6.imageset</string>
+			<key>swiftSymbol</key>
+			<string>elaProReadyIcon6</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
 			<string>ACImageNameElaProTipsLabelIcon</string>
 			<key>relativePath</key>
 			<string>./pro/ela_pro_tips_label_icon.imageset</string>
@@ -4006,6 +4066,16 @@
 			<string>./habit/habit_rank_up_icon.imageset</string>
 			<key>swiftSymbol</key>
 			<string>habitRankUpIcon</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/lns2/Desktop/lnsapp-ios/lns/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameHabitRanklistBgImg</string>
+			<key>relativePath</key>
+			<string>./habit/habit_ranklist_bg_img.imageset</string>
+			<key>swiftSymbol</key>
+			<string>habitRanklistBgImg</string>
 		</dict>
 		<dict>
 			<key>catalogPath</key>
