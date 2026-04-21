@@ -1589,11 +1589,11 @@ extension ElaProPriceVM{
             FeatureContent(title: "整理购物清单", desc: "为你食谱提前列好未来一周所需食材", iconName: "survey_subscription_mealplan_ic_05"),
             FeatureContent(title: "去除广告", desc: "专心记录饮食，不被干扰", iconName: "survey_subscription_more_ic_01"),
             FeatureContent(title: "解锁AI识别上限", desc: "放开使用AI食物与营养成分表识别", iconName: "survey_subscription_more_ic_02"),
-            FeatureContent(title: "优先体验新功能", desc: "新功能上线时第一时间体验", systemIconName: "sparkles")
+            FeatureContent(title: "优先体验新功能", desc: "新功能上线时第一时间体验", systemIconName: "pro_func_new_icon")
         ])
         configureMoreRows([
-            FeatureContent(title: "日常饮食记录", systemIconName: "plus.square"),
-            FeatureContent(title: "身体数据记录", systemIconName: "chart.line.uptrend.xyaxis")
+            FeatureContent(title: "日常饮食记录", systemIconName: "guidance_pro_fell_icon_1"),
+            FeatureContent(title: "身体数据记录", systemIconName: "guidance_pro_fell_icon_2")
         ])
 
         aiTitleLabel.isHidden = true

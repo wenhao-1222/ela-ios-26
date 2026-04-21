@@ -68,7 +68,8 @@ class GuidanceProSubscribeVM: UIView {
     }()
 
     private lazy var closeImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "ela_pro_close_icon"))
+        let imageView = UIImageView()
+        imageView.setImgLocal(imgName: "ela_pro_close_icon")
         imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = true
         
@@ -78,45 +79,48 @@ class GuidanceProSubscribeVM: UIView {
         return imageView
     }()
     
-    private lazy var logoImageView: UIImageView = {
+    private lazy var brandTitleImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "ela_pro_expired_alert_icon"))
-        //ela_pro_expired_alert_icon
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
 
-    lazy var starsLeftImgView: UIImageView = {
-        let img = UIImageView()
-        img.image = UIImage(named: "guidance_pro_promise_img")
-        return img
+    private lazy var ratingIconView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.setImgLocal(imgName: "guidance_pro_star_icon")
+        
+        return imageView
     }()
-    private lazy var starsLabel: UILabel = {
+
+    private lazy var ratingScoreLabel: UILabel = {
         let label = UILabel()
-        label.text = "★★★★★"
-        label.textColor = UIColor(hex: 0xFFC928)
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
-        label.textAlignment = .center
+        label.text = "4.9   10,000+评价"
+        label.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        label.font = .systemFont(ofSize: 12, weight: .medium)
         return label
     }()
 
-    private lazy var ratingLabel: UILabel = {
+    private lazy var ratingCountLabel: UILabel = {
         let label = UILabel()
-        label.text = "超过1万+评价"
-        label.textColor = .COLOR_TEXT_TITLE_0f1214
-        label.font = .systemFont(ofSize: 8, weight: .medium)
-        label.textAlignment = .center
+        label.text = "10,000+评价"
+        label.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        label.font = .systemFont(ofSize: 12, weight: .medium)
         return label
     }()
 
-    lazy var starsRightImgView: UIImageView = {
-        let img = UIImageView()
-        img.image = UIImage(named: "guidance_pro_subscribe_img")
-        return img
+    private lazy var ratingStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [ratingIconView, ratingScoreLabel])
+        stack.axis = .horizontal
+        stack.spacing = kFitWidth(4.5)
+        stack.alignment = .center
+        return stack
     }()
+
     private lazy var faqStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = kFitWidth(18)
+        stack.spacing = kFitWidth(30)
+//        stack.backgroundColor = WHColor_ARC()
         return stack
     }()
 
@@ -489,11 +493,8 @@ private extension GuidanceProSubscribeVM {
             make.width.equalToSuperview()
         }
 
-        contentView.addSubview(logoImageView)
-        contentView.addSubview(starsLeftImgView)
-        contentView.addSubview(starsLabel)
-        contentView.addSubview(ratingLabel)
-        contentView.addSubview(starsRightImgView)
+        contentView.addSubview(brandTitleImageView)
+        contentView.addSubview(ratingStackView)
         contentView.addSubview(faqStackView)
         contentView.addSubview(reminderCardView)
         contentView.addSubview(proTitleLabel)
@@ -512,51 +513,38 @@ private extension GuidanceProSubscribeVM {
         reminderCardView.addSubview(reminderLabel)
         reminderCardView.addSubview(reminderSwitch)
 
-        logoImageView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(28))
-            make.top.equalTo(statusBarHeight + kFitWidth(110))
-            make.width.equalTo(kFitWidth(165))
-            make.height.equalTo(kFitWidth(29))
-        }
         closeImageView.snp.makeConstraints { make in
-            make.right.equalTo(kFitWidth(-15))
-            make.top.equalTo(statusBarHeight + kFitWidth(10))
+            make.right.equalTo(kFitWidth(-16))
+            make.top.equalTo(statusBarHeight + kFitWidth(6))
             make.width.height.equalTo(kFitWidth(30))
         }
-        starsRightImgView.snp.makeConstraints { make in
-            make.right.equalTo(kFitWidth(-29))
-            make.centerY.lessThanOrEqualTo(logoImageView)
-            make.width.equalTo(kFitWidth(20))
-            make.height.equalTo(kFitWidth(38))
-        }
-        starsLabel.snp.makeConstraints { make in
-//            make.right.equalTo(kFitWidth(-24))
-            make.right.equalTo(starsRightImgView.snp.left).offset(kFitWidth(-3))
-//            make.centerY.lessThanOrEqualTo(starsRightImgView)
-            make.top.equalTo(starsRightImgView).offset(kFitWidth(5))
+
+        brandTitleImageView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(statusBarHeight + kFitWidth(77))
+            make.width.equalTo(kFitWidth(165))
+            make.height.equalTo(kFitWidth(28))
         }
 
-        ratingLabel.snp.makeConstraints { make in
-            make.centerX.equalTo(starsLabel)
-            make.bottom.equalTo(starsRightImgView).offset(kFitWidth(-5))
-//            make.top.equalTo(starsLabel.snp.bottom).offset(kFitWidth(8))
+        ratingIconView.snp.makeConstraints { make in
+            make.width.height.equalTo(kFitWidth(11))
         }
-        starsLeftImgView.snp.makeConstraints { make in
-            make.right.equalTo(starsLabel.snp.left).offset(kFitWidth(-3))
-            make.width.height.equalTo(starsRightImgView)
-            make.centerY.lessThanOrEqualTo(starsRightImgView)
+
+        ratingStackView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(brandTitleImageView.snp.bottom).offset(kFitWidth(15))
         }
 
         faqStackView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(24))
-            make.right.equalTo(kFitWidth(-24))
-            make.top.equalTo(logoImageView.snp.bottom).offset(kFitWidth(34))
+            make.left.equalTo(kFitWidth(34))
+            make.right.equalTo(kFitWidth(-34))
+            make.top.equalTo(ratingStackView.snp.bottom).offset(kFitWidth(100))
         }
 
         reminderCardView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
-            make.top.equalTo(faqStackView.snp.bottom).offset(kFitWidth(30))
+            make.top.equalTo(faqStackView.snp.bottom).offset(kFitWidth(103))
             make.height.equalTo(kFitWidth(60))
         }
 
@@ -637,7 +625,7 @@ private extension GuidanceProSubscribeVM {
         reminderCardView.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
-            make.top.equalTo(faqStackView.snp.bottom).offset(kFitWidth(30))
+            make.top.equalTo(faqStackView.snp.bottom).offset(kFitWidth(100))
             make.height.equalTo(kFitWidth(60))
         }
 
@@ -696,34 +684,30 @@ private extension GuidanceProSubscribeVM {
     func faqItemsForCurrentPermission() -> [(String, String)] {
         if hasFreeTrialPermission {
             return [
-                ("Q：试用期间会扣费吗？", "A：不会扣费。"),
                 ("Q：开始体验后可以取消吗？", "A：当然可以。在试用期结束前随时可取消，不会扣除任何费用。"),
                 ("Q：如何取消试用？", "A：非常简单！进入手机设置，随后点击你的头像，点击订阅后选择elavatine，再次点击“取消订阅”即可。")
             ]
         }
 
         return [
-            ("Q：开始订阅后会立即扣费吗？", "A：会按照当前订阅价格收取费用。"),
-            ("Q：开始体验后可以取消吗？", "A：当然可以。你可以在当前订阅周期结束前随时取消。"),
+            ("Q：开始订阅后可以取消吗？", "A：当然可以。你可以在当前订阅周期结束前随时取消。"),
             ("Q：如何取消订阅？", "A：非常简单！进入手机设置，随后点击你的头像，点击订阅后选择elavatine，再次点击“取消订阅”即可。")
         ]
     }
 
     func buildFeatureRows() {
         let proItems = [
-            ("list.bullet.clipboard", "定制饮食计划", "按你的目标与饮食模式定制，直接照着执行"),
-            ("cart", "整理购物清单", "为你食谱提前列好未来一周所需食材"),
-            ("slash.circle", "去除广告", "专心记录饮食，不被干扰"),
-            ("viewfinder.circle", "解锁AI识别上限", "放开使用AI食物与营养成分表识别"),
-            ("sparkles", "优先体验新功能", "新功能上线的第一时间体验")
+            ("guidance_pro_ai_icon", "解锁AI教练", "结合饮食记录与体重变化调整目标"),
+            ("survey_subscription_mealplan_ic_01", "定制饮食计划", "按你的目标与饮食模式定制，直接照着执行"),
+            ("survey_subscription_mealplan_ic_05", "整理购物清单", "为你食谱提前列好未来一周所需食材"),
+            ("survey_subscription_more_ic_01", "去除广告", "专心记录饮食，不被干扰"),
+            ("survey_subscription_more_ic_02", "解锁AI识别上限", "放开使用AI食物与营养成分表识别"),
+            ("pro_func_new_icon", "优先体验新功能", "新功能上线时第一时间体验")
         ]
 
         let freeItems: [(String, String, String?)] = [
-            ("fork.knife.circle", "日常饮食记录", nil),
-            ("figure.stand", "身体数据记录", nil),
-            ("figure.walk.circle", "有氧训练记录", nil),
-            ("dumbbell", "力量训练标签", nil),
-            ("target", "目标打卡养成", nil)
+            ("guidance_pro_fell_icon_1", "日常饮食记录", nil),
+            ("guidance_pro_fell_icon_2", "身体数据记录", nil)
         ]
 
         addFeatureRows(proItems, to: proFeatureContainer, accentColor: UIColor(hex: 0xEAF3FF))
@@ -736,13 +720,13 @@ private extension GuidanceProSubscribeVM {
         let questionLabel = UILabel()
         questionLabel.text = question
         questionLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        questionLabel.font = .systemFont(ofSize: 11, weight: .regular)
+        questionLabel.font = .systemFont(ofSize: 14, weight: .medium)
         questionLabel.numberOfLines = 0
 
         let answerLabel = UILabel()
         answerLabel.text = answer
-        answerLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        answerLabel.font = .systemFont(ofSize: 12, weight: .medium)
+        answerLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        answerLabel.font = .systemFont(ofSize: 12, weight: .regular)
         answerLabel.numberOfLines = 0
 
         view.addSubview(questionLabel)
@@ -750,11 +734,12 @@ private extension GuidanceProSubscribeVM {
 
         questionLabel.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
+            make.height.equalTo(kFitWidth(24))
         }
 
         answerLabel.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(questionLabel.snp.bottom).offset(kFitWidth(8))
+            make.top.equalTo(questionLabel.snp.bottom).offset(kFitWidth(7))
             make.bottom.equalToSuperview()
         }
 
@@ -815,17 +800,10 @@ private extension GuidanceProSubscribeVM {
                         accentColor: UIColor,
                         hasLine:Bool=true) -> UIView {
         let view = UIView()
-
-        let iconView = UIView()
-        iconView.backgroundColor = accentColor
-        iconView.layer.cornerRadius = kFitWidth(15)
-//        iconView.layer.borderWidth = 1
-//        iconView.layer.borderColor = UIColor.white.withAlphaComponent(0.8).cgColor
-
-        let symbolConfig = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
-        let iconImageView = UIImageView(image: UIImage(systemName: iconName, withConfiguration: symbolConfig))
+        
+        let iconImageView = UIImageView()
         iconImageView.contentMode = .scaleAspectFit
-//        iconImageView.tintColor = .COLOR_TEXT_TITLE_0f1214
+        iconImageView.setImgLocal(imgName: iconName)
 
         let titleLabel = UILabel()
         titleLabel.text = title
@@ -847,26 +825,19 @@ private extension GuidanceProSubscribeVM {
             divider.backgroundColor = UIColor.clear        }
         
 
-        view.addSubview(iconView)
-        iconView.addSubview(iconImageView)
+        view.addSubview(iconImageView)
         view.addSubview(titleLabel)
         view.addSubview(descLabel)
         view.addSubview(divider)
 
-        iconView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(14))
-//            make.top.equalTo(kFitWidth(18))
-            make.centerY.lessThanOrEqualToSuperview()
-            make.width.height.equalTo(kFitWidth(30))
-        }
-
         iconImageView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.width.height.lessThanOrEqualTo(kFitWidth(15))
+            make.centerY.equalToSuperview()
+            make.left.equalTo(kFitWidth(18))
+            make.width.height.lessThanOrEqualTo(kFitWidth(30))
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.left.equalTo(iconView.snp.right).offset(kFitWidth(12))
+            make.left.equalTo(iconImageView.snp.right).offset(kFitWidth(17))
             make.right.equalTo(kFitWidth(-16))
             make.top.equalTo(kFitWidth(14))
         }
@@ -877,12 +848,12 @@ private extension GuidanceProSubscribeVM {
             divider.snp.makeConstraints { make in
                 make.left.equalTo(titleLabel)
                 make.right.equalToSuperview()
-                make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(14))
+                make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(17))
                 make.height.equalTo(1)
                 make.bottom.equalToSuperview()
             }
             titleLabel.snp.remakeConstraints { make in
-                make.left.equalTo(iconView.snp.right).offset(kFitWidth(12))
+                make.left.equalTo(iconImageView.snp.right).offset(kFitWidth(17))
                 make.right.equalTo(kFitWidth(-16))
                 make.top.equalTo(kFitWidth(17))
                 make.bottom.equalTo(kFitWidth(-17))
