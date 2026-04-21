@@ -23,7 +23,7 @@ class GuidanceProSubscribeVM: UIView {
 
     private lazy var loadingOverlayView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.COLOR_BG_WHITE.withAlphaComponent(0.72)
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.72)
         view.isHidden = true
         return view
     }()
@@ -843,7 +843,7 @@ private extension GuidanceProSubscribeVM {
         }
 
         if desc == nil {
-            divider.isHidden = true
+//            divider.isHidden = true
             
             divider.snp.makeConstraints { make in
                 make.left.equalTo(titleLabel)
