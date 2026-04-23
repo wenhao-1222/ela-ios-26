@@ -99,7 +99,7 @@ class GuidanceSexVM: UIView {
         let allText = "已有账号？去登录"
         let attr = NSMutableAttributedString(string: allText)
         attr.addAttributes([
-            .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+            .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
             .font: UIFont.systemFont(ofSize: 16, weight: .regular)
         ], range: NSRange(location: 0, length: allText.count))
         if let range = allText.range(of: "登录") {
@@ -224,7 +224,7 @@ extension GuidanceSexVM{
         }
         loginLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(40))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(20))
             make.height.equalTo(kFitWidth(32))
 //            make.width.equalTo(kFitWidth(200))
         }

@@ -70,20 +70,22 @@ private extension GuidanceProTrialVM {
             make.height.equalTo(kFitWidth(415))
         }
 
-        titleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(40))
-            make.height.equalTo(kFitWidth(77))
-//            make.left.equalTo(kFitWidth(32))
-//            make.right.equalTo(kFitWidth(-32))
+        if WHUtils().getBottomSafeAreaHeight() > 0 {
+            titleLabel.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(40))
+                make.height.equalTo(kFitWidth(77))
+            }
+        }else{
+            titleLabel.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(10))
+                make.height.equalTo(kFitWidth(77))
+            }
         }
-
         subtitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(6))
-//            make.left.equalTo(kFitWidth(24))
-//            make.right.equalTo(kFitWidth(-24))
-//            make.bottom.equalToSuperview()
         }
     }
 

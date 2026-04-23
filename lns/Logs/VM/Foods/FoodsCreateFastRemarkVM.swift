@@ -115,7 +115,7 @@ extension FoodsCreateFastRemarkVM:UITextFieldDelegate{
             let pattern = "[^A-Za-z0-9\\u0020\\u4E00-\\u9FA5]"
             //替换后的字符串（过滤调非中文字符）
             var str = textField.text ?? ""//!.pregReplace(pattern: pattern, with: "")
-            //限制文字长度不能超过20个
+            //限制文字长度不能超过25个
             if str.count > 25 {
                 str = String(str.prefix(25))
             }

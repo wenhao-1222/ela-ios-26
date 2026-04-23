@@ -262,7 +262,7 @@ class JounalCollectionCell: UICollectionViewCell {
     }()
     lazy var addFirstFoodsAlertVm: GuideAddFirstFoodsAlertVM = {
 //        let vm = GuideAddFirstFoodsAlertVM.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(160), y: self.goalVm.frame.maxY-kFitWidth(20)-WHUtils().getNavigationBarHeight(), width: 0, height: 0))
-        let y = editHeadView.frame.maxY + kFitWidth(12) - kFitWidth(100) 
+        let y = editHeadView.frame.maxY + kFitWidth(12) - kFitWidth(100) + kFitWidth(62)
         let vm = GuideAddFirstFoodsAlertVM.init(frame: CGRect(x: SCREEN_WIDHT - kFitWidth(160), y: y, width: 0, height: 0))
         return vm
     }()

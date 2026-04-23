@@ -110,17 +110,17 @@ class DietPlanFoodsChangeCell: UICollectionViewCell {
         chooseButton.setTitle("选择", for: .normal)
         [nameLabel, chooseButton].forEach { $0.hideSkeletonWithCrossfade() }
         
-        let placeHolder = UIImage(named: "Image")
-        guard !item.mealImage.isEmpty else {
-//            mealImageView.removeSkeletonImmediately()
-            mealImageView.image = placeHolder
-            return
-        }
+//        let placeHolder = UIImage(named: "Image")
+//        guard !item.mealImage.isEmpty else {
+////            mealImageView.removeSkeletonImmediately()
+//            mealImageView.image = placeHolder
+//            return
+//        }
         
         imageLoadToken = UUID().uuidString
         let currentToken = imageLoadToken
         mealImageView.showSkeleton(imageSkeletonConfig)
-        mealImageView.setImgUrlWithComplete(urlString: item.mealImage, placeHolder: placeHolder) { [weak self] in
+        mealImageView.setImgUrlWithComplete(urlString: item.mealImage, placeHolder: nil) { [weak self] in
             guard let self = self else { return }
             guard self.imageLoadToken == currentToken else { return }
             self.mealImageView.hideSkeletonWithCrossfade()

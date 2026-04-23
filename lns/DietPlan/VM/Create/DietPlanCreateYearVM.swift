@@ -56,6 +56,7 @@ class DietPlanCreateYearVM: UIView {
             yearArr.add(i)
             
             if i == 2000 {
+                QuestinonaireMsgModel.shared.birthYear = "2000"
                 defaultIndex = yearArr.count - 1
             }
         }

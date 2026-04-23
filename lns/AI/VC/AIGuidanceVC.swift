@@ -383,13 +383,18 @@ extension AIGuidanceVC{
 
 extension AIGuidanceVC {
     func enterElaProPage() {
-        let vc = ElaProVC()
-        vc.showPriceOnly = true
-        vc.priceBizType = "2"
-        vc.priceDisplayMode = .aiGuidance
-        vc.popToRootOnClose = true
-        vc.enterAICoachPreOnPurchaseSuccess = true
-        navigationController?.pushViewController(vc, animated: true)
+        if VIPModel.shared.status == .valid{
+            let vc = AICoachPreVC()
+            navigationController?.pushViewController(vc, animated: true)
+        }else{
+            let vc = ElaProVC()
+            vc.showPriceOnly = true
+            vc.priceBizType = "2"
+            vc.priceDisplayMode = .aiGuidance
+            vc.popToRootOnClose = true
+            vc.enterAICoachPreOnPurchaseSuccess = true
+            navigationController?.pushViewController(vc, animated: true)
+        }
     }
 
     func enterAICoachPrePage() {

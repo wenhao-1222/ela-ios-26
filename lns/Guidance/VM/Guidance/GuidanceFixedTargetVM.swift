@@ -156,7 +156,7 @@ extension GuidanceFixedTargetVM {
         tipsLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
 //            make.top.equalTo(stackView.snp.bottom).offset(kFitWidth(140))
-            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(136))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(106))
         }
     }
 }

@@ -196,7 +196,8 @@ extension GuidanceReminderPromptVM {
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
             make.height.equalTo(kFitWidth(48))
-            make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(34))
+//            make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(34))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(60))
         }
 
         skipButton.snp.makeConstraints { make in

@@ -180,7 +180,10 @@ extension LoginVC{
                     self.isCodeShow = true
                 }else{
 //                    MCToast.mc_text("用户已注销！")
-                    self.presentAlertVc(confirmBtn: "确定", message: "Elavatine 作为一款免费软件，致力于在有限资源下为用户提供最佳体验。为了防止频繁重复注册占用服务器资源，注销后需等待约24小时才能重新注册，由此带来的不便，敬请谅解。", title: "提示", cancelBtn: nil, handler: { action in
+//                    self.presentAlertVc(confirmBtn: "确定", message: "Elavatine 作为一款免费软件，致力于在有限资源下为用户提供最佳体验。为了防止频繁重复注册占用服务器资源，注销后需等待约24小时才能重新注册，由此带来的不便，敬请谅解。", title: "提示", cancelBtn: nil, handler: { action in
+//                        
+//                    }, viewController: self)
+                    self.presentAlertVc(confirmBtn: "确定", message: "请在 24 小时后尝试重新注册。", title: "账户注销处理中", cancelBtn: nil, handler: { action in
                         
                     }, viewController: self)
                 }

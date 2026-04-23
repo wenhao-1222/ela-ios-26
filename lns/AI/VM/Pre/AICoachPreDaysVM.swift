@@ -79,6 +79,7 @@ class AICoachPreDaysVM: UIView, UIGestureRecognizerDelegate {
         label.textColor = .COLOR_TEXT_TITLE_0f1214_50
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         label.setContentHuggingPriority(.required, for: .vertical)
+        label.alpha = 0
         return label
     }()
 
@@ -238,6 +239,12 @@ private extension AICoachPreDaysVM {
         attributedText.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedText.length))
 
         messageLabel.attributedText = attributedText
+        
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+            UIView.animate(withDuration: 0.35) {
+                self.messageLabel.alpha = 1
+            }
+        })
     }
 
     func dayItemTapAction(index: Int, sourceView: UIView) {

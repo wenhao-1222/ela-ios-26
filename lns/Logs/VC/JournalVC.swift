@@ -625,12 +625,14 @@ extension JournalVC{
             if VIPModel.shared.status == .valid{
                 let vc = AICoachPreVC()
                 self.navigationController?.pushViewController(vc, animated: true)
-            }else if VIPModel.shared.status == .invalid{
-                self.navigationController?.fd_interactivePopDisabled = true
-                self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-                let vc = AIGuidanceVC()
-                self.navigationController?.pushViewController(vc, animated: true)
-            }else{
+            }
+//            else if VIPModel.shared.status == .invalid{
+//                self.navigationController?.fd_interactivePopDisabled = true
+//                self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+//                let vc = AIGuidanceVC()
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            }
+            else{
                 elaExpiredAlertVm.showSelf()
             }
         }else {//未做过问卷

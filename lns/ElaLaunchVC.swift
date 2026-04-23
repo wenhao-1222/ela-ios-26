@@ -30,7 +30,7 @@ class ElaLaunchVC: WHBaseViewVC {
                 self.elaProIconImg.alpha = 1
             }
         }
-        let delayTime = isVip ? 0 : 2.6
+        let delayTime = isVip ? 1.3 : 2.6
         DLLog(message: "ElaLaunchVC start：\(Date().currentSeconds)   - \(Date().timeStampMill)")
         DispatchQueue.main.asyncAfter(deadline: .now()+delayTime, execute: {
             DLLog(message: "ElaLaunchVC end:\(Date().currentSeconds)   - \(Date().timeStampMill)")

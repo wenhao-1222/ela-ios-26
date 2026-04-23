@@ -121,12 +121,22 @@ private extension GuidanceProTopVM {
             make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(50))
         }
 
-        titleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(elaproImg.snp.bottom).offset(kFitWidth(10))
-            make.left.greaterThanOrEqualTo(kFitWidth(24))
-            make.right.lessThanOrEqualTo(kFitWidth(-24))
-            make.height.equalTo(kFitWidth(39))
+        if WHUtils().getBottomSafeAreaHeight() > 0 {
+            titleLabel.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.top.equalTo(elaproImg.snp.bottom).offset(kFitWidth(10))
+                make.left.greaterThanOrEqualTo(kFitWidth(24))
+                make.right.lessThanOrEqualTo(kFitWidth(-24))
+                make.height.equalTo(kFitWidth(39))
+            }
+        }else{
+            titleLabel.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.top.equalTo(elaproImg.snp.bottom).offset(kFitWidth(-10))
+                make.left.greaterThanOrEqualTo(kFitWidth(24))
+                make.right.lessThanOrEqualTo(kFitWidth(-24))
+                make.height.equalTo(kFitWidth(39))
+            }
         }
 
         subtitleLabel.snp.makeConstraints { make in

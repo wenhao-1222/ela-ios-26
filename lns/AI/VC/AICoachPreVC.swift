@@ -48,6 +48,18 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
             sendCoachLaunchRequest()
         }
         sendReportListRequest()
+        
+        if let nav = navigationController {
+            var controllers = nav.viewControllers
+            if let index = controllers.firstIndex(where: { $0 is AIGuidanceVC }){
+                controllers.remove(at: index)
+                nav.viewControllers = controllers
+            }
+            if let index = controllers.firstIndex(where: { $0 is ElaProVC }){
+                controllers.remove(at: index)
+                nav.viewControllers = controllers
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -80,6 +92,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .disabled)
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
+        btn.alpha = 0
         btn.enablePressEffect()
         btn.addTarget(self, action: #selector(nextButtonTapAction), for: .touchUpInside)
 
@@ -210,6 +223,10 @@ private extension AICoachPreVC {
             nextButton.setTitle("数据处理中，预计时间30min", for: .normal)
             nextButton.isEnabled = false
             preDaysVM.messageLabel.isHidden = true
+        }
+        
+        UIView.animate(withDuration: 0.35) {
+            self.nextButton.alpha = 1
         }
         
         self.reportId = latestReportDict.stringValueForKey(key: "id")

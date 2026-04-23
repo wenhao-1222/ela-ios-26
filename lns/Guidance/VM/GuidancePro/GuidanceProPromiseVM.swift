@@ -71,12 +71,20 @@ private extension GuidanceProPromiseVM {
             make.height.equalTo(kFitWidth(183))
         }
 
-        titleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(120))
-            make.height.equalTo(kFitWidth(77))
+        if WHUtils().getBottomSafeAreaHeight() > 0 {
+            titleLabel.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(120))
+                make.height.equalTo(kFitWidth(77))
+            }
+        }else{
+            titleLabel.snp.makeConstraints { make in
+                make.centerX.equalToSuperview()
+                make.top.equalTo(bubbleImageView.snp.bottom).offset(kFitWidth(90))
+                make.height.equalTo(kFitWidth(77))
+            }
         }
-
+        
         subtitleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(6))
