@@ -25,6 +25,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     private var downloadButtonWidthConstraint: Constraint?
     private var isTopBarInteractionEnabled = false
     private var isDownloadInProgress = false
+    private let shouldUseLocalRecommendMock = true
 
     private lazy var topContainerView: UIView = {
         let view = UIView()
@@ -405,6 +406,15 @@ extension AICoachReportPDFDemoVC{
         DispatchQueue.main.async {
             self.updateAdviceButtonState()
         }
+        if shouldUseLocalRecommendMock {
+            let recommendation = buildRandomMockRecommendation()
+            DLLog(message: "sendRecommendRequest_mock:\(recommendation)")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                self.nextWeekRecommendation = recommendation
+                self.updateAdviceButtonState()
+            }
+            return
+        }
         let param = ["id":reportId]
         WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_recommend, parameters: param as [String : AnyObject]) { [weak self] responseObject in
             guard let self else { return }
@@ -443,6 +453,91 @@ extension AICoachReportPDFDemoVC{
 }
 
 private extension AICoachReportPDFDemoVC {
+    func buildRandomMockRecommendation() -> AICoachReportNextWeekRecommendation {
+        let mockCases: [(status: AICoachReportRecommendationStatus, buttonNum: Int)] = [
+            (.maintain, 1),
+            (.decrease, 1),
+            (.decrease, 2),
+            (.increase, 1),
+            (.increase, 2)
+        ]
+
+        let selectedCase = mockCases.randomElement() ?? (.maintain, 1)
+        let baseCalories = [1650.0, 1780.0, 1920.0, 2050.0, 2180.0].randomElement() ?? 1920.0
+
+        switch selectedCase.status {
+        case .maintain:
+            return AICoachReportNextWeekRecommendation(
+                buttonNum: 1,
+                status: .maintain,
+                titleText: "维持当前目标",
+                caloriesValue: nil,
+                carbohydrateValue: nil,
+                proteinValue: nil,
+                fatValue: nil,
+                caloriesText: "--",
+                carbohydrateText: "--",
+                proteinText: "--",
+                fatText: "--",
+                isValid: true
+            )
+        case .decrease:
+            let calories = baseCalories - 180
+            let carbohydrate = max(95, calories * 0.11)
+            let protein = max(105, calories * 0.072)
+            let fat = max(40, calories * 0.027)
+            return makeMockRecommendation(status: .decrease,
+                                          buttonNum: selectedCase.buttonNum,
+                                          titleText: "降低摄入",
+                                          calories: calories,
+                                          carbohydrate: carbohydrate,
+                                          protein: protein,
+                                          fat: fat)
+        case .increase:
+            let calories = baseCalories + 220
+            let carbohydrate = max(180, calories * 0.135)
+            let protein = max(120, calories * 0.078)
+            let fat = max(50, calories * 0.03)
+            return makeMockRecommendation(status: .increase,
+                                          buttonNum: selectedCase.buttonNum,
+                                          titleText: "提高摄入",
+                                          calories: calories,
+                                          carbohydrate: carbohydrate,
+                                          protein: protein,
+                                          fat: fat)
+        }
+    }
+
+    func makeMockRecommendation(
+        status: AICoachReportRecommendationStatus,
+        buttonNum: Int,
+        titleText: String,
+        calories: Double,
+        carbohydrate: Double,
+        protein: Double,
+        fat: Double
+    ) -> AICoachReportNextWeekRecommendation {
+        let roundedCalories = calories.rounded()
+        let roundedCarbohydrate = carbohydrate.rounded()
+        let roundedProtein = protein.rounded()
+        let roundedFat = fat.rounded()
+
+        return AICoachReportNextWeekRecommendation(
+            buttonNum: buttonNum,
+            status: status,
+            titleText: titleText,
+            caloriesValue: roundedCalories,
+            carbohydrateValue: roundedCarbohydrate,
+            proteinValue: roundedProtein,
+            fatValue: roundedFat,
+            caloriesText: "\(Int(roundedCalories))",
+            carbohydrateText: "\(Int(roundedCarbohydrate))",
+            proteinText: "\(Int(roundedProtein))",
+            fatText: "\(Int(roundedFat))",
+            isValid: true
+        )
+    }
+
     func applyReportDetailData(_ dataDict: NSDictionary) {
         report = buildReport(from: dataDict)
         refreshTopBar()
@@ -1092,13 +1187,15 @@ private extension AICoachReportPDFDemoVC {
             return (["80", "60", "40", "20", "0"], 0, 80)
         }
 
-        let range = max(maxValue - minValue, 0.1)
-        let padding = max(range * 0.25, 0.8)
-        let axisMin = floor((minValue - padding) * 10) / 10
-        let axisMax = ceil((maxValue + padding) * 10) / 10
-        let step = (axisMax - axisMin) / 3
+        let roundedMin = floor(minValue)
+        let roundedMax = ceil(maxValue)
+        let range = max(roundedMax - roundedMin, 1)
+        let padding = max(ceil(range * 0.25), 1)
+        let axisMin = max(0, roundedMin - padding)
+        let step = max(ceil((roundedMax + padding - axisMin) / 3), 1)
+        let axisMax = axisMin + step * 3
         let yAxisTexts = (0...3).map { index in
-            formatChartNumber(axisMax - CGFloat(index) * step)
+            "\(Int(axisMax - CGFloat(index) * step))"
         }
 
         return (yAxisTexts, axisMin, axisMax)

@@ -8,11 +8,12 @@
 import UIKit
 
 private var spinnerKey: UInt8 = 0
-private var successImageViewKey: UInt8 = 0
+private var successShapeLayerKey: UInt8 = 0
 private var generator = UIImpactFeedbackGenerator(style: .rigid)
 private var generatorWeight = 0.6
 private var lastFeedbackTime: TimeInterval = 0
 private let minimumFeedbackInterval: TimeInterval = 0.2
+private let statusIndicatorFadeDuration: TimeInterval = 0.18
 
 private func triggerImpact(_ generator: UIImpactFeedbackGenerator, intensity: CGFloat) {
     let now = Date().timeIntervalSince1970
@@ -22,9 +23,14 @@ private func triggerImpact(_ generator: UIImpactFeedbackGenerator, intensity: CG
 }
 
 extension UIButton {
-    func showLoadingIndicator(color: UIColor = .white) {
+    func showLoadingIndicator(color: UIColor = .white,
+                              animated: Bool = false,
+                              hideContent: Bool = true,
+                              completion: (() -> Void)? = nil) {
         isUserInteractionEnabled = false
-        setStatusContentHidden(true)
+        if hideContent {
+            setStatusContentHidden(true)
+        }
         removeSuccessIndicator()
         var spinner = objc_getAssociatedObject(self, &spinnerKey) as? UIActivityIndicatorView
         if spinner == nil {
@@ -38,75 +44,108 @@ extension UIButton {
             objc_setAssociatedObject(self, &spinnerKey, spinner, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
         spinner?.color = color
+        spinner?.alpha = animated ? 0 : 1
         spinner!.startAnimating()
-    }
 
-    func hideLoadingIndicator() {
-        isUserInteractionEnabled = true
-        setStatusContentHidden(false)
-        if let spinner = objc_getAssociatedObject(self, &spinnerKey) as? UIActivityIndicatorView {
-            spinner.stopAnimating()
-            spinner.removeFromSuperview()
-            objc_setAssociatedObject(self, &spinnerKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
-
-    func showSuccessIndicator(tintColor: UIColor = .white, completion: (() -> Void)? = nil) {
-        hideLoadingIndicator()
-        isUserInteractionEnabled = false
-        setStatusContentHidden(true)
-
-        let checkImageView: UIImageView
-        if let existingView = objc_getAssociatedObject(self, &successImageViewKey) as? UIImageView {
-            checkImageView = existingView
-        } else {
-            let imageView = UIImageView()
-            imageView.translatesAutoresizingMaskIntoConstraints = false
-            imageView.contentMode = .scaleAspectFit
-            addSubview(imageView)
-            NSLayoutConstraint.activate([
-                imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-                imageView.centerYAnchor.constraint(equalTo: centerYAnchor),
-                imageView.widthAnchor.constraint(equalToConstant: 18),
-                imageView.heightAnchor.constraint(equalToConstant: 18)
-            ])
-            objc_setAssociatedObject(self, &successImageViewKey, imageView, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            checkImageView = imageView
+        guard animated, let spinner else {
+            completion?()
+            return
         }
 
-        if #available(iOS 13.0, *) {
-            let config = UIImage.SymbolConfiguration(pointSize: 17, weight: .bold)
-            checkImageView.image = UIImage(systemName: "checkmark", withConfiguration: config)
-        } else {
-            checkImageView.image = nil
-        }
-        checkImageView.tintColor = tintColor
-        checkImageView.alpha = 0
-        checkImageView.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
-
-        UIView.animate(withDuration: 0.28,
+        UIView.animate(withDuration: statusIndicatorFadeDuration,
                        delay: 0,
-                       usingSpringWithDamping: 0.6,
-                       initialSpringVelocity: 0.8,
-                       options: [.curveEaseOut, .allowUserInteraction]) {
-            checkImageView.alpha = 1
-            checkImageView.transform = .identity
+                       options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction]) {
+            spinner.alpha = 1
         } completion: { _ in
             completion?()
         }
     }
 
+    func hideLoadingIndicator(animated: Bool = false,
+                              restoreContent: Bool = true,
+                              completion: (() -> Void)? = nil) {
+        isUserInteractionEnabled = true
+        if restoreContent {
+            setStatusContentHidden(false)
+        }
+
+        guard let spinner = objc_getAssociatedObject(self, &spinnerKey) as? UIActivityIndicatorView else {
+            completion?()
+            return
+        }
+
+        let removeSpinner = {
+            spinner.stopAnimating()
+            spinner.removeFromSuperview()
+            objc_setAssociatedObject(self, &spinnerKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            completion?()
+        }
+
+        guard animated else {
+            removeSpinner()
+            return
+        }
+
+        UIView.animate(withDuration: statusIndicatorFadeDuration,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction]) {
+            spinner.alpha = 0
+        } completion: { _ in
+            removeSpinner()
+        }
+    }
+
+    func showSuccessIndicator(tintColor: UIColor = .white, completion: (() -> Void)? = nil) {
+        hideLoadingIndicator(animated: true, restoreContent: false) {
+            self.isUserInteractionEnabled = false
+            self.setStatusContentHidden(true)
+            self.removeSuccessIndicator()
+            self.layoutIfNeeded()
+
+            let checkLayer = CAShapeLayer()
+            checkLayer.frame = self.bounds
+            checkLayer.fillColor = UIColor.clear.cgColor
+            checkLayer.strokeColor = tintColor.cgColor
+            checkLayer.lineWidth = 2.5
+            checkLayer.lineCap = .round
+            checkLayer.lineJoin = .round
+            checkLayer.strokeEnd = 1
+            self.layer.addSublayer(checkLayer)
+            objc_setAssociatedObject(self, &successShapeLayerKey, checkLayer, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+
+            let width = self.bounds.width
+            let height = self.bounds.height
+            let path = UIBezierPath()
+            path.move(to: CGPoint(x: width * 0.3, y: height * 0.54))
+            path.addLine(to: CGPoint(x: width * 0.45, y: height * 0.69))
+            path.addLine(to: CGPoint(x: width * 0.72, y: height * 0.36))
+            checkLayer.path = path.cgPath
+
+            let strokeAnimation = CABasicAnimation(keyPath: "strokeEnd")
+            strokeAnimation.fromValue = 0
+            strokeAnimation.toValue = 1
+            strokeAnimation.duration = 0.32
+            strokeAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+
+            CATransaction.begin()
+            CATransaction.setCompletionBlock(completion)
+            checkLayer.strokeEnd = 1
+            checkLayer.add(strokeAnimation, forKey: "drawCheckmark")
+            CATransaction.commit()
+        }
+    }
+
     func resetStatusIndicators() {
-        hideLoadingIndicator()
+        hideLoadingIndicator(animated: false, restoreContent: false)
         removeSuccessIndicator()
         setStatusContentHidden(false)
         transform = .identity
     }
 
     private func removeSuccessIndicator() {
-        if let successImageView = objc_getAssociatedObject(self, &successImageViewKey) as? UIImageView {
-            successImageView.removeFromSuperview()
-            objc_setAssociatedObject(self, &successImageViewKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        if let successLayer = objc_getAssociatedObject(self, &successShapeLayerKey) as? CAShapeLayer {
+            successLayer.removeFromSuperlayer()
+            objc_setAssociatedObject(self, &successShapeLayerKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 

@@ -15,14 +15,29 @@ final class AICoachReportAdviceAlertVM: UIView {
         case secondary
     }
 
+    enum ActionVisualState {
+        case idle
+        case collapsing
+        case loading
+        case success
+    }
+
     private let maintainImageAspectRatio: CGFloat = 140.0 / 1292.0
     private let whiteViewTopRadius = kFitWidth(50)
+    private let actionButtonHeight = kFitWidth(44)
 
     var primaryActionBlock: ((AICoachReportNextWeekRecommendation, @escaping (Bool) -> Void) -> Void)?
     var secondaryActionBlock: ((AICoachReportNextWeekRecommendation, @escaping (Bool) -> Void) -> Void)?
 
     private var recommendation = AICoachReportNextWeekRecommendation.empty
     private var activeActionKind: ActionKind?
+    private var activeActionVisualState: ActionVisualState = .idle
+    private var isPrimaryButtonCollapsed = false
+    private var isSecondaryButtonCollapsed = false
+    private var primaryButtonStoredTitle: String?
+    private var secondaryButtonStoredTitle: String?
+    private var primaryButtonWidthConstraint: Constraint?
+    private var secondaryButtonWidthConstraint: Constraint?
     private var whiteViewHeightConstraint: Constraint?
 
     private var maintainImageHeight: CGFloat {
@@ -59,6 +74,7 @@ final class AICoachReportAdviceAlertVM: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        syncActionButtonLayoutIfNeeded()
         updateWhiteViewCornerMask()
         updateWhiteViewBorderFrame()
     }
@@ -192,9 +208,12 @@ final class AICoachReportAdviceAlertVM: UIView {
     private lazy var primaryButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = UIColor.white.withAlphaComponent(0.6)
-        button.layer.cornerRadius = kFitWidth(22)
         button.layer.borderWidth = 1
         button.layer.borderColor = AICoachReportDemoPalette.themeBlue.cgColor
+        button.clipsToBounds = true
+        if #available(iOS 13.0, *) {
+            button.layer.cornerCurve = .continuous
+        }
         button.setTitleColor(AICoachReportDemoPalette.themeBlue, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         button.enablePressEffect()
@@ -202,10 +221,19 @@ final class AICoachReportAdviceAlertVM: UIView {
         return button
     }()
 
+    private lazy var primaryButtonContainer: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }()
+
     private lazy var secondaryButton: UIButton = {
         let button = UIButton(type: .system)
         button.backgroundColor = AICoachReportDemoPalette.themeBlue
-        button.layer.cornerRadius = kFitWidth(22)
+        button.clipsToBounds = true
+        if #available(iOS 13.0, *) {
+            button.layer.cornerCurve = .continuous
+        }
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         button.enablePressEffect()
@@ -213,8 +241,14 @@ final class AICoachReportAdviceAlertVM: UIView {
         return button
     }()
 
+    private lazy var secondaryButtonContainer: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }()
+
     private lazy var buttonStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [primaryButton, secondaryButton])
+        let stackView = UIStackView(arrangedSubviews: [primaryButtonContainer, secondaryButtonContainer])
         stackView.axis = .horizontal
         stackView.alignment = .fill
         stackView.distribution = .fillEqually
@@ -233,7 +267,9 @@ extension AICoachReportAdviceAlertVM {
         titleLabel.text = isMaintain ? "下周建议" : "下周建议： \(data.titleText)"
         primaryButton.setTitle(data.primaryButtonTitle, for: .normal)
         secondaryButton.setTitle(secondaryTitle, for: .normal)
-        secondaryButton.isHidden = secondaryTitle == nil
+        primaryButtonStoredTitle = data.primaryButtonTitle
+        secondaryButtonStoredTitle = secondaryTitle
+        secondaryButtonContainer.isHidden = secondaryTitle == nil
 
         let iconName = data.status.iconName
         caloriesValueLabel.text = data.caloriesText
@@ -299,6 +335,9 @@ private extension AICoachReportAdviceAlertVM {
         whiteView.addSubview(maintainIndicatorView)
         whiteView.addSubview(maintainTargetImageView)
         whiteView.addSubview(buttonStackView)
+
+        primaryButtonContainer.addSubview(primaryButton)
+        secondaryButtonContainer.addSubview(secondaryButton)
 
         metricsContainer.addSubview(caloriesTitleLabel)
         metricsContainer.addSubview(caloriesValueLabel)
@@ -382,22 +421,33 @@ private extension AICoachReportAdviceAlertVM {
             make.bottom.equalToSuperview().offset(-WHUtils().getBottomSafeAreaHeight() - kFitWidth(20))
         }
 
+        primaryButtonContainer.snp.makeConstraints { make in
+            make.height.equalTo(actionButtonHeight)
+        }
+
+        secondaryButtonContainer.snp.makeConstraints { make in
+            make.height.equalTo(actionButtonHeight)
+        }
+
         primaryButton.snp.makeConstraints { make in
-            make.height.equalTo(kFitWidth(44))
+            make.top.bottom.centerX.equalToSuperview()
+            primaryButtonWidthConstraint = make.width.equalTo(actionButtonHeight).constraint
         }
 
         secondaryButton.snp.makeConstraints { make in
-            make.height.equalTo(kFitWidth(44))
+            make.top.bottom.centerX.equalToSuperview()
+            secondaryButtonWidthConstraint = make.width.equalTo(actionButtonHeight).constraint
         }
 
         setupWhiteViewBorder()
     }
 
     @objc func primaryButtonAction() {
-        if recommendation.status == .maintain {
-            primaryActionBlock?(recommendation, { _ in })
-            return
-        }
+        UIView.animate(withDuration: 0.25, animations: {
+            self.primaryButton.titleLabel?.text = ""
+            self.primaryButton.titleLabel?.textColor = .white
+            self.primaryButton.titleLabel?.alpha = 0
+        })
         performAction(kind: .primary)
     }
 
@@ -420,8 +470,19 @@ private extension AICoachReportAdviceAlertVM {
 
         guard let actionBlock else { return }
         activeActionKind = kind
+        activeActionVisualState = .collapsing
         updateButtonInteraction(isProcessing: true, activeKind: kind)
-        button(for: kind).showLoadingIndicator(color: indicatorColor(for: kind))
+        button(for: kind).showLoadingIndicator(color: indicatorColor(for: kind),
+                                               animated: true,
+                                               hideContent: false)
+        animateActionButtonCollapse(kind: kind) { [weak self] in
+            guard let self else { return }
+            guard self.activeActionKind == kind, self.activeActionVisualState == .collapsing else { return }
+            self.activeActionVisualState = .loading
+            self.button(for: kind).showLoadingIndicator(color: self.indicatorColor(for: kind),
+                                                        animated: false,
+                                                        hideContent: true)
+        }
 
         actionBlock(recommendation) { [weak self] isSuccess in
             guard let self else { return }
@@ -436,22 +497,31 @@ private extension AICoachReportAdviceAlertVM {
     }
 
     func handleActionSuccess(kind: ActionKind) {
+        activeActionVisualState = .success
         button(for: kind).showSuccessIndicator(tintColor: indicatorColor(for: kind)) { [weak self] in
             guard let self else { return }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.hiddenSelf()
             }
         }
     }
 
     func handleActionFailure(kind: ActionKind) {
-        button(for: kind).hideLoadingIndicator()
+        activeActionVisualState = .idle
+        button(for: kind).hideLoadingIndicator(animated: true)
         activeActionKind = nil
+        restoreActionButtonAppearance(kind: kind, animated: true)
         updateButtonInteraction(isProcessing: false, activeKind: nil)
     }
 
     func resetButtonStates() {
         activeActionKind = nil
+        activeActionVisualState = .idle
+        restoreActionButtonAppearance(kind: .primary, animated: false)
+        restoreActionButtonAppearance(kind: .secondary, animated: false)
+        
+        self.primaryButton.titleLabel?.textColor = .THEME
+        self.primaryButton.titleLabel?.alpha = 1
         primaryButton.resetStatusIndicators()
         secondaryButton.resetStatusIndicators()
         updateButtonInteraction(isProcessing: false, activeKind: nil)
@@ -464,10 +534,11 @@ private extension AICoachReportAdviceAlertVM {
         primaryButton.isEnabled = !isProcessing
         secondaryButton.isEnabled = !isProcessing
         primaryButton.isUserInteractionEnabled = !isProcessing
-        secondaryButton.isUserInteractionEnabled = !isProcessing && !secondaryButton.isHidden
+        secondaryButton.isUserInteractionEnabled = !isProcessing && !secondaryButtonContainer.isHidden
 
-        primaryButton.alpha = buttonAlpha(for: .primary, isProcessing: isProcessing, activeKind: activeKind)
-        secondaryButton.alpha = secondaryButton.isHidden ? 0 : buttonAlpha(for: .secondary, isProcessing: isProcessing, activeKind: activeKind)
+//        primaryButton.alpha = buttonAlpha(for: .primary, isProcessing: isProcessing, activeKind: activeKind)
+        primaryButton.alpha = primaryButtonContainer.isHidden ? 0 : buttonAlpha(for: .primary, isProcessing: isProcessing, activeKind: activeKind)
+        secondaryButton.alpha = secondaryButtonContainer.isHidden ? 0 : buttonAlpha(for: .secondary, isProcessing: isProcessing, activeKind: activeKind)
     }
 
     func buttonAlpha(for kind: ActionKind, isProcessing: Bool, activeKind: ActionKind?) -> CGFloat {
@@ -481,6 +552,88 @@ private extension AICoachReportAdviceAlertVM {
 
     func button(for kind: ActionKind) -> UIButton {
         kind == .primary ? primaryButton : secondaryButton
+    }
+
+    func animateActionButtonCollapse(kind: ActionKind, completion: (() -> Void)? = nil) {
+        layoutIfNeeded()
+        setButtonTitleHidden(true, for: kind)
+        setActionButtonCollapsed(true, for: kind)
+
+        UIView.animate(withDuration: 0.28,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction]) {
+            self.layoutIfNeeded()
+        } completion: { _ in
+            self.setButtonTitleHidden(true, for: kind)
+            completion?()
+        }
+    }
+
+    func restoreActionButtonAppearance(kind: ActionKind, animated: Bool) {
+        setActionButtonCollapsed(false, for: kind)
+        setButtonTitleHidden(false, for: kind)
+
+        let animations = {
+            self.layoutIfNeeded()
+            if self.activeActionKind != kind {
+                self.button(for: kind).titleLabel?.alpha = 1
+            }
+        }
+
+        guard animated else {
+            animations()
+            return
+        }
+
+        UIView.animate(withDuration: 0.28,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction],
+                       animations: animations)
+    }
+
+    func setActionButtonCollapsed(_ isCollapsed: Bool, for kind: ActionKind) {
+        switch kind {
+        case .primary:
+            isPrimaryButtonCollapsed = isCollapsed
+            primaryButtonWidthConstraint?.update(offset: isCollapsed ? actionButtonHeight : actionButtonExpandedWidth(for: .primary))
+        case .secondary:
+            isSecondaryButtonCollapsed = isCollapsed
+            secondaryButtonWidthConstraint?.update(offset: isCollapsed ? actionButtonHeight : actionButtonExpandedWidth(for: .secondary))
+        }
+    }
+
+    func actionButtonExpandedWidth(for kind: ActionKind) -> CGFloat {
+        switch kind {
+        case .primary:
+            return max(primaryButtonContainer.bounds.width, actionButtonHeight)
+        case .secondary:
+            return max(secondaryButtonContainer.bounds.width, actionButtonHeight)
+        }
+    }
+
+    func setButtonTitleHidden(_ isHidden: Bool, for kind: ActionKind) {
+        let button = self.button(for: kind)
+        switch kind {
+        case .primary:
+            button.setTitle(isHidden ? nil : primaryButtonStoredTitle, for: .normal)
+        case .secondary:
+            button.setTitle(isHidden ? nil : secondaryButtonStoredTitle, for: .normal)
+        }
+        button.titleLabel?.isHidden = isHidden
+        button.titleLabel?.alpha = isHidden ? 0 : 1
+        button.setNeedsLayout()
+        button.layoutIfNeeded()
+    }
+
+    func syncActionButtonLayoutIfNeeded() {
+        if isPrimaryButtonCollapsed == false {
+            primaryButtonWidthConstraint?.update(offset: actionButtonExpandedWidth(for: .primary))
+        }
+        if isSecondaryButtonCollapsed == false {
+            secondaryButtonWidthConstraint?.update(offset: actionButtonExpandedWidth(for: .secondary))
+        }
+        primaryButton.layer.cornerRadius = primaryButton.bounds.height / 2
+        secondaryButton.layer.cornerRadius = secondaryButton.bounds.height / 2
     }
 
     func setupWhiteViewBorder() {
