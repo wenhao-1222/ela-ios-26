@@ -433,6 +433,7 @@ class GuidanceVC: WHBaseViewVC {
     lazy var goalVm : QuestionnaireGoalVM = {
         let vm = QuestionnaireGoalVM.init(frame: CGRect.init(x: SCREEN_WIDHT*16, y: 0, width: 0, height: 0))
 //        vm.updateConstraitForGuidance()
+        vm.titleLabel.text = "你的目标是什么？"
         vm.choiceBlock = { [weak self] in
             self?.goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
             self?.updateNextButtonForCurrentStep()

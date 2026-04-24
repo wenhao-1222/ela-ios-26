@@ -47,7 +47,7 @@ class FoodsCreateSpecVM: UIView {
         text.layer.cornerRadius = kFitWidth(4)
         text.clipsToBounds = true
         text.textAlignment = .center
-        text.keyboardType = .numberPad
+        text.keyboardType = .decimalPad
         text.delegate = self
         text.textContentType = nil
         
@@ -176,11 +176,14 @@ extension FoodsCreateSpecVM:UITextFieldDelegate{
             return false
         }
 
+        
+//        if updatedText.floatValue > 100 {
+//            return false
+//        }
         // 限制最多3位数字
         if updatedText.count > 3 {
             return false
         }
-
         // 回调
         numberInput = true
         numberChangeBlock?(updatedText.replacingOccurrences(of: ",", with: "."))

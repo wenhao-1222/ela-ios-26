@@ -9,6 +9,7 @@
 class DietPlanCreateVC: WHBaseViewVC {
     
     var currentIndex: Int = 0
+    private var maxReachedIndex: Int = 0
     private var isGoalStepEnabled = false
     private let draftKeyPrefix = "diet_plan_create_draft_"
     private var isRestoringDraft = false
@@ -294,6 +295,7 @@ extension DietPlanCreateVC{
         let finalOffsetX = min(targetOffsetX, maxOffsetX)
         let previousIndex = currentIndex
         currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
+        updateMaxReachedIndexIfNeeded(withVisibleIndex: currentIndex)
         let shouldAnimate = shouldAnimateStepTransition(from: previousIndex, to: currentIndex)
         scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: shouldAnimate)
         updateNextButtonForCurrentStep(animated: true)
@@ -308,6 +310,7 @@ extension DietPlanCreateVC{
         let finalOffsetX = min(targetOffsetX, maxOffsetX)
         let previousIndex = currentIndex
         currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
+        updateMaxReachedIndexIfNeeded(withVisibleIndex: currentIndex)
         let shouldAnimate = shouldAnimateStepTransition(from: previousIndex, to: currentIndex)
         scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: shouldAnimate)
         updateNextButtonForCurrentStep(animated: true)
@@ -880,10 +883,13 @@ extension DietPlanCreateVC{
         
         shouldResumeFromEatStyleForNonVip = draftBool(draft["shouldResumeFromEatStyleForNonVip"])
         let savedIndex = draftInt(draft["currentIndex"], fallback: 0)
+        let maxSavedIndex = draftInt(draft["maxReachedIndex"], fallback: savedIndex)
         let maxIndex = max(Int(round((scrollViewBase.contentSize.width / SCREEN_WIDHT) - 1)), 0)
         let shouldForceResumeFromEatStyle = shouldResumeFromEatStyleForNonVip && UserInfoModel.shared.vipModel.status != .valid
-        let targetIndex = shouldForceResumeFromEatStyle ? eatStyleVisibleIndex() : displayStepIndex(for: savedIndex)
+        let resumeActualIndex = max(savedIndex, maxSavedIndex)
+        let targetIndex = shouldForceResumeFromEatStyle ? eatStyleVisibleIndex() : displayStepIndex(for: resumeActualIndex)
         currentIndex = min(max(targetIndex, 0), maxIndex)
+        updateMaxReachedIndexIfNeeded(withVisibleIndex: currentIndex)
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0), animated: false)
         updateNextButtonForCurrentStep(animated: false)
         syncProfileFromUserInfoIfNeeded(applyDefaultValues: false)
@@ -985,6 +991,7 @@ private extension DietPlanCreateVC {
     func buildDraftPayload() -> [String: Any] {
         return [
             "currentIndex": persistedStepIndex(forVisibleIndex: currentIndex),
+            "maxReachedIndex": persistedStepIndex(forVisibleIndex: max(maxReachedIndex, currentIndex)),
             "skipStepsOne": skipStepsOne,
             "skipStepsNine": skipStepsNine,
             "skipMealStyle": skipMealStyle,
@@ -1193,6 +1200,10 @@ private extension DietPlanCreateVC {
             originalIndex += 1
         }
         return originalIndex
+    }
+
+    func updateMaxReachedIndexIfNeeded(withVisibleIndex visibleIndex: Int) {
+        maxReachedIndex = max(maxReachedIndex, visibleIndex)
     }
 
     func syncProfileFromUserInfoIfNeeded(applyDefaultValues: Bool) {
