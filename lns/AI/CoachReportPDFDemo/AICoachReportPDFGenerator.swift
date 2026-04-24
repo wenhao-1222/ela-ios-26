@@ -30,7 +30,7 @@ enum AICoachReportPDFGenerator {
         let pageBounds = CGRect(origin: .zero, size: pageSize)
         let pageStartOffsets = contentView.pageStartOffsets(usableHeight: usableHeight)
 
-        let fileURL = makeOutputURL()
+        let fileURL = makeOutputURL(report: report)
         let renderer = UIGraphicsPDFRenderer(bounds: pageBounds)
 
         try renderer.writePDF(to: fileURL) { context in
@@ -95,13 +95,17 @@ enum AICoachReportPDFGenerator {
         }
     }
 
-    private static func makeOutputURL() -> URL {
+    private static func makeOutputURL(report: AICoachReportDemoData) -> URL {
         let folderURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("AICoachReportPDFDemo", isDirectory: true)
+            .appendingPathComponent("AICoachReport", isDirectory: true)
         if FileManager.default.fileExists(atPath: folderURL.path) == false {
             try? FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
         }
-
-        return folderURL.appendingPathComponent("ai-coach-analysis-report.pdf")
+        let reportDate = report.reportDateRange
+            .replacingOccurrences(of: "日期：", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let fallbackDate = report.navigationDateRange.trimmingCharacters(in: .whitespacesAndNewlines)
+        let fileDate = reportDate.isEmpty ? fallbackDate : reportDate
+        return folderURL.appendingPathComponent("ELA-AI教练 \(fileDate).pdf")
     }
 }
