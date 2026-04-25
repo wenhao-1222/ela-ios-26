@@ -172,23 +172,29 @@ extension DietPlanCreateMealModeSecondVM {
             detailLab.textColor = .COLOR_TEXT_TITLE_0f1214_50
             detailLab.font = .systemFont(ofSize: 12, weight: .regular)
 
-            cardView.addSubview(titleLab)
-            cardView.addSubview(detailLab)
+            let textContainerView = UIView()
+
+            cardView.addSubview(textContainerView)
+            textContainerView.addSubview(titleLab)
+            textContainerView.addSubview(detailLab)
             stackView.addArrangedSubview(cardView)
 
             cardView.snp.makeConstraints { make in
                 make.height.equalTo(kFitWidth(92))
             }
 
+            textContainerView.snp.makeConstraints { make in
+                make.center.equalToSuperview()
+                make.left.greaterThanOrEqualToSuperview().offset(kFitWidth(27))
+                make.right.lessThanOrEqualToSuperview().offset(kFitWidth(-27))
+            }
+
             titleLab.snp.makeConstraints { make in
-                make.left.equalTo(kFitWidth(20))
-                make.right.equalTo(kFitWidth(-20))
-                make.top.equalTo(kFitWidth(16))
+                make.left.right.top.equalToSuperview()
             }
 
             detailLab.snp.makeConstraints { make in
-                make.left.equalTo(kFitWidth(27))
-                make.right.equalTo(kFitWidth(-27))
+                make.left.right.bottom.equalToSuperview()
                 make.top.equalTo(titleLab.snp.bottom).offset(kFitWidth(8))
             }
 

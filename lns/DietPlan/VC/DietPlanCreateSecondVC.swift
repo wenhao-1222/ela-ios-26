@@ -792,7 +792,9 @@ extension DietPlanCreateSecondVC {
     func buildDietUpsertParameters() -> [String: Any] {
         let model = QuestinonaireMsgModel.shared
         var param: [String: Any] = [
-            "userGoal": buildUserGoalsForRequest(from: model.goal),
+            "userGoal": buildAdjustedUserGoalsForRequest(goalText: model.goal,
+                                                        targetWeightText: model.targetWeight,
+                                                        currentWeightText: model.weight),
             "birthday": model.birthDay,
             "gender": model.sex,
             "currentWeight": model.weight,
@@ -812,6 +814,26 @@ extension DietPlanCreateSecondVC {
         ]
         param["tdee"] = numberValue(from: model.caloriesNumber) ?? NSNull()
         return param
+    }
+
+    func buildAdjustedUserGoalsForRequest(goalText: String,
+                                          targetWeightText: String,
+                                          currentWeightText: String) -> [Int] {
+        let userGoals = buildUserGoalsForRequest(from: goalText)
+        guard let targetWeight = Double(targetWeightText.trimmingCharacters(in: .whitespacesAndNewlines)),
+              let currentWeight = Double(currentWeightText.trimmingCharacters(in: .whitespacesAndNewlines)) else {
+            return userGoals
+        }
+
+        if targetWeight > currentWeight {
+            return userGoals.map { $0 == 1 ? 2 : $0 }
+        }
+
+        if targetWeight < currentWeight {
+            return userGoals.map { $0 == 2 ? 1 : $0 }
+        }
+
+        return userGoals
     }
 
     func buildUserGoalsForRequest(from text: String) -> [Int] {
