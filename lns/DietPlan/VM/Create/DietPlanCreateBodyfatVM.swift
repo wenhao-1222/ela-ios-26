@@ -123,12 +123,19 @@ extension DietPlanCreateBodyfatVM {
 
     func restoreSelection(modelValue: String) {
         let normalizedValue = modelValue.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard QuestinonaireMsgModel.shared.sex == "1" || QuestinonaireMsgModel.shared.sex == "2" else {
+            selectIndex = -1
+            refreshSelectStatus()
+            QuestinonaireMsgModel.shared.bodyFat = ""
+            selectStateChangeBlock?(false)
+            return
+        }
         let array = QuestinonaireMsgModel.shared.sex == "1" ? dataArray : dataFemanArray
 
         guard let index = array.firstIndex(where: { ($0["data"] ?? "") == normalizedValue }) else {
             selectIndex = -1
             refreshSelectStatus()
-            QuestinonaireMsgModel.shared.bodyFat = normalizedValue
+            QuestinonaireMsgModel.shared.bodyFat = ""
             selectStateChangeBlock?(false)
             return
         }
@@ -200,7 +207,16 @@ extension DietPlanCreateBodyfatVM {
         selectIndex = -1
         selectStateChangeBlock?(false)
 
-        let array = QuestinonaireMsgModel.shared.sex == "1" ? dataArray : dataFemanArray
+        let array: [[String: String]]
+        if QuestinonaireMsgModel.shared.sex == "1" {
+            array = dataArray
+        } else if QuestinonaireMsgModel.shared.sex == "2" {
+            array = dataFemanArray
+        } else {
+            scrollView.contentSize = .zero
+            scrollView.setContentOffset(.zero, animated: false)
+            return
+        }
         let colNum = 2
         let itemWidth = SCREEN_WIDHT / CGFloat(colNum)
 
@@ -236,6 +252,10 @@ extension DietPlanCreateBodyfatVM {
     }
 
     func updateBodyFatValue(index: Int) {
+        guard QuestinonaireMsgModel.shared.sex == "1" || QuestinonaireMsgModel.shared.sex == "2" else {
+            QuestinonaireMsgModel.shared.bodyFat = ""
+            return
+        }
         let array = QuestinonaireMsgModel.shared.sex == "1" ? dataArray : dataFemanArray
         guard index >= 0 && index < array.count else {
             QuestinonaireMsgModel.shared.bodyFat = ""

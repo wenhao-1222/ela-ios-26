@@ -104,6 +104,15 @@ extension DietPlanCreateKetoHistoryVM {
         select(index: view.tag)
     }
 
+    func clearSelection() {
+        if selectedIndex >= 0 && selectedIndex < itemViews.count {
+            itemViews[selectedIndex].backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_05
+            titleLabels[selectedIndex].textColor = .COLOR_TEXT_TITLE_0f1214
+        }
+        selectedIndex = -1
+        QuestinonaireMsgModel.shared.dietHistoryType = ""
+    }
+
     func select(index: Int) {
         guard index >= 0 && index < optionTitles.count else { return }
         if selectedIndex == index { return }

@@ -54,12 +54,7 @@ class DietPlanCreateVC: WHBaseViewVC {
         
         syncProfileFromUserInfoIfNeeded(applyDefaultValues: true)
         observeDraftChanges()
-        
-        if (UserInfoModel.shared.gender == "1" || UserInfoModel.shared.gender == "2") && UserInfoModel.shared.gender != QuestinonaireMsgModel.shared.sex{
-            
-        }else{
-            restoreDraftIfNeeded()
-        }
+        handleDraftRestoreFlow()
     }
     
     deinit {
@@ -267,6 +262,11 @@ extension DietPlanCreateVC{
     }
 
     func goToNextStep() {
+        resetDraftAfterManualSexChangeIfNeeded()
+        if currentIndex == displayStepIndex(for: 1) && !shouldSkipSexStep {
+            bodyfatVm.updateScrollView()
+        }
+
         let maxOffsetX = max(scrollViewBase.contentSize.width - scrollViewBase.bounds.width, 0)
         let isAtLastStep = scrollViewBase.contentOffset.x >= (maxOffsetX - 0.5)
         if isAtLastStep {
@@ -304,6 +304,7 @@ extension DietPlanCreateVC{
 
     func moveFromSexToNextStep() {
         guard currentIndex == displayStepIndex(for: 1) else { return }
+        resetDraftAfterManualSexChangeIfNeeded()
         let nextIndex = nextStepIndex(from: currentIndex)
         let targetOffsetX = SCREEN_WIDHT * CGFloat(nextIndex)
         let maxOffsetX = max(scrollViewBase.contentSize.width - scrollViewBase.bounds.width, 0)
@@ -723,7 +724,7 @@ extension DietPlanCreateVC{
         }
         
         let model = QuestinonaireMsgModel.shared
-        model.sex = draftString(draft["sex"])
+        model.sex = resolvedDraftGender(from: draft)
         model.birthYear = draftString(draft["birthYear"])
         model.goal = draftString(draft["goal"])
         model.height = draftString(draft["height"])
@@ -774,16 +775,7 @@ extension DietPlanCreateVC{
         
         targetWeightVm.applyInitialValue()
         
-        let maxBodyFatCount = model.sex == "1" ? bodyfatVm.dataArray.count : bodyfatVm.dataFemanArray.count
-        let bodyFatIndex = draftInt(draft["bodyFatSelectIndex"], fallback: -1)
-        if bodyFatIndex >= 0 && bodyFatIndex < maxBodyFatCount {
-            bodyfatVm.selectIndex = bodyFatIndex
-            bodyfatVm.refreshSelectStatus()
-            bodyfatVm.updateBodyFatValue(index: bodyFatIndex)
-            bodyfatVm.selectStateChangeBlock?(true)
-        } else {
-            bodyfatVm.selectStateChangeBlock?(false)
-        }
+        let hasValidBodyFatSelection = restoreBodyFatSelection(from: draft, gender: model.sex)
         
         eventsVm.selectedIndex = normalizedSingleSelectionIndex(
             preferred: draftInt(draft["eventsSelectedIndex"], fallback: -1),
@@ -888,7 +880,9 @@ extension DietPlanCreateVC{
         let shouldForceResumeFromEatStyle = shouldResumeFromEatStyleForNonVip && UserInfoModel.shared.vipModel.status != .valid
         let resumeActualIndex = max(savedIndex, maxSavedIndex)
         let targetIndex = shouldForceResumeFromEatStyle ? eatStyleVisibleIndex() : displayStepIndex(for: resumeActualIndex)
-        currentIndex = min(max(targetIndex, 0), maxIndex)
+        let bodyFatVisibleIndex = displayStepIndex(for: 5)
+        let clampedTargetIndex = hasValidBodyFatSelection ? targetIndex : min(targetIndex, bodyFatVisibleIndex)
+        currentIndex = min(max(clampedTargetIndex, 0), maxIndex)
         updateMaxReachedIndexIfNeeded(withVisibleIndex: currentIndex)
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0), animated: false)
         updateNextButtonForCurrentStep(animated: false)
@@ -980,6 +974,137 @@ extension DietPlanCreateVC{
 }
 
 private extension DietPlanCreateVC {
+    func handleDraftRestoreFlow() {
+        let profileGender = UserInfoModel.shared.gender
+        let hasValidProfileGender = profileGender == "1" || profileGender == "2"
+
+        guard let key = draftStorageKey(),
+              let draft = UserDefaults.standard.dictionary(forKey: key) else {
+            resetQuestionnaireForFreshStart()
+            return
+        }
+
+        if hasValidProfileGender {
+            let draftGender = draftString(draft["sex"])
+            if !draftGender.isEmpty && draftGender != profileGender {
+                UserDefaults.standard.removeObject(forKey: key)
+                resetQuestionnaireForFreshStart()
+                return
+            }
+        }
+
+        restoreDraftIfNeeded()
+    }
+
+    func resetQuestionnaireForFreshStart(preservedSex: String? = nil, startVisibleIndex: Int = 0) {
+        QuestinonaireMsgModel.shared.clearMsg()
+        currentIndex = max(0, startVisibleIndex)
+        maxReachedIndex = currentIndex
+        skipStepsOne = 0
+        skipStepsNine = false
+        skipMealStyle = false
+        skipKetoHistory = false
+        shouldResumeFromEatStyleForNonVip = false
+
+        resetDynamicStepLayoutToDefault()
+        resetQuestionnaireSelectionState()
+
+        if preservedSex == "1" || preservedSex == "2" {
+            QuestinonaireMsgModel.shared.sex = preservedSex ?? ""
+            applyDefaultPhysicalValuesForCurrentSexIfNeeded()
+        } else {
+            syncProfileFromUserInfoIfNeeded(applyDefaultValues: true)
+        }
+
+        applySexSelectionUI()
+        bodyfatVm.updateScrollView()
+        updateKetoHistoryTitleIfNeeded()
+        scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0), animated: false)
+        updateNextButtonForCurrentStep(animated: false)
+    }
+
+    func resetDraftAfterManualSexChangeIfNeeded() {
+        let sexStepIndex = displayStepIndex(for: 1)
+        guard !shouldSkipSexStep,
+              currentIndex == sexStepIndex,
+              maxReachedIndex > sexStepIndex,
+              let key = draftStorageKey(),
+              let draft = UserDefaults.standard.dictionary(forKey: key) else {
+            return
+        }
+
+        let currentSex = QuestinonaireMsgModel.shared.sex
+        let draftGender = draftString(draft["sex"])
+        guard (currentSex == "1" || currentSex == "2"),
+              (draftGender == "1" || draftGender == "2"),
+              currentSex != draftGender else {
+            return
+        }
+
+        UserDefaults.standard.removeObject(forKey: key)
+        resetQuestionnaireForFreshStart(preservedSex: currentSex, startVisibleIndex: sexStepIndex)
+    }
+
+    func resetDynamicStepLayoutToDefault() {
+        stepsArray = displayedStepsArray(for: [5,6,6])
+        importantVm.isHidden = false
+        paceVm.isHidden = false
+        mealStyleVm.isHidden = false
+        ketoHistoryVm.isHidden = false
+        applyIntroStepOffsetLayout()
+        scrollViewBase.contentSize = CGSize(width: contentWidth(forBasePageCount: 17), height: 0)
+    }
+
+    func resetQuestionnaireSelectionState() {
+        isGoalStepEnabled = false
+        goalVm.selectedIndexes = []
+        goalVm.selectedIndex = -1
+        goalVm.refreshListUI()
+
+        eventsVm.selectedIndex = -1
+        eventsVm.tableView.reloadData()
+
+        importantVm.selectedIndex = -1
+        importantVm.tableView.reloadData()
+
+        paceVm.restoreLevelFromDraft(modelValue: "2")
+
+        allergyVm.selectedIndexes = []
+        allergyVm.selectedIndex = -1
+        allergyVm.applyGoalFilter()
+        allergyVm.refreshListUI()
+
+        barrierVm.selectedIndexes = []
+        barrierVm.selectedIndex = -1
+        barrierVm.refreshListUI()
+
+        mealStyleVm.selectedIndex = -1
+        mealStyleVm.tableView.reloadData()
+
+        eatStyleVm.selectedIndex = -1
+        eatStyleVm.refreshListUI()
+
+        ketoHistoryVm.clearSelection()
+
+        flavorVM.selectedIndexes = []
+        flavorVM.selectedIndex = -1
+        flavorVM.refreshListUI()
+    }
+
+    func applyDefaultPhysicalValuesForCurrentSexIfNeeded() {
+        guard QuestinonaireMsgModel.shared.sex == "1" || QuestinonaireMsgModel.shared.sex == "2" else {
+            return
+        }
+        let isMale = QuestinonaireMsgModel.shared.sex == "1"
+        if QuestinonaireMsgModel.shared.height.isEmpty {
+            heightVm.applyDefaultHeight(isMale ? 170 : 160)
+        }
+        if QuestinonaireMsgModel.shared.weight.isEmpty {
+            weightVm.applyDefaultWeight(integer: isMale ? 70 : 50)
+        }
+        targetWeightVm.syncWithCurrentWeight(Double(QuestinonaireMsgModel.shared.weight) ?? (isMale ? 70 : 50), syncTarget: true)
+    }
+
     func draftStorageKey() -> String? {
         let uid = UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines)
         if uid.isEmpty {
@@ -1204,6 +1329,55 @@ private extension DietPlanCreateVC {
 
     func updateMaxReachedIndexIfNeeded(withVisibleIndex visibleIndex: Int) {
         maxReachedIndex = max(maxReachedIndex, visibleIndex)
+    }
+
+    func resolvedDraftGender(from draft: [String: Any]) -> String {
+        let draftGender = draftString(draft["sex"])
+        if shouldSkipSexStep {
+            let profileGender = UserInfoModel.shared.gender
+            if profileGender == "1" || profileGender == "2" {
+                return profileGender
+            }
+        }
+        if draftGender == "1" || draftGender == "2" {
+            return draftGender
+        }
+        return QuestinonaireMsgModel.shared.sex
+    }
+
+    @discardableResult
+    func restoreBodyFatSelection(from draft: [String: Any], gender: String) -> Bool {
+        guard gender == "1" || gender == "2" else {
+            QuestinonaireMsgModel.shared.bodyFat = ""
+            bodyfatVm.selectIndex = -1
+            bodyfatVm.refreshSelectStatus()
+            bodyfatVm.selectStateChangeBlock?(false)
+            return false
+        }
+
+        let bodyFatOptions = gender == "1" ? bodyfatVm.dataArray : bodyfatVm.dataFemanArray
+        let savedBodyFat = draftString(draft["bodyFat"]).trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !savedBodyFat.isEmpty else {
+            QuestinonaireMsgModel.shared.bodyFat = ""
+            bodyfatVm.selectIndex = -1
+            bodyfatVm.refreshSelectStatus()
+            bodyfatVm.selectStateChangeBlock?(false)
+            return false
+        }
+
+        if let matchedIndex = bodyFatOptions.firstIndex(where: { ($0["data"] ?? "") == savedBodyFat }) {
+            bodyfatVm.selectIndex = matchedIndex
+            bodyfatVm.refreshSelectStatus()
+            bodyfatVm.updateBodyFatValue(index: matchedIndex)
+            bodyfatVm.selectStateChangeBlock?(true)
+            return true
+        }
+
+        QuestinonaireMsgModel.shared.bodyFat = ""
+        bodyfatVm.selectIndex = -1
+        bodyfatVm.refreshSelectStatus()
+        bodyfatVm.selectStateChangeBlock?(false)
+        return false
     }
 
     func syncProfileFromUserInfoIfNeeded(applyDefaultValues: Bool) {

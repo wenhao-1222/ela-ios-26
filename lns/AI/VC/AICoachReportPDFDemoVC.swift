@@ -25,7 +25,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     private var downloadButtonWidthConstraint: Constraint?
     private var isTopBarInteractionEnabled = false
     private var isDownloadInProgress = false
-    private let shouldUseLocalRecommendMock = true
+    private let shouldUseLocalRecommendMock = false
 
     private lazy var topContainerView: UIView = {
         let view = UIView()
