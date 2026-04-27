@@ -148,7 +148,7 @@ extension AICoachPreVC{
         }
         preDaysVM.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(circleImgView.snp.bottom).offset(kFitWidth(20))
+            make.top.equalTo(circleImgView.snp.bottom).offset(kFitWidth(50))
             make.height.equalTo(preDaysVM.selfHeight)
         }
 

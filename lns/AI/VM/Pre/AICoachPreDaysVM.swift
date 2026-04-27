@@ -204,9 +204,16 @@ private extension AICoachPreDaysVM {
          
          首次出报告：你的首份教练报告已经准备好了，快去查看！
 
+         首报之后的文案：
+         请继续保持记录饮食和体重，我预计会在x天后给你发送下一份反馈报告。
+         
          后续出报告：你最新的教练报告已经准备好了，快去查看！
          */
         var fullText = "为了让反馈更精准，我还需要更多时间来了解你。请继续保持记录饮食和体重，我预计会在\(reportAfterDays) 天后为你生成第一份反馈报告！"
+        
+        if !isFirstReport{
+            fullText = "请继续保持记录饮食和体重，我预计会在\(reportAfterDays)天后给你发送下一份反馈报告。"
+        }
         
         if reportAfterDays == 0 {// 报告已能生成
             if isFirstReport{

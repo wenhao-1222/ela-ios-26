@@ -9,6 +9,8 @@
 class FriendListVM: UIView {
     
     var dataSourceArray = NSMutableArray()
+    private let skeletonPlaceholderCount = 8
+    private let skeletonFadeDuration: TimeInterval = 0.25
     
     var tableViewOriginY = kFitWidth(56)
     var isFriendList = true
@@ -23,7 +25,9 @@ class FriendListVM: UIView {
         self.isUserInteractionEnabled = true
         
         initUI()
-        sendFriendListRequest()
+//        DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
+            self.sendFriendListRequest()
+//        })
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -75,6 +79,71 @@ class FriendListVM: UIView {
 }
 
 extension FriendListVM{
+    private var isDisplayingSkeletonPlaceholders: Bool {
+        guard dataSourceArray.count == skeletonPlaceholderCount else { return false }
+        for index in 0..<dataSourceArray.count {
+            if dataSourceArray[index] is NSDictionary {
+                return false
+            }
+        }
+        return true
+    }
+    
+    private func performTableReload(after delay: TimeInterval = 0, action: @escaping () -> Void) {
+        if delay > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: action)
+        } else {
+            DispatchQueue.main.async(execute: action)
+        }
+    }
+    
+    private func fadeOutSkeletonIfNeeded(before completion: @escaping () -> Void) {
+        guard isDisplayingSkeletonPlaceholders else {
+            completion()
+            return
+        }
+        
+        let visibleCells = tableView.visibleCells.compactMap { $0 as? FriendListTableViewCell }
+        guard !visibleCells.isEmpty else {
+            completion()
+            return
+        }
+        
+        visibleCells.forEach { $0.hideLoadingSkeletonIfNeeded() }
+        UIView.animate(withDuration: skeletonFadeDuration, animations: {
+            visibleCells.forEach { $0.alpha = 0 }
+        }, completion: { _ in
+            visibleCells.forEach { $0.alpha = 1 }
+            completion()
+        })
+    }
+    
+    private func applyLoadedData(_ dataArray: NSArray, reloadDelay: TimeInterval = 0) {
+        let shouldFadeOutSkeleton = isDisplayingSkeletonPlaceholders && dataArray.count == 0
+        let noDataView = isFriendList ? noFriendDataLabel : noResultLabel
+        
+        let reloadAction = {
+            self.dataSourceArray = NSMutableArray(array: dataArray)
+            noDataView.alpha = dataArray.count == 0 ? 0 : 1
+            self.tableView.reloadData()
+            
+            guard dataArray.count == 0 else { return }
+            UIView.animate(withDuration: self.skeletonFadeDuration) {
+                noDataView.alpha = 1
+            }
+        }
+        
+        let updateAction = {
+            self.performTableReload(after: reloadDelay, action: reloadAction)
+        }
+        
+        if shouldFadeOutSkeleton {
+            fadeOutSkeletonIfNeeded(before: updateAction)
+        } else {
+            updateAction()
+        }
+    }
+    
     func initUI() {
         addSubview(tableView)
         tableView.addSubview(noResultLabel)
@@ -93,14 +162,9 @@ extension FriendListVM{
     }
     func initSkeletonData() {
         dataSourceArray.removeAllObjects()
-        dataSourceArray.add("")
-        dataSourceArray.add("")
-        dataSourceArray.add("")
-        dataSourceArray.add("")
-        dataSourceArray.add("")
-        dataSourceArray.add("")
-        dataSourceArray.add("")
-        dataSourceArray.add("")
+        for _ in 0..<skeletonPlaceholderCount {
+            dataSourceArray.add("")
+        }
         tableView.reloadData()
     }
     func updateFrame(originY:CGFloat) {
@@ -174,11 +238,7 @@ extension FriendListVM{
             
             DLLog(message: "sendFriendQueryRequest:\(dataArray)")
             DispatchQueue.main.asyncAfter(deadline: .now()+0.02, execute: {
-                self.dataSourceArray = NSMutableArray(array: dataArray)
-
-                DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
-                    self.tableView.reloadData()
-                })
+                self.applyLoadedData(dataArray, reloadDelay: 0.5)
             })
         }
     }
@@ -199,12 +259,7 @@ extension FriendListVM{
             let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             
             DLLog(message: "sendFriendListRequest:\(dataArray)")
-//            DispatchQueue.main.asyncAfter(deadline: .now()+0.02, execute: {
-                self.dataSourceArray = NSMutableArray(array: dataArray)
-//                DispatchQueue.main.asyncAfter(deadline: .now()+5.5, execute: {
-                    self.tableView.reloadData()
-//                })
-//            })
+            self.applyLoadedData(dataArray)
         }
     }
     func sendFriendPengdingDealRequest(dict:NSDictionary,status:String,indexPath:IndexPath) {

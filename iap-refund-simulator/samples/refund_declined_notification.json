@@ -1,0 +1,24 @@
+{
+  "notificationType": "REFUND_DECLINED",
+  "subtype": null,
+  "notificationUUID": "mock-refund-declined-001",
+  "version": "2.0",
+  "signedDate": 1770000000000,
+  "environment": "Sandbox",
+  "data": {
+    "bundleId": "com.leungnutrition.lns",
+    "appAppleId": 1234567890,
+    "bundleVersion": "1.0.0",
+    "environment": "Sandbox",
+    "signedTransactionInfoDecoded": {
+      "productId": "annual_yeal_new",
+      "transactionId": "490001234567891",
+      "originalTransactionId": "490001234567891",
+      "purchaseDate": 1770000000000,
+      "originalPurchaseDate": 1770000000000,
+      "expiresDate": 1772592000000,
+      "type": "Auto-Renewable Subscription"
+    }
+  },
+  "_note": "Use this to verify that the backend keeps the entitlement active when Apple declines the refund."
+}

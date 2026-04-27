@@ -246,7 +246,7 @@ private final class AICoachPreInfoSelectOptionRowView: UIView {
 
 private extension AICoachPreInfoSelectOptionRowView {
     func setupUI() {
-        backgroundColor = .white.withAlphaComponent(0.72)
+        backgroundColor = .COLOR_CARD_BG_WHITE
         layer.cornerRadius = kFitWidth(14)
         layer.cornerCurve = .continuous
 

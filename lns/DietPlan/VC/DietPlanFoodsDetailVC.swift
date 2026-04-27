@@ -131,6 +131,14 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
                                                       skeletonFadeInDuration: 0.0,
                                                       contentFadeInDuration: 0.18)
     
+    lazy var backButton: UIButton = {
+        let img = UIButton.init(type: .custom)
+        img.frame = CGRect.init(x: kFitWidth(12.5), y: statusBarHeight+kFitWidth(5), width: kFitWidth(35), height: kFitWidth(35))
+        img.setImage(UIImage(named: "habit_guide_back_icon"), for: .normal)
+        img.addTarget(self, action: #selector(backTapAction), for: .touchUpInside)
+        
+        return img
+    }()
     private lazy var topImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
@@ -310,6 +318,17 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
         scrollContentGradientLayer.frame = scrollBackgroundView.bounds
         scrollTopOverlayGradientLayer.frame = scrollTopOverlayView.bounds
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        scrollContentGradientLayer.colors = [
+            UIColor.COLOR_BG_WHITE.cgColor,
+            UIColor.COLOR_BG_F2.cgColor
+        ]
+        scrollTopOverlayGradientLayer.colors = [
+            UIColor.COLOR_CARD_BG_WHITE_ALERT.cgColor,
+            UIColor.COLOR_CARD_BG_WHITE_ALERT.withAlphaComponent(0).cgColor
+        ]
+    }
 }
 
 extension DietPlanFoodsDetailVC {
@@ -317,6 +336,7 @@ extension DietPlanFoodsDetailVC {
         view.backgroundColor = .COLOR_BG_F2
         
         view.addSubview(scrollView)
+        view.addSubview(backButton)
         view.addSubview(loadingContainerView)
         scrollView.addSubview(scrollContentView)
         scrollContentView.addSubview(topImageView)
@@ -328,7 +348,7 @@ extension DietPlanFoodsDetailVC {
         bottomActionContainer.addSubview(chooseButtonSkeletonView)
         
         scrollContentGradientLayer.colors = [
-            UIColor.white.cgColor,
+            UIColor.COLOR_BG_WHITE.cgColor,
             UIColor.COLOR_BG_F2.cgColor
         ]
         scrollContentGradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
@@ -464,16 +484,17 @@ extension DietPlanFoodsDetailVC {
             make.height.equalTo(kFitWidth(32))
         }
         
-        initNavi(titleStr: "", naviBgColor: .clear)
-        navigationView.backgroundColor = .clear
-        navigationView.isHidden = true
-        backArrowButton.removeFromSuperview()
-        view.addSubview(backArrowButton)
-        backArrowButton.snp.remakeConstraints { make in
-            make.width.height.equalTo(kFitWidth(44))
-            make.top.equalTo(statusBarHeight)
-            make.left.equalTo(kFitWidth(2))
-        }
+//        initNavi(titleStr: "", naviBgColor: .clear)
+//        navigationView.backgroundColor = .clear
+//        navigationView.isHidden = true
+//        backArrowButton.removeFromSuperview()
+//        view.addSubview(backArrowButton)
+//        backArrowButton.snp.remakeConstraints { make in
+//            make.width.height.equalTo(kFitWidth(56))
+//            make.top.equalTo(statusBarHeight)
+//            make.left.equalTo(kFitWidth(12))
+//        }
+//        backArrowButton.setImgName(imgName: "habit_guide_back_icon")
 
         setupLoadingUI()
     }
@@ -590,7 +611,7 @@ private extension DietPlanFoodsDetailVC {
     func setupLoadingUI() {
         let loadingImageSkeletonView = makeLoadingBlock(config: imageSkeletonConfig)
         let loadingCardView = UIView()
-        loadingCardView.backgroundColor = .white
+        loadingCardView.backgroundColor = .COLOR_CARD_BG_WHITE
         loadingCardView.layer.cornerRadius = kFitWidth(24)
         loadingCardView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         loadingCardView.clipsToBounds = true

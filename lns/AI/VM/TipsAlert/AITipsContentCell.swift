@@ -43,7 +43,7 @@ class AITipsContentCell: UITableViewCell {
     }()
     lazy var bgView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_BG_F5
+        vi.backgroundColor = .clear//.COLOR_BG_F5
 //        vi.layer.cornerRadius = kFitWidth(20)
 //        vi.clipsToBounds = true
         vi.isUserInteractionEnabled = true

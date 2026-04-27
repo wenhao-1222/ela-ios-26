@@ -95,7 +95,12 @@ extension FriendListTableViewCell{
     }
 }
 extension FriendListTableViewCell{
+    func hideLoadingSkeletonIfNeeded() {
+        [headImgView, nickNameLabel, idLabel].forEach { $0.hideSkeletonWithCrossfade() }
+    }
+    
     func updateUI(dict:NSDictionary) {
+        self.alpha = 1
         if dict.stringValueForKey(key: "nickname").count > 0 {
             nickNameLabel.snp.remakeConstraints { make in
                 make.left.equalTo(headImgView.snp.right).offset(kFitWidth(12))
@@ -136,7 +141,7 @@ extension FriendListTableViewCell{
                 }
             }
             // 3) 最后统一把骨架优雅淡出 + 内容淡入
-            [headImgView, nickNameLabel,idLabel].forEach { $0.hideSkeletonWithCrossfade() }
+            hideLoadingSkeletonIfNeeded()
             self.addButton.alpha = 0
             self.agreeButton.alpha = 0
             self.disagreeButton.alpha = 0

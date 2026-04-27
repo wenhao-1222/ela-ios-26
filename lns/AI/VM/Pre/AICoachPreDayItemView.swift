@@ -64,7 +64,7 @@ class AICoachPreDayItemView: UIView {
             checkImageView.isHidden = false
             titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         case 1:
-            iconContainerView.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_05
+            iconContainerView.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
             checkImageView.isHidden = false
             titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         default:

@@ -53,6 +53,7 @@ enum ElaProSubscriptionHistoryState {
 final class ElaProIAPManager: NSObject {
     static let shared = ElaProIAPManager()
     static let localEntitlementUpdatedNotification = NSNotification.Name("ela_pro_local_entitlement_updated")
+    static let refundDebugLogUpdatedNotification = NSNotification.Name("ela_pro_refund_debug_log_updated")
 
     private enum PurchaseQueryBizType: String {
         case pendingBind = "1"
@@ -77,6 +78,7 @@ final class ElaProIAPManager: NSObject {
         static let expireAtMs = "ela_pro_local_expire_at_ms"
         static let source = "ela_pro_local_source"
         static let pendingVerifyPayload = "ela_pro_pending_verify_payload"
+        static let refundDebugLogs = "ela_pro_refund_debug_logs"
     }
 
     private enum KeychainKeys {
@@ -213,6 +215,59 @@ final class ElaProIAPManager: NSObject {
         purchase(productID: ElaProIAPConfig.lifetimeProductID, completion: completion)
     }
 
+    func refundDebugLogText() -> String {
+        let logs = UserDefaults.standard.stringArray(forKey: LocalUnlockKeys.refundDebugLogs) ?? []
+        if logs.isEmpty {
+            return "暂无退款调试日志。\n\n建议顺序：\n1. 先完成一次 Sandbox/TestFlight 订阅购买。\n2. 在“管理订阅”页点“一键发起 Apple 退款申请”。\n3. 回到这里查看客户端日志。\n4. 在仓库根目录运行 iap-refund-simulator/ 里的本地回调脚本观察后台模拟回调。"
+        }
+        return logs.reversed().joined(separator: "\n\n")
+    }
+
+    func clearRefundDebugLogs() {
+        UserDefaults.standard.removeObject(forKey: LocalUnlockKeys.refundDebugLogs)
+        NotificationCenter.default.post(name: Self.refundDebugLogUpdatedNotification, object: nil)
+    }
+
+    func beginRefundDebugFlow(in scene: UIWindowScene,
+                              completion: @escaping (Result<String, Error>) -> Void) {
+        guard #available(iOS 15.0, *) else {
+            completion(.failure(ElaProRefundDebugError.storeKit2Unavailable))
+            return
+        }
+
+        let productIDs = configuredRefundProductIDs()
+        appendRefundDebugLog("准备发起 Apple 退款申请", payload: [
+            "productIDs": productIDs,
+            "subscriptionGroupID": ElaProIAPConfig.subscriptionGroupID
+        ])
+
+        Task { @MainActor in
+            do {
+                let transaction = try await latestRefundableTransaction(productIDs: productIDs)
+                appendRefundDebugLog("命中可退款交易", payload: refundTransactionPayload(transaction))
+
+                let status = try await transaction.beginRefundRequest(in: scene)
+                switch status {
+                case .success:
+                    appendRefundDebugLog("Apple 退款申请已提交", payload: refundTransactionPayload(transaction))
+                    completion(.success("Apple 退款申请已提交，请在 Apple 弹窗里完成后续操作"))
+                case .userCancelled:
+                    appendRefundDebugLog("Apple 退款申请被用户取消", payload: refundTransactionPayload(transaction))
+                    completion(.failure(ElaProRefundDebugError.userCancelled))
+                @unknown default:
+                    appendRefundDebugLog("Apple 退款申请返回未知状态", payload: refundTransactionPayload(transaction))
+                    completion(.failure(ElaProRefundDebugError.unknown("退款请求返回未知状态")))
+                }
+            } catch {
+                self.appendRefundDebugLog("Apple 退款申请失败", payload: [
+                    "error": error.localizedDescription,
+                    "productIDs": productIDs
+                ])
+                completion(.failure(error))
+            }
+        }
+    }
+
     func checkSubscriptionHistoryState(productID: String,
                                        completion: @escaping (ElaProSubscriptionHistoryState) -> Void) {
         let trimmedProductID = productID.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -262,6 +317,7 @@ final class ElaProIAPManager: NSObject {
                                          queryBizType: String = PurchaseQueryBizType.standard.rawValue) {
         let expireAt = applyLocalTemporaryUnlock(transaction: transaction)
         let payload = makePurchaseVerifyPayload(transaction: transaction, localUnlockExpireAt: expireAt)
+        appendRefundDebugLog("购买成功，已生成验单载荷", payload: payload)
         cachePendingVerifyPayload(payload: payload)
         storePendingTransactionID(transaction.transactionIdentifier)
         if canBindPurchaseToCurrentUser() {
@@ -511,6 +567,12 @@ final class ElaProIAPManager: NSObject {
                                           success: { responseObject in
             let code = responseObject["code"] as? Int ?? -1
             DLLog(message: "[ElaProIAP][QUERY] success: \(responseObject), transactionId=\(transactionID), bizType=\(bizType)")
+            self.appendRefundDebugLog("后台订单查询返回", payload: [
+                "transactionId": transactionID,
+                "bizType": bizType,
+                "code": code,
+                "response": responseObject
+            ])
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "[ElaProIAP][QUERY] success:\(dataDict)")
@@ -522,6 +584,11 @@ final class ElaProIAPManager: NSObject {
             }
         }, failure: { failed in
             DLLog(message: "[ElaProIAP][QUERY] failure: \(failed), tractionId=\(transactionID), bizType=\(bizType)")
+            self.appendRefundDebugLog("后台订单查询失败", payload: [
+                "transactionId": transactionID,
+                "bizType": bizType,
+                "failed": failed
+            ])
             completion?(false)
         })
     }
@@ -614,6 +681,9 @@ final class ElaProIAPManager: NSObject {
         defaults.removeObject(forKey: LocalUnlockKeys.unlockAtMs)
         defaults.removeObject(forKey: LocalUnlockKeys.expireAtMs)
         defaults.removeObject(forKey: LocalUnlockKeys.source)
+        appendRefundDebugLog("本地临时会员权益已清空", payload: [
+            "shouldNotify": shouldNotify
+        ])
         if shouldNotify {
             NotificationCenter.default.post(name: Self.localEntitlementUpdatedNotification, object: nil)
         }
@@ -634,10 +704,98 @@ final class ElaProIAPManager: NSObject {
         // TODO(iap-backend): 请求体建议至少包含 userId/productId/transactionId/originalTransactionId/receiptBase64
         // TODO(iap-backend): 后台返回最终会员状态后，需覆盖本地临时解锁状态
         DLLog(message: "[ElaProIAP][TODO_UPLOAD] payload=\(payload)")
-        
+        appendRefundDebugLog("客户端验单上传占位日志", payload: payload)
+
         // 预留调用形式（后台接口就绪后放开）：
         // WHNetworkUtil.shareManager().POST(urlString: URL_pro_iap_purchase_confirm,
         //                                  parameters: payload as [String : AnyObject]) { _ in }
+    }
+
+    private func configuredRefundProductIDs() -> [String] {
+        return [
+            ElaProIAPConfig.monthProductID,
+            ElaProIAPConfig.annualProductID,
+            ElaProIAPConfig.lifetimeProductID
+        ].map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+    }
+
+    @available(iOS 15.0, *)
+    private func latestRefundableTransaction(productIDs: [String]) async throws -> Transaction {
+        guard !productIDs.isEmpty else {
+            throw ElaProRefundDebugError.noConfiguredProductID
+        }
+
+        var latestTransaction: Transaction?
+        for productID in productIDs {
+            guard let result = await Transaction.latest(for: productID) else {
+                appendRefundDebugLog("未找到最近交易", payload: ["productID": productID])
+                continue
+            }
+
+            switch result {
+            case .verified(let transaction):
+                guard transaction.revocationDate == nil else {
+                    appendRefundDebugLog("交易已撤销，跳过退款申请", payload: refundTransactionPayload(transaction))
+                    continue
+                }
+                if let current = latestTransaction {
+                    if transaction.purchaseDate > current.purchaseDate {
+                        latestTransaction = transaction
+                    }
+                } else {
+                    latestTransaction = transaction
+                }
+            case .unverified(_, let error):
+                appendRefundDebugLog("交易校验失败，跳过退款申请", payload: [
+                    "productID": productID,
+                    "error": error.localizedDescription
+                ])
+            }
+        }
+
+        guard let latestTransaction else {
+            throw ElaProRefundDebugError.noRefundableTransaction(productIDs)
+        }
+        return latestTransaction
+    }
+
+    private func appendRefundDebugLog(_ title: String, payload: [String: Any]? = nil) {
+        let defaults = UserDefaults.standard
+        var logs = defaults.stringArray(forKey: LocalUnlockKeys.refundDebugLogs) ?? []
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        var segments = ["[\(formatter.string(from: Date()))] \(title)"]
+        if let payload,
+           JSONSerialization.isValidJSONObject(payload),
+           let data = try? JSONSerialization.data(withJSONObject: payload, options: [.prettyPrinted, .sortedKeys]),
+           let json = String(data: data, encoding: .utf8) {
+            segments.append(json)
+        }
+
+        logs.append(segments.joined(separator: "\n"))
+        if logs.count > 120 {
+            logs = Array(logs.suffix(120))
+        }
+        defaults.set(logs, forKey: LocalUnlockKeys.refundDebugLogs)
+        NotificationCenter.default.post(name: Self.refundDebugLogUpdatedNotification, object: nil)
+    }
+
+    @available(iOS 15.0, *)
+    private func refundTransactionPayload(_ transaction: Transaction) -> [String: Any] {
+        var payload: [String: Any] = [
+            "productID": transaction.productID,
+            "transactionID": String(transaction.id),
+            "originalTransactionID": String(transaction.originalID),
+            "purchaseDate": transaction.purchaseDate.timeIntervalSince1970,
+            "revocationDate": transaction.revocationDate?.timeIntervalSince1970 as Any,
+            "isUpgraded": transaction.isUpgraded
+        ]
+        if let expirationDate = transaction.expirationDate {
+            payload["expirationDate"] = expirationDate.timeIntervalSince1970
+        }
+        return payload
     }
     
     private func loadReceiptBase64() -> String {
@@ -728,11 +886,22 @@ extension ElaProIAPManager: SKPaymentTransactionObserver {
         for transaction in transactions {
             switch transaction.transactionState {
             case .purchased:
+                appendRefundDebugLog("StoreKit1 交易完成", payload: [
+                    "state": "purchased",
+                    "productID": transaction.payment.productIdentifier,
+                    "transactionID": transaction.transactionIdentifier ?? ""
+                ])
                 SKPaymentQueue.default().finishTransaction(transaction)
                 if transaction.payment.productIdentifier == purchasingProductID {
                     resolvePurchase(result: .success(transaction))
                 }
             case .failed:
+                appendRefundDebugLog("StoreKit1 交易失败", payload: [
+                    "state": "failed",
+                    "productID": transaction.payment.productIdentifier,
+                    "transactionID": transaction.transactionIdentifier ?? "",
+                    "error": transaction.error?.localizedDescription ?? ""
+                ])
                 SKPaymentQueue.default().finishTransaction(transaction)
                 guard transaction.payment.productIdentifier == purchasingProductID else { continue }
                 let skError = transaction.error as? SKError
@@ -742,22 +911,58 @@ extension ElaProIAPManager: SKPaymentTransactionObserver {
                     resolvePurchase(result: .failure(transaction.error ?? ElaProIAPError.unknown("购买失败")))
                 }
             case .restored:
+                appendRefundDebugLog("StoreKit1 交易恢复", payload: [
+                    "state": "restored",
+                    "productID": transaction.payment.productIdentifier,
+                    "transactionID": transaction.transactionIdentifier ?? ""
+                ])
                 SKPaymentQueue.default().finishTransaction(transaction)
                 if transaction.payment.productIdentifier == purchasingProductID {
                     resolvePurchase(result: .success(transaction))
                 }
             case .deferred:
+                appendRefundDebugLog("StoreKit1 交易待批准", payload: [
+                    "state": "deferred",
+                    "productID": transaction.payment.productIdentifier
+                ])
                 if transaction.payment.productIdentifier == purchasingProductID {
                     resolvePurchase(result: .failure(ElaProIAPError.pendingApproval))
                 }
             case .purchasing:
                 break
             @unknown default:
+                appendRefundDebugLog("StoreKit1 交易状态未知", payload: [
+                    "state": "unknown",
+                    "productID": transaction.payment.productIdentifier
+                ])
                 SKPaymentQueue.default().finishTransaction(transaction)
                 if transaction.payment.productIdentifier == purchasingProductID {
                     resolvePurchase(result: .failure(ElaProIAPError.unknown("交易状态异常")))
                 }
             }
+        }
+    }
+}
+
+enum ElaProRefundDebugError: LocalizedError {
+    case storeKit2Unavailable
+    case noConfiguredProductID
+    case noRefundableTransaction([String])
+    case userCancelled
+    case unknown(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .storeKit2Unavailable:
+            return "当前系统版本不支持退款调试，请使用 iOS 15 及以上系统"
+        case .noConfiguredProductID:
+            return "未配置可退款的订阅商品 ID"
+        case .noRefundableTransaction(let productIDs):
+            return "未找到可退款交易，请先用 Sandbox/TestFlight 购买这些商品之一：\(productIDs.joined(separator: ", "))"
+        case .userCancelled:
+            return "你已取消本次退款申请"
+        case .unknown(let message):
+            return message
         }
     }
 }
