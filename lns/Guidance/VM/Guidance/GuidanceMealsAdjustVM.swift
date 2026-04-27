@@ -506,7 +506,7 @@ private final class GuidanceMealsAdjustItemView: UIView {
 
     private func updateAppearance(animated: Bool) {
         let applyChanges = {
-            self.backgroundColor = self.isSelectedState ? .white : .COLOR_TEXT_TITLE_0f1214_05
+            self.backgroundColor = self.isSelectedState ? .COLOR_CARD_BG_WHITE : .COLOR_TEXT_TITLE_0f1214_05
             self.layer.borderColor = self.isSelectedState ? self.selectedBorderColor : self.normalBorderColor
             self.transform = self.isPressedState ? CGAffineTransform(scaleX: 0.985, y: 0.985) : .identity
             self.alpha = self.isPressedState ? 0.92 : 1

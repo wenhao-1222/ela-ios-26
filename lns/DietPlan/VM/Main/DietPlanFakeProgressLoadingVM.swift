@@ -39,9 +39,11 @@ class DietPlanFakeProgressLoadingVM: UIView {
     private(set) var config = Config()
     
     private var timer: Timer?
+    private var finishTimer: Timer?
     private var startTimestamp: CFTimeInterval = 0
-    private var displayedProgress: CGFloat = 0
+    private var displayedPercent: Int = 0
     private var progressWidthConstraint: Constraint?
+    private var successCompletion: (() -> Void)?
     
     private lazy var snapshotImageView: UIImageView = {
         let view = UIImageView()
@@ -108,6 +110,7 @@ class DietPlanFakeProgressLoadingVM: UIView {
     
     deinit {
         stopTimer()
+        stopFinishTimer()
     }
     
     func updateConfig(_ config: Config) {
@@ -130,7 +133,9 @@ class DietPlanFakeProgressLoadingVM: UIView {
         
         hostView.bringSubviewToFront(self)
         alpha = 0
-        displayedProgress = 0
+        displayedPercent = 0
+        stopFinishTimer()
+        successCompletion = nil
         startTimestamp = CACurrentMediaTime()
         statusLabel.text = config.statusText
         updateProgressUI(animated: false, animationDuration: 0)
@@ -145,21 +150,14 @@ class DietPlanFakeProgressLoadingVM: UIView {
     
     func completeSuccess(completion: (() -> Void)? = nil) {
         stopTimer()
-        
-        displayedProgress = max(displayedProgress, config.maxProgressBeforeSuccess)
-        updateProgressUI(animated: false, animationDuration: 0)
-        
-        displayedProgress = 1.0
-        updateProgressUI(animated: true, animationDuration: config.finishDuration)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + config.finishDuration + config.dismissDelay) { [weak self] in
-            self?.dismiss()
-            completion?()
-        }
+        stopFinishTimer()
+        successCompletion = completion
+        startFinishTimer()
     }
     
     func completeFailure(completion: (() -> Void)? = nil) {
         stopTimer()
+        stopFinishTimer()
         UIView.animate(withDuration: 0.2, animations: { [weak self] in
             self?.alpha = 0
         }, completion: { [weak self] _ in
@@ -216,7 +214,7 @@ extension DietPlanFakeProgressLoadingVM {
     
     func startTimer() {
         stopTimer()
-        timer = Timer.scheduledTimer(withTimeInterval: config.tickInterval, repeats: true) { [weak self] _ in
+        timer = Timer.scheduledTimer(withTimeInterval: fakeTickInterval(), repeats: true) { [weak self] _ in
             self?.tick()
         }
         if let timer = timer {
@@ -228,32 +226,89 @@ extension DietPlanFakeProgressLoadingVM {
         timer?.invalidate()
         timer = nil
     }
+
+    func startFinishTimer() {
+        stopFinishTimer()
+        let remainingSteps = max(100 - displayedPercent, 1)
+        let acceleratedTotalDuration = min(max(Double(remainingSteps) * fakeTickInterval() * 0.7, 0.45), 3.5)
+        let interval = max(0.016, acceleratedTotalDuration / Double(remainingSteps))
+        finishTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
+            self?.finishTick(animationDuration: min(max(interval * 0.8, 0.02), 0.08))
+        }
+        if let finishTimer = finishTimer {
+            RunLoop.main.add(finishTimer, forMode: .common)
+        }
+    }
+
+    func stopFinishTimer() {
+        finishTimer?.invalidate()
+        finishTimer = nil
+    }
+
+    func fakeTickInterval() -> TimeInterval {
+        let maxPercent = maxPreSuccessPercent
+        guard maxPercent > 0 else {
+            return config.tickInterval
+        }
+        let sequentialInterval = config.fakeDuration / Double(maxPercent)
+        return max(0.016, min(config.tickInterval, sequentialInterval))
+    }
+
+    var maxPreSuccessPercent: Int {
+        return min(max(Int((config.maxProgressBeforeSuccess * 100).rounded(.down)), 1), 99)
+    }
     
     func tick() {
         guard startTimestamp > 0 else { return }
         let elapsed = CACurrentMediaTime() - startTimestamp
         let progressRatio = min(1, max(0, elapsed / config.fakeDuration))
         let easedRatio = 1 - pow(1 - progressRatio, 2.2)
-        let targetProgress = config.maxProgressBeforeSuccess * CGFloat(easedRatio)
-        
-        guard targetProgress > displayedProgress else {
-            if progressRatio >= 1 {
+        let targetPercent = min(Int((CGFloat(maxPreSuccessPercent) * CGFloat(easedRatio)).rounded(.down)),
+                                maxPreSuccessPercent)
+
+        guard targetPercent > displayedPercent else {
+            if progressRatio >= 1 && displayedPercent >= maxPreSuccessPercent {
                 stopTimer()
             }
             return
         }
-        
-        displayedProgress = min(targetProgress, config.maxProgressBeforeSuccess)
-        updateProgressUI(animated: true, animationDuration: 0.14)
-        
-        if progressRatio >= 1 || displayedProgress >= config.maxProgressBeforeSuccess {
+
+        displayedPercent += 1
+        updateProgressUI(animated: true, animationDuration: min(max(fakeTickInterval() * 0.75, 0.02), 0.08))
+
+        if progressRatio >= 1 && displayedPercent >= maxPreSuccessPercent {
             stopTimer()
+        }
+    }
+
+    func finishTick(animationDuration: TimeInterval) {
+        guard displayedPercent < 100 else {
+            stopFinishTimer()
+            finishSuccessIfNeeded()
+            return
+        }
+
+        displayedPercent += 1
+        updateProgressUI(animated: true, animationDuration: animationDuration)
+
+        if displayedPercent >= 100 {
+            stopFinishTimer()
+            finishSuccessIfNeeded()
+        }
+    }
+
+    func finishSuccessIfNeeded() {
+        let completion = successCompletion
+        successCompletion = nil
+        DispatchQueue.main.asyncAfter(deadline: .now() + config.dismissDelay) { [weak self] in
+            self?.dismiss()
+            completion?()
         }
     }
     
     func updateProgressUI(animated: Bool, animationDuration: TimeInterval) {
-        let progressValue = min(max(displayedProgress, 0), 1)
-        let percent = min(Int((progressValue * 100).rounded(.down)), 100)
+        let percent = min(max(displayedPercent, 0), 100)
+        let progressValue = CGFloat(percent) / 100
         progressPercentLabel.text = "\(percent)%"
         
         layoutIfNeeded()
@@ -271,8 +326,10 @@ extension DietPlanFakeProgressLoadingVM {
     
     func dismiss() {
         stopTimer()
+        stopFinishTimer()
         startTimestamp = 0
-        displayedProgress = 0
+        displayedPercent = 0
+        successCompletion = nil
         snapshotImageView.image = nil
         removeFromSuperview()
         alpha = 1

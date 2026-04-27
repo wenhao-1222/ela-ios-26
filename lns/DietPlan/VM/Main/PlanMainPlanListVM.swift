@@ -47,6 +47,9 @@ private struct PlanMainPlanListUpdateDiff {
 }
 
 class PlanMainPlanListVM: UIView {
+    private let headerHeight = kFitWidth(86)
+    private let firstSectionHeaderTopSpacing = kFitWidth(20)
+    
     var mealChangeTapBlock: ((String,String) -> Void)?
     var mealTapBlock:((PlanMainMealItem,String)->())?
     
@@ -90,11 +93,16 @@ class PlanMainPlanListVM: UIView {
         
         let createImg = resizedImage(named: "dietplan_create_icon", size: imageSize) ?? UIImage(named: "dietplan_create_icon")
         createPlanButton.setImage(createImg, for: .normal)
+        
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
     }
-//    override func layoutSubviews() {
-//        super.layoutSubviews()
-//        topGradientLayer.frame = topGradientView.bounds
-//    }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        topGradientLayer.frame = topGradientView.bounds
+    }
     
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
@@ -148,13 +156,29 @@ class PlanMainPlanListVM: UIView {
                                       imageSize: CGSize(width: kFitWidth(30), height: kFitWidth(30)),
                                       frame: frame)
     }()
+    lazy var topGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
+        return vi
+    }()
     
+    lazy var topGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
+    }()
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = sectionInset
         layout.minimumLineSpacing = itemSpacing
         layout.minimumInteritemSpacing = itemSpacing
-        layout.headerReferenceSize = CGSize(width: SCREEN_WIDHT, height: kFitWidth(86))
+        layout.headerReferenceSize = CGSize(width: SCREEN_WIDHT, height: headerHeight)
         
         let view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         view.backgroundColor = .clear
@@ -172,10 +196,16 @@ class PlanMainPlanListVM: UIView {
 }
 
 extension PlanMainPlanListVM {
-    func updatePlanList(mealPlanItemList: NSArray, preservingScrollOffset: Bool = false) {
+    func updatePlanList(mealPlanItemList: NSArray,
+                        preservingScrollOffset: Bool = false,
+                        animatedTransition: Bool = false) {
         let currentOffset = collectionView.contentOffset
+        let previousSections = mealDaySections
         let newSections = parseSections(mealPlanItemList)
-        let updateDiff = diffForPlanSections(from: mealDaySections, to: newSections)
+        let updateDiff = diffForPlanSections(from: previousSections, to: newSections)
+        let transitionSnapshot = makeTransitionSnapshotIfNeeded(animatedTransition: animatedTransition,
+                                                                previousSections: previousSections,
+                                                                updateDiff: updateDiff)
         mealDaySections = newSections
         updateBuyListButtonState()
         
@@ -183,6 +213,7 @@ extension PlanMainPlanListVM {
             if preservingScrollOffset {
                 restoreCollectionViewOffset(currentOffset)
             }
+            fadeOutTransitionSnapshot(transitionSnapshot)
             return
         }
         
@@ -193,12 +224,14 @@ extension PlanMainPlanListVM {
                     collectionView.layoutIfNeeded()
                 }
                 restoreCollectionViewOffset(currentOffset)
+                fadeOutTransitionSnapshot(transitionSnapshot)
                 return
             }
             
             collectionView.reloadData()
             collectionView.layoutIfNeeded()
             autoScrollToTodayIfNeeded()
+            fadeOutTransitionSnapshot(transitionSnapshot)
             return
         }
         
@@ -211,6 +244,7 @@ extension PlanMainPlanListVM {
             }
             refreshVisibleHeaders(in: updateDiff.headerOnlySections)
             restoreCollectionViewOffset(currentOffset)
+            fadeOutTransitionSnapshot(transitionSnapshot)
             return
         }
         
@@ -221,6 +255,7 @@ extension PlanMainPlanListVM {
             collectionView.layoutIfNeeded()
         }
         refreshVisibleHeaders(in: updateDiff.headerOnlySections)
+        fadeOutTransitionSnapshot(transitionSnapshot)
     }
     
     func buyListDateStringsFromToday() -> [String] {
@@ -244,23 +279,24 @@ extension PlanMainPlanListVM {
 
 extension PlanMainPlanListVM{
     func initUI() {
-        addSubview(bgImgView)
+//        addSubview(bgImgView)
+        backgroundColor = .COLOR_BG_F2
         addSubview(titleLab)
         addSubview(createPlanButton)
         addSubview(buyListButton)
         addSubview(sauceButton)
         addSubview(collectionView)
-//        addSubview(topGradientView)
-//        topGradientView.layer.addSublayer(topGradientLayer)
+        addSubview(topGradientView)
+        topGradientView.layer.addSublayer(topGradientLayer)
         
         buyListButton.isEnabled = false
         
         setConstrait()
     }
     func setConstrait() {
-        bgImgView.snp.makeConstraints { make in
-            make.left.top.width.height.equalToSuperview()
-        }
+//        bgImgView.snp.makeConstraints { make in
+//            make.left.top.width.height.equalToSuperview()
+//        }
         titleLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.top.equalTo(kFitWidth(20)+statusBarHeight)
@@ -268,17 +304,49 @@ extension PlanMainPlanListVM{
         }
         collectionView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
-            make.top.equalTo(createPlanButton.snp.bottom).offset(kFitWidth(14))
+            make.top.equalTo(createPlanButton.snp.bottom)//.offset(kFitWidth(14))
         }
-//        topGradientView.snp.makeConstraints { make in
-//            make.left.right.equalToSuperview()
-//            make.top.equalTo(collectionView.snp.top)//.offset(kFitWidth(-20))
-//            make.height.equalTo(kFitWidth(35))
-//        }
+        topGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(collectionView.snp.top)//.offset(kFitWidth(-20))
+//            make.top.equalTo(createPlanButton.snp.bottom)
+            make.height.equalTo(kFitWidth(35))
+        }
     }
 }
 
 private extension PlanMainPlanListVM {
+    func makeTransitionSnapshotIfNeeded(animatedTransition: Bool,
+                                        previousSections: [PlanMainMealDaySection],
+                                        updateDiff: PlanMainPlanListUpdateDiff) -> UIView? {
+        guard animatedTransition,
+              !previousSections.isEmpty,
+              !updateDiff.isNoop,
+              collectionView.bounds.width > 0,
+              collectionView.bounds.height > 0,
+              let snapshot = collectionView.snapshotView(afterScreenUpdates: false) else {
+            return nil
+        }
+        
+        snapshot.frame = collectionView.frame
+        snapshot.isUserInteractionEnabled = false
+        addSubview(snapshot)
+        bringSubviewToFront(snapshot)
+        return snapshot
+    }
+
+    func fadeOutTransitionSnapshot(_ snapshot: UIView?) {
+        guard let snapshot = snapshot else { return }
+        
+        UIView.animate(withDuration: 0.28,
+                       delay: 0,
+                       options: [.curveEaseOut, .allowUserInteraction]) {
+            snapshot.alpha = 0
+        } completion: { _ in
+            snapshot.removeFromSuperview()
+        }
+    }
+
     func diffForPlanSections(from oldSections: [PlanMainMealDaySection],
                              to newSections: [PlanMainMealDaySection]) -> PlanMainPlanListUpdateDiff {
         guard !oldSections.isEmpty else {
@@ -499,6 +567,7 @@ extension PlanMainPlanListVM: UICollectionViewDataSource, UICollectionViewDelega
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
                                                                        withReuseIdentifier: planMainHeaderReuseId,
                                                                        for: indexPath) as? PlanMainDayHeaderView ?? PlanMainDayHeaderView()
+            view.updateTopSpacing(indexPath.section == 0 ? firstSectionHeaderTopSpacing : 0)
             view.updateUI(section: mealDaySections[indexPath.section])
             return view
         }
@@ -515,6 +584,13 @@ extension PlanMainPlanListVM: UICollectionViewDataSource, UICollectionViewDelega
         
         let width = floor((contentWidth - itemSpacing) * 0.5)
         return CGSize(width: width, height: kFitWidth(234))
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        referenceSizeForHeaderInSection section: Int) -> CGSize {
+        let extraTopSpacing = section == 0 ? firstSectionHeaderTopSpacing : 0
+        return CGSize(width: collectionView.bounds.width, height: headerHeight + extraTopSpacing)
     }
 }
 

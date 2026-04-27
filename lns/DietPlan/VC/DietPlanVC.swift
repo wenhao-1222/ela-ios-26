@@ -13,6 +13,7 @@ class DietPlanVC: WHBaseViewVC {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var buylistData = NSArray()
     var buylistEndDate = ""
+    private var shouldAnimatePlanListRefreshAfterCreateSuccess = false
     
     private lazy var buyListDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -25,6 +26,7 @@ class DietPlanVC: WHBaseViewVC {
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_DIET_PLAN_CREATE_SUCCESS, object: nil)
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -50,6 +52,10 @@ class DietPlanVC: WHBaseViewVC {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(refreshDietPlanAfterSubscriptionSuccess),
                                                name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(markPlanListRefreshAfterCreateSuccess),
+                                               name: NOTIFI_NAME_DIET_PLAN_CREATE_SUCCESS,
                                                object: nil)
         sendDietPlanMsgRequest()
     }
@@ -101,6 +107,10 @@ class DietPlanVC: WHBaseViewVC {
 extension DietPlanVC{
     @objc func refreshDietPlanAfterSubscriptionSuccess() {
         sendDietPlanMsgRequest()
+    }
+
+    @objc func markPlanListRefreshAfterCreateSuccess() {
+        shouldAnimatePlanListRefreshAfterCreateSuccess = true
     }
     
     func ensureValidVipForMealAction() -> Bool {
@@ -210,6 +220,8 @@ extension DietPlanVC{
     func applyDietPlanResponse(_ dataObj: NSDictionary, preservingListOffset: Bool = false) {
         let mealPlanItemList = dataObj["mealPlanItemList"] as? NSArray ?? []
         let status = dataObj.stringValueForKey(key: "status")
+        let shouldAnimateListRefresh = shouldAnimatePlanListRefreshAfterCreateSuccess
+        shouldAnimatePlanListRefreshAfterCreateSuccess = false
         
         if status == "1" {//无问卷
             if emptyVm.superview == nil {
@@ -243,7 +255,9 @@ extension DietPlanVC{
         }else{//有问卷，计划且在有效期内
             listVm.buyListButton.isEnabled = true
         }
-        listVm.updatePlanList(mealPlanItemList: mealPlanItemList, preservingScrollOffset: preservingListOffset)
+        listVm.updatePlanList(mealPlanItemList: mealPlanItemList,
+                              preservingScrollOffset: preservingListOffset,
+                              animatedTransition: shouldAnimateListRefresh)
          
     }
     

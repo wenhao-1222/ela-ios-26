@@ -143,8 +143,7 @@ class PlanMainMealCardCell: UICollectionViewCell {
             return
         }
         
-        let placeHolderName = isLarge ? "DietPlanImage1" : "Image"
-        let placeHolder = UIImage(named: placeHolderName)
+        let placeHolder = createImageWithColor(color: .COLOR_TEXT_TITLE_0f1214_10)
         let shouldReuseCurrentImage = previousRenderState?.imageUrl == imageUrl && mealImgView.image != nil
         let cachedLoadedImage = Self.loadedImageCache.object(forKey: imageUrl as NSString)
         let hasLoadedBefore = Self.loadedImageURLs.contains(imageUrl)

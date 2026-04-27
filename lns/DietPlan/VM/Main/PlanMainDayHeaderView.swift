@@ -5,7 +5,11 @@
 //  Created by LNS2 on 2026/4/15.
 //
 
+import SnapKit
+
 class PlanMainDayHeaderView: UICollectionReusableView {
+    private var contentTopConstraint: Constraint?
+    
     private let dayLabel: UILabel = {
         let label = UILabel()
         label.textColor = .COLOR_TEXT_TITLE_0f1214
@@ -26,12 +30,21 @@ class PlanMainDayHeaderView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        updateTopSpacing(0)
+    }
+    
     func updateUI(section: PlanMainMealDaySection) {
         dayLabel.text = dateText(from: section.sdate)
         caloriesValueLabel.text = WHUtils.convertStringToStringNoDigit("\(section.totalCalories)") ?? "0"
         proteinValueLabel.text = "\(WHUtils.convertStringToStringNoDigit("\(section.totalProtein)") ?? "0")"
         carbohydrateValueLabel.text = "\(WHUtils.convertStringToStringNoDigit("\(section.totalCarbohydrate)") ?? "0")"
         fatValueLabel.text = "\(WHUtils.convertStringToStringNoDigit("\(section.totalFat)") ?? "0")"
+    }
+    
+    func updateTopSpacing(_ spacing: CGFloat) {
+        contentTopConstraint?.update(offset: spacing)
     }
 }
 
@@ -75,7 +88,9 @@ private extension PlanMainDayHeaderView {
     }
     
     func initUI() {
-        addSubview(dayLabel)
+        let contentView = UIView()
+        addSubview(contentView)
+        contentView.addSubview(dayLabel)
         
         let rowStack = UIStackView(arrangedSubviews: [
             metricItem(valueLabel: caloriesValueLabel, title: "热量(kcal)"),
@@ -87,12 +102,17 @@ private extension PlanMainDayHeaderView {
         rowStack.alignment = .fill
         rowStack.distribution = .fillEqually
         rowStack.spacing = 0
-        addSubview(rowStack)
+        contentView.addSubview(rowStack)
+        
+        contentView.snp.makeConstraints { make in
+            contentTopConstraint = make.top.equalToSuperview().constraint
+            make.left.right.bottom.equalToSuperview()
+        }
         
         dayLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.lessThanOrEqualTo(kFitWidth(-16))
-//            make.top.equalTo(kFitWidth(12))
+            make.top.equalToSuperview()
             make.height.equalTo(kFitWidth(26))
         }
         rowStack.snp.makeConstraints { make in

@@ -8,6 +8,7 @@
 import Foundation
 import Security
 import StoreKit
+import UIKit
 
 enum ElaProIAPConfig {
     // App Store Connect: 订阅群组「Pro」，订阅群组 ID「21956560」
@@ -68,6 +69,7 @@ final class ElaProIAPManager: NSObject {
     private var purchaseCompletion: ((Result<SKPaymentTransaction, Error>) -> Void)?
     private var purchasingProductID: String?
     private var isObservingQueue = false
+    private var refundDebugSession: RefundDebugSession?
     
     private enum LocalUnlockKeys {
         static let isUnlocked = "ela_pro_local_is_unlocked"
@@ -89,6 +91,7 @@ final class ElaProIAPManager: NSObject {
     private override init() {
         super.init()
         startObservingQueue()
+        startObservingRefundLifecycle()
     }
     
     deinit {
@@ -223,6 +226,44 @@ final class ElaProIAPManager: NSObject {
         return logs.reversed().joined(separator: "\n\n")
     }
 
+    func refundDebugDiagnosisText() -> String {
+        guard let session = refundDebugSession else {
+            return "诊断摘要\n- 还没有最近一次退款调试会话。\n- 先点“一键发起 Apple 退款申请”，再回到这里看判断结果。"
+        }
+
+        var lines: [String] = []
+        lines.append("诊断摘要")
+        lines.append("- 最近商品: \(session.productID)")
+        lines.append("- 最近交易: \(session.transactionID)")
+
+        switch session.outcome {
+        case .submitted:
+            lines.append("- 结果判断: Apple 已接受退款请求提交，后续看 Apple 审核和服务端回调。")
+        case .userCancelled:
+            if session.sawBackgroundRoundtrip {
+                lines.append("- 结果判断: 更像 Apple 退款页加载失败或中途被系统打断，不像单纯没命中交易。")
+                lines.append("- 依据: 发起退款后 App 发生了后台/前台切换，StoreKit 最终只回了“用户取消”。")
+            } else {
+                lines.append("- 结果判断: 更像你在 Apple 退款页主动点了取消。")
+            }
+        case .failed(let message):
+            lines.append("- 结果判断: 退款流程启动失败。")
+            lines.append("- 错误: \(message)")
+        case .inProgress:
+            lines.append("- 结果判断: 退款流程刚开始，等待 Apple 返回。")
+        }
+
+        if let backgroundAt = session.lastDidEnterBackgroundAt {
+            lines.append("- 最近切后台: \(session.format(backgroundAt))")
+        }
+        if let activeAt = session.lastDidBecomeActiveAt {
+            lines.append("- 最近回前台: \(session.format(activeAt))")
+        }
+
+        lines.append("- 建议动作: 如果持续白屏，请直接点“打开 Apple 网页退款”，确认同一 Apple 账号在 Safari 能否访问 reportaproblem.apple.com。")
+        return lines.joined(separator: "\n")
+    }
+
     func clearRefundDebugLogs() {
         UserDefaults.standard.removeObject(forKey: LocalUnlockKeys.refundDebugLogs)
         NotificationCenter.default.post(name: Self.refundDebugLogUpdatedNotification, object: nil)
@@ -236,6 +277,8 @@ final class ElaProIAPManager: NSObject {
         }
 
         let productIDs = configuredRefundProductIDs()
+        refundDebugSession = RefundDebugSession(productID: productIDs.first ?? "<unknown>",
+                                               transactionID: "<pending>")
         appendRefundDebugLog("准备发起 Apple 退款申请", payload: [
             "productIDs": productIDs,
             "subscriptionGroupID": ElaProIAPConfig.subscriptionGroupID
@@ -244,21 +287,34 @@ final class ElaProIAPManager: NSObject {
         Task { @MainActor in
             do {
                 let transaction = try await latestRefundableTransaction(productIDs: productIDs)
+                self.refundDebugSession?.productID = transaction.productID
+                self.refundDebugSession?.transactionID = String(transaction.id)
+                self.refundDebugSession?.outcome = .inProgress
                 appendRefundDebugLog("命中可退款交易", payload: refundTransactionPayload(transaction))
 
                 let status = try await transaction.beginRefundRequest(in: scene)
                 switch status {
                 case .success:
+                    self.refundDebugSession?.outcome = .submitted
                     appendRefundDebugLog("Apple 退款申请已提交", payload: refundTransactionPayload(transaction))
                     completion(.success("Apple 退款申请已提交，请在 Apple 弹窗里完成后续操作"))
                 case .userCancelled:
+                    self.refundDebugSession?.outcome = .userCancelled
                     appendRefundDebugLog("Apple 退款申请被用户取消", payload: refundTransactionPayload(transaction))
+                    if self.refundDebugSession?.sawBackgroundRoundtrip == true {
+                        self.appendRefundDebugLog("诊断判断：更像 Apple 退款页加载失败或外部页面被中断", payload: [
+                            "transactionID": String(transaction.id),
+                            "productID": transaction.productID
+                        ])
+                    }
                     completion(.failure(ElaProRefundDebugError.userCancelled))
                 @unknown default:
+                    self.refundDebugSession?.outcome = .failed("退款请求返回未知状态")
                     appendRefundDebugLog("Apple 退款申请返回未知状态", payload: refundTransactionPayload(transaction))
                     completion(.failure(ElaProRefundDebugError.unknown("退款请求返回未知状态")))
                 }
             } catch {
+                self.refundDebugSession?.outcome = .failed(error.localizedDescription)
                 self.appendRefundDebugLog("Apple 退款申请失败", payload: [
                     "error": error.localizedDescription,
                     "productIDs": productIDs
@@ -782,6 +838,29 @@ final class ElaProIAPManager: NSObject {
         NotificationCenter.default.post(name: Self.refundDebugLogUpdatedNotification, object: nil)
     }
 
+    private func startObservingRefundLifecycle() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleRefundAppDidEnterBackground),
+                                               name: UIApplication.didEnterBackgroundNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleRefundAppDidBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
+    }
+
+    @objc private func handleRefundAppDidEnterBackground() {
+        guard refundDebugSession != nil else { return }
+        refundDebugSession?.lastDidEnterBackgroundAt = Date()
+        appendRefundDebugLog("退款调试期间 App 进入后台")
+    }
+
+    @objc private func handleRefundAppDidBecomeActive() {
+        guard refundDebugSession != nil else { return }
+        refundDebugSession?.lastDidBecomeActiveAt = Date()
+        appendRefundDebugLog("退款调试期间 App 回到前台")
+    }
+
     @available(iOS 15.0, *)
     private func refundTransactionPayload(_ transaction: Transaction) -> [String: Any] {
         var payload: [String: Any] = [
@@ -858,6 +937,36 @@ final class ElaProIAPManager: NSObject {
         }
         
         return "\(period.numberOfUnits) \(unitText)"
+    }
+}
+
+private struct RefundDebugSession {
+    enum Outcome {
+        case inProgress
+        case submitted
+        case userCancelled
+        case failed(String)
+    }
+
+    var startedAt = Date()
+    var productID: String
+    var transactionID: String
+    var lastDidEnterBackgroundAt: Date?
+    var lastDidBecomeActiveAt: Date?
+    var outcome: Outcome = .inProgress
+
+    var sawBackgroundRoundtrip: Bool {
+        guard let backgroundAt = lastDidEnterBackgroundAt,
+              let activeAt = lastDidBecomeActiveAt else {
+            return false
+        }
+        return backgroundAt >= startedAt && activeAt >= backgroundAt
+    }
+
+    func format(_ date: Date) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter.string(from: date)
     }
 }
 

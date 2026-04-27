@@ -167,8 +167,10 @@ class GuidanceProSubscribeVM: UIView {
         label.font = .systemFont(ofSize: 12, weight: .regular)
         label.textAlignment = .center
         label.numberOfLines = 0
+        label.alpha = 0
+        label.isHidden = true
         
-        label.setLineHeight(textString: "订阅计划会自动续订。请通过 App Store 取消订阅。\n除非你取消，否则免费试用结束后将开始收费。", lineHeight: label.font.lineHeight * 1.1)
+//        label.setLineHeight(textString: "订阅计划会自动续订。请通过 App Store 取消订阅。\n除非你取消，否则免费试用结束后将开始收费。", lineHeight: label.font.lineHeight * 1.1)
         return label
     }()
 

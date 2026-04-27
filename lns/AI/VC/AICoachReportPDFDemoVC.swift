@@ -25,6 +25,9 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     private var downloadButtonWidthConstraint: Constraint?
     private var isTopBarInteractionEnabled = false
     private var isDownloadInProgress = false
+    private var hasViewAppeared = false
+    private var hasLoadedReportDetail = false
+    private var pdfGenerationToken = UUID()
     private let shouldUseLocalRecommendMock = false
 
     private lazy var topContainerView: UIView = {
@@ -191,9 +194,18 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        guard hasGeneratedPDF == false else { return }
-        hasGeneratedPDF = true
-        generateAndLoadPDF()
+        hasViewAppeared = true
+        if hasGeneratedPDF == false {
+            hasGeneratedPDF = true
+        }
+        preparePDFIfNeeded()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if isMovingFromParent || isBeingDismissed {
+            pdfGenerationToken = UUID()
+        }
     }
 }
 
@@ -311,6 +323,35 @@ private extension AICoachReportPDFDemoVC {
         adviceButton.alpha = 0
     }
 
+    func preparePDFIfNeeded() {
+        guard hasGeneratedPDF, hasViewAppeared else { return }
+
+        if let cachedFileURL = cachedPDFURL() {
+            pdfFileURL = cachedFileURL
+            if loadPDFIfNeeded(from: cachedFileURL) == false {
+                try? FileManager.default.removeItem(at: cachedFileURL)
+                pdfFileURL = nil
+            } else {
+                loadingIndicator.stopAnimating()
+                loadingLabel.isHidden = true
+                updateTopBarInteraction(isEnabled: true)
+                return
+            }
+        }
+
+        if reportId.isEmpty == false, hasLoadedReportDetail == false {
+            isPDFLoaded = false
+            updateAdviceButtonState(animated: false)
+            updateTopBarInteraction(isEnabled: false)
+            loadingIndicator.startAnimating()
+            loadingLabel.text = "正在加载报告..."
+            loadingLabel.isHidden = false
+            return
+        }
+
+        generateAndLoadPDF()
+    }
+
     func generateAndLoadPDF() {
         isPDFLoaded = false
         updateAdviceButtonState(animated: false)
@@ -319,27 +360,52 @@ private extension AICoachReportPDFDemoVC {
         loadingLabel.text = "正在生成PDF..."
         loadingLabel.isHidden = false
 
-        DispatchQueue.main.async {
-            do {
-                let fileURL = try AICoachReportPDFGenerator.generate(report: self.report)
+        let currentReport = report
+        let currentReportId = reportId
+        let generationToken = UUID()
+        pdfGenerationToken = generationToken
+
+        AICoachReportPDFGenerator.generateAsync(
+            report: currentReport,
+            reportId: currentReportId,
+            isCancelled: { [weak self] in
+                guard let self else { return true }
+                return self.pdfGenerationToken != generationToken || self.reportId != currentReportId
+            }
+        ) { [weak self] result in
+            guard let self else { return }
+            guard self.pdfGenerationToken == generationToken else { return }
+            guard self.reportId == currentReportId else { return }
+
+            switch result {
+            case .success(let fileURL):
                 self.pdfFileURL = fileURL
-                self.loadPDF(from: fileURL)
+                let didLoadPDF = self.loadPDF(from: fileURL)
+                if didLoadPDF == false {
+                    self.pdfFileURL = nil
+                }
                 self.loadingIndicator.stopAnimating()
-                self.loadingLabel.isHidden = true
+                self.loadingLabel.isHidden = didLoadPDF
                 self.updateTopBarInteraction(isEnabled: true)
-            } catch {
+            case .failure(let error):
+                if case AICoachReportPDFGenerator.GenerationError.cancelled = error {
+                    return
+                }
                 self.loadingIndicator.stopAnimating()
                 self.loadingLabel.text = "PDF 生成失败"
+                self.loadingLabel.isHidden = false
                 self.updateTopBarInteraction(isEnabled: true)
             }
         }
     }
 
-    func loadPDF(from url: URL) {
+    @discardableResult
+    func loadPDF(from url: URL) -> Bool {
         guard let document = PDFDocument(url: url) else {
+            isPDFLoaded = false
             loadingLabel.text = "PDF 加载失败"
             updateTopBarInteraction(isEnabled: true)
-            return
+            return false
         }
         pdfView.document = document
         pdfView.minScaleFactor = pdfView.scaleFactorForSizeToFit
@@ -347,6 +413,17 @@ private extension AICoachReportPDFDemoVC {
         pdfView.maxScaleFactor = pdfView.minScaleFactor * 3.5
         isPDFLoaded = true
         updateAdviceButtonState()
+        return true
+    }
+
+    @discardableResult
+    func loadPDFIfNeeded(from url: URL) -> Bool {
+        guard pdfFileURL != url || isPDFLoaded == false || pdfView.document == nil else { return true }
+        return loadPDF(from: url)
+    }
+
+    func cachedPDFURL() -> URL? {
+        AICoachReportPDFGenerator.existingCachedFileURL(report: report, reportId: reportId)
     }
 
     @objc func adviceAction() {
@@ -388,6 +465,8 @@ private extension AICoachReportPDFDemoVC {
 extension AICoachReportPDFDemoVC{
     func sendReportDetailRequest() {
         guard reportId.isEmpty == false else { return }
+        let requestedReportId = reportId
+        hasLoadedReportDetail = false
         updateTopBarInteraction(isEnabled: false)
         let param = ["id":reportId]
         WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_detail, parameters: param as [String : AnyObject]) { [weak self] responseObject in
@@ -396,12 +475,14 @@ extension AICoachReportPDFDemoVC{
             let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendReportDetailRequest:\(foodsMsgDict)")
             DispatchQueue.main.async {
+                guard self.reportId == requestedReportId else { return }
                 self.applyReportDetailData(foodsMsgDict)
             }
         }
     }
     func sendRecommendRequest() {
         guard reportId.isEmpty == false else { return }
+        let requestedReportId = reportId
         nextWeekRecommendation = .empty
         DispatchQueue.main.async {
             self.updateAdviceButtonState()
@@ -423,6 +504,7 @@ extension AICoachReportPDFDemoVC{
             DLLog(message: "sendRecommendRequest:\(foodsMsgDict)")
             let recommendation = AICoachReportRecommendationBuilder.build(from: foodsMsgDict)
             DispatchQueue.main.async {
+                guard self.reportId == requestedReportId else { return }
                 self.nextWeekRecommendation = recommendation
                 self.updateAdviceButtonState()
             }
@@ -440,7 +522,9 @@ extension AICoachReportPDFDemoVC{
                 self.reportList = parsedList
                 if self.reportId.isEmpty, let firstItem = parsedList.first {
                     self.reportId = firstItem.reportId
+                    self.hasLoadedReportDetail = false
                     self.updateBottomBarVisibility()
+                    self.preparePDFIfNeeded()
                     self.sendReportDetailRequest()
                     self.sendRecommendRequest()
                 } else {
@@ -540,11 +624,10 @@ private extension AICoachReportPDFDemoVC {
 
     func applyReportDetailData(_ dataDict: NSDictionary) {
         report = buildReport(from: dataDict)
+        hasLoadedReportDetail = true
         refreshTopBar()
         reportDateAlertVM.update(items: reportList, selectedReportId: reportId)
-        if hasGeneratedPDF {
-            generateAndLoadPDF()
-        }
+        preparePDFIfNeeded()
     }
 
     func buildReport(from dataDict: NSDictionary) -> AICoachReportDemoData {
@@ -840,6 +923,8 @@ private extension AICoachReportPDFDemoVC {
         guard item.reportId != reportId else { return }
 
         reportId = item.reportId
+        hasLoadedReportDetail = false
+        pdfGenerationToken = UUID()
         isPDFLoaded = false
         nextWeekRecommendation = .empty
         updateAdviceButtonState(animated: false)
@@ -850,6 +935,7 @@ private extension AICoachReportPDFDemoVC {
         loadingLabel.text = "正在加载报告..."
         loadingLabel.isHidden = false
         loadingIndicator.startAnimating()
+        preparePDFIfNeeded()
         sendReportDetailRequest()
         sendRecommendRequest()
     }

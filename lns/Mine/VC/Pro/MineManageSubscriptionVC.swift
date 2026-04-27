@@ -9,6 +9,9 @@ import UIKit
 import SnapKit
 import StoreKit
 import MCToast
+#if DEBUG
+import Network
+#endif
 
 final class MineManageSubscriptionVC: WHBaseViewVC {
     private lazy var cardView: UIView = {
@@ -60,11 +63,14 @@ final class MineManageSubscriptionVC: WHBaseViewVC {
                                                             action: #selector(beginRefundDebugTapAction))
     private lazy var showRefundDebugLogsButton = makeRowButton(title: "查看退款调试日志",
                                                                action: #selector(showRefundDebugLogsTapAction))
+    private lazy var openAppleRefundWebButton = makeRowButton(title: "打开 Apple 网页退款",
+                                                              action: #selector(openAppleRefundWebTapAction))
     private lazy var clearRefundDebugLogsButton = makeRowButton(title: "清空退款调试日志",
                                                                 action: #selector(clearRefundDebugLogsTapAction))
 
     private lazy var refundDebugDividerOne = makeDividerView()
     private lazy var refundDebugDividerTwo = makeDividerView()
+    private lazy var refundDebugDividerThree = makeDividerView()
 #endif
 
     override func viewDidLoad() {
@@ -200,6 +206,8 @@ private extension MineManageSubscriptionVC {
         refundDebugCardView.addSubview(refundDebugDividerOne)
         refundDebugCardView.addSubview(showRefundDebugLogsButton)
         refundDebugCardView.addSubview(refundDebugDividerTwo)
+        refundDebugCardView.addSubview(openAppleRefundWebButton)
+        refundDebugCardView.addSubview(refundDebugDividerThree)
         refundDebugCardView.addSubview(clearRefundDebugLogsButton)
 
         refundDebugCardView.snp.makeConstraints { make in
@@ -246,8 +254,21 @@ private extension MineManageSubscriptionVC {
             make.height.equalTo(1)
         }
 
-        clearRefundDebugLogsButton.snp.makeConstraints { make in
+        openAppleRefundWebButton.snp.makeConstraints { make in
             make.top.equalTo(refundDebugDividerTwo.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(kFitWidth(56))
+        }
+
+        refundDebugDividerThree.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalToSuperview()
+            make.top.equalTo(openAppleRefundWebButton.snp.bottom)
+            make.height.equalTo(1)
+        }
+
+        clearRefundDebugLogsButton.snp.makeConstraints { make in
+            make.top.equalTo(refundDebugDividerThree.snp.bottom)
             make.left.right.bottom.equalToSuperview()
             make.height.equalTo(kFitWidth(56))
         }
@@ -296,6 +317,11 @@ private extension MineManageSubscriptionVC {
 
     @objc func showRefundDebugLogsTapAction() {
         navigationController?.pushViewController(ElaProRefundDebugLogVC(), animated: true)
+    }
+
+    @objc func openAppleRefundWebTapAction() {
+        guard let url = URL(string: "https://reportaproblem.apple.com") else { return }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 
     @objc func clearRefundDebugLogsTapAction() {
@@ -348,12 +374,68 @@ final class ElaProRefundDebugLogVC: WHBaseViewVC {
         let header = """
         客户端日志区域
         - 一键退款按钮会调用 Apple 官方退款申请 sheet
+        - “打开 Apple 网页退款”会直达 Apple 官方 reportaproblem 页面
         - 仓库根目录 iap-refund-simulator/ 里有本地后台回调模拟脚本
         - 实际 Apple Server Notification 仍需要公网 HTTPS 回调地址
 
         """
-        textView.text = header + ElaProIAPManager.shared.refundDebugLogText()
+        let diagnosis = ElaProIAPManager.shared.refundDebugDiagnosisText()
+        let network = RefundNetworkDiagnostics.shared.summaryText
+        textView.text = """
+        \(diagnosis)
+
+        \(network)
+
+        \(header)\(ElaProIAPManager.shared.refundDebugLogText())
+        """
         textView.setContentOffset(.zero, animated: false)
+    }
+}
+
+private final class RefundNetworkDiagnostics {
+    static let shared = RefundNetworkDiagnostics()
+
+    private let monitor = NWPathMonitor()
+    private let queue = DispatchQueue(label: "ela.pro.refund.network.monitor")
+    private var latestPath: NWPath?
+
+    private init() {
+        monitor.pathUpdateHandler = { [weak self] path in
+            self?.latestPath = path
+        }
+        monitor.start(queue: queue)
+    }
+
+    var summaryText: String {
+        guard let path = latestPath else {
+            return "网络诊断\n- 还在收集当前网络状态，请稍等 1 秒后重进日志页。"
+        }
+
+        let status: String
+        switch path.status {
+        case .satisfied:
+            status = "已联网"
+        case .unsatisfied:
+            status = "未联网"
+        case .requiresConnection:
+            status = "需要额外连接步骤"
+        @unknown default:
+            status = "未知"
+        }
+
+        var interfaces: [String] = []
+        if path.usesInterfaceType(.wifi) { interfaces.append("Wi-Fi") }
+        if path.usesInterfaceType(.cellular) { interfaces.append("蜂窝") }
+        if path.usesInterfaceType(.wiredEthernet) { interfaces.append("有线") }
+        if path.usesInterfaceType(.other) { interfaces.append("其他") }
+
+        return """
+        网络诊断
+        - 当前状态: \(status)
+        - 当前链路: \(interfaces.isEmpty ? "未知" : interfaces.joined(separator: " + "))
+        - 是否昂贵网络: \(path.isExpensive ? "是" : "否")
+        - 是否受限网络: \(path.isConstrained ? "是" : "否")
+        """
     }
 }
 #endif

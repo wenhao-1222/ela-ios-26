@@ -624,6 +624,7 @@ extension DietPlanCreateSecondVC{
                 self.isSubmittingFinalFlow = false
                 self.navigationController?.tabBarController?.selectedIndex = 2
                 self.navigationController?.popToRootViewController(animated: true)
+                NotificationCenter.default.post(name: NOTIFI_NAME_DIET_PLAN_CREATE_SUCCESS, object: nil)
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
             }
         } failure: { [weak self] isError in
@@ -652,7 +653,7 @@ extension DietPlanCreateSecondVC {
         model.mealsPerDay = stringValue(from: data["dailyMeals"])
         model.goalImportance = stringValue(from: data["goalImportance"])
         model.dietType = stringValue(from: data["dietType"])
-        model.specialAdjustmentType = defaultSpecialAdjustmentType(from: model.goal)
+        model.specialAdjustmentType = mapDietAdjustmentTypes(from: intArrayValue(from: data["dietAdjustmentType"]))
         hasRestoredDateRangeFromResponse = false
         if let startDate = dateValue(from: data["startDate"]),
            let endDate = dateValue(from: data["endDate"]) {
@@ -708,10 +709,12 @@ extension DietPlanCreateSecondVC {
         if !QuestinonaireMsgModel.shared.foodAllergy.isEmpty {
             allergyVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.foodAllergy)
         } else {
-            allergyVm.applyDefaultSelectionsForLowerUricAcidIfNeeded()
+            allergyVm.restoreSelection(modelValue: "无")
         }
         if !QuestinonaireMsgModel.shared.specialAdjustmentType.isEmpty {
             specialAdjustmentVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.specialAdjustmentType)
+        } else {
+            specialAdjustmentVm.restoreSelection(modelValue: "3")
         }
         allergyVm.enforceHighUricSelectionsIfNeeded()
         if !QuestinonaireMsgModel.shared.dietType.isEmpty {
@@ -975,6 +978,15 @@ extension DietPlanCreateSecondVC {
         return values.compactMap { mapping[$0] }.joined(separator: ",")
     }
 
+    func mapDietAdjustmentTypes(from values: [Int]) -> String {
+        let mapping: [Int: String] = [
+            0: "3",
+            7: "2",
+            8: "1"
+        ]
+        return values.compactMap { mapping[$0] }.joined(separator: ",")
+    }
+
     func mapDietBarriers(from values: [Int]) -> String {
         let mapping: [Int: String] = [
             1: "不确定",
@@ -1008,30 +1020,6 @@ extension DietPlanCreateSecondVC {
             return ""
         }
         return "\(serverValue - 1)"
-    }
-
-    func defaultSpecialAdjustmentType(from goals: String) -> String {
-        let normalized = goals.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !normalized.isEmpty else {
-            return ""
-        }
-        let combined = normalized.lowercased()
-        let tokens = normalized
-            .split(whereSeparator: { ",|， ".contains($0) })
-            .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
-        let hasUricAdjustment = combined.contains("尿酸") || tokens.contains("8")
-        let hasBloodLipidAdjustment = combined.contains("血脂") || tokens.contains("7")
-
-        switch (hasUricAdjustment, hasBloodLipidAdjustment) {
-        case (true, true):
-            return "1,2"
-        case (true, false):
-            return "1"
-        case (false, true):
-            return "2"
-        default:
-            return ""
-        }
     }
 
     func handleFinalFlowFailure(message: String?) {
