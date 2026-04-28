@@ -32,6 +32,17 @@ class DietPlanCreateBodyfatVM: UIView {
         topGradientLayer.frame = topGradientView.bounds
         bottomGradientLayer.frame = bottomGradientView.bounds
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        bottomGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+    }
 
     lazy var dataArray: [[String: String]] = {
         return [["data":"3%~5%","imgUrl":"body_fat_man_1"],

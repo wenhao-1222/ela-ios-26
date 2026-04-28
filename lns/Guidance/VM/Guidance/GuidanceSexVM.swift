@@ -7,8 +7,8 @@
 
 class GuidanceSexVM: UIView {
     
-    var manTapBlock:(()->())?
-    var femanTapBlock:(()->())?
+    var manTapBlock:((Bool)->())?
+    var femanTapBlock:((Bool)->())?
     var loginTapBlock:(()->())?
     var showTipsBlock:(()->())?
     
@@ -125,7 +125,8 @@ extension GuidanceSexVM{
         }
     }
     @objc func manTapAction(){
-        if QuestinonaireMsgModel.shared.sex == "2"{
+        let didChangeSex = QuestinonaireMsgModel.shared.sex == "2"
+        if didChangeSex{
             QuestinonaireMsgModel.shared.clearMsg()
         }
         QuestinonaireMsgModel.shared.sex = "1"
@@ -139,11 +140,12 @@ extension GuidanceSexVM{
         sexFeManLabel.textColor = WHColor_16(colorStr: "595959")
         
         if self.manTapBlock != nil{
-            self.manTapBlock!()
+            self.manTapBlock!(didChangeSex)
         }
     }
     @objc func femanTapAction(){
-        if QuestinonaireMsgModel.shared.sex == "1"{
+        let didChangeSex = QuestinonaireMsgModel.shared.sex == "1"
+        if didChangeSex{
             QuestinonaireMsgModel.shared.clearMsg()
         }
         QuestinonaireMsgModel.shared.sex = "2"
@@ -157,7 +159,7 @@ extension GuidanceSexVM{
         sexFeManLabel.textColor = .COLOR_TEXT_WHITE
         
         if self.femanTapBlock != nil{
-            self.femanTapBlock!()
+            self.femanTapBlock!(didChangeSex)
         }
     }
 }

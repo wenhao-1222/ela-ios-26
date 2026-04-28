@@ -19,7 +19,7 @@ enum DateRangeConfig {
     // 可配置：开始日期可选“今天往后几天”（两周）
     static let startSelectableDaysAhead = 14
     // 可配置：结束日期可选“开始日期往后几天”
-    static let endSelectableDaysAfterStart = 14
+    static let endSelectableDaysAfterStart = 21
 }
 class DietPlanCreateDateVC: WHBaseViewVC {
     

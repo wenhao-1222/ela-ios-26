@@ -88,8 +88,8 @@ class GuidanceVC: WHBaseViewVC {
     ]
     private let fixedTargetFlow: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
-        .strengthTrainingFrequency, .strengthTrainingSummary, .mealsPerDay, .mealsSummary, .mealsAdjust, .goal,
-        .nutritionGoal, .goalBarrier, .removeBarrier, .elaProTransition, .reminderPrompt
+        .nutritionGoal, .strengthTrainingFrequency, .strengthTrainingSummary, .mealsPerDay, .mealsSummary, .mealsAdjust,
+        .goal, .goalBarrier, .removeBarrier, .elaProTransition, .reminderPrompt
     ]
     private var mountedSteps = Set<FlowStep>()
     private var isFixedTargetFlowEnabled: Bool {
@@ -139,6 +139,10 @@ class GuidanceVC: WHBaseViewVC {
         super.viewDidLoad()
         initUI()
         prefetchGuidanceProSubscriptionHistoryIfNeeded()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        nextButton.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .disabled)
     }
     
     deinit {
@@ -266,11 +270,11 @@ class GuidanceVC: WHBaseViewVC {
     }()
     lazy var sexVm: GuidanceSexVM = {
         let vm = GuidanceSexVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
-        vm.manTapBlock = {[weak self] in
-            self?.handleSexSelection(defaultHeight: 170, defaultWeight: 70)
+        vm.manTapBlock = {[weak self] didChangeSex in
+            self?.handleSexSelection(defaultHeight: 170, defaultWeight: 70, shouldResetFlow: didChangeSex)
         }
-        vm.femanTapBlock = {[weak self] in
-            self?.handleSexSelection(defaultHeight: 160, defaultWeight: 50)
+        vm.femanTapBlock = {[weak self] didChangeSex in
+            self?.handleSexSelection(defaultHeight: 160, defaultWeight: 50, shouldResetFlow: didChangeSex)
         }
         vm.loginTapBlock = {() in
             self.loginAction()
@@ -548,7 +552,11 @@ extension GuidanceVC{
         }
     }
 
-    func handleSexSelection(defaultHeight: Int, defaultWeight: Int) {
+    func handleSexSelection(defaultHeight: Int, defaultWeight: Int, shouldResetFlow: Bool = false) {
+        // 改性别后，后续问题需要重新确认；这里把 clearMsg() 清掉的模型状态同步回各个缓存了 UI 选中态的页面。
+        if shouldResetFlow {
+            resetGuidanceStateAfterSexSelection()
+        }
         heightVm.applyDefaultHeight(defaultHeight)
         weightVm.applyDefaultWeight(integer: defaultWeight)
         bodyfatVm.updateScrollView()
@@ -749,6 +757,128 @@ extension GuidanceVC{
         }
     }
 
+    func resetGuidanceStateAfterSexSelection() {
+        nextButtonEnableWorkItem?.cancel()
+        nextButtonEnableWorkItem = nil
+        delayedNextWorkItem?.cancel()
+        delayedNextWorkItem = nil
+        removeBarrierVm.stopScrollers()
+
+        pendingNutritionGoalPresentation = false
+        isShowingFinishLoading = false
+        isBackNavigationLocked = false
+        finishLoadingVm.hideLoadingView()
+
+        reminderPromptVm.alpha = 1
+        naviVm.isHidden = false
+
+        resetStandaloneNutritionGoalPresentation()
+        resetNutritionGoalDraftViews()
+        syncStepViewStatesAfterModelReset()
+        updateFlowConfiguration()
+    }
+
+    func resetStandaloneNutritionGoalPresentation() {
+        if isShowingStandaloneNutritionGoal {
+            hideStandaloneNutritionGoalIfNeeded()
+        } else {
+            nutritionGoalVm.removeFromSuperview()
+            nutritionGoalVm.isHidden = true
+            nutritionGoalVm.alpha = 1
+        }
+    }
+
+    func resetNutritionGoalDraftViews() {
+        nutritionGoalVm.endEditing(true)
+        fixedTargetNutritionGoalVm.endEditing(true)
+
+        nutritionGoalVm.carNumber = 0
+        nutritionGoalVm.proteinNumber = 0
+        nutritionGoalVm.fatNumber = 0
+        nutritionGoalVm.carVm.textField.text = nil
+        nutritionGoalVm.proteinVm.textField.text = nil
+        nutritionGoalVm.fatVm.textField.text = nil
+        nutritionGoalVm.labelOne.text = "-"
+        nutritionGoalVm.labelOne.textColor = .COLOR_TEXT_TITLE_0f1214_25
+
+        fixedTargetNutritionGoalVm.carNumber = 0
+        fixedTargetNutritionGoalVm.proteinNumber = 0
+        fixedTargetNutritionGoalVm.fatNumber = 0
+        fixedTargetNutritionGoalVm.carVm.textField.text = nil
+        fixedTargetNutritionGoalVm.proteinVm.textField.text = nil
+        fixedTargetNutritionGoalVm.fatVm.textField.text = nil
+        fixedTargetNutritionGoalVm.labelOne.text = "-"
+        fixedTargetNutritionGoalVm.labelOne.textColor = .COLOR_TEXT_TITLE_0f1214_25
+    }
+
+    func syncStepViewStatesAfterModelReset() {
+        dietRecordVm.refreshSelectionFromModel()
+        fixedTargetVm.refreshSelectionFromModel()
+        takeoutFrequencyVm.refreshSelectionFromModel()
+        mealsPerDayVm.refreshSelectionFromModel()
+        mealsAdjustVm.refreshSelectionFromModel()
+        exerciseCaloriesRecordVm.refreshSelectionFromModel()
+        cardioFrequencyVm.refreshSelectionFromModel()
+        strengthTrainingFrequencyVm.refreshSelectionFromModel()
+        bodyfatVm.updateScrollView()
+        syncGoalSelectionFromModel()
+        goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
+        goalBarrierVm.refreshSelectionFromModel()
+    }
+
+    func syncGoalSelectionFromModel() {
+        let goalValue = QuestinonaireMsgModel.shared.goal.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let goalIndex = Int(goalValue), goalIndex > 0 {
+            goalVm.selectIndex = goalIndex - 1
+        } else {
+            goalVm.selectIndex = -1
+        }
+        goalVm.tableView.reloadData()
+    }
+
+    func refreshStepViewStateFromModel(for step: FlowStep) {
+        switch step {
+        case .dietRecord:
+            dietRecordVm.refreshSelectionFromModel()
+        case .fixedTarget:
+            fixedTargetVm.refreshSelectionFromModel()
+        case .bodyfat:
+            let bodyFatValue = QuestinonaireMsgModel.shared.bodyFat.trimmingCharacters(in: .whitespacesAndNewlines)
+            if bodyFatValue.isEmpty {
+                bodyfatVm.updateScrollView()
+            } else {
+                bodyfatVm.restoreSelection(modelValue: bodyFatValue)
+            }
+        case .takeoutFrequency:
+            takeoutFrequencyVm.refreshSelectionFromModel()
+        case .mealsPerDay:
+            mealsPerDayVm.refreshSelectionFromModel()
+        case .mealsAdjust:
+            mealsAdjustVm.refreshSelectionFromModel()
+        case .exerciseCaloriesRecord:
+            exerciseCaloriesRecordVm.refreshSelectionFromModel()
+        case .cardioFrequency:
+            cardioFrequencyVm.refreshSelectionFromModel()
+        case .strengthTrainingFrequency:
+            strengthTrainingFrequencyVm.refreshSelectionFromModel()
+        case .goal:
+            syncGoalSelectionFromModel()
+        case .goalBarrier:
+            goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
+            goalBarrierVm.refreshSelectionFromModel()
+        case .nutritionGoal:
+            if isFixedTargetFlowEnabled {
+                fixedTargetNutritionGoalVm.endEditing(true)
+            } else {
+                nutritionGoalVm.refreshContentFromModel()
+            }
+        case .reminderPrompt:
+            reminderPromptVm.alpha = 1
+        default:
+            break
+        }
+    }
+
     func moveToStep(index: Int, animated: Bool) {
         updateFlowConfiguration()
         hideStandaloneNutritionGoalIfNeeded()
@@ -758,6 +888,7 @@ extension GuidanceVC{
         if flowStep(for: currentIndex) == .nutritionGoal, isFixedTargetFlowEnabled {
             fixedTargetNutritionGoalVm.endEditing(true)
         }
+        refreshStepViewStateFromModel(for: targetStep)
         installStepViewsIfNeeded(indexes: [targetIndex, targetIndex + 1, targetIndex + 2])
         currentIndex = targetIndex
         let visibleIndex = scrollableIndex(for: targetIndex)
@@ -991,6 +1122,10 @@ extension GuidanceVC{
     func hideStandaloneNutritionGoalIfNeeded() {
         guard isShowingStandaloneNutritionGoal else { return }
         isShowingStandaloneNutritionGoal = false
+        nutritionGoalVm.endEditing(true)
+        nutritionGoalVm.isHidden = true
+        nutritionGoalVm.alpha = 1
+        nutritionGoalVm.removeFromSuperview()
 //        nutritionGoalVm.isHidden = true
     }
 

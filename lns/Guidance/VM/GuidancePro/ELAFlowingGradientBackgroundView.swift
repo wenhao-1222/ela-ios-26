@@ -45,34 +45,34 @@ public final class ELAFlowingGradientBackgroundView: UIView {
 
         /// 你发的暗色背景图
         public static let dark = Style(
-            topColor: UIColor(red: 9.0 / 255.0, green: 13.0 / 255.0, blue: 24.0 / 255.0, alpha: 1.0),
-            midColor: UIColor(red: 7.0 / 255.0, green: 10.0 / 255.0, blue: 18.0 / 255.0, alpha: 1.0),
-            bottomColor: UIColor(red: 5.0 / 255.0, green: 7.0 / 255.0, blue: 13.0 / 255.0, alpha: 1.0),
-            leftGlowColor: UIColor(red: 61.0 / 255.0, green: 96.0 / 255.0, blue: 185.0 / 255.0, alpha: 0.14),
-            rightGlowColor: UIColor(red: 38.0 / 255.0, green: 70.0 / 255.0, blue: 140.0 / 255.0, alpha: 0.10),
-            centerGlowColor: UIColor.white.withAlphaComponent(0.03)
+            topColor: UIColor(red: 24.0 / 255.0, green: 31.0 / 255.0, blue: 47.0 / 255.0, alpha: 1.0),
+            midColor: UIColor(red: 17.0 / 255.0, green: 23.0 / 255.0, blue: 36.0 / 255.0, alpha: 1.0),
+            bottomColor: UIColor(red: 11.0 / 255.0, green: 16.0 / 255.0, blue: 28.0 / 255.0, alpha: 1.0),
+            leftGlowColor: UIColor(red: 75.0 / 255.0, green: 116.0 / 255.0, blue: 208.0 / 255.0, alpha: 0.18),
+            rightGlowColor: UIColor(red: 46.0 / 255.0, green: 82.0 / 255.0, blue: 162.0 / 255.0, alpha: 0.14),
+            centerGlowColor: UIColor.white.withAlphaComponent(0.05)
         )
     }
 
-    private var style: Style
+    private var fixedStyle: Style?
 
     private let baseGradient = CAGradientLayer()
     private let leftGlow = CAGradientLayer()
     private let rightGlow = CAGradientLayer()
     private let centerGlow = CAGradientLayer()
 
-    public init(style: Style = .light) {
-        self.style = style
+    public init(style: Style? = nil) {
+        self.fixedStyle = style
         super.init(frame: .zero)
         setupUI()
-        applyStyle()
+        applyResolvedStyle()
     }
 
     required init?(coder: NSCoder) {
-        self.style = .light
+        self.fixedStyle = nil
         super.init(coder: coder)
         setupUI()
-        applyStyle()
+        applyResolvedStyle()
     }
 
     private func setupUI() {
@@ -98,7 +98,21 @@ public final class ELAFlowingGradientBackgroundView: UIView {
         glow.endPoint = CGPoint(x: 1.0, y: 1.0)
     }
 
-    private func applyStyle() {
+    private var resolvedStyle: Style {
+        if let fixedStyle {
+            return fixedStyle
+        }
+
+        if #available(iOS 12.0, *), traitCollection.userInterfaceStyle == .dark {
+            return .dark
+        }
+
+        return .light
+    }
+
+    private func applyResolvedStyle() {
+        let style = resolvedStyle
+
         baseGradient.colors = [
             style.topColor.cgColor,
             style.midColor.cgColor,
@@ -108,26 +122,26 @@ public final class ELAFlowingGradientBackgroundView: UIView {
 
         leftGlow.colors = [
             style.leftGlowColor.cgColor,
-            style.leftGlowColor.withAlphaComponent(0.10).cgColor,
+            style.leftGlowColor.withAlphaComponent(0.18).cgColor,
             UIColor.clear.cgColor
         ]
 
         rightGlow.colors = [
             style.rightGlowColor.cgColor,
-            style.rightGlowColor.withAlphaComponent(0.08).cgColor,
+            style.rightGlowColor.withAlphaComponent(0.15).cgColor,
             UIColor.clear.cgColor
         ]
 
         centerGlow.colors = [
             style.centerGlowColor.cgColor,
-            style.centerGlowColor.withAlphaComponent(0.06).cgColor,
+            style.centerGlowColor.withAlphaComponent(0.12).cgColor,
             UIColor.clear.cgColor
         ]
     }
 
-    public func updateStyle(_ style: Style) {
-        self.style = style
-        applyStyle()
+    public func updateStyle(_ style: Style?) {
+        self.fixedStyle = style
+        applyResolvedStyle()
     }
 
     public override func layoutSubviews() {
@@ -170,11 +184,23 @@ public final class ELAFlowingGradientBackgroundView: UIView {
     public override func didMoveToWindow() {
         super.didMoveToWindow()
 
+        applyResolvedStyle()
+
         if window == nil {
             stopAnimating()
         } else {
             startAnimating()
         }
+    }
+
+    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        guard fixedStyle == nil else { return }
+        guard #available(iOS 13.0, *) else { return }
+        guard traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else { return }
+
+        applyResolvedStyle()
     }
 
     public func startAnimating() {
@@ -185,35 +211,35 @@ public final class ELAFlowingGradientBackgroundView: UIView {
 
         animate(
             glow: leftGlow,
-            x: 28,
-            y: 18,
-            scale: 1.12,
+            x: 46,
+            y: 26,
+            scale: 1.20,
             opacityFrom: 1.0,
-            opacityTo: 0.68,
-            duration: 12,
+            opacityTo: 0.56,
+            duration: 9.5,
             delay: 0
         )
 
         animate(
             glow: rightGlow,
-            x: -24,
-            y: 16,
-            scale: 1.10,
-            opacityFrom: 0.98,
-            opacityTo: 0.64,
-            duration: 14,
-            delay: 0.9
+            x: -40,
+            y: 24,
+            scale: 1.18,
+            opacityFrom: 1.0,
+            opacityTo: 0.54,
+            duration: 10.5,
+            delay: 0.6
         )
 
         animate(
             glow: centerGlow,
             x: 0,
-            y: 22,
-            scale: 1.08,
-            opacityFrom: 0.88,
-            opacityTo: 0.52,
-            duration: 13,
-            delay: 0.5
+            y: 32,
+            scale: 1.16,
+            opacityFrom: 0.96,
+            opacityTo: 0.44,
+            duration: 8.8,
+            delay: 0.35
         )
     }
 
@@ -225,17 +251,17 @@ public final class ELAFlowingGradientBackgroundView: UIView {
 
     private func animateBaseGradient() {
         let startPoint = CABasicAnimation(keyPath: "startPoint")
-        startPoint.fromValue = CGPoint(x: 0.02, y: -0.08)
-        startPoint.toValue = CGPoint(x: 0.24, y: 0.10)
-        startPoint.duration = 12
+        startPoint.fromValue = CGPoint(x: -0.10, y: -0.16)
+        startPoint.toValue = CGPoint(x: 0.32, y: 0.18)
+        startPoint.duration = 8.5
         startPoint.autoreverses = true
         startPoint.repeatCount = .infinity
         startPoint.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
 
         let endPoint = CABasicAnimation(keyPath: "endPoint")
-        endPoint.fromValue = CGPoint(x: 0.74, y: 0.96)
-        endPoint.toValue = CGPoint(x: 0.98, y: 1.10)
-        endPoint.duration = 12
+        endPoint.fromValue = CGPoint(x: 0.66, y: 0.88)
+        endPoint.toValue = CGPoint(x: 1.08, y: 1.18)
+        endPoint.duration = 8.5
         endPoint.autoreverses = true
         endPoint.repeatCount = .infinity
         endPoint.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
@@ -302,7 +328,7 @@ public final class ELAFlowingGradientBackgroundView: UIView {
 public extension UIView {
     @discardableResult
     func addELAFlowingBackground(
-        _ style: ELAFlowingGradientBackgroundView.Style = .light
+        _ style: ELAFlowingGradientBackgroundView.Style? = nil
     ) -> ELAFlowingGradientBackgroundView {
         if let old = subviews.first(where: { $0 is ELAFlowingGradientBackgroundView }) as? ELAFlowingGradientBackgroundView {
             old.updateStyle(style)
@@ -327,7 +353,7 @@ public extension UIView {
 public extension UIViewController {
     @discardableResult
     func addELAFlowingBackground(
-        _ style: ELAFlowingGradientBackgroundView.Style = .light
+        _ style: ELAFlowingGradientBackgroundView.Style? = nil
     ) -> ELAFlowingGradientBackgroundView {
         view.addELAFlowingBackground(style)
     }

@@ -23,14 +23,14 @@ class GuidanceProSubscribeVM: UIView {
 
     private lazy var loadingOverlayView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.72)
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.04)
         view.isHidden = true
         return view
     }()
 
     private lazy var loadingIndicatorView: UIActivityIndicatorView = {
         let view = UIActivityIndicatorView(style: .large)
-        view.color = .THEME
+        view.color = .COLOR_TEXT_WHITE//.THEME
         view.hidesWhenStopped = false
         return view
     }()
@@ -45,8 +45,8 @@ class GuidanceProSubscribeVM: UIView {
     private lazy var contentView = UIView()
     private lazy var footerContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white.withAlphaComponent(0.98)
-        view.layer.shadowColor = UIColor.black.withAlphaComponent(0.08).cgColor
+        view.backgroundColor = UIColor.COLOR_CARD_BG_WHITE//.withAlphaComponent(0.98)
+        view.layer.shadowColor = UIColor.COLOR_BG_BLACK_06.cgColor
         view.layer.shadowOpacity = 1
         view.layer.shadowRadius = 18
         view.layer.shadowOffset = CGSize(width: 0, height: -8)
@@ -62,8 +62,8 @@ class GuidanceProSubscribeVM: UIView {
     private lazy var footerTopFadeView: VerticalFadeView = {
         let view = VerticalFadeView()
         view.isUserInteractionEnabled = false
-        view.startColor = UIColor.white.withAlphaComponent(0)
-        view.endColor = UIColor.white.withAlphaComponent(0.98)
+        view.startColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0)
+        view.endColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.98)
         return view
     }()
 
@@ -126,10 +126,10 @@ class GuidanceProSubscribeVM: UIView {
 
     private lazy var reminderCardView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white.withAlphaComponent(0.84)
+        view.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.84)
         view.layer.cornerRadius = kFitWidth(12)
         view.layer.borderWidth = kFitWidth(2)
-        view.layer.borderColor = UIColor.white.cgColor
+        view.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
         return view
     }()
 
@@ -230,6 +230,13 @@ class GuidanceProSubscribeVM: UIView {
 
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        reminderCardView.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
+        proFeatureContainer.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
+        footerTopFadeView.startColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0)
+        footerTopFadeView.endColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.98)
     }
 }
 
@@ -758,12 +765,12 @@ private extension GuidanceProSubscribeVM {
 
     func makeFeatureContainer() -> UIView {
         let view = UIView()
-        view.backgroundColor = UIColor.white.withAlphaComponent(0.84)
+        view.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.84)
         view.layer.cornerRadius = kFitWidth(16)
 //        view.layer.borderWidth = 1
 //        view.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.withAlphaComponent(0.08).cgColor
         view.layer.borderWidth = kFitWidth(2)
-        view.layer.borderColor = UIColor.white.cgColor
+        view.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
         view.clipsToBounds = true
         return view
     }

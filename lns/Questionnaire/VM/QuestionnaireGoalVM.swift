@@ -29,6 +29,18 @@ class QuestionnaireGoalVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        bottomGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         topGradientLayer.frame = topGradientView.bounds
