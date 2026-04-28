@@ -78,11 +78,12 @@ class HabitProgressVM: UIView {
     lazy var friendMsgVm: HabitFriendsGoalVM = {
         let vm = HabitFriendsGoalVM.init(frame: CGRect.init(x: 0, y: self.todayMsgVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
         vm.heightChangeBlock = {(height)in
-            let streakMsgVmCenter = self.streakMsgVm.center
+//            let streakMsgVmCenter = self.streakMsgVm.center
             self.friendMsgVm.frame = CGRect.init(x: 0, y: self.todayMsgVm.frame.maxY+kFitWidth(12), width: SCREEN_WIDHT, height: height)
-            self.streakMsgVm.center = CGPoint.init(x: streakMsgVmCenter.x, y: self.friendMsgVm.frame.maxY + kFitWidth(12) + self.streakMsgVm.selfHeight*0.5)
-            self.streakListVm.frame = CGRect.init(x: 0, y: self.streakMsgVm.frame.maxY+kFitWidth(12), width: SCREEN_WIDHT, height: self.streakListVm.selfHeight)
-            self.scrollView.contentSize = CGSize.init(width: 0, height: self.streakListVm.frame.maxY+kFitWidth(20))
+//            self.streakMsgVm.center = CGPoint.init(x: streakMsgVmCenter.x, y: self.friendMsgVm.frame.maxY + kFitWidth(12) + self.streakMsgVm.selfHeight*0.5)
+//            self.streakListVm.frame = CGRect.init(x: 0, y: self.streakMsgVm.frame.maxY+kFitWidth(12), width: SCREEN_WIDHT, height: self.streakListVm.selfHeight)
+//            self.scrollView.contentSize = CGSize.init(width: 0, height: self.streakListVm.frame.maxY+kFitWidth(20))
+            self.scrollView.contentSize = CGSize.init(width: 0, height: self.friendMsgVm.frame.maxY+kFitWidth(20))
         }
         vm.firstOnTargetVm.tapBlock = {()in
             DLLog(message: "proteinIntakeOnTargetWithFriendFirstTimeRewardId:\(self.proteinIntakeOnTargetWithFriendFirstTimeRewardId)   --- \(self.proteinIntakeOnTargetWithFriendFirstTimePoint)")
@@ -162,16 +163,7 @@ extension HabitProgressVM{
         self.lastNumber = nextPointBalance//dict.stringValueForKey(key: "pointBalance").intValue
         self.todayMsgVm.updateUI(dict: dict)
         self.friendMsgVm.updateUI(dict: dict)
-        self.streakListVm.updateUI(listArray: dict["streakRewardList"]as? NSArray ?? [])
-//        let arr = [["streakRewardName":"测试连胜一",
-//                    "isClaimed":"0",
-//                    "streakRewardPoint":"14",
-//                    "streakRewardId":"2342342"],
-//                   ["streakRewardName":"测试连胜二",
-//                               "isClaimed":"0",
-//                               "streakRewardPoint":"88",
-//                               "streakRewardId":"2342wfwe342"]]
-//        self.streakListVm.updateUI(listArray: arr as NSArray)
+//        self.streakListVm.updateUI(listArray: dict["streakRewardList"]as? NSArray ?? [])
         hideLoadingSkeletonIfNeeded()
     }
 }
@@ -199,8 +191,8 @@ extension HabitProgressVM{
         scrollView.addSubview(topMsgVm)
         scrollView.addSubview(todayMsgVm)
         scrollView.addSubview(friendMsgVm)
-        scrollView.addSubview(streakMsgVm)
-        scrollView.addSubview(streakListVm)
+//        scrollView.addSubview(streakMsgVm)
+//        scrollView.addSubview(streakListVm)
         
         scrollView.snp.makeConstraints { make in
             make.left.top.width.height.equalToSuperview()

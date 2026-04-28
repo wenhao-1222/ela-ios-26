@@ -35,6 +35,7 @@ class GuidanceProSubscribeVM: UIView {
         return view
     }()
 
+
     private lazy var scrollView: UIScrollView = {
         let view = UIScrollView()
         view.showsVerticalScrollIndicator = false
