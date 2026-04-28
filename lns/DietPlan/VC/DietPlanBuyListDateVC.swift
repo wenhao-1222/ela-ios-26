@@ -177,6 +177,7 @@ private extension DietPlanBuyListDateVC {
         
         let vc = DietPlanBuyListVC()
         vc.selectedDates = selectedDates
+        vc.createDateStrings = sourceDateStrings
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

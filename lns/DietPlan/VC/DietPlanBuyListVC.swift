@@ -26,7 +26,7 @@ class DietPlanBuyListVC: WHBaseViewVC {
                                                     contentFadeInDuration: 0.18)
     var selectedDates = [String]()
     var createDateStrings = [String]()
-    var showCreateButton = false
+    var showCreateButton = true
     var foodsArray = NSMutableArray()
     private var isLoading = false
     
@@ -35,13 +35,21 @@ class DietPlanBuyListVC: WHBaseViewVC {
         
         initUI()
         beginLoading()
-        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
+//        DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
             if self.selectedDates.count > 0 {
                 self.createBuyListRequest()
             }else{
                 self.sendBuyListRequest()
             }
-        })
+//        })
+        
+        if let nav = navigationController {
+            var controllers = nav.viewControllers
+            if let index = controllers.firstIndex(where: { $0 is DietPlanBuyListDateVC }) {
+                controllers.remove(at: index)
+                nav.viewControllers = controllers
+            }
+        }
     }
     
     override func viewDidLayoutSubviews() {

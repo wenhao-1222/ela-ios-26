@@ -71,12 +71,22 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         navigationController?.popToRootViewController(animated: true)
     }
 
+    lazy var tipsButton: ElaExpandedTapButton = {
+        let btn = ElaExpandedTapButton(type: .custom)
+        btn.hitTestEdgeInsets = .init(top: -12, left: -12, bottom: -12, right: -12)
+        btn.setImage(UIImage(named: "tips_black_icon"), for: .normal)
+        
+        btn.addTarget(self, action: #selector(tipsTapAction), for: .touchUpInside)
+        
+        return btn
+    }()
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "ela_pro_ai_pre_bg")
         img.contentMode = .scaleAspectFit
         return img
     }()
+    
     lazy var circleImgView: CoachAnimationV3View = {
         let orbView = CoachAnimationV3View(diameter: kFitWidth(250))
         orbView.backgroundColor = .clear
@@ -105,6 +115,14 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         gesture.delegate = self
         return gesture
     }()
+    lazy var katchAlertVm : QuestionnaireBodyFatAlertVM = {
+        let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
+        vm.titleLabel.text = "AI教练是如何运作的？"
+        vm.contentLabelOne.text = "BMI 主要反映体重和身高的比例，无法区分肌肉和脂肪，因此同样 BMI 的两个人，代谢需求可能差很多。Katch-McArdle 会参考你的瘦体重(去脂体重)，在体脂数据较准确时，通常能更贴近健身人群的代谢情况，给出更个性化的结果。\n\n每一次调整，AI 都会更深度地了解你，使后续方案愈发精准。\n\n不同于只按绝对标准执行、缺乏灵活性的机械公式，AI 教练能根据你的个人实际情况与摄入数据进行灵活调优，并给出针对性的解决方案。"
+        vm.contentLabelTwo.text = ""
+        vm.contentLabelThree.text = ""
+        return vm
+    }()
 }
 
 extension AICoachPreVC{
@@ -119,12 +137,19 @@ extension AICoachPreVC{
     @objc func dismissPopupTapAction() {
         preDaysVM.dismissPopup()
     }
+    
+    @objc func tipsTapAction() {
+        katchAlertVm.showView()
+    }
+    
 }
 
 extension AICoachPreVC{
     func initUI() {
         view.addSubview(bgImgView)
         initNavi(titleStr: "AI教练")
+        
+        navigationView.addSubview(tipsButton)
         view.backgroundColor = .COLOR_BG_F2
         navigationView.backgroundColor = .clear
         view.addGestureRecognizer(dismissPopupTapGesture)
@@ -135,9 +160,16 @@ extension AICoachPreVC{
         view.addSubview(nextButton)
         view.addSubview(infoSelectPopupVM)
         
+        view.addSubview(katchAlertVm)
+        
         setConstrait()
     }
     func setConstrait() {
+        tipsButton.snp.makeConstraints { make in
+            make.right.equalTo(kFitWidth(-16))
+            make.centerY.lessThanOrEqualTo(naviTitleLabel)
+            make.width.height.equalTo(kFitWidth(20))
+        }
         bgImgView.snp.makeConstraints { make in
             make.left.top.width.height.equalToSuperview()
         }
