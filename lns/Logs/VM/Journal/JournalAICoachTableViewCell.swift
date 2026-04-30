@@ -77,14 +77,19 @@ class JournalAICoachTableViewCell: UITableViewCell {
 }
 
 extension JournalAICoachTableViewCell {
-    func update(isVip: Bool) {
+    func update(isVip: Bool, isMembershipStatusConfirmed: Bool, shouldAnimateProBadge: Bool) {
         proImgView.layer.removeAllAnimations()
         proImgView.alpha = 0
         proImgView.isHidden = true
 
-        guard !isVip else { return }
+        guard isMembershipStatusConfirmed, !isVip else { return }
 
         proImgView.isHidden = false
+        guard shouldAnimateProBadge else {
+            proImgView.alpha = 1
+            return
+        }
+
         UIView.animate(withDuration: 0.35) {
             self.proImgView.alpha = 1
         }

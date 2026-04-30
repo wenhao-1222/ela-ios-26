@@ -108,18 +108,18 @@ extension AIGuidanceGoalStageVM {
         switch goalKind {
         case .gain:
             return [
-                Item(title: "准备开始增肌", value: "gain_prepare"),
+                Item(title: "还没开始", value: "gain_prepare"),
                 Item(title: "不到 1 个月", value: "gain_less_1_month"),
-                Item(title: "1–3 个月", value: "gain_1_3_months"),
-                Item(title: "3–12 个月", value: "gain_3_12_months"),
-                Item(title: "一年以上", value: "gain_over_1_year")
+                Item(title: "1 到 3 个月", value: "gain_1_3_months"),
+                Item(title: "3 到 12 个月", value: "gain_3_12_months"),
+                Item(title: "1 年以上", value: "gain_over_1_year")
             ]
         case .fatLoss:
             return [
-                Item(title: "准备开始减脂", value: "fat_prepare"),
+                Item(title: "还没开始", value: "fat_prepare"),
                 Item(title: "不到 2 周", value: "fat_less_2_weeks"),
-                Item(title: "2–6 周", value: "fat_2_6_weeks"),
-                Item(title: "7–12 周", value: "fat_7_12_weeks"),
+                Item(title: "2 到 6 周", value: "fat_2_6_weeks"),
+                Item(title: "7 到 12 周", value: "fat_7_12_weeks"),
                 Item(title: "12 周以上", value: "fat_over_12_weeks")
             ]
         }

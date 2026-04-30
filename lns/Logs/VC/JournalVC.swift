@@ -157,6 +157,10 @@ class JournalVC: WHBaseViewVC {
         NotificationCenter.default.addObserver(self, selector: #selector(cancelEditNotifi), name: NSNotification.Name(rawValue: "cancelEditStatus"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showBottomFuncVm), name: NSNotification.Name(rawValue: "editFoodsHasSelect"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hiddenBottomFuncVm), name: NSNotification.Name(rawValue: "editFoodsHasSelectNone"), object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshVipStatusAfterIAPBindSuccess),
+                                               name: NOTIFI_NAME_REFRESH_VIP_STATUS,
+                                               object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(gotoLogsNotification), name: NSNotification.Name(rawValue: "widgetAddFoodsForLogs"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(editStatus), name: NSNotification.Name(rawValue: "longPressCellForEdit"), object: nil)
@@ -1176,12 +1180,20 @@ extension JournalVC{
             
             DLLog(message: "sendProVipMsgRequest:\(dataDict)")
             DLLog(message: "sendProVipMsgRequest model: uid=\(vipModel.uid),status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime)  ,expireTime=\(vipModel.expireTime)")
-            
+
+            DispatchQueue.main.async {
+                guard self.isViewLoaded else { return }
+                self.collectView.reloadData()
+            }
         }
     }
 }
 
 extension JournalVC{
+    @objc func refreshVipStatusAfterIAPBindSuccess() {
+        sendProVipMsgRequest()
+    }
+
     func sendUserCenterRequest() {
         let param = ["uid":"\(UserInfoModel.shared.uId)"]
         WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { responseObject in

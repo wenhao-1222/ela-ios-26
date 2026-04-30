@@ -154,7 +154,7 @@ class DietPlanCreatePaceVM: UIView {
 
     lazy var cardView: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white.withAlphaComponent(0.55)
+        vi.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.55)
         vi.layer.cornerRadius = kFitWidth(12)
         vi.clipsToBounds = true
         return vi

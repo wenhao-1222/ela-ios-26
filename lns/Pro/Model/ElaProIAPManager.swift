@@ -56,6 +56,12 @@ final class ElaProIAPManager: NSObject {
     static let localEntitlementUpdatedNotification = NSNotification.Name("ela_pro_local_entitlement_updated")
     static let refundDebugLogUpdatedNotification = NSNotification.Name("ela_pro_refund_debug_log_updated")
 
+    enum PurchasePostActionOutcome {
+        case activated
+        case pendingLoginBind
+        case pendingServerSync
+    }
+
     private enum PurchaseQueryBizType: String {
         case pendingBind = "1"
         case aiGuidance = "2"
@@ -86,6 +92,7 @@ final class ElaProIAPManager: NSObject {
     private enum KeychainKeys {
         static let pendingTransactionService = "com.elavatine.pro.iap"
         static let pendingTransactionAccount = "pending_transaction_id"
+        static let pendingPayloadAccount = "pending_purchase_payload"
     }
     
     private override init() {
@@ -370,17 +377,21 @@ final class ElaProIAPManager: NSObject {
     }
     
     func handlePurchaseSuccessPostAction(transaction: SKPaymentTransaction,
-                                         queryBizType: String = PurchaseQueryBizType.standard.rawValue) {
-        let expireAt = applyLocalTemporaryUnlock(transaction: transaction)
-        let payload = makePurchaseVerifyPayload(transaction: transaction, localUnlockExpireAt: expireAt)
+                                         queryBizType: String = PurchaseQueryBizType.standard.rawValue,
+                                         completion: ((PurchasePostActionOutcome) -> Void)? = nil) {
+        let payload = makePurchaseVerifyPayload(transaction: transaction, localUnlockExpireAt: Date())
         appendRefundDebugLog("购买成功，已生成验单载荷", payload: payload)
         cachePendingVerifyPayload(payload: payload)
         storePendingTransactionID(transaction.transactionIdentifier)
+        storePendingVerifyPayloadInKeychain(payload: payload)
         if canBindPurchaseToCurrentUser() {
             let resolvedQueryBizType = resolveQueryBizType(queryBizType, defaultType: .standard)
-            bindPendingPurchaseIfNeeded(queryBizType: resolvedQueryBizType)
+            bindPendingPurchaseIfNeeded(queryBizType: resolvedQueryBizType) { success in
+                completion?(success ? .activated : .pendingServerSync)
+            }
         } else {
             DLLog(message: "[ElaProIAP][QUERY] deferred until login: user not ready")
+            completion?(.pendingLoginBind)
         }
         uploadPurchaseVerifyPayloadTODO(payload: payload)
     }
@@ -399,6 +410,7 @@ final class ElaProIAPManager: NSObject {
         let shouldNotify = defaults.bool(forKey: LocalUnlockKeys.isUnlocked)
         clearLocalUnlock(defaults: defaults, shouldNotify: shouldNotify)
         defaults.removeObject(forKey: LocalUnlockKeys.pendingVerifyPayload)
+        clearPendingVerifyPayloadKeychainCache()
         clearPendingTransactionIDCache(defaults: defaults)
     }
 
@@ -609,6 +621,23 @@ final class ElaProIAPManager: NSObject {
         let json = WHUtils.getJSONStringFromDictionary(dictionary: payload as NSDictionary)
         UserDefaults.standard.set(json, forKey: LocalUnlockKeys.pendingVerifyPayload)
     }
+
+    private func storePendingVerifyPayloadInKeychain(payload: [String: Any]) {
+        let json = WHUtils.getJSONStringFromDictionary(dictionary: payload as NSDictionary)
+        guard let data = json.data(using: .utf8) else { return }
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: KeychainKeys.pendingTransactionService,
+            kSecAttrAccount as String: KeychainKeys.pendingPayloadAccount,
+            kSecValueData as String: data
+        ]
+
+        SecItemDelete(query as CFDictionary)
+        let status = SecItemAdd(query as CFDictionary, nil)
+        if status != errSecSuccess {
+            DLLog(message: "[ElaProIAP][KEYCHAIN] save payload failed: \(status)")
+        }
+    }
     
     private func queryPurchaseOrder(transactionID: String,
                                     bizType: String,
@@ -634,6 +663,7 @@ final class ElaProIAPManager: NSObject {
             DLLog(message: "[ElaProIAP][QUERY] success:\(dataDict)")
             if code == 200 {
                 self.clearPendingTransactionAfterBindSuccess(transactionID: transactionID)
+                NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
                 completion?(true)
             } else {
                 completion?(false)
@@ -710,6 +740,8 @@ final class ElaProIAPManager: NSObject {
         let defaults = UserDefaults.standard
         clearPendingTransactionIDCache(defaults: defaults)
         defaults.removeObject(forKey: LocalUnlockKeys.pendingVerifyPayload)
+        clearPendingVerifyPayloadKeychainCache()
+        clearLocalUnlock(defaults: defaults, shouldNotify: true)
     }
 
     private func currentUserID() -> String {
@@ -753,6 +785,15 @@ final class ElaProIAPManager: NSObject {
         ]
         SecItemDelete(query as CFDictionary)
         defaults.removeObject(forKey: LocalUnlockKeys.transactionID)
+    }
+
+    private func clearPendingVerifyPayloadKeychainCache() {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: KeychainKeys.pendingTransactionService,
+            kSecAttrAccount as String: KeychainKeys.pendingPayloadAccount
+        ]
+        SecItemDelete(query as CFDictionary)
     }
     
     private func uploadPurchaseVerifyPayloadTODO(payload: [String: Any]) {

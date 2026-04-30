@@ -26,6 +26,7 @@ class DietPlanVC: WHBaseViewVC {
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_DIET_PLAN_CREATE_SUCCESS, object: nil)
     }
     
@@ -52,6 +53,10 @@ class DietPlanVC: WHBaseViewVC {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(refreshDietPlanAfterSubscriptionSuccess),
                                                name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshVipStatusAfterIAPBindSuccess),
+                                               name: NOTIFI_NAME_REFRESH_VIP_STATUS,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(markPlanListRefreshAfterCreateSuccess),
@@ -107,6 +112,10 @@ class DietPlanVC: WHBaseViewVC {
 extension DietPlanVC{
     @objc func refreshDietPlanAfterSubscriptionSuccess() {
         sendDietPlanMsgRequest()
+    }
+
+    @objc func refreshVipStatusAfterIAPBindSuccess() {
+        sendProVipMsgRequest()
     }
 
     @objc func markPlanListRefreshAfterCreateSuccess() {

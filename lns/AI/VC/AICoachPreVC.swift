@@ -118,7 +118,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     lazy var katchAlertVm : QuestionnaireBodyFatAlertVM = {
         let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
         vm.titleLabel.text = "AI教练是如何运作的？"
-        vm.contentLabelOne.text = "BMI 主要反映体重和身高的比例，无法区分肌肉和脂肪，因此同样 BMI 的两个人，代谢需求可能差很多。Katch-McArdle 会参考你的瘦体重(去脂体重)，在体脂数据较准确时，通常能更贴近健身人群的代谢情况，给出更个性化的结果。\n\n每一次调整，AI 都会更深度地了解你，使后续方案愈发精准。\n\n不同于只按绝对标准执行、缺乏灵活性的机械公式，AI 教练能根据你的个人实际情况与摄入数据进行灵活调优，并给出针对性的解决方案。"
+        vm.contentLabelOne.text = "当你开启 AI 教练，系统将主动观察你的饮食摄入、体重波动及每周进展。待系统积累完整的周期数据后，教练将为你提供一份全面的诊断报告，并给出针对性的饮食与营养素调整建议。\n\n每一次调整，AI 都会更深度地了解你，使后续方案愈发精准。\n\n不同于只按绝对标准执行、缺乏灵活性的机械公式，AI 教练能根据你的个人实际情况与摄入数据进行灵活调优，并给出针对性的解决方案。"
         vm.contentLabelTwo.text = ""
         vm.contentLabelThree.text = ""
         return vm
@@ -252,7 +252,20 @@ private extension AICoachPreVC {
         
         //报告生成中
         if latestReportDict.stringValueForKey(key: "reportStatus") == "1"{
-            nextButton.setTitle("数据处理中，预计时间30min", for: .normal)
+//            nextButton.setTitle("数据处理中，预计时间30min", for: .normal)
+            let estimatedMinutes: Int = {
+                if let value = dataDict["estimatedReportGenerationMinutes"] as? Int {
+                    return value
+                }
+                if let value = dataDict["estimatedReportGenerationMinutes"] as? NSNumber {
+                    return value.intValue
+                }
+                let value = dataDict.stringValueForKey(key: "estimatedReportGenerationMinutes").intValue
+                return value > 0 ? value : 30
+            }()
+            let processingTitle = "数据处理中，预计时间\(estimatedMinutes)min"
+            nextButton.setTitle(processingTitle, for: .normal)
+            nextButton.setTitle(processingTitle, for: .disabled)
             nextButton.isEnabled = false
             preDaysVM.messageLabel.isHidden = true
         }

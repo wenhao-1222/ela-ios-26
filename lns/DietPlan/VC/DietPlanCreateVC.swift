@@ -60,6 +60,10 @@ class DietPlanCreateVC: WHBaseViewVC {
     deinit {
         NotificationCenter.default.removeObserver(self, name: .dietPlanPaceInputDidChange, object: nil)
     }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        nextButton.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .disabled)
+    }
+    
     lazy var naviVm: DietPlanCreateNaviVM = {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
         vm.backTapBlock = {[weak self] in

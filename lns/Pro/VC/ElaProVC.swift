@@ -164,11 +164,10 @@ extension ElaProVC{
     }
 
     private func handleReadyStepNextAction() {
-//        if UserInfoModel.shared.vipModel.status == .valid {
-//            DietPlanCreateVC.clearStoredDraftForCurrentUser()
-//            navigationController?.popToRootViewController(animated: true)
-//            return
-//        }
+        if VIPModel.shared.status == .valid {
+            handleCloseAction()
+            return
+        }
 
         currentIndex = 3
         showStep(for: currentIndex, animated: true)
@@ -358,7 +357,6 @@ extension ElaProVC{
     }
     
     private func handlePurchaseSuccess() {
-        applyTemporaryValidVipStatus()
         if shouldClearDietPlanCreateDraftOnPurchaseSuccess {
             DietPlanCreateVC.clearStoredDraftForCurrentUser()
         }
@@ -383,13 +381,6 @@ extension ElaProVC{
         } else {
             backTapAction()
         }
-    }
-    
-    private func applyTemporaryValidVipStatus() {
-        let vipModel = UserInfoModel.shared.vipModel
-        vipModel.uid = vipModel.uid.isEmpty ? UserInfoModel.shared.uId : vipModel.uid
-//        vipModel.vipType = vipModel.vipType == .none ? .year : vipModel.vipType
-        vipModel.status = .valid
     }
     
     private func requestLatestVipInfo() {

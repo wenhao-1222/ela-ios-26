@@ -661,18 +661,32 @@ extension ElaProPriceVM{
         let completion: (Result<SKPaymentTransaction, Error>) -> Void = { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                self.isPurchasing = false
-                self.purchaseLoadingStateChangeBlock?(false)
-                self.confirmButton.isEnabled = true
-                self.confirmButton.setTitle("确认", for: .normal)
-                
                 switch result {
                 case .success(let transaction):
                     ElaProIAPManager.shared.handlePurchaseSuccessPostAction(transaction: transaction,
-                                                                           queryBizType: self.purchaseQueryBizType)
-                    MCToast.mc_text(purchasingPlan == .lifetime ? "购买成功" : "订阅成功")
-                    self.purchaseSuccessBlock?()
+                                                                           queryBizType: self.purchaseQueryBizType) { outcome in
+                        DispatchQueue.main.async {
+                            self.isPurchasing = false
+                            self.purchaseLoadingStateChangeBlock?(false)
+                            self.confirmButton.isEnabled = true
+                            self.confirmButton.setTitle("确认", for: .normal)
+
+                            switch outcome {
+                            case .activated:
+                                MCToast.mc_text(purchasingPlan == .lifetime ? "购买成功" : "订阅成功")
+                                self.purchaseSuccessBlock?()
+                            case .pendingLoginBind:
+                                MCToast.mc_text("支付成功，请登录后领取会员")
+                            case .pendingServerSync:
+                                MCToast.mc_text("支付已完成，正在同步会员，请勿重复购买")
+                            }
+                        }
+                    }
                 case .failure(let error):
+                    self.isPurchasing = false
+                    self.purchaseLoadingStateChangeBlock?(false)
+                    self.confirmButton.isEnabled = true
+                    self.confirmButton.setTitle("确认", for: .normal)
                     if let iapError = error as? ElaProIAPError {
                         MCToast.mc_text(iapError.localizedDescription)
                     } else {

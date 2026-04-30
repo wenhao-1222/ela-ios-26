@@ -189,7 +189,8 @@ extension GuideTotalVC{
         
         layoutGuidePages()
         scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*5, height: 0)
-        scrollViewBase.backgroundColor = UIColor(named: "color_card_bg_f5_guide")
+//        scrollViewBase.backgroundColor = UIColor(named: "color_card_bg_f5_guide")
+        scrollViewBase.backgroundColor = .COLOR_BG_F5
         self.scrollViewBase.layoutIfNeeded()
         self.view.layoutIfNeeded()
         progressVm.isHidden = false

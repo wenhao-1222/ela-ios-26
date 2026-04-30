@@ -368,15 +368,28 @@ extension GuidanceProVC {
         ElaProIAPManager.shared.purchaseAnnual { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                self.isPurchasing = false
-                self.subscribeContentVM.setLoading(false)
-
                 switch result {
                 case .success(let transaction):
-                    ElaProIAPManager.shared.handlePurchaseSuccessPostAction(transaction: transaction)
-                    MCToast.mc_text("订阅成功")
-                    self.nextBlock?()
+                    ElaProIAPManager.shared.handlePurchaseSuccessPostAction(transaction: transaction) { outcome in
+                        DispatchQueue.main.async {
+                            self.isPurchasing = false
+                            self.subscribeContentVM.setLoading(false)
+                            switch outcome {
+                            case .activated:
+                                MCToast.mc_text("订阅成功")
+                                self.nextBlock?()
+                            case .pendingLoginBind:
+                                MCToast.mc_text("支付成功，请登录后领取会员")
+                                self.nextBlock?()
+                            case .pendingServerSync:
+                                MCToast.mc_text("支付成功，正在同步订单，请登录后查看会员状态")
+                                self.nextBlock?()
+                            }
+                        }
+                    }
                 case .failure(let error):
+                    self.isPurchasing = false
+                    self.subscribeContentVM.setLoading(false)
                     if let iapError = error as? ElaProIAPError {
                         MCToast.mc_text(iapError.localizedDescription)
                     } else {

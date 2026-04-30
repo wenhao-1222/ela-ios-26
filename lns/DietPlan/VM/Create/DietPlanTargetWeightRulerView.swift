@@ -68,6 +68,17 @@ final class DietPlanTargetWeightRulerView: UIView, UIScrollViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        leftGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+        rightGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+    }
+    
     lazy var leftGradientView: UIView = {
         let vi = UIView()
         vi.isUserInteractionEnabled = false
