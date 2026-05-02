@@ -16,6 +16,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     private var shouldSkipDraftPersistence = false
     private var hasRestoredDraft = false
     private var shouldResumeFromEatStyleForNonVip = false
+    private var isBackButtonCoolingDown = false
     
     var skipStepsOne = 0
     var skipStepsNine = false//是否跳过第九步  此处是由第八步决定
@@ -68,6 +69,8 @@ class DietPlanCreateVC: WHBaseViewVC {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
+            guard !self.isBackButtonCoolingDown else { return }
+            self.startBackButtonCooldown()
             if self.currentIndex == 0 {
                 self.backTapAction()
                 return
@@ -978,6 +981,16 @@ extension DietPlanCreateVC{
 }
 
 private extension DietPlanCreateVC {
+    func startBackButtonCooldown() {
+        isBackButtonCoolingDown = true
+        naviVm.backButton.isEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            guard let self = self else { return }
+            self.isBackButtonCoolingDown = false
+            self.naviVm.backButton.isEnabled = true
+        }
+    }
+
     func handleDraftRestoreFlow() {
         let profileGender = UserInfoModel.shared.gender
         let hasValidProfileGender = profileGender == "1" || profileGender == "2"

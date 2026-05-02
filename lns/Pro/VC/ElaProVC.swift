@@ -8,6 +8,7 @@
 
 class ElaProVC: WHBaseViewVC {
     private var currentIndex: Int = 0
+    private var isBackButtonCoolingDown = false
     
     var param = [String : Any]()
     var showPriceOnly = false
@@ -79,6 +80,8 @@ class ElaProVC: WHBaseViewVC {
         vm.thirdStepVm.isHidden = true
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
+            guard !self.isBackButtonCoolingDown else { return }
+            self.startBackButtonCooldown()
 //            self.handleCloseAction()
             if self.currentIndex == 0 || self.currentIndex == 4 {
                 self.handleCloseAction()
@@ -151,6 +154,16 @@ class ElaProVC: WHBaseViewVC {
 }
 
 extension ElaProVC{
+    func startBackButtonCooldown() {
+        isBackButtonCoolingDown = true
+        naviVm.backButton.isEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            guard let self = self else { return }
+            self.isBackButtonCoolingDown = false
+            self.naviVm.backButton.isEnabled = true
+        }
+    }
+
     @objc func nextButtonTapAction() {
         if currentIndex == 1 {
             currentIndex = 2

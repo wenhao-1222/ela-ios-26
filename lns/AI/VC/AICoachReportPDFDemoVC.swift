@@ -207,6 +207,11 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
             pdfGenerationToken = UUID()
         }
     }
+
+    override func backTapAction() {
+        pdfGenerationToken = UUID()
+        super.backTapAction()
+    }
 }
 
 private extension AICoachReportPDFDemoVC {

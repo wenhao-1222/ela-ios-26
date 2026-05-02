@@ -17,6 +17,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     private var shouldPreserveManualTargetCalories = false
     private var hasRestoredDateRangeFromResponse = false
     private var isSubmittingFinalFlow = false
+    private var isBackButtonCoolingDown = false
     private var createPlanLoadingConfig = DietPlanFakeProgressLoadingVM.Config(
         fakeDuration: 9.0,
         maxProgressBeforeSuccess: 0.92,
@@ -59,6 +60,8 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
+            guard !self.isBackButtonCoolingDown else { return }
+            self.startBackButtonCooldown()
             if self.currentIndex == 0 {
                 self.backTapAction()
                 return
@@ -231,6 +234,16 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
 }
 
 extension DietPlanCreateSecondVC{
+    func startBackButtonCooldown() {
+        isBackButtonCoolingDown = true
+        naviVm.backButton.isEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            guard let self = self else { return }
+            self.isBackButtonCoolingDown = false
+            self.naviVm.backButton.isEnabled = true
+        }
+    }
+
     @objc func handleSecretSexManTap() {
         applySecretSexSelection(gender: "1")
     }

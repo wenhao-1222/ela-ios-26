@@ -233,10 +233,12 @@ extension DietPlanBuyListVC{
             MCToast.mc_text("当前没有可用的购物清单日期")
             return
         }
-        let vc = DietPlanBuyListDateVC(dateStrings: createDateStrings) { [weak self] selectedDates in
-            self?.applySelectedDatesAndRefresh(selectedDates)
-        }
-        self.navigationController?.pushViewController(vc, animated: true)
+        presentAlertVc(confirmBtn: "清空并创建", message: "", title: "放弃当前内容并创建新清单？", cancelBtn: "保留", handler: { action in
+            let vc = DietPlanBuyListDateVC(dateStrings: self.createDateStrings) { [weak self] selectedDates in
+                self?.applySelectedDatesAndRefresh(selectedDates)
+            }
+            self.navigationController?.pushViewController(vc, animated: true)
+        }, viewController: self)
     }
     
     func applySelectedDatesAndRefresh(_ selectedDates: [String]) {

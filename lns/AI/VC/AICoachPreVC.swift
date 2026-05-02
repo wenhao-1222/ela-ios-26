@@ -16,6 +16,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private var userGoal: Int = 0
     private var aiCoachIntensityPreference: Int = 0
     private var isUpdatingAICoachProfile = false
+    private var coachLaunchRefreshTimer: Timer?
     
     private lazy var preDaysVM: AICoachPreDaysVM = {
         let view = AICoachPreDaysVM(frame: .zero)
@@ -67,8 +68,17 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         trimNavigationStackToRootAndSelfIfNeeded()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        stopCoachLaunchRefreshTimer()
+    }
+
     override func backTapAction() {
         navigationController?.popToRootViewController(animated: true)
+    }
+
+    deinit {
+        stopCoachLaunchRefreshTimer()
     }
 
     lazy var tipsButton: ElaExpandedTapButton = {
@@ -127,7 +137,6 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
 
 extension AICoachPreVC{
     @objc func nextButtonTapAction() {
-//        self.sendReportDetailRequest()
         let vc = AICoachReportPDFDemoVC()
         vc.reportId = self.reportId
         vc.reportList = reportList
@@ -214,15 +223,8 @@ extension AICoachPreVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendCoachLaunchRequest:\(foodsMsgDict)")
+            self.dataDict = foodsMsgDict
             self.updatePreDaysUI(dataDict: foodsMsgDict)
-        }
-    }
-    func sendReportDetailRequest() {
-        let param = ["id":reportId]
-        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_detail, parameters: param as [String : AnyObject]) { responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendReportDetailRequest:\(foodsMsgDict)")
         }
     }
     func sendReportListRequest() {
@@ -237,6 +239,29 @@ extension AICoachPreVC{
 }
 
 private extension AICoachPreVC {
+    func startCoachLaunchRefreshTimerIfNeeded() {
+        guard coachLaunchRefreshTimer == nil else { return }
+        coachLaunchRefreshTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { [weak self] _ in
+            self?.refreshCoachLaunchStatusIfNeeded()
+        }
+    }
+
+    func stopCoachLaunchRefreshTimer() {
+//        coachLaunchRefreshTimer?.invalidate()
+        coachLaunchRefreshTimer?.invalidate()
+        coachLaunchRefreshTimer = nil
+    }
+
+    @objc
+    func refreshCoachLaunchStatusIfNeeded() {
+        let latestReportDict = dataDict["latestReport"] as? NSDictionary ?? [:]
+        guard latestReportDict.stringValueForKey(key: "reportStatus") == "1" else {
+            stopCoachLaunchRefreshTimer()
+            return
+        }
+        sendCoachLaunchRequest()
+    }
+
     func trimNavigationStackToRootAndSelfIfNeeded() {
         guard let navigationController = navigationController else { return }
         guard navigationController.topViewController === self else { return }
@@ -247,6 +272,7 @@ private extension AICoachPreVC {
     }
 
     func updatePreDaysUI(dataDict: NSDictionary) {
+        self.dataDict = dataDict
         nextButton.isHidden = dataDict.stringValueForKey(key: "has7CompleteDays") == "0"
         let latestReportDict = dataDict["latestReport"]as? NSDictionary ?? [:]
         
@@ -268,6 +294,9 @@ private extension AICoachPreVC {
             nextButton.setTitle(processingTitle, for: .disabled)
             nextButton.isEnabled = false
             preDaysVM.messageLabel.isHidden = true
+            startCoachLaunchRefreshTimerIfNeeded()
+        }else{
+            stopCoachLaunchRefreshTimer()
         }
         
         UIView.animate(withDuration: 0.35) {

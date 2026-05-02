@@ -171,6 +171,9 @@ public let URL_pro_product                  = URL_Type + "users/membership/produ
 public let URL_pro_iap_query                = URL_Type + "users/apple/iap/order/query"
 ///会员VIP信息
 public let URL_pro_info                     = URL_Type + "users/membership/vip_info"
+///获取匿名用户的身份
+public let URL_iap_dientity                 = URL_Type + "users/apple/iap/ios/identity/init"
+
 //MARK: 餐食
 //添加餐食
 public let URL_meals_add                    = URL_Type + "plans/meals/add"

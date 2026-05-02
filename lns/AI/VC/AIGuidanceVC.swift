@@ -23,6 +23,7 @@ class AIGuidanceVC: WHBaseViewVC {
     private var mountedSteps = Set<FlowStep>()
     private let totalSteps = 6
     private var isSubmittingAICoachProfile = false
+    private var isBackButtonCoolingDown = false
 
     private lazy var sharedBackgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "ela_pro_ai_bg"))
@@ -64,6 +65,8 @@ class AIGuidanceVC: WHBaseViewVC {
         vm.backButton.isHidden = false
         vm.backTapBlock = {[weak self] in
             guard let self = self else { return }
+            guard !self.isBackButtonCoolingDown else { return }
+            self.startBackButtonCooldown()
             let currentStep = flowStep(for: self.currentIndex)
             if self.currentIndex == 0 || currentStep == .readyStart{
                 self.backTapAction()
@@ -136,6 +139,16 @@ class AIGuidanceVC: WHBaseViewVC {
 }
 
 extension AIGuidanceVC{
+    func startBackButtonCooldown() {
+        isBackButtonCoolingDown = true
+        naviVm.backButton.isEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            guard let self = self else { return }
+            self.isBackButtonCoolingDown = false
+            self.naviVm.backButton.isEnabled = true
+        }
+    }
+
     @objc func nextButtonTapAction() {
         guard let currentStep = flowStep(for: currentIndex) else {
             return
