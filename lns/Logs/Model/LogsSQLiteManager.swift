@@ -1164,7 +1164,7 @@ class LogsSQLiteManager {
                                             self.fatTarget<-fatTar,
                                             self.etime<-Date().currentSecondsUTC8,
                                             self.circle_tag<-circleTag))
-//                            DLLog(message:"更改目标值 success")
+                            DLLog(message:"更改目标值 success： \(self.sdate)")
                 postTodayLogsLocalDataDidChangeIfNeeded(sDate: sdate)
             } catch {
                 DLLog(message:"Unable to update logs details")

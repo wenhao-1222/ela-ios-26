@@ -451,6 +451,9 @@ class HealthKitManager: NSObject, ObservableObject {
             let message = responseObject["message"] as? String ?? ""
             completion?(code == 200 || message.contains("存在"))
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+            if sdate == Date().todayDate {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: nil)
+            }
         }
     }
 }

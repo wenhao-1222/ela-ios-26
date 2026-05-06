@@ -26,6 +26,30 @@ class DietPlanFoodsAddAlertVM: UIView {
     private var preparedDayIndex = 0
     private var preparedMealIndex = 0
     private var hasPreparedSelection = false
+    private var rangeStartDate = ""
+    private var rangeEndDate = ""
+    private lazy var dayCalendar: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = Locale(identifier: "en_US_POSIX")
+        calendar.timeZone = TimeZone.current
+        return calendar
+    }()
+    private lazy var inputDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone.current
+        return formatter
+    }()
+    private lazy var displayDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "M月d日"
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "zh_Hans_CN")
+        formatter.timeZone = TimeZone.current
+        return formatter
+    }()
     
     private var targetDimAlpha: CGFloat {
         if #available(iOS 13.0, *) {
@@ -95,7 +119,7 @@ class DietPlanFoodsAddAlertVM: UIView {
     
     lazy var titleLab: UILabel = {
         let label = UILabel()
-        label.text = "添加食谱到某餐"
+        label.text = "添加到日志"
         label.textColor = .COLOR_TEXT_TITLE_0f1214
         label.font = .systemFont(ofSize: 16, weight: .regular)
         return label
@@ -124,17 +148,19 @@ class DietPlanFoodsAddAlertVM: UIView {
 }
 
 extension DietPlanFoodsAddAlertVM {
-    func prepare(sdate: String, foodsArray: NSArray) {
+    func prepare(sdate: String, foodsArray: NSArray, startDate: String, endDate: String) {
         sourceFoodsArray = foodsArray
+        updateDateRange(startDate: startDate, endDate: endDate, defaultDate: sdate)
         refreshPicker(defaultDate: sdate)
     }
     
-    func preloadDefaultSelection(sdate: String) {
+    func preloadDefaultSelection(sdate: String, startDate: String, endDate: String) {
+        updateDateRange(startDate: startDate, endDate: endDate, defaultDate: sdate)
         if daysArray.count == 0 {
             buildDaysArray()
         }
         
-        let targetDate = normalizedDateString(sdate)
+        let targetDate = clampedDateString(for: normalizedDateString(sdate))
         preparedDate = targetDate
         preparedDayIndex = indexForDate(targetDate)
         let targetDay = daysArray[safeDayIndex(preparedDayIndex)] as? String ?? Date().nextDay(days: 0)
@@ -255,36 +281,42 @@ extension DietPlanFoodsAddAlertVM {
     
     func buildDaysArray() {
         let arr = NSMutableArray()
-        let baseDate = Date().nextDay(days: 0)
-        let minDay = Date().getLastYearsAgo(lastYears: -3)
-        let maxDay = Date().getLastYearsAgo(lastYears: 3)
+        let fallbackDay = Date().nextDay(days: 0)
+        let startString = normalizedRangeBoundary(rangeStartDate, fallbackDate: normalizedDateString(preparedDate))
+        let endString = normalizedRangeBoundary(rangeEndDate, fallbackDate: startString)
         
-        let minGapDays = Date().daysBetweenDate(toDate: minDay)
-        let maxGapDays = Date().daysBetweenDate(toDate: maxDay)
-        
-        todayIndex = abs(minGapDays)
-        
-        for i in minGapDays...maxGapDays+1 {
-            arr.add(Date().nextDay(days: i, baseDate: baseDate))
+        guard let start = date(from: startString),
+              let end = date(from: endString) else {
+            arr.add(fallbackDay)
+            todayIndex = 0
+            daysArray = arr
+            return
         }
         
+        let lowerDate = min(start, end)
+        let upperDate = max(start, end)
+        let dayCount = dayCalendar.dateComponents([.day], from: lowerDate, to: upperDate).day ?? 0
+        
+        for offset in 0...max(dayCount, 0) {
+            if let date = dayCalendar.date(byAdding: .day, value: offset, to: lowerDate) {
+                arr.add(inputDateFormatter.string(from: date))
+            }
+        }
+        
+        let todayString = Date().todayDate
+        todayIndex = indexForDate(todayString, in: arr)
         daysArray = arr
     }
     
     func ensurePreparedSelection(for sdate: String) {
-        let targetDate = normalizedDateString(sdate)
+        let targetDate = clampedDateString(for: normalizedDateString(sdate))
         if hasPreparedSelection == false || preparedDate != targetDate {
-            preloadDefaultSelection(sdate: targetDate)
+            preloadDefaultSelection(sdate: targetDate, startDate: rangeStartDate, endDate: rangeEndDate)
         }
     }
     
     func indexForDate(_ dateString: String) -> Int {
-        for index in 0..<daysArray.count {
-            if let day = daysArray[index] as? String, day == dateString {
-                return index
-            }
-        }
-        return min(max(todayIndex, 0), max(daysArray.count - 1, 0))
+        indexForDate(dateString, in: daysArray)
     }
     
     func normalizedDateString(_ dateString: String) -> String {
@@ -300,6 +332,30 @@ extension DietPlanFoodsAddAlertVM {
     func safeMealIndex(_ index: Int) -> Int {
         let maxIndex = max(mealsArray.count - 1, 0)
         return min(max(index, 0), maxIndex)
+    }
+    
+    func updateDateRange(startDate: String, endDate: String, defaultDate: String) {
+        let normalizedDefaultDate = normalizedDateString(defaultDate)
+        let normalizedStart = normalizedRangeBoundary(startDate, fallbackDate: normalizedDefaultDate)
+        let normalizedEnd = normalizedRangeBoundary(endDate, fallbackDate: normalizedStart)
+        let rangeChanged = normalizedStart != rangeStartDate || normalizedEnd != rangeEndDate
+        
+        rangeStartDate = normalizedStart
+        rangeEndDate = normalizedEnd
+        
+        if rangeChanged {
+            buildDaysArray()
+            hasPreparedSelection = false
+        } else if daysArray.count == 0 {
+            buildDaysArray()
+        }
+        
+        let clampedDefaultDate = clampedDateString(for: normalizedDefaultDate)
+        if preparedDate.isEmpty {
+            preparedDate = clampedDefaultDate
+        } else {
+            preparedDate = clampedDateString(for: preparedDate)
+        }
     }
 }
 
@@ -325,14 +381,7 @@ extension DietPlanFoodsAddAlertVM: UIPickerViewDelegate, UIPickerViewDataSource 
             let label = UILabel(frame: CGRect(x: 0, y: 0, width: kFitWidth(160), height: kFitWidth(45)))
             label.font = .systemFont(ofSize: 20, weight: .regular)
             label.textAlignment = .center
-            
-            if row == todayIndex {
-                label.text = "今天"
-            } else if row == todayIndex + 1 {
-                label.text = "明天"
-            } else {
-                label.text = daysArray[row] as? String ?? ""
-            }
+            label.text = displayText(for: daysArray[row] as? String ?? "")
             
             setUpPickerStyleRowStyle(row: row, component: component)
             return label
@@ -372,6 +421,65 @@ extension DietPlanFoodsAddAlertVM: UIPickerViewDelegate, UIPickerViewDataSource 
 }
 
 private extension DietPlanFoodsAddAlertVM {
+    func date(from dateString: String) -> Date? {
+        inputDateFormatter.date(from: dateString)
+    }
+    
+    func normalizedRangeBoundary(_ dateString: String, fallbackDate: String) -> String {
+        let normalized = normalizedDateString(dateString)
+        return date(from: normalized) == nil ? normalizedDateString(fallbackDate) : normalized
+    }
+    
+    func clampedDateString(for dateString: String) -> String {
+        guard daysArray.count > 0 else {
+            return normalizedDateString(dateString)
+        }
+        
+        let normalized = normalizedDateString(dateString)
+        guard let targetDate = date(from: normalized),
+              let firstDay = daysArray.firstObject as? String,
+              let lastDay = daysArray.lastObject as? String,
+              let firstDate = date(from: firstDay),
+              let lastDate = date(from: lastDay) else {
+            return daysArray.firstObject as? String ?? normalized
+        }
+        
+        if targetDate < firstDate {
+            return firstDay
+        }
+        
+        if targetDate > lastDate {
+            return lastDay
+        }
+        
+        return normalized
+    }
+    
+    func indexForDate(_ dateString: String, in source: NSArray) -> Int {
+        for index in 0..<source.count {
+            if let day = source[index] as? String, day == dateString {
+                return index
+            }
+        }
+        
+        return 0
+    }
+    
+    func displayText(for dateString: String) -> String {
+        if dateString == Date().todayDate {
+            return "今天"
+        }
+        
+        if dateString == Date().nextDay(days: 1) {
+            return "明天"
+        }
+        
+        guard let date = date(from: dateString) else {
+            return dateString
+        }
+        return displayDateFormatter.string(from: date)
+    }
+    
     func firstEmptyMealIndex(for sDate: String) -> Int {
         let mealCount = max(1, min(UserInfoModel.shared.mealsNumber, maxMealCount))
         let meals = targetMealsArray(for: sDate)

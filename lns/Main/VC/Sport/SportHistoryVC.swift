@@ -145,6 +145,10 @@ extension SportHistoryVC{
         timeButton.setImage(UIImage(named: "create_plan_arrow_down"), for: .normal)
         timeButton.imagePosition(style: .right, spacing: kFitWidth(5))
     }
+    func postTodayNutritionRefreshIfNeeded(sDate:String) {
+        guard sDate == Date().todayDate else { return }
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: nil)
+    }
 }
 
 extension SportHistoryVC{
@@ -259,6 +263,7 @@ extension SportHistoryVC:UITableViewDelegate,UITableViewDataSource{
                 if self.editModel.sdate == Date().todayDate{
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
                 }
+                self.postTodayNutritionRefreshIfNeeded(sDate: self.editModel.sdate)
                 self.dataSourceArray.remove(at: indexPath.row)
                 self.isDisplayArray.remove(at: indexPath.row)
                 self.tableView.deleteRows(at: [indexPath], with: .fade)
@@ -358,6 +363,7 @@ extension SportHistoryVC{
             if self.editModel.sdate == Date().todayDate{
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
             }
+            self.postTodayNutritionRefreshIfNeeded(sDate: self.editModel.sdate)
             WidgetUtils().reloadWidgetData()
             self.sendSportListRequest(animation: .middle)
 //            MCToast.mc_text("运动数据已修改！",respond: .allow)
@@ -372,6 +378,7 @@ extension SportHistoryVC{
             if self.editModel.sdate == Date().todayDate{
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
             }
+            self.postTodayNutritionRefreshIfNeeded(sDate: self.editModel.sdate)
             WidgetUtils().reloadWidgetData()
             self.sendSportListRequest(animation: .middle)
 //            MCToast.mc_text("运动数据已修改！",respond: .allow)

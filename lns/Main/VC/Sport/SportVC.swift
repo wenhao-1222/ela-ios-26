@@ -200,6 +200,10 @@ extension SportVC{
             self.itemVm.tableView.reloadData()
         }, completion: nil)
     }
+    func postTodayNutritionRefreshIfNeeded(sDate:String) {
+        guard sDate == Date().todayDate else { return }
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: "sport")
+    }
     @objc func popGestureAction(gesture:UIPanGestureRecognizer) {
         switch gesture.state {
         case .ended:
@@ -303,6 +307,7 @@ extension SportVC{
             self.sendSportListRequest()
             self.sendCatogaryListRequest()
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+            self.postTodayNutritionRefreshIfNeeded(sDate: self.dateFilterAlertVm.dateStringYear)
             WidgetUtils().reloadWidgetData()
             self.healthManager.authorizeHealthKitWorkouts { success, error in
                 if success {

@@ -342,13 +342,13 @@ class ElaProPriceVM: UIView {
         let lab = UILabel()
         lab.numberOfLines = 1
         lab.isUserInteractionEnabled = true
-        let allText = "已阅读并同意《ELA PRO条款》（含自动续费条款）"
+        let allText = "已阅读并同意《ELA PRO订阅条款》（含自动续费条款）"
         let attr = NSMutableAttributedString(string: allText)
         attr.addAttributes([
             .foregroundColor: subTextColor,
             .font: UIFont.systemFont(ofSize: 11, weight: .regular)
         ], range: NSRange(location: 0, length: allText.count))
-        if let range = allText.range(of: "《ELA PRO条款》") {
+        if let range = allText.range(of: "《ELA PRO订阅条款》") {
             let nsRange = NSRange(range, in: allText)
             attr.addAttributes([
                 .foregroundColor: selectedBlue
@@ -395,13 +395,13 @@ class ElaProPriceVM: UIView {
         lab.numberOfLines = 1
         lab.textAlignment = .center
         lab.isUserInteractionEnabled = true
-        let allText = "我已阅读并同意《ELA PRO条款》"
+        let allText = "我已阅读并同意《ELA PRO订阅条款》"
         let attr = NSMutableAttributedString(string: allText)
         attr.addAttributes([
             .foregroundColor: subTextColor,
             .font: UIFont.systemFont(ofSize: 15, weight: .regular)
         ], range: NSRange(location: 0, length: allText.count))
-        if let range = allText.range(of: "《ELA PRO条款》") {
+        if let range = allText.range(of: "《ELA PRO订阅条款》") {
             let nsRange = NSRange(range, in: allText)
             attr.addAttributes([
                 .foregroundColor: selectedBlue
@@ -534,7 +534,7 @@ extension ElaProPriceVM{
 
     private func didTapAgreementKeyword(in label: UILabel, gesture: UITapGestureRecognizer) -> Bool {
         guard let attributedText = label.attributedText, !attributedText.string.isEmpty else { return false }
-        let keyword = "《ELA PRO条款》"
+        let keyword = "《ELA PRO订阅条款》"
         let keywordRange = (attributedText.string as NSString).range(of: keyword)
         guard keywordRange.location != NSNotFound else { return false }
 
@@ -1932,9 +1932,9 @@ extension ElaProPriceVM{
                                           success: { [weak self] responseObject in
             guard let self = self else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
-            let rawProducts = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendProProductListRequest:\(rawProducts)")
-//            let rawProducts = (dataDict["products"] as? NSArray) ?? (dataDict["product"] as? NSArray) ?? []
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendProProductListRequest:\(dataDict)")
+            let rawProducts = (dataDict["productInfoList"] as? NSArray) ?? (dataDict["product"] as? NSArray) ?? []
             let products = rawProducts.compactMap { item -> RemotePlanProduct? in
                 guard let dict = item as? NSDictionary else { return nil }
                 return RemotePlanProduct(dict: dict)

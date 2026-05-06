@@ -13,6 +13,8 @@ class DietPlanVC: WHBaseViewVC {
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     var buylistData = NSArray()
     var buylistEndDate = ""
+    private var planStartDate = ""
+    private var planEndDate = ""
     private var shouldAnimatePlanListRefreshAfterCreateSuccess = false
     
     private lazy var buyListDateFormatter: DateFormatter = {
@@ -90,6 +92,8 @@ class DietPlanVC: WHBaseViewVC {
             let vc = DietPlanFoodsDetailVC()
             vc.mealId = meal.mealId
             vc.sdate = sdate
+            vc.planStartDate = self.planStartDate
+            vc.planEndDate = self.planEndDate
             self.navigationController?.pushViewController(vc, animated: true)
         }
         return vm
@@ -229,6 +233,9 @@ extension DietPlanVC{
     func applyDietPlanResponse(_ dataObj: NSDictionary, preservingListOffset: Bool = false) {
         let mealPlanItemList = dataObj["mealPlanItemList"] as? NSArray ?? []
         let status = dataObj.stringValueForKey(key: "status")
+        let planDateRange = dateRange(from: dataObj, mealPlanItemList: mealPlanItemList)
+        planStartDate = planDateRange.startDate
+        planEndDate = planDateRange.endDate
         let shouldAnimateListRefresh = shouldAnimatePlanListRefreshAfterCreateSuccess
         shouldAnimatePlanListRefreshAfterCreateSuccess = false
         
@@ -277,6 +284,32 @@ extension DietPlanVC{
             DLLog(message: "sendDietPlanMsgRequest:\(dataObj)")
             self.applyDietPlanResponse(dataObj)
         }
+    }
+
+    func dateRange(from dataObj: NSDictionary, mealPlanItemList: NSArray) -> (startDate: String, endDate: String) {
+        let responseStartDate = dataObj.stringValueForKey(key: "startDate")
+        let responseEndDate = dataObj.stringValueForKey(key: "endDate")
+        let listRange = dateRange(from: mealPlanItemList)
+        
+        let startDate = responseStartDate.isEmpty ? listRange.startDate : responseStartDate
+        let endDate = responseEndDate.isEmpty ? listRange.endDate : responseEndDate
+        
+        return (startDate, endDate)
+    }
+    
+    func dateRange(from mealPlanItemList: NSArray) -> (startDate: String, endDate: String) {
+        var dates: [String] = []
+        
+        for item in mealPlanItemList {
+            let dict = item as? NSDictionary ?? [:]
+            let sdate = dict.stringValueForKey(key: "sdate")
+            if buyListDateFormatter.date(from: sdate) != nil {
+                dates.append(sdate)
+            }
+        }
+        
+        let sortedDates = dates.sorted()
+        return (sortedDates.first ?? "", sortedDates.last ?? "")
     }
     func sendProVipMsgRequest() {
         WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { responseObject in

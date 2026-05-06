@@ -102,6 +102,8 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
     var sdate = ""
     var mealId = ""
     var replacePlanItemId = ""
+    var planStartDate = ""
+    var planEndDate = ""
     var replaceSuccessBlock: ((NSDictionary) -> Void)?
     
     private let imageHeight = kFitWidth(209)
@@ -929,11 +931,14 @@ private extension DietPlanFoodsDetailVC {
     }
     
     func preloadFoodsAddAlertSelectionIfNeeded() {
-        guard replacePlanItemId.isEmpty, sdate.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false else {
+        guard replacePlanItemId.isEmpty,
+              sdate.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false else {
             return
         }
         
-        foodsAddAlertVm.preloadDefaultSelection(sdate: sdate)
+        foodsAddAlertVm.preloadDefaultSelection(sdate: sdate,
+                                                startDate: planStartDate,
+                                                endDate: planEndDate)
     }
     
     func showFoodsAddAlert() {
@@ -942,7 +947,10 @@ private extension DietPlanFoodsDetailVC {
             appDelegate.getKeyWindow().addSubview(foodsAddAlertVm)
         }
         
-        foodsAddAlertVm.prepare(sdate: sdate, foodsArray: detailFoodsSource)
+        foodsAddAlertVm.prepare(sdate: sdate,
+                                foodsArray: detailFoodsSource,
+                                startDate: planStartDate,
+                                endDate: planEndDate)
         foodsAddAlertVm.showSelf()
     }
     

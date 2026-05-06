@@ -892,7 +892,7 @@ extension WHBaseViewVC {
         let caloriesText = model.caloriesNumber.isEmpty ? model.caloriesNumberFromServer : model.caloriesNumber
 
         guard
-            let carbohydrate = Int(model.carbohydratesNumber), carbohydrate > 0,
+            let carbohydrate = Int(model.carbohydratesNumber), carbohydrate >= 0,
             let protein = Int(model.proteinNumber), protein > 0,
             let fat = Int(model.fatsNumber), fat > 0,
             let calories = Int(caloriesText), calories > 0

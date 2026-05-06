@@ -14,6 +14,7 @@ class QuestionCustomItemVM: UIView {
     let selfHeight = kFitWidth(56)
     
     var maxLength = 3
+    var allowsLeadingZero = false
     
     var numberChangeBlock:((String)->())?
     
@@ -140,7 +141,7 @@ extension QuestionCustomItemVM:UITextFieldDelegate{
                 }
             }
             return true
-        }else if string == "0" && text.count == 0{
+        }else if string == "0" && text.count == 0 && !allowsLeadingZero{
             return false
         }
         // 检查输入的字符是否是数字

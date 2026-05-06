@@ -455,10 +455,13 @@ extension DietPlanCreateDateVC{
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendDietPlanMsgRequest:\(dataObj)")
             let updatedDates = LogsSQLiteManager.getInstance().applyDietPlanNutrientsTargets(dataObj["nutrientsTarget"] as? NSArray ?? [])
-            if !updatedDates.isEmpty {
+//            if !updatedDates.isEmpty {
+//                
+//                
+//            }
+            DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
-            }
-            
+            })
             self.createPlanLoadingVm.completeSuccess { [weak self] in
                 guard let self = self else { return }
                 self.isSubmittingCreatePlan = false

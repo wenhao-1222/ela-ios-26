@@ -86,6 +86,7 @@ class GuidanceFixedTargetNutritionGoalVM: UIView {
         let vm = QuestionCustomItemVM.init(frame: CGRect.init(x: 0, y: kFitWidth(114), width: kFitWidth(320), height: 0))
         vm.titleLabel.text = "碳水化合物"
         vm.textField.textContentType = nil
+//        vm.allowsLeadingZero = true
         
         vm.numberChangeBlock = {(number)in
             self.carNumber = Int(number) ?? 0
