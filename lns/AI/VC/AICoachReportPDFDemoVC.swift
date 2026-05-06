@@ -246,6 +246,13 @@ private extension AICoachReportPDFDemoVC {
             make.height.equalTo(statusBarHeight + kFitWidth(44) + kFitWidth(27))
         }
 
+        backArrowButton.snp.remakeConstraints { make in
+            make.left.equalToSuperview().offset(kFitWidth(2))
+            make.top.equalToSuperview().offset(statusBarHeight)
+            make.width.height.equalTo(kFitWidth(44))
+        }
+        topContainerView.bringSubviewToFront(backArrowButton)
+
 //        backButton.snp.makeConstraints { make in
 //            make.left.equalToSuperview().offset(20)
 //            make.top.equalToSuperview().offset(statusBarHeight + 18)

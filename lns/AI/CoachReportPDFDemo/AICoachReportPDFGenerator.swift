@@ -22,6 +22,7 @@ enum AICoachReportPDFGenerator {
     // 将整页渲染拆成更小的切片，避免主线程被一次性占满，
     // 让返回按钮和页面交互能在切片间隙及时得到处理。
     private static let renderTileHeight: CGFloat = 220
+    private static let cacheVersion = "v3"
     static let pageSize = layoutPageSize
 
     static func generateAsync(
@@ -68,6 +69,9 @@ enum AICoachReportPDFGenerator {
 
             if pageIndex >= pageStartOffsets.count {
                 writer.finish { result in
+                    if case .success(let fileURL) = result {
+                        writeCacheVersion(for: fileURL)
+                    }
                     finish(with: result)
                 }
                 return
@@ -114,6 +118,11 @@ enum AICoachReportPDFGenerator {
     static func existingCachedFileURL(report: AICoachReportDemoData, reportId: String) -> URL? {
         let fileURL = makeOutputURL(report: report, reportId: reportId)
         guard FileManager.default.fileExists(atPath: fileURL.path) else { return nil }
+        guard cachedVersion(for: fileURL) == cacheVersion else {
+            try? FileManager.default.removeItem(at: fileURL)
+            try? FileManager.default.removeItem(at: cacheVersionFileURL(for: fileURL))
+            return nil
+        }
         return fileURL
     }
 
@@ -219,7 +228,12 @@ enum AICoachReportPDFGenerator {
                 return
             }
 
-            let tileRect = CGRect(x: 0, y: tileOriginY, width: layoutPageSize.width, height: tileHeight)
+            let tileRect = CGRect(
+                x: 0,
+                y: layoutPageSize.height - tileOriginY - tileHeight,
+                width: layoutPageSize.width,
+                height: tileHeight
+            )
             writer.drawPageTile(cgImage, in: tileRect) { result in
                 switch result {
                 case .failure(let error):
@@ -297,6 +311,21 @@ enum AICoachReportPDFGenerator {
         }
         let stableName = makeStableFileName(report: report, reportId: reportId)
         return folderURL.appendingPathComponent("\(stableName).pdf")
+    }
+
+    private static func cacheVersionFileURL(for fileURL: URL) -> URL {
+        fileURL.deletingPathExtension().appendingPathExtension("version")
+    }
+
+    private static func cachedVersion(for fileURL: URL) -> String? {
+        guard let version = try? String(contentsOf: cacheVersionFileURL(for: fileURL), encoding: .utf8) else {
+            return nil
+        }
+        return version.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private static func writeCacheVersion(for fileURL: URL) {
+        try? cacheVersion.write(to: cacheVersionFileURL(for: fileURL), atomically: true, encoding: .utf8)
     }
 
     private static func makeStableFileName(report: AICoachReportDemoData, reportId: String) -> String {
