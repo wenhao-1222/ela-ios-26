@@ -123,7 +123,7 @@ class DietPlanBuyListDateVC: WHBaseViewVC {
     }()
     private lazy var nextButton: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.setTitle("新建购物清单", for: .normal)
+        btn.setTitle("生成购物清单", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         btn.backgroundColor = .COLOR_BUTTON_DISABLE_BG_THEME

@@ -229,9 +229,9 @@ extension LogsNaturalGoalVM{
 //                self.proteinCircleVm.totalNumberLabel.text = "/\(String(format: "%.0f", proteinTarget))g"
 //                self.fatCircleVm.totalNumberLabel.text = "/\(String(format: "%.0f", fatTarget))g"
                 self.caloriCircleVm.updateTotalNumber(text: "/\(caloriTarget+sportNumber)")
-                self.carboCircleVm.updateTotalNumber(text: "/\(String(format: "%.0f", carboTarget))g")
-                self.proteinCircleVm.updateTotalNumber(text: "/\(String(format: "%.0f", proteinTarget))g")
-                self.fatCircleVm.updateTotalNumber(text: "/\(String(format: "%.0f", fatTarget))g")
+                self.carboCircleVm.updateTotalNumber(text: "/\(Int(carboTarget.rounded()))g")
+                self.proteinCircleVm.updateTotalNumber(text: "/\(Int(proteinTarget.rounded()))g")
+                self.fatCircleVm.updateTotalNumber(text: "/\(Int(fatTarget.rounded()))g")
                 
                 self.caloriCircleVm.currentNumFloat = caloriTotal
                 self.carboCircleVm.currentNumFloat = carboTotal

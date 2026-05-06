@@ -1187,6 +1187,34 @@ class LogsSQLiteManager {
             self.insertLogs(sDate: sdate, calori: "", protein: "", carbohydrates: "", fats: "", notes: "", foods: "", caloriTar: caloriTar, proteinTar: proteinTar, carboTar: carbohydrateTar, fatsTar: fatTar, upload: true, eTime: Date().currentSecondsUTC8,circleTag: circleTag,fitnessTag: "", notesTag: "")
         }
     }
+    @discardableResult
+    func applyDietPlanNutrientsTargets(_ targets: NSArray) -> [String] {
+        var updatedDates: [String] = []
+        
+        for case let targetDict as NSDictionary in targets {
+            let sdate = targetDict.stringValueForKey(key: "sdate")
+            guard sdate.count > 0 else { continue }
+            
+            let caloriesTarget = targetDict.stringValueForKey(key: "caloriesDen")
+            let carbohydrateTarget = targetDict.stringValueForKey(key: "carbohydrateDen")
+            let proteinTarget = targetDict.stringValueForKey(key: "proteinDen")
+            let fatTarget = targetDict.stringValueForKey(key: "fatDen")
+            guard caloriesTarget.count > 0 || carbohydrateTarget.count > 0 || proteinTarget.count > 0 || fatTarget.count > 0 else {
+                continue
+            }
+            
+            let existingCircleTag = getLogsByDate(sDate: sdate)?.circleTag ?? ""
+            updateSingelDateGoal(caloriTar: caloriesTarget,
+                                 carbohydrateTar: carbohydrateTarget,
+                                 proteinTar: proteinTarget,
+                                 fatTar: fatTarget,
+                                 circleTag: existingCircleTag,
+                                 sdate: sdate)
+            updatedDates.append(sdate)
+        }
+        
+        return updatedDates
+    }
     func deleteAllData(){
         do {
             try db?.run(logs.delete())
