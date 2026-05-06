@@ -150,8 +150,8 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     lazy var paceVm: DietPlanCreatePaceSecondVM = {
         let vm = DietPlanCreatePaceSecondVM(frame: CGRect(x: SCREEN_WIDHT * CGFloat(visibleStepIndex(forBaseIndex: 5)), y: 0, width: 0, height: 0))
 //        vm.titleLabel.text = "你的增肌节奏需要改变吗？"
-        vm.selectedBlock = {()in
-            self.recommendIntakeVm.refreshContent()
+        vm.selectedBlock = { [weak self] in
+            self?.refreshRecommendIntakeForCurrentSelections()
         }
         return vm
     }()
@@ -595,15 +595,10 @@ extension DietPlanCreateSecondVC{
 //            dataString = "3200"
             DLLog(message: "sendBasicRequest:\(dataString ?? "")")
             let caloriesText = (dataString ?? "0").trimmingCharacters(in: .whitespacesAndNewlines)
-            QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
             QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
 
             DispatchQueue.main.async {
-                self.recommendIntakeVm.updateCalories(caloriesText)
-                self.mealModeVm.refreshOptions(caloriesText: caloriesText)
-                if !QuestinonaireMsgModel.shared.mealsPerDay.isEmpty {
-                    self.mealModeVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.mealsPerDay)
-                }
+                self.updateRecommendIntake(withBaseCaloriesText: caloriesText)
             }
         }
     }
@@ -652,6 +647,52 @@ extension DietPlanCreateSecondVC{
 }
 
 extension DietPlanCreateSecondVC {
+    func refreshRecommendIntakeForCurrentSelections() {
+        let baseCaloriesText = QuestinonaireMsgModel.shared.caloriesNumberFromServer.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !baseCaloriesText.isEmpty else {
+            recommendIntakeVm.refreshContent()
+            return
+        }
+        updateRecommendIntake(withBaseCaloriesText: baseCaloriesText)
+    }
+
+    func updateRecommendIntake(withBaseCaloriesText baseCaloriesText: String) {
+        let adjustedCaloriesText = adjustedRecommendCaloriesText(from: baseCaloriesText)
+        recommendIntakeVm.updateCalories(adjustedCaloriesText)
+        mealModeVm.refreshOptions(caloriesText: adjustedCaloriesText)
+        if !QuestinonaireMsgModel.shared.mealsPerDay.isEmpty {
+            mealModeVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.mealsPerDay)
+        }
+    }
+
+    func adjustedRecommendCaloriesText(from baseCaloriesText: String) -> String {
+        let trimmedCalories = baseCaloriesText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let baseCalories = Int(trimmedCalories),
+              let currentWeight = Double(QuestinonaireMsgModel.shared.weight.trimmingCharacters(in: .whitespacesAndNewlines)),
+              let targetWeight = Double(QuestinonaireMsgModel.shared.targetWeight.trimmingCharacters(in: .whitespacesAndNewlines)) else {
+            return trimmedCalories
+        }
+
+        if currentWeight == targetWeight {
+            return "\(baseCalories)"
+        }
+
+        let offset: Int
+        switch QuestinonaireMsgModel.shared.paceLevel.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+        case "1", "slight":
+            offset = 275
+        case "3", "major":
+            offset = 770
+        default:
+            offset = 495
+        }
+
+        if currentWeight > targetWeight {
+            return "\(baseCalories - offset)"
+        }
+        return "\(baseCalories + offset)"
+    }
+
     func applyDietQuestionnaireData(_ data: NSDictionary) {
         let model = QuestinonaireMsgModel.shared
         model.sex = normalizedGenderValue(stringValue(from: data["gender"]))

@@ -97,7 +97,7 @@ class MealsDetailsVC : WHBaseViewVC{
     }()
     lazy var remarkVm : LogsRemarkVM = {
         let vm = LogsRemarkVM.init(frame: CGRect.init(x: 0, y: kFitWidth(8), width: 0, height: 0))
-        vm.placeHoldLabel.text = "这里输入食谱制作教程"
+        vm.placeHoldLabel.text = "这里输入餐食制作教程"
         vm.tapBlock = {()in
 //            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "cancelEditStatus"), object: nil)
             self.remarkAlertVm.showView()
@@ -106,7 +106,7 @@ class MealsDetailsVC : WHBaseViewVC{
     }()
     lazy var remarkAlertVm : LogsRemarkAlertVM = {
         let vm = LogsRemarkAlertVM.init(frame: .zero)
-        vm.placeHoldLabel.text = "这里输入食谱制作教程"
+        vm.placeHoldLabel.text = "这里输入餐食制作教程"
         vm.remarkBlock = {(text)in
             self.remarkVm.updateContent(text: text)
             self.remark = text
@@ -319,11 +319,11 @@ extension MealsDetailsVC{
 extension MealsDetailsVC{
     @objc func submitAction() {
         if self.nameVm.textField.text?.count == 0 {
-            MCToast.mc_text("请输入食谱/餐食名称",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
+            MCToast.mc_text("请输入食谱名称",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
             return
         }
         if self.nameVm.textField.text?.count ?? 0 > 15 {
-            MCToast.mc_text("食谱/餐食名称不能超过15个字符",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
+            MCToast.mc_text("餐食名称不能超过15个字符",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
             return
         }
         self.nameVm.textField.resignFirstResponder()

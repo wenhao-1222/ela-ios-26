@@ -70,7 +70,7 @@ class MyFoodsListVC: WHBaseViewVC {
             let searchString = self.searchVm.textField.text?.replacingOccurrences(of: " ", with: "")
             self.mealsVm.isHidden = false
             self.createButton.setTitle("创建餐食", for: .normal)
-            self.searchVm.textField.placeholder = "请输入想要搜索的食谱/餐食"
+            self.searchVm.textField.placeholder = "请输入想要搜索的餐食"
         }
         return vm
     }()
