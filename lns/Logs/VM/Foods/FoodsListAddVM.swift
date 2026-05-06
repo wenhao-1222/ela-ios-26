@@ -134,7 +134,7 @@ class FoodsListAddVM: UIView {
         let btn = GJVerButtonNoneFeedBack()
 //        btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(86))
-        btn.setTitle("创建食谱", for: .normal)
+        btn.setTitle("创建餐食", for: .normal)
         btn.backgroundColor = .COLOR_CARD_BG_WHITE
         btn.enablePressEffect()
         btn.setImage(UIImage(named: "meals_create_icon")?.withTintColor(WHColor_16(colorStr: "2BA471")), for: .normal)

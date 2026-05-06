@@ -42,7 +42,8 @@ class MineFoodsTypeVM: UIView {
     lazy var myMealsButton: FeedBackButton = {
         let btn = FeedBackButton()
         btn.frame = CGRect.init(x: kFitWidth(92), y: 0, width: kFitWidth(128), height: selfHeight)
-        btn.setTitle("我的食谱/餐食", for: .normal)
+        btn.setTitle("我的食谱", for: .normal)
+//        btn.setTitle("我的食谱/餐食", for: .normal)
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .normal)
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .highlighted)
         btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .selected)

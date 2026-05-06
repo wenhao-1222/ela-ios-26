@@ -43,7 +43,7 @@ class MineVC : WHBaseViewVC {
         sendServiceWelcomeRequest()
         NotificationCenter.default.addObserver(self, selector: #selector(createPlan), name: NSNotification.Name(rawValue: "fullPlanSaveForMine"), object: nil)
     }
-    //MARK: 头像+我的目标、数据统计、食物/食谱、轻断食
+    //MARK: 头像+我的目标、数据统计、食物/餐食、轻断食
     lazy var personalTopVm: PersonalTopVM = {
         let vm = PersonalTopVM.init(frame: .zero)
         vm.goalVm.tapBlock = {()in

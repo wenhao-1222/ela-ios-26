@@ -7,6 +7,10 @@
 import Foundation
 import UIKit
 
+private final class DateChoicePickerLabel: UILabel {
+    var dateChoiceRow: Int = 0
+}
+
 class DateChoiceAlertVM: UIView {
     
     // MARK: - Public
@@ -35,6 +39,7 @@ class DateChoiceAlertVM: UIView {
     // MARK: - Private - UI
     
     private var whiteViewHeight: CGFloat = kFitWidth(430) + WHUtils().getBottomSafeAreaHeight()
+    private var pickerRowHeight: CGFloat { kFitWidth(52) }
     
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
@@ -130,6 +135,10 @@ class DateChoiceAlertVM: UIView {
         let today = Calendar.current.startOfDay(for: Date())
         return Calendar.current.date(byAdding: .day, value: 30, to: today) ?? today
     }()
+    
+    /// 记录用户当前意图选中的行，避免等待 picker 动画结束才更新结果。
+    private var cachedSelectedRow: Int?
+    private var tappedSelectedRow: Int?
     
     private let gregorianCalendar: Calendar = {
         var cal = Calendar(identifier: .gregorian)
@@ -324,6 +333,7 @@ class DateChoiceAlertVM: UIView {
     // MARK: - Action
     
     @objc func confirmAction() {
+        syncSelectionBeforeConfirm()
         let blockString = isWeekDay ? weekDay : dateString
         confirmBlock?(blockString)
         hiddenView()
@@ -408,9 +418,13 @@ class DateChoiceAlertVM: UIView {
         }
         
         if let row = dateList.firstIndex(where: { gregorianCalendar.isDate($0, inSameDayAs: finalDate) }) {
+            cachedSelectedRow = row
+            tappedSelectedRow = nil
             pickerView.selectRow(row, inComponent: 0, animated: animated)
             updateSelectedDate(dateList[row])
         } else {
+            cachedSelectedRow = 0
+            tappedSelectedRow = nil
             updateSelectedDate(dateList[0])
             pickerView.selectRow(0, inComponent: 0, animated: animated)
         }
@@ -434,6 +448,8 @@ class DateChoiceAlertVM: UIView {
             let fallback = gregorianCalendar.startOfDay(for: Date())
             dateList = [fallback]
             pickerView.reloadAllComponents()
+            cachedSelectedRow = 0
+            tappedSelectedRow = nil
             updateSelectedDate(fallback)
             pickerView.selectRow(0, inComponent: 0, animated: false)
             return
@@ -446,6 +462,31 @@ class DateChoiceAlertVM: UIView {
     private func updateSelectedDate(_ date: Date) {
         selectedDate = gregorianCalendar.startOfDay(for: date)
         changeDate(date: selectedDate)
+    }
+    
+    private func syncSelectionBeforeConfirm() {
+        guard let row = resolvedSelectedRowForConfirmation() else { return }
+        cachedSelectedRow = row
+        updateSelectedDate(dateList[row])
+    }
+    
+    private func resolvedSelectedRowForConfirmation() -> Int? {
+        guard !dateList.isEmpty else { return nil }
+        
+        if let row = tappedSelectedRow, dateList.indices.contains(row) {
+            return row
+        }
+        
+        if let row = visibleCenteredRow() {
+            return row
+        }
+        
+        if let row = cachedSelectedRow, dateList.indices.contains(row) {
+            return row
+        }
+        
+        let row = pickerView.selectedRow(inComponent: 0)
+        return dateList.indices.contains(row) ? row : nil
     }
     
     private func changeDate(date: Date) {
@@ -480,6 +521,45 @@ class DateChoiceAlertVM: UIView {
         }
         return "\(pickerTextFormatter.string(from: date)) \(weekdayString(from: date))"
     }
+    
+    private func cacheSelectedRowIfNeeded(_ row: Int, label: DateChoicePickerLabel) {
+        guard dateList.indices.contains(row) else { return }
+        let center = label.convert(CGPoint(x: label.bounds.midX, y: label.bounds.midY), to: pickerView)
+        if abs(center.y - pickerView.bounds.midY) <= pickerRowHeight * 0.5 {
+            cachedSelectedRow = row
+            updateSelectedDate(dateList[row])
+        }
+    }
+    
+    private func visibleCenteredRow() -> Int? {
+        let labels = pickerView.allSubviews.compactMap { $0 as? DateChoicePickerLabel }
+        guard !labels.isEmpty else { return nil }
+        
+        let pickerCenterY = pickerView.bounds.midY
+        let closestLabel = labels.min { lhs, rhs in
+            let lhsCenterY = lhs.convert(CGPoint(x: lhs.bounds.midX, y: lhs.bounds.midY), to: pickerView).y
+            let rhsCenterY = rhs.convert(CGPoint(x: rhs.bounds.midX, y: rhs.bounds.midY), to: pickerView).y
+            return abs(lhsCenterY - pickerCenterY) < abs(rhsCenterY - pickerCenterY)
+        }
+        
+        guard let row = closestLabel?.dateChoiceRow, dateList.indices.contains(row) else { return nil }
+        return row
+    }
+    
+    @objc private func rowLabelTapAction(_ gesture: UITapGestureRecognizer) {
+        guard let label = gesture.view as? DateChoicePickerLabel else { return }
+        let row = label.dateChoiceRow
+        guard dateList.indices.contains(row) else { return }
+        tappedSelectedRow = row
+        cachedSelectedRow = row
+        updateSelectedDate(dateList[row])
+    }
+}
+
+private extension UIView {
+    var allSubviews: [UIView] {
+        return subviews + subviews.flatMap { $0.allSubviews }
+    }
 }
 
 // MARK: - UIPickerViewDataSource
@@ -500,7 +580,7 @@ extension DateChoiceAlertVM: UIPickerViewDataSource {
 extension DateChoiceAlertVM: UIPickerViewDelegate {
     
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-        return kFitWidth(52)
+        return pickerRowHeight
     }
     
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
@@ -509,6 +589,8 @@ extension DateChoiceAlertVM: UIPickerViewDelegate {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         guard row >= 0, row < dateList.count else { return }
+        cachedSelectedRow = row
+        tappedSelectedRow = nil
         updateSelectedDate(dateList[row])
     }
     
@@ -528,17 +610,26 @@ extension DateChoiceAlertVM: UIPickerViewDelegate {
     
     /// 如果你想让选中行更接近截图里的大字号效果，可以用 viewForRow
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        let label: UILabel
-        if let reused = view as? UILabel {
+        let label: DateChoicePickerLabel
+        if let reused = view as? DateChoicePickerLabel {
             label = reused
         } else {
-            label = UILabel()
+            label = DateChoicePickerLabel()
             label.textAlignment = .center
+            label.isUserInteractionEnabled = true
+            let tap = UITapGestureRecognizer(target: self, action: #selector(rowLabelTapAction(_:)))
+            tap.cancelsTouchesInView = false
+            label.addGestureRecognizer(tap)
         }
         
+        label.dateChoiceRow = row
         label.font = .systemFont(ofSize: 18, weight: .regular)
         label.textColor = .COLOR_TEXT_TITLE_0f1214
         label.text = pickerDisplayString(for: dateList[row])
+        DispatchQueue.main.async { [weak self, weak label] in
+            guard let self = self, let label = label else { return }
+            self.cacheSelectedRowIfNeeded(row, label: label)
+        }
         
         return label
     }

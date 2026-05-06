@@ -9,6 +9,9 @@
 class DietPlanCondimentVC: WHBaseViewVC {
     private var sauceArray = NSArray()
     private var isLoading = true
+    private let recommendAlertShownKey = "dietplan_condiment_recommend_alert_shown"
+
+    private lazy var recommendAlertVM = DietPlanCondimentAlertVM(frame: .zero)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,6 +20,7 @@ class DietPlanCondimentVC: WHBaseViewVC {
         DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
             self.sendSauceListRequest()
         })
+        showRecommendAlertIfNeeded()
     }
     
     override func viewDidLayoutSubviews() {
@@ -114,6 +118,7 @@ extension DietPlanCondimentVC{
         view.addSubview(collectionView)
         view.addSubview(topGradientView)
         view.addSubview(bottomGradientView)
+        view.addSubview(recommendAlertVM)
         bottomGradientView.layer.addSublayer(bottomGradientLayer)
         topGradientView.layer.addSublayer(topGradientLayer)
 
@@ -140,6 +145,18 @@ extension DietPlanCondimentVC{
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview()
             make.height.equalTo(kFitWidth(35)+self.getTopSafeAreaHeight())
+        }
+    }
+
+    func showRecommendAlertIfNeeded() {
+        guard UserDefaults.standard.bool(forKey: recommendAlertShownKey) == false else { return }
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            guard UserDefaults.standard.bool(forKey: self.recommendAlertShownKey) == false else { return }
+
+            UserDefaults.standard.set(true, forKey: self.recommendAlertShownKey)
+            self.recommendAlertVM.showSelf()
         }
     }
 }

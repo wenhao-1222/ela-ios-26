@@ -923,6 +923,7 @@
 		EC6F55D82F67996E00EB18A5 /* DietPlanCreateSecondVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55D72F67995F00EB18A5 /* DietPlanCreateSecondVC.swift */; };
 		EC6F55DA2F67A29800EB18A5 /* DietPlanCondimentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55D92F67A29000EB18A5 /* DietPlanCondimentVC.swift */; };
 		EC6F55DC2F67A2AA00EB18A5 /* DietPlanCondimentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55DB2F67A2A200EB18A5 /* DietPlanCondimentCell.swift */; };
+		EC6F55EA2F9B0A0000EB18A5 /* DietPlanCondimentAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55E92F9B0A0000EB18A5 /* DietPlanCondimentAlertVM.swift */; };
 		EC6F55DD2F67CB4D00EB18A5 /* DietPlanCreateDateVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55DC2F67CB4800EB18A5 /* DietPlanCreateDateVM.swift */; };
 		EC6F55DF2F67D91200EB18A5 /* DietPlanCreatePaceSecondVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55DE2F67D90F00EB18A5 /* DietPlanCreatePaceSecondVM.swift */; };
 		EC6F55E12F67E70100EB18A5 /* DietPlanCreateRecommendIntakeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55E02F67E6FA00EB18A5 /* DietPlanCreateRecommendIntakeVM.swift */; };
@@ -2424,6 +2425,7 @@
 		EC6F55D72F67995F00EB18A5 /* DietPlanCreateSecondVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateSecondVC.swift; sourceTree = "<group>"; };
 		EC6F55D92F67A29000EB18A5 /* DietPlanCondimentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCondimentVC.swift; sourceTree = "<group>"; };
 		EC6F55DB2F67A2A200EB18A5 /* DietPlanCondimentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCondimentCell.swift; sourceTree = "<group>"; };
+		EC6F55E92F9B0A0000EB18A5 /* DietPlanCondimentAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCondimentAlertVM.swift; sourceTree = "<group>"; };
 		EC6F55DC2F67CB4800EB18A5 /* DietPlanCreateDateVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateDateVM.swift; sourceTree = "<group>"; };
 		EC6F55DE2F67D90F00EB18A5 /* DietPlanCreatePaceSecondVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreatePaceSecondVM.swift; sourceTree = "<group>"; };
 		EC6F55E02F67E6FA00EB18A5 /* DietPlanCreateRecommendIntakeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateRecommendIntakeVM.swift; sourceTree = "<group>"; };
@@ -5162,6 +5164,7 @@
 				ECB0F00E2F6291A100056D6A /* DietPlanBuyListDateCell.swift */,
 				ECB0F0122F62A3B700056D6A /* DietPlanBuyListFoodsCell.swift */,
 				EC6F55DB2F67A2A200EB18A5 /* DietPlanCondimentCell.swift */,
+				EC6F55E92F9B0A0000EB18A5 /* DietPlanCondimentAlertVM.swift */,
 				EC6ED3082F63BF4600DF53D6 /* DietPlanFoodsChangeCell.swift */,
 				F0A1D0012F63E10000AADD11 /* DietPlanFoodsAddAlertVM.swift */,
 				EC31C3332F8F360B00F435BF /* PlanMainDayHeaderView.swift */,
@@ -6646,6 +6649,7 @@
 				ECA8BF042F511E93007E240E /* DietPlanCreateKetoHistoryVM.swift in Sources */,
 				ECA8BF062F512300007E240E /* DietPlanCreateFlavorVM.swift in Sources */,
 				ECA8BF082F512A10007E240E /* DietPlanCreateTargetWeightVM.swift in Sources */,
+				EC6F55EA2F9B0A0000EB18A5 /* DietPlanCondimentAlertVM.swift in Sources */,
 				ECF9D1042F50AA1100A1B2C3 /* DietPlanCreatePaceVM.swift in Sources */,
 				A77A37182CBD095B00ED4DD0 /* LogsTimeAlertVM.swift in Sources */,
 				ECD89EF62BDF9B3800EF89A6 /* JournalShareVC.swift in Sources */,

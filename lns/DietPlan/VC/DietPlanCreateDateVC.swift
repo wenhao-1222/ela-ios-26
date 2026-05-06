@@ -48,7 +48,8 @@ class DietPlanCreateDateVC: WHBaseViewVC {
     
     private lazy var displayFormatter: DateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd"
+//        formatter.dateFormat = "yyyy.MM.dd"
+        formatter.dateFormat = "M月dd日"
         formatter.calendar = Calendar(identifier: .gregorian)
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
