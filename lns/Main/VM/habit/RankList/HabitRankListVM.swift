@@ -739,6 +739,7 @@ extension HabitRankListVM {
 
         let lower = min(oldIndex, newIndex)
         let upper = max(oldIndex, newIndex)
+        let changedSections = IndexSet(integersIn: lower...upper)
         for sourceSection in lower...upper {
             guard sourceSection != oldIndex else {
                 continue
@@ -817,6 +818,7 @@ extension HabitRankListVM {
         let landingDuration: TimeInterval = 0.18
         let liftedTransform = CGAffineTransform(translationX: 0, y: -kFitWidth(6))
             .scaledBy(x: 1.02, y: 1.02)
+        let liftedVisualView = movingBundle.cardView ?? movingBundle.mirrorCell
 
         let updateLiftedStyle: (Bool) -> Void = { lifted in
             let targetCornerRadius = lifted ? CGFloat(0) : kFitWidth(12)
@@ -839,13 +841,13 @@ extension HabitRankListVM {
 
             UIView.performWithoutAnimation {
                 self.displayedDataArray = finalDataArray
-                self.tableView.reloadData()
+                self.tableView.reloadSections(changedSections, with: .none)
                 self.tableView.layoutIfNeeded()
                 self.tableView.setContentOffset(endOffset, animated: false)
                 self.tableView.layoutIfNeeded()
             }
 
-            self.animateVisibleRankRefresh()
+            self.animateVisibleRankRefresh(changedSections: changedSections)
 
             UIView.animate(withDuration: 0.18,
                            delay: 0,
@@ -883,7 +885,7 @@ extension HabitRankListVM {
                 UIView.animate(withDuration: landingDuration,
                                delay: 0,
                                options: [.curveEaseOut, .beginFromCurrentState]) {
-                    movingView.transform = .identity
+                    liftedVisualView.transform = .identity
                     updateLiftedStyle(false)
                 } completion: { _ in
                     finishAnimation()
@@ -897,7 +899,7 @@ extension HabitRankListVM {
             UIView.animate(withDuration: liftDuration,
                            delay: 0,
                            options: [.curveEaseOut, .beginFromCurrentState]) {
-                movingView.transform = liftedTransform
+                liftedVisualView.transform = liftedTransform
                 updateLiftedStyle(true)
             } completion: { _ in
                 startMoveStage()
@@ -1038,9 +1040,13 @@ extension HabitRankListVM {
         return (outer, inner, outer, mirror)
     }
 
-    private func animateVisibleRankRefresh() {
+    private func animateVisibleRankRefresh(changedSections: IndexSet) {
         let visibleRankCells = tableView.visibleCells
             .compactMap { $0 as? HabitRankTableViewCell }
+            .filter { cell in
+                guard let section = tableView.indexPath(for: cell)?.section else { return false }
+                return changedSections.contains(section)
+            }
             .sorted { lhs, rhs in
                 let lhsSection = tableView.indexPath(for: lhs)?.section ?? 0
                 let rhsSection = tableView.indexPath(for: rhs)?.section ?? 0
