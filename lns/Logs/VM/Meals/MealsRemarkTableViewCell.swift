@@ -41,7 +41,7 @@ class MealsRemarkTableViewCell: UITableViewCell {
     }()
     lazy var placeHoldLabel: UILabel = {
         let lab = UILabel()//.init(frame: CGRect.init(x: kFitWidth(16), y: kFitWidth(14), width: kFitWidth(200), height: kFitWidth(20)))
-        lab.text = "这里输入餐食制作教程"
+        lab.text = "这里输入食谱制作教程"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_25//WHColorWithAlpha(colorStr: "000000", alpha: 0.25)
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         return lab

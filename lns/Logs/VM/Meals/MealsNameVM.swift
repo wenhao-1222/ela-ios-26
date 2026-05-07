@@ -35,7 +35,7 @@ class MealsNameVM: UIView {
     }()
     lazy var titleLab: UILabel = {
         let lab = UILabel()
-        lab.text = "食谱名称"
+        lab.text = "食谱/餐食名称"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         
@@ -43,7 +43,7 @@ class MealsNameVM: UIView {
     }()
     lazy var textField : ChineseTextField = {
         let text = ChineseTextField()
-        text.placeholder = "食谱名称15字以内"
+        text.placeholder = "食谱/餐食名称15字以内"
         text.font = .systemFont(ofSize: 16, weight: .medium)
         text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.returnKeyType = .search

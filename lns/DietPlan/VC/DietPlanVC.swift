@@ -30,6 +30,7 @@ class DietPlanVC: WHBaseViewVC {
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_DIET_PLAN_CREATE_SUCCESS, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_DIET_PLAN_BUY_LIST_CREATE_SUCCESS, object: nil)
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -63,6 +64,10 @@ class DietPlanVC: WHBaseViewVC {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(markPlanListRefreshAfterCreateSuccess),
                                                name: NOTIFI_NAME_DIET_PLAN_CREATE_SUCCESS,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshBuyListAfterCreateSuccess),
+                                               name: NOTIFI_NAME_DIET_PLAN_BUY_LIST_CREATE_SUCCESS,
                                                object: nil)
         sendDietPlanMsgRequest()
     }
@@ -124,6 +129,16 @@ extension DietPlanVC{
 
     @objc func markPlanListRefreshAfterCreateSuccess() {
         shouldAnimatePlanListRefreshAfterCreateSuccess = true
+        resetBuyListCache()
+    }
+    
+    @objc func refreshBuyListAfterCreateSuccess() {
+        sendBuyListRequest()
+    }
+
+    func resetBuyListCache() {
+        buylistData = []
+        buylistEndDate = ""
     }
     
     func ensureValidVipForMealAction() -> Bool {

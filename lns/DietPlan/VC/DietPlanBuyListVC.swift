@@ -357,6 +357,7 @@ extension DietPlanBuyListVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "createBuyListRequest:\(dataObj)")
+            NotificationCenter.default.post(name: NOTIFI_NAME_DIET_PLAN_BUY_LIST_CREATE_SUCCESS, object: nil)
             
             self.prepareTimeLabelFadeInIfNeeded()
             self.prepareTipsLabelFadeInIfNeeded()

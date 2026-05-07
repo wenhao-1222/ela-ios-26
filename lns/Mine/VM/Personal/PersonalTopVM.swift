@@ -139,7 +139,7 @@ class PersonalTopVM: UIView {
     lazy var mealVm: PersonalTopItemVM = {
         let vm = PersonalTopItemVM.init(frame: CGRect.init(x: self.statVm.frame.maxX, y: 0, width: 0, height: 0))
         vm.iconImgView.setImgLocal(imgName: "mine_func_meal")
-        vm.titleLab.text = "食物/餐食"
+        vm.titleLab.text = "食物/食谱"
         return vm
     }()
 //    lazy var fastingVm: PersonalTopItemVM = {

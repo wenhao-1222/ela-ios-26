@@ -17,6 +17,8 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private var aiCoachIntensityPreference: Int = 0
     private var isUpdatingAICoachProfile = false
     private var coachLaunchRefreshTimer: Timer?
+    private var hasPlayedEntranceAnimation = false
+    private var isPlayingEntranceAnimation = false
     
     private lazy var preDaysVM: AICoachPreDaysVM = {
         let view = AICoachPreDaysVM(frame: .zero)
@@ -66,6 +68,11 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         trimNavigationStackToRootAndSelfIfNeeded()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        startEntranceAnimationIfNeeded()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -172,6 +179,7 @@ extension AICoachPreVC{
         view.addSubview(katchAlertVm)
         
         setConstrait()
+        prepareEntranceAnimation()
     }
     func setConstrait() {
         tipsButton.snp.makeConstraints { make in
@@ -273,7 +281,7 @@ private extension AICoachPreVC {
 
     func updatePreDaysUI(dataDict: NSDictionary) {
         self.dataDict = dataDict
-        nextButton.isHidden = dataDict.stringValueForKey(key: "has7CompleteDays") == "0"
+//        nextButton.isHidden = dataDict.stringValueForKey(key: "has7CompleteDays") == "0"
         let latestReportDict = dataDict["latestReport"]as? NSDictionary ?? [:]
         
         //报告生成中
@@ -298,10 +306,8 @@ private extension AICoachPreVC {
         }else{
             stopCoachLaunchRefreshTimer()
         }
-        
-        UIView.animate(withDuration: 0.35) {
-            self.nextButton.alpha = 1
-        }
+
+//        updateNextButtonVisibility(animated: hasPlayedEntranceAnimation && !isPlayingEntranceAnimation)
         
         self.reportId = latestReportDict.stringValueForKey(key: "id")
         let reportStatus = latestReportDict.stringValueForKey(key: "reportStatus").intValue
@@ -454,5 +460,97 @@ private extension AICoachPreVC {
         let alertVc = UIAlertController(title: message, message: nil, preferredStyle: .alert)
         alertVc.addAction(UIAlertAction(title: "确定", style: .cancel))
         present(alertVc, animated: true)
+    }
+}
+
+private extension AICoachPreVC {
+    func prepareEntranceAnimation() {
+        let initialTransform = CGAffineTransform(translationX: 0, y: -kFitWidth(12))
+        circleImgView.alpha = 0
+        circleImgView.transform = initialTransform
+        preDaysVM.alpha = 0
+        preDaysVM.transform = initialTransform
+        preInfoVM.alpha = 0
+        preInfoVM.transform = initialTransform
+        infoSelectPopupVM.alpha = 0
+        infoSelectPopupVM.transform = initialTransform
+        nextButton.isHidden = true
+        nextButton.alpha = 0
+//        nextButton.transform = initialTransform
+    }
+
+    func startEntranceAnimationIfNeeded() {
+        guard hasPlayedEntranceAnimation == false else { return }
+        hasPlayedEntranceAnimation = true
+        isPlayingEntranceAnimation = true
+        view.layoutIfNeeded()
+
+        animateEntrance(view: circleImgView, duration: 0.75, delay: 0) { [weak self] in
+            guard let self = self else { return }
+            self.animateEntrance(view: self.preDaysVM, duration: 0.75, delay: 0.32) { [weak self] in
+                guard let self = self else { return }
+                self.animateEntrance(view: self.preInfoVM, duration: 0.75, delay: 0.25) { [weak self] in
+                    guard let self = self else { return }
+                    self.animateEntrance(view: self.infoSelectPopupVM, duration: 0.75, delay: 0.25) { [weak self] in
+                        guard let self = self else { return }
+                        let shouldShowNextButton = self.shouldShowNextButton
+                        if shouldShowNextButton {
+                            self.nextButton.isHidden = false
+                        }
+                        self.animateEntrance(view: self.nextButton,
+                                             duration: 0.7,
+                                             delay: 0.25,
+                                             shouldFadeIn: shouldShowNextButton) { [weak self] in
+                            self?.isPlayingEntranceAnimation = false
+                            self?.updateNextButtonVisibility(animated: false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func animateEntrance(view: UIView,
+                         duration: TimeInterval,
+                         delay: TimeInterval,
+                         shouldFadeIn: Bool = true,
+                         completion: (() -> Void)? = nil) {
+        UIView.animate(withDuration: duration,
+                       delay: delay,
+                       options: .curveLinear) {
+            view.transform = .identity
+            if shouldFadeIn {
+                view.alpha = 1
+            }
+        } completion: { _ in
+            if shouldFadeIn == false {
+                view.alpha = 0
+            }
+            completion?()
+        }
+    }
+
+    func updateNextButtonVisibility(animated: Bool) {
+        let shouldShow = shouldShowNextButton
+        let targetAlpha: CGFloat = shouldShow ? 1 : 0
+        guard animated else {
+            nextButton.isHidden = !shouldShow
+            nextButton.alpha = targetAlpha
+            return
+        }
+        if shouldShow {
+            nextButton.isHidden = false
+        }
+        UIView.animate(withDuration: 0.35) {
+            self.nextButton.alpha = targetAlpha
+        } completion: { _ in
+            if shouldShow == false {
+                self.nextButton.isHidden = true
+            }
+        }
+    }
+
+    var shouldShowNextButton: Bool {
+        dataDict.stringValueForKey(key: "has7CompleteDays") != "0"
     }
 }

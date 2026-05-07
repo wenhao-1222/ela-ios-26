@@ -27,5 +27,7 @@ public let  NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS = NSNotification.Name(rawValue:
 public let  NOTIFI_NAME_REFRESH_VIP_STATUS = NSNotification.Name(rawValue: "refresh_vip_status")
 // 二次创建食谱成功后，返回食谱页时让旧列表先淡出
 public let  NOTIFI_NAME_DIET_PLAN_CREATE_SUCCESS = NSNotification.Name(rawValue: "diet_plan_create_success")
+// 生成购物清单成功后，刷新食谱页购物清单缓存
+public let  NOTIFI_NAME_DIET_PLAN_BUY_LIST_CREATE_SUCCESS = NSNotification.Name(rawValue: "diet_plan_buy_list_create_success")
 ///添加地址成功
 public let  NOTIFI_NAME_ADD_ADDRESS = NSNotification.Name(rawValue: "add_address")
