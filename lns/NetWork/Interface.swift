@@ -173,6 +173,8 @@ public let URL_pro_iap_query                = URL_Type + "users/apple/iap/order/
 public let URL_pro_info                     = URL_Type + "users/membership/vip_info"
 ///获取匿名用户的身份
 public let URL_iap_dientity                 = URL_Type + "users/apple/iap/ios/identity/init"
+///绑定匿名身份到当前账号
+public let URL_iap_dientity_bind            = URL_Type + "users/apple/iap/bindAnonymous"
 
 //MARK: 餐食
 //添加餐食

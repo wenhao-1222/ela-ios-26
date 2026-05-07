@@ -22,7 +22,18 @@ class HabitVC: WHBaseViewVC {
     lazy var topTypeVm: HabitTopTypeVM = {
         let vm = HabitTopTypeVM.init(frame: .zero)
         vm.typeChangeBlock = {(pageIndex)in
-            self.scrollViewBase.setContentOffset(CGPoint.init(x: SCREEN_WIDHT*pageIndex, y: 0), animated: true)
+            let targetOffset = CGPoint.init(x: SCREEN_WIDHT*pageIndex, y: 0)
+            if pageIndex == 1 {
+                self.topTypeVm.isUserInteractionEnabled = false
+                self.scrollViewBase.isUserInteractionEnabled = false
+                self.rankListVm.prepareLeaderboardForDisplay {
+                    self.scrollViewBase.setContentOffset(targetOffset, animated: true)
+                    self.scrollViewBase.isUserInteractionEnabled = true
+                    self.topTypeVm.isUserInteractionEnabled = true
+                }
+            }else{
+                self.scrollViewBase.setContentOffset(targetOffset, animated: true)
+            }
         }
         return vm
     }()
@@ -116,6 +127,21 @@ extension HabitVC{
 }
 
 extension HabitVC:UIScrollViewDelegate{
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                   withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        guard scrollView === scrollViewBase,
+              targetContentOffset.pointee.x > SCREEN_WIDHT * 0.5,
+              !rankListVm.isCurrentlyVisible else {
+            return
+        }
+
+        targetContentOffset.pointee = CGPoint(x: 0, y: targetContentOffset.pointee.y)
+        rankListVm.prepareLeaderboardForDisplay {
+            self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: true)
+        }
+    }
+
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         adjustPageState(for: scrollView)
     }

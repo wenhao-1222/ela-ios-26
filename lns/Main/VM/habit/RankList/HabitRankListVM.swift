@@ -5,6 +5,8 @@
 //  Created by LNS2 on 2025/12/30.
 //
 
+import Kingfisher
+
 
 class HabitRankListVM: UIView {
     
@@ -31,6 +33,9 @@ class HabitRankListVM: UIView {
     
     private var rankMoveAnimator: UIViewPropertyAnimator?
     private var isRankMoveAnimating = false
+    private var leaderboardRequestID = UUID()
+    private var pendingRankMoveFromIndex: Int?
+    private var pendingRankMoveToIndex: Int?
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -211,7 +216,9 @@ extension HabitRankListVM{
 //                }
 //            }
             showSettlementIfNeeded()
-            sendDataRequest(animateSelfChange: true)
+            playPreparedRankMoveIfNeeded()
+        }else if !isVisible {
+            isCurrentlyVisible = false
         }
     }
     private func showSettlementIfNeeded() {
@@ -224,6 +231,122 @@ extension HabitRankListVM{
         UIView.animate(withDuration: 0.15) {
             self.settlementVm.alpha = 1
         }
+    }
+
+    private func reloadLeaderboardAfterPreparingAvatars(completion: (() -> Void)? = nil) {
+        preloadLeaderboardAvatars(in: displayedDataArray) { [weak self] in
+            guard let self = self else { return }
+
+            UIView.performWithoutAnimation {
+                self.tableView.reloadData()
+                self.tableView.layoutIfNeeded()
+            }
+            completion?()
+        }
+    }
+
+    private func preloadLeaderboardAvatars(in leaderboard: NSArray,
+                                           completion: @escaping () -> Void) {
+        var seenURLs = Set<String>()
+        var avatarURLs: [String] = []
+
+        for element in leaderboard {
+            guard let dict = element as? NSDictionary else { continue }
+            let avatarURL = dict.stringValueForKey(key: "headimgurl")
+            guard avatarURL.count > 0,
+                  !seenURLs.contains(avatarURL) else {
+                continue
+            }
+            seenURLs.insert(avatarURL)
+            avatarURLs.append(avatarURL)
+        }
+
+        guard avatarURLs.count > 0 else {
+            DispatchQueue.main.async {
+                completion()
+            }
+            return
+        }
+
+        let group = DispatchGroup()
+        var preloaders: [UIImageView] = []
+
+        for avatarURL in avatarURLs {
+            group.enter()
+            let preloader = UIImageView()
+            preloaders.append(preloader)
+            preloader.setImgUrlWithComplete(urlString: avatarURL) {
+                group.leave()
+            }
+        }
+
+        var didFinish = false
+        let finishOnce = {
+            guard !didFinish else { return }
+            didFinish = true
+            _ = preloaders
+            completion()
+        }
+
+        group.notify(queue: .main) {
+            finishOnce()
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            finishOnce()
+        }
+    }
+
+    private func nextLeaderboardRequestID() -> UUID {
+        let requestID = UUID()
+        leaderboardRequestID = requestID
+        return requestID
+    }
+
+    func prepareLeaderboardForDisplay(completion: (() -> Void)? = nil) {
+        sendDataRequest(animateSelfChange: true, completion: completion)
+    }
+
+    private func setPendingRankMove(from oldIndex: Int?, to newIndex: Int?) {
+        guard let oldIndex = oldIndex,
+              let newIndex = newIndex,
+              oldIndex != newIndex else {
+            pendingRankMoveFromIndex = nil
+            pendingRankMoveToIndex = nil
+            return
+        }
+
+        pendingRankMoveFromIndex = oldIndex
+        pendingRankMoveToIndex = newIndex
+    }
+
+    private func scrollRankCellToMiddleIfPossible(section: Int?) {
+        guard let section = section,
+              displayedDataArray.count > 0 else {
+            return
+        }
+
+        let targetSection = min(max(0, section), displayedDataArray.count - 1)
+        let indexPath = IndexPath(row: 0, section: targetSection)
+
+        UIView.performWithoutAnimation {
+            tableView.layoutIfNeeded()
+            let rect = tableView.rectForRow(at: indexPath)
+            let offset = endContentOffsetToShow(rect: rect, position: .middle)
+            tableView.setContentOffset(offset, animated: false)
+            tableView.layoutIfNeeded()
+        }
+    }
+
+    private func playPreparedRankMoveIfNeeded() {
+        guard let fromIndex = pendingRankMoveFromIndex,
+              let toIndex = pendingRankMoveToIndex else {
+            return
+        }
+
+        pendingRankMoveFromIndex = nil
+        pendingRankMoveToIndex = nil
+        performSelfRankMove(from: fromIndex, to: toIndex)
     }
 }
 extension HabitRankListVM:UITableViewDelegate,UITableViewDataSource{
@@ -331,15 +454,6 @@ extension HabitRankListVM{
 
         return dict.stringValueForKey(key: "uid")
     }
-    private func currentUserEntry(in leaderboard: NSArray) -> NSDictionary? {
-        guard let index = indexOfCurrentUser(in: leaderboard),
-              index >= 0,
-              index < leaderboard.count else {
-            return nil
-        }
-
-        return leaderboard.object(at: index) as? NSDictionary
-    }
     private func transitionDisplayArray(for leaderboard: NSArray,
                                         previousIndex: Int?,
                                         newIndex: Int?,
@@ -446,8 +560,6 @@ extension HabitRankListVM{
                 return
             }
 
-            let avatarImage = (self.tableView.cellForRow(at: fromIndexPath) as? HabitRankTableViewCell)?.currentAvatarImage()
-
 //            DispatchQueue.main.asyncAfter(deadline: .now()+3, execute: {
 //                self.animateHighlightMove3Stage(from: oldIndex,
 //                                                to: newIndex,
@@ -458,7 +570,7 @@ extension HabitRankListVM{
                 self.animateHighlightMove3Stage(from: oldIndex,
                                                 to: newIndex,
                                                 extraVertical: 0,
-                                                avatarOverride: avatarImage)
+                                                avatarOverride: nil)
             }
         }
     }
@@ -989,15 +1101,16 @@ extension HabitRankListVM {
         mirror.frame = CGRect(x: 0, y: 0, width: cellWidth, height: cellHeight)
         mirror.isUserInteractionEnabled = false
 
+        let avatarURL = dict.stringValueForKey(key: "headimgurl")
         mirror.configure(rank: "\(displayRank)",
-                         avatar: dict.stringValueForKey(key: "headimgurl"),
+                         avatar: avatarURL,
                          name: dict.stringValueForKey(key: "nickname"),
                          fireCount: dict.stringValueForKey(key: "donateCount").intValue,
                          score: dict.stringValueForKey(key: "rankPointBalance"),
                          needAvatarTransition: false,
                          isCurrentUser: isCurrentUser(dict))
 
-        if let image = avatarOverride ?? baseCell?.currentAvatarImage() {
+        if let image = ImageCache.default.retrieveImageInMemoryCache(forKey: avatarURL) ?? avatarOverride ?? baseCell?.currentAvatarImage() {
             mirror.applyAvatarImage(image)
         }
 
@@ -1216,11 +1329,13 @@ extension HabitRankListVM{
 }
 
 extension HabitRankListVM{
-    func sendDataRequest(animateSelfChange: Bool = false){
+    func sendDataRequest(animateSelfChange: Bool = false,
+                         completion: (() -> Void)? = nil){
         let previousLeaderboard = displayedDataArray.count > 0 ? displayedDataArray : dataSourceArray
         let previousSelfIndex = indexOfCurrentUser(in: previousLeaderboard)
-        let preservedSelfEntry = animateSelfChange ? currentUserEntry(in: previousLeaderboard) : nil
+        let requestID = nextLeaderboardRequestID()
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
+            guard self.leaderboardRequestID == requestID else { return }
             
             let code = responseObject["code"]as? Int ?? -1
             if code == 200 {
@@ -1247,44 +1362,61 @@ extension HabitRankListVM{
                         self.displayedDataArray = self.transitionDisplayArray(for: self.dataSourceArray,
                                                                              previousIndex: previousSelfIndex,
                                                                              newIndex: newIndex,
-                                                                             preservedSelfEntry: preservedSelfEntry)
-                        self.tableView.reloadData()
-                        self.tableView.layoutIfNeeded()
-                        self.performSelfRankMove(from: previousSelfIndex, to: newIndex)
+                                                                             preservedSelfEntry: nil)
+                        self.reloadLeaderboardAfterPreparingAvatars {
+                            self.setPendingRankMove(from: previousSelfIndex, to: newIndex)
+                            self.scrollRankCellToMiddleIfPossible(section: previousSelfIndex ?? newIndex)
+                            completion?()
+                        }
                     }else{
                         self.displayedDataArray = self.dataSourceArray
-                        self.tableView.reloadData()
-                        guard let oldIndex = previousSelfIndex,
-                              self.displayedDataArray.count > 0 else { return  }
-                        let targetSection = min(max(0, oldIndex), self.displayedDataArray.count - 1)
-                        let fromIndexPath = IndexPath(row: 0, section: targetSection)
-                        
-                        self.tableView.layoutIfNeeded()
-                        self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: true)
-                        self.tableView.layoutIfNeeded()
+                        self.reloadLeaderboardAfterPreparingAvatars {
+                            guard let oldIndex = previousSelfIndex,
+                                  self.displayedDataArray.count > 0 else {
+                                completion?()
+                                return
+                            }
+                            let targetSection = min(max(0, oldIndex), self.displayedDataArray.count - 1)
+                            let fromIndexPath = IndexPath(row: 0, section: targetSection)
+
+                            self.tableView.layoutIfNeeded()
+                            self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: true)
+                            self.tableView.layoutIfNeeded()
+                            completion?()
+                        }
                     }
                 }else{
                     self.dataSourceArray = NSArray()
                     self.cacheLeaderboard(self.dataSourceArray)
                     self.displayedDataArray = self.dataSourceArray
-                    self.tableView.reloadData()
+                    UIView.performWithoutAnimation {
+                        self.tableView.reloadData()
+                        self.tableView.layoutIfNeeded()
+                    }
+                    completion?()
                 }
             }
             else{
                 self.dataSourceArray = NSArray()
 //                self.cacheLeaderboard(self.dataSourceArray)
                 self.displayedDataArray = self.dataSourceArray
-                self.tableView.reloadData()
+                UIView.performWithoutAnimation {
+                    self.tableView.reloadData()
+                    self.tableView.layoutIfNeeded()
+                }
+                completion?()
             }
         }
     }
     func sendDataRequestForHeadMsg(){
+        let requestID = nextLeaderboardRequestID()
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
+            guard self.leaderboardRequestID == requestID else { return }
+
             let code = responseObject["code"]as? Int ?? -1
             if code == 200 {
                 let previousLeaderboard = self.displayedDataArray.count > 0 ? self.displayedDataArray : self.dataSourceArray
                 let previousSelfIndex = self.indexOfCurrentUser(in: previousLeaderboard)
-                let preservedSelfEntry = self.currentUserEntry(in: previousLeaderboard)
                 let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
                 let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
                 DLLog(message: "sendDataRequest:\(dataDict)")
@@ -1312,23 +1444,24 @@ extension HabitRankListVM{
                     self.displayedDataArray = self.transitionDisplayArray(for: self.dataSourceArray,
                                                                          previousIndex: previousSelfIndex,
                                                                          newIndex: newIndex,
-                                                                         preservedSelfEntry: preservedSelfEntry)
-                    self.tableView.reloadData()
-                    self.tableView.layoutIfNeeded()
+                                                                         preservedSelfEntry: nil)
+                    self.reloadLeaderboardAfterPreparingAvatars {
+                        self.setPendingRankMove(from: previousSelfIndex, to: newIndex)
+                    }
                 }else{
                     self.dataSourceArray = NSArray()
                     self.displayedDataArray = self.dataSourceArray
-                    self.tableView.reloadData()
+                    UIView.performWithoutAnimation {
+                        self.tableView.reloadData()
+                        self.tableView.layoutIfNeeded()
+                    }
                     return
                 }
-                guard let oldIndex = previousSelfIndex,
-                      self.displayedDataArray.count > 0 else { return  }
-                let targetSection = min(max(0, oldIndex), self.displayedDataArray.count - 1)
-                let fromIndexPath = IndexPath(row: 0, section: targetSection)
-                
-                self.tableView.layoutIfNeeded()
-                self.tableView.scrollToRow(at: fromIndexPath, at: .middle, animated: true)
-                self.tableView.layoutIfNeeded()
+            }else{
+                UIView.performWithoutAnimation {
+                    self.tableView.reloadData()
+                    self.tableView.layoutIfNeeded()
+                }
             }
         }
     }

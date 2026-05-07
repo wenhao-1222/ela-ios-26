@@ -726,6 +726,8 @@ extension DietPlanCreateSecondVC {
     }
 
     func applyRestoredQuestionnaireDataToCurrentSteps() {
+        let restoredFoodAllergy = QuestinonaireMsgModel.shared.foodAllergy
+
         if shouldShowSexStep {
             updateSecretSexSelectionUI()
         }
@@ -764,8 +766,8 @@ extension DietPlanCreateSecondVC {
         recommendIntakeVm.refreshContent()
         mealModeVm.refreshOptions(caloriesText: QuestinonaireMsgModel.shared.caloriesNumber)
         allergyVm.applyGoalFilter()
-        if !QuestinonaireMsgModel.shared.foodAllergy.isEmpty {
-            allergyVm.restoreSelection(modelValue: QuestinonaireMsgModel.shared.foodAllergy)
+        if !restoredFoodAllergy.isEmpty {
+            allergyVm.restoreSelection(modelValue: restoredFoodAllergy)
         } else {
             allergyVm.restoreSelection(modelValue: "无")
         }

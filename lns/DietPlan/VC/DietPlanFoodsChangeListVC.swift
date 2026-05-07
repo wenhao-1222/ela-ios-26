@@ -17,7 +17,7 @@ struct DietPlanFoodsChangeItem {
 }
 
 class DietPlanFoodsChangeListVC: WHBaseViewVC {
-    private let loadingCount = 8
+    private let loadingCount = 4
     private let sectionInset = UIEdgeInsets(top: kFitWidth(14), left: kFitWidth(16), bottom: kFitWidth(24), right: kFitWidth(16))
     private let itemSpacing = kFitWidth(12)
     

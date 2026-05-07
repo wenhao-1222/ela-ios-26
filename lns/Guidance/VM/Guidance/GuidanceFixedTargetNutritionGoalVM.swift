@@ -198,7 +198,7 @@ extension GuidanceFixedTargetNutritionGoalVM{
 
 extension GuidanceFixedTargetNutritionGoalVM{
     func initUI() {
-        backgroundColor = .COLOR_BG_WHITE//WHColor_16(colorStr: "FAFAFA")
+        backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "FAFAFA")
         addSubview(titleLabel)
         addSubview(tipsButton)
         addSubview(whiteView)
