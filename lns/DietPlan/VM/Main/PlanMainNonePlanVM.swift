@@ -27,7 +27,7 @@ class PlanMainNonePlanVM: UIView {
     }()
     lazy var titleLab: UILabel = {
         let lab = UILabel()
-        lab.text = "食谱"
+        lab.text = "饮食计划"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 17, weight: .medium)
         

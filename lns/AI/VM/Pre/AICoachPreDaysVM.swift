@@ -48,6 +48,7 @@ class AICoachPreDaysVM: UIView, UIGestureRecognizerDelegate {
     private var selectedPopupIndex: Int?
     private var isFirstReport = true
     private var completeDays = 0
+    private var shouldAnimateMessageLabel = false
 
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
@@ -150,6 +151,38 @@ extension AICoachPreDaysVM{
         }
         return false
     }
+
+    func prepareEntranceAnimation() {
+        let initialTransform = CGAffineTransform(translationX: 0, y: -kFitWidth(12))
+        alpha = 1
+        transform = initialTransform
+        daysStackView.alpha = 0
+        daysStackView.transform = initialTransform
+        messageLabel.alpha = 0
+        messageLabel.transform = initialTransform
+        shouldAnimateMessageLabel = false
+    }
+
+    func playEntranceAnimation(completion: (() -> Void)? = nil) {
+        shouldAnimateMessageLabel = true
+
+        UIView.animate(withDuration: 0.75,
+                       delay: 0,
+                       options: .curveLinear) {
+            self.transform = .identity
+            self.daysStackView.transform = .identity
+            self.daysStackView.alpha = 1
+        } completion: { _ in
+            UIView.animate(withDuration: 0.35,
+                           delay: 0.18,
+                           options: .curveLinear) {
+                self.messageLabel.transform = .identity
+                self.messageLabel.alpha = self.messageLabel.isHidden ? 0 : 1
+            } completion: { _ in
+                completion?()
+            }
+        }
+    }
 }
 
 private extension AICoachPreDaysVM {
@@ -246,12 +279,9 @@ private extension AICoachPreDaysVM {
         attributedText.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedText.length))
 
         messageLabel.attributedText = attributedText
-        
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
-            UIView.animate(withDuration: 0.35) {
-                self.messageLabel.alpha = 1
-            }
-        })
+//
+//        guard shouldAnimateMessageLabel == false else { return }
+//        messageLabel.alpha = messageLabel.isHidden ? 0 : 1
     }
 
     func dayItemTapAction(index: Int, sourceView: UIView) {
@@ -336,4 +366,3 @@ extension AICoachPreDaysVM {
         return true
     }
 }
-

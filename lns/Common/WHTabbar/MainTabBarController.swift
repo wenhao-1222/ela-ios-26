@@ -78,7 +78,7 @@ class MainTabBarController: UITabBarController {
 //        vc3.tabBarItem = UITabBarItem(title: "干货", image: UIImage.init(named: "tabbar_forum_normal")!, tag: 2)
         
         let vc3 = DietPlanVC()
-        vc3.tabBarItem = UITabBarItem(title: "食谱", image: UIImage.init(named: "tabbar_forum_normal")!, tag: 2)
+        vc3.tabBarItem = UITabBarItem(title: "计划", image: UIImage.init(named: "tabbar_forum_normal")!, tag: 2)
         
         let vc4 = MineVC()
         vc4.tabBarItem = UITabBarItem(title: "我的", image: UIImage.init(named: "tabbar_mine_normal")!, tag: 3)
@@ -96,7 +96,7 @@ class MainTabBarController: UITabBarController {
         self.setUpChildViewController(viewController: vc3,
                                       image: useDarkIcons ? UIImage(named: "tabbar_forum_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_normal")!.withRenderingMode(.alwaysOriginal),
                                       selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_selected")!.withRenderingMode(.alwaysOriginal),
-                                      title: "干货")
+                                      title: "计划")
         self.setUpChildViewController(viewController: vc4,
                                       image: useDarkIcons ? UIImage(named: "tabbar_mine_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_normal")!.withRenderingMode(.alwaysOriginal),
                                       selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_selected")!.withRenderingMode(.alwaysOriginal),

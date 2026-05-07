@@ -161,7 +161,7 @@ class SystemTabbar: UITabBarController {
 
 //        let vc3 = forumVc
         let vc3 = dietPlanVc
-        vc3.tabBarItem = UITabBarItem(title: "食谱",
+        vc3.tabBarItem = UITabBarItem(title: "计划",
                                       image: UIImage(named: "tabbar_forum_normal")!,
                                       selectedImage: UIImage(named: "tabbar_forum_selected")?.withRenderingMode(.alwaysOriginal))
 

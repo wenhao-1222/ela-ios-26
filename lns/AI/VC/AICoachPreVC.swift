@@ -17,8 +17,10 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private var aiCoachIntensityPreference: Int = 0
     private var isUpdatingAICoachProfile = false
     private var coachLaunchRefreshTimer: Timer?
-    private var hasPlayedEntranceAnimation = false
-    private var isPlayingEntranceAnimation = false
+    private var hasPlayedCircleEntranceAnimation = false
+    private var hasPlayedRemainingEntranceAnimation = false
+    private var hasFinishedCircleEntranceAnimation = false
+    private var isWaitingForCoachLaunchResponse = false
     
     private lazy var preDaysVM: AICoachPreDaysVM = {
         let view = AICoachPreDaysVM(frame: .zero)
@@ -48,6 +50,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         if dataDict.stringValueForKey(key: "has7CompleteDays").count > 0{
             self.updatePreDaysUI(dataDict: dataDict)
         }else{
+            isWaitingForCoachLaunchResponse = true
             sendCoachLaunchRequest()
         }
         sendReportListRequest()
@@ -72,7 +75,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        startEntranceAnimationIfNeeded()
+        startCircleEntranceAnimationIfNeeded()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -101,6 +104,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         let img = UIImageView()
         img.setImgLocal(imgName: "ela_pro_ai_pre_bg")
         img.contentMode = .scaleAspectFit
+        img.alpha = 0
         return img
     }()
     
@@ -231,8 +235,10 @@ extension AICoachPreVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendCoachLaunchRequest:\(foodsMsgDict)")
+            self.isWaitingForCoachLaunchResponse = false
             self.dataDict = foodsMsgDict
             self.updatePreDaysUI(dataDict: foodsMsgDict)
+            self.startRemainingEntranceAnimationIfNeeded()
         }
     }
     func sendReportListRequest() {
@@ -307,8 +313,6 @@ private extension AICoachPreVC {
             stopCoachLaunchRefreshTimer()
         }
 
-//        updateNextButtonVisibility(animated: hasPlayedEntranceAnimation && !isPlayingEntranceAnimation)
-        
         self.reportId = latestReportDict.stringValueForKey(key: "id")
         let reportStatus = latestReportDict.stringValueForKey(key: "reportStatus").intValue
         var remainingDays = max(0, dataDict.stringValueForKey(key: "remainingDays").intValue)
@@ -467,9 +471,9 @@ private extension AICoachPreVC {
     func prepareEntranceAnimation() {
         let initialTransform = CGAffineTransform(translationX: 0, y: -kFitWidth(12))
         circleImgView.alpha = 0
+        bgImgView.alpha = 0
         circleImgView.transform = initialTransform
-        preDaysVM.alpha = 0
-        preDaysVM.transform = initialTransform
+        preDaysVM.prepareEntranceAnimation()
         preInfoVM.alpha = 0
         preInfoVM.transform = initialTransform
         infoSelectPopupVM.alpha = 0
@@ -479,19 +483,36 @@ private extension AICoachPreVC {
 //        nextButton.transform = initialTransform
     }
 
-    func startEntranceAnimationIfNeeded() {
-        guard hasPlayedEntranceAnimation == false else { return }
-        hasPlayedEntranceAnimation = true
-        isPlayingEntranceAnimation = true
+    func startCircleEntranceAnimationIfNeeded() {
+        guard hasPlayedCircleEntranceAnimation == false else { return }
+        hasPlayedCircleEntranceAnimation = true
         view.layoutIfNeeded()
 
+        
+        animateEntrance(view: bgImgView, duration: 0.75, delay: 0) { [weak self] in
+            
+        }
         animateEntrance(view: circleImgView, duration: 0.75, delay: 0) { [weak self] in
             guard let self = self else { return }
-            self.animateEntrance(view: self.preDaysVM, duration: 0.75, delay: 0.32) { [weak self] in
+            self.hasFinishedCircleEntranceAnimation = true
+            self.startRemainingEntranceAnimationIfNeeded()
+        }
+    }
+
+    func startRemainingEntranceAnimationIfNeeded() {
+        guard hasFinishedCircleEntranceAnimation else { return }
+        guard hasPlayedRemainingEntranceAnimation == false else { return }
+        guard isWaitingForCoachLaunchResponse == false else { return }
+
+        hasPlayedRemainingEntranceAnimation = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            guard let self = self else { return }
+            self.preDaysVM.playEntranceAnimation { [weak self] in
                 guard let self = self else { return }
-                self.animateEntrance(view: self.preInfoVM, duration: 0.75, delay: 0.25) { [weak self] in
+                self.animateEntrance(view: self.preInfoVM, duration: 0.75, delay: 0.35) { [weak self] in
                     guard let self = self else { return }
-                    self.animateEntrance(view: self.infoSelectPopupVM, duration: 0.75, delay: 0.25) { [weak self] in
+                    self.animateEntrance(view: self.infoSelectPopupVM, duration: 0.75, delay: 0.15) { [weak self] in
                         guard let self = self else { return }
                         let shouldShowNextButton = self.shouldShowNextButton
                         if shouldShowNextButton {
@@ -501,7 +522,6 @@ private extension AICoachPreVC {
                                              duration: 0.7,
                                              delay: 0.25,
                                              shouldFadeIn: shouldShowNextButton) { [weak self] in
-                            self?.isPlayingEntranceAnimation = false
                             self?.updateNextButtonVisibility(animated: false)
                         }
                     }

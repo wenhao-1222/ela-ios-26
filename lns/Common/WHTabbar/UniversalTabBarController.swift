@@ -121,7 +121,7 @@ class UniversalTabBarController: UITabBarController, DeviceAdaptable {
             makeViewController(title: "概览", icon: "house", type: MainVC.self),
             makeViewController(title: "日志", icon: "magnifyingglass", type: JournalVC.self),
 //            makeViewController(title: "干货", icon: "gear", type: ForumVC.self),
-            makeViewController(title: "食谱", icon: "gear", type: DietPlanVC.self),
+            makeViewController(title: "计划", icon: "gear", type: DietPlanVC.self),
             makeViewController(title: "我的", icon: "gear", type: MineVC.self)
         ]
         

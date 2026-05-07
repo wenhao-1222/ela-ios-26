@@ -236,7 +236,7 @@ class HabitRankTableViewCell: UITableViewCell {
             return
         }
 
-        addRankSweepLayer(duration: duration)
+//        addRankSweepLayer(duration: duration)
 
         UIView.animate(withDuration: 0.14,
                        delay: 0,
@@ -265,7 +265,7 @@ class HabitRankTableViewCell: UITableViewCell {
         rankContainerView.alpha = 0
         rankContainerView.transform = CGAffineTransform(scaleX: 0.92, y: 0.92)
             .translatedBy(x: 0, y: 2)
-        addRankSweepLayer(duration: duration, beginTimeDelay: delay)
+//        addRankSweepLayer(duration: duration, beginTimeDelay: delay)
 
         UIView.animate(withDuration: duration,
                        delay: delay,
