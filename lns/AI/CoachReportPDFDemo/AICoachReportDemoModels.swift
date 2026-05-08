@@ -54,6 +54,8 @@ struct AICoachReportNextWeekRecommendation {
     let buttonNum: Int
     let status: AICoachReportRecommendationStatus
     let titleText: String
+    let nextWeekRecommendationText: String
+    let caloriesGap: AnyObject?
     let caloriesValue: Double?
     let carbohydrateValue: Double?
     let proteinValue: Double?
@@ -80,6 +82,8 @@ struct AICoachReportNextWeekRecommendation {
         buttonNum: 1,
         status: .maintain,
         titleText: "",
+        nextWeekRecommendationText: "",
+        caloriesGap: nil,
         caloriesValue: nil,
         carbohydrateValue: nil,
         proteinValue: nil,
@@ -104,7 +108,8 @@ enum AICoachReportRecommendationBuilder {
         let isValid = payload.count > 0 && (hasStatus || hasTitle || hasValue)
 
         let status = AICoachReportRecommendationStatus(rawValue: Int(payload.doubleValueForKey(key: "nextWeekRecommendationStatus"))) ?? .maintain
-        let titleText = preferredRecommendationTitle(from: payload, fallback: status.defaultTitleText)
+        let nextWeekRecommendationText = payload.stringValueForKey(key: "nextWeekRecommendationText").trimmingCharacters(in: .whitespacesAndNewlines)
+        let titleText = nextWeekRecommendationText.isEmpty ? status.defaultTitleText : nextWeekRecommendationText
         let caloriesValue = numericValue(for: "calories", in: payload)
         let carbohydrateValue = numericValue(for: "carbohydrate", in: payload)
         let proteinValue = numericValue(for: "protein", in: payload)
@@ -114,6 +119,8 @@ enum AICoachReportRecommendationBuilder {
             buttonNum: max(Int(payload.doubleValueForKey(key: "buttonNum")), 1),
             status: status,
             titleText: titleText,
+            nextWeekRecommendationText: nextWeekRecommendationText,
+            caloriesGap: passthroughObject(for: "caloriesGap", in: payload),
             caloriesValue: caloriesValue,
             carbohydrateValue: carbohydrateValue,
             proteinValue: proteinValue,
@@ -136,17 +143,18 @@ enum AICoachReportRecommendationBuilder {
         return dataDict
     }
 
-    private static func preferredRecommendationTitle(from dict: NSDictionary, fallback: String) -> String {
-        let text = dict.stringValueForKey(key: "nextWeekRecommendationText").trimmingCharacters(in: .whitespacesAndNewlines)
-        return text.isEmpty ? fallback : text
-    }
-
     private static func hasValue(for key: String, in dict: NSDictionary) -> Bool {
         guard let rawValue = dict[key], (rawValue is NSNull) == false else { return false }
         if let stringValue = rawValue as? String {
             return stringValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
         }
         return true
+    }
+
+    private static func passthroughObject(for key: String, in dict: NSDictionary) -> AnyObject? {
+        guard hasValue(for: key, in: dict) else { return nil }
+        guard let rawValue = dict[key], (rawValue is NSNull) == false else { return nil }
+        return rawValue as AnyObject
     }
 
     private static func numericValue(for key: String, in dict: NSDictionary) -> Double? {

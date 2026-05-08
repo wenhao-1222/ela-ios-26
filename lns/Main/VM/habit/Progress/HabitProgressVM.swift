@@ -439,7 +439,7 @@ class HabitProgressLoadingSkeletonView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .COLOR_BG_F2
+        backgroundColor = .clear
         isUserInteractionEnabled = true
 
         [topPointPlaceholder, topDetailPlaceholder, topButtonPlaceholder,

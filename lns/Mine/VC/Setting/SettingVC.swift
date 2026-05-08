@@ -7,10 +7,40 @@
 
 import Foundation
 import MCToast
+import UIKit
 
 class SettingVC: WHBaseViewVC {
     
     var versionMsgDict = NSDictionary()
+    private lazy var restorePurchaseLoadingView: UIView = {
+        let maskView = UIView(frame: view.bounds)
+        maskView.backgroundColor = UIColor.black.withAlphaComponent(0.18)
+        maskView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        maskView.isHidden = true
+        maskView.isUserInteractionEnabled = true
+
+        let contentView = UIView()
+        contentView.backgroundColor = UIColor.black.withAlphaComponent(0.76)
+        contentView.layer.cornerRadius = kFitWidth(8)
+        contentView.clipsToBounds = true
+        contentView.tag = 10001
+
+        let indicator = UIActivityIndicatorView(style: .whiteLarge)
+        indicator.tag = 10002
+        indicator.startAnimating()
+
+        let label = UILabel()
+        label.text = "正在恢复购买"
+        label.textColor = .white
+        label.font = .systemFont(ofSize: kFitWidth(14), weight: .medium)
+        label.textAlignment = .center
+        label.tag = 10003
+
+        maskView.addSubview(contentView)
+        contentView.addSubview(indicator)
+        contentView.addSubview(label)
+        return maskView
+    }()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -213,18 +243,16 @@ extension SettingVC{
     }
 
     func restorePurchaseAction() {
-        view.isUserInteractionEnabled = false
-        MCToast.mc_loading()
+        beginRestorePurchaseLoading()
         ElaProIAPManager.shared.restorePurchases { result in
             DispatchQueue.main.async {
-                self.view.isUserInteractionEnabled = true
-                MCToast.mc_remove()
+                self.endRestorePurchaseLoading()
 
                 switch result {
                 case .success(let outcome):
                     switch outcome {
                     case .restored:
-                        MCToast.mc_text("恢复购买成功", respond: .allow)
+                        self.showRestorePurchaseToast("恢复购买成功", duration: 3)
                     case .notFound:
                         MCToast.mc_text("未找到可恢复的订阅", respond: .allow)
                     case .pendingLoginBind:
@@ -234,9 +262,97 @@ extension SettingVC{
                     }
                 case .failure(let error):
                     let message = error.localizedDescription.isEmpty ? "恢复购买失败，请稍后重试" : error.localizedDescription
+                    guard !self.shouldSuppressRestorePurchaseErrorToast(message) else { return }
                     MCToast.mc_text(message, respond: .allow)
                 }
             }
+        }
+    }
+
+    private func shouldSuppressRestorePurchaseErrorToast(_ message: String) -> Bool {
+        let trimmedMessage = message.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmedMessage == "请求已取消" ||
+            trimmedMessage == "已取消购买" ||
+            trimmedMessage.localizedCaseInsensitiveContains("cancel")
+    }
+
+    private func beginRestorePurchaseLoading() {
+        if restorePurchaseLoadingView.superview == nil {
+            view.addSubview(restorePurchaseLoadingView)
+        }
+        restorePurchaseLoadingView.frame = view.bounds
+        layoutRestorePurchaseLoadingView()
+        restorePurchaseLoadingView.isHidden = false
+        restorePurchaseLoadingView.superview?.bringSubviewToFront(restorePurchaseLoadingView)
+        (restorePurchaseLoadingView.viewWithTag(10002) as? UIActivityIndicatorView)?.startAnimating()
+        setSettingPageInteractionEnabled(false)
+    }
+
+    private func endRestorePurchaseLoading() {
+        setSettingPageInteractionEnabled(true)
+        restorePurchaseLoadingView.isHidden = true
+        (restorePurchaseLoadingView.viewWithTag(10002) as? UIActivityIndicatorView)?.stopAnimating()
+    }
+
+    private func setSettingPageInteractionEnabled(_ enabled: Bool) {
+        view.isUserInteractionEnabled = enabled
+        navigationController?.navigationBar.isUserInteractionEnabled = enabled
+        tabBarController?.tabBar.isUserInteractionEnabled = enabled
+    }
+
+    private func layoutRestorePurchaseLoadingView() {
+        guard let contentView = restorePurchaseLoadingView.viewWithTag(10001),
+              let indicator = contentView.viewWithTag(10002) as? UIActivityIndicatorView,
+              let label = contentView.viewWithTag(10003) as? UILabel else {
+            return
+        }
+
+        let contentWidth = kFitWidth(132)
+        let contentHeight = kFitWidth(112)
+        contentView.frame = CGRect(x: (restorePurchaseLoadingView.bounds.width - contentWidth) * 0.5,
+                                   y: (restorePurchaseLoadingView.bounds.height - contentHeight) * 0.5,
+                                   width: contentWidth,
+                                   height: contentHeight)
+        indicator.center = CGPoint(x: contentWidth * 0.5, y: kFitWidth(39))
+        label.frame = CGRect(x: kFitWidth(10),
+                             y: kFitWidth(66),
+                             width: contentWidth - kFitWidth(20),
+                             height: kFitWidth(24))
+    }
+
+    private func showRestorePurchaseToast(_ message: String, duration: TimeInterval) {
+        let toastView = UILabel()
+        toastView.text = message
+        toastView.textColor = .white
+        toastView.font = .systemFont(ofSize: kFitWidth(14), weight: .medium)
+        toastView.textAlignment = .center
+        toastView.numberOfLines = 0
+        toastView.backgroundColor = UIColor.black.withAlphaComponent(0.76)
+        toastView.layer.cornerRadius = kFitWidth(8)
+        toastView.clipsToBounds = true
+        toastView.isUserInteractionEnabled = false
+
+        let maxWidth = min(SCREEN_WIDHT - kFitWidth(80), kFitWidth(220))
+        let textSize = toastView.sizeThatFits(CGSize(width: maxWidth - kFitWidth(30),
+                                                     height: CGFloat.greatestFiniteMagnitude))
+        let width = max(kFitWidth(120), textSize.width + kFitWidth(30))
+        let height = max(kFitWidth(44), textSize.height + kFitWidth(22))
+        toastView.frame = CGRect(x: (view.bounds.width - width) * 0.5,
+                                 y: (view.bounds.height - height) * 0.5,
+                                 width: width,
+                                 height: height)
+        toastView.alpha = 0
+
+        view.addSubview(toastView)
+        UIView.animate(withDuration: 0.18) {
+            toastView.alpha = 1
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            UIView.animate(withDuration: 0.18, animations: {
+                toastView.alpha = 0
+            }, completion: { _ in
+                toastView.removeFromSuperview()
+            })
         }
     }
 }

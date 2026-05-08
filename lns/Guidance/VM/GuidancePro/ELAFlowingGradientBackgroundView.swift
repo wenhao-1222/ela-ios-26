@@ -45,7 +45,7 @@ public final class ELAFlowingGradientBackgroundView: UIView {
 
         /// 你发的暗色背景图
         public static let dark = Style(
-            topColor: UIColor(red: 24.0 / 255.0, green: 31.0 / 255.0, blue: 47.0 / 255.0, alpha: 1.0),
+            topColor: UIColor(red: 24.0 / 255.0, green: 31.0 / 255.0, blue: 47.0 / 255.0, alpha: 0.05),
             midColor: UIColor(red: 17.0 / 255.0, green: 23.0 / 255.0, blue: 36.0 / 255.0, alpha: 1.0),
             bottomColor: UIColor(red: 11.0 / 255.0, green: 16.0 / 255.0, blue: 28.0 / 255.0, alpha: 1.0),
             leftGlowColor: UIColor(red: 75.0 / 255.0, green: 116.0 / 255.0, blue: 208.0 / 255.0, alpha: 0.18),
@@ -60,6 +60,7 @@ public final class ELAFlowingGradientBackgroundView: UIView {
     private let leftGlow = CAGradientLayer()
     private let rightGlow = CAGradientLayer()
     private let centerGlow = CAGradientLayer()
+    private var wantsAnimating = false
 
     public init(style: Style? = nil) {
         self.fixedStyle = style
@@ -179,6 +180,8 @@ public final class ELAFlowingGradientBackgroundView: UIView {
         )
 
         CATransaction.commit()
+
+        startAnimatingIfPossible()
     }
 
     public override func didMoveToWindow() {
@@ -204,7 +207,22 @@ public final class ELAFlowingGradientBackgroundView: UIView {
     }
 
     public func startAnimating() {
+        wantsAnimating = true
+        startAnimatingIfPossible()
+    }
+
+    public func stopAnimating() {
+        wantsAnimating = false
+        [baseGradient, leftGlow, rightGlow, centerGlow].forEach {
+            $0.removeAllAnimations()
+        }
+    }
+
+    private func startAnimatingIfPossible() {
+        guard wantsAnimating else { return }
         guard !UIAccessibility.isReduceMotionEnabled else { return }
+        guard window != nil else { return }
+        guard bounds.width > 0, bounds.height > 0 else { return }
         guard baseGradient.animation(forKey: "bg.startPoint") == nil else { return }
 
         animateBaseGradient()
@@ -214,7 +232,6 @@ public final class ELAFlowingGradientBackgroundView: UIView {
             x: 46,
             y: 26,
             scale: 1.20,
-            opacityFrom: 1.0,
             opacityTo: 0.56,
             duration: 9.5,
             delay: 0
@@ -225,7 +242,6 @@ public final class ELAFlowingGradientBackgroundView: UIView {
             x: -40,
             y: 24,
             scale: 1.18,
-            opacityFrom: 1.0,
             opacityTo: 0.54,
             duration: 10.5,
             delay: 0.6
@@ -236,22 +252,15 @@ public final class ELAFlowingGradientBackgroundView: UIView {
             x: 0,
             y: 32,
             scale: 1.16,
-            opacityFrom: 0.96,
             opacityTo: 0.44,
             duration: 8.8,
             delay: 0.35
         )
     }
 
-    public func stopAnimating() {
-        [baseGradient, leftGlow, rightGlow, centerGlow].forEach {
-            $0.removeAllAnimations()
-        }
-    }
-
     private func animateBaseGradient() {
         let startPoint = CABasicAnimation(keyPath: "startPoint")
-        startPoint.fromValue = CGPoint(x: -0.10, y: -0.16)
+        startPoint.fromValue = baseGradient.startPoint
         startPoint.toValue = CGPoint(x: 0.32, y: 0.18)
         startPoint.duration = 8.5
         startPoint.autoreverses = true
@@ -259,7 +268,7 @@ public final class ELAFlowingGradientBackgroundView: UIView {
         startPoint.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
 
         let endPoint = CABasicAnimation(keyPath: "endPoint")
-        endPoint.fromValue = CGPoint(x: 0.66, y: 0.88)
+        endPoint.fromValue = baseGradient.endPoint
         endPoint.toValue = CGPoint(x: 1.08, y: 1.18)
         endPoint.duration = 8.5
         endPoint.autoreverses = true
@@ -275,15 +284,14 @@ public final class ELAFlowingGradientBackgroundView: UIView {
         x: CGFloat,
         y: CGFloat,
         scale: CGFloat,
-        opacityFrom: Float,
         opacityTo: Float,
         duration: CFTimeInterval,
         delay: CFTimeInterval
     ) {
-        let beginTime = CACurrentMediaTime() + delay
+        let beginTime = layer.convertTime(CACurrentMediaTime(), from: nil) + delay
 
         let moveX = CABasicAnimation(keyPath: "transform.translation.x")
-        moveX.fromValue = -x
+        moveX.fromValue = 0
         moveX.toValue = x
         moveX.duration = duration
         moveX.autoreverses = true
@@ -292,7 +300,7 @@ public final class ELAFlowingGradientBackgroundView: UIView {
         moveX.beginTime = beginTime
 
         let moveY = CABasicAnimation(keyPath: "transform.translation.y")
-        moveY.fromValue = -y
+        moveY.fromValue = 0
         moveY.toValue = y
         moveY.duration = duration * 0.85
         moveY.autoreverses = true
@@ -310,7 +318,7 @@ public final class ELAFlowingGradientBackgroundView: UIView {
         scaleAnim.beginTime = beginTime
 
         let opacity = CABasicAnimation(keyPath: "opacity")
-        opacity.fromValue = opacityFrom
+        opacity.fromValue = layer.opacity
         opacity.toValue = opacityTo
         opacity.duration = duration
         opacity.autoreverses = true

@@ -567,6 +567,8 @@ private extension AICoachReportPDFDemoVC {
                 buttonNum: 1,
                 status: .maintain,
                 titleText: "维持当前目标",
+                nextWeekRecommendationText: "维持当前目标",
+                caloriesGap: nil,
                 caloriesValue: nil,
                 carbohydrateValue: nil,
                 proteinValue: nil,
@@ -622,6 +624,8 @@ private extension AICoachReportPDFDemoVC {
             buttonNum: buttonNum,
             status: status,
             titleText: titleText,
+            nextWeekRecommendationText: titleText,
+            caloriesGap: NSNumber(value: Int(roundedCalories)),
             caloriesValue: roundedCalories,
             carbohydrateValue: roundedCarbohydrate,
             proteinValue: roundedProtein,
@@ -888,11 +892,16 @@ private extension AICoachReportPDFDemoVC {
             "calories": NSNumber(value: roundedCalories),
             "carbohydrate": NSNumber(value: roundedCarbohydrate),
             "protein": NSNumber(value: roundedProtein),
-            "fat": NSNumber(value: roundedFat)
+            "fat": NSNumber(value: roundedFat),
+            "nextWeekRecommendationText": recommendation.nextWeekRecommendationText as AnyObject
         ]
+        var requestParam = param
+        if let caloriesGap = recommendation.caloriesGap {
+            requestParam["caloriesGap"] = caloriesGap
+        }
 
         WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_recommend_update,
-                                          parameters: param) { [weak self] _ in
+                                          parameters: requestParam) { [weak self] _ in
             guard let self else { return }
             DispatchQueue.main.async {
                 QuestinonaireMsgModel.shared.calories = caloriesText
