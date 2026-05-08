@@ -33,21 +33,33 @@ class DietPlanCreateVC: WHBaseViewVC {
 //        !UserInfoModel.shared.birthDay.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
 //    }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateInteractivePopGestureBlocked(true)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
-        self.navigationController?.fd_interactivePopDisabled = true
-        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        super.viewDidAppear(animated)
+        updateInteractivePopGestureBlocked(true)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        navigationController?.fd_interactivePopDisabled = false
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        if let coordinator = transitionCoordinator, coordinator.isInteractive {
+            coordinator.notifyWhenInteractionChanges { [weak self] context in
+                self?.updateInteractivePopGestureBlocked(context.isCancelled)
+            }
+            persistDraftIfNeeded()
+            return
+        }
+        if navigationController?.topViewController !== self {
+            updateInteractivePopGestureBlocked(false)
+        }
         persistDraftIfNeeded()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        updateInteractivePopGestureBlocked(true)
         initUI()
 //        let profileGender = normalizedProfileGender()
 //        let questionnaireGender = normalizedGenderValue(QuestinonaireMsgModel.shared.sex)

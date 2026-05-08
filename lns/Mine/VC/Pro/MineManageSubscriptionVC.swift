@@ -294,10 +294,6 @@ private extension MineManageSubscriptionVC {
 
 #if DEBUG
     @objc func beginRefundDebugTapAction() {
-        guard #available(iOS 15.0, *) else {
-            MCToast.mc_text(ElaProRefundDebugError.storeKit2Unavailable.localizedDescription)
-            return
-        }
         guard let scene = view.window?.windowScene else {
             MCToast.mc_text("当前页面还没有可用窗口，请稍后重试")
             return

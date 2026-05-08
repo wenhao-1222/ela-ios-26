@@ -50,6 +50,10 @@
 /// stack.
 @property (nonatomic, assign) BOOL fd_interactivePopDisabled;
 
+/// Whether every interactive pop gesture should be blocked for this view
+/// controller, including fullscreen and system edge gestures.
+@property (nonatomic, assign) BOOL fd_forceDisableInteractivePopGesture;
+
 /// Indicate this view controller prefers its navigation bar hidden or not,
 /// checked when view controller based navigation bar's appearance is enabled.
 /// Default to NO, bars are more likely to show.

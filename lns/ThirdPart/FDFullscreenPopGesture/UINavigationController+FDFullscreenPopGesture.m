@@ -40,6 +40,9 @@
     
     // Ignore when the active view controller doesn't allow interactive pop.
     UIViewController *topViewController = self.navigationController.viewControllers.lastObject;
+    if (topViewController.fd_forceDisableInteractivePopGesture) {
+        return NO;
+    }
     if (topViewController.fd_interactivePopDisabled) {
         return NO;
     }
@@ -257,6 +260,16 @@ typedef void (^_FDViewControllerWillAppearInjectBlock)(UIViewController *viewCon
 - (void)setFd_interactivePopDisabled:(BOOL)disabled
 {
     objc_setAssociatedObject(self, @selector(fd_interactivePopDisabled), @(disabled), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (BOOL)fd_forceDisableInteractivePopGesture
+{
+    return [objc_getAssociatedObject(self, _cmd) boolValue];
+}
+
+- (void)setFd_forceDisableInteractivePopGesture:(BOOL)disabled
+{
+    objc_setAssociatedObject(self, @selector(fd_forceDisableInteractivePopGesture), @(disabled), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (BOOL)fd_prefersNavigationBarHidden

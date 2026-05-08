@@ -63,8 +63,17 @@ class SettingVC: WHBaseViewVC {
         
         return vm
     }()
-    lazy var resetLogsVm : MaterialItemVM = {
+    lazy var restorePurchaseVm : MaterialItemVM = {
         let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.bindOtherVm.frame.maxY+kFitWidth(8), width: 0, height: 0))
+        vm.leftLabel.text = "恢复购买"
+        vm.detailLabel.text = "恢复已购订阅"
+        vm.tapBlock = {()in
+            self.restorePurchaseAction()
+        }
+        return vm
+    }()
+    lazy var resetLogsVm : MaterialItemVM = {
+        let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.restorePurchaseVm.frame.maxY, width: 0, height: 0))
 //        vm.leftLabel.text = "个性化设置"
         vm.leftLabel.text = "重置日志列表"
         vm.detailLabel.text = ""
@@ -159,6 +168,7 @@ extension SettingVC{
         
         scrollViewBase.addSubview(bindPhoneVm)
         scrollViewBase.addSubview(bindOtherVm)
+        scrollViewBase.addSubview(restorePurchaseVm)
         scrollViewBase.addSubview(resetLogsVm)
         scrollViewBase.addSubview(personalSettingVm)
         scrollViewBase.addSubview(clearCacheVm)
@@ -200,6 +210,34 @@ extension SettingVC{
         alertVc.addAction(clearAllAction)
         alertVc.addAction(cancelAction)
         self.present(alertVc, animated: true)
+    }
+
+    func restorePurchaseAction() {
+        view.isUserInteractionEnabled = false
+        MCToast.mc_loading()
+        ElaProIAPManager.shared.restorePurchases { result in
+            DispatchQueue.main.async {
+                self.view.isUserInteractionEnabled = true
+                MCToast.mc_remove()
+
+                switch result {
+                case .success(let outcome):
+                    switch outcome {
+                    case .restored:
+                        MCToast.mc_text("恢复购买成功", respond: .allow)
+                    case .notFound:
+                        MCToast.mc_text("未找到可恢复的订阅", respond: .allow)
+                    case .pendingLoginBind:
+                        MCToast.mc_text("恢复成功，请登录后同步会员", respond: .allow)
+                    case .pendingServerSync:
+                        MCToast.mc_text("已找到订阅，会员状态同步中", respond: .allow)
+                    }
+                case .failure(let error):
+                    let message = error.localizedDescription.isEmpty ? "恢复购买失败，请稍后重试" : error.localizedDescription
+                    MCToast.mc_text(message, respond: .allow)
+                }
+            }
+        }
     }
 }
 

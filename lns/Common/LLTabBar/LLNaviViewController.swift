@@ -126,7 +126,13 @@ class LLNaviViewController: UINavigationController,UIGestureRecognizerDelegate,U
                 return false
             }
             if let topVC = self.topViewController as? WHBaseViewVC {
+                if topVC.fd_forceDisableInteractivePopGesture {
+                    return false
+                }
                 return topVC.canEdgeBack
+            }
+            if self.topViewController?.fd_forceDisableInteractivePopGesture == true {
+                return false
             }
         }
         return true
@@ -144,4 +150,3 @@ class LLNaviViewController: UINavigationController,UIGestureRecognizerDelegate,U
         }
     }
 }
-

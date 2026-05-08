@@ -20,17 +20,16 @@ enum ElaProIAPConfig {
 }
 
 enum ElaProIAPError: LocalizedError {
-    case paymentsDisabled
     case productUnavailable
     case purchaseBusy
     case cancelled
     case pendingApproval
+    case invalidAppAccountToken
+    case identityUnavailable
     case unknown(String)
-    
+
     var errorDescription: String? {
         switch self {
-        case .paymentsDisabled:
-            return "当前设备不支持内购"
         case .productUnavailable:
             return "未获取到可购买商品"
         case .purchaseBusy:
@@ -39,6 +38,10 @@ enum ElaProIAPError: LocalizedError {
             return "已取消购买"
         case .pendingApproval:
             return "订单待批准，请稍后"
+        case .invalidAppAccountToken:
+            return "订阅身份异常，请稍后重试"
+        case .identityUnavailable:
+            return "未获取到订阅身份，请稍后重试"
         case .unknown(let message):
             return message
         }
@@ -49,6 +52,13 @@ enum ElaProSubscriptionHistoryState {
     case subscribed
     case notSubscribed
     case unknown
+}
+
+enum ElaProRestorePurchaseOutcome {
+    case restored
+    case notFound
+    case pendingLoginBind
+    case pendingServerSync
 }
 
 final class ElaProIAPManager: NSObject {
@@ -67,16 +77,25 @@ final class ElaProIAPManager: NSObject {
         case aiGuidance = "2"
         case standard = "3"
     }
-    
-    private var productsRequest: SKProductsRequest?
-    private var cachedProducts: [String: SKProduct] = [:]
-    private var fetchCompletions: [(Result<[SKProduct], Error>) -> Void] = []
-    
-    private var purchaseCompletion: ((Result<SKPaymentTransaction, Error>) -> Void)?
-    private var purchasingProductID: String?
-    private var isObservingQueue = false
+
+    private struct AnonymousIdentity {
+        let anonymousUid: String
+        let appAccountToken: String
+        let expiresAt: String?
+        let boundUID: String?
+
+        var isBoundToCurrentUser: Bool {
+            let currentUID = UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines)
+            let storedUID = boundUID?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            return !currentUID.isEmpty && currentUID == storedUID
+        }
+    }
+
+    private var cachedProducts: [String: Product] = [:]
+    private var purchaseTask: Task<Void, Never>?
+    private var transactionUpdatesTask: Task<Void, Never>?
     private var refundDebugSession: RefundDebugSession?
-    
+
     private enum LocalUnlockKeys {
         static let isUnlocked = "ela_pro_local_is_unlocked"
         static let uid = "ela_pro_local_uid"
@@ -87,6 +106,11 @@ final class ElaProIAPManager: NSObject {
         static let source = "ela_pro_local_source"
         static let pendingVerifyPayload = "ela_pro_pending_verify_payload"
         static let refundDebugLogs = "ela_pro_refund_debug_logs"
+        static let deviceInstallID = "ela_pro_device_install_id"
+        static let anonymousUID = "ela_pro_anonymous_uid"
+        static let appAccountToken = "ela_pro_app_account_token"
+        static let anonymousIdentityExpiresAt = "ela_pro_anonymous_identity_expires_at"
+        static let anonymousIdentityBoundUID = "ela_pro_anonymous_identity_bound_uid"
     }
 
     private enum KeychainKeys {
@@ -94,30 +118,18 @@ final class ElaProIAPManager: NSObject {
         static let pendingTransactionAccount = "pending_transaction_id"
         static let pendingPayloadAccount = "pending_purchase_payload"
     }
-    
+
     private override init() {
         super.init()
-        startObservingQueue()
         startObservingRefundLifecycle()
+        startObservingTransactionUpdates()
     }
-    
+
     deinit {
-        stopObservingQueue()
+        transactionUpdatesTask?.cancel()
     }
-    
-    func startObservingQueue() {
-        guard !isObservingQueue else { return }
-        SKPaymentQueue.default().add(self)
-        isObservingQueue = true
-    }
-    
-    func stopObservingQueue() {
-        guard isObservingQueue else { return }
-        SKPaymentQueue.default().remove(self)
-        isObservingQueue = false
-    }
-    
-    func fetchAnnualProduct(completion: @escaping (Result<SKProduct, Error>) -> Void) {
+
+    func fetchAnnualProduct(completion: @escaping (Result<Product, Error>) -> Void) {
         let annualID = ElaProIAPConfig.annualProductID.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !annualID.isEmpty else {
             completion(.failure(ElaProIAPError.productUnavailable))
@@ -126,7 +138,7 @@ final class ElaProIAPManager: NSObject {
         fetchProducts(ids: [annualID], forceRefresh: false) { result in
             switch result {
             case .success(let products):
-                if let product = products.first(where: { $0.productIdentifier == annualID }) {
+                if let product = products.first(where: { $0.id == annualID }) {
                     self.logProductInfo(product, source: "annualProductID")
                     completion(.success(product))
                 } else {
@@ -137,8 +149,8 @@ final class ElaProIAPManager: NSObject {
             }
         }
     }
-    
-    func fetchMonthProduct(completion: @escaping (Result<SKProduct, Error>) -> Void) {
+
+    func fetchMonthProduct(completion: @escaping (Result<Product, Error>) -> Void) {
         let monthID = ElaProIAPConfig.monthProductID.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !monthID.isEmpty else {
             completion(.failure(ElaProIAPError.productUnavailable))
@@ -147,7 +159,7 @@ final class ElaProIAPManager: NSObject {
         fetchProducts(ids: [monthID], forceRefresh: false) { result in
             switch result {
             case .success(let products):
-                if let product = products.first(where: { $0.productIdentifier == monthID }) {
+                if let product = products.first(where: { $0.id == monthID }) {
                     self.logProductInfo(product, source: "monthProductID")
                     completion(.success(product))
                 } else {
@@ -158,33 +170,32 @@ final class ElaProIAPManager: NSObject {
             }
         }
     }
-    
+
     func fetchProProducts(productIDs: [String]? = nil,
-                          completion: @escaping (Result<[SKProduct], Error>) -> Void) {
+                          completion: @escaping (Result<[Product], Error>) -> Void) {
         let requestedProductIDs = (productIDs?.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } ?? [
             ElaProIAPConfig.monthProductID,
             ElaProIAPConfig.annualProductID,
             ElaProIAPConfig.lifetimeProductID
         ]).filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-        
+
         guard !requestedProductIDs.isEmpty else {
             completion(.failure(ElaProIAPError.productUnavailable))
             return
         }
-        
-        fetchProducts(ids: requestedProductIDs,
-                      forceRefresh: false) { result in
+
+        fetchProducts(ids: requestedProductIDs, forceRefresh: false) { result in
             if case .success(let products) = result {
                 if requestedProductIDs.contains(ElaProIAPConfig.monthProductID),
-                   let month = products.first(where: { $0.productIdentifier == ElaProIAPConfig.monthProductID }) {
+                   let month = products.first(where: { $0.id == ElaProIAPConfig.monthProductID }) {
                     self.logProductInfo(month, source: "monthProductID")
                 }
                 if requestedProductIDs.contains(ElaProIAPConfig.annualProductID),
-                   let annual = products.first(where: { $0.productIdentifier == ElaProIAPConfig.annualProductID }) {
+                   let annual = products.first(where: { $0.id == ElaProIAPConfig.annualProductID }) {
                     self.logProductInfo(annual, source: "annualProductID")
                 }
                 if requestedProductIDs.contains(ElaProIAPConfig.lifetimeProductID),
-                   let lifetime = products.first(where: { $0.productIdentifier == ElaProIAPConfig.lifetimeProductID }) {
+                   let lifetime = products.first(where: { $0.id == ElaProIAPConfig.lifetimeProductID }) {
                     self.logProductInfo(lifetime, source: "lifetimeProductID")
                 }
             }
@@ -192,7 +203,7 @@ final class ElaProIAPManager: NSObject {
         }
     }
 
-    func fetchLifetimeProduct(completion: @escaping (Result<SKProduct, Error>) -> Void) {
+    func fetchLifetimeProduct(completion: @escaping (Result<Product, Error>) -> Void) {
         let lifetimeID = ElaProIAPConfig.lifetimeProductID.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !lifetimeID.isEmpty else {
             completion(.failure(ElaProIAPError.productUnavailable))
@@ -201,7 +212,7 @@ final class ElaProIAPManager: NSObject {
         fetchProducts(ids: [lifetimeID], forceRefresh: false) { result in
             switch result {
             case .success(let products):
-                if let product = products.first(where: { $0.productIdentifier == lifetimeID }) {
+                if let product = products.first(where: { $0.id == lifetimeID }) {
                     self.logProductInfo(product, source: "lifetimeProductID")
                     completion(.success(product))
                 } else {
@@ -212,16 +223,16 @@ final class ElaProIAPManager: NSObject {
             }
         }
     }
-    
-    func purchaseAnnual(completion: @escaping (Result<SKPaymentTransaction, Error>) -> Void) {
+
+    func purchaseAnnual(completion: @escaping (Result<Transaction, Error>) -> Void) {
         purchase(productID: ElaProIAPConfig.annualProductID, completion: completion)
     }
-    
-    func purchaseMonth(completion: @escaping (Result<SKPaymentTransaction, Error>) -> Void) {
+
+    func purchaseMonth(completion: @escaping (Result<Transaction, Error>) -> Void) {
         purchase(productID: ElaProIAPConfig.monthProductID, completion: completion)
     }
 
-    func purchaseLifetime(completion: @escaping (Result<SKPaymentTransaction, Error>) -> Void) {
+    func purchaseLifetime(completion: @escaping (Result<Transaction, Error>) -> Void) {
         purchase(productID: ElaProIAPConfig.lifetimeProductID, completion: completion)
     }
 
@@ -278,11 +289,6 @@ final class ElaProIAPManager: NSObject {
 
     func beginRefundDebugFlow(in scene: UIWindowScene,
                               completion: @escaping (Result<String, Error>) -> Void) {
-        guard #available(iOS 15.0, *) else {
-            completion(.failure(ElaProRefundDebugError.storeKit2Unavailable))
-            return
-        }
-
         let productIDs = configuredRefundProductIDs()
         refundDebugSession = RefundDebugSession(productID: productIDs.first ?? "<unknown>",
                                                transactionID: "<pending>")
@@ -340,12 +346,6 @@ final class ElaProIAPManager: NSObject {
             return
         }
 
-        guard #available(iOS 15.0, *) else {
-            DLLog(message: "[ElaProIAP][HISTORY] skip check: StoreKit2 unavailable, productID=\(trimmedProductID)")
-            completion(.unknown)
-            return
-        }
-
         DLLog(message: "[ElaProIAP][HISTORY] start check, productID=\(trimmedProductID)")
         Task {
             let state = await self.subscriptionHistoryStateStoreKit2(productID: trimmedProductID)
@@ -355,35 +355,32 @@ final class ElaProIAPManager: NSObject {
             }
         }
     }
-    
-    func localizedPriceString(for product: SKProduct) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = product.priceLocale
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = max(2, formatter.maximumFractionDigits)
-        return formatter.string(from: product.price) ?? "\(product.price)"
+
+    func localizedPriceString(for product: Product) -> String {
+        return product.displayPrice
     }
-    
+
     func updateProductIDs(month: String, annual: String, lifetime: String) {
-        let monthID = month.trimmingCharacters(in: .whitespacesAndNewlines)
-        let annualID = annual.trimmingCharacters(in: .whitespacesAndNewlines)
-        let lifetimeID = lifetime.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        ElaProIAPConfig.monthProductID = monthID
-        ElaProIAPConfig.annualProductID = annualID
-        ElaProIAPConfig.lifetimeProductID = lifetimeID
+        ElaProIAPConfig.monthProductID = month.trimmingCharacters(in: .whitespacesAndNewlines)
+        ElaProIAPConfig.annualProductID = annual.trimmingCharacters(in: .whitespacesAndNewlines)
+        ElaProIAPConfig.lifetimeProductID = lifetime.trimmingCharacters(in: .whitespacesAndNewlines)
         cachedProducts.removeAll()
     }
-    
-    func handlePurchaseSuccessPostAction(transaction: SKPaymentTransaction,
+
+    func handlePurchaseSuccessPostAction(transaction: Transaction,
                                          queryBizType: String = PurchaseQueryBizType.standard.rawValue,
                                          completion: ((PurchasePostActionOutcome) -> Void)? = nil) {
-        let payload = makePurchaseVerifyPayload(transaction: transaction, localUnlockExpireAt: Date())
+        let localUnlockExpireAt = applyLocalTemporaryUnlock(transaction: transaction)
+        let payload = makePurchaseVerifyPayload(transaction: transaction, localUnlockExpireAt: localUnlockExpireAt)
         appendRefundDebugLog("购买成功，已生成验单载荷", payload: payload)
         cachePendingVerifyPayload(payload: payload)
-        storePendingTransactionID(transaction.transactionIdentifier)
+        storePendingTransactionID(String(transaction.id))
         storePendingVerifyPayloadInKeychain(payload: payload)
+
+        Task {
+            await transaction.finish()
+        }
+
         if canBindPurchaseToCurrentUser() {
             let resolvedQueryBizType = resolveQueryBizType(queryBizType, defaultType: .standard)
             bindPendingPurchaseIfNeeded(queryBizType: resolvedQueryBizType) { success in
@@ -393,7 +390,6 @@ final class ElaProIAPManager: NSObject {
             DLLog(message: "[ElaProIAP][QUERY] deferred until login: user not ready")
             completion?(.pendingLoginBind)
         }
-        uploadPurchaseVerifyPayloadTODO(payload: payload)
     }
 
     func isLocalProUnlocked() -> Bool {
@@ -421,91 +417,371 @@ final class ElaProIAPManager: NSObject {
             return
         }
 
-        guard let transactionID = readPendingTransactionID(),
-              !transactionID.isEmpty else {
-            completion?(true)
-            return
-        }
+        bindAnonymousIdentityIfNeeded { bindSuccess in
+            guard let transactionID = self.readPendingTransactionID(),
+                  !transactionID.isEmpty else {
+                completion?(bindSuccess)
+                return
+            }
 
-        let resolvedQueryBizType = resolveQueryBizType(queryBizType, defaultType: .pendingBind)
-        queryPurchaseOrder(transactionID: transactionID, bizType: resolvedQueryBizType) { success in
-            completion?(success)
+            let resolvedQueryBizType = self.resolveQueryBizType(queryBizType, defaultType: .pendingBind)
+            self.queryPurchaseOrder(transactionID: transactionID, bizType: resolvedQueryBizType) { querySuccess in
+                completion?(bindSuccess || querySuccess)
+            }
         }
     }
-    
+
+    func restorePurchases(completion: @escaping (Result<ElaProRestorePurchaseOutcome, Error>) -> Void) {
+        Task {
+            do {
+                DLLog(message: "[ElaProIAP][RESTORE] start AppStore.sync")
+                try await AppStore.sync()
+                DLLog(message: "[ElaProIAP][RESTORE] AppStore.sync finished")
+
+                let transactions = await activeRestorableEntitlementTransactions()
+                guard let transaction = latestTransaction(from: transactions) else {
+                    DispatchQueue.main.async {
+                        completion(.success(.notFound))
+                    }
+                    return
+                }
+
+                handleRestorePurchasePostAction(transaction: transaction,
+                                                restoredTransactions: transactions) { outcome in
+                    completion(.success(outcome))
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+
     private func fetchProducts(ids: [String],
                                forceRefresh: Bool,
-                               completion: @escaping (Result<[SKProduct], Error>) -> Void) {
+                               completion: @escaping (Result<[Product], Error>) -> Void) {
         let idSet = Set(ids.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty })
         guard !idSet.isEmpty else {
             completion(.failure(ElaProIAPError.productUnavailable))
             return
         }
+
         if !forceRefresh, idSet.allSatisfy({ cachedProducts[$0] != nil }) {
             completion(.success(idSet.compactMap { cachedProducts[$0] }))
             return
         }
-        
-        fetchCompletions.append(completion)
-        if productsRequest != nil { return }
-        
-        let request = SKProductsRequest(productIdentifiers: idSet)
-        productsRequest = request
-        request.delegate = self
-        request.start()
+
+        Task {
+            do {
+                let products = try await Product.products(for: Array(idSet))
+                for product in products {
+                    self.cachedProducts[product.id] = product
+                }
+                completion(products.isEmpty ? .failure(ElaProIAPError.productUnavailable) : .success(products))
+            } catch {
+                completion(.failure(error))
+            }
+        }
     }
-    
+
     private func purchase(productID: String,
-                          completion: @escaping (Result<SKPaymentTransaction, Error>) -> Void) {
+                          completion: @escaping (Result<Transaction, Error>) -> Void) {
         let trimmedProductID = productID.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedProductID.isEmpty else {
             completion(.failure(ElaProIAPError.productUnavailable))
             return
         }
-        
-        guard SKPaymentQueue.canMakePayments() else {
-            completion(.failure(ElaProIAPError.paymentsDisabled))
-            return
-        }
-        
-        guard purchaseCompletion == nil else {
+
+        guard purchaseTask == nil else {
             completion(.failure(ElaProIAPError.purchaseBusy))
             return
         }
-        
-        fetchProducts(ids: [trimmedProductID], forceRefresh: false) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let products):
-                guard let product = products.first(where: { $0.productIdentifier == trimmedProductID }) else {
+
+        purchaseTask = Task {
+            defer { self.purchaseTask = nil }
+
+            do {
+                let identity = try await ensurePurchaseIdentity()
+                guard let appAccountUUID = normalizedAppAccountUUID(from: identity.appAccountToken) else {
+                    DLLog(message: [
+                        "tag": "[ElaProIAP][IDENTITY] purchase invalid appAccountToken",
+                        "anonymousUid": identity.anonymousUid,
+                        "appAccountToken": identity.appAccountToken
+                    ])
+                    clearAnonymousIdentity()
+                    completion(.failure(ElaProIAPError.invalidAppAccountToken))
+                    return
+                }
+
+                let products = try await Product.products(for: [trimmedProductID])
+                guard let product = products.first(where: { $0.id == trimmedProductID }) else {
                     completion(.failure(ElaProIAPError.productUnavailable))
                     return
                 }
-                self.purchaseCompletion = completion
-                self.purchasingProductID = trimmedProductID
-                
-                let payment = SKMutablePayment(product: product)
-                SKPaymentQueue.default().add(payment)
-            case .failure(let error):
+                self.cachedProducts[product.id] = product
+
+                let result = try await product.purchase(options: [.appAccountToken(appAccountUUID)])
+                switch result {
+                case .success(let verification):
+                    switch verification {
+                    case .verified(let transaction):
+                        logAppleTransaction(transaction, source: "purchase verified")
+                        completion(.success(transaction))
+                    case .unverified(let transaction, let error):
+                        DLLog(message: [
+                            "tag": "[ElaProIAP][APPLE_TRANSACTION] purchase unverified",
+                            "error": error.localizedDescription,
+                            "transaction": appleTransactionLogPayload(transaction)
+                        ])
+                        completion(.failure(error))
+                    }
+                case .userCancelled:
+                    completion(.failure(ElaProIAPError.cancelled))
+                case .pending:
+                    completion(.failure(ElaProIAPError.pendingApproval))
+                @unknown default:
+                    completion(.failure(ElaProIAPError.unknown("交易状态异常")))
+                }
+            } catch {
                 completion(.failure(error))
             }
         }
     }
-    
-    private func resolveFetch(result: Result<[SKProduct], Error>) {
-        let callbacks = fetchCompletions
-        fetchCompletions.removeAll()
-        callbacks.forEach { $0(result) }
-    }
-    
-    private func resolvePurchase(result: Result<SKPaymentTransaction, Error>) {
-        let completion = purchaseCompletion
-        purchaseCompletion = nil
-        purchasingProductID = nil
-        completion?(result)
+
+    private func ensurePurchaseIdentity() async throws -> AnonymousIdentity {
+        if let cachedIdentity = currentAnonymousIdentity() {
+            if normalizedAppAccountUUID(from: cachedIdentity.appAccountToken) != nil {
+                return cachedIdentity
+            }
+            DLLog(message: "[ElaProIAP][IDENTITY] cached appAccountToken invalid, clear and refetch. token=\(cachedIdentity.appAccountToken)")
+            clearAnonymousIdentity()
+        }
+        return try await requestAnonymousIdentity()
     }
 
-    @available(iOS 15.0, *)
+    private func requestAnonymousIdentity() async throws -> AnonymousIdentity {
+        try await withCheckedThrowingContinuation { continuation in
+            let params: [String: AnyObject] = [
+                "device_install_id": deviceInstallID() as AnyObject,
+                "app_version": appVersion() as AnyObject,
+                "app_build": appBuild() as AnyObject
+            ]
+
+            WHNetworkUtil.shareManager().POST(urlString: URL_iap_dientity, parameters: params, success: { responseObject in
+                let code = responseObject["code"] as? Int ?? -1
+                let dataEncString = responseObject["data"]as? String ?? ""
+                let dataDecString = AESEncyptUtil.aesDecrypt(hexString: dataEncString)
+                let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataDecString ?? "")
+                
+                DLLog(message: "URL_iap_dientity:\(dataObj)")
+                
+                guard code == 200 else {
+                    let message = responseObject["message"] as? String ?? "订阅身份初始化失败"
+                    continuation.resume(throwing: ElaProIAPError.unknown(message))
+                    return
+                }
+
+                let decodedPayload = self.decodedIdentityPayload(from: responseObject)
+                DLLog(message: [
+                    "tag": "[ElaProIAP][IDENTITY] identity/init decoded payload",
+                    "payload": decodedPayload ?? "nil"
+                ])
+
+                guard let identity = self.parseAnonymousIdentity(from: responseObject) else {
+                    continuation.resume(throwing: ElaProIAPError.identityUnavailable)
+                    return
+                }
+
+                guard let normalizedUUID = self.normalizedAppAccountUUID(from: identity.appAccountToken) else {
+                    DLLog(message: [
+                        "tag": "[ElaProIAP][IDENTITY] identity/init invalid appAccountToken",
+                        "anonymousUid": identity.anonymousUid,
+                        "appAccountToken": identity.appAccountToken
+                    ])
+                    continuation.resume(throwing: ElaProIAPError.invalidAppAccountToken)
+                    return
+                }
+
+                let normalizedIdentity = AnonymousIdentity(anonymousUid: identity.anonymousUid,
+                                                           appAccountToken: normalizedUUID.uuidString.lowercased(),
+                                                           expiresAt: identity.expiresAt,
+                                                           boundUID: identity.boundUID)
+                self.storeAnonymousIdentity(normalizedIdentity)
+                self.appendRefundDebugLog("订阅匿名身份初始化成功", payload: [
+                    "anonymousUid": normalizedIdentity.anonymousUid,
+                    "appAccountToken": normalizedIdentity.appAccountToken
+                ])
+                continuation.resume(returning: normalizedIdentity)
+            }, failure: { failed in
+                continuation.resume(throwing: ElaProIAPError.unknown("订阅身份初始化失败"))
+                self.appendRefundDebugLog("订阅匿名身份初始化失败", payload: [
+                    "failed": failed
+                ])
+            })
+        }
+    }
+
+    private func parseAnonymousIdentity(from responseObject: [AnyHashable: Any]) -> AnonymousIdentity? {
+        let rawData = decodedIdentityPayload(from: responseObject)
+        let payload: [String: Any]?
+        if let array = rawData as? [[String: Any]], let first = array.first {
+            payload = first
+        } else if let dict = rawData as? [String: Any] {
+            payload = dict
+        } else if let array = rawData as? NSArray, let first = array.firstObject as? [String: Any] {
+            payload = first
+        } else if let dict = rawData as? NSDictionary {
+            payload = dict as? [String: Any]
+        } else {
+            payload = nil
+        }
+
+        guard let payload else { return nil }
+
+        let anonymousUid = (payload["anonymousUid"] as? String)
+        ?? (payload["anonymous_user_id"] as? String)
+        ?? (payload["anonymousUserId"] as? String)
+        ?? ""
+
+        let appAccountToken = (payload["appAccountToken"] as? String)
+        ?? (payload["app_account_token"] as? String)
+        ?? ""
+
+        guard !anonymousUid.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              !appAccountToken.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return nil
+        }
+
+        let expiresAt = (payload["expiresAt"] as? String) ?? (payload["expires_at"] as? String)
+        let boundUID = (payload["boundUid"] as? String) ?? (payload["bound_uid"] as? String)
+        return AnonymousIdentity(anonymousUid: anonymousUid,
+                                 appAccountToken: appAccountToken,
+                                 expiresAt: expiresAt,
+                                 boundUID: boundUID)
+    }
+
+    private func decodedIdentityPayload(from responseObject: [AnyHashable: Any]) -> Any? {
+        if let encryptedPayload = responseObject["data"] as? String {
+            let trimmedPayload = encryptedPayload.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmedPayload.isEmpty else { return nil }
+
+            if let decryptedString = AESEncyptUtil.aesDecrypt(hexString: trimmedPayload)?
+                .trimmingCharacters(in: .whitespacesAndNewlines),
+               let payload = jsonObject(from: decryptedString) {
+                return payload
+            }
+
+            if let payload = jsonObject(from: trimmedPayload) {
+                return payload
+            }
+
+            return nil
+        }
+
+        return responseObject["data"]
+    }
+
+    private func jsonObject(from jsonString: String) -> Any? {
+        guard !jsonString.isEmpty, let data = jsonString.data(using: .utf8) else {
+            return nil
+        }
+        return try? JSONSerialization.jsonObject(with: data, options: [.mutableContainers])
+    }
+
+    private func normalizedAppAccountUUID(from rawToken: String) -> UUID? {
+        let trimmedToken = rawToken.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedToken.isEmpty else { return nil }
+
+        let normalizedToken = trimmedToken
+            .replacingOccurrences(of: "\"", with: "")
+            .replacingOccurrences(of: "{", with: "")
+            .replacingOccurrences(of: "}", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        return UUID(uuidString: normalizedToken)
+    }
+
+    private func currentAnonymousIdentity() -> AnonymousIdentity? {
+        let defaults = UserDefaults.standard
+        let anonymousUid = defaults.string(forKey: LocalUnlockKeys.anonymousUID)?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let appAccountToken = defaults.string(forKey: LocalUnlockKeys.appAccountToken)?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        guard !anonymousUid.isEmpty, !appAccountToken.isEmpty else {
+            return nil
+        }
+        let expiresAt = defaults.string(forKey: LocalUnlockKeys.anonymousIdentityExpiresAt)
+        let boundUID = defaults.string(forKey: LocalUnlockKeys.anonymousIdentityBoundUID)
+        return AnonymousIdentity(anonymousUid: anonymousUid,
+                                 appAccountToken: appAccountToken,
+                                 expiresAt: expiresAt,
+                                 boundUID: boundUID)
+    }
+
+    private func storeAnonymousIdentity(_ identity: AnonymousIdentity) {
+        let defaults = UserDefaults.standard
+        defaults.set(identity.anonymousUid, forKey: LocalUnlockKeys.anonymousUID)
+        defaults.set(identity.appAccountToken, forKey: LocalUnlockKeys.appAccountToken)
+        defaults.set(identity.expiresAt, forKey: LocalUnlockKeys.anonymousIdentityExpiresAt)
+        defaults.set(identity.boundUID, forKey: LocalUnlockKeys.anonymousIdentityBoundUID)
+    }
+
+    private func clearAnonymousIdentity() {
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: LocalUnlockKeys.anonymousUID)
+        defaults.removeObject(forKey: LocalUnlockKeys.appAccountToken)
+        defaults.removeObject(forKey: LocalUnlockKeys.anonymousIdentityExpiresAt)
+        defaults.removeObject(forKey: LocalUnlockKeys.anonymousIdentityBoundUID)
+    }
+
+    private func markAnonymousIdentityBoundToCurrentUser() {
+        let currentUID = currentUserID()
+        guard !currentUID.isEmpty else { return }
+        UserDefaults.standard.set(currentUID, forKey: LocalUnlockKeys.anonymousIdentityBoundUID)
+    }
+
+    private func bindAnonymousIdentityIfNeeded(completion: @escaping (Bool) -> Void) {
+        guard let identity = currentAnonymousIdentity() else {
+            completion(true)
+            return
+        }
+        guard !identity.isBoundToCurrentUser else {
+            completion(true)
+            return
+        }
+
+        let params: [String: AnyObject] = [
+            "anonymousUid": identity.anonymousUid as AnyObject,
+            "appAccountToken": identity.appAccountToken as AnyObject
+        ]
+
+        WHNetworkUtil.shareManager().POST(urlString: URL_iap_dientity_bind, parameters: params, success: { responseObject in
+            let code = responseObject["code"] as? Int ?? -1
+            let dataEncString = responseObject["data"]as? String ?? ""
+            let dataDecString = AESEncyptUtil.aesDecrypt(hexString: dataEncString)
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataDecString ?? "")
+            
+            DLLog(message: "URL_iap_dientity:\(dataObj)")
+            self.appendRefundDebugLog("匿名身份绑定返回", payload: [
+                "code": code,
+                "response": responseObject
+            ])
+            if code == 200 {
+                self.markAnonymousIdentityBoundToCurrentUser()
+                NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
+                completion(true)
+            } else {
+                completion(false)
+            }
+        }, failure: { failed in
+            self.appendRefundDebugLog("匿名身份绑定失败", payload: [
+                "failed": failed
+            ])
+            completion(false)
+        })
+    }
+
     private func subscriptionHistoryStateStoreKit2(productID: String) async -> ElaProSubscriptionHistoryState {
         do {
             DLLog(message: "[ElaProIAP][HISTORY] load products from StoreKit2, productID=\(productID)")
@@ -541,6 +817,100 @@ final class ElaProIAPManager: NSObject {
         }
     }
 
+    private func activeRestorableEntitlementTransactions() async -> [Transaction] {
+        let restorableProductIDs = configuredIAPProductIDs()
+        guard !restorableProductIDs.isEmpty else {
+            DLLog(message: "[ElaProIAP][RESTORE] no configured product ids")
+            return []
+        }
+
+        var transactions: [Transaction] = []
+        for await result in Transaction.currentEntitlements {
+            switch result {
+            case .verified(let transaction):
+                logAppleTransaction(transaction, source: "restore currentEntitlements verified")
+                guard restorableProductIDs.contains(transaction.productID),
+                      isActiveRestorableTransaction(transaction) else {
+                    DLLog(message: [
+                        "tag": "[ElaProIAP][RESTORE] skip entitlement",
+                        "reason": "product not configured or inactive",
+                        "transaction": appleTransactionLogPayload(transaction)
+                    ])
+                    continue
+                }
+
+                transactions.append(transaction)
+            case .unverified(let transaction, let error):
+                DLLog(message: [
+                    "tag": "[ElaProIAP][RESTORE] unverified entitlement",
+                    "error": error.localizedDescription,
+                    "transaction": appleTransactionLogPayload(transaction)
+                ])
+            }
+        }
+
+        if transactions.isEmpty {
+            DLLog(message: "[ElaProIAP][RESTORE] no active entitlement found")
+        } else {
+            DLLog(message: [
+                "tag": "[ElaProIAP][RESTORE] active entitlement transactions",
+                "count": transactions.count,
+                "transactions": transactions.map { appleTransactionLogPayload($0) }
+            ])
+        }
+        return transactions
+    }
+
+    private func latestTransaction(from transactions: [Transaction]) -> Transaction? {
+        return transactions.max { $0.purchaseDate < $1.purchaseDate }
+    }
+
+    private func isActiveRestorableTransaction(_ transaction: Transaction) -> Bool {
+        guard transaction.revocationDate == nil, !transaction.isUpgraded else {
+            return false
+        }
+
+        if let expirationDate = transaction.expirationDate {
+            return expirationDate > Date()
+        }
+        return true
+    }
+
+    private func handleRestorePurchasePostAction(transaction: Transaction,
+                                                 restoredTransactions: [Transaction],
+                                                 completion: @escaping (ElaProRestorePurchaseOutcome) -> Void) {
+        let localUnlockExpireAt = applyLocalTemporaryUnlock(transaction: transaction)
+        let payload = makePurchaseVerifyPayload(transaction: transaction, localUnlockExpireAt: localUnlockExpireAt)
+        appendRefundDebugLog("恢复购买，已生成验单载荷", payload: payload)
+        cachePendingVerifyPayload(payload: payload)
+        storePendingTransactionID(String(transaction.id))
+        storePendingVerifyPayloadInKeychain(payload: payload)
+
+        guard canBindPurchaseToCurrentUser() else {
+            DispatchQueue.main.async {
+                completion(.pendingLoginBind)
+            }
+            return
+        }
+
+        reportRestoredTransactionsToServer(transactions: restoredTransactions) { restoreSuccess in
+            self.bindPendingPurchaseIfNeeded(queryBizType: PurchaseQueryBizType.standard.rawValue) { bindSuccess in
+                DispatchQueue.main.async {
+                    completion((restoreSuccess || bindSuccess) ? .restored : .pendingServerSync)
+                }
+            }
+        }
+    }
+
+    private func configuredIAPProductIDs() -> Set<String> {
+        return Set([
+            ElaProIAPConfig.monthProductID,
+            ElaProIAPConfig.annualProductID,
+            ElaProIAPConfig.lifetimeProductID
+        ].map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty })
+    }
+
     private func debugDescription(for state: ElaProSubscriptionHistoryState) -> String {
         switch state {
         case .subscribed:
@@ -551,38 +921,37 @@ final class ElaProIAPManager: NSObject {
             return "unknown"
         }
     }
-    
-    private func applyLocalTemporaryUnlock(transaction: SKPaymentTransaction) -> Date {
+
+    private func applyLocalTemporaryUnlock(transaction: Transaction) -> Date {
         let now = Date()
-        let productID = transaction.payment.productIdentifier
+        let productID = transaction.productID
         let expireAt = now.addingTimeInterval(localUnlockDuration(productID: productID))
         let defaults = UserDefaults.standard
-        
+
         defaults.set(true, forKey: LocalUnlockKeys.isUnlocked)
         defaults.set(currentUserID(), forKey: LocalUnlockKeys.uid)
         defaults.set(productID, forKey: LocalUnlockKeys.productID)
-        defaults.set(transaction.transactionIdentifier ?? "", forKey: LocalUnlockKeys.transactionID)
+        defaults.set(String(transaction.id), forKey: LocalUnlockKeys.transactionID)
         defaults.set(Int64(now.timeIntervalSince1970 * 1000), forKey: LocalUnlockKeys.unlockAtMs)
         defaults.set(Int64(expireAt.timeIntervalSince1970 * 1000), forKey: LocalUnlockKeys.expireAtMs)
         defaults.set("iap_purchase_success", forKey: LocalUnlockKeys.source)
-        
+
         NotificationCenter.default.post(name: Self.localEntitlementUpdatedNotification, object: nil)
         return expireAt
     }
-    
+
     private func clearExpiredLocalUnlockIfNeeded() {
         let defaults = UserDefaults.standard
         let expireAtMs = Int64(defaults.double(forKey: LocalUnlockKeys.expireAtMs))
         if expireAtMs <= 0 { return }
-        
+
         let nowMs = Int64(Date().timeIntervalSince1970 * 1000)
         guard nowMs >= expireAtMs else { return }
-        
+
         clearLocalUnlock(defaults: defaults, shouldNotify: true)
     }
-    
+
     private func localUnlockDuration(productID: String) -> TimeInterval {
-        // 本地先做临时放行，最终以后台验单结果为准
         if productID == ElaProIAPConfig.monthProductID ||
             productID == ElaProIAPConfig.annualProductID ||
             productID == ElaProIAPConfig.lifetimeProductID {
@@ -590,33 +959,34 @@ final class ElaProIAPManager: NSObject {
         }
         return 3 * 24 * 60 * 60
     }
-    
-    private func makePurchaseVerifyPayload(transaction: SKPaymentTransaction,
+
+    private func makePurchaseVerifyPayload(transaction: Transaction,
                                            localUnlockExpireAt: Date) -> [String: Any] {
-        let txDate = transaction.transactionDate ?? Date()
-        let oriTx = transaction.original ?? transaction
-        let oriTxDate = oriTx.transactionDate ?? txDate
         let now = Date()
-        
+        let identity = currentAnonymousIdentity()
+
         return [
             "userId": UserInfoModel.shared.uId,
-            "productId": transaction.payment.productIdentifier,
-            "transactionId": transaction.transactionIdentifier ?? "",
-            "originalTransactionId": oriTx.transactionIdentifier ?? "",
-            "transactionDateMs": Int64(txDate.timeIntervalSince1970 * 1000),
-            "originalTransactionDateMs": Int64(oriTxDate.timeIntervalSince1970 * 1000),
+            "anonymousUid": identity?.anonymousUid ?? "",
+            "appAccountToken": identity?.appAccountToken ?? transaction.appAccountToken?.uuidString.lowercased() ?? "",
+            "productId": transaction.productID,
+            "transactionId": String(transaction.id),
+            "originalTransactionId": String(transaction.originalID),
+            "transactionDateMs": Int64(transaction.purchaseDate.timeIntervalSince1970 * 1000),
+            "originalTransactionDateMs": Int64(transaction.originalPurchaseDate.timeIntervalSince1970 * 1000),
             "subscriptionGroupName": ElaProIAPConfig.subscriptionGroupName,
             "subscriptionGroupId": ElaProIAPConfig.subscriptionGroupID,
             "receiptBase64": loadReceiptBase64(),
             "receiptEnvironmentHint": receiptEnvironmentHint(),
             "appBundleId": Bundle.main.bundleIdentifier ?? "",
-            "appVersion": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "",
-            "appBuild": Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "",
+            "appVersion": appVersion(),
+            "appBuild": appBuild(),
+            "deviceInstallID": deviceInstallID(),
             "clientTimestampMs": Int64(now.timeIntervalSince1970 * 1000),
             "localUnlockExpireAtMs": Int64(localUnlockExpireAt.timeIntervalSince1970 * 1000)
         ]
     }
-    
+
     private func cachePendingVerifyPayload(payload: [String: Any]) {
         let json = WHUtils.getJSONStringFromDictionary(dictionary: payload as NSDictionary)
         UserDefaults.standard.set(json, forKey: LocalUnlockKeys.pendingVerifyPayload)
@@ -638,15 +1008,24 @@ final class ElaProIAPManager: NSObject {
             DLLog(message: "[ElaProIAP][KEYCHAIN] save payload failed: \(status)")
         }
     }
-    
+
     private func queryPurchaseOrder(transactionID: String,
                                     bizType: String,
                                     completion: ((Bool) -> Void)? = nil) {
-        let params: [String: AnyObject] = [
+        let identity = currentAnonymousIdentity()
+        var params: [String: AnyObject] = [
             "transactionId": transactionID as AnyObject,
             "bizType": bizType as AnyObject
         ]
-        
+        if let identity {
+            params["anonymousUid"] = identity.anonymousUid as AnyObject
+            params["appAccountToken"] = identity.appAccountToken as AnyObject
+        }
+        let uid = currentUserID()
+        if !uid.isEmpty {
+            params["uid"] = uid as AnyObject
+        }
+
         WHNetworkUtil.shareManager().POST(urlString: URL_pro_iap_query,
                                           parameters: params,
                                           success: { responseObject in
@@ -658,9 +1037,6 @@ final class ElaProIAPManager: NSObject {
                 "code": code,
                 "response": responseObject
             ])
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
-            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "[ElaProIAP][QUERY] success:\(dataDict)")
             if code == 200 {
                 self.clearPendingTransactionAfterBindSuccess(transactionID: transactionID)
                 NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
@@ -676,6 +1052,75 @@ final class ElaProIAPManager: NSObject {
                 "failed": failed
             ])
             completion?(false)
+        })
+    }
+
+    private func reportRestoredTransactionsToServer(transactions: [Transaction],
+                                                    completion: @escaping (Bool) -> Void) {
+        let transactionArray = NSMutableArray()
+        transactions.forEach { transaction in
+            transactionArray.add([
+                "transactionId": String(transaction.id)
+            ])
+        }
+
+        guard transactionArray.count > 0 else {
+            DLLog(message: "[ElaProIAP][RESTORE] skip URL_iap_dientity_restore: empty transactions")
+            completion(false)
+            return
+        }
+
+        let params: [String: AnyObject] = [
+            "transactions": transactionArray
+        ]
+
+        DLLog(message: [
+            "tag": "[ElaProIAP][RESTORE] request URL_iap_dientity_restore",
+            "url": URL_iap_dientity_restore,
+            "params": [
+                "transactions": transactionArray
+            ]
+        ])
+        appendRefundDebugLog("恢复购买，上报恢复交易数组", payload: [
+            "url": URL_iap_dientity_restore,
+            "transactions": transactionArray
+        ])
+
+        WHNetworkUtil.shareManager().POST(urlString: URL_iap_dientity_restore,
+                                          parameters: params,
+                                          success: { responseObject in
+            let code = responseObject["code"] as? Int ?? -1
+            let decodedData = self.decodedIdentityPayload(from: responseObject)
+            DLLog(message: [
+                "tag": "[ElaProIAP][RESTORE] URL_iap_dientity_restore success",
+                "url": URL_iap_dientity_restore,
+                "code": code,
+                "decodedData": decodedData ?? "nil",
+                "response": responseObject
+            ])
+            self.appendRefundDebugLog("恢复购买接口返回", payload: [
+                "url": URL_iap_dientity_restore,
+                "code": code,
+                "decodedData": decodedData ?? "nil",
+                "response": responseObject
+            ])
+            if code == 200 {
+                NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
+                completion(true)
+            } else {
+                completion(false)
+            }
+        }, failure: { failed in
+            DLLog(message: [
+                "tag": "[ElaProIAP][RESTORE] URL_iap_dientity_restore failure",
+                "url": URL_iap_dientity_restore,
+                "failed": failed
+            ])
+            self.appendRefundDebugLog("恢复购买接口失败", payload: [
+                "url": URL_iap_dientity_restore,
+                "failed": failed
+            ])
+            completion(false)
         })
     }
 
@@ -795,21 +1240,9 @@ final class ElaProIAPManager: NSObject {
         ]
         SecItemDelete(query as CFDictionary)
     }
-    
-    private func uploadPurchaseVerifyPayloadTODO(payload: [String: Any]) {
-        // TODO(iap-backend): 对接苹果内购凭证确认接口，接口名先占位为 `URL_pro_iap_purchase_confirm`
-        // TODO(iap-backend): 请求体建议至少包含 userId/productId/transactionId/originalTransactionId/receiptBase64
-        // TODO(iap-backend): 后台返回最终会员状态后，需覆盖本地临时解锁状态
-        DLLog(message: "[ElaProIAP][TODO_UPLOAD] payload=\(payload)")
-        appendRefundDebugLog("客户端验单上传占位日志", payload: payload)
-
-        // 预留调用形式（后台接口就绪后放开）：
-        // WHNetworkUtil.shareManager().POST(urlString: URL_pro_iap_purchase_confirm,
-        //                                  parameters: payload as [String : AnyObject]) { _ in }
-    }
 
     private func configuredRefundProductIDs() -> [String] {
-        return [
+        [
             ElaProIAPConfig.monthProductID,
             ElaProIAPConfig.annualProductID,
             ElaProIAPConfig.lifetimeProductID
@@ -817,7 +1250,6 @@ final class ElaProIAPManager: NSObject {
             .filter { !$0.isEmpty }
     }
 
-    @available(iOS 15.0, *)
     private func latestRefundableTransaction(productIDs: [String]) async throws -> Transaction {
         guard !productIDs.isEmpty else {
             throw ElaProRefundDebugError.noConfiguredProductID
@@ -890,6 +1322,35 @@ final class ElaProIAPManager: NSObject {
                                                object: nil)
     }
 
+    private func startObservingTransactionUpdates() {
+        transactionUpdatesTask?.cancel()
+        transactionUpdatesTask = Task.detached(priority: .background) { [weak self] in
+            guard let self else { return }
+            for await update in Transaction.updates {
+                switch update {
+                case .verified(let transaction):
+                    self.logAppleTransaction(transaction, source: "Transaction.updates verified")
+                    self.appendRefundDebugLog("StoreKit2 收到交易更新", payload: [
+                        "productID": transaction.productID,
+                        "transactionID": String(transaction.id),
+                        "originalTransactionID": String(transaction.originalID)
+                    ])
+                case .unverified(let transaction, let error):
+                    DLLog(message: [
+                        "tag": "[ElaProIAP][APPLE_TRANSACTION] Transaction.updates unverified",
+                        "error": error.localizedDescription,
+                        "transaction": self.appleTransactionLogPayload(transaction)
+                    ])
+                    self.appendRefundDebugLog("StoreKit2 收到未校验交易更新", payload: [
+                        "productID": transaction.productID,
+                        "transactionID": String(transaction.id),
+                        "error": error.localizedDescription
+                    ])
+                }
+            }
+        }
+    }
+
     @objc private func handleRefundAppDidEnterBackground() {
         guard refundDebugSession != nil else { return }
         refundDebugSession?.lastDidEnterBackgroundAt = Date()
@@ -902,7 +1363,6 @@ final class ElaProIAPManager: NSObject {
         appendRefundDebugLog("退款调试期间 App 回到前台")
     }
 
-    @available(iOS 15.0, *)
     private func refundTransactionPayload(_ transaction: Transaction) -> [String: Any] {
         var payload: [String: Any] = [
             "productID": transaction.productID,
@@ -917,7 +1377,38 @@ final class ElaProIAPManager: NSObject {
         }
         return payload
     }
-    
+
+    private func logAppleTransaction(_ transaction: Transaction, source: String) {
+        DLLog(message: [
+            "tag": "[ElaProIAP][APPLE_TRANSACTION]",
+            "source": source,
+            "transaction": appleTransactionLogPayload(transaction)
+        ])
+        appendRefundDebugLog("Apple 返回交易信息", payload: [
+            "source": source,
+            "transaction": appleTransactionLogPayload(transaction)
+        ])
+    }
+
+    private func appleTransactionLogPayload(_ transaction: Transaction) -> [String: Any] {
+        var payload: [String: Any] = [
+            "productID": transaction.productID,
+            "transactionID": String(transaction.id),
+            "originalTransactionID": String(transaction.originalID),
+            "purchaseDate": transaction.purchaseDate.timeIntervalSince1970,
+            "originalPurchaseDate": transaction.originalPurchaseDate.timeIntervalSince1970,
+            "isUpgraded": transaction.isUpgraded,
+            "appAccountToken": transaction.appAccountToken?.uuidString.lowercased() ?? ""
+        ]
+        if let expirationDate = transaction.expirationDate {
+            payload["expirationDate"] = expirationDate.timeIntervalSince1970
+        }
+        if let revocationDate = transaction.revocationDate {
+            payload["revocationDate"] = revocationDate.timeIntervalSince1970
+        }
+        return payload
+    }
+
     private func loadReceiptBase64() -> String {
         guard let receiptURL = Bundle.main.appStoreReceiptURL,
               let receiptData = try? Data(contentsOf: receiptURL) else {
@@ -925,44 +1416,24 @@ final class ElaProIAPManager: NSObject {
         }
         return receiptData.base64EncodedString()
     }
-    
+
     private func receiptEnvironmentHint() -> String {
         guard let receiptURL = Bundle.main.appStoreReceiptURL else { return "unknown" }
         return receiptURL.lastPathComponent.lowercased().contains("sandbox") ? "sandbox" : "production"
     }
-    
-    private func logProductInfo(_ product: SKProduct, source: String) {
+
+    private func logProductInfo(_ product: Product, source: String) {
         var lines: [String] = []
         lines.append("[ElaProIAP][\(source)] 拉取成功")
-        lines.append("productId=\(product.productIdentifier)")
-        lines.append("price=\(localizedPriceString(for: product))")
-        lines.append("subscriptionPeriod=\(periodDebugText(product.subscriptionPeriod))")
-        
-        if let intro = product.introductoryPrice {
-            let introPrice = localizedPriceString(decimal: intro.price, locale: intro.priceLocale)
-            lines.append("introPrice=\(introPrice)")
-            lines.append("introPeriod=\(periodDebugText(intro.subscriptionPeriod))")
-            lines.append("introType=\(intro.paymentMode.rawValue)")
-            lines.append("introCycles=\(intro.numberOfPeriods)")
-        } else {
-            lines.append("introPrice=<none>")
-        }
-        
+        lines.append("productId=\(product.id)")
+        lines.append("price=\(product.displayPrice)")
+        lines.append("subscriptionPeriod=\(periodDebugText(product.subscription?.subscriptionPeriod))")
         DLLog(message: lines.joined(separator: " | "))
     }
-    
-    private func localizedPriceString(decimal: NSDecimalNumber, locale: Locale) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = locale
-        formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = max(2, formatter.maximumFractionDigits)
-        return formatter.string(from: decimal) ?? "\(decimal)"
-    }
-    
-    private func periodDebugText(_ period: SKProductSubscriptionPeriod?) -> String {
-        guard let period = period else { return "<none>" }
-        
+
+    private func periodDebugText(_ period: Product.SubscriptionPeriod?) -> String {
+        guard let period else { return "<none>" }
+
         let unitText: String
         switch period.unit {
         case .day:
@@ -976,8 +1447,27 @@ final class ElaProIAPManager: NSObject {
         @unknown default:
             unitText = "unknown"
         }
-        
-        return "\(period.numberOfUnits) \(unitText)"
+
+        return "\(period.value) \(unitText)"
+    }
+
+    private func deviceInstallID() -> String {
+        let defaults = UserDefaults.standard
+        if let cached = defaults.string(forKey: LocalUnlockKeys.deviceInstallID),
+           !cached.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            return cached
+        }
+        let generated = UUID().uuidString.lowercased()
+        defaults.set(generated, forKey: LocalUnlockKeys.deviceInstallID)
+        return generated
+    }
+
+    private func appVersion() -> String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    }
+
+    private func appBuild() -> String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
     }
 }
 
@@ -1011,91 +1501,7 @@ private struct RefundDebugSession {
     }
 }
 
-extension ElaProIAPManager: SKProductsRequestDelegate, SKRequestDelegate {
-    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-        response.products.forEach { cachedProducts[$0.productIdentifier] = $0 }
-        productsRequest = nil
-        
-        if response.products.isEmpty {
-            resolveFetch(result: .failure(ElaProIAPError.productUnavailable))
-        } else {
-            resolveFetch(result: .success(response.products))
-        }
-    }
-    
-    func request(_ request: SKRequest, didFailWithError error: Error) {
-        if request === productsRequest {
-            productsRequest = nil
-            resolveFetch(result: .failure(error))
-        }
-    }
-}
-
-extension ElaProIAPManager: SKPaymentTransactionObserver {
-    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
-        for transaction in transactions {
-            switch transaction.transactionState {
-            case .purchased:
-                appendRefundDebugLog("StoreKit1 交易完成", payload: [
-                    "state": "purchased",
-                    "productID": transaction.payment.productIdentifier,
-                    "transactionID": transaction.transactionIdentifier ?? ""
-                ])
-                SKPaymentQueue.default().finishTransaction(transaction)
-                if transaction.payment.productIdentifier == purchasingProductID {
-                    resolvePurchase(result: .success(transaction))
-                }
-            case .failed:
-                appendRefundDebugLog("StoreKit1 交易失败", payload: [
-                    "state": "failed",
-                    "productID": transaction.payment.productIdentifier,
-                    "transactionID": transaction.transactionIdentifier ?? "",
-                    "error": transaction.error?.localizedDescription ?? ""
-                ])
-                SKPaymentQueue.default().finishTransaction(transaction)
-                guard transaction.payment.productIdentifier == purchasingProductID else { continue }
-                let skError = transaction.error as? SKError
-                if skError?.code == .paymentCancelled {
-                    resolvePurchase(result: .failure(ElaProIAPError.cancelled))
-                } else {
-                    resolvePurchase(result: .failure(transaction.error ?? ElaProIAPError.unknown("购买失败")))
-                }
-            case .restored:
-                appendRefundDebugLog("StoreKit1 交易恢复", payload: [
-                    "state": "restored",
-                    "productID": transaction.payment.productIdentifier,
-                    "transactionID": transaction.transactionIdentifier ?? ""
-                ])
-                SKPaymentQueue.default().finishTransaction(transaction)
-                if transaction.payment.productIdentifier == purchasingProductID {
-                    resolvePurchase(result: .success(transaction))
-                }
-            case .deferred:
-                appendRefundDebugLog("StoreKit1 交易待批准", payload: [
-                    "state": "deferred",
-                    "productID": transaction.payment.productIdentifier
-                ])
-                if transaction.payment.productIdentifier == purchasingProductID {
-                    resolvePurchase(result: .failure(ElaProIAPError.pendingApproval))
-                }
-            case .purchasing:
-                break
-            @unknown default:
-                appendRefundDebugLog("StoreKit1 交易状态未知", payload: [
-                    "state": "unknown",
-                    "productID": transaction.payment.productIdentifier
-                ])
-                SKPaymentQueue.default().finishTransaction(transaction)
-                if transaction.payment.productIdentifier == purchasingProductID {
-                    resolvePurchase(result: .failure(ElaProIAPError.unknown("交易状态异常")))
-                }
-            }
-        }
-    }
-}
-
 enum ElaProRefundDebugError: LocalizedError {
-    case storeKit2Unavailable
     case noConfiguredProductID
     case noRefundableTransaction([String])
     case userCancelled
@@ -1103,8 +1509,6 @@ enum ElaProRefundDebugError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .storeKit2Unavailable:
-            return "当前系统版本不支持退款调试，请使用 iOS 15 及以上系统"
         case .noConfiguredProductID:
             return "未配置可退款的订阅商品 ID"
         case .noRefundableTransaction(let productIDs):

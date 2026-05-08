@@ -17,6 +17,8 @@ class WHBaseViewVC: ViewController {
     public var fatherViewController: UIViewController?
     //能否侧滑返回
     var canEdgeBack:Bool = true
+    private var interactivePopBlockerGesture: UIPanGestureRecognizer?
+    private var interactivePopBlockerDelegate: WHInteractivePopBlockerDelegate?
     // iOS 26+ can opt into system navigation bar/back button.
     @objc var prefersSystemNavigationBarOnIOS26: Bool { false }
     
@@ -79,6 +81,11 @@ class WHBaseViewVC: ViewController {
         MobClick.endLogPageView(self.ClassName)
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
+    
+    deinit {
+        removeInteractivePopBlocker()
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
 //        MobClick.endLogPageView(self.ClassName)
 //        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
@@ -188,6 +195,78 @@ class WHBaseViewVC: ViewController {
             popGesture.isEnabled = true
 //            popGesture.
             
+        }
+    }
+    
+    func updateInteractivePopGestureBlocked(_ isBlocked: Bool) {
+        canEdgeBack = !isBlocked
+        fd_forceDisableInteractivePopGesture = isBlocked
+        fd_interactivePopDisabled = isBlocked
+        navigationController?.fd_interactivePopDisabled = isBlocked
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = !isBlocked
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = !isBlocked
+        if isBlocked {
+            installInteractivePopBlocker()
+        } else {
+            removeInteractivePopBlocker()
+        }
+    }
+    
+    private func installInteractivePopBlocker() {
+        guard let navigationController = navigationController else { return }
+        let blocker: UIPanGestureRecognizer
+        if let existing = interactivePopBlockerGesture {
+            blocker = existing
+            if blocker.view !== navigationController.view {
+                blocker.view?.removeGestureRecognizer(blocker)
+                navigationController.view.addGestureRecognizer(blocker)
+            }
+        } else {
+            let delegate = WHInteractivePopBlockerDelegate(viewController: self)
+            let gesture = UIPanGestureRecognizer(target: self, action: #selector(handleInteractivePopBlockerGesture(_:)))
+            gesture.maximumNumberOfTouches = 1
+            gesture.cancelsTouchesInView = true
+            gesture.delegate = delegate
+            navigationController.view.addGestureRecognizer(gesture)
+            interactivePopBlockerGesture = gesture
+            interactivePopBlockerDelegate = delegate
+            blocker = gesture
+        }
+        blocker.isEnabled = true
+        requirePopGesturesToFail(blocker)
+    }
+    
+    private func removeInteractivePopBlocker() {
+        interactivePopBlockerGesture?.isEnabled = false
+        if interactivePopBlockerGesture?.view != nil {
+            interactivePopBlockerGesture?.view?.removeGestureRecognizer(interactivePopBlockerGesture!)
+        }
+        interactivePopBlockerGesture = nil
+        interactivePopBlockerDelegate = nil
+    }
+    
+    private func requirePopGesturesToFail(_ blocker: UIGestureRecognizer) {
+        guard let navigationController = navigationController else { return }
+        navigationController.interactivePopGestureRecognizer?.require(toFail: blocker)
+        navigationController.fd_fullscreenPopGestureRecognizer.require(toFail: blocker)
+        
+        let gestureHosts = [
+            navigationController.view,
+            navigationController.interactivePopGestureRecognizer?.view
+        ].compactMap { $0 }
+        
+        for host in gestureHosts {
+            for gesture in host.gestureRecognizers ?? [] where gesture !== blocker {
+                if gesture is UIPanGestureRecognizer || gesture is UIScreenEdgePanGestureRecognizer {
+                    gesture.require(toFail: blocker)
+                }
+            }
+        }
+    }
+    
+    @objc private func handleInteractivePopBlockerGesture(_ gesture: UIPanGestureRecognizer) {
+        if gesture.state == .began || gesture.state == .changed {
+            navigationController?.view.layer.removeAllAnimations()
         }
     }
     //禁止同时点击
@@ -618,6 +697,38 @@ class WHBaseViewVC: ViewController {
 //           }
 //           return nextResponder as? UIViewController
 //       }
+}
+
+private final class WHInteractivePopBlockerDelegate: NSObject, UIGestureRecognizerDelegate {
+    private weak var viewController: WHBaseViewVC?
+    
+    init(viewController: WHBaseViewVC) {
+        self.viewController = viewController
+    }
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let viewController = viewController,
+              viewController.fd_forceDisableInteractivePopGesture,
+              let panGesture = gestureRecognizer as? UIPanGestureRecognizer,
+              let gestureView = panGesture.view else {
+            return false
+        }
+        let translation = panGesture.translation(in: gestureView)
+        let velocity = panGesture.velocity(in: gestureView)
+        let isHorizontal = abs(translation.x) > abs(translation.y) || abs(velocity.x) > abs(velocity.y)
+        let isBackDirection: Bool
+        if UIView.userInterfaceLayoutDirection(for: gestureView.semanticContentAttribute) == .rightToLeft {
+            isBackDirection = velocity.x < 0 || translation.x < 0
+        } else {
+            isBackDirection = velocity.x > 0 || translation.x > 0
+        }
+        return isHorizontal && isBackDirection
+    }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                           shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return false
+    }
 }
 
 //MARK: 处理小组件点击进来的事件

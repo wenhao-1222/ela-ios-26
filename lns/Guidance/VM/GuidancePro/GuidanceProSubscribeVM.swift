@@ -274,7 +274,7 @@ extension GuidanceProSubscribeVM {
         startTrialButton.setTitle(isLoading ? "处理中..." : startTrialButtonNormalTitle, for: .normal)
     }
 
-    func updateAnnualProduct(_ product: SKProduct) {
+    func updateAnnualProduct(_ product: Product) {
         annualPriceDescription = recurringPriceDescription(for: product)
         dailyPriceDescription = dailyPriceText(for: product)
         updateTrialDescription()
@@ -362,30 +362,31 @@ private extension GuidanceProSubscribeVM {
         trialDescLabel.setLineHeight(textString: text, lineHeight: trialDescLabel.font.lineHeight * 1.1)
     }
 
-    func recurringPriceDescription(for product: SKProduct) -> String {
-        let period = periodText(from: product.subscriptionPeriod)
-        if isChineseYuanLocale(product.priceLocale) {
-            return "\(decimalText(for: product.price))/\(period)"
+    func recurringPriceDescription(for product: Product) -> String {
+        let period = periodText(from: product.subscription?.subscriptionPeriod)
+        if isChineseYuanPrice(product.displayPrice) {
+            return "\(decimalText(for: NSDecimalNumber(decimal: product.price)))/\(period)"
         }
         return ElaProIAPManager.shared.localizedPriceString(for: product) + "/\(period)"
     }
 
-    func dailyPriceText(for product: SKProduct) -> String {
-        let days = max(daysCount(from: product.subscriptionPeriod), 1)
-        let daily = product.price.dividing(by: NSDecimalNumber(value: days))
-        if isChineseYuanLocale(product.priceLocale) {
+    func dailyPriceText(for product: Product) -> String {
+        let days = max(daysCount(from: product.subscription?.subscriptionPeriod), 1)
+        let daily = NSDecimalNumber(decimal: product.price).dividing(by: NSDecimalNumber(value: days))
+        if isChineseYuanPrice(product.displayPrice) {
             return "\(decimalText(for: daily))元/天"
         }
-        return "\(localizedPriceString(decimal: daily, locale: product.priceLocale))/天"
+        return "\(localizedPriceString(decimal: daily, fallbackPriceText: product.displayPrice))/天"
     }
 
-    func localizedPriceString(decimal: NSDecimalNumber, locale: Locale) -> String {
+    func localizedPriceString(decimal: NSDecimalNumber, fallbackPriceText: String) -> String {
+        let symbol = fallbackPriceText.contains("€") ? "€" : fallbackPriceText.contains("£") ? "£" : fallbackPriceText.contains("$") ? "$" : "$"
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.locale = locale
+        formatter.currencySymbol = symbol
         formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = max(2, formatter.maximumFractionDigits)
-        return formatter.string(from: decimal) ?? "\(decimal)"
+        formatter.maximumFractionDigits = 2
+        return formatter.string(from: decimal) ?? fallbackPriceText
     }
 
     func decimalText(for value: NSDecimalNumber) -> String {
@@ -396,7 +397,7 @@ private extension GuidanceProSubscribeVM {
         return formatter.string(from: value) ?? "\(value)"
     }
 
-    func periodText(from period: SKProductSubscriptionPeriod?) -> String {
+    func periodText(from period: Product.SubscriptionPeriod?) -> String {
         guard let period = period else { return "年" }
         let unitText: String
         switch period.unit {
@@ -412,15 +413,15 @@ private extension GuidanceProSubscribeVM {
             unitText = "期"
         }
 
-        if period.numberOfUnits <= 1 {
+        if period.value <= 1 {
             return unitText
         }
-        return "\(period.numberOfUnits)\(unitText)"
+        return "\(period.value)\(unitText)"
     }
 
-    func daysCount(from period: SKProductSubscriptionPeriod?) -> Int {
+    func daysCount(from period: Product.SubscriptionPeriod?) -> Int {
         guard let period = period else { return 365 }
-        let units = max(period.numberOfUnits, 1)
+        let units = max(period.value, 1)
         switch period.unit {
         case .day:
             return units
@@ -435,9 +436,8 @@ private extension GuidanceProSubscribeVM {
         }
     }
 
-    func isChineseYuanLocale(_ locale: Locale) -> Bool {
-        guard let currencyCode = locale.currencyCode?.uppercased() else { return false }
-        return currencyCode == "CNY" || currencyCode == "CNH" || currencyCode == "RMB"
+    func isChineseYuanPrice(_ priceText: String) -> Bool {
+        priceText.contains("¥") || priceText.contains("￥") || priceText.uppercased().contains("CNY")
     }
 
     func presentNotificationPermissionAlert() {

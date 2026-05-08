@@ -923,7 +923,6 @@
 		EC6F55D82F67996E00EB18A5 /* DietPlanCreateSecondVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55D72F67995F00EB18A5 /* DietPlanCreateSecondVC.swift */; };
 		EC6F55DA2F67A29800EB18A5 /* DietPlanCondimentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55D92F67A29000EB18A5 /* DietPlanCondimentVC.swift */; };
 		EC6F55DC2F67A2AA00EB18A5 /* DietPlanCondimentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55DB2F67A2A200EB18A5 /* DietPlanCondimentCell.swift */; };
-		EC6F55EA2F9B0A0000EB18A5 /* DietPlanCondimentAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55E92F9B0A0000EB18A5 /* DietPlanCondimentAlertVM.swift */; };
 		EC6F55DD2F67CB4D00EB18A5 /* DietPlanCreateDateVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55DC2F67CB4800EB18A5 /* DietPlanCreateDateVM.swift */; };
 		EC6F55DF2F67D91200EB18A5 /* DietPlanCreatePaceSecondVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55DE2F67D90F00EB18A5 /* DietPlanCreatePaceSecondVM.swift */; };
 		EC6F55E12F67E70100EB18A5 /* DietPlanCreateRecommendIntakeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55E02F67E6FA00EB18A5 /* DietPlanCreateRecommendIntakeVM.swift */; };
@@ -931,6 +930,7 @@
 		EC6F55E52F6804CA00EB18A5 /* DietPlanCreateEatStyleSecondVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55E42F6804C400EB18A5 /* DietPlanCreateEatStyleSecondVM.swift */; };
 		EC6F55E72F680B7200EB18A5 /* DietPlanCreateSpecialAdjustmentVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55E62F680B6900EB18A5 /* DietPlanCreateSpecialAdjustmentVM.swift */; };
 		EC6F55E92F69160000EB18A5 /* DietPlanCreateMealModeSecondVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55E82F6915F900EB18A5 /* DietPlanCreateMealModeSecondVM.swift */; };
+		EC6F55EA2F9B0A0000EB18A5 /* DietPlanCondimentAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6F55E92F9B0A0000EB18A5 /* DietPlanCondimentAlertVM.swift */; };
 		EC73D5D82F5975DF00E408EB /* ElaProAgreementAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */; };
 		EC747D8B2ED69A1600F8D3D2 /* AppearanceOptionsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */; };
 		EC7575E02F303E52005E2077 /* HabitRuleTableViewImgCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */; };
@@ -2425,7 +2425,6 @@
 		EC6F55D72F67995F00EB18A5 /* DietPlanCreateSecondVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateSecondVC.swift; sourceTree = "<group>"; };
 		EC6F55D92F67A29000EB18A5 /* DietPlanCondimentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCondimentVC.swift; sourceTree = "<group>"; };
 		EC6F55DB2F67A2A200EB18A5 /* DietPlanCondimentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCondimentCell.swift; sourceTree = "<group>"; };
-		EC6F55E92F9B0A0000EB18A5 /* DietPlanCondimentAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCondimentAlertVM.swift; sourceTree = "<group>"; };
 		EC6F55DC2F67CB4800EB18A5 /* DietPlanCreateDateVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateDateVM.swift; sourceTree = "<group>"; };
 		EC6F55DE2F67D90F00EB18A5 /* DietPlanCreatePaceSecondVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreatePaceSecondVM.swift; sourceTree = "<group>"; };
 		EC6F55E02F67E6FA00EB18A5 /* DietPlanCreateRecommendIntakeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateRecommendIntakeVM.swift; sourceTree = "<group>"; };
@@ -2433,6 +2432,7 @@
 		EC6F55E42F6804C400EB18A5 /* DietPlanCreateEatStyleSecondVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateEatStyleSecondVM.swift; sourceTree = "<group>"; };
 		EC6F55E62F680B6900EB18A5 /* DietPlanCreateSpecialAdjustmentVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateSpecialAdjustmentVM.swift; sourceTree = "<group>"; };
 		EC6F55E82F6915F900EB18A5 /* DietPlanCreateMealModeSecondVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCreateMealModeSecondVM.swift; sourceTree = "<group>"; };
+		EC6F55E92F9B0A0000EB18A5 /* DietPlanCondimentAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanCondimentAlertVM.swift; sourceTree = "<group>"; };
 		EC73D5D72F5975DF00E408EB /* ElaProAgreementAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProAgreementAlertVM.swift; sourceTree = "<group>"; };
 		EC747D8A2ED69A1200F8D3D2 /* AppearanceOptionsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceOptionsAlertVM.swift; sourceTree = "<group>"; };
 		EC7575DF2F303E4C005E2077 /* HabitRuleTableViewImgCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRuleTableViewImgCell.swift; sourceTree = "<group>"; };
@@ -6264,13 +6264,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6305,13 +6301,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -7828,7 +7820,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = ElaNaturalWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -7865,7 +7857,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = ElaNaturalWidget;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -8045,7 +8037,7 @@
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -8153,7 +8145,7 @@
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Automatic;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

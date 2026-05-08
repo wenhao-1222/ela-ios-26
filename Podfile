@@ -1,4 +1,4 @@
-platform :ios, "14.0"
+platform :ios, "15.0"
 use_frameworks!
 
 source 'https://github.com/CocoaPods/Specs.git'        #官方仓库地址
@@ -59,13 +59,13 @@ post_install do |installer|
   # 将该设置清空即可让 Xcode 根据当前环境生成所需架构的切片。
   installer.pods_project.build_configurations.each do |config|
     config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = ""
-    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
     # Allow running on both Intel and Apple Silicon simulators
     # config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = ""
   end
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
     end
   end
   end

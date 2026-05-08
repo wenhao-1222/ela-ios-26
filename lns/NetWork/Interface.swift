@@ -175,6 +175,8 @@ public let URL_pro_info                     = URL_Type + "users/membership/vip_i
 public let URL_iap_dientity                 = URL_Type + "users/apple/iap/ios/identity/init"
 ///绑定匿名身份到当前账号
 public let URL_iap_dientity_bind            = URL_Type + "users/apple/iap/bindAnonymous"
+///订阅恢复购买
+public let URL_iap_dientity_restore         = URL_Type + "users/apple/iap/order/restore"
 
 //MARK: 餐食
 //添加餐食

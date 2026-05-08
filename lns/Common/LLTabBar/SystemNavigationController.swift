@@ -175,7 +175,13 @@ final class SystemNavigationController: UINavigationController, UIGestureRecogni
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard viewControllers.count > 1 else { return false }
         if let topVC = topViewController as? WHBaseViewVC {
+            if topVC.fd_forceDisableInteractivePopGesture {
+                return false
+            }
             return topVC.canEdgeBack
+        }
+        if topViewController?.fd_forceDisableInteractivePopGesture == true {
+            return false
         }
         return true
     }

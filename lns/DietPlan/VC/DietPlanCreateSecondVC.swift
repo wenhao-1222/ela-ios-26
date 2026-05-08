@@ -31,27 +31,32 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         return formatter
     }()
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateInteractivePopGestureBlocked(true)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.fd_interactivePopDisabled = true
-        self.navigationController?.fd_interactivePopDisabled = true
-        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-        self.enableInteractivePopGesture()
+        updateInteractivePopGestureBlocked(true)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        self.fd_interactivePopDisabled = false
-        navigationController?.fd_interactivePopDisabled = false
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-        self.openInteractivePopGesture()
+        if let coordinator = transitionCoordinator, coordinator.isInteractive {
+            coordinator.notifyWhenInteractionChanges { [weak self] context in
+                self?.updateInteractivePopGestureBlocked(context.isCancelled)
+            }
+            return
+        }
+        if navigationController?.topViewController !== self {
+            updateInteractivePopGestureBlocked(false)
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        canEdgeBack = false
+        updateInteractivePopGestureBlocked(true)
         shouldShowSexStep = resolvedShouldShowSexStep()
         initUI()
         sendDietMsgRequest()
