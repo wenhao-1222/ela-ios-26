@@ -30,6 +30,7 @@ class FirstLaunchVC: WHBaseViewVC {
     private let skipAnimation: Bool
     private let forceNeedBuildPlanOnConfirm: Bool
     private var didApplyFinalState = false
+    private var didTrackGuidanceV2StartPage = false
     
     var firstLabelTopConstraint: Constraint?
     var firstLabelTwoTopConstraint: Constraint?
@@ -202,7 +203,9 @@ extension FirstLaunchVC{
 
         secondLogoImgView.alpha = 1
         secondLabel.alpha = 1
-        fadeInConfirmButton(duration: 0.75, delay: 0.75)
+        fadeInConfirmButton(duration: 0.75, delay: 0.75) { _ in
+            self.trackGuidanceV2StartPageIfNeeded()
+        }
     }
 
     @objc func showAnimation() {
@@ -558,6 +561,7 @@ extension FirstLaunchVC{
 //            }
             self.fadeInConfirmButton(duration: 0.55, delay: 2.0) { _ in
                 self.bgImgViewTwo.isUserInteractionEnabled = true
+                self.trackGuidanceV2StartPageIfNeeded()
             }
         })
     }
@@ -585,6 +589,7 @@ extension FirstLaunchVC{
             self.fadeInConfirmButton(duration: 0.55, delay: 1.5) { _ in
                 self.bgImgViewTwo.isUserInteractionEnabled = true
                 self.bgImgView.isHidden = true
+                self.trackGuidanceV2StartPageIfNeeded()
             }
         })
     }
@@ -722,6 +727,11 @@ extension FirstLaunchVC{
 //        let navVc = UINavigationController(rootViewController: GuidanceProPurchasedVC())
         
         appDelegate.switchRootViewController(to: navVc)
+    }
+    private func trackGuidanceV2StartPageIfNeeded() {
+        guard !didTrackGuidanceV2StartPage else { return }
+        didTrackGuidanceV2StartPage = true
+        EventLogUtils().sendGuidanceV2PageView(pageIndex: "1", pageTitle: "开始页", bizType: "")
     }
     func changeRootVC() {
         let token = UserDefaults.standard.value(forKey: token) as? String ?? ""

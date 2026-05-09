@@ -20,6 +20,7 @@ class WelcomeVC: WHBaseViewVC {
     //kFitWidth(-64)-getBottomSafeAreaHeight()
     let reachability = try! Reachability()
     var netWorkisConnect = false
+    private var didTrackGuidanceV2StartPage = false
     
     override func viewWillDisappear(_ animated: Bool) {
         reachability.stopNotifier()
@@ -272,7 +273,7 @@ extension WelcomeVC{
                 self.startBtn.isHidden = false
                 self.startBtn.alpha = 1
             }completion: { t in
-                
+                self.trackGuidanceV2StartPageIfNeeded()
             }
         }else{
             UIView.animate(withDuration: 0.7, delay: 0, options: .curveEaseInOut){
@@ -293,6 +294,11 @@ extension WelcomeVC{
                 self.agreeAllBtn.center = CGPoint.init(x: agreeAllBtnCenter.x, y: self.agreeAllBtnCenterY)
             }
         }
+    }
+    func trackGuidanceV2StartPageIfNeeded() {
+        guard !didTrackGuidanceV2StartPage else { return }
+        didTrackGuidanceV2StartPage = true
+        EventLogUtils().sendGuidanceV2PageView(pageIndex: "1", pageTitle: "开始页", bizType: "")
     }
     func checkNetWork(){
         reachability.whenReachable = { reachability in

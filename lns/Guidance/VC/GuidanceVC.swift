@@ -53,6 +53,7 @@ class GuidanceVC: WHBaseViewVC {
     private var hasResolvedGuidanceProSubscriptionHistory = false
     private var hasAutoSelectedSkippedCardioFrequency = false
     private var isBackNavigationLocked = false
+    private var lastGuidanceV2TrackedPageKey = ""
     private let defaultStepsArray = [7,7,9]
     private let defaultStepsArrayWithoutCardio = [7,6,9]
     private let defaultStepsArrayUncertain = [7,7,8]
@@ -755,6 +756,72 @@ extension GuidanceVC{
         } else {
             removeBarrierVm.stopScrollers()
         }
+        sendGuidanceV2PageViewIfNeeded(for: step)
+    }
+
+    func sendGuidanceV2PageViewIfNeeded(for step: FlowStep) {
+        guard let pageInfo = guidanceV2PageInfo(for: step) else { return }
+        let pageKey = "\(pageInfo.pageIndex)-\(pageInfo.pageTitle)-\(pageInfo.bizType)"
+        guard lastGuidanceV2TrackedPageKey != pageKey else { return }
+        lastGuidanceV2TrackedPageKey = pageKey
+        EventLogUtils().sendGuidanceV2PageView(
+            pageIndex: pageInfo.pageIndex,
+            pageTitle: pageInfo.pageTitle,
+            bizType: pageInfo.bizType
+        )
+    }
+
+    func guidanceV2PageInfo(for step: FlowStep) -> (pageIndex: String, pageTitle: String, bizType: String)? {
+        switch step {
+        case .sex:
+            return ("2", "性别", "")
+        case .dietRecord:
+            return ("3", "饮食记录经验", "")
+        case .progressChart:
+            return ("4", "记录与否差异动画页", "")
+        case .fixedTarget:
+            return ("5", "是否有固定的tdee", "")
+        case .birthday:
+            return ("6", "出生年份", "自动")
+        case .weight:
+            return ("7", "体重", "自动")
+        case .height:
+            return ("8", "身高", "自动")
+        case .bodyfat:
+            return ("9", "体脂率", "自动")
+        case .takeoutFrequency:
+            return ("10", "周外卖频率", "自动")
+        case .mealsPerDay:
+            return isFixedTargetFlowEnabled ? ("9", "日餐数", "手动") : ("11", "日餐数", "自动")
+        case .mealsSummary:
+            return isFixedTargetFlowEnabled ? ("10", "日餐数描述", "手动") : ("12", "日餐数描述", "自动")
+        case .mealsAdjust:
+            return isFixedTargetFlowEnabled ? ("11", "日餐数调整", "手动") : ("13", "日餐数调整", "自动")
+        case .exerciseCaloriesRecord:
+            return ("14", "是否记录运动消耗热量", "自动")
+        case .cardioFrequency:
+            return ("15", "周有氧运动频率", "自动")
+        case .strengthTrainingFrequency:
+            return isFixedTargetFlowEnabled ? ("7", "周力量训练频率", "手动") : ("16", "周力量训练频率", "自动")
+        case .strengthTrainingSummary:
+            return isFixedTargetFlowEnabled ? ("8", "周力量训练频率描述", "手动") : ("17", "周力量训练频率描述", "自动")
+        case .caloriesResultBase:
+            return ("18", "tdee结果", "自动")
+        case .caloriesResultExplain:
+            return ("19", "计算tdee缺口或盈余", "自动")
+        case .goal:
+            return isFixedTargetFlowEnabled ? ("12", "目标", "手动") : ("20", "目标", "自动")
+        case .goalBarrier:
+            return isFixedTargetFlowEnabled ? ("13", "阻碍因素", "手动") : ("21", "阻碍因素", "自动")
+        case .removeBarrier:
+            return isFixedTargetFlowEnabled ? ("14", "ela广告动画页", "手动") : ("22", "ela广告动画页", "自动")
+        case .elaProTransition:
+            return isFixedTargetFlowEnabled ? ("15", "你只用记录饮食", "手动") : ("23", "你只用记录饮食", "自动")
+        case .nutritionGoal:
+            return isFixedTargetFlowEnabled ? ("6", "营养目标", "手动") : ("26", "保存目标", "自动")
+        case .reminderPrompt:
+            return isFixedTargetFlowEnabled ? ("16", "是否打开提醒", "手动") : ("24", "是否打开提醒", "自动")
+        }
     }
 
     func resetGuidanceStateAfterSexSelection() {
@@ -1054,6 +1121,11 @@ extension GuidanceVC{
             finishLoadingVm.configureLoading(titleText: "目标生成中...")
         }
         finishLoadingVm.showLoading(waitForExternalCompletion: true)
+        EventLogUtils().sendGuidanceV2PageView(
+            pageIndex: isFixedTargetFlowEnabled ? "17" : "25",
+            pageTitle: "百分比动画页",
+            bizType: isFixedTargetFlowEnabled ? "手动" : "自动"
+        )
         submitCompletedGuidanceFlow()
     }
 
@@ -1071,6 +1143,7 @@ extension GuidanceVC{
         finishLoadingVm.configureLoading(titleText: "目标生成中...")
         finishLoadingVm.layoutIfNeeded()
         finishLoadingVm.showLoading(waitForExternalCompletion: true)
+        EventLogUtils().sendGuidanceV2PageView(pageIndex: "25", pageTitle: "百分比动画页", bizType: "自动")
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             if self.isUncertainFixedTargetSelection {
@@ -1096,6 +1169,7 @@ extension GuidanceVC{
     func showStandaloneNutritionGoal() {
         isShowingStandaloneNutritionGoal = true
         nutritionGoalVm.refreshContentFromModel()
+        sendGuidanceV2PageViewIfNeeded(for: .nutritionGoal)
 
         if nutritionGoalVm.superview !== view {
             nutritionGoalVm.removeFromSuperview()
@@ -1435,8 +1509,10 @@ extension GuidanceVC{
 
     func presentGuidanceProSubscriptionVC(hasSubscribedHistory: Bool) {
         let vc: WHBaseViewVC
+        let guidanceV2BizType = isFixedTargetFlowEnabled ? "手动" : "自动"
         if hasSubscribedHistory {
             let purchasedVC = GuidanceProPurchasedVC()
+            purchasedVC.guidanceV2BizType = guidanceV2BizType
             purchasedVC.nextBlock = { [weak purchasedVC] in
                 purchasedVC?.changeRootVcToLogin()
             }
@@ -1444,6 +1520,7 @@ extension GuidanceVC{
             vc = purchasedVC
         } else {
             let proVC = GuidanceProVC()
+            proVC.guidanceV2BizType = guidanceV2BizType
             proVC.hasFreeTrialPermission = cachedGuidanceProHasFreeTrialPermission
             proVC.nextBlock = { [weak proVC] in
                 proVC?.changeRootVcToLogin()

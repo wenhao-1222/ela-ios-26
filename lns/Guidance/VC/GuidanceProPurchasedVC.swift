@@ -22,6 +22,9 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
     private let topContentVM = GuidanceProTopVM()
     private var currentStep: ContentStep = .intro
     private var agreementAlertVm: ElaProAgreementAlertVM?
+    var guidanceV2BizType = "自动"
+    private var didTrackGuidanceV2IntroPage = false
+    private var didTrackGuidanceV2SubscribePage = false
 
     private lazy var priceVm: ElaProPriceVM = {
         let vm = ElaProPriceVM(frame: .zero)
@@ -92,6 +95,7 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        trackGuidanceV2IntroPageIfNeeded()
 //        topBackgroundView.startAnimatingIfNeeded()
 //        if currentStep == .intro {
 //            topContentVM.startBubbleFloatingAnimationIfNeeded()
@@ -196,6 +200,7 @@ private extension GuidanceProPurchasedVC {
         closeButton.isHidden = false
         topContentVM.stopBubbleFloatingAnimation()
         transition(from: topContentVM, to: priceVm)
+        trackGuidanceV2SubscribePageIfNeeded()
     }
 
     func transition(from currentView: UIView, to nextView: UIView) {
@@ -240,5 +245,27 @@ private extension GuidanceProPurchasedVC {
         } else {
             purchaseLoadingIndicator.stopAnimating()
         }
+    }
+
+    func trackGuidanceV2IntroPageIfNeeded() {
+        guard !didTrackGuidanceV2IntroPage else { return }
+        didTrackGuidanceV2IntroPage = true
+        EventLogUtils().sendGuidanceV2PageView(
+            pageIndex: guidanceV2BizType == "手动" ? "18" : "27",
+            pageTitle: "ela给你完整支持",
+            bizType: guidanceV2BizType
+        )
+    }
+
+    func trackGuidanceV2SubscribePageIfNeeded() {
+        guard !didTrackGuidanceV2SubscribePage else { return }
+        didTrackGuidanceV2SubscribePage = true
+        EventLogUtils().sendGuidanceV2PageView(
+            pageIndex: guidanceV2BizType == "手动" ? "19" : "28",
+            pageTitle: "付费墙",
+            bizType: guidanceV2BizType
+        )
+        
+        EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW, scenarioType: .ela_pro_view, text: "1")
     }
 }

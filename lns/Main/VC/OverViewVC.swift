@@ -18,6 +18,7 @@ class OverViewVC : WHBaseViewVC {
     private static var cachedNutritionData: NSDictionary?
     private static var nutritionRequestId = 0
     private static var nutritionCallbacks: [((NSDictionary) -> Void)] = []
+    private var isClick = false//上报概览页点击事件埋点
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -70,6 +71,15 @@ class OverViewVC : WHBaseViewVC {
             trainingDataTest()
             HealthKitManager().fetchBodyFatPercentage()
             HealthKitManager().fetchWaistCircumference()
+        }
+        
+        if !isClick{
+            isClick = true
+            EventLogUtils().sendEventLogRequest(
+                eventName: .CLICK_BUTTON,
+                scenarioType: .main_view,
+                text: ""
+            )
         }
     }
     override func viewWillDisappear(_ animated: Bool) {

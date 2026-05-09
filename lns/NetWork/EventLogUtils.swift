@@ -46,6 +46,17 @@ enum SCENARIO_TYPE {
     case logs_meals_alert_show
     ///轻断食提醒--点击
     case logs_meals_alert_click
+    ///概览页
+    case main_view
+    ///自律习惯养成
+    case habit_view
+    ///自律习惯养成--添加好友
+    case habit_view_friends
+    ///会员订阅付费墙
+    ///text传付费墙场景值：1-新用户问卷入口；2-AI教练问卷入口；3-食谱计划问卷入口；4-AI食物识图入口
+    case ela_pro_view
+    ///AI教练问卷
+    case ai_coach_guide
 }
 
 class EventLogModel: NSObject {
@@ -57,6 +68,18 @@ class EventLogModel: NSObject {
 }
 
 class EventLogUtils {
+    func sendGuidanceV2PageView(pageIndex: String, pageTitle: String, bizType: String) {
+        let text = "{\"pageIndex\":\"\(pageIndex)\",\"pageTitle\":\"\(pageTitle)\",\"bizType\":\"\(bizType)\"}"
+        let param = ["eventName":"PAGE_VIEW",
+                     "params":["scenario":"引导页v2",
+                               "text":text,
+                               "result":""]] as [String : Any]
+        DLLog(message: "sendGuidanceV2PageView:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_event_log, parameters: param as [String : AnyObject]) { responseObject in
+
+        }
+    }
+
     func sendEventLogRequest(eventName:EVENT_TYPE,scenarioType:SCENARIO_TYPE,text:String?,result:Bool=true){
         if UserInfoModel.shared.uId.count > 1 && UserInfoModel.shared.token.count > 1{
             
@@ -151,6 +174,16 @@ class EventLogUtils {
             return "记录饮食提醒"
         case .logs_meals_alert_click:
             return "记录饮食提醒"
+        case .main_view:
+            return "概览"
+        case .habit_view:
+            return "自律习惯养成"
+        case .habit_view_friends:
+            return "自律习惯养成-添加好友"
+        case .ela_pro_view:
+            return "会员订阅付费墙"
+        case .ai_coach_guide:
+            return "AI教练问卷"
         }
     }
 }

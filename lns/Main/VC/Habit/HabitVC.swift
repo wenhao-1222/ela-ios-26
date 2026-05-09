@@ -18,6 +18,12 @@ class HabitVC: WHBaseViewVC {
         initUI()
         sendDataRequest()
         sendLastWeekRanklistRequest()
+        
+        EventLogUtils().sendEventLogRequest(
+            eventName: .CLICK_BUTTON,
+            scenarioType: .habit_view,
+            text: ""
+        )
     }
     lazy var topTypeVm: HabitTopTypeVM = {
         let vm = HabitTopTypeVM.init(frame: .zero)

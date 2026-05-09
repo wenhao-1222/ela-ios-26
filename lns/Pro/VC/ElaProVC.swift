@@ -52,6 +52,8 @@ class ElaProVC: WHBaseViewVC {
                 nav.viewControllers = controllers
             }
         }
+        
+        EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW, scenarioType: .ela_pro_view, text: priceBizType)
     }
     
     override func viewWillAppear(_ animated: Bool) {

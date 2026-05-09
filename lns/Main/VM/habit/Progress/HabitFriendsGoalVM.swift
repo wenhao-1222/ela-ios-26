@@ -74,6 +74,11 @@ class HabitFriendsGoalVM: UIView {
 
 extension HabitFriendsGoalVM{
     @objc func firstFriendTapAction() {
+        EventLogUtils().sendEventLogRequest(
+            eventName: .CLICK_BUTTON,
+            scenarioType: .habit_view_friends,
+            text: ""
+        )
         if friendCount > 0{
             let vc = FriendRankingVC()
             self.controller.navigationController?.pushViewController(vc, animated: true)

@@ -984,6 +984,7 @@ extension CameraViewController {
         let vc = ElaProVC()
 //        vc.priceBizType = ""
         vc.showPriceOnly = true
+        vc.priceBizType = "4"
         guard let navigationController = navigationController else { return }
         navigationController.pushViewController(vc, animated: true)
         DispatchQueue.main.async {

@@ -238,6 +238,9 @@ extension AIGuidanceVC{
         updatePopGestureState()
         updateNavigationForCurrentStep(from: previousStep, animated: animated)
         updateNextButtonForCurrentStep()
+        EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
+                                            scenarioType: .ai_coach_guide,
+                                            text: "\(targetIndex + 1)")
     }
     
     func updatePopGestureState() {
