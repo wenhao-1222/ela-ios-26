@@ -12,6 +12,8 @@ import IQKeyboardManagerSwift
 
 class PlanLeadIntoAlertVM: UIView {
     
+    private let shareCodeLengthRange = 5...6
+    
     var controller = WHBaseViewVC()
     var whiteViewFrame = CGRect()
     
@@ -101,7 +103,7 @@ class PlanLeadIntoAlertVM: UIView {
         text.backgroundColor = .colorBgF2//WHColor_16(colorStr: "F3F3F3")
         text.layer.cornerRadius = kFitWidth(6)
         text.clipsToBounds = true
-        text.placeholder = "输入五位数分享码"
+        text.placeholder = "输入分享码"
         text.keyboardType = .asciiCapable
         text.returnKeyType = .done
         text.textContentType = nil
@@ -167,8 +169,9 @@ extension PlanLeadIntoAlertVM{
         self.textField.resignFirstResponder()
     }
     @objc func confirmAction(){
-        if self.textField.text?.count != 5 {
-            MCToast.mc_text("请输入5位数的分享码",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
+        let codeCount = self.textField.text?.count ?? 0
+        if !shareCodeLengthRange.contains(codeCount) {
+            MCToast.mc_text("请输入正确的分享码",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
             return
         }
         self.sendLeadIntoPlanRequest()
@@ -232,11 +235,13 @@ extension PlanLeadIntoAlertVM:UITextFieldDelegate{
         if WHBaseViewVC().isMatchPattern("[^A-Za-z0-9]", string) == true{
             return false
         }
-        if textField.text?.count ?? 0 >= 5 {
+        let currentText = textField.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else {
             return false
         }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
         
-        return true
+        return updatedText.count <= shareCodeLengthRange.upperBound
     }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.textField.resignFirstResponder()
