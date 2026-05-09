@@ -23,6 +23,10 @@ class HabitExchangeAlertVM: UIView {
     var pointCostPerDonate = 1
     ///当前总剩余积分
     var pointBalance = 1
+    /// 当日积分兑换额度是否用尽
+    var isDailyDonateLimitExceeded = false
+    /// 当日积分兑换额度用尽提示文案
+    var dailyDonateLimitExceededText = ""
     
     /// 蒙层目标透明度：浅色 0.15，深色 0.85
     private var targetDimAlpha: CGFloat {
@@ -234,6 +238,16 @@ class HabitExchangeAlertVM: UIView {
         
         return lab
     }()
+    lazy var dailyDonateLimitExceededLab: UILabel = {
+        let lab = UILabel()
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.font = .systemFont(ofSize: 12, weight: .regular)
+        lab.textAlignment = .center
+        lab.numberOfLines = 0
+        lab.isHidden = true
+
+        return lab
+    }()
 }
 // MARK: - Public API
 extension HabitExchangeAlertVM {
@@ -270,6 +284,9 @@ extension HabitExchangeAlertVM {
         }
     }
     @objc func exchangeAction() {
+        if isDailyDonateLimitExceeded {
+            return
+        }
         if pointBalance - pointCostPerDonate * num < 0{
             MCToast.mc_text("积分不足")
             return
@@ -283,15 +300,13 @@ extension HabitExchangeAlertVM{
     func updateUI(dict:NSDictionary,num:Int=1) {
         msgDict = dict
         pointBalance = msgDict.stringValueForKey(key: "pointBalance").intValue
-//        pointCostPerDonate = msgDict.stringValueForKey(key: "loggedBodyDataPoint").intValue
-        //⚠️⚠️ 后台未返回pointCostPerDonate，暂时用loggedBodyDataPoint代替
         pointCostPerDonate = dict.stringValueForKey(key: "pointCostPerDonate").intValue
+        isDailyDonateLimitExceeded = dict.stringValueForKey(key: "isDailyDonateLimitExceeded").intValue == 1
+        dailyDonateLimitExceededText = dict.stringValueForKey(key: "dailyDonateLimitExceededText")
+        dailyDonateLimitExceededLab.text = dailyDonateLimitExceededText
+        dailyDonateLimitExceededLab.isHidden = !isDailyDonateLimitExceeded || dailyDonateLimitExceededText.isEmpty
         calculatePoint()
-        
-        if pointBalance < pointCostPerDonate * num{
-            confirmButton.backgroundColor = .COLOR_BUTTON_DISABLE_BG_THEME
-            confirmButton.isEnabled = false
-        }
+        updateConfirmButtonState()
     }
     func calculatePoint() {
         needPointLabel.text = "\(pointCostPerDonate * num)"
@@ -301,6 +316,12 @@ extension HabitExchangeAlertVM{
         }
         pointLabel.text = "\(pointBalanceAfter)"
         numerLabel.text = "\(num)"
+    }
+    func updateConfirmButtonState() {
+        let isPointEnough = pointBalance >= pointCostPerDonate * num
+        let isEnabled = isPointEnough && !isDailyDonateLimitExceeded
+        confirmButton.backgroundColor = isEnabled ? .THEME : .COLOR_BUTTON_DISABLE_BG_THEME
+        confirmButton.isEnabled = isEnabled
     }
     @objc func addAction() {
         if num >= 99 {
@@ -312,6 +333,7 @@ extension HabitExchangeAlertVM{
         }
         num += 1
         calculatePoint()
+        updateConfirmButtonState()
     }
     @objc func subAction() {
         if num <= 1{
@@ -320,6 +342,7 @@ extension HabitExchangeAlertVM{
         }
         num -= 1
         calculatePoint()
+        updateConfirmButtonState()
     }
 }
 
@@ -352,6 +375,7 @@ extension HabitExchangeAlertVM{
         whiteView.addSubview(needPointLabel)
         whiteView.addSubview(pointLab)
         whiteView.addSubview(pointLabel)
+        whiteView.addSubview(dailyDonateLimitExceededLab)
         
         setConstrait()
         setupWhiteViewBorder()
@@ -424,6 +448,11 @@ extension HabitExchangeAlertVM{
         pointLabel.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-32))
             make.centerY.lessThanOrEqualTo(pointLab)
+        }
+        dailyDonateLimitExceededLab.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(32))
+            make.right.equalTo(kFitWidth(-32))
+            make.bottom.equalTo(confirmButton.snp.top).offset(kFitWidth(-18))
         }
     }
     private func setupWhiteViewBorder() {

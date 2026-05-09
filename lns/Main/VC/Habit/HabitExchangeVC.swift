@@ -18,6 +18,7 @@ class HabitExchangeVC: WHBaseViewVC {
         super.viewDidLoad()
         
         initUI()
+        sendDataRequest()
     }
     
     lazy var elaIconImgView: UIImageView = {

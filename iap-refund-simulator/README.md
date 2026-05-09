@@ -14,6 +14,22 @@
 5. Apple 会弹出官方退款申请 sheet。
 6. 提交后，回到“查看退款调试日志”确认客户端链路。
 
+### Sandbox 退款结果怎么触发
+
+Apple 测试环境会按退款申请 sheet 的输入自动给出结果：
+
+| 目标场景 | 操作 | App 侧期望 | 后台期望 |
+| --- | --- | --- | --- |
+| 全额退款通过 | 任意选择一个退款原因并提交 | `Transaction.updates` 收到带 `revocationDate` 的交易，本地临时权益清空 | 收到 `REFUND`，撤销会员权益 |
+| 退款被拒 | Issue 选 `Other`，文本框输入 `DECLINE` 后提交 | 不应该撤销当前有效权益 | 收到 `REFUND_DECLINED`，保持会员权益 |
+| 部分退款通过 | Issue 选 `Other`，文本框输入 `GRANT_PRORATED` 后提交 | 收到带 `revocationDate` 的交易，本地临时权益清空 | 收到 `REFUND`，记录 `revocationType=REFUND_PRORATED` 和 `revocationPercentage` |
+
+参考 Apple 官方文档：
+
+- https://developer.apple.com/documentation/storekit/testing-refund-requests
+- https://developer.apple.com/documentation/appstoreservernotifications/notificationtype
+- https://developer.apple.com/documentation/appstoreservernotifications/app-store-server-notifications-v2
+
 ## 本地后台回调怎么用
 
 先启动本地监听器：
@@ -57,6 +73,8 @@ iap-refund-simulator/logs/callback-events.ndjson
 
 1. 测试环境后台地址
 2. 或者 ngrok / Cloudflare Tunnel 之类的临时公网隧道
+
+App Store Connect 里需要给 Sandbox 环境单独配置通知 URL；服务端收到通知后，只有在 `signedPayload` 已完成落库或幂等确认后再返回 `200`。如果入口临时不可用，应返回 `40x`/`50x` 让 Apple 重试，恢复后再用 Notification History 补齐缺口。
 
 ## 后台建议校验点
 

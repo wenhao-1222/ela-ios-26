@@ -144,7 +144,6 @@
 		A73207FD2DFA6F84000A807D /* GuideAddFirstFoodsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73207FC2DFA6F7C000A807D /* GuideAddFirstFoodsAlertVM.swift */; };
 		A73207FF2DFABA1A000A807D /* GuideFoodsListNoDataAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73207FE2DFABA14000A807D /* GuideFoodsListNoDataAlertVM.swift */; };
 		A73208012DFBD39E000A807D /* JournalReportWeightCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73208002DFBD397000A807D /* JournalReportWeightCell.swift */; };
-		A732697E2D9531D100F2A87D /* CompactWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A732697D2D9531D100F2A87D /* CompactWindow.swift */; };
 		A73269A92D9542EA00F2A87D /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A73269A82D9542E900F2A87D /* MainTabBarController.swift */; };
 		A732FD772E44AF62007E6E20 /* TutorialVideoSwiftControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A732FD762E44AF60007E6E20 /* TutorialVideoSwiftControlView.swift */; };
 		A73323582D90E77D0065BF0A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A73323522D90E77D0065BF0A /* Assets.xcassets */; };
@@ -810,8 +809,6 @@
 		EC4732D62EEFBDEC008F67F5 /* MallDetailImageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D52EEFBDEB008F67F5 /* MallDetailImageVM.swift */; };
 		EC4732D82EEFF05A008F67F5 /* OverSeaMsgVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */; };
 		EC48CBD02F582FBA00ADB6E7 /* ElaProPriceCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC48CBCF2F582FB900ADB6E7 /* ElaProPriceCardView.swift */; };
-		EC498A6A2ED816B800BC7876 /* ColorWheelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC498A692ED816B700BC7876 /* ColorWheelView.swift */; };
-		EC498A6C2ED816CB00BC7876 /* ColorWheelVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC498A6B2ED816C800BC7876 /* ColorWheelVC.swift */; };
 		EC4DE2802BC8D0B30090A7BD /* PlanDetailTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE27F2BC8D0B30090A7BD /* PlanDetailTopVM.swift */; };
 		EC4DE2822BC8D80E0090A7BD /* PlanDetailDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE2812BC8D80E0090A7BD /* PlanDetailDaysVM.swift */; };
 		EC4DE2842BC8E4000090A7BD /* PlanDetailDayMealsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE2832BC8E4000090A7BD /* PlanDetailDayMealsVM.swift */; };
@@ -1619,7 +1616,6 @@
 		A73207FC2DFA6F7C000A807D /* GuideAddFirstFoodsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideAddFirstFoodsAlertVM.swift; sourceTree = "<group>"; };
 		A73207FE2DFABA14000A807D /* GuideFoodsListNoDataAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideFoodsListNoDataAlertVM.swift; sourceTree = "<group>"; };
 		A73208002DFBD397000A807D /* JournalReportWeightCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportWeightCell.swift; sourceTree = "<group>"; };
-		A732697D2D9531D100F2A87D /* CompactWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactWindow.swift; sourceTree = "<group>"; };
 		A73269A82D9542E900F2A87D /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		A732FD762E44AF60007E6E20 /* TutorialVideoSwiftControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialVideoSwiftControlView.swift; sourceTree = "<group>"; };
 		A73323522D90E77D0065BF0A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -2308,8 +2304,6 @@
 		EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverSeaMsgVC.swift; sourceTree = "<group>"; };
 		EC47FE352C3B8D87006CFA2A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		EC48CBCF2F582FB900ADB6E7 /* ElaProPriceCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProPriceCardView.swift; sourceTree = "<group>"; };
-		EC498A692ED816B700BC7876 /* ColorWheelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWheelView.swift; sourceTree = "<group>"; };
-		EC498A6B2ED816C800BC7876 /* ColorWheelVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWheelVC.swift; sourceTree = "<group>"; };
 		EC4DE27F2BC8D0B30090A7BD /* PlanDetailTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDetailTopVM.swift; sourceTree = "<group>"; };
 		EC4DE2812BC8D80E0090A7BD /* PlanDetailDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDetailDaysVM.swift; sourceTree = "<group>"; };
 		EC4DE2832BC8E4000090A7BD /* PlanDetailDayMealsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDetailDayMealsVM.swift; sourceTree = "<group>"; };
@@ -4829,9 +4823,6 @@
 				ECD0FE7E2BABD0A9001232C9 /* lns.entitlements */,
 				EC6978DE2BABBD81000B933A /* AppDelegate.swift */,
 				EC25C8312ED54C2400BF2D1F /* UIApplication+Appearance.swift */,
-				A732697D2D9531D100F2A87D /* CompactWindow.swift */,
-				EC498A692ED816B700BC7876 /* ColorWheelView.swift */,
-				EC498A6B2ED816C800BC7876 /* ColorWheelVC.swift */,
 				ECCBEC6F2F7A004B0010D630 /* colorbox_1_copy.splineswift */,
 				EC312AA12EFCE9330026F005 /* AlertVMCommon.swift */,
 				EC6978E22BABBD81000B933A /* ViewController.swift */,
@@ -6264,9 +6255,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6301,9 +6296,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6707,7 +6706,6 @@
 				EC4DE2D62BCE70240090A7BD /* PlanShareAlertVM.swift in Sources */,
 				EC38DE912BEF1DE5008E7FCE /* InviteCodeAlertVM.swift in Sources */,
 				A77F962B2D0AAE3E0084D4FB /* PublishPollItemVM.swift in Sources */,
-				EC498A6A2ED816B800BC7876 /* ColorWheelView.swift in Sources */,
 				A71543032E08F69A0078A5AE /* FoodsListHeaderNoDataVM.swift in Sources */,
 				A72F5FEE2DB75D150098C782 /* LogsRemarkNewVM.swift in Sources */,
 				EC6F55DA2F67A29800EB18A5 /* DietPlanCondimentVC.swift in Sources */,
@@ -7189,7 +7187,6 @@
 				A7443DEB2DD1C7F70040FEFD /* JournalReportDailyMsgVM.swift in Sources */,
 				A741874E2D7AA384006C8858 /* SolidRippleView.swift in Sources */,
 				A740EEE62E72B74300B6ABAA /* MallConfirmOrderAddressCell.swift in Sources */,
-				A732697E2D9531D100F2A87D /* CompactWindow.swift in Sources */,
 				A741872F2D794D8E006C8858 /* AINaviVM.swift in Sources */,
 				A74758012DB60CAE0043953F /* HealthKitManager+bodyFatPercentage.swift in Sources */,
 				ECD0FF042BABD25B001232C9 /* YYTextTransaction.m in Sources */,
@@ -7223,7 +7220,6 @@
 				A755ED632DF6AAB400005C3A /* InfiniteImageScroller.swift in Sources */,
 				A7092D192E4F1A35005A2087 /* FeedBackTapButton.swift in Sources */,
 				A7881EA82CBF8687008F4390 /* CollectionViewCell.swift in Sources */,
-				EC498A6C2ED816CB00BC7876 /* ColorWheelVC.swift in Sources */,
 				A7881EA92CBF8687008F4390 /* CollectionPageFlowLayout.swift in Sources */,
 				A75F431F2CA7A66D0062E7B2 /* BodyDataWeightUnitSetAlertVM.swift in Sources */,
 				A7EDC0F52D141FA90012D3FF /* ForumPollTableHeadVM.swift in Sources */,

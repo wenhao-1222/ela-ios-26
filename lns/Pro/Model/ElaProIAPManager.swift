@@ -1330,11 +1330,16 @@ final class ElaProIAPManager: NSObject {
                 switch update {
                 case .verified(let transaction):
                     self.logAppleTransaction(transaction, source: "Transaction.updates verified")
-                    self.appendRefundDebugLog("StoreKit2 收到交易更新", payload: [
+                    var payload: [String: Any] = [
                         "productID": transaction.productID,
                         "transactionID": String(transaction.id),
                         "originalTransactionID": String(transaction.originalID)
-                    ])
+                    ]
+                    if let revocationDate = transaction.revocationDate {
+                        payload["revocationDate"] = revocationDate.timeIntervalSince1970
+                    }
+                    self.appendRefundDebugLog("StoreKit2 收到交易更新", payload: payload)
+                    self.handleTransactionUpdateSideEffects(transaction)
                 case .unverified(let transaction, let error):
                     DLLog(message: [
                         "tag": "[ElaProIAP][APPLE_TRANSACTION] Transaction.updates unverified",
@@ -1349,6 +1354,26 @@ final class ElaProIAPManager: NSObject {
                 }
             }
         }
+    }
+
+    private func handleTransactionUpdateSideEffects(_ transaction: Transaction) {
+        guard configuredIAPProductIDs().contains(transaction.productID) else {
+            return
+        }
+
+        guard transaction.revocationDate != nil else {
+            return
+        }
+
+        let defaults = UserDefaults.standard
+        let cachedTransactionID = defaults.string(forKey: LocalUnlockKeys.transactionID)?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let shouldNotify = defaults.bool(forKey: LocalUnlockKeys.isUnlocked) &&
+            (cachedTransactionID.isEmpty || cachedTransactionID == String(transaction.id))
+
+        clearLocalUnlock(defaults: defaults, shouldNotify: shouldNotify)
+        appendRefundDebugLog("检测到 Apple 退款/撤销交易，本地临时权益已撤销", payload: refundTransactionPayload(transaction))
+        NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
     }
 
     @objc private func handleRefundAppDidEnterBackground() {

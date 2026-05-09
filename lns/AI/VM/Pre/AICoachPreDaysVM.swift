@@ -49,6 +49,7 @@ class AICoachPreDaysVM: UIView, UIGestureRecognizerDelegate {
     private var isFirstReport = true
     private var completeDays = 0
     private var shouldAnimateMessageLabel = false
+    private var shouldAnimateSweep = true
 
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
@@ -129,11 +130,13 @@ extension AICoachPreDaysVM{
     func configure(items: [DayItem],
                    reportAfterDays: Int,
                    isFirstReport:Bool,
-                   completeDays:Int) {
+                   completeDays:Int,
+                   shouldAnimateSweep: Bool = true) {
         self.dayItems = items
         self.reportAfterDays = reportAfterDays
         self.isFirstReport = isFirstReport
         self.completeDays = completeDays
+        self.shouldAnimateSweep = shouldAnimateSweep
         reloadDaysUI()
         updateMessage()
         hidePopup()
@@ -183,6 +186,20 @@ extension AICoachPreDaysVM{
             }
         }
     }
+
+    func applyFinalPresentationState() {
+        alpha = 1
+        transform = .identity
+        daysStackView.alpha = 1
+        daysStackView.transform = .identity
+        messageLabel.alpha = messageLabel.isHidden ? 0 : 1
+        messageLabel.transform = .identity
+    }
+
+    func setShouldAnimateSweep(_ shouldAnimateSweep: Bool) {
+        self.shouldAnimateSweep = shouldAnimateSweep
+        updateSweepAnimationIfNeeded()
+    }
 }
 
 private extension AICoachPreDaysVM {
@@ -217,7 +234,7 @@ private extension AICoachPreDaysVM {
     }
 
     func updateSweepAnimationIfNeeded() {
-        let shouldAnimate = reportAfterDays == 0
+        let shouldAnimate = shouldAnimateSweep && reportAfterDays == 0
         layoutIfNeeded()
 
         for itemView in itemViews {

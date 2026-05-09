@@ -173,7 +173,7 @@ private extension MineManageSubscriptionVC {
                     if #available(iOS 17.0, *) {
                         try await AppStore.showManageSubscriptions(in: scene, subscriptionGroupID: groupID)
                     } else {
-                        // Fallback on earlier versions
+                        try await AppStore.showManageSubscriptions(in: scene)
                     }
                 }
             } catch {
