@@ -18,6 +18,8 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     private var hasRestoredDateRangeFromResponse = false
     private var isSubmittingFinalFlow = false
     private var isBackButtonCoolingDown = false
+    private var isWaitingForVipPurchaseToCreatePlan = false
+    private var shouldResumeCreatePlanOnAppear = false
     private var createPlanLoadingConfig = DietPlanFakeProgressLoadingVM.Config(
         fakeDuration: 9.0,
         maxProgressBeforeSuccess: 0.92,
@@ -39,6 +41,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateInteractivePopGestureBlocked(true)
+        resumeCreatePlanAfterVipPurchaseIfNeeded()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -57,9 +60,17 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         updateInteractivePopGestureBlocked(true)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleVipStatusRefreshForPendingCreatePlan),
+                                               name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS,
+                                               object: nil)
         shouldShowSexStep = resolvedShouldShowSexStep()
         initUI()
         sendDietMsgRequest()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
     }
     lazy var naviVm: DietPlanCreateNaviVM = {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
@@ -582,7 +593,7 @@ extension DietPlanCreateSecondVC{
                 self.handleFinalFlowFailure(message: msg)
                 return
             }
-            self.sendCreatePlanRequestAfterUpsert()
+            self.createPlanAfterUpsertIfVipValid()
         } failure: { [weak self] isError in
             guard let self = self else { return }
             self.handleFinalFlowFailure(message: isError ? "保存失败，请稍后重试" : nil)
@@ -606,6 +617,14 @@ extension DietPlanCreateSecondVC{
                 self.updateRecommendIntake(withBaseCaloriesText: caloriesText)
             }
         }
+    }
+
+    func createPlanAfterUpsertIfVipValid() {
+        guard VIPModel.shared.status == .valid else {
+            handleFinalFlowVipUpgradeRequired()
+            return
+        }
+        sendCreatePlanRequestAfterUpsert()
     }
 
     func sendCreatePlanRequestAfterUpsert() {
@@ -1099,17 +1118,43 @@ extension DietPlanCreateSecondVC {
     }
 
     func handleFinalFlowVipUpgradeRequired() {
-        createPlanLoadingVm.completeFailure { [weak self] in
+        createPlanLoadingVm.completeSuccess { [weak self] in
             guard let self = self else { return }
+            self.isWaitingForVipPurchaseToCreatePlan = true
             self.isSubmittingFinalFlow = false
             self.syncNextButtonEnableStatus()
-            self.presentAlertVc(confirmBtn: "去升级", message: "", title: "升级ELA PRO，解锁完整体验", cancelBtn: "取消", handler: { [weak self] _ in
-                guard let self = self else { return }
-                let vc = ElaProVC()
-                vc.showPriceOnly = true
-                self.navigationController?.pushViewController(vc, animated: true)
-            }, viewController: self)
+            let vc = ElaProVC()
+            vc.showPriceOnly = true
+            self.navigationController?.pushViewController(vc, animated: true)
         }
+    }
+
+    @objc func handleVipStatusRefreshForPendingCreatePlan() {
+        guard isWaitingForVipPurchaseToCreatePlan,
+              VIPModel.shared.status == .valid else {
+            return
+        }
+        shouldResumeCreatePlanOnAppear = true
+        resumeCreatePlanAfterVipPurchaseIfNeeded()
+    }
+
+    func resumeCreatePlanAfterVipPurchaseIfNeeded() {
+        guard shouldResumeCreatePlanOnAppear,
+              isWaitingForVipPurchaseToCreatePlan,
+              VIPModel.shared.status == .valid,
+              viewIfLoaded?.window != nil,
+              navigationController?.topViewController === self,
+              !isSubmittingFinalFlow else {
+            return
+        }
+
+        shouldResumeCreatePlanOnAppear = false
+        isWaitingForVipPurchaseToCreatePlan = false
+        isSubmittingFinalFlow = true
+        syncNextButtonEnableStatus()
+        createPlanLoadingVm.updateConfig(createPlanLoadingConfig)
+        createPlanLoadingVm.start(on: view)
+        sendCreatePlanRequestAfterUpsert()
     }
 
     func visibleStepIndex(forBaseIndex baseIndex: Int) -> Int {

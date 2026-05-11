@@ -52,10 +52,13 @@ class ElaProPriceVM: UIView {
         
         var displayPriceText: String? {
             guard !price.isEmpty else { return nil }
+            let priceText: String
             if price.contains("¥") || price.contains("￥") || price.contains("$") {
-                return price
+                priceText = price
+            } else {
+                priceText = "¥\(price)"
             }
-            return "¥\(price)"
+            return ElaProPriceVM.formattedPriceText(priceText)
         }
     }
 
@@ -718,21 +721,21 @@ extension ElaProPriceVM{
                         self.monthProduct = month
                         self.monthTagText = nil
                         self.monthSubTitleText = self.preferredRemoteText(self.monthRemoteProduct?.monthAvgPriceLabel)
-                        self.monthPriceText = ElaProIAPManager.shared.localizedPriceString(for: month)
-                        self.monthOriginPriceText = self.preferredRemoteText(self.monthRemoteProduct?.originalPrice)
+                        self.monthPriceText = self.formattedProductPriceText(for: month)
+                        self.monthOriginPriceText = self.preferredRemotePriceText(self.monthRemoteProduct?.originalPrice)
                     }
 
                     if let annual = products.first(where: { $0.id == ElaProIAPConfig.annualProductID }) {
                         self.annualProduct = annual
                         self.annualTagText = self.preferredRemoteText(self.annualRemoteProduct?.promotionLabel) ?? self.promoTagText(for: annual)
                         self.annualSubTitleText = self.preferredRemoteText(self.annualRemoteProduct?.monthAvgPriceLabel) ?? "" //self.buildMonthlyText(for: annual)
-                        self.annualPriceText = ElaProIAPManager.shared.localizedPriceString(for: annual)
-                        self.annualOriginPriceText = self.preferredRemoteText(self.annualRemoteProduct?.originalPrice)
+                        self.annualPriceText = self.formattedProductPriceText(for: annual)
+                        self.annualOriginPriceText = self.preferredRemotePriceText(self.annualRemoteProduct?.originalPrice)
                     }
                     
                     if let lifetime = products.first(where: { $0.id == ElaProIAPConfig.lifetimeProductID }) {
                         self.lifetimeProduct = lifetime
-                        self.lifetimePriceText = ElaProIAPManager.shared.localizedPriceString(for: lifetime)
+                        self.lifetimePriceText = self.formattedProductPriceText(for: lifetime)
                     }
                     
                     self.refreshPlanCards()
@@ -810,6 +813,63 @@ extension ElaProPriceVM{
         return text
     }
 
+    private func preferredRemotePriceText(_ text: String?) -> String? {
+        guard let text = preferredRemoteText(text) else { return nil }
+        return Self.formattedPriceText(text)
+    }
+
+    private func formattedProductPriceText(for product: Product) -> String {
+        return Self.formattedPriceText(ElaProIAPManager.shared.localizedPriceString(for: product))
+    }
+
+    private static func formattedPriceText(_ text: String) -> String {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let dotFormatted = strippingRedundantFractionZeros(in: trimmed, decimalSeparator: ".")
+        return strippingRedundantFractionZeros(in: dotFormatted, decimalSeparator: ",")
+    }
+
+    private static func strippingRedundantFractionZeros(in text: String, decimalSeparator: Character) -> String {
+        guard let separatorIndex = text.lastIndex(of: decimalSeparator),
+              separatorIndex > text.startIndex else {
+            return text
+        }
+        if decimalSeparator == "," && text.contains(".") {
+            return text
+        }
+
+        let beforeSeparatorIndex = text.index(before: separatorIndex)
+        guard text[beforeSeparatorIndex].isNumber else { return text }
+
+        let fractionStart = text.index(after: separatorIndex)
+        guard fractionStart < text.endIndex else { return text }
+
+        var fractionEnd = fractionStart
+        while fractionEnd < text.endIndex, text[fractionEnd].isNumber {
+            fractionEnd = text.index(after: fractionEnd)
+        }
+        guard fractionEnd > fractionStart else { return text }
+
+        let fractionLength = text.distance(from: fractionStart, to: fractionEnd)
+        if decimalSeparator == "," && fractionLength > 2 {
+            return text
+        }
+
+        var trimmedFractionEnd = fractionEnd
+        while trimmedFractionEnd > fractionStart {
+            let previousIndex = text.index(before: trimmedFractionEnd)
+            guard text[previousIndex] == "0" else { break }
+            trimmedFractionEnd = previousIndex
+        }
+
+        if trimmedFractionEnd == fractionEnd {
+            return text
+        }
+        if trimmedFractionEnd == fractionStart {
+            return String(text[..<separatorIndex]) + String(text[fractionEnd...])
+        }
+        return String(text[..<fractionStart]) + String(text[fractionStart..<trimmedFractionEnd]) + String(text[fractionEnd...])
+    }
+
     private func preferredDayAvgText(remoteText: String?, product: Product?) -> String? {
         let remote = preferredRemoteText(remoteText)
         guard let product = product else { return remote }
@@ -840,8 +900,8 @@ extension ElaProPriceVM{
         annualTagText = preferredRemoteText(annualRemoteProduct?.promotionLabel)
         monthSubTitleText = preferredRemoteText(monthRemoteProduct?.monthAvgPriceLabel)
         annualSubTitleText = preferredRemoteText(annualRemoteProduct?.monthAvgPriceLabel)
-        monthOriginPriceText = preferredRemoteText(monthRemoteProduct?.originalPrice)
-        annualOriginPriceText = preferredRemoteText(annualRemoteProduct?.originalPrice)
+        monthOriginPriceText = preferredRemotePriceText(monthRemoteProduct?.originalPrice)
+        annualOriginPriceText = preferredRemotePriceText(annualRemoteProduct?.originalPrice)
         monthPriceText = preferredRemoteText(monthRemoteProduct?.displayPriceText) ?? monthPriceText
         annualPriceText = preferredRemoteText(annualRemoteProduct?.displayPriceText) ?? annualPriceText
         lifetimePriceText = preferredRemoteText(lifetimeRemoteProduct?.displayPriceText) ?? lifetimePriceText
@@ -1109,7 +1169,7 @@ extension ElaProPriceVM{
     }
 
     func initUI() {
-        addSubview(bgImgView)
+//        addSubview(bgImgView)
         addSubview(scrollView)
         addSubview(bottomBar)
         addSubview(agreementConfirmDimView)
@@ -1187,9 +1247,9 @@ extension ElaProPriceVM{
         setConstrait()
     }
     func setConstrait() {
-        bgImgView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+//        bgImgView.snp.makeConstraints { make in
+//            make.edges.equalToSuperview()
+//        }
         
         bottomBar.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()

@@ -181,6 +181,7 @@ extension DietPlanVC{
     }
     //购物清单
     @objc func openBuyListSelectionAction() {
+        guard self.ensureValidVipForMealAction() else { return }
         if self.buylistData.count > 0 && Date().daysDifference(from: self.buylistEndDate) ?? 0 <= 0{
             self.openHistoryBuyListDetailPage()
         } else {
@@ -190,6 +191,7 @@ extension DietPlanVC{
     
     //酱料
     @objc func condimentAction() {
+        guard self.ensureValidVipForMealAction() else { return }
         let vc = DietPlanCondimentVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }

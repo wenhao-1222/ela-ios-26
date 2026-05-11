@@ -50,6 +50,9 @@ class ElaProVC: WHBaseViewVC {
             if let index = controllers.firstIndex(where: { $0 is DietPlanCreateVC }) {
                 controllers.remove(at: index)
                 nav.viewControllers = controllers
+            }else if let index = controllers.firstIndex(where: { $0 is DietPlanCreateSecondVC }) {
+                controllers.remove(at: index)
+                nav.viewControllers = controllers
             }
         }
         
@@ -311,12 +314,13 @@ extension ElaProVC{
     }
     
     func initUI() {
-        view.backgroundColor = .COLOR_BG_F2
-        
+//        view.backgroundColor = .COLOR_BG_F2
+        addELAFlowingBackground()
         view.addSubview(scrollViewBase)
         scrollViewBase.isPagingEnabled = true
         scrollViewBase.showsHorizontalScrollIndicator = false
         scrollViewBase.isScrollEnabled = false
+        scrollViewBase.backgroundColor = .clear
         view.addSubview(naviVm)
         view.addSubview(nextButton)
         view.addSubview(purchaseLoadingMaskView)
