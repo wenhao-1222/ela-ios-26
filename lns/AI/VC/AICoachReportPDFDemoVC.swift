@@ -1324,11 +1324,6 @@ private extension AICoachReportPDFDemoVC {
 
         guard thisWeekAverage > 0 else { return fallback }
 
-        let previousAverage = previousWeekAverage(
-            currentAverage: thisWeekAverage,
-            deltaKg: deltaKg,
-            trendText: trendText
-        )
         let summaryText = weightTrendSummary(
             deltaKg: deltaKg,
             deltaPercent: deltaPercent,
@@ -1338,13 +1333,11 @@ private extension AICoachReportPDFDemoVC {
         var rows: [AICoachReportFooterRow] = [
             .init(
                 leftText: "本周体重均值：\(formatChartNumber(thisWeekAverage)) kg",
-                rightText: "周内波动：\(formatPercentNumber(fluctuationValue))%"
+                rightText: nil
             )
         ]
 
-        if previousAverage > 0 {
-            rows.append(.init(leftText: "上周体重均值：\(formatChartNumber(previousAverage)) kg", rightText: nil))
-        }
+        rows.append(.init(leftText: "周内波动：\(formatPercentNumber(fluctuationValue))%", rightText: nil))
 
         if summaryText.isEmpty == false {
             rows.append(.init(leftText: summaryText, rightText: nil))
@@ -1480,8 +1473,8 @@ private extension AICoachReportPDFDemoVC {
         }
         guard trendText.isEmpty == false else { return "" }
 
-        let deltaText = formatChartNumber(deltaKg)
-        let percentText = formatPercentNumber(deltaPercent)
+        let deltaText = formatChartNumber(abs(deltaKg))
+        let percentText = formatPercentNumber(abs(deltaPercent))
         return "本周体重对比上周\(trendText)\(deltaText) kg（\(percentText)%）"
     }
 

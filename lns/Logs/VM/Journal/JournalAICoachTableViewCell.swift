@@ -25,9 +25,14 @@ class JournalAICoachTableViewCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         whiteView.transform = .identity
+        titleLabel.text = "AI教练"
+        subtitleLabel.isHidden = true
+        unreadImgView.isHidden = true
+        iconImgView.setImgLocal(imgName: "ai_coach_icon")
         proImgView.layer.removeAllAnimations()
         proImgView.alpha = 0
         proImgView.isHidden = true
+        updateLayout(hasUnreadLatestReport: false)
     }
     
     lazy var whiteView: UIView = {
@@ -49,14 +54,32 @@ class JournalAICoachTableViewCell: UITableViewCell {
         let lab = UILabel()
         lab.text = "AI教练"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 16, weight: .medium)
+        lab.font = .systemFont(ofSize: 14, weight: .regular)
         return lab
     }()
+    
+    lazy var subtitleLabel: UILabel = {
+        let lab = UILabel()
+        lab.text = "查看营养缺口与调整建议"
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.font = .systemFont(ofSize: 12, weight: .regular)
+        lab.isHidden = true
+        return lab
+    }()
+    
     lazy var proImgView: UIImageView = {
         let imgView = UIImageView()
         imgView.contentMode = .scaleAspectFit
         imgView.setImgLocal(imgName: "ai_coach_pro_icon")
         imgView.alpha = 0
+        imgView.isHidden = true
+        return imgView
+    }()
+    
+    lazy var unreadImgView: UIImageView = {
+        let imgView = UIImageView()
+        imgView.contentMode = .scaleAspectFit
+        imgView.setImgLocal(imgName: "ai_coach_new_msg_icon")
         imgView.isHidden = true
         return imgView
     }()
@@ -77,10 +100,21 @@ class JournalAICoachTableViewCell: UITableViewCell {
 }
 
 extension JournalAICoachTableViewCell {
-    func update(isVip: Bool, isMembershipStatusConfirmed: Bool, shouldAnimateProBadge: Bool) {
+    func update(isVip: Bool, isMembershipStatusConfirmed: Bool, shouldAnimateProBadge: Bool, hasUnreadLatestReport: Bool) {
+        updateLayout(hasUnreadLatestReport: hasUnreadLatestReport)
         proImgView.layer.removeAllAnimations()
         proImgView.alpha = 0
         proImgView.isHidden = true
+        unreadImgView.isHidden = !hasUnreadLatestReport
+
+        if hasUnreadLatestReport {
+            titleLabel.text = "新的教练报告已准备好"
+            subtitleLabel.isHidden = false
+            return
+        }
+
+        titleLabel.text = "AI教练"
+        subtitleLabel.isHidden = true
 
         guard isMembershipStatusConfirmed, !isVip else { return }
 
@@ -115,6 +149,30 @@ extension JournalAICoachTableViewCell {
             self.whiteView.transform = transform
         }
     }
+
+    private func updateLayout(hasUnreadLatestReport: Bool) {
+        whiteView.snp.updateConstraints { make in
+            make.height.equalTo(kFitWidth(hasUnreadLatestReport ? 64 : 50))
+        }
+
+        titleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(iconImgView.snp.right).offset(kFitWidth(12))
+            make.right.lessThanOrEqualTo(hasUnreadLatestReport ? unreadImgView.snp.left : proImgView.snp.left).offset(kFitWidth(-8))
+            make.height.equalTo(kFitWidth(21))
+            if hasUnreadLatestReport {
+                make.top.equalToSuperview().offset(kFitWidth(12.5))
+            } else {
+                make.centerY.equalToSuperview()
+            }
+        }
+        
+        subtitleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(titleLabel)
+            make.right.lessThanOrEqualTo(unreadImgView.snp.left).offset(kFitWidth(-8))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(1.5))
+            make.height.equalTo(kFitWidth(18))
+        }
+    }
 }
 
 extension JournalAICoachTableViewCell {
@@ -122,7 +180,9 @@ extension JournalAICoachTableViewCell {
         contentView.addSubview(whiteView)
         whiteView.addSubview(iconImgView)
         whiteView.addSubview(titleLabel)
+        whiteView.addSubview(subtitleLabel)
         whiteView.addSubview(proImgView)
+        whiteView.addSubview(unreadImgView)
         whiteView.addSubview(tapButton)
         
         whiteView.snp.makeConstraints { make in
@@ -134,9 +194,10 @@ extension JournalAICoachTableViewCell {
         }
         
         iconImgView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(16))
-            make.centerY.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(28))
+            make.left.equalTo(kFitWidth(12.5))
+//            make.centerY.equalToSuperview()
+            make.centerY.lessThanOrEqualTo(titleLabel)
+            make.width.height.equalTo(kFitWidth(24))
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -147,6 +208,13 @@ extension JournalAICoachTableViewCell {
             make.right.top.equalToSuperview()
             make.width.equalTo(kFitWidth(30))
             make.height.equalTo(kFitWidth(13))
+        }
+        
+        unreadImgView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.right.equalTo(kFitWidth(-12.5))
+            make.width.equalTo(kFitWidth(20))
+            make.height.equalTo(kFitWidth(29.5))
         }
         
         tapButton.snp.makeConstraints { make in

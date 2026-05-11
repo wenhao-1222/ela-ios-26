@@ -95,6 +95,7 @@ class ElaProPriceVM: UIView {
     private let normalTextColor = UIColor.COLOR_TEXT_TITLE_0f1214
     private let subTextColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
     private let renewalDashLayer = CAShapeLayer()
+    private let fadeInDuration: TimeInterval = 0.25
     private var agreementConfirmSheetHeight: CGFloat {
         kFitWidth(254) + WHUtils().getBottomSafeAreaHeight()
     }
@@ -771,7 +772,7 @@ extension ElaProPriceVM{
         
         switch selectedPlan {
         case .month:
-            labelBgImgView.isHidden = true
+            setDailyPriceBadgeHidden(true)
             if let monthProduct = monthProduct {
                 dailyPriceLabel.text = preferredDayAvgText(remoteText: monthRemoteProduct?.dayAvgPriceLabel,
                                                            product: monthProduct) ?? defaultDailyPlaceholder()
@@ -785,7 +786,7 @@ extension ElaProPriceVM{
         case .annual:
             let annualDailyText = preferredDayAvgText(remoteText: annualRemoteProduct?.dayAvgPriceLabel,
                                                       product: annualProduct)
-            labelBgImgView.isHidden = (annualDailyText?.isEmpty ?? true)
+            setDailyPriceBadgeHidden(annualDailyText?.isEmpty ?? true)
             dailyPriceLabel.text = annualDailyText ?? defaultDailyPlaceholder()
             if let annualProduct = annualProduct {
                 tipsLabel.text = preferredRemoteText(annualRemoteProduct?.promotionDesc) ?? buildSubscriptionTips(for: annualProduct,
@@ -795,7 +796,7 @@ extension ElaProPriceVM{
                 tipsLabel.text = preferredRemoteText(annualRemoteProduct?.promotionDesc) ?? "价格加载中..."
             }
         case .lifetime:
-            labelBgImgView.isHidden = true
+            setDailyPriceBadgeHidden(true)
             if let lifetimeProduct = lifetimeProduct {
                 dailyPriceLabel.text = buildDailyText(for: lifetimeProduct, days: 365)
                 tipsLabel.text = preferredRemoteText(lifetimeRemoteProduct?.promotionDesc) ?? "买断价\(lifetimePriceText)，一次购买长期可用"
@@ -803,6 +804,30 @@ extension ElaProPriceVM{
                 dailyPriceLabel.text = defaultDailyPlaceholder()
                 tipsLabel.text = preferredRemoteText(lifetimeRemoteProduct?.promotionDesc) ?? "价格加载中..."
             }
+        }
+    }
+
+    private func setDailyPriceBadgeHidden(_ isHidden: Bool) {
+        let shouldFadeIn = labelBgImgView.isHidden && !isHidden
+        labelBgImgView.layer.removeAllAnimations()
+
+        if isHidden {
+            labelBgImgView.isHidden = true
+            labelBgImgView.alpha = 1
+            return
+        }
+
+        labelBgImgView.isHidden = false
+        guard shouldFadeIn else {
+            labelBgImgView.alpha = 1
+            return
+        }
+
+        labelBgImgView.alpha = 0
+        UIView.animate(withDuration: fadeInDuration,
+                       delay: 0,
+                       options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction]) {
+            self.labelBgImgView.alpha = 1
         }
     }
 

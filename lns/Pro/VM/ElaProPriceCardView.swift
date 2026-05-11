@@ -18,6 +18,7 @@ class ElaProPriceCardView: UIView {
     private var priceCenterYConstraint: Constraint?
     private var priceBottomConstraint: Constraint?
     private var originBottomConstraint: Constraint?
+    private let fadeInDuration: TimeInterval = 0.25
     
     lazy var tagLabel: UILabel = {
         let lab = UILabel()
@@ -188,7 +189,7 @@ class ElaProPriceCardView: UIView {
                    originPrice: String?,
                    selected: Bool) {
         tagLabel.text = "  \(tag ?? "")  "
-        tagLabel.isHidden = tag == nil
+        setTagLabelHidden(tag == nil)
         titleLabel.text = title
         subTitleLabel.text = subTitle
         subTitleLabel.isHidden = (subTitle?.isEmpty ?? true)
@@ -212,6 +213,30 @@ class ElaProPriceCardView: UIView {
         isCardSelected = selected
         updateLayoutForCurrentContent()
         setNeedsLayout()
+    }
+
+    private func setTagLabelHidden(_ isHidden: Bool) {
+        let shouldFadeIn = tagLabel.isHidden && !isHidden
+        tagLabel.layer.removeAllAnimations()
+
+        if isHidden {
+            tagLabel.isHidden = true
+            tagLabel.alpha = 1
+            return
+        }
+
+        tagLabel.isHidden = false
+        guard shouldFadeIn else {
+            tagLabel.alpha = 1
+            return
+        }
+
+        tagLabel.alpha = 0
+        UIView.animate(withDuration: fadeInDuration,
+                       delay: 0,
+                       options: [.curveEaseOut, .beginFromCurrentState, .allowUserInteraction]) {
+            self.tagLabel.alpha = 1
+        }
     }
     
     private func updateLayoutForCurrentContent() {

@@ -86,6 +86,8 @@ class UserInfoModel {
     var show_water_status = true
     //是否显示AI教练入口
     var show_ai_coach_status = true
+    //是否有未读的最新AI教练报告
+    var has_unread_latest_ai_coach_report = false
     ///是否显示下一餐饮食建议
     var show_next_advice = true
     //体重单位  1  kg   2  斤   3 磅
@@ -222,6 +224,7 @@ extension UserInfoModel{
         if dict.allKeys.contains(where: { "\($0)" == "ai_coach_status" }) {
             self.show_ai_coach_status = dict.stringValueForKey(key: "ai_coach_status") == "1" ? true : false
         }
+        self.has_unread_latest_ai_coach_report = dict.stringValueForKey(key: "has_unread_latest_ai_coach_report") == "1" ? true : false
         self.show_next_advice = dict.stringValueForKey(key: "next_meal_advice_status") == "1" ? true : false
 //        NotificationCenter.default.post(name: NOTIFI_NAME_SHORTCUTITEMS, object: nil)
 //        self.setABTestModel(dict: WHUtils.getDictionaryFromJSONString(jsonString: dict.stringValueForKey(key: "params")))
