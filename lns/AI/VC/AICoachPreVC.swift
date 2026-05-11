@@ -51,12 +51,17 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        initUI()
         if dataDict.stringValueForKey(key: "has7CompleteDays").count > 0{
-            self.updatePreDaysUI(dataDict: dataDict)
+            isWaitingForCoachLaunchResponse = false
         }else{
             isWaitingForCoachLaunchResponse = true
+        }
+
+        initUI()
+        if isWaitingForCoachLaunchResponse {
             sendCoachLaunchRequest()
+        } else {
+            self.updatePreDaysUI(dataDict: dataDict)
         }
         sendReportListRequest()
         
@@ -133,9 +138,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         btn.setTitleColor(.white, for: .normal)
         btn.setTitleColor(.white, for: .disabled)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
-        btn.backgroundColor = .COLOR_BUTTON_DISABLE_BG_THEME
-        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .disabled)
+        btn.backgroundColor = .THEME
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
         btn.alpha = 0
@@ -183,7 +186,7 @@ extension AICoachPreVC{
 
         markCurrentReportClicked()
         isShowingGenerationStateAfterTap = true
-        applyNextButtonState()
+        applyNextButtonState(animated: true)
     }
 
     @objc func dismissPopupTapAction() {
@@ -301,7 +304,7 @@ private extension AICoachPreVC {
     @objc
     func refreshCoachLaunchStatusIfNeeded() {
         let latestReportDict = dataDict["latestReport"] as? NSDictionary ?? [:]
-        guard latestReportDict.stringValueForKey(key: "reportStatus") == "1",
+        guard latestReportDict.stringValueForKey(key: "reportStatus").intValue < 3,
               hasClickedCurrentReportButton else {
             stopCoachLaunchRefreshTimer()
             return
@@ -318,17 +321,21 @@ private extension AICoachPreVC {
         }
     }
 
-    func applyNextButtonState() {
+    func applyNextButtonState(animated: Bool = false, updatesMessage: Bool = true) {
         let reportStatus = currentReportStatus
         let hasClicked = hasClickedCurrentReportButton
         let shouldShowGenerationEntry = hasClicked == false && (reportStatus == 1 || isGeneratedReportStatus(reportStatus))
-        let isWaitingForReport = hasClicked && (reportStatus == 1 || isShowingGenerationStateAfterTap)
+        let isWaitingForReport = hasClicked && (reportStatus == 1 || (isShowingGenerationStateAfterTap && isGeneratedReportStatus(reportStatus) == false))
 
         if shouldShowGenerationEntry {
-            nextButton.setTitle("生成报告", for: .normal)
-            nextButton.setTitle("生成报告", for: .disabled)
-            nextButton.isEnabled = true
+            applyNextButtonPresentation(title: "查看报告",
+                                        isEnabled: true,
+                                        backgroundColor: .THEME,
+                                        animated: animated)
             preDaysVM.messageLabel.isHidden = false
+            if updatesMessage {
+                preDaysVM.showConfiguredMessage(animated: animated)
+            }
             preDaysVM.setShouldAnimateSweep(false)
             stopNextButtonPlaceholderAnimation()
             stopCoachLaunchRefreshTimer()
@@ -337,11 +344,13 @@ private extension AICoachPreVC {
 
         if isWaitingForReport {
             let processingTitle = "AI 正在分析中 · 约\(estimatedReportGenerationMinutes)分钟"
-            nextButton.setTitle(processingTitle, for: .normal)
-            nextButton.setTitle(processingTitle, for: .disabled)
-            nextButton.isEnabled = false
-            preDaysVM.messageLabel.isHidden = true
-            preDaysVM.setShouldAnimateSweep(shouldAnimateProgressHighlights(reportAfterDays: currentReportAfterDays))
+            applyNextButtonPresentation(title: processingTitle,
+                                        isEnabled: false,
+                                        backgroundColor: .COLOR_BUTTON_DISABLE_BG_THEME,
+                                        animated: animated)
+            preDaysVM.messageLabel.isHidden = false
+            preDaysVM.showTemporaryMessage("可稍后回来查看", animated: animated && updatesMessage)
+            preDaysVM.setShouldAnimateSweep(true)
             startNextButtonPlaceholderAnimation()
             if reportStatus == 1 {
                 startCoachLaunchRefreshTimerIfNeeded()
@@ -352,13 +361,48 @@ private extension AICoachPreVC {
         }
 
         isShowingGenerationStateAfterTap = false
-        nextButton.setTitle("查看报告", for: .normal)
-        nextButton.setTitle("查看报告", for: .disabled)
-        nextButton.isEnabled = true
+        applyNextButtonPresentation(title: "查看报告",
+                                    isEnabled: true,
+                                    backgroundColor: .THEME,
+                                    animated: animated)
         preDaysVM.messageLabel.isHidden = false
+        if updatesMessage {
+            preDaysVM.showConfiguredMessage(animated: animated)
+        }
         preDaysVM.setShouldAnimateSweep(false)
         stopNextButtonPlaceholderAnimation()
         stopCoachLaunchRefreshTimer()
+    }
+
+    func applyNextButtonPresentation(title: String,
+                                     isEnabled: Bool,
+                                     backgroundColor: UIColor,
+                                     animated: Bool) {
+        let currentTitle = nextButton.title(for: nextButton.isEnabled ? .normal : .disabled)
+        let shouldAnimate = animated && nextButton.alpha > 0
+        let applyTitle = {
+            self.nextButton.setTitle(title, for: .normal)
+            self.nextButton.setTitle(title, for: .disabled)
+        }
+
+        nextButton.isEnabled = isEnabled
+
+        if shouldAnimate, currentTitle != title {
+            UIView.transition(with: nextButton.titleLabel ?? nextButton,
+                              duration: 0.35,
+                              options: [.transitionCrossDissolve, .allowUserInteraction],
+                              animations: applyTitle)
+        } else {
+            applyTitle()
+        }
+
+        if shouldAnimate {
+            UIView.animate(withDuration: 0.35) {
+                self.nextButton.backgroundColor = backgroundColor
+            }
+        } else {
+            nextButton.backgroundColor = backgroundColor
+        }
     }
 
     func updatePreDaysUI(dataDict: NSDictionary) {
@@ -369,7 +413,6 @@ private extension AICoachPreVC {
         isReportGenerating = isGenerating
         
         self.reportId = latestReportDict.stringValueForKey(key: "id")
-        applyNextButtonState()
         let reportStatus = latestReportDict.stringValueForKey(key: "reportStatus").intValue
         var remainingDays = max(0, dataDict.stringValueForKey(key: "remainingDays").intValue)
         var isFirstReport = dataDict.floatValueForKey(key: "reportCount") <= 1//是否为首报
@@ -394,11 +437,14 @@ private extension AICoachPreVC {
                                          reportAfterDays: remainingDays,
                                          isFirstReport:isFirstReport,
                                          completeDays: dataDict.stringValueForKey(key: "completeDays").intValue,
-                                         shouldAnimateSweep: self.shouldAnimateProgressHighlights(reportAfterDays: remainingDays))
+                                         shouldAnimateSweep: self.shouldAnimateProgressHighlights(reportAfterDays: remainingDays),
+                                         temporaryMessage: self.currentMessageOverride,
+                                         animateMessageChange: self.shouldAnimateStateTransition)
                 self.preInfoVM.configure(
                     userGoal: userGoal,
                     aiCoachIntensityPreference: aiCoachIntensityPreference
                 )
+                self.applyNextButtonState(animated: self.shouldAnimateStateTransition, updatesMessage: false)
                 self.syncVisiblePresentationStateIfNeeded()
             }
             return
@@ -431,11 +477,14 @@ private extension AICoachPreVC {
                                      reportAfterDays: remainingDays,
                                      isFirstReport:isFirstReport,
                                      completeDays: dataDict.stringValueForKey(key: "completeDays").intValue,
-                                     shouldAnimateSweep: self.shouldAnimateProgressHighlights(reportAfterDays: remainingDays))
+                                     shouldAnimateSweep: self.shouldAnimateProgressHighlights(reportAfterDays: remainingDays),
+                                     temporaryMessage: self.currentMessageOverride,
+                                     animateMessageChange: self.shouldAnimateStateTransition)
             self.preInfoVM.configure(
                 userGoal: userGoal,
                 aiCoachIntensityPreference: aiCoachIntensityPreference
             )
+            self.applyNextButtonState(animated: self.shouldAnimateStateTransition, updatesMessage: false)
             self.syncVisiblePresentationStateIfNeeded()
         }
     }
@@ -489,13 +538,14 @@ private extension AICoachPreVC {
             nextButton.layer.addSublayer(nextButtonPlaceholderLayer)
         }
 
-        let translation = max(nextButton.bounds.width, 1) * 1.8
-        nextButtonPlaceholderLayer.transform = CATransform3DMakeTranslation(-translation, 0, 0)
+        let bounds = nextButton.bounds
+        let sweepWidth = max(bounds.width * 0.22, kFitWidth(72))
+        nextButtonPlaceholderLayer.transform = CATransform3DMakeTranslation(-sweepWidth, 0, 0)
 
         let animation = CABasicAnimation(keyPath: "transform.translation.x")
-        animation.fromValue = -translation
-        animation.toValue = translation
-        animation.duration = 2.4
+        animation.fromValue = -sweepWidth
+        animation.toValue = bounds.width + sweepWidth
+        animation.duration = AICoachPreDaySweepAnimation.duration
         animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         animation.repeatCount = .infinity
         animation.isRemovedOnCompletion = false
@@ -512,15 +562,19 @@ private extension AICoachPreVC {
     func updateNextButtonPlaceholderLayerFrame() {
         let bounds = nextButton.bounds
         guard bounds.isEmpty == false else { return }
-        nextButtonPlaceholderLayer.frame = bounds.insetBy(dx: -bounds.width, dy: 0)
+        let sweepWidth = max(bounds.width * 0.22, kFitWidth(72))
+        nextButtonPlaceholderLayer.frame = CGRect(x: -sweepWidth,
+                                                  y: 0,
+                                                  width: sweepWidth,
+                                                  height: bounds.height)
         nextButtonPlaceholderLayer.cornerRadius = nextButton.layer.cornerRadius
-        nextButtonPlaceholderLayer.startPoint = CGPoint(x: 0, y: 0.5)
-        nextButtonPlaceholderLayer.endPoint = CGPoint(x: 1, y: 0.5)
+        nextButtonPlaceholderLayer.startPoint = CGPoint(x: 0, y: 0.35)
+        nextButtonPlaceholderLayer.endPoint = CGPoint(x: 1, y: 0.65)
         nextButtonPlaceholderLayer.colors = [
             UIColor.white.withAlphaComponent(0).cgColor,
-            UIColor.white.withAlphaComponent(0.06).cgColor,
-            UIColor.white.withAlphaComponent(0.16).cgColor,
-            UIColor.white.withAlphaComponent(0.06).cgColor,
+            UIColor.white.withAlphaComponent(0.18).cgColor,
+            UIColor.white.withAlphaComponent(0.52).cgColor,
+            UIColor.white.withAlphaComponent(0.18).cgColor,
             UIColor.white.withAlphaComponent(0).cgColor
         ]
         nextButtonPlaceholderLayer.locations = [0, 0.38, 0.5, 0.62, 1]
@@ -606,8 +660,7 @@ private extension AICoachPreVC {
         circleImgView.alpha = 1
         circleImgView.transform = .identity
         preDaysVM.prepareEntranceAnimation()
-        preInfoVM.alpha = 0
-        preInfoVM.transform = initialTransform
+        preInfoVM.prepareTextEntranceAnimation()
         infoSelectPopupVM.alpha = 0
         infoSelectPopupVM.transform = initialTransform
         nextButton.isHidden = true
@@ -616,7 +669,9 @@ private extension AICoachPreVC {
     }
 
     func configureInitialPresentationState() {
-        if shouldPlayFirstEntryAnimation {
+        if isWaitingForCoachLaunchResponse {
+            prepareEntranceAnimation()
+        } else if shouldPlayFirstEntryAnimation {
             prepareEntranceAnimation()
         } else {
             syncVisiblePresentationStateIfNeeded()
@@ -640,22 +695,21 @@ private extension AICoachPreVC {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             guard let self = self else { return }
-            self.preDaysVM.playEntranceAnimation { [weak self] in
+            self.preDaysVM.playEntranceAnimation(alongsideDaysAnimation: { [weak self] in
+                self?.preInfoVM.applyTextEntranceAnimation()
+            }) { [weak self] in
                 guard let self = self else { return }
-                self.animateEntrance(view: self.preInfoVM, duration: 0.75, delay: 0.35) { [weak self] in
+                self.animateEntrance(view: self.infoSelectPopupVM, duration: 0.75, delay: 0.15) { [weak self] in
                     guard let self = self else { return }
-                    self.animateEntrance(view: self.infoSelectPopupVM, duration: 0.75, delay: 0.15) { [weak self] in
-                        guard let self = self else { return }
-                        let shouldShowNextButton = self.shouldShowNextButton
-                        if shouldShowNextButton {
-                            self.nextButton.isHidden = false
-                        }
-                        self.animateEntrance(view: self.nextButton,
-                                             duration: 0.7,
-                                             delay: 0.25,
-                                             shouldFadeIn: shouldShowNextButton) { [weak self] in
-                            self?.updateNextButtonVisibility(animated: false)
-                        }
+                    let shouldShowNextButton = self.shouldShowNextButton
+                    if shouldShowNextButton {
+                        self.nextButton.isHidden = false
+                    }
+                    self.animateEntrance(view: self.nextButton,
+                                         duration: 0.7,
+                                         delay: 0.25,
+                                         shouldFadeIn: shouldShowNextButton) { [weak self] in
+                        self?.updateNextButtonVisibility(animated: false)
                     }
                 }
             }
@@ -704,14 +758,14 @@ private extension AICoachPreVC {
 
     func syncVisiblePresentationStateIfNeeded() {
         guard shouldPlayFirstEntryAnimation == false || hasPlayedRemainingEntranceAnimation else { return }
+        guard isWaitingForCoachLaunchResponse == false else { return }
 
         bgImgView.alpha = 1
         bgImgView.transform = .identity
         circleImgView.alpha = 1
         circleImgView.transform = .identity
         preDaysVM.applyFinalPresentationState()
-        preInfoVM.alpha = 1
-        preInfoVM.transform = .identity
+        preInfoVM.applyFinalPresentationState()
         infoSelectPopupVM.alpha = 1
         infoSelectPopupVM.transform = .identity
         updateNextButtonVisibility(animated: false)
@@ -744,6 +798,16 @@ private extension AICoachPreVC {
 
     var currentReportAfterDays: Int {
         max(0, dataDict.stringValueForKey(key: "remainingDays").intValue)
+    }
+
+    var currentMessageOverride: String? {
+        let reportStatus = currentReportStatus
+        let isWaitingForReport = hasClickedCurrentReportButton && (reportStatus == 1 || (isShowingGenerationStateAfterTap && isGeneratedReportStatus(reportStatus) == false))
+        return isWaitingForReport ? "可稍后回来查看" : nil
+    }
+
+    var shouldAnimateStateTransition: Bool {
+        hasPlayedRemainingEntranceAnimation && nextButton.alpha > 0
     }
 
     var shouldPlayContentAnimation: Bool {

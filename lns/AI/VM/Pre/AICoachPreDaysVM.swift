@@ -50,6 +50,7 @@ class AICoachPreDaysVM: UIView, UIGestureRecognizerDelegate {
     private var completeDays = 0
     private var shouldAnimateMessageLabel = false
     private var shouldAnimateSweep = true
+    private var temporaryMessage: String?
 
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
@@ -131,14 +132,17 @@ extension AICoachPreDaysVM{
                    reportAfterDays: Int,
                    isFirstReport:Bool,
                    completeDays:Int,
-                   shouldAnimateSweep: Bool = true) {
+                   shouldAnimateSweep: Bool = true,
+                   temporaryMessage: String? = nil,
+                   animateMessageChange: Bool = false) {
         self.dayItems = items
         self.reportAfterDays = reportAfterDays
         self.isFirstReport = isFirstReport
         self.completeDays = completeDays
         self.shouldAnimateSweep = shouldAnimateSweep
+        self.temporaryMessage = temporaryMessage
         reloadDaysUI()
-        updateMessage()
+        updateMessage(animated: animateMessageChange)
         hidePopup()
         updateSweepAnimationIfNeeded()
     }
@@ -166,7 +170,8 @@ extension AICoachPreDaysVM{
         shouldAnimateMessageLabel = false
     }
 
-    func playEntranceAnimation(completion: (() -> Void)? = nil) {
+    func playEntranceAnimation(alongsideDaysAnimation: (() -> Void)? = nil,
+                               completion: (() -> Void)? = nil) {
         shouldAnimateMessageLabel = true
 
         UIView.animate(withDuration: 0.75,
@@ -175,6 +180,7 @@ extension AICoachPreDaysVM{
             self.transform = .identity
             self.daysStackView.transform = .identity
             self.daysStackView.alpha = 1
+            alongsideDaysAnimation?()
         } completion: { _ in
             UIView.animate(withDuration: 0.35,
                            delay: 0.18,
@@ -199,6 +205,20 @@ extension AICoachPreDaysVM{
     func setShouldAnimateSweep(_ shouldAnimateSweep: Bool) {
         self.shouldAnimateSweep = shouldAnimateSweep
         updateSweepAnimationIfNeeded()
+    }
+
+    func showTemporaryMessage(_ text: String, animated: Bool) {
+        temporaryMessage = text
+        messageLabel.isHidden = false
+        updateMessage(animated: animated)
+        showMessageLabelIfNeeded(animated: animated)
+    }
+
+    func showConfiguredMessage(animated: Bool) {
+        temporaryMessage = nil
+        messageLabel.isHidden = false
+        updateMessage(animated: animated)
+        showMessageLabelIfNeeded(animated: animated)
     }
 }
 
@@ -234,7 +254,7 @@ private extension AICoachPreDaysVM {
     }
 
     func updateSweepAnimationIfNeeded() {
-        let shouldAnimate = shouldAnimateSweep && reportAfterDays == 0
+        let shouldAnimate = shouldAnimateSweep && (reportAfterDays == 0 || temporaryMessage != nil)
         layoutIfNeeded()
 
         for itemView in itemViews {
@@ -246,7 +266,7 @@ private extension AICoachPreDaysVM {
         }
     }
 
-    func updateMessage() {
+    func updateMessage(animated: Bool = false) {
         //
         /*
          首报之前的文案：
@@ -259,6 +279,11 @@ private extension AICoachPreDaysVM {
          
          后续出报告：你最新的教练报告已经准备好了，快去查看！
          */
+        if let temporaryMessage {
+            applyMessageText(temporaryMessage, highlightText: nil, animated: animated)
+            return
+        }
+
         var fullText = "为了让反馈更精准，我还需要更多时间来了解你。请继续保持记录饮食和体重，我预计会在\(reportAfterDays) 天后为你生成第一份反馈报告！"
         
         if !isFirstReport{
@@ -273,6 +298,10 @@ private extension AICoachPreDaysVM {
             }
         }
         
+        applyMessageText(fullText, highlightText: "\(reportAfterDays)", animated: animated)
+    }
+
+    func makeMessageAttributedText(_ fullText: String, highlightText: String?) -> NSAttributedString {
         let attributedText = NSMutableAttributedString(
             string: fullText,
             attributes: [
@@ -281,13 +310,14 @@ private extension AICoachPreDaysVM {
             ]
         )
 
-        let highlightText = "\(reportAfterDays)"
-        let highlightRange = (fullText as NSString).range(of: highlightText)
-        if highlightRange.location != NSNotFound {
-            attributedText.addAttributes([
-                .foregroundColor: UIColor.THEME,
-                .font: UIFont.systemFont(ofSize: 14, weight: .medium)
-            ], range: highlightRange)
+        if let highlightText, highlightText.isEmpty == false {
+            let highlightRange = (fullText as NSString).range(of: highlightText)
+            if highlightRange.location != NSNotFound {
+                attributedText.addAttributes([
+                    .foregroundColor: UIColor.THEME,
+                    .font: UIFont.systemFont(ofSize: 14, weight: .medium)
+                ], range: highlightRange)
+            }
         }
 
         let paragraphStyle = NSMutableParagraphStyle()
@@ -295,10 +325,34 @@ private extension AICoachPreDaysVM {
         paragraphStyle.lineSpacing = kFitWidth(4)
         attributedText.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedText.length))
 
-        messageLabel.attributedText = attributedText
-//
-//        guard shouldAnimateMessageLabel == false else { return }
-//        messageLabel.alpha = messageLabel.isHidden ? 0 : 1
+        return attributedText
+    }
+
+    func applyMessageText(_ fullText: String, highlightText: String?, animated: Bool) {
+        let attributedText = makeMessageAttributedText(fullText, highlightText: highlightText)
+
+        guard animated, messageLabel.alpha > 0, messageLabel.isHidden == false else {
+            messageLabel.attributedText = attributedText
+            return
+        }
+
+        UIView.transition(with: messageLabel,
+                          duration: 0.35,
+                          options: [.transitionCrossDissolve, .allowUserInteraction]) {
+            self.messageLabel.attributedText = attributedText
+        }
+    }
+
+    func showMessageLabelIfNeeded(animated: Bool) {
+        guard messageLabel.alpha < 1 else { return }
+        messageLabel.transform = .identity
+        guard animated else {
+            messageLabel.alpha = 1
+            return
+        }
+        UIView.animate(withDuration: 0.35) {
+            self.messageLabel.alpha = 1
+        }
     }
 
     func dayItemTapAction(index: Int, sourceView: UIView) {

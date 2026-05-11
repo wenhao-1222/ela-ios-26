@@ -121,17 +121,20 @@ class LogsSQLiteUploadManager {
                 for j in 0..<mealPerArr.count{
                     let dictTemp = mealPerArr[j]as? NSMutableDictionary ?? [:]
                     if dictTemp.stringValueForKey(key: "state") == "1"{
-                        let calori = dictTemp.doubleValueForKey(key: "calories")
-                        let carbohydrate = dictTemp.doubleValueForKey(key: "carbohydrate")
-                        let protein = dictTemp.doubleValueForKey(key: "protein")
-                        let fat = dictTemp.doubleValueForKey(key: "fat")
+                        let calori = WHUtils.fixedFractionString(dictTemp.doubleValueForKey(key: "calories"), fractionDigits: 0).doubleValue
+                        let carbohydrate = WHUtils.fixedFractionString(dictTemp.doubleValueForKey(key: "carbohydrate"), fractionDigits: 1).doubleValue
+                        let protein = WHUtils.fixedFractionString(dictTemp.doubleValueForKey(key: "protein"), fractionDigits: 1).doubleValue
+                        let fat = WHUtils.fixedFractionString(dictTemp.doubleValueForKey(key: "fat"), fractionDigits: 1).doubleValue
                         
                         caloriTotal = caloriTotal + calori
                         carboTotal = carboTotal + carbohydrate
                         proteinTotal = proteinTotal + protein
                         fatTotal = fatTotal + fat
                         
-                        dictTemp.setValue("\(String(format: "%.0f", dictTemp.doubleValueForKey(key: "calories").rounded()))".replacingOccurrences(of: ",", with: "."), forKey: "calories")
+                        dictTemp.setValue(WHUtils.fixedFractionString(calori, fractionDigits: 0), forKey: "calories")
+                        dictTemp.setValue(WHUtils.fixedFractionString(carbohydrate, fractionDigits: 1), forKey: "carbohydrate")
+                        dictTemp.setValue(WHUtils.fixedFractionString(protein, fractionDigits: 1), forKey: "protein")
+                        dictTemp.setValue(WHUtils.fixedFractionString(fat, fractionDigits: 1), forKey: "fat")
                         
                         mealPerArr.replaceObject(at: j, with: dictTemp)
                         isEat = "1"
@@ -148,10 +151,10 @@ class LogsSQLiteUploadManager {
                 dataArray.add(natuDict)
             }
             WidgetUtils().saveCurrentDayMealsNaturalMsg(dataArray: dataArray)
-            uploadDict.setValue("\(Int(proteinTotal.rounded()))", forKey: "totalProteins")
-            uploadDict.setValue("\(Int(carboTotal.rounded()))", forKey: "totalCarbohydrates")
-            uploadDict.setValue("\(Int(fatTotal.rounded()))", forKey: "totalFats")
-            uploadDict.setValue("\(Int(caloriTotal.rounded()))", forKey: "totalCalories")
+            uploadDict.setValue(WHUtils.fixedFractionString(proteinTotal, fractionDigits: 2), forKey: "totalProteins")
+            uploadDict.setValue(WHUtils.fixedFractionString(carboTotal, fractionDigits: 2), forKey: "totalCarbohydrates")
+            uploadDict.setValue(WHUtils.fixedFractionString(fatTotal, fractionDigits: 2), forKey: "totalFats")
+            uploadDict.setValue(WHUtils.fixedFractionString(caloriTotal, fractionDigits: 0), forKey: "totalCalories")
         }
         
         serialQueue.async {

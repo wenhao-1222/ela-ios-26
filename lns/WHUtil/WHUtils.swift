@@ -45,6 +45,15 @@ class WHUtils: NSObject {
         return roundString(str, minimumFractionDigits: 0, maximumFractionDigits: 1)
     }
 
+    static func fixedFractionString(_ str: String, fractionDigits: Int) -> String {
+        let digits = max(fractionDigits, 0)
+        return roundString(str, minimumFractionDigits: digits, maximumFractionDigits: digits) ?? str.replacingOccurrences(of: ",", with: ".")
+    }
+
+    static func fixedFractionString(_ value: Double, fractionDigits: Int) -> String {
+        return fixedFractionString("\(value)", fractionDigits: fractionDigits)
+    }
+
     private static func roundString(_ str: String, minimumFractionDigits: Int, maximumFractionDigits: Int) -> String? {
         let normalizedString = str.replacingOccurrences(of: ",", with: ".")
         guard var decimalValue = Decimal(string: normalizedString) else { return str }

@@ -84,7 +84,7 @@ class BodyDataSQLiteManager {
     private let weight = Expression<String>("weight")
     private let armcircumference = Expression<String>("armcircumference")
     private let isUpload = Expression<Bool>("isUpload")
-    private let isUploadString = Expression<Bool>("isUploadString")
+    private let isUploadString = Expression<String>("isUploadString")
     private let shoulder = Expression<String>("shoulder")
     private let bust = Expression<String>("bust")
     private let thigh = Expression<String>("thigh")
@@ -255,7 +255,7 @@ class BodyDataSQLiteManager {
                                       bfp<-bfpData,
                                       self.images<-images,
                                       self.localImages<-"",
-                                      isUploadString<-upload)
+                                      isUploadString<-(upload ? "1" : "0"))
             try db?.run(insert)
             DLLog(message:"更新身体数据成功(不存在数据) \(cTime)")
         } catch {
@@ -483,7 +483,7 @@ class BodyDataSQLiteManager {
             do {
                 try db?.run(table.filter(ctime == cTime)
                     .filter(uid == UserInfoModel.shared.uId)
-                    .update(isUploadString <- uploadStatus))
+                    .update(isUploadString <- (uploadStatus ? "1" : "0")))
                 
 //                DLLog(message:"更新身体数据状态成功 \(cTime)")
             }catch{
@@ -499,6 +499,22 @@ class BodyDataSQLiteManager {
                 }
             }
         }
+    }
+    private func parseUploadStatus(_ value: Any?) -> Bool {
+        if let boolValue = value as? Bool {
+            return boolValue
+        }
+        if let intValue = value as? Int {
+            return intValue == 1
+        }
+        if let int64Value = value as? Int64 {
+            return int64Value == 1
+        }
+        if let stringValue = value as? String {
+            let lowercasedValue = stringValue.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            return lowercasedValue == "1" || lowercasedValue == "true"
+        }
+        return false
     }
     func queryBodyData(sDate:String) -> NSDictionary{
         var dataDict = NSDictionary()
@@ -521,7 +537,7 @@ class BodyDataSQLiteManager {
                                 "calf":row[10]as? String ?? "",
 //                                "bfp":row[14]as? String ?? ""
                                 "bfp":row[14]as? String ?? "",
-                                "isUpload":row[11]as? String ?? "" == "1" ? true : false]
+                                "isUpload":parseUploadStatus(row[11])]
                     return dataDict
                 }
             }
@@ -572,7 +588,7 @@ class BodyDataSQLiteManager {
             if let rows = try db?.prepare("SELECT weight,isUploadString FROM bodydata WHERE ctime == '\(sDate)' AND uid == '\(UserInfoModel.shared.uId)'"){
                 for row in rows{
                     let weight = row[0] as? String ?? ""
-                    let status = (row[1] as? String ?? "") == "1"
+                    let status = parseUploadStatus(row[1])
                     return (weight,status)
                 }
             }
@@ -600,7 +616,7 @@ class BodyDataSQLiteManager {
                                 "thigh":row[9]as? String ?? "",
                                 "calf":row[10]as? String ?? "",
                                 "bfp":row[14]as? String ?? "",
-                                "isUpload":row[11]as? String ?? "" == "1" ? true : false] as [String : Any]
+                                "isUpload":parseUploadStatus(row[11])] as [String : Any]
                     models.add(dict)
                 }
             }
@@ -681,7 +697,7 @@ class BodyDataSQLiteManager {
                                 "thigh":row[9]as? String ?? "",
                                 "calf":row[10]as? String ?? "",
                                 "bfp":row[14]as? String ?? "",
-                                "isUpload":row[11]as? String ?? "" == "1" ? true : false] as [String : Any]
+                                "isUpload":parseUploadStatus(row[11])] as [String : Any]
                     models.add(dict)
                 }
             }

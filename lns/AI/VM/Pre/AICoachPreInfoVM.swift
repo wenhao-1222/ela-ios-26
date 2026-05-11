@@ -48,6 +48,24 @@ extension AICoachPreInfoVM {
         goalRowView.updateValue(text: AICoachPreInfoEditableField.goal.displayText(for: userGoal))
         intensityRowView.updateValue(text: AICoachPreInfoEditableField.intensity.displayText(for: aiCoachIntensityPreference))
     }
+
+    func prepareTextEntranceAnimation() {
+        alpha = 1
+        transform = .identity
+        goalRowView.setTextAlpha(0)
+        intensityRowView.setTextAlpha(0)
+    }
+
+    func applyTextEntranceAnimation() {
+        goalRowView.setTextAlpha(1)
+        intensityRowView.setTextAlpha(1)
+    }
+
+    func applyFinalPresentationState() {
+        alpha = 1
+        transform = .identity
+        applyTextEntranceAnimation()
+    }
 }
 
 private extension AICoachPreInfoVM {
@@ -135,6 +153,11 @@ private final class AICoachPreInfoRowView: UIView {
 
     func updateValue(text: String) {
         valueLabel.text = text
+    }
+
+    func setTextAlpha(_ alpha: CGFloat) {
+        titleLabel.alpha = alpha
+        valueLabel.alpha = alpha
     }
 }
 
