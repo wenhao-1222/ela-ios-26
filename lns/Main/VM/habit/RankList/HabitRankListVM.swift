@@ -36,6 +36,12 @@ class HabitRankListVM: UIView {
     private var leaderboardRequestID = UUID()
     private var pendingRankMoveFromIndex: Int?
     private var pendingRankMoveToIndex: Int?
+    private var isPreparingLeaderboardForDisplay = false
+    private var isLeaderboardPreparedForDisplay = false
+    private var leaderboardPreparationCompletions: [() -> Void] = []
+    var canShowPreparedLeaderboard: Bool {
+        return isLeaderboardPreparedForDisplay
+    }
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -217,8 +223,11 @@ extension HabitRankListVM{
 //            }
             showSettlementIfNeeded()
             playPreparedRankMoveIfNeeded()
+        }else if isVisible {
+            playPreparedRankMoveIfNeeded()
         }else if !isVisible {
             isCurrentlyVisible = false
+            isLeaderboardPreparedForDisplay = false
         }
     }
     private func showSettlementIfNeeded() {
@@ -304,7 +313,32 @@ extension HabitRankListVM{
     }
 
     func prepareLeaderboardForDisplay(completion: (() -> Void)? = nil) {
-        sendDataRequest(animateSelfChange: true, completion: completion)
+        if isLeaderboardPreparedForDisplay {
+            completion?()
+            return
+        }
+
+        if let completion = completion {
+            leaderboardPreparationCompletions.append(completion)
+        }
+
+        guard !isPreparingLeaderboardForDisplay else {
+            return
+        }
+
+        isPreparingLeaderboardForDisplay = true
+        sendDataRequest(animateSelfChange: true) { [weak self] in
+            self?.finishPreparingLeaderboardForDisplay()
+        }
+    }
+
+    private func finishPreparingLeaderboardForDisplay() {
+        isPreparingLeaderboardForDisplay = false
+        isLeaderboardPreparedForDisplay = true
+
+        let completions = leaderboardPreparationCompletions
+        leaderboardPreparationCompletions.removeAll()
+        completions.forEach { $0() }
     }
 
     private func setPendingRankMove(from oldIndex: Int?, to newIndex: Int?) {
@@ -1409,6 +1443,7 @@ extension HabitRankListVM{
         }
     }
     func sendDataRequestForHeadMsg(){
+        isPreparingLeaderboardForDisplay = true
         let requestID = nextLeaderboardRequestID()
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
             guard self.leaderboardRequestID == requestID else { return }
@@ -1447,6 +1482,8 @@ extension HabitRankListVM{
                                                                          preservedSelfEntry: nil)
                     self.reloadLeaderboardAfterPreparingAvatars {
                         self.setPendingRankMove(from: previousSelfIndex, to: newIndex)
+                        self.scrollRankCellToMiddleIfPossible(section: previousSelfIndex ?? newIndex)
+                        self.finishPreparingLeaderboardForDisplay()
                     }
                 }else{
                     self.dataSourceArray = NSArray()
@@ -1455,6 +1492,7 @@ extension HabitRankListVM{
                         self.tableView.reloadData()
                         self.tableView.layoutIfNeeded()
                     }
+                    self.finishPreparingLeaderboardForDisplay()
                     return
                 }
             }else{
@@ -1462,6 +1500,7 @@ extension HabitRankListVM{
                     self.tableView.reloadData()
                     self.tableView.layoutIfNeeded()
                 }
+                self.finishPreparingLeaderboardForDisplay()
             }
         }
     }

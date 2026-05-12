@@ -133,6 +133,15 @@ extension HabitVC{
 }
 
 extension HabitVC:UIScrollViewDelegate{
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase,
+              scrollView.contentOffset.x < SCREEN_WIDHT * 0.5,
+              !rankListVm.canShowPreparedLeaderboard else {
+            return
+        }
+        rankListVm.prepareLeaderboardForDisplay()
+    }
+
     func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                    withVelocity velocity: CGPoint,
                                    targetContentOffset: UnsafeMutablePointer<CGPoint>) {
@@ -142,9 +151,19 @@ extension HabitVC:UIScrollViewDelegate{
             return
         }
 
-        targetContentOffset.pointee = CGPoint(x: 0, y: targetContentOffset.pointee.y)
+        guard rankListVm.canShowPreparedLeaderboard else {
+            targetContentOffset.pointee = CGPoint(x: 0, y: targetContentOffset.pointee.y)
+            rankListVm.prepareLeaderboardForDisplay {
+                self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: true)
+            }
+            return
+        }
+
+        targetContentOffset.pointee = CGPoint(x: SCREEN_WIDHT, y: targetContentOffset.pointee.y)
         rankListVm.prepareLeaderboardForDisplay {
-            self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: true)
+            if self.scrollViewBase.contentOffset.x > SCREEN_WIDHT * 0.5 {
+                self.rankListVm.updateVisibility(isVisible: true)
+            }
         }
     }
 

@@ -58,7 +58,7 @@ class AICoachPreDaysVM: UIView, UIGestureRecognizerDelegate {
         self.isUserInteractionEnabled = true
 
         initUI()
-        applyDefaultContent()
+//        applyDefaultContent()
     }
 
     required init?(coder: NSCoder) {
