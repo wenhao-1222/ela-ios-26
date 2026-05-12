@@ -566,6 +566,7 @@ private extension AICoachReportPDFDemoVC {
             return AICoachReportNextWeekRecommendation(
                 buttonNum: 1,
                 status: .maintain,
+                nextWeekRecommendationStatus: NSNumber(value: AICoachReportRecommendationStatus.maintain.rawValue),
                 titleText: "维持当前目标",
                 nextWeekRecommendationText: "维持当前目标",
                 caloriesGap: nil,
@@ -623,6 +624,7 @@ private extension AICoachReportPDFDemoVC {
         return AICoachReportNextWeekRecommendation(
             buttonNum: buttonNum,
             status: status,
+            nextWeekRecommendationStatus: NSNumber(value: status.rawValue),
             titleText: titleText,
             nextWeekRecommendationText: titleText,
             caloriesGap: NSNumber(value: Int(roundedCalories)),
@@ -899,10 +901,22 @@ private extension AICoachReportPDFDemoVC {
         if let caloriesGap = recommendation.caloriesGap {
             requestParam["caloriesGap"] = caloriesGap
         }
+        if let nextWeekRecommendationStatus = recommendation.nextWeekRecommendationStatus {
+            requestParam["nextWeekRecommendationStatus"] = nextWeekRecommendationStatus
+        }
 
         WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_recommend_update,
-                                          parameters: requestParam) { [weak self] _ in
+                                          parameters: requestParam,
+                                          isNeedToast: true,
+                                          vc: self) { [weak self] responseObject in
             guard let self else { return }
+            let code = responseObject["code"] as? Int ?? -1
+            guard code == 200 else {
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+                return
+            }
             DispatchQueue.main.async {
                 QuestinonaireMsgModel.shared.calories = caloriesText
                 QuestinonaireMsgModel.shared.carbohydrates = carbohydrateText

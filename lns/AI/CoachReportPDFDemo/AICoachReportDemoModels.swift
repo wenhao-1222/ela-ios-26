@@ -53,6 +53,7 @@ enum AICoachReportRecommendationStatus: Int {
 struct AICoachReportNextWeekRecommendation {
     let buttonNum: Int
     let status: AICoachReportRecommendationStatus
+    let nextWeekRecommendationStatus: AnyObject?
     let titleText: String
     let nextWeekRecommendationText: String
     let caloriesGap: AnyObject?
@@ -81,6 +82,7 @@ struct AICoachReportNextWeekRecommendation {
     static let empty = AICoachReportNextWeekRecommendation(
         buttonNum: 1,
         status: .maintain,
+        nextWeekRecommendationStatus: nil,
         titleText: "",
         nextWeekRecommendationText: "",
         caloriesGap: nil,
@@ -118,6 +120,7 @@ enum AICoachReportRecommendationBuilder {
         return AICoachReportNextWeekRecommendation(
             buttonNum: max(Int(payload.doubleValueForKey(key: "buttonNum")), 1),
             status: status,
+            nextWeekRecommendationStatus: passthroughObject(for: "nextWeekRecommendationStatus", in: payload),
             titleText: titleText,
             nextWeekRecommendationText: nextWeekRecommendationText,
             caloriesGap: passthroughObject(for: "caloriesGap", in: payload),

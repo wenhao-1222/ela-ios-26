@@ -443,11 +443,6 @@ private extension AICoachReportAdviceAlertVM {
     }
 
     @objc func primaryButtonAction() {
-        UIView.animate(withDuration: 0.25, animations: {
-            self.primaryButton.titleLabel?.text = ""
-            self.primaryButton.titleLabel?.textColor = .white
-            self.primaryButton.titleLabel?.alpha = 0
-        })
         performAction(kind: .primary)
     }
 
@@ -508,10 +503,18 @@ private extension AICoachReportAdviceAlertVM {
 
     func handleActionFailure(kind: ActionKind) {
         activeActionVisualState = .idle
-        button(for: kind).hideLoadingIndicator(animated: true)
         activeActionKind = nil
-        restoreActionButtonAppearance(kind: kind, animated: true)
         updateButtonInteraction(isProcessing: false, activeKind: nil)
+
+        let activeButton = button(for: kind)
+        activeButton.hideLoadingIndicator(animated: true, restoreContent: false) { [weak self] in
+            guard let self else { return }
+            activeButton.resetStatusIndicators()
+            self.restoreActionButtonAppearance(kind: kind, animated: true) {
+                self.setButtonTitleHidden(false, for: kind)
+                self.restoreButtonTitleColor(for: kind)
+            }
+        }
     }
 
     func resetButtonStates() {
@@ -520,8 +523,6 @@ private extension AICoachReportAdviceAlertVM {
         restoreActionButtonAppearance(kind: .primary, animated: false)
         restoreActionButtonAppearance(kind: .secondary, animated: false)
         
-        self.primaryButton.titleLabel?.textColor = .THEME
-        self.primaryButton.titleLabel?.alpha = 1
         primaryButton.resetStatusIndicators()
         secondaryButton.resetStatusIndicators()
         updateButtonInteraction(isProcessing: false, activeKind: nil)
@@ -569,9 +570,10 @@ private extension AICoachReportAdviceAlertVM {
         }
     }
 
-    func restoreActionButtonAppearance(kind: ActionKind, animated: Bool) {
+    func restoreActionButtonAppearance(kind: ActionKind, animated: Bool, completion: (() -> Void)? = nil) {
         setActionButtonCollapsed(false, for: kind)
         setButtonTitleHidden(false, for: kind)
+        restoreButtonTitleColor(for: kind)
 
         let animations = {
             self.layoutIfNeeded()
@@ -582,13 +584,16 @@ private extension AICoachReportAdviceAlertVM {
 
         guard animated else {
             animations()
+            completion?()
             return
         }
 
         UIView.animate(withDuration: 0.28,
                        delay: 0,
                        options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction],
-                       animations: animations)
+                       animations: animations) { _ in
+            completion?()
+        }
     }
 
     func setActionButtonCollapsed(_ isCollapsed: Bool, for kind: ActionKind) {
@@ -599,6 +604,17 @@ private extension AICoachReportAdviceAlertVM {
         case .secondary:
             isSecondaryButtonCollapsed = isCollapsed
             secondaryButtonWidthConstraint?.update(offset: isCollapsed ? actionButtonHeight : actionButtonExpandedWidth(for: .secondary))
+        }
+    }
+
+    func restoreButtonTitleColor(for kind: ActionKind) {
+        switch kind {
+        case .primary:
+            primaryButton.setTitleColor(AICoachReportDemoPalette.themeBlue, for: .normal)
+            primaryButton.titleLabel?.textColor = AICoachReportDemoPalette.themeBlue
+        case .secondary:
+            secondaryButton.setTitleColor(.white, for: .normal)
+            secondaryButton.titleLabel?.textColor = .white
         }
     }
 
