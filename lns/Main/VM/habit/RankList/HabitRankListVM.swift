@@ -227,7 +227,6 @@ extension HabitRankListVM{
             playPreparedRankMoveIfNeeded()
         }else if !isVisible {
             isCurrentlyVisible = false
-            isLeaderboardPreparedForDisplay = false
         }
     }
     private func showSettlementIfNeeded() {
@@ -1365,6 +1364,9 @@ extension HabitRankListVM{
 extension HabitRankListVM{
     func sendDataRequest(animateSelfChange: Bool = false,
                          completion: (() -> Void)? = nil){
+        if !animateSelfChange {
+            isLeaderboardPreparedForDisplay = false
+        }
         let previousLeaderboard = displayedDataArray.count > 0 ? displayedDataArray : dataSourceArray
         let previousSelfIndex = indexOfCurrentUser(in: previousLeaderboard)
         let requestID = nextLeaderboardRequestID()
@@ -1444,6 +1446,7 @@ extension HabitRankListVM{
     }
     func sendDataRequestForHeadMsg(){
         isPreparingLeaderboardForDisplay = true
+        isLeaderboardPreparedForDisplay = false
         let requestID = nextLeaderboardRequestID()
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_leaderboard, parameters: nil,isNeedToast: true,vc: self.controller) { responseObject in
             guard self.leaderboardRequestID == requestID else { return }

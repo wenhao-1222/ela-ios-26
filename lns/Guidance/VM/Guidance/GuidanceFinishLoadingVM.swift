@@ -107,7 +107,7 @@ class GuidanceFinishLoadingVM: UIView {
         lab.numberOfLines = 0
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 14, weight: .regular)
-        lab.text = "我们永远不会出售你的健康数据，也绝不会在未经你同意的情况下与第三方共享。\n\n你可随时删除。"
+        lab.text = "我们永远不会出售你的健康数据，也绝不会在未经你同意的情况下与第三方共享\n\n你可随时删除这些数据"
         return lab
     }()
 }
