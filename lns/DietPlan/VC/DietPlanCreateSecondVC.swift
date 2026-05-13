@@ -711,10 +711,20 @@ extension DietPlanCreateSecondVC {
             offset = 495
         }
 
+        let minCalories = QuestinonaireMsgModel.shared.sex == "1" ? 1500 : 1200
         if currentWeight > targetWeight {
-            return "\(baseCalories - offset)"
+            if baseCalories - offset > minCalories{
+                return "\(baseCalories - offset)"
+            }else{
+                return "1200"
+            }
         }
-        return "\(baseCalories + offset)"
+        if baseCalories + offset > 5000{
+            return "5000"
+        }else{
+            return "\(baseCalories + offset)"
+        }
+        
     }
 
     func applyDietQuestionnaireData(_ data: NSDictionary) {

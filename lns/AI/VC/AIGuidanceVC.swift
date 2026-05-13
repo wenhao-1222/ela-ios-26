@@ -399,6 +399,7 @@ extension AIGuidanceVC{
 
 extension AIGuidanceVC {
     func enterElaProPage() {
+        VIPModel.shared.isAiCoachSurveyFinished = true
         if VIPModel.shared.status == .valid{
             let vc = AICoachPreVC()
             navigationController?.pushViewController(vc, animated: true)

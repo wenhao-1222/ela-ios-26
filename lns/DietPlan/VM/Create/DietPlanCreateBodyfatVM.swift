@@ -154,6 +154,7 @@ extension DietPlanCreateBodyfatVM {
         selectIndex = index
         refreshSelectStatus()
         updateBodyFatValue(index: index)
+        scrollSelectedItemToCenter(animated: false)
         selectStateChangeBlock?(true)
     }
 
@@ -161,6 +162,28 @@ extension DietPlanCreateBodyfatVM {
         for (index, itemView) in itemViews.enumerated() {
             itemView.updateUIIsSelected(isSelect: index == selectIndex)
         }
+    }
+
+    func scrollSelectedItemToCenter(animated: Bool) {
+        guard selectIndex >= 0, selectIndex < itemViews.count else {
+            return
+        }
+
+        layoutIfNeeded()
+        scrollView.layoutIfNeeded()
+
+        guard scrollView.bounds.height > 0 else {
+            DispatchQueue.main.async { [weak self] in
+                self?.scrollSelectedItemToCenter(animated: animated)
+            }
+            return
+        }
+
+        let selectedItem = itemViews[selectIndex]
+        let targetOffsetY = selectedItem.frame.midY - scrollView.bounds.height * 0.5
+        let maxOffsetY = max(scrollView.contentSize.height - scrollView.bounds.height, 0)
+        let finalOffsetY = min(max(targetOffsetY, 0), maxOffsetY)
+        scrollView.setContentOffset(CGPoint(x: 0, y: finalOffsetY), animated: animated)
     }
 }
 
