@@ -513,7 +513,7 @@ private extension GuidanceProSubscribeVM {
         contentView.addSubview(freeFeatureContainer)
         contentView.addSubview(renewalDescLabel)
         
-        freeFeatureContainer.layer.borderColor = UIColor.clear.cgColor
+//        freeFeatureContainer.layer.borderColor = UIColor.clear.cgColor
 
 //        footerContainerView.addSubview(footerDividerView)
         footerContainerView.addSubview(trialDescLabel)
@@ -766,7 +766,7 @@ private extension GuidanceProSubscribeVM {
 
     func makeFeatureContainer() -> UIView {
         let view = UIView()
-        view.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.84)
+        view.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.5)
         view.layer.cornerRadius = kFitWidth(16)
 //        view.layer.borderWidth = 1
 //        view.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.withAlphaComponent(0.08).cgColor
@@ -779,7 +779,7 @@ private extension GuidanceProSubscribeVM {
     func addFeatureRows(_ items: [(String, String, String?)], to container: UIView, accentColor: UIColor) {
         var previousRow: UIView?
 
-        let hasLine = container == proFeatureContainer
+        let hasLine = true//container == proFeatureContainer
         for (index, item) in items.enumerated() {
             let row = makeFeatureRow(iconName: item.0,
                                      title: item.1,
@@ -832,8 +832,8 @@ private extension GuidanceProSubscribeVM {
         if hasLine {
             divider.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_50.withAlphaComponent(0.15)
         }else{
-            divider.backgroundColor = UIColor.clear        }
-        
+            divider.backgroundColor = UIColor.clear
+        }
 
         view.addSubview(iconImageView)
         view.addSubview(titleLabel)

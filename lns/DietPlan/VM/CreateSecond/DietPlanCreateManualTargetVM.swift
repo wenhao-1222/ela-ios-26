@@ -50,7 +50,7 @@ class DietPlanCreateManualTargetVM: UIView {
 
     lazy var inputContainer: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         vi.layer.borderWidth = 1
         vi.layer.borderColor = UIColor.THEME.cgColor

@@ -86,10 +86,10 @@ class DietPlanVC: WHBaseViewVC {
         vm.createPlanButton.addTarget(self, action: #selector(createSecondPlanAction), for: .touchUpInside)
         vm.buyListButton.addTarget(self, action: #selector(openBuyListSelectionAction), for: .touchUpInside)
         vm.sauceButton.addTarget(self, action: #selector(condimentAction), for: .touchUpInside)
-        vm.mealChangeTapBlock = { [weak self] mealId,id in
+        vm.mealChangeTapBlock = { [weak self] mealId, id, sdate in
             guard let self = self else { return }
             guard self.ensureValidVipForMealAction() else { return }
-            self.openMealChangeList(mealId: mealId,id: id)
+            self.openMealChangeList(mealId: mealId, id: id, sdate: sdate)
         }
         vm.mealTapBlock = { [weak self] (meal,sdate) in
             guard let self = self else { return }
@@ -195,7 +195,7 @@ extension DietPlanVC{
         let vc = DietPlanCondimentVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
-    func openMealChangeList(mealId: String,id:String) {
+    func openMealChangeList(mealId: String,id:String,sdate:String) {
         guard !mealId.isEmpty else {
             MCToast.mc_text("餐食信息异常")
             return
@@ -203,7 +203,9 @@ extension DietPlanVC{
         let vc = DietPlanFoodsChangeListVC()
         vc.templateMealId = mealId
         vc.id = id
+        vc.choiceDate = sdate
         vc.replaceSuccessBlock = { [weak self] dataObj in
+            self?.updateReplacedMealNutrientsTarget(dataObj, sdate: sdate)
             self?.applyDietPlanResponse(dataObj, preservingListOffset: true)
         }
         navigationController?.pushViewController(vc, animated: true)
@@ -231,6 +233,27 @@ extension DietPlanVC{
         let endDate = dataObj.stringValueForKey(key: "endDate")
         let today = buyListDateFormatter.string(from: Date())
         return foodsArray.count > 0 && endDate.count > 0 && endDate <= today
+    }
+    
+    func updateReplacedMealNutrientsTarget(_ dataObj: NSDictionary, sdate: String) {
+        guard !sdate.isEmpty else {
+            return
+        }
+        
+        if let targetDict = replacedMealNutrientsTarget(from: dataObj["nutrientsTarget"] as? NSArray, sdate: sdate) ??
+            replacedMealNutrientsTarget(from: dataObj["mealPlanItemList"] as? NSArray, sdate: sdate),
+           LogsSQLiteManager.getInstance().updateDietPlanNutrientsTarget(targetDict, sdate: sdate) {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+        }
+    }
+    
+    func replacedMealNutrientsTarget(from targets: NSArray?, sdate: String) -> NSDictionary? {
+        guard let targets = targets else { return nil }
+        for case let targetDict as NSDictionary in targets {
+            guard targetDict.stringValueForKey(key: "sdate") == sdate else { continue }
+            return targetDict
+        }
+        return nil
     }
 }
 
@@ -288,6 +311,7 @@ extension DietPlanVC{
         }else{//有问卷，计划且在有效期内
             listVm.buyListButton.isEnabled = true
         }
+        listVm.updateActionButtonAppearance()
         listVm.updatePlanList(mealPlanItemList: mealPlanItemList,
                               preservingScrollOffset: preservingListOffset,
                               animatedTransition: shouldAnimateListRefresh)

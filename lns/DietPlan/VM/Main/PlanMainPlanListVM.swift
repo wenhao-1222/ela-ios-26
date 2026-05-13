@@ -50,7 +50,7 @@ class PlanMainPlanListVM: UIView {
     private let headerHeight = kFitWidth(86)
     private let firstSectionHeaderTopSpacing = kFitWidth(20)
     
-    var mealChangeTapBlock: ((String,String) -> Void)?
+    var mealChangeTapBlock: ((String,String,String) -> Void)?
     var mealTapBlock:((PlanMainMealItem,String)->())?
     
     private let sectionInset = UIEdgeInsets(top: 0, left: kFitWidth(16), bottom: kFitWidth(24), right: kFitWidth(16))
@@ -83,25 +83,18 @@ class PlanMainPlanListVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        let normalImage = resizedImage(named: "dietplan_buy_list_icon", size: imageSize) ?? UIImage(named: "dietplan_buy_list_icon")
-        let disabledImage = resizedImage(named: "dietplan_buy_list_disable_icon", size: imageSize) ?? UIImage(named: "dietplan_buy_list_disable_icon")
-        buyListButton.setImage(normalImage, for: .normal)
-        buyListButton.setImage(disabledImage, for: .disabled)
-        
-        let sauceImg = resizedImage(named: "dietplan_sauce_icon", size: imageSize) ?? UIImage(named: "dietplan_sauce_icon")
-        sauceButton.setImage(sauceImg, for: .normal)
-        
-        let createImg = resizedImage(named: "dietplan_create_icon", size: imageSize) ?? UIImage(named: "dietplan_create_icon")
-        createPlanButton.setImage(createImg, for: .normal)
-        
-        topGradientLayer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
-        ]
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else { return }
+        updateActionButtonAppearance()
     }
     override func layoutSubviews() {
         super.layoutSubviews()
         topGradientLayer.frame = topGradientView.bounds
+    }
+    
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        updateActionButtonAppearance()
     }
     
     lazy var bgImgView: UIImageView = {
@@ -196,6 +189,24 @@ class PlanMainPlanListVM: UIView {
 }
 
 extension PlanMainPlanListVM {
+    func updateActionButtonAppearance() {
+        applyActionButtonStyle(createPlanButton,
+                               normalImageName: "dietplan_create_icon",
+                               disabledImageName: "dietplan_create_icon")
+        applyActionButtonStyle(buyListButton,
+                               normalImageName: "dietplan_buy_list_icon",
+                               disabledImageName: "dietplan_buy_list_disable_icon")
+        applyActionButtonStyle(sauceButton,
+                               normalImageName: "dietplan_sauce_icon",
+                               disabledImageName: "dietplan_sauce_icon")
+        titleLab.textColor = .COLOR_TEXT_TITLE_0f1214
+        backgroundColor = .COLOR_BG_F2
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+    }
+    
     func updatePlanList(mealPlanItemList: NSArray,
                         preservingScrollOffset: Bool = false,
                         animatedTransition: Bool = false) {
@@ -290,6 +301,7 @@ extension PlanMainPlanListVM{
         topGradientView.layer.addSublayer(topGradientLayer)
         
         buyListButton.isEnabled = false
+        updateActionButtonAppearance()
         
         setConstrait()
     }
@@ -549,7 +561,7 @@ extension PlanMainPlanListVM: UICollectionViewDataSource, UICollectionViewDelega
                       kcalText: "\(WHUtils.convertStringToStringNoDigit("\(meal.calories)") ?? "0") kcal",
                       isLarge: isLarge)
         cell.changeButtonTapBlock = { [weak self] in
-            self?.mealChangeTapBlock?(meal.mealId,meal.id)
+            self?.mealChangeTapBlock?(meal.mealId, meal.id, daySection.sdate)
         }
         return cell
     }
@@ -595,6 +607,18 @@ extension PlanMainPlanListVM: UICollectionViewDataSource, UICollectionViewDelega
 }
 
 private extension PlanMainPlanListVM {
+    func applyActionButtonStyle(_ button: GJVerButtonNoneFeedBack,
+                                normalImageName: String,
+                                disabledImageName: String) {
+        let normalImage = resizedImage(named: normalImageName, size: imageSize) ?? UIImage(named: normalImageName)
+        let disabledImage = resizedImage(named: disabledImageName, size: imageSize) ?? UIImage(named: disabledImageName)
+        button.setImage(normalImage, for: .normal)
+        button.setImage(disabledImage, for: .disabled)
+        button.backgroundColor = .COLOR_CARD_BG_WHITE
+        button.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        button.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .disabled)
+    }
+    
     func makeRecipeActionButton(title: String,
                                 imageName: String,
                                 imageSize: CGSize,
@@ -618,7 +642,7 @@ private extension PlanMainPlanListVM {
     }
     
     func resizedImage(named: String, size: CGSize) -> UIImage? {
-        guard let image = UIImage(named: named),
+        guard let image = UIImage(named: named, in: nil, compatibleWith: traitCollection) ?? UIImage(named: named),
               size.width > 0,
               size.height > 0 else { return nil }
         let format = UIGraphicsImageRendererFormat.default()

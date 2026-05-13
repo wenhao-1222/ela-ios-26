@@ -94,8 +94,8 @@ private extension PlanMainDayHeaderView {
         
         let rowStack = UIStackView(arrangedSubviews: [
             metricItem(valueLabel: caloriesValueLabel, title: "热量(kcal)"),
-            metricItem(valueLabel: proteinValueLabel, title: "蛋白质(g)"),
             metricItem(valueLabel: carbohydrateValueLabel, title: "碳水(g)"),
+            metricItem(valueLabel: proteinValueLabel, title: "蛋白质(g)"),
             metricItem(valueLabel: fatValueLabel, title: "脂肪(g)")
         ])
         rowStack.axis = .horizontal

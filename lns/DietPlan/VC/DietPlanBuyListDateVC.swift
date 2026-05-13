@@ -17,6 +17,7 @@ class DietPlanBuyListDateVC: WHBaseViewVC {
     private let sourceDateStrings: [String]
     private var dateOptions: [DietPlanBuyListDateOption] = []
     private let onConfirm: (([String]) -> Void)?
+    private var hasCurrentBuyList = false
     
     private lazy var calendar: Calendar = {
         var cal = Calendar(identifier: .gregorian)
@@ -169,6 +170,21 @@ private extension DietPlanBuyListDateVC {
         let selectedDates = dateOptions.filter({ $0.isSelected }).map(\.sdate)
         guard !selectedDates.isEmpty else { return }
         
+        guard hasCurrentBuyList else {
+            continueGenerateBuyList(with: selectedDates)
+            return
+        }
+
+        presentAlertVc(confirmBtn: "继续生成",
+                       message: "",
+                       title: "生成新清单会清空当前清单",
+                       cancelBtn: "取消",
+                       handler: { [weak self] _ in
+            self?.continueGenerateBuyList(with: selectedDates)
+        }, viewController: self)
+    }
+
+    func continueGenerateBuyList(with selectedDates: [String]) {
         if let onConfirm = onConfirm {
             onConfirm(selectedDates)
             self.navigationController?.popViewController(animated: true)
@@ -341,11 +357,13 @@ extension DietPlanBuyListDateVC{
             DLLog(message: "sendBuyListRequest:\(dataObj)")
             
             if self.hasValidHistoryBuyList(dataObj) {
+                self.hasCurrentBuyList = true
                 self.buylistButton.isEnabled = true
                 UIView.animate(withDuration: 0.35, animations: {
                     self.buylistButton.alpha = 1
                 })
             } else {
+                self.hasCurrentBuyList = false
                 self.buylistButton.isEnabled = false
                 UIView.animate(withDuration: 0.35, animations: {
                     self.buylistButton.alpha = 0

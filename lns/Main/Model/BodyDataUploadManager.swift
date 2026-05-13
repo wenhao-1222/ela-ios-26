@@ -30,6 +30,10 @@ class BodyDataUploadManager {
         sendSaveDataRequest(dict: bodyDict)
 //        dealBodyLocalImages(dict: bodyDict)
     }
+    func syncAllBodyDataFromServer() {
+        guard UserInfoModel.shared.uId.count > 0 else { return }
+        sendBodyAllStatRequest()
+    }
     func dealBodyLocalImages(dict:NSDictionary) {
         var imgArray = NSMutableArray()
 //        if dict.stringValueForKey(key: "images").count > 5{
@@ -136,6 +140,10 @@ class BodyDataUploadManager {
             DLLog(message: "sendBodyAllStatRequest:\(dataArr)")
 //            let dataArr = responseObject["data"]as? NSArray ?? []
             BodyDataSQLiteManager.getInstance().saveBodyDataToDataBase(dataArray: dataArr)
+            UserDefaults.setAllBodyDataIsLoad()
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "bodyDataSyncFromServer"), object: nil)
+            }
         }
     }
 }

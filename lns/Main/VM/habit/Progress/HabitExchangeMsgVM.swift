@@ -99,7 +99,11 @@ extension HabitExchangeMsgVM{
     func updateUI(dict:NSDictionary) {
         currentPointLabel.text = dict.stringValueForKey(key: "pointBalance")
         pointPerLab.text = "\(dict.stringValueForKey(key: "pointCostPerDonate"))积分/1餐"
-        numberLabel.text = dict.stringValueForKey(key: "donateCount")
+        if dict.stringValueForKey(key: "donateCount").count > 0{
+            numberLabel.text = dict.stringValueForKey(key: "donateCount")
+        }else{
+            numberLabel.text = "0"
+        }
     }
 }
 

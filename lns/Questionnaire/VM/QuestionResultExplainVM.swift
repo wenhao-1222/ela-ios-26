@@ -24,16 +24,12 @@ class QuestionResultExplainVM: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     lazy var titleLabel: UILabel = {
-        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(24), y: WHUtils().getNavigationBarHeight()+kFitWidth(110), width: kFitWidth(340), height: kFitWidth(80)))
-        if isIpad(){
-            lab.frame = CGRect.init(x: kFitWidth(24), y: kFitWidth(112), width: SCREEN_WIDHT-kFitWidth(48), height: kFitWidth(80))
-        }
+        let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.text = "接下来我们将根据你的目标计算缺口/盈余，和营养素的配比。"
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
-        lab.adjustsFontSizeToFitWidth = true
 //        lab.textAlignment = .center
         
         return lab
@@ -44,12 +40,14 @@ extension QuestionResultExplainVM{
     func initUI() {
         addSubview(titleLabel)
         
-//        titleLabel.snp.makeConstraints { make in
-//            make.left.equalTo(kFitWidth(28))
-//            make.right.equalTo(kFitWidth(-28))
-//            make.width.equalTo(kFitWidth(320))
-////            make.centerX.lessThanOrEqualToSuperview()
-//            make.top.equalTo(kFitWidth(112))
-//        }
+        titleLabel.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(24))
+            make.right.equalTo(kFitWidth(-24))
+            if isIpad() {
+                make.top.equalTo(kFitWidth(112))
+            } else {
+                make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(110))
+            }
+        }
     }
 }

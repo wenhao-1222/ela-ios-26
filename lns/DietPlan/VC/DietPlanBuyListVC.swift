@@ -81,17 +81,21 @@ class DietPlanBuyListVC: WHBaseViewVC {
             UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
         ]
     }
-    lazy var timeLabel: UILabel = {
-        let lab = UILabel()
-        lab.font = .systemFont(ofSize: 17, weight: .medium)
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+    lazy var timeButton: GJVerButton = {
+        let btn = GJVerButton()
+        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
+        btn.contentHorizontalAlignment = .left
+        btn.setImage(UIImage(named: "create_plan_arrow_down"), for: .normal)
+        btn.enablePressEffect()
+        btn.addTarget(self, action: #selector(openCreateBuyListDatePage), for: .touchUpInside)
         
         if selectedDates.count > 0 {
-            lab.text = "\(selectedDates[0]) 至 \(selectedDates[selectedDates.count - 1])"
+            btn.setTitle("\(selectedDates[0]) 至 \(selectedDates[selectedDates.count - 1])", for: .normal)
+            btn.imagePosition(style: .right, spacing: kFitWidth(5))
         }
         
-        
-        return lab
+        return btn
     }()
     lazy var tipsLab: UILabel = {
         let lab = UILabel()
@@ -145,16 +149,16 @@ class DietPlanBuyListVC: WHBaseViewVC {
         layer.locations = [0, 1]
         return layer
     }()
-    lazy var createButton: FeedBackButton = {
-        let btn = FeedBackButton()
-        btn.setTitle("新建", for: .normal)
-        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
-        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_30, for: .highlighted)
-        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
-        btn.addTarget(self, action: #selector(openCreateBuyListDatePage), for: .touchUpInside)
-        btn.isHidden = !showCreateButton
-        return btn
-    }()
+//    lazy var createButton: FeedBackButton = {
+//        let btn = FeedBackButton()
+//        btn.setTitle("新建", for: .normal)
+//        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+//        btn.setTitleColor(.COLOR_TEXT_TITLE_0f1214_30, for: .highlighted)
+//        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+//        btn.addTarget(self, action: #selector(openCreateBuyListDatePage), for: .touchUpInside)
+//        btn.isHidden = !showCreateButton
+//        return btn
+//    }()
 }
 
 extension DietPlanBuyListVC{
@@ -162,21 +166,21 @@ extension DietPlanBuyListVC{
         initNavi(titleStr: "购物清单")
         self.navigationView.backgroundColor = .COLOR_BG_F2
         view.backgroundColor = .COLOR_BG_F2
-        if showCreateButton {
-            navigationView.addSubview(createButton)
-            createButton.snp.makeConstraints { make in
-                make.right.equalTo(kFitWidth(-10))
-                make.width.equalTo(kFitWidth(60))
-                make.height.equalTo(kFitWidth(44))
-                make.centerY.lessThanOrEqualTo(self.naviTitleLabel)
-            }
-        }
+//        if showCreateButton {
+//            navigationView.addSubview(createButton)
+//            createButton.snp.makeConstraints { make in
+//                make.right.equalTo(kFitWidth(-10))
+//                make.width.equalTo(kFitWidth(60))
+//                make.height.equalTo(kFitWidth(44))
+//                make.centerY.lessThanOrEqualTo(self.naviTitleLabel)
+//            }
+//        }
         
 //        view.addSubview(listAddButton)
         view.addSubview(tableView)
         view.addSubview(topGradientView)
         view.addSubview(bottomGradientView)
-        view.addSubview(timeLabel)
+        view.addSubview(timeButton)
         view.addSubview(tipsLab)
         bottomGradientView.layer.addSublayer(bottomGradientLayer)
         topGradientView.layer.addSublayer(topGradientLayer)
@@ -194,15 +198,15 @@ extension DietPlanBuyListVC{
 //            make.height.equalTo(kFitWidth(58))
 //            make.top.equalTo(kFitWidth(20)+self.getNavigationBarHeight())
 //        }
-        timeLabel.snp.makeConstraints { make in
+        timeButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
 //            make.top.equalTo(listAddButton.snp.bottom).offset(kFitWidth(25))
             make.top.equalTo(kFitWidth(15)+self.getNavigationBarHeight())
             make.height.equalTo(kFitWidth(25))
         }
         tipsLab.snp.makeConstraints { make in
-            make.left.equalTo(timeLabel)
-            make.top.equalTo(timeLabel.snp.bottom).offset(kFitWidth(6))
+            make.left.equalTo(timeButton)
+            make.top.equalTo(timeButton.snp.bottom).offset(kFitWidth(6))
         }
         
         tableView.snp.makeConstraints { make in
@@ -233,12 +237,12 @@ extension DietPlanBuyListVC{
             MCToast.mc_text("当前没有可用的购物清单日期")
             return
         }
-        presentAlertVc(confirmBtn: "清空并创建", message: "", title: "放弃当前内容并创建新清单？", cancelBtn: "保留", handler: { action in
+//        presentAlertVc(confirmBtn: "清空并创建", message: "", title: "放弃当前内容并创建新清单？", cancelBtn: "保留", handler: { action in
             let vc = DietPlanBuyListDateVC(dateStrings: self.createDateStrings) { [weak self] selectedDates in
                 self?.applySelectedDatesAndRefresh(selectedDates)
             }
             self.navigationController?.pushViewController(vc, animated: true)
-        }, viewController: self)
+//        }, viewController: self)
     }
     
     func applySelectedDatesAndRefresh(_ selectedDates: [String]) {
@@ -251,14 +255,14 @@ extension DietPlanBuyListVC{
     
     func updateTimeLabel(with selectedDates: [String]) {
         guard let firstDate = selectedDates.first, let lastDate = selectedDates.last else {
-            timeLabel.text = nil
+            setTimeButtonTitle(nil)
             return
         }
         
         if firstDate == lastDate {
-            timeLabel.text = Date().changeDateFormatter(dateString: firstDate,
-                                                        formatter: "yyyy-MM-dd",
-                                                        targetFormatter: "MM月dd日")
+            setTimeButtonTitle(Date().changeDateFormatter(dateString: firstDate,
+                                                          formatter: "yyyy-MM-dd",
+                                                          targetFormatter: "MM月dd日"))
         } else {
             let firstStr = Date().changeDateFormatter(dateString: firstDate,
                                                       formatter: "yyyy-MM-dd",
@@ -266,14 +270,14 @@ extension DietPlanBuyListVC{
             let lastStr = Date().changeDateFormatter(dateString: lastDate,
                                                      formatter: "yyyy-MM-dd",
                                                      targetFormatter: "MM月dd日")
-            timeLabel.text = "\(firstStr) 至 \(lastStr)"
+            setTimeButtonTitle("\(firstStr) 至 \(lastStr)")
         }
     }
     func updateTimeLabel(firstDate:String,lastDate:String) {
         if firstDate == lastDate {
-            timeLabel.text = Date().changeDateFormatter(dateString: firstDate,
-                                                        formatter: "yyyy-MM-dd",
-                                                        targetFormatter: "MM月dd日")
+            setTimeButtonTitle(Date().changeDateFormatter(dateString: firstDate,
+                                                          formatter: "yyyy-MM-dd",
+                                                          targetFormatter: "MM月dd日"))
         } else {
             let firstStr = Date().changeDateFormatter(dateString: firstDate,
                                                       formatter: "yyyy-MM-dd",
@@ -281,10 +285,15 @@ extension DietPlanBuyListVC{
             let lastStr = Date().changeDateFormatter(dateString: lastDate,
                                                      formatter: "yyyy-MM-dd",
                                                      targetFormatter: "MM月dd日")
-            timeLabel.text = "\(firstStr) 至 \(lastStr)"
+            setTimeButtonTitle("\(firstStr) 至 \(lastStr)")
         }
     }
     
+    func setTimeButtonTitle(_ title: String?) {
+        timeButton.setTitle(title, for: .normal)
+        timeButton.imagePosition(style: .right, spacing: kFitWidth(5))
+    }
+
     func updateSelectStatus(indexPath: IndexPath) {
         if self.foodsArray.count > indexPath.row{
             let dict = NSMutableDictionary(dictionary: self.foodsArray[indexPath.row]as? NSDictionary ?? [:])
@@ -362,7 +371,7 @@ extension DietPlanBuyListVC{
             self.prepareTimeLabelFadeInIfNeeded()
             self.prepareTipsLabelFadeInIfNeeded()
             self.updateTimeLabel(with: self.selectedDates)
-            self.timeLabel.hideSkeletonWithCrossfade()
+            self.timeButton.hideSkeletonWithCrossfade()
             self.tipsLab.hideSkeletonWithCrossfade()
             self.finishLoading(with: dataObj["shoppingList"]as? NSArray ?? [])
         }
@@ -386,7 +395,7 @@ extension DietPlanBuyListVC{
             self.prepareTimeLabelFadeInIfNeeded()
             self.prepareTipsLabelFadeInIfNeeded()
             self.updateTimeLabel(firstDate: startDate, lastDate: endDate)
-            self.timeLabel.hideSkeletonWithCrossfade()
+            self.timeButton.hideSkeletonWithCrossfade()
             self.tipsLab.hideSkeletonWithCrossfade()
             self.finishLoading(with: dataObj["shoppingList"]as? NSArray ?? [])
         }
@@ -402,11 +411,11 @@ extension DietPlanBuyListVC{
     func beginLoading() {
         isLoading = true
         tableView.allowsSelection = false
-        if !timeLabel.isSkeletonActive {
-            if timeLabel.text?.isEmpty != false {
-                timeLabel.text = "                                                "
+        if !timeButton.isSkeletonActive {
+            if timeButton.title(for: .normal)?.isEmpty != false {
+                setTimeButtonTitle("                                                ")
             }
-            timeLabel.showSkeleton(timeSkeletonConfig)
+            timeButton.showSkeleton(timeSkeletonConfig)
         }
         if !tipsLab.isSkeletonActive {
             tipsLab.showSkeleton(tipsSkeletonConfig)
@@ -422,8 +431,8 @@ extension DietPlanBuyListVC{
     }
 
     func prepareTimeLabelFadeInIfNeeded() {
-        guard timeLabel.isSkeletonActive else { return }
-        timeLabel.alpha = 0
+        guard timeButton.isSkeletonActive else { return }
+        timeButton.alpha = 0
     }
 
     func prepareTipsLabelFadeInIfNeeded() {

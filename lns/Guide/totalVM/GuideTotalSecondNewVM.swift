@@ -106,7 +106,8 @@ class GuideTotalSecondNewVM: UIView {
     }()
     lazy var jijianLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "针对健身人习惯设计，将每\n餐记录时间拉低到<30秒，\n再忙也能记录"
+//        lab.text = "针对健身人习惯设计，将每\n餐记录时间拉低到<30秒，\n再忙也能记录"
+        lab.text = "针对健身人习惯设计\n将每餐记录时间拉低到<30秒\n再忙也能记录"
         lab.textAlignment = .center
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.textColor = .white

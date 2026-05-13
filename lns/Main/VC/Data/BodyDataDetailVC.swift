@@ -81,6 +81,7 @@ class BodyDataDetailVC : WHBaseViewVC {
         super.viewDidLoad()
         
         initUI()
+        NotificationCenter.default.addObserver(self, selector: #selector(bodyDataSyncFromServer), name: NSNotification.Name(rawValue: "bodyDataSyncFromServer"), object: nil)
         
         if let nav = navigationController {
             var controllers = nav.viewControllers
@@ -89,6 +90,9 @@ class BodyDataDetailVC : WHBaseViewVC {
                 nav.viewControllers = controllers
             }
         }
+    }
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "bodyDataSyncFromServer"), object: nil)
     }
     lazy var shareButton : GJVerButton = {
         let button = GJVerButton()
@@ -205,6 +209,10 @@ extension BodyDataDetailVC{
             self.dealBodyStatData(dataArray: dataArr)
         }
         DLLog(message: "BodyDataSQLiteManager:\(dataArr)")
+    }
+    @objc func bodyDataSyncFromServer() {
+        changeTimeType()
+        getAllImagesDataSource()
     }
     @objc func shareAction() {
         let vc = BodyDataDetailShareVC()

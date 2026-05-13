@@ -18,6 +18,18 @@ class PlanMainNonePlanVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else { return }
+        updateActionButtonAppearance()
+    }
+    
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        updateActionButtonAppearance()
+    }
+    
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "ela_pro_progress_bg")
@@ -92,7 +104,43 @@ class PlanMainNonePlanVM: UIView {
     }()
 }
 
+extension PlanMainNonePlanVM {
+    func updateActionButtonAppearance() {
+        applyActionButtonStyle(createPlanButton,
+                               imageName: "dietplan_create_icon")
+        applyActionButtonStyle(buyListButton,
+                               imageName: "dietplan_buy_list_disable_icon")
+        applyActionButtonStyle(sauceButton,
+                               imageName: "dietplan_sauce_disable_icon")
+        titleLab.textColor = .COLOR_TEXT_TITLE_0f1214
+        updateTipsLabelAppearance()
+    }
+}
+
 private extension PlanMainNonePlanVM {
+    func applyActionButtonStyle(_ button: GJVerButtonNoneFeedBack,
+                                imageName: String) {
+        let image = resizedImage(named: imageName, size: CGSize(width: kFitWidth(30), height: kFitWidth(30))) ?? UIImage(named: imageName)
+        button.setImage(image, for: .normal)
+        button.setImage(image, for: .disabled)
+        button.backgroundColor = .COLOR_CARD_BG_WHITE
+        button.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
+        button.setTitleColor(.COLOR_TEXT_TITLE_0f1214_50, for: .disabled)
+    }
+    
+    func updateTipsLabelAppearance() {
+        let text = "点击“创建”\n开始计划"
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.5
+        let attr = NSMutableAttributedString(string: text)
+        attr.addAttributes([
+            .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+            .font: UIFont.systemFont(ofSize: 21, weight: .medium),
+            .paragraphStyle: paragraphStyle
+        ], range: NSRange(location: 0, length: text.count))
+        tipsLabel.attributedText = attr
+    }
+    
     func makeRecipeActionButton(title: String,
                                 imageName: String,
                                 imageSize: CGSize,
@@ -116,7 +164,7 @@ private extension PlanMainNonePlanVM {
     }
     
     func resizedImage(named: String, size: CGSize) -> UIImage? {
-        guard let image = UIImage(named: named),
+        guard let image = UIImage(named: named, in: nil, compatibleWith: traitCollection) ?? UIImage(named: named),
               size.width > 0,
               size.height > 0 else { return nil }
         let format = UIGraphicsImageRendererFormat.default()
@@ -141,6 +189,7 @@ extension PlanMainNonePlanVM{
      
         buyListButton.isEnabled = false
         sauceButton.isEnabled = false
+        updateActionButtonAppearance()
         
         setConstrait()
     }

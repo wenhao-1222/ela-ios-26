@@ -1215,6 +1215,58 @@ class LogsSQLiteManager {
         
         return updatedDates
     }
+    
+    @discardableResult
+    func updateDietPlanNutrientsTarget(_ targetDict: NSDictionary, sdate: String) -> Bool {
+        guard sdate.count > 0,
+              let currentModel = getLogsByDate(sDate: sdate) else {
+            return false
+        }
+        
+        let caloriesTarget = targetValue(from: targetDict, primaryKey: "caloriesDen", fallbackKey: "totalCalories")
+        let carbohydrateTarget = targetValue(from: targetDict, primaryKey: "carbohydrateDen", fallbackKey: "totalCarbohydrate")
+        let proteinTarget = targetValue(from: targetDict, primaryKey: "proteinDen", fallbackKey: "totalProtein")
+        let fatTarget = targetValue(from: targetDict, primaryKey: "fatDen", fallbackKey: "totalFat")
+        guard caloriesTarget.count > 0 || carbohydrateTarget.count > 0 || proteinTarget.count > 0 || fatTarget.count > 0 else {
+            return false
+        }
+        
+        let newCaloriesTarget = caloriesTarget.count > 0 ? caloriesTarget : currentModel.caloriTarget
+        let newCarbohydrateTarget = carbohydrateTarget.count > 0 ? carbohydrateTarget : currentModel.carbohydrateTarget
+        let newProteinTarget = proteinTarget.count > 0 ? proteinTarget : currentModel.proteinTarget
+        let newFatTarget = fatTarget.count > 0 ? fatTarget : currentModel.fatTarget
+        
+        do {
+            let sql = logs.filter(self.sdate == sdate).filter(uid == UserInfoModel.shared.uId)
+            try db?.run(sql.update(self.caloriTarget<-newCaloriesTarget,
+                                   self.proteinTarget<-newProteinTarget,
+                                   self.carbohydrateTarget<-newCarbohydrateTarget,
+                                   self.fatTarget<-newFatTarget))
+            postTodayLogsLocalDataDidChangeIfNeeded(sDate: sdate)
+            return true
+        } catch {
+            DLLog(message:"Unable to update diet plan nutrients target")
+            do {
+                try db?.execute("UPDATE logs SET"
+                                + " caloriTarget = '\(newCaloriesTarget)'"
+                                + ", proteinTarget = '\(newProteinTarget)'"
+                                + ", carbohydrateTarget = '\(newCarbohydrateTarget)'"
+                                + ", fatTarget = '\(newFatTarget)'"
+                                + " WHERE ((uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sdate)'));")
+                postTodayLogsLocalDataDidChangeIfNeeded(sDate: sdate)
+                return true
+            }catch{
+                DLLog(message: "SQL语句更新饮食计划目标  ----  执行失败")
+                return false
+            }
+        }
+    }
+    
+    private func targetValue(from dict: NSDictionary, primaryKey: String, fallbackKey: String) -> String {
+        let primaryValue = dict.stringValueForKey(key: primaryKey)
+        return primaryValue.count > 0 ? primaryValue : dict.stringValueForKey(key: fallbackKey)
+    }
+    
     func deleteAllData(){
         do {
             try db?.run(logs.delete())

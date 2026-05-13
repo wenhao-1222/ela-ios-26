@@ -29,8 +29,7 @@ class QuestionResultBaseVM: UIView {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 24, weight: .medium)
         lab.text = "结合你的代谢和活动量，\n你维持现体重所需的大致热量为："
-        lab.numberOfLines = 2
-        lab.adjustsFontSizeToFitWidth = true
+        lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         
         return lab
@@ -128,8 +127,7 @@ extension QuestionResultBaseVM{
     func setConstrait() {
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(28))
-//            make.right.equalTo(kFitWidth(-28))
-            make.width.equalTo(kFitWidth(320))
+            make.right.equalTo(kFitWidth(-28))
             make.top.equalTo(kFitWidth(20))
         }
         caloriesBgView.snp.makeConstraints { make in
@@ -160,8 +158,7 @@ extension QuestionResultBaseVM{
     func updateConstrait() {
         titleLabel.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(28))
-//            make.right.equalTo(kFitWidth(-28))
-            make.width.equalTo(kFitWidth(320))
+            make.right.equalTo(kFitWidth(-28))
             make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(35))
         }
     }

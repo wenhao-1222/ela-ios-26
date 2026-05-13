@@ -170,14 +170,14 @@ extension DietPlanCreateRecommendIntakeVM {
         switch QuestinonaireMsgModel.shared.paceLevel {
         case "1", "slight"://最慢档
 //            monthlyRate = 1.0
-            displayValue = "0.5"
+            displayValue = "1"
         case "3", "major"://最快档
 //            monthlyRate = 2.8
             displayValue = "0.5"
             displayTi = "预计每周"
         default:
 //            monthlyRate = 2.0
-            displayValue = "1"
+            displayValue = "1.5"
         }
         return delta < 0 ? "\(displayTi)减少 \(displayValue)kg" : "\(displayTi)增加 \(displayValue)kg"
 
