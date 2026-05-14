@@ -23,7 +23,8 @@ class MineElaProHeroCardView: UIView {
     private lazy var bgImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "ela_pro_equity_bg")
-        img.contentMode = .scaleAspectFit
+        img.contentMode = .scaleAspectFill
+        img.clipsToBounds = true
         
         return img
     }()

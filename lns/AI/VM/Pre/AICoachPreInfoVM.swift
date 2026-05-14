@@ -52,13 +52,31 @@ extension AICoachPreInfoVM {
     func prepareTextEntranceAnimation() {
         alpha = 1
         transform = .identity
+        cardView.alpha = 0
+        cardView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(12))
         goalRowView.setTextAlpha(0)
         intensityRowView.setTextAlpha(0)
     }
 
     func applyTextEntranceAnimation() {
+        cardView.alpha = 1
+        cardView.transform = .identity
         goalRowView.setTextAlpha(1)
         intensityRowView.setTextAlpha(1)
+    }
+
+    func playEntranceAnimation(duration: TimeInterval,
+                               completion: (() -> Void)? = nil) {
+        UIView.animate(withDuration: duration,
+                       delay: 0,
+                       options: .curveLinear) {
+            self.cardView.alpha = 1
+            self.cardView.transform = .identity
+            self.goalRowView.setTextAlpha(1)
+            self.intensityRowView.setTextAlpha(1)
+        } completion: { _ in
+            completion?()
+        }
     }
 
     func applyFinalPresentationState() {

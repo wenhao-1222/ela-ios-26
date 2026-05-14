@@ -170,6 +170,32 @@ extension AICoachPreDaysVM{
         shouldAnimateMessageLabel = false
     }
 
+    func playDaysEntranceAnimation(duration: TimeInterval,
+                                   completion: (() -> Void)? = nil) {
+        shouldAnimateMessageLabel = true
+        UIView.animate(withDuration: duration,
+                       delay: 0,
+                       options: .curveLinear) {
+            self.transform = .identity
+            self.daysStackView.transform = .identity
+            self.daysStackView.alpha = 1
+        } completion: { _ in
+            completion?()
+        }
+    }
+
+    func playMessageEntranceAnimation(duration: TimeInterval,
+                                      completion: (() -> Void)? = nil) {
+        UIView.animate(withDuration: duration,
+                       delay: 0,
+                       options: .curveLinear) {
+            self.messageLabel.transform = .identity
+            self.messageLabel.alpha = self.messageLabel.isHidden ? 0 : 1
+        } completion: { _ in
+            completion?()
+        }
+    }
+
     func playEntranceAnimation(alongsideDaysAnimation: (() -> Void)? = nil,
                                completion: (() -> Void)? = nil) {
         shouldAnimateMessageLabel = true

@@ -26,6 +26,9 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private var isShowingGenerationStateAfterTap = false
     private let nextButtonPlaceholderLayer = CAGradientLayer()
     private var isNextButtonPlaceholderAnimating = false
+    private let entranceAnimationDurationA: TimeInterval = 0.75
+    private let entranceAnimationDurationB: TimeInterval = 0.35
+    private let entranceAnimationDurationC: TimeInterval = 0.7
     
     private lazy var preDaysVM: AICoachPreDaysVM = {
         let view = AICoachPreDaysVM(frame: .zero)
@@ -85,7 +88,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if shouldPlayFirstEntryAnimation {
+        if shouldPlayEntranceAnimation {
             startCircleEntranceAnimationIfNeeded()
         } else {
             syncVisiblePresentationStateIfNeeded()
@@ -281,7 +284,11 @@ extension AICoachPreVC{
             self.isWaitingForCoachLaunchResponse = false
             self.dataDict = foodsMsgDict
             self.updatePreDaysUI(dataDict: foodsMsgDict)
-            self.startRemainingEntranceAnimationIfNeeded()
+            if self.shouldPlayEntranceAnimation {
+                self.startCircleEntranceAnimationIfNeeded()
+            } else {
+                self.syncVisiblePresentationStateIfNeeded(force: true)
+            }
         }
     }
     func sendReportListRequest() {
@@ -486,7 +493,7 @@ private extension AICoachPreVC {
                     aiCoachIntensityPreference: aiCoachIntensityPreference
                 )
                 self.applyNextButtonState(animated: self.shouldAnimateStateTransition, updatesMessage: false)
-                self.syncVisiblePresentationStateIfNeeded(force: self.shouldUseLegacyReportReadyPresentation)
+                self.syncVisiblePresentationStateIfNeeded(force: self.shouldForceVisiblePresentationAfterDataUpdate)
             }
             return
         }
@@ -526,7 +533,7 @@ private extension AICoachPreVC {
                 aiCoachIntensityPreference: aiCoachIntensityPreference
             )
             self.applyNextButtonState(animated: self.shouldAnimateStateTransition, updatesMessage: false)
-            self.syncVisiblePresentationStateIfNeeded(force: self.shouldUseLegacyReportReadyPresentation)
+            self.syncVisiblePresentationStateIfNeeded(force: self.shouldForceVisiblePresentationAfterDataUpdate)
         }
     }
 
@@ -718,19 +725,17 @@ private extension AICoachPreVC {
         circleImgView.transform = .identity
         preDaysVM.prepareEntranceAnimation()
         preInfoVM.prepareTextEntranceAnimation()
-        infoSelectPopupVM.alpha = 0
-        infoSelectPopupVM.transform = initialTransform
+        infoSelectPopupVM.alpha = 1
+        infoSelectPopupVM.transform = .identity
         nextButton.isHidden = true
         nextButton.alpha = 0
-//        nextButton.transform = initialTransform
+        nextButton.transform = initialTransform
     }
 
     func configureInitialPresentationState() {
-        if shouldUseLegacyReportReadyPresentation {
-            syncVisiblePresentationStateIfNeeded(force: true)
-        } else if isWaitingForCoachLaunchResponse {
+        if isWaitingForCoachLaunchResponse {
             prepareEntranceAnimation()
-        } else if shouldPlayFirstEntryAnimation {
+        } else if shouldPlayEntranceAnimation {
             prepareEntranceAnimation()
         } else {
             syncVisiblePresentationStateIfNeeded()
@@ -746,10 +751,6 @@ private extension AICoachPreVC {
     }
 
     func startRemainingEntranceAnimationIfNeeded() {
-        if shouldUseLegacyReportReadyPresentation {
-            syncVisiblePresentationStateIfNeeded(force: true)
-            return
-        }
         guard hasFinishedCircleEntranceAnimation else { return }
         guard hasPlayedRemainingEntranceAnimation == false else { return }
         guard isWaitingForCoachLaunchResponse == false else { return }
@@ -758,23 +759,54 @@ private extension AICoachPreVC {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             guard let self = self else { return }
-            self.preDaysVM.playEntranceAnimation(alongsideDaysAnimation: { [weak self] in
-                self?.preInfoVM.applyTextEntranceAnimation()
-            }) { [weak self] in
-                guard let self = self else { return }
-                self.animateEntrance(view: self.infoSelectPopupVM, duration: 0.75, delay: 0.15) { [weak self] in
-                    guard let self = self else { return }
-                    let shouldShowNextButton = self.shouldShowNextButton
-                    if shouldShowNextButton {
-                        self.nextButton.isHidden = false
-                    }
-                    self.animateEntrance(view: self.nextButton,
-                                         duration: 0.7,
-                                         delay: 0.25,
-                                         shouldFadeIn: shouldShowNextButton) { [weak self] in
-                        self?.updateNextButtonVisibility(animated: false)
-                    }
-                }
+            if self.shouldPlayParallelHalfEntranceAnimation {
+                self.playParallelEntranceAnimation()
+            } else {
+                self.playSequentialEntranceAnimation()
+            }
+        }
+    }
+
+    func playSequentialEntranceAnimation() {
+        preDaysVM.playDaysEntranceAnimation(duration: entranceAnimationDurationA)
+        preInfoVM.playEntranceAnimation(duration: entranceAnimationDurationA) { [weak self] in
+            self?.playMessageAndButtonEntranceAnimation()
+        }
+    }
+
+    func playParallelEntranceAnimation() {
+        let durationA = entranceAnimationDurationA * 0.5
+        let durationB = entranceAnimationDurationB * 0.5
+        let durationC = entranceAnimationDurationC * 0.5
+        let shouldShowNextButton = self.shouldShowNextButton
+
+        if shouldShowNextButton {
+            nextButton.isHidden = false
+        }
+
+        preDaysVM.playDaysEntranceAnimation(duration: durationA)
+        preInfoVM.playEntranceAnimation(duration: durationA)
+        preDaysVM.playMessageEntranceAnimation(duration: durationB)
+        animateEntrance(view: nextButton,
+                        duration: durationC,
+                        delay: 0,
+                        shouldFadeIn: shouldShowNextButton) { [weak self] in
+            self?.updateNextButtonVisibility(animated: false)
+        }
+    }
+
+    func playMessageAndButtonEntranceAnimation() {
+        preDaysVM.playMessageEntranceAnimation(duration: entranceAnimationDurationB) { [weak self] in
+            guard let self = self else { return }
+            let shouldShowNextButton = self.shouldShowNextButton
+            if shouldShowNextButton {
+                self.nextButton.isHidden = false
+            }
+            self.animateEntrance(view: self.nextButton,
+                                 duration: self.entranceAnimationDurationC,
+                                 delay: 0,
+                                 shouldFadeIn: shouldShowNextButton) { [weak self] in
+                self?.updateNextButtonVisibility(animated: false)
             }
         }
     }
@@ -820,7 +852,7 @@ private extension AICoachPreVC {
     }
 
     func syncVisiblePresentationStateIfNeeded(force: Bool = false) {
-        guard force || shouldPlayFirstEntryAnimation == false || hasPlayedRemainingEntranceAnimation else { return }
+        guard force || shouldPlayEntranceAnimation == false || hasPlayedRemainingEntranceAnimation else { return }
         guard force || isWaitingForCoachLaunchResponse == false else { return }
 
         bgImgView.alpha = 1
@@ -832,6 +864,7 @@ private extension AICoachPreVC {
         infoSelectPopupVM.alpha = 1
         infoSelectPopupVM.transform = .identity
         updateNextButtonVisibility(animated: false)
+        nextButton.transform = .identity
     }
 
     func shouldAnimateProgressHighlights(reportAfterDays: Int) -> Bool {
@@ -884,5 +917,17 @@ private extension AICoachPreVC {
 
     var shouldUseLegacyReportReadyPresentation: Bool {
         currentReportStatus == 4
+    }
+
+    var shouldForceVisiblePresentationAfterDataUpdate: Bool {
+        shouldUseLegacyReportReadyPresentation && shouldPlayEntranceAnimation == false
+    }
+
+    var shouldPlayParallelHalfEntranceAnimation: Bool {
+        shouldPlayFirstEntryAnimation == false && currentReportStatus == 4
+    }
+
+    var shouldPlayEntranceAnimation: Bool {
+        shouldPlayFirstEntryAnimation || currentReportStatus == 1 || currentReportStatus == 2 || currentReportStatus == 4
     }
 }

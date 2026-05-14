@@ -714,22 +714,21 @@ extension DietPlanCreateSecondVC {
         let minCalories = QuestinonaireMsgModel.shared.sex == "1" ? 1500 : 1200
         if currentWeight > targetWeight {
             if baseCalories - offset > minCalories{
-//                self.recommendIntakeVm.targetDescLabel.alpha = 1
                 self.recommendIntakeVm.refreshDesc(isShow: true)
                 return "\(baseCalories - offset)"
+            }else if baseCalories - offset >= 5000 {
+                self.recommendIntakeVm.refreshDesc(isShow: false)
+                return "5000"
             }else{
-//                self.recommendIntakeVm.targetDescLabel.alpha = 0
                 self.recommendIntakeVm.refreshDesc(isShow: false)
                 return "\(minCalories)"
             }
         }
         
         if baseCalories + offset > 5000{
-//            self.recommendIntakeVm.targetDescLabel.alpha = 0
             self.recommendIntakeVm.refreshDesc(isShow: false)
             return "5000"
         }else{
-//            self.recommendIntakeVm.targetDescLabel.alpha = 1
             self.recommendIntakeVm.refreshDesc(isShow: true)
             return "\(baseCalories + offset)"
         }
@@ -1143,8 +1142,17 @@ extension DietPlanCreateSecondVC {
             self.syncNextButtonEnableStatus()
             let vc = ElaProVC()
             vc.showPriceOnly = true
+            vc.pendingDietPlanCreateParameters = self.buildDietPlanCreateParameters()
             self.navigationController?.pushViewController(vc, animated: true)
         }
+    }
+
+    func buildDietPlanCreateParameters() -> [String: Any] {
+        return [
+            "startDate": requestDateFormatter.string(from: QuestinonaireMsgModel.shared.chartStartDate),
+            "endDate": requestDateFormatter.string(from: QuestinonaireMsgModel.shared.chartEndDate),
+            "customTdee": QuestinonaireMsgModel.shared.caloriesNumber
+        ]
     }
 
     @objc func handleVipStatusRefreshForPendingCreatePlan() {

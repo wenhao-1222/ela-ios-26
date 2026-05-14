@@ -119,39 +119,43 @@ class MineVC : WHBaseViewVC {
         return vm
     }()
     //MARK: 个性化设置
-    lazy var settingVm: PersonalTopFuncItemVM = {
-        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.funcTopVm.frame.maxY+kFitWidth(20), width: 0, height: 0))
-        vm.frame = CGRect.init(x:  kFitWidth(16), y: self.funcTopVm.frame.maxY+kFitWidth(20), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(50))
-        vm.layer.cornerRadius = kFitWidth(12)
-        vm.titleLab.text = "个性化"
-        vm.iconImgView.setImgLocal(imgName: "mine_func_personal_setting")
-        vm.lineView.isHidden =  true
-        vm.tapBlock = {()in
+//    lazy var settingVm: PersonalTopFuncItemVM = {
+//        let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.funcTopVm.frame.maxY+kFitWidth(20), width: 0, height: 0))
+//        vm.frame = CGRect.init(x:  kFitWidth(16), y: self.funcTopVm.frame.maxY+kFitWidth(20), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(50))
+//        vm.layer.cornerRadius = kFitWidth(12)
+//        vm.titleLab.text = "个性化"
+//        vm.iconImgView.setImgLocal(imgName: "mine_func_personal_setting")
+//        vm.lineView.isHidden =  true
+//        vm.tapBlock = {()in
+//            let vc = JournalSettingVC()
+//            self.navigationController?.pushViewController(vc, animated: true)
+//        }
+//        return vm
+//    }()
+    //MARK: 联系我们、使用教程、消息通知
+    lazy var funcBottomVm: PersonalBottomFuncVM = {
+        let vm = PersonalBottomFuncVM.init(frame: CGRect.init(x: 0, y: self.funcTopVm.frame.maxY+kFitWidth(20), width: 0, height: 0))
+        vm.settingVm.tapBlock = {()in
             let vc = JournalSettingVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
-        return vm
-    }()
-    //MARK: 联系我们、使用教程、消息通知
-    lazy var funcBottomVm: PersonalBottomFuncVM = {
-        let vm = PersonalBottomFuncVM.init(frame: CGRect.init(x: 0, y: self.settingVm.frame.maxY+kFitWidth(20), width: 0, height: 0))
         vm.contactVm.tapBlock = {()in
             let vc = ServiceContactVC()
 //            let vc = ServiceVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
-        vm.tutorialsVm.tapBlock = {()in
-            let vc = TutorialsListVC()
-            self.navigationController?.pushViewController(vc, animated: true)
-        }
-        vm.msgVm.tapBlock = {()in
-            let vc = ForumNewsListVC()
-            self.navigationController?.pushViewController(vc, animated: true)
-        }
-        vm.inviteVm.tapBlock = {()in
-            let vc = InviteRewardsVC()
-            self.navigationController?.pushViewController(vc, animated: true)
-        }
+//        vm.tutorialsVm.tapBlock = {()in
+//            let vc = TutorialsListVC()
+//            self.navigationController?.pushViewController(vc, animated: true)
+//        }
+//        vm.msgVm.tapBlock = {()in
+//            let vc = ForumNewsListVC()
+//            self.navigationController?.pushViewController(vc, animated: true)
+//        }
+//        vm.inviteVm.tapBlock = {()in
+//            let vc = InviteRewardsVC()
+//            self.navigationController?.pushViewController(vc, animated: true)
+//        }
         vm.frameChangeBlock = {()in
             self.scrollViewBase.contentSize = CGSize.init(width: 0, height: self.funcBottomVm.frame.maxY+self.getTabbarHeight()+self.bottomGap)
         }
@@ -180,8 +184,8 @@ extension MineVC{
 
 extension MineVC{
     func updateMineLayout() {
-        settingVm.frame = CGRect.init(x: settingVm.frame.origin.x, y: funcTopVm.frame.maxY+kFitWidth(20), width: settingVm.frame.width, height: settingVm.frame.height)
-        funcBottomVm.frame = CGRect.init(x: funcBottomVm.frame.origin.x, y: settingVm.frame.maxY+kFitWidth(20), width: funcBottomVm.frame.width, height: funcBottomVm.frame.height)
+//        settingVm.frame = CGRect.init(x: settingVm.frame.origin.x, y: funcTopVm.frame.maxY+kFitWidth(20), width: settingVm.frame.width, height: settingVm.frame.height)
+        funcBottomVm.frame = CGRect.init(x: funcBottomVm.frame.origin.x, y: funcTopVm.frame.maxY+kFitWidth(20), width: funcBottomVm.frame.width, height: funcBottomVm.frame.height)
         scrollViewBase.contentSize = CGSize.init(width: 0, height: self.funcBottomVm.frame.maxY+getTabbarHeight()+self.bottomGap)
     }
 }
@@ -195,9 +199,10 @@ extension MineVC{
 //        scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getTabbarHeight())
         scrollViewBase.addSubview(personalTopVm)
         scrollViewBase.addSubview(funcTopVm)
-        scrollViewBase.addSubview(settingVm)
+//        scrollViewBase.addSubview(settingVm)
         scrollViewBase.addSubview(funcBottomVm)
-        [personalTopVm, funcTopVm, settingVm, funcBottomVm].forEach { setupExclusiveTouch(in: $0) }
+        [personalTopVm, funcTopVm, funcBottomVm].forEach { setupExclusiveTouch(in: $0) }
+//        [personalTopVm, funcTopVm, settingVm, funcBottomVm].forEach { setupExclusiveTouch(in: $0) }
 
         scrollViewBase.contentSize = CGSize.init(width: 0, height: self.funcBottomVm.frame.maxY+getTabbarHeight()+self.bottomGap)
     }

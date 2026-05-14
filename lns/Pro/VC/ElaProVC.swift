@@ -5,10 +5,12 @@
 //  Created by LNS2 on 2026/3/3.
 //
 
+import MCToast
 
 class ElaProVC: WHBaseViewVC {
     private var currentIndex: Int = 0
     private var isBackButtonCoolingDown = false
+    private var isCreatingPendingDietPlan = false
     
     var param = [String : Any]()
     var showPriceOnly = false
@@ -18,6 +20,7 @@ class ElaProVC: WHBaseViewVC {
     var enterAICoachPreOnClose = false
     var enterAICoachPreOnPurchaseSuccess = false
     var shouldClearDietPlanCreateDraftOnPurchaseSuccess = false
+    var pendingDietPlanCreateParameters: [String: Any]?
     private var agreementAlertVm: ElaProAgreementAlertVM?
     
     lazy var purchaseLoadingMaskView: UIView = {
@@ -379,6 +382,10 @@ extension ElaProVC{
         if shouldClearDietPlanCreateDraftOnPurchaseSuccess {
             DietPlanCreateVC.clearStoredDraftForCurrentUser()
         }
+        if pendingDietPlanCreateParameters != nil {
+            createPendingDietPlanAfterPurchaseSuccess()
+            return
+        }
         requestLatestVipInfo()
         NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
         if enterAICoachPreOnPurchaseSuccess {
@@ -402,7 +409,8 @@ extension ElaProVC{
         }
     }
     
-    private func requestLatestVipInfo() {
+    private func requestLatestVipInfo(completion: ((VIPModel) -> Void)? = nil,
+                                      failure: (() -> Void)? = nil) {
         WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
@@ -410,6 +418,73 @@ extension ElaProVC{
             DLLog(message: "ElaProVC requestLatestVipInfo:\(dataDict)")
             DLLog(message: "ElaProVC requestLatestVipInfo model: uid=\(vipModel.uid), status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime), expireTime=\(vipModel.expireTime)")
             NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
+            completion?(vipModel)
+        } failure: { _ in
+            failure?()
+        }
+    }
+
+    private func createPendingDietPlanAfterPurchaseSuccess() {
+        guard !isCreatingPendingDietPlan else { return }
+        isCreatingPendingDietPlan = true
+        setPurchaseLoadingVisible(true)
+        requestLatestVipInfo { [weak self] vipModel in
+            guard let self = self else { return }
+            guard vipModel.status == .valid else {
+                self.handlePendingDietPlanCreateFailure(message: "会员状态同步中，请稍后重试")
+                return
+            }
+            self.sendPendingDietPlanCreateRequest()
+        } failure: { [weak self] in
+            self?.handlePendingDietPlanCreateFailure(message: "会员状态同步失败，请稍后重试")
+        }
+    }
+
+    private func sendPendingDietPlanCreateRequest() {
+        guard let parameters = pendingDietPlanCreateParameters else {
+            handlePendingDietPlanCreateFailure(message: "创建失败，请稍后重试")
+            return
+        }
+        DLLog(message: "ElaProVC sendPendingDietPlanCreateRequest:\(parameters)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_create, parameters: parameters as [String : AnyObject]) { [weak self] responseObject in
+            guard let self = self else { return }
+            let code = responseObject["code"] as? Int ?? -1
+            guard code == 200 else {
+                let msg = responseObject["message"] as? String ?? "创建失败，请稍后重试"
+                self.handlePendingDietPlanCreateFailure(message: msg)
+                return
+            }
+
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "ElaProVC sendPendingDietPlanCreateRequest response:\(dataObj)")
+            let updatedDates = LogsSQLiteManager.getInstance().applyDietPlanNutrientsTargets(dataObj["nutrientsTarget"] as? NSArray ?? [])
+            if !updatedDates.isEmpty {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+            }
+
+            self.handlePendingDietPlanCreateSuccess()
+        } failure: { [weak self] isError in
+            guard let self = self else { return }
+            self.handlePendingDietPlanCreateFailure(message: isError ? "创建失败，请稍后重试" : nil)
+        }
+    }
+
+    private func handlePendingDietPlanCreateSuccess() {
+        isCreatingPendingDietPlan = false
+        pendingDietPlanCreateParameters = nil
+        setPurchaseLoadingVisible(false)
+        navigationController?.tabBarController?.selectedIndex = 2
+        navigationController?.popToRootViewController(animated: true)
+        NotificationCenter.default.post(name: NOTIFI_NAME_DIET_PLAN_CREATE_SUCCESS, object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
+    }
+
+    private func handlePendingDietPlanCreateFailure(message: String?) {
+        isCreatingPendingDietPlan = false
+        setPurchaseLoadingVisible(false)
+        if let message = message, !message.isEmpty {
+            MCToast.mc_text(message)
         }
     }
 }

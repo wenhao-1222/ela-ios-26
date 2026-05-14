@@ -55,7 +55,7 @@ class HabitVC: WHBaseViewVC {
     lazy var bgImgView: UIImageView = {
         let img = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         img.setImgLocal(imgName: "habit_ranklist_bg_img")
-        img.contentMode = .scaleAspectFit
+        img.contentMode = isIpad() ? .scaleAspectFill : .scaleAspectFit
 //        img.alpha = 0
         
         return img

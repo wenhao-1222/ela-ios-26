@@ -1384,16 +1384,6 @@ extension GuidanceVC{
         return "\(calories)"
     }
 
-    private func shouldKeepEditedGuidanceCalories() -> Bool {
-        guard let currentCalories = resolvedNutritionGoalInt(primary: QuestinonaireMsgModel.shared.caloriesNumber,
-                                                             fallback: "") else {
-            return false
-        }
-        let serverCalories = resolvedNutritionGoalInt(primary: QuestinonaireMsgModel.shared.caloriesNumberFromServer,
-                                                      fallback: "")
-        return currentCalories != serverCalories
-    }
-
     private func parsedNutritionGoalValue(from data: NSDictionary, key: String) -> Int? {
         let rawValue = data[key]
         if let intValue = rawValue as? Int {
@@ -1691,19 +1681,10 @@ extension GuidanceVC{
             }
 //            QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
 //            QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
-//            QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
             QuestinonaireMsgModel.shared.caloriesNumberFromServer = "\(calories)"
-            let shouldKeepEditedCalories = self.shouldKeepEditedGuidanceCalories()
-            if !shouldKeepEditedCalories {
-                QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
-            } else {
-                DLLog(message: "sendBasicRequest(guidance) keep edited caloriesNumber=\(QuestinonaireMsgModel.shared.caloriesNumber), serverCalories=\(calories)")
-            }
+            QuestinonaireMsgModel.shared.caloriesNumber = "\(calories)"
             DispatchQueue.main.async {
-//                self.caloriesResultBaseVm.caloriesTextField.text = "\(calories)"
-                if !shouldKeepEditedCalories {
-                    self.caloriesResultBaseVm.caloriesTextField.text = "\(calories)"
-                }
+                self.caloriesResultBaseVm.caloriesTextField.text = "\(calories)"
                 completion?(true)
             }
         } failure: { _ in
