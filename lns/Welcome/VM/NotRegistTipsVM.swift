@@ -37,7 +37,8 @@ class NotRegistTipsVM: UIView {
     }()
     lazy var tipsLabel : UILabel = {
         let lab = UILabel()
-        lab.text = "请设置营养目标后再尝试登录"
+//        lab.text = "请设置营养目标后再尝试登录"
+        lab.text = "请先完成注册流程"
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         

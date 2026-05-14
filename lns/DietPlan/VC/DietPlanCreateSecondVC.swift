@@ -714,17 +714,25 @@ extension DietPlanCreateSecondVC {
         let minCalories = QuestinonaireMsgModel.shared.sex == "1" ? 1500 : 1200
         if currentWeight > targetWeight {
             if baseCalories - offset > minCalories{
+//                self.recommendIntakeVm.targetDescLabel.alpha = 1
+                self.recommendIntakeVm.refreshDesc(isShow: true)
                 return "\(baseCalories - offset)"
             }else{
-                return "1200"
+//                self.recommendIntakeVm.targetDescLabel.alpha = 0
+                self.recommendIntakeVm.refreshDesc(isShow: false)
+                return "\(minCalories)"
             }
         }
+        
         if baseCalories + offset > 5000{
+//            self.recommendIntakeVm.targetDescLabel.alpha = 0
+            self.recommendIntakeVm.refreshDesc(isShow: false)
             return "5000"
         }else{
+//            self.recommendIntakeVm.targetDescLabel.alpha = 1
+            self.recommendIntakeVm.refreshDesc(isShow: true)
             return "\(baseCalories + offset)"
         }
-        
     }
 
     func applyDietQuestionnaireData(_ data: NSDictionary) {

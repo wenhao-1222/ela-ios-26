@@ -39,6 +39,13 @@ class DietPlanCreateRecommendIntakeVM: UIView {
         return vi
     }()
 
+    lazy var aboutLab: UILabel = {
+        let lab = UILabel()
+        lab.text = "约"
+        lab.font = .systemFont(ofSize: 14, weight: .regular)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        return lab
+    }()
     lazy var caloriesLabel: UILabel = {
         let lab = UILabel()
         lab.textAlignment = .center
@@ -90,6 +97,7 @@ extension DietPlanCreateRecommendIntakeVM {
     func initUI() {
         addSubview(titleLabel)
         addSubview(cardView)
+        cardView.addSubview(aboutLab)
         cardView.addSubview(caloriesLabel)
         cardView.addSubview(unitLabel)
         cardView.addSubview(targetDescLabel)
@@ -123,6 +131,10 @@ extension DietPlanCreateRecommendIntakeVM {
             make.top.equalTo(kFitWidth(30))
         }
 
+        aboutLab.snp.makeConstraints { make in
+            make.bottom.equalTo(caloriesLabel).offset(kFitWidth(-5))
+            make.right.equalTo(caloriesLabel.snp.left).offset(kFitWidth(-8))
+        }
         unitLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(caloriesLabel.snp.bottom).offset(kFitWidth(6))
@@ -138,6 +150,26 @@ extension DietPlanCreateRecommendIntakeVM {
             make.right.bottom.equalTo(kFitWidth(-16))
             make.bottom.equalTo(kFitWidth(-16))
             make.height.equalTo(kFitWidth(39))
+        }
+    }
+    ///isShow 是否展示targetDescLabel
+    func refreshDesc(isShow:Bool) {
+        if isShow{
+            self.targetDescLabel.alpha = 1
+            cardView.snp.remakeConstraints { make in
+                make.left.equalTo(kFitWidth(20))
+                make.right.equalTo(kFitWidth(-20))
+                make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(45))
+                make.height.equalTo(kFitWidth(234))
+            }
+        }else{
+            self.targetDescLabel.alpha = 0
+            cardView.snp.remakeConstraints { make in
+                make.left.equalTo(kFitWidth(20))
+                make.right.equalTo(kFitWidth(-20))
+                make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(45))
+                make.height.equalTo(kFitWidth(184))
+            }
         }
     }
 

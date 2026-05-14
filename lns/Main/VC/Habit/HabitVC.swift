@@ -16,6 +16,7 @@ class HabitVC: WHBaseViewVC {
         super.viewDidLoad()
         
         initUI()
+        updateInteractivePopGestureState()
         sendDataRequest()
         sendLastWeekRanklistRequest()
         
@@ -25,6 +26,13 @@ class HabitVC: WHBaseViewVC {
             text: ""
         )
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        updateInteractivePopGestureState()
+    }
+    
     lazy var topTypeVm: HabitTopTypeVM = {
         let vm = HabitTopTypeVM.init(frame: .zero)
         vm.typeChangeBlock = {(pageIndex)in
@@ -129,6 +137,7 @@ extension HabitVC{
         scrollViewBase.bounces = false
         scrollViewBase.showsHorizontalScrollIndicator = false
         scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT*2, height: 0)
+        configureScrollPopGestureDependency()
     }
 }
 
@@ -189,15 +198,25 @@ extension HabitVC{
         if !isShowingRank {
             progressVm.triggerPointAnimationIfNeeded()
         }
-        if scrollView.contentOffset.x > kFitWidth(20){
-            self.navigationController?.fd_interactivePopDisabled = true
-            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-        }else{
-            if let popGesture = self.navigationController?.fd_fullscreenPopGestureRecognizer {
-                scrollViewBase.panGestureRecognizer.require(toFail: popGesture)
-            }
-            self.navigationController?.fd_interactivePopDisabled = false
-            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        updateInteractivePopGestureState()
+    }
+    
+    private func updateInteractivePopGestureState() {
+        let isPopDisabled = scrollViewBase.contentOffset.x > kFitWidth(20)
+        canEdgeBack = !isPopDisabled
+        fd_interactivePopDisabled = isPopDisabled
+        navigationController?.fd_interactivePopDisabled = isPopDisabled
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = !isPopDisabled
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = !isPopDisabled
+        
+        if !isPopDisabled {
+            configureScrollPopGestureDependency()
+        }
+    }
+    
+    private func configureScrollPopGestureDependency() {
+        if let popGesture = self.navigationController?.fd_fullscreenPopGestureRecognizer {
+            scrollViewBase.panGestureRecognizer.require(toFail: popGesture)
         }
     }
 }
