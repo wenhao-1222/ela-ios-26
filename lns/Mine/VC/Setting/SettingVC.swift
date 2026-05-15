@@ -12,6 +12,7 @@ import UIKit
 class SettingVC: WHBaseViewVC {
     
     var versionMsgDict = NSDictionary()
+    private let cacheSizeQueue = DispatchQueue(label: "com.elavatine.setting.cacheSize", qos: .utility)
     private lazy var restorePurchaseLoadingView: UIView = {
         let maskView = UIView(frame: view.bounds)
         maskView.backgroundColor = UIColor.black.withAlphaComponent(0.18)
@@ -129,7 +130,7 @@ class SettingVC: WHBaseViewVC {
     lazy var clearCacheVm : MaterialItemVM = {
         let vm = MaterialItemVM.init(frame: CGRect.init(x: 0, y: self.personalSettingVm.frame.maxY+kFitWidth(8), width: 0, height: 0))
         vm.leftLabel.text = "清除缓存"
-        vm.detailLabel.text = "\(self.getCacheFileSize())"
+        vm.detailLabel.text = "计算中"
         vm.tapBlock = {()in
             self.clearCacheVm.detailLabel.text = "\(self.clearFileCache())"
         }
@@ -209,6 +210,7 @@ extension SettingVC{
         self.view.layoutIfNeeded()
         
         scrollViewBase.contentSize = CGSize.init(width: 0, height: bottomVm.frame.maxY+getBottomSafeAreaHeight())
+        refreshCacheSize()
     }
     func clearLogsAction() {
         let alertVc = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -419,13 +421,22 @@ extension SettingVC{
 }
 
 extension SettingVC{
+    private func refreshCacheSize() {
+        cacheSizeQueue.async { [weak self] in
+            guard let self = self else { return }
+            let cacheSize = self.getCacheFileSize()
+            DispatchQueue.main.async { [weak self] in
+                self?.clearCacheVm.detailLabel.text = cacheSize
+            }
+        }
+    }
+
     func getCacheFileSize() -> String{
         var foldSize: UInt64 = 0
         let filePath: String = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first ?? ""
         if let files = FileManager.default.subpaths(atPath: filePath) {
             for path in files {
                 let temPath: String = filePath+"/"+path
-                DLLog(message: "temPath\(temPath)")
                 let folder = try? FileManager.default.attributesOfItem(atPath: temPath) as NSDictionary
                 if let c = folder?.fileSize() {
                     foldSize += c

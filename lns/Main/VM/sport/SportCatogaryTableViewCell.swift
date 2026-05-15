@@ -51,20 +51,25 @@ extension SportCatogaryTableViewCell{
     func updateUI(model:SportCatogaryModel) {
         nameLabel.text = model.name
     }
-    func setSelect(isSelect:Bool) {
-        if isSelect{
-            leftLineView.alpha = 0
-            leftLineView.isHidden = false
-            bgView.backgroundColor = .COLOR_BG_WHITE
+    func setSelect(isSelect:Bool, animated: Bool = false) {
+        let changes = {
+            self.bgView.backgroundColor = isSelect ? .COLOR_BG_WHITE : .clear
+            self.nameLabel.textColor = isSelect ? .THEME : .COLOR_TEXT_TITLE_0f1214
+            self.leftLineView.alpha = isSelect ? 1 : 0
+        }
 
-            UIView.transition(with: self.contentView, duration: 0.2, options: .transitionCrossDissolve, animations: {
-                self.nameLabel.textColor = .THEME
-                self.leftLineView.alpha = 1
-            })
-        }else{
-            leftLineView.isHidden = true
-            bgView.backgroundColor = .clear
-            nameLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+        if isSelect {
+            leftLineView.isHidden = false
+        }
+
+        guard animated else {
+            changes()
+            leftLineView.isHidden = !isSelect
+            return
+        }
+
+        UIView.animate(withDuration: 0.22, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction], animations: changes) { _ in
+            self.leftLineView.isHidden = !isSelect
         }
     }
 }

@@ -9,6 +9,20 @@
 class CourseListVMTableViewCell: UITableViewCell {
     
     var imgHeight = kFitWidth(130)
+    private let imageSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_GRAY_E8,
+                                                     highlightColorLight: .COLOR_GRAY_D6D6D6,
+                                                     cornerRadius: 0,
+                                                     shimmerWidth: 0.2,
+                                                     shimmerDuration: 1.0,
+                                                     skeletonFadeInDuration: 0.0,
+                                                     contentFadeInDuration: 0.18)
+    private let textSkeletonConfig = SkeletonConfig(baseColorLight: .COLOR_GRAY_E8,
+                                                    highlightColorLight: .COLOR_GRAY_D6D6D6,
+                                                    cornerRadius: kFitWidth(6),
+                                                    shimmerWidth: 0.2,
+                                                    shimmerDuration: 1.0,
+                                                    skeletonFadeInDuration: 0.0,
+                                                    contentFadeInDuration: 0.18)
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -56,10 +70,30 @@ class CourseListVMTableViewCell: UITableViewCell {
         
         return lab
     }()
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        coverImgView.image = nil
+        titleLab.text = nil
+        detailLab.text = nil
+        [coverImgView, titleLab, detailLab].forEach {
+            $0.alpha = 1
+        }
+    }
 }
 
 extension CourseListVMTableViewCell{
-    func updateUI(dict:NSDictionary) {
+    func updateUI(dict: NSDictionary, isLoading: Bool = false) {
+        if isLoading {
+            coverImgView.image = nil
+            titleLab.text = "                                    "
+            detailLab.text = "                          "
+            coverImgView.showSkeleton(imageSkeletonConfig)
+            [titleLab, detailLab].forEach { $0.showSkeleton(textSkeletonConfig) }
+            return
+        }
+        
+        prepareContentFadeInIfNeeded()
 //        let coverInfoDict = dict["coverInfo"]as? NSDictionary ?? [:]
 //        coverImgView.setImgUrl(urlString: coverInfoDict.stringValueForKey(key: "imageOssUrl"))
         
@@ -72,6 +106,22 @@ extension CourseListVMTableViewCell{
         
         titleLab.text = dict.stringValueForKey(key: "title")
         detailLab.text = dict.stringValueForKey(key: "subtitle")
+        
+        [coverImgView, titleLab, detailLab].forEach { $0.hideSkeletonWithCrossfade() }
+    }
+    
+    func hideLoadingSkeleton() {
+        prepareContentFadeInIfNeeded()
+        [coverImgView, titleLab, detailLab].forEach { $0.hideSkeletonWithCrossfade() }
+    }
+}
+
+private extension CourseListVMTableViewCell {
+    func prepareContentFadeInIfNeeded() {
+        [coverImgView, titleLab, detailLab].forEach { view in
+            guard view.isSkeletonActive else { return }
+            view.alpha = 0
+        }
     }
 }
 

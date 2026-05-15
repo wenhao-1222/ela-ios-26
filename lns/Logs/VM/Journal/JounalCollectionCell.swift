@@ -1591,6 +1591,13 @@ extension JounalCollectionCell{
 
 extension JounalCollectionCell{
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if isEdit && !editSelectAllVm.isHidden {
+            let selectAllPoint = editSelectAllVm.convert(point, from: self)
+            if editSelectAllVm.containsSelectAllTapPoint(selectAllPoint) {
+                return editSelectAllVm.tapTargetView
+            }
+        }
+        
         var view = super.hitTest(point, with: event)
         for vi in self.subviews{
             let tp = vi.convert(point, from: self)

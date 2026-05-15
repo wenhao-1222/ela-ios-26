@@ -107,7 +107,7 @@ class HabitRuleJournalAlertVM: UIView {
         let attr = NSMutableAttributedString(string: "规则：",
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .semibold)])
-        let attr1 = NSMutableAttributedString(string: "在本日结束前记录≥3种食物。",
+        let attr1 = NSMutableAttributedString(string: "在本日结束前记录≥3种食物",
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .regular)])
         

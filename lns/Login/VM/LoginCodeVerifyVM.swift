@@ -21,6 +21,11 @@ class LoginCodeVerifyVM: UIView {
     var phone = ""
     var code = ""
     var invideCode = ""
+    private var isRequesting = false {
+        didSet {
+            updateRequestingState()
+        }
+    }
     
     var saveSurveyBlock:(()->())?
     var closeBlock:(()->())?
@@ -86,12 +91,11 @@ class LoginCodeVerifyVM: UIView {
         vi.setCompleteHandler { verifyCode in
             DLLog(message: "\(verifyCode)")
             self.code = verifyCode
-            self.loginBtn.isEnabled = true
-            self.loginBtn.backgroundColor = .THEME
+            self.updateLoginButtonState()
         }
         vi.inputBlock = {()in
-            self.loginBtn.isEnabled = false
-            self.loginBtn.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.45)
+            self.code = self.verifyCodeView.hideTextField.text ?? ""
+            self.updateLoginButtonState()
         }
         
         return vi
@@ -128,6 +132,7 @@ class LoginCodeVerifyVM: UIView {
 
 extension LoginCodeVerifyVM{
     @objc func loginAction(){
+        guard isRequesting == false else { return }
         if self.code.count < 4 {
             MCToast.mc_text("请输入4位数验证码")
             return
@@ -135,6 +140,7 @@ extension LoginCodeVerifyVM{
         sendPhoneLoginRequest()
     }
     @objc func sendSmsAction() {
+        guard isRequesting == false else { return }
         self.sendGetCodeRequest(phone: self.phone)
     }
     @objc func showInviteCodeAction(){
@@ -143,6 +149,7 @@ extension LoginCodeVerifyVM{
         }
     }
     @objc func hiddenSelfAction() {
+        guard isRequesting == false else { return }
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.alpha = 0
             self.center = CGPoint.init(x: SCREEN_WIDHT*1.5, y: SCREEN_HEIGHT*0.5)
@@ -152,8 +159,8 @@ extension LoginCodeVerifyVM{
         self.getCodeTime = 60
         self.verifyCodeView.hideTextField.resignFirstResponder()
         self.verifyCodeView.clearNumber()
-        self.loginBtn.isEnabled = false
-        self.loginBtn.backgroundColor = WHColorWithAlpha(colorStr: "007AFF", alpha: 0.45)
+        self.code = ""
+        self.updateLoginButtonState()
         if self.closeBlock != nil{
             self.closeBlock!()
         }
@@ -240,6 +247,16 @@ extension LoginCodeVerifyVM{
         self.timer = nil
         self.getCodeBtn.setTitle("重新发送", for: .normal)
     }
+    private func updateRequestingState() {
+        closeImgView.isUserInteractionEnabled = !isRequesting
+        closeImgView.alpha = isRequesting ? 0.35 : 1
+        updateLoginButtonState()
+    }
+    private func updateLoginButtonState() {
+        let canLogin = code.count == 4 && !isRequesting
+        loginBtn.isEnabled = canLogin
+        loginBtn.backgroundColor = canLogin ? .THEME : WHColorWithAlpha(colorStr: "007AFF", alpha: 0.45)
+    }
 }
 extension LoginCodeVerifyVM{
     func initUI(){
@@ -300,12 +317,12 @@ extension LoginCodeVerifyVM{
 
 extension LoginCodeVerifyVM{
     func sendGetCodeRequest(phone:String){
-        MCToast.mc_loading()
         self.phone = phone
+        self.isRequesting = true
         sendJudgePhoneRegist()
     }
     func sendPhoneLoginRequest(){
-        MCToast.mc_loading()
+        self.isRequesting = true
         let param = ["phone":"\(self.phone)",
                      "invcode":"\(self.invideCode)",
                      "code":"\(self.code)"]
@@ -334,6 +351,8 @@ extension LoginCodeVerifyVM{
 //            }else{
 //                self.controller.presentAlertVcNoAction(title: "账户已申请注销。", viewController: self.controller)
 //            }
+        } failure: { [weak self] _ in
+            self?.isRequesting = false
         }
     }
     func sendBindInviteCodeRequest() {
@@ -350,7 +369,6 @@ extension LoginCodeVerifyVM{
         }
     }
     func sendJudgePhoneRegist() {
-        MCToast.mc_loading()
         let param = ["phone":"\(self.phone)",
                      "idc":"\(UserInfoModel.shared.idc)"]
         
@@ -376,9 +394,12 @@ extension LoginCodeVerifyVM{
                     self.controller.presentAlertVc(confirmBtn: "确定", message: "请在 24 小时后尝试重新注册。", title: "账户注销处理中", cancelBtn: nil, handler: { action in
                         
                     }, viewController: self.controller)
+                    self.isRequesting = false
                     self.hiddenSelfAction()
                 }
             }
+        } failure: { [weak self] _ in
+            self?.isRequesting = false
         }
     }
     func getCodeRequest() {
@@ -388,6 +409,7 @@ extension LoginCodeVerifyVM{
                      "idc":"\(UserInfoModel.shared.idc)"]
         WHNetworkUtil.shareManager().POST(urlString: URL_send_sms, parameters: param as [String:AnyObject],isNeedToast: true,vc: controller) { responseObject in
             DLLog(message: "\(responseObject)")
+            self.isRequesting = false
             self.showSelfAction()
             
 //            if #available(iOS 10.0, *) {
@@ -406,6 +428,8 @@ extension LoginCodeVerifyVM{
                 }
             }
             self.startCountdown()
+        } failure: { [weak self] _ in
+            self?.isRequesting = false
         }
     }
 }

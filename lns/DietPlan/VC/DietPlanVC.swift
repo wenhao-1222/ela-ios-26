@@ -173,10 +173,10 @@ extension DietPlanVC{
     }
     //非第一次创建计划，需要走问卷
     @objc func createSecondPlanAction() {
+        guard self.ensureValidVipForMealAction() else { return }
         self.navigationController?.fd_interactivePopDisabled = true
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
         let vc = DietPlanCreateSecondVC()
-//        let vc = DietPlanCreateVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     //购物清单

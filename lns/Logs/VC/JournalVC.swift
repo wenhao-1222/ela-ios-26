@@ -450,6 +450,7 @@ class JournalVC: WHBaseViewVC {
     }()
     lazy var elaExpiredAlertVm: ElaProExpiredAlertVM = {
         let vm = ElaProExpiredAlertVM.init(frame: .zero)
+        vm.updateContentForAiCoach()
         vm.upgradeBlock = {[weak self] in
             guard let self = self else { return }
             self.elaExpiredAlertVm.hiddenSelf()
@@ -625,26 +626,28 @@ extension JournalVC{
         self.navigationController?.pushViewController(vc, animated: true)
     }
     func gotoAicoachAction() {
-        if VIPModel.shared.isAiCoachSurveyFinished{//做过问卷
-            if VIPModel.shared.status == .valid{
-                let vc = AICoachPreVC()
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-//            else if VIPModel.shared.status == .invalid{
-//                self.navigationController?.fd_interactivePopDisabled = true
-//                self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-//                let vc = AIGuidanceVC()
+        elaExpiredAlertVm.showSelf()
+//        
+//        if VIPModel.shared.isAiCoachSurveyFinished{//做过问卷
+//            if VIPModel.shared.status == .valid{
+//                let vc = AICoachPreVC()
 //                self.navigationController?.pushViewController(vc, animated: true)
 //            }
-            else{
-                elaExpiredAlertVm.showSelf()
-            }
-        }else {//未做过问卷
-            self.navigationController?.fd_interactivePopDisabled = true
-            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-            let vc = AIGuidanceVC()
-            self.navigationController?.pushViewController(vc, animated: true)
-        }
+////            else if VIPModel.shared.status == .invalid{
+////                self.navigationController?.fd_interactivePopDisabled = true
+////                self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+////                let vc = AIGuidanceVC()
+////                self.navigationController?.pushViewController(vc, animated: true)
+////            }
+//            else{
+//                elaExpiredAlertVm.showSelf()
+//            }
+//        }else {//未做过问卷
+//            self.navigationController?.fd_interactivePopDisabled = true
+//            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+//            let vc = AIGuidanceVC()
+//            self.navigationController?.pushViewController(vc, animated: true)
+//        }
     }
     @objc func editStatus() {
         self.isEdit = true

@@ -145,6 +145,12 @@ extension SportHistoryVC{
         timeButton.setImage(UIImage(named: "create_plan_arrow_down"), for: .normal)
         timeButton.imagePosition(style: .right, spacing: kFitWidth(5))
     }
+    func refreshData(dateString:String, animation:UITableView.RowAnimation? = UITableView.RowAnimation.none) {
+        self.dateString = dateString
+        dateFilterAlertVm.setDate(dateString: dateString)
+        setTime(time: dateFilterAlertVm.weekDay)
+        sendSportListRequest(animation: animation)
+    }
     func postTodayNutritionRefreshIfNeeded(sDate:String) {
         guard sDate == Date().todayDate else { return }
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: nil)

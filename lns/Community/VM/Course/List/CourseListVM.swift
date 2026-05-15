@@ -10,11 +10,13 @@ import MJRefresh
 
 class CourseListVM : UIView{
     
+    private let skeletonRowCount = 4
     var selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()//-WHUtils().getTabbarHeight()
     var controller = WHBaseViewVC()
     
     var dataSourceArray = NSMutableArray()
     var courseDictArray = NSMutableArray()
+    private var isLoading = true
     
     var tutorialVcs:[ForumTutorialVC] = [ForumTutorialVC]()
     
@@ -59,7 +61,7 @@ extension CourseListVM{
 
 extension CourseListVM:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataSourceArray.count
+        return isLoading ? skeletonRowCount : dataSourceArray.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         var cell = tableView.dequeueReusableCell(withIdentifier: "CourseListVMTableViewCell")as? CourseListVMTableViewCell
@@ -68,14 +70,21 @@ extension CourseListVM:UITableViewDelegate,UITableViewDataSource{
             cell = CourseListVMTableViewCell.init(style: .default, reuseIdentifier: "CourseListVMTableViewCell")
         }
         
+        cell?.isUserInteractionEnabled = !isLoading
+        if isLoading {
+            cell?.updateUI(dict: NSDictionary(), isLoading: true)
+            return cell ?? CourseListVMTableViewCell()
+        }
+        
         let dict = self.dataSourceArray[indexPath.row]as? NSDictionary ?? [:]
-        cell?.updateUI(dict:dict)
+        cell?.updateUI(dict: dict, isLoading: false)
         
         
         return cell ?? CourseListVMTableViewCell()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard !isLoading else { return }
         let dict = self.dataSourceArray[indexPath.row]as? NSDictionary ?? [:]
 //        if dict.stringValueForKey(key: "status") == "2"{
             let vc = CourseListVC()
@@ -139,20 +148,21 @@ extension CourseListVM:UITableViewDelegate,UITableViewDataSource{
 
 extension CourseListVM{
     func sendMenuListRequest() {
+        beginLoading()
         WHNetworkUtil.shareManager().POST(urlString: URL_tutorial_menu_list, parameters: nil) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendMenuListRequest:\(dataArr)")
             
-            self.dataSourceArray.removeAllObjects()
+            let filteredArray = NSMutableArray()
             for i in 0..<dataArr.count{
                 let dict = dataArr[i]as? NSDictionary ?? [:]
                 if dict.stringValueForKey(key: "status") == "2"{
-                    self.dataSourceArray.add(dict)
+                    filteredArray.add(dict)
                 }
             }
             
-            self.tableView.reloadData()
+            self.finishLoading(with: filteredArray)
             self.tableView.mj_header?.endRefreshing()
             
             for i in  0..<self.dataSourceArray.count{
@@ -172,6 +182,39 @@ extension CourseListVM{
             DLLog(message: "sendCourseHeadMsgRequest:\(dataDict)")
             dataDict.setValue(id, forKey: "id")
             self.courseDictArray.replaceObject(at: index, with: dataDict)
+        }
+    }
+    
+    func beginLoading() {
+        isLoading = true
+        tableView.allowsSelection = false
+        tableView.reloadForSkeleton()
+    }
+    
+    func finishLoading(with list: NSArray) {
+        isLoading = false
+        tableView.allowsSelection = true
+        dataSourceArray = NSMutableArray(array: list)
+        courseDictArray.removeAllObjects()
+        
+        let visibleCells = tableView.visibleCells.compactMap { $0 as? CourseListVMTableViewCell }
+        guard visibleCells.count > 0 else {
+            tableView.reloadData()
+            return
+        }
+        
+        for cell in visibleCells {
+            guard let indexPath = tableView.indexPath(for: cell) else { continue }
+            if indexPath.row < dataSourceArray.count {
+                let dict = dataSourceArray[indexPath.row]as? NSDictionary ?? [:]
+                cell.updateUI(dict: dict, isLoading: false)
+            } else {
+                cell.hideLoadingSkeleton()
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
+            self.tableView.reloadData()
         }
     }
 }

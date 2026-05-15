@@ -43,7 +43,7 @@ class LogsMealsAlertSetVC: WHBaseViewVC {
                 self.refreshPermissionTip()
             }else{
                 DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
-                    self.presentAlertVc(confirmBtn: "设置", message: "开启通知权限后才能正常使用", title: "需要开启通知权限", cancelBtn: "取消", handler: { action in
+                    self.presentAlertVc(confirmBtn: "去设置", message: "需在系统设置中允许通知，以确保用餐提醒准时送达。", title: "系统通知未开启", cancelBtn: "取消", handler: { action in
                         self.openUrl(urlString: UIApplication.openSettingsURLString)
                         
                     },cancelHandler: { cancelAction in

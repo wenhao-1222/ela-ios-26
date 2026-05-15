@@ -153,6 +153,8 @@ class ElaProExpiredAlertVM: UIView {
         lab.text = "解锁会员权限，让你的专属计划持续更新"
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.numberOfLines = 0
+        lab.textAlignment = .center
         
         return lab
     }()
@@ -160,7 +162,8 @@ class ElaProExpiredAlertVM: UIView {
         let btn = UIButton()
         btn.layer.cornerRadius = kFitWidth(22)
         btn.clipsToBounds = true
-        btn.setTitle("升级ELA PRO", for: .normal)
+        btn.setTitle("继续", for: .normal)
+//        btn.setTitle("升级ELA PRO", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         btn.backgroundColor = .THEME
@@ -176,6 +179,28 @@ extension ElaProExpiredAlertVM {
     @objc func nothingToDo() { /* 吞点击 */ }
     @objc func upgradeTapAction() {
         self.upgradeBlock?()
+    }
+    ///更新文案   AI教练
+    func updateContentForAiCoach() {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.3
+        paragraphStyle.alignment = .center
+
+        let attr = NSAttributedString(string: "升级ELA PRO\n激活AI教练", attributes: [
+            .font: titleLabel.font as Any,
+            .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+            .paragraphStyle: paragraphStyle
+        ])
+        titleLabel.attributedText = attr
+        
+//        paragraphStyle.lineHeightMultiple = 1.2
+        let attr1 = NSAttributedString(string: "立即恢复AI深度复盘与动态饮食调整\n精准把控每一天的身体变化", attributes: [
+            .font: tipsLabel.font as Any,
+            .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
+            .paragraphStyle: paragraphStyle
+        ])
+        
+        tipsLabel.attributedText = attr1
     }
     func showSelf() {
         isHidden = false
@@ -291,7 +316,7 @@ extension ElaProExpiredAlertVM{
         tipsLabel.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(20))
-            make.height.equalTo(kFitWidth(21))
+//            make.height.equalTo(kFitWidth(21))
         }
         upgradeButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))

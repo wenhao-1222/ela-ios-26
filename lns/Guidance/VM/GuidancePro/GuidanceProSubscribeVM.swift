@@ -46,7 +46,7 @@ class GuidanceProSubscribeVM: UIView {
     private lazy var contentView = UIView()
     private lazy var footerContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.COLOR_CARD_BG_WHITE//.withAlphaComponent(0.98)
+        view.backgroundColor = UIColor.COLOR_BG_F2//.withAlphaComponent(0.98)
         view.layer.shadowColor = UIColor.COLOR_BG_BLACK_06.cgColor
         view.layer.shadowOpacity = 1
         view.layer.shadowRadius = 18
@@ -127,7 +127,7 @@ class GuidanceProSubscribeVM: UIView {
 
     private lazy var reminderCardView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.84)
+        view.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.5)
         view.layer.cornerRadius = kFitWidth(12)
         view.layer.borderWidth = kFitWidth(2)
         view.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
@@ -446,8 +446,8 @@ private extension GuidanceProSubscribeVM {
         }
         guard !(topVC.presentedViewController is UIAlertController) else { return }
 
-        let alert = UIAlertController(title: "通知权限未开启",
-                                      message: "请在系统设置中允许通知，便于你在试用结束前收到提醒。",
+        let alert = UIAlertController(title: "系统通知未开启",
+                                      message: "请在系统设置中允许通知，以便接收续费提醒。",
                                       preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel)
         let settingsAction = UIAlertAction(title: "去设置", style: .default) { _ in

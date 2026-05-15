@@ -117,7 +117,7 @@ class HabitRuleProteinAlertVM: UIView {
         let attr = NSMutableAttributedString(string: "规则：",
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .semibold)])
-        let attr1 = NSMutableAttributedString(string: "在当日完整饮食记录后，本日蛋白质摄入≥蛋白质目标。",
+        let attr1 = NSMutableAttributedString(string: "在当日完整饮食记录后，本日蛋白质摄入≥蛋白质目标",
                                              attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                                                                         .font:UIFont.systemFont(ofSize: 16, weight: .regular)])
         

@@ -65,8 +65,24 @@ extension SportCatogaryVM:UITableViewDelegate,UITableViewDataSource{
         return cell ?? SportCatogaryTableViewCell()
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let previousIndex = self.selectIndex
+        guard previousIndex != indexPath.row else {
+            if self.tapBlock != nil{
+                let model = self.dataSourceArray[indexPath.row]
+                self.tapBlock!(model)
+            }
+            return
+        }
+
         self.selectIndex = indexPath.row
-        self.tableView.reloadData()
+
+        let previousIndexPath = IndexPath(row: previousIndex, section: indexPath.section)
+        if let previousCell = tableView.cellForRow(at: previousIndexPath) as? SportCatogaryTableViewCell {
+            previousCell.setSelect(isSelect: false, animated: true)
+        }
+        if let currentCell = tableView.cellForRow(at: indexPath) as? SportCatogaryTableViewCell {
+            currentCell.setSelect(isSelect: true, animated: true)
+        }
         
         if self.tapBlock != nil{
             let model = self.dataSourceArray[indexPath.row]

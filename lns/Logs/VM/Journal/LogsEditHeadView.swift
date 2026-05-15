@@ -11,6 +11,8 @@ import UIKit
 class LogsEditHeadView: UIView {
     
     let selfHeight = kFitWidth(40)
+    private let tapRightPadding = kFitWidth(30)
+    private let tapVerticalPadding = kFitWidth(20)
     
     var isSelect = false
     var tapBlock:((Bool)->())?
@@ -25,6 +27,49 @@ class LogsEditHeadView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        bounds.contains(point) || containsSelectAllTapPoint(point)
+    }
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if isHidden || alpha <= 0.01 || !isUserInteractionEnabled {
+            return nil
+        }
+        
+        if containsSelectAllTapPoint(point) {
+            return tapView
+        }
+        
+        return super.hitTest(point, with: event)
+    }
+    
+    func containsSelectAllTapPoint(_ point: CGPoint) -> Bool {
+        selectAllTapFrame().contains(point)
+    }
+    
+    var tapTargetView: UIView {
+        tapView
+    }
+    
+    private func selectAllTapFrame() -> CGRect {
+        layoutIfNeeded()
+        
+        var titleFrame = choiceBtn.frame
+        if let titleLabel = choiceBtn.titleLabel {
+            titleFrame = titleLabel.convert(titleLabel.bounds, to: self)
+        }
+        
+        let left = selecImgView.frame.minX
+        let right = titleFrame.maxX + tapRightPadding
+        let top = selecImgView.frame.minY - tapVerticalPadding
+        let bottom = selecImgView.frame.maxY + tapVerticalPadding
+        return CGRect(x: left,
+                      y: top,
+                      width: right - left,
+                      height: bottom - top)
+    }
+    
     lazy var selecImgView : UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "logs_edit_all_normal")

@@ -59,9 +59,7 @@ class SportVC: WHBaseViewVC {
     lazy var addButton: SportAddListButton = {
         let btn = SportAddListButton.init(frame: .zero)
         btn.tapBlock = {()in
-            let vc = SportHistoryVC()
-            vc.dateString = "\(self.dateFilterAlertVm.dateStringYear)"
-            self.navigationController?.pushViewController(vc, animated: true)
+            self.showAddedSportHistory()
         }
         return btn
     }()
@@ -203,6 +201,18 @@ extension SportVC{
     func postTodayNutritionRefreshIfNeeded(sDate:String) {
         guard sDate == Date().todayDate else { return }
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: "sport")
+    }
+    func showAddedSportHistory() {
+        let dateString = "\(self.dateFilterAlertVm.dateStringYear)"
+        if let historyVC = self.navigationController?.viewControllers.reversed().first(where: { $0 is SportHistoryVC }) as? SportHistoryVC {
+            historyVC.refreshData(dateString: dateString, animation: .middle)
+            self.navigationController?.popToViewController(historyVC, animated: true)
+            return
+        }
+        
+        let vc = SportHistoryVC()
+        vc.dateString = dateString
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     @objc func popGestureAction(gesture:UIPanGestureRecognizer) {
         switch gesture.state {

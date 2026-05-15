@@ -114,7 +114,6 @@ class ElaProPriceVM: UIView {
     private var monthSubTitleText: String?
     private var monthOriginPriceText: String?
     private var annualTitleText = "连续包年"
-    private var annualTagText: String?
     private var annualPriceText = "--"
     private var annualSubTitleText: String?
     private var annualOriginPriceText: String?
@@ -191,7 +190,7 @@ class ElaProPriceVM: UIView {
     }()
     lazy var yearCard: ElaProPriceCardView = {
         let vm = ElaProPriceCardView()
-        vm.configure(tag: annualTagText,
+        vm.configure(tag: nil,
                      title: "连续包年",
                      subTitle: annualSubTitleText,
                      price: annualPriceText,
@@ -302,7 +301,10 @@ class ElaProPriceVM: UIView {
     lazy var moreDividerOne = makeDivider()
     lazy var bottomBar: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .COLOR_CARD_BG_WHITE//UIColor.white.withAlphaComponent(0.94)
+        vi.backgroundColor = UIColor(red: 248.0 / 255.0, green: 250.0 / 255.0, blue: 253.0 / 255.0, alpha: 1.0)//UIColor.white.withAlphaComponent(0.94)
+        
+//        UIColor(red: 248.0 / 255.0, green: 250.0 / 255.0, blue: 253.0 / 255.0, alpha: 1.0),
+//        UIColor(red: 11.0 / 255.0, green: 16.0 / 255.0, blue: 28.0 / 255.0, alpha: 1.0),
         return vi
     }()
     lazy var confirmButton: UIButton = {
@@ -491,13 +493,13 @@ extension ElaProPriceVM{
     
     private func presentNotificationPermissionAlert() {
         guard let topVC = UIApplication.topViewController() else {
-            MCToast.mc_text("通知权限未开启，请在系统设置中允许通知")
+            MCToast.mc_text("请在系统设置中允许通知，以便接收续费提醒。")
             return
         }
         guard !(topVC.presentedViewController is UIAlertController) else { return }
         
-        let alert = UIAlertController(title: "通知权限未开启",
-                                      message: "请在系统设置中允许通知，便于你在续费前收到提醒。",
+        let alert = UIAlertController(title: "系统通知未开启",
+                                      message: "请在系统设置中允许通知，以便接收续费提醒。",
                                       preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel)
         let settingsAction = UIAlertAction(title: "去设置", style: .default) { _ in
@@ -728,7 +730,6 @@ extension ElaProPriceVM{
 
                     if let annual = products.first(where: { $0.id == ElaProIAPConfig.annualProductID }) {
                         self.annualProduct = annual
-                        self.annualTagText = self.preferredRemoteText(self.annualRemoteProduct?.promotionLabel) ?? self.promoTagText(for: annual)
                         self.annualSubTitleText = self.preferredRemoteText(self.annualRemoteProduct?.monthAvgPriceLabel) ?? "" //self.buildMonthlyText(for: annual)
                         self.annualPriceText = self.formattedProductPriceText(for: annual)
                         self.annualOriginPriceText = self.preferredRemotePriceText(self.annualRemoteProduct?.originalPrice)
@@ -756,7 +757,7 @@ extension ElaProPriceVM{
                             originPrice: monthOriginPriceText,
                             selected: selectedPlan == .month)
         
-        yearCard.configure(tag: annualTagText,
+        yearCard.configure(tag: nil,
                            title: annualTitleText,
                            subTitle: annualSubTitleText,
                            price: annualPriceText,
@@ -922,7 +923,6 @@ extension ElaProPriceVM{
         lifetimeTitleText = preferredRemoteText(lifetimeRemoteProduct?.name) ?? "终身会员"
         
         monthTagText = nil
-        annualTagText = preferredRemoteText(annualRemoteProduct?.promotionLabel)
         monthSubTitleText = preferredRemoteText(monthRemoteProduct?.monthAvgPriceLabel)
         annualSubTitleText = preferredRemoteText(annualRemoteProduct?.monthAvgPriceLabel)
         monthOriginPriceText = preferredRemotePriceText(monthRemoteProduct?.originalPrice)
@@ -1104,12 +1104,6 @@ extension ElaProPriceVM{
         }
         
         return "\(currentPriceText)\(periodSuffix(period: product.subscription?.subscriptionPeriod))，可随时取消"
-    }
-    
-    func promoTagText(for product: Product) -> String? {
-        let periodText = periodText(period: product.subscription?.subscriptionPeriod)
-        guard !periodText.isEmpty else { return nil }
-        return periodText == "年" ? "年度订阅" : nil
     }
     
     func periodSuffix(period: Product.SubscriptionPeriod?) -> String {
@@ -1925,7 +1919,7 @@ extension ElaProPriceVM{
         let titleLab = UILabel()
         titleLab.text = title
         titleLab.textColor = normalTextColor
-        titleLab.font = .systemFont(ofSize: 16, weight: .semibold)
+        titleLab.font = .systemFont(ofSize: 14, weight: .medium)
         
         row.addSubview(dot)
         row.addSubview(titleLab)
