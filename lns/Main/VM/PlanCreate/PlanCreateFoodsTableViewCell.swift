@@ -32,7 +32,12 @@ class PlanCreateFoodsTableViewCell: UITableViewCell {
         pressGes.minimumPressDuration = 0.5
         self.addGestureRecognizer(pressGes)
     }
-    
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        resetSelectionIconForReuse()
+    }
+
     lazy var selecImgView : UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "logs_edit_all_normal")
@@ -166,7 +171,6 @@ extension PlanCreateFoodsTableViewCell{
         foodsCaloriLabel.text = "\(String(format: "%.0f", dict.doubleValueForKey(key: "calories"))) 千卡"
     }
     func updateUIForMeals(dict:NSDictionary,isEdit:Bool) {
-        self.refresEditStatus(isEdit: isEdit)
         foodsNameLabel.text = dict["fname"]as? String ?? ""
         foodsCaloriLabel.text = "\(String(format: "%.0f", dict.doubleValueForKey(key: "calories").rounded())) 千卡"
         if isEdit == false{
@@ -180,9 +184,7 @@ extension PlanCreateFoodsTableViewCell{
         }else{
             self.isSelect = false
         }
-        selecImgView.setCheckState(isSelect,
-                          checkedImageName: "logs_edit_selected",
-                          uncheckedImageName: "logs_edit_all_normal")
+        self.refresEditStatus(isEdit: isEdit)
         
         if dict["fname"]as? String ?? "" == "快速添加"{
             foodsWeightLabel.text = "\(String(format: "%.0f", dict.doubleValueForKey(key: "carbohydrate").rounded()))g 碳水，\(String(format: "%.0f", dict.doubleValueForKey(key: "protein").rounded()))g 蛋白质，\(String(format: "%.0f", dict.doubleValueForKey(key: "fat").rounded()))g 脂肪"
@@ -205,13 +207,10 @@ extension PlanCreateFoodsTableViewCell{
         foodsWeightLabel.text = "\(WHUtils.convertStringToString(String(format: "%.2f", (dict.doubleValueForKey(key: "qty")))) ?? "0")\(dict["spec"]as? String ?? "g")"
     }
     func updateUIForLogs(dict:NSDictionary,isEdit:Bool) {
-        self.refresEditStatus(isEdit: isEdit)
         foodsNameLabel.text = dict["fname"]as? String ?? ""
         isSelect = dict["isSelect"]as? String ?? "" == "1" ? true : false
+        self.refresEditStatus(isEdit: isEdit)
         
-        selecImgView.setCheckState(isSelect,
-                          checkedImageName: "logs_edit_selected",
-                          uncheckedImageName: "logs_edit_all_normal")
         arrowImgView.setImgLocal(imgName: "plan_detail_arrow_icon_right")
         arrowImgView.isHidden = false
         foodsCaloriLabel.text = "\(String(format: "%.0f", dict.doubleValueForKey(key: "calories").rounded())) 千卡"
@@ -279,8 +278,15 @@ extension PlanCreateFoodsTableViewCell{
         }
     }
     func refresEditStatus(isEdit:Bool) {
+        selecImgView.layer.removeAllAnimations()
+        selecImgView.transform = .identity
         if isEdit {
             selecImgView.isHidden = false
+            selecImgView.alpha = 1
+            selecImgView.setCheckState(isSelect,
+                                       checkedImageName: "logs_edit_selected",
+                                       uncheckedImageName: "logs_edit_all_normal",
+                                       animated: false)
             selectTapView.isHidden = false
             foodsNameLabel.snp.remakeConstraints { make in
 //                make.centerY.lessThanOrEqualTo(selecImgView)
@@ -298,7 +304,12 @@ extension PlanCreateFoodsTableViewCell{
                 make.width.equalTo(kFitWidth(50))
             }
         }else{
+            selecImgView.setCheckState(false,
+                                       checkedImageName: "logs_edit_selected",
+                                       uncheckedImageName: "logs_edit_all_normal",
+                                       animated: false)
             selecImgView.isHidden = true
+            selecImgView.alpha = 0
             selectTapView.isHidden = true
             foodsNameLabel.snp.remakeConstraints { make in
                 make.left.equalTo(kFitWidth(16))
@@ -314,6 +325,18 @@ extension PlanCreateFoodsTableViewCell{
                 make.width.equalTo(kFitWidth(10))
             }
         }
+    }
+
+    private func resetSelectionIconForReuse() {
+        selecImgView.layer.removeAllAnimations()
+        selecImgView.transform = .identity
+        selecImgView.alpha = 0
+        selecImgView.isHidden = true
+        selectTapView.isHidden = true
+        selecImgView.setCheckState(false,
+                                   checkedImageName: "logs_edit_selected",
+                                   uncheckedImageName: "logs_edit_all_normal",
+                                   animated: false)
     }
 }
 extension PlanCreateFoodsTableViewCell{

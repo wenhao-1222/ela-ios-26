@@ -46,11 +46,11 @@ class GuidanceProSubscribeVM: UIView {
     private lazy var contentView = UIView()
     private lazy var footerContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.COLOR_BG_F2//.withAlphaComponent(0.98)
-        view.layer.shadowColor = UIColor.COLOR_BG_BLACK_06.cgColor
-        view.layer.shadowOpacity = 1
-        view.layer.shadowRadius = 18
-        view.layer.shadowOffset = CGSize(width: 0, height: -8)
+        view.backgroundColor = UIColor.clear//.withAlphaComponent(0.98)
+//        view.layer.shadowColor = UIColor.COLOR_BG_BLACK_06.cgColor
+//        view.layer.shadowOpacity = 1
+//        view.layer.shadowRadius = 18
+//        view.layer.shadowOffset = CGSize(width: 0, height: -8)
         return view
     }()
 
@@ -63,8 +63,8 @@ class GuidanceProSubscribeVM: UIView {
     private lazy var footerTopFadeView: VerticalFadeView = {
         let view = VerticalFadeView()
         view.isUserInteractionEnabled = false
-        view.startColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0)
-        view.endColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.98)
+        view.startColor = UIColor.COLOR_BG_F2.withAlphaComponent(0)
+        view.endColor = UIColor.COLOR_BG_F2.withAlphaComponent(1)
         return view
     }()
 
@@ -236,8 +236,8 @@ class GuidanceProSubscribeVM: UIView {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         reminderCardView.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
         proFeatureContainer.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
-        footerTopFadeView.startColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0)
-        footerTopFadeView.endColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.98)
+        footerTopFadeView.startColor = UIColor.COLOR_BG_F2.withAlphaComponent(0)
+        footerTopFadeView.endColor = UIColor.COLOR_BG_F2.withAlphaComponent(1)
     }
 }
 
@@ -468,12 +468,12 @@ private extension GuidanceProSubscribeVM {
 
     func initUI() {
         addSubview(scrollView)
+        addSubview(footerTopFadeView)
         addSubview(footerContainerView)
         addSubview(closeImageView)
         addSubview(loadingOverlayView)
         scrollView.addSubview(contentView)
         loadingOverlayView.addSubview(loadingIndicatorView)
-        addSubview(footerTopFadeView)
 
         scrollView.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
@@ -486,8 +486,11 @@ private extension GuidanceProSubscribeVM {
 
         footerTopFadeView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.bottom.equalTo(footerContainerView.snp.top)
-            make.height.equalTo(kFitWidth(34))
+            make.bottom.equalToSuperview()
+//            make.top.equalToSuperview()
+            make.top.equalTo(footerContainerView).offset(kFitWidth(-30))
+//            make.bottom.equalTo(footerContainerView.snp.top)
+//            make.height.equalTo(kFitWidth(60))
         }
 
         loadingOverlayView.snp.makeConstraints { make in
@@ -897,40 +900,5 @@ private extension UIColor {
         let green = CGFloat((hex >> 8) & 0xFF) / 255.0
         let blue = CGFloat(hex & 0xFF) / 255.0
         self.init(red: red, green: green, blue: blue, alpha: alpha)
-    }
-}
-
-private final class VerticalFadeView: UIView {
-
-    var startColor: UIColor = .clear {
-        didSet { updateGradient() }
-    }
-
-    var endColor: UIColor = .white {
-        didSet { updateGradient() }
-    }
-
-    private let gradientLayer = CAGradientLayer()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        layer.addSublayer(gradientLayer)
-        updateGradient()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        gradientLayer.frame = bounds
-    }
-
-    private func updateGradient() {
-        gradientLayer.colors = [startColor.cgColor, endColor.cgColor]
-        gradientLayer.locations = [0, 1]
-        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
-        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
     }
 }

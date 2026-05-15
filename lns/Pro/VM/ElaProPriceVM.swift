@@ -114,10 +114,12 @@ class ElaProPriceVM: UIView {
     private var monthSubTitleText: String?
     private var monthOriginPriceText: String?
     private var annualTitleText = "连续包年"
+    private var annualTagText: String?
     private var annualPriceText = "--"
     private var annualSubTitleText: String?
     private var annualOriginPriceText: String?
     private var lifetimeTitleText = "终身会员"
+    private var lifetimeTagText: String?
     private var lifetimePriceText = "--"
     private var isPurchasing = false
     private var shouldSyncRenewalSwitchAfterSettings = false
@@ -140,6 +142,11 @@ class ElaProPriceVM: UIView {
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        footerTopFadeView.startColor = UIColor.COLOR_BG_F2.withAlphaComponent(0)
+        footerTopFadeView.endColor = UIColor.COLOR_BG_F2.withAlphaComponent(1)
     }
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
@@ -190,7 +197,7 @@ class ElaProPriceVM: UIView {
     }()
     lazy var yearCard: ElaProPriceCardView = {
         let vm = ElaProPriceCardView()
-        vm.configure(tag: nil,
+        vm.configure(tag: annualTagText,
                      title: "连续包年",
                      subTitle: annualSubTitleText,
                      price: annualPriceText,
@@ -200,7 +207,7 @@ class ElaProPriceVM: UIView {
     }()
     lazy var lifeCard: ElaProPriceCardView = {
         let vm = ElaProPriceCardView()
-        vm.configure(tag: nil,
+        vm.configure(tag: lifetimeTagText,
                      title: "终身会员",
                      subTitle: nil,
                      price: lifetimePriceText,
@@ -299,14 +306,23 @@ class ElaProPriceVM: UIView {
     lazy var moreOne = makeSimpleRow(title: "无广告",dotImg: "survey_subscription_more_ic_01")
     lazy var moreTwo = makeSimpleRow(title: "解锁AI识图上限",dotImg: "survey_subscription_more_ic_02")
     lazy var moreDividerOne = makeDivider()
+    private lazy var footerTopFadeView: VerticalFadeView = {
+        let view = VerticalFadeView()
+        view.isUserInteractionEnabled = false
+        view.startColor = UIColor.COLOR_BG_F2.withAlphaComponent(0)
+        view.endColor = UIColor.COLOR_BG_F2.withAlphaComponent(1)
+        return view
+    }()
     lazy var bottomBar: UIView = {
         let vi = UIView()
-        vi.backgroundColor = UIColor(red: 248.0 / 255.0, green: 250.0 / 255.0, blue: 253.0 / 255.0, alpha: 1.0)//UIColor.white.withAlphaComponent(0.94)
+        vi.backgroundColor = .clear
+//        vi.backgroundColor = UIColor(red: 248.0 / 255.0, green: 250.0 / 255.0, blue: 253.0 / 255.0, alpha: 1.0)//UIColor.white.withAlphaComponent(0.94)
         
 //        UIColor(red: 248.0 / 255.0, green: 250.0 / 255.0, blue: 253.0 / 255.0, alpha: 1.0),
 //        UIColor(red: 11.0 / 255.0, green: 16.0 / 255.0, blue: 28.0 / 255.0, alpha: 1.0),
         return vi
     }()
+    
     lazy var confirmButton: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("确认", for: .normal)
@@ -346,15 +362,20 @@ class ElaProPriceVM: UIView {
     }()
     lazy var agreementLabel: UILabel = {
         let lab = UILabel()
-        lab.numberOfLines = 1
+        lab.numberOfLines = 2
+        lab.textAlignment = .center
         lab.isUserInteractionEnabled = true
-        let allText = "已阅读并同意《ELA PRO订阅条款》（含自动续费条款）"
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.3
+        
+        let allText = "我已阅读并同意《ELA PRO会员服务协议》\n订阅将自动续费，可随时取消"
         let attr = NSMutableAttributedString(string: allText)
         attr.addAttributes([
             .foregroundColor: subTextColor,
-            .font: UIFont.systemFont(ofSize: 11, weight: .regular)
+            .font: UIFont.systemFont(ofSize: 11, weight: .regular),
+            .paragraphStyle:paragraphStyle
         ], range: NSRange(location: 0, length: allText.count))
-        if let range = allText.range(of: "《ELA PRO订阅条款》") {
+        if let range = allText.range(of: "《ELA PRO会员服务协议》") {
             let nsRange = NSRange(range, in: allText)
             attr.addAttributes([
                 .foregroundColor: selectedBlue
@@ -401,13 +422,13 @@ class ElaProPriceVM: UIView {
         lab.numberOfLines = 1
         lab.textAlignment = .center
         lab.isUserInteractionEnabled = true
-        let allText = "我已阅读并同意《ELA PRO订阅条款》"
+        let allText = "我已阅读并同意《ELA PRO会员服务协议》"
         let attr = NSMutableAttributedString(string: allText)
         attr.addAttributes([
             .foregroundColor: subTextColor,
             .font: UIFont.systemFont(ofSize: 15, weight: .regular)
         ], range: NSRange(location: 0, length: allText.count))
-        if let range = allText.range(of: "《ELA PRO订阅条款》") {
+        if let range = allText.range(of: "《ELA PRO会员服务协议》") {
             let nsRange = NSRange(range, in: allText)
             attr.addAttributes([
                 .foregroundColor: selectedBlue
@@ -722,7 +743,7 @@ extension ElaProPriceVM{
                     self.lifetimeProduct = nil
                     if let month = products.first(where: { $0.id == ElaProIAPConfig.monthProductID }) {
                         self.monthProduct = month
-                        self.monthTagText = nil
+                        self.monthTagText = self.preferredRemoteText(self.monthRemoteProduct?.promotionLabel)
                         self.monthSubTitleText = self.preferredRemoteText(self.monthRemoteProduct?.monthAvgPriceLabel)
                         self.monthPriceText = self.formattedProductPriceText(for: month)
                         self.monthOriginPriceText = self.preferredRemotePriceText(self.monthRemoteProduct?.originalPrice)
@@ -730,6 +751,7 @@ extension ElaProPriceVM{
 
                     if let annual = products.first(where: { $0.id == ElaProIAPConfig.annualProductID }) {
                         self.annualProduct = annual
+                        self.annualTagText = self.preferredRemoteText(self.annualRemoteProduct?.promotionLabel)
                         self.annualSubTitleText = self.preferredRemoteText(self.annualRemoteProduct?.monthAvgPriceLabel) ?? "" //self.buildMonthlyText(for: annual)
                         self.annualPriceText = self.formattedProductPriceText(for: annual)
                         self.annualOriginPriceText = self.preferredRemotePriceText(self.annualRemoteProduct?.originalPrice)
@@ -737,6 +759,7 @@ extension ElaProPriceVM{
                     
                     if let lifetime = products.first(where: { $0.id == ElaProIAPConfig.lifetimeProductID }) {
                         self.lifetimeProduct = lifetime
+                        self.lifetimeTagText = self.preferredRemoteText(self.lifetimeRemoteProduct?.promotionLabel)
                         self.lifetimePriceText = self.formattedProductPriceText(for: lifetime)
                     }
                     
@@ -757,14 +780,14 @@ extension ElaProPriceVM{
                             originPrice: monthOriginPriceText,
                             selected: selectedPlan == .month)
         
-        yearCard.configure(tag: nil,
+        yearCard.configure(tag: annualTagText,
                            title: annualTitleText,
                            subTitle: annualSubTitleText,
                            price: annualPriceText,
                            originPrice: annualOriginPriceText,
                            selected: selectedPlan == .annual)
         
-        lifeCard.configure(tag: nil,
+        lifeCard.configure(tag: lifetimeTagText,
                            title: lifetimeTitleText,
                            subTitle: nil,
                            price: lifetimePriceText,
@@ -922,7 +945,9 @@ extension ElaProPriceVM{
         annualTitleText = preferredRemoteText(annualRemoteProduct?.name) ?? "连续包年"
         lifetimeTitleText = preferredRemoteText(lifetimeRemoteProduct?.name) ?? "终身会员"
         
-        monthTagText = nil
+        monthTagText = preferredRemoteText(monthRemoteProduct?.promotionLabel)
+        annualTagText = preferredRemoteText(annualRemoteProduct?.promotionLabel)
+        lifetimeTagText = preferredRemoteText(lifetimeRemoteProduct?.promotionLabel)
         monthSubTitleText = preferredRemoteText(monthRemoteProduct?.monthAvgPriceLabel)
         annualSubTitleText = preferredRemoteText(annualRemoteProduct?.monthAvgPriceLabel)
         monthOriginPriceText = preferredRemotePriceText(monthRemoteProduct?.originalPrice)
@@ -1190,6 +1215,7 @@ extension ElaProPriceVM{
     func initUI() {
 //        addSubview(bgImgView)
         addSubview(scrollView)
+        addSubview(footerTopFadeView)
         addSubview(bottomBar)
         addSubview(agreementConfirmDimView)
         addSubview(agreementConfirmSheet)
@@ -1270,9 +1296,14 @@ extension ElaProPriceVM{
 //            make.edges.equalToSuperview()
 //        }
         
+        footerTopFadeView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.bottom.equalToSuperview()
+            make.top.equalTo(bottomBar).offset(kFitWidth(-30))
+        }
         bottomBar.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
-            make.height.equalTo(kFitWidth(100) + WHUtils().getBottomSafeAreaHeight())
+            make.height.equalTo(kFitWidth(120) + WHUtils().getBottomSafeAreaHeight())
         }
 
         agreementConfirmDimView.snp.makeConstraints { make in
@@ -1311,14 +1342,15 @@ extension ElaProPriceVM{
         agreeButton.snp.makeConstraints { make in
 //            make.left.equalTo(kFitWidth(84))
             make.right.equalTo(agreementLabel.snp.left).offset(kFitWidth(-10))
-            make.top.equalTo(confirmButton.snp.bottom).offset(kFitWidth(17))
+            make.top.equalTo(confirmButton.snp.bottom).offset(kFitWidth(10))
             make.width.height.equalTo(kFitWidth(16))
         }
         
         agreementLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(agreeButton)
+//            make.centerY.equalTo(agreeButton)
 //            make.left.equalTo(agreeButton.snp.right).offset(kFitWidth(10))
             make.right.lessThanOrEqualTo(kFitWidth(-20))
+            make.top.equalTo(confirmButton.snp.bottom).offset(kFitWidth(9))
             make.centerX.lessThanOrEqualToSuperview().offset(kFitWidth(25))
         }
 

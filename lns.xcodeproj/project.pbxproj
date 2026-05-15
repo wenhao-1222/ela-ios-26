@@ -1323,6 +1323,7 @@
 		ECF1AD0D2F21BD8800AE36D6 /* RankSettleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1AD0C2F21BD8700AE36D6 /* RankSettleView.swift */; };
 		ECF1AD132F220BFB00AE36D6 /* RankDownShatterEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1AD122F220BFA00AE36D6 /* RankDownShatterEffect.swift */; };
 		ECF1AD152F220D1400AE36D6 /* RankDownShatterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1AD142F220D1400AE36D6 /* RankDownShatterView.swift */; };
+		ECF1C58A2FB7095C00045D55 /* VerticalFadeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF1C5892FB7095B00045D55 /* VerticalFadeView.swift */; };
 		ECF1D3252C3D172A002A3B55 /* ElaLaunch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ECF1D3242C3D172A002A3B55 /* ElaLaunch.storyboard */; };
 		ECF581E02C329A9900FE0937 /* GuideMainNaturalGoalAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF581DF2C329A9900FE0937 /* GuideMainNaturalGoalAlertVM.swift */; };
 		ECF581E22C32A54C00FE0937 /* GuideJournalGotPlanAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF581E12C32A54C00FE0937 /* GuideJournalGotPlanAlertVM.swift */; };
@@ -2846,6 +2847,7 @@
 		ECF1AD0C2F21BD8700AE36D6 /* RankSettleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankSettleView.swift; sourceTree = "<group>"; };
 		ECF1AD122F220BFA00AE36D6 /* RankDownShatterEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankDownShatterEffect.swift; sourceTree = "<group>"; };
 		ECF1AD142F220D1400AE36D6 /* RankDownShatterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankDownShatterView.swift; sourceTree = "<group>"; };
+		ECF1C5892FB7095B00045D55 /* VerticalFadeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalFadeView.swift; sourceTree = "<group>"; };
 		ECF1D3242C3D172A002A3B55 /* ElaLaunch.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ElaLaunch.storyboard; sourceTree = "<group>"; };
 		ECF581DF2C329A9900FE0937 /* GuideMainNaturalGoalAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideMainNaturalGoalAlertVM.swift; sourceTree = "<group>"; };
 		ECF581E12C32A54C00FE0937 /* GuideJournalGotPlanAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideJournalGotPlanAlertVM.swift; sourceTree = "<group>"; };
@@ -4366,6 +4368,7 @@
 				EC1D07A72F6D3585002A90EA /* GuidanceProSubscribeVM.swift */,
 				EC1D07A12F6D1A0F002A90EA /* GuidanceProTopVM.swift */,
 				EC1D07A32F6D2468002A90EA /* GuidanceProTrialVM.swift */,
+				ECF1C5892FB7095B00045D55 /* VerticalFadeView.swift */,
 				ECBFC6FD2F88A22F005E3B48 /* ELAFlowingGradientBackgroundView.swift */,
 			);
 			path = GuidancePro;
@@ -7111,6 +7114,7 @@
 				EC3A9CB72BB5719900C6E442 /* QuestionnaireEventsVM.swift in Sources */,
 				EC4DE2842BC8E4000090A7BD /* PlanDetailDayMealsVM.swift in Sources */,
 				A795CA892CE44F660090D89C /* ForumCommentFuncAlertVM.swift in Sources */,
+				ECF1C58A2FB7095C00045D55 /* VerticalFadeView.swift in Sources */,
 				ECCCA7CC2BEC945100696807 /* FoodsMsgVC.swift in Sources */,
 				ECD041A82C0F0CEE0073BFB8 /* TutorialTableViewCell.swift in Sources */,
 				ECD0FF1A2BABD25B001232C9 /* EmptyViewWithBtn.swift in Sources */,

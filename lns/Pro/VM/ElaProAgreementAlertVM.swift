@@ -110,7 +110,8 @@ class ElaProAgreementAlertVM: UIView {
     
     lazy var titleLab: UILabel = {
         let lab = UILabel()
-        lab.text = "ELA PRO条款和条件"
+//        lab.text = "ELA PRO条款和条件"
+        lab.text = ""
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 17, weight: .semibold)
         

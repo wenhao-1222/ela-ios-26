@@ -192,13 +192,13 @@ extension CourseListVM{
     }
     
     func finishLoading(with list: NSArray) {
-        isLoading = false
-        tableView.allowsSelection = true
         dataSourceArray = NSMutableArray(array: list)
         courseDictArray.removeAllObjects()
         
         let visibleCells = tableView.visibleCells.compactMap { $0 as? CourseListVMTableViewCell }
         guard visibleCells.count > 0 else {
+            isLoading = false
+            tableView.allowsSelection = true
             tableView.reloadData()
             return
         }
@@ -214,7 +214,29 @@ extension CourseListVM{
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
-            self.tableView.reloadData()
+            self.finishSkeletonTransition()
+        }
+    }
+    
+    func finishSkeletonTransition() {
+        let oldRowCount = skeletonRowCount
+        let newRowCount = dataSourceArray.count
+        isLoading = false
+        tableView.allowsSelection = true
+        
+        guard oldRowCount != newRowCount else { return }
+        
+        let indexPaths: [IndexPath]
+        if newRowCount > oldRowCount {
+            indexPaths = (oldRowCount..<newRowCount).map { IndexPath(row: $0, section: 0) }
+            tableView.performBatchUpdates({
+                tableView.insertRows(at: indexPaths, with: .none)
+            }, completion: nil)
+        } else {
+            indexPaths = (newRowCount..<oldRowCount).map { IndexPath(row: $0, section: 0) }
+            tableView.performBatchUpdates({
+                tableView.deleteRows(at: indexPaths, with: .none)
+            }, completion: nil)
         }
     }
 }

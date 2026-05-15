@@ -35,11 +35,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        DLLog(message: "application  -----   didFinishLaunchingWithOptions")
-//        UserDefaults.standard.setValue("GweHLkPQtPqfw0hk", forKey: token)
-//        UserDefaults.standard.setValue("ca2e5d3997158d80b06ade0d4588fe55", forKey: userId)
-//        UserInfoModel.shared.uId = "ca2e5d3997158d80b06ade0d4588fe55"
-//        UserInfoModel.shared.token = "GweHLkPQtPqfw0hk"
+//        DLLog(message: "application  -----   didFinishLaunchingWithOptions")
+//        UserDefaults.standard.setValue("uJwwIsXG2RYSpGVV", forKey: token)
+//        UserDefaults.standard.setValue("f85f9118da17e98d62e1003729929afa", forKey: userId)
+//        UserInfoModel.shared.uId = "f85f9118da17e98d62e1003729929afa"
+//        UserInfoModel.shared.token = "uJwwIsXG2RYSpGVV"
         /*
          0786fc6c4e32277115529f473b4ac699
          IMipt2g46BsGe2Pf

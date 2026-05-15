@@ -42,7 +42,12 @@ class JournalTableViewCell: UITableViewCell {
         
         NotificationCenter.default.addObserver(self, selector: #selector(closeEditStatus), name: NSNotification.Name(rawValue: "closeEditStatus"), object: nil)
     }
-    
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        resetSelectionIconForReuse()
+    }
+
     lazy var whiteView : UIView = {
         let vi = UIView.init(frame: CGRect.init(x: kFitWidth(10), y: kFitWidth(12), width: SCREEN_WIDHT-kFitWidth(20), height: kFitWidth(70)))
         vi.backgroundColor = .COLOR_CARD_BG_WHITE//UIColor(named: "color_bg_f5")
@@ -250,8 +255,11 @@ extension JournalTableViewCell{
 //    }
     func refresEditStatus(isEdit:Bool) {
         self.isEdit = isEdit
+        selecImgView.layer.removeAllAnimations()
+        selecImgView.transform = .identity
         if isEdit && foodsArray.count > 0{
             self.selecImgView.isHidden = false
+            self.selecImgView.alpha = 1
             self.selectTapView.isHidden = false
             titleLabel.snp.remakeConstraints { make in
                 make.top.equalTo(kFitWidth(16))
@@ -259,7 +267,12 @@ extension JournalTableViewCell{
 //                make.left.equalTo(kFitWidth(44))
             }
         }else{
+            selecImgView.setCheckState(false,
+                                      checkedImageName: "logs_edit_selected",
+                                      uncheckedImageName: "logs_edit_all_normal",
+                                      animated: false)
             selecImgView.isHidden = true
+            selecImgView.alpha = 0
             selectTapView.isHidden = true
             
             titleLabel.snp.remakeConstraints { make in
@@ -277,10 +290,28 @@ extension JournalTableViewCell{
             }
         }
         isSelect = isAllSelect
-        
+
+        guard isEdit && foodsArray.count > 0 else {
+            resetSelectionIconForReuse()
+            return
+        }
+
         selecImgView.setCheckState(isSelect,
                                   checkedImageName: "logs_edit_selected",
-                                  uncheckedImageName: "logs_edit_all_normal")
+                                  uncheckedImageName: "logs_edit_all_normal",
+                                  animated: false)
+    }
+
+    private func resetSelectionIconForReuse() {
+        selecImgView.layer.removeAllAnimations()
+        selecImgView.transform = .identity
+        selecImgView.alpha = 0
+        selecImgView.isHidden = true
+        selectTapView.isHidden = true
+        selecImgView.setCheckState(false,
+                                  checkedImageName: "logs_edit_selected",
+                                  uncheckedImageName: "logs_edit_all_normal",
+                                  animated: false)
     }
     func updateMealsTime(mealsDict:NSDictionary,mealsIndex:Int) {
         if UserInfoModel.shared.hiddenMeaTimeStatus{
