@@ -16,7 +16,6 @@ class NaturalStatVC: WHBaseViewVC {
     
     var dateArray = NSMutableArray()
     var serveDataArray = NSArray()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         

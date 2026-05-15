@@ -46,6 +46,8 @@ class OverViewVC : WHBaseViewVC {
     override func viewWillAppear(_ animated: Bool) {
         IQKeyboardManager.shared.enable = false
         IQKeyboardManager.shared.enableAutoToolbar = false
+        self.navigationController?.fd_interactivePopDisabled = false
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         sendUserCenterRequest()
         
         requestNutritionDataIfNeeded()

@@ -12,7 +12,7 @@ import UIKit
 class FriendListSearchVM: UIView {
     
     var selfHeight = kFitWidth(36)
-    let maxLength = 5
+    let maxLength = 10
     
     var searchBlock:(()->())?
     

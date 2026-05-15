@@ -93,7 +93,7 @@ extension CourseListVMTableViewCell{
             return
         }
         
-        prepareContentFadeInIfNeeded()
+//        prepareContentFadeInIfNeeded()
 //        let coverInfoDict = dict["coverInfo"]as? NSDictionary ?? [:]
 //        coverImgView.setImgUrl(urlString: coverInfoDict.stringValueForKey(key: "imageOssUrl"))
         
