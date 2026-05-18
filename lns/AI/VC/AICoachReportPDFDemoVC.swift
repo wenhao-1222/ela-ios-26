@@ -918,32 +918,32 @@ private extension AICoachReportPDFDemoVC {
                 return
             }
             DispatchQueue.main.async {
-                QuestinonaireMsgModel.shared.calories = caloriesText
-                QuestinonaireMsgModel.shared.carbohydrates = carbohydrateText
-                QuestinonaireMsgModel.shared.protein = proteinText
-                QuestinonaireMsgModel.shared.fats = fatText
-                QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
-                QuestinonaireMsgModel.shared.carbohydratesNumber = carbohydrateText
-                QuestinonaireMsgModel.shared.proteinNumber = proteinText
-                QuestinonaireMsgModel.shared.fatsNumber = fatText
-                QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
-                QuestinonaireMsgModel.shared.carbohydratesNumberFromServer = carbohydrateText
-                QuestinonaireMsgModel.shared.proteinNumberFromServer = proteinText
-                QuestinonaireMsgModel.shared.fatsNumberFromServer = fatText
+//                QuestinonaireMsgModel.shared.calories = caloriesText
+//                QuestinonaireMsgModel.shared.carbohydrates = carbohydrateText
+//                QuestinonaireMsgModel.shared.protein = proteinText
+//                QuestinonaireMsgModel.shared.fats = fatText
+//                QuestinonaireMsgModel.shared.caloriesNumber = caloriesText
+//                QuestinonaireMsgModel.shared.carbohydratesNumber = carbohydrateText
+//                QuestinonaireMsgModel.shared.proteinNumber = proteinText
+//                QuestinonaireMsgModel.shared.fatsNumber = fatText
+//                QuestinonaireMsgModel.shared.caloriesNumberFromServer = caloriesText
+//                QuestinonaireMsgModel.shared.carbohydratesNumberFromServer = carbohydrateText
+//                QuestinonaireMsgModel.shared.proteinNumberFromServer = proteinText
+//                QuestinonaireMsgModel.shared.fatsNumberFromServer = fatText
+//
+//                NutritionDefaultModel.shared.saveGoals(dict: [
+//                    "calories": caloriesText,
+//                    "carbohydrates": carbohydrateText,
+//                    "proteins": proteinText,
+//                    "fats": fatText
+//                ])
+//                LogsSQLiteManager.getInstance().refreshDataTarget(sDate: Date().nextDay(days: 0),
+//                                                                  caloriTar: QuestinonaireMsgModel.shared.calories,
+//                                                                  proteinTar: QuestinonaireMsgModel.shared.protein,
+//                                                                  carboTar: QuestinonaireMsgModel.shared.carbohydrates,
+//                                                                  fatsTar: QuestinonaireMsgModel.shared.fats)
+//                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
 
-                NutritionDefaultModel.shared.saveGoals(dict: [
-                    "calories": caloriesText,
-                    "carbohydrates": carbohydrateText,
-                    "proteins": proteinText,
-                    "fats": fatText
-                ])
-                LogsSQLiteManager.getInstance().refreshDataTarget(sDate: Date().nextDay(days: 0),
-                                                                  caloriTar: QuestinonaireMsgModel.shared.calories,
-                                                                  proteinTar: QuestinonaireMsgModel.shared.protein,
-                                                                  carboTar: QuestinonaireMsgModel.shared.carbohydrates,
-                                                                  fatsTar: QuestinonaireMsgModel.shared.fats)
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
-//                self.sendRecommendRequest()
                 completion(true)
             }
         } failure: { _ in

@@ -204,6 +204,7 @@ extension CourseListVM{
         }
         
         for cell in visibleCells {
+            cell.isUserInteractionEnabled = true
             guard let indexPath = tableView.indexPath(for: cell) else { continue }
             if indexPath.row < dataSourceArray.count {
                 let dict = dataSourceArray[indexPath.row]as? NSDictionary ?? [:]
@@ -223,6 +224,7 @@ extension CourseListVM{
         let newRowCount = dataSourceArray.count
         isLoading = false
         tableView.allowsSelection = true
+        tableView.visibleCells.forEach { $0.isUserInteractionEnabled = true }
         
         guard oldRowCount != newRowCount else { return }
         

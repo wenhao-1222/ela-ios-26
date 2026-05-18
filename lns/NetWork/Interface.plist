@@ -5,7 +5,7 @@
 	<key>url_cs</key>
 	<string>https://testapi.leungnutritionsciences.cn:8443/</string>
 	<key>url_develop</key>
-	<string>http://192.168.1.156:8080/</string>
+	<string>http://192.168.1.98:8080/</string>
 	<key>url_annotation</key>
 	<string>0  release      1  develop            2 cs   (接口对应)</string>
 	<key>url_release</key>

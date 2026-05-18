@@ -96,6 +96,7 @@ class ElaProPriceVM: UIView {
     private let subTextColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
     private let renewalDashLayer = CAShapeLayer()
     private let fadeInDuration: TimeInterval = 0.25
+    private static let proAgreementKeyword = "《ELA PRO会员服务协议》"
     private var agreementConfirmSheetHeight: CGFloat {
         kFitWidth(254) + WHUtils().getBottomSafeAreaHeight()
     }
@@ -367,15 +368,16 @@ class ElaProPriceVM: UIView {
         lab.isUserInteractionEnabled = true
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.3
+        paragraphStyle.alignment = .center
         
-        let allText = "我已阅读并同意《ELA PRO会员服务协议》\n订阅将自动续费，可随时取消"
+        let allText = "我已阅读并同意\(Self.proAgreementKeyword)\n订阅将自动续费，可随时取消"
         let attr = NSMutableAttributedString(string: allText)
         attr.addAttributes([
             .foregroundColor: subTextColor,
             .font: UIFont.systemFont(ofSize: 11, weight: .regular),
             .paragraphStyle:paragraphStyle
         ], range: NSRange(location: 0, length: allText.count))
-        if let range = allText.range(of: "《ELA PRO会员服务协议》") {
+        if let range = allText.range(of: Self.proAgreementKeyword) {
             let nsRange = NSRange(range, in: allText)
             attr.addAttributes([
                 .foregroundColor: selectedBlue
@@ -422,13 +424,13 @@ class ElaProPriceVM: UIView {
         lab.numberOfLines = 1
         lab.textAlignment = .center
         lab.isUserInteractionEnabled = true
-        let allText = "我已阅读并同意《ELA PRO会员服务协议》"
+        let allText = "我已阅读并同意\(Self.proAgreementKeyword)"
         let attr = NSMutableAttributedString(string: allText)
         attr.addAttributes([
             .foregroundColor: subTextColor,
             .font: UIFont.systemFont(ofSize: 15, weight: .regular)
         ], range: NSRange(location: 0, length: allText.count))
-        if let range = allText.range(of: "《ELA PRO会员服务协议》") {
+        if let range = allText.range(of: Self.proAgreementKeyword) {
             let nsRange = NSRange(range, in: allText)
             attr.addAttributes([
                 .foregroundColor: selectedBlue
@@ -561,7 +563,7 @@ extension ElaProPriceVM{
 
     private func didTapAgreementKeyword(in label: UILabel, gesture: UITapGestureRecognizer) -> Bool {
         guard let attributedText = label.attributedText, !attributedText.string.isEmpty else { return false }
-        let keyword = "《ELA PRO订阅条款》"
+        let keyword = Self.proAgreementKeyword
         let keywordRange = (attributedText.string as NSString).range(of: keyword)
         guard keywordRange.location != NSNotFound else { return false }
 
