@@ -10,11 +10,11 @@ import Foundation
 
 class WHUtils: NSObject {
     //字符串转双精度后去除小数点00
-    static func convertStringToString(_ str: String) -> String? {
+    static func convertStringToString(_ str: String,digitNumer:Int=2) -> String? {
         if let doubleValue = Double(str) {
             let numberFormatter = NumberFormatter()
             numberFormatter.minimumFractionDigits = 0
-            numberFormatter.maximumFractionDigits = doubleValue.truncatingRemainder(dividingBy: 1) == 0 ? 0 : 2
+            numberFormatter.maximumFractionDigits = doubleValue.truncatingRemainder(dividingBy: 1) == 0 ? 0 : digitNumer
             return numberFormatter.string(from: NSNumber(value: doubleValue))
         }
         return str

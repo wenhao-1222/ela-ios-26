@@ -1227,9 +1227,9 @@ extension JounalCollectionCell{
         
         let dict = NSMutableDictionary(dictionary: self.currentDayMsg)
         let caloriesTotal = WHUtils.fixedFractionString(self.goalVm.caloriCircleVm.currentNumFloat, fractionDigits: 0)
-        let carbohydrateTotal = WHUtils.fixedFractionString(self.goalVm.carboCircleVm.currentNumFloat, fractionDigits: 2)
-        let proteinTotal = WHUtils.fixedFractionString(self.goalVm.proteinCircleVm.currentNumFloat, fractionDigits: 2)
-        let fatTotal = WHUtils.fixedFractionString(self.goalVm.fatCircleVm.currentNumFloat, fractionDigits: 2)
+        let carbohydrateTotal = WHUtils.fixedFractionString(self.goalVm.carboCircleVm.currentNumFloat, fractionDigits: 3)
+        let proteinTotal = WHUtils.fixedFractionString(self.goalVm.proteinCircleVm.currentNumFloat, fractionDigits: 3)
+        let fatTotal = WHUtils.fixedFractionString(self.goalVm.fatCircleVm.currentNumFloat, fractionDigits: 3)
         dict.setValue(caloriesTotal, forKey: "calories")
         dict.setValue(carbohydrateTotal, forKey: "carbohydrate")
         dict.setValue(proteinTotal, forKey: "protein")
@@ -1248,9 +1248,9 @@ extension JounalCollectionCell{
                 let dic = NSMutableDictionary.init(dictionary: foodsDi)
                 dic.setValue("\(i+1)", forKey: "sn")
                 dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "calories"), fractionDigits: 0), forKey: "calories")
-                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "carbohydrate"), fractionDigits: 1), forKey: "carbohydrate")
-                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "protein"), fractionDigits: 1), forKey: "protein")
-                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "fat"), fractionDigits: 1), forKey: "fat")
+                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "carbohydrate"), fractionDigits: 3), forKey: "carbohydrate")
+                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "protein"), fractionDigits: 3), forKey: "protein")
+                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "fat"), fractionDigits: 3), forKey: "fat")
                 let qty = "\(dic["specNum"]as? String ?? "")".replacingOccurrences(of: ",", with: ".")
                 if qty.count > 0 {
                     dic.setValue(qty, forKey: "qty")
@@ -1277,10 +1277,10 @@ extension JounalCollectionCell{
                 let foodsDi = foodsArray[j]as? NSDictionary ?? [:]
                 let dic = NSMutableDictionary.init(dictionary: foodsDi)
                 dic.setValue("\(i+1)", forKey: "sn")
-                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "calories"), fractionDigits: 0), forKey: "calories")
-                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "carbohydrate"), fractionDigits: 1), forKey: "carbohydrate")
-                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "protein"), fractionDigits: 1), forKey: "protein")
-                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "fat"), fractionDigits: 1), forKey: "fat")
+                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "calories"), fractionDigits: 3), forKey: "calories")
+                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "carbohydrate"), fractionDigits: 3), forKey: "carbohydrate")
+                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "protein"), fractionDigits: 3), forKey: "protein")
+                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "fat"), fractionDigits: 3), forKey: "fat")
                 if dic.stringValueForKey(key: "state") == "1" {
                     caloriTotal += dic.doubleValueForKey(key: "calories")
                     carboTotal += dic.doubleValueForKey(key: "carbohydrate")
@@ -1301,9 +1301,9 @@ extension JounalCollectionCell{
         self.goalVm.fatCircleVm.currentNumFloat = fatTotal
         DLLog(message: "self.currentDayMsg:\(self.currentDayMsg)")
         let caloriesTotal = WHUtils.fixedFractionString(caloriTotal, fractionDigits: 0)
-        let proteinTotalString = WHUtils.fixedFractionString(proteinTotal, fractionDigits: 2)
-        let carbohydrateTotalString = WHUtils.fixedFractionString(carboTotal, fractionDigits: 2)
-        let fatTotalString = WHUtils.fixedFractionString(fatTotal, fractionDigits: 2)
+        let proteinTotalString = WHUtils.fixedFractionString(proteinTotal, fractionDigits: 3)
+        let carbohydrateTotalString = WHUtils.fixedFractionString(carboTotal, fractionDigits: 3)
+        let fatTotalString = WHUtils.fixedFractionString(fatTotal, fractionDigits: 3)
         LogsSQLiteManager.getInstance().updateLogs(sDate: self.queryDay,
                                                    eTime: Date().currentSeconds,
                                                    calori: caloriesTotal,

@@ -38,6 +38,7 @@ class DataAddItemVM: UIView {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.text = "cm"
+        
         return lab
     }()
     lazy var textField : NumericTextField = {
@@ -81,7 +82,7 @@ extension DataAddItemVM{
         addSubview(unitLabel)
         addSubview(textField)
         addSubview(lineView)
-//        addSubview(tapView)
+        addSubview(tapView)
         
         setConstrait()
     }
@@ -96,18 +97,13 @@ extension DataAddItemVM{
         }
         textField.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-46))
-//            make.centerY.lessThanOrEqualToSuperview()
-//            make.width.equalTo(kFitWidth(160))
-//            make.right.equalTo(unitLabel.snp.left).offset(kFitWidth(-8))
             make.top.height.equalToSuperview()
             make.left.equalTo(leftTitleLabel.snp.right).offset(kFitWidth(50))
         }
-//        tapView.snp.makeConstraints { make in
-//            make.top.left.right.height.equalToSuperview()
-////            make.width.equalTo(kFitWidth(160))
-////            make.left.equalTo(textField.snp.right).offset(kFitWidth(-100))
-////            make.left.equalToSuperview()
-//        }
+        tapView.snp.makeConstraints { make in
+            make.top.right.height.equalToSuperview()
+            make.width.equalTo(kFitWidth(46))
+        }
         lineView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))

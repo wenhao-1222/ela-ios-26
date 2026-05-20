@@ -10,11 +10,24 @@ class AICoachPreDayItemView: UIView {
     var tapBlock: (() -> Void)?
     private let iconSweepLayer = CAGradientLayer()
     private var isIconSweepAnimating = false
+    private let todayBorderInset = kFitWidth(2)
 
     private lazy var iconContainerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = kFitWidth(5)
         view.clipsToBounds = true
+        return view
+    }()
+
+    private lazy var todayBorderView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.layer.cornerRadius = kFitWidth(7)
+        view.layer.borderColor = UIColor(hex: "007AFF").withAlphaComponent(0.5).cgColor
+//        view.backgroundColor = UIColor(hex: "007AFF").withAlphaComponent(0.5)
+        view.isHidden = true
+        view.layer.borderWidth = kFitWidth(2.2)
+//        view.layer.borderColor = UIColor.clear.cgColor
         return view
     }()
 
@@ -43,6 +56,8 @@ class AICoachPreDayItemView: UIView {
     }
 
     func update(item: AICoachPreDaysVM.DayItem,isFirstReport:Bool=false,completeDays:Int,index:Int) {
+        updateTodayBorder(isVisible: !isFirstReport && item.state == .current)
+
         if isFirstReport{
             titleLabel.text = ""
             if completeDays >= 7{
@@ -62,15 +77,22 @@ class AICoachPreDayItemView: UIView {
         case 2:
             iconContainerView.backgroundColor = .THEME
             checkImageView.isHidden = false
-            titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+//            titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         case 1:
             iconContainerView.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
             checkImageView.isHidden = false
-            titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+//            titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         default:
             iconContainerView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
             checkImageView.isHidden = true
+//            titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214_25
+        }
+        
+        switch item.state{
+        case .pending:
             titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214_25
+        default :
+            titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         }
     }
 
@@ -130,13 +152,25 @@ private extension AICoachPreDayItemView {
         iconSweepLayer.frame = bounds.insetBy(dx: -bounds.width, dy: 0)
     }
 
+    func updateTodayBorder(isVisible: Bool) {
+        todayBorderView.isHidden = !isVisible
+//        todayBorderView.layer.borderColor = isVisible ? UIColor(hex: "007AFF").withAlphaComponent(0.5).cgColor : UIColor.clear.cgColor
+    }
+
     func setupUI() {
+        addSubview(todayBorderView)
         addSubview(iconContainerView)
         addSubview(titleLabel)
         iconContainerView.addSubview(checkImageView)
 
+        todayBorderView.snp.makeConstraints { make in
+//            make.top.equalToSuperview().offset(-todayBorderInset)
+            make.center.equalToSuperview()
+            make.width.height.equalTo(kFitWidth(30) + todayBorderInset * 2)
+        }
+
         iconContainerView.snp.makeConstraints { make in
-            make.top.centerX.equalToSuperview()
+            make.center.equalToSuperview()
             make.width.height.equalTo(kFitWidth(30))
         }
 
@@ -161,4 +195,3 @@ private extension AICoachPreDayItemView {
         tapBlock?()
     }
 }
-

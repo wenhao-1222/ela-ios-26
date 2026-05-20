@@ -294,9 +294,18 @@ extension FoodsMsgDetailsVM{
         protein = NSDecimalNumber(decimal: proteinDecimal).doubleValue
         fat = NSDecimalNumber(decimal: fatDecimal).doubleValue
 
+        let carboDigit = WHUtils.convertStringToString(NSDecimalNumber(decimal: carbohydrateDecimal).stringValue,digitNumer: 4) ?? "0"
+        let proteinDigit = WHUtils.convertStringToString(NSDecimalNumber(decimal: proteinDecimal).stringValue,digitNumer: 4) ?? "0"
+        let fatDigit = WHUtils.convertStringToString(NSDecimalNumber(decimal: fatDecimal).stringValue,digitNumer: 4) ?? "0"
+        
         let carboOneDigit = WHUtils.convertStringToStringOneDigitForce(NSDecimalNumber(decimal: carbohydrateDecimal).stringValue) ?? "0"
         let proteinOneDigit = WHUtils.convertStringToStringOneDigitForce(NSDecimalNumber(decimal: proteinDecimal).stringValue) ?? "0"
         let fatOneDigit = WHUtils.convertStringToStringOneDigitForce(NSDecimalNumber(decimal: fatDecimal).stringValue) ?? "0"
+        
+        DLLog(message: "\(carboDigit)  ---   \(proteinDigit)   --- \(fatDigit) **** ")
+        DLLog(message: "\(carboOneDigit)  ---   \(proteinOneDigit)   --- \(fatOneDigit)")
+        DLLog(message: "\(carbohydrate)  ---   \(protein)   --- \(fat)")
+        
         setAttributeStringForLabel(numberString: "\(WHUtils.convertStringToStringNoDigit("\(calories.rounded())") ?? "0")", unitString: "千卡", label: caloriLabel)
         setAttributeStringForLabel(numberString: "\(carboOneDigit)", unitString: "g", label: carboLabel)
         setAttributeStringForLabel(numberString: "\(proteinOneDigit)", unitString: "g", label: proteinLabel)

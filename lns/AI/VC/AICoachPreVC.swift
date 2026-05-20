@@ -397,10 +397,11 @@ private extension AICoachPreVC {
             return leftDate < rightDate
         }
 
-        let items = sortedProgressBar.enumerated().map { index, item -> AICoachPreDaysVM.DayItem in
+        let todayDateString = Date().todayDate
+        let items = sortedProgressBar.map { item -> AICoachPreDaysVM.DayItem in
             let dateString = item["date"] as? String ?? ""
             let completeStatus = item["completeStatus"] as? Int ?? (item["completeStatus"] as? String ?? "0").intValue
-            let state = dayState(for: reportStatus, index: index, totalCount: sortedProgressBar.count)
+            let state = dayState(for: dateString, todayDateString: todayDateString)
 
             return .init(title: weekdayShortText(from: dateString), state: state, completeStatus: completeStatus)
         }
@@ -422,15 +423,27 @@ private extension AICoachPreVC {
         }
     }
 
-    func dayState(for reportStatus: Int, index: Int, totalCount: Int) -> AICoachPreDaysVM.DayState {
-        switch reportStatus {
-        case 2, 4:
-            return .completed
-        case 1:
-            return index == max(totalCount - 1, 0) ? .current : .completed
-        default:
-            return index == max(totalCount - 1, 0) ? .current : .pending
+    func dayState(for dateString: String, todayDateString: String = Date().todayDate) -> AICoachPreDaysVM.DayState {
+        let normalizedDateString = dateString.trimmingCharacters(in: .whitespacesAndNewlines)
+        if normalizedDateString == todayDateString {
+            return .current
         }
+
+        guard let date = preDayDate(from: normalizedDateString),
+              let todayDate = preDayDate(from: todayDateString) else {
+            return .pending
+        }
+
+        return date < todayDate ? .completed : .pending
+    }
+
+    func preDayDate(from dateString: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone.current
+        return formatter.date(from: dateString)
     }
 
     func weekdayShortText(from dateString: String) -> String {

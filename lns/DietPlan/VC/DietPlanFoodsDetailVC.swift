@@ -175,15 +175,15 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
         return view
     }()
     
-    private lazy var scrollTopOverlayView: UIView = {
-        let view = UIView()
-        view.isUserInteractionEnabled = false
-        view.backgroundColor = .clear
-        view.layer.cornerRadius = kFitWidth(24)
-        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        view.clipsToBounds = true
-        return view
-    }()
+//    private lazy var scrollTopOverlayView: UIView = {
+//        let view = UIView()
+//        view.isUserInteractionEnabled = false
+//        view.backgroundColor = .clear
+//        view.layer.cornerRadius = kFitWidth(24)
+//        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+//        view.clipsToBounds = true
+//        return view
+//    }()
     
     private lazy var scrollContentView: UIView = {
         let view = UIView()
@@ -318,7 +318,7 @@ class DietPlanFoodsDetailVC: WHBaseViewVC {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         scrollContentGradientLayer.frame = scrollBackgroundView.bounds
-        scrollTopOverlayGradientLayer.frame = scrollTopOverlayView.bounds
+//        scrollTopOverlayGradientLayer.frame = scrollTopOverlayView.bounds
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -343,7 +343,7 @@ extension DietPlanFoodsDetailVC {
         scrollView.addSubview(scrollContentView)
         scrollContentView.addSubview(topImageView)
         scrollContentView.addSubview(scrollBackgroundView)
-        scrollContentView.addSubview(scrollTopOverlayView)
+//        scrollContentView.addSubview(scrollTopOverlayView)
         scrollContentView.addSubview(contentCardView)
         view.addSubview(bottomActionContainer)
         bottomActionContainer.addSubview(chooseButton)
@@ -363,7 +363,7 @@ extension DietPlanFoodsDetailVC {
         ]
         scrollTopOverlayGradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
         scrollTopOverlayGradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
-        scrollTopOverlayView.layer.insertSublayer(scrollTopOverlayGradientLayer, at: 0)
+//        scrollTopOverlayView.layer.insertSublayer(scrollTopOverlayGradientLayer, at: 0)
         
         contentCardView.addSubview(titleLabel)
         contentCardView.addSubview(ingredientsTitleLabel)
@@ -419,11 +419,11 @@ extension DietPlanFoodsDetailVC {
             make.bottom.equalToSuperview()
         }
         
-        scrollTopOverlayView.snp.makeConstraints { make in
-            make.left.right.equalTo(scrollBackgroundView)
-            make.top.equalTo(scrollBackgroundView)
-            make.height.equalTo(kFitWidth(28))
-        }
+//        scrollTopOverlayView.snp.makeConstraints { make in
+//            make.left.right.equalTo(scrollBackgroundView)
+//            make.top.equalTo(scrollBackgroundView)
+//            make.height.equalTo(kFitWidth(28))
+//        }
         
         contentCardView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
@@ -511,11 +511,11 @@ extension DietPlanFoodsDetailVC: UIScrollViewDelegate {
             let fixedTransform = CGAffineTransform(translationX: 0, y: offsetY)
             topImageView.transform = fixedTransform
             scrollBackgroundView.transform = fixedTransform
-            scrollTopOverlayView.transform = fixedTransform
+//            scrollTopOverlayView.transform = fixedTransform
         } else {
             topImageView.transform = .identity
             scrollBackgroundView.transform = .identity
-            scrollTopOverlayView.transform = .identity
+//            scrollTopOverlayView.transform = .identity
         }
     }
 }
