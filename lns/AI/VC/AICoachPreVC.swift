@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 import SnapKit
 
 class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
@@ -21,6 +22,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private var hasPlayedRemainingEntranceAnimation = false
     private var hasFinishedCircleEntranceAnimation = false
     private var isWaitingForCoachLaunchResponse = false
+    private var aiCoachOrbHostController: UIHostingController<AICoachPreOrbRootView>?
     private let entranceAnimationDurationA: TimeInterval = 0.75
     private let entranceAnimationDurationB: TimeInterval = 0.35
     private let entranceAnimationDurationC: TimeInterval = 0.7
@@ -116,6 +118,12 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         orbView.backgroundColor = .clear
         return orbView
     }()
+//    private lazy var aiCoachOrbContainerView: UIView = {
+//        let view = UIView()
+//        view.backgroundColor = .clear
+//        view.isOpaque = false
+//        return view
+//    }()
     lazy var nextButton: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitle("查看报告", for: .normal)
@@ -180,7 +188,10 @@ extension AICoachPreVC{
         view.backgroundColor = .COLOR_BG_F2
         navigationView.backgroundColor = .clear
         view.addGestureRecognizer(dismissPopupTapGesture)
-        view.addSubview(circleImgView)
+        // 原 CoachAnimationV3View 保留，暂不加入层级；当前改用 SwiftUI AICoachLoopOrb。
+         view.addSubview(circleImgView)
+//        view.addSubview(aiCoachOrbContainerView)
+//        installAICoachOrbIfNeeded()
 
         view.addSubview(preDaysVM)
         view.addSubview(preInfoVM)
@@ -201,11 +212,17 @@ extension AICoachPreVC{
         bgImgView.snp.makeConstraints { make in
             make.left.top.width.height.equalToSuperview()
         }
+        // 原 circleImgView 约束保留，回退 CoachAnimationV3View 时可恢复。
         circleImgView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(kFitWidth(133.5))
             make.width.height.equalTo(kFitWidth(250))
         }
+//        aiCoachOrbContainerView.snp.makeConstraints { make in
+//            make.centerX.equalToSuperview()
+//            make.top.equalTo(kFitWidth(133.5))
+//            make.width.height.equalTo(kFitWidth(250))
+//        }
         preDaysVM.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(circleImgView.snp.bottom).offset(kFitWidth(50))
@@ -532,12 +549,31 @@ private extension AICoachPreVC {
         return hasShown == false
     }
 
+//    func installAICoachOrbIfNeeded() {
+//        guard aiCoachOrbHostController == nil else { return }
+//
+//        let hostController = UIHostingController(rootView: AICoachPreOrbRootView())
+//        hostController.view.backgroundColor = .clear
+//        hostController.view.isOpaque = false
+//
+//        addChild(hostController)
+//        aiCoachOrbContainerView.addSubview(hostController.view)
+//        hostController.view.snp.makeConstraints { make in
+//            make.edges.equalToSuperview()
+//        }
+//        hostController.didMove(toParent: self)
+//        aiCoachOrbHostController = hostController
+//    }
+
     func prepareEntranceAnimation() {
         let initialTransform = CGAffineTransform(translationX: 0, y: -kFitWidth(12))
         bgImgView.alpha = 1
         bgImgView.transform = .identity
-        circleImgView.alpha = 1
-        circleImgView.transform = .identity
+        // 原 circleImgView 状态保留，当前动画由 aiCoachOrbContainerView 承载。
+//        circleImgView.alpha = 1
+//        circleImgView.transform = .identity
+//        aiCoachOrbContainerView.alpha = 1
+//        aiCoachOrbContainerView.transform = .identity
         preDaysVM.prepareEntranceAnimation()
         preInfoVM.prepareTextEntranceAnimation()
         infoSelectPopupVM.alpha = 1
@@ -672,8 +708,11 @@ private extension AICoachPreVC {
 
         bgImgView.alpha = 1
         bgImgView.transform = .identity
+        // 原 circleImgView 状态保留，当前动画由 aiCoachOrbContainerView 承载。
         circleImgView.alpha = 1
         circleImgView.transform = .identity
+//        aiCoachOrbContainerView.alpha = 1
+//        aiCoachOrbContainerView.transform = .identity
         preDaysVM.applyFinalPresentationState()
         preInfoVM.applyFinalPresentationState()
         infoSelectPopupVM.alpha = 1
@@ -714,5 +753,21 @@ private extension AICoachPreVC {
 
     var shouldPlayEntranceAnimation: Bool {
         shouldPlayFirstEntryAnimation || currentReportStatus == 1 || currentReportStatus == 2 || currentReportStatus == 4
+    }
+}
+
+private struct AICoachPreOrbRootView: View {
+    var body: some View {
+        GeometryReader { proxy in
+            let side = min(proxy.size.width, proxy.size.height)
+            AICoachLoopOrb(
+                level: .level7,
+                size: side,
+                showsLevelLabel: false,
+                includesBackground: false
+            )
+            .position(x: proxy.size.width * 0.5, y: proxy.size.height * 0.5)
+        }
+        .background(Color.clear)
     }
 }

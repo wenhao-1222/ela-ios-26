@@ -223,9 +223,9 @@ private extension AICoachLoopLevel {
             return AICoachLoopProfile(
                 loopDuration: 62.40,
                 brainStrength: 1.62,
-                outerRingStrength: 0.96,
+                outerRingStrength: 1.36,
                 outerShellHighlightOpacity: 0.00,
-                outerFilamentHighlightOpacity: 0.00,
+                outerFilamentHighlightOpacity: 0.90,
                 brainLayers: 9,
                 neuralLineCount: 92,
                 neuralNodeCount: 0,
@@ -233,12 +233,12 @@ private extension AICoachLoopLevel {
                 sparkCount: 0,
                 outerRadius: 0.355,
                 brainRadius: 0.135,
-                ringAmplitude: 2.82,
-                bloom: 1.26,
-                sharpness: 0.92,
+                ringAmplitude: 3.82,
+                bloom: 1.16,
+                sharpness: 1.92,
                 backgroundOpacity: 1.00,
-                membraneOpacity: 2.00,
-                coreOpacity: 1.96
+                membraneOpacity: 2.40,
+                coreOpacity: 4.26
             )
         }
     }
@@ -481,36 +481,34 @@ private struct AICoachOrbCanvasRenderer {
         let cyan = Color(red: 0.02, green: 0.82, blue: 1.00)
         let electric = Color(red: 0.13, green: 0.94, blue: 1.00)
         let blue = Color(red: 0.00, green: 0.28, blue: 1.00)
-        let deepBlue = Color(red: 0.00, green: 0.06, blue: 0.26)
         let whiteBlue = Color(red: 0.78, green: 0.98, blue: 1.00)
         let pulse = 0.82 + 0.18 * sin(theta * 2.0)
         let hotPulse = 0.62 + 0.38 * flashPulse(theta: theta, cycles: 2, seed: 4.0, power: 1.9)
 
-        // 深蓝球体体积，先把能量限制在外壳内部。
+        // 底部淡蓝托光，只给球体下半部一点清澈的蓝色承托。
         context.drawLayer { layer in
-            layer.addFilter(.blur(radius: outerRadius * 0.10 * p.bloom))
+            layer.addFilter(.blur(radius: outerRadius * 0.16 * p.bloom))
             layer.fill(
                 Path(ellipseIn: CGRect(
-                    x: center.x - outerRadius * 1.02,
-                    y: center.y - outerRadius * 0.98,
-                    width: outerRadius * 2.04,
-                    height: outerRadius * 1.96
+                    x: center.x - outerRadius * 0.98,
+                    y: center.y - outerRadius * 0.12,
+                    width: outerRadius * 1.96,
+                    height: outerRadius * 1.12
                 )),
                 with: .radialGradient(
                     Gradient(stops: [
-                        .init(color: electric.alpha(0.32 * hotPulse), location: 0.00),
-                        .init(color: blue.alpha(0.18 * p.membraneOpacity), location: 0.36),
-                        .init(color: deepBlue.alpha(0.42), location: 0.72),
+                        .init(color: electric.alpha(0.085 * p.membraneOpacity * pulse), location: 0.00),
+                        .init(color: blue.alpha(0.055 * p.membraneOpacity), location: 0.42),
                         .init(color: .clear, location: 1.00)
                     ]),
-                    center: CGPoint(x: center.x - outerRadius * 0.08, y: center.y - outerRadius * 0.08),
+                    center: CGPoint(x: center.x, y: center.y + outerRadius * 0.26),
                     startRadius: 0,
-                    endRadius: outerRadius * 1.10
+                    endRadius: outerRadius * 0.98
                 )
             )
         }
 
-        // 中心爆亮脑核，类似内部爆炸光被蓝色壳体包住。
+        // 中心爆亮脑核，避免大面积底雾，让画面更清澈。
         context.drawLayer { layer in
             layer.addFilter(.blur(radius: coreRadius * 0.42 * p.bloom))
             layer.fill(
@@ -524,12 +522,12 @@ private struct AICoachOrbCanvasRenderer {
                     Gradient(stops: [
                         .init(color: whiteBlue.alpha(0.56 * p.coreOpacity * hotPulse), location: 0.00),
                         .init(color: electric.alpha(0.52 * p.coreOpacity), location: 0.28),
-                        .init(color: blue.alpha(0.28 * p.coreOpacity), location: 0.62),
+                        .init(color: blue.alpha(0.14 * p.coreOpacity), location: 0.54),
                         .init(color: .clear, location: 1.00)
                     ]),
                     center: CGPoint(x: center.x - coreRadius * 0.12, y: center.y - coreRadius * 0.08),
                     startRadius: 0,
-                    endRadius: coreRadius * 1.92
+                    endRadius: coreRadius * 1.68
                 )
             )
         }
