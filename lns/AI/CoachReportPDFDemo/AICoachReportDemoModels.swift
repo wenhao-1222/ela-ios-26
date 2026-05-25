@@ -173,6 +173,7 @@ enum AICoachReportRecommendationBuilder {
 
 struct AICoachReportDemoData {
     let navigationTitle: String
+    let startDate: String
     let navigationDateRange: String
     let reportTitle: String
     let reportDateRange: String
@@ -335,9 +336,10 @@ enum AICoachReportDemoPalette {
 
 extension AICoachReportDemoData {
     static let empty = AICoachReportDemoData(
-        navigationTitle: "AI 教练分析",
+        navigationTitle: "教练反馈",
+        startDate: "",
         navigationDateRange: "",
-        reportTitle: "ELA AI教练分析报告",
+        reportTitle: "ELA教练分析报告",
         reportDateRange: "日期： -",
         targetText: "目标： -",
         completenessText: "数据完整度： 饮食0/7，体重0/7，力量训练0/7",
@@ -400,9 +402,10 @@ extension AICoachReportDemoData {
     )
 
     static let mock = AICoachReportDemoData(
-        navigationTitle: "AI 教练分析",
+        navigationTitle: "教练反馈",
+        startDate: "2026-01-01",
         navigationDateRange: "2026/01/26 – 02/01",
-        reportTitle: "ELA AI教练分析报告",
+        reportTitle: "ELA教练分析报告",
         reportDateRange: "日期： 2026年01月01日 – 2026年01月07日",
         targetText: "目标： 增肌",
         completenessText: "数据完整度： 饮食x/7，体重x/7，力量训练x/7",

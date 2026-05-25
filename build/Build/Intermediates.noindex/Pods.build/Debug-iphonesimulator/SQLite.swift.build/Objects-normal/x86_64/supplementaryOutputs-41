@@ -1,0 +1,37 @@
+{
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SQLite.swift/Sources/SQLite/Core/Backup.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Backup.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Backup.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Backup.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Backup.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Backup.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SQLite.swift/Sources/SQLite/Core/Blob.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Blob.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Blob.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Blob.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Blob.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Blob.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SQLite.swift/Sources/SQLite/Typed/AggregateFunctions.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/AggregateFunctions.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/AggregateFunctions.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/AggregateFunctions.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/AggregateFunctions.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/AggregateFunctions.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SQLite.swift/Sources/SQLite/Typed/Coding.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Coding.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Coding.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Coding.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Coding.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Coding.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SQLite.swift/Sources/SQLite/Typed/Collation.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Collation.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Collation.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Collation.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Collation.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Collation.swiftdeps"
+  }
+}

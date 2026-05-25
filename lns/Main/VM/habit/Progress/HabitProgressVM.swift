@@ -155,6 +155,8 @@ extension HabitProgressVM{
             pendingPointTarget = nextPointBalance
             if shouldAnimatePointWhenVisible || isPointLabelVisible() {
                 triggerPointAnimationIfNeeded()
+            } else {
+                self.topMsgVm.numberLabel.text = "\(nextPointBalance)"
             }
         } else {
             pendingPointTarget = nil

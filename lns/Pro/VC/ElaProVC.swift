@@ -458,10 +458,8 @@ extension ElaProVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "ElaProVC sendPendingDietPlanCreateRequest response:\(dataObj)")
-            let updatedDates = LogsSQLiteManager.getInstance().applyDietPlanNutrientsTargets(dataObj["nutrientsTarget"] as? NSArray ?? [])
-            if !updatedDates.isEmpty {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
-            }
+            _ = LogsSQLiteManager.getInstance().applyDietPlanNutrientsTargets(dataObj["nutrientsTarget"] as? NSArray ?? [])
+            self.refreshUserCenterAndLogsAfterDietPlanCreate()
 
             self.handlePendingDietPlanCreateSuccess()
         } failure: { [weak self] isError in

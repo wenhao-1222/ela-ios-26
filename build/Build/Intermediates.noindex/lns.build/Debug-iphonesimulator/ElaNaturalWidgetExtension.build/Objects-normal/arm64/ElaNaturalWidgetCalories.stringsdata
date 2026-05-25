@@ -1,0 +1,48 @@
+{
+  "source": "/Users/lns2/Desktop/lnsapp-ios/ElaNaturalWidget/ElaNaturalWidgetCalories.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "碳水",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "蛋白质",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "脂肪",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "饮食记录",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 198
+        }
+      },
+      {
+        "comment": "",
+        "key": "今日营养目标 & 快速记录饮食",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 199
+        }
+      }
+    ]
+  },
+  "version": 1
+}

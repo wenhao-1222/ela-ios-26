@@ -206,6 +206,7 @@ extension UserInfoModel{
         self.isBindAppId = dict["appleconnected"]as? String ?? "" == "true" ? true : false
        
         self.setMobMsg(dict: dict)
+        updateShowMealsIfNeeded(dict: dict)
         
 //        if self.msgUnRead == true{
 //            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "serviceMsgUnRead"), object: nil)
@@ -257,12 +258,7 @@ extension UserInfoModel{
         
         self.dealCCStartMsg(dict: dict)
         
-        let showMealsNum = Int(dict["show_meals"]as? String ?? "6") ?? 6
-        if self.mealsNumber != showMealsNum{
-            self.mealsNumber = showMealsNum
-            UserDefaults.set(value: "\(showMealsNum)", forKey: .mealsNumber)
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
-        }
+        updateShowMealsIfNeeded(dict: dict)
         
         if dict.stringValueForKey(key: "weight_unit") == "2"{
             self.weightUnit = 2
@@ -315,6 +311,20 @@ extension UserInfoModel{
         MobClick.userProfile(dict.stringValueForKey(key: "nickname"), to: "nickname")
         MobClick.userProfile(dict.stringValueForKey(key: "id"), to: "uId")
     }
+
+    private func updateShowMealsIfNeeded(dict: NSDictionary) {
+        guard dict.allKeys.contains(where: { "\($0)" == "show_meals" }),
+              let showMealsNum = Int(dict.stringValueForKey(key: "show_meals")) else {
+            return
+        }
+
+        if self.mealsNumber != showMealsNum {
+            self.mealsNumber = showMealsNum
+            UserDefaults.set(value: "\(showMealsNum)", forKey: .mealsNumber)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+        }
+    }
+
     func changePhoneStar() {
         self.phoneStar = WHUtils().maskPhoneNumber(self.phone)
 //        if WHBaseViewVC().judgePhoneNumber(phoneNum: self.phone){
@@ -470,4 +480,3 @@ extension UserInfoModel{
         }
     }
 }
-

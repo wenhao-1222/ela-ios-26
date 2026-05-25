@@ -1,0 +1,37 @@
+{
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SQLite.swift/Sources/SQLite/Core/Connection+Aggregation.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Aggregation.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Aggregation.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Aggregation.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Aggregation.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Aggregation.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SQLite.swift/Sources/SQLite/Core/Connection+Attach.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Attach.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Attach.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Attach.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Attach.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Attach.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SQLite.swift/Sources/SQLite/Core/Connection+Pragmas.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Pragmas.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Pragmas.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Pragmas.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Pragmas.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Pragmas.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SQLite.swift/Sources/SQLite/Core/Connection.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SQLite.swift/Sources/SQLite/Schema/Connection+Schema.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Schema.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Schema.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Schema.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Schema.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SQLite.swift.build/Objects-normal/x86_64/Connection+Schema.swiftdeps"
+  }
+}

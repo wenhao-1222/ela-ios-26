@@ -1,0 +1,10 @@
+framework module DGCharts {
+  umbrella header "DGCharts-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module DGCharts.__Swift {
+  exclude header "DGCharts-Swift.h"
+}

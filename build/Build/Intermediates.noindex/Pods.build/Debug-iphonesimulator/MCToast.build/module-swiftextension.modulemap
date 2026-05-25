@@ -1,0 +1,5 @@
+
+module MCToast.Swift {
+  header "MCToast-Swift.h"
+  requires objc
+}

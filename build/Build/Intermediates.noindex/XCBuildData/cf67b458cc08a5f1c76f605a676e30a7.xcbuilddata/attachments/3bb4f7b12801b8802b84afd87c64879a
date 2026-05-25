@@ -1,0 +1,5 @@
+
+module DGCharts.Swift {
+  header "DGCharts-Swift.h"
+  requires objc
+}

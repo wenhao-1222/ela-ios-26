@@ -1,0 +1,177 @@
+{
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Community/Model/CourseProgressSQLiteManager.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/CourseProgressSQLiteManager.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/CourseProgressSQLiteManager.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/CourseProgressSQLiteManager.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/CourseProgressSQLiteManager.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/CourseProgressSQLiteManager.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Create/DietPlanCreateWeightAlertVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/DietPlanCreateWeightAlertVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/DietPlanCreateWeightAlertVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/DietPlanCreateWeightAlertVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/DietPlanCreateWeightAlertVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/DietPlanCreateWeightAlertVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Logs/VC/RankingList/FriendListVC.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/FriendListVC.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/FriendListVC.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/FriendListVC.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/FriendListVC.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/FriendListVC.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Share/JournalShareReceiptVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/JournalShareReceiptVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/JournalShareReceiptVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/JournalShareReceiptVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/JournalShareReceiptVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/JournalShareReceiptVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Order/CourseOrderListTypeVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/CourseOrderListTypeVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/CourseOrderListTypeVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/CourseOrderListTypeVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/CourseOrderListTypeVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/CourseOrderListTypeVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Setting/AppearanceOptionsAlertVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/AppearanceOptionsAlertVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/AppearanceOptionsAlertVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/AppearanceOptionsAlertVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/AppearanceOptionsAlertVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/AppearanceOptionsAlertVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/Base/Hero+UIViewContoller.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/Hero+UIViewContoller.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/Hero+UIViewContoller.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/Hero+UIViewContoller.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/Hero+UIViewContoller.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/Hero+UIViewContoller.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/Base/Hero.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/Hero.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/Hero.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/Hero.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/Hero.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/Hero.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/Base/HeroBundleTool.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBundleTool.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBundleTool.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBundleTool.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBundleTool.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBundleTool.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/Base/HeroTransitionAnimation.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroTransitionAnimation.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroTransitionAnimation.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroTransitionAnimation.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroTransitionAnimation.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroTransitionAnimation.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/Controller/HeroBrowser.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowser.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowser.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowser.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowser.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowser.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/View/HeroBrowserBaseImageCell.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserBaseImageCell.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserBaseImageCell.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserBaseImageCell.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserBaseImageCell.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserBaseImageCell.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/View/HeroBrowserHostedCellProtocol.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserHostedCellProtocol.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserHostedCellProtocol.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserHostedCellProtocol.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserHostedCellProtocol.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserHostedCellProtocol.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/View/HeroBrowserNetworkImageCell.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserNetworkImageCell.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserNetworkImageCell.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserNetworkImageCell.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserNetworkImageCell.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserNetworkImageCell.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/View/HeroBrowserVideoCell.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserVideoCell.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserVideoCell.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserVideoCell.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserVideoCell.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserVideoCell.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/View/HeroCircularProgressView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroCircularProgressView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroCircularProgressView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroCircularProgressView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroCircularProgressView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroCircularProgressView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/View/HeroVideoView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroVideoView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroVideoView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroVideoView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroVideoView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroVideoView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/ViewModule/HeroBrowserDataImageViewModule.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserDataImageViewModule.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserDataImageViewModule.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserDataImageViewModule.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserDataImageViewModule.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserDataImageViewModule.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/ViewModule/HeroBrowserLocalImageViewModule.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserLocalImageViewModule.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserLocalImageViewModule.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserLocalImageViewModule.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserLocalImageViewModule.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserLocalImageViewModule.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/ViewModule/HeroBrowserNetworkImageViewModule.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserNetworkImageViewModule.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserNetworkImageViewModule.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserNetworkImageViewModule.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserNetworkImageViewModule.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserNetworkImageViewModule.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/ViewModule/HeroBrowserVideoViewModule.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserVideoViewModule.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserVideoViewModule.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserVideoViewModule.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserVideoViewModule.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserVideoViewModule.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/ViewModule/HeroBrowserViewContainer.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserViewContainer.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserViewContainer.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserViewContainer.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserViewContainer.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserViewContainer.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/Classes/ViewModule/HeroBrowserViewModule.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserViewModule.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserViewModule.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserViewModule.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserViewModule.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroBrowserViewModule.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/JFHeroBrowser/HeroNetworkImageProvider.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroNetworkImageProvider.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroNetworkImageProvider.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroNetworkImageProvider.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroNetworkImageProvider.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/HeroNetworkImageProvider.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/WHUtil/TouchGenerator.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/TouchGenerator.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/TouchGenerator.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/TouchGenerator.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/TouchGenerator.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/TouchGenerator.swiftdeps"
+  }
+}

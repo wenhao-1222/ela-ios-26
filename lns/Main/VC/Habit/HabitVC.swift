@@ -107,8 +107,9 @@ extension HabitVC{
         let vc = HabitExchangeVC()
         vc.msgDict = self.dataObj
         self.navigationController?.pushViewController(vc, animated: true)
-        vc.exchangeBlock = {()in
-            self.sendDataRequest()
+        vc.exchangeBlock = {(dataDict) in
+            self.dataObj = dataDict
+            self.progressVm.updateUI(dict: dataDict, isAnimate: true)
             self.rankListVm.sendDataRequest()
         }
     }

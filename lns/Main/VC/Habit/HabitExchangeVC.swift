@@ -10,7 +10,7 @@ import MCToast
 class HabitExchangeVC: WHBaseViewVC {
     
     var msgDict = NSDictionary()
-    var exchangeBlock:(()->())?
+    var exchangeBlock:((NSDictionary)->())?
 
 //    override var prefersSystemNavigationBarOnIOS26: Bool { true }
     
@@ -96,11 +96,12 @@ extension HabitExchangeVC{
                 MCToast.mc_text("感谢你的爱心捐赠")
             })
             
-            self.exchangeBlock?()
-            self.sendDataRequest()
+            self.sendDataRequest { dataDict in
+                self.exchangeBlock?(dataDict)
+            }
         }
     }
-    func sendDataRequest(){
+    func sendDataRequest(completion: ((NSDictionary) -> Void)? = nil){
         WHNetworkUtil.shareManager().POST(urlString: URL_user_habit_dashboard, parameters: nil) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
@@ -110,6 +111,7 @@ extension HabitExchangeVC{
             self.msgDict = dataDict
             self.topMsgVm.updateUI(dict: self.msgDict)
             self.exchangeAlertVm.updateUI(dict: self.msgDict)
+            completion?(dataDict)
         }
     }
 }

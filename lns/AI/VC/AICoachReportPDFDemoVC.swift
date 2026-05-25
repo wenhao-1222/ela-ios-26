@@ -338,6 +338,16 @@ private extension AICoachReportPDFDemoVC {
     func preparePDFIfNeeded() {
         guard hasGeneratedPDF, hasViewAppeared else { return }
 
+        if hasLoadedReportDetail == false {
+            isPDFLoaded = false
+            updateAdviceButtonState(animated: false)
+            updateTopBarInteraction(isEnabled: false)
+            loadingIndicator.startAnimating()
+            loadingLabel.text = "正在加载报告..."
+            loadingLabel.isHidden = false
+            return
+        }
+
         if let cachedFileURL = cachedPDFURL() {
             pdfFileURL = cachedFileURL
             if loadPDFIfNeeded(from: cachedFileURL) == false {
@@ -349,16 +359,6 @@ private extension AICoachReportPDFDemoVC {
                 updateTopBarInteraction(isEnabled: true)
                 return
             }
-        }
-
-        if reportId.isEmpty == false, hasLoadedReportDetail == false {
-            isPDFLoaded = false
-            updateAdviceButtonState(animated: false)
-            updateTopBarInteraction(isEnabled: false)
-            loadingIndicator.startAnimating()
-            loadingLabel.text = "正在加载报告..."
-            loadingLabel.isHidden = false
-            return
         }
 
         generateAndLoadPDF()
@@ -675,6 +675,7 @@ private extension AICoachReportPDFDemoVC {
 
         return AICoachReportDemoData(
             navigationTitle: fallback.navigationTitle,
+            startDate: startDate,
             navigationDateRange: makeNavigationDateRange(startDate: startDate, endDate: endDate, fallback: fallback.navigationDateRange),
             reportTitle: reportTitle,
             reportDateRange: makeReportDateRange(startDate: startDate, endDate: endDate, fallback: fallback.reportDateRange),

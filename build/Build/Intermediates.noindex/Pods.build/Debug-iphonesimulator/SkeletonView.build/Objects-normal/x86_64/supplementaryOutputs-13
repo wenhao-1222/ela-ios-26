@@ -1,0 +1,58 @@
+{
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SkeletonView/SkeletonViewCore/Sources/API/Deprecated.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/Deprecated.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/Deprecated.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/Deprecated.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/Deprecated.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/Deprecated.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SkeletonView/SkeletonViewCore/Sources/API/Models/GradientDirection.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/GradientDirection.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/GradientDirection.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/GradientDirection.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/GradientDirection.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/GradientDirection.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SkeletonView/SkeletonViewCore/Sources/API/UIKitExtensions/CALayer+Animations.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CALayer+Animations.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CALayer+Animations.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CALayer+Animations.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CALayer+Animations.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CALayer+Animations.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SkeletonView/SkeletonViewCore/Sources/Internal/Collections/CollectionSkeleton.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CollectionSkeleton.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CollectionSkeleton.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CollectionSkeleton.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CollectionSkeleton.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CollectionSkeleton.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SkeletonView/SkeletonViewCore/Sources/Internal/FoundationExtensions/DispatchQueue+Extensions.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/DispatchQueue+Extensions.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/DispatchQueue+Extensions.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/DispatchQueue+Extensions.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/DispatchQueue+Extensions.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/DispatchQueue+Extensions.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SkeletonView/SkeletonViewCore/Sources/Internal/Helpers/AssociationPolicy.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/AssociationPolicy.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/AssociationPolicy.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/AssociationPolicy.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/AssociationPolicy.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/AssociationPolicy.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SkeletonView/SkeletonViewCore/Sources/Internal/SkeletonExtensions/GradientDirection+Animations.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/GradientDirection+Animations.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/GradientDirection+Animations.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/GradientDirection+Animations.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/GradientDirection+Animations.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/GradientDirection+Animations.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/SkeletonView/SkeletonViewCore/Sources/Internal/UIKitExtensions/CALayer+Extensions.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CALayer+Extensions.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CALayer+Extensions.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CALayer+Extensions.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CALayer+Extensions.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/SkeletonView.build/Objects-normal/x86_64/CALayer+Extensions.swiftdeps"
+  }
+}

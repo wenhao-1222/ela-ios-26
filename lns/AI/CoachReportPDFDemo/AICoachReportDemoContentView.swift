@@ -781,6 +781,7 @@ private extension AICoachReportDemoContentView {
         let numberLabel = UILabel()
         numberLabel.font = .systemFont(ofSize: PDFWidth(34), weight: .regular)
         numberLabel.textColor = AICoachReportDemoPalette.textSecondary
+        numberLabel.textAlignment = .right
         numberLabel.text = "\(number)."
 
         let textLabel = makeSectionBodyLabel(
@@ -793,7 +794,7 @@ private extension AICoachReportDemoContentView {
 
         numberLabel.snp.makeConstraints { make in
             make.top.left.equalToSuperview()
-            make.width.equalTo(PDFWidth(24))
+            make.width.equalTo(PDFWidth(36))
         }
         textLabel.snp.makeConstraints { make in
             make.top.right.bottom.equalToSuperview()

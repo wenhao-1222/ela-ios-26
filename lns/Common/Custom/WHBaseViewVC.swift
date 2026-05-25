@@ -753,6 +753,23 @@ extension WHBaseViewVC{
 }
 
 extension WHBaseViewVC{
+    func refreshUserCenterAndLogsAfterDietPlanCreate(completion: (() -> Void)? = nil) {
+        let param = ["uid": "\(UserInfoModel.shared.uId)"]
+        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { responseObject in
+            let previousMealsNumber = UserInfoModel.shared.mealsNumber
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            UserInfoModel.shared.updateMsg(dict: dataObj)
+            if previousMealsNumber == UserInfoModel.shared.mealsNumber {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+            }
+            completion?()
+        } failure: { _ in
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+            completion?()
+        }
+    }
+
     func initNavi(titleStr:String,naviBgColor:UIColor? = .COLOR_CARD_BG_WHITE,isWhite:Bool? = false){
         if #available(iOS 26.0, *), prefersSystemNavigationBarOnIOS26 {
             self.navigationItem.title = titleStr

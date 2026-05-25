@@ -1,0 +1,128 @@
+{
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Animation/ChartAnimationEasing.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/ChartAnimationEasing.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/ChartAnimationEasing.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/ChartAnimationEasing.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/ChartAnimationEasing.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/ChartAnimationEasing.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Charts/BubbleChartView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Charts/CandleStickChartView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleStickChartView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleStickChartView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleStickChartView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleStickChartView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleStickChartView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Data/Implementations/Standard/BarLineScatterCandleBubbleChartDataSet.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleChartDataSet.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleChartDataSet.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleChartDataSet.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleChartDataSet.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleChartDataSet.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Data/Implementations/Standard/BubbleChartData.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartData.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartData.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartData.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartData.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartData.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Data/Implementations/Standard/BubbleChartDataEntry.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataEntry.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataEntry.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataEntry.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataEntry.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataEntry.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Data/Implementations/Standard/BubbleChartDataSet.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataSet.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataSet.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataSet.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataSet.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataSet.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Data/Implementations/Standard/CandleChartData.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartData.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartData.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartData.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartData.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartData.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Data/Implementations/Standard/CandleChartDataEntry.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataEntry.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataEntry.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataEntry.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataEntry.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataEntry.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Data/Implementations/Standard/CandleChartDataSet.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataSet.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataSet.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataSet.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataSet.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataSet.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Data/Interfaces/BarLineScatterCandleBubbleChartDataSetProtocol.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleChartDataSetProtocol.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleChartDataSetProtocol.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleChartDataSetProtocol.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleChartDataSetProtocol.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleChartDataSetProtocol.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Data/Interfaces/BubbleChartDataSetProtocol.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataSetProtocol.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataSetProtocol.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataSetProtocol.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataSetProtocol.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataSetProtocol.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Data/Interfaces/CandleChartDataSetProtocol.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataSetProtocol.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataSetProtocol.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataSetProtocol.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataSetProtocol.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataSetProtocol.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Interfaces/BubbleChartDataProvider.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataProvider.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataProvider.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataProvider.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataProvider.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartDataProvider.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Interfaces/CandleChartDataProvider.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataProvider.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataProvider.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataProvider.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataProvider.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleChartDataProvider.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Renderers/BarLineScatterCandleBubbleRenderer.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleRenderer.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleRenderer.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleRenderer.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleRenderer.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BarLineScatterCandleBubbleRenderer.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Renderers/BubbleChartRenderer.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartRenderer.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartRenderer.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartRenderer.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartRenderer.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/BubbleChartRenderer.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Renderers/CandleStickChartRenderer.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleStickChartRenderer.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleStickChartRenderer.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleStickChartRenderer.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleStickChartRenderer.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CandleStickChartRenderer.swiftdeps"
+  }
+}

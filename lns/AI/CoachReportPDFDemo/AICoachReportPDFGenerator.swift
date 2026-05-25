@@ -22,7 +22,7 @@ enum AICoachReportPDFGenerator {
     // 将整页渲染拆成更小的切片，避免主线程被一次性占满，
     // 让返回按钮和页面交互能在切片间隙及时得到处理。
     private static let renderTileHeight: CGFloat = 220
-    private static let cacheVersion = "v3"
+    private static let cacheVersion = "v5"
     static let pageSize = layoutPageSize
 
     static func generateAsync(
@@ -117,13 +117,7 @@ enum AICoachReportPDFGenerator {
 
     static func existingCachedFileURL(report: AICoachReportDemoData, reportId: String) -> URL? {
         let fileURL = makeOutputURL(report: report, reportId: reportId)
-        guard FileManager.default.fileExists(atPath: fileURL.path) else { return nil }
-        guard cachedVersion(for: fileURL) == cacheVersion else {
-            try? FileManager.default.removeItem(at: fileURL)
-            try? FileManager.default.removeItem(at: cacheVersionFileURL(for: fileURL))
-            return nil
-        }
-        return fileURL
+        return FileManager.default.fileExists(atPath: fileURL.path) ? fileURL : nil
     }
 
     private static func rasterizedPageImage(
@@ -329,17 +323,26 @@ enum AICoachReportPDFGenerator {
     }
 
     private static func makeStableFileName(report: AICoachReportDemoData, reportId: String) -> String {
-        let trimmedReportId = reportId.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmedReportId.isEmpty == false {
-            return "report_\(sanitizeFileNameComponent(trimmedReportId))"
+        let startDateText = makeFileDateText(from: report.startDate)
+        if startDateText.isEmpty == false {
+            return "ELA教练分析_\(startDateText)"
         }
 
-        let reportDate = report.reportDateRange
-            .replacingOccurrences(of: "日期：", with: "")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        let fallbackDate = report.navigationDateRange.trimmingCharacters(in: .whitespacesAndNewlines)
-        let fileDate = reportDate.isEmpty ? fallbackDate : reportDate
-        return "ELA-AI教练 \(sanitizeFileNameComponent(fileDate))"
+        let trimmedReportId = reportId.trimmingCharacters(in: .whitespacesAndNewlines)
+        let fallbackText = trimmedReportId.isEmpty ? "default" : sanitizeFileNameComponent(trimmedReportId)
+        return "ELA教练分析_\(fallbackText)"
+    }
+
+    private static func makeFileDateText(from startDate: String) -> String {
+        let trimmedDate = startDate.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmedDate.isEmpty == false else { return "" }
+        let formattedDate = Date().changeDateFormatter(dateString: trimmedDate, formatter: "yyyy-MM-dd", targetFormatter: "yyyyMMdd")
+        if formattedDate.isEmpty == false {
+            return formattedDate
+        }
+
+        let digitText = trimmedDate.filter { $0.isNumber }
+        return digitText.count == 8 ? String(digitText) : ""
     }
 
     private static func sanitizeFileNameComponent(_ value: String) -> String {

@@ -1,0 +1,4 @@
+
+module MCToast.__Swift {
+  exclude header "MCToast-Swift.h"
+}

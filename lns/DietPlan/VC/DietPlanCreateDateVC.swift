@@ -455,14 +455,8 @@ extension DietPlanCreateDateVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendDietPlanMsgRequest:\(dataObj)")
-            let updatedDates = LogsSQLiteManager.getInstance().applyDietPlanNutrientsTargets(dataObj["nutrientsTarget"] as? NSArray ?? [])
-//            if !updatedDates.isEmpty {
-//                
-//                
-//            }
-            DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
-            })
+            _ = LogsSQLiteManager.getInstance().applyDietPlanNutrientsTargets(dataObj["nutrientsTarget"] as? NSArray ?? [])
+            self.refreshUserCenterAndLogsAfterDietPlanCreate()
             self.createPlanLoadingVm.completeSuccess { [weak self] in
                 guard let self = self else { return }
                 self.isSubmittingCreatePlan = false

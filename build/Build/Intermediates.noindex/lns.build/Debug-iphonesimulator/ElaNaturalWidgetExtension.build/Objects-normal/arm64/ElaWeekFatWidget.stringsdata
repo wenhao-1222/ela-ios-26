@@ -1,0 +1,40 @@
+{
+  "source": "/Users/lns2/Desktop/lnsapp-ios/ElaNaturalWidget/ElaWeekFatWidget.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "脂肪",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "（克）",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 40
+        }
+      },
+      {
+        "comment": "",
+        "key": "脂肪",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 112
+        }
+      },
+      {
+        "comment": "",
+        "key": "过去7天摄入：脂肪",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 113
+        }
+      }
+    ]
+  },
+  "version": 1
+}

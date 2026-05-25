@@ -1,0 +1,119 @@
+{
+  "" : {
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/MCToast-primary.dia",
+    "emit-module-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/MCToast-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/MCToast-primary-emit-module.dia",
+    "pch" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/MCToast-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/MCToast-primary.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/MCToast/MCToast/Classes/BundleImage.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/BundleImage.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/BundleImage.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/BundleImage.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/BundleImage.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/BundleImage.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/BundleImage.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/BundleImage.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/BundleImage~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/MCToast/MCToast/Classes/DispatchQueue+Extension.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/DispatchQueue+Extension.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/DispatchQueue+Extension.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/DispatchQueue+Extension.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/DispatchQueue+Extension.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/DispatchQueue+Extension.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/DispatchQueue+Extension.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/DispatchQueue+Extension.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/DispatchQueue+Extension~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/MCToast/MCToast/Classes/Toast+Custom.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Custom.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Custom.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Custom.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Custom.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Custom.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Custom.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Custom.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Custom~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/MCToast/MCToast/Classes/Toast+Icon.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Icon.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Icon.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Icon.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Icon.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Icon.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Icon.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Icon.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Icon~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/MCToast/MCToast/Classes/Toast+Loading.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Loading.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Loading.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Loading.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Loading.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Loading.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Loading.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Loading.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Loading~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/MCToast/MCToast/Classes/Toast+Remove.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Remove.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Remove.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Remove.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Remove.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Remove.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Remove.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Remove.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Remove~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/MCToast/MCToast/Classes/Toast+StatusBar.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+StatusBar.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+StatusBar.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+StatusBar.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+StatusBar.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+StatusBar.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+StatusBar.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+StatusBar.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+StatusBar~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/MCToast/MCToast/Classes/Toast+Text.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Text.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Text.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Text.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Text.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Text.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Text.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Text.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast+Text~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/MCToast/MCToast/Classes/Toast.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/Toast~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/MCToast/MCToast/Classes/ToastConfig.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastConfig.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastConfig.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastConfig.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastConfig.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastConfig.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastConfig.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastConfig.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastConfig~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/MCToast/MCToast/Classes/ToastHelper.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastHelper.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastHelper.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastHelper.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastHelper.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastHelper.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastHelper.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastHelper.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/MCToast.build/Objects-normal/arm64/ToastHelper~partial.swiftmodule"
+  }
+}

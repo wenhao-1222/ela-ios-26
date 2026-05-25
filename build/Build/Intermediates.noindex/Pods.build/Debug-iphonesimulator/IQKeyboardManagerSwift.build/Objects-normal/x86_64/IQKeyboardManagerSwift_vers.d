@@ -1,0 +1,3 @@
+dependencies: \
+  /Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/IQKeyboardManagerSwift.build/module.modulemap \
+  /Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/IQKeyboardManagerSwift.build/DerivedSources/IQKeyboardManagerSwift_vers.c

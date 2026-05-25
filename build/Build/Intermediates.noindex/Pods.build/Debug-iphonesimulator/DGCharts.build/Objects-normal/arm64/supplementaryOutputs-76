@@ -1,0 +1,128 @@
+{
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Charts/CombinedChartView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CombinedChartView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CombinedChartView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CombinedChartView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CombinedChartView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CombinedChartView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Charts/HorizontalBarChartView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarChartView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarChartView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarChartView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarChartView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarChartView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Components/ComponentBase.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/ComponentBase.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/ComponentBase.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/ComponentBase.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/ComponentBase.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/ComponentBase.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Components/Description.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Description.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Description.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Description.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Description.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Description.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Filters/DataApproximator+N.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataApproximator+N.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataApproximator+N.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataApproximator+N.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataApproximator+N.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataApproximator+N.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Filters/DataApproximator.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataApproximator.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataApproximator.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataApproximator.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataApproximator.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataApproximator.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Formatters/DefaultAxisValueFormatter.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultAxisValueFormatter.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultAxisValueFormatter.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultAxisValueFormatter.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultAxisValueFormatter.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultAxisValueFormatter.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Formatters/DefaultFillFormatter.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultFillFormatter.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultFillFormatter.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultFillFormatter.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultFillFormatter.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultFillFormatter.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Formatters/DefaultValueFormatter.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultValueFormatter.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultValueFormatter.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultValueFormatter.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultValueFormatter.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DefaultValueFormatter.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Formatters/FillFormatter.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/FillFormatter.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/FillFormatter.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/FillFormatter.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/FillFormatter.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/FillFormatter.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Highlight/CombinedHighlighter.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CombinedHighlighter.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CombinedHighlighter.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CombinedHighlighter.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CombinedHighlighter.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CombinedHighlighter.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Highlight/Highlight.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Highlight.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Highlight.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Highlight.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Highlight.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Highlight.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Highlight/Highlighter.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Highlighter.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Highlighter.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Highlighter.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Highlighter.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Highlighter.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Highlight/HorizontalBarHighlighter.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarHighlighter.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarHighlighter.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarHighlighter.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarHighlighter.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarHighlighter.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Renderers/DataRenderer.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataRenderer.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataRenderer.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataRenderer.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataRenderer.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/DataRenderer.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Renderers/HorizontalBarChartRenderer.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarChartRenderer.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarChartRenderer.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarChartRenderer.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarChartRenderer.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/HorizontalBarChartRenderer.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Renderers/Scatter/CrossShapeRenderer.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CrossShapeRenderer.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CrossShapeRenderer.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CrossShapeRenderer.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CrossShapeRenderer.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/CrossShapeRenderer.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/DGCharts/Source/Charts/Utils/Fill.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Fill.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Fill.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Fill.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Fill.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DGCharts.build/Objects-normal/arm64/Fill.swiftdeps"
+  }
+}

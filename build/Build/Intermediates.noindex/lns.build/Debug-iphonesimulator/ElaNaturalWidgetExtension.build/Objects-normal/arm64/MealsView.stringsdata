@@ -1,0 +1,16 @@
+{
+  "source": "/Users/lns2/Desktop/lnsapp-ios/ElaNaturalWidget/MealsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "第 %lld 餐",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 70
+        }
+      }
+    ]
+  },
+  "version": 1
+}

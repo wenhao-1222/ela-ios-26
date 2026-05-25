@@ -1203,7 +1203,7 @@ class LogsSQLiteManager {
                 continue
             }
             
-            let existingCircleTag = getLogsByDate(sDate: sdate)?.circleTag ?? ""
+            let existingCircleTag = ""//getLogsByDate(sDate: sdate)?.circleTag ?? ""
             updateSingelDateGoal(caloriTar: caloriesTarget,
                                  carbohydrateTar: carbohydrateTarget,
                                  proteinTar: proteinTarget,
