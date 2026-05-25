@@ -133,9 +133,9 @@ extension GoalSetSpecGVM{
         self.fatNumber = Int(dict.doubleValueForKey(key: "fats"))
         self.caloriesNumber = Int(dict.doubleValueForKey(key: "calories"))
         
-        self.carVm.textField.text = dict.stringValueForKey(key: "carbohydrates")
-        self.proteinVm.textField.text = dict.stringValueForKey(key: "proteins")
-        self.fatVm.textField.text = dict.stringValueForKey(key: "fats")
+        self.carVm.textField.text = "\(self.carNumber)"//dict.stringValueForKey(key: "carbohydrates")
+        self.proteinVm.textField.text = "\(self.proteinNumber)"//dict.stringValueForKey(key: "proteins")
+        self.fatVm.textField.text = "\(self.fatNumber)"//dict.stringValueForKey(key: "fats")
         
         if self.caloriInitBlock != nil{
             self.caloriInitBlock!("\(dict.stringValueForKey(key: "calories"))")

@@ -183,7 +183,7 @@ private extension AICoachPreDayItemView {
         titleLabel.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(iconContainerView.snp.bottom).offset(kFitWidth(6))
-            make.bottom.equalToSuperview()
+//            make.bottom.equalToSuperview()
         }
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(itemTapAction))

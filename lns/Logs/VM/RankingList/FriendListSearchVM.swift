@@ -74,6 +74,23 @@ extension FriendListSearchVM{
 }
 
 extension FriendListSearchVM{
+    private func normalizedFriendID(from text: String) -> String {
+        let shareIDPattern = "(?i)elavatine\\s*id\\s*(?:是|:|：)?\\s*([A-Za-z0-9]+)"
+        if let regex = try? NSRegularExpression(pattern: shareIDPattern),
+           let match = regex.firstMatch(in: text, range: NSRange(location: 0, length: (text as NSString).length)),
+           match.numberOfRanges > 1 {
+            let idRange = match.range(at: 1)
+            if idRange.location != NSNotFound {
+                let id = (text as NSString).substring(with: idRange)
+                return String(id.prefix(maxLength))
+            }
+        }
+        
+        let pattern = "[^A-Za-z0-9]"
+        let id = text.pregReplace(pattern: pattern, with: "")
+        return String(id.prefix(maxLength))
+    }
+    
     func initUI() {
         addSubview(bgView)
         bgView.addSubview(searchImgView)
@@ -154,21 +171,20 @@ extension FriendListSearchVM:UITextFieldDelegate{
         //非markedText才继续往下处理
         guard let _: UITextRange = textField.markedTextRange else{
             //当前光标的位置（后面会对其做修改）
+            let selectedRange = textField.selectedTextRange
             let cursorPostion = textField.offset(from: textField.endOfDocument,
-                                                 to: textField.selectedTextRange!.end)
-            //判断非中文非字母非数字的正则表达式
-            let pattern = "[^A-Za-z0-9]"//"[^A-Za-z0-9\\u0020\\u4E00-\\u9FA5]"
-            var str = self.textField.text!.pregReplace(pattern: pattern, with: "")
-            if str.count > maxLength {
-                str = String(str.prefix(maxLength))
-            }
+                                                 to: selectedRange?.end ?? textField.endOfDocument)
+            let rawText = self.textField.text ?? ""
+            let str = normalizedFriendID(from: rawText)
             self.textField.text = str
              
             //让光标停留在正确位置
-            let targetPostion = textField.position(from: textField.endOfDocument,
-                                                   offset: cursorPostion)!
-            textField.selectedTextRange = textField.textRange(from: targetPostion,
-                                                              to: targetPostion)
+            let safeCursorPostion = max(-str.count, cursorPostion)
+            if let targetPostion = textField.position(from: textField.endOfDocument,
+                                                      offset: safeCursorPostion) {
+                textField.selectedTextRange = textField.textRange(from: targetPostion,
+                                                                  to: targetPostion)
+            }
             return
         }
     }

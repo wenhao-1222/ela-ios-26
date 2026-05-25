@@ -768,6 +768,8 @@
 		EC31C4352F920FFA00F435BF /* AICoachPreDayStatusRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4342F920FF900F435BF /* AICoachPreDayStatusRowView.swift */; };
 		EC31C4372F92102500F435BF /* AICoachPreDayItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4362F92102400F435BF /* AICoachPreDayItemView.swift */; };
 		EC31C4392F92285600F435BF /* ElaProReadyItemCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4382F92285600F435BF /* ElaProReadyItemCardView.swift */; };
+		EC31C4412FA55E1000F435BF /* AIEnergyOrbVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4402FA55E1000F435BF /* AIEnergyOrbVC.swift */; };
+		EC31C4432FA55E1000F435BF /* AICoachLoopOrb.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4422FA55E1000F435BF /* AICoachLoopOrb.swift */; };
 		EC31C7592F95F51100F435BF /* CoachAnimationV3View.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C7582F95F51000F435BF /* CoachAnimationV3View.swift */; };
 		EC356CCD2C6C856E0023C0BA /* WidgetUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */; };
 		EC356CD52C6C99D00023C0BA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F62C19915800E46713 /* WidgetKit.framework */; };
@@ -2262,6 +2264,8 @@
 		EC31C4342F920FF900F435BF /* AICoachPreDayStatusRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDayStatusRowView.swift; sourceTree = "<group>"; };
 		EC31C4362F92102400F435BF /* AICoachPreDayItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDayItemView.swift; sourceTree = "<group>"; };
 		EC31C4382F92285600F435BF /* ElaProReadyItemCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProReadyItemCardView.swift; sourceTree = "<group>"; };
+		EC31C4402FA55E1000F435BF /* AIEnergyOrbVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIEnergyOrbVC.swift; sourceTree = "<group>"; };
+		EC31C4422FA55E1000F435BF /* AICoachLoopOrb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachLoopOrb.swift; sourceTree = "<group>"; };
 		EC31C7582F95F51000F435BF /* CoachAnimationV3View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachAnimationV3View.swift; sourceTree = "<group>"; };
 		EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetUtils.swift; sourceTree = "<group>"; };
 		EC356CD42C6C99D00023C0BA /* ElaNaturalWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ElaNaturalWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4989,6 +4993,8 @@
 			isa = PBXGroup;
 			children = (
 				ECD0FF392BABE04B001232C9 /* MineVC.swift */,
+				EC31C4402FA55E1000F435BF /* AIEnergyOrbVC.swift */,
+				EC31C4422FA55E1000F435BF /* AICoachLoopOrb.swift */,
 				EC31C3352F8F38B500F435BF /* CourseVC.swift */,
 				A71C54902E6ADB6400FB797D /* WidgetTestVC.swift */,
 				A71C54922E6ADE1C00FB797D /* GlassToggleRow.swift */,
@@ -7013,6 +7019,8 @@
 				EC77842E2F5698AC03102D21 /* ElaProPlanVM.swift in Sources */,
 				EC7784322F57A92103102D21 /* ElaProReadyVM.swift in Sources */,
 				EC31C3362F8F38BA00F435BF /* CourseVC.swift in Sources */,
+				EC31C4412FA55E1000F435BF /* AIEnergyOrbVC.swift in Sources */,
+				EC31C4432FA55E1000F435BF /* AICoachLoopOrb.swift in Sources */,
 				EC7784342F57E00403102D21 /* ElaProTransformVM.swift in Sources */,
 				EC7784302F56A3A103102D21 /* ElaProIAPManager.swift in Sources */,
 				ECAE25E62BF20F37007D4B57 /* NSDictionary+Exs.swift in Sources */,

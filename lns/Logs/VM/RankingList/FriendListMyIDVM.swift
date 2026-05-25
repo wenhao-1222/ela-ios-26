@@ -44,8 +44,8 @@ class FriendListMyIDVM: UIView {
 
 extension FriendListMyIDVM{
     @objc func copyIdAction()  {
-        UIPasteboard.general.string = UserInfoModel.shared.id
-        MCToast.mc_success("复制ID成功",respond: .allow)
+        UIPasteboard.general.string = "我的 Elavatine ID 是 \(UserInfoModel.shared.id)，快来和我互相监督饮食！"
+        MCToast.mc_success("已复制",respond: .allow)
     }
 }
 

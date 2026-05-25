@@ -347,7 +347,7 @@ private extension AICoachPreVC {
 
         self.reportId = latestReportDict.stringValueForKey(key: "id")
         let reportStatus = latestReportDict.stringValueForKey(key: "reportStatus").intValue
-        var remainingDays = max(0, dataDict.stringValueForKey(key: "remainingDays").intValue)
+        let remainingDays = max(0, dataDict.stringValueForKey(key: "remainingDays").intValue)
         var isFirstReport = dataDict.floatValueForKey(key: "reportCount") <= 1//是否为首报
         
         let userGoal = dataDict["userGoal"] as? Int ?? 0
@@ -365,7 +365,6 @@ private extension AICoachPreVC {
                         items.append(AICoachPreDaysVM.DayItem(title: "", state: .pending, completeStatus: 0))
                     }
                 }
-                remainingDays = 7 - dataDict.stringValueForKey(key: "completeDays").intValue
                 self.preDaysVM.configure(items: items,
                                          reportAfterDays: remainingDays,
                                          isFirstReport:isFirstReport,

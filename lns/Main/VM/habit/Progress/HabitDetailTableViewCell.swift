@@ -55,14 +55,15 @@ class HabitDetailTableViewCell: FeedBackTableViewCell {
         lab.textColor = .THEME
         lab.font = .systemFont(ofSize: 16, weight: .semibold)
         lab.textAlignment = .right
-        lab.text = "-783"
+//        lab.text = "-783"
         return lab
     }()
-    private lazy var separatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(hex: "F1F2F4")
-        return view
-    }()
+//    private lazy var separatorView: UIView = {
+//        let view = UIView()
+//        view.backgroundColor = UIColor(hex: "F1F2F4")
+//        view.isHidden = true
+//        return view
+//    }()
 }
 
 extension HabitDetailTableViewCell{
@@ -84,7 +85,7 @@ extension HabitDetailTableViewCell{
             numberLab.textColor = UIColor(hex: "2997FF")
         }
         
-        separatorView.isHidden = isLast
+//        separatorView.isHidden = isLast
         if isFirst && isLast {
             cornerStyle = .all
         } else if isFirst {
@@ -105,7 +106,7 @@ extension HabitDetailTableViewCell{
         bgView.addSubview(titleLab)
         bgView.addSubview(timeLab)
         bgView.addSubview(numberLab)
-        bgView.addSubview(separatorView)
+//        bgView.addSubview(separatorView)
         
         setConstrait()
     }
@@ -131,12 +132,12 @@ extension HabitDetailTableViewCell{
             make.centerY.equalToSuperview()
             make.width.greaterThanOrEqualTo(kFitWidth(52))
         }
-        separatorView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(16))
-            make.right.equalTo(kFitWidth(-16))
-            make.bottom.equalToSuperview()
-            make.height.equalTo(0.5)
-        }
+//        separatorView.snp.makeConstraints { make in
+//            make.left.equalTo(kFitWidth(16))
+//            make.right.equalTo(kFitWidth(-16))
+//            make.bottom.equalToSuperview()
+//            make.height.equalTo(0.5)
+//        }
     }
     
     func applyCornerStyle() {
