@@ -48,6 +48,7 @@ class UserInfoModel {
     var postNum = 3
     var failToastNum = 0
     var noUidResponseNum = 0// 返回501 的次数
+    private var isHandlingForcedLogout = false
     
     var uId = ""
     var registDate = Date().nextDay(days: 0)
@@ -334,6 +335,7 @@ extension UserInfoModel{
 //        }
     }
     func clearMsg() {
+        isHandlingForcedLogout = false
         clearDietPlanCreateDraftCache()
         ElaProIAPManager.shared.clearLocalEntitlementCache()
         self.birthDay = ""
@@ -356,6 +358,16 @@ extension UserInfoModel{
         UserDefaults.set(value: [:], forKey: .jounal_meal_advice)
         UserDefaults.set(value: "0", forKey: .vipStatus)
         UserDefaults.setHabitRankListVMDataArray([])
+    }
+
+    func beginForcedLogoutHandlingIfNeeded() -> Bool {
+        guard isHandlingForcedLogout == false else { return false }
+        isHandlingForcedLogout = true
+        return true
+    }
+
+    func resetForcedLogoutHandling() {
+        isHandlingForcedLogout = false
     }
     
     func updateOssParams(dict:NSDictionary) {

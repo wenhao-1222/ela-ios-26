@@ -8,6 +8,10 @@
 import UIKit
 import SnapKit
 
+private var aiCoachPressGenerator = UIImpactFeedbackGenerator(style: .rigid)
+private var aiCoachPressLastFeedbackTime: TimeInterval = 0
+private let aiCoachPressMinimumFeedbackInterval: TimeInterval = 0.2
+
 final class AICoachPreFeedbackGlassVM: UIView {
 
     let selfHeight = kFitWidth(198)
@@ -37,7 +41,8 @@ final class AICoachPreFeedbackGlassVM: UIView {
 
     private lazy var fallbackTintView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(red: 0.66, green: 0.69, blue: 0.75, alpha: 0.18)
+//        view.backgroundColor = UIColor(red: 0.66, green: 0.69, blue: 0.75, alpha: 0.18)
+        view.backgroundColor = .clear
         view.isUserInteractionEnabled = false
         if #available(iOS 26.0, *) {
             view.isHidden = true
@@ -49,6 +54,7 @@ final class AICoachPreFeedbackGlassVM: UIView {
         let layer = CAGradientLayer()
         layer.startPoint = CGPoint(x: 0.18, y: 0)
         layer.endPoint = CGPoint(x: 0.82, y: 1)
+        layer.isHidden = true
         layer.colors = [
             UIColor.white.withAlphaComponent(0.26).cgColor,
             UIColor.white.withAlphaComponent(0.06).cgColor,
@@ -273,7 +279,11 @@ private final class AICoachPreFeedbackInfoItemView: UIControl {
     private lazy var glassView: UIVisualEffectView = {
         let view = UIVisualEffectView(effect: makeInfoGlassEffect())
         view.backgroundColor = .clear
-        view.isUserInteractionEnabled = false
+        if #available(iOS 26.0, *) {
+            view.isUserInteractionEnabled = true
+        } else {
+            view.isUserInteractionEnabled = false
+        }
         view.clipsToBounds = true
         view.layer.cornerRadius = kFitWidth(14)
         view.layer.cornerCurve = .continuous
@@ -363,6 +373,7 @@ private final class AICoachPreFeedbackThemeGlassButton: UIControl {
     override var isEnabled: Bool {
         didSet {
             alpha = isEnabled ? 1 : 0.55
+            updateGlassInteractionState()
         }
     }
 
@@ -374,13 +385,22 @@ private final class AICoachPreFeedbackThemeGlassButton: UIControl {
         highlightLayer.frame = bounds.insetBy(dx: -bounds.width * 0.08, dy: -bounds.height * 0.22)
         strokeLayer.path = UIBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5),
                                         cornerRadius: cornerRadius).cgPath
+        if #available(iOS 26.0, *) {
+            highlightLayer.isHidden = true
+            strokeLayer.isHidden = true
+        }
     }
 
     private lazy var glassView: UIVisualEffectView = {
         let view = UIVisualEffectView(effect: makeGlassEffect())
         view.backgroundColor = .clear
-        view.isUserInteractionEnabled = false
-        view.clipsToBounds = true
+        if #available(iOS 26.0, *) {
+            view.isUserInteractionEnabled = true
+            view.clipsToBounds = false
+        } else {
+            view.isUserInteractionEnabled = false
+            view.clipsToBounds = true
+        }
         view.layer.cornerCurve = .continuous
         return view
     }()
@@ -390,6 +410,9 @@ private final class AICoachPreFeedbackThemeGlassButton: UIControl {
         view.backgroundColor = .THEME
         view.alpha = 0.92
         view.isUserInteractionEnabled = false
+        if #available(iOS 26.0, *) {
+            view.isHidden = true
+        }
         return view
     }()
 
@@ -427,12 +450,23 @@ private final class AICoachPreFeedbackThemeGlassButton: UIControl {
 
 private extension AICoachPreFeedbackThemeGlassButton {
     func setupUI() {
+        enableAICoachFallbackPressEffect()
         isOpaque = false
         backgroundColor = .clear
-        clipsToBounds = true
         layer.cornerCurve = .continuous
+        if #available(iOS 26.0, *) {
+            clipsToBounds = false
+            layer.masksToBounds = false
+        } else {
+            clipsToBounds = true
+        }
 
         addSubview(glassView)
+        if #available(iOS 26.0, *) {
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(glassTapAction))
+            tapGesture.cancelsTouchesInView = false
+            glassView.addGestureRecognizer(tapGesture)
+        }
         glassView.contentView.addSubview(themeOverlayView)
         glassView.contentView.layer.addSublayer(highlightLayer)
         glassView.contentView.layer.addSublayer(strokeLayer)
@@ -449,6 +483,7 @@ private extension AICoachPreFeedbackThemeGlassButton {
         titleLabel.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        updateGlassInteractionState()
     }
 
     func makeGlassEffect() -> UIVisualEffect {
@@ -464,7 +499,11 @@ private extension AICoachPreFeedbackThemeGlassButton {
 
     func updateHighlightedState(animated: Bool) {
         let changes = {
-            self.themeOverlayView.alpha = self.isHighlighted ? 0.82 : 0.92
+            if #available(iOS 26.0, *) {
+                self.themeOverlayView.alpha = 0
+            } else {
+                self.themeOverlayView.alpha = self.isHighlighted ? 0.82 : 0.92
+            }
             self.titleLabel.alpha = self.isHighlighted ? 0.86 : 1
         }
 
@@ -474,11 +513,28 @@ private extension AICoachPreFeedbackThemeGlassButton {
             changes()
         }
     }
+
+    @objc func glassTapAction() {
+        guard isEnabled else { return }
+        sendActions(for: .touchUpInside)
+    }
+
+    func updateGlassInteractionState() {
+        if #available(iOS 26.0, *) {
+            glassView.isUserInteractionEnabled = isEnabled
+        }
+    }
 }
 
 private extension AICoachPreFeedbackInfoItemView {
     func setupUI() {
+        enableAICoachFallbackPressEffect()
         addSubview(glassView)
+        if #available(iOS 26.0, *) {
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(glassTapAction))
+            tapGesture.cancelsTouchesInView = false
+            glassView.addGestureRecognizer(tapGesture)
+        }
         glassView.contentView.addSubview(tintView)
         glassView.contentView.layer.addSublayer(highlightLayer)
         glassView.contentView.layer.addSublayer(strokeLayer)
@@ -528,5 +584,115 @@ private extension AICoachPreFeedbackInfoItemView {
         } else {
             changes()
         }
+    }
+
+    @objc func glassTapAction() {
+        guard isEnabled else { return }
+        sendActions(for: .touchUpInside)
+    }
+}
+
+private extension UIControl {
+    func enableAICoachFallbackPressEffect() {
+        if #available(iOS 26.0, *) {
+            return
+        }
+
+        addTarget(self, action: #selector(aiCoachPressDown), for: .touchDown)
+        addTarget(self, action: #selector(aiCoachPressDragExit), for: .touchDragExit)
+        addTarget(self, action: #selector(aiCoachPressDragEnter), for: .touchDragEnter)
+        addTarget(self, action: #selector(aiCoachPressUpInside), for: .touchUpInside)
+        addTarget(self, action: #selector(aiCoachPressUpOutside), for: .touchUpOutside)
+        addTarget(self, action: #selector(aiCoachPressUpCancel), for: .touchCancel)
+    }
+
+    @objc func aiCoachPressDown() {
+        guard bounds.width > 0, bounds.height > 0 else { return }
+        UIView.animate(withDuration: 0.1) {
+            self.transform = CGAffineTransform(scaleX: 0.98, y: 0.98)
+        }
+        showAICoachPressRippleEffect()
+        triggerAICoachPressImpact(aiCoachPressGenerator, intensity: 0.6)
+    }
+
+    @objc func aiCoachPressDragExit() {
+        UIView.animate(withDuration: 0.1) {
+            self.transform = .identity
+        }
+        triggerAICoachPressImpact(aiCoachPressGenerator, intensity: 0.6)
+    }
+
+    @objc func aiCoachPressDragEnter() {
+        UIView.animate(withDuration: 0.1) {
+            self.transform = CGAffineTransform(scaleX: 0.98, y: 0.98)
+        }
+        triggerAICoachPressImpact(aiCoachPressGenerator, intensity: 0.6)
+    }
+
+    @objc func aiCoachPressUpInside() {
+        UIView.animate(withDuration: 0.1) {
+            self.transform = .identity
+        }
+        triggerAICoachPressImpact(UIImpactFeedbackGenerator(style: .medium), intensity: 0.9)
+    }
+
+    @objc func aiCoachPressUpOutside() {
+        UIView.animate(withDuration: 0.1) {
+            self.transform = .identity
+        }
+    }
+
+    @objc func aiCoachPressUpCancel() {
+        UIView.animate(withDuration: 0.1) {
+            self.transform = .identity
+        }
+    }
+
+    func triggerAICoachPressImpact(_ generator: UIImpactFeedbackGenerator, intensity: CGFloat) {
+        let now = Date().timeIntervalSince1970
+        guard now - aiCoachPressLastFeedbackTime > aiCoachPressMinimumFeedbackInterval else { return }
+        generator.impactOccurred(intensity: intensity)
+        aiCoachPressLastFeedbackTime = now
+    }
+
+    func showAICoachPressRippleEffect() {
+        let size = max(bounds.width, bounds.height)
+        let frame = CGRect(x: (bounds.width - size) / 2,
+                           y: (bounds.height - size) / 2,
+                           width: size,
+                           height: size)
+
+        let rippleLayer = CALayer()
+        rippleLayer.frame = frame
+        rippleLayer.cornerRadius = size / 2
+        rippleLayer.backgroundColor = UIColor.white.withAlphaComponent(0.2).cgColor
+        if subviews.count > 1 {
+            layer.insertSublayer(rippleLayer, below: subviews[1].layer)
+        } else {
+            layer.addSublayer(rippleLayer)
+        }
+
+        let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
+        scaleAnim.fromValue = 0.3
+        scaleAnim.toValue = 1.4
+
+        let opacityAnim = CABasicAnimation(keyPath: "opacity")
+        opacityAnim.fromValue = 0.5
+        opacityAnim.toValue = 0.0
+
+        let group = CAAnimationGroup()
+        group.animations = [scaleAnim, opacityAnim]
+        group.duration = 0.5
+        group.repeatCount = 0
+        group.timingFunction = CAMediaTimingFunction(name: .easeOut)
+        group.fillMode = .forwards
+        group.isRemovedOnCompletion = false
+
+        CATransaction.begin()
+        CATransaction.setCompletionBlock {
+            rippleLayer.removeFromSuperlayer()
+        }
+        rippleLayer.add(group, forKey: "ripple")
+        CATransaction.commit()
     }
 }

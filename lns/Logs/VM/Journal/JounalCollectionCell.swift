@@ -1063,7 +1063,8 @@ extension JounalCollectionCell{
 //        }
         
         if self.queryDay == Date().nextDay(days: 0){
-            WidgetUtils().dealCurrentMealsDataForWidget(mealsArray: mealsArray)
+            let arr = NSArray(array: mealsArray)
+            WidgetUtils().dealCurrentMealsDataForWidget(mealsArray: arr)
         }
         
 //        LogsSQLiteUploadManager().saveLocalNaturalData(dict: currentDayMsg)

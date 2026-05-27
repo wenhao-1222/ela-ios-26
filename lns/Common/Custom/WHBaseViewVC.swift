@@ -293,6 +293,7 @@ class WHBaseViewVC: ViewController {
         }
     }
     func completeLoginSuccessAndEnterApp() {
+        UserInfoModel.shared.resetForcedLogoutHandling()
         BodyDataUploadManager().syncAllBodyDataFromServer()
         QuestinonaireMsgModel.shared.clearMsg()
         changeRootVcToTabbar()

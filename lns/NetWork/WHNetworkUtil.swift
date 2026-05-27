@@ -243,9 +243,7 @@ class WHNetworkUtil: SessionManager {
             let dataRequest = manager.request(urlString, method: .post, parameters: paraDict, encoding: JSONEncoding.default,headers: header)
                             requestConfig?(dataRequest)
                             dataRequest.responseJSON { (response) in
-                    DLLog(message: "\(urlString) \n \(response)")
-                    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-                    let currentVc = appDelegate.getKeyWindow().rootViewController
+                DLLog(message: "\(urlString) \n \(response)")
                     
                     switch response.result{
                     case .success:
@@ -288,6 +286,11 @@ class WHNetworkUtil: SessionManager {
                                     success(result as! [String : AnyObject])
                                 }
                             }else if (code == 401 || (code == 501 && UserInfoModel.shared.noUidResponseNum > 10)) {//401 token失效，501 uid无效(
+                                guard UserInfoModel.shared.beginForcedLogoutHandlingIfNeeded() else {
+                                    MCToast.mc_remove()
+                                    return
+                                }
+
                                 MCToast.mc_remove()
                                 LogsMealsAlertSetManage().removeAllNotifi()
                                 
@@ -310,14 +313,10 @@ class WHNetworkUtil: SessionManager {
                                 DispatchQueue.main.async {
                                     let errorTitle = "\(value["message"] as? String ?? "账号登录过期，请重新登录！")"
                                     let alertVc = UIAlertController(title: "\(errorTitle)", message: "", preferredStyle: .alert)
-                                    let cancelAction = UIAlertAction(title: "确定", style: .default) { action in
-//                                        hasTap = true
-                                        // 弹窗确认这里仍然保持原来的跳转行为，不额外改动业务流程。
-                                        WHBaseViewVC().changeRootVcToWelcome()
-                                    }
+                                    let cancelAction = UIAlertAction(title: "确定", style: .default, handler: nil)
                                     alertVc.addAction(cancelAction)
 
-                                    currentVc?.present(alertVc, animated:true, completion:nil)
+                                    UIApplication.topViewController()?.present(alertVc, animated:true, completion:nil)
                                     
                                 }
                             }else{
