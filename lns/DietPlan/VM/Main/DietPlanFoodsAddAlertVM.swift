@@ -642,11 +642,11 @@ private extension DietPlanFoodsAddAlertVM {
                         let fat = dict.doubleValueForKey(key: "fat") + foodsMsg.doubleValueForKey(key: "fat")
                         let qty = dict.doubleValueForKey(key: "qty") + foodsMsg.doubleValueForKey(key: "qty")
                         
-                        foodsDict.setValue("\(WHUtils.convertStringToStringNoDigit("\(calories)") ?? "0")".replacingOccurrences(of: ",", with: "."), forKey: "calories")
+                        foodsDict.setValue("\(calories)".replacingOccurrences(of: ",", with: "."), forKey: "calories")
                         foodsDict.setValue("\(carbohydrate)".replacingOccurrences(of: ",", with: "."), forKey: "carbohydrate")
                         foodsDict.setValue("\(protein)".replacingOccurrences(of: ",", with: "."), forKey: "protein")
                         foodsDict.setValue("\(fat)".replacingOccurrences(of: ",", with: "."), forKey: "fat")
-                        foodsDict.setValue("\(WHUtils.convertStringToStringNoDigit("\(calories)") ?? "0")".replacingOccurrences(of: ",", with: "."), forKey: "caloriesNumber")
+                        foodsDict.setValue("\(calories)".replacingOccurrences(of: ",", with: "."), forKey: "caloriesNumber")
                         foodsDict.setValue("\(carbohydrate)".replacingOccurrences(of: ",", with: "."), forKey: "carbohydrateNumber")
                         foodsDict.setValue("\(protein)".replacingOccurrences(of: ",", with: "."), forKey: "proteinNumber")
                         foodsDict.setValue("\(fat)".replacingOccurrences(of: ",", with: "."), forKey: "fatNumber")
@@ -693,10 +693,10 @@ private extension DietPlanFoodsAddAlertVM {
                 }
             }
             
-            caloriTotal = String(format: "%.0f", caloriTotal.rounded()).doubleValue
-            carboTotal = String(format: "%.0f", carboTotal.rounded()).doubleValue
-            proteinTotal = String(format: "%.0f", proteinTotal.rounded()).doubleValue
-            fatTotal = String(format: "%.0f", fatTotal.rounded()).doubleValue
+            caloriTotal = String(format: "%.4f", caloriTotal).doubleValue
+            carboTotal = String(format: "%.4f", carboTotal).doubleValue
+            proteinTotal = String(format: "%.4f", proteinTotal).doubleValue
+            fatTotal = String(format: "%.4f", fatTotal).doubleValue
             
             LogsSQLiteManager.getInstance().updateLogs(sDate: sDate,
                                                        eTime: Date().currentSeconds,

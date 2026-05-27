@@ -121,7 +121,7 @@ class LogsSQLiteUploadManager {
                 for j in 0..<mealPerArr.count{
                     let dictTemp = mealPerArr[j]as? NSMutableDictionary ?? [:]
                     if dictTemp.stringValueForKey(key: "state") == "1"{
-                        let calori = WHUtils.fixedFractionString(dictTemp.doubleValueForKey(key: "calories"), fractionDigits: 0).doubleValue
+                        let calori = WHUtils.fixedFractionString(dictTemp.doubleValueForKey(key: "calories"), fractionDigits: 3).doubleValue
                         let carbohydrate = WHUtils.fixedFractionString(dictTemp.doubleValueForKey(key: "carbohydrate"), fractionDigits: 3).doubleValue
                         let protein = WHUtils.fixedFractionString(dictTemp.doubleValueForKey(key: "protein"), fractionDigits: 3).doubleValue
                         let fat = WHUtils.fixedFractionString(dictTemp.doubleValueForKey(key: "fat"), fractionDigits: 3).doubleValue
@@ -131,7 +131,7 @@ class LogsSQLiteUploadManager {
                         proteinTotal = proteinTotal + protein
                         fatTotal = fatTotal + fat
                         
-                        dictTemp.setValue(WHUtils.fixedFractionString(calori, fractionDigits: 0), forKey: "calories")
+                        dictTemp.setValue(WHUtils.fixedFractionString(calori, fractionDigits: 3), forKey: "calories")
                         dictTemp.setValue(WHUtils.fixedFractionString(carbohydrate, fractionDigits: 3), forKey: "carbohydrate")
                         dictTemp.setValue(WHUtils.fixedFractionString(protein, fractionDigits: 3), forKey: "protein")
                         dictTemp.setValue(WHUtils.fixedFractionString(fat, fractionDigits: 3), forKey: "fat")

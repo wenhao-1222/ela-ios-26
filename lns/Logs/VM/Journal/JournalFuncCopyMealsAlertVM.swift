@@ -434,10 +434,10 @@ extension JournalFuncCopyMealsAlertVM{
                 }
             }
             
-            caloriTotal = String(format: "%.0f", caloriTotal.rounded()).doubleValue
-            carboTotal = String(format: "%.0f", carboTotal.rounded()).doubleValue
-            proteinTotal = String(format: "%.0f", proteinTotal.rounded()).doubleValue
-            fatTotal = String(format: "%.0f", fatTotal.rounded()).doubleValue
+            caloriTotal = String(format: "%.3f", caloriTotal.rounded()).doubleValue
+            carboTotal = String(format: "%.3f", carboTotal.rounded()).doubleValue
+            proteinTotal = String(format: "%.3f", proteinTotal.rounded()).doubleValue
+            fatTotal = String(format: "%.3f", fatTotal.rounded()).doubleValue
             
 //            let dictTemp = ["sdate":"\(self.queryDay)",
 //                            "notes":self.targetDayMsg.stringValueForKey(key: "notes"),

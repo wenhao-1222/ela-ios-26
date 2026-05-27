@@ -1300,7 +1300,7 @@ extension JounalCollectionCell{
         self.goalVm.proteinCircleVm.currentNumFloat = proteinTotal
         self.goalVm.fatCircleVm.currentNumFloat = fatTotal
         DLLog(message: "self.currentDayMsg:\(self.currentDayMsg)")
-        let caloriesTotal = WHUtils.fixedFractionString(caloriTotal, fractionDigits: 0)
+        let caloriesTotal = WHUtils.fixedFractionString(caloriTotal, fractionDigits: 3)
         let proteinTotalString = WHUtils.fixedFractionString(proteinTotal, fractionDigits: 3)
         let carbohydrateTotalString = WHUtils.fixedFractionString(carboTotal, fractionDigits: 3)
         let fatTotalString = WHUtils.fixedFractionString(fatTotal, fractionDigits: 3)

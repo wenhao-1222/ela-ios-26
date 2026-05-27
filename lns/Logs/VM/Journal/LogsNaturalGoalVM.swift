@@ -205,6 +205,7 @@ extension LogsNaturalGoalVM{
             
             let mealsArray = dict["foods"]as? NSArray ?? []
             
+            DLLog(message: "==========================\(dict.stringValueForKey(key: "sdate")) ========================================")
             for i in 0..<mealsArray.count{
                 let mealPerArr = mealsArray[i]as? NSArray ?? []
                 for j in 0..<mealPerArr.count{
@@ -219,9 +220,17 @@ extension LogsNaturalGoalVM{
                         carboTotal = carboTotal + carbohydrate
                         proteinTotal = proteinTotal + protein
                         fatTotal = fatTotal + fat
+                        
+                        let foodsMsg = dictTemp["foods"]as? NSDictionary ?? [:]
+                        
+                        DLLog(message: "食物：\(dictTemp.stringValueForKey(key:"fname"))  -- 蛋白质：\(dictTemp.stringValueForKey(key:"protein"))")
+                        DLLog(message: "\(foodsMsg.stringValueForKey(key: "protein")) *  \(dictTemp.stringValueForKey(key:"qty"))(qty)  =  \(foodsMsg.doubleValueForKey(key: "protein") * dictTemp.doubleValueForKey(key:"qty") * 0.01)")
+                        
+                        DLLog(message: "总蛋白质：\(proteinTotal)")
                     }
                 }
             }
+            DLLog(message: "=======================================================================")
             
             DispatchQueue.main.async {
 //                self.caloriCircleVm.totalNumberLabel.text = "/\(caloriTarget+sportNumber)"

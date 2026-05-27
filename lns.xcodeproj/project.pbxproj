@@ -1308,6 +1308,8 @@
 		ECEC4EAE2F73780300FB1E56 /* AICoachPreDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */; };
 		ECEC4EB22F73A11100FB1E56 /* AICoachPreInfoVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */; };
 		ECEC4EB42F73A11300FB1E56 /* AICoachPreInfoSelectPopupVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EB32F73A11200FB1E56 /* AICoachPreInfoSelectPopupVM.swift */; };
+		EC2525A12FCE000100FB1E56 /* AICoachPreReadyMessageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2525A02FCE000100FB1E56 /* AICoachPreReadyMessageVM.swift */; };
+		EC2525A32FCE000100FB1E56 /* AICoachPreFeedbackGlassVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2525A22FCE000100FB1E56 /* AICoachPreFeedbackGlassVM.swift */; };
 		ECF0BFD32BFC3C6400E5F6F0 /* InviteRewardsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD22BFC3C6400E5F6F0 /* InviteRewardsVC.swift */; };
 		ECF0BFD62BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD52BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift */; };
 		ECF0BFD82BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD72BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift */; };
@@ -2834,6 +2836,8 @@
 		ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDaysVM.swift; sourceTree = "<group>"; };
 		ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreInfoVM.swift; sourceTree = "<group>"; };
 		ECEC4EB32F73A11200FB1E56 /* AICoachPreInfoSelectPopupVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreInfoSelectPopupVM.swift; sourceTree = "<group>"; };
+		EC2525A02FCE000100FB1E56 /* AICoachPreReadyMessageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreReadyMessageVM.swift; sourceTree = "<group>"; };
+		EC2525A22FCE000100FB1E56 /* AICoachPreFeedbackGlassVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreFeedbackGlassVM.swift; sourceTree = "<group>"; };
 		ECF0BFD22BFC3C6400E5F6F0 /* InviteRewardsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsVC.swift; sourceTree = "<group>"; };
 		ECF0BFD52BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsTopVM.swift; sourceTree = "<group>"; };
 		ECF0BFD72BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsCodeVM.swift; sourceTree = "<group>"; };
@@ -5855,6 +5859,8 @@
 			children = (
 				ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */,
 				ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */,
+				EC2525A02FCE000100FB1E56 /* AICoachPreReadyMessageVM.swift */,
+				EC2525A22FCE000100FB1E56 /* AICoachPreFeedbackGlassVM.swift */,
 				EC31C4302F920FD000F435BF /* AICoachPreDayStatusPopupView.swift */,
 				EC31C4322F920FE600F435BF /* AICoachPreDayStatusBubbleView.swift */,
 				EC31C4342F920FF900F435BF /* AICoachPreDayStatusRowView.swift */,
@@ -6642,6 +6648,8 @@
 				ECF9D1062F50CF1100A1B2C3 /* DietPlanCreateAllergyVM.swift in Sources */,
 				ECEC4EAE2F73780300FB1E56 /* AICoachPreDaysVM.swift in Sources */,
 				ECEC4EB22F73A11100FB1E56 /* AICoachPreInfoVM.swift in Sources */,
+				EC2525A12FCE000100FB1E56 /* AICoachPreReadyMessageVM.swift in Sources */,
+				EC2525A32FCE000100FB1E56 /* AICoachPreFeedbackGlassVM.swift in Sources */,
 				ECEC4EB42F73A11300FB1E56 /* AICoachPreInfoSelectPopupVM.swift in Sources */,
 				ECF9D10A2F50F11100A1B2C3 /* DietPlanCreateAdviceVM.swift in Sources */,
 				ECF9D10C2F51001100A1B2C3 /* DietPlanCreateMealStyleVM.swift in Sources */,

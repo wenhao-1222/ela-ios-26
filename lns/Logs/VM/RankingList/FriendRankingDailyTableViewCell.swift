@@ -159,7 +159,7 @@ extension FriendRankingDailyTableViewCell{
             make.centerY.lessThanOrEqualTo(headImgView)
             make.right.equalTo(kFitWidth(-52))
         }
-        comleteLab.text = "完成率"
+        comleteLab.text = "达标率"
         rankImgView.isHidden = true
         rankNumLabel.isHidden = true
         if index < 3 {
