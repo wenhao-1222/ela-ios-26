@@ -120,6 +120,23 @@ enum AICoachReportPDFGenerator {
         return FileManager.default.fileExists(atPath: fileURL.path) ? fileURL : nil
     }
 
+    @discardableResult
+    static func clearAllCachedReports() throws -> Int {
+        let folderURL = reportCacheFolderURL()
+        let fileManager = FileManager.default
+        guard fileManager.fileExists(atPath: folderURL.path) else { return 0 }
+
+        let cachedFiles = try fileManager.contentsOfDirectory(
+            at: folderURL,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles]
+        )
+        let pdfCount = cachedFiles.filter { $0.pathExtension.lowercased() == "pdf" }.count
+        try fileManager.removeItem(at: folderURL)
+        try fileManager.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
+        return pdfCount
+    }
+
     private static func rasterizedPageImage(
         contentView: AICoachReportDemoContentView,
         contentWidth: CGFloat,
@@ -298,13 +315,17 @@ enum AICoachReportPDFGenerator {
     }
 
     private static func makeOutputURL(report: AICoachReportDemoData, reportId: String) -> URL {
-        let folderURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("AICoachReport", isDirectory: true)
+        let folderURL = reportCacheFolderURL()
         if FileManager.default.fileExists(atPath: folderURL.path) == false {
             try? FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
         }
         let stableName = makeStableFileName(report: report, reportId: reportId)
         return folderURL.appendingPathComponent("\(stableName).pdf")
+    }
+
+    private static func reportCacheFolderURL() -> URL {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("AICoachReport", isDirectory: true)
     }
 
     private static func cacheVersionFileURL(for fileURL: URL) -> URL {

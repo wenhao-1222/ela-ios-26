@@ -1,0 +1,5 @@
+
+module TouchIdManager.Swift {
+  header "TouchIdManager-Swift.h"
+  requires objc
+}

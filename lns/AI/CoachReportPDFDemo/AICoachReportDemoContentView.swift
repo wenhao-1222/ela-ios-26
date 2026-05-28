@@ -445,13 +445,35 @@ private extension AICoachReportDemoContentView {
     func makeWeightCard(chartHeight: CGFloat) -> UIView {
         let chart = AICoachReportLineChartView(data: report.weightChart)
         let footer = makeFooterRows(report.weightChart.footerRows)
-        return makeChartCard(title: "体重", chartView: chart, footerView: footer, chartHeight: chartHeight)
+        return makeChartCard(
+            title: "体重",
+            chartView: chart,
+            footerView: footer,
+            chartHeight: chartHeight,
+            footerMinHeight: topChartFooterMinHeight()
+        )
     }
 
     func makeCalorieCard(chartHeight: CGFloat) -> UIView {
         let chart = AICoachReportBarChartView(data: report.calorieChart)
         let footer = makeFooterRows(report.calorieChart.footerRows)
-        return makeChartCard(title: "热量", chartView: chart, footerView: footer, chartHeight: chartHeight)
+        return makeChartCard(
+            title: "热量",
+            chartView: chart,
+            footerView: footer,
+            chartHeight: chartHeight,
+            footerMinHeight: topChartFooterMinHeight()
+        )
+    }
+
+    func topChartFooterMinHeight() -> CGFloat {
+        let stackWidth = contentWidth - mainStackInsets.left - mainStackInsets.right
+        let chartCardWidth = (stackWidth - chartRowSpacing) / 2
+        let footerWidth = chartCardWidth - 32
+        return max(
+            fittedHeight(for: makeFooterRows(report.weightChart.footerRows), width: footerWidth),
+            fittedHeight(for: makeFooterRows(report.calorieChart.footerRows), width: footerWidth)
+        )
     }
 
     func calculateFirstPageChartHeight(headerCard: UIView, summaryCard: UIView) -> CGFloat {
@@ -804,7 +826,13 @@ private extension AICoachReportDemoContentView {
         return row
     }
 
-    func makeChartCard(title: String, chartView: UIView, footerView: UIView, chartHeight: CGFloat) -> UIView {
+    func makeChartCard(
+        title: String,
+        chartView: UIView,
+        footerView: UIView,
+        chartHeight: CGFloat,
+        footerMinHeight: CGFloat? = nil
+    ) -> UIView {
         let card = AICoachReportDemoCardView()
         let titleLabel = makeCardTitleLabel(title)
 
@@ -826,6 +854,9 @@ private extension AICoachReportDemoContentView {
             make.top.equalTo(chartView.snp.bottom).offset(10)
             make.left.equalToSuperview().offset(16)
             make.right.equalToSuperview().offset(-16)
+            if let footerMinHeight {
+                make.height.greaterThanOrEqualTo(footerMinHeight)
+            }
             make.bottom.equalToSuperview().offset(-16)
         }
 
@@ -843,6 +874,8 @@ private extension AICoachReportDemoContentView {
             leftLabel.font = .systemFont(ofSize: 12, weight: .medium)
             leftLabel.textColor = AICoachReportDemoPalette.textSecondary
             leftLabel.text = row.leftText
+            leftLabel.numberOfLines = row.leftNumberOfLines
+            leftLabel.lineBreakMode = .byTruncatingTail
 
             line.addSubview(leftLabel)
             leftLabel.snp.makeConstraints { make in

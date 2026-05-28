@@ -234,6 +234,8 @@
 /Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Create/DietPlanCreateAllergyVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/AICoachPreDaysVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/AICoachPreInfoVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/AICoachPreReadyMessageVM.swift
+/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/AICoachPreFeedbackGlassVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/Pre/AICoachPreInfoSelectPopupVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Create/DietPlanCreateAdviceVM.swift
 /Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Create/DietPlanCreateMealStyleVM.swift

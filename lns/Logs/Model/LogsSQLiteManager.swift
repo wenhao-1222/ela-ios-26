@@ -1354,9 +1354,14 @@ class LogsSQLiteManager {
         return model
     }
     
-    func saveServerDataToDB(dataArray:NSArray) {
+    func saveServerDataToDB(dataArray:NSArray, completion: (() -> Void)? = nil) {
         DispatchQueue.global(qos: .userInitiated).async { [self] in
-            guard let db = db else { return }
+            guard let db = db else {
+                DispatchQueue.main.async {
+                    completion?()
+                }
+                return
+            }
 
             DLLog(message: "saveServerDataToDB start count:\(dataArray.count)")
 
@@ -1393,7 +1398,13 @@ class LogsSQLiteManager {
                             if queryTable(sDate: sDate){//如果存在数据
                                 let model = LogsSQLiteManager.getInstance().getLogsByDate(sDate: sDate)!
                                 
-                                if Date().judgeMin(firstTime: model.etime, secondTime: serverETime){
+                                let shouldUpdateFromServer = Date().judgeMin(firstTime: model.etime, secondTime: serverETime) ||
+                                    model.caloriTarget.intValue != dict.stringValueForKey(key: "caloriesden").intValue ||
+                                    model.carbohydrateTarget.intValue != dict.stringValueForKey(key: "carbohydrateden").intValue ||
+                                    model.proteinTarget.intValue != dict.stringValueForKey(key: "proteinden").intValue ||
+                                    model.fatTarget.intValue != dict.stringValueForKey(key: "fatden").intValue
+                                
+                                if shouldUpdateFromServer{
                                     do {
                                         let sql = logs.filter(sdate == sDate).filter(uid == UserInfoModel.shared.uId)
                                         try db.run(sql.update(self.foods<-foodsString,
@@ -1472,6 +1483,9 @@ class LogsSQLiteManager {
 
             DLLog(message: "saveServerDataToDB finish count:\(dataArray.count)")
             UserDefaults.standard.setValue("1", forKey: "\(UserInfoModel.shared.uId)LogsData")
+            DispatchQueue.main.async {
+                completion?()
+            }
         }
     }
     

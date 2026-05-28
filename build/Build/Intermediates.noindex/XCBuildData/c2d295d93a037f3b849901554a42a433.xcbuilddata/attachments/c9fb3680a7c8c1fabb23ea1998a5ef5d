@@ -1,0 +1,39 @@
+{
+  "" : {
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/KJTouchIdManager-primary.dia",
+    "emit-module-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/KJTouchIdManager-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/KJTouchIdManager-primary-emit-module.dia",
+    "pch" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/KJTouchIdManager-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/KJTouchIdManager-primary.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/KJTouchIdManager/TouchIdManager/LADefinition.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LADefinition.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LADefinition.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LADefinition.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LADefinition.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LADefinition.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LADefinition.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LADefinition.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LADefinition~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/KJTouchIdManager/TouchIdManager/LAHandleable.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAHandleable.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAHandleable.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAHandleable.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAHandleable.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAHandleable.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAHandleable.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAHandleable.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAHandleable~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/Pods/KJTouchIdManager/TouchIdManager/LAManager.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAManager.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAManager.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAManager.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAManager.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAManager.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAManager.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAManager.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/KJTouchIdManager.build/Objects-normal/x86_64/LAManager~partial.swiftmodule"
+  }
+}

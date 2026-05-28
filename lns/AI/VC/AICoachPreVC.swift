@@ -8,6 +8,7 @@
 import UIKit
 import SwiftUI
 import SnapKit
+import MCToast
 
 class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
 
@@ -21,7 +22,6 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private var hasPlayedCircleEntranceAnimation = false
     private var hasPlayedRemainingEntranceAnimation = false
     private var hasFinishedCircleEntranceAnimation = false
-    private var isWaitingForCoachLaunchResponse = false
     private var aiCoachOrbHostController: UIHostingController<AICoachPreOrbRootView>?
     private let entranceAnimationDurationA: TimeInterval = 0.75
     private let entranceAnimationDurationB: TimeInterval = 0.35
@@ -72,18 +72,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if dataDict.stringValueForKey(key: "completeDays").intValue > 7{
-            isWaitingForCoachLaunchResponse = false
-        }else{
-            isWaitingForCoachLaunchResponse = true
-        }
-
         initUI()
-        if isWaitingForCoachLaunchResponse {
-            sendCoachLaunchRequest()
-        } else {
-            self.updatePreDaysUI(dataDict: dataDict)
-        }
         sendReportListRequest()
         
         if let nav = navigationController {
@@ -102,10 +91,12 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         trimNavigationStackToRootAndSelfIfNeeded()
+        sendCoachLaunchRequest()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        guard dataDict.count > 0 else { return }
         if shouldPlayEntranceAnimation {
             startCircleEntranceAnimationIfNeeded()
         } else {
@@ -138,6 +129,19 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         let orbView = CoachAnimationV3View(diameter: kFitWidth(235))
         orbView.backgroundColor = .clear
         return orbView
+    }()
+
+    private lazy var clearPDFReportsButton: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.backgroundColor = UIColor(hex: "0F1214")
+        btn.layer.cornerRadius = kFitWidth(24)
+        btn.clipsToBounds = true
+        btn.setTitle("清PDF", for: .normal)
+        btn.setTitleColor(.white, for: .normal)
+        btn.titleLabel?.font = .systemFont(ofSize: 13, weight: .semibold)
+        btn.enablePressEffect()
+        btn.addTarget(self, action: #selector(clearPDFReportsButtonTapAction), for: .touchUpInside)
+        return btn
     }()
 //    private lazy var aiCoachOrbContainerView: UIView = {
 //        let view = UIView()
@@ -198,6 +202,30 @@ extension AICoachPreVC{
     @objc func tipsTapAction() {
         katchAlertVm.showView()
     }
+
+    @objc func clearPDFReportsButtonTapAction() {
+        let alertVc = UIAlertController(title: "清除本地PDF报告？",
+                                        message: "会删除本机已生成的AI教练PDF缓存，下次查看报告时会重新生成。",
+                                        preferredStyle: .alert)
+        alertVc.addAction(UIAlertAction(title: "取消", style: .cancel))
+        alertVc.addAction(UIAlertAction(title: "清除", style: .destructive) { [weak self] _ in
+            self?.clearLocalPDFReports()
+        })
+        present(alertVc, animated: true)
+    }
+
+    func clearLocalPDFReports() {
+        do {
+            let removedCount = try AICoachReportPDFGenerator.clearAllCachedReports()
+            if removedCount > 0 {
+                MCToast.mc_success("已清除\(removedCount)份PDF报告")
+            } else {
+                MCToast.mc_text("暂无本地PDF报告")
+            }
+        } catch {
+            MCToast.mc_failure("清除失败，请稍后重试")
+        }
+    }
     
 }
 
@@ -220,6 +248,7 @@ extension AICoachPreVC{
 //        view.addSubview(nextButton)
         view.addSubview(readyMessageVM)
         view.addSubview(feedbackGlassVM)
+//        view.addSubview(clearPDFReportsButton)
         view.addSubview(infoSelectPopupVM)
         
         view.addSubview(katchAlertVm)
@@ -280,6 +309,13 @@ extension AICoachPreVC{
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight() - kFitWidth(15))
         }
 
+//        clearPDFReportsButton.snp.makeConstraints { make in
+//            make.right.equalToSuperview().offset(kFitWidth(-20))
+//            make.bottom.equalTo(feedbackGlassVM.snp.top).offset(kFitWidth(-18))
+//            make.width.equalTo(kFitWidth(66))
+//            make.height.equalTo(kFitWidth(48))
+//        }
+
         infoSelectPopupVM.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -299,7 +335,6 @@ extension AICoachPreVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendCoachLaunchRequest:\(foodsMsgDict)")
-            self.isWaitingForCoachLaunchResponse = false
             self.dataDict = foodsMsgDict
             self.updatePreDaysUI(dataDict: foodsMsgDict)
             if self.shouldPlayEntranceAnimation {
@@ -518,9 +553,7 @@ private extension AICoachPreVC {
     }
 
     func configureInitialPresentationState() {
-        if isWaitingForCoachLaunchResponse {
-            prepareEntranceAnimation()
-        } else if shouldPlayEntranceAnimation {
+        if dataDict.count == 0 || shouldPlayEntranceAnimation {
             prepareEntranceAnimation()
         } else {
             syncVisiblePresentationStateIfNeeded()
@@ -538,7 +571,6 @@ private extension AICoachPreVC {
     func startRemainingEntranceAnimationIfNeeded() {
         guard hasFinishedCircleEntranceAnimation else { return }
         guard hasPlayedRemainingEntranceAnimation == false else { return }
-        guard isWaitingForCoachLaunchResponse == false else { return }
 
         hasPlayedRemainingEntranceAnimation = true
 
@@ -645,7 +677,6 @@ private extension AICoachPreVC {
 
     func syncVisiblePresentationStateIfNeeded(force: Bool = false) {
         guard force || shouldPlayEntranceAnimation == false || hasPlayedRemainingEntranceAnimation else { return }
-        guard force || isWaitingForCoachLaunchResponse == false else { return }
 
         bgImgView.alpha = 1
         bgImgView.transform = .identity

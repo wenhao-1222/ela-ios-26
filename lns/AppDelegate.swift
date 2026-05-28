@@ -36,16 +36,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-//        DLLog(message: "application  -----   didFinishLaunchingWithOptions")
-//        UserDefaults.standard.setValue("wpjNlDo2knDssC8X", forKey: token)
-//        UserDefaults.standard.setValue("f85f9118da17e98d62e1003729929afa", forKey: userId)
-//        UserInfoModel.shared.uId = "f85f9118da17e98d62e1003729929afa"
-//        UserInfoModel.shared.token = "wpjNlDo2knDssC8X"
+        UserDefaults.standard.setValue("h1fkwZ29zCSSphIV", forKey: token)
+        UserDefaults.standard.setValue("207883e9d608066fdfde0c076cf2f956", forKey: userId)
+        UserInfoModel.shared.uId = "207883e9d608066fdfde0c076cf2f956"
+        UserInfoModel.shared.token = "h1fkwZ29zCSSphIV"
         
         let launchWindow: UIWindow
         if let existingWindow = window {
             launchWindow = existingWindow
-//            window = launchWindow
         } else {
             launchWindow = UIWindow(frame: UIScreen.main.bounds)
         }

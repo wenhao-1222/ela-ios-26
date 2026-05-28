@@ -148,6 +148,7 @@ class JournalVC: WHBaseViewVC {
         NotificationCenter.default.addObserver(self, selector: #selector(refresMsgNotifi), name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refresMsgNotifi), name: NSNotification.Name(rawValue: "updateLogsCaloriesStyleMsg"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refresMsgNotifi), name: NOTIFI_NAME_ABTEST, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshLogsFromServerNotifi), name: NOTIFI_NAME_REFRESH_LOGS_FROM_SERVER, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(changeNaviButtonStatus(notify: )), name: NSNotification.Name(rawValue: "msgCalculateEnd"),
                                                object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(gotoLogsNotification), name: NSNotification.Name(rawValue: "activePlan"), object: nil)
@@ -616,6 +617,13 @@ extension JournalVC{
                                      "fat":"\(Int(fatTarget.rounded()))"], forKey: .todayGoal)
         }
     }
+    @objc func refreshLogsFromServerNotifi() {
+        sendNutritionsDefaultRequest()
+        sendLogsAllDataRequest { [weak self] in
+            guard let self else { return }
+            self.refresMsgNotifi()
+        }
+    }
     @objc func changeNaviButtonStatus(notify:Notification) {
         self.naviVm.enableButton()
 //        self.isEdit = false
@@ -1017,7 +1025,7 @@ extension JournalVC{
             sendLogsAllDataRequest()
         }
     }
-    func sendLogsAllDataRequest() {
+    func sendLogsAllDataRequest(completion: (() -> Void)? = nil) {
         DLLog(message: "sendLogsAllDataRequest:\(Date().currentSeconds)")
         WHNetworkUtil.shareManager().POST(urlString: URL_User_logs_all, parameters: nil) { responseObject in
             DispatchQueue.global(qos: .userInitiated).async { [self] in
@@ -1025,7 +1033,7 @@ extension JournalVC{
 //                DispatchQueue.main.sync(execute: {
                 let dataObj = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
                     DLLog(message: "sendLogsAllDataRequest:\(Date().currentSeconds)")
-                    LogsSQLiteManager.getInstance().saveServerDataToDB(dataArray: dataObj)
+                    LogsSQLiteManager.getInstance().saveServerDataToDB(dataArray: dataObj, completion: completion)
 //                })
             }
         }

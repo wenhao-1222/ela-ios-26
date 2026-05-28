@@ -271,6 +271,13 @@ struct AICoachReportWeekTableRow {
 struct AICoachReportFooterRow {
     let leftText: String
     let rightText: String?
+    let leftNumberOfLines: Int
+
+    init(leftText: String, rightText: String?, leftNumberOfLines: Int = 1) {
+        self.leftText = leftText
+        self.rightText = rightText
+        self.leftNumberOfLines = leftNumberOfLines
+    }
 }
 
 enum AICoachReportDateTextBuilder {

@@ -19,6 +19,8 @@ public let  NOTIFI_NAME_SHORTCUTITEMS = NSNotification.Name(rawValue: "shortcutI
 public let  NOTIFI_NAME_GUIDE = NSNotification.Name(rawValue: "onboarding_flow_status")
 ///刷新日志今日数据
 public let  NOTIFI_NAME_REFRESH_TODAY_JOUNAL = NSNotification.Name(rawValue: "refresh_today_logs_data")
+///AI Coach 更新营养目标后，从服务端同步日志页数据
+public let  NOTIFI_NAME_REFRESH_LOGS_FROM_SERVER = NSNotification.Name(rawValue: "refresh_logs_data_from_server")
 //支付成功后，刷新课程列表
 public let  NOTIFI_NAME_REFRESH_COURSE_STATUS = NSNotification.Name(rawValue: "refresh_course_status")
 // Ela Pro 订阅成功后，刷新食谱页

@@ -28,7 +28,8 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     private var hasViewAppeared = false
     private var hasLoadedReportDetail = false
     private var pdfGenerationToken = UUID()
-    private let shouldUseLocalRecommendMock = false
+    private var shouldNotifyLogsRefreshAfterRecommendationUpdate = false
+    private var logsRefreshNotifyWorkItem: DispatchWorkItem?
 
     private lazy var topContainerView: UIView = {
         let view = UIView()
@@ -188,7 +189,6 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         sendReportListRequest()
         if reportId.isEmpty == false {
             sendReportDetailRequest()
-            sendRecommendRequest()
         }
     }
 
@@ -203,7 +203,15 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if isMovingFromParent || isBeingDismissed {
+        if isMovingFromParent || isBeingDismissed || navigationController?.isBeingDismissed == true {
+            if let transitionCoordinator {
+                transitionCoordinator.animate(alongsideTransition: nil) { context in
+                    guard context.isCancelled == false else { return }
+                    self.postLogsRefreshIfNeeded()
+                }
+            } else {
+                postLogsRefreshIfNeeded()
+            }
             pdfGenerationToken = UUID()
         }
     }
@@ -211,6 +219,10 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     override func backTapAction() {
         pdfGenerationToken = UUID()
         super.backTapAction()
+    }
+
+    deinit {
+        logsRefreshNotifyWorkItem?.cancel()
     }
 }
 
@@ -472,6 +484,26 @@ private extension AICoachReportPDFDemoVC {
         reportDateAlertVM.update(items: reportList, selectedReportId: reportId)
         reportDateAlertVM.showSelf()
     }
+
+    func scheduleLogsRefreshAfterRecommendationUpdate() {
+        guard shouldNotifyLogsRefreshAfterRecommendationUpdate == false else { return }
+        shouldNotifyLogsRefreshAfterRecommendationUpdate = true
+        logsRefreshNotifyWorkItem?.cancel()
+
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.postLogsRefreshIfNeeded()
+        }
+        logsRefreshNotifyWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: workItem)
+    }
+
+    func postLogsRefreshIfNeeded() {
+        guard shouldNotifyLogsRefreshAfterRecommendationUpdate else { return }
+        shouldNotifyLogsRefreshAfterRecommendationUpdate = false
+        logsRefreshNotifyWorkItem?.cancel()
+        logsRefreshNotifyWorkItem = nil
+        NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_LOGS_FROM_SERVER, object: nil)
+    }
 }
 
 extension AICoachReportPDFDemoVC{
@@ -492,37 +524,6 @@ extension AICoachReportPDFDemoVC{
             }
         }
     }
-    func sendRecommendRequest() {
-        guard reportId.isEmpty == false else { return }
-        let requestedReportId = reportId
-        nextWeekRecommendation = .empty
-        DispatchQueue.main.async {
-            self.updateAdviceButtonState()
-        }
-        if shouldUseLocalRecommendMock {
-            let recommendation = buildRandomMockRecommendation()
-            DLLog(message: "sendRecommendRequest_mock:\(recommendation)")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                self.nextWeekRecommendation = recommendation
-                self.updateAdviceButtonState()
-            }
-            return
-        }
-        let param = ["id":reportId]
-        WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_recommend, parameters: param as [String : AnyObject]) { [weak self] responseObject in
-            guard let self else { return }
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendRecommendRequest:\(foodsMsgDict)")
-            let recommendation = AICoachReportRecommendationBuilder.build(from: foodsMsgDict)
-            DispatchQueue.main.async {
-                guard self.reportId == requestedReportId else { return }
-                self.nextWeekRecommendation = recommendation
-                self.updateAdviceButtonState()
-            }
-        }
-    }
-
     func sendReportListRequest() {
         WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_report_list, parameters: nil) { [weak self] responseObject in
             guard let self else { return }
@@ -538,7 +539,6 @@ extension AICoachReportPDFDemoVC{
                     self.updateBottomBarVisibility()
                     self.preparePDFIfNeeded()
                     self.sendReportDetailRequest()
-                    self.sendRecommendRequest()
                 } else {
                     self.updateBottomBarVisibility()
                 }
@@ -546,106 +546,23 @@ extension AICoachReportPDFDemoVC{
             }
         }
     }
-}
-
-private extension AICoachReportPDFDemoVC {
-    func buildRandomMockRecommendation() -> AICoachReportNextWeekRecommendation {
-        let mockCases: [(status: AICoachReportRecommendationStatus, buttonNum: Int)] = [
-            (.maintain, 1),
-            (.decrease, 1),
-            (.decrease, 2),
-            (.increase, 1),
-            (.increase, 2)
-        ]
-
-        let selectedCase = mockCases.randomElement() ?? (.maintain, 1)
-        let baseCalories = [1650.0, 1780.0, 1920.0, 2050.0, 2180.0].randomElement() ?? 1920.0
-
-        switch selectedCase.status {
-        case .maintain:
-            return AICoachReportNextWeekRecommendation(
-                buttonNum: 1,
-                status: .maintain,
-                nextWeekRecommendationStatus: NSNumber(value: AICoachReportRecommendationStatus.maintain.rawValue),
-                titleText: "维持当前目标",
-                nextWeekRecommendationText: "维持当前目标",
-                caloriesGap: nil,
-                caloriesValue: nil,
-                carbohydrateValue: nil,
-                proteinValue: nil,
-                fatValue: nil,
-                caloriesText: "--",
-                carbohydrateText: "--",
-                proteinText: "--",
-                fatText: "--",
-                isValid: true
-            )
-        case .decrease:
-            let calories = baseCalories - 180
-            let carbohydrate = max(95, calories * 0.11)
-            let protein = max(105, calories * 0.072)
-            let fat = max(40, calories * 0.027)
-            return makeMockRecommendation(status: .decrease,
-                                          buttonNum: selectedCase.buttonNum,
-                                          titleText: "降低摄入",
-                                          calories: calories,
-                                          carbohydrate: carbohydrate,
-                                          protein: protein,
-                                          fat: fat)
-        case .increase:
-            let calories = baseCalories + 220
-            let carbohydrate = max(180, calories * 0.135)
-            let protein = max(120, calories * 0.078)
-            let fat = max(50, calories * 0.03)
-            return makeMockRecommendation(status: .increase,
-                                          buttonNum: selectedCase.buttonNum,
-                                          titleText: "提高摄入",
-                                          calories: calories,
-                                          carbohydrate: carbohydrate,
-                                          protein: protein,
-                                          fat: fat)
-        }
-    }
-
-    func makeMockRecommendation(
-        status: AICoachReportRecommendationStatus,
-        buttonNum: Int,
-        titleText: String,
-        calories: Double,
-        carbohydrate: Double,
-        protein: Double,
-        fat: Double
-    ) -> AICoachReportNextWeekRecommendation {
-        let roundedCalories = calories.rounded()
-        let roundedCarbohydrate = carbohydrate.rounded()
-        let roundedProtein = protein.rounded()
-        let roundedFat = fat.rounded()
-
-        return AICoachReportNextWeekRecommendation(
-            buttonNum: buttonNum,
-            status: status,
-            nextWeekRecommendationStatus: NSNumber(value: status.rawValue),
-            titleText: titleText,
-            nextWeekRecommendationText: titleText,
-            caloriesGap: NSNumber(value: Int(roundedCalories)),
-            caloriesValue: roundedCalories,
-            carbohydrateValue: roundedCarbohydrate,
-            proteinValue: roundedProtein,
-            fatValue: roundedFat,
-            caloriesText: "\(Int(roundedCalories))",
-            carbohydrateText: "\(Int(roundedCarbohydrate))",
-            proteinText: "\(Int(roundedProtein))",
-            fatText: "\(Int(roundedFat))",
-            isValid: true
-        )
-    }
 
     func applyReportDetailData(_ dataDict: NSDictionary) {
         report = buildReport(from: dataDict)
+        nextWeekRecommendation = buildNextWeekRecommendation(from: dataDict)
         hasLoadedReportDetail = true
         refreshTopBar()
         reportDateAlertVM.update(items: reportList, selectedReportId: reportId)
+        updateAdviceButtonState()
         preparePDFIfNeeded()
+    }
+
+    func buildNextWeekRecommendation(from dataDict: NSDictionary) -> AICoachReportNextWeekRecommendation {
+        let reportContent = dataDict["reportContent"] as? NSDictionary ?? NSDictionary()
+        guard let recommendation = reportContent["nextWeekRecommendation"] as? NSDictionary else {
+            return .empty
+        }
+        return AICoachReportRecommendationBuilder.build(from: recommendation)
     }
 
     func buildReport(from dataDict: NSDictionary) -> AICoachReportDemoData {
@@ -885,10 +802,10 @@ private extension AICoachReportPDFDemoVC {
         let roundedProtein = Int(protein.rounded())
         let roundedFat = Int(fat.rounded())
 
-        let caloriesText = "\(roundedCalories)"
-        let carbohydrateText = "\(roundedCarbohydrate)"
-        let proteinText = "\(roundedProtein)"
-        let fatText = "\(roundedFat)"
+//        let caloriesText = "\(roundedCalories)"
+//        let carbohydrateText = "\(roundedCarbohydrate)"
+//        let proteinText = "\(roundedProtein)"
+//        let fatText = "\(roundedFat)"
 
         let param: [String: AnyObject] = [
             "isOverrideMealPlan": NSNumber(value: isOverrideMealPlan),
@@ -945,6 +862,7 @@ private extension AICoachReportPDFDemoVC {
 //                                                                  fatsTar: QuestinonaireMsgModel.shared.fats)
 //                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
 
+                self.scheduleLogsRefreshAfterRecommendationUpdate()
                 completion(true)
             }
         } failure: { _ in
@@ -973,7 +891,6 @@ private extension AICoachReportPDFDemoVC {
         loadingIndicator.startAnimating()
         preparePDFIfNeeded()
         sendReportDetailRequest()
-        sendRecommendRequest()
     }
 
     func makeSummaryInfo(
@@ -1176,7 +1093,7 @@ private extension AICoachReportPDFDemoVC {
 
             return AICoachReportWeekTableRow(values: [
                 slot.label,
-                displayText(weekItem?.weight ?? weightByDate[slot.key]),
+                weightTableDisplayText(weekItem?.weight ?? weightByDate[slot.key]),
                 displayText(weekItem?.calories ?? calorieByDate[slot.key]),
                 displayText(weekItem?.protein ?? nutrients[1]),
                 displayText(weekItem?.carbohydrate ?? nutrients[0]),
@@ -1329,6 +1246,7 @@ private extension AICoachReportPDFDemoVC {
         fallback: [AICoachReportFooterRow]
     ) -> [AICoachReportFooterRow] {
         let averageValue = weightPack.doubleValueForKey(key: "thisWeekAvgKg")
+        let lastWeekAverageValue = weightPack.doubleValueForKey(key: "lastWeekAvgKg")
         let fluctuationValue = weightPack.doubleValueForKey(key: "weeklyWeightFluctuationRate")
         let deltaKg = weightPack.doubleValueForKey(key: "deltaKg")
         let deltaPercent = weightPack.doubleValueForKey(key: "deltaPercent")
@@ -1339,12 +1257,6 @@ private extension AICoachReportPDFDemoVC {
 
         guard thisWeekAverage > 0 else { return fallback }
 
-        let summaryText = weightTrendSummary(
-            deltaKg: deltaKg,
-            deltaPercent: deltaPercent,
-            trendText: trendText
-        )
-
         var rows: [AICoachReportFooterRow] = [
             .init(
                 leftText: "本周体重均值：\(formatChartNumber(thisWeekAverage)) kg",
@@ -1354,8 +1266,22 @@ private extension AICoachReportPDFDemoVC {
 
         rows.append(.init(leftText: "周内波动：\(formatPercentNumber(fluctuationValue))%", rightText: nil))
 
+        let summaryText: String
+        let summaryNumberOfLines: Int
+        if lastWeekAverageValue <= 0 || averageValue <= 0 {
+            summaryText = trendText
+            summaryNumberOfLines = 2
+        } else {
+            summaryText = weightTrendSummary(
+                deltaKg: deltaKg,
+                deltaPercent: deltaPercent,
+                trendText: trendText
+            )
+            summaryNumberOfLines = 1
+        }
+
         if summaryText.isEmpty == false {
-            rows.append(.init(leftText: summaryText, rightText: nil))
+            rows.append(.init(leftText: summaryText, rightText: nil, leftNumberOfLines: summaryNumberOfLines))
         }
 
         return rows.isEmpty ? fallback : rows
@@ -1436,6 +1362,7 @@ private extension AICoachReportPDFDemoVC {
         fallback: [AICoachReportFooterRow]
     ) -> [AICoachReportFooterRow] {
         let averageValue = caloriesPack.doubleValueForKey(key: "thisWeekAvgKcal")
+        let lastWeekAverageValue = caloriesPack.doubleValueForKey(key: "lastWeekAvgKcal")
         let weekendValue = caloriesPack.doubleValueForKey(key: "weekendAvgKcal")
         let workdayValue = caloriesPack.doubleValueForKey(key: "workdayAvgKcal")
         let deltaKcal = caloriesPack.doubleValueForKey(key: "deltaKcal")
@@ -1460,37 +1387,18 @@ private extension AICoachReportPDFDemoVC {
             )
         }
 
-        let summaryText = calorieTrendSummary(
-            deltaKcal: deltaKcal,
-            deltaPercent: deltaPercent,
-            trendText: trendText
-        )
-        if summaryText.isEmpty == false {
-            rows.append(.init(leftText: summaryText, rightText: nil))
+        if averageValue > 0 && lastWeekAverageValue > 0 {
+            let summaryText = calorieTrendSummary(
+                deltaKcal: deltaKcal,
+                deltaPercent: deltaPercent,
+                trendText: trendText
+            )
+            if summaryText.isEmpty == false {
+                rows.append(.init(leftText: summaryText, rightText: nil))
+            }
         }
 
         return rows.isEmpty ? fallback : rows
-    }
-
-    func previousWeekAverage(currentAverage: Double, deltaKg: Double, trendText: String) -> Double {
-        if trendText.contains("增加") {
-            return max(0, currentAverage - deltaKg)
-        }
-        if trendText.contains("下降") {
-            return currentAverage + deltaKg
-        }
-        return currentAverage
-    }
-
-    func weightTrendSummary(deltaKg: Double, deltaPercent: Double, trendText: String) -> String {
-        if trendText.contains("无变化") || abs(deltaKg) < 0.0001 {
-            return "本周体重对比上周无变化"
-        }
-        guard trendText.isEmpty == false else { return "" }
-
-        let deltaText = formatChartNumber(abs(deltaKg))
-        let percentText = formatPercentNumber(abs(deltaPercent))
-        return "本周体重对比上周\(trendText)\(deltaText) kg（\(percentText)%）"
     }
 
     func calorieTrendSummary(deltaKcal: Double, deltaPercent: Double, trendText: String) -> String {
@@ -1500,8 +1408,19 @@ private extension AICoachReportPDFDemoVC {
         guard trendText.isEmpty == false else { return "" }
 
         let deltaText = formatChartNumber(deltaKcal)
-        let percentText = formatPercentNumber(deltaPercent)
+        let percentText = formatDeltaPercentNumber(deltaPercent)
         return "本周热量摄入对比上周\(trendText)\(deltaText) kcal（\(percentText)%）"
+    }
+
+    func weightTrendSummary(deltaKg: Double, deltaPercent: Double, trendText: String) -> String {
+        if trendText.contains("无变化") || abs(deltaKg) < 0.0001 {
+            return "本周体重对比上周无变化"
+        }
+        guard trendText.isEmpty == false else { return "" }
+
+        let deltaText = formatChartNumber(abs(deltaKg))
+        let percentText = formatDeltaPercentNumber(abs(deltaPercent))
+        return "本周体重对比上周\(trendText)\(deltaText) kg（\(percentText)%）"
     }
 
     func parseReportDate(_ dateString: String) -> Date? {
@@ -1581,9 +1500,26 @@ private extension AICoachReportPDFDemoVC {
         return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
     }
 
+    func formatDeltaPercentNumber(_ value: Double) -> String {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 2
+        return formatter.string(from: NSNumber(value: value)) ?? String(format: "%.2f", value)
+    }
+
     func displayText(_ value: CGFloat?) -> String {
         guard let value else { return "-" }
         return formatChartNumber(value)
+    }
+
+    func weightTableDisplayText(_ value: CGFloat?) -> String {
+        guard let value, value != 0 else { return "-" }
+        let formatter = NumberFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = 2
+        return formatter.string(from: NSNumber(value: Double(value))) ?? String(format: "%.2f", Double(value))
     }
 
     func displayText(_ value: String?) -> String {
