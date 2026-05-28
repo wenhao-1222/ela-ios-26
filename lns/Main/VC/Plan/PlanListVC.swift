@@ -155,12 +155,17 @@ class PlanListVC: WHBaseViewVC {
 extension PlanListVC{
     @objc func refreshData() {
         self.activePlanData = NSDictionary()
-        self.dataSourceArray.removeAllObjects()
+        // 删除详情页会先发 refreshListData 再立刻 pop。这里如果先清空数据源、
+        // 再延迟 reload，返回动画期间 UITableView 可能仍按旧 row 取空数组而崩溃。
+//        self.dataSourceArray.removeAllObjects()
 //        self.tableView.reloadData()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.tableView.reloadData()
-            self.showNoDataIfNeeded()
-        }
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//            self.tableView.reloadData()
+//            self.showNoDataIfNeeded()
+//        }
+        self.dataSourceArray.removeAllObjects()
+        self.tableView.reloadData()
+        self.noDataView.isHidden = true
 
         self.sendPlanListRequest()
         self.sendGetActivePlanRequest()
@@ -171,6 +176,19 @@ extension PlanListVC{
         } else {
             noDataView.isHidden = true
         }
+    }
+    func finishPlanListLoading() {
+        if self.dataSourceArray.count == 0 {
+            self.tableView.reloadData()
+            self.showNoDataIfNeeded()
+            return
+        }
+        
+        self.tableView.finishLoading(
+            list: self.dataSourceArray,
+            noDataView: self.noDataView,
+            animationCells: PlanListTableViewCell.self
+        )
     }
 }
 extension PlanListVC{
@@ -237,6 +255,10 @@ extension PlanListVC:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PlanListTableViewCell", for: indexPath) as? PlanListTableViewCell
         
+        guard indexPath.row < self.dataSourceArray.count else {
+            return cell ?? PlanListTableViewCell()
+        }
+        
         let dict = self.dataSourceArray[indexPath.row]as? NSDictionary ?? [:]
         cell?.updateUI(dict: dict)
         return cell ?? PlanListTableViewCell()
@@ -245,6 +267,8 @@ extension PlanListVC:UITableViewDelegate,UITableViewDataSource{
         return kFitWidth(92)//indexPath.row == 0 ? kFitWidth(92) : kFitWidth(112)
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard indexPath.row < self.dataSourceArray.count else { return }
+        
         let dict = NSMutableDictionary(dictionary: self.dataSourceArray[indexPath.row]as? NSDictionary ?? [:])
         if dict.stringValueForKey(key: "pname").isEmpty {
             return
@@ -254,6 +278,8 @@ extension PlanListVC:UITableViewDelegate,UITableViewDataSource{
         self.navigationController?.pushViewController(vc, animated: true)
         
         vc.nameChangeBlock = {(name)in
+            guard indexPath.row < self.dataSourceArray.count else { return }
+            
             dict.setValue(name, forKey: "pname")
             self.dataSourceArray.replaceObject(at: indexPath.row, with: dict)
             self.tableView.reloadRows(at: [indexPath], with: .fade)
@@ -293,17 +319,31 @@ extension PlanListVC:UITableViewDelegate,UITableViewDataSource{
                 //删除激活中的计划，将清空今日往后的日志数据
                 self.presentAlertVc(confirmBtn: "删除", message: "删除该计划同时会清空今日往后的日志内容", title: "温馨提示", cancelBtn: "取消", handler: { action in
                     self.sendDelPlanRequest(planDictMsg: dict, success: {
+                        guard indexPath.row < self.dataSourceArray.count else {
+                            self.tableView.reloadData()
+                            self.showNoDataIfNeeded()
+                            return
+                        }
                         self.dataSourceArray.removeObject(at: indexPath.row)
-                        self.tableView.deleteRows(at: [indexPath], with: .fade)
+//                        self.tableView.deleteRows(at: [indexPath], with: .fade)
+                        self.tableView.reloadData()
+                        self.showNoDataIfNeeded()
                     })
                 }, viewController: self)
                 return
             }
             
             self.sendDelPlanRequest(planDictMsg: dict, success: {
+                guard indexPath.row < self.dataSourceArray.count else {
+                    self.tableView.reloadData()
+                    self.showNoDataIfNeeded()
+                    return
+                }
                 self.dataSourceArray.removeObject(at: indexPath.row)
 //                self.tableView.beginUpdates()
-                self.tableView.deleteRows(at: [indexPath], with: .fade)
+//                self.tableView.deleteRows(at: [indexPath], with: .fade)
+                self.tableView.reloadData()
+                self.showNoDataIfNeeded()
 //                self.tableView.endUpdates()
             })
         }
@@ -339,11 +379,12 @@ extension PlanListVC{
 //                self.tableView.reloadData()
 //                self.showNoDataIfNeeded()
 //            }
-            self.tableView.finishLoading(
-                list: self.dataSourceArray,
-                noDataView: self.noDataView,
-                animationCells: PlanListTableViewCell.self
-            )
+//            self.tableView.finishLoading(
+//                list: self.dataSourceArray,
+//                noDataView: self.noDataView,
+//                animationCells: PlanListTableViewCell.self
+//            )
+            self.finishPlanListLoading()
 
         }
     }
@@ -353,17 +394,20 @@ extension PlanListVC{
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             self.isFirstLoad = false
             self.activePlanData = dataObj
-            self.dataSourceArray.insert(dataObj, at: 0)
+            if dataObj.stringValueForKey(key: "pname").count > 0 || dataObj.stringValueForKey(key: "pid").count > 0{
+                self.dataSourceArray.insert(dataObj, at: 0)
+            }
             // 让 Skeleton 完整播放 hide 动画，再刷新列表
 //            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
 //                self.tableView.reloadData()
 //                self.showNoDataIfNeeded()
 //            }
-            self.tableView.finishLoading(
-                list: self.dataSourceArray,
-                noDataView: self.noDataView,
-                animationCells: PlanListTableViewCell.self
-            )
+//            self.tableView.finishLoading(
+//                list: self.dataSourceArray,
+//                noDataView: self.noDataView,
+//                animationCells: PlanListTableViewCell.self
+//            )
+            self.finishPlanListLoading()
 
         }
     }

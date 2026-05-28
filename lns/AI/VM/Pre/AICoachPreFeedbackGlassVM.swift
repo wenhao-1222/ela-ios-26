@@ -135,7 +135,7 @@ extension AICoachPreFeedbackGlassVM {
 
     func setButtonEnabled(_ isEnabled: Bool) {
         feedbackButton.isEnabled = isEnabled
-        feedbackButton.alpha = isEnabled ? 1 : 0.55
+//        feedbackButton.alpha = isEnabled ? 1 : 0.55
     }
 
     func prepareEntranceAnimation() {
@@ -353,6 +353,11 @@ private final class AICoachPreFeedbackInfoItemView: UIControl {
 private final class AICoachPreFeedbackThemeGlassButton: UIControl {
 
     private let title: String
+    private let enabledBackgroundColor = UIColor.THEME
+    private let disabledBackgroundColor = UIColor(red: 196 / 255.0,
+                                                  green: 196 / 255.0,
+                                                  blue: 196 / 255.0,
+                                                  alpha: 1)
 
     init(title: String) {
         self.title = title
@@ -372,7 +377,7 @@ private final class AICoachPreFeedbackThemeGlassButton: UIControl {
 
     override var isEnabled: Bool {
         didSet {
-            alpha = isEnabled ? 1 : 0.55
+//            alpha = isEnabled ? 1 : 0.55
             updateGlassInteractionState()
         }
     }
@@ -407,7 +412,7 @@ private final class AICoachPreFeedbackThemeGlassButton: UIControl {
 
     private lazy var themeOverlayView: UIView = {
         let view = UIView()
-        view.backgroundColor = .THEME
+        view.backgroundColor = enabledBackgroundColor
         view.alpha = 0.92
         view.isUserInteractionEnabled = false
         if #available(iOS 26.0, *) {
@@ -486,10 +491,10 @@ private extension AICoachPreFeedbackThemeGlassButton {
         updateGlassInteractionState()
     }
 
-    func makeGlassEffect() -> UIVisualEffect {
+    func makeGlassEffect(backgroundColor: UIColor? = nil) -> UIVisualEffect {
         if #available(iOS 26.0, *) {
             let effect = UIGlassEffect(style: .regular)
-            effect.tintColor = UIColor.THEME.withAlphaComponent(0.82)
+            effect.tintColor = (backgroundColor ?? currentBackgroundColor()).withAlphaComponent(0.82)
             effect.isInteractive = true
             return effect
         } else {
@@ -497,13 +502,21 @@ private extension AICoachPreFeedbackThemeGlassButton {
         }
     }
 
+    func currentBackgroundColor() -> UIColor {
+        isEnabled ? enabledBackgroundColor : disabledBackgroundColor
+    }
+
+    func currentOverlayAlpha() -> CGFloat {
+        if #available(iOS 26.0, *) {
+            return isEnabled ? 0 : 0.72
+        } else {
+            return isHighlighted ? 0.82 : 0.92
+        }
+    }
+
     func updateHighlightedState(animated: Bool) {
         let changes = {
-            if #available(iOS 26.0, *) {
-                self.themeOverlayView.alpha = 0
-            } else {
-                self.themeOverlayView.alpha = self.isHighlighted ? 0.82 : 0.92
-            }
+            self.themeOverlayView.alpha = self.currentOverlayAlpha()
             self.titleLabel.alpha = self.isHighlighted ? 0.86 : 1
         }
 
@@ -520,8 +533,13 @@ private extension AICoachPreFeedbackThemeGlassButton {
     }
 
     func updateGlassInteractionState() {
+        let backgroundColor = currentBackgroundColor()
+        glassView.effect = makeGlassEffect(backgroundColor: backgroundColor)
+        themeOverlayView.backgroundColor = backgroundColor
+        themeOverlayView.alpha = currentOverlayAlpha()
         if #available(iOS 26.0, *) {
             glassView.isUserInteractionEnabled = isEnabled
+            themeOverlayView.isHidden = isEnabled
         }
     }
 }

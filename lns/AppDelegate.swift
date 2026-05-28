@@ -18,9 +18,10 @@ import AliyunPlayer
 class AppDelegate: UIResponder, UIApplicationDelegate{
 
     private var jpushInitialized = false
-    
+    private var isRefreshingVipInfoOnWarmStart = false
+
 //    var orientationLock = UIInterfaceOrientationMask.portrait
-    
+
     var window: UIWindow?
     var psharecode = ""
     var allowRotation = false
@@ -207,6 +208,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         if token.count > 0 && uId.count > 0 {
             UserInfoModel.shared.uId = uId
             UserInfoModel.shared.token = token
+            refreshVipInfoOnWarmStartIfNeeded()
         }else{
             UserInfoModel.shared.uId = ""
             UserInfoModel.shared.token = ""
@@ -565,6 +567,29 @@ extension AppDelegate: WXApiDelegate {
 
 //MARK: 网络请求
 extension AppDelegate{
+    func refreshVipInfoOnWarmStartIfNeeded() {
+        guard UserInfoModel.shared.uId.count > 0,
+              UserInfoModel.shared.token.count > 0,
+              !isRefreshingVipInfoOnWarmStart else {
+            return
+        }
+
+        isRefreshingVipInfoOnWarmStart = true
+        WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { [weak self] responseObject in
+            self?.isRefreshingVipInfoOnWarmStart = false
+
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            let vipModel = VIPModel.shared.update(with: dataDict)
+            UserDefaults.set(value: "\(vipModel.status?.rawValue ?? 0)", forKey: .vipStatus)
+
+            DLLog(message: "refreshVipInfoOnWarmStartIfNeeded:\(dataDict)")
+            DLLog(message: "refreshVipInfoOnWarmStartIfNeeded model: uid=\(vipModel.uid), status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime), expireTime=\(vipModel.expireTime)")
+        } failure: { [weak self] _ in
+            self?.isRefreshingVipInfoOnWarmStart = false
+        }
+    }
+
     func sendCodeRequest(code:String,isLogin:Bool? = true){
         let param = ["code":"\(code)"]
         WHNetworkUtil.shareManager().POST(urlString: URL_Login_wechat, parameters: param as [String:AnyObject]) { responseObject in

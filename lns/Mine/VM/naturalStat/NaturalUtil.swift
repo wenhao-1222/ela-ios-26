@@ -56,25 +56,32 @@ class NaturalUtil {
     }
     //MARK: 近一个月的日期
     func getDateLastMonthDaysArray() -> NSArray {
-        let calendar = Calendar.init(identifier: .gregorian)
-        
-        let now = Date()
-        let oneMonthAgo = calendar.date(byAdding: .month, value: -1, to: now)
-        let oneMonthAgoTimeStamp = CLongLong(round((oneMonthAgo?.timeIntervalSince1970 ?? 0)*1000)) + 24*60*60*1000
-        
-        let startDate = Date().timeIntervalChangeToTimeStr(timeInterval: TimeInterval(oneMonthAgoTimeStamp), dateFormat: nil)
-        
         let resultsArray = NSMutableArray()
         
-        for i in 0..<31{
+        for i in (0..<30).reversed() {
             let date = Date().nextDay(days: -i)
             resultsArray.add(date)
-            if date == startDate{
-                break
-            }
         }
         
-        return resultsArray.reversed() as NSArray
+//        let calendar = Calendar.init(identifier: .gregorian)
+//
+//        let now = Date()
+//        let oneMonthAgo = calendar.date(byAdding: .month, value: -1, to: now)
+//        let oneMonthAgoTimeStamp = CLongLong(round((oneMonthAgo?.timeIntervalSince1970 ?? 0)*1000))// + 24*60*60*1000
+//
+//        let startDate = Date().timeIntervalChangeToTimeStr(timeInterval: TimeInterval(oneMonthAgoTimeStamp), dateFormat: nil)
+//
+//        for i in 0..<31{
+//            let date = Date().nextDay(days: -i)
+//            resultsArray.add(date)
+//            if date == startDate{
+//                break
+//            }
+//        }
+//
+//        return resultsArray.reversed() as NSArray
+        
+        return resultsArray
     }
     //MARK: 获取近半年/近一年的日期数组
     func getLasYearDaysArray(isHalfYear:Bool? = false) -> NSArray {
@@ -158,4 +165,3 @@ class NaturalUtil {
         return dayNum
     }
 }
-

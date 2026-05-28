@@ -72,7 +72,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if dataDict.stringValueForKey(key: "has7CompleteDays").count > 0{
+        if dataDict.stringValueForKey(key: "completeDays").intValue > 7{
             isWaitingForCoachLaunchResponse = false
         }else{
             isWaitingForCoachLaunchResponse = true
@@ -135,7 +135,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     }()
     
     lazy var circleImgView: CoachAnimationV3View = {
-        let orbView = CoachAnimationV3View(diameter: kFitWidth(250))
+        let orbView = CoachAnimationV3View(diameter: kFitWidth(235))
         orbView.backgroundColor = .clear
         return orbView
     }()
@@ -239,8 +239,10 @@ extension AICoachPreVC{
         // 原 circleImgView 约束保留，回退 CoachAnimationV3View 时可恢复。
         circleImgView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(kFitWidth(133.5))
-            make.width.height.equalTo(kFitWidth(250))
+//            make.top.equalTo(kFitWidth(133.5))
+//            make.width.height.equalTo(kFitWidth(250))
+            make.top.equalTo(kFitWidth(147))
+            make.width.height.equalTo(kFitWidth(223))
         }
 //        aiCoachOrbContainerView.snp.makeConstraints { make in
 //            make.centerX.equalToSuperview()
@@ -266,8 +268,9 @@ extension AICoachPreVC{
 //        }
         readyMessageVM.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.bottom.equalTo(feedbackGlassVM.snp.top).offset(kFitWidth(-54))
-            make.height.equalTo(readyMessageVM.selfHeight)
+            make.bottom.equalTo(feedbackGlassVM.snp.top).offset(kFitWidth(-35))
+            make.height.equalTo(kFitWidth(100))
+//            make.height.equalTo(readyMessageVM.selfHeight)
         }
 
         feedbackGlassVM.snp.makeConstraints { make in
@@ -351,7 +354,6 @@ private extension AICoachPreVC {
 
     func updatePreDaysUI(dataDict: NSDictionary) {
         self.dataDict = dataDict
-//        nextButton.isHidden = dataDict.stringValueForKey(key: "has7CompleteDays") == "0"
         let latestReportDict = dataDict["latestReport"]as? NSDictionary ?? [:]
 
         self.reportId = latestReportDict.stringValueForKey(key: "id")
@@ -364,6 +366,7 @@ private extension AICoachPreVC {
         DispatchQueue.main.async {
             self.feedbackGlassVM.configure(userGoal: userGoal,
                                            aiCoachIntensityPreference: aiCoachIntensityPreference)
+            self.readyMessageVM.updateContent(msgDict: dataDict)
             self.applyNextButtonState(animated: self.shouldAnimateStateTransition, updatesMessage: false)
             self.syncVisiblePresentationStateIfNeeded(force: self.shouldForceVisiblePresentationAfterDataUpdate)
         }
@@ -679,8 +682,8 @@ private extension AICoachPreVC {
     }
 
     var shouldShowNextButton: Bool {
-        let has7CompleteDays = dataDict.stringValueForKey(key: "has7CompleteDays")
-        return has7CompleteDays.count > 0 && has7CompleteDays != "0"
+        let completeDays = dataDict.stringValueForKey(key: "completeDays").intValue
+        return completeDays >= 7
     }
 
     var shouldForceVisiblePresentationAfterDataUpdate: Bool {
