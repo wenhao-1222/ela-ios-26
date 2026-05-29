@@ -24,6 +24,33 @@ class HealthKitNaturnalManager {
 
     /// 队列用于按顺序保存营养数据，避免并发写入导致重复
     private let nutritionSaveQueue = DispatchQueue(label: "com.lns.healthkit.nutritionSaveQueue")
+    private static let nutritionSyncQueue = DispatchQueue(label: "com.lns.healthkit.nutritionSyncQueue")
+    private static var pendingNutritionRequests: [String: NutritionSyncRequest] = [:]
+    private static var debounceWorkItems: [String: DispatchWorkItem] = [:]
+    private static var debounceGenerations: [String: Int] = [:]
+    private static var syncingDates: Set<String> = []
+    private static var lastSyncedFingerprints: [String: String] = [:]
+    private static let debounceInterval: TimeInterval = 0.8
+
+    private struct NutritionSyncRequest {
+        let calories: Double
+        let carbs: Double
+        let protein: Double
+        let fat: Double
+        let cTime: String
+
+        var hasValue: Bool {
+            carbs > 0 || protein > 0 || fat > 0 || calories > 0
+        }
+
+        var fingerprint: String {
+            let caloriesValue = String(format: "%.3f", calories)
+            let carbsValue = String(format: "%.3f", carbs)
+            let proteinValue = String(format: "%.3f", protein)
+            let fatValue = String(format: "%.3f", fat)
+            return "\(cTime)|\(caloriesValue)|\(carbsValue)|\(proteinValue)|\(fatValue)"
+        }
+    }
 
 //    /// 用于去抖动保存营养数据，key 为日期字符串
 //    private static var saveWorkItems: [String: DispatchWorkItem] = [:]
@@ -216,6 +243,26 @@ extension HealthKitNaturnalManager{
    // 保存营养数据的方法
     //（带去抖动）   2025年07月15日13:38:17
     func saveNutritionData(calories: Double,carbs: Double, protein: Double, fat: Double,cTime:String) {
+        let request = NutritionSyncRequest(calories: calories, carbs: carbs, protein: protein, fat: fat, cTime: cTime)
+        Self.nutritionSyncQueue.async {
+            let existingWorkItem = Self.debounceWorkItems[cTime]
+            existingWorkItem?.cancel()
+            Self.pendingNutritionRequests[cTime] = request
+            let generation = (Self.debounceGenerations[cTime] ?? 0) + 1
+            Self.debounceGenerations[cTime] = generation
+
+            let workItem = DispatchWorkItem {
+                Self.nutritionSyncQueue.async {
+                    guard Self.debounceGenerations[cTime] == generation else {
+                        return
+                    }
+                    Self.debounceWorkItems.removeValue(forKey: cTime)
+                    self.startNextNutritionSyncIfNeeded(for: cTime)
+                }
+            }
+            Self.debounceWorkItems[cTime] = workItem
+            DispatchQueue.global().asyncAfter(deadline: .now() + Self.debounceInterval, execute: workItem)
+        }
 //        // 取消同一天待执行的任务，只保留最后一次
 //        if let work = Self.saveWorkItems[cTime] {
 //            work.cancel()
@@ -232,17 +279,54 @@ extension HealthKitNaturnalManager{
 //
 //    /// 真正执行保存营养数据的方法
 //    private func performSaveNutritionData(calories: Double,carbs: Double, protein: Double, fat: Double,cTime:String) {
+//
+//        nutritionSaveQueue.async {
+//            let semaphore = DispatchSemaphore(value: 0)
+//            self.performSaveNutritionData(calories: calories, carbs: carbs, protein: protein, fat: fat, cTime: cTime) {
+//                semaphore.signal()
+//            }
+//            semaphore.wait()
+//        }
+    }
+
+    private func startNextNutritionSyncIfNeeded(for cTime: String) {
+        guard !Self.syncingDates.contains(cTime),
+              let request = Self.pendingNutritionRequests.removeValue(forKey: cTime) else {
+            return
+        }
+
+//        if Self.lastSyncedFingerprints[cTime] == request.fingerprint {
+//            DLLog(message: "HealthKitNaturnalManager:\(cTime) 营养数据未变化，跳过重复同步")
+//            if Self.pendingNutritionRequests[cTime] != nil {
+//                startNextNutritionSyncIfNeeded(for: cTime)
+//            }
+//            return
+//        }
         
-        nutritionSaveQueue.async {
-            let semaphore = DispatchSemaphore(value: 0)
-            self.performSaveNutritionData(calories: calories, carbs: carbs, protein: protein, fat: fat, cTime: cTime) {
-                semaphore.signal()
+        Self.syncingDates.insert(cTime)
+        performSaveNutritionData(request: request) { saveSucceeded in
+            Self.nutritionSyncQueue.async {
+                Self.syncingDates.remove(cTime)
+                if request.hasValue && saveSucceeded {
+                    Self.lastSyncedFingerprints[cTime] = request.fingerprint
+                } else if !request.hasValue {
+                    Self.lastSyncedFingerprints.removeValue(forKey: cTime)
+                }
+                self.startNextNutritionSyncIfNeeded(for: cTime)
             }
-            semaphore.wait()
         }
     }
 
-        private func performSaveNutritionData(calories: Double,carbs: Double, protein: Double, fat: Double,cTime:String, completion: @escaping () -> Void) {
+    private func performSaveNutritionData(request: NutritionSyncRequest, completion: @escaping (Bool) -> Void) {
+        performSaveNutritionData(calories: request.calories,
+                                 carbs: request.carbs,
+                                 protein: request.protein,
+                                 fat: request.fat,
+                                 cTime: request.cTime,
+                                 completion: completion)
+    }
+
+        private func performSaveNutritionData(calories: Double,carbs: Double, protein: Double, fat: Double,cTime:String, completion: @escaping (Bool) -> Void) {
 //        if ADD_FOODS_FOR_HEALTHKIT_NATURAL >= 1{
 //            ADD_FOODS_FOR_HEALTHKIT_NATURAL -= 1
 //        }else{
@@ -256,6 +340,7 @@ extension HealthKitNaturnalManager{
         let nextDay = "\(Date().nextDay(days: 1)) 00:00:00"
         if !Date().judgeMin(firstTime: "\(cTime) 23:59:59", secondTime: nextDay){
             DLLog(message: "HealthKitNaturnalManager:\(cTime) 的数据不存入健康APP")
+            completion(false)
             return
         }
         DLLog(message: "HealthKitNaturnalManager:\(cTime) 的数据存入健康APP----------")
@@ -284,7 +369,10 @@ extension HealthKitNaturnalManager{
                     } else {
                         DLLog(message: "HealthKitNaturnalManager:\(cTime) -保存失败：\(String(describing: error))")
                     }
+                    completion(success)
                 }
+            } else {
+                completion(true)
             }
        }
    }

@@ -70,7 +70,7 @@ func isIpad() -> Bool {
 //这里的T表示不指定message参数类型
 func DLLog<T>(message: T, fileName: String = #file, funcName: String = #function, lineNum : Int = #line) {
     
-    #if DEBUG
+//    #if DEBUG
 //        /**
 //         * 此处还要在项目的build settings中搜索swift flags,找到 Other Swift Flags 找到Debug
 //         * 添加 -D DEBUG,即可。
@@ -107,5 +107,5 @@ func DLLog<T>(message: T, fileName: String = #file, funcName: String = #function
         }
 
         print("[\(file)][\(funcName)](第\(lineNum)行)\(messageString)")
-    #endif
+//    #endif
 }

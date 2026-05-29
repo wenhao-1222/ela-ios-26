@@ -13,6 +13,7 @@ class ElaProExpiredAlertVM: UIView {
     let whiteViewTopRadius: CGFloat = kFitWidth(50)
     
     var upgradeBlock:(()->())?
+    var dismissBlock:(()->())?
     
     private var didLoadPage = false
     private let transparentStyleID = "ela_pro_agreement_transparent_style"
@@ -226,13 +227,20 @@ extension ElaProExpiredAlertVM {
         }
     }
     
-    @objc func hiddenSelf() {
+    func dismissSelf(notifiesDismiss: Bool) {
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: self.whiteViewHeight)
             self.bgView.alpha = 0
         } completion: { _ in
             self.isHidden = true
+            if notifiesDismiss {
+                self.dismissBlock?()
+            }
         }
+    }
+
+    @objc func hiddenSelf() {
+        dismissSelf(notifiesDismiss: true)
     }
     @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {
         guard gesture.view === whiteView else { return }

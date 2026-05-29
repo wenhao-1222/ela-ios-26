@@ -28,7 +28,7 @@ final class AICoachPreReadyMessageVM: UIView {
         label.textAlignment = .center
         label.numberOfLines = 0
         label.textColor = .COLOR_TEXT_TITLE_0f1214
-        label.font = .systemFont(ofSize: 17, weight: .semibold)
+        label.font = .systemFont(ofSize: 14, weight: .medium)
         label.adjustsFontSizeToFitWidth = true
         label.minimumScaleFactor = 0.82
         return label

@@ -23,10 +23,10 @@ class HabitExchangeAlertVM: UIView {
     var pointCostPerDonate = 1
     ///当前总剩余积分
     var pointBalance = 1
-    /// 当日积分兑换额度是否用尽
-    var isDailyDonateLimitExceeded = false
-    /// 当日积分兑换额度用尽提示文案
-    var dailyDonateLimitExceededText = ""
+    /// 积分兑换额度是否用尽
+    var isDonateLimitExceeded = false
+    /// 积分兑换额度用尽提示文案
+    var donateLimitExceededText = ""
     
     /// 蒙层目标透明度：浅色 0.15，深色 0.85
     private var targetDimAlpha: CGFloat {
@@ -284,7 +284,7 @@ extension HabitExchangeAlertVM {
         }
     }
     @objc func exchangeAction() {
-        if isDailyDonateLimitExceeded {
+        if isDonateLimitExceeded {
             return
         }
         if pointBalance - pointCostPerDonate * num < 0{
@@ -301,10 +301,10 @@ extension HabitExchangeAlertVM{
         msgDict = dict
         pointBalance = msgDict.stringValueForKey(key: "pointBalance").intValue
         pointCostPerDonate = dict.stringValueForKey(key: "pointCostPerDonate").intValue
-        isDailyDonateLimitExceeded = dict.stringValueForKey(key: "isDailyDonateLimitExceeded").intValue == 1
-        dailyDonateLimitExceededText = dict.stringValueForKey(key: "dailyDonateLimitExceededText")
-        dailyDonateLimitExceededLab.text = dailyDonateLimitExceededText
-        dailyDonateLimitExceededLab.isHidden = !isDailyDonateLimitExceeded || dailyDonateLimitExceededText.isEmpty
+        isDonateLimitExceeded = dict.stringValueForKey(key: "isDonateLimitExceeded").intValue == 1
+        donateLimitExceededText = dict.stringValueForKey(key: "donateLimitExceededText")
+        dailyDonateLimitExceededLab.text = donateLimitExceededText
+        dailyDonateLimitExceededLab.isHidden = !isDonateLimitExceeded//!isDonateLimitExceeded || donateLimitExceededText.isEmpty
         calculatePoint()
         updateConfirmButtonState()
     }
@@ -319,7 +319,19 @@ extension HabitExchangeAlertVM{
     }
     func updateConfirmButtonState() {
         let isPointEnough = pointBalance >= pointCostPerDonate * num
-        let isEnabled = isPointEnough && !isDailyDonateLimitExceeded
+        let isEnabled : Bool
+        
+        if isPointEnough{
+            if isDonateLimitExceeded{
+                isEnabled = false
+            }else{
+                isEnabled = true
+            }
+        }else{
+            isEnabled = false
+        }
+        
+//        let isEnabled = isPointEnough && !isDonateLimitExceeded
         confirmButton.backgroundColor = isEnabled ? .THEME : .COLOR_BUTTON_DISABLE_BG_THEME
         confirmButton.isEnabled = isEnabled
     }

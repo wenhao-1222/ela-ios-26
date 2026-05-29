@@ -68,6 +68,26 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         }
         return view
     }()
+
+    private lazy var elaExpiredAlertVm: ElaProExpiredAlertVM = {
+        let vm = ElaProExpiredAlertVM(frame: .zero)
+        vm.updateContentForAiCoach()
+        vm.upgradeBlock = { [weak self] in
+            guard let self = self else { return }
+            self.elaExpiredAlertVm.dismissSelf(notifiesDismiss: false)
+            self.navigationController?.fd_interactivePopDisabled = true
+            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+            let vc = ElaProVC()
+            vc.showPriceOnly = true
+            vc.priceBizType = "3"
+            vc.popToRootOnClose = true
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        vm.dismissBlock = { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        return vm
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -126,7 +146,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     }()
     
     lazy var circleImgView: CoachAnimationV3View = {
-        let orbView = CoachAnimationV3View(diameter: kFitWidth(235))
+        let orbView = CoachAnimationV3View(diameter: kFitWidth(250))
         orbView.backgroundColor = .clear
         return orbView
     }()
@@ -252,6 +272,7 @@ extension AICoachPreVC{
         view.addSubview(infoSelectPopupVM)
         
         view.addSubview(katchAlertVm)
+        view.addSubview(elaExpiredAlertVm)
         
         setConstrait()
         configureInitialPresentationState()
@@ -268,10 +289,10 @@ extension AICoachPreVC{
         // 原 circleImgView 约束保留，回退 CoachAnimationV3View 时可恢复。
         circleImgView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-//            make.top.equalTo(kFitWidth(133.5))
-//            make.width.height.equalTo(kFitWidth(250))
-            make.top.equalTo(kFitWidth(147))
-            make.width.height.equalTo(kFitWidth(223))
+            make.top.equalTo(kFitWidth(133.5))
+            make.width.height.equalTo(kFitWidth(250))
+//            make.top.equalTo(kFitWidth(147))
+//            make.width.height.equalTo(kFitWidth(223))
         }
 //        aiCoachOrbContainerView.snp.makeConstraints { make in
 //            make.centerX.equalToSuperview()
@@ -319,6 +340,10 @@ extension AICoachPreVC{
         infoSelectPopupVM.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+
+        elaExpiredAlertVm.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
 }
 
@@ -332,6 +357,14 @@ extension AICoachPreVC {
 extension AICoachPreVC{
     func sendCoachLaunchRequest() {
         WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_launch, parameters: nil) { responseObject in
+            let code = responseObject["code"] as? Int ?? -1
+            guard code == 200 else {
+                if code == 403 {
+                    self.elaExpiredAlertVm.showSelf()
+                }
+                return
+            }
+
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let foodsMsgDict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendCoachLaunchRequest:\(foodsMsgDict)")

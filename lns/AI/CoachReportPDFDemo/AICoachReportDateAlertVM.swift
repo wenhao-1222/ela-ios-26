@@ -85,11 +85,18 @@ final class AICoachReportDateAlertVM: UIView, UIPickerViewDelegate, UIPickerView
         return label
     }()
 
-    private lazy var closeButton: UIButton = {
-        let button = UIButton(type: .custom)
+    private lazy var closeButton: ElaExpandedTapButton = {
+        let button = ElaExpandedTapButton(type: .custom)
+        button.hitTestEdgeInsets = .init(top: -20, left: -20, bottom: -20, right: -20)
         button.setImage(UIImage(named: "date_fliter_cancel_img"), for: .normal)
         button.addTarget(self, action: #selector(hiddenSelf), for: .touchUpInside)
         return button
+    }()
+
+    private lazy var closeButtonVisibleTapGesture: UITapGestureRecognizer = {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(closeButtonVisibleTapAction(_:)))
+        tap.delegate = self
+        return tap
     }()
 
     private lazy var pickerView: UIPickerView = {
@@ -135,7 +142,7 @@ extension AICoachReportDateAlertVM {
         guard items.isEmpty == false else { return }
 
         isHidden = false
-        bgView.isUserInteractionEnabled = false
+//        bgView.isUserInteractionEnabled = false
         updateLayout()
 
         whiteView.transform = CGAffineTransform(translationX: 0, y: whiteViewHeight)
@@ -149,16 +156,16 @@ extension AICoachReportDateAlertVM {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: -kFitWidth(2))
             self.bgView.alpha = self.targetDimAlpha
         } completion: { _ in
-            self.bgView.isUserInteractionEnabled = true
+//            self.bgView.isUserInteractionEnabled = true
         }
 
-        UIView.animate(withDuration: 0.25, delay: 0.4, options: .curveEaseInOut) {
+        UIView.animate(withDuration: 0.25, delay: 0.4, options: [.curveEaseInOut, .allowUserInteraction]) {
             self.whiteView.transform = .identity
         }
     }
 
     @objc func hiddenSelf() {
-        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
+        UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseIn, .beginFromCurrentState]) {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: self.whiteViewHeight)
             self.bgView.alpha = 0
         } completion: { _ in
@@ -171,6 +178,7 @@ private extension AICoachReportDateAlertVM {
     func initUI() {
         addSubview(bgView)
         addSubview(whiteView)
+        addGestureRecognizer(closeButtonVisibleTapGesture)
 
         whiteView.addSubview(titleLabel)
         whiteView.addSubview(closeButton)
@@ -224,6 +232,24 @@ private extension AICoachReportDateAlertVM {
     }
 
     @objc func nothingToDo() {}
+
+    @objc func closeButtonVisibleTapAction(_ gesture: UITapGestureRecognizer) {
+        guard gesture.state == .ended else { return }
+        hiddenSelf()
+    }
+
+    func closeButtonVisibleHitFrame() -> CGRect {
+        let sourceLayer = whiteView.layer.presentation() ?? whiteView.layer
+        return sourceLayer.convert(closeButton.frame.insetBy(dx: -20, dy: -20), to: layer)
+    }
+}
+
+extension AICoachReportDateAlertVM: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        guard gestureRecognizer === closeButtonVisibleTapGesture else { return true }
+        guard isHidden == false, closeButton.isHidden == false, closeButton.alpha > 0.01 else { return false }
+        return closeButtonVisibleHitFrame().contains(touch.location(in: self))
+    }
 }
 
 extension AICoachReportDateAlertVM {
