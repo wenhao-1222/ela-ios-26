@@ -23,6 +23,11 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private var hasPlayedRemainingEntranceAnimation = false
     private var hasFinishedCircleEntranceAnimation = false
     private var aiCoachOrbHostController: UIHostingController<AICoachPreOrbRootView>?
+    private var bgImgViewBottomConstraint: Constraint?
+    private var lastBgImgViewBottomOffset: CGFloat = -1
+    // Measured from the original ela_pro_ai_pre_bg asset in pixels.
+    private let bgImagePixelSize = CGSize(width: 1500.0, height: 3248.0)
+    private let bgCircleCenterYPixels: CGFloat = 1058.0
     private let entranceAnimationDurationA: TimeInterval = 0.75
     private let entranceAnimationDurationB: TimeInterval = 0.35
     private let entranceAnimationDurationC: TimeInterval = 0.7
@@ -124,6 +129,11 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         }
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateBackgroundCircleAlignmentIfNeeded()
+    }
+
     override func backTapAction() {
         navigationController?.popToRootViewController(animated: true)
     }
@@ -140,7 +150,8 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     lazy var bgImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "ela_pro_ai_pre_bg")
-        img.contentMode = .scaleAspectFit
+        img.contentMode = .scaleAspectFill
+        img.clipsToBounds = true
         img.alpha = 0
         return img
     }()
@@ -284,7 +295,8 @@ extension AICoachPreVC{
             make.width.height.equalTo(kFitWidth(20))
         }
         bgImgView.snp.makeConstraints { make in
-            make.left.top.width.height.equalToSuperview()
+            make.left.top.right.equalToSuperview()
+            bgImgViewBottomConstraint = make.bottom.equalToSuperview().constraint
         }
         // 原 circleImgView 约束保留，回退 CoachAnimationV3View 时可恢复。
         circleImgView.snp.makeConstraints { make in
@@ -389,6 +401,54 @@ extension AICoachPreVC{
 }
 
 private extension AICoachPreVC {
+    func updateBackgroundCircleAlignmentIfNeeded() {
+        let bottomOffset = backgroundBottomOffsetForCircleAlignment()
+        guard abs(bottomOffset - lastBgImgViewBottomOffset) > 0.5 else { return }
+
+        lastBgImgViewBottomOffset = bottomOffset
+        bgImgViewBottomConstraint?.update(offset: bottomOffset)
+    }
+
+    func backgroundBottomOffsetForCircleAlignment() -> CGFloat {
+        guard isIpad(),
+              view.bounds.width > 0,
+              view.bounds.height > 0 else {
+            return 0
+        }
+
+        let targetCircleCenterY = kFitWidth(133.5) + kFitWidth(250) / 2.0
+        guard backgroundCircleCenterY(bottomOffset: 0) < targetCircleCenterY else {
+            return 0
+        }
+
+        var low: CGFloat = 0
+        var high: CGFloat = max(view.bounds.height, targetCircleCenterY * 2.0)
+        while backgroundCircleCenterY(bottomOffset: high) < targetCircleCenterY,
+              high < view.bounds.height * 4.0 {
+            high *= 2.0
+        }
+
+        for _ in 0..<18 {
+            let mid = (low + high) / 2.0
+            if backgroundCircleCenterY(bottomOffset: mid) < targetCircleCenterY {
+                low = mid
+            } else {
+                high = mid
+            }
+        }
+
+        return high
+    }
+
+    func backgroundCircleCenterY(bottomOffset: CGFloat) -> CGFloat {
+        let imageViewHeight = view.bounds.height + bottomOffset
+        let scale = max(view.bounds.width / bgImagePixelSize.width,
+                        imageViewHeight / bgImagePixelSize.height)
+        let displayedHeight = bgImagePixelSize.height * scale
+        let verticalCrop = max(0, (displayedHeight - imageViewHeight) / 2.0)
+        return bgCircleCenterYPixels * scale - verticalCrop
+    }
+
     func trimNavigationStackToRootAndSelfIfNeeded() {
         guard let navigationController = navigationController else { return }
         guard navigationController.topViewController === self else { return }

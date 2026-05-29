@@ -22,7 +22,7 @@ enum AICoachReportPDFGenerator {
     // 将整页渲染拆成更小的切片，避免主线程被一次性占满，
     // 让返回按钮和页面交互能在切片间隙及时得到处理。
     private static let renderTileHeight: CGFloat = 220
-    private static let cacheVersion = "v5"
+    private static let cacheVersion = "v6"
     static let pageSize = layoutPageSize
 
     static func generateAsync(
@@ -117,7 +117,13 @@ enum AICoachReportPDFGenerator {
 
     static func existingCachedFileURL(report: AICoachReportDemoData, reportId: String) -> URL? {
         let fileURL = makeOutputURL(report: report, reportId: reportId)
-        return FileManager.default.fileExists(atPath: fileURL.path) ? fileURL : nil
+        guard FileManager.default.fileExists(atPath: fileURL.path) else { return nil }
+        guard cachedVersion(for: fileURL) == cacheVersion else {
+            try? FileManager.default.removeItem(at: fileURL)
+            try? FileManager.default.removeItem(at: cacheVersionFileURL(for: fileURL))
+            return nil
+        }
+        return fileURL
     }
 
     @discardableResult

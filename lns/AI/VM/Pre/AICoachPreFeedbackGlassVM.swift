@@ -211,7 +211,7 @@ private extension AICoachPreFeedbackGlassVM {
     func makeBackgroundGlassEffect() -> UIVisualEffect {
         if #available(iOS 26.0, *) {
             let effect = UIGlassEffect(style: .clear)
-            effect.tintColor = UIColor.white.withAlphaComponent(0.08)
+            effect.tintColor = UIColor(red: 0.58, green: 0.61, blue: 0.68, alpha: 0.18)
             effect.isInteractive = true
             return effect
         } else {
