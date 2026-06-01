@@ -90,7 +90,8 @@ class GuidanceProVC: WHBaseViewVC {
 }
 extension GuidanceProVC {
     func initUI() {
-        view.backgroundColor = .clear
+        view.backgroundColor = .COLOR_BG_WHITE
+        navigationController?.view.backgroundColor = .COLOR_BG_WHITE
         addELAFlowingBackground()
         
 //        view.addSubview(topBackgroundView)

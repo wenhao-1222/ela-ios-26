@@ -10,6 +10,7 @@ class FriendRankingVC: WHBaseViewVC {
     var isSetPopGesture = false
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         sendFriendListRequest()
         setupPopGestureFailureRequirementIfNeeded()
         updatePopGestureStatus()
@@ -116,6 +117,11 @@ extension FriendRankingVC : UIScrollViewDelegate{
         updatePopGestureStatus()
         self.typeVm.changeType()
     }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        updatePopGestureStatus()
+    }
+    
     func updateUI() {
         if self.typeVm.currentIndex == 0 {
             UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
@@ -141,9 +147,9 @@ extension FriendRankingVC{
     }
     
     func updatePopGestureStatus() {
-        let isOnWeekRanking = scrollViewBase.contentOffset.x > kFitWidth(20) || typeVm.currentIndex == 1
-        self.navigationController?.fd_interactivePopDisabled = isOnWeekRanking
-        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = !isOnWeekRanking
+        let isOnWeekRanking = typeVm.currentIndex == 1
+        canEdgeBack = !isOnWeekRanking
+        self.fd_interactivePopDisabled = isOnWeekRanking
     }
 }
 

@@ -11,7 +11,10 @@ class FriendListVC: WHBaseViewVC {
     
     override func viewWillAppear(_ animated: Bool) {
        super.viewWillAppear(animated)
+       canEdgeBack = true
+       fd_interactivePopDisabled = false
        self.navigationController?.fd_interactivePopDisabled = false
+       self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
    }
     override func viewDidAppear(_ animated: Bool) {

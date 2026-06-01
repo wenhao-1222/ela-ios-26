@@ -36,10 +36,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-//        UserDefaults.standard.setValue("fjo02drehRGw9ufu", forKey: token)
-//        UserDefaults.standard.setValue("f85f9118da17e98d62e1003729929afa", forKey: userId)
-//        UserInfoModel.shared.uId = "f85f9118da17e98d62e1003729929afa"
-//        UserInfoModel.shared.token = "fjo02drehRGw9ufu"
+//        UserDefaults.standard.setValue("UUFEnv0i1bx2aJuS", forKey: token)
+//        UserDefaults.standard.setValue("3c02e5d6e9e3e0635b3e93654d581379", forKey: userId)
+//        UserInfoModel.shared.uId = "3c02e5d6e9e3e0635b3e93654d581379"
+//        UserInfoModel.shared.token = "UUFEnv0i1bx2aJuS"
         
         let launchWindow: UIWindow
         if let existingWindow = window {
@@ -753,6 +753,9 @@ extension AppDelegate{
         let oldSnapshot = keyWindow.snapshotView(afterScreenUpdates: false)
         oldSnapshot?.frame = keyWindow.bounds
         oldSnapshot?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        if let oldSnapshot {
+            keyWindow.addSubview(oldSnapshot)
+        }
 
         newRootVC.loadViewIfNeeded()
         newRootVC.view.frame = keyWindow.bounds
@@ -764,10 +767,15 @@ extension AppDelegate{
             keyWindow.rootViewController = newRootVC
             keyWindow.makeKeyAndVisible()
             keyWindow.layoutIfNeeded()
+            if let oldSnapshot {
+                if oldSnapshot.superview !== keyWindow {
+                    keyWindow.addSubview(oldSnapshot)
+                }
+                keyWindow.bringSubviewToFront(oldSnapshot)
+            }
         }
 
         guard let oldSnapshot else { return }
-        keyWindow.addSubview(oldSnapshot)
         UIView.animate(
             withDuration: 0.25,
             delay: 0,
