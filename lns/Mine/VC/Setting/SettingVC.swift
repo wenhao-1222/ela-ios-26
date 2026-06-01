@@ -433,15 +433,9 @@ extension SettingVC{
 
     func getCacheFileSize() -> String{
         var foldSize: UInt64 = 0
-        let filePath: String = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first ?? ""
-        if let files = FileManager.default.subpaths(atPath: filePath) {
-            for path in files {
-                let temPath: String = filePath+"/"+path
-                let folder = try? FileManager.default.attributesOfItem(atPath: temPath) as NSDictionary
-                if let c = folder?.fileSize() {
-                    foldSize += c
-                }
-            }
+        for fileURL in clearableCacheFileURLs() {
+            let fileSize = (try? fileURL.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+            foldSize += UInt64(fileSize)
         }
         
         //保留2位小数
@@ -454,17 +448,37 @@ extension SettingVC{
         }
     }
     func clearFileCache() -> String {
-        let filePath: String = NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first ?? ""
-        if let files = FileManager.default.subpaths(atPath: filePath) {
-            for path in files {
-                if !path.contains(".sqlite"){
-                    let temPath: String = filePath+"/"+path
-                    if FileManager.default.fileExists(atPath: temPath) {
-                        try? FileManager.default.removeItem(atPath: temPath)
-                    }
-                }
-            }
+        for fileURL in clearableCacheFileURLs() {
+            try? FileManager.default.removeItem(at: fileURL)
         }
         return getCacheFileSize()
+    }
+
+    private func clearableCacheFileURLs() -> [URL] {
+        guard let cacheDirectoryURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first,
+              let enumerator = FileManager.default.enumerator(
+                at: cacheDirectoryURL,
+                includingPropertiesForKeys: [.isRegularFileKey, .fileSizeKey],
+                options: [.skipsHiddenFiles]
+              ) else {
+            return []
+        }
+
+        return enumerator.compactMap { item -> URL? in
+            guard let fileURL = item as? URL,
+                  shouldIncludeCacheFile(fileURL) else {
+                return nil
+            }
+            return fileURL
+        }
+    }
+
+    private func shouldIncludeCacheFile(_ fileURL: URL) -> Bool {
+        let resourceValues = try? fileURL.resourceValues(forKeys: [.isRegularFileKey])
+        guard resourceValues?.isRegularFile == true else { return false }
+
+        let lowercasedPath = fileURL.path.lowercased()
+        let databaseSuffixes = [".sqlite", ".sqlite3", ".db", ".sqlite-wal", ".sqlite-shm", ".db-wal", ".db-shm"]
+        return databaseSuffixes.contains { lowercasedPath.hasSuffix($0) } == false
     }
 }

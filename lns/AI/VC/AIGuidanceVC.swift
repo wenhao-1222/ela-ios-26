@@ -102,9 +102,7 @@ class AIGuidanceVC: WHBaseViewVC {
     lazy var goalVm: AIGuidanceGoalVM = {
         let vm = AIGuidanceGoalVM.init(frame: .zero)
         vm.selectedBlock = { [weak self] in
-            self?.goalStageVm.refreshContentForCurrentGoal()
-            self?.coachStrictnessVm.refreshContentForCurrentGoal()
-            self?.moveToStep(index: 1, animated: true)
+            self?.updateNextButtonForCurrentStep()
         }
         return vm
     }()
@@ -170,7 +168,9 @@ extension AIGuidanceVC{
 
         switch currentStep {
         case .goal:
-            break
+            goalStageVm.refreshContentForCurrentGoal()
+            coachStrictnessVm.refreshContentForCurrentGoal()
+            moveToStep(index: 1, animated: true)
         case .goalStage:
             moveToStep(index: 2, animated: true)
         case .coachStrictness:
@@ -278,8 +278,8 @@ extension AIGuidanceVC{
 
         switch currentStep {
         case .goal:
-            nextButton.isHidden = true
-            nextButton.isEnabled = false
+            nextButton.isHidden = false
+            nextButton.isEnabled = goalVm.hasSelection
         case .goalStage:
             nextButton.isHidden = false
             nextButton.isEnabled = goalStageVm.hasSelection

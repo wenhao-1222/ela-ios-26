@@ -22,6 +22,7 @@ class MineVC : WHBaseViewVC {
         self.funcTopVm.updateUI()
         sendUserCenterRequest()
         getUserConfigRequest()
+        sendFriendPendingListRequest()
 //        sendForumMsgNuberRequest()
         //2026年02月04日13:41:23   个性化设置新功能红点不再显示
 //        settingVm.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
@@ -179,6 +180,14 @@ extension MineVC{
 //        }else{
 //            
 //        }
+    }
+    func sendFriendPendingListRequest() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_friend_pengding_list, parameters: nil) { responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
+            
+            self.personalTopVm.friendsVm.redView.isHidden = dataArray.count == 0
+        }
     }
 }
 

@@ -25,7 +25,6 @@ class HonorVC: WHBaseViewVC {
             }else{
                 self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: true)
             }
-            
         }
         
         return vm

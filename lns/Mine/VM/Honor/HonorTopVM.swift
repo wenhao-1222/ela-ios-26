@@ -11,6 +11,15 @@ import Foundation
 class HonorTopVM: UIView {
     
     let selfHeight = kFitWidth(267)
+    private var iconCount = 0
+    private var donateCount = 0
+    private var countDisplayLink: CADisplayLink?
+    private var animationStartTime: CFTimeInterval = 0
+    private var fromIconCount = 0
+    private var toIconCount = 0
+    private var fromDonateCount = 0
+    private var toDonateCount = 0
+    private let countAnimationDuration: CFTimeInterval = 0.85
     
     override init(frame: CGRect) {
         super.init(frame: CGRect.init(x: 0, y: statusBarHeight, width: SCREEN_WIDHT, height: selfHeight))
@@ -46,11 +55,40 @@ class HonorTopVM: UIView {
         return lab
     }()
     
+    deinit {
+        stopCountAnimation()
+    }
+    
 }
 
 extension HonorTopVM{
     ///iconNum   徽章数   donateNum   捐赠次数
-    func updateUI(iconNum:String,donateNum:String) {
+    func updateUI(iconNum:String,donateNum:String, animated: Bool = true) {
+        let targetIconCount = Int(iconNum) ?? 0
+        let targetDonateCount = Int(donateNum) ?? 0
+        
+        guard animated else {
+            stopCountAnimation()
+            iconCount = targetIconCount
+            donateCount = targetDonateCount
+            updateHonorText(iconNum: "\(targetIconCount)", donateNum: "\(targetDonateCount)")
+            return
+        }
+        
+        fromIconCount = iconCount
+        toIconCount = targetIconCount
+        fromDonateCount = donateCount
+        toDonateCount = targetDonateCount
+        animationStartTime = CACurrentMediaTime()
+        
+        stopCountAnimation()
+        let link = CADisplayLink(target: self, selector: #selector(handleCountAnimation(_:)))
+        link.add(to: .main, forMode: .common)
+        countDisplayLink = link
+        handleCountAnimation(link)
+    }
+    
+    private func updateHonorText(iconNum:String,donateNum:String) {
         let attr = NSMutableAttributedString(string: "累计获得 ", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
                         .font:UIFont.systemFont(ofSize: 12, weight: .medium)])
         attr.append(NSAttributedString(string: iconNum, attributes: [.foregroundColor:UIColor.THEME,
@@ -63,6 +101,27 @@ extension HonorTopVM{
                                                                      .font:UIFont.systemFont(ofSize: 12, weight: .medium)]))
         honorLabel.attributedText = attr
     }
+    
+    @objc private func handleCountAnimation(_ link: CADisplayLink) {
+        let elapsed = CACurrentMediaTime() - animationStartTime
+        let rawProgress = min(max(elapsed / countAnimationDuration, 0), 1)
+        let progress = 1 - pow(1 - rawProgress, 3)
+        let currentIcon = fromIconCount + Int(round(Double(toIconCount - fromIconCount) * progress))
+        let currentDonate = fromDonateCount + Int(round(Double(toDonateCount - fromDonateCount) * progress))
+        
+        iconCount = currentIcon
+        donateCount = currentDonate
+        updateHonorText(iconNum: "\(currentIcon)", donateNum: "\(currentDonate)")
+        
+        if rawProgress >= 1 {
+            stopCountAnimation()
+        }
+    }
+    
+    private func stopCountAnimation() {
+        countDisplayLink?.invalidate()
+        countDisplayLink = nil
+    }
 }
 
 extension HonorTopVM{
@@ -72,7 +131,7 @@ extension HonorTopVM{
         addSubview(honorLabel)
         
         setConstrait()
-        updateUI(iconNum: "0", donateNum: "0")
+        updateUI(iconNum: "0", donateNum: "0", animated: false)
     }
     func setConstrait() {
         bgImgView.snp.makeConstraints { make in

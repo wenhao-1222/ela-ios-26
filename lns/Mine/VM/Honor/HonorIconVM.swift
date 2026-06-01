@@ -23,6 +23,7 @@ class HonorIconVM: UIView {
     var dataBlock:((NSDictionary)->())?
     
     private var dataSource: [HonorIconModel] = []
+    private var shouldAnimateCells = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -204,6 +205,7 @@ extension HonorIconVM{
     }
     
     func dealDataSource(dataArray:NSArray) {
+        dataSource.removeAll()
         for i in 0..<dataArray.count{
             let dataDict = dataArray[i]as? NSDictionary ?? [:]
             dataSource.append(HonorIconModel(iconName: dataDict.stringValueForKey(key: "badgeIconUrl"),
@@ -212,6 +214,30 @@ extension HonorIconVM{
                                              dateText: dataDict.stringValueForKey(key: "ctime"),
                                              isAchieved: dataDict.stringValueForKey(key: "earned") == "1"))
         }
+        shouldAnimateCells = true
         self.collectionView.reloadData()
+    }
+}
+
+extension HonorIconVM {
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
+        guard shouldAnimateCells else { return }
+        
+        cell.alpha = 0
+        cell.transform = CGAffineTransform(translationX: 0, y: kFitWidth(18))
+        UIView.animate(
+            withDuration: 0.38,
+            delay: min(Double(indexPath.item) * 0.045, 0.45),
+            options: [.curveEaseOut, .allowUserInteraction]
+        ) {
+            cell.alpha = 1
+            cell.transform = .identity
+        } completion: { [weak self] _ in
+            if indexPath.item == (self?.dataSource.count ?? 0) - 1 {
+                self?.shouldAnimateCells = false
+            }
+        }
     }
 }

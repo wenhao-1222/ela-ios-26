@@ -70,6 +70,7 @@ class FriendRankingListTopVM: UIView {
         vi.backgroundColor = WHColor_16(colorStr: "FE2C21")
         vi.layer.cornerRadius = kFitWidth(4.5)
         vi.clipsToBounds = true
+        vi.isHidden = true
 
         return vi
     }()

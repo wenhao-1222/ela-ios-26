@@ -55,6 +55,15 @@ class PersonalTopItemVM: UIView {
         
         return lab
     }()
+    lazy var redView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = WHColor_16(colorStr: "FE2C21")
+        vi.layer.cornerRadius = kFitWidth(4)
+        vi.clipsToBounds = true
+        vi.isHidden = true
+        vi.isUserInteractionEnabled = false
+        return vi
+    }()
 }
 
 extension PersonalTopItemVM{
@@ -138,6 +147,7 @@ extension PersonalTopItemVM{
         addSubview(themeBgView)
         themeBgView.addSubview(iconImgView)
         themeBgView.addSubview(titleLab)
+        themeBgView.addSubview(redView)
      
         setConstrait()
     }
@@ -153,6 +163,11 @@ extension PersonalTopItemVM{
         titleLab.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(iconImgView.snp.bottom).offset(kFitWidth(10))
+        }
+        redView.snp.makeConstraints { make in
+            make.centerX.equalTo(iconImgView.snp.right).offset(kFitWidth(-5))
+            make.centerY.equalTo(iconImgView.snp.top).offset(kFitWidth(5))
+            make.width.height.equalTo(kFitWidth(8))
         }
     }
 }

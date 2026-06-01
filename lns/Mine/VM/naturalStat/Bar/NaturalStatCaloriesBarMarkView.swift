@@ -35,8 +35,8 @@ class NaturalStatCaloriesBarMarkView: UIView {
         return vi
     }()
     lazy var timeLabel: UILabel = {
-        let lab = UILabel.init(frame: CGRect.init(x: 0, y: kFitWidth(8), width: kFitWidth(80), height: kFitWidth(12)))
-        lab.textAlignment = .center
+        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(8), y: kFitWidth(26), width: kFitWidth(64), height: kFitWidth(12)))
+        lab.textAlignment = .left
         lab.font = .systemFont(ofSize: 10, weight: .medium)
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.adjustsFontSizeToFitWidth = true
@@ -45,7 +45,8 @@ class NaturalStatCaloriesBarMarkView: UIView {
         return lab
     }()
     lazy var numberLabel: UILabel = {
-        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(8), y: kFitWidth(20), width: kFitWidth(64), height: kFitWidth(14)))
+        let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(8), y: kFitWidth(8), width: kFitWidth(64), height: kFitWidth(14)))
+        lab.textAlignment = .left
         lab.font = .systemFont(ofSize: 12, weight: .bold)
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.adjustsFontSizeToFitWidth = true

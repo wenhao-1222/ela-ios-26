@@ -192,7 +192,7 @@ extension AIGuidanceCoachStrictnessVM {
             ]
         }
     }
-
+    
     func refreshListUI() {
         tableView.reloadData()
     }

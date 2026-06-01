@@ -11,6 +11,8 @@ class FriendRankingVC: WHBaseViewVC {
     
     override func viewWillAppear(_ animated: Bool) {
         sendFriendListRequest()
+        setupPopGestureFailureRequirementIfNeeded()
+        updatePopGestureStatus()
         
 //        if scrollViewBase.contentOffset.x > kFitWidth(20){
 //            self.navigationController?.fd_interactivePopDisabled = true
@@ -23,14 +25,15 @@ class FriendRankingVC: WHBaseViewVC {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-//        self.navigationController?.fd_interactivePopDisabled = false
-//        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        self.navigationController?.fd_interactivePopDisabled = false
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         initUI()
+        setupPopGestureFailureRequirementIfNeeded()
         
         if self.typeVm.currentIndex == 1{
 //            self.navigationController?.fd_interactivePopDisabled = true
@@ -38,6 +41,7 @@ class FriendRankingVC: WHBaseViewVC {
             DispatchQueue.main.asyncAfter(deadline: .now()+0.03, execute: {
                 self.typeVm.changeType(duration: 0)
                 self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: false)
+                self.updatePopGestureStatus()
             })
         }else{
 //            if let popGesture = self.navigationController?.fd_fullscreenPopGestureRecognizer {
@@ -106,18 +110,10 @@ extension FriendRankingVC : UIScrollViewDelegate{
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.x > kFitWidth(20){
             self.typeVm.currentIndex = 1
-            self.navigationController?.fd_interactivePopDisabled = true
-            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
         }else{
-            if let popGesture = self.navigationController?.fd_fullscreenPopGestureRecognizer ,
-               isSetPopGesture == false{
-                isSetPopGesture = true
-                scrollViewBase.panGestureRecognizer.require(toFail: popGesture)
-            }
             self.typeVm.currentIndex = 0
-            self.navigationController?.fd_interactivePopDisabled = false
-            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         }
+        updatePopGestureStatus()
         self.typeVm.changeType()
     }
     func updateUI() {
@@ -125,15 +121,29 @@ extension FriendRankingVC : UIScrollViewDelegate{
             UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
                 self.scrollViewBase.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
             }
-            self.navigationController?.fd_interactivePopDisabled = false
-            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         }else{
             UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
                 self.scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: true)
             }
-            self.navigationController?.fd_interactivePopDisabled = true
-            self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
         }
+        updatePopGestureStatus()
+    }
+}
+
+extension FriendRankingVC{
+    func setupPopGestureFailureRequirementIfNeeded() {
+        guard let popGesture = self.navigationController?.fd_fullscreenPopGestureRecognizer,
+              isSetPopGesture == false else {
+            return
+        }
+        isSetPopGesture = true
+        scrollViewBase.panGestureRecognizer.require(toFail: popGesture)
+    }
+    
+    func updatePopGestureStatus() {
+        let isOnWeekRanking = scrollViewBase.contentOffset.x > kFitWidth(20) || typeVm.currentIndex == 1
+        self.navigationController?.fd_interactivePopDisabled = isOnWeekRanking
+        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = !isOnWeekRanking
     }
 }
 
