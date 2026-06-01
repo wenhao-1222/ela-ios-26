@@ -1,0 +1,177 @@
+{
+  "/Users/lns2/Desktop/lnsapp-ios/lns/AI/VM/TipsAlert/AITipsAlertConfirmBtn.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AITipsAlertConfirmBtn.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AITipsAlertConfirmBtn.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AITipsAlertConfirmBtn.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AITipsAlertConfirmBtn.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AITipsAlertConfirmBtn.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Community/VC/TestVC.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/TestVC.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/TestVC.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/TestVC.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/TestVC.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/TestVC.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/Market/Detail/MallSpecAlertBottomVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MallSpecAlertBottomVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MallSpecAlertBottomVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MallSpecAlertBottomVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MallSpecAlertBottomVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MallSpecAlertBottomVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/Market/Order/MallPaySuccessTopCell.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MallPaySuccessTopCell.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MallPaySuccessTopCell.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MallPaySuccessTopCell.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MallPaySuccessTopCell.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MallPaySuccessTopCell.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/Publish/Poll/PublishPollSettingCell.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PublishPollSettingCell.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PublishPollSettingCell.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PublishPollSettingCell.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PublishPollSettingCell.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PublishPollSettingCell.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Community/VM/Tutorial/TutorialVideoTypeVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/TutorialVideoTypeVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/TutorialVideoTypeVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/TutorialVideoTypeVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/TutorialVideoTypeVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/TutorialVideoTypeVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Login/VC/LoginVC.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/LoginVC.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/LoginVC.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/LoginVC.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/LoginVC.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/LoginVC.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Foods/NaturalCaloriSourceVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/NaturalCaloriSourceVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/NaturalCaloriSourceVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/NaturalCaloriSourceVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/NaturalCaloriSourceVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/NaturalCaloriSourceVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Journal/JournalFuncAlertVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalFuncAlertVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalFuncAlertVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalFuncAlertVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalFuncAlertVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalFuncAlertVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Merge/FoodsMergeNaturalItemVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/FoodsMergeNaturalItemVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/FoodsMergeNaturalItemVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/FoodsMergeNaturalItemVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/FoodsMergeNaturalItemVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/FoodsMergeNaturalItemVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Logs/VM/Report/Daily/JournalReportDailyCaloriesMealsItemVm.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalReportDailyCaloriesMealsItemVm.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalReportDailyCaloriesMealsItemVm.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalReportDailyCaloriesMealsItemVm.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalReportDailyCaloriesMealsItemVm.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/JournalReportDailyCaloriesMealsItemVm.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/Main/CalCircleView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CalCircleView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CalCircleView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CalCircleView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CalCircleView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/CalCircleView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/data/MainWeightLineChartView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MainWeightLineChartView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MainWeightLineChartView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MainWeightLineChartView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MainWeightLineChartView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MainWeightLineChartView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/goal/GoalSetCaloriesVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GoalSetCaloriesVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GoalSetCaloriesVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GoalSetCaloriesVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GoalSetCaloriesVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/GoalSetCaloriesVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/habit/Progress/HabitTodayGoalVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/HabitTodayGoalVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/HabitTodayGoalVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/HabitTodayGoalVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/HabitTodayGoalVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/HabitTodayGoalVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Main/VM/habit/Settle/PartyPopperEffect.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PartyPopperEffect.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PartyPopperEffect.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PartyPopperEffect.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PartyPopperEffect.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/PartyPopperEffect.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VC/Other/AddressPickerView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AddressPickerView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AddressPickerView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AddressPickerView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AddressPickerView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/AddressPickerView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Mine/MineTopFuncVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MineTopFuncVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MineTopFuncVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MineTopFuncVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MineTopFuncVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/MineTopFuncVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/Service/ServiceTextView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ServiceTextView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ServiceTextView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ServiceTextView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ServiceTextView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ServiceTextView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Mine/VM/naturalStat/Calendar/NaturalStatCalendarMarkView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/NaturalStatCalendarMarkView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/NaturalStatCalendarMarkView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/NaturalStatCalendarMarkView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/NaturalStatCalendarMarkView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/NaturalStatCalendarMarkView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Pro/VM/ElaProPriceCardView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProPriceCardView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProPriceCardView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProPriceCardView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProPriceCardView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/ElaProPriceCardView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Questionnaire/VM/QuestionnaireFoodsTipsAlertVM.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/QuestionnaireFoodsTipsAlertVM.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/QuestionnaireFoodsTipsAlertVM.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/QuestionnaireFoodsTipsAlertVM.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/QuestionnaireFoodsTipsAlertVM.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/QuestionnaireFoodsTipsAlertVM.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/WHShowBigImgVIew/WHCollectionViewCell.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/WHCollectionViewCell.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/WHCollectionViewCell.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/WHCollectionViewCell.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/WHCollectionViewCell.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/WHCollectionViewCell.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/ThirdPart/WHShowBigImgVIew/WHShowBigImgBackView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/WHShowBigImgBackView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/WHShowBigImgBackView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/WHShowBigImgBackView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/WHShowBigImgBackView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/WHShowBigImgBackView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/WHUtil/FPSMonitor.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/FPSMonitor.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/FPSMonitor.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/FPSMonitor.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/FPSMonitor.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/arm64/FPSMonitor.swiftdeps"
+  }
+}

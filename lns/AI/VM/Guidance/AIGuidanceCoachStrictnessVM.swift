@@ -70,7 +70,7 @@ class AIGuidanceCoachStrictnessVM: UIView {
 
     lazy var subtitleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "你可以随时调整标准"
+        lab.text = "你后续可随时调整"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
         lab.font = .systemFont(ofSize: 14, weight: .regular)
@@ -126,7 +126,8 @@ class AIGuidanceCoachStrictnessVM: UIView {
 extension AIGuidanceCoachStrictnessVM {
     func refreshContentForCurrentGoal() {
         currentGoalKind = goalKindFromModel()
-        titleLabel.text = "你希望 AI 教练的\n执行标准有多严格？"
+        titleLabel.text = "你希望 AI 教练\n按照什么标准要求你"
+//        titleLabel.text = "你希望 AI 教练的\n执行标准有多严格？"
         dataArray = items(for: currentGoalKind)
         refreshSelectionFromModel()
         refreshListUI()
@@ -155,10 +156,10 @@ extension AIGuidanceCoachStrictnessVM {
         switch goalKind {
         case .gain:
             return [
-                Item(title: "非常放松",
+                Item(title: "非常轻松",
                      detail: "更看重大方向和习惯养成，不追求增肌速率。偏离进度时，我会按你的执行力把方案变得更易坚持，尽量把偏离缩小。",
                      value: "very_relaxed"),
-                Item(title: "放松",
+                Item(title: "轻松",
                      detail: "增肌效率要求偏低到中等。进度跑偏时，我会给出解决方案，也可能根据你的习惯与生活节奏适度调整目标。",
                      value: "relaxed"),
                 Item(title: "正常",
@@ -173,10 +174,10 @@ extension AIGuidanceCoachStrictnessVM {
             ]
         case .fatLoss:
             return [
-                Item(title: "非常放松",
+                Item(title: "非常轻松",
                      detail: "更看重习惯养成，不太追求减脂效率。偏离进度时，我会按你的执行力把方案变得更易坚持，尽量把偏离缩小。",
                      value: "very_relaxed"),
-                Item(title: "放松",
+                Item(title: "轻松",
                      detail: "减脂效率要求偏低到中等。进度跑偏时，我会给出解决方案，也可能根据你的习惯与生活节奏适度调整目标。",
                      value: "relaxed"),
                 Item(title: "正常",

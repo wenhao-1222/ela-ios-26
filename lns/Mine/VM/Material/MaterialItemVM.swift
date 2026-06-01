@@ -19,11 +19,13 @@ class MaterialItemVM: UIButton {
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
         self.backgroundColor = .clear
         self.isUserInteractionEnabled = true
+        adjustsImageWhenHighlighted = false
         
         initUI()
-        
-        let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))
-        self.addGestureRecognizer(tap)
+
+        addTarget(self, action: #selector(touchDownAction), for: [.touchDown, .touchDragEnter])
+        addTarget(self, action: #selector(touchCancelAction), for: [.touchUpOutside, .touchCancel, .touchDragExit])
+        addTarget(self, action: #selector(touchUpInsideAction), for: .touchUpInside)
     }
     
     required init?(coder: NSCoder) {
@@ -31,7 +33,7 @@ class MaterialItemVM: UIButton {
     }
     lazy var bgView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        vi.isUserInteractionEnabled = true
+        vi.isUserInteractionEnabled = false
         vi.backgroundColor = .COLOR_CARD_BG_WHITE
         
         return vi
@@ -53,7 +55,7 @@ class MaterialItemVM: UIButton {
     }()
     lazy var arrowImgView : UIImageView = {
         let img = UIImageView()
-        img.isUserInteractionEnabled = true
+        img.isUserInteractionEnabled = false
 //        img.setImgLocal(imgName: "mine_func_arrow")
         img.setImgLocal(imgName: "plan_arrow_gray")
         
@@ -64,7 +66,7 @@ class MaterialItemVM: UIButton {
         img.layer.cornerRadius = kFitWidth(16)
         img.clipsToBounds = true
         img.backgroundColor = .THEME
-        img.isUserInteractionEnabled = true
+        img.isUserInteractionEnabled = false
         img.isHidden = true
         img.contentMode = .scaleAspectFill
         
@@ -103,15 +105,26 @@ class MaterialItemVM: UIButton {
 }
 
 extension MaterialItemVM{
-    @objc func tapAction() {
-        bgView.backgroundColor = .COLOR_CARD_BG_WHITE
-        if self.tapBlock != nil{
-            self.tapBlock!()
-        }
+    @objc private func touchDownAction() {
+        setPressedBackground(true)
     }
+
+    @objc private func touchCancelAction() {
+        setPressedBackground(false)
+    }
+
+    @objc private func touchUpInsideAction() {
+        setPressedBackground(false)
+        tapBlock?()
+    }
+
     @objc private func switchChanged(_ sender: UISwitch) {
         print("isOn =", sender.isOn)
         self.switchBlock?(sender.isOn)
+    }
+
+    private func setPressedBackground(_ isPressed: Bool) {
+        bgView.backgroundColor = isPressed ? .COLOR_BG_BLACK_04 : .COLOR_CARD_BG_WHITE
     }
 }
 
@@ -166,25 +179,24 @@ extension MaterialItemVM{
 }
 
 extension MaterialItemVM{
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        TouchGenerator.shared.touchGenerator()
-        bgView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
-    }
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        bgView.backgroundColor = .COLOR_CARD_BG_WHITE
-    }
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        bgView.backgroundColor = .COLOR_CARD_BG_WHITE
-    }
     override var isHighlighted: Bool {
        didSet {
-           if isHighlighted {
-               // 当按钮被高亮时，更改按钮的状态，如颜色等
-               bgView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.02)
-           } else {
-               // 当按钮高亮状态结束时，恢复按钮的原始状态
-               bgView.backgroundColor = .COLOR_CARD_BG_WHITE
-           }
+           setPressedBackground(isHighlighted)
        }
    }
+
+    override var isEnabled: Bool {
+        didSet {
+            if !isEnabled {
+                setPressedBackground(false)
+            }
+        }
+    }
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window == nil {
+            setPressedBackground(false)
+        }
+    }
 }

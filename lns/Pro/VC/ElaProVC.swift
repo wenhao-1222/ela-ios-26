@@ -39,7 +39,7 @@ class ElaProVC: WHBaseViewVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        canEdgeBack = false
+        updateInteractivePopGestureBlocked(true)
         initUI()
         applyInitialDisplayMode()
         priceVm.startLoadingIfNeeded()
@@ -64,20 +64,16 @@ class ElaProVC: WHBaseViewVC {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.fd_interactivePopDisabled = true
-        navigationController?.fd_interactivePopDisabled = true
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-        self.enableInteractivePopGesture()
+        updateInteractivePopGestureBlocked(true)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateInteractivePopGestureBlocked(true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.fd_interactivePopDisabled = false
-        navigationController?.fd_interactivePopDisabled = false
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-        self.openInteractivePopGesture()
     }
     
     lazy var naviVm: DietPlanCreateNaviVM = {

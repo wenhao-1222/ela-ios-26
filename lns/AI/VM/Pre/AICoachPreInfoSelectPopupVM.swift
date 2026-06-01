@@ -35,8 +35,8 @@ enum AICoachPreInfoEditableField {
             ]
         case .intensity:
             return [
-                .init(value: 1, title: "非常放松"),
-                .init(value: 2, title: "放松"),
+                .init(value: 1, title: "非常轻松"),
+                .init(value: 2, title: "轻松"),
                 .init(value: 3, title: "正常"),
                 .init(value: 4, title: "健身爱好者"),
                 .init(value: 5, title: "职业运动员")

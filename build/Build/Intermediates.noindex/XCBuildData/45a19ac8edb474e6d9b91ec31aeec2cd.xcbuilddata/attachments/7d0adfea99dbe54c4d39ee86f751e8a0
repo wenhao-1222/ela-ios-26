@@ -1,0 +1,4 @@
+
+module CHIPageControl.__Swift {
+  exclude header "CHIPageControl-Swift.h"
+}

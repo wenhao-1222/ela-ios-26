@@ -177,6 +177,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        updateInteractivePopGestureBlocked(true)
         if #available(iOS 13.0, *) {
             overrideUserInterfaceStyle = .light
         }
@@ -191,9 +192,15 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
             sendReportDetailRequest()
         }
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateInteractivePopGestureBlocked(true)
+    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        updateInteractivePopGestureBlocked(true)
         hasViewAppeared = true
         if hasGeneratedPDF == false {
             hasGeneratedPDF = true

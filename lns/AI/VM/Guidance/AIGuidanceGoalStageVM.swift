@@ -98,9 +98,9 @@ extension AIGuidanceGoalStageVM {
     func titleText(for goalKind: GoalKind) -> String {
         switch goalKind {
         case .gain:
-            return "你现在处于增肌的哪个阶段？"
+            return "你开始增肌多久了？"
         case .fatLoss:
-            return "你现在处于减脂的哪个阶段？"
+            return "你开始减脂多久了？"
         }
     }
 
@@ -131,7 +131,6 @@ extension AIGuidanceGoalStageVM {
         }
 
         for (index, item) in dataArray.enumerated() {
-            titleLabels[index].text = item.title
             applySelectionStyle(index: index, isSelected: index == selectedIndex)
         }
     }
@@ -151,7 +150,6 @@ extension AIGuidanceGoalStageVM {
             button.addTarget(self, action: #selector(itemTapAction(_:)), for: .touchUpInside)
 
             let lab = UILabel()
-            lab.text = item.title
             lab.textAlignment = .center
             lab.textColor = .COLOR_TEXT_TITLE_0f1214
             lab.font = .systemFont(ofSize: 20, weight: .medium)
@@ -176,7 +174,9 @@ extension AIGuidanceGoalStageVM {
             return
         }
         itemButtons[index].backgroundColor = isSelected ? .THEME : .COLOR_BG_BLACK_04
-        titleLabels[index].textColor = isSelected ? .COLOR_TEXT_WHITE : .COLOR_TEXT_TITLE_0f1214
+        let textColor: UIColor = isSelected ? .COLOR_TEXT_WHITE : .COLOR_TEXT_TITLE_0f1214
+        titleLabels[index].textColor = textColor
+        updateItemLabel(titleLabels[index], text: dataArray[index].title, color: textColor)
     }
 
     @objc func itemTapAction(_ sender: UIButton) {
@@ -198,6 +198,37 @@ extension AIGuidanceGoalStageVM {
         if notify {
             selectedBlock?()
         }
+    }
+}
+
+private extension AIGuidanceGoalStageVM {
+    func updateItemLabel(_ label: UILabel, text: String, color: UIColor) {
+        label.attributedText = makeItemAttributedText(text: text, color: color)
+    }
+
+    func makeItemAttributedText(text: String, color: UIColor) -> NSAttributedString {
+        let fontSize: CGFloat = 20
+        let attr = NSMutableAttributedString(
+            string: text,
+            attributes: [
+                .font: UIFont.systemFont(ofSize: fontSize, weight: .medium),
+                .foregroundColor: color
+            ]
+        )
+
+        guard let regex = try? NSRegularExpression(pattern: "\\d+", options: []) else {
+            return attr
+        }
+
+        let nsText = text as NSString
+        let numberFont = UIFont().DDInFontMedium(fontSize: fontSize)
+        regex.matches(in: text, options: [], range: NSRange(location: 0, length: nsText.length)).forEach {
+            attr.addAttributes([
+                .font: numberFont,
+                .foregroundColor: color
+            ], range: $0.range)
+        }
+        return attr
     }
 }
 

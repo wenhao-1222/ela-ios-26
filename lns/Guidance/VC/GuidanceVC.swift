@@ -624,6 +624,13 @@ extension GuidanceVC{
         !isFixedTargetFlowEnabled && step == .nutritionGoal
     }
 
+    func shouldDisableBackEdgePan(for step: FlowStep) -> Bool {
+        if step == .progressChart {
+            return nextButton.isHidden || nextButton.alpha < 0.99 || !nextButton.isEnabled
+        }
+        return shouldDisableBack(for: step)
+    }
+
     func shouldHideBackButton(for step: FlowStep) -> Bool {
         step == .sex
     }
@@ -1884,6 +1891,6 @@ extension GuidanceVC: UIGestureRecognizerDelegate {
         guard !isShowingStandaloneNutritionGoal else { return false }
         guard currentIndex > 0 else { return true }
         guard let currentStep = flowStep(for: currentIndex) else { return false }
-        return !shouldDisableBack(for: currentStep)
+        return !shouldDisableBackEdgePan(for: currentStep)
     }
 }

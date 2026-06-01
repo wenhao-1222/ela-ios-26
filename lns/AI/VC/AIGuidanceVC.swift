@@ -537,6 +537,7 @@ extension AIGuidanceVC {
 extension AIGuidanceVC: UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard gestureRecognizer === backEdgePanGesture else { return true }
+        guard introVm.superview == nil || introVm.alpha <= 0.01 || introVm.isHidden else { return false }
         return !isBackButtonCoolingDown && !isSubmittingAICoachProfile
     }
 }

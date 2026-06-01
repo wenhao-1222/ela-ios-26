@@ -97,6 +97,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        updateInteractivePopGestureBlocked(true)
         initUI()
         sendReportListRequest()
         
@@ -115,12 +116,14 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        updateInteractivePopGestureBlocked(true)
         trimNavigationStackToRootAndSelfIfNeeded()
         sendCoachLaunchRequest()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        updateInteractivePopGestureBlocked(true)
         guard dataDict.count > 0 else { return }
         if shouldPlayEntranceAnimation {
             startCircleEntranceAnimationIfNeeded()
