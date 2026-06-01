@@ -30,10 +30,12 @@ class DietPlanCreateVC: WHBaseViewVC {
     var skipKetoHistory = false//是否跳过生酮历史（由饮食风格决定）
     
     private var isUploadingDietProfile = false
+    private var shouldForceShowSexStep = false
     private var shouldSkipSexStep: Bool {
-        UserInfoModel.shared.gender == "1" || UserInfoModel.shared.gender == "2"
+        !shouldForceShowSexStep && isValidGender(UserInfoModel.shared.gender)
     }
     private var shouldSkipBirthdayStep = false
+    private var shouldSkipHeightStep = false
 //    private var shouldSkipBirthdayStep: Bool {
 //        
 //        !UserInfoModel.shared.birthDay.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -66,6 +68,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         updateInteractivePopGestureBlocked(true)
+        prepareInitialStepSkipState()
         initUI()
 //        let profileGender = normalizedProfileGender()
 //        let questionnaireGender = normalizedGenderValue(QuestinonaireMsgModel.shared.sex)
@@ -692,6 +695,7 @@ extension DietPlanCreateVC{
         scrollViewBase.contentSize = CGSize.init(width: contentWidth(forBasePageCount: 17), height: 0)
         sexVm.isHidden = shouldSkipSexStep
         birthdayVm.isHidden = shouldSkipBirthdayStep
+        heightVm.isHidden = shouldSkipHeightStep
 
         if WHUtils().getBottomSafeAreaHeight() > 0{
             nextButton.snp.makeConstraints { make in
@@ -759,9 +763,9 @@ extension DietPlanCreateVC{
         
         let model = QuestinonaireMsgModel.shared
         model.sex = resolvedDraftGender(from: draft)
-        model.birthYear = draftString(draft["birthYear"])
+        model.birthYear = resolvedDraftBirthYear(from: draft)
         model.goal = draftString(draft["goal"])
-        model.height = draftString(draft["height"])
+        model.height = resolvedDraftHeight(from: draft)
         model.weight = draftString(draft["weight"])
         model.targetWeight = draftString(draft["targetWeight"])
         model.bodyFat = draftString(draft["bodyFat"])
@@ -1008,6 +1012,16 @@ extension DietPlanCreateVC{
 }
 
 private extension DietPlanCreateVC {
+    func prepareInitialStepSkipState() {
+        let draft = draftStorageKey().flatMap { UserDefaults.standard.dictionary(forKey: $0) }
+        let draftGender = draftString(draft?["sex"])
+        let profileGender = UserInfoModel.shared.gender
+        shouldForceShowSexStep = isValidGender(draftGender) && draftGender != profileGender
+        let effectiveDraft = shouldForceShowSexStep ? nil : draft
+        shouldSkipBirthdayStep = hasValidBirthYear(draftString(effectiveDraft?["birthYear"])) || hasValidBirthYear(profileBirthYear())
+        shouldSkipHeightStep = hasValidHeight(draftString(effectiveDraft?["height"])) || hasValidHeight(UserInfoModel.shared.height)
+    }
+
     func startBackButtonCooldown() {
         isBackButtonCoolingDown = true
         naviVm.backButton.isEnabled = false
@@ -1019,22 +1033,16 @@ private extension DietPlanCreateVC {
     }
 
     func handleDraftRestoreFlow() {
-        let profileGender = UserInfoModel.shared.gender
-        let hasValidProfileGender = profileGender == "1" || profileGender == "2"
-
         guard let key = draftStorageKey(),
               let draft = UserDefaults.standard.dictionary(forKey: key) else {
             resetQuestionnaireForFreshStart()
             return
         }
 
-        if hasValidProfileGender {
-            let draftGender = draftString(draft["sex"])
-            if !draftGender.isEmpty && draftGender != profileGender {
-                UserDefaults.standard.removeObject(forKey: key)
-                resetQuestionnaireForFreshStart()
-                return
-            }
+        if shouldForceShowSexStep {
+            UserDefaults.standard.removeObject(forKey: key)
+            resetQuestionnaireForFreshStart()
+            return
         }
 
         restoreDraftIfNeeded()
@@ -1042,6 +1050,8 @@ private extension DietPlanCreateVC {
 
     func resetQuestionnaireForFreshStart(preservedSex: String? = nil, startVisibleIndex: Int = 0) {
         QuestinonaireMsgModel.shared.clearMsg()
+        applyProfileBirthYearIfNeeded()
+        applyProfileHeightIfNeeded()
         currentIndex = max(0, startVisibleIndex)
         maxReachedIndex = currentIndex
         skipStepsOne = 0
@@ -1056,7 +1066,7 @@ private extension DietPlanCreateVC {
         if preservedSex == "1" || preservedSex == "2" {
             QuestinonaireMsgModel.shared.sex = preservedSex ?? ""
             applyDefaultPhysicalValuesForCurrentSexIfNeeded()
-        } else {
+        } else if !shouldForceShowSexStep {
             syncProfileFromUserInfoIfNeeded(applyDefaultValues: true)
         }
 
@@ -1318,6 +1328,9 @@ private extension DietPlanCreateVC {
         if shouldSkipBirthdayStep {
             indexes.append(2)
         }
+        if shouldSkipHeightStep {
+            indexes.append(3)
+        }
         return indexes
     }
 
@@ -1361,12 +1374,10 @@ private extension DietPlanCreateVC {
 
     func persistedStepIndex(forVisibleIndex visibleIndex: Int) -> Int {
         var originalIndex = visibleIndex
-        if shouldSkipSexStep && visibleIndex >= 1 {
-            originalIndex += 1
-        }
-        let birthdayVisibleIndex = shouldSkipSexStep ? 1 : 2
-        if shouldSkipBirthdayStep && visibleIndex >= birthdayVisibleIndex {
-            originalIndex += 1
+        for skippedIndex in skippedIntroStepIndexes {
+            if originalIndex >= skippedIndex {
+                originalIndex += 1
+            }
         }
         return originalIndex
     }
@@ -1375,18 +1386,90 @@ private extension DietPlanCreateVC {
         maxReachedIndex = max(maxReachedIndex, visibleIndex)
     }
 
+    func isValidGender(_ gender: String) -> Bool {
+        gender == "1" || gender == "2"
+    }
+
+    func hasValidBirthYear(_ value: String) -> Bool {
+        !normalizedBirthYear(value).isEmpty
+    }
+
+    func hasValidHeight(_ value: String) -> Bool {
+        guard let height = Double(value.trimmingCharacters(in: .whitespacesAndNewlines)) else {
+            return false
+        }
+        return height > 0
+    }
+
+    func profileBirthYear() -> String {
+        let birthYear = UserInfoModel.shared.birthYear.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !birthYear.isEmpty {
+            return normalizedBirthYear(birthYear)
+        }
+        return normalizedBirthYear(UserInfoModel.shared.birthDay)
+    }
+
+    func normalizedBirthYear(_ value: String) -> String {
+        let text = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return "" }
+        if text.contains("-") {
+            return Date().changeDateFormatter(dateString: text, formatter: "yyyy-MM-dd", targetFormatter: "yyyy")
+        }
+        if text.count >= 4 {
+            return String(text.prefix(4))
+        }
+        return text
+    }
+
+    func applyProfileBirthYearIfNeeded() {
+        guard shouldSkipBirthdayStep, QuestinonaireMsgModel.shared.birthYear.isEmpty else {
+            return
+        }
+        let birthYear = profileBirthYear()
+        if !birthYear.isEmpty {
+            QuestinonaireMsgModel.shared.birthYear = birthYear
+        }
+    }
+
+    func applyProfileHeightIfNeeded() {
+        guard shouldSkipHeightStep, QuestinonaireMsgModel.shared.height.isEmpty else {
+            return
+        }
+        let height = UserInfoModel.shared.height.trimmingCharacters(in: .whitespacesAndNewlines)
+        if hasValidHeight(height) {
+            heightVm.applyDefaultHeight(Int(Double(height) ?? 0))
+        }
+    }
+
     func resolvedDraftGender(from draft: [String: Any]) -> String {
         let draftGender = draftString(draft["sex"])
         if shouldSkipSexStep {
             let profileGender = UserInfoModel.shared.gender
-            if profileGender == "1" || profileGender == "2" {
+            if isValidGender(profileGender) {
                 return profileGender
             }
         }
-        if draftGender == "1" || draftGender == "2" {
+        if isValidGender(draftGender) {
             return draftGender
         }
         return QuestinonaireMsgModel.shared.sex
+    }
+
+    func resolvedDraftBirthYear(from draft: [String: Any]) -> String {
+        let draftBirthYear = normalizedBirthYear(draftString(draft["birthYear"]))
+        if !draftBirthYear.isEmpty {
+            return draftBirthYear
+        }
+        return profileBirthYear()
+    }
+
+    func resolvedDraftHeight(from draft: [String: Any]) -> String {
+        let draftHeight = draftString(draft["height"])
+        if hasValidHeight(draftHeight) {
+            return draftHeight
+        }
+        let profileHeight = UserInfoModel.shared.height.trimmingCharacters(in: .whitespacesAndNewlines)
+        return hasValidHeight(profileHeight) ? profileHeight : ""
     }
 
     @discardableResult
@@ -1440,15 +1523,8 @@ private extension DietPlanCreateVC {
             }
         }
 
-        if shouldSkipBirthdayStep {
-            let profileBirthday = UserInfoModel.shared.birthYear.trimmingCharacters(in: .whitespacesAndNewlines)
-            if !profileBirthday.isEmpty {
-                let birthYear = profileBirthday.contains("-")
-                ? Date().changeDateFormatter(dateString: profileBirthday, formatter: "yyyy-MM-dd", targetFormatter: "yyyy")
-                : profileBirthday
-                QuestinonaireMsgModel.shared.birthYear = birthYear
-            }
-        }
+        applyProfileBirthYearIfNeeded()
+        applyProfileHeightIfNeeded()
     }
     
     func draftString(_ value: Any?, fallback: String = "") -> String {

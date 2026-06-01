@@ -55,6 +55,7 @@ class UserInfoModel {
     var birthDay = ""
     var birthYear = ""
     var gender = ""
+    var height = ""
     var sex = ""
     var headimgurl = ""
     var avatarStatus = AUDIT_STATUS.pass
@@ -180,7 +181,15 @@ extension UserInfoModel{
     func updateMsg(dict:NSDictionary){
         DLLog(message: "UserInfoModel：\(dict)")
         self.birthDay = dict["birthday"]as? String ?? ""
+        self.birthYear = dict.stringValueForKey(key: "birthYear")
+        if self.birthYear.isEmpty {
+            self.birthYear = dict.stringValueForKey(key: "birth_year")
+        }
+        if self.birthYear.isEmpty {
+            self.birthYear = self.birthDay
+        }
         self.gender = dict.stringValueForKey(key: "gender")//"\(dict["gender"]as? Int ?? 0)"
+        self.height = dict.stringValueForKey(key: "height")
         self.headimgurl = dict["headimgurl"]as? String ?? ""
         self.id = dict["id"]as? String ?? ""
         self.registDate = dict.stringValueForKey(key: "ctime")

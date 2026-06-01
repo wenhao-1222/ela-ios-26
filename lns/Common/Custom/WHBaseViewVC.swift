@@ -980,7 +980,9 @@ extension WHBaseViewVC {
         
         param["hasDailyIntakeGoal"] = NSNumber(value: 0)
 
-        let birthday = model.birthDay.trimmingCharacters(in: .whitespacesAndNewlines)
+        let birthday = model.birthYear.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        ? model.birthDay.trimmingCharacters(in: .whitespacesAndNewlines)
+        : model.birthYear.trimmingCharacters(in: .whitespacesAndNewlines)
         if !birthday.isEmpty {
             param["birthday"] = birthday as NSString
         }
