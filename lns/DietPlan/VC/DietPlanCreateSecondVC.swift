@@ -1161,7 +1161,7 @@ extension DietPlanCreateSecondVC {
             let vc = ElaProVC()
             vc.showPriceOnly = true
             vc.pendingDietPlanCreateParameters = self.buildDietPlanCreateParameters()
-            self.navigationController?.pushViewController(vc, animated: true)
+            self.pushElaProVCWhenReady(vc)
         }
     }
 

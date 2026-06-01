@@ -33,7 +33,7 @@ class ElaProPriceVM: UIView {
         let promotionLabel: String
         let dayAvgPriceLabel: String
         let monthAvgPriceLabel: String
-        
+
         init(dict: NSDictionary) {
             type = Int(dict.stringValueForKey(key: "type")) ?? 0
             let directProductId = dict.stringValueForKey(key: "productId")
@@ -49,7 +49,7 @@ class ElaProPriceVM: UIView {
             let monthAvg = dict.stringValueForKey(key: "monthAvgPriceLabel")
             monthAvgPriceLabel = monthAvg.isEmpty ? dict.stringValueForKey(key: "monthAvgPriceLable") : monthAvg
         }
-        
+
         var displayPriceText: String? {
             guard !price.isEmpty else { return nil }
             let priceText: String
@@ -126,6 +126,12 @@ class ElaProPriceVM: UIView {
     private var shouldSyncRenewalSwitchAfterSettings = false
     private var isAgreementConfirmVisible = false
     private var hasStartedLoading = false
+    private struct ProductLoadSnapshot {
+        let remoteProducts: [RemotePlanProduct]
+        let storeProducts: [Product]
+    }
+    private static var productLoadCache: [String: ProductLoadSnapshot] = [:]
+    private static var productLoadCallbacks: [String: [(Bool) -> Void]] = [:]
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -740,34 +746,36 @@ extension ElaProPriceVM{
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 if case .success(let products) = result {
-                    self.monthProduct = nil
-                    self.annualProduct = nil
-                    self.lifetimeProduct = nil
-                    if let month = products.first(where: { $0.id == ElaProIAPConfig.monthProductID }) {
-                        self.monthProduct = month
-                        self.monthTagText = self.preferredRemoteText(self.monthRemoteProduct?.promotionLabel)
-                        self.monthSubTitleText = self.preferredRemoteText(self.monthRemoteProduct?.monthAvgPriceLabel)
-                        self.monthPriceText = self.formattedProductPriceText(for: month)
-                        self.monthOriginPriceText = self.preferredRemotePriceText(self.monthRemoteProduct?.originalPrice)
-                    }
-
-                    if let annual = products.first(where: { $0.id == ElaProIAPConfig.annualProductID }) {
-                        self.annualProduct = annual
-                        self.annualTagText = self.preferredRemoteText(self.annualRemoteProduct?.promotionLabel)
-                        self.annualSubTitleText = self.preferredRemoteText(self.annualRemoteProduct?.monthAvgPriceLabel) ?? "" //self.buildMonthlyText(for: annual)
-                        self.annualPriceText = self.formattedProductPriceText(for: annual)
-                        self.annualOriginPriceText = self.preferredRemotePriceText(self.annualRemoteProduct?.originalPrice)
-                    }
-                    
-                    if let lifetime = products.first(where: { $0.id == ElaProIAPConfig.lifetimeProductID }) {
-                        self.lifetimeProduct = lifetime
-                        self.lifetimeTagText = self.preferredRemoteText(self.lifetimeRemoteProduct?.promotionLabel)
-                        self.lifetimePriceText = self.formattedProductPriceText(for: lifetime)
-                    }
-                    
+                    self.applyStoreProducts(products)
                     self.refreshPlanCards()
                 }
             }
+        }
+    }
+
+    private func applyStoreProducts(_ products: [Product]) {
+        monthProduct = nil
+        annualProduct = nil
+        lifetimeProduct = nil
+        if let month = products.first(where: { $0.id == ElaProIAPConfig.monthProductID }) {
+            monthProduct = month
+            monthTagText = preferredRemoteText(monthRemoteProduct?.promotionLabel)
+            monthSubTitleText = preferredRemoteText(monthRemoteProduct?.monthAvgPriceLabel)
+            monthPriceText = formattedProductPriceText(for: month)
+            monthOriginPriceText = preferredRemotePriceText(monthRemoteProduct?.originalPrice)
+        }
+
+        if let annual = products.first(where: { $0.id == ElaProIAPConfig.annualProductID }) {
+            annualProduct = annual
+            annualTagText = preferredRemoteText(annualRemoteProduct?.promotionLabel)
+            annualSubTitleText = preferredRemoteText(annualRemoteProduct?.monthAvgPriceLabel) ?? ""
+            annualPriceText = formattedProductPriceText(for: annual)
+            annualOriginPriceText = preferredRemotePriceText(annualRemoteProduct?.originalPrice)
+        }
+        if let lifetime = products.first(where: { $0.id == ElaProIAPConfig.lifetimeProductID }) {
+            lifetimeProduct = lifetime
+            lifetimeTagText = preferredRemoteText(lifetimeRemoteProduct?.promotionLabel)
+            lifetimePriceText = formattedProductPriceText(for: lifetime)
         }
     }
     
@@ -966,7 +974,7 @@ extension ElaProPriceVM{
     }
 
     private func remoteProduct(from products: [RemotePlanProduct], type: PlanType) -> RemotePlanProduct? {
-        if let matchedByType = products.first(where: { remotePlanType(for: $0) == type }) {
+        if let matchedByType = products.first(where: { Self.remotePlanType(for: $0) == type }) {
             return matchedByType
         }
         
@@ -1058,6 +1066,10 @@ extension ElaProPriceVM{
     }
 
     private func remotePlanType(for product: RemotePlanProduct) -> PlanType? {
+        Self.remotePlanType(for: product)
+    }
+
+    private static func remotePlanType(for product: RemotePlanProduct) -> PlanType? {
         switch product.type {
         case 1:
             return .month
@@ -2018,45 +2030,160 @@ extension ElaProPriceVM{
 }
 
 extension ElaProPriceVM{
+    static func preloadProducts(bizType: String,
+                                isPurchased: String = "",
+                                completion: @escaping (Bool) -> Void) {
+        let cacheKey = productLoadCacheKey(bizType: bizType, isPurchased: isPurchased)
+        if let snapshot = productLoadCache[cacheKey] {
+            completion(hasDisplayablePrice(in: snapshot.storeProducts, remoteProducts: snapshot.remoteProducts))
+            return
+        }
+        if productLoadCallbacks[cacheKey] != nil {
+            productLoadCallbacks[cacheKey]?.append(completion)
+            return
+        }
+        productLoadCallbacks[cacheKey] = [completion]
+        requestProductSnapshot(bizType: bizType, isPurchased: isPurchased) { success in
+            let callbacks = productLoadCallbacks.removeValue(forKey: cacheKey) ?? []
+            callbacks.forEach { $0(success) }
+        }
+    }
+
     func startLoadingIfNeeded() {
         guard !hasStartedLoading else { return }
+        if applyCachedProductSnapshotIfAvailable() {
+            hasStartedLoading = true
+            return
+        }
         hasStartedLoading = true
         sendProProductListRequest()
     }
 
     func sendProProductListRequest() {
-        var parameters = [String: Any]()
-        if !bizType.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            parameters["bizType"] = bizType
+        Self.requestProductSnapshot(bizType: bizType, isPurchased: isPurchased) { [weak self] success in
+            guard let self = self else { return }
+            if success, self.applyCachedProductSnapshotIfAvailable() {
+                return
+            }
+            self.fetchProProductsIfNeeded()
         }
-        if !isPurchased.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            parameters["isPurchased"] = isPurchased
+    }
+
+    private func applyCachedProductSnapshotIfAvailable() -> Bool {
+        let cacheKey = Self.productLoadCacheKey(bizType: bizType, isPurchased: isPurchased)
+        guard let snapshot = Self.productLoadCache[cacheKey] else { return false }
+        Self.updateConfiguredProductIDs(from: snapshot.remoteProducts)
+        applyRemoteProducts(snapshot.remoteProducts)
+        applyStoreProducts(snapshot.storeProducts)
+        refreshPlanCards()
+        return Self.hasDisplayablePrice(in: snapshot.storeProducts, remoteProducts: snapshot.remoteProducts)
+    }
+
+    private static func requestProductSnapshot(bizType: String,
+                                               isPurchased: String,
+                                               completion: @escaping (Bool) -> Void) {
+        let cacheKey = productLoadCacheKey(bizType: bizType, isPurchased: isPurchased)
+        var parameters = [String: Any]()
+        let cleanBizType = bizType.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanIsPurchased = isPurchased.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !cleanBizType.isEmpty {
+            parameters["bizType"] = cleanBizType
+        }
+        if !cleanIsPurchased.isEmpty {
+            parameters["isPurchased"] = cleanIsPurchased
         }
 
-        DLLog(message: "sendProProductListRequest params:\(parameters)")
+        DLLog(message: "preloadProProductList params:\(parameters)")
         WHNetworkUtil.shareManager().POST(urlString: URL_pro_product,
                                           parameters: parameters.isEmpty ? nil : parameters as [String: AnyObject],
-                                          success: { [weak self] responseObject in
-            guard let self = self else { return }
+                                          success: { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            DLLog(message: "sendProProductListRequest:\(dataDict)")
-            let rawProducts = (dataDict["productInfoList"] as? NSArray) ?? (dataDict["product"] as? NSArray) ?? []
-            let products = rawProducts.compactMap { item -> RemotePlanProduct? in
-                guard let dict = item as? NSDictionary else { return nil }
-                return RemotePlanProduct(dict: dict)
+            DLLog(message: "preloadProProductList:\(dataDict)")
+            let remoteProducts = remoteProducts(from: dataDict)
+            updateConfiguredProductIDs(from: remoteProducts)
+            let productIDs = requestedProductIDs(from: remoteProducts)
+            ElaProIAPManager.shared.fetchProProducts(productIDs: productIDs) { result in
+                DispatchQueue.main.async {
+                    guard case .success(let storeProducts) = result else {
+                        completion(false)
+                        return
+                    }
+                    productLoadCache[cacheKey] = ProductLoadSnapshot(remoteProducts: remoteProducts,
+                                                                     storeProducts: storeProducts)
+                    completion(hasDisplayablePrice(in: storeProducts, remoteProducts: remoteProducts))
+                }
             }
-            
-            self.applyRemoteProducts(products)
-            let monthID = self.preferredRemoteText(self.monthRemoteProduct?.iosProductId) ?? ""
-            let annualID = self.preferredRemoteText(self.annualRemoteProduct?.iosProductId) ?? ""
-            let lifetimeID = self.preferredRemoteText(self.lifetimeRemoteProduct?.iosProductId) ?? ""
-            
-            ElaProIAPManager.shared.updateProductIDs(month: monthID, annual: annualID, lifetime: lifetimeID)
-            self.refreshPlanCards()
-            self.fetchProProductsIfNeeded()
-        }, failure: { [weak self] _ in
-            self?.fetchProProductsIfNeeded()
+        }, failure: { _ in
+            completion(false)
         })
+    }
+
+    private static func productLoadCacheKey(bizType: String, isPurchased: String) -> String {
+        let cleanBizType = bizType.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanIsPurchased = isPurchased.trimmingCharacters(in: .whitespacesAndNewlines)
+        return "\(cleanBizType)|\(cleanIsPurchased)"
+    }
+
+    private static func remoteProducts(from dataDict: NSDictionary) -> [RemotePlanProduct] {
+        let rawProducts = (dataDict["productInfoList"] as? NSArray) ?? (dataDict["product"] as? NSArray) ?? []
+        return rawProducts.compactMap { item -> RemotePlanProduct? in
+            guard let dict = item as? NSDictionary else { return nil }
+            return RemotePlanProduct(dict: dict)
+        }
+    }
+
+    private static func updateConfiguredProductIDs(from products: [RemotePlanProduct]) {
+        let monthID = preferredText(remoteProduct(from: products, type: .month)?.iosProductId) ?? ""
+        let annualID = preferredText(remoteProduct(from: products, type: .annual)?.iosProductId) ?? ""
+        let lifetimeID = preferredText(remoteProduct(from: products, type: .lifetime)?.iosProductId) ?? ""
+        ElaProIAPManager.shared.updateProductIDs(month: monthID, annual: annualID, lifetime: lifetimeID)
+    }
+
+    private static func requestedProductIDs(from products: [RemotePlanProduct]) -> [String] {
+        [PlanType.month, .annual, .lifetime].compactMap { plan in
+            preferredText(remoteProduct(from: products, type: plan)?.iosProductId)
+        }
+    }
+
+    private static func remoteProduct(from products: [RemotePlanProduct], type: PlanType) -> RemotePlanProduct? {
+        if let matchedByType = products.first(where: { remotePlanType(for: $0) == type }) {
+            return matchedByType
+        }
+        switch type {
+        case .month:
+            return products.first(where: {
+                $0.iosProductId.lowercased().contains("month") || $0.name.contains("月")
+            })
+        case .annual:
+            return products.first(where: {
+                $0.iosProductId.lowercased().contains("annual") || $0.name.contains("年")
+            })
+        case .lifetime:
+            return products.first(where: {
+                $0.iosProductId.lowercased().contains("life") || $0.name.contains("终身")
+            })
+        }
+    }
+
+    private static func preferredText(_ text: String?) -> String? {
+        guard let text = text?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else {
+            return nil
+        }
+        return text
+    }
+
+    private static func hasDisplayablePrice(in products: [Product], remoteProducts: [RemotePlanProduct]) -> Bool {
+        guard !products.isEmpty else { return false }
+        let visiblePlans = [PlanType.month, .annual, .lifetime].filter {
+            remoteProduct(from: remoteProducts, type: $0) != nil
+        }
+        let plans = visiblePlans.isEmpty ? [PlanType.month, .annual] : visiblePlans
+        return plans.contains { plan in
+            guard let productID = preferredText(remoteProduct(from: remoteProducts, type: plan)?.iosProductId) else {
+                return false
+            }
+            return products.contains(where: { $0.id == productID })
+        }
     }
 }

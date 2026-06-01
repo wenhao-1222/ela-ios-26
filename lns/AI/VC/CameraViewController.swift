@@ -986,11 +986,12 @@ extension CameraViewController {
         vc.showPriceOnly = true
         vc.priceBizType = "4"
         guard let navigationController = navigationController else { return }
-        navigationController.pushViewController(vc, animated: true)
-        DispatchQueue.main.async {
-            var controllers = navigationController.viewControllers
-            controllers.removeAll { $0 is CameraViewController }
-            navigationController.viewControllers = controllers
+        pushElaProVCWhenReady(vc) {
+            DispatchQueue.main.async {
+                var controllers = navigationController.viewControllers
+                controllers.removeAll { $0 is CameraViewController }
+                navigationController.viewControllers = controllers
+            }
         }
     }
 }

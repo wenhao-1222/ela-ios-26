@@ -60,6 +60,7 @@ public final class ELAFlowingGradientBackgroundView: UIView {
     private let leftGlow = CAGradientLayer()
     private let rightGlow = CAGradientLayer()
     private let centerGlow = CAGradientLayer()
+    private var wantsAnimating = false
 
     public init(style: Style? = nil) {
         self.fixedStyle = style
@@ -179,6 +180,8 @@ public final class ELAFlowingGradientBackgroundView: UIView {
         )
 
         CATransaction.commit()
+
+        startAnimatingIfPossible()
     }
 
     public override func didMoveToWindow() {
@@ -204,7 +207,15 @@ public final class ELAFlowingGradientBackgroundView: UIView {
     }
 
     public func startAnimating() {
+        wantsAnimating = true
+        startAnimatingIfPossible()
+    }
+
+    private func startAnimatingIfPossible() {
+        guard wantsAnimating else { return }
         guard !UIAccessibility.isReduceMotionEnabled else { return }
+        guard window != nil else { return }
+        guard bounds.width > 0, bounds.height > 0 else { return }
         guard baseGradient.animation(forKey: "bg.startPoint") == nil else { return }
 
         animateBaseGradient()
@@ -214,7 +225,6 @@ public final class ELAFlowingGradientBackgroundView: UIView {
             x: 46,
             y: 26,
             scale: 1.20,
-            opacityFrom: 1.0,
             opacityTo: 0.56,
             duration: 9.5,
             delay: 0
@@ -225,7 +235,6 @@ public final class ELAFlowingGradientBackgroundView: UIView {
             x: -40,
             y: 24,
             scale: 1.18,
-            opacityFrom: 1.0,
             opacityTo: 0.54,
             duration: 10.5,
             delay: 0.6
@@ -236,7 +245,6 @@ public final class ELAFlowingGradientBackgroundView: UIView {
             x: 0,
             y: 32,
             scale: 1.16,
-            opacityFrom: 0.96,
             opacityTo: 0.44,
             duration: 8.8,
             delay: 0.35
@@ -244,6 +252,7 @@ public final class ELAFlowingGradientBackgroundView: UIView {
     }
 
     public func stopAnimating() {
+        wantsAnimating = false
         [baseGradient, leftGlow, rightGlow, centerGlow].forEach {
             $0.removeAllAnimations()
         }
@@ -251,7 +260,7 @@ public final class ELAFlowingGradientBackgroundView: UIView {
 
     private func animateBaseGradient() {
         let startPoint = CABasicAnimation(keyPath: "startPoint")
-        startPoint.fromValue = CGPoint(x: -0.10, y: -0.16)
+        startPoint.fromValue = baseGradient.startPoint
         startPoint.toValue = CGPoint(x: 0.32, y: 0.18)
         startPoint.duration = 8.5
         startPoint.autoreverses = true
@@ -259,7 +268,7 @@ public final class ELAFlowingGradientBackgroundView: UIView {
         startPoint.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
 
         let endPoint = CABasicAnimation(keyPath: "endPoint")
-        endPoint.fromValue = CGPoint(x: 0.66, y: 0.88)
+        endPoint.fromValue = baseGradient.endPoint
         endPoint.toValue = CGPoint(x: 1.08, y: 1.18)
         endPoint.duration = 8.5
         endPoint.autoreverses = true
@@ -275,45 +284,40 @@ public final class ELAFlowingGradientBackgroundView: UIView {
         x: CGFloat,
         y: CGFloat,
         scale: CGFloat,
-        opacityFrom: Float,
         opacityTo: Float,
         duration: CFTimeInterval,
         delay: CFTimeInterval
     ) {
-        let beginTime = CACurrentMediaTime() + delay
+        let beginTime = layer.convertTime(CACurrentMediaTime(), from: nil) + delay
 
-        let moveX = CABasicAnimation(keyPath: "transform.translation.x")
-        moveX.fromValue = -x
-        moveX.toValue = x
+        let moveX = CAKeyframeAnimation(keyPath: "transform.translation.x")
+        moveX.values = [0, x, 0, -x, 0]
+        moveX.keyTimes = [0, 0.25, 0.5, 0.75, 1]
         moveX.duration = duration
-        moveX.autoreverses = true
         moveX.repeatCount = .infinity
         moveX.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         moveX.beginTime = beginTime
 
-        let moveY = CABasicAnimation(keyPath: "transform.translation.y")
-        moveY.fromValue = -y
-        moveY.toValue = y
+        let moveY = CAKeyframeAnimation(keyPath: "transform.translation.y")
+        moveY.values = [0, y, 0, -y, 0]
+        moveY.keyTimes = [0, 0.25, 0.5, 0.75, 1]
         moveY.duration = duration * 0.85
-        moveY.autoreverses = true
         moveY.repeatCount = .infinity
         moveY.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         moveY.beginTime = beginTime
 
-        let scaleAnim = CABasicAnimation(keyPath: "transform.scale")
-        scaleAnim.fromValue = 1.0
-        scaleAnim.toValue = scale
+        let scaleAnim = CAKeyframeAnimation(keyPath: "transform.scale")
+        scaleAnim.values = [1.0, scale, 1.0, max(0.92, 2.0 - scale), 1.0]
+        scaleAnim.keyTimes = [0, 0.25, 0.5, 0.75, 1]
         scaleAnim.duration = duration * 0.90
-        scaleAnim.autoreverses = true
         scaleAnim.repeatCount = .infinity
         scaleAnim.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         scaleAnim.beginTime = beginTime
 
-        let opacity = CABasicAnimation(keyPath: "opacity")
-        opacity.fromValue = opacityFrom
-        opacity.toValue = opacityTo
+        let opacity = CAKeyframeAnimation(keyPath: "opacity")
+        opacity.values = [layer.opacity, opacityTo, layer.opacity, opacityTo, layer.opacity]
+        opacity.keyTimes = [0, 0.25, 0.5, 0.75, 1]
         opacity.duration = duration
-        opacity.autoreverses = true
         opacity.repeatCount = .infinity
         opacity.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
         opacity.beginTime = beginTime

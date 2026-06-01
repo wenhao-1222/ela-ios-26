@@ -134,7 +134,9 @@ extension SportHistoryVC{
         self.dateFilterAlertVm.showView()
     }
     @objc func addAction() {
-        TouchGenerator.shared.touchGeneratorMedium()
+//        TouchGenerator.shared.touchGeneratorMedium()
+        TouchGenerator.shared.touchGeneratorRigid(weight: 0.6)
+        
         let vc = SportVC()
         vc.isCanAdd = true
 //        vc.sendCatogaryListRequest()

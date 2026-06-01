@@ -483,6 +483,24 @@ extension ElaProVC{
     }
 }
 
+extension UIViewController {
+    func pushElaProVCWhenReady(_ vc: ElaProVC, animated: Bool = true, completion: (() -> Void)? = nil) {
+        guard VIPModel.shared.status != .valid else {
+            navigationController?.pushViewController(vc, animated: animated)
+            completion?()
+            return
+        }
+
+        MCToast.mc_loading(duration: 8, respond: .forbid)
+        ElaProPriceVM.preloadProducts(bizType: vc.priceBizType) { [weak self, weak vc] _ in
+            MCToast.mc_remove()
+            guard let self = self, let vc = vc else { return }
+            self.navigationController?.pushViewController(vc, animated: animated)
+            completion?()
+        }
+    }
+}
+
 extension ElaProVC{
     func sendDietUpsertRequest() {
         DLLog(message: "sendDietUpsertRequest:\(param)")

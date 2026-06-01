@@ -163,11 +163,11 @@ extension MainTopMsgVM{
         circleV.setValueSport(number: Double(currentCalories), sport: Double(sportCalories), total: Double(targetCalories + sportCalories))
         
         if currentCalories <= targetCalories + sportCalories{
-            circleVm.numberLabel.text = "\(targetCalories - currentCalories + sportCalories)"
-            circleVm.tipsLabel.text = "剩余摄入 (千卡)"
+            circleVm.numberLabel.setTextWithCrossfade("\(targetCalories - currentCalories + sportCalories)")
+            circleVm.tipsLabel.setTextWithCrossfade("剩余摄入 (千卡)")
         }else{
-            circleVm.numberLabel.text = "\(currentCalories - targetCalories - sportCalories)"
-            circleVm.tipsLabel.text = "超出摄入 (千卡)"
+            circleVm.numberLabel.setTextWithCrossfade("\(currentCalories - targetCalories - sportCalories)")
+            circleVm.tipsLabel.setTextWithCrossfade("超出摄入 (千卡)")
         }
     }
     func updateUI(dict:NSDictionary) {
@@ -195,15 +195,15 @@ extension MainTopMsgVM{
         
         
         if currentCalories <= targetCalories + sportCalories{
-            circleVm.numberLabel.text = "\(targetCalories - currentCalories + sportCalories)"
-            circleVm.tipsLabel.text = "剩余摄入 (千卡)"
+            circleVm.numberLabel.setTextWithCrossfade("\(targetCalories - currentCalories + sportCalories)")
+            circleVm.tipsLabel.setTextWithCrossfade("剩余摄入 (千卡)")
         }else{
-            circleVm.numberLabel.text = "\(currentCalories - targetCalories - sportCalories)"
-            circleVm.tipsLabel.text = "超出摄入 (千卡)"
+            circleVm.numberLabel.setTextWithCrossfade("\(currentCalories - targetCalories - sportCalories)")
+            circleVm.tipsLabel.setTextWithCrossfade("超出摄入 (千卡)")
         }
     }
     func updateLocalData(model:LogsModel) {
-        goalVm.numberLabel.text = model.caloriTarget
+        goalVm.numberLabel.setTextWithCrossfade(model.caloriTarget)
         
         var carbo = "\(model.carbohydrate)"
         var protein = "\(model.protein)"
@@ -231,11 +231,11 @@ extension MainTopMsgVM{
         cirlcCoverView.setValue(number: Double(currentCalories), total: Double(targetCalories))
         DLLog(message: "test:(本地)\(targetCalories) - \(currentCalories)   ===== \(Float(targetCalories) - currentCalories)")
         if Int(currentCalories) <= targetCalories{
-            circleVm.numberLabel.text = "\(targetCalories - Int32(currentCalories))"
-            circleVm.tipsLabel.text = "剩余摄入 (千卡)"
+            circleVm.numberLabel.setTextWithCrossfade("\(targetCalories - Int32(currentCalories))")
+            circleVm.tipsLabel.setTextWithCrossfade("剩余摄入 (千卡)")
         }else{
-            circleVm.numberLabel.text = "\(Int32(currentCalories) - targetCalories)"
-            circleVm.tipsLabel.text = "超出摄入 (千卡)"
+            circleVm.numberLabel.setTextWithCrossfade("\(Int32(currentCalories) - targetCalories)")
+            circleVm.tipsLabel.setTextWithCrossfade("超出摄入 (千卡)")
         }
     }
     
@@ -244,7 +244,7 @@ extension MainTopMsgVM{
         if dict.stringValueForKey(key: "sdate") != Date().nextDay(days: 0){
             return
         }
-        goalVm.numberLabel.text = "\(Int(dict.doubleValueForKey(key: "caloriTar").rounded()))"
+        goalVm.numberLabel.setTextWithCrossfade("\(Int(dict.doubleValueForKey(key: "caloriTar").rounded()))")
         
         carbonVm.setNumberMsg(num: "\(Int(dict.doubleValueForKey(key: "carbohydrates").rounded()))",
                               total: "\(Int(dict.doubleValueForKey(key: "carboTar").rounded()))")
@@ -259,11 +259,11 @@ extension MainTopMsgVM{
         cirlcCoverView.setValue(number: Double(currentCalories), total: Double(targetCalories))
         
         if currentCalories <= targetCalories{
-            circleVm.numberLabel.text = "\(targetCalories - currentCalories)"
-            circleVm.tipsLabel.text = "剩余摄入 (千卡)"
+            circleVm.numberLabel.setTextWithCrossfade("\(targetCalories - currentCalories)")
+            circleVm.tipsLabel.setTextWithCrossfade("剩余摄入 (千卡)")
         }else{
-            circleVm.numberLabel.text = "\(currentCalories - targetCalories)"
-            circleVm.tipsLabel.text = "超出摄入 (千卡)"
+            circleVm.numberLabel.setTextWithCrossfade("\(currentCalories - targetCalories)")
+            circleVm.tipsLabel.setTextWithCrossfade("超出摄入 (千卡)")
         }
     }
 }

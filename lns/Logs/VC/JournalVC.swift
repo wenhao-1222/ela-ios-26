@@ -460,7 +460,7 @@ class JournalVC: WHBaseViewVC {
             let vc = ElaProVC()
             vc.showPriceOnly = true
             vc.priceBizType = "3"
-            self.navigationController?.pushViewController(vc, animated: true)
+            self.pushElaProVCWhenReady(vc)
         }
         
         return vm

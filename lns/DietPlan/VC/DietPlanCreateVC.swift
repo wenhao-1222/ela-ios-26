@@ -973,7 +973,7 @@ extension DietPlanCreateVC{
         let vc = ElaProVC()
         vc.shouldClearDietPlanCreateDraftOnPurchaseSuccess = true
 //            vc.param = param
-        self.navigationController?.pushViewController(vc, animated: true)
+        self.pushElaProVCWhenReady(vc)
     }
     func sendBasicRequest() {
         let param = ["gender":"\(QuestinonaireMsgModel.shared.sex)",

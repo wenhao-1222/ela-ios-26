@@ -425,7 +425,7 @@ extension AIGuidanceVC {
             vc.priceDisplayMode = .aiGuidance
             vc.popToRootOnClose = true
             vc.enterAICoachPreOnPurchaseSuccess = true
-            navigationController?.pushViewController(vc, animated: true)
+            pushElaProVCWhenReady(vc)
         }
     }
 

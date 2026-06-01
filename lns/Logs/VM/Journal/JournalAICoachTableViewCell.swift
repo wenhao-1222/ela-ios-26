@@ -103,11 +103,11 @@ extension JournalAICoachTableViewCell {
     func update(isVip: Bool, isMembershipStatusConfirmed: Bool, shouldAnimateProBadge: Bool, hasUnreadLatestReport: Bool) {
         updateLayout(hasUnreadLatestReport: hasUnreadLatestReport)
         proImgView.layer.removeAllAnimations()
-        proImgView.alpha = 0
-        proImgView.isHidden = true
         unreadImgView.isHidden = !hasUnreadLatestReport
 
         if hasUnreadLatestReport {
+            proImgView.alpha = 0
+            proImgView.isHidden = true
             titleLabel.text = "新的教练报告已准备好"
             subtitleLabel.isHidden = false
             return
@@ -116,7 +116,11 @@ extension JournalAICoachTableViewCell {
         titleLabel.text = "AI教练"
         subtitleLabel.isHidden = true
 
-        guard isMembershipStatusConfirmed, !isVip else { return }
+        guard isMembershipStatusConfirmed, !isVip else {
+            proImgView.alpha = 0
+            proImgView.isHidden = true
+            return
+        }
 
         proImgView.isHidden = false
         guard shouldAnimateProBadge else {

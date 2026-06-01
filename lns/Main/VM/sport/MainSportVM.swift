@@ -125,8 +125,8 @@ extension MainSportVM{
         }
     }
     func updateUI(dict:NSDictionary){
-        caloriesLabel.text = "\(WHUtils.convertStringToString("\(Int(dict.doubleValueForKey(key: "sportCalories").rounded()))") ?? "0")千卡"
-        timeLabel.text = "\(WHUtils.convertStringToString("\(dict.stringValueForKey(key: "sportDuration"))") ?? "0")分钟"
+        caloriesLabel.setTextWithCrossfade("\(WHUtils.convertStringToString("\(Int(dict.doubleValueForKey(key: "sportCalories").rounded()))") ?? "0")千卡")
+        timeLabel.setTextWithCrossfade("\(WHUtils.convertStringToString("\(dict.stringValueForKey(key: "sportDuration"))") ?? "0")分钟")
     }
 }
 

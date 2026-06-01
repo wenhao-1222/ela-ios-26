@@ -126,7 +126,7 @@ extension HonorTopVM{
 
 extension HonorTopVM{
     func initUI() {
-        addSubview(bgImgView)
+//        addSubview(bgImgView)
         addSubview(titleLab)
         addSubview(honorLabel)
         
@@ -134,9 +134,9 @@ extension HonorTopVM{
         updateUI(iconNum: "0", donateNum: "0", animated: false)
     }
     func setConstrait() {
-        bgImgView.snp.makeConstraints { make in
-            make.left.top.width.height.equalToSuperview()
-        }
+//        bgImgView.snp.makeConstraints { make in
+//            make.left.top.width.height.equalToSuperview()
+//        }
         titleLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(30))
             make.top.equalTo(kFitWidth(64))

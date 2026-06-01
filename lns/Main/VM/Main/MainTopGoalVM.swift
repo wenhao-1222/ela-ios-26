@@ -12,6 +12,7 @@ class MainTopGoalVM: UIView {
     
     let selfHeight = kFitWidth(32)
     var number = 10
+    private var currentContentKey: String?
     
     var editBlock:(()->())?
     
@@ -116,7 +117,34 @@ extension MainTopGoalVM{
         }
     }
     func updateContent(targetNum:String,sportNum:String) {
-        if sportNum.floatValue > 0 && UserInfoModel.shared.statSportDataToTarget == "1"{
+        let roundedTarget = Int(targetNum.floatValue.rounded())
+        let roundedSport = Int(sportNum.floatValue.rounded())
+        let isSportIncluded = sportNum.floatValue > 0 && UserInfoModel.shared.statSportDataToTarget == "1"
+        let contentKey = "\(roundedTarget)-\(roundedSport)-\(isSportIncluded)"
+        let shouldAnimate = window != nil && currentContentKey != nil && currentContentKey != contentKey
+        currentContentKey = contentKey
+
+        let updates = {
+            self.applyContent(targetNum: targetNum,
+                              roundedTarget: roundedTarget,
+                              roundedSport: roundedSport,
+                              isSportIncluded: isSportIncluded)
+            self.themeBgView.layoutIfNeeded()
+        }
+
+        if shouldAnimate {
+            UIView.transition(with: themeBgView,
+                              duration: 0.25,
+                              options: [.transitionCrossDissolve, .beginFromCurrentState, .allowUserInteraction]) {
+                updates()
+            }
+        } else {
+            updates()
+        }
+    }
+
+    private func applyContent(targetNum: String, roundedTarget: Int, roundedSport: Int, isSportIncluded: Bool) {
+        if isSportIncluded{
             leftLab.isHidden = true
             themeBgView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05//.WIDGET_COLOR_GRAY_BLACK_04
             rightLab.textColor = .COLOR_TEXT_TITLE_0f1214_60
@@ -128,8 +156,8 @@ extension MainTopGoalVM{
                 make.top.height.equalToSuperview()
                 make.right.equalTo(kFitWidth(-69))
             }
-            let attr = NSMutableAttributedString(string: "\(Int(targetNum.floatValue.rounded()))")
-            let sportAttr = NSMutableAttributedString(string: " +\(Int(sportNum.floatValue.rounded()))")
+            let attr = NSMutableAttributedString(string: "\(roundedTarget)")
+            let sportAttr = NSMutableAttributedString(string: " +\(roundedSport)")
             sportAttr.yy_color = .COLOR_SPORT
             attr.append(sportAttr)
             numberLabel.attributedText = attr

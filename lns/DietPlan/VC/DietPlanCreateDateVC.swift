@@ -485,7 +485,7 @@ extension DietPlanCreateDateVC{
                 guard let self = self else { return }
                 let vc = ElaProVC()
                 vc.showPriceOnly = true
-                self.navigationController?.pushViewController(vc, animated: true)
+                self.pushElaProVCWhenReady(vc)
             }, viewController: self)
         }
     }

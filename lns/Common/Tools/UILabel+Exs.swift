@@ -11,6 +11,33 @@ import UIKit
 
 
 extension UILabel{
+    func setTextWithCrossfade(_ newText: String?, duration: TimeInterval = 0.25) {
+        guard text != newText else { return }
+        guard window != nil else {
+            text = newText
+            return
+        }
+        UIView.transition(with: self,
+                          duration: duration,
+                          options: [.transitionCrossDissolve, .beginFromCurrentState, .allowUserInteraction]) {
+            self.text = newText
+        }
+    }
+
+    func setAttributedTextWithCrossfade(_ newText: NSAttributedString?, duration: TimeInterval = 0.25) {
+        let currentText = attributedText?.string ?? text
+        guard currentText != newText?.string else { return }
+        guard window != nil else {
+            attributedText = newText
+            return
+        }
+        UIView.transition(with: self,
+                          duration: duration,
+                          options: [.transitionCrossDissolve, .beginFromCurrentState, .allowUserInteraction]) {
+            self.attributedText = newText
+        }
+    }
+
     //计算label的行数
     func getRealLabelTextLines() -> Int {
         guard let labelText = text else {

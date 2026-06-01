@@ -787,7 +787,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
             let hasUnreadLatestReport = UserInfoModel.shared.has_unread_latest_ai_coach_report
             cell.update(isVip: UserInfoModel.shared.vipModel.isValidVip,
                         isMembershipStatusConfirmed: UserInfoModel.shared.vipModel.isMembershipStatusConfirmed,
-                        shouldAnimateProBadge: hasUnreadLatestReport ? false : UserInfoModel.shared.vipModel.consumeJournalAICoachProBadgeAnimationFlag(),
+                        shouldAnimateProBadge: false,
                         hasUnreadLatestReport: hasUnreadLatestReport)
             cell.tapBlock = { [weak self] in
                 self?.handleAICoachTap()

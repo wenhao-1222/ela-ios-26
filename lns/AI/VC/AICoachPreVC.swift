@@ -86,7 +86,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
             vc.showPriceOnly = true
             vc.priceBizType = "3"
             vc.popToRootOnClose = true
-            self.navigationController?.pushViewController(vc, animated: true)
+            self.pushElaProVCWhenReady(vc)
         }
         vm.dismissBlock = { [weak self] in
             self?.navigationController?.popViewController(animated: true)
