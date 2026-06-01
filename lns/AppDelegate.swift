@@ -40,7 +40,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 //        UserDefaults.standard.setValue("3c02e5d6e9e3e0635b3e93654d581379", forKey: userId)
 //        UserInfoModel.shared.uId = "3c02e5d6e9e3e0635b3e93654d581379"
 //        UserInfoModel.shared.token = "UUFEnv0i1bx2aJuS"
-        
+        //207883e9d608066fdfde0c076cf2f956
+        //7kuQHvci02dPMeYF
         let launchWindow: UIWindow
         if let existingWindow = window {
             launchWindow = existingWindow
@@ -750,14 +751,19 @@ extension AppDelegate{
             teardownTabBarControllersIfNeeded(in: keyWindow)
         }
         keyWindow.backgroundColor = .COLOR_BG_WHITE
+        let transitionBackgroundView = UIView(frame: keyWindow.bounds)
+        transitionBackgroundView.backgroundColor = .COLOR_BG_WHITE
+        transitionBackgroundView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         let oldSnapshot = keyWindow.snapshotView(afterScreenUpdates: false)
         oldSnapshot?.frame = keyWindow.bounds
         oldSnapshot?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        keyWindow.addSubview(transitionBackgroundView)
         if let oldSnapshot {
             keyWindow.addSubview(oldSnapshot)
         }
 
         newRootVC.loadViewIfNeeded()
+        newRootVC.view.backgroundColor = newRootVC.view.backgroundColor ?? .COLOR_BG_WHITE
         newRootVC.view.frame = keyWindow.bounds
         newRootVC.view.setNeedsLayout()
         newRootVC.view.layoutIfNeeded()
@@ -767,23 +773,41 @@ extension AppDelegate{
             keyWindow.rootViewController = newRootVC
             keyWindow.makeKeyAndVisible()
             keyWindow.layoutIfNeeded()
+            if transitionBackgroundView.superview !== keyWindow {
+                keyWindow.addSubview(transitionBackgroundView)
+            }
             if let oldSnapshot {
                 if oldSnapshot.superview !== keyWindow {
                     keyWindow.addSubview(oldSnapshot)
                 }
+                keyWindow.bringSubviewToFront(transitionBackgroundView)
                 keyWindow.bringSubviewToFront(oldSnapshot)
+            } else {
+                keyWindow.bringSubviewToFront(transitionBackgroundView)
             }
         }
 
-        guard let oldSnapshot else { return }
         UIView.animate(
             withDuration: 0.25,
             delay: 0,
             options: [.curveEaseInOut, .beginFromCurrentState]
         ) {
-            oldSnapshot.alpha = 0
+            oldSnapshot?.alpha = 0
         } completion: { _ in
-            oldSnapshot.removeFromSuperview()
+            oldSnapshot?.removeFromSuperview()
+            keyWindow.setNeedsLayout()
+            keyWindow.layoutIfNeeded()
+            DispatchQueue.main.async {
+                UIView.animate(
+                    withDuration: 0.12,
+                    delay: 0,
+                    options: [.curveEaseOut, .beginFromCurrentState]
+                ) {
+                    transitionBackgroundView.alpha = 0
+                } completion: { _ in
+                    transitionBackgroundView.removeFromSuperview()
+                }
+            }
         }
     }
     func getKeyWindow() -> UIWindow{

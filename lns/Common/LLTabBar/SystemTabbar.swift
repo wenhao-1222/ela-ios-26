@@ -27,6 +27,7 @@ class SystemTabbar: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .COLOR_BG_WHITE
         delegate = self
         generator.prepare()
 //        configureTabBarTouchBlocker()
@@ -370,6 +371,5 @@ extension SystemTabbar {
         selectedIndex = 2
     }
 }
-
 
 

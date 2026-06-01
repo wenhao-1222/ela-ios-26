@@ -12,6 +12,7 @@ class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .COLOR_BG_WHITE
         self.tabBar.backgroundColor = .COLOR_CARD_BG_WHITE
         setupViewControllers()
         setupForiPad()

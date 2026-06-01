@@ -139,6 +139,7 @@ class JournalVC: WHBaseViewVC {
         sendNutritionsDefaultCircleRequest()
         getActivityListRequest()
         sendProVipMsgRequest()
+        preloadProSubscriptionProducts()
 //        BodyDataUploadManager().dealOldSqlData()
         
         initUI()
@@ -1192,6 +1193,12 @@ extension JournalVC{
                 guard self.isViewLoaded else { return }
                 self.collectView.reloadData()
             }
+        }
+    }
+
+    func preloadProSubscriptionProducts() {
+        ElaProPriceVM.preloadProducts(bizType: "3") { success in
+            DLLog(message: "preloadProSubscriptionProducts success:\(success)")
         }
     }
 }

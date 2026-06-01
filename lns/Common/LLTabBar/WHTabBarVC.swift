@@ -77,6 +77,7 @@ class WHTabBarVC : UITabBarController{
     }
     override func viewDidLoad(){
         super.viewDidLoad()
+        view.backgroundColor = .COLOR_BG_WHITE
         
         createMainTabBarView()
         childAllChildViewControllers()
