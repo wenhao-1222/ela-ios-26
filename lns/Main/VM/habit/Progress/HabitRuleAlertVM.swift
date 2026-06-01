@@ -179,7 +179,7 @@ class HabitRuleAlertVM: UIView {
                 RuleTextModel().initModel(content: "根据elavatine数据显示，活跃用户中能做到周末记录，养成长期记录习惯（持续记录30天及以上）高达53.8%（无周末记录时：21.0%）",bottomGap: kFitWidth(-15)),
                 RuleTextModel().initModel(content: "",bottomGap: kFitWidth(-40),contentType: "1",imgString: "habit_rule_img_1"),
                 RuleTextModel().initModel(content: "缺失记录扣分（不影响排行榜）", isTitle: true,bottomGap: kFitWidth(-15)),
-                RuleTextModel().initModel(content: "和养成习惯一样，短期记录缺失影响不大，但负面习惯累计越多，对坚持的影响就越大，所以当你连续未记录饮食时，积分的减少也是阶梯式的。"),
+                RuleTextModel().initModel(content: "和习惯养成一样，短期记录缺失影响不大，但负面习惯累计越多，对坚持的影响就越大，所以当你连续未记录饮食时，积分的减少也是阶梯式的。"),
                 RuleTextModel().initModel(content: "缺失记录1天扣1分，缺失2天在此基础上再扣2分，3天再扣3分，以此类推叠加。(7分封顶)",contentType: "2",imgString: "habit_rule_img_2")]  }()
 }
 // MARK: - Public API

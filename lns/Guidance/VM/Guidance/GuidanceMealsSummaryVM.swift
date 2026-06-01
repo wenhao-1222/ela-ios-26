@@ -105,7 +105,7 @@ extension GuidanceMealsSummaryVM {
             return DisplayContent(
                 title: "每天 1-2 餐",
                 
-                message: "每天吃1-2餐能够在最短的时间内解决饮食，但是可能会造成比较高的血糖和胃口波动。当然，只要你觉得舒服好坚持，就是最适合你的安排。"
+                message: "每天吃1到2餐能够让你在最短的时间内完成进食，但是可能会造成较大的血糖和食欲波动。当然，只要你觉得舒服好坚持，就是最适合你的安排。"
             )
         case "3":
             return DisplayContent(

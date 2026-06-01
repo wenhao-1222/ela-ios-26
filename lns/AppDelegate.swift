@@ -749,12 +749,34 @@ extension AppDelegate{
         if teardownTabBarControllers {
             teardownTabBarControllersIfNeeded(in: keyWindow)
         }
-        let transtition = CATransition()
-        transtition.duration = 0.3
-        transtition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        keyWindow.layer.add(transtition, forKey: "animation")
-        keyWindow.rootViewController = newRootVC
-        keyWindow.makeKeyAndVisible()
+        keyWindow.backgroundColor = .COLOR_BG_WHITE
+        let oldSnapshot = keyWindow.snapshotView(afterScreenUpdates: false)
+        oldSnapshot?.frame = keyWindow.bounds
+        oldSnapshot?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+        newRootVC.loadViewIfNeeded()
+        newRootVC.view.frame = keyWindow.bounds
+        newRootVC.view.setNeedsLayout()
+        newRootVC.view.layoutIfNeeded()
+
+        UIView.performWithoutAnimation {
+            keyWindow.layer.removeAnimation(forKey: "animation")
+            keyWindow.rootViewController = newRootVC
+            keyWindow.makeKeyAndVisible()
+            keyWindow.layoutIfNeeded()
+        }
+
+        guard let oldSnapshot else { return }
+        keyWindow.addSubview(oldSnapshot)
+        UIView.animate(
+            withDuration: 0.25,
+            delay: 0,
+            options: [.curveEaseInOut, .beginFromCurrentState]
+        ) {
+            oldSnapshot.alpha = 0
+        } completion: { _ in
+            oldSnapshot.removeFromSuperview()
+        }
     }
     func getKeyWindow() -> UIWindow{
 //        if let keyWindow = UIApplication.shared.connectedScenes

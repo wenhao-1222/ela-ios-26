@@ -147,7 +147,7 @@ class GuidanceSexTipsAlertVM: UIView {
     }()
 
     private lazy var referenceLabel: UILabel = {
-        let label = makeBodyLabel("[1] Hunter et al. (2023), Med Sci Sports Exer\n[2] Cano et al. (2022), Eur J Appl Physiol\n[3] Kanellakis et al. (2023), Am J Hum Biol\n[4] Benton et al. (2020), PLOS On")
+        let label = makeBodyLabel("[1] Hunter et al. (2023), Med Sci Sports Exerc\n[2] Cano et al. (2022), Eur J Appl Physiol\n[3] Kanellakis et al. (2023), Am J Hum Biol\n[4] Benton et al. (2020), PLOS One")
         label.font = .systemFont(ofSize: 12, weight: .regular)
         label.setLineHeightMultiple(textString: label.text, lineHeightMultiple: 1.2)
         return label

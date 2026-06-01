@@ -17,6 +17,12 @@ class DietPlanCreateVC: WHBaseViewVC {
     private var hasRestoredDraft = false
     private var shouldResumeFromEatStyleForNonVip = false
     private var isBackButtonCoolingDown = false
+    private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
+        let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
+        gesture.edges = .left
+        gesture.delegate = self
+        return gesture
+    }()
     
     var skipStepsOne = 0
     var skipStepsNine = false//是否跳过第九步  此处是由第八步决定
@@ -80,20 +86,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     lazy var naviVm: DietPlanCreateNaviVM = {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
         vm.backTapBlock = {[weak self] in
-            guard let self = self else { return }
-            guard !self.isBackButtonCoolingDown else { return }
-            self.startBackButtonCooldown()
-            if self.currentIndex == 0 {
-                self.backTapAction()
-                return
-            }
-            let previousIndex = self.currentIndex
-            self.currentIndex = self.previousStepIndex(from: self.currentIndex)
-            let targetOffsetX = SCREEN_WIDHT * CGFloat(self.currentIndex)
-            let shouldAnimate = self.shouldAnimateStepTransition(from: previousIndex, to: self.currentIndex)
-            self.scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: shouldAnimate)
-            self.updateNextButtonForCurrentStep(animated: true)
-            self.persistDraftIfNeeded()
+            self?.navigateBackOneStep()
         }
         return vm
     }()
@@ -268,6 +261,27 @@ class DietPlanCreateVC: WHBaseViewVC {
 }
 
 extension DietPlanCreateVC{
+    @objc func handleBackEdgePan(_ gesture: UIScreenEdgePanGestureRecognizer) {
+        guard gesture.state == .recognized else { return }
+        navigateBackOneStep()
+    }
+
+    func navigateBackOneStep() {
+        guard !isBackButtonCoolingDown else { return }
+        startBackButtonCooldown()
+        if currentIndex == 0 {
+            backTapAction()
+            return
+        }
+        let previousIndex = currentIndex
+        currentIndex = previousStepIndex(from: currentIndex)
+        let targetOffsetX = SCREEN_WIDHT * CGFloat(currentIndex)
+        let shouldAnimate = shouldAnimateStepTransition(from: previousIndex, to: currentIndex)
+        scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: shouldAnimate)
+        updateNextButtonForCurrentStep(animated: true)
+        persistDraftIfNeeded()
+    }
+
     @objc func nextButtonTapAction() {
         if currentIndex == displayStepIndex(for: 6), let payload = targetWeightVm.buildTargetWeightAlertPayload() {
             targetWeightAlertVm.showView(type: payload.type, confirmBlock: { [weak self] in
@@ -643,6 +657,7 @@ extension DietPlanCreateVC{
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
         scrollViewBase.isScrollEnabled = false
+        view.addGestureRecognizer(backEdgePanGesture)
         
         scrollViewBase.addSubview(goalVm)
         scrollViewBase.addSubview(sexVm)
@@ -1528,5 +1543,12 @@ extension DietPlanCreateVC {
             return
         }
         UserDefaults.standard.removeObject(forKey: "diet_plan_create_draft_" + uid)
+    }
+}
+
+extension DietPlanCreateVC: UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer === backEdgePanGesture else { return true }
+        return !isBackButtonCoolingDown
     }
 }

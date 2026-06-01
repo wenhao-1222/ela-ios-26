@@ -1,0 +1,23 @@
+{
+  "version": 0,
+  "use-external-names": false,
+  "case-sensitive": false,
+  "roots": [{
+    "type": "directory",
+    "name": "/Users/lns2/Desktop/lnsapp-ios/build/Build/Products/Debug-iphonesimulator/DeviceKit/DeviceKit.framework/Modules",
+    "contents": [{
+      "type": "file",
+      "name": "module.modulemap",
+      "external-contents": "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DeviceKit.build/unextended-module.modulemap",
+    }]
+    },
+    {
+    "type": "directory",
+    "name": "/Users/lns2/Desktop/lnsapp-ios/build/Build/Products/Debug-iphonesimulator/DeviceKit/DeviceKit.framework/Headers",
+    "contents": [{
+      "type": "file",
+      "name": "DeviceKit-Swift.h",
+      "external-contents": "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/DeviceKit.build/unextended-interface-header.h",
+    }]
+  }]
+}

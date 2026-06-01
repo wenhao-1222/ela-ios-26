@@ -5,6 +5,91 @@
 	<key>logFormatVersion</key>
 	<integer>11</integer>
 	<key>logs</key>
-	<dict/>
+	<dict>
+		<key>1E23A06C-4EA2-4D38-B6AB-F7088AC0F116</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>1E23A06C-4EA2-4D38-B6AB-F7088AC0F116.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>4</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>26</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>lns project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>lns</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building workspace lns with scheme lns and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>801971481.80546498</real>
+			<key>timeStoppedRecording</key>
+			<real>801971488.852965</real>
+			<key>title</key>
+			<string>Building workspace lns with scheme lns and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>1E23A06C-4EA2-4D38-B6AB-F7088AC0F116</string>
+		</dict>
+		<key>40622FB4-D1F6-43A6-B7FD-C2C83F293139</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>40622FB4-D1F6-43A6-B7FD-C2C83F293139.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>4</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>59</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>lns project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>lns</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building workspace lns with scheme lns and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>801970964.927827</real>
+			<key>timeStoppedRecording</key>
+			<real>801971002.37177002</real>
+			<key>title</key>
+			<string>Building workspace lns with scheme lns and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>40622FB4-D1F6-43A6-B7FD-C2C83F293139</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

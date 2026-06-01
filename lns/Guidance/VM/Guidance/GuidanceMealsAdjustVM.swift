@@ -39,7 +39,7 @@ class GuidanceMealsAdjustVM: UIView {
             cutting: "适合",
             advantages: ["相对省时间", "能满足大部分人的健身需求"],
             disadvantages: ["两餐之间可能更容易饿", "增肌效果上限相对有限"],
-            targetGroup: "除对训练结果有较高要求以外的大多数人"
+            targetGroup: "对训练结果没有特别高要求的大多数人"
         ),
         Item(
             title: "C. 每日 4 餐",

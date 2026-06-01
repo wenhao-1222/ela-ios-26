@@ -149,7 +149,7 @@ extension GuidanceReminderPromptVM {
         paragraphStyle.alignment = .center
         paragraphStyle.lineSpacing = kFitWidth(2)
         let subtitleText = NSMutableAttributedString(
-            string: "开启个性化提醒的用户\n达成饮食计划目标的概率高出 46%",
+            string: "开启个性化提醒的用户\n饮食目标达成率比未开启用户高出 46%",
             attributes: [
                 .font: UIFont.systemFont(ofSize: 16, weight: .regular),
                 .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,

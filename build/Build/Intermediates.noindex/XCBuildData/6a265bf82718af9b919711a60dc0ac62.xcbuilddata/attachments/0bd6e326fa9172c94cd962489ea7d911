@@ -1,0 +1,5 @@
+
+module CHIPageControl.Swift {
+  header "CHIPageControl-Swift.h"
+  requires objc
+}

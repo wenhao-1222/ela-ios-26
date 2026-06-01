@@ -20,6 +20,12 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     private var isBackButtonCoolingDown = false
     private var isWaitingForVipPurchaseToCreatePlan = false
     private var shouldResumeCreatePlanOnAppear = false
+    private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
+        let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
+        gesture.edges = .left
+        gesture.delegate = self
+        return gesture
+    }()
     private var createPlanLoadingConfig = DietPlanFakeProgressLoadingVM.Config(
         fakeDuration: 9.0,
         maxProgressBeforeSuccess: 0.92,
@@ -75,17 +81,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     lazy var naviVm: DietPlanCreateNaviVM = {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
         vm.backTapBlock = {[weak self] in
-            guard let self = self else { return }
-            guard !self.isBackButtonCoolingDown else { return }
-            self.startBackButtonCooldown()
-            if self.currentIndex == 0 {
-                self.backTapAction()
-                return
-            }
-            self.currentIndex = self.previousStepIndex(from: self.currentIndex)
-            let targetOffsetX = SCREEN_WIDHT * CGFloat(self.currentIndex)
-            self.scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: true)
-            self.updateNextButtonForCurrentStep(animated: true)
+            self?.navigateBackOneStep()
         }
         return vm
     }()
@@ -250,6 +246,29 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
 }
 
 extension DietPlanCreateSecondVC{
+    @objc func handleBackEdgePan(_ gesture: UIScreenEdgePanGestureRecognizer) {
+        guard gesture.state == .recognized else { return }
+        navigateBackOneStep()
+    }
+
+    func navigateBackOneStep() {
+        guard !isBackButtonCoolingDown else { return }
+        if isShowingManualTargetEditor {
+            hideManualTargetEditor(isBack: true)
+            return
+        }
+        guard !isSubmittingFinalFlow else { return }
+        startBackButtonCooldown()
+        if currentIndex == 0 {
+            backTapAction()
+            return
+        }
+        currentIndex = previousStepIndex(from: currentIndex)
+        let targetOffsetX = SCREEN_WIDHT * CGFloat(currentIndex)
+        scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: true)
+        updateNextButtonForCurrentStep(animated: true)
+    }
+
     func startBackButtonCooldown() {
         isBackButtonCoolingDown = true
         naviVm.backButton.isEnabled = false
@@ -522,6 +541,7 @@ extension DietPlanCreateSecondVC{
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
         scrollViewBase.isScrollEnabled = false
+        view.addGestureRecognizer(backEdgePanGesture)
         
         scrollViewBase.addSubview(dateVm)
         scrollViewBase.addSubview(sexVm)
@@ -1250,5 +1270,13 @@ extension DietPlanCreateSecondVC {
         default:
             return ""
         }
+    }
+}
+
+extension DietPlanCreateSecondVC: UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer === backEdgePanGesture else { return true }
+        guard !isBackButtonCoolingDown else { return false }
+        return isShowingManualTargetEditor || !isSubmittingFinalFlow
     }
 }

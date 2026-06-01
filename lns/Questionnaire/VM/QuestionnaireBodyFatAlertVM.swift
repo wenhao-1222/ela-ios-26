@@ -83,7 +83,7 @@ class QuestionnaireBodyFatAlertVM: UIView {
     }()
     lazy var contentLabelOne : UILabel = {
         let label = UILabel()
-        label.text = "许多人倾向于低估自己的体脂率百分比，这部分原因在于常用的测量方法（如电阻体脂仪和体脂秤）可能不够准确。这些设备通常使用电阻测量来估算体脂百分比，但结果易受水分、饮食和其他因素的影响，从而可能给出低于实际的读数。"
+        label.text = "许多人倾向于低估自己的体脂率，部分原因在于常用的测量方法（如电阻体脂仪和体脂秤）可能不够准确。这些设备通常使用电阻测量来估算体脂百分比，但结果易受水分、饮食和其他因素的影响，从而可能给出低于实际的读数。"
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true

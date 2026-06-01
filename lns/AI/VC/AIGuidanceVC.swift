@@ -24,6 +24,12 @@ class AIGuidanceVC: WHBaseViewVC {
     private let totalSteps = 6
     private var isSubmittingAICoachProfile = false
     private var isBackButtonCoolingDown = false
+    private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
+        let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
+        gesture.edges = .left
+        gesture.delegate = self
+        return gesture
+    }()
 
     private lazy var sharedBackgroundImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "ela_pro_ai_bg"))
@@ -64,15 +70,7 @@ class AIGuidanceVC: WHBaseViewVC {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
         vm.backButton.isHidden = false
         vm.backTapBlock = {[weak self] in
-            guard let self = self else { return }
-            guard !self.isBackButtonCoolingDown else { return }
-            self.startBackButtonCooldown()
-            let currentStep = flowStep(for: self.currentIndex)
-            if self.currentIndex == 0 || currentStep == .readyStart{
-                self.backTapAction()
-                return
-            }
-            self.moveToStep(index: self.currentIndex - 1, animated: true)
+            self?.navigateBackOneStep()
         }
         return vm
     }()
@@ -139,6 +137,22 @@ class AIGuidanceVC: WHBaseViewVC {
 }
 
 extension AIGuidanceVC{
+    @objc func handleBackEdgePan(_ gesture: UIScreenEdgePanGestureRecognizer) {
+        guard gesture.state == .recognized else { return }
+        navigateBackOneStep()
+    }
+
+    func navigateBackOneStep() {
+        guard !isBackButtonCoolingDown else { return }
+        guard !isSubmittingAICoachProfile else { return }
+        startBackButtonCooldown()
+        if currentIndex == 0 {
+            backTapAction()
+            return
+        }
+        moveToStep(index: currentIndex - 1, animated: true)
+    }
+
     func startBackButtonCooldown() {
         isBackButtonCoolingDown = true
         naviVm.backButton.isEnabled = false
@@ -373,6 +387,7 @@ extension AIGuidanceVC{
         scrollViewBase.backgroundColor = .clear
         scrollViewBase.isScrollEnabled = false
         scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalSteps), height: SCREEN_HEIGHT)
+        view.addGestureRecognizer(backEdgePanGesture)
 
         installStepViewsIfNeeded(indexes: [0, 1, 2, 3, 4, 5])
         setConstrait()
@@ -516,5 +531,12 @@ extension AIGuidanceVC {
         let confirmAction = UIAlertAction(title: "确定", style: .cancel)
         alertVc.addAction(confirmAction)
         present(alertVc, animated: true)
+    }
+}
+
+extension AIGuidanceVC: UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer === backEdgePanGesture else { return true }
+        return !isBackButtonCoolingDown && !isSubmittingAICoachProfile
     }
 }

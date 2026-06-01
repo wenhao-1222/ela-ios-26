@@ -54,6 +54,12 @@ class GuidanceVC: WHBaseViewVC {
     private var hasAutoSelectedSkippedCardioFrequency = false
     private var isBackNavigationLocked = false
     private var lastGuidanceV2TrackedPageKey = ""
+    private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
+        let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
+        gesture.edges = .left
+        gesture.delegate = self
+        return gesture
+    }()
     private let defaultStepsArray = [7,7,9]
     private let defaultStepsArrayWithoutCardio = [7,6,9]
     private let defaultStepsArrayUncertain = [7,7,8]
@@ -153,23 +159,7 @@ class GuidanceVC: WHBaseViewVC {
         let vm = DietPlanCreateNaviVM.init(frame: .zero)
         vm.backButton.isHidden = true
         vm.backTapBlock = {[weak self] in
-            guard let self = self else { return }
-            if self.isShowingFinishLoading {
-                return
-            }
-            if self.isBackNavigationLocked {
-                return
-            }
-            if self.currentIndex == 0 {
-                self.backTapAction()
-                return
-            }
-            if let currentStep = self.flowStep(for: self.currentIndex),
-               self.shouldDisableBack(for: currentStep) {
-                return
-            }
-            let targetIndex = self.previousNavigableIndex(from: self.currentIndex)
-            self.moveToStep(index: targetIndex, animated: true)
+            self?.navigateBackOneStep()
         }
         return vm
     }()
@@ -249,7 +239,7 @@ class GuidanceVC: WHBaseViewVC {
         let vm = QuestionCustomTipsAlertVM(frame: .zero)
         vm.isHidden = true
         vm.titleLabel.text = "身体是动态的，目标也应如此"
-        vm.contentLabelOne.text = "我们必须诚实地告诉你，无论是自己计算，还是通过 Elavatine 结合科学研究及运动员长期实践经验得出的目标计算公式，都无法保证初始目标能 100% 贴合你的真实身体需求。你的日训练风格、站立、坐立习惯，以及代谢适应能力等，都有可能会在未来影响你所需的摄入量。\n\n但请不必担心，你完全可以通过观察体重增减与体型变化，自己逐渐调整摄入量或营养比例。\n\n如果你需要更专业的支持，ELA AI 教练也可以帮助你更快地找到最适合你的摄入目标并持续调整。"
+        vm.contentLabelOne.text = "我们必须诚实地告诉你，无论是你自己计算，还是使用 Elavatine 基于科学研究和运动员长期实践经验设计的目标计算公式，都无法保证初始目标 100% 贴合你的真实身体需求。你的训练风格、日常习惯，以及代谢适应能力等，都可能影响你的实际摄入需求。\n\n但请不必担心，你完全可以通过观察体重增减与体型变化，自己逐渐调整摄入量或营养比例。\n\n如果你需要更专业的支持，ELA AI 教练也可以帮助你更快地找到最适合你的摄入目标并持续调整。"
         return vm
     }()
     lazy var nextButton: UIButton = {
@@ -590,6 +580,30 @@ extension GuidanceVC{
             targetIndex -= 1
         }
         return max(0, targetIndex)
+    }
+
+    @objc func handleBackEdgePan(_ gesture: UIScreenEdgePanGestureRecognizer) {
+        guard gesture.state == .recognized else { return }
+        navigateBackOneStep()
+    }
+
+    func navigateBackOneStep() {
+        if isShowingFinishLoading {
+            return
+        }
+        if isBackNavigationLocked {
+            return
+        }
+        if currentIndex == 0 {
+            backTapAction()
+            return
+        }
+        if let currentStep = flowStep(for: currentIndex),
+           shouldDisableBack(for: currentStep) {
+            return
+        }
+        let targetIndex = previousNavigableIndex(from: currentIndex)
+        moveToStep(index: targetIndex, animated: true)
     }
 
     func shouldSkipBackwardStep(_ step: FlowStep) -> Bool {
@@ -1623,6 +1637,7 @@ extension GuidanceVC{
         scrollViewBase.backgroundColor = .clear
         scrollViewBase.isScrollEnabled = false
         scrollViewBase.delegate = self
+        view.addGestureRecognizer(backEdgePanGesture)
         updateFlowConfiguration()
         
         installStepViewsIfNeeded(indexes: [0, 1, 2])
@@ -1859,5 +1874,16 @@ extension GuidanceVC: UIScrollViewDelegate {
         guard let currentStep = flowStep(for: currentIndex) else { return }
         refreshBackButtonState(for: currentStep, index: currentIndex)
         handleStepDidBecomeVisible(currentStep)
+    }
+}
+
+extension GuidanceVC: UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer === backEdgePanGesture else { return true }
+        guard !isShowingFinishLoading, !isBackNavigationLocked else { return false }
+        guard !isShowingStandaloneNutritionGoal else { return false }
+        guard currentIndex > 0 else { return true }
+        guard let currentStep = flowStep(for: currentIndex) else { return false }
+        return !shouldDisableBack(for: currentStep)
     }
 }

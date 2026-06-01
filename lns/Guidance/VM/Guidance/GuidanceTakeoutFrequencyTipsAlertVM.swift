@@ -84,7 +84,7 @@ class GuidanceTakeoutFrequencyTipsAlertVM: UIView {
     }()
     lazy var contentLabelOne : UILabel = {
         let label = UILabel()
-        label.text = "研究分析发现，每周外食超过 2 次的人，整体饮食质量通常更低，相关饮食指标也更差。快餐消费者也普遍会低估所购餐食的热量，而且餐量越大，低估越明显。[1]"
+        label.text = "研究发现，每周外食超过 2 餐的人，整体饮食质量通常更低，相关营养指标也更差。快餐消费者也普遍会低估所购餐食的热量，而且餐食份量越大，低估越明显。[1]"
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.numberOfLines = 0
         label.adjustsFontSizeToFitWidth = true

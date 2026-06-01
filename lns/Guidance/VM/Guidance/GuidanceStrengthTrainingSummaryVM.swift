@@ -139,31 +139,31 @@ extension GuidanceStrengthTrainingSummaryVM {
             return DisplayContent(
                 title: "每周 0-2 次",
                 primaryMessage: "如果你每周能再增加 1 到 2 次力量训练，通常就可以获得很好的效果。",
-                secondaryMessage: "历史上有许多顶尖运动员（例如 Dorian Yates 和 Mike Mentzer）仅靠每周 3 到 4 次训练，就达到了世界上最好的体型之一。"
+                secondaryMessage: "Dorian Yates 和 Mike Mentzer 等顶尖健美运动员，也曾仅靠每周 3 到 4 次高强度训练，练出世界顶级水平的体型。"
             )
         case "3-4":
             return DisplayContent(
                 title: "每周 3-4 次",
                 primaryMessage: "每周 3 到 4 次力量训练能确保你在使用极高强度训练时，仍然有充足的时间让身体恢复。",
-                secondaryMessage: "历史上有许多顶尖运动员（例如 Dorian Yates 和 Mike Mentzer）都依靠这样的方式达到了世界上最好的体型之一。"
+                secondaryMessage: "Dorian Yates 和 Mike Mentzer 等顶尖健美运动员，也曾依靠这种训练方式，练出世界顶级水平的体型。"
             )
         case "5-6":
             return DisplayContent(
                 title: "每周 5-6 次",
                 primaryMessage: "每周5-6次是最稳健的力量训练安排，在饮食得到保障的前提下，你可以非常好地兼顾训练强度、容量与恢复。",
-                secondaryMessage: "大部分顶尖健美运动员（Phil Heath，Jay Cutler 等）都是使用这种方式。"
+                secondaryMessage: "大部分顶尖健美运动员（Phil Heath，Jay Cutler 等）都使用这种方式。"
             )
         case "7+":
             return DisplayContent(
                 title: "每周 7+ 次",
                 primaryMessage: "这是非常挑战恢复能力的训练安排，不仅需要极致的饮食，更需要很强的恢复条件与天赋。",
-                secondaryMessage: "历史上仅有少数优秀健美运动员（例如阿诺·施瓦辛格）能够用这种方式并获得收益。"
+                secondaryMessage: "历史上仅有少数优秀健美运动员（例如阿诺·施瓦辛格）能够从这种方式中获得收益。"
             )
         default:
             return DisplayContent(
                 title: "每周 3-4 次",
                 primaryMessage: "每周 3 到 4 次力量训练能确保你在使用极高强度训练时，仍然有充足的时间让身体恢复。",
-                secondaryMessage: "历史上有许多顶尖运动员（例如 Dorian Yates 和 Mike Mentzer）都依靠这样的方式达到了世界上最好的体型之一。"
+                secondaryMessage: "Dorian Yates 和 Mike Mentzer 等顶尖健美运动员，也曾依靠这种训练方式，练出世界顶级水平的体型。"
             )
         }
     }
