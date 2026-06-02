@@ -919,7 +919,7 @@ extension DietPlanCreateVC{
         let resumeActualIndex = max(savedIndex, maxSavedIndex)
         let targetIndex = shouldForceResumeFromEatStyle ? eatStyleVisibleIndex() : displayStepIndex(for: resumeActualIndex)
         let bodyFatVisibleIndex = displayStepIndex(for: 5)
-        let clampedTargetIndex = hasValidBodyFatSelection ? targetIndex : min(targetIndex, bodyFatVisibleIndex)
+        let clampedTargetIndex = (shouldForceResumeFromEatStyle || hasValidBodyFatSelection) ? targetIndex : min(targetIndex, bodyFatVisibleIndex)
         currentIndex = min(max(clampedTargetIndex, 0), maxIndex)
         updateMaxReachedIndexIfNeeded(withVisibleIndex: currentIndex)
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0), animated: false)
@@ -1484,18 +1484,21 @@ private extension DietPlanCreateVC {
 
         let bodyFatOptions = gender == "1" ? bodyfatVm.dataArray : bodyfatVm.dataFemanArray
         let savedBodyFat = draftString(draft["bodyFat"]).trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !savedBodyFat.isEmpty else {
-            QuestinonaireMsgModel.shared.bodyFat = ""
-            bodyfatVm.selectIndex = -1
-            bodyfatVm.refreshSelectStatus()
-            bodyfatVm.selectStateChangeBlock?(false)
-            return false
+        let savedSelectIndex = draftInt(draft["bodyFatSelectIndex"], fallback: -1)
+        let restoredIndex: Int?
+        if !savedBodyFat.isEmpty,
+           let matchedIndex = bodyFatOptions.firstIndex(where: { ($0["data"] ?? "") == savedBodyFat }) {
+            restoredIndex = matchedIndex
+        } else if savedSelectIndex >= 0 && savedSelectIndex < bodyFatOptions.count {
+            restoredIndex = savedSelectIndex
+        } else {
+            restoredIndex = nil
         }
 
-        if let matchedIndex = bodyFatOptions.firstIndex(where: { ($0["data"] ?? "") == savedBodyFat }) {
-            bodyfatVm.selectIndex = matchedIndex
+        if let restoredIndex {
+            bodyfatVm.selectIndex = restoredIndex
             bodyfatVm.refreshSelectStatus()
-            bodyfatVm.updateBodyFatValue(index: matchedIndex)
+            bodyfatVm.updateBodyFatValue(index: restoredIndex)
             bodyfatVm.selectStateChangeBlock?(true)
             return true
         }

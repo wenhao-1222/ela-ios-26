@@ -40,6 +40,11 @@ class AddFoodsAlertVM: UIView {
         self.alpha = 0
         if UserInfoModel.shared.hidden_survery_button_status{
             addBtnOriginY = statusBarHeight + 44 + kFitWidth(180) + kFitWidth(12)
+            if UserInfoModel.shared.show_ai_coach_status {
+                addBtnOriginY += kFitWidth(76)
+            }else{
+                
+            }
         }
         
         initUI()
