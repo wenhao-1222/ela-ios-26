@@ -220,38 +220,6 @@ class JounalCollectionCell: UICollectionViewCell {
         }
         return vm
     }()
-    lazy var fitnessTypeAlertVm: LogsFitnessTypeAlertVM = {
-        let vm = LogsFitnessTypeAlertVM.init(frame: .zero)
-        vm.confirmBlock = {(fitnessType)in
-            self.updateFitnessBlock?(fitnessType)
-            let msgDict = NSMutableDictionary(dictionary: self.currentDayMsg)
-            msgDict.setValue("\(fitnessType)", forKey: "fitnessLabel")
-            self.currentDayMsg = msgDict
-            self.logsModel.isUpload = false
-            LogsSQLiteManager.getInstance().updateFitnessType(fitnessType: fitnessType, sDate: self.queryDay)
-            LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
-            LogsSQLiteUploadManager().uploadLogsBySDate(sdate: self.queryDay)
-        }
-        return vm
-    }()
-    lazy var fitnessTypeMultipleAlertVm: JournalFitnessTypeAlertVM = {
-        let vm = JournalFitnessTypeAlertVM.init(frame: .zero)
-        vm.confirmBlock = {(arr)in
-            DLLog(message: "fitnessTypeMultipleAlertVm:\(arr)")
-            
-            let fitnessType = arr.count > 0 ? arr.first : ""
-            self.updateFitnessBlock?(fitnessType ?? "")
-            let msgDict = NSMutableDictionary(dictionary: self.currentDayMsg)
-            msgDict.setValue("\(WHUtils.getJSONStringFromArray(array: arr as NSArray))", forKey: "fitnessLabel")
-            self.currentDayMsg = msgDict
-            self.logsModel.isUpload = false
-//            LogsSQLiteManager.getInstance().updateFitnessType(fitnessType: fitnessType ?? "", sDate: self.queryDay)
-            LogsSQLiteManager.getInstance().updateFitnessType(fitnessType: WHUtils.getJSONStringFromArray(array: arr as NSArray), sDate: self.queryDay)
-            LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
-            LogsSQLiteUploadManager().uploadLogsBySDate(sdate: self.queryDay)
-        }
-        return vm
-    }()
     lazy var timeAlertVm: LogsTimeAlertVM = {
         let vm = LogsTimeAlertVM.init(frame: .zero)
         vm.setAlertBlock = {()in
@@ -287,8 +255,6 @@ extension JounalCollectionCell{
         appDelegate.getKeyWindow().addSubview(remarkAlertVm)
         
         appDelegate.getKeyWindow().addSubview(timeAlertVm)
-//        appDelegate.getKeyWindow().addSubview(fitnessTypeAlertVm)
-        appDelegate.getKeyWindow().addSubview(fitnessTypeMultipleAlertVm)
         appDelegate.getKeyWindow().addSubview(changeCircleTempAlertVm)
         
 //        tableView.insertSubview(addFirstFoodsAlertVm, aboveSubview: editHeadView)
@@ -307,26 +273,37 @@ extension JounalCollectionCell{
         updateFirstFoodsAlert()
         updateTableViewFrame()
     }
-    func showFitnessAlertVm() {
-//        self.fitnessTypeAlertVm.fitnessType = currentDayMsg.stringValueForKey(key: "fitnessLabel")
-//        self.fitnessTypeAlertVm.showSelf()
-        
+    func fitnessTypesForAlert() -> [String] {
         let fitnessType = currentDayMsg.stringValueForKey(key: "fitnessLabel")
-        
-        self.fitnessTypeMultipleAlertVm.selectFitnessType.removeAll()
+        var selectFitnessType: [String] = []
         //新版本，为json字符串
         let fitnessArray = WHUtils.getArrayFromJSONString(jsonString: fitnessType)
         if fitnessArray.count > 0 {
             for i in 0..<fitnessArray.count{
-                self.fitnessTypeMultipleAlertVm.selectFitnessType.append(fitnessArray[i]as? String ?? "")
+                selectFitnessType.append(fitnessArray[i]as? String ?? "")
             }
         }else{
             if fitnessType.count > 0 {
-                self.fitnessTypeMultipleAlertVm.selectFitnessType.append(fitnessType)
+                selectFitnessType.append(fitnessType)
             }
         }
         
-        self.fitnessTypeMultipleAlertVm.showSelf()
+        return selectFitnessType
+    }
+    
+    func updateFitnessTypes(_ arr: [String]) {
+        DLLog(message: "fitnessTypeAlertVm:\(arr)")
+        
+        let fitnessType = arr.count > 0 ? arr.first : ""
+        self.updateFitnessBlock?(fitnessType ?? "")
+        let fitnessLabel = WHUtils.getJSONStringFromArray(array: arr as NSArray)
+        let msgDict = NSMutableDictionary(dictionary: self.currentDayMsg)
+        msgDict.setValue("\(fitnessLabel)", forKey: "fitnessLabel")
+        self.currentDayMsg = msgDict
+        self.logsModel.isUpload = false
+        LogsSQLiteManager.getInstance().updateFitnessType(fitnessType: fitnessLabel, sDate: self.queryDay)
+        LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
+        LogsSQLiteUploadManager().uploadLogsBySDate(sdate: self.queryDay)
     }
     private func startIdleTimer() {
 //        guard !hasShownFirstFoodsGuide else { return }

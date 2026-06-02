@@ -26,6 +26,7 @@ class JournalVC: WHBaseViewVC {
     
     var logsGuideStep = 0
     private var needsInitialScrollToToday = true
+    private weak var activeFitnessCell: JounalCollectionCell?
     
     lazy var tabbarCoverView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getTabbarHeight(), width: SCREEN_WIDHT, height: getTabbarHeight()))
@@ -265,8 +266,8 @@ class JournalVC: WHBaseViewVC {
         vm.fitnessBlock = {()in
             self.collectView.layoutIfNeeded()
             
-            let indexPath = IndexPath(row: self.selecteIndex, section: 0)
-            let cell = self.collectView.cellForItem(at: indexPath)as! JounalCollectionCell
+            guard let cell = self.currentVisibleJournalCell() else { return }
+            self.activeFitnessCell = cell
             cell.updateFitnessBlock = {(fitnessType)in
                 if fitnessType.count > 0 {
                     self.naviVm.fitnessLabel.text = fitnessType.mc_clipFromPrefix(to: 1)
@@ -274,7 +275,9 @@ class JournalVC: WHBaseViewVC {
                     self.naviVm.fitnessLabel.text = "-"
                 }
             }
-            cell.showFitnessAlertVm()
+            self.fitnessTypeAlertVm.selectFitnessType = cell.fitnessTypesForAlert()
+            self.attachFitnessTypeAlertIfNeeded()
+            self.fitnessTypeAlertVm.showSelf()
         }
         return vm
     }()
@@ -390,6 +393,15 @@ class JournalVC: WHBaseViewVC {
         
         return vm
     }()
+    lazy var fitnessTypeAlertVm: JournalFitnessTypeAlertVM = {
+        let vm = JournalFitnessTypeAlertVM.init(frame: .zero)
+        vm.confirmBlock = { [weak self] arr in
+            guard let self = self else { return }
+            let cell = self.activeFitnessCell ?? self.currentVisibleJournalCell()
+            cell?.updateFitnessTypes(arr)
+        }
+        return vm
+    }()
 //    lazy var guideGoalAlertVm: GuideSetWeekGoalAlertVM = {
 //        let vm = GuideSetWeekGoalAlertVM.init(frame: .zero)
 //        vm.clickBlock = {()in
@@ -496,6 +508,44 @@ extension JournalVC{
             self.queryDay = today
         }
     }
+    
+    private func currentVisibleJournalCell() -> JounalCollectionCell? {
+        collectView.layoutIfNeeded()
+        
+        let centerPoint = CGPoint(x: collectView.contentOffset.x + collectView.bounds.midX,
+                                  y: collectView.contentOffset.y + collectView.bounds.midY)
+        if let indexPath = collectView.indexPathForItem(at: centerPoint),
+           let cell = collectView.cellForItem(at: indexPath) as? JounalCollectionCell {
+            syncCurrentDay(indexPath: indexPath)
+            return cell
+        }
+        
+        let fallbackIndexPath = IndexPath(row: selecteIndex, section: 0)
+        if let cell = collectView.cellForItem(at: fallbackIndexPath) as? JounalCollectionCell {
+            syncCurrentDay(indexPath: fallbackIndexPath)
+            return cell
+        }
+        
+        guard let visibleIndexPath = collectView.indexPathsForVisibleItems.sorted(by: { $0.row < $1.row }).first,
+              let cell = collectView.cellForItem(at: visibleIndexPath) as? JounalCollectionCell else {
+            return nil
+        }
+        syncCurrentDay(indexPath: visibleIndexPath)
+        return cell
+    }
+    
+    private func syncCurrentDay(indexPath: IndexPath) {
+        guard indexPath.row >= 0, indexPath.row < daySourceArray.count else { return }
+        selecteIndex = indexPath.row
+        queryDay = daySourceArray[indexPath.row] as? String ?? queryDay
+    }
+    
+    private func attachFitnessTypeAlertIfNeeded() {
+        guard fitnessTypeAlertVm.superview == nil else { return }
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.getKeyWindow().addSubview(fitnessTypeAlertVm)
+    }
+    
     @objc func judegeToDay() {
         if toDayDate != Date().nextDay(days: 0) {
             queryDay = Date().nextDay(days: 0)
@@ -910,6 +960,7 @@ extension JournalVC{
             appDelegate.getKeyWindow().addSubview(self.bottomFuncVm)
             appDelegate.getKeyWindow().addSubview(self.copyMealsAlertVm)
             appDelegate.getKeyWindow().addSubview(self.dateFilterAlertVm)
+            appDelegate.getKeyWindow().addSubview(self.fitnessTypeAlertVm)
             appDelegate.getKeyWindow().addSubview(self.addFoodsAlertVm)
             appDelegate.getKeyWindow().addSubview(self.notifiAuthoriAlertVm)
             appDelegate.getKeyWindow().addSubview(self.activityAlertVm)

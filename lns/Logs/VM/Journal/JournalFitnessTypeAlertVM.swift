@@ -25,6 +25,7 @@ class JournalFitnessTypeAlertVM: UIView {
     var vmArray: [PlanCreateSynDaysVM] = []
     var fitnessArray: [String] = []
     var selectFitnessType: [String] = []
+    private let fallbackFitnessLabels = ["胸", "背", "肩", "手臂", "腿", "臀", "核心", "休"]
     /// 蒙层目标透明度：浅色 0.15，深色 0.85
     private var targetDimAlpha: CGFloat {
         return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.15
@@ -126,6 +127,8 @@ extension JournalFitnessTypeAlertVM {
        reloadDataIfNeeded()
        // 若仍无数据则不展示
        guard !vmArray.isEmpty else { return }
+        
+        superview?.bringSubviewToFront(self)
 
         isHidden = false
 
@@ -267,12 +270,7 @@ extension JournalFitnessTypeAlertVM {
 
     private func dealData() {
         fitnessArray.removeAll()
-        for i in 0..<ConstantModel.shared.fitness_label_array.count {
-            let str = ConstantModel.shared.fitness_label_array[i] as? String ?? ""
-            if str != "-" {
-                fitnessArray.append(str)
-            }
-        }
+        fitnessArray = availableFitnessLabels()
 
         // 计算内容高度（按 4 列网格）
         let rows = CGFloat((fitnessArray.count + 3) / 4)
@@ -318,21 +316,43 @@ extension JournalFitnessTypeAlertVM {
     
     /// 如果初始化时常量数据未返回，在展示前重新构建内容
     private func reloadDataIfNeeded() {
-        // 如果常量还未准备好，尝试从本地缓存读取
-        if ConstantModel.shared.fitness_label_array.count == 0,
-           let arr = UserDefaults.getArray(forKey: .fitness_label_array) {
-            ConstantModel.shared.fitness_label_array = arr as NSArray
-        }
+        let labels = availableFitnessLabels()
+        guard !labels.isEmpty else { return }
 
-        // 若 still 无数据则直接返回
-        if ConstantModel.shared.fitness_label_array.count == 0 { return }
-
-        // 当之前构建的内容为空或数量不一致时，重新构建
-        if vmArray.isEmpty || fitnessArray.count != ConstantModel.shared.fitness_label_array.count {
+        // 当之前构建的内容为空或标签内容变化时，重新构建
+        if vmArray.isEmpty || fitnessArray != labels {
             dealData()
             layoutWhiteViewFrame()
             initVmArray()
         }
+    }
+    
+    private func availableFitnessLabels() -> [String] {
+        let constantLabels = labels(from: ConstantModel.shared.fitness_label_array)
+        if !constantLabels.isEmpty {
+            return constantLabels
+        }
+        
+        if let cache = UserDefaults.getArray(forKey: .fitness_label_array) {
+            let cachedLabels = labels(from: cache as NSArray)
+            if !cachedLabels.isEmpty {
+                ConstantModel.shared.fitness_label_array = cache as NSArray
+                return cachedLabels
+            }
+        }
+        
+        return fallbackFitnessLabels
+    }
+    
+    private func labels(from array: NSArray) -> [String] {
+        var result: [String] = []
+        for item in array {
+            let label = item as? String ?? ""
+            if label.count > 0 && label != "-" {
+                result.append(label)
+            }
+        }
+        return result
     }
 }
 
