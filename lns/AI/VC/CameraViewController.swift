@@ -5,6 +5,8 @@
 //  Created by Elavatine on 2025/3/6.
 //
 import AVFoundation
+import Photos
+import PhotosUI
 import UIKit
 import MCToast
 import AliyunOSSiOS
@@ -51,6 +53,8 @@ class CameraViewController: WHBaseViewVC {
     private var backgroundObserver: NSObjectProtocol?
     private var foregroundObserver: NSObjectProtocol?
     private var isShowingQuotaUpgradeAlert = false
+    private var isPresentingPhotoPicker = false
+    private var preloadedPhotoPicker: PHPickerViewController?
     
     // ————— 你的视图模型 / 其他 UI 组件 —————
     lazy var overLayImgView: UIImageView = {
@@ -160,6 +164,11 @@ class CameraViewController: WHBaseViewVC {
             name: UIApplication.didBecomeActiveNotification, object: nil)
         funcVm.updateFlashStatus(isOn: false)
         DLLog(message: "CameraViewController  viewWillDisappear ")
+        if isPresentingPhotoPicker {
+            // 打开相册只需要暂停预览，避免和系统相册初始化同时做彻底释放。
+            self.stopCaptureSession()
+            return
+        }
         self.stopCaptureSession()
         self.stopCapture()
     }
@@ -167,6 +176,9 @@ class CameraViewController: WHBaseViewVC {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         DLLog(message: "CameraViewController  viewDidDisappear ")
+        if isPresentingPhotoPicker {
+            return
+        }
         self.stopCaptureSession()
         self.stopCapture()
     }
@@ -267,6 +279,7 @@ class CameraViewController: WHBaseViewVC {
 //            self.tipsAlertVM.showView()
 //            self.tipsAlertVM.confirmVm.startCountdown()
         }
+        preloadPhotoPickerIfAuthorized()
     }
     // MARK: - 初始化 UI
     func initUI() {
@@ -593,10 +606,55 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
     
     // 相册
     func openAlbum() {
-        let picker = UIImagePickerController()
+        isPresentingPhotoPicker = true
+        funcVm.updateFlashStatus(isOn: false)
+        stopCaptureSession()
+
+        let picker = preloadedPhotoPicker ?? makePhotoPicker()
+        preloadedPhotoPicker = nil
         picker.delegate = self
-        picker.sourceType = .photoLibrary
         present(picker, animated: true)
+
+//        let picker = UIImagePickerController()
+//        picker.delegate = self
+//        picker.sourceType = .photoLibrary
+//        present(picker, animated: true)
+    }
+
+    private func handlePickedAlbumImage(_ image: UIImage) {
+        captureResultVm.showView(img: image)
+        naviVm.refreshShowStatus(isShow: false)
+        typeVm.refreshShowStatus(isShow: false)
+        funcVm.refreshShowStatus(isShow: false)
+        funcVm.updateFlashStatus(isOn: false)
+
+        self.sendImgForAiRequest(img: image)
+    }
+
+    private func makePhotoPicker() -> PHPickerViewController {
+        var configuration = PHPickerConfiguration(photoLibrary: .shared())
+        configuration.filter = .images
+        configuration.selectionLimit = 1
+        configuration.preferredAssetRepresentationMode = .current
+
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self
+        return picker
+    }
+
+    private func preloadPhotoPickerIfAuthorized() {
+        guard preloadedPhotoPicker == nil else { return }
+
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        guard status == .authorized || status == .limited else { return }
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  self.preloadedPhotoPicker == nil else { return }
+
+            self.preloadedPhotoPicker = self.makePhotoPicker()
+            DLLog(message: "CameraViewController preloaded PHPickerViewController")
+        }
     }
     
     // 坐标系转换
@@ -631,14 +689,64 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)
         guard let image = info[.originalImage] as? UIImage else { return }
-        
-        captureResultVm.showView(img: image)
-        naviVm.refreshShowStatus(isShow: false)
-        typeVm.refreshShowStatus(isShow: false)
-        funcVm.refreshShowStatus(isShow: false)
-        funcVm.updateFlashStatus(isOn: false)
-        
-        self.sendImgForAiRequest(img: image)
+
+//        captureResultVm.showView(img: image)
+//        naviVm.refreshShowStatus(isShow: false)
+//        typeVm.refreshShowStatus(isShow: false)
+//        funcVm.refreshShowStatus(isShow: false)
+//        funcVm.updateFlashStatus(isOn: false)
+//
+//        self.sendImgForAiRequest(img: image)
+        handlePickedAlbumImage(image)
+        preloadPhotoPickerIfAuthorized()
+    }
+
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        isPresentingPhotoPicker = false
+        restartCaptureSession()
+        picker.dismiss(animated: true) {
+            self.preloadPhotoPickerIfAuthorized()
+        }
+    }
+}
+
+// MARK: - PHPickerViewController
+extension CameraViewController: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        isPresentingPhotoPicker = false
+
+        guard let provider = results.first?.itemProvider else {
+            restartCaptureSession()
+            picker.dismiss(animated: true) {
+                self.preloadPhotoPickerIfAuthorized()
+            }
+            return
+        }
+
+        picker.dismiss(animated: true) {
+            guard provider.canLoadObject(ofClass: UIImage.self) else {
+                self.restartCaptureSession()
+                self.preloadPhotoPickerIfAuthorized()
+                return
+            }
+
+            provider.loadObject(ofClass: UIImage.self) { [weak self] object, error in
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    guard let image = object as? UIImage else {
+                        if let error = error {
+                            DLLog(message: "PHPicker load image error: \(error)")
+                        }
+                        self.restartCaptureSession()
+                        self.preloadPhotoPickerIfAuthorized()
+                        return
+                    }
+
+                    self.handlePickedAlbumImage(image)
+                    self.preloadPhotoPickerIfAuthorized()
+                }
+            }
+        }
     }
 }
 
