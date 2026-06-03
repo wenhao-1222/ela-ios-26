@@ -741,6 +741,7 @@ extension FirstLaunchVC{
             let uId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
             UserInfoModel.shared.uId = uId
             UserInfoModel.shared.token = token
+            ElaProPriceVM.preloadLoggedInProductSnapshots()
             
             UserInfoModel.shared.mealsNumber = UserDefaults.getMealsNumber()
             UserInfoModel.shared.hidden_survery_button_status = UserDefaults.getSurveryStatus()

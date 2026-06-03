@@ -295,6 +295,7 @@ extension NeedBuildPlanVC{
                     UserDefaults.standard.setValue("\(dataObj["uid"]as? String ?? "")", forKey: userId)
                     
                     WidgetUtils().saveUserInfo(uId: "\(dataObj["uid"]as? String ?? "")", uToken: "\(dataObj["token"]as? String ?? "")")
+                    ElaProPriceVM.preloadLoggedInProductSnapshots()
                     self.completeLoginSuccessAndEnterApp()
                 }else{
                     self.presentAlertVcNoAction(title: "账户已申请注销。", viewController: self)

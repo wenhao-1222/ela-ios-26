@@ -2049,6 +2049,26 @@ extension ElaProPriceVM{
         }
     }
 
+    static func preloadLoggedInProductSnapshots() {
+        guard UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false,
+              UserInfoModel.shared.token.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false else {
+            return
+        }
+
+        let targets: [(bizType: String, isPurchased: String)] = [
+            ("1", ""),
+            ("1", "1"),
+            ("2", ""),
+            ("3", ""),
+            ("4", "")
+        ]
+        targets.forEach { target in
+            preloadProducts(bizType: target.bizType, isPurchased: target.isPurchased) { success in
+                DLLog(message: "[ElaProPriceVM][LoginPreload] bizType=\(target.bizType), isPurchased=\(target.isPurchased), success=\(success)")
+            }
+        }
+    }
+
     func startLoadingIfNeeded() {
         guard !hasStartedLoading else { return }
         if applyCachedProductSnapshotIfAvailable() {

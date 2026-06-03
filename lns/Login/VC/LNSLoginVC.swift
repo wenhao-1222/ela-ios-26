@@ -258,6 +258,7 @@ extension LNSLoginVC{
                     UserDefaults.standard.setValue("\(dataObj["uid"]as? String ?? "")", forKey: userId)
                     
                     WidgetUtils().saveUserInfo(uId: "\(dataObj["uid"]as? String ?? "")", uToken: "\(dataObj["token"]as? String ?? "")")
+                    ElaProPriceVM.preloadLoggedInProductSnapshots()
                     if QuestinonaireMsgModel.shared.surveytype == "noPlan"{
                         self.completeLoginSuccessAndEnterApp()
                     }else{

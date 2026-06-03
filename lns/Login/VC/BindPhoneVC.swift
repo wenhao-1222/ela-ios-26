@@ -262,6 +262,7 @@ extension BindPhoneVC{
                 UserDefaults.standard.setValue("\(dataObj["uid"]as? String ?? "")", forKey: userId)
                 
                 WidgetUtils().saveUserInfo(uId: "\(dataObj["uid"]as? String ?? "")", uToken: "\(dataObj["token"]as? String ?? "")")
+                ElaProPriceVM.preloadLoggedInProductSnapshots()
 //                if self.invideCode.count > 0 {
 //                    self.sendBindInviteCodeRequest()
 //                }else{
@@ -300,6 +301,7 @@ extension BindPhoneVC{
 //                if self.invideCode.count > 0 {
 //                    self.sendBindInviteCodeRequest()
 //                }else{
+                    ElaProPriceVM.preloadLoggedInProductSnapshots()
                     if QuestinonaireMsgModel.shared.surveytype == "noPlan"{
                         self.completeLoginSuccessAndEnterApp()
                     }else{

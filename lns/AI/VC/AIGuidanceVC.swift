@@ -24,6 +24,13 @@ class AIGuidanceVC: WHBaseViewVC {
     private let totalSteps = 6
     private var isSubmittingAICoachProfile = false
     private var isBackButtonCoolingDown = false
+    private var isStepTransitioning = false
+    private var scrollDragStartIndex: Int?
+    private var isScrollBackInteractionInProgress = false
+    private weak var fullscreenPopGestureFailureNavigationController: UINavigationController?
+    private var backSwipeBackgroundSourceStep: FlowStep?
+    private var sharedBackgroundShouldBeVisible = false
+    private var shouldHideProgressViews = false
     private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
         let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
         gesture.edges = .left
@@ -42,6 +49,9 @@ class AIGuidanceVC: WHBaseViewVC {
 
     private let sharedBackgroundTransitionDuration: TimeInterval = 0.25
     private let introViewFadeDuration: TimeInterval = 0.25
+    private var isIntroVisible: Bool {
+        introVm.superview != nil && !introVm.isHidden && introVm.alpha > 0.01
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,6 +71,12 @@ class AIGuidanceVC: WHBaseViewVC {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        isStepTransitioning = false
+        isScrollBackInteractionInProgress = false
+        backSwipeBackgroundSourceStep = nil
+        scrollViewBase.isScrollEnabled = true
+        fd_forceDisableInteractivePopGesture = false
+        fd_interactivePopDisabled = false
         navigationController?.fd_interactivePopDisabled = false
         navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
@@ -143,6 +159,7 @@ extension AIGuidanceVC{
     func navigateBackOneStep() {
         guard !isBackButtonCoolingDown else { return }
         guard !isSubmittingAICoachProfile else { return }
+        guard !isStepTransitioning, !isScrollBackInteractionInProgress else { return }
         startBackButtonCooldown()
         if currentIndex == 0 {
             backTapAction()
@@ -162,6 +179,7 @@ extension AIGuidanceVC{
     }
 
     @objc func nextButtonTapAction() {
+        guard !isStepTransitioning, !isScrollBackInteractionInProgress else { return }
         guard let currentStep = flowStep(for: currentIndex) else {
             return
         }
@@ -245,24 +263,42 @@ extension AIGuidanceVC{
     }
 
     func moveToStep(index: Int, animated: Bool) {
+        guard !isStepTransitioning || !animated || index == currentIndex else { return }
         let targetIndex = max(0, min(index, totalSteps - 1))
         let previousStep = flowStep(for: currentIndex)
+        let targetOffset = CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0)
+        prepareStepTransition(to: targetOffset.x, animated: animated)
         currentIndex = targetIndex
-        scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: animated)
+        scrollViewBase.setContentOffset(targetOffset, animated: animated)
         updatePopGestureState()
         updateNavigationForCurrentStep(from: previousStep, animated: animated)
         updateNextButtonForCurrentStep()
+        if !animated {
+            finishStepTransitionIfNeeded(animated: animated)
+        }
         EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
                                             scenarioType: .ai_coach_guide,
                                             text: "\(targetIndex + 1)")
     }
     
     func updatePopGestureState() {
-        canEdgeBack = false
-        fd_interactivePopDisabled = true
-        navigationController?.fd_interactivePopDisabled = true
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        configureScrollPanFailureRequirementIfNeeded()
+        let shouldAllowFullscreenPop = currentIndex == 0 && !isIntroVisible
+        canEdgeBack = shouldAllowFullscreenPop
+        fd_forceDisableInteractivePopGesture = !shouldAllowFullscreenPop
+        fd_interactivePopDisabled = !shouldAllowFullscreenPop
+        navigationController?.fd_interactivePopDisabled = !shouldAllowFullscreenPop
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = shouldAllowFullscreenPop
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = shouldAllowFullscreenPop
+    }
+
+    func configureScrollPanFailureRequirementIfNeeded() {
+        guard fullscreenPopGestureFailureNavigationController !== navigationController,
+              let navigationController = navigationController else {
+            return
+        }
+        scrollViewBase.panGestureRecognizer.require(toFail: navigationController.fd_fullscreenPopGestureRecognizer)
+        fullscreenPopGestureFailureNavigationController = navigationController
     }
 
     func updateNextButtonForCurrentStep() {
@@ -311,9 +347,11 @@ extension AIGuidanceVC{
                                          animated: animated && previousShouldShowBackground != shouldShowBackground)
 
         let shouldHideProgress = shouldShowBackground
-        naviVm.firstStepVm.isHidden = shouldHideProgress
-        naviVm.secondStepVm.isHidden = shouldHideProgress
-        naviVm.thirdStepVm.isHidden = shouldHideProgress
+        updateProgressVisibility(
+            shouldHide: shouldHideProgress,
+            wasHidden: previousShouldShowBackground,
+            animated: animated
+        )
         let isCloseStyle = currentStep == .readyStart
         let backImageName = isCloseStyle ? "navi_close_icon" : "habit_guide_back_icon"
         naviVm.backButton.setImage(UIImage(named: backImageName), for: .normal)
@@ -323,11 +361,55 @@ extension AIGuidanceVC{
         }
     }
 
+    func updateProgressVisibility(shouldHide: Bool, wasHidden: Bool, animated: Bool) {
+        shouldHideProgressViews = shouldHide
+        let progressViews = [naviVm.firstStepVm, naviVm.secondStepVm, naviVm.thirdStepVm]
+        progressViews.forEach { $0.layer.removeAllAnimations() }
+
+        if shouldHide {
+            progressViews.forEach { progressView in
+                if animated && !wasHidden {
+                    UIView.animate(withDuration: sharedBackgroundTransitionDuration,
+                                   delay: 0,
+                                   options: [.curveEaseInOut, .beginFromCurrentState]) {
+                        progressView.alpha = 0
+                    } completion: { [weak self] _ in
+                        guard self?.shouldHideProgressViews == true else { return }
+                        progressView.isHidden = true
+                    }
+                } else {
+                    progressView.alpha = 1
+                    progressView.isHidden = true
+                }
+            }
+            return
+        }
+
+        progressViews.forEach { progressView in
+            progressView.isHidden = false
+            if animated && wasHidden {
+                progressView.alpha = 0
+                UIView.animate(withDuration: sharedBackgroundTransitionDuration,
+                               delay: 0,
+                               options: [.curveEaseInOut, .beginFromCurrentState]) {
+                    progressView.alpha = 1
+                } completion: { [weak self] _ in
+                    guard self?.shouldHideProgressViews == false else { return }
+                    progressView.isHidden = false
+                    progressView.alpha = 1
+                }
+            } else {
+                progressView.alpha = 1
+            }
+        }
+    }
+
     func usesSharedBackground(for step: FlowStep) -> Bool {
         step == .notice || step == .elaProIntro || step == .readyStart
     }
 
     func updateSharedBackgroundVisibility(shouldShow: Bool, animated: Bool) {
+        sharedBackgroundShouldBeVisible = shouldShow
         sharedBackgroundImageView.layer.removeAllAnimations()
 
         guard animated else {
@@ -343,6 +425,10 @@ extension AIGuidanceVC{
                            delay: 0,
                            options: [.curveEaseInOut, .beginFromCurrentState]) {
                 self.sharedBackgroundImageView.alpha = 1
+            } completion: { [weak self] _ in
+                guard let self = self, self.sharedBackgroundShouldBeVisible else { return }
+                self.sharedBackgroundImageView.isHidden = false
+                self.sharedBackgroundImageView.alpha = 1
             }
         } else {
             sharedBackgroundImageView.alpha = 1
@@ -352,7 +438,9 @@ extension AIGuidanceVC{
                 self.sharedBackgroundImageView.alpha = 0
             } completion: { [weak self] _ in
                 guard let self = self else { return }
+                guard !self.sharedBackgroundShouldBeVisible else { return }
                 self.sharedBackgroundImageView.isHidden = true
+                self.sharedBackgroundImageView.alpha = 0
             }
         }
     }
@@ -372,6 +460,7 @@ extension AIGuidanceVC{
             self.introVm.alpha = 0
         } completion: { [weak self] _ in
             self?.introVm.removeFromSuperview()
+            self?.updatePopGestureState()
         }
     }
 
@@ -385,7 +474,10 @@ extension AIGuidanceVC{
 
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
-        scrollViewBase.isScrollEnabled = false
+        scrollViewBase.isScrollEnabled = true
+        scrollViewBase.isPagingEnabled = true
+        scrollViewBase.bounces = false
+        scrollViewBase.delegate = self
         scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * CGFloat(totalSteps), height: SCREEN_HEIGHT)
         view.addGestureRecognizer(backEdgePanGesture)
 
@@ -537,7 +629,136 @@ extension AIGuidanceVC {
 extension AIGuidanceVC: UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard gestureRecognizer === backEdgePanGesture else { return true }
-        guard introVm.superview == nil || introVm.alpha <= 0.01 || introVm.isHidden else { return false }
+        guard !isIntroVisible else { return false }
+        guard !isStepTransitioning, !isScrollBackInteractionInProgress else { return false }
+        guard currentIndex > 0 else { return false }
+        guard flowStep(for: currentIndex) != .readyStart else { return false }
         return !isBackButtonCoolingDown && !isSubmittingAICoachProfile
+    }
+}
+
+extension AIGuidanceVC: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase else { return }
+        guard !isIntroVisible else {
+            scrollDragStartIndex = nil
+            return
+        }
+        guard !isSubmittingAICoachProfile, !isStepTransitioning else {
+            scrollDragStartIndex = nil
+            return
+        }
+        guard flowStep(for: currentIndex) != .readyStart else {
+            scrollDragStartIndex = nil
+            return
+        }
+        scrollDragStartIndex = currentIndex
+        isScrollBackInteractionInProgress = true
+        prepareSharedBackgroundForBackSwipeIfNeeded(from: currentIndex)
+    }
+
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                   withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        guard scrollView === scrollViewBase else { return }
+        let startIndex = scrollDragStartIndex ?? currentIndex
+        let offsetRange = allowedBackScrollOffsetRange(from: startIndex)
+        targetContentOffset.pointee.x = min(max(targetContentOffset.pointee.x, offsetRange.min), offsetRange.max)
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase else { return }
+        if scrollView.isDragging || scrollView.isDecelerating {
+            let startIndex = scrollDragStartIndex ?? currentIndex
+            let offsetRange = allowedBackScrollOffsetRange(from: startIndex)
+            if scrollView.contentOffset.x > offsetRange.max {
+                scrollView.contentOffset.x = offsetRange.max
+            } else if scrollView.contentOffset.x < offsetRange.min {
+                scrollView.contentOffset.x = offsetRange.min
+            }
+        }
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        guard !decelerate else { return }
+        syncCurrentStepWithScrollView(scrollView)
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        syncCurrentStepWithScrollView(scrollView)
+    }
+
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        syncCurrentStepWithScrollView(scrollView)
+    }
+
+    private func updateScrollViewBaseScrollAvailability() {
+        scrollViewBase.isScrollEnabled = !isStepTransitioning && flowStep(for: currentIndex) != .readyStart
+    }
+
+    private func prepareSharedBackgroundForBackSwipeIfNeeded(from startIndex: Int) {
+        let targetIndex = max(startIndex - 1, 0)
+        guard targetIndex < startIndex,
+              let sourceStep = flowStep(for: startIndex),
+              let targetStep = flowStep(for: targetIndex) else {
+            return
+        }
+        let sourceUsesBackground = usesSharedBackground(for: sourceStep)
+        let targetUsesBackground = usesSharedBackground(for: targetStep)
+        guard sourceUsesBackground != targetUsesBackground else { return }
+
+        backSwipeBackgroundSourceStep = sourceStep
+        updateSharedBackgroundVisibility(shouldShow: targetUsesBackground, animated: true)
+    }
+
+    private func restoreSharedBackgroundAfterCancelledBackSwipeIfNeeded() {
+        guard let sourceStep = backSwipeBackgroundSourceStep else { return }
+        updateSharedBackgroundVisibility(shouldShow: usesSharedBackground(for: sourceStep), animated: true)
+        backSwipeBackgroundSourceStep = nil
+    }
+
+    private func allowedBackScrollOffsetRange(from startIndex: Int) -> (min: CGFloat, max: CGFloat) {
+        let currentOffsetX = SCREEN_WIDHT * CGFloat(max(startIndex, 0))
+        let previousOffsetX = SCREEN_WIDHT * CGFloat(max(startIndex - 1, 0))
+        return (min: previousOffsetX, max: currentOffsetX)
+    }
+
+    private func prepareStepTransition(to targetOffsetX: CGFloat, animated: Bool) {
+        isStepTransitioning = animated && abs(scrollViewBase.contentOffset.x - targetOffsetX) > 0.5
+        updateScrollViewBaseScrollAvailability()
+    }
+
+    private func finishStepTransitionIfNeeded(animated: Bool) {
+        if !animated || !isStepTransitioning {
+            isStepTransitioning = false
+            updateScrollViewBaseScrollAvailability()
+        }
+    }
+
+    private func syncCurrentStepWithScrollView(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase else { return }
+        let maxOffsetX = max(scrollView.contentSize.width - scrollView.bounds.width, 0)
+        let maxIndex = max(Int(round(maxOffsetX / SCREEN_WIDHT)), 0)
+        let visibleIndex = min(max(Int(round(scrollView.contentOffset.x / SCREEN_WIDHT)), 0), maxIndex)
+
+        if currentIndex != visibleIndex {
+            let didPrepareBackSwipeBackground = backSwipeBackgroundSourceStep != nil
+            let previousStep = flowStep(for: currentIndex)
+            currentIndex = visibleIndex
+            updatePopGestureState()
+            updateNavigationForCurrentStep(from: previousStep, animated: didPrepareBackSwipeBackground)
+            updateNextButtonForCurrentStep()
+            EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
+                                                scenarioType: .ai_coach_guide,
+                                                text: "\(visibleIndex + 1)")
+            backSwipeBackgroundSourceStep = nil
+        } else {
+            restoreSharedBackgroundAfterCancelledBackSwipeIfNeeded()
+        }
+
+        isStepTransitioning = false
+        isScrollBackInteractionInProgress = false
+        updateScrollViewBaseScrollAvailability()
+        scrollDragStartIndex = nil
     }
 }

@@ -339,6 +339,7 @@ extension LoginCodeVerifyVM{
                 UserDefaults.standard.setValue("\(dataObj["uid"]as? String ?? "")", forKey: userId)
             
             WidgetUtils().saveUserInfo(uId: "\(dataObj["uid"]as? String ?? "")", uToken: "\(dataObj["token"]as? String ?? "")")
+            ElaProPriceVM.preloadLoggedInProductSnapshots()
 //                self.codeTimer.cancel()
                 self.disableTimer()
                 if self.hasPlan{

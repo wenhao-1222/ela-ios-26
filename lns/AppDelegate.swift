@@ -75,6 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                     UserInfoModel.shared.uId = uId
                     UserInfoModel.shared.token = token
                     UserInfoModel.shared.phone = phone
+                    ElaProPriceVM.preloadLoggedInProductSnapshots()
                     sendSplashIdRequest()
                     ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
                     
@@ -207,6 +208,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         if token.count > 0 && uId.count > 0 {
             UserInfoModel.shared.uId = uId
             UserInfoModel.shared.token = token
+            ElaProPriceVM.preloadLoggedInProductSnapshots()
             refreshVipInfoOnWarmStartIfNeeded()
         }else{
             UserInfoModel.shared.uId = ""
@@ -612,6 +614,7 @@ extension AppDelegate{
                 
                 UserDefaults.standard.setValue("\(dataObj["token"]as? String ?? "")", forKey: token)
                 UserDefaults.standard.setValue("\(dataObj["uid"]as? String ?? "")", forKey: userId)
+                ElaProPriceVM.preloadLoggedInProductSnapshots()
                 
                 NotificationCenter.default.post(name: Notification.Name(rawValue: "wechatLogin"), object: nil)
             }else{
