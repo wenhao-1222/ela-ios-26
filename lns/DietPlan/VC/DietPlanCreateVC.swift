@@ -23,6 +23,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     private weak var fullscreenPopGestureFailureNavigationController: UINavigationController?
     private var scrollDragStartIndex: Int?
     private var isStepTransitioning = false
+    private var isScrollBackInteractionInProgress = false
     private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
         let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
         gesture.edges = .left
@@ -59,6 +60,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        isScrollBackInteractionInProgress = false
         if let coordinator = transitionCoordinator, coordinator.isInteractive {
             coordinator.notifyWhenInteractionChanges { [weak self] context in
                 if context.isCancelled {
@@ -280,7 +282,7 @@ extension DietPlanCreateVC{
     }
 
     func navigateBackOneStep() {
-        guard !isBackButtonCoolingDown, !isStepTransitioning else { return }
+        guard !isBackButtonCoolingDown, !isStepTransitioning, !isScrollBackInteractionInProgress else { return }
         startBackButtonCooldown()
         if currentIndex == 0 {
             backTapAction()
@@ -299,7 +301,7 @@ extension DietPlanCreateVC{
     }
 
     @objc func nextButtonTapAction() {
-        guard !isStepTransitioning else { return }
+        guard !isStepTransitioning, !isScrollBackInteractionInProgress else { return }
         if currentIndex == displayStepIndex(for: 6), let payload = targetWeightVm.buildTargetWeightAlertPayload() {
             targetWeightAlertVm.showView(type: payload.type, confirmBlock: { [weak self] in
                 guard let self = self else { return }
@@ -1660,6 +1662,8 @@ extension DietPlanCreateVC: UIGestureRecognizerDelegate, UIScrollViewDelegate {
                 return false
             }
             return !isBackButtonCoolingDown
+                && !isStepTransitioning
+                && !isScrollBackInteractionInProgress
                 && !isAtInitialScrollPage
                 && isBackSwipe(panGesture, in: gestureView)
         }
@@ -1670,6 +1674,7 @@ extension DietPlanCreateVC: UIGestureRecognizerDelegate, UIScrollViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         guard scrollView === scrollViewBase else { return }
         scrollDragStartIndex = currentIndex
+        isScrollBackInteractionInProgress = true
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
@@ -1758,6 +1763,7 @@ extension DietPlanCreateVC: UIGestureRecognizerDelegate, UIScrollViewDelegate {
             persistDraftIfNeeded()
         }
         isStepTransitioning = false
+        isScrollBackInteractionInProgress = false
         scrollViewBase.isScrollEnabled = true
         scrollDragStartIndex = nil
         updateFullscreenPopGestureAvailability()

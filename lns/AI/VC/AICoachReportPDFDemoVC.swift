@@ -28,6 +28,12 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     private var hasViewAppeared = false
     private var hasLoadedReportDetail = false
     private var pdfGenerationToken = UUID()
+    private var isPDFGenerationInProgress = false {
+        didSet {
+            guard oldValue != isPDFGenerationInProgress else { return }
+            updatePDFGenerationPopGestureState()
+        }
+    }
     private var shouldNotifyLogsRefreshAfterRecommendationUpdate = false
     private var logsRefreshNotifyWorkItem: DispatchWorkItem?
 
@@ -177,7 +183,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateInteractivePopGestureBlocked(true)
+//        updateInteractivePopGestureBlocked(true)
         if #available(iOS 13.0, *) {
             overrideUserInterfaceStyle = .light
         }
@@ -195,12 +201,13 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        updateInteractivePopGestureBlocked(true)
+//        updateInteractivePopGestureBlocked(true)
+        updatePDFGenerationPopGestureState()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        updateInteractivePopGestureBlocked(true)
+//        updateInteractivePopGestureBlocked(true)
         hasViewAppeared = true
         if hasGeneratedPDF == false {
             hasGeneratedPDF = true
@@ -220,11 +227,13 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
                 postLogsRefreshIfNeeded()
             }
             pdfGenerationToken = UUID()
+            isPDFGenerationInProgress = false
         }
     }
 
     override func backTapAction() {
         pdfGenerationToken = UUID()
+        isPDFGenerationInProgress = false
         super.backTapAction()
     }
 
@@ -385,6 +394,7 @@ private extension AICoachReportPDFDemoVC {
 
     func generateAndLoadPDF() {
         isPDFLoaded = false
+        isPDFGenerationInProgress = true
         updateAdviceButtonState(animated: false)
         updateTopBarInteraction(isEnabled: false)
         loadingIndicator.startAnimating()
@@ -410,6 +420,7 @@ private extension AICoachReportPDFDemoVC {
 
             switch result {
             case .success(let fileURL):
+                self.isPDFGenerationInProgress = false
                 self.pdfFileURL = fileURL
                 let didLoadPDF = self.loadPDF(from: fileURL)
                 if didLoadPDF == false {
@@ -419,6 +430,7 @@ private extension AICoachReportPDFDemoVC {
                 self.loadingLabel.isHidden = didLoadPDF
                 self.updateTopBarInteraction(isEnabled: true)
             case .failure(let error):
+                self.isPDFGenerationInProgress = false
                 if case AICoachReportPDFGenerator.GenerationError.cancelled = error {
                     return
                 }
@@ -886,6 +898,7 @@ extension AICoachReportPDFDemoVC{
         reportId = item.reportId
         hasLoadedReportDetail = false
         pdfGenerationToken = UUID()
+        isPDFGenerationInProgress = false
         isPDFLoaded = false
         nextWeekRecommendation = .empty
         updateAdviceButtonState(animated: false)
@@ -898,6 +911,10 @@ extension AICoachReportPDFDemoVC{
         loadingIndicator.startAnimating()
         preparePDFIfNeeded()
         sendReportDetailRequest()
+    }
+
+    func updatePDFGenerationPopGestureState() {
+        updateInteractivePopGestureBlocked(isPDFGenerationInProgress)
     }
 
     func makeSummaryInfo(

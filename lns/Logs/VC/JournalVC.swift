@@ -50,10 +50,10 @@ class JournalVC: WHBaseViewVC {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        restoreFullscreenInteractivePopGesture()
         WidgetMsgModel.shared.mealsIndex = 0
         sendNutritionsDefaultRequest()
-        self.navigationController?.fd_interactivePopDisabled = false
-        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         DispatchQueue.main.async { [weak self] in
             self?.flushPendingLogsRefreshIfNeeded()
         }

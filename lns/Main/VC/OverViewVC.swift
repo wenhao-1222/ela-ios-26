@@ -41,6 +41,11 @@ class OverViewVC : WHBaseViewVC {
 //        self.navigationController?.fd_interactivePopDisabled = true
 //        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
 //    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        restoreFullscreenInteractivePopGesture()
+    }
+
     let launchInt = UserDefaults.standard.value(forKey: launchNum) as? Int ?? 0
     
     override func viewWillAppear(_ animated: Bool) {

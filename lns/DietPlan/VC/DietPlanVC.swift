@@ -34,8 +34,8 @@ class DietPlanVC: WHBaseViewVC {
     }
     
     public override func viewDidAppear(_ animated: Bool) {
-        self.navigationController?.fd_interactivePopDisabled = false
-        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        super.viewDidAppear(animated)
+        restoreFullscreenInteractivePopGesture()
 
 //        appDelegate.getKeyWindow().addSubview(elaExpiredAlertVm)
 //        self.elaExpiredAlertVm.showSelf()

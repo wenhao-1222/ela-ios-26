@@ -26,6 +26,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     private weak var fullscreenPopGestureFailureNavigationController: UINavigationController?
     private var scrollDragStartIndex: Int?
     private var isStepTransitioning = false
+    private var isScrollBackInteractionInProgress = false
     private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
         let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
         gesture.edges = .left
@@ -58,6 +59,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        isScrollBackInteractionInProgress = false
         if let coordinator = transitionCoordinator, coordinator.isInteractive {
             coordinator.notifyWhenInteractionChanges { [weak self] context in
                 if context.isCancelled {
@@ -262,7 +264,7 @@ extension DietPlanCreateSecondVC{
     }
 
     func navigateBackOneStep() {
-        guard !isBackButtonCoolingDown, !isStepTransitioning else { return }
+        guard !isBackButtonCoolingDown, !isStepTransitioning, !isScrollBackInteractionInProgress else { return }
         if isShowingManualTargetEditor {
             hideManualTargetEditor(isBack: true)
             return
@@ -299,7 +301,7 @@ extension DietPlanCreateSecondVC{
     }
 
     @objc func nextButtonTapAction() {
-        guard !isStepTransitioning else { return }
+        guard !isStepTransitioning, !isScrollBackInteractionInProgress else { return }
         goToNextStep()
     }
 
@@ -1298,7 +1300,7 @@ extension DietPlanCreateSecondVC {
 extension DietPlanCreateSecondVC: UIGestureRecognizerDelegate, UIScrollViewDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard gestureRecognizer === backEdgePanGesture else { return true }
-        guard !isBackButtonCoolingDown, !isStepTransitioning else { return false }
+        guard !isBackButtonCoolingDown, !isStepTransitioning, !isScrollBackInteractionInProgress else { return false }
         
         if isShowingManualTargetEditor {
             return true
@@ -1315,6 +1317,7 @@ extension DietPlanCreateSecondVC: UIGestureRecognizerDelegate, UIScrollViewDeleg
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         guard scrollView === scrollViewBase else { return }
         scrollDragStartIndex = currentIndex
+        isScrollBackInteractionInProgress = true
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
@@ -1395,6 +1398,7 @@ extension DietPlanCreateSecondVC: UIGestureRecognizerDelegate, UIScrollViewDeleg
             updateNextButtonForCurrentStep(animated: false)
         }
         isStepTransitioning = false
+        isScrollBackInteractionInProgress = false
         scrollViewBase.isScrollEnabled = true
         scrollDragStartIndex = nil
         updateFullscreenPopGestureAvailability()

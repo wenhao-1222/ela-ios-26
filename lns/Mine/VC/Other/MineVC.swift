@@ -29,8 +29,8 @@ class MineVC : WHBaseViewVC {
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
     }
     public override func viewDidAppear(_ animated: Bool) {
-        self.navigationController?.fd_interactivePopDisabled = false
-        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        super.viewDidAppear(animated)
+        restoreFullscreenInteractivePopGesture()
 //        sendCoachLaunchRequest()
     }
     

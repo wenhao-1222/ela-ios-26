@@ -211,6 +211,11 @@ class WHBaseViewVC: ViewController {
             removeInteractivePopBlocker()
         }
     }
+
+    func restoreFullscreenInteractivePopGesture() {
+        updateInteractivePopGestureBlocked(false)
+        fd_interactivePopMaxAllowedInitialDistanceToLeftEdge = 0
+    }
     
     private func installInteractivePopBlocker() {
         guard let navigationController = navigationController else { return }

@@ -11,6 +11,8 @@ class ElaProVC: WHBaseViewVC {
     private var currentIndex: Int = 0
     private var isBackButtonCoolingDown = false
     private var isCreatingPendingDietPlan = false
+    private var isStepScrollAnimating = false
+    private var scrollDragStartIndex: Int?
     
     var param = [String : Any]()
     var showPriceOnly = false
@@ -39,9 +41,9 @@ class ElaProVC: WHBaseViewVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateInteractivePopGestureBlocked(true)
         initUI()
         applyInitialDisplayMode()
+        updateScrollBackGestureState()
         priceVm.startLoadingIfNeeded()
 //        
 //        if showPriceOnly == false {
@@ -64,16 +66,17 @@ class ElaProVC: WHBaseViewVC {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        updateInteractivePopGestureBlocked(true)
+        updateScrollBackGestureState()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        updateInteractivePopGestureBlocked(true)
+        updateScrollBackGestureState()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        restoreFullscreenInteractivePopGesture()
     }
     
     lazy var naviVm: DietPlanCreateNaviVM = {
@@ -169,6 +172,7 @@ extension ElaProVC{
     }
 
     @objc func nextButtonTapAction() {
+        guard !isStepScrollAnimating, !isScrollBackInteractionInProgress else { return }
         if currentIndex == 1 {
             currentIndex = 2
             showStep(for: currentIndex, animated: true)
@@ -200,20 +204,74 @@ extension ElaProVC{
         updateNavigationStyle(for: index, animated: animated)
         
         self.naviVm.backButton.isHidden = currentIndex <= 1
+        let targetOffset: CGPoint
         switch index {
         case 1:
-            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: animated)
+            targetOffset = CGPoint(x: SCREEN_WIDHT, y: 0)
         case 2:
-            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 2, y: 0), animated: animated)
+            targetOffset = CGPoint(x: SCREEN_WIDHT * 2, y: 0)
         case 3:
-            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 3, y: 0), animated: animated)
+            targetOffset = CGPoint(x: SCREEN_WIDHT * 3, y: 0)
         case 4:
-            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * 4, y: 0), animated: animated)
+            targetOffset = CGPoint(x: SCREEN_WIDHT * 4, y: 0)
         default:
-            scrollViewBase.setContentOffset(.zero, animated: animated)
+            targetOffset = .zero
         }
 
+        prepareStepScrollTransition(to: targetOffset, animated: animated)
+        scrollViewBase.setContentOffset(targetOffset, animated: animated)
         updateNextButtonForCurrentStep(animated: animated)
+        if !isStepScrollAnimating {
+            updateScrollBackGestureState()
+        }
+    }
+
+    private var shouldAllowScrollBackForCurrentStep: Bool {
+        currentIndex == 2 || currentIndex == 3
+    }
+
+    private var isScrollBackInteractionInProgress: Bool {
+        scrollDragStartIndex != nil
+    }
+
+    private func updateScrollBackGestureState() {
+        disableFullscreenPopGesture()
+        scrollViewBase.isScrollEnabled = shouldAllowScrollBackForCurrentStep && !isStepScrollAnimating
+    }
+
+    private func disableFullscreenPopGesture() {
+        canEdgeBack = false
+        fd_forceDisableInteractivePopGesture = true
+        fd_interactivePopDisabled = true
+        navigationController?.fd_interactivePopDisabled = true
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+    }
+
+    private func prepareStepScrollTransition(to targetOffset: CGPoint, animated: Bool) {
+        isStepScrollAnimating = animated && abs(scrollViewBase.contentOffset.x - targetOffset.x) > 0.5
+        if isStepScrollAnimating {
+            disableFullscreenPopGesture()
+            scrollViewBase.isScrollEnabled = false
+        }
+    }
+
+    private func finishStepScrollTransitionIfNeeded() {
+        guard isStepScrollAnimating else { return }
+        isStepScrollAnimating = false
+        updateNextButtonForCurrentStep(animated: false)
+        updateScrollBackGestureState()
+    }
+
+    private func finishScrollBackDraggingIfNeeded() {
+        guard scrollDragStartIndex != nil else { return }
+        scrollDragStartIndex = nil
+        isStepScrollAnimating = false
+        scrollViewBase.setContentOffset(CGPoint(x: CGFloat(currentIndex) * SCREEN_WIDHT, y: 0), animated: false)
+        updateNavigationStyle(for: currentIndex, animated: false)
+        naviVm.backButton.isHidden = currentIndex <= 1
+        updateNextButtonForCurrentStep(animated: false)
+        updateScrollBackGestureState()
     }
 
     private func updateNavigationStyle(for index: Int, animated: Bool) {
@@ -272,7 +330,7 @@ extension ElaProVC{
             self.nextButton.transform = targetTransform
             self.nextButton.alpha = targetAlpha
         }
-        nextButton.isUserInteractionEnabled = shouldShow
+        nextButton.isUserInteractionEnabled = shouldShow && !isStepScrollAnimating && !isScrollBackInteractionInProgress
         
         if animated {
             UIView.animate(withDuration: 0.25) {
@@ -319,6 +377,8 @@ extension ElaProVC{
         scrollViewBase.isPagingEnabled = true
         scrollViewBase.showsHorizontalScrollIndicator = false
         scrollViewBase.isScrollEnabled = false
+        scrollViewBase.bounces = false
+        scrollViewBase.delegate = self
         scrollViewBase.backgroundColor = .clear
         view.addSubview(naviVm)
         view.addSubview(nextButton)
@@ -508,5 +568,64 @@ extension ElaProVC{
             DLLog(message: "\(responseObject)")
             
         }
+    }
+}
+
+extension ElaProVC: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase,
+              shouldAllowScrollBackForCurrentStep,
+              !isStepScrollAnimating else {
+            return
+        }
+        scrollDragStartIndex = currentIndex
+        disableFullscreenPopGesture()
+        updateNextButtonForCurrentStep(animated: false)
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase,
+              let startIndex = scrollDragStartIndex else {
+            return
+        }
+        let startOffsetX = CGFloat(startIndex) * SCREEN_WIDHT
+        let previousOffsetX = CGFloat(max(startIndex - 1, 0)) * SCREEN_WIDHT
+        let clampedOffsetX = min(max(scrollView.contentOffset.x, previousOffsetX), startOffsetX)
+        guard abs(scrollView.contentOffset.x - clampedOffsetX) > 0.5 else { return }
+        scrollView.contentOffset = CGPoint(x: clampedOffsetX, y: scrollView.contentOffset.y)
+    }
+
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                   withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        guard scrollView === scrollViewBase,
+              let startIndex = scrollDragStartIndex else {
+            return
+        }
+        let startOffsetX = CGFloat(startIndex) * SCREEN_WIDHT
+        let previousOffsetX = CGFloat(max(startIndex - 1, 0)) * SCREEN_WIDHT
+        let shouldReturn = velocity.x < -0.25 || scrollView.contentOffset.x < startOffsetX - SCREEN_WIDHT * 0.35
+        let targetIndex = shouldReturn ? max(startIndex - 1, 0) : startIndex
+        targetContentOffset.pointee = CGPoint(x: shouldReturn ? previousOffsetX : startOffsetX, y: 0)
+        guard currentIndex != targetIndex else { return }
+        currentIndex = targetIndex
+        updateNavigationStyle(for: currentIndex, animated: true)
+        naviVm.backButton.isHidden = currentIndex <= 1
+        updateNextButtonForCurrentStep(animated: true)
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        guard scrollView === scrollViewBase, !decelerate else { return }
+        finishScrollBackDraggingIfNeeded()
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase else { return }
+        finishScrollBackDraggingIfNeeded()
+    }
+
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase else { return }
+        finishStepScrollTransitionIfNeeded()
     }
 }
