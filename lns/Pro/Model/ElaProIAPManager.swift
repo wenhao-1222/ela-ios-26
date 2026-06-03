@@ -361,9 +361,18 @@ final class ElaProIAPManager: NSObject {
     }
 
     func updateProductIDs(month: String, annual: String, lifetime: String) {
-        ElaProIAPConfig.monthProductID = month.trimmingCharacters(in: .whitespacesAndNewlines)
-        ElaProIAPConfig.annualProductID = annual.trimmingCharacters(in: .whitespacesAndNewlines)
-        ElaProIAPConfig.lifetimeProductID = lifetime.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedMonth = month.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedAnnual = annual.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedLifetime = lifetime.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard ElaProIAPConfig.monthProductID != trimmedMonth ||
+                ElaProIAPConfig.annualProductID != trimmedAnnual ||
+                ElaProIAPConfig.lifetimeProductID != trimmedLifetime else {
+            return
+        }
+
+        ElaProIAPConfig.monthProductID = trimmedMonth
+        ElaProIAPConfig.annualProductID = trimmedAnnual
+        ElaProIAPConfig.lifetimeProductID = trimmedLifetime
         cachedProducts.removeAll()
     }
 

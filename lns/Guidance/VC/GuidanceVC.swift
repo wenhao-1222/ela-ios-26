@@ -51,6 +51,7 @@ class GuidanceVC: WHBaseViewVC {
     private var isTransitioningToGuidancePro = false
     private var cachedGuidanceProHasFreeTrialPermission = true
     private var hasPrefetchedGuidanceProSubscriptionHistory = false
+    private var hasPrefetchedGuidanceProProducts = false
     private var hasResolvedGuidanceProSubscriptionHistory = false
     private var hasAutoSelectedSkippedCardioFrequency = false
     private var isBackNavigationLocked = false
@@ -159,6 +160,7 @@ class GuidanceVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
+        prefetchGuidanceProProductsIfNeeded()
         prefetchGuidanceProSubscriptionHistoryIfNeeded()
     }
 
@@ -1533,6 +1535,19 @@ extension GuidanceVC{
         DLLog(message: "[GuidancePro][Route] prefetch subscription history")
 
         resolveGuidanceProSubscriptionHistoryState(completion: nil)
+    }
+
+    func prefetchGuidanceProProductsIfNeeded() {
+        guard !hasPrefetchedGuidanceProProducts else { return }
+        hasPrefetchedGuidanceProProducts = true
+        DLLog(message: "[GuidancePro][Route] prefetch product list")
+
+        ElaProPriceVM.preloadProducts(bizType: "1") { success in
+            DLLog(message: "[GuidancePro][Route] prefetch product list finished, isPurchased=0, success=\(success)")
+        }
+        ElaProPriceVM.preloadProducts(bizType: "1", isPurchased: "1") { success in
+            DLLog(message: "[GuidancePro][Route] prefetch product list finished, isPurchased=1, success=\(success)")
+        }
     }
 
     func resolveGuidanceProSubscriptionHistoryState(completion: ((Bool) -> Void)?) {

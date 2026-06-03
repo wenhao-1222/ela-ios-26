@@ -25,6 +25,7 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
     var guidanceV2BizType = "自动"
     private var didTrackGuidanceV2IntroPage = false
     private var didTrackGuidanceV2SubscribePage = false
+    private var isPreparingSubscribeContent = false
 
     private lazy var priceVm: ElaProPriceVM = {
         let vm = ElaProPriceVM(frame: .zero)
@@ -193,12 +194,27 @@ private extension GuidanceProPurchasedVC {
     }
 
     func showSubscribeContent() {
+        guard currentStep == .intro, !isPreparingSubscribeContent else { return }
+
+        isPreparingSubscribeContent = true
+        nextButton.isEnabled = false
+        ElaProPriceVM.preloadProducts(bizType: "1", isPurchased: "1") { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.showPreparedSubscribeContent()
+            }
+        }
+    }
+
+    func showPreparedSubscribeContent() {
+        isPreparingSubscribeContent = false
+        nextButton.isEnabled = true
         guard currentStep == .intro else { return }
 
         currentStep = .subscribe
         nextButton.isHidden = true
         closeButton.isHidden = false
         topContentVM.stopBubbleFloatingAnimation()
+        priceVm.startLoadingIfNeeded()
         transition(from: topContentVM, to: priceVm)
         trackGuidanceV2SubscribePageIfNeeded()
     }
