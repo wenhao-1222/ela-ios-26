@@ -737,26 +737,31 @@ extension AppDelegate{
     ///
     /// 这样做的目的，是避免旧 tabbar 页面因为通知、window 浮层或导航栈引用而没有及时释放，
     /// 继续在后台响应事件，导致出现重复请求、重复提交之类的灵异问题。
-    func switchRootViewController(to newRootVC: UIViewController, teardownTabBarControllers: Bool = false) {
+    func switchRootViewController(to newRootVC: UIViewController,
+                                  teardownTabBarControllers: Bool = false,
+                                  transitionSnapshot: UIView? = nil) {
         guard Thread.isMainThread else {
             DispatchQueue.main.async { [weak self] in
-                self?.switchRootViewController(to: newRootVC, teardownTabBarControllers: teardownTabBarControllers)
+                self?.switchRootViewController(to: newRootVC,
+                                               teardownTabBarControllers: teardownTabBarControllers,
+                                               transitionSnapshot: transitionSnapshot)
             }
             return
         }
 
-        UserInfoModel.shared.noUidResponseNum = 0
         let keyWindow = getKeyWindow()
+        let oldSnapshot = transitionSnapshot ?? makeRootTransitionSnapshot(from: keyWindow)
+        oldSnapshot?.frame = keyWindow.bounds
+        oldSnapshot?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+        UserInfoModel.shared.noUidResponseNum = 0
         if teardownTabBarControllers {
             teardownTabBarControllersIfNeeded(in: keyWindow)
         }
         keyWindow.backgroundColor = .COLOR_BG_WHITE
         let transitionBackgroundView = UIView(frame: keyWindow.bounds)
-        transitionBackgroundView.backgroundColor = .COLOR_BG_WHITE
+        transitionBackgroundView.backgroundColor = oldSnapshot == nil ? .COLOR_BG_WHITE : .clear
         transitionBackgroundView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        let oldSnapshot = keyWindow.snapshotView(afterScreenUpdates: false)
-        oldSnapshot?.frame = keyWindow.bounds
-        oldSnapshot?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         keyWindow.addSubview(transitionBackgroundView)
         if let oldSnapshot {
             keyWindow.addSubview(oldSnapshot)
@@ -810,6 +815,24 @@ extension AppDelegate{
             }
         }
     }
+
+    private func makeRootTransitionSnapshot(from window: UIWindow) -> UIView? {
+        window.layoutIfNeeded()
+        if let snapshot = window.snapshotView(afterScreenUpdates: false) {
+            return snapshot
+        }
+
+        guard window.bounds.width > 0, window.bounds.height > 0 else {
+            return nil
+        }
+
+        let renderer = UIGraphicsImageRenderer(bounds: window.bounds)
+        let image = renderer.image { _ in
+            window.drawHierarchy(in: window.bounds, afterScreenUpdates: false)
+        }
+        return UIImageView(image: image)
+    }
+
     func getKeyWindow() -> UIWindow{
 //        if let keyWindow = UIApplication.shared.connectedScenes
 //            .filter({$0 is UIWindowScene})

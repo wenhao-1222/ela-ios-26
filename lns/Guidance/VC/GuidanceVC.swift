@@ -13,7 +13,7 @@ import IQKeyboardManagerSwift
 
 class GuidanceVC: WHBaseViewVC {
 
-    
+
     enum FlowStep: Hashable {
         case sex
         case dietRecord
@@ -40,10 +40,11 @@ class GuidanceVC: WHBaseViewVC {
         case nutritionGoal
         case reminderPrompt
     }
-    
+
     var currentIndex: Int = 0
     private var nextButtonEnableWorkItem: DispatchWorkItem?
     private var delayedNextWorkItem: DispatchWorkItem?
+    private var deferredInitialStepWarmupWorkItem: DispatchWorkItem?
     private var isShowingFinishLoading = false
     private var pendingNutritionGoalPresentation = false
     private var isShowingStandaloneNutritionGoal = false
@@ -54,6 +55,13 @@ class GuidanceVC: WHBaseViewVC {
     private var hasAutoSelectedSkippedCardioFrequency = false
     private var isBackNavigationLocked = false
     private var lastGuidanceV2TrackedPageKey = ""
+    private var hasConfiguredFullscreenPopGesture = false
+    private var isFullscreenPopGestureEnabledForInitialStep = false
+    private weak var fullscreenPopGestureNavigationController: UINavigationController?
+    private weak var fullscreenPopGestureFailureNavigationController: UINavigationController?
+    private var scrollDragStartIndex: Int?
+    private var isStepTransitioning = false
+    private var hasCompletedProgressChartAnimation = false
     private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
         let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
         gesture.edges = .left
@@ -99,6 +107,11 @@ class GuidanceVC: WHBaseViewVC {
         .goal, .goalBarrier, .removeBarrier, .elaProTransition, .reminderPrompt
     ]
     private var mountedSteps = Set<FlowStep>()
+    private var virtualBackScrollSourceIndex: Int?
+    private var virtualBackScrollTargetIndex: Int?
+    private var virtualBackScrollDisplayIndex: Int?
+    private var didHideNextButtonForFixedNutritionBackSwipe = false
+    private var isScrollBackInteractionInProgress = false
     private var isFixedTargetFlowEnabled: Bool {
         QuestinonaireMsgModel.shared.guidanceFixedTargetType == "fixed"
     }
@@ -123,17 +136,18 @@ class GuidanceVC: WHBaseViewVC {
     private var totalSteps: Int {
         activeFlow.count
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         IQKeyboardManager.shared.enable = false
-        self.navigationController?.fd_interactivePopDisabled = true
-        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        updateFullscreenPopGestureAvailability()
     }
-    
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         IQKeyboardManager.shared.enable = true
+        isStepTransitioning = false
+        isScrollBackInteractionInProgress = false
+        scrollViewBase.isScrollEnabled = true
         navigationController?.fd_interactivePopDisabled = false
         navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
@@ -147,12 +161,13 @@ class GuidanceVC: WHBaseViewVC {
         initUI()
         prefetchGuidanceProSubscriptionHistoryIfNeeded()
     }
-    
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         nextButton.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .disabled)
     }
-    
+
     deinit {
+        deferredInitialStepWarmupWorkItem?.cancel()
         NotificationCenter.default.removeObserver(self, name: .dietPlanPaceInputDidChange, object: nil)
     }
     lazy var naviVm: DietPlanCreateNaviVM = {
@@ -173,7 +188,7 @@ class GuidanceVC: WHBaseViewVC {
             let appleIDProvider = ASAuthorizationAppleIDProvider()
             let request = appleIDProvider.createRequest()
             request.requestedScopes = [.fullName, .email]
-            
+
             let authorizationController = ASAuthorizationController(authorizationRequests: [request])
             authorizationController.delegate = self
             authorizationController.presentationContextProvider = self
@@ -193,7 +208,7 @@ class GuidanceVC: WHBaseViewVC {
     }()
     lazy var notRegistVm : NotRegistTipsVM = {
         let vm = NotRegistTipsVM.init(frame: .zero)
-        
+
         return vm
     }()
     lazy var bodyFatAlertVm : QuestionnaireBodyFatAlertVM = {
@@ -218,7 +233,7 @@ class GuidanceVC: WHBaseViewVC {
     }()
     lazy var weightTipsAlertVm: DietPlanCreateWeightAlertVM = {
         let vm = DietPlanCreateWeightAlertVM.init(frame: .zero)
-        
+
         return vm
     }()
     lazy var takeoutTipsAlertVm: GuidanceTakeoutFrequencyTipsAlertVM = {
@@ -233,7 +248,7 @@ class GuidanceVC: WHBaseViewVC {
         let vm = GuidanceNutritionGoalTipsAlertVM.init(frame: .zero)
         return vm
     }()
-    
+
 
     lazy var fixGoalTipsAlertVm: QuestionCustomTipsAlertVM = {
         let vm = QuestionCustomTipsAlertVM(frame: .zero)
@@ -273,7 +288,7 @@ class GuidanceVC: WHBaseViewVC {
         vm.showTipsBlock = { [weak self] in
             self?.sexTipsAlertVm.showView()
         }
-        
+
         return vm
     }()
     lazy var dietRecordVm: GuidanceDietRecordVM = {
@@ -358,7 +373,7 @@ class GuidanceVC: WHBaseViewVC {
     }()
     lazy var mealsPerDayVm: GuidanceMealsPerDayVM = {
         let vm = GuidanceMealsPerDayVM.init(frame: CGRect.init(x: SCREEN_WIDHT*9, y: 0, width: 0, height: 0))
-        vm.selectedBlock = { [weak self] in 
+        vm.selectedBlock = { [weak self] in
             QuestinonaireMsgModel.shared.guidanceMealsAdjustType = QuestinonaireMsgModel.shared.guidanceMealsPerDayType
             self?.mealsAdjustVm.refreshSelectionFromModel()
             self?.updateNextButtonForCurrentStep()
@@ -428,6 +443,7 @@ class GuidanceVC: WHBaseViewVC {
     lazy var goalVm : QuestionnaireGoalVM = {
         let vm = QuestionnaireGoalVM.init(frame: CGRect.init(x: SCREEN_WIDHT*16, y: 0, width: 0, height: 0))
 //        vm.updateConstraitForGuidance()
+        vm.applyGuidanceSelectionStyle(isCompact: self.isFixedTargetFlowEnabled)
         vm.titleLabel.text = "你的目标是什么？"
         vm.choiceBlock = { [weak self] in
             self?.goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
@@ -507,6 +523,7 @@ class GuidanceVC: WHBaseViewVC {
 
 extension GuidanceVC{
     @objc func nextButtonTapAction() {
+        guard !isStepTransitioning, !isScrollBackInteractionInProgress else { return }
         guard let currentStep = flowStep(for: currentIndex) else { return }
 
         switch currentStep {
@@ -591,7 +608,7 @@ extension GuidanceVC{
         if isShowingFinishLoading {
             return
         }
-        if isBackNavigationLocked {
+        if isBackNavigationLocked || isStepTransitioning {
             return
         }
         if currentIndex == 0 {
@@ -621,10 +638,13 @@ extension GuidanceVC{
     }
 
     func shouldDisableBack(for step: FlowStep) -> Bool {
-        !isFixedTargetFlowEnabled && step == .nutritionGoal
+        isSummaryStep(step) || (!isFixedTargetFlowEnabled && step == .nutritionGoal)
     }
 
     func shouldDisableBackEdgePan(for step: FlowStep) -> Bool {
+        if isSummaryStep(step) {
+            return true
+        }
         if step == .progressChart {
             return nextButton.isHidden || nextButton.alpha < 0.99 || !nextButton.isEnabled
         }
@@ -652,7 +672,9 @@ extension GuidanceVC{
 
     func updateFlowConfiguration() {
         syncCardioFrequencyFlowState()
-        goalVm.applyGuidanceSelectionStyle(isCompact: isFixedTargetFlowEnabled)
+        if mountedSteps.contains(.goal) {
+            goalVm.applyGuidanceSelectionStyle(isCompact: isFixedTargetFlowEnabled)
+        }
         if isFixedTargetFlowEnabled {
             stepsArray = fixedTargetStepsArray
         } else if isUncertainFixedTargetSelection {
@@ -741,6 +763,7 @@ extension GuidanceVC{
               let targetView = stepView(for: targetStep) else {
             scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: false)
             isBackNavigationLocked = false
+            finishStepTransitionIfNeeded(animated: false)
             handleStepDidBecomeVisible(flowStep(for: targetIndex))
             return
         }
@@ -765,6 +788,7 @@ extension GuidanceVC{
             targetView.frame = targetFrame
             self.scrollViewBase.setContentOffset(CGPoint(x: targetFrame.minX, y: 0), animated: false)
             self.isBackNavigationLocked = false
+            self.finishStepTransitionIfNeeded(animated: false)
             self.refreshBackButtonState(for: targetStep, index: targetIndex)
             self.handleStepDidBecomeVisible(targetStep)
         }
@@ -924,7 +948,7 @@ extension GuidanceVC{
         goalVm.tableView.reloadData()
     }
 
-    func refreshStepViewStateFromModel(for step: FlowStep) {
+    func refreshStepViewStateFromModel(for step: FlowStep, shouldCenterBodyfatSelection: Bool = true) {
         switch step {
         case .dietRecord:
             dietRecordVm.refreshSelectionFromModel()
@@ -935,7 +959,7 @@ extension GuidanceVC{
             if bodyFatValue.isEmpty {
                 bodyfatVm.updateScrollView()
             } else {
-                bodyfatVm.restoreSelection(modelValue: bodyFatValue)
+                bodyfatVm.restoreSelection(modelValue: bodyFatValue, shouldCenterSelectedItem: shouldCenterBodyfatSelection)
             }
         case .takeoutFrequency:
             takeoutFrequencyVm.refreshSelectionFromModel()
@@ -967,7 +991,8 @@ extension GuidanceVC{
         }
     }
 
-    func moveToStep(index: Int, animated: Bool) {
+    func moveToStep(index: Int, animated: Bool, prefetchAhead: Bool = true) {
+        guard !isStepTransitioning || !animated || index == currentIndex else { return }
         updateFlowConfiguration()
         hideStandaloneNutritionGoalIfNeeded()
         let sourceIndex = currentIndex
@@ -977,12 +1002,14 @@ extension GuidanceVC{
             fixedTargetNutritionGoalVm.endEditing(true)
         }
         refreshStepViewStateFromModel(for: targetStep)
-        installStepViewsIfNeeded(indexes: [targetIndex, targetIndex + 1, targetIndex + 2])
+        let indexesToInstall = prefetchAhead ? [targetIndex, targetIndex + 1, targetIndex + 2] : [targetIndex]
+        installStepViewsIfNeeded(indexes: indexesToInstall)
         currentIndex = targetIndex
         let visibleIndex = scrollableIndex(for: targetIndex)
         let targetOffset = CGPoint(x: SCREEN_WIDHT * CGFloat(visibleIndex), y: 0)
         let shouldUseDirectTransition = shouldUseDirectStepTransition(from: sourceIndex, to: targetIndex, animated: animated)
         let shouldLockBack = (animated || shouldUseDirectTransition) && abs(scrollViewBase.contentOffset.x - targetOffset.x) > 0.5
+        prepareStepTransition(to: targetOffset.x, animated: animated || shouldUseDirectTransition)
         isBackNavigationLocked = shouldLockBack
         naviVm.updateStep(steps: stepsArray, currentStep: progressIndex(for: targetIndex))
         refreshBackButtonState(for: targetStep, index: targetIndex)
@@ -995,13 +1022,19 @@ extension GuidanceVC{
             scrollViewBase.setContentOffset(targetOffset, animated: animated)
             if !animated {
                 isBackNavigationLocked = false
+                finishStepTransitionIfNeeded(animated: animated)
                 handleStepDidBecomeVisible(targetStep)
             }
         }
 
         if targetStep == .progressChart {
-            resetProgressChartNextButtonPresentation()
-            progressChartVm.chart.startGradientAnimation(duration: 2.4)
+            if hasCompletedProgressChartAnimation || progressChartVm.chart.areLegendLabelsVisible {
+                showCompletedProgressChartPresentation()
+            } else {
+                resetProgressChartNextButtonPresentation()
+                updateScrollViewBaseScrollAvailability()
+                progressChartVm.chart.startGradientAnimation(duration: 2.4)
+            }
         }
         if targetStep == .goalBarrier {
             goalBarrierVm.updateContentForGoal(modelValue: QuestinonaireMsgModel.shared.goal)
@@ -1042,9 +1075,10 @@ extension GuidanceVC{
             nextButton.isEnabled = false
             nextButton.alpha = 1
         case .progressChart:
+            let isReady = hasCompletedProgressChartAnimation || progressChartVm.chart.areLegendLabelsVisible
             nextButton.isHidden = false
-            nextButton.isEnabled = false
-            nextButton.alpha = progressChartVm.chart.areLegendLabelsVisible ? 1 : 0
+            nextButton.isEnabled = isReady
+            nextButton.alpha = isReady ? 1 : 0
         case .fixedTarget:
             nextButton.isHidden = false
             nextButton.isEnabled = fixedTargetVm.hasSelection
@@ -1289,7 +1323,9 @@ extension GuidanceVC{
         guard flowStep(for: currentIndex) == .progressChart else { return }
         let workItem = DispatchWorkItem { [weak self] in
             guard let self = self, self.flowStep(for: self.currentIndex) == .progressChart else { return }
+            self.hasCompletedProgressChartAnimation = true
             self.updateNextButtonEnabledState(true, animated: true)
+            self.updateScrollViewBaseScrollAvailability()
         }
         nextButtonEnableWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: workItem)
@@ -1300,6 +1336,18 @@ extension GuidanceVC{
         nextButton.isHidden = false
         nextButton.isEnabled = false
         nextButton.alpha = 0
+        updateScrollViewBaseScrollAvailability()
+    }
+
+    func showCompletedProgressChartPresentation() {
+        hasCompletedProgressChartAnimation = true
+        nextButtonEnableWorkItem?.cancel()
+        nextButtonEnableWorkItem = nil
+        progressChartVm.chart.showCompletedState()
+        nextButton.isHidden = false
+        nextButton.alpha = 1
+        nextButton.isEnabled = true
+        updateScrollViewBaseScrollAvailability()
     }
 
     func animateProgressChartNextButtonFadeIn() {
@@ -1446,7 +1494,7 @@ extension GuidanceVC{
             }, viewController: self)
         }
     }
-    
+
     func saveGuidanceNutritionGoals() {
         hideStandaloneNutritionGoalIfNeeded()
         if isFixedTargetFlowEnabled, let goalBarrierIndex = indexOfStep(.goalBarrier) {
@@ -1622,6 +1670,16 @@ extension GuidanceVC{
         }
     }
 
+    func scheduleDeferredInitialStepWarmup() {
+        deferredInitialStepWarmupWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            self.installStepViewsIfNeeded(indexes: [1, 2])
+        }
+        deferredInitialStepWarmupWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: workItem)
+    }
+
     func initUI() {
         view.backgroundColor = .COLOR_BG_F2
         view.addSubview(scrollViewBase)
@@ -1639,18 +1697,21 @@ extension GuidanceVC{
         view.addSubview(goalTipsAlertVm)
         view.addSubview(fixGoalTipsAlertVm)
         view.addSubview(finishLoadingVm)
-        
+
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
-        scrollViewBase.isScrollEnabled = false
+        scrollViewBase.isScrollEnabled = true
+        scrollViewBase.isPagingEnabled = true
+        scrollViewBase.bounces = false
         scrollViewBase.delegate = self
         view.addGestureRecognizer(backEdgePanGesture)
         updateFlowConfiguration()
-        
-        installStepViewsIfNeeded(indexes: [0, 1, 2])
-        
+
+        installStepViewsIfNeeded(indexes: [0])
+
         setConstrait()
-        moveToStep(index: 0, animated: false)
+        moveToStep(index: 0, animated: false, prefetchAhead: false)
+        scheduleDeferredInitialStepWarmup()
     }
     func setConstrait() {
         nextButton.snp.makeConstraints { make in
@@ -1766,7 +1827,7 @@ extension GuidanceVC{
             QuestinonaireMsgModel.shared.fatsNumber = "\(nutritionGoalPayload.fat)"
             QuestinonaireMsgModel.shared.proteinNumber = "\(nutritionGoalPayload.protein)"
             QuestinonaireMsgModel.shared.caloriesNumber = "\(nutritionGoalPayload.calories)"
-            
+
             QuestinonaireMsgModel.shared.carbohydratesNumberFromServer = "\(nutritionGoalPayload.carbohydrate)"
             QuestinonaireMsgModel.shared.proteinNumberFromServer = "\(nutritionGoalPayload.protein)"
             QuestinonaireMsgModel.shared.fatsNumberFromServer = "\(nutritionGoalPayload.fat)"
@@ -1797,22 +1858,22 @@ extension GuidanceVC{
         let param = ["appleid":"\(UserInfoModel.shared.appleId)"]
         WHNetworkUtil.shareManager().POST(urlString: URL_Login_appid, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
             DLLog(message: "\(responseObject)")
-            
+
             let dataEncString = responseObject["data"]as? String ?? ""
             let dataDecString = AESEncyptUtil.aesDecrypt(hexString: dataEncString)
             let dataObj = self.getDictionaryFromJSONString(jsonString: dataDecString ?? "")
             DLLog(message: "sendAppleIdLoginRequest:\(dataObj)")
-            
+
             UserInfoModel.shared.isRegist = dataObj["registered"]as? String ?? ""
             if dataObj["registered"]as? String ?? "" == "yes"{
                 if dataObj.stringValueForKey(key: "state") == "1" {
                     MCToast.mc_text("登录成功！")
                     UserInfoModel.shared.token = dataObj["token"]as? String ?? ""
                     UserInfoModel.shared.uId   = dataObj["uid"]as? String ?? ""
-                    
+
                     UserDefaults.standard.setValue("\(dataObj["token"]as? String ?? "")", forKey: token)
                     UserDefaults.standard.setValue("\(dataObj["uid"]as? String ?? "")", forKey: userId)
-                    
+
                     WidgetUtils().saveUserInfo(uId: "\(dataObj["uid"]as? String ?? "")", uToken: "\(dataObj["token"]as? String ?? "")")
                     self.completeLoginSuccessAndEnterApp()
                 }else{
@@ -1833,30 +1894,30 @@ extension GuidanceVC:ASAuthorizationControllerDelegate,ASAuthorizationController
 
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            
+
             // Create an account in your system.
             let userIdentifier = appleIDCredential.user // 保存一下, 用于校验登录状态
             DLLog(message: "appleIDCredential:\(appleIDCredential.description)")
             DLLog(message: "userIdentifier:\(userIdentifier)")
-            
+
             UserInfoModel.shared.appleId = "\(userIdentifier)"
             self.sendAppleIdLoginRequest()
             // 与服务器交互, 并跳转页面 ...
-            
+
             /*
              001020.3c40ffb6b0af4962902100fca966d926.0208
              */
-        
+
         case let passwordCredential as ASPasswordCredential:
-        
+
             // Sign in using an existing iCloud Keychain credential.
             let username = passwordCredential.user
             let password = passwordCredential.password
-            
+
             DLLog(message: "\(passwordCredential.description)")
-            
+
             // 与服务器交互, 并跳转页面 ...
-            
+
         default:
             break
         }
@@ -1867,7 +1928,7 @@ extension GuidanceVC:ASAuthorizationControllerDelegate,ASAuthorizationController
       didCompleteWithError error: Error) {
         // Handle error.
     }
-    
+
     /// - Tag: provide_presentation_anchor
         func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
             return self.view.window!
@@ -1875,22 +1936,301 @@ extension GuidanceVC:ASAuthorizationControllerDelegate,ASAuthorizationController
 }
 
 extension GuidanceVC: UIScrollViewDelegate {
-    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+    private var guidanceAlertViews: [UIView] {
+        [
+            loginAlertVm,
+            notRegistVm,
+            bodyFatAlertVm,
+            katchAlertVm,
+            sexTipsAlertVm,
+            dietRecordTipsAlertVm,
+            weightTipsAlertVm,
+            takeoutTipsAlertVm,
+            caloriesRecordTipsAlertVm,
+            goalTipsAlertVm,
+            fixGoalTipsAlertVm
+        ]
+    }
+
+    private var isAnyGuidanceAlertVisible: Bool {
+        guidanceAlertViews.contains { alertView in
+            alertView.window != nil && !alertView.isHidden && alertView.alpha > 0.01
+        }
+    }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         guard scrollView === scrollViewBase else { return }
+        guard !isAnyGuidanceAlertVisible else {
+            scrollDragStartIndex = nil
+            clearVirtualBackScrollLayout()
+            return
+        }
+        guard let currentStep = flowStep(for: currentIndex), !isSummaryStep(currentStep) else {
+            scrollDragStartIndex = nil
+            clearVirtualBackScrollLayout()
+            return
+        }
+        if currentStep == .nutritionGoal, isFixedTargetFlowEnabled {
+            fixedTargetNutritionGoalVm.endEditing(true)
+            view.endEditing(true)
+        }
+        didHideNextButtonForFixedNutritionBackSwipe = false
+        isScrollBackInteractionInProgress = true
+        scrollDragStartIndex = currentIndex
+        installStepViewsIfNeeded(indexes: [previousNavigableIndex(from: currentIndex)])
+        hideNextButtonForFixedNutritionBackSwipeIfNeeded(from: currentIndex)
+        prepareVirtualBackScrollLayoutIfNeeded(from: currentIndex)
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        guard !decelerate else { return }
+        syncCurrentStepWithScrollView(scrollView)
+    }
+
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                   withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        guard scrollView === scrollViewBase else { return }
+        let startIndex = scrollDragStartIndex ?? currentIndex
+        guard let startStep = flowStep(for: startIndex), !isSummaryStep(startStep) else {
+            targetContentOffset.pointee.x = SCREEN_WIDHT * CGFloat(max(startIndex, 0))
+            return
+        }
+        let currentOffsetX = SCREEN_WIDHT * CGFloat(max(startIndex, 0))
+        let previousDisplayIndex = virtualBackScrollDisplayIndex(for: startIndex) ?? previousNavigableIndex(from: startIndex)
+        let previousOffsetX = SCREEN_WIDHT * CGFloat(previousDisplayIndex)
+        let shouldReturnToPreviousStep = targetContentOffset.pointee.x < currentOffsetX - 0.5
+        targetContentOffset.pointee.x = shouldReturnToPreviousStep ? previousOffsetX : currentOffsetX
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        syncCurrentStepWithScrollView(scrollView)
+    }
+
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        syncCurrentStepWithScrollView(scrollView)
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase else { return }
+        if scrollView.isDragging || scrollView.isDecelerating {
+            let startIndex = scrollDragStartIndex ?? currentIndex
+            let offsetRange = allowedBackScrollOffsetRange(from: startIndex)
+            if scrollView.contentOffset.x > offsetRange.max {
+                scrollView.contentOffset.x = offsetRange.max
+            } else if scrollView.contentOffset.x < offsetRange.min {
+                scrollView.contentOffset.x = offsetRange.min
+            }
+        }
+
+        if scrollView.contentOffset.x <= 0.5 || currentIndex == 0 {
+            updateFullscreenPopGestureAvailability()
+        }
+    }
+
+    private var isAtInitialScrollPage: Bool {
+        currentIndex == 0 && scrollViewBase.contentOffset.x <= 0.5
+    }
+
+    private func isBackSwipe(_ panGesture: UIPanGestureRecognizer, in view: UIView) -> Bool {
+        let translation = panGesture.translation(in: view)
+        let velocity = panGesture.velocity(in: view)
+        let isHorizontal = abs(translation.x) > abs(translation.y) || abs(velocity.x) > abs(velocity.y)
+        guard isHorizontal else { return false }
+
+        if UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft {
+            return velocity.x < 0 || translation.x < 0
+        }
+        return velocity.x > 0 || translation.x > 0
+    }
+
+    private func hideNextButtonForFixedNutritionBackSwipeIfNeeded(from startIndex: Int) {
+        guard isFixedTargetFlowEnabled,
+              let targetStep = flowStep(for: previousNavigableIndex(from: startIndex)),
+              targetStep == .nutritionGoal else {
+            return
+        }
+        didHideNextButtonForFixedNutritionBackSwipe = true
+        nextButtonEnableWorkItem?.cancel()
+        nextButtonEnableWorkItem = nil
+        nextButton.isHidden = true
+        nextButton.isEnabled = false
+        nextButton.alpha = 1
+    }
+
+    private func allowedBackScrollOffsetRange(from startIndex: Int) -> (min: CGFloat, max: CGFloat) {
+        let currentOffsetX = SCREEN_WIDHT * CGFloat(max(startIndex, 0))
+        if let step = flowStep(for: startIndex), isSummaryStep(step) {
+            return (min: currentOffsetX, max: currentOffsetX)
+        }
+        let previousDisplayIndex = virtualBackScrollDisplayIndex(for: startIndex) ?? previousNavigableIndex(from: startIndex)
+        let previousOffsetX = SCREEN_WIDHT * CGFloat(previousDisplayIndex)
+        return (min: previousOffsetX, max: currentOffsetX)
+    }
+
+    private func virtualBackScrollDisplayIndex(for startIndex: Int) -> Int? {
+        guard virtualBackScrollSourceIndex == startIndex else { return nil }
+        return virtualBackScrollDisplayIndex
+    }
+
+    private func prepareVirtualBackScrollLayoutIfNeeded(from startIndex: Int) {
+        clearVirtualBackScrollLayout()
+        let targetIndex = previousNavigableIndex(from: startIndex)
+        let displayIndex = startIndex - 1
+        guard targetIndex >= 0, targetIndex < displayIndex else { return }
+        guard let targetStep = flowStep(for: targetIndex),
+              let targetView = stepView(for: targetStep) else {
+            return
+        }
+
+        targetView.isHidden = false
+        targetView.frame = CGRect(x: SCREEN_WIDHT * CGFloat(displayIndex),
+                                  y: 0,
+                                  width: SCREEN_WIDHT,
+                                  height: SCREEN_HEIGHT)
+        for index in (targetIndex + 1)..<startIndex {
+            guard let skippedStep = flowStep(for: index) else { continue }
+            stepView(for: skippedStep)?.isHidden = true
+        }
+
+        virtualBackScrollSourceIndex = startIndex
+        virtualBackScrollTargetIndex = targetIndex
+        virtualBackScrollDisplayIndex = displayIndex
+    }
+
+    private func clearVirtualBackScrollLayout() {
+        guard virtualBackScrollSourceIndex != nil else { return }
+        virtualBackScrollSourceIndex = nil
+        virtualBackScrollTargetIndex = nil
+        virtualBackScrollDisplayIndex = nil
+        layoutMountedStepViews()
+        updateNutritionGoalViewVisibility()
+    }
+
+    private var shouldBlockScrollForProgressChartAnimation: Bool {
+        flowStep(for: currentIndex) == .progressChart && !hasCompletedProgressChartAnimation
+    }
+
+    private var shouldBlockScrollForSummaryStep: Bool {
+        guard let currentStep = flowStep(for: currentIndex) else { return false }
+        return isSummaryStep(currentStep)
+    }
+
+    private func updateScrollViewBaseScrollAvailability() {
+        scrollViewBase.isScrollEnabled = !isStepTransitioning &&
+            !shouldBlockScrollForProgressChartAnimation &&
+            !shouldBlockScrollForSummaryStep
+    }
+
+    private func prepareStepTransition(to targetOffsetX: CGFloat, animated: Bool) {
+        isStepTransitioning = animated && abs(scrollViewBase.contentOffset.x - targetOffsetX) > 0.5
+        updateScrollViewBaseScrollAvailability()
+    }
+
+    private func finishStepTransitionIfNeeded(animated: Bool) {
+        if !animated || !isStepTransitioning {
+            isStepTransitioning = false
+            updateScrollViewBaseScrollAvailability()
+        }
+    }
+
+    private func syncCurrentStepWithScrollView(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase else { return }
+        let maxOffsetX = max(scrollView.contentSize.width - scrollView.bounds.width, 0)
+        let maxIndex = max(Int(round(maxOffsetX / SCREEN_WIDHT)), 0)
+        let visibleIndex = min(max(Int(round(scrollView.contentOffset.x / SCREEN_WIDHT)), 0), maxIndex)
+        let resolvedIndex: Int
+        let shouldResolveVirtualBackScroll = virtualBackScrollSourceIndex == scrollDragStartIndex &&
+            visibleIndex < (virtualBackScrollSourceIndex ?? 0)
+        if shouldResolveVirtualBackScroll, let targetIndex = virtualBackScrollTargetIndex {
+            resolvedIndex = targetIndex
+            clearVirtualBackScrollLayout()
+            scrollView.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(targetIndex), y: 0), animated: false)
+        } else if let startIndex = scrollDragStartIndex,
+           startIndex > visibleIndex,
+           let visibleStep = flowStep(for: visibleIndex),
+           isSummaryStep(visibleStep) {
+            resolvedIndex = previousNavigableIndex(from: startIndex)
+            clearVirtualBackScrollLayout()
+            scrollView.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(resolvedIndex), y: 0), animated: false)
+        } else {
+            resolvedIndex = visibleIndex
+            clearVirtualBackScrollLayout()
+        }
+
+        if currentIndex != resolvedIndex {
+            let isDraggingBack = (scrollDragStartIndex ?? currentIndex) > resolvedIndex
+            currentIndex = resolvedIndex
+            if let currentStep = flowStep(for: currentIndex) {
+                let shouldCenterBodyfatSelection = !(isDraggingBack && currentStep == .bodyfat)
+                refreshStepViewStateFromModel(
+                    for: currentStep,
+                    shouldCenterBodyfatSelection: shouldCenterBodyfatSelection
+                )
+                naviVm.updateStep(steps: stepsArray, currentStep: progressIndex(for: currentIndex))
+                naviVm.isHidden = shouldHideNavigation(for: currentStep)
+                updateNextButtonForCurrentStep()
+            }
+        } else if didHideNextButtonForFixedNutritionBackSwipe {
+            updateNextButtonForCurrentStep()
+        }
+        didHideNextButtonForFixedNutritionBackSwipe = false
+
         isBackNavigationLocked = false
+        isStepTransitioning = false
+        isScrollBackInteractionInProgress = false
+        updateScrollViewBaseScrollAvailability()
+        scrollDragStartIndex = nil
         guard let currentStep = flowStep(for: currentIndex) else { return }
         refreshBackButtonState(for: currentStep, index: currentIndex)
         handleStepDidBecomeVisible(currentStep)
+        updateFullscreenPopGestureAvailability()
+    }
+
+    private func updateFullscreenPopGestureAvailability() {
+        guard isViewLoaded else { return }
+        configureScrollPanFailureRequirementIfNeeded()
+        let shouldAllowFullscreenPop = false
+        guard !hasConfiguredFullscreenPopGesture
+                || isFullscreenPopGestureEnabledForInitialStep != shouldAllowFullscreenPop
+                || fullscreenPopGestureNavigationController !== navigationController else {
+            return
+        }
+
+        updateInteractivePopGestureBlocked(false)
+        fd_forceDisableInteractivePopGesture = !shouldAllowFullscreenPop
+        fd_interactivePopDisabled = !shouldAllowFullscreenPop
+        navigationController?.fd_interactivePopDisabled = !shouldAllowFullscreenPop
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = shouldAllowFullscreenPop
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = shouldAllowFullscreenPop
+        canEdgeBack = shouldAllowFullscreenPop
+        isFullscreenPopGestureEnabledForInitialStep = shouldAllowFullscreenPop
+        fullscreenPopGestureNavigationController = navigationController
+        hasConfiguredFullscreenPopGesture = true
+    }
+
+    private func configureScrollPanFailureRequirementIfNeeded() {
+        guard fullscreenPopGestureFailureNavigationController !== navigationController,
+              let navigationController = navigationController else {
+            return
+        }
+        scrollViewBase.panGestureRecognizer.require(toFail: navigationController.fd_fullscreenPopGestureRecognizer)
+        fullscreenPopGestureFailureNavigationController = navigationController
     }
 }
 
 extension GuidanceVC: UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard gestureRecognizer === backEdgePanGesture else { return true }
-        guard !isShowingFinishLoading, !isBackNavigationLocked else { return false }
+        guard !isAnyGuidanceAlertVisible else { return false }
+        guard !isShowingFinishLoading, !isBackNavigationLocked, !isStepTransitioning else { return false }
         guard !isShowingStandaloneNutritionGoal else { return false }
-        guard currentIndex > 0 else { return true }
-        guard let currentStep = flowStep(for: currentIndex) else { return false }
-        return !shouldDisableBackEdgePan(for: currentStep)
+        guard !isAtInitialScrollPage else { return false }
+        guard let currentStep = flowStep(for: currentIndex),
+              let panGesture = gestureRecognizer as? UIPanGestureRecognizer,
+              let gestureView = panGesture.view else {
+            return false
+        }
+        return !shouldDisableBackEdgePan(for: currentStep) && isBackSwipe(panGesture, in: gestureView)
     }
 }

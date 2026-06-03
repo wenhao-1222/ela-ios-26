@@ -725,8 +725,10 @@ extension FirstLaunchVC{
         let navVc = UINavigationController(rootViewController: GuidanceVC())
 //        let navVc = UINavigationController(rootViewController: GuidanceProVC())
 //        let navVc = UINavigationController(rootViewController: GuidanceProPurchasedVC())
-        
-        appDelegate.switchRootViewController(to: navVc)
+
+        view.layoutIfNeeded()
+        let transitionSnapshot = view.snapshotView(afterScreenUpdates: false)
+        appDelegate.switchRootViewController(to: navVc, transitionSnapshot: transitionSnapshot)
     }
     private func trackGuidanceV2StartPageIfNeeded() {
         guard !didTrackGuidanceV2StartPage else { return }

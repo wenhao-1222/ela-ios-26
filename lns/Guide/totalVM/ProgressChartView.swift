@@ -77,6 +77,22 @@ class ProgressChartView: UIView {
         displayLink?.add(to: .main, forMode: .common)
     }
 
+    func showCompletedState() {
+        displayLink?.invalidate()
+        displayLink = nil
+        layer.removeAllAnimations()
+        recordedLineLayer.removeAllAnimations()
+        unrecordedLineLayer.removeAllAnimations()
+        recordedLabel.layer.removeAllAnimations()
+        unrecordedLabel.layer.removeAllAnimations()
+        animationProgress = 1.0
+        progress = 1
+        recordedLabel.alpha = 1
+        unrecordedLabel.alpha = 1
+        areLegendLabelsVisible = true
+        setNeedsDisplay()
+    }
+
     @objc private func updateGradientProgress() {
 //        animationProgress += 0.02
         guard gradientDuration > 0 else { return }

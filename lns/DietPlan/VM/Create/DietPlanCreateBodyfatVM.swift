@@ -132,7 +132,7 @@ extension DietPlanCreateBodyfatVM {
         showTipsBlock?()
     }
 
-    func restoreSelection(modelValue: String) {
+    func restoreSelection(modelValue: String, shouldCenterSelectedItem: Bool = true) {
         let normalizedValue = modelValue.trimmingCharacters(in: .whitespacesAndNewlines)
         guard QuestinonaireMsgModel.shared.sex == "1" || QuestinonaireMsgModel.shared.sex == "2" else {
             selectIndex = -1
@@ -154,7 +154,9 @@ extension DietPlanCreateBodyfatVM {
         selectIndex = index
         refreshSelectStatus()
         updateBodyFatValue(index: index)
-        scrollSelectedItemToCenter(animated: false)
+        if shouldCenterSelectedItem {
+            scrollSelectedItemToCenter(animated: false)
+        }
         selectStateChangeBlock?(true)
     }
 
