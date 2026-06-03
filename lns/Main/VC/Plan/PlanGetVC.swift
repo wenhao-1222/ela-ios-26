@@ -227,7 +227,7 @@ class PlanGetVC: WHBaseViewVC {
         let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
 //        vm.titleLabel.text = "为什么选择Katch-McArdle公式?"
 //        vm.contentLabelOne.text = "Katch-McArdle公式更适合健身人群，因为瘦体重比总体重更能准确反映身体的代谢需求。与传统的BMR和BMI 公式相比，它更能体现肌肉量对代谢的影响，因此对于健美运动员、健身爱好者、或体脂率低的人，这个公式提供了更个性化的结果。"
-        vm.titleLabel.text = "为什么不用BMI或身高？"
+        vm.titleLabel.text = "为什么不用BMI？"
         vm.contentLabelOne.text = "BMI 主要反映体重和身高的比例，无法区分肌肉和脂肪，因此同样 BMI 的两个人，代谢需求可能差很多。Katch-McArdle 会参考你的瘦体重(去脂体重)，在体脂数据较准确时，通常能更贴近健身人群的代谢情况，给出更个性化的结果。"
         vm.contentLabelTwo.text = ""
         vm.contentLabelThree.text = ""

@@ -59,7 +59,7 @@ class JournalReportWeekMsgVM: UIView {
         return vi
     }()
     lazy var rankingButton: RankingListButton = {
-        let vm = RankingListButton.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(111), y: kFitWidth(42), width: 0, height: 0))
+        let vm = RankingListButton.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(115), y: kFitWidth(42), width: 0, height: 0))
         vm.tapBlock = {()in
             let vc = FriendRankingVC()
             vc.typeVm.currentIndex = 1

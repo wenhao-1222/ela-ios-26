@@ -12,6 +12,7 @@ import IQKeyboardManagerSwift
 class GoalSetVC: WHBaseViewVC {
     
     var dataArray = NSMutableArray()
+    private var isOpeningCircleGoal = false
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -26,6 +27,7 @@ class GoalSetVC: WHBaseViewVC {
     override func viewWillAppear(_ animated: Bool) {
         IQKeyboardManager.shared.enable = false
         IQKeyboardManager.shared.enableAutoToolbar = false
+        setCircleGoalActionEnabled(true)
         
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -85,9 +87,14 @@ extension GoalSetVC{
         self.navigationController?.pushViewController(vc, animated: true)
     }
     @objc func setWeekAction() {
+        guard !isOpeningCircleGoal else {
+            return
+        }
         if self.contentVm.checkValue() == false{
             return
         }
+        view.endEditing(true)
+        setCircleGoalActionEnabled(false)
         let vc = GoalSetCircleVC()
 
 //        let vc = GoalSetWeeksVC()
@@ -103,12 +110,22 @@ extension GoalSetVC{
 //        else if self.dataArray.count > 0{
 //            vc.goalsDataArray.addObjects(from: self.dataArray as! [Any])
 //        }
-        self.navigationController?.pushViewController(vc, animated: true)
+        guard let navigationController = self.navigationController else {
+            setCircleGoalActionEnabled(true)
+            return
+        }
+        navigationController.pushViewController(vc, animated: true)
         vc.dataChangeBlock = {(dataArr)in
 //            self.dataArray = NSMutableArray(array: dataArr)
 //            self.contentVm.specGVm.dataIsChanged = false
 //            self.contentVm.specPercentVm.dataIsChanged = false
         }
+    }
+
+    private func setCircleGoalActionEnabled(_ isEnabled: Bool) {
+        isOpeningCircleGoal = !isEnabled
+        setWeekDayGoalButton.isEnabled = isEnabled
+        bottomTypeVm.circleButton.isEnabled = isEnabled
     }
 }
 
@@ -122,6 +139,7 @@ extension GoalSetVC{
         view.insertSubview(scrollViewBase, belowSubview: self.navigationView)
         scrollViewBase.backgroundColor = .COLOR_BG_F5
         scrollViewBase.delegate = self
+        scrollViewBase.delaysContentTouches = false
         scrollViewBase.frame = CGRect.init(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight())
         scrollViewBase.addSubview(contentVm)
         scrollViewBase.addSubview(bottomTypeVm)

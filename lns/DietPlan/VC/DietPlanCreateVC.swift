@@ -17,6 +17,12 @@ class DietPlanCreateVC: WHBaseViewVC {
     private var hasRestoredDraft = false
     private var shouldResumeFromEatStyleForNonVip = false
     private var isBackButtonCoolingDown = false
+    private var hasConfiguredFullscreenPopGesture = false
+    private var isFullscreenPopGestureEnabledForInitialStep = false
+    private weak var fullscreenPopGestureNavigationController: UINavigationController?
+    private weak var fullscreenPopGestureFailureNavigationController: UINavigationController?
+    private var scrollDragStartIndex: Int?
+    private var isStepTransitioning = false
     private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
         let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
         gesture.edges = .left
@@ -43,19 +49,23 @@ class DietPlanCreateVC: WHBaseViewVC {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        updateInteractivePopGestureBlocked(true)
+        updateFullscreenPopGestureAvailability()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        updateInteractivePopGestureBlocked(true)
+        updateFullscreenPopGestureAvailability()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         if let coordinator = transitionCoordinator, coordinator.isInteractive {
             coordinator.notifyWhenInteractionChanges { [weak self] context in
-                self?.updateInteractivePopGestureBlocked(context.isCancelled)
+                if context.isCancelled {
+                    self?.updateFullscreenPopGestureAvailability()
+                } else {
+                    self?.updateInteractivePopGestureBlocked(false)
+                }
             }
             persistDraftIfNeeded()
             return
@@ -67,7 +77,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateInteractivePopGestureBlocked(true)
+        updateFullscreenPopGestureAvailability()
         prepareInitialStepSkipState()
         initUI()
 //        let profileGender = normalizedProfileGender()
@@ -270,7 +280,7 @@ extension DietPlanCreateVC{
     }
 
     func navigateBackOneStep() {
-        guard !isBackButtonCoolingDown else { return }
+        guard !isBackButtonCoolingDown, !isStepTransitioning else { return }
         startBackButtonCooldown()
         if currentIndex == 0 {
             backTapAction()
@@ -280,12 +290,16 @@ extension DietPlanCreateVC{
         currentIndex = previousStepIndex(from: currentIndex)
         let targetOffsetX = SCREEN_WIDHT * CGFloat(currentIndex)
         let shouldAnimate = shouldAnimateStepTransition(from: previousIndex, to: currentIndex)
+        prepareStepTransition(to: targetOffsetX, animated: shouldAnimate)
         scrollViewBase.setContentOffset(CGPoint(x: targetOffsetX, y: 0), animated: shouldAnimate)
-        updateNextButtonForCurrentStep(animated: true)
+        updateNextButtonForCurrentStep(animated: false)
+        finishStepTransitionIfNeeded(animated: shouldAnimate)
+        updateFullscreenPopGestureAvailability()
         persistDraftIfNeeded()
     }
 
     @objc func nextButtonTapAction() {
+        guard !isStepTransitioning else { return }
         if currentIndex == displayStepIndex(for: 6), let payload = targetWeightVm.buildTargetWeightAlertPayload() {
             targetWeightAlertVm.showView(type: payload.type, confirmBlock: { [weak self] in
                 guard let self = self else { return }
@@ -333,13 +347,16 @@ extension DietPlanCreateVC{
         currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
         updateMaxReachedIndexIfNeeded(withVisibleIndex: currentIndex)
         let shouldAnimate = shouldAnimateStepTransition(from: previousIndex, to: currentIndex)
+        prepareStepTransition(to: finalOffsetX, animated: shouldAnimate)
         scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: shouldAnimate)
-        updateNextButtonForCurrentStep(animated: true)
+        updateNextButtonForCurrentStep(animated: false)
+        finishStepTransitionIfNeeded(animated: shouldAnimate)
+        updateFullscreenPopGestureAvailability()
         persistDraftIfNeeded()
     }
 
     func moveFromSexToNextStep() {
-        guard currentIndex == displayStepIndex(for: 1) else { return }
+        guard currentIndex == displayStepIndex(for: 1), !isStepTransitioning else { return }
         resetDraftAfterManualSexChangeIfNeeded()
         let nextIndex = nextStepIndex(from: currentIndex)
         let targetOffsetX = SCREEN_WIDHT * CGFloat(nextIndex)
@@ -349,8 +366,11 @@ extension DietPlanCreateVC{
         currentIndex = Int(round(finalOffsetX / SCREEN_WIDHT))
         updateMaxReachedIndexIfNeeded(withVisibleIndex: currentIndex)
         let shouldAnimate = shouldAnimateStepTransition(from: previousIndex, to: currentIndex)
+        prepareStepTransition(to: finalOffsetX, animated: shouldAnimate)
         scrollViewBase.setContentOffset(CGPoint(x: finalOffsetX, y: 0), animated: shouldAnimate)
-        updateNextButtonForCurrentStep(animated: true)
+        updateNextButtonForCurrentStep(animated: false)
+        finishStepTransitionIfNeeded(animated: shouldAnimate)
+        updateFullscreenPopGestureAvailability()
         self.bodyfatVm.updateScrollView()
         persistDraftIfNeeded()
     }
@@ -659,7 +679,10 @@ extension DietPlanCreateVC{
         
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
-        scrollViewBase.isScrollEnabled = false
+        scrollViewBase.isScrollEnabled = true
+        scrollViewBase.isPagingEnabled = true
+        scrollViewBase.bounces = false
+        scrollViewBase.delegate = self
         view.addGestureRecognizer(backEdgePanGesture)
         
         scrollViewBase.addSubview(goalVm)
@@ -917,13 +940,16 @@ extension DietPlanCreateVC{
         let maxIndex = max(Int(round((scrollViewBase.contentSize.width / SCREEN_WIDHT) - 1)), 0)
         let shouldForceResumeFromEatStyle = shouldResumeFromEatStyleForNonVip && UserInfoModel.shared.vipModel.status != .valid
         let resumeActualIndex = max(savedIndex, maxSavedIndex)
-        let targetIndex = shouldForceResumeFromEatStyle ? eatStyleVisibleIndex() : displayStepIndex(for: resumeActualIndex)
+        let eatStyleIndex = eatStyleVisibleIndex()
+        let restoredProgressIndex = min(displayStepIndex(for: resumeActualIndex), eatStyleIndex)
+        let targetIndex = shouldForceResumeFromEatStyle ? eatStyleIndex : restoredProgressIndex
         let bodyFatVisibleIndex = displayStepIndex(for: 5)
         let clampedTargetIndex = (shouldForceResumeFromEatStyle || hasValidBodyFatSelection) ? targetIndex : min(targetIndex, bodyFatVisibleIndex)
         currentIndex = min(max(clampedTargetIndex, 0), maxIndex)
         updateMaxReachedIndexIfNeeded(withVisibleIndex: currentIndex)
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0), animated: false)
         updateNextButtonForCurrentStep(animated: false)
+        updateFullscreenPopGestureAvailability()
         syncProfileFromUserInfoIfNeeded(applyDefaultValues: false)
     }
     
@@ -1075,6 +1101,7 @@ private extension DietPlanCreateVC {
         updateKetoHistoryTitleIfNeeded()
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0), animated: false)
         updateNextButtonForCurrentStep(animated: false)
+        updateFullscreenPopGestureAvailability()
     }
 
     func resetDraftAfterManualSexChangeIfNeeded() {
@@ -1625,9 +1652,145 @@ extension DietPlanCreateVC {
     }
 }
 
-extension DietPlanCreateVC: UIGestureRecognizerDelegate {
+extension DietPlanCreateVC: UIGestureRecognizerDelegate, UIScrollViewDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        guard gestureRecognizer === backEdgePanGesture else { return true }
-        return !isBackButtonCoolingDown
+        if gestureRecognizer === backEdgePanGesture {
+            guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer,
+                  let gestureView = panGesture.view else {
+                return false
+            }
+            return !isBackButtonCoolingDown
+                && !isAtInitialScrollPage
+                && isBackSwipe(panGesture, in: gestureView)
+        }
+        
+        return true
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase else { return }
+        scrollDragStartIndex = currentIndex
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        guard !decelerate else { return }
+        syncCurrentStepWithScrollView(scrollView)
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                   withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        guard scrollView === scrollViewBase else { return }
+        let startIndex = scrollDragStartIndex ?? currentIndex
+        let offsetRange = allowedBackScrollOffsetRange(from: startIndex)
+        targetContentOffset.pointee.x = min(max(targetContentOffset.pointee.x, offsetRange.min), offsetRange.max)
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        syncCurrentStepWithScrollView(scrollView)
+    }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        syncCurrentStepWithScrollView(scrollView)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase else { return }
+        if scrollView.isDragging || scrollView.isDecelerating {
+            let startIndex = scrollDragStartIndex ?? currentIndex
+            let offsetRange = allowedBackScrollOffsetRange(from: startIndex)
+            if scrollView.contentOffset.x > offsetRange.max {
+                scrollView.contentOffset.x = offsetRange.max
+            } else if scrollView.contentOffset.x < offsetRange.min {
+                scrollView.contentOffset.x = offsetRange.min
+            }
+        }
+        
+        if scrollView.contentOffset.x <= 0.5 || currentIndex == 0 {
+            updateFullscreenPopGestureAvailability()
+        }
+    }
+    
+    private var isAtInitialScrollPage: Bool {
+        currentIndex == 0 && scrollViewBase.contentOffset.x <= 0.5
+    }
+    
+    private func isBackSwipe(_ panGesture: UIPanGestureRecognizer, in view: UIView) -> Bool {
+        let translation = panGesture.translation(in: view)
+        let velocity = panGesture.velocity(in: view)
+        let isHorizontal = abs(translation.x) > abs(translation.y) || abs(velocity.x) > abs(velocity.y)
+        guard isHorizontal else { return false }
+        
+        if UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft {
+            return velocity.x < 0 || translation.x < 0
+        }
+        return velocity.x > 0 || translation.x > 0
+    }
+    
+    private func allowedBackScrollOffsetRange(from startIndex: Int) -> (min: CGFloat, max: CGFloat) {
+        let currentOffsetX = SCREEN_WIDHT * CGFloat(max(startIndex, 0))
+        let previousIndex = max(previousStepIndex(from: startIndex), 0)
+        let previousOffsetX = SCREEN_WIDHT * CGFloat(previousIndex)
+        return (min: previousOffsetX, max: currentOffsetX)
+    }
+    
+    private func prepareStepTransition(to targetOffsetX: CGFloat, animated: Bool) {
+        isStepTransitioning = animated && abs(scrollViewBase.contentOffset.x - targetOffsetX) > 0.5
+        scrollViewBase.isScrollEnabled = !isStepTransitioning
+    }
+    
+    private func finishStepTransitionIfNeeded(animated: Bool) {
+        if !animated || !isStepTransitioning {
+            isStepTransitioning = false
+            scrollViewBase.isScrollEnabled = true
+        }
+    }
+    
+    private func syncCurrentStepWithScrollView(_ scrollView: UIScrollView) {
+        guard scrollView === scrollViewBase else { return }
+        let maxOffsetX = max(scrollView.contentSize.width - scrollView.bounds.width, 0)
+        let maxIndex = max(Int(round(maxOffsetX / SCREEN_WIDHT)), 0)
+        let visibleIndex = min(max(Int(round(scrollView.contentOffset.x / SCREEN_WIDHT)), 0), maxIndex)
+        
+        if currentIndex != visibleIndex {
+            currentIndex = visibleIndex
+            updateNextButtonForCurrentStep(animated: false)
+            persistDraftIfNeeded()
+        }
+        isStepTransitioning = false
+        scrollViewBase.isScrollEnabled = true
+        scrollDragStartIndex = nil
+        updateFullscreenPopGestureAvailability()
+    }
+    
+    private func updateFullscreenPopGestureAvailability() {
+        guard isViewLoaded else { return }
+        configureScrollPanFailureRequirementIfNeeded()
+        let shouldAllowFullscreenPop = isAtInitialScrollPage
+        guard !hasConfiguredFullscreenPopGesture
+                || isFullscreenPopGestureEnabledForInitialStep != shouldAllowFullscreenPop
+                || fullscreenPopGestureNavigationController !== navigationController else {
+            return
+        }
+        
+        updateInteractivePopGestureBlocked(false)
+        fd_forceDisableInteractivePopGesture = !shouldAllowFullscreenPop
+        fd_interactivePopDisabled = !shouldAllowFullscreenPop
+        navigationController?.fd_interactivePopDisabled = !shouldAllowFullscreenPop
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = shouldAllowFullscreenPop
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = shouldAllowFullscreenPop
+        canEdgeBack = shouldAllowFullscreenPop
+        isFullscreenPopGestureEnabledForInitialStep = shouldAllowFullscreenPop
+        fullscreenPopGestureNavigationController = navigationController
+        hasConfiguredFullscreenPopGesture = true
+    }
+    
+    private func configureScrollPanFailureRequirementIfNeeded() {
+        guard fullscreenPopGestureFailureNavigationController !== navigationController,
+              let navigationController = navigationController else {
+            return
+        }
+        scrollViewBase.panGestureRecognizer.require(toFail: navigationController.fd_fullscreenPopGestureRecognizer)
+        fullscreenPopGestureFailureNavigationController = navigationController
     }
 }

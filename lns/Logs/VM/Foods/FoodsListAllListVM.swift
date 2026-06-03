@@ -24,6 +24,8 @@ class FoodsListAllListVM: UIView {
     var scrollBlock:(()->())?
     var searchNoDataBlocK:(()->())?
     
+    private let headerViews = NSHashTable<UIView>.weakObjects()
+    private let headerGrayViews = NSHashTable<UIView>.weakObjects()
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -35,6 +37,12 @@ class FoodsListAllListVM: UIView {
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        guard traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else { return }
+        updateHeaderColors()
     }
     lazy var tableView: UITableView = {
         let table = UITableView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.selfHeight), style: .plain)
@@ -64,6 +72,23 @@ class FoodsListAllListVM: UIView {
 }
 
 extension FoodsListAllListVM{
+    private var headerBackgroundColor: UIColor {
+        UIColor.COLOR_BG_WHITE.resolvedColor(with: traitCollection)
+    }
+
+    private var headerOverlayColor: UIColor {
+        UIColor.COLOR_BG_BLACK_04.resolvedColor(with: traitCollection)
+    }
+
+    private func updateHeaderColors() {
+        headerViews.allObjects.forEach {
+            $0.backgroundColor = headerBackgroundColor
+        }
+        headerGrayViews.allObjects.forEach {
+            $0.backgroundColor = headerOverlayColor
+        }
+    }
+
     func initUI() {
         addSubview(tableView)
         
@@ -149,11 +174,13 @@ extension FoodsListAllListVM:UITableViewDelegate,UITableViewDataSource{
             return nil
         }
         let headView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(55)))
-        headView.backgroundColor = .COLOR_BG_WHITE
+        headView.backgroundColor = headerBackgroundColor
+        headerViews.add(headView)
         
         let grayView = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(55)))
         headView.addSubview(grayView)
-        grayView.backgroundColor = .COLOR_BG_BLACK_04//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        grayView.backgroundColor = headerOverlayColor//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
+        headerGrayViews.add(grayView)
         
         let label = UILabel.init(frame: CGRect.init(x: kFitWidth(16), y: 0, width: kFitWidth(200), height: kFitWidth(55)))
         label.textColor = .COLOR_TEXT_TITLE_0f1214

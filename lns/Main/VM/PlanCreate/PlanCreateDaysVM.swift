@@ -208,15 +208,16 @@ extension PlanCreateDaysVM{
 //        stringOne.append(stringTwo)
 //        stringOne.append(stringThree)
         
+        let textColor = UserConfigModel.shared.overrideUserInterfaceStyle == .dark ? WHColor_16(colorStr: "D2D3D4") : UIColor.COLOR_TEXT_TITLE_0f1214
         
         let stringOne = NSMutableAttributedString(string: "计划周期 ",
-                                                  attributes: [.foregroundColor : UIColor.COLOR_TEXT_TITLE_0f1214,
+                                                  attributes: [.foregroundColor : textColor,
                                                                .font: UIFont.systemFont(ofSize: 14, weight: .regular)])
         stringOne.append(NSMutableAttributedString(string: "\(daysNumber)",
                                                    attributes: [.foregroundColor: UIColor.THEME,
                                                                 .font : UIFont.systemFont(ofSize: 14, weight: .regular)]))
         stringOne.append(NSMutableAttributedString(string: " 天",
-                                                   attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+                                                   attributes: [.foregroundColor: textColor,
                                                                 .font : UIFont.systemFont(ofSize: 14, weight: .regular)]))
         titleLabel.attributedText = stringOne
     }

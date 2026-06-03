@@ -201,10 +201,7 @@ extension PlanMainPlanListVM {
                                disabledImageName: "dietplan_sauce_icon")
         titleLab.textColor = .COLOR_TEXT_TITLE_0f1214
         backgroundColor = .COLOR_BG_F2
-        topGradientLayer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
-        ]
+        updateTopGradientColors()
     }
     
     func updatePlanList(mealPlanItemList: NSArray,
@@ -652,5 +649,13 @@ private extension PlanMainPlanListVM {
         return renderer.image { _ in
             image.draw(in: CGRect(origin: .zero, size: size))
         }
+    }
+    
+    func updateTopGradientColors() {
+        let backgroundColor = UIColor.COLOR_BG_F2.resolvedColor(with: traitCollection)
+        topGradientLayer.colors = [
+            backgroundColor.withAlphaComponent(1).cgColor,
+            backgroundColor.withAlphaComponent(0).cgColor
+        ]
     }
 }

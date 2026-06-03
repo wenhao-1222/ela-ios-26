@@ -26,6 +26,8 @@ class JournalVC: WHBaseViewVC {
     
     var logsGuideStep = 0
     private var needsInitialScrollToToday = true
+    private var pendingLogsRefreshDates = Set<String>()
+    private var pendingLogsRefreshNeedsFullReload = false
     private weak var activeFitnessCell: JounalCollectionCell?
     
     lazy var tabbarCoverView: UIView = {
@@ -52,6 +54,9 @@ class JournalVC: WHBaseViewVC {
         sendNutritionsDefaultRequest()
         self.navigationController?.fd_interactivePopDisabled = false
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        DispatchQueue.main.async { [weak self] in
+            self?.flushPendingLogsRefreshIfNeeded()
+        }
         
         if UserInfoModel.shared.showNotifiAuthoriAlertVM {
             self.notifiAuthoriAlertVm.showView()
@@ -147,9 +152,9 @@ class JournalVC: WHBaseViewVC {
         
         NotificationCenter.default.addObserver(self, selector: #selector(showAddFoodsAlert), name: NOTIFI_NAME_REPORT_ADD_FOODS, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(judegeToDay), name: NOTIFI_NAME_DID_BECOME_ACTIVE, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(refresMsgNotifi), name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(refresMsgNotifi), name: NSNotification.Name(rawValue: "updateLogsCaloriesStyleMsg"), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(refresMsgNotifi), name: NOTIFI_NAME_ABTEST, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refresMsgNotifi(notify:)), name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refresMsgNotifi(notify:)), name: NSNotification.Name(rawValue: "updateLogsCaloriesStyleMsg"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refresMsgNotifi(notify:)), name: NOTIFI_NAME_ABTEST, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refreshLogsFromServerNotifi), name: NOTIFI_NAME_REFRESH_LOGS_FROM_SERVER, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(changeNaviButtonStatus(notify: )), name: NSNotification.Name(rawValue: "msgCalculateEnd"),
                                                object: nil)
@@ -650,11 +655,71 @@ extension JournalVC{
             self.addFoodsAlertVm.showView()
         })
     }
-    @objc func refresMsgNotifi() {
-        self.refreshNaviDayText()
-        self.collectView.reloadData()
+    @objc func refresMsgNotifi(notify: Notification) {
+        let sdate = notify.userInfo?["sdate"] as? String
+        performLogsMsgRefresh(sdate: sdate, requiresFullReload: sdate == nil)
+    }
+    
+    func refreshLogsMsg() {
+        performLogsMsgRefresh(sdate: nil, requiresFullReload: true)
+    }
+    
+    private func performLogsMsgRefresh(sdate: String?, requiresFullReload: Bool) {
+        guard isViewLoaded, view.window != nil else {
+            if requiresFullReload {
+                pendingLogsRefreshNeedsFullReload = true
+                pendingLogsRefreshDates.removeAll()
+            } else if let sdate = sdate {
+                pendingLogsRefreshDates.insert(sdate)
+            }
+            return
+        }
         
-        let model = LogsSQLiteManager.getInstance().getLogsByDate(sDate: Date().nextDay(days: 0))!
+        self.refreshNaviDayText()
+        
+        if requiresFullReload {
+            self.collectView.reloadData()
+        } else if let sdate = sdate {
+            refreshVisibleJournalCellIfNeeded(sdate: sdate)
+        }
+        
+        refreshTodayGoalIfNeeded(sdate: sdate, requiresFullReload: requiresFullReload)
+    }
+    
+    private func flushPendingLogsRefreshIfNeeded() {
+        guard isViewLoaded, view.window != nil else { return }
+        
+        if pendingLogsRefreshNeedsFullReload {
+            pendingLogsRefreshNeedsFullReload = false
+            pendingLogsRefreshDates.removeAll()
+            performLogsMsgRefresh(sdate: nil, requiresFullReload: true)
+            return
+        }
+        
+        let dates = pendingLogsRefreshDates
+        pendingLogsRefreshDates.removeAll()
+        dates.forEach { performLogsMsgRefresh(sdate: $0, requiresFullReload: false) }
+    }
+    
+    private func refreshVisibleJournalCellIfNeeded(sdate: String) {
+        let index = daySourceArray.index(of: sdate)
+        guard index != NSNotFound else { return }
+        let indexPath = IndexPath(row: index, section: 0)
+        guard let cell = collectView.cellForItem(at: indexPath) as? JounalCollectionCell else { return }
+        
+        if cell.queryDay == sdate {
+            cell.isEdit = isEdit
+            cell.dealData()
+        } else {
+            cell.setQueryDate(date: sdate, isEdit: isEdit)
+        }
+    }
+    
+    private func refreshTodayGoalIfNeeded(sdate: String?, requiresFullReload: Bool) {
+        let today = Date().nextDay(days: 0)
+        guard requiresFullReload || sdate == today else { return }
+        guard let model = LogsSQLiteManager.getInstance().getLogsByDate(sDate: today) else { return }
+        
         let currentDayMsg = NSMutableDictionary(dictionary: model.modelToDict())
         let caloriTarget = Int(currentDayMsg.stringValueForKey(key: "caloriesden")) ?? 0
         let carboTarget = Float(currentDayMsg.stringValueForKey(key: "carbohydrateden")) ?? 0
@@ -672,7 +737,7 @@ extension JournalVC{
         sendNutritionsDefaultRequest()
         sendLogsAllDataRequest { [weak self] in
             guard let self else { return }
-            self.refresMsgNotifi()
+            self.refreshLogsMsg()
         }
     }
     @objc func changeNaviButtonStatus(notify:Notification) {

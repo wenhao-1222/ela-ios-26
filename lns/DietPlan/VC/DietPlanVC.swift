@@ -47,6 +47,13 @@ class DietPlanVC: WHBaseViewVC {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         sendDietPlanMsgRequest()
+//        listVm.updateActionButtonAppearance()
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        DLLog(message: "traitCollectionDidChange")
+        listVm.updateActionButtonAppearance()
     }
     
     override func viewDidLoad() {
@@ -243,7 +250,9 @@ extension DietPlanVC{
         if let targetDict = replacedMealNutrientsTarget(from: dataObj["nutrientsTarget"] as? NSArray, sdate: sdate) ??
             replacedMealNutrientsTarget(from: dataObj["mealPlanItemList"] as? NSArray, sdate: sdate),
            LogsSQLiteManager.getInstance().updateDietPlanNutrientsTarget(targetDict, sdate: sdate) {
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"),
+                                            object: nil,
+                                            userInfo: ["sdate": sdate])
         }
     }
     

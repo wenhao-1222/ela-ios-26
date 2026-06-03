@@ -17,7 +17,7 @@ class QuestionnaireEventsVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_BG_F2
         self.isUserInteractionEnabled = true
         self.selfHeight = SCREEN_HEIGHT-frame.origin.y
         self.clipsToBounds = true
@@ -26,6 +26,23 @@ class QuestionnaireEventsVM: UIView {
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        topGradientLayer.frame = topGradientView.bounds
+        bottomGradientLayer.frame = bottomGradientView.bounds
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        bottomGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
     }
     lazy var dataArray : NSArray = {
         return [["name":"无活动","detail":"除少量走路通勤，无体育活动"],
@@ -45,7 +62,7 @@ class QuestionnaireEventsVM: UIView {
     }()
     
     lazy var tableView : UITableView = {
-        let vi = UITableView.init(frame: CGRect.init(x: 0, y: kFitWidth(152), width: SCREEN_WIDHT, height: self.selfHeight-kFitWidth(152)-kFitWidth(84)-WHUtils().getBottomSafeAreaHeight()), style: .plain)
+        let vi = UITableView.init(frame: CGRect.init(x: 0, y: kFitWidth(152)-kFitWidth(35), width: SCREEN_WIDHT, height: self.selfHeight-kFitWidth(152)+kFitWidth(35)-kFitWidth(84)-WHUtils().getBottomSafeAreaHeight()), style: .plain)
         vi.delegate = self
         vi.dataSource = self
         vi.separatorStyle = .none
@@ -54,43 +71,93 @@ class QuestionnaireEventsVM: UIView {
         
         return vi
     }()
-    lazy var coverView : UIImageView = {
-        let vi = UIImageView.init(frame: CGRect.init(x: 0, y: self.selfHeight, width: SCREEN_WIDHT, height: kFitWidth(40)))
-        vi.setImgLocal(imgName: "bottom_cover_img")
-        
+    
+    lazy var bottomGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
         return vi
     }()
-    lazy var coverTopView : UIImageView = {
-        let vi = UIImageView()
-        vi.setImgLocal(imgName: "bottom_cover_img")
-        vi.transform = CGAffineTransform(scaleX: -1, y: -1)
-        vi.isHidden = true
-        
+    lazy var topGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
         return vi
     }()
+    lazy var bottomGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
+    }()
+    lazy var topGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
+    }()
+//    lazy var coverView : UIImageView = {
+//        let vi = UIImageView.init(frame: CGRect.init(x: 0, y: self.selfHeight, width: SCREEN_WIDHT, height: kFitWidth(40)))
+//        vi.setImgLocal(imgName: "bottom_cover_img")
+//        
+//        return vi
+//    }()
+//    lazy var coverTopView : UIImageView = {
+//        let vi = UIImageView()
+//        vi.setImgLocal(imgName: "bottom_cover_img")
+//        vi.transform = CGAffineTransform(scaleX: -1, y: -1)
+//        vi.isHidden = true
+//        
+//        return vi
+//    }()
 }
 
 extension QuestionnaireEventsVM{
     func initUI() {
         addSubview(titleLabel)
         addSubview(tableView)
-        addSubview(coverView)
-        addSubview(coverTopView)
+//        addSubview(coverView)
+//        addSubview(coverTopView)
+        addSubview(topGradientView)
+        addSubview(bottomGradientView)
+        bottomGradientView.layer.addSublayer(bottomGradientLayer)
+        topGradientView.layer.addSublayer(topGradientLayer)
         
         titleLabel.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
             make.top.equalTo(kFitWidth(60))
             make.height.equalTo(kFitWidth(72))
         }
-        coverTopView.snp.makeConstraints { make in
-            make.left.width.equalToSuperview()
-            make.height.equalTo(kFitWidth(40))
-            make.top.equalTo(self.tableView)
+        
+        topGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(tableView.snp.top)
+            make.height.equalTo(kFitWidth(35))
         }
+        bottomGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(tableView).offset(kFitWidth(4))
+            make.height.equalTo(kFitWidth(35))
+//            make.top.equalTo(scrollView.snp.bottom).offset(kFitWidth(-35))
+        }
+//        coverTopView.snp.makeConstraints { make in
+//            make.left.width.equalToSuperview()
+//            make.height.equalTo(kFitWidth(40))
+//            make.top.equalTo(self.tableView)
+//        }
     }
 }
 
 extension QuestionnaireEventsVM:UITableViewDataSource,UITableViewDelegate{
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dataArray.count
     }
@@ -109,9 +176,9 @@ extension QuestionnaireEventsVM:UITableViewDataSource,UITableViewDelegate{
         }
         if self.selectedIndex < 0 && self.selectedBlock != nil{
             self.selectedBlock!()
-            UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-                self.coverView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.tableView.frame.maxY-kFitWidth(20))
-            }
+//            UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
+//                self.coverView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: self.tableView.frame.maxY-kFitWidth(20))
+//            }
         }
         self.selectedIndex = indexPath.row
         self.tableView.reloadData()
@@ -120,28 +187,36 @@ extension QuestionnaireEventsVM:UITableViewDataSource,UITableViewDelegate{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return kFitWidth(82)
     }
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        self.coverTopView.isHidden = false
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return kFitWidth(35)
     }
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            // 滑动已经结束且没有减速
-            // 在这里进行相应的操作
-            DLLog(message: "\(scrollView.contentOffset.y)")
-            if scrollView.contentOffset.y > kFitWidth(40){
-                self.coverTopView.isHidden = false
-            }else{
-                self.coverTopView.isHidden = true
-            }
-        }
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(35)))
+        vi.backgroundColor = .clear
+        return vi
     }
-     
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        DLLog(message: "\(scrollView.contentOffset.y)")
-        if scrollView.contentOffset.y > kFitWidth(40){
-            self.coverTopView.isHidden = false
-        }else{
-            self.coverTopView.isHidden = true
-        }
-    }
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        self.coverTopView.isHidden = false
+//    }
+//    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+//        if !decelerate {
+//            // 滑动已经结束且没有减速
+//            // 在这里进行相应的操作
+//            DLLog(message: "\(scrollView.contentOffset.y)")
+//            if scrollView.contentOffset.y > kFitWidth(40){
+//                self.coverTopView.isHidden = false
+//            }else{
+//                self.coverTopView.isHidden = true
+//            }
+//        }
+//    }
+//     
+//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+//        DLLog(message: "\(scrollView.contentOffset.y)")
+//        if scrollView.contentOffset.y > kFitWidth(40){
+//            self.coverTopView.isHidden = false
+//        }else{
+//            self.coverTopView.isHidden = true
+//        }
+//    }
 }

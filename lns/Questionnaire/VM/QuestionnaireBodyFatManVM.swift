@@ -18,11 +18,9 @@ class QuestionnaireBodyFatManVM: UIView {
     
     var vmDataArray = NSMutableArray()
     
-    
-    
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
-        self.backgroundColor = .COLOR_BG_WHITE
+        self.backgroundColor = .COLOR_BG_F2
         self.isUserInteractionEnabled = true
         self.selfHeight = SCREEN_HEIGHT-frame.origin.y
         self.clipsToBounds = true
@@ -31,6 +29,23 @@ class QuestionnaireBodyFatManVM: UIView {
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        topGradientLayer.frame = topGradientView.bounds
+        bottomGradientLayer.frame = bottomGradientView.bounds
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        bottomGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
     }
     lazy var dataArray : NSArray = {
         return [["data":"3%~5%","imgUrl":"body_fat_man_1"],
@@ -75,27 +90,59 @@ class QuestionnaireBodyFatManVM: UIView {
     }()
     lazy var scrollView : UIScrollView = {
         let vi = UIScrollView()
-        vi.frame = CGRect.init(x: 0, y: kFitWidth(162), width: SCREEN_WIDHT, height: self.selfHeight-kFitWidth(162)-kFitWidth(12)-WHUtils().getBottomSafeAreaHeight())
+//        vi.frame = CGRect.init(x: 0, y: kFitWidth(162), width: SCREEN_WIDHT, height: self.selfHeight-kFitWidth(162)-kFitWidth(12)-WHUtils().getBottomSafeAreaHeight())
         vi.backgroundColor = .clear
         vi.showsVerticalScrollIndicator = false
         vi.delegate = self
         
         return vi
     }()
-    lazy var coverView : UIImageView = {
-        let vi = UIImageView()
-        vi.setImgLocal(imgName: "bottom_cover_img")
-        
+    lazy var bottomGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
         return vi
     }()
-    lazy var coverTopView : UIImageView = {
-        let vi = UIImageView()
-        vi.setImgLocal(imgName: "bottom_cover_img")
-        vi.transform = CGAffineTransform(scaleX: -1, y: -1)
-        vi.isHidden = true
-        
+    lazy var topGradientView: UIView = {
+        let vi = UIView()
+        vi.isUserInteractionEnabled = false
         return vi
     }()
+    lazy var bottomGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
+    }()
+    lazy var topGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+        layer.locations = [0, 1]
+        return layer
+    }()
+//    lazy var coverView : UIImageView = {
+//        let vi = UIImageView()
+//        vi.setImgLocal(imgName: "bottom_cover_img")
+//        
+//        return vi
+//    }()
+//    lazy var coverTopView : UIImageView = {
+//        let vi = UIImageView()
+//        vi.setImgLocal(imgName: "bottom_cover_img")
+//        vi.transform = CGAffineTransform(scaleX: -1, y: -1)
+//        vi.isHidden = true
+//        
+//        return vi
+//    }()
 }
 
 extension QuestionnaireBodyFatManVM{
@@ -119,8 +166,12 @@ extension QuestionnaireBodyFatManVM{
         addSubview(scrollView)
         
         updateScrollView()
-        addSubview(coverView)
-        addSubview(coverTopView)
+//        addSubview(coverView)
+//        addSubview(coverTopView)
+        addSubview(topGradientView)
+        addSubview(bottomGradientView)
+        bottomGradientView.layer.addSublayer(bottomGradientLayer)
+        topGradientView.layer.addSublayer(topGradientLayer)
         
         setConstrait()
     }
@@ -135,16 +186,33 @@ extension QuestionnaireBodyFatManVM{
             make.top.equalTo(kFitWidth(82))
             make.height.equalTo(kFitWidth(26))
         }
-        coverView.snp.makeConstraints { make in
-            make.left.width.equalToSuperview()
-            make.height.equalTo(kFitWidth(40))
-            make.bottom.equalTo(self.scrollView)
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(tipsButton.snp.bottom)//.offset(kFitWidth(24))
+            make.left.right.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-WHUtils().getBottomSafeAreaHeight())
+//            make.bottom.equalToSuperview().offset(-(nextButtonTopOffset + kFitWidth(8)))
         }
-        coverTopView.snp.makeConstraints { make in
-            make.left.width.equalToSuperview()
-            make.height.equalTo(kFitWidth(40))
-            make.top.equalTo(self.scrollView).offset(kFitWidth(-5))
+        topGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(scrollView.snp.top)
+            make.height.equalTo(kFitWidth(35))
         }
+        bottomGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(scrollView)
+            make.height.equalTo(kFitWidth(35))
+//            make.top.equalTo(scrollView.snp.bottom).offset(kFitWidth(-35))
+        }
+//        coverView.snp.makeConstraints { make in
+//            make.left.width.equalToSuperview()
+//            make.height.equalTo(kFitWidth(40))
+//            make.bottom.equalTo(self.scrollView)
+//        }
+//        coverTopView.snp.makeConstraints { make in
+//            make.left.width.equalToSuperview()
+//            make.height.equalTo(kFitWidth(40))
+//            make.top.equalTo(self.scrollView).offset(kFitWidth(-5))
+//        }
     }
     func updateScrollView() {
         for vi in scrollView.subviews{
@@ -158,7 +226,7 @@ extension QuestionnaireBodyFatManVM{
         let itemW = SCREEN_WIDHT/CGFloat(colNum)
         var offsetY = kFitWidth(0)
         for i in 0..<array.count{
-            let vm = QuestionnaireBodyFatItemVM.init(frame: CGRect.init(x: itemW*CGFloat(i%colNum), y: QuestionnaireBodyFatItemVM().selfHeight*CGFloat(i/colNum), width: 0, height: 0))
+            let vm = QuestionnaireBodyFatItemVM.init(frame: CGRect.init(x: itemW*CGFloat(i%colNum), y: QuestionnaireBodyFatItemVM().selfHeight*CGFloat(i/colNum)+kFitWidth(35), width: 0, height: 0))
             scrollView.addSubview(vm)
             offsetY = vm.frame.maxY
             
@@ -174,12 +242,12 @@ extension QuestionnaireBodyFatManVM{
                 if self.selectIndex == -1 && self.selectedBlock != nil{
                     self.selectedBlock!()
                     
-                    self.scrollView.frame = CGRect.init(x: 0, y: kFitWidth(162), width: SCREEN_WIDHT, height: self.selfHeight-kFitWidth(230)-WHUtils().getBottomSafeAreaHeight())
-                    self.coverView.snp.remakeConstraints { make in
-                        make.left.width.equalToSuperview()
-                        make.height.equalTo(kFitWidth(40))
-                        make.bottom.equalTo(self.scrollView.snp.bottom)
-                    }
+//                    self.scrollView.frame = CGRect.init(x: 0, y: kFitWidth(162), width: SCREEN_WIDHT, height: self.selfHeight-kFitWidth(230)-WHUtils().getBottomSafeAreaHeight())
+//                    self.coverView.snp.remakeConstraints { make in
+//                        make.left.width.equalToSuperview()
+//                        make.height.equalTo(kFitWidth(40))
+//                        make.bottom.equalTo(self.scrollView.snp.bottom)
+//                    }
                 }
                 self.selectIndex = i
                 self.refreshSelectStatus()
@@ -193,28 +261,28 @@ extension QuestionnaireBodyFatManVM{
 }
 
 extension QuestionnaireBodyFatManVM:UIScrollViewDelegate{
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        self.coverTopView.isHidden = false
-    }
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            // 滑动已经结束且没有减速
-            // 在这里进行相应的操作
-            DLLog(message: "\(scrollView.contentOffset.y)")
-            if scrollView.contentOffset.y > kFitWidth(40){
-                self.coverTopView.isHidden = false
-            }else{
-                self.coverTopView.isHidden = true
-            }
-        }
-    }
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+////        self.coverTopView.isHidden = false
+//    }
+//    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+//        if !decelerate {
+//            // 滑动已经结束且没有减速
+//            // 在这里进行相应的操作
+//            DLLog(message: "\(scrollView.contentOffset.y)")
+//            if scrollView.contentOffset.y > kFitWidth(40){
+//                self.coverTopView.isHidden = false
+//            }else{
+//                self.coverTopView.isHidden = true
+//            }
+//        }
+//    }
      
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        DLLog(message: "\(scrollView.contentOffset.y)")
-        if scrollView.contentOffset.y > kFitWidth(40){
-            self.coverTopView.isHidden = false
-        }else{
-            self.coverTopView.isHidden = true
-        }
-    }
+//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+//        DLLog(message: "\(scrollView.contentOffset.y)")
+//        if scrollView.contentOffset.y > kFitWidth(40){
+//            self.coverTopView.isHidden = false
+//        }else{
+//            self.coverTopView.isHidden = true
+//        }
+//    }
 }

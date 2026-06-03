@@ -186,7 +186,7 @@ extension QuestionnaireGoalVM{
 
         bottomGradientView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.bottom.equalTo(tableView.snp.bottom)
+            make.bottom.equalTo(tableView.snp.bottom).offset(kFitWidth(4))
             make.height.equalTo(kFitWidth(36))
         }
 
