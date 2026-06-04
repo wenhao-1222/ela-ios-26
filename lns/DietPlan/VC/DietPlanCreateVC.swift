@@ -1779,13 +1779,7 @@ extension DietPlanCreateVC: UIGestureRecognizerDelegate, UIScrollViewDelegate {
             return
         }
         
-        updateInteractivePopGestureBlocked(false)
-        fd_forceDisableInteractivePopGesture = !shouldAllowFullscreenPop
-        fd_interactivePopDisabled = !shouldAllowFullscreenPop
-        navigationController?.fd_interactivePopDisabled = !shouldAllowFullscreenPop
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = shouldAllowFullscreenPop
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = shouldAllowFullscreenPop
-        canEdgeBack = shouldAllowFullscreenPop
+        updateInteractivePopGestureBlocked(!shouldAllowFullscreenPop)
         isFullscreenPopGestureEnabledForInitialStep = shouldAllowFullscreenPop
         fullscreenPopGestureNavigationController = navigationController
         hasConfiguredFullscreenPopGesture = true

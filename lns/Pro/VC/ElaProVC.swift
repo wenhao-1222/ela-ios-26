@@ -240,12 +240,7 @@ extension ElaProVC{
     }
 
     private func disableFullscreenPopGesture() {
-        canEdgeBack = false
-        fd_forceDisableInteractivePopGesture = true
-        fd_interactivePopDisabled = true
-        navigationController?.fd_interactivePopDisabled = true
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        updateInteractivePopGestureBlocked(true)
     }
 
     private func prepareStepScrollTransition(to targetOffset: CGPoint, animated: Bool) {
@@ -344,10 +339,6 @@ extension ElaProVC{
     private func applyInitialDisplayMode() {
         if showPriceOnly {
             currentIndex = 4
-            progressVm.isHidden = true
-            planVm.isHidden = true
-            readyVm.isHidden = true
-            transformVm.isHidden = true
             priceVm.isHidden = false
             priceVm.frame.origin.x = 0
             naviVm.alpha = 1
@@ -386,12 +377,17 @@ extension ElaProVC{
         purchaseLoadingMaskView.addSubview(purchaseLoadingIndicator)
 
         scrollViewBase.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
-        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 5, height: 0)
-        scrollViewBase.addSubview(progressVm)
-        scrollViewBase.addSubview(planVm)
-        scrollViewBase.addSubview(readyVm)
-        scrollViewBase.addSubview(transformVm)
-        scrollViewBase.addSubview(priceVm)
+        if showPriceOnly {
+            scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT, height: 0)
+            scrollViewBase.addSubview(priceVm)
+        } else {
+            scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 5, height: 0)
+            scrollViewBase.addSubview(progressVm)
+            scrollViewBase.addSubview(planVm)
+            scrollViewBase.addSubview(readyVm)
+            scrollViewBase.addSubview(transformVm)
+            scrollViewBase.addSubview(priceVm)
+        }
         
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
@@ -545,19 +541,8 @@ extension ElaProVC{
 
 extension UIViewController {
     func pushElaProVCWhenReady(_ vc: ElaProVC, animated: Bool = true, completion: (() -> Void)? = nil) {
-        guard VIPModel.shared.status != .valid else {
-            navigationController?.pushViewController(vc, animated: animated)
-            completion?()
-            return
-        }
-
-        MCToast.mc_loading(duration: 8, respond: .forbid)
-        ElaProPriceVM.preloadProducts(bizType: vc.priceBizType) { [weak self, weak vc] _ in
-            MCToast.mc_remove()
-            guard let self = self, let vc = vc else { return }
-            self.navigationController?.pushViewController(vc, animated: animated)
-            completion?()
-        }
+        navigationController?.pushViewController(vc, animated: animated)
+        completion?()
     }
 }
 

@@ -94,8 +94,14 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateInteractivePopGestureBlocked(true)
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        updateInteractivePopGestureBlocked(true)
         trackGuidanceV2IntroPageIfNeeded()
 //        topBackgroundView.startAnimatingIfNeeded()
 //        if currentStep == .intro {
@@ -105,6 +111,7 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        restoreFullscreenInteractivePopGesture()
 //        topBackgroundView.pauseAnimating()
         topContentVM.stopBubbleFloatingAnimation()
     }

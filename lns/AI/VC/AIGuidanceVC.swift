@@ -75,11 +75,7 @@ class AIGuidanceVC: WHBaseViewVC {
         isScrollBackInteractionInProgress = false
         backSwipeBackgroundSourceStep = nil
         scrollViewBase.isScrollEnabled = true
-        fd_forceDisableInteractivePopGesture = false
-        fd_interactivePopDisabled = false
-        navigationController?.fd_interactivePopDisabled = false
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        restoreFullscreenInteractivePopGesture()
     }
 
     lazy var naviVm: DietPlanCreateNaviVM = {
@@ -284,12 +280,7 @@ extension AIGuidanceVC{
     func updatePopGestureState() {
         configureScrollPanFailureRequirementIfNeeded()
         let shouldAllowFullscreenPop = currentIndex == 0 && !isIntroVisible
-        canEdgeBack = shouldAllowFullscreenPop
-        fd_forceDisableInteractivePopGesture = !shouldAllowFullscreenPop
-        fd_interactivePopDisabled = !shouldAllowFullscreenPop
-        navigationController?.fd_interactivePopDisabled = !shouldAllowFullscreenPop
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = shouldAllowFullscreenPop
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = shouldAllowFullscreenPop
+        updateInteractivePopGestureBlocked(!shouldAllowFullscreenPop)
     }
 
     func configureScrollPanFailureRequirementIfNeeded() {

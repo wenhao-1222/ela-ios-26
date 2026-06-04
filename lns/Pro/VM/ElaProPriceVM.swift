@@ -2080,7 +2080,7 @@ extension ElaProPriceVM{
     }
 
     func sendProProductListRequest() {
-        Self.requestProductSnapshot(bizType: bizType, isPurchased: isPurchased) { [weak self] success in
+        Self.preloadProducts(bizType: bizType, isPurchased: isPurchased) { [weak self] success in
             guard let self = self else { return }
             if success, self.applyCachedProductSnapshotIfAvailable() {
                 return
