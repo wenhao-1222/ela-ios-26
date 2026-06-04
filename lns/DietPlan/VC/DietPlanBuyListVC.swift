@@ -297,15 +297,20 @@ extension DietPlanBuyListVC{
     func updateSelectStatus(indexPath: IndexPath) {
         if self.foodsArray.count > indexPath.row{
             let dict = NSMutableDictionary(dictionary: self.foodsArray[indexPath.row]as? NSDictionary ?? [:])
+            let isChecked: Bool
             if dict.stringValueForKey(key: "checked") == "0"{
                 dict.setValue("1", forKey: "checked")
+                isChecked = true
                 self.sendFoodsCheckRequest(check: "1", id: dict.stringValueForKey(key: "id"))
             }else{
                 dict.setValue("0", forKey: "checked")
+                isChecked = false
                 self.sendFoodsCheckRequest(check: "0", id: dict.stringValueForKey(key: "id"))
             }
             self.foodsArray.replaceObject(at: indexPath.row, with: dict)
-            tableView.reloadRows(at: [indexPath], with: .none)
+            if let cell = tableView.cellForRow(at: indexPath) as? DietPlanBuyListFoodsCell {
+                cell.updateCheckState(isChecked)
+            }
             tableView.deselectRow(at: indexPath, animated: false)
         }
     }

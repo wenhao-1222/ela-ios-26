@@ -6,6 +6,48 @@
 	<integer>11</integer>
 	<key>logs</key>
 	<dict>
+		<key>269E9B34-418F-4759-945F-DF5D366BE0E9</key>
+		<dict>
+			<key>className</key>
+			<string>IDECommandLineBuildLog</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
+			<key>fileName</key>
+			<string>269E9B34-418F-4759-945F-DF5D366BE0E9.xcactivitylog</string>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>4</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>75</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>lns project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>lns</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Building workspace lns with scheme lns and configuration Debug</string>
+			<key>timeStartedRecording</key>
+			<real>802247496.50300002</real>
+			<key>timeStoppedRecording</key>
+			<real>802247548.55403996</real>
+			<key>title</key>
+			<string>Building workspace lns with scheme lns and configuration Debug</string>
+			<key>uniqueIdentifier</key>
+			<string>269E9B34-418F-4759-945F-DF5D366BE0E9</string>
+		</dict>
 		<key>4CE81ACF-3F24-40D4-B908-6BDEF4630310</key>
 		<dict>
 			<key>className</key>
@@ -47,48 +89,6 @@
 			<string>Building workspace lns with scheme lns and configuration Debug</string>
 			<key>uniqueIdentifier</key>
 			<string>4CE81ACF-3F24-40D4-B908-6BDEF4630310</string>
-		</dict>
-		<key>A2693072-3FE1-4140-B956-F1351BA54FF6</key>
-		<dict>
-			<key>className</key>
-			<string>IDECommandLineBuildLog</string>
-			<key>documentTypeString</key>
-			<string>&lt;nil&gt;</string>
-			<key>domainType</key>
-			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
-			<key>fileName</key>
-			<string>A2693072-3FE1-4140-B956-F1351BA54FF6.xcactivitylog</string>
-			<key>hasPrimaryLog</key>
-			<true/>
-			<key>primaryObservable</key>
-			<dict>
-				<key>highLevelStatus</key>
-				<string>E</string>
-				<key>totalNumberOfAnalyzerIssues</key>
-				<integer>0</integer>
-				<key>totalNumberOfErrors</key>
-				<integer>4</integer>
-				<key>totalNumberOfTestFailures</key>
-				<integer>0</integer>
-				<key>totalNumberOfWarnings</key>
-				<integer>53</integer>
-			</dict>
-			<key>schemeIdentifier-containerName</key>
-			<string>lns project</string>
-			<key>schemeIdentifier-schemeName</key>
-			<string>lns</string>
-			<key>schemeIdentifier-sharedScheme</key>
-			<integer>1</integer>
-			<key>signature</key>
-			<string>Building workspace lns with scheme lns and configuration Debug</string>
-			<key>timeStartedRecording</key>
-			<real>801989144.89886498</real>
-			<key>timeStoppedRecording</key>
-			<real>801989156.96408296</real>
-			<key>title</key>
-			<string>Building workspace lns with scheme lns and configuration Debug</string>
-			<key>uniqueIdentifier</key>
-			<string>A2693072-3FE1-4140-B956-F1351BA54FF6</string>
 		</dict>
 	</dict>
 </dict>

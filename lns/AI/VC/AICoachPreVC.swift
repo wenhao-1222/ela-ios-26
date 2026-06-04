@@ -29,8 +29,14 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private let bgImagePixelSize = CGSize(width: 1500.0, height: 3248.0)
     private let bgCircleCenterYPixels: CGFloat = 1058.0
     private let entranceAnimationDurationA: TimeInterval = 0.75
-    private let entranceAnimationDurationB: TimeInterval = 0.35
+    private let entranceAnimationDurationB: TimeInterval = 0.75
     private let entranceAnimationDurationC: TimeInterval = 0.7
+    // reportCount = 1 且 latestReport.reportStatus = 2 时，readyMessageVM 渐现时长，可按视觉节奏调节。
+    private let firstReportReadyMessageFadeDuration: TimeInterval = 0.32
+    // reportCount = 1 且 latestReport.reportStatus = 2 时，feedbackGlassVM（不含 feedbackButton）渐现时长，可按视觉节奏调节。
+    private let firstReportFeedbackGlassFadeDuration: TimeInterval = 0.32
+    // reportCount = 1 且 latestReport.reportStatus = 2 时，feedbackButton 最后单独渐现时长，可按视觉节奏调节。
+    private let firstReportFeedbackButtonFadeDuration: TimeInterval = 0.28
     
 //    private lazy var preDaysVM: AICoachPreDaysVM = {
 //        let view = AICoachPreDaysVM(frame: .zero)
@@ -375,7 +381,9 @@ extension AICoachPreVC{
             let code = responseObject["code"] as? Int ?? -1
             guard code == 200 else {
                 if code == 403 {
-                    self.elaExpiredAlertVm.showSelf()
+                    self.showVMWithFade(self.elaExpiredAlertVm) {
+                        self.elaExpiredAlertVm.showSelf()
+                    }
                 }
                 return
             }
@@ -544,7 +552,9 @@ private extension AICoachPreVC {
         guard isUpdatingAICoachProfile == false else { return }
         let selectedValue = field == .goal ? userGoal : aiCoachIntensityPreference
         infoSelectPopupVM.update(field: field, selectedValue: selectedValue)
-        infoSelectPopupVM.showSelf()
+        showVMWithFade(infoSelectPopupVM) {
+            infoSelectPopupVM.showSelf()
+        }
     }
 
     func updateAICoachProfile(field: AICoachPreInfoEditableField, value: Int) {
@@ -641,8 +651,7 @@ private extension AICoachPreVC {
 //        preInfoVM.prepareTextEntranceAnimation()
         readyMessageVM.prepareEntranceAnimation()
         feedbackGlassVM.prepareEntranceAnimation()
-        infoSelectPopupVM.alpha = 1
-        infoSelectPopupVM.transform = .identity
+        applyHiddenPopupPresentationState()
 //        nextButton.isHidden = true
 //        nextButton.alpha = 0
 //        nextButton.transform = initialTransform
@@ -685,6 +694,11 @@ private extension AICoachPreVC {
 //        preInfoVM.playEntranceAnimation(duration: entranceAnimationDurationA) { [weak self] in
 //            self?.playMessageAndButtonEntranceAnimation()
 //        }
+        guard shouldPlayFirstReportReadyFeedbackButtonFade == false else {
+            playFirstReportReadyFeedbackButtonFade()
+            return
+        }
+
         readyMessageVM.playEntranceAnimation(duration: entranceAnimationDurationA)
         feedbackGlassVM.playEntranceAnimation(duration: entranceAnimationDurationA)
     }
@@ -768,7 +782,12 @@ private extension AICoachPreVC {
 //                self.nextButton.isHidden = true
 //            }
 //        }
-        feedbackGlassVM.applyFinalPresentationState()
+        if animated {
+            feedbackGlassVM.applyFeedbackButtonVisibleState()
+            fadeInVMIfNeeded(feedbackGlassVM)
+        } else {
+            feedbackGlassVM.applyFinalPresentationState()
+        }
     }
 
     func syncVisiblePresentationStateIfNeeded(force: Bool = false) {
@@ -783,12 +802,102 @@ private extension AICoachPreVC {
 //        aiCoachOrbContainerView.transform = .identity
 //        preDaysVM.applyFinalPresentationState()
 //        preInfoVM.applyFinalPresentationState()
-        readyMessageVM.applyFinalPresentationState()
-        feedbackGlassVM.applyFinalPresentationState()
-        infoSelectPopupVM.alpha = 1
-        infoSelectPopupVM.transform = .identity
-        updateNextButtonVisibility(animated: false)
+        applyReadyAndFeedbackPresentationState(animated: true)
+        applyHiddenPopupPresentationState()
 //        nextButton.transform = .identity
+    }
+
+    func applyReadyAndFeedbackPresentationState(animated: Bool) {
+        guard animated else {
+            readyMessageVM.applyFinalPresentationState()
+            updateNextButtonVisibility(animated: false)
+            return
+        }
+
+        guard shouldPlayFirstReportReadyFeedbackButtonFade == false else {
+            playFirstReportReadyFeedbackButtonFade()
+            return
+        }
+
+        let shouldFadeReadyMessage = readyMessageVM.alpha < 1
+        let shouldFadeFeedback = feedbackGlassVM.alpha < 1
+        readyMessageVM.transform = .identity
+        feedbackGlassVM.transform = .identity
+        feedbackGlassVM.applyFeedbackButtonVisibleState()
+
+        if shouldFadeReadyMessage {
+            fadeInVMIfNeeded(readyMessageVM)
+        } else {
+            readyMessageVM.applyFinalPresentationState()
+        }
+
+        if shouldFadeFeedback {
+            fadeInVMIfNeeded(feedbackGlassVM)
+        } else {
+            updateNextButtonVisibility(animated: false)
+        }
+    }
+
+    func playFirstReportReadyFeedbackButtonFade() {
+        view.layoutIfNeeded()
+        readyMessageVM.layer.removeAllAnimations()
+        feedbackGlassVM.layer.removeAllAnimations()
+        readyMessageVM.alpha = 0
+        readyMessageVM.transform = .identity
+        feedbackGlassVM.alpha = 0
+        feedbackGlassVM.transform = .identity
+        feedbackGlassVM.prepareFeedbackButtonHiddenState()
+
+        UIView.animate(withDuration: firstReportReadyMessageFadeDuration,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState]) {
+            self.readyMessageVM.alpha = 1
+        } completion: { _ in
+            UIView.animate(withDuration: self.firstReportFeedbackGlassFadeDuration,
+                           delay: 0,
+                           options: [.curveEaseInOut, .beginFromCurrentState]) {
+                self.feedbackGlassVM.alpha = 1
+            } completion: { _ in
+                self.feedbackGlassVM.playFeedbackButtonFadeIn(duration: self.firstReportFeedbackButtonFadeDuration)
+            }
+        }
+    }
+
+    func applyHiddenPopupPresentationState() {
+        infoSelectPopupVM.alpha = infoSelectPopupVM.isHidden ? 0 : 1
+        infoSelectPopupVM.transform = .identity
+        katchAlertVm.alpha = katchAlertVm.isHidden ? 0 : 1
+        katchAlertVm.transform = .identity
+        elaExpiredAlertVm.alpha = elaExpiredAlertVm.isHidden ? 0 : 1
+        elaExpiredAlertVm.transform = .identity
+    }
+
+    func showVMWithFade(_ vm: UIView, show: () -> Void) {
+        vm.layer.removeAllAnimations()
+        vm.alpha = 0
+        show()
+        UIView.animate(withDuration: 0.28,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState]) {
+            vm.alpha = 1
+        }
+    }
+
+    func fadeInVMIfNeeded(_ vm: UIView) {
+        let shouldAnimate = vm.alpha < 1
+        vm.layer.removeAllAnimations()
+        vm.transform = .identity
+        guard shouldAnimate else {
+            vm.alpha = 1
+            return
+        }
+
+        vm.alpha = 0
+        UIView.animate(withDuration: 0.32,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState]) {
+            vm.alpha = 1
+        }
     }
 
     func shouldAnimateProgressHighlights(reportAfterDays: Int) -> Bool {
@@ -823,6 +932,13 @@ private extension AICoachPreVC {
 
     var shouldPlayEntranceAnimation: Bool {
         shouldPlayFirstEntryAnimation || currentReportStatus == 1 || currentReportStatus == 2 || currentReportStatus == 4
+    }
+
+    var shouldPlayFirstReportReadyFeedbackButtonFade: Bool {
+        //判断为首报    且  未读   ，控制渐现的顺序
+        //2026年06月04日17:11:52  不需要特殊处理，都是一起显示
+//        dataDict.doubleValueForKey(key: "reportCount") == 1 && currentReportStatus == 2
+        false
     }
 }
 

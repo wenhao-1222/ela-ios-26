@@ -96,12 +96,12 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        updateInteractivePopGestureBlocked(true)
+        enforceFullscreenPopGestureDisabled()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        updateInteractivePopGestureBlocked(true)
+        enforceFullscreenPopGestureDisabled()
         trackGuidanceV2IntroPageIfNeeded()
 //        topBackgroundView.startAnimatingIfNeeded()
 //        if currentStep == .intro {
@@ -184,6 +184,28 @@ private extension GuidanceProPurchasedVC {
         priceVm.isHidden = true
         priceVm.alpha = 0
         priceVm.startLoadingIfNeeded()
+    }
+
+    func disableFullscreenPopGesture() {
+        navigationItem.hidesBackButton = true
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        canEdgeBack = false
+        fd_forceDisableInteractivePopGesture = true
+        fd_interactivePopDisabled = true
+        navigationController?.fd_interactivePopDisabled = true
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+    }
+
+    func enforceFullscreenPopGestureDisabled() {
+        disableFullscreenPopGesture()
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  self.navigationController?.topViewController === self else {
+                return
+            }
+            self.disableFullscreenPopGesture()
+        }
     }
 
     @objc func nextButtonTapAction() {

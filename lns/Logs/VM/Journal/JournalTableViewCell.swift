@@ -25,6 +25,7 @@ class JournalTableViewCell: UITableViewCell {
     var eatTapBlock:((Int)->())?
     var selectBlock:((Bool)->())?
     var selectMeaslIndexBlock:((Int)->())?
+    var foodsTapBlock:((NSDictionary, Int)->())?
     
     var isEdit = false
     var isSelect = false
@@ -423,46 +424,7 @@ extension JournalTableViewCell:UITableViewDelegate,UITableViewDataSource{
         if self.selectMeaslIndexBlock != nil{
             self.selectMeaslIndexBlock!(indexPath.row)
         }
-        
-        if dict["fname"]as? String ?? "" == "快速添加"{
-            let vc = FoodsCreateFastVC()
-            vc.setNumber(dict: dict)
-            self.controller.navigationController?.pushViewController(vc, animated: true)
-            return
-        }
-        
-        let foodsDict = dict["foods"]as? NSDictionary ?? [:]
-        
-        if foodsDict.stringValueForKey(key: "fname").count > 0{
-            let vc = FoodsMsgDetailsVC()
-            vc.sourceType = .logs
-            vc.foodsDetailDict = foodsDict
-            
-            DLLog(message: "\(dict)")
-            let qtyStr = dict.stringValueForKey(key: "qty")
-
-            if qtyStr == "" || qtyStr.count == 0 || qtyStr == "0.0" || qtyStr == "0"{
-                vc.specNum = dict.stringValueForKey(key: "weight")
-                vc.specName = "g"
-            }else{
-                vc.specNum = dict.stringValueForKey(key: "qty")
-                vc.specName = dict["spec"]as? String ?? "g"
-            }
-            
-            if (dict.stringValueForKey(key: "state") != "1" && dict.stringValueForKey(key: "state") != "1.0"){
-                vc.confirmButton.setTitle("用餐", for: .normal)
-            }else{
-                vc.confirmButton.setTitle("保存", for: .normal)
-            }
-            
-            self.controller.navigationController?.pushViewController(vc, animated: true)
-            DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
-                vc.deleteButton.isHidden = true
-            })
-//            vc.deleteButton.isHidden = true
-        }else{
-//            MCToast.mc_text("该食物已删除！",respond: .respond)
-        }
+        foodsTapBlock?(dict, indexPath.row)
     }
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if foodsArray.count <= indexPath.row{

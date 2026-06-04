@@ -29,6 +29,8 @@ class JournalVC: WHBaseViewVC {
     private var pendingLogsRefreshDates = Set<String>()
     private var pendingLogsRefreshNeedsFullReload = false
     private weak var activeFitnessCell: JounalCollectionCell?
+    private weak var activeRemarkCell: JounalCollectionCell?
+    private weak var activeCircleTemplateCell: JounalCollectionCell?
     
     lazy var tabbarCoverView: UIView = {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: SCREEN_HEIGHT-getTabbarHeight(), width: SCREEN_WIDHT, height: getTabbarHeight()))
@@ -404,6 +406,33 @@ class JournalVC: WHBaseViewVC {
             guard let self = self else { return }
             let cell = self.activeFitnessCell ?? self.currentVisibleJournalCell()
             cell?.updateFitnessTypes(arr)
+        }
+        return vm
+    }()
+    lazy var remarkAlertVm : LogsRemarkAlertVM = {
+        let vm = LogsRemarkAlertVM.init(frame: .zero)
+        vm.placeHoldLabel.text = "   "
+        vm.hideBlock = { [weak self] models, text in
+            guard let self = self else { return }
+            self.activeRemarkCell?.applyRemark(models: models, text: text)
+            self.activeRemarkCell = nil
+        }
+        return vm
+    }()
+    lazy var timeAlertVm: LogsTimeAlertVM = {
+        let vm = LogsTimeAlertVM.init(frame: .zero)
+        vm.setAlertBlock = { [weak self] in
+            let vc = LogsMealsAlertSetVC()
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
+        return vm
+    }()
+    lazy var changeCircleTempAlertVm: JournalCircleTemplateAlertVM = {
+        let vm = JournalCircleTemplateAlertVM.init(frame: .zero)
+        vm.confirmBlock = { [weak self] dict in
+            guard let self = self else { return }
+            self.activeCircleTemplateCell?.sendUpdateGoalRequest(dict: dict)
+            self.activeCircleTemplateCell = nil
         }
         return vm
     }()
@@ -1026,6 +1055,9 @@ extension JournalVC{
             appDelegate.getKeyWindow().addSubview(self.copyMealsAlertVm)
             appDelegate.getKeyWindow().addSubview(self.dateFilterAlertVm)
             appDelegate.getKeyWindow().addSubview(self.fitnessTypeAlertVm)
+            appDelegate.getKeyWindow().addSubview(self.remarkAlertVm)
+            appDelegate.getKeyWindow().addSubview(self.timeAlertVm)
+            appDelegate.getKeyWindow().addSubview(self.changeCircleTempAlertVm)
             appDelegate.getKeyWindow().addSubview(self.addFoodsAlertVm)
             appDelegate.getKeyWindow().addSubview(self.notifiAuthoriAlertVm)
             appDelegate.getKeyWindow().addSubview(self.activityAlertVm)
@@ -1051,8 +1083,8 @@ extension JournalVC:UICollectionViewDelegate,UICollectionViewDataSource{
         //        cell?.isVisible = isCellVisible(indexPath: indexPath)
         
         let day = daySourceArray[indexPath.row]as? String ?? "\(Date().nextDay(days: 0))"
-        cell?.setQueryDate(date: day,isEdit: self.isEdit)
         cell?.controller = self
+        cell?.setQueryDate(date: day,isEdit: self.isEdit)
         
         cell?.offsetChangeBlock = {(offsetY)in
             if day == self.queryDay{
@@ -1077,6 +1109,22 @@ extension JournalVC:UICollectionViewDelegate,UICollectionViewDataSource{
         }
         cell?.aiCoachTapBlock = {()in
             self.gotoAicoachAction()
+        }
+        cell?.showRemarkAlertBlock = { [weak self] cell in
+            guard let self = self else { return }
+            self.activeRemarkCell = cell
+            self.remarkAlertVm.updateContext(text: cell.currentDayMsg["notes"] as? String ?? "",
+                                             notesTag: cell.currentDayMsg.stringValueForKey(key: "notesTag"))
+            self.remarkAlertVm.showView()
+        }
+        cell?.showTimeAlertBlock = { [weak self] _, time, mealIndex, sdate in
+            self?.timeAlertVm.updateTime(time: time, mealsIndex: mealIndex, sDate: sdate)
+        }
+        cell?.showCircleTemplateAlertBlock = { [weak self] cell in
+            guard let self = self else { return }
+            self.activeCircleTemplateCell = cell
+            self.changeCircleTempAlertVm.sdate = cell.queryDay
+            self.changeCircleTempAlertVm.showSelf()
         }
         
         return cell ?? JounalCollectionCell()

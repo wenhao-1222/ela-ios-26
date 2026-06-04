@@ -129,6 +129,14 @@ class DietPlanBuyListFoodsCell: UITableViewCell {
                                      animated: false)
         [titleLabel, weightLabel, checkImageView].forEach { $0.hideSkeletonWithCrossfade() }
     }
+
+    func updateCheckState(_ isSelected: Bool, animated: Bool = true) {
+        checkImageView.hideSkeletonWithCrossfade()
+        checkImageView.setCheckState(isSelected,
+                                     checkedImageName: checkedImageName,
+                                     uncheckedImageName: uncheckedImageName,
+                                     animated: animated)
+    }
 }
 
 private extension DietPlanBuyListFoodsCell {

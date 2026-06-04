@@ -139,6 +139,9 @@ extension SportHistoryVC{
         
         let vc = SportVC()
         vc.isCanAdd = true
+        vc.sportAddedBlock = { [weak self] dateString in
+            self?.refreshData(dateString: dateString, animation: .middle)
+        }
 //        vc.sendCatogaryListRequest()
         self.navigationController?.pushViewController(vc, animated: true)
     }

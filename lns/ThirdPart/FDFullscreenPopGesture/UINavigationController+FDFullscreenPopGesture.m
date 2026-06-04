@@ -31,6 +31,99 @@
 
 @implementation _FDFullscreenPopGestureRecognizerDelegate
 
+- (BOOL)fd_isVisibleTableViewSwipeActionView:(UIView *)view
+{
+    if (view.hidden || view.alpha <= 0.01) {
+        return NO;
+    }
+    
+    NSString *className = NSStringFromClass(view.class);
+    if ([className containsString:@"SwipeAction"] ||
+        [className containsString:@"SwipeContainer"] ||
+        [className containsString:@"DeleteConfirmation"]) {
+        return !CGRectIsEmpty(view.bounds);
+    }
+    
+    return NO;
+}
+
+- (BOOL)fd_viewHasVisibleTableViewSwipeAction:(UIView *)view
+{
+    if ([self fd_isVisibleTableViewSwipeActionView:view]) {
+        return YES;
+    }
+    
+    for (UIView *subview in view.subviews) {
+        if ([self fd_viewHasVisibleTableViewSwipeAction:subview]) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
+- (UITableView *)fd_tableViewForView:(UIView *)view
+{
+    UIView *currentView = view;
+    while (currentView) {
+        if ([currentView isKindOfClass:UITableView.class]) {
+            return (UITableView *)currentView;
+        }
+        currentView = currentView.superview;
+    }
+    return nil;
+}
+
+- (BOOL)fd_cellContentIsShiftedForSwipeAction:(UITableViewCell *)cell
+{
+    return CGRectGetMinX(cell.contentView.frame) < -1.0 ||
+           cell.contentView.transform.tx < -1.0;
+}
+
+- (BOOL)fd_view:(UIView *)view
+hasVisibleSwipeActionIntersectingCell:(UITableViewCell *)cell
+    inTableView:(UITableView *)tableView
+{
+    if ([self fd_isVisibleTableViewSwipeActionView:view]) {
+        CGRect actionRect = [view convertRect:view.bounds toView:tableView];
+        CGRect cellRect = [cell convertRect:cell.bounds toView:tableView];
+        return CGRectIntersectsRect(actionRect, cellRect);
+    }
+    
+    for (UIView *subview in view.subviews) {
+        if ([self fd_view:subview hasVisibleSwipeActionIntersectingCell:cell inTableView:tableView]) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
+- (BOOL)fd_shouldLetTableViewCloseSwipeActionForGesture:(UIPanGestureRecognizer *)gestureRecognizer
+{
+    CGPoint location = [gestureRecognizer locationInView:gestureRecognizer.view];
+    UIView *hitView = [gestureRecognizer.view hitTest:location withEvent:nil];
+    UITableView *tableView = [self fd_tableViewForView:hitView];
+    if (!tableView) {
+        return NO;
+    }
+    
+    CGPoint tableLocation = [gestureRecognizer locationInView:tableView];
+    NSIndexPath *indexPath = [tableView indexPathForRowAtPoint:tableLocation];
+    if (!indexPath) {
+        return NO;
+    }
+    
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if (!cell) {
+        return NO;
+    }
+    
+    return [self fd_cellContentIsShiftedForSwipeAction:cell] ||
+           [self fd_viewHasVisibleTableViewSwipeAction:cell] ||
+           [self fd_view:tableView hasVisibleSwipeActionIntersectingCell:cell inTableView:tableView];
+}
+
 - (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)gestureRecognizer
 {
     // Ignore when no view controller is pushed into the navigation stack.
@@ -64,6 +157,10 @@
     BOOL isLeftToRight = [UIApplication sharedApplication].userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionLeftToRight;
     CGFloat multiplier = isLeftToRight ? 1 : - 1;
     if ((translation.x * multiplier) <= 0) {
+        return NO;
+    }
+    
+    if ([self fd_shouldLetTableViewCloseSwipeActionForGesture:gestureRecognizer]) {
         return NO;
     }
     

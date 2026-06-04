@@ -40,6 +40,9 @@ class JounalCollectionCell: UICollectionViewCell {
     var offsetChangeBlock:((CGFloat)->())?
     var updateFitnessBlock:((String)->())?
     var aiCoachTapBlock:(()->())?
+    var showRemarkAlertBlock:((JounalCollectionCell)->())?
+    var showTimeAlertBlock:((JounalCollectionCell, String, Int, String)->())?
+    var showCircleTemplateAlertBlock:((JounalCollectionCell)->())?
     
 //    /// 最大收缩偏移
 //    private let maxShrinkOffset: CGFloat = kFitWidth(120)
@@ -127,7 +130,7 @@ class JounalCollectionCell: UICollectionViewCell {
         vm.updateGoalBlock = {()in
             DLLog(message: "点击修改今日营养目标")
 //            if Date().daysDifference(from: self.queryDay) ?? 0 <= 0{
-                self.changeCircleTempAlertVm.showSelf()
+                self.showCircleTemplateAlertBlock?(self)
 //            }
         }
         return vm
@@ -155,7 +158,7 @@ class JounalCollectionCell: UICollectionViewCell {
         let vm = LogsRemarkNewVM.init(frame: CGRect.init(x: 0, y: kFitWidth(8), width: 0, height: 0))
         vm.tapBlock = {()in
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "cancelEditStatus"), object: nil)
-            self.remarkAlertVm.showView()
+            self.showRemarkAlertBlock?(self)
         }
         return vm
     }()
@@ -184,61 +187,10 @@ class JounalCollectionCell: UICollectionViewCell {
         }
         return vi
     }()
-    lazy var remarkAlertVm : LogsRemarkAlertVM = {
-        let vm = LogsRemarkAlertVM.init(frame: .zero)
-        vm.placeHoldLabel.text = "   "
-//        vm.remarkBlock = {(text)in
-//            let msgDict = NSMutableDictionary(dictionary: self.currentDayMsg)
-//            msgDict.setValue("\(text)", forKey: "notes")
-//            self.currentDayMsg = msgDict
-//            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .none)
-//            self.logsModel.isUpload = false
-//            LogsSQLiteManager.getInstance().insertNotes(sDate: self.queryDay, notestr: text)
-//            LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
-//            LogsSQLiteUploadManager().uploadLogsBySDate(sdate: self.queryDay)
-//        }
-        vm.hideBlock = {(models,text)in
-            let notesTagArray = NSMutableArray()
-            models.forEach {
-                if $0.hasValue == true{
-                    notesTagArray.add(["key":"\($0.name)","value":$0.valueArr])
-                }
-            }
-            DLLog(message: "notesTagArray:\(notesTagArray)")
-            let msgDict = NSMutableDictionary(dictionary: self.currentDayMsg)
-            msgDict.setValue("\(WHUtils.getJSONStringFromArray(array: notesTagArray))", forKey: "notesTag")
-            msgDict.setValue("\(text)", forKey: "notes")
-            self.currentDayMsg = msgDict
-//            self.tableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .none)
-            let remarkSection = self.remarkSectionIndex
-            self.tableView.reloadRows(at: [IndexPath(row: 0, section: remarkSection)], with: .none)
-            self.logsModel.isUpload = false
-            LogsSQLiteManager.getInstance().insertNotes(sDate: self.queryDay, notestr: text)
-            LogsSQLiteManager.getInstance().insertNotesTag(sDate: self.queryDay, notesTag: WHUtils.getJSONStringFromArray(array: notesTagArray))
-            LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
-            LogsSQLiteUploadManager().uploadLogsBySDate(sdate: self.queryDay)
-        }
-        return vm
-    }()
-    lazy var timeAlertVm: LogsTimeAlertVM = {
-        let vm = LogsTimeAlertVM.init(frame: .zero)
-        vm.setAlertBlock = {()in
-            let vc = LogsMealsAlertSetVC()
-            self.controller.navigationController?.pushViewController(vc, animated: true)
-        }
-        return vm
-    }()
     lazy var addFirstFoodsAlertVm: GuideAddFirstFoodsAlertVM = {
 //        let vm = GuideAddFirstFoodsAlertVM.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(160), y: self.goalVm.frame.maxY-kFitWidth(20)-WHUtils().getNavigationBarHeight(), width: 0, height: 0))
         let y = editHeadView.frame.maxY + kFitWidth(12) - kFitWidth(100) + kFitWidth(62)
         let vm = GuideAddFirstFoodsAlertVM.init(frame: CGRect(x: SCREEN_WIDHT - kFitWidth(160), y: y, width: 0, height: 0))
-        return vm
-    }()
-    lazy var changeCircleTempAlertVm: JournalCircleTemplateAlertVM = {
-        let vm = JournalCircleTemplateAlertVM.init(frame: .zero)
-        vm.confirmBlock = {(dict)in
-            self.sendUpdateGoalRequest(dict: dict)
-        }
         return vm
     }()
     
@@ -251,11 +203,6 @@ extension JounalCollectionCell{
         contentView.addSubview(tableView)
         contentView.addSubview(editHeadView)
         contentView.addSubview(addFirstFoodsAlertVm)
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        appDelegate.getKeyWindow().addSubview(remarkAlertVm)
-        
-        appDelegate.getKeyWindow().addSubview(timeAlertVm)
-        appDelegate.getKeyWindow().addSubview(changeCircleTempAlertVm)
         
 //        tableView.insertSubview(addFirstFoodsAlertVm, aboveSubview: editHeadView)
 //        tableView.bringSubviewToFront(addFirstFoodsAlertVm)
@@ -401,7 +348,6 @@ extension JounalCollectionCell{
     }
     func setQueryDate(date:String,isEdit:Bool) {
         self.goalVm.refreshHiddenSurveyButton()
-        self.changeCircleTempAlertVm.sdate = date
         
         goalOriginalHeight = goalVm.frame.height
         goalMinHeight = goalOriginalHeight - kFitWidth(60)
@@ -786,8 +732,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
             cell?.controller = UIApplication.topViewController() ?? self.controller//self.controller
             
             cell?.timeChangeBlock = {(time)in
-                self.timeAlertVm.showView()
-                self.timeAlertVm.updateTime(time: time, mealsIndex: indexPath.row+1,sDate:self.currentDayMsg.stringValueForKey(key: "sdate"))
+                self.showTimeAlertBlock?(self, time, indexPath.row + 1, self.currentDayMsg.stringValueForKey(key: "sdate"))
             }
             cell?.addBlock = {()in
                 self.selectMealsIndex = indexPath.row
@@ -815,6 +760,11 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
             cell?.selectMeaslIndexBlock = {(foodsIndex)in
                 self.selectMealsIndex = indexPath.row
                 self.selectFoodsIndex = foodsIndex
+            }
+            cell?.foodsTapBlock = {(dict, foodsIndex) in
+                self.selectMealsIndex = indexPath.row
+                self.selectFoodsIndex = foodsIndex
+                self.handleFoodsTap(dict: dict)
             }
             cell?.eatTapBlock = {(foodsIndex)in
                 self.selectMealsIndex = indexPath.row
@@ -870,7 +820,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                 
                 cell?.remarkBlock = {()in
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "cancelEditStatus"), object: nil)
-                    self.remarkAlertVm.showView()
+                    self.showRemarkAlertBlock?(self)
                 }
                 return cell ?? JournalRemarkTableViewCell()
             } else if indexPath.section == naturalDetailSectionIndex {
@@ -972,6 +922,73 @@ extension JounalCollectionCell {
     func handleAICoachTap() {
         aiCoachTapBlock?()
     }
+    
+    func applyRemark(models: [TAG_MODEL], text: String) {
+        let notesTagArray = NSMutableArray()
+        models.forEach {
+            if $0.hasValue == true {
+                notesTagArray.add(["key":"\($0.name)","value":$0.valueArr])
+            }
+        }
+        DLLog(message: "notesTagArray:\(notesTagArray)")
+        
+        let notesTag = WHUtils.getJSONStringFromArray(array: notesTagArray)
+        let msgDict = NSMutableDictionary(dictionary: self.currentDayMsg)
+        msgDict.setValue("\(notesTag)", forKey: "notesTag")
+        msgDict.setValue("\(text)", forKey: "notes")
+        self.currentDayMsg = msgDict
+        self.remarkVm.updateContent(text: text)
+        
+        if UserInfoModel.shared.abTestModel.diet_log_note == .A {
+            let remarkSection = self.remarkSectionIndex
+            self.tableView.reloadRows(at: [IndexPath(row: 0, section: remarkSection)], with: .none)
+        }
+        
+        self.logsModel.isUpload = false
+        LogsSQLiteManager.getInstance().insertNotes(sDate: self.queryDay, notestr: text)
+        LogsSQLiteManager.getInstance().insertNotesTag(sDate: self.queryDay, notesTag: notesTag)
+        LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
+        LogsSQLiteUploadManager().uploadLogsBySDate(sdate: self.queryDay)
+    }
+    
+    func handleFoodsTap(dict: NSDictionary) {
+        if dict["fname"] as? String ?? "" == "快速添加" {
+            let vc = FoodsCreateFastVC()
+            vc.setNumber(dict: dict)
+            controller.navigationController?.pushViewController(vc, animated: true)
+            return
+        }
+        
+        let foodsDict = dict["foods"] as? NSDictionary ?? [:]
+        
+        if foodsDict.stringValueForKey(key: "fname").count > 0 {
+            let vc = FoodsMsgDetailsVC()
+            vc.sourceType = .logs
+            vc.foodsDetailDict = foodsDict
+            
+            DLLog(message: "\(dict)")
+            let qtyStr = dict.stringValueForKey(key: "qty")
+            
+            if qtyStr == "" || qtyStr.count == 0 || qtyStr == "0.0" || qtyStr == "0" {
+                vc.specNum = dict.stringValueForKey(key: "weight")
+                vc.specName = "g"
+            } else {
+                vc.specNum = dict.stringValueForKey(key: "qty")
+                vc.specName = dict["spec"] as? String ?? "g"
+            }
+            
+            if dict.stringValueForKey(key: "state") != "1" && dict.stringValueForKey(key: "state") != "1.0" {
+                vc.confirmButton.setTitle("用餐", for: .normal)
+            } else {
+                vc.confirmButton.setTitle("保存", for: .normal)
+            }
+            
+            controller.navigationController?.pushViewController(vc, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                vc.deleteButton.isHidden = true
+            }
+        }
+    }
 }
 
 extension JounalCollectionCell{
@@ -1035,8 +1052,6 @@ extension JounalCollectionCell{
             self.tableView.reloadData()
         updateFirstFoodsAlert()
         self.remarkVm.updateContent(text: self.currentDayMsg["notes"]as? String ?? "")
-        self.remarkAlertVm.updateContext(text: self.currentDayMsg["notes"]as? String ?? "",
-                                         notesTag: self.currentDayMsg.stringValueForKey(key: "notesTag"))
 //        }
         
         if self.queryDay == Date().nextDay(days: 0){
@@ -1144,8 +1159,6 @@ extension JounalCollectionCell{
             goalVm.updateUI(dict: self.currentDayMsg,isUpload: false)
             LogsSQLiteUploadManager().saveNaturalData(dict: dict, isServerData: true)
             self.remarkVm.updateContent(text: self.currentDayMsg["notes"]as? String ?? "")
-            self.remarkAlertVm.updateContext(text: self.currentDayMsg["notes"]as? String ?? "",
-                                             notesTag: self.currentDayMsg.stringValueForKey(key: "notesTag"))
             mealsArray.removeAllObjects()
             mealsArray.addObjects(from: (self.currentDayMsg["foods"]as? NSArray ?? []) as! [Any])
             if mealsArray.count == 0 {
@@ -1508,9 +1521,9 @@ extension JounalCollectionCell{
 //            self.dealServerData(dict:responseObject["data"]as? NSDictionary ?? [:])
         }
     }
-    func sendUpdateNotesReqeust() {
+    func sendUpdateNotesReqeust(text: String) {
         let param = ["sdate":"\(self.currentDayMsg["sdate"]as? String ?? "\(self.queryDay)")",
-                     "notes":"\(self.remarkAlertVm.textView.text ?? "")"]
+                     "notes":"\(text)"]
         
         WHNetworkUtil.shareManager().POST(urlString: URL_User_logs_update_notes, parameters: param as [String : AnyObject]) { responseObject in
             DLLog(message: responseObject)

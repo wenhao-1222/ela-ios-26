@@ -59,9 +59,7 @@ class AIBottomFuncVM: UIView {
 
 extension AIBottomFuncVM{
     @objc func toggleFlash() {
-//        self.flashBlock?()
-        self.flashIsOn = !self.flashIsOn
-        self.updateFlashStatus(isOn: self.flashIsOn)
+        self.flashBlock?()
     }
     @objc func capturePhoto() {
         self.captureBlock?()
@@ -74,32 +72,13 @@ extension AIBottomFuncVM{
         self.albumBlock?()
     }
     func updateFlashStatus(isOn:Bool?=false) {
-        guard let device = AVCaptureDevice.default(for: .video) else { return }
-        try? device.lockForConfiguration()
-        
         if isOn == true{
             self.flashIsOn = true
-            if device.isTorchModeSupported(.on){
-                device.torchMode = .on
-            }
-            
             flashImgView.setImgLocal(imgName: "ai_camera_flash_icon")
         }else{
             self.flashIsOn = false
-            if device.isTorchModeSupported(.on){
-                device.torchMode = .off
-            }
-//            device.torchMode = .off
             flashImgView.setImgLocal(imgName: "ai_camera_flash_normal_icon")
         }
-        
-//        device.torchMode = device.torchMode == .on ? .off : .on
-        device.unlockForConfiguration()
-//        if isOn == true{
-//            flashImgView.setImgLocal(imgName: "ai_camera_flash_icon")
-//        }else{
-//            flashImgView.setImgLocal(imgName: "ai_camera_flash_normal_icon")
-//        }
     }
     func refreshShowStatus(isShow:Bool) {
         if isShow{

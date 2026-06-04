@@ -174,11 +174,13 @@ extension AICoachPreFeedbackGlassVM {
     func prepareEntranceAnimation() {
         alpha = 0
         transform = CGAffineTransform(translationX: 0, y: -kFitWidth(12))
+        applyFeedbackButtonVisibleState()
     }
 
     func applyFinalPresentationState() {
         alpha = 1
         transform = .identity
+        applyFeedbackButtonVisibleState()
     }
 
     func playEntranceAnimation(duration: TimeInterval,
@@ -187,6 +189,29 @@ extension AICoachPreFeedbackGlassVM {
                        delay: 0,
                        options: .curveLinear) {
             self.applyFinalPresentationState()
+        } completion: { _ in
+            completion?()
+        }
+    }
+
+    func prepareFeedbackButtonHiddenState() {
+        feedbackButton.layer.removeAllAnimations()
+        feedbackButton.alpha = 0
+    }
+
+    func applyFeedbackButtonVisibleState() {
+        feedbackButton.layer.removeAllAnimations()
+        feedbackButton.alpha = 1
+    }
+
+    func playFeedbackButtonFadeIn(duration: TimeInterval,
+                                  completion: (() -> Void)? = nil) {
+        feedbackButton.layer.removeAllAnimations()
+        feedbackButton.alpha = 0
+        UIView.animate(withDuration: duration,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState]) {
+            self.feedbackButton.alpha = 1
         } completion: { _ in
             completion?()
         }

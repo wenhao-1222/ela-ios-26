@@ -14,6 +14,7 @@ class SportVC: WHBaseViewVC {
     
     var isCanAdd = false
     var isFirst = true
+    var sportAddedBlock:((String)->())?
     
     //动画播放时间
     var duration:CFTimeInterval = 3
@@ -247,11 +248,11 @@ extension SportVC{
         view.layoutIfNeeded()
         
         backArrowButton.tapBlock = {()in
-            if self.isCanAdd {
-                self.navigationController?.popToRootViewController(animated: true)
-            }else{
+//            if self.isCanAdd {
+//                self.navigationController?.popToRootViewController(animated: true)
+//            }else{
                 self.backTapAction()
-            }
+//            }
         }
     }
     func setTime(time:String) {
@@ -314,6 +315,7 @@ extension SportVC{
             
             self.addAnimation(rect: self.itemVm.selectRect)
             
+            self.sportAddedBlock?(self.dateFilterAlertVm.dateStringYear)
             self.sendSportListRequest()
             self.sendCatogaryListRequest()
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)

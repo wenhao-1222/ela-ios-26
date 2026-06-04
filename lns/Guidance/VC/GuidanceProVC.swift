@@ -86,12 +86,12 @@ class GuidanceProVC: WHBaseViewVC {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        disableFullscreenPopGesture()
+        enforceFullscreenPopGestureDisabled()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        disableFullscreenPopGesture()
+        enforceFullscreenPopGestureDisabled()
         trackGuidanceV2IntroPageIfNeeded()
 //        topBackgroundView.startAnimatingIfNeeded()
 //        if currentStep == .intro {
@@ -399,12 +399,25 @@ extension GuidanceProVC {
     }
 
     private func disableFullscreenPopGesture() {
+        navigationItem.hidesBackButton = true
+        navigationController?.setNavigationBarHidden(true, animated: false)
         canEdgeBack = false
         fd_forceDisableInteractivePopGesture = true
         fd_interactivePopDisabled = true
         navigationController?.fd_interactivePopDisabled = true
         navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+    }
+
+    private func enforceFullscreenPopGestureDisabled() {
+        disableFullscreenPopGesture()
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  self.navigationController?.topViewController === self else {
+                return
+            }
+            self.disableFullscreenPopGesture()
+        }
     }
 
     @objc private func handleContentSwipeBackPan(_ gesture: UIPanGestureRecognizer) {

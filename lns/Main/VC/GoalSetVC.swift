@@ -13,9 +13,12 @@ class GoalSetVC: WHBaseViewVC {
     
     var dataArray = NSMutableArray()
     private var isOpeningCircleGoal = false
+    private weak var fullscreenPopGestureFailureNavigationController: UINavigationController?
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        restoreFullscreenInteractivePopGesture()
+        configureScrollPanFailureRequirementIfNeeded()
         // 禁用页面展开动画 —— SettingVC 专属方式
         DispatchQueue.main.async {
             if let transitionView = self.view.superview,
@@ -28,6 +31,8 @@ class GoalSetVC: WHBaseViewVC {
         IQKeyboardManager.shared.enable = false
         IQKeyboardManager.shared.enableAutoToolbar = false
         setCircleGoalActionEnabled(true)
+        restoreFullscreenInteractivePopGesture()
+        configureScrollPanFailureRequirementIfNeeded()
         
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -126,6 +131,15 @@ extension GoalSetVC{
         isOpeningCircleGoal = !isEnabled
         setWeekDayGoalButton.isEnabled = isEnabled
         bottomTypeVm.circleButton.isEnabled = isEnabled
+    }
+
+    private func configureScrollPanFailureRequirementIfNeeded() {
+        guard fullscreenPopGestureFailureNavigationController !== navigationController,
+              let navigationController = navigationController else {
+            return
+        }
+        scrollViewBase.panGestureRecognizer.require(toFail: navigationController.fd_fullscreenPopGestureRecognizer)
+        fullscreenPopGestureFailureNavigationController = navigationController
     }
 }
 

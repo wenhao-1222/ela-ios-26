@@ -16,6 +16,7 @@ class AIFailAlertVM: UIView {
     var cancelBlock:(()->())?
     var retryBlock:(()->())?
     var hiddenBlock:(()->())?
+    private var presentationToken = 0
     
     /// 蒙层目标透明度：浅色 0.15，深色 0.85
     private var targetDimAlpha: CGFloat {
@@ -153,6 +154,9 @@ extension AIFailAlertVM{
         self.hiddenView()
     }
     @objc func showView() {
+        presentationToken += 1
+        whiteView.layer.removeAllAnimations()
+        bgView.layer.removeAllAnimations()
         self.isHidden = false
         self.bgView.alpha = 0
 
@@ -163,12 +167,17 @@ extension AIFailAlertVM{
         }
    }
    @objc func hiddenView() {
+       presentationToken += 1
+       let token = presentationToken
        self.hiddenBlock?()
+       whiteView.layer.removeAllAnimations()
+       bgView.layer.removeAllAnimations()
        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
            self.whiteView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*1.5+kFitWidth(16))
 //           self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0)
            self.bgView.alpha = 0
        }completion: { t in
+           guard token == self.presentationToken else { return }
            self.isHidden = true
        }
   }

@@ -158,17 +158,18 @@ class CameraViewController: WHBaseViewVC {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        DLLog(message: "CameraViewController  viewWillDisappear ")
+        if isPresentingPhotoPicker {
+            // 打开相册只需要暂停预览，避免和系统相册初始化同时做彻底释放。
+            setTorch(false)
+            self.stopCaptureSession()
+            return
+        }
         NotificationCenter.default.removeObserver(self,
             name: UIApplication.willResignActiveNotification, object: nil)
         NotificationCenter.default.removeObserver(self,
             name: UIApplication.didBecomeActiveNotification, object: nil)
-        funcVm.updateFlashStatus(isOn: false)
-        DLLog(message: "CameraViewController  viewWillDisappear ")
-        if isPresentingPhotoPicker {
-            // 打开相册只需要暂停预览，避免和系统相册初始化同时做彻底释放。
-            self.stopCaptureSession()
-            return
-        }
+        setTorch(false)
         self.stopCaptureSession()
         self.stopCapture()
     }
@@ -359,6 +360,8 @@ extension CameraViewController {
               let input = try? AVCaptureDeviceInput(device: device) else {
             return
         }
+        cachedDevice = device
+        lastKnownDevicePosition = device.position
         
         // 配置对焦/曝光
         do {
@@ -497,7 +500,9 @@ extension CameraViewController {
     private func restartCaptureSession() {
 //        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
         sessionQueue.async { [weak self] in
-            guard let self = self, let session = self.captureSession else { return }
+            guard let self = self,
+                  self.isViewLoaded,
+                  let session = self.captureSession else { return }
             if !session.isRunning {
                 session.startRunning()
             }
@@ -589,7 +594,7 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
         naviVm.refreshShowStatus(isShow: false)
         typeVm.refreshShowStatus(isShow: false)
         funcVm.refreshShowStatus(isShow: false)
-        funcVm.updateFlashStatus(isOn: false)
+        setTorch(false)
         
         // 转换坐标系并进行裁剪
         let cropRect = convertCropRectToImageCoordinates(image: image)
@@ -607,12 +612,13 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
     // 相册
     func openAlbum() {
         isPresentingPhotoPicker = true
-        funcVm.updateFlashStatus(isOn: false)
+        setTorch(false)
         stopCaptureSession()
 
         let picker = preloadedPhotoPicker ?? makePhotoPicker()
         preloadedPhotoPicker = nil
         picker.delegate = self
+        picker.presentationController?.delegate = self
         present(picker, animated: true)
 
 //        let picker = UIImagePickerController()
@@ -626,7 +632,7 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
         naviVm.refreshShowStatus(isShow: false)
         typeVm.refreshShowStatus(isShow: false)
         funcVm.refreshShowStatus(isShow: false)
-        funcVm.updateFlashStatus(isOn: false)
+        setTorch(false)
 
         self.sendImgForAiRequest(img: image)
     }
@@ -639,6 +645,7 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
 
         let picker = PHPickerViewController(configuration: configuration)
         picker.delegate = self
+        picker.presentationController?.delegate = self
         return picker
     }
 
@@ -655,6 +662,12 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
             self.preloadedPhotoPicker = self.makePhotoPicker()
             DLLog(message: "CameraViewController preloaded PHPickerViewController")
         }
+    }
+
+    private func resumeCameraPreviewAfterClosingPhotoPicker() {
+        guard isPresentingPhotoPicker else { return }
+        isPresentingPhotoPicker = false
+        restartCaptureSession()
     }
     
     // 坐标系转换
@@ -713,15 +726,15 @@ extension CameraViewController: UIImagePickerControllerDelegate, UINavigationCon
 // MARK: - PHPickerViewController
 extension CameraViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        isPresentingPhotoPicker = false
-
         guard let provider = results.first?.itemProvider else {
-            restartCaptureSession()
+            resumeCameraPreviewAfterClosingPhotoPicker()
             picker.dismiss(animated: true) {
                 self.preloadPhotoPickerIfAuthorized()
             }
             return
         }
+
+        isPresentingPhotoPicker = false
 
         picker.dismiss(animated: true) {
             guard provider.canLoadObject(ofClass: UIImage.self) else {
@@ -753,13 +766,59 @@ extension CameraViewController: PHPickerViewControllerDelegate {
 // MARK: - 闪光灯
 extension CameraViewController {
     @objc private func toggleFlash() {
-        guard let device = AVCaptureDevice.default(for: .video),
-              device.hasTorch else {
-            return
+        setTorch(!funcVm.flashIsOn)
+    }
+
+    private func setTorch(_ isOn: Bool) {
+        funcVm.updateFlashStatus(isOn: isOn)
+
+        sessionQueue.async { [weak self] in
+            guard let self = self,
+                  let device = self.currentVideoDevice(),
+                  device.hasTorch else { return }
+
+            do {
+                try device.lockForConfiguration()
+                defer { device.unlockForConfiguration() }
+                if isOn, device.isTorchModeSupported(.on) {
+                    try device.setTorchModeOn(level: AVCaptureDevice.maxAvailableTorchLevel)
+                } else if device.isTorchModeSupported(.off) {
+                    device.torchMode = .off
+                }
+            } catch {
+                DLLog(message: "CameraViewController setTorch error: \(error)")
+                DispatchQueue.main.async {
+                    self.funcVm.updateFlashStatus(isOn: device.torchMode == .on)
+                }
+            }
         }
-        try? device.lockForConfiguration()
-        device.torchMode = (device.torchMode == .on) ? .off : .on
-        device.unlockForConfiguration()
+    }
+
+    private func currentVideoDevice() -> AVCaptureDevice? {
+        if let input = captureSession?.inputs.compactMap({ $0 as? AVCaptureDeviceInput }).first {
+            cachedDevice = input.device
+            lastKnownDevicePosition = input.device.position
+            return input.device
+        }
+
+        if let cachedDevice {
+            return cachedDevice
+        }
+
+        return AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: lastKnownDevicePosition)
+            ?? AVCaptureDevice.default(for: .video)
+    }
+}
+
+// MARK: - 相册交互关闭
+extension CameraViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
+        resumeCameraPreviewAfterClosingPhotoPicker()
+    }
+
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        resumeCameraPreviewAfterClosingPhotoPicker()
+        preloadPhotoPickerIfAuthorized()
     }
 }
 
@@ -850,21 +909,36 @@ extension CameraViewController {
             
             return
         }
-        //非会员识图额度用完
-        isShowingQuotaUpgradeAlert = true
-        captureResultVm.rippleView.stopAnimation()
-        captureResultVm.hiddenView()
-        failAlertVm.hiddenView()
-        naviVm.refreshShowStatus(isShow: true)
-        typeVm.refreshShowStatus(isShow: true)
-        funcVm.refreshShowStatus(isShow: true)
+        let shouldResetCaptureUIForAlert = code != 200
+        if shouldResetCaptureUIForAlert {
+            captureResultVm.rippleView.stopAnimation()
+            captureResultVm.hiddenView()
+            failAlertVm.hiddenView()
+            naviVm.refreshShowStatus(isShow: true)
+            typeVm.refreshShowStatus(isShow: true)
+            funcVm.refreshShowStatus(isShow: true)
+        }
 
         if code == 401{
             //会员用户识图额度用完
 //            MCToast.mc_text("当前请求较多，请稍后重试")
             self.presentAlertVc(confirmBtn: "确定", message: "\(responseObject["message"] as? String ?? "当前请求较多，请稍后重试")", title: "系统繁忙", cancelBtn: nil, handler: { action in
-                
+                self.backTapAction()
             }, viewController: self)
+//            presentAlertVc(confirmBtn: "确定",
+//                           message: "\(responseObject["message"] as? String ?? "当前请求较多，请稍后重试")",
+//                           title: "系统繁忙",
+//                           cancelBtn: "取消",
+//                           handler: { [weak self] _ in
+//                guard let self = self else { return }
+//                self.isShowingQuotaUpgradeAlert = false
+//                self.showElaProPriceOnlyVC()
+//            },
+//                           cancelHandler: { [weak self] _ in
+//                self?.isShowingQuotaUpgradeAlert = false
+//                self?.backTapAction()
+//            },
+//                           viewController: self)
             return
         }else if code == 402{
             presentAlertVc(confirmBtn: "去开通",
@@ -878,6 +952,7 @@ extension CameraViewController {
             },
                            cancelHandler: { [weak self] _ in
                 self?.isShowingQuotaUpgradeAlert = false
+                self?.backTapAction()
             },
                            viewController: self)
         }else if code == 503{//AI识别功能维护中
@@ -1083,6 +1158,7 @@ extension CameraViewController {
         },
                        cancelHandler: { [weak self] _ in
             self?.isShowingQuotaUpgradeAlert = false
+            self?.backTapAction()
         },
                        viewController: self)
         return true
