@@ -274,7 +274,7 @@ extension SportHistoryVC:UITableViewDelegate,UITableViewDataSource{
                 self.postTodayNutritionRefreshIfNeeded(sDate: self.editModel.sdate)
                 self.dataSourceArray.remove(at: indexPath.row)
                 self.isDisplayArray.remove(at: indexPath.row)
-                self.tableView.deleteRows(at: [indexPath], with: .fade)
+                self.tableView.deleteRows(at: [indexPath], with: .none)
                 self.sendSportListRequest()
                 
                 if self.editModel.source == "2"{

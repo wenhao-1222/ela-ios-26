@@ -40,9 +40,9 @@ class SportVC: WHBaseViewVC {
         let sportData = UserDefaults.getSportData()
         dealDataSource(dataArray: sportData)
         sendSportListRequest()
-        let panGes = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(popGestureAction(gesture: )))
-        panGes.edges = .left
-        view.addGestureRecognizer(panGes)
+//        let panGes = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(popGestureAction(gesture: )))
+//        panGes.edges = .left
+//        view.addGestureRecognizer(panGes)
     }
     lazy var timeButton : GJVerButton = {
         let btn = GJVerButton.init(frame: CGRect.init(x: kFitWidth(80), y: statusBarHeight, width: kFitWidth(215), height: kFitWidth(44)))

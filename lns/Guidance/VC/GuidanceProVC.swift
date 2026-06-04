@@ -33,10 +33,21 @@ class GuidanceProVC: WHBaseViewVC {
     private let subscribeContentVM = GuidanceProSubscribeVM()
     private var currentStep: ContentStep = .intro
     private var isPurchasing = false
+    private var isContentTransitionAnimating = false
+    private var isSwipeBackInteractionInProgress = false
+    private var swipeBackStartStep: ContentStep?
     var hasFreeTrialPermission = true
     var guidanceV2BizType = "自动"
     private var didTrackGuidanceV2IntroPage = false
     private var didTrackGuidanceV2SubscribePage = false
+
+    private lazy var contentSwipeBackPanGesture: UIPanGestureRecognizer = {
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(handleContentSwipeBackPan(_:)))
+        gesture.maximumNumberOfTouches = 1
+        gesture.cancelsTouchesInView = false
+        gesture.delegate = self
+        return gesture
+    }()
     
     lazy var backButton: UIButton = {
         let img = UIButton.init(type: .custom)
@@ -75,12 +86,12 @@ class GuidanceProVC: WHBaseViewVC {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        updateInteractivePopGestureBlocked(true)
+        disableFullscreenPopGesture()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        updateInteractivePopGestureBlocked(true)
+        disableFullscreenPopGesture()
         trackGuidanceV2IntroPageIfNeeded()
 //        topBackgroundView.startAnimatingIfNeeded()
 //        if currentStep == .intro {
@@ -105,6 +116,7 @@ extension GuidanceProVC {
         view.addSubview(contentContainerView)
         view.addSubview(backButton)
         view.addSubview(nextButton)
+        contentContainerView.addGestureRecognizer(contentSwipeBackPanGesture)
 
         contentContainerView.addSubview(topContentVM)
         contentContainerView.addSubview(trialContentVM)
@@ -177,9 +189,11 @@ extension GuidanceProVC {
         }
 
         updateBackButtonVisibility(animated: false)
+        updateNextButtonInteractionState()
     }
 
     @objc func nextButtonTapAction() {
+        guard canRespondToNextButton else { return }
         switch currentStep {
         case .intro:
             if hasFreeTrialPermission {
@@ -197,7 +211,7 @@ extension GuidanceProVC {
     }
 
     @objc func backAction() {
-        guard !isPurchasing else { return }
+        guard !isPurchasing, !isContentTransitionAnimating, !isSwipeBackInteractionInProgress else { return }
         showPreviousContent()
     }
 
@@ -211,6 +225,7 @@ extension GuidanceProVC {
         currentStep = .trial
         topContentVM.stopBubbleFloatingAnimation()
         nextButton.isHidden = false
+        updateNextButtonInteractionState()
         updateBackButtonVisibility(animated: true)
         transition(from: topContentVM, to: trialContentVM, direction: .forward)
     }
@@ -220,6 +235,7 @@ extension GuidanceProVC {
 
         currentStep = .promise
         nextButton.isHidden = false
+        updateNextButtonInteractionState()
         updateBackButtonVisibility(animated: true)
         transition(from: trialContentVM, to: promiseContentVM, direction: .forward)
     }
@@ -230,6 +246,7 @@ extension GuidanceProVC {
 
         currentStep = .subscribe
         nextButton.isHidden = true
+        updateNextButtonInteractionState()
         topContentVM.stopBubbleFloatingAnimation()
         updateBackButtonVisibility(animated: true)
 
@@ -256,6 +273,7 @@ extension GuidanceProVC {
 
         currentStep = previousStep
         nextButton.isHidden = false
+        updateNextButtonInteractionState()
         updateBackButtonVisibility(animated: true)
         transition(from: fromView, to: toView, direction: .backward)
     }
@@ -288,7 +306,7 @@ extension GuidanceProVC {
 
     func updateBackButtonVisibility(animated: Bool) {
         let shouldShow = currentStep == .trial || currentStep == .promise
-        backButton.isUserInteractionEnabled = shouldShow
+        backButton.isUserInteractionEnabled = shouldShow && !isContentTransitionAnimating && !isSwipeBackInteractionInProgress
 
         if animated == false {
             backButton.isHidden = !shouldShow
@@ -325,6 +343,9 @@ extension GuidanceProVC {
     }
 
     func transition(from currentView: UIView, to nextView: UIView, direction: TransitionDirection) {
+        isContentTransitionAnimating = true
+        updateNextButtonInteractionState()
+        backButton.isUserInteractionEnabled = false
         let offset = kFitWidth(28)
         let nextTranslationX = direction == .forward ? offset : -offset
         let currentTranslationX = direction == .forward ? -offset : offset
@@ -359,7 +380,136 @@ extension GuidanceProVC {
             currentView.isHidden = true
 //            currentView.alpha = 1
             currentView.transform = .identity
+            self.isContentTransitionAnimating = false
+            self.updateNextButtonInteractionState()
+            self.updateBackButtonVisibility(animated: true)
         }
+    }
+
+    private var canRespondToNextButton: Bool {
+        !isPurchasing && !isContentTransitionAnimating && !isSwipeBackInteractionInProgress
+    }
+
+    private var canSwipeBackCurrentStep: Bool {
+        currentStep == .trial || currentStep == .promise
+    }
+
+    private func updateNextButtonInteractionState() {
+        nextButton.isUserInteractionEnabled = !nextButton.isHidden && canRespondToNextButton
+    }
+
+    private func disableFullscreenPopGesture() {
+        canEdgeBack = false
+        fd_forceDisableInteractivePopGesture = true
+        fd_interactivePopDisabled = true
+        navigationController?.fd_interactivePopDisabled = true
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+    }
+
+    @objc private func handleContentSwipeBackPan(_ gesture: UIPanGestureRecognizer) {
+        let translationX = max(gesture.translation(in: contentContainerView).x, 0)
+        let progress = min(translationX / max(SCREEN_WIDHT, 1), 1)
+
+        switch gesture.state {
+        case .began:
+            guard canSwipeBackCurrentStep,
+                  !isPurchasing,
+                  !isContentTransitionAnimating,
+                  !isSwipeBackInteractionInProgress,
+                  let previousStep = previousStep(for: currentStep) else {
+                return
+            }
+            swipeBackStartStep = currentStep
+            isSwipeBackInteractionInProgress = true
+            disableFullscreenPopGesture()
+            updateNextButtonInteractionState()
+            updateBackButtonVisibility(animated: false)
+
+            let currentView = view(for: currentStep)
+            let previousView = view(for: previousStep)
+            previousView.isHidden = false
+            previousView.alpha = 0
+            previousView.transform = CGAffineTransform(translationX: -kFitWidth(28), y: 0)
+            contentContainerView.bringSubviewToFront(currentView)
+
+        case .changed:
+            guard let startStep = swipeBackStartStep,
+                  let previousStep = previousStep(for: startStep) else {
+                return
+            }
+            let currentView = view(for: startStep)
+            let previousView = view(for: previousStep)
+            currentView.transform = CGAffineTransform(translationX: translationX, y: 0)
+            currentView.alpha = 1 - progress
+            previousView.alpha = progress
+            previousView.transform = CGAffineTransform(translationX: -kFitWidth(28) * (1 - progress), y: 0)
+
+        case .ended, .cancelled, .failed:
+            guard let startStep = swipeBackStartStep,
+                  let previousStep = previousStep(for: startStep) else {
+                finishSwipeBackInteraction()
+                return
+            }
+            let velocityX = gesture.velocity(in: contentContainerView).x
+            let shouldComplete = gesture.state == .ended && (velocityX > 260 || progress > 0.35)
+            finishSwipeBack(from: startStep, to: previousStep, shouldComplete: shouldComplete)
+
+        default:
+            break
+        }
+    }
+
+    private func finishSwipeBack(from startStep: ContentStep,
+                                 to previousStep: ContentStep,
+                                 shouldComplete: Bool) {
+        let currentView = view(for: startStep)
+        let previousView = view(for: previousStep)
+
+        UIView.animate(
+            withDuration: 0.24,
+            delay: 0,
+            options: [.curveEaseInOut, .beginFromCurrentState]
+        ) {
+            if shouldComplete {
+                currentView.transform = CGAffineTransform(translationX: SCREEN_WIDHT, y: 0)
+                currentView.alpha = 0
+                previousView.transform = .identity
+                previousView.alpha = 1
+            } else {
+                currentView.transform = .identity
+                currentView.alpha = 1
+                previousView.transform = CGAffineTransform(translationX: -kFitWidth(28), y: 0)
+                previousView.alpha = 0
+            }
+        } completion: { _ in
+            if shouldComplete {
+                self.currentStep = previousStep
+                currentView.isHidden = true
+                currentView.transform = .identity
+                currentView.alpha = 0
+                previousView.isHidden = false
+                previousView.transform = .identity
+                previousView.alpha = 1
+            } else {
+                previousView.isHidden = true
+                previousView.transform = .identity
+                previousView.alpha = 1
+                currentView.isHidden = false
+                currentView.transform = .identity
+                currentView.alpha = 1
+            }
+            self.finishSwipeBackInteraction()
+        }
+    }
+
+    private func finishSwipeBackInteraction() {
+        swipeBackStartStep = nil
+        isSwipeBackInteractionInProgress = false
+        nextButton.isHidden = currentStep == .subscribe
+        updateNextButtonInteractionState()
+        updateBackButtonVisibility(animated: true)
+        disableFullscreenPopGesture()
     }
 
     func fetchAnnualDisplayProduct() {
@@ -432,5 +582,22 @@ extension GuidanceProVC {
             bizType: guidanceV2BizType
         )
         EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW, scenarioType: .ela_pro_view, text: "1")
+    }
+}
+
+extension GuidanceProVC: UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer === contentSwipeBackPanGesture,
+              canSwipeBackCurrentStep,
+              !isPurchasing,
+              !isContentTransitionAnimating,
+              !isSwipeBackInteractionInProgress,
+              let panGesture = gestureRecognizer as? UIPanGestureRecognizer else {
+            return false
+        }
+        let velocity = panGesture.velocity(in: contentContainerView)
+        let translation = panGesture.translation(in: contentContainerView)
+        let isHorizontal = abs(velocity.x) > abs(velocity.y) || abs(translation.x) > abs(translation.y)
+        return isHorizontal && (velocity.x > 0 || translation.x > 0)
     }
 }
