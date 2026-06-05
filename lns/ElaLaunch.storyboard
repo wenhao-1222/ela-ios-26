@@ -37,7 +37,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="launch_bg_img" width="750" height="1624"/>
+        <image name="launch_bg_img" width="250" height="541.33331298828125"/>
         <systemColor name="tintColor">
             <color red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

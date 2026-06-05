@@ -727,6 +727,8 @@
 		EC24EB552BB2C8AD002F21DF /* QuestionnaireSurveyBodyFatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC24EB542BB2C8AD002F21DF /* QuestionnaireSurveyBodyFatVM.swift */; };
 		EC24EB572BB2CA44002F21DF /* QuestionnaireSurveyBodyFatDataVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC24EB562BB2CA44002F21DF /* QuestionnaireSurveyBodyFatDataVM.swift */; };
 		EC24EB592BB2CBEB002F21DF /* QuestionnaireSurveyBodyFatImageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC24EB582BB2CBEB002F21DF /* QuestionnaireSurveyBodyFatImageVM.swift */; };
+		EC2525A12FCE000100FB1E56 /* AICoachPreReadyMessageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2525A02FCE000100FB1E56 /* AICoachPreReadyMessageVM.swift */; };
+		EC2525A32FCE000100FB1E56 /* AICoachPreFeedbackGlassVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2525A22FCE000100FB1E56 /* AICoachPreFeedbackGlassVM.swift */; };
 		EC25980C2C36458F00F300AB /* FoodsListNewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC25980B2C36458F00F300AB /* FoodsListNewVC.swift */; };
 		EC25C8322ED54C2C00BF2D1F /* UIApplication+Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC25C8312ED54C2400BF2D1F /* UIApplication+Appearance.swift */; };
 		EC25C8342ED560CC00BF2D1F /* SkeletonListLoadingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC25C8332ED560CB00BF2D1F /* SkeletonListLoadingManager.swift */; };
@@ -1308,8 +1310,6 @@
 		ECEC4EAE2F73780300FB1E56 /* AICoachPreDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */; };
 		ECEC4EB22F73A11100FB1E56 /* AICoachPreInfoVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */; };
 		ECEC4EB42F73A11300FB1E56 /* AICoachPreInfoSelectPopupVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EB32F73A11200FB1E56 /* AICoachPreInfoSelectPopupVM.swift */; };
-		EC2525A12FCE000100FB1E56 /* AICoachPreReadyMessageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2525A02FCE000100FB1E56 /* AICoachPreReadyMessageVM.swift */; };
-		EC2525A32FCE000100FB1E56 /* AICoachPreFeedbackGlassVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2525A22FCE000100FB1E56 /* AICoachPreFeedbackGlassVM.swift */; };
 		ECF0BFD32BFC3C6400E5F6F0 /* InviteRewardsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD22BFC3C6400E5F6F0 /* InviteRewardsVC.swift */; };
 		ECF0BFD62BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD52BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift */; };
 		ECF0BFD82BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECF0BFD72BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift */; };
@@ -2226,6 +2226,8 @@
 		EC24EB542BB2C8AD002F21DF /* QuestionnaireSurveyBodyFatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireSurveyBodyFatVM.swift; sourceTree = "<group>"; };
 		EC24EB562BB2CA44002F21DF /* QuestionnaireSurveyBodyFatDataVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireSurveyBodyFatDataVM.swift; sourceTree = "<group>"; };
 		EC24EB582BB2CBEB002F21DF /* QuestionnaireSurveyBodyFatImageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireSurveyBodyFatImageVM.swift; sourceTree = "<group>"; };
+		EC2525A02FCE000100FB1E56 /* AICoachPreReadyMessageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreReadyMessageVM.swift; sourceTree = "<group>"; };
+		EC2525A22FCE000100FB1E56 /* AICoachPreFeedbackGlassVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreFeedbackGlassVM.swift; sourceTree = "<group>"; };
 		EC25980B2C36458F00F300AB /* FoodsListNewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsListNewVC.swift; sourceTree = "<group>"; };
 		EC25C8312ED54C2400BF2D1F /* UIApplication+Appearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Appearance.swift"; sourceTree = "<group>"; };
 		EC25C8332ED560CB00BF2D1F /* SkeletonListLoadingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonListLoadingManager.swift; sourceTree = "<group>"; };
@@ -2836,8 +2838,6 @@
 		ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDaysVM.swift; sourceTree = "<group>"; };
 		ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreInfoVM.swift; sourceTree = "<group>"; };
 		ECEC4EB32F73A11200FB1E56 /* AICoachPreInfoSelectPopupVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreInfoSelectPopupVM.swift; sourceTree = "<group>"; };
-		EC2525A02FCE000100FB1E56 /* AICoachPreReadyMessageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreReadyMessageVM.swift; sourceTree = "<group>"; };
-		EC2525A22FCE000100FB1E56 /* AICoachPreFeedbackGlassVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreFeedbackGlassVM.swift; sourceTree = "<group>"; };
 		ECF0BFD22BFC3C6400E5F6F0 /* InviteRewardsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsVC.swift; sourceTree = "<group>"; };
 		ECF0BFD52BFC3DD700E5F6F0 /* InviteRewardsTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsTopVM.swift; sourceTree = "<group>"; };
 		ECF0BFD72BFC462E00E5F6F0 /* InviteRewardsCodeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteRewardsCodeVM.swift; sourceTree = "<group>"; };
@@ -8048,7 +8048,6 @@
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App需要读取相册权限";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = ElaLaunch;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -8156,7 +8155,6 @@
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "App需要读取相册权限";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = ElaLaunch;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

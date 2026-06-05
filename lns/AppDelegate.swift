@@ -48,6 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         } else {
             launchWindow = UIWindow(frame: UIScreen.main.bounds)
         }
+    
         UserConfigModel.shared.overrideUserInterfaceStyle = UserDefaults.getAppearanceStyle()
         launchWindow.backgroundColor = .THEME
         launchWindow.overrideUserInterfaceStyle = UserConfigModel.shared.overrideUserInterfaceStyle
