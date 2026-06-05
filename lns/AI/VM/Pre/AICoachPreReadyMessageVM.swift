@@ -52,7 +52,6 @@ extension AICoachPreReadyMessageVM {
             //  remainingDays  不适用首报未出的情况
             let remainingDays = max(1,7 - msgDict.stringValueForKey(key: "completeDays").intValue)
             
-            
             attr.append(NSAttributedString(string: "\(remainingDays)", attributes: [.font:UIFont.systemFont(ofSize: 14, weight: .medium),
                   .foregroundColor:UIColor.THEME,
                   .paragraphStyle: paragraphStyle]))

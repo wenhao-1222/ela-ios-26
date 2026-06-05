@@ -14,6 +14,7 @@ class SportVC: WHBaseViewVC {
     
     var isCanAdd = false
     var isFirst = true
+    private var didRemovePreviousSportHistoryVC = false
     var sportAddedBlock:((String)->())?
     
     //动画播放时间
@@ -44,6 +45,11 @@ class SportVC: WHBaseViewVC {
 //        let panGes = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(popGestureAction(gesture: )))
 //        panGes.edges = .left
 //        view.addGestureRecognizer(panGes)
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        removePreviousSportHistoryVCIfNeeded()
     }
     lazy var timeButton : GJVerButton = {
         let btn = GJVerButton.init(frame: CGRect.init(x: kFitWidth(80), y: statusBarHeight, width: kFitWidth(215), height: kFitWidth(44)))
@@ -205,15 +211,28 @@ extension SportVC{
     }
     func showAddedSportHistory() {
         let dateString = "\(self.dateFilterAlertVm.dateStringYear)"
-        if let historyVC = self.navigationController?.viewControllers.reversed().first(where: { $0 is SportHistoryVC }) as? SportHistoryVC {
-            historyVC.refreshData(dateString: dateString, animation: .middle)
-            self.navigationController?.popToViewController(historyVC, animated: true)
-            return
-        }
-        
         let vc = SportHistoryVC()
         vc.dateString = dateString
+        vc.isCanAdd = false
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+    func removePreviousSportHistoryVCIfNeeded() {
+        guard isCanAdd,
+              didRemovePreviousSportHistoryVC == false,
+              let navigationController = navigationController,
+              let currentIndex = navigationController.viewControllers.firstIndex(where: { $0 === self })
+        else { return }
+        
+        didRemovePreviousSportHistoryVC = true
+        let viewControllers = navigationController.viewControllers.enumerated()
+            .filter { index, viewController in
+                !(index < currentIndex && viewController is SportHistoryVC)
+            }
+            .map { $0.element }
+        
+        if viewControllers.count != navigationController.viewControllers.count {
+            navigationController.setViewControllers(viewControllers, animated: false)
+        }
     }
     @objc func popGestureAction(gesture:UIPanGestureRecognizer) {
         switch gesture.state {

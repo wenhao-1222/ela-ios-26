@@ -49,9 +49,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
             launchWindow = UIWindow(frame: UIScreen.main.bounds)
         }
         UserConfigModel.shared.overrideUserInterfaceStyle = UserDefaults.getAppearanceStyle()
+        launchWindow.backgroundColor = .THEME
         launchWindow.overrideUserInterfaceStyle = UserConfigModel.shared.overrideUserInterfaceStyle
         window = launchWindow
-        launchWindow.backgroundColor = .THEME
         UIApplication.shared.applyInterfaceStyle(UserConfigModel.shared.overrideUserInterfaceStyle)
         MCToastConfig.shared.text.maxWidth = kFitWidth(343)//SCREEN_WIDHT-kFitWidth(82)-kFitWidth(72)
         

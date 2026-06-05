@@ -19,10 +19,22 @@ class AIGuidanceVC: WHBaseViewVC {
         case readyStart
     }
 
+    private enum AICoachProfileSubmitState {
+        case idle
+        case submitting
+        case success
+        case failed(String?)
+    }
+
     var currentIndex: Int = 0
     private var mountedSteps = Set<FlowStep>()
     private let totalSteps = 6
     private var isSubmittingAICoachProfile = false
+    private var aiCoachProfileSubmitState: AICoachProfileSubmitState = .idle
+    private var activeAICoachProfileSubmitKey: String?
+    private var successfulAICoachProfileSubmitKey: String?
+    private var aiCoachProfileSubmitCompletions: [() -> Void] = []
+    private var shouldShowAICoachProfileSubmitFailureAlert = false
     private var isBackButtonCoolingDown = false
     private var isStepTransitioning = false
     private var scrollDragStartIndex: Int?
@@ -114,21 +126,21 @@ class AIGuidanceVC: WHBaseViewVC {
     lazy var goalVm: AIGuidanceGoalVM = {
         let vm = AIGuidanceGoalVM.init(frame: .zero)
         vm.selectedBlock = { [weak self] in
-            self?.updateNextButtonForCurrentStep()
+            self?.handleAICoachQuestionnaireSelectionChanged()
         }
         return vm
     }()
     lazy var goalStageVm: AIGuidanceGoalStageVM = {
         let vm = AIGuidanceGoalStageVM.init(frame: .zero)
         vm.selectedBlock = { [weak self] in
-            self?.updateNextButtonForCurrentStep()
+            self?.handleAICoachQuestionnaireSelectionChanged()
         }
         return vm
     }()
     lazy var coachStrictnessVm: AIGuidanceCoachStrictnessVM = {
         let vm = AIGuidanceCoachStrictnessVM.init(frame: .zero)
         vm.selectedBlock = { [weak self] in
-            self?.updateNextButtonForCurrentStep()
+            self?.handleAICoachQuestionnaireSelectionChanged()
         }
         return vm
     }()
@@ -275,6 +287,9 @@ extension AIGuidanceVC{
         EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW,
                                             scenarioType: .ai_coach_guide,
                                             text: "\(targetIndex + 1)")
+        if flowStep(for: targetIndex) == .notice {
+            submitAICoachProfile(showFailureAlert: false)
+        }
     }
     
     func updatePopGestureState() {
@@ -517,32 +532,63 @@ extension AIGuidanceVC {
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    func submitAICoachProfile(completion: (() -> Void)? = nil) {
-        if isSubmittingAICoachProfile {
+    func handleAICoachQuestionnaireSelectionChanged() {
+        aiCoachProfileSubmitState = .idle
+        activeAICoachProfileSubmitKey = nil
+        successfulAICoachProfileSubmitKey = nil
+        aiCoachProfileSubmitCompletions.removeAll()
+        shouldShowAICoachProfileSubmitFailureAlert = false
+        isSubmittingAICoachProfile = false
+        updateNextButtonForCurrentStep()
+    }
+
+    func submitAICoachProfile(showFailureAlert: Bool = true, completion: (() -> Void)? = nil) {
+        let param = buildAICoachUpsertParameters()
+        let submitKey = aiCoachProfileSubmitKey(for: param)
+
+        if successfulAICoachProfileSubmitKey == submitKey {
+            completion?()
             return
         }
 
-        let param = buildAICoachUpsertParameters()
-        isSubmittingAICoachProfile = true
+        if case .submitting = aiCoachProfileSubmitState,
+           activeAICoachProfileSubmitKey == submitKey {
+            if showFailureAlert {
+                isSubmittingAICoachProfile = true
+                shouldShowAICoachProfileSubmitFailureAlert = true
+                updateNextButtonForCurrentStep()
+            }
+            if let completion = completion {
+                aiCoachProfileSubmitCompletions.append(completion)
+            }
+            return
+        }
+
+        if let completion = completion {
+            aiCoachProfileSubmitCompletions.append(completion)
+        }
+
+        activeAICoachProfileSubmitKey = submitKey
+        aiCoachProfileSubmitState = .submitting
+        shouldShowAICoachProfileSubmitFailureAlert = showFailureAlert
+        isSubmittingAICoachProfile = showFailureAlert
         updateNextButtonForCurrentStep()
 
         DLLog(message: "submitAICoachProfile:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_ai_coach_upsert,
                                           parameters: param as [String : AnyObject],
-                                          isNeedToast: true,
-                                          vc: self) { [weak self] responseObject in
+                                          isNeedToast: showFailureAlert,
+                                          vc: showFailureAlert ? self : nil) { [weak self] responseObject in
             guard let self = self else { return }
             let code = responseObject["code"] as? Int ?? -1
             guard code == 200 else {
                 let msg = responseObject["message"] as? String ?? "保存失败，请稍后重试"
-                self.handleAICoachSubmitFailure(message: msg)
+                self.handleAICoachSubmitFailure(message: msg, submitKey: submitKey)
                 return
             }
-            self.isSubmittingAICoachProfile = false
-            self.updateNextButtonForCurrentStep()
-            completion?()
+            self.handleAICoachSubmitSuccess(submitKey: submitKey)
         } failure: { [weak self] _ in
-            self?.handleAICoachSubmitFailure(message: nil)
+            self?.handleAICoachSubmitFailure(message: nil, submitKey: submitKey)
         }
     }
 
@@ -602,10 +648,39 @@ extension AIGuidanceVC {
         return mapping[QuestinonaireMsgModel.shared.aiGuidanceCoachStrictnessType]
     }
 
-    func handleAICoachSubmitFailure(message: String?) {
+    func aiCoachProfileSubmitKey(for parameters: [String: Any]) -> String {
+        parameters.keys.sorted().map { key in
+            "\(key)=\(parameters[key] ?? "")"
+        }.joined(separator: "&")
+    }
+
+    func handleAICoachSubmitSuccess(submitKey: String) {
+        guard activeAICoachProfileSubmitKey == submitKey else { return }
+        let completions = aiCoachProfileSubmitCompletions
+        aiCoachProfileSubmitState = .success
+        activeAICoachProfileSubmitKey = nil
+        successfulAICoachProfileSubmitKey = submitKey
+        aiCoachProfileSubmitCompletions.removeAll()
+        shouldShowAICoachProfileSubmitFailureAlert = false
+        isSubmittingAICoachProfile = false
+        updateNextButtonForCurrentStep()
+        completions.forEach { $0() }
+    }
+
+    func handleAICoachSubmitFailure(message: String?, submitKey: String) {
+        guard activeAICoachProfileSubmitKey == submitKey else { return }
+        let shouldShowFailureAlert = shouldShowAICoachProfileSubmitFailureAlert
+        aiCoachProfileSubmitState = .failed(message)
+        activeAICoachProfileSubmitKey = nil
+        successfulAICoachProfileSubmitKey = nil
+        aiCoachProfileSubmitCompletions.removeAll()
+        shouldShowAICoachProfileSubmitFailureAlert = false
         isSubmittingAICoachProfile = false
         updateNextButtonForCurrentStep()
 
+        guard shouldShowFailureAlert else {
+            return
+        }
         guard let message = message, !message.isEmpty else {
             return
         }
