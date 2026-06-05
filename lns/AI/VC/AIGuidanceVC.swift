@@ -135,6 +135,13 @@ class AIGuidanceVC: WHBaseViewVC {
         vm.selectedBlock = { [weak self] in
             self?.handleAICoachQuestionnaireSelectionChanged()
         }
+        vm.infoButtonTapBlock = { [weak self] content in
+            self?.showGoalStageInfoAlert(content: content)
+        }
+        return vm
+    }()
+    lazy var goalStageInfoAlertVm: AIGuidanceGoalStageInfoAlertVM = {
+        let vm = AIGuidanceGoalStageInfoAlertVM(frame: .zero)
         return vm
     }()
     lazy var coachStrictnessVm: AIGuidanceCoachStrictnessVM = {
@@ -477,6 +484,7 @@ extension AIGuidanceVC{
         view.addSubview(naviVm)
         view.addSubview(nextButton)
         view.addSubview(introVm)
+        view.addSubview(goalStageInfoAlertVm)
 
         scrollViewBase.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         scrollViewBase.backgroundColor = .clear
@@ -507,10 +515,19 @@ extension AIGuidanceVC{
         introVm.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+
+        goalStageInfoAlertVm.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
 }
 
 extension AIGuidanceVC {
+    func showGoalStageInfoAlert(content: AIGuidanceGoalStageVM.StageInfoContent) {
+        view.bringSubviewToFront(goalStageInfoAlertVm)
+        goalStageInfoAlertVm.show(content: content)
+    }
+
     func enterElaProPage() {
         VIPModel.shared.isAiCoachSurveyFinished = true
         if VIPModel.shared.status == .valid{

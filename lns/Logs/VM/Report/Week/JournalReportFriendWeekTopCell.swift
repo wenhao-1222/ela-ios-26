@@ -65,7 +65,7 @@ class JournalReportFriendWeekTopCell: UITableViewCell {
     }()
     lazy var whiteVi: UIView = {
         let vi = UIView()
-        vi.backgroundColor = .white
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.layer.cornerRadius = kFitWidth(12)
         
         return vi
@@ -127,7 +127,7 @@ extension JournalReportFriendWeekTopCell{
             make.top.equalTo(titleLab.snp.bottom)
             make.right.equalTo(kFitWidth(-32))
             make.bottom.equalTo(kFitWidth(-30))
-//            make.height.equalTo(kFitWidth(20))
+            make.height.equalTo(kFitWidth(20))
         }
         whiteVi.snp.makeConstraints { make in
             make.left.right.equalToSuperview()

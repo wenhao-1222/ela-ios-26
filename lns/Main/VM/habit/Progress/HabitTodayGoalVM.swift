@@ -69,7 +69,8 @@ class HabitTodayGoalVM: UIView {
     }()
     lazy var journalMsgVm: HabitItemVM = {
         let vm = HabitItemVM.init(frame: CGRect.init(x: 0, y: vmOriginY[0], width: 0, height: 0))
-        vm.titleLabel.text = "记录当日完整饮食"
+        vm.titleLabel.text = "记录饮食"
+//        vm.titleLabel.text = "记录当日完整饮食"
         vm.leftIconImgView.setImgLocal(imgName: "haibit_journal_icon")
         return vm
     }()

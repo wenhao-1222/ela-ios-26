@@ -15,12 +15,19 @@ class AIGuidanceGoalStageVM: UIView {
         let value: String
     }
 
+    struct StageInfoContent {
+        let title: String
+        let message: String
+        let reference: String
+    }
+
     enum GoalKind {
         case gain
         case fatLoss
     }
 
     var selectedBlock: (() -> ())?
+    var infoButtonTapBlock: ((StageInfoContent) -> Void)?
     private(set) var selectedIndex = -1
     private var currentGoalKind: GoalKind = .gain
     private var dataArray: [Item] = []
@@ -54,6 +61,15 @@ class AIGuidanceGoalStageVM: UIView {
         return lab
     }()
 
+    lazy var infoButton: UIButton = {
+        let btn = UIButton(type: .custom)
+        btn.setTitleColor(.THEME, for: .normal)
+        btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
+        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        btn.addTarget(self, action: #selector(infoButtonTapAction), for: .touchUpInside)
+        return btn
+    }()
+
     lazy var stackView: UIStackView = {
         let st = UIStackView()
         st.axis = .vertical
@@ -68,6 +84,7 @@ extension AIGuidanceGoalStageVM {
         let oldGoalKind = currentGoalKind
         currentGoalKind = goalKind
         titleLabel.text = titleText(for: goalKind)
+        infoButton.setTitle(infoButtonText(for: goalKind), for: .normal)
         dataArray = items(for: goalKind)
         if oldGoalKind != goalKind {
             QuestinonaireMsgModel.shared.aiGuidanceGoalStageType = ""
@@ -83,6 +100,40 @@ extension AIGuidanceGoalStageVM {
         } else {
             selectedIndex = -1
             QuestinonaireMsgModel.shared.aiGuidanceGoalStageType = ""
+        }
+    }
+
+    func infoButtonText(for goalKind: GoalKind) -> String {
+        switch goalKind {
+        case .gain:
+            return "为什么要区分增肌阶段？"
+        case .fatLoss:
+            return "为什么要区分减脂阶段？"
+        }
+    }
+
+    func infoContent(for goalKind: GoalKind) -> StageInfoContent {
+        switch goalKind {
+        case .gain:
+            return StageInfoContent(
+                title: "为什么要区分增肌阶段？",
+                message: """
+早期力量提升很大一部分来自神经因素，研究显示，训练初期神经因素占更大比例，约 3 到 5 周后肌肥大因素才逐渐变得更主导。
+
+运动训练会提高骨骼肌 GLUT4 表达，并可能增强肌糖原储备。肌糖原具有亲水性，每 1g 糖原会伴随至少约 3g 水分，因此增肌早期体重上升通常会更快，且不一定全是肌肉。
+
+另外，训练经验也会影响增肌速度，系统综述指出未训练者通常有更大的肌肥大提升，而有训练经验的人需要更多训练刺激才能继续进步。
+""",
+                reference: "参考文献：Moritani & deVries, 1979; Richter & Hargreaves, 2013; Fernández-Elías et al., 2015; ACSM, 2009; Lopez et al., 2021."
+            )
+        case .fatLoss:
+            return StageInfoContent(
+                title: "为什么要区分减脂阶段？",
+                message: """
+减脂速度并非线性。早期体重下降常包含糖原和水分变化，因为糖原会以水合形式储存，每 1g 糖原通常伴随约 3 到 4g 水分；短期体重变化也不等同于纯脂肪变化。持续减脂后，体重变化会受到能量摄入、能量消耗和身体成分变化共同影响。到后期，体重降低会减少维持身体所需的能量，热量限制还可能带来一定代谢适应，因此减重速度变慢或进入平台期很常见。
+""",
+                reference: "参考文献：Kreitzman et al., 1992; Bhutani et al., 2017; Hall et al., 2012; Hall et al., 2011; Most & Redman, 2020; Hall & Kahan, 2018; Nunes et al., 2021."
+            )
         }
     }
 
@@ -183,6 +234,10 @@ extension AIGuidanceGoalStageVM {
         applySelection(index: sender.tag, notify: true)
     }
 
+    @objc func infoButtonTapAction() {
+        infoButtonTapBlock?(infoContent(for: currentGoalKind))
+    }
+
     func applySelection(index: Int, notify: Bool) {
         guard index >= 0 && index < dataArray.count else {
             return
@@ -235,6 +290,7 @@ private extension AIGuidanceGoalStageVM {
 extension AIGuidanceGoalStageVM {
     func initUI() {
         addSubview(titleLabel)
+        addSubview(infoButton)
         addSubview(stackView)
 
         titleLabel.snp.makeConstraints { make in
@@ -242,10 +298,16 @@ extension AIGuidanceGoalStageVM {
             make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(59))
         }
 
+        infoButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(10))
+            make.height.equalTo(kFitWidth(22))
+        }
+
         stackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(100))
+            make.top.equalTo(infoButton.snp.bottom).offset(kFitWidth(76))
         }
     }
 }

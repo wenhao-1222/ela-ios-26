@@ -249,7 +249,6 @@ class GuidanceVC: WHBaseViewVC {
         return vm
     }()
 
-
     lazy var fixGoalTipsAlertVm: QuestionCustomTipsAlertVM = {
         let vm = QuestionCustomTipsAlertVM(frame: .zero)
         vm.isHidden = true

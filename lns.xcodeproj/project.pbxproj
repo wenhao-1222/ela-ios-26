@@ -671,6 +671,7 @@
 		C0A100052E8F000100000001 /* AICoachReportPDFDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100152E8F000100000001 /* AICoachReportPDFDemoVC.swift */; };
 		C0A100062F91000100000001 /* AICoachReportDateAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100162F91000100000001 /* AICoachReportDateAlertVM.swift */; };
 		C0A100072F92000100000001 /* AICoachReportAdviceAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0A100172F92000100000001 /* AICoachReportAdviceAlertVM.swift */; };
+		D1B000012F9A000000000001 /* DebugTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B000022F9A000000000001 /* DebugTools.swift */; };
 		EC000E6A2EA78F6000E2C60A /* CoursePayPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC000E692EA78F5900E2C60A /* CoursePayPopupView.swift */; };
 		EC029B8F2EAA188700834AD5 /* LiquidGlassShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B8E2EAA188600834AD5 /* LiquidGlassShadow.swift */; };
 		EC029B912EAA2F3A00834AD5 /* GradientGlassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC029B902EAA2F3A00834AD5 /* GradientGlassView.swift */; };
@@ -813,6 +814,7 @@
 		EC4732D62EEFBDEC008F67F5 /* MallDetailImageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D52EEFBDEB008F67F5 /* MallDetailImageVM.swift */; };
 		EC4732D82EEFF05A008F67F5 /* OverSeaMsgVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */; };
 		EC48CBD02F582FBA00ADB6E7 /* ElaProPriceCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC48CBCF2F582FB900ADB6E7 /* ElaProPriceCardView.swift */; };
+		EC4A27752FD2CA5A0062E890 /* AIGuidanceGoalStageInfoAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4A27742FD2CA590062E890 /* AIGuidanceGoalStageInfoAlertVM.swift */; };
 		EC4DE2802BC8D0B30090A7BD /* PlanDetailTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE27F2BC8D0B30090A7BD /* PlanDetailTopVM.swift */; };
 		EC4DE2822BC8D80E0090A7BD /* PlanDetailDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE2812BC8D80E0090A7BD /* PlanDetailDaysVM.swift */; };
 		EC4DE2842BC8E4000090A7BD /* PlanDetailDayMealsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4DE2832BC8E4000090A7BD /* PlanDetailDayMealsVM.swift */; };
@@ -903,7 +905,6 @@
 		EC67033D2E9C8FE200C0FDFE /* SystemNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */; };
 		EC67033F2E9CF3EA00C0FDFE /* ForumNaviTypeLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */; };
 		EC6703422E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */; };
-		D1B000012F9A000000000001 /* DebugTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B000022F9A000000000001 /* DebugTools.swift */; };
 		EC6978DF2BABBD81000B933A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6978DE2BABBD81000B933A /* AppDelegate.swift */; };
 		EC6978E32BABBD81000B933A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6978E22BABBD81000B933A /* ViewController.swift */; };
 		EC6978E62BABBD81000B933A /* Base in Resources */ = {isa = PBXBuildFile; fileRef = EC6978E52BABBD81000B933A /* Base */; };
@@ -2162,6 +2163,7 @@
 		C0A100172F92000100000001 /* AICoachReportAdviceAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachReportAdviceAlertVM.swift; sourceTree = "<group>"; };
 		CAEB3A5694EA2B884C5946E3 /* Pods_ElaNaturalThreeMealsWidgetExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ElaNaturalThreeMealsWidgetExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDFD4BE5993CA839312C9118 /* Pods-ElaNaturalFiveMealsWidgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalFiveMealsWidgetExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaNaturalFiveMealsWidgetExtension/Pods-ElaNaturalFiveMealsWidgetExtension.release.xcconfig"; sourceTree = "<group>"; };
+		D1B000022F9A000000000001 /* DebugTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugTools.swift; sourceTree = "<group>"; };
 		DB3B3C07E8D8819AF777A82A /* Pods-ElaNaturalWidgetCaloriesFourMealsExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalWidgetCaloriesFourMealsExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaNaturalWidgetCaloriesFourMealsExtension/Pods-ElaNaturalWidgetCaloriesFourMealsExtension.release.xcconfig"; sourceTree = "<group>"; };
 		DD8104AF7D11321922808F22 /* Pods-ElaNaturalFiveMealsWidgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalFiveMealsWidgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-ElaNaturalFiveMealsWidgetExtension/Pods-ElaNaturalFiveMealsWidgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		E4FBFB54E8CC7241D44272E4 /* Pods_ElaWeekCaloriesWidgetExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ElaWeekCaloriesWidgetExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2314,6 +2316,7 @@
 		EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverSeaMsgVC.swift; sourceTree = "<group>"; };
 		EC47FE352C3B8D87006CFA2A /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		EC48CBCF2F582FB900ADB6E7 /* ElaProPriceCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProPriceCardView.swift; sourceTree = "<group>"; };
+		EC4A27742FD2CA590062E890 /* AIGuidanceGoalStageInfoAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceGoalStageInfoAlertVM.swift; sourceTree = "<group>"; };
 		EC4DE27F2BC8D0B30090A7BD /* PlanDetailTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDetailTopVM.swift; sourceTree = "<group>"; };
 		EC4DE2812BC8D80E0090A7BD /* PlanDetailDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDetailDaysVM.swift; sourceTree = "<group>"; };
 		EC4DE2832BC8E4000090A7BD /* PlanDetailDayMealsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanDetailDayMealsVM.swift; sourceTree = "<group>"; };
@@ -2404,7 +2407,6 @@
 		EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemNavigationController.swift; sourceTree = "<group>"; };
 		EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumNaviTypeLiquidVM.swift; sourceTree = "<group>"; };
 		EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverViewLogoLiquidVM.swift; sourceTree = "<group>"; };
-		D1B000022F9A000000000001 /* DebugTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugTools.swift; sourceTree = "<group>"; };
 		EC6978DB2BABBD81000B933A /* lns.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lns.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC6978DE2BABBD81000B933A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EC6978E22BABBD81000B933A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -4242,6 +4244,14 @@
 			path = CoachReportPDFDemo;
 			sourceTree = "<group>";
 		};
+		D1B000032F9A000000000001 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				D1B000022F9A000000000001 /* DebugTools.swift */,
+			);
+			path = Debug;
+			sourceTree = "<group>";
+		};
 		E0A62C21CE4AEE1226859378 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -4589,6 +4599,7 @@
 				F1A0C10D2F73A10000A1B2C3 /* AIGuidanceIntroVM.swift */,
 				F1A0C1072F72430000A1B2C3 /* AIGuidanceNoticeVM.swift */,
 				F1A0C10B2F72450000A1B2C3 /* AIGuidanceReadyStartVM.swift */,
+				EC4A27742FD2CA590062E890 /* AIGuidanceGoalStageInfoAlertVM.swift */,
 			);
 			path = Guidance;
 			sourceTree = "<group>";
@@ -6024,14 +6035,6 @@
 			path = plan;
 			sourceTree = "<group>";
 		};
-		D1B000032F9A000000000001 /* Debug */ = {
-			isa = PBXGroup;
-			children = (
-				D1B000022F9A000000000001 /* DebugTools.swift */,
-			);
-			path = Debug;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -6466,6 +6469,7 @@
 				A7881E9D2CBF8182008F4390 /* WHCollectionViewCell.swift in Sources */,
 				A7881E9E2CBF8182008F4390 /* WHShowBigImgBackView.swift in Sources */,
 				EC62537D2EFA84F2003C076C /* HabitTodayGoalVM.swift in Sources */,
+				EC4A27752FD2CA5A0062E890 /* AIGuidanceGoalStageInfoAlertVM.swift in Sources */,
 				A7454B322E73B6E60064076C /* AddressPickerView.swift in Sources */,
 				A74187482D7990AB006C8858 /* AITipsAlertConfirmBtn.swift in Sources */,
 				EC5328402BF5E69100C39C6A /* ServiceTextView.swift in Sources */,
