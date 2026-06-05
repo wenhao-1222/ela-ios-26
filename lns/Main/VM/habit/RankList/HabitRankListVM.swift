@@ -652,27 +652,27 @@ extension HabitRankListVM{
 extension HabitRankListVM{
     //MARK: 造假数据
     private func prepareLeaderboardData(from array: NSArray) -> NSArray {
-//        return array
-        var entries = array.compactMap { $0 as? NSDictionary }
-        var placeholderIndex = 1
-
-        while entries.count < 20 {
-            let randomScore = Int.random(in: 1...8)
-            let placeholder: NSDictionary = [
-                "headimgurl": "",
-                "nickname": "Tester \(placeholderIndex)",
-                "donateCount": 0,
-                "rankPointBalance": "\(randomScore)"
-            ]
-            entries.append(placeholder)
-            placeholderIndex += 1
-        }
-
-        let sortedEntries = entries.sorted {
-            $0.stringValueForKey(key: "rankPointBalance").intValue > $1.stringValueForKey(key: "rankPointBalance").intValue
-        }
-
-        return Array(sortedEntries.prefix(20)) as NSArray
+        return array
+//        var entries = array.compactMap { $0 as? NSDictionary }
+//        var placeholderIndex = 1
+//
+//        while entries.count < 20 {
+//            let randomScore = Int.random(in: 1...8)
+//            let placeholder: NSDictionary = [
+//                "headimgurl": "",
+//                "nickname": "Tester \(placeholderIndex)",
+//                "donateCount": 0,
+//                "rankPointBalance": "\(randomScore)"
+//            ]
+//            entries.append(placeholder)
+//            placeholderIndex += 1
+//        }
+//
+//        let sortedEntries = entries.sorted {
+//            $0.stringValueForKey(key: "rankPointBalance").intValue > $1.stringValueForKey(key: "rankPointBalance").intValue
+//        }
+//
+//        return Array(sortedEntries.prefix(20)) as NSArray
     }
 }
 

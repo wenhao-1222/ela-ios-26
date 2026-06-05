@@ -305,7 +305,6 @@ extension DietPlanCreateVC{
         if currentIndex == displayStepIndex(for: 6), let payload = targetWeightVm.buildTargetWeightAlertPayload() {
             targetWeightAlertVm.showView(type: payload.type, confirmBlock: { [weak self] in
                 guard let self = self else { return }
-                self.targetWeightVm.applyRecommendedTargetWeight(payload.recommendedWeight)
                 self.goToNextStep()
             })
             return
@@ -969,11 +968,12 @@ extension DietPlanCreateVC{
         isUploadingDietProfile = true
         let flavorPreferences = flavorVM.selectedIndex == 4 ? 1 : (flavorVM.selectedIndex + 1)
         let goalImportance = importantVm.selectedIndex < 0 ? 4 : (importantVm.selectedIndex == 3 ? 1 : importantVm.selectedIndex + 1)
+        let requestTargetWeight = targetWeightVm.targetWeightForRequest()
         var param = ["userGoal":goalVm.buildUserGoal(),
                      "birthYear":QuestinonaireMsgModel.shared.birthYear,
                      "gender":QuestinonaireMsgModel.shared.sex,
                      "currentWeight":QuestinonaireMsgModel.shared.weight,
-                     "targetWeight":QuestinonaireMsgModel.shared.targetWeight,
+                     "targetWeight":requestTargetWeight,
                      "height":QuestinonaireMsgModel.shared.height,
                      "bodyFat":QuestinonaireMsgModel.shared.bodyFat,
                      "dailyActivityLevel":QuestinonaireMsgModel.shared.events,

@@ -48,7 +48,7 @@
 			<key>uniqueIdentifier</key>
 			<string>269E9B34-418F-4759-945F-DF5D366BE0E9</string>
 		</dict>
-		<key>4CE81ACF-3F24-40D4-B908-6BDEF4630310</key>
+		<key>2E78BA59-9D05-4E82-B5A9-B92689F16AEB</key>
 		<dict>
 			<key>className</key>
 			<string>IDECommandLineBuildLog</string>
@@ -57,7 +57,7 @@
 			<key>domainType</key>
 			<string>Xcode.IDEActivityLogDomainType.BuildLog</string>
 			<key>fileName</key>
-			<string>4CE81ACF-3F24-40D4-B908-6BDEF4630310.xcactivitylog</string>
+			<string>2E78BA59-9D05-4E82-B5A9-B92689F16AEB.xcactivitylog</string>
 			<key>hasPrimaryLog</key>
 			<true/>
 			<key>primaryObservable</key>
@@ -71,7 +71,7 @@
 				<key>totalNumberOfTestFailures</key>
 				<integer>0</integer>
 				<key>totalNumberOfWarnings</key>
-				<integer>69</integer>
+				<integer>75</integer>
 			</dict>
 			<key>schemeIdentifier-containerName</key>
 			<string>lns project</string>
@@ -82,13 +82,13 @@
 			<key>signature</key>
 			<string>Building workspace lns with scheme lns and configuration Debug</string>
 			<key>timeStartedRecording</key>
-			<real>801994868.72074497</real>
+			<real>802340635.94891703</real>
 			<key>timeStoppedRecording</key>
-			<real>801994963.26822102</real>
+			<real>802340693.99920595</real>
 			<key>title</key>
 			<string>Building workspace lns with scheme lns and configuration Debug</string>
 			<key>uniqueIdentifier</key>
-			<string>4CE81ACF-3F24-40D4-B908-6BDEF4630310</string>
+			<string>2E78BA59-9D05-4E82-B5A9-B92689F16AEB</string>
 		</dict>
 	</dict>
 </dict>

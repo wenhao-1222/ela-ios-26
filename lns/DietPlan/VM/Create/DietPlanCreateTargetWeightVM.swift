@@ -267,6 +267,13 @@ extension DietPlanCreateTargetWeightVM {
         return nil
     }
 
+    func targetWeightForRequest() -> String {
+        if let payload = buildTargetWeightAlertPayload() {
+            return formatOneDecimal(payload.recommendedWeight)
+        }
+        return QuestinonaireMsgModel.shared.targetWeight
+    }
+
     func applyRecommendedTargetWeight(_ weight: Double) {
         let recommended = clamp(roundToTenth(weight))
         currentTargetWeight = recommended
