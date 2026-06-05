@@ -125,8 +125,8 @@ extension ElaLaunchVC{
         logoImgView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(210))
-            make.width.equalTo(kFitWidth(259))
-            make.height.equalTo(kFitWidth(45))
+            make.width.equalTo(kFitWidth(277.5))
+            make.height.equalTo(kFitWidth(48.5))
         }
         elaProIconImg.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
