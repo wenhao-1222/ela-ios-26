@@ -153,7 +153,7 @@ class QuestionnaireVC: WHBaseViewVC {
             }else{
                 let appDelegate = UIApplication.shared.delegate as! AppDelegate
                 let newRootVC = LNSLoginVC()
-                appDelegate.switchRootViewController(to: newRootVC)
+                appDelegate.switchRootViewController(to: newRootVC,from: self)
             }
         }
         return vm

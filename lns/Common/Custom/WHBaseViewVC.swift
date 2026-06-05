@@ -286,14 +286,14 @@ class WHBaseViewVC: ViewController {
         ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
         if isIpad(){
             let newRootVC = MainTabBarController()
-            appDelegate.switchRootViewController(to: newRootVC)
+            appDelegate.switchRootViewController(to: newRootVC,from: self)
         }else{
 //            var newRootVC = WHTabBarVC()
 //            appDelegate.switchRootViewController(to: newRootVC)
             if #available(iOS 26.0, *) {
-                appDelegate.switchRootViewController(to: SystemTabbar())
+                appDelegate.switchRootViewController(to: SystemTabbar(),from: self)
             }else{
-                appDelegate.switchRootViewController(to: WHTabBarVC())
+                appDelegate.switchRootViewController(to: WHTabBarVC(),from: self)
             }
         }
     }
@@ -307,7 +307,7 @@ class WHBaseViewVC: ViewController {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
 //        let newRootVC = LNSLoginVC()
         let newRootVC = LLNaviViewController(rootViewController: LNSLoginVC())
-        appDelegate.switchRootViewController(to: newRootVC)
+        appDelegate.switchRootViewController(to: newRootVC,from: self)
     }
     /// 切回欢迎页 / 登录前页面。
     ///
@@ -322,7 +322,7 @@ class WHBaseViewVC: ViewController {
         } else {
             navVc = UINavigationController(rootViewController: FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true))
         }
-        appDelegate.switchRootViewController(to: navVc, teardownTabBarControllers: teardownTabBarControllers)
+        appDelegate.switchRootViewController(to: navVc,from: self, teardownTabBarControllers: teardownTabBarControllers)
     }
     @objc func backTapAction(){
         if (self.navigationController != nil) {
