@@ -511,42 +511,42 @@ private extension AICoachPreVC {
         }
     }
 
-    func dayState(for dateString: String, todayDateString: String = Date().todayDate) -> AICoachPreDaysVM.DayState {
-        let normalizedDateString = dateString.trimmingCharacters(in: .whitespacesAndNewlines)
-        if normalizedDateString == todayDateString {
-            return .current
-        }
+//    func dayState(for dateString: String, todayDateString: String = Date().todayDate) -> AICoachPreDaysVM.DayState {
+//        let normalizedDateString = dateString.trimmingCharacters(in: .whitespacesAndNewlines)
+//        if normalizedDateString == todayDateString {
+//            return .current
+//        }
+//
+//        guard let date = preDayDate(from: normalizedDateString),
+//              let todayDate = preDayDate(from: todayDateString) else {
+//            return .pending
+//        }
+//
+//        return date < todayDate ? .completed : .pending
+//    }
 
-        guard let date = preDayDate(from: normalizedDateString),
-              let todayDate = preDayDate(from: todayDateString) else {
-            return .pending
-        }
+//    func preDayDate(from dateString: String) -> Date? {
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "yyyy-MM-dd"
+//        formatter.calendar = Calendar(identifier: .gregorian)
+//        formatter.locale = Locale(identifier: "en_US_POSIX")
+//        formatter.timeZone = TimeZone.current
+//        return formatter.date(from: dateString)
+//    }
 
-        return date < todayDate ? .completed : .pending
-    }
-
-    func preDayDate(from dateString: String) -> Date? {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.calendar = Calendar(identifier: .gregorian)
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone.current
-        return formatter.date(from: dateString)
-    }
-
-    func weekdayShortText(from dateString: String) -> String {
-        let date = Date().changeDateStringToDate(dateString: dateString, formatter: "yyyy-MM-dd")
-        switch Calendar.current.component(.weekday, from: date) {
-        case 1: return "日"
-        case 2: return "一"
-        case 3: return "二"
-        case 4: return "三"
-        case 5: return "四"
-        case 6: return "五"
-        case 7: return "六"
-        default: return ""
-        }
-    }
+//    func weekdayShortText(from dateString: String) -> String {
+//        let date = Date().changeDateStringToDate(dateString: dateString, formatter: "yyyy-MM-dd")
+//        switch Calendar.current.component(.weekday, from: date) {
+//        case 1: return "日"
+//        case 2: return "一"
+//        case 3: return "二"
+//        case 4: return "三"
+//        case 5: return "四"
+//        case 6: return "五"
+//        case 7: return "六"
+//        default: return ""
+//        }
+//    }
 
     func showInfoSelectPopup(for field: AICoachPreInfoEditableField) {
         guard isUpdatingAICoachProfile == false else { return }
@@ -917,10 +917,10 @@ private extension AICoachPreVC {
         hasPlayedRemainingEntranceAnimation && feedbackGlassVM.alpha > 0
     }
 
-    var shouldShowNextButton: Bool {
-        let completeDays = dataDict.stringValueForKey(key: "completeDays").intValue
-        return completeDays >= 7
-    }
+//    var shouldShowNextButton: Bool {
+//        let completeDays = dataDict.stringValueForKey(key: "completeDays").intValue
+//        return completeDays >= 7
+//    }
 
     var shouldForceVisiblePresentationAfterDataUpdate: Bool {
         currentReportStatus == 4 && shouldPlayEntranceAnimation == false

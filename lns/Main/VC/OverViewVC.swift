@@ -341,7 +341,27 @@ extension OverViewVC{
         "\(Date().nextDay(days: 0))"
     }
 
+    private class func canRequestNutritionData() -> Bool {
+        if UserInfoModel.shared.isLoggingOut {
+            return false
+        }
+
+        if UserInfoModel.shared.uId.count >= 4,
+           UserInfoModel.shared.token.count >= 4 {
+            return true
+        }
+
+        let uId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
+        let token = UserDefaults.standard.value(forKey: token) as? String ?? ""
+        return uId.count >= 4 && token.count >= 4
+    }
+
     class func prefetchNutritionDataIfNeeded(forceRefresh: Bool = false, completion: ((NSDictionary) -> Void)? = nil) {
+        guard canRequestNutritionData() else {
+            nutritionCallbacks.removeAll()
+            return
+        }
+
         let sdate = currentNutritionDateString()
         if forceRefresh == false,
            cachedNutritionDate == sdate,

@@ -162,6 +162,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
             }
         }
 
+        #if DEBUG
+        DebugTools.bootstrap()
+        #endif
+
         return true
     }
     //禁用了三方输入法

@@ -46,11 +46,12 @@ extension AICoachPreReadyMessageVM {
             .paragraphStyle: paragraphStyle]))
         
         let latestReport = msgDict["latestReport"]as? NSDictionary ?? [:]
-        
+        //remainingDays 后台计算好了各种状态的  remainingDays，直接用
+        let remainingDays = msgDict.stringValueForKey(key: "remainingDays").intValue
         if msgDict.doubleValueForKey(key: "reportCount") == 0 {
             //首报未出
             //  remainingDays  不适用首报未出的情况
-            let remainingDays = max(1,7 - msgDict.stringValueForKey(key: "completeDays").intValue)
+//            let remainingDays = msgDict.stringValueForKey(key: "remainingDays").intValue//max(1,7 - msgDict.stringValueForKey(key: "completeDays").intValue)
             
             attr.append(NSAttributedString(string: "\(remainingDays)", attributes: [.font:UIFont.systemFont(ofSize: 14, weight: .medium),
                   .foregroundColor:UIColor.THEME,
@@ -70,7 +71,7 @@ extension AICoachPreReadyMessageVM {
                 messageLabel.text = "你的首期教练反馈已经准备好了，快去查看！"
             }else{
                 //首报已读，则已开始下一周期的报告
-                let remainingDays = msgDict.stringValueForKey(key: "remainingDays")//max(1,7 - msgDict.stringValueForKey(key: "completeDays").intValue)
+//                let remainingDays = msgDict.stringValueForKey(key: "remainingDays")//max(1,7 - msgDict.stringValueForKey(key: "completeDays").intValue)
                 attr.append(NSAttributedString(string: "\(remainingDays)", attributes: [.font:UIFont.systemFont(ofSize: 14, weight: .medium),
                       .foregroundColor:UIColor.THEME,
                       .paragraphStyle: paragraphStyle]))
@@ -86,7 +87,7 @@ extension AICoachPreReadyMessageVM {
                 messageLabel.text = "你最新的教练反馈已经准备好了，快去查看！"
             }else{
                 //首报已读，则已开始下一周期的报告
-                let remainingDays = msgDict.stringValueForKey(key: "remainingDays")//max(1,7 - msgDict.stringValueForKey(key: "completeDays").intValue)
+//                let remainingDays = msgDict.stringValueForKey(key: "remainingDays")//max(1,7 - msgDict.stringValueForKey(key: "completeDays").intValue)
                 attr.append(NSAttributedString(string: "\(remainingDays)", attributes: [.font:UIFont.systemFont(ofSize: 14, weight: .medium),
                       .foregroundColor:UIColor.THEME,
                       .paragraphStyle: paragraphStyle]))

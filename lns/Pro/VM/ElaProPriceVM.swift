@@ -84,7 +84,7 @@ class ElaProPriceVM: UIView {
     var purchaseLoadingStateChangeBlock: ((Bool) -> ())?
     var bizType = ""
     var purchaseQueryBizType = "3"
-    var isPurchased = ""
+    var isPurchased = "0"
     var displayMode: DisplayMode = .default {
         didSet {
             applyDisplayMode()
@@ -2031,7 +2031,7 @@ extension ElaProPriceVM{
 
 extension ElaProPriceVM{
     static func preloadProducts(bizType: String,
-                                isPurchased: String = "",
+                                isPurchased: String = "0",
                                 completion: @escaping (Bool) -> Void) {
         let cacheKey = productLoadCacheKey(bizType: bizType, isPurchased: isPurchased)
         if let snapshot = productLoadCache[cacheKey] {
@@ -2056,11 +2056,11 @@ extension ElaProPriceVM{
         }
 
         let targets: [(bizType: String, isPurchased: String)] = [
-            ("1", ""),
+            ("1", "0"),
             ("1", "1"),
-            ("2", ""),
-            ("3", ""),
-            ("4", "")
+            ("2", "0"),
+            ("3", "0"),
+            ("4", "0")
         ]
         targets.forEach { target in
             preloadProducts(bizType: target.bizType, isPurchased: target.isPurchased) { success in
@@ -2105,13 +2105,11 @@ extension ElaProPriceVM{
         let cacheKey = productLoadCacheKey(bizType: bizType, isPurchased: isPurchased)
         var parameters = [String: Any]()
         let cleanBizType = bizType.trimmingCharacters(in: .whitespacesAndNewlines)
-        let cleanIsPurchased = isPurchased.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanIsPurchased = normalizedIsPurchased(isPurchased)
         if !cleanBizType.isEmpty {
             parameters["bizType"] = cleanBizType
         }
-        if !cleanIsPurchased.isEmpty {
-            parameters["isPurchased"] = cleanIsPurchased
-        }
+        parameters["isPurchased"] = cleanIsPurchased
 
         DLLog(message: "preloadProProductList params:\(parameters)")
         WHNetworkUtil.shareManager().POST(urlString: URL_pro_product,
@@ -2141,8 +2139,13 @@ extension ElaProPriceVM{
 
     private static func productLoadCacheKey(bizType: String, isPurchased: String) -> String {
         let cleanBizType = bizType.trimmingCharacters(in: .whitespacesAndNewlines)
-        let cleanIsPurchased = isPurchased.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanIsPurchased = normalizedIsPurchased(isPurchased)
         return "\(cleanBizType)|\(cleanIsPurchased)"
+    }
+
+    private static func normalizedIsPurchased(_ isPurchased: String) -> String {
+        let cleanIsPurchased = isPurchased.trimmingCharacters(in: .whitespacesAndNewlines)
+        return cleanIsPurchased.isEmpty ? "0" : cleanIsPurchased
     }
 
     private static func remoteProducts(from dataDict: NSDictionary) -> [RemotePlanProduct] {

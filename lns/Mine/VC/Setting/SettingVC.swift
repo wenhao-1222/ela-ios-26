@@ -400,12 +400,13 @@ extension SettingVC{
     }
     func sendLogOutRequest() {
         MCToast.mc_loading()
+        UserInfoModel.shared.beginLogoutHandling()
         WHNetworkUtil.shareManager().POST(urlString: URL_Login_out, parameters: nil,isNeedToast: true,vc: self) { responseObject in
             
         }
 //        UserInfoModel.shared.logoutClearMsg()
 //        WHBaseViewVC().changeRootVcToWelcome()
-        WHBaseViewVC().changeRootVcToWelcome()
+        WHBaseViewVC().changeRootVcToWelcome(teardownTabBarControllers: true)
         LogsSQLiteUploadManager().clearNaturalData()
         BodyDataSQLiteManager.getInstance().deleteAllData()
         LogsSQLiteManager.getInstance().deleteAllData()

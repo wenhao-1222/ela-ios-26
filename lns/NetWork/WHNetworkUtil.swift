@@ -48,8 +48,23 @@ class WHNetworkUtil: SessionManager {
 //        header["token"] = "\(UserInfoModel.shared.token)"
         
         DLLog(message: "\(urlString)")
+        #if DEBUG
+        let debugLogID = DebugNetworkLogStore.shared.recordRequest(
+            method: "GET",
+            url: urlString,
+            parameters: nil
+        )
+        #endif
         Alamofire.request(urlString,method: .get,encoding: JSONEncoding.default,headers: header).responseJSON { response in
             DLLog(message: "\(response)")
+            #if DEBUG
+            DebugNetworkLogStore.shared.recordResponse(
+                id: debugLogID,
+                statusCode: response.response?.statusCode,
+                response: response.result.value ?? response.data ?? response.debugDescription,
+                error: response.error
+            )
+            #endif
             MCToast.mc_remove()
             if let value = response.result.value as? [String : AnyObject]{
                 DLLog(message: "\(urlString)  \(value)")
@@ -185,6 +200,15 @@ class WHNetworkUtil: SessionManager {
         ]
 
         NetworkMonitor.shared.addRequest ({
+            if urlString == URL_get_current_nutrition {
+                let currentUId = UserInfoModel.shared.uId.count >= 4 ? UserInfoModel.shared.uId : (UserDefaults.standard.value(forKey: userId) as? String ?? "")
+                let currentToken = UserInfoModel.shared.token.count >= 4 ? UserInfoModel.shared.token : (UserDefaults.standard.value(forKey: token) as? String ?? "")
+                if UserInfoModel.shared.isLoggingOut || currentUId.count < 4 || currentToken.count < 4 {
+                    failure?(false)
+                    return
+                }
+            }
+
             if UserInfoModel.shared.uId.count < 4 || UserInfoModel.shared.token.count < 4{
                 let uId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
                 let token = UserDefaults.standard.value(forKey: token) as? String ?? ""
@@ -239,11 +263,28 @@ class WHNetworkUtil: SessionManager {
                 manager.session.configuration.timeoutIntervalForRequest = timeOut ?? 10.0
     //            WHNetworkUtil.shareManager().dataRequest =
                 DLLog(message: "\(urlString)入参:\(paraDict)")
+                #if DEBUG
+                let debugLogID = DebugNetworkLogStore.shared.recordRequest(
+                    method: "POST",
+                    url: urlString,
+                    parameters: parameters,
+                    encodedParameters: paraDict,
+                    taskId: taskId
+                )
+                #endif
 //                manager.request(urlString, method: .post, parameters: paraDict, encoding: JSONEncoding.default,headers: header).responseJSON { (response) in
             let dataRequest = manager.request(urlString, method: .post, parameters: paraDict, encoding: JSONEncoding.default,headers: header)
                             requestConfig?(dataRequest)
                             dataRequest.responseJSON { (response) in
                 DLLog(message: "\(urlString) \n \(response)")
+                #if DEBUG
+                DebugNetworkLogStore.shared.recordResponse(
+                    id: debugLogID,
+                    statusCode: response.response?.statusCode,
+                    response: response.result.value ?? response.data ?? response.debugDescription,
+                    error: response.error
+                )
+                #endif
                     
                     switch response.result{
                     case .success:

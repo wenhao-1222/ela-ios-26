@@ -903,6 +903,7 @@
 		EC67033D2E9C8FE200C0FDFE /* SystemNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */; };
 		EC67033F2E9CF3EA00C0FDFE /* ForumNaviTypeLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */; };
 		EC6703422E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */; };
+		D1B000012F9A000000000001 /* DebugTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1B000022F9A000000000001 /* DebugTools.swift */; };
 		EC6978DF2BABBD81000B933A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6978DE2BABBD81000B933A /* AppDelegate.swift */; };
 		EC6978E32BABBD81000B933A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6978E22BABBD81000B933A /* ViewController.swift */; };
 		EC6978E62BABBD81000B933A /* Base in Resources */ = {isa = PBXBuildFile; fileRef = EC6978E52BABBD81000B933A /* Base */; };
@@ -2403,6 +2404,7 @@
 		EC67033C2E9C8FE100C0FDFE /* SystemNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemNavigationController.swift; sourceTree = "<group>"; };
 		EC67033E2E9CF3E300C0FDFE /* ForumNaviTypeLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumNaviTypeLiquidVM.swift; sourceTree = "<group>"; };
 		EC6703412E9CFFD800C0FDFE /* OverViewLogoLiquidVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverViewLogoLiquidVM.swift; sourceTree = "<group>"; };
+		D1B000022F9A000000000001 /* DebugTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugTools.swift; sourceTree = "<group>"; };
 		EC6978DB2BABBD81000B933A /* lns.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lns.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC6978DE2BABBD81000B933A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EC6978E22BABBD81000B933A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -4833,6 +4835,7 @@
 				A7454B2D2E73B6AE0064076C /* pca-code.json */,
 				ECD0FE7E2BABD0A9001232C9 /* lns.entitlements */,
 				EC6978DE2BABBD81000B933A /* AppDelegate.swift */,
+				D1B000032F9A000000000001 /* Debug */,
 				EC25C8312ED54C2400BF2D1F /* UIApplication+Appearance.swift */,
 				ECCBEC6F2F7A004B0010D630 /* colorbox_1_copy.splineswift */,
 				EC312AA12EFCE9330026F005 /* AlertVMCommon.swift */,
@@ -6019,6 +6022,14 @@
 				EC4DE2D52BCE70240090A7BD /* PlanShareAlertVM.swift */,
 			);
 			path = plan;
+			sourceTree = "<group>";
+		};
+		D1B000032F9A000000000001 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				D1B000022F9A000000000001 /* DebugTools.swift */,
+			);
+			path = Debug;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -7215,6 +7226,7 @@
 				ECD0FF182BABD25B001232C9 /* WHTool.swift in Sources */,
 				EC2802F32F1A060500FEF08D /* HabitGuideThirdVM.swift in Sources */,
 				EC6978DF2BABBD81000B933A /* AppDelegate.swift in Sources */,
+				D1B000012F9A000000000001 /* DebugTools.swift in Sources */,
 				A71D33122E1385BD008D27E4 /* JournalCircleTemplateNaturalVM.swift in Sources */,
 				A7253B752DE0264300D74533 /* EventLogUtils.swift in Sources */,
 				EC5D4F812C21524300F376A4 /* TutorialUpdateAttr.swift in Sources */,
