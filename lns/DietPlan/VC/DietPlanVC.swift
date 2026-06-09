@@ -263,7 +263,8 @@ extension DietPlanVC{
            LogsSQLiteManager.getInstance().updateDietPlanNutrientsTarget(targetDict, sdate: sdate) {
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"),
                                             object: nil,
-                                            userInfo: ["sdate": sdate])
+                                            userInfo: ["sdate": sdate,
+                                                       "refreshGoalOnly": true])
         }
     }
     

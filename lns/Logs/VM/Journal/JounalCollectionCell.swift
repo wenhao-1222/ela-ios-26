@@ -1070,6 +1070,30 @@ extension JounalCollectionCell{
         }
 //        setTodayGoal()
     }
+
+    func refreshGoalDataFromLocalLogs() {
+        guard let latestLogsModel = LogsSQLiteManager.getInstance().getLogsByDate(sDate: self.queryDay) else {
+            return
+        }
+
+        logsModel = latestLogsModel
+        let sportDict = SportDataSQLiteManager.getInstance().querySportsData(sDate: self.queryDay)
+        let latestDayMsg = latestLogsModel.modelToDict()
+        let dict = currentDayMsg.count > 0 ? NSMutableDictionary(dictionary: currentDayMsg) : NSMutableDictionary(dictionary: latestDayMsg)
+        dict.setValue(latestDayMsg.stringValueForKey(key: "caloriesden"), forKey: "caloriesden")
+        dict.setValue(latestDayMsg.stringValueForKey(key: "carbohydrateden"), forKey: "carbohydrateden")
+        dict.setValue(latestDayMsg.stringValueForKey(key: "proteinden"), forKey: "proteinden")
+        dict.setValue(latestDayMsg.stringValueForKey(key: "fatden"), forKey: "fatden")
+        if UserInfoModel.shared.statSportDataToTarget == "1" {
+            dict.setValue("\(sportDict.stringValueForKey(key: "sportCalories"))", forKey: "sportCalories")
+        } else {
+            dict.setValue("", forKey: "sportCalories")
+        }
+        currentDayMsg = dict
+        setTodayGoal()
+        goalVm.updateUI(dict: currentDayMsg, isUpload: false)
+    }
+
     func setTodayGoal() {
         if self.queryDay == Date().nextDay(days: 0){
             let caloriTarget = Int(currentDayMsg.stringValueForKey(key: "caloriesden")) ?? 0

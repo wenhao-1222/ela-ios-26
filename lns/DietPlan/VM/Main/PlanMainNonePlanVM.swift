@@ -90,6 +90,7 @@ class PlanMainNonePlanVM: UIView {
         let text = "点击“创建”\n开始计划"
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.5
+        paragraphStyle.alignment = .center
         let attr = NSMutableAttributedString(string: text)
         attr.addAttributes([
             .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
@@ -132,6 +133,7 @@ private extension PlanMainNonePlanVM {
         let text = "点击“创建”\n开始计划"
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.5
+        paragraphStyle.alignment = .center
         let attr = NSMutableAttributedString(string: text)
         attr.addAttributes([
             .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,

@@ -27,6 +27,7 @@ class JournalVC: WHBaseViewVC {
     var logsGuideStep = 0
     private var needsInitialScrollToToday = true
     private var pendingLogsRefreshDates = Set<String>()
+    private var pendingLogsGoalOnlyRefreshDates = Set<String>()
     private var pendingLogsRefreshNeedsFullReload = false
     private var shouldRequestLogDetailWhenReloadingCells = true
     private weak var activeFitnessCell: JounalCollectionCell?
@@ -706,20 +707,27 @@ extension JournalVC{
     }
     @objc func refresMsgNotifi(notify: Notification) {
         let sdate = notify.userInfo?["sdate"] as? String
-        performLogsMsgRefresh(sdate: sdate, requiresFullReload: sdate == nil)
+        let refreshGoalOnly = notify.userInfo?["refreshGoalOnly"] as? Bool ?? false
+        performLogsMsgRefresh(sdate: sdate, requiresFullReload: sdate == nil, refreshGoalOnly: refreshGoalOnly)
     }
     
     func refreshLogsMsg() {
         performLogsMsgRefresh(sdate: nil, requiresFullReload: true)
     }
     
-    private func performLogsMsgRefresh(sdate: String?, requiresFullReload: Bool) {
+    private func performLogsMsgRefresh(sdate: String?, requiresFullReload: Bool, refreshGoalOnly: Bool = false) {
         guard isViewLoaded, view.window != nil else {
             if requiresFullReload {
                 pendingLogsRefreshNeedsFullReload = true
                 pendingLogsRefreshDates.removeAll()
+                pendingLogsGoalOnlyRefreshDates.removeAll()
             } else if let sdate = sdate {
-                pendingLogsRefreshDates.insert(sdate)
+                if refreshGoalOnly {
+                    pendingLogsGoalOnlyRefreshDates.insert(sdate)
+                } else {
+                    pendingLogsRefreshDates.insert(sdate)
+                    pendingLogsGoalOnlyRefreshDates.remove(sdate)
+                }
             }
             return
         }
@@ -729,7 +737,11 @@ extension JournalVC{
         if requiresFullReload {
             self.reloadJournalCells(shouldRequestLogDetail: true)
         } else if let sdate = sdate {
-            refreshVisibleJournalCellIfNeeded(sdate: sdate)
+            if refreshGoalOnly {
+                refreshVisibleJournalGoalIfNeeded(sdate: sdate)
+            } else {
+                refreshVisibleJournalCellIfNeeded(sdate: sdate)
+            }
         }
         
         refreshTodayGoalIfNeeded(sdate: sdate, requiresFullReload: requiresFullReload)
@@ -741,13 +753,17 @@ extension JournalVC{
         if pendingLogsRefreshNeedsFullReload {
             pendingLogsRefreshNeedsFullReload = false
             pendingLogsRefreshDates.removeAll()
+            pendingLogsGoalOnlyRefreshDates.removeAll()
             performLogsMsgRefresh(sdate: nil, requiresFullReload: true)
             return
         }
         
         let dates = pendingLogsRefreshDates
+        let goalOnlyDates = pendingLogsGoalOnlyRefreshDates.subtracting(dates)
         pendingLogsRefreshDates.removeAll()
+        pendingLogsGoalOnlyRefreshDates.removeAll()
         dates.forEach { performLogsMsgRefresh(sdate: $0, requiresFullReload: false) }
+        goalOnlyDates.forEach { performLogsMsgRefresh(sdate: $0, requiresFullReload: false, refreshGoalOnly: true) }
     }
     
     private func refreshVisibleJournalCellIfNeeded(sdate: String) {
@@ -764,6 +780,18 @@ extension JournalVC{
         }
     }
     
+    private func refreshVisibleJournalGoalIfNeeded(sdate: String) {
+        let index = daySourceArray.index(of: sdate)
+        guard index != NSNotFound else { return }
+        let indexPath = IndexPath(row: index, section: 0)
+        collectView.layoutIfNeeded()
+        guard let cell = collectView.cellForItem(at: indexPath) as? JounalCollectionCell else { return }
+
+        if cell.queryDay == sdate {
+            cell.refreshGoalDataFromLocalLogs()
+        }
+    }
+
     private func refreshTodayGoalIfNeeded(sdate: String?, requiresFullReload: Bool) {
         let today = Date().nextDay(days: 0)
         guard requiresFullReload || sdate == today else { return }
