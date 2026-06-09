@@ -28,6 +28,7 @@ class JournalVC: WHBaseViewVC {
     private var needsInitialScrollToToday = true
     private var pendingLogsRefreshDates = Set<String>()
     private var pendingLogsRefreshNeedsFullReload = false
+    private var shouldRequestLogDetailWhenReloadingCells = true
     private weak var activeFitnessCell: JounalCollectionCell?
     private weak var activeRemarkCell: JounalCollectionCell?
     private weak var activeCircleTemplateCell: JounalCollectionCell?
@@ -397,7 +398,7 @@ class JournalVC: WHBaseViewVC {
             DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
                 let indexPath = IndexPath(row: self.copyMealsAlertVm.selectIndex, section: 0)
                 let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
-                cell?.setQueryDate(date: self.copyMealsAlertVm.queryDay, isEdit: false)
+                cell?.setQueryDate(date: self.copyMealsAlertVm.queryDay, isEdit: false, shouldRequestLogDetail: false)
                 
                 self.isEdit = false
                 self.changeEditStatus()
@@ -538,7 +539,7 @@ extension JournalVC{
         needsInitialScrollToToday = false
         UIView.performWithoutAnimation {
             if reloadData {
-                self.collectView.reloadData()
+                self.reloadJournalCells(shouldRequestLogDetail: true)
             }
             self.collectView.layoutIfNeeded()
             if self.collectView.numberOfItems(inSection: 0) > self.todayIndex {
@@ -549,6 +550,13 @@ extension JournalVC{
         if let today = self.daySourceArray[self.todayIndex] as? String {
             self.queryDay = today
         }
+    }
+
+    private func reloadJournalCells(shouldRequestLogDetail: Bool) {
+        shouldRequestLogDetailWhenReloadingCells = shouldRequestLogDetail
+        collectView.reloadData()
+        collectView.layoutIfNeeded()
+        shouldRequestLogDetailWhenReloadingCells = true
     }
     
     private func currentVisibleJournalCell() -> JounalCollectionCell? {
@@ -719,7 +727,7 @@ extension JournalVC{
         self.refreshNaviDayText()
         
         if requiresFullReload {
-            self.collectView.reloadData()
+            self.reloadJournalCells(shouldRequestLogDetail: true)
         } else if let sdate = sdate {
             refreshVisibleJournalCellIfNeeded(sdate: sdate)
         }
@@ -750,9 +758,9 @@ extension JournalVC{
         
         if cell.queryDay == sdate {
             cell.isEdit = isEdit
-            cell.dealData()
+            cell.dealData(shouldRequestLogDetail: false)
         } else {
-            cell.setQueryDate(date: sdate, isEdit: isEdit)
+            cell.setQueryDate(date: sdate, isEdit: isEdit, shouldRequestLogDetail: false)
         }
     }
     
@@ -864,12 +872,12 @@ extension JournalVC{
         self.isEdit = false
         self.refreshNaviDayText()
         self.getQueryDayIndex()
-        self.collectView.reloadData()
+        self.reloadJournalCells(shouldRequestLogDetail: false)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             let indexPath = IndexPath(row: self.selecteIndex, section: 0)
             let cell = self.collectView.cellForItem(at: indexPath) as? JounalCollectionCell
-            cell?.setQueryDate(date: sdate, isEdit: false)
+            cell?.setQueryDate(date: sdate, isEdit: false, shouldRequestLogDetail: false)
             cell?.reloadTableView()
         }
     }
@@ -1097,7 +1105,7 @@ extension JournalVC:UICollectionViewDelegate,UICollectionViewDataSource{
         
         let day = daySourceArray[indexPath.row]as? String ?? "\(Date().nextDay(days: 0))"
         cell?.controller = self
-        cell?.setQueryDate(date: day,isEdit: self.isEdit)
+        cell?.setQueryDate(date: day,isEdit: self.isEdit, shouldRequestLogDetail: shouldRequestLogDetailWhenReloadingCells)
         
         cell?.offsetChangeBlock = {(offsetY)in
             if day == self.queryDay{
@@ -1368,7 +1376,7 @@ extension JournalVC{
 
             DispatchQueue.main.async {
                 guard self.isViewLoaded else { return }
-                self.collectView.reloadData()
+                self.reloadJournalCells(shouldRequestLogDetail: true)
             }
         }
     }

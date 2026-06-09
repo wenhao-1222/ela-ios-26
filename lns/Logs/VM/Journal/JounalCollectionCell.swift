@@ -346,7 +346,7 @@ extension JounalCollectionCell{
         updateFirstFoodsAlert()
         updateTableViewFrame()
     }
-    func setQueryDate(date:String,isEdit:Bool) {
+    func setQueryDate(date:String,isEdit:Bool, shouldRequestLogDetail: Bool = true) {
         self.goalVm.refreshHiddenSurveyButton()
         
         goalOriginalHeight = goalVm.frame.height
@@ -370,7 +370,7 @@ extension JounalCollectionCell{
 
         self.editHeadView.frame = self.goalVm.frame
 
-        self.dealData()
+        self.dealData(shouldRequestLogDetail: shouldRequestLogDetail)
         tableView.setContentOffset(.zero, animated: false)
         goalVm.changeBgAlpha(offsetY: 0)
         goalVm.winnerVm.updateUI(dict: UserInfoModel.shared.streakDict)
@@ -1033,7 +1033,7 @@ extension JounalCollectionCell{
 }
 
 extension JounalCollectionCell{
-    func dealData(){
+    func dealData(shouldRequestLogDetail: Bool = true){
         logsModel = LogsSQLiteManager.getInstance().getLogsByDate(sDate: self.queryDay)!
         let sportDict = SportDataSQLiteManager.getInstance().querySportsData(sDate: self.queryDay)
         DLLog(message: "SportDataSQLiteManager:\(sportDict)")
@@ -1068,9 +1068,11 @@ extension JounalCollectionCell{
         }
         
 //        LogsSQLiteUploadManager().saveLocalNaturalData(dict: currentDayMsg)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-            self.sendLogsDetailRequest()
-        })
+        if shouldRequestLogDetail {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                self.sendLogsDetailRequest()
+            })
+        }
 //        setTodayGoal()
     }
     func setTodayGoal() {
@@ -1583,7 +1585,7 @@ extension JounalCollectionCell{
                                                                  fatTar: dict.stringValueForKey(key: "fats"),
                                                                  circleTag: dict.stringValueForKey(key: "carbLabel"),
                                                                  sdate: date)
-            self.setQueryDate(date: date, isEdit: false)
+            self.setQueryDate(date: date, isEdit: false, shouldRequestLogDetail: false)
         }
     }
 }
