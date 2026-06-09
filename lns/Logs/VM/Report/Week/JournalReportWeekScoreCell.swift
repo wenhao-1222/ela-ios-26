@@ -83,34 +83,46 @@ class JournalReportWeekScoreCell: UITableViewCell {
 
 extension JournalReportWeekScoreCell{
     func updateUI(dict:NSDictionary) {
-        if dict.stringValueForKey(key: "encourageSentence").count > 0 {
-            hideSkeleton()
-            titleLabel.snp.remakeConstraints { make in
-                make.left.equalTo(kFitWidth(45))
-                make.centerY.lessThanOrEqualTo(circleView)
-            }
-            scoreLabel.snp.remakeConstraints { make in
-                make.left.equalTo(kFitWidth(49))
-                make.bottom.equalTo(kFitWidth(-16))
-            }
-            percentLabel.snp.remakeConstraints { make in
-                make.left.equalTo((SCREEN_WIDHT-kFitWidth(32))*0.5+kFitWidth(36))
-                make.bottom.equalTo(scoreLabel)
-            }
-            titleLabel.text = dict.stringValueForKey(key: "encourageSentence")
+        if dict.stringValueForKey(key: "encourageSentence").count == 0 {
+            titleLabel.text = nil
+            scoreLabel.text = nil
+            percentLabel.text = nil
             
-            let scoreAttr = NSMutableAttributedString(string: "\(dict.stringValueForKey(key: "weeklyScore"))")
-            let scoreAttr1 = NSMutableAttributedString(string: "分")
-            scoreAttr1.yy_font = .systemFont(ofSize: 13, weight: .semibold)
-            scoreAttr.append(scoreAttr1)
-            scoreLabel.attributedText = scoreAttr
-            
-            let percentAttr = NSMutableAttributedString(string: "\(WHUtils.convertStringToString("\(dict.doubleValueForKey(key: "defeatUserRate"))") ?? "0")")
-            let percentAttr1 = NSMutableAttributedString(string: "%用户")
-            percentAttr1.yy_font = .systemFont(ofSize: 13, weight: .semibold)
-            percentAttr.append(percentAttr1)
-            percentLabel.attributedText = percentAttr
+            let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                                     highlightColorLight: .COLOR_GRAY_E2,
+                                     cornerRadius: kFitWidth(4),
+                                     shimmerWidth: 0.22,
+                                     shimmerDuration: 1.15)
+            [titleLabel, scoreLabel, percentLabel].forEach { $0.showSkeleton(cfg) }
+            return
         }
+        
+        [titleLabel, scoreLabel, percentLabel].forEach { $0.hideSkeletonWithCrossfade() }
+//        titleLabel.snp.remakeConstraints { make in
+//            make.left.equalTo(kFitWidth(45))
+//            make.centerY.lessThanOrEqualTo(circleView)
+//        }
+//        scoreLabel.snp.remakeConstraints { make in
+//            make.left.equalTo(kFitWidth(49))
+//            make.bottom.equalTo(kFitWidth(-16))
+//        }
+//        percentLabel.snp.remakeConstraints { make in
+//            make.left.equalTo((SCREEN_WIDHT-kFitWidth(32))*0.5+kFitWidth(36))
+//            make.bottom.equalTo(scoreLabel)
+//        }
+        titleLabel.text = dict.stringValueForKey(key: "encourageSentence")
+        
+        let scoreAttr = NSMutableAttributedString(string: "\(dict.stringValueForKey(key: "weeklyScore"))")
+        let scoreAttr1 = NSMutableAttributedString(string: "分")
+        scoreAttr1.yy_font = .systemFont(ofSize: 13, weight: .semibold)
+        scoreAttr.append(scoreAttr1)
+        scoreLabel.attributedText = scoreAttr
+        
+        let percentAttr = NSMutableAttributedString(string: "\(WHUtils.convertStringToString("\(dict.doubleValueForKey(key: "defeatUserRate"))") ?? "0")")
+        let percentAttr1 = NSMutableAttributedString(string: "%用户")
+        percentAttr1.yy_font = .systemFont(ofSize: 13, weight: .semibold)
+        percentAttr.append(percentAttr1)
+        percentLabel.attributedText = percentAttr
     }
 }
 
@@ -142,7 +154,7 @@ extension JournalReportWeekScoreCell{
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(45))
             make.centerY.lessThanOrEqualTo(circleView)
-            make.width.equalTo(kFitWidth(180))
+//            make.width.equalTo(kFitWidth(180))
             make.height.equalTo(kFitWidth(24))
         }
         scoreLab.snp.makeConstraints { make in

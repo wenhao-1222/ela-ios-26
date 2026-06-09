@@ -15,7 +15,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     private var isDateStepEnabled = false
     private var isShowingManualTargetEditor = false
     private var shouldPreserveManualTargetCalories = false
-    private var hasRestoredDateRangeFromResponse = false
+    private var restoredDateRangeFromResponse: (startDate: Date, endDate: Date)?
     private var isSubmittingFinalFlow = false
     private var isBackButtonCoolingDown = false
     private var isWaitingForVipPurchaseToCreatePlan = false
@@ -38,14 +38,6 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
         maxProgressBeforeSuccess: 0.92,
         statusText: "创建食谱中..."
     )
-    private lazy var requestDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.calendar = Calendar(identifier: .gregorian)
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
-    }()
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         updateFullscreenPopGestureAvailability()
@@ -617,6 +609,15 @@ extension DietPlanCreateSecondVC{
             return
         }
 
+        guard dateVm.requestDateRange() != nil else {
+            MCToast.mc_text("请选择有效的计划日期")
+            currentIndex = 0
+            prepareStepTransition(to: 0, animated: true)
+            scrollViewBase.setContentOffset(.zero, animated: true)
+            updateNextButtonForCurrentStep(animated: false)
+            return
+        }
+
 //        syncCaloriesNumberForRecommendStepIfNeeded()
         isSubmittingFinalFlow = true
         syncNextButtonEnableStatus()
@@ -670,11 +671,10 @@ extension DietPlanCreateSecondVC{
     }
 
     func sendCreatePlanRequestAfterUpsert() {
-        let param = [
-            "startDate": requestDateFormatter.string(from: QuestinonaireMsgModel.shared.chartStartDate),
-            "endDate": requestDateFormatter.string(from: QuestinonaireMsgModel.shared.chartEndDate),
-            "customTdee":QuestinonaireMsgModel.shared.caloriesNumber
-        ]
+        guard let param = buildDietPlanCreateParameters() else {
+            handleFinalFlowFailure(message: "请选择有效的计划日期")
+            return
+        }
         DLLog(message: "sendCreatePlanRequest(second):\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_create, parameters: param as [String : AnyObject]) { [weak self] responseObject in
             guard let self = self else { return }
@@ -793,12 +793,10 @@ extension DietPlanCreateSecondVC {
         model.goalImportance = stringValue(from: data["goalImportance"])
         model.dietType = stringValue(from: data["dietType"])
         model.specialAdjustmentType = mapDietAdjustmentTypes(from: intArrayValue(from: data["dietAdjustmentType"]))
-        hasRestoredDateRangeFromResponse = false
+        restoredDateRangeFromResponse = nil
         if let startDate = dateValue(from: data["startDate"]),
            let endDate = dateValue(from: data["endDate"]) {
-            model.chartStartDate = startDate
-            model.chartEndDate = endDate
-            hasRestoredDateRangeFromResponse = true
+            restoredDateRangeFromResponse = (startDate, endDate)
         }
 
         updateShouldShowSexStepIfNeeded(resolvedShouldShowSexStep())
@@ -813,9 +811,9 @@ extension DietPlanCreateSecondVC {
             updateSecretSexSelectionUI()
         }
 
-        if hasRestoredDateRangeFromResponse {
-            dateVm.restoreDateRange(start: QuestinonaireMsgModel.shared.chartStartDate,
-                                    end: QuestinonaireMsgModel.shared.chartEndDate)
+        if let restoredDateRangeFromResponse = restoredDateRangeFromResponse {
+            dateVm.restoreDateRange(start: restoredDateRangeFromResponse.startDate,
+                                    end: restoredDateRangeFromResponse.endDate)
         }
 
         if let weightValue = parsedWeight(from: QuestinonaireMsgModel.shared.weight) {
@@ -1178,20 +1176,31 @@ extension DietPlanCreateSecondVC {
     func handleFinalFlowVipUpgradeRequired() {
         createPlanLoadingVm.completeSuccess { [weak self] in
             guard let self = self else { return }
+            guard let createParameters = self.buildDietPlanCreateParameters() else {
+                self.isSubmittingFinalFlow = false
+                self.syncNextButtonEnableStatus()
+                self.updateFullscreenPopGestureAvailability()
+                MCToast.mc_text("请选择有效的计划日期")
+                return
+            }
             self.isWaitingForVipPurchaseToCreatePlan = true
             self.isSubmittingFinalFlow = false
             self.syncNextButtonEnableStatus()
             let vc = ElaProVC()
             vc.showPriceOnly = true
-            vc.pendingDietPlanCreateParameters = self.buildDietPlanCreateParameters()
+            vc.pendingDietPlanCreateParameters = createParameters
             self.pushElaProVCWhenReady(vc)
         }
     }
 
-    func buildDietPlanCreateParameters() -> [String: Any] {
+    func buildDietPlanCreateParameters() -> [String: Any]? {
+        guard let dateRange = dateVm.requestDateRange() else {
+            return nil
+        }
+
         return [
-            "startDate": requestDateFormatter.string(from: QuestinonaireMsgModel.shared.chartStartDate),
-            "endDate": requestDateFormatter.string(from: QuestinonaireMsgModel.shared.chartEndDate),
+            "startDate": dateRange.startDate,
+            "endDate": dateRange.endDate,
             "customTdee": QuestinonaireMsgModel.shared.caloriesNumber
         ]
     }

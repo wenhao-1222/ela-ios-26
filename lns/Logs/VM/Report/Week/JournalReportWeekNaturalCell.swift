@@ -153,8 +153,43 @@ extension JournalReportWeekNaturalCell{
         let gapCalDict = dict["gapCal"]as? NSDictionary ?? [:]
         
         let calories = "\(gapCalDict.stringValueForKey(key: "sign"))\(gapCalDict.stringValueForKey(key: "gap"))"
+        if calories.count == 0 {
+            gapCaloriesLabel.text = nil
+            gapCarboLabel.text = nil
+            gapProteinLabel.text = nil
+            gapFatLabel.text = nil
+            caloriesItemVm.numberLabel.text = nil
+            carboItemVm.numberLabel.text = nil
+            proteinItemVm.numberLabel.text = nil
+            fatItemVm.numberLabel.text = nil
+            
+            let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                                     highlightColorLight: .COLOR_GRAY_E2,
+                                     cornerRadius: kFitWidth(4),
+                                     shimmerWidth: 0.22,
+                                     shimmerDuration: 1.15)
+            [titleLabel,
+             gapCaloriesLabel,
+             gapCarboLabel,
+             gapProteinLabel,
+             gapFatLabel,
+             caloriesItemVm.numberLabel,
+             carboItemVm.numberLabel,
+             proteinItemVm.numberLabel,
+             fatItemVm.numberLabel].forEach { $0.showSkeleton(cfg) }
+            return
+        }
+        
         if calories.count > 0 {
-            hideSkeleton()
+            [titleLabel,
+             gapCaloriesLabel,
+             gapCarboLabel,
+             gapProteinLabel,
+             gapFatLabel,
+             caloriesItemVm.numberLabel,
+             carboItemVm.numberLabel,
+             proteinItemVm.numberLabel,
+             fatItemVm.numberLabel].forEach { $0.hideSkeletonWithCrossfade() }
             caloriesItemVm.hideSkeletonForFrame()
             carboItemVm.hideSkeletonForFrame()
             proteinItemVm.hideSkeletonForFrame()

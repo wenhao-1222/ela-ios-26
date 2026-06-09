@@ -41,7 +41,7 @@ class JournalReportFriendWeekTopCell: UITableViewCell {
     }()
     lazy var nickNameLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_BG_WHITE
+        lab.textColor = .white
         lab.font = .systemFont(ofSize: 15, weight: .semibold)
         lab.isSkeletonable = true
         
@@ -76,8 +76,40 @@ extension JournalReportFriendWeekTopCell{
     func updateUI(dict:NSDictionary){
         let startDate = dict.stringValueForKey(key: "startDate")
         
+        if startDate.count == 0 {
+            headImgView.image = nil
+            nickNameLabel.text = nil
+            contentLab.text = nil
+            
+//            nickNameLabel.snp.remakeConstraints { make in
+//                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(10))
+//                make.centerY.lessThanOrEqualTo(headImgView)
+//                make.width.equalTo(kFitWidth(112))
+//                make.height.equalTo(kFitWidth(18))
+//            }
+            
+            let avatarCfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                                           highlightColorLight: .COLOR_GRAY_E2,
+                                           cornerRadius: kFitWidth(16),
+                                           shimmerWidth: 0.22,
+                                           shimmerDuration: 1.15)
+            let textCfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                                         highlightColorLight: .COLOR_GRAY_E2,
+                                         cornerRadius: kFitWidth(4),
+                                         shimmerWidth: 0.22,
+                                         shimmerDuration: 1.15)
+            headImgView.showSkeleton(avatarCfg)
+            [nickNameLabel, contentLab].forEach { $0.showSkeleton(textCfg) }
+            return
+        }
+        
         if startDate.count > 0 {
-            hideSkeleton()
+            [headImgView, nickNameLabel, contentLab].forEach { $0.hideSkeletonWithCrossfade() }
+            nickNameLabel.snp.remakeConstraints { make in
+                make.left.equalTo(headImgView.snp.right).offset(kFitWidth(10))
+                make.centerY.lessThanOrEqualTo(headImgView)
+                make.right.equalTo(kFitWidth(-20))
+            }
             
             headImgView.setImgUrl(urlString: dict.stringValueForKey(key: "headimgurl"))
             nickNameLabel.text = dict.stringValueForKey(key: "nickname")
@@ -115,6 +147,7 @@ extension JournalReportFriendWeekTopCell{
             make.left.equalTo(headImgView.snp.right).offset(kFitWidth(10))
             make.centerY.lessThanOrEqualTo(headImgView)
             make.right.equalTo(kFitWidth(-20))
+            make.height.equalTo(kFitWidth(18))
         }
         titleLab.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))

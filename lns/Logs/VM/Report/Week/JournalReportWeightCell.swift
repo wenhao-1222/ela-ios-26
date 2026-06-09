@@ -61,29 +61,41 @@ class JournalReportWeightCell: UITableViewCell {
 
 extension JournalReportWeightCell{
     func updateUI(dict:NSDictionary) {
-        if dict.stringValueForKey(key: "sign").count > 0 {
-            if dict.stringValueForKey(key: "sign") == "+"{
-                changeIconImgView.setImgLocal(imgName: "report_weight_up_icon")
-            }else{
-                changeIconImgView.setImgLocal(imgName: "report_weight_down_icon")
-            }
+        if dict.stringValueForKey(key: "sign").count == 0 {
+            changeIconImgView.image = nil
+            changeNumLabel.text = nil
             
-            var num = (dict.doubleValueForKey(key: "diff") * UserInfoModel.shared.weightCoefficient)
-            num = String(format: "%.1f",(num * 10).rounded()/10).doubleValue
-            
-            var attr = NSMutableAttributedString(string: "\(WHUtils.convertStringToStringOneDigit("\(num)") ?? "0") ")
-            var attr1 = NSMutableAttributedString(string: " 公斤")
-            if UserInfoModel.shared.weightUnit == 2{
-                attr1 = NSMutableAttributedString(string: " 斤")
-            }else if UserInfoModel.shared.weightUnit == 3{
-                attr1 = NSMutableAttributedString(string: " 磅")
-            }
-            attr.yy_font = .systemFont(ofSize: 18, weight: .semibold)
-            attr1.yy_font = .systemFont(ofSize: 12, weight: .regular)
-            
-            attr.append(attr1)
-            changeNumLabel.attributedText = attr
+            let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                                     highlightColorLight: .COLOR_GRAY_E2,
+                                     cornerRadius: kFitWidth(4),
+                                     shimmerWidth: 0.22,
+                                     shimmerDuration: 1.15)
+            [titleLabel, changeIconImgView, changeNumLabel].forEach { $0.showSkeleton(cfg) }
+            return
         }
+        
+        [titleLabel, changeIconImgView, changeNumLabel].forEach { $0.hideSkeletonWithCrossfade() }
+        if dict.stringValueForKey(key: "sign") == "+"{
+            changeIconImgView.setImgLocal(imgName: "report_weight_up_icon")
+        }else{
+            changeIconImgView.setImgLocal(imgName: "report_weight_down_icon")
+        }
+        
+        var num = (dict.doubleValueForKey(key: "diff") * UserInfoModel.shared.weightCoefficient)
+        num = String(format: "%.1f",(num * 10).rounded()/10).doubleValue
+        
+        var attr = NSMutableAttributedString(string: "\(WHUtils.convertStringToStringOneDigit("\(num)") ?? "0") ")
+        var attr1 = NSMutableAttributedString(string: " 公斤")
+        if UserInfoModel.shared.weightUnit == 2{
+            attr1 = NSMutableAttributedString(string: " 斤")
+        }else if UserInfoModel.shared.weightUnit == 3{
+            attr1 = NSMutableAttributedString(string: " 磅")
+        }
+        attr.yy_font = .systemFont(ofSize: 18, weight: .semibold)
+        attr1.yy_font = .systemFont(ofSize: 12, weight: .regular)
+        
+        attr.append(attr1)
+        changeNumLabel.attributedText = attr
     }
 }
 extension JournalReportWeightCell{

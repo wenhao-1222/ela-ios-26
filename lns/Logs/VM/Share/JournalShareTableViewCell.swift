@@ -49,6 +49,7 @@ class JournalShareTableViewCell: UITableViewCell {
         lab.font = .systemFont(ofSize: 13, weight: .regular)
         lab.adjustsFontSizeToFitWidth = true
         lab.textAlignment = .right
+//        lab.backgroundColor = WHColor_ARC()
         
         return lab
     }()
@@ -69,6 +70,23 @@ extension JournalShareTableViewCell{
             let spec = dict.stringValueForKey(key: "spec").count > 0 ? dict.stringValueForKey(key: "spec") : "g"
             qtyLabel.text = "\(dict.stringValueForKey(key: "qty"))\(spec)"
         }
+    }
+    ///给label 的每个字都加上随机底色
+    private func setQtyText(_ text: String) {
+        let attributedText = NSMutableAttributedString(
+            string: text,
+            attributes: [
+                .font: qtyLabel.font as Any,
+                .foregroundColor: qtyLabel.textColor as Any
+            ]
+        )
+        var location = 0
+        text.forEach { character in
+            let length = (String(character) as NSString).length
+            attributedText.addAttribute(.backgroundColor, value: WHColor_ARC(), range: NSRange(location: location, length: length))
+            location += length
+        }
+        qtyLabel.attributedText = attributedText
     }
 }
 

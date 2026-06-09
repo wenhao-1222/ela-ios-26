@@ -14,13 +14,8 @@ class JournalShareSaveFooterVM: UIView {
     var circleRadius = kFitWidth(4.5)
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        if traitCollection.userInterfaceStyle == .dark{
-            lineLayer.strokeColor = UIColor.COLOR_BG_WHITE.cgColor // 弧线颜色
-            lineLayer.fillColor = UIColor.COLOR_BG_WHITE.cgColor // 填充色
-        }else{
-            lineLayer.strokeColor = UIColor.THEME.cgColor // 弧线颜色
-            lineLayer.fillColor = UIColor.THEME.cgColor // 填充色
-        }
+        lineLayer.strokeColor = UIColor.clear.cgColor
+        lineLayer.fillColor = UIColor(named: "color_bg_theme_share")?.cgColor
     }
     
     override init(frame:CGRect){
@@ -61,24 +56,21 @@ extension JournalShareSaveFooterVM{
         whiteView.layer.addSublayer(lineLayer)
         
         lineLayer.allowsEdgeAntialiasing = true
-        
-        if traitCollection.userInterfaceStyle == .dark{
-            lineLayer.strokeColor = UIColor.COLOR_BG_WHITE.cgColor // 弧线颜色
-            lineLayer.fillColor = UIColor.COLOR_BG_WHITE.cgColor // 填充色
-        }else{
-            lineLayer.strokeColor = UIColor.THEME.cgColor // 弧线颜色
-            lineLayer.fillColor = UIColor.THEME.cgColor // 填充色
-        }
-        
-        lineLayer.lineWidth = kFitWidth(0.5) // 线宽
+        lineLayer.strokeColor = UIColor.clear.cgColor
+        lineLayer.fillColor = UIColor(named: "color_bg_theme_share")?.cgColor
+        lineLayer.lineWidth = 0
     }
     func initLayer() {
         DLLog(message: "JournalShareFooterVM  initLayer")
         
-//        lineLayer.strokeColor = UIColor(named: "color_bg_theme_share")?.cgColor // 弧线颜色
-//        lineLayer.fillColor = UIColor(named: "color_bg_theme_share")?.cgColor // 填充色
+        lineLayer.strokeColor = UIColor.clear.cgColor
+        lineLayer.fillColor = UIColor(named: "color_bg_theme_share")?.cgColor
         linePath = UIBezierPath()
-        linePath.move(to: CGPoint.init(x: 0, y: selfHeight-circleRadius))
+        let width = whiteView.bounds.width > 0 ? whiteView.bounds.width : SCREEN_WIDHT-kFitWidth(84)
+        let pixel = 1 / UIScreen.main.scale
+        lineLayer.frame = whiteView.bounds
+        linePath.move(to: CGPoint.init(x: -pixel, y: selfHeight+pixel))
+        linePath.addLine(to: CGPoint.init(x: -pixel, y: selfHeight-circleRadius))
         linePath.addArc(withCenter: CGPoint.init(x: 0, y: selfHeight), radius: circleRadius, startAngle: -Double.pi*0.5, endAngle: 0, clockwise: true)
         
         for i in 0..<1000{
@@ -86,11 +78,13 @@ extension JournalShareSaveFooterVM{
             linePath.addLine(to: CGPoint.init(x: firstPointX, y: selfHeight))
             linePath.addArc(withCenter: CGPoint.init(x: firstPointX+circleRadius*2, y: selfHeight), radius: circleRadius, startAngle: -Double.pi, endAngle: 0, clockwise: true)
             
-            if firstPointX+circleRadius*2 >= SCREEN_WIDHT-kFitWidth(84){
+            if firstPointX+circleRadius*2 >= width{
                 break
             }
         }
-        linePath.addLine(to: CGPoint.init(x: 0, y: selfHeight))
+        linePath.addLine(to: CGPoint.init(x: width+pixel, y: selfHeight))
+        linePath.addLine(to: CGPoint.init(x: width+pixel, y: selfHeight+pixel))
+        linePath.close()
         lineLayer.path = linePath.cgPath
     }
 }

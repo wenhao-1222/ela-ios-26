@@ -710,6 +710,8 @@ extension ElaProPriceVM{
                             case .activated:
                                 MCToast.mc_text(purchasingPlan == .lifetime ? "购买成功" : "订阅成功")
                                 self.purchaseSuccessBlock?()
+                            case .boundToOtherAccount:
+                                self.showIAPBoundToOtherAccountAlert()
                             case .pendingLoginBind:
                                 MCToast.mc_text("支付成功，请登录后领取会员")
                             case .pendingServerSync:
@@ -739,6 +741,16 @@ extension ElaProPriceVM{
         case .lifetime:
             ElaProIAPManager.shared.purchaseLifetime(completion: completion)
         }
+    }
+
+    private func showIAPBoundToOtherAccountAlert() {
+        guard let topVC = UIApplication.topViewController() else { return }
+        guard !(topVC.presentedViewController is UIAlertController) else { return }
+        let alert = UIAlertController(title: "该APPLE账户订阅已绑定其他账号",
+                                      message: nil,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "知道了", style: .default))
+        topVC.present(alert, animated: true)
     }
     
     func fetchProProductsIfNeeded() {

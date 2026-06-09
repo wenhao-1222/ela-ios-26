@@ -91,33 +91,46 @@ class JournalReportWeekCalendarCell: UITableViewCell {
 
 extension JournalReportWeekCalendarCell{
     func updateUI(dict:NSDictionary) {
-        if dict.stringValueForKey(key: "weeklyLogDays").count > 0{
-            hideSkeleton()
-            titleLabel.text = dict.stringValueForKey(key: "weeklyLogDays")
+        if dict.stringValueForKey(key: "weeklyLogDays").count == 0 {
+            titleLabel.text = nil
+            bestDayLabel.text = nil
+            detailCaloriesLabel.text = nil
+            detailProteinLabel.text = nil
             
-            let perfectDayDict = dict["perfectDayText"]as? NSDictionary ?? [:]
-            let string = perfectDayDict.stringValueForKey(key: "text")
-            bestDayLabel.numberOfLines = 0
-            if string.count > 0 {
-                let keyWords = perfectDayDict["keywords"]as? NSArray ?? []
-                bestDayLabel.attributedText = string.attributedText(text: "\(string)", keywords: keyWords as! [String], font: .systemFont(ofSize: 14, weight: .semibold),color: .THEME)
-            }
-            
-            let weeklyAvgCalDict = dict["weeklyAvgCal"]as? NSDictionary ?? [:]
-            detailCaloriesLabel.numberOfLines = 0
-            detailCaloriesLabel.setText(weeklyAvgCalDict.stringValueForKey(key: "text"),
-                                        keywords: weeklyAvgCalDict["keywords"]as? [String] ?? [])
+            let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                                     highlightColorLight: .COLOR_GRAY_E2,
+                                     cornerRadius: kFitWidth(4),
+                                     shimmerWidth: 0.22,
+                                     shimmerDuration: 1.15)
+            [titleLabel, bestDayLabel, calendarBgView, detailCaloriesLabel, detailProteinLabel].forEach { $0.showSkeleton(cfg) }
+            return
+        }
+        
+        [titleLabel, bestDayLabel, calendarBgView, detailCaloriesLabel, detailProteinLabel].forEach { $0.hideSkeletonWithCrossfade() }
+        titleLabel.text = dict.stringValueForKey(key: "weeklyLogDays")
+        
+        let perfectDayDict = dict["perfectDayText"]as? NSDictionary ?? [:]
+        let string = perfectDayDict.stringValueForKey(key: "text")
+        bestDayLabel.numberOfLines = 0
+        if string.count > 0 {
+            let keyWords = perfectDayDict["keywords"]as? NSArray ?? []
+            bestDayLabel.attributedText = string.attributedText(text: "\(string)", keywords: keyWords as! [String], font: .systemFont(ofSize: 14, weight: .semibold),color: .THEME)
+        }
+        
+        let weeklyAvgCalDict = dict["weeklyAvgCal"]as? NSDictionary ?? [:]
+        detailCaloriesLabel.numberOfLines = 0
+        detailCaloriesLabel.setText(weeklyAvgCalDict.stringValueForKey(key: "text"),
+                                    keywords: weeklyAvgCalDict["keywords"]as? [String] ?? [])
 //            detailCaloriesLabel.setText("这周平均每天摄入2000 kcal，与 “卷福”本尼迪克特·康伯巴奇 为拍摄《神探夏洛克》保持瘦削体态时日常摄入的热量接近。",
 //                                        keywords: ["“卷福”本尼迪克特·康伯巴奇 为拍摄《神探夏洛克》保持瘦削体态时日常摄入"])
-            let weeklyTotalProDict = dict["weeklyTotalPro"]as? NSDictionary ?? [:]
-            detailProteinLabel.setText(weeklyTotalProDict.stringValueForKey(key: "text"),
-                                        keywords: weeklyTotalProDict["keywords"]as? [String] ?? [])
-            if let (startMonth, endMonth) = Date().getStartAndEndMonth(from: dict.stringValueForKey(key: "startDate"), to: dict.stringValueForKey(key: "endDate")) {
-                print("Start: \(startMonth), End: \(endMonth)")
-                self.calendarVm.updateUI(startDate: startMonth, endDate: endMonth,perfectDay:dict.stringValueForKey(key: "perfectDay"), logsDate: dict["dietLogList"]as? NSArray ?? [])
-    //            self.calendarVm.updateUI(startDate: "2024-12-28", endDate: "2025-1-5")
-    //            self.calendarVm.updateUI(startDate: "2025-5-25", endDate: "2025-6-2")
-            }
+        let weeklyTotalProDict = dict["weeklyTotalPro"]as? NSDictionary ?? [:]
+        detailProteinLabel.setText(weeklyTotalProDict.stringValueForKey(key: "text"),
+                                    keywords: weeklyTotalProDict["keywords"]as? [String] ?? [])
+        if let (startMonth, endMonth) = Date().getStartAndEndMonth(from: dict.stringValueForKey(key: "startDate"), to: dict.stringValueForKey(key: "endDate")) {
+            print("Start: \(startMonth), End: \(endMonth)")
+            self.calendarVm.updateUI(startDate: startMonth, endDate: endMonth,perfectDay:dict.stringValueForKey(key: "perfectDay"), logsDate: dict["dietLogList"]as? NSArray ?? [])
+//            self.calendarVm.updateUI(startDate: "2024-12-28", endDate: "2025-1-5")
+//            self.calendarVm.updateUI(startDate: "2025-5-25", endDate: "2025-6-2")
         }
     }
     func styledText(

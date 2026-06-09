@@ -36,10 +36,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        UserDefaults.standard.setValue("g4YHHKJaIvXyEBYs", forKey: token)
-        UserDefaults.standard.setValue("f85f9118da17e98d62e1003729929afa", forKey: userId)
-        UserInfoModel.shared.uId = "f85f9118da17e98d62e1003729929afa"
-        UserInfoModel.shared.token = "g4YHHKJaIvXyEBYs"
+//        UserDefaults.standard.setValue("g4YHHKJaIvXyEBYs", forKey: token)
+//        UserDefaults.standard.setValue("f85f9118da17e98d62e1003729929afa", forKey: userId)
+//        UserInfoModel.shared.uId = "f85f9118da17e98d62e1003729929afa"
+//        UserInfoModel.shared.token = "g4YHHKJaIvXyEBYs"
         //f85f9118da17e98d62e1003729929afa   邓毅
         //g4YHHKJaIvXyEBYs
         let launchWindow: UIWindow

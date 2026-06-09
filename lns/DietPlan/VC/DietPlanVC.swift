@@ -16,6 +16,7 @@ class DietPlanVC: WHBaseViewVC {
     private var planStartDate = ""
     private var planEndDate = ""
     private var shouldAnimatePlanListRefreshAfterCreateSuccess = false
+    private var shouldPreferNonePlanStateAfterProSuccess = false
     
     private lazy var buyListDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -28,6 +29,7 @@ class DietPlanVC: WHBaseViewVC {
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_DIET_PLAN_SHOW_NONE_PLAN_AFTER_PRO_SUCCESS, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_DIET_PLAN_CREATE_SUCCESS, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_DIET_PLAN_BUY_LIST_CREATE_SUCCESS, object: nil)
@@ -63,6 +65,10 @@ class DietPlanVC: WHBaseViewVC {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(refreshDietPlanAfterSubscriptionSuccess),
                                                name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(showNonePlanAfterProSuccess),
+                                               name: NOTIFI_NAME_DIET_PLAN_SHOW_NONE_PLAN_AFTER_PRO_SUCCESS,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(refreshVipStatusAfterIAPBindSuccess),
@@ -128,6 +134,11 @@ class DietPlanVC: WHBaseViewVC {
 extension DietPlanVC{
     @objc func refreshDietPlanAfterSubscriptionSuccess() {
         sendDietPlanMsgRequest()
+    }
+
+    @objc func showNonePlanAfterProSuccess() {
+        shouldPreferNonePlanStateAfterProSuccess = true
+        showNonePlanState()
     }
 
     @objc func refreshVipStatusAfterIAPBindSuccess() {
@@ -278,6 +289,13 @@ extension DietPlanVC{
         nonePlanVm.removeFromSuperview()
         listVm.removeFromSuperview()
     }
+
+    func showNonePlanState() {
+        if nonePlanVm.superview == nil {
+            removeStateViews()
+            view.addSubview(nonePlanVm)
+        }
+    }
     
     func applyDietPlanResponse(_ dataObj: NSDictionary, preservingListOffset: Bool = false) {
         let mealPlanItemList = dataObj["mealPlanItemList"] as? NSArray ?? []
@@ -288,7 +306,15 @@ extension DietPlanVC{
         let shouldAnimateListRefresh = shouldAnimatePlanListRefreshAfterCreateSuccess
         shouldAnimatePlanListRefreshAfterCreateSuccess = false
         
-        if status == "1" {//无问卷
+        if shouldPreferNonePlanStateAfterProSuccess && (status == "1" || status == "2") {
+            showNonePlanState()
+            if VIPModel.shared.status == .valid {
+                shouldPreferNonePlanStateAfterProSuccess = false
+            }
+            return
+        }
+        
+        if status == "1" || VIPModel.shared.mealPlanProcessStatus == 0{//无问卷  或者以前做完食谱问卷 没有付费的情况
             if emptyVm.superview == nil {
                 removeStateViews()
                 view.addSubview(emptyVm)
@@ -303,14 +329,12 @@ extension DietPlanVC{
                     view.addSubview(emptyVm)
                 }
             }else{//以前购买过会员
-                if nonePlanVm.superview == nil {
-                    removeStateViews()
-                    view.addSubview(nonePlanVm)
-                }
+                showNonePlanState()
             }
             return
         }
         
+        shouldPreferNonePlanStateAfterProSuccess = false
         if listVm.superview == nil {
             removeStateViews()
             view.addSubview(listVm)

@@ -5,12 +5,15 @@
 //  Created by Elavatine on 2025/7/7.
 //
 
+import SkeletonView
+
 class JournalFriendReportVC: WHBaseViewVC {
     
     var followerUid = ""//好友uid
     var followerNickName =  ""
     var followerAvatar = ""
     var weekMsgDict = NSDictionary()
+    private var isLoadingWeeklyReport = true
     
     override func viewWillAppear(_ animated: Bool) {
        super.viewWillAppear(animated)
@@ -62,6 +65,9 @@ class JournalFriendReportVC: WHBaseViewVC {
 
 extension JournalFriendReportVC:UITableViewDelegate,UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
+        if isLoadingWeeklyReport {
+            return 2
+        }
         let badgesArray = weekMsgDict["badges"]as? NSArray ?? []
         if badgesArray.count > 0 {
             return 3
@@ -69,6 +75,9 @@ extension JournalFriendReportVC:UITableViewDelegate,UITableViewDataSource{
         return 2
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if isLoadingWeeklyReport {
+            return section == 0 ? 2 : 2
+        }
         if section == 0{
             return 2
         }else if section == 1{
@@ -124,6 +133,21 @@ extension JournalFriendReportVC:UITableViewDelegate,UITableViewDataSource{
         }
     }
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if isLoadingWeeklyReport {
+            if section == 1 {
+                let footV = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(20)))
+                footV.backgroundColor = .clear
+                let vi = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: 0, width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(20)))
+                vi.backgroundColor = .COLOR_CARD_BG_WHITE
+                vi.addClipCorner(corners: [.bottomLeft,.bottomRight], radius: kFitWidth(12))
+                footV.addSubview(vi)
+                return footV
+            }
+            let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(16)))
+            let vm = JournalReportWeekDashVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: 0))
+            vi.addSubview(vm)
+            return vi
+        }
         if section == 2{
             let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(40)))
             vi.backgroundColor = .clear
@@ -140,7 +164,7 @@ extension JournalFriendReportVC:UITableViewDelegate,UITableViewDataSource{
                 let footV = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: kFitWidth(20)))
                 footV.backgroundColor = .clear
                 let vi = UIView.init(frame: CGRect.init(x: kFitWidth(16), y: 0, width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(20)))
-                vi.backgroundColor = .white
+                vi.backgroundColor = .COLOR_CARD_BG_WHITE
                 vi.addClipCorner(corners: [.bottomLeft,.bottomRight], radius: kFitWidth(12))
                 
                 footV.addSubview(vi)
@@ -156,6 +180,9 @@ extension JournalFriendReportVC:UITableViewDelegate,UITableViewDataSource{
         }
     }
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if isLoadingWeeklyReport {
+            return section == 1 ? kFitWidth(20) : kFitWidth(16)
+        }
         if section == 2{
             return kFitWidth(40)
         }else if section == 1{
@@ -197,10 +224,22 @@ extension JournalFriendReportVC{
     func initSkeleton() {
         self.view.isSkeletonable = true
         self.tableView.isSkeletonable = true
+        tableView.reloadData()
         DispatchQueue.main.asyncAfter(deadline: .now()+0.03, execute: {
+            guard self.isLoadingWeeklyReport else { return }
             self.tableView.showAnimatedGradientSkeleton()
             self.tableView.isUserInteractionEnabled = true
         })
+    }
+    func finishSkeletonLoading(reloadData: Bool = true, completion: (() -> Void)? = nil) {
+        isLoadingWeeklyReport = false
+        if reloadData {
+            tableView.hideSkeleton()
+            tableView.reloadData()
+        }else{
+            tableView.hideSkeleton(reloadDataAfter: false, transition: .crossDissolve(0.25))
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.25) { completion?() }
     }
 }
 
@@ -212,8 +251,10 @@ extension JournalFriendReportVC{
             DLLog(message: "sendWeeklyReposrtRequest:\(responseObject)")
             if code == 400 {
                 self.nodataVm.tipsLabel.text = "\(responseObject["message"] as? String ?? "需要更多数据才能生成更详细营养建议与分析。每周记录满4天，即可解锁完整、精准的营养反馈。")"
-                self.nodataVm.showView()
-                self.tableView.isHidden = true
+                self.finishSkeletonLoading(reloadData: false) {
+                    self.nodataVm.showView()
+                    self.tableView.isHidden = true
+                }
             }else{
                 let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
                 let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
@@ -223,8 +264,7 @@ extension JournalFriendReportVC{
                 obj.setValue(self.followerNickName, forKey: "nickname")
                 self.weekMsgDict = obj
                 
-                self.tableView.hideSkeleton()
-                self.tableView.reloadData()
+                self.finishSkeletonLoading()
             }
         }
     }

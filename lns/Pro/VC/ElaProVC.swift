@@ -22,6 +22,7 @@ class ElaProVC: WHBaseViewVC {
     var enterAICoachPreOnClose = false
     var enterAICoachPreOnPurchaseSuccess = false
     var shouldClearDietPlanCreateDraftOnPurchaseSuccess = false
+    var shouldShowDietPlanNoneStateOnPurchaseSuccess = false
     var pendingDietPlanCreateParameters: [String: Any]?
     private var agreementAlertVm: ElaProAgreementAlertVM?
     
@@ -132,7 +133,7 @@ class ElaProVC: WHBaseViewVC {
     lazy var priceVm: ElaProPriceVM = {
         let vm = ElaProPriceVM.init(frame: CGRect(x: SCREEN_WIDHT * 4, y: 0, width: 0, height: 0))
         vm.bizType = self.priceBizType
-        vm.purchaseQueryBizType = self.priceBizType == "2" ? "2" : "3"
+        vm.purchaseQueryBizType = (self.priceBizType == "2" || self.priceBizType == "4") ? self.priceBizType : "3"
         vm.displayMode = self.priceDisplayMode
         vm.purchaseSuccessBlock = { [weak self] in
             self?.handlePurchaseSuccess()
@@ -438,6 +439,7 @@ extension ElaProVC{
             createPendingDietPlanAfterPurchaseSuccess()
             return
         }
+        notifyDietPlanNoneStateAfterPurchaseSuccessIfNeeded()
         requestLatestVipInfo()
         NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
         if enterAICoachPreOnPurchaseSuccess {
@@ -446,6 +448,11 @@ extension ElaProVC{
             return
         }
         handleCloseAction()
+    }
+
+    private func notifyDietPlanNoneStateAfterPurchaseSuccessIfNeeded() {
+        guard shouldShowDietPlanNoneStateOnPurchaseSuccess else { return }
+        NotificationCenter.default.post(name: NOTIFI_NAME_DIET_PLAN_SHOW_NONE_PLAN_AFTER_PRO_SUCCESS, object: nil)
     }
     
     private func handleCloseAction() {

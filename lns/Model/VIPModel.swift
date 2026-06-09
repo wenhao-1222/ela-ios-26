@@ -52,6 +52,8 @@ class VIPModel: NSObject {
     var etime = ""
     
     var isAiCoachSurveyFinished = false
+    var aiCoachProcessStatus = 0
+    var mealPlanProcessStatus = 0
     
 //    var isVip: Bool {
 //        return self.vipType != .none
@@ -77,6 +79,8 @@ class VIPModel: NSObject {
         hasAnimatedJournalAICoachProBadge = false
         isLifetime = false
         isAiCoachSurveyFinished = false
+        aiCoachProcessStatus = 0
+        mealPlanProcessStatus = 0
         ctime = ""
         etime = ""
     }
@@ -92,6 +96,8 @@ class VIPModel: NSObject {
         ctime = dict.stringValueForKey(key: "ctime")
         etime = dict.stringValueForKey(key: "etime")
         isAiCoachSurveyFinished = dict.stringValueForKey(key: "isAiCoachSurveyFinished") == "1"
+        aiCoachProcessStatus = VIPModel.parseIntValue(from: dict["aiCoachProcessStatus"])
+        mealPlanProcessStatus = VIPModel.parseIntValue(from: dict["mealPlanProcessStatus"])
         
         let vipTypeValue = Int(dict.stringValueForKey(key: "vipType")) ?? 0
         vipType = VIP_TYPE(rawValue: vipTypeValue) ?? .none
@@ -129,6 +135,16 @@ class VIPModel: NSObject {
         }
         if let string = value as? String {
             return Int64(string) ?? 0
+        }
+        return 0
+    }
+
+    private static func parseIntValue(from value: Any?) -> Int {
+        if let number = value as? NSNumber {
+            return number.intValue
+        }
+        if let string = value as? String {
+            return Int(string) ?? 0
         }
         return 0
     }

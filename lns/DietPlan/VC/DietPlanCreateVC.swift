@@ -997,6 +997,10 @@ extension DietPlanCreateVC{
         WHNetworkUtil.shareManager().POST(urlString: URL_diet_upsert, parameters: param as [String : AnyObject]) { responseObject in
             DLLog(message: "\(responseObject)")
             self.isUploadingDietProfile = false
+            let code = responseObject["code"] as? Int ?? -1
+            guard code == 200, VIPModel.shared.status == .valid else { return }
+            VIPModel.shared.mealPlanProcessStatus = 1
+            NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
         }
         
         shouldResumeFromEatStyleForNonVip = true
@@ -1004,6 +1008,7 @@ extension DietPlanCreateVC{
         persistDraftIfNeeded()
         let vc = ElaProVC()
         vc.shouldClearDietPlanCreateDraftOnPurchaseSuccess = true
+        vc.shouldShowDietPlanNoneStateOnPurchaseSuccess = true
 //            vc.param = param
         self.pushElaProVCWhenReady(vc)
     }

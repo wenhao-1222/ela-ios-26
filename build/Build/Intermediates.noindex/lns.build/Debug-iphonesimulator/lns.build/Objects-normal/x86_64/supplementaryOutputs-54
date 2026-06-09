@@ -6,6 +6,13 @@
     "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/ForumCommentModel.o",
     "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/ForumCommentModel.swiftdeps"
   },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/Community/Model/ForumCommentNews/ForumCommentNewsModel.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/ForumCommentNewsModel.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/ForumCommentNewsModel.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/ForumCommentNewsModel.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/ForumCommentNewsModel.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/ForumCommentNewsModel.swiftdeps"
+  },
   "/Users/lns2/Desktop/lnsapp-ios/lns/Community/VC/Mall/MallOrderAfterSaleVC.swift" : {
     "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/MallOrderAfterSaleVC.swiftconstvalues",
     "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/MallOrderAfterSaleVC.d",
@@ -40,13 +47,6 @@
     "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/VideoEditKeyFrameVM.dia",
     "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/VideoEditKeyFrameVM.o",
     "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/VideoEditKeyFrameVM.swiftdeps"
-  },
-  "/Users/lns2/Desktop/lnsapp-ios/lns/DietPlan/VM/Create/DietPlanCreateNaviVM.swift" : {
-    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/DietPlanCreateNaviVM.swiftconstvalues",
-    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/DietPlanCreateNaviVM.d",
-    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/DietPlanCreateNaviVM.dia",
-    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/DietPlanCreateNaviVM.o",
-    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/DietPlanCreateNaviVM.swiftdeps"
   },
   "/Users/lns2/Desktop/lnsapp-ios/lns/Guide/totalVM/GuideSevenCircleVM.swift" : {
     "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/Build/Intermediates.noindex/lns.build/Debug-iphonesimulator/lns.build/Objects-normal/x86_64/GuideSevenCircleVM.swiftconstvalues",

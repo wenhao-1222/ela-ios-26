@@ -14,6 +14,7 @@ enum ElaProIAPConfig {
     // App Store Connect: 订阅群组「Pro」，订阅群组 ID「21956560」
     static let subscriptionGroupName = "Pro"
     static let subscriptionGroupID = "21956560"
+    static let knownSubscriptionProductIDs: Set<String> = ["annual", "month", "annual_yeal_new"]
     static var monthProductID = ""
     static var annualProductID = "annual_yeal_new"
     static var lifetimeProductID = ""
@@ -57,6 +58,7 @@ enum ElaProSubscriptionHistoryState {
 enum ElaProRestorePurchaseOutcome {
     case restored
     case notFound
+    case boundToOtherAccount
     case pendingLoginBind
     case pendingServerSync
 }
@@ -68,6 +70,7 @@ final class ElaProIAPManager: NSObject {
 
     enum PurchasePostActionOutcome {
         case activated
+        case boundToOtherAccount
         case pendingLoginBind
         case pendingServerSync
     }
@@ -76,6 +79,13 @@ final class ElaProIAPManager: NSObject {
         case pendingBind = "1"
         case aiGuidance = "2"
         case standard = "3"
+        case aiFoodRecognition = "4"
+    }
+
+    private enum BackendSyncOutcome {
+        case success
+        case boundToOtherAccount
+        case failed
     }
 
     private struct AnonymousIdentity {
@@ -92,6 +102,7 @@ final class ElaProIAPManager: NSObject {
     }
 
     private var cachedProducts: [String: Product] = [:]
+    private let productCacheQueue = DispatchQueue(label: "com.elavatine.pro.iap.productCache")
     private var purchaseTask: Task<Void, Never>?
     private var transactionUpdatesTask: Task<Void, Never>?
     private var refundDebugSession: RefundDebugSession?
@@ -373,7 +384,7 @@ final class ElaProIAPManager: NSObject {
         ElaProIAPConfig.monthProductID = trimmedMonth
         ElaProIAPConfig.annualProductID = trimmedAnnual
         ElaProIAPConfig.lifetimeProductID = trimmedLifetime
-        cachedProducts.removeAll()
+        clearCachedProducts()
     }
 
     func handlePurchaseSuccessPostAction(transaction: Transaction,
@@ -392,8 +403,15 @@ final class ElaProIAPManager: NSObject {
 
         if canBindPurchaseToCurrentUser() {
             let resolvedQueryBizType = resolveQueryBizType(queryBizType, defaultType: .standard)
-            bindPendingPurchaseIfNeeded(queryBizType: resolvedQueryBizType) { success in
-                completion?(success ? .activated : .pendingServerSync)
+            bindPendingPurchaseIfNeededDetailed(queryBizType: resolvedQueryBizType) { outcome in
+                switch outcome {
+                case .success:
+                    completion?(.activated)
+                case .boundToOtherAccount:
+                    completion?(.boundToOtherAccount)
+                case .failed:
+                    completion?(.pendingServerSync)
+                }
             }
         } else {
             DLLog(message: "[ElaProIAP][QUERY] deferred until login: user not ready")
@@ -421,21 +439,33 @@ final class ElaProIAPManager: NSObject {
 
     func bindPendingPurchaseIfNeeded(queryBizType: String = PurchaseQueryBizType.pendingBind.rawValue,
                                      completion: ((Bool) -> Void)? = nil) {
+        bindPendingPurchaseIfNeededDetailed(queryBizType: queryBizType) { outcome in
+            completion?(outcome == .success)
+        }
+    }
+
+    private func bindPendingPurchaseIfNeededDetailed(queryBizType: String = PurchaseQueryBizType.pendingBind.rawValue,
+                                                     completion: ((BackendSyncOutcome) -> Void)? = nil) {
         guard canBindPurchaseToCurrentUser() else {
-            completion?(false)
+            completion?(.failed)
             return
         }
 
         bindAnonymousIdentityIfNeeded { bindSuccess in
             guard let transactionID = self.readPendingTransactionID(),
                   !transactionID.isEmpty else {
-                completion?(bindSuccess)
+                completion?(bindSuccess ? .success : .failed)
                 return
             }
 
             let resolvedQueryBizType = self.resolveQueryBizType(queryBizType, defaultType: .pendingBind)
-            self.queryPurchaseOrder(transactionID: transactionID, bizType: resolvedQueryBizType) { querySuccess in
-                completion?(bindSuccess || querySuccess)
+            self.queryPurchaseOrder(transactionID: transactionID, bizType: resolvedQueryBizType) { queryOutcome in
+                switch queryOutcome {
+                case .success, .boundToOtherAccount:
+                    completion?(queryOutcome)
+                case .failed:
+                    completion?(bindSuccess ? .success : .failed)
+                }
             }
         }
     }
@@ -472,25 +502,60 @@ final class ElaProIAPManager: NSObject {
                                completion: @escaping (Result<[Product], Error>) -> Void) {
         let idSet = Set(ids.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty })
         guard !idSet.isEmpty else {
-            completion(.failure(ElaProIAPError.productUnavailable))
+            performOnMain {
+                completion(.failure(ElaProIAPError.productUnavailable))
+            }
             return
         }
 
-        if !forceRefresh, idSet.allSatisfy({ cachedProducts[$0] != nil }) {
-            completion(.success(idSet.compactMap { cachedProducts[$0] }))
+        if !forceRefresh, let cachedProductList = cachedProductList(for: idSet) {
+            performOnMain {
+                completion(.success(cachedProductList))
+            }
             return
         }
 
         Task {
             do {
                 let products = try await Product.products(for: Array(idSet))
-                for product in products {
-                    self.cachedProducts[product.id] = product
+                self.cacheProducts(products)
+                self.performOnMain {
+                    completion(products.isEmpty ? .failure(ElaProIAPError.productUnavailable) : .success(products))
                 }
-                completion(products.isEmpty ? .failure(ElaProIAPError.productUnavailable) : .success(products))
             } catch {
-                completion(.failure(error))
+                self.performOnMain {
+                    completion(.failure(error))
+                }
             }
+        }
+    }
+
+    private func cachedProductList(for ids: Set<String>) -> [Product]? {
+        productCacheQueue.sync {
+            let products = ids.compactMap { cachedProducts[$0] }
+            return products.count == ids.count ? products : nil
+        }
+    }
+
+    private func cacheProducts(_ products: [Product]) {
+        productCacheQueue.sync {
+            for product in products {
+                cachedProducts[product.id] = product
+            }
+        }
+    }
+
+    private func clearCachedProducts() {
+        productCacheQueue.sync {
+            cachedProducts.removeAll()
+        }
+    }
+
+    private func performOnMain(_ action: @escaping () -> Void) {
+        if Thread.isMainThread {
+            action()
+        } else {
+            DispatchQueue.main.async(execute: action)
         }
     }
 
@@ -528,7 +593,7 @@ final class ElaProIAPManager: NSObject {
                     completion(.failure(ElaProIAPError.productUnavailable))
                     return
                 }
-                self.cachedProducts[product.id] = product
+                self.cacheProducts([product])
 
                 let result = try await product.purchase(options: [.appAccountToken(appAccountUUID)])
                 switch result {
@@ -902,22 +967,33 @@ final class ElaProIAPManager: NSObject {
             return
         }
 
-        reportRestoredTransactionsToServer(transactions: restoredTransactions) { restoreSuccess in
-            self.bindPendingPurchaseIfNeeded(queryBizType: PurchaseQueryBizType.standard.rawValue) { bindSuccess in
-                DispatchQueue.main.async {
-                    completion((restoreSuccess || bindSuccess) ? .restored : .pendingServerSync)
+        reportRestoredTransactionsToServer(transactions: restoredTransactions) { restoreOutcome in
+            let defaults = UserDefaults.standard
+            DispatchQueue.main.async {
+                switch restoreOutcome {
+                case .success:
+                    self.clearPendingPurchaseLocalState(defaults: defaults, shouldNotify: true)
+                    completion(.restored)
+                case .boundToOtherAccount:
+                    self.clearLocalUnlock(defaults: defaults, shouldNotify: true)
+                    completion(.boundToOtherAccount)
+                case .failed:
+                    self.clearLocalUnlock(defaults: defaults, shouldNotify: true)
+                    completion(.pendingServerSync)
                 }
             }
         }
     }
 
     private func configuredIAPProductIDs() -> Set<String> {
-        return Set([
+        let currentProductIDs = [
             ElaProIAPConfig.monthProductID,
             ElaProIAPConfig.annualProductID,
             ElaProIAPConfig.lifetimeProductID
-        ].map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        ]
+        let configuredProductIDs = Set(currentProductIDs.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty })
+        return configuredProductIDs.union(ElaProIAPConfig.knownSubscriptionProductIDs)
     }
 
     private func debugDescription(for state: ElaProSubscriptionHistoryState) -> String {
@@ -961,9 +1037,7 @@ final class ElaProIAPManager: NSObject {
     }
 
     private func localUnlockDuration(productID: String) -> TimeInterval {
-        if productID == ElaProIAPConfig.monthProductID ||
-            productID == ElaProIAPConfig.annualProductID ||
-            productID == ElaProIAPConfig.lifetimeProductID {
+        if configuredIAPProductIDs().contains(productID) {
             return 7 * 24 * 60 * 60
         }
         return 3 * 24 * 60 * 60
@@ -1020,7 +1094,7 @@ final class ElaProIAPManager: NSObject {
 
     private func queryPurchaseOrder(transactionID: String,
                                     bizType: String,
-                                    completion: ((Bool) -> Void)? = nil) {
+                                    completion: ((BackendSyncOutcome) -> Void)? = nil) {
         let identity = currentAnonymousIdentity()
         var params: [String: AnyObject] = [
             "transactionId": transactionID as AnyObject,
@@ -1040,18 +1114,29 @@ final class ElaProIAPManager: NSObject {
                                           success: { responseObject in
             let code = responseObject["code"] as? Int ?? -1
             DLLog(message: "[ElaProIAP][QUERY] success: \(responseObject), transactionId=\(transactionID), bizType=\(bizType)")
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            let canBind = self.restoreCanBindValue(responseObject: responseObject, decodedData: dataObj)
+            DLLog(message: "[ElaProIAP][QUERY] success:\(dataObj)")
             self.appendRefundDebugLog("后台订单查询返回", payload: [
                 "transactionId": transactionID,
                 "bizType": bizType,
                 "code": code,
+                "canBind": canBind.map { $0 ? 1 : 0 } ?? "nil",
+                "decodedData": dataObj,
                 "response": responseObject
             ])
-            if code == 200 {
-                self.clearPendingTransactionAfterBindSuccess(transactionID: transactionID)
+            if code == 200, canBind == false {
+                self.clearLocalUnlock(defaults: UserDefaults.standard, shouldNotify: true)
+                completion?(.boundToOtherAccount)
+            } else if code == 200, canBind == true {
+                self.clearPendingPurchaseLocalState(defaults: UserDefaults.standard, shouldNotify: true)
                 NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
-                completion?(true)
+                completion?(.success)
+            } else if self.isBoundToOtherAccountResponse(responseObject, decodedData: dataObj) {
+                completion?(.boundToOtherAccount)
             } else {
-                completion?(false)
+                completion?(.failed)
             }
         }, failure: { failed in
             DLLog(message: "[ElaProIAP][QUERY] failure: \(failed), tractionId=\(transactionID), bizType=\(bizType)")
@@ -1060,39 +1145,52 @@ final class ElaProIAPManager: NSObject {
                 "bizType": bizType,
                 "failed": failed
             ])
-            completion?(false)
+            completion?(.failed)
         })
     }
 
     private func reportRestoredTransactionsToServer(transactions: [Transaction],
-                                                    completion: @escaping (Bool) -> Void) {
+                                                    completion: @escaping (BackendSyncOutcome) -> Void) {
         let transactionArray = NSMutableArray()
         transactions.forEach { transaction in
-            transactionArray.add([
-                "transactionId": String(transaction.id)
-            ])
+            var transactionPayload: [String: Any] = [
+                "transactionId": String(transaction.id),
+                "originalTransactionId": String(transaction.originalID),
+                "productId": transaction.productID
+            ]
+            if let appAccountToken = transaction.appAccountToken?.uuidString.lowercased() {
+                transactionPayload["appAccountToken"] = appAccountToken
+            }
+            transactionArray.add(transactionPayload)
         }
 
         guard transactionArray.count > 0 else {
             DLLog(message: "[ElaProIAP][RESTORE] skip URL_iap_dientity_restore: empty transactions")
-            completion(false)
+            completion(.failed)
             return
         }
 
-        let params: [String: AnyObject] = [
+        let identity = currentAnonymousIdentity()
+        var params: [String: AnyObject] = [
             "transactions": transactionArray
         ]
+        let uid = currentUserID()
+        if !uid.isEmpty {
+            params["uid"] = uid as AnyObject
+        }
+        if let identity {
+            params["anonymousUid"] = identity.anonymousUid as AnyObject
+            params["appAccountToken"] = identity.appAccountToken as AnyObject
+        }
 
         DLLog(message: [
             "tag": "[ElaProIAP][RESTORE] request URL_iap_dientity_restore",
             "url": URL_iap_dientity_restore,
-            "params": [
-                "transactions": transactionArray
-            ]
+            "params": params
         ])
         appendRefundDebugLog("恢复购买，上报恢复交易数组", payload: [
             "url": URL_iap_dientity_restore,
-            "transactions": transactionArray
+            "params": params
         ])
 
         WHNetworkUtil.shareManager().POST(urlString: URL_iap_dientity_restore,
@@ -1107,17 +1205,23 @@ final class ElaProIAPManager: NSObject {
                 "decodedData": decodedData ?? "nil",
                 "response": responseObject
             ])
+            let canBind = self.restoreCanBindValue(responseObject: responseObject, decodedData: decodedData)
             self.appendRefundDebugLog("恢复购买接口返回", payload: [
                 "url": URL_iap_dientity_restore,
                 "code": code,
+                "canBind": canBind.map { $0 ? 1 : 0 } ?? "nil",
                 "decodedData": decodedData ?? "nil",
                 "response": responseObject
             ])
-            if code == 200 {
+            if code == 200, canBind == false {
+                completion(.boundToOtherAccount)
+            } else if code == 200, canBind == true {
                 NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
-                completion(true)
+                completion(.success)
+            } else if self.isBoundToOtherAccountResponse(responseObject, decodedData: decodedData) {
+                completion(.boundToOtherAccount)
             } else {
-                completion(false)
+                completion(.failed)
             }
         }, failure: { failed in
             DLLog(message: [
@@ -1129,8 +1233,127 @@ final class ElaProIAPManager: NSObject {
                 "url": URL_iap_dientity_restore,
                 "failed": failed
             ])
-            completion(false)
+            completion(.failed)
         })
+    }
+
+    private func restoreCanBindValue(responseObject: [AnyHashable: Any], decodedData: Any?) -> Bool? {
+        if let value = canBindValue(from: decodedData) {
+            return value
+        }
+        return canBindValue(from: responseObject)
+    }
+
+    private func canBindValue(from object: Any?) -> Bool? {
+        if let dict = object as? [String: Any] {
+            if let value = dict["canBind"] ?? dict["can_bind"] {
+                return boolFromCanBindValue(value)
+            }
+            for value in dict.values {
+                if let canBind = canBindValue(from: value) {
+                    return canBind
+                }
+            }
+        }
+
+        if let dict = object as? NSDictionary {
+            if let value = dict["canBind"] ?? dict["can_bind"] {
+                return boolFromCanBindValue(value)
+            }
+            for value in dict.allValues {
+                if let canBind = canBindValue(from: value) {
+                    return canBind
+                }
+            }
+        }
+
+        if let array = object as? [Any] {
+            for value in array {
+                if let canBind = canBindValue(from: value) {
+                    return canBind
+                }
+            }
+        }
+
+        if let array = object as? NSArray {
+            for value in array {
+                if let canBind = canBindValue(from: value) {
+                    return canBind
+                }
+            }
+        }
+
+        return nil
+    }
+
+    private func boolFromCanBindValue(_ value: Any) -> Bool? {
+        if let boolValue = value as? Bool {
+            return boolValue
+        }
+        if let intValue = value as? Int {
+            return intValue == 1
+        }
+        if let numberValue = value as? NSNumber {
+            return numberValue.intValue == 1
+        }
+        if let stringValue = value as? String {
+            let normalizedValue = stringValue.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            if normalizedValue == "1" || normalizedValue == "true" {
+                return true
+            }
+            if normalizedValue == "0" || normalizedValue == "false" {
+                return false
+            }
+        }
+        return nil
+    }
+
+    private func isBoundToOtherAccountResponse(_ responseObject: [AnyHashable: Any],
+                                               decodedData: Any?) -> Bool {
+        let code = responseObject["code"] as? Int ?? -1
+        if code == 409 || code == 100409 || code == 4009 {
+            return true
+        }
+
+        var searchableTexts: [String] = []
+        if let message = responseObject["message"] as? String {
+            searchableTexts.append(message)
+        }
+        if let msg = responseObject["msg"] as? String {
+            searchableTexts.append(msg)
+        }
+        collectStringValues(from: decodedData).forEach { searchableTexts.append($0) }
+
+        return searchableTexts.contains { text in
+            let lowercasedText = text.lowercased()
+            return text.contains("其他账号") ||
+                text.contains("其它账号") ||
+                text.contains("其他用户") ||
+                text.contains("其它用户") ||
+                text.contains("已绑定") && (text.contains("账号") || text.contains("用户")) ||
+                lowercasedText.contains("other account") ||
+                lowercasedText.contains("another account") ||
+                lowercasedText.contains("bound to")
+        }
+    }
+
+    private func collectStringValues(from object: Any?) -> [String] {
+        if let text = object as? String {
+            return [text]
+        }
+        if let dictionary = object as? [String: Any] {
+            return dictionary.values.flatMap { collectStringValues(from: $0) }
+        }
+        if let dictionary = object as? NSDictionary {
+            return dictionary.allValues.flatMap { collectStringValues(from: $0) }
+        }
+        if let array = object as? [Any] {
+            return array.flatMap { collectStringValues(from: $0) }
+        }
+        if let array = object as? NSArray {
+            return array.compactMap { $0 }.flatMap { collectStringValues(from: $0) }
+        }
+        return []
     }
 
     private func resolveQueryBizType(_ queryBizType: String,
@@ -1190,12 +1413,11 @@ final class ElaProIAPManager: NSObject {
         return transactionID
     }
 
-    private func clearPendingTransactionAfterBindSuccess(transactionID _: String) {
-        let defaults = UserDefaults.standard
+    private func clearPendingPurchaseLocalState(defaults: UserDefaults, shouldNotify: Bool) {
         clearPendingTransactionIDCache(defaults: defaults)
         defaults.removeObject(forKey: LocalUnlockKeys.pendingVerifyPayload)
         clearPendingVerifyPayloadKeychainCache()
-        clearLocalUnlock(defaults: defaults, shouldNotify: true)
+        clearLocalUnlock(defaults: defaults, shouldNotify: shouldNotify)
     }
 
     private func currentUserID() -> String {
@@ -1251,12 +1473,13 @@ final class ElaProIAPManager: NSObject {
     }
 
     private func configuredRefundProductIDs() -> [String] {
-        [
+        let currentProductIDs = [
             ElaProIAPConfig.monthProductID,
             ElaProIAPConfig.annualProductID,
             ElaProIAPConfig.lifetimeProductID
         ].map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
+        return Array(Set(currentProductIDs).union(ElaProIAPConfig.knownSubscriptionProductIDs)).sorted()
     }
 
     private func latestRefundableTransaction(productIDs: [String]) async throws -> Transaction {

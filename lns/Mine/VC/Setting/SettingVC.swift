@@ -257,6 +257,8 @@ extension SettingVC{
                         self.showRestorePurchaseToast("恢复购买成功", duration: 3)
                     case .notFound:
                         MCToast.mc_text("未找到可恢复的订阅", respond: .allow)
+                    case .boundToOtherAccount:
+                        self.showRestorePurchaseBoundToOtherAccountAlert()
                     case .pendingLoginBind:
                         MCToast.mc_text("恢复成功，请登录后同步会员", respond: .allow)
                     case .pendingServerSync:
@@ -269,6 +271,15 @@ extension SettingVC{
                 }
             }
         }
+    }
+
+    private func showRestorePurchaseBoundToOtherAccountAlert() {
+        presentAlertVc(confirmBtn: "知道了",
+                       message: "",
+                       title: "该APPLE账户订阅已绑定其他账号",
+                       cancelBtn: nil,
+                       handler: { _ in },
+                       viewController: self)
     }
 
     private func shouldSuppressRestorePurchaseErrorToast(_ message: String) -> Bool {

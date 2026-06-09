@@ -25,6 +25,8 @@ public let  NOTIFI_NAME_REFRESH_LOGS_FROM_SERVER = NSNotification.Name(rawValue:
 public let  NOTIFI_NAME_REFRESH_COURSE_STATUS = NSNotification.Name(rawValue: "refresh_course_status")
 // Ela Pro 订阅成功后，刷新食谱页
 public let  NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS = NSNotification.Name(rawValue: "refresh_diet_plan_status")
+// 首次创建食谱流程中开通 Ela Pro 后，食谱页优先展示未生成计划状态
+public let  NOTIFI_NAME_DIET_PLAN_SHOW_NONE_PLAN_AFTER_PRO_SUCCESS = NSNotification.Name(rawValue: "diet_plan_show_none_plan_after_pro_success")
 // Ela Pro 绑定/订阅成功后，刷新会员状态
 public let  NOTIFI_NAME_REFRESH_VIP_STATUS = NSNotification.Name(rawValue: "refresh_vip_status")
 // 二次创建食谱成功后，返回食谱页时让旧列表先淡出

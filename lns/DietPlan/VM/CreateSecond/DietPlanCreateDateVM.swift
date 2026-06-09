@@ -140,6 +140,17 @@ extension DietPlanCreateDateVM {
         updateNextButtonState()
     }
 
+    func requestDateRange() -> (startDate: String, endDate: String)? {
+        guard let start = startDate,
+              let end = endDate,
+              isCurrentDateRangeValid() else {
+            return nil
+        }
+
+        return (requestDateFormatter.string(from: start),
+                requestDateFormatter.string(from: end))
+    }
+
     @objc func startDateTapAction() {
         showDatePickerAlert(type: .start)
         
@@ -214,10 +225,6 @@ extension DietPlanCreateDateVM {
                                     min: startDate,
                                     max: endSelectableMaxDate(for: startDate))
             }
-        }
-        if let startDate = startDate, let endDate = endDate, isCurrentDateRangeValid() {
-            QuestinonaireMsgModel.shared.chartStartDate = startDate
-            QuestinonaireMsgModel.shared.chartEndDate = endDate
         }
         updateDateButtons()
         updateNextButtonState()

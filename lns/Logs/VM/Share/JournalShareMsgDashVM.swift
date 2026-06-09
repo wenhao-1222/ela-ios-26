@@ -54,7 +54,8 @@ extension JournalShareMsgDashVM{
         self.layer.addSublayer(dashLineLayer)
         
         lineLayer.allowsEdgeAntialiasing = true
-        lineLayer.lineWidth = kFitWidth(0.5) // 线宽
+        lineLayer.lineWidth = 0
+        lineLayer.strokeColor = UIColor.clear.cgColor
         
         dashLineLayer.allowsEdgeAntialiasing = true
         dashLineLayer.strokeColor = WHColorWithAlpha(colorStr: "0f1214", alpha: 0.2).cgColor // 弧线颜色
@@ -69,15 +70,15 @@ extension JournalShareMsgDashVM{
         lineLayer.strokeColor = UIColor(named: "color_share_msg_bg")?.cgColor // 弧线颜色
         lineLayer.fillColor = UIColor(named: "color_share_msg_bg")?.cgColor // 填充色
         linePath = UIBezierPath()
-        linePath.move(to: CGPoint.init(x: 0.5, y: 0))
-        linePath.addLine(to: CGPoint.init(x: 0.5, y: selfHeight*0.5-circleRadius))
-        linePath.addArc(withCenter: CGPoint(x: 0.5, y: selfHeight*0.5), radius: circleRadius, startAngle: -Double.pi*0.5, endAngle: Double.pi*0.5, clockwise: true)
-        linePath.addLine(to: CGPoint.init(x: 0.5, y: selfHeight))
-        linePath.addLine(to: CGPoint.init(x:selfWidth-0.5 , y: selfHeight))
-        linePath.addLine(to: CGPoint.init(x:selfWidth-0.5 , y: selfHeight*0.5+circleRadius))
-        linePath.addArc(withCenter: CGPoint(x: selfWidth-0.5, y: selfHeight*0.5), radius: circleRadius, startAngle: Double.pi*0.5, endAngle: -Double.pi*0.5, clockwise: true)
-        linePath.addLine(to: CGPoint.init(x: selfWidth-0.5, y: 0))
-        linePath.addLine(to: CGPoint.init(x: 0.5, y: 0))
+        linePath.move(to: CGPoint.init(x: 0, y: 0))
+        linePath.addLine(to: CGPoint.init(x: 0, y: selfHeight*0.5-circleRadius))
+        linePath.addArc(withCenter: CGPoint(x: 0, y: selfHeight*0.5), radius: circleRadius, startAngle: -Double.pi*0.5, endAngle: Double.pi*0.5, clockwise: true)
+        linePath.addLine(to: CGPoint.init(x: 0, y: selfHeight))
+        linePath.addLine(to: CGPoint.init(x: selfWidth, y: selfHeight))
+        linePath.addLine(to: CGPoint.init(x: selfWidth, y: selfHeight*0.5+circleRadius))
+        linePath.addArc(withCenter: CGPoint(x: selfWidth, y: selfHeight*0.5), radius: circleRadius, startAngle: Double.pi*0.5, endAngle: -Double.pi*0.5, clockwise: true)
+        linePath.addLine(to: CGPoint.init(x: selfWidth, y: 0))
+        linePath.close()
         
         lineLayer.path = linePath.cgPath
         

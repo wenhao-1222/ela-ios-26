@@ -779,7 +779,8 @@ extension JournalVC{
         self.navigationController?.pushViewController(vc, animated: true)
     }
     func gotoAicoachAction() {
-        if VIPModel.shared.isAiCoachSurveyFinished{//做过问卷
+        if VIPModel.shared.isAiCoachSurveyFinished && VIPModel.shared.aiCoachProcessStatus == 1{
+            //做过问卷    且  AI教练后  付过费才能直接进AI教练页面，否则重走问卷 （2026年06月08日15:52:31）
             if VIPModel.shared.status == .valid{
                 let vc = AICoachPreVC()
                 self.navigationController?.pushViewController(vc, animated: true)

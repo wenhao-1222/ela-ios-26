@@ -554,6 +554,8 @@ extension GuidanceProVC {
                             case .activated:
                                 MCToast.mc_text("订阅成功")
                                 self.nextBlock?()
+                            case .boundToOtherAccount:
+                                self.showIAPBoundToOtherAccountAlert()
                             case .pendingLoginBind:
                                 MCToast.mc_text("支付成功，请登录后领取会员")
                                 self.nextBlock?()
@@ -574,6 +576,15 @@ extension GuidanceProVC {
                 }
             }
         }
+    }
+
+    private func showIAPBoundToOtherAccountAlert() {
+        guard !(presentedViewController is UIAlertController) else { return }
+        let alert = UIAlertController(title: "该APPLE账户订阅已绑定其他账号",
+                                      message: nil,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "知道了", style: .default))
+        present(alert, animated: true)
     }
 
     func trackGuidanceV2IntroPageIfNeeded() {
