@@ -48,6 +48,7 @@ class JournalReportDailyItemVM: UIView {
 extension JournalReportDailyItemVM{
     func showSkeletonAnimation() {
         detailLab.text = nil
+        typeLabel.text = nil
         imgView.image = nil
         // 需要骨架的子视图：显示骨架（从左向右 Shimmer + 渐入）
         let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
@@ -60,20 +61,33 @@ extension JournalReportDailyItemVM{
         typeLabel.showSkeleton(cfg)
     }
     func updateUI(dict:NSDictionary,index:Int,totalNum:Int) {
-        detailLab.text = dict.stringValueForKey(key: "text")
+        let detailText = dict.stringValueForKey(key: "text")
+        var typeText = ""
+        var imageName = ""
         if dict.stringValueForKey(key: "type") == "CHO" {
-            typeLabel.text = "碳水"
-            imgView.setImgLocal(imgName: "report_daily_carbo_icon")
+            typeText = "碳水"
+            imageName = "report_daily_carbo_icon"
         }else if dict.stringValueForKey(key: "type") == "PRO" {
-            typeLabel.text = "蛋白质"
-            imgView.setImgLocal(imgName: "report_daily_protein_icon")
+            typeText = "蛋白质"
+            imageName = "report_daily_protein_icon"
         }else if dict.stringValueForKey(key: "type") == "FAT" {
-            typeLabel.text = "脂肪"
-            imgView.setImgLocal(imgName: "report_daily_fat_icon")
+            typeText = "脂肪"
+            imageName = "report_daily_fat_icon"
         }
         
         updateFrame(index: index, totalNum: totalNum)
-        // 3) 最后统一把骨架优雅淡出 + 内容淡入
+
+        UIView.transition(with: detailLab, duration: 0.22, options: .transitionCrossDissolve) {
+            self.detailLab.text = detailText
+        }
+        UIView.transition(with: typeLabel, duration: 0.22, options: .transitionCrossDissolve) {
+            self.typeLabel.text = typeText
+        }
+        UIView.transition(with: imgView, duration: 0.22, options: .transitionCrossDissolve) {
+            if imageName.count > 0 {
+                self.imgView.setImgLocal(imgName: imageName)
+            }
+        }
         [detailLab,typeLabel, imgView].forEach { $0.hideSkeletonWithCrossfade() }
     }
     func updateFrame(index:Int,totalNum:Int) {
@@ -114,12 +128,16 @@ extension JournalReportDailyItemVM{
             make.width.height.equalTo(kFitWidth(30))
         }
         detailLab.snp.makeConstraints { make in
-            make.left.right.equalToSuperview()
+            make.centerX.equalToSuperview()
             make.top.equalTo(kFitWidth(42))
+            make.width.equalTo(kFitWidth(88))
+            make.height.equalTo(kFitWidth(18))
         }
         typeLabel.snp.makeConstraints { make in
-            make.centerX.lessThanOrEqualToSuperview()
+            make.centerX.equalToSuperview()
             make.bottom.equalToSuperview()
+            make.width.equalTo(kFitWidth(38))
+            make.height.equalTo(kFitWidth(14))
         }
     }
 }

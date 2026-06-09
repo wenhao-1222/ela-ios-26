@@ -12,6 +12,9 @@ class JournalReportDailyMsgVM: UIView {
     var detailDict = NSDictionary()
     var reportMsgDict = NSDictionary()
     var tableHeight = kFitWidth(0)
+    private var isDailyReportLoading = false
+    private var dailyReportLoadingStartTime: TimeInterval = 0
+    private let minDailyReportSkeletonDuration: TimeInterval = 0.35
     
     var offsetChangeBlock:((CGFloat)->())?
     
@@ -81,6 +84,7 @@ class JournalReportDailyMsgVM: UIView {
     lazy var rankingButton: RankingListButton = {
         let vm = RankingListButton.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(111), y: kFitWidth(71), width: 0, height: 0))
 //        vm.isHidden = true
+        vm.alpha = 0
         vm.tapBlock = {()in
             let vc = FriendRankingVC()
             self.controller.navigationController?.pushViewController(vc, animated: true)
@@ -121,6 +125,9 @@ extension JournalReportDailyMsgVM:UITableViewDelegate,UITableViewDataSource{
 //    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         self.tableView.isScrollEnabled = false
+        if isDailyReportLoading {
+            return 4
+        }
         if self.reportMsgDict.stringValueForKey(key: "achieved") == "yes"{
             return 3
         }else{
@@ -154,6 +161,12 @@ extension JournalReportDailyMsgVM:UITableViewDelegate,UITableViewDataSource{
 
                 return cell ?? JournalReportDailyDesCell()
             }else if indexPath.row == 2{
+                if isDailyReportLoading {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "JournalReportDailyNaturalCell") as? JournalReportDailyNaturalCell
+                    cell?.showSkeletonUI()
+
+                    return cell ?? JournalReportDailyNaturalCell()
+                }
                 if self.reportMsgDict.stringValueForKey(key: "achieved") == "yes"{
                     let cell = tableView.dequeueReusableCell(withIdentifier: "JournalReportDailyAchievedCell") as? JournalReportDailyAchievedCell
                     cell?.updateUI(dict: self.reportMsgDict)
@@ -177,6 +190,11 @@ extension JournalReportDailyMsgVM:UITableViewDelegate,UITableViewDataSource{
                 }
             }else {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "JournalReportDailyDetailCell") as? JournalReportDailyDetailCell
+                if isDailyReportLoading {
+                    cell?.showSkeletonUI()
+
+                    return cell ?? JournalReportDailyDetailCell()
+                }
                 let dict = self.reportMsgDict["advice"]as? NSDictionary ?? [:]
                 cell?.updateUI(dict: dict)
                 
@@ -186,7 +204,7 @@ extension JournalReportDailyMsgVM:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let vm = JournalReportTableHeadVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
         vm.titleLab.text = "每日营养分析"
-        
+
         return vm
     }
 //    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -238,7 +256,7 @@ extension JournalReportDailyMsgVM{
             self.naturalHeadVm.frame = CGRect.init(x: 0, y: self.tableHeight, width: SCREEN_WIDHT, height: self.naturalHeadVm.selfHeight)
             self.caloriesMealMsgVm.frame = CGRect.init(x: 0, y: self.tableHeight+self.naturalHeadVm.selfHeight, width: SCREEN_WIDHT, height: self.caloriesMealMsgVm.selfHeight)
             self.caloriesSourceMsgVm.frame = CGRect.init(x: 0, y: self.caloriesMealMsgVm.frame.maxY+kFitWidth(12), width: SCREEN_WIDHT, height: self.caloriesSourceMsgVm.selfHeight)
-            
+
             self.scrollView.contentSize = CGSize.init(width: 0, height: self.caloriesSourceMsgVm.frame.maxY+kFitWidth(20)+WHUtils().getBottomSafeAreaHeight())
             DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
                 self.caloriesMealMsgVm.alpha = 1
@@ -273,30 +291,49 @@ extension JournalReportDailyMsgVM{
 }
 
 extension JournalReportDailyMsgVM{
+    private func showRankingButton(in containerView: UIView) {
+        let shouldFadeIn = rankingButton.superview !== containerView || rankingButton.alpha == 0
+        containerView.addSubview(rankingButton)
+        rankingButton.alpha = shouldFadeIn ? 0 : 1
+        UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut, .allowUserInteraction]) {
+            self.rankingButton.alpha = 1
+        }
+    }
+    
     func sendDayliReposrtRequest() {
+        isDailyReportLoading = true
+        dailyReportLoadingStartTime = Date().timeIntervalSince1970
+        tableView.isHidden = false
+        tableView.reloadForSkeleton()
+
         let param = ["sdate":self.detailDict.stringValueForKey(key: "sdate")]
         WHNetworkUtil.shareManager().POST(urlString: URL_daily_nutrition_report, parameters: param as [String:AnyObject]) { responseObject in
             let code = responseObject["code"] as? Int ?? -1
             DLLog(message: "sendDayliReposrtRequest:\(responseObject)")
-            if code == 400 {
-                self.nodataVm.tipsLabel.text = "\(responseObject["message"] as? String ?? "请先记录至少一种食物")"
-                self.nodataVm.showView()
-                self.nodataVm.addSubview(self.rankingButton)
-                
-                self.rankingButton.addFriendButton.backgroundColor = .COLOR_CARD_BG_WHITE
-                self.rankingButton.addFriendButton.setTitleColor(.THEME, for: .normal)
-//                self.rankingButton.isHidden = true
-            }else{
-                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-                let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-                DLLog(message: "sendDayliReposrtRequest:\(dataObj)")
-                
-//                self.rankingButton.isHidden = false
-                self.scrollView.addSubview(self.rankingButton)
-                self.reportMsgDict = dataObj
-//                DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+
+            let elapsed = Date().timeIntervalSince1970 - self.dailyReportLoadingStartTime
+            let delay = max(0, self.minDailyReportSkeletonDuration - elapsed)
+            DispatchQueue.main.asyncAfter(deadline: .now()+delay) {
+                self.isDailyReportLoading = false
+                if code == 400 {
                     self.tableView.reloadData()
-//                })
+                    self.nodataVm.tipsLabel.text = "\(responseObject["message"] as? String ?? "请先记录至少一种食物")"
+                    self.nodataVm.showView()
+                    self.showRankingButton(in: self.nodataVm)
+
+                    self.rankingButton.addFriendButton.backgroundColor = .COLOR_CARD_BG_WHITE
+                    self.rankingButton.addFriendButton.setTitleColor(.THEME, for: .normal)
+//                    self.rankingButton.isHidden = true
+                }else{
+                    let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+                    let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+                    DLLog(message: "sendDayliReposrtRequest:\(dataObj)")
+
+//                    self.rankingButton.isHidden = false
+                    self.showRankingButton(in: self.scrollView)
+                    self.reportMsgDict = dataObj
+                    self.tableView.reloadData()
+                }
             }
         }
     }

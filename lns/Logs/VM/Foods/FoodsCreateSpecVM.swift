@@ -169,24 +169,34 @@ extension FoodsCreateSpecVM:UITextFieldDelegate{
         // 构建修改后的文本内容
         let updatedText = currentText.replacingCharacters(in: textRange, with: string)
 
-        // 判断是否为纯数字
-        let allowedCharacters = CharacterSet(charactersIn: "0123456789")
+        // 判断是否为数字或小数分隔符
+        let allowedCharacters = CharacterSet(charactersIn: ".,0123456789")
         let characterSet = CharacterSet(charactersIn: string)
         if !allowedCharacters.isSuperset(of: characterSet) && string != "" {
             return false
         }
 
-        
-//        if updatedText.floatValue > 100 {
-//            return false
-//        }
-        // 限制最多3位数字
-        if updatedText.count > 3 {
+        let normalizedText = updatedText.replacingOccurrences(of: ",", with: ".")
+        let components = normalizedText.components(separatedBy: ".")
+        if components.count > 2 {
+            return false
+        }
+        if normalizedText.hasPrefix(".") {
+            return false
+        }
+        if components.count == 2 && components[1].count > 1 {
+            return false
+        }
+        if let number = Float(normalizedText), number > 100 {
             return false
         }
         // 回调
         numberInput = true
-        numberChangeBlock?(updatedText.replacingOccurrences(of: ",", with: "."))
+        numberChangeBlock?(normalizedText)
+        if normalizedText != updatedText {
+            textField.text = normalizedText
+            return false
+        }
 
         return true
     }

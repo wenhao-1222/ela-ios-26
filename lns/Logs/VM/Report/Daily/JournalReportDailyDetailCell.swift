@@ -50,6 +50,25 @@ class JournalReportDailyDetailCell: UITableViewCell {
 }
 
 extension JournalReportDailyDetailCell{
+    func showSkeletonUI() {
+        detailLab.text = nil
+        detailLab.snp.remakeConstraints { make in
+            make.top.equalTo(kFitWidth(16))
+            make.left.equalTo(kFitWidth(46))
+            make.right.equalTo(kFitWidth(-46))
+            make.height.equalTo(kFitWidth(64))
+            make.bottom.equalTo(kFitWidth(-32))
+        }
+
+        let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
+                                 highlightColorLight: .COLOR_GRAY_E2,
+                                 cornerRadius: kFitWidth(4),
+                                 shimmerWidth: 0.22,
+                                 shimmerDuration: 1.15)
+
+        detailLab.showSkeleton(cfg)
+    }
+
     func updateUI(dict:NSDictionary)  {
         if dict.stringValueForKey(key: "text").count > 0 {
 //            self.hideSkeleton()

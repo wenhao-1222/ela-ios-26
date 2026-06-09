@@ -183,7 +183,7 @@ class PropotionResultVC: WHBaseViewVC {
         let vm = PropotionResultNumberVM.init(frame: CGRect.init(x: 0, y: self.synVm.frame.maxY, width: 0, height: 0))
         vm.updateUI(dict:self.msgDict)
         vm.numberChangeBlock = {(number)in
-            if number.intValue > 0 {
+            if number.floatValue > 0 {
                 self.naturalVm.inputNumer = number.doubleValue
             }else{
                 self.naturalVm.inputNumer = Double(self.naturalVm.defaultNumer)

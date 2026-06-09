@@ -18,14 +18,20 @@ class JournalReportDailyNaturalCell: UITableViewCell {
         self.clipsToBounds = true
         isSkeletonable = true
         contentView.isSkeletonable = true
-        
+
         initUI()
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        resetDailyItemViews()
+        pieSketeView.isHidden = false
     }
     lazy var bgView: UIView = {
         let vi = UIView()
         vi.backgroundColor = .COLOR_CARD_BG_WHITE
         vi.isSkeletonable = true
-        
+
         return vi
     }()
     lazy var dottlieView: DottedLineView = {
@@ -56,24 +62,43 @@ class JournalReportDailyNaturalCell: UITableViewCell {
         
         return vi
     }()
-    
+
 }
 
 extension JournalReportDailyNaturalCell{
+    func showSkeletonUI() {
+        resetDailyItemViews()
+        titleLab.text = "今日你比原计划"
+        pieSketeView.isHidden = true
+
+        for i in 0..<3 {
+            let vm = JournalReportDailyItemVM.init(frame: CGRect.init(x: 0, y: kFitWidth(72), width: 0, height: 0))
+            bgView.addSubview(vm)
+            vm.updateFrame(index: i, totalNum: 3)
+        }
+    }
+
     func updateUI(dataArr:NSArray) {
 //        let whiteViewWidth = SCREEN_WIDHT - kFitWidth(32)
+        resetDailyItemViews()
         if dataArr.count > 0 {
             self.hideSkeleton()
             self.pieSketeView.isHidden = true
             titleLab.text = "今日你比原计划"
             for i in 0..<dataArr.count{
                 let vm = JournalReportDailyItemVM.init(frame: CGRect.init(x: 0, y: kFitWidth(72), width: 0, height: 0))
-                
+
                 bgView.addSubview(vm)
                 let dict = dataArr[i]as? NSDictionary ?? [:]
                 vm.updateUI(dict: dict,index: i,totalNum: dataArr.count)
             }
         }
+    }
+
+    private func resetDailyItemViews() {
+        bgView.subviews
+            .compactMap { $0 as? JournalReportDailyItemVM }
+            .forEach { $0.removeFromSuperview() }
     }
 }
 

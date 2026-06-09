@@ -46,6 +46,13 @@ class JournalReportDailyGoalCell: UITableViewCell {
         
         return lab
     }()
+    lazy var titleSkeLab: UILabel = {
+        let lab = UILabel()
+        lab.layer.cornerRadius = kFitWidth(3)
+        lab.clipsToBounds = true
+        
+        return lab
+    }()
     lazy var caloriesImg: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "report_daily_calories_bg_icon")
@@ -84,18 +91,20 @@ extension JournalReportDailyGoalCell{
             
             contentLab.attributedText = string.attributedText(text: string, keywords: keyWords as! [String], font: UIFont().DDInFontSemiBold(fontSize: 28),color: .white)
             // 3) 最后统一把骨架优雅淡出 + 内容淡入
-            [titleLab, contentLab].forEach { $0.hideSkeletonWithCrossfade() }
+            [titleLab, contentLab,titleSkeLab].forEach { $0.hideSkeletonWithCrossfade() }
         }else{
             titleLab.text = nil
             // 需要骨架的子视图：显示骨架（从左向右 Shimmer + 渐入）
-            let cfg = SkeletonConfig(baseColorLight: .COLOR_LIGHT_GREY,
-                                     highlightColorLight: .COLOR_GRAY_E2,
+            let cfg = SkeletonConfig(baseColorLight: UIColor.white.withAlphaComponent(0.28),
+                                     highlightColorLight: UIColor.white.withAlphaComponent(0.36),
                                      cornerRadius: kFitWidth(4),
                                      shimmerWidth: 0.22,
                                      shimmerDuration: 1.15)
             
             titleLab.showSkeleton(cfg)
             contentLab.showSkeleton(cfg)
+            titleSkeLab.showSkeleton(cfg)
+            
         }
     }
     func refreshLabelFrame(isAchieved:Bool) {
@@ -126,6 +135,7 @@ extension JournalReportDailyGoalCell{
         contentView.addSubview(bgView)
         bgView.addSubview(caloriesImg)
         bgView.addSubview(titleLab)
+        bgView.addSubview(titleSkeLab)
         bgView.addSubview(whiteVi)
         contentView.addSubview(contentLab)
         
@@ -144,6 +154,11 @@ extension JournalReportDailyGoalCell{
         titleLab.snp.makeConstraints { make in
             make.left.top.equalTo(kFitWidth(16))
 //            make.width.equalTo(kFitWidth(104))
+            make.width.equalTo(kFitWidth(130))
+            make.height.equalTo(kFitWidth(28))
+        }
+        titleSkeLab.snp.makeConstraints { make in
+            make.left.top.equalTo(kFitWidth(16))
             make.width.equalTo(kFitWidth(130))
             make.height.equalTo(kFitWidth(28))
         }
