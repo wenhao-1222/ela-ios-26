@@ -1231,7 +1231,7 @@ class LogsSQLiteManager {
             return false
         }
         
-        let newCaloriesTarget = caloriesTarget.count > 0 ? caloriesTarget : currentModel.caloriTarget
+        let newCaloriesTarget = caloriesTarget.count > 0 ? roundedCaloriesTargetValue(caloriesTarget) : currentModel.caloriTarget
         let newCarbohydrateTarget = carbohydrateTarget.count > 0 ? carbohydrateTarget : currentModel.carbohydrateTarget
         let newProteinTarget = proteinTarget.count > 0 ? proteinTarget : currentModel.proteinTarget
         let newFatTarget = fatTarget.count > 0 ? fatTarget : currentModel.fatTarget
@@ -1266,7 +1266,15 @@ class LogsSQLiteManager {
         let primaryValue = dict.stringValueForKey(key: primaryKey)
         return primaryValue.count > 0 ? primaryValue : dict.stringValueForKey(key: fallbackKey)
     }
-    
+
+    private func roundedCaloriesTargetValue(_ value: String) -> String {
+        let normalizedValue = value.replacingOccurrences(of: ",", with: "")
+        guard let doubleValue = Double(normalizedValue) else {
+            return value
+        }
+        return "\(Int(doubleValue.rounded()))"
+    }
+
     func deleteAllData(){
         do {
             try db?.run(logs.delete())
