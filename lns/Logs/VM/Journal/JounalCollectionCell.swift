@@ -919,6 +919,14 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
 }
 
 extension JounalCollectionCell {
+    func refreshAICoachUnreadStatus() {
+        guard hasAICoachSection else { return }
+        let indexPath = IndexPath(row: 0, section: 0)
+        guard tableView.numberOfSections > indexPath.section,
+              tableView.numberOfRows(inSection: indexPath.section) > indexPath.row else { return }
+        tableView.reloadRows(at: [indexPath], with: .none)
+    }
+
     func handleAICoachTap() {
         aiCoachTapBlock?()
     }

@@ -57,6 +57,7 @@ class GuidanceVC: WHBaseViewVC {
     private var isBackNavigationLocked = false
     private var lastGuidanceV2TrackedPageKey = ""
     private var hasConfiguredFullscreenPopGesture = false
+    private let guidanceProTrialHistoryProductID = "annual_yeal_new"
     private var isFullscreenPopGestureEnabledForInitialStep = false
     private weak var fullscreenPopGestureNavigationController: UINavigationController?
     private weak var fullscreenPopGestureFailureNavigationController: UINavigationController?
@@ -1548,17 +1549,17 @@ extension GuidanceVC{
     }
 
     func resolveGuidanceProSubscriptionHistoryState(completion: ((Bool) -> Void)?) {
-        let annualProductID = ElaProIAPConfig.annualProductID.trimmingCharacters(in: .whitespacesAndNewlines)
-        DLLog(message: "[GuidancePro][Route] resolve subscription history, annualProductID=\(annualProductID)")
-        guard !annualProductID.isEmpty else {
+        let trialHistoryProductID = guidanceProTrialHistoryProductID.trimmingCharacters(in: .whitespacesAndNewlines)
+        DLLog(message: "[GuidancePro][Route] resolve subscription history, trialHistoryProductID=\(trialHistoryProductID)")
+        guard !trialHistoryProductID.isEmpty else {
             cachedGuidanceProHasFreeTrialPermission = true
             hasResolvedGuidanceProSubscriptionHistory = true
-            DLLog(message: "[GuidancePro][Route] annualProductID empty, default hasFreeTrial=true")
+            DLLog(message: "[GuidancePro][Route] trialHistoryProductID empty, default hasFreeTrial=true")
             completion?(false)
             return
         }
 
-        ElaProIAPManager.shared.checkSubscriptionHistoryState(productID: annualProductID) { [weak self] state in
+        ElaProIAPManager.shared.checkSubscriptionHistoryState(productID: trialHistoryProductID) { [weak self] state in
             guard let self = self else { return }
             self.hasResolvedGuidanceProSubscriptionHistory = true
             switch state {

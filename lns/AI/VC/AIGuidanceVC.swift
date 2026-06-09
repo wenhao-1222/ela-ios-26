@@ -531,6 +531,7 @@ extension AIGuidanceVC {
     func enterElaProPage() {
         VIPModel.shared.isAiCoachSurveyFinished = true
         if VIPModel.shared.status == .valid{
+            NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_JOURNAL_VIP_STATUS, object: nil)
             let vc = AICoachPreVC()
             navigationController?.pushViewController(vc, animated: true)
         }else{

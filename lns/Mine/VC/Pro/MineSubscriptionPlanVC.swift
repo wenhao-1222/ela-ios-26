@@ -41,6 +41,7 @@ final class MineSubscriptionPlanVC: WHBaseViewVC {
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         lab.textAlignment = .right
+        lab.isHidden = true
         return lab
     }()
 

@@ -171,10 +171,18 @@ class JournalVC: WHBaseViewVC {
                                                selector: #selector(refreshVipStatusAfterIAPBindSuccess),
                                                name: NOTIFI_NAME_REFRESH_VIP_STATUS,
                                                object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshVipStatusAfterIAPBindSuccess),
+                                               name: NOTIFI_NAME_REFRESH_JOURNAL_VIP_STATUS,
+                                               object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(gotoLogsNotification), name: NSNotification.Name(rawValue: "widgetAddFoodsForLogs"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(editStatus), name: NSNotification.Name(rawValue: "longPressCellForEdit"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(refreshTodayData), name: NOTIFI_NAME_REFRESH_TODAY_JOUNAL, object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshAICoachReportUnreadStatus),
+                                               name: NOTIFI_NAME_REFRESH_AI_COACH_REPORT_UNREAD_STATUS,
+                                               object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleDietPlanFoodsAddToLogs(notify:)), name: NSNotification.Name(rawValue: "dietPlanFoodsAddToLogs"), object: nil)
         
 //        let launchInt = UserDefaults.standard.value(forKey: launchNum) as? Int ?? 0
@@ -572,6 +580,10 @@ extension JournalVC{
         guard indexPath.row >= 0, indexPath.row < daySourceArray.count else { return }
         selecteIndex = indexPath.row
         queryDay = daySourceArray[indexPath.row] as? String ?? queryDay
+    }
+
+    @objc private func refreshAICoachReportUnreadStatus() {
+        currentVisibleJournalCell()?.refreshAICoachUnreadStatus()
     }
     
     private func attachFitnessTypeAlertIfNeeded() {

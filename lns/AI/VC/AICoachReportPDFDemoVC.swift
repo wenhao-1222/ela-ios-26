@@ -193,6 +193,7 @@ final class AICoachReportPDFDemoVC: WHBaseViewVC {
         updateTopBarInteraction(isEnabled: false)
         updateBottomBarVisibility()
         updateAdviceButtonState(animated: false)
+        markLatestReportAsReadIfNeeded()
         sendReportListRequest()
         if reportId.isEmpty == false {
             sendReportDetailRequest()
@@ -522,6 +523,12 @@ private extension AICoachReportPDFDemoVC {
         logsRefreshNotifyWorkItem?.cancel()
         logsRefreshNotifyWorkItem = nil
         NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_LOGS_FROM_SERVER, object: nil)
+    }
+
+    func markLatestReportAsReadIfNeeded() {
+        guard UserInfoModel.shared.has_unread_latest_ai_coach_report else { return }
+        UserInfoModel.shared.has_unread_latest_ai_coach_report = false
+        NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_AI_COACH_REPORT_UNREAD_STATUS, object: nil)
     }
 }
 
