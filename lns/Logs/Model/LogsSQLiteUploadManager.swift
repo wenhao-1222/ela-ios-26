@@ -51,10 +51,10 @@ class LogsSQLiteUploadManager {
         }
     }
     
-    func uploadLogsBySDate(sdate:String, completion: (() -> Void)? = nil) {
+    func uploadLogsBySDate(sdate:String, shouldRefreshTodayJournal: Bool = true, completion: (() -> Void)? = nil) {
         let logsDict = LogsSQLiteManager.getInstance().queryLogsData(sdata: sdate)
         if logsDict["isUpload"]as? Bool ?? true == false{
-            dealLogsDataForUpload(dict: logsDict, completion: completion)
+            dealLogsDataForUpload(dict: logsDict, shouldRefreshTodayJournal: shouldRefreshTodayJournal, completion: completion)
         } else {
             completion?()
         }
@@ -100,7 +100,7 @@ class LogsSQLiteUploadManager {
         }
     }
 
-    func dealLogsDataForUpload(dict:NSDictionary, completion: (() -> Void)? = nil) {
+    func dealLogsDataForUpload(dict:NSDictionary, shouldRefreshTodayJournal: Bool = true, completion: (() -> Void)? = nil) {
         let serialQueue = DispatchQueue(label: "com.logs.calculate")
          
         let uploadDict = NSMutableDictionary(dictionary: dict)
@@ -160,7 +160,7 @@ class LogsSQLiteUploadManager {
         serialQueue.async {
             DLLog(message: "checkDataUploadStatus  上传 第二步")
             DispatchQueue.main.sync {
-                self.sendUpdateLogsRequest(dict: uploadDict, meals: mealsArray, completion: completion)
+                self.sendUpdateLogsRequest(dict: uploadDict, meals: mealsArray, shouldRefreshTodayJournal: shouldRefreshTodayJournal, completion: completion)
                 NutritionDefaultModel.shared.getDefaultGoal(weekDay: Date().getWeekdayIndex(from: Date().nextDay(days: 0)))
                 if uploadDict.stringValueForKey(key: "sdate") == Date().nextDay(days: 0){
                     self.saveNaturalData(dict: uploadDict,isServerData:false)
@@ -192,7 +192,7 @@ class LogsSQLiteUploadManager {
             DLLog(message: "sendUpdateLogsMealsTimeRequest:\(responseObject)")
         }
     }
-    func sendUpdateLogsRequest(dict:NSDictionary,meals:NSArray, completion: (() -> Void)? = nil) {
+    func sendUpdateLogsRequest(dict:NSDictionary,meals:NSArray, shouldRefreshTodayJournal: Bool = true, completion: (() -> Void)? = nil) {
         let logsDict = NSMutableDictionary(dictionary: LogsSQLiteManager.getInstance().getMealsTimeForUpload(sDate: "\(dict.stringValueForKey(key: "sdate"))"))
         
         logsDict.setValue("\(dict.stringValueForKey(key: "sdate"))", forKey: "sdate")
@@ -214,17 +214,21 @@ class LogsSQLiteUploadManager {
         logsDict.setValue("\(WHUtils.getJSONStringFromArray(array: meals))", forKey: "meals")
         
         let sn = dealMealsData(meals: meals)
+        if shouldRefreshTodayJournal {
 //        if logsDict.stringValueForKey(key: "sdate") == Date().todayDate && (sn >= 4 || sn == 0){
             UserDefaults.set(value: [:], forKey: .jounal_meal_advice)
             NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_TODAY_JOUNAL, object: nil)
 //        }
+        }
         
         DLLog(message: "sendUpdateLogsRequest(param):\(logsDict)")
         WHNetworkUtil.shareManager().POST(urlString: URL_User_logs_update_details, parameters: logsDict as? [String : AnyObject]) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             
-            self.sendNextMealAdviceRequest(logsDict: logsDict, sn: sn)
+            if shouldRefreshTodayJournal {
+                self.sendNextMealAdviceRequest(logsDict: logsDict, sn: sn)
+            }
             LogsSQLiteManager.getInstance().updateUploadStatus(sDate: dict.stringValueForKey(key: "sdate"), update: true)
             LogsSQLiteManager.getInstance().updateLogsEtime(sDate: dict.stringValueForKey(key: "sdate"), endTime: dataObj["etime"]as? String ?? "\(Date().currentSeconds)")
             completion?()

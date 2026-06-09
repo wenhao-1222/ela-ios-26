@@ -250,7 +250,7 @@ extension JounalCollectionCell{
         self.logsModel.isUpload = false
         LogsSQLiteManager.getInstance().updateFitnessType(fitnessType: fitnessLabel, sDate: self.queryDay)
         LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
-        LogsSQLiteUploadManager().uploadLogsBySDate(sdate: self.queryDay)
+        LogsSQLiteUploadManager().uploadLogsBySDate(sdate: self.queryDay, shouldRefreshTodayJournal: false)
     }
     private func startIdleTimer() {
 //        guard !hasShownFirstFoodsGuide else { return }
@@ -785,10 +785,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                         vc.sDate = self.queryDay
                         vc.totalNum = 0
                         vc.numChangeBlock = {(waterNum)in
-                            self.currentDayMsg.setValue(waterNum, forKey: "waterNum")
-                            if let waterSectionIndex = self.waterSectionIndex {
-                                self.tableView.reloadRows(at: [IndexPath(row: 0, section: waterSectionIndex)], with: .fade)
-                            }
+                            self.updateWaterRow(waterNum: waterNum)
                         }
                         self.controller.navigationController?.pushViewController(vc, animated: true)
                     }
@@ -797,10 +794,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                         vc.sDate = self.queryDay
                         vc.totalNum = self.currentDayMsg.stringValueForKey(key: "waterNum").intValue
                         vc.numChangeBlock = {(waterNum)in
-                            self.currentDayMsg.setValue(waterNum, forKey: "waterNum")
-                            if let waterSectionIndex = self.waterSectionIndex {
-                                self.tableView.reloadRows(at: [IndexPath(row: 0, section: waterSectionIndex)], with: .fade)
-                            }
+                            self.updateWaterRow(waterNum: waterNum)
                         }
                         self.controller.navigationController?.pushViewController(vc, animated: true)
                     }
@@ -808,6 +802,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                         HealthKitNaturnalManager().saveWaterData(sdate: self.queryDay, waterNum: 0, isTotal: true)
                         self.sendWaterSynRequest(waterNum: "0")
                         LogsSQLiteManager.getInstance().insertWater(sDate: self.queryDay, waterNum: "0")
+                        self.updateWaterRow(waterNum: "0")
                     }
                     return cell ?? JournalWaterViewCell()
                 }
@@ -1554,6 +1549,14 @@ extension JounalCollectionCell{
                                                              eTime: dataObj.stringValueForKey(key: "etime").replacingOccurrences(of: "T", with: " "))
         }
     }
+
+    private func updateWaterRow(waterNum: String) {
+        self.currentDayMsg.setValue(waterNum, forKey: "waterNum")
+        if let waterSectionIndex = self.waterSectionIndex {
+            self.tableView.reloadRows(at: [IndexPath(row: 0, section: waterSectionIndex)], with: .fade)
+        }
+    }
+
     @objc func sendNextMealAdviceConfigRequest(statu:Bool,indexPath:IndexPath) {
 //        MCToast.mc_loading()
         let param = ["next_meal_advice_status":"\(statu ? 1 : 0)"]
@@ -1585,8 +1588,21 @@ extension JounalCollectionCell{
                                                                  fatTar: dict.stringValueForKey(key: "fats"),
                                                                  circleTag: dict.stringValueForKey(key: "carbLabel"),
                                                                  sdate: date)
-            self.setQueryDate(date: date, isEdit: false, shouldRequestLogDetail: false)
+            self.applyGoalPatch(dict: dict)
         }
+    }
+
+    private func applyGoalPatch(dict: NSDictionary) {
+        let msgDict = NSMutableDictionary(dictionary: self.currentDayMsg)
+        msgDict.setValue(dict.stringValueForKey(key: "calories"), forKey: "caloriesden")
+        msgDict.setValue(dict.stringValueForKey(key: "proteins"), forKey: "proteinden")
+        msgDict.setValue(dict.stringValueForKey(key: "carbohydrates"), forKey: "carbohydrateden")
+        msgDict.setValue(dict.stringValueForKey(key: "fats"), forKey: "fatden")
+        msgDict.setValue(dict.stringValueForKey(key: "carbLabel"), forKey: "carbLabel")
+        msgDict.setValue(dict.stringValueForKey(key: "carbLabel"), forKey: "circleTag")
+        self.currentDayMsg = msgDict
+        self.goalVm.updateUI(dict: self.currentDayMsg, isUpload: false)
+        self.setTodayGoal()
     }
 }
 
