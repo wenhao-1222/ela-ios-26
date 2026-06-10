@@ -73,6 +73,7 @@ class GuidanceProVC: WHBaseViewVC {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        VIPModel.shared.updateSubscriptionBizType("1")
         initUI()
         
         if let nav = navigationController {
@@ -546,7 +547,7 @@ extension GuidanceProVC {
                 guard let self = self else { return }
                 switch result {
                 case .success(let transaction):
-                    ElaProIAPManager.shared.handlePurchaseSuccessPostAction(transaction: transaction) { outcome in
+                    ElaProIAPManager.shared.handlePurchaseSuccessPostAction(transaction: transaction, queryBizType: "1") { outcome in
                         DispatchQueue.main.async {
                             self.isPurchasing = false
                             self.subscribeContentVM.setLoading(false)

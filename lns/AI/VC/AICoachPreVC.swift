@@ -90,7 +90,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
             self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
             let vc = ElaProVC()
             vc.showPriceOnly = true
-            vc.priceBizType = "3"
+            vc.priceBizType = "2"
             vc.popToRootOnClose = true
             self.pushElaProVCWhenReady(vc)
         }

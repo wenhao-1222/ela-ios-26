@@ -42,6 +42,7 @@ class ElaProVC: WHBaseViewVC {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        VIPModel.shared.updateSubscriptionBizType(priceBizType)
         initUI()
         applyInitialDisplayMode()
         updateScrollBackGestureState()

@@ -54,6 +54,7 @@ class VIPModel: NSObject {
     var isAiCoachSurveyFinished = false
     var aiCoachProcessStatus = 0
     var mealPlanProcessStatus = 0
+    var bizType = "3"
     
 //    var isVip: Bool {
 //        return self.vipType != .none
@@ -66,6 +67,12 @@ class VIPModel: NSObject {
     
     var isMembershipStatusValid: Bool {
         return storedStatus == .valid
+    }
+
+    func updateSubscriptionBizType(_ value: String) {
+        let trimmedValue = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard ["1", "2", "3", "4"].contains(trimmedValue) else { return }
+        bizType = trimmedValue
     }
     
     func reset() {

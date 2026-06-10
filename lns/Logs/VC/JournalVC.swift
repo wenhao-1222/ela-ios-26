@@ -516,7 +516,7 @@ class JournalVC: WHBaseViewVC {
             self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
             let vc = ElaProVC()
             vc.showPriceOnly = true
-            vc.priceBizType = "3"
+            vc.priceBizType = "2"
             self.pushElaProVCWhenReady(vc)
         }
         

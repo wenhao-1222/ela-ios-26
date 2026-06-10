@@ -690,6 +690,7 @@ extension ElaProPriceVM{
         guard !isPurchasing else { return }
         
         let purchasingPlan = selectedPlan
+        let queryBizType = resolvedPurchaseQueryBizType()
         isPurchasing = true
         purchaseLoadingStateChangeBlock?(true)
         confirmButton.isEnabled = false
@@ -699,7 +700,6 @@ extension ElaProPriceVM{
                 guard let self = self else { return }
                 switch result {
                 case .success(let transaction):
-                    let queryBizType = self.resolvedPurchaseQueryBizType()
                     ElaProIAPManager.shared.handlePurchaseSuccessPostAction(transaction: transaction,
                                                                            queryBizType: queryBizType) { outcome in
                         DispatchQueue.main.async {
@@ -771,12 +771,6 @@ extension ElaProPriceVM{
     }
 
     private func resolvedPurchaseQueryBizType() -> String {
-        let uId = UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines)
-        let token = UserInfoModel.shared.token.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !uId.isEmpty, !token.isEmpty else {
-            return "1"
-        }
-
         let trimmedBizType = purchaseQueryBizType.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmedBizType.isEmpty ? "3" : trimmedBizType
     }

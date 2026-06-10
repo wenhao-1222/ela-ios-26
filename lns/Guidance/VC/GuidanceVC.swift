@@ -57,7 +57,8 @@ class GuidanceVC: WHBaseViewVC {
     private var isBackNavigationLocked = false
     private var lastGuidanceV2TrackedPageKey = ""
     private var hasConfiguredFullscreenPopGesture = false
-    private let guidanceProTrialHistoryProductID = "annual_yeal_new"
+    private let guidanceProTrialHistorySubscriptionGroupID = ElaProIAPConfig.subscriptionGroupID
+    private let guidanceProTrialHistoryProductIDs = ["annual", "month", "annual_yeal_new"]
     private var isFullscreenPopGestureEnabledForInitialStep = false
     private weak var fullscreenPopGestureNavigationController: UINavigationController?
     private weak var fullscreenPopGestureFailureNavigationController: UINavigationController?
@@ -1549,17 +1550,21 @@ extension GuidanceVC{
     }
 
     func resolveGuidanceProSubscriptionHistoryState(completion: ((Bool) -> Void)?) {
-        let trialHistoryProductID = guidanceProTrialHistoryProductID.trimmingCharacters(in: .whitespacesAndNewlines)
-        DLLog(message: "[GuidancePro][Route] resolve subscription history, trialHistoryProductID=\(trialHistoryProductID)")
-        guard !trialHistoryProductID.isEmpty else {
+        let trialHistorySubscriptionGroupID = guidanceProTrialHistorySubscriptionGroupID.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trialHistoryProductIDs = guidanceProTrialHistoryProductIDs
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        DLLog(message: "[GuidancePro][Route] resolve subscription history, subscriptionGroupID=\(trialHistorySubscriptionGroupID), trialHistoryProductIDs=\(trialHistoryProductIDs.joined(separator: ","))")
+        guard !trialHistorySubscriptionGroupID.isEmpty || !trialHistoryProductIDs.isEmpty else {
             cachedGuidanceProHasFreeTrialPermission = true
             hasResolvedGuidanceProSubscriptionHistory = true
-            DLLog(message: "[GuidancePro][Route] trialHistoryProductID empty, default hasFreeTrial=true")
+            DLLog(message: "[GuidancePro][Route] trialHistorySubscriptionGroupID and trialHistoryProductIDs empty, default hasFreeTrial=true")
             completion?(false)
             return
         }
 
-        ElaProIAPManager.shared.checkSubscriptionHistoryState(productID: trialHistoryProductID) { [weak self] state in
+        ElaProIAPManager.shared.checkSubscriptionHistoryState(subscriptionGroupID: trialHistorySubscriptionGroupID,
+                                                              productIDs: trialHistoryProductIDs) { [weak self] state in
             guard let self = self else { return }
             self.hasResolvedGuidanceProSubscriptionHistory = true
             switch state {

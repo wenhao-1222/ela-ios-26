@@ -367,6 +367,30 @@ final class ElaProIAPManager: NSObject {
         }
     }
 
+    func checkSubscriptionHistoryState(subscriptionGroupID: String,
+                                       productIDs: [String],
+                                       completion: @escaping (ElaProSubscriptionHistoryState) -> Void) {
+        let trimmedSubscriptionGroupID = subscriptionGroupID.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedProductIDs = productIDs
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        guard !trimmedSubscriptionGroupID.isEmpty || !trimmedProductIDs.isEmpty else {
+            DLLog(message: "[ElaProIAP][HISTORY] skip group check: empty subscriptionGroupID and productIDs")
+            completion(.unknown)
+            return
+        }
+
+        DLLog(message: "[ElaProIAP][HISTORY] start group check, subscriptionGroupID=\(trimmedSubscriptionGroupID), productIDs=\(trimmedProductIDs.joined(separator: ","))")
+        Task {
+            let state = await self.subscriptionHistoryStateStoreKit2(subscriptionGroupID: trimmedSubscriptionGroupID,
+                                                                     productIDs: trimmedProductIDs)
+            DispatchQueue.main.async {
+                DLLog(message: "[ElaProIAP][HISTORY] finish group check, subscriptionGroupID=\(trimmedSubscriptionGroupID), productIDs=\(trimmedProductIDs.joined(separator: ",")), state=\(self.debugDescription(for: state))")
+                completion(state)
+            }
+        }
+    }
+
     func localizedPriceString(for product: Product) -> String {
         return product.displayPrice
     }
@@ -390,8 +414,13 @@ final class ElaProIAPManager: NSObject {
     func handlePurchaseSuccessPostAction(transaction: Transaction,
                                          queryBizType: String = PurchaseQueryBizType.standard.rawValue,
                                          completion: ((PurchasePostActionOutcome) -> Void)? = nil) {
+        let fallbackQueryBizType = resolveQueryBizType(queryBizType, defaultType: .standard)
+        let effectiveQueryBizType = resolveQueryBizType(VIPModel.shared.bizType,
+                                                        defaultType: PurchaseQueryBizType(rawValue: fallbackQueryBizType) ?? .standard)
         let localUnlockExpireAt = applyLocalTemporaryUnlock(transaction: transaction)
-        let payload = makePurchaseVerifyPayload(transaction: transaction, localUnlockExpireAt: localUnlockExpireAt)
+        let payload = makePurchaseVerifyPayload(transaction: transaction,
+                                                localUnlockExpireAt: localUnlockExpireAt,
+                                                bizType: effectiveQueryBizType)
         appendRefundDebugLog("购买成功，已生成验单载荷", payload: payload)
         cachePendingVerifyPayload(payload: payload)
         storePendingTransactionID(String(transaction.id))
@@ -402,8 +431,7 @@ final class ElaProIAPManager: NSObject {
         }
 
         if canBindPurchaseToCurrentUser() {
-            let resolvedQueryBizType = resolveQueryBizType(queryBizType, defaultType: .standard)
-            bindPendingPurchaseIfNeededDetailed(queryBizType: resolvedQueryBizType) { outcome in
+            bindPendingPurchaseIfNeededDetailed(queryBizType: effectiveQueryBizType) { outcome in
                 switch outcome {
                 case .success:
                     completion?(.activated)
@@ -458,7 +486,8 @@ final class ElaProIAPManager: NSObject {
                 return
             }
 
-            let resolvedQueryBizType = self.resolveQueryBizType(queryBizType, defaultType: .pendingBind)
+            let resolvedQueryBizType = self.resolvePendingPurchaseQueryBizType(transactionID: transactionID,
+                                                                               fallbackQueryBizType: queryBizType)
             self.queryPurchaseOrder(transactionID: transactionID, bizType: resolvedQueryBizType) { queryOutcome in
                 switch queryOutcome {
                 case .success, .boundToOtherAccount:
@@ -891,6 +920,49 @@ final class ElaProIAPManager: NSObject {
         }
     }
 
+    private func subscriptionHistoryStateStoreKit2(subscriptionGroupID: String,
+                                                   productIDs: [String]) async -> ElaProSubscriptionHistoryState {
+        let cleanSubscriptionGroupID = subscriptionGroupID.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanProductIDs = Set(productIDs.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty })
+
+        if !cleanSubscriptionGroupID.isEmpty {
+            let isEligibleForIntroOffer = await Product.SubscriptionInfo.isEligibleForIntroOffer(for: cleanSubscriptionGroupID)
+            DLLog(message: "[ElaProIAP][HISTORY] group intro eligibility, subscriptionGroupID=\(cleanSubscriptionGroupID), isEligible=\(isEligibleForIntroOffer)")
+            if !isEligibleForIntroOffer {
+                return .subscribed
+            }
+        }
+
+        let hasTransactionHistory = await hasVerifiedSubscriptionHistory(subscriptionGroupID: cleanSubscriptionGroupID,
+                                                                         productIDs: cleanProductIDs)
+        if hasTransactionHistory {
+            return .subscribed
+        }
+
+        return cleanSubscriptionGroupID.isEmpty ? .unknown : .notSubscribed
+    }
+
+    private func hasVerifiedSubscriptionHistory(subscriptionGroupID: String,
+                                                productIDs: Set<String>) async -> Bool {
+        for await result in Transaction.all {
+            switch result {
+            case .verified(let transaction):
+                let transactionGroupID = transaction.subscriptionGroupID?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                let transactionProductID = transaction.productID.trimmingCharacters(in: .whitespacesAndNewlines)
+                let isMatchedGroup = !subscriptionGroupID.isEmpty && transactionGroupID == subscriptionGroupID
+                let isMatchedProduct = productIDs.contains(transactionProductID)
+                if isMatchedGroup || isMatchedProduct {
+                    DLLog(message: "[ElaProIAP][HISTORY] transaction history matched, subscriptionGroupID=\(transactionGroupID), productID=\(transaction.productID), transactionID=\(transaction.id)")
+                    return true
+                }
+            case .unverified:
+                DLLog(message: "[ElaProIAP][HISTORY] skip unverified transaction while scanning group history")
+            }
+        }
+        DLLog(message: "[ElaProIAP][HISTORY] no matched transaction history, subscriptionGroupID=\(subscriptionGroupID), productIDs=\(productIDs.joined(separator: ","))")
+        return false
+    }
+
     private func activeRestorableEntitlementTransactions() async -> [Transaction] {
         let restorableProductIDs = configuredIAPProductIDs()
         guard !restorableProductIDs.isEmpty else {
@@ -1044,12 +1116,15 @@ final class ElaProIAPManager: NSObject {
     }
 
     private func makePurchaseVerifyPayload(transaction: Transaction,
-                                           localUnlockExpireAt: Date) -> [String: Any] {
+                                           localUnlockExpireAt: Date,
+                                           bizType: String = PurchaseQueryBizType.standard.rawValue) -> [String: Any] {
         let now = Date()
         let identity = currentAnonymousIdentity()
+        let resolvedBizType = resolveQueryBizType(bizType, defaultType: .standard)
 
         return [
             "userId": UserInfoModel.shared.uId,
+            "bizType": resolvedBizType,
             "anonymousUid": identity?.anonymousUid ?? "",
             "appAccountToken": identity?.appAccountToken ?? transaction.appAccountToken?.uuidString.lowercased() ?? "",
             "productId": transaction.productID,
@@ -1090,6 +1165,30 @@ final class ElaProIAPManager: NSObject {
         if status != errSecSuccess {
             DLLog(message: "[ElaProIAP][KEYCHAIN] save payload failed: \(status)")
         }
+    }
+
+    private func readPendingVerifyPayload() -> [String: Any]? {
+        if let json = UserDefaults.standard.string(forKey: LocalUnlockKeys.pendingVerifyPayload),
+           let payload = dictionaryFromJSONString(json) {
+            return payload
+        }
+
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: KeychainKeys.pendingTransactionService,
+            kSecAttrAccount as String: KeychainKeys.pendingPayloadAccount,
+            kSecReturnData as String: kCFBooleanTrue as Any,
+            kSecMatchLimit as String: kSecMatchLimitOne
+        ]
+
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        guard status == errSecSuccess,
+              let data = result as? Data,
+              let json = String(data: data, encoding: .utf8) else {
+            return nil
+        }
+        return dictionaryFromJSONString(json)
     }
 
     private func queryPurchaseOrder(transactionID: String,
@@ -1363,6 +1462,40 @@ final class ElaProIAPManager: NSObject {
             return defaultType.rawValue
         }
         return type.rawValue
+    }
+
+    private func resolvePendingPurchaseQueryBizType(transactionID: String,
+                                                    fallbackQueryBizType: String) -> String {
+        let fallback = resolveQueryBizType(fallbackQueryBizType, defaultType: .pendingBind)
+        guard let payload = readPendingVerifyPayload() else { return fallback }
+
+        let payloadTransactionID = stringValue(from: payload["transactionId"])
+        guard payloadTransactionID.isEmpty || payloadTransactionID == transactionID else {
+            return fallback
+        }
+
+        let payloadBizType = stringValue(from: payload["bizType"])
+        return resolveQueryBizType(payloadBizType,
+                                   defaultType: PurchaseQueryBizType(rawValue: fallback) ?? .pendingBind)
+    }
+
+    private func dictionaryFromJSONString(_ json: String) -> [String: Any]? {
+        guard let data = json.data(using: .utf8),
+              let object = try? JSONSerialization.jsonObject(with: data),
+              let dictionary = object as? [String: Any] else {
+            return nil
+        }
+        return dictionary
+    }
+
+    private func stringValue(from value: Any?) -> String {
+        if let string = value as? String {
+            return string.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        if let number = value as? NSNumber {
+            return number.stringValue
+        }
+        return ""
     }
 
     private func canBindPurchaseToCurrentUser() -> Bool {

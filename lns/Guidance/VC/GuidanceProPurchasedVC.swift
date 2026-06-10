@@ -30,6 +30,7 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
     private lazy var priceVm: ElaProPriceVM = {
         let vm = ElaProPriceVM(frame: .zero)
         vm.bizType = "1"
+        vm.purchaseQueryBizType = "1"
         vm.isPurchased = "1"
         vm.displayMode = .guidance
         vm.purchaseSuccessBlock = { [weak self] in
@@ -86,6 +87,7 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        VIPModel.shared.updateSubscriptionBizType("1")
         initUI()
 
         if let nav = navigationController {
