@@ -54,6 +54,7 @@ class CameraViewController: WHBaseViewVC {
     private var foregroundObserver: NSObjectProtocol?
     private var isShowingQuotaUpgradeAlert = false
     private var isPresentingPhotoPicker = false
+    private var shouldRunCaptureSession = true
     private var preloadedPhotoPicker: PHPickerViewController?
     
     // ————— 你的视图模型 / 其他 UI 组件 —————
@@ -165,6 +166,7 @@ class CameraViewController: WHBaseViewVC {
             self.stopCaptureSession()
             return
         }
+        shouldRunCaptureSession = false
         NotificationCenter.default.removeObserver(self,
             name: UIApplication.willResignActiveNotification, object: nil)
         NotificationCenter.default.removeObserver(self,
@@ -180,11 +182,13 @@ class CameraViewController: WHBaseViewVC {
         if isPresentingPhotoPicker {
             return
         }
+        shouldRunCaptureSession = false
         self.stopCaptureSession()
         self.stopCapture()
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        shouldRunCaptureSession = true
         UIView.animate(withDuration: 0.3) {
             self.view.backgroundColor = .clear
         }
@@ -499,12 +503,25 @@ extension CameraViewController {
     
     private func restartCaptureSession() {
 //        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-        sessionQueue.async { [weak self] in
+//        sessionQueue.async { [weak self] in
+//            guard let self = self,
+//                  self.isViewLoaded,
+//                  let session = self.captureSession else { return }
+//            if !session.isRunning {
+//                session.startRunning()
+//            }
+//        }
+        DispatchQueue.main.async { [weak self] in
             guard let self = self,
+                  self.shouldRunCaptureSession,
                   self.isViewLoaded,
+                  self.view.window != nil,
                   let session = self.captureSession else { return }
-            if !session.isRunning {
-                session.startRunning()
+
+            self.sessionQueue.async {
+                if !session.isRunning {
+                    session.startRunning()
+                }
             }
         }
     }
@@ -667,6 +684,7 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
     private func resumeCameraPreviewAfterClosingPhotoPicker() {
         guard isPresentingPhotoPicker else { return }
         isPresentingPhotoPicker = false
+        shouldRunCaptureSession = true
         restartCaptureSession()
     }
     

@@ -1007,7 +1007,7 @@ extension DietPlanCreateSecondVC {
         return Array(Set(splitCSVText(text).compactMap { mapping[$0] })).sorted()
     }
 
-    func buildFlavorPreferencesValue(from text: String) -> Int {
+    func buildFlavorPreferencesValue(from text: String) -> [Int] {
         let mapping: [String: Int] = [
             "不确定": 1,
             "清爽": 2,
@@ -1015,7 +1015,8 @@ extension DietPlanCreateSecondVC {
             "香辣": 4,
             "香甜": 5
         ]
-        return splitCSVText(text).compactMap { mapping[$0] }.first ?? 1
+        let values = splitCSVText(text).compactMap { mapping[$0] }
+        return values.isEmpty ? [1] : values
     }
 
     func buildDietMethodExperienceForRequest(from text: String) -> Int {

@@ -486,7 +486,7 @@ extension DietPlanCreateVC{
                     eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4-off, y: SCREEN_HEIGHT*0.5)
                     ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5-off, y: SCREEN_HEIGHT*0.5)
                     flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6-off, y: SCREEN_HEIGHT*0.5)
-                    updateKetoHistorySkipIfNeeded()
+                    updateKetoHistorySkipAfterBaseLayoutReset()
                 }else{
                     if skipStepsNine{//如果之前选择的是 4
                         paceVm.isHidden = false
@@ -507,7 +507,7 @@ extension DietPlanCreateVC{
                         eatStyleVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*4-off, y: SCREEN_HEIGHT*0.5)
                         ketoHistoryVm.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*5-off, y: SCREEN_HEIGHT*0.5)
                         flavorVM.center = CGPoint(x: firstCenterX+SCREEN_WIDHT*6-off, y: SCREEN_HEIGHT*0.5)
-                        updateKetoHistorySkipIfNeeded()
+                        updateKetoHistorySkipAfterBaseLayoutReset()
                     }
                     skipStepsNine = false
                 }
@@ -582,7 +582,7 @@ extension DietPlanCreateVC{
             paceVm.isHidden = false
             scrollViewBase.contentSize = CGSize.init(width: contentWidth(forBasePageCount: 17)-off, height: 0)
         }
-        updateKetoHistorySkipIfNeeded()
+        updateKetoHistorySkipAfterBaseLayoutReset()
         return isSkip
     }
 
@@ -591,7 +591,7 @@ extension DietPlanCreateVC{
               eatStyleVm.selectedIndex < eatStyleVm.dataArray.count else {
             return false
         }
-        return eatStyleVm.selectedIndex == 0
+        return eatStyleVm.dataArray[eatStyleVm.selectedIndex]["name"] == "均衡"
     }
 
     func updateKetoHistoryTitleIfNeeded() {
@@ -622,6 +622,7 @@ extension DietPlanCreateVC{
         ketoHistoryVm.isHidden = shouldSkip
 
         if shouldSkip {
+            ketoHistoryVm.clearSelection()
             flavorVM.center = ketoHistoryVm.center
             if skipStateChanged {
                 scrollViewBase.contentSize = CGSize(width: max(scrollViewBase.contentSize.width - SCREEN_WIDHT, SCREEN_WIDHT), height: 0)
@@ -638,6 +639,13 @@ extension DietPlanCreateVC{
                 }
             }
         }
+    }
+
+    func updateKetoHistorySkipAfterBaseLayoutReset() {
+        // 基础布局默认包含历史页；重算前恢复标记，避免草稿恢复时已是跳过态导致漏扣一页。
+        skipKetoHistory = false
+        ketoHistoryVm.isHidden = false
+        updateKetoHistorySkipIfNeeded()
     }
     //第七步，判断是否跳过 mealStyleVm
     func updateEatStyleSkipIfNeeded(){
@@ -826,6 +834,7 @@ extension DietPlanCreateVC{
             heightVm.applyDefaultHeight(heightValue)
         }
         
+        let restoredTargetWeight = model.targetWeight
         if let weightValue = Double(model.weight), weightValue > 0 {
             let rounded = (weightValue * 10).rounded() / 10
             let integerPart = Int(rounded)
@@ -835,6 +844,10 @@ extension DietPlanCreateVC{
             weightVm.getWeightValue()
         }
         
+        // applyDefaultWeight 会触发 weightChangedBlock；恢复草稿时保留用户之前选择的目标体重。
+        if !restoredTargetWeight.isEmpty {
+            model.targetWeight = restoredTargetWeight
+        }
         targetWeightVm.applyInitialValue()
         
         let hasValidBodyFatSelection = restoreBodyFatSelection(from: draft, gender: model.sex)
@@ -966,7 +979,7 @@ extension DietPlanCreateVC{
             return
         }
         isUploadingDietProfile = true
-        let flavorPreferences = flavorVM.selectedIndex == 4 ? 1 : (flavorVM.selectedIndex + 1)
+        let flavorPreferences = buildFlavorPreferencesForRequest()
         let goalImportance = importantVm.selectedIndex < 0 ? 4 : (importantVm.selectedIndex == 3 ? 1 : importantVm.selectedIndex + 1)
         let requestTargetWeight = targetWeightVm.targetWeightForRequest()
         var param = ["userGoal":goalVm.buildUserGoal(),
@@ -989,7 +1002,7 @@ extension DietPlanCreateVC{
 //        if importantVm.selectedIndex < 0 {
 //            param.removeValue(forKey: "goalImportance")
 //        }
-        if ketoHistoryVm.selectedIndex + 1 <= 0{
+        if skipKetoHistory || ketoHistoryVm.selectedIndex + 1 <= 0{
             param.removeValue(forKey: "dietMethodExperience")
         }
         
@@ -1012,6 +1025,35 @@ extension DietPlanCreateVC{
 //            vc.param = param
         self.pushElaProVCWhenReady(vc)
     }
+    
+    func buildFlavorPreferencesForRequest() -> [Int] {
+        let selectedIndexes: [Int]
+        if flavorVM.selectedIndexes.isEmpty && flavorVM.selectedIndex >= 0 {
+            selectedIndexes = [flavorVM.selectedIndex]
+        } else {
+            selectedIndexes = flavorVM.selectedIndexes.sorted()
+        }
+        let values = selectedIndexes.compactMap { flavorPreferenceValue(fromSelectedIndex: $0) }
+        return values.isEmpty ? [1] : values
+    }
+    
+    func flavorPreferenceValue(fromSelectedIndex index: Int) -> Int? {
+        switch index {
+        case 0:
+            return 2
+        case 1:
+            return 3
+        case 2:
+            return 4
+        case 3:
+            return 5
+        case 4:
+            return 1
+        default:
+            return nil
+        }
+    }
+    
     func sendBasicRequest() {
         let param = ["gender":"\(QuestinonaireMsgModel.shared.sex)",
                      "dailyact":"\(QuestinonaireMsgModel.shared.events)",
@@ -1338,7 +1380,7 @@ private extension DietPlanCreateVC {
             ketoHistoryVm.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 5 - off, y: SCREEN_HEIGHT * 0.5)
             flavorVM.center = CGPoint(x: firstCenterX + SCREEN_WIDHT * 6 - off, y: SCREEN_HEIGHT * 0.5)
         }
-        updateKetoHistorySkipIfNeeded()
+        updateKetoHistorySkipAfterBaseLayoutReset()
     }
 
     func displayedStepsArray(for baseSteps: [Int]) -> [Int] {
