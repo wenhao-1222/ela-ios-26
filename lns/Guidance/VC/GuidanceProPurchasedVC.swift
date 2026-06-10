@@ -35,6 +35,9 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
         vm.purchaseSuccessBlock = { [weak self] in
             self?.nextBlock?()
         }
+        vm.purchasePendingLoginBlock = { [weak self] in
+            self?.changeRootVcToLogin()
+        }
         vm.protocalTapBlock = { [weak self] in
             self?.showAgreementAlert()
         }

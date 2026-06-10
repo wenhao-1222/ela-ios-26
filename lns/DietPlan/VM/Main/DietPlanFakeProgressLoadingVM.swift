@@ -53,13 +53,13 @@ class DietPlanFakeProgressLoadingVM: UIView {
     }()
     
     private lazy var blurView: UIVisualEffectView = {
-        let view = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterialLight))
+        let view = UIVisualEffectView(effect: UIBlurEffect(style: .systemUltraThinMaterial))
         return view
     }()
     
     private lazy var dimView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.white.withAlphaComponent(config.tintAlpha)
+        view.backgroundColor = UIColor.COLOR_BG_WHITE.withAlphaComponent(config.tintAlpha)
         return view
     }()
     
@@ -116,7 +116,7 @@ class DietPlanFakeProgressLoadingVM: UIView {
     func updateConfig(_ config: Config) {
         self.config = config.normalized()
         statusLabel.text = self.config.statusText
-        dimView.backgroundColor = UIColor.white.withAlphaComponent(self.config.tintAlpha)
+        dimView.backgroundColor = UIColor.COLOR_BG_WHITE.withAlphaComponent(self.config.tintAlpha)
     }
     
     func start(on hostView: UIView) {

@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 //        UserDefaults.standard.setValue("f85f9118da17e98d62e1003729929afa", forKey: userId)
 //        UserInfoModel.shared.uId = "f85f9118da17e98d62e1003729929afa"
 //        UserInfoModel.shared.token = "g4YHHKJaIvXyEBYs"
-        //f85f9118da17e98d62e1003729929afa   邓毅
+        //f85f9118da17e98d62e1003729929afa
         //g4YHHKJaIvXyEBYs
         let launchWindow: UIWindow
         if let existingWindow = window {
@@ -56,11 +56,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         UIApplication.shared.applyInterfaceStyle(UserConfigModel.shared.overrideUserInterfaceStyle)
         MCToastConfig.shared.text.maxWidth = kFitWidth(343)//SCREEN_WIDHT-kFitWidth(82)-kFitWidth(72)
         
-        let token = UserDefaults.standard.value(forKey: token) as? String ?? ""
-        let uId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
-        let isLaunchWelcome = UserDefaults.standard.value(forKey: isLaunchWelcome)as? String ?? ""
+        let storedToken = UserDefaults.standard.value(forKey: token) as? String ?? ""
+        let storedIsLaunchWelcome = UserDefaults.standard.value(forKey: isLaunchWelcome)as? String ?? ""
         let rootViewController: UIViewController
-        if isLaunchWelcome == "" && token == ""{
+        if storedIsLaunchWelcome == "" && storedToken == ""{
 //            self.window?.rootViewController = WelcomeLaunchVC()
 //            self.window?.rootViewController = FirstLaunchVC()
             rootViewController = FirstLaunchVC()
@@ -68,13 +67,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
             let elaLchVc = ElaLaunchVC()
             
             elaLchVc.lchBlock = {[weak self, weak elaLchVc] in
-                guard let self = self, let window = self.window else { return }
+                guard let self = self, let window = self.window, let launchVc = elaLchVc else { return }
+                guard window.rootViewController === launchVc else { return }
+                
+                let currentToken = UserDefaults.standard.value(forKey: token) as? String ?? ""
+                let currentUId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
                 let rootVc: UIViewController
                 
-                if token.count > 1 && uId.count > 1{
+                if !UserInfoModel.shared.isLoggingOut && currentToken.count > 1 && currentUId.count > 1{
                     let phone = UserDefaults.standard.value(forKey: userPhone) as? String ?? ""
-                    UserInfoModel.shared.uId = uId
-                    UserInfoModel.shared.token = token
+                    UserInfoModel.shared.uId = currentUId
+                    UserInfoModel.shared.token = currentToken
                     UserInfoModel.shared.phone = phone
                     ElaProPriceVM.preloadLoggedInProductSnapshots()
                     sendSplashIdRequest()
@@ -95,7 +98,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                         }
                     }
                     
-                    WidgetUtils().saveUserInfo(uId: "\(uId)", uToken: "\(token)")
+                    WidgetUtils().saveUserInfo(uId: "\(currentUId)", uToken: "\(currentToken)")
                 }else{
                     UserInfoModel.shared.uId = ""
                     UserInfoModel.shared.token = ""
@@ -110,7 +113,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                 UIView.transition(with: window, duration: 0.35, options: .transitionCrossDissolve, animations: {
                                     window.rootViewController = rootVc
                 }) { _ in
-                    elaLchVc?.removeFromParent()
+                    launchVc.removeFromParent()
                 }
             }
             
