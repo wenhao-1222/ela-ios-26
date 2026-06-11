@@ -59,7 +59,7 @@ extension AICoachPreReadyMessageVM {
             attr.append(NSAttributedString(string: " 天后为你带来第一次全面反馈", attributes: [.font:UIFont.systemFont(ofSize: 14, weight: .semibold),
                   .foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,
                   .paragraphStyle: paragraphStyle]))
-          attr.append(NSAttributedString(string: "\n为了让分析更精准，我还需要更多时间来了解你", attributes: [.font:UIFont.systemFont(ofSize: 12, weight: .regular),
+            attr.append(NSAttributedString(string: "\n为了让分析更精准，我还需要更多时间来了解你", attributes: [.font:UIFont.systemFont(ofSize: 12, weight: .regular),
                     .foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214_50,
                      .paragraphStyle: paragraphStyle]))
             

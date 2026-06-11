@@ -6,6 +6,8 @@
 //
 
 import SnapKit
+import Kingfisher
+import ObjectiveC
 
 class PlanMainMealCardCell: UICollectionViewCell {
     private static let loadedImageCache = NSCache<NSString, UIImage>()
@@ -112,6 +114,7 @@ class PlanMainMealCardCell: UICollectionViewCell {
         changeButtonTapBlock = nil
         imageLoadToken = ""
         renderState = nil
+        mealImgView.cancelReusableImgUrlLoad()
         mealImgView.image = nil
         mealImgView.removeSkeletonImmediately()
     }
@@ -157,6 +160,7 @@ class PlanMainMealCardCell: UICollectionViewCell {
 
             if let cachedLoadedImage = cachedLoadedImage {
                 imageLoadToken = ""
+                mealImgView.cancelReusableImgUrlLoad()
                 mealImgView.image = cachedLoadedImage
                 mealImgView.removeSkeletonImmediately()
                 return
@@ -174,7 +178,7 @@ class PlanMainMealCardCell: UICollectionViewCell {
                 mealImgView.image = placeHolder
             }
 
-            mealImgView.setImgUrlWithComplete(urlString: imageUrl, placeHolder: placeHolder) { [weak self] in
+            mealImgView.setReusableImgUrlWithComplete(urlString: imageUrl, placeHolder: placeHolder) { [weak self] in
                 guard let self = self else { return }
                 guard self.imageLoadToken == currentToken else { return }
                 if let image = self.mealImgView.image {
@@ -195,6 +199,7 @@ class PlanMainMealCardCell: UICollectionViewCell {
             }
         } else {
             imageLoadToken = ""
+            mealImgView.cancelReusableImgUrlLoad()
             mealImgView.removeSkeletonImmediately()
             UIView.transition(with: mealImgView,
                               duration: 0.2,
@@ -257,5 +262,123 @@ extension PlanMainMealCardCell {
     
     @objc func changeButtonTapAction() {
         changeButtonTapBlock?()
+    }
+}
+
+private var planMainMealCardImageLoadIdentifierKey: UInt8 = 0
+
+private extension UIImageView {
+    var planMainMealCardImageLoadIdentifier: String? {
+        get {
+            objc_getAssociatedObject(self, &planMainMealCardImageLoadIdentifierKey) as? String
+        }
+        set {
+            objc_setAssociatedObject(self,
+                                     &planMainMealCardImageLoadIdentifierKey,
+                                     newValue,
+                                     .OBJC_ASSOCIATION_COPY_NONATOMIC)
+        }
+    }
+
+    func isCurrentPlanMainMealCardImageLoad(_ urlString: String) -> Bool {
+        planMainMealCardImageLoadIdentifier == urlString
+    }
+
+    func beginPlanMainMealCardImageLoad(_ urlString: String) {
+        if planMainMealCardImageLoadIdentifier != urlString {
+            kf.cancelDownloadTask()
+        }
+        planMainMealCardImageLoadIdentifier = urlString
+    }
+
+    func cancelReusableImgUrlLoad() {
+        planMainMealCardImageLoadIdentifier = nil
+        kf.cancelDownloadTask()
+    }
+
+    func setReusableImgUrlWithComplete(urlString:String,
+                                       placeHolder:UIImage?=nil,
+                                       completeHandler: @escaping () -> ()){
+        beginPlanMainMealCardImageLoad(urlString)
+        ImageCache.default.retrieveImage(forKey: urlString) { [weak self] result in
+            guard let self = self else { return }
+            guard self.isCurrentPlanMainMealCardImageLoad(urlString) else { return }
+            switch result {
+            case .success(let value):
+                if let image = value.image{
+                    DLLog(message: "setImgUrl(urlString:   找到了缓存的图片  \(image)  --- \(urlString)")
+                    DispatchQueue.main.async {
+                        guard self.isCurrentPlanMainMealCardImageLoad(urlString) else { return }
+                        self.image = image
+                        completeHandler()
+                    }
+                }else{
+                    self.loadPlanMainMealCardImage(urlString: urlString, placeHolder: placeHolder, completeHandler: {
+                        guard self.isCurrentPlanMainMealCardImageLoad(urlString) else { return }
+                        completeHandler()
+                    })
+                }
+            case .failure(let error):
+                DLLog(message: "setImgUrl(urlString:\(error)  --- \(urlString)")
+                self.loadPlanMainMealCardImage(urlString: urlString, placeHolder: placeHolder, completeHandler: {
+                    guard self.isCurrentPlanMainMealCardImageLoad(urlString) else { return }
+                    completeHandler()
+                })
+                break
+            }
+        }
+    }
+
+    func loadPlanMainMealCardImage(urlString:String,
+                                   placeHolder:UIImage?=nil,
+                                   needTransiton:Bool?=true,
+                                   completeHandler: @escaping () -> ()) {
+        guard isCurrentPlanMainMealCardImageLoad(urlString) else { return }
+        var signUrl = urlString
+        var optionsInfo: KingfisherOptionsInfo = [.cacheOriginalImage,
+                                                  .keepCurrentImageWhileLoading,
+                                                  .transition(.fade(0.2))]
+        if needTransiton == false{
+            optionsInfo = [.cacheOriginalImage,
+                           .keepCurrentImageWhileLoading]
+        }
+
+        DLLog(message: "setImgUrl(urlString:加载图片  \(urlString)")
+        let setImageOnMain: (_ task: @escaping () -> Void) -> Void = { task in
+            if Thread.isMainThread {
+                task()
+            } else {
+                DispatchQueue.main.async { task() }
+            }
+        }
+        if urlString.contains("aliyuncs.com"){
+            DSImageUploader().dealImgUrlSignForOss(urlStr: urlString) { [weak self] str in
+                guard let self = self else { return }
+                guard self.isCurrentPlanMainMealCardImageLoad(urlString) else { return }
+                signUrl = str
+                guard let resourceUrl = URL(string: signUrl) else{
+                    return
+                }
+
+                let resource = KF.ImageResource(downloadURL: resourceUrl, cacheKey: urlString)
+                DLLog(message: "图片加载地址 私有桶链接：\(signUrl)")
+                setImageOnMain {
+                    guard self.isCurrentPlanMainMealCardImageLoad(urlString) else { return }
+                    self.kf.setImage(with: resource, placeholder: placeHolder, options: optionsInfo) { _ in
+                        guard self.isCurrentPlanMainMealCardImageLoad(urlString) else { return }
+                        completeHandler()
+                    }
+                }
+            }
+        }else{
+            guard let imgUrl = URL(string: signUrl) else { return }
+            setImageOnMain {
+                guard self.isCurrentPlanMainMealCardImageLoad(urlString) else { return }
+                self.kf.setImage(with: imgUrl, placeholder: nil, options: optionsInfo) { _ in
+                    guard self.isCurrentPlanMainMealCardImageLoad(urlString) else { return }
+                    completeHandler()
+                }
+            }
+        }
     }
 }

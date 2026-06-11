@@ -174,7 +174,7 @@ extension JournalElaProAnnouncementAlertVM {
     @objc func nothingToDo() { /* 吞点击 */ }
     func showSelf() {
         isHidden = false
-        
+        self.sendUpdateRequest()
         bgView.isUserInteractionEnabled = false
         
         // 初态：whiteView 在最终停靠位，先整体下移隐藏；蒙层透明
@@ -327,4 +327,13 @@ extension JournalElaProAnnouncementAlertVM{
         whiteBorderMaskLayer.path = UIBezierPath(roundedRect: pathRect,
                                                  cornerRadius: whiteViewTopRadius - inset).cgPath
     }
+}
+
+extension JournalElaProAnnouncementAlertVM{
+    @objc func sendUpdateRequest() {
+        let param = ["is_ela_pro_notified":"1"]
+        WHNetworkUtil.shareManager().POST(urlString: URL_config_set, parameters: param as [String : AnyObject]) { responseObject in
+            DLLog(message: "\(responseObject)")
+        }
+    }//b41b7074fc6f9dfbb960fb1e4264682e
 }

@@ -1253,6 +1253,13 @@ extension JournalVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "getUserConfigRequest:\(dataObj)")
+            
+            if dataObj.stringValueForKey(key: "is_ela_pro_notified") == "0"{
+                //后台返回，如果需要显示弹窗
+                //返回0 的时候，需要弹窗，可能为空，为null，
+                //返回1的时候，代表已经弹过，不需要弹了
+                self.journalElaProAnnouncementAlertVm.showSelf()
+            }
             if dataObj.stringValueForKey(key: "onboarding_flow_status") == "0"{
                 NotificationCenter.default.post(name: NOTIFI_NAME_GUIDE, object: nil)
                 UserInfoModel.shared.onboarding_flow_status = false
@@ -1263,13 +1270,6 @@ extension JournalVC{
             UserInfoModel.shared.updateUserConfig(dict: dataObj)
             
             LogsMealsAlertSetManage().refreshClockAlertMsg()
-            
-            if dataObj.stringValueForKey(key: "is_ela_pro_notified") == "0"{
-                //后台返回，如果需要显示弹窗
-                //返回0 的时候，需要弹窗，可能为空，为null，
-                //返回1的时候，代表已经弹过，不需要弹了
-                self.journalElaProAnnouncementAlertVm.showSelf()
-            }
         }
     }
     func getPostAllowedListRequest() {

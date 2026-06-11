@@ -287,7 +287,7 @@ extension NeedBuildPlanVC{
             UserInfoModel.shared.isRegist = dataObj["registered"]as? String ?? ""
             if dataObj["registered"]as? String ?? "" == "yes"{
                 if dataObj.stringValueForKey(key: "state") == "1" {
-                    MCToast.mc_text("登录成功！")
+//                    MCToast.mc_text("登录成功！")
                     UserInfoModel.shared.token = dataObj["token"]as? String ?? ""
                     UserInfoModel.shared.uId   = dataObj["uid"]as? String ?? ""
                     

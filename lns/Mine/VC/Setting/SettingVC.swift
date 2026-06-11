@@ -13,6 +13,7 @@ class SettingVC: WHBaseViewVC {
     
     var versionMsgDict = NSDictionary()
     private let cacheSizeQueue = DispatchQueue(label: "com.elavatine.setting.cacheSize", qos: .utility)
+    private var isRestorePurchaseInProgress = false
     private lazy var restorePurchaseLoadingView: UIView = {
         let maskView = UIView(frame: view.bounds)
         maskView.backgroundColor = UIColor.black.withAlphaComponent(0.18)
@@ -47,6 +48,10 @@ class SettingVC: WHBaseViewVC {
         super.viewWillAppear(animated)
         bindPhoneVm.detailLabel.text = "\(UserInfoModel.shared.phoneStar)"
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
+        if isRestorePurchaseInProgress {
+            setSettingPageInteractionEnabled(false)
+            updateInteractivePopGestureBlocked(true)
+        }
         
 //        personalSettingVm.redView.isHidden = UserInfoModel.shared.settingNewFuncRead
     }
@@ -186,6 +191,7 @@ extension SettingVC{
             self.openUrl(urlString: urlString)
         })
     }
+
 }
 extension SettingVC{
     func initUI() {
@@ -245,6 +251,7 @@ extension SettingVC{
     }
 
     func restorePurchaseAction() {
+        guard !isRestorePurchaseInProgress else { return }
         beginRestorePurchaseLoading()
         ElaProIAPManager.shared.restorePurchases { result in
             DispatchQueue.main.async {
@@ -290,6 +297,9 @@ extension SettingVC{
     }
 
     private func beginRestorePurchaseLoading() {
+        isRestorePurchaseInProgress = true
+        setSettingPageInteractionEnabled(false)
+        updateInteractivePopGestureBlocked(true)
         if restorePurchaseLoadingView.superview == nil {
             view.addSubview(restorePurchaseLoadingView)
         }
@@ -298,17 +308,22 @@ extension SettingVC{
         restorePurchaseLoadingView.isHidden = false
         restorePurchaseLoadingView.superview?.bringSubviewToFront(restorePurchaseLoadingView)
         (restorePurchaseLoadingView.viewWithTag(10002) as? UIActivityIndicatorView)?.startAnimating()
-        setSettingPageInteractionEnabled(false)
     }
 
     private func endRestorePurchaseLoading() {
+        guard isRestorePurchaseInProgress else { return }
+        isRestorePurchaseInProgress = false
+        updateInteractivePopGestureBlocked(false)
         setSettingPageInteractionEnabled(true)
         restorePurchaseLoadingView.isHidden = true
         (restorePurchaseLoadingView.viewWithTag(10002) as? UIActivityIndicatorView)?.stopAnimating()
     }
 
     private func setSettingPageInteractionEnabled(_ enabled: Bool) {
-        view.isUserInteractionEnabled = enabled
+        scrollViewBase.isUserInteractionEnabled = enabled
+        navigationView.isUserInteractionEnabled = enabled
+        backArrowButton.isUserInteractionEnabled = enabled
+        naviBackImg.isUserInteractionEnabled = enabled
         navigationController?.navigationBar.isUserInteractionEnabled = enabled
         tabBarController?.tabBar.isUserInteractionEnabled = enabled
     }
