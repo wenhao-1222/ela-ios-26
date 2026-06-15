@@ -222,6 +222,7 @@ extension CancelAccountCodeVC{
                                       "code":verifyCode]
         
         WHNetworkUtil.shareManager().POST(urlString: URL_Uer_Cancel, parameters: param as [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
+            LogsSQLiteUploadManager().clearUploadQueue()
             WHBaseViewVC().changeRootVcToWelcome()
             LogsSQLiteUploadManager().clearNaturalData()
             BodyDataSQLiteManager.getInstance().deleteAllData()

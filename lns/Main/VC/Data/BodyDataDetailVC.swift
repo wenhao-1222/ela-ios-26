@@ -369,7 +369,8 @@ extension BodyDataDetailVC{
 
 extension BodyDataDetailVC{
     func initUI() {
-        initNavi(titleStr: "身体数据")
+        initNavi(titleStr: "体重围度")
+//        initNavi(titleStr: "身体数据")
         
         self.navigationView.addSubview(shareButton)
         

@@ -26,7 +26,7 @@ class JounalCollectionCell: UICollectionViewCell {
                               circleTag: "",
                               fitnessTag: "",
                               notesTag: "")
-    var controller = WHBaseViewVC()
+    weak var controller: WHBaseViewVC?
     var isEdit = false
     var isDelete = false
 //    static var selectMealsIndex = 0
@@ -43,6 +43,7 @@ class JounalCollectionCell: UICollectionViewCell {
     var showRemarkAlertBlock:((JounalCollectionCell)->())?
     var showTimeAlertBlock:((JounalCollectionCell, String, Int, String)->())?
     var showCircleTemplateAlertBlock:((JounalCollectionCell)->())?
+    private var isPreparingForLogoutRelease = false
     
 //    /// 最大收缩偏移
 //    private let maxShrinkOffset: CGFloat = kFitWidth(120)
@@ -79,9 +80,80 @@ class JounalCollectionCell: UICollectionViewCell {
         updateTableViewFrame()
         contentView.bringSubviewToFront(addFirstFoodsAlertVm)
     }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        isPreparingForLogoutRelease = false
+        controller = nil
+        offsetChangeBlock = nil
+        updateFitnessBlock = nil
+        aiCoachTapBlock = nil
+        showRemarkAlertBlock = nil
+        showTimeAlertBlock = nil
+        showCircleTemplateAlertBlock = nil
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    func prepareForLogoutRelease() {
+        DLLog(message: "JounalCollectionCell prepareForLogoutRelease \(queryDay)")
+        isPreparingForLogoutRelease = true
+        NotificationCenter.default.removeObserver(self)
+        idleWorkItem?.cancel()
+        idleWorkItem = nil
+
+        controller = nil
+        offsetChangeBlock = nil
+        updateFitnessBlock = nil
+        aiCoachTapBlock = nil
+        showRemarkAlertBlock = nil
+        showTimeAlertBlock = nil
+        showCircleTemplateAlertBlock = nil
+
+        goalVm.calcuBlock = nil
+        goalVm.updateDataBlock = nil
+        goalVm.addPlanBlock = nil
+        goalVm.goalTapBlock = nil
+        goalVm.updateGoalBlock = nil
+        editSelectAllVm.tapBlock = nil
+        remarkVm.tapBlock = nil
+
+        tableView.delegate = nil
+        tableView.dataSource = nil
+        tableView.visibleCells.forEach { cell in
+            if let cell = cell as? JournalTableViewCell {
+                cell.addBlock = nil
+                cell.deleteBlock = nil
+                cell.deleteCellBlock = nil
+                cell.timeChangeBlock = nil
+                cell.closeMealAdviceBlock = nil
+                cell.controller = UIViewController()
+                cell.caloriBlock = nil
+                cell.selectCellBlock = nil
+                cell.eatTapBlock = nil
+                cell.selectBlock = nil
+                cell.selectMeaslIndexBlock = nil
+                cell.foodsTapBlock = nil
+            } else if let cell = cell as? JournalWaterViewCell {
+                cell.addBlock = nil
+                cell.totalBlock = nil
+                cell.deleteBlock = nil
+            } else if let cell = cell as? JournalRemarkTableViewCell {
+                cell.remarkBlock = nil
+                cell.detalBlock = nil
+            } else if let cell = cell as? JournalNaturalDetailCell {
+                cell.detalBlock = nil
+                cell.detalOldBlock = nil
+            } else if let cell = cell as? JournalAICoachTableViewCell {
+                cell.tapBlock = nil
+            }
+        }
+        tableView.reloadData()
+        tableView.removeFromSuperview()
+    }
+
     lazy var goalVm: LogsNaturalGoalVM = {
         let vm = LogsNaturalGoalVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
         vm.layer.anchorPoint = CGPoint(x: 0.5, y: 0)
@@ -121,11 +193,11 @@ class JounalCollectionCell: UICollectionViewCell {
         }
         vm.addPlanBlock = {()in
             let vc = QuestionnairePreVC()
-            self.controller.navigationController?.pushViewController(vc, animated: true)
+            self.controller?.navigationController?.pushViewController(vc, animated: true)
         }
         vm.goalTapBlock = {()in
             let vc = GoalSetVC()
-            self.controller.navigationController?.pushViewController(vc, animated: true)
+            self.controller?.navigationController?.pushViewController(vc, animated: true)
         }
         vm.updateGoalBlock = {()in
             DLLog(message: "点击修改今日营养目标")
@@ -207,7 +279,8 @@ extension JounalCollectionCell{
 //        tableView.insertSubview(addFirstFoodsAlertVm, aboveSubview: editHeadView)
 //        tableView.bringSubviewToFront(addFirstFoodsAlertVm)
         
-        DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: { [weak self] in
+            guard let self = self else { return }
 //            self.addFirstFoodsAlertVm.showSelf()
 //            self.tableView.bringSubviewToFront(self.addFirstFoodsAlertVm)
             self.contentView.bringSubviewToFront(self.addFirstFoodsAlertVm)
@@ -729,7 +802,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
 //            cell?.refreshTodayAdvice(isToday: self.queryDay == Date().todayDate, sn: "\(indexPath.row+1)")
             cell?.updateMealsTime(mealsDict: self.currentMealTimeMsg,mealsIndex:indexPath.row+1)
     //        let mealsTime = self.currentDayMsg.stringValueForKey(key: "mealTimeSn1")
-            cell?.controller = UIApplication.topViewController() ?? self.controller//self.controller
+            cell?.controller = UIApplication.topViewController() ?? self.controller ?? UIViewController()
             
             cell?.timeChangeBlock = {(time)in
                 self.showTimeAlertBlock?(self, time, indexPath.row + 1, self.currentDayMsg.stringValueForKey(key: "sdate"))
@@ -739,7 +812,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                 self.selectFoodsIndex = -1
                 let vc = FoodsListNewVC()//FoodsListVC()
                 vc.sourceType = .logs
-                self.controller.navigationController?.pushViewController(vc, animated: true)
+                self.controller?.navigationController?.pushViewController(vc, animated: true)
             }
             cell?.deleteBlock = {(dict)in
                 self.selectMealsIndex = indexPath.row
@@ -787,7 +860,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                         vc.numChangeBlock = {(waterNum)in
                             self.updateWaterRow(waterNum: waterNum)
                         }
-                        self.controller.navigationController?.pushViewController(vc, animated: true)
+                        self.controller?.navigationController?.pushViewController(vc, animated: true)
                     }
                     cell?.totalBlock = {()in
                         let vc = JournalWaterVC()
@@ -796,7 +869,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                         vc.numChangeBlock = {(waterNum)in
                             self.updateWaterRow(waterNum: waterNum)
                         }
-                        self.controller.navigationController?.pushViewController(vc, animated: true)
+                        self.controller?.navigationController?.pushViewController(vc, animated: true)
                     }
                     cell?.deleteBlock = {()in
                         HealthKitNaturnalManager().saveWaterData(sdate: self.queryDay, waterNum: 0, isTotal: true)
@@ -958,7 +1031,7 @@ extension JounalCollectionCell {
         if dict["fname"] as? String ?? "" == "快速添加" {
             let vc = FoodsCreateFastVC()
             vc.setNumber(dict: dict)
-            controller.navigationController?.pushViewController(vc, animated: true)
+            controller?.navigationController?.pushViewController(vc, animated: true)
             return
         }
         
@@ -986,7 +1059,7 @@ extension JounalCollectionCell {
                 vc.confirmButton.setTitle("保存", for: .normal)
             }
             
-            controller.navigationController?.pushViewController(vc, animated: true)
+            controller?.navigationController?.pushViewController(vc, animated: true)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 vc.deleteButton.isHidden = true
             }
@@ -1064,7 +1137,8 @@ extension JounalCollectionCell{
         
 //        LogsSQLiteUploadManager().saveLocalNaturalData(dict: currentDayMsg)
         if shouldRequestLogDetail {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
+                guard let self = self, self.isPreparingForLogoutRelease == false else { return }
                 self.sendLogsDetailRequest()
             })
         }
@@ -1528,7 +1602,7 @@ extension JounalCollectionCell{
 //        let vc = NaturalDetailVC()
         let vc = JournalReportVC()
         vc.detailDict = self.currentDayMsg
-        self.controller.navigationController?.pushViewController(vc, animated: true)
+        self.controller?.navigationController?.pushViewController(vc, animated: true)
     }
     @objc func naturalDetailOldTapAction() {
         let vc = NaturalDetailVC()

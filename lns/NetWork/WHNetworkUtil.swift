@@ -337,6 +337,7 @@ class WHNetworkUtil: SessionManager {
                                 }
 
                                 MCToast.mc_remove()
+                                LogsSQLiteUploadManager().clearUploadQueue()
                                 LogsMealsAlertSetManage().removeAllNotifi()
                                 
                                 LogsSQLiteManager.getInstance().deleteAllData()

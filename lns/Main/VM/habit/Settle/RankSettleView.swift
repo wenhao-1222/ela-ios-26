@@ -185,6 +185,30 @@ final class RankSettleView: UIView {
     }
 
     // MARK: - 段位升级动画：四个一起动（oldLeft / oldCenter / oldRight / incomingRight）
+    func playFirstUnlockAnimation() {
+        let originalTransform = centerBadge.transform
+        centerBadge.alpha = 0.2
+        centerBadge.transform = originalTransform.scaledBy(x: 0.85, y: 0.85)
+        rankUpAnimationPlayKey += 1
+        confetti.play(playKey: rankUpAnimationPlayKey) { [weak self] in
+            self?.handleFinished()
+        }
+        UIView.animate(withDuration: 0.45,
+                       delay: 0,
+                       usingSpringWithDamping: 0.62,
+                       initialSpringVelocity: 0.8,
+                       options: [.curveEaseOut, .beginFromCurrentState]) {
+            self.centerBadge.alpha = 1
+            self.centerBadge.transform = originalTransform.scaledBy(x: 1.08, y: 1.08)
+        } completion: { _ in
+            UIView.animate(withDuration: 0.18,
+                           delay: 0,
+                           options: [.curveEaseInOut, .beginFromCurrentState]) {
+                self.centerBadge.transform = originalTransform
+            }
+        }
+    }
+    
     func playRankUpAnimation() {
         guard currentRank < maxRank,
               let oldRight = rightBadge else { return }

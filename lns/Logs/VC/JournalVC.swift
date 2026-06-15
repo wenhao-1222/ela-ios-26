@@ -30,6 +30,7 @@ class JournalVC: WHBaseViewVC {
     private var pendingLogsGoalOnlyRefreshDates = Set<String>()
     private var pendingLogsRefreshNeedsFullReload = false
     private var shouldRequestLogDetailWhenReloadingCells = true
+    private var isPreparingForLogoutRelease = false
     private weak var activeFitnessCell: JounalCollectionCell?
     private weak var activeRemarkCell: JounalCollectionCell?
     private weak var activeCircleTemplateCell: JounalCollectionCell?
@@ -67,7 +68,71 @@ class JournalVC: WHBaseViewVC {
         }
     }
     deinit {
+        DLLog(message: "JournalVC deinit")
         NotificationCenter.default.removeObserver(self)
+    }
+
+    func prepareForLogoutRelease() {
+        DLLog(message: "JournalVC prepareForLogoutRelease")
+        isPreparingForLogoutRelease = true
+        NotificationCenter.default.removeObserver(self)
+
+        guard isViewLoaded else { return }
+
+        activeFitnessCell = nil
+        activeRemarkCell = nil
+        activeCircleTemplateCell = nil
+
+        naviVm.controller = WHBaseViewVC()
+        naviVm.choiceTimeBlock = nil
+        naviVm.lastDayBlock = nil
+        naviVm.nextDayBlock = nil
+        naviVm.delBlock = nil
+        naviVm.shareBlock = nil
+        naviVm.fitnessBlock = nil
+
+        naviEditStatusVm.doneBlock = nil
+        naviEditStatusVm.deleteBlock = nil
+        dateFilterAlertVm.confirmBlock = nil
+        bottomFuncVm.copyBlock = nil
+        bottomFuncVm.saveBlock = nil
+        copyMealsAlertVm.copyBlock = nil
+        copyMealsAlertVm.updateBlock = nil
+        fitnessTypeAlertVm.confirmBlock = nil
+        remarkAlertVm.hideBlock = nil
+        timeAlertVm.setAlertBlock = nil
+        changeCircleTempAlertVm.confirmBlock = nil
+        addFoodsAlertVm.addBlock = nil
+        notifiAuthoriAlertVm.controller = WHBaseViewVC()
+        notifiAuthoriAlertVm.acceptBlock = nil
+        activityAlertVm.controller = WHBaseViewVC()
+        activityAlertVm.pushBlock = nil
+        elaExpiredAlertVm.upgradeBlock = nil
+
+        bottomFuncVm.removeFromSuperview()
+        copyMealsAlertVm.removeFromSuperview()
+        dateFilterAlertVm.removeFromSuperview()
+        fitnessTypeAlertVm.removeFromSuperview()
+        remarkAlertVm.removeFromSuperview()
+        timeAlertVm.removeFromSuperview()
+        changeCircleTempAlertVm.removeFromSuperview()
+        addFoodsAlertVm.removeFromSuperview()
+        notifiAuthoriAlertVm.removeFromSuperview()
+        activityAlertVm.removeFromSuperview()
+        elaExpiredAlertVm.removeFromSuperview()
+        journalElaProAnnouncementAlertVm.removeFromSuperview()
+        tabbarCoverView.removeFromSuperview()
+        naviVm.removeFromSuperview()
+        naviEditStatusVm.removeFromSuperview()
+
+        collectView.delegate = nil
+        collectView.dataSource = nil
+        DLLog(message: "JournalVC prepareForLogoutRelease visibleCells \(collectView.visibleCells.count)")
+        collectView.visibleCells.forEach { cell in
+            (cell as? JounalCollectionCell)?.prepareForLogoutRelease()
+        }
+        collectView.reloadData()
+        collectView.removeFromSuperview()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -285,7 +350,8 @@ class JournalVC: WHBaseViewVC {
             
             guard let cell = self.currentVisibleJournalCell() else { return }
             self.activeFitnessCell = cell
-            cell.updateFitnessBlock = {(fitnessType)in
+            cell.updateFitnessBlock = { [weak self] fitnessType in
+                guard let self = self, self.isPreparingForLogoutRelease == false else { return }
                 if fitnessType.count > 0 {
                     self.naviVm.fitnessLabel.text = fitnessType.mc_clipFromPrefix(to: 1)
                 }else{
@@ -395,8 +461,9 @@ class JournalVC: WHBaseViewVC {
             let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
             self.copyMealsAlertVm.copyFoods(mealsArray: cell?.mealsArray ?? NSArray())
         }
-        vm.updateBlock = {()in
-            DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+        vm.updateBlock = { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now(), execute: { [weak self] in
+                guard let self = self, self.isPreparingForLogoutRelease == false else { return }
                 let indexPath = IndexPath(row: self.copyMealsAlertVm.selectIndex, section: 0)
                 let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
                 cell?.setQueryDate(date: self.copyMealsAlertVm.queryDay, isEdit: false, shouldRequestLogDetail: false)
@@ -701,7 +768,8 @@ extension JournalVC{
         let indexPath = IndexPath(row: self.selecteIndex, section: 0)
         let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
         cell?.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: { [weak self] in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             self.addFoodsAlertVm.showView()
         })
     }
@@ -853,10 +921,12 @@ extension JournalVC{
         self.changeEditStatus()
     }
     @objc func gotoLogsNotification(){
-        DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: { [weak self] in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             self.getUserConfigRequest()
         })
-        DispatchQueue.main.asyncAfter(deadline: .now()+10, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now()+10, execute: { [weak self] in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             self.getUserConfigRequest()
         })
         self.queryDay = Date().nextDay(days: 0)
@@ -902,7 +972,8 @@ extension JournalVC{
         self.getQueryDayIndex()
         self.reloadJournalCells(shouldRequestLogDetail: false)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let indexPath = IndexPath(row: self.selecteIndex, section: 0)
             let cell = self.collectView.cellForItem(at: indexPath) as? JounalCollectionCell
             cell?.setQueryDate(date: sdate, isEdit: false, shouldRequestLogDetail: false)
@@ -914,7 +985,8 @@ extension JournalVC{
 //        DLLog(message: "\(foodsDict)")
         let foodsObj = notify.object ?? [:]
         DLLog(message: "\(foodsObj)")
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.2) { [weak self] in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             self.collectView.layoutIfNeeded()
             
             var indexPath = IndexPath(row: self.selecteIndex, section: 0)
@@ -1098,7 +1170,8 @@ extension JournalVC{
         
 //        collectView.scrollToItem(at: IndexPath.init(row: todayIndex, section: 0), at: .right, animated: false)
         */
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: { [weak self] in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.getKeyWindow().addSubview(self.bottomFuncVm)
             appDelegate.getKeyWindow().addSubview(self.copyMealsAlertVm)
@@ -1135,7 +1208,8 @@ extension JournalVC:UICollectionViewDelegate,UICollectionViewDataSource{
         cell?.controller = self
         cell?.setQueryDate(date: day,isEdit: self.isEdit, shouldRequestLogDetail: shouldRequestLogDetailWhenReloadingCells)
         
-        cell?.offsetChangeBlock = {(offsetY)in
+        cell?.offsetChangeBlock = { [weak self] offsetY in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             if day == self.queryDay{
                 self.naviVm.changeBgAlpha(offsetY: offsetY)
                 self.naviEditStatusVm.changeBgAlpha(offsetY: offsetY)
@@ -1144,7 +1218,8 @@ extension JournalVC:UICollectionViewDelegate,UICollectionViewDataSource{
             //                self.offsetYArray[indexPath.row] = offsetY
             //            }
         }
-        cell?.updateFitnessBlock = {(fitnessType)in
+        cell?.updateFitnessBlock = { [weak self] fitnessType in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             //            if fitnessType == "[]"{
             //                return
             //            }
@@ -1156,7 +1231,8 @@ extension JournalVC:UICollectionViewDelegate,UICollectionViewDataSource{
                 }
             }
         }
-        cell?.aiCoachTapBlock = {()in
+        cell?.aiCoachTapBlock = { [weak self] in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             self.gotoAicoachAction()
         }
         cell?.showRemarkAlertBlock = { [weak self] cell in
@@ -1237,8 +1313,10 @@ extension JournalVC{
     }
     func sendLogsAllDataRequest(completion: (() -> Void)? = nil) {
         DLLog(message: "sendLogsAllDataRequest:\(Date().currentSeconds)")
-        WHNetworkUtil.shareManager().POST(urlString: URL_User_logs_all, parameters: nil) { responseObject in
-            DispatchQueue.global(qos: .userInitiated).async { [self] in
+        WHNetworkUtil.shareManager().POST(urlString: URL_User_logs_all, parameters: nil) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let self = self, self.isPreparingForLogoutRelease == false else { return }
                 let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
 //                DispatchQueue.main.sync(execute: {
                 let dataObj = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
@@ -1249,7 +1327,8 @@ extension JournalVC{
         }
     }
     func getUserConfigRequest() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_config_msg, parameters: nil) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_config_msg, parameters: nil) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "getUserConfigRequest:\(dataObj)")
@@ -1286,7 +1365,8 @@ extension JournalVC{
         }
     }
     func getActivityListRequest() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_activity_list, parameters: nil) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_activity_list, parameters: nil) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "getActivityListRequest:\(dataArray)")
@@ -1296,16 +1376,18 @@ extension JournalVC{
         }
     }
     func sendOssStsRequest() {
-        WHNetworkUtil.shareManager().GET(urlString: URL_OSS_sts) { responseObject in
+        WHNetworkUtil.shareManager().GET(urlString: URL_OSS_sts) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             UserInfoModel.shared.updateOssParams(dict: self.getDictionaryFromJSONString(jsonString: dataString ?? ""))
         }
     }
     /*
      提前请求教程的数据，视频数据解析要时间
-     */
+    */
     func sendTutorialMenuListRequest() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_tutorial_menu_list, parameters: nil) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_tutorial_menu_list, parameters: nil) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendDataListRequest:\(dataArr)")
@@ -1323,7 +1405,8 @@ extension JournalVC{
     func sendTutorialDataListReqeust(parentId:String) {
         let param = ["parentId":"\(parentId)"]
         var modelArray = NSMutableArray()
-        WHNetworkUtil.shareManager().POST(urlString: URL_tutorial_menu_catogary_list, parameters: param as [String:AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_tutorial_menu_catogary_list, parameters: param as [String:AnyObject]) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArr = self.getArrayFromJSONString(jsonString: dataString ?? "")
             UserConfigModel.shared.tutorialsTypeDict["\(parentId)"] = dataArr
@@ -1392,7 +1475,8 @@ extension JournalVC{
         }
     }
     func sendProVipMsgRequest() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             let vipModel = VIPModel.shared.update(with: dataDict)
@@ -1402,8 +1486,8 @@ extension JournalVC{
             DLLog(message: "sendProVipMsgRequest:\(dataDict)")
             DLLog(message: "sendProVipMsgRequest model: uid=\(vipModel.uid),status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime)  ,expireTime=\(vipModel.expireTime)")
 
-            DispatchQueue.main.async {
-                guard self.isViewLoaded else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self, self.isViewLoaded, self.isPreparingForLogoutRelease == false else { return }
                 self.reloadJournalCells(shouldRequestLogDetail: true)
             }
         }
@@ -1423,7 +1507,8 @@ extension JournalVC{
 
     func sendUserCenterRequest() {
         let param = ["uid":"\(UserInfoModel.shared.uId)"]
-        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             
@@ -1453,7 +1538,8 @@ extension JournalVC{
     }
     func sendUserCenterForMineRedView() {
         let param = ["uid":"\(UserInfoModel.shared.uId)"]
-        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             
@@ -1470,7 +1556,8 @@ extension JournalVC{
         }
     }
     func sendVersionRequest()  {
-        WHNetworkUtil.shareManager().POST(urlString: URL_app_version_new, parameters: nil) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_app_version_new, parameters: nil) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dict = self.getDictionaryFromJSONString(jsonString: dataString ?? "")
         

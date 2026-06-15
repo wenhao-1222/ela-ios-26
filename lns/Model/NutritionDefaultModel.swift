@@ -39,10 +39,10 @@ extension NutritionDefaultModel{
             let msgStr = UserDefaults.getString(forKey: .nutritionDefault) ?? ""
             dict = WHUtils.getDictionaryFromJSONString(jsonString: msgStr)
         }
-        self.calories = "\(Int(dict.doubleValueForKey(key: "calories")))"
-        self.carbohydrate = "\(Int(dict.doubleValueForKey(key: "carbohydrates")))"
-        self.protein = "\(Int(dict.doubleValueForKey(key: "proteins")))"
-        self.fat = "\(Int(dict.doubleValueForKey(key: "fats")))"
+        self.calories = "\(Int(dict.doubleValueForKey(key: "calories").rounded()))"
+        self.carbohydrate = "\(Int(dict.doubleValueForKey(key: "carbohydrates").rounded()))"
+        self.protein = "\(Int(dict.doubleValueForKey(key: "proteins").rounded()))"
+        self.fat = "\(Int(dict.doubleValueForKey(key: "fats").rounded()))"
     }
     func getTodayGoal() -> NSDictionary{
         let weekDay = Date().getWeekdayIndex(from: Date().nextDay(days: 0))

@@ -15,6 +15,8 @@ enum RANK_TYPE {
     case RISE
     ///段位下降
     case DECLINE
+    ///首次完成目标解锁排行榜，复用升杯动画但不走周结算文案
+    case FIRST_UNLOCK
 }
 
 class HabitSettleVM: UIView {
@@ -473,7 +475,10 @@ extension HabitSettleVM {
             }
         }else{
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                if self.rankUpType == .RISE{
+                if self.rankUpType == .FIRST_UNLOCK{
+                    //首次解锁排行榜
+                    self.settleView.playFirstUnlockAnimation()
+                }else if self.rankUpType == .RISE{
                     //段位上升
                     self.settleView.playRankUpAnimation()
                 }else if self.rankUpType == .DECLINE{
@@ -493,6 +498,9 @@ extension HabitSettleVM {
                 UIView.animate(withDuration: 0.08) {
                     self.cupShadowImgView.alpha = 0
                 }
+            }
+            if self.rankUpType == .FIRST_UNLOCK {
+                self.rankTipLabel.text = "已解锁排行榜"
             }
             self.currentCupNameLabel.text = self.newRankName
             let dealyTime = self.rankUpType == .RISE ? 0.5 : 1.5

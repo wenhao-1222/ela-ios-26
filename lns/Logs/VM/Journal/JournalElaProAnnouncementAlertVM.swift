@@ -58,7 +58,7 @@ class JournalElaProAnnouncementAlertVM: UIView {
         // 先用默认高度创建，后面 dealData() 会重算高度并设置 frame
         let vi = UIView(frame: CGRect(x: 0, y: SCREEN_HEIGHT - whiteViewHeight, width: SCREEN_WIDHT, height: whiteViewHeight))
         //        vi.backgroundColor = .COLOR_CARD_BG_WHITE_ALERT
-        vi.backgroundColor = .clear
+//        vi.backgroundColor = .clear
         //        vi.layer.cornerRadius = whiteViewTopRadius
         vi.addClipCorner(corners: [.topLeft,.topRight], radius: whiteViewTopRadius)
         if #available(iOS 13.0, *) { vi.layer.cornerCurve = .continuous }
@@ -335,5 +335,5 @@ extension JournalElaProAnnouncementAlertVM{
         WHNetworkUtil.shareManager().POST(urlString: URL_config_set, parameters: param as [String : AnyObject]) { responseObject in
             DLLog(message: "\(responseObject)")
         }
-    }//b41b7074fc6f9dfbb960fb1e4264682e
+    }
 }

@@ -15,6 +15,7 @@ enum ElaProIAPConfig {
     static let subscriptionGroupName = "Pro"
     static let subscriptionGroupID = "21956560"
     static let knownSubscriptionProductIDs: Set<String> = ["annual", "month", "annual_yeal_new"]
+    static let guidanceAnnualProductID = "annual_yeal_new"
     static var monthProductID = ""
     static var annualProductID = "annual_yeal_new"
     static var lifetimeProductID = ""
@@ -161,6 +162,57 @@ final class ElaProIAPManager: NSObject {
         }
     }
 
+    func fetchGuidanceAnnualProduct(completion: @escaping (Result<Product, Error>) -> Void) {
+        let annualID = ElaProIAPConfig.guidanceAnnualProductID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !annualID.isEmpty else {
+            completion(.failure(ElaProIAPError.productUnavailable))
+            return
+        }
+        fetchProducts(ids: [annualID], forceRefresh: false) { result in
+            switch result {
+            case .success(let products):
+                if let product = products.first(where: { $0.id == annualID }) {
+                    self.logProductInfo(product, source: "guidanceAnnualProductID")
+                    completion(.success(product))
+                } else {
+                    completion(.failure(ElaProIAPError.productUnavailable))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func checkGuidanceAnnualIntroOfferEligibility(completion: @escaping (Result<Bool, Error>) -> Void) {
+        let annualID = ElaProIAPConfig.guidanceAnnualProductID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !annualID.isEmpty else {
+            completion(.failure(ElaProIAPError.productUnavailable))
+            return
+        }
+
+        Task {
+            do {
+                let products = try await Product.products(for: [annualID])
+                guard let product = products.first(where: { $0.id == annualID }),
+                      let subscription = product.subscription else {
+                    DispatchQueue.main.async {
+                        completion(.failure(ElaProIAPError.productUnavailable))
+                    }
+                    return
+                }
+
+                let isEligible = await subscription.isEligibleForIntroOffer
+                DispatchQueue.main.async {
+                    completion(.success(isEligible))
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+
     func fetchMonthProduct(completion: @escaping (Result<Product, Error>) -> Void) {
         let monthID = ElaProIAPConfig.monthProductID.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !monthID.isEmpty else {
@@ -237,6 +289,10 @@ final class ElaProIAPManager: NSObject {
 
     func purchaseAnnual(completion: @escaping (Result<Transaction, Error>) -> Void) {
         purchase(productID: ElaProIAPConfig.annualProductID, completion: completion)
+    }
+
+    func purchaseGuidanceAnnual(completion: @escaping (Result<Transaction, Error>) -> Void) {
+        purchase(productID: ElaProIAPConfig.guidanceAnnualProductID, completion: completion)
     }
 
     func purchaseMonth(completion: @escaping (Result<Transaction, Error>) -> Void) {

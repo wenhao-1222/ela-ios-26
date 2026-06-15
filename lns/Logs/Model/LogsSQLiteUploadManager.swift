@@ -13,6 +13,7 @@ class LogsSQLiteUploadManager {
     private static var pendingUploadWorkItems: [String: DispatchWorkItem] = [:]
     private static var uploadingDates = Set<String>()
     private static var queuedDates = Set<String>()
+    private static var uploadQueueGeneration = 0
     
     ///检查本地日志   饮水量上传状态
     func checkWaterDataUploadStatus() {
@@ -41,9 +42,10 @@ class LogsSQLiteUploadManager {
         Self.uploadSyncQueue.async {
             Self.queuedDates.insert(sdate)
             Self.pendingUploadWorkItems[sdate]?.cancel()
+            let generation = Self.uploadQueueGeneration
             
             let workItem = DispatchWorkItem { [self] in
-                self.startQueuedUploadIfNeededOnSyncQueue(sdate: sdate)
+                self.startQueuedUploadIfNeededOnSyncQueue(sdate: sdate, generation: generation)
             }
             
             Self.pendingUploadWorkItems[sdate] = workItem
@@ -51,6 +53,16 @@ class LogsSQLiteUploadManager {
         }
     }
     
+    func clearUploadQueue() {
+        Self.uploadSyncQueue.async {
+            Self.uploadQueueGeneration += 1
+            Self.pendingUploadWorkItems.values.forEach { $0.cancel() }
+            Self.pendingUploadWorkItems.removeAll()
+            Self.queuedDates.removeAll()
+            Self.uploadingDates.removeAll()
+        }
+    }
+
     func uploadLogsBySDate(sdate:String, shouldRefreshTodayJournal: Bool = true, completion: (() -> Void)? = nil) {
         let logsDict = LogsSQLiteManager.getInstance().queryLogsData(sdata: sdate)
         if logsDict["isUpload"]as? Bool ?? true == false{
@@ -60,8 +72,12 @@ class LogsSQLiteUploadManager {
         }
     }
 
-    private func startQueuedUploadIfNeededOnSyncQueue(sdate: String) {
+    private func startQueuedUploadIfNeededOnSyncQueue(sdate: String, generation: Int) {
         Self.pendingUploadWorkItems.removeValue(forKey: sdate)
+
+        guard generation == Self.uploadQueueGeneration else {
+            return
+        }
         
         guard Self.queuedDates.contains(sdate) else {
             return
@@ -90,9 +106,10 @@ class LogsSQLiteUploadManager {
             }
             
             Self.pendingUploadWorkItems[sdate]?.cancel()
+            let generation = Self.uploadQueueGeneration
             
             let workItem = DispatchWorkItem { [self] in
-                self.startQueuedUploadIfNeededOnSyncQueue(sdate: sdate)
+                self.startQueuedUploadIfNeededOnSyncQueue(sdate: sdate, generation: generation)
             }
             
             Self.pendingUploadWorkItems[sdate] = workItem
@@ -207,10 +224,14 @@ class LogsSQLiteUploadManager {
 //        }
         
         logsDict.setValue("\(dict.stringValueForKey(key: "carbLabel"))", forKey: "carbLabel")
-        logsDict.setValue("\(dict.stringValueForKey(key: "totalProteins"))", forKey: "totalProteins")
-        logsDict.setValue("\(dict.stringValueForKey(key: "totalCarbohydrates"))", forKey: "totalCarbohydrates")
-        logsDict.setValue("\(dict.stringValueForKey(key: "totalFats"))", forKey: "totalFats")
-        logsDict.setValue("\(dict.stringValueForKey(key: "totalCalories"))", forKey: "totalCalories")
+
+        logsDict.setValue("\(uploadNumberString(dict.stringValueForKey(key: "totalProteins")))", forKey: "totalProteins")
+        logsDict.setValue("\(uploadNumberString(dict.stringValueForKey(key: "totalCarbohydrates")))", forKey: "totalCarbohydrates")
+        logsDict.setValue("\(uploadNumberString(dict.stringValueForKey(key: "totalFats")))", forKey: "totalFats")
+        logsDict.setValue("\(uploadNumberString(dict.stringValueForKey(key: "totalCalories")))", forKey: "totalCalories")
+//        logsDict.setValue("\(dict.stringValueForKey(key: "totalCarbohydrates"))", forKey: "totalCarbohydrates")
+//        logsDict.setValue("\(dict.stringValueForKey(key: "totalFats"))", forKey: "totalFats")
+//        logsDict.setValue("\(dict.stringValueForKey(key: "totalCalories"))", forKey: "totalCalories")
         logsDict.setValue("\(WHUtils.getJSONStringFromArray(array: meals))", forKey: "meals")
         
         let sn = dealMealsData(meals: meals)
@@ -394,5 +415,8 @@ extension LogsSQLiteUploadManager{
         }else{
             return 0
         }
+    }
+    private func uploadNumberString(_ value: String) -> String {
+        return value.replacingOccurrences(of: ",", with: ".")
     }
 }

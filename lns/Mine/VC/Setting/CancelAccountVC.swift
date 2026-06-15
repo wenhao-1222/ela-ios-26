@@ -274,6 +274,7 @@ extension CancelAccountVC{
 //            WHBaseViewVC().changeRootVcToWelcome()
 //            
 //            WidgetUtils().saveUserInfo(uId: "", uToken: "")
+            LogsSQLiteUploadManager().clearUploadQueue()
             WHBaseViewVC().changeRootVcToWelcome()
             LogsSQLiteUploadManager().clearNaturalData()
             BodyDataSQLiteManager.getInstance().deleteAllData()

@@ -52,6 +52,7 @@ public extension UserDefaults {
         case habitRankListVM_leaderboardCache//自律习惯养成--排行榜数据
         case tier
         case tier_weekStartDate//自律习惯，结算页面是否展示过   这里记录的是当周的开始日期  eg.20260126
+        case habit_rank_first_unlock_settle//自律习惯，首次解锁排行榜升杯动画是否展示过
         case rank_list_guide//自律习惯引导是否展示过
         case vipStatus //会员状态
     }
@@ -460,6 +461,12 @@ extension UserDefaults {
     }
     func getTierWeekStartDate() -> String {
         return UserDefaults.getString(forKey: .tier_weekStartDate) ?? ""
+    }
+    static func setHabitRankFirstUnlockSettleShown() {
+        UserDefaults.standard.set("1", forKey: "\(UserInfoModel.shared.uId)_\(AccountKeys.habit_rank_first_unlock_settle.rawValue)")
+    }
+    func getHabitRankFirstUnlockSettleShown() -> Bool {
+        return (UserDefaults.standard.string(forKey: "\(UserInfoModel.shared.uId)_\(AccountKeys.habit_rank_first_unlock_settle.rawValue)") ?? "").count > 0
     }
     
     // MARK: - Splash Material

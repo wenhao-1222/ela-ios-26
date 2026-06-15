@@ -28,6 +28,7 @@ class DietPlanVC: WHBaseViewVC {
     }()
     
     deinit {
+        DLLog(message: "DietPlanVC deinit")
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_DIET_PLAN_SHOW_NONE_PLAN_AFTER_PRO_SUCCESS, object: nil)
         NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)

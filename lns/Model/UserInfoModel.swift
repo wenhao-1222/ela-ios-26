@@ -219,11 +219,11 @@ extension UserInfoModel{
         self.setMobMsg(dict: dict)
         updateShowMealsIfNeeded(dict: dict)
         
-//        if self.msgUnRead == true{
-//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "serviceMsgUnRead"), object: nil)
-//        }else{
-//            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "serviceMsgRead"), object: nil)
-//        }
+        if self.msgUnRead == true{
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "serviceMsgUnRead"), object: nil)
+        }else{
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "serviceMsgRead"), object: nil)
+        }
         
         UserDefaults.standard.set(dict["phone"]as? String ?? "", forKey: userPhone)
     }
@@ -469,6 +469,7 @@ extension UserInfoModel{
     /// 当 401 强制下线时传 `true`，会在切回欢迎页之前，额外释放旧的 tabbar 页面层级，
     /// 避免这些旧页面因为引用残留继续响应通知或继续发请求。
     func logoutClearMsg(teardownTabBarControllers: Bool = false) {
+        LogsSQLiteUploadManager().clearUploadQueue()
         LogsMealsAlertSetManage().removeAllNotifi()
         clearDietPlanCreateDraftCache()
         ElaProIAPManager.shared.clearLocalEntitlementCache()

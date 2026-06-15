@@ -30,6 +30,11 @@ class HabitRankListVM: UIView {
     private var isAnimatingBackFromDemo: Bool = false
     private var pendingSettlementDict: NSDictionary?
     private var headTierName: String?
+    private var pendingFirstUnlockSettlementDict: NSDictionary?
+    private var pendingFirstUnlockRankList: NSArray?
+    private var pendingFirstUnlockRankIndex: Int?
+    private var hasReceivedEmptyLeaderboard = false
+    private var shouldMarkFirstUnlockSettlementShown = false
     
     private var rankMoveAnimator: UIViewPropertyAnimator?
     private var isRankMoveAnimating = false
@@ -183,6 +188,62 @@ extension HabitRankListVM{
                                        rankList: dataArray)
         showSettlementIfNeeded()
     }
+    
+    private func prepareFirstUnlockSettlementIfNeeded(dataDict: NSDictionary,
+                                                      previousSelfIndex: Int?,
+                                                      previousLeaderboardCount: Int,
+                                                      rankList: NSArray,
+                                                      newIndex: Int?) {
+        guard hasReceivedEmptyLeaderboard,
+              previousSelfIndex == nil,
+              previousLeaderboardCount == 0,
+              let newIndex = newIndex,
+              !UserDefaults.standard.getHabitRankFirstUnlockSettleShown(),
+              !settlementVm.hasData else {
+            return
+        }
+        
+        pendingFirstUnlockSettlementDict = dataDict
+        pendingFirstUnlockRankList = rankList
+        pendingFirstUnlockRankIndex = newIndex
+        updateFirstUnlockSettlementVmIfReady()
+    }
+    
+    private func updateFirstUnlockSettlementVmIfReady() {
+        guard let dict = pendingFirstUnlockSettlementDict,
+              let rankList = pendingFirstUnlockRankList,
+              let newIndex = pendingFirstUnlockRankIndex,
+              rankList.count > 0 else {
+            return
+        }
+        
+        let currentTier = dict.stringValueForKey(key: "tier").intValue
+        let tierName = dict.stringValueForKey(key: "tierName")
+        let settleTier = max(currentTier, 1)
+        let settleOldTierName = tierName.count > 0 ? tierName : headTierName ?? ""
+        let settleNewTierName = tierName.count > 0 ? tierName : settleOldTierName
+        let rankSn = newIndex + 1
+        var point = "0"
+        let weeklyRewardPoint = dict["weeklyRewardPoint"]as? NSDictionary ?? [:]
+        if rankSn == 1{
+            point = weeklyRewardPoint.stringValueForKey(key: "champion")
+        }else if rankSn == 2{
+            point = weeklyRewardPoint.stringValueForKey(key: "runnerUp")
+        }else if rankSn == 3{
+            point = weeklyRewardPoint.stringValueForKey(key: "thirdPlace")
+        }
+        
+        settlementVm.rankUpType = .FIRST_UNLOCK
+        settlementVm.updateCurrentTier(tier: settleTier,
+                                       sn: rankSn,
+                                       point: point,
+                                       lastRankName: settleOldTierName,
+                                       rankName: settleNewTierName,
+                                       promotionLine: dict.stringValueForKey(key: "promotionLine").intValue,
+                                       rankList: rankList)
+        shouldMarkFirstUnlockSettlementShown = true
+        showSettlementIfNeeded()
+    }
 }
 
 extension HabitRankListVM{
@@ -236,6 +297,10 @@ extension HabitRankListVM{
             return
         }
         appDelegate.getKeyWindow().addSubview(settlementVm)
+        if settlementVm.rankUpType == .FIRST_UNLOCK && shouldMarkFirstUnlockSettlementShown {
+            UserDefaults.setHabitRankFirstUnlockSettleShown()
+            shouldMarkFirstUnlockSettlementShown = false
+        }
         UIView.animate(withDuration: 0.15) {
             self.settlementVm.alpha = 1
         }
@@ -312,7 +377,7 @@ extension HabitRankListVM{
     }
 
     func prepareLeaderboardForDisplay(completion: (() -> Void)? = nil) {
-        if isLeaderboardPreparedForDisplay {
+        if isLeaderboardPreparedForDisplay && displayedDataArray.count > 0 {
             completion?()
             return
         }
@@ -1391,6 +1456,11 @@ extension HabitRankListVM{
                     self.dataSourceArray = self.prepareLeaderboardData(from: dataDict["leaderboard"]as? NSArray ?? [])
                     self.cacheLeaderboard(self.dataSourceArray)
                     let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
+                    self.prepareFirstUnlockSettlementIfNeeded(dataDict: dataDict,
+                                                              previousSelfIndex: previousSelfIndex,
+                                                              previousLeaderboardCount: previousLeaderboard.count,
+                                                              rankList: self.dataSourceArray,
+                                                              newIndex: newIndex)
                     
                     if animateSelfChange {
                         self.promotionLine = dataDict.stringValueForKey(key: "promotionLine").intValue
@@ -1422,6 +1492,7 @@ extension HabitRankListVM{
                         }
                     }
                 }else{
+                    self.hasReceivedEmptyLeaderboard = true
                     self.dataSourceArray = NSArray()
                     self.cacheLeaderboard(self.dataSourceArray)
                     self.displayedDataArray = self.dataSourceArray
@@ -1463,7 +1534,8 @@ extension HabitRankListVM{
                 self.headCupVm.setCurrentTier(tier: dataDict.stringValueForKey(key: "tier").intValue, tierName: dataDict.stringValueForKey(key: "tierName"))
 //                DispatchQueue.main.asyncAfter(deadline: .now()+10, execute: {
                     self.headTierName = dataDict.stringValueForKey(key: "tierName")
-//                    self.updateSettlementVmIfReady()
+                    self.updateSettlementVmIfReady()
+                    self.updateFirstUnlockSettlementVmIfReady()
 //                })
                 
                 let weeklyRewardPoint = dataDict["weeklyRewardPoint"]as? NSDictionary ?? [:]
@@ -1479,6 +1551,11 @@ extension HabitRankListVM{
                     self.dataSourceArray = self.prepareLeaderboardData(from: dataDict["leaderboard"]as? NSArray ?? [])
                     self.cacheLeaderboard(self.dataSourceArray)
                     let newIndex = self.indexOfCurrentUser(in: self.dataSourceArray)
+                    self.prepareFirstUnlockSettlementIfNeeded(dataDict: dataDict,
+                                                              previousSelfIndex: previousSelfIndex,
+                                                              previousLeaderboardCount: previousLeaderboard.count,
+                                                              rankList: self.dataSourceArray,
+                                                              newIndex: newIndex)
                     self.displayedDataArray = self.transitionDisplayArray(for: self.dataSourceArray,
                                                                          previousIndex: previousSelfIndex,
                                                                          newIndex: newIndex,
@@ -1489,6 +1566,7 @@ extension HabitRankListVM{
                         self.finishPreparingLeaderboardForDisplay()
                     }
                 }else{
+                    self.hasReceivedEmptyLeaderboard = true
                     self.dataSourceArray = NSArray()
                     self.displayedDataArray = self.dataSourceArray
                     UIView.performWithoutAnimation {

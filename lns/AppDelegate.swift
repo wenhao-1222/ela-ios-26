@@ -763,7 +763,12 @@ extension AppDelegate{
         }
 
         let keyWindow = getKeyWindow()
-        
+
+        UserInfoModel.shared.noUidResponseNum = 0
+        if teardownTabBarControllers {
+            teardownTabBarControllersIfNeeded(in: keyWindow)
+        }
+
         
         UIView.transition(with: keyWindow, duration: 0.35, options: .transitionCrossDissolve, animations: {
             keyWindow.rootViewController = newRootVC
@@ -922,6 +927,16 @@ extension AppDelegate{
     ///
     /// 这样可以最大程度减少旧 tabbar 页面在切 root 后继续残留的概率。
     private func prepareViewControllerForRelease(_ viewController: UIViewController) {
+        if let overViewVC = viewController as? OverViewVC {
+            overViewVC.prepareForLogoutRelease()
+        }
+        if let journalVC = viewController as? JournalVC {
+            journalVC.prepareForLogoutRelease()
+        }
+        if let mineVC = viewController as? MineVC {
+            mineVC.prepareForLogoutRelease()
+        }
+
         if let presentedViewController = viewController.presentedViewController {
             prepareViewControllerForRelease(presentedViewController)
             presentedViewController.dismiss(animated: false)

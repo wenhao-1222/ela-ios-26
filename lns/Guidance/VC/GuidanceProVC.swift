@@ -527,7 +527,7 @@ extension GuidanceProVC {
     }
 
     func fetchAnnualDisplayProduct() {
-        ElaProIAPManager.shared.fetchAnnualProduct { [weak self] result in
+        ElaProIAPManager.shared.fetchGuidanceAnnualProduct { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 guard case .success(let product) = result else { return }
@@ -542,7 +542,21 @@ extension GuidanceProVC {
         isPurchasing = true
         subscribeContentVM.setLoading(true)
 
-        ElaProIAPManager.shared.purchaseAnnual { [weak self] result in
+        ElaProIAPManager.shared.checkGuidanceAnnualIntroOfferEligibility { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(true):
+                self.purchaseGuidanceAnnual()
+            case .success(false), .failure:
+                self.isPurchasing = false
+                self.subscribeContentVM.setLoading(false)
+                self.showIntroOfferUnavailableConfirmAlert()
+            }
+        }
+    }
+
+    private func purchaseGuidanceAnnual() {
+        ElaProIAPManager.shared.purchaseGuidanceAnnual { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 switch result {
@@ -577,6 +591,21 @@ extension GuidanceProVC {
                 }
             }
         }
+    }
+
+    private func showIntroOfferUnavailableConfirmAlert() {
+        guard !(presentedViewController is UIAlertController) else { return }
+        let alert = UIAlertController(title: "订阅确认",
+                                      message: "当前 Apple 账号可能暂不可领取免费试用，请以 App Store 确认页显示的价格为准。是否继续？",
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "取消", style: .cancel))
+        alert.addAction(UIAlertAction(title: "继续", style: .default) { [weak self] _ in
+            guard let self = self, !self.isPurchasing else { return }
+            self.isPurchasing = true
+            self.subscribeContentVM.setLoading(true)
+            self.purchaseGuidanceAnnual()
+        })
+        present(alert, animated: true)
     }
 
     private func showIAPBoundToOtherAccountAlert() {

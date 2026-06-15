@@ -19,6 +19,7 @@ class OverViewVC : WHBaseViewVC {
     private static var nutritionRequestId = 0
     private static var nutritionCallbacks: [((NSDictionary) -> Void)] = []
     private var isClick = false//上报概览页点击事件埋点
+    private var isPreparingForLogoutRelease = false
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -35,7 +36,37 @@ class OverViewVC : WHBaseViewVC {
     }
 
     deinit {
+        DLLog(message: "OverViewVC deinit")
         NotificationCenter.default.removeObserver(self)
+    }
+
+    func prepareForLogoutRelease() {
+        DLLog(message: "OverViewVC prepareForLogoutRelease")
+        isPreparingForLogoutRelease = true
+        NotificationCenter.default.removeObserver(self)
+
+        guard isViewLoaded else { return }
+
+        scrollView.delegate = nil
+
+        topMsgVm.editBlock = nil
+        topMsgVm.planTapBlock = nil
+        habitVm.tapBlock = nil
+        sportVm.tapBlock = nil
+        sportVm.tipsTapBlock = nil
+        sportVm.addTapBlock = nil
+        weightLineChartView.tapBlock = nil
+        weightLineChartView.addBlock = nil
+        dataLineChartView.tapBlock = nil
+        dataLineChartView.addBlock = nil
+        saveNutrationAlertVm.saveBlock = nil
+
+        tipsAlertVm.removeFromSuperview()
+        scrollView.removeFromSuperview()
+        tabbarCoverView.removeFromSuperview()
+        logoVm.removeFromSuperview()
+        naviVm.removeFromSuperview()
+        topBgImgView.removeFromSuperview()
     }
 //    override func viewDidAppear(_ animated: Bool) {
 //        self.navigationController?.fd_interactivePopDisabled = true
@@ -96,7 +127,8 @@ class OverViewVC : WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         if UserDefaults.getAllBodyDataIsLoad() == false {
-            DispatchQueue.main.asyncAfter(deadline: .now()+5, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now()+5, execute: { [weak self] in
+                guard let self = self, self.isPreparingForLogoutRelease == false else { return }
                 self.sendBodyAllStatRequest()
             })
         }
@@ -240,7 +272,8 @@ class OverViewVC : WHBaseViewVC {
 
 extension OverViewVC{
     @objc func refreshTodayNutrition(notify:Notification) {
-        DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: { [weak self] in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             self.getNutritionDataRequest()
         })
     }
@@ -269,7 +302,8 @@ extension OverViewVC{
                             healthManager.hkWorkouts.append(HKWorkoutActivityType(rawValue: (result?.workoutActivityType)!.rawValue) ?? HKWorkoutActivityType.other)
                         }
                         healthManager.getAllRunningWorkOutsData()
-                        DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: {
+                        DispatchQueue.main.asyncAfter(deadline: .now()+0.5, execute: { [weak self] in
+                            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
                             self.sendNutritionsDefaultRequest()
                         })
                     }
@@ -308,7 +342,8 @@ extension OverViewVC{
         
         scrollView.contentSize = CGSize.init(width: 0, height: self.dataLineChartView.frame.maxY + kFitWidth(32) + getTabbarHeight())
         
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: { [weak self] in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.getKeyWindow().addSubview(self.tipsAlertVm)
         })
@@ -400,6 +435,7 @@ extension OverViewVC{
     }
 
     private func applyNutritionData(_ dataObj: NSDictionary) {
+        guard isPreparingForLogoutRelease == false else { return }
         self.topMsgVm.updateUI(dict: dataObj)
         self.saveNutrationAlertVm.updateUI(msgDict: dataObj)
         self.sportVm.updateUI(dict: dataObj)
@@ -423,7 +459,8 @@ extension OverViewVC{
                  "carbohydrate":"\(QuestinonaireMsgModel.shared.carbohydrates)",
                  "fat":"\(QuestinonaireMsgModel.shared.fats)"]
         
-        WHNetworkUtil.shareManager().POST(urlString: URL_question_custom_save, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_question_custom_save, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
 //            DLLog(message: "\(responseObject)")
             self.saveNutrationAlertVm.clearText()
             self.getNutritionDataRequest()
@@ -453,7 +490,8 @@ extension OverViewVC{
     func sendBodyDataLast14Request(qtype:String) {
         let param = ["qtype":qtype]
         
-        WHNetworkUtil.shareManager().POST(urlString: URL_bodystat_query_14, parameters: param as [String:AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_bodystat_query_14, parameters: param as [String:AnyObject]) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendBodyDataLast14Request  \(qtype):\(dataArr)")
@@ -472,7 +510,8 @@ extension OverViewVC{
     func sendUserCenterRequest() {
         let param = ["uid":"\(UserInfoModel.shared.uId)"]
         
-        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
 //            DLLog(message: "sendUserCenterRequest:\(responseObject)")
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")

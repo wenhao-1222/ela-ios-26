@@ -39,7 +39,7 @@ class MainHeightVM: UIView {
     }()
     lazy var titleLab : UILabel = {
         let lab = UILabel()
-        lab.text = "身体维度"
+        lab.text = "身体围度"
         lab.font = .systemFont(ofSize: 18, weight: .medium)
         lab.textColor = .COLOR_GRAY_BLACK_85
         

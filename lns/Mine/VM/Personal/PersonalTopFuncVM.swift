@@ -51,7 +51,7 @@ class PersonalTopFuncVM: UIView {
     }()
     lazy var bodyDataVm: PersonalTopFuncItemVM = {
         let vm = PersonalTopFuncItemVM.init(frame: CGRect.init(x: 0, y: self.itemY(at: shouldShowElaPro ? 2 : 1), width: 0, height: 0))
-        vm.titleLab.text = "体重维度"//"身体数据"
+        vm.titleLab.text = "体重围度"//"身体数据"
         vm.iconImgView.setImgLocal(imgName: "mine_boday_data")
         return vm
     }()

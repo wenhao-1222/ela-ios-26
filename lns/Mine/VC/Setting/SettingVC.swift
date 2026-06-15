@@ -427,6 +427,7 @@ extension SettingVC{
     func sendLogOutRequest() {
         MCToast.mc_loading()
         UserInfoModel.shared.beginLogoutHandling()
+        LogsSQLiteUploadManager().clearUploadQueue()
         WHNetworkUtil.shareManager().POST(urlString: URL_Login_out, parameters: nil,isNeedToast: true,vc: self) { responseObject in
             
         }

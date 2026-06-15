@@ -9,6 +9,8 @@ class HabitExchangeTipsMsgVM: UIView {
     
     var selfHeight = kFitWidth(157)
     var tapBlock:(()->())?
+    private let tipsText = "2021年监测结果显示，仅在农村义务教育学生营养改善计划的重点监测抽样范围内，6至15岁学生消瘦率仍为9.8%，贫血率为12.0%，营养缺口依然真实存在，针对性的支持仍有必要。"
+    private let showMoreText = "查看更多"
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
@@ -46,21 +48,19 @@ class HabitExchangeTipsMsgVM: UIView {
         lab.font = .systemFont(ofSize: 15, weight: .medium)
         return lab
     }()
-    lazy var tipsLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
-        lab.numberOfLines = 0
-        lab.lineBreakMode = .byWordWrapping
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        lab.font = .systemFont(ofSize: 13, weight: .regular)
-        
-        return lab
-    }()
-    lazy var showMoreLabel: LineHeightLabel = {
-        let lab = LineHeightLabel()
-        lab.textColor = .THEME
-        lab.font = .systemFont(ofSize: 13, weight: .regular)
-        
-        return lab
+    lazy var tipsTextView: HabitExchangeTipsTextView = {
+        let view = HabitExchangeTipsTextView()
+        view.text = tipsText
+        view.showMoreText = showMoreText
+        view.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        view.showMoreColor = .THEME
+        view.textFont = .systemFont(ofSize: 13, weight: .regular)
+        view.showMoreFont = .systemFont(ofSize: 13, weight: .regular)
+        view.lineHeight = view.textFont.lineHeight*1.2
+        view.showMoreLineHeight = kFitWidth(20)
+        view.backgroundColor = .clear
+        view.isUserInteractionEnabled = false
+        return view
     }()
 }
 
@@ -70,17 +70,158 @@ extension HabitExchangeTipsMsgVM{
     }
 }
 
+class HabitExchangeTipsTextView: UIView {
+    var text = "" {
+        didSet { invalidateTextLayout() }
+    }
+    var showMoreText = "" {
+        didSet { invalidateTextLayout() }
+    }
+    var textFont = UIFont.systemFont(ofSize: 13, weight: .regular) {
+        didSet { invalidateTextLayout() }
+    }
+    var showMoreFont = UIFont.systemFont(ofSize: 13, weight: .regular) {
+        didSet { invalidateTextLayout() }
+    }
+    var textColor = UIColor.COLOR_TEXT_TITLE_0f1214_50 {
+        didSet { invalidateTextLayout() }
+    }
+    var showMoreColor = UIColor.THEME {
+        didSet { invalidateTextLayout() }
+    }
+    var lineHeight = UIFont.systemFont(ofSize: 13, weight: .regular).lineHeight {
+        didSet { invalidateTextLayout() }
+    }
+    var showMoreLineHeight = kFitWidth(20) {
+        didSet { invalidateTextLayout() }
+    }
+    private let linkSpacing = kFitWidth(4)
+    private let textStorage = NSTextStorage()
+    private let layoutManager = NSLayoutManager()
+    private let textContainer = NSTextContainer(size: .zero)
+    private var layoutNeedsUpdate = true
+    private var cachedWidth: CGFloat = 0
+    private var glyphRange = NSRange(location: 0, length: 0)
+    private var lastLineUsedRect = CGRect.zero
+    private var showMoreAttributedText = NSAttributedString()
+    private var showMoreRect = CGRect.zero
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupTextLayout()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupTextLayout()
+    }
+
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        guard bounds.width > 0, text.isEmpty == false else { return }
+
+        updateTextLayoutIfNeeded()
+        layoutManager.drawGlyphs(forGlyphRange: glyphRange, at: .zero)
+
+        guard showMoreRect != .zero, showMoreAttributedText.length > 0 else { return }
+        showMoreAttributedText.draw(in: showMoreRect)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        if abs(cachedWidth - bounds.width) > 0.5 {
+            invalidateTextLayout()
+        }
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        invalidateTextLayout()
+    }
+
+    private func setupTextLayout() {
+        textContainer.lineFragmentPadding = 0
+        textContainer.lineBreakMode = .byWordWrapping
+        textContainer.maximumNumberOfLines = 0
+        layoutManager.addTextContainer(textContainer)
+        textStorage.addLayoutManager(layoutManager)
+    }
+
+    private func invalidateTextLayout() {
+        layoutNeedsUpdate = true
+        setNeedsDisplay()
+    }
+
+    private func updateTextLayoutIfNeeded() {
+        guard layoutNeedsUpdate || abs(cachedWidth - bounds.width) > 0.5 else { return }
+
+        cachedWidth = bounds.width
+        textContainer.size = CGSize(width: bounds.width, height: CGFloat.greatestFiniteMagnitude)
+        textStorage.setAttributedString(makeBodyAttributedText())
+        layoutManager.invalidateLayout(forCharacterRange: NSRange(location: 0, length: textStorage.length), actualCharacterRange: nil)
+
+        glyphRange = layoutManager.glyphRange(for: textContainer)
+        lastLineUsedRect = .zero
+        layoutManager.enumerateLineFragments(forGlyphRange: glyphRange) { _, usedRect, _, _, _ in
+            self.lastLineUsedRect = usedRect
+        }
+
+        showMoreAttributedText = makeShowMoreAttributedText()
+        showMoreRect = makeShowMoreRect()
+        layoutNeedsUpdate = false
+    }
+
+    private func makeShowMoreRect() -> CGRect {
+        guard lastLineUsedRect != .zero, showMoreAttributedText.length > 0 else { return .zero }
+
+        let showMoreWidth = ceil(showMoreText.size(withAttributes: [.font: showMoreFont]).width)
+        let showMoreHeight = showMoreLineHeight
+        let showMoreX = bounds.width - showMoreWidth
+        let canPlaceOnLastLine = lastLineUsedRect.maxX + linkSpacing + showMoreWidth <= bounds.width
+        let showMoreY = canPlaceOnLastLine
+            ? lastLineUsedRect.midY - showMoreHeight / 2
+            : lastLineUsedRect.minY + lineHeight
+
+        return CGRect(x: showMoreX, y: showMoreY, width: showMoreWidth, height: showMoreHeight)
+    }
+
+    private func makeBodyAttributedText() -> NSAttributedString {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.minimumLineHeight = lineHeight
+        paragraphStyle.maximumLineHeight = lineHeight
+        paragraphStyle.lineBreakMode = .byWordWrapping
+
+        return NSAttributedString(string: text, attributes: [
+            .font: textFont,
+            .foregroundColor: textColor,
+            .paragraphStyle: paragraphStyle,
+            .baselineOffset: (lineHeight - textFont.lineHeight) / 2
+        ])
+    }
+
+    private func makeShowMoreAttributedText() -> NSAttributedString {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.minimumLineHeight = showMoreLineHeight
+        paragraphStyle.maximumLineHeight = showMoreLineHeight
+        paragraphStyle.lineBreakMode = .byClipping
+
+        return NSAttributedString(string: showMoreText, attributes: [
+            .font: showMoreFont,
+            .foregroundColor: showMoreColor,
+            .paragraphStyle: paragraphStyle,
+            .baselineOffset: (showMoreLineHeight - showMoreFont.lineHeight) / 2
+        ])
+    }
+}
+
 extension HabitExchangeTipsMsgVM{
     func initUI() {
         addSubview(whiteView)
         whiteView.addSubview(elaIconImg)
         whiteView.addSubview(titleLab)
-        whiteView.addSubview(tipsLabel)
-        whiteView.addSubview(showMoreLabel)
+        whiteView.addSubview(tipsTextView)
         
         setConstrait()
-        tipsLabel.setLineHeight(textString: "2021年监测结果显示，仅在农村义务教育学生营养改善计划的重点监测抽样范围内，6至15岁学生消瘦率仍为9.8%，贫血率为12.0%，营养缺口依然真实存在，针对性的支持仍有必要。",lineHeight: tipsLabel.font.lineHeight)
-        showMoreLabel.setLineHeight(textString: "查看更多",lineHeight: kFitWidth(20))
     }
     func setConstrait() {
         elaIconImg.snp.makeConstraints { make in
@@ -93,15 +234,11 @@ extension HabitExchangeTipsMsgVM{
             make.left.equalTo(elaIconImg.snp.right).offset(kFitWidth(4))
             make.centerY.lessThanOrEqualTo(elaIconImg)
         }
-        tipsLabel.snp.makeConstraints { make in
+        tipsTextView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
             make.top.equalTo(kFitWidth(45))
-        }
-        showMoreLabel.snp.makeConstraints { make in
-            make.right.equalTo(kFitWidth(-20))
-//            make.bottom.equalTo(kFitWidth(-20))
-            make.bottom.equalTo(tipsLabel)
+            make.bottom.equalTo(kFitWidth(-20))
         }
     }
 }

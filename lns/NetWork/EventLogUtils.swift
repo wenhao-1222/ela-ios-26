@@ -84,7 +84,11 @@ class EventLogUtils {
         if UserInfoModel.shared.uId.count > 1 && UserInfoModel.shared.token.count > 1{
             
         }else{
-            return
+            if scenarioType == .ela_pro_view{
+                
+            }else {
+                return
+            }
         }
         let model = EventLogModel()
         model.scenario = getScenario(type: scenarioType)

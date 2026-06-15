@@ -13,9 +13,46 @@ import AliyunPlayer
 class MineVC : WHBaseViewVC {
     
     var bottomGap = kFitWidth(20)
+    private var isPreparingForLogoutRelease = false
 //    var isAiCoachSurveyFinished = "-1"//是否做过AI教练问卷    0  未做过   1  做过     -1 本地状态：还未请求数据
 //    var isVip = "-1"  //0  非VIP   1  VIP     -1 本地状态：还未请求数据
 //    var aiCoachDict = NSDictionary()
+
+    deinit {
+        DLLog(message: "MineVC deinit")
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    func prepareForLogoutRelease() {
+        DLLog(message: "MineVC prepareForLogoutRelease")
+        isPreparingForLogoutRelease = true
+        NotificationCenter.default.removeObserver(self)
+
+        guard isViewLoaded else { return }
+
+        personalTopVm.goalVm.tapBlock = nil
+        personalTopVm.statVm.tapBlock = nil
+        personalTopVm.mealVm.tapBlock = nil
+        personalTopVm.friendsVm.tapBlock = nil
+        personalTopVm.settinBlock = nil
+        personalTopVm.editBlock = nil
+
+        funcTopVm.frameChangeBlock = nil
+        funcTopVm.planVm.tapBlock = nil
+        funcTopVm.bodyDataVm.tapBlock = nil
+        funcTopVm.fastingVm.tapBlock = nil
+        funcTopVm.orderVm.tapBlock = nil
+        funcTopVm.honorVm.tapBlock = nil
+        funcTopVm.communityVm.tapBlock = nil
+        funcTopVm.elaproVm.tapBlock = nil
+
+        funcBottomVm.settingVm.tapBlock = nil
+        funcBottomVm.contactVm.tapBlock = nil
+        funcBottomVm.frameChangeBlock = nil
+
+        scrollViewBase.delegate = nil
+        scrollViewBase.removeFromSuperview()
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         self.personalTopVm.updateUI()
@@ -182,7 +219,8 @@ extension MineVC{
 //        }
     }
     func sendFriendPendingListRequest() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_friend_pengding_list, parameters: nil) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_friend_pengding_list, parameters: nil) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             
@@ -220,20 +258,22 @@ extension MineVC{
 extension MineVC{
     func sendUserCenterRequest() {
         let param = ["uid":"\(UserInfoModel.shared.uId)"]
-        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_User_Center, parameters: param as [String : AnyObject]) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
 //            DLLog(message: "sendUserCenterRequest:\(responseObject)")
             
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             
             UserInfoModel.shared.updateMsg(dict: dataObj)
-//            self.funcBottomVm.updateUI()
+            self.funcBottomVm.updateUI()
             self.personalTopVm.updateUI()
             self.funcTopVm.updateUI()
         }
     }
     func sendServiceWelcomeRequest() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_User_Service_config, parameters: nil) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_User_Service_config, parameters: nil) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendServiceWelcomeRequest:\(dataObj)")
@@ -243,7 +283,8 @@ extension MineVC{
         }
     }
     func getUserConfigRequest() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_config_msg, parameters: nil) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_config_msg, parameters: nil) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "getUserConfigRequest:\(dataObj)")
@@ -251,7 +292,8 @@ extension MineVC{
         }
     }
     func sendForumMsgNuberRequest() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_forum_msg_count, parameters: nil) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_forum_msg_count, parameters: nil) { [weak self] responseObject in
+            guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendForumMsgNuberRequest:\(dataObj)")
