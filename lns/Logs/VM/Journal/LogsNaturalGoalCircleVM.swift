@@ -120,8 +120,9 @@ extension LogsNaturalGoalCircleVM{
         if num < 0 {
             num = 0
         }
-        var totalNum = self.totalNum > 0 ? self.totalNum : 1
-        let percent = CGFloat(num)/CGFloat(totalNum)
+        let totalNum = self.totalNum > 0 ? self.totalNum : 1
+        let rawPercent = CGFloat(num)/CGFloat(totalNum)
+        let percent = min(max(rawPercent, 0), 1)
         
         //线宽度
         let lineWidth: CGFloat = kFitWidth(6)
@@ -200,7 +201,7 @@ extension LogsNaturalGoalCircleVM{
         /**
                   以下为超出摄入时的圆环
          */
-        var fillPercent = percent - 1 > 0 ? percent - 1 : 0
+        var fillPercent = rawPercent - 1 > 0 ? rawPercent - 1 : 0
         
         if fillPercent >= 1 {
             fillPercent = 1
@@ -297,10 +298,11 @@ extension LogsNaturalGoalCircleVM{
         self.totalNum = totalNumber
         self.sportNum = sportNumber
         
-        if self.sportNum <= 0 {
+        if self.sportNum <= 0 || totalNumber <= 0 {
             self.percentSport = 0
         }else{
-            self.percentSport = Double(Float(self.sportNum)/Float(totalNumber))
+            let rawPercentSport = Double(Float(self.sportNum)/Float(totalNumber))
+            self.percentSport = min(max(rawPercentSport, 0), 1)
         }
         
         setNeedsDisplay()
