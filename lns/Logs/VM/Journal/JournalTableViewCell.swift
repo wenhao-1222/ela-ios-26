@@ -10,7 +10,7 @@ import MCToast
 import UIKit
 
 class JournalTableViewCell: UITableViewCell {
-    
+
     var foodsArray = NSMutableArray()
     var addBlock:(()->())?
     var deleteBlock:((NSDictionary)->())?
@@ -18,29 +18,29 @@ class JournalTableViewCell: UITableViewCell {
     var timeChangeBlock:((String)->())?
     var closeMealAdviceBlock:(()->())?
     var controller = UIViewController()
-    
+
     var caloriBlock:((NSDictionary)->())?
-    
+
     var selectCellBlock:((Bool,Int)->())?
     var eatTapBlock:((Int)->())?
     var selectBlock:((Bool)->())?
     var selectMeaslIndexBlock:((Int)->())?
     var foodsTapBlock:((NSDictionary, Int)->())?
-    
+
     var isEdit = false
     var isSelect = false
     var deleteIndex = IndexPath()
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.backgroundColor = .clear
         self.selectionStyle = .none
         initUI()
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(closeEditStatus), name: NSNotification.Name(rawValue: "closeEditStatus"), object: nil)
     }
 
@@ -54,7 +54,7 @@ class JournalTableViewCell: UITableViewCell {
         vi.backgroundColor = .COLOR_CARD_BG_WHITE//UIColor(named: "color_bg_f5")
         vi.isUserInteractionEnabled = true
         vi.layer.cornerRadius = kFitWidth(12)
-        
+
         return vi
     }()
     lazy var selecImgView : UIImageView = {
@@ -62,7 +62,7 @@ class JournalTableViewCell: UITableViewCell {
         img.setImgLocal(imgName: "logs_edit_all_normal")
         img.isUserInteractionEnabled = true
         img.isHidden = true
-        
+
         return img
     }()
     lazy var selectTapView : FeedBackView = {
@@ -70,10 +70,10 @@ class JournalTableViewCell: UITableViewCell {
         vi.isUserInteractionEnabled = true
         vi.backgroundColor = .clear
         vi.isHidden = true
-        
+
         let tap = UITapGestureRecognizer.init(target: self, action: #selector(tapAction))
         vi.addGestureRecognizer(tap)
-        
+
         return vi
     }()
     lazy var titleLabel : UILabel = {
@@ -98,7 +98,7 @@ class JournalTableViewCell: UITableViewCell {
         btn.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
         btn.addPressEffect()
         btn.addTarget(self, action: #selector(addAction), for: .touchUpInside)
-        
+
         return btn
     }()
     lazy var noFoodsLabel: UILabel = {
@@ -116,9 +116,9 @@ class JournalTableViewCell: UITableViewCell {
         btn.titleLabel?.font = .systemFont(ofSize: 11, weight: .regular)
         btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_BG_THEME_LIGHT, for: .highlighted)
         btn.isHidden = true
-        
+
         btn.addTarget(self, action: #selector(nextAdviceNotTipsAction), for: .touchUpInside)
-        
+
         return btn
     }()
     lazy var naturalVm : LogsMealsNaturalMsgVM = {
@@ -134,7 +134,7 @@ class JournalTableViewCell: UITableViewCell {
         table.dataSource = self
         table.isScrollEnabled = false
         table.backgroundColor = .COLOR_CARD_BG_WHITE
-        
+
         return table
     }()
 }
@@ -157,7 +157,7 @@ extension JournalTableViewCell{
     }
     @objc func tapAction() {
         isSelect = !isSelect
-        
+
         selecImgView.setCheckState(isSelect,
                                   checkedImageName: "logs_edit_selected",
                                   uncheckedImageName: "logs_edit_all_normal")
@@ -193,7 +193,7 @@ extension JournalTableViewCell{
             var btnHeight = kFitWidth(0)
             if isToday == true && UserInfoModel.shared.show_next_advice{
                 let adviceDict = UserDefaults.getDictionary(forKey: .jounal_meal_advice) as? NSDictionary ?? [:]
-                
+
                 if sn == adviceDict.stringValueForKey(key: "sn") && adviceDict.stringValueForKey(key: "uid") == UserInfoModel.shared.uId && adviceDict.stringValueForKey(key: "sdate") == queryDate && adviceDict.stringValueForKey(key: "advice").count > 0{
                     noFoodsLabel.text = adviceDict.stringValueForKey(key: "advice")
                     noTipsButton.isHidden = false
@@ -210,7 +210,7 @@ extension JournalTableViewCell{
 //            self.whiteView.frame = CGRect.init(x: kFitWidth(10), y: kFitWidth(12), width: SCREEN_WIDHT-kFitWidth(20), height: kFitWidth(70))
             return
         }
-        
+
         noFoodsLabel.isHidden = true
         naturalVm.isHidden = false
         self.whiteView.frame = CGRect.init(x: kFitWidth(10), y: kFitWidth(12), width: SCREEN_WIDHT-kFitWidth(20), height: kFitWidth(143)+CGFloat(foodsArray.count)*kFitWidth(55))
@@ -218,37 +218,60 @@ extension JournalTableViewCell{
         self.tableView.frame = CGRect.init(x: 0, y: naturalVm.frame.maxY, width: SCREEN_WIDHT-kFitWidth(20), height: CGFloat(foodsArray.count)*kFitWidth(55))
         self.tableView.isHidden = false
         self.tableView.reloadData()
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            var caloriTotal = Double(0)
-            var carboTotal = Double(0)
-            var proteinTotal = Double(0)
-            var fatTotal = Double(0)
-            
-            for i in 0..<self.foodsArray.count{
-                let dict = self.foodsArray[i]as? NSDictionary ?? [:]
-                if dict.stringValueForKey(key: "state") == "1"{
-                    caloriTotal = caloriTotal + dict.doubleValueForKey(key: "calories")
-                    carboTotal = carboTotal + dict.doubleValueForKey(key: "carbohydrate")
-                    proteinTotal = proteinTotal + dict.doubleValueForKey(key: "protein")
-                    fatTotal = fatTotal + dict.doubleValueForKey(key: "fat")
-                }
-            }
-            
-            DispatchQueue.main.async {
-                self.naturalVm.caloriLabel.text = "\(String(format: "%.0f", caloriTotal.rounded()))"
-                self.naturalVm.carboLabel.text = "\(String(format: "%.0f", carboTotal.rounded()))"
-                self.naturalVm.proteinLabel.text = "\(String(format: "%.0f", proteinTotal.rounded()))"
-                self.naturalVm.fatLabel.text = "\(String(format: "%.0f", fatTotal.rounded()))"
+
+//        DispatchQueue.global(qos: .userInitiated).async {
+//            var caloriTotal = Double(0)
+//            var carboTotal = Double(0)
+//            var proteinTotal = Double(0)
+//            var fatTotal = Double(0)
+//
+//            for i in 0..<self.foodsArray.count{
+//                let dict = self.foodsArray[i]as? NSDictionary ?? [:]
+//                if dict.stringValueForKey(key: "state") == "1"{
+//                    caloriTotal = caloriTotal + dict.doubleValueForKey(key: "calories")
+//                    carboTotal = carboTotal + dict.doubleValueForKey(key: "carbohydrate")
+//                    proteinTotal = proteinTotal + dict.doubleValueForKey(key: "protein")
+//                    fatTotal = fatTotal + dict.doubleValueForKey(key: "fat")
+//                }
+//            }
+//
+//            DispatchQueue.main.async {
+//                self.naturalVm.caloriLabel.text = "\(String(format: "%.0f", caloriTotal.rounded()))"
+//                self.naturalVm.carboLabel.text = "\(String(format: "%.0f", carboTotal.rounded()))"
+//                self.naturalVm.proteinLabel.text = "\(String(format: "%.0f", proteinTotal.rounded()))"
+//                self.naturalVm.fatLabel.text = "\(String(format: "%.0f", fatTotal.rounded()))"
+//            }
+//        }
+        updateNaturalTotal(array: array)
+    }
+
+    func updateNaturalTotal(array:NSArray) {
+        var caloriTotal = Double(0)
+        var carboTotal = Double(0)
+        var proteinTotal = Double(0)
+        var fatTotal = Double(0)
+
+        for i in 0..<array.count{
+            let dict = array[i]as? NSDictionary ?? [:]
+            if dict.stringValueForKey(key: "state") == "1"{
+                caloriTotal = caloriTotal + dict.doubleValueForKey(key: "calories")
+                carboTotal = carboTotal + dict.doubleValueForKey(key: "carbohydrate")
+                proteinTotal = proteinTotal + dict.doubleValueForKey(key: "protein")
+                fatTotal = fatTotal + dict.doubleValueForKey(key: "fat")
             }
         }
+
+        self.naturalVm.caloriLabel.text = "\(String(format: "%.0f", caloriTotal.rounded()))"
+        self.naturalVm.carboLabel.text = "\(String(format: "%.0f", carboTotal.rounded()))"
+        self.naturalVm.proteinLabel.text = "\(String(format: "%.0f", proteinTotal.rounded()))"
+        self.naturalVm.fatLabel.text = "\(String(format: "%.0f", fatTotal.rounded()))"
     }
 //    func refreshTodayAdvice(isToday:Bool,sn:String) {
 //        if isToday == false{
 //            return
 //        }
 //        let adviceDict = UserDefaults.getDictionary(forKey: .jounal_meal_advice) as? NSDictionary ?? [:]
-//        
+//
 //        if sn == adviceDict.stringValueForKey(key: "sn") && adviceDict.stringValueForKey(key: "uid") == UserInfoModel.shared.uId && adviceDict.stringValueForKey(key: "advice").count > 0{
 //            noFoodsLabel.isHidden = false
 //            noFoodsLabel.text = adviceDict.stringValueForKey(key: "advice")
@@ -275,7 +298,7 @@ extension JournalTableViewCell{
             selecImgView.isHidden = true
             selecImgView.alpha = 0
             selectTapView.isHidden = true
-            
+
             titleLabel.snp.remakeConstraints { make in
                 make.left.top.equalTo(kFitWidth(16))
             }
@@ -331,7 +354,7 @@ extension JournalTableViewCell{
 extension JournalTableViewCell{
     func initUI() {
         contentView.addSubview(whiteView)
-        
+
         whiteView.addSubview(selecImgView)
         whiteView.addSubview(selectTapView)
         whiteView.addSubview(titleLabel)
@@ -339,10 +362,10 @@ extension JournalTableViewCell{
         whiteView.addSubview(addButton)
         whiteView.addSubview(noFoodsLabel)
         whiteView.addSubview(noTipsButton)
-        
+
         whiteView.addSubview(naturalVm)
         whiteView.addSubview(tableView)
-        
+
         setConstrait()
     }
     func setConstrait() {
@@ -389,10 +412,10 @@ extension JournalTableViewCell:UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 //        let cell = tableView.dequeueReusableCell(withIdentifier: "PlanCreateFoodsTableViewCell")as! PlanCreateFoodsTableViewCell
         let cell = tableView.dequeueReusableCell(withIdentifier: "PlanCreateFoodsTableViewCell", for: indexPath) as? PlanCreateFoodsTableViewCell
-        
+
         let dict = foodsArray[indexPath.row]as? NSDictionary ?? [:]
         cell?.updateUIForLogs(dict: dict,isEdit:self.isEdit)
-        
+
         cell?.selectTapBlock = {(isSelec)in
             if self.selectCellBlock != nil{
                 self.selectCellBlock!(isSelec,indexPath.row)

@@ -58,6 +58,10 @@ class DietPlanCreateFlavorVM: UIView {
 }
 
 extension DietPlanCreateFlavorVM {
+    private var uncertainIndex: Int? {
+        dataArray.firstIndex(of: "不确定")
+    }
+
     func initUI() {
         addSubview(titleLabel)
         addSubview(scrollView)
@@ -98,6 +102,7 @@ extension DietPlanCreateFlavorVM {
     }
 
     func refreshListUI() {
+        normalizeSelectionState()
         stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         itemViews.removeAll()
 
@@ -120,21 +125,45 @@ extension DietPlanCreateFlavorVM {
             return
         }
         let wasSelected = selectedIndexes.contains(index)
-        if wasSelected {
-            selectedIndexes.remove(index)
+
+        if let uncertainIndex, index == uncertainIndex {
+            selectedIndexes = wasSelected ? [] : [uncertainIndex]
         } else {
-            selectedIndexes.insert(index)
+            selectedIndexes.remove(uncertainIndex ?? -1)
+            if wasSelected {
+                selectedIndexes.remove(index)
+            } else {
+                selectedIndexes.insert(index)
+            }
+        }
+
+        normalizeSelectionState()
+        refreshSelectionUI()
+        selectedBlock?()
+    }
+
+    private func normalizeSelectionState() {
+        if let uncertainIndex,
+           selectedIndexes.contains(uncertainIndex),
+           selectedIndexes.count > 1 {
+            selectedIndexes = [uncertainIndex]
         }
         selectedIndex = selectedIndexes.sorted().first ?? -1
-        itemViews[index].updateUI(title: dataArray[index], isSelected: !wasSelected)
+        syncSelectedFlavorText()
+    }
 
+    private func refreshSelectionUI() {
+        for (index, itemView) in itemViews.enumerated() {
+            itemView.updateUI(title: dataArray[index], isSelected: selectedIndexes.contains(index))
+        }
+    }
+
+    private func syncSelectedFlavorText() {
         if selectedIndexes.isEmpty {
             QuestinonaireMsgModel.shared.foodTasteType = ""
         } else {
             let selectedTitles = selectedIndexes.sorted().map { dataArray[$0] }
             QuestinonaireMsgModel.shared.foodTasteType = selectedTitles.joined(separator: ",")
         }
-
-        selectedBlock?()
     }
 }

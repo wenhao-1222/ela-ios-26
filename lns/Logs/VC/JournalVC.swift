@@ -69,13 +69,13 @@ class JournalVC: WHBaseViewVC {
     }
     deinit {
         DLLog(message: "JournalVC deinit")
-        NotificationCenter.default.removeObserver(self)
+        removeJournalNotifications()
     }
 
     func prepareForLogoutRelease() {
         DLLog(message: "JournalVC prepareForLogoutRelease")
         isPreparingForLogoutRelease = true
-        NotificationCenter.default.removeObserver(self)
+        removeJournalNotifications()
 
         guard isViewLoaded else { return }
 
@@ -108,6 +108,7 @@ class JournalVC: WHBaseViewVC {
         activityAlertVm.controller = WHBaseViewVC()
         activityAlertVm.pushBlock = nil
         elaExpiredAlertVm.upgradeBlock = nil
+        NotificationCenter.default.removeObserver(remarkAlertVm)
 
         bottomFuncVm.removeFromSuperview()
         copyMealsAlertVm.removeFromSuperview()
@@ -133,6 +134,32 @@ class JournalVC: WHBaseViewVC {
         }
         collectView.reloadData()
         collectView.removeFromSuperview()
+    }
+
+    private func removeJournalNotifications() {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REPORT_ADD_FOODS, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_DID_BECOME_ACTIVE, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "updateLogsCaloriesStyleMsg"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_ABTEST, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_LOGS_FROM_SERVER, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "msgCalculateEnd"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "activePlan"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "fullPlanSave"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "foodsAddForLogs"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "fastAddFoods"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "cancelEditStatus"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "editFoodsHasSelect"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "editFoodsHasSelectNone"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_JOURNAL_VIP_STATUS, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoodsForLogs"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "longPressCellForEdit"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_TODAY_JOUNAL, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_AI_COACH_REPORT_UNREAD_STATUS, object: nil)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "dietPlanFoodsAddToLogs"), object: nil)
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

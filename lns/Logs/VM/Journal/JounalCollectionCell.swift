@@ -3,7 +3,7 @@ import Foundation
 import UIKit
 
 class JounalCollectionCell: UICollectionViewCell {
-    
+
     var queryDay = ""
     var logsModel = LogsModel(uid: UserInfoModel.shared.uId,
                               sdate: Date().nextDay(days: 0),
@@ -36,7 +36,7 @@ class JounalCollectionCell: UICollectionViewCell {
     var mealsForUpload = NSArray()
     var selectMealsIndex = 0
     var selectFoodsIndex = -1
-    
+
     var offsetChangeBlock:((CGFloat)->())?
     var updateFitnessBlock:((String)->())?
     var aiCoachTapBlock:(()->())?
@@ -44,13 +44,13 @@ class JounalCollectionCell: UICollectionViewCell {
     var showTimeAlertBlock:((JounalCollectionCell, String, Int, String)->())?
     var showCircleTemplateAlertBlock:((JounalCollectionCell)->())?
     private var isPreparingForLogoutRelease = false
-    
+
 //    /// 最大收缩偏移
 //    private let maxShrinkOffset: CGFloat = kFitWidth(120)
 //    /// 最小缩放比例
 //    private let minGoalScale: CGFloat = 0.6
-    
-    
+
+
     /// Height of ``goalVm`` when fully expanded
     private var goalOriginalHeight: CGFloat = 0
     /// Minimum height when collapsed
@@ -61,19 +61,19 @@ class JounalCollectionCell: UICollectionViewCell {
     private let goalShrinkRange: CGFloat = kFitWidth(80)
     /// Minimum scale of the circle when collapsed
     private let circleMinScale: CGFloat = 0.7
-    
-    
+
+
     override init(frame: CGRect) {
 //        selectMealsIndex = 0
         super.init(frame: frame)
         self.backgroundColor = .clear
         self.contentView.backgroundColor = .clear
-        
+
         initUI()
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(reloadStreakMsg), name: NSNotification.Name(rawValue: "reloadStreakMsg"), object: nil)
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
 //        tableView.bringSubviewToFront(addFirstFoodsAlertVm)
@@ -100,7 +100,7 @@ class JounalCollectionCell: UICollectionViewCell {
     func prepareForLogoutRelease() {
         DLLog(message: "JounalCollectionCell prepareForLogoutRelease \(queryDay)")
         isPreparingForLogoutRelease = true
-        NotificationCenter.default.removeObserver(self)
+        removeJournalCellNotifications()
         idleWorkItem?.cancel()
         idleWorkItem = nil
 
@@ -123,6 +123,7 @@ class JounalCollectionCell: UICollectionViewCell {
         tableView.delegate = nil
         tableView.dataSource = nil
         tableView.visibleCells.forEach { cell in
+            NotificationCenter.default.removeObserver(cell)
             if let cell = cell as? JournalTableViewCell {
                 cell.addBlock = nil
                 cell.deleteBlock = nil
@@ -152,6 +153,11 @@ class JounalCollectionCell: UICollectionViewCell {
         }
         tableView.reloadData()
         tableView.removeFromSuperview()
+    }
+
+    private func removeJournalCellNotifications() {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "reloadStreakMsg"), object: nil)
+        NotificationCenter.default.removeObserver(self)
     }
 
     lazy var goalVm: LogsNaturalGoalVM = {
@@ -220,10 +226,10 @@ class JounalCollectionCell: UICollectionViewCell {
         let vi = UIView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.goalVm.frame.maxY))
         vi.backgroundColor = .clear
         vi.isUserInteractionEnabled = true
-        
+
 //        vi.addSubview(editSelectAllVm)
         vi.addSubview(goalVm)
-        
+
         return vi
     }()
     lazy var remarkVm : LogsRemarkNewVM = {
@@ -265,7 +271,7 @@ class JounalCollectionCell: UICollectionViewCell {
         let vm = GuideAddFirstFoodsAlertVM.init(frame: CGRect(x: SCREEN_WIDHT - kFitWidth(160), y: y, width: 0, height: 0))
         return vm
     }()
-    
+
     private var idleWorkItem: DispatchWorkItem?
     private var hasShownFirstFoodsGuide = UserDefaults.standard.string(forKey: guide_add_first_foods) == "1"
 }
@@ -275,16 +281,16 @@ extension JounalCollectionCell{
         contentView.addSubview(tableView)
         contentView.addSubview(editHeadView)
         contentView.addSubview(addFirstFoodsAlertVm)
-        
+
 //        tableView.insertSubview(addFirstFoodsAlertVm, aboveSubview: editHeadView)
 //        tableView.bringSubviewToFront(addFirstFoodsAlertVm)
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: { [weak self] in
             guard let self = self else { return }
 //            self.addFirstFoodsAlertVm.showSelf()
 //            self.tableView.bringSubviewToFront(self.addFirstFoodsAlertVm)
             self.contentView.bringSubviewToFront(self.addFirstFoodsAlertVm)
-            
+
         })
 //        startIdleTimer()
 //        goalOriginalHeight = goalVm.frame.height
@@ -307,13 +313,13 @@ extension JounalCollectionCell{
                 selectFitnessType.append(fitnessType)
             }
         }
-        
+
         return selectFitnessType
     }
-    
+
     func updateFitnessTypes(_ arr: [String]) {
         DLLog(message: "fitnessTypeAlertVm:\(arr)")
-        
+
         let fitnessType = arr.count > 0 ? arr.first : ""
         self.updateFitnessBlock?(fitnessType ?? "")
         let fitnessLabel = WHUtils.getJSONStringFromArray(array: arr as NSArray)
@@ -331,7 +337,7 @@ extension JounalCollectionCell{
         idleWorkItem?.cancel()
         let work = DispatchWorkItem { [weak self] in
             guard let self = self else { return }
-            
+
             if UserDefaults.standard.string(forKey: guide_total) == nil {
                 self.startIdleTimer()
                 return
@@ -352,7 +358,7 @@ extension JounalCollectionCell{
         super.touchesBegan(touches, with: event)
         resetIdleTimer()
     }
-    
+
     private func hasFoods() -> Bool {
         for item in mealsArray {
             if let arr = item as? NSArray, arr.count > 0 {
@@ -371,7 +377,7 @@ extension JounalCollectionCell{
         var headerHeight = editHeadView.frame.maxY
         var bottomHeight = kFitWidth(0)
         if #available(iOS 26.0, *) {
-            
+
         }else{
             bottomHeight = WHUtils().getTabbarHeight()
         }
@@ -381,7 +387,7 @@ extension JounalCollectionCell{
                                  height: contentView.bounds.height - headerHeight - bottomHeight)
         addFirstFoodsAlertVm.frame.origin.y = goalVm.frame.maxY - kFitWidth(20) - WHUtils().getNavigationBarHeight()
     }
-    
+
     private func updateFirstFoodsAlert() {
 //        tableView.bringSubviewToFront(addFirstFoodsAlertVm)
         contentView.bringSubviewToFront(addFirstFoodsAlertVm)
@@ -421,14 +427,14 @@ extension JounalCollectionCell{
     }
     func setQueryDate(date:String,isEdit:Bool, shouldRequestLogDetail: Bool = true) {
         self.goalVm.refreshHiddenSurveyButton()
-        
+
         goalOriginalHeight = goalVm.frame.height
         goalMinHeight = goalOriginalHeight - kFitWidth(60)
         currentGoalHeight = goalOriginalHeight
 
 //        let editSelectAllVmFrame = editSelectAllVm.frame
 //        editSelectAllVm.frame = CGRect.init(x: editSelectAllVmFrame.origin.x, y: self.goalVm.frame.maxY, width: editSelectAllVmFrame.width, height: editSelectAllVmFrame.height)
-        
+
         self.isEdit = isEdit
         self.queryDay = date
         self.editSelectAllVm.selecImgView.setImgLocal(imgName: "logs_edit_all_normal")
@@ -448,7 +454,7 @@ extension JounalCollectionCell{
         goalVm.changeBgAlpha(offsetY: 0)
         goalVm.winnerVm.updateUI(dict: UserInfoModel.shared.streakDict)
         goalVm.winnerPopView.updateUI(dict: UserInfoModel.shared.streakDict)
-        
+
 //        self.tableView.bringSubviewToFront(self.addFirstFoodsAlertVm)
         contentView.bringSubviewToFront(self.addFirstFoodsAlertVm)
 //        self.dealData()
@@ -473,7 +479,7 @@ extension JounalCollectionCell{
             LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
             logsModel.isUpload = false
         }
-        
+
         let foodsArray = NSMutableArray.init(array: mealsArray[self.selectMealsIndex] as? NSArray ?? [])
         if self.selectFoodsIndex == -1 {
             if foodsMsg.stringValueForKey(key: "fname") == "快速添加"{
@@ -482,32 +488,32 @@ extension JounalCollectionCell{
                 var hasData = false
                 for i in 0..<foodsArray.count{
                     let dict = foodsArray[i]as? NSDictionary ?? [:]
-                    
+
                     let dictFid = dict.stringValueForKey(key: "fid")
-                    
+
                     if dictFid != "-1" &&  dictFid == foodsMsg.stringValueForKey(key: "fid") && (dict["spec"]as? String ?? "" == foodsMsg["spec"]as? String ?? "" || (dict["spec"]as? String ?? "" == "" && foodsMsg["spec"]as? String ?? "" == "g")){
                         let foodsDict = NSMutableDictionary.init(dictionary: dict)
                         let specNum = foodsMsg.doubleValueForKey(key: "qty")
                         foodsDict.setValue(foodsMsg["foods"]as? NSDictionary ?? [:], forKey: "foods")
-                        
+
                         if dict.stringValueForKey(key: "state") == "1"{
                             var dictNum = dict.doubleValueForKey(key: "qty")
                             if dictNum == 0 {
                                 dictNum = dict.doubleValueForKey(key: "weight")
                             }
                             let num = dictNum + specNum
-                            
+
                             foodsDict.setValue("\(num)".replacingOccurrences(of: ",", with: "."), forKey: "qty")
                             foodsDict.setValue("\(num)".replacingOccurrences(of: ",", with: "."), forKey: "specNum")
-                            
+
                             let caloriesNumber = foodsMsg.doubleValueForKey(key: "caloriesNumber")
                             let calories = caloriesNumber/specNum * num
-                            
+
                             let calori = calories
                             let carbo = foodsDict.doubleValueForKey(key: "carbohydrate") + foodsMsg.doubleValueForKey(key: "carbohydrateNumber")
                             let protein = foodsDict.doubleValueForKey(key: "protein") + foodsMsg.doubleValueForKey(key: "proteinNumber")
                             let fat = foodsDict.doubleValueForKey(key: "fat") + foodsMsg.doubleValueForKey(key: "fatNumber")
-                            
+
                             foodsDict.setValue("\(WHUtils.convertStringToStringNoDigit("\(calori)") ?? "0")".replacingOccurrences(of: ",", with: "."), forKey: "calories")
                             foodsDict.setValue("\(carbo)".replacingOccurrences(of: ",", with: "."), forKey: "carbohydrate")
                             foodsDict.setValue("\(protein)".replacingOccurrences(of: ",", with: "."), forKey: "protein")
@@ -520,7 +526,7 @@ extension JounalCollectionCell{
                             let carbo = foodsMsg.doubleValueForKey(key: "carbohydrateNumber")
                             let protein = foodsMsg.doubleValueForKey(key: "proteinNumber")
                             let fat = foodsMsg.doubleValueForKey(key: "fatNumber")
-                            
+
                             foodsDict.setValue("\(WHUtils.convertStringToStringNoDigit("\(calori)") ?? "0")".replacingOccurrences(of: ",", with: "."), forKey: "calories")
                             foodsDict.setValue("\(carbo)".replacingOccurrences(of: ",", with: "."), forKey: "carbohydrate")
                             foodsDict.setValue("\(protein)".replacingOccurrences(of: ",", with: "."), forKey: "protein")
@@ -538,7 +544,7 @@ extension JounalCollectionCell{
 //                            self.addFoods(foodsMsg:foodsMsg)
                             return
                         }
-                        
+
                         break
                     }
                 }
@@ -557,9 +563,9 @@ extension JounalCollectionCell{
             }else{
                 for i in 0..<foodsArray.count{
                     let dict = foodsArray[i]as? NSDictionary ?? [:]
-                    
+
                     var dictFid = dict["fid"]as? String ?? "\(dict["fid"]as? Int ?? -1)"
-                    
+
                     if dictFid != "-1" &&  dictFid == foodsMsg["fid"]as? String ?? "\(foodsMsg["fid"]as? Int ?? -2)" && dict["spec"]as? String ?? "" == foodsMsg["spec"]as? String ?? ""{
                         let foodsDict = NSMutableDictionary.init(dictionary: dict)
                         foodsDict.setValue(foodsMsg["foods"]as? NSDictionary ?? [:], forKey: "foods")
@@ -588,25 +594,25 @@ extension JounalCollectionCell{
                                 dictNum = Double(((dict["qty"]as? String ?? "0") as NSString).intValue)
                             }
                             let num = dictNum + specNum
-                            
+
                             foodsDict.setValue("\(num)".replacingOccurrences(of: ",", with: "."), forKey: "qty")
                             foodsDict.setValue("\(num)".replacingOccurrences(of: ",", with: "."), forKey: "specNum")
-                            
+
                             let caloriesNumber = foodsMsg.doubleValueForKey(key: "caloriesNumber")
                             let calories = caloriesNumber/specNum * num
-                            
+
                             let calori = calories
-                            
+
                             let carbo = foodsDict.doubleValueForKey(key: "carbohydrate") + foodsMsg.doubleValueForKey(key: "carbohydrateNumber")
                             let protein = foodsDict.doubleValueForKey(key: "protein") + foodsMsg.doubleValueForKey(key: "proteinNumber")
                             let fat = foodsDict.doubleValueForKey(key: "fat") + foodsMsg.doubleValueForKey(key: "fatNumber")
-                            
+
                             foodsDict.setValue("\(WHUtils.convertStringToStringNoDigit("\(calori)") ?? "0")".replacingOccurrences(of: ",", with: "."), forKey: "calories")
                             foodsDict.setValue("\(carbo)".replacingOccurrences(of: ",", with: "."), forKey: "carbohydrate")
                             foodsDict.setValue("\(protein)".replacingOccurrences(of: ",", with: "."), forKey: "protein")
                             foodsDict.setValue("\(fat)".replacingOccurrences(of: ",", with: "."), forKey: "fat")
                             foodsDict.setValue("1", forKey: "state")
-                            
+
                             if foodsArray.count > i{
                                 if foodsMsg.doubleValueForKey(key: "specNum") > 0{
                                     foodsArray.replaceObject(at: i, with: foodsDict)
@@ -637,13 +643,13 @@ extension JounalCollectionCell{
                 }
             }
         }
-        
+
         if mealsArray.count > self.selectMealsIndex{
             if foodsMsg.stringValueForKey(key: "fname") != "快速添加" && foodsMsg.stringValueForKey(key: "fid").count > 0{
                 WHUtils().sendAddFoodsForCountRequest(fids: [foodsMsg.stringValueForKey(key: "fid")])
                 WHUtils().sendAddHistoryFoods(foodsMsgArray: [foodsMsg])
             }
-            
+
             mealsArray.replaceObject(at: self.selectMealsIndex, with: foodsArray)
 //            saveDataToSqlDB()
 //            self.tableView.reloadData()
@@ -652,7 +658,8 @@ extension JounalCollectionCell{
 //            self.checkPushAuthAfterSecondMeal()
             if shouldUpload {
                 saveDataToSqlDB()
-                self.tableView.reloadData()
+//                self.tableView.reloadData()
+                self.refreshSingleMealRow(mealIndex: self.selectMealsIndex)
                 updateFirstFoodsAlert()
                 self.calculateNaturalNum()
                 self.checkPushAuthAfterSecondMeal()
@@ -678,6 +685,32 @@ extension JounalCollectionCell{
         self.calculateNaturalNum()
         self.checkPushAuthAfterSecondMeal()
     }
+
+    private func refreshSingleMealRow(mealIndex:Int) {
+        guard mealIndex >= 0,
+              mealIndex < UserInfoModel.shared.mealsNumber,
+              tableView.numberOfSections > mealsSectionIndex,
+              tableView.numberOfRows(inSection: mealsSectionIndex) > mealIndex else {
+            return
+        }
+
+        let indexPath = IndexPath(row: mealIndex, section: mealsSectionIndex)
+        let foodsArr = mealsArray.count > mealIndex ? (mealsArray[mealIndex] as? NSArray ?? []) : []
+        if let cell = tableView.cellForRow(at: indexPath) as? JournalTableViewCell {
+            cell.updateUI(array: foodsArr,
+                          isEdit: self.isEdit,
+                          isToday: self.queryDay == Date().todayDate,
+                          sn: "\(mealIndex)",
+                          queryDate: self.queryDay)
+            cell.titleLabel.text = "第 \(mealIndex+1) 餐"
+            cell.updateMealsTime(mealsDict: self.currentMealTimeMsg, mealsIndex: mealIndex+1)
+            tableView.beginUpdates()
+            tableView.endUpdates()
+        }else{
+            tableView.reloadRows(at: [indexPath], with: .none)
+        }
+    }
+
     private func checkPushAuthAfterSecondMeal() {
         let key = UserDefaults.AccountKeys.push_authori_second_foods.rawValue
         if UserDefaults.standard.string(forKey: key) == "1" { return }
@@ -690,7 +723,7 @@ extension JounalCollectionCell{
             }
         }
         if count < 2 { return }
-        
+
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             if settings.authorizationStatus != .authorized {
                 UserInfoModel.shared.showNotifiAuthoriAlertVM = true
@@ -702,7 +735,7 @@ extension JounalCollectionCell{
                 }
             }
         }
-        
+
         UserDefaults.standard.setValue("1", forKey: key)
     }
 }
@@ -711,31 +744,31 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
     private var hasAICoachSection: Bool {
         UserInfoModel.shared.show_ai_coach_status
     }
-    
+
     private var mealsSectionIndex: Int {
         hasAICoachSection ? 1 : 0
     }
-    
+
     private var waterSectionIndex: Int? {
         UserInfoModel.shared.show_water_status ? mealsSectionIndex + 1 : nil
     }
-    
+
     private var remarkSectionIndex: Int {
         mealsSectionIndex + 1 + (UserInfoModel.shared.show_water_status ? 1 : 0)
     }
-    
+
     private var naturalDetailSectionIndex: Int {
         remarkSectionIndex + (UserInfoModel.shared.abTestModel.diet_log_note == .A ? 1 : 0)
     }
-    
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "closeEditStatus"), object: nil)
         self.goalVm.winnerPopView.closeSelfAction()
         self.addFirstFoodsAlertVm.closeSelfAction()
-        
+
         let offsetY = scrollView.contentOffset.y
         self.offsetChangeBlock?(offsetY)
-        
+
         if isEdit {
            let minY = goalVm.frame.maxY
            let headerHeight = editSelectAllVm.frame.height
@@ -745,21 +778,21 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                editSelectAllVm.frame.origin.y = minY
            }
        }
-        
+
         goalVm.changeBgAlpha(offsetY: offsetY)
         resetIdleTimer()
     }
     func numberOfSections(in tableView: UITableView) -> Int {
         var sectionNum = 1
-        
+
         if hasAICoachSection {
             sectionNum += 1
         }
-        
+
         if UserInfoModel.shared.show_water_status{
             sectionNum += 1
         }
-        
+
         if UserInfoModel.shared.abTestModel.diet_log_note == .A{
             sectionNum += 1
         }
@@ -791,7 +824,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
             return cell
         } else if indexPath.section == mealsSectionIndex {
             let cell = tableView.dequeueReusableCell(withIdentifier: "JournalTableViewCell") as? JournalTableViewCell
-            
+
             if self.mealsArray.count > 0 && self.mealsArray.count > indexPath.row{
                 let foodsArr = self.mealsArray[indexPath.row]as? NSArray ?? []
                 cell?.updateUI(array: foodsArr,isEdit:self.isEdit,isToday: self.queryDay==Date().todayDate,sn: "\(indexPath.row)", queryDate: self.queryDay)
@@ -803,7 +836,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
             cell?.updateMealsTime(mealsDict: self.currentMealTimeMsg,mealsIndex:indexPath.row+1)
     //        let mealsTime = self.currentDayMsg.stringValueForKey(key: "mealTimeSn1")
             cell?.controller = UIApplication.topViewController() ?? self.controller ?? UIViewController()
-            
+
             cell?.timeChangeBlock = {(time)in
                 self.showTimeAlertBlock?(self, time, indexPath.row + 1, self.currentDayMsg.stringValueForKey(key: "sdate"))
             }
@@ -885,7 +918,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                 cell?.updateContent(remark: self.currentDayMsg.stringValueForKey(key: "notes"),
                                     notesTag: self.currentDayMsg.stringValueForKey(key: "notesTag"),
                                     queryDay: self.queryDay)
-                
+
                 cell?.remarkBlock = {()in
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "cancelEditStatus"), object: nil)
                     self.showRemarkAlertBlock?(self)
@@ -899,10 +932,10 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                 cell?.detalOldBlock = {()in
                     self.naturalDetailOldTapAction()
                 }
-                
+
                 return cell ?? JournalNaturalDetailCell()
             }
-            
+
             let cell = UITableViewCell()
             cell.backgroundColor = .clear
             cell.selectionStyle = .none
@@ -950,11 +983,11 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
             return UITableView.automaticDimension
         }
     }
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 //        if section == 0 {
 //            var headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeaderViewIdentifier")
-//            
+//
 //            if headerView == nil{
 //                headerView = UITableViewHeaderFooterView(reuseIdentifier: "HeaderViewIdentifier")
 //                headerView?.addSubview(self.editHeadView)
@@ -998,7 +1031,7 @@ extension JounalCollectionCell {
     func handleAICoachTap() {
         aiCoachTapBlock?()
     }
-    
+
     func applyRemark(models: [TAG_MODEL], text: String) {
         let notesTagArray = NSMutableArray()
         models.forEach {
@@ -1007,26 +1040,26 @@ extension JounalCollectionCell {
             }
         }
         DLLog(message: "notesTagArray:\(notesTagArray)")
-        
+
         let notesTag = WHUtils.getJSONStringFromArray(array: notesTagArray)
         let msgDict = NSMutableDictionary(dictionary: self.currentDayMsg)
         msgDict.setValue("\(notesTag)", forKey: "notesTag")
         msgDict.setValue("\(text)", forKey: "notes")
         self.currentDayMsg = msgDict
         self.remarkVm.updateContent(text: text)
-        
+
         if UserInfoModel.shared.abTestModel.diet_log_note == .A {
             let remarkSection = self.remarkSectionIndex
             self.tableView.reloadRows(at: [IndexPath(row: 0, section: remarkSection)], with: .none)
         }
-        
+
         self.logsModel.isUpload = false
         LogsSQLiteManager.getInstance().insertNotes(sDate: self.queryDay, notestr: text)
         LogsSQLiteManager.getInstance().insertNotesTag(sDate: self.queryDay, notesTag: notesTag)
         LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
         LogsSQLiteUploadManager().uploadLogsBySDate(sdate: self.queryDay)
     }
-    
+
     func handleFoodsTap(dict: NSDictionary) {
         if dict["fname"] as? String ?? "" == "快速添加" {
             let vc = FoodsCreateFastVC()
@@ -1034,17 +1067,17 @@ extension JounalCollectionCell {
             controller?.navigationController?.pushViewController(vc, animated: true)
             return
         }
-        
+
         let foodsDict = dict["foods"] as? NSDictionary ?? [:]
-        
+
         if foodsDict.stringValueForKey(key: "fname").count > 0 {
             let vc = FoodsMsgDetailsVC()
             vc.sourceType = .logs
             vc.foodsDetailDict = foodsDict
-            
+
             DLLog(message: "\(dict)")
             let qtyStr = dict.stringValueForKey(key: "qty")
-            
+
             if qtyStr == "" || qtyStr.count == 0 || qtyStr == "0.0" || qtyStr == "0" {
                 vc.specNum = dict.stringValueForKey(key: "weight")
                 vc.specName = "g"
@@ -1052,13 +1085,13 @@ extension JounalCollectionCell {
                 vc.specNum = dict.stringValueForKey(key: "qty")
                 vc.specName = dict["spec"] as? String ?? "g"
             }
-            
+
             if dict.stringValueForKey(key: "state") != "1" && dict.stringValueForKey(key: "state") != "1.0" {
                 vc.confirmButton.setTitle("用餐", for: .normal)
             } else {
                 vc.confirmButton.setTitle("保存", for: .normal)
             }
-            
+
             controller?.navigationController?.pushViewController(vc, animated: true)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 vc.deleteButton.isHidden = true
@@ -1091,7 +1124,7 @@ extension JounalCollectionCell{
         self.editSelectAllVm.selecImgView.setImgLocal(imgName: "logs_edit_all_normal")
         self.editSelectAllVm.isHidden = true
         self.editHeadView.frame = self.goalVm.frame
-        
+
         tableView.reloadData()
         calculateNaturalNum()
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "cancelEditStatus"), object: nil)
@@ -1105,7 +1138,7 @@ extension JounalCollectionCell{
         logsModel = LogsSQLiteManager.getInstance().getLogsByDate(sDate: self.queryDay)!
         let sportDict = SportDataSQLiteManager.getInstance().querySportsData(sDate: self.queryDay)
         DLLog(message: "SportDataSQLiteManager:\(sportDict)")
-        
+
         let dict = NSMutableDictionary(dictionary: logsModel.modelToDict())
         if UserInfoModel.shared.statSportDataToTarget == "1"{
             dict.setValue("\(sportDict.stringValueForKey(key: "sportCalories"))", forKey: "sportCalories")
@@ -1119,7 +1152,7 @@ extension JounalCollectionCell{
 //            sendLogsDetailRequest()
 //        }else{
             goalVm.updateUI(dict: self.currentDayMsg,isUpload: false)
-            
+
             mealsArray.removeAllObjects()
             mealsArray.addObjects(from: (self.currentDayMsg["foods"]as? NSArray ?? []) as! [Any])
             if mealsArray.count == 0 {
@@ -1129,12 +1162,12 @@ extension JounalCollectionCell{
         updateFirstFoodsAlert()
         self.remarkVm.updateContent(text: self.currentDayMsg["notes"]as? String ?? "")
 //        }
-        
+
         if self.queryDay == Date().nextDay(days: 0){
             let arr = NSArray(array: mealsArray)
             WidgetUtils().dealCurrentMealsDataForWidget(mealsArray: arr)
         }
-        
+
 //        LogsSQLiteUploadManager().saveLocalNaturalData(dict: currentDayMsg)
         if shouldRequestLogDetail {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
@@ -1174,7 +1207,7 @@ extension JounalCollectionCell{
             let carboTarget = Float(currentDayMsg.stringValueForKey(key: "carbohydrateden")) ?? 0
             let proteinTarget = Float(currentDayMsg.stringValueForKey(key: "proteinden")) ?? 0
             let fatTarget = Float(currentDayMsg.stringValueForKey(key: "fatden")) ?? 0
-            
+
             if carboTarget > 0 || proteinTarget > 0 || fatTarget > 0{
                 UserDefaults.set(value: ["calories":"\(caloriTarget)",
                                          "carbohydrate":"\(Int(carboTarget.rounded()))",
@@ -1190,17 +1223,17 @@ extension JounalCollectionCell{
         var serverETime = dict.stringValueForKey(key: "etime")
         //本地etime 小于 服务器的etime ，说明本地数据需要更新
         logsModel = LogsSQLiteManager.getInstance().getLogsByDate(sDate: self.queryDay)!
-        
+
         let waterDict = dict["dietLogWater"]as? NSDictionary ?? [:]
         let serverWaterETime = waterDict.stringValueForKey(key: "etime").replacingOccurrences(of: "T", with: " ")
-        
+
         let dictTemp = NSMutableDictionary(dictionary: logsModel.modelToDict())
         if UserInfoModel.shared.statSportDataToTarget == "1"{
             dictTemp.setValue(dict.stringValueForKey(key: "sportCalories"), forKey: "sportCalories")
         }else{
             dictTemp.setValue("", forKey: "sportCalories")
         }
-        
+
         if serverWaterETime.count > 0 && (logsModel.waterETime == "" || Date().judgeMin(firstTime: logsModel.waterETime, secondTime: serverWaterETime)) {
             dictTemp.setValue(waterDict.stringValueForKey(key: "qty"), forKey: "waterNum")
             dictTemp.setValue("1", forKey: "waterUpload")
@@ -1226,7 +1259,7 @@ extension JounalCollectionCell{
             //TODO:  || logsModel.etime == serverETime  因为同时提交多种食物的时候，后台数据处理会出错
             // TODO:  通过餐食/食谱等功能添加食物时，先将本地数据库更新，再一起提交日志到后台
 //            let waterDict = dict["dietLogWater"]as? NSDictionary ?? [:]
-            
+
             let msgDict = NSMutableDictionary(dictionary: dict)
             msgDict.setValue(waterDict.stringValueForKey(key: "qty"), forKey: "waterNum")
             msgDict.setValue("1", forKey: "waterUpload")
@@ -1244,7 +1277,7 @@ extension JounalCollectionCell{
                     break
                 }
             }
-            
+
             var fitnessLabel = msgDict.stringValueForKey(key: "fitnessLabel")
             if fitnessLabelArray.count > 0{
                 fitnessLabel = WHUtils.getJSONStringFromArray(array: fitnessLabelArray)
@@ -1256,7 +1289,7 @@ extension JounalCollectionCell{
                 }
                 self.updateFitnessBlock?(fitnessLabel)
             }
-            
+
             self.currentDayMsg = msgDict
             self.currentMealTimeMsg = dict
             goalVm.updateUI(dict: self.currentDayMsg,isUpload: false)
@@ -1270,11 +1303,11 @@ extension JounalCollectionCell{
             setTodayGoal()
             self.tableView.reloadData()
             updateFirstFoodsAlert()
-            
+
             if self.currentDayMsg.stringValueForKey(key: "etime") == "" && (WHUtils.getJSONStringFromArray(array: self.currentDayMsg["foods"]as? NSArray ?? []) == "[]" || WHUtils.getJSONStringFromArray(array: self.currentDayMsg["foods"]as? NSArray ?? []) == ""){
                 return
             }
-            
+
             LogsSQLiteManager.getInstance().updateLogs(sDate: self.queryDay,
                                                        eTime: serverETime,
                                                        calori: self.currentDayMsg.stringValueForKey(key: "calories"),
@@ -1318,7 +1351,7 @@ extension JounalCollectionCell{
     }
     func dealParamForRequest() {
         let param = NSMutableArray()
-        
+
         let dict = NSMutableDictionary(dictionary: self.currentDayMsg)
         let caloriesTotal = WHUtils.fixedFractionString(self.goalVm.caloriCircleVm.currentNumFloat, fractionDigits: 0)
         let carbohydrateTotal = WHUtils.fixedFractionString(self.goalVm.carboCircleVm.currentNumFloat, fractionDigits: 3)
@@ -1333,10 +1366,10 @@ extension JounalCollectionCell{
         dict.setValue(proteinTotal, forKey: "proteinDouble")
         dict.setValue(fatTotal, forKey: "fatDouble")
         self.currentDayMsg = dict
-        
+
         for i in 0..<self.mealsArray.count{
             let foodsArray = NSMutableArray.init(array: self.mealsArray[i]as? NSArray ?? [])
-            
+
             for j in 0..<foodsArray.count{
                 let foodsDi = foodsArray[j]as? NSDictionary ?? [:]
                 let dic = NSMutableDictionary.init(dictionary: foodsDi)
@@ -1352,7 +1385,7 @@ extension JounalCollectionCell{
                 }
                 foodsArray.replaceObject(at: j, with: dic)
             }
-            
+
             param.add(foodsArray)
         }
         self.mealsArray = param
@@ -1363,10 +1396,10 @@ extension JounalCollectionCell{
         var carboTotal = Double(0)
         var proteinTotal = Double(0)
         var fatTotal = Double(0)
-        
+
         for i in 0..<mealsArray.count{
             let foodsArray = NSMutableArray.init(array: mealsArray[i]as? NSArray ?? [])
-            
+
             for j in 0..<foodsArray.count{
                 let foodsDi = foodsArray[j]as? NSDictionary ?? [:]
                 let dic = NSMutableDictionary.init(dictionary: foodsDi)
@@ -1381,10 +1414,10 @@ extension JounalCollectionCell{
                     proteinTotal += dic.doubleValueForKey(key: "protein")
                     fatTotal += dic.doubleValueForKey(key: "fat")
                 }
-                
+
                 foodsArray.replaceObject(at: j, with: dic)
             }
-            
+
             param.add(foodsArray)
         }
         self.mealsArray = param
@@ -1420,7 +1453,7 @@ extension JounalCollectionCell{
                           "fitnessLabel":self.currentDayMsg.stringValueForKey(key: "fitnessLabel"),
                      "notes":self.currentDayMsg.stringValueForKey(key: "notes"),
                           "foods":WHUtils.getJSONStringFromArray(array: param)] as [String : Any]
-        
+
         LogsSQLiteUploadManager().dealLogsDataForUpload(dict: uploadDict as NSDictionary)
 //        LogsSQLiteUploadManager().sendUpdateLogsMealsTimeRequest(sDate: self.queryDay)
         LogsMealsAlertSetManage().refreshClockAlertMsg()
@@ -1444,7 +1477,7 @@ extension JounalCollectionCell{
                 if fidStr == "-1"{
                     fidStr = dict["fid"]as? String ?? "-1"
                 }
-                
+
                 var foodsMsgIdStr = "\(foodsMsg["fid"]as? Int ?? -1)"
                 if foodsMsgIdStr == "-1"{
                     foodsMsgIdStr = foodsMsg["fid"]as? String ?? "-1"
@@ -1471,10 +1504,10 @@ extension JounalCollectionCell{
         LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
         logsModel.isUpload = false
         foodsArray.removeObject(at: index)
-        
+
         if mealsArray.count > self.selectMealsIndex{
             mealsArray.replaceObject(at: self.selectMealsIndex, with: foodsArray)
-            
+
             saveDataToSqlDB()
             self.tableView.reloadData()
             updateFirstFoodsAlert()
@@ -1490,18 +1523,18 @@ extension JounalCollectionCell{
         let foodsDict = NSMutableDictionary.init(dictionary: foodsArray[cellIndex]as? NSDictionary ?? [:])
         foodsDict.setValue("1", forKey: "state")
         foodsArray.replaceObject(at: cellIndex, with: foodsDict)
-        
+
         WHUtils().sendAddFoodsForCountRequest(fids: [foodsDict.stringValueForKey(key: "fid")])
         WHUtils().sendAddHistoryFoods(foodsMsgArray: [foodsDict])
         UserDefaults.saveFoods(foodsDict: foodsDict)
-        
+
         mealsArray.replaceObject(at: self.selectMealsIndex, with: foodsArray)
         logsModel.isUpload = false
-        
+
         let msgDict = NSMutableDictionary.init(dictionary: self.currentDayMsg)
         msgDict.setValue(mealsArray, forKey: "foods")
         self.currentDayMsg = msgDict
-        
+
         saveDataToSqlDB()
         tableView.reloadData()
         goalVm.updateUI(dict: self.currentDayMsg)
@@ -1517,11 +1550,11 @@ extension JounalCollectionCell{
         }
         foodsArray.replaceObject(at: cellIndex, with: foodsDict)
         mealsArray.replaceObject(at: self.selectMealsIndex, with: foodsArray)
-        
+
         tableView.reloadData()
         judgeAllSelectStatus()
     }
-    
+
     //某一餐  全选或取消全选
     func mealsSelectAction(isSelect:Bool) {
         let foodsArray = NSMutableArray(array: mealsArray[self.selectMealsIndex] as? NSArray ?? [])
@@ -1548,7 +1581,7 @@ extension JounalCollectionCell{
             mealsArray.replaceObject(at: i, with: foodsArray)
         }
         tableView.reloadData()
-        
+
         if isSelect{
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "editFoodsHasSelect"), object: nil)
         }else{
@@ -1567,12 +1600,12 @@ extension JounalCollectionCell{
                     break
                 }
             }
-            
+
             if isAllSelect == false{
                 break
             }
         }
-        
+
         self.editSelectAllVm.setSelectStatus(isAllSelect: isAllSelect)
         self.judgeHasFoodsSelect()
     }
@@ -1587,7 +1620,7 @@ extension JounalCollectionCell{
                     break
                 }
             }
-            
+
             if hasSelect == true{
                 break
             }
@@ -1627,7 +1660,7 @@ extension JounalCollectionCell{
     func sendUpdateNotesReqeust(text: String) {
         let param = ["sdate":"\(self.currentDayMsg["sdate"]as? String ?? "\(self.queryDay)")",
                      "notes":"\(text)"]
-        
+
         WHNetworkUtil.shareManager().POST(urlString: URL_User_logs_update_notes, parameters: param as [String : AnyObject]) { responseObject in
             DLLog(message: responseObject)
             LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: true)
@@ -1641,7 +1674,7 @@ extension JounalCollectionCell{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendWaterSynRequest:\(dataObj)")
-            
+
             LogsSQLiteManager.shared.updateWaterUploadStatus(sDate: self.queryDay,
                                                              update: true,
                                                              eTime: dataObj.stringValueForKey(key: "etime").replacingOccurrences(of: "T", with: " "))
@@ -1661,7 +1694,7 @@ extension JounalCollectionCell{
         DLLog(message: "sendNextMealAdviceConfigRequest:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_config_set, parameters: param as [String : AnyObject],isNeedToast: true,vc: self.controller) { responseObject in
             DLLog(message: "sendNextMealAdviceConfigRequest:\(responseObject)")
-           
+
             UserInfoModel.shared.show_next_advice = statu
 //            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
             self.tableView.reloadRows(at: [indexPath], with: .top)
@@ -1675,7 +1708,7 @@ extension JounalCollectionCell{
                      "caloriesDen":"\(dict.stringValueForKey(key: "calories"))",
                      "carbLabel":"\(dict.stringValueForKey(key: "carbLabel"))",
                      "sdate":"\(date)"]
-        
+
         DLLog(message: "sendUpdateGoalRequest:(param)\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_User_logs_goal_update, parameters: param as [String:AnyObject]) { responseObject in
             DLLog(message: "sendUpdateGoalRequest:(responseObject)\(responseObject)")
@@ -1712,13 +1745,13 @@ extension JounalCollectionCell{
                 return editSelectAllVm.tapTargetView
             }
         }
-        
+
         var view = super.hitTest(point, with: event)
         for vi in self.subviews{
             let tp = vi.convert(point, from: self)
             let centerImgFrame = self.goalVm.winnerPopView.frame
             if CGRectContainsPoint(centerImgFrame, tp){
-                
+
             }else{
                 self.goalVm.winnerPopView.closeSelfAction()
             }

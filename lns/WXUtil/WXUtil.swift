@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum ShareType {
     case session
@@ -46,6 +47,50 @@ class WXUtil {
             
         }
         WXApi.send(req)
+    }
+
+    @discardableResult
+    func shareFile(fileURL: URL,
+                   title: String,
+                   description: String,
+                   to scene: ShareType = .session,
+                   completion: ((Bool) -> Void)? = nil) -> Bool {
+        guard WXApi.isWXAppInstalled(), WXApi.isWXAppSupport() else {
+            completion?(false)
+            return false
+        }
+
+        guard let fileData = try? Data(contentsOf: fileURL), fileData.count <= 10 * 1024 * 1024 else {
+            completion?(false)
+            return false
+        }
+
+        let message = WXMediaMessage()
+        message.title = title
+        message.description = description
+
+        let fileObject = WXFileObject()
+        fileObject.fileExtension = fileURL.pathExtension.isEmpty ? "xls" : fileURL.pathExtension
+        fileObject.fileData = fileData
+        message.mediaObject = fileObject
+
+        let req = SendMessageToWXReq()
+        req.bText = false
+        req.message = message
+
+        switch scene {
+        case .session:
+            req.scene = Int32(WXSceneSession.rawValue)
+        case .timeline:
+            req.scene = Int32(WXSceneTimeline.rawValue)
+        case .favorite:
+            req.scene = Int32(WXSceneFavorite.rawValue)
+        }
+
+        WXApi.send(req) { success in
+            completion?(success)
+        }
+        return true
     }
     
     /*

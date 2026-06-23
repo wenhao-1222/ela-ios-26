@@ -15,16 +15,21 @@ class AppearanceOptionsAlertVM: UIView {
     
     /// 蒙层目标透明度：浅色 0.15，深色 0.85
     private var targetDimAlpha: CGFloat {
-        return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+        return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.55
     }
+    private let appearanceTransitionDuration: TimeInterval = 0.25
+    private var isDismissing = false
+    private var appearanceSnapshotViews: [UIView] = []
+
     // 主题变更时（例如从浅色切到深色）同步调整蒙层透明度
    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
        super.traitCollectionDidChange(previousTraitCollection)
        if #available(iOS 13.0, *),
-          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle,
-          !isHidden {
-           UIView.animate(withDuration: 0.2) {
-               self.bgView.alpha = self.targetDimAlpha
+          previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+           if !isHidden && !isDismissing {
+               UIView.animate(withDuration: appearanceTransitionDuration) {
+                   self.bgView.alpha = self.targetDimAlpha
+               }
            }
        }
    }
@@ -43,7 +48,7 @@ class AppearanceOptionsAlertVM: UIView {
     private lazy var bgView: UIView = {
         let v = UIView(frame: bounds)
         v.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        v.backgroundColor = .COLOR_ALERT_BG_BLACK//WHColorWithAlpha(colorStr: "000000", alpha: 1.0)
+        v.backgroundColor = .black
         v.alpha = 0
         let tap = UITapGestureRecognizer(target: self, action: #selector(hiddenSelf))
         v.addGestureRecognizer(tap)
@@ -111,6 +116,7 @@ class AppearanceOptionsAlertVM: UIView {
 extension AppearanceOptionsAlertVM{
     func showSelf() {
         self.isHidden = false
+        isDismissing = false
         bgView.isUserInteractionEnabled = false
         
         // 初态：whiteView 在最终停靠位，先整体下移隐藏；蒙层透明
@@ -134,23 +140,28 @@ extension AppearanceOptionsAlertVM{
         }
     }
     @objc func hiddenSelf() {
-        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseIn) {
+        hideSelf(duration: 0.25)
+    }
+
+    private func hideSelf(duration: TimeInterval) {
+        isDismissing = true
+        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseIn) {
             self.whiteView.transform = CGAffineTransform(translationX: 0, y: self.whiteViewHeight)
             self.bgView.alpha = 0
             self.bottomLineView.alpha = 0
         } completion: { _ in
             self.isHidden = true
+            self.isDismissing = false
+            self.clearAppearanceTransitionSnapshots()
         }
     }
     
     @objc func confirmAction() {
-        self.hiddenSelf()
-        
         let selectIndex = self.pickerView.selectedRow(inComponent: 0)
-        
-        if self.confirmBlock != nil{
-            self.confirmBlock!(selectIndex+1)
-        }
+        prepareAppearanceTransitionSnapshots()
+        hideSelf(duration: appearanceTransitionDuration)
+        confirmBlock?(selectIndex+1)
+        fadeAppearanceTransitionSnapshots()
     }
     @objc func nothingToDo() {
         
@@ -215,6 +226,42 @@ extension AppearanceOptionsAlertVM{
                 break
             }
         }
+    }
+
+    private func prepareAppearanceTransitionSnapshots() {
+        clearAppearanceTransitionSnapshots()
+        layoutIfNeeded()
+        addAppearanceSnapshot(for: bgView)
+        addAppearanceSnapshot(for: whiteView)
+        addAppearanceSnapshot(for: bottomLineView)
+    }
+
+    private func addAppearanceSnapshot(for view: UIView) {
+        view.layoutIfNeeded()
+        guard let snapshot = view.snapshotView(afterScreenUpdates: false) else { return }
+        snapshot.frame = view.bounds
+        snapshot.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        snapshot.isUserInteractionEnabled = false
+        view.addSubview(snapshot)
+        appearanceSnapshotViews.append(snapshot)
+    }
+
+    private func fadeAppearanceTransitionSnapshots() {
+        let snapshots = appearanceSnapshotViews
+        appearanceSnapshotViews.removeAll()
+
+        UIView.animate(withDuration: appearanceTransitionDuration,
+                       delay: 0,
+                       options: [.curveEaseInOut, .allowUserInteraction]) {
+            snapshots.forEach { $0.alpha = 0 }
+        } completion: { _ in
+            snapshots.forEach { $0.removeFromSuperview() }
+        }
+    }
+
+    private func clearAppearanceTransitionSnapshots() {
+        appearanceSnapshotViews.forEach { $0.removeFromSuperview() }
+        appearanceSnapshotViews.removeAll()
     }
 }
 

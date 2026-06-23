@@ -225,9 +225,9 @@ class LogsSQLiteUploadManager {
         
         logsDict.setValue("\(dict.stringValueForKey(key: "carbLabel"))", forKey: "carbLabel")
 
-        logsDict.setValue("\(uploadNumberString(dict.stringValueForKey(key: "totalProteins")))", forKey: "totalProteins")
-        logsDict.setValue("\(uploadNumberString(dict.stringValueForKey(key: "totalCarbohydrates")))", forKey: "totalCarbohydrates")
-        logsDict.setValue("\(uploadNumberString(dict.stringValueForKey(key: "totalFats")))", forKey: "totalFats")
+        logsDict.setValue("\(truncatedUploadNumberString(dict.stringValueForKey(key: "totalProteins")))", forKey: "totalProteins")
+        logsDict.setValue("\(truncatedUploadNumberString(dict.stringValueForKey(key: "totalCarbohydrates")))", forKey: "totalCarbohydrates")
+        logsDict.setValue("\(truncatedUploadNumberString(dict.stringValueForKey(key: "totalFats")))", forKey: "totalFats")
         logsDict.setValue("\(uploadNumberString(dict.stringValueForKey(key: "totalCalories")))", forKey: "totalCalories")
 //        logsDict.setValue("\(dict.stringValueForKey(key: "totalCarbohydrates"))", forKey: "totalCarbohydrates")
 //        logsDict.setValue("\(dict.stringValueForKey(key: "totalFats"))", forKey: "totalFats")
@@ -418,5 +418,26 @@ extension LogsSQLiteUploadManager{
     }
     private func uploadNumberString(_ value: String) -> String {
         return value.replacingOccurrences(of: ",", with: ".")
+    }
+
+    private func truncatedUploadNumberString(_ value: Double, fractionDigits: Int = 2) -> String {
+        return truncatedUploadNumberString("\(value)", fractionDigits: fractionDigits)
+    }
+
+    private func truncatedUploadNumberString(_ value: String, fractionDigits: Int = 2) -> String {
+        let digits = max(fractionDigits, 0)
+        let normalizedValue = uploadNumberString(value)
+        guard var decimalValue = Decimal(string: normalizedValue) else {
+            return normalizedValue
+        }
+
+        var truncatedValue = Decimal()
+        NSDecimalRound(&truncatedValue, &decimalValue, digits, .down)
+
+        let formatter = NumberFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.minimumFractionDigits = digits
+        formatter.maximumFractionDigits = digits
+        return formatter.string(from: truncatedValue as NSDecimalNumber) ?? normalizedValue
     }
 }

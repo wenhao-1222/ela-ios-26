@@ -953,9 +953,9 @@ class LogsSQLiteManager {
         var dict = NSDictionary()
         do {
             if let rows = try db?.prepare("SELECT * FROM logs WHERE ((uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sDate)'))"){
-                DLLog(message: "---- \(rows)")
+//                DLLog(message: "---- \(rows)")
                 for row in rows{
-                    DLLog(message: "queryLogsDataForMealsTime SELECT RESULT:\(row)")
+//                    DLLog(message: "queryLogsDataForMealsTime SELECT RESULT:\(row)")
                     dict = ["fitnessLabel":row[26]as? String ?? ""]
                 }
             }
@@ -1314,7 +1314,7 @@ class LogsSQLiteManager {
         
         do {
             if let rows = try db?.prepare("SELECT * FROM logs WHERE sdate == '\(sDate)' AND uid == '\(UserInfoModel.shared.uId)'"){
-                DLLog(message: "---- \(rows)")
+//                DLLog(message: "---- \(rows)")
                 for row in rows{
                     let model =  LogsModel(uid: UserInfoModel.shared.uId,
                                            sdate: row[1]as? String ?? "",

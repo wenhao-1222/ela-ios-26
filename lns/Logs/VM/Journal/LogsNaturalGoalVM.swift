@@ -223,10 +223,10 @@ extension LogsNaturalGoalVM{
                         
                         let foodsMsg = dictTemp["foods"]as? NSDictionary ?? [:]
                         
-                        DLLog(message: "食物：\(dictTemp.stringValueForKey(key:"fname"))  -- 蛋白质：\(dictTemp.stringValueForKey(key:"protein"))")
-                        DLLog(message: "\(foodsMsg.stringValueForKey(key: "protein")) *  \(dictTemp.stringValueForKey(key:"qty"))(qty)  =  \(foodsMsg.doubleValueForKey(key: "protein") * dictTemp.doubleValueForKey(key:"qty") * 0.01)")
+                        DLLog(message: "食物：\(dictTemp.stringValueForKey(key:"fname"))  -- 脂肪：\(dictTemp.stringValueForKey(key:"fat"))")
+                        DLLog(message: "\(foodsMsg.stringValueForKey(key: "fat")) *  \(dictTemp.stringValueForKey(key:"qty"))(qty)  =  \(foodsMsg.doubleValueForKey(key: "fat") * dictTemp.doubleValueForKey(key:"qty") * 0.01)")
                         
-                        DLLog(message: "总蛋白质：\(proteinTotal)")
+                        DLLog(message: "总脂肪：\(fatTotal)")
                     }
                 }
             }
@@ -247,6 +247,20 @@ extension LogsNaturalGoalVM{
                 self.proteinCircleVm.currentNumFloat = proteinTotal
                 self.fatCircleVm.currentNumFloat = fatTotal
                 
+                let caloriTotalForUI = String(format: "%.2f", caloriTotal).floatValue
+                let carboTotalForUI = String(format: "%.2f", carboTotal).floatValue
+                let proteinTotalForUI = String(format: "%.2f", proteinTotal).floatValue
+                let fatTotalForUI = String(format: "%.2f", fatTotal).floatValue
+                
+//                let caloriTotalForUI = WHUtils.fixedFractionString(caloriTotal, fractionDigits: 2).floatValue
+//                let carboTotalForUI = WHUtils.fixedFractionString(carboTotal, fractionDigits: 2).floatValue
+//                let proteinTotalForUI = WHUtils.fixedFractionString(proteinTotal, fractionDigits: 2).floatValue
+//                let fatTotalForUI = WHUtils.fixedFractionString(fatTotal, fractionDigits: 2).floatValue
+                /*   2026年06月18日11:24:13
+                 三大营养素计算过程中保持足够的精度，不做任何
+                 */
+                DLLog(message: "刷新营养目标转成两位小数先：\(caloriTotalForUI)   ----  \(carboTotalForUI)  ----  \(proteinTotalForUI)  ----  \(fatTotalForUI)")
+                
                 caloriTotal = String(format: "%.0f", caloriTotal.rounded()).doubleValue
                 carboTotal = String(format: "%.0f", carboTotal.rounded()).doubleValue
                 proteinTotal = String(format: "%.0f", proteinTotal.rounded()).doubleValue
@@ -257,10 +271,15 @@ extension LogsNaturalGoalVM{
                 self.proteinCircleVm.currentNumberLabel.textColor = .COLOR_TEXT_TITLE_0f1214
                 self.fatCircleVm.currentNumberLabel.textColor = .COLOR_TEXT_TITLE_0f1214
                 
-                self.caloriCircleVm.setDataSport(currentNumber: String(format: "%.0f", caloriTotal).intValue, sportNumber: sportNumber, totalNumber: caloriTarget+sportNumber)
-                self.carboCircleVm.setData(currentNumber: String(format: "%.0f", carboTotal).intValue, totalNumber: Int(carboTarget.rounded()))
-                self.proteinCircleVm.setData(currentNumber: String(format: "%.0f", proteinTotal).intValue, totalNumber: Int(proteinTarget.rounded()))
-                self.fatCircleVm.setData(currentNumber: String(format: "%.0f", fatTotal).intValue, totalNumber: Int(fatTarget.rounded()))
+                self.caloriCircleVm.setDataSport(currentNumber: String(format: "%.0f", caloriTotalForUI.rounded()).intValue, sportNumber: sportNumber, totalNumber: caloriTarget+sportNumber)
+                self.carboCircleVm.setData(currentNumber: String(format: "%.0f", carboTotalForUI.rounded()).intValue, totalNumber: Int(carboTarget.rounded()))
+                self.proteinCircleVm.setData(currentNumber: String(format: "%.0f", proteinTotalForUI.rounded()).intValue, totalNumber: Int(proteinTarget.rounded()))
+                self.fatCircleVm.setData(currentNumber: String(format: "%.0f", fatTotalForUI.rounded()).intValue, totalNumber: Int(fatTarget.rounded()))
+                
+//                self.caloriCircleVm.setDataSport(currentNumber: String(format: "%.0f", caloriTotal).intValue, sportNumber: sportNumber, totalNumber: caloriTarget+sportNumber)
+//                self.carboCircleVm.setData(currentNumber: String(format: "%.0f", carboTotal).intValue, totalNumber: Int(carboTarget.rounded()))
+//                self.proteinCircleVm.setData(currentNumber: String(format: "%.0f", proteinTotal).intValue, totalNumber: Int(proteinTarget.rounded()))
+//                self.fatCircleVm.setData(currentNumber: String(format: "%.0f", fatTotal).intValue, totalNumber: Int(fatTarget.rounded()))
                 
                 self.circleTag.isHidden = true
                 self.circleTag.text = ""
@@ -310,11 +329,15 @@ extension LogsNaturalGoalVM{
                     self.titlLab.text = "营养目标"
                 }
                 DLLog(message: "刷新营养目标：\(caloriTotal)   ----  \(carboTotal)  ----  \(proteinTotal)  ----  \(fatTotal)")
+                self.caloriCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", caloriTotalForUI.rounded())) ?? "0")"
+                self.carboCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", carboTotalForUI.rounded())) ?? "0")"
+                self.proteinCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", proteinTotalForUI.rounded())) ?? "0")"
+                self.fatCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", fatTotalForUI.rounded())) ?? "0")"
                 
-                self.caloriCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", caloriTotal)) ?? "0")"
-                self.carboCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", carboTotal)) ?? "0")"
-                self.proteinCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", proteinTotal)) ?? "0")"
-                self.fatCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", fatTotal)) ?? "0")"
+//                self.caloriCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", caloriTotal)) ?? "0")"
+//                self.carboCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", carboTotal)) ?? "0")"
+//                self.proteinCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", proteinTotal)) ?? "0")"
+//                self.fatCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", fatTotal)) ?? "0")"
                 
                 if isUpload == true{
                     if self.calcuBlock != nil{

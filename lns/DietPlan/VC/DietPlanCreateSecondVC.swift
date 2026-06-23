@@ -1016,7 +1016,18 @@ extension DietPlanCreateSecondVC {
             "香甜": 5
         ]
         let values = splitCSVText(text).compactMap { mapping[$0] }
-        return values.isEmpty ? [1] : values
+        return normalizedFlavorPreferenceValues(values)
+    }
+
+    func normalizedFlavorPreferenceValues(_ values: [Int]) -> [Int] {
+        let uniqueValues = Array(Set(values)).sorted()
+        guard !uniqueValues.isEmpty else {
+            return [1]
+        }
+        if uniqueValues.contains(1), uniqueValues.count > 1 {
+            return [1]
+        }
+        return uniqueValues
     }
 
     func buildDietMethodExperienceForRequest(from text: String) -> Int {

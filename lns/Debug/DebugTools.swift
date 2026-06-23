@@ -284,6 +284,38 @@ final class DebugNetworkLogStore: ObservableObject {
         UIPasteboard.general.string = entries.map { $0.detailText }.joined(separator: "\n\n---\n\n")
     }
 
+    func exportRequestInputExcel(entries exportEntries: [DebugNetworkEntry]? = nil) throws -> URL {
+        let targetEntries = exportEntries ?? entries
+        guard targetEntries.isEmpty == false else {
+            throw DebugNetworkExportError.empty
+        }
+
+        let fileName = "lns_debug_api_inputs_\(DebugNetworkLogStore.fileDateFormatter.string(from: Date())).xls"
+        let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        let html = DebugNetworkLogStore.excelHTML(for: targetEntries)
+        try html.write(to: fileURL, atomically: true, encoding: .utf8)
+        return fileURL
+    }
+
+    func forwardRequestInputExcelToWechat(entries exportEntries: [DebugNetworkEntry]? = nil,
+                                          completion: @escaping (Bool) -> Void) {
+        do {
+            let fileURL = try exportRequestInputExcel(entries: exportEntries)
+            _ = WXUtil().shareFile(
+                fileURL: fileURL,
+                title: fileURL.deletingPathExtension().lastPathComponent,
+                description: "lns debug interface request inputs",
+                to: .session
+            ) { success in
+                DispatchQueue.main.async {
+                    completion(success)
+                }
+            }
+        } catch {
+            completion(false)
+        }
+    }
+
     private static func prettyText(_ value: Any?) -> String {
         guard let value else { return "-" }
 
@@ -359,6 +391,68 @@ final class DebugNetworkLogStore: ObservableObject {
         }
         return object
     }
+
+    private static let fileDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyyMMdd_HHmmss"
+        return formatter
+    }()
+
+    fileprivate static let displayDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return formatter
+    }()
+
+    private static func excelHTML(for entries: [DebugNetworkEntry]) -> String {
+        let rows = entries.map { entry in
+            """
+            <tr>
+              <td>\(entry.requestTimeText.excelEscaped)</td>
+              <td>\(entry.method.excelEscaped)</td>
+              <td>\(entry.url.excelEscaped)</td>
+              <td>\(entry.taskId.excelEscaped)</td>
+              <td>\(entry.requestParameters.excelEscaped)</td>
+              <td>\(entry.encodedParameters.excelEscaped)</td>
+              <td>\(entry.statusText.excelEscaped)</td>
+              <td>\(entry.durationText.excelEscaped)</td>
+            </tr>
+            """
+        }.joined(separator: "\n")
+
+        return """
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <style>
+            table { border-collapse: collapse; }
+            th, td { border: 1px solid #999999; padding: 6px; vertical-align: top; mso-number-format:"\\@"; }
+            th { background: #f0f0f0; font-weight: bold; }
+            td { white-space: pre-wrap; }
+          </style>
+        </head>
+        <body>
+          <table>
+            <tr>
+              <th>Request Time</th>
+              <th>Method</th>
+              <th>URL</th>
+              <th>Task ID</th>
+              <th>Request Input</th>
+              <th>Encoded Input</th>
+              <th>Status</th>
+              <th>Duration</th>
+            </tr>
+            \(rows)
+          </table>
+        </body>
+        </html>
+        """
+    }
+}
+
+private enum DebugNetworkExportError: Error {
+    case empty
 }
 
 struct DebugNetworkEntry: Identifiable {
@@ -396,6 +490,10 @@ struct DebugNetworkEntry: Identifiable {
         return String(format: "%.2fs", duration)
     }
 
+    var requestTimeText: String {
+        DebugNetworkLogStore.displayDateFormatter.string(from: requestAt)
+    }
+
     var detailText: String {
         [
             "\(method) \(url)",
@@ -413,7 +511,7 @@ struct DebugNetworkEntry: Identifiable {
 private struct DebugNetworkView: View {
 
     @ObservedObject private var store = DebugNetworkLogStore.shared
-    @State private var copiedMessage = ""
+    @State private var forwardMessage = ""
 
     var body: some View {
         NavigationView {
@@ -452,9 +550,9 @@ private struct DebugNetworkView: View {
                     }
                 }
 
-                if copiedMessage.isEmpty == false {
+                if forwardMessage.isEmpty == false {
                     Section {
-                        Text(copiedMessage)
+                        Text(forwardMessage)
                             .font(.system(size: 13))
                             .foregroundColor(.secondary)
                     }
@@ -466,13 +564,12 @@ private struct DebugNetworkView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Clear") {
                         store.clear()
-                        copiedMessage = ""
+                        forwardMessage = ""
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Copy") {
-                        store.copyAllText()
-                        copiedMessage = "Network logs copied."
+                    Button("Share") {
+                        forwardAllInputsToWechat()
                     }
                     .disabled(store.entries.isEmpty)
                 }
@@ -488,12 +585,20 @@ private struct DebugNetworkView: View {
         if (400..<600).contains(code) { return .red }
         return .secondary
     }
+
+    private func forwardAllInputsToWechat() {
+        forwardMessage = "Preparing Excel..."
+        store.forwardRequestInputExcelToWechat { success in
+            forwardMessage = success ? "Excel forwarded to WeChat." : "Unable to forward. Check WeChat install/support or file size."
+        }
+    }
 }
 
 private struct DebugNetworkDetailView: View {
 
     let entry: DebugNetworkEntry
     @State private var message = ""
+    @State private var forwardMessage = ""
 
     var body: some View {
         List {
@@ -536,8 +641,20 @@ private struct DebugNetworkDetailView: View {
                     Label("Copy This Request", systemImage: "doc.on.doc")
                 }
 
+                Button {
+                    forwardThisInputToWechat()
+                } label: {
+                    Label("Forward Input Excel to WeChat", systemImage: "square.and.arrow.up")
+                }
+
                 if message.isEmpty == false {
                     Text(message)
+                        .font(.system(size: 13))
+                        .foregroundColor(.secondary)
+                }
+
+                if forwardMessage.isEmpty == false {
+                    Text(forwardMessage)
                         .font(.system(size: 13))
                         .foregroundColor(.secondary)
                 }
@@ -566,6 +683,13 @@ private struct DebugNetworkDetailView: View {
             .font(.system(size: 12, design: .monospaced))
             .textSelection(.enabled)
             .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func forwardThisInputToWechat() {
+        forwardMessage = "Preparing Excel..."
+        DebugNetworkLogStore.shared.forwardRequestInputExcelToWechat(entries: [entry]) { success in
+            forwardMessage = success ? "Excel forwarded to WeChat." : "Unable to forward. Check WeChat install/support or file size."
+        }
     }
 }
 
@@ -711,6 +835,16 @@ private func displayValue(_ value: String?) -> String {
         return "-"
     }
     return value
+}
+
+private extension String {
+    var excelEscaped: String {
+        replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "<", with: "&lt;")
+            .replacingOccurrences(of: ">", with: "&gt;")
+            .replacingOccurrences(of: "\"", with: "&quot;")
+            .replacingOccurrences(of: "'", with: "&#39;")
+    }
 }
 
 #endif

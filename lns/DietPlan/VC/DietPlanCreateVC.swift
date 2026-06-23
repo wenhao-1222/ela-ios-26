@@ -1034,7 +1034,18 @@ extension DietPlanCreateVC{
             selectedIndexes = flavorVM.selectedIndexes.sorted()
         }
         let values = selectedIndexes.compactMap { flavorPreferenceValue(fromSelectedIndex: $0) }
-        return values.isEmpty ? [1] : values
+        return normalizedFlavorPreferenceValues(values)
+    }
+
+    func normalizedFlavorPreferenceValues(_ values: [Int]) -> [Int] {
+        let uniqueValues = Array(Set(values)).sorted()
+        guard !uniqueValues.isEmpty else {
+            return [1]
+        }
+        if uniqueValues.contains(1), uniqueValues.count > 1 {
+            return [1]
+        }
+        return uniqueValues
     }
     
     func flavorPreferenceValue(fromSelectedIndex index: Int) -> Int? {

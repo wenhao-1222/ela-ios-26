@@ -121,7 +121,10 @@ extension HabitFriendsGoalVM{
          3：领取了，变成灰色“已领取”。
          4：已经领取，超过24小时/第二天再打开这个页面，就直接不显示这条
          */
-        if dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus").count > 0{
+        /*2026年06月22日09:39:07
+         0：已经领取，超过24小时/第二天再打开这个页面，就直接不显示这条
+         */
+        if dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus").intValue > 0{
             firstOnTargetVm.isHidden = false
             firstOnTargetVm.showButton.isHidden = false
             firstOnTargetVm.showButton.isUserInteractionEnabled = dict.stringValueForKey(key: "proteinIntakeOnTargetWithFriendFirstTimeStatus") == "2"
