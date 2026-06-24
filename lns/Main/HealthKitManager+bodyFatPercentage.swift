@@ -96,34 +96,59 @@ extension HealthKitManager{
             dateFormatter.timeZone = TimeZone.current//TimeZone(secondsFromGMT: 0)
             
             DispatchQueue.global(qos: .userInitiated).async {
+                var sDate = ""
                 for i in 0..<results.count{
                     let result = results[i] as? HKQuantitySample
                     let value = result?.quantity.doubleValue(for: HKUnit.percent())
                     DLLog(message: "HealthKitManager bodyfat:\(result)")
-                    
+
                     let time = Date().changeZeroAreaToZHTimeZone(dateString: dateFormatter.string(from: result?.startDate ?? Date()))
                     let valueString = "\(value ?? 0)".replacingOccurrences(of: ",", with: ".")
                     DLLog(message: "HealthKitManager:\(time)  --   \(value)")
-                    
-                    if valueString.floatValue > 0 {
-                        if BodyDataSQLiteManager.getInstance().queryTable(sDate: time){
-                            BodyDataSQLiteManager.getInstance().updateSingleData(columnName: "bfp", data: "\(valueString.floatValue*100)", cTime: time)
+
+                    if time != sDate && valueString.floatValue > 0 {
+                        let bfpValue = "\((Double(valueString) ?? 0) * 100)"
+                        let info = BodyDataSQLiteManager.getInstance().queryHealthKitBodyInfo(sDate: time)
+                        let hasSameBodyFat = self.isSameHealthKitNumber(info?.bfp, bfpValue, fractionDigits: 2)
+                        if info == nil || !hasSameBodyFat {
+                            if BodyDataSQLiteManager.getInstance().queryTable(sDate: time){
+                                BodyDataSQLiteManager.getInstance().updateSingleData(columnName: "bfp", data: bfpValue, cTime: time)
+                            }else{
+                                BodyDataSQLiteManager.getInstance().updateData(cTime: time,
+                                                                               imgurl: "",
+                                                                               hipsData: "",
+                                                                               weightData: "",
+                                                                               waistlineData: "",
+                                                                               shoulderData: "",
+                                                                               bustData: "",
+                                                                               thighData: "",
+                                                                               calfData: "",
+                                                                               bfpData: bfpValue,
+                                                                               images: "",
+                                                                               armcircumferenceData: "")
+                            }
+                            BodyDataSQLiteManager.getInstance().updateUploadStatus(cTime: time, uploadStatus: false)
                         }else{
-                            BodyDataSQLiteManager.getInstance().updateData(cTime: time,
-                                                                           imgurl: "",
-                                                                           hipsData: "",
-                                                                           weightData: "",
-                                                                           waistlineData: "",
-                                                                           shoulderData: "",
-                                                                           bustData: "",
-                                                                           thighData: "",
-                                                                           calfData: "",
-                                                                           bfpData: "\(valueString.floatValue*100)",
-                                                                           images: "",
-                                                                           armcircumferenceData: "")
+//                            if BodyDataSQLiteManager.getInstance().queryTable(sDate: time){
+//                                BodyDataSQLiteManager.getInstance().updateSingleData(columnName: "bfp", data: "\(valueString.floatValue*100)", cTime: time)
+//                            }else{
+//                                BodyDataSQLiteManager.getInstance().updateData(cTime: time,
+//                                                                               imgurl: "",
+//                                                                               hipsData: "",
+//                                                                               weightData: "",
+//                                                                               waistlineData: "",
+//                                                                               shoulderData: "",
+//                                                                               bustData: "",
+//                                                                               thighData: "",
+//                                                                               calfData: "",
+//                                                                               bfpData: "\(valueString.floatValue*100)",
+//                                                                               images: "",
+//                                                                               armcircumferenceData: "")
+//                            }
+//                            BodyDataSQLiteManager.getInstance().updateUploadStatus(cTime: time, uploadStatus: false)
                         }
-                        BodyDataSQLiteManager.getInstance().updateUploadStatus(cTime: time, uploadStatus: false)
                     }
+                    sDate = time
                 }
             }
         }
@@ -152,33 +177,59 @@ extension HealthKitManager{
             dateFormatter.timeZone = TimeZone.current//TimeZone(secondsFromGMT: 0)
             
             DispatchQueue.global(qos: .userInitiated).async {
+                var sDate = ""
                 for i in 0..<results.count{
                     let result = results[i] as? HKQuantitySample
                     let value = result?.quantity.doubleValue(for: HKUnit.meterUnit(with: .centi))
-                    
+
                     let time = Date().changeZeroAreaToZHTimeZone(dateString: dateFormatter.string(from: result?.startDate ?? Date()))
                     let valueString = "\(value ?? 0)".replacingOccurrences(of: ",", with: ".")
-                    
-                    if valueString.floatValue > 0 {
-                        if BodyDataSQLiteManager.getInstance().queryTable(sDate: time){
-                            BodyDataSQLiteManager.getInstance().updateSingleData(columnName: "waistline", data: "\(valueString)", cTime: time)
+
+                    if time != sDate && valueString.floatValue > 0 {
+                        let waistlineValue = valueString
+                        let info = BodyDataSQLiteManager.getInstance().queryHealthKitBodyInfo(sDate: time)
+                        let hasSameWaistline = self.isSameHealthKitNumber(info?.waistline, waistlineValue, fractionDigits: 2)
+                        if info == nil || !hasSameWaistline {
+                            if BodyDataSQLiteManager.getInstance().queryTable(sDate: time){
+                                BodyDataSQLiteManager.getInstance().updateSingleData(columnName: "waistline", data: waistlineValue, cTime: time)
+                            }else{
+                                BodyDataSQLiteManager.getInstance().updateData(cTime: time,
+                                                                               imgurl: "",
+                                                                               hipsData: "",
+                                                                               weightData: "",
+                                                                               waistlineData: waistlineValue,
+                                                                               shoulderData: "",
+                                                                               bustData: "",
+                                                                               thighData: "",
+                                                                               calfData: "",
+                                                                               bfpData: "",
+                                                                               images: "",
+                                                                               armcircumferenceData: "")
+                            }
+
+                            BodyDataSQLiteManager.getInstance().updateUploadStatus(cTime: time, uploadStatus: false)
                         }else{
-                            BodyDataSQLiteManager.getInstance().updateData(cTime: time,
-                                                                           imgurl: "",
-                                                                           hipsData: "",
-                                                                           weightData: "",
-                                                                           waistlineData: "\(valueString)",
-                                                                           shoulderData: "",
-                                                                           bustData: "",
-                                                                           thighData: "",
-                                                                           calfData: "",
-                                                                           bfpData: "",
-                                                                           images: "",
-                                                                           armcircumferenceData: "")
+//                            if BodyDataSQLiteManager.getInstance().queryTable(sDate: time){
+//                                BodyDataSQLiteManager.getInstance().updateSingleData(columnName: "waistline", data: "\(valueString)", cTime: time)
+//                            }else{
+//                                BodyDataSQLiteManager.getInstance().updateData(cTime: time,
+//                                                                               imgurl: "",
+//                                                                               hipsData: "",
+//                                                                               weightData: "",
+//                                                                               waistlineData: "\(valueString)",
+//                                                                               shoulderData: "",
+//                                                                               bustData: "",
+//                                                                               thighData: "",
+//                                                                               calfData: "",
+//                                                                               bfpData: "",
+//                                                                               images: "",
+//                                                                               armcircumferenceData: "")
+//                            }
+//
+//                            BodyDataSQLiteManager.getInstance().updateUploadStatus(cTime: time, uploadStatus: false)
                         }
-                        
-                        BodyDataSQLiteManager.getInstance().updateUploadStatus(cTime: time, uploadStatus: false)
                     }
+                    sDate = time
                 }
             }
         }

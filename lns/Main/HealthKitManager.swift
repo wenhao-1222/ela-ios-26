@@ -8,7 +8,7 @@ import HealthKit
 
 class HealthKitManager: NSObject, ObservableObject {
     let healthStore = HKHealthStore()
-    
+
     let healthKitTypesToRead = HKObjectType.workoutType()
     let weightType = HKObjectType.quantityType(forIdentifier: .bodyMass)
     let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater)//饮水
@@ -18,7 +18,7 @@ class HealthKitManager: NSObject, ObservableObject {
     let carboType = HKObjectType.quantityType(forIdentifier: .dietaryCarbohydrates)
     let caloriesType = HKQuantityType.quantityType(forIdentifier: .dietaryEnergyConsumed)
     var hkWorkouts: [HKWorkoutActivityType] = [HKWorkoutActivityType]()
-    
+
     override init() {
         super.init()
         var shareType = Set<HKSampleType>()
@@ -118,7 +118,7 @@ class HealthKitManager: NSObject, ObservableObject {
             }
         }
     }
-    
+
     func getLatestWeightSample(completion: @escaping (HKQuantity?) -> Void) {
         guard let weightType = weightType else { return }
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
@@ -154,10 +154,16 @@ class HealthKitManager: NSObject, ObservableObject {
                         
                         if weight.floatValue > 0 {
                             let info = BodyDataSQLiteManager.getInstance().queryWeightInfo(sDate: time)
-                            if info == nil || !info!.isUpload || info!.weight != weight {
+//                            DLLog(message: "HealthKitManager:\(time)  --   \(info?.weight)")
+                            let hasSameWeight = self.isSameHealthKitNumber(info?.weight, weight, fractionDigits: 2)
+                            if info == nil || !hasSameWeight {
+//                            if info == nil || !info!.isUpload || info!.weight != weight {
 //                            if info == nil || !(info!.isUpload && info!.weight == weight) {
                                 BodyDataSQLiteManager.getInstance().updateWeightDataFromHealthKit(cTime: time, weightData: weight)
                                 BodyDataSQLiteManager.getInstance().updateUploadStatus(cTime: time, uploadStatus: false)
+                            }
+                            if info == nil || !hasSameWeight {
+//                            if info == nil || !hasSameWeight || info?.isUpload == false {
                                 BodyDataUploadManager().sendWeightDataRequest(sDate: time, weightData: weight)
                             }
                         }
@@ -167,6 +173,25 @@ class HealthKitManager: NSObject, ObservableObject {
             }
         }
         healthStore.execute(sampleQuery)
+    }
+
+    /// HealthKit 体重按 kg 读取，本地身体数据体重也统一按 kg 保存；用户选择斤/磅只影响录入展示。
+    func normalizedHealthKitNumber(_ value: String?, fractionDigits: Int) -> String? {
+        guard let rawValue = value?.replacingOccurrences(of: ",", with: ".").trimmingCharacters(in: .whitespacesAndNewlines),
+              rawValue.count > 0,
+              let doubleValue = Double(rawValue) else {
+            return nil
+        }
+        return String(format: "%.\(fractionDigits)f", locale: Locale(identifier: "en_US_POSIX"), doubleValue)
+    }
+
+    func isSameHealthKitNumber(_ lhs: String?, _ rhs: String?, fractionDigits: Int) -> Bool {
+        guard let lhsValue = normalizedHealthKitNumber(lhs, fractionDigits: fractionDigits),
+              let rhsValue = normalizedHealthKitNumber(rhs, fractionDigits: fractionDigits) else {
+            return false
+        }
+//        DLLog(message: "HealthKitManager:数据库  --- \(lhs)   --  \(rhs)")
+        return lhsValue == rhsValue
     }
  
     func saveWeight(weight: HKQuantity,sdate:String, completion: @escaping (Bool, Error?) -> Void) {

@@ -597,6 +597,23 @@ class BodyDataSQLiteManager {
         }
         return nil
     }
+    /// 查询 HealthKit 同步字段和上传状态。体重在库内统一按 kg 保存，展示时再按用户单位换算。
+    func queryHealthKitBodyInfo(sDate:String) -> (weight:String, waistline:String, bfp:String, isUpload:Bool)? {
+        do {
+            if let rows = try db?.prepare("SELECT weight,waistline,bfp,isUploadString FROM bodydata WHERE ctime == '\(sDate)' AND uid == '\(UserInfoModel.shared.uId)'"){
+                for row in rows{
+                    let weight = row[0] as? String ?? ""
+                    let waistline = row[1] as? String ?? ""
+                    let bfp = row[2] as? String ?? ""
+                    let status = parseUploadStatus(row[3])
+                    return (weight,waistline,bfp,status)
+                }
+            }
+        }catch {
+            DLLog(message:"查询错误")
+        }
+        return nil
+    }
     func queryTableAll() -> NSArray {
         let models = NSMutableArray()
         do {
