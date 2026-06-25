@@ -204,6 +204,8 @@ extension JournalTableViewCell{
             let labelHeight = noFoodsLabel.text?.mc_getHeight(font: noFoodsLabel.font, width: labelWidth) ?? 0
             noFoodsLabel.preferredMaxLayoutWidth = labelWidth
             self.tableView.isHidden = true
+            self.tableView.frame = CGRect.init(x: 0, y: naturalVm.frame.maxY, width: SCREEN_WIDHT-kFitWidth(20), height: 0)
+            self.tableView.reloadData()
             self.whiteView.frame = CGRect.init(x: kFitWidth(10), y: kFitWidth(12), width: SCREEN_WIDHT-kFitWidth(20), height: kFitWidth(42)+labelHeight+kFitWidth(12)+btnHeight)
             self.whiteView.layoutIfNeeded()
 //            self.tableView.isHidden = true
@@ -413,6 +415,9 @@ extension JournalTableViewCell:UITableViewDelegate,UITableViewDataSource{
 //        let cell = tableView.dequeueReusableCell(withIdentifier: "PlanCreateFoodsTableViewCell")as! PlanCreateFoodsTableViewCell
         let cell = tableView.dequeueReusableCell(withIdentifier: "PlanCreateFoodsTableViewCell", for: indexPath) as? PlanCreateFoodsTableViewCell
 
+        guard foodsArray.count > indexPath.row else {
+            return cell ?? PlanCreateFoodsTableViewCell()
+        }
         let dict = foodsArray[indexPath.row]as? NSDictionary ?? [:]
         cell?.updateUIForLogs(dict: dict,isEdit:self.isEdit)
 

@@ -948,6 +948,29 @@ class LogsSQLiteManager {
                        notesTag: "")
         }
     }
+
+    func updateServerFitnessType(fitnessType:String,sDate:String) {
+        if queryTable(sDate: sDate){
+            do {
+                try db?.run(logs.filter(sdate == sDate).filter(uid == UserInfoModel.shared.uId).update(fitness_tag <- fitnessType,
+                                                                                                      isUploadString <- "1"))
+            }catch{
+                do {
+                    try db?.execute("UPDATE logs SET"
+                                    + " fitness_tag = '\(fitnessType)'"
+                                    + ", isUploadString = '1'"
+                                    + " WHERE ((uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sDate)'));")
+                    DLLog(message: "SQL语句更新训练标签  ----  success")
+                }catch{
+                    DLLog(message: "SQL语句更新训练标签  ----  执行失败")
+                }
+            }
+        }else{
+            updateFitnessType(fitnessType: fitnessType, sDate: sDate)
+            updateUploadStatus(sDate: sDate, update: true)
+        }
+    }
+
     ///查询 训练部位
     func queryLogsDataForFitness(sDate:String) -> String {
         var dict = NSDictionary()
@@ -1459,6 +1482,15 @@ class LogsSQLiteManager {
                                         }catch{
                                             DLLog(message: "SQL语句更新  ----  执行失败")
                                         }
+                                    }
+                                }
+                                if !shouldUpdateFromServer && model.isUpload && model.fitnessTag != fitnessTag {
+                                    do {
+                                        let sql = logs.filter(sdate == sDate).filter(uid == UserInfoModel.shared.uId)
+                                        try db.run(sql.update(self.fitness_tag<-fitnessTag,
+                                                              self.isUploadString<-"1"))
+                                    }catch{
+                                        DLLog(message:"更新训练标签失败 \(sDate)")
                                     }
                                 }
                             }else{//如果不存在数据

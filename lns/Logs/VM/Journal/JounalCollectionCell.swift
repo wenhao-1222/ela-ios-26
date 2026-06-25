@@ -329,7 +329,8 @@ extension JounalCollectionCell{
         self.logsModel.isUpload = false
         LogsSQLiteManager.getInstance().updateFitnessType(fitnessType: fitnessLabel, sDate: self.queryDay)
         LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
-        LogsSQLiteUploadManager().uploadLogsBySDate(sdate: self.queryDay, shouldRefreshTodayJournal: false)
+        // Route same-day detail updates through the upload queue so repeated edits do not hit update_details too tightly.
+        LogsSQLiteUploadManager().scheduleUploadLogsBySDate(sdate: self.queryDay, shouldRefreshTodayJournal: false)
     }
     private func startIdleTimer() {
 //        guard !hasShownFirstFoodsGuide else { return }
@@ -1057,7 +1058,8 @@ extension JounalCollectionCell {
         LogsSQLiteManager.getInstance().insertNotes(sDate: self.queryDay, notestr: text)
         LogsSQLiteManager.getInstance().insertNotesTag(sDate: self.queryDay, notesTag: notesTag)
         LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
-        LogsSQLiteUploadManager().uploadLogsBySDate(sdate: self.queryDay)
+        // Route same-day detail updates through the upload queue so repeated edits do not hit update_details too tightly.
+        LogsSQLiteUploadManager().scheduleUploadLogsBySDate(sdate: self.queryDay)
     }
 
     func handleFoodsTap(dict: NSDictionary) {
@@ -1101,6 +1103,38 @@ extension JounalCollectionCell {
 }
 
 extension JounalCollectionCell{
+    private func normalizedFitnessLabel(from dict: NSDictionary) -> String {
+        var fitnessLabelArray = NSMutableArray(array: dict["fitnessLabelArray"] as? NSArray ?? [])
+        for i in 0..<fitnessLabelArray.count {
+            let str = fitnessLabelArray[i] as? String ?? ""
+            if str == "-" || str == "[]" {
+                fitnessLabelArray.removeObject(at: i)
+                break
+            }
+        }
+
+        if fitnessLabelArray.count > 0 {
+            return WHUtils.getJSONStringFromArray(array: fitnessLabelArray)
+        }
+
+        let fitnessLabel = dict.stringValueForKey(key: "fitnessLabel")
+        return fitnessLabel == "-" ? "" : fitnessLabel
+    }
+
+    private func applyServerFitnessLabel(from dict: NSDictionary, shouldUpdateDatabase: Bool = true) -> String {
+        let fitnessLabel = normalizedFitnessLabel(from: dict)
+        let msgDict = NSMutableDictionary(dictionary: currentDayMsg)
+        msgDict.setValue(fitnessLabel, forKey: "fitnessLabel")
+        currentDayMsg = msgDict
+
+        if shouldUpdateDatabase, fitnessLabel != logsModel.fitnessTag {
+            LogsSQLiteManager.getInstance().updateServerFitnessType(fitnessType: fitnessLabel, sDate: queryDay)
+        }
+
+        updateFitnessBlock?(fitnessTypesForAlert().first ?? "")
+        return fitnessLabel
+    }
+
     func editDelAction() {
         LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
         logsModel.isUpload = false
@@ -1269,28 +1303,32 @@ extension JounalCollectionCell{
             }else{
                 msgDict.setValue(dict.stringValueForKey(key: "notesLabel"), forKey: "notesTag")
             }
-            var fitnessLabelArray = NSMutableArray(array: msgDict["fitnessLabelArray"]as? NSArray ?? [])
-            for i in 0..<fitnessLabelArray.count{
-                let str = fitnessLabelArray[i]as? String ?? ""
-                if str == "-" || str == "[]"{
-                    fitnessLabelArray.removeObject(at: i)
-                    break
-                }
-            }
-
-            var fitnessLabel = msgDict.stringValueForKey(key: "fitnessLabel")
-            if fitnessLabelArray.count > 0{
-                fitnessLabel = WHUtils.getJSONStringFromArray(array: fitnessLabelArray)
-                msgDict.setValue(fitnessLabel, forKey: "fitnessLabel")
-                self.updateFitnessBlock?(fitnessLabelArray[0]as? String ?? "")
-            }else{
-                if fitnessLabel == "-"{
-                    fitnessLabel = ""
-                }
-                self.updateFitnessBlock?(fitnessLabel)
-            }
-
+//            var fitnessLabelArray = NSMutableArray(array: msgDict["fitnessLabelArray"]as? NSArray ?? [])
+//            for i in 0..<fitnessLabelArray.count{
+//                let str = fitnessLabelArray[i]as? String ?? ""
+//                if str == "-" || str == "[]"{
+//                    fitnessLabelArray.removeObject(at: i)
+//                    break
+//                }
+//            }
+//
+//            var fitnessLabel = msgDict.stringValueForKey(key: "fitnessLabel")
+//            if fitnessLabelArray.count > 0{
+//                fitnessLabel = WHUtils.getJSONStringFromArray(array: fitnessLabelArray)
+//                msgDict.setValue(fitnessLabel, forKey: "fitnessLabel")
+//                self.updateFitnessBlock?(fitnessLabelArray[0]as? String ?? "")
+//            }else{
+//                if fitnessLabel == "-"{
+//                    fitnessLabel = ""
+//                }
+//                self.updateFitnessBlock?(fitnessLabel)
+//            }
+//
+            let fitnessLabel = normalizedFitnessLabel(from: msgDict)
+            msgDict.setValue(fitnessLabel, forKey: "fitnessLabel")
             self.currentDayMsg = msgDict
+            self.updateFitnessBlock?(fitnessTypesForAlert().first ?? "")
+
             self.currentMealTimeMsg = dict
             goalVm.updateUI(dict: self.currentDayMsg,isUpload: false)
             LogsSQLiteUploadManager().saveNaturalData(dict: dict, isServerData: true)
@@ -1336,6 +1374,9 @@ extension JounalCollectionCell{
             logsModel.isUpload = false
             LogsSQLiteUploadManager().saveNaturalData(dict: currentDayMsg, isServerData: false)
 //            self.dealParamForRequest()
+        }else if logsModel.isUpload{
+            applyServerFitnessLabel(from: dict)
+            logsModel = LogsSQLiteManager.getInstance().getLogsByDate(sDate: self.queryDay)!
         }
         goalVm.updateUI(dict: self.currentDayMsg,isUpload: true)
         self.tableView.reloadData()
@@ -1449,12 +1490,13 @@ extension JounalCollectionCell{
         LogsSQLiteManager.getInstance().updateMealsTime(foodsArray: param,sDate: self.queryDay)
         self.currentMealTimeMsg = LogsSQLiteManager.getInstance().queryLogsDataForMealsTime(sDate: self.queryDay)
         LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
-        let uploadDict = ["sdate":"\(self.queryDay)",
-                          "fitnessLabel":self.currentDayMsg.stringValueForKey(key: "fitnessLabel"),
-                     "notes":self.currentDayMsg.stringValueForKey(key: "notes"),
-                          "foods":WHUtils.getJSONStringFromArray(array: param)] as [String : Any]
+//        let uploadDict = ["sdate":"\(self.queryDay)",
+//                          "fitnessLabel":self.currentDayMsg.stringValueForKey(key: "fitnessLabel"),
+//                     "notes":self.currentDayMsg.stringValueForKey(key: "notes"),
+//                          "foods":WHUtils.getJSONStringFromArray(array: param)] as [String : Any]
 
-        LogsSQLiteUploadManager().dealLogsDataForUpload(dict: uploadDict as NSDictionary)
+        // Keep meal-detail saves on the same date behind the shared upload queue to avoid backend write conflicts.
+        LogsSQLiteUploadManager().scheduleUploadLogsBySDate(sdate: self.queryDay)
 //        LogsSQLiteUploadManager().sendUpdateLogsMealsTimeRequest(sDate: self.queryDay)
         LogsMealsAlertSetManage().refreshClockAlertMsg()
     }

@@ -13,6 +13,7 @@ class LogsSQLiteUploadManager {
     private static var pendingUploadWorkItems: [String: DispatchWorkItem] = [:]
     private static var uploadingDates = Set<String>()
     private static var queuedDates = Set<String>()
+    private static var queuedRefreshTodayJournalByDate: [String: Bool] = [:]
     private static var uploadQueueGeneration = 0
     
     ///检查本地日志   饮水量上传状态
@@ -38,9 +39,11 @@ class LogsSQLiteUploadManager {
         }
     }
     
-    func scheduleUploadLogsBySDate(sdate: String, delay: TimeInterval = 1.0) {
+    func scheduleUploadLogsBySDate(sdate: String, delay: TimeInterval = 1.0, shouldRefreshTodayJournal: Bool = true) {
         Self.uploadSyncQueue.async {
             Self.queuedDates.insert(sdate)
+            let existingRefreshFlag = Self.queuedRefreshTodayJournalByDate[sdate] ?? false
+            Self.queuedRefreshTodayJournalByDate[sdate] = existingRefreshFlag || shouldRefreshTodayJournal
             Self.pendingUploadWorkItems[sdate]?.cancel()
             let generation = Self.uploadQueueGeneration
             
@@ -89,9 +92,11 @@ class LogsSQLiteUploadManager {
         
         Self.queuedDates.remove(sdate)
         Self.uploadingDates.insert(sdate)
+        let shouldRefreshTodayJournal = Self.queuedRefreshTodayJournalByDate[sdate] ?? true
+        Self.queuedRefreshTodayJournalByDate.removeValue(forKey: sdate)
         
         DispatchQueue.global(qos: .userInitiated).async {
-            self.uploadLogsBySDate(sdate: sdate) {
+            self.uploadLogsBySDate(sdate: sdate, shouldRefreshTodayJournal: shouldRefreshTodayJournal) {
                 self.finishQueuedUpload(sdate: sdate)
             }
         }
@@ -113,7 +118,8 @@ class LogsSQLiteUploadManager {
             }
             
             Self.pendingUploadWorkItems[sdate] = workItem
-            Self.uploadSyncQueue.asyncAfter(deadline: .now() + 0.2, execute: workItem)
+            // Keep re-queued uploads for the same day spaced out to reduce backend date-level transaction conflicts.
+            Self.uploadSyncQueue.asyncAfter(deadline: .now() + 1.0, execute: workItem)
         }
     }
 
@@ -168,9 +174,9 @@ class LogsSQLiteUploadManager {
                 dataArray.add(natuDict)
             }
             WidgetUtils().saveCurrentDayMealsNaturalMsg(dataArray: dataArray)
-            uploadDict.setValue(WHUtils.fixedFractionString(proteinTotal, fractionDigits: 3), forKey: "totalProteins")
-            uploadDict.setValue(WHUtils.fixedFractionString(carboTotal, fractionDigits: 3), forKey: "totalCarbohydrates")
-            uploadDict.setValue(WHUtils.fixedFractionString(fatTotal, fractionDigits: 3), forKey: "totalFats")
+            uploadDict.setValue(WHUtils.fixedFractionString(proteinTotal, fractionDigits: 4), forKey: "totalProteins")
+            uploadDict.setValue(WHUtils.fixedFractionString(carboTotal, fractionDigits: 4), forKey: "totalCarbohydrates")
+            uploadDict.setValue(WHUtils.fixedFractionString(fatTotal, fractionDigits: 4), forKey: "totalFats")
             uploadDict.setValue(WHUtils.fixedFractionString(caloriTotal, fractionDigits: 0), forKey: "totalCalories")
         }
         
@@ -225,9 +231,9 @@ class LogsSQLiteUploadManager {
         
         logsDict.setValue("\(dict.stringValueForKey(key: "carbLabel"))", forKey: "carbLabel")
 
-        logsDict.setValue("\(truncatedUploadNumberString(dict.stringValueForKey(key: "totalProteins")))", forKey: "totalProteins")
-        logsDict.setValue("\(truncatedUploadNumberString(dict.stringValueForKey(key: "totalCarbohydrates")))", forKey: "totalCarbohydrates")
-        logsDict.setValue("\(truncatedUploadNumberString(dict.stringValueForKey(key: "totalFats")))", forKey: "totalFats")
+        logsDict.setValue("\(uploadNumberString(dict.stringValueForKey(key: "totalProteins")))", forKey: "totalProteins")
+        logsDict.setValue("\(uploadNumberString(dict.stringValueForKey(key: "totalCarbohydrates")))", forKey: "totalCarbohydrates")
+        logsDict.setValue("\(uploadNumberString(dict.stringValueForKey(key: "totalFats")))", forKey: "totalFats")
         logsDict.setValue("\(uploadNumberString(dict.stringValueForKey(key: "totalCalories")))", forKey: "totalCalories")
 //        logsDict.setValue("\(dict.stringValueForKey(key: "totalCarbohydrates"))", forKey: "totalCarbohydrates")
 //        logsDict.setValue("\(dict.stringValueForKey(key: "totalFats"))", forKey: "totalFats")
@@ -418,26 +424,5 @@ extension LogsSQLiteUploadManager{
     }
     private func uploadNumberString(_ value: String) -> String {
         return value.replacingOccurrences(of: ",", with: ".")
-    }
-
-    private func truncatedUploadNumberString(_ value: Double, fractionDigits: Int = 2) -> String {
-        return truncatedUploadNumberString("\(value)", fractionDigits: fractionDigits)
-    }
-
-    private func truncatedUploadNumberString(_ value: String, fractionDigits: Int = 2) -> String {
-        let digits = max(fractionDigits, 0)
-        let normalizedValue = uploadNumberString(value)
-        guard var decimalValue = Decimal(string: normalizedValue) else {
-            return normalizedValue
-        }
-
-        var truncatedValue = Decimal()
-        NSDecimalRound(&truncatedValue, &decimalValue, digits, .down)
-
-        let formatter = NumberFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.minimumFractionDigits = digits
-        formatter.maximumFractionDigits = digits
-        return formatter.string(from: truncatedValue as NSDecimalNumber) ?? normalizedValue
     }
 }

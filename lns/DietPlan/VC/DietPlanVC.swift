@@ -17,6 +17,7 @@ class DietPlanVC: WHBaseViewVC {
     private var planEndDate = ""
     private var shouldAnimatePlanListRefreshAfterCreateSuccess = false
     private var shouldPreferNonePlanStateAfterProSuccess = false
+    private var trackedDietPlanCreatePageIndexes: Set<String> = []
     
     private lazy var buyListDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -115,6 +116,7 @@ class DietPlanVC: WHBaseViewVC {
             vc.planEndDate = self.planEndDate
             self.navigationController?.pushViewController(vc, animated: true)
         }
+        
         return vm
     }()
     lazy var elaExpiredAlertVm: ElaProExpiredAlertVM = {
@@ -321,6 +323,7 @@ extension DietPlanVC{
                 removeStateViews()
                 view.addSubview(emptyVm)
             }
+            sendDietPlanCreatePageViewIfNeeded(pageIndex: "1", pageTitle: "开始页")
             return
         }
         
@@ -330,6 +333,7 @@ extension DietPlanVC{
                     removeStateViews()
                     view.addSubview(emptyVm)
                 }
+                sendDietPlanCreatePageViewIfNeeded(pageIndex: "1", pageTitle: "开始页")
             }else{//以前购买过会员
                 showNonePlanState()
             }
@@ -416,5 +420,11 @@ extension DietPlanVC{
             
             UserInfoModel.shared.updateMsg(dict: dataObj)
         }
+    }
+
+    func sendDietPlanCreatePageViewIfNeeded(pageIndex: String, pageTitle: String) {
+        guard !trackedDietPlanCreatePageIndexes.contains(pageIndex) else { return }
+        trackedDietPlanCreatePageIndexes.insert(pageIndex)
+        EventLogUtils().sendDietPlanCreatePageView(pageIndex: pageIndex, pageTitle: pageTitle)
     }
 }

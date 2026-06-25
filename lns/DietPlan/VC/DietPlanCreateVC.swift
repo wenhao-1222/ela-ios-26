@@ -24,6 +24,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     private var scrollDragStartIndex: Int?
     private var isStepTransitioning = false
     private var isScrollBackInteractionInProgress = false
+    private var trackedDietPlanCreatePageIndexes: Set<String> = []
     private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
         let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
         gesture.edges = .left
@@ -89,6 +90,7 @@ class DietPlanCreateVC: WHBaseViewVC {
         syncProfileFromUserInfoIfNeeded(applyDefaultValues: true)
         observeDraftChanges()
         handleDraftRestoreFlow()
+        sendDietPlanCreatePageViewIfNeeded()
     }
     
     deinit {
@@ -298,6 +300,7 @@ extension DietPlanCreateVC{
         finishStepTransitionIfNeeded(animated: shouldAnimate)
         updateFullscreenPopGestureAvailability()
         persistDraftIfNeeded()
+        sendDietPlanCreatePageViewIfNeeded()
     }
 
     @objc func nextButtonTapAction() {
@@ -354,6 +357,7 @@ extension DietPlanCreateVC{
         finishStepTransitionIfNeeded(animated: shouldAnimate)
         updateFullscreenPopGestureAvailability()
         persistDraftIfNeeded()
+        sendDietPlanCreatePageViewIfNeeded()
     }
 
     func moveFromSexToNextStep() {
@@ -374,6 +378,7 @@ extension DietPlanCreateVC{
         updateFullscreenPopGestureAvailability()
         self.bodyfatVm.updateScrollView()
         persistDraftIfNeeded()
+        sendDietPlanCreatePageViewIfNeeded()
     }
 
     func updateNextButtonForCurrentStep(animated: Bool) {
@@ -1022,6 +1027,7 @@ extension DietPlanCreateVC{
         let vc = ElaProVC()
         vc.shouldClearDietPlanCreateDraftOnPurchaseSuccess = true
         vc.shouldShowDietPlanNoneStateOnPurchaseSuccess = true
+        vc.shouldTrackDietPlanCreateLoadingPage = true
 //            vc.param = param
         self.pushElaProVCWhenReady(vc)
     }
@@ -1473,6 +1479,40 @@ private extension DietPlanCreateVC {
         maxReachedIndex = max(maxReachedIndex, visibleIndex)
     }
 
+    func sendDietPlanCreatePageViewIfNeeded() {
+        guard let pageInfo = dietPlanCreatePageInfoForCurrentIndex() else { return }
+        guard !trackedDietPlanCreatePageIndexes.contains(pageInfo.pageIndex) else { return }
+        trackedDietPlanCreatePageIndexes.insert(pageInfo.pageIndex)
+        EventLogUtils().sendDietPlanCreatePageView(pageIndex: pageInfo.pageIndex, pageTitle: pageInfo.pageTitle)
+    }
+
+    func dietPlanCreatePageInfoForCurrentIndex() -> (pageIndex: String, pageTitle: String)? {
+        let visibleCenterX = SCREEN_WIDHT * (CGFloat(currentIndex) + 0.5)
+        let pages: [(view: UIView, pageIndex: String, pageTitle: String)] = [
+            (goalVm, "2", "你希望通过饮食计划达到什么目标"),
+            (sexVm, "3", "性别"),
+            (birthdayVm, "4", "年龄"),
+            (heightVm, "5", "身高"),
+            (weightVm, "6", "你现在的体重是"),
+            (bodyfatVm, "7", "你现在的体脂率是"),
+            (targetWeightVm, "8", "你的目标体重是"),
+            (eventsVm, "9", "你的日常活动量是多少"),
+            (importantVm, "10", "达成目标对你有多重要"),
+            (paceVm, "11", "你希望多快达成目标"),
+            (allergyVm, "12", "你是否有过敏或忌口"),
+            (barrierVm, "13", "你在以往控制饮食时最大的阻碍是"),
+            (adviceVm, "14", "做到以下几点"),
+            (mealStyleVm, "15", "你更喜欢哪种进餐方式"),
+            (eatStyleVm, "16", "确认你的饮食风格"),
+            (ketoHistoryVm, "17", "你之前有尝试过高蛋白/低碳/生酮饮食吗"),
+            (flavorVM, "18", "你喜欢什么类型的食物")
+        ]
+        return pages
+            .filter { !$0.view.isHidden }
+            .min { ($0.view.frame.midX - visibleCenterX).magnitude < ($1.view.frame.midX - visibleCenterX).magnitude }
+            .map { ($0.pageIndex, $0.pageTitle) }
+    }
+
     func isValidGender(_ gender: String) -> Bool {
         gender == "1" || gender == "2"
     }
@@ -1825,6 +1865,7 @@ extension DietPlanCreateVC: UIGestureRecognizerDelegate, UIScrollViewDelegate {
         scrollViewBase.isScrollEnabled = true
         scrollDragStartIndex = nil
         updateFullscreenPopGestureAvailability()
+        sendDietPlanCreatePageViewIfNeeded()
     }
     
     private func updateFullscreenPopGestureAvailability() {

@@ -23,7 +23,9 @@ class ElaProVC: WHBaseViewVC {
     var enterAICoachPreOnPurchaseSuccess = false
     var shouldClearDietPlanCreateDraftOnPurchaseSuccess = false
     var shouldShowDietPlanNoneStateOnPurchaseSuccess = false
+    var shouldTrackDietPlanCreateLoadingPage = false
     var pendingDietPlanCreateParameters: [String: Any]?
+    private var hasTrackedDietPlanCreateLoadingPage = false
     private var agreementAlertVm: ElaProAgreementAlertVM?
     
     lazy var purchaseLoadingMaskView: UIView = {
@@ -356,6 +358,7 @@ extension ElaProVC{
         }
         
         progressVm.isHidden = false
+        sendDietPlanCreateLoadingPageViewIfNeeded()
         planVm.isHidden = false
         readyVm.isHidden = false
         transformVm.isHidden = false
@@ -544,6 +547,15 @@ extension ElaProVC{
         if let message = message, !message.isEmpty {
             MCToast.mc_text(message)
         }
+    }
+
+    private func sendDietPlanCreateLoadingPageViewIfNeeded() {
+        guard shouldTrackDietPlanCreateLoadingPage,
+              !hasTrackedDietPlanCreateLoadingPage else {
+            return
+        }
+        hasTrackedDietPlanCreateLoadingPage = true
+        EventLogUtils().sendDietPlanCreatePageView(pageIndex: "19", pageTitle: "加载动画")
     }
 }
 

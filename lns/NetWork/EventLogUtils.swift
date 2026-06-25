@@ -68,6 +68,18 @@ class EventLogModel: NSObject {
 }
 
 class EventLogUtils {
+    func sendDietPlanCreatePageView(pageIndex: String, pageTitle: String) {
+        let text = "{\"pageIndex\":\"\(pageIndex)\",\"pageTitle\":\"\(pageTitle)\"}"
+        let param = ["eventName":"PAGE_VIEW",
+                     "params":["scenario":"食谱计划问卷",
+                               "text":text,
+                               "result":""]] as [String : Any]
+        DLLog(message: "sendDietPlanCreatePageView:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_event_log, parameters: param as [String : AnyObject]) { responseObject in
+
+        }
+    }
+
     func sendGuidanceV2PageView(pageIndex: String, pageTitle: String, bizType: String) {
         let text = "{\"pageIndex\":\"\(pageIndex)\",\"pageTitle\":\"\(pageTitle)\",\"bizType\":\"\(bizType)\"}"
         let param = ["eventName":"PAGE_VIEW",

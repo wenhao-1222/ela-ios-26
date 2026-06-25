@@ -231,12 +231,13 @@ final class DebugNetworkLogStore: ObservableObject {
                        parameters: Any?,
                        encodedParameters: Any? = nil,
                        taskId: String = "") -> UUID {
+        let requestAt = Date()
         let entry = DebugNetworkEntry(
             id: UUID(),
             method: method,
             url: url,
             taskId: taskId,
-            requestAt: Date(),
+            requestAt: requestAt,
             requestParameters: DebugNetworkLogStore.prettyText(parameters),
             encodedParameters: DebugNetworkLogStore.prettyText(encodedParameters),
             responseAt: nil,
@@ -404,6 +405,12 @@ final class DebugNetworkLogStore: ObservableObject {
         return formatter
     }()
 
+    fileprivate static let displayDateWithMillisecondsFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        return formatter
+    }()
+
     private static func excelHTML(for entries: [DebugNetworkEntry]) -> String {
         let rows = entries.map { entry in
             """
@@ -491,7 +498,7 @@ struct DebugNetworkEntry: Identifiable {
     }
 
     var requestTimeText: String {
-        DebugNetworkLogStore.displayDateFormatter.string(from: requestAt)
+        DebugNetworkLogStore.displayDateWithMillisecondsFormatter.string(from: requestAt)
     }
 
     var detailText: String {
@@ -526,6 +533,9 @@ private struct DebugNetworkView: View {
                         ForEach(store.entries) { entry in
                             NavigationLink(destination: DebugNetworkDetailView(entry: entry)) {
                                 VStack(alignment: .leading, spacing: 6) {
+                                    Text(entry.requestTimeText)
+                                        .font(.system(size: 11, design: .monospaced))
+                                        .foregroundColor(.secondary)
                                     HStack(spacing: 8) {
                                         Text(entry.method)
                                             .font(.system(size: 12, weight: .semibold, design: .monospaced))
@@ -603,6 +613,7 @@ private struct DebugNetworkDetailView: View {
     var body: some View {
         List {
             Section("Request") {
+                row("Start Time", entry.requestTimeText, monospaced: true)
                 row("Method", entry.method)
                 row("URL", entry.url, monospaced: true)
                 if entry.taskId.isEmpty == false {
