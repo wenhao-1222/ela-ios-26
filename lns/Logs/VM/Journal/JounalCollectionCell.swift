@@ -1468,10 +1468,21 @@ extension JounalCollectionCell{
         self.goalVm.proteinCircleVm.currentNumFloat = proteinTotal
         self.goalVm.fatCircleVm.currentNumFloat = fatTotal
         DLLog(message: "self.currentDayMsg:\(self.currentDayMsg)")
-        let caloriesTotal = WHUtils.fixedFractionString(caloriTotal, fractionDigits: 3)
-        let proteinTotalString = WHUtils.fixedFractionString(proteinTotal, fractionDigits: 3)
-        let carbohydrateTotalString = WHUtils.fixedFractionString(carboTotal, fractionDigits: 3)
-        let fatTotalString = WHUtils.fixedFractionString(fatTotal, fractionDigits: 3)
+        let caloriesTotal = WHUtils.fixedFractionString(caloriTotal, fractionDigits: 4)
+        let proteinTotalString = WHUtils.fixedFractionString(proteinTotal, fractionDigits: 4)
+        let carbohydrateTotalString = WHUtils.fixedFractionString(carboTotal, fractionDigits: 4)
+        let fatTotalString = WHUtils.fixedFractionString(fatTotal, fractionDigits: 4)
+        let msgDict = NSMutableDictionary(dictionary: self.currentDayMsg)
+        msgDict.setValue(param, forKey: "foods")
+        msgDict.setValue(caloriesTotal, forKey: "calories")
+        msgDict.setValue(carbohydrateTotalString, forKey: "carbohydrate")
+        msgDict.setValue(proteinTotalString, forKey: "protein")
+        msgDict.setValue(fatTotalString, forKey: "fat")
+        msgDict.setValue(caloriesTotal, forKey: "caloriesDouble")
+        msgDict.setValue(carbohydrateTotalString, forKey: "carbohydrateDouble")
+        msgDict.setValue(proteinTotalString, forKey: "proteinDouble")
+        msgDict.setValue(fatTotalString, forKey: "fatDouble")
+        self.currentDayMsg = msgDict
         LogsSQLiteManager.getInstance().updateLogs(sDate: self.queryDay,
                                                    eTime: Date().currentSeconds,
                                                    calori: caloriesTotal,

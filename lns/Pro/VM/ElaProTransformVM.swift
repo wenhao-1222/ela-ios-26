@@ -49,7 +49,7 @@ class ElaProTransformVM: UIView {
     
     private lazy var descTopLabel: UILabel = {
         let lab = UILabel()
-        let text = "你的计划已经准备就绪，加入 ELA Pro，今天就开始朝目标前进。"
+        let text = "你的计划已经准备就绪，加入 ELA PRO，今天就开始朝目标前进。"
         let font = UIFont.systemFont(ofSize: 16, weight: .regular)
         let color = UIColor.white
         let paragraphStyle = NSMutableParagraphStyle()

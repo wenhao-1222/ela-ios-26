@@ -198,39 +198,65 @@ extension LogsNaturalGoalVM{
             sportNumber = 0
         }
         DispatchQueue.global(qos: .userInitiated).async {
-            var caloriTotal = Double(0)
-            var carboTotal = Double(0)
-            var proteinTotal = Double(0)
-            var fatTotal = Double(0)
-            
+            var caloriTotal = dict.doubleValueForKey(key: "caloriesDouble")
+            var carboTotal = dict.doubleValueForKey(key: "carbohydrateDouble")
+            var proteinTotal = dict.doubleValueForKey(key: "proteinDouble")
+            var fatTotal = dict.doubleValueForKey(key: "fatDouble")
+
             let mealsArray = dict["foods"]as? NSArray ?? []
+
+            let hasCaloriesTotal = dict.stringValueForKey(key: "caloriesDouble").count > 0 || dict.stringValueForKey(key: "calories").count > 0
+            let hasCarbohydrateTotal = dict.stringValueForKey(key: "carbohydrateDouble").count > 0 || dict.stringValueForKey(key: "carbohydrate").count > 0
+            let hasProteinTotal = dict.stringValueForKey(key: "proteinDouble").count > 0 || dict.stringValueForKey(key: "protein").count > 0
+            let hasFatTotal = dict.stringValueForKey(key: "fatDouble").count > 0 || dict.stringValueForKey(key: "fat").count > 0
+            let hasTopLevelTotals = hasCaloriesTotal && hasCarbohydrateTotal && hasProteinTotal && hasFatTotal
             
-            DLLog(message: "==========================\(dict.stringValueForKey(key: "sdate")) ========================================")
-            for i in 0..<mealsArray.count{
-                let mealPerArr = mealsArray[i]as? NSArray ?? []
-                for j in 0..<mealPerArr.count{
-                    let dictTemp = mealPerArr[j]as? NSDictionary ?? [:]
-                    if dictTemp.stringValueForKey(key: "state") == "1"{
-                        let calori = dictTemp.doubleValueForKey(key: "calories")
-                        let carbohydrate = dictTemp.doubleValueForKey(key: "carbohydrate")
-                        let protein = dictTemp.doubleValueForKey(key: "protein")
-                        let fat = dictTemp.doubleValueForKey(key: "fat")
-                        
-                        caloriTotal = caloriTotal + calori
-                        carboTotal = carboTotal + carbohydrate
-                        proteinTotal = proteinTotal + protein
-                        fatTotal = fatTotal + fat
-                        
-                        let foodsMsg = dictTemp["foods"]as? NSDictionary ?? [:]
-                        
-                        DLLog(message: "食物：\(dictTemp.stringValueForKey(key:"fname"))  -- 脂肪：\(dictTemp.stringValueForKey(key:"fat"))")
-                        DLLog(message: "\(foodsMsg.stringValueForKey(key: "fat")) *  \(dictTemp.stringValueForKey(key:"qty"))(qty)  =  \(foodsMsg.doubleValueForKey(key: "fat") * dictTemp.doubleValueForKey(key:"qty") * 0.01)")
-                        
-                        DLLog(message: "总脂肪：\(fatTotal)")
+            if hasTopLevelTotals {
+                if dict.stringValueForKey(key: "caloriesDouble").count == 0 {
+                    caloriTotal = dict.doubleValueForKey(key: "calories")
+                }
+                if dict.stringValueForKey(key: "carbohydrateDouble").count == 0 {
+                    carboTotal = dict.doubleValueForKey(key: "carbohydrate")
+                }
+                if dict.stringValueForKey(key: "proteinDouble").count == 0 {
+                    proteinTotal = dict.doubleValueForKey(key: "protein")
+                }
+                if dict.stringValueForKey(key: "fatDouble").count == 0 {
+                    fatTotal = dict.doubleValueForKey(key: "fat")
+                }
+            } else {
+                // Fallback for old or partial dictionaries that only carry foods details.
+                caloriTotal = Double(0)
+                carboTotal = Double(0)
+                proteinTotal = Double(0)
+                fatTotal = Double(0)
+                DLLog(message: "==========================\(dict.stringValueForKey(key: "sdate")) ========================================")
+                for i in 0..<mealsArray.count{
+                    let mealPerArr = mealsArray[i]as? NSArray ?? []
+                    for j in 0..<mealPerArr.count{
+                        let dictTemp = mealPerArr[j]as? NSDictionary ?? [:]
+                        if dictTemp.stringValueForKey(key: "state") == "1"{
+                            let calori = dictTemp.doubleValueForKey(key: "calories")
+                            let carbohydrate = dictTemp.doubleValueForKey(key: "carbohydrate")
+                            let protein = dictTemp.doubleValueForKey(key: "protein")
+                            let fat = dictTemp.doubleValueForKey(key: "fat")
+
+                            caloriTotal = caloriTotal + calori
+                            carboTotal = carboTotal + carbohydrate
+                            proteinTotal = proteinTotal + protein
+                            fatTotal = fatTotal + fat
+
+                            let foodsMsg = dictTemp["foods"]as? NSDictionary ?? [:]
+
+                            DLLog(message: "食物：\(dictTemp.stringValueForKey(key:"fname"))  -- 脂肪：\(dictTemp.stringValueForKey(key:"fat"))")
+                            DLLog(message: "\(foodsMsg.stringValueForKey(key: "fat")) *  \(dictTemp.stringValueForKey(key:"qty"))(qty)  =  \(foodsMsg.doubleValueForKey(key: "fat") * dictTemp.doubleValueForKey(key:"qty") * 0.01)")
+
+                            DLLog(message: "总脂肪：\(fatTotal)")
+                        }
                     }
                 }
+                DLLog(message: "=======================================================================")
             }
-            DLLog(message: "=======================================================================")
             
             DispatchQueue.main.async {
 //                self.caloriCircleVm.totalNumberLabel.text = "/\(caloriTarget+sportNumber)"

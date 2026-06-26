@@ -39,7 +39,7 @@ class LogsSQLiteUploadManager {
         }
     }
     
-    func scheduleUploadLogsBySDate(sdate: String, delay: TimeInterval = 1.0, shouldRefreshTodayJournal: Bool = true) {
+    func scheduleUploadLogsBySDate(sdate: String, delay: TimeInterval = 0.3, shouldRefreshTodayJournal: Bool = true) {
         Self.uploadSyncQueue.async {
             Self.queuedDates.insert(sdate)
             let existingRefreshFlag = Self.queuedRefreshTodayJournalByDate[sdate] ?? false
@@ -119,7 +119,7 @@ class LogsSQLiteUploadManager {
             
             Self.pendingUploadWorkItems[sdate] = workItem
             // Keep re-queued uploads for the same day spaced out to reduce backend date-level transaction conflicts.
-            Self.uploadSyncQueue.asyncAfter(deadline: .now() + 1.0, execute: workItem)
+            Self.uploadSyncQueue.asyncAfter(deadline: .now() + 0.3, execute: workItem)
         }
     }
 
@@ -258,6 +258,11 @@ class LogsSQLiteUploadManager {
             }
             LogsSQLiteManager.getInstance().updateUploadStatus(sDate: dict.stringValueForKey(key: "sdate"), update: true)
             LogsSQLiteManager.getInstance().updateLogsEtime(sDate: dict.stringValueForKey(key: "sdate"), endTime: dataObj["etime"]as? String ?? "\(Date().currentSeconds)")
+            if dict.stringValueForKey(key: "sdate") == Date().todayDate {
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: nil)
+                }
+            }
             completion?()
         } failure: { _ in
             completion?()
