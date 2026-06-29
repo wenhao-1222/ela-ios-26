@@ -24,15 +24,15 @@ class ElaLaunchVC: WHBaseViewVC {
         }else{
             self.peacockImgView.isHidden = true
             tapButton.isHidden = true
-            UIView.animate(withDuration: 0.5, delay: 0.25,options: .curveLinear) {
+//            UIView.animate(withDuration: 0.5, delay: 0.25,options: .curveLinear) {
                 self.logoImgView.alpha = 1
                 self.logoLabel.alpha = 1
                 self.elaProIconImg.alpha = 1
-            }
+//            }
         }
-        let delayTime = isVip ? 1.3 : 2.6
+        let delayTime = 1.0//isVip ? 1.3 : 2.6
         DLLog(message: "ElaLaunchVC start：\(Date().currentSeconds)   - \(Date().timeStampMill)")
-        DispatchQueue.main.asyncAfter(deadline: .now()+delayTime, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delayTime, execute: {
             DLLog(message: "ElaLaunchVC end:\(Date().currentSeconds)   - \(Date().timeStampMill)")
             self.lchBlock?()
         })

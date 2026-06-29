@@ -59,11 +59,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         let storedToken = UserDefaults.standard.value(forKey: token) as? String ?? ""
         let storedIsLaunchWelcome = UserDefaults.standard.value(forKey: isLaunchWelcome)as? String ?? ""
         let rootViewController: UIViewController
-        if storedIsLaunchWelcome == "" && storedToken == ""{
-//            self.window?.rootViewController = WelcomeLaunchVC()
-//            self.window?.rootViewController = FirstLaunchVC()
-            rootViewController = FirstLaunchVC()
-        }else{
+//        if storedIsLaunchWelcome == "" && storedToken == ""{
+////            self.window?.rootViewController = WelcomeLaunchVC()
+////            self.window?.rootViewController = FirstLaunchVC()
+//            rootViewController = FirstLaunchVC()
+//        }else{
             let elaLchVc = ElaLaunchVC()
             
             elaLchVc.lchBlock = {[weak self, weak elaLchVc] in
@@ -103,12 +103,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                     UserInfoModel.shared.uId = ""
                     UserInfoModel.shared.token = ""
                     
-                    let agreeProtocal = UserDefaults.standard.value(forKey: "agreeProtocal") as? String ?? ""
-                    if agreeProtocal.count > 0 {
+//                    let agreeProtocal = UserDefaults.standard.value(forKey: "agreeProtocal") as? String ?? ""
+//                    if agreeProtocal.count > 0 {
                         rootVc = UINavigationController(rootViewController: FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true))
-                    }else{
-                        rootVc = UINavigationController(rootViewController: WelcomeVC())
-                    }
+//                    }else{
+//                        rootVc = UINavigationController(rootViewController: WelcomeVC())
+//                    }
                 }
                 UIView.transition(with: window, duration: 0.35, options: .transitionCrossDissolve, animations: {
                                     window.rootViewController = rootVc
@@ -119,7 +119,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
             
 //            self.window?.rootViewController = elaLchVc
             rootViewController = elaLchVc
-        }
+//        }
         window?.rootViewController = rootViewController
         launchWindow.makeKeyAndVisible()
         //2026年02月04日13:41:23   个性化设置新功能红点不再显示

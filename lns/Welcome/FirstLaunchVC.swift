@@ -133,7 +133,8 @@ class FirstLaunchVC: WHBaseViewVC {
     
     lazy var secondLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.text = "我们会将实测有效的功能，\n全部开放供你使用，\n助你高效实现目标" // 目标文案
+//        lab.text = "我们会将实测有效的功能，\n全部开放供你使用，\n助你高效实现目标" // 目标文案
+        lab.text = "专业健身营养管理，\n助你更高效增肌减脂"
         lab.font = .systemFont(ofSize: 20, weight: .medium) // 目标样式
         lab.textColor = .white
         lab.textAlignment = .left
@@ -147,7 +148,8 @@ class FirstLaunchVC: WHBaseViewVC {
         btn.backgroundColor = .white
         btn.layer.cornerRadius = kFitWidth(27)
         btn.clipsToBounds = true
-        btn.setTitle("我准备好了", for: .normal)
+        btn.setTitle("开始", for: .normal)
+//        btn.setTitle("我准备好了", for: .normal)
         btn.setTitleColor(WHColor_16(colorStr: "0F1214"), for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         btn.layer.opacity = 0
@@ -692,18 +694,21 @@ extension FirstLaunchVC{
         }
         secondLogoImgView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(25))
-            make.top.equalTo(getTopSafeAreaHeight()+kFitWidth(432))
+//            make.top.equalTo(getTopSafeAreaHeight()+kFitWidth(432))
+            make.bottom.equalTo(secondLabel.snp.top).offset(kFitWidth(-20))
             make.width.equalTo(kFitWidth(115))
             make.height.equalTo(kFitWidth(20))
         }
         secondLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(25))
-            make.top.equalTo(secondLogoImgView.snp.bottom).offset(kFitWidth(20))
+//            make.top.equalTo(secondLogoImgView.snp.bottom).offset(kFitWidth(20))
+            make.bottom.equalTo(confirmButton.snp.top).offset(kFitWidth(-29))
         }
         confirmButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(25))
             make.right.equalTo(kFitWidth(-25))
-            make.top.equalTo(secondLabel.snp.bottom).offset(kFitWidth(29))
+//            make.top.equalTo(secondLabel.snp.bottom).offset(kFitWidth(29))
+            make.bottom.equalTo(kFitWidth(-60)-getBottomSafeAreaHeight())
             make.height.equalTo(kFitWidth(54))
         }
     }
