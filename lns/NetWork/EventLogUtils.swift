@@ -92,6 +92,14 @@ class EventLogUtils {
         }
     }
 
+    func sendGuidanceV2LoginRegisteredResult(registered: String) {
+        if registered == "no" {
+            sendGuidanceV2PageView(pageIndex: "98", pageTitle: "账号不存在", bizType: "")
+        } else if registered == "yes" {
+            sendGuidanceV2PageView(pageIndex: "99", pageTitle: "账号存在", bizType: "")
+        }
+    }
+
     func sendEventLogRequest(eventName:EVENT_TYPE,scenarioType:SCENARIO_TYPE,text:String?,result:Bool=true){
         if UserInfoModel.shared.uId.count > 1 && UserInfoModel.shared.token.count > 1{
             

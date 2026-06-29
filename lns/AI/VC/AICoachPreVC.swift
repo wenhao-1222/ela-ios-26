@@ -9,6 +9,7 @@ import UIKit
 import SwiftUI
 import SnapKit
 import MCToast
+import DeviceKit
 
 class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
 
@@ -421,7 +422,7 @@ private extension AICoachPreVC {
     }
 
     func backgroundBottomOffsetForCircleAlignment() -> CGFloat {
-        guard isIpad(),
+        guard shouldAlignBackgroundCircleWithOrb,
               view.bounds.width > 0,
               view.bounds.height > 0 else {
             return 0
@@ -449,6 +450,28 @@ private extension AICoachPreVC {
         }
 
         return high
+    }
+
+    var shouldAlignBackgroundCircleWithOrb: Bool {
+        guard isIpad() == false else { return true }
+        guard UIDevice.current.userInterfaceIdiom == .phone,
+              isIPhone7Plus,
+              view.safeAreaInsets.bottom <= 0.5 else {
+            return false
+        }
+
+        let size = view.bounds.size
+        return abs(size.width - 414.0) <= 0.5
+            && abs(size.height - 736.0) <= 0.5
+    }
+
+    var isIPhone7Plus: Bool {
+        switch Device.current {
+        case .iPhone7Plus, .simulator(.iPhone7Plus):
+            return true
+        default:
+            return false
+        }
     }
 
     func backgroundCircleCenterY(bottomOffset: CGFloat) -> CGFloat {

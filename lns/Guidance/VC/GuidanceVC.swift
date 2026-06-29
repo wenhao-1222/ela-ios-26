@@ -65,6 +65,7 @@ class GuidanceVC: WHBaseViewVC {
     private var scrollDragStartIndex: Int?
     private var isStepTransitioning = false
     private var hasCompletedProgressChartAnimation = false
+    private var shouldTrackLoginAlertRegisteredResult = false
     private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
         let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
         gesture.edges = .left
@@ -184,9 +185,11 @@ class GuidanceVC: WHBaseViewVC {
     lazy var loginAlertVm : LoginAlertVm = {
         let vm = LoginAlertVm.init(frame: .zero)
         vm.weChatLoginBlock = {()in
+            self.markLoginAlertRegisteredResultTracking()
             WXUtil().wxLogin()
         }
         vm.appleLoginBlock = {()in
+            self.markLoginAlertRegisteredResultTracking()
             let appleIDProvider = ASAuthorizationAppleIDProvider()
             let request = appleIDProvider.createRequest()
             request.requestedScopes = [.fullName, .email]
@@ -197,8 +200,10 @@ class GuidanceVC: WHBaseViewVC {
             authorizationController.performRequests()
         }
         vm.phoneLoginBlock = {()in
+            self.markLoginAlertRegisteredResultTracking()
             self.loginAlertVm.hiddenLoginView()
             let vc = LoginVC()
+            vc.shouldTrackGuidanceV2LoginRegisteredResult = self.consumeLoginAlertRegisteredResultTracking()
             if self.navigationController != nil{
                 self.navigationController?.pushViewController(vc, animated: true)
             }else{
@@ -1150,6 +1155,7 @@ extension GuidanceVC{
     }
 
     func finishGuidanceFlow() {
+        shouldTrackLoginAlertRegisteredResult = false
         UserInfoModel.shared.showNotifiAuthoriAlertVM = false
         if isFixedTargetFlowEnabled {
             QuestinonaireMsgModel.shared.surveytype = "custom_v2"
@@ -1630,6 +1636,7 @@ extension GuidanceVC{
         })
    }
     @objc func wechatLogin() {
+        trackLoginAlertRegisteredResultIfNeeded(registered: UserInfoModel.shared.isRegist)
         if UserInfoModel.shared.isRegist == "yes"{
             if UserInfoModel.shared.state == 1 {
                 self.completeLoginSuccessAndEnterApp()
@@ -1639,6 +1646,21 @@ extension GuidanceVC{
         }else{
             notRegistVm.showView()
         }
+    }
+
+    func markLoginAlertRegisteredResultTracking() {
+        shouldTrackLoginAlertRegisteredResult = true
+    }
+
+    func consumeLoginAlertRegisteredResultTracking() -> Bool {
+        let shouldTrack = shouldTrackLoginAlertRegisteredResult
+        shouldTrackLoginAlertRegisteredResult = false
+        return shouldTrack
+    }
+
+    func trackLoginAlertRegisteredResultIfNeeded(registered: String) {
+        guard consumeLoginAlertRegisteredResultTracking() else { return }
+        EventLogUtils().sendGuidanceV2LoginRegisteredResult(registered: registered)
     }
 }
 
@@ -1883,6 +1905,7 @@ extension GuidanceVC{
             DLLog(message: "sendAppleIdLoginRequest:\(dataObj)")
 
             UserInfoModel.shared.isRegist = dataObj["registered"]as? String ?? ""
+            self.trackLoginAlertRegisteredResultIfNeeded(registered: dataObj["registered"]as? String ?? "")
             if dataObj["registered"]as? String ?? "" == "yes"{
                 if dataObj.stringValueForKey(key: "state") == "1" {
 //                    MCToast.mc_text("登录成功！")
