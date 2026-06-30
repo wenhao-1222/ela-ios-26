@@ -51,7 +51,15 @@ class UserInfoModel {
     private var isHandlingForcedLogout = false
     private(set) var isLoggingOut = false
     
-    var uId = ""
+    var uId = "" {
+        didSet {
+            let oldUid = oldValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            let newUid = uId.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !oldUid.isEmpty, oldUid != newUid else { return }
+            // 切账号/退出时，清掉旧账号在 NetworkMonitor 里挂起或等待重试的请求。
+            NetworkMonitor.shared.clearPendingRequests(ownerUid: oldUid)
+        }
+    }
     var registDate = Date().nextDay(days: 0)
     var birthDay = ""
     var birthYear = ""
@@ -469,6 +477,7 @@ extension UserInfoModel{
     /// 当 401 强制下线时传 `true`，会在切回欢迎页之前，额外释放旧的 tabbar 页面层级，
     /// 避免这些旧页面因为引用残留继续响应通知或继续发请求。
     func logoutClearMsg(teardownTabBarControllers: Bool = false) {
+        NetworkMonitor.shared.clearPendingRequests(ownerUid: UserInfoModel.shared.uId)
         LogsSQLiteUploadManager().clearUploadQueue()
         LogsMealsAlertSetManage().removeAllNotifi()
         clearDietPlanCreateDraftCache()

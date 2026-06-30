@@ -198,6 +198,9 @@ class WHNetworkUtil: SessionManager {
             "parameters": parameters ?? [:],
             "taskId": taskId
         ]
+        let currentOwnerUid = UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cachedOwnerUid = (UserDefaults.standard.value(forKey: userId) as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let requestOwnerUid = currentOwnerUid.isEmpty ? cachedOwnerUid : currentOwnerUid
 
         NetworkMonitor.shared.addRequest ({
             if urlString == URL_get_current_nutrition {
@@ -337,6 +340,7 @@ class WHNetworkUtil: SessionManager {
                                 }
 
                                 MCToast.mc_remove()
+                                NetworkMonitor.shared.clearPendingRequests(ownerUid: UserInfoModel.shared.uId)
                                 LogsSQLiteUploadManager().clearUploadQueue()
                                 LogsMealsAlertSetManage().removeAllNotifi()
                                 
@@ -479,7 +483,7 @@ class WHNetworkUtil: SessionManager {
                             retryMsgDict["error"] = response.error?.localizedDescription ?? ""
                             NetworkMonitor.shared.retryLater({
                                 self.POST(urlString: urlString, parameters: parameters, isNeedToast: isNeedToast, vc: vc, timeOut: timeOut, taskId: taskId, requestConfig: requestConfig, success: success, failure: failure)
-                            }, retryCount: 0, msgDict: retryMsgDict)
+                            }, retryCount: 0, msgDict: retryMsgDict, ownerUid: requestOwnerUid)
                         } else {
                             DLLog(message: "[NetworkMonitor] 请求失败，但禁止重试，直接回调失败 - \(urlString)")
                             DispatchQueue.main.async {
@@ -490,7 +494,7 @@ class WHNetworkUtil: SessionManager {
                     }
                 }
             }
-        })
+        }, ownerUid: requestOwnerUid)
     }
 
     public func md5(strs:String) ->String!{

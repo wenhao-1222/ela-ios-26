@@ -19,9 +19,12 @@ class NetworkMonitor {
         var allowRetry: Bool
         var timestamp: Date
         var msgDict: [String: Any]
+        var ownerUid: String?
     }
 
     private var pendingRequests: [PendingRequest] = []
+    private var retryGenerationByOwnerUid: [String: Int] = [:]
+    private var retryGenerationForAll = 0
 
     private let maxRetryCount = 3
     private let baseDelay: TimeInterval = 1.0 // 初始延迟1秒
@@ -58,32 +61,54 @@ class NetworkMonitor {
         }
     }
 
-    func addRequest(_ request: @escaping () -> Void, allowRetry: Bool = true, msgDict: [String: Any] = [:]) {
+    func addRequest(_ request: @escaping () -> Void, allowRetry: Bool = true, msgDict: [String: Any] = [:], ownerUid: String? = nil) {
         if isConnected || !allowRetry {
             request()
         } else {
             print("[NetworkMonitor] 无网络，挂起请求")
-            let pending = PendingRequest(retryCount: 0, request: request, allowRetry: allowRetry, timestamp: Date(), msgDict: msgDict)
+            let pending = PendingRequest(retryCount: 0, request: request, allowRetry: allowRetry, timestamp: Date(), msgDict: msgDict, ownerUid: normalizedOwnerUid(ownerUid))
             pendingRequests.append(pending)
         }
     }
 
-    func retryLater(_ request: @escaping () -> Void, retryCount: Int, msgDict: [String: Any] = [:]) {
+    func retryLater(_ request: @escaping () -> Void, retryCount: Int, msgDict: [String: Any] = [:], ownerUid: String? = nil) {
         if retryCount < maxRetryCount {
             let delay = baseDelay * pow(2.0, Double(retryCount))
             print("[NetworkMonitor] 延迟 \(delay)s 后重试，第 \(retryCount + 1) 次")
+            let requestOwnerUid = normalizedOwnerUid(ownerUid)
+            let globalGeneration = retryGenerationForAll
+            let ownerGeneration = retryGeneration(ownerUid: requestOwnerUid)
 
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
-                if self?.isConnected == true {
+                guard let self = self else { return }
+                if self.retryGenerationForAll != globalGeneration || self.retryGeneration(ownerUid: requestOwnerUid) != ownerGeneration {
+                    print("[NetworkMonitor] 账号已切换，丢弃旧账号重试请求")
+                    return
+                }
+                if self.isConnected == true {
                     request()
                 } else {
-                    self?.retryLater(request, retryCount: retryCount + 1,msgDict:msgDict)
+                    self.retryLater(request, retryCount: retryCount + 1,msgDict:msgDict, ownerUid: requestOwnerUid)
                 }
             }
         } else {
             print("[NetworkMonitor] 超过最大重试次数，丢弃请求")
             reportRequestEvent(reason: "max_retry_exceeded", info: msgDict, retryCount: retryCount)
         }
+    }
+
+    func clearPendingRequests(ownerUid: String? = nil) {
+        guard let ownerUid = normalizedOwnerUid(ownerUid) else {
+            pendingRequests.removeAll()
+            retryGenerationForAll += 1
+            retryGenerationByOwnerUid.removeAll()
+            return
+        }
+
+        pendingRequests.removeAll { pending in
+            pending.ownerUid == ownerUid
+        }
+        retryGenerationByOwnerUid[ownerUid] = retryGeneration(ownerUid: ownerUid) + 1
     }
 
     private func retryPendingRequests() {
@@ -108,9 +133,19 @@ class NetworkMonitor {
 
         for item in validRequests {
             if item.allowRetry {
-                retryLater(item.request, retryCount: item.retryCount,msgDict: item.msgDict)
+                retryLater(item.request, retryCount: item.retryCount,msgDict: item.msgDict, ownerUid: item.ownerUid)
             }
         }
+    }
+
+    private func normalizedOwnerUid(_ ownerUid: String?) -> String? {
+        let uid = ownerUid?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return uid.isEmpty ? nil : uid
+    }
+
+    private func retryGeneration(ownerUid: String?) -> Int {
+        guard let ownerUid = ownerUid else { return 0 }
+        return retryGenerationByOwnerUid[ownerUid] ?? 0
     }
 
     func shouldAllowRetry(for urlString: String) -> Bool {
