@@ -740,6 +740,7 @@
 		EC26E62F2BBD2667001E4381 /* BindPhoneVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC26E62E2BBD2666001E4381 /* BindPhoneVC.swift */; };
 		EC26E6312BBD26CE001E4381 /* BIndPhoneTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC26E6302BBD26CE001E4381 /* BIndPhoneTopVM.swift */; };
 		EC26E6332BBD2819001E4381 /* BindPhoneVerifyCodeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC26E6322BBD2819001E4381 /* BindPhoneVerifyCodeButton.swift */; };
+		EC26E6352FEE8C5B001E4381 /* ElaHealthDataConfirmAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC26E6342FEE8C5B001E4381 /* ElaHealthDataConfirmAlert.swift */; };
 		EC2802EB2F19D33B00FEF08D /* HabitGuideFirstVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2802EA2F19D33300FEF08D /* HabitGuideFirstVM.swift */; };
 		EC2802EF2F19DC9A00FEF08D /* HabitGuideVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2802EE2F19DC9300FEF08D /* HabitGuideVM.swift */; };
 		EC2802F12F19DF5C00FEF08D /* HabitGuideSecondVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2802F02F19DF5800FEF08D /* HabitGuideSecondVM.swift */; };
@@ -2812,6 +2813,7 @@
 		ECD0FEE42BABD25B001232C9 /* EmptyViewWithBtn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyViewWithBtn.swift; sourceTree = "<group>"; };
 		ECD0FEE72BABD25B001232C9 /* WHBaseViewVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WHBaseViewVC.swift; sourceTree = "<group>"; };
 		ECD0FEE82BABD25B001232C9 /* WHCommonH5VC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WHCommonH5VC.swift; sourceTree = "<group>"; };
+		EC26E6342FEE8C5B001E4381 /* ElaHealthDataConfirmAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaHealthDataConfirmAlert.swift; sourceTree = "<group>"; };
 		ECD0FEE92BABD25B001232C9 /* WHToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WHToast.swift; sourceTree = "<group>"; };
 		ECD0FF222BABDC07001232C9 /* LocalAuthenUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAuthenUtil.swift; sourceTree = "<group>"; };
 		ECD0FF332BABE030001232C9 /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
@@ -3031,6 +3033,7 @@
 				ECFACE882BC7E575003CDA3A /* TableViewNoDataVM.swift */,
 				ECD0FEE72BABD25B001232C9 /* WHBaseViewVC.swift */,
 				ECD0FEE82BABD25B001232C9 /* WHCommonH5VC.swift */,
+				EC26E6342FEE8C5B001E4381 /* ElaHealthDataConfirmAlert.swift */,
 				A73348A92DACED6B00AD747A /* GradientView.swift */,
 				A7EE9E0A2DB74228003E767A /* DottedLineView.swift */,
 				ECAE372C2F5E694F0051F234 /* ElaExpandedTapButton.swift */,
@@ -7163,6 +7166,7 @@
 				A7BAE5E92D811F54000A690A /* PropotionResultVC.swift in Sources */,
 				EC4DE2ED2BCF7B2D0090A7BD /* DataAddItemVM.swift in Sources */,
 				ECD0FF1E2BABD25B001232C9 /* WHCommonH5VC.swift in Sources */,
+				EC26E6352FEE8C5B001E4381 /* ElaHealthDataConfirmAlert.swift in Sources */,
 				A75012AC2DF00E93009BCA7E /* GuideTotalFirstVM.swift in Sources */,
 				A77F96062D02C86D0084D4FB /* PublishTitleCell.swift in Sources */,
 				EC30F2B62C8702B300E7BD33 /* NaturalStatNaviVM.swift in Sources */,

@@ -317,11 +317,11 @@ class WHBaseViewVC: ViewController {
     func changeRootVcToWelcome(teardownTabBarControllers: Bool = false) {
         let agreeProtocal = UserDefaults.standard.value(forKey: "agreeProtocal") as? String ?? ""
         let navVc: UINavigationController
-        if agreeProtocal.count == 0 {
-            navVc = UINavigationController(rootViewController: WelcomeVC())
-        } else {
+//        if agreeProtocal.count == 0 {
+////            navVc = UINavigationController(rootViewController: WelcomeVC())
+//        } else {
             navVc = UINavigationController(rootViewController: FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true))
-        }
+//        }
         appDelegate.switchRootViewController(to: navVc,from: self, teardownTabBarControllers: teardownTabBarControllers)
     }
     @objc func backTapAction(){

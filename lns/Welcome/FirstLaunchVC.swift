@@ -175,8 +175,9 @@ extension FirstLaunchVC{
 //            self.confirmButton.isUserInteractionEnabled = true
 //        }
 
+        let delayT = 0.5//delay
         UIView.animate(withDuration: duration,
-                       delay: delay,
+                       delay: delayT,
                        options: [.curveEaseInOut, .beginFromCurrentState]) {
             self.confirmButton.layer.opacity = 1
         } completion: { finished in
@@ -716,13 +717,17 @@ extension FirstLaunchVC{
 
 extension FirstLaunchVC{
     @objc func startBtnAction() {
-        UserDefaults.standard.setValue("1", forKey: isLaunchWelcome)
-        if forceNeedBuildPlanOnConfirm {
-            changeRootToNeedBuildPlan()
-        } else {
-            self.changeRootVC()
-        }
         
+        ElaHealthDataConfirmAlert.show { [self] in
+            UserDefaults.standard.setValue("1", forKey: isLaunchWelcome)
+            if forceNeedBuildPlanOnConfirm {
+                changeRootToNeedBuildPlan()
+            } else {
+                self.changeRootVC()
+            }
+        } onExit: {
+            exit(0)
+        }
     }
     private func changeRootToNeedBuildPlan() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -735,7 +740,6 @@ extension FirstLaunchVC{
         view.layoutIfNeeded()
         let transitionSnapshot = view.snapshotView(afterScreenUpdates: false)
         appDelegate.switchRootViewController(to: navVc,from: self, transitionSnapshot: transitionSnapshot)
-        
         
         UIView.transition(with: appDelegate.window!, duration: 0.35, options: .transitionCrossDissolve, animations: {
             appDelegate.window!.rootViewController = navVc
