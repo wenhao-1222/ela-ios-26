@@ -66,17 +66,46 @@ class GuidanceVC: WHBaseViewVC {
     private var isStepTransitioning = false
     private var hasCompletedProgressChartAnimation = false
     private var shouldTrackLoginAlertRegisteredResult = false
+    private let dietImportantGroup = UserInfoModel.shared.abTestModel.diet_important
     private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
         let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
         gesture.edges = .left
         gesture.delegate = self
         return gesture
     }()
-    private let defaultStepsArray = [7,7,9]
-    private let defaultStepsArrayWithoutCardio = [7,6,9]
-    private let defaultStepsArrayUncertain = [7,7,8]
-    private let defaultStepsArrayWithoutCardioUncertain = [7,6,8]
-    private let fixedTargetStepsArray = [4,5,5]
+    private var hiddenGuidanceSteps: Set<FlowStep> {
+        var steps: Set<FlowStep> = [.dietRecord, .progressChart]
+        if shouldHideElaProTransitionForDietImportantB {
+            steps.insert(.elaProTransition)
+        }
+        return steps
+    }
+    // dietRecordVm 和 progressChartVm 暂不展示；原进度数组仍保留在这里，展示用进度从原数组扣掉这两个首段步骤。
+    private let hiddenGuidanceProgressStepsInFirstSegment = 2
+    // diet_important B 组暂不展示 elaProTransitionVm；原 flow / VM / 埋点映射保留。
+    private var hiddenGuidanceProgressStepsInThirdSegment: Int {
+        shouldHideElaProTransitionForDietImportantB ? 1 : 0
+    }
+    private let defaultStepsArrayIncludingDietRecordAndProgressChart = [7,7,9]
+    private let defaultStepsArrayWithoutCardioIncludingDietRecordAndProgressChart = [7,6,9]
+    private let defaultStepsArrayUncertainIncludingDietRecordAndProgressChart = [7,7,8]
+    private let defaultStepsArrayWithoutCardioUncertainIncludingDietRecordAndProgressChart = [7,6,8]
+    private let fixedTargetStepsArrayIncludingDietRecordAndProgressChart = [4,5,5]
+    private var defaultStepsArray: [Int] {
+        displayedStepsArray(from: defaultStepsArrayIncludingDietRecordAndProgressChart)
+    }
+    private var defaultStepsArrayWithoutCardio: [Int] {
+        displayedStepsArray(from: defaultStepsArrayWithoutCardioIncludingDietRecordAndProgressChart)
+    }
+    private var defaultStepsArrayUncertain: [Int] {
+        displayedStepsArray(from: defaultStepsArrayUncertainIncludingDietRecordAndProgressChart)
+    }
+    private var defaultStepsArrayWithoutCardioUncertain: [Int] {
+        displayedStepsArray(from: defaultStepsArrayWithoutCardioUncertainIncludingDietRecordAndProgressChart)
+    }
+    private var fixedTargetStepsArray: [Int] {
+        displayedStepsArray(from: fixedTargetStepsArrayIncludingDietRecordAndProgressChart)
+    }
     private let defaultFlow: [FlowStep] = [
         .sex, .dietRecord, .progressChart, .fixedTarget,
         .birthday, .weight, .height, .bodyfat, .takeoutFrequency,
@@ -125,17 +154,21 @@ class GuidanceVC: WHBaseViewVC {
     private var shouldSkipCardioFrequencyStep: Bool {
         !isFixedTargetFlowEnabled && QuestinonaireMsgModel.shared.guidanceExerciseCaloriesRecordType == "yes"
     }
+    private var shouldHideElaProTransitionForDietImportantB: Bool {
+        dietImportantGroup == .B
+    }
     private var activeFlow: [FlowStep] {
+        let sourceFlow: [FlowStep]
         if isFixedTargetFlowEnabled {
-            return fixedTargetFlow
+            sourceFlow = fixedTargetFlow
+        } else if isUncertainFixedTargetSelection {
+            sourceFlow = shouldSkipCardioFrequencyStep ? defaultFlowNoCardioFrequencyUncertain : defaultFlowUncertain
+        } else if shouldSkipCardioFrequencyStep {
+            sourceFlow = defaultFlowNoCardioFrequency
+        } else {
+            sourceFlow = defaultFlow
         }
-        if isUncertainFixedTargetSelection {
-            return shouldSkipCardioFrequencyStep ? defaultFlowNoCardioFrequencyUncertain : defaultFlowUncertain
-        }
-        if shouldSkipCardioFrequencyStep {
-            return defaultFlowNoCardioFrequency
-        }
-        return defaultFlow
+        return sourceFlow.filter { !hiddenGuidanceSteps.contains($0) }
     }
     private var totalSteps: Int {
         activeFlow.count
@@ -641,6 +674,16 @@ extension GuidanceVC{
         let prefixSteps = activeFlow.prefix(max(0, flowIndex + 1))
         let actualStepCount = prefixSteps.filter { shouldCountForProgress($0) }.count
         return max(0, actualStepCount - 1)
+    }
+
+    func displayedStepsArray(from originalSteps: [Int]) -> [Int] {
+        guard !originalSteps.isEmpty else { return originalSteps }
+        var displayedSteps = originalSteps
+        displayedSteps[0] = max(0, displayedSteps[0] - hiddenGuidanceProgressStepsInFirstSegment)
+        if displayedSteps.indices.contains(2) {
+            displayedSteps[2] = max(0, displayedSteps[2] - hiddenGuidanceProgressStepsInThirdSegment)
+        }
+        return displayedSteps
     }
 
     func shouldDisableBack(for step: FlowStep) -> Bool {

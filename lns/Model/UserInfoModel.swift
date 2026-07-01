@@ -14,6 +14,13 @@ enum ABTEST_TYPE {
     case B
 }
 
+//2026年06月30日14:13:27  弱化食谱ABC Test
+enum ABC_TEST_TYPE {
+    case A
+    case B
+    case C
+}
+
 //审核状态
 enum AUDIT_STATUS {
     case pass     //审核通过
@@ -26,6 +33,8 @@ class ABTESTMODEL: NSObject {
     var diet_log_note = ABTEST_TYPE.A
     
     var tutorial_briefing_price_hidden = ABTEST_TYPE.A //a组（默认）：教程详情页隐藏价格、    b组：教程详情页显示价格
+    
+    var diet_important = ABC_TEST_TYPE.B
 }
 
 class UserInfoModel {

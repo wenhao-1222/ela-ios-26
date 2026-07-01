@@ -23,7 +23,7 @@ class GuidanceProTrialVM: UIView {
         label.textAlignment = .center
         label.numberOfLines = 0
         label.attributedText = centeredText(
-            "我们为新用户\n免费开放使用 3 天",
+            "我们为新用户\n免费开放使用 ELA PRO",
             font: .systemFont(ofSize: 24, weight: .medium),
             color: .COLOR_TEXT_TITLE_0f1214,
             lineSpacing: kFitWidth(2)

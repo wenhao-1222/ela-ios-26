@@ -23,7 +23,7 @@ class GuidanceProPromiseVM: UIView {
         label.textAlignment = .center
         label.numberOfLines = 0
         label.attributedText = centeredText(
-            "我们希望Ela Pro能够真正\n帮到你，而不是引诱你付费",
+            "我们希望Ela PRO能够真正\n帮到你，而不是引诱你付费",
             font: .systemFont(ofSize: 24, weight: .medium),
             color: .COLOR_TEXT_TITLE_0f1214,
             lineSpacing: kFitWidth(2)

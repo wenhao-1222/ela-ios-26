@@ -703,6 +703,7 @@
 		EC1B59E62EE6D34200FE3E9A /* ServiceFuncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B59E52EE6D33B00FE3E9A /* ServiceFuncButton.swift */; };
 		EC1CFB562EE18519003E42DD /* MallDetailBottomFuncVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */; };
 		EC1D079E2F6CF264002A90EA /* GuidanceProFlowBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D079D2F6CF262002A90EA /* GuidanceProFlowBackgroundView.swift */; };
+		EC2606302F000002002A90EA /* GuidanceProDietRecordVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC2606302F000001002A90EA /* GuidanceProDietRecordVM.swift */; };
 		EC1D07A22F6D1A11002A90EA /* GuidanceProTopVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A12F6D1A0F002A90EA /* GuidanceProTopVM.swift */; };
 		EC1D07A42F6D246A002A90EA /* GuidanceProTrialVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A32F6D2468002A90EA /* GuidanceProTrialVM.swift */; };
 		EC1D07A62F6D2A1A002A90EA /* GuidanceProPromiseVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */; };
@@ -2203,6 +2204,7 @@
 		EC1B59E52EE6D33B00FE3E9A /* ServiceFuncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceFuncButton.swift; sourceTree = "<group>"; };
 		EC1CFB552EE18511003E42DD /* MallDetailBottomFuncVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallDetailBottomFuncVM.swift; sourceTree = "<group>"; };
 		EC1D079D2F6CF262002A90EA /* GuidanceProFlowBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProFlowBackgroundView.swift; sourceTree = "<group>"; };
+		EC2606302F000001002A90EA /* GuidanceProDietRecordVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProDietRecordVM.swift; sourceTree = "<group>"; };
 		EC1D07A12F6D1A0F002A90EA /* GuidanceProTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProTopVM.swift; sourceTree = "<group>"; };
 		EC1D07A32F6D2468002A90EA /* GuidanceProTrialVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProTrialVM.swift; sourceTree = "<group>"; };
 		EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPromiseVM.swift; sourceTree = "<group>"; };
@@ -2242,6 +2244,7 @@
 		EC26E62E2BBD2666001E4381 /* BindPhoneVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BindPhoneVC.swift; sourceTree = "<group>"; };
 		EC26E6302BBD26CE001E4381 /* BIndPhoneTopVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BIndPhoneTopVM.swift; sourceTree = "<group>"; };
 		EC26E6322BBD2819001E4381 /* BindPhoneVerifyCodeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BindPhoneVerifyCodeButton.swift; sourceTree = "<group>"; };
+		EC26E6342FEE8C5B001E4381 /* ElaHealthDataConfirmAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaHealthDataConfirmAlert.swift; sourceTree = "<group>"; };
 		EC2802EA2F19D33300FEF08D /* HabitGuideFirstVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitGuideFirstVM.swift; sourceTree = "<group>"; };
 		EC2802EE2F19DC9300FEF08D /* HabitGuideVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitGuideVM.swift; sourceTree = "<group>"; };
 		EC2802F02F19DF5800FEF08D /* HabitGuideSecondVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitGuideSecondVM.swift; sourceTree = "<group>"; };
@@ -2813,7 +2816,6 @@
 		ECD0FEE42BABD25B001232C9 /* EmptyViewWithBtn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyViewWithBtn.swift; sourceTree = "<group>"; };
 		ECD0FEE72BABD25B001232C9 /* WHBaseViewVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WHBaseViewVC.swift; sourceTree = "<group>"; };
 		ECD0FEE82BABD25B001232C9 /* WHCommonH5VC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WHCommonH5VC.swift; sourceTree = "<group>"; };
-		EC26E6342FEE8C5B001E4381 /* ElaHealthDataConfirmAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaHealthDataConfirmAlert.swift; sourceTree = "<group>"; };
 		ECD0FEE92BABD25B001232C9 /* WHToast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WHToast.swift; sourceTree = "<group>"; };
 		ECD0FF222BABDC07001232C9 /* LocalAuthenUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAuthenUtil.swift; sourceTree = "<group>"; };
 		ECD0FF332BABE030001232C9 /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
@@ -4386,6 +4388,7 @@
 		EC1D079C2F6CF25A002A90EA /* GuidancePro */ = {
 			isa = PBXGroup;
 			children = (
+				EC2606302F000001002A90EA /* GuidanceProDietRecordVM.swift */,
 				EC1D079D2F6CF262002A90EA /* GuidanceProFlowBackgroundView.swift */,
 				EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */,
 				EC1D07A72F6D3585002A90EA /* GuidanceProSubscribeVM.swift */,
@@ -7343,6 +7346,7 @@
 				EC6E7D092C228B2800AAD428 /* NewQuestionnaireNoSexVC.swift in Sources */,
 				A7137ABB2DAE00A700DD2D0D /* CourseDetailVC.swift in Sources */,
 				EC1D079E2F6CF264002A90EA /* GuidanceProFlowBackgroundView.swift in Sources */,
+				EC2606302F000002002A90EA /* GuidanceProDietRecordVM.swift in Sources */,
 				EC1D07A62F6D2A1A002A90EA /* GuidanceProPromiseVM.swift in Sources */,
 				EC1D07A82F6D3587002A90EA /* GuidanceProSubscribeVM.swift in Sources */,
 				EC1D07A22F6D1A11002A90EA /* GuidanceProTopVM.swift in Sources */,
@@ -8050,7 +8054,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 154;
+				CURRENT_PROJECT_VERSION = 155;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -8077,7 +8081,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.1;
+				MARKETING_VERSION = 2.5.2;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -8158,7 +8162,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 154;
+				CURRENT_PROJECT_VERSION = 155;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -8184,7 +8188,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.1;
+				MARKETING_VERSION = 2.5.2;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",

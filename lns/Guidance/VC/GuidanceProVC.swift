@@ -28,6 +28,7 @@ class GuidanceProVC: WHBaseViewVC {
     private let topBackgroundView = GuidanceProFlowBackgroundView()
     private let contentContainerView = UIView()
     private let topContentVM = GuidanceProTopVM()
+    private let dietRecordContentVM = GuidanceProDietRecordVM()
     private let trialContentVM = GuidanceProTrialVM()
     private let promiseContentVM = GuidanceProPromiseVM()
     private let subscribeContentVM = GuidanceProSubscribeVM()
@@ -40,6 +41,12 @@ class GuidanceProVC: WHBaseViewVC {
     var guidanceV2BizType = "自动"
     private var didTrackGuidanceV2IntroPage = false
     private var didTrackGuidanceV2SubscribePage = false
+    private var shouldUseDietRecordIntro: Bool {
+        UserInfoModel.shared.abTestModel.diet_important == .B
+    }
+    private var introContentVM: UIView {
+        shouldUseDietRecordIntro ? dietRecordContentVM : topContentVM
+    }
 
     private lazy var contentSwipeBackPanGesture: UIPanGestureRecognizer = {
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(handleContentSwipeBackPan(_:)))
@@ -120,6 +127,7 @@ extension GuidanceProVC {
         contentContainerView.addGestureRecognizer(contentSwipeBackPanGesture)
 
         contentContainerView.addSubview(topContentVM)
+        contentContainerView.addSubview(dietRecordContentVM)
         contentContainerView.addSubview(trialContentVM)
         contentContainerView.addSubview(promiseContentVM)
         view.addSubview(subscribeContentVM)
@@ -139,6 +147,9 @@ extension GuidanceProVC {
         topContentVM.snp.makeConstraints { make in
 //            make.left.right.top.equalToSuperview()
 //            make.height.equalTo(kFitWidth(434))
+            make.edges.equalToSuperview()
+        }
+        dietRecordContentVM.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
@@ -177,6 +188,11 @@ extension GuidanceProVC {
         subscribeContentVM.updateFreeTrialPermission(hasFreeTrialPermission)
         fetchAnnualDisplayProduct()
 
+        topContentVM.isHidden = shouldUseDietRecordIntro
+        topContentVM.alpha = shouldUseDietRecordIntro ? 0 : 1
+        dietRecordContentVM.isHidden = !shouldUseDietRecordIntro
+        dietRecordContentVM.alpha = shouldUseDietRecordIntro ? 1 : 0
+        dietRecordContentVM.nextButton.isHidden = true
         trialContentVM.isHidden = true
         trialContentVM.alpha = 0
         promiseContentVM.isHidden = true
@@ -228,7 +244,7 @@ extension GuidanceProVC {
         nextButton.isHidden = false
         updateNextButtonInteractionState()
         updateBackButtonVisibility(animated: true)
-        transition(from: topContentVM, to: trialContentVM, direction: .forward)
+        transition(from: introContentVM, to: trialContentVM, direction: .forward)
     }
 
     func showPromiseContent() {
@@ -261,7 +277,7 @@ extension GuidanceProVC {
             promiseContentVM.alpha = 0
         }
 
-        let fromView = previousStep == .promise ? promiseContentVM : topContentVM
+        let fromView = previousStep == .promise ? promiseContentVM : introContentVM
         transition(from: fromView, to: subscribeContentVM, direction: .forward)
         trackGuidanceV2SubscribePageIfNeeded()
     }
@@ -295,7 +311,7 @@ extension GuidanceProVC {
     func view(for step: ContentStep) -> UIView {
         switch step {
         case .intro:
-            return topContentVM
+            return introContentVM
         case .trial:
             return trialContentVM
         case .promise:

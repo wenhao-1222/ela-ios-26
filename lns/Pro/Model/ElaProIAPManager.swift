@@ -448,7 +448,23 @@ final class ElaProIAPManager: NSObject {
     }
 
     func localizedPriceString(for product: Product) -> String {
-        return product.displayPrice
+        return priceTextRemovingUSPrefix(product.displayPrice)
+    }
+
+    private func priceTextRemovingUSPrefix(_ text: String) -> String {
+        guard text.hasPrefix("US") else {
+            return text
+        }
+
+        let prefixEnd = text.index(text.startIndex, offsetBy: 2)
+        let remainingText = text[prefixEnd...]
+        let spaces = remainingText.prefix { $0.isWhitespace }
+        let symbolStart = remainingText.index(remainingText.startIndex, offsetBy: spaces.count)
+        guard symbolStart < remainingText.endIndex, remainingText[symbolStart] == "$" else {
+            return text
+        }
+
+        return "$" + String(remainingText[remainingText.index(after: symbolStart)...])
     }
 
     func updateProductIDs(month: String, annual: String, lifetime: String) {

@@ -20,6 +20,7 @@ class GuidanceProSubscribeVM: UIView {
     private var startTrialButtonNormalTitle = "0元 开启体验"
     private var annualPriceDescription = "168/年"
     private var dailyPriceDescription = "0.46元/天"
+    private let trialDescPriceColor = UIColor(hex: 0xFF0000)
 
     private lazy var loadingOverlayView: UIView = {
         let view = UIView()
@@ -152,12 +153,10 @@ class GuidanceProSubscribeVM: UIView {
 
     private lazy var trialDescLabel: UILabel = {
         let label = UILabel()
-//        label.text = "免费试用3天，随后以186/年价格续费，仅0.51元/天。"
         label.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.font = .systemFont(ofSize: 11, weight: .regular)
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.setLineHeight(textString: "免费试用3天，随后以168/年价格续费，仅0.46元/天。", lineHeight: label.font.lineHeight * 1.1)
         return label
     }()
 
@@ -356,18 +355,51 @@ private extension GuidanceProSubscribeVM {
 
     func updateTrialDescription() {
         let text = hasFreeTrialPermission
-        ? "免费试用3天，随后以\(annualPriceDescription)价格续费，仅\(dailyPriceDescription)。"
-        : "订阅价格为\(annualPriceDescription)，仅\(dailyPriceDescription)。"
-        trialDescLabel.text = text
-        trialDescLabel.setLineHeight(textString: text, lineHeight: trialDescLabel.font.lineHeight * 1.1)
+        ? "免费试用3天，随后以\(annualPriceDescription)，仅\(dailyPriceDescription)"
+        : "订阅价格为\(annualPriceDescription)，仅\(dailyPriceDescription)"
+        trialDescLabel.attributedText = makeTrialDescriptionAttributedText(
+            text: text,
+            highlightedTexts: [annualPriceDescription, dailyPriceDescription]
+        )
+    }
+
+    func makeTrialDescriptionAttributedText(text: String, highlightedTexts: [String]) -> NSAttributedString {
+        let lineHeight = trialDescLabel.font.lineHeight * 1.1
+        let baselineOffset = (lineHeight - trialDescLabel.font.lineHeight) / 2
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.minimumLineHeight = lineHeight
+        paragraphStyle.maximumLineHeight = lineHeight
+        paragraphStyle.alignment = trialDescLabel.textAlignment
+        paragraphStyle.lineBreakMode = trialDescLabel.lineBreakMode
+
+        let attributedText = NSMutableAttributedString(string: text, attributes: [
+            .font: trialDescLabel.font as Any,
+            .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
+            .paragraphStyle: paragraphStyle,
+            .baselineOffset: baselineOffset
+        ])
+
+        let nsText = text as NSString
+        highlightedTexts
+            .filter { !$0.isEmpty }
+            .forEach { highlightedText in
+                let range = nsText.range(of: highlightedText)
+                guard range.location != NSNotFound else { return }
+                attributedText.addAttributes([
+                    .font: UIFont.systemFont(ofSize: 11, weight: .semibold),
+                    .foregroundColor: trialDescPriceColor
+                ], range: range)
+            }
+
+        return attributedText
     }
 
     func recurringPriceDescription(for product: Product) -> String {
         let period = periodText(from: product.subscription?.subscriptionPeriod)
         if isChineseYuanPrice(product.displayPrice) {
-            return "\(decimalText(for: NSDecimalNumber(decimal: product.price)))/\(period)"
+            return "\(decimalText(for: NSDecimalNumber(decimal: product.price)))/\(period)开始订阅"
         }
-        return ElaProIAPManager.shared.localizedPriceString(for: product) + "/\(period)"
+        return ElaProIAPManager.shared.localizedPriceString(for: product) + "/\(period)开始订阅"
     }
 
     func dailyPriceText(for product: Product) -> String {

@@ -25,7 +25,7 @@ class ElaLaunchVC: WHBaseViewVC {
             self.peacockImgView.isHidden = true
             tapButton.isHidden = true
 //            UIView.animate(withDuration: 0.5, delay: 0.25,options: .curveLinear) {
-                self.logoImgView.alpha = 1
+                self.logoImgView.alpha =  1
                 self.logoLabel.alpha = 1
                 self.elaProIconImg.alpha = 1
 //            }

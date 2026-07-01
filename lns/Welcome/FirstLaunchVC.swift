@@ -6,6 +6,7 @@
 //
 
 import SnapKit
+import MCToast
 
 
 private extension UIImage {
@@ -31,6 +32,9 @@ class FirstLaunchVC: WHBaseViewVC {
     private let forceNeedBuildPlanOnConfirm: Bool
     private var didApplyFinalState = false
     private var didTrackGuidanceV2StartPage = false
+    private var isRequestingUserGroupInit = false
+    private var hasLoadedUserGroupInit = false
+    private var shouldContinueAfterUserGroupInit = false
     
     var firstLabelTopConstraint: Constraint?
     var firstLabelTwoTopConstraint: Constraint?
@@ -71,6 +75,7 @@ class FirstLaunchVC: WHBaseViewVC {
         super.viewDidLoad()
         
         initUI()
+        requestUserGroupInitIfNeeded()
         
         
 //        let tap = UITapGestureRecognizer.init(target: self, action: #selector(showAnimation))
@@ -717,7 +722,23 @@ extension FirstLaunchVC{
 
 extension FirstLaunchVC{
     @objc func startBtnAction() {
-        
+        openNetWorkServiceWithBolck { [weak self] netConnect in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                guard netConnect else {
+                    self.presentNetworkPermissionAlert()
+                    return
+                }
+                guard self.hasLoadedUserGroupInit else {
+                    self.requestUserGroupInitIfNeeded(showLoadingToast: true)
+                    return
+                }
+                self.showHealthConfirmAndContinue()
+            }
+        }
+    }
+    
+    private func showHealthConfirmAndContinue() {
         ElaHealthDataConfirmAlert.show { [self] in
             UserDefaults.standard.setValue("1", forKey: isLaunchWelcome)
             if forceNeedBuildPlanOnConfirm {
@@ -729,6 +750,82 @@ extension FirstLaunchVC{
             exit(0)
         }
     }
+
+    private func presentNetworkPermissionAlert() {
+        presentAlertVc(confirmBtn: "设置",
+                       message: "可以在“设置->App->无线数据”中开启“无线数据”，连接网络后才能流畅使用。",
+                       title: "“Elavatine”已关闭网络权限",
+                       cancelBtn: "取消",
+                       handler: { [weak self] _ in
+            self?.openUrl(urlString: UIApplication.openSettingsURLString)
+        }, viewController: self)
+    }
+
+    private func requestUserGroupInitIfNeeded(showLoadingToast: Bool = false) {
+        guard !hasLoadedUserGroupInit else {
+            if showLoadingToast {
+                showHealthConfirmAndContinue()
+            }
+            return
+        }
+        guard !isRequestingUserGroupInit else {
+            if showLoadingToast {
+                shouldContinueAfterUserGroupInit = true
+                MCToast.mc_loading()
+            }
+            return
+        }
+        isRequestingUserGroupInit = true
+        shouldContinueAfterUserGroupInit = showLoadingToast
+        if showLoadingToast {
+            MCToast.mc_loading()
+        }
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_group_init, parameters: nil) { [weak self] responseObject in
+            guard let self = self else { return }
+            MCToast.mc_remove()
+            self.isRequestingUserGroupInit = false
+            let shouldContinue = self.shouldContinueAfterUserGroupInit
+            self.shouldContinueAfterUserGroupInit = false
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+//            self.applyUserGroupInitData(dataObj)
+            self.hasLoadedUserGroupInit = true
+            DLLog(message: [
+                "tag": "[UserGroupInit][FirstLaunch] URL_user_group_init response",
+                "dataObj": dataObj,
+                "rawResponse": responseObject
+            ])
+            if shouldContinue {
+                self.showHealthConfirmAndContinue()
+            }
+        } failure: { [weak self] failed in
+            guard let self = self else { return }
+            MCToast.mc_remove()
+            self.isRequestingUserGroupInit = false
+            let shouldShowError = self.shouldContinueAfterUserGroupInit
+            self.shouldContinueAfterUserGroupInit = false
+            DLLog(message: "[UserGroupInit][FirstLaunch] URL_user_group_init failed: \(failed)")
+            if shouldShowError {
+                MCToast.mc_text("网络异常，请稍后重试")
+            }
+        }
+    }
+    
+    private func applyUserGroupInitData(_ dataObj: NSDictionary) {
+        let dietImportant = dataObj.stringValueForKey(key: "userGroup").isEmpty
+            ? "A"
+            : dataObj.stringValueForKey(key: "userGroup")
+        switch dietImportant.uppercased() {
+        case "B":
+            UserInfoModel.shared.abTestModel.diet_important = .B
+        case "C":
+            UserInfoModel.shared.abTestModel.diet_important = .C
+        default:
+            UserInfoModel.shared.abTestModel.diet_important = .A
+        }
+        NotificationCenter.default.post(name: NOTIFI_NAME_ABTEST, object: nil)
+    }
+
     private func changeRootToNeedBuildPlan() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
 //        let navVc = UINavigationController(rootViewController: NeedBuildPlanVC())

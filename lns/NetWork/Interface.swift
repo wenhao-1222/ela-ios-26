@@ -177,6 +177,8 @@ public let URL_iap_dientity                 = URL_Type + "users/apple/iap/ios/id
 public let URL_iap_dientity_bind            = URL_Type + "users/apple/iap/bindAnonymous"
 ///订阅恢复购买
 public let URL_iap_dientity_restore         = URL_Type + "users/apple/iap/order/restore"
+///根据设备id给用户分组
+public let URL_user_group_init              = URL_Type + "users/anon/finalizeUserGroupByDeviceId"
 
 //MARK: 餐食
 //添加餐食
