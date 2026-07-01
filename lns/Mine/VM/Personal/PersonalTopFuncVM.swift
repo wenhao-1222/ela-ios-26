@@ -22,7 +22,7 @@ class PersonalTopFuncVM: UIView {
     
     override init(frame: CGRect) {
         let shouldShowElaPro = UserInfoModel.shared.vipModel.isMembershipStatusValid
-        let shouldShowDietPlan = UserInfoModel.shared.abTestModel.isTrial
+        let shouldShowDietPlan = UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A
         let itemHeight = kFitWidth(50)
         let selfHeight = itemHeight * CGFloat(6 + (shouldShowElaPro ? 1 : 0) + (shouldShowDietPlan ? 1 : 0))
         self.shouldShowElaPro = shouldShowElaPro
@@ -109,7 +109,7 @@ extension PersonalTopFuncVM{
     
     func updateUI(notifyFrameChange: Bool = true) {
         shouldShowElaPro = UserInfoModel.shared.vipModel.isMembershipStatusValid
-        shouldShowDietPlan = UserInfoModel.shared.abTestModel.isTrial
+        shouldShowDietPlan = UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A
         let planIndex = shouldShowElaPro ? 1 : 0
         let dietPlanIndex = planIndex + 1
         let bodyDataIndex = dietPlanIndex + (shouldShowDietPlan ? 1 : 0)

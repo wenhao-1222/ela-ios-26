@@ -167,7 +167,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     }()
     
     lazy var circleImgView: CoachAnimationV3View = {
-        let orbView = CoachAnimationV3View(diameter: kFitWidth(250))
+        let orbView = CoachAnimationV3View(diameter: self.aiCoachCircleDiameter)
         orbView.backgroundColor = .clear
         return orbView
     }()
@@ -311,8 +311,8 @@ extension AICoachPreVC{
         // 原 circleImgView 约束保留，回退 CoachAnimationV3View 时可恢复。
         circleImgView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(kFitWidth(133.5))
-            make.width.height.equalTo(kFitWidth(250))
+            make.top.equalTo(aiCoachCircleTop)
+            make.width.height.equalTo(aiCoachCircleDiameter)
 //            make.top.equalTo(kFitWidth(147))
 //            make.width.height.equalTo(kFitWidth(223))
         }
@@ -428,7 +428,7 @@ private extension AICoachPreVC {
             return 0
         }
 
-        let targetCircleCenterY = kFitWidth(133.5) + kFitWidth(250) / 2.0
+        let targetCircleCenterY = aiCoachCircleCenterY
         guard backgroundCircleCenterY(bottomOffset: 0) < targetCircleCenterY else {
             return 0
         }
@@ -455,19 +455,23 @@ private extension AICoachPreVC {
     var shouldAlignBackgroundCircleWithOrb: Bool {
         guard isIpad() == false else { return true }
         guard UIDevice.current.userInterfaceIdiom == .phone,
-              isIPhone7Plus,
+              needsLegacyPlusCircleAdjustment,
               view.safeAreaInsets.bottom <= 0.5 else {
             return false
         }
 
         let size = view.bounds.size
-        return abs(size.width - 414.0) <= 0.5
+        let isStandardPlusViewport = abs(size.width - 414.0) <= 0.5
             && abs(size.height - 736.0) <= 0.5
+        let isZoomedPlusViewport = abs(size.width - 375.0) <= 0.5
+            && abs(size.height - 667.0) <= 0.5
+        return isStandardPlusViewport || isZoomedPlusViewport
     }
 
-    var isIPhone7Plus: Bool {
+    var needsLegacyPlusCircleAdjustment: Bool {
         switch Device.current {
-        case .iPhone7Plus, .simulator(.iPhone7Plus):
+        case .iPhone6Plus, .iPhone7Plus,
+             .simulator(.iPhone6Plus), .simulator(.iPhone7Plus):
             return true
         default:
             return false
@@ -481,6 +485,18 @@ private extension AICoachPreVC {
         let displayedHeight = bgImagePixelSize.height * scale
         let verticalCrop = max(0, (displayedHeight - imageViewHeight) / 2.0)
         return bgCircleCenterYPixels * scale - verticalCrop
+    }
+
+    var aiCoachCircleTop: CGFloat {
+        kFitWidth(needsLegacyPlusCircleAdjustment ? 147.0 : 133.5)
+    }
+
+    var aiCoachCircleDiameter: CGFloat {
+        kFitWidth(needsLegacyPlusCircleAdjustment ? 223.0 : 250.0)
+    }
+
+    var aiCoachCircleCenterY: CGFloat {
+        aiCoachCircleTop + aiCoachCircleDiameter / 2.0
     }
 
     func trimNavigationStackToRootAndSelfIfNeeded() {

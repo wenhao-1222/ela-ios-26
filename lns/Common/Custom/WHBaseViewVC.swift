@@ -301,7 +301,66 @@ class WHBaseViewVC: ViewController {
         UserInfoModel.shared.resetForcedLogoutHandling()
         BodyDataUploadManager().syncAllBodyDataFromServer()
         QuestinonaireMsgModel.shared.clearMsg()
-        changeRootVcToTabbar()
+//        changeRootVcToTabbar()
+        requestLoginSuccessDependenciesThenEnterApp()
+    }
+
+    private func requestLoginSuccessDependenciesThenEnterApp() {
+        MCToast.mc_loading()
+        if ElaProIAPManager.shared.hasPendingPurchaseToBind() {
+            ElaProIAPManager.shared.bindPendingPurchaseBeforeEnterApp { [weak self] success in
+                guard let self = self else { return }
+                guard success else {
+                    MCToast.mc_text("订阅同步失败，请稍后重试")
+                    return
+                }
+                self.requestUserGroupMsgThenEnterApp()
+            }
+        } else {
+            requestUserGroupMsgThenEnterApp()
+        }
+    }
+
+    private func requestUserGroupMsgThenEnterApp() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_group_msg, parameters: nil) { [weak self] responseObject in
+            guard let self = self else { return }
+            let dataObj = self.parseUserGroupMsgData(responseObject)
+            DLLog(message: [
+                "tag": "[UserGroupMsg][LoginSuccess] URL_user_group_msg response",
+                "dataObj": dataObj,
+                "rawResponse": responseObject
+            ])
+            self.applyLoginUserGroupMsgData(dataObj)
+            self.changeRootVcToTabbar()
+        } failure: { failed in
+            DLLog(message: "[UserGroupMsg][LoginSuccess] URL_user_group_msg failed: \(failed)")
+            MCToast.mc_text("网络异常，请稍后重试")
+        }
+    }
+
+    private func parseUserGroupMsgData(_ responseObject: [String: AnyObject]) -> NSDictionary {
+        if let dataObj = responseObject["data"] as? NSDictionary {
+            return dataObj
+        }
+        let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+        return WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+    }
+
+    private func applyLoginUserGroupMsgData(_ dataObj: NSDictionary) {
+        UserInfoModel.shared.onboarding_flow_status = dataObj.stringValueForKey(key: "onboarding_flow_status") != "0"
+        UserInfoModel.shared.abTestModel.isTrial = dataObj.stringValueForKey(key: "is_ela_pro_free_trial_used") == "1"
+
+        if dataObj.stringValueForKey(key: "user_group") == "B"{
+            UserInfoModel.shared.abTestModel.diet_important = .B
+        }else if dataObj.stringValueForKey(key: "user_group") == "C"{
+            UserInfoModel.shared.abTestModel.diet_important = .C
+        }else{
+            UserInfoModel.shared.abTestModel.diet_important = .A
+        }
+
+        UserDefaults.saveLoginUserGroupMsgCache()
+        NotificationCenter.default.post(name: NOTIFI_NAME_ABTEST, object: nil)
+        NotificationCenter.default.post(name: NOTIFI_NAME_GUIDE, object: nil)
     }
     func changeRootVcToLogin() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate

@@ -35,8 +35,19 @@ class ABTESTMODEL: NSObject {
     var tutorial_briefing_price_hidden = ABTEST_TYPE.A //a组（默认）：教程详情页隐藏价格、    b组：教程详情页显示价格
     
     var diet_important = ABC_TEST_TYPE.B
-    
+    ///用户是否有试用过
     var isTrial = true
+
+    var dietImportantCacheValue: String {
+        switch diet_important {
+        case .B:
+            return "B"
+        case .C:
+            return "C"
+        default:
+            return "A"
+        }
+    }
 }
 
 class UserInfoModel {
@@ -517,6 +528,7 @@ extension UserInfoModel{
         WidgetUtils().saveUserInfo(uId: "", uToken: "")
         UserDefaults.standard.setValue("", forKey: token)
         UserDefaults.standard.setValue("", forKey: userId)
+        UserDefaults.clearLoginUserGroupMsgCache()
         UserDefaults.set(value: "", forKey: .myFoodsList)
         UserDefaults.set(value: "", forKey: .hidsoryFoodsAdd)
 //        UserInfoModel.shared.clearMsg()

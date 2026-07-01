@@ -544,6 +544,43 @@ final class ElaProIAPManager: NSObject {
         }
     }
 
+    func hasPendingPurchaseToBind() -> Bool {
+        let transactionID = readPendingTransactionID()?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return !transactionID.isEmpty
+    }
+
+    func bindPendingPurchaseBeforeEnterApp(queryBizType: String = PurchaseQueryBizType.pendingBind.rawValue,
+                                           completion: ((Bool) -> Void)? = nil) {
+        guard canBindPurchaseToCurrentUser() else {
+            completion?(false)
+            return
+        }
+
+        bindAnonymousIdentityIfNeeded { bindSuccess in
+            guard bindSuccess else {
+                completion?(false)
+                return
+            }
+
+            guard let transactionID = self.readPendingTransactionID(),
+                  !transactionID.isEmpty else {
+                completion?(true)
+                return
+            }
+
+            let resolvedQueryBizType = self.resolvePendingPurchaseQueryBizType(transactionID: transactionID,
+                                                                               fallbackQueryBizType: queryBizType)
+            self.queryPurchaseOrder(transactionID: transactionID, bizType: resolvedQueryBizType) { queryOutcome in
+                switch queryOutcome {
+                case .success:
+                    completion?(true)
+                case .boundToOtherAccount, .failed:
+                    completion?(false)
+                }
+            }
+        }
+    }
+
     private func bindPendingPurchaseIfNeededDetailed(queryBizType: String = PurchaseQueryBizType.pendingBind.rawValue,
                                                      completion: ((BackendSyncOutcome) -> Void)? = nil) {
         guard canBindPurchaseToCurrentUser() else {

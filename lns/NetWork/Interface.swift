@@ -178,7 +178,7 @@ public let URL_iap_dientity_bind            = URL_Type + "users/apple/iap/bindAn
 ///订阅恢复购买
 public let URL_iap_dientity_restore         = URL_Type + "users/apple/iap/order/restore"
 ///根据设备id给用户分组
-public let URL_user_group_init              = URL_Type + "users/anon/finalizeUserGroupByDeviceId"
+public let URL_user_group_init              = URL_Type + "users/anon/finalize_user_group_by_device_id"
 ///获取用户分组情况
 public let URL_user_group_msg              = URL_Type + "users/membership/is_ela_pro_free_trial_used"
 //MARK: 餐食

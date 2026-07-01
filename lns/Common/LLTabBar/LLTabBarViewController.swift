@@ -47,7 +47,7 @@ class LLTabBarViewController: UITabBarController,LLMyTabbarDelegate {
 //
         self.setUpChildViewController(viewController: LogsVC(), image: UIImage.init(named: "tabbar_logs_normal")!, selectImage: UIImage.init(named: "tabbar_logs_selected")!, title: "日志")
         
-        if UserInfoModel.shared.abTestModel.isTrial {
+        if (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) {
             self.setUpChildViewController(viewController: CourseTabVC(), image: UIImage.init(named: "tabbar_forum_normal")!, selectImage: UIImage.init(named: "tabbar_forum_selected")!, title: "课程")
         }else{
             self.setUpChildViewController(viewController: DietPlanVC(), image: UIImage.init(named: "tabbar_forum_normal")!, selectImage: UIImage.init(named: "tabbar_forum_selected")!, title: "计划")

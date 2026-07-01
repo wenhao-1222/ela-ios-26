@@ -53,7 +53,7 @@ class VIPModel: NSObject {
     
     var isAiCoachSurveyFinished = false
     var aiCoachProcessStatus = 0
-    var mealPlanProcessStatus = 0
+    var mealPlanProcessStatus = -1
     var bizType = "3"
     
 //    var isVip: Bool {
@@ -87,7 +87,7 @@ class VIPModel: NSObject {
         isLifetime = false
         isAiCoachSurveyFinished = false
         aiCoachProcessStatus = 0
-        mealPlanProcessStatus = 0
+        mealPlanProcessStatus = -1
         ctime = ""
         etime = ""
     }

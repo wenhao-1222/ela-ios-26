@@ -149,8 +149,8 @@ class WHTabBarVC : UITabBarController{
         let mineVc = MineVC()
 //        let dietPlanVc = DietPlanVC()
         
-        let dietPlanVc = UserInfoModel.shared.abTestModel.isTrial ? CourseTabVC() : DietPlanVC()
-        let dietPlanVcName = UserInfoModel.shared.abTestModel.isTrial ? "课程" : "计划"
+        let dietPlanVc = (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) ? CourseTabVC() : DietPlanVC()
+        let dietPlanVcName = (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) ? "课程" : "计划"
         
 //        let forumVc = ForumVC()
         

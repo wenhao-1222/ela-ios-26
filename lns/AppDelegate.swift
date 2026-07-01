@@ -86,6 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                     UserInfoModel.shared.mealsNumber = UserDefaults.getMealsNumber()
                     UserInfoModel.shared.hidden_survery_button_status = UserDefaults.getSurveryStatus()
                     UserInfoModel.shared.hiddenMeaTimeStatus = UserDefaults.getLogsTimeStatus()
+                    UserDefaults.initLoginUserGroupMsgCache()
                     UserDefaults.initWeightUnit()
                     
                     if isIpad(){

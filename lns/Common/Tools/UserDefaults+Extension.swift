@@ -55,6 +55,9 @@ public extension UserDefaults {
         case habit_rank_first_unlock_settle//自律习惯，首次解锁排行榜升杯动画是否展示过
         case rank_list_guide//自律习惯引导是否展示过
         case vipStatus //会员状态
+        case loginUserGroupOnboardingFlowStatus
+        case loginUserGroupIsTrial
+        case loginUserGroupDietImportant
     }
 }
 
@@ -287,6 +290,42 @@ extension UserDefaults {
     static public func getAppearanceStyle() -> UIUserInterfaceStyle {
         let rawValue = Int(self.getString(forKey: .appearanceStyle) ?? "") ?? UIUserInterfaceStyle.unspecified.rawValue
         return UIUserInterfaceStyle(rawValue: rawValue) ?? .unspecified
+    }
+    static public func saveLoginUserGroupMsgCache() {
+        UserDefaults.set(value: UserInfoModel.shared.onboarding_flow_status ? "1" : "0", forKey: .loginUserGroupOnboardingFlowStatus)
+        UserDefaults.set(value: UserInfoModel.shared.abTestModel.isTrial ? "1" : "0", forKey: .loginUserGroupIsTrial)
+        UserDefaults.set(value: UserInfoModel.shared.abTestModel.dietImportantCacheValue, forKey: .loginUserGroupDietImportant)
+    }
+    static public func clearLoginUserGroupMsgCache() {
+        UserDefaults.standard.removeObject(forKey: AccountKeys.loginUserGroupOnboardingFlowStatus.rawValue)
+        UserDefaults.standard.removeObject(forKey: AccountKeys.loginUserGroupIsTrial.rawValue)
+        UserDefaults.standard.removeObject(forKey: AccountKeys.loginUserGroupDietImportant.rawValue)
+        UserInfoModel.shared.onboarding_flow_status = true
+        UserInfoModel.shared.abTestModel.isTrial = true
+        UserInfoModel.shared.abTestModel.diet_important = .B
+    }
+    static public func initLoginUserGroupMsgCache() {
+        let onboardingFlowStatus = self.getString(forKey: .loginUserGroupOnboardingFlowStatus) ?? ""
+        if onboardingFlowStatus.count > 0 {
+            UserInfoModel.shared.onboarding_flow_status = onboardingFlowStatus != "0"
+        }
+
+        let isTrial = self.getString(forKey: .loginUserGroupIsTrial) ?? ""
+        if isTrial.count > 0 {
+            UserInfoModel.shared.abTestModel.isTrial = isTrial == "1"
+        }
+
+        let dietImportant = self.getString(forKey: .loginUserGroupDietImportant) ?? ""
+        switch dietImportant.uppercased() {
+        case "B":
+            UserInfoModel.shared.abTestModel.diet_important = .B
+        case "C":
+            UserInfoModel.shared.abTestModel.diet_important = .C
+        case "A":
+            UserInfoModel.shared.abTestModel.diet_important = .A
+        default:
+            break
+        }
     }
     static public func initWeightUnit(){
         let num = self.getString(forKey: .weightUnit) ?? ""
