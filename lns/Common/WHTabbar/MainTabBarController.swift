@@ -78,8 +78,9 @@ class MainTabBarController: UITabBarController {
 //        let vc3 = ForumVC()
 //        vc3.tabBarItem = UITabBarItem(title: "干货", image: UIImage.init(named: "tabbar_forum_normal")!, tag: 2)
         
-        let vc3 = DietPlanVC()
-        vc3.tabBarItem = UITabBarItem(title: "计划", image: UIImage.init(named: "tabbar_forum_normal")!, tag: 2)
+        let vc3 = UserInfoModel.shared.abTestModel.isTrial ? CourseTabVC() : DietPlanVC()
+        let vc3Name = UserInfoModel.shared.abTestModel.isTrial ? "课程" : "计划"
+        vc3.tabBarItem = UITabBarItem(title: vc3Name, image: UIImage.init(named: "tabbar_forum_normal")!, tag: 2)
         
         let vc4 = MineVC()
         vc4.tabBarItem = UITabBarItem(title: "我的", image: UIImage.init(named: "tabbar_mine_normal")!, tag: 3)

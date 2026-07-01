@@ -143,7 +143,10 @@ class SystemTabbar: UITabBarController {
         let journalVc = JournalVC()
         let mineVc = MineVC()
 //        let forumVc = ForumVC()
-        let dietPlanVc = DietPlanVC()
+//        let dietPlanVc = DietPlanVC()
+        
+        let dietPlanVc = UserInfoModel.shared.abTestModel.isTrial ? CourseTabVC() : DietPlanVC()
+        let dietPlanVcName = UserInfoModel.shared.abTestModel.isTrial ? "课程" : "计划"
 
         _ = mainVc.view;
         _ = journalVc.view;
@@ -162,7 +165,7 @@ class SystemTabbar: UITabBarController {
 
 //        let vc3 = forumVc
         let vc3 = dietPlanVc
-        vc3.tabBarItem = UITabBarItem(title: "计划",
+        vc3.tabBarItem = UITabBarItem(title: dietPlanVcName,
                                       image: UIImage(named: "tabbar_forum_normal")!,
                                       selectedImage: UIImage(named: "tabbar_forum_selected")?.withRenderingMode(.alwaysOriginal))
 

@@ -126,6 +126,10 @@ class MineVC : WHBaseViewVC {
 //            let vc = AICoachReportPDFDemoVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
+        vm.dietPlanVm.tapBlock = {()in
+            let vc = DietPlanSecondVC()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
         vm.bodyDataVm.tapBlock = {()in
 //            self.gotoAicoachAction()
             let vc = BodyDataDetailVC()

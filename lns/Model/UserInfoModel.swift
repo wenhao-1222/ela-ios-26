@@ -35,6 +35,8 @@ class ABTESTMODEL: NSObject {
     var tutorial_briefing_price_hidden = ABTEST_TYPE.A //a组（默认）：教程详情页隐藏价格、    b组：教程详情页显示价格
     
     var diet_important = ABC_TEST_TYPE.B
+    
+    var isTrial = true
 }
 
 class UserInfoModel {

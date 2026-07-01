@@ -147,7 +147,11 @@ class WHTabBarVC : UITabBarController{
         let mainVc = OverViewVC()
         let journalVc = JournalVC()
         let mineVc = MineVC()
-        let dietPlanVc = DietPlanVC()
+//        let dietPlanVc = DietPlanVC()
+        
+        let dietPlanVc = UserInfoModel.shared.abTestModel.isTrial ? CourseTabVC() : DietPlanVC()
+        let dietPlanVcName = UserInfoModel.shared.abTestModel.isTrial ? "课程" : "计划"
+        
 //        let forumVc = ForumVC()
         
         //预加载
@@ -159,12 +163,12 @@ class WHTabBarVC : UITabBarController{
         if traitCollection.userInterfaceStyle == .dark && UserConfigModel.shared.overrideUserInterfaceStyle != .light{
             self.setUpChildViewController(viewController: mainVc, image: UIImage.init(named: "tabbar_main_normal_dark")!, selectImage: UIImage.init(named: "tabbar_main_selected_dark")!, title: "概览")
             self.setUpChildViewController(viewController: journalVc, image: UIImage.init(named: "tabbar_logs_normal_dark")!, selectImage: UIImage.init(named: "tabbar_logs_selected_dark")!, title: "日志")
-            self.setUpChildViewController(viewController: dietPlanVc, image: UIImage.init(named: "tabbar_forum_normal_dark")!, selectImage: UIImage.init(named: "tabbar_forum_selected_dark")!, title: "计划")
+            self.setUpChildViewController(viewController: dietPlanVc, image: UIImage.init(named: "tabbar_forum_normal_dark")!, selectImage: UIImage.init(named: "tabbar_forum_selected_dark")!, title: dietPlanVcName)
             self.setUpChildViewController(viewController: mineVc, image: UIImage.init(named: "tabbar_mine_normal_dark")!, selectImage: UIImage.init(named: "tabbar_mine_selected_dark")!, title: "我的")
         }else{
             self.setUpChildViewController(viewController: mainVc, image: UIImage.init(named: "tabbar_main_normal")!, selectImage: UIImage.init(named: "tabbar_main_selected")!, title: "概览")
             self.setUpChildViewController(viewController: journalVc, image: UIImage.init(named: "tabbar_logs_normal")!, selectImage: UIImage.init(named: "tabbar_logs_selected")!, title: "日志")
-            self.setUpChildViewController(viewController: dietPlanVc, image: UIImage.init(named: "tabbar_forum_normal")!, selectImage: UIImage.init(named: "tabbar_forum_selected")!, title: "计划")
+            self.setUpChildViewController(viewController: dietPlanVc, image: UIImage.init(named: "tabbar_forum_normal")!, selectImage: UIImage.init(named: "tabbar_forum_selected")!, title: dietPlanVcName)
             self.setUpChildViewController(viewController: mineVc, image: UIImage.init(named: "tabbar_mine_normal")!, selectImage: UIImage.init(named: "tabbar_mine_selected")!, title: "我的")
         }
     }

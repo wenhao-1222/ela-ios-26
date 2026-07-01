@@ -812,9 +812,9 @@ extension FirstLaunchVC{
     }
     
     private func applyUserGroupInitData(_ dataObj: NSDictionary) {
-        let dietImportant = dataObj.stringValueForKey(key: "userGroup").isEmpty
+        let dietImportant = dataObj.stringValueForKey(key: "user_group").isEmpty
             ? "A"
-            : dataObj.stringValueForKey(key: "userGroup")
+            : dataObj.stringValueForKey(key: "user_group")
         switch dietImportant.uppercased() {
         case "B":
             UserInfoModel.shared.abTestModel.diet_important = .B
