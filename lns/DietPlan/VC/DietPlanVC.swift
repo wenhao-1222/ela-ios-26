@@ -18,6 +18,7 @@ class DietPlanVC: WHBaseViewVC {
     private var shouldAnimatePlanListRefreshAfterCreateSuccess = false
     private var shouldPreferNonePlanStateAfterProSuccess = false
     private var trackedDietPlanCreatePageIndexes: Set<String> = []
+    private var pendingDietPlanResponse: (dataObj: NSDictionary, preservingListOffset: Bool)?
     
     private lazy var buyListDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -141,6 +142,10 @@ extension DietPlanVC{
 
     @objc func showNonePlanAfterProSuccess() {
         shouldPreferNonePlanStateAfterProSuccess = true
+        guard VIPModel.shared.mealPlanProcessStatus != -1 else {
+            showBlankStateWaitingForMealPlanProcessStatus()
+            return
+        }
         showNonePlanState()
     }
 
@@ -294,6 +299,18 @@ extension DietPlanVC{
         listVm.removeFromSuperview()
     }
 
+    func showBlankStateWaitingForMealPlanProcessStatus() {
+        removeStateViews()
+    }
+
+    func applyPendingDietPlanResponseIfNeeded() {
+        guard VIPModel.shared.mealPlanProcessStatus != -1 else { return }
+        guard let pendingDietPlanResponse = pendingDietPlanResponse else { return }
+        self.pendingDietPlanResponse = nil
+        applyDietPlanResponse(pendingDietPlanResponse.dataObj,
+                              preservingListOffset: pendingDietPlanResponse.preservingListOffset)
+    }
+
     func showNonePlanState() {
         if nonePlanVm.superview == nil {
             removeStateViews()
@@ -302,6 +319,12 @@ extension DietPlanVC{
     }
     
     func applyDietPlanResponse(_ dataObj: NSDictionary, preservingListOffset: Bool = false) {
+        guard VIPModel.shared.mealPlanProcessStatus != -1 else {
+            pendingDietPlanResponse = (dataObj, preservingListOffset)
+            showBlankStateWaitingForMealPlanProcessStatus()
+            return
+        }
+        
         let mealPlanItemList = dataObj["mealPlanItemList"] as? NSArray ?? []
         let status = dataObj.stringValueForKey(key: "status")
         let planDateRange = dateRange(from: dataObj, mealPlanItemList: mealPlanItemList)
@@ -318,6 +341,7 @@ extension DietPlanVC{
             return
         }
         
+        // 原判断：status == "1" || VIPModel.shared.mealPlanProcessStatus == 0
         if status == "1" || VIPModel.shared.mealPlanProcessStatus == 0{//无问卷  或者以前做完食谱问卷 没有付费的情况
             if emptyVm.superview == nil {
                 removeStateViews()
@@ -398,6 +422,7 @@ extension DietPlanVC{
             let vipModel = VIPModel.shared.update(with: dataDict)
             DLLog(message: "sendProVipMsgRequest:\(dataDict)")
             DLLog(message: "sendProVipMsgRequest model: uid=\(vipModel.uid), status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime)  ,expireTime=\(vipModel.expireTime)")
+            self.applyPendingDietPlanResponseIfNeeded()
             
         }
     }
