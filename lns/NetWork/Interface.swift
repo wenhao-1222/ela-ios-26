@@ -99,32 +99,32 @@ public let URL_plan_poster          = URL_Type + "plans/dietplan/poster"
 
 public let URL_plan_brief           = URL_Type + "plans/dietplan/brief"
 //获取每日营养元素
-public let URL_get_nutrition_data           = URL_Type + "users/nutrition/data"
+public let URL_get_nutrition_data              = URL_Type + "users/nutrition/data"
 //概览，获取当日营养日志  代替  users/nutrition/data  接口
 public let URL_get_current_nutrition           = URL_Type + "plans/log/today_nutrition"
 //获取用户默认营养目标
 public let URL_get_default_nutrition           = URL_Type + "users/nutrition/default"
 //获取用户碳循环目标
-public let URL_get_default_nutrition_circle           = URL_Type + "users/nutrition/cc"
+public let URL_get_default_nutrition_circle    = URL_Type + "users/nutrition/cc"
 //保存身体测量数据
 public let URL_bodystat_save               = URL_Type + "users/bodystat/save"
 //查询身体测量数据
-public let URL_bodystat_query               = URL_Type + "users/bodystat/query"
+public let URL_bodystat_query              = URL_Type + "users/bodystat/query"
 //查询最后14条数据
-public let URL_bodystat_query_14            = URL_Type + "users/bodystat/query14"
+public let URL_bodystat_query_14           = URL_Type + "users/bodystat/query14"
 //删除身体测量数据
-public let URL_bodystat_delete              = URL_Type + "users/bodystat/del"
+public let URL_bodystat_delete             = URL_Type + "users/bodystat/del"
 //获取用户资料
 public let URL_User_Center                 = URL_Type + "users/profile/get"
 //更新用户资料
 public let URL_User_Material_Update        = URL_Type + "users/profile/set"
 
 //获取用户配置
-public let URL_config_msg                = URL_Type + "users/config/get"
+public let URL_config_msg                  = URL_Type + "users/config/get"
 //更新用户配置
-public let URL_config_set        = URL_Type + "users/config/set"
+public let URL_config_set                  = URL_Type + "users/config/set"
 ///常量接口获取
-public let URL_constant_get        = URL_Type + "tools/app/constant"
+public let URL_constant_get                = URL_Type + "tools/app/constant"
 //分佣详情
 public let URL_User_fission_detail         = URL_Type + "users/fission/data"
 //获取日志信息
