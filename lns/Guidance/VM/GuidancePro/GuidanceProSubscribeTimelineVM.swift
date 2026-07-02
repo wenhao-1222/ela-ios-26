@@ -122,16 +122,24 @@ class GuidanceProSubscribeTimelineVM: UIView {
     private lazy var firstLineView = makeTimelineLineView()
     private lazy var secondLineView = makeTimelineLineView()
 
+    private lazy var planCardShadowView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.layer.cornerRadius = kFitWidth(12)
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = 0.05
+        view.layer.shadowRadius = kFitWidth(16)
+        view.layer.shadowOffset = .zero
+        view.layer.masksToBounds = false
+        return view
+    }()
+
     private lazy var planCardView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.COLOR_CARD_BG_WHITE//.withAlphaComponent(0.78)
+        view.backgroundColor = .clear//UIColor.COLOR_CARD_BG_WHITE//.withAlphaComponent(0.78)
         view.layer.cornerRadius = kFitWidth(12)
-        view.layer.borderWidth = kFitWidth(1)
-        view.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
-//        view.layer.shadowColor = UIColor.COLOR_TEXT_TITLE_0f1214.cgColor
-//        view.layer.shadowOpacity = 0.06
-//        view.layer.shadowRadius = kFitWidth(16)
-//        view.layer.shadowOffset = CGSize(width: 0, height: kFitWidth(8))
+//        view.layer.borderWidth = kFitWidth(2)
+//        view.layer.borderColor = UIColor.COLOR_CARD_BG_WHITE.cgColor
         view.clipsToBounds = true
         return view
     }()
@@ -153,22 +161,28 @@ class GuidanceProSubscribeTimelineVM: UIView {
 
     private lazy var planBodyView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.86)
+        view.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.5)
+        return view
+    }()
+
+    private lazy var planBodyBlurView: UIVisualEffectView = {
+        let view = UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterialLight))
+        view.isUserInteractionEnabled = false
         return view
     }()
 
     private lazy var radioOuterView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = kFitWidth(6)
-        view.layer.borderWidth = kFitWidth(1)
-        view.layer.borderColor = UIColor.THEME.cgColor
+        view.layer.cornerRadius = kFitWidth(7.5)
+        view.layer.borderWidth = kFitWidth(1.2)
+        view.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_20.cgColor
         return view
     }()
 
     private lazy var radioInnerView: UIView = {
         let view = UIView()
         view.backgroundColor = .THEME
-        view.layer.cornerRadius = kFitWidth(2.5)
+        view.layer.cornerRadius = kFitWidth(3)
         return view
     }()
 
@@ -213,7 +227,7 @@ class GuidanceProSubscribeTimelineVM: UIView {
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 18, weight: .medium)
         button.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-        button.layer.cornerRadius = kFitWidth(24)
+        button.layer.cornerRadius = kFitWidth(25)
         button.clipsToBounds = true
         button.enablePressEffect()
         button.addTarget(self, action: #selector(startTrialTapAction), for: .touchUpInside)
@@ -244,6 +258,14 @@ class GuidanceProSubscribeTimelineVM: UIView {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        planCardShadowView.layer.shadowPath = UIBezierPath(
+            roundedRect: planCardShadowView.bounds,
+            cornerRadius: kFitWidth(12)
+        ).cgPath
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -342,7 +364,7 @@ private extension GuidanceProSubscribeTimelineVM {
         contentView.addSubview(ratingStackView)
         contentView.addSubview(brandTitleImageView)
         contentView.addSubview(timelineContainerView)
-        contentView.addSubview(planCardView)
+        contentView.addSubview(planCardShadowView)
         contentView.addSubview(renewalDescLabel)
         contentView.addSubview(proTitleLabel)
         contentView.addSubview(proFeatureContainer)
@@ -353,9 +375,11 @@ private extension GuidanceProSubscribeTimelineVM {
         timelineContainerView.addSubview(thirdStepView)
         timelineContainerView.addSubview(firstLineView)
         timelineContainerView.addSubview(secondLineView)
+        planCardShadowView.addSubview(planCardView)
         planCardView.addSubview(planHeaderView)
         planHeaderView.addSubview(planHeaderLabel)
         planCardView.addSubview(planBodyView)
+        planBodyView.addSubview(planBodyBlurView)
         planBodyView.addSubview(radioOuterView)
         radioOuterView.addSubview(radioInnerView)
         planBodyView.addSubview(planTitleLabel)
@@ -388,8 +412,8 @@ private extension GuidanceProSubscribeTimelineVM {
 
         timelineContainerView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(brandTitleImageView.snp.bottom).offset(kFitWidth(75))
-            make.height.equalTo(kFitWidth(250))
+            make.top.equalTo(brandTitleImageView.snp.bottom).offset(kFitWidth(65))
+            make.height.equalTo(kFitWidth(240))
         }
 
         firstStepView.snp.makeConstraints { make in
@@ -423,17 +447,21 @@ private extension GuidanceProSubscribeTimelineVM {
             make.width.equalTo(kFitWidth(2))
         }
 
-        planCardView.snp.makeConstraints { make in
+        planCardShadowView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(23))
             make.right.equalTo(kFitWidth(-23))
-            make.top.equalTo(timelineContainerView.snp.bottom).offset(kFitWidth(57))
+            make.top.equalTo(timelineContainerView.snp.bottom).offset(kFitWidth(37))
             make.height.equalTo(kFitWidth(109))
+        }
+
+        planCardView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
 
         renewalDescLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))
             make.right.equalTo(kFitWidth(-24))
-            make.top.equalTo(planCardView.snp.bottom).offset(kFitWidth(18))
+            make.top.equalTo(planCardShadowView.snp.bottom).offset(kFitWidth(18))
         }
 
         proTitleLabel.snp.makeConstraints { make in
@@ -475,15 +503,19 @@ private extension GuidanceProSubscribeTimelineVM {
             make.top.equalTo(planHeaderView.snp.bottom)
         }
 
+        planBodyBlurView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+
         radioOuterView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(18))
-            make.top.equalTo(kFitWidth(24))
-            make.width.height.equalTo(kFitWidth(12))
+            make.left.equalTo(kFitWidth(15.5))
+            make.top.equalTo(kFitWidth(17))
+            make.width.height.equalTo(kFitWidth(15))
         }
 
         radioInnerView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(5))
+            make.width.height.equalTo(kFitWidth(6))
         }
 
         planTitleLabel.snp.makeConstraints { make in
@@ -500,7 +532,7 @@ private extension GuidanceProSubscribeTimelineVM {
         }
 
         planPriceLabel.snp.makeConstraints { make in
-            make.right.equalTo(kFitWidth(-18))
+            make.right.equalTo(kFitWidth(-16))
             make.centerY.equalTo(planTitleLabel)
             make.width.greaterThanOrEqualTo(kFitWidth(86))
         }
@@ -515,8 +547,9 @@ private extension GuidanceProSubscribeTimelineVM {
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
             make.top.equalTo(trialDescLabel.snp.bottom).offset(kFitWidth(16))
-            make.height.equalTo(kFitWidth(52))
-            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-kFitWidth(26))
+            make.height.equalTo(kFitWidth(50))
+//            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).offset(-kFitWidth(26))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
         }
 
         updateFreeTrialPermission(true)
