@@ -23,7 +23,7 @@ class GuidanceProPromiseVM: UIView {
         label.textAlignment = .center
         label.numberOfLines = 0
         label.attributedText = centeredText(
-            "我们希望Ela PRO能够真正\n帮到你，而不是引诱你付费",
+            "我们希望ELA PRO能够真正\n帮到你，而不是引诱你付费",
             font: .systemFont(ofSize: 24, weight: .medium),
             color: .COLOR_TEXT_TITLE_0f1214,
             lineSpacing: kFitWidth(2)
@@ -34,7 +34,8 @@ class GuidanceProPromiseVM: UIView {
     private lazy var subtitleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        label.text = "我们会在试用结束前48小时提醒你"
+        label.text = "我们会在试用结束前提醒你"
+//        label.text = "我们会在试用结束前48小时提醒你"
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.textAlignment = .center
 //        label.numberOfLines = 0
