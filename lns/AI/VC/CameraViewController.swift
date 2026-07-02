@@ -960,7 +960,7 @@ extension CameraViewController {
             return
         }else if code == 402{
             presentAlertVc(confirmBtn: "去开通",
-                           message: "\(responseObject["message"] as? String ?? "AI 识别消耗的资源较多，因此免费额度有限。你可以明天再来，或开通 ELA Pro 畅用 AI识别。")",
+                           message: "\(responseObject["message"] as? String ?? "AI 识别消耗的资源较多，因此免费额度有限。你可以明天再来，或开通 ELA PRO 畅用 AI识别。")",
                            title: "今日免费 AI 额度已用完",
                            cancelBtn: "取消",
                            handler: { [weak self] _ in
@@ -1166,7 +1166,7 @@ extension CameraViewController {
         funcVm.refreshShowStatus(isShow: true)
 
         presentAlertVc(confirmBtn: "去开通",
-                       message:"AI 识别消耗的资源较多，因此免费额度有限。你可以明天再来，或开通 ELA Pro 畅用 AI识别。",
+                       message:"AI 识别消耗的资源较多，因此免费额度有限。你可以明天再来，或开通 ELA PRO 畅用 AI识别。",
                        title: "今日免费 AI 额度已用完",
                        cancelBtn: "取消",
                        handler: { [weak self] _ in

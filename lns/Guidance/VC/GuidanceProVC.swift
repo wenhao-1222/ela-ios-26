@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import MCToast
+import UserNotifications
 
 class GuidanceProVC: WHBaseViewVC {
 
@@ -30,9 +31,10 @@ class GuidanceProVC: WHBaseViewVC {
     private let topContentVM = GuidanceProTopVM()
     private let trialContentVM = GuidanceProTrialVM()
     private let promiseContentVM = GuidanceProPromiseVM()
-    private let subscribeContentVM = GuidanceProSubscribeVM()
+    private let subscribeContentVM = GuidanceProSubscribeTimelineVM()
     private var currentStep: ContentStep = .intro
     private var isPurchasing = false
+    private var isRequestingNotificationPermission = false
     private var isContentTransitionAnimating = false
     private var isSwipeBackInteractionInProgress = false
     private var swipeBackStartStep: ContentStep?
@@ -167,7 +169,7 @@ extension GuidanceProVC {
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.height.equalTo(kFitWidth(48))
+            make.height.equalTo(kFitWidth(50))
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
         }
 
@@ -205,7 +207,7 @@ extension GuidanceProVC {
         case .trial:
             showPromiseContent()
         case .promise:
-            showSubscribeContent()
+            requestNotificationPermissionBeforeSubscribeIfNeeded()
         case .subscribe:
             nextBlock?()
         }
@@ -388,7 +390,7 @@ extension GuidanceProVC {
     }
 
     private var canRespondToNextButton: Bool {
-        !isPurchasing && !isContentTransitionAnimating && !isSwipeBackInteractionInProgress
+        !isPurchasing && !isRequestingNotificationPermission && !isContentTransitionAnimating && !isSwipeBackInteractionInProgress
     }
 
     private var canSwipeBackCurrentStep: Bool {
@@ -396,7 +398,13 @@ extension GuidanceProVC {
     }
 
     private func updateNextButtonInteractionState() {
+        updateNextButtonTitle()
         nextButton.isUserInteractionEnabled = !nextButton.isHidden && canRespondToNextButton
+    }
+
+    private func updateNextButtonTitle() {
+        let title = currentStep == .promise ? "0元 开启体验" : "下一步"
+        nextButton.setTitle(title, for: .normal)
     }
 
     private func disableFullscreenPopGesture() {
@@ -636,6 +644,39 @@ extension GuidanceProVC {
             bizType: guidanceV2BizType
         )
         EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW, scenarioType: .ela_pro_view, text: "1")
+    }
+
+    private func requestNotificationPermissionBeforeSubscribeIfNeeded() {
+        guard !isRequestingNotificationPermission else { return }
+        isRequestingNotificationPermission = true
+        updateNextButtonInteractionState()
+
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            guard let self = self else { return }
+
+            switch settings.authorizationStatus {
+            case .notDetermined:
+                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in
+                    DispatchQueue.main.async {
+                        self.isRequestingNotificationPermission = false
+                        self.updateNextButtonInteractionState()
+                        self.showSubscribeContent()
+                    }
+                }
+            case .authorized, .provisional, .ephemeral, .denied:
+                DispatchQueue.main.async {
+                    self.isRequestingNotificationPermission = false
+                    self.updateNextButtonInteractionState()
+                    self.showSubscribeContent()
+                }
+            @unknown default:
+                DispatchQueue.main.async {
+                    self.isRequestingNotificationPermission = false
+                    self.updateNextButtonInteractionState()
+                    self.showSubscribeContent()
+                }
+            }
+        }
     }
 }
 

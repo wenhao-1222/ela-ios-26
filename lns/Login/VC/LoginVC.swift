@@ -172,6 +172,7 @@ extension LoginVC{
             let respData = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             
             DLLog(message: "\(respData)")
+            
             self.trackGuidanceV2LoginRegisteredResultIfNeeded(registered: respData["registered"] as? String ?? "")
             if respData["registered"] as? String ?? "" == "no"{
                 self.notRegistVm.showView()
@@ -195,7 +196,7 @@ extension LoginVC{
 
     func trackGuidanceV2LoginRegisteredResultIfNeeded(registered: String) {
         guard shouldTrackGuidanceV2LoginRegisteredResult else { return }
-        shouldTrackGuidanceV2LoginRegisteredResult = false
+//        shouldTrackGuidanceV2LoginRegisteredResult = false
         EventLogUtils().sendGuidanceV2LoginRegisteredResult(registered: registered)
     }
 }
