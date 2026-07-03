@@ -467,7 +467,7 @@ private extension GuidanceProSubscribeTimelineVM {
         proTitleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
-            make.top.equalTo(renewalDescLabel.snp.bottom).offset(kFitWidth(28))
+            make.top.equalTo(renewalDescLabel.snp.bottom).offset(kFitWidth(48))
         }
 
         proFeatureContainer.snp.makeConstraints { make in
