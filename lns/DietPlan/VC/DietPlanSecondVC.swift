@@ -65,6 +65,7 @@ class DietPlanSecondVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.clipsToBounds = true
         initUI()
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(refreshDietPlanAfterSubscriptionSuccess),
@@ -95,6 +96,8 @@ class DietPlanSecondVC: WHBaseViewVC {
     }()
     lazy var nonePlanVm: PlanMainNonePlanVM = {
         let vm = PlanMainNonePlanVM.init(frame: .zero)
+        vm.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+        vm.titleLab.isHidden = true
         vm.createPlanButton.addTarget(self, action: #selector(createPlanAction), for: .touchUpInside)
         return vm
     }()
@@ -291,7 +294,7 @@ extension DietPlanSecondVC{
 
 extension DietPlanSecondVC{
     func initUI() {
-        initNavi(titleStr: "")
+        initNavi(titleStr: "饮食计划",naviBgColor: .clear)
     }
 }
 
@@ -317,7 +320,7 @@ extension DietPlanSecondVC{
     func showNonePlanState() {
         if nonePlanVm.superview == nil {
             removeStateViews()
-            view.addSubview(nonePlanVm)
+            view.insertSubview(nonePlanVm, belowSubview: navigationView)
         }
     }
     
@@ -348,16 +351,20 @@ extension DietPlanSecondVC{
         if status == "1" || VIPModel.shared.mealPlanProcessStatus == 0{//无问卷  或者以前做完食谱问卷 没有付费的情况
             if emptyVm.superview == nil {
                 removeStateViews()
-                view.addSubview(emptyVm)
+//                view.addSubview(emptyVm)
+                self.naviTitleLabel.text = ""
+                view.insertSubview(emptyVm, belowSubview: navigationView)
             }
             sendDietPlanCreatePageViewIfNeeded(pageIndex: "1", pageTitle: "开始页")
             return
         }
+        self.naviTitleLabel.text = "饮食计划"
         if status == "2" {//做过问卷，未生成计划
             if VIPModel.shared.status == .invalid{//从未购买过会员，重新进问卷
                 if emptyVm.superview == nil {
                     removeStateViews()
-                    view.addSubview(emptyVm)
+//                    view.addSubview(emptyVm)
+                    view.insertSubview(emptyVm, belowSubview: navigationView)
                 }
                 sendDietPlanCreatePageViewIfNeeded(pageIndex: "1", pageTitle: "开始页")
             }else{//以前购买过会员
@@ -369,7 +376,8 @@ extension DietPlanSecondVC{
         shouldPreferNonePlanStateAfterProSuccess = false
         if listVm.superview == nil {
             removeStateViews()
-            view.addSubview(listVm)
+//            view.addSubview(listVm)
+            view.insertSubview(listVm, belowSubview: navigationView)
         }
         if status == "3"{//有问卷，计划过期   buyListButton不可点
             listVm.buyListButton.isEnabled = false

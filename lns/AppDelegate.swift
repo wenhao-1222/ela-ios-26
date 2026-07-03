@@ -81,6 +81,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                     UserInfoModel.shared.phone = phone
                     ElaProPriceVM.preloadLoggedInProductSnapshots()
                     sendSplashIdRequest()
+                    ElaProIAPManager.shared.refreshAnonymousIdentityAfterDeletionIfNeeded()
                     ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
                     
                     UserInfoModel.shared.mealsNumber = UserDefaults.getMealsNumber()
@@ -209,6 +210,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         setupJpushIfAuthorized()
         getHealthAppData()
         application.applicationIconBadgeNumber = 0
+        ElaProIAPManager.shared.refreshAnonymousIdentityAfterDeletionIfNeeded()
         ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
     }
     func applicationWillEnterForeground(_ application: UIApplication) {

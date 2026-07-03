@@ -11,6 +11,6 @@
 	<key>url_release</key>
 	<string>https://api.leungnutritionsciences.cn:8443/</string>
 	<key>server_type</key>
-	<integer>0</integer>
+	<integer>2</integer>
 </dict>
 </plist>

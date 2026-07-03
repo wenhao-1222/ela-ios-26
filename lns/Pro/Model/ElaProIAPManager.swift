@@ -105,6 +105,7 @@ final class ElaProIAPManager: NSObject {
     private var cachedProducts: [String: Product] = [:]
     private let productCacheQueue = DispatchQueue(label: "com.elavatine.pro.iap.productCache")
     private var purchaseTask: Task<Void, Never>?
+    private var identityRefreshTask: Task<Void, Never>?
     private var transactionUpdatesTask: Task<Void, Never>?
     private var refundDebugSession: RefundDebugSession?
 
@@ -123,6 +124,7 @@ final class ElaProIAPManager: NSObject {
         static let appAccountToken = "ela_pro_app_account_token"
         static let anonymousIdentityExpiresAt = "ela_pro_anonymous_identity_expires_at"
         static let anonymousIdentityBoundUID = "ela_pro_anonymous_identity_bound_uid"
+        static let pendingIdentityRefreshAfterDeletion = "ela_pro_pending_identity_refresh_after_deletion"
     }
 
     private enum KeychainKeys {
@@ -535,6 +537,45 @@ final class ElaProIAPManager: NSObject {
         defaults.removeObject(forKey: LocalUnlockKeys.pendingVerifyPayload)
         clearPendingVerifyPayloadKeychainCache()
         clearPendingTransactionIDCache(defaults: defaults)
+    }
+
+    func resetAnonymousIdentityAfterAccountDeletion(delaySeconds: TimeInterval = 3) {
+        clearAnonymousIdentity()
+        UserDefaults.standard.set(true, forKey: LocalUnlockKeys.pendingIdentityRefreshAfterDeletion)
+        refreshAnonymousIdentityAfterDeletionIfNeeded(delaySeconds: delaySeconds)
+    }
+
+    func refreshAnonymousIdentityAfterDeletionIfNeeded(delaySeconds: TimeInterval = 0) {
+        guard UserDefaults.standard.bool(forKey: LocalUnlockKeys.pendingIdentityRefreshAfterDeletion) else {
+            return
+        }
+        guard identityRefreshTask == nil else {
+            return
+        }
+
+        identityRefreshTask = Task {
+            defer { self.identityRefreshTask = nil }
+
+            let delayNanoseconds = UInt64(max(delaySeconds, 0) * 1_000_000_000)
+            if delayNanoseconds > 0 {
+                try? await Task.sleep(nanoseconds: delayNanoseconds)
+            }
+
+            do {
+                let identity = try await requestAnonymousIdentity()
+                UserDefaults.standard.removeObject(forKey: LocalUnlockKeys.pendingIdentityRefreshAfterDeletion)
+                DLLog(message: [
+                    "tag": "[ElaProIAP][IDENTITY] refreshed after account deletion",
+                    "anonymousUid": identity.anonymousUid,
+                    "appAccountToken": identity.appAccountToken
+                ])
+            } catch {
+                DLLog(message: [
+                    "tag": "[ElaProIAP][IDENTITY] refresh after account deletion failed",
+                    "error": error.localizedDescription
+                ])
+            }
+        }
     }
 
     func bindPendingPurchaseIfNeeded(queryBizType: String = PurchaseQueryBizType.pendingBind.rawValue,
