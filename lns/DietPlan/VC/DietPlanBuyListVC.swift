@@ -28,6 +28,7 @@ class DietPlanBuyListVC: WHBaseViewVC {
     var createDateStrings = [String]()
     var showCreateButton = true
     var foodsArray = NSMutableArray()
+    var shouldReturnToDietPlanSecond = false
     private var isLoading = false
     
     override func viewDidLoad() {
@@ -50,6 +51,13 @@ class DietPlanBuyListVC: WHBaseViewVC {
                 nav.viewControllers = controllers
             }
         }
+    }
+    
+    override func backTapAction() {
+        if popToDietPlanSecondIfNeeded() {
+            return
+        }
+        self.navigationController?.popToRootViewController(animated: true)
     }
     
     override func viewDidLayoutSubviews() {
@@ -188,7 +196,7 @@ extension DietPlanBuyListVC{
         setConstrait()
         
         self.backArrowButton.tapBlock = {()in
-            self.navigationController?.popToRootViewController(animated: true)
+            self.backTapAction()
         }
     }
     func setConstrait() {
@@ -241,6 +249,7 @@ extension DietPlanBuyListVC{
             let vc = DietPlanBuyListDateVC(dateStrings: self.createDateStrings) { [weak self] selectedDates in
                 self?.applySelectedDatesAndRefresh(selectedDates)
             }
+            vc.shouldReturnToDietPlanSecond = self.shouldReturnToDietPlanSecond
             self.navigationController?.pushViewController(vc, animated: true)
 //        }, viewController: self)
     }
@@ -313,6 +322,18 @@ extension DietPlanBuyListVC{
             }
             tableView.deselectRow(at: indexPath, animated: false)
         }
+    }
+}
+
+private extension DietPlanBuyListVC {
+    func popToDietPlanSecondIfNeeded() -> Bool {
+        guard shouldReturnToDietPlanSecond,
+              let navigationController = navigationController,
+              let targetVC = navigationController.viewControllers.last(where: { $0 is DietPlanSecondVC }) else {
+            return false
+        }
+        navigationController.popToViewController(targetVC, animated: true)
+        return true
     }
 }
 

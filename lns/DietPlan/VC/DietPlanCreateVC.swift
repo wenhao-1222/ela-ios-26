@@ -25,6 +25,7 @@ class DietPlanCreateVC: WHBaseViewVC {
     private var isStepTransitioning = false
     private var isScrollBackInteractionInProgress = false
     private var trackedDietPlanCreatePageIndexes: Set<String> = []
+    var shouldReturnToDietPlanSecondAfterElaPro = false
     private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
         let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
         gesture.edges = .left
@@ -1025,6 +1026,7 @@ extension DietPlanCreateVC{
         shouldSkipDraftPersistence = false
         persistDraftIfNeeded()
         let vc = ElaProVC()
+        vc.shouldReturnToDietPlanSecondOnClose = shouldReturnToDietPlanSecondAfterElaPro
         vc.shouldClearDietPlanCreateDraftOnPurchaseSuccess = true
         vc.shouldShowDietPlanNoneStateOnPurchaseSuccess = true
         vc.shouldTrackDietPlanCreateLoadingPage = true

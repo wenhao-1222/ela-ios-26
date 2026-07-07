@@ -15,7 +15,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "组 1013@2x.png",
+      "filename" : "子件查看@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -26,11 +26,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "深色@2x.png",
+      "filename" : "子件查看@2x 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "子件查看@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -41,6 +42,7 @@
           "value" : "dark"
         }
       ],
+      "filename" : "子件查看@3x 1.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

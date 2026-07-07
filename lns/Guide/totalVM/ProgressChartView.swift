@@ -45,6 +45,7 @@ class ProgressChartView: UIView {
     var animationProgress: CGFloat = 0.0
     var displayLink: CADisplayLink?
     var gradientAnimationDidFinish: (() -> Void)?
+    private var gradientAnimationCompletion: (() -> Void)?
     var legendFadeWillStart: (() -> Void)?
     private(set) var areLegendLabelsVisible = false
     
@@ -60,9 +61,10 @@ class ProgressChartView: UIView {
     private var gradientStartTime: CFTimeInterval = 0
     private var gradientDuration: CFTimeInterval = 1
 
-    func startGradientAnimation(duration: CFTimeInterval = 1.2) {
+    func startGradientAnimation(duration: CFTimeInterval = 1.2, completion: (() -> Void)? = nil) {
         gradientDuration = duration
         gradientStartTime = CACurrentMediaTime()
+        gradientAnimationCompletion = completion
         animationProgress = 0.0
         displayLink?.invalidate()
         animationProgress = 0.0
@@ -85,6 +87,7 @@ class ProgressChartView: UIView {
         unrecordedLineLayer.removeAllAnimations()
         recordedLabel.layer.removeAllAnimations()
         unrecordedLabel.layer.removeAllAnimations()
+        gradientAnimationCompletion = nil
         animationProgress = 1.0
         progress = 1
         recordedLabel.alpha = 1
@@ -103,7 +106,11 @@ class ProgressChartView: UIView {
 //            animationProgress = 1.0
             displayLink?.invalidate()
             displayLink = nil
-            startLegendFadeAnimation()
+            startLegendFadeAnimation { [weak self] in
+                let completion = self?.gradientAnimationCompletion
+                self?.gradientAnimationCompletion = nil
+                completion?()
+            }
             gradientAnimationDidFinish?()
         }
         setNeedsDisplay() // 触发 draw(_:)
@@ -493,14 +500,18 @@ class ProgressChartView: UIView {
         }
     }
     
-    private func startLegendFadeAnimation() {
-        guard areLegendLabelsVisible == false else { return }
+    private func startLegendFadeAnimation(completion: (() -> Void)? = nil) {
+        guard areLegendLabelsVisible == false else {
+            completion?()
+            return
+        }
         legendFadeWillStart?()
         UIView.animate(withDuration: 0.3) {
             self.recordedLabel.alpha = 1
             self.unrecordedLabel.alpha = 1
         } completion: { _ in
             self.areLegendLabelsVisible = true
+            completion?()
         }
     }
     private func animateLines() {

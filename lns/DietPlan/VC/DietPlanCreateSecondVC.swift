@@ -27,6 +27,7 @@ class DietPlanCreateSecondVC: WHBaseViewVC {
     private var scrollDragStartIndex: Int?
     private var isStepTransitioning = false
     private var isScrollBackInteractionInProgress = false
+    var shouldReturnToDietPlanSecondAfterElaPro = false
     private lazy var backEdgePanGesture: UIScreenEdgePanGestureRecognizer = {
         let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleBackEdgePan(_:)))
         gesture.edges = .left
@@ -1200,6 +1201,7 @@ extension DietPlanCreateSecondVC {
             self.syncNextButtonEnableStatus()
             let vc = ElaProVC()
             vc.showPriceOnly = true
+            vc.shouldReturnToDietPlanSecondOnClose = self.shouldReturnToDietPlanSecondAfterElaPro
             vc.pendingDietPlanCreateParameters = createParameters
             self.pushElaProVCWhenReady(vc)
         }

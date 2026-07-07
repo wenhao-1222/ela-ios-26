@@ -194,6 +194,7 @@ extension DietPlanSecondVC{
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
         
         let vc = DietPlanCreateVC()
+        vc.shouldReturnToDietPlanSecondAfterElaPro = true
 //        let vc = ElaProVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
@@ -209,6 +210,7 @@ extension DietPlanSecondVC{
         self.navigationController?.fd_interactivePopDisabled = true
         self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
         let vc = DietPlanCreateSecondVC()
+        vc.shouldReturnToDietPlanSecondAfterElaPro = true
         self.navigationController?.pushViewController(vc, animated: true)
     }
     //购物清单
@@ -225,6 +227,7 @@ extension DietPlanSecondVC{
     @objc func condimentAction() {
         guard self.ensureValidVipForMealAction() else { return }
         let vc = DietPlanCondimentVC()
+        vc.shouldReturnToDietPlanSecond = true
         self.navigationController?.pushViewController(vc, animated: true)
     }
     func openMealChangeList(mealId: String,id:String,sdate:String) {
@@ -250,6 +253,7 @@ extension DietPlanSecondVC{
             return
         }
         let vc = DietPlanBuyListDateVC(dateStrings: availableDates)
+        vc.shouldReturnToDietPlanSecond = true
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -257,6 +261,7 @@ extension DietPlanSecondVC{
         let vc = DietPlanBuyListVC()
         vc.showCreateButton = true
         vc.createDateStrings = listVm.buyListDateStringsFromToday()
+        vc.shouldReturnToDietPlanSecond = true
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

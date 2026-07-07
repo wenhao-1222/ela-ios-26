@@ -9,13 +9,13 @@
 class GuideTotalProgressVM: UIView {
     
     let progressWidth = SCREEN_WIDHT-kFitWidth(110)
-    let totalStep = CGFloat(5)
+    let totalStep = CGFloat(6)
     var stepWidth = kFitWidth(55)
     
     var backBlock:(()->())?
     
     override init(frame:CGRect){
-        super.init(frame: CGRect.init(x: 0, y: statusBarHeight, width: SCREEN_WIDHT, height: kFitWidth(30)))
+        super.init(frame: CGRect.init(x: 0, y: statusBarHeight, width: SCREEN_WIDHT, height: 44))
         self.backgroundColor = .clear
         self.isUserInteractionEnabled = true
         self.clipsToBounds = true
@@ -30,7 +30,8 @@ class GuideTotalProgressVM: UIView {
     lazy var backImg: UIImageView = {
         let img = UIImageView()
 //        img.setImgLocal(imgName: "guide_back_button")
-        img.image = UIImage(named: "guide_back_button")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
+        img.image = UIImage(named: "habit_guide_back_icon")
+//        img.image = UIImage(named: "guide_back_button")?.withTintColor(.COLOR_TEXT_TITLE_0f1214)
         img.isUserInteractionEnabled = true
         img.alpha = 0
         
@@ -50,6 +51,7 @@ class GuideTotalProgressVM: UIView {
         vi.backgroundColor = .COLOR_TEXT_TITLE_0f1214_06
         vi.layer.cornerRadius = kFitWidth(3)
         vi.clipsToBounds = true
+        vi.alpha = 0
         
         return vi
     }()
@@ -58,27 +60,59 @@ class GuideTotalProgressVM: UIView {
         vi.backgroundColor = .THEME
         vi.layer.cornerRadius = kFitWidth(3)
         vi.clipsToBounds = true
+        vi.alpha = 0
         
         return vi
     }()
 }
 
 extension GuideTotalProgressVM{
+    func setBackOnlyMode(_ isBackOnly: Bool, animated: Bool = false) {
+        let updateProgressVisibility = {
+            self.progressBottomView.alpha = isBackOnly ? 0 : 1
+            self.progressView.alpha = isBackOnly ? 0 : 1
+        }
+        let completion: (Bool) -> Void = { finished in
+            guard finished else { return }
+            self.progressBottomView.isHidden = isBackOnly
+            self.progressView.isHidden = isBackOnly
+        }
+        
+        if isBackOnly == false {
+            progressBottomView.isHidden = false
+            progressView.isHidden = false
+            if animated, progressBottomView.alpha == 0 {
+                progressBottomView.alpha = 0
+                progressView.alpha = 0
+            }
+        }
+        
+        if animated {
+            UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState], animations: updateProgressVisibility, completion: completion)
+        } else {
+            updateProgressVisibility()
+            completion(true)
+        }
+        
+        backImg.alpha = isBackOnly ? 1 : backImg.alpha
+    }
+
     @objc func backTapAction() {
         self.backBlock?()
     }
 }
 
 extension GuideTotalProgressVM{
-    func setStep(step: Int, animated: Bool = true, duration: TimeInterval = 0.25) {
-        if step <= 0{
-            self.backImg.alpha = 0
-        }else{
+    func setStep(step: Int, animated: Bool = true, duration: TimeInterval = 0.25, showsBackButton: Bool? = nil) {
+        setBackOnlyMode(false, animated: animated)
+        let shouldShowBackButton = showsBackButton ?? (step > 0)
+        if shouldShowBackButton {
             UIView.animate(withDuration: 0.35) {
                 self.backImg.alpha = 1
             }
+        } else {
+            self.backImg.alpha = 0
         }
-        
         
         let targetWidth = stepWidth * CGFloat(step + 1)
         
@@ -109,7 +143,7 @@ extension GuideTotalProgressVM{
         backImg.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(12))
             make.top.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(30))
+            make.width.height.equalTo(kFitWidth(35))
         }
         backTapView.snp.makeConstraints { make in
             make.left.top.bottom.equalToSuperview()

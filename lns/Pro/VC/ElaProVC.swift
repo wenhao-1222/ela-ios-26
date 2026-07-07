@@ -24,6 +24,7 @@ class ElaProVC: WHBaseViewVC {
     var shouldClearDietPlanCreateDraftOnPurchaseSuccess = false
     var shouldShowDietPlanNoneStateOnPurchaseSuccess = false
     var shouldTrackDietPlanCreateLoadingPage = false
+    var shouldReturnToDietPlanSecondOnClose = false
     var pendingDietPlanCreateParameters: [String: Any]?
     private var hasTrackedDietPlanCreateLoadingPage = false
     private var agreementAlertVm: ElaProAgreementAlertVM?
@@ -465,6 +466,9 @@ extension ElaProVC{
             navigationController?.pushViewController(vc, animated: true)
             return
         }
+        if popToDietPlanSecondIfNeeded() {
+            return
+        }
         if popToRootOnClose {
             navigationController?.popToRootViewController(animated: true)
         } else {
@@ -535,6 +539,11 @@ extension ElaProVC{
         isCreatingPendingDietPlan = false
         pendingDietPlanCreateParameters = nil
         setPurchaseLoadingVisible(false)
+        if popToDietPlanSecondIfNeeded() {
+            NotificationCenter.default.post(name: NOTIFI_NAME_DIET_PLAN_CREATE_SUCCESS, object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
+            return
+        }
         navigationController?.tabBarController?.selectedIndex = 2
         navigationController?.popToRootViewController(animated: true)
         NotificationCenter.default.post(name: NOTIFI_NAME_DIET_PLAN_CREATE_SUCCESS, object: nil)
@@ -556,6 +565,18 @@ extension ElaProVC{
         }
         hasTrackedDietPlanCreateLoadingPage = true
         EventLogUtils().sendDietPlanCreatePageView(pageIndex: "19", pageTitle: "加载动画")
+    }
+}
+
+private extension ElaProVC {
+    func popToDietPlanSecondIfNeeded() -> Bool {
+        guard shouldReturnToDietPlanSecondOnClose,
+              let navigationController = navigationController,
+              let targetVC = navigationController.viewControllers.last(where: { $0 is DietPlanSecondVC }) else {
+            return false
+        }
+        navigationController.popToViewController(targetVC, animated: true)
+        return true
     }
 }
 

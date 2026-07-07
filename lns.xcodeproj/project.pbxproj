@@ -1387,6 +1387,10 @@
 		F1A700032F90000100AABBCC /* MineSubscriptionPlanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700042F90000100AABBCC /* MineSubscriptionPlanVC.swift */; };
 		F1A700052F90000100AABBCC /* MineManageSubscriptionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700062F90000100AABBCC /* MineManageSubscriptionVC.swift */; };
 		F1A700102F90000100AABBCC /* JournalElaProAnnouncementAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A7000F2F90000100AABBCC /* JournalElaProAnnouncementAlertVM.swift */; };
+		F1A700202F90000100AABBCC /* GuideTotalBodyImpactVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700212F90000100AABBCC /* GuideTotalBodyImpactVM.swift */; };
+		F1A700222F90000100AABBCC /* GuideTotalDietRecordVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700232F90000100AABBCC /* GuideTotalDietRecordVM.swift */; };
+		EC42ACE02FFB979F00D01D29 /* GuideTotalProVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE12FFB979F00D01D29 /* GuideTotalProVM.swift */; };
+		EC42ACE22FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE32FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift */; };
 		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
 		F2B0C2012F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */; };
 		F2B0C3012F80100100A1B2C3 /* GuidanceElaProTransitionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */; };
@@ -2922,6 +2926,10 @@
 		F1A700042F90000100AABBCC /* MineSubscriptionPlanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineSubscriptionPlanVC.swift; sourceTree = "<group>"; };
 		F1A700062F90000100AABBCC /* MineManageSubscriptionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineManageSubscriptionVC.swift; sourceTree = "<group>"; };
 		F1A7000F2F90000100AABBCC /* JournalElaProAnnouncementAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalElaProAnnouncementAlertVM.swift; sourceTree = "<group>"; };
+		F1A700212F90000100AABBCC /* GuideTotalBodyImpactVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalBodyImpactVM.swift; sourceTree = "<group>"; };
+		F1A700232F90000100AABBCC /* GuideTotalDietRecordVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalDietRecordVM.swift; sourceTree = "<group>"; };
+		EC42ACE12FFB979F00D01D29 /* GuideTotalProVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProVM.swift; sourceTree = "<group>"; };
+		EC42ACE32FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProReadyStartVM.swift; sourceTree = "<group>"; };
 		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceElaProTransitionVM.swift; sourceTree = "<group>"; };
@@ -3659,6 +3667,9 @@
 		A75012AA2DF00E63009BCA7E /* totalVM */ = {
 			isa = PBXGroup;
 			children = (
+				EC42ACDD2FFB978F00D01D29 /* pro */,
+				F1A700212F90000100AABBCC /* GuideTotalBodyImpactVM.swift */,
+				F1A700232F90000100AABBCC /* GuideTotalDietRecordVM.swift */,
 				A75012AB2DF00E86009BCA7E /* GuideTotalFirstVM.swift */,
 				A755ED6A2DF6D89700005C3A /* GuideFirstWeightLineChartVM.swift */,
 				A755ED6C2DF7C3E500005C3A /* ProgressChartView.swift */,
@@ -4613,6 +4624,15 @@
 				EC4A27742FD2CA590062E890 /* AIGuidanceGoalStageInfoAlertVM.swift */,
 			);
 			path = Guidance;
+			sourceTree = "<group>";
+		};
+		EC42ACDD2FFB978F00D01D29 /* pro */ = {
+			isa = PBXGroup;
+			children = (
+				EC42ACE12FFB979F00D01D29 /* GuideTotalProVM.swift */,
+				EC42ACE32FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift */,
+			);
+			path = pro;
 			sourceTree = "<group>";
 		};
 		EC4DE28D2BC930F30090A7BD /* PlanCreate */ = {
@@ -6518,6 +6538,10 @@
 				A75F43232CA7EEE80062E7B2 /* DataAddImageItemVM.swift in Sources */,
 				ECD0FE7A2BABCC69001232C9 /* WXUtil.swift in Sources */,
 				A72F03812DF8351900823ED3 /* GuideTotalSevenVM.swift in Sources */,
+				F1A700202F90000100AABBCC /* GuideTotalBodyImpactVM.swift in Sources */,
+				F1A700222F90000100AABBCC /* GuideTotalDietRecordVM.swift in Sources */,
+				EC42ACE02FFB979F00D01D29 /* GuideTotalProVM.swift in Sources */,
+				EC42ACE22FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift in Sources */,
 				A7B5016F2DE59DA30024C0CB /* OverViewVC.swift in Sources */,
 				ECD041A62C0F0C160073BFB8 /* TutorialsVC.swift in Sources */,
 				EC2802F92F1A322400FEF08D /* HabitStreakMsgVM.swift in Sources */,

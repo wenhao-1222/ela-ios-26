@@ -496,10 +496,10 @@ extension UserDefaults {
         return tier
     }
     static func setTierData(tierStartDate:String){
-        UserDefaults.set(value: tierStartDate, forKey: .tier_weekStartDate)
+        UserDefaults.standard.set(tierStartDate, forKey: "\(UserInfoModel.shared.uId)_\(AccountKeys.tier_weekStartDate.rawValue)")
     }
     func getTierWeekStartDate() -> String {
-        return UserDefaults.getString(forKey: .tier_weekStartDate) ?? ""
+        return UserDefaults.standard.string(forKey: "\(UserInfoModel.shared.uId)_\(AccountKeys.tier_weekStartDate.rawValue)") ?? ""
     }
     static func setHabitRankFirstUnlockSettleShown() {
         UserDefaults.standard.set("1", forKey: "\(UserInfoModel.shared.uId)_\(AccountKeys.habit_rank_first_unlock_settle.rawValue)")

@@ -29,6 +29,7 @@ class HabitRankListVM: UIView {
     private var isAnimatingToDemo: Bool = false
     private var isAnimatingBackFromDemo: Bool = false
     private var pendingSettlementDict: NSDictionary?
+    private var pendingSettlementWeekStartDate: String?
     private var headTierName: String?
     private var pendingFirstUnlockSettlementDict: NSDictionary?
     private var pendingFirstUnlockRankList: NSArray?
@@ -140,12 +141,23 @@ private typealias RankMirrorBundle = (
 
 extension HabitRankListVM{
     func updateUI(dict:NSDictionary) {
-        if dict.stringValueForKey(key: "weekStartDate").count > 0 &&
-            UserDefaults.standard.getTierWeekStartDate() != dict.stringValueForKey(key: "weekStartDate"){
+        let weekStartDate = dict.stringValueForKey(key: "weekStartDate")
+        if weekStartDate.count > 0 &&
+            UserDefaults.standard.getTierWeekStartDate() != weekStartDate{
             pendingSettlementDict = dict
-            UserDefaults.setTierData(tierStartDate: dict.stringValueForKey(key: "weekStartDate"))
+            pendingSettlementWeekStartDate = weekStartDate
             updateSettlementVmIfReady()
         }
+    }
+    
+    private func markPendingSettlementShown() {
+        guard let weekStartDate = pendingSettlementWeekStartDate,
+              weekStartDate.count > 0 else {
+            return
+        }
+        UserDefaults.setTierData(tierStartDate: weekStartDate)
+        pendingSettlementWeekStartDate = nil
+        pendingSettlementDict = nil
     }
 
     private func updateSettlementVmIfReady() {
@@ -297,6 +309,7 @@ extension HabitRankListVM{
             return
         }
         appDelegate.getKeyWindow().addSubview(settlementVm)
+        markPendingSettlementShown()
         if settlementVm.rankUpType == .FIRST_UNLOCK && shouldMarkFirstUnlockSettlementShown {
             UserDefaults.setHabitRankFirstUnlockSettleShown()
             shouldMarkFirstUnlockSettlementShown = false

@@ -18,6 +18,7 @@ class DietPlanBuyListDateVC: WHBaseViewVC {
     private var dateOptions: [DietPlanBuyListDateOption] = []
     private let onConfirm: (([String]) -> Void)?
     private var hasCurrentBuyList = false
+    var shouldReturnToDietPlanSecond = false
     
     private lazy var calendar: Calendar = {
         var cal = Calendar(identifier: .gregorian)
@@ -194,6 +195,7 @@ private extension DietPlanBuyListDateVC {
         let vc = DietPlanBuyListVC()
         vc.selectedDates = selectedDates
         vc.createDateStrings = sourceDateStrings
+        vc.shouldReturnToDietPlanSecond = shouldReturnToDietPlanSecond
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -206,6 +208,7 @@ private extension DietPlanBuyListDateVC {
         let vc = DietPlanBuyListVC()
         vc.showCreateButton = true
         vc.createDateStrings = sourceDateStrings
+        vc.shouldReturnToDietPlanSecond = shouldReturnToDietPlanSecond
         self.navigationController?.pushViewController(vc, animated: true)
     }
     

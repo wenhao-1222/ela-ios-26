@@ -10,6 +10,7 @@ class DietPlanCondimentVC: WHBaseViewVC {
     private var sauceArray = NSArray()
     private var isLoading = true
     private let recommendAlertShownKey = "dietplan_condiment_recommend_alert_shown"
+    var shouldReturnToDietPlanSecond = false
 
     private lazy var recommendAlertVM = DietPlanCondimentAlertVM(frame: .zero)
     
@@ -17,9 +18,9 @@ class DietPlanCondimentVC: WHBaseViewVC {
         super.viewDidLoad()
         
         initUI()
-        DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
+//        DispatchQueue.main.asyncAfter(deadline: .now(), execute: {
             self.sendSauceListRequest()
-        })
+//        })
         showRecommendAlertIfNeeded()
     }
     
@@ -37,6 +38,13 @@ class DietPlanCondimentVC: WHBaseViewVC {
             UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
             UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
         ]
+    }
+    
+    override func backTapAction() {
+        if popToDietPlanSecondIfNeeded() {
+            return
+        }
+        super.backTapAction()
     }
 
     private lazy var tipDotView: UIView = {
@@ -158,6 +166,18 @@ extension DietPlanCondimentVC{
             UserDefaults.standard.set(true, forKey: self.recommendAlertShownKey)
             self.recommendAlertVM.showSelf()
         }
+    }
+}
+
+private extension DietPlanCondimentVC {
+    func popToDietPlanSecondIfNeeded() -> Bool {
+        guard shouldReturnToDietPlanSecond,
+              let navigationController = navigationController,
+              let targetVC = navigationController.viewControllers.last(where: { $0 is DietPlanSecondVC }) else {
+            return false
+        }
+        navigationController.popToViewController(targetVC, animated: true)
+        return true
     }
 }
 
