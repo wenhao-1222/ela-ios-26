@@ -15,7 +15,7 @@ class GuideTotalProReadyStartVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
-        backgroundColor = .COLOR_BG_F5
+        backgroundColor = .clear
         isUserInteractionEnabled = true
         clipsToBounds = true
         
@@ -29,6 +29,7 @@ class GuideTotalProReadyStartVM: UIView {
     lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.bounces = false
+        scrollView.backgroundColor = .clear
         scrollView.alwaysBounceVertical = true
         scrollView.showsVerticalScrollIndicator = false
         scrollView.contentInsetAdjustmentBehavior = .never
@@ -37,6 +38,7 @@ class GuideTotalProReadyStartVM: UIView {
     
     lazy var contentView: UIView = {
         let view = UIView()
+        view.backgroundColor = .clear
         return view
     }()
     

@@ -142,7 +142,8 @@ class GuideTotalSevenVM: UIView {
     
     lazy var searchButton: UIButton = {
         let btn = UIButton()
-        btn.setTitle("去记录", for: .normal)
+        btn.setTitle("下一步", for: .normal)
+//        btn.setTitle("去记录", for: .normal)
         btn.setTitleColor(.white, for: .normal)
 //        btn.backgroundColor = .THEME
         btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)

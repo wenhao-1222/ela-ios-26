@@ -1391,6 +1391,11 @@
 		F1A700222F90000100AABBCC /* GuideTotalDietRecordVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700232F90000100AABBCC /* GuideTotalDietRecordVM.swift */; };
 		EC42ACE02FFB979F00D01D29 /* GuideTotalProVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE12FFB979F00D01D29 /* GuideTotalProVM.swift */; };
 		EC42ACE22FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE32FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift */; };
+		EC42ACE42FFB979F00D01D29 /* GuideTotalProGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE52FFB979F00D01D29 /* GuideTotalProGoalVM.swift */; };
+		EC42ACE62FFB979F00D01D29 /* GuideTotalProGoalStageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE72FFB979F00D01D29 /* GuideTotalProGoalStageVM.swift */; };
+		EC42ACE82FFB979F00D01D29 /* GuideTotalProCoachStrictnessVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE92FFB979F00D01D29 /* GuideTotalProCoachStrictnessVM.swift */; };
+		EC42ACEA2FFB979F00D01D29 /* GuideTotalProNoticeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACEB2FFB979F00D01D29 /* GuideTotalProNoticeVM.swift */; };
+		EC42ACEC2FFB979F00D01D29 /* GuideTotalProCompleteVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACED2FFB979F00D01D29 /* GuideTotalProCompleteVM.swift */; };
 		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
 		F2B0C2012F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */; };
 		F2B0C3012F80100100A1B2C3 /* GuidanceElaProTransitionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */; };
@@ -2930,6 +2935,11 @@
 		F1A700232F90000100AABBCC /* GuideTotalDietRecordVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalDietRecordVM.swift; sourceTree = "<group>"; };
 		EC42ACE12FFB979F00D01D29 /* GuideTotalProVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProVM.swift; sourceTree = "<group>"; };
 		EC42ACE32FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProReadyStartVM.swift; sourceTree = "<group>"; };
+		EC42ACE52FFB979F00D01D29 /* GuideTotalProGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProGoalVM.swift; sourceTree = "<group>"; };
+		EC42ACE72FFB979F00D01D29 /* GuideTotalProGoalStageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProGoalStageVM.swift; sourceTree = "<group>"; };
+		EC42ACE92FFB979F00D01D29 /* GuideTotalProCoachStrictnessVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProCoachStrictnessVM.swift; sourceTree = "<group>"; };
+		EC42ACEB2FFB979F00D01D29 /* GuideTotalProNoticeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProNoticeVM.swift; sourceTree = "<group>"; };
+		EC42ACED2FFB979F00D01D29 /* GuideTotalProCompleteVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProCompleteVM.swift; sourceTree = "<group>"; };
 		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceElaProTransitionVM.swift; sourceTree = "<group>"; };
@@ -4631,6 +4641,11 @@
 			children = (
 				EC42ACE12FFB979F00D01D29 /* GuideTotalProVM.swift */,
 				EC42ACE32FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift */,
+				EC42ACE52FFB979F00D01D29 /* GuideTotalProGoalVM.swift */,
+				EC42ACE72FFB979F00D01D29 /* GuideTotalProGoalStageVM.swift */,
+				EC42ACE92FFB979F00D01D29 /* GuideTotalProCoachStrictnessVM.swift */,
+				EC42ACEB2FFB979F00D01D29 /* GuideTotalProNoticeVM.swift */,
+				EC42ACED2FFB979F00D01D29 /* GuideTotalProCompleteVM.swift */,
 			);
 			path = pro;
 			sourceTree = "<group>";
@@ -6542,6 +6557,11 @@
 				F1A700222F90000100AABBCC /* GuideTotalDietRecordVM.swift in Sources */,
 				EC42ACE02FFB979F00D01D29 /* GuideTotalProVM.swift in Sources */,
 				EC42ACE22FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift in Sources */,
+				EC42ACE42FFB979F00D01D29 /* GuideTotalProGoalVM.swift in Sources */,
+				EC42ACE62FFB979F00D01D29 /* GuideTotalProGoalStageVM.swift in Sources */,
+				EC42ACE82FFB979F00D01D29 /* GuideTotalProCoachStrictnessVM.swift in Sources */,
+				EC42ACEA2FFB979F00D01D29 /* GuideTotalProNoticeVM.swift in Sources */,
+				EC42ACEC2FFB979F00D01D29 /* GuideTotalProCompleteVM.swift in Sources */,
 				A7B5016F2DE59DA30024C0CB /* OverViewVC.swift in Sources */,
 				ECD041A62C0F0C160073BFB8 /* TutorialsVC.swift in Sources */,
 				EC2802F92F1A322400FEF08D /* HabitStreakMsgVM.swift in Sources */,

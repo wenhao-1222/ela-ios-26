@@ -7,6 +7,12 @@
 
 import SnapKit
 
+struct AIGuidanceGoalStageInfoContent {
+    let title: String
+    let message: String
+    let reference: String
+}
+
 class AIGuidanceGoalStageInfoAlertVM: UIView {
 
     private var availableCardHeight: CGFloat {
@@ -135,7 +141,7 @@ class AIGuidanceGoalStageInfoAlertVM: UIView {
 }
 
 extension AIGuidanceGoalStageInfoAlertVM {
-    func show(content: AIGuidanceGoalStageVM.StageInfoContent) {
+    func show(content: AIGuidanceGoalStageInfoContent) {
         titleLabel.text = content.title
         setBodyText(content.message, label: messageLabel, lineHeightMultiple: 1.33)
         setBodyText(content.reference, label: referenceLabel, lineHeightMultiple: 1.28)
