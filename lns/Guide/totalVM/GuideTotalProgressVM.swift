@@ -9,7 +9,7 @@
 class GuideTotalProgressVM: UIView {
     
     let progressWidth = SCREEN_WIDHT-kFitWidth(110)
-    let totalStep = CGFloat(6)
+    private var totalStep = CGFloat(6)
     var stepWidth = kFitWidth(55)
     
     var backBlock:(()->())?
@@ -103,6 +103,12 @@ extension GuideTotalProgressVM{
 }
 
 extension GuideTotalProgressVM{
+    func setTotalSteps(_ totalSteps: Int) {
+        totalStep = CGFloat(max(totalSteps, 1))
+        stepWidth = progressWidth / totalStep
+        progressView.frame.size.width = stepWidth
+    }
+
     func setStep(step: Int, animated: Bool = true, duration: TimeInterval = 0.25, showsBackButton: Bool? = nil) {
         setBackOnlyMode(false, animated: animated)
         let shouldShowBackButton = showsBackButton ?? (step > 0)

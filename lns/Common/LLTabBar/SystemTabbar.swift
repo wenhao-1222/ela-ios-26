@@ -45,6 +45,9 @@ class SystemTabbar: UITabBarController {
                                                selector: #selector(showGuideTotalIfNeeded),
                                                name: NOTIFI_NAME_GUIDE,
                                                object: nil)
+        DispatchQueue.main.async { [weak self] in
+            self?.showGuideTotalIfNeeded()
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -348,6 +351,7 @@ extension SystemTabbar {
     }
 
     @objc private func showGuideTotalIfNeeded() {
+        guard !UserInfoModel.shared.onboarding_flow_status, guideVC == nil else { return }
         let vc = GuideTotalVC()
         vc.finishBlock = { [weak self] in self?.removeGuideTotalVC() }
         guideVC = vc
@@ -363,6 +367,8 @@ extension SystemTabbar {
             vc.view.removeFromSuperview()
             vc.removeFromParent()
             self.guideVC = nil
+            UserInfoModel.shared.onboarding_flow_status = true
+            UserDefaults.saveLoginUserGroupMsgCache()
         }
         UserDefaults.standard.setValue("1", forKey: guide_total)
     }
@@ -374,5 +380,3 @@ extension SystemTabbar {
         selectedIndex = 2
     }
 }
-
-

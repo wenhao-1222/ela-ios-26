@@ -283,7 +283,6 @@ class WHBaseViewVC: ViewController {
     }
     func changeRootVcToTabbar() {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
         if isIpad(){
             let newRootVC = MainTabBarController()
             appDelegate.switchRootViewController(to: newRootVC,from: self)
@@ -302,12 +301,12 @@ class WHBaseViewVC: ViewController {
         BodyDataUploadManager().syncAllBodyDataFromServer()
         QuestinonaireMsgModel.shared.clearMsg()
 //        changeRootVcToTabbar()
-        requestLoginSuccessDependenciesThenEnterApp()
+        requestLoginSuccessDependenciesThenEnterApp(shouldSyncGuidanceProSubscription: consumeGuidanceProLoginSubscriptionSyncFlag())
     }
 
-    private func requestLoginSuccessDependenciesThenEnterApp() {
+    private func requestLoginSuccessDependenciesThenEnterApp(shouldSyncGuidanceProSubscription: Bool) {
         MCToast.mc_loading()
-        if ElaProIAPManager.shared.hasPendingPurchaseToBind() {
+        if shouldSyncGuidanceProSubscription, ElaProIAPManager.shared.hasPendingPurchaseToBind() {
             ElaProIAPManager.shared.bindPendingPurchaseBeforeEnterApp { [weak self] success in
                 guard let self = self else { return }
                 guard success else {
@@ -331,11 +330,34 @@ class WHBaseViewVC: ViewController {
                 "rawResponse": responseObject
             ])
             self.applyLoginUserGroupMsgData(dataObj)
-            self.changeRootVcToTabbar()
+            self.enterAppAfterLoginUserGroupMsg()
         } failure: { failed in
             DLLog(message: "[UserGroupMsg][LoginSuccess] URL_user_group_msg failed: \(failed)")
             MCToast.mc_text("网络异常，请稍后重试")
         }
+    }
+
+    private func enterAppAfterLoginUserGroupMsg() {
+        if UserInfoModel.shared.onboarding_flow_status {
+            changeRootVcToTabbar()
+        } else {
+            changeRootVcToGuideTotal()
+        }
+    }
+
+    private func changeRootVcToGuideTotal() {
+        let guideVC = GuideTotalVC()
+        guideVC.finishBlock = { [weak guideVC] in
+            UserInfoModel.shared.onboarding_flow_status = true
+            UserDefaults.saveLoginUserGroupMsgCache()
+            UserDefaults.standard.setValue("1", forKey: guide_total)
+            guideVC?.changeRootVcToTabbar()
+        }
+
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.switchRootViewController(to: guideVC,
+                                             from: self,
+                                             preRenderNewRootBeforeTransition: true)
     }
 
     private func parseUserGroupMsgData(_ responseObject: [String: AnyObject]) -> NSDictionary {
@@ -362,11 +384,28 @@ class WHBaseViewVC: ViewController {
         NotificationCenter.default.post(name: NOTIFI_NAME_ABTEST, object: nil)
         NotificationCenter.default.post(name: NOTIFI_NAME_GUIDE, object: nil)
     }
-    func changeRootVcToLogin() {
+    func changeRootVcToLogin(shouldSyncGuidanceProSubscriptionAfterLogin: Bool = false) {
+        setGuidanceProLoginSubscriptionSyncFlag(shouldSyncGuidanceProSubscriptionAfterLogin)
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
 //        let newRootVC = LNSLoginVC()
         let newRootVC = LLNaviViewController(rootViewController: LNSLoginVC())
         appDelegate.switchRootViewController(to: newRootVC,from: self)
+    }
+
+    private func setGuidanceProLoginSubscriptionSyncFlag(_ enabled: Bool) {
+        let key = "guidance_pro_login_should_sync_subscription_after_login"
+        if enabled {
+            UserDefaults.standard.set(true, forKey: key)
+        } else {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+    }
+
+    private func consumeGuidanceProLoginSubscriptionSyncFlag() -> Bool {
+        let key = "guidance_pro_login_should_sync_subscription_after_login"
+        let shouldSync = UserDefaults.standard.bool(forKey: key)
+        UserDefaults.standard.removeObject(forKey: key)
+        return shouldSync
     }
     /// 切回欢迎页 / 登录前页面。
     ///

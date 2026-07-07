@@ -16,6 +16,9 @@ class GuideTotalVC: WHBaseViewVC {
     private let pageBackgroundView = UIView()
     private var solidPageBackgroundViews: [Int: UIView] = [:]
     private let flowingBackgroundPageIndexes: Set<Int> = [8, 12, 13]
+    private var isTrialGuideEnabled: Bool {
+        UserInfoModel.shared.abTestModel.isTrial
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -161,29 +164,47 @@ class GuideTotalVC: WHBaseViewVC {
     }()
     lazy var sevenVm: GuideTotalSevenVM = {
         let vm = GuideTotalSevenVM.init(frame: .zero)
+        vm.searchButton.setTitle(self.isTrialGuideEnabled ? "下一步" : "去记录", for: .normal)
         vm.nextBlock = { [weak self] in
-            self?.animateTransition(to: 7)
+            guard let self = self else { return }
+            if self.isTrialGuideEnabled {
+                self.animateTransition(to: 7)
+            } else {
+                self.finishBlock?()
+            }
         }
         return vm
     }()
 
     private var guidePages: [UIView] {
-        return [
+        var pages: [UIView] = [
             bodyImpactVm,
             dietRecordVm,
             thirdVm,
             fourthVm,
             fifthVm,
             sixthVm,
-            sevenVm,
-            proVm,
-            proReadyStartVm,
-            proGoalVm,
-            proGoalStageVm,
-            proCoachStrictnessVm,
-            proNoticeVm,
-            proCompleteVm
+            sevenVm
         ]
+        if isTrialGuideEnabled {
+            pages.append(contentsOf: [
+                proVm,
+                proReadyStartVm,
+                proGoalVm,
+                proGoalStageVm,
+                proCoachStrictnessVm,
+                proNoticeVm,
+                proCompleteVm
+            ])
+        }
+        return pages
+    }
+
+    private var progressPageIndexes: [Int] {
+        if isTrialGuideEnabled {
+            return [2, 3, 4, 5, 6, 7, 9, 10, 11]
+        }
+        return [2, 3, 4, 5, 6]
     }
 
     private func showsFlowingBackground(at index: Int) -> Bool {
@@ -197,7 +218,6 @@ class GuideTotalVC: WHBaseViewVC {
     }
 
     private func updateProgressForCurrentStep(animated: Bool = true) {
-        let progressStartIndex = 2
         let wasProgressHidden = progressVm.isHidden
         if currentIndex == 0 {
             progressVm.isHidden = true
@@ -208,15 +228,15 @@ class GuideTotalVC: WHBaseViewVC {
             progressVm.isHidden = false
             return
         }
-        if currentIndex >= 8 {
+        guard let progressStep = progressPageIndexes.firstIndex(of: currentIndex) else {
             progressVm.setBackOnlyMode(true, animated: animated && !wasProgressHidden)
             progressVm.isHidden = false
             return
         }
         progressVm.isHidden = false
-        progressVm.setStep(step: currentIndex - progressStartIndex,
+        progressVm.setStep(step: progressStep,
                            animated: animated,
-                           showsBackButton: currentIndex >= progressStartIndex)
+                           showsBackButton: true)
     }
 }
 
@@ -358,22 +378,10 @@ extension GuideTotalVC{
         scrollViewBase.isPagingEnabled = true
         scrollViewBase.addSubview(pageBackgroundView)
         configurePageBackgrounds()
-        scrollViewBase.addSubview(bodyImpactVm)
-        scrollViewBase.addSubview(dietRecordVm)
-        scrollViewBase.addSubview(thirdVm)
-        scrollViewBase.addSubview(fourthVm)
-        scrollViewBase.addSubview(fifthVm)
-        scrollViewBase.addSubview(sixthVm)
-        scrollViewBase.addSubview(sevenVm)
-        scrollViewBase.addSubview(proVm)
-        scrollViewBase.addSubview(proReadyStartVm)
-        scrollViewBase.addSubview(proGoalVm)
-        scrollViewBase.addSubview(proGoalStageVm)
-        scrollViewBase.addSubview(proCoachStrictnessVm)
-        scrollViewBase.addSubview(proNoticeVm)
-        scrollViewBase.addSubview(proCompleteVm)
+        guidePages.forEach { scrollViewBase.addSubview($0) }
         view.addSubview(goalStageInfoAlertVm)
         
+        progressVm.setTotalSteps(progressPageIndexes.count)
         layoutGuidePages()
         scrollViewBase.contentSize = CGSize.init(width: SCREEN_WIDHT * CGFloat(guidePages.count), height: 0)
 //        scrollViewBase.backgroundColor = UIColor(named: "color_card_bg_f5_guide")

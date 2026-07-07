@@ -92,19 +92,21 @@ class WHTabBarVC : UITabBarController{
         
         tabbar.centerClick()
 //        showGuideTotalIfNeeded()
+        DispatchQueue.main.async { [weak self] in
+            self?.showGuideTotalIfNeeded()
+        }
     }
 
     @objc private func showGuideTotalIfNeeded() {
-//        if UserDefaults.standard.string(forKey: guide_total) == nil {
-            let vc = GuideTotalVC()
-            vc.finishBlock = { [weak self] in
-                self?.removeGuideTotalVC()
-            }
-            guideVC = vc
-            addChild(vc)
-            view.addSubview(vc.view)
-            vc.view.frame = view.bounds
-//        }
+        guard !UserInfoModel.shared.onboarding_flow_status, guideVC == nil else { return }
+        let vc = GuideTotalVC()
+        vc.finishBlock = { [weak self] in
+            self?.removeGuideTotalVC()
+        }
+        guideVC = vc
+        addChild(vc)
+        view.addSubview(vc.view)
+        vc.view.frame = view.bounds
     }
 
     func removeGuideTotalVC() {
@@ -116,6 +118,8 @@ class WHTabBarVC : UITabBarController{
             vc.view.removeFromSuperview()
             vc.removeFromParent()
             self.guideVC = nil
+            UserInfoModel.shared.onboarding_flow_status = true
+            UserDefaults.saveLoginUserGroupMsgCache()
         }
         UserDefaults.standard.setValue("1", forKey: guide_total)
     }

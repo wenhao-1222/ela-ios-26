@@ -1640,7 +1640,7 @@ extension GuidanceVC{
             let purchasedVC = GuidanceProPurchasedVC()
             purchasedVC.guidanceV2BizType = guidanceV2BizType
             purchasedVC.nextBlock = { [weak purchasedVC] in
-                purchasedVC?.changeRootVcToLogin()
+                purchasedVC?.changeRootVcToLogin(shouldSyncGuidanceProSubscriptionAfterLogin: true)
             }
             DLLog(message: "[GuidancePro][Route] push GuidanceProPurchasedVC")
             vc = purchasedVC
@@ -1649,7 +1649,7 @@ extension GuidanceVC{
             proVC.guidanceV2BizType = guidanceV2BizType
             proVC.hasFreeTrialPermission = cachedGuidanceProHasFreeTrialPermission
             proVC.nextBlock = { [weak proVC] in
-                proVC?.changeRootVcToLogin()
+                proVC?.changeRootVcToLogin(shouldSyncGuidanceProSubscriptionAfterLogin: true)
             }
             DLLog(message: "[GuidancePro][Route] push GuidanceProVC, hasFreeTrialPermission=\(cachedGuidanceProHasFreeTrialPermission)")
             vc = proVC

@@ -20,6 +20,9 @@ class MainTabBarController: UITabBarController {
         self.selectedIndex = 1
 //        showGuideTotalIfNeeded()
         NotificationCenter.default.addObserver(self, selector: #selector(showGuideTotalIfNeeded), name: NOTIFI_NAME_GUIDE, object: nil)
+        DispatchQueue.main.async { [weak self] in
+            self?.showGuideTotalIfNeeded()
+        }
         
     }
     
@@ -137,18 +140,17 @@ class MainTabBarController: UITabBarController {
         }
         return super.traitCollection
     }
-    
+
     @objc private func showGuideTotalIfNeeded() {
-//        if UserDefaults.standard.string(forKey: guide_total) == nil {
-            let vc = GuideTotalVC()
-            vc.finishBlock = { [weak self] in
-                self?.removeGuideTotalVC()
-            }
-            guideVC = vc
-            addChild(vc)
-            view.addSubview(vc.view)
-            vc.view.frame = view.bounds
-//        }
+        guard !UserInfoModel.shared.onboarding_flow_status, guideVC == nil else { return }
+        let vc = GuideTotalVC()
+        vc.finishBlock = { [weak self] in
+            self?.removeGuideTotalVC()
+        }
+        guideVC = vc
+        addChild(vc)
+        view.addSubview(vc.view)
+        vc.view.frame = view.bounds
     }
 
     func removeGuideTotalVC() {
@@ -161,6 +163,8 @@ class MainTabBarController: UITabBarController {
             vc.view.removeFromSuperview()
             vc.removeFromParent()
             self.guideVC = nil
+            UserInfoModel.shared.onboarding_flow_status = true
+            UserDefaults.saveLoginUserGroupMsgCache()
             UserDefaults.standard.setValue("1", forKey: guide_total)
         }
     }

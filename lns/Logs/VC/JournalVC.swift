@@ -1366,13 +1366,13 @@ extension JournalVC{
                 //返回1的时候，代表已经弹过，不需要弹了
                 self.journalElaProAnnouncementAlertVm.showSelf()
             }
-            if dataObj.stringValueForKey(key: "onboarding_flow_status") != "0"{
-                NotificationCenter.default.post(name: NOTIFI_NAME_GUIDE, object: nil)
-                UserInfoModel.shared.onboarding_flow_status = false
-            }else{
-                UserDefaults.standard.setValue("1", forKey: guide_total)
-                UserInfoModel.shared.onboarding_flow_status = true
-            }
+//            if dataObj.stringValueForKey(key: "onboarding_flow_status") == "0"{
+//                NotificationCenter.default.post(name: NOTIFI_NAME_GUIDE, object: nil)
+//                UserInfoModel.shared.onboarding_flow_status = false
+//            }else{
+//                UserDefaults.standard.setValue("1", forKey: guide_total)
+//                UserInfoModel.shared.onboarding_flow_status = true
+//            }
             UserInfoModel.shared.updateUserConfig(dict: dataObj)
             
             LogsMealsAlertSetManage().refreshClockAlertMsg()

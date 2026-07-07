@@ -754,13 +754,15 @@ extension AppDelegate{
     func switchRootViewController(to newRootVC: UIViewController,
                                   from oldVc: UIViewController,
                                   teardownTabBarControllers: Bool = false,
-                                  transitionSnapshot: UIView? = nil) {
+                                  transitionSnapshot: UIView? = nil,
+                                  preRenderNewRootBeforeTransition: Bool = false) {
         guard Thread.isMainThread else {
             DispatchQueue.main.async { [weak self] in
                 self?.switchRootViewController(to: newRootVC,
                                                from: oldVc,
                                                teardownTabBarControllers: teardownTabBarControllers,
-                                               transitionSnapshot: transitionSnapshot)
+                                               transitionSnapshot: transitionSnapshot,
+                                               preRenderNewRootBeforeTransition: preRenderNewRootBeforeTransition)
             }
             return
         }
@@ -772,7 +774,14 @@ extension AppDelegate{
             teardownTabBarControllersIfNeeded(in: keyWindow)
         }
 
-        
+        if preRenderNewRootBeforeTransition {
+            switchRootViewControllerWithPreRenderedFade(to: newRootVC,
+                                                        from: oldVc,
+                                                        in: keyWindow,
+                                                        transitionSnapshot: transitionSnapshot)
+            return
+        }
+
         UIView.transition(with: keyWindow, duration: 0.35, options: .transitionCrossDissolve, animations: {
             keyWindow.rootViewController = newRootVC
         }) { _ in
@@ -847,6 +856,42 @@ extension AppDelegate{
 //                }
 //            }
 //        }
+    }
+
+    private func switchRootViewControllerWithPreRenderedFade(to newRootVC: UIViewController,
+                                                             from oldVc: UIViewController,
+                                                             in keyWindow: UIWindow,
+                                                             transitionSnapshot: UIView?) {
+        let oldSnapshot = transitionSnapshot ?? makeRootTransitionSnapshot(from: keyWindow)
+        oldSnapshot?.frame = keyWindow.bounds
+        oldSnapshot?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+        newRootVC.loadViewIfNeeded()
+        newRootVC.view.frame = keyWindow.bounds
+        newRootVC.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        newRootVC.view.setNeedsLayout()
+        newRootVC.view.layoutIfNeeded()
+        newRootVC.view.alpha = 0
+
+        UIView.performWithoutAnimation {
+            keyWindow.layer.removeAllAnimations()
+            keyWindow.rootViewController = newRootVC
+            keyWindow.makeKeyAndVisible()
+            keyWindow.layoutIfNeeded()
+            if let oldSnapshot = oldSnapshot {
+                keyWindow.addSubview(oldSnapshot)
+            }
+        }
+
+        UIView.animate(withDuration: 0.25,
+                       delay: 0,
+                       options: [.curveEaseOut, .beginFromCurrentState]) {
+            newRootVC.view.alpha = 1
+            oldSnapshot?.alpha = 0
+        } completion: { _ in
+            oldSnapshot?.removeFromSuperview()
+            oldVc.removeFromParent()
+        }
     }
 
     private func makeRootTransitionSnapshot(from window: UIWindow) -> UIView? {
