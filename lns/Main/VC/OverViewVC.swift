@@ -523,7 +523,7 @@ extension OverViewVC{
         WHNetworkUtil.shareManager().POST(urlString: URL_get_default_nutrition, parameters: nil) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
-//            DLLog(message: "nutrition/default:\(dataObj)")
+            DLLog(message: "nutrition/default:\(dataArray)")
 //            UserDefaults.set(value: self.getJSONStringFromDictionary(dictionary: dataObj), forKey: .nutritionDefault)
 //            NutritionDefaultModel.shared.saveGoals(dict: dataArray)
             UserDefaults.set(value: WHUtils.getJSONStringFromArray(array: dataArray), forKey: .nutritionDefaultArray)

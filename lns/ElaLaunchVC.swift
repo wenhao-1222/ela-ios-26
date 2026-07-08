@@ -19,9 +19,11 @@ class ElaLaunchVC: WHBaseViewVC {
         let uId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
         let token = UserDefaults.standard.value(forKey: token) as? String ?? ""
         
-        if uId.count > 0 && token.count > 0 && !isVip{
-            loadSplashImage()
-        }else{
+        //2026年07月08日09:13:35
+        //苹果审核说课程那里需要走内购，开屏的臂王广告做屏蔽
+//        if uId.count > 0 && token.count > 0 && !isVip{
+//            loadSplashImage()
+//        }else{
             self.peacockImgView.isHidden = true
             tapButton.isHidden = true
 //            UIView.animate(withDuration: 0.5, delay: 0.25,options: .curveLinear) {
@@ -29,7 +31,7 @@ class ElaLaunchVC: WHBaseViewVC {
                 self.logoLabel.alpha = 1
                 self.elaProIconImg.alpha = 1
 //            }
-        }
+//        }
         let delayTime = 1.0//isVip ? 1.3 : 2.6
         DLLog(message: "ElaLaunchVC start：\(Date().currentSeconds)   - \(Date().timeStampMill)")
         DispatchQueue.main.asyncAfter(deadline: .now() + delayTime, execute: {
