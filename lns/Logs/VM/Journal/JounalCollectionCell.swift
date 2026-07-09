@@ -818,7 +818,8 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
             cell.update(isVip: UserInfoModel.shared.vipModel.isValidVip,
                         isMembershipStatusConfirmed: UserInfoModel.shared.vipModel.isMembershipStatusConfirmed,
                         shouldAnimateProBadge: false,
-                        hasUnreadLatestReport: hasUnreadLatestReport)
+                        hasUnreadLatestReport: hasUnreadLatestReport,
+                        shouldDisplayLogWeightRemind: UserInfoModel.shared.is_display_log_weight_remind)
             cell.tapBlock = { [weak self] in
                 self?.handleAICoachTap()
             }

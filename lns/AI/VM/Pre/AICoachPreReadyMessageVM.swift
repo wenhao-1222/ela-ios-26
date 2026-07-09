@@ -37,6 +37,11 @@ final class AICoachPreReadyMessageVM: UIView {
 
 extension AICoachPreReadyMessageVM {
     func updateContent(msgDict:NSDictionary) {
+        if let logWeightRemindText = msgDict["logWeightRemindText"] as? NSDictionary,
+           updateLogWeightRemindText(logWeightRemindText) {
+            return
+        }
+
         let attr = NSMutableAttributedString()
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.2
@@ -124,6 +129,76 @@ extension AICoachPreReadyMessageVM {
 }
 
 private extension AICoachPreReadyMessageVM {
+    func updateLogWeightRemindText(_ remindText: NSDictionary) -> Bool {
+        let titleDict = remindText["title"] as? NSDictionary ?? [:]
+        let contentDict = remindText["content"] as? NSDictionary ?? [:]
+        let titleText = titleDict.stringValueForKey(key: "text")
+        let contentText = contentDict.stringValueForKey(key: "text")
+
+        guard titleText.isEmpty == false || contentText.isEmpty == false else { return false }
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        paragraphStyle.lineSpacing = kFitWidth(8)
+        paragraphStyle.lineBreakMode = .byWordWrapping
+
+        let titleAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 16, weight: .semibold),
+            .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+            .paragraphStyle: paragraphStyle
+        ]
+        let contentAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 16, weight: .semibold),
+            .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214,
+            .paragraphStyle: paragraphStyle
+        ]
+        let keywordAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 16, weight: .semibold),
+            .foregroundColor: UIColor.THEME,
+            .paragraphStyle: paragraphStyle
+        ]
+
+        let attr = NSMutableAttributedString(string: titleText, attributes: titleAttributes)
+        let keywords = highlightKeywords(from: titleDict, titleText: titleText)
+        keywords.forEach { keyword in
+            attr.addAttributes(keywordAttributes, rangesOf: keyword, in: titleText)
+        }
+
+        if titleText.isEmpty == false && contentText.isEmpty == false {
+            attr.append(NSAttributedString(string: "\n", attributes: contentAttributes))
+        }
+        attr.append(NSAttributedString(string: contentText, attributes: contentAttributes))
+
+        messageLabel.attributedText = attr
+        return true
+    }
+
+    func highlightKeywords(from titleDict: NSDictionary, titleText: String) -> [String] {
+        let keywords = (titleDict["keywords"] as? [Any])?.compactMap { value -> String? in
+            switch value {
+            case let text as String:
+                return text
+            case let number as NSNumber:
+                return number.stringValue
+            default:
+                return nil
+            }
+        } ?? []
+
+        let validKeywords = keywords.filter { $0.isEmpty == false && titleText.contains($0) }
+        if validKeywords.isEmpty == false {
+            return validKeywords
+        }
+
+        let pattern = "\\d+"
+        guard let regex = try? NSRegularExpression(pattern: pattern) else { return [] }
+        let nsRange = NSRange(titleText.startIndex..<titleText.endIndex, in: titleText)
+        return regex.matches(in: titleText, range: nsRange).compactMap { match in
+            guard let range = Range(match.range, in: titleText) else { return nil }
+            return String(titleText[range])
+        }
+    }
+
     func initUI() {
         addSubview(messageLabel)
 
@@ -131,6 +206,16 @@ private extension AICoachPreReadyMessageVM {
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
             make.bottom.equalToSuperview()
+        }
+    }
+}
+
+private extension NSMutableAttributedString {
+    func addAttributes(_ attrs: [NSAttributedString.Key: Any], rangesOf keyword: String, in text: String) {
+        var searchRange = text.startIndex..<text.endIndex
+        while let range = text.range(of: keyword, options: [], range: searchRange) {
+            addAttributes(attrs, range: NSRange(range, in: text))
+            searchRange = range.upperBound..<text.endIndex
         }
     }
 }

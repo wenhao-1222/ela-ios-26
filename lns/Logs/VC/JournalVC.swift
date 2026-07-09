@@ -48,6 +48,10 @@ class JournalVC: WHBaseViewVC {
         MobClick.beginLogPageView("journal")
 
         self.sendUserCenterForMineRedView()
+
+        if UserInfoModel.shared.is_display_log_weight_remind {
+            self.getUserConfigRequest()
+        }
         
 //        LogsSQLiteUploadManager().checkDataUploadStatus()
         
@@ -1374,6 +1378,7 @@ extension JournalVC{
 //                UserInfoModel.shared.onboarding_flow_status = true
 //            }
             UserInfoModel.shared.updateUserConfig(dict: dataObj)
+            self.currentVisibleJournalCell()?.refreshAICoachUnreadStatus()
             
             LogsMealsAlertSetManage().refreshClockAlertMsg()
         }

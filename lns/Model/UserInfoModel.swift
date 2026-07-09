@@ -121,6 +121,8 @@ class UserInfoModel {
     var show_ai_coach_status = true
     //是否有未读的最新AI教练报告
     var has_unread_latest_ai_coach_report = false
+    //日志页AI教练入口是否显示缺少近期体重数据提醒
+    var is_display_log_weight_remind = false
     ///是否显示下一餐饮食建议
     var show_next_advice = true
     //体重单位  1  kg   2  斤   3 磅
@@ -267,6 +269,7 @@ extension UserInfoModel{
             self.show_ai_coach_status = dict.stringValueForKey(key: "ai_coach_status") == "1" ? true : false
         }
         self.has_unread_latest_ai_coach_report = dict.stringValueForKey(key: "has_unread_latest_ai_coach_report") == "1" ? true : false
+        self.is_display_log_weight_remind = dict.stringValueForKey(key: "is_display_log_weight_remind") == "1" ? true : false
         self.show_next_advice = dict.stringValueForKey(key: "next_meal_advice_status") == "1" ? true : false
 //        NotificationCenter.default.post(name: NOTIFI_NAME_SHORTCUTITEMS, object: nil)
 //        self.setABTestModel(dict: WHUtils.getDictionaryFromJSONString(jsonString: dict.stringValueForKey(key: "params")))

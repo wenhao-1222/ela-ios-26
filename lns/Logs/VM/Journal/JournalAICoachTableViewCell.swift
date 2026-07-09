@@ -133,6 +133,51 @@ extension JournalAICoachTableViewCell {
         }
     }
 
+    func update(isVip: Bool, isMembershipStatusConfirmed: Bool, shouldAnimateProBadge: Bool, hasUnreadLatestReport: Bool, shouldDisplayLogWeightRemind: Bool) {
+        let shouldUseMessageLayout = shouldDisplayLogWeightRemind || hasUnreadLatestReport
+        updateLayout(hasUnreadLatestReport: shouldUseMessageLayout)
+        proImgView.layer.removeAllAnimations()
+        unreadImgView.isHidden = !shouldUseMessageLayout
+
+        if shouldDisplayLogWeightRemind {
+            proImgView.alpha = 0
+            proImgView.isHidden = true
+            titleLabel.text = "教练反馈暂未更新"
+            subtitleLabel.text = "缺少近期体重数据，请记录体重"
+            subtitleLabel.isHidden = false
+            return
+        }
+
+        if hasUnreadLatestReport {
+            proImgView.alpha = 0
+            proImgView.isHidden = true
+            titleLabel.text = "新的教练报告已准备好"
+            subtitleLabel.text = "查看营养缺口与调整建议"
+            subtitleLabel.isHidden = false
+            return
+        }
+
+        titleLabel.text = "AI教练"
+        subtitleLabel.text = "查看营养缺口与调整建议"
+        subtitleLabel.isHidden = true
+
+        guard isMembershipStatusConfirmed, !isVip else {
+            proImgView.alpha = 0
+            proImgView.isHidden = true
+            return
+        }
+
+        proImgView.isHidden = false
+        guard shouldAnimateProBadge else {
+            proImgView.alpha = 1
+            return
+        }
+
+        UIView.animate(withDuration: 0.35) {
+            self.proImgView.alpha = 1
+        }
+    }
+
     @objc private func handlePressDown() {
         updateWhiteViewPressState(isPressed: true)
     }
