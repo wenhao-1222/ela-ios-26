@@ -190,6 +190,11 @@ extension GoalSetVC{
                  "fat":"\(QuestinonaireMsgModel.shared.fats)"]
         DLLog(message: "sendSaveNutrationRequest:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_question_custom_save, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
+            UserDefaults.set(value: ["calories":"\(QuestinonaireMsgModel.shared.calories)",
+                                                "carbohydrate":"\(QuestinonaireMsgModel.shared.carbohydrates)",
+                                                "protein":"\(QuestinonaireMsgModel.shared.protein)",
+                                                "fat":"\(QuestinonaireMsgModel.shared.fats)"], forKey: .todayGoal)
+                      
             LogsSQLiteManager.getInstance().refreshDataTarget(sDate: Date().nextDay(days: 0),
                                                               caloriTar: QuestinonaireMsgModel.shared.calories,
                                                               proteinTar: QuestinonaireMsgModel.shared.protein,

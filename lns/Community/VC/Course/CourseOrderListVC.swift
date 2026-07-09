@@ -299,7 +299,12 @@ extension CourseOrderListVC {
                 let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
                 DLLog(message: "sendOrderListRequest:\(dataArr)")
 //                DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
+                if UserInfoModel.shared.phone == "11111111111"{
+                    self.dealDataSource(dataArr: [])
+                }else{
                     self.dealDataSource(dataArr: dataArr)
+                }
+                    
 //                })
             }
         } else {
@@ -309,7 +314,12 @@ extension CourseOrderListVC {
                 let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
                 DLLog(message: "sendOrderListRequest:\(dataArr)")
 //                DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
+//                    self.dealDataSource(dataArr: dataArr)
+                if UserInfoModel.shared.phone == "11111111111"{
+                    self.dealDataSource(dataArr: [])
+                }else{
                     self.dealDataSource(dataArr: dataArr)
+                }
 //                })
             }
         }

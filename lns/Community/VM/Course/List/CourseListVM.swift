@@ -155,10 +155,22 @@ extension CourseListVM{
             DLLog(message: "sendMenuListRequest:\(dataArr)")
             
             let filteredArray = NSMutableArray()
+//            for i in 0..<dataArr.count{
+//                let dict = dataArr[i]as? NSDictionary ?? [:]
+//                if dict.stringValueForKey(key: "status") == "2"{
+//                    filteredArray.add(dict)
+//                }
+//            }
             for i in 0..<dataArr.count{
                 let dict = dataArr[i]as? NSDictionary ?? [:]
                 if dict.stringValueForKey(key: "status") == "2"{
-                    filteredArray.add(dict)
+                    if dict.doubleValueForKey(key: "price") > 0{
+                        if dict.stringValueForKey(key: "isPurchased") == "1" && !UserInfoModel.shared.phone.contains("111111111"){
+                            filteredArray.add(dict)
+                        }
+                    }else{
+                        filteredArray.add(dict)
+                    }
                 }
             }
             

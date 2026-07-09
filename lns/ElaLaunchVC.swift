@@ -19,9 +19,9 @@ class ElaLaunchVC: WHBaseViewVC {
         let uId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
         let token = UserDefaults.standard.value(forKey: token) as? String ?? ""
         
-        if uId.count > 0 && token.count > 0 && !isVip{
-            loadSplashImage()
-        }else{
+//        if uId.count > 0 && token.count > 0 && !isVip{
+//            loadSplashImage()
+//        }else{
             self.peacockImgView.isHidden = true
             tapButton.isHidden = true
             UIView.animate(withDuration: 0.5, delay: 0.25,options: .curveLinear) {
@@ -29,7 +29,7 @@ class ElaLaunchVC: WHBaseViewVC {
                 self.logoLabel.alpha = 1
                 self.elaProIconImg.alpha = 1
             }
-        }
+//        }
         let delayTime = isVip ? 1.3 : 2.6
         DLLog(message: "ElaLaunchVC start：\(Date().currentSeconds)   - \(Date().timeStampMill)")
         DispatchQueue.main.asyncAfter(deadline: .now()+delayTime, execute: {
