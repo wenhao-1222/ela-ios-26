@@ -16,14 +16,13 @@ class GuideTotalVC: WHBaseViewVC {
     private let pageBackgroundView = UIView()
     private var solidPageBackgroundViews: [Int: UIView] = [:]
     private let flowingBackgroundPageIndexes: Set<Int> = [8, 12, 13]
-    private var isTrialGuideEnabled: Bool {
-        UserInfoModel.shared.abTestModel.isTrial
+    private var isProGuideEnabled: Bool {
+        UserInfoModel.shared.vipModel.status == .valid
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        initUI()
+        refreshVipInfoThenInitUI()
     }
     
     /// Remove guide view controller and notify caller
@@ -164,10 +163,10 @@ class GuideTotalVC: WHBaseViewVC {
     }()
     lazy var sevenVm: GuideTotalSevenVM = {
         let vm = GuideTotalSevenVM.init(frame: .zero)
-        vm.searchButton.setTitle(self.isTrialGuideEnabled ? "下一步" : "去记录", for: .normal)
+        vm.searchButton.setTitle(self.isProGuideEnabled ? "下一步" : "去记录", for: .normal)
         vm.nextBlock = { [weak self] in
             guard let self = self else { return }
-            if self.isTrialGuideEnabled {
+            if self.isProGuideEnabled {
                 self.animateTransition(to: 7)
             } else {
                 self.finishBlock?()
@@ -186,7 +185,7 @@ class GuideTotalVC: WHBaseViewVC {
             sixthVm,
             sevenVm
         ]
-        if isTrialGuideEnabled {
+        if isProGuideEnabled {
             pages.append(contentsOf: [
                 proVm,
                 proReadyStartVm,
@@ -201,7 +200,7 @@ class GuideTotalVC: WHBaseViewVC {
     }
 
     private var progressPageIndexes: [Int] {
-        if isTrialGuideEnabled {
+        if isProGuideEnabled {
             return [2, 3, 4, 5, 6, 7, 9, 10, 11]
         }
         return [2, 3, 4, 5, 6]
@@ -237,6 +236,21 @@ class GuideTotalVC: WHBaseViewVC {
         progressVm.setStep(step: progressStep,
                            animated: animated,
                            showsBackButton: true)
+    }
+
+    private func refreshVipInfoThenInitUI() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { [weak self] responseObject in
+            guard let self = self else { return }
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            let vipModel = VIPModel.shared.update(with: dataDict)
+            UserDefaults.set(value: "\(vipModel.status?.rawValue ?? 0)", forKey: .vipStatus)
+            DLLog(message: "GuideTotalVC refreshVipInfoThenInitUI:\(dataDict)")
+            DLLog(message: "GuideTotalVC refreshVipInfoThenInitUI model: uid=\(vipModel.uid), status=\(vipModel.status?.rawValue ?? 0), isLifetime=\(vipModel.isLifetime), expireTime=\(vipModel.expireTime)")
+            self.initUI()
+        } failure: { [weak self] _ in
+            self?.initUI()
+        }
     }
 }
 

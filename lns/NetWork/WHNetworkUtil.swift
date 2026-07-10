@@ -232,7 +232,7 @@ class WHNetworkUtil: SessionManager {
                 var paraDict:Parameters = ["phonetype":"iOS",
                                            "phonemodel":"\(Device.current)",
                                            "phoneName":"\(UIDevice.current.name)",
-                                           "deviceId":DeviceUUIDManager.shared.uuidWithoutHyphen,
+                                           "deviceId":DeviceUUIDManager.shared.testUUIDWithoutHyphen,
         //                                   "phonemodel":"\(UserInfoModel.shared.deviceModelName)",
                                            "phoneos":"\(UserInfoModel.shared.deviceModelVersion)",
                                            "vercode":"\(buildVersion)",
