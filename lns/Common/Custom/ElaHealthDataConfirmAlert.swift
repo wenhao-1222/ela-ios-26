@@ -7,6 +7,20 @@
 
 import UIKit
 
+private enum ElaHealthDataConfirmAlertStyle {
+    static var backgroundColor: UIColor {
+        if #available(iOS 26.0, *) {
+            UIColor.COLOR_BG_WHITE.withAlphaComponent(0.7)
+        }else{
+            UIColor.COLOR_BG_WHITE.withAlphaComponent(0.9)
+        }
+    }
+
+    static var cornerRadius: CGFloat {
+        kFitWidth(34)
+    }
+}
+
 final class ElaHealthDataConfirmAlert: NSObject {
 
     private static var agreementWindow: UIWindow?
@@ -31,7 +45,7 @@ final class ElaHealthDataConfirmAlert: NSObject {
             }
 
             let alert = UIAlertController(
-                title: shouldUseInlineTitle ? nil : "请先确认",
+                title: shouldUseInlineTitle ? nil : "开始前",
                 message: nil,
                 preferredStyle: .alert
             )
@@ -84,8 +98,11 @@ final class ElaHealthDataConfirmAlert: NSObject {
 
             alert.addAction(exitAction)
             alert.addAction(agreeAction)
+            alert.applyElaContainerBackground()
 
-            presenter.present(alert, animated: true)
+            presenter.present(alert, animated: true) {
+                alert.applyElaContainerBackground()
+            }
         }
     }
 
@@ -198,7 +215,7 @@ private final class ElaHealthDataConfirmContentController: UIViewController, UIT
     private let showsTitle: Bool
     private let titleLabel = UILabel()
     private let textView = UITextView()
-    private let contentInsets = UIEdgeInsets(top: 0, left: 16, bottom: 16, right: 16)
+    private let contentInsets = UIEdgeInsets(top: 16, left: kFitWidth(29), bottom: 16, right: kFitWidth(29))
 
     init(showsTitle: Bool) {
         self.showsTitle = showsTitle
@@ -213,9 +230,9 @@ private final class ElaHealthDataConfirmContentController: UIViewController, UIT
         super.viewDidLoad()
 
         view.backgroundColor = .clear
-        titleLabel.text = "请先确认"
-        titleLabel.textColor = .label
-        titleLabel.font = .systemFont(ofSize: 17, weight: .semibold)
+        titleLabel.text = "开始前"
+        titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+        titleLabel.font = .systemFont(ofSize: 16, weight: .medium)
         titleLabel.textAlignment = .left
         titleLabel.numberOfLines = 0
         titleLabel.isHidden = !showsTitle
@@ -229,7 +246,7 @@ private final class ElaHealthDataConfirmContentController: UIViewController, UIT
         textView.textContainer.lineFragmentPadding = 0
         textView.adjustsFontForContentSizeCategory = true
         textView.linkTextAttributes = [
-            .foregroundColor: UIColor.systemBlue
+            .foregroundColor: UIColor.THEME
         ]
         textView.attributedText = makeMessage()
 
@@ -240,11 +257,11 @@ private final class ElaHealthDataConfirmContentController: UIViewController, UIT
 
         if showsTitle {
             NSLayoutConstraint.activate([
-                titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: contentInsets.bottom),
-                titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: contentInsets.left),
+                titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: kFitWidth(20)),
+                titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: kFitWidth(29)),
                 titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -contentInsets.right),
 
-                textView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+                textView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: kFitWidth(16)),
                 textView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: contentInsets.left),
                 textView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -contentInsets.right),
                 textView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -contentInsets.bottom)
@@ -267,9 +284,10 @@ private final class ElaHealthDataConfirmContentController: UIViewController, UIT
         let fittingSize = CGSize(width: contentWidth, height: UIView.layoutFittingCompressedSize.height)
         let textHeight = textView.sizeThatFits(fittingSize).height
         let titleHeight = showsTitle
-            ? titleLabel.sizeThatFits(fittingSize).height + 10
+            ? titleLabel.sizeThatFits(fittingSize).height + 14
             : 0
-        let height = titleHeight + textHeight
+        let verticalInsets = showsTitle ? contentInsets.top + contentInsets.bottom : contentInsets.bottom
+        let height = verticalInsets + titleHeight + textHeight
         preferredContentSize = CGSize(width: targetWidth, height: ceil(height))
     }
 
@@ -291,23 +309,18 @@ private final class ElaHealthDataConfirmContentController: UIViewController, UIT
     }
 
     private func makeMessage() -> NSAttributedString {
-        let linkedTerms = "《\u{2060}隐\u{2060}私\u{2060}政\u{2060}策\u{2060}》\u{2060}和\u{2060}《\u{2060}用\u{2060}户\u{2060}协\u{2060}议\u{2060}》"
-        let text = """
-        为了给到你更准确的营养目标和建议，Elavatine 需要分析你填写的健康信息。
-
-        你的健康数据将受到严格保护，仅用于提供相关服务。详情可查看
-        \(linkedTerms)。
-        """
+        let linkedTerms = "《\u{2060}隐\u{2060}私\u{2060}政\u{2060}策\u{2060}》\u{2060}和《\u{2060}用\u{2060}户\u{2060}协\u{2060}议\u{2060}》"
+        let text = "为了给到你更准确的营养目标和建议，Elavatine 需要分析你填写的健康信息。\n\n你的健康数据将受到严格保护，仅用于提供相关服务。详情可查看\(linkedTerms)。"
 
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 5
+        paragraphStyle.lineSpacing = 4
         paragraphStyle.alignment = .left
 
         let attributedText = NSMutableAttributedString(
             string: text,
             attributes: [
-                .font: UIFont.systemFont(ofSize: 15),
-                .foregroundColor: UIColor.secondaryLabel,
+                .font: UIFont.systemFont(ofSize: 13, weight: .regular),
+                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
                 .paragraphStyle: paragraphStyle
             ]
         )
@@ -316,6 +329,34 @@ private final class ElaHealthDataConfirmContentController: UIViewController, UIT
         attributedText.addLink(text: "用\u{2060}户\u{2060}协\u{2060}议", urlString: "elavatine-alert://agreement")
 
         return attributedText
+    }
+}
+
+private extension UIAlertController {
+
+    func applyElaContainerBackground() {
+        view.layoutIfNeeded()
+        view.clearElaSystemMaterialBackground()
+        view.backgroundColor = .clear
+//        view.layer.cornerRadius = ElaHealthDataConfirmAlertStyle.cornerRadius
+        view.layer.masksToBounds = true
+        let backgroundView = view.subviews.first?.subviews.first?.subviews.first ?? view
+        backgroundView?.backgroundColor = ElaHealthDataConfirmAlertStyle.backgroundColor
+//        backgroundView?.layer.cornerRadius = ElaHealthDataConfirmAlertStyle.cornerRadius
+        backgroundView?.layer.masksToBounds = true
+    }
+}
+
+private extension UIView {
+
+    func clearElaSystemMaterialBackground() {
+        if let effectView = self as? UIVisualEffectView {
+            effectView.effect = nil
+            effectView.backgroundColor = .clear
+            effectView.contentView.backgroundColor = .clear
+        }
+
+        subviews.forEach { $0.clearElaSystemMaterialBackground() }
     }
 }
 
@@ -328,7 +369,7 @@ private extension NSMutableAttributedString {
 
         addAttributes([
             .link: urlString,
-            .foregroundColor: UIColor.systemBlue
+            .foregroundColor: UIColor.THEME
         ], range: range)
     }
 }

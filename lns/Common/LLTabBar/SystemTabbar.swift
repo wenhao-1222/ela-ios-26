@@ -150,6 +150,8 @@ class SystemTabbar: UITabBarController {
         
         let dietPlanVc = (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) ? CourseTabVC() : DietPlanVC()
         let dietPlanVcName = (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) ? "课程" : "计划"
+        
+        let tabbar_3_name = (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) ? "tabbar_forum" : "tabbar_diet"
 
         _ = mainVc.view;
         _ = journalVc.view;
@@ -169,8 +171,8 @@ class SystemTabbar: UITabBarController {
 //        let vc3 = forumVc
         let vc3 = dietPlanVc
         vc3.tabBarItem = UITabBarItem(title: dietPlanVcName,
-                                      image: UIImage(named: "tabbar_forum_normal")!,
-                                      selectedImage: UIImage(named: "tabbar_forum_selected")?.withRenderingMode(.alwaysOriginal))
+                                      image: UIImage(named: "\(tabbar_3_name)_normal")!,
+                                      selectedImage: UIImage(named: "\(tabbar_3_name)_selected")?.withRenderingMode(.alwaysOriginal))
 
         let vc4 = mineVc
         vc4.tabBarItem = UITabBarItem(title: "我的",

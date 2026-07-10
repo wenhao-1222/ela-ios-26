@@ -1785,6 +1785,7 @@ extension GuidanceVC{
         scrollViewBase.backgroundColor = .clear
         scrollViewBase.isScrollEnabled = true
         scrollViewBase.isPagingEnabled = true
+        scrollViewBase.showsHorizontalScrollIndicator = false
         scrollViewBase.bounces = false
         scrollViewBase.delegate = self
         view.addGestureRecognizer(backEdgePanGesture)

@@ -30,7 +30,7 @@ class GuideTotalDietRecordVM: UIView {
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
-        self.backgroundColor = UIColor(named: "color_card_bg_f5_guide")
+        self.backgroundColor = UIColor(named: "color_bg_f5")
         self.isUserInteractionEnabled = true
         
         initUI()

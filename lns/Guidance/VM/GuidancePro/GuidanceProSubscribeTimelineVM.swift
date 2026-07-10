@@ -15,7 +15,7 @@ class GuidanceProSubscribeTimelineVM: UIView {
     var closeTapBlock: (() -> Void)?
 
     private var hasFreeTrialPermission = true
-    private var startTrialButtonNormalTitle = "开始免费试用"
+    private var startTrialButtonNormalTitle = "0元 开始体验"
     private var annualPriceDescription = "168/年"
     private var dailyPriceDescription = "0.46元/天"
 
@@ -166,7 +166,8 @@ class GuidanceProSubscribeTimelineVM: UIView {
     }()
 
     private lazy var planBodyBlurView: UIVisualEffectView = {
-        let view = UIVisualEffectView(effect: UIBlurEffect(style: .systemThinMaterialLight))
+        let view = UIVisualEffectView(effect: UIBlurEffect(style: .systemMaterial))
+        view.alpha = 0.4
         view.isUserInteractionEnabled = false
         return view
     }()
@@ -281,7 +282,7 @@ class GuidanceProSubscribeTimelineVM: UIView {
 extension GuidanceProSubscribeTimelineVM {
     func updateFreeTrialPermission(_ hasPermission: Bool) {
         hasFreeTrialPermission = hasPermission
-        startTrialButtonNormalTitle = hasPermission ? "开始免费试用" : "开启体验"
+        startTrialButtonNormalTitle = hasPermission ? "0元 开始体验" : "开启体验"
 
         planHeaderLabel.text = hasPermission ? "免费试用" : "年度订阅"
         planTitleLabel.text = hasPermission ? "立即免费试用" : "立即订阅"
@@ -379,7 +380,7 @@ private extension GuidanceProSubscribeTimelineVM {
         planCardView.addSubview(planHeaderView)
         planHeaderView.addSubview(planHeaderLabel)
         planCardView.addSubview(planBodyView)
-        planBodyView.addSubview(planBodyBlurView)
+//        planBodyView.addSubview(planBodyBlurView)
         planBodyView.addSubview(radioOuterView)
         radioOuterView.addSubview(radioInnerView)
         planBodyView.addSubview(planTitleLabel)
@@ -412,7 +413,7 @@ private extension GuidanceProSubscribeTimelineVM {
 
         timelineContainerView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(brandTitleImageView.snp.bottom).offset(kFitWidth(65))
+            make.top.equalTo(brandTitleImageView.snp.bottom).offset(kFitWidth(68))
             make.height.equalTo(kFitWidth(240))
         }
 
@@ -503,9 +504,9 @@ private extension GuidanceProSubscribeTimelineVM {
             make.top.equalTo(planHeaderView.snp.bottom)
         }
 
-        planBodyBlurView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+//        planBodyBlurView.snp.makeConstraints { make in
+//            make.edges.equalToSuperview()
+//        }
 
         radioOuterView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(15.5))

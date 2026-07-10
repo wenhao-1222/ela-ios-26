@@ -14,6 +14,8 @@ class WHTabBarVC : UITabBarController{
     var whTabBar = WHTabBar()
     private var guideVC: GuideTotalVC?
     
+    var tabbar_3_name = "tabbar_forum"
+    
     lazy var coverWhiteView: UIView = {
         let vi = UIView()
         vi.backgroundColor = .COLOR_CARD_BG_WHITE
@@ -65,8 +67,8 @@ class WHTabBarVC : UITabBarController{
                 button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_normal_dark") : UIImage(named: "tabbar_logs_normal"), for: .normal)
                 button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_selected_dark") : UIImage(named: "tabbar_logs_selected"), for: .selected)
             case 2:
-                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_normal_dark") : UIImage(named: "tabbar_forum_normal"), for: .normal)
-                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_selected_dark") : UIImage(named: "tabbar_forum_selected"), for: .selected)
+                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "\(tabbar_3_name)_normal_dark") : UIImage(named: "\(tabbar_3_name)_normal"), for: .normal)
+                button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "\(tabbar_3_name)_selected_dark") : UIImage(named: "\(tabbar_3_name)_selected"), for: .selected)
             case 3:
                 button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_normal_dark") : UIImage(named: "tabbar_mine_normal"), for: .normal)
                 button.setImage(traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_mine_selected_dark") : UIImage(named: "tabbar_mine_selected"), for: .selected)
@@ -156,6 +158,8 @@ class WHTabBarVC : UITabBarController{
         let dietPlanVc = (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) ? CourseTabVC() : DietPlanVC()
         let dietPlanVcName = (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) ? "课程" : "计划"
         
+        tabbar_3_name = (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) ? "tabbar_forum" : "tabbar_diet"
+        
 //        let forumVc = ForumVC()
         
         //预加载
@@ -167,12 +171,12 @@ class WHTabBarVC : UITabBarController{
         if traitCollection.userInterfaceStyle == .dark && UserConfigModel.shared.overrideUserInterfaceStyle != .light{
             self.setUpChildViewController(viewController: mainVc, image: UIImage.init(named: "tabbar_main_normal_dark")!, selectImage: UIImage.init(named: "tabbar_main_selected_dark")!, title: "概览")
             self.setUpChildViewController(viewController: journalVc, image: UIImage.init(named: "tabbar_logs_normal_dark")!, selectImage: UIImage.init(named: "tabbar_logs_selected_dark")!, title: "日志")
-            self.setUpChildViewController(viewController: dietPlanVc, image: UIImage.init(named: "tabbar_forum_normal_dark")!, selectImage: UIImage.init(named: "tabbar_forum_selected_dark")!, title: dietPlanVcName)
+            self.setUpChildViewController(viewController: dietPlanVc, image: UIImage.init(named: "\(tabbar_3_name)_normal_dark")!, selectImage: UIImage.init(named: "\(tabbar_3_name)_selected_dark")!, title: dietPlanVcName)
             self.setUpChildViewController(viewController: mineVc, image: UIImage.init(named: "tabbar_mine_normal_dark")!, selectImage: UIImage.init(named: "tabbar_mine_selected_dark")!, title: "我的")
         }else{
             self.setUpChildViewController(viewController: mainVc, image: UIImage.init(named: "tabbar_main_normal")!, selectImage: UIImage.init(named: "tabbar_main_selected")!, title: "概览")
             self.setUpChildViewController(viewController: journalVc, image: UIImage.init(named: "tabbar_logs_normal")!, selectImage: UIImage.init(named: "tabbar_logs_selected")!, title: "日志")
-            self.setUpChildViewController(viewController: dietPlanVc, image: UIImage.init(named: "tabbar_forum_normal")!, selectImage: UIImage.init(named: "tabbar_forum_selected")!, title: dietPlanVcName)
+            self.setUpChildViewController(viewController: dietPlanVc, image: UIImage.init(named: "\(tabbar_3_name)_normal")!, selectImage: UIImage.init(named: "\(tabbar_3_name)_selected")!, title: dietPlanVcName)
             self.setUpChildViewController(viewController: mineVc, image: UIImage.init(named: "tabbar_mine_normal")!, selectImage: UIImage.init(named: "tabbar_mine_selected")!, title: "我的")
         }
     }

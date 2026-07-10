@@ -151,7 +151,8 @@ class MineVC : WHBaseViewVC {
         }
         vm.communityVm.tapBlock = {()in
 //            let vc = AIEnergyOrbVC()
-            let vc = CourseVC()
+//            let vc = CourseVC()
+            let vc = GuideTotalVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }
         vm.elaproVm.tapBlock = {()in

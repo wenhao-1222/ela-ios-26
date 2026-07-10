@@ -15,7 +15,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "appicon 2.png",
+      "filename" : "干货@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -26,12 +26,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "appicon.png",
+      "filename" : "深色-干货@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "appicon 3.png",
+      "filename" : "干货@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -42,7 +42,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "appicon 1.png",
+      "filename" : "深色-干货@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

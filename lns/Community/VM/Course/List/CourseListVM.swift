@@ -10,7 +10,7 @@ import MJRefresh
 
 class CourseListVM : UIView{
     
-    private let skeletonRowCount = 3
+    private let skeletonRowCount = 2
     var selfHeight = SCREEN_HEIGHT-WHUtils().getNavigationBarHeight()//-WHUtils().getTabbarHeight()
     var controller = WHBaseViewVC()
     

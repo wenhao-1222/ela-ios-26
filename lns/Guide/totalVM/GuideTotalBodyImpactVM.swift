@@ -13,11 +13,13 @@ class GuideTotalBodyImpactVM: UIView {
     private var selectedIndex = 0
     private let tabTitles = ["健康", "约会", "事业", "社交"]
     private lazy var tabButtons: [UIButton] = [healthButton, dateButton, careerButton, socialButton]
+    private let tabTransitionDuration: TimeInterval = 0.25
+    private let contentTransitionDuration: TimeInterval = 0.28
     
     private let impactSections: [[ImpactItem]] = [
         [
             ImpactItem(title: "更长寿命",
-                       detail: "体重和体脂处于健康范围的人，全因死亡风险更低。",
+                       detail: "体重和体脂保持在健康范围内的人，寿命通常更长。",
                        source: "Global BMI Mortality Collaboration. The Lancet. 2016."),
             ImpactItem(title: "更低心脏病风险",
                        detail: "腰腹脂肪越多，心肌梗死等心血管事件风险越高。",
@@ -166,8 +168,8 @@ extension GuideTotalBodyImpactVM {
     @objc private func tabButtonAction(_ button: UIButton) {
         guard selectedIndex != button.tag else { return }
         selectedIndex = button.tag
-        updateTabs()
-        reloadCards()
+        updateTabs(animated: true)
+        reloadCards(animated: true)
     }
 }
 
@@ -183,8 +185,8 @@ extension GuideTotalBodyImpactVM {
         contentScrollView.addSubview(cardsStackView)
         
         setConstrait()
-        updateTabs()
-        reloadCards()
+        updateTabs(animated: false)
+        reloadCards(animated: false)
     }
     
     func setConstrait() {
@@ -244,23 +246,71 @@ extension GuideTotalBodyImpactVM {
         return btn
     }
     
-    private func updateTabs() {
+    private func updateTabs(animated: Bool) {
         for (index, button) in tabButtons.enumerated() {
             let isSelected = index == selectedIndex
-            button.isSelected = isSelected
-            button.backgroundColor = isSelected ? .THEME : .clear
-            button.titleLabel?.font = .systemFont(ofSize: 16, weight: isSelected ? .semibold : .medium)
+            let applyTextState = {
+                button.isSelected = isSelected
+                button.titleLabel?.font = .systemFont(ofSize: 16, weight: isSelected ? .semibold : .medium)
+            }
+            let applyBackgroundState = {
+                button.backgroundColor = isSelected ? .THEME : .clear
+            }
+
+            guard animated else {
+                applyTextState()
+                applyBackgroundState()
+                continue
+            }
+
+            UIView.transition(
+                with: button,
+                duration: tabTransitionDuration,
+                options: [.transitionCrossDissolve, .allowUserInteraction, .beginFromCurrentState]
+            ) {
+                applyTextState()
+            }
+            UIView.animate(
+                withDuration: tabTransitionDuration,
+                delay: 0,
+                options: [.curveEaseInOut, .allowUserInteraction, .beginFromCurrentState]
+            ) {
+                applyBackgroundState()
+            }
         }
     }
     
-    private func reloadCards() {
-        cardsStackView.arrangedSubviews.forEach { view in
-            cardsStackView.removeArrangedSubview(view)
-            view.removeFromSuperview()
+    private func reloadCards(animated: Bool) {
+        let items = impactSections[selectedIndex]
+        let cards = cardsStackView.arrangedSubviews.compactMap { $0 as? GuideImpactCardView }
+
+        guard cards.count == items.count else {
+            cardsStackView.arrangedSubviews.forEach { view in
+                cardsStackView.removeArrangedSubview(view)
+                view.removeFromSuperview()
+            }
+
+            for item in items {
+                let card = GuideImpactCardView(item: item)
+                card.alpha = animated ? 0 : 1
+                cardsStackView.addArrangedSubview(card)
+            }
+
+            if animated {
+                UIView.animate(
+                    withDuration: contentTransitionDuration,
+                    delay: 0,
+                    options: [.curveEaseInOut, .allowUserInteraction, .beginFromCurrentState]
+                ) {
+                    self.cardsStackView.arrangedSubviews.forEach { $0.alpha = 1 }
+                }
+            }
+            contentScrollView.setContentOffset(.zero, animated: false)
+            return
         }
         
-        for item in impactSections[selectedIndex] {
-            cardsStackView.addArrangedSubview(GuideImpactCardView(item: item))
+        for (card, item) in zip(cards, items) {
+            card.update(item: item, animated: animated, duration: contentTransitionDuration)
         }
         contentScrollView.setContentOffset(.zero, animated: false)
     }
@@ -296,7 +346,7 @@ private struct ImpactItem {
 
 private class GuideImpactCardView: UIView {
     
-    private let item: ImpactItem
+    private var item: ImpactItem
     private let sourceIconSize: CGFloat = kFitWidth(15)
     
     init(item: ImpactItem) {
@@ -309,6 +359,30 @@ private class GuideImpactCardView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func update(item: ImpactItem, animated: Bool, duration: TimeInterval) {
+        self.item = item
+        let updates = {
+            self.titleLabel.text = item.title
+            self.detailLabel.attributedText = self.detailAttributedText(for: item.detail)
+            self.sourceLabel.text = item.source
+        }
+
+        guard animated else {
+            updates()
+            return
+        }
+
+        UIView.transition(with: titleLabel, duration: duration, options: [.transitionCrossDissolve, .allowUserInteraction, .beginFromCurrentState]) {
+            self.titleLabel.text = item.title
+        }
+        UIView.transition(with: detailLabel, duration: duration, options: [.transitionCrossDissolve, .allowUserInteraction, .beginFromCurrentState]) {
+            self.detailLabel.attributedText = self.detailAttributedText(for: item.detail)
+        }
+        UIView.transition(with: sourceLabel, duration: duration, options: [.transitionCrossDissolve, .allowUserInteraction, .beginFromCurrentState]) {
+            self.sourceLabel.text = item.source
+        }
+    }
+
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
         lab.text = item.title
@@ -325,18 +399,7 @@ private class GuideImpactCardView: UIView {
         lab.numberOfLines = 0
         lab.lineBreakMode = .byWordWrapping
         
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.minimumLineHeight = sourceIconSize
-        paragraphStyle.maximumLineHeight = sourceIconSize
-        paragraphStyle.lineBreakMode = .byWordWrapping
-        lab.attributedText = NSAttributedString(
-            string: item.detail,
-            attributes: [
-                .font: lab.font as Any,
-                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
-                .paragraphStyle: paragraphStyle
-            ]
-        )
+        lab.attributedText = detailAttributedText(for: item.detail, font: lab.font)
         return lab
     }()
     
@@ -405,5 +468,20 @@ private class GuideImpactCardView: UIView {
             make.firstBaseline.equalTo(sourcePrefixLabel.snp.firstBaseline)
             make.bottom.equalTo(kFitWidth(-13))
         }
+    }
+
+    private func detailAttributedText(for detail: String, font: UIFont? = nil) -> NSAttributedString {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.minimumLineHeight = sourceIconSize
+        paragraphStyle.maximumLineHeight = sourceIconSize
+        paragraphStyle.lineBreakMode = .byWordWrapping
+        return NSAttributedString(
+            string: detail,
+            attributes: [
+                .font: (font ?? .systemFont(ofSize: 12, weight: .regular)) as Any,
+                .foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214_50,
+                .paragraphStyle: paragraphStyle
+            ]
+        )
     }
 }

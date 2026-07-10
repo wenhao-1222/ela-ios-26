@@ -812,6 +812,13 @@
 		EC3A9CBD2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3A9CBC2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift */; };
 		EC3F21FE2F722D19001F4C86 /* AIGuidanceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3F21FD2F722D13001F4C86 /* AIGuidanceVC.swift */; };
 		EC3F22012F7256A5001F4C86 /* ElaProExpiredAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3F22002F725697001F4C86 /* ElaProExpiredAlertVM.swift */; };
+		EC42ACE02FFB979F00D01D29 /* GuideTotalProVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE12FFB979F00D01D29 /* GuideTotalProVM.swift */; };
+		EC42ACE22FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE32FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift */; };
+		EC42ACE42FFB979F00D01D29 /* GuideTotalProGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE52FFB979F00D01D29 /* GuideTotalProGoalVM.swift */; };
+		EC42ACE62FFB979F00D01D29 /* GuideTotalProGoalStageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE72FFB979F00D01D29 /* GuideTotalProGoalStageVM.swift */; };
+		EC42ACE82FFB979F00D01D29 /* GuideTotalProCoachStrictnessVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE92FFB979F00D01D29 /* GuideTotalProCoachStrictnessVM.swift */; };
+		EC42ACEA2FFB979F00D01D29 /* GuideTotalProNoticeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACEB2FFB979F00D01D29 /* GuideTotalProNoticeVM.swift */; };
+		EC42ACEC2FFB979F00D01D29 /* GuideTotalProCompleteVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACED2FFB979F00D01D29 /* GuideTotalProCompleteVM.swift */; };
 		EC44393D2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC44393C2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift */; };
 		EC4732D62EEFBDEC008F67F5 /* MallDetailImageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D52EEFBDEB008F67F5 /* MallDetailImageVM.swift */; };
 		EC4732D82EEFF05A008F67F5 /* OverSeaMsgVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */; };
@@ -1389,13 +1396,6 @@
 		F1A700102F90000100AABBCC /* JournalElaProAnnouncementAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A7000F2F90000100AABBCC /* JournalElaProAnnouncementAlertVM.swift */; };
 		F1A700202F90000100AABBCC /* GuideTotalBodyImpactVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700212F90000100AABBCC /* GuideTotalBodyImpactVM.swift */; };
 		F1A700222F90000100AABBCC /* GuideTotalDietRecordVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700232F90000100AABBCC /* GuideTotalDietRecordVM.swift */; };
-		EC42ACE02FFB979F00D01D29 /* GuideTotalProVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE12FFB979F00D01D29 /* GuideTotalProVM.swift */; };
-		EC42ACE22FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE32FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift */; };
-		EC42ACE42FFB979F00D01D29 /* GuideTotalProGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE52FFB979F00D01D29 /* GuideTotalProGoalVM.swift */; };
-		EC42ACE62FFB979F00D01D29 /* GuideTotalProGoalStageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE72FFB979F00D01D29 /* GuideTotalProGoalStageVM.swift */; };
-		EC42ACE82FFB979F00D01D29 /* GuideTotalProCoachStrictnessVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACE92FFB979F00D01D29 /* GuideTotalProCoachStrictnessVM.swift */; };
-		EC42ACEA2FFB979F00D01D29 /* GuideTotalProNoticeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACEB2FFB979F00D01D29 /* GuideTotalProNoticeVM.swift */; };
-		EC42ACEC2FFB979F00D01D29 /* GuideTotalProCompleteVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC42ACED2FFB979F00D01D29 /* GuideTotalProCompleteVM.swift */; };
 		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
 		F2B0C2012F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */; };
 		F2B0C3012F80100100A1B2C3 /* GuidanceElaProTransitionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */; };
@@ -2326,6 +2326,13 @@
 		EC3A9CBC2BB5789D00C6E442 /* QuestionnaireBodyFatItemVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnaireBodyFatItemVM.swift; sourceTree = "<group>"; };
 		EC3F21FD2F722D13001F4C86 /* AIGuidanceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIGuidanceVC.swift; sourceTree = "<group>"; };
 		EC3F22002F725697001F4C86 /* ElaProExpiredAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProExpiredAlertVM.swift; sourceTree = "<group>"; };
+		EC42ACE12FFB979F00D01D29 /* GuideTotalProVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProVM.swift; sourceTree = "<group>"; };
+		EC42ACE32FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProReadyStartVM.swift; sourceTree = "<group>"; };
+		EC42ACE52FFB979F00D01D29 /* GuideTotalProGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProGoalVM.swift; sourceTree = "<group>"; };
+		EC42ACE72FFB979F00D01D29 /* GuideTotalProGoalStageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProGoalStageVM.swift; sourceTree = "<group>"; };
+		EC42ACE92FFB979F00D01D29 /* GuideTotalProCoachStrictnessVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProCoachStrictnessVM.swift; sourceTree = "<group>"; };
+		EC42ACEB2FFB979F00D01D29 /* GuideTotalProNoticeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProNoticeVM.swift; sourceTree = "<group>"; };
+		EC42ACED2FFB979F00D01D29 /* GuideTotalProCompleteVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProCompleteVM.swift; sourceTree = "<group>"; };
 		EC44393C2C48DC4800E81BBC /* JournalFuncCopyMealsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalFuncCopyMealsAlertVM.swift; sourceTree = "<group>"; };
 		EC4732D52EEFBDEB008F67F5 /* MallDetailImageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallDetailImageVM.swift; sourceTree = "<group>"; };
 		EC4732D72EEFF056008F67F5 /* OverSeaMsgVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverSeaMsgVC.swift; sourceTree = "<group>"; };
@@ -2933,13 +2940,6 @@
 		F1A7000F2F90000100AABBCC /* JournalElaProAnnouncementAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalElaProAnnouncementAlertVM.swift; sourceTree = "<group>"; };
 		F1A700212F90000100AABBCC /* GuideTotalBodyImpactVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalBodyImpactVM.swift; sourceTree = "<group>"; };
 		F1A700232F90000100AABBCC /* GuideTotalDietRecordVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalDietRecordVM.swift; sourceTree = "<group>"; };
-		EC42ACE12FFB979F00D01D29 /* GuideTotalProVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProVM.swift; sourceTree = "<group>"; };
-		EC42ACE32FFB979F00D01D29 /* GuideTotalProReadyStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProReadyStartVM.swift; sourceTree = "<group>"; };
-		EC42ACE52FFB979F00D01D29 /* GuideTotalProGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProGoalVM.swift; sourceTree = "<group>"; };
-		EC42ACE72FFB979F00D01D29 /* GuideTotalProGoalStageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProGoalStageVM.swift; sourceTree = "<group>"; };
-		EC42ACE92FFB979F00D01D29 /* GuideTotalProCoachStrictnessVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProCoachStrictnessVM.swift; sourceTree = "<group>"; };
-		EC42ACEB2FFB979F00D01D29 /* GuideTotalProNoticeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProNoticeVM.swift; sourceTree = "<group>"; };
-		EC42ACED2FFB979F00D01D29 /* GuideTotalProCompleteVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalProCompleteVM.swift; sourceTree = "<group>"; };
 		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceElaProTransitionVM.swift; sourceTree = "<group>"; };
@@ -8106,7 +8106,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 155;
+				CURRENT_PROJECT_VERSION = 157;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -8133,7 +8133,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.2;
+				MARKETING_VERSION = 2.5.4;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -8214,7 +8214,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 155;
+				CURRENT_PROJECT_VERSION = 157;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -8240,7 +8240,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.2;
+				MARKETING_VERSION = 2.5.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",

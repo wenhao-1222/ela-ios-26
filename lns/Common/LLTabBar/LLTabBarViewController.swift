@@ -13,6 +13,7 @@ class LLTabBarViewController: UITabBarController,LLMyTabbarDelegate {
     
     var TabBar = LLMyTabbar()
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.creatTabBar()
@@ -50,14 +51,10 @@ class LLTabBarViewController: UITabBarController,LLMyTabbarDelegate {
         if (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) {
             self.setUpChildViewController(viewController: CourseTabVC(), image: UIImage.init(named: "tabbar_forum_normal")!, selectImage: UIImage.init(named: "tabbar_forum_selected")!, title: "课程")
         }else{
-            self.setUpChildViewController(viewController: DietPlanVC(), image: UIImage.init(named: "tabbar_forum_normal")!, selectImage: UIImage.init(named: "tabbar_forum_selected")!, title: "计划")
+            self.setUpChildViewController(viewController: DietPlanVC(), image: UIImage.init(named: "tabbar_diet_normal")!, selectImage: UIImage.init(named: "tabbar_diet_selected")!, title: "计划")
         }
         
-//        self.setUpChildViewController(viewController: ForumVC(), image: UIImage.init(named: "tabbar_forum_normal")!, selectImage: UIImage.init(named: "tabbar_forum_selected")!, title: "社区")
         self.setUpChildViewController(viewController: MineVC(), image: UIImage.init(named: "tabbar_mine_normal")!, selectImage: UIImage.init(named: "tabbar_mine_selected")!, title: "我的")
-        
-        
-//        tabbar_forum_selected
     }
 
     func setUpChildViewController(viewController:UIViewController,image:UIImage,selectImage:UIImage,title:String){

@@ -419,7 +419,7 @@ extension GuidanceProVC {
     }
 
     private func updateNextButtonTitle() {
-        let title = currentStep == .promise ? "0元 开启体验" : "下一步"
+        let title = currentStep == .promise ? "开始免费试用" : "下一步"
         nextButton.setTitle(title, for: .normal)
     }
 

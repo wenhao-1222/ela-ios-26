@@ -29,9 +29,6 @@ extension UIColor {
     public static let COLOR_WHITE_75                    = UIColor(named: "color_white_75")!
     public static let COLOR_CELL_HIGHLIGHT_BG           = UIColor(named: "color_cell_current_bg")!
     
-//
-    
-    
     public static let COLOR_BG_WHITE                    = UIColor(named: "color_bg_white")!
     ///透明度为  1  的95 白色
     public static let COLOR_BG_WHITE_95                 = UIColor(named: "color_bg_white_95")!
@@ -50,7 +47,9 @@ extension UIColor {
     
     public static let COLOR_ALERT_BG_BLACK              = UIColor(named: "color_alert_bg_black")!
     
-    public static let COLOR_BG_F5                       = UIColor(named: "color_bg_f5")!
+    //2026年07月10日12:00:00
+    //背景色没有F5了，全部改成F2，这里统一处理替换，代码里面没有逐一替换了
+    public static let COLOR_BG_F5                       = UIColor(named: "color_bg_f2")!//UIColor(named: "color_bg_f5")!
     public static let COLOR_BG_F5_SEGMENT               = UIColor(named: "color_bg_f5_segment")!
     public static let COLOR_BG_F5_FITNESS               = UIColor(named: "color_bg_f5_fitness_bg")!
     public static let COLOR_BG_F2                       = UIColor(named: "color_bg_f2")!
@@ -59,23 +58,17 @@ extension UIColor {
     public static let COLOR_BG_FA                       = UIColor(named: "color_bg_fa")!
     public static let COLOR_BG_C4                       = UIColor(named: "color_bg_c4")!
     
-    
-    
     public static let COLOR_BG_THEME                    = UIColor(named: "color_bg_theme")!
     public static let COLOR_CARD_BG_WHITE               = UIColor(named: "color_card_bg_ff")!
     public static let COLOR_CARD_BG_WHITE_ALERT         = UIColor(named: "color_card_bg_alert")!
     public static let COLOR_CARD_BG_CLEAR               = UIColor(named: "color_card_bg_clear")!
     
-    
-    
     public static let COLOR_TEXT_MAIN_NATURAL           = UIColor(named: "color_text_main_natural")
     public static let COLOR_TEXT_MAIN_NATURAL_OVER      = UIColor(named: "color_text_main_natural_over")
     public static let COLOR_TEXT_MAIN_CALORIES          = UIColor(named: "color_text_main_calories")!
     
-    
-    public static let COLOR_LINE_F0                       = UIColor(named: "color_line_f0")!
-    public static let COLOR_LINE_F0_30                    = UIColor(named: "color_line_f0_30")!
-    
+    public static let COLOR_LINE_F0                     = UIColor(named: "color_line_f0")!
+    public static let COLOR_LINE_F0_30                  = UIColor(named: "color_line_f0_30")!
 }
 
 extension UIColor {

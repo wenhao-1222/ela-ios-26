@@ -355,10 +355,10 @@ extension LogsNaturalGoalVM{
                     self.titlLab.text = "营养目标"
                 }
                 DLLog(message: "刷新营养目标：\(caloriTotal)   ----  \(carboTotal)  ----  \(proteinTotal)  ----  \(fatTotal)")
-                self.caloriCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", caloriTotalForUI.rounded())) ?? "0")"
-                self.carboCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", carboTotalForUI.rounded())) ?? "0")"
-                self.proteinCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", proteinTotalForUI.rounded())) ?? "0")"
-                self.fatCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", fatTotalForUI.rounded())) ?? "0")"
+                self.caloriCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", caloriTotal.rounded())) ?? "0")"
+                self.carboCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", carboTotal.rounded())) ?? "0")"
+                self.proteinCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", proteinTotal.rounded())) ?? "0")"
+                self.fatCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", fatTotal.rounded())) ?? "0")"
                 
 //                self.caloriCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", caloriTotal)) ?? "0")"
 //                self.carboCircleVm.currentNumberLabel.text = "\(WHUtils.convertStringToString(String(format: "%.0f", carboTotal)) ?? "0")"

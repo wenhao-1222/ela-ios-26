@@ -12,13 +12,14 @@ class GuidanceProDietRecordVM: UIView {
 
     var nextTapBlock: (() -> Void)?
 
-    private lazy var bgImgView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.setImgLocal(imgName: "ela_pro_progress_bg")
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        return imageView
-    }()
+//    private lazy var bgImgView: UIImageView = {
+//        let imageView = UIImageView()
+//        imageView.setImgLocal(imgName: "ela_pro_progress_bg")
+//        imageView.contentMode = .scaleAspectFill
+//        imageView.clipsToBounds = true
+//        imageView.isHidden = true
+//        return imageView
+//    }()
 
     private lazy var logoImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "ela_pro_expired_alert_icon"))
@@ -87,17 +88,17 @@ class GuidanceProDietRecordVM: UIView {
 
 private extension GuidanceProDietRecordVM {
     func initUI() {
-        addSubview(bgImgView)
+//        addSubview(bgImgView)
         addSubview(logoImageView)
         addSubview(titleLabel)
         addSubview(dottedLineView)
         addSubview(descriptionLabel)
         addSubview(bulletStackView)
         addSubview(nextButton)
-
-        bgImgView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+//
+//        bgImgView.snp.makeConstraints { make in
+//            make.edges.equalToSuperview()
+//        }
 
         logoImageView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(32))

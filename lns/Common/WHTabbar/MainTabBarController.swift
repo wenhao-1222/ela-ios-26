@@ -10,6 +10,8 @@ class MainTabBarController: UITabBarController {
     
     private var guideVC: GuideTotalVC?
     
+    var tabbar_3_name = "tabbar_forum"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .COLOR_BG_WHITE
@@ -61,8 +63,8 @@ class MainTabBarController: UITabBarController {
             items[1].image = UIImage(named: useDarkIcons ? "tabbar_logs_normal_dark" : "tabbar_logs_normal")?.withRenderingMode(.alwaysOriginal)
             items[1].selectedImage = UIImage(named: useDarkIcons ? "tabbar_logs_selected_dark" : "tabbar_logs_selected")?.withRenderingMode(.alwaysOriginal)
 
-            items[2].image = UIImage(named: useDarkIcons ? "tabbar_forum_normal_dark" : "tabbar_forum_normal")?.withRenderingMode(.alwaysOriginal)
-            items[2].selectedImage = UIImage(named: useDarkIcons ? "tabbar_forum_selected_dark" : "tabbar_forum_selected")?.withRenderingMode(.alwaysOriginal)
+            items[2].image = UIImage(named: useDarkIcons ? "\(tabbar_3_name)_normal_dark" : "\(tabbar_3_name)_normal")?.withRenderingMode(.alwaysOriginal)
+            items[2].selectedImage = UIImage(named: useDarkIcons ? "\(tabbar_3_name)_selected_dark" : "\(tabbar_3_name)_selected")?.withRenderingMode(.alwaysOriginal)
 
             items[3].image = UIImage(named: useDarkIcons ? "tabbar_mine_normal_dark" : "tabbar_mine_normal")?.withRenderingMode(.alwaysOriginal)
             items[3].selectedImage = UIImage(named: useDarkIcons ? "tabbar_mine_selected_dark" : "tabbar_mine_selected")?.withRenderingMode(.alwaysOriginal)
@@ -83,7 +85,8 @@ class MainTabBarController: UITabBarController {
         
         let vc3 = (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) ? CourseTabVC() : DietPlanVC()
         let vc3Name = (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) ? "课程" : "计划"
-        vc3.tabBarItem = UITabBarItem(title: vc3Name, image: UIImage.init(named: "tabbar_forum_normal")!, tag: 2)
+        tabbar_3_name = (UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A) ? "tabbar_forum" : "tabbar_diet"
+        vc3.tabBarItem = UITabBarItem(title: vc3Name, image: UIImage.init(named: "\(tabbar_3_name)_normal")!, tag: 2)
         
         let vc4 = MineVC()
         vc4.tabBarItem = UITabBarItem(title: "我的", image: UIImage.init(named: "tabbar_mine_normal")!, tag: 3)
@@ -99,8 +102,8 @@ class MainTabBarController: UITabBarController {
                                       selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_logs_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_logs_selected")!.withRenderingMode(.alwaysOriginal),
                                       title: "日志")
         self.setUpChildViewController(viewController: vc3,
-                                      image: useDarkIcons ? UIImage(named: "tabbar_forum_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_normal")!.withRenderingMode(.alwaysOriginal),
-                                      selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "tabbar_forum_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_forum_selected")!.withRenderingMode(.alwaysOriginal),
+                                      image: useDarkIcons ? UIImage(named: "\(tabbar_3_name)_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "\(tabbar_3_name)_normal")!.withRenderingMode(.alwaysOriginal),
+                                      selectImage: traitCollection.userInterfaceStyle == .dark ? UIImage(named: "\(tabbar_3_name)_selected_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "\(tabbar_3_name)_selected")!.withRenderingMode(.alwaysOriginal),
                                       title: "计划")
         self.setUpChildViewController(viewController: vc4,
                                       image: useDarkIcons ? UIImage(named: "tabbar_mine_normal_dark")!.withRenderingMode(.alwaysOriginal) : UIImage(named: "tabbar_mine_normal")!.withRenderingMode(.alwaysOriginal),

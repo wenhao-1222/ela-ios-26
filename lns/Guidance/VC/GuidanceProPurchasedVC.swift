@@ -20,12 +20,19 @@ class GuidanceProPurchasedVC: WHBaseViewVC {
     private let topBackgroundView = GuidanceProFlowBackgroundView()
     private let contentContainerView = UIView()
     private let topContentVM = GuidanceProTopVM()
+    private let dietRecordContentVM = GuidanceProDietRecordVM()
     private var currentStep: ContentStep = .intro
     private var agreementAlertVm: ElaProAgreementAlertVM?
     var guidanceV2BizType = "自动"
     private var didTrackGuidanceV2IntroPage = false
     private var didTrackGuidanceV2SubscribePage = false
     private var isPreparingSubscribeContent = false
+    private var shouldUseDietRecordIntro: Bool {
+        UserInfoModel.shared.abTestModel.diet_important == .B
+    }
+    private var introContentVM: UIView {
+        shouldUseDietRecordIntro ? dietRecordContentVM : topContentVM
+    }
 
     private lazy var priceVm: ElaProPriceVM = {
         let vm = ElaProPriceVM(frame: .zero)
@@ -137,6 +144,7 @@ private extension GuidanceProPurchasedVC {
         purchaseLoadingMaskView.addSubview(purchaseLoadingIndicator)
 
         contentContainerView.addSubview(topContentVM)
+        contentContainerView.addSubview(dietRecordContentVM)
 
 //        topBackgroundView.snp.makeConstraints { make in
 //            make.left.right.top.equalToSuperview()
@@ -158,6 +166,10 @@ private extension GuidanceProPurchasedVC {
         topContentVM.snp.makeConstraints { make in
 //            make.left.right.top.equalToSuperview()
 //            make.height.equalTo(kFitWidth(434))
+            make.edges.equalToSuperview()
+        }
+
+        dietRecordContentVM.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
@@ -189,6 +201,12 @@ private extension GuidanceProPurchasedVC {
         priceVm.isHidden = true
         priceVm.alpha = 0
         priceVm.startLoadingIfNeeded()
+
+        topContentVM.isHidden = shouldUseDietRecordIntro
+        topContentVM.alpha = shouldUseDietRecordIntro ? 0 : 1
+        dietRecordContentVM.isHidden = !shouldUseDietRecordIntro
+        dietRecordContentVM.alpha = shouldUseDietRecordIntro ? 1 : 0
+        dietRecordContentVM.nextButton.isHidden = true
     }
 
     func disableFullscreenPopGesture() {
@@ -249,7 +267,7 @@ private extension GuidanceProPurchasedVC {
         closeButton.isHidden = false
         topContentVM.stopBubbleFloatingAnimation()
         priceVm.startLoadingIfNeeded()
-        transition(from: topContentVM, to: priceVm)
+        transition(from: introContentVM, to: priceVm)
         trackGuidanceV2SubscribePageIfNeeded()
     }
 
