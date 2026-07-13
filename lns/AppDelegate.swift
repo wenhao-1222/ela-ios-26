@@ -969,7 +969,7 @@ extension AppDelegate{
     ///
     /// 这里不做任何业务状态修改，只处理界面层级：
     /// - dismiss 已经 present 的页面
-    /// - 清空 navigationController 的栈
+    /// - 遍历 navigationController 的栈，释放子页面持有的业务资源
     /// - 移除 child controller
     /// - 结束当前正在编辑的输入状态
     ///
@@ -1000,7 +1000,9 @@ extension AppDelegate{
             for child in navigationController.viewControllers {
                 prepareViewControllerForRelease(child)
             }
-            navigationController.setViewControllers([], animated: false)
+            // 保留原实现但不再执行：切 root 与旧页面释放存在交错时，清空导航栈可能把当前 root
+            // 留成一个没有 topViewController 的空 UINavigationController。
+//            navigationController.setViewControllers([], animated: false)
         }
 
         for child in viewController.children {

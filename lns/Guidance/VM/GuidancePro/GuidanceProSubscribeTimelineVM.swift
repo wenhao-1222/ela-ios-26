@@ -315,6 +315,33 @@ extension GuidanceProSubscribeTimelineVM {
         planDailyLabel.text = dailyPlanText(for: product)
     }
 
+    func updateAnnualProductInfo(_ dict: NSDictionary) {
+        let remoteProductName = dict.stringValueForKey(key: "productName")
+        let productName = remoteProductName.isEmpty ? dict.stringValueForKey(key: "name") : remoteProductName
+        if !productName.isEmpty {
+            planTitleLabel.text = productName
+        }
+
+        let period = remotePeriodText(from: dict)
+        let priceText = remotePriceNumberText(from: dict.stringValueForKey(key: "price"))
+        if !priceText.isEmpty {
+            annualPriceDescription = "\(priceText)/\(period)"
+            planPriceLabel.text = "¥ \(priceText)/\(period)"
+        }
+
+        let remoteDayAvgText = dict.stringValueForKey(key: "dayAvgPriceLabel")
+        let dayAvgText = remoteDayAvgText.isEmpty ? dict.stringValueForKey(key: "dayAvgPriceLable") : remoteDayAvgText
+        if !dayAvgText.isEmpty {
+            dailyPriceDescription = dayAvgText
+            planDailyLabel.text = remoteDailyPlanText(from: dayAvgText)
+        } else if let priceDecimal = remotePriceDecimal(from: dict.stringValueForKey(key: "price")) {
+            let daily = priceDecimal.dividing(by: NSDecimalNumber(value: remoteDaysCount(from: dict)))
+            let dailyText = decimalText(for: daily)
+            dailyPriceDescription = "\(dailyText)元/天"
+            planDailyLabel.text = "每天仅¥\(dailyText)"
+        }
+    }
+
     @objc func closeTapAction() {
         closeTapBlock?()
     }
@@ -758,6 +785,69 @@ private extension GuidanceProSubscribeTimelineVM {
         let text = hasFreeTrialPermission ? "现在无需付费，试用期内可随时取消" : "订阅计划可随时取消"
         trialDescLabel.text = text
         trialDescLabel.setLineHeight(textString: text, lineHeight: trialDescLabel.font.lineHeight * 1.1)
+    }
+
+    func remotePeriodText(from dict: NSDictionary) -> String {
+        let productType = Int(dict.stringValueForKey(key: "productType")) ?? Int(dict.stringValueForKey(key: "type")) ?? 0
+        switch productType {
+        case 1:
+            return "月"
+        case 2:
+            return "年"
+        default:
+            let membershipDays = Int(dict.stringValueForKey(key: "membershipDays")) ?? 0
+            if membershipDays > 0, membershipDays < 365 {
+                return "\(membershipDays)天"
+            }
+            return "年"
+        }
+    }
+
+    func remoteDaysCount(from dict: NSDictionary) -> Int {
+        let productType = Int(dict.stringValueForKey(key: "productType")) ?? Int(dict.stringValueForKey(key: "type")) ?? 0
+        switch productType {
+        case 1:
+            return 30
+        case 2:
+            return 365
+        default:
+            let membershipDays = Int(dict.stringValueForKey(key: "membershipDays")) ?? 0
+            return membershipDays > 0 ? membershipDays : 365
+        }
+    }
+
+    func remotePriceDecimal(from priceText: String) -> NSDecimalNumber? {
+        let cleanText = priceText
+            .replacingOccurrences(of: "¥", with: "")
+            .replacingOccurrences(of: "￥", with: "")
+            .replacingOccurrences(of: "CNY", with: "", options: .caseInsensitive)
+            .replacingOccurrences(of: ",", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanText.isEmpty else { return nil }
+        let value = NSDecimalNumber(string: cleanText)
+        guard !value.doubleValue.isNaN else { return nil }
+        return value
+    }
+
+    func remotePriceNumberText(from priceText: String) -> String {
+        guard let value = remotePriceDecimal(from: priceText) else {
+            return priceText
+                .replacingOccurrences(of: "¥", with: "")
+                .replacingOccurrences(of: "￥", with: "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        return decimalText(for: value)
+    }
+
+    func remoteDailyPlanText(from dayAvgText: String) -> String {
+        let cleanText = dayAvgText
+            .replacingOccurrences(of: "元/天", with: "")
+            .replacingOccurrences(of: "/天", with: "")
+            .replacingOccurrences(of: "¥", with: "")
+            .replacingOccurrences(of: "￥", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanText.isEmpty else { return "每天仅\(dayAvgText)" }
+        return "每天仅¥\(cleanText)"
     }
 
     func recurringPriceDescription(for product: Product) -> String {

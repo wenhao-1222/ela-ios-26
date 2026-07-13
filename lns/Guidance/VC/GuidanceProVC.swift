@@ -551,13 +551,50 @@ extension GuidanceProVC {
     }
 
     func fetchAnnualDisplayProduct() {
-        ElaProIAPManager.shared.fetchGuidanceAnnualProduct { [weak self] result in
+        let parameters: [String: AnyObject] = [
+            "bizType": "1" as NSString,
+            "isPurchased": "0" as NSString
+        ]
+        WHNetworkUtil.shareManager().POST(urlString: URL_pro_product,
+                                          parameters: parameters,
+                                          success: { [weak self] responseObject in
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            let productDict = self?.guidanceTrialAnnualProduct(from: dataDict)
             DispatchQueue.main.async {
-                guard let self = self else { return }
-                guard case .success(let product) = result else { return }
-                self.subscribeContentVM.updateAnnualProduct(product)
+                guard let self = self, let productDict = productDict else { return }
+                self.subscribeContentVM.updateAnnualProductInfo(productDict)
             }
+        }, failure: { _ in
+//            ElaProIAPManager.shared.fetchGuidanceAnnualProduct { [weak self] result in
+//                DispatchQueue.main.async {
+//                    guard let self = self else { return }
+//                    guard case .success(let product) = result else { return }
+//                    self.subscribeContentVM.updateAnnualProduct(product)
+//                }
+//            }
+        })
+    }
+
+    private func guidanceTrialAnnualProduct(from dataDict: NSDictionary) -> NSDictionary? {
+        let rawProducts = (dataDict["productInfoList"] as? NSArray) ?? (dataDict["product"] as? NSArray) ?? []
+        let products = rawProducts.compactMap { $0 as? NSDictionary }
+        if let trialAnnual = products.first(where: { dict in
+            let productType = Int(dict.stringValueForKey(key: "productType")) ?? Int(dict.stringValueForKey(key: "type")) ?? -1
+            return productType == 0
+        }) {
+            return trialAnnual
         }
+        if let guidanceAnnual = products.first(where: { $0.stringValueForKey(key: "productId") == ElaProIAPConfig.guidanceAnnualProductID }) {
+            return guidanceAnnual
+        }
+        if let trialProduct = products.first(where: { $0.stringValueForKey(key: "productName").contains("试用") }) {
+            return trialProduct
+        }
+        return products.first(where: { dict in
+            let productType = Int(dict.stringValueForKey(key: "productType")) ?? Int(dict.stringValueForKey(key: "type")) ?? -1
+            return productType == 2
+        })
     }
 
     func startSubscriptionFlow() {

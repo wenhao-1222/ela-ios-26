@@ -35,6 +35,9 @@ class FirstLaunchVC: WHBaseViewVC {
     private var isRequestingUserGroupInit = false
     private var hasLoadedUserGroupInit = false
     private var shouldContinueAfterUserGroupInit = false
+    private var userGroupInitRequestStartTime: Date?
+    private let userGroupInitRequestMaxWaitTime: TimeInterval = 30.0
+    private var userGroupInitRequestGeneration = 0
     
     var firstLabelTopConstraint: Constraint?
     var firstLabelTwoTopConstraint: Constraint?
@@ -769,29 +772,47 @@ extension FirstLaunchVC{
             return
         }
         guard !isRequestingUserGroupInit else {
+            if showLoadingToast, shouldRestartUserGroupInitRequest() {
+                DLLog(message: "[UserGroupInit][FirstLaunch] request stale, restart")
+                isRequestingUserGroupInit = false
+                shouldContinueAfterUserGroupInit = false
+                userGroupInitRequestStartTime = nil
+                requestUserGroupInitIfNeeded(showLoadingToast: true)
+                return
+            }
             if showLoadingToast {
                 shouldContinueAfterUserGroupInit = true
-                MCToast.mc_loading()
             }
             return
         }
         isRequestingUserGroupInit = true
+        userGroupInitRequestStartTime = Date()
+        userGroupInitRequestGeneration += 1
+        let requestGeneration = userGroupInitRequestGeneration
         shouldContinueAfterUserGroupInit = showLoadingToast
-        if showLoadingToast {
-            MCToast.mc_loading()
-        }
         WHNetworkUtil.shareManager().POST(urlString: URL_user_group_init, parameters: nil) { [weak self] responseObject in
             guard let self = self else { return }
-            MCToast.mc_remove()
+            guard self.userGroupInitRequestGeneration == requestGeneration else {
+                DLLog(message: "[UserGroupInit][FirstLaunch] ignore stale success")
+                return
+            }
             self.isRequestingUserGroupInit = false
+            self.userGroupInitRequestStartTime = nil
             let shouldContinue = self.shouldContinueAfterUserGroupInit
             self.shouldContinueAfterUserGroupInit = false
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-//            self.applyUserGroupInitData(dataObj)
+            let code = responseObject["code"] as? Int ?? -1
+            let dataObj: NSDictionary
+            if code == 200 {
+                let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+                dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            } else {
+                dataObj = NSDictionary()
+            }
+            self.applyUserGroupInitData(dataObj)
             self.hasLoadedUserGroupInit = true
             DLLog(message: [
                 "tag": "[UserGroupInit][FirstLaunch] URL_user_group_init response",
+                "code": code,
                 "dataObj": dataObj,
                 "rawResponse": responseObject
             ])
@@ -800,15 +821,22 @@ extension FirstLaunchVC{
             }
         } failure: { [weak self] failed in
             guard let self = self else { return }
-            MCToast.mc_remove()
+            guard self.userGroupInitRequestGeneration == requestGeneration else {
+                DLLog(message: "[UserGroupInit][FirstLaunch] ignore stale failure: \(failed)")
+                return
+            }
             self.isRequestingUserGroupInit = false
-            let shouldShowError = self.shouldContinueAfterUserGroupInit
+            self.userGroupInitRequestStartTime = nil
             self.shouldContinueAfterUserGroupInit = false
             DLLog(message: "[UserGroupInit][FirstLaunch] URL_user_group_init failed: \(failed)")
-            if shouldShowError {
-                MCToast.mc_text("网络异常，请稍后重试")
-            }
         }
+    }
+
+    private func shouldRestartUserGroupInitRequest() -> Bool {
+        guard let startTime = userGroupInitRequestStartTime else {
+            return true
+        }
+        return Date().timeIntervalSince(startTime) > userGroupInitRequestMaxWaitTime
     }
     
     private func applyUserGroupInitData(_ dataObj: NSDictionary) {
@@ -837,12 +865,14 @@ extension FirstLaunchVC{
         view.layoutIfNeeded()
         let transitionSnapshot = view.snapshotView(afterScreenUpdates: false)
         appDelegate.switchRootViewController(to: navVc,from: self, transitionSnapshot: transitionSnapshot)
-        
-        UIView.transition(with: appDelegate.window!, duration: 0.35, options: .transitionCrossDissolve, animations: {
-            appDelegate.window!.rootViewController = navVc
-        }) { _ in
-            self.removeFromParent()
-        }
+
+        // 保留原实现但不再执行：上面已经通过统一入口完成 root 切换。
+        // 同一个 navVc 被连续设置两次 root，容易让 UIWindow 长时间停在 UITransitionView 中间态。
+//        UIView.transition(with: appDelegate.window!, duration: 0.35, options: .transitionCrossDissolve, animations: {
+//            appDelegate.window!.rootViewController = navVc
+//        }) { _ in
+//            self.removeFromParent()
+//        }
     }
     private func trackGuidanceV2StartPageIfNeeded() {
         guard !didTrackGuidanceV2StartPage else { return }

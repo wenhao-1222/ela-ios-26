@@ -35,11 +35,13 @@ class ElaProPriceVM: UIView {
         let monthAvgPriceLabel: String
 
         init(dict: NSDictionary) {
-            type = Int(dict.stringValueForKey(key: "type")) ?? 0
+            let productType = dict.stringValueForKey(key: "productType")
+            type = Int(productType.isEmpty ? dict.stringValueForKey(key: "type") : productType) ?? 0
             let directProductId = dict.stringValueForKey(key: "productId")
             let iOSProductId = dict.stringValueForKey(key: "iosProductId")
             iosProductId = directProductId.isEmpty ? iOSProductId : directProductId
-            name = dict.stringValueForKey(key: "name")
+            let productName = dict.stringValueForKey(key: "productName")
+            name = productName.isEmpty ? dict.stringValueForKey(key: "name") : productName
             originalPrice = dict.stringValueForKey(key: "originalPrice")
             price = dict.stringValueForKey(key: "price")
             promotionDesc = dict.stringValueForKey(key: "promotionDesc")
@@ -795,7 +797,7 @@ extension ElaProPriceVM{
             monthProduct = month
             monthTagText = preferredRemoteText(monthRemoteProduct?.promotionLabel)
             monthSubTitleText = preferredRemoteText(monthRemoteProduct?.monthAvgPriceLabel)
-            monthPriceText = formattedProductPriceText(for: month)
+//            monthPriceText = formattedProductPriceText(for: month)
             monthOriginPriceText = preferredRemotePriceText(monthRemoteProduct?.originalPrice)
         }
 
@@ -803,13 +805,13 @@ extension ElaProPriceVM{
             annualProduct = annual
             annualTagText = preferredRemoteText(annualRemoteProduct?.promotionLabel)
             annualSubTitleText = preferredRemoteText(annualRemoteProduct?.monthAvgPriceLabel) ?? ""
-            annualPriceText = formattedProductPriceText(for: annual)
+//            annualPriceText = formattedProductPriceText(for: annual)
             annualOriginPriceText = preferredRemotePriceText(annualRemoteProduct?.originalPrice)
         }
         if let lifetime = products.first(where: { $0.id == ElaProIAPConfig.lifetimeProductID }) {
             lifetimeProduct = lifetime
             lifetimeTagText = preferredRemoteText(lifetimeRemoteProduct?.promotionLabel)
-            lifetimePriceText = formattedProductPriceText(for: lifetime)
+//            lifetimePriceText = formattedProductPriceText(for: lifetime)
         }
     }
     
@@ -849,7 +851,7 @@ extension ElaProPriceVM{
                                                                                                                   originPriceText: monthOriginPriceText)
             } else {
                 dailyPriceLabel.text = preferredRemoteText(monthRemoteProduct?.dayAvgPriceLabel) ?? defaultDailyPlaceholder()
-                tipsLabel.text = preferredRemoteText(monthRemoteProduct?.promotionDesc) ?? "价格加载中..."
+                tipsLabel.text = preferredRemoteText(monthRemoteProduct?.promotionDesc) ?? remoteSubscriptionTips(for: .month)
             }
         case .annual:
             let annualDailyText = preferredDayAvgText(remoteText: annualRemoteProduct?.dayAvgPriceLabel,
@@ -861,7 +863,7 @@ extension ElaProPriceVM{
                                                                                                                    currentPriceText: annualPriceText,
                                                                                                                    originPriceText: annualOriginPriceText)
             } else {
-                tipsLabel.text = preferredRemoteText(annualRemoteProduct?.promotionDesc) ?? "价格加载中..."
+                tipsLabel.text = preferredRemoteText(annualRemoteProduct?.promotionDesc) ?? remoteSubscriptionTips(for: .annual)
             }
         case .lifetime:
             setDailyPriceBadgeHidden(true)
@@ -870,7 +872,7 @@ extension ElaProPriceVM{
                 tipsLabel.text = preferredRemoteText(lifetimeRemoteProduct?.promotionDesc) ?? "买断价\(lifetimePriceText)，一次购买长期可用"
             } else {
                 dailyPriceLabel.text = defaultDailyPlaceholder()
-                tipsLabel.text = preferredRemoteText(lifetimeRemoteProduct?.promotionDesc) ?? "价格加载中..."
+                tipsLabel.text = preferredRemoteText(lifetimeRemoteProduct?.promotionDesc) ?? remoteSubscriptionTips(for: .lifetime)
             }
         }
     }
@@ -964,11 +966,14 @@ extension ElaProPriceVM{
     }
 
     private func preferredDayAvgText(remoteText: String?, product: Product?) -> String? {
+        return preferredRemoteText(remoteText)
+        /*
         let remote = preferredRemoteText(remoteText)
         guard let product = product else { return remote }
         let localized = buildDailyText(for: product)
         guard shouldUseRemoteDayAvgText(for: product) else { return localized }
         return remote ?? localized
+        */
     }
 
     private func shouldUseRemoteDayAvgText(for product: Product) -> Bool {
@@ -977,6 +982,31 @@ extension ElaProPriceVM{
 
     private func defaultDailyPlaceholder() -> String {
         return "--/天"
+    }
+
+    private func remoteSubscriptionTips(for plan: PlanType) -> String {
+        let priceText: String
+        let periodText: String
+        switch plan {
+        case .month:
+            priceText = monthPriceText
+            periodText = "/月"
+        case .annual:
+            priceText = annualPriceText
+            periodText = "/年"
+        case .lifetime:
+            priceText = lifetimePriceText
+            periodText = ""
+        }
+
+        guard !priceText.isEmpty, priceText != "--" else {
+            return "价格加载中..."
+        }
+
+        if plan == .lifetime {
+            return "买断价\(priceText)，一次购买长期可用"
+        }
+        return "\(priceText)\(periodText)，可随时取消"
     }
 
     private func applyRemoteProducts(_ products: [RemotePlanProduct]) {
@@ -2119,7 +2149,7 @@ extension ElaProPriceVM{
             if success, self.applyCachedProductSnapshotIfAvailable() {
                 return
             }
-            self.fetchProProductsIfNeeded()
+//            self.fetchProProductsIfNeeded()
         }
     }
 
@@ -2154,6 +2184,12 @@ extension ElaProPriceVM{
             DLLog(message: "preloadProProductList:\(dataDict)")
             let remoteProducts = remoteProducts(from: dataDict)
             updateConfiguredProductIDs(from: remoteProducts)
+            DispatchQueue.main.async {
+                productLoadCache[cacheKey] = ProductLoadSnapshot(remoteProducts: remoteProducts,
+                                                                 storeProducts: [])
+                completion(hasDisplayablePrice(in: [], remoteProducts: remoteProducts))
+            }
+            /*
             let productIDs = requestedProductIDs(from: remoteProducts)
             ElaProIAPManager.shared.fetchProProducts(productIDs: productIDs) { result in
                 DispatchQueue.main.async {
@@ -2166,6 +2202,7 @@ extension ElaProPriceVM{
                     completion(hasDisplayablePrice(in: storeProducts, remoteProducts: remoteProducts))
                 }
             }
+            */
         }, failure: { _ in
             completion(false)
         })
@@ -2231,16 +2268,12 @@ extension ElaProPriceVM{
     }
 
     private static func hasDisplayablePrice(in products: [Product], remoteProducts: [RemotePlanProduct]) -> Bool {
-        guard !products.isEmpty else { return false }
         let visiblePlans = [PlanType.month, .annual, .lifetime].filter {
             remoteProduct(from: remoteProducts, type: $0) != nil
         }
         let plans = visiblePlans.isEmpty ? [PlanType.month, .annual] : visiblePlans
         return plans.contains { plan in
-            guard let productID = preferredText(remoteProduct(from: remoteProducts, type: plan)?.iosProductId) else {
-                return false
-            }
-            return products.contains(where: { $0.id == productID })
+            preferredText(remoteProduct(from: remoteProducts, type: plan)?.displayPriceText) != nil
         }
     }
 }

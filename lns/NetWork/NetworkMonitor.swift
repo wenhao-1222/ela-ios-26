@@ -20,6 +20,7 @@ class NetworkMonitor {
         var timestamp: Date
         var msgDict: [String: Any]
         var ownerUid: String?
+        var onDropped: (() -> Void)?
     }
 
     private var pendingRequests: [PendingRequest] = []
@@ -61,17 +62,31 @@ class NetworkMonitor {
         }
     }
 
-    func addRequest(_ request: @escaping () -> Void, allowRetry: Bool = true, msgDict: [String: Any] = [:], ownerUid: String? = nil) {
+    func addRequest(_ request: @escaping () -> Void,
+                    allowRetry: Bool = true,
+                    msgDict: [String: Any] = [:],
+                    ownerUid: String? = nil,
+                    onDropped: (() -> Void)? = nil) {
         if isConnected || !allowRetry {
             request()
         } else {
             print("[NetworkMonitor] 无网络，挂起请求")
-            let pending = PendingRequest(retryCount: 0, request: request, allowRetry: allowRetry, timestamp: Date(), msgDict: msgDict, ownerUid: normalizedOwnerUid(ownerUid))
+            let pending = PendingRequest(retryCount: 0,
+                                         request: request,
+                                         allowRetry: allowRetry,
+                                         timestamp: Date(),
+                                         msgDict: msgDict,
+                                         ownerUid: normalizedOwnerUid(ownerUid),
+                                         onDropped: onDropped)
             pendingRequests.append(pending)
         }
     }
 
-    func retryLater(_ request: @escaping () -> Void, retryCount: Int, msgDict: [String: Any] = [:], ownerUid: String? = nil) {
+    func retryLater(_ request: @escaping () -> Void,
+                    retryCount: Int,
+                    msgDict: [String: Any] = [:],
+                    ownerUid: String? = nil,
+                    onDropped: (() -> Void)? = nil) {
         if retryCount < maxRetryCount {
             let delay = baseDelay * pow(2.0, Double(retryCount))
             print("[NetworkMonitor] 延迟 \(delay)s 后重试，第 \(retryCount + 1) 次")
@@ -88,12 +103,17 @@ class NetworkMonitor {
                 if self.isConnected == true {
                     request()
                 } else {
-                    self.retryLater(request, retryCount: retryCount + 1,msgDict:msgDict, ownerUid: requestOwnerUid)
+                    self.retryLater(request,
+                                    retryCount: retryCount + 1,
+                                    msgDict: msgDict,
+                                    ownerUid: requestOwnerUid,
+                                    onDropped: onDropped)
                 }
             }
         } else {
             print("[NetworkMonitor] 超过最大重试次数，丢弃请求")
             reportRequestEvent(reason: "max_retry_exceeded", info: msgDict, retryCount: retryCount)
+            notifyDroppedRequestIfNeeded(info: msgDict, onDropped: onDropped)
         }
     }
 
@@ -126,6 +146,7 @@ class NetworkMonitor {
             } else {
                 print("[NetworkMonitor] 请求挂起超过\(maxPendingTime)秒，丢弃！")
                 reportRequestEvent(reason: "pending_timeout  \(maxPendingTime)秒", info: pending.msgDict)
+                notifyDroppedRequestIfNeeded(info: pending.msgDict, onDropped: pending.onDropped)
             }
         }
         
@@ -133,8 +154,19 @@ class NetworkMonitor {
 
         for item in validRequests {
             if item.allowRetry {
-                retryLater(item.request, retryCount: item.retryCount,msgDict: item.msgDict, ownerUid: item.ownerUid)
+                retryLater(item.request,
+                           retryCount: item.retryCount,
+                           msgDict: item.msgDict,
+                           ownerUid: item.ownerUid,
+                           onDropped: item.onDropped)
             }
+        }
+    }
+
+    private func notifyDroppedRequestIfNeeded(info: [String: Any], onDropped: (() -> Void)?) {
+        guard let onDropped = onDropped else { return }
+        DispatchQueue.main.async {
+            onDropped()
         }
     }
 

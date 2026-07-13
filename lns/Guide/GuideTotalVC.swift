@@ -13,6 +13,7 @@ class GuideTotalVC: WHBaseViewVC {
     /// Current displayed page index
     private var currentIndex: Int = 0
     private var isSubmittingAICoachProfile = false
+    private var hasMarkedGuideCompletedLocally = false
     private let pageBackgroundView = UIView()
     private var solidPageBackgroundViews: [Int: UIView] = [:]
     private let flowingBackgroundPageIndexes: Set<Int> = [8, 12, 13]
@@ -210,6 +211,15 @@ class GuideTotalVC: WHBaseViewVC {
         return flowingBackgroundPageIndexes.contains(index)
     }
 
+    private func markGuideCompletedLocallyIfNeeded() {
+        guard hasMarkedGuideCompletedLocally == false else { return }
+        hasMarkedGuideCompletedLocally = true
+        UserInfoModel.shared.onboarding_flow_status = true
+        UserDefaults.saveLoginUserGroupMsgCache()
+        UserDefaults.standard.setValue("1", forKey: guide_total)
+        UserDefaults.standard.synchronize()
+    }
+
     private func resetSolidPageBackgroundAlphas(except excludedView: UIView? = nil) {
         for backgroundView in solidPageBackgroundViews.values where backgroundView !== excludedView {
             backgroundView.alpha = 1
@@ -308,7 +318,9 @@ extension GuideTotalVC{
             case 3: self.fourthVm.startEntranceAnimation()
             case 4: self.fifthVm.startEntranceAnimation()
             case 5: self.sixthVm.startEntranceAnimation()
-            case 6: self.sevenVm.startEntranceAnimation()
+            case 6:
+                self.sevenVm.startEntranceAnimation()
+                self.markGuideCompletedLocallyIfNeeded()
             case 7: self.proVm.startEntranceAnimation()
             case 8: self.proReadyStartVm.startEntranceAnimation()
             case 9: self.proGoalVm.startEntranceAnimation()

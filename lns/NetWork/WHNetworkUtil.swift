@@ -201,6 +201,11 @@ class WHNetworkUtil: SessionManager {
         let currentOwnerUid = UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines)
         let cachedOwnerUid = (UserDefaults.standard.value(forKey: userId) as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         let requestOwnerUid = currentOwnerUid.isEmpty ? cachedOwnerUid : currentOwnerUid
+        let droppedHandler: (() -> Void)? = urlString == URL_user_group_init ? {
+            DispatchQueue.main.async {
+                failure?(true)
+            }
+        } : nil
 
         NetworkMonitor.shared.addRequest ({
             if urlString == URL_get_current_nutrition {
@@ -483,7 +488,7 @@ class WHNetworkUtil: SessionManager {
                             retryMsgDict["error"] = response.error?.localizedDescription ?? ""
                             NetworkMonitor.shared.retryLater({
                                 self.POST(urlString: urlString, parameters: parameters, isNeedToast: isNeedToast, vc: vc, timeOut: timeOut, taskId: taskId, requestConfig: requestConfig, success: success, failure: failure)
-                            }, retryCount: 0, msgDict: retryMsgDict, ownerUid: requestOwnerUid)
+                            }, retryCount: 0, msgDict: retryMsgDict, ownerUid: requestOwnerUid, onDropped: droppedHandler)
                         } else {
                             DLLog(message: "[NetworkMonitor] 请求失败，但禁止重试，直接回调失败 - \(urlString)")
                             DispatchQueue.main.async {
@@ -494,7 +499,7 @@ class WHNetworkUtil: SessionManager {
                     }
                 }
             }
-        }, ownerUid: requestOwnerUid)
+        }, msgDict: msgDictError, ownerUid: requestOwnerUid, onDropped: droppedHandler)
     }
 
     public func md5(strs:String) ->String!{
