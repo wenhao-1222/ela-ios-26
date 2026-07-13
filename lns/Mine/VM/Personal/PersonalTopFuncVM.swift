@@ -11,9 +11,10 @@ class PersonalTopFuncVM: UIView {
     private let itemHeight = kFitWidth(50)
     private var shouldShowElaPro = false
     private var shouldShowDietPlan = false
+    private var shouldShowCommunity = true
     var frameChangeBlock:(()->())?
     var selfHeight: CGFloat {
-        itemHeight * CGFloat(6 + (shouldShowElaPro ? 1 : 0) + (shouldShowDietPlan ? 1 : 0))
+        itemHeight * CGFloat(5 + (shouldShowElaPro ? 1 : 0) + (shouldShowDietPlan ? 1 : 0) + (shouldShowCommunity ? 1 : 0))
     }
     
     private func itemY(at index: Int) -> CGFloat {
@@ -23,10 +24,12 @@ class PersonalTopFuncVM: UIView {
     override init(frame: CGRect) {
         let shouldShowElaPro = UserInfoModel.shared.vipModel.isMembershipStatusValid
         let shouldShowDietPlan = UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A
+        let shouldShowCommunity = !(UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A)
         let itemHeight = kFitWidth(50)
-        let selfHeight = itemHeight * CGFloat(6 + (shouldShowElaPro ? 1 : 0) + (shouldShowDietPlan ? 1 : 0))
+        let selfHeight = itemHeight * CGFloat(5 + (shouldShowElaPro ? 1 : 0) + (shouldShowDietPlan ? 1 : 0) + (shouldShowCommunity ? 1 : 0))
         self.shouldShowElaPro = shouldShowElaPro
         self.shouldShowDietPlan = shouldShowDietPlan
+        self.shouldShowCommunity = shouldShowCommunity
         super.init(frame: CGRect.init(x: kFitWidth(16), y: frame.origin.y, width: SCREEN_WIDHT-kFitWidth(32), height: selfHeight))
         self.backgroundColor = .COLOR_CARD_BG_WHITE
         self.isUserInteractionEnabled = true
@@ -110,9 +113,14 @@ extension PersonalTopFuncVM{
     func updateUI(notifyFrameChange: Bool = true) {
         shouldShowElaPro = UserInfoModel.shared.vipModel.isMembershipStatusValid
         shouldShowDietPlan = UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A
+        shouldShowCommunity = !(UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A)
         let planIndex = shouldShowElaPro ? 1 : 0
         let dietPlanIndex = planIndex + 1
         let bodyDataIndex = dietPlanIndex + (shouldShowDietPlan ? 1 : 0)
+        let fastingIndex = bodyDataIndex + 1
+        let communityIndex = fastingIndex + 1
+        let orderIndex = communityIndex + (shouldShowCommunity ? 1 : 0)
+        let honorIndex = orderIndex + 1
         
         let selfFrame = self.frame
         self.frame = CGRect.init(x: selfFrame.origin.x, y: selfFrame.origin.y, width: selfFrame.width, height: selfHeight)
@@ -123,10 +131,11 @@ extension PersonalTopFuncVM{
         dietPlanVm.isHidden = !shouldShowDietPlan
         dietPlanVm.frame.origin.y = itemY(at: dietPlanIndex)
         bodyDataVm.frame.origin.y = itemY(at: bodyDataIndex)
-        fastingVm.frame.origin.y = itemY(at: bodyDataIndex + 1)
-        communityVm.frame.origin.y = itemY(at: bodyDataIndex + 2)
-        orderVm.frame.origin.y = itemY(at: bodyDataIndex + 3)
-        honorVm.frame.origin.y = itemY(at: bodyDataIndex + 4)
+        fastingVm.frame.origin.y = itemY(at: fastingIndex)
+        communityVm.isHidden = !shouldShowCommunity
+        communityVm.frame.origin.y = itemY(at: communityIndex)
+        orderVm.frame.origin.y = itemY(at: orderIndex)
+        honorVm.frame.origin.y = itemY(at: honorIndex)
         
         if notifyFrameChange {
             frameChangeBlock?()

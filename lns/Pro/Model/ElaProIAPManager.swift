@@ -1024,6 +1024,9 @@ final class ElaProIAPManager: NSObject {
                 self.markAnonymousIdentityBoundToCurrentUser()
                 NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
                 completion(true)
+            } else if self.isBoundToOtherAccountResponse(responseObject, decodedData: dataObj) {
+                DLLog(message: "[ElaProIAP][IDENTITY] anonymous identity bind conflict, continue login flow")
+                completion(false)
             } else {
                 completion(false)
             }

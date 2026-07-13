@@ -332,6 +332,10 @@ class WHNetworkUtil: SessionManager {
                                 DispatchQueue.main.async {
                                     success(value)
                                 }
+                            }else if code == 409 && urlString == URL_iap_dientity_bind {
+                                DispatchQueue.main.async {
+                                    success(value)
+                                }
                             }else if (code == 400 && (urlString == URL_community_comment_list_push || urlString == URL_daily_nutrition_report || urlString == URL_weekly_nutrition_report)) {
                                 DispatchQueue.main.async {
 //                                    success(["code":"400"]as [String : AnyObject])

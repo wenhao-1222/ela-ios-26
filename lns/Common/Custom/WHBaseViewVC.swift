@@ -307,20 +307,96 @@ class WHBaseViewVC: ViewController {
     private func requestLoginSuccessDependenciesThenEnterApp(shouldSyncGuidanceProSubscription: Bool) {
         MCToast.mc_loading()
         if shouldSyncGuidanceProSubscription, ElaProIAPManager.shared.hasPendingPurchaseToBind() {
-            ElaProIAPManager.shared.bindPendingPurchaseBeforeEnterApp { [weak self] success in
-                guard let self = self else { return }
+            var didContinueToUserGroupMsg = false
+            let continueToUserGroupMsg: (String) -> Void = { [weak self] reason in
+                DispatchQueue.main.async {
+                    guard let self = self, didContinueToUserGroupMsg == false else { return }
+                    didContinueToUserGroupMsg = true
+                    DLLog(message: "[LoginSuccessDependencies] continue to URL_user_group_msg after subscription sync, reason=\(reason)")
+                    self.requestUserGroupMsgThenEnterApp(allowDefaultFallback: true)
+                }
+            }
+
+            ElaProIAPManager.shared.bindPendingPurchaseBeforeEnterApp { success in
                 guard success else {
-                    MCToast.mc_text("订阅同步失败，请稍后重试")
+//                    MCToast.mc_text("订阅同步失败，请稍后重试")
+                    DLLog(message: "[LoginSuccessDependencies] subscription sync failed, continue login flow")
+                    continueToUserGroupMsg("subscription_sync_failed")
                     return
                 }
-                self.requestUserGroupMsgThenEnterApp()
+                continueToUserGroupMsg("subscription_sync_success")
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
+                continueToUserGroupMsg("subscription_sync_no_callback_fallback")
             }
         } else {
-            requestUserGroupMsgThenEnterApp()
+            requestUserGroupMsgThenEnterApp(allowDefaultFallback: shouldSyncGuidanceProSubscription)
         }
     }
 
-    private func requestUserGroupMsgThenEnterApp() {
+    private func requestUserGroupMsgThenEnterApp(allowDefaultFallback: Bool = false) {
+        guard allowDefaultFallback else {
+            requestUserGroupMsgThenEnterAppWithOriginalBlockingBehavior()
+            return
+        }
+
+        var didEnterApp = false
+        let enterAppWithUserGroupMsg: (NSDictionary, String, Any?) -> Void = { [weak self] dataObj, reason, rawResponse in
+            DispatchQueue.main.async {
+                guard let self = self, didEnterApp == false else { return }
+                guard self.canEnterAppAfterLoginDependencies() else {
+                    DLLog(message: [
+                        "tag": "[UserGroupMsg][LoginSuccess] skip enter app",
+                        "reason": reason,
+                        "uid": UserInfoModel.shared.uId,
+                        "hasToken": UserInfoModel.shared.token.count > 0
+                    ])
+                    return
+                }
+                didEnterApp = true
+                DLLog(message: [
+                    "tag": "[UserGroupMsg][LoginSuccess] enter app",
+                    "reason": reason,
+                    "dataObj": dataObj,
+                    "rawResponse": rawResponse ?? ""
+                ])
+                self.applyLoginUserGroupMsgData(dataObj)
+                self.enterAppAfterLoginUserGroupMsg()
+            }
+        }
+
+        WHNetworkUtil.shareManager().POST(urlString: URL_user_group_msg, parameters: nil) { [weak self] responseObject in
+            guard let self = self else { return }
+            let code = responseObject["code"] as? Int ?? -1
+            guard code == 200 else {
+                enterAppWithUserGroupMsg(self.defaultLoginUserGroupMsgData(), "user_group_msg_code_not_200", responseObject)
+                return
+            }
+
+            let dataObj = self.parseUserGroupMsgData(responseObject)
+//            DLLog(message: [
+//                "tag": "[UserGroupMsg][LoginSuccess] URL_user_group_msg response",
+//                "dataObj": dataObj,
+//                "rawResponse": responseObject
+//            ])
+//            self.applyLoginUserGroupMsgData(dataObj)
+//            self.enterAppAfterLoginUserGroupMsg()
+            enterAppWithUserGroupMsg(dataObj, dataObj.count > 0 ? "user_group_msg_success" : "user_group_msg_empty_data", responseObject)
+        } failure: { [weak self] failed in
+            guard let self = self else { return }
+            DLLog(message: "[UserGroupMsg][LoginSuccess] URL_user_group_msg failed: \(failed)")
+//            MCToast.mc_text("网络异常，请稍后重试")
+            enterAppWithUserGroupMsg(self.defaultLoginUserGroupMsgData(), "user_group_msg_failure", failed)
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8) { [weak self] in
+            guard let self = self else { return }
+            enterAppWithUserGroupMsg(self.defaultLoginUserGroupMsgData(), "user_group_msg_no_callback_fallback", nil)
+        }
+    }
+
+    private func requestUserGroupMsgThenEnterAppWithOriginalBlockingBehavior() {
         WHNetworkUtil.shareManager().POST(urlString: URL_user_group_msg, parameters: nil) { [weak self] responseObject in
             guard let self = self else { return }
             let dataObj = self.parseUserGroupMsgData(responseObject)
@@ -366,6 +442,16 @@ class WHBaseViewVC: ViewController {
         }
         let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
         return WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+    }
+
+    private func defaultLoginUserGroupMsgData() -> NSDictionary {
+        return NSDictionary()
+    }
+
+    private func canEnterAppAfterLoginDependencies() -> Bool {
+        let uid = UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines)
+        let userToken = UserInfoModel.shared.token.trimmingCharacters(in: .whitespacesAndNewlines)
+        return uid.count >= 4 && userToken.count >= 4
     }
 
     private func applyLoginUserGroupMsgData(_ dataObj: NSDictionary) {
