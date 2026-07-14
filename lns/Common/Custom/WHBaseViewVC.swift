@@ -313,7 +313,7 @@ class WHBaseViewVC: ViewController {
                     guard let self = self, didContinueToUserGroupMsg == false else { return }
                     didContinueToUserGroupMsg = true
                     DLLog(message: "[LoginSuccessDependencies] continue to URL_user_group_msg after subscription sync, reason=\(reason)")
-                    self.requestUserGroupMsgThenEnterApp(allowDefaultFallback: true)
+                    self.requestUserGroupMsgThenEnterApp()
                 }
             }
 
@@ -331,16 +331,11 @@ class WHBaseViewVC: ViewController {
                 continueToUserGroupMsg("subscription_sync_no_callback_fallback")
             }
         } else {
-            requestUserGroupMsgThenEnterApp(allowDefaultFallback: shouldSyncGuidanceProSubscription)
+            requestUserGroupMsgThenEnterApp()
         }
     }
 
-    private func requestUserGroupMsgThenEnterApp(allowDefaultFallback: Bool = false) {
-        guard allowDefaultFallback else {
-            requestUserGroupMsgThenEnterAppWithOriginalBlockingBehavior()
-            return
-        }
-
+    private func requestUserGroupMsgThenEnterApp() {
         var didEnterApp = false
         let enterAppWithUserGroupMsg: (NSDictionary, String, Any?) -> Void = { [weak self] dataObj, reason, rawResponse in
             DispatchQueue.main.async {
@@ -393,23 +388,6 @@ class WHBaseViewVC: ViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 8) { [weak self] in
             guard let self = self else { return }
             enterAppWithUserGroupMsg(self.defaultLoginUserGroupMsgData(), "user_group_msg_no_callback_fallback", nil)
-        }
-    }
-
-    private func requestUserGroupMsgThenEnterAppWithOriginalBlockingBehavior() {
-        WHNetworkUtil.shareManager().POST(urlString: URL_user_group_msg, parameters: nil) { [weak self] responseObject in
-            guard let self = self else { return }
-            let dataObj = self.parseUserGroupMsgData(responseObject)
-            DLLog(message: [
-                "tag": "[UserGroupMsg][LoginSuccess] URL_user_group_msg response",
-                "dataObj": dataObj,
-                "rawResponse": responseObject
-            ])
-            self.applyLoginUserGroupMsgData(dataObj)
-            self.enterAppAfterLoginUserGroupMsg()
-        } failure: { failed in
-            DLLog(message: "[UserGroupMsg][LoginSuccess] URL_user_group_msg failed: \(failed)")
-            MCToast.mc_text("网络异常，请稍后重试")
         }
     }
 

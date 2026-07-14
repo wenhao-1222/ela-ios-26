@@ -49,8 +49,20 @@
 
 - (NSInteger)zf_selectedIndex {
     NSInteger index = [self zf_selectedIndex];
-    if (index > self.viewControllers.count) return 0;
+    if (index < 0 || index >= self.viewControllers.count) return 0;
     return index;
+}
+
+- (UIViewController *)zf_selectedViewController {
+    NSArray<UIViewController *> *viewControllers = self.viewControllers;
+    if (viewControllers.count == 0) return nil;
+
+    NSInteger selectedIndex = self.selectedIndex;
+    if (selectedIndex < 0 || selectedIndex >= viewControllers.count) {
+        selectedIndex = 0;
+    }
+
+    return viewControllers[selectedIndex];
 }
 
 /**
@@ -60,10 +72,11 @@
 
 // Whether automatic screen rotation is supported.
 - (BOOL)shouldAutorotate {
-    UIViewController *vc = self.viewControllers[self.selectedIndex];
+    UIViewController *vc = [self zf_selectedViewController];
+    if (!vc) return NO;
     if ([vc isKindOfClass:[UINavigationController class]]) {
         UINavigationController *nav = (UINavigationController *)vc;
-        return [nav.topViewController shouldAutorotate];
+        return nav.topViewController ? [nav.topViewController shouldAutorotate] : NO;
     } else {
         return [vc shouldAutorotate];
     }
@@ -71,10 +84,11 @@
 
 // Which screen directions are supported.
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    UIViewController *vc = self.viewControllers[self.selectedIndex];
+    UIViewController *vc = [self zf_selectedViewController];
+    if (!vc) return UIInterfaceOrientationMaskPortrait;
     if ([vc isKindOfClass:[UINavigationController class]]) {
         UINavigationController *nav = (UINavigationController *)vc;
-        return [nav.topViewController supportedInterfaceOrientations];
+        return nav.topViewController ? [nav.topViewController supportedInterfaceOrientations] : UIInterfaceOrientationMaskPortrait;
     } else {
         return [vc supportedInterfaceOrientations];
     }
@@ -82,10 +96,11 @@
 
 // The default screen direction (the current ViewController must be represented by a modal UIViewController (which is not valid with modal navigation) to call this method).
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
-    UIViewController *vc = self.viewControllers[self.selectedIndex];
+    UIViewController *vc = [self zf_selectedViewController];
+    if (!vc) return UIInterfaceOrientationPortrait;
     if ([vc isKindOfClass:[UINavigationController class]]) {
         UINavigationController *nav = (UINavigationController *)vc;
-        return [nav.topViewController preferredInterfaceOrientationForPresentation];
+        return nav.topViewController ? [nav.topViewController preferredInterfaceOrientationForPresentation] : UIInterfaceOrientationPortrait;
     } else {
         return [vc preferredInterfaceOrientationForPresentation];
     }
