@@ -9,6 +9,7 @@ class HabitVC: WHBaseViewVC {
     
     var dataObj = NSDictionary()
     var isSetPopGesture = false
+    private var isRankListPageShowing = false
 
 //    override var prefersSystemNavigationBarOnIOS26: Bool { true }
     
@@ -189,6 +190,10 @@ extension HabitVC:UIScrollViewDelegate{
 extension HabitVC{
     private func adjustPageState(for scrollView: UIScrollView) {
         let isShowingRank = scrollView.contentOffset.x > SCREEN_WIDHT * 0.5
+        if isShowingRank && !isRankListPageShowing {
+            EventLogUtils().sendHabitRankListPageView()
+        }
+        isRankListPageShowing = isShowingRank
 
         topTypeVm.changeType(isLeft: !isShowingRank)
         rankListVm.updateVisibility(isVisible: isShowingRank)

@@ -19,6 +19,8 @@ class DietPlanVC: WHBaseViewVC {
     private var shouldPreferNonePlanStateAfterProSuccess = false
     private var trackedDietPlanCreatePageIndexes: Set<String> = []
     private var pendingDietPlanResponse: (dataObj: NSDictionary, preservingListOffset: Bool)?
+    private var isDietPlanPageVisible = false
+    private var shouldReportDietPlanCreateStartPageView = false
     
     private lazy var buyListDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -40,13 +42,20 @@ class DietPlanVC: WHBaseViewVC {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        isDietPlanPageVisible = true
         restoreFullscreenInteractivePopGesture()
+        sendPendingDietPlanCreateStartPageViewIfNeeded()
 
 //        appDelegate.getKeyWindow().addSubview(elaExpiredAlertVm)
 //        self.elaExpiredAlertVm.showSelf()
         sendProVipMsgRequest()
         sendBuyListRequest()
         sendUserCenterRequest()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        isDietPlanPageVisible = false
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -300,6 +309,7 @@ extension DietPlanVC{
     }
 
     func showBlankStateWaitingForMealPlanProcessStatus() {
+        markDietPlanCreateStartPageViewEligible(false)
         removeStateViews()
     }
 
@@ -312,6 +322,7 @@ extension DietPlanVC{
     }
 
     func showNonePlanState() {
+        markDietPlanCreateStartPageViewEligible(false)
         if nonePlanVm.superview == nil {
             removeStateViews()
             view.addSubview(nonePlanVm)
@@ -334,6 +345,7 @@ extension DietPlanVC{
         shouldAnimatePlanListRefreshAfterCreateSuccess = false
         
         if shouldPreferNonePlanStateAfterProSuccess && (status == "1" || status == "2") {
+            markDietPlanCreateStartPageViewEligible(false)
             showNonePlanState()
             if VIPModel.shared.status == .valid {
                 shouldPreferNonePlanStateAfterProSuccess = false
@@ -347,7 +359,7 @@ extension DietPlanVC{
                 removeStateViews()
                 view.addSubview(emptyVm)
             }
-            sendDietPlanCreatePageViewIfNeeded(pageIndex: "1", pageTitle: "开始页")
+            markDietPlanCreateStartPageViewEligible(true)
             return
         }
         
@@ -357,13 +369,15 @@ extension DietPlanVC{
                     removeStateViews()
                     view.addSubview(emptyVm)
                 }
-                sendDietPlanCreatePageViewIfNeeded(pageIndex: "1", pageTitle: "开始页")
+                markDietPlanCreateStartPageViewEligible(true)
             }else{//以前购买过会员
+                markDietPlanCreateStartPageViewEligible(false)
                 showNonePlanState()
             }
             return
         }
         
+        markDietPlanCreateStartPageViewEligible(false)
         shouldPreferNonePlanStateAfterProSuccess = false
         if listVm.superview == nil {
             removeStateViews()
@@ -451,5 +465,18 @@ extension DietPlanVC{
         guard !trackedDietPlanCreatePageIndexes.contains(pageIndex) else { return }
         trackedDietPlanCreatePageIndexes.insert(pageIndex)
         EventLogUtils().sendDietPlanCreatePageView(pageIndex: pageIndex, pageTitle: pageTitle)
+    }
+
+    func markDietPlanCreateStartPageViewEligible(_ isEligible: Bool) {
+        shouldReportDietPlanCreateStartPageView = isEligible
+        guard isEligible else { return }
+        sendPendingDietPlanCreateStartPageViewIfNeeded()
+    }
+
+    func sendPendingDietPlanCreateStartPageViewIfNeeded() {
+        guard isDietPlanPageVisible else { return }
+        guard shouldReportDietPlanCreateStartPageView else { return }
+        shouldReportDietPlanCreateStartPageView = false
+        sendDietPlanCreatePageViewIfNeeded(pageIndex: "1", pageTitle: "开始页")
     }
 }

@@ -50,6 +50,8 @@ enum SCENARIO_TYPE {
     case main_view
     ///自律习惯养成
     case habit_view
+    ///自律习惯养成--排行榜
+    case habit_rank_list
     ///自律习惯养成--添加好友
     case habit_view_friends
     ///会员订阅付费墙
@@ -97,6 +99,20 @@ class EventLogUtils {
             sendGuidanceV2PageView(pageIndex: "98", pageTitle: "账号不存在", bizType: "")
         } else if registered == "yes" {
             sendGuidanceV2PageView(pageIndex: "99", pageTitle: "账号存在", bizType: "")
+        }
+    }
+
+    func sendHabitRankListPageView() {
+        if UserInfoModel.shared.uId.count <= 1 || UserInfoModel.shared.token.count <= 1 {
+            return
+        }
+        let param = ["eventName":"PAGE_VIEW",
+                     "params":["scenario":getScenario(type: .habit_rank_list),
+                               "text":"",
+                               "result":""]] as [String : Any]
+        DLLog(message: "sendHabitRankListPageView:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_event_log, parameters: param as [String : AnyObject]) { responseObject in
+
         }
     }
 
@@ -202,6 +218,8 @@ class EventLogUtils {
             return "概览"
         case .habit_view:
             return "自律习惯养成"
+        case .habit_rank_list:
+            return "自律习惯养成-排行榜"
         case .habit_view_friends:
             return "自律习惯养成-添加好友"
         case .ela_pro_view:
