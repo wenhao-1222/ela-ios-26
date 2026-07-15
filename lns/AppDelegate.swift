@@ -865,6 +865,7 @@ extension AppDelegate{
         let oldSnapshot = transitionSnapshot ?? makeRootTransitionSnapshot(from: keyWindow)
         oldSnapshot?.frame = keyWindow.bounds
         oldSnapshot?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        oldSnapshot?.isUserInteractionEnabled = false
 
         newRootVC.loadViewIfNeeded()
         newRootVC.view.frame = keyWindow.bounds

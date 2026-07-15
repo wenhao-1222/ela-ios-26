@@ -864,7 +864,10 @@ extension FirstLaunchVC{
 
         view.layoutIfNeeded()
         let transitionSnapshot = view.snapshotView(afterScreenUpdates: false)
-        appDelegate.switchRootViewController(to: navVc,from: self, transitionSnapshot: transitionSnapshot)
+        appDelegate.switchRootViewController(to: navVc,
+                                             from: self,
+                                             transitionSnapshot: transitionSnapshot,
+                                             preRenderNewRootBeforeTransition: true)
 
         // 保留原实现但不再执行：上面已经通过统一入口完成 root 切换。
         // 同一个 navVc 被连续设置两次 root，容易让 UIWindow 长时间停在 UITransitionView 中间态。

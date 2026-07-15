@@ -59,6 +59,13 @@ class GuidanceVC: WHBaseViewVC {
     private var hasConfiguredFullscreenPopGesture = false
     private let guidanceProTrialHistorySubscriptionGroupID = ElaProIAPConfig.subscriptionGroupID
     private let guidanceProTrialHistoryProductIDs = ["annual", "month", "annual_yeal_new"]
+    private let guidanceProTrialHistoryFallbackProductID = "annual_yeal_new"
+    private let guidanceProTrialHistoryResolveTimeout: TimeInterval = 6.0
+    ///模拟苹果服务器IAP查询超时  2026年07月15日14:09:
+    private let shouldSimulateGuidanceProSubscriptionHistoryTimeout = false
+    private var isResolvingGuidanceProSubscriptionHistory = false
+    private var guidanceProTrialHistoryResolveTimeoutWorkItem: DispatchWorkItem?
+    private var pendingGuidanceProSubscriptionHistoryCompletions: [(Bool) -> Void] = []
     private var isFullscreenPopGestureEnabledForInitialStep = false
     private weak var fullscreenPopGestureNavigationController: UINavigationController?
     private weak var fullscreenPopGestureFailureNavigationController: UINavigationController?
@@ -204,6 +211,7 @@ class GuidanceVC: WHBaseViewVC {
 
     deinit {
         deferredInitialStepWarmupWorkItem?.cancel()
+        guidanceProTrialHistoryResolveTimeoutWorkItem?.cancel()
         NotificationCenter.default.removeObserver(self, name: .dietPlanPaceInputDidChange, object: nil)
     }
     lazy var naviVm: DietPlanCreateNaviVM = {
@@ -1599,37 +1607,71 @@ extension GuidanceVC{
     }
 
     func resolveGuidanceProSubscriptionHistoryState(completion: ((Bool) -> Void)?) {
+        if hasResolvedGuidanceProSubscriptionHistory {
+            completion?(!cachedGuidanceProHasFreeTrialPermission)
+            return
+        }
+        if let completion {
+            pendingGuidanceProSubscriptionHistoryCompletions.append(completion)
+        }
+        guard !isResolvingGuidanceProSubscriptionHistory else {
+            DLLog(message: "[GuidancePro][Route] subscription history resolving, append completion")
+            return
+        }
+
         let trialHistorySubscriptionGroupID = guidanceProTrialHistorySubscriptionGroupID.trimmingCharacters(in: .whitespacesAndNewlines)
         let trialHistoryProductIDs = guidanceProTrialHistoryProductIDs
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
         DLLog(message: "[GuidancePro][Route] resolve subscription history, subscriptionGroupID=\(trialHistorySubscriptionGroupID), trialHistoryProductIDs=\(trialHistoryProductIDs.joined(separator: ","))")
         guard !trialHistorySubscriptionGroupID.isEmpty || !trialHistoryProductIDs.isEmpty else {
-            cachedGuidanceProHasFreeTrialPermission = true
-            hasResolvedGuidanceProSubscriptionHistory = true
-            DLLog(message: "[GuidancePro][Route] trialHistorySubscriptionGroupID and trialHistoryProductIDs empty, default hasFreeTrial=true")
-            completion?(false)
+            completeGuidanceProSubscriptionHistoryResolution(
+                hasSubscribedHistory: false,
+                logMessage: "[GuidancePro][Route] trialHistorySubscriptionGroupID and trialHistoryProductIDs empty, default hasFreeTrial=true"
+            )
+            return
+        }
+
+        isResolvingGuidanceProSubscriptionHistory = true
+        let timeoutLogMessage = "[GuidancePro][Route] subscription history timeout, fallback subscribed productID=\(guidanceProTrialHistoryFallbackProductID), route=GuidanceProPurchasedVC"
+        let workItem = DispatchWorkItem { [weak self] in
+            self?.completeGuidanceProSubscriptionHistoryResolution(hasSubscribedHistory: true, logMessage: timeoutLogMessage)
+        }
+        guidanceProTrialHistoryResolveTimeoutWorkItem?.cancel()
+        guidanceProTrialHistoryResolveTimeoutWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + guidanceProTrialHistoryResolveTimeout, execute: workItem)
+
+        if shouldSimulateGuidanceProSubscriptionHistoryTimeout {
+            DLLog(message: "[GuidancePro][Route] simulate subscription history timeout, wait for fallback productID=\(guidanceProTrialHistoryFallbackProductID)")
             return
         }
 
         ElaProIAPManager.shared.checkSubscriptionHistoryState(subscriptionGroupID: trialHistorySubscriptionGroupID,
                                                               productIDs: trialHistoryProductIDs) { [weak self] state in
             guard let self = self else { return }
-            self.hasResolvedGuidanceProSubscriptionHistory = true
             switch state {
             case .subscribed:
-                self.cachedGuidanceProHasFreeTrialPermission = false
-                DLLog(message: "[GuidancePro][Route] subscription history result=subscribed, route=GuidanceProPurchasedVC")
-                completion?(true)
+                self.completeGuidanceProSubscriptionHistoryResolution(hasSubscribedHistory: true, logMessage: "[GuidancePro][Route] subscription history result=subscribed, route=GuidanceProPurchasedVC")
             case .notSubscribed:
-                self.cachedGuidanceProHasFreeTrialPermission = true
-                DLLog(message: "[GuidancePro][Route] subscription history result=notSubscribed, route=GuidanceProVC")
-                completion?(false)
+                self.completeGuidanceProSubscriptionHistoryResolution(hasSubscribedHistory: false, logMessage: "[GuidancePro][Route] subscription history result=notSubscribed, route=GuidanceProVC")
             case .unknown:
-                self.cachedGuidanceProHasFreeTrialPermission = true
-                DLLog(message: "[GuidancePro][Route] subscription history result=unknown, route=GuidanceProVC")
-                completion?(false)
+                self.completeGuidanceProSubscriptionHistoryResolution(hasSubscribedHistory: false, logMessage: "[GuidancePro][Route] subscription history result=unknown, route=GuidanceProVC")
             }
+        }
+    }
+
+    private func completeGuidanceProSubscriptionHistoryResolution(hasSubscribedHistory: Bool, logMessage: String) {
+        DispatchQueue.main.async {
+            guard !self.hasResolvedGuidanceProSubscriptionHistory else { return }
+            self.guidanceProTrialHistoryResolveTimeoutWorkItem?.cancel()
+            self.guidanceProTrialHistoryResolveTimeoutWorkItem = nil
+            self.isResolvingGuidanceProSubscriptionHistory = false
+            self.hasResolvedGuidanceProSubscriptionHistory = true
+            self.cachedGuidanceProHasFreeTrialPermission = !hasSubscribedHistory
+            let completions = self.pendingGuidanceProSubscriptionHistoryCompletions
+            self.pendingGuidanceProSubscriptionHistoryCompletions.removeAll()
+            DLLog(message: logMessage)
+            completions.forEach { $0(hasSubscribedHistory) }
         }
     }
 
