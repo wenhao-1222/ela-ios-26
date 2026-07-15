@@ -76,11 +76,16 @@ class PlanListVC: WHBaseViewVC {
 //                self.navigationController?.pushViewController(vc, animated: true)
 //            }
             
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
-            self.navigationController?.tabBarController?.selectedIndex = 2
-            DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
-                self.navigationController?.popToRootViewController(animated: true)
-            })
+            if UserInfoModel.shared.abTestModel.isTrial && UserInfoModel.shared.abTestModel.diet_important != .A{
+                let vc = DietPlanSecondVC()
+                self.navigationController?.pushViewController(vc, animated: true)
+            }else{
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dietPlan"), object: nil)
+                self.navigationController?.tabBarController?.selectedIndex = 2
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
+                    self.navigationController?.popToRootViewController(animated: true)
+                })
+            }
         }
         vm.createPlanBlock = {()in
             let vc = PlanCreateVC()
