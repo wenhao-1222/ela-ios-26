@@ -1133,6 +1133,7 @@
 		ECADF2B22BB44164004B2C4B /* NeedBuildPlanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECADF2B12BB44164004B2C4B /* NeedBuildPlanVC.swift */; };
 		ECAE25E22BF1DB3E007D4B57 /* FoodsMsgDetailsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE25E12BF1DB3E007D4B57 /* FoodsMsgDetailsVC.swift */; };
 		ECAE25E42BF1DFD0007D4B57 /* FoodsMsgDetailsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE25E32BF1DFD0007D4B57 /* FoodsMsgDetailsVM.swift */; };
+		ECAE25E82F66A101007D4B57 /* FoodsNutritionDetailsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE25E72F66A101007D4B57 /* FoodsNutritionDetailsVM.swift */; };
 		ECAE25E62BF20F37007D4B57 /* NSDictionary+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE25E52BF20F37007D4B57 /* NSDictionary+Exs.swift */; };
 		ECAE372D2F5E69540051F234 /* ElaExpandedTapButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE372C2F5E694F0051F234 /* ElaExpandedTapButton.swift */; };
 		ECB0F0092F62563F00056D6A /* PlanMainPlanListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F0082F62563700056D6A /* PlanMainPlanListVM.swift */; };
@@ -2648,6 +2649,7 @@
 		ECADF2B12BB44164004B2C4B /* NeedBuildPlanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeedBuildPlanVC.swift; sourceTree = "<group>"; };
 		ECAE25E12BF1DB3E007D4B57 /* FoodsMsgDetailsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsMsgDetailsVC.swift; sourceTree = "<group>"; };
 		ECAE25E32BF1DFD0007D4B57 /* FoodsMsgDetailsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsMsgDetailsVM.swift; sourceTree = "<group>"; };
+		ECAE25E72F66A101007D4B57 /* FoodsNutritionDetailsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsNutritionDetailsVM.swift; sourceTree = "<group>"; };
 		ECAE25E52BF20F37007D4B57 /* NSDictionary+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDictionary+Exs.swift"; sourceTree = "<group>"; };
 		ECAE372C2F5E694F0051F234 /* ElaExpandedTapButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaExpandedTapButton.swift; sourceTree = "<group>"; };
 		ECB0F0082F62563700056D6A /* PlanMainPlanListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMainPlanListVM.swift; sourceTree = "<group>"; };
@@ -6016,6 +6018,7 @@
 				EC78754E2BDB46E20050D7E8 /* NaturalCaloriSourceVM.swift */,
 				EC78754C2BDB3D5A0050D7E8 /* NaturalPieChartLegendITemVM.swift */,
 				ECAE25E32BF1DFD0007D4B57 /* FoodsMsgDetailsVM.swift */,
+				ECAE25E72F66A101007D4B57 /* FoodsNutritionDetailsVM.swift */,
 				ECB7C29F2C37A5BB000E83C2 /* FoodsAddIconVM.swift */,
 				A75F431C2CA7976C0062E7B2 /* FoodsCreateFastRemarkVM.swift */,
 			);
@@ -7067,6 +7070,7 @@
 				ECD0FEF92BABD25B001232C9 /* YYTextSelectionView.m in Sources */,
 				ECB848432BF3448900B554B9 /* MaterialNickNameAlertVM.swift in Sources */,
 				ECAE25E42BF1DFD0007D4B57 /* FoodsMsgDetailsVM.swift in Sources */,
+				ECAE25E82F66A101007D4B57 /* FoodsNutritionDetailsVM.swift in Sources */,
 				ECA0594E2F4D985E00E257E8 /* DietPlanCreateNaviSegmentVM.swift in Sources */,
 				A77F96122D02F76A0084D4FB /* PublishWidgetCell.swift in Sources */,
 				A7C72B552E1223C7001EA74D /* FriendRankingVC.swift in Sources */,

@@ -63,6 +63,18 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
         
         return lab
     }()
+    lazy var scrollView: UIScrollView = {
+        let scro = UIScrollView()
+        scro.backgroundColor = .clear
+        scro.showsVerticalScrollIndicator = false
+        scro.keyboardDismissMode = .onDrag
+        return scro
+    }()
+    lazy var contentView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = .clear
+        return vi
+    }()
     lazy var foodsVerifyImgView: UIImageView = {
         let img = UIImageView()
         img.setImgLocal(imgName: "question_foods_verify_icon")
@@ -91,6 +103,14 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
     lazy var caloriDetailVm: FoodsDetailCaloriVM = {
         let vm = FoodsDetailCaloriVM.init(frame: CGRect.init(x: 0, y: self.topVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
         vm.calculatePercent(dict: self.foodsDetailDict)
+        return vm
+    }()
+    lazy var nutritionDetailVm: FoodsNutritionDetailsVM = {
+        let vm = FoodsNutritionDetailsVM.init(frame: CGRect.init(x: 0, y: self.caloriDetailVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
+        vm.foodsDetailDict = self.foodsDetailDict
+        vm.heightChangeBlock = { [weak self] in
+            self?.refreshScrollContentSize()
+        }
         return vm
     }()
     lazy var confirmButton: GJVerButtonNoneFeedBack = {
@@ -275,10 +295,13 @@ extension FoodsMsgDetailsVC{
         self.navigationView.addSubview(deleteButton)
         
         view.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "FAFAFA")
-        view.addSubview(foodsNameLabel)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(foodsNameLabel)
 //        view.addSubview(foodsVerifyImgView)
-        view.addSubview(topVm)
-        view.addSubview(caloriDetailVm)
+        contentView.addSubview(topVm)
+        contentView.addSubview(caloriDetailVm)
+        contentView.addSubview(nutritionDetailVm)
         view.addSubview(confirmButton)
         
         view.addSubview(specAlertVm)
@@ -298,6 +321,15 @@ extension FoodsMsgDetailsVC{
             make.right.equalTo(kFitWidth(-10))
             make.width.top.height.equalTo(self.naviTitleLabel)
         }
+        scrollView.snp.makeConstraints { make in
+            make.left.right.top.equalToSuperview()
+            make.bottom.equalTo(confirmButton.snp.top).offset(kFitWidth(-12))
+        }
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+            make.height.equalTo(nutritionDetailVm.frame.maxY+kFitWidth(24))
+        }
         foodsNameLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))
             make.top.equalTo(getNavigationBarHeight()+kFitWidth(24))
@@ -314,6 +346,14 @@ extension FoodsMsgDetailsVC{
             make.width.equalTo(SCREEN_WIDHT-kFitWidth(32))
             make.height.equalTo(kFitWidth(48))
             make.bottom.equalTo(kFitWidth(-12)-WHUtils().getBottomSafeAreaHeight())
+        }
+        refreshScrollContentSize()
+    }
+    
+    func refreshScrollContentSize() {
+        nutritionDetailVm.frame.origin.y = caloriDetailVm.frame.maxY+kFitWidth(12)
+        contentView.snp.updateConstraints { make in
+            make.height.equalTo(nutritionDetailVm.frame.maxY+kFitWidth(24))
         }
     }
 }
@@ -339,6 +379,13 @@ extension FoodsMsgDetailsVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "\(dataDict)")
+            let foodsDict = NSMutableDictionary(dictionary: self.foodsDetailDict)
+            if let detailDict = dataDict as? [AnyHashable: Any] {
+                foodsDict.addEntries(from: detailDict)
+            }
+            self.foodsDetailDict = foodsDict
+            self.nutritionDetailVm.foodsDetailDict = foodsDict
+            self.refreshScrollContentSize()
             if self.foodsDetailDict.stringValueForKey(key: "uid") != UserInfoModel.shared.uId{
                 self.deleteButton.isHidden = true
             }else{
