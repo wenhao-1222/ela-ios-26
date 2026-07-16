@@ -151,8 +151,8 @@ extension FoodsCreateNameVM:UITextFieldDelegate{
             let cursorPosition = textField.offset(from: textField.endOfDocument, to: selectedRange.end)
 //            let cursorPostion = textField.offset(from: textField.endOfDocument,
 //                                                 to: textField.selectedTextRange?.end)
-            //判断非中文非字母非数字的正则表达式
-            let pattern = "[^A-Za-z0-9\\u0020\\u4E00-\\u9FA5]"//判断非中文非字母非数字的正则表达式
+            //判断非食物名称可用字符的正则表达式
+            let pattern = "[^A-Za-z0-9\\u0020\\u4E00-\\u9FA5（）()、，。~.-]"
             guard let text = textField.text else { return }
             var str = text.pregReplace(pattern: pattern, with: "")
             

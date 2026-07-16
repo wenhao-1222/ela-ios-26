@@ -14,6 +14,8 @@ class FoodsCreateItemVM: UIView {
     var numberChangeBlock:((String)->())?
     
     var maxLength = 2
+    var maximumFractionDigits = 1
+    var maximumValue: Float? = 999.9
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
@@ -28,7 +30,7 @@ class FoodsCreateItemVM: UIView {
     lazy var titleLabel : UILabel = {
         let lab = UILabel()
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 16, weight: .medium)
+        lab.font = .systemFont(ofSize: 14, weight: .medium)
         
         return lab
     }()
@@ -37,7 +39,7 @@ class FoodsCreateItemVM: UIView {
         text.keyboardType = .decimalPad
         text.placeholder = "请输入数值"
         text.textColor = .COLOR_TEXT_TITLE_0f1214
-        text.font = .systemFont(ofSize: 16, weight: .medium)
+        text.font = .systemFont(ofSize: 14, weight: .regular)
         text.textAlignment = .right
         text.delegate = self
         text.returnKeyType = .done
@@ -48,7 +50,7 @@ class FoodsCreateItemVM: UIView {
     lazy var unitLab : UILabel = {
         let lab = UILabel()
         lab.text = "g"
-        lab.font = .systemFont(ofSize: 16, weight: .medium)
+        lab.font = .systemFont(ofSize: 16, weight: .regular)
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         
         return lab
@@ -61,6 +63,16 @@ class FoodsCreateItemVM: UIView {
 }
 
 extension FoodsCreateItemVM{
+    @objc func textFieldTapAction() {
+        textField.becomeFirstResponder()
+    }
+
+    func configureNutritionInputAccessory(title: String,
+                                          onCancel: (() -> Void)? = nil,
+                                          onConfirm: (() -> Void)? = nil) {
+        textField.setNutritionInputAccessory(title: title, onCancel: onCancel, onConfirm: onConfirm)
+    }
+
     func initUI() {
         addSubview(titleLabel)
         addSubview(textField)
@@ -71,6 +83,10 @@ extension FoodsCreateItemVM{
         textField.autocorrectionType = .no
         textField.spellCheckingType = .no
         textField.isSecureTextEntry = false
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(textFieldTapAction))
+        tap.cancelsTouchesInView = false
+        addGestureRecognizer(tap)
         
         setConstrait()
     }
@@ -80,11 +96,11 @@ extension FoodsCreateItemVM{
             make.centerY.lessThanOrEqualToSuperview()
         }
         unitLab.snp.makeConstraints { make in
-            make.right.equalTo(kFitWidth(-16))
+            make.right.equalTo(kFitWidth(-15))
             make.centerY.lessThanOrEqualToSuperview()
         }
         textField.snp.makeConstraints { make in
-            make.right.equalTo(kFitWidth(-34))
+            make.right.equalTo(kFitWidth(-47))
             make.top.height.equalToSuperview()
             make.left.equalTo(kFitWidth(100))
         }
@@ -124,7 +140,7 @@ extension FoodsCreateItemVM:UITextFieldDelegate{
         }
         if let separatorIndex = prospectiveText.firstIndex(where: { $0 == "." || $0 == "," }) {
             let decimalPart = prospectiveText[prospectiveText.index(after: separatorIndex)...]
-            if decimalPart.count > 1 {
+            if decimalPart.count > maximumFractionDigits {
                 return false
             }
         }
@@ -133,7 +149,7 @@ extension FoodsCreateItemVM:UITextFieldDelegate{
             return false
         }
         let normalizedText = prospectiveText.replacingOccurrences(of: ",", with: ".")
-        if let value = Float(normalizedText), value > 999.9 {
+        if let maximumValue = maximumValue, let value = Float(normalizedText), value > maximumValue {
             return false
         }
         numberChangeBlock?(normalizedText)

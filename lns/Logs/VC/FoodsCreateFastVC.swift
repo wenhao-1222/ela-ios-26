@@ -19,6 +19,8 @@ class FoodsCreateFastVC: WHBaseViewVC {
     var carNumber = Float(0)
     var proteinNumber = Float(0)
     var fatNumber = Float(0)
+    private var nutritionInputValues: [String: String] = [:]
+    private let nutritionCatalogItems = FoodsNutritionCatalog.shared.createInputItems
     
     var fastAddBlock:((NSDictionary)->())?
     
@@ -27,11 +29,14 @@ class FoodsCreateFastVC: WHBaseViewVC {
         IQKeyboardManager.shared.enable = false
         IQKeyboardManager.shared.enableAutoToolbar = false
         NotificationCenter.default.addObserver(self, selector: #selector(dealsWidgetTapAction), name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshNutritionProState), name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
+        refreshNutritionProState()
 //        self.remarkVm.textField.startCountdown()
     }
     override func viewDidDisappear(_ animated: Bool) {
         IQKeyboardManager.shared.enable = true
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name(rawValue: "widgetAddFoods"), object: nil)
+        NotificationCenter.default.removeObserver(self, name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
     }
     
     override func viewDidLoad() {
@@ -49,28 +54,33 @@ class FoodsCreateFastVC: WHBaseViewVC {
         
         return vi
     }()
+    lazy var contentScrollView: UIScrollView = {
+        let scroll = UIScrollView(frame: CGRect(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight()))
+        scroll.backgroundColor = .COLOR_CARD_BG_WHITE
+        scroll.alwaysBounceVertical = true
+        scroll.showsVerticalScrollIndicator = false
+        scroll.keyboardDismissMode = .interactive
+        return scroll
+    }()
     lazy var caloriVm : FoodsCreateCaloriVM = {
-        let vm = FoodsCreateCaloriVM.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight()+kFitWidth(24), width: 0, height: 0))
+        let vm = FoodsCreateCaloriVM.init(frame: CGRect.init(x: 0, y: kFitWidth(24), width: 0, height: 0))
         vm.numberLabel.isEnabled = true
         vm.numberTapView.isUserInteractionEnabled = true
         vm.numberChangeBlock = {(number)in
-            if number.count > 0 {
-                self.saveButton.isEnabled = true
-            }else{
-                self.saveButton.isEnabled = false
-                if self.carNumber == 0 && self.proteinNumber == 0 && self.fatNumber == 0{
+            if number.count == 0 {
+                if self.carNumber == 0 && self.proteinNumber == 0 && self.fatNumber == 0 && self.hasNutritionInputValue() == false {
                     self.caloriVm.numberLabel.text = ""
-                    return
                 }
-                self.saveButton.isEnabled = true
             }
+            self.refreshSaveButtonState(caloriesText: number)
         }
         return vm
     }()
     lazy var carboVm : FoodsCreateItemVM = {
-        let vm = FoodsCreateItemVM.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight()+kFitWidth(88), width: 0, height: 0))
+        let vm = FoodsCreateItemVM.init(frame: CGRect.init(x: 0, y: kFitWidth(88), width: 0, height: 0))
         vm.titleLabel.text = "碳水"
         vm.maxLength = 4
+        vm.configureNutritionInputAccessory(title: "碳水")
         vm.numberChangeBlock = {(number)in
             self.carNumber = Float(number) ?? 0.0
             self.calculateNumber()
@@ -81,6 +91,7 @@ class FoodsCreateFastVC: WHBaseViewVC {
         let vm = FoodsCreateItemVM.init(frame: CGRect.init(x: 0, y: self.carboVm.frame.maxY, width: 0, height: 0))
         vm.titleLabel.text = "蛋白质"
         vm.maxLength = 4
+        vm.configureNutritionInputAccessory(title: "蛋白质")
         vm.numberChangeBlock = {(number)in
             self.proteinNumber = Float(number) ?? 0.0
             self.calculateNumber()
@@ -91,6 +102,7 @@ class FoodsCreateFastVC: WHBaseViewVC {
         let vm = FoodsCreateItemVM.init(frame: CGRect.init(x: 0, y: self.proteinVm.frame.maxY, width: 0, height: 0))
         vm.titleLabel.text = "脂肪"
         vm.maxLength = 4
+        vm.configureNutritionInputAccessory(title: "脂肪")
         vm.numberChangeBlock = {(number)in
             self.fatNumber = Float(number) ?? 0.0
             self.calculateNumber()
@@ -101,6 +113,49 @@ class FoodsCreateFastVC: WHBaseViewVC {
         let vm = FoodsCreateFastRemarkVM.init(frame: CGRect.init(x: 0, y: fatVm.frame.maxY+kFitWidth(4), width: 0, height: 0))
         
         return vm
+    }()
+    lazy var nutritionHeaderVm: UIView = {
+        let vi = UIView(frame: CGRect(x: 0, y: remarkVm.frame.maxY, width: SCREEN_WIDHT, height: kFitWidth(56)))
+        vi.backgroundColor = .COLOR_CARD_BG_WHITE
+        return vi
+    }()
+    lazy var nutritionHeaderLabel: UILabel = {
+        let lab = UILabel()
+        lab.text = "微量元素"
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
+        lab.font = .systemFont(ofSize: 16, weight: .regular)
+        return lab
+    }()
+    lazy var nutritionInputVms: [FoodsCreateItemVM] = {
+        return nutritionCatalogItems.map { item in
+            let vm = FoodsCreateItemVM(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+            vm.titleLabel.text = item.title
+            vm.unitLab.text = item.unit
+            vm.textField.placeholder = "选填"
+            vm.configureNutritionInputAccessory(title: item.title)
+            vm.maxLength = 6
+            vm.maximumValue = item.maximumInputValue.map { Float($0) }
+            vm.maximumFractionDigits = item.maximumInputFractionDigits
+            vm.numberChangeBlock = { [weak self] number in
+                guard let self = self else { return }
+                let normalizedNumber = number.replacingOccurrences(of: ",", with: ".")
+                if normalizedNumber.count == 0 {
+                    self.nutritionInputValues.removeValue(forKey: item.key)
+                } else {
+                    self.nutritionInputValues[item.key] = normalizedNumber
+                }
+                self.refreshSaveButtonState()
+            }
+            return vm
+        }
+    }()
+    lazy var noProCoverImageView: UIImageView = {
+        let img = UIImageView()
+        img.contentMode = .scaleAspectFill
+        img.clipsToBounds = true
+        img.isUserInteractionEnabled = true
+        img.setImgLocal(imgName: "ele_fast_foods_no_pro")
+        return img
     }()
     lazy var saveButton: GJVerButton = {
         let btn = GJVerButton()
@@ -132,10 +187,11 @@ extension FoodsCreateFastVC{
             let caloriesFLoat = (calories.floatValue)/4.18585
             calories = "\(WHUtils.convertStringToString("\(caloriesFLoat.rounded())") ?? "0")"
         }
+        let hasMoreNutrition = isNutritionUnlocked() && hasNutritionInputValue()
         if calories != "" && calories != "0"{
             
         }else{
-            if self.carNumber == 0 && self.proteinNumber == 0 && self.fatNumber == 0{
+            if self.carNumber == 0 && self.proteinNumber == 0 && self.fatNumber == 0 && hasMoreNutrition == false{
                 MCToast.mc_text("请填写至少一种营养元素含量")
                 return
             }
@@ -157,6 +213,19 @@ extension FoodsCreateFastVC{
             MCToast.mc_text("食物脂肪数据错误！")
             return
         }
+        if isNutritionUnlocked() {
+            for (index, item) in nutritionCatalogItems.enumerated() {
+                guard let inputValue = nutritionInputValue(at: index, item: item), inputValue.count > 0 else { continue }
+                guard let doubleValue = Double(inputValue), doubleValue >= item.minimumInputValue else {
+                    self.presentAlertVcNoAction(title: "请输入正确的\(item.title)数量", viewController: self)
+                    return
+                }
+                if let maximumInputValue = item.maximumInputValue, doubleValue > maximumInputValue {
+                    self.presentAlertVcNoAction(title: "\(item.title)不能超过\(WHUtils.convertStringToString("\(maximumInputValue)") ?? "\(maximumInputValue)")\(item.unit)", viewController: self)
+                    return
+                }
+            }
+        }
         
         MobClick.event("createFoodsSoon")
         let ctype = self.msgDict.stringValueForKey(key: "ctype").count > 0 ? self.msgDict.stringValueForKey(key: "ctype") : "2"
@@ -172,6 +241,9 @@ extension FoodsCreateFastVC{
                          "ctype":ctype,
                          "remark":"\((self.remarkVm.textField.text ?? "").disable_emoji(text: (self.remarkVm.textField.text ?? "")as NSString))",
                          "fname":"快速添加"]
+        if isNutritionUnlocked() {
+            appendNutritionInputValues(to: &foodsDict)
+        }
         
         if isFromPlan{
             if let viewControllers = navigationController?.viewControllers, viewControllers.count > 2 {
@@ -233,21 +305,23 @@ extension FoodsCreateFastVC{
         proteinVm.textField.text = dict.stringValueForKey(key: "protein")
         fatVm.textField.text = dict.stringValueForKey(key: "fat")
         remarkVm.textField.text = dict.stringValueForKey(key: "remark")
+        fillNutritionInputData(from: dict)
         
         if msgDict.stringValueForKey(key: "ctype") == "3"{//以“快速添加”的方式添加到日志/计划/食谱，但展示时不显示“快速添加”，百而直接显示放到remark的食物名称
             remarkVm.isHidden = true
             self.naviTitleLabel.text = msgDict.stringValueForKey(key: "remark")
+            layoutNutritionViews()
         }
         saveButton.setTitle("保存", for: .normal)
         saveButton.isEnabled = true
     }
     func calculateNumber() {
         saveButton.isEnabled = false
-        if self.carNumber == 0 && self.proteinNumber == 0 && self.fatNumber == 0{
+        if self.carNumber == 0 && self.proteinNumber == 0 && self.fatNumber == 0 && self.hasNutritionInputValue() == false{
             caloriVm.numberLabel.text = ""
+            refreshSaveButtonState()
             return
         }
-        saveButton.isEnabled = true
         
         let number = (proteinNumber + carNumber) * 4 + fatNumber * 9
         
@@ -257,8 +331,93 @@ extension FoodsCreateFastVC{
             let numberKj = number * 4.18585
             caloriVm.numberLabel.text = "\(WHUtils.convertStringToString("\(numberKj.rounded())") ?? "")"
         }
+        refreshSaveButtonState()
         
 //        caloriVm.numberLabel.text = "\(String(format: "%.0f", number.rounded()))"
+    }
+
+    func isNutritionUnlocked() -> Bool {
+        UserInfoModel.shared.vipModel.isValidVip
+    }
+
+    @objc func refreshNutritionProState() {
+        let unlocked = isNutritionUnlocked()
+        noProCoverImageView.isHidden = unlocked
+        nutritionInputVms.forEach { vm in
+            vm.textField.isEnabled = unlocked
+            vm.isUserInteractionEnabled = unlocked
+        }
+        if unlocked == false {
+            nutritionInputVms.forEach { $0.textField.resignFirstResponder() }
+        }
+        refreshSaveButtonState()
+    }
+
+    func refreshSaveButtonState(caloriesText: String? = nil) {
+        let calories = caloriesText ?? caloriVm.numberLabel.text ?? ""
+        let hasBaseNutrition = carNumber > 0 || proteinNumber > 0 || fatNumber > 0
+        let hasCalories = calories.floatValue > 0
+        let hasMoreNutrition = isNutritionUnlocked() && hasNutritionInputValue()
+        saveButton.isEnabled = hasBaseNutrition || hasCalories || hasMoreNutrition
+    }
+
+    func hasNutritionInputValue() -> Bool {
+        nutritionInputValues.values.contains { $0.floatValue > 0 }
+    }
+
+    func layoutNutritionViews() {
+        let headerY = remarkVm.isHidden ? fatVm.frame.maxY + kFitWidth(4) : remarkVm.frame.maxY
+        nutritionHeaderVm.frame = CGRect(x: 0, y: headerY, width: SCREEN_WIDHT, height: kFitWidth(56))
+
+        var nextY = nutritionHeaderVm.frame.maxY
+        for vm in nutritionInputVms {
+            vm.frame = CGRect(x: 0, y: nextY, width: SCREEN_WIDHT, height: vm.selfHeight)
+            nextY = vm.frame.maxY
+        }
+
+        let coverHeight = SCREEN_WIDHT * 1260.0 / 1500.0
+        noProCoverImageView.frame = CGRect(x: 0, y: nutritionHeaderVm.frame.maxY, width: SCREEN_WIDHT, height: coverHeight)
+
+        let bottomGap = kFitWidth(132) + getBottomSafeAreaHeight()
+        contentScrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: nextY + bottomGap)
+        contentScrollView.bringSubviewToFront(noProCoverImageView)
+    }
+
+    func appendNutritionInputValues(to foodsDict: inout [String: String]) {
+        for (index, item) in nutritionCatalogItems.enumerated() {
+            guard let inputValue = nutritionInputValue(at: index, item: item), inputValue.count > 0 else { continue }
+            let formattedValue = WHUtils.convertStringToString(inputValue, digitNumer: item.maximumInputFractionDigits) ?? inputValue
+            foodsDict.updateValue(formattedValue.replacingOccurrences(of: ",", with: "."), forKey: item.key)
+        }
+    }
+
+    func nutritionInputValue(at index: Int, item: FoodsNutritionCatalog.Item) -> String? {
+        let textFieldValue: String
+        if index < nutritionInputVms.count {
+            textFieldValue = nutritionInputVms[index].textField.text ?? ""
+        } else {
+            textFieldValue = nutritionInputValues[item.key] ?? ""
+        }
+        let normalizedValue = textFieldValue
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: ",", with: ".")
+        if normalizedValue.count == 0 {
+            nutritionInputValues.removeValue(forKey: item.key)
+            return nil
+        }
+        nutritionInputValues[item.key] = normalizedValue
+        return normalizedValue
+    }
+
+    func fillNutritionInputData(from dict: NSDictionary) {
+        for (index, item) in nutritionCatalogItems.enumerated() {
+            guard index < nutritionInputVms.count else { continue }
+            let rawValue = dict.stringValueForKey(key: item.key)
+            guard rawValue.count > 0, rawValue != "0" else { continue }
+            let displayValue = WHUtils.convertStringToString(rawValue, digitNumer: item.maximumInputFractionDigits) ?? rawValue
+            nutritionInputVms[index].textField.text = displayValue
+            nutritionInputValues[item.key] = displayValue.replacingOccurrences(of: ",", with: ".")
+        }
     }
 }
 
@@ -267,17 +426,29 @@ extension FoodsCreateFastVC{
         initNavi(titleStr: "快速添加")
         view.insertSubview(bottomView, belowSubview: self.navigationView)
         
-        bottomView.addSubview(caloriVm)
-        bottomView.addSubview(proteinVm)
-        bottomView.addSubview(fatVm)
-        bottomView.addSubview(carboVm)
-        bottomView.addSubview(remarkVm)
+        bottomView.addSubview(contentScrollView)
+        contentScrollView.addSubview(caloriVm)
+        contentScrollView.addSubview(proteinVm)
+        contentScrollView.addSubview(fatVm)
+        contentScrollView.addSubview(carboVm)
+        contentScrollView.addSubview(remarkVm)
+        contentScrollView.addSubview(nutritionHeaderVm)
+        nutritionHeaderVm.addSubview(nutritionHeaderLabel)
+        nutritionInputVms.forEach { contentScrollView.addSubview($0) }
+        contentScrollView.addSubview(noProCoverImageView)
         
         bottomView.addSubview(saveButton)
+        nutritionHeaderLabel.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(16))
+            make.centerY.equalToSuperview()
+        }
+        layoutNutritionViews()
+        refreshNutritionProState()
         
         if msgDict.stringValueForKey(key: "ctype") == "3"{//以“快速添加”的方式添加到日志/计划/食谱，但展示时不显示“快速添加”，百而直接显示放到remark的食物名称
             remarkVm.isHidden = true
             self.naviTitleLabel.text = msgDict.stringValueForKey(key: "remark")
+            layoutNutritionViews()
         }
     }
 }
@@ -285,19 +456,44 @@ extension FoodsCreateFastVC{
 
 extension FoodsCreateFastVC{
     @objc func keyboardWillShow(notification: NSNotification) {
-        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            let carboVmBottomGap = (SCREEN_HEIGHT-self.remarkVm.frame.maxY)
-            if carboVmBottomGap < keyboardSize.size.height{
-                UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-                    self.bottomView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*0.5-(keyboardSize.size.height-carboVmBottomGap))
-                }
-            }
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+            return
+        }
+        let keyboardObscuredHeight = keyboardSize.size.height + activeInputAccessoryHeight()
+        contentScrollView.contentInset.bottom = keyboardObscuredHeight + kFitWidth(16)
+        contentScrollView.scrollIndicatorInsets = contentScrollView.contentInset
+
+        guard let activeInputView = activeInputView() else { return }
+        let activeFrame = activeInputView.convert(activeInputView.bounds, to: contentScrollView)
+        let visibleHeight = SCREEN_HEIGHT - keyboardObscuredHeight - getBottomSafeAreaHeight()
+        let targetBottom = activeFrame.maxY + kFitWidth(16)
+        if targetBottom > contentScrollView.contentOffset.y + visibleHeight {
+            let offsetY = min(targetBottom - visibleHeight, contentScrollView.contentSize.height - visibleHeight)
+            contentScrollView.setContentOffset(CGPoint(x: 0, y: max(offsetY, 0)), animated: true)
         }
     }
      
     @objc func keyboardWillHide(notification: NSNotification) {
-        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
-            self.bottomView.center = CGPoint.init(x: SCREEN_WIDHT*0.5, y: SCREEN_HEIGHT*0.5)
+        contentScrollView.contentInset.bottom = 0
+        contentScrollView.scrollIndicatorInsets = .zero
+    }
+
+    private func activeInputView() -> UIView? {
+        if caloriVm.numberLabel.isEditing { return caloriVm }
+        if carboVm.textField.isEditing { return carboVm }
+        if proteinVm.textField.isEditing { return proteinVm }
+        if fatVm.textField.isEditing { return fatVm }
+        if remarkVm.textField.isEditing { return remarkVm }
+        return nutritionInputVms.first { $0.textField.isEditing }
+    }
+
+    private func activeInputAccessoryHeight() -> CGFloat {
+        if carboVm.textField.isEditing || proteinVm.textField.isEditing || fatVm.textField.isEditing {
+            return NutritionInputAccessoryView.preferredHeight
         }
+        if nutritionInputVms.contains(where: { $0.textField.isEditing }) {
+            return NutritionInputAccessoryView.preferredHeight
+        }
+        return 0
     }
 }

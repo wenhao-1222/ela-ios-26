@@ -193,7 +193,7 @@ extension FoodsListMyListVM{
             guard let self = self else { return }
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArr = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
-            
+            DLLog(message: "URL_foods_list_my:\(dataArr)")
 //            UserDefaults.set(value: WHUtils.getJSONStringFromArray(array: dataArr), forKey: .myFoodsList)
             
             DispatchQueue.main.async {

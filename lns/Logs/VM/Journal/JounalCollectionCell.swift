@@ -1076,6 +1076,7 @@ extension JounalCollectionCell {
         if foodsDict.stringValueForKey(key: "fname").count > 0 {
             let vc = FoodsMsgDetailsVC()
             vc.sourceType = .logs
+            vc.canEdit = false
             vc.foodsDetailDict = foodsDict
 
             DLLog(message: "\(dict)")
@@ -1098,6 +1099,7 @@ extension JounalCollectionCell {
             controller?.navigationController?.pushViewController(vc, animated: true)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 vc.deleteButton.isHidden = true
+                vc.editButton.isHidden = true
             }
         }
     }

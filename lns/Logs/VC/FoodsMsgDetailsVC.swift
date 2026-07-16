@@ -20,32 +20,42 @@ enum ADD_FOODS_SOURCE {
 }
 
 class FoodsMsgDetailsVC : WHBaseViewVC{
-    
+
     var foodsDetailDict = NSDictionary()
     var specNum = ""
     var specName   = ""
     var canAdd = true
+    var canEdit = true
     var isFromDetail = false
     var sourceType = ADD_FOODS_SOURCE.other
-    
+    private var hasLoadedFoodsDetail = false
+
     var deleteBlock:(()->())?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         initUI()
         sendFoodsDetailRequest()
     }
+    lazy var editButton : GJVerButton = {
+        let button = GJVerButton()
+        button.setImage(UIImage(named: "element_edit_icon"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+//        button.contentEdgeInsets = UIEdgeInsets(top: kFitWidth(7), left: kFitWidth(7), bottom: kFitWidth(7), right: kFitWidth(7))
+        button.isHidden = true
+        button.addTarget(self, action: #selector(editAction), for: .touchUpInside)
+        button.enablePressEffect()
+        return button
+    }()
     lazy var deleteButton : GJVerButton = {
         let button = GJVerButton()
-        button.setImage(UIImage(named: "plan_detail_delete_icon"), for: .normal)
-        button.setTitle("删除", for: .normal)
-        button.setTitleColor(.THEME, for: .normal)
-        button.setTitleColor(.COLOR_HIGHTLIGHT_GRAY, for: .highlighted)
-        button.titleLabel?.font = .systemFont(ofSize: 14, weight: .regular)
+        button.setImage(UIImage(named: "element_delete_icon"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFit
+//        button.contentEdgeInsets = UIEdgeInsets(top: kFitWidth(7), left: kFitWidth(7), bottom: kFitWidth(7), right: kFitWidth(7))
         button.isHidden = true
         button.addTarget(self, action: #selector(deleteAction), for: .touchUpInside)
-        
+        button.enablePressEffect()
         return button
     }()
     lazy var foodsNameLabel: UILabel = {
@@ -59,8 +69,8 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
         }else{
             lab.text = "\(foodsDetailDict["fname"]as? String ?? "")"
         }
-        
-        
+
+
         return lab
     }()
     lazy var scrollView: UIScrollView = {
@@ -86,7 +96,7 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
         return img
     }()
     lazy var topVm : FoodsMsgDetailsVM = {
-        let vm = FoodsMsgDetailsVM.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight()+kFitWidth(60), width: 0, height: 0))
+        let vm = FoodsMsgDetailsVM.init(frame: CGRect.init(x: 0, y: kFitWidth(60), width: 0, height: 0))
         vm.specNum = self.specNum
         vm.specName = self.specName
         vm.foodsMsgDict = self.foodsDetailDict
@@ -109,7 +119,7 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
         let vm = FoodsNutritionDetailsVM.init(frame: CGRect.init(x: 0, y: self.caloriDetailVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
         vm.foodsDetailDict = self.foodsDetailDict
         vm.heightChangeBlock = { [weak self] in
-            self?.refreshScrollContentSize()
+            self?.refreshScrollContentSize(animated: true)
         }
         return vm
     }()
@@ -123,14 +133,14 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
         btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .disabled)
         btn.layer.cornerRadius = kFitWidth(12)
         btn.clipsToBounds = true
-        
+
         if self.canAdd == false{
             btn.isHidden = true
         }
 
         btn.enablePressEffect()
         btn.addTarget(self, action: #selector(addAction), for: .touchUpInside)
-        
+
         return btn
     }()
     lazy var specAlertVm: FoodsDetailSpecAlertVM = {
@@ -166,7 +176,7 @@ extension FoodsMsgDetailsVC{
         }
         var number = topVm.textField.text ?? ""
         number = number.replacingOccurrences(of: ",", with: ".")
-        
+
         specName = self.topVm.specName
         if (number == ""){
             if specName == "g" || specName == "克" || specName == "ml" || specName == "毫升" || specName == ""{
@@ -175,7 +185,7 @@ extension FoodsMsgDetailsVC{
                 number = "1"
             }
         }
-        
+
         UserInfoModel.shared.isAddFoods = true
         number = number.replacingOccurrences(of: ",", with: ".")
         let foodMsg = NSMutableDictionary.init(dictionary: self.foodsDetailDict)
@@ -195,11 +205,11 @@ extension FoodsMsgDetailsVC{
         foodMsg.setValue("\(topVm.fat)".replacingOccurrences(of: ",", with: "."), forKey: "fat")
         foodMsg.setValue("\(WHUtils.convertStringToString("\(topVm.calories)") ?? "0")".replacingOccurrences(of: ",", with: "."), forKey: "calories")
         foodMsg.setValue("1", forKey: "state")
-        
+
         if number.doubleValue > 0 {
             UserDefaults.saveFoods(foodsDict: foodMsg)
         }
-        
+
         switch self.sourceType {
         case .logs:
             MobClick.event("journalEditFoods")
@@ -262,10 +272,10 @@ extension FoodsMsgDetailsVC{
 //        attachment.image = image
 //        attachment.bounds = CGRect(x: 0, y: (UIFont.systemFont(ofSize: 16, weight: .medium).capHeight - image.size.height).rounded() / 2, width: image.size.width, height: image.size.height)
 //        let attachmentString = NSAttributedString(attachment: attachment)
-//        
+//
 //        let string = NSMutableAttributedString(string: text)
 //        string.append(attachmentString)
-//        
+//
 //        return string
 //    }
     func createAttributedStringWithImage(image: UIImage, text: String,keywords:String? = "") -> NSAttributedString {
@@ -278,7 +288,7 @@ extension FoodsMsgDetailsVC{
             attributes: [.foregroundColor: UIColor.COLOR_TEXT_TITLE_0f1214]
         )
         a.append(attachmentString)
-        
+
         return a
     }
     @objc func deleteAction() {
@@ -286,16 +296,37 @@ extension FoodsMsgDetailsVC{
             self.sendDeleteFoodsRequest()
         }, viewController: self)
     }
+    @objc func editAction() {
+        let vc = FoodsCreateVC()
+        vc.isEditFoods = true
+        vc.editFoodsDict = self.foodsDetailDict
+        vc.editSuccessBlock = { [weak self] _ in
+            self?.hasLoadedFoodsDetail = false
+            self?.updateOwnerActionButtonsVisibility()
+            self?.sendFoodsDetailRequest()
+        }
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func updateOwnerActionButtonsVisibility() {
+        let isOwner = hasLoadedFoodsDetail && self.foodsDetailDict.stringValueForKey(key: "uid") == UserInfoModel.shared.uId
+        if canEdit{
+            self.editButton.isHidden = !isOwner
+            self.deleteButton.isHidden = !isOwner
+        }
+    }
 }
 
 extension FoodsMsgDetailsVC{
     func initUI(){
         initNavi(titleStr: "食物详情")
         self.navigationView.backgroundColor = .clear
+        self.navigationView.addSubview(editButton)
         self.navigationView.addSubview(deleteButton)
-        
+        updateOwnerActionButtonsVisibility()
+
         view.backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "FAFAFA")
-        view.addSubview(scrollView)
+        view.insertSubview(scrollView, belowSubview: self.navigationView)
         scrollView.addSubview(contentView)
         contentView.addSubview(foodsNameLabel)
 //        view.addSubview(foodsVerifyImgView)
@@ -303,26 +334,33 @@ extension FoodsMsgDetailsVC{
         contentView.addSubview(caloriDetailVm)
         contentView.addSubview(nutritionDetailVm)
         view.addSubview(confirmButton)
-        
+
         view.addSubview(specAlertVm)
-        
+
         topVm.calculateSpecWeight()
         specAlertVm.setDataArray(specArr: self.topVm.specArray)
-        
+
 //        if self.foodsDetailDict.stringValueForKey(key: "uid") != UserInfoModel.shared.uId{
 //            deleteButton.isHidden = true
 //        }
-        
+
         setConstrait()
     }
-    
+
     func setConstrait() {
         deleteButton.snp.makeConstraints { make in
-            make.right.equalTo(kFitWidth(-10))
-            make.width.top.height.equalTo(self.naviTitleLabel)
+            make.right.equalTo(kFitWidth(-16))
+            make.centerY.lessThanOrEqualTo(naviTitleLabel)
+            make.width.height.equalTo(kFitWidth(28))
+        }
+        editButton.snp.makeConstraints { make in
+            make.right.equalTo(deleteButton.snp.left).offset(kFitWidth(-4))
+            make.centerY.lessThanOrEqualTo(naviTitleLabel)
+            make.width.height.equalTo(kFitWidth(28))
         }
         scrollView.snp.makeConstraints { make in
-            make.left.right.top.equalToSuperview()
+            make.left.right.equalToSuperview()
+            make.top.equalTo(getNavigationBarHeight())
             make.bottom.equalTo(confirmButton.snp.top).offset(kFitWidth(-12))
         }
         contentView.snp.makeConstraints { make in
@@ -332,7 +370,8 @@ extension FoodsMsgDetailsVC{
         }
         foodsNameLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(24))
-            make.top.equalTo(getNavigationBarHeight()+kFitWidth(24))
+            make.top.equalTo(kFitWidth(24))
+//            make.top.equalTo(getNavigationBarHeight()+kFitWidth(24))
             make.right.equalTo(kFitWidth(-10))
 //            make.centerY.lessThanOrEqualTo(getNavigationBarHeight()+kFitWidth(24)+kFitWidth(8))
         }
@@ -349,11 +388,27 @@ extension FoodsMsgDetailsVC{
         }
         refreshScrollContentSize()
     }
-    
-    func refreshScrollContentSize() {
+
+    func refreshScrollContentSize(animated: Bool = false) {
         nutritionDetailVm.frame.origin.y = caloriDetailVm.frame.maxY+kFitWidth(12)
-        contentView.snp.updateConstraints { make in
-            make.height.equalTo(nutritionDetailVm.frame.maxY+kFitWidth(24))
+        let contentHeight = nutritionDetailVm.frame.maxY+kFitWidth(24)
+        let minOffsetY = -scrollView.adjustedContentInset.top
+        let maxOffsetY = max(minOffsetY, contentHeight - scrollView.bounds.height + scrollView.adjustedContentInset.bottom)
+        let targetOffsetY = min(max(scrollView.contentOffset.y, minOffsetY), maxOffsetY)
+        let targetOffset = CGPoint(x: scrollView.contentOffset.x, y: targetOffsetY)
+        let changes = {
+            self.contentView.snp.updateConstraints { make in
+                make.height.equalTo(contentHeight)
+            }
+            self.contentView.layoutIfNeeded()
+            self.scrollView.layoutIfNeeded()
+            self.scrollView.contentOffset = targetOffset
+        }
+
+        if animated {
+            UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState], animations: changes)
+        } else {
+            UIView.performWithoutAnimation(changes)
         }
     }
 }
@@ -362,11 +417,11 @@ extension FoodsMsgDetailsVC{
     func sendDeleteFoodsRequest() {
         MCToast.mc_loading()
         let param = ["fname":"\(foodsDetailDict.stringValueForKey(key: "fname"))"]
-        
+
         WHNetworkUtil.shareManager().POST(urlString: URL_foods_delete, parameters: param as [String:AnyObject]) { responseObject in
             UserDefaults.delFoods(foodsDict: self.foodsDetailDict, forKey: .myFoodsList)
             UserDefaults.delFoods(foodsDict: self.foodsDetailDict, forKey: .hidsoryFoodsAdd)
-            
+
             if self.deleteBlock != nil{
                 self.deleteBlock!()
             }
@@ -384,13 +439,26 @@ extension FoodsMsgDetailsVC{
                 foodsDict.addEntries(from: detailDict)
             }
             self.foodsDetailDict = foodsDict
-            self.nutritionDetailVm.foodsDetailDict = foodsDict
-            self.refreshScrollContentSize()
-            if self.foodsDetailDict.stringValueForKey(key: "uid") != UserInfoModel.shared.uId{
-                self.deleteButton.isHidden = true
-            }else{
-                self.deleteButton.isHidden = false
-            }
+            self.hasLoadedFoodsDetail = true
+            self.refreshDetailUI()
+            self.updateOwnerActionButtonsVisibility()
         }
+    }
+
+    func refreshDetailUI() {
+        if self.foodsDetailDict["verified"]as? String ?? "\(self.foodsDetailDict["verified"]as? Int ?? 0)" == "1"{
+            if let img = UIImage(named: "question_foods_verify_icon") {
+                foodsNameLabel.attributedText = createAttributedStringWithImage(image: img, text: "\(foodsDetailDict["fname"]as? String ?? "")")
+            }
+        }else{
+            foodsNameLabel.attributedText = nil
+            foodsNameLabel.text = "\(foodsDetailDict["fname"]as? String ?? "")"
+        }
+        topVm.foodsMsgDict = foodsDetailDict
+        topVm.calculateSpecWeight()
+        specAlertVm.setDataArray(specArr: topVm.specArray)
+        caloriDetailVm.calculatePercent(dict: foodsDetailDict)
+        nutritionDetailVm.foodsDetailDict = foodsDetailDict
+        refreshScrollContentSize()
     }
 }
