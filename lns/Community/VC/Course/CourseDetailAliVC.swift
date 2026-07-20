@@ -7,7 +7,9 @@
 
 
 import SkeletonView
+#if !targetEnvironment(simulator)
 import AliyunPlayer
+#endif
 
 class CourseDetailAliVC : WHBaseViewVC{
     

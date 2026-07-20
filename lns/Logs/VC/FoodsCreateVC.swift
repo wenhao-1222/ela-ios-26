@@ -10,6 +10,15 @@ import MCToast
 import IQKeyboardManagerSwift
 import UMCommon
 
+private final class FoodsCreateInputScrollView: UIScrollView {
+    override func touchesShouldCancel(in view: UIView) -> Bool {
+        if view is UITextField {
+            return true
+        }
+        return super.touchesShouldCancel(in: view)
+    }
+}
+
 class FoodsCreateVC: WHBaseViewVC {
 
     var carNumber = Float(0)
@@ -56,9 +65,10 @@ class FoodsCreateVC: WHBaseViewVC {
         return vi
     }()
     lazy var contentScrollView: UIScrollView = {
-        let scroll = UIScrollView(frame: CGRect(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        let scroll = FoodsCreateInputScrollView(frame: CGRect(x: 0, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         scroll.backgroundColor = .COLOR_CARD_BG_WHITE
         scroll.alwaysBounceVertical = true
+        scroll.canCancelContentTouches = true
         scroll.showsVerticalScrollIndicator = false
         scroll.keyboardDismissMode = .interactive
         return scroll

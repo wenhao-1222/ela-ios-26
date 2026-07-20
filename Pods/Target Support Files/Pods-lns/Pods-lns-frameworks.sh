@@ -177,9 +177,15 @@ code_sign_if_enabled() {
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework"
+  if [ "${PLATFORM_NAME}" != "iphonesimulator" ]; then
   install_framework "${PODS_ROOT}/AliPlayerSDK_iOS/AliyunPlayer.framework"
+  fi
+  if [ "${PLATFORM_NAME}" != "iphonesimulator" ]; then
   install_framework "${PODS_ROOT}/AliPlayerSDK_iOS/alivcffmpeg.framework"
+  fi
+  if [ "${PLATFORM_NAME}" != "iphonesimulator" ]; then
   install_framework "${PODS_ROOT}/AliPlayerSDK_iOS/AliyunMediaDownloader.framework"
+  fi
   install_framework "${BUILT_PRODUCTS_DIR}/AliyunOSSiOS/AliyunOSSiOS.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CHIPageControl/CHIPageControl.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework"
@@ -205,9 +211,15 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework"
+  if [ "${PLATFORM_NAME}" != "iphonesimulator" ]; then
   install_framework "${PODS_ROOT}/AliPlayerSDK_iOS/AliyunPlayer.framework"
+  fi
+  if [ "${PLATFORM_NAME}" != "iphonesimulator" ]; then
   install_framework "${PODS_ROOT}/AliPlayerSDK_iOS/alivcffmpeg.framework"
+  fi
+  if [ "${PLATFORM_NAME}" != "iphonesimulator" ]; then
   install_framework "${PODS_ROOT}/AliPlayerSDK_iOS/AliyunMediaDownloader.framework"
+  fi
   install_framework "${BUILT_PRODUCTS_DIR}/AliyunOSSiOS/AliyunOSSiOS.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CHIPageControl/CHIPageControl.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/CryptoSwift/CryptoSwift.framework"

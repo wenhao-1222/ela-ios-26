@@ -6,7 +6,9 @@
 //
 
 import UIKit
+#if !targetEnvironment(simulator)
 import AliyunPlayer
+#endif
 
 class TutorialVideoSwiftControlView: UIView {
     weak var player: AliPlayer?

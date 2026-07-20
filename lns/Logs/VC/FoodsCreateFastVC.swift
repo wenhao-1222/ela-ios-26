@@ -344,12 +344,14 @@ extension FoodsCreateFastVC{
         let unlocked = isNutritionUnlocked()
         noProCoverImageView.isHidden = unlocked
         nutritionInputVms.forEach { vm in
+            vm.isHidden = !unlocked
             vm.textField.isEnabled = unlocked
             vm.isUserInteractionEnabled = unlocked
         }
         if unlocked == false {
             nutritionInputVms.forEach { $0.textField.resignFirstResponder() }
         }
+        layoutNutritionViews()
         refreshSaveButtonState()
     }
 
@@ -379,7 +381,8 @@ extension FoodsCreateFastVC{
         noProCoverImageView.frame = CGRect(x: 0, y: nutritionHeaderVm.frame.maxY, width: SCREEN_WIDHT, height: coverHeight)
 
         let bottomGap = kFitWidth(132) + getBottomSafeAreaHeight()
-        contentScrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: nextY + bottomGap)
+        let contentHeight = isNutritionUnlocked() ? nextY : noProCoverImageView.frame.maxY
+        contentScrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: contentHeight + bottomGap)
         contentScrollView.bringSubviewToFront(noProCoverImageView)
     }
 

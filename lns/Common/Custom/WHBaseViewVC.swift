@@ -687,20 +687,36 @@ class WHBaseViewVC: ViewController {
     /// 检测是否开启联网
     func openNetWorkServiceWithBolck(action :@escaping ((Bool)->())) {
         let cellularData = CTCellularData()
-        cellularData.cellularDataRestrictionDidUpdateNotifier = { (state) in
-            if state == CTCellularDataRestrictedState.restrictedStateUnknown || state == CTCellularDataRestrictedState.notRestricted {
-                action(true)
-            } else {
-                action(false)
+        var didComplete = false
+
+        func complete(_ isAllowed: Bool) {
+            DispatchQueue.main.async {
+                guard !didComplete else { return }
+                didComplete = true
+                cellularData.cellularDataRestrictionDidUpdateNotifier = nil
+                action(isAllowed)
             }
-            cellularData.cellularDataRestrictionDidUpdateNotifier = nil
         }
-//        let state = cellularData.restrictedState
-//        if state == CTCellularDataRestrictedState.restrictedStateUnknown ||  state == CTCellularDataRestrictedState.notRestricted {
-//            action(true)
-//        } else {
-//            action(false)
-//        }
+
+        cellularData.cellularDataRestrictionDidUpdateNotifier = { (state) in
+            complete(state == .restrictedStateUnknown || state == .notRestricted)
+        }
+
+        switch cellularData.restrictedState {
+        case .restricted:
+            complete(false)
+        case .notRestricted:
+            complete(true)
+        case .restrictedStateUnknown:
+#if targetEnvironment(simulator)
+            // The simulator can leave CTCellularData in unknown without invoking the notifier.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                complete(true)
+            }
+#endif
+        @unknown default:
+            complete(true)
+        }
     }
 
     //MARK: - 限制手机输入11位

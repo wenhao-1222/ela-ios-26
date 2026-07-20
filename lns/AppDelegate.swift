@@ -12,7 +12,104 @@ import CryptoKit
 import UMCommon
 import UserNotifications
 import Kingfisher
+#if !targetEnvironment(simulator)
 import AliyunPlayer
+#endif
+
+#if targetEnvironment(simulator)
+typealias AVPEventType = Int
+typealias AVPStatus = Int
+
+let AVPEventPrepareDone = 0
+let AVPEventSeekEnd = 1
+let AVPEventFirstRenderedStart = 2
+let AVPStatusStarted = 1
+let AVPStatusPaused = 2
+let AVPStatusStopped = 3
+let AVPStatusCompletion = 4
+let AVP_SCALINGMODE_SCALEASPECTFIT = 0
+let AVP_SCALINGMODE_SCALEASPECTFILL = 1
+let AVP_SEEKMODE_ACCURATE = 0
+
+protocol AVPDelegate: AnyObject {}
+
+class AVPErrorModel {
+    var code: Int = 0
+    var message: String?
+}
+
+class AVPVidStsSource {
+    var region: String?
+    var vid: String?
+    var securityToken: String?
+    var accessKeyId: String?
+    var accessKeySecret: String?
+}
+
+class AVPUrlSource {
+    func url(with url: String) -> AVPUrlSource! { self }
+}
+
+class AVPPreloadConfig {
+    var preloadDuration: Int = 0
+    required init?() {}
+}
+
+protocol AliMediaLoaderStatusDelegate: AnyObject {}
+
+class AliMediaLoader {
+    static func shareInstance() -> AliMediaLoader { AliMediaLoader() }
+    func setAliMediaLoaderStatusDelegate(_ delegate: AliMediaLoaderStatusDelegate?) {}
+    func pause(_ url: String) {}
+    func cancel(_ url: String) {}
+    func load(_ url: String, duration: Int) {}
+}
+
+class AliPlayer {
+    weak var delegate: AVPDelegate?
+    var playerView: UIView?
+    var isAutoPlay = false
+    var duration: Int64 = 0
+    var currentPosition: Int64 = 0
+    var rate: Float = 1.0
+    var volume: Float = 1.0
+    var scalingMode = AVP_SCALINGMODE_SCALEASPECTFIT
+    var enableHardwareDecoder = false
+
+    func setTraceID(_ traceID: String) {}
+    func setStsSource(_ source: AVPVidStsSource?) {}
+    func setUrlSource(_ source: AVPUrlSource?) {}
+    func prepare() {}
+    func start() {}
+    func pause() {}
+    func stop() {}
+    func destroy() {}
+    func destroyAsync() {}
+    func seek(toTime time: Int64, seekMode: Int) {}
+}
+
+enum AlivcGlobalEnv {
+    case SEA
+    case DEFAULT
+}
+
+class AlivcEnvironmentManager {
+    func setGlobalEnvironment(_ env: AlivcGlobalEnv) {}
+}
+
+class AlivcBase {
+    static let environmentManager = AlivcEnvironmentManager()
+}
+
+class AliPrivateService {
+    static func initLicense() {}
+}
+
+class AliPlayerGlobalSettings {
+    static func enableLocalCache(_ enabled: Bool) {}
+    static func setFairPlayCertID(_ certID: String) {}
+}
+#endif
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate{

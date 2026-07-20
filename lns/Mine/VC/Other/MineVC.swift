@@ -8,7 +8,9 @@
 import Foundation
 import UIKit
 import MCToast
+#if !targetEnvironment(simulator)
 import AliyunPlayer
+#endif
 
 class MineVC : WHBaseViewVC {
     

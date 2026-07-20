@@ -289,7 +289,6 @@
 		A744269C2CDB5A7F000D7E2B /* SwiftSoup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A744265B2CDB5A7F000D7E2B /* SwiftSoup.swift */; };
 		A744269D2CDB5A7F000D7E2B /* CharacterExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = A744262F2CDB5A7F000D7E2B /* CharacterExt.swift */; };
 		A744269E2CDB5A7F000D7E2B /* Elements.swift in Sources */ = {isa = PBXBuildFile; fileRef = A744263C2CDB5A7F000D7E2B /* Elements.swift */; };
-		ECAFFB522F68C0A3002A6C7A /* FoodsNutritionCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAFFB512F68C0A3002A6C7A /* FoodsNutritionCatalog.swift */; };
 		A744269F2CDB5A7F000D7E2B /* BooleanAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = A744262E2CDB5A7F000D7E2B /* BooleanAttribute.swift */; };
 		A74426A02CDB5A7F000D7E2B /* ParseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A744264D2CDB5A7F000D7E2B /* ParseError.swift */; };
 		A74426A12CDB5A7F000D7E2B /* Collector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A74426322CDB5A7F000D7E2B /* Collector.swift */; };
@@ -1138,6 +1137,7 @@
 		ECAE25E62BF20F37007D4B57 /* NSDictionary+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE25E52BF20F37007D4B57 /* NSDictionary+Exs.swift */; };
 		ECAE25E82F66A101007D4B57 /* FoodsNutritionDetailsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE25E72F66A101007D4B57 /* FoodsNutritionDetailsVM.swift */; };
 		ECAE372D2F5E69540051F234 /* ElaExpandedTapButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAE372C2F5E694F0051F234 /* ElaExpandedTapButton.swift */; };
+		ECAFFB522F68C0A3002A6C7A /* FoodsNutritionCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECAFFB512F68C0A3002A6C7A /* FoodsNutritionCatalog.swift */; };
 		ECB0F0092F62563F00056D6A /* PlanMainPlanListVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F0082F62563700056D6A /* PlanMainPlanListVM.swift */; };
 		ECB0F00B2F6265F500056D6A /* PlanMainMealCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */; };
 		ECB0F00D2F628FDA00056D6A /* DietPlanBuyListDateVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECB0F00C2F628FD900056D6A /* DietPlanBuyListDateVC.swift */; };
@@ -1751,7 +1751,6 @@
 		A744263A2CDB5A7F000D7E2B /* DocumentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentType.swift; sourceTree = "<group>"; };
 		A744263B2CDB5A7F000D7E2B /* Element.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Element.swift; sourceTree = "<group>"; };
 		A744263C2CDB5A7F000D7E2B /* Elements.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Elements.swift; sourceTree = "<group>"; };
-		ECAFFB512F68C0A3002A6C7A /* FoodsNutritionCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsNutritionCatalog.swift; sourceTree = "<group>"; };
 		A744263D2CDB5A7F000D7E2B /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
 		A744263E2CDB5A7F000D7E2B /* Evaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Evaluator.swift; sourceTree = "<group>"; };
 		A744263F2CDB5A7F000D7E2B /* Exception.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exception.swift; sourceTree = "<group>"; };
@@ -2657,6 +2656,7 @@
 		ECAE25E52BF20F37007D4B57 /* NSDictionary+Exs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSDictionary+Exs.swift"; sourceTree = "<group>"; };
 		ECAE25E72F66A101007D4B57 /* FoodsNutritionDetailsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsNutritionDetailsVM.swift; sourceTree = "<group>"; };
 		ECAE372C2F5E694F0051F234 /* ElaExpandedTapButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaExpandedTapButton.swift; sourceTree = "<group>"; };
+		ECAFFB512F68C0A3002A6C7A /* FoodsNutritionCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsNutritionCatalog.swift; sourceTree = "<group>"; };
 		ECB0F0082F62563700056D6A /* PlanMainPlanListVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMainPlanListVM.swift; sourceTree = "<group>"; };
 		ECB0F00A2F6265F400056D6A /* PlanMainMealCardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanMainMealCardCell.swift; sourceTree = "<group>"; };
 		ECB0F00C2F628FD900056D6A /* DietPlanBuyListDateVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DietPlanBuyListDateVC.swift; sourceTree = "<group>"; };
@@ -6351,13 +6351,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6392,13 +6388,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

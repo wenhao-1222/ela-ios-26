@@ -7,7 +7,9 @@
 
 import AVKit
 import MCToast
+#if !targetEnvironment(simulator)
 import AliyunPlayer
+#endif
 
 class CourseListVC: WHBaseViewVC {
     

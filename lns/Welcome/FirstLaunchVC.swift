@@ -827,8 +827,14 @@ extension FirstLaunchVC{
             }
             self.isRequestingUserGroupInit = false
             self.userGroupInitRequestStartTime = nil
+            let shouldContinue = self.shouldContinueAfterUserGroupInit
             self.shouldContinueAfterUserGroupInit = false
             DLLog(message: "[UserGroupInit][FirstLaunch] URL_user_group_init failed: \(failed)")
+            self.applyUserGroupInitData(NSDictionary())
+            self.hasLoadedUserGroupInit = true
+            if shouldContinue {
+                self.showHealthConfirmAndContinue()
+            }
         }
     }
 

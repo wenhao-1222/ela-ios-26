@@ -5,7 +5,9 @@
 //  Created by Elavatine on 2025/8/11.
 //
 
+#if !targetEnvironment(simulator)
 import AliyunPlayer
+#endif
 import UIKit
 
 class TutorialAliVideoVM: UIView {
