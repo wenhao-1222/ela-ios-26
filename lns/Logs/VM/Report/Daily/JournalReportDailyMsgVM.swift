@@ -42,9 +42,13 @@ class JournalReportDailyMsgVM: UIView {
                          "advice":["text":""]]
         
         initUI()
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshNutritionDetailState), name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     lazy var scrollView: UIScrollView = {
         let scro = UIScrollView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
@@ -96,6 +100,11 @@ class JournalReportDailyMsgVM: UIView {
         vm.titleLab.text = "营养详情"
         return vm
     }()
+    lazy var nutritionDistributionHeadVm: JournalReportTableHeadVM = {
+        let vm = JournalReportTableHeadVM.init(frame: .zero)
+        vm.titleLab.text = "营养分布"
+        return vm
+    }()
 //    let vm = JournalReportTableHeadVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
     lazy var caloriesMealMsgVm: JournalReportDailyCaloriesMealsVM = {
         let vm = JournalReportDailyCaloriesMealsVM.init(frame: .zero)
@@ -110,6 +119,15 @@ class JournalReportDailyMsgVM: UIView {
         let vm = JournalReportDailyCaloriesSourceVM.init(frame: CGRect.init(x: 0, y: self.caloriesMealMsgVm.frame.maxY, width: 0, height: 0))
 //        vm.isHidden = true
         vm.alpha = 0
+        return vm
+    }()
+    lazy var nutritionNoProVm: JournalReportDailyNutritionNoProVM = {
+        let vm = JournalReportDailyNutritionNoProVM.init(frame: .zero)
+        vm.alpha = 0
+        vm.tapBlock = {()in
+            let vc = ElaProElementsVC()
+            self.controller.navigationController?.pushViewController(vc, animated: true)
+        }
         return vm
     }()
     lazy var nodataVm: ReportNoDataVM = {
@@ -241,9 +259,11 @@ extension JournalReportDailyMsgVM{
         addSubview(scrollView)
         scrollView.addSubview(tableView)
 //        scrollView.addSubview(rankingButton)
-        scrollView.addSubview(naturalHeadVm)
+        scrollView.addSubview(nutritionDistributionHeadVm)
         scrollView.addSubview(caloriesMealMsgVm)
         scrollView.addSubview(caloriesSourceMsgVm)
+        scrollView.addSubview(naturalHeadVm)
+        scrollView.addSubview(nutritionNoProVm)
         tableView.isScrollEnabled = false
         
         addSubview(nodataVm)
@@ -253,14 +273,16 @@ extension JournalReportDailyMsgVM{
     func updateFrame() {
         if self.detailDict.stringValueForKey(key: "sdate") == Date().todayDate{
             self.tableView.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.tableHeight)
-            self.naturalHeadVm.frame = CGRect.init(x: 0, y: self.tableHeight, width: SCREEN_WIDHT, height: self.naturalHeadVm.selfHeight)
-            self.caloriesMealMsgVm.frame = CGRect.init(x: 0, y: self.tableHeight+self.naturalHeadVm.selfHeight, width: SCREEN_WIDHT, height: self.caloriesMealMsgVm.selfHeight)
+            self.nutritionDistributionHeadVm.frame = CGRect.init(x: 0, y: self.tableHeight, width: SCREEN_WIDHT, height: self.nutritionDistributionHeadVm.selfHeight)
+            self.caloriesMealMsgVm.frame = CGRect.init(x: 0, y: self.nutritionDistributionHeadVm.frame.maxY, width: SCREEN_WIDHT, height: self.caloriesMealMsgVm.selfHeight)
             self.caloriesSourceMsgVm.frame = CGRect.init(x: 0, y: self.caloriesMealMsgVm.frame.maxY+kFitWidth(12), width: SCREEN_WIDHT, height: self.caloriesSourceMsgVm.selfHeight)
+            let contentMaxY = layoutNutritionDetail(startY: self.caloriesSourceMsgVm.frame.maxY+kFitWidth(12))
 
-            self.scrollView.contentSize = CGSize.init(width: 0, height: self.caloriesSourceMsgVm.frame.maxY+kFitWidth(20)+WHUtils().getBottomSafeAreaHeight())
+            self.scrollView.contentSize = CGSize.init(width: 0, height: contentMaxY+kFitWidth(20)+WHUtils().getBottomSafeAreaHeight())
             DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
                 self.caloriesMealMsgVm.alpha = 1
                 self.caloriesSourceMsgVm.alpha = 1
+                self.nutritionNoProVm.alpha = 1
             })
         }else{
 //            self.hiddenTableView()
@@ -276,17 +298,40 @@ extension JournalReportDailyMsgVM{
         self.caloriesMealMsgVm.isHidden = false
         self.caloriesSourceMsgVm.isHidden = false
         
-        self.naturalHeadVm.frame = CGRect.init(x: 0, y: self.tableHeight, width: SCREEN_WIDHT, height: self.naturalHeadVm.selfHeight)
-        self.caloriesMealMsgVm.frame = CGRect.init(x: 0, y: self.tableHeight+self.naturalHeadVm.selfHeight, width: SCREEN_WIDHT, height: self.caloriesMealMsgVm.selfHeight)
+        self.nutritionDistributionHeadVm.frame = CGRect.init(x: 0, y: self.tableHeight, width: SCREEN_WIDHT, height: self.nutritionDistributionHeadVm.selfHeight)
+        self.caloriesMealMsgVm.frame = CGRect.init(x: 0, y: self.nutritionDistributionHeadVm.frame.maxY, width: SCREEN_WIDHT, height: self.caloriesMealMsgVm.selfHeight)
         self.caloriesSourceMsgVm.frame = CGRect.init(x: 0, y: self.caloriesMealMsgVm.frame.maxY+kFitWidth(12), width: SCREEN_WIDHT, height: self.caloriesSourceMsgVm.selfHeight)
+        let contentMaxY = layoutNutritionDetail(startY: self.caloriesSourceMsgVm.frame.maxY+kFitWidth(12))
         
-        self.scrollView.contentSize = CGSize.init(width: 0, height: self.caloriesSourceMsgVm.frame.maxY+kFitWidth(20)+WHUtils().getBottomSafeAreaHeight())
+        self.scrollView.contentSize = CGSize.init(width: 0, height: contentMaxY+kFitWidth(20)+WHUtils().getBottomSafeAreaHeight())
         
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.naturalHeadVm.alpha = 1
             self.caloriesMealMsgVm.alpha = 1
             self.caloriesSourceMsgVm.alpha = 1
+            self.nutritionNoProVm.alpha = 1
         }
+    }
+    
+    @objc func refreshNutritionDetailState() {
+        updateFrame()
+    }
+    
+    @discardableResult
+    func layoutNutritionDetail(startY: CGFloat) -> CGFloat {
+        let showNoPro = UserInfoModel.shared.vipModel.isValidVip == false
+        naturalHeadVm.isHidden = !showNoPro
+        nutritionNoProVm.isHidden = !showNoPro
+        
+        guard showNoPro else {
+            naturalHeadVm.frame = CGRect.init(x: 0, y: startY, width: SCREEN_WIDHT, height: 0)
+            nutritionNoProVm.frame = CGRect.init(x: 0, y: startY, width: SCREEN_WIDHT, height: 0)
+            return self.caloriesSourceMsgVm.frame.maxY
+        }
+        
+        naturalHeadVm.frame = CGRect.init(x: 0, y: startY, width: SCREEN_WIDHT, height: naturalHeadVm.selfHeight)
+        nutritionNoProVm.frame = CGRect.init(x: 0, y: naturalHeadVm.frame.maxY, width: SCREEN_WIDHT, height: nutritionNoProVm.selfHeight)
+        return nutritionNoProVm.frame.maxY
     }
 }
 

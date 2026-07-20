@@ -13,7 +13,7 @@ class SystemTabbar: UITabBarController {
     private let tabBarTouchBlocker = UIControl()
     let generator = UIImpactFeedbackGenerator(style: .soft)
     private var shouldShowDotAfterLayout = false
-    private var pendingDotDiameter: CGFloat = 5
+    private var pendingDotDiameter: CGFloat = kFitWidth(5)
     private var pendingDotOffset: UIOffset = .init(horizontal: 10, vertical: -6)
 
     // 旧抑制开关保留（本方案不用）
@@ -184,7 +184,8 @@ class SystemTabbar: UITabBarController {
         self.selectedIndex = 1
         self.myTabItem = navs[3].tabBarItem
 
-        if UserInfoModel.shared.msgUnRead {
+//        if UserInfoModel.shared.msgUnRead {
+        if UserInfoModel.shared.hasMineTabRedDot {
             scheduleShowDot(for: vc4.tabBarItem, diameter: kFitWidth(3))
         }
     }
@@ -317,14 +318,19 @@ extension SystemTabbar {
                                                selector: #selector(mineServiceMsgReadNotification),
                                                name: NSNotification.Name(rawValue: "serviceMsgRead"),
                                                object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshMineTabRedDotNotification),
+                                               name: NOTIFI_NAME_REFRESH_MINE_TAB_RED_DOT,
+                                               object: nil)
     }
 
     private func updateMineRedDotInitialState() {
-        if UserInfoModel.shared.msgUnRead {
-            setMineRedDotHidden(false)
-        } else {
-            mineServiceMsgReadNotification()
-        }
+//        if UserInfoModel.shared.msgUnRead {
+//            setMineRedDotHidden(false)
+//        } else {
+//            mineServiceMsgReadNotification()
+//        }
+        refreshMineTabRedDotNotification()
     }
 
     private func setMineRedDotHidden(_ hidden: Bool) {
@@ -333,7 +339,7 @@ extension SystemTabbar {
             shouldShowDotAfterLayout = false
             hideDot(on: item)
         } else {
-            let diameter = kFitWidth(3)
+            let diameter = kFitWidth(5)
             let offset = UIOffset(horizontal: 10, vertical: -6)
             pendingDotDiameter = diameter
             pendingDotOffset = offset
@@ -344,12 +350,18 @@ extension SystemTabbar {
     }
 
     @objc private func mineServiceMsgNotification() {
-        setMineRedDotHidden(false)
+//        setMineRedDotHidden(false)
+        refreshMineTabRedDotNotification()
     }
 
     @objc private func mineServiceMsgReadNotification() {
-        let shouldHide = UserInfoModel.shared.settingNewFuncRead && UserInfoModel.shared.newsListHasUnRead == false
-        setMineRedDotHidden(shouldHide)
+//        let shouldHide = UserInfoModel.shared.settingNewFuncRead && UserInfoModel.shared.newsListHasUnRead == false
+//        setMineRedDotHidden(shouldHide)
+        refreshMineTabRedDotNotification()
+    }
+    
+    @objc private func refreshMineTabRedDotNotification() {
+        setMineRedDotHidden(UserInfoModel.shared.hasMineTabRedDot == false)
     }
 
     @objc private func showGuideTotalIfNeeded() {

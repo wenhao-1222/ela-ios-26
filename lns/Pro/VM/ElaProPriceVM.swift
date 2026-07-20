@@ -21,6 +21,7 @@ class ElaProPriceVM: UIView {
         case `default`
         case aiGuidance
         case guidance
+        case elements
     }
     
     private struct RemotePlanProduct {
@@ -85,7 +86,12 @@ class ElaProPriceVM: UIView {
     var purchasePendingLoginBlock: (() -> ())?
     var protocalTapBlock: (() -> ())?
     var purchaseLoadingStateChangeBlock: ((Bool) -> ())?
-    var bizType = ""
+    var bizType = "" {
+        didSet {
+            guard oldValue != bizType else { return }
+            applyDisplayMode()
+        }
+    }
     var purchaseQueryBizType = "3"
     var isPurchased = "0"
     var displayMode: DisplayMode = .default {
@@ -298,9 +304,13 @@ class ElaProPriceVM: UIView {
     lazy var aiTwo = makeBenefitRow(title: "卡点预警", desc: "多维数据早发现，瓶颈前先介入",dotImg: "survey_subscription_coach_ic_02")
     lazy var aiThree = makeBenefitRow(title: "体重去噪", desc: "分清真实进度，减少结果焦虑",dotImg: "survey_subscription_coach_ic_03")
     lazy var aiFour = makeBenefitRow(title: "持续微调", desc: "越用越懂你，你只需照做",dotImg: "survey_subscription_coach_ic_04")
+    lazy var aiFive = makeBenefitRow(title: "", desc: "",dotImg: "")
+    lazy var aiSix = makeBenefitRow(title: "", desc: "",dotImg: "")
     lazy var aiDividerOne = makeDivider()
     lazy var aiDividerTwo = makeDivider()
     lazy var aiDividerThree = makeDivider()
+    lazy var aiDividerFour = makeDivider()
+    lazy var aiDividerFive = makeDivider()
     lazy var moreTitleLabel: UILabel = {
         let lab = UILabel()
         lab.text = "和更多："
@@ -1341,9 +1351,13 @@ extension ElaProPriceVM{
         aiContainer.addSubview(aiTwo)
         aiContainer.addSubview(aiThree)
         aiContainer.addSubview(aiFour)
+        aiContainer.addSubview(aiFive)
+        aiContainer.addSubview(aiSix)
         aiContainer.addSubview(aiDividerOne)
         aiContainer.addSubview(aiDividerTwo)
         aiContainer.addSubview(aiDividerThree)
+        aiContainer.addSubview(aiDividerFour)
+        aiContainer.addSubview(aiDividerFive)
         
         moreContainer.addSubview(moreOne)
         moreContainer.addSubview(moreTwo)
@@ -1689,6 +1703,12 @@ extension ElaProPriceVM{
 
     private func applyDisplayMode() {
         guard subviews.isEmpty == false else { return }
+        
+        if isElementsBizType {
+            configureElementsDisplayMode()
+            layoutIfNeeded()
+            return
+        }
 
         switch displayMode {
         case .default:
@@ -1697,9 +1717,15 @@ extension ElaProPriceVM{
             configureAIGuidanceDisplayMode()
         case .guidance:
             configureGuidanceDisplayMode()
+        case .elements:
+            configureElementsDisplayMode()
         }
 
         layoutIfNeeded()
+    }
+    
+    private var isElementsBizType: Bool {
+        bizType.trimmingCharacters(in: .whitespacesAndNewlines) == "5"
     }
 
     private func configureDefaultDisplayMode() {
@@ -1734,6 +1760,9 @@ extension ElaProPriceVM{
         applyContainerStyle(benefitContainer, highlighted: true)
         applyContainerStyle(aiContainer, highlighted: false)
         applyContainerStyle(moreContainer, highlighted: false)
+        remakeBenefitRowConstraints(visibleCount: 6)
+        remakeAIRowConstraints(visibleCount: 4)
+        remakeMoreRowConstraints(visibleCount: 2)
         remakeSectionConstraintsForDefaultOrder()
     }
 
@@ -1770,6 +1799,9 @@ extension ElaProPriceVM{
         applyContainerStyle(aiContainer, highlighted: true)
         applyContainerStyle(benefitContainer, highlighted: false)
         applyContainerStyle(moreContainer, highlighted: false)
+        remakeBenefitRowConstraints(visibleCount: 6)
+        remakeAIRowConstraints(visibleCount: 4)
+        remakeMoreRowConstraints(visibleCount: 2)
         remakeSectionConstraintsForAIGuidanceOrder()
     }
 
@@ -1797,7 +1829,104 @@ extension ElaProPriceVM{
         aiContainer.isHidden = true
         applyContainerStyle(benefitContainer, highlighted: true)
         applyContainerStyle(moreContainer, highlighted: true)
+        remakeBenefitRowConstraints(visibleCount: 6)
+        remakeAIRowConstraints(visibleCount: 4)
+        remakeMoreRowConstraints(visibleCount: 2)
         remakeSectionConstraintsForGuidanceOrder()
+    }
+    
+    private func configureElementsDisplayMode() {
+        let titleFont = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        benefitTitleLabel.text = "ELA PRO 将帮助你："
+        benefitTitleLabel.font = titleFont
+        aiTitleLabel.text = "以及ELA 智能饮食计划："
+        aiTitleLabel.font = titleFont
+        moreTitleLabel.text = "和更多："
+        moreTitleLabel.font = titleFont
+        
+        configureBenefitRows([
+            FeatureContent(title: "深度分析", desc: "微量元素深入追踪，优化恢复与表现"),
+            FeatureContent(title: "每周复盘", desc: "结合饮食训练变化，系统复盘进度", iconName: "survey_subscription_coach_ic_01"),
+            FeatureContent(title: "卡点预警", desc: "多维数据早发现，瓶颈前先介入", iconName: "survey_subscription_coach_ic_02"),
+            FeatureContent(title: "体重去噪", desc: "分清真实进度，减少结果焦虑", iconName: "survey_subscription_coach_ic_03"),
+            FeatureContent(title: "持续微调", desc: "越用越懂你，你只需照做", iconName: "survey_subscription_coach_ic_04")
+        ])
+        configureAIRows([
+            FeatureContent(title: "定制每周食谱", desc: "每天不重样，照着吃就行", iconName: "survey_subscription_mealplan_ic_01"),
+            FeatureContent(title: "消除选择困难", desc: "不用每天纠结吃什么", iconName: "survey_subscription_mealplan_ic_02"),
+            FeatureContent(title: "平衡家庭与健康饮食", desc: "和家人同桌，也能精准对齐目标", iconName: "survey_subscription_mealplan_ic_03"),
+            FeatureContent(title: "节省外卖支出", desc: "每月省下上千元外卖费用", iconName: "survey_subscription_mealplan_ic_04"),
+            FeatureContent(title: "整理购物清单", desc: "提前列好未来一周所需食材", iconName: "survey_subscription_mealplan_ic_05"),
+            FeatureContent(title: "快速记录", desc: "无需手动搜索，一键把每餐加入日志", iconName: "survey_subscription_mealplan_ic_06")
+        ])
+        configureMoreRows([
+            FeatureContent(title: "无广告", iconName: "survey_subscription_more_ic_01")
+        ])
+        
+        aiTitleLabel.isHidden = false
+        aiContainer.isHidden = false
+        applyContainerStyle(benefitContainer, highlighted: true)
+        applyContainerStyle(aiContainer, highlighted: false)
+        applyContainerStyle(moreContainer, highlighted: false)
+        remakeBenefitRowConstraints(visibleCount: 5)
+        remakeAIRowConstraints(visibleCount: 6)
+        remakeMoreRowConstraints(visibleCount: 1)
+        remakeSectionConstraintsForDefaultOrder()
+    }
+    
+    private func remakeBenefitRowConstraints(visibleCount: Int) {
+        remakeRowConstraints(rows: [benefitOne, benefitTwo, benefitThree, benefitFour, benefitFive, benefitSix],
+                             dividers: [dividerOne, dividerTwo, dividerThree, dividerFour, dividerFive],
+                             visibleCount: visibleCount,
+                             rowHeight: kFitWidth(65))
+    }
+    
+    private func remakeAIRowConstraints(visibleCount: Int) {
+        remakeRowConstraints(rows: [aiOne, aiTwo, aiThree, aiFour, aiFive, aiSix],
+                             dividers: [aiDividerOne, aiDividerTwo, aiDividerThree, aiDividerFour, aiDividerFive],
+                             visibleCount: visibleCount,
+                             rowHeight: kFitWidth(65))
+    }
+    
+    private func remakeMoreRowConstraints(visibleCount: Int) {
+        remakeRowConstraints(rows: [moreOne, moreTwo],
+                             dividers: [moreDividerOne],
+                             visibleCount: visibleCount,
+                             rowHeight: kFitWidth(55))
+    }
+    
+    private func remakeRowConstraints(rows: [UIView],
+                                      dividers: [UIView],
+                                      visibleCount: Int,
+                                      rowHeight: CGFloat) {
+        let count = max(1, min(visibleCount, rows.count))
+        
+        for (index, row) in rows.enumerated() {
+            row.isHidden = index >= count
+            row.snp.remakeConstraints { make in
+                make.left.right.equalToSuperview()
+                if index == 0 {
+                    make.top.equalToSuperview()
+                } else {
+                    make.top.equalTo(dividers[index - 1].snp.bottom)
+                }
+                make.height.equalTo(index < count ? rowHeight : 0)
+                if index == count - 1 {
+                    make.bottom.equalToSuperview()
+                }
+            }
+        }
+        
+        for (index, divider) in dividers.enumerated() {
+            let visible = index < count - 1
+            divider.isHidden = !visible
+            divider.snp.remakeConstraints { make in
+                make.left.equalTo(kFitWidth(65))
+                make.right.equalToSuperview()
+                make.top.equalTo(rows[index].snp.bottom)
+                make.height.equalTo(visible ? 1 : 0)
+            }
+        }
     }
 
     private func remakeSectionConstraintsForDefaultOrder() {
@@ -1906,7 +2035,7 @@ extension ElaProPriceVM{
     }
 
     private func configureAIRows(_ contents: [FeatureContent]) {
-        let rows = [aiOne, aiTwo, aiThree, aiFour]
+        let rows = [aiOne, aiTwo, aiThree, aiFour, aiFive, aiSix]
         for (index, row) in rows.enumerated() {
             guard index < contents.count else { continue }
             configureBenefitRow(row, with: contents[index])
@@ -1975,7 +2104,7 @@ extension ElaProPriceVM{
         }
     }
     
-    func makeBenefitRow(title: String, desc: String,dotImg:String) -> UIView {
+    static func makeBenefitRow(title: String, desc: String, dotImg: String) -> UIView {
         let row = UIView()
         let dot = UIImageView()
 //        dot.backgroundColor = UIColor.white.withAlphaComponent(0.9)
@@ -1985,12 +2114,12 @@ extension ElaProPriceVM{
         
         let titleLab = UILabel()
         titleLab.text = title
-        titleLab.textColor = normalTextColor
+        titleLab.textColor = UIColor.COLOR_TEXT_TITLE_0f1214
         titleLab.font = .systemFont(ofSize: 15, weight: .medium)
         
         let descLab = UILabel()
         descLab.text = desc
-        descLab.textColor = subTextColor
+        descLab.textColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
         descLab.font = .systemFont(ofSize: 12, weight: .regular)
         
         row.addSubview(dot)
@@ -2015,6 +2144,10 @@ extension ElaProPriceVM{
         }
         
         return row
+    }
+    
+    func makeBenefitRow(title: String, desc: String,dotImg:String) -> UIView {
+        ElaProPriceVM.makeBenefitRow(title: title, desc: desc, dotImg: dotImg)
     }
     
     func makeSimpleRow(title: String,dotImg:String) -> UIView {

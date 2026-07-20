@@ -37,5 +37,7 @@ public let  NOTIFI_NAME_REFRESH_JOURNAL_VIP_STATUS = NSNotification.Name(rawValu
 public let  NOTIFI_NAME_DIET_PLAN_CREATE_SUCCESS = NSNotification.Name(rawValue: "diet_plan_create_success")
 // 生成购物清单成功后，刷新食谱页购物清单缓存
 public let  NOTIFI_NAME_DIET_PLAN_BUY_LIST_CREATE_SUCCESS = NSNotification.Name(rawValue: "diet_plan_buy_list_create_success")
+// 刷新“我的”tab 红点聚合状态
+public let  NOTIFI_NAME_REFRESH_MINE_TAB_RED_DOT = NSNotification.Name(rawValue: "refresh_mine_tab_red_dot")
 ///添加地址成功
 public let  NOTIFI_NAME_ADD_ADDRESS = NSNotification.Name(rawValue: "add_address")

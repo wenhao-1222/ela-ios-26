@@ -109,6 +109,12 @@ class UserInfoModel {
     var settingNewFuncRead = true
     //消息通知是否有新消息
     var newsListHasUnRead = false
+    //好友申请待处理数量
+    var friendPendingCount = 0
+    //“我的”tab 红点聚合状态
+    var hasMineTabRedDot: Bool {
+        return msgUnRead || settingNewFuncRead == false || newsListHasUnRead || friendPendingCount > 0
+    }
     
     var isAppStoreMark = "0"
     //日志--每日显示多少餐   3 ~ 6 餐
@@ -211,6 +217,13 @@ class UserInfoModel {
 }
 
 extension UserInfoModel{
+    func updateFriendPendingCount(_ count:Int) {
+        let newCount = max(0, count)
+        guard friendPendingCount != newCount else { return }
+        friendPendingCount = newCount
+        NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_MINE_TAB_RED_DOT, object: nil)
+    }
+    
     func updateMsg(dict:NSDictionary){
         DLLog(message: "UserInfoModel：\(dict)")
         self.birthDay = dict["birthday"]as? String ?? ""

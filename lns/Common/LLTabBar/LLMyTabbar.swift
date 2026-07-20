@@ -33,6 +33,7 @@ class LLMyTabbar: UIView {
         
         NotificationCenter.default.addObserver(self, selector: #selector(mineServiceMsgNotification), name: NSNotification.Name(rawValue: "serviceMsgUnRead"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(mineServiceMsgReadNotification), name: NSNotification.Name(rawValue: "serviceMsgRead"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshMineTabRedDotNotification), name: NOTIFI_NAME_REFRESH_MINE_TAB_RED_DOT, object: nil)
         
     }
     required init?(coder aDecoder: NSCoder) {
@@ -68,17 +69,23 @@ class LLMyTabbar: UIView {
         seletedButton.setSelectStatus(isSelect: true)
     }
     @objc func mineServiceMsgNotification(){
-        let btn = btnArr.last
-        btn?.redView.isHidden = false
+//        let btn = btnArr.last
+//        btn?.redView.isHidden = false
+        refreshMineTabRedDotNotification()
     }
     @objc func mineServiceMsgReadNotification(){
+//        let btn = btnArr.last
+//        //UserInfoModel.shared.widgetNewFuncRead 使用教程--小组件  红点去除   2025年04月08日11:27:30
+//        if UserInfoModel.shared.settingNewFuncRead && UserInfoModel.shared.newsListHasUnRead == false{//&& UserInfoModel.shared.statNewFuncRead
+//            btn?.redView.isHidden = true
+//        }else{
+//            btn?.redView.isHidden = false
+//        }
+        refreshMineTabRedDotNotification()
+    }
+    @objc func refreshMineTabRedDotNotification(){
         let btn = btnArr.last
-        //UserInfoModel.shared.widgetNewFuncRead 使用教程--小组件  红点去除   2025年04月08日11:27:30
-        if UserInfoModel.shared.settingNewFuncRead && UserInfoModel.shared.newsListHasUnRead == false{//&& UserInfoModel.shared.statNewFuncRead
-            btn?.redView.isHidden = true
-        }else{
-            btn?.redView.isHidden = false
-        }
+        btn?.redView.isHidden = UserInfoModel.shared.hasMineTabRedDot == false
     }
     func addTabBarButtonWithItem(item:UITabBarItem)-> Void{
         let button:LLButton = LLButton(type: .custom)

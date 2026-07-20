@@ -159,6 +159,7 @@ extension FriendRankingVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             
+            UserInfoModel.shared.updateFriendPendingCount(dataArray.count)
             self.topVm.newFriendMsgRedIcon.isHidden = dataArray.count > 0 ? false : true
         }
     }

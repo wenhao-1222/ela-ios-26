@@ -231,6 +231,7 @@ extension MineVC{
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataArray = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
             
+            UserInfoModel.shared.updateFriendPendingCount(dataArray.count)
             self.personalTopVm.friendsVm.redView.isHidden = dataArray.count == 0
         }
     }

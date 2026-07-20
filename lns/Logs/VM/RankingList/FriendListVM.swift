@@ -269,6 +269,7 @@ extension FriendListVM{
         WHNetworkUtil.shareManager().POST(urlString: URL_friend_handle, parameters: param as [String:AnyObject]) { responseObject in
             self.dataSourceArray.removeObject(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: .fade)
+            UserInfoModel.shared.updateFriendPendingCount(self.dataSourceArray.count)
             
             if status == "2"{
                 self.friendDataRefreshBlock?()

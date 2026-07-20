@@ -115,15 +115,15 @@ class FoodsCreateFastVC: WHBaseViewVC {
         return vm
     }()
     lazy var nutritionHeaderVm: UIView = {
-        let vi = UIView(frame: CGRect(x: 0, y: remarkVm.frame.maxY, width: SCREEN_WIDHT, height: kFitWidth(56)))
+        let vi = UIView(frame: CGRect(x: 0, y: remarkVm.frame.maxY, width: SCREEN_WIDHT, height: kFitWidth(34)))
         vi.backgroundColor = .COLOR_CARD_BG_WHITE
         return vi
     }()
     lazy var nutritionHeaderLabel: UILabel = {
         let lab = UILabel()
         lab.text = "微量元素"
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
-        lab.font = .systemFont(ofSize: 16, weight: .regular)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        lab.font = .systemFont(ofSize: 14, weight: .regular)
         return lab
     }()
     lazy var nutritionInputVms: [FoodsCreateItemVM] = {
@@ -155,6 +155,7 @@ class FoodsCreateFastVC: WHBaseViewVC {
         img.clipsToBounds = true
         img.isUserInteractionEnabled = true
         img.setImgLocal(imgName: "ele_fast_foods_no_pro")
+        img.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(noProCoverTapAction)))
         return img
     }()
     lazy var saveButton: GJVerButton = {
@@ -353,6 +354,12 @@ extension FoodsCreateFastVC{
         }
         layoutNutritionViews()
         refreshSaveButtonState()
+    }
+    
+    @objc func noProCoverTapAction() {
+        guard isNutritionUnlocked() == false else { return }
+        let vc = ElaProElementsVC()
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     func refreshSaveButtonState(caloriesText: String? = nil) {
