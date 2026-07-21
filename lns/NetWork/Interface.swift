@@ -41,6 +41,8 @@ public let URL_bind_inviteCode           = URL_Type + "users/fission/invcode"
 public let URL_foods_list                 = URL_Type + "foods/query_foods_by_name"
 //创建食物
 public let URL_foods_save                 = URL_Type + "foods/save_personal_foods"
+///编辑食物
+public let URL_foods_update               = URL_Type + "foods/update_personal_foods"
 //查询我的食物
 public let URL_foods_list_my              = URL_Type + "foods/query_personal_foods_by_name"
 //获取食物规格列表

@@ -205,6 +205,7 @@ extension FoodsMsgDetailsVC{
         foodMsg.setValue("\(topVm.fat)".replacingOccurrences(of: ",", with: "."), forKey: "fat")
         foodMsg.setValue("\(WHUtils.convertStringToString("\(topVm.calories)") ?? "0")".replacingOccurrences(of: ",", with: "."), forKey: "calories")
         foodMsg.setValue("1", forKey: "state")
+        applyScaledNutritionDetails(to: foodMsg, countString: number)
 
         if number.doubleValue > 0 {
             UserDefaults.saveFoods(foodsDict: foodMsg)
@@ -266,6 +267,55 @@ extension FoodsMsgDetailsVC{
         case .main:
             break
         }
+    }
+    func applyScaledNutritionDetails(to foodMsg: NSMutableDictionary, countString: String) {
+        guard let scaleDecimal = nutritionDetailScaleDecimal(countString: countString) else { return }
+
+        for item in FoodsNutritionCatalog.shared.flatItems {
+            let rawValue = self.foodsDetailDict[item.key]
+            guard rawValue != nil, !(rawValue is NSNull) else { continue }
+
+            let baseDecimal = decimalValue(rawValue)
+            let scaledDecimal = baseDecimal * scaleDecimal
+            let scaledString = WHUtils.convertStringToString(
+                NSDecimalNumber(decimal: scaledDecimal).stringValue,
+                digitNumer: item.maximumInputFractionDigits
+            ) ?? "0"
+            foodMsg.setValue(scaledString.replacingOccurrences(of: ",", with: "."), forKey: item.key)
+        }
+    }
+
+    func nutritionDetailScaleDecimal(countString: String) -> Decimal? {
+        let normalizedCountString = countString.replacingOccurrences(of: ",", with: ".")
+        let countDecimal = Decimal(string: normalizedCountString) ?? 0
+        let specDefault = WHUtils.getSpecDefaultFromFoods(foodsDict: foodsDetailDict)
+        let unitQty = decimalValue(specDefault["specNum"])
+        if NSDecimalNumber(decimal: unitQty).compare(NSDecimalNumber.zero) == .orderedSame {
+            return nil
+        }
+
+        var specQty = decimalValue(topVm.specDict["specNum"])
+        let selectedSpecName = topVm.specDict.stringValueForKey(key: "specName")
+        if selectedSpecName == "g" ||
+            selectedSpecName == "克" ||
+            selectedSpecName == "ml" ||
+            selectedSpecName == "毫升" ||
+            topVm.specArray.count == 1 {
+            specQty = 1
+        }
+
+        return specQty / unitQty * countDecimal
+    }
+
+    func decimalValue(_ value: Any?) -> Decimal {
+        if let number = value as? NSNumber {
+            return number.decimalValue
+        }
+        if let stringValue = value as? String {
+            let normalized = stringValue.replacingOccurrences(of: ",", with: ".")
+            return Decimal(string: normalized) ?? 0
+        }
+        return 0
     }
 //    func createAttributedStringWithImage(image: UIImage, text: String) -> NSAttributedString {
 //        let attachment = NSTextAttachment()
