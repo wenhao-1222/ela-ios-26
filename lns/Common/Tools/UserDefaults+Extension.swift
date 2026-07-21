@@ -12,6 +12,7 @@ public extension UserDefaults {
         case hidsoryFoodsAdd
         case nutritionDefault
         case nutritionDefaultArray
+        case nutritionDefaultMineral
         case circleGoalArray//碳循环目标
         case myFoodsList
         case bodyDataSetting
@@ -154,6 +155,20 @@ extension UserDefaults {
         let value = UserDefaults.standard.dictionary(forKey: aKey)
         return value
     }
+
+    static public func hasNutritionDefaultMineralCache() -> Bool {
+        return (UserDefaults.getDictionary(forKey: .nutritionDefaultMineral)?.isEmpty == false)
+    }
+
+    static public func setNutritionDefaultMineral(_ dataDict: NSDictionary) {
+        guard dataDict.count > 0 else { return }
+        UserDefaults.set(value: dataDict, forKey: .nutritionDefaultMineral)
+    }
+
+    static public func clearNutritionDefaultMineralCache() {
+        UserDefaults.standard.removeObject(forKey: AccountKeys.nutritionDefaultMineral.rawValue)
+    }
+
     static public func saveFoods(foodsDict:NSDictionary ,forKey key: AccountKeys? = .hidsoryFoodsAdd){
         var foodsArray = NSMutableArray.init(array: getHistoryFoods())
         

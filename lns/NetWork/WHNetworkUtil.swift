@@ -360,6 +360,7 @@ class WHNetworkUtil: SessionManager {
                                 CourseProgressSQLiteManager.getInstance().deleteAllData()
                                 UserDefaults.standard.setValue("", forKey: token)
                                 UserDefaults.standard.setValue("", forKey: userId)
+                                UserDefaults.clearNutritionDefaultMineralCache()
                                 UserDefaults.set(value: "", forKey: .myFoodsList)
                                 UserDefaults.set(value: "", forKey: .hidsoryFoodsAdd)
                                 UserInfoModel.shared.uId = ""

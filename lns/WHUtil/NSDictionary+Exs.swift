@@ -18,6 +18,18 @@ extension NSDictionary{
         }
         return self.value(forKey: key) as? String ?? ""
     }
+    func rawStringValueForKey(key:String) -> String {
+        guard let value = self.value(forKey: key), !(value is NSNull) else {
+            return ""
+        }
+        if let stringValue = value as? String {
+            return stringValue.replacingOccurrences(of: ",", with: ".")
+        }
+        if let numberValue = value as? NSNumber {
+            return numberValue.stringValue.replacingOccurrences(of: ",", with: ".")
+        }
+        return "\(value)".replacingOccurrences(of: ",", with: ".")
+    }
     func doubleValueForKey(key:String) -> Double {
         var value = self.value(forKey: key)as? String ?? ""
         value = value.replacingOccurrences(of: ",", with: ".")

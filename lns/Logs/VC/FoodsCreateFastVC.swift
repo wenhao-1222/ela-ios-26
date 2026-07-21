@@ -136,6 +136,8 @@ class FoodsCreateFastVC: WHBaseViewVC {
             vm.maxLength = 6
             vm.maximumValue = item.maximumInputValue.map { Float($0) }
             vm.maximumFractionDigits = item.maximumInputFractionDigits
+            vm.normalizesLeadingZeroInput = true
+            vm.disallowsZeroWhenMaximumFractionDigitsFilled = true
             vm.numberChangeBlock = { [weak self] number in
                 guard let self = self else { return }
                 let normalizedNumber = number.replacingOccurrences(of: ",", with: ".")
@@ -422,8 +424,8 @@ extension FoodsCreateFastVC{
     func fillNutritionInputData(from dict: NSDictionary) {
         for (index, item) in nutritionCatalogItems.enumerated() {
             guard index < nutritionInputVms.count else { continue }
-            let rawValue = dict.stringValueForKey(key: item.key)
-            guard rawValue.count > 0, rawValue != "0" else { continue }
+            let rawValue = dict.rawStringValueForKey(key: item.key)
+            guard rawValue.count > 0, (Float(rawValue) ?? 0) > 0 else { continue }
             let displayValue = WHUtils.convertStringToString(rawValue, digitNumer: item.maximumInputFractionDigits) ?? rawValue
             nutritionInputVms[index].textField.text = displayValue
             nutritionInputValues[item.key] = displayValue.replacingOccurrences(of: ",", with: ".")

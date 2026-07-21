@@ -108,6 +108,12 @@ public let URL_get_current_nutrition           = URL_Type + "plans/log/today_nut
 public let URL_get_default_nutrition           = URL_Type + "users/nutrition/default"
 //获取用户碳循环目标
 public let URL_get_default_nutrition_circle    = URL_Type + "users/nutrition/cc"
+///设置微量元素目标
+public let URL_get_default_nutrition_minerals_set    = URL_Type + "users/nutrition/minerals/default/set"
+///删除微量元素目标
+public let URL_get_default_nutrition_minerals_delete    = URL_Type + "users/nutrition/minerals/default/delete"
+///获取默认元素目标
+public let URL_get_default_nutrition_minerals_get    = URL_Type + "users/nutrition/minerals/default/get"
 //保存身体测量数据
 public let URL_bodystat_save               = URL_Type + "users/bodystat/save"
 //查询身体测量数据

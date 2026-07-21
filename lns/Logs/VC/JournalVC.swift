@@ -11,6 +11,9 @@ import StoreKit
 import MCToast
 
 class JournalVC: WHBaseViewVC {
+    private static var hasRequestedDefaultMineralsThisLaunch = false
+    private static var isRequestingDefaultMinerals = false
+
     /**
      记录APP首次打开时  ，今日的日期
      因为APP可能在后台长时间运行，第二天的时候，会出问题
@@ -243,6 +246,7 @@ class JournalVC: WHBaseViewVC {
         sendHistoryFoodsListRequest()
         sendConstantRequest()
         sendNutritionsDefaultCircleRequest()
+        sendNutritionsDefaultMineralRequest()
         getActivityListRequest()
         sendProVipMsgRequest()
         preloadProSubscriptionProducts()
@@ -1507,6 +1511,23 @@ extension JournalVC{
             UserDefaults.set(value: dataArray, forKey: .circleGoalArray)
         }
     }
+    ///微量元素目标
+    func sendNutritionsDefaultMineralRequest() {
+        guard Self.isRequestingDefaultMinerals == false else { return }
+        guard Self.hasRequestedDefaultMineralsThisLaunch == false || UserDefaults.hasNutritionDefaultMineralCache() == false else { return }
+
+        Self.isRequestingDefaultMinerals = true
+        Self.hasRequestedDefaultMineralsThisLaunch = true
+        WHNetworkUtil.shareManager().POST(urlString: URL_get_default_nutrition_minerals_get, parameters: nil) { responseObject in
+            Self.isRequestingDefaultMinerals = false
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            let dataArray = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            DLLog(message: "sendNutritionsDefaultMineralRequest:\(dataArray)")
+            UserDefaults.setNutritionDefaultMineral(dataArray)
+        }
+    }
+    
+    
     func sendProVipMsgRequest() {
         WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { [weak self] responseObject in
             guard let self = self, self.isPreparingForLogoutRelease == false else { return }

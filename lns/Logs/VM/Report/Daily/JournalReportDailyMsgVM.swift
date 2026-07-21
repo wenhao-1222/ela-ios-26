@@ -130,6 +130,11 @@ class JournalReportDailyMsgVM: UIView {
         }
         return vm
     }()
+    lazy var nutritionProVm: JournalReportDailyNutritionProVM = {
+        let vm = JournalReportDailyNutritionProVM.init(frame: .zero)
+        vm.alpha = 0
+        return vm
+    }()
     lazy var nodataVm: ReportNoDataVM = {
         let vm = ReportNoDataVM.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
         vm.isHidden = true
@@ -264,6 +269,7 @@ extension JournalReportDailyMsgVM{
         scrollView.addSubview(caloriesSourceMsgVm)
         scrollView.addSubview(naturalHeadVm)
         scrollView.addSubview(nutritionNoProVm)
+        scrollView.addSubview(nutritionProVm)
         tableView.isScrollEnabled = false
         
         addSubview(nodataVm)
@@ -283,6 +289,7 @@ extension JournalReportDailyMsgVM{
                 self.caloriesMealMsgVm.alpha = 1
                 self.caloriesSourceMsgVm.alpha = 1
                 self.nutritionNoProVm.alpha = 1
+                self.nutritionProVm.alpha = 1
             })
         }else{
 //            self.hiddenTableView()
@@ -310,6 +317,7 @@ extension JournalReportDailyMsgVM{
             self.caloriesMealMsgVm.alpha = 1
             self.caloriesSourceMsgVm.alpha = 1
             self.nutritionNoProVm.alpha = 1
+            self.nutritionProVm.alpha = 1
         }
     }
     
@@ -320,17 +328,21 @@ extension JournalReportDailyMsgVM{
     @discardableResult
     func layoutNutritionDetail(startY: CGFloat) -> CGFloat {
         let showNoPro = UserInfoModel.shared.vipModel.isValidVip == false
-        naturalHeadVm.isHidden = !showNoPro
+        let showPro = !showNoPro
+        naturalHeadVm.isHidden = false
         nutritionNoProVm.isHidden = !showNoPro
-        
-        guard showNoPro else {
-            naturalHeadVm.frame = CGRect.init(x: 0, y: startY, width: SCREEN_WIDHT, height: 0)
-            nutritionNoProVm.frame = CGRect.init(x: 0, y: startY, width: SCREEN_WIDHT, height: 0)
-            return self.caloriesSourceMsgVm.frame.maxY
-        }
+        nutritionProVm.isHidden = !showPro
         
         naturalHeadVm.frame = CGRect.init(x: 0, y: startY, width: SCREEN_WIDHT, height: naturalHeadVm.selfHeight)
+        
+        if showPro {
+            nutritionNoProVm.frame = CGRect.init(x: 0, y: startY, width: SCREEN_WIDHT, height: 0)
+            nutritionProVm.frame = CGRect.init(x: 0, y: naturalHeadVm.frame.maxY, width: SCREEN_WIDHT, height: nutritionProVm.selfHeight)
+            return nutritionProVm.frame.maxY
+        }
+        
         nutritionNoProVm.frame = CGRect.init(x: 0, y: naturalHeadVm.frame.maxY, width: SCREEN_WIDHT, height: nutritionNoProVm.selfHeight)
+        nutritionProVm.frame = CGRect.init(x: 0, y: startY, width: SCREEN_WIDHT, height: 0)
         return nutritionNoProVm.frame.maxY
     }
 }
@@ -377,6 +389,7 @@ extension JournalReportDailyMsgVM{
 //                    self.rankingButton.isHidden = false
                     self.showRankingButton(in: self.scrollView)
                     self.reportMsgDict = dataObj
+                    self.nutritionProVm.updateData(reportMsgDict: dataObj)
                     self.tableView.reloadData()
                 }
             }

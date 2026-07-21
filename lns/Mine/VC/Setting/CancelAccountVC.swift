@@ -284,6 +284,7 @@ extension CancelAccountVC{
             WidgetUtils().saveUserInfo(uId: "", uToken: "")
             UserDefaults.standard.setValue("", forKey: token)
             UserDefaults.standard.setValue("", forKey: userId)
+            UserDefaults.clearNutritionDefaultMineralCache()
             UserDefaults.set(value: "", forKey: .myFoodsList)
             UserDefaults.set(value: "", forKey: .hidsoryFoodsAdd)
             ElaProIAPManager.shared.resetAnonymousIdentityAfterAccountDeletion()

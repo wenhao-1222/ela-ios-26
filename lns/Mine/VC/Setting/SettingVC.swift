@@ -445,6 +445,7 @@ extension SettingVC{
         UserDefaults.standard.setValue("", forKey: token)
         UserDefaults.standard.setValue("", forKey: userId)
         UserDefaults.clearLoginUserGroupMsgCache()
+        UserDefaults.clearNutritionDefaultMineralCache()
         UserDefaults.set(value: "", forKey: .myFoodsList)
         UserDefaults.set(value: "", forKey: .hidsoryFoodsAdd)
         UserInfoModel.shared.clearMsg()

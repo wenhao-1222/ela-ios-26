@@ -16,6 +16,8 @@ class FoodsCreateItemVM: UIView {
     var maxLength = 2
     var maximumFractionDigits = 1
     var maximumValue: Float? = 999.9
+    var normalizesLeadingZeroInput = false
+    var disallowsZeroWhenMaximumFractionDigitsFilled = false
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
@@ -129,7 +131,17 @@ extension FoodsCreateItemVM:UITextFieldDelegate{
         if string.rangeOfCharacter(from: allowedCharacters.inverted) != nil {
             return false
         }
-        let prospectiveText = currentText.replacingCharacters(in: textRange, with: string)
+        var prospectiveText = currentText.replacingCharacters(in: textRange, with: string)
+        let shouldApplyTextManually = normalizesLeadingZeroInput
+            && currentText == "0"
+            && range.location == 1
+            && range.length == 0
+            && string.count == 1
+            && string != "."
+            && string != ","
+        if shouldApplyTextManually {
+            prospectiveText = string
+        }
 
         if prospectiveText.first == "." || prospectiveText.first == "," {
             return false
@@ -144,6 +156,10 @@ extension FoodsCreateItemVM:UITextFieldDelegate{
                 return false
             }
         }
+        if disallowsZeroWhenMaximumFractionDigitsFilled,
+           isZeroWithMaximumFractionDigitsFilled(prospectiveText) {
+            return false
+        }
         let integerPart = prospectiveText.split(omittingEmptySubsequences: false, whereSeparator: { $0 == "." || $0 == "," }).first.map(String.init) ?? ""
         if maxLength > 0 && integerPart.count > maxLength {
             return false
@@ -152,10 +168,26 @@ extension FoodsCreateItemVM:UITextFieldDelegate{
         if let maximumValue = maximumValue, let value = Float(normalizedText), value > maximumValue {
             return false
         }
+        if shouldApplyTextManually {
+            textField.text = prospectiveText
+        }
         numberChangeBlock?(normalizedText)
-        return true
+        return shouldApplyTextManually == false
     }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.textField.resignFirstResponder()
+    }
+
+    private func isZeroWithMaximumFractionDigitsFilled(_ text: String) -> Bool {
+        guard maximumFractionDigits > 0,
+              let separatorIndex = text.firstIndex(where: { $0 == "." || $0 == "," }) else {
+            return false
+        }
+        let integerPart = String(text[..<separatorIndex])
+        let decimalPart = String(text[text.index(after: separatorIndex)...])
+        return integerPart.isEmpty == false
+            && integerPart.allSatisfy { $0 == "0" }
+            && decimalPart.count == maximumFractionDigits
+            && decimalPart.allSatisfy { $0 == "0" }
     }
 }

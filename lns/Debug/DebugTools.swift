@@ -801,6 +801,7 @@ private struct DebugActionsView: View {
                 Button(role: .destructive) {
                     UserDefaults.standard.setValue("", forKey: token)
                     UserDefaults.standard.setValue("", forKey: userId)
+                    UserDefaults.clearNutritionDefaultMineralCache()
                     UserInfoModel.shared.token = ""
                     UserInfoModel.shared.uId = ""
                     message = "Login cache cleared. Restart the app to verify the logged-out flow."
