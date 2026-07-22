@@ -105,8 +105,8 @@ final class FoodsNutritionCatalog {
 
     private init() {
         let items: [Item] = [
-            Item(title: "纤维", key: "fibre", unit: "g", section: .metabolicAndUricAcid, itemSortIndex: 1, displayMaximumFractionDigits: 1),
-            Item(title: "糖", key: "sugar", unit: "g", section: .metabolicAndUricAcid, itemSortIndex: 2, displayMaximumFractionDigits: 1),
+            Item(title: "纤维", key: "fibre", unit: "g", section: .metabolicAndUricAcid, itemSortIndex: 2, displayMaximumFractionDigits: 1),
+            Item(title: "糖", key: "sugar", unit: "g", section: .metabolicAndUricAcid, itemSortIndex: 1, displayMaximumFractionDigits: 1),
             Item(title: "饱和脂肪", key: "saturatedFat", unit: "g", section: .cardiovascularRisk, itemSortIndex: 1, displayMaximumFractionDigits: 1),
             Item(title: "反式脂肪", key: "transFat", unit: "g", section: .cardiovascularRisk, itemSortIndex: 2, displayMaximumFractionDigits: 1),
             Item(title: "胆固醇", key: "cholesterol", unit: "mg", section: .cardiovascularRisk, itemSortIndex: 3, displayMaximumFractionDigits: 1),
@@ -122,9 +122,9 @@ final class FoodsNutritionCatalog {
         ]
 
         let sortedItems = items.sorted { $0.sortIndex < $1.sortIndex }
-        flatItems = sortedItems
+        flatItems = items
         createInputItems = items
-        itemMap = Dictionary(uniqueKeysWithValues: sortedItems.map { ($0.key, $0) })
+        itemMap = Dictionary(uniqueKeysWithValues: items.map { ($0.key, $0) })
 
         var groupedItems: [SectionItems] = []
         for section in Section.allCases {

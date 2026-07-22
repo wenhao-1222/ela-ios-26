@@ -97,7 +97,7 @@ class JournalReportDailyMsgVM: UIView {
     }()
     lazy var naturalHeadVm: JournalReportTableHeadVM = {
         let vm = JournalReportTableHeadVM.init(frame: .zero)
-        vm.titleLab.text = "营养详情"
+        vm.titleLab.text = "其他营养成分"
         return vm
     }()
     lazy var nutritionDistributionHeadVm: JournalReportTableHeadVM = {
@@ -133,6 +133,14 @@ class JournalReportDailyMsgVM: UIView {
     lazy var nutritionProVm: JournalReportDailyNutritionProVM = {
         let vm = JournalReportDailyNutritionProVM.init(frame: .zero)
         vm.alpha = 0
+        vm.hintTapBlock = { [weak self] in
+            guard let self = self else { return }
+            self.nutritionRecommendAlertVm.showSelf(in: self.controller.view)
+        }
+        return vm
+    }()
+    lazy var nutritionRecommendAlertVm: JournalReportNutritionRecommendAlertVM = {
+        let vm = JournalReportNutritionRecommendAlertVM.init(frame: .zero)
         return vm
     }()
     lazy var nodataVm: ReportNoDataVM = {
@@ -270,6 +278,7 @@ extension JournalReportDailyMsgVM{
         scrollView.addSubview(naturalHeadVm)
         scrollView.addSubview(nutritionNoProVm)
         scrollView.addSubview(nutritionProVm)
+        addSubview(nutritionRecommendAlertVm)
         tableView.isScrollEnabled = false
         
         addSubview(nodataVm)

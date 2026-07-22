@@ -181,7 +181,8 @@ extension FoodsSearchVM:UITextFieldDelegate{
             let originalOffset = textField.offset(from: textField.beginningOfDocument, to: selectedRange.start)
             
             // 允许字母、数字、汉字、空格及特定标点
-            let pattern = "[^A-Za-z0-9\\u4E00-\\u9FA5 ']"
+//            let pattern = "[^A-Za-z0-9\\u4E00-\\u9FA5 ']"
+            let pattern = "[^A-Za-z0-9\\u0020\\u4E00-\\u9FA5（）()、，。~.-]"
             var filteredText = textField.text!.pregReplace(pattern: pattern, with: "")
             
             // 限制长度

@@ -289,7 +289,11 @@ extension FoodsCreateVC{
 //            return
 //        }
         MobClick.event("createFoods")
-        sendAddFoodsRequest()
+        if isEditFoods {
+            sendUpdateFoodsRequest()
+        } else {
+            sendAddFoodsRequest()
+        }
     }
     func calculateNumber() {
         if self.carNumber == 0 && self.proteinNumber == 0 && self.fatNumber == 0{
@@ -511,7 +515,39 @@ extension FoodsCreateVC{
 
 extension FoodsCreateVC{
     func sendAddFoodsRequest() {
-        MCToast.mc_loading(text: isEditFoods ? "食物保存中..." : "食物创建中...")
+        MCToast.mc_loading(text: "食物创建中...")
+        let param = makeFoodsRequestParam()
+        WHNetworkUtil.shareManager().POST(urlString: URL_foods_save, parameters: param as? [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
+//            DLLog(message: "\(responseObject)")
+            MCToast.mc_text("“\(self.foodsNameVm.textField.text ?? "")”创建成功",respond: .allow)
+
+            let dataStrig = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
+            param.setValue("\(dataStrig ?? "")", forKey: "fid")
+            self.handleFoodsSaveSuccess(param: param, shouldRemoveOldFoods: false)
+            if self.addBlock != nil{
+                self.addBlock!()
+            }
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "createFoodsSuccess"), object: nil)
+            self.backTapAction()
+        }
+    }
+
+    func sendUpdateFoodsRequest() {
+        MCToast.mc_loading(text: "食物保存中...")
+        let param = makeFoodsRequestParam()
+        param.setValue(editFoodsDict.stringValueForKey(key: "fid"), forKey: "fid")
+        WHNetworkUtil.shareManager().POST(urlString: URL_foods_update, parameters: param as? [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
+//            DLLog(message: "\(responseObject)")
+            MCToast.mc_text("“\(self.foodsNameVm.textField.text ?? "")”保存成功",respond: .allow)
+
+            self.handleFoodsSaveSuccess(param: param, shouldRemoveOldFoods: true)
+            self.editSuccessBlock?(param)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "createFoodsSuccess"), object: nil)
+            self.backTapAction()
+        }
+    }
+
+    private func makeFoodsRequestParam() -> NSMutableDictionary {
         let spec = [["specNum":"\(self.specVm.numberTextField.text ?? "1")",
                      "specName":"\(self.specVm.specName)"]]
         var calories = self.caloriVm.numberLabel.text
@@ -530,42 +566,23 @@ extension FoodsCreateVC{
                      "carbohydrate":"\(WHUtils.convertStringToString("\(self.carNumber)") ?? "0")".replacingOccurrences(of: ",", with: "."),
                      "spec":self.getJSONStringFromArray(array: spec as NSArray)] as NSMutableDictionary
         appendNutritionInputValues(to: param)
-        if isEditFoods {
-            param.setValue(editFoodsDict.stringValueForKey(key: "fid"), forKey: "fid")
+        return param
+    }
+
+    private func handleFoodsSaveSuccess(param: NSMutableDictionary, shouldRemoveOldFoods: Bool) {
+        param.setValue("\(self.specVm.specName)", forKey: "specName")
+        param.setValue("\(self.specVm.numberTextField.text ?? "1")", forKey: "specNum")
+        param.setValue("\(self.specVm.numberTextField.text ?? "1")", forKey: "qty")
+        if shouldRemoveOldFoods {
+            UserDefaults.delFoods(foodsDict: self.editFoodsDict, forKey: .myFoodsList)
+            UserDefaults.delFoods(foodsDict: self.editFoodsDict, forKey: .hidsoryFoodsAdd)
         }
-        WHNetworkUtil.shareManager().POST(urlString: URL_foods_save, parameters: param as? [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
-//            DLLog(message: "\(responseObject)")
-            MCToast.mc_text("“\(self.foodsNameVm.textField.text ?? "")”\(self.isEditFoods ? "保存" : "创建")成功",respond: .allow)
-
-            let dataStrig = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-
-            let fid = self.isEditFoods ? self.editFoodsDict.stringValueForKey(key: "fid") : "\(dataStrig ?? "")"
-            param.setValue(fid, forKey: "fid")
-            param.setValue("\(self.specVm.specName)", forKey: "specName")
-            param.setValue("\(self.specVm.numberTextField.text ?? "1")", forKey: "specNum")
-            param.setValue("\(self.specVm.numberTextField.text ?? "1")", forKey: "qty")
-            if self.isEditFoods {
-                UserDefaults.delFoods(foodsDict: self.editFoodsDict, forKey: .myFoodsList)
-                UserDefaults.delFoods(foodsDict: self.editFoodsDict, forKey: .hidsoryFoodsAdd)
-            }
-            UserDefaults.saveFoods(foodsDict: param as NSDictionary,forKey: .myFoodsList)
+        UserDefaults.saveFoods(foodsDict: param as NSDictionary,forKey: .myFoodsList)
 //            WHUtils().sendAddFoodsForCountRequest(fids: ["\(dataStrig ?? "")"])
 
-            param.setValue("\(self.specVm.specName)", forKey: "spec")
+        param.setValue("\(self.specVm.specName)", forKey: "spec")
 //            param.setValue("\(self.specVm.numberTextField.text ?? "1")", forKey: "qty")
-            WHUtils().sendAddHistoryFoods(foodsMsgArray: [param])
-            if self.isEditFoods {
-                self.editSuccessBlock?(param)
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "createFoodsSuccess"), object: nil)
-                self.backTapAction()
-                return
-            }
-            if self.addBlock != nil{
-                self.addBlock!()
-            }
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "createFoodsSuccess"), object: nil)
-            self.backTapAction()
-        }
+        WHUtils().sendAddHistoryFoods(foodsMsgArray: [param])
     }
 
     private func appendNutritionInputValues(to param: NSMutableDictionary) {

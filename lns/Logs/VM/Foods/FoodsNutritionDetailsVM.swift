@@ -151,7 +151,7 @@ class FoodsNutritionDetailsVM: UIView {
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "营养详情"
+        lab.text = "其他营养成分"
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
         lab.font = .systemFont(ofSize: 14, weight: .medium)
         return lab

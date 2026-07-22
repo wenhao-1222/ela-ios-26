@@ -297,6 +297,7 @@ class JournalReportDailyNutritionProVM: UIView {
     private var isRequestingDefaultMineral = false
     /// 外部容器布局使用的整体高度。
     var selfHeight = kFitWidth(0)
+    var hintTapBlock:(()->())?
 
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: 0))
@@ -460,6 +461,15 @@ extension JournalReportDailyNutritionProVM {
         hintIconLabel.frame = CGRect(x: kFitWidth(82), y: currentY + hintTopGap + kFitWidth(2), width: kFitWidth(16), height: kFitWidth(16))
         hintLabel.frame = CGRect(x: hintIconLabel.frame.maxX + kFitWidth(6), y: currentY + hintTopGap, width: whiteWidth - hintIconLabel.frame.maxX - kFitWidth(36), height: hintHeight)
 
+        let hintTapView = UIView(frame: CGRect(x: kFitWidth(56),
+                                               y: currentY + kFitWidth(8),
+                                               width: whiteWidth - kFitWidth(112),
+                                               height: kFitWidth(36)))
+        hintTapView.backgroundColor = .clear
+        hintTapView.isUserInteractionEnabled = true
+        hintTapView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hintTapAction)))
+        whiteView.addSubview(hintTapView)
+
         updateData(reportMsgDict: [:])
     }
 
@@ -607,5 +617,9 @@ extension JournalReportDailyNutritionProVM {
             return intake
         }
         return nil
+    }
+
+    @objc private func hintTapAction() {
+        hintTapBlock?()
     }
 }
