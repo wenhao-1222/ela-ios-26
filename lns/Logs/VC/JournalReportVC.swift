@@ -13,6 +13,7 @@ class JournalReportVC: WHBaseViewVC {
     
     var currentIndex = 0 // 0  日报   1  周报
     var detailDict = NSDictionary()
+    var shouldScrollToDailyNutritionDetail = false
     
     override func viewDidDisappear(_ animated: Bool) {
 //        SkeletonAppearance.default.gradient = .init(colors: [UIColor.COLOR_TEXT_TITLE_0f1214_06,UIColor.COLOR_TEXT_TITLE_0f1214_10])
@@ -198,6 +199,9 @@ extension JournalReportVC{
             self.dailyMsgVm.caloriesMealMsgVm.alpha = 1
             self.dailyMsgVm.caloriesSourceMsgVm.alpha = 1
         })
+        if shouldScrollToDailyNutritionDetail {
+            dailyMsgVm.scrollToNutritionDetail(animated: false)
+        }
     }
     func updateUI() {
         let center = self.dailyMsgVm.center

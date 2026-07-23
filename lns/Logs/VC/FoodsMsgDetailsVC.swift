@@ -118,6 +118,9 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
     lazy var nutritionDetailVm: FoodsNutritionDetailsVM = {
         let vm = FoodsNutritionDetailsVM.init(frame: CGRect.init(x: 0, y: self.caloriDetailVm.frame.maxY+kFitWidth(12), width: 0, height: 0))
         vm.foodsDetailDict = self.foodsDetailDict
+        vm.detailTapBlock = { [weak self] in
+            self?.showTodayNutritionReportAction()
+        }
         vm.heightChangeBlock = { [weak self] in
             self?.refreshScrollContentSize(animated: true)
         }
@@ -356,6 +359,30 @@ extension FoodsMsgDetailsVC{
             self?.sendFoodsDetailRequest()
         }
         self.navigationController?.pushViewController(vc, animated: true)
+    }
+
+    @objc func showTodayNutritionReportAction() {
+        let vc = JournalReportVC()
+        vc.detailDict = todayJournalReportDetailDict()
+        vc.currentIndex = 0
+        vc.shouldScrollToDailyNutritionDetail = true
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func todayJournalReportDetailDict() -> NSDictionary {
+        let todayDate = Date().todayDate
+        guard let logsModel = LogsSQLiteManager.getInstance().getLogsByDate(sDate: todayDate) else {
+            return ["sdate": todayDate]
+        }
+
+        let detailDict = NSMutableDictionary(dictionary: logsModel.modelToDict())
+        let sportDict = SportDataSQLiteManager.getInstance().querySportsData(sDate: todayDate)
+        if UserInfoModel.shared.statSportDataToTarget == "1" {
+            detailDict.setValue("\(sportDict.stringValueForKey(key: "sportCalories"))", forKey: "sportCalories")
+        } else {
+            detailDict.setValue("", forKey: "sportCalories")
+        }
+        return detailDict
     }
 
     func updateOwnerActionButtonsVisibility() {

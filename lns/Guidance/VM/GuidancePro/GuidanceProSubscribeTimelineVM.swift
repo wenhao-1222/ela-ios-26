@@ -593,13 +593,13 @@ private extension GuidanceProSubscribeTimelineVM {
 
         let dayLabel = UILabel()
         dayLabel.text = dayText
-        dayLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        dayLabel.font = .systemFont(ofSize: 12, weight: .regular)
+        dayLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+        dayLabel.font = .systemFont(ofSize: 14, weight: .medium)
 
         let titleLabel = UILabel()
         titleLabel.text = titleText
-        titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        titleLabel.font = .systemFont(ofSize: 14, weight: .medium)
+        titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        titleLabel.font = .systemFont(ofSize: 12, weight: .regular)
 
         let subtitleLabel = UILabel()
         subtitleLabel.text = subtitleText

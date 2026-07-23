@@ -15,6 +15,8 @@ class JournalReportDailyMsgVM: UIView {
     private var isDailyReportLoading = false
     private var dailyReportLoadingStartTime: TimeInterval = 0
     private let minDailyReportSkeletonDuration: TimeInterval = 0.35
+    private var pendingScrollToNutritionDetail = false
+    private var pendingScrollToNutritionDetailAnimated = false
     
     var offsetChangeBlock:((CGFloat)->())?
     
@@ -300,6 +302,7 @@ extension JournalReportDailyMsgVM{
             let contentMaxY = layoutNutritionDetail(startY: self.caloriesSourceMsgVm.frame.maxY+kFitWidth(12))
 
             self.scrollView.contentSize = CGSize.init(width: 0, height: contentMaxY+kFitWidth(20)+WHUtils().getBottomSafeAreaHeight())
+            self.performPendingNutritionDetailScrollIfNeeded()
             DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
                 self.caloriesMealMsgVm.alpha = 1
                 self.caloriesSourceMsgVm.alpha = 1
@@ -326,6 +329,7 @@ extension JournalReportDailyMsgVM{
         let contentMaxY = layoutNutritionDetail(startY: self.caloriesSourceMsgVm.frame.maxY+kFitWidth(12))
         
         self.scrollView.contentSize = CGSize.init(width: 0, height: contentMaxY+kFitWidth(20)+WHUtils().getBottomSafeAreaHeight())
+        self.performPendingNutritionDetailScrollIfNeeded()
         
         UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
             self.naturalHeadVm.alpha = 1
@@ -359,6 +363,27 @@ extension JournalReportDailyMsgVM{
         nutritionNoProVm.frame = CGRect.init(x: 0, y: naturalHeadVm.frame.maxY, width: SCREEN_WIDHT, height: nutritionNoProVm.selfHeight)
         nutritionProVm.frame = CGRect.init(x: 0, y: startY, width: SCREEN_WIDHT, height: 0)
         return nutritionNoProVm.frame.maxY
+    }
+
+    func scrollToNutritionDetail(animated: Bool) {
+        pendingScrollToNutritionDetail = true
+        pendingScrollToNutritionDetailAnimated = animated
+        DispatchQueue.main.async {
+            self.performPendingNutritionDetailScrollIfNeeded()
+        }
+    }
+
+    private func performPendingNutritionDetailScrollIfNeeded() {
+        guard pendingScrollToNutritionDetail else { return }
+        guard naturalHeadVm.isHidden == false, naturalHeadVm.frame.maxY > 0 else { return }
+        guard scrollView.contentSize.height > 0, scrollView.bounds.height > 0 else { return }
+
+        pendingScrollToNutritionDetail = false
+        let minOffsetY = -scrollView.adjustedContentInset.top
+        let maxOffsetY = max(minOffsetY, scrollView.contentSize.height - scrollView.bounds.height + scrollView.adjustedContentInset.bottom)
+        let targetOffsetY = min(max(naturalHeadVm.frame.minY-kFitWidth(8), minOffsetY), maxOffsetY)
+        scrollView.setContentOffset(CGPoint(x: 0, y: targetOffsetY), animated: pendingScrollToNutritionDetailAnimated)
+        offsetChangeBlock?(targetOffsetY)
     }
 }
 

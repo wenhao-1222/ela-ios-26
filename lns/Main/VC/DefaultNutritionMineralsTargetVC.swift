@@ -410,20 +410,27 @@ private extension DefaultNutritionMineralsTargetVC {
     func confirmTarget(_ row: DefaultNutritionMineralsRowView) {
         let item = row.item
         let value = (row.textField.text ?? "").replacingOccurrences(of: ",", with: ".")
-        guard value.count > 0, let doubleValue = Double(value), doubleValue >= item.minimumInputValue else {
+        let doubleValue: Double
+        if value.isEmpty {
+            doubleValue = 0
+        } else if let inputValue = Double(value), inputValue >= item.minimumInputValue {
+            doubleValue = inputValue
+        } else {
             MCToast.mc_text("请输入\(item.title)数值", offset: kFitWidth(100) + SCREEN_HEIGHT * 0.5, respond: .allow)
             return
         }
 
         row.textField.resignFirstResponder()
         MCToast.mc_loading()
-        let param = [item.key: displayText(from: doubleValue)]
+        let targetText = displayText(from: doubleValue)
+        let param = [item.key: targetText]
         WHNetworkUtil.shareManager().POST(urlString: URL_get_default_nutrition_minerals_set,
                                           parameters: param as [String: AnyObject],
                                           isNeedToast: true,
                                           vc: self) { [weak self] _ in
             guard let self = self else { return }
-            self.targetValues[item.key] = self.displayText(from: doubleValue)
+            row.updateValue(targetText)
+            self.targetValues[item.key] = targetText
             self.updateCache(key: item.key, value: doubleValue)
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
         } failure: { [weak self] _ in
