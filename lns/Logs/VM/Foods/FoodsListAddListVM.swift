@@ -185,6 +185,7 @@ extension FoodsListAddListVM{
             foodMsg.setValue("\(specDefault.stringValueForKey(key: "specNum"))".replacingOccurrences(of: ",", with: "."), forKey: "weight")
             foodMsg.setValue("\(specDefault.stringValueForKey(key: "specNum"))".replacingOccurrences(of: ",", with: "."), forKey: "specNum")
             foodMsg.setValue(specDefault.doubleValueForKey(key: "specNum"), forKey: "qty")
+            applyNutritionDetails(to: foodMsg, baseFoodsDict: foodsDict)
         }else{
             if (foodsDict["fname"]as? String ?? "").count > 0{
                 foodMsg.setValue("\(foodsDict.stringValueForKey(key: "fname"))", forKey: "fname")
@@ -205,6 +206,7 @@ extension FoodsListAddListVM{
             foodMsg.setValue("\(foodsMsgDict.stringValueForKey(key: "spec"))", forKey: "spec")
             foodMsg.setValue("1", forKey: "select")
             foodMsg.setValue("1", forKey: "state")
+            applyNutritionDetails(to: foodMsg, baseFoodsDict: foodsDict)
         }
 //        MobClick.event("journalAddHistoryFoods")
 //        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "foodsAddForLogs"), object: foodMsg)
@@ -217,6 +219,64 @@ extension FoodsListAddListVM{
         }
         UserDefaults.saveFoods(foodsDict: foodMsg)
     }
+    private func applyNutritionDetails(to foodMsg: NSMutableDictionary, baseFoodsDict: NSDictionary) {
+        let scaleDecimal = nutritionDetailScaleDecimal(foodMsg: foodMsg, baseFoodsDict: baseFoodsDict)
+
+        for item in FoodsNutritionCatalog.shared.flatItems {
+            if let rawValue = nutritionRawValue(in: foodMsg, key: item.key) {
+                setNutritionDetailValue(rawValue, for: item, in: foodMsg)
+                continue
+            }
+
+            guard let baseValue = nutritionRawValue(in: baseFoodsDict, key: item.key) else { continue }
+            let scaledDecimal = decimalValue(baseValue) * scaleDecimal
+            setNutritionDetailValue(scaledDecimal, for: item, in: foodMsg)
+        }
+    }
+
+    private func nutritionDetailScaleDecimal(foodMsg: NSDictionary, baseFoodsDict: NSDictionary) -> Decimal {
+        let macroKeys = ["protein", "carbohydrate", "fat", "calories"]
+        for key in macroKeys {
+            let baseDecimal = decimalValue(baseFoodsDict[key])
+            guard NSDecimalNumber(decimal: baseDecimal).compare(NSDecimalNumber.zero) != .orderedSame else { continue }
+
+            let currentDecimal = decimalValue(foodMsg[key])
+            guard NSDecimalNumber(decimal: currentDecimal).compare(NSDecimalNumber.zero) != .orderedSame else { continue }
+
+            return currentDecimal / baseDecimal
+        }
+        return 1
+    }
+
+    private func nutritionRawValue(in dict: NSDictionary, key: String) -> Any? {
+        guard let value = dict[key], !(value is NSNull) else { return nil }
+        if let stringValue = value as? String,
+           stringValue.trimmingCharacters(in: .whitespacesAndNewlines).count == 0 {
+            return nil
+        }
+        return value
+    }
+
+    private func setNutritionDetailValue(_ value: Any, for item: FoodsNutritionCatalog.Item, in foodMsg: NSMutableDictionary) {
+        let decimal = decimalValue(value)
+        let formattedValue = WHUtils.convertStringToString(
+            NSDecimalNumber(decimal: decimal).stringValue,
+            digitNumer: item.maximumInputFractionDigits
+        ) ?? "0"
+        foodMsg.setValue(formattedValue.replacingOccurrences(of: ",", with: "."), forKey: item.key)
+    }
+
+    private func decimalValue(_ value: Any?) -> Decimal {
+        if let number = value as? NSNumber {
+            return number.decimalValue
+        }
+        if let stringValue = value as? String {
+            let normalized = stringValue.replacingOccurrences(of: ",", with: ".")
+            return Decimal(string: normalized) ?? 0
+        }
+        return 0
+    }
+
     func sortDataArray() {
         let dictonaries:[Dictionary<String,Any>] = foodsArray.map { $0 as! [String: Any] }
     

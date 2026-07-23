@@ -519,6 +519,7 @@ extension JounalCollectionCell{
                             foodsDict.setValue("\(carbo)".replacingOccurrences(of: ",", with: "."), forKey: "carbohydrate")
                             foodsDict.setValue("\(protein)".replacingOccurrences(of: ",", with: "."), forKey: "protein")
                             foodsDict.setValue("\(fat)".replacingOccurrences(of: ",", with: "."), forKey: "fat")
+                            addNutritionDetails(to: foodsDict, from: foodsMsg)
                             foodsDict.setValue("1", forKey: "state")
                         }else{
                             foodsDict.setValue("\(specNum)".replacingOccurrences(of: ",", with: "."), forKey: "qty")
@@ -532,6 +533,7 @@ extension JounalCollectionCell{
                             foodsDict.setValue("\(carbo)".replacingOccurrences(of: ",", with: "."), forKey: "carbohydrate")
                             foodsDict.setValue("\(protein)".replacingOccurrences(of: ",", with: "."), forKey: "protein")
                             foodsDict.setValue("\(fat)".replacingOccurrences(of: ",", with: "."), forKey: "fat")
+                            replaceNutritionDetails(in: foodsDict, from: foodsMsg)
                             foodsDict.setValue("1", forKey: "state")
                         }
                         if foodsArray.count > i {
@@ -577,6 +579,7 @@ extension JounalCollectionCell{
                             foodsDict.setValue("\(foodsMsg.doubleValueForKey(key: "carbohydrateNumber"))".replacingOccurrences(of: ",", with: "."), forKey: "carbohydrate")
                             foodsDict.setValue("\(foodsMsg.doubleValueForKey(key: "proteinNumber"))".replacingOccurrences(of: ",", with: "."), forKey: "protein")
                             foodsDict.setValue("\(foodsMsg.doubleValueForKey(key: "fatNumber"))".replacingOccurrences(of: ",", with: "."), forKey: "fat")
+                            replaceNutritionDetails(in: foodsDict, from: foodsMsg)
                             foodsDict.setValue("1", forKey: "state")
                             if foodsArray.count > i {
                                 if foodsMsg.doubleValueForKey(key: "specNum") > 0{
@@ -612,6 +615,7 @@ extension JounalCollectionCell{
                             foodsDict.setValue("\(carbo)".replacingOccurrences(of: ",", with: "."), forKey: "carbohydrate")
                             foodsDict.setValue("\(protein)".replacingOccurrences(of: ",", with: "."), forKey: "protein")
                             foodsDict.setValue("\(fat)".replacingOccurrences(of: ",", with: "."), forKey: "fat")
+                            addNutritionDetails(to: foodsDict, from: foodsMsg)
                             foodsDict.setValue("1", forKey: "state")
 
                             if foodsArray.count > i{
@@ -669,6 +673,54 @@ extension JounalCollectionCell{
 //            self.addFoods(foodsMsg: foodsMsg)
         }
     }
+    private func addNutritionDetails(to foodsDict: NSMutableDictionary, from foodsMsg: NSDictionary) {
+        for item in FoodsNutritionCatalog.shared.flatItems {
+            let hasCurrentValue = nutritionRawValue(in: foodsDict, key: item.key) != nil
+            let hasAddedValue = nutritionRawValue(in: foodsMsg, key: item.key) != nil
+            guard hasCurrentValue || hasAddedValue else { continue }
+
+            let total = foodsDict.doubleValueForKey(key: item.key) + foodsMsg.doubleValueForKey(key: item.key)
+            setNutritionDetailValue(total, for: item, in: foodsDict)
+        }
+    }
+
+    private func replaceNutritionDetails(in foodsDict: NSMutableDictionary, from foodsMsg: NSDictionary) {
+        for item in FoodsNutritionCatalog.shared.flatItems {
+            guard let value = nutritionRawValue(in: foodsMsg, key: item.key) else {
+                foodsDict.removeObject(forKey: item.key)
+                continue
+            }
+            setNutritionDetailValue(value, for: item, in: foodsDict)
+        }
+    }
+
+    private func nutritionRawValue(in dict: NSDictionary, key: String) -> Any? {
+        guard let value = dict[key], !(value is NSNull) else { return nil }
+        if let stringValue = value as? String,
+           stringValue.trimmingCharacters(in: .whitespacesAndNewlines).count == 0 {
+            return nil
+        }
+        return value
+    }
+
+    private func setNutritionDetailValue(_ value: Any, for item: FoodsNutritionCatalog.Item, in foodsDict: NSMutableDictionary) {
+        let formattedValue = WHUtils.convertStringToString(
+            "\(numericNutritionValue(value))",
+            digitNumer: item.maximumInputFractionDigits
+        ) ?? "0"
+        foodsDict.setValue(formattedValue.replacingOccurrences(of: ",", with: "."), forKey: item.key)
+    }
+
+    private func numericNutritionValue(_ value: Any?) -> Double {
+        if let number = value as? NSNumber {
+            return number.doubleValue
+        }
+        if let stringValue = value as? String {
+            return stringValue.replacingOccurrences(of: ",", with: ".").doubleValue
+        }
+        return 0
+    }
+
     func addFoodsBatch(foodsArray:NSArray) {
         if foodsArray.count == 0 { return }
 

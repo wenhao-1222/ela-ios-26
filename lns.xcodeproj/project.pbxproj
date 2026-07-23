@@ -307,10 +307,6 @@
 		A7443DF72DD1EA0A0040FEFD /* JournalReportDailyCaloriesMealsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7443DF62DD1E9FA0040FEFD /* JournalReportDailyCaloriesMealsCell.swift */; };
 		A7443DF92DD1EB8C0040FEFD /* JournalReportDailyCaloriesMealsItemVm.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7443DF82DD1EB870040FEFD /* JournalReportDailyCaloriesMealsItemVm.swift */; };
 		A7443DFB2DD1F68E0040FEFD /* JournalReportDailyCaloriesMealsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7443DFA2DD1F6890040FEFD /* JournalReportDailyCaloriesMealsVM.swift */; };
-		F1B200022F9B000000000001 /* JournalReportDailyNutritionNoProVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B200012F9B000000000001 /* JournalReportDailyNutritionNoProVM.swift */; };
-		F1B200042F9B000000000001 /* JournalReportDailyNutritionProVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B200032F9B000000000001 /* JournalReportDailyNutritionProVM.swift */; };
-		F1B200062F9B000000000001 /* JournalReportNutritionRecommendAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B200052F9B000000000001 /* JournalReportNutritionRecommendAlertVM.swift */; };
-		F1B200082F9B100000000001 /* DefaultNutritionMineralsTargetVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B200072F9B100000000001 /* DefaultNutritionMineralsTargetVC.swift */; };
 		A7454B2E2E73B6AF0064076C /* pca-code.json in Resources */ = {isa = PBXBuildFile; fileRef = A7454B2D2E73B6AE0064076C /* pca-code.json */; };
 		A7454B302E73B6C30064076C /* AddressDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7454B2F2E73B6C20064076C /* AddressDataLoader.swift */; };
 		A7454B322E73B6E60064076C /* AddressPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7454B312E73B6E50064076C /* AddressPickerView.swift */; };
@@ -967,13 +963,13 @@
 		EC768B5C2C8A503C006B98E5 /* ElaWeekFatWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC768B5B2C8A503C006B98E5 /* ElaWeekFatWidget.swift */; };
 		EC7784272F5675F6003102D2 /* ElaProVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7784262F5675F2003102D2 /* ElaProVC.swift */; };
 		EC7784292F568CBB003102D2 /* ElaProPriceVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7784282F568CB7003102D2 /* ElaProPriceVM.swift */; };
-		EC7785012FA0000003102D2 /* ElaProElementsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7785002FA0000003102D2 /* ElaProElementsVC.swift */; };
-		EC7785032FA0000003102D2 /* ElaProElementsIntroVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7785022FA0000003102D2 /* ElaProElementsIntroVM.swift */; };
 		EC77842B2F56900003102D21 /* ElaProProgressVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */; };
 		EC77842E2F5698AC03102D21 /* ElaProPlanVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */; };
 		EC7784302F56A3A103102D21 /* ElaProIAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC77842F2F56A39F03102D21 /* ElaProIAPManager.swift */; };
 		EC7784322F57A92103102D21 /* ElaProReadyVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7784312F57A91F03102D21 /* ElaProReadyVM.swift */; };
 		EC7784342F57E00403102D21 /* ElaProTransformVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7784332F57E00103102D21 /* ElaProTransformVM.swift */; };
+		EC7785012FA0000003102D2 /* ElaProElementsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7785002FA0000003102D2 /* ElaProElementsVC.swift */; };
+		EC7785032FA0000003102D2 /* ElaProElementsIntroVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7785022FA0000003102D2 /* ElaProElementsIntroVM.swift */; };
 		EC77AAC52F56DA2700ED0E93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC77AAC42F56DA2700ED0E93 /* StoreKit.framework */; };
 		EC781CC82BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC781CC72BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift */; };
 		EC781CCA2BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC781CC92BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift */; };
@@ -1406,6 +1402,10 @@
 		F1A700102F90000100AABBCC /* JournalElaProAnnouncementAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A7000F2F90000100AABBCC /* JournalElaProAnnouncementAlertVM.swift */; };
 		F1A700202F90000100AABBCC /* GuideTotalBodyImpactVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700212F90000100AABBCC /* GuideTotalBodyImpactVM.swift */; };
 		F1A700222F90000100AABBCC /* GuideTotalDietRecordVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A700232F90000100AABBCC /* GuideTotalDietRecordVM.swift */; };
+		F1B200022F9B000000000001 /* JournalReportDailyNutritionNoProVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B200012F9B000000000001 /* JournalReportDailyNutritionNoProVM.swift */; };
+		F1B200042F9B000000000001 /* JournalReportDailyNutritionProVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B200032F9B000000000001 /* JournalReportDailyNutritionProVM.swift */; };
+		F1B200062F9B000000000001 /* JournalReportNutritionRecommendAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B200052F9B000000000001 /* JournalReportNutritionRecommendAlertVM.swift */; };
+		F1B200082F9B100000000001 /* DefaultNutritionMineralsTargetVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B200072F9B100000000001 /* DefaultNutritionMineralsTargetVC.swift */; };
 		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
 		F2B0C2012F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */; };
 		F2B0C3012F80100100A1B2C3 /* GuidanceElaProTransitionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */; };
@@ -1809,10 +1809,6 @@
 		A7443DF62DD1E9FA0040FEFD /* JournalReportDailyCaloriesMealsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportDailyCaloriesMealsCell.swift; sourceTree = "<group>"; };
 		A7443DF82DD1EB870040FEFD /* JournalReportDailyCaloriesMealsItemVm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportDailyCaloriesMealsItemVm.swift; sourceTree = "<group>"; };
 		A7443DFA2DD1F6890040FEFD /* JournalReportDailyCaloriesMealsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportDailyCaloriesMealsVM.swift; sourceTree = "<group>"; };
-		F1B200012F9B000000000001 /* JournalReportDailyNutritionNoProVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportDailyNutritionNoProVM.swift; sourceTree = "<group>"; };
-		F1B200032F9B000000000001 /* JournalReportDailyNutritionProVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportDailyNutritionProVM.swift; sourceTree = "<group>"; };
-		F1B200052F9B000000000001 /* JournalReportNutritionRecommendAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportNutritionRecommendAlertVM.swift; sourceTree = "<group>"; };
-		F1B200072F9B100000000001 /* DefaultNutritionMineralsTargetVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultNutritionMineralsTargetVC.swift; sourceTree = "<group>"; };
 		A7454B2D2E73B6AE0064076C /* pca-code.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "pca-code.json"; sourceTree = "<group>"; };
 		A7454B2F2E73B6C20064076C /* AddressDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressDataLoader.swift; sourceTree = "<group>"; };
 		A7454B312E73B6E50064076C /* AddressPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressPickerView.swift; sourceTree = "<group>"; };
@@ -2496,13 +2492,13 @@
 		EC768B5B2C8A503C006B98E5 /* ElaWeekFatWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaWeekFatWidget.swift; sourceTree = "<group>"; };
 		EC7784262F5675F2003102D2 /* ElaProVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProVC.swift; sourceTree = "<group>"; };
 		EC7784282F568CB7003102D2 /* ElaProPriceVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProPriceVM.swift; sourceTree = "<group>"; };
-		EC7785002FA0000003102D2 /* ElaProElementsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProElementsVC.swift; sourceTree = "<group>"; };
-		EC7785022FA0000003102D2 /* ElaProElementsIntroVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProElementsIntroVM.swift; sourceTree = "<group>"; };
 		EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProProgressVM.swift; sourceTree = "<group>"; };
 		EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProPlanVM.swift; sourceTree = "<group>"; };
 		EC77842F2F56A39F03102D21 /* ElaProIAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProIAPManager.swift; sourceTree = "<group>"; };
 		EC7784312F57A91F03102D21 /* ElaProReadyVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProReadyVM.swift; sourceTree = "<group>"; };
 		EC7784332F57E00103102D21 /* ElaProTransformVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProTransformVM.swift; sourceTree = "<group>"; };
+		EC7785002FA0000003102D2 /* ElaProElementsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProElementsVC.swift; sourceTree = "<group>"; };
+		EC7785022FA0000003102D2 /* ElaProElementsIntroVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProElementsIntroVM.swift; sourceTree = "<group>"; };
 		EC77AAC42F56DA2700ED0E93 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EC781CC72BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnairePlanFoodsVM.swift; sourceTree = "<group>"; };
 		EC781CC92BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnairePlanFoodsTableViewCell.swift; sourceTree = "<group>"; };
@@ -2960,6 +2956,10 @@
 		F1A7000F2F90000100AABBCC /* JournalElaProAnnouncementAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalElaProAnnouncementAlertVM.swift; sourceTree = "<group>"; };
 		F1A700212F90000100AABBCC /* GuideTotalBodyImpactVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalBodyImpactVM.swift; sourceTree = "<group>"; };
 		F1A700232F90000100AABBCC /* GuideTotalDietRecordVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideTotalDietRecordVM.swift; sourceTree = "<group>"; };
+		F1B200012F9B000000000001 /* JournalReportDailyNutritionNoProVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportDailyNutritionNoProVM.swift; sourceTree = "<group>"; };
+		F1B200032F9B000000000001 /* JournalReportDailyNutritionProVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportDailyNutritionProVM.swift; sourceTree = "<group>"; };
+		F1B200052F9B000000000001 /* JournalReportNutritionRecommendAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportNutritionRecommendAlertVM.swift; sourceTree = "<group>"; };
+		F1B200072F9B100000000001 /* DefaultNutritionMineralsTargetVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultNutritionMineralsTargetVC.swift; sourceTree = "<group>"; };
 		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceElaProTransitionVM.swift; sourceTree = "<group>"; };
@@ -6369,9 +6369,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6406,9 +6410,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -8146,7 +8154,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 159;
+				CURRENT_PROJECT_VERSION = 160;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -8173,7 +8181,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.4;
+				MARKETING_VERSION = 2.5.5;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -8254,7 +8262,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 159;
+				CURRENT_PROJECT_VERSION = 160;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -8280,7 +8288,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.4;
+				MARKETING_VERSION = 2.5.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",
