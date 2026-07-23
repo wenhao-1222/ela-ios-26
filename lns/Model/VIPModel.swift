@@ -71,7 +71,7 @@ class VIPModel: NSObject {
 
     func updateSubscriptionBizType(_ value: String) {
         let trimmedValue = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard ["1", "2", "3", "4"].contains(trimmedValue) else { return }
+        guard ["1", "2", "3", "4", "5"].contains(trimmedValue) else { return }
         bizType = trimmedValue
     }
     

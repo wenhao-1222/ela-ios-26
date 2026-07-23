@@ -143,7 +143,7 @@ private extension ElaProElementsIntroVM {
         
         heroImageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(7))
+            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(21))
             make.width.equalTo(kFitWidth(303))
             make.height.equalTo(kFitWidth(244))
         }

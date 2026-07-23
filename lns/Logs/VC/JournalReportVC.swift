@@ -25,6 +25,7 @@ class JournalReportVC: WHBaseViewVC {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.sendFriendListRequest()
+        self.dailyMsgVm.refreshNutritionDetailState()
 //        self.navigationController?.fd_interactivePopDisabled = false
 //        self.navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
         if self.typeVm.currentIndex == 1 { checkPushAuthForWeek() }

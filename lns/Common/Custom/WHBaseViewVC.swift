@@ -498,7 +498,7 @@ class WHBaseViewVC: ViewController {
         self.view.resignFirstResponder()
     }
     
-    func presentAlertVc(confirmBtn:String, message:String, title:String, cancelBtn:String?,textAlignLeft:Bool? = false, handler:@escaping(UIAlertAction) ->Void, viewController:UIViewController) {
+    func presentAlertVc(confirmBtn:String, message:String, title:String, cancelBtn:String?,textAlignLeft:Bool? = false, confirmTextColor: UIColor? = nil, cancelTextColor: UIColor? = nil, handler:@escaping(UIAlertAction) ->Void, viewController:UIViewController) {
         let alertVc = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
         if cancelBtn != nil{
@@ -506,7 +506,7 @@ class WHBaseViewVC: ViewController {
 
             })
             alertVc.addAction(cancelAction)
-            cancelAction.setTextColor(WHColorWithAlpha(colorStr: "007AFF", alpha: 0.6))
+            cancelAction.setTextColor(cancelTextColor ?? WHColorWithAlpha(colorStr: "007AFF", alpha: 0.6))
         }
         
         let okAction = UIAlertAction(title: confirmBtn, style: .default, handler: { (action)in
@@ -514,6 +514,9 @@ class WHBaseViewVC: ViewController {
             handler(action)
         })
         alertVc.addAction(okAction)
+        if let confirmTextColor = confirmTextColor {
+            okAction.setTextColor(confirmTextColor)
+        }
         if textAlignLeft == true{
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .left
@@ -526,7 +529,7 @@ class WHBaseViewVC: ViewController {
         
         viewController.present(alertVc, animated:true, completion:nil)
     }
-    func presentAlertVc(confirmBtn:String, message:String, title:String, cancelBtn:String?,textAlignLeft:Bool? = false, handler:@escaping(UIAlertAction) ->Void, cancelHandler:@escaping(UIAlertAction) ->Void,viewController:UIViewController) {
+    func presentAlertVc(confirmBtn:String, message:String, title:String, cancelBtn:String?,textAlignLeft:Bool? = false, confirmTextColor: UIColor? = nil, cancelTextColor: UIColor? = nil, handler:@escaping(UIAlertAction) ->Void, cancelHandler:@escaping(UIAlertAction) ->Void,viewController:UIViewController) {
         let alertVc = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
         if cancelBtn != nil{
@@ -535,7 +538,7 @@ class WHBaseViewVC: ViewController {
                 cancelHandler(action)
           })
             alertVc.addAction(cancelAction)
-            cancelAction.setTextColor(WHColorWithAlpha(colorStr: "007AFF", alpha: 0.6))
+            cancelAction.setTextColor(cancelTextColor ?? WHColorWithAlpha(colorStr: "007AFF", alpha: 0.6))
         }
         
         let okAction = UIAlertAction(title: confirmBtn, style: .default, handler: { (action)in
@@ -543,6 +546,9 @@ class WHBaseViewVC: ViewController {
             handler(action)
         })
         alertVc.addAction(okAction)
+        if let confirmTextColor = confirmTextColor {
+            okAction.setTextColor(confirmTextColor)
+        }
         if textAlignLeft == true{
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .left

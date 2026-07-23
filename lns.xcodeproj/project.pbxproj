@@ -310,6 +310,7 @@
 		F1B200022F9B000000000001 /* JournalReportDailyNutritionNoProVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B200012F9B000000000001 /* JournalReportDailyNutritionNoProVM.swift */; };
 		F1B200042F9B000000000001 /* JournalReportDailyNutritionProVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B200032F9B000000000001 /* JournalReportDailyNutritionProVM.swift */; };
 		F1B200062F9B000000000001 /* JournalReportNutritionRecommendAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B200052F9B000000000001 /* JournalReportNutritionRecommendAlertVM.swift */; };
+		F1B200082F9B100000000001 /* DefaultNutritionMineralsTargetVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B200072F9B100000000001 /* DefaultNutritionMineralsTargetVC.swift */; };
 		A7454B2E2E73B6AF0064076C /* pca-code.json in Resources */ = {isa = PBXBuildFile; fileRef = A7454B2D2E73B6AE0064076C /* pca-code.json */; };
 		A7454B302E73B6C30064076C /* AddressDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7454B2F2E73B6C20064076C /* AddressDataLoader.swift */; };
 		A7454B322E73B6E60064076C /* AddressPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7454B312E73B6E50064076C /* AddressPickerView.swift */; };
@@ -1811,6 +1812,7 @@
 		F1B200012F9B000000000001 /* JournalReportDailyNutritionNoProVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportDailyNutritionNoProVM.swift; sourceTree = "<group>"; };
 		F1B200032F9B000000000001 /* JournalReportDailyNutritionProVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportDailyNutritionProVM.swift; sourceTree = "<group>"; };
 		F1B200052F9B000000000001 /* JournalReportNutritionRecommendAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalReportNutritionRecommendAlertVM.swift; sourceTree = "<group>"; };
+		F1B200072F9B100000000001 /* DefaultNutritionMineralsTargetVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultNutritionMineralsTargetVC.swift; sourceTree = "<group>"; };
 		A7454B2D2E73B6AE0064076C /* pca-code.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "pca-code.json"; sourceTree = "<group>"; };
 		A7454B2F2E73B6C20064076C /* AddressDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressDataLoader.swift; sourceTree = "<group>"; };
 		A7454B312E73B6E50064076C /* AddressPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressPickerView.swift; sourceTree = "<group>"; };
@@ -5796,6 +5798,7 @@
 				A7B5016E2DE59D950024C0CB /* OverViewVC.swift */,
 				EC2B38342C070E87008315DA /* WHPieChartView.swift */,
 				EC5C816A2C5A0286000EC4BC /* GoalSetVC.swift */,
+				F1B200072F9B100000000001 /* DefaultNutritionMineralsTargetVC.swift */,
 				A79541DF2E011D4C00E019C8 /* GoalSetCircleVC.swift */,
 				EC9726122C5B578B00F244A2 /* GoalSetWeeksVC.swift */,
 			);
@@ -7316,6 +7319,7 @@
 				F1B200022F9B000000000001 /* JournalReportDailyNutritionNoProVM.swift in Sources */,
 				F1B200042F9B000000000001 /* JournalReportDailyNutritionProVM.swift in Sources */,
 				F1B200062F9B000000000001 /* JournalReportNutritionRecommendAlertVM.swift in Sources */,
+				F1B200082F9B100000000001 /* DefaultNutritionMineralsTargetVC.swift in Sources */,
 				ECFACE932BC7F213003CDA3A /* NaviBackButton.swift in Sources */,
 				ECD0FF182BABD25B001232C9 /* WHTool.swift in Sources */,
 				EC2802F32F1A060500FEF08D /* HabitGuideThirdVM.swift in Sources */,

@@ -137,6 +137,12 @@ class JournalReportDailyMsgVM: UIView {
             guard let self = self else { return }
             self.nutritionRecommendAlertVm.showSelf(in: self.controller.view)
         }
+        vm.itemTapBlock = { [weak self] item in
+            guard let self = self else { return }
+            let vc = DefaultNutritionMineralsTargetVC()
+//            vc.selectedItemKey = item.key
+            self.controller.navigationController?.pushViewController(vc, animated: true)
+        }
         return vm
     }()
     lazy var nutritionRecommendAlertVm: JournalReportNutritionRecommendAlertVM = {

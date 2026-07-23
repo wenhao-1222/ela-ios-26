@@ -124,6 +124,7 @@ private class JournalReportNutritionProgressView: UIView {
 private class JournalReportDailyNutritionRowView: UIView {
     /// 行数据，包含营养素基础配置、目标值和进度条风险样式。
     private var rowData: JournalReportDailyNutritionTarget
+    var tapBlock: ((FoodsNutritionCatalog.Item) -> Void)?
     private let rowHeight = kFitWidth(55)
     private let progressHeight = kFitWidth(4)
     private let intakeLabelWidth = kFitWidth(52)
@@ -229,6 +230,9 @@ extension JournalReportDailyNutritionRowView {
 
     /// 初始化行内标题、数值、箭头和进度条布局。
     private func initUI() {
+        isUserInteractionEnabled = true
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(rowTapAction)))
+
         addSubview(titleLabel)
         addSubview(intakeLabel)
         addSubview(targetLabel)
@@ -273,6 +277,10 @@ extension JournalReportDailyNutritionRowView {
     private func displayIntegerText(_ value: Double) -> String {
         return "\(Int(value.rounded()))"
     }
+
+    @objc private func rowTapAction() {
+        tapBlock?(rowData.item)
+    }
 }
 
 /// 日报会员态“营养详情”卡片。
@@ -298,6 +306,7 @@ class JournalReportDailyNutritionProVM: UIView {
     /// 外部容器布局使用的整体高度。
     var selfHeight = kFitWidth(0)
     var hintTapBlock:(()->())?
+    var itemTapBlock: ((FoodsNutritionCatalog.Item) -> Void)?
 
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT, height: 0))
@@ -449,6 +458,9 @@ extension JournalReportDailyNutritionProVM {
             for item in section.items {
                 guard let rowData = rows.first(where: { $0.item.key == item.key }) else { continue }
                 let rowView = JournalReportDailyNutritionRowView(rowData: rowData)
+                rowView.tapBlock = { [weak self] item in
+                    self?.itemTapBlock?(item)
+                }
                 rowViews[item.key] = rowView
                 whiteView.addSubview(rowView)
                 rowView.frame = CGRect(x: kFitWidth(20), y: currentY, width: whiteWidth - kFitWidth(40), height: rowView.selfHeight)

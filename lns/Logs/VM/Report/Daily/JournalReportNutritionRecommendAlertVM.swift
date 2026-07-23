@@ -64,14 +64,14 @@ final class JournalReportNutritionRecommendAlertVM: AlertVMCommon {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.alignment = .fill
-        stack.spacing = kFitWidth(20)
+        stack.spacing = kFitWidth(16)
         return stack
     }()
 }
 
 private extension JournalReportNutritionRecommendAlertVM {
     func configureBaseStyle() {
-        whiteView.backgroundColor = .COLOR_CARD_BG_WHITE_ALERT
+        whiteView.backgroundColor = .COLOR_BG_F2//.COLOR_CARD_BG_WHITE_ALERT
         whiteBlurView.contentView.backgroundColor = UIColor.COLOR_CARD_BG_WHITE_ALERT.withAlphaComponent(0.08)
         confirmButton.isHidden = true
     }

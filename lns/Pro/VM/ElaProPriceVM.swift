@@ -1845,7 +1845,7 @@ extension ElaProPriceVM{
         moreTitleLabel.font = titleFont
         
         configureBenefitRows([
-            FeatureContent(title: "深度分析", desc: "微量元素深入追踪，优化恢复与表现"),
+            FeatureContent(title: "深度分析", desc: "微量元素深入追踪，优化恢复与表现",iconName: "elements_pro_icon_3"),
             FeatureContent(title: "每周复盘", desc: "结合饮食训练变化，系统复盘进度", iconName: "survey_subscription_coach_ic_01"),
             FeatureContent(title: "卡点预警", desc: "多维数据早发现，瓶颈前先介入", iconName: "survey_subscription_coach_ic_02"),
             FeatureContent(title: "体重去噪", desc: "分清真实进度，减少结果焦虑", iconName: "survey_subscription_coach_ic_03"),

@@ -53,6 +53,7 @@ private final class DefaultNutritionMineralsRowView: UIView {
         lab.textColor = .THEME
         lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.textAlignment = .right
+        lab.adjustsFontSizeToFitWidth = true
         return lab
     }()
 
@@ -76,6 +77,15 @@ private final class DefaultNutritionMineralsRowView: UIView {
 
     func updateValue(_ value: String) {
         textField.text = value
+    }
+
+    ///将光标移动到输入框结尾位置
+    func beginEditing() {
+//        let shouldMoveCursorToEnd = textField.isFirstResponder == false
+        textField.becomeFirstResponder()
+//        if shouldMoveCursorToEnd {
+//            textField.moveCursorToEnd()
+//        }
     }
 
     func configureAccessory(onCancel: (() -> Void)?, onConfirm: (() -> Void)?) {
@@ -103,11 +113,11 @@ private final class DefaultNutritionMineralsRowView: UIView {
         unitLabel.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-16))
             make.centerY.lessThanOrEqualToSuperview()
-            make.width.equalTo(kFitWidth(32))
+            make.width.equalTo(kFitWidth(26))
         }
         textField.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(130))
-            make.right.equalTo(unitLabel.snp.left).offset(kFitWidth(-8))
+            make.right.equalTo(unitLabel.snp.left)//.offset(kFitWidth(-4))
             make.top.bottom.equalToSuperview()
         }
         lineView.snp.makeConstraints { make in
@@ -119,12 +129,19 @@ private final class DefaultNutritionMineralsRowView: UIView {
     }
 
     @objc private func rowTapAction() {
+//        let shouldMoveCursorToEnd = textField.isFirstResponder == false
         textField.becomeFirstResponder()
+//        if shouldMoveCursorToEnd {
+//            textField.moveCursorToEnd()
+//        }
     }
 }
 
 extension DefaultNutritionMineralsRowView: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
+//        DispatchQueue.main.async { [weak textField] in
+//            textField?.moveCursorToEnd()
+//        }
         beginEditingBlock?()
     }
 
@@ -181,6 +198,13 @@ extension DefaultNutritionMineralsRowView: UITextFieldDelegate {
     }
 }
 
+//private extension UITextField {
+//    func moveCursorToEnd() {
+//        let endPosition = endOfDocument
+//        selectedTextRange = textRange(from: endPosition, to: endPosition)
+//    }
+//}
+
 class DefaultNutritionMineralsTargetVC: WHBaseViewVC {
     private let sectionTitleHeight = kFitWidth(77)
     private let rowHeight = kFitWidth(47)
@@ -190,6 +214,8 @@ class DefaultNutritionMineralsTargetVC: WHBaseViewVC {
     private var targetValues: [String: String] = [:]
     private var editingOriginalValues: [String: String] = [:]
     private var contentBottomY: CGFloat = 0
+    var selectedItemKey: String?
+    private var didFocusSelectedItem = false
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -211,6 +237,11 @@ class DefaultNutritionMineralsTargetVC: WHBaseViewVC {
         initUI()
         loadTargetsFromCache()
         sendDefaultMineralsRequestIfNeeded()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        focusSelectedItemIfNeeded(animated: false)
     }
 
     private lazy var contentScrollView: UIScrollView = {
@@ -263,6 +294,19 @@ class DefaultNutritionMineralsTargetVC: WHBaseViewVC {
         lab.minimumScaleFactor = 0.8
         return lab
     }()
+
+    private lazy var hintTapView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = .clear
+        vi.isUserInteractionEnabled = true
+        vi.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hintTapAction)))
+        return vi
+    }()
+
+    private lazy var nutritionRecommendAlertVm: JournalReportNutritionRecommendAlertVM = {
+        let vm = JournalReportNutritionRecommendAlertVM(frame: .zero)
+        return vm
+    }()
 }
 
 private extension DefaultNutritionMineralsTargetVC {
@@ -292,11 +336,14 @@ private extension DefaultNutritionMineralsTargetVC {
                         self.scrollRowToVisible(row, keyboardObscuredHeight: keyboardObscuredHeight, animated: true)
                     }
                 }
-                row.configureAccessory(onCancel: { [weak self, weak row] in
-                    guard let self = self, let row = row else { return }
-                    let originalValue = self.editingOriginalValues[item.key] ?? self.targetValues[item.key] ?? ""
-                    row.updateValue(originalValue)
-                    self.targetValues[item.key] = originalValue
+//                row.configureAccessory(onCancel: { [weak self, weak row] in
+//                    guard let self = self, let row = row else { return }
+//                    let originalValue = self.editingOriginalValues[item.key] ?? self.targetValues[item.key] ?? ""
+//                    row.updateValue(originalValue)
+//                    self.targetValues[item.key] = originalValue
+//                },
+                row.configureAccessory(onCancel: { [weak row] in
+                    guard let row = row else { return }
                     row.textField.resignFirstResponder()
                 }, onConfirm: { [weak self, weak row] in
                     guard let self = self, let row = row else { return }
@@ -311,9 +358,11 @@ private extension DefaultNutritionMineralsTargetVC {
         contentView.addSubview(restoreButton)
         contentView.addSubview(hintIconLabel)
         contentView.addSubview(hintLabel)
+        contentView.addSubview(hintTapView)
         restoreButton.frame = CGRect(x: 0, y: currentY + kFitWidth(10), width: SCREEN_WIDHT, height: kFitWidth(35))
         hintIconLabel.frame = CGRect(x: kFitWidth(111), y: restoreButton.frame.maxY + kFitWidth(15), width: kFitWidth(14), height: kFitWidth(14))
         hintLabel.frame = CGRect(x: hintIconLabel.frame.maxX + kFitWidth(6), y: restoreButton.frame.maxY + kFitWidth(12), width: SCREEN_WIDHT - hintIconLabel.frame.maxX - kFitWidth(26), height: kFitWidth(20))
+        hintTapView.frame = CGRect(x: kFitWidth(72), y: restoreButton.frame.maxY, width: SCREEN_WIDHT - kFitWidth(144), height: kFitWidth(45))
 
         contentBottomY = currentY + bottomActionHeight
         contentView.frame.size.height = contentBottomY
@@ -354,6 +403,7 @@ private extension DefaultNutritionMineralsTargetVC {
             let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             UserDefaults.setNutritionDefaultMineral(dataDict)
             self.refreshTargets(from: dataDict)
+            self.focusSelectedItemIfNeeded(animated: true)
         }
     }
 
@@ -361,7 +411,7 @@ private extension DefaultNutritionMineralsTargetVC {
         let item = row.item
         let value = (row.textField.text ?? "").replacingOccurrences(of: ",", with: ".")
         guard value.count > 0, let doubleValue = Double(value), doubleValue >= item.minimumInputValue else {
-            MCToast.mc_text("请输入\(item.title)数值", respond: .allow)
+            MCToast.mc_text("请输入\(item.title)数值", offset: kFitWidth(100) + SCREEN_HEIGHT * 0.5, respond: .allow)
             return
         }
 
@@ -386,16 +436,29 @@ private extension DefaultNutritionMineralsTargetVC {
 
     @objc func restoreDefaultAction() {
         view.endEditing(true)
-        MCToast.mc_loading()
-        WHNetworkUtil.shareManager().POST(urlString: URL_get_default_nutrition_minerals_delete,
-                                          parameters: nil,
-                                          isNeedToast: true,
-                                          vc: self) { [weak self] _ in
-            guard let self = self else { return }
-            UserDefaults.clearNutritionDefaultMineralCache()
-            self.sendDefaultMineralsRequestIfNeeded(force: true)
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
-        }
+        presentAlertVc(confirmBtn: "恢复默认",
+                       message: "将覆盖已修改的目标值",
+                       title: "恢复默认值？",
+                       cancelBtn: "取消",
+                       confirmTextColor: .THEME,
+                       cancelTextColor: .COLOR_TEXT_TITLE_0f1214,
+                       handler: { action in
+            MCToast.mc_loading()
+            WHNetworkUtil.shareManager().POST(urlString: URL_get_default_nutrition_minerals_delete,
+                                              parameters: nil,
+                                              isNeedToast: true,
+                                              vc: self) { [weak self] _ in
+                guard let self = self else { return }
+                UserDefaults.clearNutritionDefaultMineralCache()
+                self.sendDefaultMineralsRequestIfNeeded(force: true)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+            }
+        }, viewController: self)
+    }
+
+    @objc func hintTapAction() {
+        view.endEditing(true)
+        nutritionRecommendAlertVm.showSelf(in: view)
     }
 
     func updateCache(key: String, value: Double) {
@@ -419,6 +482,22 @@ private extension DefaultNutritionMineralsTargetVC {
         let maxOffsetY = max(contentBottomY - visibleHeight, 0)
         let offsetY = min(targetBottom - visibleHeight, maxOffsetY)
         contentScrollView.setContentOffset(CGPoint(x: 0, y: max(offsetY, 0)), animated: animated)
+    }
+
+    func focusSelectedItemIfNeeded(animated: Bool) {
+        guard didFocusSelectedItem == false,
+              let selectedItemKey = selectedItemKey,
+              let row = rowViews[selectedItemKey] else { return }
+
+        didFocusSelectedItem = true
+        let visibleHeight = SCREEN_HEIGHT - getNavigationBarHeight()
+        let rowMidY = row.frame.midY
+        let maxOffsetY = max(contentView.frame.height - visibleHeight, 0)
+        let offsetY = min(max(rowMidY - visibleHeight/2, 0), maxOffsetY)
+        contentScrollView.setContentOffset(CGPoint(x: 0, y: offsetY), animated: animated)
+        DispatchQueue.main.async { [weak row] in
+            row?.beginEditing()
+        }
     }
 
     func targetValue(in dict: NSDictionary, for item: FoodsNutritionCatalog.Item) -> Double? {

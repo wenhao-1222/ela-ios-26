@@ -316,8 +316,8 @@ extension UserDefaults {
         UserDefaults.standard.removeObject(forKey: AccountKeys.loginUserGroupIsTrial.rawValue)
         UserDefaults.standard.removeObject(forKey: AccountKeys.loginUserGroupDietImportant.rawValue)
         UserInfoModel.shared.onboarding_flow_status = true
-        UserInfoModel.shared.abTestModel.isTrial = true
-        UserInfoModel.shared.abTestModel.diet_important = .B
+        UserInfoModel.shared.abTestModel.isTrial = false
+        UserInfoModel.shared.abTestModel.diet_important = .A
     }
     static public func initLoginUserGroupMsgCache() {
         let onboardingFlowStatus = self.getString(forKey: .loginUserGroupOnboardingFlowStatus) ?? ""

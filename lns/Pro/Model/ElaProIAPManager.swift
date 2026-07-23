@@ -81,6 +81,7 @@ final class ElaProIAPManager: NSObject {
         case aiGuidance = "2"
         case standard = "3"
         case aiFoodRecognition = "4"
+        case nutritionElements = "5"
     }
 
     private enum BackendSyncOutcome {
@@ -489,8 +490,7 @@ final class ElaProIAPManager: NSObject {
                                          queryBizType: String = PurchaseQueryBizType.standard.rawValue,
                                          completion: ((PurchasePostActionOutcome) -> Void)? = nil) {
         let fallbackQueryBizType = resolveQueryBizType(queryBizType, defaultType: .standard)
-        let effectiveQueryBizType = resolveQueryBizType(VIPModel.shared.bizType,
-                                                        defaultType: PurchaseQueryBizType(rawValue: fallbackQueryBizType) ?? .standard)
+        let effectiveQueryBizType = fallbackQueryBizType
         let localUnlockExpireAt = applyLocalTemporaryUnlock(transaction: transaction)
         let payload = makePurchaseVerifyPayload(transaction: transaction,
                                                 localUnlockExpireAt: localUnlockExpireAt,

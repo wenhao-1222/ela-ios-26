@@ -29,7 +29,7 @@ class ElaProElementsVC: WHBaseViewVC {
             self?.showAgreementAlert()
         }
         vm.purchaseSuccessBlock = { [weak self] in
-            self?.backTapAction()
+            self?.refreshVipInfoAndBack()
         }
         vm.startLoadingIfNeeded()
         return vm
@@ -114,5 +114,18 @@ private extension ElaProElementsVC {
             alertVm = created
         }
         alertVm.showSelf()
+    }
+    
+    func refreshVipInfoAndBack() {
+        WHNetworkUtil.shareManager().POST(urlString: URL_pro_info, parameters: nil) { [weak self] responseObject in
+            guard let self = self else { return }
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            VIPModel.shared.update(with: dataDict)
+            NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_VIP_STATUS, object: nil)
+            self.backTapAction()
+        } failure: { [weak self] _ in
+            self?.backTapAction()
+        }
     }
 }
