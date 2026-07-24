@@ -311,12 +311,10 @@ extension FoodsMsgDetailsVM{
         setAttributeStringForLabel(numberString: "\(proteinOneDigit)", unitString: "g", label: proteinLabel)
         setAttributeStringForLabel(numberString: "\(fatOneDigit)", unitString: "g", label: fatLabel)
         
-//        if self.changeBlock != nil{
-//            let dict = ["carbohydrate":"\(WHUtils.convertStringToStringOneDigit("\(specCarbohydrate)") ?? "0")",
-//                        "protein":"\(WHUtils.convertStringToStringOneDigit("\(specProtein)") ?? "0")",
-//                        "fat":"\(WHUtils.convertStringToStringOneDigit("\(specFat)") ?? "0")"]
-//            self.changeBlock!(dict as NSDictionary)
-//        }
+        if self.changeBlock != nil {
+            let dict = ["countString": numString]
+            self.changeBlock!(dict as NSDictionary)
+        }
     }
     private func decimalValue(forSpecKey key: String) -> Decimal {
         let value = specDict[key]

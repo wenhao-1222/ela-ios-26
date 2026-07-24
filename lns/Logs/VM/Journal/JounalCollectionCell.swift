@@ -160,6 +160,11 @@ class JounalCollectionCell: UICollectionViewCell {
         NotificationCenter.default.removeObserver(self)
     }
 
+    /// 生成当天同步到 Apple 健康的其他营养素总量，优先使用当前 cell 内最新的 mealsArray。
+    private func healthKitAdditionalNutritionValuesForCurrentDay() -> [String: Double] {
+        HealthKitNaturnalManager.additionalNutritionValues(fromFoods: mealsArray)
+    }
+
     lazy var goalVm: LogsNaturalGoalVM = {
         let vm = LogsNaturalGoalVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
         vm.layer.anchorPoint = CGPoint(x: 0.5, y: 0)
@@ -172,7 +177,8 @@ class JounalCollectionCell: UICollectionViewCell {
                                                          carbs: self.goalVm.carboCircleVm.currentNumFloat,
                                                                      protein: self.goalVm.proteinCircleVm.currentNumFloat,
                                                                      fat: self.goalVm.fatCircleVm.currentNumFloat,
-                                                                     cTime: self.queryDay)
+                                                                     cTime: self.queryDay,
+                                                                     additionalNutritionValues: self.healthKitAdditionalNutritionValuesForCurrentDay())
             if self.queryDay == Date().todayDate{
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: nil)
             }
@@ -192,7 +198,8 @@ class JounalCollectionCell: UICollectionViewCell {
                                                          carbs: self.goalVm.carboCircleVm.currentNumFloat,
                                                                      protein: self.goalVm.proteinCircleVm.currentNumFloat,
                                                                      fat: self.goalVm.fatCircleVm.currentNumFloat,
-                                                                     cTime: self.queryDay)
+                                                                     cTime: self.queryDay,
+                                                                     additionalNutritionValues: self.healthKitAdditionalNutritionValuesForCurrentDay())
             if self.queryDay == Date().todayDate{
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshTodayNutrition"), object: nil)
             }

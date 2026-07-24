@@ -12,9 +12,13 @@ import HealthKit
 
 class JournalSettingVC: WHBaseViewVC {
     
+    /// HealthKit 数据读写入口。
     let healthStore = HKHealthStore()
+    /// 运动记录 HealthKit 类型。
     let healthKitTypesToRead = HKObjectType.workoutType()
+    /// 体重 HealthKit 类型。
     let weightType = HKObjectType.quantityType(forIdentifier: .bodyMass)
+    /// 活动能量 HealthKit 类型。
     let activeEnergyBurnedType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)
     
     override func viewWillAppear(_ animated: Bool) {
@@ -405,8 +409,11 @@ extension JournalSettingVC{
         alertVc.addAction(cancelAction)
         self.present(alertVc, animated: true)
     }
+    /// 设置页请求运动同步授权；实际请求本 App 全部已接入的 HealthKit 权限，避免后续分批弹窗。
     func authorizeHealthKitWorkouts(completion: @escaping (Bool, Error?) -> Void) {
-        healthStore.requestAuthorization(toShare: [healthKitTypesToRead], read: [healthKitTypesToRead]) { success, error in
+//        旧逻辑：这里只请求运动类型权限，其他健康数据会在别的入口再次弹窗。
+//        healthStore.requestAuthorization(toShare: [healthKitTypesToRead], read: [healthKitTypesToRead]) { success, error in
+        HealthKitPermissionTypesProvider.requestAllKnownHealthDataAuthorization(in: healthStore) { success, error in
             completion(success, error)
             UserDefaults.set(value: "1", forKey: .health_sport_Authori)
             DispatchQueue.main.async {
@@ -415,8 +422,11 @@ extension JournalSettingVC{
         }
     }
     
+    /// 设置页请求体重同步授权；实际请求本 App 全部已接入的 HealthKit 权限，和其他入口保持一致。
     func authorizeWeightWorkouts(completion: @escaping (Bool, Error?) -> Void) {
-        healthStore.requestAuthorization(toShare: [weightType!], read: [weightType!]) { success, error in
+//        旧逻辑：这里只请求体重类型权限，其他健康数据会在别的入口再次弹窗。
+//        healthStore.requestAuthorization(toShare: [weightType!], read: [weightType!]) { success, error in
+        HealthKitPermissionTypesProvider.requestAllKnownHealthDataAuthorization(in: healthStore) { success, error in
             completion(success, error)
         }
     }

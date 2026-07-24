@@ -7,18 +7,29 @@
 import HealthKit
 
 class HealthKitManager: NSObject, ObservableObject {
+    /// HealthKit 数据读写入口。
     let healthStore = HKHealthStore()
 
+    /// 运动记录 HealthKit 类型。
     let healthKitTypesToRead = HKObjectType.workoutType()
+    /// 体重 HealthKit 类型。
     let weightType = HKObjectType.quantityType(forIdentifier: .bodyMass)
+    /// 饮水 HealthKit 类型。
     let waterType = HKObjectType.quantityType(forIdentifier: .dietaryWater)//饮水
+    /// 活动能量 HealthKit 类型。
     let activeEnergyBurnedType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)
+    /// 腰围 HealthKit 类型。
     let waistType = HKObjectType.quantityType(forIdentifier: .waistCircumference)//腰围
+    /// 体脂率 HealthKit 类型。
     let bodyFatType = HKObjectType.quantityType(forIdentifier: .bodyFatPercentage)//体脂率
+    /// 碳水 HealthKit 类型。
     let carboType = HKObjectType.quantityType(forIdentifier: .dietaryCarbohydrates)
+    /// 膳食能量 HealthKit 类型。
     let caloriesType = HKQuantityType.quantityType(forIdentifier: .dietaryEnergyConsumed)
+    /// 当前需要读取的运动类型列表。
     var hkWorkouts: [HKWorkoutActivityType] = [HKWorkoutActivityType]()
 
+    /// 初始化时检查本 App 已接入的 HealthKit 权限，并尽量一次性请求完整权限集合。
     override init() {
         super.init()
         var shareType = Set<HKSampleType>()
@@ -63,44 +74,48 @@ class HealthKitManager: NSObject, ObservableObject {
 //                    shareType.insert(waterType!)
 //                }
 //            }
-            if let weightType = weightType,
-               healthStore.authorizationStatus(for: weightType) != .sharingAuthorized {
-                shareType.insert(weightType)
-            }
-            if let waistType = waistType,
-               healthStore.authorizationStatus(for: waistType) != .sharingAuthorized {
-                shareType.insert(waistType)
-            }
-            if let bodyFatType = bodyFatType,
-               healthStore.authorizationStatus(for: bodyFatType) != .sharingAuthorized {
-                shareType.insert(bodyFatType)
-            }
-            if let caloriesType = caloriesType,
-               healthStore.authorizationStatus(for: caloriesType) != .sharingAuthorized {
-                shareType.insert(caloriesType)
-            }
-            if let carboType = carboType,
-               healthStore.authorizationStatus(for: carboType) != .sharingAuthorized {
-                shareType.insert(carboType)
-            }
-            if let proteinType = HKObjectType.quantityType(forIdentifier: .dietaryProtein),
-               healthStore.authorizationStatus(for: proteinType) != .sharingAuthorized {
-                shareType.insert(proteinType)
-            }
-            if let fatType = HKObjectType.quantityType(forIdentifier: .dietaryFatTotal),
-               healthStore.authorizationStatus(for: fatType) != .sharingAuthorized {
-                shareType.insert(fatType)
-            }
-            if let waterType = waterType,
-               healthStore.authorizationStatus(for: waterType) != .sharingAuthorized {
-                shareType.insert(waterType)
-            }
-            if let activeEnergyBurnedType = activeEnergyBurnedType,
-               healthStore.authorizationStatus(for: activeEnergyBurnedType) != .sharingAuthorized {
-                shareType.insert(activeEnergyBurnedType)
-            }
-            if healthStore.authorizationStatus(for: healthKitTypesToRead) != .sharingAuthorized {
-                shareType.insert(healthKitTypesToRead)
+//            旧逻辑：逐个检查旧类型，新增营养素不在这里，可能导致权限弹窗不完整。
+//            if let weightType = weightType,
+//               healthStore.authorizationStatus(for: weightType) != .sharingAuthorized {
+//                shareType.insert(weightType)
+//            }
+//            if let waistType = waistType,
+//               healthStore.authorizationStatus(for: waistType) != .sharingAuthorized {
+//                shareType.insert(waistType)
+//            }
+//            if let bodyFatType = bodyFatType,
+//               healthStore.authorizationStatus(for: bodyFatType) != .sharingAuthorized {
+//                shareType.insert(bodyFatType)
+//            }
+//            if let caloriesType = caloriesType,
+//               healthStore.authorizationStatus(for: caloriesType) != .sharingAuthorized {
+//                shareType.insert(caloriesType)
+//            }
+//            if let carboType = carboType,
+//               healthStore.authorizationStatus(for: carboType) != .sharingAuthorized {
+//                shareType.insert(carboType)
+//            }
+//            if let proteinType = HKObjectType.quantityType(forIdentifier: .dietaryProtein),
+//               healthStore.authorizationStatus(for: proteinType) != .sharingAuthorized {
+//                shareType.insert(proteinType)
+//            }
+//            if let fatType = HKObjectType.quantityType(forIdentifier: .dietaryFatTotal),
+//               healthStore.authorizationStatus(for: fatType) != .sharingAuthorized {
+//                shareType.insert(fatType)
+//            }
+//            if let waterType = waterType,
+//               healthStore.authorizationStatus(for: waterType) != .sharingAuthorized {
+//                shareType.insert(waterType)
+//            }
+//            if let activeEnergyBurnedType = activeEnergyBurnedType,
+//               healthStore.authorizationStatus(for: activeEnergyBurnedType) != .sharingAuthorized {
+//                shareType.insert(activeEnergyBurnedType)
+//            }
+//            if healthStore.authorizationStatus(for: healthKitTypesToRead) != .sharingAuthorized {
+//                shareType.insert(healthKitTypesToRead)
+//            }
+            if HealthKitPermissionTypesProvider.hasNotDeterminedShareType(in: healthStore) {
+                shareType = HealthKitPermissionTypesProvider.allShareTypes
             }
             if shareType.count > 0 {
                 UserDefaults.set(value: "1", forKey: .bodyData_Weight_Authori)
@@ -110,7 +125,7 @@ class HealthKitManager: NSObject, ObservableObject {
                 UserDefaults.set(value: "1", forKey: .health_sport_Authori)
                 UserDefaults.set(value: "1", forKey: .health_water_Authori)
                 
-                healthStore.requestAuthorization(toShare: shareType, read: shareType) { success, error in
+                healthStore.requestAuthorization(toShare: shareType, read: HealthKitPermissionTypesProvider.allReadTypes) { success, error in
                     if let error = error {
                         print("Error requesting health authorization: \(error.localizedDescription)")
                     }
@@ -263,18 +278,21 @@ class HealthKitManager: NSObject, ObservableObject {
 //       }
 //       healthStore.execute(sampleQuery)
 //   }
+    /// 请求运动入口所需的 HealthKit 权限；实际请求本 App 全部已接入权限，避免分批弹窗。
     func authorizeHealthKitWorkouts(completion: @escaping (Bool, Error?) -> Void) {
         guard HKHealthStore.isHealthDataAvailable() else {
             print("Health data not available")
             completion(false, nil)
             return
         }
-        let typesToShare: Set<HKSampleType> = [healthKitTypesToRead]
-                var typesToRead: Set<HKObjectType> = [healthKitTypesToRead]
-                if let activeEnergyBurnedType {
-                    typesToRead.insert(activeEnergyBurnedType)
-                }
-        if healthStore.authorizationStatus(for: healthKitTypesToRead) == HKAuthorizationStatus.sharingAuthorized{
+//        旧逻辑：运动入口只请求运动和活动能量读取权限。
+//        let typesToShare: Set<HKSampleType> = [healthKitTypesToRead]
+//                var typesToRead: Set<HKObjectType> = [healthKitTypesToRead]
+//                if let activeEnergyBurnedType {
+//                    typesToRead.insert(activeEnergyBurnedType)
+//                }
+        if healthStore.authorizationStatus(for: healthKitTypesToRead) == HKAuthorizationStatus.sharingAuthorized,
+           HealthKitPermissionTypesProvider.hasNotDeterminedShareType(in: healthStore) == false {
             completion(true, nil)
 //        }else{
 //            let isAuthori = UserDefaults.getString(forKey: .health_sport_Authori)
@@ -288,7 +306,7 @@ class HealthKitManager: NSObject, ObservableObject {
 //                completion(true, nil)
         } else {
 //            completion(false, nil)
-            healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { success, error in
+            HealthKitPermissionTypesProvider.requestAllKnownHealthDataAuthorization(in: healthStore) { success, error in
                 if success {
                     UserDefaults.set(value: "1", forKey: .health_sport_Authori)
                 }

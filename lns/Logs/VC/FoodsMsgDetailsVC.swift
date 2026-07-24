@@ -104,9 +104,10 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
             self.specAlertVm.showSelf()
             self.topVm.textField.resignFirstResponder()
         }
-        vm.changeBlock = {(dict)in
+        vm.changeBlock = { [weak self] dict in
 //            DLLog(message: "changeBlock:\(dict)")
 //            self.caloriDetailVm.updateUI(dict: dict)
+            self?.refreshScaledNutritionDetails(countString: dict.stringValueForKey(key: "countString"))
         }
         return vm
     }()
@@ -286,6 +287,12 @@ extension FoodsMsgDetailsVC{
             ) ?? "0"
             foodMsg.setValue(scaledString.replacingOccurrences(of: ",", with: "."), forKey: item.key)
         }
+    }
+
+    func refreshScaledNutritionDetails(countString: String) {
+        let scaledFoodDetailDict = NSMutableDictionary(dictionary: foodsDetailDict)
+        applyScaledNutritionDetails(to: scaledFoodDetailDict, countString: countString)
+        nutritionDetailVm.foodsDetailDict = scaledFoodDetailDict
     }
 
     func nutritionDetailScaleDecimal(countString: String) -> Decimal? {
@@ -550,7 +557,6 @@ extension FoodsMsgDetailsVC{
         topVm.calculateSpecWeight()
         specAlertVm.setDataArray(specArr: topVm.specArray)
         caloriDetailVm.calculatePercent(dict: foodsDetailDict)
-        nutritionDetailVm.foodsDetailDict = foodsDetailDict
         refreshScrollContentSize()
     }
 }
