@@ -433,11 +433,6 @@ private extension DefaultNutritionMineralsTargetVC {
             self.targetValues[item.key] = targetText
             self.updateCache(key: item.key, value: doubleValue)
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
-        } failure: { [weak self] _ in
-            guard let self = self else { return }
-            let originalValue = self.editingOriginalValues[item.key] ?? self.targetValues[item.key] ?? ""
-            row.updateValue(originalValue)
-            self.targetValues[item.key] = originalValue
         }
     }
 

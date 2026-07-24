@@ -13,7 +13,7 @@ final class JournalReportNutritionRecommendAlertVM: AlertVMCommon {
 
     private let contentHorizontalInset = kFitWidth(28)
     private let titleTop = kFitWidth(25)
-    private let closeButtonSize = kFitWidth(25)
+    private let closeButtonSize = kFitWidth(28)
     private let closeTapSize = kFitWidth(70)
     private let scrollBottomInset = kFitWidth(12)
     weak var hostView: UIView?
@@ -32,11 +32,12 @@ final class JournalReportNutritionRecommendAlertVM: AlertVMCommon {
 
     private lazy var closeButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.9)
+//        button.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.9)
         button.layer.cornerRadius = closeButtonSize/2
         button.clipsToBounds = true
         button.tintColor = .COLOR_TEXT_TITLE_0f1214_35
-        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+//        button.setImage(UIImage(systemName: "xmark"), for: .normal)
+        button.setImage(UIImage(named: "alert_close_icon"), for: .normal)
         button.addTarget(self, action: #selector(hiddenSelf), for: .touchUpInside)
         return button
     }()

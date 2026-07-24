@@ -386,10 +386,25 @@ extension FoodsMsgDetailsVC{
     }
 
     func updateOwnerActionButtonsVisibility() {
+        if shouldHideOwnerActionButtonsForSource() {
+            self.editButton.isHidden = true
+            self.deleteButton.isHidden = true
+            return
+        }
+
         let isOwner = hasLoadedFoodsDetail && self.foodsDetailDict.stringValueForKey(key: "uid") == UserInfoModel.shared.uId
         if canEdit{
             self.editButton.isHidden = !isOwner
             self.deleteButton.isHidden = !isOwner
+        }
+    }
+
+    func shouldHideOwnerActionButtonsForSource() -> Bool {
+        switch sourceType {
+        case .merge, .meals_create, .plan, .plan_update:
+            return true
+        default:
+            return false
         }
     }
 }

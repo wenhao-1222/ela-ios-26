@@ -379,19 +379,18 @@ class HealthKitManager: NSObject, ObservableObject {
                 uploadedUUidsArray.contains(result?.uuid.uuidString ?? "uuids") ||
                 result?.workoutActivityType != workType{
                 DLLog(message: "体能训练数据  已上传过 : \(result)")
-                
                 continue
             }
             
 //            let metadata = result?.metadata as? NSDictionary ?? [:]
-            let sourceRevision = result?.sourceRevision.source.name
+            let sourceRevision = result?.sourceRevision.source.name//这个是APP名字，可能会变动
             let time = Date().changeZeroAreaToZHTimeZone(dateString: dateFormatter.string(from: result?.startDate ?? Date()))
             DLLog(message: "dealRunningData (result):\(result)")
             DLLog(message: "dealRunningData (卡路里):\(result?.totalEnergyBurned?.doubleValue(for: HKUnit(from: "kcal")) ?? 0)")
             DLLog(message: "dealRunningData (开始时间):\(time)")
             DLLog(message: "dealRunningData (来源):\(sourceRevision ?? "数据来源")")
 //            if metadata.stringValueForKey(key: "HKWasUserEntered") == "1" && time.contains(Date().todayDate){
-            if sourceRevision?.contains("Elavatine") == false{
+            if sourceRevision?.contains("Elavatine") == false && result?.sourceRevision.source.bundleIdentifier != "com.lns.elavatine"{
 //                if (time.contains(Date().todayDate) || time.contains(Date().nextDay(days: -1))) && (sourceRevision?.contains("Elavatine") == false){
                     
                 var prancerciseWorkout = PrancerciseWorkout(calories: "0")
