@@ -11,12 +11,17 @@ class JournalReportDailyMsgVM: UIView {
     var selfHeight = kFitWidth(44)
     var detailDict = NSDictionary()
     var reportMsgDict = NSDictionary()
+    var shouldShowNutritionOnlyWhenDailyReportNoData = false
     var tableHeight = kFitWidth(0)
     private var isDailyReportLoading = false
     private var dailyReportLoadingStartTime: TimeInterval = 0
     private let minDailyReportSkeletonDuration: TimeInterval = 0.35
     private var pendingScrollToNutritionDetail = false
     private var pendingScrollToNutritionDetailAnimated = false
+    private var didReceiveDailyReportNoData = false
+    private var dailyReportNoDataMessage = "请先记录至少一种食物"
+    private var isShowingNutritionNoProOnlyForDailyNoData = false
+    private var isWaitingForDailyReportDisplayDecision = false
     
     var offsetChangeBlock:((CGFloat)->())?
     
@@ -294,6 +299,14 @@ extension JournalReportDailyMsgVM{
     }
     
     func updateFrame() {
+        if shouldShowNutritionOnlyWhenDailyReportNoData, didReceiveDailyReportNoData {
+            if UserInfoModel.shared.vipModel.isValidVip {
+                showDailyNoDataOnly(message: dailyReportNoDataMessage)
+            } else {
+                showNutritionNoProOnlyForDailyNoData()
+            }
+            return
+        }
         if self.detailDict.stringValueForKey(key: "sdate") == Date().todayDate{
             self.tableView.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: self.tableHeight)
             self.nutritionDistributionHeadVm.frame = CGRect.init(x: 0, y: self.tableHeight, width: SCREEN_WIDHT, height: self.nutritionDistributionHeadVm.selfHeight)
@@ -341,11 +354,26 @@ extension JournalReportDailyMsgVM{
     }
     
     @objc func refreshNutritionDetailState() {
+        if shouldShowNutritionOnlyWhenDailyReportNoData,
+           isShowingNutritionNoProOnlyForDailyNoData,
+           UserInfoModel.shared.vipModel.isValidVip {
+            sendDayliReposrtRequest()
+            return
+        }
         updateFrame()
     }
     
     @discardableResult
     func layoutNutritionDetail(startY: CGFloat) -> CGFloat {
+        if shouldShowNutritionOnlyWhenDailyReportNoData, isWaitingForDailyReportDisplayDecision {
+            naturalHeadVm.isHidden = true
+            nutritionNoProVm.isHidden = true
+            nutritionProVm.isHidden = true
+            naturalHeadVm.frame = CGRect(x: 0, y: startY, width: SCREEN_WIDHT, height: 0)
+            nutritionNoProVm.frame = CGRect(x: 0, y: startY, width: SCREEN_WIDHT, height: 0)
+            nutritionProVm.frame = CGRect(x: 0, y: startY, width: SCREEN_WIDHT, height: 0)
+            return startY
+        }
         let showNoPro = UserInfoModel.shared.vipModel.isValidVip == false
         let showPro = !showNoPro
         naturalHeadVm.isHidden = false
@@ -381,13 +409,99 @@ extension JournalReportDailyMsgVM{
         pendingScrollToNutritionDetail = false
         let minOffsetY = -scrollView.adjustedContentInset.top
         let maxOffsetY = max(minOffsetY, scrollView.contentSize.height - scrollView.bounds.height + scrollView.adjustedContentInset.bottom)
-        let targetOffsetY = min(max(naturalHeadVm.frame.minY-kFitWidth(8), minOffsetY), maxOffsetY)
+        let targetOffsetY = min(max(naturalHeadVm.frame.minY, minOffsetY), maxOffsetY)
         scrollView.setContentOffset(CGPoint(x: 0, y: targetOffsetY), animated: pendingScrollToNutritionDetailAnimated)
         offsetChangeBlock?(targetOffsetY)
     }
 }
 
 extension JournalReportDailyMsgVM{
+    private func hideNoDataView() {
+        nodataVm.isHidden = true
+        nodataVm.alpha = 0
+        nodataVm.whiteCoverView.isHidden = true
+        nodataVm.whiteCoverView.alpha = 0
+    }
+
+    private func restoreDailyReportContentVisibility() {
+        scrollView.isScrollEnabled = true
+        tableView.isHidden = false
+        nutritionDistributionHeadVm.isHidden = false
+        caloriesMealMsgVm.isHidden = false
+        caloriesSourceMsgVm.isHidden = false
+        naturalHeadVm.isHidden = false
+        rankingButton.removeFromSuperview()
+        rankingButton.alpha = 0
+        isShowingNutritionNoProOnlyForDailyNoData = false
+        isWaitingForDailyReportDisplayDecision = false
+        hideNoDataView()
+    }
+
+    private func hideDailyReportContentForNoData() {
+        tableView.isHidden = true
+        nutritionDistributionHeadVm.isHidden = true
+        caloriesMealMsgVm.isHidden = true
+        caloriesSourceMsgVm.isHidden = true
+        naturalHeadVm.isHidden = true
+        nutritionNoProVm.isHidden = true
+        nutritionProVm.isHidden = true
+        scrollView.setContentOffset(.zero, animated: false)
+        scrollView.isScrollEnabled = false
+        scrollView.contentSize = CGSize(width: 0, height: selfHeight)
+        offsetChangeBlock?(0)
+    }
+
+    private func showNutritionNoProOnlyForDailyNoData() {
+        hideNoDataView()
+        rankingButton.removeFromSuperview()
+        rankingButton.alpha = 0
+        hideDailyReportContentForNoData()
+        isShowingNutritionNoProOnlyForDailyNoData = true
+        naturalHeadVm.isHidden = false
+        naturalHeadVm.alpha = 1
+        naturalHeadVm.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: naturalHeadVm.selfHeight)
+        nutritionNoProVm.isHidden = false
+        nutritionNoProVm.alpha = 1
+        nutritionNoProVm.frame = CGRect(x: 0, y: naturalHeadVm.frame.maxY, width: SCREEN_WIDHT, height: nutritionNoProVm.selfHeight)
+        scrollView.contentSize = CGSize(width: 0, height: naturalHeadVm.frame.maxY+nutritionNoProVm.selfHeight)
+    }
+
+    private func showDailyNoDataOnly(message: String) {
+        let shouldShowNoDataWithAnimation = nodataVm.isHidden || nodataVm.alpha == 0
+        isShowingNutritionNoProOnlyForDailyNoData = false
+        scrollView.isScrollEnabled = true
+        scrollView.setContentOffset(.zero, animated: false)
+        offsetChangeBlock?(0)
+        tableView.isHidden = false
+        nutritionDistributionHeadVm.isHidden = false
+        caloriesMealMsgVm.isHidden = false
+        caloriesSourceMsgVm.isHidden = false
+        naturalHeadVm.isHidden = true
+        nutritionNoProVm.isHidden = true
+        nutritionProVm.isHidden = true
+        nutritionDistributionHeadVm.alpha = 1
+        caloriesMealMsgVm.alpha = 1
+        caloriesSourceMsgVm.alpha = 1
+
+        tableView.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: tableHeight)
+        nutritionDistributionHeadVm.frame = CGRect(x: 0, y: tableView.frame.maxY, width: SCREEN_WIDHT, height: nutritionDistributionHeadVm.selfHeight)
+        caloriesMealMsgVm.frame = CGRect(x: 0, y: nutritionDistributionHeadVm.frame.maxY, width: SCREEN_WIDHT, height: caloriesMealMsgVm.selfHeight)
+        caloriesSourceMsgVm.frame = CGRect(x: 0, y: caloriesMealMsgVm.frame.maxY+kFitWidth(12), width: SCREEN_WIDHT, height: caloriesSourceMsgVm.selfHeight)
+        scrollView.contentSize = CGSize(width: 0, height: caloriesSourceMsgVm.frame.maxY+kFitWidth(20)+WHUtils().getBottomSafeAreaHeight())
+        nodataVm.tipsLabel.text = message
+        if shouldShowNoDataWithAnimation {
+            nodataVm.showView()
+        } else {
+            nodataVm.isHidden = false
+            nodataVm.alpha = 1
+            nodataVm.whiteCoverView.isHidden = false
+            nodataVm.whiteCoverView.alpha = 1
+        }
+        showRankingButton(in: nodataVm)
+        rankingButton.addFriendButton.backgroundColor = .COLOR_CARD_BG_WHITE
+        rankingButton.addFriendButton.setTitleColor(.THEME, for: .normal)
+    }
+
     private func showRankingButton(in containerView: UIView) {
         let shouldFadeIn = rankingButton.superview !== containerView || rankingButton.alpha == 0
         containerView.addSubview(rankingButton)
@@ -399,8 +513,10 @@ extension JournalReportDailyMsgVM{
     
     func sendDayliReposrtRequest() {
         isDailyReportLoading = true
+        didReceiveDailyReportNoData = false
         dailyReportLoadingStartTime = Date().timeIntervalSince1970
-        tableView.isHidden = false
+        restoreDailyReportContentVisibility()
+        isWaitingForDailyReportDisplayDecision = shouldShowNutritionOnlyWhenDailyReportNoData
         tableView.reloadForSkeleton()
 
         let param = ["sdate":self.detailDict.stringValueForKey(key: "sdate")]
@@ -413,24 +529,40 @@ extension JournalReportDailyMsgVM{
             DispatchQueue.main.asyncAfter(deadline: .now()+delay) {
                 self.isDailyReportLoading = false
                 if code == 400 {
-                    self.tableView.reloadData()
-                    self.nodataVm.tipsLabel.text = "\(responseObject["message"] as? String ?? "请先记录至少一种食物")"
-                    self.nodataVm.showView()
-                    self.showRankingButton(in: self.nodataVm)
+                    self.isWaitingForDailyReportDisplayDecision = false
+                    self.didReceiveDailyReportNoData = true
+                    self.dailyReportNoDataMessage = "\(responseObject["message"] as? String ?? "请先记录至少一种食物")"
+                    if self.shouldShowNutritionOnlyWhenDailyReportNoData,
+                       UserInfoModel.shared.vipModel.isValidVip == false {
+                        self.showNutritionNoProOnlyForDailyNoData()
+                    } else if self.shouldShowNutritionOnlyWhenDailyReportNoData,
+                              UserInfoModel.shared.vipModel.isValidVip {
+                        self.tableView.reloadData()
+                        self.showDailyNoDataOnly(message: self.dailyReportNoDataMessage)
+                    } else {
+                        self.tableView.reloadData()
+                        self.nodataVm.tipsLabel.text = self.dailyReportNoDataMessage
+                        self.nodataVm.showView()
+                        self.showRankingButton(in: self.nodataVm)
 
-                    self.rankingButton.addFriendButton.backgroundColor = .COLOR_CARD_BG_WHITE
-                    self.rankingButton.addFriendButton.setTitleColor(.THEME, for: .normal)
+                        self.rankingButton.addFriendButton.backgroundColor = .COLOR_CARD_BG_WHITE
+                        self.rankingButton.addFriendButton.setTitleColor(.THEME, for: .normal)
+                    }
 //                    self.rankingButton.isHidden = true
                 }else{
+                    self.isWaitingForDailyReportDisplayDecision = false
                     let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
                     let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
                     DLLog(message: "sendDayliReposrtRequest:\(dataObj)")
 
 //                    self.rankingButton.isHidden = false
+                    self.didReceiveDailyReportNoData = false
+                    self.restoreDailyReportContentVisibility()
                     self.showRankingButton(in: self.scrollView)
                     self.reportMsgDict = dataObj
                     self.nutritionProVm.updateData(reportMsgDict: dataObj)
                     self.tableView.reloadData()
+                    self.updateFrame()
                 }
             }
         }

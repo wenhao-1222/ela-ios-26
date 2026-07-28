@@ -373,6 +373,7 @@ extension FoodsMsgDetailsVC{
         vc.detailDict = todayJournalReportDetailDict()
         vc.currentIndex = 0
         vc.shouldScrollToDailyNutritionDetail = true
+        vc.shouldShowNutritionOnlyWhenDailyReportNoData = true
         self.navigationController?.pushViewController(vc, animated: true)
     }
 

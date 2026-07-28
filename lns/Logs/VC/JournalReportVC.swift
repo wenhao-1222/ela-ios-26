@@ -14,6 +14,7 @@ class JournalReportVC: WHBaseViewVC {
     var currentIndex = 0 // 0  日报   1  周报
     var detailDict = NSDictionary()
     var shouldScrollToDailyNutritionDetail = false
+    var shouldShowNutritionOnlyWhenDailyReportNoData = false
     
     override func viewDidDisappear(_ animated: Bool) {
 //        SkeletonAppearance.default.gradient = .init(colors: [UIColor.COLOR_TEXT_TITLE_0f1214_06,UIColor.COLOR_TEXT_TITLE_0f1214_10])
@@ -71,12 +72,12 @@ class JournalReportVC: WHBaseViewVC {
         let vm = JournalReportDailyMsgVM.init(frame: CGRect.init(x: 0, y: self.typeVm.frame.maxY, width: 0, height: 0))
         vm.detailDict = self.detailDict
         vm.controller = self
+        vm.shouldShowNutritionOnlyWhenDailyReportNoData = self.shouldShowNutritionOnlyWhenDailyReportNoData
         vm.offsetChangeBlock = {(offsetY)in
             self.typeVm.changeBgAlpha(offsetY: offsetY)
         }
         vm.nodataVm.recordBlock = {()in
-            NotificationCenter.default.post(name: NOTIFI_NAME_REPORT_ADD_FOODS, object: nil)
-            self.backTapAction()
+            self.returnToJournalTabAndShowAddFoodsAlert()
         }
         return vm
     }()
@@ -99,8 +100,7 @@ class JournalReportVC: WHBaseViewVC {
             self.saveAction()
         }
         vm.nodataVm.recordBlock = {()in
-            NotificationCenter.default.post(name: NOTIFI_NAME_REPORT_ADD_FOODS, object: nil)
-            self.backTapAction()
+            self.returnToJournalTabAndShowAddFoodsAlert()
         }
         return vm
     }()
@@ -109,6 +109,59 @@ class JournalReportVC: WHBaseViewVC {
         
         return vm
     }()
+}
+
+private extension JournalReportVC {
+    func returnToJournalTabAndShowAddFoodsAlert() {
+        guard let tabBarController = self.tabBarController ?? findTabBarController(from: UIApplication.shared.keyWindow?.rootViewController),
+              let journalIndex = journalTabIndex(in: tabBarController) else {
+            NotificationCenter.default.post(name: NOTIFI_NAME_REPORT_ADD_FOODS, object: nil)
+            backTapAction()
+            return
+        }
+
+        tabBarController.selectedIndex = journalIndex
+        let journalNavigationController = tabBarController.viewControllers?[journalIndex] as? UINavigationController
+        let shouldAnimatePop = journalNavigationController === self.navigationController
+        journalNavigationController?.popToRootViewController(animated: shouldAnimatePop)
+
+        DispatchQueue.main.asyncAfter(deadline: .now()+(shouldAnimatePop ? 0.35 : 0.1)) {
+            NotificationCenter.default.post(name: NOTIFI_NAME_REPORT_ADD_FOODS, object: nil)
+        }
+    }
+
+    func journalTabIndex(in tabBarController: UITabBarController) -> Int? {
+        guard let viewControllers = tabBarController.viewControllers else { return nil }
+        if let index = viewControllers.firstIndex(where: { containsJournalVC($0) }) {
+            return index
+        }
+        return viewControllers.indices.contains(1) ? 1 : nil
+    }
+
+    func containsJournalVC(_ viewController: UIViewController) -> Bool {
+        if viewController is JournalVC { return true }
+        if let navigationController = viewController as? UINavigationController {
+            return navigationController.viewControllers.contains { $0 is JournalVC }
+        }
+        return viewController.children.contains { containsJournalVC($0) }
+    }
+
+    func findTabBarController(from viewController: UIViewController?) -> UITabBarController? {
+        if let tabBarController = viewController as? UITabBarController {
+            return tabBarController
+        }
+        if let navigationController = viewController as? UINavigationController,
+           let found = navigationController.viewControllers.compactMap({ findTabBarController(from: $0) }).first {
+            return found
+        }
+        if let found = viewController?.children.compactMap({ findTabBarController(from: $0) }).first {
+            return found
+        }
+        if let presentedViewController = viewController?.presentedViewController {
+            return findTabBarController(from: presentedViewController)
+        }
+        return nil
+    }
 }
 
 extension JournalReportVC{
