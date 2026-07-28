@@ -135,10 +135,10 @@ extension FoodsListMyListVM:UITableViewDelegate,UITableViewDataSource{
         let vc = FoodsMsgDetailsVC()
         vc.foodsDetailDict = foodsDict
         vc.sourceType = self.sourceType
-        self.controller.navigationController?.pushViewController(vc, animated:true)
         if self.sourceType == .main {
-            vc.confirmButton.isHidden = true
+            vc.canAdd = false
         }
+        self.controller.navigationController?.pushViewController(vc, animated:true)
         vc.deleteBlock = {()in
             if self.deleteFoodsBlock != nil{
                 self.deleteFoodsBlock!(foodsDict)

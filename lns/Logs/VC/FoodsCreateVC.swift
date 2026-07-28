@@ -580,9 +580,10 @@ extension FoodsCreateVC{
         UserDefaults.saveFoods(foodsDict: param as NSDictionary,forKey: .myFoodsList)
 //            WHUtils().sendAddFoodsForCountRequest(fids: ["\(dataStrig ?? "")"])
 
-        param.setValue("\(self.specVm.specName)", forKey: "spec")
+        let historyParam = NSMutableDictionary(dictionary: param)
+        historyParam.setValue("\(self.specVm.specName)", forKey: "spec")
 //            param.setValue("\(self.specVm.numberTextField.text ?? "1")", forKey: "qty")
-        WHUtils().sendAddHistoryFoods(foodsMsgArray: [param])
+        WHUtils().sendAddHistoryFoods(foodsMsgArray: [historyParam])
     }
 
     private func appendNutritionInputValues(to param: NSMutableDictionary) {

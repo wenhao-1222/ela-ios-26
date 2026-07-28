@@ -138,7 +138,7 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
         btn.layer.cornerRadius = kFitWidth(12)
         btn.clipsToBounds = true
 
-        if self.canAdd == false{
+        if self.canAdd == false || self.sourceType == .main{
             btn.isHidden = true
         }
 
@@ -360,10 +360,9 @@ extension FoodsMsgDetailsVC{
         let vc = FoodsCreateVC()
         vc.isEditFoods = true
         vc.editFoodsDict = self.foodsDetailDict
-        vc.editSuccessBlock = { [weak self] _ in
-            self?.hasLoadedFoodsDetail = false
-            self?.updateOwnerActionButtonsVisibility()
-            self?.sendFoodsDetailRequest()
+        vc.editSuccessBlock = { [weak self] updatedFoodsDict in
+            self?.applyFoodsDetailUpdate(updatedFoodsDict)
+            self?.sendFoodsDetailRequest(preferredDetailDict: updatedFoodsDict)
         }
         self.navigationController?.pushViewController(vc, animated: true)
     }
@@ -418,6 +417,10 @@ extension FoodsMsgDetailsVC{
 }
 
 extension FoodsMsgDetailsVC{
+    private var shouldShowConfirmButton: Bool {
+        canAdd && sourceType != .main && confirmButton.isHidden == false
+    }
+
     func initUI(){
         initNavi(titleStr: "食物详情")
         self.navigationView.backgroundColor = .clear
@@ -461,7 +464,12 @@ extension FoodsMsgDetailsVC{
         scrollView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(getNavigationBarHeight())
-            make.bottom.equalTo(confirmButton.snp.top).offset(kFitWidth(-12))
+            if shouldShowConfirmButton {
+                make.bottom.equalTo(confirmButton.snp.top).offset(kFitWidth(-12))
+            } else {
+                make.bottom.equalToSuperview()
+//                make.bottom.equalTo(kFitWidth(-12)-WHUtils().getBottomSafeAreaHeight())
+            }
         }
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -528,7 +536,7 @@ extension FoodsMsgDetailsVC{
             self.navigationController?.popViewController(animated: true)
         }
     }
-    func sendFoodsDetailRequest(){
+    func sendFoodsDetailRequest(preferredDetailDict: NSDictionary? = nil){
         let param = ["fid":"\(foodsDetailDict.stringValueForKey(key: "fid"))"]
         WHNetworkUtil.shareManager().POST(urlString: URL_foods_query_id, parameters: param as [String : AnyObject]) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
@@ -538,11 +546,42 @@ extension FoodsMsgDetailsVC{
             if let detailDict = dataDict as? [AnyHashable: Any] {
                 foodsDict.addEntries(from: detailDict)
             }
-            self.foodsDetailDict = foodsDict
-            self.hasLoadedFoodsDetail = true
-            self.refreshDetailUI()
-            self.updateOwnerActionButtonsVisibility()
+            if let preferredDetailDict,
+               let detailDict = preferredDetailDict as? [AnyHashable: Any] {
+                foodsDict.addEntries(from: detailDict)
+            }
+            self.applyFoodsDetailUpdate(foodsDict)
         }
+    }
+
+    func applyFoodsDetailUpdate(_ detailDict: NSDictionary) {
+        let foodsDict = NSMutableDictionary(dictionary: self.foodsDetailDict)
+        if let detailDict = detailDict as? [AnyHashable: Any] {
+            foodsDict.addEntries(from: detailDict)
+        }
+        normalizeSpecIfNeeded(in: foodsDict)
+        self.foodsDetailDict = foodsDict
+        self.hasLoadedFoodsDetail = true
+        self.refreshDetailUI()
+        self.updateOwnerActionButtonsVisibility()
+    }
+
+    func normalizeSpecIfNeeded(in foodsDict: NSMutableDictionary) {
+        guard WHUtils.getSpecArrayFromFoods(foodsDict: foodsDict).count == 0 else { return }
+
+        let specName = foodsDict.stringValueForKey(key: "specName")
+        guard specName.count > 0 else { return }
+
+        var specNum = foodsDict.stringValueForKey(key: "specNum")
+        if specNum.count == 0 {
+            specNum = foodsDict.stringValueForKey(key: "qty")
+        }
+        if specNum.count == 0 {
+            specNum = "1"
+        }
+
+        let spec = [["specNum": specNum, "specName": specName]]
+        foodsDict.setValue(getJSONStringFromArray(array: spec as NSArray), forKey: "spec")
     }
 
     func refreshDetailUI() {
@@ -558,6 +597,7 @@ extension FoodsMsgDetailsVC{
         topVm.calculateSpecWeight()
         specAlertVm.setDataArray(specArr: topVm.specArray)
         caloriDetailVm.calculatePercent(dict: foodsDetailDict)
+        nutritionDetailVm.foodsDetailDict = foodsDetailDict
         refreshScrollContentSize()
     }
 }

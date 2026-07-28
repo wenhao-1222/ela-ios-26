@@ -197,8 +197,8 @@ extension MyFoodsListVC:UITableViewDelegate,UITableViewDataSource{
         
         let vc = FoodsMsgDetailsVC()
         vc.foodsDetailDict = dict
-//        vc.sourceType = self.sourceType
-        vc.confirmButton.isHidden = true
+        vc.sourceType = .main
+        vc.canAdd = false
         self.navigationController?.pushViewController(vc, animated:true)
     }
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

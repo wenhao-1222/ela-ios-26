@@ -288,11 +288,10 @@ extension FoodsListVC:UITableViewDelegate,UITableViewDataSource{
             let vc = FoodsMsgDetailsVC()
             vc.foodsDetailDict = dict
             vc.sourceType = self.sourceType
-            self.navigationController?.pushViewController(vc, animated:true)
-            
             if self.isFromMain == true {
-                vc.confirmButton.isHidden = true
+                vc.canAdd = false
             }
+            self.navigationController?.pushViewController(vc, animated:true)
         }else{
             let dict = self.foodsArray[indexPath.section]as? NSDictionary ?? [:]
             let array = dict["foodsArray"]as? NSArray ?? []
@@ -303,10 +302,10 @@ extension FoodsListVC:UITableViewDelegate,UITableViewDataSource{
             let vc = FoodsMsgDetailsVC()
             vc.foodsDetailDict = foodsDict
             vc.sourceType = self.sourceType
-            self.navigationController?.pushViewController(vc, animated:true)
             if self.isFromMain == true {
-                vc.confirmButton.isHidden = true
+                vc.canAdd = false
             }
+            self.navigationController?.pushViewController(vc, animated:true)
         }
     }
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

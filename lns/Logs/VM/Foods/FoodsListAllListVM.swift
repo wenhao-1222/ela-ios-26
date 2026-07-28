@@ -163,10 +163,10 @@ extension FoodsListAllListVM:UITableViewDelegate,UITableViewDataSource{
             let vc = FoodsMsgDetailsVC()
             vc.foodsDetailDict = foodsDict
             vc.sourceType = self.sourceType
-            self.controller.navigationController?.pushViewController(vc, animated:true)
             if self.sourceType == .main {
-                vc.confirmButton.isHidden = true
+                vc.canAdd = false
             }
+            self.controller.navigationController?.pushViewController(vc, animated:true)
         }
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

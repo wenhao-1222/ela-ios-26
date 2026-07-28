@@ -124,6 +124,9 @@ private extension JournalReportVC {
         let journalNavigationController = tabBarController.viewControllers?[journalIndex] as? UINavigationController
         let shouldAnimatePop = journalNavigationController === self.navigationController
         journalNavigationController?.popToRootViewController(animated: shouldAnimatePop)
+        if shouldAnimatePop == false {
+            self.navigationController?.popToRootViewController(animated: false)
+        }
 
         DispatchQueue.main.asyncAfter(deadline: .now()+(shouldAnimatePop ? 0.35 : 0.1)) {
             NotificationCenter.default.post(name: NOTIFI_NAME_REPORT_ADD_FOODS, object: nil)
