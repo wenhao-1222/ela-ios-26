@@ -325,7 +325,9 @@ class ElaProPriceVM: UIView {
     //survey_subscription_more_ic_01
     lazy var moreOne = makeSimpleRow(title: "无广告",dotImg: "survey_subscription_more_ic_01")
     lazy var moreTwo = makeSimpleRow(title: "解锁AI识图上限",dotImg: "survey_subscription_more_ic_02")
+    lazy var moreThree = makeSimpleRow(title: "",dotImg: "")
     lazy var moreDividerOne = makeDivider()
+    lazy var moreDividerTwo = makeDivider()
     private lazy var footerTopFadeView: VerticalFadeView = {
         let view = VerticalFadeView()
         view.isUserInteractionEnabled = false
@@ -1361,7 +1363,9 @@ extension ElaProPriceVM{
         
         moreContainer.addSubview(moreOne)
         moreContainer.addSubview(moreTwo)
+        moreContainer.addSubview(moreThree)
         moreContainer.addSubview(moreDividerOne)
+        moreContainer.addSubview(moreDividerTwo)
         
         renewalDashLayer.strokeColor = UIColor.COLOR_TEXT_TITLE_0f1214_20.cgColor
         renewalDashLayer.lineWidth = 1
@@ -1697,6 +1701,18 @@ extension ElaProPriceVM{
             make.left.right.equalToSuperview()
             make.top.equalTo(moreDividerOne.snp.bottom)
             make.height.equalTo(kFitWidth(55))
+        }
+        moreDividerTwo.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(65))
+            make.right.equalToSuperview()
+            make.top.equalTo(moreTwo.snp.bottom)
+            make.height.equalTo(1)
+        }
+
+        moreThree.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(moreDividerTwo.snp.bottom)
+            make.height.equalTo(kFitWidth(55))
             make.bottom.equalToSuperview()
         }
     }
@@ -1790,6 +1806,7 @@ extension ElaProPriceVM{
             FeatureContent(title: "持续微调", desc: "越用越懂你，你只需照做", iconName: "survey_subscription_coach_ic_04")
         ])
         configureMoreRows([
+            FeatureContent(title: "深度分析", iconName: "elements_pro_icon_3"),
             FeatureContent(title: "无广告", iconName: "survey_subscription_more_ic_01"),
             FeatureContent(title: "解锁AI识图上限", iconName: "survey_subscription_more_ic_02")
         ])
@@ -1801,7 +1818,7 @@ extension ElaProPriceVM{
         applyContainerStyle(moreContainer, highlighted: false)
         remakeBenefitRowConstraints(visibleCount: 6)
         remakeAIRowConstraints(visibleCount: 4)
-        remakeMoreRowConstraints(visibleCount: 2)
+        remakeMoreRowConstraints(visibleCount: 3)
         remakeSectionConstraintsForAIGuidanceOrder()
     }
 
@@ -1889,8 +1906,8 @@ extension ElaProPriceVM{
     }
     
     private func remakeMoreRowConstraints(visibleCount: Int) {
-        remakeRowConstraints(rows: [moreOne, moreTwo],
-                             dividers: [moreDividerOne],
+        remakeRowConstraints(rows: [moreOne, moreTwo, moreThree],
+                             dividers: [moreDividerOne, moreDividerTwo],
                              visibleCount: visibleCount,
                              rowHeight: kFitWidth(55))
     }
@@ -2043,7 +2060,7 @@ extension ElaProPriceVM{
     }
 
     private func configureMoreRows(_ contents: [FeatureContent]) {
-        let rows = [moreOne, moreTwo]
+        let rows = [moreOne, moreTwo, moreThree]
         for (index, row) in rows.enumerated() {
             guard index < contents.count else { continue }
             configureSimpleRow(row, with: contents[index])

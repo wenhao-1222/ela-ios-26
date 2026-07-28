@@ -17,6 +17,8 @@ public let  NOTIFI_NAME_ABTEST = NSNotification.Name(rawValue: "ab_test_msg")
 public let  NOTIFI_NAME_SHORTCUTITEMS = NSNotification.Name(rawValue: "shortcutItems")
 
 public let  NOTIFI_NAME_GUIDE = NSNotification.Name(rawValue: "onboarding_flow_status")
+/// 主 TabBar 已完成 root 切换并进入稳定展示状态，适合触发系统权限弹窗。
+public let  NOTIFI_NAME_MAIN_TABBAR_DID_STABILIZE = NSNotification.Name(rawValue: "main_tabbar_did_stabilize")
 ///刷新日志今日数据
 public let  NOTIFI_NAME_REFRESH_TODAY_JOUNAL = NSNotification.Name(rawValue: "refresh_today_logs_data")
 ///AI Coach 更新营养目标后，从服务端同步日志页数据

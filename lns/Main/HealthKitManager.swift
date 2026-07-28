@@ -5,8 +5,15 @@
 //  Created by LNS2 on 2024/8/6.
 //
 import HealthKit
+import UIKit
 
 class HealthKitManager: NSObject, ObservableObject {
+    private static let initialAuthorizationHealthStore = HKHealthStore()
+    private static var pendingInitialShareTypes = Set<HKSampleType>()
+    private static var pendingInitialAuthorizationObserver: NSObjectProtocol?
+    private static var isRequestingInitialAuthorization = false
+    private static var hasStableMainTabBarForInitialAuthorization = false
+
     /// HealthKit 数据读写入口。
     let healthStore = HKHealthStore()
 
@@ -118,20 +125,134 @@ class HealthKitManager: NSObject, ObservableObject {
                 shareType = HealthKitPermissionTypesProvider.allShareTypes
             }
             if shareType.count > 0 {
-                UserDefaults.set(value: "1", forKey: .bodyData_Weight_Authori)
-                UserDefaults.set(value: "1", forKey: .health_waist_Authori)
-                UserDefaults.set(value: "1", forKey: .health_sport_natural)
-                UserDefaults.set(value: "1", forKey: .health_sport_natural_calories)
-                UserDefaults.set(value: "1", forKey: .health_sport_Authori)
-                UserDefaults.set(value: "1", forKey: .health_water_Authori)
-                
-                healthStore.requestAuthorization(toShare: shareType, read: HealthKitPermissionTypesProvider.allReadTypes) { success, error in
-                    if let error = error {
-                        print("Error requesting health authorization: \(error.localizedDescription)")
-                    }
-                }
+                Self.requestInitialAuthorizationWhenMainTabBarIsStable(shareTypes: shareType)
             }
         }
+    }
+
+    private static func requestInitialAuthorizationWhenMainTabBarIsStable(shareTypes: Set<HKSampleType>) {
+        let work = {
+            guard HKHealthStore.isHealthDataAvailable() else { return }
+            guard canPresentInitialHealthAuthorizationNow else {
+                pendingInitialShareTypes.formUnion(shareTypes)
+                observeMainTabBarStabilizationIfNeeded()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                    flushPendingInitialAuthorizationIfReady()
+                }
+                return
+            }
+            requestInitialAuthorization(shareTypes: shareTypes)
+        }
+
+        if Thread.isMainThread {
+            work()
+        } else {
+            DispatchQueue.main.async(execute: work)
+        }
+    }
+
+    static func flushPendingInitialAuthorizationIfReady() {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { flushPendingInitialAuthorizationIfReady() }
+            return
+        }
+        guard pendingInitialShareTypes.isEmpty == false else { return }
+        guard canPresentInitialHealthAuthorizationNow else {
+            observeMainTabBarStabilizationIfNeeded()
+            return
+        }
+
+        let shareTypes = pendingInitialShareTypes
+        pendingInitialShareTypes.removeAll()
+        requestInitialAuthorization(shareTypes: shareTypes)
+    }
+
+    static func markMainTabBarStableForInitialHealthAuthorization() {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { markMainTabBarStableForInitialHealthAuthorization() }
+            return
+        }
+        hasStableMainTabBarForInitialAuthorization = true
+        flushPendingInitialAuthorizationIfReady()
+    }
+
+    static func resetMainTabBarStabilityForInitialHealthAuthorization() {
+        guard Thread.isMainThread else {
+            DispatchQueue.main.async { resetMainTabBarStabilityForInitialHealthAuthorization() }
+            return
+        }
+        hasStableMainTabBarForInitialAuthorization = false
+    }
+
+    private static func requestInitialAuthorization(shareTypes: Set<HKSampleType>) {
+        guard isRequestingInitialAuthorization == false else {
+            pendingInitialShareTypes.formUnion(shareTypes)
+            return
+        }
+
+        isRequestingInitialAuthorization = true
+        UserDefaults.set(value: "1", forKey: .bodyData_Weight_Authori)
+        UserDefaults.set(value: "1", forKey: .health_waist_Authori)
+        UserDefaults.set(value: "1", forKey: .health_sport_natural)
+        UserDefaults.set(value: "1", forKey: .health_sport_natural_calories)
+        UserDefaults.set(value: "1", forKey: .health_sport_Authori)
+        UserDefaults.set(value: "1", forKey: .health_water_Authori)
+
+        initialAuthorizationHealthStore.requestAuthorization(toShare: shareTypes, read: HealthKitPermissionTypesProvider.allReadTypes) { _, error in
+            DispatchQueue.main.async {
+                isRequestingInitialAuthorization = false
+                flushPendingInitialAuthorizationIfReady()
+            }
+            if let error = error {
+                print("Error requesting health authorization: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private static func observeMainTabBarStabilizationIfNeeded() {
+        guard pendingInitialAuthorizationObserver == nil else { return }
+        pendingInitialAuthorizationObserver = NotificationCenter.default.addObserver(
+            forName: NOTIFI_NAME_MAIN_TABBAR_DID_STABILIZE,
+            object: nil,
+            queue: .main
+        ) { _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                markMainTabBarStableForInitialHealthAuthorization()
+            }
+        }
+    }
+
+    private static var canPresentInitialHealthAuthorizationNow: Bool {
+        guard hasStableMainTabBarForInitialAuthorization else { return false }
+        guard UserInfoModel.shared.uId.count > 0,
+              UserInfoModel.shared.token.count > 0,
+              UserInfoModel.shared.onboarding_flow_status else {
+            return false
+        }
+        guard let rootViewController = UIApplication.shared.keyWindow?.rootViewController,
+              containsTabBarController(rootViewController) else {
+            return false
+        }
+        guard hasPresentedViewController(rootViewController) == false else {
+            return false
+        }
+        return true
+    }
+
+    private static func containsTabBarController(_ viewController: UIViewController) -> Bool {
+        if viewController is UITabBarController { return true }
+        if let navigationController = viewController as? UINavigationController {
+            return navigationController.viewControllers.contains { containsTabBarController($0) }
+        }
+        return viewController.children.contains { containsTabBarController($0) }
+    }
+
+    private static func hasPresentedViewController(_ viewController: UIViewController) -> Bool {
+        if viewController.presentedViewController != nil { return true }
+        if let navigationController = viewController as? UINavigationController {
+            return navigationController.viewControllers.contains { hasPresentedViewController($0) }
+        }
+        return viewController.children.contains { hasPresentedViewController($0) }
     }
 
     func getLatestWeightSample(completion: @escaping (HKQuantity?) -> Void) {

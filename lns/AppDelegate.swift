@@ -864,6 +864,7 @@ extension AppDelegate{
             return
         }
 
+        HealthKitManager.resetMainTabBarStabilityForInitialHealthAuthorization()
         let keyWindow = getKeyWindow()
 
         UserInfoModel.shared.noUidResponseNum = 0
@@ -883,6 +884,7 @@ extension AppDelegate{
             keyWindow.rootViewController = newRootVC
         }) { _ in
             oldVc.removeFromParent()
+            self.notifyMainTabBarRootDidSwitchIfNeeded(newRootVC)
         }
 //        
 //        let oldSnapshot = transitionSnapshot ?? makeRootTransitionSnapshot(from: keyWindow)
@@ -989,6 +991,14 @@ extension AppDelegate{
         } completion: { _ in
             oldSnapshot?.removeFromSuperview()
             oldVc.removeFromParent()
+            self.notifyMainTabBarRootDidSwitchIfNeeded(newRootVC)
+        }
+    }
+
+    private func notifyMainTabBarRootDidSwitchIfNeeded(_ rootViewController: UIViewController) {
+        guard findTabBarController(from: rootViewController) != nil else { return }
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: NOTIFI_NAME_MAIN_TABBAR_DID_STABILIZE, object: nil)
         }
     }
 

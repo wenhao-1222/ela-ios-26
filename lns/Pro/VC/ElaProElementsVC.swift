@@ -7,9 +7,15 @@
 
 import UIKit
 
-class ElaProElementsVC: WHBaseViewVC {
+class ElaProElementsVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private var currentIndex = 0
     private var agreementAlertVm: ElaProAgreementAlertVM?
+    private lazy var backToIntroPanGesture: UIPanGestureRecognizer = {
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(handleBackToIntroPan(_:)))
+        gesture.maximumNumberOfTouches = 1
+        gesture.delegate = self
+        return gesture
+    }()
     
     lazy var introVm: ElaProElementsIntroVM = {
         let vm = ElaProElementsIntroVM(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -63,6 +69,29 @@ class ElaProElementsVC: WHBaseViewVC {
         VIPModel.shared.updateSubscriptionBizType("5")
         initUI()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updatePopGestureState()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        restoreElementsPopGestureState()
+    }
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer === backToIntroPanGesture,
+              currentIndex == 1,
+              agreementAlertVm?.isHidden != false,
+              let panGesture = gestureRecognizer as? UIPanGestureRecognizer else {
+            return false
+        }
+        let translation = panGesture.translation(in: view)
+        let velocity = panGesture.velocity(in: view)
+        let isHorizontal = abs(translation.x) > abs(translation.y) || abs(velocity.x) > abs(velocity.y)
+        return isHorizontal && (translation.x > 0 || velocity.x > 0)
+    }
 }
 
 private extension ElaProElementsVC {
@@ -79,8 +108,10 @@ private extension ElaProElementsVC {
         scrollViewBase.bounces = false
         scrollViewBase.showsHorizontalScrollIndicator = false
         scrollViewBase.backgroundColor = .clear
+        view.addGestureRecognizer(backToIntroPanGesture)
         scrollViewBase.addSubview(introVm)
         scrollViewBase.addSubview(secondVm)
+        updatePopGestureState()
         
 //        backButton.snp.makeConstraints { make in
 //            make.left.equalTo(kFitWidth(12))
@@ -92,15 +123,64 @@ private extension ElaProElementsVC {
     func showNextVm() {
         currentIndex = 1
         scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: true)
+        updatePopGestureState()
+    }
+    
+    func showIntroVm(animated: Bool = true) {
+        currentIndex = 0
+        scrollViewBase.setContentOffset(.zero, animated: animated)
+        updatePopGestureState()
     }
     
     @objc func backButtonTapAction() {
         if currentIndex == 1 {
-            currentIndex = 0
-            scrollViewBase.setContentOffset(.zero, animated: true)
+            showIntroVm()
             return
         }
         backTapAction()
+    }
+    
+    @objc func handleBackToIntroPan(_ gesture: UIPanGestureRecognizer) {
+        let translationX = max(gesture.translation(in: view).x, 0)
+        let progress = min(translationX / SCREEN_WIDHT, 1)
+        
+        switch gesture.state {
+        case .changed:
+            let offsetX = max(SCREEN_WIDHT - translationX, 0)
+            scrollViewBase.setContentOffset(CGPoint(x: offsetX, y: 0), animated: false)
+        case .ended:
+            let velocityX = gesture.velocity(in: view).x
+            if progress > 0.3 || velocityX > kFitWidth(500) {
+                showIntroVm()
+            } else {
+                scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: true)
+            }
+        case .cancelled, .failed:
+            scrollViewBase.setContentOffset(CGPoint(x: SCREEN_WIDHT, y: 0), animated: true)
+        default:
+            break
+        }
+    }
+    
+    func updatePopGestureState() {
+        let isShowingSecondVm = currentIndex == 1
+        canEdgeBack = !isShowingSecondVm
+        fd_forceDisableInteractivePopGesture = isShowingSecondVm
+        fd_interactivePopDisabled = isShowingSecondVm
+        navigationController?.fd_interactivePopDisabled = isShowingSecondVm
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = !isShowingSecondVm
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = !isShowingSecondVm
+        backToIntroPanGesture.isEnabled = isShowingSecondVm
+    }
+    
+    func restoreElementsPopGestureState() {
+        canEdgeBack = true
+        fd_forceDisableInteractivePopGesture = false
+        fd_interactivePopDisabled = false
+        navigationController?.fd_interactivePopDisabled = false
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        backToIntroPanGesture.isEnabled = false
     }
     
     func showAgreementAlert() {

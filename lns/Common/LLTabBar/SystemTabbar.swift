@@ -15,6 +15,7 @@ class SystemTabbar: UITabBarController {
     private var shouldShowDotAfterLayout = false
     private var pendingDotDiameter: CGFloat = kFitWidth(5)
     private var pendingDotOffset: UIOffset = .init(horizontal: 10, vertical: -6)
+    private var didAppearAfterRootSwitch = false
 
     // 旧抑制开关保留（本方案不用）
     var suppressTabBarDuringInteractivePop: Bool = false
@@ -45,9 +46,23 @@ class SystemTabbar: UITabBarController {
                                                selector: #selector(showGuideTotalIfNeeded),
                                                name: NOTIFI_NAME_GUIDE,
                                                object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(mainTabBarDidStabilize),
+                                               name: NOTIFI_NAME_MAIN_TABBAR_DID_STABILIZE,
+                                               object: nil)
         DispatchQueue.main.async { [weak self] in
             self?.showGuideTotalIfNeeded()
         }
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        didAppearAfterRootSwitch = true
+        schedulePendingHealthKitAuthorizationIfNeeded()
     }
 
     override func viewDidLayoutSubviews() {
@@ -383,8 +398,20 @@ extension SystemTabbar {
             self.guideVC = nil
             UserInfoModel.shared.onboarding_flow_status = true
             UserDefaults.saveLoginUserGroupMsgCache()
+            self.schedulePendingHealthKitAuthorizationIfNeeded()
         }
         UserDefaults.standard.setValue("1", forKey: guide_total)
+    }
+
+    @objc private func mainTabBarDidStabilize() {
+        schedulePendingHealthKitAuthorizationIfNeeded()
+    }
+
+    private func schedulePendingHealthKitAuthorizationIfNeeded() {
+        guard didAppearAfterRootSwitch, guideVC == nil, UserInfoModel.shared.onboarding_flow_status else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+            HealthKitManager.markMainTabBarStableForInitialHealthAuthorization()
+        }
     }
 
     @objc private func gotoLogsNotification() {

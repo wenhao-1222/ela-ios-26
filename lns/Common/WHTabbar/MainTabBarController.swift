@@ -9,6 +9,7 @@
 class MainTabBarController: UITabBarController {
     
     private var guideVC: GuideTotalVC?
+    private var didAppearAfterRootSwitch = false
     
     var tabbar_3_name = "tabbar_forum"
     
@@ -22,10 +23,21 @@ class MainTabBarController: UITabBarController {
         self.selectedIndex = 1
 //        showGuideTotalIfNeeded()
         NotificationCenter.default.addObserver(self, selector: #selector(showGuideTotalIfNeeded), name: NOTIFI_NAME_GUIDE, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(mainTabBarDidStabilize), name: NOTIFI_NAME_MAIN_TABBAR_DID_STABILIZE, object: nil)
         DispatchQueue.main.async { [weak self] in
             self?.showGuideTotalIfNeeded()
         }
         
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        didAppearAfterRootSwitch = true
+        schedulePendingHealthKitAuthorizationIfNeeded()
     }
     
     override var traitCollection: UITraitCollection{
@@ -169,6 +181,18 @@ class MainTabBarController: UITabBarController {
             UserInfoModel.shared.onboarding_flow_status = true
             UserDefaults.saveLoginUserGroupMsgCache()
             UserDefaults.standard.setValue("1", forKey: guide_total)
+            self.schedulePendingHealthKitAuthorizationIfNeeded()
+        }
+    }
+
+    @objc private func mainTabBarDidStabilize() {
+        schedulePendingHealthKitAuthorizationIfNeeded()
+    }
+
+    private func schedulePendingHealthKitAuthorizationIfNeeded() {
+        guard didAppearAfterRootSwitch, guideVC == nil, UserInfoModel.shared.onboarding_flow_status else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+            HealthKitManager.markMainTabBarStableForInitialHealthAuthorization()
         }
     }
     

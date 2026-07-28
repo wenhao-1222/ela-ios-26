@@ -57,6 +57,7 @@ class CalCircleView : UIView{
     //中心点y
     var centerY = kFitWidth(0)
     let startAngle = CGFloat(-0.5*Double.pi)
+    var limitProgressToOneCircle = true
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: kFitWidth(156), height: kFitWidth(156)))
@@ -78,12 +79,19 @@ class CalCircleView : UIView{
         vi.backgroundColor = WHColor_16(colorStr: "C2DFFF")
         return vi
     }()
+    private func circleProgress(_ value: Double, total: Double) -> Double {
+        guard limitProgressToOneCircle else { return value / total }
+        guard total > 0 else { return 0 }
+        let progress = value / total
+        guard progress.isFinite else { return 0 }
+        return min(max(progress, 0), 1)
+    }
     func setValue(number:Double,total:Double) {
         self.value = number//total - number
         if self.value <= 0 {
             self.percent = 0
         }else{
-            self.percent = self.value/total
+            self.percent = circleProgress(self.value, total: total)
         }
         setNeedsDisplay()
     }
@@ -94,7 +102,7 @@ class CalCircleView : UIView{
         if self.value <= 0 {
             self.percent = 0
         }else{
-            self.percent = self.value/total
+            self.percent = circleProgress(self.value, total: total)
 //            let tanValue = lineWidth*0.5/(radius-kFitWidth(5))
 //            let angle = atan(tanValue)
 //            let percent = angle * (180/Double.pi) / 360
@@ -105,7 +113,7 @@ class CalCircleView : UIView{
         if self.valueSport <= 0 {
             self.percentSport = 0
         }else{
-            self.percentSport = self.valueSport/total
+            self.percentSport = circleProgress(self.valueSport, total: total)
         }
         setNeedsDisplay()
     }

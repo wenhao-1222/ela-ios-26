@@ -69,11 +69,13 @@ class MainTopMsgVM: UIView {
     }()
     lazy var circleV : CalCircleView = {
         let v = CalCircleView.init(frame: self.circleVm.frame)
+        v.limitProgressToOneCircle = true
         
         return v
     }()
     lazy var cirlcCoverView : CalFillCircleView = {
         let vi = CalFillCircleView.init(frame: self.circleVm.frame)
+        vi.limitProgressToOneCircle = true
         vi.editBlock = {()in
             self.editActtion()
         }

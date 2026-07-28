@@ -149,24 +149,40 @@ extension GoalSetVM{
             MCToast.mc_text("请输入营养素数值",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
             return false
         }
+
+        let carbohydratesNumber = Int(QuestinonaireMsgModel.shared.carbohydrates) ?? 0
+        let proteinNumber = Int(QuestinonaireMsgModel.shared.protein) ?? 0
+        let fatsNumber = Int(QuestinonaireMsgModel.shared.fats) ?? 0
         
-        if Int(QuestinonaireMsgModel.shared.carbohydrates) ?? 0 <= 4999 {
+        if carbohydratesNumber <= 4999 {
             //Int(QuestinonaireMsgModel.shared.carbohydrates) ?? 0 >= 0 &&
         }else{
             MCToast.mc_text("碳水化合物目标数值范围 0 ~ 4999 g",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
             return false
         }
-        if Int(QuestinonaireMsgModel.shared.protein) ?? 0 <= 4999 {
+
+        // 蛋白质不能为 0：未输入时会按 0 处理，这里统一拦截。
+        if proteinNumber <= 0 {
+            MCToast.mc_text("蛋白质目标数值范围 1 ~ 4999 g",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
+            return false
+        }
+        if proteinNumber <= 4999 {
             //Int(QuestinonaireMsgModel.shared.protein) ?? 0 >= 1 &&
         }else{
-            MCToast.mc_text("蛋白质目标数值范围 0 ~ 4999 g",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
+            MCToast.mc_text("蛋白质目标数值范围 1 ~ 4999 g",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
+            return false
+        }
+
+        // 脂肪不能为 0：未输入时会按 0 处理，这里统一拦截。
+        if fatsNumber <= 0 {
+            MCToast.mc_text("脂肪目标数值范围 1 ~ 4999 g",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
             return false
         }
         //Int(QuestinonaireMsgModel.shared.fats) ?? 0 >= 0 &&
-        if Int(QuestinonaireMsgModel.shared.fats) ?? 0 <= 4999 {
+        if fatsNumber <= 4999 {
             
         }else{
-            MCToast.mc_text("脂肪目标数值范围 0 ~ 4999 g",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
+            MCToast.mc_text("脂肪目标数值范围 1 ~ 4999 g",offset: kFitWidth(100)+SCREEN_HEIGHT*0.5,respond: .allow)
             return false
         }
         return true

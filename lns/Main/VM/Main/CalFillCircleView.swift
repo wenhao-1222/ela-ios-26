@@ -42,6 +42,8 @@ class CalFillCircleView : UIView{
     
     
     var editBlock:(()->())?
+    var limitProgressToOneCircle = false
+    private var didAddProgressLayers = false
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: kFitWidth(156), height: kFitWidth(156)))
@@ -65,11 +67,7 @@ class CalFillCircleView : UIView{
         if self.value <= 0 {
             self.percent = 0
         }else{
-            self.percent = self.value/total
-        }
-        
-        if self.percent > 1 {
-            self.percent = 1
+            self.percent = circleProgress(self.value, total: total)
         }
         
 //        DLLog(message: "\(self.percent)")
@@ -80,11 +78,7 @@ class CalFillCircleView : UIView{
         if self.value <= 0 {
             self.percent = 0
         }else{
-            self.percent = self.value/total
-        }
-        
-        if self.percent > 1 {
-            self.percent = 1
+            self.percent = circleProgress(self.value, total: total)
         }
         
 //        DLLog(message: "\(self.percent)")
@@ -195,13 +189,30 @@ class CalFillCircleView : UIView{
         shapeLayerShadow.lineWidth = lineWidth // 线宽
         shapeLayerShadow.lineDashPattern = [1,4]
  
-        // 将CAShapeLayer作为子层添加到视图的layer中
-        self.layer.addSublayer(shapeLayer)
-        self.layer.addSublayer(shapeLayerShadow)
-        self.layer.addSublayer(leftCoverShapeLayer)
+        addProgressLayersIfNeeded()
         if self.percent > 0.98 || self.percent <= 0{
             leftCoverShapeLayer.strokeColor = UIColor.clear.cgColor
         }
+    }
+    
+    private func circleProgress(_ value: Double, total: Double) -> Double {
+        let progress = value / total
+        guard limitProgressToOneCircle else {
+            return progress > 1 ? 1 : progress
+        }
+        guard total > 0 else { return 0 }
+        guard progress.isFinite else { return 0 }
+        return min(max(progress, 0), 1)
+    }
+    
+    private func addProgressLayersIfNeeded() {
+        if limitProgressToOneCircle {
+            guard !didAddProgressLayers else { return }
+            didAddProgressLayers = true
+        }
+        self.layer.addSublayer(shapeLayer)
+        self.layer.addSublayer(shapeLayerShadow)
+        self.layer.addSublayer(leftCoverShapeLayer)
     }
 }
 
