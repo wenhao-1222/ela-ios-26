@@ -97,8 +97,14 @@ extension HealthKitManager{
             
             DispatchQueue.global(qos: .userInitiated).async {
                 var sDate = ""
+                let currentBundleIdentifier = Bundle.main.bundleIdentifier ?? "com.lns.elavatine"
                 for i in 0..<results.count{
                     let result = results[i] as? HKQuantitySample
+                    // 本 App 写入 HealthKit 的体脂率不再反向同步，避免同一条数据回流覆盖或重复上传。
+                    if result?.sourceRevision.source.bundleIdentifier == currentBundleIdentifier {
+                        DLLog(message: "HealthKitManager:跳过本App写入的体脂率数据 \(String(describing: result))")
+                        continue
+                    }
                     let value = result?.quantity.doubleValue(for: HKUnit.percent())
                     DLLog(message: "HealthKitManager bodyfat:\(result)")
 
@@ -178,8 +184,14 @@ extension HealthKitManager{
             
             DispatchQueue.global(qos: .userInitiated).async {
                 var sDate = ""
+                let currentBundleIdentifier = Bundle.main.bundleIdentifier ?? "com.lns.elavatine"
                 for i in 0..<results.count{
                     let result = results[i] as? HKQuantitySample
+                    // 本 App 写入 HealthKit 的腰围不再反向同步，避免同一条数据回流覆盖或重复上传。
+                    if result?.sourceRevision.source.bundleIdentifier == currentBundleIdentifier {
+                        DLLog(message: "HealthKitManager:跳过本App写入的腰围数据 \(String(describing: result))")
+                        continue
+                    }
                     let value = result?.quantity.doubleValue(for: HKUnit.meterUnit(with: .centi))
 
                     let time = Date().changeZeroAreaToZHTimeZone(dateString: dateFormatter.string(from: result?.startDate ?? Date()))

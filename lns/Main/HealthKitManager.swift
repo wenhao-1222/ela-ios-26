@@ -276,8 +276,14 @@ class HealthKitManager: NSObject, ObservableObject {
             DispatchQueue.global(qos: .userInitiated).async {
                 var sDate = ""
                 let deleteSdates = UserDefaults.getWeightSdate()
+                let currentBundleIdentifier = Bundle.main.bundleIdentifier ?? "com.lns.elavatine"
                 for i in 0..<results.count{
                     let result = results[i] as? HKQuantitySample
+                    // 本 App 写入 HealthKit 的体重不再反向同步，避免同一条数据回流覆盖或重复上传。
+                    if result?.sourceRevision.source.bundleIdentifier == currentBundleIdentifier {
+                        DLLog(message: "HealthKitManager:跳过本App写入的体重数据 \(String(describing: result))")
+                        continue
+                    }
                     let value = result?.quantity.doubleValue(for: HKUnit(from: "kg"))
                     
                     let time = Date().changeZeroAreaToZHTimeZone(dateString: dateFormatter.string(from: result?.startDate ?? Date()))
