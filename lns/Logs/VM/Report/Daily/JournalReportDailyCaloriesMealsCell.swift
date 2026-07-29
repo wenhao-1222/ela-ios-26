@@ -94,6 +94,9 @@ extension JournalReportDailyCaloriesMealsCell{
                         if calori == 0 {
                             calori = Double(dict.stringValueForKey(key: "calories")) ?? 0
                         }
+                        if !calori.isFinite {
+                            calori = 0
+                        }
                         caloriTotal = caloriTotal + calori
                         hasData = true
                     }
@@ -121,7 +124,7 @@ extension JournalReportDailyCaloriesMealsCell{
             
             for i in 0..<numArray.count{
                 let model = numArray[i]
-                let percent = model.calories/totalNum*100
+                let percent = totalNum > 0 ? model.calories/totalNum*100 : 0
                 model.percent = Float(percent.rounded())
                 numArray[i] = model
 //                percentArray.add(WHUtils.convertStringToString(String(format: "%.2f", percent)) ?? "0")

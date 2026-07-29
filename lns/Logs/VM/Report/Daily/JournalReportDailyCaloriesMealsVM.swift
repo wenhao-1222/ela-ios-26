@@ -69,6 +69,9 @@ extension JournalReportDailyCaloriesMealsVM{
                         if calori == 0 {
                             calori = Double(dict.stringValueForKey(key: "calories")) ?? 0
                         }
+                        if !calori.isFinite {
+                            calori = 0
+                        }
                         caloriTotal = caloriTotal + calori
                         hasData = true
                     }
@@ -94,7 +97,7 @@ extension JournalReportDailyCaloriesMealsVM{
             
             for i in 0..<numArray.count{
                 let model = numArray[i]
-                let percent = Float(model.calories/totalNum)*Float(100)
+                let percent = totalNum > 0 ? Float(model.calories/totalNum)*Float(100) : 0
                 model.percent = percent//Float(percent.rounded())
                 numArray[i] = model
             }

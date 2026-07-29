@@ -131,6 +131,9 @@ extension NaturalCaloriMealsVM{
                         if calori == 0 {
                             calori = Double(dict.stringValueForKey(key: "calories")) ?? 0
                         }
+                        if !calori.isFinite {
+                            calori = 0
+                        }
                         caloriTotal = caloriTotal + calori
                         hasData = true
                     }
@@ -158,7 +161,7 @@ extension NaturalCaloriMealsVM{
             
             var percentArray = NSMutableArray()
             
-            if hasData == false{
+            if hasData == false || totalNum <= 0{
                 percentArray = ["0","0","0","0","0","0"]
                 numArray = [0.0,0.0,0.0,0.0,0.0,0.0]
             }else{

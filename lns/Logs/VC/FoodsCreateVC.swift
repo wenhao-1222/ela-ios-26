@@ -383,11 +383,15 @@ extension FoodsCreateVC{
 
     func refreshSaveButtonState(foodNameText: String? = nil, caloriesText: String? = nil) {
         let foodName = (foodNameText ?? foodsNameVm.textField.text ?? "").replacingOccurrences(of: " ", with: "")
+        saveButton.isEnabled = foodName.count > 0
+        
+        /*
         let calories = caloriesText ?? caloriVm.numberLabel.text ?? ""
         let hasBaseNutrition = carNumber > 0 || proteinNumber > 0 || fatNumber > 0
         let hasCalories = calories.floatValue > 0
         let hasMoreNutrition = nutritionInputValues.values.contains { $0.floatValue > 0 }
         saveButton.isEnabled = foodName.count > 0 && (hasBaseNutrition || hasCalories )// || hasMoreNutrition)
+         */
     }
 }
 
