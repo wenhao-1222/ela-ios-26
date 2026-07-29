@@ -139,15 +139,16 @@ extension FoodsMergeAlertSpecVM{
 //        setAttributeStringForLabel(numberString: "\(fatOneDigit)", unitString: "g", label: fatLabel)
 //        
         if self.changeBlock != nil{
-            let dict = ["carbohydrate":"\(WHUtils.convertStringToStringOneDigit("\(carbohydrate)") ?? "0")",
-                        "protein":"\(WHUtils.convertStringToStringOneDigit("\(protein)") ?? "0")",
-                        "fat":"\(WHUtils.convertStringToStringOneDigit("\(fat)") ?? "0")",
-                        "calories":"\(WHUtils.convertStringToStringNoDigit("\(calories)") ?? "0")",
-                        "specName":self.specDict.stringValueForKey(key: "specName")]
+            let dict = NSMutableDictionary(dictionary: ["carbohydrate":"\(WHUtils.convertStringToStringOneDigit("\(carbohydrate)") ?? "0")",
+                                                        "protein":"\(WHUtils.convertStringToStringOneDigit("\(protein)") ?? "0")",
+                                                        "fat":"\(WHUtils.convertStringToStringOneDigit("\(fat)") ?? "0")",
+                                                        "calories":"\(WHUtils.convertStringToStringNoDigit("\(calories)") ?? "0")",
+                                                        "specName":self.specDict.stringValueForKey(key: "specName")])
+            appendScaledNutritionDetails(to: dict, countString: numString)
 //            let dict = ["carbohydrate":"\(WHUtils.convertStringToStringOneDigit("\(specCarbohydrate)") ?? "0")",
 //                        "protein":"\(WHUtils.convertStringToStringOneDigit("\(specProtein)") ?? "0")",
 //                        "fat":"\(WHUtils.convertStringToStringOneDigit("\(specFat)") ?? "0")"]
-            self.changeBlock!(dict as NSDictionary)
+            self.changeBlock!(dict)
         }
     }
     func changeSpec() {
@@ -172,12 +173,13 @@ extension FoodsMergeAlertSpecVM{
         fat = (self.specDict["specFat"]as? Double ?? 0) * (Double(numString) ?? 0)
         
         if self.changeBlock != nil{
-            let dict = ["carbohydrate":"\(WHUtils.convertStringToStringOneDigit("\(carbohydrate)") ?? "0")",
-                        "protein":"\(WHUtils.convertStringToStringOneDigit("\(protein)") ?? "0")",
-                        "fat":"\(WHUtils.convertStringToStringOneDigit("\(fat)") ?? "0")",
-                        "calories":"\(WHUtils.convertStringToStringNoDigit("\(calories)") ?? "0")",
-                        "specName":self.specDict.stringValueForKey(key: "specName")]
-            self.changeBlock!(dict as NSDictionary)
+            let dict = NSMutableDictionary(dictionary: ["carbohydrate":"\(WHUtils.convertStringToStringOneDigit("\(carbohydrate)") ?? "0")",
+                                                        "protein":"\(WHUtils.convertStringToStringOneDigit("\(protein)") ?? "0")",
+                                                        "fat":"\(WHUtils.convertStringToStringOneDigit("\(fat)") ?? "0")",
+                                                        "calories":"\(WHUtils.convertStringToStringNoDigit("\(calories)") ?? "0")",
+                                                        "specName":self.specDict.stringValueForKey(key: "specName")])
+            appendScaledNutritionDetails(to: dict, countString: numString)
+            self.changeBlock!(dict)
         }
     }
 }
@@ -353,6 +355,7 @@ extension FoodsMergeAlertSpecVM{
             dict.setValue(specCarbohydratePer, forKey: "specCarbohydrate")
             dict.setValue(specProteinPer, forKey: "specProtein")
             dict.setValue(specFatPer, forKey: "specFat")
+            appendSpecNutritionDetails(to: dict, unitQty: unitqty, specQty: specQty)
             
             specArray.add(dict)
             
@@ -394,5 +397,51 @@ extension FoodsMergeAlertSpecVM{
         string.append(attachmentString)
         
         return string
+    }
+
+    func appendSpecNutritionDetails(to specDict: NSMutableDictionary, unitQty: Double, specQty: Double) {
+        guard unitQty != 0 else { return }
+
+        for item in FoodsNutritionCatalog.shared.flatItems {
+            guard let rawValue = nutritionRawValue(in: foodsMsgDict, key: item.key) else { continue }
+            let specNutritionPer = numericNutritionValue(rawValue) / unitQty * specQty
+            specDict.setValue(specNutritionPer, forKey: specNutritionKey(for: item.key))
+        }
+    }
+
+    func appendScaledNutritionDetails(to dict: NSMutableDictionary, countString: String) {
+        let count = Double(countString.replacingOccurrences(of: ",", with: ".")) ?? 0
+        for item in FoodsNutritionCatalog.shared.flatItems {
+            guard let rawValue = nutritionRawValue(in: specDict, key: specNutritionKey(for: item.key)) else { continue }
+            let scaledValue = numericNutritionValue(rawValue) * count
+            let formattedValue = WHUtils.convertStringToString(
+                "\(scaledValue)",
+                digitNumer: item.maximumInputFractionDigits
+            ) ?? "0"
+            dict.setValue(formattedValue.replacingOccurrences(of: ",", with: "."), forKey: item.key)
+        }
+    }
+
+    func specNutritionKey(for key: String) -> String {
+        return "specNutrition_\(key)"
+    }
+
+    func nutritionRawValue(in dict: NSDictionary, key: String) -> Any? {
+        guard let value = dict[key], !(value is NSNull) else { return nil }
+        if let stringValue = value as? String,
+           stringValue.trimmingCharacters(in: .whitespacesAndNewlines).count == 0 {
+            return nil
+        }
+        return value
+    }
+
+    func numericNutritionValue(_ value: Any?) -> Double {
+        if let number = value as? NSNumber {
+            return number.doubleValue
+        }
+        if let stringValue = value as? String {
+            return stringValue.replacingOccurrences(of: ",", with: ".").doubleValue
+        }
+        return 0
     }
 }

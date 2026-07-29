@@ -295,6 +295,25 @@ extension FoodsMsgDetailsVC{
         nutritionDetailVm.foodsDetailDict = scaledFoodDetailDict
     }
 
+    func refreshScaledNutritionDetailsForCurrentCount() {
+        var countString = topVm.textField.text ?? ""
+        countString = countString.replacingOccurrences(of: ",", with: ".")
+        if countString.count == 0 {
+            countString = topVm.specNum.replacingOccurrences(of: ",", with: ".")
+        }
+        if countString.count == 0 {
+            countString = topVm.specDict.stringValueForKey(key: "specNum").replacingOccurrences(of: ",", with: ".")
+        }
+        if countString.count == 0 {
+            if topVm.specName == "g" || topVm.specName == "克" || topVm.specName == "ml" || topVm.specName == "毫升" || topVm.specName == "" {
+                countString = "100"
+            } else {
+                countString = "1"
+            }
+        }
+        refreshScaledNutritionDetails(countString: countString)
+    }
+
     func nutritionDetailScaleDecimal(countString: String) -> Decimal? {
         let normalizedCountString = countString.replacingOccurrences(of: ",", with: ".")
         let countDecimal = Decimal(string: normalizedCountString) ?? 0
@@ -442,6 +461,7 @@ extension FoodsMsgDetailsVC{
 
         topVm.calculateSpecWeight()
         specAlertVm.setDataArray(specArr: self.topVm.specArray)
+        refreshScaledNutritionDetailsForCurrentCount()
 
 //        if self.foodsDetailDict.stringValueForKey(key: "uid") != UserInfoModel.shared.uId{
 //            deleteButton.isHidden = true
@@ -597,7 +617,8 @@ extension FoodsMsgDetailsVC{
         topVm.calculateSpecWeight()
         specAlertVm.setDataArray(specArr: topVm.specArray)
         caloriDetailVm.calculatePercent(dict: foodsDetailDict)
-        nutritionDetailVm.foodsDetailDict = foodsDetailDict
+//        nutritionDetailVm.foodsDetailDict = foodsDetailDict
+        refreshScaledNutritionDetailsForCurrentCount()
         refreshScrollContentSize()
     }
 }

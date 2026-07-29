@@ -20,6 +20,7 @@ class FoodsMergeVC: WHBaseViewVC {
     var totalProtein = Double(0)
     var totalFat = Double(0)
     var totalQty = Float(1)
+    var totalNutritionDetails: [String: Double] = [:]
     
     var foodsDataArray = NSMutableArray()
     
@@ -456,6 +457,7 @@ extension FoodsMergeVC{
                 foodsDict.setValue("\(carbo)".replacingOccurrences(of: ",", with: "."), forKey: "carbohydrate")
                 foodsDict.setValue("\(protein)".replacingOccurrences(of: ",", with: "."), forKey: "protein")
                 foodsDict.setValue("\(fat)".replacingOccurrences(of: ",", with: "."), forKey: "fat")
+                addNutritionDetails(to: foodsDict, from: foodsMsg)
                 
                 self.foodsDataArray.replaceObject(at: i, with: foodsDict)
                 break
@@ -473,6 +475,7 @@ extension FoodsMergeVC{
         totalProtein = Double(0)
         totalFat = Double(0)
         totalQty = Float(0)
+        totalNutritionDetails.removeAll()
         
         for i in 0..<foodsDataArray.count{
             let foodsDict = foodsDataArray[i]as? NSDictionary ?? [:]
@@ -483,6 +486,7 @@ extension FoodsMergeVC{
             totalFat = totalFat + foodsDict.doubleValueForKey(key: "fat")
             
             totalQty = totalQty + Float(foodsDict.doubleValueForKey(key: "qty"))
+            addNutritionDetailsToTotal(from: foodsDict)
         }
         
         naturalMsgVm.setDataSource(array: [self.totalCarbohydrate,self.totalProtein,self.totalFat])
@@ -504,6 +508,49 @@ extension FoodsMergeVC{
             bottomFuncVm.saveButton.isEnabled = false
         }
     }
+
+    func addNutritionDetails(to foodsDict: NSMutableDictionary, from foodsMsg: NSDictionary) {
+        for item in FoodsNutritionCatalog.shared.flatItems {
+            let hasCurrentValue = nutritionRawValue(in: foodsDict, key: item.key) != nil
+            let hasAddedValue = nutritionRawValue(in: foodsMsg, key: item.key) != nil
+            guard hasCurrentValue || hasAddedValue else { continue }
+
+            let total = foodsDict.doubleValueForKey(key: item.key) + foodsMsg.doubleValueForKey(key: item.key)
+            setNutritionDetailValue(total, for: item, in: foodsDict)
+        }
+    }
+
+    func addNutritionDetailsToTotal(from foodsDict: NSDictionary) {
+        for item in FoodsNutritionCatalog.shared.flatItems {
+            guard nutritionRawValue(in: foodsDict, key: item.key) != nil else { continue }
+            totalNutritionDetails[item.key, default: 0] += foodsDict.doubleValueForKey(key: item.key)
+        }
+    }
+
+    func appendNutritionDetailTotals(to param: NSMutableDictionary) {
+        for item in FoodsNutritionCatalog.shared.flatItems {
+            guard let total = totalNutritionDetails[item.key] else { continue }
+            setNutritionDetailValue(total, for: item, in: param)
+        }
+    }
+
+    func nutritionRawValue(in dict: NSDictionary, key: String) -> Any? {
+        guard let value = dict[key], !(value is NSNull) else { return nil }
+        if let stringValue = value as? String,
+           stringValue.trimmingCharacters(in: .whitespacesAndNewlines).count == 0 {
+            return nil
+        }
+        return value
+    }
+
+    func setNutritionDetailValue(_ value: Double, for item: FoodsNutritionCatalog.Item, in foodsDict: NSMutableDictionary) {
+        let formattedValue = WHUtils.convertStringToString(
+            "\(value)",
+            digitNumer: item.maximumInputFractionDigits
+        ) ?? "0"
+        foodsDict.setValue(formattedValue.replacingOccurrences(of: ",", with: "."), forKey: item.key)
+    }
+
     // 在数据更新后调用此方法
     func updateScrollViewContent() {
         DispatchQueue.main.async {
@@ -552,6 +599,7 @@ extension FoodsMergeVC{
                      "fat":"\(WHUtils.convertStringToString("\(self.totalFat)") ?? "0")".replacingOccurrences(of: ",", with: "."),
                      "carbohydrate":"\(WHUtils.convertStringToString("\(self.totalCarbohydrate)") ?? "0")".replacingOccurrences(of: ",", with: "."),
                      "spec":self.getJSONStringFromArray(array: spec as NSArray)] as NSMutableDictionary
+        appendNutritionDetailTotals(to: param)
         WHNetworkUtil.shareManager().POST(urlString: URL_foods_save, parameters: param as? [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
 //            DLLog(message: "\(responseObject)")
             MCToast.mc_text("“\(self.foodsNameVm.textField.text ?? "")”创建成功",respond: .allow)

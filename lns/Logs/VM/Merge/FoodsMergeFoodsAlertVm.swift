@@ -22,6 +22,7 @@ class FoodsMergeFoodsAlertVm: UIView {
     
     var foodsMsgDict = NSMutableDictionary()
     var updateBlock:((NSDictionary)->())?
+    private var currentNutritionDetailValues: [String: String] = [:]
     
     private let lineLayer = CAShapeLayer()
     var linePath = UIBezierPath()
@@ -154,6 +155,7 @@ class FoodsMergeFoodsAlertVm: UIView {
             self.fatItemVm.contentLabel.text = "脂肪 \(WHUtils.convertStringToStringOneDigit("\(self.fatNumber)") ?? "0")g"
             self.numberSpecVm.specLabel.text = dict.stringValueForKey(key: "specName")
             self.numberSpecVm.specName = dict.stringValueForKey(key: "specName")
+            self.currentNutritionDetailValues = self.nutritionDetailValues(from: dict)
         }
         return vm
     }()
@@ -250,7 +252,10 @@ extension FoodsMergeFoodsAlertVm{
     }
     func updateUI(dict:NSDictionary) {
         foodsMsgDict = NSMutableDictionary(dictionary: dict)
+        self.currentNutritionDetailValues.removeAll()
         self.numberSpecVm.foodsMsgDict = dict["foods"]as? NSDictionary ?? [:]
+        self.numberSpecVm.specName = dict.stringValueForKey(key: "spec")
+        self.numberSpecVm.specNum = dict.stringValueForKey(key: "qty")
         self.numberSpecVm.calculateSpecWeight()
         
         self.carNumber = dict.stringValueForKey(key: "carbohydrate").floatValue
@@ -264,6 +269,8 @@ extension FoodsMergeFoodsAlertVm{
         self.fatItemVm.contentLabel.text = "脂肪 \(WHUtils.convertStringToString(String(format: "%.1f", dict.doubleValueForKey(key: "fat"))) ?? "0")g"
         self.numberSpecVm.numberTextField.text = "\(WHUtils.convertStringToStringThreeDigit(String(format: "%.3f", dict.doubleValueForKey(key: "qty"))) ?? "0")"
         self.numberSpecVm.specLabel.text = dict.stringValueForKey(key: "spec")
+        self.numberSpecVm.specName = dict.stringValueForKey(key: "spec")
+        mergeNutritionDetailValues(from: dict)
         self.showView()
     }
 }
@@ -299,11 +306,62 @@ extension FoodsMergeFoodsAlertVm{
         foodsMsgDict.setValue("\(fatNumber)", forKey: "fat")
         foodsMsgDict.setValue("\(self.numberSpecVm.numberTextField.text?.floatValue ?? 0)", forKey: "qty")
         foodsMsgDict.setValue("\(self.numberSpecVm.specName)", forKey: "spec")
+        replaceNutritionDetails(in: foodsMsgDict, values: currentNutritionDetailValues)
         
         DLLog(message: "\(foodsMsgDict)")
         self.updateBlock?(foodsMsgDict)
         self.hiddenView()
     }
+
+    func nutritionDetailValues(from dict: NSDictionary) -> [String: String] {
+        var values: [String: String] = [:]
+        for item in FoodsNutritionCatalog.shared.flatItems {
+            guard let value = nutritionRawValue(in: dict, key: item.key) else { continue }
+            let formattedValue = WHUtils.convertStringToString(
+                "\(numericNutritionValue(value))",
+                digitNumer: item.maximumInputFractionDigits
+            ) ?? "0"
+            values[item.key] = formattedValue.replacingOccurrences(of: ",", with: ".")
+        }
+        return values
+    }
+
+    func mergeNutritionDetailValues(from dict: NSDictionary) {
+        let values = nutritionDetailValues(from: dict)
+        for (key, value) in values {
+            currentNutritionDetailValues[key] = value
+        }
+    }
+
+    func replaceNutritionDetails(in foodsDict: NSMutableDictionary, values: [String: String]) {
+        for item in FoodsNutritionCatalog.shared.flatItems {
+            guard let value = values[item.key] else {
+                foodsDict.removeObject(forKey: item.key)
+                continue
+            }
+            foodsDict.setValue(value, forKey: item.key)
+        }
+    }
+
+    func nutritionRawValue(in dict: NSDictionary, key: String) -> Any? {
+        guard let value = dict[key], !(value is NSNull) else { return nil }
+        if let stringValue = value as? String,
+           stringValue.trimmingCharacters(in: .whitespacesAndNewlines).count == 0 {
+            return nil
+        }
+        return value
+    }
+
+    func numericNutritionValue(_ value: Any?) -> Double {
+        if let number = value as? NSNumber {
+            return number.doubleValue
+        }
+        if let stringValue = value as? String {
+            return stringValue.replacingOccurrences(of: ",", with: ".").doubleValue
+        }
+        return 0
+    }
+
     func showView() {
         self.isHidden = false
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -370,4 +428,3 @@ extension FoodsMergeFoodsAlertVm{
         }
     }
 }
-
