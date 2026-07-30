@@ -237,7 +237,10 @@ extension JournalReportVC{
         view.insertSubview(weekShareV, belowSubview: self.weekMsgVm)
         
         weekMsgVm.sendWeeklyReposrtRequest()
-        
+        if shouldScrollToDailyNutritionDetail {
+            dailyMsgVm.scrollToNutritionDetail(animated: false)
+        }
+
         if self.detailDict.stringValueForKey(key: "sdate") == Date().todayDate{
             dailyMsgVm.sendDayliReposrtRequest()
         }else{
@@ -255,9 +258,6 @@ extension JournalReportVC{
             self.dailyMsgVm.caloriesMealMsgVm.alpha = 1
             self.dailyMsgVm.caloriesSourceMsgVm.alpha = 1
         })
-        if shouldScrollToDailyNutritionDetail {
-            dailyMsgVm.scrollToNutritionDetail(animated: false)
-        }
     }
     func updateUI() {
         let center = self.dailyMsgVm.center

@@ -22,6 +22,7 @@ class JournalReportDailyMsgVM: UIView {
     private var dailyReportNoDataMessage = "请先记录至少一种食物"
     private var isShowingNutritionNoProOnlyForDailyNoData = false
     private var isWaitingForDailyReportDisplayDecision = false
+    private var isHoldingContentForInitialNutritionScroll = false
     
     var offsetChangeBlock:((CGFloat)->())?
     
@@ -86,7 +87,7 @@ class JournalReportDailyMsgVM: UIView {
             let size = self.tableView.contentSize
             if abs(self.tableHeight - size.height) > 1{
                 self.tableHeight = size.height
-                self.updateFrame()
+                self.updateFrame(shouldPerformPendingScroll: self.shouldShowNutritionOnlyWhenDailyReportNoData == false)
             }
         }
         
@@ -298,7 +299,7 @@ extension JournalReportDailyMsgVM{
         
     }
     
-    func updateFrame() {
+    func updateFrame(shouldPerformPendingScroll: Bool = true) {
         if shouldShowNutritionOnlyWhenDailyReportNoData, didReceiveDailyReportNoData {
             if UserInfoModel.shared.vipModel.isValidVip {
                 showDailyNoDataOnly(message: dailyReportNoDataMessage)
@@ -315,7 +316,9 @@ extension JournalReportDailyMsgVM{
             let contentMaxY = layoutNutritionDetail(startY: self.caloriesSourceMsgVm.frame.maxY+kFitWidth(12))
 
             self.scrollView.contentSize = CGSize.init(width: 0, height: contentMaxY+kFitWidth(20)+WHUtils().getBottomSafeAreaHeight())
-            self.performPendingNutritionDetailScrollIfNeeded()
+            if shouldPerformPendingScroll {
+                self.performPendingNutritionDetailScrollIfNeeded()
+            }
             DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
                 self.caloriesMealMsgVm.alpha = 1
                 self.caloriesSourceMsgVm.alpha = 1
@@ -396,6 +399,10 @@ extension JournalReportDailyMsgVM{
     func scrollToNutritionDetail(animated: Bool) {
         pendingScrollToNutritionDetail = true
         pendingScrollToNutritionDetailAnimated = animated
+        if shouldShowNutritionOnlyWhenDailyReportNoData {
+            isHoldingContentForInitialNutritionScroll = true
+            scrollView.alpha = 0
+        }
         DispatchQueue.main.async {
             self.performPendingNutritionDetailScrollIfNeeded()
         }
@@ -412,6 +419,19 @@ extension JournalReportDailyMsgVM{
         let targetOffsetY = min(max(naturalHeadVm.frame.minY, minOffsetY), maxOffsetY)
         scrollView.setContentOffset(CGPoint(x: 0, y: targetOffsetY), animated: pendingScrollToNutritionDetailAnimated)
         offsetChangeBlock?(targetOffsetY)
+    }
+
+    private func finishPendingNutritionDetailScrollAtTop() {
+        guard pendingScrollToNutritionDetail else { return }
+        pendingScrollToNutritionDetail = false
+        scrollView.setContentOffset(.zero, animated: false)
+        offsetChangeBlock?(0)
+    }
+
+    private func revealHeldContentIfNeeded() {
+        guard isHoldingContentForInitialNutritionScroll else { return }
+        isHoldingContentForInitialNutritionScroll = false
+        scrollView.alpha = 1
     }
 }
 
@@ -464,6 +484,8 @@ extension JournalReportDailyMsgVM{
         nutritionNoProVm.alpha = 1
         nutritionNoProVm.frame = CGRect(x: 0, y: naturalHeadVm.frame.maxY, width: SCREEN_WIDHT, height: nutritionNoProVm.selfHeight)
         scrollView.contentSize = CGSize(width: 0, height: naturalHeadVm.frame.maxY+nutritionNoProVm.selfHeight)
+        finishPendingNutritionDetailScrollAtTop()
+        revealHeldContentIfNeeded()
     }
 
     private func showDailyNoDataOnly(message: String) {
@@ -472,6 +494,8 @@ extension JournalReportDailyMsgVM{
         scrollView.isScrollEnabled = true
         scrollView.setContentOffset(.zero, animated: false)
         offsetChangeBlock?(0)
+        finishPendingNutritionDetailScrollAtTop()
+        revealHeldContentIfNeeded()
         tableView.isHidden = false
         nutritionDistributionHeadVm.isHidden = false
         caloriesMealMsgVm.isHidden = false
@@ -508,6 +532,14 @@ extension JournalReportDailyMsgVM{
         rankingButton.alpha = shouldFadeIn ? 0 : 1
         UIView.animate(withDuration: 0.25, delay: 0, options: [.curveEaseOut, .allowUserInteraction]) {
             self.rankingButton.alpha = 1
+        }
+    }
+
+    private func updateTableHeightFromCurrentContent() {
+        tableView.layoutIfNeeded()
+        let size = tableView.contentSize
+        if abs(tableHeight - size.height) > 1 {
+            tableHeight = size.height
         }
     }
     
@@ -562,7 +594,10 @@ extension JournalReportDailyMsgVM{
                     self.reportMsgDict = dataObj
                     self.nutritionProVm.updateData(reportMsgDict: dataObj)
                     self.tableView.reloadData()
-                    self.updateFrame()
+                    self.updateTableHeightFromCurrentContent()
+                    self.updateFrame(shouldPerformPendingScroll: false)
+                    self.performPendingNutritionDetailScrollIfNeeded()
+                    self.revealHeldContentIfNeeded()
                 }
             }
         }
