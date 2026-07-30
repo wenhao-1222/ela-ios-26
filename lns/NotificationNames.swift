@@ -23,6 +23,8 @@ public let  NOTIFI_NAME_MAIN_TABBAR_DID_STABILIZE = NSNotification.Name(rawValue
 public let  NOTIFI_NAME_REFRESH_TODAY_JOUNAL = NSNotification.Name(rawValue: "refresh_today_logs_data")
 ///AI Coach 更新营养目标后，从服务端同步日志页数据
 public let  NOTIFI_NAME_REFRESH_LOGS_FROM_SERVER = NSNotification.Name(rawValue: "refresh_logs_data_from_server")
+///微量元素默认目标更新后，刷新日报营养详情目标值
+public let  NOTIFI_NAME_NUTRITION_DEFAULT_MINERAL_DID_CHANGE = NSNotification.Name(rawValue: "nutrition_default_mineral_did_change")
 ///进入最新 AI Coach 报告后，刷新日志页 AI Coach 入口未读状态
 public let  NOTIFI_NAME_REFRESH_AI_COACH_REPORT_UNREAD_STATUS = NSNotification.Name(rawValue: "refresh_ai_coach_report_unread_status")
 //支付成功后，刷新课程列表

@@ -72,6 +72,8 @@ class UserInfoModel {
     var noUidResponseNum = 0// 返回501 的次数
     private var isHandlingForcedLogout = false
     private(set) var isLoggingOut = false
+    private var isRefreshingDefaultNutritionMinerals = false
+    private var shouldRefreshDefaultNutritionMineralsAgain = false
     
     var uId = "" {
         didSet {
@@ -85,7 +87,11 @@ class UserInfoModel {
     var registDate = Date().nextDay(days: 0)
     var birthDay = ""
     var birthYear = ""
-    var gender = ""
+    var gender = "" {
+        didSet {
+            refreshDefaultNutritionMineralsAfterGenderChange(from: oldValue, to: gender)
+        }
+    }
     var height = ""
     var sex = ""
     var headimgurl = ""
@@ -217,6 +223,42 @@ class UserInfoModel {
 }
 
 extension UserInfoModel{
+    private func refreshDefaultNutritionMineralsAfterGenderChange(from oldGender: String, to newGender: String) {
+        let oldValue = oldGender.trimmingCharacters(in: .whitespacesAndNewlines)
+        let newValue = newGender.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard oldValue.isEmpty == false, newValue.isEmpty == false, oldValue != newValue else {
+            return
+        }
+
+        requestDefaultNutritionMineralsAfterProfileChange()
+    }
+
+    private func requestDefaultNutritionMineralsAfterProfileChange() {
+        UserDefaults.clearNutritionDefaultMineralCache()
+
+        guard isRefreshingDefaultNutritionMinerals == false else {
+            shouldRefreshDefaultNutritionMineralsAgain = true
+            return
+        }
+
+        isRefreshingDefaultNutritionMinerals = true
+        WHNetworkUtil.shareManager().POST(urlString: URL_get_default_nutrition_minerals_get, parameters: nil) { [weak self] responseObject in
+            guard let self = self else { return }
+            self.isRefreshingDefaultNutritionMinerals = false
+
+            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"] as? String ?? "")
+            let dataDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            UserDefaults.setNutritionDefaultMineral(dataDict)
+            NotificationCenter.default.post(name: NOTIFI_NAME_NUTRITION_DEFAULT_MINERAL_DID_CHANGE, object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+
+            if self.shouldRefreshDefaultNutritionMineralsAgain {
+                self.shouldRefreshDefaultNutritionMineralsAgain = false
+                self.requestDefaultNutritionMineralsAfterProfileChange()
+            }
+        }
+    }
+
     func updateFriendPendingCount(_ count:Int) {
         let newCount = max(0, count)
         guard friendPendingCount != newCount else { return }

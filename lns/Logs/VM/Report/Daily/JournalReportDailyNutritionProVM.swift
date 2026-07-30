@@ -73,7 +73,14 @@ private class JournalReportNutritionProgressView: UIView {
         super.layoutSubviews()
         trackView.frame = bounds
         trackView.layer.cornerRadius = bounds.height/2
-        let fillWidth = bounds.width * min(max(progress, 0), 1)
+        let clampedProgress = min(max(progress, 0), 1)
+        fillView.isHidden = clampedProgress <= 0
+        if clampedProgress <= 0 {
+            fillView.frame = .zero
+            stripeLayer.path = nil
+            return
+        }
+        let fillWidth = bounds.width * clampedProgress
         fillView.frame = CGRect(x: 0, y: 0, width: fillWidth, height: bounds.height)
         fillView.layer.cornerRadius = bounds.height/2
         refreshStripePath()
@@ -316,11 +323,19 @@ class JournalReportDailyNutritionProVM: UIView {
         selfHeight = calculatedHeight
         self.frame.size.height = selfHeight
         initUI()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(nutritionDefaultMineralDidChange),
+                                               name: NOTIFI_NAME_NUTRITION_DEFAULT_MINERAL_DID_CHANGE,
+                                               object: nil)
         requestDefaultMineralIfNeeded()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     lazy var whiteView: UIView = {
@@ -435,6 +450,10 @@ extension JournalReportDailyNutritionProVM {
             let intake = intakeValue(forKey: row.item.key, reportMsgDict: reportMsgDict)
             rowViews[row.item.key]?.updateIntake(intake)
         }
+    }
+
+    @objc private func nutritionDefaultMineralDidChange() {
+        refreshTargetsFromCache()
     }
 
     /// 创建卡片头部、分组标题、营养素行和底部说明。

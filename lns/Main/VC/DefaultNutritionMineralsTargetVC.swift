@@ -25,7 +25,6 @@ private final class DefaultNutritionMineralsRowView: UIView {
 
     private let rowHeight = kFitWidth(47)
     private let maxIntegerLength = 6
-    private let maxFractionLength = 4
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
@@ -36,7 +35,7 @@ private final class DefaultNutritionMineralsRowView: UIView {
 
     lazy var textField: NumericTextField = {
         let text = NumericTextField()
-        text.keyboardType = .decimalPad
+        text.keyboardType = .numberPad
         text.textColor = .THEME
         text.tintColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 14, weight: .regular)
@@ -150,11 +149,11 @@ extension DefaultNutritionMineralsRowView: UITextFieldDelegate {
         guard let textRange = Range(range, in: currentText) else { return false }
         if string.isEmpty {
             let updatedText = currentText.replacingCharacters(in: textRange, with: "")
-            numberChangeBlock?(updatedText.replacingOccurrences(of: ",", with: "."))
+            numberChangeBlock?(updatedText)
             return true
         }
 
-        let allowedCharacters = CharacterSet(charactersIn: "0123456789.,")
+        let allowedCharacters = CharacterSet(charactersIn: "0123456789")
         if string.rangeOfCharacter(from: allowedCharacters.inverted) != nil {
             return false
         }
@@ -164,36 +163,21 @@ extension DefaultNutritionMineralsRowView: UITextFieldDelegate {
             && range.location == 1
             && range.length == 0
             && string.count == 1
-            && string != "."
-            && string != ","
         if shouldApplyTextManually {
             prospectiveText = string
         }
 
-        if prospectiveText.first == "." || prospectiveText.first == "," {
-            return false
-        }
-        let separatorCount = prospectiveText.filter { $0 == "." || $0 == "," }.count
-        if separatorCount > 1 {
-            return false
-        }
-        let parts = prospectiveText.split(omittingEmptySubsequences: false, whereSeparator: { $0 == "." || $0 == "," })
-        let integerPart = parts.first.map(String.init) ?? ""
-        if integerPart.count > maxIntegerLength {
-            return false
-        }
-        if parts.count > 1, parts[1].count > maxFractionLength {
+        if prospectiveText.count > maxIntegerLength {
             return false
         }
 
-        let normalizedText = prospectiveText.replacingOccurrences(of: ",", with: ".")
-        if let value = Double(normalizedText), value > 999_999.9999 {
+        if let value = Int(prospectiveText), value > 999_999 {
             return false
         }
         if shouldApplyTextManually {
             textField.text = prospectiveText
         }
-        numberChangeBlock?(normalizedText)
+        numberChangeBlock?(prospectiveText)
         return shouldApplyTextManually == false
     }
 }
@@ -404,6 +388,9 @@ private extension DefaultNutritionMineralsTargetVC {
             UserDefaults.setNutritionDefaultMineral(dataDict)
             self.refreshTargets(from: dataDict)
             self.focusSelectedItemIfNeeded(animated: true)
+            if dataDict.count > 0 {
+                NotificationCenter.default.post(name: NOTIFI_NAME_NUTRITION_DEFAULT_MINERAL_DID_CHANGE, object: nil)
+            }
         }
     }
 
@@ -421,7 +408,7 @@ private extension DefaultNutritionMineralsTargetVC {
         }
 
         row.textField.resignFirstResponder()
-        MCToast.mc_loading()
+//        MCToast.mc_loading()
         let targetText = displayText(from: doubleValue)
         let param = [item.key: targetText]
         WHNetworkUtil.shareManager().POST(urlString: URL_get_default_nutrition_minerals_set,
@@ -432,6 +419,7 @@ private extension DefaultNutritionMineralsTargetVC {
             row.updateValue(targetText)
             self.targetValues[item.key] = targetText
             self.updateCache(key: item.key, value: doubleValue)
+            NotificationCenter.default.post(name: NOTIFI_NAME_NUTRITION_DEFAULT_MINERAL_DID_CHANGE, object: nil)
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
         }
     }
@@ -554,16 +542,15 @@ private extension DefaultNutritionMineralsTargetVC {
     }
 
     func displayText(from value: Double) -> String {
-        if value.rounded() == value {
-            return "\(Int(value))"
-        }
+        guard value.isFinite else { return "0" }
         let formatter = NumberFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.numberStyle = .decimal
         formatter.usesGroupingSeparator = false
         formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = 4
-        return formatter.string(from: NSNumber(value: value)) ?? "\(value)"
+        formatter.maximumFractionDigits = 0
+        formatter.roundingMode = .halfUp
+        return formatter.string(from: NSNumber(value: value)) ?? "0"
     }
 }
 

@@ -215,7 +215,12 @@ extension MaterialVC{
         
        WHNetworkUtil.shareManager().POST(urlString: URL_User_Material_Update, parameters: param as [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
             DLLog(message: "\(responseObject)")
-           self.updateUI()
+           let code = responseObject["code"]as? Int ?? -1
+           if (code == 200) {
+               self.updateUI()
+           }else{
+               MCToast.mc_text(responseObject["message"]as? String ?? "网络异常，请稍后重试")
+           }
         }
     }
     @objc func sendSaveMaterialNickNameRequest() {
