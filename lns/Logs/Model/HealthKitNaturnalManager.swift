@@ -795,7 +795,7 @@ extension HealthKitNaturnalManager{
     }
 
     private func nutritionSyncIdentifier(cTime: String, item: ResolvedHealthKitNutritionSyncItem) -> String {
-        let userId = UserInfoModel.shared.uId.count > 0 ? UserInfoModel.shared.uId : "anonymous"
+        let userId = UserInfoModel.shared.id.count > 0 ? UserInfoModel.shared.id : "anonymous"
         return "ela.\(userId).\(item.identifier.rawValue).\(cTime)"
     }
 

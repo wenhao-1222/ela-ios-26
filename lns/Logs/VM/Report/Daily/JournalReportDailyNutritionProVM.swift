@@ -414,6 +414,16 @@ extension JournalReportDailyNutritionProVM {
         requestDefaultMineralIfNeeded()
     }
 
+    /// 非今日日志不请求日报接口时，从日志明细中本地汇总其他营养成分摄入值。
+    func updateData(dayDict: NSDictionary) {
+        self.reportMsgDict = [:]
+        for row in rows {
+            let intake = intakeValue(for: row.item, dayDict: dayDict)
+            rowViews[row.item.key]?.updateIntake(intake)
+        }
+        requestDefaultMineralIfNeeded()
+    }
+
     /// 按 `FoodsNutritionCatalog.sectionItems` 生成展示行。
     /// 目标值从用户默认微量元素目标缓存读取，缓存不存在或字段缺失时按 0 展示。
     private func buildRows() {
@@ -648,6 +658,34 @@ extension JournalReportDailyNutritionProVM {
             return intake
         }
         return nil
+    }
+
+    /// 优先读当天顶层汇总字段；不存在时遍历 foods 中 state 为 1 的食物累加。
+    private func intakeValue(for item: FoodsNutritionCatalog.Item, dayDict: NSDictionary) -> Double {
+        if let topLevelValue = nutritionValue(forKey: "\(item.key)Double", in: dayDict) {
+            return topLevelValue
+        }
+        if let topLevelValue = nutritionValue(forKey: item.key, in: dayDict) {
+            return topLevelValue
+        }
+
+        let mealsArray = dayDict["foods"] as? NSArray ?? []
+        var total = Double(0)
+        for i in 0..<mealsArray.count {
+            let foodsArray = mealsArray[i] as? NSArray ?? []
+            for j in 0..<foodsArray.count {
+                let foodDict = foodsArray[j] as? NSDictionary ?? [:]
+                guard foodDict.stringValueForKey(key: "state") == "1" else { continue }
+                total += nutritionValue(forKey: item.key, in: foodDict) ?? 0
+            }
+        }
+        return max(total, 0)
+    }
+
+    private func nutritionValue(forKey key: String, in dict: NSDictionary) -> Double? {
+        let rawValue = dict.rawStringValueForKey(key: key)
+        guard rawValue.count > 0 else { return nil }
+        return max(dict.doubleValueForKey(key: key), 0)
     }
 
     @objc private func hintTapAction() {

@@ -253,6 +253,9 @@ extension JournalReportVC{
         
         dailyMsgVm.caloriesMealMsgVm.setDataSource(dataDict: self.detailDict)
         dailyMsgVm.caloriesSourceMsgVm.dealData(detailDict: self.detailDict)
+        if self.detailDict.stringValueForKey(key: "sdate") != Date().todayDate {
+            dailyMsgVm.nutritionProVm.updateData(dayDict: self.detailDict)
+        }
         UIView.animate(withDuration: 0.45, animations: {
             self.dailyMsgVm.naturalHeadVm.alpha = 1
             self.dailyMsgVm.caloriesMealMsgVm.alpha = 1
