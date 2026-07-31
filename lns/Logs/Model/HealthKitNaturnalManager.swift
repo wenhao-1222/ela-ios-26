@@ -130,6 +130,8 @@ class HealthKitNaturnalManager {
     private struct ResolvedHealthKitNutritionSyncItem {
         /// 项目内部使用的营养素字段名。
         let key: String
+        /// Apple 健康中的营养素类型标识。
+        let identifier: HKQuantityTypeIdentifier
         /// HealthKit 数量类型。
         let quantityType: HKQuantityType
         /// 写入 Apple 健康时使用的单位。
@@ -731,6 +733,7 @@ extension HealthKitNaturnalManager{
             guard values[item.key] != nil,
                   let quantityType = item.quantityType else { return nil }
             return ResolvedHealthKitNutritionSyncItem(key: item.key,
+                                                      identifier: item.identifier,
                                                       quantityType: quantityType,
                                                       unit: item.unit,
                                                       title: item.title)
@@ -768,7 +771,6 @@ extension HealthKitNaturnalManager{
 
    /// 根据营养素数值和 HealthKit 配置生成要保存的新样本，0 值不写入样本。
     private func nutritionSamples(from values: [String: Double],items: [ResolvedHealthKitNutritionSyncItem],date: Date,cTime: String) -> [HKQuantitySample] {
-        let metadata = nutritionSampleMetadata(cTime: cTime)
         return items.compactMap { item in
             let value = values[item.key] ?? 0
             guard value > 0 else { return nil }
@@ -777,16 +779,28 @@ extension HealthKitNaturnalManager{
                                     quantity: quantity,
                                     start: date,
                                     end: date,
-                                    metadata: metadata.merging(["lns.healthkit.nutritionKey": item.key]) { current, _ in current })
+                                    metadata: nutritionSampleMetadata(cTime: cTime, item: item))
         }
     }
 
-   /// 生成营养同步样本的元数据，用于后续区分本 App 的每日总量同步样本。
-    private func nutritionSampleMetadata(cTime: String) -> [String: Any] {
+    /// 生成营养同步样本的元数据，用于 HealthKit 按日期和营养素类型识别同一条每日总量样本。
+    private func nutritionSampleMetadata(cTime: String, item: ResolvedHealthKitNutritionSyncItem) -> [String: Any] {
         [
+            HKMetadataKeySyncIdentifier: nutritionSyncIdentifier(cTime: cTime, item: item),
+            HKMetadataKeySyncVersion: healthKitSyncVersion(),
             "lns.healthkit.syncType": "dailyNutritionTotal",
-            "lns.healthkit.sdate": cTime
+            "lns.healthkit.sdate": cTime,
+            "lns.healthkit.nutritionKey": item.key
         ]
+    }
+
+    private func nutritionSyncIdentifier(cTime: String, item: ResolvedHealthKitNutritionSyncItem) -> String {
+        let userId = UserInfoModel.shared.uId.count > 0 ? UserInfoModel.shared.uId : "anonymous"
+        return "ela.\(userId).\(item.identifier.rawValue).\(cTime)"
+    }
+
+    private func healthKitSyncVersion() -> Int {
+        Int(Date().timeIntervalSince1970 * 1000)
     }
 }
 

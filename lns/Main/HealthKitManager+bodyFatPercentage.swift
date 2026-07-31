@@ -8,6 +8,25 @@
 import HealthKit
 
 extension HealthKitManager{
+    func healthKitDailySyncIdentifier(metric: String, sdate: String) -> String {
+        let userId = UserInfoModel.shared.uId.count > 0 ? UserInfoModel.shared.uId : "anonymous"
+        return "ela.\(userId).\(metric).\(sdate)"
+    }
+
+    func healthKitSyncVersion() -> Int {
+        Int(Date().timeIntervalSince1970 * 1000)
+    }
+
+    func healthKitDailySampleMetadata(metric: String, sdate: String) -> [String: Any] {
+        [
+            HKMetadataKeySyncIdentifier: healthKitDailySyncIdentifier(metric: metric, sdate: sdate),
+            HKMetadataKeySyncVersion: healthKitSyncVersion(),
+            "lns.healthkit.syncType": "dailyBodyData",
+            "lns.healthkit.metric": metric,
+            "lns.healthkit.sdate": sdate
+        ]
+    }
+
     ///保存体脂率数据到HealthKit
     func saveBodyFatPercentage(value: Double, sdate:String) {
         guard let bodyFatType = HKObjectType.quantityType(forIdentifier: .bodyFatPercentage) else { return }
@@ -16,7 +35,11 @@ extension HealthKitManager{
         
         let date = Date().changeDateStringToDate(dateString: dateString,formatter: "yyyy-MM-dd HH:mm:ss")
         let bodyFatQuantity = HKQuantity(unit: HKUnit.percent(), doubleValue: value)
-        let bodyFatSample = HKQuantitySample(type: bodyFatType, quantity: bodyFatQuantity, start: date, end: date)
+        let bodyFatSample = HKQuantitySample(type: bodyFatType,
+                                             quantity: bodyFatQuantity,
+                                             start: date,
+                                             end: date,
+                                             metadata: healthKitDailySampleMetadata(metric: "bodyFatPercentage", sdate: sdate))
 
         deleteOldHealthData(sDate: sdate, sampleType: bodyFatType) { success ,hasData in
             if value > 0 {
@@ -39,7 +62,11 @@ extension HealthKitManager{
         let date = Date().changeDateStringToDate(dateString: dateString,formatter: "yyyy-MM-dd HH:mm:ss")
         
         let waistCircumferenceQuantity = HKQuantity(unit: HKUnit.meterUnit(with: .centi), doubleValue: value)
-        let waistCircumferenceSample = HKQuantitySample(type: waistCircumferenceType, quantity: waistCircumferenceQuantity, start: date, end: date)
+        let waistCircumferenceSample = HKQuantitySample(type: waistCircumferenceType,
+                                                       quantity: waistCircumferenceQuantity,
+                                                       start: date,
+                                                       end: date,
+                                                       metadata: healthKitDailySampleMetadata(metric: "waistCircumference", sdate: sdate))
 
         deleteOldHealthData(sDate: sdate, sampleType: waistCircumferenceType) { success ,hasData in
             if value > 0 {
@@ -62,7 +89,11 @@ extension HealthKitManager{
         let date = Date().changeDateStringToDate(dateString: dateString,formatter: "yyyy-MM-dd HH:mm:ss")
         
         let weight = HKQuantity(unit: HKUnit(from: "kg"), doubleValue: value)
-        let weightSample = HKQuantitySample(type: weightType, quantity: weight, start: date, end: date)
+        let weightSample = HKQuantitySample(type: weightType,
+                                            quantity: weight,
+                                            start: date,
+                                            end: date,
+                                            metadata: healthKitDailySampleMetadata(metric: "bodyMass", sdate: sdate))
 
         deleteOldHealthData(sDate: sdate, sampleType: weightType) { success ,hasData in
             if value > 0 {

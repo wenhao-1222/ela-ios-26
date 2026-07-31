@@ -326,16 +326,18 @@ extension JournalReportDailyMsgVM{
                 self.nutritionProVm.alpha = 1
             })
         }else{
-//            self.hiddenTableView()
+            self.hiddenTableView(animated: false, shouldPerformPendingScroll: shouldPerformPendingScroll)
         }
     }
-    func hiddenTableView() {
+    func hiddenTableView(animated: Bool = true, shouldPerformPendingScroll: Bool = true) {
         self.tableView.isHidden = true
         self.tableHeight = 0
         
-        self.naturalHeadVm.alpha = 0
-        self.caloriesMealMsgVm.alpha = 0
-        self.caloriesSourceMsgVm.alpha = 0
+        if animated {
+            self.naturalHeadVm.alpha = 0
+            self.caloriesMealMsgVm.alpha = 0
+            self.caloriesSourceMsgVm.alpha = 0
+        }
         self.caloriesMealMsgVm.isHidden = false
         self.caloriesSourceMsgVm.isHidden = false
         
@@ -345,14 +347,21 @@ extension JournalReportDailyMsgVM{
         let contentMaxY = layoutNutritionDetail(startY: self.caloriesSourceMsgVm.frame.maxY+kFitWidth(12))
         
         self.scrollView.contentSize = CGSize.init(width: 0, height: contentMaxY+kFitWidth(20)+WHUtils().getBottomSafeAreaHeight())
-        self.performPendingNutritionDetailScrollIfNeeded()
+        if shouldPerformPendingScroll {
+            self.performPendingNutritionDetailScrollIfNeeded()
+        }
         
-        UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear) {
+        let showViews = {
             self.naturalHeadVm.alpha = 1
             self.caloriesMealMsgVm.alpha = 1
             self.caloriesSourceMsgVm.alpha = 1
             self.nutritionNoProVm.alpha = 1
             self.nutritionProVm.alpha = 1
+        }
+        if animated {
+            UIView.animate(withDuration: 0.3, delay: 0,options: .curveLinear, animations: showViews)
+        } else {
+            showViews()
         }
     }
     

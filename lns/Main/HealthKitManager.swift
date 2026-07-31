@@ -343,11 +343,17 @@ class HealthKitManager: NSObject, ObservableObject {
         let dateString = currentTimeString.replacingOccurrences(of: Date().todayDate, with: sdate)
         
         let date = Date().changeDateStringToDate(dateString: dateString,formatter: "yyyy-MM-dd HH:mm:ss")
-        let weightSample = HKQuantitySample(type: weightType, quantity: weight, start: date, end: date)
- 
-        healthStore.save(weightSample) { (success, error) in
-            DispatchQueue.main.async {
-                completion(success, error)
+        let weightSample = HKQuantitySample(type: weightType,
+                                            quantity: weight,
+                                            start: date,
+                                            end: date,
+                                            metadata: healthKitDailySampleMetadata(metric: "bodyMass", sdate: sdate))
+
+        deleteOldHealthData(sDate: sdate, sampleType: weightType) { _, _ in
+            self.healthStore.save(weightSample) { (success, error) in
+                DispatchQueue.main.async {
+                    completion(success, error)
+                }
             }
         }
     }
