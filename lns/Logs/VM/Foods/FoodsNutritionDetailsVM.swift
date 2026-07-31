@@ -117,6 +117,7 @@ class FoodsNutritionDetailsVM: UIView {
     }
     var heightChangeBlock: (() -> Void)?
     var detailTapBlock: (() -> Void)?
+    var toggleTapBlock: (() -> Void)?
 
     private let collapsedHeight = kFitWidth(55)
     private let headerHeight = kFitWidth(55)
@@ -327,6 +328,13 @@ extension FoodsNutritionDetailsVM {
 
 extension FoodsNutritionDetailsVM {
     @objc func toggleAction() {
+//        EventLogUtils().sendEventLogRequest(
+//            eventName: .CLICK_BUTTON,
+//            scenarioType: .food_detail_other_nutrition,
+//            text: foodsDetailDict.stringValueForKey(key: "fid"),
+//            resultText: ""
+//        )
+        toggleTapBlock?()
         isExpanded.toggle()
         refreshExpandedState(animated: true)
         heightChangeBlock?()

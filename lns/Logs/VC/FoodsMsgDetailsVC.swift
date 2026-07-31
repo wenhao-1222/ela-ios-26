@@ -29,6 +29,7 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
     var isFromDetail = false
     var sourceType = ADD_FOODS_SOURCE.other
     private var hasLoadedFoodsDetail = false
+    private var hasTrackedFoodDetailOtherNutrition = false
 
     var deleteBlock:(()->())?
 
@@ -122,6 +123,9 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
         vm.detailTapBlock = { [weak self] in
             self?.showTodayNutritionReportAction()
         }
+        vm.toggleTapBlock = { [weak self] in
+            self?.trackFoodDetailOtherNutritionIfNeeded()
+        }
         vm.heightChangeBlock = { [weak self] in
             self?.refreshScrollContentSize(animated: true)
         }
@@ -161,6 +165,17 @@ class FoodsMsgDetailsVC : WHBaseViewVC{
 }
 
 extension FoodsMsgDetailsVC{
+    func trackFoodDetailOtherNutritionIfNeeded() {
+        guard hasTrackedFoodDetailOtherNutrition == false else { return }
+        hasTrackedFoodDetailOtherNutrition = true
+        EventLogUtils().sendEventLogRequest(
+            eventName: .CLICK_BUTTON,
+            scenarioType: .food_detail_other_nutrition,
+            text: foodsDetailDict.stringValueForKey(key: "fid"),
+            resultText: ""
+        )
+    }
+
     @objc func addAction(){
         if topVm.calories >= 100000 {
             MCToast.mc_text("食物热量数据错误！")

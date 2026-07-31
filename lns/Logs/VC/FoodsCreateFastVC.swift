@@ -360,8 +360,18 @@ extension FoodsCreateFastVC{
     
     @objc func noProCoverTapAction() {
         guard isNutritionUnlocked() == false else { return }
+        trackQuickAddFoodElaPro()
         let vc = ElaProElementsVC()
         navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func trackQuickAddFoodElaPro() {
+        EventLogUtils().sendEventLogRequest(
+            eventName: .CLICK_BUTTON,
+            scenarioType: .quick_add_food_elapro,
+            text: "",
+            resultText: ""
+        )
     }
 
     func refreshSaveButtonState(caloriesText: String? = nil) {

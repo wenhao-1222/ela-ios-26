@@ -59,6 +59,20 @@ enum SCENARIO_TYPE {
     case ela_pro_view
     ///AI教练问卷
     case ai_coach_guide
+    ///食物详情-其他营养成分
+    case food_detail_other_nutrition
+    ///食物详情-编辑
+    case food_detail_edit
+    ///创建食物-其他营养成分-保存
+    case create_food_other_nutrition_save
+    ///快速添加食物-ELAPRO
+    case quick_add_food_elapro
+    ///日报-其他营养成分
+    case daily_report_other_nutrition
+    ///其他营养成分-目标
+    case other_nutrition_target
+    ///其他营养成分-目标-恢复默认
+    case other_nutrition_target_restore_default
 }
 
 class EventLogModel: NSObject {
@@ -116,7 +130,7 @@ class EventLogUtils {
         }
     }
 
-    func sendEventLogRequest(eventName:EVENT_TYPE,scenarioType:SCENARIO_TYPE,text:String?,result:Bool=true){
+    func sendEventLogRequest(eventName:EVENT_TYPE,scenarioType:SCENARIO_TYPE,text:String?,result:Bool=true,resultText:String?=nil){
         if UserInfoModel.shared.uId.count > 1 && UserInfoModel.shared.token.count > 1{
             
         }else{
@@ -129,7 +143,7 @@ class EventLogUtils {
         let model = EventLogModel()
         model.scenario = getScenario(type: scenarioType)
         model.text = text ?? ""
-        model.result = result ? "SUCCESS" : "FAILED"
+        model.result = resultText ?? (result ? "SUCCESS" : "FAILED")
         
         //显示了教程一级列表的时候，将开屏页点击的sessionId置空
         if scenarioType == .course_list{
@@ -226,6 +240,20 @@ class EventLogUtils {
             return "会员订阅付费墙"
         case .ai_coach_guide:
             return "AI教练问卷"
+        case .food_detail_other_nutrition:
+            return "食物详情-其他营养成分"
+        case .food_detail_edit:
+            return "食物详情-编辑"
+        case .create_food_other_nutrition_save:
+            return "创建食物-其他营养成分-保存"
+        case .quick_add_food_elapro:
+            return "快速添加食物-ELAPRO"
+        case .daily_report_other_nutrition:
+            return "日报-其他营养成分"
+        case .other_nutrition_target:
+            return "其他营养成分-目标"
+        case .other_nutrition_target_restore_default:
+            return "其他营养成分-目标-恢复默认"
         }
     }
 }

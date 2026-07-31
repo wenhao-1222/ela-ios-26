@@ -290,11 +290,39 @@ extension FoodsCreateVC{
 //        }
         MobClick.event("createFoods")
         if isEditFoods {
+            trackFoodDetailEdit()
             sendUpdateFoodsRequest()
         } else {
+            trackCreateFoodOtherNutritionSaveIfNeeded()
             sendAddFoodsRequest()
         }
     }
+
+    func trackFoodDetailEdit() {
+        EventLogUtils().sendEventLogRequest(
+            eventName: .CLICK_BUTTON,
+            scenarioType: .food_detail_edit,
+            text: editFoodsDict.stringValueForKey(key: "fid"),
+            resultText: ""
+        )
+    }
+
+    func trackCreateFoodOtherNutritionSaveIfNeeded() {
+        guard hasAnyOtherNutritionInputValue() else { return }
+        EventLogUtils().sendEventLogRequest(
+            eventName: .CLICK_BUTTON,
+            scenarioType: .create_food_other_nutrition_save,
+            text: "",
+            resultText: ""
+        )
+    }
+
+    func hasAnyOtherNutritionInputValue() -> Bool {
+        return nutritionInputValues.values.contains { value in
+            value.trimmingCharacters(in: .whitespacesAndNewlines).count > 0
+        }
+    }
+
     func calculateNumber() {
         if self.carNumber == 0 && self.proteinNumber == 0 && self.fatNumber == 0{
             caloriVm.numberLabel.text = ""

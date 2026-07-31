@@ -218,6 +218,7 @@ class DefaultNutritionMineralsTargetVC: WHBaseViewVC {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        trackOtherNutritionTargetPageView()
         initUI()
         loadTargetsFromCache()
         sendDefaultMineralsRequestIfNeeded()
@@ -294,6 +295,15 @@ class DefaultNutritionMineralsTargetVC: WHBaseViewVC {
 }
 
 private extension DefaultNutritionMineralsTargetVC {
+    func trackOtherNutritionTargetPageView() {
+        EventLogUtils().sendEventLogRequest(
+            eventName: .PAGE_VIEW,
+            scenarioType: .other_nutrition_target,
+            text: "",
+            resultText: ""
+        )
+    }
+
     func initUI() {
         view.backgroundColor = .COLOR_CARD_BG_WHITE
         initNavi(titleStr: "目标")
@@ -426,6 +436,7 @@ private extension DefaultNutritionMineralsTargetVC {
 
     @objc func restoreDefaultAction() {
         view.endEditing(true)
+        trackOtherNutritionTargetRestoreDefault()
         presentAlertVc(confirmBtn: "恢复默认",
                        message: "将覆盖已修改的目标值",
                        title: "恢复默认值？",
@@ -449,6 +460,15 @@ private extension DefaultNutritionMineralsTargetVC {
     @objc func hintTapAction() {
         view.endEditing(true)
         nutritionRecommendAlertVm.showSelf(in: view)
+    }
+
+    func trackOtherNutritionTargetRestoreDefault() {
+        EventLogUtils().sendEventLogRequest(
+            eventName: .CLICK_BUTTON,
+            scenarioType: .other_nutrition_target_restore_default,
+            text: "",
+            resultText: ""
+        )
     }
 
     func updateCache(key: String, value: Double) {

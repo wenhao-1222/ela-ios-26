@@ -23,6 +23,7 @@ class JournalReportDailyMsgVM: UIView {
     private var isShowingNutritionNoProOnlyForDailyNoData = false
     private var isWaitingForDailyReportDisplayDecision = false
     private var isHoldingContentForInitialNutritionScroll = false
+    private var hasTrackedDailyOtherNutritionPageView = false
     
     var offsetChangeBlock:((CGFloat)->())?
     
@@ -277,7 +278,26 @@ extension JournalReportDailyMsgVM:UIScrollViewDelegate{
 //            scrollView.contentOffset.y = 0
 //        }else{
             self.offsetChangeBlock?(self.scrollView.contentOffset.y)
+            trackDailyOtherNutritionPageViewIfNeeded()
 //        }
+    }
+
+    private func trackDailyOtherNutritionPageViewIfNeeded() {
+        guard hasTrackedDailyOtherNutritionPageView == false else { return }
+        guard UserInfoModel.shared.vipModel.isValidVip else { return }
+        guard naturalHeadVm.isHidden == false, nutritionProVm.isHidden == false else { return }
+        guard naturalHeadVm.frame.minY > 0, nutritionProVm.frame.height > 0 else { return }
+
+        let triggerOffsetY = naturalHeadVm.frame.minY - scrollView.adjustedContentInset.top
+        guard scrollView.contentOffset.y >= triggerOffsetY else { return }
+
+        hasTrackedDailyOtherNutritionPageView = true
+        EventLogUtils().sendEventLogRequest(
+            eventName: .PAGE_VIEW,
+            scenarioType: .daily_report_other_nutrition,
+            text: "",
+            resultText: ""
+        )
     }
 }
 
