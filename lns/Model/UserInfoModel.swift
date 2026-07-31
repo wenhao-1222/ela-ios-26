@@ -233,6 +233,10 @@ extension UserInfoModel{
         requestDefaultNutritionMineralsAfterProfileChange()
     }
 
+    func refreshDefaultNutritionMineralsAfterTargetChange() {
+        requestDefaultNutritionMineralsAfterProfileChange()
+    }
+
     private func requestDefaultNutritionMineralsAfterProfileChange() {
         UserDefaults.clearNutritionDefaultMineralCache()
 
@@ -252,6 +256,13 @@ extension UserInfoModel{
             NotificationCenter.default.post(name: NOTIFI_NAME_NUTRITION_DEFAULT_MINERAL_DID_CHANGE, object: nil)
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
 
+            if self.shouldRefreshDefaultNutritionMineralsAgain {
+                self.shouldRefreshDefaultNutritionMineralsAgain = false
+                self.requestDefaultNutritionMineralsAfterProfileChange()
+            }
+        } failure: { [weak self] _ in
+            guard let self = self else { return }
+            self.isRefreshingDefaultNutritionMinerals = false
             if self.shouldRefreshDefaultNutritionMineralsAgain {
                 self.shouldRefreshDefaultNutritionMineralsAgain = false
                 self.requestDefaultNutritionMineralsAfterProfileChange()

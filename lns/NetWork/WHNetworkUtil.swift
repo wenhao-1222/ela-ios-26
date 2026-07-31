@@ -17,6 +17,36 @@ class WHNetworkUtil: SessionManager {
     static var instance : WHNetworkUtil? = nil
     
     public var dataRequest : DataRequest?
+
+    private func shouldRefreshDefaultNutritionMineralsAfterSuccess(urlString: String) -> Bool {
+        let urls: Set<String> = [
+            URL_goal_week_save,
+            URL_question_custom_save,
+//            URL_question_custom_save_v2,
+            URL_goal_circle_save,
+//            URL_dietplan_active,
+            URL_clear_logs,
+            URL_diet_plan_create,
+//            URL_diet_plan_foods_replace,
+//            URL_question_survey_save,
+//            URL_question_survey_savepart,
+//            URL_question_survey_savepart_v2,
+//            URL_question_survey_part_save,
+//            URL_User_logs_update_notes,
+//            URL_User_logs_update_water,
+//            URL_User_logs_update_meal_time,
+//            URL_User_logs_update_details,
+//            URL_User_logs_goal_update,
+//            URL_dietplan_update,
+//            URL_ai_coach_report_recommend_update
+        ]
+        return urls.contains(urlString)
+    }
+
+    private func refreshDefaultNutritionMineralsAfterSuccessIfNeeded(urlString: String) {
+        guard shouldRefreshDefaultNutritionMineralsAfterSuccess(urlString: urlString) else { return }
+        UserInfoModel.shared.refreshDefaultNutritionMineralsAfterTargetChange()
+    }
     
     class func shareManager() -> WHNetworkUtil{
     
@@ -303,6 +333,10 @@ class WHNetworkUtil: SessionManager {
                                 MCToast.mc_remove()
                                 DispatchQueue.main.async {
                                     success(value)
+                                    if urlString == URL_diet_plan_create,
+                                       (value["code"] as? Int ?? -1) == 200 {
+                                        self.refreshDefaultNutritionMineralsAfterSuccessIfNeeded(urlString: urlString)
+                                    }
                                 }
                                 return
                             }else if urlString == URL_foods_ai_identify{
@@ -325,6 +359,7 @@ class WHNetworkUtil: SessionManager {
                                 }
                                 DispatchQueue.main.async {
                                     success(value)
+                                    self.refreshDefaultNutritionMineralsAfterSuccessIfNeeded(urlString: urlString)
                                 }
                             }else if code == 422{
                                 DispatchQueue.main.async {
