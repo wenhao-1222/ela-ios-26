@@ -107,6 +107,7 @@ class JournalReportDailyMsgVM: UIView {
     lazy var naturalHeadVm: JournalReportTableHeadVM = {
         let vm = JournalReportTableHeadVM.init(frame: .zero)
         vm.titleLab.text = "其他营养成分"
+        vm.alpha = 0
         return vm
     }()
     lazy var nutritionDistributionHeadVm: JournalReportTableHeadVM = {
@@ -341,9 +342,7 @@ extension JournalReportDailyMsgVM{
             }
             DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
                 self.caloriesMealMsgVm.alpha = 1
-                self.caloriesSourceMsgVm.alpha = 1
-                self.nutritionNoProVm.alpha = 1
-                self.nutritionProVm.alpha = 1
+                self.fadeInNutritionDetailViews()
             })
         }else{
             self.hiddenTableView(animated: false, shouldPerformPendingScroll: shouldPerformPendingScroll)
@@ -357,6 +356,8 @@ extension JournalReportDailyMsgVM{
             self.naturalHeadVm.alpha = 0
             self.caloriesMealMsgVm.alpha = 0
             self.caloriesSourceMsgVm.alpha = 0
+            self.nutritionNoProVm.alpha = 0
+            self.nutritionProVm.alpha = 0
         }
         self.caloriesMealMsgVm.isHidden = false
         self.caloriesSourceMsgVm.isHidden = false
@@ -462,6 +463,25 @@ extension JournalReportDailyMsgVM{
         isHoldingContentForInitialNutritionScroll = false
         scrollView.alpha = 1
     }
+
+    private func visibleNutritionDetailViews() -> [UIView] {
+        return [caloriesSourceMsgVm, naturalHeadVm, nutritionNoProVm, nutritionProVm].filter {
+            $0.isHidden == false && $0.frame.height > 0
+        }
+    }
+
+    private func fadeInNutritionDetailViews(animated: Bool = true) {
+        let views = visibleNutritionDetailViews()
+        guard views.isEmpty == false else { return }
+        guard animated else {
+            views.forEach { $0.alpha = 1 }
+            return
+        }
+
+        UIView.animate(withDuration: 0.35, delay: 0, options: [.curveEaseOut, .allowUserInteraction]) {
+            views.forEach { $0.alpha = 1 }
+        }
+    }
 }
 
 extension JournalReportDailyMsgVM{
@@ -507,14 +527,15 @@ extension JournalReportDailyMsgVM{
         hideDailyReportContentForNoData()
         isShowingNutritionNoProOnlyForDailyNoData = true
         naturalHeadVm.isHidden = false
-        naturalHeadVm.alpha = 1
+        naturalHeadVm.alpha = 0
         naturalHeadVm.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: naturalHeadVm.selfHeight)
         nutritionNoProVm.isHidden = false
-        nutritionNoProVm.alpha = 1
+        nutritionNoProVm.alpha = 0
         nutritionNoProVm.frame = CGRect(x: 0, y: naturalHeadVm.frame.maxY, width: SCREEN_WIDHT, height: nutritionNoProVm.selfHeight)
         scrollView.contentSize = CGSize(width: 0, height: naturalHeadVm.frame.maxY+nutritionNoProVm.selfHeight)
         finishPendingNutritionDetailScrollAtTop()
         revealHeldContentIfNeeded()
+        fadeInNutritionDetailViews()
     }
 
     private func showDailyNoDataOnly(message: String) {

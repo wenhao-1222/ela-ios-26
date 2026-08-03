@@ -247,7 +247,6 @@ extension JournalReportVC{
             dailyMsgVm.hiddenTableView()
         }
         
-        dailyMsgVm.naturalHeadVm.alpha = 0
         dailyMsgVm.caloriesMealMsgVm.alpha = 0
         dailyMsgVm.caloriesSourceMsgVm.alpha = 0
         
@@ -257,7 +256,6 @@ extension JournalReportVC{
             dailyMsgVm.nutritionProVm.updateData(dayDict: self.detailDict)
         }
         UIView.animate(withDuration: 0.45, animations: {
-            self.dailyMsgVm.naturalHeadVm.alpha = 1
             self.dailyMsgVm.caloriesMealMsgVm.alpha = 1
             self.dailyMsgVm.caloriesSourceMsgVm.alpha = 1
         })

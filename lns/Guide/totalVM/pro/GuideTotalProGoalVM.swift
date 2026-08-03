@@ -47,7 +47,8 @@ class GuideTotalProGoalVM: UIView {
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "再次确认你的目标"
+        lab.text = "你现在处于什么阶段？"
+//        lab.text = "再次确认你的目标"
 //        lab.text = "你的目标是？"
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
