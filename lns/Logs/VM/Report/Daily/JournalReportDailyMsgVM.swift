@@ -521,21 +521,28 @@ extension JournalReportDailyMsgVM{
     }
 
     private func showNutritionNoProOnlyForDailyNoData() {
+        let shouldAnimateNutritionDetail = scrollView.alpha == 0 ||
+            naturalHeadVm.isHidden ||
+            nutritionNoProVm.isHidden ||
+            naturalHeadVm.alpha < 1 ||
+            nutritionNoProVm.alpha < 1
         hideNoDataView()
         rankingButton.removeFromSuperview()
         rankingButton.alpha = 0
         hideDailyReportContentForNoData()
         isShowingNutritionNoProOnlyForDailyNoData = true
         naturalHeadVm.isHidden = false
-        naturalHeadVm.alpha = 0
+        naturalHeadVm.alpha = shouldAnimateNutritionDetail ? 0 : 1
         naturalHeadVm.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: naturalHeadVm.selfHeight)
         nutritionNoProVm.isHidden = false
-        nutritionNoProVm.alpha = 0
+        nutritionNoProVm.alpha = shouldAnimateNutritionDetail ? 0 : 1
         nutritionNoProVm.frame = CGRect(x: 0, y: naturalHeadVm.frame.maxY, width: SCREEN_WIDHT, height: nutritionNoProVm.selfHeight)
         scrollView.contentSize = CGSize(width: 0, height: naturalHeadVm.frame.maxY+nutritionNoProVm.selfHeight)
         finishPendingNutritionDetailScrollAtTop()
         revealHeldContentIfNeeded()
-        fadeInNutritionDetailViews()
+        if shouldAnimateNutritionDetail {
+            fadeInNutritionDetailViews()
+        }
     }
 
     private func showDailyNoDataOnly(message: String) {

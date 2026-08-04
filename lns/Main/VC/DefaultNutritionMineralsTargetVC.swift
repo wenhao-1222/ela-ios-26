@@ -24,7 +24,13 @@ private final class DefaultNutritionMineralsRowView: UIView {
     var beginEditingBlock: (() -> Void)?
 
     private let rowHeight = kFitWidth(47)
-    private let maxIntegerLength = 6
+
+    private var maximumIntegerLength: Int? {
+        guard let maximumValue = item.maximumInputValue,
+              maximumValue.isFinite,
+              maximumValue >= 0 else { return nil }
+        return String(Int(maximumValue.rounded(.down))).count
+    }
 
     lazy var titleLabel: UILabel = {
         let lab = UILabel()
@@ -167,11 +173,14 @@ extension DefaultNutritionMineralsRowView: UITextFieldDelegate {
             prospectiveText = string
         }
 
-        if prospectiveText.count > maxIntegerLength {
+        if let maximumIntegerLength = maximumIntegerLength,
+           prospectiveText.count > maximumIntegerLength {
             return false
         }
 
-        if let value = Int(prospectiveText), value > 999_999 {
+        if let maximumInputValue = item.maximumInputValue,
+           let value = Double(prospectiveText),
+           value > maximumInputValue {
             return false
         }
         if shouldApplyTextManually {
@@ -414,6 +423,10 @@ private extension DefaultNutritionMineralsTargetVC {
             doubleValue = inputValue
         } else {
             MCToast.mc_text("请输入\(item.title)数值", offset: kFitWidth(100) + SCREEN_HEIGHT * 0.5, respond: .allow)
+            return
+        }
+        if let maximumInputValue = item.maximumInputValue, doubleValue > maximumInputValue {
+            MCToast.mc_text("\(item.title)不能超过\(displayText(from: maximumInputValue))\(item.unit)", offset: kFitWidth(100) + SCREEN_HEIGHT * 0.5, respond: .allow)
             return
         }
 

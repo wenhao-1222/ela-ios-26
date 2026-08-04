@@ -26,43 +26,41 @@ private struct JournalReportDailyNutritionTarget {
 }
 
 /// 日报营养详情的横向进度条。
-/// 普通营养素使用实心进度；上限型营养素或已超目标时使用斜条纹进度。
+/// 普通营养素使用实心进度；风险项或普通项超量部分使用斜条纹覆盖。
 private class JournalReportNutritionProgressView: UIView {
-    /// 进度条展示样式。
-    enum ProgressStyle {
-        /// 常规目标：当前摄入越接近目标越好。
-        case normal
-        /// 上限目标：当前摄入越接近上限风险越高，使用斜条纹提示。
-        case upperLimit
-    }
-
-    /// 0...1 的展示进度，传入值会在布局时裁剪。
-    var progress: CGFloat = 0 {
+    /// 0...1 的实色进度，传入值会在布局时裁剪。
+    var solidProgress: CGFloat = 0 {
         didSet {
             setNeedsLayout()
         }
     }
-    /// 当前进度条样式，变更后刷新填充色或斜纹。
-    var progressStyle: ProgressStyle = .normal {
+
+    /// 0...1 的斜纹覆盖进度，传入值会在布局时裁剪。
+    var stripeProgress: CGFloat = 0 {
         didSet {
-            refreshStyle()
+            setNeedsLayout()
         }
     }
 
     private let trackView = UIView()
-    private let fillView = UIView()
+    private let solidFillView = UIView()
+    private let stripeFillView = UIView()
     private let stripeLayer = CAShapeLayer()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         isUserInteractionEnabled = false
         addSubview(trackView)
-        addSubview(fillView)
-        fillView.layer.addSublayer(stripeLayer)
+        addSubview(solidFillView)
+        addSubview(stripeFillView)
+        stripeFillView.layer.addSublayer(stripeLayer)
         trackView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_10
         trackView.clipsToBounds = true
-        fillView.clipsToBounds = true
-        refreshStyle()
+        solidFillView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_50
+        solidFillView.clipsToBounds = true
+        stripeFillView.backgroundColor = .clear
+        stripeFillView.clipsToBounds = true
+        stripeLayer.fillColor = UIColor.COLOR_TEXT_TITLE_0f1214.cgColor
     }
 
     required init?(coder: NSCoder) {
@@ -73,44 +71,47 @@ private class JournalReportNutritionProgressView: UIView {
         super.layoutSubviews()
         trackView.frame = bounds
         trackView.layer.cornerRadius = bounds.height/2
-        let clampedProgress = min(max(progress, 0), 1)
-        fillView.isHidden = clampedProgress <= 0
+        layoutSolidFill()
+        layoutStripeFill()
+    }
+
+    private func layoutSolidFill() {
+        let clampedProgress = min(max(solidProgress, 0), 1)
+        solidFillView.isHidden = clampedProgress <= 0
         if clampedProgress <= 0 {
-            fillView.frame = .zero
+            solidFillView.frame = .zero
+            return
+        }
+        let fillWidth = bounds.width * clampedProgress
+        solidFillView.frame = CGRect(x: 0, y: 0, width: fillWidth, height: bounds.height)
+        solidFillView.layer.cornerRadius = bounds.height/2
+    }
+
+    private func layoutStripeFill() {
+        let clampedProgress = min(max(stripeProgress, 0), 1)
+        stripeFillView.isHidden = clampedProgress <= 0
+        if clampedProgress <= 0 {
+            stripeFillView.frame = .zero
             stripeLayer.path = nil
             return
         }
         let fillWidth = bounds.width * clampedProgress
-        fillView.frame = CGRect(x: 0, y: 0, width: fillWidth, height: bounds.height)
-        fillView.layer.cornerRadius = bounds.height/2
+        stripeFillView.frame = CGRect(x: 0, y: 0, width: fillWidth, height: bounds.height)
+        stripeFillView.layer.cornerRadius = bounds.height/2
         refreshStripePath()
     }
 
-    /// 根据样式切换填充颜色。上限型进度条用 50% 底色加 100% 平行四边形，形成等宽间隔条纹。
-    private func refreshStyle() {
-        switch progressStyle {
-        case .normal:
-            fillView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_50
-            stripeLayer.isHidden = true
-        case .upperLimit:
-            fillView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_50
-            stripeLayer.isHidden = false
-            stripeLayer.fillColor = UIColor.COLOR_TEXT_TITLE_0f1214.cgColor
-        }
-        setNeedsLayout()
-    }
-
-    /// 在填充区域内绘制等宽、等距的平行四边形条纹，填充区域由 `progress` 的宽度决定。
+    /// 在覆盖区域内绘制等宽、等距的平行四边形条纹，覆盖区域由 `stripeProgress` 的宽度决定。
     private func refreshStripePath() {
-        guard progressStyle == .upperLimit, fillView.bounds.width > 0 else {
+        guard stripeFillView.bounds.width > 0 else {
             stripeLayer.path = nil
             return
         }
 
-        stripeLayer.frame = fillView.bounds
+        stripeLayer.frame = stripeFillView.bounds
         let path = UIBezierPath()
-        let height = fillView.bounds.height
-        let width = fillView.bounds.width
+        let height = stripeFillView.bounds.height
+        let width = stripeFillView.bounds.width
         let stripeWidth = kFitWidth(10)
         let gapWidth = kFitWidth(10)
         let skewOffset = height
@@ -221,11 +222,16 @@ extension JournalReportDailyNutritionRowView {
         remainLabel.text = displayIntegerText(remain)
 
         let progress = target > 0 ? CGFloat(intake/target) : (intake > 0 ? 1 : 0)
-        progressView.progress = min(max(progress, 0), 1)
-        if intake > target || rowData.useUpperLimitProgressStyle {
-            progressView.progressStyle = .upperLimit
+        if rowData.useUpperLimitProgressStyle {
+            let clampedProgress = min(max(progress, 0), 1)
+            progressView.solidProgress = clampedProgress
+            progressView.stripeProgress = clampedProgress
+        } else if target > 0, intake > target {
+            progressView.solidProgress = 1
+            progressView.stripeProgress = min(max(progress - 1, 0), 1)
         } else {
-            progressView.progressStyle = .normal
+            progressView.solidProgress = min(max(progress, 0), 1)
+            progressView.stripeProgress = 0
         }
     }
 
