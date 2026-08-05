@@ -73,6 +73,16 @@ enum SCENARIO_TYPE {
     case other_nutrition_target
     ///其他营养成分-目标-恢复默认
     case other_nutrition_target_restore_default
+    ///IOS专项0805-引导页v2-开始按钮
+    case ios0805_guidance_v2_start_button
+    ///IOS专项0805-引导页v2-开始前弹框
+    case ios0805_guidance_v2_before_start_alert
+    ///IOS专项0805-引导页v2-开始前-退出
+    case ios0805_guidance_v2_before_start_exit
+    ///IOS专项0805-引导页v2-开始前-同意
+    case ios0805_guidance_v2_before_start_agree
+    ///IOS专项0805-引导页v2-开始前-转后台
+    case ios0805_guidance_v2_before_start_background
 }
 
 class EventLogModel: NSObject {
@@ -113,6 +123,24 @@ class EventLogUtils {
             sendGuidanceV2PageView(pageIndex: "98", pageTitle: "账号不存在", bizType: "")
         } else if registered == "yes" {
             sendGuidanceV2PageView(pageIndex: "99", pageTitle: "账号存在", bizType: "")
+        }
+    }
+
+    func sendIOS0805GuidanceV2EventLog(eventName: EVENT_TYPE, scenarioType: SCENARIO_TYPE) {
+        let eventNameText: String
+        switch eventName {
+        case .PAGE_VIEW:
+            eventNameText = "PAGE_VIEW"
+        case .CLICK_BUTTON:
+            eventNameText = "CLICK_BUTTON"
+        }
+        let param = ["eventName": eventNameText,
+                     "params": ["scenario": getScenario(type: scenarioType),
+                                "text": "",
+                                "result": ""]] as [String : Any]
+        DLLog(message: "sendIOS0805GuidanceV2EventLog:\(param)")
+        WHNetworkUtil.shareManager().POST(urlString: URL_event_log, parameters: param as [String : AnyObject]) { responseObject in
+
         }
     }
 
@@ -254,6 +282,16 @@ class EventLogUtils {
             return "其他营养成分-目标"
         case .other_nutrition_target_restore_default:
             return "其他营养成分-目标-恢复默认"
+        case .ios0805_guidance_v2_start_button:
+            return "IOS专项0805-引导页v2-开始按钮"
+        case .ios0805_guidance_v2_before_start_alert:
+            return "IOS专项0805-引导页v2-开始前弹框"
+        case .ios0805_guidance_v2_before_start_exit:
+            return "IOS专项0805-引导页v2-开始前-退出"
+        case .ios0805_guidance_v2_before_start_agree:
+            return "IOS专项0805-引导页v2-开始前-同意"
+        case .ios0805_guidance_v2_before_start_background:
+            return "IOS专项0805-引导页v2-开始前-转后台"
         }
     }
 }

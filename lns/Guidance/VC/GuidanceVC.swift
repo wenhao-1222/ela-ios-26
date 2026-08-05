@@ -196,6 +196,7 @@ class GuidanceVC: WHBaseViewVC {
     }
     override func viewWillAppear(_ animated: Bool) {
         isTransitioningToGuidancePro = false
+        NotificationCenter.default.removeObserver(self, name: Notification.Name(rawValue: "wechatLogin"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(wechatLogin), name: Notification.Name(rawValue: "wechatLogin"), object: nil)
     }
     override func viewDidLoad() {

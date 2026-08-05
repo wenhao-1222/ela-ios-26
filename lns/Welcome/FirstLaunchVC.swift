@@ -1,10 +1,11 @@
 //
 //  FirstLaunchVC.swift
 //  lns
-//  
+//
 //  Created by Elavatine on 2025/8/28.
 //
 
+import UIKit
 import SnapKit
 import MCToast
 
@@ -38,6 +39,7 @@ class FirstLaunchVC: WHBaseViewVC {
     private var userGroupInitRequestStartTime: Date?
     private let userGroupInitRequestMaxWaitTime: TimeInterval = 30.0
     private var userGroupInitRequestGeneration = 0
+    private var isHealthConfirmAlertShowing = false
     
     var firstLabelTopConstraint: Constraint?
     var firstLabelTwoTopConstraint: Constraint?
@@ -78,11 +80,19 @@ class FirstLaunchVC: WHBaseViewVC {
         super.viewDidLoad()
         
         initUI()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(appDidEnterBackground),
+                                               name: UIApplication.didEnterBackgroundNotification,
+                                               object: nil)
         requestUserGroupInitIfNeeded()
         
         
 //        let tap = UITapGestureRecognizer.init(target: self, action: #selector(showAnimation))
 //        self.view.addGestureRecognizer(tap)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     lazy var bgImgView: UIImageView = {
         let img = UIImageView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -725,6 +735,7 @@ extension FirstLaunchVC{
 
 extension FirstLaunchVC{
     @objc func startBtnAction() {
+        trackIOS0805GuidanceV2StartButton()
         openNetWorkServiceWithBolck { [weak self] netConnect in
             DispatchQueue.main.async {
                 guard let self = self else { return }
@@ -742,16 +753,31 @@ extension FirstLaunchVC{
     }
     
     private func showHealthConfirmAndContinue() {
-        ElaHealthDataConfirmAlert.show { [self] in
+        ElaHealthDataConfirmAlert.show { [weak self] in
+            guard let self = self else { return }
+            self.trackIOS0805GuidanceV2BeforeStartAgree()
             UserDefaults.standard.setValue("1", forKey: isLaunchWelcome)
-            if forceNeedBuildPlanOnConfirm {
-                changeRootToNeedBuildPlan()
+            if self.forceNeedBuildPlanOnConfirm {
+                self.changeRootToNeedBuildPlan()
             } else {
                 self.changeRootVC()
             }
-        } onExit: {
-            exit(0)
+        } onExit: { [weak self] in
+            self?.trackIOS0805GuidanceV2BeforeStartExit()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                exit(0)
+            }
+        } onShow: { [weak self] in
+            self?.isHealthConfirmAlertShowing = true
+            self?.trackIOS0805GuidanceV2BeforeStartAlert()
+        } onDismiss: { [weak self] in
+            self?.isHealthConfirmAlertShowing = false
         }
+    }
+
+    @objc private func appDidEnterBackground() {
+        guard isHealthConfirmAlertShowing else { return }
+        trackIOS0805GuidanceV2BeforeStartBackground()
     }
 
     private func presentNetworkPermissionAlert() {
@@ -888,6 +914,32 @@ extension FirstLaunchVC{
         didTrackGuidanceV2StartPage = true
         EventLogUtils().sendGuidanceV2PageView(pageIndex: "1", pageTitle: "开始页", bizType: "")
     }
+
+    private func trackIOS0805GuidanceV2StartButton() {
+        EventLogUtils().sendIOS0805GuidanceV2EventLog(eventName: .CLICK_BUTTON,
+                                                      scenarioType: .ios0805_guidance_v2_start_button)
+    }
+
+    private func trackIOS0805GuidanceV2BeforeStartAlert() {
+        EventLogUtils().sendIOS0805GuidanceV2EventLog(eventName: .PAGE_VIEW,
+                                                      scenarioType: .ios0805_guidance_v2_before_start_alert)
+    }
+
+    private func trackIOS0805GuidanceV2BeforeStartExit() {
+        EventLogUtils().sendIOS0805GuidanceV2EventLog(eventName: .CLICK_BUTTON,
+                                                      scenarioType: .ios0805_guidance_v2_before_start_exit)
+    }
+
+    private func trackIOS0805GuidanceV2BeforeStartAgree() {
+        EventLogUtils().sendIOS0805GuidanceV2EventLog(eventName: .CLICK_BUTTON,
+                                                      scenarioType: .ios0805_guidance_v2_before_start_agree)
+    }
+
+    private func trackIOS0805GuidanceV2BeforeStartBackground() {
+        EventLogUtils().sendIOS0805GuidanceV2EventLog(eventName: .PAGE_VIEW,
+                                                      scenarioType: .ios0805_guidance_v2_before_start_background)
+    }
+
     func changeRootVC() {
         let token = UserDefaults.standard.value(forKey: token) as? String ?? ""
         if token.count > 1 {

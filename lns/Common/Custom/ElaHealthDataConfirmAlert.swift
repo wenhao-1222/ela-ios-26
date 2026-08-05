@@ -30,7 +30,9 @@ final class ElaHealthDataConfirmAlert: NSObject {
         onAgree: (() -> Void)? = nil,
         onExit: (() -> Void)? = nil,
         onPrivacy: (() -> Void)? = nil,
-        onAgreement: (() -> Void)? = nil
+        onAgreement: (() -> Void)? = nil,
+        onShow: (() -> Void)? = nil,
+        onDismiss: (() -> Void)? = nil
     ) {
         DispatchQueue.main.async {
             guard let presenter = presenter ?? UIApplication.topViewController() else {
@@ -64,7 +66,9 @@ final class ElaHealthDataConfirmAlert: NSObject {
                         onAgree: onAgree,
                         onExit: onExit,
                         onPrivacy: onPrivacy,
-                        onAgreement: onAgreement
+                        onAgreement: onAgreement,
+                        onShow: onShow,
+                        onDismiss: onDismiss
                     )
                 }
             }
@@ -80,18 +84,22 @@ final class ElaHealthDataConfirmAlert: NSObject {
                         onAgree: onAgree,
                         onExit: onExit,
                         onPrivacy: onPrivacy,
-                        onAgreement: onAgreement
+                        onAgreement: onAgreement,
+                        onShow: onShow,
+                        onDismiss: onDismiss
                     )
                 }
             }
 
             alert.setValue(contentController, forKey: "contentViewController")
             let exitAction = UIAlertAction(title: "退出", style: .cancel) { _ in
+                onDismiss?()
                 onExit?()
             }
             exitAction.setValue(UIColor.COLOR_TEXT_TITLE_0f1214, forKey: "titleTextColor")
 
             let agreeAction = UIAlertAction(title: "同意", style: .default) { _ in
+                onDismiss?()
                 onAgree?()
             }
             agreeAction.setValue(UIColor.THEME, forKey: "titleTextColor")
@@ -102,6 +110,7 @@ final class ElaHealthDataConfirmAlert: NSObject {
 
             presenter.present(alert, animated: true) {
                 alert.applyElaContainerBackground()
+                onShow?()
             }
         }
     }
@@ -113,7 +122,9 @@ final class ElaHealthDataConfirmAlert: NSObject {
         onAgree: (() -> Void)?,
         onExit: (() -> Void)?,
         onPrivacy: (() -> Void)?,
-        onAgreement: (() -> Void)?
+        onAgreement: (() -> Void)?,
+        onShow: (() -> Void)?,
+        onDismiss: (() -> Void)?
     ) {
         let h5VC = ElaAgreementH5ViewController()
         h5VC.urlString = urlString as NSString
@@ -129,12 +140,15 @@ final class ElaHealthDataConfirmAlert: NSObject {
                 onAgree: onAgree,
                 onExit: onExit,
                 onPrivacy: onPrivacy,
-                onAgreement: onAgreement
+                onAgreement: onAgreement,
+                onShow: onShow,
+                onDismiss: onDismiss
             )
         }
 
         guard let window = makeAgreementWindow(from: presenter) else {
             alert.dismiss(animated: true) {
+                onDismiss?()
                 presenter.present(navigationController, animated: true)
             }
             return
@@ -142,7 +156,9 @@ final class ElaHealthDataConfirmAlert: NSObject {
 
         agreementWindow = window
         window.rootViewController?.present(navigationController, animated: true) {
-            alert.dismiss(animated: false)
+            alert.dismiss(animated: false) {
+                onDismiss?()
+            }
         }
     }
 

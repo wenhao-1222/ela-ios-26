@@ -551,7 +551,7 @@ extension FoodsCreateVC{
         let param = makeFoodsRequestParam()
         WHNetworkUtil.shareManager().POST(urlString: URL_foods_save, parameters: param as? [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
 //            DLLog(message: "\(responseObject)")
-            MCToast.mc_text("“\(self.foodsNameVm.textField.text ?? "")”创建成功",respond: .allow)
+//            MCToast.mc_text("“\(self.foodsNameVm.textField.text ?? "")”创建成功",respond: .allow)
 
             let dataStrig = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             param.setValue("\(dataStrig ?? "")", forKey: "fid")
@@ -570,7 +570,7 @@ extension FoodsCreateVC{
         param.setValue(editFoodsDict.stringValueForKey(key: "fid"), forKey: "fid")
         WHNetworkUtil.shareManager().POST(urlString: URL_foods_update, parameters: param as? [String : AnyObject],isNeedToast: true,vc: self) { responseObject in
 //            DLLog(message: "\(responseObject)")
-            MCToast.mc_text("“\(self.foodsNameVm.textField.text ?? "")”保存成功",respond: .allow)
+//            MCToast.mc_text("“\(self.foodsNameVm.textField.text ?? "")”保存成功",respond: .allow)
 
             self.handleFoodsSaveSuccess(param: param, shouldRemoveOldFoods: true)
             self.editSuccessBlock?(param)

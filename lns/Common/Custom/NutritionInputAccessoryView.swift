@@ -26,16 +26,16 @@ final class NutritionInputAccessoryView: UIView {
         return lab
     }()
 
-    private lazy var cancelButton: UIButton = {
-        let btn = UIButton(type: .custom)
+    private lazy var cancelButton: ElaExpandedTapButton = {
+        let btn = ElaExpandedTapButton(type: .custom)
         btn.setImage(UIImage(named: "date_fliter_cancel_img"), for: .normal)
         btn.accessibilityLabel = "取消"
         btn.addTarget(self, action: #selector(cancelAction), for: .touchUpInside)
         return btn
     }()
 
-    private lazy var confirmButton: UIButton = {
-        let btn = UIButton(type: .custom)
+    private lazy var confirmButton: ElaExpandedTapButton = {
+        let btn = ElaExpandedTapButton(type: .custom)
         btn.setImage(UIImage(named: "date_fliter_confirm_img"), for: .normal)
         btn.accessibilityLabel = "完成"
         btn.addTarget(self, action: #selector(confirmAction), for: .touchUpInside)
