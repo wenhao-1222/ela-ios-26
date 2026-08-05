@@ -219,7 +219,7 @@ extension JournalReportDailyNutritionRowView {
         let remain = target - intake
         intakeLabel.text = displayIntegerText(intake)
         let targetText = displayIntegerText(target)
-        targetLabel.text = rowData.useUpperLimitProgressStyle ? "<=\(targetText)" : targetText
+        targetLabel.text = rowData.useUpperLimitProgressStyle ? "≤\(targetText)" : targetText
         remainLabel.text = displayIntegerText(remain)
 
         let progress = target > 0 ? CGFloat(intake/target) : (intake > 0 ? 1 : 0)
