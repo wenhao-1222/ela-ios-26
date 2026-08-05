@@ -132,6 +132,7 @@ class FoodsListNewVC: WHBaseViewVC {
     }()
     lazy var createVm: FoodsListAddVM = {
         let vm = FoodsListAddVM.init(frame: CGRect.init(x: 0, y: self.topTypeVM.frame.maxY, width: 0, height: 0))
+        vm.controller = self
         vm.isFromMerge = self.isFromMerge
         vm.createFoodsButton.addTarget(self, action: #selector(createFoodsActino), for: .touchUpInside)
         vm.createFoodsSoonButton.addTarget(self, action: #selector(createFoodsFastAction), for: .touchUpInside)
@@ -288,6 +289,11 @@ extension FoodsListNewVC{
         let vc = CameraViewController()
         vc.sourceType = self.sourceType
         vc.controller = self
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    @objc func nextMealAdviceAction() {
+        self.naviVm.textField.resignFirstResponder()
+        let vc = MealAdviceVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     @objc func mergeFoodsAction() {

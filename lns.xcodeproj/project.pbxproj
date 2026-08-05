@@ -1324,6 +1324,8 @@
 		ECE399982EA8675E005718C5 /* CoursePayTipsPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */; };
 		ECE3999A2EA87AA7005718C5 /* CoursePDFCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE399992EA87A9E005718C5 /* CoursePDFCell.swift */; };
 		ECE3F9C82EE7BD710032E7C8 /* ServiceCameraCaptureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE3F9C72EE7BD700032E7C8 /* ServiceCameraCaptureViewController.swift */; };
+		ECE40A613023204500837832 /* MealAdviceVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE40A603023203C00837832 /* MealAdviceVC.swift */; };
+		ECE40A64302320A600837832 /* MealsNumVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE40A633023209800837832 /* MealsNumVM.swift */; };
 		ECEC4EAB2F73777200FB1E56 /* AICoachPreVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */; };
 		ECEC4EAE2F73780300FB1E56 /* AICoachPreDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */; };
 		ECEC4EB22F73A11100FB1E56 /* AICoachPreInfoVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */; };
@@ -2877,6 +2879,8 @@
 		ECE399972EA86754005718C5 /* CoursePayTipsPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePayTipsPopupView.swift; sourceTree = "<group>"; };
 		ECE399992EA87A9E005718C5 /* CoursePDFCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursePDFCell.swift; sourceTree = "<group>"; };
 		ECE3F9C72EE7BD700032E7C8 /* ServiceCameraCaptureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceCameraCaptureViewController.swift; sourceTree = "<group>"; };
+		ECE40A603023203C00837832 /* MealAdviceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealAdviceVC.swift; sourceTree = "<group>"; };
+		ECE40A633023209800837832 /* MealsNumVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealsNumVM.swift; sourceTree = "<group>"; };
 		ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreVC.swift; sourceTree = "<group>"; };
 		ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDaysVM.swift; sourceTree = "<group>"; };
 		ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreInfoVM.swift; sourceTree = "<group>"; };
@@ -5849,6 +5853,7 @@
 				A76F50C62D5B13AC001B67CB /* SurveyVC.swift */,
 				A76F50C82D5B3A68001B67CB /* SurveyNoSexVC.swift */,
 				EC1B59DE2EE668A800FE3E9A /* ActivityAlertVC.swift */,
+				ECE40A603023203C00837832 /* MealAdviceVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -5856,6 +5861,7 @@
 		ECD0FF292BABDFF2001232C9 /* VM */ = {
 			isa = PBXGroup;
 			children = (
+				ECE40A623023208700837832 /* NextMealsAdvice */,
 				A7C72B562E1236E6001EA74D /* RankingList */,
 				A7942C4D2DCDEC8200C4816D /* Report */,
 				A7817EEE2DC1E7C0003169EF /* Share */,
@@ -5950,6 +5956,14 @@
 				EC38DE9C2BEF66BF008E7FCE /* Material */,
 			);
 			path = VM;
+			sourceTree = "<group>";
+		};
+		ECE40A623023208700837832 /* NextMealsAdvice */ = {
+			isa = PBXGroup;
+			children = (
+				ECE40A633023209800837832 /* MealsNumVM.swift */,
+			);
+			path = NextMealsAdvice;
 			sourceTree = "<group>";
 		};
 		ECEC4EAC2F7377F200FB1E56 /* Pre */ = {
@@ -6530,6 +6544,7 @@
 				A735A7BB2D5DE3F5006CE140 /* JFToastView+Objc.swift in Sources */,
 				A735A7BC2D5DE3F5006CE140 /* JFToastQueueTask.swift in Sources */,
 				A735A7BD2D5DE3F5006CE140 /* JFAlertView+PopupView.swift in Sources */,
+				ECE40A613023204500837832 /* MealAdviceVC.swift in Sources */,
 				A755ED652DF6AAD000005C3A /* GuideTotalSecondNewVM.swift in Sources */,
 				ECB80C622F14DE4300F429DB /* HonorDonationPreviewView.swift in Sources */,
 				A7F3DB752E867ECB00E9B7ED /* RoundedShadowImageView.swift in Sources */,
@@ -6888,6 +6903,7 @@
 				A72F5FF12DB75E630098C782 /* DottedLabelView.swift in Sources */,
 				A71D4CC02D408B59000399A4 /* YFPlayerPopTransition.m in Sources */,
 				A71D4CC12D408B59000399A4 /* YFPlayerTransitionParameter.m in Sources */,
+				ECE40A64302320A600837832 /* MealsNumVM.swift in Sources */,
 				A7FB331A2DC9DD7C00751B64 /* JournalShareTableViewCell.swift in Sources */,
 				A71D4CC22D408B59000399A4 /* YFPlayerInteractiveAnimatedTransition.m in Sources */,
 				A7CEA5FA2D1AA146009DDEB5 /* TutorialVideoPortraitControlView.m in Sources */,

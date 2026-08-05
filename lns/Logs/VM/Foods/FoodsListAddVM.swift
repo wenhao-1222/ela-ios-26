@@ -19,6 +19,7 @@ class FoodsListAddVM: UIView {
     let selfHeight = kFitWidth(119)
     var foodsType = "all"
     var isFromMerge = false
+    weak var controller: WHBaseViewVC?
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: selfHeight))
@@ -35,6 +36,14 @@ class FoodsListAddVM: UIView {
         vi.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
         return vi
     }()
+    lazy var scrollView: UIScrollView = {
+        let vi = UIScrollView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
+        vi.backgroundColor = .clear
+        vi.showsHorizontalScrollIndicator = false
+        vi.alwaysBounceHorizontal = false
+        vi.contentInsetAdjustmentBehavior = .never
+        return vi
+    }()
     lazy var createFoodsButton: GJVerButtonNoneFeedBack = {
         let btn = GJVerButtonNoneFeedBack()
         btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(109), height: kFitWidth(86))
@@ -46,6 +55,23 @@ class FoodsListAddVM: UIView {
         btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(8)
 //        btn.setTitleColor(.COLOR_BUTTON_HIGHLIGHT_GRAY, for: .highlighted)
+        btn.clipsToBounds = true
+        btn.enablePressEffect()
+        btn.layer.borderColor = UIColor.COLOR_BG_BLACK_06.cgColor
+        btn.layer.borderWidth = kFitWidth(1)
+        btn.imagePosition(style: .top, spacing: kFitWidth(5))
+        
+        return btn
+    }()
+    lazy var adviceFoodsButton: GJVerButtonNoneFeedBack = {
+        let btn = GJVerButtonNoneFeedBack()
+        btn.frame = CGRect.init(x: kFitWidth(367), y: kFitWidth(17), width: kFitWidth(99), height: kFitWidth(86))
+        btn.setTitle("下餐规划", for: .normal)
+        btn.backgroundColor = .COLOR_CARD_BG_WHITE
+        btn.setImage(UIImage(named: "foods_advice_icon")?.withTintColor(.THEME), for: .normal)
+        btn.setTitleColor(.THEME, for: .normal)
+        btn.titleLabel?.font = .systemFont(ofSize: 14, weight: .medium)
+        btn.layer.cornerRadius = kFitWidth(8)
         btn.clipsToBounds = true
         btn.enablePressEffect()
         btn.layer.borderColor = UIColor.COLOR_BG_BLACK_06.cgColor
@@ -156,11 +182,13 @@ class FoodsListAddVM: UIView {
 extension FoodsListAddVM{
     func initUI() {
         addSubview(bgView)
-        addSubview(createFoodsButton)
-        addSubview(createFoodsSoonButton)
-        addSubview(aiFoodsButton)
-        addSubview(mergeFoodsButton)
-        addSubview(createMealsButton)
+        addSubview(scrollView)
+        scrollView.addSubview(createFoodsButton)
+        scrollView.addSubview(createFoodsSoonButton)
+        scrollView.addSubview(aiFoodsButton)
+        scrollView.addSubview(adviceFoodsButton)
+        scrollView.addSubview(mergeFoodsButton)
+        scrollView.addSubview(createMealsButton)
         
 //        aiFoodsButton.addSubview(aiFoodsNewVm)
         mergeFoodsButton.addSubview(mergeFoodsNewVm)
@@ -180,25 +208,40 @@ extension FoodsListAddVM{
             make.right.equalTo(kFitWidth(-5))
             make.width.height.equalTo(kFitWidth(12))
         }
+        refreshButton(type: .all, isFromMain: false)
+        adviceFoodsButton.addTarget(self, action: #selector(adviceFoodsAction), for: .touchUpInside)
     }
+    
+    @objc func adviceFoodsAction() {
+        window?.endEditing(true)
+        let vc = MealAdviceVC()
+        controller?.navigationController?.pushViewController(vc, animated: true)
+    }
+    
     func refreshButtonFrame() {
         createFoodsSoonButton.isHidden = true
+        adviceFoodsButton.isHidden = true
 //        createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(343), height: kFitWidth(86))
         createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         aiFoodsButton.frame = CGRect.init(x: kFitWidth(191), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
+        scrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: scrollView.frame.height)
 //        mergeFoodsButton.frame = CGRect.init(x: kFitWidth(191), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
     }
     
     func refreshButtonFrameForAll(hasCreatSoon:Bool)  {
         if hasCreatSoon{
             createFoodsSoonButton.isHidden = false
+            adviceFoodsButton.isHidden = true
             createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(109), height: kFitWidth(86))
             createFoodsSoonButton.frame = CGRect.init(x: kFitWidth(133), y: kFitWidth(17), width: kFitWidth(109), height: kFitWidth(86))
             aiFoodsButton.frame = CGRect.init(x: kFitWidth(250), y: kFitWidth(17), width: kFitWidth(109), height: kFitWidth(86))
+            scrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: scrollView.frame.height)
         }else{
             createFoodsSoonButton.isHidden = true
+            adviceFoodsButton.isHidden = true
             createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
             aiFoodsButton.frame = CGRect.init(x: kFitWidth(191), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
+            scrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: scrollView.frame.height)
         }
     }
     
@@ -209,12 +252,14 @@ extension FoodsListAddVM{
             self.createMealsButton.isHidden = false
             self.createFoodsButton.isHidden = true
             self.createFoodsSoonButton.isHidden = true
+            self.adviceFoodsButton.isHidden = true
         }else{
             bgView.backgroundColor = .clear//WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
             self.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.04)
             self.createMealsButton.isHidden = true
             self.createFoodsButton.isHidden = false
             self.createFoodsSoonButton.isHidden = false
+            self.adviceFoodsButton.isHidden = true
         }
     }
     
@@ -222,42 +267,56 @@ extension FoodsListAddVM{
         createFoodsButton.isHidden = true
         aiFoodsButton.isHidden = true
         createFoodsSoonButton.isHidden = true
+        adviceFoodsButton.isHidden = true
         mergeFoodsButton.isHidden = true
         createMealsButton.isHidden = true
+        scrollView.contentOffset = .zero
+        scrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: scrollView.frame.height)
         
         if isFromMain{//首页进来的
-            var btnWidth = (SCREEN_WIDHT-kFitWidth(40))/2
+            let btnWidth = kFitWidth(99)//(SCREEN_WIDHT-kFitWidth(48))/3
             switch type{
-            case .all: //创建食物 、 AI识别
+            case .all: //快速添加、 AI识别 、下餐规划、 创建食物
                 createFoodsButton.isHidden = false
+                createFoodsSoonButton.isHidden = false
                 aiFoodsButton.isHidden = false
-                createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
-                aiFoodsButton.frame = CGRect.init(x: createFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                adviceFoodsButton.isHidden = false
+                createFoodsSoonButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                aiFoodsButton.frame = CGRect.init(x: createFoodsSoonButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                adviceFoodsButton.frame = CGRect.init(x: aiFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                createFoodsButton.frame = CGRect.init(x: adviceFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                scrollView.contentSize = CGSize(width: createFoodsButton.frame.maxX+kFitWidth(16), height: scrollView.frame.height)
             case .my://创建食物 、 食物融合
                 createFoodsButton.isHidden = false
                 mergeFoodsButton.isHidden = false
                 createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
                 mergeFoodsButton.frame = CGRect.init(x: createFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
+                scrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: scrollView.frame.height)
             case .meal:
                 createMealsButton.isHidden = false
+                scrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: scrollView.frame.height)
             }
         }else{
             switch type{
-            case .all: //创建食物 、快速添加、 AI识别
+            case .all: //快速添加、 AI识别 、下餐规划、 创建食物
                 if self.isFromMerge {
                     let btnWidth = (SCREEN_WIDHT-kFitWidth(40))/2
                     createFoodsButton.isHidden = false
                     createFoodsSoonButton.isHidden = false
                     createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
                     createFoodsSoonButton.frame = CGRect.init(x: createFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                    scrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: scrollView.frame.height)
                 }else{
-                    let btnWidth = (SCREEN_WIDHT-kFitWidth(48))/3
+                    let btnWidth = kFitWidth(99)//(SCREEN_WIDHT-kFitWidth(48))/3
                     createFoodsButton.isHidden = false
                     createFoodsSoonButton.isHidden = false
                     aiFoodsButton.isHidden = false
-                    createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
-                    createFoodsSoonButton.frame = CGRect.init(x: createFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                    adviceFoodsButton.isHidden = false
+                    createFoodsSoonButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
                     aiFoodsButton.frame = CGRect.init(x: createFoodsSoonButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                    adviceFoodsButton.frame = CGRect.init(x: aiFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                    createFoodsButton.frame = CGRect.init(x: adviceFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                    scrollView.contentSize = CGSize(width: createFoodsButton.frame.maxX+kFitWidth(16), height: scrollView.frame.height)
                 }
             case .my://创建食物 、 食物融合
                 createFoodsButton.isHidden = false
@@ -265,8 +324,10 @@ extension FoodsListAddVM{
                 let btnWidth = (SCREEN_WIDHT-kFitWidth(40))/2
                 createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
                 mergeFoodsButton.frame = CGRect.init(x: createFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                scrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: scrollView.frame.height)
             case .meal:
                 createMealsButton.isHidden = false
+                scrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: scrollView.frame.height)
             }
         }
     }
@@ -274,8 +335,10 @@ extension FoodsListAddVM{
         createFoodsButton.isHidden = false
         aiFoodsButton.isHidden = true
         createFoodsSoonButton.isHidden = true
+        adviceFoodsButton.isHidden = true
         mergeFoodsButton.isHidden = true
         createMealsButton.isHidden = true
         createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(86))
+        scrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: scrollView.frame.height)
     }
 }

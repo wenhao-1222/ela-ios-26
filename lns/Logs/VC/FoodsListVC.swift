@@ -89,6 +89,7 @@ class FoodsListVC: WHBaseViewVC {
             self.foodsArray.removeAllObjects()
             self.tableView.reloadData()
             self.naviVm.textField.resignFirstResponder()
+            self.createVm.refreshButton(type: .all, isFromMain: self.isFromMain)
             if self.naviVm.textField.text == "" {
                 self.historyFoodsVm.isHidden = false
                 self.tableView.isHidden = true
@@ -105,6 +106,7 @@ class FoodsListVC: WHBaseViewVC {
             self.foodsArray.removeAllObjects()
             self.tableView.isHidden = false
             self.tableView.reloadData()
+            self.createVm.refreshButton(type: .my, isFromMain: self.isFromMain)
             
             if self.naviVm.textField.text?.count ?? 0 > 0{
                 self.uid = "\(UserInfoModel.shared.uId)"
@@ -127,8 +129,10 @@ class FoodsListVC: WHBaseViewVC {
     }()
     lazy var createVm: FoodsListAddVM = {
         let vm = FoodsListAddVM.init(frame: CGRect.init(x: 0, y: self.topTypeVM.frame.maxY, width: 0, height: 0))
+        vm.controller = self
         vm.createFoodsButton.addTarget(self, action: #selector(createFoodsActino), for: .touchUpInside)
         vm.createFoodsSoonButton.addTarget(self, action: #selector(createFoodsFastAction), for: .touchUpInside)
+        vm.aiFoodsButton.addTarget(self, action: #selector(aiPhotoAction), for: .touchUpInside)
         return vm
     }()
     lazy var historyFoodsVm: FoodsListAddListVM = {
@@ -184,6 +188,22 @@ extension FoodsListVC{
         self.naviVm.textField.resignFirstResponder()
         let vc = FoodsCreateFastVC()
         vc.isFromPlan = self.isFromPlan
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    @objc func aiPhotoAction() {
+        if ConstantModel.shared.ai_identify_image_status == false{
+            MCToast.mc_text("AI识别升级维护中，请稍后重试")
+            return
+        }
+        self.naviVm.textField.resignFirstResponder()
+        let vc = CameraViewController()
+        vc.sourceType = self.sourceType
+        vc.controller = self
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
+    @objc func nextMealAdviceAction(){
+        self.naviVm.textField.resignFirstResponder()
+        let vc = MealAdviceVC()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     @objc func createFoodsNotifi(){
