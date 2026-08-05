@@ -218,7 +218,8 @@ extension JournalReportDailyNutritionRowView {
         let target = rowData.target
         let remain = target - intake
         intakeLabel.text = displayIntegerText(intake)
-        targetLabel.text = displayIntegerText(target)
+        let targetText = displayIntegerText(target)
+        targetLabel.text = rowData.useUpperLimitProgressStyle ? "<=\(targetText)" : targetText
         remainLabel.text = displayIntegerText(remain)
 
         let progress = target > 0 ? CGFloat(intake/target) : (intake > 0 ? 1 : 0)
@@ -357,7 +358,7 @@ class JournalReportDailyNutritionProVM: UIView {
     }()
 
     lazy var totalHeadLabel: UILabel = {
-        return headLabel("总计", alignment: .right)
+        return headLabel("摄入", alignment: .right)
     }()
 
     lazy var targetHeadLabel: UILabel = {

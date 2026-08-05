@@ -274,44 +274,55 @@ class HealthKitManager: NSObject, ObservableObject {
             dateFormatter.timeZone = TimeZone.current//TimeZone(secondsFromGMT: 0)
             
             DispatchQueue.global(qos: .userInitiated).async {
-                var sDate = ""
                 let deleteSdates = UserDefaults.getWeightSdate()
-                let currentBundleIdentifier = Bundle.main.bundleIdentifier ?? "com.lns.elavatine"
-                for i in 0..<results.count{
-                    let result = results[i] as? HKQuantitySample
-                    // 本 App 写入 HealthKit 的体重不再反向同步，避免同一条数据回流覆盖或重复上传。
-                    if result?.sourceRevision.source.bundleIdentifier == currentBundleIdentifier {
-                        DLLog(message: "HealthKitManager:跳过本App写入的体重数据 \(String(describing: result))")
+                // 同一天可能有多条 HealthKit 体重样本，先保留当天 startDate 最新的一条。
+                var latestWeightSamplesByDate = [String: HKQuantitySample]()
+                for i in 0..<results.count {
+                    guard let result = results[i] as? HKQuantitySample else {
                         continue
                     }
-                    let value = result?.quantity.doubleValue(for: HKUnit(from: "kg"))
-                    
-                    let time = Date().changeZeroAreaToZHTimeZone(dateString: dateFormatter.string(from: result?.startDate ?? Date()))
-                    
-                    DLLog(message: "HealthKitManager:\(time)  -------   \(value)")
-                    if time != sDate && !deleteSdates.contains(time){
-                        var weight = String(format: "%.2f", value ?? 0)
-                        weight = weight.replacingOccurrences(of: ",", with: ".")
-                        DLLog(message: "HealthKitManager:\(time)  --   \(weight)")
-                        
-                        if weight.floatValue > 0 {
-                            let info = BodyDataSQLiteManager.getInstance().queryWeightInfo(sDate: time)
-//                            DLLog(message: "HealthKitManager:\(time)  --   \(info?.weight)")
-                            let hasSameWeight = self.isSameHealthKitNumber(info?.weight, weight, fractionDigits: 2)
-                            if info == nil || !hasSameWeight {
-//                            if info == nil || !info!.isUpload || info!.weight != weight {
-//                            if info == nil || !(info!.isUpload && info!.weight == weight) {
-                                BodyDataSQLiteManager.getInstance().updateWeightDataFromHealthKit(cTime: time, weightData: weight)
-                                BodyDataSQLiteManager.getInstance().updateUploadStatus(cTime: time, uploadStatus: false)
-                            }
-                            if info == nil || !hasSameWeight {
-//                            if info == nil || !hasSameWeight || info?.isUpload == false {
-                                BodyDataUploadManager().sendWeightDataRequest(sDate: time, weightData: weight)
-                            }
-                        }
+
+                    let time = Date().changeZeroAreaToZHTimeZone(dateString: dateFormatter.string(from: result.startDate))
+                    guard !deleteSdates.contains(time) else {
+                        continue
                     }
-                    sDate = time
+
+                    if let selectedSample = latestWeightSamplesByDate[time] {
+                        if result.startDate > selectedSample.startDate {
+                            latestWeightSamplesByDate[time] = result
+                        }
+                    } else {
+                        latestWeightSamplesByDate[time] = result
+                    }
                 }
+
+                for time in latestWeightSamplesByDate.keys.sorted(by: >) {
+                    guard let result = latestWeightSamplesByDate[time] else {
+                        continue
+                    }
+                    let value = result.quantity.doubleValue(for: HKUnit(from: "kg"))
+
+                    DLLog(message: "HealthKitManager:\(time)  -------   \(value)")
+                    var weight = String(format: "%.2f", value)
+                    weight = weight.replacingOccurrences(of: ",", with: ".")
+                    DLLog(message: "HealthKitManager:\(time)  --   \(weight)")
+
+                    guard weight.floatValue > 0 else {
+                        continue
+                    }
+
+                    let info = BodyDataSQLiteManager.getInstance().queryWeightInfo(sDate: time)
+                    // 本地已有且与 HealthKit 一致时，直接跳过，不更新数据库也不上传。
+                    if let info = info, self.isSameHealthKitNumber(info.weight, weight, fractionDigits: 2) {
+                        continue
+                    }
+
+                    // 本地缺失或体重不一致时，才同步到本地并触发上传。
+                    BodyDataSQLiteManager.getInstance().updateWeightDataFromHealthKit(cTime: time, weightData: weight)
+                    BodyDataSQLiteManager.getInstance().updateUploadStatus(cTime: time, uploadStatus: false)
+                    BodyDataUploadManager().sendWeightDataRequest(sDate: time, weightData: weight)
+                }
+                // 同一天可能存在多个 HealthKit 体重样本，按样本时间取当天最新一条同步。
             }
         }
         healthStore.execute(sampleQuery)
