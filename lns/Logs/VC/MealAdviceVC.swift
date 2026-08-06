@@ -17,6 +17,17 @@ class MealAdviceVC: WHBaseViewVC {
         
         initUI()
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateInteractivePopGestureBlocked(true)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        restoreFullscreenInteractivePopGesture()
+    }
+
     lazy var backImg: UIImageView = {
         let img = UIImageView()
         img.image = UIImage(named: "habit_guide_back_icon")
