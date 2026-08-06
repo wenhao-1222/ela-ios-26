@@ -36,7 +36,10 @@ class WHNetworkUtil: SessionManager {
 
         return instance!
     }
-    func GET(urlString : String,vc:UIViewController? = nil,success : @escaping (_ responseObject : [String : AnyObject]) -> ()) -> () {
+    func GET(urlString : String,
+             vc:UIViewController? = nil,
+             requestConfig: ((DataRequest) -> Void)? = nil,
+             success : @escaping (_ responseObject : [String : AnyObject]) -> ()) -> () {
         var header : HTTPHeaders = Alamofire.SessionManager.defaultHTTPHeaders
     
         let uId = try? AESEncyptUtil.encrypt_AES_CBC(encryptText: UserInfoModel.shared.uId)
@@ -55,7 +58,9 @@ class WHNetworkUtil: SessionManager {
             parameters: nil
         )
         #endif
-        Alamofire.request(urlString,method: .get,encoding: JSONEncoding.default,headers: header).responseJSON { response in
+        let dataRequest = Alamofire.request(urlString,method: .get,encoding: JSONEncoding.default,headers: header)
+        requestConfig?(dataRequest)
+        dataRequest.responseJSON { response in
             DLLog(message: "\(response)")
             #if DEBUG
             DebugNetworkLogStore.shared.recordResponse(

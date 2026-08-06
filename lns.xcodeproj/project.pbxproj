@@ -707,6 +707,7 @@
 		EC1D07A62F6D2A1A002A90EA /* GuidanceProPromiseVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */; };
 		EC1D07A82F6D3587002A90EA /* GuidanceProSubscribeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A72F6D3585002A90EA /* GuidanceProSubscribeVM.swift */; };
 		EC1D07AA2F6D4FFF002A90EA /* GuidanceProSubscribeTimelineVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A92F6D4FFF002A90EA /* GuidanceProSubscribeTimelineVM.swift */; };
+		F2B0C4012F9A000200A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C4002F9A000100A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift */; };
 		EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */; };
 		EC1EB5252BF72E3000537F0B /* PlanCreateSynDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5242BF72E3000537F0B /* PlanCreateSynDaysVM.swift */; };
 		EC1EB5272BFAED5400537F0B /* FoodsEstablishVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5262BFAED5400537F0B /* FoodsEstablishVC.swift */; };
@@ -2219,6 +2220,7 @@
 		EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPromiseVM.swift; sourceTree = "<group>"; };
 		EC1D07A72F6D3585002A90EA /* GuidanceProSubscribeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProSubscribeVM.swift; sourceTree = "<group>"; };
 		EC1D07A92F6D4FFF002A90EA /* GuidanceProSubscribeTimelineVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProSubscribeTimelineVM.swift; sourceTree = "<group>"; };
+		F2B0C4002F9A000100A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPurchasedConfirmAlertVM.swift; sourceTree = "<group>"; };
 		EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynAlertVM.swift; sourceTree = "<group>"; };
 		EC1EB5242BF72E3000537F0B /* PlanCreateSynDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynDaysVM.swift; sourceTree = "<group>"; };
 		EC1EB5262BFAED5400537F0B /* FoodsEstablishVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsEstablishVC.swift; sourceTree = "<group>"; };
@@ -4418,6 +4420,7 @@
 				EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */,
 				EC1D07A72F6D3585002A90EA /* GuidanceProSubscribeVM.swift */,
 				EC1D07A92F6D4FFF002A90EA /* GuidanceProSubscribeTimelineVM.swift */,
+				F2B0C4002F9A000100A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift */,
 				EC1D07A12F6D1A0F002A90EA /* GuidanceProTopVM.swift */,
 				EC1D07A32F6D2468002A90EA /* GuidanceProTrialVM.swift */,
 				ECF1C5892FB7095B00045D55 /* VerticalFadeView.swift */,
@@ -7400,6 +7403,7 @@
 				EC1D07A62F6D2A1A002A90EA /* GuidanceProPromiseVM.swift in Sources */,
 				EC1D07A82F6D3587002A90EA /* GuidanceProSubscribeVM.swift in Sources */,
 				EC1D07AA2F6D4FFF002A90EA /* GuidanceProSubscribeTimelineVM.swift in Sources */,
+				F2B0C4012F9A000200A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift in Sources */,
 				EC1D07A22F6D1A11002A90EA /* GuidanceProTopVM.swift in Sources */,
 				EC1D07A42F6D246A002A90EA /* GuidanceProTrialVM.swift in Sources */,
 				A78FE20C2CD47E2C00661F7D /* ForumNoticeVM.swift in Sources */,

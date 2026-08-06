@@ -84,6 +84,7 @@ class ElaProPriceVM: UIView {
     var purchaseSuccessBlock: (() -> ())?
     var purchasePendingLoginBlock: (() -> ())?
     var protocalTapBlock: (() -> ())?
+    var purchasePreConfirmBlock: (() -> Void)?
     var purchaseLoadingStateChangeBlock: ((Bool) -> ())?
     var bizType = ""
     var purchaseQueryBizType = "3"
@@ -620,10 +621,21 @@ extension ElaProPriceVM{
     }
     
     @objc func confirmButtonTapAction() {
+        if let purchasePreConfirmBlock = purchasePreConfirmBlock {
+            purchasePreConfirmBlock()
+            return
+        }
+
         guard agreeButton.isSelected else {
             showAgreementConfirmSheet()
             return
         }
+        startPurchaseFlow()
+    }
+
+    func proceedPurchaseAfterAgreementConfirmation() {
+        guard !isPurchasing else { return }
+        agreeButton.isSelected = true
         startPurchaseFlow()
     }
 
