@@ -8,6 +8,15 @@
 import Foundation
 import UIKit
 
+private final class FoodsListAddActionScrollView: UIScrollView {
+    override func touchesShouldCancel(in view: UIView) -> Bool {
+        if view is UIControl {
+            return true
+        }
+        return super.touchesShouldCancel(in: view)
+    }
+}
+
 enum FOODS_TYPE {
     case all //全部食物
     case my //我的食物
@@ -37,10 +46,11 @@ class FoodsListAddVM: UIView {
         return vi
     }()
     lazy var scrollView: UIScrollView = {
-        let vi = UIScrollView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
+        let vi = FoodsListAddActionScrollView.init(frame: CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: selfHeight))
         vi.backgroundColor = .clear
         vi.showsHorizontalScrollIndicator = false
         vi.alwaysBounceHorizontal = false
+        vi.canCancelContentTouches = true
         vi.contentInsetAdjustmentBehavior = .never
         return vi
     }()
@@ -340,5 +350,21 @@ extension FoodsListAddVM{
         createMealsButton.isHidden = true
         createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: SCREEN_WIDHT-kFitWidth(32), height: kFitWidth(86))
         scrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: scrollView.frame.height)
+    }
+    
+    func showCreateFoodsButtonWithRightInset() {
+        layoutIfNeeded()
+        scrollView.layoutIfNeeded()
+        
+        let maxOffsetX = max(0, scrollView.contentSize.width - scrollView.bounds.width)
+        let targetOffsetX = max(0, createFoodsButton.frame.maxX + kFitWidth(16) - scrollView.bounds.width)
+        let offsetX = min(targetOffsetX, maxOffsetX)
+        scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: false)
+    }
+    
+    func createFoodsButtonFrame(in view: UIView) -> CGRect {
+        layoutIfNeeded()
+        scrollView.layoutIfNeeded()
+        return createFoodsButton.convert(createFoodsButton.bounds, to: view)
     }
 }

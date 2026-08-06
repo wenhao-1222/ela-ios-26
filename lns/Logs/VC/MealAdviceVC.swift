@@ -27,7 +27,7 @@ class MealAdviceVC: WHBaseViewVC {
     lazy var backTapView: UIView = {
         let vi = UIView()
         vi.isUserInteractionEnabled = true
-        vi.backgroundColor = WHColor_ARC()
+        vi.backgroundColor = .clear
         
         let tap = FeedBackTapGestureRecognizer.init(target: self, action: #selector(backAction))
         vi.addGestureRecognizer(tap)
@@ -35,19 +35,17 @@ class MealAdviceVC: WHBaseViewVC {
     }()
     
     lazy var mealsNumVm: MealsNumVM = {
-        let vm = MealsNumVM.init(frame: CGRect.init(x: 0, y: getNavigationBarHeight(), width: 0, height: 0))
+        let vm = MealsNumVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
         vm.nextBlock = { [weak self] in
             self?.showSecondStep()
         }
         
         return vm
     }()
-    lazy var secondVm: UIView = {
-        let vi = UIView.init(frame: CGRect.init(x: SCREEN_WIDHT, y: getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-getNavigationBarHeight()))
-        vi.backgroundColor = .COLOR_BG_F2
-        vi.isUserInteractionEnabled = true
+    lazy var secondVm: MealAdviceFoodsVM = {
+        let vm = MealAdviceFoodsVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: 0, height: 0))
         
-        return vi
+        return vm
     }()
     
     @objc func backAction() {
@@ -88,16 +86,16 @@ extension MealAdviceVC{
     func showMealsNumStep() {
         currentStep = 0
         UIView.animate(withDuration: 0.25) {
-            self.mealsNumVm.frame = CGRect.init(x: 0, y: self.getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.getNavigationBarHeight())
-            self.secondVm.frame = CGRect.init(x: SCREEN_WIDHT, y: self.getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.getNavigationBarHeight())
+            self.mealsNumVm.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+            self.secondVm.frame = CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         }
     }
     
     func showSecondStep() {
         currentStep = 1
         UIView.animate(withDuration: 0.25) {
-            self.mealsNumVm.frame = CGRect.init(x: -SCREEN_WIDHT, y: self.getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.getNavigationBarHeight())
-            self.secondVm.frame = CGRect.init(x: 0, y: self.getNavigationBarHeight(), width: SCREEN_WIDHT, height: SCREEN_HEIGHT-self.getNavigationBarHeight())
+            self.mealsNumVm.frame = CGRect.init(x: -SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+            self.secondVm.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         }
     }
 }

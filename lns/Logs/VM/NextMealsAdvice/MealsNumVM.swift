@@ -74,7 +74,7 @@ class MealsNumVM: UIView {
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         btn.backgroundColor = .THEME
-        btn.layer.cornerRadius = kFitWidth(24)
+        btn.layer.cornerRadius = kFitWidth(29)
         btn.clipsToBounds = true
         btn.enablePressEffect()
         btn.addTarget(self, action: #selector(nextAction), for: .touchUpInside)
@@ -100,17 +100,18 @@ extension MealsNumVM{
     func setConstrait() {
         titleLabel.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(kFitWidth(60))
+            make.top.equalTo(kFitWidth(58)+WHUtils().getNavigationBarHeight())
         }
         tipsLabel.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
-            make.top.equalTo(kFitWidth(112))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(7))
         }
         pickerView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()
 //            make.top.equalTo(kFitWidth(260))
 //            make.centerY.lessThanOrEqualToSuperview().offset(kFitWidth(90))
-            make.bottom.equalTo(-(kFitWidth(218)-kFitWidth(126))-kFitWidth(30))
+//            make.bottom.equalTo(-(kFitWidth(218)-kFitWidth(126))-kFitWidth(30))
+            make.top.equalTo(tipsLabel.snp.bottom).offset(kFitWidth(78))
             make.width.equalTo(kFitWidth(343))
             make.height.equalTo(kFitWidth(252))
         }
@@ -125,8 +126,8 @@ extension MealsNumVM{
         nextButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
-            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(35))
-            make.height.equalTo(kFitWidth(48))
+            make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
+            make.height.equalTo(kFitWidth(58))
         }
     }
 }

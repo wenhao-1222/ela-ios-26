@@ -54,7 +54,7 @@ class GuideFoodsListNoDataAlertVM: UIView {
     }()
     lazy var createFoodsButton: GJVerButton = {
         let btn = GJVerButton()
-        let btnWidth = (SCREEN_WIDHT-kFitWidth(48))/3
+        let btnWidth = kFitWidth(99)//(SCREEN_WIDHT-kFitWidth(48))/3
 //        btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
         btn.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
         btn.setTitle("创建食物", for: .normal)
@@ -148,7 +148,7 @@ extension GuideFoodsListNoDataAlertVM{
         addSubview(blurEffectView)
         addSubview(borderView2)
         addSubview(createFoodsButton)
-        createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: WHUtils().getNavigationBarHeight() + kFitWidth(47) + kFitWidth(17), width: kFitWidth(168), height: kFitWidth(86))
+        createFoodsButton.frame = CGRect.init(x: kFitWidth(16), y: WHUtils().getNavigationBarHeight() + kFitWidth(47) + kFitWidth(17), width: kFitWidth(99), height: kFitWidth(86))
         addSubview(tips2Label)
         addSubview(bottomeTipsLabel)
         

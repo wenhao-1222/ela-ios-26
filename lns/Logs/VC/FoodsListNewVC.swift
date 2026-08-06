@@ -177,6 +177,7 @@ class FoodsListNewVC: WHBaseViewVC {
                     self.naviVm.updateUIForGuide(isGuide: false)
 //                    self.view.insertSubview(self.guideAlertVm, aboveSubview: self.naviVm)
 //                    self.view.insertSubview(self.noFoodsCreateAlertVm, aboveSubview: self.naviVm)
+                    self.updateNoFoodsCreateAlertButtonFrame()
                     self.noFoodsCreateAlertVm.show(in: self.view, above: self.naviVm)
 //                    self.noFoodsCreateAlertVm.
 //                    self.guideAlertVm.hiddenSelf()
@@ -474,8 +475,6 @@ extension FoodsListNewVC{
         if self.sourceType == .merge{
             self.topTypeVM.myMealsButton.isHidden = true
         }
-        let createBtnFrame = self.createVm.createFoodsButton.frame
-        self.noFoodsCreateAlertVm.createFoodsButton.frame = CGRect.init(origin: CGPoint.init(x: createBtnFrame.origin.x, y: createBtnFrame.origin.y+self.createVm.frame.minY), size: createBtnFrame.size)
         
         // ⬇️⬇️ 明确初始状态：只显示 historyFoodsVm
         historyFoodsVm.isHidden = false
@@ -487,5 +486,11 @@ extension FoodsListNewVC{
         myFoodsVm.alpha = 0
         mealsVm.isHidden = true
         mealsVm.alpha = 0
+    }
+    
+    func updateNoFoodsCreateAlertButtonFrame() {
+        createVm.showCreateFoodsButtonWithRightInset()
+        noFoodsCreateAlertVm.createFoodsButton.frame = createVm.createFoodsButtonFrame(in: view)
+        noFoodsCreateAlertVm.setNeedsDisplay()
     }
 }

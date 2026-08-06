@@ -747,8 +747,16 @@ extension JounalCollectionCell{
     }
 
     private func refreshSingleMealRow(mealIndex:Int) {
-        guard mealIndex >= 0,
-              mealIndex < UserInfoModel.shared.mealsNumber,
+        guard mealIndex >= 0 else {
+            return
+        }
+
+        guard isTableViewStructureSyncedForBatchUpdates() else {
+            tableView.reloadData()
+            return
+        }
+
+        guard mealIndex < UserInfoModel.shared.mealsNumber,
               tableView.numberOfSections > mealsSectionIndex,
               tableView.numberOfRows(inSection: mealsSectionIndex) > mealIndex else {
             return
@@ -769,6 +777,21 @@ extension JounalCollectionCell{
         }else{
             tableView.reloadRows(at: [indexPath], with: .none)
         }
+    }
+
+    private func isTableViewStructureSyncedForBatchUpdates() -> Bool {
+        let expectedSections = numberOfSections(in: tableView)
+        guard tableView.numberOfSections == expectedSections else {
+            return false
+        }
+
+        for section in 0..<expectedSections {
+            if tableView.numberOfRows(inSection: section) != self.tableView(tableView, numberOfRowsInSection: section) {
+                return false
+            }
+        }
+
+        return true
     }
 
     private func checkPushAuthAfterSecondMeal() {
@@ -1083,6 +1106,10 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
 extension JounalCollectionCell {
     func refreshAICoachUnreadStatus() {
         guard hasAICoachSection else { return }
+        guard isTableViewStructureSyncedForBatchUpdates() else {
+            tableView.reloadData()
+            return
+        }
         let indexPath = IndexPath(row: 0, section: 0)
         guard tableView.numberOfSections > indexPath.section,
               tableView.numberOfRows(inSection: indexPath.section) > indexPath.row else { return }
