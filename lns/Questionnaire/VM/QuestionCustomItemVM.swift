@@ -14,6 +14,7 @@ class QuestionCustomItemVM: UIView {
     let selfHeight = kFitWidth(56)
     
     var maxLength = 3
+    ///是否允许输入0
     var allowsLeadingZero = false
     
     var numberChangeBlock:((String)->())?

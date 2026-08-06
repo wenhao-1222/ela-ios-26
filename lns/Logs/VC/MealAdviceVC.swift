@@ -55,6 +55,7 @@ class MealAdviceVC: WHBaseViewVC {
     }()
     lazy var secondVm: MealAdviceFoodsVM = {
         let vm = MealAdviceFoodsVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: 0, height: 0))
+        vm.controller = self
         
         return vm
     }()

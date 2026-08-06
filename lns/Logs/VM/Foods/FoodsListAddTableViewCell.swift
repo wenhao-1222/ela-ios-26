@@ -27,9 +27,11 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
         super.setHighlighted(highlighted, animated: animated)
         
         if highlighted {
-            self.bottomView.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT
+            self.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT
+//            self.bottomView.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT
         }else{
-            self.bottomView.backgroundColor = .COLOR_CARD_BG_WHITE
+            self.backgroundColor = .COLOR_CARD_BG_WHITE
+//            self.bottomView.backgroundColor = .COLOR_CARD_BG_WHITE
         }
     }
     lazy var bottomView : UIView = {
@@ -90,10 +92,22 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
         vi.backgroundColor = .COLOR_BG_BLACK_06//WHColorWithAlpha(colorStr: "000000", alpha: 0.06)
         return vi
     }()
+    lazy var disabledOverlayView: UIView = {
+        let vi = UIView()
+        vi.backgroundColor = UIColor.COLOR_CARD_BG_WHITE.withAlphaComponent(0.5)
+        vi.isHidden = true
+        vi.isUserInteractionEnabled = false
+        return vi
+    }()
 }
 
 extension FoodsListAddTableViewCell{
-    func updateUI(dict:NSDictionary) {
+    func setSelectionDisabled(_ disabled: Bool) {
+        disabledOverlayView.isHidden = !disabled
+    }
+
+    func updateUI(dict:NSDictionary, keywords:String = "") {
+        setSelectionDisabled(false)
         addButtonVm.isHidden = true
         aiLabel.isHidden = true
         foodsNameLabel.snp.makeConstraints { make in
@@ -122,9 +136,13 @@ extension FoodsListAddTableViewCell{
         
         updateConstrait()
         if dict["verified"]as? String ?? "\(dict["verified"]as? Int ?? 0)" == "1"{
-            foodsNameLabel.attributedText = createAttributedStringWithImage(image: verifyImgView.image!, text: dict["fname"]as? String ?? "")
+            foodsNameLabel.attributedText = createAttributedStringWithImage(image: verifyImgView.image!, text: dict["fname"]as? String ?? "", keywords: keywords)
         }else{
-            foodsNameLabel.text = dict["fname"]as? String ?? ""
+            if keywords.count > 0 {
+                foodsNameLabel.attributedText = createAttributedString(text: dict["fname"]as? String ?? "", keywords: keywords)
+            }else{
+                foodsNameLabel.text = dict["fname"]as? String ?? ""
+            }
             if dict.stringValueForKey(key: "isAi") == "1"{
                 foodsNameLabel.snp.remakeConstraints { make in
                     make.left.equalTo(kFitWidth(16))
@@ -139,11 +157,13 @@ extension FoodsListAddTableViewCell{
     }
     
     func updateUIForMeals(dict:NSDictionary) {
+        setSelectionDisabled(false)
         foodsNameLabel.text = dict.stringValueForKey(key: "name")
         updateConstrait()
     }
     
     func updateUIForMy(dict:NSDictionary,keywords:String? = "") {
+        setSelectionDisabled(false)
         addButtonVm.isHidden = true
         if dict.stringValueForKey(key: "fname").isEmpty {
             foodsNameLabel.text = nil
@@ -175,6 +195,7 @@ extension FoodsListAddTableViewCell{
     }
     
     func updateUIForHistory(dict:NSDictionary,keywords:String? = "") {
+        setSelectionDisabled(false)
 //        addButtonVm.isHidden = true
         if dict.stringValueForKey(key: "fname").isEmpty {
             foodsNameLabel.text = nil
@@ -283,6 +304,7 @@ extension FoodsListAddTableViewCell{
         bottomView.addSubview(numberLabel)
         bottomView.addSubview(addButtonVm)
         bottomView.addSubview(lineView)
+        bottomView.addSubview(disabledOverlayView)
         
         setConstrait()
     }
@@ -313,6 +335,9 @@ extension FoodsListAddTableViewCell{
             make.bottom.equalToSuperview()
             make.height.equalTo(kFitWidth(1))
             make.width.equalTo(SCREEN_WIDHT-kFitWidth(32))
+        }
+        disabledOverlayView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
     func updateConstrait() {

@@ -74,7 +74,7 @@ class MealsNumVM: UIView {
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         btn.backgroundColor = .THEME
-        btn.layer.cornerRadius = kFitWidth(29)
+        btn.layer.cornerRadius = kFitWidth(27)
         btn.clipsToBounds = true
         btn.enablePressEffect()
         btn.addTarget(self, action: #selector(nextAction), for: .touchUpInside)
@@ -127,7 +127,7 @@ extension MealsNumVM{
             make.left.equalTo(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight()-kFitWidth(10))
-            make.height.equalTo(kFitWidth(58))
+            make.height.equalTo(kFitWidth(54))
         }
     }
 }

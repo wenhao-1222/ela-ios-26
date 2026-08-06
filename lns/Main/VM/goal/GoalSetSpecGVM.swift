@@ -36,6 +36,7 @@ class GoalSetSpecGVM: UIView {
         vm.titleLabel.text = "碳水化合物"
         vm.textField.textContentType = nil
         vm.maxLength = 4
+        vm.allowsLeadingZero = true
 //        if QuestinonaireMsgModel.shared.surveytype == "part" {
 //            vm.textField.isEnabled = false
 //        }
@@ -50,6 +51,7 @@ class GoalSetSpecGVM: UIView {
         vm.titleLabel.text = "蛋白质"
         vm.textField.textContentType = nil
         vm.maxLength = 4
+//        vm.allowsLeadingZero = true
 //        if QuestinonaireMsgModel.shared.surveytype == "part" {
 //            vm.textField.isEnabled = false
 //        }
@@ -64,6 +66,7 @@ class GoalSetSpecGVM: UIView {
         vm.titleLabel.text = "脂肪"
         vm.textField.textContentType = nil
         vm.maxLength = 4
+//        vm.allowsLeadingZero = true
 //        if QuestinonaireMsgModel.shared.surveytype == "part" {
 //            vm.textField.isEnabled = false
 //        }
@@ -174,4 +177,3 @@ extension GoalSetSpecGVM{
         fatVm.updateConstrait()
     }
 }
-
