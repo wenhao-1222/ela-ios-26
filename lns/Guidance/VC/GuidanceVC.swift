@@ -203,7 +203,8 @@ class GuidanceVC: WHBaseViewVC {
         super.viewDidLoad()
         initUI()
         prefetchGuidanceProProductsIfNeeded()
-        prefetchGuidanceProSubscriptionHistoryIfNeeded()
+        // APPID 试用历史不再参与 GuidanceVC 的路由判断，保留原方法供后续兼容。
+        // prefetchGuidanceProSubscriptionHistoryIfNeeded()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -1574,16 +1575,19 @@ extension GuidanceVC{
     func showGuidanceProVCForSubscription() {
         guard !isTransitioningToGuidancePro else { return }
         isTransitioningToGuidancePro = true
-        DLLog(message: "[GuidancePro][Route] request subscription page, hasResolved=\(hasResolvedGuidanceProSubscriptionHistory), cachedHasFreeTrial=\(cachedGuidanceProHasFreeTrialPermission)")
+        DLLog(message: "[GuidancePro][Route] skip APPID trial history check, route=GuidanceProPurchasedVC")
 
-        if hasResolvedGuidanceProSubscriptionHistory {
-            presentGuidanceProSubscriptionVC(hasSubscribedHistory: !cachedGuidanceProHasFreeTrialPermission)
-            return
-        }
-
-        resolveGuidanceProSubscriptionHistoryState { [weak self] hasSubscribedHistory in
-            self?.presentGuidanceProSubscriptionVC(hasSubscribedHistory: hasSubscribedHistory)
-        }
+        // GuidanceVC 后续统一进入 GuidanceProPurchasedVC。
+        // 原 APPID 试用历史判断逻辑保留，暂不参与当前路由，避免影响其他业务逻辑。
+        // if hasResolvedGuidanceProSubscriptionHistory {
+        //     presentGuidanceProSubscriptionVC(hasSubscribedHistory: !cachedGuidanceProHasFreeTrialPermission)
+        //     return
+        // }
+        //
+        // resolveGuidanceProSubscriptionHistoryState { [weak self] hasSubscribedHistory in
+        //     self?.presentGuidanceProSubscriptionVC(hasSubscribedHistory: hasSubscribedHistory)
+        // }
+        presentGuidanceProSubscriptionVC(hasSubscribedHistory: true)
     }
 
     func prefetchGuidanceProSubscriptionHistoryIfNeeded() {

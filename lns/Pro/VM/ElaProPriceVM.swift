@@ -85,6 +85,7 @@ class ElaProPriceVM: UIView {
     var purchaseSuccessBlock: (() -> ())?
     var purchasePendingLoginBlock: (() -> ())?
     var protocalTapBlock: (() -> ())?
+    var purchasePreConfirmBlock: (() -> Void)?
     var purchaseLoadingStateChangeBlock: ((Bool) -> ())?
     var bizType = "" {
         didSet {
@@ -135,6 +136,7 @@ class ElaProPriceVM: UIView {
     private var shouldSyncRenewalSwitchAfterSettings = false
     private var isAgreementConfirmVisible = false
     private var hasStartedLoading = false
+    private var isRefreshingProductSnapshot = false
     private struct ProductLoadSnapshot {
         let remoteProducts: [RemotePlanProduct]
         let storeProducts: [Product]
@@ -374,39 +376,18 @@ class ElaProPriceVM: UIView {
         lab.clipsToBounds = true
         return lab
     }()
-    lazy var agreeButton: ElaExpandedTapButton = {
-        let btn = ElaExpandedTapButton(type: .custom)
-        btn.setImage(makeCircleImage(color: WHColor_16(colorStr: "BFC3CA")), for: .normal)
-        btn.setImage(makeCheckedImage(), for: .selected)
-        btn.isSelected = false
-        btn.addTarget(self, action: #selector(toggleAgreeAction), for: .touchUpInside)
-        return btn
-    }()
     lazy var agreementLabel: UILabel = {
         let lab = UILabel()
-        lab.numberOfLines = 2
+        lab.numberOfLines = 1
         lab.textAlignment = .center
-        lab.isUserInteractionEnabled = true
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineHeightMultiple = 1.3
-        paragraphStyle.alignment = .center
-        
-        let allText = "我已阅读并同意\(Self.proAgreementKeyword)\n订阅将自动续费，可随时取消"
+        lab.isUserInteractionEnabled = false
+        let allText = "订阅将自动续费，可随时取消"
         let attr = NSMutableAttributedString(string: allText)
         attr.addAttributes([
             .foregroundColor: subTextColor,
-            .font: UIFont.systemFont(ofSize: 11, weight: .regular),
-            .paragraphStyle:paragraphStyle
+            .font: UIFont.systemFont(ofSize: 11, weight: .regular)
         ], range: NSRange(location: 0, length: allText.count))
-        if let range = allText.range(of: Self.proAgreementKeyword) {
-            let nsRange = NSRange(range, in: allText)
-            attr.addAttributes([
-                .foregroundColor: selectedBlue
-            ], range: nsRange)
-        }
         lab.attributedText = attr
-        let tap = UITapGestureRecognizer(target: self, action: #selector(handleAgreementLabelTap(_:)))
-        lab.addGestureRecognizer(tap)
         return lab
     }()
     lazy var agreementConfirmDimView: UIView = {
@@ -562,10 +543,6 @@ extension ElaProPriceVM{
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
     
-    @objc func toggleAgreeAction() {
-        agreeButton.isSelected.toggle()
-    }
-    
     @objc func handleAgreementLabelTap(_ gesture: UITapGestureRecognizer) {
         guard let label = gesture.view as? UILabel else { return }
         guard didTapAgreementKeyword(in: label, gesture: gesture) else { return }
@@ -632,10 +609,20 @@ extension ElaProPriceVM{
     }
     
     @objc func confirmButtonTapAction() {
-        guard agreeButton.isSelected else {
-            showAgreementConfirmSheet()
+        if let purchasePreConfirmBlock = purchasePreConfirmBlock {
+            purchasePreConfirmBlock()
             return
         }
+        startPurchaseFlow()
+    }
+
+    func proceedPurchaseAfterAgreementConfirmation() {
+        guard !isPurchasing else { return }
+        startPurchaseFlow()
+    }
+
+    func continuePurchaseAfterIapStatusCheck() {
+        guard !isPurchasing else { return }
         startPurchaseFlow()
     }
 
@@ -644,7 +631,6 @@ extension ElaProPriceVM{
     }
 
     @objc func agreeAndContinueAction() {
-        agreeButton.isSelected = true
         hideAgreementConfirmSheet(animated: true) { [weak self] in
             self?.startPurchaseFlow()
         }
@@ -801,30 +787,52 @@ extension ElaProPriceVM{
         }
     }
 
+    func loadProductsOnViewDidLoad() {
+        if let snapshot = cachedProductSnapshot() {
+            hasStartedLoading = true
+            applyProductSnapshot(snapshot)
+            refreshProductsIfNeeded()
+            return
+        }
+
+        startLoadingIfNeeded()
+    }
+
     private func applyStoreProducts(_ products: [Product]) {
-        monthProduct = nil
-        annualProduct = nil
-        lifetimeProduct = nil
-        if let month = products.first(where: { $0.id == ElaProIAPConfig.monthProductID }) {
-            monthProduct = month
+        let month = products.first(where: { $0.id == ElaProIAPConfig.monthProductID })
+        let annual = products.first(where: { $0.id == ElaProIAPConfig.annualProductID })
+        let lifetime = products.first(where: { $0.id == ElaProIAPConfig.lifetimeProductID })
+
+        monthProduct = month
+        annualProduct = annual
+        lifetimeProduct = lifetime
+
+        if month != nil {
             monthTagText = preferredRemoteText(monthRemoteProduct?.promotionLabel)
             monthSubTitleText = preferredRemoteText(monthRemoteProduct?.monthAvgPriceLabel)
-//            monthPriceText = formattedProductPriceText(for: month)
             monthOriginPriceText = preferredRemotePriceText(monthRemoteProduct?.originalPrice)
         }
 
-        if let annual = products.first(where: { $0.id == ElaProIAPConfig.annualProductID }) {
-            annualProduct = annual
+        if annual != nil {
             annualTagText = preferredRemoteText(annualRemoteProduct?.promotionLabel)
             annualSubTitleText = preferredRemoteText(annualRemoteProduct?.monthAvgPriceLabel) ?? ""
-//            annualPriceText = formattedProductPriceText(for: annual)
             annualOriginPriceText = preferredRemotePriceText(annualRemoteProduct?.originalPrice)
         }
-        if let lifetime = products.first(where: { $0.id == ElaProIAPConfig.lifetimeProductID }) {
-            lifetimeProduct = lifetime
+
+        if lifetime != nil {
             lifetimeTagText = preferredRemoteText(lifetimeRemoteProduct?.promotionLabel)
-//            lifetimePriceText = formattedProductPriceText(for: lifetime)
         }
+
+        monthPriceText = resolvedPriceText(storeProduct: month, remotePriceText: monthRemoteProduct?.displayPriceText)
+        annualPriceText = resolvedPriceText(storeProduct: annual, remotePriceText: annualRemoteProduct?.displayPriceText)
+        lifetimePriceText = resolvedPriceText(storeProduct: lifetime, remotePriceText: lifetimeRemoteProduct?.displayPriceText)
+    }
+
+    private func applyProductSnapshot(_ snapshot: ProductLoadSnapshot) {
+        Self.updateConfiguredProductIDs(from: snapshot.remoteProducts)
+        applyRemoteProducts(snapshot.remoteProducts)
+        applyStoreProducts(snapshot.storeProducts)
+        refreshPlanCards()
     }
     
     func refreshPlanCards() {
@@ -923,6 +931,16 @@ extension ElaProPriceVM{
     private func preferredRemotePriceText(_ text: String?) -> String? {
         guard let text = preferredRemoteText(text) else { return nil }
         return Self.formattedPriceText(text)
+    }
+
+    private func resolvedPriceText(storeProduct: Product?, remotePriceText: String?) -> String {
+        if let storeProduct {
+            let storePriceText = formattedProductPriceText(for: storeProduct)
+            if !storePriceText.isEmpty {
+                return storePriceText
+            }
+        }
+        return preferredRemoteText(remotePriceText) ?? "--"
     }
 
     private func formattedProductPriceText(for product: Product) -> String {
@@ -1038,9 +1056,9 @@ extension ElaProPriceVM{
         annualSubTitleText = preferredRemoteText(annualRemoteProduct?.monthAvgPriceLabel)
         monthOriginPriceText = preferredRemotePriceText(monthRemoteProduct?.originalPrice)
         annualOriginPriceText = preferredRemotePriceText(annualRemoteProduct?.originalPrice)
-        monthPriceText = preferredRemoteText(monthRemoteProduct?.displayPriceText) ?? monthPriceText
-        annualPriceText = preferredRemoteText(annualRemoteProduct?.displayPriceText) ?? annualPriceText
-        lifetimePriceText = preferredRemoteText(lifetimeRemoteProduct?.displayPriceText) ?? lifetimePriceText
+        monthPriceText = preferredRemoteText(monthRemoteProduct?.displayPriceText) ?? "--"
+        annualPriceText = preferredRemoteText(annualRemoteProduct?.displayPriceText) ?? "--"
+        lifetimePriceText = preferredRemoteText(lifetimeRemoteProduct?.displayPriceText) ?? "--"
         cardContainer.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(48))
             make.right.equalTo(kFitWidth(-48))
@@ -1143,6 +1161,25 @@ extension ElaProPriceVM{
 
     private func remotePlanType(for product: RemotePlanProduct) -> PlanType? {
         Self.remotePlanType(for: product)
+    }
+
+    private func cachedProductSnapshot() -> ProductLoadSnapshot? {
+        let cacheKey = Self.productLoadCacheKey(bizType: bizType, isPurchased: isPurchased)
+        return Self.productLoadCache[cacheKey]
+    }
+
+    private func refreshProductsIfNeeded() {
+        guard !isRefreshingProductSnapshot else { return }
+        isRefreshingProductSnapshot = true
+
+        Self.refreshProducts(bizType: bizType, isPurchased: isPurchased) { [weak self] snapshot in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.isRefreshingProductSnapshot = false
+                guard let snapshot = snapshot else { return }
+                self.applyProductSnapshot(snapshot)
+            }
+        }
     }
 
     private static func remotePlanType(for product: RemotePlanProduct) -> PlanType? {
@@ -1376,7 +1413,6 @@ extension ElaProPriceVM{
         bottomBar.addSubview(labelBgImgView)
         labelBgImgView.addSubview(dailyPriceLabel)
         bottomBar.addSubview(confirmButton)
-        bottomBar.addSubview(agreeButton)
         bottomBar.addSubview(agreementLabel)
         agreementConfirmSheet.addSubview(agreementConfirmCloseButton)
         agreementConfirmSheet.addSubview(agreementConfirmTitleLabel)
@@ -1435,19 +1471,9 @@ extension ElaProPriceVM{
 //            make.height.equalTo(kFitWidth(26))
 //        }
         
-        agreeButton.snp.makeConstraints { make in
-//            make.left.equalTo(kFitWidth(84))
-            make.right.equalTo(agreementLabel.snp.left).offset(kFitWidth(-10))
-            make.top.equalTo(confirmButton.snp.bottom).offset(kFitWidth(10))
-            make.width.height.equalTo(kFitWidth(16))
-        }
-        
         agreementLabel.snp.makeConstraints { make in
-//            make.centerY.equalTo(agreeButton)
-//            make.left.equalTo(agreeButton.snp.right).offset(kFitWidth(10))
-            make.right.lessThanOrEqualTo(kFitWidth(-20))
-            make.top.equalTo(confirmButton.snp.bottom).offset(kFitWidth(9))
-            make.centerX.lessThanOrEqualToSuperview().offset(kFitWidth(25))
+            make.centerX.equalToSuperview()
+            make.top.equalTo(confirmButton.snp.bottom).offset(kFitWidth(11))
         }
 
         agreementConfirmCloseButton.snp.makeConstraints { make in
@@ -2257,9 +2283,37 @@ extension ElaProPriceVM{
             return
         }
         productLoadCallbacks[cacheKey] = [completion]
-        requestProductSnapshot(bizType: bizType, isPurchased: isPurchased) { success in
+        requestProductSnapshot(bizType: bizType, isPurchased: isPurchased, forceRefreshStoreProducts: false) { snapshot in
             let callbacks = productLoadCallbacks.removeValue(forKey: cacheKey) ?? []
+            guard let snapshot = snapshot else {
+                callbacks.forEach { $0(false) }
+                return
+            }
+            productLoadCache[cacheKey] = snapshot
+            let success = hasDisplayablePrice(in: snapshot.storeProducts, remoteProducts: snapshot.remoteProducts)
             callbacks.forEach { $0(success) }
+        }
+    }
+
+    private static func refreshProducts(bizType: String,
+                                        isPurchased: String = "0",
+                                        completion: @escaping (ProductLoadSnapshot?) -> Void) {
+        let cacheKey = productLoadCacheKey(bizType: bizType, isPurchased: isPurchased)
+        let existingSignature = remoteSnapshotSignature(from: productLoadCache[cacheKey]?.remoteProducts)
+        requestProductSnapshot(bizType: bizType, isPurchased: isPurchased, forceRefreshStoreProducts: true) { snapshot in
+            guard let snapshot = snapshot else {
+                completion(nil)
+                return
+            }
+
+            let newSignature = remoteSnapshotSignature(from: snapshot.remoteProducts)
+            guard newSignature != existingSignature else {
+                completion(nil)
+                return
+            }
+
+            productLoadCache[cacheKey] = snapshot
+            completion(snapshot)
         }
     }
 
@@ -2304,19 +2358,15 @@ extension ElaProPriceVM{
     }
 
     private func applyCachedProductSnapshotIfAvailable() -> Bool {
-        let cacheKey = Self.productLoadCacheKey(bizType: bizType, isPurchased: isPurchased)
-        guard let snapshot = Self.productLoadCache[cacheKey] else { return false }
-        Self.updateConfiguredProductIDs(from: snapshot.remoteProducts)
-        applyRemoteProducts(snapshot.remoteProducts)
-        applyStoreProducts(snapshot.storeProducts)
-        refreshPlanCards()
+        guard let snapshot = cachedProductSnapshot() else { return false }
+        applyProductSnapshot(snapshot)
         return Self.hasDisplayablePrice(in: snapshot.storeProducts, remoteProducts: snapshot.remoteProducts)
     }
 
     private static func requestProductSnapshot(bizType: String,
                                                isPurchased: String,
-                                               completion: @escaping (Bool) -> Void) {
-        let cacheKey = productLoadCacheKey(bizType: bizType, isPurchased: isPurchased)
+                                               forceRefreshStoreProducts: Bool,
+                                               completion: @escaping (ProductLoadSnapshot?) -> Void) {
         var parameters = [String: Any]()
         let cleanBizType = bizType.trimmingCharacters(in: .whitespacesAndNewlines)
         let cleanIsPurchased = normalizedIsPurchased(isPurchased)
@@ -2334,27 +2384,32 @@ extension ElaProPriceVM{
             DLLog(message: "preloadProProductList:\(dataDict)")
             let remoteProducts = remoteProducts(from: dataDict)
             updateConfiguredProductIDs(from: remoteProducts)
-            DispatchQueue.main.async {
-                productLoadCache[cacheKey] = ProductLoadSnapshot(remoteProducts: remoteProducts,
-                                                                 storeProducts: [])
-                completion(hasDisplayablePrice(in: [], remoteProducts: remoteProducts))
-            }
-            /*
             let productIDs = requestedProductIDs(from: remoteProducts)
-            ElaProIAPManager.shared.fetchProProducts(productIDs: productIDs) { result in
+            guard !productIDs.isEmpty else {
                 DispatchQueue.main.async {
-                    guard case .success(let storeProducts) = result else {
-                        completion(false)
-                        return
+                    completion(ProductLoadSnapshot(remoteProducts: remoteProducts,
+                                                   storeProducts: []))
+                }
+                return
+            }
+
+            ElaProIAPManager.shared.fetchProProducts(productIDs: productIDs, forceRefresh: forceRefreshStoreProducts) { result in
+                DispatchQueue.main.async {
+                    let storeProducts: [Product]
+                    switch result {
+                    case .success(let products):
+                        storeProducts = products
+                    case .failure:
+                        storeProducts = []
                     }
-                    productLoadCache[cacheKey] = ProductLoadSnapshot(remoteProducts: remoteProducts,
-                                                                     storeProducts: storeProducts)
-                    completion(hasDisplayablePrice(in: storeProducts, remoteProducts: remoteProducts))
+                    completion(ProductLoadSnapshot(remoteProducts: remoteProducts,
+                                                   storeProducts: storeProducts))
                 }
             }
-            */
         }, failure: { _ in
-            completion(false)
+            DispatchQueue.main.async {
+                completion(nil)
+            }
         })
     }
 
@@ -2362,6 +2417,34 @@ extension ElaProPriceVM{
         let cleanBizType = bizType.trimmingCharacters(in: .whitespacesAndNewlines)
         let cleanIsPurchased = normalizedIsPurchased(isPurchased)
         return "\(cleanBizType)|\(cleanIsPurchased)"
+    }
+
+    private static func remoteSnapshotSignature(from products: [RemotePlanProduct]?) -> String {
+        guard let products = products else {
+            return "nil"
+        }
+
+        return [PlanType.month, .annual, .lifetime].map { plan in
+            remoteProductSignature(remoteProduct(from: products, type: plan))
+        }.joined(separator: "||")
+    }
+
+    private static func remoteProductSignature(_ product: RemotePlanProduct?) -> String {
+        guard let product = product else {
+            return "nil"
+        }
+
+        return [
+            "\(product.type)",
+            product.iosProductId,
+            product.name,
+            product.originalPrice,
+            product.price,
+            product.promotionDesc,
+            product.promotionLabel,
+            product.dayAvgPriceLabel,
+            product.monthAvgPriceLabel
+        ].joined(separator: "\u{001F}")
     }
 
     private static func normalizedIsPurchased(_ isPurchased: String) -> String {
@@ -2418,6 +2501,9 @@ extension ElaProPriceVM{
     }
 
     private static func hasDisplayablePrice(in products: [Product], remoteProducts: [RemotePlanProduct]) -> Bool {
+        if !products.isEmpty {
+            return true
+        }
         let visiblePlans = [PlanType.month, .annual, .lifetime].filter {
             remoteProduct(from: remoteProducts, type: $0) != nil
         }

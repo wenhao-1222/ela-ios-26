@@ -1412,6 +1412,7 @@
 		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
 		F2B0C2012F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */; };
 		F2B0C3012F80100100A1B2C3 /* GuidanceElaProTransitionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */; };
+		F2B0C4012F9A000200A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C4002F9A000100A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2969,6 +2970,7 @@
 		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceElaProTransitionVM.swift; sourceTree = "<group>"; };
+		F2B0C4002F9A000100A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPurchasedConfirmAlertVM.swift; sourceTree = "<group>"; };
 		F9B1295DEDB005F6AC14F235 /* Pods-ElaWeekProteinWidgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekProteinWidgetExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaWeekProteinWidgetExtension/Pods-ElaWeekProteinWidgetExtension.release.xcconfig"; sourceTree = "<group>"; };
 		FFE3733779EF5564F1D7097E /* Pods-ElaWeekProteinWidgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekProteinWidgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-ElaWeekProteinWidgetExtension/Pods-ElaWeekProteinWidgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4448,6 +4450,7 @@
 				EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */,
 				EC1D07A72F6D3585002A90EA /* GuidanceProSubscribeVM.swift */,
 				EC1D07A92F6D4FFF002A90EA /* GuidanceProSubscribeTimelineVM.swift */,
+				F2B0C4002F9A000100A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift */,
 				EC1D07A12F6D1A0F002A90EA /* GuidanceProTopVM.swift */,
 				EC1D07A32F6D2468002A90EA /* GuidanceProTrialVM.swift */,
 				ECF1C5892FB7095B00045D55 /* VerticalFadeView.swift */,
@@ -7466,6 +7469,7 @@
 				EC1D07A62F6D2A1A002A90EA /* GuidanceProPromiseVM.swift in Sources */,
 				EC1D07A82F6D3587002A90EA /* GuidanceProSubscribeVM.swift in Sources */,
 				EC1D07AA2F6D4FFF002A90EA /* GuidanceProSubscribeTimelineVM.swift in Sources */,
+				F2B0C4012F9A000200A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift in Sources */,
 				EC1D07A22F6D1A11002A90EA /* GuidanceProTopVM.swift in Sources */,
 				EC1D07A42F6D246A002A90EA /* GuidanceProTrialVM.swift in Sources */,
 				A78FE20C2CD47E2C00661F7D /* ForumNoticeVM.swift in Sources */,
