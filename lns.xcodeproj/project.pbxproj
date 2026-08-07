@@ -707,7 +707,6 @@
 		EC1D07A62F6D2A1A002A90EA /* GuidanceProPromiseVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */; };
 		EC1D07A82F6D3587002A90EA /* GuidanceProSubscribeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A72F6D3585002A90EA /* GuidanceProSubscribeVM.swift */; };
 		EC1D07AA2F6D4FFF002A90EA /* GuidanceProSubscribeTimelineVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1D07A92F6D4FFF002A90EA /* GuidanceProSubscribeTimelineVM.swift */; };
-		F2B0C4012F9A000200A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C4002F9A000100A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift */; };
 		EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */; };
 		EC1EB5252BF72E3000537F0B /* PlanCreateSynDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5242BF72E3000537F0B /* PlanCreateSynDaysVM.swift */; };
 		EC1EB5272BFAED5400537F0B /* FoodsEstablishVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1EB5262BFAED5400537F0B /* FoodsEstablishVC.swift */; };
@@ -1400,6 +1399,7 @@
 		F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */; };
 		F2B0C2012F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */; };
 		F2B0C3012F80100100A1B2C3 /* GuidanceElaProTransitionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */; };
+		F2B0C4012F9A000200A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C4002F9A000100A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -2220,7 +2220,6 @@
 		EC1D07A52F6D2A18002A90EA /* GuidanceProPromiseVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPromiseVM.swift; sourceTree = "<group>"; };
 		EC1D07A72F6D3585002A90EA /* GuidanceProSubscribeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProSubscribeVM.swift; sourceTree = "<group>"; };
 		EC1D07A92F6D4FFF002A90EA /* GuidanceProSubscribeTimelineVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProSubscribeTimelineVM.swift; sourceTree = "<group>"; };
-		F2B0C4002F9A000100A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPurchasedConfirmAlertVM.swift; sourceTree = "<group>"; };
 		EC1EB5222BF7297000537F0B /* PlanCreateSynAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynAlertVM.swift; sourceTree = "<group>"; };
 		EC1EB5242BF72E3000537F0B /* PlanCreateSynDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCreateSynDaysVM.swift; sourceTree = "<group>"; };
 		EC1EB5262BFAED5400537F0B /* FoodsEstablishVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodsEstablishVC.swift; sourceTree = "<group>"; };
@@ -2945,6 +2944,7 @@
 		F2B0C1022F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceSexTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C2022F80000200A1B2C3 /* GuidanceDietRecordTipsAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceDietRecordTipsAlertVM.swift; sourceTree = "<group>"; };
 		F2B0C3022F80100200A1B2C3 /* GuidanceElaProTransitionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceElaProTransitionVM.swift; sourceTree = "<group>"; };
+		F2B0C4002F9A000100A1B2C3 /* GuidanceProPurchasedConfirmAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceProPurchasedConfirmAlertVM.swift; sourceTree = "<group>"; };
 		F9B1295DEDB005F6AC14F235 /* Pods-ElaWeekProteinWidgetExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekProteinWidgetExtension.release.xcconfig"; path = "Target Support Files/Pods-ElaWeekProteinWidgetExtension/Pods-ElaWeekProteinWidgetExtension.release.xcconfig"; sourceTree = "<group>"; };
 		FFE3733779EF5564F1D7097E /* Pods-ElaWeekProteinWidgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaWeekProteinWidgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-ElaWeekProteinWidgetExtension/Pods-ElaWeekProteinWidgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -8110,7 +8110,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 159;
+				CURRENT_PROJECT_VERSION = 160;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
@@ -8137,7 +8137,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.4;
+				MARKETING_VERSION = 2.5.5;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -8218,7 +8218,7 @@
 				CODE_SIGN_ENTITLEMENTS = lns/lns.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 159;
+				CURRENT_PROJECT_VERSION = 160;
 				DEVELOPMENT_TEAM = 2Q85AGKRJG;
 				EXCLUDED_ARCHS = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -8244,7 +8244,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.4;
+				MARKETING_VERSION = 2.5.5;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-all_load",

@@ -8,11 +8,20 @@
 import MCToast
 
 class ElaProVC: WHBaseViewVC {
+    private enum ProIapStatusState {
+        case idle
+        case loading
+        case subscribable
+        case unsubscribable(message: String)
+    }
+
     private var currentIndex: Int = 0
     private var isBackButtonCoolingDown = false
     private var isCreatingPendingDietPlan = false
     private var isStepScrollAnimating = false
     private var scrollDragStartIndex: Int?
+    private var proIapStatusState: ProIapStatusState = .idle
+    private var shouldProceedPurchaseAfterIapStatusLoaded = false
     
     var param = [String : Any]()
     var showPriceOnly = false
@@ -28,6 +37,7 @@ class ElaProVC: WHBaseViewVC {
     var pendingDietPlanCreateParameters: [String: Any]?
     private var hasTrackedDietPlanCreateLoadingPage = false
     private var agreementAlertVm: ElaProAgreementAlertVM?
+    private var purchaseConfirmAlertVm: GuidanceProPurchasedConfirmAlertVM?
     
     lazy var purchaseLoadingMaskView: UIView = {
         let vi = UIView()
@@ -49,6 +59,7 @@ class ElaProVC: WHBaseViewVC {
         initUI()
         applyInitialDisplayMode()
         updateScrollBackGestureState()
+        requestProIapStatusIfNeeded(showLoading: false)
         priceVm.startLoadingIfNeeded()
 //        
 //        if showPriceOnly == false {
@@ -144,6 +155,9 @@ class ElaProVC: WHBaseViewVC {
         }
         vm.protocalTapBlock = { [weak self] in
             self?.showAgreementAlert()
+        }
+        vm.purchasePreConfirmBlock = { [weak self] in
+            self?.handlePurchasePreConfirmAction()
         }
         vm.purchaseLoadingStateChangeBlock = { [weak self] visible in
             self?.setPurchaseLoadingVisible(visible)
@@ -569,6 +583,138 @@ extension ElaProVC{
 }
 
 private extension ElaProVC {
+    func handlePurchasePreConfirmAction() {
+        switch proIapStatusState {
+        case .subscribable:
+            showPurchaseConfirmAlert()
+        case .unsubscribable(let message):
+            MCToast.mc_text(message)
+        case .loading:
+            shouldProceedPurchaseAfterIapStatusLoaded = true
+            MCToast.mc_loading()
+        case .idle:
+            shouldProceedPurchaseAfterIapStatusLoaded = true
+            requestProIapStatusIfNeeded(showLoading: true)
+        }
+    }
+
+    func requestProIapStatusIfNeeded(showLoading: Bool) {
+        guard case .loading = proIapStatusState else {
+            proIapStatusState = .loading
+            if showLoading {
+                MCToast.mc_loading()
+            }
+            fetchProIapStatus()
+            return
+        }
+
+        if showLoading {
+            MCToast.mc_loading()
+        }
+    }
+
+    func fetchProIapStatus() {
+        WHNetworkUtil.shareManager().GET(
+            urlString: URL_pro_iap_status,
+            vc: nil,
+            requestConfig: { [weak self] request in
+                request.responseJSON { [weak self] response in
+                    guard let self = self else { return }
+                    let responseObject = response.result.value as? [String: AnyObject]
+                    if let responseObject = responseObject {
+                        self.handleProIapStatusResponse(responseObject: responseObject)
+                    } else {
+                        self.handleProIapStatusRequestFailure()
+                    }
+                }
+            },
+            success: { _ in }
+        )
+    }
+
+    func handleProIapStatusResponse(responseObject: [String: AnyObject]?) {
+        guard let responseObject = responseObject else { return }
+
+        let code = intValue(from: responseObject["code"])
+        let message = stringValue(from: responseObject["message"]) ?? "网络异常，请稍后重试"
+        proIapStatusState = code == 200 ? .subscribable : .unsubscribable(message: message)
+
+        if shouldProceedPurchaseAfterIapStatusLoaded {
+            shouldProceedPurchaseAfterIapStatusLoaded = false
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                MCToast.mc_remove()
+                switch self.proIapStatusState {
+                case .subscribable:
+                    self.showPurchaseConfirmAlert()
+                case .unsubscribable(let message):
+                    MCToast.mc_text(message)
+                case .idle, .loading:
+                    break
+                }
+            }
+        }
+    }
+
+    func handleProIapStatusRequestFailure() {
+        proIapStatusState = .idle
+        if shouldProceedPurchaseAfterIapStatusLoaded {
+            shouldProceedPurchaseAfterIapStatusLoaded = false
+            DispatchQueue.main.async {
+                MCToast.mc_remove()
+                MCToast.mc_text("网络异常，请稍后重试")
+            }
+        }
+    }
+
+    func intValue(from value: AnyObject?) -> Int {
+        if let intValue = value as? Int {
+            return intValue
+        }
+        if let stringValue = value as? String, let intValue = Int(stringValue) {
+            return intValue
+        }
+        return -1
+    }
+
+    func stringValue(from value: AnyObject?) -> String? {
+        if let stringValue = value as? String, !stringValue.isEmpty {
+            return stringValue
+        }
+        return nil
+    }
+
+    func showPurchaseConfirmAlert() {
+        let alertVm: GuidanceProPurchasedConfirmAlertVM
+        if let existing = purchaseConfirmAlertVm {
+            alertVm = existing
+        } else {
+            let created = GuidanceProPurchasedConfirmAlertVM(frame: .zero)
+            purchaseConfirmAlertVm = created
+            view.addSubview(created)
+            created.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+            }
+            alertVm = created
+        }
+
+        alertVm.confirmBlock = { [weak self] in
+            self?.priceVm.continuePurchaseAfterIapStatusCheck()
+        }
+        alertVm.linkTapBlock = { [weak self] type in
+            self?.openPurchaseAgreement(type)
+        }
+        view.bringSubviewToFront(alertVm)
+        alertVm.showSelf()
+    }
+
+    func openPurchaseAgreement(_ type: GuidanceProPurchasedConfirmAlertVM.LinkType) {
+        switch type {
+        case .membershipAgreement:
+            showAgreementAlert()
+        }
+    }
+
     func popToDietPlanSecondIfNeeded() -> Bool {
         guard shouldReturnToDietPlanSecondOnClose,
               let navigationController = navigationController,

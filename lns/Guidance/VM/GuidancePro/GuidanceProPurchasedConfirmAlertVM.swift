@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ObjectiveC
 import SnapKit
 
 final class GuidanceProPurchasedCheckButton: ElaExpandedTapButton {
@@ -40,7 +41,7 @@ final class GuidanceProPurchasedCheckButton: ElaExpandedTapButton {
         addSubview(checkImageView)
         checkImageView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(30))
+            make.width.height.equalTo(kFitWidth(20))
         }
         checkImageView.contentMode = .scaleAspectFit
         checkImageView.isUserInteractionEnabled = false
@@ -48,13 +49,25 @@ final class GuidanceProPurchasedCheckButton: ElaExpandedTapButton {
 
     private func applyCheckState(animated: Bool) {
         checkImageView.setCheckState(isSelected,
-                                     checkedImageName: "circle_today_select_icon",
-                                     uncheckedImageName: "circle_today_normal_icon",
+                                     checkedImageName: "select_icon_selected_circle",
+                                     uncheckedImageName: "select_icon_normal_circle",
                                      animated: animated)
+        //select_icon_normal_circle  circle_today_normal_icon
+        //select_icon_selected_circle   circle_today_select_icon
     }
 }
 
-final class GuidanceProPurchasedConfirmAlertVM: UIView {
+private final class GuidanceProPurchasedRowTapContext: NSObject {
+    weak var checkButton: UIButton?
+    weak var label: UILabel?
+
+    init(checkButton: UIButton, label: UILabel) {
+        self.checkButton = checkButton
+        self.label = label
+    }
+}
+
+final class GuidanceProPurchasedConfirmAlertVM: UIView, UIGestureRecognizerDelegate {
 
     enum LinkType {
         case membershipAgreement
@@ -66,10 +79,11 @@ final class GuidanceProPurchasedConfirmAlertVM: UIView {
     private static let linkAttribute = NSAttributedString.Key("GuidanceProPurchasedConfirmAlertLinkType")
     private let blueColor = UIColor.THEME//WHColor_16(colorStr: "1677F2")
     private var isDismissing = false
+    fileprivate static var rowTapContextKey: UInt8 = 0
 
     private lazy var dimView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.38)
+        view.backgroundColor = UIColor.COLOR_BG_BLACK_15
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissAction))
         view.addGestureRecognizer(tap)
         return view
@@ -103,7 +117,8 @@ final class GuidanceProPurchasedConfirmAlertVM: UIView {
 
     private lazy var subtitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "为确保你的权益，请在确认需要 ELA PRO 后，\n再勾选并支付"
+//        label.text = "为确保你的权益，请在确认需要 ELA PRO 后，\n再勾选并支付"
+        label.text = "请确认 ELA PRO 符合你的需求，再决定是否购买"
         label.textColor = .COLOR_TEXT_TITLE_0f1214_50
         label.font = .systemFont(ofSize: 12, weight: .regular)
         label.textAlignment = .center
@@ -135,29 +150,29 @@ final class GuidanceProPurchasedConfirmAlertVM: UIView {
     }()
 
     private lazy var coachLabel: UILabel = {
-        makeBodyLabel("我明白教练调整建议和分析，需要基于我的主动记录，才能提供帮助。")
+        makeBodyLabel("我明白只有持续记录饮食和体重，教练才能提供有效的调整建议。")
     }()
 
     private lazy var refundLabel: UILabel = {
-        makeBodyLabel("我理解数据计算会消耗成本，虚拟产品购买后不退款。")
+        makeBodyLabel("我理解数据计算会产生成本，购买后不退费。")
     }()
 
-    private lazy var agreementRow: UIStackView = {
+    private lazy var agreementRow: UIView = {
         makeRow(checkButton: agreementCheckButton, label: agreementLabel)
     }()
 
-    private lazy var coachRow: UIStackView = {
+    private lazy var coachRow: UIView = {
         makeRow(checkButton: coachCheckButton, label: coachLabel)
     }()
 
-    private lazy var refundRow: UIStackView = {
+    private lazy var refundRow: UIView = {
         makeRow(checkButton: refundCheckButton, label: refundLabel)
     }()
 
     private lazy var itemStackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [agreementRow, coachRow, refundRow])
         stack.axis = .vertical
-        stack.spacing = kFitWidth(15)
+        stack.spacing = kFitWidth(0)
         stack.alignment = .fill
         return stack
     }()
@@ -267,7 +282,7 @@ private extension GuidanceProPurchasedConfirmAlertVM {
 
         itemStackView.snp.makeConstraints { make in
             make.top.equalTo(subtitleLabel.snp.bottom).offset(kFitWidth(22))
-            make.left.right.equalToSuperview().inset(kFitWidth(24))
+            make.left.right.equalToSuperview()//.inset(kFitWidth(24))
         }
 
         cancelButton.snp.makeConstraints { make in
@@ -286,24 +301,41 @@ private extension GuidanceProPurchasedConfirmAlertVM {
         }
     }
 
-    func makeRow(checkButton: UIButton, label: UILabel) -> UIStackView {
+    func makeRow(checkButton: UIButton, label: UILabel) -> UIView {
         checkButton.setContentHuggingPriority(.required, for: .horizontal)
         checkButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         NSLayoutConstraint.activate([
-            checkButton.widthAnchor.constraint(equalToConstant: kFitWidth(30)),
-            checkButton.heightAnchor.constraint(equalToConstant: kFitWidth(30))
+            checkButton.widthAnchor.constraint(equalToConstant: kFitWidth(22)),
+            checkButton.heightAnchor.constraint(equalToConstant: kFitWidth(22))
         ])
+
+        let container = UIView()
+        container.backgroundColor = .clear//WHColor_ARC()
 
         let stack = UIStackView(arrangedSubviews: [checkButton, label])
         stack.axis = .horizontal
         stack.spacing = kFitWidth(2)
         stack.alignment = .center
-        return stack
+        stack.isUserInteractionEnabled = true
+//        stack.backgroundColor = WHColor_ARC()
+
+        container.addSubview(stack)
+        stack.snp.makeConstraints { make in
+            make.left.right.equalToSuperview().inset(kFitWidth(24))
+            make.top.equalToSuperview().offset(kFitWidth(8))
+            make.bottom.equalToSuperview().offset(kFitWidth(-8))
+        }
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleRowTap(_:)))
+        tap.delegate = self
+        container.addGestureRecognizer(tap)
+        tap.rowTapContext = GuidanceProPurchasedRowTapContext(checkButton: checkButton, label: label)
+        return container
     }
 
     func makeCheckButton(action: Selector) -> GuidanceProPurchasedCheckButton {
         let button = GuidanceProPurchasedCheckButton(type: .custom)
-        button.hitTestEdgeInsets = .init(top: -8, left: -8, bottom: -8, right: -8)
+        button.hitTestEdgeInsets = .init(top: -kFitWidth(22), left: -kFitWidth(22), bottom: -kFitWidth(22), right: -kFitWidth(22))
         button.addTarget(self, action: action, for: .touchUpInside)
         return button
     }
@@ -327,7 +359,7 @@ private extension GuidanceProPurchasedConfirmAlertVM {
 
     func makeAgreementText() -> NSAttributedString {
         let normalText = "我已阅读并同意 "
-        let membershipAgreement = "《会员服务协议》"
+        let membershipAgreement = "《ELA PRO会员服务协议》"
         let text = normalText + membershipAgreement
         let result = NSMutableAttributedString(string: text)
         result.addAttributes([
@@ -425,6 +457,11 @@ private extension GuidanceProPurchasedConfirmAlertVM {
         linkTapBlock?(type)
     }
 
+    @objc func handleRowTap(_ gesture: UITapGestureRecognizer) {
+        guard let context = gesture.rowTapContext else { return }
+        context.checkButton?.sendActions(for: .touchUpInside)
+    }
+
     func linkType(at point: CGPoint, in label: UILabel) -> LinkType? {
         guard let attributedText = label.attributedText, !attributedText.string.isEmpty else {
             return nil
@@ -487,5 +524,38 @@ private extension GuidanceProPurchasedConfirmAlertVM {
         animation.duration = 0.3
         animation.values = [-5, 5, -5, 5, 0]
         row.layer.add(animation, forKey: "shake")
+    }
+}
+
+private extension UIGestureRecognizer {
+    var rowTapContext: GuidanceProPurchasedRowTapContext? {
+        get {
+            objc_getAssociatedObject(self, &GuidanceProPurchasedConfirmAlertVM.rowTapContextKey) as? GuidanceProPurchasedRowTapContext
+        }
+        set {
+            objc_setAssociatedObject(self,
+                                     &GuidanceProPurchasedConfirmAlertVM.rowTapContextKey,
+                                     newValue,
+                                     .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+}
+
+extension GuidanceProPurchasedConfirmAlertVM {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        guard let context = gestureRecognizer.rowTapContext else { return true }
+
+        if let checkButton = context.checkButton,
+           checkButton.point(inside: touch.location(in: checkButton), with: nil) {
+            return false
+        }
+
+        if let label = context.label,
+           label.point(inside: touch.location(in: label), with: nil),
+           linkType(at: touch.location(in: label), in: label) != nil {
+            return false
+        }
+
+        return true
     }
 }

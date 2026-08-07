@@ -166,7 +166,7 @@ public let URL_clear_logs                   = URL_Type + "plans/log/clear"
 
 //MARK: 会员
 ///苹果iap订阅开启状态
-public let URL_pro_iap_status                = URL_Type + "tools/apple/iap/subscription_status"
+public let URL_pro_iap_status               = URL_Type + "tools/apple/iap/subscription_status"
 ///会员订阅套餐列表
 public let URL_pro_product                  = URL_Type + "users/membership/product"
 ///会员订阅 后  向后台发起查询
