@@ -60,7 +60,7 @@ class ElaProVC: WHBaseViewVC {
         applyInitialDisplayMode()
         updateScrollBackGestureState()
         requestProIapStatusIfNeeded(showLoading: false)
-        priceVm.startLoadingIfNeeded()
+        priceVm.loadProductsOnViewDidLoad()
 //        
 //        if showPriceOnly == false {
 //            self.sendDietUpsertRequest()

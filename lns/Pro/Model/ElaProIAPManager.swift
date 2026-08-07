@@ -237,6 +237,7 @@ final class ElaProIAPManager: NSObject {
     }
 
     func fetchProProducts(productIDs: [String]? = nil,
+                          forceRefresh: Bool = false,
                           completion: @escaping (Result<[Product], Error>) -> Void) {
         let requestedProductIDs = (productIDs?.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty } ?? [
             ElaProIAPConfig.monthProductID,
@@ -249,7 +250,7 @@ final class ElaProIAPManager: NSObject {
             return
         }
 
-        fetchProducts(ids: requestedProductIDs, forceRefresh: false) { result in
+        fetchProducts(ids: requestedProductIDs, forceRefresh: forceRefresh) { result in
             if case .success(let products) = result {
                 if requestedProductIDs.contains(ElaProIAPConfig.monthProductID),
                    let month = products.first(where: { $0.id == ElaProIAPConfig.monthProductID }) {
