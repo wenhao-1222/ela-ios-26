@@ -128,7 +128,7 @@ enum AICoachReportPDFGenerator {
 
     @discardableResult
     static func clearAllCachedReports() throws -> Int {
-        let folderURL = reportCacheFolderURL()
+        let folderURL = currentUserReportCacheFolderURL()
         let fileManager = FileManager.default
         guard fileManager.fileExists(atPath: folderURL.path) else { return 0 }
 
@@ -321,7 +321,7 @@ enum AICoachReportPDFGenerator {
     }
 
     private static func makeOutputURL(report: AICoachReportDemoData, reportId: String) -> URL {
-        let folderURL = reportCacheFolderURL()
+        let folderURL = currentUserReportCacheFolderURL()
         if FileManager.default.fileExists(atPath: folderURL.path) == false {
             try? FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
         }
@@ -332,6 +332,16 @@ enum AICoachReportPDFGenerator {
     private static func reportCacheFolderURL() -> URL {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("AICoachReport", isDirectory: true)
+    }
+
+    private static func currentUserReportCacheFolderURL() -> URL {
+        reportCacheFolderURL()
+            .appendingPathComponent(currentUserCacheFolderName(), isDirectory: true)
+    }
+
+    private static func currentUserCacheFolderName() -> String {
+        let currentUserID = UserInfoModel.shared.id.trimmingCharacters(in: .whitespacesAndNewlines)
+        return sanitizeFileNameComponent(currentUserID.isEmpty ? "anonymous" : currentUserID)
     }
 
     private static func cacheVersionFileURL(for fileURL: URL) -> URL {
