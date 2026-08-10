@@ -65,8 +65,7 @@ extension FoodsListFooterVM{
         addSubview(searchFoodsButton)
         searchFoodsButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
-//            make.top.height.equalToSuperview()
-            make.centerY.lessThanOrEqualToSuperview()
+            make.top.equalTo(kFitWidth(10))
             make.height.equalTo(kFitWidth(30))
         }
     }

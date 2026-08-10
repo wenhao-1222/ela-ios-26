@@ -373,6 +373,7 @@ extension ElaProVC{
         }
         
         progressVm.isHidden = false
+        progressVm.startProgressAnimation()
         sendDietPlanCreateLoadingPageViewIfNeeded()
         planVm.isHidden = false
         readyVm.isHidden = false

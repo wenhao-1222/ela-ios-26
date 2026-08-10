@@ -89,11 +89,12 @@ final class MealAdviceFoodsVM: UIView {
     private var selectedChipViews: [MealAdviceSelectedFoodChipView] = []
     private var selectedScrollHeightConstraint: Constraint?
     private let maximumSelectedFoodsCount = 9
+    private lazy var recentSearchNoDataVm = FoodsListHeaderNoDataVM(frame: .zero)
+    private lazy var recentSearchFooterVm = FoodsListFooterVM(frame: .zero)
 
     private struct TableViewAnchor {
         let indexPath: IndexPath
         let screenY: CGFloat
-        let contentOffsetY: CGFloat
     }
 
     override init(frame: CGRect) {
@@ -114,6 +115,7 @@ final class MealAdviceFoodsVM: UIView {
         super.layoutSubviews()
 
         noDataView.center = CGPoint(x: tableView.bounds.width * 0.5, y: kFitWidth(134))
+        layoutRecentSearchPromptViews()
         topGradientLayer.frame = topGradientView.bounds
         bottomGradientLayer.frame = bottomGradientView.bounds
     }
@@ -227,21 +229,7 @@ final class MealAdviceFoodsVM: UIView {
         return stack
     }()
 
-    lazy var tableView: UITableView = {
-        let table = UITableView(frame: .zero, style: .plain)
-        table.separatorStyle = .none
-        table.backgroundColor = .clear
-        table.delegate = self
-        table.dataSource = self
-        table.sectionHeaderHeight = CGFloat.leastNormalMagnitude
-        table.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: CGFloat.leastNormalMagnitude))
-        table.register(FoodsListAddTableViewCell.classForCoder(), forCellReuseIdentifier: "FoodsListAddTableViewCell")
-        table.contentInsetAdjustmentBehavior = .never
-        if #available(iOS 15.0, *) {
-            table.sectionHeaderTopPadding = 0
-        }
-        return table
-    }()
+    let tableView = UITableView(frame: .zero, style: .plain)
 
     lazy var noDataView: TableViewNoDataVM = {
         let vi = TableViewNoDataVM(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: 0))
@@ -300,6 +288,18 @@ final class MealAdviceFoodsVM: UIView {
 
 extension MealAdviceFoodsVM {
     func initUI() {
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .clear
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.sectionHeaderHeight = CGFloat.leastNormalMagnitude
+        tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: CGFloat.leastNormalMagnitude))
+        tableView.register(FoodsListAddTableViewCell.classForCoder(), forCellReuseIdentifier: "FoodsListAddTableViewCell")
+        tableView.contentInsetAdjustmentBehavior = .never
+        if #available(iOS 15.0, *) {
+            tableView.sectionHeaderTopPadding = 0
+        }
+
         addSubview(titleLabel)
         addSubview(tipsLabel)
         addSubview(searchBgView)
@@ -314,6 +314,7 @@ extension MealAdviceFoodsVM {
         listHeaderView.addSubview(tabLineView)
         addSubview(tableView)
         tableView.addSubview(noDataView)
+        tableView.addSubview(recentSearchNoDataVm)
 
         addSubview(topGradientView)
         addSubview(bottomGradientView)
@@ -324,6 +325,9 @@ extension MealAdviceFoodsVM {
 
         noDataView.center = CGPoint(x: tableView.frame.width * 0.5, y: kFitWidth(134))
         noDataView.noDataLabel.text = "- 暂无数据 -"
+        recentSearchNoDataVm.isHidden = true
+        recentSearchNoDataVm.searchFoodsButton.addTarget(self, action: #selector(searchAllFoodsAction), for: .touchUpInside)
+        recentSearchFooterVm.searchFoodsButton.addTarget(self, action: #selector(searchAllFoodsAction), for: .touchUpInside)
 
         selectedScrollView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
@@ -405,6 +409,16 @@ extension MealAdviceFoodsVM {
         refreshTabState()
         refreshSelectedState()
         refreshSelectedFoodsView()
+        updateRecentSearchPromptState()
+    }
+
+    func layoutRecentSearchPromptViews() {
+        recentSearchNoDataVm.frame = CGRect(
+            x: 0,
+            y: kFitWidth(18),
+            width: tableView.bounds.width,
+            height: recentSearchNoDataVm.selfHeight
+        )
     }
 
     func makeTabButton(title: String) -> UIButton {
@@ -448,6 +462,7 @@ extension MealAdviceFoodsVM {
             }
         }
         setNeedsLayout()
+        updateRecentSearchPromptState()
     }
 
     func refreshSelectedState() {
@@ -469,34 +484,6 @@ extension MealAdviceFoodsVM {
         confirmButton.isEnabled = selectedFoodsArray.count > 0
     }
 
-    private func captureTableViewAnchor() -> TableViewAnchor? {
-        layoutIfNeeded()
-        guard let indexPath = tableView.indexPathsForVisibleRows?.first,
-              let cell = tableView.cellForRow(at: indexPath) else {
-            return nil
-        }
-
-        let screenY = cell.convert(.zero, to: self).y
-        return TableViewAnchor(
-            indexPath: indexPath,
-            screenY: screenY,
-            contentOffsetY: tableView.contentOffset.y
-        )
-    }
-
-    private func restoreTableViewAnchor(_ anchor: TableViewAnchor?) {
-        guard let anchor = anchor else { return }
-        layoutIfNeeded()
-        guard let cell = tableView.cellForRow(at: anchor.indexPath) else { return }
-
-        let currentScreenY = cell.convert(.zero, to: self).y
-        let movement = currentScreenY - anchor.screenY
-        tableView.setContentOffset(
-            CGPoint(x: tableView.contentOffset.x, y: anchor.contentOffsetY + movement),
-            animated: false
-        )
-    }
-
     private func refreshSelectionUI() {
         let anchor = captureTableViewAnchor()
         refreshSelectedState()
@@ -505,22 +492,27 @@ extension MealAdviceFoodsVM {
         restoreTableViewAnchor(anchor)
     }
 
+    private func resetTableViewOffsetToTop() {
+        tableView.layoutIfNeeded()
+        tableView.setContentOffset(.zero, animated: false)
+    }
+
     func refreshSelectedFoodsView() {
         selectedChipViews.forEach { $0.removeFromSuperview() }
         selectedChipViews.removeAll()
 
+        let chipHeight = kFitWidth(32)
         let hasSelected = selectedFoodsArray.count > 0
         selectedScrollView.isHidden = !hasSelected
 
         guard hasSelected else {
-            selectedScrollHeightConstraint?.update(offset: 0)
+            selectedScrollHeightConstraint?.update(offset: chipHeight)
             selectedScrollView.contentSize = .zero
             setNeedsLayout()
             layoutIfNeeded()
             return
         }
 
-        let chipHeight = kFitWidth(32)
         let columnSpacing = kFitWidth(8)
         let rowSpacing = kFitWidth(12)
         let columnCount = 3
@@ -554,6 +546,27 @@ extension MealAdviceFoodsVM {
         layoutIfNeeded()
     }
 
+    private func captureTableViewAnchor() -> TableViewAnchor? {
+        layoutIfNeeded()
+        guard let indexPath = tableView.indexPathsForVisibleRows?.first else { return nil }
+        let rowRect = tableView.rectForRow(at: indexPath)
+        let screenY = tableView.convert(CGPoint(x: 0, y: rowRect.minY), to: self).y
+        return TableViewAnchor(indexPath: indexPath, screenY: screenY)
+    }
+
+    private func restoreTableViewAnchor(_ anchor: TableViewAnchor?) {
+        guard let anchor = anchor else { return }
+        layoutIfNeeded()
+        let rowRect = tableView.rectForRow(at: anchor.indexPath)
+        let currentScreenY = tableView.convert(CGPoint(x: 0, y: rowRect.minY), to: self).y
+        let movement = currentScreenY - anchor.screenY
+        guard abs(movement) > 0.5 else { return }
+        tableView.setContentOffset(
+            CGPoint(x: tableView.contentOffset.x, y: tableView.contentOffset.y + movement),
+            animated: false
+        )
+    }
+
     func reloadCurrentList() {
         currentKeyword = normalizedSearchKeyword()
 
@@ -573,6 +586,7 @@ extension MealAdviceFoodsVM {
         recentFoodsArray = NSMutableArray(array: sourceArray)
         filteredRecentFoodsArray = filteredFoods(in: recentFoodsArray, keyword: currentKeyword)
         tableView.reloadData()
+        resetTableViewOffsetToTop()
         updateNoDataState()
     }
 
@@ -580,6 +594,7 @@ extension MealAdviceFoodsVM {
         myFoodsArray = NSMutableArray(array: UserDefaults.getMyFoods())
         filteredMyFoodsArray = filteredFoods(in: myFoodsArray, keyword: currentKeyword)
         tableView.reloadData()
+        resetTableViewOffsetToTop()
         updateNoDataState()
     }
 
@@ -593,7 +608,8 @@ extension MealAdviceFoodsVM {
         case .my:
             hasData = filteredMyFoodsArray.count > 0
         }
-        noDataView.isHidden = hasData
+        let isRecentKeywordEmptyResult = currentListType == .recent && currentKeyword.count > 0 && !hasData
+        noDataView.isHidden = hasData || isRecentKeywordEmptyResult
         if !hasData {
             switch currentListType {
             case .recent:
@@ -601,8 +617,33 @@ extension MealAdviceFoodsVM {
             case .all:
                 noDataView.noDataLabel.text = "- 暂无数据 -"
             case .my:
-                noDataView.noDataLabel.text = "- 暂无我的食物 -"
+                noDataView.noDataLabel.text = "- 暂无数据 -"
             }
+        }
+        updateRecentSearchPromptState()
+    }
+
+    func updateRecentSearchPromptState() {
+        let shouldShowPrompt = currentListType == .recent && currentKeyword.count > 0
+        recentSearchNoDataVm.isHidden = true
+        tableView.tableFooterView = nil
+
+        guard shouldShowPrompt else { return }
+
+        recentSearchFooterVm.setNoDataText(text: currentKeyword)
+        recentSearchFooterVm.frame = CGRect(
+            x: 0,
+            y: 0,
+            width: tableView.bounds.width,
+            height: recentSearchFooterVm.selfHeight
+        )
+
+        if filteredRecentFoodsArray.count > 0 {
+            tableView.tableFooterView = recentSearchFooterVm
+        } else {
+            recentSearchNoDataVm.setNoDataText(text: currentKeyword)
+            recentSearchNoDataVm.isHidden = false
+            layoutRecentSearchPromptViews()
         }
     }
 
@@ -708,6 +749,8 @@ extension MealAdviceFoodsVM {
 
     @objc func searchTextChanged() {
         currentKeyword = normalizedSearchKeyword()
+        guard currentListType == .recent else { return }
+        loadRecentFoods()
     }
 
     @objc func searchAction() {
@@ -724,6 +767,14 @@ extension MealAdviceFoodsVM {
         reloadCurrentList()
     }
 
+    @objc func searchAllFoodsAction() {
+        searchTextField.resignFirstResponder()
+        guard currentKeyword.count > 0 else { return }
+        currentListType = .all
+        refreshTabState()
+        reloadCurrentList()
+    }
+
     func normalizedSearchKeyword() -> String {
         let text = searchTextField.text ?? ""
         return text.disable_emoji(text: text as NSString)
@@ -731,7 +782,7 @@ extension MealAdviceFoodsVM {
 
     @objc func confirmAction() {
         guard selectedFoodsArray.count > 0 else { return }
-        confirmBlock?(selectedFoodsArray)
+        confirmBlock?(NSArray(array: selectedFoodsArray as? [Any] ?? []))
     }
 }
 
@@ -843,6 +894,7 @@ extension MealAdviceFoodsVM {
                 self.allFoodsArray.addObjects(from: bestArray as? [Any] ?? [])
                 self.allFoodsArray.addObjects(from: moreArray as? [Any] ?? [])
                 self.tableView.reloadData()
+                self.resetTableViewOffsetToTop()
                 self.updateNoDataState()
             }
         } failure: { [weak self] _ in
@@ -852,6 +904,7 @@ extension MealAdviceFoodsVM {
                 guard token == self.requestVersion else { return }
                 self.allFoodsArray.removeAllObjects()
                 self.tableView.reloadData()
+                self.resetTableViewOffsetToTop()
                 self.updateNoDataState()
             }
         }
@@ -872,6 +925,7 @@ extension MealAdviceFoodsVM {
                 self.filteredMyFoodsArray = NSMutableArray(array: dataArr)
                 self.filteredMyFoodsArray = self.filteredFoods(in: self.myFoodsArray, keyword: self.currentKeyword)
                 self.tableView.reloadData()
+                self.resetTableViewOffsetToTop()
                 self.updateNoDataState()
 
                 if self.currentKeyword.count == 0 {

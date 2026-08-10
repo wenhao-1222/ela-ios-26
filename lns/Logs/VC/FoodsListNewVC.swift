@@ -14,6 +14,7 @@ class FoodsListNewVC: WHBaseViewVC {
     var isFromPlan = false
     var isFromMain = false
     var isFromMerge = false//是否为融合食物，融合食物没有AI识别
+    var mealAdviceSDate = Date().todayDate
     var sourceType = ADD_FOODS_SOURCE.other
     
     var isFirstLoad = true
@@ -295,6 +296,7 @@ extension FoodsListNewVC{
     @objc func nextMealAdviceAction() {
         self.naviVm.textField.resignFirstResponder()
         let vc = MealAdviceVC()
+        vc.sDate = mealAdviceSDate
         self.navigationController?.pushViewController(vc, animated: true)
     }
     @objc func mergeFoodsAction() {

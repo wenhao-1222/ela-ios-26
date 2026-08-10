@@ -1,0 +1,49 @@
+{
+  "" : {
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonExtension-primary.dia",
+    "emit-module-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonExtension-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonExtension-primary-emit-module.dia",
+    "pch" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonExtension-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonExtension-primary.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/ElaWidgetButton/ElaWidgetButtonBundle.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonBundle.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonBundle.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonBundle.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonBundle.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonBundle.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonBundle.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonBundle.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonBundle~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/ElaWidgetButton/ElaWidgetButtonControl.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonControl.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonControl.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonControl.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonControl.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonControl.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonControl.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonControl.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/ElaWidgetButtonControl~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/ElaWidgetButton/LaunchAppIntent.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/LaunchAppIntent.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/LaunchAppIntent.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/LaunchAppIntent.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/LaunchAppIntent.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/LaunchAppIntent.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/LaunchAppIntent.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/LaunchAppIntent.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/LaunchAppIntent~partial.swiftmodule"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaWidgetButtonExtension.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

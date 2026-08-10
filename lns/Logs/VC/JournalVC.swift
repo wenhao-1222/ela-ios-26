@@ -583,6 +583,7 @@ class JournalVC: WHBaseViewVC {
             WidgetUtils().saveMealsData(mealsIndex: 1)
             let vc = FoodsListNewVC()
             vc.sourceType = .logs
+            vc.mealAdviceSDate = self.queryDay
             self.navigationController?.pushViewController(vc, animated: true)
             WidgetMsgModel.shared.mealsIndex = WidgetUtils().readMealsData()
             WidgetUtils().saveMealsData(mealsIndex: -1)

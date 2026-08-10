@@ -60,11 +60,6 @@ class ElaProProgressVM: UIView {
         isUserInteractionEnabled = true
         
         initUI()
-        DispatchQueue.main.asyncAfter(deadline: .now()+0.2, execute: {
-            self.updateProgressUI(animated: true)
-            self.startFakeProgress()
-        })
-        
     }
     
     required init?(coder: NSCoder) {
@@ -79,8 +74,6 @@ class ElaProProgressVM: UIView {
         super.didMoveToWindow()
         if window == nil {
             stopFakeProgress()
-        } else if currentProgress < 100 {
-            startFakeProgress()
         }
     }
     
@@ -175,7 +168,16 @@ extension ElaProProgressVM {
         progressTimer?.invalidate()
         progressTimer = nil
     }
-    
+
+    func startProgressAnimation() {
+        updateProgressUI(animated: true)
+        startFakeProgress()
+    }
+
+    func pauseProgressAnimation() {
+        stopFakeProgress()
+    }
+
     func setFakeProgress(_ progress: Int, animated: Bool = true) {
         currentProgress = max(0, min(progress, 100))
         displayedProgress = CGFloat(currentProgress)
@@ -186,6 +188,17 @@ extension ElaProProgressVM {
         if currentProgress >= 100 {
             stopFakeProgress()
         }
+    }
+
+    func resetProgressState() {
+        stopFakeProgress()
+        currentProgress = 0
+        displayedProgress = 0
+        stallRemaining = 0
+        finishHoldRemaining = 0
+        wavePhase = 0
+        hasNotifiedComplete = false
+        updateProgressUI(animated: false)
     }
     
     private func tickFakeProgress() {

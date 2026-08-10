@@ -1,0 +1,30 @@
+{
+  "/Users/lns2/Desktop/lnsapp-ios/ElaNaturalWidget/CircleView.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/CircleView.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/CircleView.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/CircleView.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/CircleView.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/CircleView.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/ElaNaturalWidget/ElaNaturalWidgetBundle.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetBundle.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetBundle.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetBundle.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetBundle.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaNaturalWidgetBundle.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/ElaNaturalWidget/ElaWeekCaloriesWidget.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaWeekCaloriesWidget.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaWeekCaloriesWidget.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaWeekCaloriesWidget.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaWeekCaloriesWidget.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/ElaWeekCaloriesWidget.swiftdeps"
+  },
+  "/Users/lns2/Desktop/lnsapp-ios/lns/NetWork/Interface.swift" : {
+    "const-values" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Interface.swiftconstvalues",
+    "dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Interface.d",
+    "diagnostics" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Interface.dia",
+    "object" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Interface.o",
+    "swift-dependencies" : "/Users/lns2/Desktop/lnsapp-ios/build/lns.build/Debug-iphoneos/ElaNaturalWidgetExtension.build/Objects-normal/arm64/Interface.swiftdeps"
+  }
+}
