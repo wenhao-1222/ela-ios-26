@@ -187,7 +187,7 @@ class ElaProPriceVM: UIView {
     }()
     lazy var logoImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "ela_pro_icon")
+        img.setImgLocal(imgName: "ela_pro_expired_alert_icon")
         img.contentMode = .scaleAspectFit
         return img
     }()
@@ -1517,6 +1517,12 @@ extension ElaProPriceVM{
             make.width.equalTo(kFitWidth(165))
             make.height.equalTo(kFitWidth(59))
         }
+//        logoImgView.snp.makeConstraints { make in
+//            make.centerX.equalToSuperview()
+//            make.top.equalTo(WHUtils().getNavigationBarHeight() + kFitWidth(8))
+//            make.width.equalTo(kFitWidth(95))
+//            make.height.equalTo(kFitWidth(18))
+//        }
         
         subTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(logoImgView.snp.bottom).offset(kFitWidth(2))

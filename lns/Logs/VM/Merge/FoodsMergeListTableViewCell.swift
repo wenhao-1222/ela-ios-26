@@ -10,6 +10,9 @@
 class FoodsMergeListTableViewCell: UITableViewCell {
     
     var editBlock:(()->())?
+    var deleteBlock:(()->())?
+    var actionViewWillShowBlock:(()->())?
+    private(set) var isActionViewShown = false
     let btnWidth = kFitWidth(72)
     
     required init?(coder aDecoder: NSCoder) {
@@ -49,12 +52,17 @@ class FoodsMergeListTableViewCell: UITableViewCell {
         
 //        contentView.backgroundColor = editing ? .lightGray : .white
     }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        manualEdit(isEdit: false, animated: false)
+    }
     lazy var editButton: UIButton = {
         let btn = UIButton()
         btn.setTitle("编辑", for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
         btn.setTitleColor(.white, for: .normal)
         btn.backgroundColor = .COLOR_BG_BLACK_65//.COLOR_GRAY_C4C4C4
+        btn.addTarget(self, action: #selector(editButtonAction), for: .touchUpInside)
         
         return btn
     }()
@@ -64,6 +72,7 @@ class FoodsMergeListTableViewCell: UITableViewCell {
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .regular)
         btn.setTitleColor(.white, for: .normal)
         btn.backgroundColor = .systemRed
+        btn.addTarget(self, action: #selector(deleteButtonAction), for: .touchUpInside)
         
         return btn
     }()
@@ -124,6 +133,7 @@ class FoodsMergeListTableViewCell: UITableViewCell {
 extension FoodsMergeListTableViewCell{
     func updateUI(dict:NSDictionary) {
         DLLog(message: "FoodsMergeListTableViewCell:\(dict)")
+        manualEdit(isEdit: false, animated: false)
         nameLabel.text = dict.stringValueForKey(key: "fname")
         weightLabel.text = "\(dict.stringValueForKey(key: "qty"))\(dict.stringValueForKey(key: "spec"))"
         naturalLabel.text = "\(WHUtils.convertStringToStringNoDigit("\(dict.stringValueForKey(key: "calories"))") ?? "0")千卡" +
@@ -140,25 +150,32 @@ extension FoodsMergeListTableViewCell{
         }
     }
     @objc func editTapAction() {
-//        self.editBlock?()
-        manualEdit(isEdit: true)
+        let needShow = !isActionViewShown
+        if needShow {
+            actionViewWillShowBlock?()
+        }
+        manualEdit(isEdit: needShow)
     }
-    func manualEdit(isEdit:Bool) {
-//        if isEdit{
+    @objc func editButtonAction() {
+        manualEdit(isEdit: false)
+        editBlock?()
+    }
+    @objc func deleteButtonAction() {
+        deleteBlock?()
+    }
+    func manualEdit(isEdit:Bool, animated: Bool = true) {
+        isActionViewShown = isEdit
+        let leftOffset = isEdit ? -btnWidth * 2 : 0
+        bgView.snp.updateConstraints { make in
+            make.left.equalToSuperview().offset(leftOffset)
+        }
+        if animated {
             UIView.animate(withDuration: 0.3) {
-                self.bgView.center = CGPoint.init(x: self.bounds.width*0.5-self.btnWidth*0.3, y: self.bounds.height*0.5)
-            } completion: { t in
-                UIView.animate(withDuration: 0.3) {
-                    self.bgView.center = CGPoint.init(x: self.bounds.width*0.5, y: self.bounds.height*0.5)
-                }
+                self.contentView.layoutIfNeeded()
             }
-//        }else{
-//            UIView.animate(withDuration: 0.3) {
-//                self.bgView.center = CGPoint.init(x: self.bounds.width*0.5, y: self.bounds.height*0.5)
-//            } completion: { t in
-//                
-//            }
-//        }
+        }else{
+            contentView.layoutIfNeeded()
+        }
     }
 }
 

@@ -311,14 +311,31 @@ extension FoodsMergeVC:UITableViewDelegate,UITableViewDataSource{
         let dict = foodsDataArray[indexPath.section]as? NSDictionary ?? [:]
         cell?.updateUI(dict: dict)
         
-        cell?.editBlock = {()in
-            DLLog(message: "点击了编辑icon")
+        cell?.actionViewWillShowBlock = { [weak self, weak cell] in
+            guard let self = self, let cell = cell else { return }
+            self.closeActionCells(except: cell)
+        }
+        cell?.editBlock = { [weak self, weak cell] in
+            guard let self = self,
+                  let cell = cell,
+                  let currentIndexPath = self.tableView.indexPath(for: cell) else { return }
+            self.editFoods(at: currentIndexPath)
+        }
+        cell?.deleteBlock = { [weak self, weak cell] in
+            guard let self = self,
+                  let cell = cell,
+                  let currentIndexPath = self.tableView.indexPath(for: cell) else { return }
+            self.deleteFoods(at: currentIndexPath)
         }
         
         return cell ?? FoodsMergeListTableViewCell()
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        TouchGenerator.shared.touchGenerator()
+        if let cell = tableView.cellForRow(at: indexPath) as? FoodsMergeListTableViewCell, cell.isActionViewShown {
+            cell.manualEdit(isEdit: false)
+            return
+        }
         let dict = foodsDataArray[indexPath.section]as? NSDictionary ?? [:]
         if dict.stringValueForKey(key: "fname") == "快速添加"{
             self.foodsMsgSoonAlertVM.index = indexPath
@@ -350,27 +367,12 @@ extension FoodsMergeVC:UITableViewDelegate,UITableViewDataSource{
         DLLog(message: "trailingSwipeActionsConfigurationForRowAt")
         let editAction  = UIContextualAction.init(style: .normal, title: "编辑") { _,_,_ in
             TouchGenerator.shared.touchGenerator()
-            let dict = self.foodsDataArray[indexPath.section]as? NSDictionary ?? [:]
-            if dict.stringValueForKey(key: "fname") == "快速添加"{
-                self.foodsMsgSoonAlertVM.index = indexPath
-                self.foodsMsgSoonAlertVM.updateUI(dict: dict)
-            }else{
-                self.foodsMsgAlertVm.index = indexPath
-                self.foodsMsgAlertVm.updateUI(dict: dict)
-                self.specAlertVmForFoods.setSpecArr(arr: self.foodsMsgAlertVm.numberSpecVm.specArray)
-            }
-            self.tableView.setEditing(false, animated: true)
+            self.editFoods(at: indexPath)
         }
         
         let deleteAction  = UIContextualAction.init(style: .destructive, title: "删除") { _,_,_ in
             TouchGenerator.shared.touchGenerator()
-            self.tableView.performBatchUpdates {
-                self.foodsDataArray.removeObject(at: indexPath.section)
-                self.tableView.deleteSections(IndexSet(integer: indexPath.section), with: .fade)
-            } completion: { t in
-                self.calculateNum()
-                self.judgeSelectFoods()
-            }
+            self.deleteFoods(at: indexPath)
         }
         editAction.backgroundColor = WHColorWithAlpha(colorStr: "000000", alpha: 0.3)
         
@@ -385,6 +387,38 @@ extension FoodsMergeVC:UITableViewDelegate,UITableViewDataSource{
         if let indexPath = indexPath, let cell = tableView.cellForRow(at: indexPath) {
             cell.layer.cornerRadius = kFitWidth(12)
             cell.layer.masksToBounds = true
+        }
+    }
+
+    func closeActionCells(except targetCell: FoodsMergeListTableViewCell? = nil) {
+        tableView.visibleCells.forEach { cell in
+            guard let actionCell = cell as? FoodsMergeListTableViewCell, actionCell !== targetCell else { return }
+            actionCell.manualEdit(isEdit: false)
+        }
+    }
+
+    func editFoods(at indexPath: IndexPath) {
+        guard indexPath.section < foodsDataArray.count else { return }
+        let dict = foodsDataArray[indexPath.section]as? NSDictionary ?? [:]
+        if dict.stringValueForKey(key: "fname") == "快速添加"{
+            self.foodsMsgSoonAlertVM.index = indexPath
+            self.foodsMsgSoonAlertVM.updateUI(dict: dict)
+        }else{
+            self.foodsMsgAlertVm.index = indexPath
+            self.foodsMsgAlertVm.updateUI(dict: dict)
+            self.specAlertVmForFoods.setSpecArr(arr: self.foodsMsgAlertVm.numberSpecVm.specArray)
+        }
+        self.tableView.setEditing(false, animated: true)
+    }
+
+    func deleteFoods(at indexPath: IndexPath) {
+        guard indexPath.section < foodsDataArray.count else { return }
+        self.tableView.performBatchUpdates {
+            self.foodsDataArray.removeObject(at: indexPath.section)
+            self.tableView.deleteSections(IndexSet(integer: indexPath.section), with: .fade)
+        } completion: { t in
+            self.calculateNum()
+            self.judgeSelectFoods()
         }
     }
 }

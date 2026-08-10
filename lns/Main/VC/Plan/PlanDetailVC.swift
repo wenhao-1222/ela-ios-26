@@ -396,7 +396,7 @@ extension PlanDetailVC{
 //            DLLog(message: "\(responseObject)")
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getArrayFromJSONString(jsonString: dataString ?? "")
-            
+            DLLog(message: "sendPlanDetailRequest:\(dataObj)")
 //            let arr = responseObject["data"]as? NSArray ?? []
             self.dataSourceArray.addObjects(from: dataObj as! [Any])
             

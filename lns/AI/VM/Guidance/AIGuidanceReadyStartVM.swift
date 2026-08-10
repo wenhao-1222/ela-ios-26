@@ -40,13 +40,7 @@ class AIGuidanceReadyStartVM: UIView {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
-
-//    private lazy var logoImageView: UIImageView = {
-//        let imageView = UIImageView(image: UIImage(named: "ela_pro_icon"))
-//        imageView.contentMode = .scaleAspectFit
-//        return imageView
-//    }()
-
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "准备好开始改变了吗？"

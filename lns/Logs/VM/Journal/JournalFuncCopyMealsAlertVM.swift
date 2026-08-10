@@ -10,7 +10,7 @@ import UIKit
 
 class JournalFuncCopyMealsAlertVM: UIView {
     private static let saveQueue = DispatchQueue(label: "com.lns.logs.copy.meals.save")
-    
+
     var whiteViewHeight = kFitWidth(256)+WHUtils().getBottomSafeAreaHeight()
     var daysArray = NSArray()
     var tomorrowIndex = 0
@@ -245,7 +245,7 @@ extension JournalFuncCopyMealsAlertVM:UIPickerViewDelegate,UIPickerViewDataSourc
             let lab = UILabel.init(frame: CGRect.init(x: 0, y: 0, width: kFitWidth(160), height: kFitWidth(45)))
             lab.font = .systemFont(ofSize: 20, weight: .regular)
             lab.textAlignment = .center
-            
+
             if row == self.tomorrowIndex - 1{
                 lab.text =  "今天"
             }else if row == self.tomorrowIndex{
@@ -253,9 +253,9 @@ extension JournalFuncCopyMealsAlertVM:UIPickerViewDelegate,UIPickerViewDataSourc
             }else{
                 lab.text =  daysArray[row]as? String ?? ""
             }
-            
+
             setUpPickerStyleRowStyle(row: row, component: component)
-            
+
             return lab
         }else{
             let lab = UILabel.init(frame: CGRect.init(x: kFitWidth(20), y: 0, width: kFitWidth(60), height: kFitWidth(45)))
@@ -356,7 +356,7 @@ extension JournalFuncCopyMealsAlertVM{
         
         saveDataToSqlDB(mealsArr: targetFoodsArray)
     }
-    
+
     //处理目标餐的食物
     private func dealTargetMealFoods(foodsArray:NSArray,targetFoodsArray:NSArray) -> NSArray{
         let resultFoodsArray = NSMutableArray.init(array: targetFoodsArray)
@@ -393,6 +393,7 @@ extension JournalFuncCopyMealsAlertVM{
                         foodsDict.setValue("\(qty)".replacingOccurrences(of: ",", with: "."), forKey: "specNum")
                         foodsDict.setValue("1", forKey: "state")
                         foodsDict.setValue("0", forKey: "isSelect")
+                        self.mergeNutritionDetails(into: foodsDict, from: foodsMsg)
                         
                         resultFoodsArray.replaceObject(at: j, with: foodsDict)
                         break
@@ -454,6 +455,12 @@ extension JournalFuncCopyMealsAlertVM{
                                                        proteinNum: "\(proteinTotal)",
                                                        carboNum: "\(carboTotal)",
                                                        fatsNum: "\(fatTotal)")
+            HealthKitNaturnalManager().saveNutritionData(calories: caloriTotal,
+                                                         carbs: carboTotal,
+                                                         protein: proteinTotal,
+                                                         fat: fatTotal,
+                                                         cTime: self.queryDay,
+                                                         additionalNutritionValues: HealthKitNaturnalManager.additionalNutritionValues(fromFoods: mealsArr))
             LogsSQLiteManager.getInstance().updateMealsTime(foodsArray: mealsArr, sDate: self.queryDay)
             LogsSQLiteManager.getInstance().updateUploadStatus(sDate: self.queryDay, update: false)
             LogsSQLiteUploadManager().scheduleUploadLogsBySDate(sdate: self.queryDay)
@@ -463,5 +470,33 @@ extension JournalFuncCopyMealsAlertVM{
                 self.updateBlock!()
             }
         }
+    }
+
+    private func mergeNutritionDetails(into foodsDict: NSMutableDictionary, from foodsMsg: NSDictionary) {
+        for item in FoodsNutritionCatalog.shared.flatItems {
+            let hasCurrentValue = nutritionRawValue(in: foodsDict, key: item.key) != nil
+            let hasAddedValue = nutritionRawValue(in: foodsMsg, key: item.key) != nil
+            guard hasCurrentValue || hasAddedValue else { continue }
+
+            let total = foodsDict.doubleValueForKey(key: item.key) + foodsMsg.doubleValueForKey(key: item.key)
+            setNutritionDetailValue(total, for: item, in: foodsDict)
+        }
+    }
+
+    private func nutritionRawValue(in dict: NSDictionary, key: String) -> Any? {
+        guard let value = dict[key], !(value is NSNull) else { return nil }
+        if let stringValue = value as? String,
+           stringValue.trimmingCharacters(in: .whitespacesAndNewlines).count == 0 {
+            return nil
+        }
+        return value
+    }
+
+    private func setNutritionDetailValue(_ value: Double, for item: FoodsNutritionCatalog.Item, in foodsDict: NSMutableDictionary) {
+        let formattedValue = WHUtils.convertStringToString(
+            "\(value)",
+            digitNumer: item.maximumInputFractionDigits
+        ) ?? "0"
+        foodsDict.setValue(formattedValue.replacingOccurrences(of: ",", with: "."), forKey: item.key)
     }
 }
