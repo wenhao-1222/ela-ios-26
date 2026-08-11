@@ -1328,6 +1328,8 @@
 		ECE40A64302320A600837832 /* MealsNumVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE40A633023209800837832 /* MealsNumVM.swift */; };
 		ECE40A663023348200837832 /* MealAdviceFoodsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE40A653023348200837832 /* MealAdviceFoodsVM.swift */; };
 		ECE40A673023500000837832 /* MealAdviceNextVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE40A683023500000837832 /* MealAdviceNextVC.swift */; };
+		F1A1B1C12F00000200AAA001 /* MealAdviceNextViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A1B1C12F00000100AAA001 /* MealAdviceNextViewModel.swift */; };
+		F1A1B1C12F00000400AAA001 /* MealAdviceNextComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A1B1C12F00000300AAA001 /* MealAdviceNextComponents.swift */; };
 		ECEC4EAB2F73777200FB1E56 /* AICoachPreVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */; };
 		ECEC4EAE2F73780300FB1E56 /* AICoachPreDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */; };
 		ECEC4EB22F73A11100FB1E56 /* AICoachPreInfoVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */; };
@@ -2885,7 +2887,9 @@
 		ECE40A603023203C00837832 /* MealAdviceVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealAdviceVC.swift; sourceTree = "<group>"; };
 		ECE40A633023209800837832 /* MealsNumVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealsNumVM.swift; sourceTree = "<group>"; };
 		ECE40A653023348200837832 /* MealAdviceFoodsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealAdviceFoodsVM.swift; sourceTree = "<group>"; };
-		ECE40A683023500000837832 /* MealAdviceNextVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ../../VC/NextMealsAdvice/MealAdviceNextVC.swift; sourceTree = "<group>"; };
+		ECE40A683023500000837832 /* MealAdviceNextVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealAdviceNextVC.swift; sourceTree = "<group>"; };
+		F1A1B1C12F00000100AAA001 /* MealAdviceNextViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealAdviceNextViewModel.swift; sourceTree = "<group>"; };
+		F1A1B1C12F00000300AAA001 /* MealAdviceNextComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealAdviceNextComponents.swift; sourceTree = "<group>"; };
 		ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreVC.swift; sourceTree = "<group>"; };
 		ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDaysVM.swift; sourceTree = "<group>"; };
 		ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreInfoVM.swift; sourceTree = "<group>"; };
@@ -5861,6 +5865,7 @@
 				A76F50C82D5B3A68001B67CB /* SurveyNoSexVC.swift */,
 				EC1B59DE2EE668A800FE3E9A /* ActivityAlertVC.swift */,
 				ECE40A603023203C00837832 /* MealAdviceVC.swift */,
+				ECE40A6A302360000837832 /* NextMealsAdvice */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -5970,7 +5975,16 @@
 			children = (
 				ECE40A633023209800837832 /* MealsNumVM.swift */,
 				ECE40A653023348200837832 /* MealAdviceFoodsVM.swift */,
+				F1A1B1C12F00000100AAA001 /* MealAdviceNextViewModel.swift */,
+			);
+			path = NextMealsAdvice;
+			sourceTree = "<group>";
+		};
+		ECE40A6A302360000837832 /* NextMealsAdvice */ = {
+			isa = PBXGroup;
+			children = (
 				ECE40A683023500000837832 /* MealAdviceNextVC.swift */,
+				F1A1B1C12F00000300AAA001 /* MealAdviceNextComponents.swift */,
 			);
 			path = NextMealsAdvice;
 			sourceTree = "<group>";
@@ -6556,6 +6570,8 @@
 				ECE40A613023204500837832 /* MealAdviceVC.swift in Sources */,
 				ECE40A663023348200837832 /* MealAdviceFoodsVM.swift in Sources */,
 				ECE40A673023500000837832 /* MealAdviceNextVC.swift in Sources */,
+				F1A1B1C12F00000200AAA001 /* MealAdviceNextViewModel.swift in Sources */,
+				F1A1B1C12F00000400AAA001 /* MealAdviceNextComponents.swift in Sources */,
 				A755ED652DF6AAD000005C3A /* GuideTotalSecondNewVM.swift in Sources */,
 				ECB80C622F14DE4300F429DB /* HonorDonationPreviewView.swift in Sources */,
 				A7F3DB752E867ECB00E9B7ED /* RoundedShadowImageView.swift in Sources */,
