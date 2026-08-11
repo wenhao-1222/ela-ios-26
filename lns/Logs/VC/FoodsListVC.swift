@@ -15,6 +15,7 @@ class FoodsListVC: WHBaseViewVC {
     var myFoodsArray = NSArray()
     var uid = ""
     var mealAdviceSDate = Date().todayDate
+    var mealAdviceMealIndex = 0
     var isFromPlan = false
     var isFromMain = false
     var sourceType = ADD_FOODS_SOURCE.other
@@ -206,6 +207,7 @@ extension FoodsListVC{
         self.naviVm.textField.resignFirstResponder()
         let vc = MealAdviceVC()
         vc.sDate = mealAdviceSDate
+        vc.mealIndex = mealAdviceMealIndex
         self.navigationController?.pushViewController(vc, animated: true)
     }
     @objc func createFoodsNotifi(){

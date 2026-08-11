@@ -9,7 +9,7 @@ import UIKit
 import MCToast
 
 
-class MealAdviceVC: WHBaseViewVC {
+class MealAdviceVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     
     /// 当前所处的步骤编号。
     private var currentStep = 0
@@ -17,8 +17,23 @@ class MealAdviceVC: WHBaseViewVC {
     private var mealPlanRequestVersion = 0
     /// 当前是否正在请求下餐规划接口。
     private var isRequestingMealPlan = false
+    /// 下餐规划进度是否已经自然走完。
+    private var isMealPlanProgressCompleted = false
+    /// 已返回但还在等待进度走完的下餐规划数据。
+    private var pendingMealPlanNextPlanDict: NSDictionary?
+    /// 缓存下餐规划数据所属的请求版本号。
+    private var pendingMealPlanNextRequestVersion = 0
     /// 当前日志页对应的日期。
     var sDate = Date().todayDate
+    /// 当前日志页点击的餐序号，1 开始，0 表示未指定。
+    var mealIndex = 0
+    /// 第二步页面的右滑返回手势。
+    private lazy var backToMealsNumPanGesture: UIPanGestureRecognizer = {
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(handleBackToMealsNumPan(_:)))
+        gesture.maximumNumberOfTouches = 1
+        gesture.delegate = self
+        return gesture
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,12 +43,13 @@ class MealAdviceVC: WHBaseViewVC {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        updateInteractivePopGestureBlocked(true)
+        updatePopGestureState()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         restoreFullscreenInteractivePopGesture()
+        backToMealsNumPanGesture.isEnabled = false
     }
 
     /// 左上角返回图标。
@@ -77,6 +93,18 @@ class MealAdviceVC: WHBaseViewVC {
     /// 生成中的进度页面。
     lazy var progressVm: ElaProProgressVM = {
         let vm = ElaProProgressVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        vm.showsStepTexts = false
+        vm.currentStageLabel.text = "正在规划本餐摄入量..."
+        vm.generatingTitleLabel.isHidden = true
+        vm.progressCompleteBlock = { [weak self] in
+            guard let self = self else { return }
+            let completedRequestVersion = self.mealPlanRequestVersion
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                guard completedRequestVersion == self.mealPlanRequestVersion else { return }
+                self.isMealPlanProgressCompleted = true
+                self.tryFinishMealPlanNextIfReady()
+            }
+        }
         return vm
     }()
     
@@ -104,8 +132,10 @@ extension MealAdviceVC{
         view.addSubview(progressVm)
         view.addSubview(backImg)
         view.addSubview(backTapView)
+        view.addGestureRecognizer(backToMealsNumPanGesture)
         
         progressVm.resetProgressState()
+        updatePopGestureState()
         setConstrait()
     }
     
@@ -122,10 +152,17 @@ extension MealAdviceVC{
             make.width.height.equalTo(kFitWidth(48))
         }
     }
+
+    /// 控制左上角返回按钮显隐。
+    func setBackButtonVisible(_ visible: Bool) {
+        backImg.isHidden = !visible
+        backTapView.isHidden = !visible
+    }
     
     /// 展示第一步的餐数选择页面。
     func showMealsNumStep(animated: Bool = true) {
         currentStep = 0
+        setBackButtonVisible(true)
         let changes = {
             self.mealsNumVm.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
             self.secondVm.frame = CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
@@ -136,11 +173,13 @@ extension MealAdviceVC{
         } else {
             changes()
         }
+        updatePopGestureState()
     }
     
     /// 展示第二步的食物选择页面。
     func showSecondStep(animated: Bool = true) {
         currentStep = 1
+        setBackButtonVisible(true)
         let changes = {
             self.mealsNumVm.frame = CGRect.init(x: -SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
             self.secondVm.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
@@ -151,11 +190,13 @@ extension MealAdviceVC{
         } else {
             changes()
         }
+        updatePopGestureState()
     }
 
     /// 展示生成中的进度页面。
     func showProgressStep() {
         currentStep = 2
+        setBackButtonVisible(false)
         progressVm.resetProgressState()
         progressVm.startProgressAnimation()
         UIView.animate(withDuration: 0.25) {
@@ -163,6 +204,7 @@ extension MealAdviceVC{
             self.secondVm.frame = CGRect.init(x: -SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
             self.progressVm.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         }
+        updatePopGestureState()
     }
 
     /// 校验第二步结果并开始请求下餐规划接口。
@@ -188,6 +230,9 @@ extension MealAdviceVC{
         mealPlanRequestVersion += 1
         let requestVersion = mealPlanRequestVersion
         isRequestingMealPlan = true
+        isMealPlanProgressCompleted = false
+        pendingMealPlanNextPlanDict = nil
+        pendingMealPlanNextRequestVersion = 0
         showProgressStep()
 
         let param: [String: Any] = [
@@ -225,12 +270,27 @@ extension MealAdviceVC{
     ///   - requestVersion: 本次请求版本号。
     func handleMealPlanNextSuccess(planDict: NSDictionary, requestVersion: Int) {
         guard requestVersion == mealPlanRequestVersion else { return }
+        pendingMealPlanNextPlanDict = planDict
+        pendingMealPlanNextRequestVersion = requestVersion
+        tryFinishMealPlanNextIfReady()
+    }
+
+    /// 数据和进度都完成后，进入下餐规划结果页。
+    func tryFinishMealPlanNextIfReady() {
+        guard isMealPlanProgressCompleted else { return }
+        guard pendingMealPlanNextRequestVersion == mealPlanRequestVersion,
+              let planDict = pendingMealPlanNextPlanDict else {
+            return
+        }
         isRequestingMealPlan = false
         progressVm.pauseProgressAnimation()
         showSecondStep(animated: false)
         progressVm.resetProgressState()
+        isMealPlanProgressCompleted = false
+        pendingMealPlanNextPlanDict = nil
+        pendingMealPlanNextRequestVersion = 0
 
-        let vc = MealAdviceNextVC(planDict: planDict, sDate: sDate)
+        let vc = MealAdviceNextVC(planDict: planDict, sDate: sDate, mealIndex: mealIndex)
         navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -241,8 +301,10 @@ extension MealAdviceVC{
     func handleMealPlanNextFailure(message: String, requestVersion: Int) {
         guard requestVersion == mealPlanRequestVersion else { return }
         isRequestingMealPlan = false
+        pendingMealPlanNextPlanDict = nil
+        pendingMealPlanNextRequestVersion = 0
         progressVm.pauseProgressAnimation()
-        MCToast.mc_text(message)
+        MCToast.mc_text(message, duration: 3)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             guard let self = self else { return }
@@ -256,6 +318,9 @@ extension MealAdviceVC{
     func cancelMealPlanRequest() {
         mealPlanRequestVersion += 1
         isRequestingMealPlan = false
+        isMealPlanProgressCompleted = false
+        pendingMealPlanNextPlanDict = nil
+        pendingMealPlanNextRequestVersion = 0
         progressVm.pauseProgressAnimation()
         progressVm.resetProgressState()
     }
@@ -272,5 +337,93 @@ extension MealAdviceVC{
             }
         }
         return fidList
+    }
+
+    /// 根据当前步骤切换系统返回和页内右滑返回的可用性。
+    private func updatePopGestureState() {
+        guard isViewLoaded else { return }
+
+        let shouldAllowSystemPop = currentStep == 0
+        let shouldAllowBackSwipe = currentStep == 1
+
+        if shouldAllowSystemPop {
+            canEdgeBack = true
+            fd_forceDisableInteractivePopGesture = false
+            fd_interactivePopDisabled = false
+            navigationController?.fd_interactivePopDisabled = false
+            navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
+            navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        } else {
+            canEdgeBack = false
+            fd_forceDisableInteractivePopGesture = true
+            fd_interactivePopDisabled = true
+            navigationController?.fd_interactivePopDisabled = true
+            navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+            navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        }
+
+        backToMealsNumPanGesture.isEnabled = shouldAllowBackSwipe
+    }
+
+    /// 第二步右滑返回到餐数选择页。
+    @objc private func handleBackToMealsNumPan(_ gesture: UIPanGestureRecognizer) {
+        guard currentStep == 1 else { return }
+        guard let gestureView = gesture.view else { return }
+
+        let translation = gesture.translation(in: gestureView)
+        let velocity = gesture.velocity(in: gestureView)
+        let isHorizontal = abs(translation.x) > abs(translation.y) || abs(velocity.x) > abs(velocity.y)
+        guard isHorizontal else { return }
+
+        let isBackSwipe: Bool
+        if UIView.userInterfaceLayoutDirection(for: gestureView.semanticContentAttribute) == .rightToLeft {
+            isBackSwipe = velocity.x < 0 || translation.x < 0
+        } else {
+            isBackSwipe = velocity.x > 0 || translation.x > 0
+        }
+        guard isBackSwipe else { return }
+
+        let progress = min(max(translation.x, 0), SCREEN_WIDHT)
+
+        switch gesture.state {
+        case .began, .changed:
+            mealsNumVm.frame = CGRect.init(x: -SCREEN_WIDHT + progress, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+            secondVm.frame = CGRect.init(x: progress, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+            progressVm.frame = CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
+        case .ended:
+            if progress > SCREEN_WIDHT * 0.3 || velocity.x > kFitWidth(500) {
+                showMealsNumStep()
+            } else {
+                showSecondStep()
+            }
+        case .cancelled, .failed:
+            showSecondStep()
+        default:
+            break
+        }
+    }
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer === backToMealsNumPanGesture,
+              currentStep == 1,
+              let panGesture = gestureRecognizer as? UIPanGestureRecognizer,
+              let gestureView = panGesture.view else {
+            return false
+        }
+
+        let translation = panGesture.translation(in: gestureView)
+        let velocity = panGesture.velocity(in: gestureView)
+        let isHorizontal = abs(translation.x) > abs(translation.y) || abs(velocity.x) > abs(velocity.y)
+        guard isHorizontal else { return false }
+
+        if UIView.userInterfaceLayoutDirection(for: gestureView.semanticContentAttribute) == .rightToLeft {
+            return velocity.x < 0 || translation.x < 0
+        }
+        return velocity.x > 0 || translation.x > 0
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                           shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return false
     }
 }

@@ -11,6 +11,7 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
     
     var choiceBlock:(()->())?
     var addBlock:(()->())?
+    private let selectionButton = UIButton(type: .custom)
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -19,6 +20,7 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.backgroundColor = .COLOR_CARD_BG_WHITE
+        contentView.backgroundColor = .clear
         self.selectionStyle = .none
         
         initUI()
@@ -26,13 +28,28 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         
-        if highlighted {
-            self.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT
-//            self.bottomView.backgroundColor = .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT
-        }else{
-            self.backgroundColor = .COLOR_CARD_BG_WHITE
-//            self.bottomView.backgroundColor = .COLOR_CARD_BG_WHITE
-        }
+        let shouldHighlight = highlighted || isSelected
+        backgroundColor = shouldHighlight ? .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT : .COLOR_CARD_BG_WHITE
+        bottomView.backgroundColor = shouldHighlight ? .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT : .COLOR_CARD_BG_WHITE
+//        selectionButton.backgroundColor = shouldHighlight ? .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT : .clear
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+        let shouldHighlight = selected || isHighlighted
+        backgroundColor = shouldHighlight ? .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT : .COLOR_CARD_BG_WHITE
+        bottomView.backgroundColor = shouldHighlight ? .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT : .COLOR_CARD_BG_WHITE
+//        selectionButton.backgroundColor = shouldHighlight ? .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT : .clear
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        backgroundColor = .COLOR_CARD_BG_WHITE
+        bottomView.backgroundColor = .COLOR_CARD_BG_WHITE
+//        selectionButton.backgroundColor = .clear
+        selectionButton.setImage(nil, for: .normal)
+        selectionButton.alpha = 1
     }
     lazy var bottomView : UIView = {
         let vi = UIView()
@@ -106,8 +123,15 @@ extension FoodsListAddTableViewCell{
         disabledOverlayView.isHidden = !disabled
     }
 
+    func updateSelectionAccessory(isSelected: Bool, isDisabled: Bool) {
+        selectionButton.setImage(UIImage(named: isSelected ? "question_foods_selected_icon" : "question_foods_normal_icon"), for: .normal)
+        selectionButton.alpha = isDisabled ? 0.45 : 1
+    }
+
     func updateUI(dict:NSDictionary, keywords:String = "") {
         setSelectionDisabled(false)
+        backgroundColor = .COLOR_CARD_BG_WHITE
+        bottomView.backgroundColor = .COLOR_CARD_BG_WHITE
         addButtonVm.isHidden = true
         aiLabel.isHidden = true
         foodsNameLabel.snp.makeConstraints { make in
@@ -164,6 +188,8 @@ extension FoodsListAddTableViewCell{
     
     func updateUIForMy(dict:NSDictionary,keywords:String? = "") {
         setSelectionDisabled(false)
+        backgroundColor = .COLOR_CARD_BG_WHITE
+        bottomView.backgroundColor = .COLOR_CARD_BG_WHITE
         addButtonVm.isHidden = true
         if dict.stringValueForKey(key: "fname").isEmpty {
             foodsNameLabel.text = nil
@@ -196,6 +222,8 @@ extension FoodsListAddTableViewCell{
     
     func updateUIForHistory(dict:NSDictionary,keywords:String? = "") {
         setSelectionDisabled(false)
+        backgroundColor = .COLOR_CARD_BG_WHITE
+        bottomView.backgroundColor = .COLOR_CARD_BG_WHITE
 //        addButtonVm.isHidden = true
         if dict.stringValueForKey(key: "fname").isEmpty {
             foodsNameLabel.text = nil
@@ -305,6 +333,9 @@ extension FoodsListAddTableViewCell{
         bottomView.addSubview(addButtonVm)
         bottomView.addSubview(lineView)
         bottomView.addSubview(disabledOverlayView)
+        bottomView.addSubview(selectionButton)
+        selectionButton.backgroundColor = .clear
+        selectionButton.isUserInteractionEnabled = false
         
         setConstrait()
     }
@@ -329,6 +360,11 @@ extension FoodsListAddTableViewCell{
             make.top.equalTo(kFitWidth(42))
             make.width.equalTo(kFitWidth(180))
             make.height.equalTo(kFitWidth(18))
+        }
+        selectionButton.snp.makeConstraints { make in
+            make.right.equalTo(kFitWidth(-20))
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(kFitWidth(24))
         }
         lineView.snp.makeConstraints { make in
             make.centerX.lessThanOrEqualToSuperview()

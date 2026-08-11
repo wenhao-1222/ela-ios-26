@@ -159,15 +159,15 @@ class EventLogUtils {
     }
 
     func sendEventLogRequest(eventName:EVENT_TYPE,scenarioType:SCENARIO_TYPE,text:String?,result:Bool=true,resultText:String?=nil){
-        if UserInfoModel.shared.uId.count > 1 && UserInfoModel.shared.token.count > 1{
-            
-        }else{
-            if scenarioType == .ela_pro_view{
-                
-            }else {
-                return
-            }
-        }
+//        if UserInfoModel.shared.uId.count > 1 && UserInfoModel.shared.token.count > 1{
+//            
+//        }else{
+//            if scenarioType == .ela_pro_view{
+//                
+//            }else {
+//                return
+//            }
+//        }
         let model = EventLogModel()
         model.scenario = getScenario(type: scenarioType)
         model.text = text ?? ""

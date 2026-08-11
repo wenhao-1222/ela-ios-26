@@ -11,6 +11,18 @@ import SnapKit
 class ElaProProgressVM: UIView {
     var backTapBlock: (() -> ())?
     var progressCompleteBlock: (() -> ())?
+    /// 是否展示 stepTexts 对应的阶段文案与条目文案。
+    var showsStepTexts: Bool = true {
+        didSet {
+            updateStepTextsVisibility()
+        }
+    }
+    /// 生成中的标题文案，默认沿用原样式。
+    var generatingTitleText: String = "正在生成食谱" {
+        didSet {
+            generatingTitleLabel.text = generatingTitleText
+        }
+    }
     // 进度节奏系数：1.0 为默认；>1 更快，<1 更慢
     var progressTempo: CGFloat = 3.3 {//2.8 {
         didSet {
@@ -115,17 +127,17 @@ class ElaProProgressVM: UIView {
     
     lazy var currentStageLabel: UILabel = {
         let lab = UILabel()
-        lab.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        lab.font = .systemFont(ofSize: 20, weight: .regular)
+        lab.textColor = .COLOR_TEXT_TITLE_0f1214
+        lab.font = .systemFont(ofSize: 14, weight: .regular)
         lab.textAlignment = .center
         return lab
     }()
     
     lazy var generatingTitleLabel: UILabel = {
         let lab = UILabel()
-        lab.text = "正在生成食谱"
+        lab.text = generatingTitleText
         lab.textColor = .COLOR_TEXT_TITLE_0f1214
-        lab.font = .systemFont(ofSize: 54/3, weight: .semibold)
+        lab.font = .systemFont(ofSize: 18, weight: .regular)
         return lab
     }()
     
@@ -287,13 +299,18 @@ extension ElaProProgressVM {
         currentProgress = max(0, min(Int(displayedProgress.rounded(.down)), 100))
         progressPercentLabel.text = "\(currentProgress)%"
         
-        let stageText = stageTextForCurrentProgress()
-        currentStageLabel.text = "\(stageText)..."
+        if showsStepTexts {
+            let stageText = stageTextForCurrentProgress()
+            currentStageLabel.text = "\(stageText)..."
+        }
         
-        let completeCount = completedStepCount()
-        let labels = [itemLabel1, itemLabel2, itemLabel3, itemLabel4, itemLabel5]
-        for (index, label) in labels.enumerated() {
-            label.textColor = index < completeCount ? .COLOR_TEXT_TITLE_0f1214 : .COLOR_TEXT_TITLE_0f1214_50
+        updateStepTextsVisibility()
+        if showsStepTexts {
+            let completeCount = completedStepCount()
+            let labels = [itemLabel1, itemLabel2, itemLabel3, itemLabel4, itemLabel5]
+            for (index, label) in labels.enumerated() {
+                label.textColor = index < completeCount ? .COLOR_TEXT_TITLE_0f1214 : .COLOR_TEXT_TITLE_0f1214_50
+            }
         }
         
         let targetWidth = (SCREEN_WIDHT - kFitWidth(64)) * displayedProgress / 100.0
@@ -344,6 +361,15 @@ extension ElaProProgressVM {
         default:
             return 5
         }
+    }
+
+    private func updateStepTextsVisibility() {
+        let hidden = !showsStepTexts
+        itemLabel1.isHidden = hidden
+        itemLabel2.isHidden = hidden
+        itemLabel3.isHidden = hidden
+        itemLabel4.isHidden = hidden
+        itemLabel5.isHidden = hidden
     }
 }
 

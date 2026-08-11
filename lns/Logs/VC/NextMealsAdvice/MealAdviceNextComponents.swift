@@ -34,6 +34,8 @@ final class MealAdviceNextFoodCell: FeedBackTableViewCell {
     private let quantityTextField = NumericTextField()
     /// 当前行的单位标签。
     private let unitLabel = UILabel()
+    /// 数量输入框宽度约束。
+    private var quantityTextFieldWidthConstraint: Constraint?
     /// 当前行的勾选按钮。
     private let selectionButton = UIButton(type: .custom)
     /// 当前行底部的分割线。
@@ -84,16 +86,17 @@ extension MealAdviceNextFoodCell {
         if keepQuantityText == false {
             quantityTextField.text = item.quantityText
         }
+        updateQuantityTextFieldWidth()
     }
 
     /// 搭建当前行的子视图和约束。
     private func buildUI() {
         titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        titleLabel.font = .systemFont(ofSize: 16, weight: .medium)
+        titleLabel.font = .systemFont(ofSize: 14, weight: .regular)
         titleLabel.numberOfLines = 1
 
         caloriesLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        caloriesLabel.font = .systemFont(ofSize: 12, weight: .regular)
+        caloriesLabel.font = .systemFont(ofSize: 13, weight: .regular)
 
         quantityContainerView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
         quantityContainerView.layer.cornerRadius = kFitWidth(16)
@@ -104,10 +107,15 @@ extension MealAdviceNextFoodCell {
         quantityTextField.font = .systemFont(ofSize: 13, weight: .medium)
         quantityTextField.textAlignment = .right
         quantityTextField.keyboardType = .decimalPad
+        quantityTextField.shouldLimitFoodQuantityInput = true
         quantityTextField.delegate = self
         quantityTextField.textContentType = nil
         quantityTextField.backgroundColor = .clear
         quantityTextField.placeholder = "100"
+        quantityTextField.maximumFoodQuantityValue = 9999.99
+        quantityTextField.maximumFoodQuantityFractionDigits = 2
+        quantityTextField.setContentHuggingPriority(.required, for: .horizontal)
+        quantityTextField.setContentCompressionResistancePriority(.required, for: .horizontal)
         quantityTextField.setMealAdviceDoneAccessory { [weak self] in
             self?.quantityTextField.resignFirstResponder()
         }
@@ -117,6 +125,8 @@ extension MealAdviceNextFoodCell {
         unitLabel.textColor = .THEME
         unitLabel.font = .systemFont(ofSize: 13, weight: .medium)
         unitLabel.textAlignment = .left
+        unitLabel.setContentHuggingPriority(.required, for: .horizontal)
+        unitLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
 
         selectionButton.setImage(UIImage(named: "question_foods_selected_icon"), for: .normal)
         selectionButton.addTarget(self, action: #selector(selectionAction), for: .touchUpInside)
@@ -127,6 +137,7 @@ extension MealAdviceNextFoodCell {
         quantityStackView.axis = .horizontal
         quantityStackView.alignment = .center
         quantityStackView.spacing = kFitWidth(2)
+        quantityStackView.distribution = .fill
 
         contentView.addSubview(titleLabel)
         contentView.addSubview(caloriesLabel)
@@ -159,15 +170,11 @@ extension MealAdviceNextFoodCell {
             make.height.equalTo(kFitWidth(32))
         }
         quantityStackView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview()
         }
         quantityTextField.snp.makeConstraints { make in
-            make.width.equalTo(kFitWidth(66))
-        }
-        unitLabel.snp.makeConstraints { make in
-//            make.width.greaterThanOrEqualTo(kFitWidth(18))
-            make.right.equalTo(kFitWidth(20))
-            make.width.equalTo(kFitWidth(20))
+            quantityTextFieldWidthConstraint = make.width.equalTo(kFitWidth(24)).constraint
         }
 //        separatorView.snp.makeConstraints { make in
 //            make.left.equalTo(titleLabel)
@@ -175,6 +182,7 @@ extension MealAdviceNextFoodCell {
 //            make.bottom.equalToSuperview()
 //            make.height.equalTo(1)
 //        }
+        updateQuantityTextFieldWidth()
     }
 
     /// 点击勾选按钮。
@@ -189,12 +197,26 @@ extension MealAdviceNextFoodCell {
 
     /// 数量变化时同步回调。
     @objc private func quantityChangedAction() {
+        updateQuantityTextFieldWidth()
         onQuantityChanged?(quantityTextField.text ?? "")
     }
 
     /// 数量编辑结束时同步回调。
     @objc private func quantityEditingEndedAction() {
+        updateQuantityTextFieldWidth()
         onQuantityEditingEnded?(quantityTextField.text ?? "")
+    }
+
+    /// 根据当前文本调整数量输入框宽度，让单位始终贴着数字居中显示。
+    private func updateQuantityTextFieldWidth() {
+        let currentText = quantityTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let textForMeasure = currentText.isEmpty ? (quantityTextField.placeholder ?? "") : currentText
+        let font = quantityTextField.font ?? .systemFont(ofSize: 13, weight: .medium)
+        let measuredWidth = ceil((textForMeasure as NSString).size(withAttributes: [.font: font]).width)
+        let maximumTextWidth = ceil(("9999.99" as NSString).size(withAttributes: [.font: font]).width) + kFitWidth(8)
+        let targetWidth = min(max(measuredWidth + kFitWidth(8), kFitWidth(24)), maximumTextWidth)
+        quantityTextFieldWidthConstraint?.update(offset: targetWidth)
+        layoutIfNeeded()
     }
 }
 
@@ -209,6 +231,13 @@ extension MealAdviceNextFoodCell: UITextFieldDelegate {
 
         let currentText = textField.text ?? ""
         let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        guard NumericTextField.shouldAllowFoodQuantityChange(currentText: currentText,
+                                                             range: range,
+                                                             replacementString: string,
+                                                             maximumValue: quantityTextField.maximumFoodQuantityValue,
+                                                             maximumFractionDigits: quantityTextField.maximumFoodQuantityFractionDigits) else {
+            return false
+        }
         return !(updatedText.first?.isWhitespace ?? false)
     }
 }
@@ -338,6 +367,86 @@ extension UITextField {
     }
 }
 
+/// 下餐规划页的整数数值过渡动画。
+private final class MealAdviceNextNumberAnimator: NSObject {
+
+    /// 需要刷新文本的标签。
+    private weak var label: UILabel?
+    /// 驱动数字变化的 display link。
+    private var displayLink: CADisplayLink?
+    /// 起始值。
+    private var startValue = 0
+    /// 目标值。
+    private var targetValue = 0
+    /// 动画起始时间。
+    private var startTime: CFTimeInterval = 0
+    /// 动画时长。
+    private var duration: CFTimeInterval = 0.35
+
+    /// 创建数值动画器。
+    /// - Parameter label: 需要显示数字的标签。
+    init(label: UILabel) {
+        self.label = label
+        super.init()
+    }
+
+    deinit {
+        stop()
+    }
+
+    /// 直接设置最终值。
+    /// - Parameter value: 最终值。
+    func setValue(_ value: Int) {
+        stop()
+        label?.text = "\(value)"
+    }
+
+    /// 从旧值滚动到新值。
+    /// - Parameters:
+    ///   - fromValue: 起始值。
+    ///   - toValue: 目标值。
+    ///   - duration: 动画时长。
+    func animate(from fromValue: Int, to toValue: Int, duration: CFTimeInterval = 0.35) {
+        guard fromValue != toValue else {
+            setValue(toValue)
+            return
+        }
+
+        stop()
+        startValue = fromValue
+        targetValue = toValue
+        self.duration = duration
+        startTime = CACurrentMediaTime()
+        label?.text = "\(fromValue)"
+
+        let link = CADisplayLink(target: self, selector: #selector(handleDisplayLink(_:)))
+        link.add(to: .main, forMode: .common)
+        displayLink = link
+    }
+
+    /// 停止当前动画。
+    private func stop() {
+        displayLink?.invalidate()
+        displayLink = nil
+    }
+
+    /// 逐帧刷新数字。
+    /// - Parameter link: 当前 display link。
+    @objc private func handleDisplayLink(_ link: CADisplayLink) {
+        let elapsed = CACurrentMediaTime() - startTime
+        let progress = min(max(elapsed / duration, 0), 1)
+        let easedProgress = 1 - pow(1 - progress, 3)
+        let delta = Double(targetValue - startValue) * easedProgress
+        let currentValue = Int((Double(startValue) + delta).rounded())
+        label?.text = "\(currentValue)"
+
+        if progress >= 1 {
+            label?.text = "\(targetValue)"
+            stop()
+        }
+    }
+}
+
 /// 下餐规划页顶部的核心营养摘要。
 final class MealAdviceNextTopMetricView: UIView {
 
@@ -347,6 +456,10 @@ final class MealAdviceNextTopMetricView: UIView {
     private let titleLabel = UILabel()
     /// 大号数字标签。
     private let valueLabel = UILabel()
+    /// 数字过渡动画器。
+    private lazy var numberAnimator = MealAdviceNextNumberAnimator(label: valueLabel)
+    /// 当前已展示的整数值。
+    private var displayedValue: Int?
 
     /// 创建顶部摘要视图。
     override init(frame: CGRect) {
@@ -367,25 +480,45 @@ extension MealAdviceNextTopMetricView {
     ///   - unit: 营养单位。
     ///   - value: 当前摄入值。
     ///   - color: 标识颜色。
-    func update(title: String, unit: String, value: Double, color: UIColor) {
+    func update(title: String, unit: String, value: Double, color: UIColor, animated: Bool = false) {
         dotView.backgroundColor = color
         titleLabel.text = "\(title)(\(unit))"
-        valueLabel.text = String(Int(value.rounded()))
+        updateValue(Int(value.rounded()), animated: animated)
+    }
+
+    /// 刷新数字文本。
+    /// - Parameters:
+    ///   - value: 新值。
+    ///   - animated: 是否展示数字滚动动画。
+    private func updateValue(_ value: Int, animated: Bool) {
+        guard let oldValue = displayedValue else {
+            displayedValue = value
+            numberAnimator.setValue(value)
+            return
+        }
+
+        displayedValue = value
+        if animated {
+            numberAnimator.animate(from: oldValue, to: value)
+        } else {
+            numberAnimator.setValue(value)
+        }
     }
 
     /// 搭建顶部摘要视图。
     private func buildUI() {
         backgroundColor = .clear
 
-        dotView.layer.cornerRadius = kFitWidth(3)
+        dotView.layer.cornerRadius = kFitWidth(2)
         dotView.clipsToBounds = true
 
         titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        titleLabel.font = .systemFont(ofSize: 12, weight: .regular)
+        titleLabel.font = .systemFont(ofSize: 11, weight: .regular)
         titleLabel.adjustsFontSizeToFitWidth = true
 
         valueLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        valueLabel.font = .systemFont(ofSize: 24, weight: .semibold)
+//        valueLabel.font = .systemFont(ofSize: 24, weight: .semibold)
+        valueLabel.font = UIFont().DDInFontSemiBold(fontSize: 20)
         valueLabel.adjustsFontSizeToFitWidth = true
         valueLabel.minimumScaleFactor = 0.8
         valueLabel.textAlignment = .center
@@ -393,13 +526,13 @@ extension MealAdviceNextTopMetricView {
         let titleStackView = UIStackView(arrangedSubviews: [dotView, titleLabel])
         titleStackView.axis = .horizontal
         titleStackView.alignment = .center
-        titleStackView.spacing = kFitWidth(4)
+        titleStackView.spacing = kFitWidth(3)
 
         addSubview(titleStackView)
         addSubview(valueLabel)
 
         dotView.snp.makeConstraints { make in
-            make.width.height.equalTo(kFitWidth(6))
+            make.width.height.equalTo(kFitWidth(4))
         }
         titleStackView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -416,18 +549,8 @@ extension MealAdviceNextTopMetricView {
 /// 下餐规划页底部的圆环营养展示。
 final class MealAdviceNextRingMetricView: UIView {
 
-    /// 环形容器视图。
-    private let ringContainerView = UIView()
-    /// 中间数字标签。
-    private let valueLabel = UILabel()
-    /// 底部标题标签。
-    private let titleLabel = UILabel()
-    /// 圆环底层。
-    private let trackLayer = CAShapeLayer()
-    /// 圆环进度层。
-    private let progressLayer = CAShapeLayer()
-    /// 当前高亮颜色。
-    private var progressColor = UIColor.COLOR_CARBOHYDRATE
+    /// 日志页同款圆圈组件。
+    private let circleView = LogsNaturalGoalCircleVM(frame: .zero)
 
     /// 创建圆环视图。
     override init(frame: CGRect) {
@@ -439,6 +562,10 @@ final class MealAdviceNextRingMetricView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    override var intrinsicContentSize: CGSize {
+        CGSize(width: kFitWidth(53), height: kFitWidth(76))
+    }
 }
 
 extension MealAdviceNextRingMetricView {
@@ -446,82 +573,55 @@ extension MealAdviceNextRingMetricView {
     /// - Parameters:
     ///   - title: 营养名称。
     ///   - unit: 营养单位。
-    ///   - value: 当前值。
+    ///   - remainingValue: 当前剩余值。
+    ///   - consumedValue: 当前已摄入值。
     ///   - target: 目标值。
     ///   - color: 圆环颜色。
-    func update(title: String, unit: String, value: Double, target: Double, color: UIColor) {
-        progressColor = color
-        titleLabel.text = "\(title)(\(unit))"
-        valueLabel.text = String(Int(value.rounded()))
+    func update(title: String,
+                unit: String,
+                remainingValue: Double,
+                overflowValue: Double,
+                consumedValue: Double,
+                target: Double,
+                color: UIColor,
+                overflowColor: UIColor,
+                animated: Bool = false) {
+        _ = animated
+        circleView.circleColor = color
+        circleView.circleFillColor = overflowColor
+        circleView.titleLab.text = "\(title)(\(unit))"
+        let targetInt = max(Int(target.rounded()), 0)
+        let consumedInt = max(Int(consumedValue.rounded()), 0)
+        let signedRemaining = target - consumedValue
+        let displayRemaining = signedRemaining < 0 ? Int(signedRemaining.rounded()) : Int(abs(signedRemaining).rounded())
 
-        let progress = target > 0 ? min(max(value / target, 0), 1) : 0
-        progressLayer.strokeColor = color.cgColor
-        progressLayer.strokeEnd = CGFloat(progress)
-        setNeedsLayout()
+        circleView.currentNumberLabel.textColor = signedRemaining < 0 ? WHColor_16(colorStr: "D54941") : .COLOR_TEXT_TITLE_0f1214
+
+        circleView.updateTotalNumber(text: "/\(targetInt)\(MealAdviceNextRingMetricView.totalSuffix(for: unit))")
+        circleView.currentNumberLabel.text = "\(displayRemaining)"
+        circleView.setData(currentNumber: consumedInt, totalNumber: max(targetInt, 1))
     }
 
     /// 搭建圆环视图。
     private func buildUI() {
         backgroundColor = .clear
-        ringContainerView.backgroundColor = .clear
-
-        valueLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        valueLabel.font = .systemFont(ofSize: 18, weight: .semibold)
-        valueLabel.textAlignment = .center
-
-        titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        titleLabel.font = .systemFont(ofSize: 12, weight: .regular)
-        titleLabel.textAlignment = .center
-        titleLabel.adjustsFontSizeToFitWidth = true
-        titleLabel.minimumScaleFactor = 0.8
-
-        addSubview(ringContainerView)
-        addSubview(valueLabel)
-        addSubview(titleLabel)
-
-        ringContainerView.snp.makeConstraints { make in
+        addSubview(circleView)
+        circleView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(66))
+            make.width.equalTo(kFitWidth(53))
+            make.height.equalTo(kFitWidth(76))
         }
-        valueLabel.snp.makeConstraints { make in
-            make.center.equalTo(ringContainerView)
-            make.width.lessThanOrEqualTo(kFitWidth(52))
-        }
-        titleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(ringContainerView.snp.bottom).offset(kFitWidth(12))
-            make.bottom.equalToSuperview()
-        }
-
-        trackLayer.fillColor = UIColor.clear.cgColor
-        trackLayer.strokeColor = UIColor.COLOR_TEXT_TITLE_0f1214_10.cgColor
-        trackLayer.lineWidth = kFitWidth(5)
-        trackLayer.lineCap = .round
-
-        progressLayer.fillColor = UIColor.clear.cgColor
-        progressLayer.strokeColor = progressColor.cgColor
-        progressLayer.lineWidth = kFitWidth(5)
-        progressLayer.lineCap = .round
-        progressLayer.strokeEnd = 0
-
-        ringContainerView.layer.addSublayer(trackLayer)
-        ringContainerView.layer.addSublayer(progressLayer)
     }
 
-    /// 更新圆环路径。
-    override func layoutSubviews() {
-        super.layoutSubviews()
-
-        let bounds = ringContainerView.bounds
-        trackLayer.frame = bounds
-        progressLayer.frame = bounds
-
-        let inset = progressLayer.lineWidth / 2 + kFitWidth(1)
-        let ringRect = bounds.insetBy(dx: inset, dy: inset)
-        let path = UIBezierPath(ovalIn: ringRect)
-        trackLayer.path = path.cgPath
-        progressLayer.path = path.cgPath
-        progressLayer.strokeColor = progressColor.cgColor
+    /// 日志页同款圆圈的总数后缀。
+    private static func totalSuffix(for unit: String) -> String {
+        if unit.contains("千卡") || unit.lowercased().contains("kcal") {
+            return ""
+        }
+        if unit.contains("g") || unit.contains("克") || unit.contains("ml") || unit.contains("毫升") {
+            return "g"
+        }
+        return unit
     }
 }

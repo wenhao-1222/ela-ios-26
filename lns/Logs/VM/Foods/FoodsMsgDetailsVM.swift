@@ -177,6 +177,7 @@ class FoodsMsgDetailsVM: UIView {
         text.keyboardType = .decimalPad
         text.textColor = .COLOR_TEXT_TITLE_0f1214
         text.font = .systemFont(ofSize: 16, weight: .medium)
+        text.shouldLimitFoodQuantityInput = true
         text.delegate = self
         text.textContentType = nil
 //        text.select
@@ -488,22 +489,23 @@ extension FoodsMsgDetailsVM:UITextFieldDelegate{
         if range.length > 0 || (range.location == 0 && range.length == 0){
             let firstStr = number.mc_clipFromPrefix(to: range.location)
             let endStr = number.mc_cutToSuffix(from: range.location+range.length)
+            var candidate = ""
             if range.location == 0{
                 if string == "0"{
-                    if number == "0"{
-                        textField.text = "0"//"\(endStr)"
-                    }else{
-                        textField.text = "0"//"\(endStr)"
-                    }
+                    candidate = "0"
 //                    textField.text = "0"//"\(endStr)"
                 }else if string == "." || string == ","{
-                    textField.text = "0.\(endStr)"
+                    candidate = "0.\(endStr)"
                 }else{
-                    textField.text = "\(firstStr)\(string)\(endStr)"
+                    candidate = "\(firstStr)\(string)\(endStr)"
                 }
             }else{
-                textField.text = "\(firstStr)\(string)\(endStr)"
+                candidate = "\(firstStr)\(string)\(endStr)"
             }
+            if NumericTextField.isValidFoodQuantityText(candidate) == false {
+                return false
+            }
+            textField.text = candidate
             
             updateNumber(num:"\(textField.text ?? "")")
             return false
@@ -526,7 +528,11 @@ extension FoodsMsgDetailsVM:UITextFieldDelegate{
                     return false
                 }
             }
-            number = "\(number)\(string)"
+            let candidate = "\(number)\(string)"
+            if NumericTextField.isValidFoodQuantityText(candidate) == false {
+                return false
+            }
+            number = candidate
             updateNumber(num:number)
             return true
         }else if number.contains(","){
@@ -537,13 +543,21 @@ extension FoodsMsgDetailsVM:UITextFieldDelegate{
                     return false
                 }
             }
-            number = "\(number)\(string)"
+            let candidate = "\(number)\(string)"
+            if NumericTextField.isValidFoodQuantityText(candidate) == false {
+                return false
+            }
+            number = candidate
             updateNumber(num:number)
             return true
         }else if number.count >= 4 && string != "." && string != ","{
             return false
         }
-        number = "\(number)\(string)"
+        let candidate = "\(number)\(string)"
+        if NumericTextField.isValidFoodQuantityText(candidate) == false {
+            return false
+        }
+        number = candidate
         updateNumber(num:number)
         
         return true

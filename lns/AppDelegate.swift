@@ -122,6 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
     var window: UIWindow?
     var psharecode = ""
     var allowRotation = false
+    private var allowKeyboardExtension = true
     
     lazy var planDetailAlertVM : PlanLeadIntoDetailsMsgAlertVM = {
         let vm = PlanLeadIntoDetailsMsgAlertVM.init(frame: .zero)
@@ -269,13 +270,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
 
         return true
     }
-    //禁用了三方输入法
-//    func application(_ application: UIApplication, shouldAllowExtensionPointIdentifier extensionPointIdentifier: UIApplication.ExtensionPointIdentifier) -> Bool {
-//        if extensionPointIdentifier == UIApplication.ExtensionPointIdentifier.keyboard{
-//            return false
-//        }
-//        return true
-//    }
+    func setKeyboardExtensionAllowed(_ allowed: Bool) {
+        allowKeyboardExtension = allowed
+    }
+
+    func application(_ application: UIApplication, shouldAllowExtensionPointIdentifier extensionPointIdentifier: UIApplication.ExtensionPointIdentifier) -> Bool {
+        if extensionPointIdentifier == UIApplication.ExtensionPointIdentifier.keyboard {
+            return allowKeyboardExtension
+        }
+        return true
+    }
     
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
 //        if #available(iOS 16.0, *) {

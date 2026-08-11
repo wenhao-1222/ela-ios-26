@@ -1021,6 +1021,8 @@ extension JournalVC{
 //        DLLog(message: "\(foodsDict)")
         let foodsObj = notify.object ?? [:]
         DLLog(message: "\(foodsObj)")
+        let mealIndex = mealIndex(from: notify)
+        let isFromMealAdvice = (notify.userInfo?["fromMealAdvice"] as? Bool) ?? false
         DispatchQueue.main.asyncAfter(deadline: .now()+0.2) { [weak self] in
             guard let self = self, self.isPreparingForLogoutRelease == false else { return }
             self.collectView.layoutIfNeeded()
@@ -1038,13 +1040,13 @@ extension JournalVC{
 //                cell?.addFoods(foodsMsg: foodsDict as! NSDictionary)
 //            }
             
-            if WidgetMsgModel.shared.mealsIndex > 0 {
+            if mealIndex > 0 && isFromMealAdvice == false {
                 indexPath = IndexPath(row: self.todayIndex, section: 0)
             }
             guard let cell = self.collectView.cellForItem(at: indexPath) as? JounalCollectionCell else { return }
 
-            if WidgetMsgModel.shared.mealsIndex > 0 {
-                cell.selectMealsIndex = WidgetMsgModel.shared.mealsIndex - 1
+            if mealIndex > 0 {
+                cell.selectMealsIndex = mealIndex - 1
                 cell.selectFoodsIndex = -1
             }
 
@@ -1059,18 +1061,29 @@ extension JournalVC{
         self.collectView.layoutIfNeeded()
         let foodsDict = notify.object ?? [:]
         DLLog(message: "\(foodsDict)")
+        let mealIndex = mealIndex(from: notify)
+        let isFromMealAdvice = (notify.userInfo?["fromMealAdvice"] as? Bool) ?? false
         var indexPath = IndexPath(row: self.selecteIndex, section: 0)
-        if WidgetMsgModel.shared.mealsIndex > 0 {
+        if mealIndex > 0 && isFromMealAdvice == false {
             indexPath = IndexPath(row: self.todayIndex, section: 0)
             let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
             
-            cell?.selectMealsIndex = WidgetMsgModel.shared.mealsIndex - 1
+            cell?.selectMealsIndex = mealIndex - 1
             cell?.selectFoodsIndex = -1
             cell?.addFoods(foodsMsg: foodsDict as! NSDictionary)
         }else{
             let cell = self.collectView.cellForItem(at: indexPath)as? JounalCollectionCell
             cell?.addFoods(foodsMsg: foodsDict as! NSDictionary)
         }
+    }
+    private func mealIndex(from notify: Notification) -> Int {
+        if let number = notify.userInfo?["mealIndex"] as? NSNumber {
+            return number.intValue
+        }
+        if let index = notify.userInfo?["mealIndex"] as? Int {
+            return index
+        }
+        return WidgetMsgModel.shared.mealsIndex
     }
     @objc func cancelEditNotifi(){
         self.isEdit = false

@@ -227,8 +227,10 @@ extension FoodsListAddVM{
         let vc = MealAdviceVC()
         if let foodsVC = controller as? FoodsListNewVC {
             vc.sDate = foodsVC.mealAdviceSDate
+            vc.mealIndex = foodsVC.mealAdviceMealIndex
         } else if let foodsVC = controller as? FoodsListVC {
             vc.sDate = foodsVC.mealAdviceSDate
+            vc.mealIndex = foodsVC.mealAdviceMealIndex
         }
         controller?.navigationController?.pushViewController(vc, animated: true)
     }

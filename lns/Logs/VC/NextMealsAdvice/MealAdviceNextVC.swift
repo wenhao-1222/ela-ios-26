@@ -16,12 +16,22 @@ final class MealAdviceNextVC: WHBaseViewVC {
     private let viewModel: MealAdviceNextViewModel
     /// 页面日志日期。
     private let sDate: String
-    /// 页面顶部的滚动容器。
+    /// 当前日志页点击的餐序号，1 开始，0 表示未指定。
+    private let mealIndex: Int
+    /// 红框内的滚动容器。
     private let scrollView = UIScrollView()
     /// 滚动内容容器。
     private let contentView = UIView()
     /// 滚动内容的纵向布局栈。
     private let contentStackView = UIStackView()
+    /// 滚动区域顶部渐变遮罩容器。
+    private let topGradientView = UIView()
+    /// 滚动区域底部渐变遮罩容器。
+    private let bottomGradientView = UIView()
+    /// 滚动区域顶部渐变层。
+    private let topGradientLayer = CAGradientLayer()
+    /// 滚动区域底部渐变层。
+    private let bottomGradientLayer = CAGradientLayer()
     /// 右上角关闭按钮。
     private let closeButton = UIButton(type: .custom)
     /// 页面标题。
@@ -49,17 +59,26 @@ final class MealAdviceNextVC: WHBaseViewVC {
     /// 底部圆环营养视图数组。
     private var ringMetricViews: [MealAdviceNextRingMetricView] = []
     /// 顶部和底部营养卡片共用的颜色顺序。
-    private let metricColors: [UIColor] = [.COLOR_TEXT_MAIN_CALORIES, .COLOR_CARBOHYDRATE, .COLOR_PROTEIN, .COLOR_FAT]
+    private let metricColors: [UIColor] = [.COLOR_CALORI, .COLOR_CARBOHYDRATE, .COLOR_PROTEIN, .COLOR_FAT]
+    /// 超出剩余时的圆环颜色，保持和日志页顶部圆圈一致。
+    private let metricOverflowColors: [UIColor] = [
+        WHColor_RGB(r: 28, g: 70, b: 140),
+        WHColor_RGB(r: 62, g: 36, b: 101),
+        WHColor_RGB(r: 135, g: 102, b: 13),
+        WHColor_RGB(r: 116, g: 66, b: 25)
+    ]
     /// 列表行高。
-    private let foodRowHeight = kFitWidth(72)
+    private let foodRowHeight = kFitWidth(65)
 
     /// 创建下餐规划结果页。
     /// - Parameters:
     ///   - planDict: 接口返回的规划结果。
     ///   - sDate: 从日志页进入时的日期。
-    init(planDict: NSDictionary, sDate: String) {
+    ///   - mealIndex: 从日志页进入时点击的餐序号。
+    init(planDict: NSDictionary, sDate: String, mealIndex: Int = 0) {
         self.viewModel = MealAdviceNextViewModel(responseDict: planDict, sDate: sDate)
         self.sDate = sDate
+        self.mealIndex = mealIndex
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -73,6 +92,26 @@ final class MealAdviceNextVC: WHBaseViewVC {
         buildUI()
         reloadData()
     }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        setKeyboardExtensionAllowed(false)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        setKeyboardExtensionAllowed(true)
+    }
+
+    deinit {
+        setKeyboardExtensionAllowed(true)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        topGradientLayer.frame = topGradientView.bounds
+        bottomGradientLayer.frame = bottomGradientView.bounds
+    }
 }
 
 extension MealAdviceNextVC {
@@ -81,31 +120,58 @@ extension MealAdviceNextVC {
         view.backgroundColor = .COLOR_BG_F2
 
         view.addSubview(closeButton)
+        view.addSubview(headlineView)
         view.addSubview(scrollView)
         view.addSubview(addToLogsButton)
+        view.addSubview(topGradientView)
+        view.addSubview(bottomGradientView)
         scrollView.addSubview(contentView)
         contentView.addSubview(contentStackView)
+        topGradientView.layer.addSublayer(topGradientLayer)
+        bottomGradientView.layer.addSublayer(bottomGradientLayer)
+        topGradientView.isUserInteractionEnabled = false
+        bottomGradientView.isUserInteractionEnabled = false
+        topGradientView.backgroundColor = .clear
+        bottomGradientView.backgroundColor = .clear
 
-        closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
-        closeButton.tintColor = .COLOR_TEXT_TITLE_0f1214
-        closeButton.backgroundColor = .white
-        closeButton.layer.cornerRadius = kFitWidth(18)
-        closeButton.layer.borderWidth = 1
-        closeButton.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_06.cgColor
+        topGradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        topGradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
+        topGradientLayer.locations = [0, 1]
+
+        bottomGradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        bottomGradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
+        bottomGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        bottomGradientLayer.locations = [0, 1]
+
+//        closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
+        closeButton.setImage(UIImage(named: "alert_close_icon"), for: .normal)
+//        closeButton.tintColor = .COLOR_TEXT_TITLE_0f1214
+//        closeButton.backgroundColor = .white
+//        closeButton.layer.cornerRadius = kFitWidth(18)
+//        closeButton.layer.borderWidth = 1
+//        closeButton.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_06.cgColor
         closeButton.addTarget(self, action: #selector(closeAction), for: .touchUpInside)
 
         titleLabel.text = "建议摄入量"
         titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        titleLabel.font = .systemFont(ofSize: 28, weight: .semibold)
+        titleLabel.font = .systemFont(ofSize: 24, weight: .medium)
         titleLabel.textAlignment = .center
 
         topMetricsStackView.axis = .horizontal
         topMetricsStackView.alignment = .fill
         topMetricsStackView.distribution = .fillEqually
-        topMetricsStackView.spacing = kFitWidth(10)
+        topMetricsStackView.spacing = kFitWidth(13)
 
+        headlineView.backgroundColor = .clear
         foodListCardView.backgroundColor = .COLOR_CARD_BG_WHITE
-        foodListCardView.layer.cornerRadius = kFitWidth(16)
+        foodListCardView.layer.cornerRadius = kFitWidth(12)
         foodListCardView.clipsToBounds = true
 
         foodTableView.separatorStyle = .none
@@ -119,12 +185,12 @@ extension MealAdviceNextVC {
         foodTableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: CGFloat.leastNormalMagnitude))
 
         remainingCardView.backgroundColor = .COLOR_CARD_BG_WHITE
-        remainingCardView.layer.cornerRadius = kFitWidth(16)
+        remainingCardView.layer.cornerRadius = kFitWidth(12)
         remainingCardView.clipsToBounds = true
 
         remainingTitleLabel.text = "本餐后剩余"
         remainingTitleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        remainingTitleLabel.font = .systemFont(ofSize: 20, weight: .semibold)
+        remainingTitleLabel.font = .systemFont(ofSize: 16, weight: .medium)
 
         remainingMetricsStackView.axis = .horizontal
         remainingMetricsStackView.alignment = .fill
@@ -134,9 +200,9 @@ extension MealAdviceNextVC {
         addToLogsButton.setTitle("添加到日志", for: .normal)
         addToLogsButton.setTitleColor(.white, for: .normal)
         addToLogsButton.setTitleColor(.white, for: .disabled)
-        addToLogsButton.titleLabel?.font = .systemFont(ofSize: 20, weight: .medium)
+        addToLogsButton.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         addToLogsButton.backgroundColor = .THEME
-        addToLogsButton.layer.cornerRadius = kFitWidth(28)
+        addToLogsButton.layer.cornerRadius = kFitWidth(27)
         addToLogsButton.clipsToBounds = true
         addToLogsButton.enablePressEffect()
         addToLogsButton.addTarget(self, action: #selector(addToLogsAction), for: .touchUpInside)
@@ -144,7 +210,7 @@ extension MealAdviceNextVC {
         contentStackView.axis = .vertical
         contentStackView.alignment = .fill
         contentStackView.distribution = .fill
-        contentStackView.spacing = kFitWidth(16)
+        contentStackView.spacing = kFitWidth(12)
 
         let topMetricViewsLocal = metricColors.map { _ in MealAdviceNextTopMetricView() }
         let ringMetricViewsLocal = metricColors.map { _ in MealAdviceNextRingMetricView() }
@@ -153,7 +219,6 @@ extension MealAdviceNextVC {
         topMetricViewsLocal.forEach { topMetricsStackView.addArrangedSubview($0) }
         ringMetricViewsLocal.forEach { remainingMetricsStackView.addArrangedSubview($0) }
 
-        contentStackView.addArrangedSubview(headlineView)
         contentStackView.addArrangedSubview(foodListCardView)
         contentStackView.addArrangedSubview(remainingCardView)
         headlineView.addSubview(titleLabel)
@@ -163,26 +228,40 @@ extension MealAdviceNextVC {
         remainingCardView.addSubview(remainingMetricsStackView)
 
         scrollView.showsVerticalScrollIndicator = false
+        scrollView.alwaysBounceVertical = true
+        scrollView.contentInsetAdjustmentBehavior = .never
 
         closeButton.snp.makeConstraints { make in
             make.right.equalTo(kFitWidth(-16))
             make.top.equalTo(statusBarHeight + kFitWidth(8))
             make.width.height.equalTo(kFitWidth(36))
         }
-        scrollView.snp.makeConstraints { make in
+        headlineView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(closeButton.snp.bottom).offset(kFitWidth(10))
+            make.height.equalTo(kFitWidth(115))
+        }
+        scrollView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(headlineView.snp.bottom).offset(kFitWidth(8))
             make.bottom.equalTo(addToLogsButton.snp.top).offset(kFitWidth(-16))
+        }
+        topGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.top.equalTo(scrollView.snp.top)
+            make.height.equalTo(kFitWidth(35))
+        }
+        bottomGradientView.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(scrollView.snp.bottom)
+            make.height.equalTo(kFitWidth(35))
         }
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalTo(scrollView)
         }
         contentStackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(UIEdgeInsets(top: 0, left: kFitWidth(16), bottom: 0, right: kFitWidth(16)))
-        }
-        headlineView.snp.makeConstraints { make in
-            make.height.equalTo(kFitWidth(170))
+            make.edges.equalToSuperview().inset(UIEdgeInsets(top: kFitWidth(35), left: kFitWidth(16), bottom: 0, right: kFitWidth(16)))
         }
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -202,23 +281,23 @@ extension MealAdviceNextVC {
             foodTableHeightConstraint = make.height.equalTo(kFitWidth(1)).constraint
         }
         remainingCardView.snp.makeConstraints { make in
-            make.height.equalTo(kFitWidth(230))
+            make.height.equalTo(kFitWidth(168))
         }
         remainingTitleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
-            make.top.equalTo(kFitWidth(20))
+            make.top.equalTo(kFitWidth(6))
         }
         remainingMetricsStackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(remainingTitleLabel.snp.bottom).offset(kFitWidth(24))
-            make.bottom.equalTo(kFitWidth(-18))
+            make.top.equalTo(remainingTitleLabel.snp.bottom)//.offset(kFitWidth(16))
+            make.bottom.equalTo(kFitWidth(-26))
         }
         addToLogsButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight() - kFitWidth(10))
-            make.height.equalTo(kFitWidth(56))
+            make.height.equalTo(kFitWidth(54))
         }
     }
 
@@ -226,7 +305,7 @@ extension MealAdviceNextVC {
     private func reloadData() {
         foodTableView.reloadData()
         reloadFoodListHeight()
-        updateMetricViews()
+        updateMetricViews(animated: false)
         updateAddButtonState()
     }
 
@@ -238,13 +317,21 @@ extension MealAdviceNextVC {
     }
 
     /// 刷新顶部和底部营养视图。
-    private func updateMetricViews() {
+    private func updateMetricViews(animated: Bool) {
         let states = viewModel.coreMetricStates
         for (index, state) in states.enumerated() {
             guard index < topMetricViews.count, index < ringMetricViews.count else { continue }
             let color = metricColors[index]
-            topMetricViews[index].update(title: state.title, unit: state.unit, value: state.selectedValue, color: color)
-            ringMetricViews[index].update(title: state.title, unit: state.unit, value: state.remainingValue, target: state.targetValue, color: color)
+            topMetricViews[index].update(title: state.title, unit: state.unit, value: state.selectedValue, color: color, animated: animated)
+            ringMetricViews[index].update(title: state.title,
+                                          unit: state.unit,
+                                          remainingValue: state.remainingValue,
+                                          overflowValue: state.overflowValue,
+                                          consumedValue: state.selectedValue,
+                                          target: state.targetValue,
+                                          color: color,
+                                          overflowColor: metricOverflowColors[index],
+                                          animated: animated)
         }
     }
 
@@ -259,7 +346,7 @@ extension MealAdviceNextVC {
     private func toggleSelection(at index: Int) {
         viewModel.toggleSelection(at: index)
         refreshVisibleFoodCell(at: index)
-        updateMetricViews()
+        updateMetricViews(animated: true)
         updateAddButtonState()
     }
 
@@ -270,7 +357,7 @@ extension MealAdviceNextVC {
     private func updateQuantity(at index: Int, text: String) {
         viewModel.updateQuantity(at: index, text: text)
         refreshVisibleFoodCell(at: index)
-        updateMetricViews()
+        updateMetricViews(animated: false)
         updateAddButtonState()
     }
 
@@ -283,13 +370,13 @@ extension MealAdviceNextVC {
         guard let quantity = Double(normalizedText), quantity > 0 else {
             viewModel.restoreQuantity(at: index)
             refreshVisibleFoodCell(at: index)
-            updateMetricViews()
+            updateMetricViews(animated: false)
             updateAddButtonState()
             return
         }
         viewModel.updateQuantity(at: index, text: text)
         refreshVisibleFoodCell(at: index)
-        updateMetricViews()
+        updateMetricViews(animated: false)
         updateAddButtonState()
     }
 
@@ -311,11 +398,13 @@ extension MealAdviceNextVC {
 
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dietPlanFoodsAddToLogs"),
                                         object: nil,
-                                        userInfo: ["sdate": sDate])
+                                        userInfo: ["sdate": sDate, "mealIndex": mealIndex, "fromMealAdvice": true])
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
             guard let self = self else { return }
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "foodsAddForLogs"), object: payloads)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "foodsAddForLogs"),
+                                            object: payloads,
+                                            userInfo: ["sdate": sDate, "mealIndex": mealIndex, "fromMealAdvice": true])
             self.navigationController?.popToRootViewController(animated: true)
         }
     }
@@ -323,6 +412,12 @@ extension MealAdviceNextVC {
     /// 关闭当前页面。
     @objc private func closeAction() {
         navigationController?.popViewController(animated: true)
+    }
+
+    /// 切换当前页面对应的三方输入法开关。
+    /// - Parameter allowed: 是否允许键盘扩展。
+    private func setKeyboardExtensionAllowed(_ allowed: Bool) {
+        (UIApplication.shared.delegate as? AppDelegate)?.setKeyboardExtensionAllowed(allowed)
     }
 }
 

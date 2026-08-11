@@ -24,6 +24,11 @@ struct MealAdviceNextCoreMetricState {
     var remainingValue: Double {
         max(targetValue - selectedValue, 0)
     }
+
+    /// 超出目标的值。
+    var overflowValue: Double {
+        max(selectedValue - targetValue, 0)
+    }
 }
 
 /// 下餐规划页的单个食物状态。
@@ -31,8 +36,10 @@ final class MealAdviceNextFoodItemViewModel {
 
     /// 用于计算比例的基础食物字典。
     private let baseFoodDict: NSDictionary
-    /// 当前数量的基础数量。
-    private let baseQuantity: Double
+    /// 标准规格数量，用来做营养换算基准。
+    private let standardQuantity: Double
+    /// 接口返回时的原始数量。
+    private let originalQuantity: Double
     /// 当前展示的单位。
     private let unitName: String
 
@@ -54,8 +61,9 @@ final class MealAdviceNextFoodItemViewModel {
         displayName = MealAdviceNextFoodItemViewModel.displayName(from: baseFoodDict)
         isSelected = MealAdviceNextFoodItemViewModel.initialSelection(from: rawDict)
         unitName = MealAdviceNextFoodItemViewModel.unitName(from: baseFoodDict)
-        baseQuantity = MealAdviceNextFoodItemViewModel.baseQuantity(from: baseFoodDict, unitName: unitName)
-        currentQuantity = baseQuantity
+        standardQuantity = MealAdviceNextFoodItemViewModel.standardQuantity(from: baseFoodDict, unitName: unitName)
+        originalQuantity = MealAdviceNextFoodItemViewModel.originalQuantity(from: rawDict, standardQuantity: standardQuantity)
+        currentQuantity = originalQuantity
         rebuildState()
     }
 
@@ -76,7 +84,7 @@ final class MealAdviceNextFoodItemViewModel {
 
     /// 恢复到接口返回时的原始数量。
     func restoreOriginalQuantity() {
-        currentQuantity = baseQuantity
+        currentQuantity = originalQuantity
         rebuildState()
     }
 
@@ -114,7 +122,7 @@ final class MealAdviceNextFoodItemViewModel {
     /// 计算当前数量下的全部营养值。
     private func scaledNutritionValues() -> [String: Double] {
         var values: [String: Double] = [:]
-        let divisor = max(baseQuantity, 1)
+        let divisor = max(standardQuantity, 1)
 
         for item in FoodsNutritionCatalog.shared.flatItems {
             let baseValue = numericValue(in: baseFoodDict, key: item.key)
@@ -185,14 +193,11 @@ final class MealAdviceNextFoodItemViewModel {
         return "g"
     }
 
-    /// 获取基础数量。
+    /// 获取标准规格数量。
     /// - Parameters:
     ///   - dict: 食物基础字典。
     ///   - unitName: 当前单位名称。
-    private static func baseQuantity(from dict: NSDictionary, unitName: String) -> Double {
-        let currentQty = dict.doubleValueForKey(key: "qty")
-        if currentQty > 0 { return currentQty }
-
+    private static func standardQuantity(from dict: NSDictionary, unitName: String) -> Double {
         let defaultSpec = WHUtils.getSpecDefaultFromFoods(foodsDict: dict)
         let defaultQty = defaultSpec.doubleValueForKey(key: "specNum")
         if defaultQty > 0 { return defaultQty }
@@ -201,6 +206,16 @@ final class MealAdviceNextFoodItemViewModel {
             return 100
         }
         return 1
+    }
+
+    /// 获取接口返回时的原始数量。
+    /// - Parameters:
+    ///   - dict: 接口返回的原始食物字典。
+    ///   - standardQuantity: 标准规格数量。
+    private static func originalQuantity(from dict: NSDictionary, standardQuantity: Double) -> Double {
+        let currentQty = dict.doubleValueForKey(key: "qty")
+        if currentQty > 0 { return currentQty }
+        return standardQuantity
     }
 
     /// 获取食物展示名称。
