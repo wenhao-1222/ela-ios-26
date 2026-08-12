@@ -34,7 +34,7 @@ class ElaMealAdviceProVC: WHBaseViewVC {
     private lazy var priceVm: ElaProPriceVM = {
         let vm = ElaProPriceVM(frame: CGRect(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         vm.bizType = self.priceBizType
-        vm.purchaseQueryBizType = (self.priceBizType == "2" || self.priceBizType == "4") ? self.priceBizType : "3"
+        vm.purchaseQueryBizType = self.priceBizType
         vm.displayMode = .mealAdvice
         vm.purchaseSuccessBlock = { [weak self] in
             self?.handlePurchaseSuccess()

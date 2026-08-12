@@ -180,6 +180,7 @@ class ElaProPriceVM: UIView {
         let vi = UIScrollView()
         vi.showsVerticalScrollIndicator = false
         vi.contentInsetAdjustmentBehavior = .never
+        vi.contentInset.bottom = kFitWidth(120) + WHUtils().getBottomSafeAreaHeight()
         return vi
     }()
     lazy var contentView: UIView = {
@@ -354,7 +355,7 @@ class ElaProPriceVM: UIView {
         btn.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         btn.setTitleColor(.white, for: .normal)
         btn.backgroundColor = selectedBlue
-        btn.layer.cornerRadius = kFitWidth(22)
+        btn.layer.cornerRadius = kFitWidth(26)
         btn.clipsToBounds = true
         btn.enablePressEffect()
         return btn
@@ -1432,11 +1433,11 @@ extension ElaProPriceVM{
         footerTopFadeView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview()
-            make.top.equalTo(bottomBar).offset(kFitWidth(-30))
+            make.top.equalTo(bottomBar).offset(kFitWidth(-74))
         }
         bottomBar.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
-            make.height.equalTo(kFitWidth(120) + WHUtils().getBottomSafeAreaHeight())
+            make.height.equalTo(kFitWidth(82) + WHUtils().getBottomSafeAreaHeight())
         }
 
         agreementConfirmDimView.snp.makeConstraints { make in
@@ -1451,8 +1452,9 @@ extension ElaProPriceVM{
         confirmButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
-            make.top.equalTo(kFitWidth(22))
-            make.height.equalTo(kFitWidth(44))
+            make.top.equalToSuperview()
+//            make.top.equalTo(kFitWidth(22))
+            make.height.equalTo(kFitWidth(52))
         }
         labelBgImgView.snp.makeConstraints { make in
             make.right.equalTo(confirmButton)
@@ -1474,7 +1476,7 @@ extension ElaProPriceVM{
         
         agreementLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(confirmButton.snp.bottom).offset(kFitWidth(11))
+            make.top.equalTo(confirmButton.snp.bottom).offset(kFitWidth(10))
         }
 
         agreementConfirmCloseButton.snp.makeConstraints { make in
@@ -1504,7 +1506,7 @@ extension ElaProPriceVM{
         
         scrollView.snp.makeConstraints { make in
             make.left.right.top.equalToSuperview()
-            make.bottom.equalTo(bottomBar.snp.top)
+            make.bottom.equalToSuperview()
         }
         
         contentView.snp.makeConstraints { make in

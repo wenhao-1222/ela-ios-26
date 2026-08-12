@@ -33,8 +33,8 @@ class VerticalFadeView: UIView {
     }
 
     private func updateGradient() {
-        gradientLayer.colors = [startColor.cgColor, endColor.cgColor]
-        gradientLayer.locations = [0,0.2, 1]
+        gradientLayer.colors = [startColor.cgColor, endColor.cgColor, endColor.cgColor]
+        gradientLayer.locations = [0, 0.65, 1]
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
     }
