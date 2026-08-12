@@ -22,6 +22,7 @@ class ElaProPriceVM: UIView {
         case aiGuidance
         case guidance
         case elements
+        case mealAdvice
     }
     
     private struct RemotePlanProduct {
@@ -1767,6 +1768,8 @@ extension ElaProPriceVM{
             configureGuidanceDisplayMode()
         case .elements:
             configureElementsDisplayMode()
+        case .mealAdvice:
+            configureMealAdviceDisplayMode()
         }
 
         layoutIfNeeded()
@@ -1920,6 +1923,47 @@ extension ElaProPriceVM{
         remakeBenefitRowConstraints(visibleCount: 5)
         remakeAIRowConstraints(visibleCount: 6)
         remakeMoreRowConstraints(visibleCount: 1)
+        remakeSectionConstraintsForDefaultOrder()
+    }
+
+    private func configureMealAdviceDisplayMode() {
+        let titleFont = UIFont.systemFont(ofSize: 14, weight: .semibold)
+        benefitTitleLabel.text = "ELA PRO 将帮助你："
+        benefitTitleLabel.font = titleFont
+        aiTitleLabel.text = "以及ELA 智能饮食计划："
+        aiTitleLabel.font = titleFont
+        moreTitleLabel.text = "和更多："
+        moreTitleLabel.font = titleFont
+
+        configureBenefitRows([
+            FeatureContent(title: "下餐规划", desc: "根据你的剩余营养目标和所选食物推荐下餐摄入克重", iconName: nil),
+            FeatureContent(title: "深度分析", desc: "微量元素深入追踪，优化恢复与表现", iconName: "elements_pro_icon_3"),
+            FeatureContent(title: "每周复盘", desc: "结合饮食训练变化，系统复盘进度", iconName: "survey_subscription_coach_ic_01"),
+            FeatureContent(title: "卡点预警", desc: "多维数据早发现，瓶颈前先介入", iconName: "survey_subscription_coach_ic_02"),
+            FeatureContent(title: "体重去噪", desc: "分清真实进度，减少结果焦虑", iconName: "survey_subscription_coach_ic_03"),
+            FeatureContent(title: "持续微调", desc: "越用越懂你，你只需照做", iconName: "survey_subscription_coach_ic_04")
+        ])
+        configureAIRows([
+            FeatureContent(title: "定制每周食谱", desc: "每天不重样，照着吃就行", iconName: "survey_subscription_mealplan_ic_01"),
+            FeatureContent(title: "消除选择困难", desc: "不用每天纠结吃什么", iconName: "survey_subscription_mealplan_ic_02"),
+            FeatureContent(title: "平衡家庭与健康饮食", desc: "和家人同桌，也能精准对齐目标", iconName: "survey_subscription_mealplan_ic_03"),
+            FeatureContent(title: "节省外卖支出", desc: "每月省下上千元外卖费用", iconName: "survey_subscription_mealplan_ic_04"),
+            FeatureContent(title: "整理购物清单", desc: "提前列好未来一周所需食材", iconName: "survey_subscription_mealplan_ic_05"),
+            FeatureContent(title: "快速记录", desc: "无需手动搜索，一键把每餐加入日志", iconName: "survey_subscription_mealplan_ic_06")
+        ])
+        configureMoreRows([
+            FeatureContent(title: "无广告", iconName: "survey_subscription_more_ic_01"),
+            FeatureContent(title: "解锁AI识图上限", iconName: "survey_subscription_more_ic_02")
+        ])
+
+        aiTitleLabel.isHidden = false
+        aiContainer.isHidden = false
+        applyContainerStyle(benefitContainer, highlighted: true)
+        applyContainerStyle(aiContainer, highlighted: false)
+        applyContainerStyle(moreContainer, highlighted: false)
+        remakeBenefitRowConstraints(visibleCount: 6)
+        remakeAIRowConstraints(visibleCount: 6)
+        remakeMoreRowConstraints(visibleCount: 2)
         remakeSectionConstraintsForDefaultOrder()
     }
     
@@ -2110,6 +2154,7 @@ extension ElaProPriceVM{
             iconView.contentMode = .scaleAspectFit
             iconView.tintColor = normalTextColor
             iconView.image = resolvedFeatureImage(iconName: content.iconName, systemIconName: content.systemIconName)
+            iconView.isHidden = iconView.image == nil
         }
     }
 
@@ -2121,6 +2166,7 @@ extension ElaProPriceVM{
             iconView.contentMode = .scaleAspectFit
             iconView.tintColor = normalTextColor
             iconView.image = resolvedFeatureImage(iconName: content.iconName, systemIconName: content.systemIconName)
+            iconView.isHidden = iconView.image == nil
         }
     }
 

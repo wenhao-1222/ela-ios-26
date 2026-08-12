@@ -304,7 +304,7 @@ final class AICoachPreToneStylePopupVM: AlertVMCommon, UIGestureRecognizerDelega
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        whiteViewHeight = kFitWidth(265) + WHUtils().getBottomSafeAreaHeight()
+        whiteViewHeight = kFitWidth(223) + WHUtils().getBottomSafeAreaHeight()
         updateWhiteViewLayout()
         configureBaseStyle()
         initContentUI()
@@ -367,7 +367,7 @@ final class AICoachPreToneStylePopupVM: AlertVMCommon, UIGestureRecognizerDelega
             self?.updateSelectedValue(value, animated: true, notifiesChange: false)
         }
         view.valueCommitBlock = { [weak self] value in
-            self?.updateSelectedValue(value, animated: true, notifiesChange: true)
+            self?.commitSelectedValue(value, animated: true)
         }
         return view
     }()
@@ -450,21 +450,23 @@ private extension AICoachPreToneStylePopupVM {
     }
 
     func updateSelectedValue(_ value: Int, animated: Bool, notifiesChange: Bool) {
+        let shouldNotifyChange = notifiesChange && selectedValue != value
         guard selectedValue != value || toneSliderView.selectedValue != value else {
             toneSliderView.setSelectedValue(value, animated: animated)
             updateLabelStates()
-            if notifiesChange {
-                confirmBlock?(value)
-            }
             return
         }
 
         selectedValue = value
         toneSliderView.setSelectedValue(value, animated: animated)
         updateLabelStates()
-        if notifiesChange {
+        if shouldNotifyChange {
             confirmBlock?(value)
         }
+    }
+
+    func commitSelectedValue(_ value: Int, animated: Bool) {
+        updateSelectedValue(value, animated: animated, notifiesChange: true)
     }
 
     func updateLabelStates() {
@@ -478,7 +480,7 @@ private extension AICoachPreToneStylePopupVM {
 
     @objc func optionLabelTapAction(_ gesture: UITapGestureRecognizer) {
         guard let label = gesture.view as? UILabel else { return }
-        updateSelectedValue(label.tag, animated: true, notifiesChange: true)
+        toneSliderView.commitSelectedValue(label.tag, animated: true)
     }
 
 }
@@ -623,6 +625,12 @@ private final class AICoachPreToneStyleSliderView: UIControl {
             trackingThumbCenterX = nil
         }
         updateLayout(animated: animated && !isTrackingTouch)
+    }
+
+    /// 外部触发最终选中值提交，供点击文案等非拖拽入口复用。
+    func commitSelectedValue(_ value: Int, animated: Bool) {
+        setSelectedValue(value, animated: animated)
+        valueCommitBlock?(selectedValue)
     }
 }
 

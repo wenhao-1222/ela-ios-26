@@ -970,6 +970,8 @@
 		EC7784342F57E00403102D21 /* ElaProTransformVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7784332F57E00103102D21 /* ElaProTransformVM.swift */; };
 		EC7785012FA0000003102D2 /* ElaProElementsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7785002FA0000003102D2 /* ElaProElementsVC.swift */; };
 		EC7785032FA0000003102D2 /* ElaProElementsIntroVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7785022FA0000003102D2 /* ElaProElementsIntroVM.swift */; };
+		EC7785052FA56A11003102D2 /* ElaMealAdviceProVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7785042FA56A11003102D2 /* ElaMealAdviceProVC.swift */; };
+		EC7785072FA56A12003102D2 /* ElaMealAdviceProIntroVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7785062FA56A12003102D2 /* ElaMealAdviceProIntroVM.swift */; };
 		EC77AAC52F56DA2700ED0E93 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC77AAC42F56DA2700ED0E93 /* StoreKit.framework */; };
 		EC781CC82BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC781CC72BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift */; };
 		EC781CCA2BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC781CC92BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift */; };
@@ -2506,6 +2508,8 @@
 		EC7784332F57E00103102D21 /* ElaProTransformVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProTransformVM.swift; sourceTree = "<group>"; };
 		EC7785002FA0000003102D2 /* ElaProElementsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProElementsVC.swift; sourceTree = "<group>"; };
 		EC7785022FA0000003102D2 /* ElaProElementsIntroVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaProElementsIntroVM.swift; sourceTree = "<group>"; };
+		EC7785042FA56A11003102D2 /* ElaMealAdviceProVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaMealAdviceProVC.swift; sourceTree = "<group>"; };
+		EC7785062FA56A12003102D2 /* ElaMealAdviceProIntroVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaMealAdviceProIntroVM.swift; sourceTree = "<group>"; };
 		EC77AAC42F56DA2700ED0E93 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		EC781CC72BB94ADE00752C95 /* QuestionnairePlanFoodsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnairePlanFoodsVM.swift; sourceTree = "<group>"; };
 		EC781CC92BB94D2F00752C95 /* QuestionnairePlanFoodsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionnairePlanFoodsTableViewCell.swift; sourceTree = "<group>"; };
@@ -5027,6 +5031,7 @@
 			children = (
 				EC7784262F5675F2003102D2 /* ElaProVC.swift */,
 				EC7785002FA0000003102D2 /* ElaProElementsVC.swift */,
+				EC7785042FA56A11003102D2 /* ElaMealAdviceProVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -5037,6 +5042,7 @@
 				EC48CBCF2F582FB900ADB6E7 /* ElaProPriceCardView.swift */,
 				EC7784282F568CB7003102D2 /* ElaProPriceVM.swift */,
 				EC7785022FA0000003102D2 /* ElaProElementsIntroVM.swift */,
+				EC7785062FA56A12003102D2 /* ElaMealAdviceProIntroVM.swift */,
 				EC77842A2F568FFF03102D21 /* ElaProProgressVM.swift */,
 				EC77842D2F5698A903102D21 /* ElaProPlanVM.swift */,
 				EC7784312F57A91F03102D21 /* ElaProReadyVM.swift */,
@@ -7177,6 +7183,7 @@
 				A790DD092E7169490036D5B5 /* SpecAnchorPopup.swift in Sources */,
 				EC7784292F568CBB003102D2 /* ElaProPriceVM.swift in Sources */,
 				EC7785032FA0000003102D2 /* ElaProElementsIntroVM.swift in Sources */,
+				EC7785072FA56A12003102D2 /* ElaMealAdviceProIntroVM.swift in Sources */,
 				EC77842B2F56900003102D21 /* ElaProProgressVM.swift in Sources */,
 				ECBFC5202F7F8511005E3B48 /* GuidanceProPurchasedVC.swift in Sources */,
 				EC77842E2F5698AC03102D21 /* ElaProPlanVM.swift in Sources */,
@@ -7825,6 +7832,7 @@
 				ECF1AD152F220D1400AE36D6 /* RankDownShatterView.swift in Sources */,
 				EC7784272F5675F6003102D2 /* ElaProVC.swift in Sources */,
 				EC7785012FA0000003102D2 /* ElaProElementsVC.swift in Sources */,
+				EC7785052FA56A11003102D2 /* ElaMealAdviceProVC.swift in Sources */,
 				A7C72B462E0B92B2001EA74D /* LineHeightLabel.swift in Sources */,
 				A7A78D6F2D9BD86100DDB1E6 /* FileCacheManager.swift in Sources */,
 				EC6C231A2BFE0166001DFF97 /* QuestionnairePreVC.swift in Sources */,
