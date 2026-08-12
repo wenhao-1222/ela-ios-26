@@ -61,6 +61,11 @@ class JournalReportWeekMsgVM: UIView {
     lazy var rankingButton: RankingListButton = {
         let vm = RankingListButton.init(frame: CGRect.init(x: SCREEN_WIDHT-kFitWidth(115), y: kFitWidth(42), width: 0, height: 0))
         vm.tapBlock = {()in
+            EventLogUtils().sendEventLogRequest(
+                eventName: .PAGE_VIEW,
+                scenarioType: .daily_nutrition_analysis_friend_rank,
+                text: ""
+            )
             let vc = FriendRankingVC()
             vc.typeVm.currentIndex = 1
             self.controller.navigationController?.pushViewController(vc, animated: true)

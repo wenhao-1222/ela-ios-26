@@ -52,7 +52,8 @@ class JournalReportDailyCaloriesSourceVM: UIView {
             self.carboLabel.text = "碳水 \(WHUtils.convertStringToString(String(format:"%.2f",carbo*100)) ?? "0.00")%"
             self.proteinLabel.text = "蛋白质 \(WHUtils.convertStringToString(String(format:"%.2f",protein*100)) ?? "0.00")%"
             if carbo > 0 || protein > 0 || fat > 0 {
-                self.fatLabel.text = "脂肪 \(WHUtils.convertStringToString(String(format:"%.2f",(100-carbo*100-protein*100))) ?? "0.00")%"
+                let fatPercent = abs(fat * 100) < 0.005 ? 0 : fat * 100
+                self.fatLabel.text = "脂肪 \(WHUtils.convertStringToString(String(format:"%.2f",fatPercent)) ?? "0.00")%"
             }else{
                 self.fatLabel.text = "脂肪 0%"
             }

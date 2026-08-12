@@ -103,6 +103,11 @@ class MineVC : WHBaseViewVC {
 //            self.navigationController?.pushViewController(vc, animated: true)
 //        }
         vm.friendsVm.tapBlock = {()in
+            EventLogUtils().sendEventLogRequest(
+                eventName: .PAGE_VIEW,
+                scenarioType: .user_center_my_friends,
+                text: ""
+            )
             let vc = FriendRankingVC()
             self.navigationController?.pushViewController(vc, animated: true)
         }

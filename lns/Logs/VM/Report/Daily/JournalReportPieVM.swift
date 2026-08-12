@@ -127,9 +127,9 @@ extension JournalReportPieVM{
         
         let carboPercent = carboNum/total
         let proteinPercent = proteinNum/total
-        let fatPercent = 1 - carboPercent - proteinPercent
+        let fatPercent = max(fatNum/total, 0)
         
-        var dataPercentArray = [carboPercent,proteinPercent,fatPercent]
+        let dataPercentArray = [carboPercent,proteinPercent,fatPercent]
         
         var hasData = false
         for i in 0..<dataSourceArray.count{

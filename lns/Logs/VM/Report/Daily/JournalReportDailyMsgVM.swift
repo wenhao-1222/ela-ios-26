@@ -99,6 +99,11 @@ class JournalReportDailyMsgVM: UIView {
 //        vm.isHidden = true
         vm.alpha = 0
         vm.tapBlock = {()in
+            EventLogUtils().sendEventLogRequest(
+                eventName: .PAGE_VIEW,
+                scenarioType: .daily_nutrition_analysis_friend_rank,
+                text: ""
+            )
             let vc = FriendRankingVC()
             self.controller.navigationController?.pushViewController(vc, animated: true)
         }

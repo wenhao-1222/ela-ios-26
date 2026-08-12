@@ -13,6 +13,9 @@ class AlertVMCommon: UIView {
     // MARK: - Layout constants
     var whiteViewHeight: CGFloat = kFitWidth(385) + WHUtils().getBottomSafeAreaHeight()
     let whiteViewTopRadius: CGFloat = kFitWidth(50)
+
+    var willShowBlock: (() -> Void)?
+    var didHideBlock: (() -> Void)?
     
     /// 蒙层目标透明度：浅色 0.15，深色 0.85
     private var targetDimAlpha: CGFloat {
@@ -120,6 +123,7 @@ class AlertVMCommon: UIView {
 // MARK: - Public API
 extension AlertVMCommon {
     func showSelf() {
+        willShowBlock?()
         isHidden = false
 
         bgView.isUserInteractionEnabled = false
@@ -149,6 +153,7 @@ extension AlertVMCommon {
             self.bgView.alpha = 0
         } completion: { _ in
             self.isHidden = true
+            self.didHideBlock?()
         }
     }
 }

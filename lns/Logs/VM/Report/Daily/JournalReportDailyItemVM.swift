@@ -136,7 +136,7 @@ extension JournalReportDailyItemVM{
         typeLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview()
-            make.width.equalTo(kFitWidth(38))
+            make.width.equalTo(kFitWidth(58))
             make.height.equalTo(kFitWidth(14))
         }
     }

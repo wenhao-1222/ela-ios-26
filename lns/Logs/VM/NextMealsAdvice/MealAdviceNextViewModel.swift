@@ -17,17 +17,23 @@ struct MealAdviceNextCoreMetricState {
     let unit: String
     /// 当前选中食物的总摄入。
     let selectedValue: Double
+    /// 进入页面前当天日志已摄入的总量。
+    let loggedValue: Double
     /// 今天的目标值。
     let targetValue: Double
+    /// 添加本餐后的当天总摄入。
+    var postMealConsumedValue: Double {
+        loggedValue + selectedValue
+    }
 
     /// 当前剩余值，最小不小于 0。
     var remainingValue: Double {
-        max(targetValue - selectedValue, 0)
+        max(targetValue - postMealConsumedValue, 0)
     }
 
     /// 超出目标的值。
     var overflowValue: Double {
-        max(selectedValue - targetValue, 0)
+        max(postMealConsumedValue - targetValue, 0)
     }
 }
 
@@ -296,6 +302,8 @@ final class MealAdviceNextViewModel {
     let sDate: String
     /// 今天的营养目标。
     private let goalNutritionDict: NSDictionary
+    /// 进入页面前当天日志已摄入的核心营养总量。
+    private let loggedNutritionTotals: [String: Double]
     /// 当前页面的所有食物状态。
     private(set) var foodItems: [MealAdviceNextFoodItemViewModel] = []
     /// 当前已选中食物的全部营养总量。
@@ -308,7 +316,10 @@ final class MealAdviceNextViewModel {
     init(responseDict: NSDictionary, sDate: String) {
         self.responseDict = responseDict
         self.sDate = sDate
-        self.goalNutritionDict = NutritionDefaultModel.shared.getTodayGoal()
+        let logModel = LogsSQLiteManager.getInstance().getLogsByDate(sDate: sDate)
+        let logDict = logModel?.modelToDict() ?? NSDictionary()
+        self.goalNutritionDict = logDict
+        self.loggedNutritionTotals = MealAdviceNextViewModel.loggedNutritionTotals(from: logDict)
         reloadData()
     }
 
@@ -373,8 +384,9 @@ final class MealAdviceNextViewModel {
     ///   - unit: 展示单位。
     private func coreMetricState(key: String, title: String, unit: String) -> MealAdviceNextCoreMetricState {
         let selectedValue = selectedNutritionTotals[key] ?? 0
+        let loggedValue = loggedNutritionTotals[key] ?? 0
         let targetValue = goalValue(for: key)
-        return MealAdviceNextCoreMetricState(key: key, title: title, unit: unit, selectedValue: selectedValue, targetValue: targetValue)
+        return MealAdviceNextCoreMetricState(key: key, title: title, unit: unit, selectedValue: selectedValue, loggedValue: loggedValue, targetValue: targetValue)
     }
 
     /// 构造食物状态数组。
@@ -417,13 +429,13 @@ final class MealAdviceNextViewModel {
         let goalKeys: [String]
         switch key {
         case "calories":
-            goalKeys = ["calories"]
+            goalKeys = ["caloriesden", "calories"]
         case "carbohydrate":
-            goalKeys = ["carbohydrate", "carbohydrates"]
+            goalKeys = ["carbohydrateden", "carbohydrate", "carbohydrates"]
         case "protein":
-            goalKeys = ["protein", "proteins"]
+            goalKeys = ["proteinden", "protein", "proteins"]
         case "fat":
-            goalKeys = ["fat", "fats"]
+            goalKeys = ["fatden", "fat", "fats"]
         default:
             goalKeys = [key]
         }
@@ -451,5 +463,41 @@ final class MealAdviceNextViewModel {
         default:
             return 0
         }
+    }
+
+    /// 读取当前日志日已摄入的核心营养总量。
+    /// - Parameter dict: sDate 对应日志字典。
+    private static func loggedNutritionTotals(from dict: NSDictionary) -> [String: Double] {
+        let topLevelTotals = [
+            "calories": dict.doubleValueForKey(key: "calories"),
+            "carbohydrate": dict.doubleValueForKey(key: "carbohydrate"),
+            "protein": dict.doubleValueForKey(key: "protein"),
+            "fat": dict.doubleValueForKey(key: "fat")
+        ]
+        let hasTopLevelTotals = dict.stringValueForKey(key: "calories").count > 0 &&
+            dict.stringValueForKey(key: "carbohydrate").count > 0 &&
+            dict.stringValueForKey(key: "protein").count > 0 &&
+            dict.stringValueForKey(key: "fat").count > 0
+        if hasTopLevelTotals {
+            return topLevelTotals
+        }
+
+        var totals: [String: Double] = [
+            "calories": 0,
+            "carbohydrate": 0,
+            "protein": 0,
+            "fat": 0
+        ]
+        let mealsArray = dict["foods"] as? NSArray ?? []
+        for case let mealFoods as NSArray in mealsArray {
+            for case let foodDict as NSDictionary in mealFoods {
+                guard foodDict.stringValueForKey(key: "state") == "1" else { continue }
+                totals["calories", default: 0] += foodDict.doubleValueForKey(key: "calories")
+                totals["carbohydrate", default: 0] += foodDict.doubleValueForKey(key: "carbohydrate")
+                totals["protein", default: 0] += foodDict.doubleValueForKey(key: "protein")
+                totals["fat", default: 0] += foodDict.doubleValueForKey(key: "fat")
+            }
+        }
+        return totals
     }
 }

@@ -22,6 +22,7 @@ private final class DefaultNutritionMineralsRowView: UIView {
     let item: FoodsNutritionCatalog.Item
     var numberChangeBlock: ((String) -> Void)?
     var beginEditingBlock: (() -> Void)?
+    var shouldEndEditingBlock: (() -> Bool)?
 
     private let rowHeight = kFitWidth(47)
 
@@ -150,6 +151,10 @@ extension DefaultNutritionMineralsRowView: UITextFieldDelegate {
         beginEditingBlock?()
     }
 
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        return shouldEndEditingBlock?() ?? true
+    }
+
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let currentText = textField.text ?? ""
         guard let textRange = Range(range, in: currentText) else { return false }
@@ -209,6 +214,8 @@ class DefaultNutritionMineralsTargetVC: WHBaseViewVC {
     private var contentBottomY: CGFloat = 0
     var selectedItemKey: String?
     private var didFocusSelectedItem = false
+    private var isCancellingInput = false
+    private var isConfirmingInput = false
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -297,6 +304,13 @@ class DefaultNutritionMineralsTargetVC: WHBaseViewVC {
         return vi
     }()
 
+    private lazy var blankTapGesture: UITapGestureRecognizer = {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(blankTapAction(_:)))
+        tap.cancelsTouchesInView = false
+        tap.delegate = self
+        return tap
+    }()
+
     private lazy var nutritionRecommendAlertVm: JournalReportNutritionRecommendAlertVM = {
         let vm = JournalReportNutritionRecommendAlertVM(frame: .zero)
         return vm
@@ -318,6 +332,7 @@ private extension DefaultNutritionMineralsTargetVC {
         initNavi(titleStr: "目标")
         view.addSubview(contentScrollView)
         contentScrollView.addSubview(contentView)
+        contentScrollView.addGestureRecognizer(blankTapGesture)
 
         var currentY: CGFloat = 0
         for section in FoodsNutritionCatalog.shared.sectionItems {
@@ -339,18 +354,18 @@ private extension DefaultNutritionMineralsTargetVC {
                         self.scrollRowToVisible(row, keyboardObscuredHeight: keyboardObscuredHeight, animated: true)
                     }
                 }
-//                row.configureAccessory(onCancel: { [weak self, weak row] in
-//                    guard let self = self, let row = row else { return }
-//                    let originalValue = self.editingOriginalValues[item.key] ?? self.targetValues[item.key] ?? ""
-//                    row.updateValue(originalValue)
-//                    self.targetValues[item.key] = originalValue
-//                },
-                row.configureAccessory(onCancel: { [weak row] in
-                    guard let row = row else { return }
-                    row.textField.resignFirstResponder()
+                row.shouldEndEditingBlock = { [weak self, weak row] in
+                    guard let self = self, let row = row else { return true }
+                    return self.saveTargetBeforeEditingEnds(row)
+                }
+                row.configureAccessory(onCancel: { [weak self, weak row] in
+                    guard let self = self, let row = row else { return }
+                    self.cancelTargetInput(row)
                 }, onConfirm: { [weak self, weak row] in
                     guard let self = self, let row = row else { return }
-                    self.confirmTarget(row)
+                    self.isConfirmingInput = true
+                    defer { self.isConfirmingInput = false }
+                    self.confirmTarget(row, shouldResign: true)
                 })
                 contentView.addSubview(row)
                 rowViews[item.key] = row
@@ -370,6 +385,29 @@ private extension DefaultNutritionMineralsTargetVC {
         contentBottomY = currentY + bottomActionHeight
         contentView.frame.size.height = contentBottomY
         updateContentSize()
+    }
+
+    func cancelTargetInput(_ row: DefaultNutritionMineralsRowView) {
+        let item = row.item
+        let originalValue = editingOriginalValues[item.key] ?? targetValues[item.key] ?? row.textField.text ?? ""
+        row.updateValue(originalValue)
+        targetValues[item.key] = originalValue
+        isCancellingInput = true
+        defer { isCancellingInput = false }
+        row.textField.resignFirstResponder()
+    }
+
+    func saveTargetBeforeEditingEnds(_ row: DefaultNutritionMineralsRowView) -> Bool {
+        guard isCancellingInput == false, isConfirmingInput == false else { return true }
+        return confirmTarget(row, shouldResign: false)
+    }
+
+    @objc func blankTapAction(_ gesture: UITapGestureRecognizer) {
+        let location = gesture.location(in: contentView)
+        if rowViews.values.contains(where: { $0.frame.contains(location) }) {
+            return
+        }
+        view.endEditing(true)
     }
 
     func makeSectionLabel(_ title: String) -> UILabel {
@@ -413,7 +451,8 @@ private extension DefaultNutritionMineralsTargetVC {
         }
     }
 
-    func confirmTarget(_ row: DefaultNutritionMineralsRowView) {
+    @discardableResult
+    func confirmTarget(_ row: DefaultNutritionMineralsRowView, shouldResign: Bool = true) -> Bool {
         let item = row.item
         let value = (row.textField.text ?? "").replacingOccurrences(of: ",", with: ".")
         let doubleValue: Double
@@ -423,14 +462,16 @@ private extension DefaultNutritionMineralsTargetVC {
             doubleValue = inputValue
         } else {
             MCToast.mc_text("请输入\(item.title)数值", offset: kFitWidth(100) + SCREEN_HEIGHT * 0.5, respond: .allow)
-            return
+            return false
         }
         if let maximumInputValue = item.maximumInputValue, doubleValue > maximumInputValue {
             MCToast.mc_text("\(item.title)不能超过\(displayText(from: maximumInputValue))\(item.unit)", offset: kFitWidth(100) + SCREEN_HEIGHT * 0.5, respond: .allow)
-            return
+            return false
         }
 
-        row.textField.resignFirstResponder()
+        if shouldResign {
+            row.textField.resignFirstResponder()
+        }
 //        MCToast.mc_loading()
         let targetText = displayText(from: doubleValue)
         let param = [item.key: targetText]
@@ -445,6 +486,7 @@ private extension DefaultNutritionMineralsTargetVC {
             NotificationCenter.default.post(name: NOTIFI_NAME_NUTRITION_DEFAULT_MINERAL_DID_CHANGE, object: nil)
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
         }
+        return true
     }
 
     @objc func restoreDefaultAction() {
@@ -587,7 +629,7 @@ private extension DefaultNutritionMineralsTargetVC {
     }
 }
 
-extension DefaultNutritionMineralsTargetVC {
+extension DefaultNutritionMineralsTargetVC: UIGestureRecognizerDelegate {
     @objc func keyboardWillShow(notification: NSNotification) {
         guard let keyboardSize = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
         let keyboardObscuredHeight = keyboardSize.cgRectValue.height + NutritionInputAccessoryView.preferredHeight

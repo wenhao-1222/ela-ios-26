@@ -11,6 +11,8 @@ import MCToast
 
 class MealAdviceVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     
+    /// 下餐规划失败 toast 显示时间。
+    private let mealPlanFailureToastDuration: CGFloat = 3
     /// 当前所处的步骤编号。
     private var currentStep = 0
     /// 下餐规划请求的版本号，用来忽略过期回包。
@@ -252,7 +254,8 @@ extension MealAdviceVC{
             if code == 200 {
                 self.handleMealPlanNextSuccess(planDict: planDict, requestVersion: requestVersion)
             } else {
-                let message = responseObject["message"] as? String ?? "生成失败，请稍后重试"
+                let responseMessage = (responseObject["message"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                let message = responseMessage.isEmpty ? "生成失败，请稍后重试" : responseMessage
                 self.handleMealPlanNextFailure(message: message, requestVersion: requestVersion)
             }
         } failure: { [weak self] isError in
@@ -304,14 +307,9 @@ extension MealAdviceVC{
         pendingMealPlanNextPlanDict = nil
         pendingMealPlanNextRequestVersion = 0
         progressVm.pauseProgressAnimation()
-        MCToast.mc_text(message, duration: 3)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            guard let self = self else { return }
-            guard requestVersion == self.mealPlanRequestVersion else { return }
-            self.showSecondStep()
-            self.progressVm.resetProgressState()
-        }
+        MCToast.mc_text(message, duration: mealPlanFailureToastDuration)
+        showSecondStep()
+        progressVm.resetProgressState()
     }
 
     /// 取消当前请求并重置进度页状态。

@@ -551,6 +551,24 @@ final class MealAdviceNextRingMetricView: UIView {
 
     /// 日志页同款圆圈组件。
     private let circleView = LogsNaturalGoalCircleVM(frame: .zero)
+    /// 数字过渡动画器。
+    private lazy var numberAnimator = MealAdviceNextNumberAnimator(label: circleView.currentNumberLabel)
+    /// 圆环过渡动画器。
+    private var circleDisplayLink: CADisplayLink?
+    /// 圆环动画起始时间。
+    private var circleAnimationStartTime: CFTimeInterval = 0
+    /// 圆环动画时长。
+    private var circleAnimationDuration: CFTimeInterval = 0.35
+    /// 上一次展示的剩余数值。
+    private var displayedRemainingValue: Int?
+    /// 上一次展示的已摄入数值，用于驱动圆环过渡。
+    private var displayedConsumedValue: Int?
+    /// 当前目标数值。
+    private var displayedTargetValue = 1
+    /// 圆环动画起始已摄入数值。
+    private var circleStartConsumedValue = 0
+    /// 圆环动画目标已摄入数值。
+    private var circleTargetConsumedValue = 0
 
     /// 创建圆环视图。
     override init(frame: CGRect) {
@@ -561,6 +579,10 @@ final class MealAdviceNextRingMetricView: UIView {
     /// 禁止从 storyboard 创建。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit {
+        stopCircleAnimation()
     }
 
     override var intrinsicContentSize: CGSize {
@@ -586,7 +608,6 @@ extension MealAdviceNextRingMetricView {
                 color: UIColor,
                 overflowColor: UIColor,
                 animated: Bool = false) {
-        _ = animated
         circleView.circleColor = color
         circleView.circleFillColor = overflowColor
         circleView.titleLab.text = "\(title)(\(unit))"
@@ -598,8 +619,8 @@ extension MealAdviceNextRingMetricView {
         circleView.currentNumberLabel.textColor = signedRemaining < 0 ? WHColor_16(colorStr: "D54941") : .COLOR_TEXT_TITLE_0f1214
 
         circleView.updateTotalNumber(text: "/\(targetInt)\(MealAdviceNextRingMetricView.totalSuffix(for: unit))")
-        circleView.currentNumberLabel.text = "\(displayRemaining)"
-        circleView.setData(currentNumber: consumedInt, totalNumber: max(targetInt, 1))
+        updateRemainingValue(displayRemaining, animated: animated)
+        updateCircleProgress(consumedValue: consumedInt, targetValue: max(targetInt, 1), animated: animated)
     }
 
     /// 搭建圆环视图。
@@ -611,6 +632,91 @@ extension MealAdviceNextRingMetricView {
             make.top.equalToSuperview()
             make.width.equalTo(kFitWidth(53))
             make.height.equalTo(kFitWidth(76))
+        }
+    }
+
+    /// 刷新中间剩余数字。
+    /// - Parameters:
+    ///   - value: 新剩余值。
+    ///   - animated: 是否展示数字跳动动画。
+    private func updateRemainingValue(_ value: Int, animated: Bool) {
+        guard let oldValue = displayedRemainingValue else {
+            displayedRemainingValue = value
+            numberAnimator.setValue(value)
+            return
+        }
+
+        displayedRemainingValue = value
+        if animated {
+            numberAnimator.animate(from: oldValue, to: value)
+        } else {
+            numberAnimator.setValue(value)
+        }
+    }
+
+    /// 刷新圆环进度。
+    /// - Parameters:
+    ///   - consumedValue: 新已摄入值。
+    ///   - targetValue: 新目标值。
+    ///   - animated: 是否展示进度动画。
+    private func updateCircleProgress(consumedValue: Int, targetValue: Int, animated: Bool) {
+        let normalizedTarget = max(targetValue, 1)
+        guard let oldConsumedValue = displayedConsumedValue else {
+            displayedConsumedValue = consumedValue
+            displayedTargetValue = normalizedTarget
+            circleView.setData(currentNumber: consumedValue, totalNumber: normalizedTarget)
+            return
+        }
+
+        displayedConsumedValue = consumedValue
+        displayedTargetValue = normalizedTarget
+
+        guard animated, oldConsumedValue != consumedValue else {
+            stopCircleAnimation()
+            circleView.setData(currentNumber: consumedValue, totalNumber: normalizedTarget)
+            return
+        }
+
+        animateCircleProgress(from: oldConsumedValue, to: consumedValue, targetValue: normalizedTarget)
+    }
+
+    /// 从旧进度平滑过渡到新进度。
+    /// - Parameters:
+    ///   - fromValue: 起始已摄入值。
+    ///   - toValue: 目标已摄入值。
+    ///   - targetValue: 目标总值。
+    private func animateCircleProgress(from fromValue: Int, to toValue: Int, targetValue: Int) {
+        stopCircleAnimation()
+        circleStartConsumedValue = fromValue
+        circleTargetConsumedValue = toValue
+        displayedTargetValue = max(targetValue, 1)
+        circleAnimationStartTime = CACurrentMediaTime()
+        circleView.setData(currentNumber: fromValue, totalNumber: displayedTargetValue)
+
+        let link = CADisplayLink(target: self, selector: #selector(handleCircleDisplayLink(_:)))
+        link.add(to: .main, forMode: .common)
+        circleDisplayLink = link
+    }
+
+    /// 停止圆环过渡动画。
+    private func stopCircleAnimation() {
+        circleDisplayLink?.invalidate()
+        circleDisplayLink = nil
+    }
+
+    /// 逐帧刷新圆环进度。
+    /// - Parameter link: 当前 display link。
+    @objc private func handleCircleDisplayLink(_ link: CADisplayLink) {
+        let elapsed = CACurrentMediaTime() - circleAnimationStartTime
+        let progress = min(max(elapsed / circleAnimationDuration, 0), 1)
+        let easedProgress = 1 - pow(1 - progress, 3)
+        let delta = Double(circleTargetConsumedValue - circleStartConsumedValue) * easedProgress
+        let currentValue = Int((Double(circleStartConsumedValue) + delta).rounded())
+        circleView.setData(currentNumber: currentValue, totalNumber: displayedTargetValue)
+
+        if progress >= 1 {
+            circleView.setData(currentNumber: circleTargetConsumedValue, totalNumber: displayedTargetValue)
+            stopCircleAnimation()
         }
     }
 

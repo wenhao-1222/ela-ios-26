@@ -305,7 +305,7 @@ extension MealAdviceNextVC {
     private func reloadData() {
         foodTableView.reloadData()
         reloadFoodListHeight()
-        updateMetricViews(animated: false)
+        updateMetricViews(animated: false, animateTopMetrics: false)
         updateAddButtonState()
     }
 
@@ -318,16 +318,24 @@ extension MealAdviceNextVC {
 
     /// 刷新顶部和底部营养视图。
     private func updateMetricViews(animated: Bool) {
+        updateMetricViews(animated: animated, animateTopMetrics: animated)
+    }
+
+    /// 刷新顶部和底部营养视图。
+    /// - Parameters:
+    ///   - animated: 底部圆环是否动画。
+    ///   - animateTopMetrics: 顶部数值是否动画。
+    private func updateMetricViews(animated: Bool, animateTopMetrics: Bool) {
         let states = viewModel.coreMetricStates
         for (index, state) in states.enumerated() {
             guard index < topMetricViews.count, index < ringMetricViews.count else { continue }
             let color = metricColors[index]
-            topMetricViews[index].update(title: state.title, unit: state.unit, value: state.selectedValue, color: color, animated: animated)
+            topMetricViews[index].update(title: state.title, unit: state.unit, value: state.selectedValue, color: color, animated: animateTopMetrics)
             ringMetricViews[index].update(title: state.title,
                                           unit: state.unit,
                                           remainingValue: state.remainingValue,
                                           overflowValue: state.overflowValue,
-                                          consumedValue: state.selectedValue,
+                                          consumedValue: state.postMealConsumedValue,
                                           target: state.targetValue,
                                           color: color,
                                           overflowColor: metricOverflowColors[index],
@@ -357,7 +365,7 @@ extension MealAdviceNextVC {
     private func updateQuantity(at index: Int, text: String) {
         viewModel.updateQuantity(at: index, text: text)
         refreshVisibleFoodCell(at: index)
-        updateMetricViews(animated: false)
+        updateMetricViews(animated: true, animateTopMetrics: false)
         updateAddButtonState()
     }
 
@@ -370,13 +378,13 @@ extension MealAdviceNextVC {
         guard let quantity = Double(normalizedText), quantity > 0 else {
             viewModel.restoreQuantity(at: index)
             refreshVisibleFoodCell(at: index)
-            updateMetricViews(animated: false)
+            updateMetricViews(animated: true, animateTopMetrics: false)
             updateAddButtonState()
             return
         }
         viewModel.updateQuantity(at: index, text: text)
         refreshVisibleFoodCell(at: index)
-        updateMetricViews(animated: false)
+        updateMetricViews(animated: true, animateTopMetrics: false)
         updateAddButtonState()
     }
 

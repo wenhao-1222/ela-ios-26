@@ -19,6 +19,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private let shouldPlayFirstEntryAnimation = AICoachPreVC.consumeFirstEntryAnimationFlag()
     private var userGoal: Int = 0
     private var aiCoachIntensityPreference: Int = 0
+    private var aiCoachTone: Int = 0
     private var isUpdatingAICoachProfile = false
     private var hasPlayedCircleEntranceAnimation = false
     private var hasPlayedRemainingEntranceAnimation = false
@@ -70,6 +71,9 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         view.intensityTapBlock = { [weak self] in
             self?.showInfoSelectPopup(for: .intensity)
         }
+        view.toneTapBlock = { [weak self] in
+            self?.showToneStylePopup()
+        }
         return view
     }()
 
@@ -77,6 +81,20 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         let view = AICoachPreInfoSelectPopupVM(frame: .zero)
         view.confirmBlock = { [weak self] field, value in
             self?.updateAICoachProfile(field: field, value: value)
+        }
+        return view
+    }()
+
+    private lazy var toneStylePopupVM: AICoachPreToneStylePopupVM = {
+        let view = AICoachPreToneStylePopupVM(frame: .zero)
+        view.willShowBlock = { [weak self] in
+            self?.setToneStylePopupNavigationGesturesEnabled(false)
+        }
+        view.didHideBlock = { [weak self] in
+            self?.setToneStylePopupNavigationGesturesEnabled(true)
+        }
+        view.confirmBlock = { [weak self] value in
+            self?.updateAICoachProfile(field: .tone, value: value)
         }
         return view
     }()
@@ -291,6 +309,7 @@ extension AICoachPreVC{
         view.addSubview(feedbackGlassVM)
 //        view.addSubview(clearPDFReportsButton)
         view.addSubview(infoSelectPopupVM)
+        view.addSubview(toneStylePopupVM)
         
         view.addSubview(katchAlertVm)
         view.addSubview(elaExpiredAlertVm)
@@ -360,6 +379,10 @@ extension AICoachPreVC{
 //        }
 
         infoSelectPopupVM.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+
+        toneStylePopupVM.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
@@ -538,12 +561,15 @@ private extension AICoachPreVC {
         
         let userGoal = dataDict["userGoal"] as? Int ?? 0
         let aiCoachIntensityPreference = dataDict["aiCoachIntensityPreference"] as? Int ?? 0
+        let aiCoachTone = dataDict["aiCoachTone"] as? Int ?? 0
         self.userGoal = userGoal
         self.aiCoachIntensityPreference = aiCoachIntensityPreference
+        self.aiCoachTone = aiCoachTone
 
         DispatchQueue.main.async {
             self.feedbackGlassVM.configure(userGoal: userGoal,
-                                           aiCoachIntensityPreference: aiCoachIntensityPreference)
+                                           aiCoachIntensityPreference: aiCoachIntensityPreference,
+                                           aiCoachTone: aiCoachTone)
             self.readyMessageVM.updateContent(msgDict: dataDict)
             self.applyNextButtonState(animated: self.shouldAnimateStateTransition, updatesMessage: false)
             self.syncVisiblePresentationStateIfNeeded(force: self.shouldForceVisiblePresentationAfterDataUpdate)
@@ -589,23 +615,49 @@ private extension AICoachPreVC {
 
     func showInfoSelectPopup(for field: AICoachPreInfoEditableField) {
         guard isUpdatingAICoachProfile == false else { return }
-        let selectedValue = field == .goal ? userGoal : aiCoachIntensityPreference
+        let selectedValue: Int
+        switch field {
+        case .goal:
+            selectedValue = userGoal
+        case .intensity:
+            selectedValue = aiCoachIntensityPreference
+        case .tone:
+            selectedValue = aiCoachTone
+        }
         infoSelectPopupVM.update(field: field, selectedValue: selectedValue)
         showVMWithFade(infoSelectPopupVM) {
             infoSelectPopupVM.showSelf()
         }
     }
 
+    func showToneStylePopup() {
+        guard isUpdatingAICoachProfile == false else { return }
+        toneStylePopupVM.update(selectedValue: aiCoachTone)
+        showVMWithFade(toneStylePopupVM) {
+            toneStylePopupVM.showSelf()
+        }
+    }
+
+    func setToneStylePopupNavigationGesturesEnabled(_ enabled: Bool) {
+        navigationController?.fd_interactivePopDisabled = !enabled
+        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = enabled
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = enabled
+    }
+
     func updateAICoachProfile(field: AICoachPreInfoEditableField, value: Int) {
         let newUserGoal = field == .goal ? value : userGoal
         let newIntensityPreference = field == .intensity ? value : aiCoachIntensityPreference
+        let newAICoachTone = field == .tone ? value : aiCoachTone
 
-        guard newUserGoal != userGoal || newIntensityPreference != aiCoachIntensityPreference else {
+        guard newUserGoal != userGoal
+                || newIntensityPreference != aiCoachIntensityPreference
+                || newAICoachTone != aiCoachTone else {
             return
         }
 
         let param = buildAICoachUpsertParameters(userGoal: newUserGoal,
-                                                 aiCoachIntensityPreference: newIntensityPreference)
+                                                 aiCoachIntensityPreference: newIntensityPreference,
+                                                 aiCoachTone: newAICoachTone)
         guard param.isEmpty == false else { return }
 
         isUpdatingAICoachProfile = true
@@ -624,21 +676,27 @@ private extension AICoachPreVC {
             self.isUpdatingAICoachProfile = false
             self.userGoal = newUserGoal
             self.aiCoachIntensityPreference = newIntensityPreference
+            self.aiCoachTone = newAICoachTone
             self.feedbackGlassVM.configure(userGoal: newUserGoal,
-                                           aiCoachIntensityPreference: newIntensityPreference)
+                                           aiCoachIntensityPreference: newIntensityPreference,
+                                           aiCoachTone: newAICoachTone)
         } failure: { [weak self] _ in
             self?.handleProfileUpdateFailure(message: "保存失败，请稍后重试")
         }
     }
 
     func buildAICoachUpsertParameters(userGoal: Int,
-                                      aiCoachIntensityPreference: Int) -> [String: Any] {
+                                      aiCoachIntensityPreference: Int,
+                                      aiCoachTone: Int) -> [String: Any] {
         var param: [String: Any] = [:]
         if (1...2).contains(userGoal) {
             param["userGoal"] = userGoal
         }
         if (1...5).contains(aiCoachIntensityPreference) {
             param["aiCoachIntensityPreference"] = aiCoachIntensityPreference
+        }
+        if (1...4).contains(aiCoachTone) {
+            param["aiCoachTone"] = aiCoachTone
         }
         return param
     }
@@ -905,6 +963,8 @@ private extension AICoachPreVC {
     func applyHiddenPopupPresentationState() {
         infoSelectPopupVM.alpha = infoSelectPopupVM.isHidden ? 0 : 1
         infoSelectPopupVM.transform = .identity
+        toneStylePopupVM.alpha = toneStylePopupVM.isHidden ? 0 : 1
+        toneStylePopupVM.transform = .identity
         katchAlertVm.alpha = katchAlertVm.isHidden ? 0 : 1
         katchAlertVm.transform = .identity
         elaExpiredAlertVm.alpha = elaExpiredAlertVm.isHidden ? 0 : 1

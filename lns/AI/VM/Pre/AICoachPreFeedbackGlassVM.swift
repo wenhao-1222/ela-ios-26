@@ -34,6 +34,7 @@ final class AICoachPreFeedbackGlassVM: UIView {
     var buttonTapBlock: (() -> Void)?
     var goalTapBlock: (() -> Void)?
     var intensityTapBlock: (() -> Void)?
+    var toneTapBlock: (() -> Void)?
 
     // MARK: - Native Liquid Glass background panel
 
@@ -102,6 +103,14 @@ final class AICoachPreFeedbackGlassVM: UIView {
         return view
     }()
 
+    private lazy var toneItemView: AICoachPreFeedbackInfoItemView = {
+        let view = AICoachPreFeedbackInfoItemView(title: "风格")
+        view.tapBlock = { [weak self] in
+            self?.toneTapBlock?()
+        }
+        return view
+    }()
+
     private lazy var feedbackButton: AICoachPreFeedbackThemeGlassButton = {
         let button = AICoachPreFeedbackThemeGlassButton(title: "查看教练反馈")
         button.tapBlock = { [weak self] in
@@ -117,7 +126,7 @@ final class AICoachPreFeedbackGlassVM: UIView {
                                   height: selfHeight))
         setupBase()
         initUI()
-        configure(userGoal: 1, aiCoachIntensityPreference: 1)
+        configure(userGoal: 1, aiCoachIntensityPreference: 1, aiCoachTone: 1)
         setButtonEnabled(false)
         applyCurrentAppearance()
     }
@@ -162,9 +171,10 @@ final class AICoachPreFeedbackGlassVM: UIView {
 
 extension AICoachPreFeedbackGlassVM {
 
-    func configure(userGoal: Int, aiCoachIntensityPreference: Int) {
+    func configure(userGoal: Int, aiCoachIntensityPreference: Int, aiCoachTone: Int) {
         goalItemView.updateValue(text: displayGoalText(for: userGoal))
         intensityItemView.updateValue(text: displayIntensityText(for: aiCoachIntensityPreference))
+        toneItemView.updateValue(text: displayToneText(for: aiCoachTone))
     }
 
     func setButtonEnabled(_ isEnabled: Bool) {
@@ -242,6 +252,7 @@ private extension AICoachPreFeedbackGlassVM {
 
         elementsContainerView.contentView.addSubview(goalItemView)
         elementsContainerView.contentView.addSubview(intensityItemView)
+        elementsContainerView.contentView.addSubview(toneItemView)
         elementsContainerView.contentView.addSubview(feedbackButton)
 
         panelGlassView.snp.makeConstraints { make in
@@ -264,6 +275,12 @@ private extension AICoachPreFeedbackGlassVM {
 
         intensityItemView.snp.makeConstraints { make in
             make.left.equalTo(goalItemView.snp.right).offset(kFitWidth(16))
+            make.top.height.equalTo(goalItemView)
+            make.width.equalTo(goalItemView)
+        }
+
+        toneItemView.snp.makeConstraints { make in
+            make.left.equalTo(intensityItemView.snp.right).offset(kFitWidth(16))
             make.right.equalTo(kFitWidth(-16))
             make.top.height.equalTo(goalItemView)
             make.width.equalTo(goalItemView)
@@ -350,6 +367,19 @@ private extension AICoachPreFeedbackGlassVM {
             return "职业运动员"
         default:
             return "非常轻松"
+        }
+    }
+
+    func displayToneText(for value: Int) -> String {
+        switch value {
+        case 2:
+            return "温柔"
+        case 3:
+            return "毒舌"
+        case 4:
+            return "诛心"
+        default:
+            return "专业"
         }
     }
 }
@@ -477,16 +507,18 @@ private final class AICoachPreFeedbackInfoItemView: UIVisualEffectView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = title
-        label.font = .systemFont(ofSize: 15, weight: .regular)
+        label.font = .systemFont(ofSize: 13, weight: .regular)
         label.isUserInteractionEnabled = false
+        label.textColor = .COLOR_TEXT_TITLE_0f1214_50
         return label
     }()
 
     private lazy var valueLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
-        label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.74
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+//        label.adjustsFontSizeToFitWidth = true
+//        label.minimumScaleFactor = 0.74
+        label.textColor = .COLOR_TEXT_TITLE_0f1214
         label.isUserInteractionEnabled = false
         return label
     }()
@@ -507,7 +539,7 @@ private extension AICoachPreFeedbackInfoItemView {
         backgroundColor = .clear
         clipsToBounds = true
         isUserInteractionEnabled = true
-        layer.cornerRadius = kFitWidth(14)
+        layer.cornerRadius = kFitWidth(12)
         layer.cornerCurve = .continuous
 
         addGestureRecognizer(pressGesture)
@@ -524,13 +556,13 @@ private extension AICoachPreFeedbackInfoItemView {
 
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(14))
-            make.right.equalTo(kFitWidth(-14))
-            make.top.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-6))
+            make.top.equalTo(kFitWidth(12))
         }
 
         valueLabel.snp.makeConstraints { make in
             make.left.right.equalTo(titleLabel)
-            make.bottom.equalTo(kFitWidth(-16))
+            make.bottom.equalTo(kFitWidth(-12))
         }
     }
 

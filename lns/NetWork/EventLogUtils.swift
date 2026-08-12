@@ -69,6 +69,10 @@ enum SCENARIO_TYPE {
     case quick_add_food_elapro
     ///日报-其他营养成分
     case daily_report_other_nutrition
+    ///每日营养分析-好友榜
+    case daily_nutrition_analysis_friend_rank
+    ///个人中心-我的好友
+    case user_center_my_friends
     ///其他营养成分-目标
     case other_nutrition_target
     ///其他营养成分-目标-恢复默认
@@ -148,7 +152,7 @@ class EventLogUtils {
         if UserInfoModel.shared.uId.count <= 1 || UserInfoModel.shared.token.count <= 1 {
             return
         }
-        let param = ["eventName":"PAGE_VIEW",
+        let param = ["eventName":"CLICK_BUTTON",
                      "params":["scenario":getScenario(type: .habit_rank_list),
                                "text":"",
                                "result":""]] as [String : Any]
@@ -278,6 +282,10 @@ class EventLogUtils {
             return "快速添加食物-ELAPRO"
         case .daily_report_other_nutrition:
             return "日报-其他营养成分"
+        case .daily_nutrition_analysis_friend_rank:
+            return "每日营养分析-好友榜"
+        case .user_center_my_friends:
+            return "个人中心-我的好友"
         case .other_nutrition_target:
             return "其他营养成分-目标"
         case .other_nutrition_target_restore_default:
