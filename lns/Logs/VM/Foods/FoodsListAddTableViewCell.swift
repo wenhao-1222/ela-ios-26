@@ -16,6 +16,8 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
     
     
     private let selectionButton = UIButton(type: .custom)
+    private var selectionAccessoryIsSelected: Bool?
+    private var selectionAccessoryIsDisabled: Bool?
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -54,6 +56,9 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
 //        selectionButton.backgroundColor = .clear
         selectionButton.setImage(nil, for: .normal)
         selectionButton.alpha = 1
+        selectionButton.layer.removeAllAnimations()
+        selectionAccessoryIsSelected = nil
+        selectionAccessoryIsDisabled = nil
     }
     lazy var bottomView : UIView = {
         let vi = UIView()
@@ -128,8 +133,38 @@ extension FoodsListAddTableViewCell{
     }
 
     func updateSelectionAccessory(isSelected: Bool, isDisabled: Bool) {
-        selectionButton.setImage(UIImage(named: isSelected ? "question_foods_selected_icon" : "question_foods_normal_icon"), for: .normal)
-        selectionButton.alpha = isDisabled ? 0.45 : 1
+        updateSelectionAccessory(isSelected: isSelected, isDisabled: isDisabled, animated: false)
+    }
+
+    func updateSelectionAccessory(isSelected: Bool, isDisabled: Bool, animated: Bool) {
+        let previousIsSelected = selectionAccessoryIsSelected
+        let previousIsDisabled = selectionAccessoryIsDisabled
+        let image = UIImage(named: isSelected ? "question_foods_selected_icon" : "question_foods_normal_icon")
+        let alpha: CGFloat = isDisabled ? 0.45 : 1
+        let shouldAnimate = animated &&
+            ((previousIsSelected != nil && previousIsSelected != isSelected) ||
+             (previousIsDisabled != nil && previousIsDisabled != isDisabled))
+
+        selectionAccessoryIsSelected = isSelected
+        selectionAccessoryIsDisabled = isDisabled
+
+        let updateBlock = {
+            self.selectionButton.setImage(image, for: .normal)
+            self.selectionButton.alpha = alpha
+        }
+
+        guard shouldAnimate else {
+            updateBlock()
+            return
+        }
+
+        UIView.transition(
+            with: selectionButton,
+            duration: 0.18,
+            options: [.transitionCrossDissolve, .beginFromCurrentState, .allowUserInteraction],
+            animations: updateBlock,
+            completion: nil
+        )
     }
 
     func updateUI(dict:NSDictionary, keywords:String = "") {

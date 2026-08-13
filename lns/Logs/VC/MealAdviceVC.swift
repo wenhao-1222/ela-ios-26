@@ -210,6 +210,7 @@ extension MealAdviceVC{
     /// 展示生成中的进度页面。
     func showProgressStep() {
         currentStep = 2
+        updatePopGestureState()
         setBackButtonVisible(false)
         progressVm.resetProgressState()
         progressVm.startProgressAnimation()
@@ -414,13 +415,11 @@ extension MealAdviceVC{
         let shouldAllowBackSwipe = currentStep == 1
 
         if shouldAllowSystemPop {
-            canEdgeBack = true
-            fd_forceDisableInteractivePopGesture = false
-            fd_interactivePopDisabled = false
-            navigationController?.fd_interactivePopDisabled = false
-            navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = true
-            navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+            updateInteractivePopGestureBlocked(false)
+        } else if currentStep == 2 {
+            updateInteractivePopGestureBlocked(true)
         } else {
+            updateInteractivePopGestureBlocked(false)
             canEdgeBack = false
             fd_forceDisableInteractivePopGesture = true
             fd_interactivePopDisabled = true

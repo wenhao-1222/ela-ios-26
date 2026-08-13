@@ -91,19 +91,28 @@ final class MealAdviceNextVC: WHBaseViewVC {
         super.viewDidLoad()
         buildUI()
         reloadData()
+        updateInteractivePopGestureBlocked(true)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateInteractivePopGestureBlocked(true)
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        updateInteractivePopGestureBlocked(true)
         setKeyboardExtensionAllowed(false)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        restoreFullscreenInteractivePopGesture()
         setKeyboardExtensionAllowed(true)
     }
 
     deinit {
+        restoreFullscreenInteractivePopGesture()
         setKeyboardExtensionAllowed(true)
     }
 

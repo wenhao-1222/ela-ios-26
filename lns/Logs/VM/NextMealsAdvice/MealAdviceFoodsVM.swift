@@ -53,11 +53,14 @@ final class MealAdviceSelectedFoodChipView: UIView {
     private let titleLabel = UILabel()
     /// 删除标签的关闭按钮。
     private let closeButton = MealAdviceChipCloseButton(type: .custom)
+    /// 当前标签对应的食物唯一标识。
+    let identityKey: String
     /// 点击关闭按钮后的回调。
     var onRemove: (() -> Void)?
 
     /// 使用标题初始化一个已选食物标签。
-    init(title: String) {
+    init(title: String, identityKey: String) {
+        self.identityKey = identityKey
         super.init(frame: .zero)
         backgroundColor = .COLOR_BG_WHITE
         layer.cornerRadius = kFitWidth(14)
@@ -113,24 +116,24 @@ final class MealAdviceSelectedFoodChipView: UIView {
 private final class MealAdviceFoodsListAddTableViewCell: FoodsListAddTableViewCell {
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        super.setHighlighted(highlighted, animated: animated)
-        applyMealAdviceBackground(isActive: highlighted || isSelected)
+        super.setHighlighted(false, animated: animated)
+        applyMealAdviceBackground()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        applyMealAdviceBackground(isActive: selected || isHighlighted)
+        super.setSelected(false, animated: animated)
+        applyMealAdviceBackground()
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        applyMealAdviceBackground(isActive: false)
+        applyMealAdviceBackground()
     }
 
-    func applyMealAdviceBackground(isActive: Bool = false) {
+    func applyMealAdviceBackground() {
         backgroundColor = .clear
         contentView.backgroundColor = .clear
-        bottomView.backgroundColor = isActive ? .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT : .COLOR_CARD_BG_WHITE
+        bottomView.backgroundColor = .COLOR_CARD_BG_WHITE
     }
 
     func applyMealAdviceLayout() {
@@ -155,6 +158,68 @@ private final class MealAdviceFoodsListAddTableViewCell: FoodsListAddTableViewCe
     }
 }
 
+private final class MealAdviceConfirmButton: UIButton {
+
+    private let gradientLayer = CAGradientLayer()
+    private let normalColors: [UIColor] = [.THEME, .THEME]
+    private let disabledColors: [UIColor] = [.COLOR_BUTTON_DISABLE_BG_THEME, .COLOR_BUTTON_DISABLE_BG_THEME]
+    private let stateTransitionDuration: TimeInterval = 0.25
+
+    override var isEnabled: Bool {
+        didSet {
+            updateBackground(animated: oldValue != isEnabled)
+        }
+    }
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        gradientLayer.locations = [0, 1]
+        gradientLayer.colors = cgColors(for: isEnabled)
+        layer.insertSublayer(gradientLayer, at: 0)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        gradientLayer.frame = bounds
+        CATransaction.commit()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        updateBackground(animated: false)
+    }
+
+    private func updateBackground(animated: Bool) {
+        let targetColors = cgColors(for: isEnabled)
+        if animated {
+            let animation = CABasicAnimation(keyPath: "colors")
+            animation.fromValue = gradientLayer.presentation()?.colors ?? gradientLayer.colors
+            animation.toValue = targetColors
+            animation.duration = stateTransitionDuration
+            animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            gradientLayer.add(animation, forKey: "mealAdviceConfirmBackgroundTransition")
+        } else {
+            gradientLayer.removeAnimation(forKey: "mealAdviceConfirmBackgroundTransition")
+        }
+        gradientLayer.colors = targetColors
+    }
+
+    private func cgColors(for isEnabled: Bool) -> [CGColor] {
+        let colors = isEnabled ? normalColors : disabledColors
+        return colors.map { $0.cgColor }
+    }
+}
+
 final class MealAdviceFoodsVM: UIView {
 
     /// 视图整体所占的高度。
@@ -170,6 +235,12 @@ final class MealAdviceFoodsVM: UIView {
     private var currentKeyword = ""
     /// 请求版本号，用于忽略过期网络响应。
     private var requestVersion = 0
+    /// 切换食物来源后，列表先展示骨架屏等待新数据。
+    private var isFoodSourceSwitchLoading = false
+    /// 食物来源切换时展示的骨架行数。
+    private let foodSourceSkeletonRowCount = 6
+    /// 食物列表切源的渐变时长。
+    private let foodSourceTransitionDuration: TimeInterval = 0.25
 
     /// 最近添加的食物数据源。
     private var recentFoodsArray = NSMutableArray()
@@ -188,6 +259,8 @@ final class MealAdviceFoodsVM: UIView {
     private var selectedChipViews: [MealAdviceSelectedFoodChipView] = []
     /// 已选食物区域的高度约束。
     private var selectedScrollHeightConstraint: Constraint?
+    /// 已选食物标签移除与位移动画时长。
+    private let selectedChipRemovalAnimationDuration: TimeInterval = 0.24
     /// 最多允许选择的食物数量。
     private let maximumSelectedFoodsCount = 6
     /// 最近搜索暂无结果时使用的提示视图。
@@ -203,6 +276,14 @@ final class MealAdviceFoodsVM: UIView {
         let indexPath: IndexPath
         /// 锚点行在当前视图中的屏幕坐标。
         let screenY: CGFloat
+    }
+
+    /// 已选食物标签的目标布局信息。
+    private struct SelectedFoodChipLayout {
+        let key: String
+        let title: String
+        let dict: NSDictionary
+        let frame: CGRect
     }
 
     /// 按给定起始位置初始化整个食物推荐面板。
@@ -366,15 +447,13 @@ final class MealAdviceFoodsVM: UIView {
 
     /// 底部确认按钮。
     lazy var confirmButton: UIButton = {
-        let btn = UIButton()
+        let btn = MealAdviceConfirmButton()
         btn.setTitle("规划本餐摄入量", for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         btn.layer.cornerRadius = kFitWidth(27)
         btn.clipsToBounds = true
         btn.isEnabled = false
-        btn.setBackgroundImage(createImageWithColor(color: .THEME), for: .normal)
-        btn.setBackgroundImage(createImageWithColor(color: .COLOR_BUTTON_DISABLE_BG_THEME), for: .disabled)
         btn.enablePressEffect()
         btn.addTarget(self, action: #selector(confirmAction), for: .touchUpInside)
         return btn
@@ -637,12 +716,29 @@ extension MealAdviceFoodsVM {
     }
 
     /// 刷新已选食物标签区域，并保持表格位置稳定。
-    private func refreshSelectionUI() {
+    private func refreshSelectionUI(removingFoodKey: String? = nil) {
         let anchor = captureTableViewAnchor()
         refreshSelectedState()
-        refreshSelectedFoodsView()
-        tableView.reloadData()
-        restoreTableViewAnchor(anchor)
+        let restoreAnchor: () -> Void = { [weak self] in
+            guard let self = self else { return }
+            self.restoreTableViewAnchor(anchor)
+        }
+        refreshSelectedFoodsView(removingFoodKey: removingFoodKey, completion: restoreAnchor)
+        refreshVisibleSelectionCells(animated: true)
+        if removingFoodKey == nil {
+            restoreAnchor()
+        }
+    }
+
+    /// 刷新当前可见行的选中按钮状态，保留按钮渐变动画。
+    private func refreshVisibleSelectionCells(animated: Bool) {
+        for case let cell as MealAdviceFoodsListAddTableViewCell in tableView.visibleCells {
+            guard let indexPath = tableView.indexPath(for: cell),
+                  let dict = currentFoodDict(at: indexPath) else {
+                continue
+            }
+            applySelectionState(to: cell, dict: dict, animated: animated)
+        }
     }
 
     /// 将表格滚动到顶部。
@@ -651,40 +747,124 @@ extension MealAdviceFoodsVM {
         tableView.setContentOffset(.zero, animated: false)
     }
 
+    /// 停止列表惯性滚动，避免分类切换时旧 indexPath 继续触发取数。
+    private func stopTableViewScrolling() {
+        tableView.setContentOffset(tableView.contentOffset, animated: false)
+    }
+
+    /// 分类切换后先刷新一次列表状态，避免旧的滚动动画继续请求旧 indexPath。
+    private func prepareTableViewForListTypeChange(from previousListType: MealAdviceFoodListType) {
+        guard currentListType != previousListType else { return }
+        stopTableViewScrolling()
+        showFoodSourceSkeleton()
+        resetTableViewOffsetToTop()
+    }
+
+    /// 将列表渐变切到骨架屏。
+    private func showFoodSourceSkeleton() {
+        isFoodSourceSwitchLoading = true
+        noDataView.isHidden = true
+        recentSearchNoDataVm.isHidden = true
+        tableView.tableFooterView = nil
+
+        UIView.transition(
+            with: tableView,
+            duration: foodSourceTransitionDuration,
+            options: [.transitionCrossDissolve, .allowUserInteraction],
+            animations: {
+                self.tableView.reloadData()
+            },
+            completion: nil
+        )
+    }
+
+    /// 新数据就绪后，将骨架屏渐变切回真实食物列表。
+    private func reloadFoodListAfterSourceDataReady() {
+        guard isFoodSourceSwitchLoading else {
+            tableView.reloadData()
+            resetTableViewOffsetToTop()
+            updateNoDataState()
+            return
+        }
+
+        isFoodSourceSwitchLoading = false
+        UIView.transition(
+            with: tableView,
+            duration: foodSourceTransitionDuration,
+            options: [.transitionCrossDissolve, .allowUserInteraction],
+            animations: {
+                self.tableView.reloadData()
+            },
+            completion: { _ in
+                self.updateNoDataState()
+            }
+        )
+        resetTableViewOffsetToTop()
+    }
+
     /// 重新布局已选食物标签视图。
-    func refreshSelectedFoodsView() {
+    func refreshSelectedFoodsView(removingFoodKey: String? = nil, completion: (() -> Void)? = nil) {
+        if let removingFoodKey = removingFoodKey,
+           selectedChipViews.contains(where: { $0.identityKey == removingFoodKey }) {
+            animateSelectedFoodsView(removingFoodKey: removingFoodKey, completion: completion)
+            return
+        }
+
         selectedChipViews.forEach { $0.removeFromSuperview() }
         selectedChipViews.removeAll()
 
-        let chipHeight = MealAdviceSelectedFoodChipView.chipHeight
         let hasSelected = selectedFoodsArray.count > 0
         selectedScrollView.isHidden = !hasSelected
 
         guard hasSelected else {
-            selectedScrollHeightConstraint?.update(offset: chipHeight)
+            selectedScrollHeightConstraint?.update(offset: MealAdviceSelectedFoodChipView.chipHeight)
             selectedScrollView.contentSize = .zero
             setNeedsLayout()
             layoutIfNeeded()
+            completion?()
             return
         }
 
+        let layoutResult = selectedFoodChipLayouts()
+        for layout in layoutResult.layouts {
+            let chip = makeSelectedFoodChip(for: layout)
+            selectedScrollView.addSubview(chip)
+            selectedChipViews.append(chip)
+        }
+
+        selectedScrollHeightConstraint?.update(offset: layoutResult.contentHeight)
+        selectedScrollView.contentSize = CGSize(width: layoutResult.availableWidth, height: layoutResult.contentHeight)
+        setNeedsLayout()
+        layoutIfNeeded()
+        completion?()
+    }
+
+    /// 创建已选食物标签视图。
+    private func makeSelectedFoodChip(for layout: SelectedFoodChipLayout) -> MealAdviceSelectedFoodChipView {
+        let chip = MealAdviceSelectedFoodChipView(title: layout.title, identityKey: layout.key)
+        chip.frame = layout.frame
+        chip.onRemove = { [weak self] in
+            self?.removeSelectedFood(dict: layout.dict)
+        }
+        return chip
+    }
+
+    /// 计算已选食物标签的换行布局。
+    private func selectedFoodChipLayouts() -> (layouts: [SelectedFoodChipLayout], availableWidth: CGFloat, contentHeight: CGFloat) {
+        let chipHeight = MealAdviceSelectedFoodChipView.chipHeight
         let columnSpacing = kFitWidth(12)
         let rowSpacing = kFitWidth(12)
         let availableWidth = selectedScrollView.bounds.width > 0
             ? selectedScrollView.bounds.width
             : SCREEN_WIDHT - kFitWidth(32)
 
+        var layouts: [SelectedFoodChipLayout] = []
         var currentX: CGFloat = 0
         var currentY: CGFloat = 0
 
         for index in 0..<selectedFoodsArray.count {
             let dict = selectedFoodsArray[index] as? NSDictionary ?? [:]
             let title = foodDisplayName(from: dict)
-            let chip = MealAdviceSelectedFoodChipView(title: title)
-            chip.onRemove = { [weak self] in
-                self?.removeSelectedFood(dict: dict)
-            }
-
             let chipWidth = min(
                 MealAdviceSelectedFoodChipView.preferredWidth(for: title),
                 availableWidth
@@ -694,17 +874,67 @@ extension MealAdviceFoodsVM {
                 currentY += chipHeight + rowSpacing
             }
 
-            chip.frame = CGRect(x: currentX, y: currentY, width: chipWidth, height: chipHeight)
-            selectedScrollView.addSubview(chip)
-            selectedChipViews.append(chip)
+            let frame = CGRect(x: currentX, y: currentY, width: chipWidth, height: chipHeight)
+            layouts.append(SelectedFoodChipLayout(key: foodIdentityKey(from: dict), title: title, dict: dict, frame: frame))
             currentX += chipWidth + columnSpacing
         }
 
-        let contentHeight = currentY + chipHeight
-        selectedScrollHeightConstraint?.update(offset: contentHeight)
-        selectedScrollView.contentSize = CGSize(width: availableWidth, height: contentHeight)
-        setNeedsLayout()
+        let contentHeight = layouts.isEmpty ? chipHeight : currentY + chipHeight
+        return (layouts, availableWidth, contentHeight)
+    }
+
+    /// 取消选择时，让保留的标签线性移动到新位置，并让被移除标签向左收缩渐隐。
+    private func animateSelectedFoodsView(removingFoodKey: String, completion: (() -> Void)?) {
         layoutIfNeeded()
+        selectedScrollView.layoutIfNeeded()
+
+        let layoutResult = selectedFoodChipLayouts()
+        let existingChips = selectedChipViews.reduce(into: [String: MealAdviceSelectedFoodChipView]()) { result, chip in
+            result[chip.identityKey] = chip
+        }
+        let removedChip = existingChips[removingFoodKey]
+        let targetChips = layoutResult.layouts.map { layout -> MealAdviceSelectedFoodChipView in
+            let chip = existingChips[layout.key] ?? makeSelectedFoodChip(for: layout)
+            if chip.superview == nil {
+                selectedScrollView.addSubview(chip)
+            }
+            chip.layer.removeAllAnimations()
+            chip.alpha = 1
+            return chip
+        }
+
+        selectedScrollView.isHidden = false
+        selectedScrollView.isUserInteractionEnabled = false
+        selectedScrollHeightConstraint?.update(offset: layoutResult.contentHeight)
+        selectedScrollView.contentSize = CGSize(width: layoutResult.availableWidth, height: layoutResult.contentHeight)
+
+        UIView.animate(
+            withDuration: selectedChipRemovalAnimationDuration,
+            delay: 0,
+            options: [.curveLinear, .beginFromCurrentState, .allowUserInteraction],
+            animations: {
+                for (index, layout) in layoutResult.layouts.enumerated() {
+                    targetChips[index].frame = layout.frame
+                }
+                if let removedChip = removedChip {
+                    removedChip.alpha = 0
+                    removedChip.frame = CGRect(
+                        x: removedChip.frame.minX - kFitWidth(8),
+                        y: removedChip.frame.minY,
+                        width: 0,
+                        height: removedChip.frame.height
+                    )
+                }
+                self.layoutIfNeeded()
+            },
+            completion: { _ in
+                removedChip?.removeFromSuperview()
+                self.selectedChipViews = targetChips
+                self.selectedScrollView.isHidden = self.selectedFoodsArray.count == 0
+                self.selectedScrollView.isUserInteractionEnabled = true
+                completion?()
+            }
+        )
     }
 
     /// 捕获当前表格首个可见行的位置锚点，用于刷新后恢复滚动偏移。
@@ -750,22 +980,25 @@ extension MealAdviceFoodsVM {
         let sourceArray = UserDefaults.getHistoryFoods()
         recentFoodsArray = NSMutableArray(array: sourceArray)
         filteredRecentFoodsArray = filteredFoods(in: recentFoodsArray, keyword: currentKeyword)
-        tableView.reloadData()
-        resetTableViewOffsetToTop()
-        updateNoDataState()
+        reloadFoodListAfterSourceDataReady()
     }
 
     /// 从缓存加载“我的食物”并按当前关键字筛选。
     func loadMyFoodsFromCache() {
         myFoodsArray = NSMutableArray(array: UserDefaults.getMyFoods())
         filteredMyFoodsArray = filteredFoods(in: myFoodsArray, keyword: currentKeyword)
-        tableView.reloadData()
-        resetTableViewOffsetToTop()
-        updateNoDataState()
+        reloadFoodListAfterSourceDataReady()
     }
 
     /// 刷新空状态显示逻辑。
     func updateNoDataState() {
+        guard !isFoodSourceSwitchLoading else {
+            noDataView.isHidden = true
+            recentSearchNoDataVm.isHidden = true
+            tableView.tableFooterView = nil
+            return
+        }
+
         let hasData: Bool
         switch currentListType {
         case .recent:
@@ -792,6 +1025,12 @@ extension MealAdviceFoodsVM {
 
     /// 刷新最近搜索时的底部提示内容。
     func updateRecentSearchPromptState() {
+        guard !isFoodSourceSwitchLoading else {
+            recentSearchNoDataVm.isHidden = true
+            tableView.tableFooterView = nil
+            return
+        }
+
         let shouldShowPrompt = currentListType == .recent && currentKeyword.count > 0
         recentSearchNoDataVm.isHidden = true
         tableView.tableFooterView = nil
@@ -830,6 +1069,33 @@ extension MealAdviceFoodsVM {
             }
         }
         return result
+    }
+
+    /// 按当前分类安全获取指定行的数据。
+    private func currentFoodDict(at indexPath: IndexPath) -> NSDictionary? {
+        guard indexPath.section == 0, indexPath.row >= 0 else { return nil }
+
+        let dataArray: NSMutableArray
+        switch currentListType {
+        case .recent:
+            dataArray = filteredRecentFoodsArray
+        case .all:
+            dataArray = allFoodsArray
+        case .my:
+            dataArray = filteredMyFoodsArray
+        }
+
+        guard indexPath.row < dataArray.count else { return nil }
+        return dataArray[indexPath.row] as? NSDictionary
+    }
+
+    /// 构造越界保护用的空 cell。
+    private func emptyFoodCell() -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
+        cell.selectionStyle = .none
+        cell.backgroundColor = .clear
+        cell.contentView.backgroundColor = .clear
+        return cell
     }
 
     /// 将原始数据规范化为实际食物字典。
@@ -888,38 +1154,45 @@ extension MealAdviceFoodsVM {
             }
         }
 
+        var removingFoodKey: String?
         if let removeIndex = removeIndex {
             selectedFoodsArray.removeObject(at: removeIndex)
+            removingFoodKey = key
         } else {
             guard selectedFoodsArray.count < maximumSelectedFoodsCount else { return }
             selectedFoodsArray.add(normalized)
         }
 
-        refreshSelectionUI()
+        refreshSelectionUI(removingFoodKey: removingFoodKey)
     }
 
     /// 从已选列表中移除指定食物。
     func removeSelectedFood(dict: NSDictionary) {
         let key = foodIdentityKey(from: dict)
+        var didRemove = false
         for index in stride(from: selectedFoodsArray.count - 1, through: 0, by: -1) {
             let item = selectedFoodsArray[index] as? NSDictionary ?? [:]
             if foodIdentityKey(from: item) == key {
                 selectedFoodsArray.removeObject(at: index)
+                didRemove = true
                 break
             }
         }
-        refreshSelectionUI()
+        refreshSelectionUI(removingFoodKey: didRemove ? key : nil)
     }
 
     /// 处理顶部分类按钮点击。
     @objc func tabButtonAction(_ sender: UIButton) {
         searchTextField.resignFirstResponder()
+        let previousListType = currentListType
         if sender == allFoodsButton {
             currentListType = .all
         } else if sender == myFoodsButton {
             currentListType = .my
         }
+        guard currentListType != previousListType else { return }
         refreshTabState()
+        prepareTableViewForListTypeChange(from: previousListType)
         reloadCurrentList()
     }
 
@@ -934,6 +1207,7 @@ extension MealAdviceFoodsVM {
     @objc func searchAction() {
         searchTextField.resignFirstResponder()
         currentKeyword = normalizedSearchKeyword()
+        let previousListType = currentListType
 
         if currentKeyword.isEmpty {
             currentListType = .recent
@@ -942,6 +1216,7 @@ extension MealAdviceFoodsVM {
         }
 
         refreshTabState()
+        prepareTableViewForListTypeChange(from: previousListType)
         reloadCurrentList()
     }
 
@@ -949,8 +1224,10 @@ extension MealAdviceFoodsVM {
     @objc func searchAllFoodsAction() {
         searchTextField.resignFirstResponder()
         guard currentKeyword.count > 0 else { return }
+        let previousListType = currentListType
         currentListType = .all
         refreshTabState()
+        prepareTableViewForListTypeChange(from: previousListType)
         reloadCurrentList()
     }
 
@@ -983,6 +1260,10 @@ extension MealAdviceFoodsVM: UITableViewDelegate, UITableViewDataSource {
 
     /// 返回当前分区行数。
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if isFoodSourceSwitchLoading {
+            return foodSourceSkeletonRowCount
+        }
+
         switch currentListType {
         case .recent:
             return filteredRecentFoodsArray.count
@@ -996,19 +1277,28 @@ extension MealAdviceFoodsVM: UITableViewDelegate, UITableViewDataSource {
     /// 构建列表单元格并填充对应数据。
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FoodsListAddTableViewCell") as? MealAdviceFoodsListAddTableViewCell
+        if isFoodSourceSwitchLoading {
+            cell?.updateUI(dict: [:], keywords: "")
+            cell?.addButtonVm.isHidden = true
+            cell?.addButtonVm.alpha = 0
+            applyNextMealCellBackground(to: cell)
+            return cell ?? FoodsListAddTableViewCell()
+        }
+
+        guard let dict = currentFoodDict(at: indexPath) else {
+            return emptyFoodCell()
+        }
+
         switch currentListType {
         case .recent:
-            let dict = filteredRecentFoodsArray[indexPath.row] as? NSDictionary ?? [:]
             cell?.updateUIForHistory(dict: dict, keywords: currentKeyword)
             cell?.addButtonVm.isHidden = true
             cell?.addButtonVm.alpha = 0
             applySelectionState(to: cell, dict: dict)
         case .all:
-            let dict = allFoodsArray[indexPath.row] as? NSDictionary ?? [:]
             cell?.updateUI(dict: dict, keywords: currentKeyword)
             applySelectionState(to: cell, dict: dict)
         case .my:
-            let dict = filteredMyFoodsArray[indexPath.row] as? NSDictionary ?? [:]
             cell?.updateUI(dict: dict, keywords: currentKeyword)
             applySelectionState(to: cell, dict: dict)
         }
@@ -1021,31 +1311,23 @@ extension MealAdviceFoodsVM: UITableViewDelegate, UITableViewDataSource {
     private func applyNextMealCellBackground(to cell: FoodsListAddTableViewCell?) {
         let mealAdviceCell = cell as? MealAdviceFoodsListAddTableViewCell
         mealAdviceCell?.applyMealAdviceLayout()
-        mealAdviceCell?.applyMealAdviceBackground(isActive: cell?.isHighlighted == true || cell?.isSelected == true)
+        mealAdviceCell?.applyMealAdviceBackground()
     }
 
     /// 配置单元格的选中态与禁用态图标。
-    func applySelectionState(to cell: FoodsListAddTableViewCell?, dict: NSDictionary) {
+    func applySelectionState(to cell: FoodsListAddTableViewCell?, dict: NSDictionary, animated: Bool = false) {
         guard let cell = cell else { return }
         let isSelected = isSelectedFood(dict: dict)
         let isDisabled = selectedFoodsArray.count >= maximumSelectedFoodsCount && !isSelected
-        cell.updateSelectionAccessory(isSelected: isSelected, isDisabled: isDisabled)
+        cell.updateSelectionAccessory(isSelected: isSelected, isDisabled: isDisabled, animated: animated)
         cell.setSelectionDisabled(isDisabled)
     }
 
     /// 处理列表项点击，切换选中状态。
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch currentListType {
-        case .recent:
-            let dict = filteredRecentFoodsArray[indexPath.row] as? NSDictionary ?? [:]
-            toggleSelection(dict: dict)
-        case .all:
-            let dict = allFoodsArray[indexPath.row] as? NSDictionary ?? [:]
-            toggleSelection(dict: dict)
-        case .my:
-            let dict = filteredMyFoodsArray[indexPath.row] as? NSDictionary ?? [:]
-            toggleSelection(dict: dict)
-        }
+        guard !isFoodSourceSwitchLoading else { return }
+        guard let dict = currentFoodDict(at: indexPath) else { return }
+        toggleSelection(dict: dict)
     }
 
     /// 固定列表行高。
@@ -1079,9 +1361,7 @@ extension MealAdviceFoodsVM {
                 self.allFoodsArray.removeAllObjects()
                 self.allFoodsArray.addObjects(from: bestArray as? [Any] ?? [])
                 self.allFoodsArray.addObjects(from: moreArray as? [Any] ?? [])
-                self.tableView.reloadData()
-                self.resetTableViewOffsetToTop()
-                self.updateNoDataState()
+                self.reloadFoodListAfterSourceDataReady()
             }
         } failure: { [weak self] _ in
             guard let self = self else { return }
@@ -1089,9 +1369,7 @@ extension MealAdviceFoodsVM {
             DispatchQueue.main.async {
                 guard token == self.requestVersion else { return }
                 self.allFoodsArray.removeAllObjects()
-                self.tableView.reloadData()
-                self.resetTableViewOffsetToTop()
-                self.updateNoDataState()
+                self.reloadFoodListAfterSourceDataReady()
             }
         }
     }
@@ -1111,13 +1389,20 @@ extension MealAdviceFoodsVM {
                 self.myFoodsArray = NSMutableArray(array: dataArr)
                 self.filteredMyFoodsArray = NSMutableArray(array: dataArr)
                 self.filteredMyFoodsArray = self.filteredFoods(in: self.myFoodsArray, keyword: self.currentKeyword)
-                self.tableView.reloadData()
-                self.resetTableViewOffsetToTop()
-                self.updateNoDataState()
+                self.reloadFoodListAfterSourceDataReady()
 
                 if self.currentKeyword.count == 0 {
                     UserDefaults.set(value: WHUtils.getJSONStringFromArray(array: dataArr), forKey: .myFoodsList)
                 }
+            }
+        } failure: { [weak self] _ in
+            guard let self = self else { return }
+            guard token == self.requestVersion else { return }
+            DispatchQueue.main.async {
+                guard token == self.requestVersion else { return }
+                self.myFoodsArray.removeAllObjects()
+                self.filteredMyFoodsArray.removeAllObjects()
+                self.reloadFoodListAfterSourceDataReady()
             }
         }
     }
