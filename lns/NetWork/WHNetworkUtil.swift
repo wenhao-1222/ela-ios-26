@@ -47,6 +47,13 @@ class WHNetworkUtil: SessionManager {
         guard shouldRefreshDefaultNutritionMineralsAfterSuccess(urlString: urlString) else { return }
         UserInfoModel.shared.refreshDefaultNutritionMineralsAfterTargetChange()
     }
+
+    private func shouldReportResponseError(code: Int, message: String) -> Bool {
+        if message.contains("ELA"){
+            return false
+        }
+        return true
+    }
     
     class func shareManager() -> WHNetworkUtil{
     
@@ -425,22 +432,25 @@ class WHNetworkUtil: SessionManager {
                                 MCToast.mc_remove()
                                 if urlString != URL_sport_add || (value["message"] as? String ?? "").contains("存在")
                                 || urlString != URL_dietplan_plan_active{
-                                    var msgDict: NSMutableDictionary = [
-                                        "stage": "response_error",
-                                        "code": code,
-                                        "url":urlString,
-                                        "message": value as Any,
-                                        "params": parameters ?? [:]
-                                    ]
-                                    if urlString == URL_User_logs_update_details{
-                                        msgDict = [
+                                    let errorMessage = value["message"] as? String ?? ""
+                                    if self.shouldReportResponseError(code: code, message: errorMessage) {
+                                        var msgDict: NSMutableDictionary = [
                                             "stage": "response_error",
                                             "code": code,
                                             "url":urlString,
-                                            "message": value as Any
+                                            "message": value as Any,
+                                            "params": parameters ?? [:]
                                         ]
+                                        if urlString == URL_User_logs_update_details{
+                                            msgDict = [
+                                                "stage": "response_error",
+                                                "code": code,
+                                                "url":urlString,
+                                                "message": value as Any
+                                            ]
+                                        }
+                                        WHUtils().sendErrorMsgRequest(msgDict: msgDict)
                                     }
-                                    WHUtils().sendErrorMsgRequest(msgDict: msgDict)
                                 }
                                 
                                 DispatchQueue.main.async {

@@ -13,6 +13,7 @@ class LogsSQLiteUploadManager {
     private static var pendingUploadWorkItems: [String: DispatchWorkItem] = [:]
     private static var uploadingDates = Set<String>()
     private static var queuedDates = Set<String>()
+    private static var dirtyDates = Set<String>()
     private static var queuedRefreshTodayJournalByDate: [String: Bool] = [:]
     private static var uploadQueueGeneration = 0
     
@@ -40,7 +41,11 @@ class LogsSQLiteUploadManager {
     }
     
     func scheduleUploadLogsBySDate(sdate: String, delay: TimeInterval = 0.3, shouldRefreshTodayJournal: Bool = true) {
-        Self.uploadSyncQueue.async {
+        Self.uploadSyncQueue.sync {
+            if Self.uploadingDates.contains(sdate) {
+                Self.dirtyDates.insert(sdate)
+            }
+            LogsSQLiteManager.getInstance().updateUploadStatus(sDate: sdate, update: false)
             Self.queuedDates.insert(sdate)
             let existingRefreshFlag = Self.queuedRefreshTodayJournalByDate[sdate] ?? false
             Self.queuedRefreshTodayJournalByDate[sdate] = existingRefreshFlag || shouldRefreshTodayJournal
@@ -63,6 +68,7 @@ class LogsSQLiteUploadManager {
             Self.pendingUploadWorkItems.removeAll()
             Self.queuedDates.removeAll()
             Self.uploadingDates.removeAll()
+            Self.dirtyDates.removeAll()
         }
     }
 
@@ -92,6 +98,7 @@ class LogsSQLiteUploadManager {
         
         Self.queuedDates.remove(sdate)
         Self.uploadingDates.insert(sdate)
+        Self.dirtyDates.remove(sdate)
         let shouldRefreshTodayJournal = Self.queuedRefreshTodayJournalByDate[sdate] ?? true
         Self.queuedRefreshTodayJournalByDate.removeValue(forKey: sdate)
         
@@ -256,7 +263,7 @@ class LogsSQLiteUploadManager {
             if shouldRefreshTodayJournal {
                 self.sendNextMealAdviceRequest(logsDict: logsDict, sn: sn)
             }
-            LogsSQLiteManager.getInstance().updateUploadStatus(sDate: dict.stringValueForKey(key: "sdate"), update: true)
+            self.updateUploadStatusAfterSuccessfulRequest(sdate: dict.stringValueForKey(key: "sdate"))
             LogsSQLiteManager.getInstance().updateLogsEtime(sDate: dict.stringValueForKey(key: "sdate"), endTime: dataObj["etime"]as? String ?? "\(Date().currentSeconds)")
             if dict.stringValueForKey(key: "sdate") == Date().todayDate {
                 DispatchQueue.main.async {
@@ -268,6 +275,14 @@ class LogsSQLiteUploadManager {
             completion?()
         }
     }
+
+    private func updateUploadStatusAfterSuccessfulRequest(sdate: String) {
+        Self.uploadSyncQueue.sync {
+            let hasNewerQueuedUpload = Self.dirtyDates.contains(sdate) || Self.queuedDates.contains(sdate)
+            LogsSQLiteManager.getInstance().updateUploadStatus(sDate: sdate, update: !hasNewerQueuedUpload)
+        }
+    }
+
     ///获取下餐饮食建议
     func sendNextMealAdviceRequest(logsDict:NSDictionary,sn:Int) {
         if logsDict.stringValueForKey(key: "sdate") != Date().todayDate || sn >= 4 || sn == 0 || UserInfoModel.shared.show_next_advice == false{

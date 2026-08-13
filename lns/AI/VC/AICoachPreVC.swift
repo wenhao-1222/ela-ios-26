@@ -639,9 +639,7 @@ private extension AICoachPreVC {
     }
 
     func setToneStylePopupNavigationGesturesEnabled(_ enabled: Bool) {
-        navigationController?.fd_interactivePopDisabled = !enabled
-        navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = enabled
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = enabled
+        updateInteractivePopGestureBlocked(!enabled)
     }
 
     func updateAICoachProfile(field: AICoachPreInfoEditableField, value: Int) {

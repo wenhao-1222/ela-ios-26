@@ -291,7 +291,6 @@ final class AICoachPreToneStylePopupVM: AlertVMCommon, UIGestureRecognizerDelega
     var confirmBlock: ((Int) -> Void)?
 
     private var selectedValue: Int = 1
-    private weak var whiteViewPanGestureRecognizer: UIPanGestureRecognizer?
     private let labelHorizontalInset: CGFloat = kFitWidth(11)
     private let labelWidth: CGFloat = kFitWidth(56)
 
@@ -444,9 +443,11 @@ private extension AICoachPreToneStylePopupVM {
     }
 
     func configureWhiteViewPanGesture() {
-        let panGesture = whiteView.gestureRecognizers?.compactMap { $0 as? UIPanGestureRecognizer }.first
-        panGesture?.delegate = self
-        whiteViewPanGestureRecognizer = panGesture
+        for gesture in whiteView.gestureRecognizers ?? [] {
+            if gesture is UIPanGestureRecognizer || gesture is UITapGestureRecognizer {
+                gesture.delegate = self
+            }
+        }
     }
 
     func updateSelectedValue(_ value: Int, animated: Bool, notifiesChange: Bool) {
@@ -466,7 +467,8 @@ private extension AICoachPreToneStylePopupVM {
     }
 
     func commitSelectedValue(_ value: Int, animated: Bool) {
-        updateSelectedValue(value, animated: animated, notifiesChange: true)
+        updateSelectedValue(value, animated: animated, notifiesChange: false)
+        confirmBlock?(value)
     }
 
     func updateLabelStates() {
@@ -487,7 +489,7 @@ private extension AICoachPreToneStylePopupVM {
 
 extension AICoachPreToneStylePopupVM {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        guard gestureRecognizer === whiteViewPanGestureRecognizer else { return true }
+        guard gestureRecognizer.view === whiteView else { return true }
         let touchedView = touch.view
         if touchedView?.isDescendant(of: toneSliderView) == true
             || touchedView?.isDescendant(of: labelsContainerView) == true {
@@ -512,8 +514,8 @@ private final class AICoachPreToneStyleSliderView: UIControl {
     private let trackHeight: CGFloat = kFitWidth(30)
     /// 白色滑块直径。
     private let thumbDiameter: CGFloat = kFitWidth(26)
-    /// 灰色圆点中心到轨道左右边缘的距离。
-    private let dotHorizontalInset: CGFloat = kFitWidth(11)
+    /// 透明系统滑杆扩大触摸热区的距离。
+    private let sliderTouchInset: CGFloat = kFitWidth(18)
     /// 滑块在最左/最右时，滑块边缘到轨道左右边缘的距离。
     private let thumbHorizontalInset: CGFloat = kFitWidth(2)
 
@@ -551,12 +553,32 @@ private final class AICoachPreToneStyleSliderView: UIControl {
         return view
     }()
 
+    /// 透明系统滑杆，只负责拖拽手感；视觉仍由自绘轨道和 thumb 承担。
+    private lazy var systemSlider: AICoachPreToneStyleSystemSlider = {
+        let slider = AICoachPreToneStyleSystemSlider()
+        slider.trackHorizontalInset = sliderTouchInset + thumbHorizontalInset + thumbDiameter * 0.5
+        slider.trackHeight = trackHeight
+        slider.minimumValue = 0
+        slider.maximumValue = Float(max(values.count - 1, 0))
+        slider.isContinuous = true
+        slider.minimumTrackTintColor = .clear
+        slider.maximumTrackTintColor = .clear
+        slider.setMinimumTrackImage(UIImage(), for: .normal)
+        slider.setMaximumTrackImage(UIImage(), for: .normal)
+        slider.setThumbImage(transparentThumbImage(), for: .normal)
+        slider.setThumbImage(transparentThumbImage(), for: .highlighted)
+        slider.addTarget(self, action: #selector(systemSliderTouchDownAction), for: .touchDown)
+        slider.addTarget(self, action: #selector(systemSliderValueChangedAction), for: .valueChanged)
+        slider.addTarget(self, action: #selector(systemSliderTouchEndAction), for: [.touchUpInside, .touchUpOutside, .touchCancel])
+        return slider
+    }()
+
     /// 未选中档位的灰色圆点集合。
     private var dotViews: [UIView] = []
     /// 标记当前是否正在手指拖拽，避免外部刷新动画和拖拽手感冲突。
     private var isTrackingTouch = false
-    /// 拖拽过程中的滑块中心点 x 坐标，用于让滑块跟随手指连续移动。
-    private var trackingThumbCenterX: CGFloat?
+    /// 当前系统滑杆的连续档位位置，范围为 0...(values.count - 1)。
+    private var sliderPosition: Float = 0
 
     /// 使用指定档位值初始化滑杆，空数组时回退为 1...4。
     init(values: [Int]) {
@@ -579,50 +601,36 @@ private final class AICoachPreToneStyleSliderView: UIControl {
 
     /// 扩大滑杆触摸热区，让可拖拽范围比视觉控件更大。
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        bounds.insetBy(dx: -kFitWidth(18), dy: -kFitWidth(18)).contains(point)
+        bounds.insetBy(dx: -sliderTouchInset, dy: -sliderTouchInset).contains(point)
     }
 
-    /// 手指开始触摸时进入拖拽状态，并立即根据触点更新预览值。
-    override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+    @objc private func systemSliderTouchDownAction() {
         isTrackingTouch = true
-        updateTrackingPosition(for: touch)
-        updateValue(for: touch, animated: false, shouldNotifyPreview: true)
-        return true
+        systemSliderValueChangedAction()
     }
 
-    /// 手指移动时持续更新预览值。
-    override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-        updateTrackingPosition(for: touch)
-        updateValue(for: touch, animated: false, shouldNotifyPreview: true)
-        return true
-    }
-
-    /// 手指抬起时结束拖拽，并提交最终选中的值。
-    override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
-        if let touch = touch {
-            updateTrackingPosition(for: touch)
-            updateValue(for: touch, animated: true, shouldNotifyPreview: true)
-        } else {
-            updateLayout(animated: true)
+    @objc private func systemSliderValueChangedAction() {
+        if systemSlider.isTracking {
+            isTrackingTouch = true
         }
-        isTrackingTouch = false
-        trackingThumbCenterX = nil
-        updateLayout(animated: true)
-        valueCommitBlock?(selectedValue)
+        sliderPosition = systemSlider.value
+        updateValue(forSliderPosition: sliderPosition, animated: false, shouldNotifyPreview: true)
     }
 
-    /// 系统取消触摸时结束拖拽，并把滑块回弹到当前选中档位。
-    override func cancelTracking(with event: UIEvent?) {
+    @objc private func systemSliderTouchEndAction() {
+        sliderPosition = systemSlider.value
+        updateValue(forSliderPosition: sliderPosition, animated: true, shouldNotifyPreview: true)
         isTrackingTouch = false
-        trackingThumbCenterX = nil
-        updateLayout(animated: true)
+        snapToSelectedValue(animated: true)
+        valueCommitBlock?(selectedValue)
     }
 
     /// 外部设置选中值，并按需刷新滑块动画。
     func setSelectedValue(_ value: Int, animated: Bool) {
         selectedValue = values.contains(value) ? value : (values.first ?? 1)
         if !isTrackingTouch {
-            trackingThumbCenterX = nil
+            sliderPosition = sliderPosition(for: selectedValue)
+            systemSlider.setValue(sliderPosition, animated: animated)
         }
         updateLayout(animated: animated && !isTrackingTouch)
     }
@@ -632,6 +640,7 @@ private final class AICoachPreToneStyleSliderView: UIControl {
         setSelectedValue(value, animated: animated)
         valueCommitBlock?(selectedValue)
     }
+
 }
 
 private extension AICoachPreToneStyleSliderView {
@@ -642,8 +651,9 @@ private extension AICoachPreToneStyleSliderView {
 
         addSubview(trackView)
 
-        for _ in 0..<max(values.count - 1, 0) {
+        for value in values.dropFirst() {
             let dotView = UIView()
+            dotView.tag = value
             dotView.backgroundColor = UIColor(hex: "D3D3D3")
             dotView.isUserInteractionEnabled = false
             dotView.layer.cornerRadius = kFitWidth(5)
@@ -653,12 +663,12 @@ private extension AICoachPreToneStyleSliderView {
 
         trackView.addSubview(progressView)
         addSubview(thumbView)
+        addSubview(systemSlider)
     }
 
     /// 根据触摸位置换算最近档位，并按需通知外层刷新预览。
-    func updateValue(for touch: UITouch, animated: Bool, shouldNotifyPreview: Bool) {
-        let location = touch.location(in: self)
-        let value = nearestValue(for: location.x)
+    func updateValue(forSliderPosition position: Float, animated: Bool, shouldNotifyPreview: Bool) {
+        let value = nearestValue(forSliderPosition: position)
         guard value != selectedValue else {
             updateLayout(animated: animated)
             return
@@ -673,45 +683,50 @@ private extension AICoachPreToneStyleSliderView {
         }
     }
 
-    /// 根据触摸位置更新拖拽中的滑块连续坐标。
-    func updateTrackingPosition(for touch: UITouch) {
-        let location = touch.location(in: self)
-        trackingThumbCenterX = clampedThumbCenterX(for: location.x)
-        updateLayout(animated: false)
+    /// 根据系统滑杆的连续位置计算最近的档位值。
+    func nearestValue(forSliderPosition position: Float) -> Int {
+        let maxIndex = max(values.count - 1, 0)
+        let index = min(maxIndex, max(0, Int(position.rounded())))
+        return values[index]
     }
 
-    /// 根据横向坐标计算最近的档位值。
-    func nearestValue(for x: CGFloat) -> Int {
-        let minCenterX = thumbHorizontalInset + thumbDiameter * 0.5
-        let maxCenterX = bounds.width - thumbHorizontalInset - thumbDiameter * 0.5
-        let usableWidth = max(1, maxCenterX - minCenterX)
-        let progress = min(1, max(0, (clampedThumbCenterX(for: x) - minCenterX) / usableWidth))
-        let maxIndex = max(values.count - 1, 0)
-        let index = min(maxIndex, max(0, Int((progress * CGFloat(maxIndex)).rounded())))
-        return values[index]
+    /// 根据档位值计算系统滑杆的连续位置。
+    func sliderPosition(for value: Int) -> Float {
+        Float(values.firstIndex(of: value) ?? 0)
+    }
+
+    /// 拖拽结束或点击档位时，将连续进度吸附到最近的档位圆点。
+    func snapToSelectedValue(animated: Bool) {
+        sliderPosition = sliderPosition(for: selectedValue)
+        systemSlider.setValue(sliderPosition, animated: animated)
+        updateLayout(animated: animated)
+    }
+
+    /// 系统 UISlider 的 thumb 只负责命中和拖拽，实际白色圆点由 thumbView 绘制。
+    func transparentThumbImage() -> UIImage {
+        let size = CGSize(width: thumbDiameter, height: thumbDiameter)
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { _ in
+            UIColor.clear.setFill()
+            UIBezierPath(ovalIn: CGRect(origin: .zero, size: size)).fill()
+        }
+    }
+
+    /// 根据系统滑杆连续位置计算滑块中心点 x 坐标。
+    func thumbCenterX(forSliderPosition position: Float) -> CGFloat {
+        let maxIndex = max(values.count - 1, 1)
+        let progress = CGFloat(position) / CGFloat(maxIndex)
+        return thumbHorizontalInset + thumbDiameter * 0.5 + progress * max(1, bounds.width - thumbDiameter - thumbHorizontalInset * 2)
     }
 
     /// 根据档位值计算滑块中心点 x 坐标。
     func thumbCenterX(for value: Int) -> CGFloat {
-        let maxIndex = max(values.count - 1, 1)
-        let index = values.firstIndex(of: value) ?? 0
-        let progress = CGFloat(index) / CGFloat(maxIndex)
-        return thumbHorizontalInset + thumbDiameter * 0.5 + progress * max(1, bounds.width - thumbDiameter - thumbHorizontalInset * 2)
-    }
-
-    /// 将手指横向坐标限制在滑块可移动范围内。
-    func clampedThumbCenterX(for x: CGFloat) -> CGFloat {
-        let minCenterX = thumbHorizontalInset + thumbDiameter * 0.5
-        let maxCenterX = bounds.width - thumbHorizontalInset - thumbDiameter * 0.5
-        return min(maxCenterX, max(minCenterX, x))
+        thumbCenterX(forSliderPosition: sliderPosition(for: value))
     }
 
     /// 根据档位值计算灰色圆点中心点 x 坐标。
     func dotCenterX(for value: Int) -> CGFloat {
-        let maxIndex = max(values.count - 1, 1)
-        let index = values.firstIndex(of: value) ?? 0
-        let progress = CGFloat(index) / CGFloat(maxIndex)
-        return dotHorizontalInset + progress * max(1, bounds.width - dotHorizontalInset * 2)
+        thumbCenterX(for: value)
     }
 
     /// 刷新轨道、进度条、圆点和滑块的 frame。
@@ -720,7 +735,7 @@ private extension AICoachPreToneStyleSliderView {
                                 y: (bounds.height - trackHeight) * 0.5,
                                 width: bounds.width,
                                 height: trackHeight)
-        let thumbCenterX = trackingThumbCenterX ?? thumbCenterX(for: selectedValue)
+        let thumbCenterX = thumbCenterX(forSliderPosition: sliderPosition)
         let progressGap = kFitWidth(3)
         let thumbFrame = CGRect(x: thumbCenterX - self.thumbDiameter * 0.5,
                                 y: (bounds.height - self.thumbDiameter) * 0.5,
@@ -730,6 +745,13 @@ private extension AICoachPreToneStyleSliderView {
         let progressWidth = max(0, progressMaxX - progressGap)
         let changes = {
             self.trackView.frame = trackFrame
+            self.systemSlider.frame = self.bounds.insetBy(dx: -self.sliderTouchInset,
+                                                          dy: -self.sliderTouchInset)
+            self.systemSlider.minimumValue = 0
+            self.systemSlider.maximumValue = Float(max(self.values.count - 1, 0))
+            if self.systemSlider.value != self.sliderPosition {
+                self.systemSlider.setValue(self.sliderPosition, animated: false)
+            }
             self.trackView.layer.cornerRadius = self.trackHeight * 0.5
             self.progressView.isHidden = false
             self.progressView.frame = CGRect(x: progressGap,
@@ -764,5 +786,38 @@ private extension AICoachPreToneStyleSliderView {
         } else {
             changes()
         }
+    }
+}
+
+private final class AICoachPreToneStyleSystemSlider: UISlider {
+    var trackHorizontalInset: CGFloat = 0
+    var trackHeight: CGFloat = 0
+
+    override func trackRect(forBounds bounds: CGRect) -> CGRect {
+        let height = trackHeight > 0 ? trackHeight : super.trackRect(forBounds: bounds).height
+        return CGRect(x: trackHorizontalInset,
+                      y: (bounds.height - height) * 0.5,
+                      width: max(1, bounds.width - trackHorizontalInset * 2),
+                      height: height)
+    }
+
+    override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        updateValue(for: touch)
+        sendActions(for: .touchDown)
+        sendActions(for: .valueChanged)
+        return true
+    }
+
+    override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+        updateValue(for: touch)
+        sendActions(for: .valueChanged)
+        return true
+    }
+
+    private func updateValue(for touch: UITouch) {
+        let trackRect = trackRect(forBounds: bounds)
+        let locationX = touch.location(in: self).x
+        let progress = min(1, max(0, (locationX - trackRect.minX) / max(1, trackRect.width)))
+        value = minimumValue + Float(progress) * (maximumValue - minimumValue)
     }
 }

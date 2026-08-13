@@ -11,6 +11,8 @@ import SnapKit
 class ElaProProgressVM: UIView {
     var backTapBlock: (() -> ())?
     var progressCompleteBlock: (() -> ())?
+    /// 进度变化回调，供外部做阈值判断。
+    var progressDidChangeBlock: ((Int) -> ())?
     /// 是否展示 stepTexts 对应的阶段文案与条目文案。
     var showsStepTexts: Bool = true {
         didSet {
@@ -323,6 +325,11 @@ extension ElaProProgressVM {
         } else {
             layoutIfNeeded()
         }
+        progressDidChangeBlock?(currentProgress)
+    }
+
+    var progressValue: Int {
+        currentProgress
     }
     
     private func notifyProgressCompletedIfNeeded() {

@@ -13,6 +13,8 @@ class MealAdviceVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     
     /// 下餐规划失败 toast 显示时间。
     private let mealPlanFailureToastDuration: CGFloat = 3
+    /// 下餐规划失败 toast 文字最大宽度，与 MCToast 文本实现保持一致。
+    private let mealPlanFailureToastTextMaxWidth: CGFloat = 220
     /// 当前所处的步骤编号。
     private var currentStep = 0
     /// 下餐规划请求的版本号，用来忽略过期回包。
@@ -25,6 +27,12 @@ class MealAdviceVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private var pendingMealPlanNextPlanDict: NSDictionary?
     /// 缓存下餐规划数据所属的请求版本号。
     private var pendingMealPlanNextRequestVersion = 0
+    /// 等待进度达到最低展示比例后再展示的失败文案。
+    private var pendingMealPlanNextFailureMessage: String?
+    /// 失败回退对应的请求版本号。
+    private var pendingMealPlanNextFailureRequestVersion = 0
+    /// 下餐规划失败时，进度页至少展示到该进度后再返回第二步。
+    private let mealPlanFailureMinimumProgress = 20
     /// 当前日志页对应的日期。
     var sDate = Date().todayDate
     /// 当前日志页点击的餐序号，1 开始，0 表示未指定。
@@ -107,6 +115,9 @@ class MealAdviceVC: WHBaseViewVC, UIGestureRecognizerDelegate {
                 self.isMealPlanProgressCompleted = true
                 self.tryFinishMealPlanNextIfReady()
             }
+        }
+        vm.progressDidChangeBlock = { [weak self] progress in
+            self?.tryHandleMealPlanNextFailureIfReady(progress: progress)
         }
         return vm
     }()
@@ -236,6 +247,8 @@ extension MealAdviceVC{
         isMealPlanProgressCompleted = false
         pendingMealPlanNextPlanDict = nil
         pendingMealPlanNextRequestVersion = 0
+        pendingMealPlanNextFailureMessage = nil
+        pendingMealPlanNextFailureRequestVersion = 0
         showProgressStep()
 
         let param: [String: Any] = [
@@ -293,6 +306,8 @@ extension MealAdviceVC{
         isMealPlanProgressCompleted = false
         pendingMealPlanNextPlanDict = nil
         pendingMealPlanNextRequestVersion = 0
+        pendingMealPlanNextFailureMessage = nil
+        pendingMealPlanNextFailureRequestVersion = 0
 
         let vc = MealAdviceNextVC(planDict: planDict, sDate: sDate, mealIndex: mealIndex)
         navigationController?.pushViewController(vc, animated: true)
@@ -304,13 +319,64 @@ extension MealAdviceVC{
     ///   - requestVersion: 本次请求版本号。
     func handleMealPlanNextFailure(message: String, requestVersion: Int) {
         guard requestVersion == mealPlanRequestVersion else { return }
-        isRequestingMealPlan = false
         pendingMealPlanNextPlanDict = nil
         pendingMealPlanNextRequestVersion = 0
+        pendingMealPlanNextFailureMessage = message
+        pendingMealPlanNextFailureRequestVersion = requestVersion
+        tryHandleMealPlanNextFailureIfReady(progress: progressVm.progressValue)
+    }
+
+    /// 失败后等待进度至少展示到指定比例，再提示并返回第二步。
+    /// - Parameter progress: 当前进度百分比。
+    private func tryHandleMealPlanNextFailureIfReady(progress: Int) {
+        guard let message = pendingMealPlanNextFailureMessage else { return }
+        guard pendingMealPlanNextFailureRequestVersion == mealPlanRequestVersion else { return }
+        guard progress >= mealPlanFailureMinimumProgress else { return }
+
+        isRequestingMealPlan = false
+        isMealPlanProgressCompleted = false
+        pendingMealPlanNextPlanDict = nil
+        pendingMealPlanNextRequestVersion = 0
+        pendingMealPlanNextFailureMessage = nil
+        pendingMealPlanNextFailureRequestVersion = 0
         progressVm.pauseProgressAnimation()
-        MCToast.mc_text(message, duration: mealPlanFailureToastDuration)
+        MCToast.mc_text(message, offset: centeredMealPlanToastOffset(for: message), duration: mealPlanFailureToastDuration)
         showSecondStep()
         progressVm.resetProgressState()
+    }
+
+    /// 计算 MCToast 底部 offset，使下餐规划失败提示显示在屏幕中央。
+    /// - Parameter message: toast 文案。
+    /// - Returns: MCToast 所需的底部偏移。
+    private func centeredMealPlanToastOffset(for message: String) -> CGFloat {
+        let font = MCToastConfig.shared.text.font
+        let lineHeight = font.lineHeight * 1.5
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.alignment = .center
+        paragraph.minimumLineHeight = lineHeight
+        paragraph.maximumLineHeight = lineHeight
+
+        var baselineOffset = -(lineHeight - font.lineHeight) / 2
+        if #unavailable(iOS 17) {
+            baselineOffset /= 2
+        }
+
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.attributedText = NSAttributedString(
+            string: message,
+            attributes: [
+                .font: font,
+                .paragraphStyle: paragraph,
+                .baselineOffset: -baselineOffset
+            ]
+        )
+        let labelSize = label.sizeThatFits(
+            CGSize(width: mealPlanFailureToastTextMaxWidth, height: .greatestFiniteMagnitude)
+        )
+        let padding = MCToastConfig.shared.text.padding
+        let toastHeight = labelSize.height + padding.top + padding.bottom
+        return max(0, (UIScreen.main.bounds.height - toastHeight) * 0.5)
     }
 
     /// 取消当前请求并重置进度页状态。
@@ -320,6 +386,8 @@ extension MealAdviceVC{
         isMealPlanProgressCompleted = false
         pendingMealPlanNextPlanDict = nil
         pendingMealPlanNextRequestVersion = 0
+        pendingMealPlanNextFailureMessage = nil
+        pendingMealPlanNextFailureRequestVersion = 0
         progressVm.pauseProgressAnimation()
         progressVm.resetProgressState()
     }

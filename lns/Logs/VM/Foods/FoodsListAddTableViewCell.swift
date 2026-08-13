@@ -398,9 +398,10 @@ extension FoodsListAddTableViewCell{
         lineView.isHidden = true
         bottomView.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(21))
-            make.top.equalTo(kFitWidth(12))
-            make.bottom.equalTo(kFitWidth(-12))
+            make.top.equalTo(kFitWidth(6))
+            make.bottom.equalTo(kFitWidth(-6))
             make.right.equalTo(kFitWidth(-21))
+//            make.left.right.equalToSuperview()
         }
         foodsNameLabel.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(20))

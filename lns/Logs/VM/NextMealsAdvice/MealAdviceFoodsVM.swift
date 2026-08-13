@@ -26,29 +26,51 @@ fileprivate enum MealAdviceFoodListType {
     }
 }
 
+private final class MealAdviceChipCloseButton: UIButton {
+    var hitSize = CGSize(width: MealAdviceSelectedFoodChipView.chipHeight, height: MealAdviceSelectedFoodChipView.chipHeight)
+
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        let hitWidth = max(bounds.width, hitSize.width)
+        let hitHeight = max(bounds.height, hitSize.height)
+        let expandedBounds = bounds.insetBy(
+            dx: -(hitWidth - bounds.width) * 0.5,
+            dy: -(hitHeight - bounds.height) * 0.5
+        )
+        return expandedBounds.contains(point)
+    }
+}
+
 final class MealAdviceSelectedFoodChipView: UIView {
+
+    /// 标签固定高度。
+    static let chipHeight = kFitWidth(28)
+    /// 单个标签最大宽度。
+    static let maxChipWidth = kFitWidth(155)
+    /// 标签标题字体。
+    private static let titleFont = UIFont.systemFont(ofSize: 12, weight: .regular)
 
     /// 标签标题文本。
     private let titleLabel = UILabel()
     /// 删除标签的关闭按钮。
-    private let closeButton = UIButton(type: .custom)
+    private let closeButton = MealAdviceChipCloseButton(type: .custom)
     /// 点击关闭按钮后的回调。
     var onRemove: (() -> Void)?
 
     /// 使用标题初始化一个已选食物标签。
     init(title: String) {
         super.init(frame: .zero)
-        backgroundColor = .white
-        layer.cornerRadius = kFitWidth(16)
+        backgroundColor = .COLOR_BG_WHITE
+        layer.cornerRadius = kFitWidth(14)
         clipsToBounds = true
 
         titleLabel.text = title
         titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        titleLabel.font = .systemFont(ofSize: 13, weight: .regular)
+        titleLabel.font = Self.titleFont
         titleLabel.lineBreakMode = .byTruncatingTail
 
         closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
         closeButton.tintColor = .COLOR_TEXT_TITLE_0f1214_50
+        closeButton.hitSize = CGSize(width: Self.chipHeight, height: Self.chipHeight)
         closeButton.addTarget(self, action: #selector(removeAction), for: .touchUpInside)
 
         addSubview(titleLabel)
@@ -64,15 +86,27 @@ final class MealAdviceSelectedFoodChipView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        let buttonSize = kFitWidth(14)
-        let closeX = bounds.width - kFitWidth(10) - buttonSize
+        let buttonSize = kFitWidth(6)
+        let closeX = bounds.width - kFitWidth(12) - buttonSize
         closeButton.frame = CGRect(x: closeX, y: (bounds.height - buttonSize) * 0.5, width: buttonSize, height: buttonSize)
-        titleLabel.frame = CGRect(x: kFitWidth(12), y: 0, width: max(0, closeX - kFitWidth(10) - kFitWidth(12)), height: bounds.height)
+        titleLabel.frame = CGRect(x: kFitWidth(12), y: 0, width: max(0, closeX - kFitWidth(3) - kFitWidth(12)), height: bounds.height)
     }
 
     /// 触发移除回调。
     @objc private func removeAction() {
         onRemove?()
+    }
+
+    /// 根据食物名称计算标签宽度，并限制最大宽度。
+    static func preferredWidth(for title: String) -> CGFloat {
+        let titleWidth = (title as NSString).boundingRect(
+            with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: chipHeight),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            attributes: [.font: titleFont],
+            context: nil
+        ).width
+        let horizontalPadding = kFitWidth(12) + kFitWidth(3) + kFitWidth(6) + kFitWidth(12)
+        return min(ceil(titleWidth) + horizontalPadding, maxChipWidth)
     }
 }
 
@@ -465,8 +499,8 @@ extension MealAdviceFoodsVM {
             make.top.equalTo(searchBgView.snp.bottom).offset(kFitWidth(25))
         }
         listHeaderView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(16))
-            make.right.equalTo(kFitWidth(-16))
+            make.left.equalTo(kFitWidth(21))
+            make.right.equalTo(kFitWidth(-21))
             make.top.equalTo(selectedScrollView.snp.bottom).offset(kFitWidth(16))
             make.height.equalTo(kFitWidth(28))
         }
@@ -484,8 +518,9 @@ extension MealAdviceFoodsVM {
             make.centerX.equalTo(allFoodsButton.snp.centerX)
         }
         tableView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(16))
-            make.right.equalTo(kFitWidth(-16))
+//            make.left.equalTo(kFitWidth(16))
+//            make.right.equalTo(kFitWidth(-16))
+            make.left.right.equalToSuperview()
             make.top.equalTo(listHeaderView.snp.bottom).offset(kFitWidth(4))
             make.bottom.equalTo(confirmButton.snp.top)//.offset(-kFitWidth(16))
         }
@@ -621,7 +656,7 @@ extension MealAdviceFoodsVM {
         selectedChipViews.forEach { $0.removeFromSuperview() }
         selectedChipViews.removeAll()
 
-        let chipHeight = kFitWidth(32)
+        let chipHeight = MealAdviceSelectedFoodChipView.chipHeight
         let hasSelected = selectedFoodsArray.count > 0
         selectedScrollView.isHidden = !hasSelected
 
@@ -633,18 +668,14 @@ extension MealAdviceFoodsVM {
             return
         }
 
-        let columnSpacing = kFitWidth(8)
+        let columnSpacing = kFitWidth(12)
         let rowSpacing = kFitWidth(12)
-        let columnCount = 3
-        let rowCount = (selectedFoodsArray.count + columnCount - 1) / columnCount
-        let gridHeight = CGFloat(rowCount) * chipHeight + CGFloat(rowCount - 1) * rowSpacing
-        selectedScrollHeightConstraint?.update(offset: gridHeight)
-        layoutIfNeeded()
-
         let availableWidth = selectedScrollView.bounds.width > 0
             ? selectedScrollView.bounds.width
             : SCREEN_WIDHT - kFitWidth(32)
-        let chipWidth = (availableWidth - CGFloat(columnCount - 1) * columnSpacing) / CGFloat(columnCount)
+
+        var currentX: CGFloat = 0
+        var currentY: CGFloat = 0
 
         for index in 0..<selectedFoodsArray.count {
             let dict = selectedFoodsArray[index] as? NSDictionary ?? [:]
@@ -653,15 +684,25 @@ extension MealAdviceFoodsVM {
             chip.onRemove = { [weak self] in
                 self?.removeSelectedFood(dict: dict)
             }
-            let row = index / columnCount
-            let column = index % columnCount
-            let chipX = CGFloat(column) * (chipWidth + columnSpacing)
-            let chipY = CGFloat(row) * (chipHeight + rowSpacing)
-            chip.frame = CGRect(x: chipX, y: chipY, width: chipWidth, height: chipHeight)
+
+            let chipWidth = min(
+                MealAdviceSelectedFoodChipView.preferredWidth(for: title),
+                availableWidth
+            )
+            if currentX > 0, currentX + chipWidth > availableWidth {
+                currentX = 0
+                currentY += chipHeight + rowSpacing
+            }
+
+            chip.frame = CGRect(x: currentX, y: currentY, width: chipWidth, height: chipHeight)
             selectedScrollView.addSubview(chip)
             selectedChipViews.append(chip)
+            currentX += chipWidth + columnSpacing
         }
-        selectedScrollView.contentSize = CGSize(width: availableWidth, height: gridHeight)
+
+        let contentHeight = currentY + chipHeight
+        selectedScrollHeightConstraint?.update(offset: contentHeight)
+        selectedScrollView.contentSize = CGSize(width: availableWidth, height: contentHeight)
         setNeedsLayout()
         layoutIfNeeded()
     }
@@ -1009,7 +1050,7 @@ extension MealAdviceFoodsVM: UITableViewDelegate, UITableViewDataSource {
 
     /// 固定列表行高。
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return kFitWidth(79)
+        return kFitWidth(77)
     }
 
 }
