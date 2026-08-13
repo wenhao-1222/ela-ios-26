@@ -76,6 +76,7 @@ class MealAdviceVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     /// 第一步的餐数选择页面。
     lazy var mealsNumVm: MealsNumVM = {
         let vm = MealsNumVM.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
+        vm.configureDefaultSelection(sDate: sDate)
         vm.nextBlock = { [weak self] in
             self?.showSecondStep()
         }

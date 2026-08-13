@@ -92,8 +92,7 @@ extension MealsNumVM{
         pickerView.addSubview(unitPreLabel)
         pickerView.addSubview(unitAfterLabel)
         
-        pickerView.selectRow(2, inComponent: 0, animated: false)
-        QuestinonaireMsgModel.shared.mealsPerDay = "3"
+        configureDefaultSelection(sDate: Date().todayDate)
         
         setConstrait()
     }
@@ -132,6 +131,42 @@ extension MealsNumVM{
     }
 }
 extension MealsNumVM{
+    private var maxMealsNum: Int {
+        let mealsNum = UserInfoModel.shared.mealsNumber
+        return mealsNum > 0 ? mealsNum : 6
+    }
+    func configureDefaultSelection(sDate:String) {
+        let totalMealsNum = maxMealsNum
+        let eatMealsNum = eatMealsNumForLocalLogs(sDate: sDate)
+        let defaultMealsNum = max(totalMealsNum - eatMealsNum, 1)
+        pickerView.reloadAllComponents()
+        selectMealsNum(defaultMealsNum)
+    }
+    private func selectMealsNum(_ mealsNum:Int) {
+        let boundedMealsNum = min(max(mealsNum, 1), maxMealsNum)
+        pickerView.selectRow(boundedMealsNum - 1, inComponent: 0, animated: false)
+        QuestinonaireMsgModel.shared.mealsPerDay = "\(boundedMealsNum)"
+    }
+    private func eatMealsNumForLocalLogs(sDate:String) -> Int {
+        guard let logsModel = LogsSQLiteManager.getInstance().getLogsByDate(sDate: sDate) else {
+            return 0
+        }
+        let mealsArray = WHUtils.getArrayFromJSONString(jsonString: logsModel.foods)
+        var eatMealsNum = 0
+        for mealsItem in mealsArray {
+            let foodsArray = mealsItem as? NSArray ?? []
+            let hasEatFoods = foodsArray.contains { item in
+                let foodsDict = item as? NSDictionary ?? [:]
+                let state = foodsDict.stringValueForKey(key: "state")
+                let status = foodsDict.stringValueForKey(key: "status")
+                return state == "1" || state == "1.0" || status == "1" || status == "1.0"
+            }
+            if hasEatFoods {
+                eatMealsNum += 1
+            }
+        }
+        return eatMealsNum
+    }
     func getDataData() {
         let index = pickerView.selectedRow(inComponent: 0)
         QuestinonaireMsgModel.shared.mealsPerDay = "\(index + 1)"
@@ -147,7 +182,7 @@ extension MealsNumVM:UIPickerViewDataSource,UIPickerViewDelegate{
         return 1
     }
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return 6
+        return maxMealsNum
     }
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
         return kFitWidth(60)

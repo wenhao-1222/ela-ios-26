@@ -98,6 +98,27 @@ private final class MealAdviceFoodsListAddTableViewCell: FoodsListAddTableViewCe
         contentView.backgroundColor = .clear
         bottomView.backgroundColor = isActive ? .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT : .COLOR_CARD_BG_WHITE
     }
+
+    func applyMealAdviceLayout() {
+        updateConstraitForNextMeal()
+
+        let titleHeight = kFitWidth(18)
+        let numberHeight = kFitWidth(18)
+        let labelGap = kFitWidth(2)
+        let labelsHeight = titleHeight + labelGap + numberHeight
+
+        foodsNameLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.top.equalTo(bottomView.snp.centerY).offset(-labelsHeight * 0.5)
+            make.right.equalTo(kFitWidth(-50))
+            make.height.equalTo(titleHeight)
+        }
+        numberLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.top.equalTo(foodsNameLabel.snp.bottom).offset(labelGap)
+            make.height.equalTo(numberHeight)
+        }
+    }
 }
 
 final class MealAdviceFoodsVM: UIView {
@@ -140,7 +161,7 @@ final class MealAdviceFoodsVM: UIView {
     /// 最近搜索暂无结果时使用的底部提示视图。
     private lazy var recentSearchFooterVm = FoodsListFooterVM(frame: .zero)
     /// 表格顶部留白高度，避免首个 cell 被顶部渐变遮住。
-    private let topTableHeaderHeight = kFitWidth(35)
+    private let topTableHeaderHeight = kFitWidth(10)
 
     /// 用于记录表格当前位置，方便刷新后恢复滚动位置。
     private struct TableViewAnchor {
@@ -386,11 +407,11 @@ extension MealAdviceFoodsVM {
         searchIconImg.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(searchAction)))
         addSubview(selectedTitleLabel)
         addSubview(selectedScrollView)
+        addSubview(tableView)
         addSubview(listHeaderView)
         listHeaderView.addSubview(sectionTitleLabel)
         listHeaderView.addSubview(tabButtonsStackView)
         listHeaderView.addSubview(tabLineView)
-        addSubview(tableView)
         tableView.backgroundColor = .clear
         tableView.addSubview(noDataView)
         tableView.addSubview(recentSearchNoDataVm)
@@ -476,7 +497,7 @@ extension MealAdviceFoodsVM {
         }
         topGradientView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(tableView.snp.top)
+            make.top.equalTo(tableView.snp.top)//.offset(kFitWidth(18))
             make.height.equalTo(topTableHeaderHeight)
         }
         bottomGradientView.snp.makeConstraints { make in
@@ -934,8 +955,6 @@ extension MealAdviceFoodsVM: UITableViewDelegate, UITableViewDataSource {
     /// 构建列表单元格并填充对应数据。
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FoodsListAddTableViewCell") as? MealAdviceFoodsListAddTableViewCell
-        cell?.updateConstraitForNextMeal()
-        
         switch currentListType {
         case .recent:
             let dict = filteredRecentFoodsArray[indexPath.row] as? NSDictionary ?? [:]
@@ -959,7 +978,9 @@ extension MealAdviceFoodsVM: UITableViewDelegate, UITableViewDataSource {
 
     /// 下餐规划页只保留圆角内容卡片的背景，cell 本身保持透明，避免影响普通食物列表。
     private func applyNextMealCellBackground(to cell: FoodsListAddTableViewCell?) {
-        (cell as? MealAdviceFoodsListAddTableViewCell)?.applyMealAdviceBackground(isActive: cell?.isHighlighted == true || cell?.isSelected == true)
+        let mealAdviceCell = cell as? MealAdviceFoodsListAddTableViewCell
+        mealAdviceCell?.applyMealAdviceLayout()
+        mealAdviceCell?.applyMealAdviceBackground(isActive: cell?.isHighlighted == true || cell?.isSelected == true)
     }
 
     /// 配置单元格的选中态与禁用态图标。
