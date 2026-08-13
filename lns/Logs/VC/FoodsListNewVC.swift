@@ -16,6 +16,7 @@ class FoodsListNewVC: WHBaseViewVC {
     var isFromMerge = false//是否为融合食物，融合食物没有AI识别
     var mealAdviceSDate = Date().todayDate
     var mealAdviceMealIndex = 0
+    var shouldShowMealAdviceEntry = false
     var sourceType = ADD_FOODS_SOURCE.other
     
     var isFirstLoad = true
@@ -136,6 +137,7 @@ class FoodsListNewVC: WHBaseViewVC {
         let vm = FoodsListAddVM.init(frame: CGRect.init(x: 0, y: self.topTypeVM.frame.maxY, width: 0, height: 0))
         vm.controller = self
         vm.isFromMerge = self.isFromMerge
+        vm.shouldShowMealAdviceEntry = self.shouldShowMealAdviceEntry
         vm.createFoodsButton.addTarget(self, action: #selector(createFoodsActino), for: .touchUpInside)
         vm.createFoodsSoonButton.addTarget(self, action: #selector(createFoodsFastAction), for: .touchUpInside)
         vm.createMealsButton.addTarget(self, action: #selector(createMealsAction), for: .touchUpInside)
@@ -296,10 +298,7 @@ extension FoodsListNewVC{
     }
     @objc func nextMealAdviceAction() {
         self.naviVm.textField.resignFirstResponder()
-        let vc = MealAdviceVC()
-        vc.sDate = mealAdviceSDate
-        vc.mealIndex = mealAdviceMealIndex
-        self.navigationController?.pushViewController(vc, animated: true)
+        ElaMealAdviceProVC.pushMealAdviceFlow(from: self, sDate: mealAdviceSDate, mealIndex: mealAdviceMealIndex)
     }
     @objc func mergeFoodsAction() {
         self.naviVm.textField.resignFirstResponder()

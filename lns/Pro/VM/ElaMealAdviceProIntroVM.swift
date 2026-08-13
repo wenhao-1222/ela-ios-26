@@ -16,9 +16,9 @@ class ElaMealAdviceProIntroVM: UIView {
     }
 
     private let features: [Feature] = [
-        Feature(title: "提前规划", desc: "提前分配剩余目标，不再临时纠结每餐吃多少", iconName: nil),
-        Feature(title: "合理分配", desc: "防止单餐摄入过多或不足，造成胃口波动", iconName: nil),
-        Feature(title: "告别反复试算", desc: "热量、碳水、蛋白质和脂肪同步匹配目标", iconName: nil)
+        Feature(title: "提前规划", desc: "提前分配剩余目标，不再临时纠结每餐吃多少", iconName: "next_meal_pro_1"),
+        Feature(title: "合理分配", desc: "防止单餐摄入过多或不足，造成胃口波动", iconName: "next_meal_pro_2"),
+        Feature(title: "告别反复试算", desc: "热量、碳水、蛋白质和脂肪同步匹配目标", iconName: "next_meal_pro_3")
     ]
 
     override init(frame: CGRect) {
@@ -151,12 +151,12 @@ private extension ElaMealAdviceProIntroVM {
         let titleLabel = UILabel()
         titleLabel.text = feature.title
         titleLabel.textColor = UIColor.COLOR_TEXT_TITLE_0f1214
-        titleLabel.font = .systemFont(ofSize: 16, weight: .semibold)
+        titleLabel.font = .systemFont(ofSize: 14, weight: .medium)
 
         let descLabel = UILabel()
         descLabel.text = feature.desc
         descLabel.textColor = UIColor.COLOR_TEXT_TITLE_0f1214_50
-        descLabel.font = .systemFont(ofSize: 13, weight: .regular)
+        descLabel.font = .systemFont(ofSize: 12, weight: .regular)
         descLabel.numberOfLines = 0
 
         let divider = UIView()
@@ -178,6 +178,7 @@ private extension ElaMealAdviceProIntroVM {
             make.left.equalTo(kFitWidth(64))
             make.right.equalTo(kFitWidth(-18))
             make.top.equalTo(kFitWidth(12))
+            make.height.equalTo(kFitWidth(21))
         }
 
         descLabel.snp.makeConstraints { make in

@@ -205,10 +205,7 @@ extension FoodsListVC{
     }
     @objc func nextMealAdviceAction(){
         self.naviVm.textField.resignFirstResponder()
-        let vc = MealAdviceVC()
-        vc.sDate = mealAdviceSDate
-        vc.mealIndex = mealAdviceMealIndex
-        self.navigationController?.pushViewController(vc, animated: true)
+        ElaMealAdviceProVC.pushMealAdviceFlow(from: self, sDate: mealAdviceSDate, mealIndex: mealAdviceMealIndex)
     }
     @objc func createFoodsNotifi(){
         myFoodsArray = UserDefaults.getMyFoods()

@@ -28,6 +28,7 @@ class FoodsListAddVM: UIView {
     let selfHeight = kFitWidth(119)
     var foodsType = "all"
     var isFromMerge = false
+    var shouldShowMealAdviceEntry = false
     weak var controller: WHBaseViewVC?
     
     override init(frame:CGRect){
@@ -224,17 +225,21 @@ extension FoodsListAddVM{
     
     @objc func adviceFoodsAction() {
         window?.endEditing(true)
-        let vc = ElaMealAdviceProVC()
-        
-//        let vc = MealAdviceVC()
-//        if let foodsVC = controller as? FoodsListNewVC {
-//            vc.sDate = foodsVC.mealAdviceSDate
-//            vc.mealIndex = foodsVC.mealAdviceMealIndex
-//        } else if let foodsVC = controller as? FoodsListVC {
-//            vc.sDate = foodsVC.mealAdviceSDate
-//            vc.mealIndex = foodsVC.mealAdviceMealIndex
-//        }
-        controller?.navigationController?.pushViewController(vc, animated: true)
+        let mealAdviceContext = currentMealAdviceContext()
+        ElaMealAdviceProVC.pushMealAdviceFlow(
+            from: controller,
+            sDate: mealAdviceContext.sDate,
+            mealIndex: mealAdviceContext.mealIndex
+        )
+    }
+
+    private func currentMealAdviceContext() -> (sDate: String, mealIndex: Int) {
+        if let foodsVC = controller as? FoodsListNewVC {
+            return (foodsVC.mealAdviceSDate, foodsVC.mealAdviceMealIndex)
+        } else if let foodsVC = controller as? FoodsListVC {
+            return (foodsVC.mealAdviceSDate, foodsVC.mealAdviceMealIndex)
+        }
+        return (Date().todayDate, 0)
     }
     
     func refreshButtonFrame() {
@@ -296,14 +301,16 @@ extension FoodsListAddVM{
             let btnWidth = kFitWidth(99)//(SCREEN_WIDHT-kFitWidth(48))/3
             switch type{
             case .all: //快速添加、 AI识别 、下餐规划、 创建食物
+                let actionBtnWidth = shouldShowMealAdviceEntry ? kFitWidth(99) : kFitWidth(109)
                 createFoodsButton.isHidden = false
                 createFoodsSoonButton.isHidden = false
                 aiFoodsButton.isHidden = false
-                adviceFoodsButton.isHidden = false
-                createFoodsSoonButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
-                aiFoodsButton.frame = CGRect.init(x: createFoodsSoonButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
-                adviceFoodsButton.frame = CGRect.init(x: aiFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
-                createFoodsButton.frame = CGRect.init(x: adviceFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                adviceFoodsButton.isHidden = !shouldShowMealAdviceEntry
+                createFoodsSoonButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: actionBtnWidth, height: kFitWidth(86))
+                aiFoodsButton.frame = CGRect.init(x: createFoodsSoonButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: actionBtnWidth, height: kFitWidth(86))
+                adviceFoodsButton.frame = CGRect.init(x: aiFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: actionBtnWidth, height: kFitWidth(86))
+                let createFoodsX = shouldShowMealAdviceEntry ? adviceFoodsButton.frame.maxX+kFitWidth(8) : aiFoodsButton.frame.maxX+kFitWidth(8)
+                createFoodsButton.frame = CGRect.init(x: createFoodsX, y: kFitWidth(17), width: actionBtnWidth, height: kFitWidth(86))
                 scrollView.contentSize = CGSize(width: createFoodsButton.frame.maxX+kFitWidth(16), height: scrollView.frame.height)
             case .my://创建食物 、 食物融合
                 createFoodsButton.isHidden = false
@@ -326,15 +333,16 @@ extension FoodsListAddVM{
                     createFoodsSoonButton.frame = CGRect.init(x: createFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
                     scrollView.contentSize = CGSize(width: SCREEN_WIDHT, height: scrollView.frame.height)
                 }else{
-                    let btnWidth = kFitWidth(99)//(SCREEN_WIDHT-kFitWidth(48))/3
+                    let actionBtnWidth = shouldShowMealAdviceEntry ? kFitWidth(99) : kFitWidth(109)//(SCREEN_WIDHT-kFitWidth(48))/3
                     createFoodsButton.isHidden = false
                     createFoodsSoonButton.isHidden = false
                     aiFoodsButton.isHidden = false
-                    adviceFoodsButton.isHidden = false
-                    createFoodsSoonButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
-                    aiFoodsButton.frame = CGRect.init(x: createFoodsSoonButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
-                    adviceFoodsButton.frame = CGRect.init(x: aiFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
-                    createFoodsButton.frame = CGRect.init(x: adviceFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: btnWidth, height: kFitWidth(86))
+                    adviceFoodsButton.isHidden = !shouldShowMealAdviceEntry
+                    createFoodsSoonButton.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(17), width: actionBtnWidth, height: kFitWidth(86))
+                    aiFoodsButton.frame = CGRect.init(x: createFoodsSoonButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: actionBtnWidth, height: kFitWidth(86))
+                    adviceFoodsButton.frame = CGRect.init(x: aiFoodsButton.frame.maxX+kFitWidth(8), y: kFitWidth(17), width: actionBtnWidth, height: kFitWidth(86))
+                    let createFoodsX = shouldShowMealAdviceEntry ? adviceFoodsButton.frame.maxX+kFitWidth(8) : aiFoodsButton.frame.maxX+kFitWidth(8)
+                    createFoodsButton.frame = CGRect.init(x: createFoodsX, y: kFitWidth(17), width: actionBtnWidth, height: kFitWidth(86))
                     scrollView.contentSize = CGSize(width: createFoodsButton.frame.maxX+kFitWidth(16), height: scrollView.frame.height)
                 }
             case .my://创建食物 、 食物融合

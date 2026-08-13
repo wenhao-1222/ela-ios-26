@@ -11,6 +11,10 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
     
     var choiceBlock:(()->())?
     var addBlock:(()->())?
+    
+    var bgColor = UIColor.COLOR_CARD_BG_WHITE
+    
+    
     private let selectionButton = UIButton(type: .custom)
     
     required init?(coder aDecoder: NSCoder) {
@@ -38,14 +42,14 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
         super.setSelected(selected, animated: animated)
 
         let shouldHighlight = selected || isHighlighted
-        backgroundColor = shouldHighlight ? .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT : .COLOR_CARD_BG_WHITE
+//        backgroundColor = shouldHighlight ? .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT : .COLOR_CARD_BG_WHITE
         bottomView.backgroundColor = shouldHighlight ? .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT : .COLOR_CARD_BG_WHITE
 //        selectionButton.backgroundColor = shouldHighlight ? .COLOR_BUTTON_HIGHLIGHT_BG_GRAY_LIGHT : .clear
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        backgroundColor = .COLOR_CARD_BG_WHITE
+//        backgroundColor = .COLOR_CARD_BG_WHITE
         bottomView.backgroundColor = .COLOR_CARD_BG_WHITE
 //        selectionButton.backgroundColor = .clear
         selectionButton.setImage(nil, for: .normal)
@@ -385,6 +389,27 @@ extension FoodsListAddTableViewCell{
         numberLabel.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(16))
             make.top.equalTo(kFitWidth(42))
+        }
+    }
+    func updateConstraitForNextMeal() {
+        self.backgroundColor = .clear
+        bottomView.layer.cornerRadius = kFitWidth(12)
+        bottomView.clipsToBounds = true
+        lineView.isHidden = true
+        bottomView.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(21))
+            make.top.equalTo(kFitWidth(12))
+            make.bottom.equalTo(kFitWidth(-12))
+            make.right.equalTo(kFitWidth(-21))
+        }
+        foodsNameLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.top.equalTo(kFitWidth(12))
+            make.right.equalTo(kFitWidth(-50))
+        }
+        numberLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(20))
+            make.top.equalTo(foodsNameLabel.snp.bottom).offset(kFitWidth(2))
         }
     }
 }

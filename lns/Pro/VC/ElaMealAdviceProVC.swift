@@ -10,6 +10,8 @@ import SnapKit
 import MCToast
 
 class ElaMealAdviceProVC: WHBaseViewVC {
+    private static let memberIntroShownKeyPrefix = "ela_meal_advice_pro_member_intro_shown"
+
     private enum ProIapStatusState {
         case idle
         case loading
@@ -23,11 +25,30 @@ class ElaMealAdviceProVC: WHBaseViewVC {
     private var shouldProceedPurchaseAfterIapStatusLoaded = false
     private var agreementAlertVm: ElaProAgreementAlertVM?
     private var purchaseConfirmAlertVm: GuidanceProPurchasedConfirmAlertVM?
-    private var backButtonLeftConstraint: Constraint?
-    private var backButtonTopConstraint: Constraint?
 
     var priceBizType = "6"
+    var sDate = Date().todayDate
+    var mealIndex = 0
     var purchaseSuccessBlock: (() -> Void)?
+
+    static func shouldEnterProPageForCurrentUser() -> Bool {
+        guard UserInfoModel.shared.vipModel.status == .valid else { return true }
+        return !hasShownMemberIntroForCurrentUser()
+    }
+
+    static func pushMealAdviceFlow(from controller: UIViewController?, sDate: String, mealIndex: Int, animated: Bool = true) {
+        guard let navigationController = controller?.navigationController else { return }
+
+        if shouldEnterProPageForCurrentUser() {
+            let vc = ElaMealAdviceProVC()
+            vc.sDate = sDate
+            vc.mealIndex = mealIndex
+            navigationController.pushViewController(vc, animated: animated)
+        } else {
+            let vc = makeMealAdviceVC(sDate: sDate, mealIndex: mealIndex)
+            navigationController.pushViewController(vc, animated: animated)
+        }
+    }
 
     private lazy var introVm = ElaMealAdviceProIntroVM(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
 
@@ -55,6 +76,13 @@ class ElaMealAdviceProVC: WHBaseViewVC {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "habit_guide_back_icon"), for: .normal)
         button.addTarget(self, action: #selector(backButtonTapAction), for: .touchUpInside)
+        return button
+    }()
+
+    private lazy var closeButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setImage(UIImage(named: "ela_pro_close_icon"), for: .normal)
+        button.addTarget(self, action: #selector(closeButtonTapAction), for: .touchUpInside)
         return button
     }()
 
@@ -90,8 +118,12 @@ class ElaMealAdviceProVC: WHBaseViewVC {
         super.viewDidLoad()
         VIPModel.shared.updateSubscriptionBizType(priceBizType)
         initUI()
-        requestProIapStatusIfNeeded(showLoading: false)
-        priceVm.loadProductsOnViewDidLoad()
+        if isCurrentUserMember {
+            Self.markMemberIntroShownForCurrentUser()
+        } else {
+            requestProIapStatusIfNeeded(showLoading: false)
+            priceVm.loadProductsOnViewDidLoad()
+        }
         EventLogUtils().sendEventLogRequest(eventName: .PAGE_VIEW, scenarioType: .ela_pro_view, text: priceBizType)
     }
 
@@ -107,17 +139,43 @@ class ElaMealAdviceProVC: WHBaseViewVC {
 }
 
 private extension ElaMealAdviceProVC {
+    static func memberIntroShownKeyForCurrentUser() -> String {
+        let uid = UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !uid.isEmpty else { return memberIntroShownKeyPrefix }
+        return "\(uid)_\(memberIntroShownKeyPrefix)"
+    }
+
+    static func hasShownMemberIntroForCurrentUser() -> Bool {
+        return UserDefaults.standard.bool(forKey: memberIntroShownKeyForCurrentUser())
+    }
+
+    static func markMemberIntroShownForCurrentUser() {
+        UserDefaults.standard.set(true, forKey: memberIntroShownKeyForCurrentUser())
+    }
+
+    static func makeMealAdviceVC(sDate: String, mealIndex: Int) -> MealAdviceVC {
+        let vc = MealAdviceVC()
+        vc.sDate = sDate
+        vc.mealIndex = mealIndex
+        return vc
+    }
+
+    var isCurrentUserMember: Bool {
+        return UserInfoModel.shared.vipModel.status == .valid
+    }
+
     func initUI() {
         addELAFlowingBackground()
 
         view.addSubview(scrollViewBase)
         view.addSubview(backButton)
+        view.addSubview(closeButton)
         view.addSubview(nextButton)
         view.addSubview(purchaseLoadingMaskView)
         purchaseLoadingMaskView.addSubview(purchaseLoadingIndicator)
 
         scrollViewBase.frame = CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
-        scrollViewBase.contentSize = CGSize(width: SCREEN_WIDHT * 2, height: 0)
+        scrollViewBase.contentSize = CGSize(width: isCurrentUserMember ? SCREEN_WIDHT : SCREEN_WIDHT * 2, height: 0)
         scrollViewBase.isPagingEnabled = true
         scrollViewBase.showsHorizontalScrollIndicator = false
         scrollViewBase.isScrollEnabled = false
@@ -125,11 +183,19 @@ private extension ElaMealAdviceProVC {
         scrollViewBase.delegate = self
         scrollViewBase.backgroundColor = .clear
         scrollViewBase.addSubview(introVm)
-        scrollViewBase.addSubview(priceVm)
+        if !isCurrentUserMember {
+            scrollViewBase.addSubview(priceVm)
+        }
 
         backButton.snp.makeConstraints { make in
-            backButtonLeftConstraint = make.left.equalTo(kFitWidth(12.5)).constraint
-            backButtonTopConstraint = make.top.equalTo(statusBarHeight + kFitWidth(5)).constraint
+            make.left.equalTo(kFitWidth(12.5))
+            make.top.equalTo(statusBarHeight + kFitWidth(5))
+            make.width.height.equalTo(kFitWidth(35))
+        }
+
+        closeButton.snp.makeConstraints { make in
+            make.right.equalTo(kFitWidth(-12.5))
+            make.top.equalTo(statusBarHeight + kFitWidth(5))
             make.width.height.equalTo(kFitWidth(35))
         }
 
@@ -153,18 +219,24 @@ private extension ElaMealAdviceProVC {
 
     @objc func nextButtonTapAction() {
         guard !isStepScrollAnimating, currentIndex == 0 else { return }
+        if isCurrentUserMember {
+            Self.markMemberIntroShownForCurrentUser()
+            pushMealAdviceAndRemoveSelf()
+            return
+        }
+
         currentIndex = 1
         showCurrentStep(animated: true)
     }
 
     @objc func backButtonTapAction() {
         guard !isStepScrollAnimating else { return }
-        if currentIndex == 1 {
-            currentIndex = 0
-            showCurrentStep(animated: true)
-        } else {
-            backTapAction()
-        }
+        backTapAction()
+    }
+
+    @objc func closeButtonTapAction() {
+        guard !isStepScrollAnimating, currentIndex == 1 else { return }
+        backTapAction()
     }
 
     func showCurrentStep(animated: Bool) {
@@ -179,29 +251,34 @@ private extension ElaMealAdviceProVC {
 
     func updateChromeForCurrentStep(animated: Bool) {
         let isPriceStep = currentIndex == 1
-        let backImageName = isPriceStep ? "ela_pro_close_icon" : "habit_guide_back_icon"
-        let backLeft = isPriceStep ? SCREEN_WIDHT - kFitWidth(12.5) - kFitWidth(35) : kFitWidth(12.5)
-        let backTop = statusBarHeight + kFitWidth(5)
         let nextTransform = isPriceStep ? CGAffineTransform(translationX: 0, y: kFitWidth(90) + WHUtils().getBottomSafeAreaHeight()) : .identity
         let nextAlpha: CGFloat = isPriceStep ? 0 : 1
 
         let apply = {
-            self.backButton.setImage(UIImage(named: backImageName), for: .normal)
-            self.backButtonLeftConstraint?.update(offset: backLeft)
-            self.backButtonTopConstraint?.update(offset: backTop)
+            self.backButton.alpha = isPriceStep ? 0 : 1
+            self.closeButton.alpha = isPriceStep ? 1 : 0
             self.nextButton.transform = nextTransform
             self.nextButton.alpha = nextAlpha
             self.view.layoutIfNeeded()
         }
 
+        backButton.isHidden = false
+        closeButton.isHidden = false
+        backButton.isUserInteractionEnabled = !isPriceStep && !isStepScrollAnimating
+        closeButton.isUserInteractionEnabled = isPriceStep && !isStepScrollAnimating
         nextButton.isUserInteractionEnabled = !isPriceStep && !isStepScrollAnimating
 
         if animated {
             UIView.animate(withDuration: 0.22) {
                 apply()
+            } completion: { _ in
+                self.backButton.isHidden = isPriceStep
+                self.closeButton.isHidden = !isPriceStep
             }
         } else {
             apply()
+            backButton.isHidden = isPriceStep
+            closeButton.isHidden = !isPriceStep
         }
     }
 
@@ -222,10 +299,25 @@ private extension ElaMealAdviceProVC {
     }
 
     func handlePurchaseSuccess() {
+        Self.markMemberIntroShownForCurrentUser()
         requestLatestVipInfo()
         NotificationCenter.default.post(name: NOTIFI_NAME_REFRESH_DIET_PLAN_STATUS, object: nil)
         purchaseSuccessBlock?()
-        backTapAction()
+        DispatchQueue.main.async { [weak self] in
+            self?.pushMealAdviceAndRemoveSelf()
+        }
+    }
+
+    func pushMealAdviceAndRemoveSelf() {
+        let vc = Self.makeMealAdviceVC(sDate: sDate, mealIndex: mealIndex)
+        guard let navigationController = navigationController else {
+            present(vc, animated: true)
+            return
+        }
+
+        var controllers = navigationController.viewControllers.filter { $0 !== self }
+        controllers.append(vc)
+        navigationController.setViewControllers(controllers, animated: true)
     }
 
     func requestLatestVipInfo() {

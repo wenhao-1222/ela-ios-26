@@ -931,6 +931,7 @@ extension JounalCollectionCell:UITableViewDelegate,UITableViewDataSource{
                 vc.sourceType = .logs
                 vc.mealAdviceSDate = self.queryDay
                 vc.mealAdviceMealIndex = indexPath.row + 1
+                vc.shouldShowMealAdviceEntry = true
                 self.controller?.navigationController?.pushViewController(vc, animated: true)
             }
             cell?.deleteBlock = {(dict)in

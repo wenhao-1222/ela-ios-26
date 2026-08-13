@@ -1938,7 +1938,7 @@ extension ElaProPriceVM{
         moreTitleLabel.font = titleFont
 
         configureBenefitRows([
-            FeatureContent(title: "下餐规划", desc: "根据你的剩余营养目标和所选食物推荐下餐摄入克重", iconName: nil),
+            FeatureContent(title: "下餐规划", desc: "根据你的剩余营养目标和所选食物推荐下餐摄入克重", iconName: "next_meal_pro_4"),
             FeatureContent(title: "深度分析", desc: "微量元素深入追踪，优化恢复与表现", iconName: "elements_pro_icon_3"),
             FeatureContent(title: "每周复盘", desc: "结合饮食训练变化，系统复盘进度", iconName: "survey_subscription_coach_ic_01"),
             FeatureContent(title: "卡点预警", desc: "多维数据早发现，瓶颈前先介入", iconName: "survey_subscription_coach_ic_02"),
