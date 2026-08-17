@@ -33,6 +33,14 @@ class MealAdviceVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private var pendingMealPlanNextFailureRequestVersion = 0
     /// 下餐规划失败时，进度页至少展示到该进度后再返回第二步。
     private let mealPlanFailureMinimumProgress = 20
+    /// 下餐规划接口未返回前，生成进度最多展示到该进度。
+    private let mealPlanProgressMaximumBeforeResponse = 84
+    /// 下餐规划生成页的基础假进度时长。
+    private let mealPlanProgressAnimationDuration: TimeInterval = 3.0
+    /// 下餐规划接口未返回时，超过上限后每递增 1% 的时间。
+    private let mealPlanProgressSlowIntervalAfterMaximum: TimeInterval = 0.25
+    /// 下餐规划接口成功返回后，进度补到 100% 的动画时长。
+    private let mealPlanProgressCompletionDuration: TimeInterval = 0.5
     /// 当前日志页对应的日期。
     var sDate = Date().todayDate
     /// 当前日志页点击的餐序号，1 开始，0 表示未指定。
@@ -104,6 +112,7 @@ class MealAdviceVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     /// 生成中的进度页面。
     lazy var progressVm: ElaProProgressVM = {
         let vm = ElaProProgressVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
+        vm.progressAnimationDuration = self.mealPlanProgressAnimationDuration
         vm.showsStepTexts = false
         vm.currentStageLabel.text = "正在规划本餐摄入量..."
         vm.generatingTitleLabel.isHidden = true
@@ -212,6 +221,9 @@ extension MealAdviceVC{
         currentStep = 2
         updatePopGestureState()
         setBackButtonVisible(false)
+        progressVm.progressAnimationDuration = mealPlanProgressAnimationDuration
+        progressVm.automaticProgressLimit = mealPlanProgressMaximumBeforeResponse
+        progressVm.automaticProgressSlowIntervalAfterLimit = mealPlanProgressSlowIntervalAfterMaximum
         progressVm.resetProgressState()
         progressVm.startProgressAnimation()
         UIView.animate(withDuration: 0.25) {
@@ -270,14 +282,14 @@ extension MealAdviceVC{
                 self.handleMealPlanNextSuccess(planDict: planDict, requestVersion: requestVersion)
             } else {
                 let responseMessage = (responseObject["message"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-                let message = responseMessage.isEmpty ? "生成失败，请稍后重试" : responseMessage
+                let message = responseMessage.isEmpty ? "系统繁忙，请稍后再试" : responseMessage
                 self.handleMealPlanNextFailure(message: message, requestVersion: requestVersion)
             }
         } failure: { [weak self] isError in
             guard let self = self else { return }
             guard requestVersion == self.mealPlanRequestVersion else { return }
             if isError {
-                self.handleMealPlanNextFailure(message: "网络异常，请稍后重试", requestVersion: requestVersion)
+                self.handleMealPlanNextFailure(message: "系统繁忙，请稍后再试", requestVersion: requestVersion)
             }
         }
     }
@@ -290,6 +302,7 @@ extension MealAdviceVC{
         guard requestVersion == mealPlanRequestVersion else { return }
         pendingMealPlanNextPlanDict = planDict
         pendingMealPlanNextRequestVersion = requestVersion
+        progressVm.finishProgressAnimation(duration: mealPlanProgressCompletionDuration)
         tryFinishMealPlanNextIfReady()
     }
 

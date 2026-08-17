@@ -454,9 +454,15 @@ extension HabitSettleVM {
         if self.rankUpType == .REMAIN{
             let attr = NSMutableAttributedString.init(string: "你处于\(self.currentCupNameLabel.text ?? "")第", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,.font:UIFont.systemFont(ofSize: 18, weight: .regular)])
             attr.append(NSAttributedString.init(string: "\(rankSn)", attributes: [.foregroundColor:UIColor.THEME,.font:UIFont().DDInFontHeavy(fontSize: 21)]))
-            attr.append(NSAttributedString.init(string: "位\n\n冲进前", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,.font:UIFont.systemFont(ofSize: 18, weight: .regular)]))
-            attr.append(NSAttributedString.init(string: "\(promotionLine)", attributes: [.foregroundColor:UIColor.THEME,.font:UIFont().DDInFontHeavy(fontSize: 18)]))
-            attr.append(NSAttributedString.init(string: "即可晋升等级", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,.font:UIFont.systemFont(ofSize: 18, weight: .regular)]))//\(newRankName)
+            
+            if promotionLine >= 0 {
+                attr.append(NSAttributedString.init(string: "位\n\n冲进前", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,.font:UIFont.systemFont(ofSize: 18, weight: .regular)]))
+                attr.append(NSAttributedString.init(string: "\(promotionLine)", attributes: [.foregroundColor:UIColor.THEME,.font:UIFont().DDInFontHeavy(fontSize: 18)]))
+                attr.append(NSAttributedString.init(string: "即可晋升等级", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,.font:UIFont.systemFont(ofSize: 18, weight: .regular)]))//\(newRankName)
+            }else{
+                attr.append(NSAttributedString.init(string: "位", attributes: [.foregroundColor:UIColor.COLOR_TEXT_TITLE_0f1214,.font:UIFont.systemFont(ofSize: 18, weight: .regular)]))
+            }
+            
             rankTipLabel.attributedText = attr
             currentCupNameLabel.snp.remakeConstraints { make in
                 make.centerX.lessThanOrEqualToSuperview()

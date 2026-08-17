@@ -46,6 +46,17 @@ final class MealAdviceNextVC: WHBaseViewVC {
     private let foodTableView = UITableView(frame: .zero, style: .plain)
     /// 食物列表高度约束。
     private var foodTableHeightConstraint: Constraint?
+    /// 建议份量不合理？
+    private let tipsCardView = UIView()
+    /// icon
+    private let tipsIcon = UIImageView()
+    /// 内容
+    private let tipsStackView = UIStackView()
+    /// 提示标题。
+    private let tipsTitleLabel = UILabel()
+    /// 提示说明。
+    private let tipsContentLabel = UILabel()
+
     /// 本餐后剩余卡片。
     private let remainingCardView = UIView()
     /// 本餐后剩余标题。
@@ -69,6 +80,16 @@ final class MealAdviceNextVC: WHBaseViewVC {
     ]
     /// 列表行高。
     private let foodRowHeight = kFitWidth(65)
+
+
+    lazy var tipsAlertVm : QuestionnaireBodyFatAlertVM = {
+        let vm = QuestionnaireBodyFatAlertVM.init(frame: .zero)
+        vm.titleLabel.text = "建议份量不合理？"
+        vm.contentLabelOne.text = "当所选食物无法覆盖剩余营养目标时，建议份量可能不符合预期。请根据剩余目标搭配不同食物：\n\n蛋白质：鸡胸肉、鸡腿肉、鱼肉等\n碳水：米饭、糙米、燕麦等\n脂肪：牛油果、橄榄油、坚果等"
+        vm.contentLabelTwo.text = ""
+        vm.contentLabelThree.text = ""
+        return vm
+    }()
 
     /// 创建下餐规划结果页。
     /// - Parameters:
@@ -134,6 +155,7 @@ extension MealAdviceNextVC {
         view.addSubview(addToLogsButton)
         view.addSubview(topGradientView)
         view.addSubview(bottomGradientView)
+        view.addSubview(tipsAlertVm)
         scrollView.addSubview(contentView)
         contentView.addSubview(contentStackView)
         topGradientView.layer.addSublayer(topGradientLayer)
@@ -158,14 +180,8 @@ extension MealAdviceNextVC {
             UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
         ]
         bottomGradientLayer.locations = [0, 1]
-
-//        closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
-        closeButton.setImage(UIImage(named: "alert_close_icon"), for: .normal)
-//        closeButton.tintColor = .COLOR_TEXT_TITLE_0f1214
-//        closeButton.backgroundColor = .white
-//        closeButton.layer.cornerRadius = kFitWidth(18)
-//        closeButton.layer.borderWidth = 1
-//        closeButton.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214_06.cgColor
+//
+        closeButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
         closeButton.addTarget(self, action: #selector(closeAction), for: .touchUpInside)
 
         titleLabel.text = "建议摄入量"
@@ -192,6 +208,30 @@ extension MealAdviceNextVC {
         foodTableView.estimatedRowHeight = foodRowHeight
         foodTableView.register(MealAdviceNextFoodCell.classForCoder(), forCellReuseIdentifier: "MealAdviceNextFoodCell")
         foodTableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: CGFloat.leastNormalMagnitude))
+
+        tipsCardView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
+        tipsCardView.layer.cornerRadius = kFitWidth(12)
+        tipsCardView.clipsToBounds = true
+        tipsCardView.isUserInteractionEnabled = true
+        tipsCardView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tipsCardTapAction)))
+
+        tipsIcon.image = UIImage(named: "tips_icon")
+        tipsIcon.contentMode = .scaleAspectFit
+
+        tipsTitleLabel.text = "建议份量不合理？"
+        tipsTitleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+        tipsTitleLabel.font = .systemFont(ofSize: 15, weight: .medium)
+
+        tipsContentLabel.text = "当所选食物无法覆盖剩余营养目标时，建议份量可能不符合预期。请根据剩余目标搭配不同食物：\n\n蛋白质：鸡胸肉、鸡腿肉、鱼肉等\n碳水：米饭、糙米、燕麦等\n脂肪：牛油果、橄榄油、坚果等"
+        tipsContentLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        tipsContentLabel.font = .systemFont(ofSize: 13, weight: .regular)
+        tipsContentLabel.numberOfLines = 2
+        tipsContentLabel.lineBreakMode = .byTruncatingTail
+
+        tipsStackView.axis = .vertical
+        tipsStackView.alignment = .fill
+        tipsStackView.distribution = .fill
+        tipsStackView.spacing = kFitWidth(6)
 
         remainingCardView.backgroundColor = .COLOR_CARD_BG_WHITE
         remainingCardView.layer.cornerRadius = kFitWidth(12)
@@ -229,10 +269,15 @@ extension MealAdviceNextVC {
         ringMetricViewsLocal.forEach { remainingMetricsStackView.addArrangedSubview($0) }
 
         contentStackView.addArrangedSubview(foodListCardView)
+        contentStackView.addArrangedSubview(tipsCardView)
         contentStackView.addArrangedSubview(remainingCardView)
         headlineView.addSubview(titleLabel)
         headlineView.addSubview(topMetricsStackView)
         foodListCardView.addSubview(foodTableView)
+        tipsCardView.addSubview(tipsIcon)
+        tipsCardView.addSubview(tipsStackView)
+        tipsStackView.addArrangedSubview(tipsTitleLabel)
+        tipsStackView.addArrangedSubview(tipsContentLabel)
         remainingCardView.addSubview(remainingTitleLabel)
         remainingCardView.addSubview(remainingMetricsStackView)
 
@@ -247,7 +292,7 @@ extension MealAdviceNextVC {
         }
         headlineView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(closeButton.snp.bottom).offset(kFitWidth(10))
+            make.top.equalTo(closeButton.snp.bottom)//.offset(kFitWidth(10))
             make.height.equalTo(kFitWidth(115))
         }
         scrollView.snp.makeConstraints { make in
@@ -274,7 +319,7 @@ extension MealAdviceNextVC {
         }
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(kFitWidth(20))
+            make.top.equalTo(kFitWidth(16))
         }
         topMetricsStackView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(20))
@@ -288,6 +333,19 @@ extension MealAdviceNextVC {
         foodTableView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             foodTableHeightConstraint = make.height.equalTo(kFitWidth(1)).constraint
+        }
+        tipsCardView.snp.makeConstraints { make in
+            make.height.equalTo(kFitWidth(89))
+        }
+        tipsIcon.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(21))
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(kFitWidth(20))
+        }
+        tipsStackView.snp.makeConstraints { make in
+            make.left.equalTo(tipsIcon.snp.right).offset(kFitWidth(17))
+            make.right.equalTo(kFitWidth(-21))
+            make.centerY.equalToSuperview()
         }
         remainingCardView.snp.makeConstraints { make in
             make.height.equalTo(kFitWidth(168))
@@ -336,14 +394,18 @@ extension MealAdviceNextVC {
     ///   - animateTopMetrics: 顶部数值是否动画。
     private func updateMetricViews(animated: Bool, animateTopMetrics: Bool) {
         let states = viewModel.coreMetricStates
+        let showRemainingValue = UserInfoModel.shared.showRemainCalories
+        remainingTitleLabel.text = showRemainingValue ? "本餐后剩余" : "本餐后摄入"
         for (index, state) in states.enumerated() {
             guard index < topMetricViews.count, index < ringMetricViews.count else { continue }
             let color = metricColors[index]
+            let postMealRemainingValue = state.targetValue - state.postMealConsumedValue
+            let displayValue = showRemainingValue ? postMealRemainingValue : state.postMealConsumedValue
             topMetricViews[index].update(title: state.title, unit: state.unit, value: state.selectedValue, color: color, animated: animateTopMetrics)
             ringMetricViews[index].update(title: state.title,
                                           unit: state.unit,
-                                          remainingValue: state.remainingValue,
-                                          overflowValue: state.overflowValue,
+                                          displayValue: displayValue,
+                                          shouldHighlightNegativeValue: showRemainingValue,
                                           consumedValue: state.postMealConsumedValue,
                                           target: state.targetValue,
                                           color: color,
@@ -429,6 +491,13 @@ extension MealAdviceNextVC {
     /// 关闭当前页面。
     @objc private func closeAction() {
         navigationController?.popViewController(animated: true)
+    }
+
+    /// 点击建议份量提示卡片。
+    @objc private func tipsCardTapAction() {
+        view.endEditing(true)
+        view.bringSubviewToFront(tipsAlertVm)
+        tipsAlertVm.showView()
     }
 
     /// 切换当前页面对应的三方输入法开关。

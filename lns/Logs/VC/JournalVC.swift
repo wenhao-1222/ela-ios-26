@@ -70,9 +70,9 @@ class JournalVC: WHBaseViewVC {
             self?.flushPendingLogsRefreshIfNeeded()
         }
         
-        if UserInfoModel.shared.showNotifiAuthoriAlertVM {
-            self.notifiAuthoriAlertVm.showView()
-        }
+//        if UserInfoModel.shared.showNotifiAuthoriAlertVM {
+//            self.notifiAuthoriAlertVm.showView()
+//        }
     }
     deinit {
         DLLog(message: "JournalVC deinit")
@@ -110,8 +110,8 @@ class JournalVC: WHBaseViewVC {
         timeAlertVm.setAlertBlock = nil
         changeCircleTempAlertVm.confirmBlock = nil
         addFoodsAlertVm.addBlock = nil
-        notifiAuthoriAlertVm.controller = WHBaseViewVC()
-        notifiAuthoriAlertVm.acceptBlock = nil
+//        notifiAuthoriAlertVm.controller = WHBaseViewVC()
+//        notifiAuthoriAlertVm.acceptBlock = nil
         activityAlertVm.controller = WHBaseViewVC()
         activityAlertVm.pushBlock = nil
         elaExpiredAlertVm.upgradeBlock = nil
@@ -125,7 +125,7 @@ class JournalVC: WHBaseViewVC {
         timeAlertVm.removeFromSuperview()
         changeCircleTempAlertVm.removeFromSuperview()
         addFoodsAlertVm.removeFromSuperview()
-        notifiAuthoriAlertVm.removeFromSuperview()
+//        notifiAuthoriAlertVm.removeFromSuperview()
         activityAlertVm.removeFromSuperview()
         elaExpiredAlertVm.removeFromSuperview()
         journalElaProAnnouncementAlertVm.removeFromSuperview()
@@ -590,14 +590,14 @@ class JournalVC: WHBaseViewVC {
         }
         return vm
     }()
-    lazy var notifiAuthoriAlertVm: NotifiAuthoriAlertVM = {
-        let vm = NotifiAuthoriAlertVM.init(frame: .zero)
-        vm.controller = self
-        vm.acceptBlock = { [weak self] in
-            self?.sendSaveRegistIdRequest()
-        }
-        return vm
-    }()
+//    lazy var notifiAuthoriAlertVm: NotifiAuthoriAlertVM = {
+//        let vm = NotifiAuthoriAlertVM.init(frame: .zero)
+//        vm.controller = self
+//        vm.acceptBlock = { [weak self] in
+//            self?.sendSaveRegistIdRequest()
+//        }
+//        return vm
+//    }()
     lazy var activityAlertVm: ActivityAlertVM = {
         let vm = ActivityAlertVM.init(frame: .zero)
         vm.controller = self
@@ -1230,7 +1230,7 @@ extension JournalVC{
             appDelegate.getKeyWindow().addSubview(self.timeAlertVm)
             appDelegate.getKeyWindow().addSubview(self.changeCircleTempAlertVm)
             appDelegate.getKeyWindow().addSubview(self.addFoodsAlertVm)
-            appDelegate.getKeyWindow().addSubview(self.notifiAuthoriAlertVm)
+//            appDelegate.getKeyWindow().addSubview(self.notifiAuthoriAlertVm)
             appDelegate.getKeyWindow().addSubview(self.activityAlertVm)
             appDelegate.getKeyWindow().addSubview(self.elaExpiredAlertVm)
             appDelegate.getKeyWindow().addSubview(self.journalElaProAnnouncementAlertVm)

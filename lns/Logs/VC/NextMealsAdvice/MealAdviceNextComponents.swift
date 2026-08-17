@@ -595,14 +595,15 @@ extension MealAdviceNextRingMetricView {
     /// - Parameters:
     ///   - title: 营养名称。
     ///   - unit: 营养单位。
-    ///   - remainingValue: 当前剩余值。
+    ///   - displayValue: 圆环中间展示值。
+    ///   - shouldHighlightNegativeValue: 负数是否高亮。
     ///   - consumedValue: 当前已摄入值。
     ///   - target: 目标值。
     ///   - color: 圆环颜色。
     func update(title: String,
                 unit: String,
-                remainingValue: Double,
-                overflowValue: Double,
+                displayValue: Double,
+                shouldHighlightNegativeValue: Bool,
                 consumedValue: Double,
                 target: Double,
                 color: UIColor,
@@ -613,13 +614,12 @@ extension MealAdviceNextRingMetricView {
         circleView.titleLab.text = "\(title)(\(unit))"
         let targetInt = max(Int(target.rounded()), 0)
         let consumedInt = max(Int(consumedValue.rounded()), 0)
-        let signedRemaining = target - consumedValue
-        let displayRemaining = signedRemaining < 0 ? Int(signedRemaining.rounded()) : Int(abs(signedRemaining).rounded())
+        let displayInt = Int(displayValue.rounded())
 
-        circleView.currentNumberLabel.textColor = signedRemaining < 0 ? WHColor_16(colorStr: "D54941") : .COLOR_TEXT_TITLE_0f1214
+        circleView.currentNumberLabel.textColor = shouldHighlightNegativeValue && displayValue < 0 ? WHColor_16(colorStr: "D54941") : .COLOR_TEXT_TITLE_0f1214
 
         circleView.updateTotalNumber(text: "/\(targetInt)\(MealAdviceNextRingMetricView.totalSuffix(for: unit))")
-        updateRemainingValue(displayRemaining, animated: animated)
+        updateRemainingValue(displayInt, animated: animated)
         updateCircleProgress(consumedValue: consumedInt, targetValue: max(targetInt, 1), animated: animated)
     }
 

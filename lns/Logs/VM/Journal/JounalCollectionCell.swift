@@ -667,14 +667,13 @@ extension JounalCollectionCell{
 //            self.tableView.reloadData()
 //            updateFirstFoodsAlert()
 //            self.calculateNaturalNum()
-//            self.checkPushAuthAfterSecondMeal()
             if shouldUpload {
                 saveDataToSqlDB()
 //                self.tableView.reloadData()
                 self.refreshSingleMealRow(mealIndex: self.selectMealsIndex)
                 updateFirstFoodsAlert()
                 self.calculateNaturalNum()
-                self.checkPushAuthAfterSecondMeal()
+//                self.checkPushAuthAfterSecondMeal()
             }
         }else{
 //            self.addFoods(foodsMsg: foodsMsg)
@@ -743,7 +742,7 @@ extension JounalCollectionCell{
         self.tableView.reloadData()
         updateFirstFoodsAlert()
         self.calculateNaturalNum()
-        self.checkPushAuthAfterSecondMeal()
+//        self.checkPushAuthAfterSecondMeal()
     }
 
     private func refreshSingleMealRow(mealIndex:Int) {
@@ -807,17 +806,17 @@ extension JounalCollectionCell{
         }
         if count < 2 { return }
 
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            if settings.authorizationStatus != .authorized {
-                UserInfoModel.shared.showNotifiAuthoriAlertVM = true
-                DispatchQueue.main.async {
-                    if let vc = self.controller as? JournalVC,
-                       UIApplication.topViewController() === vc {
-                        vc.notifiAuthoriAlertVm.showView()
-                    }
-                }
-            }
-        }
+//        UNUserNotificationCenter.current().getNotificationSettings { settings in
+//            if settings.authorizationStatus != .authorized {
+//                UserInfoModel.shared.showNotifiAuthoriAlertVM = true
+//                DispatchQueue.main.async {
+//                    if let vc = self.controller as? JournalVC,
+//                       UIApplication.topViewController() === vc {
+//                        vc.notifiAuthoriAlertVm.showView()
+//                    }
+//                }
+//            }
+//        }
 
         UserDefaults.standard.setValue("1", forKey: key)
     }

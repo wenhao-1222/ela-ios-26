@@ -248,6 +248,7 @@ class WHNetworkUtil: SessionManager {
                 failure?(true)
             }
         } : nil
+        let allowNetworkRetry = NetworkMonitor.shared.shouldAllowRetry(for: urlString)
 
         NetworkMonitor.shared.addRequest ({
             if urlString == URL_get_current_nutrition {
@@ -312,7 +313,7 @@ class WHNetworkUtil: SessionManager {
                 }
                 
                 let manager = Alamofire.SessionManager.default
-                manager.session.configuration.timeoutIntervalForRequest = timeOut ?? 10.0
+                let requestTimeout = timeOut ?? 10.0
     //            WHNetworkUtil.shareManager().dataRequest =
                 DLLog(message: "\(urlString)入参:\(paraDict)")
                 #if DEBUG
@@ -325,7 +326,15 @@ class WHNetworkUtil: SessionManager {
                 )
                 #endif
 //                manager.request(urlString, method: .post, parameters: paraDict, encoding: JSONEncoding.default,headers: header).responseJSON { (response) in
-            let dataRequest = manager.request(urlString, method: .post, parameters: paraDict, encoding: JSONEncoding.default,headers: header)
+                let dataRequest: DataRequest
+                do {
+                    var urlRequest = try URLRequest(url: urlString, method: .post, headers: header)
+                    urlRequest.timeoutInterval = requestTimeout
+                    let encodedURLRequest = try JSONEncoding.default.encode(urlRequest, with: paraDict)
+                    dataRequest = manager.request(encodedURLRequest)
+                } catch {
+                    dataRequest = manager.request(urlString, method: .post, parameters: paraDict, encoding: JSONEncoding.default,headers: header)
+                }
                             requestConfig?(dataRequest)
                             dataRequest.responseJSON { (response) in
                 DLLog(message: "\(urlString) \n \(response)")
@@ -556,7 +565,7 @@ class WHNetworkUtil: SessionManager {
                     }
                 }
             }
-        }, msgDict: msgDictError, ownerUid: requestOwnerUid, onDropped: droppedHandler)
+        }, allowRetry: allowNetworkRetry, msgDict: msgDictError, ownerUid: requestOwnerUid, onDropped: droppedHandler)
     }
 
     public func md5(strs:String) ->String!{

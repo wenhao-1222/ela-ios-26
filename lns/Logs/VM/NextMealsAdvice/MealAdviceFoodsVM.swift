@@ -270,14 +270,6 @@ final class MealAdviceFoodsVM: UIView {
     /// 表格顶部留白高度，避免首个 cell 被顶部渐变遮住。
     private let topTableHeaderHeight = kFitWidth(10)
 
-    /// 用于记录表格当前位置，方便刷新后恢复滚动位置。
-    private struct TableViewAnchor {
-        /// 锚点所在的行位置。
-        let indexPath: IndexPath
-        /// 锚点行在当前视图中的屏幕坐标。
-        let screenY: CGFloat
-    }
-
     /// 已选食物标签的目标布局信息。
     private struct SelectedFoodChipLayout {
         let key: String
@@ -539,7 +531,9 @@ extension MealAdviceFoodsVM {
         noDataView.center = CGPoint(x: tableView.frame.width * 0.5, y: kFitWidth(134))
         noDataView.noDataLabel.text = "- 暂无数据 -"
         recentSearchNoDataVm.isHidden = true
+        recentSearchNoDataVm.backgroundColor = .clear
         recentSearchNoDataVm.searchFoodsButton.addTarget(self, action: #selector(searchAllFoodsAction), for: .touchUpInside)
+        recentSearchFooterVm.backgroundColor = .clear
         recentSearchFooterVm.searchFoodsButton.addTarget(self, action: #selector(searchAllFoodsAction), for: .touchUpInside)
 
         selectedScrollView.snp.makeConstraints { make in
@@ -715,19 +709,11 @@ extension MealAdviceFoodsVM {
         confirmButton.isEnabled = selectedFoodsArray.count > 0
     }
 
-    /// 刷新已选食物标签区域，并保持表格位置稳定。
+    /// 刷新已选食物标签区域，让列表跟随上方区域自然移动。
     private func refreshSelectionUI(removingFoodKey: String? = nil) {
-        let anchor = captureTableViewAnchor()
         refreshSelectedState()
-        let restoreAnchor: () -> Void = { [weak self] in
-            guard let self = self else { return }
-            self.restoreTableViewAnchor(anchor)
-        }
-        refreshSelectedFoodsView(removingFoodKey: removingFoodKey, completion: restoreAnchor)
+        refreshSelectedFoodsView(removingFoodKey: removingFoodKey)
         refreshVisibleSelectionCells(animated: true)
-        if removingFoodKey == nil {
-            restoreAnchor()
-        }
     }
 
     /// 刷新当前可见行的选中按钮状态，保留按钮渐变动画。
@@ -934,29 +920,6 @@ extension MealAdviceFoodsVM {
                 self.selectedScrollView.isUserInteractionEnabled = true
                 completion?()
             }
-        )
-    }
-
-    /// 捕获当前表格首个可见行的位置锚点，用于刷新后恢复滚动偏移。
-    private func captureTableViewAnchor() -> TableViewAnchor? {
-        layoutIfNeeded()
-        guard let indexPath = tableView.indexPathsForVisibleRows?.first else { return nil }
-        let rowRect = tableView.rectForRow(at: indexPath)
-        let screenY = tableView.convert(CGPoint(x: 0, y: rowRect.minY), to: self).y
-        return TableViewAnchor(indexPath: indexPath, screenY: screenY)
-    }
-
-    /// 按锚点恢复表格滚动位置，避免标签区域变化后内容跳动。
-    private func restoreTableViewAnchor(_ anchor: TableViewAnchor?) {
-        guard let anchor = anchor else { return }
-        layoutIfNeeded()
-        let rowRect = tableView.rectForRow(at: anchor.indexPath)
-        let currentScreenY = tableView.convert(CGPoint(x: 0, y: rowRect.minY), to: self).y
-        let movement = currentScreenY - anchor.screenY
-        guard abs(movement) > 0.5 else { return }
-        tableView.setContentOffset(
-            CGPoint(x: tableView.contentOffset.x, y: tableView.contentOffset.y + movement),
-            animated: false
         )
     }
 

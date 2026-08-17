@@ -13,6 +13,52 @@ class ElaProProgressVM: UIView {
     var progressCompleteBlock: (() -> ())?
     /// 进度变化回调，供外部做阈值判断。
     var progressDidChangeBlock: ((Int) -> ())?
+    /// 自动进度上限。默认 nil 表示不限制，保持原有最多走到 100% 的行为。
+    var automaticProgressLimit: Int? {
+        get {
+            automaticProgressLimitValue
+        }
+        set {
+            automaticProgressLimitValue = newValue.map { max(0, min($0, 100)) }
+            guard let limit = automaticProgressLimitValue,
+                  limit < 100,
+                  displayedProgress > CGFloat(limit) else {
+                return
+            }
+            displayedProgress = CGFloat(limit)
+            currentProgress = limit
+            updateProgressUI(animated: false)
+        }
+    }
+    /// 达到自动进度上限后，是否继续慢速递增。默认 nil 表示到上限后停止。
+    var automaticProgressSlowIntervalAfterLimit: TimeInterval? {
+        get {
+            automaticProgressSlowIntervalAfterLimitValue
+        }
+        set {
+            automaticProgressSlowIntervalAfterLimitValue = newValue.map { max(0.1, $0) }
+        }
+    }
+    /// 指定整体进度时长。默认 nil 时沿用原来的随机假进度节奏。
+    var progressAnimationDuration: TimeInterval? {
+        get {
+            progressAnimationDurationValue
+        }
+        set {
+            if let duration = newValue {
+                let clampedDuration = max(0.3, duration)
+                progressAnimationDurationValue = clampedDuration
+                timedProgressElapsed = clampedDuration * TimeInterval(displayedProgress / 100.0)
+            } else {
+                progressAnimationDurationValue = nil
+                timedProgressElapsed = 0
+            }
+            if progressTimer != nil && currentProgress < 100 {
+                stopFakeProgress()
+                startFakeProgress()
+            }
+        }
+    }
     /// 是否展示 stepTexts 对应的阶段文案与条目文案。
     var showsStepTexts: Bool = true {
         didSet {
@@ -57,6 +103,11 @@ class ElaProProgressVM: UIView {
     private var wavePhase: CGFloat = 0
     private var stallRemaining: TimeInterval = 0
     private var finishHoldRemaining: TimeInterval = 0
+    private var timedProgressElapsed: TimeInterval = 0
+    private var progressAnimationDurationValue: TimeInterval?
+    private var automaticProgressLimitValue: Int?
+    private var automaticProgressSlowIntervalAfterLimitValue: TimeInterval?
+    private var automaticProgressSlowElapsed: TimeInterval = 0
     private var lastTickTime: CFTimeInterval = CACurrentMediaTime()
     private var hasNotifiedComplete = false
     
@@ -195,13 +246,37 @@ extension ElaProProgressVM {
     func setFakeProgress(_ progress: Int, animated: Bool = true) {
         currentProgress = max(0, min(progress, 100))
         displayedProgress = CGFloat(currentProgress)
+        if let duration = progressAnimationDuration {
+            timedProgressElapsed = duration * TimeInterval(displayedProgress / 100.0)
+        }
         stallRemaining = 0
         finishHoldRemaining = 0
+        automaticProgressSlowElapsed = 0
         hasNotifiedComplete = currentProgress >= 100
         updateProgressUI(animated: animated)
         if currentProgress >= 100 {
             stopFakeProgress()
         }
+    }
+
+    func finishProgressAnimation(duration: TimeInterval = 0.35) {
+        automaticProgressLimit = nil
+        if currentProgress >= 100 {
+            notifyProgressCompletedIfNeeded()
+            return
+        }
+
+        let clampedDuration = max(0.1, duration)
+        let progressRatio = TimeInterval(max(0, min(displayedProgress, 99.0)) / 100.0)
+        let remainingRatio = max(0.01, 1.0 - progressRatio)
+        let totalDuration = clampedDuration / remainingRatio
+        progressAnimationDurationValue = totalDuration
+        timedProgressElapsed = totalDuration * progressRatio
+        stallRemaining = 0
+        finishHoldRemaining = 0
+        automaticProgressSlowElapsed = 0
+        stopFakeProgress()
+        startFakeProgress()
     }
 
     func resetProgressState() {
@@ -210,6 +285,8 @@ extension ElaProProgressVM {
         displayedProgress = 0
         stallRemaining = 0
         finishHoldRemaining = 0
+        timedProgressElapsed = 0
+        automaticProgressSlowElapsed = 0
         wavePhase = 0
         hasNotifiedComplete = false
         updateProgressUI(animated: false)
@@ -219,7 +296,20 @@ extension ElaProProgressVM {
         let now = CACurrentMediaTime()
         let dt = min(max(now - lastTickTime, 0.016), 0.2)
         lastTickTime = now
+        
+        if let duration = progressAnimationDuration {
+            tickTimedProgress(dt: dt, duration: duration)
+            return
+        }
+        
         let speedMultiplier = effectiveSpeedMultiplier()
+        let automaticLimit = automaticProgressLimitValue ?? 100
+        let maxRunningProgress = CGFloat(min(automaticLimit, 99))
+
+        if automaticLimit < 100, displayedProgress >= CGFloat(automaticLimit) {
+            tickSlowProgressAfterLimit(dt: dt, limit: automaticLimit)
+            return
+        }
         
         if displayedProgress >= 99 {
             if finishHoldRemaining <= 0 {
@@ -240,8 +330,9 @@ extension ElaProProgressVM {
         
         if stallRemaining > 0 {
             stallRemaining -= dt
-            displayedProgress = min(displayedProgress + CGFloat(dt * 0.15) * speedMultiplier, 99)
+            displayedProgress = min(displayedProgress + CGFloat(dt * 0.15) * speedMultiplier, maxRunningProgress)
             updateProgressUI(animated: true)
+            stopAtAutomaticLimitIfNeeded()
             return
         }
         
@@ -254,13 +345,77 @@ extension ElaProProgressVM {
         var delta = CGFloat(dt) * baseSpeed * factor
         let maxDelta = CGFloat(dt) * baseSpeed * 1.35
         delta = min(delta, maxDelta)
-        displayedProgress = min(displayedProgress + delta, 99)
+        displayedProgress = min(displayedProgress + delta, maxRunningProgress)
         
         if shouldPause(progress: displayedProgress) {
             stallRemaining = Double.random(in: 0.18...0.6) / Double(max(progressTempo, 0.2) * speedMultiplier)
         }
         
         updateProgressUI(animated: true)
+        stopAtAutomaticLimitIfNeeded()
+    }
+    
+    private func tickTimedProgress(dt: TimeInterval, duration: TimeInterval) {
+        timedProgressElapsed += dt
+        let automaticLimit = automaticProgressLimitValue ?? 100
+        if automaticLimit < 100,
+           let slowInterval = automaticProgressSlowIntervalAfterLimitValue {
+            let clampedDuration = max(duration, 0.3)
+            let limitStartTime = clampedDuration * TimeInterval(CGFloat(automaticLimit) / 100.0)
+            if timedProgressElapsed <= limitStartTime {
+                displayedProgress = min(CGFloat(timedProgressElapsed / clampedDuration) * 100.0, CGFloat(automaticLimit))
+            } else {
+                let slowSteps = floor((timedProgressElapsed - limitStartTime) / slowInterval)
+                displayedProgress = min(CGFloat(automaticLimit) + CGFloat(slowSteps), 99)
+            }
+        } else {
+            displayedProgress = min(CGFloat(timedProgressElapsed / max(duration, 0.3)) * 100.0, CGFloat(automaticLimit))
+        }
+        currentProgress = max(0, min(Int(displayedProgress.rounded(.down)), 100))
+        updateProgressUI(animated: true)
+        
+        if displayedProgress >= 100 {
+            stopFakeProgress()
+            notifyProgressCompletedIfNeeded()
+        } else if automaticLimit < 100,
+                  automaticProgressSlowIntervalAfterLimitValue != nil,
+                  displayedProgress >= 99 {
+            stopFakeProgress()
+        } else {
+            stopAtAutomaticLimitIfNeeded()
+        }
+    }
+
+    private func stopAtAutomaticLimitIfNeeded() {
+        guard let automaticLimit = automaticProgressLimitValue,
+              automaticLimit < 100,
+              automaticProgressSlowIntervalAfterLimitValue == nil,
+              displayedProgress >= CGFloat(automaticLimit) else {
+            return
+        }
+        displayedProgress = CGFloat(automaticLimit)
+        currentProgress = automaticLimit
+        stopFakeProgress()
+    }
+
+    private func tickSlowProgressAfterLimit(dt: TimeInterval, limit: Int) {
+        guard let slowInterval = automaticProgressSlowIntervalAfterLimitValue else {
+            displayedProgress = CGFloat(limit)
+            currentProgress = limit
+            updateProgressUI(animated: true)
+            stopFakeProgress()
+            return
+        }
+
+        automaticProgressSlowElapsed += dt
+        let slowSteps = floor(automaticProgressSlowElapsed / slowInterval)
+        displayedProgress = min(CGFloat(limit) + CGFloat(slowSteps), 99)
+        currentProgress = max(0, min(Int(displayedProgress.rounded(.down)), 99))
+        updateProgressUI(animated: true)
+
+        if displayedProgress >= 99 {
+            stopFakeProgress()
+        }
     }
     
     private func baseSpeedFor(progress: CGFloat) -> CGFloat {

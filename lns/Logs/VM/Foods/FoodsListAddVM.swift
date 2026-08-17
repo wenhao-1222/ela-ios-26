@@ -202,7 +202,7 @@ extension FoodsListAddVM{
         scrollView.addSubview(createMealsButton)
         
 //        aiFoodsButton.addSubview(aiFoodsNewVm)
-        mergeFoodsButton.addSubview(mergeFoodsNewVm)
+//        mergeFoodsButton.addSubview(mergeFoodsNewVm)
         
 //        aiFoodsNewVm.snp.makeConstraints { make in
 ////            make.top.right.equalToSuperview()
@@ -211,14 +211,14 @@ extension FoodsListAddVM{
 //            make.width.height.equalTo(kFitWidth(12))
 ////            make.height.equalTo(kFitWidth(15))
 //        }
-        mergeFoodsNewVm.snp.makeConstraints { make in
-//            make.top.right.equalToSuperview()
-//            make.width.equalTo(kFitWidth(40))
-//            make.height.equalTo(kFitWidth(15))
-            make.top.equalTo(kFitWidth(5))
-            make.right.equalTo(kFitWidth(-5))
-            make.width.height.equalTo(kFitWidth(12))
-        }
+//        mergeFoodsNewVm.snp.makeConstraints { make in
+////            make.top.right.equalToSuperview()
+////            make.width.equalTo(kFitWidth(40))
+////            make.height.equalTo(kFitWidth(15))
+//            make.top.equalTo(kFitWidth(5))
+//            make.right.equalTo(kFitWidth(-5))
+//            make.width.height.equalTo(kFitWidth(12))
+//        }
         refreshButton(type: .all, isFromMain: false)
         adviceFoodsButton.addTarget(self, action: #selector(adviceFoodsAction), for: .touchUpInside)
     }

@@ -32,7 +32,10 @@ class NetworkMonitor {
     private let maxPendingTime: TimeInterval = 30.0 // 最多挂起30秒
 
     // 不允许自动重试的接口关键词
-    private let nonRetryRequestKeywords = ["pay","ai_identify_image"]//["login", "pay", "支付", "登录"]
+    private let nonRetryRequestKeywords = ["pay","ai_identify_image","next_meal_advice"]//["login", "pay", "支付", "登录","下餐饮食规划"]
+    private let nonRetryRequestUrls: Set<String> = [
+        URL_diet_plan_next
+    ]
 
     private init() {
         reachabilityManager = NetworkReachabilityManager()
@@ -181,6 +184,9 @@ class NetworkMonitor {
     }
 
     func shouldAllowRetry(for urlString: String) -> Bool {
+        if nonRetryRequestUrls.contains(urlString) {
+            return false
+        }
         for keyword in nonRetryRequestKeywords {
             if urlString.contains(keyword) {
                 return false

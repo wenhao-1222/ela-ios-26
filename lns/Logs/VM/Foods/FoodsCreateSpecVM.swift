@@ -187,7 +187,7 @@ extension FoodsCreateSpecVM:UITextFieldDelegate{
         if components.count == 2 && components[1].count > 1 {
             return false
         }
-        if let number = Float(normalizedText), number > 100 {
+        if let number = Float(normalizedText), number > 999.9 {
             return false
         }
         // 回调
