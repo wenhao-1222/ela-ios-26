@@ -30,6 +30,7 @@ private enum AICoachLiquidGlassRuntime {
 final class AICoachPreFeedbackGlassVM: UIView {
 
     let selfHeight = kFitWidth(198)
+    private let shouldShowToneItemView: Bool
 
     var buttonTapBlock: (() -> Void)?
     var goalTapBlock: (() -> Void)?
@@ -119,7 +120,8 @@ final class AICoachPreFeedbackGlassVM: UIView {
         return button
     }()
 
-    override init(frame: CGRect) {
+    init(frame: CGRect, shouldShowToneItemView: Bool = true) {
+        self.shouldShowToneItemView = shouldShowToneItemView
         super.init(frame: CGRect(x: 0,
                                   y: frame.origin.y,
                                   width: SCREEN_WIDHT,
@@ -174,7 +176,9 @@ extension AICoachPreFeedbackGlassVM {
     func configure(userGoal: Int, aiCoachIntensityPreference: Int, aiCoachTone: Int) {
         goalItemView.updateValue(text: displayGoalText(for: userGoal))
         intensityItemView.updateValue(text: displayIntensityText(for: aiCoachIntensityPreference))
-        toneItemView.updateValue(text: displayToneText(for: aiCoachTone))
+        if shouldShowToneItemView {
+            toneItemView.updateValue(text: displayToneText(for: aiCoachTone))
+        }
     }
 
     func setButtonEnabled(_ isEnabled: Bool) {
@@ -252,7 +256,9 @@ private extension AICoachPreFeedbackGlassVM {
 
         elementsContainerView.contentView.addSubview(goalItemView)
         elementsContainerView.contentView.addSubview(intensityItemView)
-        elementsContainerView.contentView.addSubview(toneItemView)
+        if shouldShowToneItemView {
+            elementsContainerView.contentView.addSubview(toneItemView)
+        }
         elementsContainerView.contentView.addSubview(feedbackButton)
 
         panelGlassView.snp.makeConstraints { make in
@@ -279,11 +285,17 @@ private extension AICoachPreFeedbackGlassVM {
             make.width.equalTo(goalItemView)
         }
 
-        toneItemView.snp.makeConstraints { make in
-            make.left.equalTo(intensityItemView.snp.right).offset(kFitWidth(16))
-            make.right.equalTo(kFitWidth(-16))
-            make.top.height.equalTo(goalItemView)
-            make.width.equalTo(goalItemView)
+        if shouldShowToneItemView {
+            toneItemView.snp.makeConstraints { make in
+                make.left.equalTo(intensityItemView.snp.right).offset(kFitWidth(16))
+                make.right.equalTo(kFitWidth(-16))
+                make.top.height.equalTo(goalItemView)
+                make.width.equalTo(goalItemView)
+            }
+        } else {
+            intensityItemView.snp.makeConstraints { make in
+                make.right.equalTo(kFitWidth(-16))
+            }
         }
 
         feedbackButton.snp.makeConstraints { make in

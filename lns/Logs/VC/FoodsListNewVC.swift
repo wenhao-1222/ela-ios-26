@@ -137,7 +137,7 @@ class FoodsListNewVC: WHBaseViewVC {
         let vm = FoodsListAddVM.init(frame: CGRect.init(x: 0, y: self.topTypeVM.frame.maxY, width: 0, height: 0))
         vm.controller = self
         vm.isFromMerge = self.isFromMerge
-        vm.shouldShowMealAdviceEntry = self.shouldShowMealAdviceEntry
+        vm.shouldShowMealAdviceEntry = false
         vm.createFoodsButton.addTarget(self, action: #selector(createFoodsActino), for: .touchUpInside)
         vm.createFoodsSoonButton.addTarget(self, action: #selector(createFoodsFastAction), for: .touchUpInside)
         vm.createMealsButton.addTarget(self, action: #selector(createMealsAction), for: .touchUpInside)

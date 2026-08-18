@@ -105,7 +105,7 @@ extension JournalAICoachTableViewCell {
         proImgView.layer.removeAllAnimations()
         unreadImgView.isHidden = !hasUnreadLatestReport
 
-        if hasUnreadLatestReport {
+        if hasUnreadLatestReport && isVip{
             proImgView.alpha = 0
             proImgView.isHidden = true
             titleLabel.text = "新的教练报告已准备好"
@@ -134,7 +134,7 @@ extension JournalAICoachTableViewCell {
     }
 
     func update(isVip: Bool, isMembershipStatusConfirmed: Bool, shouldAnimateProBadge: Bool, hasUnreadLatestReport: Bool, shouldDisplayLogWeightRemind: Bool) {
-        let shouldUseMessageLayout = shouldDisplayLogWeightRemind || hasUnreadLatestReport
+        let shouldUseMessageLayout = (shouldDisplayLogWeightRemind || hasUnreadLatestReport) && isVip
         updateLayout(hasUnreadLatestReport: shouldUseMessageLayout)
         proImgView.layer.removeAllAnimations()
         unreadImgView.isHidden = !shouldUseMessageLayout
@@ -148,7 +148,7 @@ extension JournalAICoachTableViewCell {
             return
         }
 
-        if hasUnreadLatestReport {
+        if hasUnreadLatestReport && isVip{
             proImgView.alpha = 0
             proImgView.isHidden = true
             titleLabel.text = "新的教练报告已准备好"

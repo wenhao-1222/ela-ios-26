@@ -27,6 +27,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private var aiCoachOrbHostController: UIHostingController<AICoachPreOrbRootView>?
     private var bgImgViewBottomConstraint: Constraint?
     private var lastBgImgViewBottomOffset: CGFloat = -1
+    private let shouldEnableToneFeedbackFeature = false
     // Measured from the original ela_pro_ai_pre_bg asset in pixels.
     private let bgImagePixelSize = CGSize(width: 1500.0, height: 3248.0)
     private let bgCircleCenterYPixels: CGFloat = 1058.0
@@ -61,7 +62,8 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     }()
 
     private lazy var feedbackGlassVM: AICoachPreFeedbackGlassVM = {
-        let view = AICoachPreFeedbackGlassVM(frame: .zero)
+        let view = AICoachPreFeedbackGlassVM(frame: .zero,
+                                             shouldShowToneItemView: self.shouldEnableToneFeedbackFeature)
         view.buttonTapBlock = { [weak self] in
             self?.nextButtonTapAction()
         }
@@ -71,8 +73,10 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         view.intensityTapBlock = { [weak self] in
             self?.showInfoSelectPopup(for: .intensity)
         }
-        view.toneTapBlock = { [weak self] in
-            self?.showToneStylePopup()
+        if self.shouldEnableToneFeedbackFeature {
+            view.toneTapBlock = { [weak self] in
+                self?.showToneStylePopup()
+            }
         }
         return view
     }()
@@ -309,7 +313,9 @@ extension AICoachPreVC{
         view.addSubview(feedbackGlassVM)
 //        view.addSubview(clearPDFReportsButton)
         view.addSubview(infoSelectPopupVM)
-        view.addSubview(toneStylePopupVM)
+        if shouldEnableToneFeedbackFeature {
+            view.addSubview(toneStylePopupVM)
+        }
         
         view.addSubview(katchAlertVm)
         view.addSubview(elaExpiredAlertVm)
@@ -382,8 +388,10 @@ extension AICoachPreVC{
             make.edges.equalToSuperview()
         }
 
-        toneStylePopupVM.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        if shouldEnableToneFeedbackFeature {
+            toneStylePopupVM.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+            }
         }
 
         elaExpiredAlertVm.snp.makeConstraints { make in
@@ -631,6 +639,7 @@ private extension AICoachPreVC {
     }
 
     func showToneStylePopup() {
+        guard shouldEnableToneFeedbackFeature else { return }
         guard isUpdatingAICoachProfile == false else { return }
         toneStylePopupVM.update(selectedValue: aiCoachTone)
         showVMWithFade(toneStylePopupVM) {
@@ -643,6 +652,7 @@ private extension AICoachPreVC {
     }
 
     func updateAICoachProfile(field: AICoachPreInfoEditableField, value: Int) {
+        guard shouldEnableToneFeedbackFeature || field != .tone else { return }
         let newUserGoal = field == .goal ? value : userGoal
         let newIntensityPreference = field == .intensity ? value : aiCoachIntensityPreference
         let newAICoachTone = field == .tone ? value : aiCoachTone
@@ -693,7 +703,7 @@ private extension AICoachPreVC {
         if (1...5).contains(aiCoachIntensityPreference) {
             param["aiCoachIntensityPreference"] = aiCoachIntensityPreference
         }
-        if (1...4).contains(aiCoachTone) {
+        if shouldEnableToneFeedbackFeature && (1...4).contains(aiCoachTone) {
             param["aiCoachTone"] = aiCoachTone
         }
         return param
@@ -961,8 +971,10 @@ private extension AICoachPreVC {
     func applyHiddenPopupPresentationState() {
         infoSelectPopupVM.alpha = infoSelectPopupVM.isHidden ? 0 : 1
         infoSelectPopupVM.transform = .identity
-        toneStylePopupVM.alpha = toneStylePopupVM.isHidden ? 0 : 1
-        toneStylePopupVM.transform = .identity
+        if shouldEnableToneFeedbackFeature {
+            toneStylePopupVM.alpha = toneStylePopupVM.isHidden ? 0 : 1
+            toneStylePopupVM.transform = .identity
+        }
         katchAlertVm.alpha = katchAlertVm.isHidden ? 0 : 1
         katchAlertVm.transform = .identity
         elaExpiredAlertVm.alpha = elaExpiredAlertVm.isHidden ? 0 : 1
