@@ -291,7 +291,7 @@ class LogsSQLiteUploadManager {
         let param = ["sdate":"\(logsDict.stringValueForKey(key: "sdate"))",
                      "sn":"\(sn)"]
         DLLog(message: "sendNextMealAdviceRequest:\(param)")
-        WHNetworkUtil.shareManager().POST(urlString: URL_User_logs_next_meal_advice, parameters: param as [String : AnyObject]) { responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_User_logs_next_meal_advice, parameters: param as [String : AnyObject],timeOut: 60) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
             DLLog(message: "sendNextMealAdviceRequest:\(dataObj)")

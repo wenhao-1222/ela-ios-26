@@ -33,7 +33,7 @@ final class MealAdviceNextVC: WHBaseViewVC {
     /// 滚动区域底部渐变层。
     private let bottomGradientLayer = CAGradientLayer()
     /// 右上角关闭按钮。
-    private let closeButton = UIButton(type: .custom)
+    private let closeButton = ElaLiquidGlassCloseButton()
     /// 页面标题。
     private let titleLabel = UILabel()
     /// 顶部营养摘要容器。
@@ -181,7 +181,6 @@ extension MealAdviceNextVC {
         ]
         bottomGradientLayer.locations = [0, 1]
 //
-        closeButton.setImage(UIImage(named: "navi_close_icon"), for: .normal)
         closeButton.addTarget(self, action: #selector(closeAction), for: .touchUpInside)
 
         titleLabel.text = "建议摄入量"

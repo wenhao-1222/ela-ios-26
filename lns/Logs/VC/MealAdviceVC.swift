@@ -270,7 +270,7 @@ extension MealAdviceVC{
             "fidList": fidList
         ]
         DLLog(message: "sendMealPlanNextRequest:\(param)")
-        WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_next, parameters: param as [String : AnyObject]) { [weak self] responseObject in
+        WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_next, parameters: param as [String : AnyObject],timeOut: 60) { [weak self] responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             DLLog(message: "sendMealPlanNextRequest:\(dataString)")
             guard let self = self else { return }
