@@ -189,6 +189,11 @@ class FoodsListNewVC: WHBaseViewVC {
                 }
             }
         }
+        vm.networkErrorBlock = {()in
+            if self.topTypeVM.foodsType == "all"{
+                self.moveHistory(isTop:false)
+            }
+        }
         
         return vm
     }()

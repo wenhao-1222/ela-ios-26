@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class FoodsListAllListVM: UIView {
-    
+
     var fname = ""
     var fNameChanged = false
     
@@ -23,9 +23,12 @@ class FoodsListAllListVM: UIView {
     
     var scrollBlock:(()->())?
     var searchNoDataBlocK:(()->())?
+    var networkErrorBlock:(()->())?
     
     private let headerViews = NSHashTable<UIView>.weakObjects()
     private let headerGrayViews = NSHashTable<UIView>.weakObjects()
+    private var requestVersion = 0
+    private var isShowingNetworkError = false
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: 0, y: frame.origin.y, width: SCREEN_WIDHT, height: SCREEN_HEIGHT-frame.origin.y))
@@ -104,6 +107,7 @@ extension FoodsListAllListVM{
         self.sendFoodsListRequest()
     }
     func initSkeletonData() {
+        hideNetworkError()
         foodsArray.removeAllObjects()
         foodsArray.add(["foodsArray":[[:],[:],[:],[:],[:],[:],[:],[:]]])
 //        foodsArray.addObjects(from: ["foodsArray":[[:],[:],[:],[:],[:],[:],[:],[:]]])
@@ -112,10 +116,28 @@ extension FoodsListAllListVM{
 //            self.tableView.showAnimatedGradientSkeleton()
 //        })
     }
+    private func showNetworkError() {
+        isShowingNetworkError = true
+        noDataView.noDataLabel.text = "网络不可用，请检查网络后重试"
+        noDataView.tipsLabel.isHidden = true
+        noDataView.isHidden = false
+        tableView.tableFooterView = nil
+        networkErrorBlock?()
+    }
+
+    private func hideNetworkError() {
+        isShowingNetworkError = false
+        noDataView.noDataLabel.text = "- 暂无数据 -"
+        noDataView.tipsLabel.isHidden = true
+    }
 }
 
 extension FoodsListAllListVM:UITableViewDelegate,UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
+        if isShowingNetworkError {
+            noDataView.isHidden = false
+            return 0
+        }
         noDataView.isHidden = foodsArray.count > 0 ? true : false
         if foodsArray.count == 0 && self.searchNoDataBlocK != nil{
             self.searchNoDataBlocK!()
@@ -207,6 +229,8 @@ extension FoodsListAllListVM:UITableViewDelegate,UITableViewDataSource{
 
 extension FoodsListAllListVM{
     func sendFoodsListRequest() {
+        requestVersion += 1
+        let currentRequestVersion = requestVersion
         if fNameChanged == true{
 //            foodsArray.removeAllObjects()
 //            self.tableView.reloadData()
@@ -226,6 +250,7 @@ extension FoodsListAllListVM{
         DLLog(message: "sendFoodsListRequest:\(param)")
         WHNetworkUtil.shareManager().POST(urlString: URL_foods_list, parameters: param as [String:AnyObject],isNeedToast: true,vc: self.controller) { [weak self] responseObject in
                     guard let self = self else { return }
+                    guard currentRequestVersion == self.requestVersion else { return }
 //        WHNetworkUtil.shareManager().POST(urlString: URL_foods_list, parameters: param as [String:AnyObject],isNeedToast: true,vc: self.controller) { responseObject in
 //        WHNetworkUtil.shareManager().POST(urlString: URL_foods_list, parameters: param as [String:AnyObject],isNeedToast: true,vc: self.controller) { responseObject in
 //            self.noDataView.noDataLabel.text = "- 暂无数据 -"
@@ -256,6 +281,8 @@ extension FoodsListAllListVM{
 //                    if aiFoods.stringValueForKey(key: "fname").count > 0 {
 //                        aiFoodsArr.add(aiFoods)
             DispatchQueue.main.async {
+                guard currentRequestVersion == self.requestVersion else { return }
+                self.hideNetworkError()
                 self.foodsArray.removeAllObjects()
                 if bestArray.count > 0 {
                     self.foodsArray.add(["title":"精准搜索",
@@ -306,8 +333,10 @@ extension FoodsListAllListVM{
         } failure: { [weak self] _ in
             guard let self = self else { return }
             DispatchQueue.main.async {
+                guard currentRequestVersion == self.requestVersion else { return }
                 self.fNameChanged = false
                 self.foodsArray.removeAllObjects()
+                self.showNetworkError()
                 self.tableView.reloadData()
             }
 //            self.fNameChanged = false

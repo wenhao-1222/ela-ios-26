@@ -14,10 +14,12 @@ class NetworkMonitor {
     private(set) var isConnected: Bool = true
 
     private struct PendingRequest {
+        let id = UUID()
         var retryCount: Int
         var request: () -> Void
         var allowRetry: Bool
         var timestamp: Date
+        var pendingTimeout: TimeInterval?
         var msgDict: [String: Any]
         var ownerUid: String?
         var onDropped: (() -> Void)?
@@ -67,6 +69,7 @@ class NetworkMonitor {
 
     func addRequest(_ request: @escaping () -> Void,
                     allowRetry: Bool = true,
+                    pendingTimeout: TimeInterval? = nil,
                     msgDict: [String: Any] = [:],
                     ownerUid: String? = nil,
                     onDropped: (() -> Void)? = nil) {
@@ -78,10 +81,12 @@ class NetworkMonitor {
                                          request: request,
                                          allowRetry: allowRetry,
                                          timestamp: Date(),
+                                         pendingTimeout: pendingTimeout,
                                          msgDict: msgDict,
                                          ownerUid: normalizedOwnerUid(ownerUid),
                                          onDropped: onDropped)
             pendingRequests.append(pending)
+            schedulePendingRequestExpiryIfNeeded(pending)
         }
     }
 
@@ -144,11 +149,12 @@ class NetworkMonitor {
         
         for pending in pendingRequests {
             let elapsed = now.timeIntervalSince(pending.timestamp)
-            if elapsed <= maxPendingTime {
+            let pendingTimeout = pending.pendingTimeout ?? maxPendingTime
+            if elapsed <= pendingTimeout {
                 validRequests.append(pending)
             } else {
-                print("[NetworkMonitor] 请求挂起超过\(maxPendingTime)秒，丢弃！")
-                reportRequestEvent(reason: "pending_timeout  \(maxPendingTime)秒", info: pending.msgDict)
+                print("[NetworkMonitor] 请求挂起超过\(pendingTimeout)秒，丢弃！")
+                reportRequestEvent(reason: "pending_timeout  \(pendingTimeout)秒", info: pending.msgDict)
                 notifyDroppedRequestIfNeeded(info: pending.msgDict, onDropped: pending.onDropped)
             }
         }
@@ -171,6 +177,23 @@ class NetworkMonitor {
         DispatchQueue.main.async {
             onDropped()
         }
+    }
+
+    private func schedulePendingRequestExpiryIfNeeded(_ pending: PendingRequest) {
+        guard let pendingTimeout = pending.pendingTimeout else { return }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + pendingTimeout) { [weak self] in
+            self?.dropPendingRequest(id: pending.id, timeout: pendingTimeout)
+        }
+    }
+
+    private func dropPendingRequest(id: UUID, timeout: TimeInterval) {
+        guard let index = pendingRequests.firstIndex(where: { $0.id == id }) else { return }
+
+        let pending = pendingRequests.remove(at: index)
+        print("[NetworkMonitor] 请求挂起超过\(timeout)秒，丢弃！")
+        reportRequestEvent(reason: "pending_timeout  \(timeout)秒", info: pending.msgDict)
+        notifyDroppedRequestIfNeeded(info: pending.msgDict, onDropped: pending.onDropped)
     }
 
     private func normalizedOwnerUid(_ ownerUid: String?) -> String? {

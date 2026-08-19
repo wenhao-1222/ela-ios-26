@@ -1,7 +1,7 @@
 platform :ios, "15.0"
 use_frameworks!
 
-source 'https://github.com/CocoaPods/Specs.git'        #官方仓库地址
+source 'https://cdn.cocoapods.org/'        # 官方 CDN 仓库地址
 
 target 'lns' do
     #pod 'pop'

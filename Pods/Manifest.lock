@@ -23,7 +23,7 @@ PODS:
   - CHIPageControl/Paprika (0.2)
   - CHIPageControl/Puya (0.2)
   - CryptoSwift (1.8.2)
-  - DeviceKit (5.4.0)
+  - DeviceKit (5.8.0)
   - DGCharts (5.1.0):
     - DGCharts/Core (= 5.1.0)
   - DGCharts/Core (5.1.0)
@@ -212,7 +212,6 @@ SPEC REPOS:
     - AliyunOSSiOS
     - CHIPageControl
     - CryptoSwift
-    - DeviceKit
     - DGCharts
     - FLAnimatedImage
     - IQKeyboardManagerSwift
@@ -237,6 +236,8 @@ SPEC REPOS:
     - UMCommon
     - UMDevice
     - WechatOpenSDK-XCFramework
+  trunk:
+    - DeviceKit
 
 SPEC CHECKSUMS:
   Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
@@ -245,7 +246,7 @@ SPEC CHECKSUMS:
   AliyunOSSiOS: 1f091b3aeec9f7a5fd722cb511704116f2ca468d
   CHIPageControl: a787bf7205c9b7e7fbfc412be36c5e8636b68f86
   CryptoSwift: c63a805d8bb5e5538e88af4e44bb537776af11ea
-  DeviceKit: bd34bb1766d926c3cc5a5f6e3e9a6dd10148b805
+  DeviceKit: 57636054c827d171a22baa3fd320b65a70f3fda7
   DGCharts: 1c6daf585b6cfc78807af44ea690d357c410627f
   FLAnimatedImage: bbf914596368867157cc71b38a8ec834b3eeb32b
   IQKeyboardManagerSwift: a8228c257614af98743b4cd8584637025f36358f
@@ -271,6 +272,6 @@ SPEC CHECKSUMS:
   UMDevice: dcdf7ec167387837559d149fbc7d793d984faf82
   WechatOpenSDK-XCFramework: 36fb2bea0754266c17184adf4963d7e6ff98b69f
 
-PODFILE CHECKSUM: 0ea3d8e6d24dd87777911d37dbda16c8ccaa2061
+PODFILE CHECKSUM: 2883c7776bc2fa8753b81b2b090bdfb34e6872d9
 
 COCOAPODS: 1.16.2

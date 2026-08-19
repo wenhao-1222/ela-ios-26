@@ -1330,6 +1330,7 @@
 		ECE40A64302320A600837832 /* MealsNumVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE40A633023209800837832 /* MealsNumVM.swift */; };
 		ECE40A663023348200837832 /* MealAdviceFoodsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE40A653023348200837832 /* MealAdviceFoodsVM.swift */; };
 		ECE40A673023500000837832 /* MealAdviceNextVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE40A683023500000837832 /* MealAdviceNextVC.swift */; };
+		ECE40A6B302350000837832 /* MealAdviceNextSkeletonVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE40A6C302350000837832 /* MealAdviceNextSkeletonVC.swift */; };
 		ECEC4EAB2F73777200FB1E56 /* AICoachPreVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */; };
 		ECEC4EAE2F73780300FB1E56 /* AICoachPreDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */; };
 		ECEC4EB22F73A11100FB1E56 /* AICoachPreInfoVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */; };
@@ -2893,6 +2894,7 @@
 		ECE40A633023209800837832 /* MealsNumVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealsNumVM.swift; sourceTree = "<group>"; };
 		ECE40A653023348200837832 /* MealAdviceFoodsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealAdviceFoodsVM.swift; sourceTree = "<group>"; };
 		ECE40A683023500000837832 /* MealAdviceNextVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealAdviceNextVC.swift; sourceTree = "<group>"; };
+		ECE40A6C302350000837832 /* MealAdviceNextSkeletonVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealAdviceNextSkeletonVC.swift; sourceTree = "<group>"; };
 		ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreVC.swift; sourceTree = "<group>"; };
 		ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDaysVM.swift; sourceTree = "<group>"; };
 		ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreInfoVM.swift; sourceTree = "<group>"; };
@@ -5993,6 +5995,7 @@
 			isa = PBXGroup;
 			children = (
 				ECE40A683023500000837832 /* MealAdviceNextVC.swift */,
+				ECE40A6C302350000837832 /* MealAdviceNextSkeletonVC.swift */,
 				F1A1B1C12F00000300AAA001 /* MealAdviceNextComponents.swift */,
 			);
 			path = NextMealsAdvice;
@@ -6415,13 +6418,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6456,13 +6455,9 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
-			inputPaths = (
-			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6579,6 +6574,7 @@
 				ECE40A613023204500837832 /* MealAdviceVC.swift in Sources */,
 				ECE40A663023348200837832 /* MealAdviceFoodsVM.swift in Sources */,
 				ECE40A673023500000837832 /* MealAdviceNextVC.swift in Sources */,
+				ECE40A6B302350000837832 /* MealAdviceNextSkeletonVC.swift in Sources */,
 				F1A1B1C12F00000200AAA001 /* MealAdviceNextViewModel.swift in Sources */,
 				F1A1B1C12F00000400AAA001 /* MealAdviceNextComponents.swift in Sources */,
 				A755ED652DF6AAD000005C3A /* GuideTotalSecondNewVM.swift in Sources */,

@@ -243,11 +243,12 @@ class WHNetworkUtil: SessionManager {
         let currentOwnerUid = UserInfoModel.shared.uId.trimmingCharacters(in: .whitespacesAndNewlines)
         let cachedOwnerUid = (UserDefaults.standard.value(forKey: userId) as? String ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         let requestOwnerUid = currentOwnerUid.isEmpty ? cachedOwnerUid : currentOwnerUid
-        let droppedHandler: (() -> Void)? = urlString == URL_user_group_init ? {
+        let droppedHandler: (() -> Void)? = urlString == URL_user_group_init || urlString == URL_foods_list ? {
             DispatchQueue.main.async {
                 failure?(true)
             }
         } : nil
+        let pendingTimeout: TimeInterval? = urlString == URL_foods_list ? 3.0 : nil
         let allowNetworkRetry = NetworkMonitor.shared.shouldAllowRetry(for: urlString)
 
         NetworkMonitor.shared.addRequest ({
@@ -565,7 +566,7 @@ class WHNetworkUtil: SessionManager {
                     }
                 }
             }
-        }, allowRetry: allowNetworkRetry, msgDict: msgDictError, ownerUid: requestOwnerUid, onDropped: droppedHandler)
+        }, allowRetry: allowNetworkRetry, pendingTimeout: pendingTimeout, msgDict: msgDictError, ownerUid: requestOwnerUid, onDropped: droppedHandler)
     }
 
     public func md5(strs:String) ->String!{

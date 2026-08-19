@@ -11,36 +11,8 @@ import MCToast
 
 class MealAdviceVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     
-    /// 下餐规划失败 toast 显示时间。
-    private let mealPlanFailureToastDuration: CGFloat = 3
-    /// 下餐规划失败 toast 文字最大宽度，与 MCToast 文本实现保持一致。
-    private let mealPlanFailureToastTextMaxWidth: CGFloat = 220
     /// 当前所处的步骤编号。
     private var currentStep = 0
-    /// 下餐规划请求的版本号，用来忽略过期回包。
-    private var mealPlanRequestVersion = 0
-    /// 当前是否正在请求下餐规划接口。
-    private var isRequestingMealPlan = false
-    /// 下餐规划进度是否已经自然走完。
-    private var isMealPlanProgressCompleted = false
-    /// 已返回但还在等待进度走完的下餐规划数据。
-    private var pendingMealPlanNextPlanDict: NSDictionary?
-    /// 缓存下餐规划数据所属的请求版本号。
-    private var pendingMealPlanNextRequestVersion = 0
-    /// 等待进度达到最低展示比例后再展示的失败文案。
-    private var pendingMealPlanNextFailureMessage: String?
-    /// 失败回退对应的请求版本号。
-    private var pendingMealPlanNextFailureRequestVersion = 0
-    /// 下餐规划失败时，进度页至少展示到该进度后再返回第二步。
-    private let mealPlanFailureMinimumProgress = 20
-    /// 下餐规划接口未返回前，生成进度最多展示到该进度。
-    private let mealPlanProgressMaximumBeforeResponse = 84
-    /// 下餐规划生成页的基础假进度时长。
-    private let mealPlanProgressAnimationDuration: TimeInterval = 3.0
-    /// 下餐规划接口未返回时，超过上限后每递增 1% 的时间。
-    private let mealPlanProgressSlowIntervalAfterMaximum: TimeInterval = 0.25
-    /// 下餐规划接口成功返回后，进度补到 100% 的动画时长。
-    private let mealPlanProgressCompletionDuration: TimeInterval = 0.5
     /// 当前日志页对应的日期。
     var sDate = Date().todayDate
     /// 当前日志页点击的餐序号，1 开始，0 表示未指定。
@@ -109,34 +81,9 @@ class MealAdviceVC: WHBaseViewVC, UIGestureRecognizerDelegate {
         
         return vm
     }()
-    /// 生成中的进度页面。
-    lazy var progressVm: ElaProProgressVM = {
-        let vm = ElaProProgressVM.init(frame: CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
-        vm.progressAnimationDuration = self.mealPlanProgressAnimationDuration
-        vm.showsStepTexts = false
-        vm.currentStageLabel.text = "正在规划本餐摄入量..."
-        vm.generatingTitleLabel.isHidden = true
-        vm.progressCompleteBlock = { [weak self] in
-            guard let self = self else { return }
-            let completedRequestVersion = self.mealPlanRequestVersion
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                guard completedRequestVersion == self.mealPlanRequestVersion else { return }
-                self.isMealPlanProgressCompleted = true
-                self.tryFinishMealPlanNextIfReady()
-            }
-        }
-        vm.progressDidChangeBlock = { [weak self] progress in
-            self?.tryHandleMealPlanNextFailureIfReady(progress: progress)
-        }
-        return vm
-    }()
-    
     /// 返回上一页或回退到上一步。
     @objc func backAction() {
-        if currentStep == 2 {
-            cancelMealPlanRequest()
-            showSecondStep()
-        } else if currentStep > 0 {
+        if currentStep > 0 {
             showMealsNumStep()
         } else {
             self.backTapAction()
@@ -152,12 +99,10 @@ extension MealAdviceVC{
         
         view.addSubview(mealsNumVm)
         view.addSubview(secondVm)
-        view.addSubview(progressVm)
         view.addSubview(backImg)
         view.addSubview(backTapView)
         view.addGestureRecognizer(backToMealsNumPanGesture)
         
-        progressVm.resetProgressState()
         updatePopGestureState()
         setConstrait()
     }
@@ -189,7 +134,6 @@ extension MealAdviceVC{
         let changes = {
             self.mealsNumVm.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
             self.secondVm.frame = CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
-            self.progressVm.frame = CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         }
         if animated {
             UIView.animate(withDuration: 0.25, animations: changes)
@@ -206,7 +150,6 @@ extension MealAdviceVC{
         let changes = {
             self.mealsNumVm.frame = CGRect.init(x: -SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
             self.secondVm.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
-            self.progressVm.frame = CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         }
         if animated {
             UIView.animate(withDuration: 0.25, animations: changes)
@@ -216,29 +159,9 @@ extension MealAdviceVC{
         updatePopGestureState()
     }
 
-    /// 展示生成中的进度页面。
-    func showProgressStep() {
-        currentStep = 2
-        updatePopGestureState()
-        setBackButtonVisible(false)
-        progressVm.progressAnimationDuration = mealPlanProgressAnimationDuration
-        progressVm.automaticProgressLimit = mealPlanProgressMaximumBeforeResponse
-        progressVm.automaticProgressSlowIntervalAfterLimit = mealPlanProgressSlowIntervalAfterMaximum
-        progressVm.resetProgressState()
-        progressVm.startProgressAnimation()
-        UIView.animate(withDuration: 0.25) {
-            self.mealsNumVm.frame = CGRect.init(x: -SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
-            self.secondVm.frame = CGRect.init(x: -SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
-            self.progressVm.frame = CGRect.init(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
-        }
-        updatePopGestureState()
-    }
-
-    /// 校验第二步结果并开始请求下餐规划接口。
+    /// 校验第二步结果并直接进入下餐规划骨架页。
     /// - Parameter selectedFoods: 当前勾选的食物。
     func handleMealPlanConfirm(selectedFoods: NSArray) {
-        guard !isRequestingMealPlan else { return }
-
         let restMealNum = Int(QuestinonaireMsgModel.shared.mealsPerDay) ?? 0
         let fidList = mealPlanFidList(from: selectedFoods)
         guard restMealNum > 0, fidList.count > 0 else {
@@ -246,164 +169,8 @@ extension MealAdviceVC{
             return
         }
 
-        sendMealPlanNextRequest(restMealNum: restMealNum, fidList: fidList)
-    }
-
-    /// 请求下餐规划接口，并根据结果进入下一页。
-    /// - Parameters:
-    ///   - restMealNum: 剩余餐数。
-    ///   - fidList: 当前勾选的食物 fid 列表。
-    func sendMealPlanNextRequest(restMealNum: Int, fidList: [Int]) {
-        mealPlanRequestVersion += 1
-        let requestVersion = mealPlanRequestVersion
-        isRequestingMealPlan = true
-        isMealPlanProgressCompleted = false
-        pendingMealPlanNextPlanDict = nil
-        pendingMealPlanNextRequestVersion = 0
-        pendingMealPlanNextFailureMessage = nil
-        pendingMealPlanNextFailureRequestVersion = 0
-        showProgressStep()
-
-        let param: [String: Any] = [
-            "sdate": sDate,
-            "restMealNum": restMealNum,
-            "fidList": fidList
-        ]
-        DLLog(message: "sendMealPlanNextRequest:\(param)")
-        WHNetworkUtil.shareManager().POST(urlString: URL_diet_plan_next, parameters: param as [String : AnyObject],timeOut: 60) { [weak self] responseObject in
-            let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
-            DLLog(message: "sendMealPlanNextRequest:\(dataString)")
-            guard let self = self else { return }
-            guard requestVersion == self.mealPlanRequestVersion else { return }
-
-            let code = responseObject["code"] as? Int ?? -1
-            let planDict = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
-            if code == 200 {
-                self.handleMealPlanNextSuccess(planDict: planDict, requestVersion: requestVersion)
-            } else {
-                let responseMessage = (responseObject["message"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-                let message = responseMessage.isEmpty ? "系统繁忙，请稍后再试" : responseMessage
-                self.handleMealPlanNextFailure(message: message, requestVersion: requestVersion)
-            }
-        } failure: { [weak self] isError in
-            guard let self = self else { return }
-            guard requestVersion == self.mealPlanRequestVersion else { return }
-            if isError {
-                self.handleMealPlanNextFailure(message: "系统繁忙，请稍后再试", requestVersion: requestVersion)
-            }
-        }
-    }
-
-    /// 进入下餐规划结果页。
-    /// - Parameters:
-    ///   - planDict: 接口返回的规划数据。
-    ///   - requestVersion: 本次请求版本号。
-    func handleMealPlanNextSuccess(planDict: NSDictionary, requestVersion: Int) {
-        guard requestVersion == mealPlanRequestVersion else { return }
-        pendingMealPlanNextPlanDict = planDict
-        pendingMealPlanNextRequestVersion = requestVersion
-        progressVm.finishProgressAnimation(duration: mealPlanProgressCompletionDuration)
-        tryFinishMealPlanNextIfReady()
-    }
-
-    /// 数据和进度都完成后，进入下餐规划结果页。
-    func tryFinishMealPlanNextIfReady() {
-        guard isMealPlanProgressCompleted else { return }
-        guard pendingMealPlanNextRequestVersion == mealPlanRequestVersion,
-              let planDict = pendingMealPlanNextPlanDict else {
-            return
-        }
-        isRequestingMealPlan = false
-        progressVm.pauseProgressAnimation()
-        showSecondStep(animated: false)
-        progressVm.resetProgressState()
-        isMealPlanProgressCompleted = false
-        pendingMealPlanNextPlanDict = nil
-        pendingMealPlanNextRequestVersion = 0
-        pendingMealPlanNextFailureMessage = nil
-        pendingMealPlanNextFailureRequestVersion = 0
-
-        let vc = MealAdviceNextVC(planDict: planDict, sDate: sDate, mealIndex: mealIndex)
+        let vc = MealAdviceNextSkeletonVC(selectedFoods: selectedFoods, sDate: sDate, mealIndex: mealIndex)
         navigationController?.pushViewController(vc, animated: true)
-    }
-
-    /// 处理下餐规划接口失败。
-    /// - Parameters:
-    ///   - message: 后台返回的错误信息。
-    ///   - requestVersion: 本次请求版本号。
-    func handleMealPlanNextFailure(message: String, requestVersion: Int) {
-        guard requestVersion == mealPlanRequestVersion else { return }
-        pendingMealPlanNextPlanDict = nil
-        pendingMealPlanNextRequestVersion = 0
-        pendingMealPlanNextFailureMessage = message
-        pendingMealPlanNextFailureRequestVersion = requestVersion
-        tryHandleMealPlanNextFailureIfReady(progress: progressVm.progressValue)
-    }
-
-    /// 失败后等待进度至少展示到指定比例，再提示并返回第二步。
-    /// - Parameter progress: 当前进度百分比。
-    private func tryHandleMealPlanNextFailureIfReady(progress: Int) {
-        guard let message = pendingMealPlanNextFailureMessage else { return }
-        guard pendingMealPlanNextFailureRequestVersion == mealPlanRequestVersion else { return }
-        guard progress >= mealPlanFailureMinimumProgress else { return }
-
-        isRequestingMealPlan = false
-        isMealPlanProgressCompleted = false
-        pendingMealPlanNextPlanDict = nil
-        pendingMealPlanNextRequestVersion = 0
-        pendingMealPlanNextFailureMessage = nil
-        pendingMealPlanNextFailureRequestVersion = 0
-        progressVm.pauseProgressAnimation()
-        MCToast.mc_text(message, offset: centeredMealPlanToastOffset(for: message), duration: mealPlanFailureToastDuration)
-        showSecondStep()
-        progressVm.resetProgressState()
-    }
-
-    /// 计算 MCToast 底部 offset，使下餐规划失败提示显示在屏幕中央。
-    /// - Parameter message: toast 文案。
-    /// - Returns: MCToast 所需的底部偏移。
-    private func centeredMealPlanToastOffset(for message: String) -> CGFloat {
-        let font = MCToastConfig.shared.text.font
-        let lineHeight = font.lineHeight * 1.5
-        let paragraph = NSMutableParagraphStyle()
-        paragraph.alignment = .center
-        paragraph.minimumLineHeight = lineHeight
-        paragraph.maximumLineHeight = lineHeight
-
-        var baselineOffset = -(lineHeight - font.lineHeight) / 2
-        if #unavailable(iOS 17) {
-            baselineOffset /= 2
-        }
-
-        let label = UILabel()
-        label.numberOfLines = 0
-        label.attributedText = NSAttributedString(
-            string: message,
-            attributes: [
-                .font: font,
-                .paragraphStyle: paragraph,
-                .baselineOffset: -baselineOffset
-            ]
-        )
-        let labelSize = label.sizeThatFits(
-            CGSize(width: mealPlanFailureToastTextMaxWidth, height: .greatestFiniteMagnitude)
-        )
-        let padding = MCToastConfig.shared.text.padding
-        let toastHeight = labelSize.height + padding.top + padding.bottom
-        return max(0, (UIScreen.main.bounds.height - toastHeight) * 0.5)
-    }
-
-    /// 取消当前请求并重置进度页状态。
-    func cancelMealPlanRequest() {
-        mealPlanRequestVersion += 1
-        isRequestingMealPlan = false
-        isMealPlanProgressCompleted = false
-        pendingMealPlanNextPlanDict = nil
-        pendingMealPlanNextRequestVersion = 0
-        pendingMealPlanNextFailureMessage = nil
-        pendingMealPlanNextFailureRequestVersion = 0
-        progressVm.pauseProgressAnimation()
-        progressVm.resetProgressState()
     }
 
     /// 从选中的食物里提取 fid 列表。
@@ -429,8 +196,6 @@ extension MealAdviceVC{
 
         if shouldAllowSystemPop {
             updateInteractivePopGestureBlocked(false)
-        } else if currentStep == 2 {
-            updateInteractivePopGestureBlocked(true)
         } else {
             updateInteractivePopGestureBlocked(false)
             canEdgeBack = false
@@ -468,7 +233,6 @@ extension MealAdviceVC{
         case .began, .changed:
             mealsNumVm.frame = CGRect.init(x: -SCREEN_WIDHT + progress, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
             secondVm.frame = CGRect.init(x: progress, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
-            progressVm.frame = CGRect.init(x: SCREEN_WIDHT, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT)
         case .ended:
             if progress > SCREEN_WIDHT * 0.3 || velocity.x > kFitWidth(500) {
                 showMealsNumStep()
