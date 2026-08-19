@@ -55,13 +55,7 @@ extension JournalReportPieVM{
 
 extension JournalReportPieVM{
     func refreshLayer() {
-        if self.layer.sublayers?.count ?? 0 > 0 {
-            for i in 0..<(self.layer.sublayers?.count ?? 0) {
-                let lay = self.layer.sublayers?[i]
-                lay?.removeFromSuperlayer()
-//                lay?.isHidden = true
-            }
-        }
+        self.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
         initBottomLayer()
         maxValue = Float(0)
         switch self.dataType {
@@ -74,7 +68,8 @@ extension JournalReportPieVM{
         }
     }
     func refreshUIForMeals() {
-        for model in mealsDataArray{
+        let validMealsDataArray = mealsDataArray.filter { $0.percent > 0 }
+        for model in validMealsDataArray{
             let percent = model.percent * 0.01
             if maxValue < percent{
                 maxValue = percent
@@ -82,8 +77,8 @@ extension JournalReportPieVM{
         }
         
         var startAngle = -Double.pi*0.5
-        for i in 0..<mealsDataArray.count{
-            let model = mealsDataArray[i]
+        for i in 0..<validMealsDataArray.count{
+            let model = validMealsDataArray[i]
             let circleLayer = CAShapeLayer()
             let circlePath = UIBezierPath()
             let percent = model.percent*0.01
@@ -92,7 +87,7 @@ extension JournalReportPieVM{
             circleLayer.fillColor = nil // 无填充色
             circleLayer.strokeColor = model.color.cgColor
             var endAngle = startAngle + Double(percent)*Double.pi*2
-            if i == mealsDataArray.count - 1 && i > 0{
+            if i == validMealsDataArray.count - 1 && i > 0{
                 endAngle = -Double.pi*0.5
             }
             self.layer.addSublayer(circleLayer)

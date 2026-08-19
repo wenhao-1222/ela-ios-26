@@ -1345,6 +1345,14 @@ extension JounalCollectionCell{
         if self.queryDay != dict.stringValueForKey(key: "sdate"){
             return
         }
+        let logsManager = LogsSQLiteManager.getInstance()
+        if logsManager.hasLogsRecord(sDate: self.queryDay) == false {
+            logsManager.saveServerDetailToDBIfNeeded(dict: dict) { [weak self] success in
+                guard let self = self, success else { return }
+                self.dealServerData(dict: dict)
+            }
+            return
+        }
         var serverETime = dict.stringValueForKey(key: "etime")
         //本地etime 小于 服务器的etime ，说明本地数据需要更新
         logsModel = LogsSQLiteManager.getInstance().getLogsByDate(sDate: self.queryDay)!
@@ -1796,6 +1804,10 @@ extension JounalCollectionCell{
         WHNetworkUtil.shareManager().POST(urlString: URL_User_logs_detail, parameters: param as [String : AnyObject]) { responseObject in
             let dataString = AESEncyptUtil.aesDecrypt(hexString: responseObject["data"]as? String ?? "")
             let dataObj = WHUtils.getDictionaryFromJSONString(jsonString: dataString ?? "")
+            guard dataObj.count > 0 else {
+                DLLog(message: "sendLogsDetailRequest: empty server data")
+                return
+            }
             self.dealServerData(dict:dataObj)
             DLLog(message: "sendLogsDetailRequest:\(dataObj)")
 //            self.dealServerData(dict:responseObject["data"]as? NSDictionary ?? [:])

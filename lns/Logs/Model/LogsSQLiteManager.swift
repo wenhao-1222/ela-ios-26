@@ -106,6 +106,40 @@ class LogsSQLiteManager {
             NotificationCenter.default.post(name: Self.todayLogsLocalDataDidChangeNotification, object: nil)
         }
     }
+
+    func hasLogsRecord(sDate: String) -> Bool {
+        do {
+            if let rows = try db?.prepare("SELECT 1 FROM logs WHERE uid == '\(UserInfoModel.shared.uId)' AND sdate == '\(sDate)' LIMIT 1") {
+                for _ in rows {
+                    return true
+                }
+            }
+        } catch {
+            DLLog(message: "hasLogsRecord query failed \(sDate)")
+        }
+        return false
+    }
+
+    func saveServerDetailToDBIfNeeded(dict: NSDictionary, completion: ((Bool) -> Void)? = nil) {
+        let sDate = dict.stringValueForKey(key: "sdate")
+        guard sDate.count > 0 else {
+            completion?(false)
+            return
+        }
+
+        guard hasLogsRecord(sDate: sDate) == false else {
+            completion?(true)
+            return
+        }
+
+        saveServerDataToDB(dataArray: [dict]) { [weak self] in
+            guard let self = self else {
+                completion?(false)
+                return
+            }
+            completion?(self.hasLogsRecord(sDate: sDate))
+        }
+    }
     
     class func getInstance() -> LogsSQLiteManager
      {

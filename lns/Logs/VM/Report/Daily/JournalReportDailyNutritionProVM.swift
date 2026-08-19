@@ -230,6 +230,10 @@ extension JournalReportDailyNutritionRowView {
         } else if target > 0, intake > target {
             progressView.solidProgress = 1
             progressView.stripeProgress = min(max(progress - 1, 0), 1)
+        } else if target <= 0, intake > 0 {
+            // 目标为 0 且有摄入时，按完全超出处理，展示整条斜纹溢出态。
+            progressView.solidProgress = 1
+            progressView.stripeProgress = 1
         } else {
             progressView.solidProgress = min(max(progress, 0), 1)
             progressView.stripeProgress = 0
