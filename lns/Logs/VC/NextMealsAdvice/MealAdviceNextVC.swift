@@ -445,7 +445,7 @@ extension MealAdviceNextVC {
     ///   - text: 当前输入框文本。
     private func endEditingQuantity(at index: Int, text: String) {
         let normalizedText = text.replacingOccurrences(of: ",", with: ".")
-        guard let quantity = Double(normalizedText), quantity > 0 else {
+        guard let quantity = Double(normalizedText), quantity >= 0 else {
             viewModel.restoreQuantity(at: index)
             refreshVisibleFoodCell(at: index)
             updateMetricViews(animated: true, animateTopMetrics: false)

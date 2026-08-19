@@ -27,7 +27,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private var aiCoachOrbHostController: UIHostingController<AICoachPreOrbRootView>?
     private var bgImgViewBottomConstraint: Constraint?
     private var lastBgImgViewBottomOffset: CGFloat = -1
-    private let shouldEnableToneFeedbackFeature = false
+    private let shouldEnableToneFeedbackFeature = true
     // Measured from the original ela_pro_ai_pre_bg asset in pixels.
     private let bgImagePixelSize = CGSize(width: 1500.0, height: 3248.0)
     private let bgCircleCenterYPixels: CGFloat = 1058.0

@@ -83,7 +83,7 @@ final class MealAdviceNextFoodItemViewModel {
     /// - Parameter text: 输入框里的数量文本。
     func updateQuantity(text: String) {
         let normalizedText = text.replacingOccurrences(of: ",", with: ".")
-        guard let quantity = Double(normalizedText), quantity > 0 else { return }
+        guard let quantity = Double(normalizedText), quantity >= 0 else { return }
         currentQuantity = quantity
         rebuildState()
     }
@@ -219,8 +219,10 @@ final class MealAdviceNextFoodItemViewModel {
     ///   - dict: 接口返回的原始食物字典。
     ///   - standardQuantity: 标准规格数量。
     private static func originalQuantity(from dict: NSDictionary, standardQuantity: Double) -> Double {
-        let currentQty = dict.doubleValueForKey(key: "qty")
-        if currentQty > 0 { return currentQty }
+        let currentQtyText = dict.rawStringValueForKey(key: "qty")
+        if currentQtyText.count > 0 {
+            return Double(currentQtyText) ?? standardQuantity
+        }
         return standardQuantity
     }
 
