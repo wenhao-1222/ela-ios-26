@@ -61,6 +61,7 @@ private final class WelcomeGuide0820BulletRow: UIView {
 
 class WelcomeGuide0820BasePageVM: UIView {
     private let content: WelcomeGuide0820PageContent
+    private var delayedDetailViews: [UIView] = []
 
     private lazy var topImageView: UIImageView = {
         let imageView = UIImageView()
@@ -98,6 +99,27 @@ class WelcomeGuide0820BasePageVM: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    func setDetailsVisible(_ isVisible: Bool) {
+        delayedDetailViews.forEach {
+            $0.layer.removeAllAnimations()
+            $0.alpha = isVisible ? 1 : 0
+        }
+    }
+
+    func revealDetails(delay: TimeInterval, duration: TimeInterval, completion: (() -> Void)? = nil) {
+        delayedDetailViews.forEach {
+            $0.layer.removeAllAnimations()
+            $0.alpha = 0
+        }
+        UIView.animate(withDuration: duration, delay: delay, options: [.curveEaseInOut]) {
+            self.delayedDetailViews.forEach {
+                $0.alpha = 1
+            }
+        } completion: { _ in
+            completion?()
+        }
+    }
 }
 
 private extension WelcomeGuide0820BasePageVM {
@@ -107,8 +129,12 @@ private extension WelcomeGuide0820BasePageVM {
         addSubview(detailStackView)
         titleLabel.text = content.title
 //        titleLabel.setLineHeight(textString: content.title, lineHeight: kFitWidth(37))
-        content.details.forEach { text in
-            detailStackView.addArrangedSubview(WelcomeGuide0820BulletRow(text: text))
+        content.details.enumerated().forEach { index, text in
+            let row = WelcomeGuide0820BulletRow(text: text)
+            detailStackView.addArrangedSubview(row)
+            if index > 0 {
+                delayedDetailViews.append(row)
+            }
         }
 
         topImageView.snp.makeConstraints { make in
