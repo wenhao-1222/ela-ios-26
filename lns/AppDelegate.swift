@@ -155,6 +155,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         
         let storedToken = UserDefaults.standard.value(forKey: token) as? String ?? ""
         let storedIsLaunchWelcome = UserDefaults.standard.value(forKey: isLaunchWelcome)as? String ?? ""
+        let launchCountAtStart = UserDefaults.standard.value(forKey: launchNum) as? Int ?? 0
+        let shouldShowWelcomeGuide0820 = true// launchCountAtStart == 0 && UserDefaults.standard.bool(forKey: WelcomeGuide0820VC.hasShownKey) == false
         let rootViewController: UIViewController
 //        if storedIsLaunchWelcome == "" && storedToken == ""{
 ////            self.window?.rootViewController = WelcomeLaunchVC()
@@ -167,53 +169,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
                 guard let self = self, let window = self.window, let launchVc = elaLchVc else { return }
                 guard window.rootViewController === launchVc else { return }
                 
-                let currentToken = UserDefaults.standard.value(forKey: token) as? String ?? ""
-                let currentUId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
-                let rootVc: UIViewController
-                
-                if !UserInfoModel.shared.isLoggingOut && currentToken.count > 1 && currentUId.count > 1{
-                    let phone = UserDefaults.standard.value(forKey: userPhone) as? String ?? ""
-                    UserInfoModel.shared.uId = currentUId
-                    UserInfoModel.shared.token = currentToken
-                    UserInfoModel.shared.phone = phone
-                    ElaProPriceVM.preloadLoggedInProductSnapshots()
-                    sendSplashIdRequest()
-                    ElaProIAPManager.shared.refreshAnonymousIdentityAfterDeletionIfNeeded()
-                    ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
-                    
-                    UserInfoModel.shared.mealsNumber = UserDefaults.getMealsNumber()
-                    UserInfoModel.shared.hidden_survery_button_status = UserDefaults.getSurveryStatus()
-                    UserInfoModel.shared.hiddenMeaTimeStatus = UserDefaults.getLogsTimeStatus()
-                    UserDefaults.initLoginUserGroupMsgCache()
-                    UserDefaults.initWeightUnit()
-                    
-                    if isIpad(){
-                        rootVc = MainTabBarController()
-                    }else{
-                        if #available(iOS 26.0, *) {
-                            rootVc = SystemTabbar()
-                        }else{
-                            rootVc = WHTabBarVC()
-                        }
-                    }
-                    
-                    WidgetUtils().saveUserInfo(uId: "\(currentUId)", uToken: "\(currentToken)")
-                }else{
-                    UserInfoModel.shared.uId = ""
-                    UserInfoModel.shared.token = ""
-                    
-//                    let agreeProtocal = UserDefaults.standard.value(forKey: "agreeProtocal") as? String ?? ""
-//                    if agreeProtocal.count > 0 {
-                        rootVc = UINavigationController(rootViewController: FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true))
-//                    }else{
-//                        rootVc = UINavigationController(rootViewController: WelcomeVC())
-//                    }
-                }
-                UIView.transition(with: window, duration: 0.35, options: .transitionCrossDissolve, animations: {
-                                    window.rootViewController = rootVc
-                }) { _ in
-                    launchVc.removeFromParent()
-                }
+                let rootVc = self.makePostLaunchRootViewController(showingWelcomeGuide0820: shouldShowWelcomeGuide0820)
+                self.transitionRootViewController(rootVc, removing: launchVc)
             }
             
 //            self.window?.rootViewController = elaLchVc
@@ -1217,6 +1174,93 @@ extension UIApplication {
     }
 }
 extension AppDelegate{
+    private func makePostLaunchRootViewController(showingWelcomeGuide0820: Bool = false) -> UIViewController {
+        if showingWelcomeGuide0820 {
+            UserDefaults.standard.set(true, forKey: WelcomeGuide0820VC.hasShownKey)
+            let guideVC = WelcomeGuide0820VC()
+            guideVC.finishBlock = { [weak self, weak guideVC] in
+                guard let self = self,
+                      let window = self.window,
+                      let guideVC = guideVC,
+                      window.rootViewController === guideVC else { return }
+                self.transitionRootViewController(self.makePostLaunchRootViewController())
+            }
+            return guideVC
+        }
+
+        let currentToken = UserDefaults.standard.value(forKey: token) as? String ?? ""
+        let currentUId = UserDefaults.standard.value(forKey: userId) as? String ?? ""
+
+        if !UserInfoModel.shared.isLoggingOut && currentToken.count > 1 && currentUId.count > 1 {
+            let phone = UserDefaults.standard.value(forKey: userPhone) as? String ?? ""
+            UserInfoModel.shared.uId = currentUId
+            UserInfoModel.shared.token = currentToken
+            UserInfoModel.shared.phone = phone
+            ElaProPriceVM.preloadLoggedInProductSnapshots()
+            sendSplashIdRequest()
+            ElaProIAPManager.shared.refreshAnonymousIdentityAfterDeletionIfNeeded()
+            ElaProIAPManager.shared.bindPendingPurchaseIfNeeded()
+
+            UserInfoModel.shared.mealsNumber = UserDefaults.getMealsNumber()
+            UserInfoModel.shared.hidden_survery_button_status = UserDefaults.getSurveryStatus()
+            UserInfoModel.shared.hiddenMeaTimeStatus = UserDefaults.getLogsTimeStatus()
+            UserDefaults.initLoginUserGroupMsgCache()
+            UserDefaults.initWeightUnit()
+
+            let rootVc: UIViewController
+            if isIpad() {
+                rootVc = MainTabBarController()
+            } else {
+                if #available(iOS 26.0, *) {
+                    rootVc = SystemTabbar()
+                } else {
+                    rootVc = WHTabBarVC()
+                }
+            }
+
+            WidgetUtils().saveUserInfo(uId: "\(currentUId)", uToken: "\(currentToken)")
+            return rootVc
+        } else {
+            UserInfoModel.shared.uId = ""
+            UserInfoModel.shared.token = ""
+
+//            let agreeProtocal = UserDefaults.standard.value(forKey: "agreeProtocal") as? String ?? ""
+//            if agreeProtocal.count > 0 {
+                return UINavigationController(rootViewController: FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true))
+//            }else{
+//                return UINavigationController(rootViewController: WelcomeVC())
+//            }
+        }
+    }
+
+    private func transitionRootViewController(_ rootViewController: UIViewController, removing oldViewController: UIViewController? = nil) {
+        guard let window = window else { return }
+
+        let oldSnapshot = window.snapshotView(afterScreenUpdates: false)
+        oldSnapshot?.frame = window.bounds
+        rootViewController.view.frame = window.bounds
+        rootViewController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        rootViewController.view.alpha = 0
+
+        UIView.performWithoutAnimation {
+            window.rootViewController = rootViewController
+            window.layoutIfNeeded()
+        }
+
+        if let oldSnapshot = oldSnapshot {
+            window.addSubview(oldSnapshot)
+        }
+
+        UIView.animate(withDuration: 0.35, delay: 0, options: [.curveEaseInOut]) {
+            rootViewController.view.alpha = 1
+            oldSnapshot?.alpha = 0
+        } completion: { _ in
+            rootViewController.view.alpha = 1
+            oldSnapshot?.removeFromSuperview()
+            oldViewController?.removeFromParent()
+        }
+    }
+
     @objc public func updateWaterShortcutItems() {
         let records = UserDefaults.getWaterRecord()
         var items: [UIApplicationShortcutItem] = []
