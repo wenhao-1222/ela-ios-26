@@ -999,8 +999,10 @@ private extension UIView {
             showSkeleton(
                 SkeletonConfig(baseColorLight: .COLOR_GRAY_E8,
                                highlightColorLight: .COLOR_GRAY_D6D6D6,
-                               baseColorDark: .COLOR_GRAY_E8,
-                               highlightColorDark: .COLOR_GRAY_D6D6D6,
+//                               baseColorDark: .COLOR_GRAY_E8,
+//                               highlightColorDark: .COLOR_GRAY_D6D6D6,
+                               baseColorDark: UIColor(white: 0.5, alpha: 0.5),
+                               highlightColorDark: UIColor(white: 0.08, alpha: 0.55),
                                cornerRadius: layer.cornerRadius,
                                shimmerWidth: 0.22,
                                shimmerDuration: 1.0,

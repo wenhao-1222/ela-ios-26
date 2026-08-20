@@ -582,7 +582,8 @@ extension JounalCollectionCell{
                         if self.selectFoodsIndex == i {
                             foodsDict.setValue("\(foodsMsg.doubleValueForKey(key: "qty"))".replacingOccurrences(of: ",", with: "."), forKey: "qty")
                             foodsDict.setValue("\(foodsMsg.doubleValueForKey(key: "qty"))".replacingOccurrences(of: ",", with: "."), forKey: "specNum")
-                            foodsDict.setValue("\(WHUtils.convertStringToStringNoDigit("\(foodsMsg.doubleValueForKey(key: "caloriesNumber"))") ?? "0")".replacingOccurrences(of: ",", with: "."), forKey: "calories")
+                            foodsDict.setValue("\(foodsMsg.doubleValueForKey(key: "caloriesNumber"))".replacingOccurrences(of: ",", with: "."), forKey: "calories")
+//                            foodsDict.setValue("\(WHUtils.convertStringToStringNoDigit("\(foodsMsg.doubleValueForKey(key: "caloriesNumber"))") ?? "0")".replacingOccurrences(of: ",", with: "."), forKey: "calories")
                             foodsDict.setValue("\(foodsMsg.doubleValueForKey(key: "carbohydrateNumber"))".replacingOccurrences(of: ",", with: "."), forKey: "carbohydrate")
                             foodsDict.setValue("\(foodsMsg.doubleValueForKey(key: "proteinNumber"))".replacingOccurrences(of: ",", with: "."), forKey: "protein")
                             foodsDict.setValue("\(foodsMsg.doubleValueForKey(key: "fatNumber"))".replacingOccurrences(of: ",", with: "."), forKey: "fat")
@@ -1514,7 +1515,7 @@ extension JounalCollectionCell{
                 let foodsDi = foodsArray[j]as? NSDictionary ?? [:]
                 let dic = NSMutableDictionary.init(dictionary: foodsDi)
                 dic.setValue("\(i+1)", forKey: "sn")
-                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "calories"), fractionDigits: 0), forKey: "calories")
+                dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "calories"), fractionDigits: 3), forKey: "calories")
                 dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "carbohydrate"), fractionDigits: 3), forKey: "carbohydrate")
                 dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "protein"), fractionDigits: 3), forKey: "protein")
                 dic.setValue(WHUtils.fixedFractionString(dic.doubleValueForKey(key: "fat"), fractionDigits: 3), forKey: "fat")

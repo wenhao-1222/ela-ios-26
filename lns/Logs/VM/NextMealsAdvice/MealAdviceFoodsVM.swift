@@ -261,6 +261,8 @@ final class MealAdviceFoodsVM: UIView {
     private var selectedScrollHeightConstraint: Constraint?
     /// 已选食物标签移除与位移动画时长。
     private let selectedChipRemovalAnimationDuration: TimeInterval = 0.24
+    /// 已选食物标签新增并触发布局增长时的动画时长。
+    private let selectedChipAdditionAnimationDuration: TimeInterval = 0.25
     /// 最多允许选择的食物数量。
     private let maximumSelectedFoodsCount = 6
     /// 最近搜索暂无结果时使用的提示视图。
@@ -277,6 +279,9 @@ final class MealAdviceFoodsVM: UIView {
         let dict: NSDictionary
         let frame: CGRect
     }
+
+    /// 已选食物区域当前的实际高度。
+    private var selectedScrollContentHeight: CGFloat = 0
 
     /// 按给定起始位置初始化整个食物推荐面板。
     override init(frame: CGRect) {
@@ -796,15 +801,13 @@ extension MealAdviceFoodsVM {
             return
         }
 
-        selectedChipViews.forEach { $0.removeFromSuperview() }
-        selectedChipViews.removeAll()
-
         let hasSelected = selectedFoodsArray.count > 0
         selectedScrollView.isHidden = !hasSelected
 
         guard hasSelected else {
-            selectedScrollHeightConstraint?.update(offset: MealAdviceSelectedFoodChipView.chipHeight)
-            selectedScrollView.contentSize = .zero
+            selectedChipViews.forEach { $0.removeFromSuperview() }
+            selectedChipViews.removeAll()
+            updateSelectedScrollLayout(availableWidth: selectedScrollView.bounds.width > 0 ? selectedScrollView.bounds.width : SCREEN_WIDHT - kFitWidth(32), height: MealAdviceSelectedFoodChipView.chipHeight)
             setNeedsLayout()
             layoutIfNeeded()
             completion?()
@@ -812,17 +815,30 @@ extension MealAdviceFoodsVM {
         }
 
         let layoutResult = selectedFoodChipLayouts()
+        if layoutResult.contentHeight > selectedScrollContentHeight, window != nil {
+            animateSelectedFoodsViewAdding(layoutResult: layoutResult, completion: completion)
+            return
+        }
+
+        selectedChipViews.forEach { $0.removeFromSuperview() }
+        selectedChipViews.removeAll()
         for layout in layoutResult.layouts {
             let chip = makeSelectedFoodChip(for: layout)
             selectedScrollView.addSubview(chip)
             selectedChipViews.append(chip)
         }
 
-        selectedScrollHeightConstraint?.update(offset: layoutResult.contentHeight)
-        selectedScrollView.contentSize = CGSize(width: layoutResult.availableWidth, height: layoutResult.contentHeight)
+        updateSelectedScrollLayout(availableWidth: layoutResult.availableWidth, height: layoutResult.contentHeight)
         setNeedsLayout()
         layoutIfNeeded()
         completion?()
+    }
+
+    /// 更新已选食物区域的高度和滚动内容尺寸。
+    private func updateSelectedScrollLayout(availableWidth: CGFloat, height: CGFloat) {
+        selectedScrollHeightConstraint?.update(offset: height)
+        selectedScrollView.contentSize = CGSize(width: availableWidth, height: height)
+        selectedScrollContentHeight = height
     }
 
     /// 创建已选食物标签视图。
@@ -891,8 +907,7 @@ extension MealAdviceFoodsVM {
 
         selectedScrollView.isHidden = false
         selectedScrollView.isUserInteractionEnabled = false
-        selectedScrollHeightConstraint?.update(offset: layoutResult.contentHeight)
-        selectedScrollView.contentSize = CGSize(width: layoutResult.availableWidth, height: layoutResult.contentHeight)
+        updateSelectedScrollLayout(availableWidth: layoutResult.availableWidth, height: layoutResult.contentHeight)
 
         UIView.animate(
             withDuration: selectedChipRemovalAnimationDuration,
@@ -917,6 +932,50 @@ extension MealAdviceFoodsVM {
                 removedChip?.removeFromSuperview()
                 self.selectedChipViews = targetChips
                 self.selectedScrollView.isHidden = self.selectedFoodsArray.count == 0
+                self.selectedScrollView.isUserInteractionEnabled = true
+                completion?()
+            }
+        )
+    }
+
+    /// 新增食物并触发换行时，平滑移动已选区域和下方列表。
+    private func animateSelectedFoodsViewAdding(layoutResult: (layouts: [SelectedFoodChipLayout], availableWidth: CGFloat, contentHeight: CGFloat), completion: (() -> Void)?) {
+        layoutIfNeeded()
+        selectedScrollView.layoutIfNeeded()
+
+        let existingChips = selectedChipViews.reduce(into: [String: MealAdviceSelectedFoodChipView]()) { result, chip in
+            result[chip.identityKey] = chip
+        }
+        let targetChips = layoutResult.layouts.map { layout -> MealAdviceSelectedFoodChipView in
+            let chip = existingChips[layout.key] ?? makeSelectedFoodChip(for: layout)
+            if chip.superview == nil {
+                chip.alpha = 0
+                selectedScrollView.addSubview(chip)
+            }
+            chip.layer.removeAllAnimations()
+            return chip
+        }
+
+        selectedScrollView.isHidden = false
+        selectedScrollView.isUserInteractionEnabled = false
+        updateSelectedScrollLayout(availableWidth: layoutResult.availableWidth, height: layoutResult.contentHeight)
+
+        UIView.animate(
+            withDuration: selectedChipAdditionAnimationDuration,
+            delay: 0,
+            options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction],
+            animations: {
+                for (index, layout) in layoutResult.layouts.enumerated() {
+                    let chip = targetChips[index]
+                    chip.frame = layout.frame
+                    if existingChips[layout.key] == nil {
+                        chip.alpha = 1
+                    }
+                }
+                self.layoutIfNeeded()
+            },
+            completion: { _ in
+                self.selectedChipViews = targetChips
                 self.selectedScrollView.isUserInteractionEnabled = true
                 completion?()
             }
@@ -1291,6 +1350,26 @@ extension MealAdviceFoodsVM: UITableViewDelegate, UITableViewDataSource {
         guard !isFoodSourceSwitchLoading else { return }
         guard let dict = currentFoodDict(at: indexPath) else { return }
         toggleSelection(dict: dict)
+    }
+
+    /// 列表滚动复用后，按当前选中数量再次校准进屏 cell 的禁用遮罩和图标。
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard !isFoodSourceSwitchLoading,
+              let foodCell = cell as? MealAdviceFoodsListAddTableViewCell,
+              let dict = currentFoodDict(at: indexPath) else {
+            return
+        }
+        applySelectionState(to: foodCell, dict: dict)
+    }
+
+    /// 已达上限时，未选食物不再响应列表选择，避免复用过程中的视觉状态与实际交互脱节。
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        guard !isFoodSourceSwitchLoading,
+              let dict = currentFoodDict(at: indexPath) else {
+            return nil
+        }
+        let isAtSelectionLimit = selectedFoodsArray.count >= maximumSelectedFoodsCount
+        return isAtSelectionLimit && !isSelectedFood(dict: dict) ? nil : indexPath
     }
 
     /// 固定列表行高。

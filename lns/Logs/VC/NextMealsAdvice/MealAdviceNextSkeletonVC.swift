@@ -5,9 +5,11 @@
 //  Created by Codex on 2026/8/10.
 //
 
+import SwiftUI
 import UIKit
 import MCToast
 import SnapKit
+import ThinkingOrbsKit
 
 /// 下餐规划骨架态食物行。
 private struct MealAdviceNextLoadingFoodItem {
@@ -56,7 +58,7 @@ final class MealAdviceNextSkeletonVC: WHBaseViewVC {
     /// 每段加载文案的展示间隔。
     private let loadingTipInterval: TimeInterval = 1.8
     /// 第六段文案至少保持可见的时间。
-    private let finalLoadingTipDisplayDuration: TimeInterval = 0.55
+    private let finalLoadingTipDisplayDuration: TimeInterval = 1.4
     /// 骨架态切换到真实内容的淡化时长。
     private let loadingContentTransitionDuration: TimeInterval = 0.3
     /// 红框内的滚动容器。
@@ -91,6 +93,8 @@ final class MealAdviceNextSkeletonVC: WHBaseViewVC {
     private let tipsCardView = UIView()
     /// icon
     private let tipsIcon = UIImageView()
+    /// 骨架加载期间替代提示图标的动态思考球。
+    private var loadingTipsOrbHostController: UIHostingController<ThinkingOrb>?
     /// 内容
     private let tipsStackView = UIStackView()
     /// 提示标题。
@@ -189,6 +193,16 @@ final class MealAdviceNextSkeletonVC: WHBaseViewVC {
         super.viewDidLayoutSubviews()
         topGradientLayer.frame = topGradientView.bounds
         bottomGradientLayer.frame = bottomGradientView.bounds
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        bottomGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
+        ]
+        topGradientLayer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+        ]
     }
 }
 
@@ -322,6 +336,7 @@ extension MealAdviceNextSkeletonVC {
         headlineView.addSubview(topMetricsStackView)
         foodListCardView.addSubview(foodTableView)
         tipsCardView.addSubview(tipsIcon)
+        embedLoadingTipsOrb()
         tipsCardView.addSubview(tipsStackView)
         tipsStackView.addArrangedSubview(tipsTitleLabel)
         tipsStackView.addArrangedSubview(tipsContentLabel)
@@ -569,6 +584,7 @@ extension MealAdviceNextSkeletonVC {
 
     /// 展示骨架加载态。
     private func showLoadingState() {
+        setTipsIconLoading(true)
         tipsTitleLabel.text = "正在为你规划下一餐"
         tipsContentLabel.text = loadingTipTexts.first
         tipsContentLabel.numberOfLines = 2
@@ -689,6 +705,7 @@ extension MealAdviceNextSkeletonVC {
         mealPlanRequestVersion += 1
         isRequestingMealPlan = false
         stopLoadingTipsRotation()
+        setTipsIconLoading(false)
         pendingViewModel = nil
         topMetricViews.forEach { $0.setLoading(false) }
         ringMetricViews.forEach { $0.setLoading(false) }
@@ -763,6 +780,7 @@ extension MealAdviceNextSkeletonVC {
             view.addSubview(loadingSnapshotView)
         }
         UIView.performWithoutAnimation {
+            self.setTipsIconLoading(false)
             self.applyLoadedContentText()
             self.reloadData()
             self.view.layoutIfNeeded()
@@ -813,6 +831,38 @@ extension MealAdviceNextSkeletonVC {
     /// - Parameter allowed: 是否允许键盘扩展。
     private func setKeyboardExtensionAllowed(_ allowed: Bool) {
         (UIApplication.shared.delegate as? AppDelegate)?.setKeyboardExtensionAllowed(allowed)
+    }
+
+    /// 将 SwiftUI 思考球嵌入 UIKit 提示卡片，尺寸与原有图标保持一致。
+    private func embedLoadingTipsOrb() {
+        let hostController = UIHostingController(
+            rootView: ThinkingOrb(
+                state: .solving,
+                size: .px64,
+                theme: .auto,
+                displaySize: Double(kFitWidth(40))
+            )
+        )
+        hostController.view.backgroundColor = .clear
+        hostController.view.isOpaque = false
+        hostController.view.isUserInteractionEnabled = false
+        hostController.view.isHidden = true
+
+        addChild(hostController)
+        tipsCardView.addSubview(hostController.view)
+        hostController.view.snp.makeConstraints { make in
+            make.left.equalTo(kFitWidth(11))
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(kFitWidth(40))
+        }
+        hostController.didMove(toParent: self)
+        loadingTipsOrbHostController = hostController
+    }
+
+    /// 在骨架加载态显示动态思考球，其余时间保留原有提示图标。
+    private func setTipsIconLoading(_ isLoading: Bool) {
+        tipsIcon.isHidden = isLoading
+        loadingTipsOrbHostController?.view.isHidden = !isLoading
     }
 
     /// 从选中的食物里提取 fid 列表。

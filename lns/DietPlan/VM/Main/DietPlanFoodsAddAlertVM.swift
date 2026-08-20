@@ -723,9 +723,11 @@ private extension DietPlanFoodsAddAlertVM {
     func navigateToLogsRoot(sDate: String) {
         if let tabBarController = findTabBarController() {
             if let selectedNavigationController = tabBarController.selectedViewController as? UINavigationController {
-                selectedNavigationController.popToRootViewController(animated: true)
+//                selectedNavigationController.popToRootViewController(animated: true)
+                selectedNavigationController.popViewController(animated: true)
             } else if let selectedViewController = tabBarController.selectedViewController?.navigationController {
-                selectedViewController.popToRootViewController(animated: true)
+//                selectedViewController.popToRootViewController(animated: true)
+                selectedViewController.popViewController(animated: true)
             }
         }
         

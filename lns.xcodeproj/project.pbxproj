@@ -6227,6 +6227,9 @@
 				A7EDFB1A2CA3A69100282A6B /* PBXTargetDependency */,
 			);
 			name = lns;
+			packageProductDependencies = (
+				F1A0B0022F0A000100000002 /* ThinkingOrbsKit */,
+			);
 			productName = lns;
 			productReference = EC6978DB2BABBD81000B933A /* lns.app */;
 			productType = "com.apple.product-type.application";
@@ -6307,6 +6310,9 @@
 				"zh-Hans",
 			);
 			mainGroup = EC6978D22BABBD81000B933A;
+			packageReferences = (
+				F1A0B0012F0A000100000001 /* ThinkingOrbsKit */,
+			);
 			productRefGroup = EC6978DC2BABBD81000B933A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -6319,6 +6325,21 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		F1A0B0012F0A000100000001 /* ThinkingOrbsKit */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ThirdParty/ThinkingOrbsKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F1A0B0022F0A000100000002 /* ThinkingOrbsKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F1A0B0012F0A000100000001 /* ThinkingOrbsKit */;
+			productName = ThinkingOrbsKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A7EDFB0A2CA3A69000282A6B /* Resources */ = {

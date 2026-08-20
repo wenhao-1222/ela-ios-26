@@ -59,6 +59,7 @@ class FoodsListAddTableViewCell: FeedBackTableViewCell {
         selectionButton.layer.removeAllAnimations()
         selectionAccessoryIsSelected = nil
         selectionAccessoryIsDisabled = nil
+        setSelectionDisabled(false)
     }
     lazy var bottomView : UIView = {
         let vi = UIView()
