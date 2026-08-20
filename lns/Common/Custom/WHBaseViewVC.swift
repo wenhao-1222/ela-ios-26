@@ -926,17 +926,24 @@ private final class WHInteractivePopBlockerDelegate: NSObject, UIGestureRecogniz
 extension WHBaseViewVC{
     @objc func dealsWidgetTapAction() {
 //        self.presentAlertVcNoAction(title: "\(WidgetUtils().readMealsData())", viewController: self)
-        if WidgetUtils().readMealsData() >= 0 && UserInfoModel.shared.token.count > 2{
+        let widgetMealsIndex = WidgetUtils().readMealsData()
+        if widgetMealsIndex >= 0 && UserInfoModel.shared.token.count > 2{
+            WidgetMsgModel.shared.mealsIndex = widgetMealsIndex
             let vc = FoodsListNewVC()
             vc.sourceType = .logs
+            vc.mealAdviceSDate = Date().todayDate
+            vc.mealAdviceMealIndex = widgetMealsIndex
+            vc.shouldShowMealAdviceEntry = true
             self.navigationController?.pushViewController(vc, animated: true)
-            WidgetMsgModel.shared.mealsIndex = WidgetUtils().readMealsData()
             WidgetUtils().saveMealsData(mealsIndex: -1)
         }else if WidgetMsgModel.shared.mealsIndex > 0 && UserInfoModel.shared.token.count > 2{
 //        if WidgetMsgModel.shared.mealsIndex > 0 && UserInfoModel.shared.token.count > 2{
             DLLog(message: "dealsWidgetTapAction:\(WidgetMsgModel.shared.mealsIndex)  -- uid:\(UserInfoModel.shared.token)")
             let vc = FoodsListNewVC()
             vc.sourceType = .logs
+            vc.mealAdviceSDate = Date().todayDate
+            vc.mealAdviceMealIndex = WidgetMsgModel.shared.mealsIndex
+            vc.shouldShowMealAdviceEntry = true
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
