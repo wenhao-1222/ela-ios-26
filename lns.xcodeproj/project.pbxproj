@@ -18,6 +18,53 @@
 		A70820A42F6B000000000001 /* WelcomeGuide0820VM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70820A22F6B000000000001 /* WelcomeGuide0820VM.swift */; };
 		A70821032F6C000000000001 /* Guide0820VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70821012F6C000000000001 /* Guide0820VC.swift */; };
 		A70821042F6C000000000001 /* Guide0820RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70821022F6C000000000001 /* Guide0820RootView.swift */; };
+		A70823012F70000000000001 /* Guide0820AgreementType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822012F70000000000001 /* Guide0820AgreementType.swift */; };
+		A70823022F70000000000002 /* Guide0820FeatureSwitches.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822022F70000000000002 /* Guide0820FeatureSwitches.swift */; };
+		A70823032F70000000000003 /* Guide0820OperationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822032F70000000000003 /* Guide0820OperationItem.swift */; };
+		A70823042F70000000000004 /* Guide0820SourceStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822042F70000000000004 /* Guide0820SourceStorage.swift */; };
+		A70823052F70000000000005 /* Guide0820DeleteConfirmationVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822052F70000000000005 /* Guide0820DeleteConfirmationVM.swift */; };
+		A70823062F70000000000006 /* Guide0820FlowState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822062F70000000000006 /* Guide0820FlowState.swift */; };
+		A70823072F70000000000007 /* Guide0820InviteSourceInputVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822072F70000000000007 /* Guide0820InviteSourceInputVM.swift */; };
+		A70823082F70000000000008 /* Guide0820OperationSheetVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822082F70000000000008 /* Guide0820OperationSheetVM.swift */; };
+		A70823092F70000000000009 /* Guide0820PrivacyVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822092F70000000000009 /* Guide0820PrivacyVM.swift */; };
+		A708230A2F7000000000000A /* Guide0820ProfessionalBasisVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708220A2F7000000000000A /* Guide0820ProfessionalBasisVM.swift */; };
+		A708230B2F7000000000000B /* Guide0820SourceVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708220B2F7000000000000B /* Guide0820SourceVM.swift */; };
+		A708230C2F7000000000000C /* Guide0820TextExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708220C2F7000000000000C /* Guide0820TextExtensions.swift */; };
+		A708230D2F7000000000000D /* Guide0820AgreementLegalTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708220D2F7000000000000D /* Guide0820AgreementLegalTextView.swift */; };
+		A708230E2F7000000000000E /* Guide0820AgreementRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708220E2F7000000000000E /* Guide0820AgreementRow.swift */; };
+		A708230F2F7000000000000F /* Guide0820BottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708220F2F7000000000000F /* Guide0820BottomSheetView.swift */; };
+		A70823102F70000000000010 /* Guide0820CheckBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822102F70000000000010 /* Guide0820CheckBoxView.swift */; };
+		A70823112F70000000000011 /* Guide0820DeleteConfirmationSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822112F70000000000011 /* Guide0820DeleteConfirmationSheetView.swift */; };
+		A70823122F70000000000012 /* Guide0820InviteSourceSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822122F70000000000012 /* Guide0820InviteSourceSheetView.swift */; };
+		A70823132F70000000000013 /* Guide0820OperationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822132F70000000000013 /* Guide0820OperationRow.swift */; };
+		A70823142F70000000000014 /* Guide0820OperationSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822142F70000000000014 /* Guide0820OperationSheetView.swift */; };
+		A70823152F70000000000015 /* Guide0820PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822152F70000000000015 /* Guide0820PrimaryButton.swift */; };
+		A70823162F70000000000016 /* Guide0820PrivacyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822162F70000000000016 /* Guide0820PrivacyView.swift */; };
+		A70823172F70000000000017 /* Guide0820ProfessionalBasisUIKitVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822172F70000000000017 /* Guide0820ProfessionalBasisUIKitVM.swift */; };
+		A70823182F70000000000018 /* Guide0820ProfessionalBasisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822182F70000000000018 /* Guide0820ProfessionalBasisView.swift */; };
+		A70823192F70000000000019 /* Guide0820SheetHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822192F70000000000019 /* Guide0820SheetHeaderView.swift */; };
+		A708231A2F7000000000001A /* Guide0820SourceBottomFadeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221A2F7000000000001A /* Guide0820SourceBottomFadeView.swift */; };
+		A708231B2F7000000000001B /* Guide0820SourceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221B2F7000000000001B /* Guide0820SourceRow.swift */; };
+		A708231C2F7000000000001C /* Guide0820SourceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221C2F7000000000001C /* Guide0820SourceView.swift */; };
+		A708231D2F7000000000001D /* VCStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221D2F7000000000001D /* VCStart.swift */; };
+		A708231E2F7000000000001E /* VCStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221E2F7000000000001E /* VCStartVM.swift */; };
+		A708231F2F7000000000001F /* VCStartStepVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221F2F7000000000001F /* VCStartStepVM.swift */; };
+		A70823202F70000000000020 /* VCStartRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822202F70000000000020 /* VCStartRootView.swift */; };
+		A70823212F70000000000021 /* VCStartStepRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822212F70000000000021 /* VCStartStepRow.swift */; };
+		A70823222F70000000000022 /* Guide0820BodyProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822222F70000000000022 /* Guide0820BodyProfileVC.swift */; };
+		A70823252F70000000000025 /* Guide0820BodyProfileLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822252F70000000000025 /* Guide0820BodyProfileLayout.swift */; };
+		A70823262F70000000000026 /* Guide0820BodyProfilePageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822262F70000000000026 /* Guide0820BodyProfilePageVM.swift */; };
+		A70823272F70000000000027 /* Guide0820BodyProfileSexVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822272F70000000000027 /* Guide0820BodyProfileSexVM.swift */; };
+		A70823292F70000000000029 /* Guide0820BodyProfileYearVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822292F70000000000029 /* Guide0820BodyProfileYearVM.swift */; };
+		A708232A2F7000000000002A /* Guide0820BodyProfileHeightVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708222A2F7000000000002A /* Guide0820BodyProfileHeightVM.swift */; };
+		A708232B2F7000000000002B /* Guide0820BodyProfileWeightVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708222B2F7000000000002B /* Guide0820BodyProfileWeightVM.swift */; };
+		A708232C2F7000000000002C /* Guide0820BodyProfileWeightExceededVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708222C2F7000000000002C /* Guide0820BodyProfileWeightExceededVM.swift */; };
+		A708232D2F7000000000002D /* Guide0820BodyProfileWeightTrendVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708222D2F7000000000002D /* Guide0820BodyProfileWeightTrendVM.swift */; };
+		A708232E2F7000000000002E /* Guide0820BodyProfileBodyfatVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708222E2F7000000000002E /* Guide0820BodyProfileBodyfatVM.swift */; };
+		A708232F2F7000000000002F /* Guide0820BodyProfileOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708222F2F7000000000002F /* Guide0820BodyProfileOption.swift */; };
+		A70823302F70000000000030 /* Guide0820BodyProfileOptionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822302F70000000000030 /* Guide0820BodyProfileOptionCard.swift */; };
+		A70823312F70000000000031 /* Guide0820BodyProfileInfoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822312F70000000000031 /* Guide0820BodyProfileInfoCard.swift */; };
+		A70823322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift */; };
 		A7092D132E4EE02D005A2087 /* ArticlesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D122E4EE02C005A2087 /* ArticlesVC.swift */; };
 		A7092D152E4EE093005A2087 /* ArticlesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */; };
 		A7092D172E4EE0D5005A2087 /* SkeletonKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */; };
@@ -1504,6 +1551,53 @@
 		A70820A22F6B000000000001 /* WelcomeGuide0820VM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeGuide0820VM.swift; sourceTree = "<group>"; };
 		A70821012F6C000000000001 /* Guide0820VC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820VC.swift; sourceTree = "<group>"; };
 		A70821022F6C000000000001 /* Guide0820RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820RootView.swift; sourceTree = "<group>"; };
+		A70822012F70000000000001 /* Guide0820AgreementType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820AgreementType.swift; sourceTree = "<group>"; };
+		A70822022F70000000000002 /* Guide0820FeatureSwitches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820FeatureSwitches.swift; sourceTree = "<group>"; };
+		A70822032F70000000000003 /* Guide0820OperationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820OperationItem.swift; sourceTree = "<group>"; };
+		A70822042F70000000000004 /* Guide0820SourceStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820SourceStorage.swift; sourceTree = "<group>"; };
+		A70822052F70000000000005 /* Guide0820DeleteConfirmationVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820DeleteConfirmationVM.swift; sourceTree = "<group>"; };
+		A70822062F70000000000006 /* Guide0820FlowState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820FlowState.swift; sourceTree = "<group>"; };
+		A70822072F70000000000007 /* Guide0820InviteSourceInputVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820InviteSourceInputVM.swift; sourceTree = "<group>"; };
+		A70822082F70000000000008 /* Guide0820OperationSheetVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820OperationSheetVM.swift; sourceTree = "<group>"; };
+		A70822092F70000000000009 /* Guide0820PrivacyVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820PrivacyVM.swift; sourceTree = "<group>"; };
+		A708220A2F7000000000000A /* Guide0820ProfessionalBasisVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820ProfessionalBasisVM.swift; sourceTree = "<group>"; };
+		A708220B2F7000000000000B /* Guide0820SourceVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820SourceVM.swift; sourceTree = "<group>"; };
+		A708220C2F7000000000000C /* Guide0820TextExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820TextExtensions.swift; sourceTree = "<group>"; };
+		A708220D2F7000000000000D /* Guide0820AgreementLegalTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820AgreementLegalTextView.swift; sourceTree = "<group>"; };
+		A708220E2F7000000000000E /* Guide0820AgreementRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820AgreementRow.swift; sourceTree = "<group>"; };
+		A708220F2F7000000000000F /* Guide0820BottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BottomSheetView.swift; sourceTree = "<group>"; };
+		A70822102F70000000000010 /* Guide0820CheckBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820CheckBoxView.swift; sourceTree = "<group>"; };
+		A70822112F70000000000011 /* Guide0820DeleteConfirmationSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820DeleteConfirmationSheetView.swift; sourceTree = "<group>"; };
+		A70822122F70000000000012 /* Guide0820InviteSourceSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820InviteSourceSheetView.swift; sourceTree = "<group>"; };
+		A70822132F70000000000013 /* Guide0820OperationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820OperationRow.swift; sourceTree = "<group>"; };
+		A70822142F70000000000014 /* Guide0820OperationSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820OperationSheetView.swift; sourceTree = "<group>"; };
+		A70822152F70000000000015 /* Guide0820PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820PrimaryButton.swift; sourceTree = "<group>"; };
+		A70822162F70000000000016 /* Guide0820PrivacyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820PrivacyView.swift; sourceTree = "<group>"; };
+		A70822172F70000000000017 /* Guide0820ProfessionalBasisUIKitVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820ProfessionalBasisUIKitVM.swift; sourceTree = "<group>"; };
+		A70822182F70000000000018 /* Guide0820ProfessionalBasisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820ProfessionalBasisView.swift; sourceTree = "<group>"; };
+		A70822192F70000000000019 /* Guide0820SheetHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820SheetHeaderView.swift; sourceTree = "<group>"; };
+		A708221A2F7000000000001A /* Guide0820SourceBottomFadeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820SourceBottomFadeView.swift; sourceTree = "<group>"; };
+		A708221B2F7000000000001B /* Guide0820SourceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820SourceRow.swift; sourceTree = "<group>"; };
+		A708221C2F7000000000001C /* Guide0820SourceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820SourceView.swift; sourceTree = "<group>"; };
+		A708221D2F7000000000001D /* VCStart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCStart.swift; sourceTree = "<group>"; };
+		A708221E2F7000000000001E /* VCStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCStartVM.swift; sourceTree = "<group>"; };
+		A708221F2F7000000000001F /* VCStartStepVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCStartStepVM.swift; sourceTree = "<group>"; };
+		A70822202F70000000000020 /* VCStartRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCStartRootView.swift; sourceTree = "<group>"; };
+		A70822212F70000000000021 /* VCStartStepRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCStartStepRow.swift; sourceTree = "<group>"; };
+		A70822222F70000000000022 /* Guide0820BodyProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileVC.swift; sourceTree = "<group>"; };
+		A70822252F70000000000025 /* Guide0820BodyProfileLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileLayout.swift; sourceTree = "<group>"; };
+		A70822262F70000000000026 /* Guide0820BodyProfilePageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfilePageVM.swift; sourceTree = "<group>"; };
+		A70822272F70000000000027 /* Guide0820BodyProfileSexVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileSexVM.swift; sourceTree = "<group>"; };
+		A70822292F70000000000029 /* Guide0820BodyProfileYearVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileYearVM.swift; sourceTree = "<group>"; };
+		A708222A2F7000000000002A /* Guide0820BodyProfileHeightVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileHeightVM.swift; sourceTree = "<group>"; };
+		A708222B2F7000000000002B /* Guide0820BodyProfileWeightVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileWeightVM.swift; sourceTree = "<group>"; };
+		A708222C2F7000000000002C /* Guide0820BodyProfileWeightExceededVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileWeightExceededVM.swift; sourceTree = "<group>"; };
+		A708222D2F7000000000002D /* Guide0820BodyProfileWeightTrendVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileWeightTrendVM.swift; sourceTree = "<group>"; };
+		A708222E2F7000000000002E /* Guide0820BodyProfileBodyfatVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileBodyfatVM.swift; sourceTree = "<group>"; };
+		A708222F2F7000000000002F /* Guide0820BodyProfileOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileOption.swift; sourceTree = "<group>"; };
+		A70822302F70000000000030 /* Guide0820BodyProfileOptionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileOptionCard.swift; sourceTree = "<group>"; };
+		A70822312F70000000000031 /* Guide0820BodyProfileInfoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileInfoCard.swift; sourceTree = "<group>"; };
+		A70822322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileIntroOverlayVM.swift; sourceTree = "<group>"; };
 		A7092D122E4EE02C005A2087 /* ArticlesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesVC.swift; sourceTree = "<group>"; };
 		A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesTableViewCell.swift; sourceTree = "<group>"; };
 		A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonKit.swift; sourceTree = "<group>"; };
@@ -4588,11 +4682,90 @@
 			path = Pro;
 			sourceTree = "<group>";
 		};
-		EC33DAE53037041F007727F3 /* Guide0820 */ = {
+		A70824012F70000000000001 /* VC */ = {
 			isa = PBXGroup;
 			children = (
 				A70821012F6C000000000001 /* Guide0820VC.swift */,
+				A708221D2F7000000000001D /* VCStart.swift */,
+				A70822222F70000000000022 /* Guide0820BodyProfileVC.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		A70824022F70000000000002 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A70822012F70000000000001 /* Guide0820AgreementType.swift */,
+				A70822022F70000000000002 /* Guide0820FeatureSwitches.swift */,
+				A70822032F70000000000003 /* Guide0820OperationItem.swift */,
+				A70822042F70000000000004 /* Guide0820SourceStorage.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A70824032F70000000000003 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A70822052F70000000000005 /* Guide0820DeleteConfirmationVM.swift */,
+				A70822062F70000000000006 /* Guide0820FlowState.swift */,
+				A70822072F70000000000007 /* Guide0820InviteSourceInputVM.swift */,
+				A70822082F70000000000008 /* Guide0820OperationSheetVM.swift */,
+				A70822092F70000000000009 /* Guide0820PrivacyVM.swift */,
+				A708220A2F7000000000000A /* Guide0820ProfessionalBasisVM.swift */,
+				A708220B2F7000000000000B /* Guide0820SourceVM.swift */,
+				A70822252F70000000000025 /* Guide0820BodyProfileLayout.swift */,
+				A70822262F70000000000026 /* Guide0820BodyProfilePageVM.swift */,
+				A70822272F70000000000027 /* Guide0820BodyProfileSexVM.swift */,
+				A70822292F70000000000029 /* Guide0820BodyProfileYearVM.swift */,
+				A708222A2F7000000000002A /* Guide0820BodyProfileHeightVM.swift */,
+				A708222B2F7000000000002B /* Guide0820BodyProfileWeightVM.swift */,
+				A708222C2F7000000000002C /* Guide0820BodyProfileWeightExceededVM.swift */,
+				A708222D2F7000000000002D /* Guide0820BodyProfileWeightTrendVM.swift */,
+				A708222E2F7000000000002E /* Guide0820BodyProfileBodyfatVM.swift */,
+				A708221E2F7000000000001E /* VCStartVM.swift */,
+				A708221F2F7000000000001F /* VCStartStepVM.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A70824042F70000000000004 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A708220D2F7000000000000D /* Guide0820AgreementLegalTextView.swift */,
+				A708220E2F7000000000000E /* Guide0820AgreementRow.swift */,
+				A708220F2F7000000000000F /* Guide0820BottomSheetView.swift */,
+				A70822102F70000000000010 /* Guide0820CheckBoxView.swift */,
+				A70822112F70000000000011 /* Guide0820DeleteConfirmationSheetView.swift */,
+				A70822122F70000000000012 /* Guide0820InviteSourceSheetView.swift */,
+				A70822132F70000000000013 /* Guide0820OperationRow.swift */,
+				A70822142F70000000000014 /* Guide0820OperationSheetView.swift */,
+				A70822152F70000000000015 /* Guide0820PrimaryButton.swift */,
+				A70822162F70000000000016 /* Guide0820PrivacyView.swift */,
+				A70822172F70000000000017 /* Guide0820ProfessionalBasisUIKitVM.swift */,
+				A70822182F70000000000018 /* Guide0820ProfessionalBasisView.swift */,
 				A70821022F6C000000000001 /* Guide0820RootView.swift */,
+				A70822192F70000000000019 /* Guide0820SheetHeaderView.swift */,
+				A708221A2F7000000000001A /* Guide0820SourceBottomFadeView.swift */,
+				A708221B2F7000000000001B /* Guide0820SourceRow.swift */,
+				A708221C2F7000000000001C /* Guide0820SourceView.swift */,
+				A708220C2F7000000000000C /* Guide0820TextExtensions.swift */,
+				A708222F2F7000000000002F /* Guide0820BodyProfileOption.swift */,
+				A70822302F70000000000030 /* Guide0820BodyProfileOptionCard.swift */,
+				A70822312F70000000000031 /* Guide0820BodyProfileInfoCard.swift */,
+				A70822322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift */,
+				A70822202F70000000000020 /* VCStartRootView.swift */,
+				A70822212F70000000000021 /* VCStartStepRow.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		EC33DAE53037041F007727F3 /* Guide0820 */ = {
+			isa = PBXGroup;
+			children = (
+				A70824012F70000000000001 /* VC */,
+				A70824022F70000000000002 /* Models */,
+				A70824032F70000000000003 /* ViewModels */,
+				A70824042F70000000000004 /* Views */,
 			);
 			path = Guide0820;
 			sourceTree = "<group>";
@@ -7200,6 +7373,53 @@
 				A70820A42F6B000000000001 /* WelcomeGuide0820VM.swift in Sources */,
 				A70821032F6C000000000001 /* Guide0820VC.swift in Sources */,
 				A70821042F6C000000000001 /* Guide0820RootView.swift in Sources */,
+				A70823012F70000000000001 /* Guide0820AgreementType.swift in Sources */,
+				A70823022F70000000000002 /* Guide0820FeatureSwitches.swift in Sources */,
+				A70823032F70000000000003 /* Guide0820OperationItem.swift in Sources */,
+				A70823042F70000000000004 /* Guide0820SourceStorage.swift in Sources */,
+				A70823052F70000000000005 /* Guide0820DeleteConfirmationVM.swift in Sources */,
+				A70823062F70000000000006 /* Guide0820FlowState.swift in Sources */,
+				A70823072F70000000000007 /* Guide0820InviteSourceInputVM.swift in Sources */,
+				A70823082F70000000000008 /* Guide0820OperationSheetVM.swift in Sources */,
+				A70823092F70000000000009 /* Guide0820PrivacyVM.swift in Sources */,
+				A708230A2F7000000000000A /* Guide0820ProfessionalBasisVM.swift in Sources */,
+				A708230B2F7000000000000B /* Guide0820SourceVM.swift in Sources */,
+				A708230C2F7000000000000C /* Guide0820TextExtensions.swift in Sources */,
+				A708230D2F7000000000000D /* Guide0820AgreementLegalTextView.swift in Sources */,
+				A708230E2F7000000000000E /* Guide0820AgreementRow.swift in Sources */,
+				A708230F2F7000000000000F /* Guide0820BottomSheetView.swift in Sources */,
+				A70823102F70000000000010 /* Guide0820CheckBoxView.swift in Sources */,
+				A70823112F70000000000011 /* Guide0820DeleteConfirmationSheetView.swift in Sources */,
+				A70823122F70000000000012 /* Guide0820InviteSourceSheetView.swift in Sources */,
+				A70823132F70000000000013 /* Guide0820OperationRow.swift in Sources */,
+				A70823142F70000000000014 /* Guide0820OperationSheetView.swift in Sources */,
+				A70823152F70000000000015 /* Guide0820PrimaryButton.swift in Sources */,
+				A70823162F70000000000016 /* Guide0820PrivacyView.swift in Sources */,
+				A70823172F70000000000017 /* Guide0820ProfessionalBasisUIKitVM.swift in Sources */,
+				A70823182F70000000000018 /* Guide0820ProfessionalBasisView.swift in Sources */,
+				A70823192F70000000000019 /* Guide0820SheetHeaderView.swift in Sources */,
+				A708231A2F7000000000001A /* Guide0820SourceBottomFadeView.swift in Sources */,
+				A708231B2F7000000000001B /* Guide0820SourceRow.swift in Sources */,
+				A708231C2F7000000000001C /* Guide0820SourceView.swift in Sources */,
+				A708231D2F7000000000001D /* VCStart.swift in Sources */,
+				A708231E2F7000000000001E /* VCStartVM.swift in Sources */,
+				A708231F2F7000000000001F /* VCStartStepVM.swift in Sources */,
+				A70823202F70000000000020 /* VCStartRootView.swift in Sources */,
+				A70823212F70000000000021 /* VCStartStepRow.swift in Sources */,
+				A70823222F70000000000022 /* Guide0820BodyProfileVC.swift in Sources */,
+				A70823252F70000000000025 /* Guide0820BodyProfileLayout.swift in Sources */,
+				A70823262F70000000000026 /* Guide0820BodyProfilePageVM.swift in Sources */,
+				A70823272F70000000000027 /* Guide0820BodyProfileSexVM.swift in Sources */,
+				A70823292F70000000000029 /* Guide0820BodyProfileYearVM.swift in Sources */,
+				A708232A2F7000000000002A /* Guide0820BodyProfileHeightVM.swift in Sources */,
+				A708232B2F7000000000002B /* Guide0820BodyProfileWeightVM.swift in Sources */,
+				A708232C2F7000000000002C /* Guide0820BodyProfileWeightExceededVM.swift in Sources */,
+				A708232D2F7000000000002D /* Guide0820BodyProfileWeightTrendVM.swift in Sources */,
+				A708232E2F7000000000002E /* Guide0820BodyProfileBodyfatVM.swift in Sources */,
+				A708232F2F7000000000002F /* Guide0820BodyProfileOption.swift in Sources */,
+				A70823302F70000000000030 /* Guide0820BodyProfileOptionCard.swift in Sources */,
+				A70823312F70000000000031 /* Guide0820BodyProfileInfoCard.swift in Sources */,
+				A70823322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift in Sources */,
 				EC61ABD22F03A482008FA297 /* HabitRankListVM.swift in Sources */,
 				A7454B342E73B7070064076C /* AddressRegionCell.swift in Sources */,
 				EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */,

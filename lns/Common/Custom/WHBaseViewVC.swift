@@ -1235,6 +1235,10 @@ extension WHBaseViewVC {
             "calories": NSNumber(value: calories)
         ]
 
+        if let guideSource = Guide0820SourceStorage.storedValueForUpload {
+            param[Guide0820SourceStorage.uploadParameterKey] = guideSource as NSString
+        }
+
         if let gender = Int(model.sex), gender > 0 {
             param["gender"] = NSNumber(value: gender)
         }

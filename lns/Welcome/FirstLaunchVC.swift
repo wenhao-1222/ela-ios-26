@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import MCToast
+import AuthenticationServices
 
 
 private extension UIImage {
@@ -84,6 +85,10 @@ class FirstLaunchVC: WHBaseViewVC {
                                                selector: #selector(appDidEnterBackground),
                                                name: UIApplication.didEnterBackgroundNotification,
                                                object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(wechatLogin),
+                                               name: Notification.Name(rawValue: "wechatLogin"),
+                                               object: nil)
         requestUserGroupInitIfNeeded()
         
         
@@ -153,7 +158,7 @@ class FirstLaunchVC: WHBaseViewVC {
     lazy var secondLabel: LineHeightLabel = {
         let lab = LineHeightLabel()
 //        lab.text = "我们会将实测有效的功能，\n全部开放供你使用，\n助你高效实现目标" // 目标文案
-        lab.text = "专业健身营养管理，\n助你更高效增肌减脂"
+        lab.text = "你的营养教练，\n让增肌减脂更可控"
         lab.font = .systemFont(ofSize: 20, weight: .medium) // 目标样式
         lab.textColor = .white
         lab.textAlignment = .left
@@ -165,7 +170,7 @@ class FirstLaunchVC: WHBaseViewVC {
     lazy var confirmButton: UIButton = {
         let btn = UIButton()
         btn.backgroundColor = .white
-        btn.layer.cornerRadius = kFitWidth(27)
+        btn.layer.cornerRadius = kFitWidth(27.5)
         btn.clipsToBounds = true
         btn.setTitle("开始", for: .normal)
 //        btn.setTitle("我准备好了", for: .normal)
@@ -180,6 +185,61 @@ class FirstLaunchVC: WHBaseViewVC {
         
         return btn
     }()
+    lazy var loginLabel: UILabel = {
+        let lab = UILabel()
+        lab.numberOfLines = 1
+        lab.textAlignment = .center
+        lab.isUserInteractionEnabled = false
+        lab.layer.opacity = 0
+        let allText = "已有账号？去登录"
+        let attr = NSMutableAttributedString(string: allText)
+        attr.addAttributes([
+            .foregroundColor: UIColor.white,
+            .font: UIFont.systemFont(ofSize: 14, weight: .medium)
+        ], range: NSRange(location: 0, length: (allText as NSString).length))
+        if let range = allText.range(of: "登录") {
+            attr.addAttributes([
+                .foregroundColor: UIColor.THEME
+            ], range: NSRange(range, in: allText))
+        }
+        lab.attributedText = attr
+        let tap = UITapGestureRecognizer(target: self, action: #selector(loginAction))
+        lab.addGestureRecognizer(tap)
+        return lab
+    }()
+    lazy var loginAlertVm: LoginAlertVm = {
+        let vm = LoginAlertVm(frame: .zero)
+        vm.weChatLoginBlock = {
+            WXUtil().wxLogin()
+        }
+        vm.appleLoginBlock = { [weak self] in
+            guard let self = self else { return }
+            let appleIDProvider = ASAuthorizationAppleIDProvider()
+            let request = appleIDProvider.createRequest()
+            request.requestedScopes = [.fullName, .email]
+
+            let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+            authorizationController.delegate = self
+            authorizationController.presentationContextProvider = self
+            authorizationController.performRequests()
+        }
+        vm.phoneLoginBlock = { [weak self] in
+            guard let self = self else { return }
+            self.loginAlertVm.hiddenLoginView()
+            let vc = LoginVC()
+            if let navigationController = self.navigationController {
+                navigationController.pushViewController(vc, animated: true)
+            } else {
+                vc.modalPresentationStyle = .fullScreen
+                self.present(vc, animated: true)
+            }
+        }
+        return vm
+    }()
+    lazy var notRegistVm: NotRegistTipsVM = {
+        let vm = NotRegistTipsVM(frame: .zero)
+        return vm
+    }()
 }
 
 extension FirstLaunchVC{
@@ -188,6 +248,9 @@ extension FirstLaunchVC{
                                      completion: ((Bool) -> Void)? = nil) {
         confirmButton.layer.removeAllAnimations()
         confirmButton.layer.opacity = 0
+        loginLabel.layer.removeAllAnimations()
+        loginLabel.layer.opacity = 0
+        loginLabel.isUserInteractionEnabled = false
 //        confirmButton.isUserInteractionEnabled = true
 //
 //        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
@@ -199,7 +262,9 @@ extension FirstLaunchVC{
                        delay: delayT,
                        options: [.curveEaseInOut, .beginFromCurrentState]) {
             self.confirmButton.layer.opacity = 1
+            self.loginLabel.layer.opacity = 1
         } completion: { finished in
+            self.loginLabel.isUserInteractionEnabled = true
             completion?(finished)
         }
     }
@@ -235,6 +300,8 @@ extension FirstLaunchVC{
         generatorMedium.prepare()
         firstLabelTwoTopConstraint?.update(offset: 0)
         firstLabelTwo.alpha = 0
+        loginLabel.layer.opacity = 0
+        loginLabel.isUserInteractionEnabled = false
         firstLabelOne.snp.remakeConstraints { make in
             self.firstLabelTopConstraint = make.centerY.equalToSuperview().constraint
             make.centerX.equalToSuperview()
@@ -670,6 +737,33 @@ extension FirstLaunchVC{
     }
 }
 
+extension FirstLaunchVC: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+    func authorizationController(controller: ASAuthorizationController,
+                                 didCompleteWithAuthorization authorization: ASAuthorization) {
+        switch authorization.credential {
+        case let appleIDCredential as ASAuthorizationAppleIDCredential:
+            let userIdentifier = appleIDCredential.user
+            DLLog(message: "appleIDCredential:\(appleIDCredential.description)")
+            DLLog(message: "userIdentifier:\(userIdentifier)")
+            UserInfoModel.shared.appleId = "\(userIdentifier)"
+            sendAppleIdLoginRequest()
+        case let passwordCredential as ASPasswordCredential:
+            DLLog(message: "\(passwordCredential.description)")
+        default:
+            break
+        }
+    }
+
+    func authorizationController(controller: ASAuthorizationController,
+                                 didCompleteWithError error: Error) {
+        DLLog(message: "apple authorization error:\(error)")
+    }
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return view.window!
+    }
+}
+
 extension FirstLaunchVC{
     func initUI() {
         view.addSubview(bgImgViewTwo)
@@ -682,6 +776,10 @@ extension FirstLaunchVC{
         bgImgViewTwo.addSubview(secondLogoImgView)
         bgImgViewTwo.addSubview(secondLabel)
         bgImgViewTwo.addSubview(confirmButton)
+        bgImgViewTwo.addSubview(loginLabel)
+        
+        view.addSubview(loginAlertVm)
+        view.addSubview(notRegistVm)
         
         setConstrait()
 //        firstLabelOne.transform = CGAffineTransform(scaleX: 5, y: 5)
@@ -714,22 +812,23 @@ extension FirstLaunchVC{
         }
         secondLogoImgView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(25))
-//            make.top.equalTo(getTopSafeAreaHeight()+kFitWidth(432))
-            make.bottom.equalTo(secondLabel.snp.top).offset(kFitWidth(-20))
+            make.top.equalTo(kFitWidth(516.5))
             make.width.equalTo(kFitWidth(115))
             make.height.equalTo(kFitWidth(20))
         }
         secondLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(25))
-//            make.top.equalTo(secondLogoImgView.snp.bottom).offset(kFitWidth(20))
-            make.bottom.equalTo(confirmButton.snp.top).offset(kFitWidth(-29))
+            make.top.equalTo(kFitWidth(556.5))
         }
         confirmButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(25))
             make.right.equalTo(kFitWidth(-25))
-//            make.top.equalTo(secondLabel.snp.bottom).offset(kFitWidth(29))
-            make.bottom.equalTo(kFitWidth(-60)-getBottomSafeAreaHeight())
-            make.height.equalTo(kFitWidth(54))
+            make.top.equalTo(kFitWidth(657.5))
+            make.height.equalTo(kFitWidth(55))
+        }
+        loginLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(kFitWidth(745))
         }
     }
 }
@@ -749,6 +848,67 @@ extension FirstLaunchVC{
                     return
                 }
                 self.showHealthConfirmAndContinue()
+            }
+        }
+    }
+
+    @objc private func loginAction() {
+        openNetWorkServiceWithBolck { [weak self] netConnect in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                if netConnect {
+                    self.loginAlertVm.showLoginView()
+                } else {
+                    self.presentNetworkPermissionAlert()
+                }
+            }
+        }
+    }
+
+    @objc private func wechatLogin() {
+        if UserInfoModel.shared.isRegist == "yes" {
+            if UserInfoModel.shared.state == 1 {
+                completeLoginSuccessAndEnterApp()
+            } else {
+                presentAlertVcNoAction(title: "账户已申请注销！", viewController: self)
+            }
+        } else {
+            notRegistVm.showView()
+        }
+    }
+
+    private func sendAppleIdLoginRequest() {
+        MCToast.mc_loading()
+        let param = ["appleid": "\(UserInfoModel.shared.appleId)"]
+        WHNetworkUtil.shareManager().POST(urlString: URL_Login_appid,
+                                          parameters: param as [String: AnyObject],
+                                          isNeedToast: true,
+                                          vc: self) { responseObject in
+            DLLog(message: "\(responseObject)")
+
+            let dataEncString = responseObject["data"] as? String ?? ""
+            let dataDecString = AESEncyptUtil.aesDecrypt(hexString: dataEncString)
+            let dataObj = self.getDictionaryFromJSONString(jsonString: dataDecString ?? "")
+            DLLog(message: "sendAppleIdLoginRequest:\(dataObj)")
+
+            UserInfoModel.shared.isRegist = dataObj["registered"] as? String ?? ""
+            if dataObj["registered"] as? String ?? "" == "yes" {
+                if dataObj.stringValueForKey(key: "state") == "1" {
+                    UserInfoModel.shared.token = dataObj["token"] as? String ?? ""
+                    UserInfoModel.shared.uId = dataObj["uid"] as? String ?? ""
+
+                    UserDefaults.standard.setValue("\(dataObj["token"] as? String ?? "")", forKey: token)
+                    UserDefaults.standard.setValue("\(dataObj["uid"] as? String ?? "")", forKey: userId)
+
+                    WidgetUtils().saveUserInfo(uId: "\(dataObj["uid"] as? String ?? "")",
+                                               uToken: "\(dataObj["token"] as? String ?? "")")
+                    ElaProPriceVM.preloadLoggedInProductSnapshots()
+                    self.completeLoginSuccessAndEnterApp()
+                } else {
+                    self.presentAlertVcNoAction(title: "账户已申请注销。", viewController: self)
+                }
+            } else {
+                self.notRegistVm.showView()
             }
         }
     }
@@ -774,12 +934,14 @@ extension FirstLaunchVC{
 
     private func showGuide0820AndContinue() {
         let guideVC = Guide0820VC()
-        guideVC.finishBlock = { [weak self] in
-            guard let self = self else { return }
-            if self.forceNeedBuildPlanOnConfirm {
-                self.changeRootToNeedBuildPlan()
+        guideVC.finishBlock = { [weak guideVC] in
+            guard let guideVC = guideVC else { return }
+            let startVC = VCStart()
+            if let navigationController = guideVC.navigationController {
+                navigationController.pushViewController(startVC, animated: true)
             } else {
-                self.changeRootVC()
+                startVC.modalPresentationStyle = .fullScreen
+                guideVC.present(startVC, animated: true)
             }
         }
 

@@ -9,6 +9,7 @@
 class DietPlanCreateYearVM: UIView {
     
     var defaultIndex = 0
+    var pickerRowHeight = kFitWidth(40)
     
     override init(frame:CGRect){
         super.init(frame: CGRect.init(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -122,7 +123,7 @@ extension DietPlanCreateYearVM:UIPickerViewDataSource,UIPickerViewDelegate{
         return yearDataArray.count
     }
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-        return kFitWidth(40)
+        return pickerRowHeight
     }
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {

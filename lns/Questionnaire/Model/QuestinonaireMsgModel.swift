@@ -48,6 +48,8 @@ class QuestinonaireMsgModel{
     var guidanceCardioFrequencyType = ""//引导页：日常有氧频次
     var guidanceStrengthTrainingFrequencyType = ""//引导页：力量训练频次
     var guidanceGoalBarrierType = ""//引导页：阻碍目标达成的主要因素
+    var guidanceBodyWeightExceededType = ""//引导页：体重是否曾超过当前体重
+    var guidanceRecentWeightTrendType = ""//引导页：近4周体重变化趋势
     var aiGuidanceGoalStageType = ""//AI引导页：目标阶段
     var aiGuidanceCoachStrictnessType = ""//AI引导页：AI教练执行标准
     var planWeeks = ""
@@ -103,6 +105,8 @@ class QuestinonaireMsgModel{
         DLLog(message: "引导有氧频次：\(guidanceCardioFrequencyType)")
         DLLog(message: "引导力量训练频次：\(guidanceStrengthTrainingFrequencyType)")
         DLLog(message: "引导目标阻碍：\(guidanceGoalBarrierType)")
+        DLLog(message: "引导历史体重超过当前：\(guidanceBodyWeightExceededType)")
+        DLLog(message: "引导近4周体重趋势：\(guidanceRecentWeightTrendType)")
         DLLog(message: "AI引导目标阶段：\(aiGuidanceGoalStageType)")
         DLLog(message: "AI引导执行标准：\(aiGuidanceCoachStrictnessType)")
         DLLog(message: "计划时长：\(planWeeks)周")
@@ -167,6 +171,8 @@ class QuestinonaireMsgModel{
         self.guidanceCardioFrequencyType = ""
         self.guidanceStrengthTrainingFrequencyType = ""
         self.guidanceGoalBarrierType = ""
+        self.guidanceBodyWeightExceededType = ""
+        self.guidanceRecentWeightTrendType = ""
         self.aiGuidanceGoalStageType = ""
         self.aiGuidanceCoachStrictnessType = ""
         self.planWeeks = ""
