@@ -126,7 +126,8 @@ class FirstLaunchVC: WHBaseViewVC {
 
     lazy var firstLabelTwo: LineHeightLabel = {
         let lab = LineHeightLabel()
-        lab.text = "这是由健身人，\n为健身人打造的饮食工具" // 目标文案
+//        lab.text = "这是由健身人，\n为健身人打造的饮食工具" // 目标文案
+        lab.text = "你的营养教练，\n让增肌减脂更可控"
         lab.font = .systemFont(ofSize: 24, weight: .semibold) // 目标样式
         lab.textColor = .white
         lab.textAlignment = .left
@@ -757,11 +758,7 @@ extension FirstLaunchVC{
             guard let self = self else { return }
             self.trackIOS0805GuidanceV2BeforeStartAgree()
             UserDefaults.standard.setValue("1", forKey: isLaunchWelcome)
-            if self.forceNeedBuildPlanOnConfirm {
-                self.changeRootToNeedBuildPlan()
-            } else {
-                self.changeRootVC()
-            }
+            self.showGuide0820AndContinue()
         } onExit: { [weak self] in
             self?.trackIOS0805GuidanceV2BeforeStartExit()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -772,6 +769,25 @@ extension FirstLaunchVC{
             self?.trackIOS0805GuidanceV2BeforeStartAlert()
         } onDismiss: { [weak self] in
             self?.isHealthConfirmAlertShowing = false
+        }
+    }
+
+    private func showGuide0820AndContinue() {
+        let guideVC = Guide0820VC()
+        guideVC.finishBlock = { [weak self] in
+            guard let self = self else { return }
+            if self.forceNeedBuildPlanOnConfirm {
+                self.changeRootToNeedBuildPlan()
+            } else {
+                self.changeRootVC()
+            }
+        }
+
+        if let navigationController = navigationController {
+            navigationController.pushViewController(guideVC, animated: true)
+        } else {
+            guideVC.modalPresentationStyle = .fullScreen
+            present(guideVC, animated: true)
         }
     }
 

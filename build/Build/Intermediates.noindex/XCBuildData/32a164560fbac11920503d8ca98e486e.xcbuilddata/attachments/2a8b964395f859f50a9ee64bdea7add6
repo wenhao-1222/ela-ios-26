@@ -1,5 +1,0 @@
-
-module DeviceKit.Swift {
-  header "DeviceKit-Swift.h"
-  requires objc
-}

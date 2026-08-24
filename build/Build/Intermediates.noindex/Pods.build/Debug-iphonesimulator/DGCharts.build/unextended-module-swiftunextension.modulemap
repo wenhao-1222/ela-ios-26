@@ -1,4 +1,0 @@
-
-module DGCharts.__Swift {
-  exclude header "DGCharts-Swift.h"
-}

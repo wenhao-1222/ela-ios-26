@@ -1,5 +1,0 @@
-
-module SQLite.Swift {
-  header "SQLite-Swift.h"
-  requires objc
-}

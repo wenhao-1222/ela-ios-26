@@ -1,4 +1,0 @@
-
-module CryptoSwift.__Swift {
-  exclude header "CryptoSwift-Swift.h"
-}

@@ -1,6 +1,0 @@
-framework module RITLKit {
-  umbrella header "RITLKit-umbrella.h"
-
-  export *
-  module * { export * }
-}

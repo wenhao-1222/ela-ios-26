@@ -8,6 +8,7 @@ xcuserdata/
 
 # Derived data (build products)
 DerivedData/
+build/
 
 # User-specific settings
 *.moved-aside

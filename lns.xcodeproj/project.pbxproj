@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,6 +14,10 @@
 		A70289B42E7BFF4900B03AA6 /* MallPayMsgCopyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70289B32E7BFF4100B03AA6 /* MallPayMsgCopyCell.swift */; };
 		A70289B62E7C06F100B03AA6 /* MallOrderExpressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70289B52E7C06E300B03AA6 /* MallOrderExpressCell.swift */; };
 		A707D2C02CBBE7B7005BDC0E /* BodyDataSQLiteManagerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = A707D2BF2CBBE7B2005BDC0E /* BodyDataSQLiteManagerOld.swift */; };
+		A70820A32F6B000000000001 /* WelcomeGuide0820VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70820A12F6B000000000001 /* WelcomeGuide0820VC.swift */; };
+		A70820A42F6B000000000001 /* WelcomeGuide0820VM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70820A22F6B000000000001 /* WelcomeGuide0820VM.swift */; };
+		A70821032F6C000000000001 /* Guide0820VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70821012F6C000000000001 /* Guide0820VC.swift */; };
+		A70821042F6C000000000001 /* Guide0820RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70821022F6C000000000001 /* Guide0820RootView.swift */; };
 		A7092D132E4EE02D005A2087 /* ArticlesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D122E4EE02C005A2087 /* ArticlesVC.swift */; };
 		A7092D152E4EE093005A2087 /* ArticlesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */; };
 		A7092D172E4EE0D5005A2087 /* SkeletonKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */; };
@@ -29,8 +33,6 @@
 		A70A1F8C2E6ED8E600B506DC /* MallDetailImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70A1F8B2E6ED8E300B506DC /* MallDetailImageCell.swift */; };
 		A70A1F902E6EDBE200B506DC /* CNIPGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70A1F8F2E6EDBE200B506DC /* CNIPGate.swift */; };
 		A70A2FC72DCAED5400F1E630 /* ElaLaunchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70A2FC62DCAED4D00F1E630 /* ElaLaunchVC.swift */; };
-		A70820A32F6B000000000001 /* WelcomeGuide0820VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70820A12F6B000000000001 /* WelcomeGuide0820VC.swift */; };
-		A70820A42F6B000000000001 /* WelcomeGuide0820VM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70820A22F6B000000000001 /* WelcomeGuide0820VM.swift */; };
 		A70A2FD32DCAF89F00F1E630 /* FPSLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70A2FD22DCAF89E00F1E630 /* FPSLabel.swift */; };
 		A70A2FD52DCAF90900F1E630 /* FPSMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70A2FD42DCAF90800F1E630 /* FPSMonitor.swift */; };
 		A70A2FD82DCB026F00F1E630 /* MJRefreshHeader+Exs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70A2FD72DCB026C00F1E630 /* MJRefreshHeader+Exs.swift */; };
@@ -779,6 +781,7 @@
 		EC31C4412FA55E1000F435BF /* AIEnergyOrbVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4402FA55E1000F435BF /* AIEnergyOrbVC.swift */; };
 		EC31C4432FA55E1000F435BF /* AICoachLoopOrb.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C4422FA55E1000F435BF /* AICoachLoopOrb.swift */; };
 		EC31C7592F95F51100F435BF /* CoachAnimationV3View.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC31C7582F95F51000F435BF /* CoachAnimationV3View.swift */; };
+		EC33DAE43036D4CF007727F3 /* ThinkingOrbsKit in Frameworks */ = {isa = PBXBuildFile; productRef = F1A0B0022F0A000100000002 /* ThinkingOrbsKit */; };
 		EC356CCD2C6C856E0023C0BA /* WidgetUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC356CCC2C6C856E0023C0BA /* WidgetUtils.swift */; };
 		EC356CD52C6C99D00023C0BA /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F62C19915800E46713 /* WidgetKit.framework */; };
 		EC356CD62C6C99D00023C0BA /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EC3A04F82C19915800E46713 /* SwiftUI.framework */; };
@@ -1497,6 +1500,10 @@
 		A70289B32E7BFF4100B03AA6 /* MallPayMsgCopyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallPayMsgCopyCell.swift; sourceTree = "<group>"; };
 		A70289B52E7C06E300B03AA6 /* MallOrderExpressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallOrderExpressCell.swift; sourceTree = "<group>"; };
 		A707D2BF2CBBE7B2005BDC0E /* BodyDataSQLiteManagerOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyDataSQLiteManagerOld.swift; sourceTree = "<group>"; };
+		A70820A12F6B000000000001 /* WelcomeGuide0820VC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeGuide0820VC.swift; sourceTree = "<group>"; };
+		A70820A22F6B000000000001 /* WelcomeGuide0820VM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeGuide0820VM.swift; sourceTree = "<group>"; };
+		A70821012F6C000000000001 /* Guide0820VC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820VC.swift; sourceTree = "<group>"; };
+		A70821022F6C000000000001 /* Guide0820RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820RootView.swift; sourceTree = "<group>"; };
 		A7092D122E4EE02C005A2087 /* ArticlesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesVC.swift; sourceTree = "<group>"; };
 		A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesTableViewCell.swift; sourceTree = "<group>"; };
 		A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonKit.swift; sourceTree = "<group>"; };
@@ -2149,8 +2156,6 @@
 		A7E272612DA8EA27006AF4CF /* CourseMenuHeadVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseMenuHeadVM.swift; sourceTree = "<group>"; };
 		A7E27B522DBF4D550055AE1D /* LoadingSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingSpinner.swift; sourceTree = "<group>"; };
 		A7E575FE2E790F4400C8C835 /* MallConfirmOrderExpCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallConfirmOrderExpCell.swift; sourceTree = "<group>"; };
-		A70820A12F6B000000000001 /* WelcomeGuide0820VC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeGuide0820VC.swift; sourceTree = "<group>"; };
-		A70820A22F6B000000000001 /* WelcomeGuide0820VM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeGuide0820VM.swift; sourceTree = "<group>"; };
 		A7E6C5652E604B24001145DB /* FirstLaunchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstLaunchVC.swift; sourceTree = "<group>"; };
 		A7E9F8AC2CB384C8002C0AA5 /* DataDetailCellImageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataDetailCellImageVM.swift; sourceTree = "<group>"; };
 		A7EB33502CDC58F000103D4F /* WebViewJavascriptBridge_JS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebViewJavascriptBridge_JS.h; sourceTree = "<group>"; };
@@ -3017,6 +3022,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC33DAE43036D4CF007727F3 /* ThinkingOrbsKit in Frameworks */,
 				ECD0FE752BABC7A3001232C9 /* CoreGraphics.framework in Frameworks */,
 				ECD0FE732BABC799001232C9 /* Security.framework in Frameworks */,
 				EC77AAC52F56DA2700ED0E93 /* StoreKit.framework in Frameworks */,
@@ -4582,6 +4588,15 @@
 			path = Pro;
 			sourceTree = "<group>";
 		};
+		EC33DAE53037041F007727F3 /* Guide0820 */ = {
+			isa = PBXGroup;
+			children = (
+				A70821012F6C000000000001 /* Guide0820VC.swift */,
+				A70821022F6C000000000001 /* Guide0820RootView.swift */,
+			);
+			path = Guide0820;
+			sourceTree = "<group>";
+		};
 		EC356CD72C6C99D00023C0BA /* ElaNaturalWidget */ = {
 			isa = PBXGroup;
 			children = (
@@ -4955,6 +4970,7 @@
 				EC25C8332ED560CB00BF2D1F /* SkeletonListLoadingManager.swift */,
 				ECD0FE6D2BABC59E001232C9 /* PrefixHeader.pch */,
 				ECD0FE762BABCA04001232C9 /* lns-Bridging-Header.h */,
+				EC33DAE53037041F007727F3 /* Guide0820 */,
 				EC6B59E93008788F00802B85 /* Elements */,
 				EC78C2A72F691E5B00681507 /* Guidance */,
 				ECF581DE2C329A8200FE0937 /* Guide */,
@@ -6317,7 +6333,7 @@
 			);
 			mainGroup = EC6978D22BABBD81000B933A;
 			packageReferences = (
-				F1A0B0012F0A000100000001 /* ThinkingOrbsKit */,
+				F1A0B0012F0A000100000001 /* XCLocalSwiftPackageReference "ThirdParty/ThinkingOrbsKit" */,
 			);
 			productRefGroup = EC6978DC2BABBD81000B933A /* Products */;
 			projectDirPath = "";
@@ -6331,21 +6347,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		F1A0B0012F0A000100000001 /* ThinkingOrbsKit */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ThirdParty/ThinkingOrbsKit;
-		};
-/* End XCLocalSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		F1A0B0022F0A000100000002 /* ThinkingOrbsKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F1A0B0012F0A000100000001 /* ThinkingOrbsKit */;
-			productName = ThinkingOrbsKit;
-		};
-/* End XCSwiftPackageProductDependency section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A7EDFB0A2CA3A69000282A6B /* Resources */ = {
@@ -6445,9 +6446,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -6482,9 +6487,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-lns/Pods-lns-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -7189,6 +7198,8 @@
 				A70A2FC72DCAED5400F1E630 /* ElaLaunchVC.swift in Sources */,
 				A70820A32F6B000000000001 /* WelcomeGuide0820VC.swift in Sources */,
 				A70820A42F6B000000000001 /* WelcomeGuide0820VM.swift in Sources */,
+				A70821032F6C000000000001 /* Guide0820VC.swift in Sources */,
+				A70821042F6C000000000001 /* Guide0820RootView.swift in Sources */,
 				EC61ABD22F03A482008FA297 /* HabitRankListVM.swift in Sources */,
 				A7454B342E73B7070064076C /* AddressRegionCell.swift in Sources */,
 				EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */,
@@ -8567,6 +8578,21 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		F1A0B0012F0A000100000001 /* XCLocalSwiftPackageReference "ThirdParty/ThinkingOrbsKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ThirdParty/ThinkingOrbsKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F1A0B0022F0A000100000002 /* ThinkingOrbsKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F1A0B0012F0A000100000001 /* XCLocalSwiftPackageReference "ThirdParty/ThinkingOrbsKit" */;
+			productName = ThinkingOrbsKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EC6978D32BABBD81000B933A /* Project object */;
 }

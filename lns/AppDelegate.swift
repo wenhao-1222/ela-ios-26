@@ -156,7 +156,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
         let storedToken = UserDefaults.standard.value(forKey: token) as? String ?? ""
         let storedIsLaunchWelcome = UserDefaults.standard.value(forKey: isLaunchWelcome)as? String ?? ""
         let launchCountAtStart = UserDefaults.standard.value(forKey: launchNum) as? Int ?? 0
-        let shouldShowWelcomeGuide0820 = true// launchCountAtStart == 0 && UserDefaults.standard.bool(forKey: WelcomeGuide0820VC.hasShownKey) == false
+        let shouldShowWelcomeGuide0820 = launchCountAtStart == 0 && UserDefaults.standard.bool(forKey: WelcomeGuide0820VC.hasShownKey) == false
         let rootViewController: UIViewController
 //        if storedIsLaunchWelcome == "" && storedToken == ""{
 ////            self.window?.rootViewController = WelcomeLaunchVC()
@@ -1176,7 +1176,6 @@ extension UIApplication {
 extension AppDelegate{
     private func makePostLaunchRootViewController(showingWelcomeGuide0820: Bool = false) -> UIViewController {
         if showingWelcomeGuide0820 {
-            UserDefaults.standard.set(true, forKey: WelcomeGuide0820VC.hasShownKey)
             let guideVC = WelcomeGuide0820VC()
             guideVC.finishBlock = { [weak self, weak guideVC] in
                 guard let self = self,

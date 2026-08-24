@@ -1,4 +1,0 @@
-
-module SQLite.__Swift {
-  exclude header "SQLite-Swift.h"
-}

@@ -1,4 +1,0 @@
-
-module SkeletonView.__Swift {
-  exclude header "SkeletonView-Swift.h"
-}

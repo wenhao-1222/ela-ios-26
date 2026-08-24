@@ -1,4 +1,0 @@
-
-module TouchIdManager.__Swift {
-  exclude header "TouchIdManager-Swift.h"
-}

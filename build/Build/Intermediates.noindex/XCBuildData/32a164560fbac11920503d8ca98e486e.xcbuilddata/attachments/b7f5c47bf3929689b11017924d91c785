@@ -1,4 +1,0 @@
-
-module DeviceKit.__Swift {
-  exclude header "DeviceKit-Swift.h"
-}

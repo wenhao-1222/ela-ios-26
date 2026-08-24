@@ -29,6 +29,12 @@ final class ElaLiquidGlassCloseButton: UIButton {
         }
     }
 
+    var showsOuterStroke: Bool = true {
+        didSet {
+            updateStrokeVisibility()
+        }
+    }
+
     private let glassBackgroundView = UIVisualEffectView(effect: nil)
     private let tintView = UIView()
     private let iconImageView = UIImageView()
@@ -151,8 +157,7 @@ private extension ElaLiquidGlassCloseButton {
 
         glassBackgroundView.isHidden = true
         iconImageView.isHidden = true
-        strokeLayer.isHidden = false
-        borderHighlightLayer.isHidden = false
+        updateStrokeVisibility()
 
         var config = UIButton.Configuration.clearGlass()
         config.image = iconImage?.withRenderingMode(.alwaysTemplate)
@@ -171,8 +176,7 @@ private extension ElaLiquidGlassCloseButton {
         configuration = nil
         glassBackgroundView.isHidden = false
         iconImageView.isHidden = false
-        strokeLayer.isHidden = false
-        borderHighlightLayer.isHidden = false
+        updateStrokeVisibility()
 
         let isDark = traitCollection.userInterfaceStyle == .dark
         glassBackgroundView.effect = UIBlurEffect(style: isDark ? .systemThinMaterialDark : .systemThinMaterialLight)
@@ -209,6 +213,11 @@ private extension ElaLiquidGlassCloseButton {
         borderHighlightLayer.removeFromSuperlayer()
         layer.addSublayer(strokeLayer)
         layer.addSublayer(borderHighlightLayer)
+    }
+
+    func updateStrokeVisibility() {
+        strokeLayer.isHidden = !showsOuterStroke
+        borderHighlightLayer.isHidden = !showsOuterStroke
     }
 
     func updateStateAppearance() {
