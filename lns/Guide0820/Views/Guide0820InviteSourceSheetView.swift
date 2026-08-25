@@ -116,8 +116,7 @@ private extension Guide0820InviteSourceSheetView {
     /// 创建错误提示行。
     func makeErrorView() {
         let iconView = UIImageView()
-        iconView.image = UIImage(systemName: "exclamationmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
-        iconView.tintColor = .systemRed
+        iconView.image = UIImage(named: "guide0820_error_icon")
 
         let label = UILabel()
         label.text = vm.errorText
@@ -157,7 +156,7 @@ private extension Guide0820InviteSourceSheetView {
         textField.layer.borderWidth = 0
         textField.backgroundColor = UIColor.COLOR_BG_F2
         confirmButton.setTitle(nil, for: .normal)
-        confirmButton.setImage(UIImage(systemName: "checkmark")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        confirmButton.setImage(UIImage(named: "guide0820_button_check_icon")?.withRenderingMode(.alwaysTemplate), for: .normal)
         confirmButton.tintColor = .white
     }
 

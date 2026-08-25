@@ -15,17 +15,21 @@ final class Guide0820BodyProfileOption {
     /// 选项副标题，没有副标题时为 nil。
     let subtitle: String?
 
-    /// 选项左侧图标文本。
+    /// 选项左侧图标文本，缺少图标资源时作为兜底展示。
     let iconText: String
+
+    /// 选项左侧图标资源名。
+    let iconName: String?
 
     /// 选项提交到问卷模型时使用的值。
     let value: String
 
     /// 初始化选项数据。
-    init(title: String, subtitle: String? = nil, iconText: String, value: String) {
+    init(title: String, subtitle: String? = nil, iconText: String, iconName: String? = nil, value: String) {
         self.title = title
         self.subtitle = subtitle
         self.iconText = iconText
+        self.iconName = iconName
         self.value = value
     }
 }

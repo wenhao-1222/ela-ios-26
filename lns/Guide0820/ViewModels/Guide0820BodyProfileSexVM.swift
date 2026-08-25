@@ -61,8 +61,8 @@ final class Guide0820BodyProfileSexVM: Guide0820BodyProfilePageVM {
         }
 
         let items = [
-            Guide0820BodyProfileOption(title: "女", iconText: "♀", value: "2"),
-            Guide0820BodyProfileOption(title: "男", iconText: "♂", value: "1")
+            Guide0820BodyProfileOption(title: "女", iconText: "♀", iconName: "guide0820_sex_female_icon", value: "2"),
+            Guide0820BodyProfileOption(title: "男", iconText: "♂", iconName: "guide0820_sex_male_icon", value: "1")
         ]
 
         var previous: UIView = titleLabel

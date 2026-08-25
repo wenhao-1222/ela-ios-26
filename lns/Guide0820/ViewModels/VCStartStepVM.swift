@@ -15,6 +15,8 @@ struct VCStartStepVM {
     let title: String
     /// 步骤详情。
     let detail: String?
+    /// 序号圆点是否展示选中态。
+    let isNumberHighlighted: Bool
     /// 当前步骤是否高亮。
     let isActive: Bool
 }

@@ -23,18 +23,21 @@ final class VCStartVM {
                 number: "1",
                 title: "了解你的身体",
                 detail: detail(for: .bodyProfile, activeStep: activeStep),
+                isNumberHighlighted: isNumberHighlighted(for: .bodyProfile, activeStep: activeStep),
                 isActive: activeStep == .bodyProfile
             ),
             VCStartStepVM(
                 number: "2",
                 title: "了解你的生活",
                 detail: detail(for: .lifeProfile, activeStep: activeStep),
+                isNumberHighlighted: isNumberHighlighted(for: .lifeProfile, activeStep: activeStep),
                 isActive: activeStep == .lifeProfile
             ),
             VCStartStepVM(
                 number: "3",
                 title: "明确你的方向",
                 detail: detail(for: .directionProfile, activeStep: activeStep),
+                isNumberHighlighted: isNumberHighlighted(for: .directionProfile, activeStep: activeStep),
                 isActive: activeStep == .directionProfile
             )
         ]
@@ -56,5 +59,9 @@ private extension VCStartVM {
         case .directionProfile:
             return "最后明确目标方向，生成更适合当前阶段的营养计划"
         }
+    }
+
+    func isNumberHighlighted(for step: Guide0820ProgressStorage.MainStep, activeStep: Guide0820ProgressStorage.MainStep) -> Bool {
+        step.rawValue <= activeStep.rawValue
     }
 }

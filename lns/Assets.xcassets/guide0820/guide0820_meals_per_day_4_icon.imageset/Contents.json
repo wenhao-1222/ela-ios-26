@@ -1,0 +1,22 @@
+{
+  "images": [
+    {
+      "idiom": "universal",
+      "scale": "1x"
+    },
+    {
+      "filename": "guide0820_meals_per_day_4_icon@2x.png",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "guide0820_meals_per_day_4_icon@3x.png",
+      "idiom": "universal",
+      "scale": "3x"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}

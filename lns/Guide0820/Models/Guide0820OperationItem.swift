@@ -21,8 +21,8 @@ struct Guide0820OperationItem {
     let identifier: Identifier
     /// 当前操作项的标题。
     let title: String
-    /// SF Symbols 占位图标名称。
-    let systemIconName: String
+    /// 操作项图标资源名。
+    let iconName: String
     /// 图标展示颜色。
     let iconColor: UIColor
     /// 文案展示颜色。

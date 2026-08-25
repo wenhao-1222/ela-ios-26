@@ -18,7 +18,7 @@ final class Guide0820OperationSheetVM {
             Guide0820OperationItem(
                 identifier: .sourceInput,
                 title: "你怎么知道我们的？",
-                systemIconName: "qrcode.viewfinder",
+                iconName: "guide0820_source_operation_icon",
                 iconColor: .COLOR_TEXT_TITLE_0f1214,
                 titleColor: .COLOR_TEXT_TITLE_0f1214,
                 showsDisclosure: true,
@@ -27,7 +27,7 @@ final class Guide0820OperationSheetVM {
             Guide0820OperationItem(
                 identifier: .clearData,
                 title: "清空数据 & 进度",
-                systemIconName: "trash.fill",
+                iconName: "guide0820_delete_icon",
                 iconColor: .systemRed,
                 titleColor: .systemRed,
                 showsDisclosure: false,

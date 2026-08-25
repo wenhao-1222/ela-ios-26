@@ -39,9 +39,9 @@ private extension Guide0820OperationRow {
         addTarget(self, action: #selector(tapAction), for: .touchUpInside)
 
         let iconView = UIImageView()
-        iconView.image = UIImage(systemName: item.systemIconName)?.withRenderingMode(.alwaysTemplate)
-        iconView.tintColor = item.iconColor
+        iconView.setImgLocal(imgName: item.iconName)
         iconView.contentMode = .scaleAspectFit
+        iconView.alpha = item.isEnabled ? 1 : 0.35
 
         let titleLabel = UILabel()
         titleLabel.text = item.title
@@ -49,8 +49,7 @@ private extension Guide0820OperationRow {
         titleLabel.font = .systemFont(ofSize: kFitWidth(14), weight: .medium)
 
         let arrowView = UIImageView()
-        arrowView.image = UIImage(systemName: "chevron.right")?.withRenderingMode(.alwaysTemplate)
-        arrowView.tintColor = UIColor.COLOR_TEXT_TITLE_0f1214_25
+        arrowView.image = UIImage(named: "guide0820_operation_arrow_icon")
         arrowView.contentMode = .scaleAspectFit
         arrowView.isHidden = item.showsDisclosure == false
 

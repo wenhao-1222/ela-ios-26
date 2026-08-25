@@ -74,6 +74,13 @@ enum Guide0820ProgressStorage {
         static let bodyWeightExceeded = "guide_0820_body_profile_weight_exceeded"
         static let bodyWeightTrend = "guide_0820_body_profile_weight_trend"
         static let bodyFat = "guide_0820_body_profile_body_fat"
+        static let lifeTakeoutFrequency = "guide_0820_life_profile_takeout_frequency"
+        static let lifeMealsPerDay = "guide_0820_life_profile_meals_per_day"
+        static let lifeMealsAdjust = "guide_0820_life_profile_meals_adjust"
+        static let lifeExerciseCaloriesRecord = "guide_0820_life_profile_exercise_calories_record"
+        static let lifeCardioFrequency = "guide_0820_life_profile_cardio_frequency"
+        static let lifeStrengthTrainingFrequency = "guide_0820_life_profile_strength_training_frequency"
+        static let lifeCaloriesNumber = "guide_0820_life_profile_calories_number"
     }
 
     static var currentMainStep: MainStep {
@@ -179,6 +186,57 @@ enum Guide0820ProgressStorage {
     static var bodyProfileWeightExceeded: String? { storedString(forKey: Key.bodyWeightExceeded) }
     static var bodyProfileWeightTrend: String? { storedString(forKey: Key.bodyWeightTrend) }
     static var bodyProfileBodyFat: String? { storedString(forKey: Key.bodyFat) }
+
+    static func saveLifeProfile(takeoutFrequency: String?,
+                                mealsPerDay: String?,
+                                mealsAdjust: String?,
+                                exerciseCaloriesRecord: String?,
+                                cardioFrequency: String?,
+                                strengthTrainingFrequency: String?,
+                                caloriesNumber: String?) {
+        setString(takeoutFrequency, forKey: Key.lifeTakeoutFrequency)
+        setString(mealsPerDay, forKey: Key.lifeMealsPerDay)
+        setString(mealsAdjust, forKey: Key.lifeMealsAdjust)
+        setString(exerciseCaloriesRecord, forKey: Key.lifeExerciseCaloriesRecord)
+        setString(cardioFrequency, forKey: Key.lifeCardioFrequency)
+        setString(strengthTrainingFrequency, forKey: Key.lifeStrengthTrainingFrequency)
+        setString(caloriesNumber, forKey: Key.lifeCaloriesNumber)
+        Guide0820DefaultsFlusher.flush()
+    }
+
+    static func saveLifeProfileFromQuestionnaireModel() {
+        let model = QuestinonaireMsgModel.shared
+        saveLifeProfile(
+            takeoutFrequency: model.guidanceTakeoutFrequencyType,
+            mealsPerDay: model.guidanceMealsPerDayType,
+            mealsAdjust: model.guidanceMealsAdjustType,
+            exerciseCaloriesRecord: model.guidanceExerciseCaloriesRecordType,
+            cardioFrequency: model.guidanceCardioFrequencyType,
+            strengthTrainingFrequency: model.guidanceStrengthTrainingFrequencyType,
+            caloriesNumber: model.caloriesNumber
+        )
+    }
+
+    static func restoreLifeProfileToQuestionnaireModel() {
+        let model = QuestinonaireMsgModel.shared
+        model.guidanceTakeoutFrequencyType = lifeProfileTakeoutFrequency ?? model.guidanceTakeoutFrequencyType
+        model.guidanceMealsPerDayType = lifeProfileMealsPerDay ?? model.guidanceMealsPerDayType
+        model.guidanceMealsAdjustType = lifeProfileMealsAdjust ?? model.guidanceMealsAdjustType
+        model.guidanceExerciseCaloriesRecordType = lifeProfileExerciseCaloriesRecord ?? model.guidanceExerciseCaloriesRecordType
+        model.guidanceCardioFrequencyType = lifeProfileCardioFrequency ?? model.guidanceCardioFrequencyType
+        model.guidanceStrengthTrainingFrequencyType = lifeProfileStrengthTrainingFrequency ?? model.guidanceStrengthTrainingFrequencyType
+        model.caloriesNumber = lifeProfileCaloriesNumber ?? model.caloriesNumber
+        model.caloriesNumberFromServer = lifeProfileCaloriesNumber ?? model.caloriesNumberFromServer
+    }
+
+    static var lifeProfileTakeoutFrequency: String? { storedString(forKey: Key.lifeTakeoutFrequency) }
+    static var lifeProfileMealsPerDay: String? { storedString(forKey: Key.lifeMealsPerDay) }
+    static var lifeProfileMealsAdjust: String? { storedString(forKey: Key.lifeMealsAdjust) }
+    static var lifeProfileExerciseCaloriesRecord: String? { storedString(forKey: Key.lifeExerciseCaloriesRecord) }
+    static var lifeProfileCardioFrequency: String? { storedString(forKey: Key.lifeCardioFrequency) }
+    static var lifeProfileStrengthTrainingFrequency: String? { storedString(forKey: Key.lifeStrengthTrainingFrequency) }
+    static var lifeProfileCaloriesNumber: String? { storedString(forKey: Key.lifeCaloriesNumber) }
+
     static var hasBodyProfileProgress: Bool {
         [
             Key.bodyProfileFurthestPageIndex,
@@ -194,9 +252,25 @@ enum Guide0820ProgressStorage {
         }
     }
 
+    static var hasLifeProfileProgress: Bool {
+        [
+            Key.lifeProfileCurrentPageIndex,
+            Key.lifeTakeoutFrequency,
+            Key.lifeMealsPerDay,
+            Key.lifeMealsAdjust,
+            Key.lifeExerciseCaloriesRecord,
+            Key.lifeCardioFrequency,
+            Key.lifeStrengthTrainingFrequency,
+            Key.lifeCaloriesNumber
+        ].contains {
+            UserDefaults.standard.object(forKey: $0) != nil
+        }
+    }
+
     static var shouldResumeGuide0820: Bool {
         Guide0820SourceStorage.hasStoredSelection ||
-        (hasBodyProfileProgress && isStepCompleted(.bodyProfile) == false)
+        (hasBodyProfileProgress && isStepCompleted(.bodyProfile) == false) ||
+        (hasLifeProfileProgress && isStepCompleted(.lifeProfile) == false)
     }
 
     static func clearAll() {
@@ -216,6 +290,13 @@ enum Guide0820ProgressStorage {
             Key.bodyWeightExceeded,
             Key.bodyWeightTrend,
             Key.bodyFat,
+            Key.lifeTakeoutFrequency,
+            Key.lifeMealsPerDay,
+            Key.lifeMealsAdjust,
+            Key.lifeExerciseCaloriesRecord,
+            Key.lifeCardioFrequency,
+            Key.lifeStrengthTrainingFrequency,
+            Key.lifeCaloriesNumber,
             Guide0820VC.hasShownKey
         ].forEach {
             UserDefaults.standard.removeObject(forKey: $0)

@@ -11,7 +11,7 @@ import SnapKit
 /// 身体资料页通用说明卡，包含信息图标、标题和简短说明。
 final class Guide0820BodyProfileInfoCard: UIControl {
     /// 左侧信息图标。
-    private let iconView = UILabel()
+    private let iconView = UIImageView()
 
     /// 说明卡标题。
     private let titleLabel = UILabel()
@@ -37,13 +37,8 @@ final class Guide0820BodyProfileInfoCard: UIControl {
         layer.cornerCurve = .continuous
         clipsToBounds = true
 
-        iconView.text = "i"
-        iconView.textAlignment = .center
-        iconView.textColor = .white
-        iconView.font = .systemFont(ofSize: guide0820Design(24), weight: .bold)
-        iconView.backgroundColor = .COLOR_TEXT_TITLE_0f1214
-        iconView.layer.cornerRadius = guide0820Design(20)
-        iconView.clipsToBounds = true
+        iconView.setImgLocal(imgName: "guide0820_info_icon")
+        iconView.contentMode = .scaleAspectFit
 
         titleLabel.text = title
         titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214

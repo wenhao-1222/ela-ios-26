@@ -45,15 +45,15 @@ final class VCStartStepRow: UIView {
 private extension VCStartStepRow {
     /// 初始化步骤行布局。
     func initUI() {
-        numberView.backgroundColor = vm.isActive ? .THEME : UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.06)
+        numberView.backgroundColor = vm.isNumberHighlighted ? .THEME : UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.06)
         numberView.layer.cornerRadius = kFitWidth(17)
         lineView.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.06)
         lineView.isHidden = showsBottomLine == false
 
         numberLabel.text = vm.number
         numberLabel.textAlignment = .center
-        numberLabel.textColor = vm.isActive ? .white : .COLOR_TEXT_TITLE_0f1214
-        numberLabel.font = .systemFont(ofSize: kFitWidth(14), weight: vm.isActive ? .medium : .regular)
+        numberLabel.textColor = vm.isNumberHighlighted ? .white : .COLOR_TEXT_TITLE_0f1214
+        numberLabel.font = .systemFont(ofSize: kFitWidth(14), weight: vm.isNumberHighlighted ? .medium : .regular)
 
         titleLabel.text = vm.title
         titleLabel.textColor = vm.isActive ? .COLOR_TEXT_TITLE_0f1214 : .COLOR_TEXT_TITLE_0f1214_50

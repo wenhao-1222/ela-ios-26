@@ -212,9 +212,24 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
                                                object: nil)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        enforceInteractivePopGestureDisabled()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        enforceInteractivePopGestureDisabled()
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         bottomGradientLayer.frame = bottomGradientView.bounds
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        restoreFullscreenInteractivePopGesture()
     }
 
     deinit {
@@ -223,6 +238,17 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
 }
 
 private extension Guide0820BodyProfileVC {
+    func enforceInteractivePopGestureDisabled() {
+        updateInteractivePopGestureBlocked(true)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  self.navigationController?.topViewController === self else {
+                return
+            }
+            self.updateInteractivePopGestureBlocked(true)
+        }
+    }
+
     func initUI() {
         navigationController?.setNavigationBarHidden(true, animated: false)
         view.backgroundColor = .COLOR_BG_F2

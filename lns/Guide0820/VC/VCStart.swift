@@ -29,9 +29,7 @@ final class VCStart: WHBaseViewVC {
     /// 右上角操作按钮。
     private lazy var operationButton: UIButton = {
         let button = UIButton(type: .custom)
-        let image = UIImage(systemName: "ellipsis")?.withRenderingMode(.alwaysTemplate)
-        button.setImage(image, for: .normal)
-        button.tintColor = .COLOR_TEXT_TITLE_0f1214
+        button.setImage(UIImage(named: "guide0820_more_icon"), for: .normal)
         button.addTarget(self, action: #selector(operationButtonAction), for: .touchUpInside)
         return button
     }()
@@ -44,13 +42,19 @@ final class VCStart: WHBaseViewVC {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        enforceInteractivePopGestureDisabled()
         rootView?.reloadSteps()
     }
 
-    /// 页面出现后恢复系统侧滑手势。
+    /// 页面出现后禁用系统侧滑和全屏侧滑返回。
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        enforceInteractivePopGestureDisabled()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        restoreFullscreenInteractivePopGesture()
     }
 }
 
@@ -73,6 +77,11 @@ extension VCStart {
             viewControllers.append(Guide0820BodyProfileVC())
             return viewControllers
         case .lifeProfile:
+            guard Guide0820ProgressStorage.hasLifeProfileProgress,
+                  Guide0820ProgressStorage.isStepCompleted(.lifeProfile) == false else {
+                return viewControllers
+            }
+            viewControllers.append(Guide0820LifeProfileVC())
             return viewControllers
         case .directionProfile:
             return viewControllers
@@ -81,6 +90,17 @@ extension VCStart {
 }
 
 private extension VCStart {
+    func enforceInteractivePopGestureDisabled() {
+        updateInteractivePopGestureBlocked(true)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  self.navigationController?.topViewController === self else {
+                return
+            }
+            self.updateInteractivePopGestureBlocked(true)
+        }
+    }
+
     /// 初始化页面结构。
     func initUI() {
         navigationController?.setNavigationBarHidden(true, animated: false)
@@ -154,6 +174,8 @@ private extension VCStart {
 
     /// 进入生活习惯采集流程。真实 VC 接入后在这里替换跳转。
     func startLifeProfileStep() {
+        let vc = Guide0820LifeProfileVC()
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     /// 进入目标方向采集流程。真实 VC 接入后在这里替换跳转。

@@ -13,8 +13,11 @@ final class Guide0820BodyProfileOptionCard: UIControl {
     /// 当前卡片绑定的选项数据。
     private let item: Guide0820BodyProfileOption
 
-    /// 左侧图标文本 Label。
+    /// 左侧图标文本 Label，缺少图标资源时兜底展示。
     private let iconLabel = UILabel()
+
+    /// 左侧图标图片视图。
+    private let iconImageView = UIImageView()
 
     /// 选项标题 Label。
     private let titleLabel = UILabel()
@@ -53,10 +56,15 @@ final class Guide0820BodyProfileOptionCard: UIControl {
         layer.cornerCurve = .continuous
         clipsToBounds = true
 
-        iconLabel.text = item.iconText
-        iconLabel.textAlignment = .center
-        iconLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        iconLabel.font = .systemFont(ofSize: guide0820Design(40), weight: .medium)
+        if let iconName = item.iconName {
+            iconImageView.setImgLocal(imgName: iconName)
+            iconImageView.contentMode = .scaleAspectFit
+        } else {
+            iconLabel.text = item.iconText
+            iconLabel.textAlignment = .center
+            iconLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+            iconLabel.font = .systemFont(ofSize: guide0820Design(40), weight: .medium)
+        }
 
         titleLabel.text = item.title
         titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
@@ -71,15 +79,16 @@ final class Guide0820BodyProfileOptionCard: UIControl {
         selectCircle.layer.borderWidth = guide0820Design(3)
         selectCircle.layer.cornerRadius = guide0820Design(24)
 
-        addSubview(iconLabel)
+        let iconView: UIView = item.iconName == nil ? iconLabel : iconImageView
+        addSubview(iconView)
         addSubview(titleLabel)
         addSubview(subtitleLabel)
         addSubview(selectCircle)
 
-        iconLabel.snp.makeConstraints { make in
+        iconView.snp.makeConstraints { make in
             make.left.equalTo(guide0820Design(32))
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(guide0820Design(40))
+            make.width.height.equalTo(guide0820Design(item.iconName == nil ? 40 : 50))
         }
 
         titleLabel.snp.makeConstraints { make in

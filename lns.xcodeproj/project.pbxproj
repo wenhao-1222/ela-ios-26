@@ -52,6 +52,7 @@
 		A70823202F70000000000020 /* VCStartRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822202F70000000000020 /* VCStartRootView.swift */; };
 		A70823212F70000000000021 /* VCStartStepRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822212F70000000000021 /* VCStartStepRow.swift */; };
 		A70823222F70000000000022 /* Guide0820BodyProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822222F70000000000022 /* Guide0820BodyProfileVC.swift */; };
+		A70823332F70000000000033 /* Guide0820LifeProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822332F70000000000033 /* Guide0820LifeProfileVC.swift */; };
 		A70823252F70000000000025 /* Guide0820BodyProfileLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822252F70000000000025 /* Guide0820BodyProfileLayout.swift */; };
 		A70823262F70000000000026 /* Guide0820BodyProfilePageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822262F70000000000026 /* Guide0820BodyProfilePageVM.swift */; };
 		A70823272F70000000000027 /* Guide0820BodyProfileSexVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822272F70000000000027 /* Guide0820BodyProfileSexVM.swift */; };
@@ -65,6 +66,8 @@
 		A70823302F70000000000030 /* Guide0820BodyProfileOptionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822302F70000000000030 /* Guide0820BodyProfileOptionCard.swift */; };
 		A70823312F70000000000031 /* Guide0820BodyProfileInfoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822312F70000000000031 /* Guide0820BodyProfileInfoCard.swift */; };
 		A70823322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift */; };
+		A70823342F70000000000034 /* Guide0820LifeProfilePageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822342F70000000000034 /* Guide0820LifeProfilePageVM.swift */; };
+		A70823352F70000000000035 /* Guide0820LifeProfileMealsAdjustVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822352F70000000000035 /* Guide0820LifeProfileMealsAdjustVM.swift */; };
 		A7092D132E4EE02D005A2087 /* ArticlesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D122E4EE02C005A2087 /* ArticlesVC.swift */; };
 		A7092D152E4EE093005A2087 /* ArticlesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */; };
 		A7092D172E4EE0D5005A2087 /* SkeletonKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */; };
@@ -1585,6 +1588,7 @@
 		A70822202F70000000000020 /* VCStartRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCStartRootView.swift; sourceTree = "<group>"; };
 		A70822212F70000000000021 /* VCStartStepRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCStartStepRow.swift; sourceTree = "<group>"; };
 		A70822222F70000000000022 /* Guide0820BodyProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileVC.swift; sourceTree = "<group>"; };
+		A70822332F70000000000033 /* Guide0820LifeProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820LifeProfileVC.swift; sourceTree = "<group>"; };
 		A70822252F70000000000025 /* Guide0820BodyProfileLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileLayout.swift; sourceTree = "<group>"; };
 		A70822262F70000000000026 /* Guide0820BodyProfilePageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfilePageVM.swift; sourceTree = "<group>"; };
 		A70822272F70000000000027 /* Guide0820BodyProfileSexVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileSexVM.swift; sourceTree = "<group>"; };
@@ -1598,6 +1602,8 @@
 		A70822302F70000000000030 /* Guide0820BodyProfileOptionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileOptionCard.swift; sourceTree = "<group>"; };
 		A70822312F70000000000031 /* Guide0820BodyProfileInfoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileInfoCard.swift; sourceTree = "<group>"; };
 		A70822322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileIntroOverlayVM.swift; sourceTree = "<group>"; };
+		A70822342F70000000000034 /* Guide0820LifeProfilePageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820LifeProfilePageVM.swift; sourceTree = "<group>"; };
+		A70822352F70000000000035 /* Guide0820LifeProfileMealsAdjustVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820LifeProfileMealsAdjustVM.swift; sourceTree = "<group>"; };
 		A7092D122E4EE02C005A2087 /* ArticlesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesVC.swift; sourceTree = "<group>"; };
 		A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesTableViewCell.swift; sourceTree = "<group>"; };
 		A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonKit.swift; sourceTree = "<group>"; };
@@ -4688,6 +4694,7 @@
 				A70821012F6C000000000001 /* Guide0820VC.swift */,
 				A708221D2F7000000000001D /* VCStart.swift */,
 				A70822222F70000000000022 /* Guide0820BodyProfileVC.swift */,
+				A70822332F70000000000033 /* Guide0820LifeProfileVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -4722,6 +4729,8 @@
 				A708222C2F7000000000002C /* Guide0820BodyProfileWeightExceededVM.swift */,
 				A708222D2F7000000000002D /* Guide0820BodyProfileWeightTrendVM.swift */,
 				A708222E2F7000000000002E /* Guide0820BodyProfileBodyfatVM.swift */,
+				A70822342F70000000000034 /* Guide0820LifeProfilePageVM.swift */,
+				A70822352F70000000000035 /* Guide0820LifeProfileMealsAdjustVM.swift */,
 				A708221E2F7000000000001E /* VCStartVM.swift */,
 				A708221F2F7000000000001F /* VCStartStepVM.swift */,
 			);
@@ -7407,6 +7416,7 @@
 				A70823202F70000000000020 /* VCStartRootView.swift in Sources */,
 				A70823212F70000000000021 /* VCStartStepRow.swift in Sources */,
 				A70823222F70000000000022 /* Guide0820BodyProfileVC.swift in Sources */,
+				A70823332F70000000000033 /* Guide0820LifeProfileVC.swift in Sources */,
 				A70823252F70000000000025 /* Guide0820BodyProfileLayout.swift in Sources */,
 				A70823262F70000000000026 /* Guide0820BodyProfilePageVM.swift in Sources */,
 				A70823272F70000000000027 /* Guide0820BodyProfileSexVM.swift in Sources */,
@@ -7420,6 +7430,8 @@
 				A70823302F70000000000030 /* Guide0820BodyProfileOptionCard.swift in Sources */,
 				A70823312F70000000000031 /* Guide0820BodyProfileInfoCard.swift in Sources */,
 				A70823322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift in Sources */,
+				A70823342F70000000000034 /* Guide0820LifeProfilePageVM.swift in Sources */,
+				A70823352F70000000000035 /* Guide0820LifeProfileMealsAdjustVM.swift in Sources */,
 				EC61ABD22F03A482008FA297 /* HabitRankListVM.swift in Sources */,
 				A7454B342E73B7070064076C /* AddressRegionCell.swift in Sources */,
 				EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */,

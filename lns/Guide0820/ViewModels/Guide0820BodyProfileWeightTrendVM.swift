@@ -60,10 +60,10 @@ final class Guide0820BodyProfileWeightTrendVM: Guide0820BodyProfilePageVM {
         }
 
         let items = [
-            Guide0820BodyProfileOption(title: "基本稳定", subtitle: "上下变化不大", iconText: "=", value: "stable"),
-            Guide0820BodyProfileOption(title: "持续上升", subtitle: "整体呈上升趋势", iconText: "↑", value: "up"),
-            Guide0820BodyProfileOption(title: "持续下降", subtitle: "整体呈下降趋势", iconText: "↓", value: "down"),
-            Guide0820BodyProfileOption(title: "经常反复", subtitle: "下降或上升后又很快回到原位", iconText: "~", value: "fluctuate")
+            Guide0820BodyProfileOption(title: "基本稳定", subtitle: "上下变化不大", iconText: "=", iconName: "guide0820_weight_trend_stable_icon", value: "stable"),
+            Guide0820BodyProfileOption(title: "持续上升", subtitle: "整体呈上升趋势", iconText: "↑", iconName: "guide0820_weight_trend_up_icon", value: "up"),
+            Guide0820BodyProfileOption(title: "持续下降", subtitle: "整体呈下降趋势", iconText: "↓", iconName: "guide0820_weight_trend_down_icon", value: "down"),
+            Guide0820BodyProfileOption(title: "经常反复", subtitle: "下降或上升后又很快回到原位", iconText: "~", iconName: "guide0820_weight_trend_fluctuate_icon", value: "fluctuate")
         ]
 
         var previous: UIView = titleLabel

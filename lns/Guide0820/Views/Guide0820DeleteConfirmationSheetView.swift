@@ -127,7 +127,7 @@ private extension Guide0820DeleteConfirmationSheetView {
     func confirmAction() {
         guard vm.isAcknowledged else { return }
         confirmButton.setTitle(nil, for: .normal)
-        confirmButton.setImage(UIImage(systemName: "checkmark")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        confirmButton.setImage(UIImage(named: "guide0820_button_check_icon")?.withRenderingMode(.alwaysTemplate), for: .normal)
         confirmButton.tintColor = .white
         onConfirm()
     }

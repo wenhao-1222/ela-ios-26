@@ -30,11 +30,11 @@ enum AICoachReportRecommendationStatus: Int {
     var defaultTitleText: String {
         switch self {
         case .decrease:
-            return "降低摄入"
+            return "降低摄入目标"
         case .maintain:
             return "维持当前目标"
         case .increase:
-            return "提高摄入"
+            return "提高摄入目标"
         }
     }
 

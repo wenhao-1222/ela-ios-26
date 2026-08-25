@@ -41,8 +41,7 @@ private extension Guide0820SheetHeaderView {
         titleLabel.font = .systemFont(ofSize: kFitWidth(17), weight: .semibold)
 
         let closeButton = UIButton(type: .custom)
-        closeButton.setImage(UIImage(systemName: "xmark")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        closeButton.tintColor = .COLOR_TEXT_TITLE_0f1214
+        closeButton.setImage(UIImage(named: "guide0820_close_icon"), for: .normal)
         closeButton.addTarget(self, action: #selector(closeButtonAction), for: .touchUpInside)
 
         addSubview(titleLabel)

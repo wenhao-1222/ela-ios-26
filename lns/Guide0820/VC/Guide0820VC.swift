@@ -55,15 +55,36 @@ final class Guide0820VC: WHBaseViewVC {
         initUI()
     }
 
-    /// 页面出现后恢复系统侧滑手势。
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        enforceInteractivePopGestureDisabled()
+    }
+
+    /// 页面出现后禁用系统侧滑和全屏侧滑返回。
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        enforceInteractivePopGestureDisabled()
         redirectToStartIfSourceStored()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        restoreFullscreenInteractivePopGesture()
     }
 }
 
 private extension Guide0820VC {
+    func enforceInteractivePopGestureDisabled() {
+        updateInteractivePopGestureBlocked(true)
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self,
+                  self.navigationController?.topViewController === self else {
+                return
+            }
+            self.updateInteractivePopGestureBlocked(true)
+        }
+    }
+
     /// 初始化页面 UI。
     func initUI() {
         navigationController?.setNavigationBarHidden(true, animated: false)

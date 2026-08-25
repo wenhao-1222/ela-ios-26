@@ -31,9 +31,7 @@ final class Guide0820CheckBoxView: UIControl {
     ///   - animated: 是否执行动画。
     func setChecked(_ checked: Bool, animated: Bool) {
         isChecked = checked
-        layer.borderWidth = checked ? 0 : kFitWidth(2)
-        backgroundColor = checked ? .THEME : .clear
-        checkImageView.isHidden = checked == false
+        checkImageView.setImgLocal(imgName: checked ? "guide0820_checkbox_selected_icon" : "guide0820_checkbox_normal_icon")
         guard animated else { return }
         transform = CGAffineTransform(scaleX: 0.88, y: 0.88)
         UIView.animate(withDuration: 0.18) {
@@ -45,17 +43,12 @@ final class Guide0820CheckBoxView: UIControl {
 private extension Guide0820CheckBoxView {
     /// 初始化勾选框样式。
     func initUI() {
-        layer.cornerRadius = kFitWidth(4)
-        layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.15).cgColor
         clipsToBounds = true
 
-        checkImageView.image = UIImage(systemName: "checkmark")?.withRenderingMode(.alwaysTemplate)
-        checkImageView.tintColor = .white
         checkImageView.contentMode = .scaleAspectFit
         addSubview(checkImageView)
         checkImageView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(17))
+            make.edges.equalToSuperview()
         }
         setChecked(false, animated: false)
     }

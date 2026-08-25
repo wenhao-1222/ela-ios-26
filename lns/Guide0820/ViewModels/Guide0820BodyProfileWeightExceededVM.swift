@@ -73,9 +73,9 @@ final class Guide0820BodyProfileWeightExceededVM: Guide0820BodyProfilePageVM {
         }
 
         let items = [
-            Guide0820BodyProfileOption(title: "是", iconText: "↑", value: "yes"),
-            Guide0820BodyProfileOption(title: "否", iconText: "↓", value: "no"),
-            Guide0820BodyProfileOption(title: "不确定", iconText: "?", value: "unknown")
+            Guide0820BodyProfileOption(title: "是", iconText: "↑", iconName: "guide0820_answer_yes_icon", value: "yes"),
+            Guide0820BodyProfileOption(title: "否", iconText: "↓", iconName: "guide0820_answer_no_icon", value: "no"),
+            Guide0820BodyProfileOption(title: "不确定", iconText: "?", iconName: "guide0820_answer_unknown_icon", value: "unknown")
         ]
         layoutCards(items: items, below: titleLabel)
     }
