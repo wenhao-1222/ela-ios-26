@@ -21,6 +21,9 @@ final class Guide0820BodyProfileWeightTrendVM: Guide0820BodyProfilePageVM {
         }
     }
 
+    /// 当前选择值。
+    var selectedTrendValue: String? { selectedValue }
+
     /// 只有选择趋势后才允许继续。
     override var isStepValid: Bool { selectedValue != nil }
 
@@ -38,6 +41,12 @@ final class Guide0820BodyProfileWeightTrendVM: Guide0820BodyProfilePageVM {
     /// 将当前选择写入问卷模型。
     override func commitCurrentValue() {
         QuestinonaireMsgModel.shared.guidanceRecentWeightTrendType = selectedValue ?? ""
+    }
+
+    /// 恢复本地保存的选择。
+    func restore(selectedValue: String?) {
+        self.selectedValue = selectedValue
+        commitCurrentValue()
     }
 
     /// 按 MasterGo 设计稿创建标题和趋势选项卡。

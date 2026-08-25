@@ -157,7 +157,7 @@ private extension ElaLiquidGlassCloseButton {
 
         glassBackgroundView.isHidden = true
         iconImageView.isHidden = true
-        updateStrokeVisibility()
+        updateNativeStrokeVisibility()
 
         var config = UIButton.Configuration.clearGlass()
         config.image = iconImage?.withRenderingMode(.alwaysTemplate)
@@ -216,8 +216,19 @@ private extension ElaLiquidGlassCloseButton {
     }
 
     func updateStrokeVisibility() {
+        guard !isNativeGlassAvailable else {
+            updateNativeStrokeVisibility()
+            return
+        }
+
         strokeLayer.isHidden = !showsOuterStroke
         borderHighlightLayer.isHidden = !showsOuterStroke
+    }
+
+    func updateNativeStrokeVisibility() {
+        strokeLayer.isHidden = true
+        borderHighlightLayer.isHidden = true
+        borderHighlightLayer.opacity = 0
     }
 
     func updateStateAppearance() {
@@ -227,14 +238,7 @@ private extension ElaLiquidGlassCloseButton {
             transform = .identity
             iconImageView.alpha = 1
             tintView.alpha = 1
-            let isActive = isHighlighted && isEnabled
-            borderHighlightLayer.opacity = isActive ? 1 : 0.38
-            strokeLayer.strokeColor = UIColor.white
-                .withAlphaComponent(isActive ? 0.88 : 0.42)
-                .cgColor
-            borderHighlightLayer.strokeColor = UIColor.white
-                .withAlphaComponent(isActive ? 0.92 : 0.64)
-                .cgColor
+            updateNativeStrokeVisibility()
             return
         }
 

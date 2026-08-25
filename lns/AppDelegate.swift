@@ -1225,7 +1225,12 @@ extension AppDelegate{
 
 //            let agreeProtocal = UserDefaults.standard.value(forKey: "agreeProtocal") as? String ?? ""
 //            if agreeProtocal.count > 0 {
-                return UINavigationController(rootViewController: FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true))
+            if Guide0820ProgressStorage.shouldResumeGuide0820 {
+                let nav = UINavigationController()
+                nav.setViewControllers(VCStart.makeResumeViewControllers(includingLaunchEntry: true), animated: false)
+                return nav
+            }
+            return UINavigationController(rootViewController: FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true))
 //            }else{
 //                return UINavigationController(rootViewController: WelcomeVC())
 //            }

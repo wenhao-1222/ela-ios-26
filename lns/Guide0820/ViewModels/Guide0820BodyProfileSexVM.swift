@@ -44,6 +44,12 @@ final class Guide0820BodyProfileSexVM: Guide0820BodyProfilePageVM {
         QuestinonaireMsgModel.shared.sex = selectedSex
     }
 
+    /// 恢复本地保存的性别选择。
+    func restore(selectedSex: String?) {
+        self.selectedSex = selectedSex
+        commitCurrentValue()
+    }
+
     /// 按 MasterGo 设计稿创建标题、选项卡和说明卡。
     private func initUI() {
         let titleLabel = makeTitleLabel("你的性别是？")

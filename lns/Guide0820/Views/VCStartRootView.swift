@@ -38,6 +38,15 @@ final class VCStartRootView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    /// 刷新步骤状态。
+    func reloadSteps() {
+        stepsContainerView.subviews.forEach { $0.removeFromSuperview() }
+        stepsContainerView.snp.updateConstraints { make in
+            make.height.equalTo(stepsContainerHeight())
+        }
+        buildStepRows()
+    }
 }
 
 private extension VCStartRootView {
@@ -78,7 +87,7 @@ private extension VCStartRootView {
             make.left.equalTo(kFitWidth(40))
             make.top.equalToSuperview().offset(kFitWidth(273.5))
             make.width.equalTo(kFitWidth(295))
-            make.height.equalTo(kFitWidth(203.5))
+            make.height.equalTo(stepsContainerHeight())
         }
 
         startButton.snp.makeConstraints { make in
@@ -93,8 +102,10 @@ private extension VCStartRootView {
     /// 创建步骤行。
     func buildStepRows() {
         var previousRow: VCStartStepRow?
-        vm.steps.enumerated().forEach { index, step in
-            let row = VCStartStepRow(vm: step, showsBottomLine: index < vm.steps.count - 1)
+        let steps = vm.steps
+        let activeIndex = steps.firstIndex { $0.isActive } ?? 0
+        steps.enumerated().forEach { index, step in
+            let row = VCStartStepRow(vm: step, showsBottomLine: index < steps.count - 1)
             stepsContainerView.addSubview(row)
             row.snp.makeConstraints { make in
                 make.left.right.equalToSuperview()
@@ -103,18 +114,30 @@ private extension VCStartRootView {
                 } else {
                     make.top.equalToSuperview()
                 }
-                if index == 0 {
-                    make.height.equalTo(kFitWidth(105.5))
-                } else if index == 1 {
-                    make.height.equalTo(kFitWidth(64))
-                } else {
-                    make.height.equalTo(kFitWidth(34))
-                }
-                if index == vm.steps.count - 1 {
+                make.height.equalTo(rowHeight(index: index, activeIndex: activeIndex, totalCount: steps.count))
+                if index == steps.count - 1 {
                     make.bottom.lessThanOrEqualToSuperview()
                 }
             }
             previousRow = row
+        }
+    }
+
+    /// 当前步骤列表总高度。
+    func stepsContainerHeight() -> CGFloat {
+        let steps = vm.steps
+        let activeIndex = steps.firstIndex { $0.isActive } ?? 0
+        return steps.indices.reduce(0) { $0 + rowHeight(index: $1, activeIndex: activeIndex, totalCount: steps.count) }
+    }
+
+    /// 单行步骤高度。
+    func rowHeight(index: Int, activeIndex: Int, totalCount: Int) -> CGFloat {
+        if index == activeIndex {
+            return kFitWidth(105.5)
+        } else if index < totalCount - 1 {
+            return kFitWidth(64)
+        } else {
+            return kFitWidth(34)
         }
     }
 }

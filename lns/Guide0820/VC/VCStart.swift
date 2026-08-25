@@ -42,10 +42,41 @@ final class VCStart: WHBaseViewVC {
         initUI()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        rootView?.reloadSteps()
+    }
+
     /// 页面出现后恢复系统侧滑手势。
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+}
+
+extension VCStart {
+    /// Guide0820 冷启动恢复用导航栈；子流程未完成时直接展示子流程，并保留返回 VCStart 的能力。
+    static func makeResumeViewControllers(includingLaunchEntry: Bool = false) -> [UIViewController] {
+        var viewControllers: [UIViewController] = []
+        if includingLaunchEntry {
+            viewControllers.append(FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true))
+        }
+        viewControllers.append(Guide0820VC(initialPageIndex: 2, shouldRedirectStoredSource: false))
+        viewControllers.append(VCStart())
+
+        switch Guide0820ProgressStorage.currentMainStep {
+        case .bodyProfile:
+            guard Guide0820ProgressStorage.hasBodyProfileProgress,
+                  Guide0820ProgressStorage.isStepCompleted(.bodyProfile) == false else {
+                return viewControllers
+            }
+            viewControllers.append(Guide0820BodyProfileVC())
+            return viewControllers
+        case .lifeProfile:
+            return viewControllers
+        case .directionProfile:
+            return viewControllers
+        }
     }
 }
 
@@ -105,9 +136,28 @@ private extension VCStart {
 
     /// 步骤 1 开始时进入身体信息采集流程。
     func startButtonAction() {
-        guard vm.steps.first?.isActive == true else { return }
+        switch vm.currentStep {
+        case .bodyProfile:
+            startBodyProfileStep()
+        case .lifeProfile:
+            startLifeProfileStep()
+        case .directionProfile:
+            startDirectionProfileStep()
+        }
+    }
+
+    /// 进入身体信息采集流程。
+    func startBodyProfileStep() {
         let vc = Guide0820BodyProfileVC()
         navigationController?.pushViewController(vc, animated: true)
+    }
+
+    /// 进入生活习惯采集流程。真实 VC 接入后在这里替换跳转。
+    func startLifeProfileStep() {
+    }
+
+    /// 进入目标方向采集流程。真实 VC 接入后在这里替换跳转。
+    func startDirectionProfileStep() {
     }
 
     /// 展示操作底部面板。
@@ -169,28 +219,26 @@ private extension VCStart {
                                 keyboardAvoidanceEnabled: false)
     }
 
-    /// 清除来源问卷数据并回退到 Guide0820VC 的上一个页面。
+    /// 清除 Guide0820 全流程本地数据并回到首次启动页。
     func clearGuideSourceDataAndReturn() {
-        Guide0820SourceStorage.clear()
+        Guide0820ProgressStorage.clearAll()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak self] in
-            self?.returnToPreviousPageBeforeGuide()
+            self?.returnToFirstLaunchPage()
         }
     }
 
-    /// 回退到导航栈中 Guide0820VC 的上一个页面。
-    func returnToPreviousPageBeforeGuide() {
-        guard let navigationController = navigationController else {
-            dismiss(animated: true)
+    /// 回到 FirstLaunchVC，恢复“从未开始 Guide0820”的入口状态。
+    func returnToFirstLaunchPage() {
+        let firstLaunchVC = FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true)
+
+        if let navigationController = navigationController {
+            navigationController.setViewControllers([firstLaunchVC], animated: true)
             return
         }
 
-        guard let guideIndex = navigationController.viewControllers.firstIndex(where: { $0 is Guide0820VC }),
-              guideIndex > 0 else {
-            navigationController.popViewController(animated: true)
-            return
-        }
-
-        let previousViewController = navigationController.viewControllers[guideIndex - 1]
-        navigationController.popToViewController(previousViewController, animated: true)
+        let nav = UINavigationController(rootViewController: firstLaunchVC)
+        nav.setNavigationBarHidden(true, animated: false)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
     }
 }

@@ -24,6 +24,9 @@ final class Guide0820BodyProfileWeightExceededVM: Guide0820BodyProfilePageVM {
         }
     }
 
+    /// 当前选择值。
+    var selectedAnswerValue: String? { selectedValue }
+
     /// 只有选择答案后才允许继续。
     override var isStepValid: Bool { selectedValue != nil }
 
@@ -40,13 +43,20 @@ final class Guide0820BodyProfileWeightExceededVM: Guide0820BodyProfilePageVM {
 
     /// 根据当前体重刷新标题文案。
     func updateCurrentWeight(_ weight: Double) {
-        titleLabel.text = "你的体重是否曾超过 \(Int(round(weight))) kg？"
+        let exceededWeight = Int(weight / 0.9)
+        titleLabel.text = "你的体重是否曾超过 \(exceededWeight) kg？"
         titleLabel.setLineHeight(textString: titleLabel.text ?? "", lineHeight: guide0820Design(72))
     }
 
     /// 将当前选择写入问卷模型。
     override func commitCurrentValue() {
         QuestinonaireMsgModel.shared.guidanceBodyWeightExceededType = selectedValue ?? ""
+    }
+
+    /// 恢复本地保存的选择。
+    func restore(selectedValue: String?) {
+        self.selectedValue = selectedValue
+        commitCurrentValue()
     }
 
     /// 按 MasterGo 设计稿创建标题和三张选项卡。

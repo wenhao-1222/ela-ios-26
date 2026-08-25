@@ -81,6 +81,10 @@ class FirstLaunchVC: WHBaseViewVC {
         super.viewDidLoad()
         
         initUI()
+        if skipAnimation {
+            showFinalState()
+            didApplyFinalState = true
+        }
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(appDidEnterBackground),
                                                name: UIApplication.didEnterBackgroundNotification,
@@ -933,6 +937,20 @@ extension FirstLaunchVC{
     }
 
     private func showGuide0820AndContinue() {
+        if Guide0820ProgressStorage.shouldResumeGuide0820 {
+            let resumeViewControllers = VCStart.makeResumeViewControllers(includingLaunchEntry: false)
+            if let navigationController = navigationController {
+                navigationController.setViewControllers([self] + resumeViewControllers, animated: true)
+            } else {
+                let nav = UINavigationController()
+                nav.setViewControllers(resumeViewControllers, animated: false)
+                nav.setNavigationBarHidden(true, animated: false)
+                nav.modalPresentationStyle = .fullScreen
+                present(nav, animated: true)
+            }
+            return
+        }
+
         let guideVC = Guide0820VC()
         guideVC.finishBlock = { [weak guideVC] in
             guard let guideVC = guideVC else { return }

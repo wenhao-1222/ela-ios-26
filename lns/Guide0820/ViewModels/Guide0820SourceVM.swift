@@ -37,10 +37,25 @@ final class Guide0820SourceVM {
         selectedItemID == nil ? "跳过" : "继续"
     }
 
+    init(selectedItemID: String? = nil) {
+        restoreSelection(selectedItemID)
+    }
+
     /// 选中或取消来源选项。
     /// - Parameter item: 用户点击的来源选项。
     func select(_ item: SourceItem) {
         selectedItemID = selectedItemID == item.id ? nil : item.id
+    }
+
+    /// 恢复来源选项。
+    /// - Parameter itemID: 已保存的来源 ID。
+    func restoreSelection(_ itemID: String?) {
+        guard let itemID,
+              items.contains(where: { $0.id == itemID }) else {
+            selectedItemID = nil
+            return
+        }
+        selectedItemID = itemID
     }
 
     /// 清空当前页面内存态选择。

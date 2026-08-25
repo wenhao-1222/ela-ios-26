@@ -17,11 +17,15 @@ final class Guide0820VC: WHBaseViewVC {
     var finishBlock: (() -> Void)?
 
     /// 引导流程状态。
-    private let flowState = Guide0820FlowState()
+    private let flowState: Guide0820FlowState
+    /// 已保存来源时是否自动跳到恢复栈。
+    private let shouldRedirectStoredSource: Bool
     /// 引导流程根视图。
     private var rootView: Guide0820RootView?
     /// 是否已经完成引导。
     private var didFinish = false
+    /// 是否已经根据本地来源选择跳过引导页。
+    private var didRedirectStoredSource = false
     /// 左上角返回按钮。
     private lazy var backButton: ElaLiquidGlassCloseButton = {
         let button = ElaLiquidGlassCloseButton()
@@ -33,6 +37,18 @@ final class Guide0820VC: WHBaseViewVC {
         return button
     }()
 
+    init(initialPageIndex: Int = 0, shouldRedirectStoredSource: Bool = true) {
+        self.flowState = Guide0820FlowState(initialPageIndex: initialPageIndex)
+        self.shouldRedirectStoredSource = shouldRedirectStoredSource
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        self.flowState = Guide0820FlowState()
+        self.shouldRedirectStoredSource = true
+        super.init(coder: coder)
+    }
+
     /// 页面加载完成后初始化 UI。
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,6 +59,7 @@ final class Guide0820VC: WHBaseViewVC {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+        redirectToStartIfSourceStored()
     }
 }
 
@@ -95,6 +112,32 @@ private extension Guide0820VC {
         }
 
         finishGuide()
+    }
+
+    /// 已保存过来源选择时，跳过 Guide0820 来源引导，直接进入 VCStart。
+    func redirectToStartIfSourceStored() {
+        guard shouldRedirectStoredSource,
+              didRedirectStoredSource == false,
+              didFinish == false,
+              Guide0820ProgressStorage.shouldResumeGuide0820 else { return }
+        didRedirectStoredSource = true
+
+        let resumeViewControllers = VCStart.makeResumeViewControllers(includingLaunchEntry: false)
+        if let navigationController = navigationController {
+            var viewControllers = navigationController.viewControllers
+            if let index = viewControllers.firstIndex(where: { $0 === self }) {
+                viewControllers.replaceSubrange(index...index, with: resumeViewControllers)
+                navigationController.setViewControllers(viewControllers, animated: false)
+            } else {
+                navigationController.setViewControllers(viewControllers + resumeViewControllers, animated: false)
+            }
+        } else {
+            let nav = UINavigationController()
+            nav.setViewControllers(resumeViewControllers, animated: false)
+            nav.setNavigationBarHidden(true, animated: false)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: false)
+        }
     }
 
     /// 返回按钮点击事件。

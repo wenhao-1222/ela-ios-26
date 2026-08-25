@@ -10,6 +10,9 @@ import SnapKit
 
 /// Guide0820 出生年份页 VM，复用 DietPlanCreateYearVM 的 pickerView 和年份数据逻辑。
 final class Guide0820BodyProfileYearVM: DietPlanCreateYearVM {
+    /// 出生年份变化回调，用于外层实时保存当前选择。
+    var birthYearChangedBlock: ((String) -> Void)?
+
     /// Guide0820 设计稿里的选中行背景。
     private let selectionBackgroundView = UIView()
 
@@ -35,6 +38,31 @@ final class Guide0820BodyProfileYearVM: DietPlanCreateYearVM {
 
     /// 页面显示钩子，保留给外层流程统一调用。
     func pageWillAppear() {}
+
+    /// 用户滚动年份后实时同步到本地进度。
+    override func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        QuestinonaireMsgModel.shared.birthYear = "\(yearDataArray[row] as? Int ?? 0)"
+        QuestinonaireMsgModel.shared.birthDay = QuestinonaireMsgModel.shared.birthYear
+        DLLog(message: "生日：\(QuestinonaireMsgModel.shared.birthYear)")
+        birthYearChangedBlock?(QuestinonaireMsgModel.shared.birthYear)
+    }
+
+    /// 当前选中的出生年份。
+    var currentBirthYear: String {
+        getBirthDayData()
+        return QuestinonaireMsgModel.shared.birthYear
+    }
+
+    /// 恢复本地保存的出生年份。
+    func restore(birthYear: String?) {
+        guard let birthYear,
+              let targetYear = Int(birthYear),
+              let yearArray = yearDataArray as? [Int],
+              let index = yearArray.firstIndex(of: targetYear) else { return }
+        pickerView.selectRow(index, inComponent: 0, animated: false)
+        QuestinonaireMsgModel.shared.birthYear = birthYear
+        QuestinonaireMsgModel.shared.birthDay = birthYear
+    }
 
     override func layoutSubviews() {
         super.layoutSubviews()

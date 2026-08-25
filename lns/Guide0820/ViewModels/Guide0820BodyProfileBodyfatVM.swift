@@ -16,6 +16,22 @@ final class Guide0820BodyProfileBodyfatVM: DietPlanCreateBodyfatVM {
         detail: "大多数家用体脂秤受水分、时间、设备算法影响，测量值通常会比真实体脂率偏低..."
     )
 
+    /// 当前选中的体脂值。
+    var selectedBodyFatValue: String? {
+        guard selectIndex >= 0 else { return nil }
+        let sourceArray: [[String: String]]
+        if QuestinonaireMsgModel.shared.sex == "1" {
+            sourceArray = dataArray
+        } else if QuestinonaireMsgModel.shared.sex == "2" {
+            sourceArray = dataFemanArray
+        } else {
+            return nil
+        }
+        guard selectIndex < sourceArray.count else { return nil }
+        let value = (sourceArray[selectIndex]["data"] ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        return value.isEmpty ? nil : value
+    }
+
     /// 初始化并覆盖旧体脂 VM 的默认视觉布局。
     override init(frame: CGRect) {
         super.init(frame: frame)

@@ -16,9 +16,14 @@ final class Guide0820FlowState {
     /// 专业依据页视图模型。
     let professionalBasisVM = Guide0820ProfessionalBasisVM()
     /// 来源问卷页视图模型。
-    let sourceVM = Guide0820SourceVM()
+    let sourceVM: Guide0820SourceVM
     /// 当前流程最后一页下标。
     private let maxPageIndex = 2
+
+    init(initialPageIndex: Int = 0) {
+        sourceVM = Guide0820SourceVM(selectedItemID: Guide0820SourceStorage.storedValueForDisplay)
+        currentPageIndex = min(max(initialPageIndex, 0), maxPageIndex)
+    }
 
     /// 前进到下一页。
     func showNext() {

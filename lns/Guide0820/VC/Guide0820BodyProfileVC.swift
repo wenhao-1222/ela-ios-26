@@ -9,7 +9,8 @@ import UIKit
 import SnapKit
 
 final class Guide0820BodyProfileVC: WHBaseViewVC {
-    private var currentIndex = 0
+    private var currentIndex = Guide0820ProgressStorage.furthestPageIndex(for: .bodyProfile)
+    private var isProgressPersistenceSuppressed = false
 
     private lazy var backButton: ElaLiquidGlassCloseButton = {
         let button = ElaLiquidGlassCloseButton()
@@ -102,13 +103,27 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
             self?.sexIntroVm.show()
         }
         vm.validityChanged = { [weak self] _ in
+            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
     }()
 
-    private lazy var yearVm = Guide0820BodyProfileYearVM(frame: .zero)
-    private lazy var heightVm = Guide0820BodyProfileHeightVM(frame: .zero)
+    private lazy var yearVm: Guide0820BodyProfileYearVM = {
+        let vm = Guide0820BodyProfileYearVM(frame: .zero)
+        vm.birthYearChangedBlock = { [weak self] _ in
+            self?.persistCurrentProgress()
+        }
+        return vm
+    }()
+
+    private lazy var heightVm: Guide0820BodyProfileHeightVM = {
+        let vm = Guide0820BodyProfileHeightVM(frame: .zero)
+        vm.heightChangedBlock = { [weak self] _ in
+            self?.persistCurrentProgress()
+        }
+        return vm
+    }()
 
     private lazy var weightVm: Guide0820BodyProfileWeightVM = {
         let vm = Guide0820BodyProfileWeightVM(frame: .zero)
@@ -117,6 +132,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         }
         vm.weightChangedBlock = { [weak self] value in
             self?.weightExceededVm.updateCurrentWeight(value)
+            self?.persistCurrentProgress()
         }
         return vm
     }()
@@ -124,6 +140,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
     private lazy var weightExceededVm: Guide0820BodyProfileWeightExceededVM = {
         let vm = Guide0820BodyProfileWeightExceededVM(frame: .zero)
         vm.validityChanged = { [weak self] _ in
+            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -132,6 +149,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
     private lazy var weightTrendVm: Guide0820BodyProfileWeightTrendVM = {
         let vm = Guide0820BodyProfileWeightTrendVM(frame: .zero)
         vm.validityChanged = { [weak self] _ in
+            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -140,6 +158,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
     private lazy var bodyfatVm: Guide0820BodyProfileBodyfatVM = {
         let vm = Guide0820BodyProfileBodyfatVM(frame: .zero)
         vm.selectStateChangeBlock = { [weak self] _ in
+            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -178,12 +197,21 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
+        restoreSavedProgress()
         updatePage(animated: false)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(appDidEnterBackground),
+                                               name: UIApplication.didEnterBackgroundNotification,
+                                               object: nil)
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         bottomGradientLayer.frame = bottomGradientView.bounds
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -267,13 +295,15 @@ private extension Guide0820BodyProfileVC {
     }
 
     func updatePage(animated: Bool) {
+        currentIndex = min(max(currentIndex, 0), pages.count - 1)
+        Guide0820ProgressStorage.recordFurthestPageIndex(currentIndex, for: .bodyProfile)
         view.layoutIfNeeded()
         let offset = CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0)
         scrollView.setContentOffset(offset, animated: animated)
         updateProgress()
         syncNextButtonState()
         if currentIndex == pages.count - 1 {
-            bodyfatVm.updateScrollView()
+            restoreBodyFatSelectionFromStorage(shouldCenterSelectedItem: false, persistAfterRestore: true)
         }
         if let page = pages[currentIndex] as? Guide0820BodyProfilePageVM {
             page.pageWillAppear()
@@ -309,6 +339,7 @@ private extension Guide0820BodyProfileVC {
     }
 
     @objc func backButtonAction() {
+        persistCurrentProgress()
         if currentIndex > 0 {
             currentIndex -= 1
             updatePage(animated: true)
@@ -318,17 +349,78 @@ private extension Guide0820BodyProfileVC {
     }
 
     @objc func nextButtonAction() {
-        if let pageVM = pages[currentIndex] as? Guide0820BodyProfilePageVM {
-            pageVM.commitCurrentValue()
-        } else if let pageVM = pages[currentIndex] as? Guide0820BodyProfileYearVM {
-            pageVM.commitCurrentValue()
-        }
+        persistCurrentProgress()
         if currentIndex == pages.count - 1 {
+            Guide0820ProgressStorage.markStepCompleted(.bodyProfile)
             QuestinonaireMsgModel.shared.printModelMsg()
             navigationController?.popViewController(animated: true)
             return
         }
         currentIndex += 1
         updatePage(animated: true)
+    }
+
+    /// 恢复本地保存的身体资料进度。
+    func restoreSavedProgress() {
+        performWithoutProgressPersistence {
+            sexVm.restore(selectedSex: Guide0820ProgressStorage.bodyProfileSex)
+            yearVm.restore(birthYear: Guide0820ProgressStorage.bodyProfileBirthYear)
+            heightVm.restore(height: Guide0820ProgressStorage.bodyProfileHeight)
+            weightVm.restore(weight: Guide0820ProgressStorage.bodyProfileWeight)
+            weightExceededVm.restore(selectedValue: Guide0820ProgressStorage.bodyProfileWeightExceeded)
+            weightTrendVm.restore(selectedValue: Guide0820ProgressStorage.bodyProfileWeightTrend)
+            restoreBodyFatSelectionFromStorage(shouldCenterSelectedItem: false, persistAfterRestore: false)
+            currentIndex = min(max(currentIndex, 0), pages.count - 1)
+        }
+
+        persistCurrentProgress()
+        syncNextButtonState()
+    }
+
+    /// 保存当前页和当前已填写答案。
+    func persistCurrentProgress() {
+        guard isProgressPersistenceSuppressed == false else { return }
+
+        if let pageVM = pages[currentIndex] as? Guide0820BodyProfilePageVM {
+            pageVM.commitCurrentValue()
+        } else if let pageVM = pages[currentIndex] as? Guide0820BodyProfileYearVM {
+            pageVM.commitCurrentValue()
+        }
+
+        Guide0820ProgressStorage.recordFurthestPageIndex(currentIndex, for: .bodyProfile)
+        Guide0820ProgressStorage.saveBodyProfile(
+            sex: sexVm.selectedSex,
+            birthYear: yearVm.currentBirthYear,
+            height: heightVm.currentValue,
+            weight: weightVm.currentWeightValue,
+            weightExceeded: weightExceededVm.selectedAnswerValue,
+            weightTrend: weightTrendVm.selectedTrendValue,
+            bodyFat: bodyfatVm.selectedBodyFatValue
+        )
+    }
+
+    /// App 退后台时保存当前进度。
+    @objc func appDidEnterBackground() {
+        persistCurrentProgress()
+    }
+
+    func restoreBodyFatSelectionFromStorage(shouldCenterSelectedItem: Bool, persistAfterRestore: Bool) {
+        performWithoutProgressPersistence {
+            bodyfatVm.updateScrollView()
+            if let bodyFat = Guide0820ProgressStorage.bodyProfileBodyFat {
+                bodyfatVm.restoreSelection(modelValue: bodyFat, shouldCenterSelectedItem: shouldCenterSelectedItem)
+            }
+        }
+
+        guard persistAfterRestore else { return }
+        persistCurrentProgress()
+        syncNextButtonState()
+    }
+
+    func performWithoutProgressPersistence(_ action: () -> Void) {
+        let previousValue = isProgressPersistenceSuppressed
+        isProgressPersistenceSuppressed = true
+        action()
+        isProgressPersistenceSuppressed = previousValue
     }
 }
