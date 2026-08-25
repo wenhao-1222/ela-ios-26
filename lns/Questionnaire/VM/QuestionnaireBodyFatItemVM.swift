@@ -16,6 +16,19 @@ class QuestionnaireBodyFatItemVM: UIView {
     
     var numberLabelWidth = kFitWidth(20)
     var numberLabelWidthSelect = kFitWidth(20)
+    var itemWidth = SCREEN_WIDHT * 0.5
+    var imageSide = kFitWidth(164)
+    var imageLeftInset = kFitWidth(16)
+    var imageRightInset = kFitWidth(16)
+    var selectedImageSide = kFitWidth(148)
+    var selectedImageTopInset = kFitWidth(8)
+    var selectedImageLeftInset = kFitWidth(24)
+    var selectedImageRightInset = kFitWidth(24)
+    var selectIconSize = kFitWidth(16)
+    var selectIconLeft = kFitWidth(28)
+    var selectIconTop = kFitWidth(49)
+    var selectedTitleIconSpacing = kFitWidth(4)
+    var centersSelectedContent = false
     
     private let feedbackGenerator = UIImpactFeedbackGenerator(style: .soft)
     private let feedbackWeight: CGFloat = 0.9
@@ -28,7 +41,7 @@ class QuestionnaireBodyFatItemVM: UIView {
     var tapBlock:(()->())?
     
     override init(frame:CGRect){
-        super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT*0.5, height: selfHeight))
+        super.init(frame: CGRect.init(x: frame.origin.x, y: frame.origin.y, width: SCREEN_WIDHT * 0.5, height: selfHeight))
         self.backgroundColor = .clear
         self.isUserInteractionEnabled = true
         self.clipsToBounds = true
@@ -103,6 +116,37 @@ class QuestionnaireBodyFatItemVM: UIView {
 }
 
 extension QuestionnaireBodyFatItemVM{
+    func applyLayout(itemWidth: CGFloat,
+                     itemHeight: CGFloat,
+                     imageSide: CGFloat,
+                     imageLeftInset: CGFloat,
+                     imageRightInset: CGFloat,
+                     selectedImageInset: CGFloat,
+                     selectedImageSide: CGFloat,
+                     selectIconSize: CGFloat,
+                     selectIconLeft: CGFloat,
+                     selectIconTop: CGFloat,
+                     selectedTitleIconSpacing: CGFloat = kFitWidth(4),
+                     centersSelectedContent: Bool = false) {
+        self.itemWidth = itemWidth
+        self.selfHeight = itemHeight
+        self.imageSide = imageSide
+        self.imageLeftInset = imageLeftInset
+        self.imageRightInset = imageRightInset
+        self.selectedImageSide = selectedImageSide
+        self.selectedImageLeftInset = selectedImageInset
+        self.selectedImageRightInset = selectedImageInset
+        self.selectedImageTopInset = (imageSide - selectedImageSide) * 0.5
+        self.selectIconSize = selectIconSize
+        self.selectIconLeft = selectIconLeft
+        self.selectIconTop = selectIconTop
+        self.selectedTitleIconSpacing = selectedTitleIconSpacing
+        self.centersSelectedContent = centersSelectedContent
+        frame.size = CGSize(width: itemWidth, height: itemHeight)
+        setConstrait()
+        resetToUnselectedStyle()
+    }
+
     @objc func tapAction() {
         if self.isSelect{
             return
@@ -115,7 +159,7 @@ extension QuestionnaireBodyFatItemVM{
 
 extension QuestionnaireBodyFatItemVM{
     func refreshForRight() {
-        imgView.frame = CGRect.init(x: SCREEN_WIDHT*0.5-kFitWidth(16)-kFitWidth(164), y: kFitWidth(0), width: kFitWidth(164), height: kFitWidth(164))
+        imgView.frame = CGRect.init(x: itemWidth - imageRightInset - imageSide, y: kFitWidth(0), width: imageSide, height: imageSide)
         rectView.frame =  imgView.frame
     }
 
@@ -127,8 +171,10 @@ extension QuestionnaireBodyFatItemVM{
 
         isSelect = false
         titleLab.text = "体脂率"
-        titleLab.frame = CGRect(x: kFitWidth(16), y: kFitWidth(120), width: kFitWidth(200), height: kFitWidth(12))
-        numberLabel.frame = CGRect(x: kFitWidth(16), y: kFitWidth(135), width: numberLabelWidth, height: kFitWidth(20))
+        titleLab.textAlignment = .left
+        let labelX = kFitWidth(16)
+        titleLab.frame = CGRect(x: labelX, y: max(imageSide - kFitWidth(44), 0), width: max(imageSide - kFitWidth(32), kFitWidth(60)), height: kFitWidth(12))
+        numberLabel.frame = CGRect(x: labelX, y: max(imageSide - kFitWidth(29), 0), width: min(numberLabelWidth, max(imageSide - kFitWidth(32), kFitWidth(44))), height: kFitWidth(20))
         numberLabel.textAlignment = .left
         applyValueText(fontSize: 20)
         imgView.layer.cornerCurve = .continuous
@@ -137,10 +183,12 @@ extension QuestionnaireBodyFatItemVM{
         if isRight {
             refreshForRight()
         } else {
-            imgView.frame = CGRect(x: kFitWidth(16), y: 0, width: kFitWidth(164), height: kFitWidth(164))
+            imgView.frame = CGRect(x: imageLeftInset, y: 0, width: imageSide, height: imageSide)
             rectView.frame = imgView.frame
         }
 
+        coverViewForLabel.frame = CGRect(x: 0, y: max(imageSide - kFitWidth(60), 0), width: imageSide, height: min(kFitWidth(60), imageSide))
+        coverView.frame = imgView.bounds
         coverView.alpha = 0
         coverView.isHidden = true
         coverViewForLabel.alpha = 1
@@ -171,8 +219,8 @@ extension QuestionnaireBodyFatItemVM{
 
         if isSelect {
             let animationDuration: TimeInterval = 0.24
-            let leftGap = isRight ? (SCREEN_WIDHT*0.5 - kFitWidth(24) - kFitWidth(148)) : kFitWidth(24)
-            let finalFrame = CGRect(x: leftGap, y: kFitWidth(8), width: kFitWidth(148), height: kFitWidth(148))
+            let leftGap = isRight ? (itemWidth - selectedImageRightInset - selectedImageSide) : selectedImageLeftInset
+            let finalFrame = CGRect(x: leftGap, y: selectedImageTopInset, width: selectedImageSide, height: selectedImageSide)
 
             [imgView, coverView, coverViewForLabel, titleLab, numberLabel, selectImgView].forEach {
                 $0.layer.removeAllAnimations()
@@ -189,18 +237,51 @@ extension QuestionnaireBodyFatItemVM{
             coverView.alpha = 0
 
             // 选中态文案/数值目标
-            let targetTitleFrame = CGRect(x: kFitWidth(48), y: kFitWidth(52), width: kFitWidth(200), height: kFitWidth(12))
-            let targetNumberWidth = min(kFitWidth(146), max(self.numberLabelWidthSelect, kFitWidth(104)))
-            let targetNumberFrame = CGRect(
-                x: (kFitWidth(148) - targetNumberWidth) * 0.5,
-                y: kFitWidth(70),
-                width: targetNumberWidth,
-                height: kFitWidth(28)
-            )
+            let targetTitleFrame: CGRect
+            let targetNumberFrame: CGRect
+            if centersSelectedContent {
+                let titleTextWidth = ceil(("已选择体脂率" as NSString).size(withAttributes: [.font: titleLab.font as Any]).width)
+                let titleGroupWidth = selectIconSize + selectedTitleIconSpacing + titleTextWidth
+                let titleGroupMinX = max((selectedImageSide - titleGroupWidth) * 0.5, 0)
+                let titleY = selectedImageSide * 0.30
+                targetTitleFrame = CGRect(
+                    x: titleGroupMinX + selectIconSize + selectedTitleIconSpacing,
+                    y: titleY,
+                    width: min(titleTextWidth, selectedImageSide - selectIconSize - selectedTitleIconSpacing),
+                    height: kFitWidth(12)
+                )
+                selectImgView.snp.remakeConstraints { make in
+                    make.left.equalTo(titleGroupMinX)
+                    make.top.equalTo(titleY + (kFitWidth(12) - selectIconSize) * 0.5)
+                    make.width.height.equalTo(selectIconSize)
+                }
+                let targetNumberWidth = min(selectedImageSide - kFitWidth(20), max(self.numberLabelWidthSelect, selectedImageSide * 0.7))
+                targetNumberFrame = CGRect(
+                    x: (selectedImageSide - targetNumberWidth) * 0.5,
+                    y: selectedImageSide * 0.42,
+                    width: targetNumberWidth,
+                    height: kFitWidth(28)
+                )
+            } else {
+                targetTitleFrame = CGRect(x: kFitWidth(48), y: kFitWidth(52), width: kFitWidth(200), height: kFitWidth(12))
+                let targetNumberWidth = min(kFitWidth(146), max(self.numberLabelWidthSelect, kFitWidth(104)))
+                targetNumberFrame = CGRect(
+                    x: (kFitWidth(148) - targetNumberWidth) * 0.5,
+                    y: kFitWidth(70),
+                    width: targetNumberWidth,
+                    height: kFitWidth(28)
+                )
+                selectImgView.snp.remakeConstraints { make in
+                    make.left.equalTo(selectIconLeft)
+                    make.top.equalTo(selectIconTop)
+                    make.width.height.equalTo(selectIconSize)
+                }
+            }
 
             // 勾选初始
             selectImgView.alpha = 0
             selectImgView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+            titleLab.textAlignment = .left
             numberLabel.textAlignment = .center
             applyValueText(fontSize: 28)
 
@@ -237,21 +318,23 @@ extension QuestionnaireBodyFatItemVM{
 
             imgView.layer.cornerCurve = .continuous
             imgView.layer.cornerRadius = kFitWidth(12)
+            titleLab.textAlignment = .left
             numberLabel.textAlignment = .left
             applyValueText(fontSize: 20)
 
             if isRight {
                 self.refreshForRight()
             } else {
-                imgView.frame = CGRect(x: kFitWidth(16), y: 0, width: kFitWidth(164), height: kFitWidth(164))
+                imgView.frame = CGRect(x: imageLeftInset, y: 0, width: imageSide, height: imageSide)
             }
+            let labelX = kFitWidth(16)
 
             coverViewForLabel.isHidden = false
             UIView.animate(withDuration: 0.22, delay: 0, options: [.curveEaseInOut, .beginFromCurrentState, .allowUserInteraction]) {
                 self.coverView.alpha = 0
                 self.coverViewForLabel.alpha = 1
-                self.titleLab.frame = CGRect(x: kFitWidth(16), y: kFitWidth(120), width: kFitWidth(200), height: kFitWidth(12))
-                self.numberLabel.frame = CGRect(x: kFitWidth(16), y: kFitWidth(135), width: self.numberLabelWidth, height: kFitWidth(20))
+                self.titleLab.frame = CGRect(x: labelX, y: max(self.imageSide - kFitWidth(44), 0), width: max(self.imageSide - kFitWidth(32), kFitWidth(60)), height: kFitWidth(12))
+                self.numberLabel.frame = CGRect(x: labelX, y: max(self.imageSide - kFitWidth(29), 0), width: min(self.numberLabelWidth, max(self.imageSide - kFitWidth(32), kFitWidth(44))), height: kFitWidth(20))
                 self.selectImgView.alpha = 0
             } completion: { _ in
                 guard animationToken == self.selectionAnimationToken, !self.isSelect else { return }
@@ -320,15 +403,16 @@ extension QuestionnaireBodyFatItemVM{
         coverView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
     }
     func setConstrait() {
-        imgView.frame = CGRect.init(x: kFitWidth(16), y: 0, width: kFitWidth(164), height: kFitWidth(164))
-        titleLab.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(120), width: kFitWidth(200), height: kFitWidth(12))
-        numberLabel.frame = CGRect.init(x: kFitWidth(16), y: kFitWidth(135), width: kFitWidth(200), height: kFitWidth(20))
-        rectView.frame =  CGRect.init(x: kFitWidth(16), y: 0, width: kFitWidth(164), height: kFitWidth(164))
+        imgView.frame = CGRect.init(x: imageLeftInset, y: 0, width: imageSide, height: imageSide)
+        titleLab.frame = CGRect.init(x: kFitWidth(16), y: max(imageSide - kFitWidth(44), 0), width: max(imageSide - kFitWidth(32), kFitWidth(60)), height: kFitWidth(12))
+        numberLabel.frame = CGRect.init(x: kFitWidth(16), y: max(imageSide - kFitWidth(29), 0), width: max(imageSide - kFitWidth(32), kFitWidth(44)), height: kFitWidth(20))
+        rectView.frame =  CGRect.init(x: imageLeftInset, y: 0, width: imageSide, height: imageSide)
+        coverViewForLabel.frame = CGRect(x: 0, y: max(imageSide - kFitWidth(60), 0), width: imageSide, height: min(kFitWidth(60), imageSide))
         
-        selectImgView.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(28))
-            make.top.equalTo(kFitWidth(49))
-            make.width.height.equalTo(kFitWidth(16))
+        selectImgView.snp.remakeConstraints { make in
+            make.left.equalTo(selectIconLeft)
+            make.top.equalTo(selectIconTop)
+            make.width.height.equalTo(selectIconSize)
         }
 //        coverView.snp.makeConstraints { make in
 //            make.left.top.width.height.equalToSuperview()

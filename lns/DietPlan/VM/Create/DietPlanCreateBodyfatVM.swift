@@ -13,7 +13,23 @@ class DietPlanCreateBodyfatVM: UIView {
     var showTipsBlock: (() -> ())?
     var selectStateChangeBlock: ((Bool) -> ())?
 
-    private var itemViews: [QuestionnaireBodyFatItemVM] = []
+    var itemViews: [QuestionnaireBodyFatItemVM] = []
+    var bodyFatColumnCount = 2
+    var bodyFatListHorizontalInset: CGFloat = 0
+    var bodyFatListInteritemSpacing: CGFloat = 0
+    var bodyFatListTopInset = kFitWidth(35)
+    var bodyFatListBottomInset = kFitWidth(35)
+    var bodyFatItemHeight = kFitWidth(179)
+    var bodyFatItemImageSide = kFitWidth(164)
+    var bodyFatItemImageLeftInset = kFitWidth(16)
+    var bodyFatItemImageRightInset = kFitWidth(16)
+    var bodyFatItemSelectedInset = kFitWidth(24)
+    var bodyFatItemSelectedImageSide = kFitWidth(148)
+    var bodyFatSelectIconSize = kFitWidth(16)
+    var bodyFatSelectIconLeft = kFitWidth(28)
+    var bodyFatSelectIconTop = kFitWidth(49)
+    var bodyFatSelectedTitleIconSpacing = kFitWidth(4)
+    var bodyFatCentersSelectedContent = false
 
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
@@ -253,14 +269,37 @@ extension DietPlanCreateBodyfatVM {
             scrollView.setContentOffset(.zero, animated: false)
             return
         }
-        let colNum = 2
-        let itemWidth = SCREEN_WIDHT / CGFloat(colNum)
+        let colNum = max(bodyFatColumnCount, 1)
+        let contentWidth = max(SCREEN_WIDHT - bodyFatListHorizontalInset * 2, 0)
+        let totalSpacing = bodyFatListInteritemSpacing * CGFloat(max(colNum - 1, 0))
+        let itemWidth = max((contentWidth - totalSpacing) / CGFloat(colNum), 0)
 
         var offsetY: CGFloat = 0
         for i in 0..<array.count {
             let row = i / colNum
             let col = i % colNum
-            let itemVm = QuestionnaireBodyFatItemVM(frame: CGRect(x: itemWidth * CGFloat(col), y: QuestionnaireBodyFatItemVM().selfHeight * CGFloat(row)+kFitWidth(35), width: 0, height: 0))
+            let itemVm = QuestionnaireBodyFatItemVM(
+                frame: CGRect(
+                    x: bodyFatListHorizontalInset + (itemWidth + bodyFatListInteritemSpacing) * CGFloat(col),
+                    y: bodyFatItemHeight * CGFloat(row) + bodyFatListTopInset,
+                    width: 0,
+                    height: 0
+                )
+            )
+            itemVm.applyLayout(
+                itemWidth: itemWidth,
+                itemHeight: bodyFatItemHeight,
+                imageSide: bodyFatItemImageSide,
+                imageLeftInset: bodyFatItemImageLeftInset,
+                imageRightInset: bodyFatItemImageRightInset,
+                selectedImageInset: bodyFatItemSelectedInset,
+                selectedImageSide: bodyFatItemSelectedImageSide,
+                selectIconSize: bodyFatSelectIconSize,
+                selectIconLeft: bodyFatSelectIconLeft,
+                selectIconTop: bodyFatSelectIconTop,
+                selectedTitleIconSpacing: bodyFatSelectedTitleIconSpacing,
+                centersSelectedContent: bodyFatCentersSelectedContent
+            )
             scrollView.addSubview(itemVm)
 
             let dict = array[i]
@@ -283,7 +322,7 @@ extension DietPlanCreateBodyfatVM {
             offsetY = itemVm.frame.maxY
         }
 
-        scrollView.contentSize = CGSize(width: 0, height: offsetY + kFitWidth(35))
+        scrollView.contentSize = CGSize(width: 0, height: offsetY + bodyFatListBottomInset)
         scrollView.setContentOffset(.zero, animated: false)
     }
 

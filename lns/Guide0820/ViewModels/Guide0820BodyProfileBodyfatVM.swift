@@ -13,7 +13,7 @@ final class Guide0820BodyProfileBodyfatVM: DietPlanCreateBodyfatVM {
     /// 体脂说明卡，点击后复用旧体脂说明弹窗。
     private let infoCard = Guide0820BodyProfileInfoCard(
         title: "体脂肪误差：为什么测量值通常偏低？",
-        detail: "大多数家用体脂秤受水分、时间、设备算法影响，测量值通常会比真实体脂率偏低..."
+        detail: "许多人倾向于低估自己的体脂率，部分原因在于常用的测量方法（如电阻体脂仪和体脂秤）可能不够准确。"
     )
 
     /// 当前选中的体脂值。
@@ -41,7 +41,9 @@ final class Guide0820BodyProfileBodyfatVM: DietPlanCreateBodyfatVM {
         tipsButton.isHidden = true
         topGradientView.isHidden = true
         bottomGradientView.isHidden = true
+        applyGuide0820BodyFatGridLayout()
         applyGuide0820Layout()
+        updateScrollView()
     }
 
     /// Storyboard 初始化入口，本页面不支持。
@@ -67,8 +69,39 @@ final class Guide0820BodyProfileBodyfatVM: DietPlanCreateBodyfatVM {
         infoCard.addTarget(self, action: #selector(showTipsAction), for: .touchUpInside)
         infoCard.snp.makeConstraints { make in
             make.left.right.equalToSuperview().inset(guide0820Design(42))
-            make.top.equalTo(guide0820Design(1413))
+            make.top.equalTo(guide0820InfoCardTop)
             make.height.equalTo(guide0820Design(178))
         }
+    }
+
+    /// 按 MasterGo 选中画布：左右 42px 不变，三列图片之间间距 10px。
+    private func applyGuide0820BodyFatGridLayout() {
+        let horizontalInset = guide0820Design(42)
+        let interitemSpacing = guide0820Design(10)
+        let contentWidth = SCREEN_WIDHT - horizontalInset * 2
+        let imageSide = (contentWidth - interitemSpacing * 2) / 3
+
+        bodyFatColumnCount = 3
+        bodyFatListHorizontalInset = horizontalInset
+        bodyFatListInteritemSpacing = interitemSpacing
+        bodyFatListTopInset = kFitWidth(35)
+        bodyFatListBottomInset = guide0820Design(24)
+        bodyFatItemHeight = imageSide + guide0820Design(24)
+        bodyFatItemImageSide = imageSide
+        bodyFatItemImageLeftInset = 0
+        bodyFatItemImageRightInset = 0
+        bodyFatItemSelectedInset = guide0820Design(8)
+        bodyFatItemSelectedImageSide = max(imageSide - guide0820Design(16), 0)
+        bodyFatSelectIconSize = guide0820Design(16)
+        bodyFatSelectIconLeft = guide0820Design(28)
+        bodyFatSelectIconTop = guide0820Design(49)
+        bodyFatSelectedTitleIconSpacing = guide0820Design(8)
+        bodyFatCentersSelectedContent = true
+    }
+
+    private var guide0820InfoCardTop: CGFloat {
+        let rowCount = ceil(CGFloat(max(dataArray.count, dataFemanArray.count)) / CGFloat(bodyFatColumnCount))
+        let imageListBottom = guide0820Design(378) + max(rowCount - 1, 0) * bodyFatItemHeight + bodyFatItemImageSide
+        return imageListBottom + guide0820Design(24)
     }
 }

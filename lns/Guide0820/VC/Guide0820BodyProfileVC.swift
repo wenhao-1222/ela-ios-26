@@ -157,11 +157,18 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
 
     private lazy var bodyfatVm: Guide0820BodyProfileBodyfatVM = {
         let vm = Guide0820BodyProfileBodyfatVM(frame: .zero)
+        vm.showTipsBlock = { [weak self] in
+            self?.bodyFatAlertVm.showView()
+        }
         vm.selectStateChangeBlock = { [weak self] _ in
             self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
+    }()
+
+    private lazy var bodyFatAlertVm: QuestionnaireBodyFatAlertVM = {
+        QuestionnaireBodyFatAlertVM(frame: .zero)
     }()
 
     private lazy var pages: [UIView] = [
@@ -290,6 +297,11 @@ private extension Guide0820BodyProfileVC {
 
         view.addSubview(weightIntroVm)
         weightIntroVm.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+
+        view.addSubview(bodyFatAlertVm)
+        bodyFatAlertVm.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
