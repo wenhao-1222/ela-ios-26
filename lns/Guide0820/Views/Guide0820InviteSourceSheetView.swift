@@ -157,7 +157,7 @@ private extension Guide0820InviteSourceSheetView {
         textField.backgroundColor = UIColor.COLOR_BG_F2
         confirmButton.setTitle(nil, for: .normal)
         confirmButton.setImage(UIImage(named: "guide0820_button_check_icon")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        confirmButton.tintColor = .white
+        confirmButton.tintColor = .COLOR_TEXT_WHITE
     }
 
     /// 输入内容变化时更新 VM。

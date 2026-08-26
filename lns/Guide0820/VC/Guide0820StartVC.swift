@@ -1,5 +1,5 @@
 //
-//  VCStart.swift
+//  Guide0820StartVC.swift
 //  lns
 //
 //  Created by Codex on 2026/8/24.
@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 /// Guide0820 完成后的“让我们开始吧”页面。
-final class VCStart: WHBaseViewVC {
+final class Guide0820StartVC: WHBaseViewVC {
     /// 开始页视图模型。
     private let vm = VCStartVM()
     /// 页面根视图。
@@ -27,9 +27,8 @@ final class VCStart: WHBaseViewVC {
         return button
     }()
     /// 右上角操作按钮。
-    private lazy var operationButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "guide0820_more_icon"), for: .normal)
+    private lazy var operationButton: Guide0820MoreButton = {
+        let button = Guide0820MoreButton()
         button.addTarget(self, action: #selector(operationButtonAction), for: .touchUpInside)
         return button
     }()
@@ -58,38 +57,20 @@ final class VCStart: WHBaseViewVC {
     }
 }
 
-extension VCStart {
-    /// Guide0820 冷启动恢复用导航栈；子流程未完成时直接展示子流程，并保留返回 VCStart 的能力。
+extension Guide0820StartVC {
+    /// Guide0820 冷启动恢复用导航栈；子流程未完成时停留在开始页，由开始页展示当前主步骤。
     static func makeResumeViewControllers(includingLaunchEntry: Bool = false) -> [UIViewController] {
         var viewControllers: [UIViewController] = []
         if includingLaunchEntry {
             viewControllers.append(FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true))
         }
         viewControllers.append(Guide0820VC(initialPageIndex: 2, shouldRedirectStoredSource: false))
-        viewControllers.append(VCStart())
-
-        switch Guide0820ProgressStorage.currentMainStep {
-        case .bodyProfile:
-            guard Guide0820ProgressStorage.hasBodyProfileProgress,
-                  Guide0820ProgressStorage.isStepCompleted(.bodyProfile) == false else {
-                return viewControllers
-            }
-            viewControllers.append(Guide0820BodyProfileVC())
-            return viewControllers
-        case .lifeProfile:
-            guard Guide0820ProgressStorage.hasLifeProfileProgress,
-                  Guide0820ProgressStorage.isStepCompleted(.lifeProfile) == false else {
-                return viewControllers
-            }
-            viewControllers.append(Guide0820LifeProfileVC())
-            return viewControllers
-        case .directionProfile:
-            return viewControllers
-        }
+        viewControllers.append(Guide0820StartVC())
+        return viewControllers
     }
 }
 
-private extension VCStart {
+private extension Guide0820StartVC {
     func enforceInteractivePopGestureDisabled() {
         updateInteractivePopGestureBlocked(true)
         DispatchQueue.main.async { [weak self] in
@@ -124,9 +105,9 @@ private extension VCStart {
 
         view.addSubview(operationButton)
         operationButton.snp.makeConstraints { make in
-            make.right.equalTo(kFitWidth(-20))
+            make.right.equalTo(kFitWidth(-18))
             make.centerY.equalTo(backButton)
-            make.width.equalTo(kFitWidth(48))
+            make.width.equalTo(kFitWidth(42))
             make.height.equalTo(kFitWidth(40))
         }
 
@@ -138,15 +119,7 @@ private extension VCStart {
 
     /// 处理返回按钮点击。
     @objc func backButtonAction() {
-        if let navigationController = navigationController,
-           navigationController.viewControllers.first !== self {
-            navigationController.popViewController(animated: true)
-            return
-        }
-
-        if presentingViewController != nil {
-            dismiss(animated: true)
-        }
+        returnToFirstLaunchPage()
     }
 
     /// 处理右上角操作按钮点击。
@@ -262,5 +235,44 @@ private extension VCStart {
         nav.setNavigationBarHidden(true, animated: false)
         nav.modalPresentationStyle = .fullScreen
         present(nav, animated: true)
+    }
+}
+
+/// Guide0820 开始页右上角更多按钮，按 MasterGo 设计稿绘制 3 个独立圆点。
+private final class Guide0820MoreButton: UIButton {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .clear
+        accessibilityLabel = "更多"
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override var isHighlighted: Bool {
+        didSet {
+            alpha = isHighlighted ? 0.55 : 1
+        }
+    }
+
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+
+        let dotDiameter = kFitWidth(5)
+        let dotSpacing = kFitWidth(4)
+        let totalWidth = dotDiameter * 3 + dotSpacing * 2
+        let startX = bounds.width - totalWidth
+        let centerY = bounds.midY
+
+        UIColor.COLOR_TEXT_TITLE_0f1214.setFill()
+        for index in 0..<3 {
+            let x = startX + CGFloat(index) * (dotDiameter + dotSpacing)
+            let dotRect = CGRect(x: x,
+                                 y: centerY - dotDiameter * 0.5,
+                                 width: dotDiameter,
+                                 height: dotDiameter)
+            UIBezierPath(ovalIn: dotRect).fill()
+        }
     }
 }

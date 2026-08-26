@@ -84,7 +84,13 @@ enum Guide0820ProgressStorage {
     }
 
     static var currentMainStep: MainStep {
-        MainStep(rawValue: completedMainStepCount) ?? .directionProfile
+        if isStepCompleted(.lifeProfile) {
+            return .directionProfile
+        }
+        if isStepCompleted(.bodyProfile) {
+            return .lifeProfile
+        }
+        return MainStep(rawValue: completedMainStepCount) ?? .directionProfile
     }
 
     static func currentPageIndex(for step: MainStep) -> Int {

@@ -18,6 +18,8 @@ final class VCStartStepRow: UIView {
     private let numberView = UIView()
     /// 序号标签。
     private let numberLabel = UILabel()
+    /// 已完成步骤勾选图标。
+    private let checkImageView = UIImageView()
     /// 连接线。
     private let lineView = UIView()
     /// 步骤标题。
@@ -52,11 +54,17 @@ private extension VCStartStepRow {
 
         numberLabel.text = vm.number
         numberLabel.textAlignment = .center
+        numberLabel.isHidden = vm.isCompleted
         numberLabel.textColor = vm.isNumberHighlighted ? .white : .COLOR_TEXT_TITLE_0f1214
         numberLabel.font = .systemFont(ofSize: kFitWidth(14), weight: vm.isNumberHighlighted ? .medium : .regular)
 
+        checkImageView.image = UIImage(named: "guide0820_button_check_icon")?.withRenderingMode(.alwaysTemplate)
+        checkImageView.tintColor = .COLOR_TEXT_WHITE
+        checkImageView.contentMode = .scaleAspectFit
+        checkImageView.isHidden = vm.isCompleted == false
+
         titleLabel.text = vm.title
-        titleLabel.textColor = vm.isActive ? .COLOR_TEXT_TITLE_0f1214 : .COLOR_TEXT_TITLE_0f1214_50
+        titleLabel.textColor = vm.isNumberHighlighted ? .COLOR_TEXT_TITLE_0f1214 : .COLOR_TEXT_TITLE_0f1214_50
         titleLabel.font = .systemFont(ofSize: kFitWidth(14), weight: vm.isActive ? .medium : .regular)
         titleLabel.guide0820SetLineHeight(kFitWidth(21))
 
@@ -69,6 +77,7 @@ private extension VCStartStepRow {
         addSubview(lineView)
         addSubview(numberView)
         numberView.addSubview(numberLabel)
+        numberView.addSubview(checkImageView)
         addSubview(titleLabel)
         addSubview(detailLabel)
 
@@ -80,6 +89,12 @@ private extension VCStartStepRow {
 
         numberLabel.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+
+        checkImageView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.equalTo(kFitWidth(16))
+            make.height.equalTo(kFitWidth(12))
         }
 
         lineView.snp.makeConstraints { make in

@@ -46,7 +46,7 @@
 		A708231A2F7000000000001A /* Guide0820SourceBottomFadeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221A2F7000000000001A /* Guide0820SourceBottomFadeView.swift */; };
 		A708231B2F7000000000001B /* Guide0820SourceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221B2F7000000000001B /* Guide0820SourceRow.swift */; };
 		A708231C2F7000000000001C /* Guide0820SourceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221C2F7000000000001C /* Guide0820SourceView.swift */; };
-		A708231D2F7000000000001D /* VCStart.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221D2F7000000000001D /* VCStart.swift */; };
+		A708231D2F7000000000001D /* Guide0820StartVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221D2F7000000000001D /* Guide0820StartVC.swift */; };
 		A708231E2F7000000000001E /* VCStartVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221E2F7000000000001E /* VCStartVM.swift */; };
 		A708231F2F7000000000001F /* VCStartStepVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221F2F7000000000001F /* VCStartStepVM.swift */; };
 		A70823202F70000000000020 /* VCStartRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822202F70000000000020 /* VCStartRootView.swift */; };
@@ -1582,7 +1582,7 @@
 		A708221A2F7000000000001A /* Guide0820SourceBottomFadeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820SourceBottomFadeView.swift; sourceTree = "<group>"; };
 		A708221B2F7000000000001B /* Guide0820SourceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820SourceRow.swift; sourceTree = "<group>"; };
 		A708221C2F7000000000001C /* Guide0820SourceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820SourceView.swift; sourceTree = "<group>"; };
-		A708221D2F7000000000001D /* VCStart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCStart.swift; sourceTree = "<group>"; };
+		A708221D2F7000000000001D /* Guide0820StartVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820StartVC.swift; sourceTree = "<group>"; };
 		A708221E2F7000000000001E /* VCStartVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCStartVM.swift; sourceTree = "<group>"; };
 		A708221F2F7000000000001F /* VCStartStepVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCStartStepVM.swift; sourceTree = "<group>"; };
 		A70822202F70000000000020 /* VCStartRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCStartRootView.swift; sourceTree = "<group>"; };
@@ -4692,7 +4692,7 @@
 			isa = PBXGroup;
 			children = (
 				A70821012F6C000000000001 /* Guide0820VC.swift */,
-				A708221D2F7000000000001D /* VCStart.swift */,
+				A708221D2F7000000000001D /* Guide0820StartVC.swift */,
 				A70822222F70000000000022 /* Guide0820BodyProfileVC.swift */,
 				A70822332F70000000000033 /* Guide0820LifeProfileVC.swift */,
 			);
@@ -7410,7 +7410,7 @@
 				A708231A2F7000000000001A /* Guide0820SourceBottomFadeView.swift in Sources */,
 				A708231B2F7000000000001B /* Guide0820SourceRow.swift in Sources */,
 				A708231C2F7000000000001C /* Guide0820SourceView.swift in Sources */,
-				A708231D2F7000000000001D /* VCStart.swift in Sources */,
+				A708231D2F7000000000001D /* Guide0820StartVC.swift in Sources */,
 				A708231E2F7000000000001E /* VCStartVM.swift in Sources */,
 				A708231F2F7000000000001F /* VCStartStepVM.swift in Sources */,
 				A70823202F70000000000020 /* VCStartRootView.swift in Sources */,

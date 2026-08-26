@@ -135,7 +135,7 @@ private extension Guide0820VC {
         finishGuide()
     }
 
-    /// 已保存过来源选择时，跳过 Guide0820 来源引导，直接进入 VCStart。
+    /// 已保存过来源选择时，跳过 Guide0820 来源引导，直接进入 Guide0820StartVC。
     func redirectToStartIfSourceStored() {
         guard shouldRedirectStoredSource,
               didRedirectStoredSource == false,
@@ -143,7 +143,7 @@ private extension Guide0820VC {
               Guide0820ProgressStorage.shouldResumeGuide0820 else { return }
         didRedirectStoredSource = true
 
-        let resumeViewControllers = VCStart.makeResumeViewControllers(includingLaunchEntry: false)
+        let resumeViewControllers = Guide0820StartVC.makeResumeViewControllers(includingLaunchEntry: false)
         if let navigationController = navigationController {
             var viewControllers = navigationController.viewControllers
             if let index = viewControllers.firstIndex(where: { $0 === self }) {
@@ -201,7 +201,7 @@ private extension Guide0820VC {
 
     /// 展示 Guide0820 之后的开始页。
     func showStartVC() {
-        let startVC = VCStart()
+        let startVC = Guide0820StartVC()
         if let navigationController = navigationController {
             navigationController.pushViewController(startVC, animated: true)
         } else {

@@ -1227,7 +1227,7 @@ extension AppDelegate{
 //            if agreeProtocal.count > 0 {
             if Guide0820ProgressStorage.shouldResumeGuide0820 {
                 let nav = UINavigationController()
-                nav.setViewControllers(VCStart.makeResumeViewControllers(includingLaunchEntry: true), animated: false)
+                nav.setViewControllers(Guide0820StartVC.makeResumeViewControllers(includingLaunchEntry: true), animated: false)
                 return nav
             }
             return UINavigationController(rootViewController: FirstLaunchVC(skipAnimation: true, forceNeedBuildPlanOnConfirm: true))

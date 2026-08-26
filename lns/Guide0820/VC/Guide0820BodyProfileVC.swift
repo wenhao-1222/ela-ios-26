@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class Guide0820BodyProfileVC: WHBaseViewVC {
-    private var currentIndex = Guide0820ProgressStorage.furthestPageIndex(for: .bodyProfile)
+    private var currentIndex = 0
     private var isProgressPersistenceSuppressed = false
 
     private lazy var backButton: ElaLiquidGlassCloseButton = {
@@ -103,7 +103,6 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
             self?.sexIntroVm.show()
         }
         vm.validityChanged = { [weak self] _ in
-            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -111,17 +110,11 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
 
     private lazy var yearVm: Guide0820BodyProfileYearVM = {
         let vm = Guide0820BodyProfileYearVM(frame: .zero)
-        vm.birthYearChangedBlock = { [weak self] _ in
-            self?.persistCurrentProgress()
-        }
         return vm
     }()
 
     private lazy var heightVm: Guide0820BodyProfileHeightVM = {
         let vm = Guide0820BodyProfileHeightVM(frame: .zero)
-        vm.heightChangedBlock = { [weak self] _ in
-            self?.persistCurrentProgress()
-        }
         return vm
     }()
 
@@ -132,7 +125,6 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         }
         vm.weightChangedBlock = { [weak self] value in
             self?.weightExceededVm.updateCurrentWeight(value)
-            self?.persistCurrentProgress()
         }
         return vm
     }()
@@ -140,7 +132,6 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
     private lazy var weightExceededVm: Guide0820BodyProfileWeightExceededVM = {
         let vm = Guide0820BodyProfileWeightExceededVM(frame: .zero)
         vm.validityChanged = { [weak self] _ in
-            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -149,7 +140,6 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
     private lazy var weightTrendVm: Guide0820BodyProfileWeightTrendVM = {
         let vm = Guide0820BodyProfileWeightTrendVM(frame: .zero)
         vm.validityChanged = { [weak self] _ in
-            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -161,7 +151,6 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
             self?.bodyFatAlertVm.showView()
         }
         vm.selectStateChangeBlock = { [weak self] _ in
-            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -206,10 +195,6 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         initUI()
         restoreSavedProgress()
         updatePage(animated: false)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(appDidEnterBackground),
-                                               name: UIApplication.didEnterBackgroundNotification,
-                                               object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -334,14 +319,13 @@ private extension Guide0820BodyProfileVC {
 
     func updatePage(animated: Bool) {
         currentIndex = min(max(currentIndex, 0), pages.count - 1)
-        Guide0820ProgressStorage.recordFurthestPageIndex(currentIndex, for: .bodyProfile)
         view.layoutIfNeeded()
         let offset = CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0)
         scrollView.setContentOffset(offset, animated: animated)
         updateProgress()
         syncNextButtonState()
         if currentIndex == pages.count - 1 {
-            restoreBodyFatSelectionFromStorage(shouldCenterSelectedItem: false, persistAfterRestore: true)
+            restoreBodyFatSelectionFromStorage(shouldCenterSelectedItem: false)
         }
         if let page = pages[currentIndex] as? Guide0820BodyProfilePageVM {
             page.pageWillAppear()
@@ -377,7 +361,6 @@ private extension Guide0820BodyProfileVC {
     }
 
     @objc func backButtonAction() {
-        persistCurrentProgress()
         if currentIndex > 0 {
             currentIndex -= 1
             updatePage(animated: true)
@@ -387,8 +370,8 @@ private extension Guide0820BodyProfileVC {
     }
 
     @objc func nextButtonAction() {
-        persistCurrentProgress()
         if currentIndex == pages.count - 1 {
+            persistCompletedBodyProfile()
             Guide0820ProgressStorage.markStepCompleted(.bodyProfile)
             QuestinonaireMsgModel.shared.printModelMsg()
             navigationController?.popViewController(animated: true)
@@ -407,25 +390,25 @@ private extension Guide0820BodyProfileVC {
             weightVm.restore(weight: Guide0820ProgressStorage.bodyProfileWeight)
             weightExceededVm.restore(selectedValue: Guide0820ProgressStorage.bodyProfileWeightExceeded)
             weightTrendVm.restore(selectedValue: Guide0820ProgressStorage.bodyProfileWeightTrend)
-            restoreBodyFatSelectionFromStorage(shouldCenterSelectedItem: false, persistAfterRestore: false)
+            restoreBodyFatSelectionFromStorage(shouldCenterSelectedItem: false)
             currentIndex = min(max(currentIndex, 0), pages.count - 1)
         }
 
-        persistCurrentProgress()
         syncNextButtonState()
     }
 
-    /// 保存当前页和当前已填写答案。
-    func persistCurrentProgress() {
+    /// 身体问卷整段完成后，一次性保存全部答案。
+    func persistCompletedBodyProfile() {
         guard isProgressPersistenceSuppressed == false else { return }
 
-        if let pageVM = pages[currentIndex] as? Guide0820BodyProfilePageVM {
-            pageVM.commitCurrentValue()
-        } else if let pageVM = pages[currentIndex] as? Guide0820BodyProfileYearVM {
-            pageVM.commitCurrentValue()
+        pages.forEach { page in
+            if let pageVM = page as? Guide0820BodyProfilePageVM {
+                pageVM.commitCurrentValue()
+            } else if let pageVM = page as? Guide0820BodyProfileYearVM {
+                pageVM.commitCurrentValue()
+            }
         }
 
-        Guide0820ProgressStorage.recordFurthestPageIndex(currentIndex, for: .bodyProfile)
         Guide0820ProgressStorage.saveBodyProfile(
             sex: sexVm.selectedSex,
             birthYear: yearVm.currentBirthYear,
@@ -437,22 +420,13 @@ private extension Guide0820BodyProfileVC {
         )
     }
 
-    /// App 退后台时保存当前进度。
-    @objc func appDidEnterBackground() {
-        persistCurrentProgress()
-    }
-
-    func restoreBodyFatSelectionFromStorage(shouldCenterSelectedItem: Bool, persistAfterRestore: Bool) {
+    func restoreBodyFatSelectionFromStorage(shouldCenterSelectedItem: Bool) {
         performWithoutProgressPersistence {
             bodyfatVm.updateScrollView()
             if let bodyFat = Guide0820ProgressStorage.bodyProfileBodyFat {
                 bodyfatVm.restoreSelection(modelValue: bodyFat, shouldCenterSelectedItem: shouldCenterSelectedItem)
             }
         }
-
-        guard persistAfterRestore else { return }
-        persistCurrentProgress()
-        syncNextButtonState()
     }
 
     func performWithoutProgressPersistence(_ action: () -> Void) {

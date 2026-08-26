@@ -149,12 +149,12 @@ class FirstLaunchVC: WHBaseViewVC {
 
     lazy var firstLogoImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "main_top_logo_launch")
+        img.setImgLocal(imgName: "main_top_logo_cj")
         return img
     }()
     lazy var secondLogoImgView: UIImageView = {
         let img = UIImageView()
-        img.setImgLocal(imgName: "main_top_logo_launch")
+        img.setImgLocal(imgName: "main_top_logo_cj")
         img.alpha = 0
         return img
     }()
@@ -918,27 +918,27 @@ extension FirstLaunchVC{
     }
     
     private func showHealthConfirmAndContinue() {
-        ElaHealthDataConfirmAlert.show { [weak self] in
-            guard let self = self else { return }
+//        ElaHealthDataConfirmAlert.show { [weak self] in
+//            guard let self = self else { return }
             self.trackIOS0805GuidanceV2BeforeStartAgree()
             UserDefaults.standard.setValue("1", forKey: isLaunchWelcome)
             self.showGuide0820AndContinue()
-        } onExit: { [weak self] in
-            self?.trackIOS0805GuidanceV2BeforeStartExit()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                exit(0)
-            }
-        } onShow: { [weak self] in
-            self?.isHealthConfirmAlertShowing = true
-            self?.trackIOS0805GuidanceV2BeforeStartAlert()
-        } onDismiss: { [weak self] in
-            self?.isHealthConfirmAlertShowing = false
-        }
+//        } onExit: { [weak self] in
+//            self?.trackIOS0805GuidanceV2BeforeStartExit()
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+//                exit(0)
+//            }
+//        } onShow: { [weak self] in
+//            self?.isHealthConfirmAlertShowing = true
+//            self?.trackIOS0805GuidanceV2BeforeStartAlert()
+//        } onDismiss: { [weak self] in
+//            self?.isHealthConfirmAlertShowing = false
+//        }
     }
 
     private func showGuide0820AndContinue() {
         if Guide0820ProgressStorage.shouldResumeGuide0820 {
-            let resumeViewControllers = VCStart.makeResumeViewControllers(includingLaunchEntry: false)
+            let resumeViewControllers = Guide0820StartVC.makeResumeViewControllers(includingLaunchEntry: false)
             if let navigationController = navigationController {
                 navigationController.setViewControllers([self] + resumeViewControllers, animated: true)
             } else {
@@ -954,7 +954,7 @@ extension FirstLaunchVC{
         let guideVC = Guide0820VC()
         guideVC.finishBlock = { [weak guideVC] in
             guard let guideVC = guideVC else { return }
-            let startVC = VCStart()
+            let startVC = Guide0820StartVC()
             if let navigationController = guideVC.navigationController {
                 navigationController.pushViewController(startVC, animated: true)
             } else {

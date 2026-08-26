@@ -11,7 +11,7 @@ import UserNotifications
 
 /// Guide0820 第二步“了解你的生活”流程页。
 final class Guide0820LifeProfileVC: WHBaseViewVC {
-    private var currentIndex = Guide0820ProgressStorage.furthestPageIndex(for: .lifeProfile)
+    private var currentIndex = 0
     private var isProgressPersistenceSuppressed = false
     private var hasInstalledPages = false
 
@@ -103,7 +103,6 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
     private lazy var takeoutFrequencyVm: Guide0820LifeProfileTakeoutFrequencyVM = {
         let vm = Guide0820LifeProfileTakeoutFrequencyVM()
         vm.validityChanged = { [weak self] _ in
-            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -113,7 +112,6 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
         let vm = Guide0820LifeProfileMealsPerDayVM()
         vm.validityChanged = { [weak self] _ in
             self?.mealsAdjustVm.refreshSelectionFromModel()
-            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -122,7 +120,6 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
     private lazy var mealsAdjustVm: Guide0820LifeProfileMealsAdjustVM = {
         let vm = Guide0820LifeProfileMealsAdjustVM(frame: .zero)
         vm.validityChanged = { [weak self] _ in
-            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -131,7 +128,6 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
     private lazy var exerciseCaloriesRecordVm: Guide0820LifeProfileExerciseCaloriesRecordVM = {
         let vm = Guide0820LifeProfileExerciseCaloriesRecordVM()
         vm.validityChanged = { [weak self] _ in
-            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -140,7 +136,6 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
     private lazy var cardioFrequencyVm: Guide0820LifeProfileCardioFrequencyVM = {
         let vm = Guide0820LifeProfileCardioFrequencyVM()
         vm.validityChanged = { [weak self] _ in
-            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -149,7 +144,6 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
     private lazy var strengthTrainingFrequencyVm: Guide0820LifeProfileStrengthTrainingFrequencyVM = {
         let vm = Guide0820LifeProfileStrengthTrainingFrequencyVM()
         vm.validityChanged = { [weak self] _ in
-            self?.persistCurrentProgress()
             self?.syncNextButtonState()
         }
         return vm
@@ -184,10 +178,6 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
         initUI()
         restoreSavedProgress()
         updatePage(animated: false)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(appDidEnterBackground),
-                                               name: UIApplication.didEnterBackgroundNotification,
-                                               object: nil)
     }
 
     override func viewDidLayoutSubviews() {
@@ -271,7 +261,6 @@ private extension Guide0820LifeProfileVC {
     func updatePage(animated: Bool) {
         guard hasInstalledPages, pages.isEmpty == false else { return }
         currentIndex = clampedCurrentIndex()
-        Guide0820ProgressStorage.recordFurthestPageIndex(currentIndex, for: .lifeProfile)
         view.layoutIfNeeded()
         scrollView.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0), animated: animated)
         updateProgress()
@@ -304,7 +293,6 @@ private extension Guide0820LifeProfileVC {
     }
 
     @objc func backButtonAction() {
-        persistCurrentProgress()
         if currentIndex > 0 {
             currentIndex -= 1
             updatePage(animated: true)
@@ -314,7 +302,6 @@ private extension Guide0820LifeProfileVC {
     }
 
     @objc func nextButtonAction() {
-        persistCurrentProgress()
         if currentIndex == pages.count - 1 {
             finishLifeProfile(requestReminderPermission: false)
             return
@@ -334,24 +321,17 @@ private extension Guide0820LifeProfileVC {
             strengthTrainingFrequencyVm.restore(selectedValue: Guide0820ProgressStorage.lifeProfileStrengthTrainingFrequency)
             currentIndex = clampedCurrentIndex()
         }
-        persistCurrentProgress()
         syncNextButtonState()
     }
 
-    func persistCurrentProgress() {
+    func persistCompletedLifeProfile() {
         guard isProgressPersistenceSuppressed == false else { return }
-        guard let currentPage = safeCurrentPage() else { return }
-        (currentPage as? Guide0820LifeProfilePageVM)?.commitCurrentValue()
-        Guide0820ProgressStorage.recordFurthestPageIndex(currentIndex, for: .lifeProfile)
+        pages.forEach { ($0 as? Guide0820LifeProfilePageVM)?.commitCurrentValue() }
         Guide0820ProgressStorage.saveLifeProfileFromQuestionnaireModel()
     }
 
-    @objc func appDidEnterBackground() {
-        persistCurrentProgress()
-    }
-
     func finishLifeProfile(requestReminderPermission: Bool) {
-        persistCurrentProgress()
+        persistCompletedLifeProfile()
         Guide0820ProgressStorage.markStepCompleted(.lifeProfile)
         QuestinonaireMsgModel.shared.printModelMsg()
 
