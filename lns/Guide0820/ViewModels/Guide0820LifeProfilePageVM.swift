@@ -572,11 +572,11 @@ final class Guide0820LifeProfileTakeoutFrequencyVM: Guide0820LifeProfileChoicePa
             info: (
                 title: "外食的“热量认知偏差”",
                 detail: "研究发现，每周外食超过 2 餐的人，整体饮食质量通常更低，相关营养指标也更差。快餐消...",
-                body: "研究发现，每周外食超过 2 餐的人，整体饮食质量通常更低，相关营养指标也更差。快餐、外卖和餐厅菜品往往更容易出现油脂、糖和总热量被低估的情况。\n\n记录这一项不是为了限制你外食，而是为了让 ELA 在估算和建议时更贴近你的真实生活。",
-                references: nil
+                body: "研究发现，每周外食超过 2 餐的人，整体饮食质量通常更低，相关营养指标也更差。快餐消费者也普遍会低估所购餐食的热量，而且餐食份量越大，低估越明显。[1]\n\n外食/外卖的频率越高，潜在影响通常越大，因此更需要注意食物的选择与分量控制。[2]",
+                references: "[1] Lachat et al., Obes Rev, 2012  \n[2] Block et al., BMJ, 2013"
             ),
-            restoreValue: { QuestinonaireMsgModel.shared.guidanceTakeoutFrequencyType },
-            commitValue: { QuestinonaireMsgModel.shared.guidanceTakeoutFrequencyType = $0 }
+            restoreValue: { Guide0820Model.shared.guidanceTakeoutFrequencyType },
+            commitValue: { Guide0820Model.shared.guidanceTakeoutFrequencyType = $0 }
         )
     }
 
@@ -596,11 +596,11 @@ final class Guide0820LifeProfileMealsPerDayVM: Guide0820LifeProfileChoicePageVM 
                 Item(iconText: "5", iconName: "guide0820_meals_per_day_5_icon", title: "5 餐", subtitle: nil, value: "5"),
                 Item(iconText: "6", iconName: "guide0820_meals_per_day_6_plus_icon", title: "6+ 餐", subtitle: nil, value: "6+")
             ],
-            restoreValue: { QuestinonaireMsgModel.shared.guidanceMealsPerDayType },
+            restoreValue: { Guide0820Model.shared.guidanceMealsPerDayType },
             commitValue: {
-                QuestinonaireMsgModel.shared.guidanceMealsPerDayType = $0
-                if QuestinonaireMsgModel.shared.guidanceMealsAdjustType.isEmpty {
-                    QuestinonaireMsgModel.shared.guidanceMealsAdjustType = $0
+                Guide0820Model.shared.guidanceMealsPerDayType = $0
+                if Guide0820Model.shared.guidanceMealsAdjustType.isEmpty {
+                    Guide0820Model.shared.guidanceMealsAdjustType = $0
                 }
             }
         )
@@ -622,10 +622,10 @@ final class Guide0820LifeProfileCardioFrequencyVM: Guide0820LifeProfileChoicePag
                 Item(iconText: "4", iconName: "guide0820_cardio_4_5_icon", title: "每周 4～5 次", subtitle: nil, value: "4-5"),
                 Item(iconText: "6", iconName: "guide0820_cardio_6_plus_icon", title: "每周 6 次及以上", subtitle: nil, value: "6-7")
             ],
-            restoreValue: { QuestinonaireMsgModel.shared.guidanceCardioFrequencyType },
+            restoreValue: { Guide0820Model.shared.guidanceCardioFrequencyType },
             commitValue: {
-                QuestinonaireMsgModel.shared.guidanceCardioFrequencyType = $0
-                QuestinonaireMsgModel.shared.events = Guide0820LifeProfileActivityEstimator.eventsValue(forCardio: $0)
+                Guide0820Model.shared.guidanceCardioFrequencyType = $0
+                Guide0820Model.shared.events = Guide0820LifeProfileActivityEstimator.eventsValue(forCardio: $0)
             }
         )
     }
@@ -645,8 +645,8 @@ final class Guide0820LifeProfileStrengthTrainingFrequencyVM: Guide0820LifeProfil
                 Item(iconText: "S", iconName: "guide0820_strength_5_6_icon", title: "每周 5～6 次", subtitle: nil, value: "5-6"),
                 Item(iconText: "S", iconName: "guide0820_strength_7_plus_icon", title: "每周 7 次及以上", subtitle: nil, value: "7+")
             ],
-            restoreValue: { QuestinonaireMsgModel.shared.guidanceStrengthTrainingFrequencyType },
-            commitValue: { QuestinonaireMsgModel.shared.guidanceStrengthTrainingFrequencyType = $0 }
+            restoreValue: { Guide0820Model.shared.guidanceStrengthTrainingFrequencyType },
+            commitValue: { Guide0820Model.shared.guidanceStrengthTrainingFrequencyType = $0 }
         )
     }
 
@@ -666,11 +666,11 @@ final class Guide0820LifeProfileExerciseCaloriesRecordVM: Guide0820LifeProfileCh
             info: (
                 title: "我们不建议额外记录运动消耗",
                 detail: "你的每日摄入目标已经包含日常活动、训练，以及增肌或减脂所需的热量盈余或缺口。后续...",
-                body: "你的每日摄入目标已经包含日常活动、训练，以及增肌或减脂所需的热量盈余或缺口。后续，我们也会根据你的体重变化持续调整目标，因此你无需再将运动消耗额外加回当天的摄入量。\n\n研究显示，不论是借助手表等设备还是手动记录，运动消耗的热量都很容易出现明显误差。部分腕戴设备研究的中位误差约为 27% 至 93%，各品牌平均绝对误差普遍超过 30%。手动记录同样不稳定，且整体更倾向于高估。\n\n因此，我们更建议大多数人优先记录饮食、体重趋势，以及力量训练频率而不是运动消耗。",
+                body: "你的每日摄入目标已经包含日常活动、训练，以及增肌或减脂所需的热量盈余或缺口。后续，我们也会根据你的体重变化持续调整目标，因此你无需再将运动消耗额外加回当天的摄入量。\n\n研究显示，不论是借助手表等设备还是手动记录，运动消耗的热量都很容易出现明显误差。部分腕戴设备研究的中位误差约为 27% 至 93%，各品牌平均绝对误差普遍超过 30%。手动记录同样不稳定，且整体更倾向于高估。现实中，几乎只有实验室间接测热能（运动）和双标水（日常）才能相对的测出热量消耗。[1] [2]\n\n因此，我们更建议大多数人优先记录饮食、体重趋势，以及力量训练频率而不是运动消耗。[3]",
                 references: "[1] Germini et al. (2022), JMIR\n[2] Shcherbina et al. (2017), JPM\n[3] Dowd et al. (2018), IJBNPA"
             ),
-            restoreValue: { QuestinonaireMsgModel.shared.guidanceExerciseCaloriesRecordType },
-            commitValue: { QuestinonaireMsgModel.shared.guidanceExerciseCaloriesRecordType = $0 }
+            restoreValue: { Guide0820Model.shared.guidanceExerciseCaloriesRecordType },
+            commitValue: { Guide0820Model.shared.guidanceExerciseCaloriesRecordType = $0 }
         )
     }
 
@@ -702,8 +702,8 @@ final class Guide0820LifeProfileCaloriesResultVM: Guide0820LifeProfilePageVM, UI
 
     override func commitCurrentValue() {
         let calories = caloriesTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        QuestinonaireMsgModel.shared.caloriesNumber = calories
-        QuestinonaireMsgModel.shared.caloriesNumberFromServer = calories
+        Guide0820Model.shared.caloriesNumber = calories
+        Guide0820Model.shared.caloriesNumberFromServer = calories
     }
 
     private func initUI() {
@@ -787,7 +787,7 @@ final class Guide0820LifeProfileCaloriesResultVM: Guide0820LifeProfilePageVM, UI
     }
 
     private func refreshCaloriesIfNeeded() {
-        if let existing = Int(QuestinonaireMsgModel.shared.caloriesNumber), existing > 0 {
+        if let existing = Int(Guide0820Model.shared.caloriesNumber), existing > 0 {
             caloriesTextField.text = "\(existing)"
             return
         }
@@ -864,53 +864,18 @@ final class Guide0820LifeProfileReminderVM: Guide0820LifeProfilePageVM {
             make.top.equalTo(resultLabel.snp.bottom).offset(guide0820Design(24))
         }
 
-        let illustrationView = UIView()
-        illustrationView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
-        illustrationView.layer.cornerRadius = guide0820Design(325)
-        illustrationView.clipsToBounds = true
-        addSubview(illustrationView)
-        illustrationView.snp.makeConstraints { make in
+        // The design uses the supplied 3D bell artwork directly. The asset is a
+        // 1300px @2x canvas with transparent padding, so keeping a 650pt square
+        // container preserves the artwork's intended visual scale and position.
+        let reminderIconView = UIImageView()
+        reminderIconView.setImgLocal(imgName: "guide_reminder_icon")
+        reminderIconView.contentMode = .scaleAspectFit
+        reminderIconView.isUserInteractionEnabled = false
+        addSubview(reminderIconView)
+        reminderIconView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(guide0820Design(581))
             make.width.height.equalTo(guide0820Design(650))
-        }
-
-        let phoneView = UIView()
-        phoneView.backgroundColor = .COLOR_CARD_BG_WHITE
-        phoneView.layer.cornerRadius = guide0820Design(36)
-        phoneView.layer.shadowColor = UIColor.black.withAlphaComponent(0.08).cgColor
-        phoneView.layer.shadowOpacity = 1
-        phoneView.layer.shadowRadius = guide0820Design(24)
-        phoneView.layer.shadowOffset = CGSize(width: 0, height: guide0820Design(12))
-        illustrationView.addSubview(phoneView)
-        phoneView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.width.equalTo(guide0820Design(227))
-            make.height.equalTo(guide0820Design(284))
-        }
-
-        let bellLabel = UILabel()
-        bellLabel.text = "!"
-        bellLabel.textAlignment = .center
-        bellLabel.textColor = .COLOR_TEXT_WHITE
-        bellLabel.font = .systemFont(ofSize: guide0820Design(46), weight: .bold)
-        bellLabel.backgroundColor = .THEME
-        bellLabel.layer.cornerRadius = guide0820Design(40)
-        bellLabel.clipsToBounds = true
-        phoneView.addSubview(bellLabel)
-        bellLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(guide0820Design(52))
-            make.width.height.equalTo(guide0820Design(80))
-        }
-
-        let lineView = UIView()
-        lineView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
-        phoneView.addSubview(lineView)
-        lineView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview().inset(guide0820Design(36))
-            make.top.equalTo(bellLabel.snp.bottom).offset(guide0820Design(40))
-            make.height.equalTo(guide0820Design(20))
         }
 
         let enableButton = UIButton(type: .custom)
@@ -965,7 +930,7 @@ enum Guide0820LifeProfileActivityEstimator {
     }
 
     static func estimatedMaintenanceCalories() -> Int {
-        let model = QuestinonaireMsgModel.shared
+        let model = Guide0820Model.shared
         let weight = Double(model.weight) ?? Guide0820ProgressStorage.bodyProfileWeight ?? 60
         let height = Double(model.height) ?? Double(Guide0820ProgressStorage.bodyProfileHeight ?? 165)
         let birthYear = Int(model.birthDay.isEmpty ? model.birthYear : model.birthDay) ?? Int(Guide0820ProgressStorage.bodyProfileBirthYear ?? "") ?? 1995
@@ -984,8 +949,8 @@ enum Guide0820LifeProfileActivityEstimator {
     }
 
     private static func activityMultiplier() -> Double {
-        let cardio = QuestinonaireMsgModel.shared.guidanceCardioFrequencyType
-        let strength = QuestinonaireMsgModel.shared.guidanceStrengthTrainingFrequencyType
+        let cardio = Guide0820Model.shared.guidanceCardioFrequencyType
+        let strength = Guide0820Model.shared.guidanceStrengthTrainingFrequencyType
         var multiplier = 1.2
         switch cardio {
         case "commute": multiplier += 0.1

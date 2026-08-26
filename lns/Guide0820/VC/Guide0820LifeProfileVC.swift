@@ -110,7 +110,10 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
 
     private lazy var mealsPerDayVm: Guide0820LifeProfileMealsPerDayVM = {
         let vm = Guide0820LifeProfileMealsPerDayVM()
-        vm.validityChanged = { [weak self] _ in
+        vm.validityChanged = { [weak self, weak vm] _ in
+            if let selectedValue = vm?.selectedAnswerValue {
+                Guide0820Model.shared.guidanceMealsAdjustType = selectedValue
+            }
             self?.mealsAdjustVm.refreshSelectionFromModel()
             self?.syncNextButtonState()
         }
@@ -165,12 +168,12 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
     private lazy var pages: [UIView] = [
         takeoutFrequencyVm,
         mealsPerDayVm,
-        cardioFrequencyVm,
         mealsAdjustVm,
-        strengthTrainingFrequencyVm,
-        caloriesResultVm,
         exerciseCaloriesRecordVm,
-        reminderVm
+        cardioFrequencyVm,
+        strengthTrainingFrequencyVm,
+        reminderVm,
+        caloriesResultVm,        
     ]
 
     override func viewDidLoad() {
@@ -302,6 +305,7 @@ private extension Guide0820LifeProfileVC {
     }
 
     @objc func nextButtonAction() {
+        commitCurrentPage()
         if currentIndex == pages.count - 1 {
             finishLifeProfile(requestReminderPermission: false)
             return
@@ -312,7 +316,8 @@ private extension Guide0820LifeProfileVC {
 
     func restoreSavedProgress() {
         performWithoutProgressPersistence {
-            Guide0820ProgressStorage.restoreLifeProfileToQuestionnaireModel()
+            Guide0820ProgressStorage.restoreBodyProfileToGuide0820Model()
+            Guide0820ProgressStorage.restoreLifeProfileToGuide0820Model()
             takeoutFrequencyVm.restore(selectedValue: Guide0820ProgressStorage.lifeProfileTakeoutFrequency)
             mealsPerDayVm.restore(selectedValue: Guide0820ProgressStorage.lifeProfileMealsPerDay)
             mealsAdjustVm.refreshSelectionFromModel()
@@ -327,13 +332,18 @@ private extension Guide0820LifeProfileVC {
     func persistCompletedLifeProfile() {
         guard isProgressPersistenceSuppressed == false else { return }
         pages.forEach { ($0 as? Guide0820LifeProfilePageVM)?.commitCurrentValue() }
-        Guide0820ProgressStorage.saveLifeProfileFromQuestionnaireModel()
+        Guide0820ProgressStorage.saveLifeProfileFromGuide0820Model()
+    }
+
+    /// 完成当前页时先把页面状态同步到 Guide0820Model。
+    func commitCurrentPage() {
+        (pages[currentIndex] as? Guide0820LifeProfilePageVM)?.commitCurrentValue()
     }
 
     func finishLifeProfile(requestReminderPermission: Bool) {
         persistCompletedLifeProfile()
         Guide0820ProgressStorage.markStepCompleted(.lifeProfile)
-        QuestinonaireMsgModel.shared.printModelMsg()
+        Guide0820Model.shared.printModelMsg()
 
         guard requestReminderPermission else {
             navigationController?.popViewController(animated: true)

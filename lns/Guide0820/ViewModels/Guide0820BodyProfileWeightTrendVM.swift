@@ -16,7 +16,10 @@ final class Guide0820BodyProfileWeightTrendVM: Guide0820BodyProfilePageVM {
     /// 当前选择值，变化时同步卡片选中态和页面有效性。
     private var selectedValue: String? {
         didSet {
-            cards.forEach { $0.isSelected = $0.value == selectedValue }
+            cards.forEach {
+                $0.setSelected($0.value == selectedValue, animated: true)
+            }
+            commitCurrentValue()
             validityChanged?(isStepValid)
         }
     }
@@ -40,7 +43,7 @@ final class Guide0820BodyProfileWeightTrendVM: Guide0820BodyProfilePageVM {
 
     /// 将当前选择写入问卷模型。
     override func commitCurrentValue() {
-        QuestinonaireMsgModel.shared.guidanceRecentWeightTrendType = selectedValue ?? ""
+        Guide0820Model.shared.guidanceRecentWeightTrendType = selectedValue ?? ""
     }
 
     /// 恢复本地保存的选择。
@@ -68,7 +71,7 @@ final class Guide0820BodyProfileWeightTrendVM: Guide0820BodyProfilePageVM {
 
         var previous: UIView = titleLabel
         items.forEach { item in
-            let card = Guide0820BodyProfileOptionCard(item: item)
+            let card = Guide0820BodyProfileOptionCard(item: item, usesCheckStateImages: true)
             card.addTarget(self, action: #selector(optionCardAction(_:)), for: .touchUpInside)
             addSubview(card)
             card.snp.makeConstraints { make in

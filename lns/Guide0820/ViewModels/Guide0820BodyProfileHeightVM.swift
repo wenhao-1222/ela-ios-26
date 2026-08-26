@@ -16,6 +16,16 @@ final class Guide0820BodyProfileHeightVM: Guide0820BodyProfilePageVM, rulerDeleg
     /// 当前身高值，单位为厘米。
     var currentValue = 170
 
+    /// 应用性别页提供的默认身高。
+    func applyDefaultHeight(_ value: Int) {
+        currentValue = min(max(value, 110), 240)
+        updateHeightText(value: currentValue)
+        commitCurrentValue()
+        if hasAppliedInitialValue {
+            rulerView.scroll(toValue: currentValue, animation: false)
+        }
+    }
+
     /// 标记初始身高是否已同步到刻度尺，避免约束未完成时滚动失效。
     private var hasAppliedInitialValue = false
 
@@ -112,7 +122,7 @@ final class Guide0820BodyProfileHeightVM: Guide0820BodyProfilePageVM, rulerDeleg
 
     /// 将当前身高写入问卷模型。
     override func commitCurrentValue() {
-        QuestinonaireMsgModel.shared.height = "\(currentValue)"
+        Guide0820Model.shared.height = "\(currentValue)"
     }
 
     /// 恢复本地保存的身高。
@@ -120,7 +130,7 @@ final class Guide0820BodyProfileHeightVM: Guide0820BodyProfilePageVM, rulerDeleg
         guard let height else { return }
         currentValue = min(max(height, 110), 240)
         updateHeightText(value: currentValue)
-        QuestinonaireMsgModel.shared.height = "\(currentValue)"
+        Guide0820Model.shared.height = "\(currentValue)"
         if hasAppliedInitialValue {
             rulerView.scroll(toValue: currentValue, animation: false)
         }

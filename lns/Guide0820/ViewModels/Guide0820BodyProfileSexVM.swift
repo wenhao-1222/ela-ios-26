@@ -13,10 +13,19 @@ final class Guide0820BodyProfileSexVM: Guide0820BodyProfilePageVM {
     /// 点击说明卡时通知外层 VC 展示弹窗。
     var showTipsBlock: (() -> Void)?
 
+    /// 性别变更通知，用于同步身体资料页的默认身高和体重。
+    var sexChangedBlock: ((String) -> Void)?
+
     /// 当前选择的性别值，变化时同步卡片选中态和页面有效性。
     var selectedSex: String? {
         didSet {
-            cards.forEach { $0.isSelected = $0.value == selectedSex }
+            cards.forEach {
+                $0.setSelected($0.value == selectedSex, animated: true)
+            }
+            commitCurrentValue()
+            if let selectedSex {
+                sexChangedBlock?(selectedSex)
+            }
             validityChanged?(isStepValid)
         }
     }
@@ -40,8 +49,7 @@ final class Guide0820BodyProfileSexVM: Guide0820BodyProfilePageVM {
 
     /// 将性别选择写入问卷模型。
     override func commitCurrentValue() {
-        guard let selectedSex else { return }
-        QuestinonaireMsgModel.shared.sex = selectedSex
+        Guide0820Model.shared.sex = selectedSex ?? ""
     }
 
     /// 恢复本地保存的性别选择。
@@ -67,7 +75,7 @@ final class Guide0820BodyProfileSexVM: Guide0820BodyProfilePageVM {
 
         var previous: UIView = titleLabel
         items.forEach { item in
-            let card = Guide0820BodyProfileOptionCard(item: item)
+            let card = Guide0820BodyProfileOptionCard(item: item, usesCheckStateImages: true)
             card.addTarget(self, action: #selector(optionCardAction(_:)), for: .touchUpInside)
             addSubview(card)
             card.snp.makeConstraints { make in

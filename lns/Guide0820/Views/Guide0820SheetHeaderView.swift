@@ -41,8 +41,11 @@ private extension Guide0820SheetHeaderView {
         titleLabel.font = .systemFont(ofSize: kFitWidth(17), weight: .semibold)
 
         let closeButton = UIButton(type: .custom)
-        closeButton.setImage(UIImage(named: "guide0820_close_icon"), for: .normal)
         closeButton.addTarget(self, action: #selector(closeButtonAction), for: .touchUpInside)
+        let closeImageView = UIImageView(image: UIImage(named: "guide0820_close_icon"))
+        closeImageView.contentMode = .scaleAspectFit
+        closeImageView.isUserInteractionEnabled = false
+        closeButton.addSubview(closeImageView)
 
         addSubview(titleLabel)
         addSubview(closeButton)
@@ -54,9 +57,15 @@ private extension Guide0820SheetHeaderView {
         }
 
         closeButton.snp.makeConstraints { make in
-            make.right.equalTo(kFitWidth(-16))
+//            make.right.equalTo(kFitWidth(-16))
+            make.right.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(40))
+            make.width.height.equalTo(kFitWidth(52))
+        }
+
+        closeImageView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.height.equalTo(kFitWidth(20))
         }
     }
 

@@ -153,6 +153,11 @@ private extension Guide0820StartVC {
 
     /// 进入目标方向采集流程。真实 VC 接入后在这里替换跳转。
     func startDirectionProfileStep() {
+        let vc = GuidanceGoalPlanVC()
+        vc.finishBlock = { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     /// 展示操作底部面板。
@@ -166,8 +171,9 @@ private extension Guide0820StartVC {
                 self?.handleOperationItem(item)
             }
         )
+        let sheetViewHeight = kFitWidth(239) + getBottomSafeAreaHeight() - kFitWidth(65)
         bottomSheetView.present(contentView: operationView,
-                                contentHeight: kFitWidth(272.5),
+                                contentHeight: sheetViewHeight,
                                 keyboardAvoidanceEnabled: false)
     }
 

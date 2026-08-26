@@ -19,14 +19,18 @@ final class Guide0820BodyProfileWeightVM: Guide0820BodyProfilePageVM {
     /// 当前体重值，单位为公斤。
     private var currentWeight = 60.0
 
-    /// 用户是否已经确认过体重。无历史值时保持下一步按钮禁用，贴近 MasterGo 初始态。
-    private var hasAcceptedCurrentWeight = false
-
     /// 当前体重值，单位为公斤。
     var currentWeightValue: Double { currentWeight }
 
-    /// 用户滑动或恢复体重后才允许进入下一步。
-    override var isStepValid: Bool { hasAcceptedCurrentWeight }
+    /// 应用性别页提供的默认体重。
+    func applyDefaultWeight(integer: Int, decimal: Int = 0) {
+        let value = Double(integer) + Double(decimal) / 10.0
+        updateWeight(min(max(value, 30), 300))
+        rulerView.setValue(currentWeight, animated: false, notifies: false)
+    }
+
+    /// 体重页使用默认体重值初始化，进入页面后即可继续下一步。
+    override var isStepValid: Bool { true }
 
     /// 顶部显示当前体重的富文本 Label。
     private let valueLabel = UILabel()
@@ -47,14 +51,14 @@ final class Guide0820BodyProfileWeightVM: Guide0820BodyProfilePageVM {
 
     /// 将当前体重写入问卷模型。
     override func commitCurrentValue() {
-        QuestinonaireMsgModel.shared.weight = String(format: "%.1f", currentWeight)
+        Guide0820Model.shared.weight = String(format: "%.1f", currentWeight)
     }
 
     /// 恢复本地保存的体重。
     func restore(weight: Double?) {
         guard let weight else { return }
         let safeWeight = min(max(weight, 30), 300)
-        updateWeight(safeWeight, marksValid: true)
+        updateWeight(safeWeight)
         DispatchQueue.main.async { [weak self] in
             self?.rulerView.setValue(safeWeight, animated: false, notifies: false)
         }
@@ -81,7 +85,7 @@ final class Guide0820BodyProfileWeightVM: Guide0820BodyProfilePageVM {
         rulerView.maxValue = 300
         rulerView.stepValue = 0.1
         rulerView.onValueChanged = { [weak self] value in
-            self?.updateWeight(value, marksValid: true)
+            self?.updateWeight(value)
         }
         addSubview(rulerView)
         rulerView.snp.makeConstraints { make in
@@ -102,7 +106,7 @@ final class Guide0820BodyProfileWeightVM: Guide0820BodyProfilePageVM {
             make.height.equalTo(guide0820Design(178))
         }
 
-        updateWeight(currentWeight, marksValid: false)
+        updateWeight(currentWeight)
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             self.rulerView.setValue(self.currentWeight, animated: false, notifies: false)
@@ -110,7 +114,7 @@ final class Guide0820BodyProfileWeightVM: Guide0820BodyProfilePageVM {
     }
 
     /// 更新体重富文本、提交模型并通知外部当前体重变化。
-    private func updateWeight(_ value: Double, marksValid: Bool) {
+    private func updateWeight(_ value: Double) {
         currentWeight = value
         let text = NSMutableAttributedString(string: String(format: "%.1f", value))
         text.addAttributes([
@@ -126,10 +130,6 @@ final class Guide0820BodyProfileWeightVM: Guide0820BodyProfilePageVM {
         )
         text.append(unit)
         valueLabel.attributedText = text
-        if marksValid, !hasAcceptedCurrentWeight {
-            hasAcceptedCurrentWeight = true
-            validityChanged?(isStepValid)
-        }
         commitCurrentValue()
         weightChangedBlock?(value)
     }

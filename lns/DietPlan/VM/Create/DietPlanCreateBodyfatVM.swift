@@ -8,6 +8,15 @@
 
 class DietPlanCreateBodyfatVM: UIView {
 
+    /// 体脂率选项所属性别和当前值的存储钩子；Guide0820 子类可注入独立模型。
+    var bodyFatSex: String { QuestinonaireMsgModel.shared.sex }
+
+    func setBodyFatModelValue(_ value: String) {
+        QuestinonaireMsgModel.shared.bodyFat = value
+    }
+
+    func commitCurrentValue() {}
+
     var selectIndex = -1
     var selectedBlock: (() -> ())?
     var showTipsBlock: (() -> ())?
@@ -150,19 +159,19 @@ extension DietPlanCreateBodyfatVM {
 
     func restoreSelection(modelValue: String, shouldCenterSelectedItem: Bool = true) {
         let normalizedValue = modelValue.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard QuestinonaireMsgModel.shared.sex == "1" || QuestinonaireMsgModel.shared.sex == "2" else {
+        guard bodyFatSex == "1" || bodyFatSex == "2" else {
             selectIndex = -1
             refreshSelectStatus()
-            QuestinonaireMsgModel.shared.bodyFat = ""
+            setBodyFatModelValue("")
             selectStateChangeBlock?(false)
             return
         }
-        let array = QuestinonaireMsgModel.shared.sex == "1" ? dataArray : dataFemanArray
+        let array = bodyFatSex == "1" ? dataArray : dataFemanArray
 
         guard let index = array.firstIndex(where: { ($0["data"] ?? "") == normalizedValue }) else {
             selectIndex = -1
             refreshSelectStatus()
-            QuestinonaireMsgModel.shared.bodyFat = ""
+            setBodyFatModelValue("")
             selectStateChangeBlock?(false)
             return
         }
@@ -255,14 +264,14 @@ extension DietPlanCreateBodyfatVM {
     func updateScrollView() {
         scrollView.subviews.forEach { $0.removeFromSuperview() }
         itemViews.removeAll()
-        QuestinonaireMsgModel.shared.bodyFat = ""
+        setBodyFatModelValue("")
         selectIndex = -1
         selectStateChangeBlock?(false)
 
         let array: [[String: String]]
-        if QuestinonaireMsgModel.shared.sex == "1" {
+        if bodyFatSex == "1" {
             array = dataArray
-        } else if QuestinonaireMsgModel.shared.sex == "2" {
+        } else if bodyFatSex == "2" {
             array = dataFemanArray
         } else {
             scrollView.contentSize = .zero
@@ -327,16 +336,16 @@ extension DietPlanCreateBodyfatVM {
     }
 
     func updateBodyFatValue(index: Int) {
-        guard QuestinonaireMsgModel.shared.sex == "1" || QuestinonaireMsgModel.shared.sex == "2" else {
-            QuestinonaireMsgModel.shared.bodyFat = ""
+        guard bodyFatSex == "1" || bodyFatSex == "2" else {
+            setBodyFatModelValue("")
             return
         }
-        let array = QuestinonaireMsgModel.shared.sex == "1" ? dataArray : dataFemanArray
+        let array = bodyFatSex == "1" ? dataArray : dataFemanArray
         guard index >= 0 && index < array.count else {
-            QuestinonaireMsgModel.shared.bodyFat = ""
+            setBodyFatModelValue("")
             return
         }
-        QuestinonaireMsgModel.shared.bodyFat = array[index]["data"] ?? ""
+        setBodyFatModelValue(array[index]["data"] ?? "")
     }
 
 }

@@ -99,6 +99,20 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
 
     private lazy var sexVm: Guide0820BodyProfileSexVM = {
         let vm = Guide0820BodyProfileSexVM(frame: .zero)
+        vm.sexChangedBlock = { [weak self] sex in
+            guard let self else { return }
+            switch sex {
+            case "1":
+                self.heightVm.applyDefaultHeight(170)
+                self.weightVm.applyDefaultWeight(integer: 70)
+            case "2":
+                self.heightVm.applyDefaultHeight(160)
+                self.weightVm.applyDefaultWeight(integer: 50)
+            default:
+                break
+            }
+            self.bodyfatVm.updateScrollView()
+        }
         vm.showTipsBlock = { [weak self] in
             self?.sexIntroVm.show()
         }
@@ -370,10 +384,11 @@ private extension Guide0820BodyProfileVC {
     }
 
     @objc func nextButtonAction() {
+        commitCurrentPage()
         if currentIndex == pages.count - 1 {
             persistCompletedBodyProfile()
             Guide0820ProgressStorage.markStepCompleted(.bodyProfile)
-            QuestinonaireMsgModel.shared.printModelMsg()
+            Guide0820Model.shared.printModelMsg()
             navigationController?.popViewController(animated: true)
             return
         }
@@ -384,6 +399,7 @@ private extension Guide0820BodyProfileVC {
     /// 恢复本地保存的身体资料进度。
     func restoreSavedProgress() {
         performWithoutProgressPersistence {
+            Guide0820ProgressStorage.restoreBodyProfileToGuide0820Model()
             sexVm.restore(selectedSex: Guide0820ProgressStorage.bodyProfileSex)
             yearVm.restore(birthYear: Guide0820ProgressStorage.bodyProfileBirthYear)
             heightVm.restore(height: Guide0820ProgressStorage.bodyProfileHeight)
@@ -406,18 +422,22 @@ private extension Guide0820BodyProfileVC {
                 pageVM.commitCurrentValue()
             } else if let pageVM = page as? Guide0820BodyProfileYearVM {
                 pageVM.commitCurrentValue()
+            } else if let pageVM = page as? Guide0820BodyProfileBodyfatVM {
+                pageVM.commitCurrentValue()
             }
         }
+        Guide0820ProgressStorage.saveBodyProfileFromGuide0820Model()
+    }
 
-        Guide0820ProgressStorage.saveBodyProfile(
-            sex: sexVm.selectedSex,
-            birthYear: yearVm.currentBirthYear,
-            height: heightVm.currentValue,
-            weight: weightVm.currentWeightValue,
-            weightExceeded: weightExceededVm.selectedAnswerValue,
-            weightTrend: weightTrendVm.selectedTrendValue,
-            bodyFat: bodyfatVm.selectedBodyFatValue
-        )
+    /// 完成当前页时先把页面状态同步到 Guide0820Model。
+    func commitCurrentPage() {
+        if let pageVM = pages[currentIndex] as? Guide0820BodyProfilePageVM {
+            pageVM.commitCurrentValue()
+        } else if let pageVM = pages[currentIndex] as? Guide0820BodyProfileYearVM {
+            pageVM.commitCurrentValue()
+        } else if let pageVM = pages[currentIndex] as? Guide0820BodyProfileBodyfatVM {
+            pageVM.commitCurrentValue()
+        }
     }
 
     func restoreBodyFatSelectionFromStorage(shouldCenterSelectedItem: Bool) {

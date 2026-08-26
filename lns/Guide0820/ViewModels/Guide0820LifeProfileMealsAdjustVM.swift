@@ -108,15 +108,15 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
 
     override func commitCurrentValue() {
         if let selectedAdjustValue {
-            QuestinonaireMsgModel.shared.guidanceMealsPerDayType = selectedAdjustValue
-            QuestinonaireMsgModel.shared.guidanceMealsAdjustType = selectedAdjustValue
+            Guide0820Model.shared.guidanceMealsPerDayType = selectedAdjustValue
+            Guide0820Model.shared.guidanceMealsAdjustType = selectedAdjustValue
         }
     }
 
     func refreshSelectionFromModel() {
-        let selectedValue = QuestinonaireMsgModel.shared.guidanceMealsAdjustType.isEmpty
-            ? QuestinonaireMsgModel.shared.guidanceMealsPerDayType
-            : QuestinonaireMsgModel.shared.guidanceMealsAdjustType
+        let selectedValue = Guide0820Model.shared.guidanceMealsAdjustType.isEmpty
+            ? Guide0820Model.shared.guidanceMealsPerDayType
+            : Guide0820Model.shared.guidanceMealsAdjustType
         if let index = dataArray.firstIndex(where: { $0.value == selectedValue }) {
             applySelection(index: index, notify: false)
         } else {

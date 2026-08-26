@@ -20,9 +20,9 @@ final class Guide0820BodyProfileBodyfatVM: DietPlanCreateBodyfatVM {
     var selectedBodyFatValue: String? {
         guard selectIndex >= 0 else { return nil }
         let sourceArray: [[String: String]]
-        if QuestinonaireMsgModel.shared.sex == "1" {
+        if Guide0820Model.shared.sex == "1" {
             sourceArray = dataArray
-        } else if QuestinonaireMsgModel.shared.sex == "2" {
+        } else if Guide0820Model.shared.sex == "2" {
             sourceArray = dataFemanArray
         } else {
             return nil
@@ -30,6 +30,16 @@ final class Guide0820BodyProfileBodyfatVM: DietPlanCreateBodyfatVM {
         guard selectIndex < sourceArray.count else { return nil }
         let value = (sourceArray[selectIndex]["data"] ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         return value.isEmpty ? nil : value
+    }
+
+    override var bodyFatSex: String { Guide0820Model.shared.sex }
+
+    override func setBodyFatModelValue(_ value: String) {
+        Guide0820Model.shared.bodyFat = value
+    }
+
+    override func commitCurrentValue() {
+        updateBodyFatValue(index: selectIndex)
     }
 
     /// 初始化并覆盖旧体脂 VM 的默认视觉布局。

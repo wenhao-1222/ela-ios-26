@@ -33,7 +33,7 @@ final class Guide0820BodyProfileYearVM: DietPlanCreateYearVM {
     /// 将当前 pickerView 选中的出生年份写入问卷模型。
     func commitCurrentValue() {
         getBirthDayData()
-        QuestinonaireMsgModel.shared.birthDay = QuestinonaireMsgModel.shared.birthYear
+        Guide0820Model.shared.birthDay = Guide0820Model.shared.birthYear
     }
 
     /// 页面显示钩子，保留给外层流程统一调用。
@@ -41,16 +41,16 @@ final class Guide0820BodyProfileYearVM: DietPlanCreateYearVM {
 
     /// 用户滚动年份后实时同步到本地进度。
     override func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        QuestinonaireMsgModel.shared.birthYear = "\(yearDataArray[row] as? Int ?? 0)"
-        QuestinonaireMsgModel.shared.birthDay = QuestinonaireMsgModel.shared.birthYear
-        DLLog(message: "生日：\(QuestinonaireMsgModel.shared.birthYear)")
-        birthYearChangedBlock?(QuestinonaireMsgModel.shared.birthYear)
+        Guide0820Model.shared.birthYear = "\(yearDataArray[row] as? Int ?? 0)"
+        Guide0820Model.shared.birthDay = Guide0820Model.shared.birthYear
+        DLLog(message: "生日：\(Guide0820Model.shared.birthYear)")
+        birthYearChangedBlock?(Guide0820Model.shared.birthYear)
     }
 
     /// 当前选中的出生年份。
     var currentBirthYear: String {
         getBirthDayData()
-        return QuestinonaireMsgModel.shared.birthYear
+        return Guide0820Model.shared.birthYear
     }
 
     /// 恢复本地保存的出生年份。
@@ -60,8 +60,8 @@ final class Guide0820BodyProfileYearVM: DietPlanCreateYearVM {
               let yearArray = yearDataArray as? [Int],
               let index = yearArray.firstIndex(of: targetYear) else { return }
         pickerView.selectRow(index, inComponent: 0, animated: false)
-        QuestinonaireMsgModel.shared.birthYear = birthYear
-        QuestinonaireMsgModel.shared.birthDay = birthYear
+        Guide0820Model.shared.birthYear = birthYear
+        Guide0820Model.shared.birthDay = birthYear
     }
 
     override func layoutSubviews() {

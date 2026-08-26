@@ -16,15 +16,6 @@ final class Guide0820OperationSheetVM {
     var items: [Guide0820OperationItem] {
         [
             Guide0820OperationItem(
-                identifier: .sourceInput,
-                title: "你怎么知道我们的？",
-                iconName: "guide0820_source_operation_icon",
-                iconColor: .COLOR_TEXT_TITLE_0f1214,
-                titleColor: .COLOR_TEXT_TITLE_0f1214,
-                showsDisclosure: true,
-                isEnabled: Guide0820FeatureSwitches.isSourceOperationEnabled
-            ),
-            Guide0820OperationItem(
                 identifier: .clearData,
                 title: "清空数据 & 进度",
                 iconName: "guide0820_delete_icon",
@@ -35,4 +26,26 @@ final class Guide0820OperationSheetVM {
             )
         ]
     }
+//    var items: [Guide0820OperationItem] {
+//        [
+//            Guide0820OperationItem(
+//                identifier: .sourceInput,
+//                title: "你怎么知道我们的？",
+//                iconName: "guide0820_source_operation_icon",
+//                iconColor: .COLOR_TEXT_TITLE_0f1214,
+//                titleColor: .COLOR_TEXT_TITLE_0f1214,
+//                showsDisclosure: true,
+//                isEnabled: Guide0820FeatureSwitches.isSourceOperationEnabled
+//            ),
+//            Guide0820OperationItem(
+//                identifier: .clearData,
+//                title: "清空数据 & 进度",
+//                iconName: "guide0820_delete_icon",
+//                iconColor: .systemRed,
+//                titleColor: .systemRed,
+//                showsDisclosure: false,
+//                isEnabled: true
+//            )
+//        ]
+//    }
 }

@@ -28,15 +28,25 @@ final class Guide0820BodyProfileOptionCard: UIControl {
     /// 右侧选择圆点视图。
     private let selectCircle = UIView()
 
+    /// 使用图片资源展示选中态时的按钮视图。
+    private let checkImageView = UIImageView()
+
+    /// 是否使用通用的图片选中态。
+    private let usesCheckStateImages: Bool
+
+    /// 避免显式设置动画状态时重复刷新。
+    private var isApplyingSelectedState = false
+
     /// 当前选项提交值。
     var value: String { item.value }
 
     /// 使用选项数据初始化卡片。
-    init(item: Guide0820BodyProfileOption) {
+    init(item: Guide0820BodyProfileOption, usesCheckStateImages: Bool = false) {
         self.item = item
+        self.usesCheckStateImages = usesCheckStateImages
         super.init(frame: .zero)
         initUI()
-        updateSelectedState(false)
+        updateSelectedState(animated: false)
     }
 
     /// Storyboard 初始化入口，本控件不支持。
@@ -46,7 +56,18 @@ final class Guide0820BodyProfileOptionCard: UIControl {
 
     /// 选中态变化时刷新右侧圆点。
     override var isSelected: Bool {
-        didSet { updateSelectedState(isSelected) }
+        didSet {
+            guard !isApplyingSelectedState else { return }
+            updateSelectedState(animated: false)
+        }
+    }
+
+    /// 设置卡片选中态，并控制选中按钮是否播放动画。
+    func setSelected(_ selected: Bool, animated: Bool) {
+        isApplyingSelectedState = true
+        super.isSelected = selected
+        updateSelectedState(animated: animated)
+        isApplyingSelectedState = false
     }
 
     /// 按 MasterGo 设计稿创建卡片内部视图和约束。
@@ -78,12 +99,18 @@ final class Guide0820BodyProfileOptionCard: UIControl {
         selectCircle.backgroundColor = .clear
         selectCircle.layer.borderWidth = guide0820Design(3)
         selectCircle.layer.cornerRadius = guide0820Design(24)
+        selectCircle.isHidden = usesCheckStateImages
+
+        checkImageView.contentMode = .scaleAspectFit
+        checkImageView.isUserInteractionEnabled = false
+        checkImageView.isHidden = !usesCheckStateImages
 
         let iconView: UIView = item.iconName == nil ? iconLabel : iconImageView
         addSubview(iconView)
         addSubview(titleLabel)
         addSubview(subtitleLabel)
         addSubview(selectCircle)
+        addSubview(checkImageView)
 
         iconView.snp.makeConstraints { make in
             make.left.equalTo(guide0820Design(32))
@@ -112,10 +139,23 @@ final class Guide0820BodyProfileOptionCard: UIControl {
             make.centerY.equalToSuperview()
             make.width.height.equalTo(guide0820Design(48))
         }
+
+        checkImageView.snp.makeConstraints { make in
+            make.edges.equalTo(selectCircle)
+        }
     }
 
     /// 根据选中态更新圆点边框、背景和对勾。
-    private func updateSelectedState(_ selected: Bool) {
+    private func updateSelectedState(animated: Bool) {
+        if usesCheckStateImages {
+            checkImageView.setCheckState(isSelected,
+                                         checkedImageName: "select_icon_selected_circle",
+                                         uncheckedImageName: "select_icon_normal_circle",
+                                         animated: animated)
+            return
+        }
+
+        let selected = isSelected
         selectCircle.layer.borderColor = selected ? UIColor.THEME.cgColor : UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.15).cgColor
         selectCircle.backgroundColor = selected ? .THEME : .clear
         if selected {

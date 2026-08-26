@@ -47,16 +47,16 @@ final class VCStartStepRow: UIView {
 private extension VCStartStepRow {
     /// 初始化步骤行布局。
     func initUI() {
-        numberView.backgroundColor = vm.isNumberHighlighted ? .THEME : UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.06)
+        numberView.backgroundColor = vm.isNumberHighlighted ? .THEME : UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.05)
         numberView.layer.cornerRadius = kFitWidth(17)
-        lineView.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.06)
+        lineView.backgroundColor = UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.05)
         lineView.isHidden = showsBottomLine == false
 
         numberLabel.text = vm.number
         numberLabel.textAlignment = .center
         numberLabel.isHidden = vm.isCompleted
         numberLabel.textColor = vm.isNumberHighlighted ? .white : .COLOR_TEXT_TITLE_0f1214
-        numberLabel.font = .systemFont(ofSize: kFitWidth(14), weight: vm.isNumberHighlighted ? .medium : .regular)
+        numberLabel.font = .systemFont(ofSize: kFitWidth(14), weight: vm.isActive ? .medium : .regular)
 
         checkImageView.image = UIImage(named: "guide0820_button_check_icon")?.withRenderingMode(.alwaysTemplate)
         checkImageView.tintColor = .COLOR_TEXT_WHITE
@@ -65,7 +65,7 @@ private extension VCStartStepRow {
 
         titleLabel.text = vm.title
         titleLabel.textColor = vm.isNumberHighlighted ? .COLOR_TEXT_TITLE_0f1214 : .COLOR_TEXT_TITLE_0f1214_50
-        titleLabel.font = .systemFont(ofSize: kFitWidth(14), weight: vm.isActive ? .medium : .regular)
+        titleLabel.font = .systemFont(ofSize: kFitWidth(14), weight: vm.isNumberHighlighted ? .medium : .regular)
         titleLabel.guide0820SetLineHeight(kFitWidth(21))
 
         detailLabel.text = vm.detail

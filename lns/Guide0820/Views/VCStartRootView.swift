@@ -101,43 +101,90 @@ private extension VCStartRootView {
 
     /// 创建步骤行。
     func buildStepRows() {
-        var previousRow: VCStartStepRow?
         let steps = vm.steps
         let activeIndex = steps.firstIndex { $0.isActive } ?? 0
+        let layout = stepLayout(activeIndex: activeIndex)
+
+        buildStepLines(activeIndex: activeIndex, layout: layout)
+
         steps.enumerated().forEach { index, step in
-            let row = VCStartStepRow(vm: step, showsBottomLine: index < steps.count - 1)
+            let row = VCStartStepRow(vm: step, showsBottomLine: false)
             stepsContainerView.addSubview(row)
             row.snp.makeConstraints { make in
                 make.left.right.equalToSuperview()
-                if let previousRow = previousRow {
-                    make.top.equalTo(previousRow.snp.bottom)
-                } else {
-                    make.top.equalToSuperview()
-                }
-                make.height.equalTo(rowHeight(index: index, activeIndex: activeIndex, totalCount: steps.count))
-                if index == steps.count - 1 {
-                    make.bottom.lessThanOrEqualToSuperview()
-                }
+                make.top.equalToSuperview().offset(layout.rowTopOffsets[index])
+                make.height.equalTo(rowContentHeight(isActive: step.isActive))
             }
-            previousRow = row
         }
     }
 
     /// 当前步骤列表总高度。
     func stepsContainerHeight() -> CGFloat {
-        let steps = vm.steps
-        let activeIndex = steps.firstIndex { $0.isActive } ?? 0
-        return steps.indices.reduce(0) { $0 + rowHeight(index: $1, activeIndex: activeIndex, totalCount: steps.count) }
+        let activeIndex = vm.steps.firstIndex { $0.isActive } ?? 0
+        return stepLayout(activeIndex: activeIndex).containerHeight
     }
 
-    /// 单行步骤高度。
-    func rowHeight(index: Int, activeIndex: Int, totalCount: Int) -> CGFloat {
-        if index == activeIndex {
-            return kFitWidth(105.5)
-        } else if index < totalCount - 1 {
-            return kFitWidth(64)
-        } else {
-            return kFitWidth(34)
+    /// 绘制步骤之间的连接线。
+    func buildStepLines(activeIndex: Int, layout: StepLayout) {
+        layout.lineFrames.enumerated().forEach { index, frame in
+            let lineView = UIView()
+            lineView.backgroundColor = index < activeIndex
+                ? .THEME
+                : UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.05)
+            stepsContainerView.addSubview(lineView)
+            lineView.snp.makeConstraints { make in
+                make.left.equalToSuperview().offset(frame.minX)
+                make.top.equalToSuperview().offset(frame.minY)
+                make.width.equalTo(frame.width)
+                make.height.equalTo(frame.height)
+            }
         }
     }
+
+    /// 单个步骤行的内容高度。
+    func rowContentHeight(isActive: Bool) -> CGFloat {
+        isActive ? kFitWidth(77) : kFitWidth(34)
+    }
+
+    /// 根据当前主步骤匹配 MasterGo 三个状态的固定布局。
+    func stepLayout(activeIndex: Int) -> StepLayout {
+        let lineX = kFitWidth(16.5)
+        let lineWidth = kFitWidth(2)
+
+        switch activeIndex {
+        case 1:
+            return StepLayout(
+                rowTopOffsets: [kFitWidth(0), kFitWidth(52.5), kFitWidth(148)],
+                lineFrames: [
+                    CGRect(x: lineX, y: kFitWidth(33), width: lineWidth, height: kFitWidth(41)),
+                    CGRect(x: lineX, y: kFitWidth(108), width: lineWidth, height: kFitWidth(40))
+                ],
+                containerHeight: kFitWidth(182)
+            )
+        case 2:
+            return StepLayout(
+                rowTopOffsets: [kFitWidth(0), kFitWidth(74), kFitWidth(128)],
+                lineFrames: [
+                    CGRect(x: lineX, y: kFitWidth(33), width: lineWidth, height: kFitWidth(41)),
+                    CGRect(x: lineX, y: kFitWidth(108), width: lineWidth, height: kFitWidth(40))
+                ],
+                containerHeight: kFitWidth(205)
+            )
+        default:
+            return StepLayout(
+                rowTopOffsets: [kFitWidth(0), kFitWidth(105.5), kFitWidth(169.5)],
+                lineFrames: [
+                    CGRect(x: lineX, y: kFitWidth(54.5), width: lineWidth, height: kFitWidth(51)),
+                    CGRect(x: lineX, y: kFitWidth(139.5), width: lineWidth, height: kFitWidth(30))
+                ],
+                containerHeight: kFitWidth(203.5)
+            )
+        }
+    }
+}
+
+private struct StepLayout {
+    let rowTopOffsets: [CGFloat]
+    let lineFrames: [CGRect]
+    let containerHeight: CGFloat
 }

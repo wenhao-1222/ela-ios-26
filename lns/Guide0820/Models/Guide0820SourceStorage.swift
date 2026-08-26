@@ -66,6 +66,17 @@ enum Guide0820ProgressStorage {
         static let lifeProfileCompleted = "guide_0820_life_profile_completed"
         static let directionProfileCurrentPageIndex = "guide_0820_direction_profile_current_page_index"
         static let directionProfileCompleted = "guide_0820_direction_profile_completed"
+        static let directionProfileTarget = "guide_0820_direction_profile_target"
+        static let directionProfileMuscleGainBarrier = "guide_0820_direction_profile_muscle_gain_barrier"
+        static let directionProfileMuscleGainMode = "guide_0820_direction_profile_muscle_gain_mode"
+        static let directionProfileMuscleGainDurationWeeks = "guide_0820_direction_profile_muscle_gain_duration_weeks"
+        static let directionProfileMuscleGainProfile = "guide_0820_direction_profile_muscle_gain_profile"
+        static let directionProfileMuscleGainProteinHabit = "guide_0820_direction_profile_muscle_gain_protein_habit"
+        static let directionProfileFatLossFoodFluctuation = "guide_0820_direction_profile_fat_loss_food_fluctuation"
+        static let directionProfileFatLossMode = "guide_0820_direction_profile_fat_loss_mode"
+        static let directionProfileFatLossDurationWeeks = "guide_0820_direction_profile_fat_loss_duration_weeks"
+        static let directionProfileFatLossProfile = "guide_0820_direction_profile_fat_loss_profile"
+        static let directionProfileFatLossProteinHabit = "guide_0820_direction_profile_fat_loss_protein_habit"
 
         static let bodySex = "guide_0820_body_profile_sex"
         static let bodyBirthYear = "guide_0820_body_profile_birth_year"
@@ -160,6 +171,45 @@ enum Guide0820ProgressStorage {
         Guide0820DefaultsFlusher.flush()
     }
 
+    static func saveDirectionProfile(flowState: GuidanceGoalPlanFlowState) {
+        setString(flowState.target?.rawValue, forKey: Key.directionProfileTarget)
+        setString(flowState.muscleGainBarrier, forKey: Key.directionProfileMuscleGainBarrier)
+        setString(flowState.muscleGainMode, forKey: Key.directionProfileMuscleGainMode)
+        if flowState.muscleGainDurationWeeks > 0 {
+            UserDefaults.standard.set(flowState.muscleGainDurationWeeks, forKey: Key.directionProfileMuscleGainDurationWeeks)
+        }
+        setString(flowState.muscleGainProfile, forKey: Key.directionProfileMuscleGainProfile)
+        setString(flowState.muscleGainProteinHabit, forKey: Key.directionProfileMuscleGainProteinHabit)
+        setString(flowState.fatLossFoodFluctuation, forKey: Key.directionProfileFatLossFoodFluctuation)
+        setString(flowState.fatLossMode, forKey: Key.directionProfileFatLossMode)
+        if flowState.fatLossDurationWeeks > 0 {
+            UserDefaults.standard.set(flowState.fatLossDurationWeeks, forKey: Key.directionProfileFatLossDurationWeeks)
+        }
+        setString(flowState.fatLossProfile, forKey: Key.directionProfileFatLossProfile)
+        setString(flowState.fatLossProteinHabit, forKey: Key.directionProfileFatLossProteinHabit)
+        Guide0820DefaultsFlusher.flush()
+    }
+
+    static func restoreDirectionProfile(flowState: GuidanceGoalPlanFlowState) {
+        if let target = storedString(forKey: Key.directionProfileTarget) {
+            flowState.target = GuidanceGoalPlanTarget(rawValue: target)
+        }
+        flowState.muscleGainBarrier = storedString(forKey: Key.directionProfileMuscleGainBarrier) ?? flowState.muscleGainBarrier
+        flowState.muscleGainMode = storedString(forKey: Key.directionProfileMuscleGainMode) ?? flowState.muscleGainMode
+        if UserDefaults.standard.object(forKey: Key.directionProfileMuscleGainDurationWeeks) != nil {
+            flowState.muscleGainDurationWeeks = UserDefaults.standard.integer(forKey: Key.directionProfileMuscleGainDurationWeeks)
+        }
+        flowState.muscleGainProfile = storedString(forKey: Key.directionProfileMuscleGainProfile) ?? flowState.muscleGainProfile
+        flowState.muscleGainProteinHabit = storedString(forKey: Key.directionProfileMuscleGainProteinHabit) ?? flowState.muscleGainProteinHabit
+        flowState.fatLossFoodFluctuation = storedString(forKey: Key.directionProfileFatLossFoodFluctuation) ?? flowState.fatLossFoodFluctuation
+        flowState.fatLossMode = storedString(forKey: Key.directionProfileFatLossMode) ?? flowState.fatLossMode
+        if UserDefaults.standard.object(forKey: Key.directionProfileFatLossDurationWeeks) != nil {
+            flowState.fatLossDurationWeeks = UserDefaults.standard.integer(forKey: Key.directionProfileFatLossDurationWeeks)
+        }
+        flowState.fatLossProfile = storedString(forKey: Key.directionProfileFatLossProfile) ?? flowState.fatLossProfile
+        flowState.fatLossProteinHabit = storedString(forKey: Key.directionProfileFatLossProteinHabit) ?? flowState.fatLossProteinHabit
+    }
+
     static func saveBodyProfile(sex: String?,
                                 birthYear: String?,
                                 height: Int?,
@@ -179,6 +229,33 @@ enum Guide0820ProgressStorage {
         setString(weightTrend, forKey: Key.bodyWeightTrend)
         setString(bodyFat, forKey: Key.bodyFat)
         Guide0820DefaultsFlusher.flush()
+    }
+
+    /// 保存 Guide0820 身体资料模型，保留现有草稿 key 以兼容历史草稿。
+    static func saveBodyProfileFromGuide0820Model() {
+        let model = Guide0820Model.shared
+        saveBodyProfile(
+            sex: model.sex,
+            birthYear: model.birthYear.isEmpty ? model.birthDay : model.birthYear,
+            height: Int(model.height),
+            weight: Double(model.weight),
+            weightExceeded: model.guidanceBodyWeightExceededType,
+            weightTrend: model.guidanceRecentWeightTrendType,
+            bodyFat: model.bodyFat
+        )
+    }
+
+    /// 将现有身体资料草稿恢复到 Guide0820 独立模型。
+    static func restoreBodyProfileToGuide0820Model() {
+        let model = Guide0820Model.shared
+        model.sex = bodyProfileSex ?? model.sex
+        model.birthYear = bodyProfileBirthYear ?? model.birthYear
+        model.birthDay = model.birthYear
+        if let height = bodyProfileHeight { model.height = "\(height)" }
+        if let weight = bodyProfileWeight { model.weight = String(format: "%.1f", weight) }
+        model.guidanceBodyWeightExceededType = bodyProfileWeightExceeded ?? model.guidanceBodyWeightExceededType
+        model.guidanceRecentWeightTrendType = bodyProfileWeightTrend ?? model.guidanceRecentWeightTrendType
+        model.bodyFat = bodyProfileBodyFat ?? model.bodyFat
     }
 
     static var bodyProfileSex: String? { storedString(forKey: Key.bodySex) }
@@ -210,8 +287,8 @@ enum Guide0820ProgressStorage {
         Guide0820DefaultsFlusher.flush()
     }
 
-    static func saveLifeProfileFromQuestionnaireModel() {
-        let model = QuestinonaireMsgModel.shared
+    static func saveLifeProfileFromGuide0820Model() {
+        let model = Guide0820Model.shared
         saveLifeProfile(
             takeoutFrequency: model.guidanceTakeoutFrequencyType,
             mealsPerDay: model.guidanceMealsPerDayType,
@@ -223,8 +300,8 @@ enum Guide0820ProgressStorage {
         )
     }
 
-    static func restoreLifeProfileToQuestionnaireModel() {
-        let model = QuestinonaireMsgModel.shared
+    static func restoreLifeProfileToGuide0820Model() {
+        let model = Guide0820Model.shared
         model.guidanceTakeoutFrequencyType = lifeProfileTakeoutFrequency ?? model.guidanceTakeoutFrequencyType
         model.guidanceMealsPerDayType = lifeProfileMealsPerDay ?? model.guidanceMealsPerDayType
         model.guidanceMealsAdjustType = lifeProfileMealsAdjust ?? model.guidanceMealsAdjustType
@@ -273,10 +350,30 @@ enum Guide0820ProgressStorage {
         }
     }
 
+    static var hasDirectionProfileProgress: Bool {
+        [
+            Key.directionProfileCurrentPageIndex,
+            Key.directionProfileTarget,
+            Key.directionProfileMuscleGainBarrier,
+            Key.directionProfileMuscleGainMode,
+            Key.directionProfileMuscleGainDurationWeeks,
+            Key.directionProfileMuscleGainProfile,
+            Key.directionProfileMuscleGainProteinHabit,
+            Key.directionProfileFatLossFoodFluctuation,
+            Key.directionProfileFatLossMode,
+            Key.directionProfileFatLossDurationWeeks,
+            Key.directionProfileFatLossProfile,
+            Key.directionProfileFatLossProteinHabit
+        ].contains {
+            UserDefaults.standard.object(forKey: $0) != nil
+        }
+    }
+
     static var shouldResumeGuide0820: Bool {
         Guide0820SourceStorage.hasStoredSelection ||
         (hasBodyProfileProgress && isStepCompleted(.bodyProfile) == false) ||
-        (hasLifeProfileProgress && isStepCompleted(.lifeProfile) == false)
+        (hasLifeProfileProgress && isStepCompleted(.lifeProfile) == false) ||
+        (hasDirectionProfileProgress && isStepCompleted(.directionProfile) == false)
     }
 
     static func clearAll() {
@@ -303,12 +400,23 @@ enum Guide0820ProgressStorage {
             Key.lifeCardioFrequency,
             Key.lifeStrengthTrainingFrequency,
             Key.lifeCaloriesNumber,
+            Key.directionProfileTarget,
+            Key.directionProfileMuscleGainBarrier,
+            Key.directionProfileMuscleGainMode,
+            Key.directionProfileMuscleGainDurationWeeks,
+            Key.directionProfileMuscleGainProfile,
+            Key.directionProfileMuscleGainProteinHabit,
+            Key.directionProfileFatLossFoodFluctuation,
+            Key.directionProfileFatLossMode,
+            Key.directionProfileFatLossDurationWeeks,
+            Key.directionProfileFatLossProfile,
+            Key.directionProfileFatLossProteinHabit,
             Guide0820VC.hasShownKey
         ].forEach {
             UserDefaults.standard.removeObject(forKey: $0)
         }
         Guide0820DefaultsFlusher.flush()
-        QuestinonaireMsgModel.shared.clearMsg()
+        Guide0820Model.shared.clear()
     }
 }
 

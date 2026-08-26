@@ -60,7 +60,7 @@ private extension Guide0820OperationRow {
         iconView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(17.5))
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(15))
+            make.width.height.equalTo(kFitWidth(30))
         }
 
         titleLabel.snp.makeConstraints { make in

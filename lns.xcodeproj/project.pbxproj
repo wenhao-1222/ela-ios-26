@@ -68,6 +68,24 @@
 		A70823322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift */; };
 		A70823342F70000000000034 /* Guide0820LifeProfilePageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822342F70000000000034 /* Guide0820LifeProfilePageVM.swift */; };
 		A70823352F70000000000035 /* Guide0820LifeProfileMealsAdjustVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70822352F70000000000035 /* Guide0820LifeProfileMealsAdjustVM.swift */; };
+		A7CF10132FABCDEF00000013 /* Guide0820Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10122FABCDEF00000012 /* Guide0820Model.swift */; };
+		A7CF11012FABCDEF00000001 /* GuidanceGoalPlanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10012FABCDEF00000001 /* GuidanceGoalPlanVC.swift */; };
+		A7CF11022FABCDEF00000002 /* GuidanceGoalPlanModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10022FABCDEF00000002 /* GuidanceGoalPlanModels.swift */; };
+		A7CF11032FABCDEF00000003 /* GuidanceGoalPlanOptionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10032FABCDEF00000003 /* GuidanceGoalPlanOptionCardView.swift */; };
+		A7CF11042FABCDEF00000004 /* GuidanceGoalPlanChoicePageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10042FABCDEF00000004 /* GuidanceGoalPlanChoicePageVM.swift */; };
+		A7CF11052FABCDEF00000005 /* GuidanceGoalPlanDurationPageVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10052FABCDEF00000005 /* GuidanceGoalPlanDurationPageVM.swift */; };
+		A7CF11062FABCDEF00000006 /* GuidanceGoalPlanGoalVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10062FABCDEF00000006 /* GuidanceGoalPlanGoalVM.swift */; };
+		A7CF11072FABCDEF00000007 /* GuidanceGoalPlanMuscleGainBarrierVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10072FABCDEF00000007 /* GuidanceGoalPlanMuscleGainBarrierVM.swift */; };
+		A7CF11082FABCDEF00000008 /* GuidanceGoalPlanMuscleGainModeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10082FABCDEF00000008 /* GuidanceGoalPlanMuscleGainModeVM.swift */; };
+		A7CF11092FABCDEF00000009 /* GuidanceGoalPlanMuscleGainDurationVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10092FABCDEF00000009 /* GuidanceGoalPlanMuscleGainDurationVM.swift */; };
+		A7CF110A2FABCDEF0000000A /* GuidanceGoalPlanMuscleGainProfileVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF100A2FABCDEF0000000A /* GuidanceGoalPlanMuscleGainProfileVM.swift */; };
+		A7CF110B2FABCDEF0000000B /* GuidanceGoalPlanMuscleGainProteinHabitVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF100B2FABCDEF0000000B /* GuidanceGoalPlanMuscleGainProteinHabitVM.swift */; };
+		A7CF110C2FABCDEF0000000C /* GuidanceGoalPlanFatLossFoodFluctuationVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF100C2FABCDEF0000000C /* GuidanceGoalPlanFatLossFoodFluctuationVM.swift */; };
+		A7CF110D2FABCDEF0000000D /* GuidanceGoalPlanFatLossModeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF100D2FABCDEF0000000D /* GuidanceGoalPlanFatLossModeVM.swift */; };
+		A7CF110E2FABCDEF0000000E /* GuidanceGoalPlanFatLossDurationVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF100E2FABCDEF0000000E /* GuidanceGoalPlanFatLossDurationVM.swift */; };
+		A7CF110F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF100F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift */; };
+		A7CF11102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift */; };
+		A7CF11112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift */; };
 		A7092D132E4EE02D005A2087 /* ArticlesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D122E4EE02C005A2087 /* ArticlesVC.swift */; };
 		A7092D152E4EE093005A2087 /* ArticlesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */; };
 		A7092D172E4EE0D5005A2087 /* SkeletonKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */; };
@@ -1589,6 +1607,7 @@
 		A70822212F70000000000021 /* VCStartStepRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCStartStepRow.swift; sourceTree = "<group>"; };
 		A70822222F70000000000022 /* Guide0820BodyProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileVC.swift; sourceTree = "<group>"; };
 		A70822332F70000000000033 /* Guide0820LifeProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820LifeProfileVC.swift; sourceTree = "<group>"; };
+		A7CF10122FABCDEF00000012 /* Guide0820Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820Model.swift; sourceTree = "<group>"; };
 		A70822252F70000000000025 /* Guide0820BodyProfileLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileLayout.swift; sourceTree = "<group>"; };
 		A70822262F70000000000026 /* Guide0820BodyProfilePageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfilePageVM.swift; sourceTree = "<group>"; };
 		A70822272F70000000000027 /* Guide0820BodyProfileSexVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileSexVM.swift; sourceTree = "<group>"; };
@@ -1604,6 +1623,23 @@
 		A70822322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820BodyProfileIntroOverlayVM.swift; sourceTree = "<group>"; };
 		A70822342F70000000000034 /* Guide0820LifeProfilePageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820LifeProfilePageVM.swift; sourceTree = "<group>"; };
 		A70822352F70000000000035 /* Guide0820LifeProfileMealsAdjustVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820LifeProfileMealsAdjustVM.swift; sourceTree = "<group>"; };
+		A7CF10012FABCDEF00000001 /* GuidanceGoalPlanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanVC.swift; sourceTree = "<group>"; };
+		A7CF10022FABCDEF00000002 /* GuidanceGoalPlanModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanModels.swift; sourceTree = "<group>"; };
+		A7CF10032FABCDEF00000003 /* GuidanceGoalPlanOptionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanOptionCardView.swift; sourceTree = "<group>"; };
+		A7CF10042FABCDEF00000004 /* GuidanceGoalPlanChoicePageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanChoicePageVM.swift; sourceTree = "<group>"; };
+		A7CF10052FABCDEF00000005 /* GuidanceGoalPlanDurationPageVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanDurationPageVM.swift; sourceTree = "<group>"; };
+		A7CF10062FABCDEF00000006 /* GuidanceGoalPlanGoalVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanGoalVM.swift; sourceTree = "<group>"; };
+		A7CF10072FABCDEF00000007 /* GuidanceGoalPlanMuscleGainBarrierVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanMuscleGainBarrierVM.swift; sourceTree = "<group>"; };
+		A7CF10082FABCDEF00000008 /* GuidanceGoalPlanMuscleGainModeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanMuscleGainModeVM.swift; sourceTree = "<group>"; };
+		A7CF10092FABCDEF00000009 /* GuidanceGoalPlanMuscleGainDurationVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanMuscleGainDurationVM.swift; sourceTree = "<group>"; };
+		A7CF100A2FABCDEF0000000A /* GuidanceGoalPlanMuscleGainProfileVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanMuscleGainProfileVM.swift; sourceTree = "<group>"; };
+		A7CF100B2FABCDEF0000000B /* GuidanceGoalPlanMuscleGainProteinHabitVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanMuscleGainProteinHabitVM.swift; sourceTree = "<group>"; };
+		A7CF100C2FABCDEF0000000C /* GuidanceGoalPlanFatLossFoodFluctuationVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFatLossFoodFluctuationVM.swift; sourceTree = "<group>"; };
+		A7CF100D2FABCDEF0000000D /* GuidanceGoalPlanFatLossModeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFatLossModeVM.swift; sourceTree = "<group>"; };
+		A7CF100E2FABCDEF0000000E /* GuidanceGoalPlanFatLossDurationVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFatLossDurationVM.swift; sourceTree = "<group>"; };
+		A7CF100F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFatLossProfileVM.swift; sourceTree = "<group>"; };
+		A7CF10102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFatLossProteinHabitVM.swift; sourceTree = "<group>"; };
+		A7CF10112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanProfileVM.swift; sourceTree = "<group>"; };
 		A7092D122E4EE02C005A2087 /* ArticlesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesVC.swift; sourceTree = "<group>"; };
 		A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesTableViewCell.swift; sourceTree = "<group>"; };
 		A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonKit.swift; sourceTree = "<group>"; };
@@ -4695,6 +4731,7 @@
 				A708221D2F7000000000001D /* Guide0820StartVC.swift */,
 				A70822222F70000000000022 /* Guide0820BodyProfileVC.swift */,
 				A70822332F70000000000033 /* Guide0820LifeProfileVC.swift */,
+				A7CF10012FABCDEF00000001 /* GuidanceGoalPlanVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -4702,10 +4739,12 @@
 		A70824022F70000000000002 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				A7CF10122FABCDEF00000012 /* Guide0820Model.swift */,
 				A70822012F70000000000001 /* Guide0820AgreementType.swift */,
 				A70822022F70000000000002 /* Guide0820FeatureSwitches.swift */,
 				A70822032F70000000000003 /* Guide0820OperationItem.swift */,
 				A70822042F70000000000004 /* Guide0820SourceStorage.swift */,
+				A7CF10022FABCDEF00000002 /* GuidanceGoalPlanModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -4731,6 +4770,20 @@
 				A708222E2F7000000000002E /* Guide0820BodyProfileBodyfatVM.swift */,
 				A70822342F70000000000034 /* Guide0820LifeProfilePageVM.swift */,
 				A70822352F70000000000035 /* Guide0820LifeProfileMealsAdjustVM.swift */,
+				A7CF10042FABCDEF00000004 /* GuidanceGoalPlanChoicePageVM.swift */,
+				A7CF10052FABCDEF00000005 /* GuidanceGoalPlanDurationPageVM.swift */,
+				A7CF10062FABCDEF00000006 /* GuidanceGoalPlanGoalVM.swift */,
+				A7CF10072FABCDEF00000007 /* GuidanceGoalPlanMuscleGainBarrierVM.swift */,
+				A7CF10082FABCDEF00000008 /* GuidanceGoalPlanMuscleGainModeVM.swift */,
+				A7CF10092FABCDEF00000009 /* GuidanceGoalPlanMuscleGainDurationVM.swift */,
+				A7CF100A2FABCDEF0000000A /* GuidanceGoalPlanMuscleGainProfileVM.swift */,
+				A7CF100B2FABCDEF0000000B /* GuidanceGoalPlanMuscleGainProteinHabitVM.swift */,
+				A7CF100C2FABCDEF0000000C /* GuidanceGoalPlanFatLossFoodFluctuationVM.swift */,
+				A7CF100D2FABCDEF0000000D /* GuidanceGoalPlanFatLossModeVM.swift */,
+				A7CF100E2FABCDEF0000000E /* GuidanceGoalPlanFatLossDurationVM.swift */,
+				A7CF100F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift */,
+				A7CF10102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift */,
+				A7CF10112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift */,
 				A708221E2F7000000000001E /* VCStartVM.swift */,
 				A708221F2F7000000000001F /* VCStartStepVM.swift */,
 			);
@@ -4762,6 +4815,7 @@
 				A70822302F70000000000030 /* Guide0820BodyProfileOptionCard.swift */,
 				A70822312F70000000000031 /* Guide0820BodyProfileInfoCard.swift */,
 				A70822322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift */,
+				A7CF10032FABCDEF00000003 /* GuidanceGoalPlanOptionCardView.swift */,
 				A70822202F70000000000020 /* VCStartRootView.swift */,
 				A70822212F70000000000021 /* VCStartStepRow.swift */,
 			);
@@ -7287,6 +7341,23 @@
 				EC78C2C42F69C8F000681507 /* GuidanceStrengthTrainingSummaryVM.swift in Sources */,
 				EC78C2B62F6946B000681507 /* GuidanceTakeoutFrequencyVM.swift in Sources */,
 				EC78C2AF2F69222300681507 /* GuidanceSexVM.swift in Sources */,
+				A7CF11012FABCDEF00000001 /* GuidanceGoalPlanVC.swift in Sources */,
+				A7CF11022FABCDEF00000002 /* GuidanceGoalPlanModels.swift in Sources */,
+				A7CF11032FABCDEF00000003 /* GuidanceGoalPlanOptionCardView.swift in Sources */,
+				A7CF11042FABCDEF00000004 /* GuidanceGoalPlanChoicePageVM.swift in Sources */,
+				A7CF11052FABCDEF00000005 /* GuidanceGoalPlanDurationPageVM.swift in Sources */,
+				A7CF11062FABCDEF00000006 /* GuidanceGoalPlanGoalVM.swift in Sources */,
+				A7CF11072FABCDEF00000007 /* GuidanceGoalPlanMuscleGainBarrierVM.swift in Sources */,
+				A7CF11082FABCDEF00000008 /* GuidanceGoalPlanMuscleGainModeVM.swift in Sources */,
+				A7CF11092FABCDEF00000009 /* GuidanceGoalPlanMuscleGainDurationVM.swift in Sources */,
+				A7CF110A2FABCDEF0000000A /* GuidanceGoalPlanMuscleGainProfileVM.swift in Sources */,
+				A7CF110B2FABCDEF0000000B /* GuidanceGoalPlanMuscleGainProteinHabitVM.swift in Sources */,
+				A7CF110C2FABCDEF0000000C /* GuidanceGoalPlanFatLossFoodFluctuationVM.swift in Sources */,
+				A7CF110D2FABCDEF0000000D /* GuidanceGoalPlanFatLossModeVM.swift in Sources */,
+				A7CF110E2FABCDEF0000000E /* GuidanceGoalPlanFatLossDurationVM.swift in Sources */,
+				A7CF110F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift in Sources */,
+				A7CF11102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift in Sources */,
+				A7CF11112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift in Sources */,
 				F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */,
 				A7B772FC2D3A6688006B12C4 /* UINavigationController+FDFullscreenPopGesture.m in Sources */,
 				ECD0FEFD2BABD25B001232C9 /* YYTextRubyAnnotation.m in Sources */,
@@ -7432,6 +7503,7 @@
 				A70823322F70000000000032 /* Guide0820BodyProfileIntroOverlayVM.swift in Sources */,
 				A70823342F70000000000034 /* Guide0820LifeProfilePageVM.swift in Sources */,
 				A70823352F70000000000035 /* Guide0820LifeProfileMealsAdjustVM.swift in Sources */,
+				A7CF10132FABCDEF00000013 /* Guide0820Model.swift in Sources */,
 				EC61ABD22F03A482008FA297 /* HabitRankListVM.swift in Sources */,
 				A7454B342E73B7070064076C /* AddressRegionCell.swift in Sources */,
 				EC1EB5232BF7297000537F0B /* PlanCreateSynAlertVM.swift in Sources */,
