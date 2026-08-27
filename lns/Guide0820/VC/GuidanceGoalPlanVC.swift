@@ -15,9 +15,24 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
     private var currentIndex = 0
     private var currentPageView: UIView?
     private var pageCache: [String: UIView] = [:]
-    private var didRestoreSavedProgress = false
 
-    private let contentView = UIView()
+    private let scrollView: UIScrollView = {
+        let view = UIScrollView()
+        view.isPagingEnabled = true
+        view.isScrollEnabled = false
+        view.showsHorizontalScrollIndicator = false
+        view.showsVerticalScrollIndicator = false
+        view.bounces = false
+        view.contentInsetAdjustmentBehavior = .never
+        return view
+    }()
+
+    private let stackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 0
+        return stack
+    }()
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -71,7 +86,8 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
-        restoreSavedProgress()
+        // Every new instance starts a fresh flow from the first step. Do not
+        // restore the previous answers or page index here.
         showPage(at: currentIndex, animated: false)
     }
 
@@ -87,7 +103,7 @@ private extension GuidanceGoalPlanVC {
         view.addSubview(backButton)
         view.addSubview(titleLabel)
         view.addSubview(progressTrackView)
-        view.addSubview(contentView)
+        view.addSubview(scrollView)
         view.addSubview(nextButton)
 
         backButton.snp.makeConstraints { make in
@@ -120,8 +136,14 @@ private extension GuidanceGoalPlanVC {
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
 
-        contentView.snp.makeConstraints { make in
+        scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+
+        scrollView.addSubview(stackView)
+        stackView.snp.makeConstraints { make in
+            make.edges.equalTo(scrollView.contentLayoutGuide)
+            make.height.equalTo(scrollView.frameLayoutGuide)
         }
 
         view.bringSubviewToFront(backButton)
@@ -136,37 +158,29 @@ private extension GuidanceGoalPlanVC {
         currentIndex = index
         persistCurrentProgress()
 
-        let step = steps[index]
-        let nextPage = page(for: step)
-        let oldPage = currentPageView
-        guard oldPage !== nextPage else {
-            refreshNavigationState()
-            (nextPage as? (UIView & GuidanceGoalPlanPageVM))?.pageWillAppear()
-            return
-        }
-
-        (nextPage as? (UIView & GuidanceGoalPlanPageVM))?.pageWillAppear()
-        contentView.addSubview(nextPage)
-        nextPage.snp.remakeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-
+        installPages(steps)
+        view.layoutIfNeeded()
+        let nextPage = page(for: steps[index])
         currentPageView = nextPage
+        // Keep the same page-width calculation as the other Guide0820 flow VCs.
+        scrollView.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(index), y: 0), animated: animated)
         refreshNavigationState()
+        (nextPage as? (UIView & GuidanceGoalPlanPageVM))?.pageWillAppear()
+    }
 
-        guard animated, let oldPage = oldPage else {
-            oldPage?.removeFromSuperview()
-            return
+    func installPages(_ steps: [GuidanceGoalPlanStep]) {
+        stackView.arrangedSubviews.forEach { page in
+            stackView.removeArrangedSubview(page)
+            page.removeFromSuperview()
         }
 
-        nextPage.alpha = 0
-        UIView.animate(withDuration: 0.2, animations: {
-            oldPage.alpha = 0
-            nextPage.alpha = 1
-        }, completion: { _ in
-            oldPage.removeFromSuperview()
-            oldPage.alpha = 1
-        })
+        steps.forEach { step in
+            let page = page(for: step)
+            stackView.addArrangedSubview(page)
+            page.snp.remakeConstraints { make in
+                make.width.equalTo(scrollView.frameLayoutGuide)
+            }
+        }
     }
 
     func page(for step: GuidanceGoalPlanStep) -> UIView {
@@ -183,12 +197,12 @@ private extension GuidanceGoalPlanVC {
             page = GuidanceGoalPlanProfileVM(flowState: flowState)
         case .muscleGainBarrier:
             page = GuidanceGoalPlanMuscleGainBarrierVM(flowState: flowState)
+        case .muscleGainProteinHabit:
+            page = GuidanceGoalPlanMuscleGainProteinHabitVM(flowState: flowState)
         case .muscleGainMode:
             page = GuidanceGoalPlanMuscleGainModeVM(flowState: flowState)
         case .muscleGainDuration:
             page = GuidanceGoalPlanMuscleGainDurationVM(flowState: flowState)
-        case .muscleGainProteinHabit:
-            page = GuidanceGoalPlanMuscleGainProteinHabitVM(flowState: flowState)
         case .fatLossFoodFluctuation:
             page = GuidanceGoalPlanFatLossFoodFluctuationVM(flowState: flowState)
         case .fatLossMode:
@@ -248,15 +262,6 @@ private extension GuidanceGoalPlanVC {
         if presentingViewController != nil {
             dismiss(animated: true)
         }
-    }
-
-    func restoreSavedProgress() {
-        guard didRestoreSavedProgress == false else { return }
-        didRestoreSavedProgress = true
-        Guide0820ProgressStorage.restoreDirectionProfile(flowState: flowState)
-        let savedIndex = Guide0820ProgressStorage.currentPageIndex(for: .directionProfile)
-        let steps = flowState.steps
-        currentIndex = steps.isEmpty ? 0 : min(max(savedIndex, 0), steps.count - 1)
     }
 
     func persistCurrentProgress() {

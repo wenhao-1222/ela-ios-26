@@ -73,7 +73,7 @@ final class GuidanceGoalPlanFlowState {
     var steps: [GuidanceGoalPlanStep] {
         switch target {
         case .muscleGain:
-            return [.goal, .profile, .muscleGainBarrier, .muscleGainMode, .muscleGainDuration, .muscleGainProteinHabit]
+            return [.goal, .profile, .muscleGainBarrier, .muscleGainProteinHabit, .muscleGainMode, .muscleGainDuration]
         case .fatLoss:
             return [.goal, .profile, .fatLossFoodFluctuation, .fatLossMode, .fatLossDuration, .fatLossProteinHabit]
         case .none:

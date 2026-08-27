@@ -13,6 +13,7 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
         case standard
         case goal
         case profile
+        case expandable
     }
 
     private let titleLabel = UILabel()
@@ -21,6 +22,7 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
     private let checkImageView = UIImageView()
     private var accentColor: UIColor = .THEME
     private var presentationStyle: PresentationStyle = .standard
+    private var detailExpanded = false
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -37,9 +39,13 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
         }
     }
 
-    func configure(option: GuidanceGoalPlanOption, accentColor: UIColor) {
+    func configure(option: GuidanceGoalPlanOption,
+                   accentColor: UIColor,
+                   detailOnlyWhenSelected: Bool = false) {
         self.accentColor = accentColor
-        if option.iconName != nil && (option.detail?.isEmpty == true || option.detail == nil) {
+        if detailOnlyWhenSelected && option.detail?.isEmpty == false {
+            presentationStyle = .expandable
+        } else if option.iconName != nil && (option.detail?.isEmpty == true || option.detail == nil) {
             presentationStyle = .goal
         } else if option.iconName != nil {
             presentationStyle = .profile
@@ -53,7 +59,8 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
         backgroundColor = presentationStyle == .standard ? GuidanceGoalPlanStyle.cardBackgroundColor : .white
         titleLabel.text = option.title
         detailLabel.text = option.detail
-        detailLabel.isHidden = option.detail?.isEmpty ?? true || presentationStyle == .goal
+        detailExpanded = presentationStyle != .expandable
+        detailLabel.isHidden = option.detail?.isEmpty ?? true || presentationStyle == .goal || (presentationStyle == .expandable && !detailExpanded)
 
         if let iconName = option.iconName {
             iconImageView.isHidden = false
@@ -65,11 +72,14 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
             iconImageView.image = nil
         }
 
-        if presentationStyle == .goal || presentationStyle == .profile {
+        if presentationStyle == .goal || presentationStyle == .profile || presentationStyle == .expandable {
             titleLabel.font = .systemFont(ofSize: guide0820Design(32), weight: .medium)
             titleLabel.textColor = GuidanceGoalPlanStyle.titleColor
             detailLabel.font = .systemFont(ofSize: guide0820Design(24), weight: .regular)
             detailLabel.textColor = GuidanceGoalPlanStyle.detailColor
+            if presentationStyle == .expandable {
+                detailLabel.guide0820SetLineHeight(guide0820Design(36))
+            }
         } else {
             titleLabel.font = .systemFont(ofSize: 17, weight: .medium)
             titleLabel.textColor = GuidanceGoalPlanStyle.titleColor
@@ -82,20 +92,33 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
 
     func setSelected(_ selected: Bool, animated: Bool = false) {
         if presentationStyle == .goal || presentationStyle == .profile {
-            backgroundColor = selected ? accentColor.withAlphaComponent(0.10) : .white
             layer.borderColor = selected ? accentColor.cgColor : UIColor.clear.cgColor
             layer.borderWidth = selected ? 1 : 0
-            titleLabel.textColor = selected ? accentColor : GuidanceGoalPlanStyle.titleColor
+        } else if presentationStyle == .expandable {
+            layer.borderColor = selected ? accentColor.cgColor : UIColor.clear.cgColor
+            layer.borderWidth = selected ? guide0820Design(4) : 0
         } else {
-            backgroundColor = selected ? accentColor.withAlphaComponent(0.10) : GuidanceGoalPlanStyle.cardBackgroundColor
             layer.borderColor = selected ? accentColor.cgColor : GuidanceGoalPlanStyle.unselectedBorderColor
             layer.borderWidth = 1
-            titleLabel.textColor = selected ? accentColor : GuidanceGoalPlanStyle.titleColor
         }
         checkImageView.setCheckState(selected,
                                      checkedImageName: "select_icon_selected_circle",
                                      uncheckedImageName: "select_icon_normal_circle",
                                      animated: animated)
+        if presentationStyle == .expandable {
+            setDetailExpanded(selected, animated: animated)
+        }
+    }
+
+    private func setDetailExpanded(_ expanded: Bool, animated: Bool) {
+        guard detailExpanded != expanded else { return }
+        detailExpanded = expanded
+        detailLabel.isHidden = !expanded
+        remakeLayout()
+        guard animated else { return }
+        UIView.animate(withDuration: 0.25) {
+            self.superview?.layoutIfNeeded()
+        }
     }
 }
 
@@ -193,6 +216,36 @@ private extension GuidanceGoalPlanOptionCardView {
                 make.left.equalTo(guide0820Design(116))
                 make.right.equalTo(checkImageView.snp.left).offset(guide0820Design(-36))
                 make.top.equalTo(guide0820Design(40))
+            }
+
+            detailLabel.snp.remakeConstraints { make in
+                make.left.right.equalTo(titleLabel)
+                make.top.equalTo(titleLabel.snp.bottom).offset(guide0820Design(12))
+                make.bottom.lessThanOrEqualTo(guide0820Design(-40))
+            }
+        case .expandable:
+            iconImageView.snp.remakeConstraints { make in
+                make.left.equalTo(guide0820Design(32))
+                make.centerY.equalToSuperview()
+                make.width.height.equalTo(guide0820Design(50))
+            }
+
+            checkImageView.snp.remakeConstraints { make in
+                make.right.equalTo(guide0820Design(-32))
+                make.centerY.equalToSuperview()
+                make.width.height.equalTo(guide0820Design(42))
+            }
+
+            titleLabel.snp.remakeConstraints { make in
+                make.left.equalTo(guide0820Design(116))
+                // The mode cards reserve the same 58pt gap between copy and
+                // the trailing 42pt selection control as the MasterGo layer.
+                make.right.equalTo(checkImageView.snp.left).offset(guide0820Design(-58))
+                if detailExpanded {
+                    make.top.equalTo(guide0820Design(40))
+                } else {
+                    make.centerY.equalToSuperview()
+                }
             }
 
             detailLabel.snp.remakeConstraints { make in

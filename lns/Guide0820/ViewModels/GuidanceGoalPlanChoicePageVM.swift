@@ -65,6 +65,21 @@ class GuidanceGoalPlanChoicePageVM: UIView, GuidanceGoalPlanPageVM {
             cardSpacing: guide0820Design(24),
             cardMinimumHeight: guide0820Design(196)
         )
+
+        // The protein-habit screen uses the 160pt cards shown in the MasterGo
+        // design, rather than the compact default choice cards.
+        static let proteinHabit = Layout(
+            titleTopOffset: guide0820Design(262),
+            titleHorizontalInset: guide0820Design(42),
+            titleFontSize: guide0820Design(48),
+            subtitleTopOffset: guide0820Design(12),
+            subtitleFontSize: guide0820Design(28),
+            stackTopOffset: guide0820Design(44),
+            stackHorizontalInset: guide0820Design(42),
+            stackBottomInset: guide0820Design(24),
+            cardSpacing: guide0820Design(24),
+            cardMinimumHeight: guide0820Design(160)
+        )
     }
 
     var selectionChanged: (() -> Void)?
@@ -82,18 +97,27 @@ class GuidanceGoalPlanChoicePageVM: UIView, GuidanceGoalPlanPageVM {
     private let options: [GuidanceGoalPlanOption]
     private let accentColor: UIColor
     private let layout: Layout
+    private let detailOnlyWhenSelected: Bool
     private var cards: [GuidanceGoalPlanOptionCardView] = []
 
     var hasSelection: Bool {
         !selectedValue.isEmpty
     }
 
-    init(title: String, subtitle: String? = nil, options: [GuidanceGoalPlanOption], accentColor: UIColor, layout: Layout = .default) {
+    /// When enabled, cards collapse to the compact design state and reveal
+    /// their detail copy only for the currently selected option.
+    init(title: String,
+         subtitle: String? = nil,
+         options: [GuidanceGoalPlanOption],
+         accentColor: UIColor,
+         layout: Layout = .default,
+         detailOnlyWhenSelected: Bool = false) {
         self.title = title
         self.subtitle = subtitle
         self.options = options
         self.accentColor = accentColor
         self.layout = layout
+        self.detailOnlyWhenSelected = detailOnlyWhenSelected
         super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         initUI()
     }
@@ -165,11 +189,17 @@ private extension GuidanceGoalPlanChoicePageVM {
         for (index, option) in options.enumerated() {
             let card = GuidanceGoalPlanOptionCardView()
             card.tag = index
-            card.configure(option: option, accentColor: accentColor)
+            card.configure(option: option,
+                           accentColor: accentColor,
+                           detailOnlyWhenSelected: detailOnlyWhenSelected)
             card.addTarget(self, action: #selector(cardTapAction(_:)), for: .touchUpInside)
             card.snp.makeConstraints { make in
                 let defaultHeight = kFitWidth(option.detail == nil ? 64 : 92)
-                make.height.greaterThanOrEqualTo(max(layout.cardMinimumHeight, defaultHeight))
+                if detailOnlyWhenSelected {
+                    make.height.equalTo(guide0820Design(160))
+                } else {
+                    make.height.greaterThanOrEqualTo(max(layout.cardMinimumHeight, defaultHeight))
+                }
             }
             stackView.addArrangedSubview(card)
             cards.append(card)
@@ -185,7 +215,18 @@ private extension GuidanceGoalPlanChoicePageVM {
 
     func refreshSelection(animated: Bool) {
         for (index, card) in cards.enumerated() {
-            card.setSelected(options[index].value == selectedValue, animated: animated)
+            let selected = options[index].value == selectedValue
+            card.setSelected(selected, animated: animated)
+            if detailOnlyWhenSelected {
+                card.snp.updateConstraints { make in
+                    make.height.equalTo(guide0820Design(selected ? 232 : 160))
+                }
+            }
+        }
+        if detailOnlyWhenSelected, animated {
+            UIView.animate(withDuration: 0.25) {
+                self.layoutIfNeeded()
+            }
         }
     }
 }
