@@ -32,6 +32,10 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
     private var presentationStyle: PresentationStyle = .standard
     // `detailExpanded` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var detailExpanded = false
+    // Selection indicator assets; multi-select pages override these with checkbox icons.
+    private var checkedImageName = "select_icon_selected_circle"
+    private var uncheckedImageName = "select_icon_normal_circle"
+    private var selectionState: Bool?
 
     /// 初始化当前类型实例。
     override init(frame: CGRect) {
@@ -54,8 +58,13 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
     /// 执行 `configure` 操作，完成当前引导页面的状态更新或交互处理。
     func configure(option: GuidanceGoalPlanOption,
                    accentColor: UIColor,
-                   detailOnlyWhenSelected: Bool = false) {
+                   detailOnlyWhenSelected: Bool = false,
+                   checkedImageName: String = "select_icon_selected_circle",
+                   uncheckedImageName: String = "select_icon_normal_circle") {
         self.accentColor = accentColor
+        self.checkedImageName = checkedImageName
+        self.uncheckedImageName = uncheckedImageName
+        self.selectionState = nil
         if detailOnlyWhenSelected && option.detail?.isEmpty == false {
             presentationStyle = .expandable
         } else if option.iconName != nil && (option.detail?.isEmpty == true || option.detail == nil) {
@@ -105,6 +114,8 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
 
     /// 执行 `setSelected` 操作，完成当前引导页面的状态更新或交互处理。
     func setSelected(_ selected: Bool, animated: Bool = false) {
+        if let selectionState, selectionState == selected { return }
+        selectionState = selected
         if presentationStyle == .goal || presentationStyle == .profile {
             layer.borderColor = selected ? accentColor.cgColor : UIColor.clear.cgColor
             layer.borderWidth = selected ? 1 : 0
@@ -116,8 +127,8 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
             layer.borderWidth = 1
         }
         checkImageView.setCheckState(selected,
-                                     checkedImageName: "select_icon_selected_circle",
-                                     uncheckedImageName: "select_icon_normal_circle",
+                                     checkedImageName: checkedImageName,
+                                     uncheckedImageName: uncheckedImageName,
                                      animated: animated)
         if presentationStyle == .expandable {
             setDetailExpanded(selected, animated: animated)

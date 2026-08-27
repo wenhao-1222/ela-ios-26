@@ -15,6 +15,9 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
 
     // `flowState` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let flowState = GuidanceGoalPlanFlowState()
+    /// The direction flow always contains seven pages, regardless of the
+    /// target selected on the first page.
+    private let progressTotalStepCount = 7
     // `currentIndex` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var currentIndex = 0
     // `currentPageView` 属性，保存该类型对外提供或内部使用的状态与配置。
@@ -231,6 +234,8 @@ private extension GuidanceGoalPlanVC {
             page = GuidanceGoalPlanFatLossDurationVM(flowState: flowState)
         case .fatLossProteinHabit:
             page = GuidanceGoalPlanFatLossProteinHabitVM(flowState: flowState)
+        case .foodAdjustment:
+            page = GuidanceGoalPlanFoodAdjustmentVM(flowState: flowState)
         }
 
         if let pageVM = page as? (UIView & GuidanceGoalPlanPageVM) {
@@ -245,7 +250,7 @@ private extension GuidanceGoalPlanVC {
 
     // 执行 `refreshNavigationState` 操作，完成当前引导页面的状态更新或交互处理。
     func refreshNavigationState() {
-        let total = max(flowState.steps.count, 6)
+        let total = progressTotalStepCount
         nextButton.setTitle(currentIndex == total - 1 ? "完成" : "下一步", for: .normal)
 
         let canContinue = (currentPageView as? (UIView & GuidanceGoalPlanPageVM))?.hasSelection ?? false
@@ -256,7 +261,7 @@ private extension GuidanceGoalPlanVC {
 
     // 执行 `updateProgress` 操作，完成当前引导页面的状态更新或交互处理。
     func updateProgress() {
-        let total = max(flowState.steps.count, 6)
+        let total = progressTotalStepCount
         let ratio = CGFloat(currentIndex + 1) / CGFloat(total)
         progressView.snp.remakeConstraints { make in
             make.left.top.bottom.equalToSuperview()

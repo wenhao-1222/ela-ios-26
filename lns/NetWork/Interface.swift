@@ -66,6 +66,8 @@ public let URL_question_survey_save       = URL_Type + "users/survey/save"
 public let URL_question_survey_savepart       = URL_Type + "users/survey/savepart"
 //保存用户部分问卷 v2（引导页非固定目标分支）
 public let URL_question_survey_savepart_v2    = URL_Type + "users/survey/savePart/v2"
+///新用户引导   0820
+public let URL_question_nutrition_goals_v3    = URL_Type + "users/nutrition/goals/v3"
 //部分问卷调查保存，获取营养目标
 public let URL_question_survey_part_save       = URL_Type + "users/nutrition/goals"
 //用户自定义目标

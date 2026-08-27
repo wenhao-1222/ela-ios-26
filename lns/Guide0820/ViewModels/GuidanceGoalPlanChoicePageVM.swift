@@ -129,6 +129,10 @@ class GuidanceGoalPlanChoicePageVM: UIView, GuidanceGoalPlanPageVM {
     private let detailOnlyWhenSelected: Bool
     // `infoNoticeText` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let infoNoticeText: String?
+    /// Enables checkbox-style multi-selection for pages such as food adjustment.
+    private let allowsMultipleSelection: Bool
+    /// Value that cannot be selected together with any other value.
+    private let mutuallyExclusiveValue: String?
     // `cards` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var cards: [GuidanceGoalPlanOptionCardView] = []
 
@@ -145,7 +149,9 @@ class GuidanceGoalPlanChoicePageVM: UIView, GuidanceGoalPlanPageVM {
          accentColor: UIColor,
          layout: Layout = .default,
          detailOnlyWhenSelected: Bool = false,
-         infoNoticeText: String? = nil) {
+         infoNoticeText: String? = nil,
+         allowsMultipleSelection: Bool = false,
+         mutuallyExclusiveValue: String? = nil) {
         self.title = title
         self.subtitle = subtitle
         self.options = options
@@ -153,6 +159,8 @@ class GuidanceGoalPlanChoicePageVM: UIView, GuidanceGoalPlanPageVM {
         self.layout = layout
         self.detailOnlyWhenSelected = detailOnlyWhenSelected
         self.infoNoticeText = infoNoticeText
+        self.allowsMultipleSelection = allowsMultipleSelection
+        self.mutuallyExclusiveValue = mutuallyExclusiveValue
         super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         initUI()
     }
@@ -249,7 +257,9 @@ private extension GuidanceGoalPlanChoicePageVM {
             card.tag = index
             card.configure(option: option,
                            accentColor: accentColor,
-                           detailOnlyWhenSelected: detailOnlyWhenSelected)
+                           detailOnlyWhenSelected: detailOnlyWhenSelected,
+                           checkedImageName: allowsMultipleSelection ? "guide0820_checkbox_selected_icon" : "select_icon_selected_circle",
+                           uncheckedImageName: allowsMultipleSelection ? "guide0820_checkbox_normal_icon" : "select_icon_normal_circle")
             card.addTarget(self, action: #selector(cardTapAction(_:)), for: .touchUpInside)
             card.snp.makeConstraints { make in
                 let defaultHeight = kFitWidth(option.detail == nil ? 64 : 92)
@@ -269,13 +279,41 @@ private extension GuidanceGoalPlanChoicePageVM {
     // 执行 `cardTapAction` 操作，完成当前引导页面的状态更新或交互处理。
     @objc func cardTapAction(_ sender: GuidanceGoalPlanOptionCardView) {
         guard options.indices.contains(sender.tag) else { return }
-        selectedValue = options[sender.tag].value
+        let value = options[sender.tag].value
+        guard allowsMultipleSelection else {
+            selectedValue = value
+            return
+        }
+
+        var values = selectedValue
+            .split(separator: ",")
+            .map(String.init)
+        if let existingIndex = values.firstIndex(of: value) {
+            values.remove(at: existingIndex)
+        } else {
+            if let mutuallyExclusiveValue, value == mutuallyExclusiveValue {
+                values = [value]
+            } else {
+                if let mutuallyExclusiveValue {
+                    values.removeAll { $0 == mutuallyExclusiveValue }
+                }
+                values.append(value)
+            }
+        }
+        // Keep persisted values deterministic in the visual option order.
+        let orderedValues = options.map(\.value).filter { values.contains($0) }
+        selectedValue = orderedValues.joined(separator: ",")
     }
 
     // 执行 `refreshSelection` 操作，完成当前引导页面的状态更新或交互处理。
     func refreshSelection(animated: Bool) {
         for (index, card) in cards.enumerated() {
-            let selected = options[index].value == selectedValue
+            let selected: Bool
+            if allowsMultipleSelection {
+                selected = selectedValue.split(separator: ",").contains { String($0) == options[index].value }
+            } else {
+                selected = options[index].value == selectedValue
+            }
             card.setSelected(selected, animated: animated)
             if detailOnlyWhenSelected {
                 card.snp.updateConstraints { make in

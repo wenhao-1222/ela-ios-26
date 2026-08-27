@@ -45,6 +45,7 @@ enum GuidanceGoalPlanStep: String {
     case fatLossDuration
     case fatLossProfile
     case fatLossProteinHabit
+    case foodAdjustment
 }
 
 /// GuidanceGoalPlanOption 类型，封装 Guide0820 引导流程中的相关功能。
@@ -91,14 +92,16 @@ final class GuidanceGoalPlanFlowState {
     var fatLossProfile = ""
     /// `fatLossProteinHabit` 属性，保存该类型对外提供或内部使用的状态与配置。
     var fatLossProteinHabit = ""
+    /// Comma-separated values selected on the final food-adjustment page.
+    var foodAdjustment = ""
 
     /// `steps` 属性，保存该类型对外提供或内部使用的状态与配置。
     var steps: [GuidanceGoalPlanStep] {
         switch target {
         case .muscleGain:
-            return [.goal, .profile, .muscleGainBarrier, .muscleGainProteinHabit, .muscleGainMode, .muscleGainDuration]
+            return [.goal, .profile, .muscleGainBarrier, .muscleGainProteinHabit, .muscleGainMode, .muscleGainDuration, .foodAdjustment]
         case .fatLoss:
-            return [.goal, .profile, .fatLossFoodFluctuation, .fatLossProteinHabit, .fatLossMode, .fatLossDuration]
+            return [.goal, .profile, .fatLossFoodFluctuation, .fatLossProteinHabit, .fatLossMode, .fatLossDuration, .foodAdjustment]
         case .none:
             return [.goal]
         }
@@ -138,6 +141,8 @@ final class GuidanceGoalPlanFlowState {
             return fatLossProfile
         case .fatLossProteinHabit:
             return fatLossProteinHabit
+        case .foodAdjustment:
+            return foodAdjustment
         }
     }
 }

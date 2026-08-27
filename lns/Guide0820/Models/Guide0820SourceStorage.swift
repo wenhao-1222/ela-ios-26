@@ -97,6 +97,7 @@ enum Guide0820ProgressStorage {
         static let directionProfileFatLossProfile = "guide_0820_direction_profile_fat_loss_profile"
         // `directionProfileFatLossProteinHabit` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileFatLossProteinHabit = "guide_0820_direction_profile_fat_loss_protein_habit"
+        static let directionProfileFoodAdjustment = "guide_0820_direction_profile_food_adjustment"
 
         // `bodySex` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let bodySex = "guide_0820_body_profile_sex"
@@ -229,6 +230,7 @@ enum Guide0820ProgressStorage {
         }
         setString(flowState.fatLossProfile, forKey: Key.directionProfileFatLossProfile)
         setString(flowState.fatLossProteinHabit, forKey: Key.directionProfileFatLossProteinHabit)
+        setString(flowState.foodAdjustment, forKey: Key.directionProfileFoodAdjustment)
         Guide0820DefaultsFlusher.flush()
     }
 
@@ -251,6 +253,7 @@ enum Guide0820ProgressStorage {
         }
         flowState.fatLossProfile = storedString(forKey: Key.directionProfileFatLossProfile) ?? flowState.fatLossProfile
         flowState.fatLossProteinHabit = storedString(forKey: Key.directionProfileFatLossProteinHabit) ?? flowState.fatLossProteinHabit
+        flowState.foodAdjustment = storedString(forKey: Key.directionProfileFoodAdjustment) ?? flowState.foodAdjustment
     }
 
     /// 执行 `saveBodyProfile` 操作，完成当前引导页面的状态更新或交互处理。
@@ -427,7 +430,8 @@ enum Guide0820ProgressStorage {
             Key.directionProfileFatLossMode,
             Key.directionProfileFatLossDurationWeeks,
             Key.directionProfileFatLossProfile,
-            Key.directionProfileFatLossProteinHabit
+            Key.directionProfileFatLossProteinHabit,
+            Key.directionProfileFoodAdjustment
         ].contains {
             UserDefaults.standard.object(forKey: $0) != nil
         }
@@ -477,6 +481,7 @@ enum Guide0820ProgressStorage {
             Key.directionProfileFatLossDurationWeeks,
             Key.directionProfileFatLossProfile,
             Key.directionProfileFatLossProteinHabit,
+            Key.directionProfileFoodAdjustment,
             Guide0820VC.hasShownKey
         ].forEach {
             UserDefaults.standard.removeObject(forKey: $0)

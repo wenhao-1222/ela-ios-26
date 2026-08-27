@@ -86,6 +86,7 @@
 		A7CF110F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF100F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift */; };
 		A7CF11102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift */; };
 		A7CF11112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift */; };
+		A7CF11202FABCDEF00000020 /* GuidanceGoalPlanFoodAdjustmentVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10202FABCDEF00000020 /* GuidanceGoalPlanFoodAdjustmentVM.swift */; };
 		A7092D132E4EE02D005A2087 /* ArticlesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D122E4EE02C005A2087 /* ArticlesVC.swift */; };
 		A7092D152E4EE093005A2087 /* ArticlesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */; };
 		A7092D172E4EE0D5005A2087 /* SkeletonKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */; };
@@ -1640,6 +1641,7 @@
 		A7CF100F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFatLossProfileVM.swift; sourceTree = "<group>"; };
 		A7CF10102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFatLossProteinHabitVM.swift; sourceTree = "<group>"; };
 		A7CF10112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanProfileVM.swift; sourceTree = "<group>"; };
+		A7CF10202FABCDEF00000020 /* GuidanceGoalPlanFoodAdjustmentVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFoodAdjustmentVM.swift; sourceTree = "<group>"; };
 		A7092D122E4EE02C005A2087 /* ArticlesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesVC.swift; sourceTree = "<group>"; };
 		A7092D142E4EE08E005A2087 /* ArticlesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesTableViewCell.swift; sourceTree = "<group>"; };
 		A7092D162E4EE0D4005A2087 /* SkeletonKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkeletonKit.swift; sourceTree = "<group>"; };
@@ -4784,6 +4786,7 @@
 				A7CF100F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift */,
 				A7CF10102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift */,
 				A7CF10112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift */,
+				A7CF10202FABCDEF00000020 /* GuidanceGoalPlanFoodAdjustmentVM.swift */,
 				A708221E2F7000000000001E /* VCStartVM.swift */,
 				A708221F2F7000000000001F /* VCStartStepVM.swift */,
 			);
@@ -6599,6 +6602,8 @@
 			files = (
 				EC356CE52C6C9C060023C0BA /* Assets.xcassets in Resources */,
 				EC356CDD2C6C99D10023C0BA /* Assets.xcassets in Resources */,
+				ECBF8C132BC230A30095C4B0 /* D-DIN-PRO-400-Regular.otf in Resources */,
+				ECBF8C152BC230A30095C4B0 /* D-DIN-PRO-600-SemiBold.otf in Resources */,
 				ECD5492F2C75D18E009E7E6B /* Interface.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7358,6 +7363,7 @@
 				A7CF110F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift in Sources */,
 				A7CF11102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift in Sources */,
 				A7CF11112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift in Sources */,
+				A7CF11202FABCDEF00000020 /* GuidanceGoalPlanFoodAdjustmentVM.swift in Sources */,
 				F2B0C1012F80000100A1B2C3 /* GuidanceSexTipsAlertVM.swift in Sources */,
 				A7B772FC2D3A6688006B12C4 /* UINavigationController+FDFullscreenPopGesture.m in Sources */,
 				ECD0FEFD2BABD25B001232C9 /* YYTextRubyAnnotation.m in Sources */,
