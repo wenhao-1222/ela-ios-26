@@ -7,9 +7,12 @@
 
 import UIKit
 
+/// GuidanceGoalPlanGoalVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class GuidanceGoalPlanGoalVM: GuidanceGoalPlanChoicePageVM {
+    // `flowState` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let flowState: GuidanceGoalPlanFlowState
 
+    /// 初始化当前类型实例。
     init(flowState: GuidanceGoalPlanFlowState) {
         self.flowState = flowState
         super.init(
@@ -38,12 +41,15 @@ final class GuidanceGoalPlanGoalVM: GuidanceGoalPlanChoicePageVM {
         }
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
+// GuidanceGoalPlanGoalVM 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension GuidanceGoalPlanGoalVM {
+    // 执行 `syncToState` 操作，完成当前引导页面的状态更新或交互处理。
     func syncToState() {
         guard let target = GuidanceGoalPlanTarget(rawValue: selectedValue) else { return }
         flowState.target = target

@@ -49,6 +49,7 @@ final class VCStartRootView: UIView {
     }
 }
 
+// VCStartRootView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension VCStartRootView {
     /// 初始化页面布局。
     func initUI() {
@@ -183,8 +184,12 @@ private extension VCStartRootView {
     }
 }
 
+// StepLayout 类型，封装 Guide0820 引导流程中的相关功能。
 private struct StepLayout {
+    // `rowTopOffsets` 属性，保存该类型对外提供或内部使用的状态与配置。
     let rowTopOffsets: [CGFloat]
+    // `lineFrames` 属性，保存该类型对外提供或内部使用的状态与配置。
     let lineFrames: [CGRect]
+    // `containerHeight` 属性，保存该类型对外提供或内部使用的状态与配置。
     let containerHeight: CGFloat
 }

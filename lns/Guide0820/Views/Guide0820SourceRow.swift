@@ -48,6 +48,7 @@ final class Guide0820SourceRow: UIControl {
     }
 }
 
+// Guide0820SourceRow 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820SourceRow {
     /// 初始化来源行布局。
     /// - Parameter isSelected: 是否选中。
@@ -61,16 +62,37 @@ private extension Guide0820SourceRow {
         iconView.setImgLocal(imgName: item.iconName)
         iconView.contentMode = .scaleAspectFit
 
-        let titleLabel = UILabel()
-        titleLabel.text = item.title
-        titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
-        titleLabel.font = .systemFont(ofSize: kFitWidth(16), weight: .medium)
+        let titleContainer = UIStackView()
+        titleContainer.axis = .horizontal
+        titleContainer.alignment = .center
+        titleContainer.spacing = kFitWidth(6)
+
+        if item.id == "ai_chat_tool" {
+            let mainTitleLabel = UILabel()
+            mainTitleLabel.text = "AI 聊天工具"
+            mainTitleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+            mainTitleLabel.font = .systemFont(ofSize: kFitWidth(16), weight: .medium)
+
+            let subtitleLabel = UILabel()
+            subtitleLabel.text = "（如 ChatGPT）"
+            subtitleLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
+            subtitleLabel.font = .systemFont(ofSize: kFitWidth(12), weight: .regular)
+
+            titleContainer.addArrangedSubview(mainTitleLabel)
+            titleContainer.addArrangedSubview(subtitleLabel)
+        } else {
+            let titleLabel = UILabel()
+            titleLabel.text = item.title
+            titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
+            titleLabel.font = .systemFont(ofSize: kFitWidth(16), weight: .medium)
+            titleContainer.addArrangedSubview(titleLabel)
+        }
 
         checkImageView.contentMode = .scaleAspectFit
         setSelected(isSelected, animated: false)
 
         addSubview(iconView)
-        addSubview(titleLabel)
+        addSubview(titleContainer)
         addSubview(checkImageView)
 
         iconView.snp.makeConstraints { make in
@@ -79,7 +101,7 @@ private extension Guide0820SourceRow {
             make.width.height.equalTo(kFitWidth(25))
         }
 
-        titleLabel.snp.makeConstraints { make in
+        titleContainer.snp.makeConstraints { make in
             make.left.equalTo(iconView.snp.right).offset(kFitWidth(17))
             make.centerY.equalToSuperview()
         }

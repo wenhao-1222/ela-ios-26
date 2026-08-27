@@ -30,6 +30,7 @@ final class Guide0820PrimaryButton: UIButton {
     }
 }
 
+// Guide0820PrimaryButton 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820PrimaryButton {
     /// 初始化按钮样式。
     func initUI() {

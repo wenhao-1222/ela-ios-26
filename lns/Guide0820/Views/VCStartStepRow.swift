@@ -44,6 +44,7 @@ final class VCStartStepRow: UIView {
     }
 }
 
+// VCStartStepRow 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension VCStartStepRow {
     /// 初始化步骤行布局。
     func initUI() {

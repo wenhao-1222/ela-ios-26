@@ -37,12 +37,14 @@ final class Guide0820VC: WHBaseViewVC {
         return button
     }()
 
+    /// 初始化当前类型实例。
     init(initialPageIndex: Int = 0, shouldRedirectStoredSource: Bool = true) {
         self.flowState = Guide0820FlowState(initialPageIndex: initialPageIndex)
         self.shouldRedirectStoredSource = shouldRedirectStoredSource
         super.init(nibName: nil, bundle: nil)
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         self.flowState = Guide0820FlowState()
         self.shouldRedirectStoredSource = true
@@ -55,6 +57,7 @@ final class Guide0820VC: WHBaseViewVC {
         initUI()
     }
 
+    /// 执行 `viewWillAppear` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         enforceInteractivePopGestureDisabled()
@@ -67,13 +70,16 @@ final class Guide0820VC: WHBaseViewVC {
         redirectToStartIfSourceStored()
     }
 
+    /// 执行 `viewDidDisappear` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         restoreFullscreenInteractivePopGesture()
     }
 }
 
+// Guide0820VC 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820VC {
+    // 执行 `enforceInteractivePopGestureDisabled` 操作，完成当前引导页面的状态更新或交互处理。
     func enforceInteractivePopGestureDisabled() {
         updateInteractivePopGestureBlocked(true)
         DispatchQueue.main.async { [weak self] in

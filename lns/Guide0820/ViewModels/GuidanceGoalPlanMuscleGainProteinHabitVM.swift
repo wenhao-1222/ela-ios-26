@@ -7,9 +7,12 @@
 
 import UIKit
 
+/// GuidanceGoalPlanMuscleGainProteinHabitVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class GuidanceGoalPlanMuscleGainProteinHabitVM: GuidanceGoalPlanChoicePageVM {
+    // `flowState` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let flowState: GuidanceGoalPlanFlowState
 
+    /// 初始化当前类型实例。
     init(flowState: GuidanceGoalPlanFlowState) {
         self.flowState = flowState
         super.init(
@@ -29,6 +32,7 @@ final class GuidanceGoalPlanMuscleGainProteinHabitVM: GuidanceGoalPlanChoicePage
         }
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

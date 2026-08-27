@@ -7,9 +7,12 @@
 
 import UIKit
 
+/// GuidanceGoalPlanFatLossProfileVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class GuidanceGoalPlanFatLossProfileVM: GuidanceGoalPlanChoicePageVM {
+    // `flowState` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let flowState: GuidanceGoalPlanFlowState
 
+    /// 初始化当前类型实例。
     init(flowState: GuidanceGoalPlanFlowState) {
         self.flowState = flowState
         super.init(
@@ -21,7 +24,7 @@ final class GuidanceGoalPlanFatLossProfileVM: GuidanceGoalPlanChoicePageVM {
                 GuidanceGoalPlanOption(title: "HYROX 运动员", detail: "我希望优化体重与能量供给，提升跑步效率、力量耐力和恢复能力", value: "hyrox"),
                 GuidanceGoalPlanOption(title: "耐力运动员", detail: "我希望减少不必要的体重负担，提高骑行、越野跑等项目的运动效率", value: "endurance_athlete")
             ],
-            accentColor: GuidanceGoalPlanStyle.fatLossColor
+            accentColor: GuidanceGoalPlanStyle.muscleGainColor
         )
         selectedValue = flowState.fatLossProfile
         valueChanged = { [weak self] _ in
@@ -29,6 +32,7 @@ final class GuidanceGoalPlanFatLossProfileVM: GuidanceGoalPlanChoicePageVM {
         }
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

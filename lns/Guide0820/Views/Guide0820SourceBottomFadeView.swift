@@ -30,6 +30,7 @@ final class Guide0820SourceBottomFadeView: UIView {
     }
 }
 
+// Guide0820SourceBottomFadeView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820SourceBottomFadeView {
     /// 初始化渐变样式。
     func initUI() {

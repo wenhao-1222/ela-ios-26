@@ -9,29 +9,48 @@ import Foundation
 
 /// Guide0820 流程内使用的独立问卷模型，避免与旧问卷流程共享全局状态。
 final class Guide0820Model {
+    /// `shared` 属性，保存该类型对外提供或内部使用的状态与配置。
     static let shared = Guide0820Model()
 
+    // 初始化当前类型实例。
     private init() {}
 
     // 身体资料
+    /// `sex` 属性，保存该类型对外提供或内部使用的状态与配置。
     var sex = ""
+    /// `birthDay` 属性，保存该类型对外提供或内部使用的状态与配置。
     var birthDay = ""
+    /// `birthYear` 属性，保存该类型对外提供或内部使用的状态与配置。
     var birthYear = ""
+    /// `height` 属性，保存该类型对外提供或内部使用的状态与配置。
     var height = ""
+    /// `weight` 属性，保存该类型对外提供或内部使用的状态与配置。
     var weight = ""
+    /// `bodyFat` 属性，保存该类型对外提供或内部使用的状态与配置。
     var bodyFat = ""
+    /// `guidanceBodyWeightExceededType` 属性，保存该类型对外提供或内部使用的状态与配置。
     var guidanceBodyWeightExceededType = ""
+    /// `guidanceRecentWeightTrendType` 属性，保存该类型对外提供或内部使用的状态与配置。
     var guidanceRecentWeightTrendType = ""
 
     // 生活资料
+    /// `guidanceTakeoutFrequencyType` 属性，保存该类型对外提供或内部使用的状态与配置。
     var guidanceTakeoutFrequencyType = ""
+    /// `guidanceMealsPerDayType` 属性，保存该类型对外提供或内部使用的状态与配置。
     var guidanceMealsPerDayType = ""
+    /// `guidanceMealsAdjustType` 属性，保存该类型对外提供或内部使用的状态与配置。
     var guidanceMealsAdjustType = ""
+    /// `guidanceExerciseCaloriesRecordType` 属性，保存该类型对外提供或内部使用的状态与配置。
     var guidanceExerciseCaloriesRecordType = ""
+    /// `guidanceCardioFrequencyType` 属性，保存该类型对外提供或内部使用的状态与配置。
     var guidanceCardioFrequencyType = ""
+    /// `guidanceStrengthTrainingFrequencyType` 属性，保存该类型对外提供或内部使用的状态与配置。
     var guidanceStrengthTrainingFrequencyType = ""
+    /// `events` 属性，保存该类型对外提供或内部使用的状态与配置。
     var events = ""
+    /// `caloriesNumber` 属性，保存该类型对外提供或内部使用的状态与配置。
     var caloriesNumber = ""
+    /// `caloriesNumberFromServer` 属性，保存该类型对外提供或内部使用的状态与配置。
     var caloriesNumberFromServer = ""
 
     /// 清空 Guide0820 当前流程内存数据。
@@ -55,6 +74,7 @@ final class Guide0820Model {
         caloriesNumberFromServer = ""
     }
 
+    /// 执行 `printModelMsg` 操作，完成当前引导页面的状态更新或交互处理。
     func printModelMsg() {
         DLLog(message: "Guide0820 性别：\(sex)")
         DLLog(message: "Guide0820 出生年份：\(birthDay.isEmpty ? birthYear : birthDay)")

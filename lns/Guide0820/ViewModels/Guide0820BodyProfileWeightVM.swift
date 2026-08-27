@@ -142,33 +142,49 @@ final class Guide0820BodyProfileWeightVM: Guide0820BodyProfilePageVM {
 
 /// Guide0820 当前体重页专用横向刻度尺，尺寸按 MasterGo 选中图层换算。
 private final class Guide0820WeightRulerView: UIView, UIScrollViewDelegate {
+    // `minValue` 属性，保存该类型对外提供或内部使用的状态与配置。
     var minValue: Double = 30 {
         didSet { rebuildRuler() }
     }
 
+    // `maxValue` 属性，保存该类型对外提供或内部使用的状态与配置。
     var maxValue: Double = 300 {
         didSet { rebuildRuler() }
     }
 
+    // `stepValue` 属性，保存该类型对外提供或内部使用的状态与配置。
     var stepValue: Double = 0.1 {
         didSet { rebuildRuler() }
     }
 
+    // `onValueChanged` 属性，保存该类型对外提供或内部使用的状态与配置。
     var onValueChanged: ((Double) -> Void)?
 
+    // `scrollView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let scrollView = UIScrollView()
+    // `contentView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let contentView = UIView()
+    // `centerLine` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let centerLine = UIView()
+    // `feedbackGenerator` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let feedbackGenerator = UISelectionFeedbackGenerator()
+    // `spacing` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let spacing = guide0820Design(16.4)
+    // `centerInset` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var centerInset: CGFloat = 0
+    // `lastSize` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var lastSize: CGSize = .zero
+    // `currentIndex` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var currentIndex = 0
+    // `shouldNotifyValueChange` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var shouldNotifyValueChange = true
 
+    // `leftGradientView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var leftGradientView = makeGradientContainer()
+    // `rightGradientView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var rightGradientView = makeGradientContainer()
 
+    // `leftGradientLayer` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var leftGradientLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
         layer.startPoint = CGPoint(x: 0, y: 0.5)
@@ -180,6 +196,7 @@ private final class Guide0820WeightRulerView: UIView, UIScrollViewDelegate {
         return layer
     }()
 
+    // `rightGradientLayer` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var rightGradientLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
         layer.startPoint = CGPoint(x: 0, y: 0.5)
@@ -191,15 +208,18 @@ private final class Guide0820WeightRulerView: UIView, UIScrollViewDelegate {
         return layer
     }()
 
+    // 初始化当前类型实例。
     override init(frame: CGRect) {
         super.init(frame: frame)
         initUI()
     }
 
+    // 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // 执行 `traitCollectionDidChange` 操作，完成当前引导页面的状态更新或交互处理。
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         leftGradientLayer.colors = [
@@ -212,6 +232,7 @@ private final class Guide0820WeightRulerView: UIView, UIScrollViewDelegate {
         ]
     }
 
+    // 执行 `layoutSubviews` 操作，完成当前引导页面的状态更新或交互处理。
     override func layoutSubviews() {
         super.layoutSubviews()
         scrollView.frame = bounds
@@ -227,6 +248,7 @@ private final class Guide0820WeightRulerView: UIView, UIScrollViewDelegate {
         updateOffset(index: currentIndex, animated: false)
     }
 
+    // 执行 `setValue` 操作，完成当前引导页面的状态更新或交互处理。
     func setValue(_ value: Double, animated: Bool, notifies: Bool = true) {
         guard valueCount > 0 else { return }
         let clamped = min(max(value, minValue), maxValue)
@@ -239,17 +261,21 @@ private final class Guide0820WeightRulerView: UIView, UIScrollViewDelegate {
     }
 }
 
+// Guide0820WeightRulerView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820WeightRulerView {
+    // `valueCount` 属性，保存该类型对外提供或内部使用的状态与配置。
     var valueCount: Int {
         guard stepValue > 0, maxValue >= minValue else { return 0 }
         return Int(round((maxValue - minValue) / stepValue)) + 1
     }
 
+    // `majorInterval` 属性，保存该类型对外提供或内部使用的状态与配置。
     var majorInterval: Int {
         guard stepValue > 0 else { return 1 }
         return max(1, Int(round(1.0 / stepValue)))
     }
 
+    // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     func initUI() {
         backgroundColor = .clear
         scrollView.backgroundColor = .clear
@@ -286,12 +312,14 @@ private extension Guide0820WeightRulerView {
         feedbackGenerator.prepare()
     }
 
+    // 执行 `makeGradientContainer` 操作，完成当前引导页面的状态更新或交互处理。
     func makeGradientContainer() -> UIView {
         let view = UIView()
         view.isUserInteractionEnabled = false
         return view
     }
 
+    // 执行 `rebuildRuler` 操作，完成当前引导页面的状态更新或交互处理。
     func rebuildRuler() {
         guard bounds.width > 0, valueCount > 0 else { return }
         contentView.subviews.forEach { $0.removeFromSuperview() }
@@ -306,6 +334,7 @@ private extension Guide0820WeightRulerView {
         }
     }
 
+    // 执行 `addTick` 操作，完成当前引导页面的状态更新或交互处理。
     func addTick(at index: Int) {
         let x = centerInset + CGFloat(index) * spacing
         let isMajor = index % majorInterval == 0
@@ -331,6 +360,7 @@ private extension Guide0820WeightRulerView {
         contentView.addSubview(label)
     }
 
+    // 执行 `updateOffset` 操作，完成当前引导页面的状态更新或交互处理。
     func updateOffset(index: Int, animated: Bool) {
         let targetCenterX = centerInset + CGFloat(index) * spacing
         let targetOffsetX = targetCenterX - scrollView.bounds.width * 0.5
@@ -342,6 +372,7 @@ private extension Guide0820WeightRulerView {
         }
     }
 
+    // 执行 `updateIndexByContentOffset` 操作，完成当前引导页面的状态更新或交互处理。
     func updateIndexByContentOffset() {
         guard valueCount > 0 else { return }
         let centerX = scrollView.contentOffset.x + scrollView.bounds.width * 0.5
@@ -354,28 +385,34 @@ private extension Guide0820WeightRulerView {
         emitValueIfNeeded()
     }
 
+    // 执行 `emitValueIfNeeded` 操作，完成当前引导页面的状态更新或交互处理。
     func emitValueIfNeeded() {
         guard shouldNotifyValueChange else { return }
         let value = minValue + Double(currentIndex) * stepValue
         onValueChanged?(value)
     }
 
+    // 执行 `snapToCurrentIndex` 操作，完成当前引导页面的状态更新或交互处理。
     func snapToCurrentIndex() {
         updateOffset(index: currentIndex, animated: true)
     }
 }
 
+// Guide0820WeightRulerView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820WeightRulerView {
+    // 执行 `scrollViewDidScroll` 操作，完成当前引导页面的状态更新或交互处理。
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         updateIndexByContentOffset()
     }
 
+    // 执行 `scrollViewDidEndDragging` 操作，完成当前引导页面的状态更新或交互处理。
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
             snapToCurrentIndex()
         }
     }
 
+    // 执行 `scrollViewDidEndDecelerating` 操作，完成当前引导页面的状态更新或交互处理。
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         snapToCurrentIndex()
     }

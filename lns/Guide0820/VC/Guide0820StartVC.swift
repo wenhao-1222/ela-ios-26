@@ -39,6 +39,7 @@ final class Guide0820StartVC: WHBaseViewVC {
         initUI()
     }
 
+    /// 执行 `viewWillAppear` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         enforceInteractivePopGestureDisabled()
@@ -51,12 +52,14 @@ final class Guide0820StartVC: WHBaseViewVC {
         enforceInteractivePopGestureDisabled()
     }
 
+    /// 执行 `viewDidDisappear` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         restoreFullscreenInteractivePopGesture()
     }
 }
 
+/// Guide0820StartVC 扩展，提供 Guide0820 流程相关的辅助能力。
 extension Guide0820StartVC {
     /// Guide0820 冷启动恢复用导航栈；子流程未完成时停留在开始页，由开始页展示当前主步骤。
     static func makeResumeViewControllers(includingLaunchEntry: Bool = false) -> [UIViewController] {
@@ -70,7 +73,9 @@ extension Guide0820StartVC {
     }
 }
 
+// Guide0820StartVC 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820StartVC {
+    // 执行 `enforceInteractivePopGestureDisabled` 操作，完成当前引导页面的状态更新或交互处理。
     func enforceInteractivePopGestureDisabled() {
         updateInteractivePopGestureBlocked(true)
         DispatchQueue.main.async { [weak self] in
@@ -246,22 +251,26 @@ private extension Guide0820StartVC {
 
 /// Guide0820 开始页右上角更多按钮，按 MasterGo 设计稿绘制 3 个独立圆点。
 private final class Guide0820MoreButton: UIButton {
+    // 初始化当前类型实例。
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
         accessibilityLabel = "更多"
     }
 
+    // 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // `isHighlighted` 属性，保存该类型对外提供或内部使用的状态与配置。
     override var isHighlighted: Bool {
         didSet {
             alpha = isHighlighted ? 0.55 : 1
         }
     }
 
+    // 执行 `draw` 操作，完成当前引导页面的状态更新或交互处理。
     override func draw(_ rect: CGRect) {
         super.draw(rect)
 

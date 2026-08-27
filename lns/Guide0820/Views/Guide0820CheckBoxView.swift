@@ -40,6 +40,7 @@ final class Guide0820CheckBoxView: UIControl {
     }
 }
 
+// Guide0820CheckBoxView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820CheckBoxView {
     /// 初始化勾选框样式。
     func initUI() {

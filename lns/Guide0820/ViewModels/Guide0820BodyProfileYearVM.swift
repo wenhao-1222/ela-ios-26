@@ -64,6 +64,7 @@ final class Guide0820BodyProfileYearVM: DietPlanCreateYearVM {
         Guide0820Model.shared.birthDay = birthYear
     }
 
+    /// 执行 `layoutSubviews` 操作，完成当前引导页面的状态更新或交互处理。
     override func layoutSubviews() {
         super.layoutSubviews()
         hidePickerSystemIndicator()
@@ -110,6 +111,7 @@ final class Guide0820BodyProfileYearVM: DietPlanCreateYearVM {
         }
     }
 
+    // 执行 `hidePickerSystemIndicator` 操作，完成当前引导页面的状态更新或交互处理。
     private func hidePickerSystemIndicator() {
         pickerView.subviews.forEach { subview in
             guard !(subview is UILabel) else { return }

@@ -46,12 +46,15 @@ final class VCStartVM {
         ]
     }
 
+    /// `currentStep` 属性，保存该类型对外提供或内部使用的状态与配置。
     var currentStep: Guide0820ProgressStorage.MainStep {
         Guide0820ProgressStorage.currentMainStep
     }
 }
 
+// VCStartVM 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension VCStartVM {
+    // 执行 `detail` 操作，完成当前引导页面的状态更新或交互处理。
     func detail(for step: Guide0820ProgressStorage.MainStep, activeStep: Guide0820ProgressStorage.MainStep) -> String? {
         guard step == activeStep else { return nil }
         switch step {
@@ -64,6 +67,7 @@ private extension VCStartVM {
         }
     }
 
+    // 执行 `isNumberHighlighted` 操作，完成当前引导页面的状态更新或交互处理。
     func isNumberHighlighted(for step: Guide0820ProgressStorage.MainStep, activeStep: Guide0820ProgressStorage.MainStep) -> Bool {
         step.rawValue <= activeStep.rawValue
         

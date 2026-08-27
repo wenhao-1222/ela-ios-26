@@ -51,6 +51,7 @@ final class Guide0820RootView: UIView {
     }
 }
 
+// Guide0820RootView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820RootView {
     /// 页面切换方向。
     enum PageDirection {
@@ -188,7 +189,18 @@ private extension Guide0820RootView {
     }
 }
 
+/// Guide0820RootView 扩展，提供 Guide0820 流程相关的辅助能力。
 extension Guide0820RootView: UIGestureRecognizerDelegate {
+    /// 根视图只接管明显的右滑返回手势，避免影响页面内纵向滚动。
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer else {
+            return true
+        }
+
+        let velocity = panGesture.velocity(in: self)
+        return velocity.x > 0 && abs(velocity.x) > abs(velocity.y)
+    }
+
     /// 允许和页面内滚动手势同时识别。
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
                            shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {

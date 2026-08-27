@@ -8,10 +8,14 @@
 import UIKit
 import SnapKit
 
+/// Guide0820BodyProfileVC 类型，封装 Guide0820 引导流程中的相关功能。
 final class Guide0820BodyProfileVC: WHBaseViewVC {
+    // `currentIndex` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var currentIndex = 0
+    // `isProgressPersistenceSuppressed` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var isProgressPersistenceSuppressed = false
 
+    // `backButton` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var backButton: ElaLiquidGlassCloseButton = {
         let button = ElaLiquidGlassCloseButton()
         button.iconImage = UIImage(named: "guide_back_button")
@@ -22,6 +26,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return button
     }()
 
+    // `navTitleLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let navTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "了解你的身体"
@@ -31,6 +36,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return label
     }()
 
+    // `progressTrackView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let progressTrackView: UIView = {
         let view = UIView()
         view.backgroundColor = .COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.1)
@@ -39,6 +45,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return view
     }()
 
+    // `progressView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let progressView: UIView = {
         let view = UIView()
         view.backgroundColor = .COLOR_TEXT_TITLE_0f1214
@@ -47,6 +54,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return view
     }()
 
+    // `scrollView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let scrollView: UIScrollView = {
         let view = UIScrollView()
         view.isPagingEnabled = true
@@ -58,6 +66,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return view
     }()
 
+    // `stackView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -65,6 +74,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return stack
     }()
 
+    // `nextButton` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var nextButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("下一步", for: .normal)
@@ -79,6 +89,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return button
     }()
 
+    // `bottomGradientView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var bottomGradientView: UIView = {
         let view = UIView()
         view.isUserInteractionEnabled = false
@@ -86,6 +97,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return view
     }()
 
+    // `bottomGradientLayer` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var bottomGradientLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
         layer.startPoint = CGPoint(x: 0.5, y: 0)
@@ -97,6 +109,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return layer
     }()
 
+    // `sexVm` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var sexVm: Guide0820BodyProfileSexVM = {
         let vm = Guide0820BodyProfileSexVM(frame: .zero)
         vm.sexChangedBlock = { [weak self] sex in
@@ -122,16 +135,19 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return vm
     }()
 
+    // `yearVm` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var yearVm: Guide0820BodyProfileYearVM = {
         let vm = Guide0820BodyProfileYearVM(frame: .zero)
         return vm
     }()
 
+    // `heightVm` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var heightVm: Guide0820BodyProfileHeightVM = {
         let vm = Guide0820BodyProfileHeightVM(frame: .zero)
         return vm
     }()
 
+    // `weightVm` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var weightVm: Guide0820BodyProfileWeightVM = {
         let vm = Guide0820BodyProfileWeightVM(frame: .zero)
         vm.showTipsBlock = { [weak self] in
@@ -143,6 +159,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return vm
     }()
 
+    // `weightExceededVm` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var weightExceededVm: Guide0820BodyProfileWeightExceededVM = {
         let vm = Guide0820BodyProfileWeightExceededVM(frame: .zero)
         vm.validityChanged = { [weak self] _ in
@@ -151,6 +168,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return vm
     }()
 
+    // `weightTrendVm` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var weightTrendVm: Guide0820BodyProfileWeightTrendVM = {
         let vm = Guide0820BodyProfileWeightTrendVM(frame: .zero)
         vm.validityChanged = { [weak self] _ in
@@ -159,6 +177,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return vm
     }()
 
+    // `bodyfatVm` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var bodyfatVm: Guide0820BodyProfileBodyfatVM = {
         let vm = Guide0820BodyProfileBodyfatVM(frame: .zero)
         vm.showTipsBlock = { [weak self] in
@@ -170,10 +189,12 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         return vm
     }()
 
+    // `bodyFatAlertVm` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var bodyFatAlertVm: QuestionnaireBodyFatAlertVM = {
         QuestionnaireBodyFatAlertVM(frame: .zero)
     }()
 
+    // `pages` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var pages: [UIView] = [
         sexVm,
         yearVm,
@@ -184,6 +205,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         bodyfatVm
     ]
 
+    // `sexIntroVm` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var sexIntroVm = Guide0820BodyProfileIntroOverlayVM(
         title: "荷尔蒙：无法被忽略的变量",
         bodyItems: [
@@ -196,6 +218,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         dismissAction: {}
     )
 
+    // `weightIntroVm` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var weightIntroVm = Guide0820BodyProfileIntroOverlayVM(
         title: "什么时候称更准？",
         bodyItems: [
@@ -204,6 +227,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         dismissAction: {}
     )
 
+    /// 执行 `viewDidLoad` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
@@ -211,32 +235,39 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
         updatePage(animated: false)
     }
 
+    /// 执行 `viewWillAppear` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         enforceInteractivePopGestureDisabled()
     }
 
+    /// 执行 `viewDidAppear` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         enforceInteractivePopGestureDisabled()
     }
 
+    /// 执行 `viewDidLayoutSubviews` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         bottomGradientLayer.frame = bottomGradientView.bounds
     }
 
+    /// 执行 `viewDidDisappear` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         restoreFullscreenInteractivePopGesture()
     }
 
+    /// 释放当前类型实例持有的资源。
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
 }
 
+// Guide0820BodyProfileVC 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820BodyProfileVC {
+    // 执行 `enforceInteractivePopGestureDisabled` 操作，完成当前引导页面的状态更新或交互处理。
     func enforceInteractivePopGestureDisabled() {
         updateInteractivePopGestureBlocked(true)
         DispatchQueue.main.async { [weak self] in
@@ -248,6 +279,7 @@ private extension Guide0820BodyProfileVC {
         }
     }
 
+    // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     func initUI() {
         navigationController?.setNavigationBarHidden(true, animated: false)
         view.backgroundColor = .COLOR_BG_F2
@@ -331,6 +363,7 @@ private extension Guide0820BodyProfileVC {
         }
     }
 
+    // 执行 `updatePage` 操作，完成当前引导页面的状态更新或交互处理。
     func updatePage(animated: Bool) {
         currentIndex = min(max(currentIndex, 0), pages.count - 1)
         view.layoutIfNeeded()
@@ -348,6 +381,7 @@ private extension Guide0820BodyProfileVC {
         }
     }
 
+    // 执行 `updateProgress` 操作，完成当前引导页面的状态更新或交互处理。
     func updateProgress() {
         let ratio = CGFloat(currentIndex + 1) / CGFloat(max(pages.count, 1))
         progressView.snp.remakeConstraints { make in
@@ -359,6 +393,7 @@ private extension Guide0820BodyProfileVC {
         }
     }
 
+    // 执行 `syncNextButtonState` 操作，完成当前引导页面的状态更新或交互处理。
     func syncNextButtonState() {
         let valid: Bool
         if let vm = pages[currentIndex] as? Guide0820BodyProfilePageVM {
@@ -374,6 +409,7 @@ private extension Guide0820BodyProfileVC {
         nextButton.backgroundColor = valid ? .THEME : .COLOR_BUTTON_DISABLE_BG_THEME
     }
 
+    // 执行 `backButtonAction` 操作，完成当前引导页面的状态更新或交互处理。
     @objc func backButtonAction() {
         if currentIndex > 0 {
             currentIndex -= 1
@@ -383,6 +419,7 @@ private extension Guide0820BodyProfileVC {
         navigationController?.popViewController(animated: true)
     }
 
+    // 执行 `nextButtonAction` 操作，完成当前引导页面的状态更新或交互处理。
     @objc func nextButtonAction() {
         commitCurrentPage()
         if currentIndex == pages.count - 1 {
@@ -440,6 +477,7 @@ private extension Guide0820BodyProfileVC {
         }
     }
 
+    // 执行 `restoreBodyFatSelectionFromStorage` 操作，完成当前引导页面的状态更新或交互处理。
     func restoreBodyFatSelectionFromStorage(shouldCenterSelectedItem: Bool) {
         performWithoutProgressPersistence {
             bodyfatVm.updateScrollView()
@@ -449,6 +487,7 @@ private extension Guide0820BodyProfileVC {
         }
     }
 
+    // 执行 `performWithoutProgressPersistence` 操作，完成当前引导页面的状态更新或交互处理。
     func performWithoutProgressPersistence(_ action: () -> Void) {
         let previousValue = isProgressPersistenceSuppressed
         isProgressPersistenceSuppressed = true

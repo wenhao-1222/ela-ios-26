@@ -8,6 +8,13 @@
 import UIKit
 import SnapKit
 
+/// 允许在来源选项控件上拖动时取消点击并开始滚动。
+private final class Guide0820SourceScrollView: UIScrollView {
+    override func touchesShouldCancel(in view: UIView) -> Bool {
+        true
+    }
+}
+
 /// Guide0820 来源问卷页。
 final class Guide0820SourceView: UIView {
     /// 来源问卷视图模型。
@@ -26,10 +33,12 @@ final class Guide0820SourceView: UIView {
     }()
     /// 来源列表滚动视图。
     private lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
+        let scrollView = Guide0820SourceScrollView()
         scrollView.backgroundColor = .clear
         scrollView.showsVerticalScrollIndicator = false
         scrollView.alwaysBounceVertical = true
+        scrollView.delaysContentTouches = false
+        scrollView.canCancelContentTouches = true
         return scrollView
     }()
     /// 来源选项垂直容器。
@@ -40,9 +49,17 @@ final class Guide0820SourceView: UIView {
         return stackView
     }()
     /// 底部滚动渐变容器。
-    private lazy var bottomGradientView = UIView()
+    private lazy var bottomGradientView: UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+        return view
+    }()
     /// 顶部滚动渐变容器。
-    private lazy var topGradientView = UIView()
+    private lazy var topGradientView: UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+        return view
+    }()
     /// 底部滚动渐变图层。
     private lazy var bottomGradientLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
@@ -97,6 +114,7 @@ final class Guide0820SourceView: UIView {
     }
 }
 
+// Guide0820SourceView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820SourceView {
     /// 初始化页面布局。
     func initUI() {
@@ -158,7 +176,8 @@ private extension Guide0820SourceView {
         stackView.snp.makeConstraints { make in
             make.left.right.equalTo(scrollView.frameLayoutGuide).inset(kFitWidth(21))
             make.top.equalTo(scrollView.contentLayoutGuide).offset(kFitWidth(36))
-            make.bottom.equalTo(scrollView.contentLayoutGuide)
+            // 给最后一项预留滚动后的底部安全空白，避免被渐变遮罩盖住。
+            make.bottom.equalTo(scrollView.contentLayoutGuide).offset(-kFitWidth(80))
         }
     }
 

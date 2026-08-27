@@ -32,12 +32,15 @@ final class Guide0820BodyProfileBodyfatVM: DietPlanCreateBodyfatVM {
         return value.isEmpty ? nil : value
     }
 
+    /// `bodyFatSex` 属性，保存该类型对外提供或内部使用的状态与配置。
     override var bodyFatSex: String { Guide0820Model.shared.sex }
 
+    /// 执行 `setBodyFatModelValue` 操作，完成当前引导页面的状态更新或交互处理。
     override func setBodyFatModelValue(_ value: String) {
         Guide0820Model.shared.bodyFat = value
     }
 
+    /// 执行 `commitCurrentValue` 操作，完成当前引导页面的状态更新或交互处理。
     override func commitCurrentValue() {
         updateBodyFatValue(index: selectIndex)
     }
@@ -109,6 +112,7 @@ final class Guide0820BodyProfileBodyfatVM: DietPlanCreateBodyfatVM {
         bodyFatCentersSelectedContent = true
     }
 
+    // `guide0820InfoCardTop` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var guide0820InfoCardTop: CGFloat {
         let rowCount = ceil(CGFloat(max(dataArray.count, dataFemanArray.count)) / CGFloat(bodyFatColumnCount))
         let imageListBottom = guide0820Design(378) + max(rowCount - 1, 0) * bodyFatItemHeight + bodyFatItemImageSide

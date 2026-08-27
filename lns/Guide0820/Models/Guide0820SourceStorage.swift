@@ -51,49 +51,84 @@ enum Guide0820SourceStorage {
 
 /// Guide0820 三段式引导流程本地进度存储。
 enum Guide0820ProgressStorage {
+    /// MainStep 类型，封装 Guide0820 引导流程中的相关功能。
     enum MainStep: Int, CaseIterable {
         case bodyProfile = 0
         case lifeProfile = 1
         case directionProfile = 2
     }
 
+    // Key 类型，封装 Guide0820 引导流程中的相关功能。
     private enum Key {
+        // `completedMainStepCount` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let completedMainStepCount = "guide_0820_completed_main_step_count"
         // 复用旧 key，避免已经保存的身体资料进度丢失。
+        // `bodyProfileFurthestPageIndex` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let bodyProfileFurthestPageIndex = "guide_0820_body_profile_current_page_index"
+        // `bodyProfileCompleted` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let bodyProfileCompleted = "guide_0820_body_profile_completed"
+        // `lifeProfileCurrentPageIndex` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let lifeProfileCurrentPageIndex = "guide_0820_life_profile_current_page_index"
+        // `lifeProfileCompleted` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let lifeProfileCompleted = "guide_0820_life_profile_completed"
+        // `directionProfileCurrentPageIndex` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileCurrentPageIndex = "guide_0820_direction_profile_current_page_index"
+        // `directionProfileCompleted` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileCompleted = "guide_0820_direction_profile_completed"
+        // `directionProfileTarget` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileTarget = "guide_0820_direction_profile_target"
+        // `directionProfileMuscleGainBarrier` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileMuscleGainBarrier = "guide_0820_direction_profile_muscle_gain_barrier"
+        // `directionProfileMuscleGainMode` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileMuscleGainMode = "guide_0820_direction_profile_muscle_gain_mode"
+        // `directionProfileMuscleGainDurationWeeks` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileMuscleGainDurationWeeks = "guide_0820_direction_profile_muscle_gain_duration_weeks"
+        // `directionProfileMuscleGainProfile` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileMuscleGainProfile = "guide_0820_direction_profile_muscle_gain_profile"
+        // `directionProfileMuscleGainProteinHabit` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileMuscleGainProteinHabit = "guide_0820_direction_profile_muscle_gain_protein_habit"
+        // `directionProfileFatLossFoodFluctuation` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileFatLossFoodFluctuation = "guide_0820_direction_profile_fat_loss_food_fluctuation"
+        // `directionProfileFatLossMode` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileFatLossMode = "guide_0820_direction_profile_fat_loss_mode"
+        // `directionProfileFatLossDurationWeeks` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileFatLossDurationWeeks = "guide_0820_direction_profile_fat_loss_duration_weeks"
+        // `directionProfileFatLossProfile` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileFatLossProfile = "guide_0820_direction_profile_fat_loss_profile"
+        // `directionProfileFatLossProteinHabit` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let directionProfileFatLossProteinHabit = "guide_0820_direction_profile_fat_loss_protein_habit"
 
+        // `bodySex` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let bodySex = "guide_0820_body_profile_sex"
+        // `bodyBirthYear` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let bodyBirthYear = "guide_0820_body_profile_birth_year"
+        // `bodyHeight` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let bodyHeight = "guide_0820_body_profile_height"
+        // `bodyWeight` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let bodyWeight = "guide_0820_body_profile_weight"
+        // `bodyWeightExceeded` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let bodyWeightExceeded = "guide_0820_body_profile_weight_exceeded"
+        // `bodyWeightTrend` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let bodyWeightTrend = "guide_0820_body_profile_weight_trend"
+        // `bodyFat` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let bodyFat = "guide_0820_body_profile_body_fat"
+        // `lifeTakeoutFrequency` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let lifeTakeoutFrequency = "guide_0820_life_profile_takeout_frequency"
+        // `lifeMealsPerDay` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let lifeMealsPerDay = "guide_0820_life_profile_meals_per_day"
+        // `lifeMealsAdjust` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let lifeMealsAdjust = "guide_0820_life_profile_meals_adjust"
+        // `lifeExerciseCaloriesRecord` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let lifeExerciseCaloriesRecord = "guide_0820_life_profile_exercise_calories_record"
+        // `lifeCardioFrequency` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let lifeCardioFrequency = "guide_0820_life_profile_cardio_frequency"
+        // `lifeStrengthTrainingFrequency` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let lifeStrengthTrainingFrequency = "guide_0820_life_profile_strength_training_frequency"
+        // `lifeCaloriesNumber` 属性，保存该类型对外提供或内部使用的状态与配置。
         static let lifeCaloriesNumber = "guide_0820_life_profile_calories_number"
     }
 
+    /// `currentMainStep` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var currentMainStep: MainStep {
         if isStepCompleted(.lifeProfile) {
             return .directionProfile
@@ -104,6 +139,7 @@ enum Guide0820ProgressStorage {
         return MainStep(rawValue: completedMainStepCount) ?? .directionProfile
     }
 
+    /// 执行 `currentPageIndex` 操作，完成当前引导页面的状态更新或交互处理。
     static func currentPageIndex(for step: MainStep) -> Int {
         switch step {
         case .bodyProfile:
@@ -115,6 +151,7 @@ enum Guide0820ProgressStorage {
         }
     }
 
+    /// 执行 `saveCurrentPageIndex` 操作，完成当前引导页面的状态更新或交互处理。
     static func saveCurrentPageIndex(_ index: Int, for step: MainStep) {
         let safeIndex = max(index, 0)
         switch step {
@@ -128,10 +165,12 @@ enum Guide0820ProgressStorage {
         Guide0820DefaultsFlusher.flush()
     }
 
+    /// 执行 `furthestPageIndex` 操作，完成当前引导页面的状态更新或交互处理。
     static func furthestPageIndex(for step: MainStep) -> Int {
         currentPageIndex(for: step)
     }
 
+    /// 执行 `recordFurthestPageIndex` 操作，完成当前引导页面的状态更新或交互处理。
     static func recordFurthestPageIndex(_ index: Int, for step: MainStep) {
         let safeIndex = max(currentPageIndex(for: step), index, 0)
         switch step {
@@ -145,6 +184,7 @@ enum Guide0820ProgressStorage {
         Guide0820DefaultsFlusher.flush()
     }
 
+    /// 执行 `isStepCompleted` 操作，完成当前引导页面的状态更新或交互处理。
     static func isStepCompleted(_ step: MainStep) -> Bool {
         switch step {
         case .bodyProfile:
@@ -156,6 +196,7 @@ enum Guide0820ProgressStorage {
         }
     }
 
+    /// 执行 `markStepCompleted` 操作，完成当前引导页面的状态更新或交互处理。
     static func markStepCompleted(_ step: MainStep) {
         switch step {
         case .bodyProfile:
@@ -171,6 +212,7 @@ enum Guide0820ProgressStorage {
         Guide0820DefaultsFlusher.flush()
     }
 
+    /// 执行 `saveDirectionProfile` 操作，完成当前引导页面的状态更新或交互处理。
     static func saveDirectionProfile(flowState: GuidanceGoalPlanFlowState) {
         setString(flowState.target?.rawValue, forKey: Key.directionProfileTarget)
         setString(flowState.muscleGainBarrier, forKey: Key.directionProfileMuscleGainBarrier)
@@ -190,6 +232,7 @@ enum Guide0820ProgressStorage {
         Guide0820DefaultsFlusher.flush()
     }
 
+    /// 执行 `restoreDirectionProfile` 操作，完成当前引导页面的状态更新或交互处理。
     static func restoreDirectionProfile(flowState: GuidanceGoalPlanFlowState) {
         if let target = storedString(forKey: Key.directionProfileTarget) {
             flowState.target = GuidanceGoalPlanTarget(rawValue: target)
@@ -210,6 +253,7 @@ enum Guide0820ProgressStorage {
         flowState.fatLossProteinHabit = storedString(forKey: Key.directionProfileFatLossProteinHabit) ?? flowState.fatLossProteinHabit
     }
 
+    /// 执行 `saveBodyProfile` 操作，完成当前引导页面的状态更新或交互处理。
     static func saveBodyProfile(sex: String?,
                                 birthYear: String?,
                                 height: Int?,
@@ -258,18 +302,26 @@ enum Guide0820ProgressStorage {
         model.bodyFat = bodyProfileBodyFat ?? model.bodyFat
     }
 
+    /// `bodyProfileSex` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var bodyProfileSex: String? { storedString(forKey: Key.bodySex) }
+    /// `bodyProfileBirthYear` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var bodyProfileBirthYear: String? { storedString(forKey: Key.bodyBirthYear) }
+    /// `bodyProfileHeight` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var bodyProfileHeight: Int? {
         UserDefaults.standard.object(forKey: Key.bodyHeight) == nil ? nil : UserDefaults.standard.integer(forKey: Key.bodyHeight)
     }
+    /// `bodyProfileWeight` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var bodyProfileWeight: Double? {
         UserDefaults.standard.object(forKey: Key.bodyWeight) == nil ? nil : UserDefaults.standard.double(forKey: Key.bodyWeight)
     }
+    /// `bodyProfileWeightExceeded` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var bodyProfileWeightExceeded: String? { storedString(forKey: Key.bodyWeightExceeded) }
+    /// `bodyProfileWeightTrend` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var bodyProfileWeightTrend: String? { storedString(forKey: Key.bodyWeightTrend) }
+    /// `bodyProfileBodyFat` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var bodyProfileBodyFat: String? { storedString(forKey: Key.bodyFat) }
 
+    /// 执行 `saveLifeProfile` 操作，完成当前引导页面的状态更新或交互处理。
     static func saveLifeProfile(takeoutFrequency: String?,
                                 mealsPerDay: String?,
                                 mealsAdjust: String?,
@@ -287,6 +339,7 @@ enum Guide0820ProgressStorage {
         Guide0820DefaultsFlusher.flush()
     }
 
+    /// 执行 `saveLifeProfileFromGuide0820Model` 操作，完成当前引导页面的状态更新或交互处理。
     static func saveLifeProfileFromGuide0820Model() {
         let model = Guide0820Model.shared
         saveLifeProfile(
@@ -300,6 +353,7 @@ enum Guide0820ProgressStorage {
         )
     }
 
+    /// 执行 `restoreLifeProfileToGuide0820Model` 操作，完成当前引导页面的状态更新或交互处理。
     static func restoreLifeProfileToGuide0820Model() {
         let model = Guide0820Model.shared
         model.guidanceTakeoutFrequencyType = lifeProfileTakeoutFrequency ?? model.guidanceTakeoutFrequencyType
@@ -312,14 +366,22 @@ enum Guide0820ProgressStorage {
         model.caloriesNumberFromServer = lifeProfileCaloriesNumber ?? model.caloriesNumberFromServer
     }
 
+    /// `lifeProfileTakeoutFrequency` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var lifeProfileTakeoutFrequency: String? { storedString(forKey: Key.lifeTakeoutFrequency) }
+    /// `lifeProfileMealsPerDay` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var lifeProfileMealsPerDay: String? { storedString(forKey: Key.lifeMealsPerDay) }
+    /// `lifeProfileMealsAdjust` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var lifeProfileMealsAdjust: String? { storedString(forKey: Key.lifeMealsAdjust) }
+    /// `lifeProfileExerciseCaloriesRecord` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var lifeProfileExerciseCaloriesRecord: String? { storedString(forKey: Key.lifeExerciseCaloriesRecord) }
+    /// `lifeProfileCardioFrequency` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var lifeProfileCardioFrequency: String? { storedString(forKey: Key.lifeCardioFrequency) }
+    /// `lifeProfileStrengthTrainingFrequency` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var lifeProfileStrengthTrainingFrequency: String? { storedString(forKey: Key.lifeStrengthTrainingFrequency) }
+    /// `lifeProfileCaloriesNumber` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var lifeProfileCaloriesNumber: String? { storedString(forKey: Key.lifeCaloriesNumber) }
 
+    /// `hasBodyProfileProgress` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var hasBodyProfileProgress: Bool {
         [
             Key.bodyProfileFurthestPageIndex,
@@ -335,6 +397,7 @@ enum Guide0820ProgressStorage {
         }
     }
 
+    /// `hasLifeProfileProgress` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var hasLifeProfileProgress: Bool {
         [
             Key.lifeProfileCurrentPageIndex,
@@ -350,6 +413,7 @@ enum Guide0820ProgressStorage {
         }
     }
 
+    /// `hasDirectionProfileProgress` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var hasDirectionProfileProgress: Bool {
         [
             Key.directionProfileCurrentPageIndex,
@@ -369,6 +433,7 @@ enum Guide0820ProgressStorage {
         }
     }
 
+    /// `shouldResumeGuide0820` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var shouldResumeGuide0820: Bool {
         Guide0820SourceStorage.hasStoredSelection ||
         (hasBodyProfileProgress && isStepCompleted(.bodyProfile) == false) ||
@@ -376,6 +441,7 @@ enum Guide0820ProgressStorage {
         (hasDirectionProfileProgress && isStepCompleted(.directionProfile) == false)
     }
 
+    /// 执行 `clearAll` 操作，完成当前引导页面的状态更新或交互处理。
     static func clearAll() {
         Guide0820SourceStorage.clear()
         [
@@ -420,22 +486,28 @@ enum Guide0820ProgressStorage {
     }
 }
 
+// Guide0820DefaultsFlusher 类型，封装 Guide0820 引导流程中的相关功能。
 private enum Guide0820DefaultsFlusher {
+    // 执行 `flush` 操作，完成当前引导页面的状态更新或交互处理。
     static func flush() {
         UserDefaults.standard.synchronize()
     }
 }
 
+// Guide0820ProgressStorage 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820ProgressStorage {
+    // `completedMainStepCount` 属性，保存该类型对外提供或内部使用的状态与配置。
     static var completedMainStepCount: Int {
         min(max(UserDefaults.standard.integer(forKey: Key.completedMainStepCount), 0), MainStep.allCases.count)
     }
 
+    // 执行 `storedString` 操作，完成当前引导页面的状态更新或交互处理。
     static func storedString(forKey key: String) -> String? {
         guard UserDefaults.standard.object(forKey: key) != nil else { return nil }
         return UserDefaults.standard.string(forKey: key)
     }
 
+    // 执行 `setString` 操作，完成当前引导页面的状态更新或交互处理。
     static func setString(_ value: String?, forKey key: String) {
         guard let value else { return }
         UserDefaults.standard.set(value, forKey: key)

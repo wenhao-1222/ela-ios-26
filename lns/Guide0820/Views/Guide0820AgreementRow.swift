@@ -29,6 +29,7 @@ final class Guide0820AgreementRow: UIControl {
     }
 }
 
+// Guide0820AgreementRow 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820AgreementRow {
     /// 初始化协议行样式。
     /// - Parameter item: 协议配置。

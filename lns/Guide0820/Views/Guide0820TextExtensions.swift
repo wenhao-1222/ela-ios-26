@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// UILabel 扩展，提供 Guide0820 流程相关的辅助能力。
 extension UILabel {
     /// 给当前 label 文本设置行间距。
     /// - Parameter spacing: 需要设置的行间距。
@@ -44,6 +45,7 @@ extension UILabel {
     }
 }
 
+/// NSMutableAttributedString 扩展，提供 Guide0820 流程相关的辅助能力。
 extension NSMutableAttributedString {
     /// 给指定文本添加链接属性。
     /// - Parameters:

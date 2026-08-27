@@ -8,7 +8,9 @@
 import UIKit
 import SnapKit
 
+/// GuidanceGoalPlanOptionCardView 类型，封装 Guide0820 引导流程中的相关功能。
 final class GuidanceGoalPlanOptionCardView: UIControl {
+    // PresentationStyle 类型，封装 Guide0820 引导流程中的相关功能。
     private enum PresentationStyle {
         case standard
         case goal
@@ -16,29 +18,40 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
         case expandable
     }
 
+    // `titleLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let titleLabel = UILabel()
+    // `detailLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let detailLabel = UILabel()
+    // `iconImageView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let iconImageView = UIImageView()
+    // `checkImageView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let checkImageView = UIImageView()
+    // `accentColor` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var accentColor: UIColor = .THEME
+    // `presentationStyle` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var presentationStyle: PresentationStyle = .standard
+    // `detailExpanded` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var detailExpanded = false
 
+    /// 初始化当前类型实例。
     override init(frame: CGRect) {
         super.init(frame: frame)
         initUI()
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// `isHighlighted` 属性，保存该类型对外提供或内部使用的状态与配置。
     override var isHighlighted: Bool {
         didSet {
             alpha = isHighlighted ? 0.72 : 1
         }
     }
 
+    /// 执行 `configure` 操作，完成当前引导页面的状态更新或交互处理。
     func configure(option: GuidanceGoalPlanOption,
                    accentColor: UIColor,
                    detailOnlyWhenSelected: Bool = false) {
@@ -90,6 +103,7 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
         remakeLayout()
     }
 
+    /// 执行 `setSelected` 操作，完成当前引导页面的状态更新或交互处理。
     func setSelected(_ selected: Bool, animated: Bool = false) {
         if presentationStyle == .goal || presentationStyle == .profile {
             layer.borderColor = selected ? accentColor.cgColor : UIColor.clear.cgColor
@@ -110,6 +124,7 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
         }
     }
 
+    // 执行 `setDetailExpanded` 操作，完成当前引导页面的状态更新或交互处理。
     private func setDetailExpanded(_ expanded: Bool, animated: Bool) {
         guard detailExpanded != expanded else { return }
         detailExpanded = expanded
@@ -122,7 +137,9 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
     }
 }
 
+// GuidanceGoalPlanOptionCardView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension GuidanceGoalPlanOptionCardView {
+    // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     func initUI() {
         backgroundColor = GuidanceGoalPlanStyle.cardBackgroundColor
         layer.cornerRadius = kFitWidth(12)
@@ -173,6 +190,7 @@ private extension GuidanceGoalPlanOptionCardView {
         }
     }
 
+    // 执行 `remakeLayout` 操作，完成当前引导页面的状态更新或交互处理。
     func remakeLayout() {
         switch presentationStyle {
         case .goal:

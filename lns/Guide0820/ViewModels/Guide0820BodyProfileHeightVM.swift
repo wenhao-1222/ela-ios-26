@@ -108,6 +108,7 @@ final class Guide0820BodyProfileHeightVM: Guide0820BodyProfilePageVM, rulerDeleg
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// 执行 `traitCollectionDidChange` 操作，完成当前引导页面的状态更新或交互处理。
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         updateHeightText(value: currentValue)
         topMaskLayer.colors = [
@@ -226,6 +227,7 @@ final class Guide0820BodyProfileHeightVM: Guide0820BodyProfilePageVM, rulerDeleg
         numberLabel.attributedText = text
     }
 
+    /// 执行 `layoutSubviews` 操作，完成当前引导页面的状态更新或交互处理。
     override func layoutSubviews() {
         super.layoutSubviews()
         topMaskLayer.frame = topMaskView.bounds
@@ -242,6 +244,7 @@ final class Guide0820BodyProfileHeightVM: Guide0820BodyProfilePageVM, rulerDeleg
         }
     }
 
+    // 执行 `resolveRulerScrollView` 操作，完成当前引导页面的状态更新或交互处理。
     private func resolveRulerScrollView() -> UIScrollView? {
         if let linkedRulerScrollView {
             return linkedRulerScrollView
@@ -249,12 +252,14 @@ final class Guide0820BodyProfileHeightVM: Guide0820BodyProfilePageVM, rulerDeleg
         return rulerView.subviews.first(where: { $0 is UIScrollView }) as? UIScrollView
     }
 
+    // 执行 `clampRulerOffset` 操作，完成当前引导页面的状态更新或交互处理。
     private func clampRulerOffset(_ offsetY: CGFloat, scrollView: UIScrollView) -> CGFloat {
         let minOffset = CGFloat(rulerView.lockMin / max(rulerView.unitValue, 1)) * rulerStepHeight
         let maxOffset = CGFloat(rulerView.lockMax / max(rulerView.unitValue, 1)) * rulerStepHeight
         return min(max(offsetY, minOffset), maxOffset)
     }
 
+    // 执行 `handleProxyPan` 操作，完成当前引导页面的状态更新或交互处理。
     @objc
     private func handleProxyPan(_ gesture: UIPanGestureRecognizer) {
         guard let scrollView = resolveRulerScrollView() else { return }

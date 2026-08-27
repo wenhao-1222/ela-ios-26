@@ -10,16 +10,25 @@ import SnapKit
 
 /// “如果你想做出调整”页面，选项内容复用 GuidanceMealsAdjustVM，页面布局按 MasterGo 重新实现。
 final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
+    /// Item 类型，封装 Guide0820 引导流程中的相关功能。
     struct Item {
+        /// `title` 属性，保存该类型对外提供或内部使用的状态与配置。
         let title: String
+        /// `value` 属性，保存该类型对外提供或内部使用的状态与配置。
         let value: String
+        /// `bulking` 属性，保存该类型对外提供或内部使用的状态与配置。
         let bulking: String
+        /// `cutting` 属性，保存该类型对外提供或内部使用的状态与配置。
         let cutting: String
+        /// `advantages` 属性，保存该类型对外提供或内部使用的状态与配置。
         let advantages: [String]
+        /// `disadvantages` 属性，保存该类型对外提供或内部使用的状态与配置。
         let disadvantages: [String]
+        /// `targetGroup` 属性，保存该类型对外提供或内部使用的状态与配置。
         let targetGroup: String
     }
 
+    // `dataArray` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let dataArray: [Item] = [
         Item(
             title: "A. 每日 1-2 餐",
@@ -68,34 +77,49 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
         )
     ]
 
+    // `selectedIndex` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var selectedIndex = -1
+    // `itemViews` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var itemViews: [Guide0820LifeProfileMealsAdjustItemView] = []
+    // `hasAppliedInitialCenteredSelection` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var hasAppliedInitialCenteredSelection = false
+    // `scrollView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let scrollView = UIScrollView()
+    // `contentView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let contentView = UIView()
+    // `stackView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let stackView = UIStackView()
+    // `topGradientView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let topGradientView = UIView()
+    // `bottomGradientView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let bottomGradientView = UIView()
+    // `topGradientLayer` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let topGradientLayer = CAGradientLayer()
+    // `bottomGradientLayer` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let bottomGradientLayer = CAGradientLayer()
 
+    /// `selectedAdjustValue` 属性，保存该类型对外提供或内部使用的状态与配置。
     var selectedAdjustValue: String? {
         guard dataArray.indices.contains(selectedIndex) else { return nil }
         return dataArray[selectedIndex].value
     }
 
+    /// `isStepValid` 属性，保存该类型对外提供或内部使用的状态与配置。
     override var isStepValid: Bool { selectedIndex >= 0 }
 
+    /// 初始化当前类型实例。
     override init(frame: CGRect) {
         super.init(frame: frame)
         initUI()
         refreshSelectionFromModel()
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// 执行 `layoutSubviews` 操作，完成当前引导页面的状态更新或交互处理。
     override func layoutSubviews() {
         super.layoutSubviews()
         topGradientLayer.frame = topGradientView.bounds
@@ -106,6 +130,7 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
         }
     }
 
+    /// 执行 `commitCurrentValue` 操作，完成当前引导页面的状态更新或交互处理。
     override func commitCurrentValue() {
         if let selectedAdjustValue {
             Guide0820Model.shared.guidanceMealsPerDayType = selectedAdjustValue
@@ -113,6 +138,7 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
         }
     }
 
+    /// 执行 `refreshSelectionFromModel` 操作，完成当前引导页面的状态更新或交互处理。
     func refreshSelectionFromModel() {
         let selectedValue = Guide0820Model.shared.guidanceMealsAdjustType.isEmpty
             ? Guide0820Model.shared.guidanceMealsPerDayType
@@ -124,6 +150,7 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
         }
     }
 
+    // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     private func initUI() {
         let titleLabel = UILabel()
         titleLabel.text = "如果你想做出调整"
@@ -205,6 +232,7 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
         }
     }
 
+    // 执行 `configureGradient` 操作，完成当前引导页面的状态更新或交互处理。
     private func configureGradient(_ layer: CAGradientLayer, from: UIColor, to: UIColor) {
         layer.startPoint = CGPoint(x: 0.5, y: 0)
         layer.endPoint = CGPoint(x: 0.5, y: 1)
@@ -212,11 +240,13 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
         layer.locations = [0, 1]
     }
 
+    // 执行 `itemTapAction` 操作，完成当前引导页面的状态更新或交互处理。
     @objc private func itemTapAction(_ sender: UITapGestureRecognizer) {
         guard let view = sender.view else { return }
         applySelection(index: view.tag, notify: true)
     }
 
+    // 执行 `applySelection` 操作，完成当前引导页面的状态更新或交互处理。
     private func applySelection(index: Int, notify: Bool) {
         selectedIndex = index
         for (idx, itemView) in itemViews.enumerated() {
@@ -227,6 +257,7 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
         centerSelectedItemIfNeeded(animated: notify)
     }
 
+    // 执行 `centerSelectedItemIfNeeded` 操作，完成当前引导页面的状态更新或交互处理。
     private func centerSelectedItemIfNeeded(animated: Bool) {
         guard itemViews.indices.contains(selectedIndex) else { return }
         scrollView.layoutIfNeeded()
@@ -243,6 +274,7 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
         updateGradientVisibility()
     }
 
+    // 执行 `updateGradientVisibility` 操作，完成当前引导页面的状态更新或交互处理。
     private func updateGradientVisibility() {
         let visibleHeight = scrollView.bounds.height
         let contentHeight = scrollView.contentSize.height
@@ -253,25 +285,39 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
     }
 }
 
+/// Guide0820LifeProfileMealsAdjustVM 扩展，提供 Guide0820 流程相关的辅助能力。
 extension Guide0820LifeProfileMealsAdjustVM: UIScrollViewDelegate {
+    /// 执行 `scrollViewDidScroll` 操作，完成当前引导页面的状态更新或交互处理。
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         updateGradientVisibility()
     }
 }
 
+// Guide0820LifeProfileMealsAdjustItemView 类型，封装 Guide0820 引导流程中的相关功能。
 private final class Guide0820LifeProfileMealsAdjustItemView: UIView {
+    // `isSelectedState` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var isSelectedState = false
+    // `isPressedState` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var isPressedState = false
 
+    // `titleLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let titleLabel = UILabel()
+    // `fitLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let fitLabel = UILabel()
+    // `advantageTitleLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let advantageTitleLabel = Guide0820LifeProfileMealsAdjustItemView.makeSectionTitleLabel(text: "优点：")
+    // `disadvantageTitleLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let disadvantageTitleLabel = Guide0820LifeProfileMealsAdjustItemView.makeSectionTitleLabel(text: "缺点：")
+    // `groupTitleLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let groupTitleLabel = Guide0820LifeProfileMealsAdjustItemView.makeSectionTitleLabel(text: "群体：")
+    // `advantageLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let advantageLabel = Guide0820LifeProfileMealsAdjustItemView.makeBodyLabel()
+    // `disadvantageLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let disadvantageLabel = Guide0820LifeProfileMealsAdjustItemView.makeBodyLabel()
+    // `groupLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let groupLabel = Guide0820LifeProfileMealsAdjustItemView.makeBodyLabel()
 
+    // 初始化当前类型实例。
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .COLOR_TEXT_TITLE_0f1214_05
@@ -283,10 +329,12 @@ private final class Guide0820LifeProfileMealsAdjustItemView: UIView {
         initUI()
     }
 
+    // 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     private func initUI() {
         titleLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         fitLabel.textAlignment = .right
@@ -340,6 +388,7 @@ private final class Guide0820LifeProfileMealsAdjustItemView: UIView {
         }
     }
 
+    // 执行 `update` 操作，完成当前引导页面的状态更新或交互处理。
     func update(item: Guide0820LifeProfileMealsAdjustVM.Item) {
         titleLabel.attributedText = attributedTitle(for: item.title, color: .COLOR_TEXT_TITLE_0f1214)
         fitLabel.text = "增肌：\(item.bulking)｜减脂：\(item.cutting)"
@@ -348,6 +397,7 @@ private final class Guide0820LifeProfileMealsAdjustItemView: UIView {
         groupLabel.attributedText = attributedBody(content: item.targetGroup)
     }
 
+    // 执行 `updateSelection` 操作，完成当前引导页面的状态更新或交互处理。
     func updateSelection(isSelected: Bool) {
         isSelectedState = isSelected
         updateAppearance(animated: false)
@@ -355,24 +405,28 @@ private final class Guide0820LifeProfileMealsAdjustItemView: UIView {
         titleLabel.attributedText = attributedTitle(for: titleLabel.attributedText?.string ?? "", color: titleColor)
     }
 
+    // 执行 `touchesBegan` 操作，完成当前引导页面的状态更新或交互处理。
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         isPressedState = true
         updateAppearance(animated: true)
         super.touchesBegan(touches, with: event)
     }
 
+    // 执行 `touchesEnded` 操作，完成当前引导页面的状态更新或交互处理。
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         isPressedState = false
         updateAppearance(animated: true)
         super.touchesEnded(touches, with: event)
     }
 
+    // 执行 `touchesCancelled` 操作，完成当前引导页面的状态更新或交互处理。
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         isPressedState = false
         updateAppearance(animated: true)
         super.touchesCancelled(touches, with: event)
     }
 
+    // 执行 `updateAppearance` 操作，完成当前引导页面的状态更新或交互处理。
     private func updateAppearance(animated: Bool) {
         let applyChanges = {
             self.backgroundColor = self.isSelectedState ? .COLOR_CARD_BG_WHITE : .COLOR_TEXT_TITLE_0f1214_05
@@ -390,6 +444,7 @@ private final class Guide0820LifeProfileMealsAdjustItemView: UIView {
         }
     }
 
+    // 执行 `makeSectionTitleLabel` 操作，完成当前引导页面的状态更新或交互处理。
     private static func makeSectionTitleLabel(text: String) -> UILabel {
         let label = UILabel()
         label.text = text
@@ -398,6 +453,7 @@ private final class Guide0820LifeProfileMealsAdjustItemView: UIView {
         return label
     }
 
+    // 执行 `makeBodyLabel` 操作，完成当前引导页面的状态更新或交互处理。
     private static func makeBodyLabel() -> LineHeightLabel {
         let label = LineHeightLabel()
         label.numberOfLines = 0
@@ -406,6 +462,7 @@ private final class Guide0820LifeProfileMealsAdjustItemView: UIView {
         return label
     }
 
+    // 执行 `attributedTitle` 操作，完成当前引导页面的状态更新或交互处理。
     private func attributedTitle(for title: String, color: UIColor) -> NSAttributedString {
         let attributed = NSMutableAttributedString(
             string: title,
@@ -425,10 +482,12 @@ private final class Guide0820LifeProfileMealsAdjustItemView: UIView {
         return attributed
     }
 
+    // 执行 `attributedSection` 操作，完成当前引导页面的状态更新或交互处理。
     private func attributedSection(items: [String]) -> NSAttributedString {
         attributedBody(content: items.enumerated().map { "\($0.offset + 1). \($0.element)" }.joined(separator: "\n"))
     }
 
+    // 执行 `attributedBody` 操作，完成当前引导页面的状态更新或交互处理。
     private func attributedBody(content: String) -> NSAttributedString {
         let attributed = NSMutableAttributedString(
             string: content,
@@ -445,6 +504,7 @@ private final class Guide0820LifeProfileMealsAdjustItemView: UIView {
         return attributed
     }
 
+    // 执行 `applyNumberFont` 操作，完成当前引导页面的状态更新或交互处理。
     private func applyNumberFont(on attributed: NSMutableAttributedString, text: String, fontSize: CGFloat, color: UIColor) {
         guard let regex = try? NSRegularExpression(pattern: "\\d+", options: []) else { return }
         let nsText = text as NSString

@@ -29,6 +29,7 @@ final class Guide0820SourceVM {
         SourceItem(id: "coach", title: "教练", iconName: "guide0820_source_coach_icon"),
         SourceItem(id: "douyin", title: "抖音", iconName: "guide0820_source_douyin_icon"),
         SourceItem(id: "xiaohongshu", title: "小红书", iconName: "guide0820_source_xiaohongshu_icon"),
+        SourceItem(id: "ai_chat_tool", title: "AI 聊天工具（如 ChatGPT）", iconName: "guide0820_source_ai_icon"),
         SourceItem(id: "app_market", title: "应用市场", iconName: "guide0820_source_app_market_icon"),
         SourceItem(id: "other", title: "其他", iconName: "guide0820_source_other_icon")
     ]
@@ -37,6 +38,7 @@ final class Guide0820SourceVM {
         selectedItemID == nil ? "跳过" : "继续"
     }
 
+    /// 初始化当前类型实例。
     init(selectedItemID: String? = nil) {
         restoreSelection(selectedItemID)
     }

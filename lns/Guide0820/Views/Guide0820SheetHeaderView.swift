@@ -32,6 +32,7 @@ final class Guide0820SheetHeaderView: UIView {
     }
 }
 
+// Guide0820SheetHeaderView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820SheetHeaderView {
     /// 初始化标题栏布局。
     func initUI() {

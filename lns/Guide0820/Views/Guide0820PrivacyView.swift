@@ -46,6 +46,7 @@ final class Guide0820PrivacyView: UIView {
     }
 }
 
+// Guide0820PrivacyView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820PrivacyView {
     /// 初始化页面布局。
     func initUI() {

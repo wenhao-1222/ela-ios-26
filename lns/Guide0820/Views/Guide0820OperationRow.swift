@@ -33,6 +33,7 @@ final class Guide0820OperationRow: UIControl {
     }
 }
 
+// Guide0820OperationRow 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820OperationRow {
     /// 初始化操作行样式。
     func initUI() {

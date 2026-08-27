@@ -83,6 +83,7 @@ final class Guide0820BottomSheetView: UIView {
     }
 }
 
+// Guide0820BottomSheetView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820BottomSheetView {
     /// 初始化容器结构。
     func initUI() {

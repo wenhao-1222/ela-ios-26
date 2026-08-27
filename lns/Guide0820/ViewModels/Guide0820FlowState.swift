@@ -20,6 +20,7 @@ final class Guide0820FlowState {
     /// 当前流程最后一页下标。
     private let maxPageIndex = 2
 
+    /// 初始化当前类型实例。
     init(initialPageIndex: Int = 0) {
         sourceVM = Guide0820SourceVM(selectedItemID: Guide0820SourceStorage.storedValueForDisplay)
         currentPageIndex = min(max(initialPageIndex, 0), maxPageIndex)

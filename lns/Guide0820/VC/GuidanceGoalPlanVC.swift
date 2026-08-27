@@ -8,14 +8,21 @@
 import UIKit
 import SnapKit
 
+/// GuidanceGoalPlanVC 类型，封装 Guide0820 引导流程中的相关功能。
 final class GuidanceGoalPlanVC: WHBaseViewVC {
+    /// `finishBlock` 属性，保存该类型对外提供或内部使用的状态与配置。
     var finishBlock: ((GuidanceGoalPlanFlowState) -> Void)?
 
+    // `flowState` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let flowState = GuidanceGoalPlanFlowState()
+    // `currentIndex` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var currentIndex = 0
+    // `currentPageView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var currentPageView: UIView?
+    // `pageCache` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var pageCache: [String: UIView] = [:]
 
+    // `scrollView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let scrollView: UIScrollView = {
         let view = UIScrollView()
         view.isPagingEnabled = true
@@ -27,6 +34,7 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
         return view
     }()
 
+    // `stackView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -34,6 +42,7 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
         return stack
     }()
 
+    // `titleLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "明确你的方向"
@@ -43,6 +52,7 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
         return label
     }()
 
+    // `progressTrackView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let progressTrackView: UIView = {
         let view = UIView()
         view.backgroundColor = .COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.1)
@@ -51,6 +61,7 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
         return view
     }()
 
+    // `progressView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let progressView: UIView = {
         let view = UIView()
         view.backgroundColor = .COLOR_TEXT_TITLE_0f1214
@@ -59,6 +70,7 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
         return view
     }()
 
+    // `backButton` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var backButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("‹", for: .normal)
@@ -68,6 +80,7 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
         return button
     }()
 
+    // `nextButton` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var nextButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setTitle("下一步", for: .normal)
@@ -83,6 +96,7 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
         return button
     }()
 
+    /// 执行 `viewDidLoad` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
@@ -91,13 +105,16 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
         showPage(at: currentIndex, animated: false)
     }
 
+    /// 执行 `viewWillAppear` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
 }
 
+// GuidanceGoalPlanVC 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension GuidanceGoalPlanVC {
+    // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     func initUI() {
         view.backgroundColor = GuidanceGoalPlanStyle.pageBackgroundColor
         view.addSubview(backButton)
@@ -152,6 +169,7 @@ private extension GuidanceGoalPlanVC {
         view.bringSubviewToFront(nextButton)
     }
 
+    // 执行 `showPage` 操作，完成当前引导页面的状态更新或交互处理。
     func showPage(at index: Int, animated: Bool) {
         let steps = flowState.steps
         guard steps.indices.contains(index) else { return }
@@ -168,6 +186,7 @@ private extension GuidanceGoalPlanVC {
         (nextPage as? (UIView & GuidanceGoalPlanPageVM))?.pageWillAppear()
     }
 
+    // 执行 `installPages` 操作，完成当前引导页面的状态更新或交互处理。
     func installPages(_ steps: [GuidanceGoalPlanStep]) {
         stackView.arrangedSubviews.forEach { page in
             stackView.removeArrangedSubview(page)
@@ -183,6 +202,7 @@ private extension GuidanceGoalPlanVC {
         }
     }
 
+    // 执行 `page` 操作，完成当前引导页面的状态更新或交互处理。
     func page(for step: GuidanceGoalPlanStep) -> UIView {
         let cacheKey = pageCacheKey(for: step)
         if let page = pageCache[cacheKey] {
@@ -223,6 +243,7 @@ private extension GuidanceGoalPlanVC {
         return page
     }
 
+    // 执行 `refreshNavigationState` 操作，完成当前引导页面的状态更新或交互处理。
     func refreshNavigationState() {
         let total = max(flowState.steps.count, 6)
         nextButton.setTitle(currentIndex == total - 1 ? "完成" : "下一步", for: .normal)
@@ -233,6 +254,7 @@ private extension GuidanceGoalPlanVC {
         updateProgress()
     }
 
+    // 执行 `updateProgress` 操作，完成当前引导页面的状态更新或交互处理。
     func updateProgress() {
         let total = max(flowState.steps.count, 6)
         let ratio = CGFloat(currentIndex + 1) / CGFloat(total)
@@ -245,6 +267,7 @@ private extension GuidanceGoalPlanVC {
         }
     }
 
+    // 执行 `finishFlow` 操作，完成当前引导页面的状态更新或交互处理。
     func finishFlow() {
         persistCurrentProgress()
         Guide0820ProgressStorage.markStepCompleted(.directionProfile)
@@ -264,12 +287,14 @@ private extension GuidanceGoalPlanVC {
         }
     }
 
+    // 执行 `persistCurrentProgress` 操作，完成当前引导页面的状态更新或交互处理。
     func persistCurrentProgress() {
         Guide0820ProgressStorage.saveDirectionProfile(flowState: flowState)
         Guide0820ProgressStorage.saveCurrentPageIndex(currentIndex, for: .directionProfile)
         Guide0820ProgressStorage.recordFurthestPageIndex(currentIndex, for: .directionProfile)
     }
 
+    // 执行 `backButtonTapAction` 操作，完成当前引导页面的状态更新或交互处理。
     @objc func backButtonTapAction() {
         if currentIndex > 0 {
             showPage(at: currentIndex - 1, animated: true)
@@ -287,6 +312,7 @@ private extension GuidanceGoalPlanVC {
         }
     }
 
+    // 执行 `nextButtonTapAction` 操作，完成当前引导页面的状态更新或交互处理。
     @objc func nextButtonTapAction() {
         guard nextButton.isEnabled else { return }
         let nextIndex = currentIndex + 1
@@ -297,6 +323,7 @@ private extension GuidanceGoalPlanVC {
         finishFlow()
     }
 
+    // 执行 `pageCacheKey` 操作，完成当前引导页面的状态更新或交互处理。
     func pageCacheKey(for step: GuidanceGoalPlanStep) -> String {
         "\(step.rawValue)|\(flowState.target?.rawValue ?? "none")"
     }

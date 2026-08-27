@@ -7,9 +7,12 @@
 
 import UIKit
 
+/// GuidanceGoalPlanMuscleGainDurationVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class GuidanceGoalPlanMuscleGainDurationVM: GuidanceGoalPlanDurationPageVM {
+    // `flowState` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let flowState: GuidanceGoalPlanFlowState
 
+    /// 初始化当前类型实例。
     init(flowState: GuidanceGoalPlanFlowState) {
         self.flowState = flowState
         let recommendation = Self.recommendation(for: flowState.muscleGainMode)
@@ -18,17 +21,20 @@ final class GuidanceGoalPlanMuscleGainDurationVM: GuidanceGoalPlanDurationPageVM
             accentColor: GuidanceGoalPlanStyle.muscleGainColor,
             defaultWeeks: flowState.muscleGainDurationWeeks,
             recommendationTitle: recommendation.title,
-            recommendationDetail: recommendation.detail
+            recommendationDetail: recommendation.detail,
+            controlStyle: .customPicker
         )
         weeksChanged = { [weak self] weeks in
             self?.flowState.muscleGainDurationWeeks = weeks
         }
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// 执行 `pageWillAppear` 操作，完成当前引导页面的状态更新或交互处理。
     override func pageWillAppear() {
         let recommendation = Self.recommendation(for: flowState.muscleGainMode)
         updateRecommendation(defaultWeeks: flowState.muscleGainDurationWeeks, title: recommendation.title, detail: recommendation.detail)
@@ -36,7 +42,9 @@ final class GuidanceGoalPlanMuscleGainDurationVM: GuidanceGoalPlanDurationPageVM
     }
 }
 
+// GuidanceGoalPlanMuscleGainDurationVM 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension GuidanceGoalPlanMuscleGainDurationVM {
+    // 执行 `recommendation` 操作，完成当前引导页面的状态更新或交互处理。
     static func recommendation(for mode: String) -> (title: String, detail: String) {
         switch mode {
         case "quality":
@@ -48,4 +56,3 @@ private extension GuidanceGoalPlanMuscleGainDurationVM {
         }
     }
 }
-

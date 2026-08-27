@@ -38,6 +38,7 @@ final class Guide0820OperationSheetView: UIView {
     }
 }
 
+// Guide0820OperationSheetView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820OperationSheetView {
     /// 初始化操作面板布局。
     func initUI() {

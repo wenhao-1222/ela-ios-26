@@ -8,23 +8,31 @@
 import UIKit
 import SnapKit
 
+/// Guide0820LifeProfilePageVM 类型，封装 Guide0820 引导流程中的相关功能。
 class Guide0820LifeProfilePageVM: UIView {
+    /// `validityChanged` 属性，保存该类型对外提供或内部使用的状态与配置。
     var validityChanged: ((Bool) -> Void)?
+    /// `isStepValid` 属性，保存该类型对外提供或内部使用的状态与配置。
     var isStepValid: Bool { true }
 
+    /// 初始化当前类型实例。
     override init(frame: CGRect) {
         super.init(frame: CGRect(x: frame.origin.x, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         backgroundColor = .clear
         isUserInteractionEnabled = true
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// 执行 `pageWillAppear` 操作，完成当前引导页面的状态更新或交互处理。
     func pageWillAppear() {}
+    /// 执行 `commitCurrentValue` 操作，完成当前引导页面的状态更新或交互处理。
     func commitCurrentValue() {}
 
+    /// 执行 `makeTitleLabel` 操作，完成当前引导页面的状态更新或交互处理。
     func makeTitleLabel(_ text: String, fontSize: CGFloat = 48, lineHeight: CGFloat = 72) -> UILabel {
         let label = UILabel()
         label.text = text
@@ -36,10 +44,14 @@ class Guide0820LifeProfilePageVM: UIView {
     }
 }
 
+/// Guide0820LifeProfileInfoCard 类型，封装 Guide0820 引导流程中的相关功能。
 final class Guide0820LifeProfileInfoCard: UIControl {
+    // `titleText` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let titleText: String
+    // `detailText` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let detailText: String
 
+    /// 初始化当前类型实例。
     init(title: String, detail: String) {
         titleText = title
         detailText = detail
@@ -51,10 +63,12 @@ final class Guide0820LifeProfileInfoCard: UIControl {
         initUI()
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     private func initUI() {
         let iconView = UIImageView()
         iconView.setImgLocal(imgName: "guide0820_info_icon")
@@ -91,11 +105,16 @@ final class Guide0820LifeProfileInfoCard: UIControl {
     }
 }
 
+/// Guide0820LifeProfileInfoOverlayVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class Guide0820LifeProfileInfoOverlayVM: UIView {
+    // `title` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let title: String
+    // `body` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let body: String
+    // `references` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let references: String?
 
+    /// 初始化当前类型实例。
     init(title: String, body: String, references: String? = nil) {
         self.title = title
         self.body = body
@@ -107,10 +126,12 @@ final class Guide0820LifeProfileInfoOverlayVM: UIView {
         initUI()
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// 执行 `show` 操作，完成当前引导页面的状态更新或交互处理。
     func show() {
         isHidden = false
         UIView.animate(withDuration: 0.2) {
@@ -118,6 +139,7 @@ final class Guide0820LifeProfileInfoOverlayVM: UIView {
         }
     }
 
+    // 执行 `hideAction` 操作，完成当前引导页面的状态更新或交互处理。
     @objc private func hideAction() {
         UIView.animate(withDuration: 0.2, animations: {
             self.alpha = 0
@@ -126,6 +148,7 @@ final class Guide0820LifeProfileInfoOverlayVM: UIView {
         })
     }
 
+    // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     private func initUI() {
         let panelView = UIView()
         panelView.backgroundColor = .white
@@ -205,25 +228,40 @@ final class Guide0820LifeProfileInfoOverlayVM: UIView {
     }
 }
 
+/// Guide0820LifeProfileChoiceCard 类型，封装 Guide0820 引导流程中的相关功能。
 final class Guide0820LifeProfileChoiceCard: UIControl {
+    // `iconText` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let iconText: String?
+    // `iconName` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let iconName: String?
+    // `titleText` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let titleText: String
+    // `subtitleText` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let subtitleText: String?
+    // `titleLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let titleLabel = UILabel()
+    // `subtitleLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let subtitleLabel = UILabel()
+    // `iconLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let iconLabel = UILabel()
+    // `iconImageView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let iconImageView = UIImageView()
+    // `checkImageView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let checkImageView = UIImageView()
+    // `isPressedState` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var isPressedState = false
+    // `hasIcon` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var hasIcon: Bool { iconText != nil || iconName != nil }
 
+    /// `value` 属性，保存该类型对外提供或内部使用的状态与配置。
     var value = ""
 
+    /// `isSelected` 属性，保存该类型对外提供或内部使用的状态与配置。
     override var isSelected: Bool {
         didSet { updateAppearance(animated: oldValue != isSelected) }
     }
 
+    /// 初始化当前类型实例。
     init(iconText: String?, iconName: String? = nil, title: String, subtitle: String? = nil, value: String) {
         self.iconText = iconText
         self.iconName = iconName
@@ -239,10 +277,12 @@ final class Guide0820LifeProfileChoiceCard: UIControl {
         updateAppearance(animated: false)
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     private func initUI() {
         if hasIcon {
             let iconView: UIView
@@ -303,6 +343,7 @@ final class Guide0820LifeProfileChoiceCard: UIControl {
         }
     }
 
+    // 执行 `updateAppearance` 操作，完成当前引导页面的状态更新或交互处理。
     private func updateAppearance(animated: Bool = true) {
         layer.borderWidth = isSelected ? 1.5 : 0
         layer.borderColor = isSelected ? UIColor.THEME.cgColor : UIColor.clear.cgColor
@@ -314,18 +355,21 @@ final class Guide0820LifeProfileChoiceCard: UIControl {
         alpha = isPressedState ? 0.92 : 1
     }
 
+    /// 执行 `touchesBegan` 操作，完成当前引导页面的状态更新或交互处理。
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         isPressedState = true
         updateAppearance(animated: false)
         super.touchesBegan(touches, with: event)
     }
 
+    /// 执行 `touchesEnded` 操作，完成当前引导页面的状态更新或交互处理。
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         isPressedState = false
         updateAppearance(animated: false)
         super.touchesEnded(touches, with: event)
     }
 
+    /// 执行 `touchesCancelled` 操作，完成当前引导页面的状态更新或交互处理。
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         isPressedState = false
         updateAppearance(animated: false)
@@ -333,7 +377,9 @@ final class Guide0820LifeProfileChoiceCard: UIControl {
     }
 }
 
+// Guide0820LifeProfileChoiceScrollView 类型，封装 Guide0820 引导流程中的相关功能。
 private final class Guide0820LifeProfileChoiceScrollView: UIScrollView {
+    // 执行 `touchesShouldCancel` 操作，完成当前引导页面的状态更新或交互处理。
     override func touchesShouldCancel(in view: UIView) -> Bool {
         if view is UIControl {
             return true
@@ -342,14 +388,22 @@ private final class Guide0820LifeProfileChoiceScrollView: UIScrollView {
     }
 }
 
+/// Guide0820LifeProfileChoicePageVM 类型，封装 Guide0820 引导流程中的相关功能。
 class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
+    /// Item 类型，封装 Guide0820 引导流程中的相关功能。
     struct Item {
+        /// `iconText` 属性，保存该类型对外提供或内部使用的状态与配置。
         let iconText: String?
+        /// `iconName` 属性，保存该类型对外提供或内部使用的状态与配置。
         let iconName: String?
+        /// `title` 属性，保存该类型对外提供或内部使用的状态与配置。
         let title: String
+        /// `subtitle` 属性，保存该类型对外提供或内部使用的状态与配置。
         let subtitle: String?
+        /// `value` 属性，保存该类型对外提供或内部使用的状态与配置。
         let value: String
 
+        /// 初始化当前类型实例。
         init(iconText: String?, iconName: String? = nil, title: String, subtitle: String?, value: String) {
             self.iconText = iconText
             self.iconName = iconName
@@ -359,18 +413,33 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
         }
     }
 
+    // `titleText` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let titleText: String
+    // `items` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let items: [Item]
+    // `restoreValue` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let restoreValue: () -> String
+    // `commitValue` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let commitValue: (String) -> Void
+    // `contentBottomSpacing` 属性，保存滚动内容底部的额外留白。
+    private let contentBottomSpacing: CGFloat
+    // `info` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let info: (title: String, detail: String, body: String, references: String?)?
+    // `scrollView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let scrollView = Guide0820LifeProfileChoiceScrollView()
+    // `contentView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let contentView = UIView()
+    // `topGradientView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let topGradientView = UIView()
+    // `bottomGradientView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let bottomGradientView = UIView()
+    // `topGradientLayer` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let topGradientLayer = CAGradientLayer()
+    // `bottomGradientLayer` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let bottomGradientLayer = CAGradientLayer()
+    // `cards` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var cards: [Guide0820LifeProfileChoiceCard] = []
+    // `selectedValue` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var selectedValue: String? {
         didSet {
             cards.forEach { $0.isSelected = $0.value == selectedValue }
@@ -378,22 +447,28 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
         }
     }
 
+    // `overlay` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var overlay: Guide0820LifeProfileInfoOverlayVM? = {
         guard let info else { return nil }
         return Guide0820LifeProfileInfoOverlayVM(title: info.title, body: info.body, references: info.references)
     }()
 
+    /// `selectedAnswerValue` 属性，保存该类型对外提供或内部使用的状态与配置。
     var selectedAnswerValue: String? { selectedValue }
+    /// `isStepValid` 属性，保存该类型对外提供或内部使用的状态与配置。
     override var isStepValid: Bool { selectedValue?.isEmpty == false }
 
+    /// 初始化当前类型实例。
     init(title: String,
          items: [Item],
          info: (title: String, detail: String, body: String, references: String?)? = nil,
+         contentBottomSpacing: CGFloat = 0,
          restoreValue: @escaping () -> String,
          commitValue: @escaping (String) -> Void) {
         titleText = title
         self.items = items
         self.info = info
+        self.contentBottomSpacing = contentBottomSpacing
         self.restoreValue = restoreValue
         self.commitValue = commitValue
         super.init(frame: .zero)
@@ -401,10 +476,12 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
         restore(selectedValue: restoreValue())
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// 执行 `layoutSubviews` 操作，完成当前引导页面的状态更新或交互处理。
     override func layoutSubviews() {
         super.layoutSubviews()
         topGradientLayer.frame = topGradientView.bounds
@@ -412,10 +489,12 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
         updateGradientVisibility()
     }
 
+    /// 执行 `commitCurrentValue` 操作，完成当前引导页面的状态更新或交互处理。
     override func commitCurrentValue() {
         commitValue(selectedValue ?? "")
     }
 
+    /// 执行 `restore` 操作，完成当前引导页面的状态更新或交互处理。
     func restore(selectedValue: String?) {
         guard let selectedValue,
               selectedValue.isEmpty == false,
@@ -428,6 +507,7 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
         commitCurrentValue()
     }
 
+    // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     private func initUI() {
         let titleLabel = makeTitleLabel(titleText)
         addSubview(titleLabel)
@@ -491,7 +571,7 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
                 make.left.right.equalToSuperview()
                 make.top.equalTo(stackView.snp.bottom).offset(guide0820Design(24))
                 make.height.equalTo(guide0820Design(178))
-                make.bottom.equalToSuperview()
+                make.bottom.equalToSuperview().offset(-contentBottomSpacing)
             }
         } else {
             stackView.snp.makeConstraints { make in
@@ -526,6 +606,7 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
         }
     }
 
+    // 执行 `configureGradient` 操作，完成当前引导页面的状态更新或交互处理。
     private func configureGradient(_ layer: CAGradientLayer, from: UIColor, to: UIColor) {
         layer.startPoint = CGPoint(x: 0.5, y: 0)
         layer.endPoint = CGPoint(x: 0.5, y: 1)
@@ -533,6 +614,7 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
         layer.locations = [0, 1]
     }
 
+    // 执行 `updateGradientVisibility` 操作，完成当前引导页面的状态更新或交互处理。
     private func updateGradientVisibility() {
         let visibleHeight = scrollView.bounds.height
         let contentHeight = scrollView.contentSize.height
@@ -542,23 +624,29 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
         bottomGradientView.alpha = offsetY < maxOffsetY - 4 ? 1 : 0
     }
 
+    // 执行 `cardAction` 操作，完成当前引导页面的状态更新或交互处理。
     @objc private func cardAction(_ sender: Guide0820LifeProfileChoiceCard) {
         selectedValue = sender.value
         commitCurrentValue()
     }
 
+    // 执行 `infoAction` 操作，完成当前引导页面的状态更新或交互处理。
     @objc private func infoAction() {
         overlay?.show()
     }
 }
 
+/// Guide0820LifeProfileChoicePageVM 扩展，提供 Guide0820 流程相关的辅助能力。
 extension Guide0820LifeProfileChoicePageVM: UIScrollViewDelegate {
+    /// 执行 `scrollViewDidScroll` 操作，完成当前引导页面的状态更新或交互处理。
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         updateGradientVisibility()
     }
 }
 
+/// Guide0820LifeProfileTakeoutFrequencyVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class Guide0820LifeProfileTakeoutFrequencyVM: Guide0820LifeProfileChoicePageVM {
+    /// 初始化当前类型实例。
     init() {
         super.init(
             title: "你平均每周\n有几餐会外食或点外卖？",
@@ -575,17 +663,21 @@ final class Guide0820LifeProfileTakeoutFrequencyVM: Guide0820LifeProfileChoicePa
                 body: "研究发现，每周外食超过 2 餐的人，整体饮食质量通常更低，相关营养指标也更差。快餐消费者也普遍会低估所购餐食的热量，而且餐食份量越大，低估越明显。[1]\n\n外食/外卖的频率越高，潜在影响通常越大，因此更需要注意食物的选择与分量控制。[2]",
                 references: "[1] Lachat et al., Obes Rev, 2012  \n[2] Block et al., BMJ, 2013"
             ),
+            contentBottomSpacing: guide0820Design(30),
             restoreValue: { Guide0820Model.shared.guidanceTakeoutFrequencyType },
             commitValue: { Guide0820Model.shared.guidanceTakeoutFrequencyType = $0 }
         )
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
+/// Guide0820LifeProfileMealsPerDayVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class Guide0820LifeProfileMealsPerDayVM: Guide0820LifeProfileChoicePageVM {
+    /// 初始化当前类型实例。
     init() {
         super.init(
             title: "你的每天进餐频率是？",
@@ -606,12 +698,15 @@ final class Guide0820LifeProfileMealsPerDayVM: Guide0820LifeProfileChoicePageVM 
         )
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
+/// Guide0820LifeProfileCardioFrequencyVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class Guide0820LifeProfileCardioFrequencyVM: Guide0820LifeProfileChoicePageVM {
+    /// 初始化当前类型实例。
     init() {
         super.init(
             title: "过去 4 周，你平均每周完成几次有氧训练？",
@@ -630,12 +725,15 @@ final class Guide0820LifeProfileCardioFrequencyVM: Guide0820LifeProfileChoicePag
         )
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
+/// Guide0820LifeProfileStrengthTrainingFrequencyVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class Guide0820LifeProfileStrengthTrainingFrequencyVM: Guide0820LifeProfileChoicePageVM {
+    /// 初始化当前类型实例。
     init() {
         super.init(
             title: "过去 4 周 你平均每周进行几次力量训练？",
@@ -650,12 +748,15 @@ final class Guide0820LifeProfileStrengthTrainingFrequencyVM: Guide0820LifeProfil
         )
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
+/// Guide0820LifeProfileExerciseCaloriesRecordVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class Guide0820LifeProfileExerciseCaloriesRecordVM: Guide0820LifeProfileChoicePageVM {
+    /// 初始化当前类型实例。
     init() {
         super.init(
             title: "你是否计划\n额外记录运动消耗？",
@@ -674,38 +775,63 @@ final class Guide0820LifeProfileExerciseCaloriesRecordVM: Guide0820LifeProfileCh
         )
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
+/// Guide0820LifeProfileCaloriesResultVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class Guide0820LifeProfileCaloriesResultVM: Guide0820LifeProfilePageVM, UITextFieldDelegate {
+    // `caloriesTextField` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let caloriesTextField = UITextField()
+    // `maxCaloriesInputValue` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let maxCaloriesInputValue = 9999
+    // `bmiOverlay` 属性，保存该类型对外提供或内部使用的状态与配置。
     private lazy var bmiOverlay = Guide0820LifeProfileInfoOverlayVM(
         title: "为什么不用BMI？",
         body: "BMI主要反映体重和身高的比例，无法区分肌肉和脂肪，因此同样BMI的两个人，代谢需求可能差很多。Katch-McArdle会参考你的瘦体重(去脂体重)，在体脂数据较准确时，通常能更贴近健身人群的代谢情况，给出更个性化的结果。"
     )
 
+    /// 初始化当前类型实例。
     override init(frame: CGRect) {
         super.init(frame: frame)
         initUI()
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// 执行 `pageWillAppear` 操作，完成当前引导页面的状态更新或交互处理。
     override func pageWillAppear() {
         refreshCaloriesIfNeeded()
     }
 
+    /// 执行 `commitCurrentValue` 操作，完成当前引导页面的状态更新或交互处理。
     override func commitCurrentValue() {
         let calories = caloriesTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         Guide0820Model.shared.caloriesNumber = calories
         Guide0820Model.shared.caloriesNumberFromServer = calories
     }
 
+    /// 热量输入必须是至少 10 千卡的有效整数。
+    var hasReasonableCaloriesInput: Bool {
+        guard let calories = Int(caloriesTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "") else {
+            return false
+        }
+        return calories >= 10
+    }
+
+    /// 使用基础消耗接口返回的热量更新页面输入框及流程模型。
+    func updateCaloriesFromServer(_ calories: String) {
+        caloriesTextField.text = calories
+        Guide0820Model.shared.caloriesNumber = calories
+        Guide0820Model.shared.caloriesNumberFromServer = calories
+    }
+
+    // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     private func initUI() {
         let titleLabel = makeTitleLabel("结合你的代谢和活动量\n你维持现体重所需的大致热量为：", fontSize: 36, lineHeight: 54)
         addSubview(titleLabel)
@@ -778,14 +904,17 @@ final class Guide0820LifeProfileCaloriesResultVM: Guide0820LifeProfilePageVM, UI
         }
     }
 
+    // 执行 `focusCaloriesInput` 操作，完成当前引导页面的状态更新或交互处理。
     @objc private func focusCaloriesInput() {
         caloriesTextField.becomeFirstResponder()
     }
 
+    // 执行 `showBMIInfo` 操作，完成当前引导页面的状态更新或交互处理。
     @objc private func showBMIInfo() {
         bmiOverlay.show()
     }
 
+    // 执行 `refreshCaloriesIfNeeded` 操作，完成当前引导页面的状态更新或交互处理。
     private func refreshCaloriesIfNeeded() {
         if let existing = Int(Guide0820Model.shared.caloriesNumber), existing > 0 {
             caloriesTextField.text = "\(existing)"
@@ -796,6 +925,7 @@ final class Guide0820LifeProfileCaloriesResultVM: Guide0820LifeProfilePageVM, UI
         commitCurrentValue()
     }
 
+    /// 执行 `textField` 操作，完成当前引导页面的状态更新或交互处理。
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let currentText = textField.text,
               let textRange = Range(range, in: currentText) else { return false }
@@ -807,19 +937,25 @@ final class Guide0820LifeProfileCaloriesResultVM: Guide0820LifeProfilePageVM, UI
     }
 }
 
+/// Guide0820LifeProfileReminderVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class Guide0820LifeProfileReminderVM: Guide0820LifeProfilePageVM {
+    /// `enableReminderBlock` 属性，保存该类型对外提供或内部使用的状态与配置。
     var enableReminderBlock: (() -> Void)?
+    /// `skipReminderBlock` 属性，保存该类型对外提供或内部使用的状态与配置。
     var skipReminderBlock: (() -> Void)?
 
+    /// 初始化当前类型实例。
     override init(frame: CGRect) {
         super.init(frame: frame)
         initUI()
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     private func initUI() {
         let titleLabel = makeTitleLabel("我们发现", fontSize: 48, lineHeight: 58)
         addSubview(titleLabel)
@@ -908,16 +1044,20 @@ final class Guide0820LifeProfileReminderVM: Guide0820LifeProfilePageVM {
         }
     }
 
+    // 执行 `enableAction` 操作，完成当前引导页面的状态更新或交互处理。
     @objc private func enableAction() {
         enableReminderBlock?()
     }
 
+    // 执行 `skipAction` 操作，完成当前引导页面的状态更新或交互处理。
     @objc private func skipAction() {
         skipReminderBlock?()
     }
 }
 
+/// Guide0820LifeProfileActivityEstimator 类型，封装 Guide0820 引导流程中的相关功能。
 enum Guide0820LifeProfileActivityEstimator {
+    /// 执行 `eventsValue` 操作，完成当前引导页面的状态更新或交互处理。
     static func eventsValue(forCardio value: String) -> String {
         switch value {
         case "never": return "1"
@@ -929,6 +1069,7 @@ enum Guide0820LifeProfileActivityEstimator {
         }
     }
 
+    /// 执行 `estimatedMaintenanceCalories` 操作，完成当前引导页面的状态更新或交互处理。
     static func estimatedMaintenanceCalories() -> Int {
         let model = Guide0820Model.shared
         let weight = Double(model.weight) ?? Guide0820ProgressStorage.bodyProfileWeight ?? 60
@@ -948,6 +1089,7 @@ enum Guide0820LifeProfileActivityEstimator {
         return Int((bmr * activityMultiplier()).rounded())
     }
 
+    // 执行 `activityMultiplier` 操作，完成当前引导页面的状态更新或交互处理。
     private static func activityMultiplier() -> Double {
         let cardio = Guide0820Model.shared.guidanceCardioFrequencyType
         let strength = Guide0820Model.shared.guidanceStrengthTrainingFrequencyType
@@ -968,6 +1110,7 @@ enum Guide0820LifeProfileActivityEstimator {
         return min(max(multiplier, 1.2), 1.85)
     }
 
+    // 执行 `bodyFatRatio` 操作，完成当前引导页面的状态更新或交互处理。
     private static func bodyFatRatio(from value: String) -> Double? {
         let text = value.replacingOccurrences(of: "%", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
         guard let number = Double(text), number > 0 else { return nil }

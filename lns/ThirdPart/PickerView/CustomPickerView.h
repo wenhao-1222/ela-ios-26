@@ -25,6 +25,8 @@
 
 /** PickerView 数据源 */
 @property (nonatomic,strong) NSArray *dataModel;
+/** 可选行数，默认 20 */
+@property (nonatomic,assign) NSInteger numberOfRows;
 /** 当前选择器选择的元素 （NSDictionary 类型， name：选择元素名称  index：选择元素位置）*/
 @property (nonatomic,strong,readonly) NSDictionary *selectedItem;
 /** 滑动到指定位置 */

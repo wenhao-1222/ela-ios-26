@@ -7,10 +7,14 @@
 
 import UIKit
 
+/// GuidanceGoalPlanProfileVM 类型，封装 Guide0820 引导流程中的相关功能。
 final class GuidanceGoalPlanProfileVM: GuidanceGoalPlanChoicePageVM {
+    // `flowState` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let flowState: GuidanceGoalPlanFlowState
+    // `target` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let target: GuidanceGoalPlanTarget
 
+    /// 初始化当前类型实例。
     init(flowState: GuidanceGoalPlanFlowState) {
         self.flowState = flowState
         self.target = flowState.target ?? .muscleGain
@@ -26,12 +30,15 @@ final class GuidanceGoalPlanProfileVM: GuidanceGoalPlanChoicePageVM {
         }
     }
 
+    /// 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
+// GuidanceGoalPlanProfileVM 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension GuidanceGoalPlanProfileVM {
+    // 执行 `selectedValueFromState` 操作，完成当前引导页面的状态更新或交互处理。
     func selectedValueFromState() -> String {
         switch target {
         case .muscleGain:
@@ -41,6 +48,7 @@ private extension GuidanceGoalPlanProfileVM {
         }
     }
 
+    // 执行 `syncToState` 操作，完成当前引导页面的状态更新或交互处理。
     func syncToState() {
         switch target {
         case .muscleGain:
@@ -50,6 +58,7 @@ private extension GuidanceGoalPlanProfileVM {
         }
     }
 
+    // 执行 `options` 操作，完成当前引导页面的状态更新或交互处理。
     static func options(for target: GuidanceGoalPlanTarget) -> [GuidanceGoalPlanOption] {
         switch target {
         case .muscleGain:

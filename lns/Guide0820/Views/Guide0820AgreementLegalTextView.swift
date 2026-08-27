@@ -26,6 +26,7 @@ final class Guide0820AgreementLegalTextView: UITextView {
     }
 }
 
+// Guide0820AgreementLegalTextView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820AgreementLegalTextView {
     /// 初始化文本视图样式。
     func initUI() {
@@ -83,6 +84,7 @@ private extension Guide0820AgreementLegalTextView {
     }
 }
 
+/// Guide0820AgreementLegalTextView 扩展，提供 Guide0820 流程相关的辅助能力。
 extension Guide0820AgreementLegalTextView: UITextViewDelegate {
     /// iOS 10 及以上链接点击回调。
     func textView(_ textView: UITextView,

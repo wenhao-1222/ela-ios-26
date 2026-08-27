@@ -42,6 +42,7 @@ final class Guide0820DeleteConfirmationSheetView: UIView {
     }
 }
 
+// Guide0820DeleteConfirmationSheetView 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820DeleteConfirmationSheetView {
     /// 初始化面板结构。
     func initUI() {
