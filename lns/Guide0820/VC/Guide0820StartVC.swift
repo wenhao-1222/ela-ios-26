@@ -163,18 +163,12 @@ private extension Guide0820StartVC {
             guard let self else { return }
             let progressVC = GuidanceNutritionGoalsProgressVC(flowState: flowState)
             progressVC.finishBlock = { [weak progressVC] result in
-                if let result {
-                    NutritionDefaultModel.shared.saveGoals(dict: [
-                        "calories": "\(result.calories)",
-                        "carbohydrates": "\(result.carbohydrate)",
-                        "proteins": "\(result.protein)",
-                        "fats": "\(result.fat)"
-                    ] as NSDictionary)
+                guard let navigationController = progressVC?.navigationController else { return }
+                let resultVC = GuidanceNutritionGoalsResultVC(goals: result)
+                resultVC.completion = { [weak resultVC] in
+                    resultVC?.navigationController?.popToViewController(self, animated: true)
                 }
-                // The result page is intentionally the hand-off point for the
-                // next Guide0820 step; callers can replace this closure when
-                // wiring a post-goals screen.
-                progressVC?.navigationController?.popToViewController(self, animated: true)
+                navigationController.pushViewController(resultVC, animated: true)
             }
             self.navigationController?.pushViewController(progressVC, animated: true)
         }
@@ -266,7 +260,7 @@ private extension Guide0820StartVC {
 }
 
 /// Guide0820 开始页右上角更多按钮，按 MasterGo 设计稿绘制 3 个独立圆点。
-private final class Guide0820MoreButton: UIButton {
+final class Guide0820MoreButton: UIButton {
     // 初始化当前类型实例。
     override init(frame: CGRect) {
         super.init(frame: frame)

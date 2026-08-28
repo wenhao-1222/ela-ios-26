@@ -17,9 +17,10 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
         var stageCycleDuration: TimeInterval = 5.0
         /// Cross-dissolve duration when switching status messages.
         var stageTransitionDuration: TimeInterval = 0.35
-        /// Minimum time from page appearance before the final transition may start.
-        var minimumDisplayDuration: TimeInterval = 6.0
-        var completionAnimationDuration: TimeInterval = 1.0
+        /// Minimum duration of the final animation after the API responds.
+        var completionAnimationDuration: TimeInterval = 3.0
+        /// Keeps the complete progress animation from finishing too quickly.
+        var minimumTotalAnimationDuration: TimeInterval = 4.0
 
         func normalized() -> Configuration {
             var value = self
@@ -27,8 +28,8 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
             value.fakeProgressDuration = max(value.fakeProgressDuration, 0.1)
             value.stageCycleDuration = max(value.stageCycleDuration, 0.3)
             value.stageTransitionDuration = max(value.stageTransitionDuration, 0.1)
-            value.minimumDisplayDuration = max(value.minimumDisplayDuration, 0.3)
             value.completionAnimationDuration = max(value.completionAnimationDuration, 0.1)
+            value.minimumTotalAnimationDuration = max(value.minimumTotalAnimationDuration, 0.1)
             return value
         }
     }
@@ -47,10 +48,7 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     private var displayedProgress: Double = 0
     private var fakeTimer: Timer?
     private var stageTimer: Timer?
-    private var readinessTimer: Timer?
-    private var pageShownAt: CFTimeInterval = 0
-    private var fakeProgressReached = false
-    private var stageCycleCompleted = false
+    private var progressStartedAt: CFTimeInterval = 0
     private var requestFinished = false
     private var hasFinishedAnimation = false
     private var nutritionResult: NutritionGoalsResult?
@@ -167,7 +165,6 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     deinit {
         fakeTimer?.invalidate()
         stageTimer?.invalidate()
-        readinessTimer?.invalidate()
     }
 
     override func viewDidLoad() {
@@ -175,7 +172,7 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
         navigationController?.setNavigationBarHidden(true, animated: false)
         buildInterface()
         updateProgressUI(animated: false)
-        pageShownAt = CACurrentMediaTime()
+        progressStartedAt = CACurrentMediaTime()
         startStageCycle()
         startFakeProgress()
         requestNutritionGoals()
@@ -185,7 +182,6 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
         super.viewDidDisappear(animated)
         fakeTimer?.invalidate()
         stageTimer?.invalidate()
-        readinessTimer?.invalidate()
     }
 }
 
@@ -274,8 +270,6 @@ private extension GuidanceNutritionGoalsProgressVC {
             if ratio >= 1 {
                 self.fakeTimer?.invalidate()
                 self.fakeTimer = nil
-                self.fakeProgressReached = true
-                self.tryFinishIfReady()
             }
         }
         if let fakeTimer { RunLoop.main.add(fakeTimer, forMode: .common) }
@@ -299,10 +293,8 @@ private extension GuidanceNutritionGoalsProgressVC {
             }
             if elapsed >= self.configuration.stageCycleDuration {
                 self.activeStageIndex = self.stageTexts.count - 1
-                self.stageCycleCompleted = true
                 self.stageTimer?.invalidate()
                 self.stageTimer = nil
-                self.tryFinishIfReady()
             }
         }
         if let stageTimer { RunLoop.main.add(stageTimer, forMode: .common) }
@@ -340,43 +332,31 @@ private extension GuidanceNutritionGoalsProgressVC {
     }
 
     func tryFinishIfReady() {
-        guard requestFinished, fakeProgressReached, stageCycleCompleted, !hasFinishedAnimation else {
-            scheduleReadinessCheckIfNeeded()
-            return
-        }
-        let elapsed = CACurrentMediaTime() - pageShownAt
-        let remainingDisplayTime = configuration.minimumDisplayDuration - elapsed
-        if remainingDisplayTime > 0 {
-            scheduleReadinessCheck(after: remainingDisplayTime)
-            return
-        }
+        guard requestFinished, !hasFinishedAnimation else { return }
         hasFinishedAnimation = true
-        readinessTimer?.invalidate()
-        readinessTimer = nil
-        UIView.animate(withDuration: configuration.completionAnimationDuration, delay: 0, options: [.curveEaseInOut]) {
+
+        // Once the API has returned, stop only the placeholder progress. The
+        // stage timer must keep running so a fast response cannot prevent the
+        // second and third status messages from being shown.
+        fakeTimer?.invalidate()
+        fakeTimer = nil
+        let elapsed = CACurrentMediaTime() - progressStartedAt
+        let remainingStageCycleDuration = max(configuration.stageCycleDuration - elapsed, 0)
+        let completionDuration = max(configuration.completionAnimationDuration,
+                                     configuration.minimumTotalAnimationDuration - elapsed,
+                                     remainingStageCycleDuration)
+        UIView.animate(withDuration: completionDuration, delay: 0, options: [.curveEaseInOut]) {
             self.displayedProgress = 100
             self.updateProgressUI(animated: false)
             self.view.layoutIfNeeded()
         } completion: { [weak self] _ in
             guard let self else { return }
+            self.stageTimer?.invalidate()
+            self.stageTimer = nil
+            self.activeStageIndex = self.stageTexts.count - 1
+            self.updateStageText(animated: false)
             self.finishBlock?(self.nutritionResult)
         }
-    }
-
-    func scheduleReadinessCheckIfNeeded() {
-        guard requestFinished, fakeProgressReached, stageCycleCompleted else { return }
-        let remaining = max(configuration.minimumDisplayDuration - (CACurrentMediaTime() - pageShownAt), 0)
-        scheduleReadinessCheck(after: remaining)
-    }
-
-    func scheduleReadinessCheck(after delay: TimeInterval) {
-        guard !hasFinishedAnimation else { return }
-        readinessTimer?.invalidate()
-        readinessTimer = Timer.scheduledTimer(withTimeInterval: max(delay, 0.01), repeats: false) { [weak self] _ in
-            self?.readinessTimer = nil
-            self?.tryFinishIfReady()
-        }
-        if let readinessTimer { RunLoop.main.add(readinessTimer, forMode: .common) }
     }
 
     func requestNutritionGoals() {

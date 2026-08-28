@@ -86,6 +86,7 @@
 		A7CF110F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF100F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift */; };
 		A7CF11102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift */; };
 		A7CF11232FABCDEF00000023 /* GuidanceNutritionGoalsProgressVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10232FABCDEF00000023 /* GuidanceNutritionGoalsProgressVC.swift */; };
+		A7CF11242FABCDEF00000024 /* GuidanceNutritionGoalsResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10242FABCDEF00000024 /* GuidanceNutritionGoalsResultVC.swift */; };
 		A7CF11112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift */; };
 		A7CF11202FABCDEF00000020 /* GuidanceGoalPlanFoodAdjustmentVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10202FABCDEF00000020 /* GuidanceGoalPlanFoodAdjustmentVM.swift */; };
 		A7092D132E4EE02D005A2087 /* ArticlesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D122E4EE02C005A2087 /* ArticlesVC.swift */; };
@@ -1642,6 +1643,7 @@
 		A7CF100F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFatLossProfileVM.swift; sourceTree = "<group>"; };
 		A7CF10102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFatLossProteinHabitVM.swift; sourceTree = "<group>"; };
 		A7CF10232FABCDEF00000023 /* GuidanceNutritionGoalsProgressVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceNutritionGoalsProgressVC.swift; sourceTree = "<group>"; };
+		A7CF10242FABCDEF00000024 /* GuidanceNutritionGoalsResultVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceNutritionGoalsResultVC.swift; sourceTree = "<group>"; };
 		A7CF10112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanProfileVM.swift; sourceTree = "<group>"; };
 		A7CF10202FABCDEF00000020 /* GuidanceGoalPlanFoodAdjustmentVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFoodAdjustmentVM.swift; sourceTree = "<group>"; };
 		A7092D122E4EE02C005A2087 /* ArticlesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesVC.swift; sourceTree = "<group>"; };
@@ -4737,6 +4739,7 @@
 				A70822332F70000000000033 /* Guide0820LifeProfileVC.swift */,
 				A7CF10012FABCDEF00000001 /* GuidanceGoalPlanVC.swift */,
 				A7CF10232FABCDEF00000023 /* GuidanceNutritionGoalsProgressVC.swift */,
+				A7CF10242FABCDEF00000024 /* GuidanceNutritionGoalsResultVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -7351,6 +7354,7 @@
 				EC78C2AF2F69222300681507 /* GuidanceSexVM.swift in Sources */,
 				A7CF11012FABCDEF00000001 /* GuidanceGoalPlanVC.swift in Sources */,
 				A7CF11232FABCDEF00000023 /* GuidanceNutritionGoalsProgressVC.swift in Sources */,
+				A7CF11242FABCDEF00000024 /* GuidanceNutritionGoalsResultVC.swift in Sources */,
 				A7CF11022FABCDEF00000002 /* GuidanceGoalPlanModels.swift in Sources */,
 				A7CF11032FABCDEF00000003 /* GuidanceGoalPlanOptionCardView.swift in Sources */,
 				A7CF11042FABCDEF00000004 /* GuidanceGoalPlanChoicePageVM.swift in Sources */,

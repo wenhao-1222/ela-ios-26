@@ -287,8 +287,18 @@ private extension GuidanceGoalPlanVC {
         // finishBlock.
         if let navigationController {
             let progressVC = GuidanceNutritionGoalsProgressVC(flowState: flowState)
-            progressVC.finishBlock = { [weak progressVC] _ in
-                progressVC?.navigationController?.popViewController(animated: true)
+            progressVC.finishBlock = { [weak progressVC] result in
+                guard let navigationController = progressVC?.navigationController else { return }
+                let resultVC = GuidanceNutritionGoalsResultVC(goals: result)
+                resultVC.completion = { [weak resultVC, weak self] in
+                    guard let navigationController = resultVC?.navigationController else { return }
+                    if let self {
+                        navigationController.popToViewController(self, animated: true)
+                    } else {
+                        navigationController.popViewController(animated: true)
+                    }
+                }
+                navigationController.pushViewController(resultVC, animated: true)
             }
             navigationController.pushViewController(progressVC, animated: true)
             return
