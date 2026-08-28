@@ -95,10 +95,23 @@ final class GuidanceNutritionGoalsResultVC: WHBaseViewVC {
     }
 
     @objc private func primaryAction() {
-        // The selected nutrition values are the edit affordances in the
-        // MasterGo card. Tapping one of them opens the dedicated edit state.
         saveGoals()
-        completion?()
+        let featureVC = Guide0820FeatureIntroVC(onFinished: completion)
+        if let navigationController,
+           let index = navigationController.viewControllers.firstIndex(where: { $0 === self }) {
+            // Replace this result page in-place so it can never be revealed by
+            // a back gesture or a later pop operation.
+            var stack = navigationController.viewControllers
+            stack[index] = featureVC
+            navigationController.setViewControllers(stack, animated: true)
+        } else if let navigationController {
+            navigationController.pushViewController(featureVC, animated: true)
+        } else {
+            let navigationController = UINavigationController(rootViewController: featureVC)
+            navigationController.setNavigationBarHidden(true, animated: false)
+            navigationController.modalPresentationStyle = .fullScreen
+            present(navigationController, animated: true)
+        }
     }
 
 }

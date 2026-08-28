@@ -290,13 +290,9 @@ private extension GuidanceGoalPlanVC {
             progressVC.finishBlock = { [weak progressVC] result in
                 guard let navigationController = progressVC?.navigationController else { return }
                 let resultVC = GuidanceNutritionGoalsResultVC(goals: result)
-                resultVC.completion = { [weak resultVC, weak self] in
-                    guard let navigationController = resultVC?.navigationController else { return }
-                    if let self {
-                        navigationController.popToViewController(self, animated: true)
-                    } else {
-                        navigationController.popViewController(animated: true)
-                    }
+                resultVC.completion = { [weak self] in
+                    guard let self, let navigationController = self.navigationController else { return }
+                    navigationController.popToViewController(self, animated: true)
                 }
                 navigationController.pushViewController(resultVC, animated: true)
             }

@@ -87,6 +87,12 @@
 		A7CF11102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift */; };
 		A7CF11232FABCDEF00000023 /* GuidanceNutritionGoalsProgressVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10232FABCDEF00000023 /* GuidanceNutritionGoalsProgressVC.swift */; };
 		A7CF11242FABCDEF00000024 /* GuidanceNutritionGoalsResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10242FABCDEF00000024 /* GuidanceNutritionGoalsResultVC.swift */; };
+		B82001012FABCDEF00000001 /* Guide0820FeatureIntroVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82000012FABCDEF00000001 /* Guide0820FeatureIntroVC.swift */; };
+		B82001022FABCDEF00000002 /* Guide0820FeatureNutritionRecommendationVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82000022FABCDEF00000002 /* Guide0820FeatureNutritionRecommendationVM.swift */; };
+		B82001032FABCDEF00000003 /* Guide0820FeatureDynamicGoalsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82000032FABCDEF00000003 /* Guide0820FeatureDynamicGoalsVM.swift */; };
+		B82001042FABCDEF00000004 /* Guide0820FeatureAIActionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82000042FABCDEF00000004 /* Guide0820FeatureAIActionVM.swift */; };
+		B82001052FABCDEF00000005 /* Guide0820FeatureWeightTrendVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82000052FABCDEF00000005 /* Guide0820FeatureWeightTrendVM.swift */; };
+		B82001062FABCDEF00000006 /* Guide0820FeatureNutritionAnalysisVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82000062FABCDEF00000006 /* Guide0820FeatureNutritionAnalysisVM.swift */; };
 		A7CF11112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift */; };
 		A7CF11202FABCDEF00000020 /* GuidanceGoalPlanFoodAdjustmentVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10202FABCDEF00000020 /* GuidanceGoalPlanFoodAdjustmentVM.swift */; };
 		A7092D132E4EE02D005A2087 /* ArticlesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7092D122E4EE02C005A2087 /* ArticlesVC.swift */; };
@@ -1545,6 +1551,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		B82000012FABCDEF00000001 /* Guide0820FeatureIntroVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820FeatureIntroVC.swift; sourceTree = "<group>"; };
+		B82000022FABCDEF00000002 /* Guide0820FeatureNutritionRecommendationVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820FeatureNutritionRecommendationVM.swift; sourceTree = "<group>"; };
+		B82000032FABCDEF00000003 /* Guide0820FeatureDynamicGoalsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820FeatureDynamicGoalsVM.swift; sourceTree = "<group>"; };
+		B82000042FABCDEF00000004 /* Guide0820FeatureAIActionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820FeatureAIActionVM.swift; sourceTree = "<group>"; };
+		B82000052FABCDEF00000005 /* Guide0820FeatureWeightTrendVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820FeatureWeightTrendVM.swift; sourceTree = "<group>"; };
+		B82000062FABCDEF00000006 /* Guide0820FeatureNutritionAnalysisVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820FeatureNutritionAnalysisVM.swift; sourceTree = "<group>"; };
 		044BE13CF6421A3A7A3C8332 /* Pods_ElaNaturalFiveMealsWidgetExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ElaNaturalFiveMealsWidgetExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		093F413DB86DBEDC2D21C9E1 /* Pods-lns.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lns.release.xcconfig"; path = "Target Support Files/Pods-lns/Pods-lns.release.xcconfig"; sourceTree = "<group>"; };
 		155ACF13D7262B167FF017AA /* Pods-ElaNaturalThreeMealsWidgetExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ElaNaturalThreeMealsWidgetExtension.debug.xcconfig"; path = "Target Support Files/Pods-ElaNaturalThreeMealsWidgetExtension/Pods-ElaNaturalThreeMealsWidgetExtension.debug.xcconfig"; sourceTree = "<group>"; };
@@ -4733,6 +4745,7 @@
 		A70824012F70000000000001 /* VC */ = {
 			isa = PBXGroup;
 			children = (
+				B82000012FABCDEF00000001 /* Guide0820FeatureIntroVC.swift */,
 				A70821012F6C000000000001 /* Guide0820VC.swift */,
 				A708221D2F7000000000001D /* Guide0820StartVC.swift */,
 				A70822222F70000000000022 /* Guide0820BodyProfileVC.swift */,
@@ -4760,6 +4773,11 @@
 		A70824032F70000000000003 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				B82000022FABCDEF00000002 /* Guide0820FeatureNutritionRecommendationVM.swift */,
+				B82000032FABCDEF00000003 /* Guide0820FeatureDynamicGoalsVM.swift */,
+				B82000042FABCDEF00000004 /* Guide0820FeatureAIActionVM.swift */,
+				B82000052FABCDEF00000005 /* Guide0820FeatureWeightTrendVM.swift */,
+				B82000062FABCDEF00000006 /* Guide0820FeatureNutritionAnalysisVM.swift */,
 				A70822052F70000000000005 /* Guide0820DeleteConfirmationVM.swift */,
 				A70822062F70000000000006 /* Guide0820FlowState.swift */,
 				A70822072F70000000000007 /* Guide0820InviteSourceInputVM.swift */,
@@ -7355,6 +7373,12 @@
 				A7CF11012FABCDEF00000001 /* GuidanceGoalPlanVC.swift in Sources */,
 				A7CF11232FABCDEF00000023 /* GuidanceNutritionGoalsProgressVC.swift in Sources */,
 				A7CF11242FABCDEF00000024 /* GuidanceNutritionGoalsResultVC.swift in Sources */,
+				B82001012FABCDEF00000001 /* Guide0820FeatureIntroVC.swift in Sources */,
+				B82001022FABCDEF00000002 /* Guide0820FeatureNutritionRecommendationVM.swift in Sources */,
+				B82001032FABCDEF00000003 /* Guide0820FeatureDynamicGoalsVM.swift in Sources */,
+				B82001042FABCDEF00000004 /* Guide0820FeatureAIActionVM.swift in Sources */,
+				B82001052FABCDEF00000005 /* Guide0820FeatureWeightTrendVM.swift in Sources */,
+				B82001062FABCDEF00000006 /* Guide0820FeatureNutritionAnalysisVM.swift in Sources */,
 				A7CF11022FABCDEF00000002 /* GuidanceGoalPlanModels.swift in Sources */,
 				A7CF11032FABCDEF00000003 /* GuidanceGoalPlanOptionCardView.swift in Sources */,
 				A7CF11042FABCDEF00000004 /* GuidanceGoalPlanChoicePageVM.swift in Sources */,
