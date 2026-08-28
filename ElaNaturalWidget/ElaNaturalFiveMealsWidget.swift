@@ -57,7 +57,7 @@ private enum FiveMealsWidgetStyle {
     }
 }
 
-private struct FiveMealsWidgetBackground: View {
+struct FiveMealsWidgetBackground: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -225,8 +225,9 @@ private struct LegacyElaNaturalFiveMealsWidgetEntryView: View {
 
 }
 
-struct ElaNaturalFiveMealsWidgetEntryView: View {
+struct ElaNaturalMealsWidgetEntryView: View {
     let entry: Provider.Entry
+    let mealCount: Int
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -238,8 +239,8 @@ struct ElaNaturalFiveMealsWidgetEntryView: View {
             : Int(dict.doubleValueForKeyWidget(key: "sportCalories").rounded())
         let caloriesTarget = Int(dict.doubleValueForKeyWidget(key: "caloriTar").rounded()) + sportCalories
         let calories = Int(dict.doubleValueForKeyWidget(key: "calori").rounded())
-        let completionStates = (0..<5).map { index in
-            index < mealsArray.count && ((mealsArray[index] as? NSDictionary)?["isEat"] as? String == "1")
+        let completionStates = (0..<mealCount).map { index in
+            index < mealsArray.count && FiveMealsMealStateResolver.isRecorded(mealsArray[index])
         }
         let highestCompletedIndex = completionStates.lastIndex(where: { $0 })
         let nextMealIndex: Int? = {
@@ -308,7 +309,7 @@ struct ElaNaturalFiveMealsWidgetEntryView: View {
 
                     GeometryReader { mealsGeometry in
                         HStack(spacing: 0) {
-                            ForEach(0..<5, id: \.self) { index in
+                            ForEach(0..<mealCount, id: \.self) { index in
                                 let actionState: FiveMealsActionState = completionStates[index]
                                     ? .recorded
                                     : (nextMealIndex == index ? .next : .inactive)
@@ -320,11 +321,11 @@ struct ElaNaturalFiveMealsWidgetEntryView: View {
                                     )
                                 }
                                 .frame(
-                                    width: mealsGeometry.size.width / 5,
+                                    width: mealsGeometry.size.width / CGFloat(mealCount),
                                     height: mealsGeometry.size.height
                                 )
                                 .overlay(alignment: .trailing) {
-                                    if index < 4 {
+                                    if index < mealCount - 1 {
                                         Rectangle()
                                             .fill(FiveMealsWidgetStyle.divider(for: colorScheme))
                                             .frame(width: dividerWidth)
@@ -337,6 +338,33 @@ struct ElaNaturalFiveMealsWidgetEntryView: View {
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
+    }
+}
+
+private enum FiveMealsMealStateResolver {
+    static func isRecorded(_ meal: Any) -> Bool {
+        guard let meal = meal as? NSDictionary else { return false }
+
+        if let isEat = meal["isEat"] as? String {
+            return isEat == "1" || isEat.lowercased() == "true"
+        }
+
+        if let isEat = meal["isEat"] as? NSNumber {
+            return isEat.boolValue
+        }
+
+        return meal.doubleValueForKeyWidget(key: "calories") > 0
+            || meal.doubleValueForKeyWidget(key: "carbohydrate") > 0
+            || meal.doubleValueForKeyWidget(key: "protein") > 0
+            || meal.doubleValueForKeyWidget(key: "fat") > 0
+    }
+}
+
+struct ElaNaturalFiveMealsWidgetEntryView: View {
+    let entry: Provider.Entry
+
+    var body: some View {
+        ElaNaturalMealsWidgetEntryView(entry: entry, mealCount: 5)
     }
 }
 

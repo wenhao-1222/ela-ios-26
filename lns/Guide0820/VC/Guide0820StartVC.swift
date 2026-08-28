@@ -159,8 +159,24 @@ private extension Guide0820StartVC {
     /// 进入目标方向采集流程。真实 VC 接入后在这里替换跳转。
     func startDirectionProfileStep() {
         let vc = GuidanceGoalPlanVC()
-        vc.finishBlock = { [weak self] _ in
-            self?.navigationController?.popViewController(animated: true)
+        vc.finishBlock = { [weak self] flowState in
+            guard let self else { return }
+            let progressVC = GuidanceNutritionGoalsProgressVC(flowState: flowState)
+            progressVC.finishBlock = { [weak progressVC] result in
+                if let result {
+                    NutritionDefaultModel.shared.saveGoals(dict: [
+                        "calories": "\(result.calories)",
+                        "carbohydrates": "\(result.carbohydrate)",
+                        "proteins": "\(result.protein)",
+                        "fats": "\(result.fat)"
+                    ] as NSDictionary)
+                }
+                // The result page is intentionally the hand-off point for the
+                // next Guide0820 step; callers can replace this closure when
+                // wiring a post-goals screen.
+                progressVC?.navigationController?.popToViewController(self, animated: true)
+            }
+            self.navigationController?.pushViewController(progressVC, animated: true)
         }
         navigationController?.pushViewController(vc, animated: true)
     }

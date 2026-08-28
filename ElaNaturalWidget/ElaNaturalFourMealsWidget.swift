@@ -8,7 +8,7 @@ import WidgetKit
 import SwiftUI
 
 
-struct ElaNaturalFourMealsWidgetEntryView : View {
+private struct LegacyElaNaturalFourMealsWidgetEntryView: View {
     var entry: Provider.Entry
     
     var body: some View {
@@ -147,6 +147,14 @@ struct ElaNaturalFourMealsWidgetEntryView : View {
     }
 }
 
+struct ElaNaturalFourMealsWidgetEntryView: View {
+    let entry: Provider.Entry
+
+    var body: some View {
+        ElaNaturalMealsWidgetEntryView(entry: entry, mealCount: 4)
+    }
+}
+
 struct ElaNaturalFourMealsWidget: Widget {
     let kind: String = "ElaNaturalFourMealsWidget"
 
@@ -154,15 +162,15 @@ struct ElaNaturalFourMealsWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             if #available(iOS 17.0, *) {
                 ElaNaturalFourMealsWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
+                    .containerBackground(for: .widget) {
+                        FiveMealsWidgetBackground()
+                    }
                     .edgesIgnoringSafeArea(.all)
-                    .background(Color(WHColorWithAlpha(colorStr: "007AFF", alpha: 0.02)))
 //                    .background(Color(WHColor_16(colorStr: "EFEFEF")))
 //                    .background(UIColor.isDarkModeEnabled ? Color(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0,opacity: 0.85) : Color(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0,opacity: 0.2))
             } else {
                 ElaNaturalFourMealsWidgetEntryView(entry: entry)
                     .edgesIgnoringSafeArea(.all)
-                    .background(Color(WHColorWithAlpha(colorStr: "007AFF", alpha: 0.02)))
 //                    .background(Color(WHColor_16(colorStr: "EFEFEF")))
 //                    .background(UIColor.isDarkModeEnabled ? Color(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0,opacity: 0.85) : Color(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0,opacity: 0.2))
             }

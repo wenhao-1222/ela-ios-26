@@ -74,11 +74,12 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
     }()
 
     // `backButton` 属性，保存该类型对外提供或内部使用的状态与配置。
-    private lazy var backButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitle("‹", for: .normal)
-        button.setTitleColor(.COLOR_TEXT_TITLE_0f1214, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 36, weight: .regular)
+    private lazy var backButton: ElaLiquidGlassCloseButton = {
+        let button = ElaLiquidGlassCloseButton()
+        button.iconImage = UIImage(named: "guide_back_button")
+        button.iconColor = .COLOR_TEXT_TITLE_0f1214
+        button.iconSize = kFitWidth(20)
+        button.showsOuterStroke = true
         button.addTarget(self, action: #selector(backButtonTapAction), for: .touchUpInside)
         return button
     }()
@@ -278,6 +279,18 @@ private extension GuidanceGoalPlanVC {
         Guide0820ProgressStorage.markStepCompleted(.directionProfile)
         if let finishBlock = finishBlock {
             finishBlock(flowState)
+            return
+        }
+
+        // Keep the flow connected even when this VC is opened directly (for
+        // example from a resumed navigation stack) without an external
+        // finishBlock.
+        if let navigationController {
+            let progressVC = GuidanceNutritionGoalsProgressVC(flowState: flowState)
+            progressVC.finishBlock = { [weak progressVC] _ in
+                progressVC?.navigationController?.popViewController(animated: true)
+            }
+            navigationController.pushViewController(progressVC, animated: true)
             return
         }
 
