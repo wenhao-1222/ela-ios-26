@@ -29,7 +29,7 @@ private struct LegacyElaNaturalThreeMealsWidgetEntryView: View {
                                          numberTarget: dict.doubleValueForKeyWidget(key: "caloriTar").rounded()+sportCalories,
                                          number: dict.doubleValueForKeyWidget(key: "calori").rounded(),
                                          sportCalories: sportCalories,
-                                         progressColor: Color.init(red: 0, green: 122.0/255.0, blue: 1.0),
+                                         progressColor: Color("color_natural_calories", bundle: .main),
                                          fillColor: Color(red: 85.0/255.0, green: 41.0/255.0, blue: 143.0/255.0))
                             .frame(width: progressWidth,height: geoHeight*0.23)
                         
@@ -38,7 +38,7 @@ private struct LegacyElaNaturalThreeMealsWidgetEntryView: View {
                             ProgressView(naturalType: "碳水",
                                          numberTarget: dict.doubleValueForKeyWidget(key: "carboTar").rounded(),
                                          number: dict.doubleValueForKeyWidget(key: "carbohydrates").rounded(),
-                                         progressColor: Color(red: 113.0/255.0, green: 55.0/255.0, blue: 191.0/255.0),
+                                         progressColor: Color("color_natural_carbo", bundle: .main),
                                          fillColor: Color(red: 85.0/255.0, green: 41.0/255.0, blue: 143.0/255.0))
                             .frame(width: progressWidth,height: geoHeight*0.2)
                             .padding(EdgeInsets(top: -4, leading: 0, bottom: 0, trailing: 0))
@@ -46,7 +46,7 @@ private struct LegacyElaNaturalThreeMealsWidgetEntryView: View {
                             ProgressView(naturalType: "蛋白质",
                                          numberTarget: dict.doubleValueForKeyWidget(key: "proteinTar").rounded(),
                                          number: dict.doubleValueForKeyWidget(key: "protein").rounded(),
-                                         progressColor: Color(red: 245.0/255.0, green: 186.0/255.0, blue: 24.0/255.0),
+                                         progressColor: Color("color_natural_protein", bundle: .main),
                                          fillColor: Color(red: 135.0/255.0, green: 102.0/255.0, blue: 13.0/255.0))
                                 .frame(width: progressWidth,height: geoHeight*0.2)
                                 .padding(EdgeInsets(top: -4, leading: 0, bottom: 0, trailing: 0))
@@ -55,7 +55,7 @@ private struct LegacyElaNaturalThreeMealsWidgetEntryView: View {
                             ProgressView(naturalType: "脂肪",
                                          numberTarget: dict.doubleValueForKeyWidget(key: "fatsTar").rounded(),
                                          number: dict.doubleValueForKeyWidget(key: "fats").rounded(),
-                                         progressColor: Color(red: 226.0/255.0, green: 115.0/255.0, blue: 24.0/255.0),
+                                         progressColor: Color("color_natural_fat", bundle: .main),
                                          fillColor: Color(red: 85.0/255.0, green: 41.0/255.0, blue: 143.0/255.0))
                             .frame(width: progressWidth,height: geoHeight*0.2)
                             .padding(EdgeInsets(top: -4, leading: 0, bottom: 0, trailing: 0))
@@ -334,7 +334,7 @@ private struct ThreeMealsMacroProgressRow: View {
 
     var body: some View {
         VStack(spacing: 5 * scale) {
-            HStack(alignment: .top, spacing: 0) {
+            HStack(alignment: .lastTextBaseline, spacing: 0) {
                 Text(title)
                     .foregroundColor(FiveMealsWidgetStyle.primaryText(for: colorScheme))
                     .font(Font.custom("PingFangSC-Regular", size: 8 * scale))
@@ -348,7 +348,8 @@ private struct ThreeMealsMacroProgressRow: View {
                             ? FiveMealsWidgetStyle.overflowRed
                             : FiveMealsWidgetStyle.primaryText(for: colorScheme)
                     )
-                    .font(Font.custom("PingFangSC-Regular", size: 8 * scale))
+                    .font(Font.custom("PingFangSC-Medium", size: 8 * scale))
+//                    .font(Font.custom("D-DIN-PRO-Regular", size: 8 * scale))
                     .lineLimit(1)
 
                 Text(verbatim: "/\(Int(target.rounded()))g")

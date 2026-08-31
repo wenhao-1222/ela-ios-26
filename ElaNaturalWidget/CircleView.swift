@@ -16,7 +16,7 @@ struct CircleView: View {
     var calories = 0
     var sportCalories = 0
 //    var percent:Double
-    var themeColor = Color.init(red: 0, green: 122.0/255.0, blue: 1.0)
+    var themeColor = Color("color_natural_calories", bundle: .main)
     var sportColor = Color.init(red: 1.0, green: 149.0/255.0, blue: 0.0)//FF9500
     
     var body: some View {
@@ -74,7 +74,8 @@ struct CircleView: View {
                 Text("\(calories)".replacingOccurrences(of: ",", with: ""))
 //                .foregroundColor(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_85))
                 .foregroundColor(Color(UIColor(named: "text_color_85") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_85))
-                    .font(.system(size: 16,weight: .medium))
+//                    .font(.system(size: 16,weight: .medium))
+                    .font(Font.custom("D-DIN-PRO-SemiBold", size: 18))
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
 //
@@ -90,7 +91,8 @@ struct CircleView: View {
             Text("/\(caloriesTarget)".replacingOccurrences(of: ",", with: ""))
 //                .foregroundColor(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_45))
                 .foregroundColor(Color(UIColor(named: "text_color_45") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_45))
-                .font(Font.system(size: 12))
+//                .font(Font.system(size: 12))
+                .font(Font.custom("PingFangSC-Regular", size: 12))
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
         }

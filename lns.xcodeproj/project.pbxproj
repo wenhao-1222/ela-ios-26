@@ -842,6 +842,7 @@
 		EC30F2D52C89C38500E7BD33 /* ElaNaturalWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EC356CD42C6C99D00023C0BA /* ElaNaturalWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		EC30F35F2C8A42C400E7BD33 /* ElaNaturalWidgetCalories.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30F35E2C8A42C400E7BD33 /* ElaNaturalWidgetCalories.swift */; };
 		EC30F37D2C8A4B3700E7BD33 /* ElaNaturalWidgetCaloriesFourMeals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC30F37C2C8A4B3700E7BD33 /* ElaNaturalWidgetCaloriesFourMeals.swift */; };
+		CD3CA1002F7A000100000002 /* ElaNaturalWidgetCaloriesThreeMeals.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3CA1002F7A000100000001 /* ElaNaturalWidgetCaloriesThreeMeals.swift */; };
 		EC312A9C2EFCDD270026F005 /* HabitExchangeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC312A9B2EFCDD230026F005 /* HabitExchangeVC.swift */; };
 		EC312A9E2EFCE2AC0026F005 /* HabitExchangeMsgVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC312A9D2EFCE2A60026F005 /* HabitExchangeMsgVM.swift */; };
 		EC312AA02EFCE8780026F005 /* HabitExchangeAlertVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC312A9F2EFCE8740026F005 /* HabitExchangeAlertVM.swift */; };
@@ -2460,6 +2461,7 @@
 		EC30F2B52C8702B300E7BD33 /* NaturalStatNaviVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaturalStatNaviVM.swift; sourceTree = "<group>"; };
 		EC30F35E2C8A42C400E7BD33 /* ElaNaturalWidgetCalories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetCalories.swift; sourceTree = "<group>"; };
 		EC30F37C2C8A4B3700E7BD33 /* ElaNaturalWidgetCaloriesFourMeals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetCaloriesFourMeals.swift; sourceTree = "<group>"; };
+		CD3CA1002F7A000100000001 /* ElaNaturalWidgetCaloriesThreeMeals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElaNaturalWidgetCaloriesThreeMeals.swift; sourceTree = "<group>"; };
 		EC312A9B2EFCDD230026F005 /* HabitExchangeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeVC.swift; sourceTree = "<group>"; };
 		EC312A9D2EFCE2A60026F005 /* HabitExchangeMsgVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeMsgVM.swift; sourceTree = "<group>"; };
 		EC312A9F2EFCE8740026F005 /* HabitExchangeAlertVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitExchangeAlertVM.swift; sourceTree = "<group>"; };
@@ -4874,6 +4876,7 @@
 				EC356CDA2C6C99D00023C0BA /* ElaNaturalWidget.swift */,
 				EC30F35E2C8A42C400E7BD33 /* ElaNaturalWidgetCalories.swift */,
 				EC30F37C2C8A4B3700E7BD33 /* ElaNaturalWidgetCaloriesFourMeals.swift */,
+				CD3CA1002F7A000100000001 /* ElaNaturalWidgetCaloriesThreeMeals.swift */,
 				EC768B4B2C8A4EE8006B98E5 /* ElaNaturalFiveMealsWidget.swift */,
 				EC768B4D2C8A4F13006B98E5 /* ElaNaturalFourMealsWidget.swift */,
 				EC768B512C8A4F83006B98E5 /* ElaNaturalThreeMealsWidget.swift */,
@@ -6829,6 +6832,7 @@
 				EC30F35F2C8A42C400E7BD33 /* ElaNaturalWidgetCalories.swift in Sources */,
 				EC925E3C2C7F1915009F1E72 /* ElaNaturalWidgetCaloriesProgressView.swift in Sources */,
 				EC30F37D2C8A4B3700E7BD33 /* ElaNaturalWidgetCaloriesFourMeals.swift in Sources */,
+				CD3CA1002F7A000100000002 /* ElaNaturalWidgetCaloriesThreeMeals.swift in Sources */,
 				EC768B5C2C8A503C006B98E5 /* ElaWeekFatWidget.swift in Sources */,
 				EC85AFF72C6DD111006F788D /* CircleView.swift in Sources */,
 				ECD549252C75D0D9009E7E6B /* Interface.swift in Sources */,

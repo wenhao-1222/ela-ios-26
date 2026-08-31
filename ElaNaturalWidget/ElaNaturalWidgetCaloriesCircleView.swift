@@ -15,7 +15,7 @@ struct ElaNaturalWidgetCaloriesCircleView: View {
     var caloriesTarget = 0
     var calories = 0
 //    var percent:Double
-    var themeColor = Color.init(red: 0, green: 122.0/255.0, blue: 1.0)
+    var themeColor = Color("color_natural_calories", bundle: .main)
     var fillColor = Color.init(red: 31.0/255.0, green: 64.0/255.0, blue: 134.0/255.0)
     //Color(red: 85.0/255.0, green: 41.0/255.0, blue: 143.0/255.0)
     

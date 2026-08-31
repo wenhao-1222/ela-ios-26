@@ -57,20 +57,20 @@ private struct LegacyElaNaturalFourMealsWidgetEntryView: View {
                                         ProgressView(naturalType: "碳水",
                                                      numberTarget: dict.doubleValueForKeyWidget(key: "carboTar").rounded(),
                                                      number: dict.doubleValueForKeyWidget(key: "carbohydrates").rounded(),
-                                                     progressColor: Color(red: 113.0/255.0, green: 55.0/255.0, blue: 191.0/255.0),
+                                                     progressColor: Color("color_natural_carbo", bundle: .main),
                                                      fillColor: Color(red: 85.0/255.0, green: 41.0/255.0, blue: 143.0/255.0))
                                         .frame(width: progressWidth,height: progressSize.size.height*0.3)
                                         ProgressView(naturalType: "蛋白质",
                                                      numberTarget: dict.doubleValueForKeyWidget(key: "proteinTar").rounded(),
                                                      number: dict.doubleValueForKeyWidget(key: "protein").rounded(),
-                                                     progressColor: Color(red: 245.0/255.0, green: 186.0/255.0, blue: 24.0/255.0),
+                                                     progressColor: Color("color_natural_protein", bundle: .main),
                                                      fillColor: Color(red: 135.0/255.0, green: 102.0/255.0, blue: 13.0/255.0))
                                             .frame(width: progressWidth,height: progressSize.size.height*0.3)
     //                                        .background(Color.green)
                                         ProgressView(naturalType: "脂肪",
                                                      numberTarget: dict.doubleValueForKeyWidget(key: "fatsTar").rounded(),
                                                      number: dict.doubleValueForKeyWidget(key: "fats").rounded(),
-                                                     progressColor: Color(red: 226.0/255.0, green: 115.0/255.0, blue: 24.0/255.0),
+                                                     progressColor: Color("color_natural_fat", bundle: .main),
                                                      fillColor: Color(red: 85.0/255.0, green: 41.0/255.0, blue: 143.0/255.0))
                                         .frame(width: progressWidth,height: progressSize.size.height*0.3)
                                 })

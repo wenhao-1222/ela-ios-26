@@ -14,7 +14,7 @@ struct ElaNaturalWidgetCaloriesProgressView: View {
     var sportCalories:Double
     
     let progressHeight = CGFloat(10)
-    let progressColor = Color.init(red: 0, green: 122.0/255.0, blue: 1.0)
+    let progressColor = Color("color_natural_calories", bundle: .main)
     let fillColor = Color(red: 85.0/255.0, green: 41.0/255.0, blue: 143.0/255.0)
     var sportColor = Color.init(red: 1.0, green: 149.0/255.0, blue: 0.0)//FF9500
     

@@ -8,77 +8,327 @@
 import WidgetKit
 import SwiftUI
 
-struct ElaWeekCaloriesWidgetEntryView : View {
-    var entry: Provider.Entry
+enum WeekRemainingMetric: Equatable {
+    case calories
+    case carbohydrate
+    case protein
+    case fat
+
+    var title: String {
+        switch self {
+        case .calories:
+            return "卡路里剩余"
+        case .carbohydrate:
+            return "碳水剩余"
+        case .protein:
+            return "蛋白质剩余"
+        case .fat:
+            return "脂肪剩余"
+        }
+    }
+
+    var unit: String {
+        self == .calories ? "千卡" : "g"
+    }
+
+    var accent: Color {
+        switch self {
+        case .calories:
+            return Color("color_natural_calories", bundle: .main)
+        case .carbohydrate:
+            return Color("color_natural_carbo", bundle: .main)
+        case .protein:
+            return Color("color_natural_protein", bundle: .main)
+        case .fat:
+            return Color("color_natural_fat", bundle: .main)
+        }
+    }
+
+    var lightBackgroundTint: Color {
+        switch self {
+        case .calories:
+            return Color(red: 0.0 / 255.0, green: 122.0 / 255.0, blue: 255.0 / 255.0).opacity(0.12)
+        case .carbohydrate:
+            return Color(red: 155.0 / 255.0, green: 81.0 / 255.0, blue: 255.0 / 255.0).opacity(0.12)
+        case .protein:
+            return Color(red: 255.0 / 255.0, green: 219.0 / 255.0, blue: 37.0 / 255.0).opacity(0.12)
+        case .fat:
+            return Color(red: 255.0 / 255.0, green: 135.0 / 255.0, blue: 37.0 / 255.0).opacity(0.12)
+        }
+    }
+
+    var darkGradientColors: [Color] {
+        switch self {
+        case .calories:
+            return [
+                Color(red: 0.11, green: 0.208, blue: 0.369),
+                Color(red: 0.192, green: 0.337, blue: 0.604)
+            ]
+        case .carbohydrate:
+            return [
+                Color(red: 0.231, green: 0.208, blue: 0.455),
+                Color(red: 0.361, green: 0.31, blue: 0.62)
+            ]
+        case .protein:
+            return [
+                Color(red: 0.306, green: 0.216, blue: 0.059),
+                Color(red: 0.459, green: 0.325, blue: 0.137)
+            ]
+        case .fat:
+            return [
+                Color(red: 0.341, green: 0.204, blue: 0.149),
+                Color(red: 0.478, green: 0.306, blue: 0.216)
+            ]
+        }
+    }
+
+    var darkGradientPoints: (start: UnitPoint, end: UnitPoint) {
+        switch self {
+        case .calories, .protein:
+            return (
+                UnitPoint(x: 0.6, y: 0.39),
+                UnitPoint(x: 1, y: 1.11)
+            )
+        case .carbohydrate, .fat:
+            return (
+                UnitPoint(x: 0.56, y: 0.42),
+                UnitPoint(x: 1, y: 1)
+            )
+        }
+    }
+
+    func intake(from dict: NSDictionary) -> Int {
+        let key: String
+        switch self {
+        case .calories:
+            key = "calori"
+        case .carbohydrate:
+            key = "carbohydrates"
+        case .protein:
+            key = "protein"
+        case .fat:
+            key = "fats"
+        }
+        return max(0, Int(dict.doubleValueForKeyWidget(key: key).rounded()))
+    }
+
+    func target(from dict: NSDictionary) -> Int {
+        switch self {
+        case .calories:
+            let sportCalories = WidgetUtils().readSportInTargetStatus() == "0"
+                ? 0
+                : Int(dict.doubleValueForKeyWidget(key: "sportCalories").rounded())
+            return max(0, Int(dict.doubleValueForKeyWidget(key: "caloriTar").rounded()) + sportCalories)
+        case .carbohydrate:
+            return max(0, Int(dict.doubleValueForKeyWidget(key: "carboTar").rounded()))
+        case .protein:
+            return max(0, Int(dict.doubleValueForKeyWidget(key: "proteinTar").rounded()))
+        case .fat:
+            return max(0, Int(dict.doubleValueForKeyWidget(key: "fatsTar").rounded()))
+        }
+    }
+}
+
+struct WeekRemainingWidgetBackground: View {
+    let metric: WeekRemainingMetric
+
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        GeometryReader(content: { geometry in
-            VStack {
-                let frame = CGSize(width: geometry.size.width - 8,
-                                   height: geometry.size.height - 20)
-                
-                let dataOBj = entry.isSnap ? WidgetUtils().getNaturalDataArrayDefault(type: .calories) : WidgetUtils().getNaturalDataArray(type: .calories)
-                
-                let totalNumber = dataOBj.doubleValueForKeyWidget(key: "maxValue")
-                let dataArray = dataOBj["data"]as? NSArray ?? []
-                let numbers = [(dataArray[0]as? NSDictionary ?? [:]).doubleValueForKeyWidget(key: "value"),
-                               (dataArray[1]as? NSDictionary ?? [:]).doubleValueForKeyWidget(key: "value"),
-                               (dataArray[2]as? NSDictionary ?? [:]).doubleValueForKeyWidget(key: "value"),
-                               (dataArray[3]as? NSDictionary ?? [:]).doubleValueForKeyWidget(key: "value"),
-                               (dataArray[4]as? NSDictionary ?? [:]).doubleValueForKeyWidget(key: "value"),
-                               (dataArray[5]as? NSDictionary ?? [:]).doubleValueForKeyWidget(key: "value"),
-                               (dataArray[6]as? NSDictionary ?? [:]).doubleValueForKeyWidget(key: "value")]
-                
-                HStack(alignment: .bottom, content: {
-//                    Spacer()
-                    Text("卡路里")
-//                        .foregroundColor(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_85))
-                        .foregroundColor(Color(UIColor(named: "text_color_85") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_85))
-                        .font(Font.system(size: 12,weight: .bold))
-//                    Spacer()
-                    Text("（千卡）")
-//                        .foregroundColor(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_45))
-                        .foregroundColor(Color(UIColor(named: "text_color_45") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_45))
-                        .font(Font.system(size: 10,weight: .medium))
-                        .padding(EdgeInsets(top: 0, leading: -6, bottom: 0, trailing: 0))
-                    Spacer()
-                })
-                .padding(EdgeInsets(top: 0, leading: 6, bottom: 0, trailing: 0))
-                let barWidth = frame.width*0.13
-                let barHeight = frame.height*0.8
-                let spaceWidth = frame.width*0.015
-                
-                HStack{
-                    ElaWeekWidgetBarChartView(number: Int(numbers[0]),percent: numbers[0]/totalNumber,weekDay: (dataArray[0]as? NSDictionary ?? [:]).stringValueForKeyWidget(key: "weekday"),themeColor: Color(UIColor.COLOR_CALORI))
-                        .frame(width: barWidth,height: barHeight)
-                    Spacer()
-                        .frame(width: spaceWidth,height: barHeight)
-                    ElaWeekWidgetBarChartView(number: Int(numbers[1]),percent: numbers[1]/totalNumber,weekDay: (dataArray[1]as? NSDictionary ?? [:]).stringValueForKeyWidget(key: "weekday"),themeColor: Color(UIColor.COLOR_CALORI))
-                        .frame(width: barWidth,height: barHeight)
-                    Spacer()
-                        .frame(width: spaceWidth,height: barHeight)
-                    ElaWeekWidgetBarChartView(number: Int(numbers[2]),percent: numbers[2]/totalNumber,weekDay: (dataArray[2]as? NSDictionary ?? [:]).stringValueForKeyWidget(key: "weekday"),themeColor: Color(UIColor.COLOR_CALORI))
-                        .frame(width: barWidth,height: barHeight)
-                    Spacer()
-                        .frame(width: spaceWidth,height: barHeight)
-                    ElaWeekWidgetBarChartView(number: Int(numbers[3]),percent: numbers[3]/totalNumber,weekDay: (dataArray[3]as? NSDictionary ?? [:]).stringValueForKeyWidget(key: "weekday"),themeColor: Color(UIColor.COLOR_CALORI))
-                        .frame(width: barWidth,height: barHeight)
-                    Spacer()
-                        .frame(width: spaceWidth,height: barHeight)
-                    ElaWeekWidgetBarChartView(number: Int(numbers[4]),percent: numbers[4]/totalNumber,weekDay: (dataArray[4]as? NSDictionary ?? [:]).stringValueForKeyWidget(key: "weekday"),themeColor: Color(UIColor.COLOR_CALORI))
-                        .frame(width: barWidth,height: barHeight)
-                    Spacer()
-                        .frame(width: spaceWidth,height: barHeight)
-                    ElaWeekWidgetBarChartView(number: Int(numbers[5]),percent: numbers[5]/totalNumber,weekDay: (dataArray[5]as? NSDictionary ?? [:]).stringValueForKeyWidget(key: "weekday"),themeColor: Color(UIColor.COLOR_CALORI))
-                        .frame(width: barWidth,height: barHeight)
-                    Spacer()
-                        .frame(width: spaceWidth,height: barHeight)
-                    ElaWeekWidgetBarChartView(number: Int(numbers[6]),percent: numbers[6]/totalNumber,weekDay: (dataArray[6]as? NSDictionary ?? [:]).stringValueForKeyWidget(key: "weekday"),themeColor: Color(UIColor.COLOR_CALORI))
-                        .frame(width: barWidth,height: barHeight)
-                }
+        if colorScheme == .dark {
+            let points = metric.darkGradientPoints
+            LinearGradient(
+                colors: metric.darkGradientColors,
+                startPoint: points.start,
+                endPoint: points.end
+            )
+        } else {
+            ZStack {
+                Color.white
+
+                metric.lightBackgroundTint
+
+                LinearGradient(
+                    colors: [
+                        Color(red: 242.0 / 255.0, green: 242.0 / 255.0, blue: 242.0 / 255.0).opacity(0),
+                        Color(red: 242.0 / 255.0, green: 242.0 / 255.0, blue: 242.0 / 255.0)
+                    ],
+                    startPoint: UnitPoint(x: 0.5, y: 0),
+                    endPoint: UnitPoint(x: 0.5, y: 1)
+                )
             }
-            .padding(EdgeInsets(top: 10, leading: 4, bottom: 10, trailing: 4))
-        })
+        }
+    }
+}
+
+struct ElaWeekRemainingWidgetEntryView: View {
+    let entry: Provider.Entry
+    let metric: WeekRemainingMetric
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        let dict = entry.isSnap ? WidgetUtils().readNaturalDataDefault() : WidgetUtils().readNaturalData()
+        let intake = metric.intake(from: dict)
+        let target = metric.target(from: dict)
+        let remaining = target - intake
+        let progress = target > 0
+            ? max(CGFloat(intake) / CGFloat(target), 0)
+            : 0
+
+        GeometryReader { geometry in
+            let scale = min(geometry.size.width / 153, geometry.size.height / 153)
+
+            ZStack(alignment: .topLeading) {
+                WeekRemainingWidgetBackground(metric: metric)
+
+                WeekRemainingProgressRing(
+                    progress: progress,
+                    metric: metric,
+                    scale: scale
+                )
+                .frame(width: 72 * scale, height: 72 * scale)
+                .offset(x: 15 * scale, y: 15 * scale)
+
+                VStack(alignment: .leading, spacing: 7 * scale) {
+                    Text(metric.title)
+                        .foregroundColor(
+                            colorScheme == .dark
+                                ? .white
+                                : Color(red: 15.0 / 255.0, green: 18.0 / 255.0, blue: 20.0 / 255.0)
+                        )
+                        .font(Font.custom("PingFangSC-Regular", size: 10 * scale))
+                        .lineLimit(1)
+                        .frame(height: 10 * scale)
+
+                    HStack(alignment: .lastTextBaseline, spacing: 1 * scale) {
+                        Text(verbatim: remaining.formatted(.number.grouping(.automatic)))
+                            .foregroundColor(valueColor)
+                            .font(Font.custom("D-DIN-PRO-SemiBold", size: 20 * scale))
+                            .monospacedDigit()
+                            .minimumScaleFactor(0.6)
+                            .lineLimit(1)
+
+                        Text(metric.unit)
+                            .foregroundColor(valueColor)
+                            .font(Font.custom("PingFangSC-Regular", size: 8 * scale))
+                            .lineLimit(1)
+                    }
+                    .frame(height: 20 * scale)
+                }
+                .offset(x: 15 * scale, y: 101 * scale)
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height)
+        }
+    }
+
+    private var valueColor: Color {
+        colorScheme == .dark ? .white : metric.accent
+    }
+}
+
+private struct WeekRemainingProgressRing: View {
+    let progress: CGFloat
+    let metric: WeekRemainingMetric
+    let scale: CGFloat
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        let normalProgress = min(max(progress, 0), 1)
+        let overflowProgress = min(max(progress - 1, 0), 1)
+        let lineWidth = 16 * scale
+        let progressColor = colorScheme == .dark ? Color.white : metric.accent
+        let overflowColor = colorScheme == .dark
+            ? Color(
+                red: 135.0 / 255.0,
+                green: 136.5 / 255.0,
+                blue: 137.5 / 255.0
+            )
+            : Color(red: 8.0 / 255.0, green: 70.0 / 255.0, blue: 137.0 / 255.0)
+        let trackColor = colorScheme == .dark
+            ? Color.white.opacity(0.08)
+            : Color(red: 15.0 / 255.0, green: 18.0 / 255.0, blue: 20.0 / 255.0).opacity(0.06)
+
+        ZStack {
+            Circle()
+                .inset(by: lineWidth / 2)
+                .stroke(trackColor, lineWidth: lineWidth)
+
+            if normalProgress >= 1 {
+                Circle()
+                    .inset(by: lineWidth / 2)
+                    .stroke(progressColor, lineWidth: lineWidth)
+            } else if normalProgress > 0 {
+                Circle()
+                    .inset(by: lineWidth / 2)
+                    .trim(from: 0, to: normalProgress)
+                    .stroke(
+                        progressColor,
+                        style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
+                    )
+                    .rotationEffect(.degrees(-90))
+
+                WeekRemainingRingEndCap(
+                    progress: normalProgress,
+                    color: progressColor,
+                    lineWidth: lineWidth
+                )
+            }
+
+            if overflowProgress >= 1 {
+                Circle()
+                    .inset(by: lineWidth / 2)
+                    .stroke(overflowColor, lineWidth: lineWidth)
+            } else if overflowProgress > 0 {
+                Circle()
+                    .inset(by: lineWidth / 2)
+                    .trim(from: 0, to: overflowProgress)
+                    .stroke(
+                        overflowColor,
+                        style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
+                    )
+                    .rotationEffect(.degrees(-90))
+
+                WeekRemainingRingEndCap(
+                    progress: overflowProgress,
+                    color: overflowColor,
+                    lineWidth: lineWidth
+                )
+            }
+        }
+    }
+}
+
+private struct WeekRemainingRingEndCap: View {
+    let progress: CGFloat
+    let color: Color
+    let lineWidth: CGFloat
+
+    var body: some View {
+        GeometryReader { geometry in
+            let centerX = geometry.size.width / 2
+            let centerY = geometry.size.height / 2
+            let radius = (min(geometry.size.width, geometry.size.height) - lineWidth) / 2
+            let angle = (2 * CGFloat.pi * progress) - (CGFloat.pi / 2)
+
+            Circle()
+                .fill(color)
+                .frame(width: lineWidth, height: lineWidth)
+                .position(
+                    x: centerX + cos(angle) * radius,
+                    y: centerY + sin(angle) * radius
+                )
+        }
+        .allowsHitTesting(false)
+    }
+}
+
+struct ElaWeekCaloriesWidgetEntryView: View {
+    let entry: Provider.Entry
+
+    var body: some View {
+        ElaWeekRemainingWidgetEntryView(entry: entry, metric: .calories)
     }
 }
 
@@ -89,23 +339,18 @@ struct ElaWeekCaloriesWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             if #available(iOS 17.0, *) {
                 ElaWeekCaloriesWidgetEntryView(entry: entry)
-                    .containerBackground(.fill.tertiary, for: .widget)
+                    .containerBackground(for: .widget) {
+                        WeekRemainingWidgetBackground(metric: .calories)
+                    }
                     .edgesIgnoringSafeArea(.all)
-                    .background(Color(WHColorWithAlpha(colorStr: "007AFF", alpha: 0.02)))
-//                    .background(Color(WHColor_16(colorStr: "EFEFEF")))
-//                    .background(UIColor.isDarkModeEnabled ? Color(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0,opacity: 0.85) : Color(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0,opacity: 0.2))
             } else {
                 ElaWeekCaloriesWidgetEntryView(entry: entry)
                     .edgesIgnoringSafeArea(.all)
-                    .background(Color(WHColorWithAlpha(colorStr: "007AFF", alpha: 0.02)))
-//                    .background(Color(WHColor_16(colorStr: "EFEFEF")))
-//                    .background(UIColor.isDarkModeEnabled ? Color(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0,opacity: 0.85) : Color(red: 255.0/255.0, green: 255.0/255.0, blue: 255.0/255.0,opacity: 0.2))
             }
         }
         .configurationDisplayName("卡路里")
-        .description("过去7天摄入：卡路里")
+        .description("今日剩余")
         .supportedFamilies([.systemSmall])
         .disableContentMarginsIfNeeded()
     }
 }
-

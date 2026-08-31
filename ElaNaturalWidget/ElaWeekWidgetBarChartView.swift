@@ -14,7 +14,7 @@ struct ElaWeekWidgetBarChartView: View {
     var weekDay = "一"
     
 //    let color = Color.init(red: 194.0/255.0, green: 223.0/255.0, blue: 1.0)
-    var themeColor = Color.init(red: 0, green: 122.0/255.0, blue: 1.0)
+    var themeColor = Color("color_natural_calories", bundle: .main)
     let totalNumber = Double(1000)
     
     var body: some View {
@@ -59,6 +59,5 @@ struct ElaWeekWidgetBarChartView: View {
 //        .background(Color.green)
     }
 }
-
 
 

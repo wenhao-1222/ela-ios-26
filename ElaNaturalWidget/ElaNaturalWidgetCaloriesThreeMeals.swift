@@ -1,34 +1,34 @@
 //
-//  ElaNaturalWidgetCaloriesFourMeals.swift
-//  ElaNaturalWidgetCaloriesFourMeals
+//  ElaNaturalWidgetCaloriesThreeMeals.swift
+//  ElaNaturalWidgetExtension
 //
-//  Created by LNS2 on 2024/8/27.
+//  Created by Codex on 2026/8/31.
 //
 
 import WidgetKit
 import SwiftUI
 
-struct ElaNaturalWidgetCaloriesFourMealsEntryView: View {
+struct ElaNaturalWidgetCaloriesThreeMealsEntryView: View {
     let entry: Provider.Entry
 
     var body: some View {
-        ElaNaturalCaloriesMealsWidgetEntryView(entry: entry, mealCount: 4)
+        ElaNaturalCaloriesMealsWidgetEntryView(entry: entry, mealCount: 3)
     }
 }
 
-struct ElaNaturalWidgetCaloriesFourMeals: Widget {
-    let kind: String = "ElaNaturalWidgetCaloriesFourMeals"
+struct ElaNaturalWidgetCaloriesThreeMeals: Widget {
+    let kind: String = "ElaNaturalWidgetCaloriesThreeMeals"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             if #available(iOS 17.0, *) {
-                ElaNaturalWidgetCaloriesFourMealsEntryView(entry: entry)
+                ElaNaturalWidgetCaloriesThreeMealsEntryView(entry: entry)
                     .containerBackground(for: .widget) {
                         CaloriesMealsWidgetBackground()
                     }
                     .edgesIgnoringSafeArea(.all)
             } else {
-                ElaNaturalWidgetCaloriesFourMealsEntryView(entry: entry)
+                ElaNaturalWidgetCaloriesThreeMealsEntryView(entry: entry)
                     .edgesIgnoringSafeArea(.all)
             }
         }
