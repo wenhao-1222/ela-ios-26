@@ -101,6 +101,8 @@ class ElaProPriceVM: UIView {
             applyDisplayMode()
         }
     }
+    /// 由特定业务页承载套餐卡时，价格 VM 只更新内容与选中态，不重排卡片。
+    var usesExternalPlanCardLayout = false
     
     private let selectedBlue = WHColor_16(colorStr: "1677F2")
     private let normalTextColor = UIColor.COLOR_TEXT_TITLE_0f1214
@@ -1061,11 +1063,13 @@ extension ElaProPriceVM{
         monthPriceText = preferredRemoteText(monthRemoteProduct?.displayPriceText) ?? "--"
         annualPriceText = preferredRemoteText(annualRemoteProduct?.displayPriceText) ?? "--"
         lifetimePriceText = preferredRemoteText(lifetimeRemoteProduct?.displayPriceText) ?? "--"
-        cardContainer.snp.remakeConstraints { make in
-            make.left.equalTo(kFitWidth(48))
-            make.right.equalTo(kFitWidth(-48))
-            make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
-            make.height.equalTo(kFitWidth(155))
+        if !usesExternalPlanCardLayout {
+            cardContainer.snp.remakeConstraints { make in
+                make.left.equalTo(kFitWidth(48))
+                make.right.equalTo(kFitWidth(-48))
+                make.top.equalTo(subTitleLabel.snp.bottom).offset(kFitWidth(57))
+                make.height.equalTo(kFitWidth(155))
+            }
         }
     }
 
@@ -1129,6 +1133,10 @@ extension ElaProPriceVM{
         monthCard.isHidden = !isPlanVisible(.month)
         yearCard.isHidden = !isPlanVisible(.annual)
         lifeCard.isHidden = !isPlanVisible(.lifetime)
+        guard !usesExternalPlanCardLayout else {
+            lifeCard.isHidden = true
+            return
+        }
         remakePlanCardConstraints()
     }
 

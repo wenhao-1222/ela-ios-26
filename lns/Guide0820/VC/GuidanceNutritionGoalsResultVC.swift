@@ -25,6 +25,26 @@ final class GuidanceNutritionGoalsResultVC: WHBaseViewVC {
     private let tipsStack = UIStackView()
     private lazy var bottomSheetView = Guide0820BottomSheetView()
 
+    // `bottomGradientView` 属性，保存该类型对外提供或内部使用的状态与配置。
+    private lazy var bottomGradientView: UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+        view.layer.addSublayer(bottomGradientLayer)
+        return view
+    }()
+
+    // `bottomGradientLayer` 属性，保存该类型对外提供或内部使用的状态与配置。
+    private lazy var bottomGradientLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.startPoint = CGPoint(x: 0.5, y: 0)
+        layer.endPoint = CGPoint(x: 0.5, y: 1)
+        layer.colors = [
+            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
+            UIColor.COLOR_BG_F2.cgColor
+        ]
+        return layer
+    }()
+
     private let caloriesLabel = UILabel()
     private let carbohydrateField = UITextField()
     private let proteinField = UITextField()
@@ -43,6 +63,7 @@ final class GuidanceNutritionGoalsResultVC: WHBaseViewVC {
         button.titleLabel?.font = .systemFont(ofSize: 17, weight: .medium)
         button.backgroundColor = .THEME
         button.layer.cornerRadius = kFitWidth(12)
+        button.enablePressEffect()
         button.addTarget(self, action: #selector(primaryAction), for: .touchUpInside)
         return button
     }()
@@ -72,6 +93,11 @@ final class GuidanceNutritionGoalsResultVC: WHBaseViewVC {
         super.viewDidAppear(animated)
         updateInteractivePopGestureBlocked(true)
         setKeyboardExtensionAllowed(false)
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        bottomGradientLayer.frame = bottomGradientView.bounds
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -196,6 +222,7 @@ private extension GuidanceNutritionGoalsResultVC {
         view.backgroundColor = .COLOR_BG_F2
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
+        view.addSubview(bottomGradientView)
         view.addSubview(primaryButton)
         view.addSubview(closeButton)
         view.addSubview(bottomSheetView)
@@ -205,6 +232,10 @@ private extension GuidanceNutritionGoalsResultVC {
         scrollView.snp.makeConstraints {
             $0.left.top.right.equalToSuperview()
             $0.bottom.equalTo(primaryButton.snp.top).offset(kFitWidth(-16))
+        }
+        bottomGradientView.snp.makeConstraints {
+            $0.left.right.bottom.equalTo(scrollView)
+            $0.height.equalTo(kFitWidth(72))
         }
         contentView.snp.makeConstraints {
             $0.edges.equalToSuperview()
@@ -299,7 +330,7 @@ private extension GuidanceNutritionGoalsResultVC {
         contentView.addSubview(noteStack)
         noteStack.snp.makeConstraints {
             $0.left.equalTo(kFitWidth(21)); $0.right.equalTo(kFitWidth(-21)); $0.top.equalTo(tipsCard.snp.bottom).offset(kFitWidth(25.5))
-            $0.bottom.equalToSuperview().offset(kFitWidth(-16))
+            $0.bottom.equalToSuperview().offset(kFitWidth(-30))
         }
 
         primaryButton.snp.makeConstraints {

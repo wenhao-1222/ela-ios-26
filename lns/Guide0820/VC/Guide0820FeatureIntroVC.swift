@@ -40,7 +40,7 @@ final class Guide0820FeatureIntroVC: WHBaseViewVC, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.setNavigationBarHidden(true, animated: false)
-        addELAFlowingBackground(.light)
+        addELAFlowingBackground()
         buildInterface()
         updateNavigationState()
     }
@@ -139,6 +139,7 @@ private extension Guide0820FeatureIntroVC {
         continueButton.titleLabel?.font = .systemFont(ofSize: kFitWidth(17), weight: .medium)
         continueButton.backgroundColor = .THEME
         continueButton.layer.cornerRadius = kFitWidth(12)
+        continueButton.enablePressEffect()
         continueButton.addTarget(self, action: #selector(continueAction), for: .touchUpInside)
         view.addSubview(continueButton)
         continueButton.snp.makeConstraints {
@@ -174,7 +175,7 @@ private extension Guide0820FeatureIntroVC {
         let message = UILabel()
         message.text = vm.message
         message.textColor = .COLOR_TEXT_TITLE_0f1214
-        message.font = .systemFont(ofSize: kFitWidth(21), weight: .semibold)
+        message.font = .systemFont(ofSize: kFitWidth(21), weight: .medium)
         message.numberOfLines = 0
         message.lineBreakMode = .byWordWrapping
         page.addSubview(message)
@@ -186,9 +187,11 @@ private extension Guide0820FeatureIntroVC {
         let detail = UILabel()
         detail.text = vm.detail
         detail.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        detail.font = .systemFont(ofSize: kFitWidth(15), weight: .regular)
+        detail.font = .systemFont(ofSize: kFitWidth(14), weight: .regular)
         detail.numberOfLines = 0
         detail.lineBreakMode = .byWordWrapping
+        // MasterGo 标注行高为 47.6px（2x 导出，对应 23.8pt）。
+        detail.guide0820SetLineHeight(kFitWidth(23.8))
         page.addSubview(detail)
         detail.snp.makeConstraints {
             $0.left.equalTo(message); $0.right.equalTo(page).offset(kFitWidth(-28))

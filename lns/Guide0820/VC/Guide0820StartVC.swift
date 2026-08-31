@@ -167,7 +167,7 @@ private extension Guide0820StartVC {
                 let resultVC = GuidanceNutritionGoalsResultVC(goals: result)
                 resultVC.completion = { [weak self] in
                     guard let self, let navigationController = self.navigationController else { return }
-                    navigationController.popToViewController(self, animated: true)
+                    navigationController.pushViewController(Guide0820ProVC(), animated: true)
                 }
                 navigationController.pushViewController(resultVC, animated: true)
             }
