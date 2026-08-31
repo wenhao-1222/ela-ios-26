@@ -124,7 +124,10 @@ class ElaProPriceCardView: UIView {
         guard bounds.width > 0, bounds.height > 0 else { return }
         
         let lineWidth: CGFloat = kFitWidth(1.5)
-        let radius = min(kFitWidth(16), min(bounds.width, bounds.height) * 0.5)
+        // 外部页面可能会覆写卡片圆角（例如 Guide0820 使用 12pt）。
+        // 边框路径跟随实际圆角，并扣除半个线宽，让描边外沿与背景边界重合。
+        let radius = min(max(0, layer.cornerRadius - lineWidth * 0.5),
+                         min(bounds.width, bounds.height) * 0.5)
         let insetRect = bounds.insetBy(dx: lineWidth * 0.5, dy: lineWidth * 0.5)
         let topY = insetRect.minY
         let leftX = insetRect.minX
@@ -133,25 +136,7 @@ class ElaProPriceCardView: UIView {
         let topLeftStart = CGPoint(x: leftX + radius, y: topY)
         
         let path = UIBezierPath()
-        
-        if !tagLabel.isHidden {
-            // 缺口紧贴 tag 两侧边缘，不再用估算宽度。
-            let minGapX = leftX + radius + 1
-            let maxGapX = rightX - radius - 1
-            let rawStartX = tagLabel.frame.minX
-            let rawEndX = tagLabel.frame.maxX
-            let gapStartX = max(minGapX, min(rawStartX, maxGapX))
-            let gapEndX = min(maxGapX, max(rawEndX, minGapX))
-            
-            path.move(to: topLeftStart)
-            if gapEndX > gapStartX {
-                path.addLine(to: CGPoint(x: gapStartX, y: topY))
-                path.move(to: CGPoint(x: gapEndX, y: topY))
-            }
-        } else {
-            path.move(to: topLeftStart)
-        }
-        
+        path.move(to: topLeftStart)
         path.addLine(to: CGPoint(x: rightX - radius, y: topY))
         path.addArc(withCenter: CGPoint(x: rightX - radius, y: topY + radius),
                     radius: radius,

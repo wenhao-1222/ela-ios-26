@@ -266,7 +266,8 @@ extension BindPhoneVC{
 //                if self.invideCode.count > 0 {
 //                    self.sendBindInviteCodeRequest()
 //                }else{
-                    if QuestinonaireMsgModel.shared.surveytype == "noPlan"{
+                    if QuestinonaireMsgModel.shared.surveytype == "noPlan",
+                       Guide0820ProgressStorage.hasPendingCompletedData == false {
                         self.completeLoginSuccessAndEnterApp()
                     }else{
                         self.sendSurveySaveRequest()
@@ -302,7 +303,8 @@ extension BindPhoneVC{
 //                    self.sendBindInviteCodeRequest()
 //                }else{
                     ElaProPriceVM.preloadLoggedInProductSnapshots()
-                    if QuestinonaireMsgModel.shared.surveytype == "noPlan"{
+                    if QuestinonaireMsgModel.shared.surveytype == "noPlan",
+                       Guide0820ProgressStorage.hasPendingCompletedData == false {
                         self.completeLoginSuccessAndEnterApp()
                     }else{
                         self.sendSurveySaveRequest()
@@ -318,7 +320,8 @@ extension BindPhoneVC{
         let param = ["invcode":"\(self.invideCode)"]
         WHNetworkUtil.shareManager().POST(urlString: URL_bind_inviteCode, parameters: param as [String:AnyObject],isNeedToast: true,vc: self) { responseObject in
 //            DLLog(message: "\(responseObject)")
-            if QuestinonaireMsgModel.shared.surveytype == "noPlan"{
+            if QuestinonaireMsgModel.shared.surveytype == "noPlan",
+               Guide0820ProgressStorage.hasPendingCompletedData == false {
                 self.completeLoginSuccessAndEnterApp()
             }else{
                 self.sendSurveySaveRequest()
@@ -329,7 +332,12 @@ extension BindPhoneVC{
     func sendSurveySaveRequest() {
         MCToast.mc_loading()
         var param = NSDictionary()
-        if isPendingGuidanceFixedTargetSurveyUpload() {
+        // 新版 Guide0820 由独立完成态识别，不再依赖旧 QuestinonaireMsgModel.surveytype。
+        if Guide0820PendingUploadManager.handleLoginIfNeeded(controller: self, completion: { [weak self] in
+            self?.completeLoginSuccessAndEnterApp()
+        }) {
+            return
+        } else if isPendingGuidanceFixedTargetSurveyUpload() {
             uploadPendingGuidanceFixedTargetSurveyV2 { [weak self] in
                 self?.completeLoginSuccessAndEnterApp()
             } failure: { [weak self] message in

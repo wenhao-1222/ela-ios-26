@@ -88,6 +88,8 @@ class ElaProPriceVM: UIView {
     var protocalTapBlock: (() -> ())?
     var purchasePreConfirmBlock: (() -> Void)?
     var purchaseLoadingStateChangeBlock: ((Bool) -> ())?
+    /// 商品价格或其派生展示发生变化时通知外部自定义套餐布局。
+    var priceDisplayChangeBlock: (() -> Void)?
     var bizType = "" {
         didSet {
             guard oldValue != bizType else { return }
@@ -122,17 +124,17 @@ class ElaProPriceVM: UIView {
     private var monthRemoteProduct: RemotePlanProduct?
     private var annualRemoteProduct: RemotePlanProduct?
     private var lifetimeRemoteProduct: RemotePlanProduct?
-    private var monthTitleText = "连续包月"
+    private var monthTitleText = ""
     private var monthTagText: String?
     private var monthPriceText = "--"
     private var monthSubTitleText: String?
     private var monthOriginPriceText: String?
-    private var annualTitleText = "连续包年"
+    private var annualTitleText = ""
     private var annualTagText: String?
     private var annualPriceText = "--"
     private var annualSubTitleText: String?
     private var annualOriginPriceText: String?
-    private var lifetimeTitleText = "终身会员"
+    private var lifetimeTitleText = ""
     private var lifetimeTagText: String?
     private var lifetimePriceText = "--"
     private var isPurchasing = false
@@ -210,7 +212,7 @@ class ElaProPriceVM: UIView {
     lazy var monthCard: ElaProPriceCardView = {
         let vm = ElaProPriceCardView()
         vm.configure(tag: monthTagText,
-                     title: "连续包月",
+                     title: monthTitleText,
                      subTitle: monthSubTitleText,
                      price: monthPriceText,
                      originPrice: monthOriginPriceText,
@@ -220,7 +222,7 @@ class ElaProPriceVM: UIView {
     lazy var yearCard: ElaProPriceCardView = {
         let vm = ElaProPriceCardView()
         vm.configure(tag: annualTagText,
-                     title: "连续包年",
+                     title: annualTitleText,
                      subTitle: annualSubTitleText,
                      price: annualPriceText,
                      originPrice: annualOriginPriceText,
@@ -230,7 +232,7 @@ class ElaProPriceVM: UIView {
     lazy var lifeCard: ElaProPriceCardView = {
         let vm = ElaProPriceCardView()
         vm.configure(tag: lifetimeTagText,
-                     title: "终身会员",
+                     title: lifetimeTitleText,
                      subTitle: nil,
                      price: lifetimePriceText,
                      originPrice: nil,
@@ -811,16 +813,16 @@ extension ElaProPriceVM{
         annualProduct = annual
         lifetimeProduct = lifetime
 
-        if month != nil {
+        if let month {
             monthTagText = preferredRemoteText(monthRemoteProduct?.promotionLabel)
-            monthSubTitleText = preferredRemoteText(monthRemoteProduct?.monthAvgPriceLabel)
-            monthOriginPriceText = preferredRemotePriceText(monthRemoteProduct?.originalPrice)
+            monthSubTitleText = preferredRemoteText(buildMonthlyText(for: month))
+            monthOriginPriceText = nil
         }
 
-        if annual != nil {
+        if let annual {
             annualTagText = preferredRemoteText(annualRemoteProduct?.promotionLabel)
-            annualSubTitleText = preferredRemoteText(annualRemoteProduct?.monthAvgPriceLabel) ?? ""
-            annualOriginPriceText = preferredRemotePriceText(annualRemoteProduct?.originalPrice)
+            annualSubTitleText = preferredRemoteText(buildMonthlyText(for: annual))
+            annualOriginPriceText = nil
         }
 
         if lifetime != nil {
@@ -870,9 +872,9 @@ extension ElaProPriceVM{
             if let monthProduct = monthProduct {
                 dailyPriceLabel.text = preferredDayAvgText(remoteText: monthRemoteProduct?.dayAvgPriceLabel,
                                                            product: monthProduct) ?? defaultDailyPlaceholder()
-                tipsLabel.text = preferredRemoteText(monthRemoteProduct?.promotionDesc) ?? buildSubscriptionTips(for: monthProduct,
-                                                                                                                  currentPriceText: monthPriceText,
-                                                                                                                  originPriceText: monthOriginPriceText)
+                tipsLabel.text = buildSubscriptionTips(for: monthProduct,
+                                                       currentPriceText: monthPriceText,
+                                                       originPriceText: monthOriginPriceText)
             } else {
                 dailyPriceLabel.text = preferredRemoteText(monthRemoteProduct?.dayAvgPriceLabel) ?? defaultDailyPlaceholder()
                 tipsLabel.text = preferredRemoteText(monthRemoteProduct?.promotionDesc) ?? remoteSubscriptionTips(for: .month)
@@ -883,9 +885,9 @@ extension ElaProPriceVM{
             setDailyPriceBadgeHidden(annualDailyText?.isEmpty ?? true)
             dailyPriceLabel.text = annualDailyText ?? defaultDailyPlaceholder()
             if let annualProduct = annualProduct {
-                tipsLabel.text = preferredRemoteText(annualRemoteProduct?.promotionDesc) ?? buildSubscriptionTips(for: annualProduct,
-                                                                                                                   currentPriceText: annualPriceText,
-                                                                                                                   originPriceText: annualOriginPriceText)
+                tipsLabel.text = buildSubscriptionTips(for: annualProduct,
+                                                       currentPriceText: annualPriceText,
+                                                       originPriceText: annualOriginPriceText)
             } else {
                 tipsLabel.text = preferredRemoteText(annualRemoteProduct?.promotionDesc) ?? remoteSubscriptionTips(for: .annual)
             }
@@ -893,12 +895,13 @@ extension ElaProPriceVM{
             setDailyPriceBadgeHidden(true)
             if let lifetimeProduct = lifetimeProduct {
                 dailyPriceLabel.text = buildDailyText(for: lifetimeProduct, days: 365)
-                tipsLabel.text = preferredRemoteText(lifetimeRemoteProduct?.promotionDesc) ?? "买断价\(lifetimePriceText)，一次购买长期可用"
+                tipsLabel.text = "买断价\(lifetimePriceText)，一次购买长期可用"
             } else {
                 dailyPriceLabel.text = defaultDailyPlaceholder()
                 tipsLabel.text = preferredRemoteText(lifetimeRemoteProduct?.promotionDesc) ?? remoteSubscriptionTips(for: .lifetime)
             }
         }
+        priceDisplayChangeBlock?()
     }
 
     private func setDailyPriceBadgeHidden(_ isHidden: Bool) {
@@ -1000,18 +1003,9 @@ extension ElaProPriceVM{
     }
 
     private func preferredDayAvgText(remoteText: String?, product: Product?) -> String? {
-        return preferredRemoteText(remoteText)
-        /*
         let remote = preferredRemoteText(remoteText)
         guard let product = product else { return remote }
-        let localized = buildDailyText(for: product)
-        guard shouldUseRemoteDayAvgText(for: product) else { return localized }
-        return remote ?? localized
-        */
-    }
-
-    private func shouldUseRemoteDayAvgText(for product: Product) -> Bool {
-        return isChineseYuanPrice(product.displayPrice)
+        return buildDailyText(for: product)
     }
 
     private func defaultDailyPlaceholder() -> String {
@@ -1049,9 +1043,9 @@ extension ElaProPriceVM{
         lifetimeRemoteProduct = remoteProduct(from: products, type: .lifetime)
         updateVisiblePlans(products: products)
         
-        monthTitleText = preferredRemoteText(monthRemoteProduct?.name) ?? "连续包月"
-        annualTitleText = preferredRemoteText(annualRemoteProduct?.name) ?? "连续包年"
-        lifetimeTitleText = preferredRemoteText(lifetimeRemoteProduct?.name) ?? "终身会员"
+        monthTitleText = preferredRemoteText(monthRemoteProduct?.name) ?? ""
+        annualTitleText = preferredRemoteText(annualRemoteProduct?.name) ?? ""
+        lifetimeTitleText = preferredRemoteText(lifetimeRemoteProduct?.name) ?? ""
         
         monthTagText = preferredRemoteText(monthRemoteProduct?.promotionLabel)
         annualTagText = preferredRemoteText(annualRemoteProduct?.promotionLabel)
@@ -1224,6 +1218,85 @@ extension ElaProPriceVM{
     func buildDailyText(for product: Product) -> String {
         let days = daysCount(from: product.subscription?.subscriptionPeriod)
         return buildDailyText(for: product, days: days)
+    }
+
+    /// 自定义套餐卡使用的周均价：优先由 StoreKit 商品计算，缺失时再使用后台套餐价格。
+    func weeklyPriceText(for plan: PlanType) -> String {
+        let storeProduct: Product?
+        let remoteProduct: RemotePlanProduct?
+        switch plan {
+        case .month:
+            storeProduct = monthProduct
+            remoteProduct = monthRemoteProduct
+        case .annual:
+            storeProduct = annualProduct
+            remoteProduct = annualRemoteProduct
+        case .lifetime:
+            return "--/周"
+        }
+
+        if let storeProduct {
+            let days = max(daysCount(from: storeProduct.subscription?.subscriptionPeriod), 1)
+            let weeks = NSDecimalNumber(value: Double(days) / 7.0)
+            let weeklyPrice = NSDecimalNumber(decimal: storeProduct.price).dividing(by: weeks)
+            let localizedPrice = weeklyPrice.decimalValue.formatted(storeProduct.priceFormatStyle)
+            return "\(Self.formattedPriceText(localizedPrice))/周"
+        }
+
+        guard let remoteProduct,
+              let price = remotePriceDecimal(from: remoteProduct.price) else {
+            return "--/周"
+        }
+        let days = plan == .annual ? 365 : 30
+        let weeks = NSDecimalNumber(value: Double(days) / 7.0)
+        let weeklyPrice = price.dividing(by: weeks)
+        return "\(formattedRemoteAveragePrice(weeklyPrice, reference: remoteProduct.displayPriceText ?? remoteProduct.price))/周"
+    }
+
+    /// 套餐名称完全由后台 productName 提供。
+    func productNameText(for plan: PlanType) -> String? {
+        switch plan {
+        case .month:
+            return preferredRemoteText(monthRemoteProduct?.name)
+        case .annual:
+            return preferredRemoteText(annualRemoteProduct?.name)
+        case .lifetime:
+            return preferredRemoteText(lifetimeRemoteProduct?.name)
+        }
+    }
+
+    /// 年付优惠标签由后台控制；字段为空或缺失时不展示。
+    func annualSavingsText() -> String? {
+        return preferredRemoteText(annualRemoteProduct?.promotionLabel)
+    }
+
+    private func remotePriceDecimal(from text: String) -> NSDecimalNumber? {
+        let cleanText = text
+            .replacingOccurrences(of: "¥", with: "")
+            .replacingOccurrences(of: "￥", with: "")
+            .replacingOccurrences(of: "$", with: "")
+            .replacingOccurrences(of: "€", with: "")
+            .replacingOccurrences(of: "£", with: "")
+            .replacingOccurrences(of: "CNY", with: "", options: .caseInsensitive)
+            .replacingOccurrences(of: ",", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !cleanText.isEmpty else { return nil }
+        let value = NSDecimalNumber(string: cleanText)
+        return value == .notANumber ? nil : value
+    }
+
+    private func formattedRemoteAveragePrice(_ price: NSDecimalNumber, reference: String) -> String {
+        let behavior = NSDecimalNumberHandler(
+            roundingMode: .plain,
+            scale: 2,
+            raiseOnExactness: false,
+            raiseOnOverflow: false,
+            raiseOnUnderflow: false,
+            raiseOnDivideByZero: false
+        )
+        let roundedPrice = price.rounding(accordingToBehavior: behavior)
+        let symbol = currencySymbol(from: reference)
+        return Self.formattedPriceText("\(symbol)\(roundedPrice.stringValue)")
     }
     
     func buildDailyText(decimal: NSDecimalNumber, fallbackPriceText: String) -> String {

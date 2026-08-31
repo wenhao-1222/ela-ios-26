@@ -8,7 +8,7 @@
 import WidgetKit
 import SwiftUI
 
-private enum FiveMealsWidgetStyle {
+enum FiveMealsWidgetStyle {
     static let designSize = CGSize(width: 326, height: 154)
     static let topAreaRatio: CGFloat = 109.0 / 154.0
 
@@ -341,7 +341,7 @@ struct ElaNaturalMealsWidgetEntryView: View {
     }
 }
 
-private enum FiveMealsMealStateResolver {
+enum FiveMealsMealStateResolver {
     static func isRecorded(_ meal: Any) -> Bool {
         guard let meal = meal as? NSDictionary else { return false }
 
@@ -545,7 +545,7 @@ private struct FiveMealsMacroProgressRow: View {
     }
 }
 
-private enum FiveMealsActionState {
+enum FiveMealsActionState {
     case recorded
     case next
     case inactive
@@ -562,7 +562,7 @@ private enum FiveMealsActionState {
     }
 }
 
-private struct FiveMealsActionCell: View {
+struct FiveMealsActionCell: View {
     let state: FiveMealsActionState
     let scale: CGFloat
 

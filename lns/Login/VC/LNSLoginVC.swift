@@ -132,7 +132,8 @@ class LNSLoginVC : WHBaseViewVC {
         vm.controller = self
         vm.hasPlan = self.hasPlan
         vm.saveSurveyBlock = {()in
-            if QuestinonaireMsgModel.shared.surveytype == "noPlan"{
+            if QuestinonaireMsgModel.shared.surveytype == "noPlan",
+               Guide0820ProgressStorage.hasPendingCompletedData == false {
                 self.completeLoginSuccessAndEnterApp()
             }else{
                 self.sendSurveySaveRequest()
@@ -192,7 +193,8 @@ extension LNSLoginVC{
     @objc func wechatLoginResult(){
         if UserInfoModel.shared.isRegist == "yes"{
             if UserInfoModel.shared.state == 1 {
-                if QuestinonaireMsgModel.shared.surveytype == "noPlan"{
+                if QuestinonaireMsgModel.shared.surveytype == "noPlan",
+                   Guide0820ProgressStorage.hasPendingCompletedData == false {
                     self.completeLoginSuccessAndEnterApp()
                 }else{
                     self.sendSurveySaveRequest()
@@ -259,7 +261,8 @@ extension LNSLoginVC{
                     
                     WidgetUtils().saveUserInfo(uId: "\(dataObj["uid"]as? String ?? "")", uToken: "\(dataObj["token"]as? String ?? "")")
                     ElaProPriceVM.preloadLoggedInProductSnapshots()
-                    if QuestinonaireMsgModel.shared.surveytype == "noPlan"{
+                    if QuestinonaireMsgModel.shared.surveytype == "noPlan",
+                       Guide0820ProgressStorage.hasPendingCompletedData == false {
                         self.completeLoginSuccessAndEnterApp()
                     }else{
                         self.sendSurveySaveRequest()
@@ -280,7 +283,12 @@ extension LNSLoginVC{
     func sendSurveySaveRequest() {
         MCToast.mc_loading()
         var param = NSDictionary()
-        if isPendingGuidanceFixedTargetSurveyUpload() {
+        // 新版 Guide0820 由独立完成态识别，不再依赖旧 QuestinonaireMsgModel.surveytype。
+        if Guide0820PendingUploadManager.handleLoginIfNeeded(controller: self, completion: { [weak self] in
+            self?.completeLoginSuccessAndEnterApp()
+        }) {
+            return
+        } else if isPendingGuidanceFixedTargetSurveyUpload() {
             uploadPendingGuidanceFixedTargetSurveyV2 { [weak self] in
                 self?.completeLoginSuccessAndEnterApp()
             } failure: { [weak self] message in

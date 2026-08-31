@@ -57,6 +57,11 @@ final class Guide0820ProVM: UIView {
     private let planContainer = UIView()
     private let bottomFadeView = Guide0820ProBottomFadeView()
     private weak var priceVM: ElaProPriceVM?
+    private weak var annualWeeklyPriceLabel: UILabel?
+    private weak var monthWeeklyPriceLabel: UILabel?
+    private weak var annualSavingsLabel: UILabel?
+    private weak var annualTitleLabel: UILabel?
+    private weak var monthTitleLabel: UILabel?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -77,20 +82,35 @@ final class Guide0820ProVM: UIView {
         priceVM.scrollView.isHidden = true
         priceVM.lifeCard.isHidden = true
 
-        installPlanCard(
+        let annualLabels = installPlanCard(
             priceVM.yearCard,
-            title: "每年",
+            title: priceVM.productNameText(for: .annual) ?? "",
             period: "/年",
-            weeklyPrice: "¥3.23/周",
-            savingsText: "节省 50%"
+            weeklyPrice: priceVM.weeklyPriceText(for: .annual),
+            savingsText: priceVM.annualSavingsText() ?? ""
         )
-        installPlanCard(
+        annualWeeklyPriceLabel = annualLabels.weekly
+        annualSavingsLabel = annualLabels.savings
+        annualTitleLabel = annualLabels.title
+        let monthLabels = installPlanCard(
             priceVM.monthCard,
-            title: "每月",
+            title: priceVM.productNameText(for: .month) ?? "",
             period: "/月",
-            weeklyPrice: "¥6.54/周",
+            weeklyPrice: priceVM.weeklyPriceText(for: .month),
             savingsText: nil
         )
+        monthWeeklyPriceLabel = monthLabels.weekly
+        monthTitleLabel = monthLabels.title
+        priceVM.priceDisplayChangeBlock = { [weak self, weak priceVM] in
+            guard let self, let priceVM else { return }
+            self.annualTitleLabel?.text = priceVM.productNameText(for: .annual)
+            self.monthTitleLabel?.text = priceVM.productNameText(for: .month)
+            self.annualWeeklyPriceLabel?.text = priceVM.weeklyPriceText(for: .annual)
+            self.monthWeeklyPriceLabel?.text = priceVM.weeklyPriceText(for: .month)
+            let savingsText = priceVM.annualSavingsText()
+            self.annualSavingsLabel?.text = savingsText
+            self.annualSavingsLabel?.isHidden = savingsText == nil
+        }
 
         priceVM.bottomBar.removeFromSuperview()
         addSubview(bottomFadeView)
@@ -281,7 +301,7 @@ private extension Guide0820ProVM {
         period: String,
         weeklyPrice: String,
         savingsText: String?
-    ) {
+    ) -> (title: UILabel, weekly: UILabel, savings: UILabel?) {
         card.removeFromSuperview()
         planContainer.addSubview(card)
         card.layer.cornerRadius = kFitWidth(12)
@@ -289,6 +309,7 @@ private extension Guide0820ProVM {
         card.subTitleLabel.removeFromSuperview()
         card.originLabel.removeFromSuperview()
         card.tagLabel.removeFromSuperview()
+        card.setNeedsLayout()
         card.priceLabel.font = .systemFont(ofSize: kFitWidth(13), weight: .regular)
         card.priceLabel.textColor = .COLOR_TEXT_TITLE_0f1214
         card.priceLabel.textAlignment = .left
@@ -333,6 +354,7 @@ private extension Guide0820ProVM {
             make.centerY.equalTo(card.priceLabel)
         }
 
+        var savingsLabel: UILabel?
         if let savingsText {
             let badge = makeLabel(
                 text: savingsText,
@@ -342,9 +364,11 @@ private extension Guide0820ProVM {
             )
             badge.backgroundColor = .THEME
             badge.layer.cornerRadius = kFitWidth(12)
-            badge.layer.maskedCorners = [.layerMinXMaxYCorner]
+            badge.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMaxYCorner]
             badge.clipsToBounds = true
+            badge.isHidden = savingsText.isEmpty
             card.addSubview(badge)
+            savingsLabel = badge
             badge.snp.makeConstraints { make in
                 make.top.right.equalToSuperview()
                 make.width.equalTo(kFitWidth(62))
@@ -352,7 +376,7 @@ private extension Guide0820ProVM {
             }
         }
 
-        if title == "每年" {
+        if card === priceVM?.yearCard {
             card.snp.makeConstraints {
                 $0.left.top.right.equalToSuperview()
                 $0.height.equalTo(kFitWidth(80))
@@ -363,6 +387,7 @@ private extension Guide0820ProVM {
                 $0.height.equalTo(kFitWidth(72))
             }
         }
+        return (titleLabel, weeklyLabel, savingsLabel)
     }
 
     func makeRatingView() -> UIView {

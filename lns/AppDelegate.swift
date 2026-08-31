@@ -261,6 +261,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate{
     func applicationDidBecomeActive(_ application: UIApplication) {
         DLLog(message: "application  -----   DidBecomeActive")
         NotificationCenter.default.post(name: NOTIFI_NAME_DID_BECOME_ACTIVE, object: nil)
+        // Guide0820 v3 失败仅在已登录冷启动或回到前台重试；管理器内部会校验登录态和 pending。
+        Guide0820PendingUploadManager.uploadPendingSurveyV3IfNeeded()
         NotificationManager.shared.reportDeliveredMealNotificationsIfNeeded()
 
         JPUSHService.setBadge(0)
@@ -1195,6 +1197,10 @@ extension AppDelegate{
             UserInfoModel.shared.uId = currentUId
             UserInfoModel.shared.token = currentToken
             UserInfoModel.shared.phone = phone
+            // 冷启动恢复登录态后静默重试未完成的 Guide0820 v3 绑定，不影响根页面创建。
+            DispatchQueue.main.async {
+                Guide0820PendingUploadManager.uploadPendingSurveyV3IfNeeded()
+            }
             ElaProPriceVM.preloadLoggedInProductSnapshots()
             sendSplashIdRequest()
             ElaProIAPManager.shared.refreshAnonymousIdentityAfterDeletionIfNeeded()

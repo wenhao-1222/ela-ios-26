@@ -2,24 +2,24 @@
 //  GuidanceNutritionGoalsProgressVC.swift
 //  lns
 //
-//  Nutrition goal generation page shown after GuidanceGoalPlanVC.
+//  营养目标规划页之后展示的营养目标生成页面。
 //
 
 import UIKit
 import SnapKit
 
-/// Displays the nutrition-goal generation progress and requests the v3 goals API.
+/// 展示营养目标生成进度，并请求第三版目标接口。
 final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     struct Configuration {
         var fakeProgressTarget: Int = 88
         var fakeProgressDuration: TimeInterval = 3.0
-        /// Total time used to cycle through all three status messages.
+        /// 三条状态文案完整轮播一遍所需的总时长。
         var stageCycleDuration: TimeInterval = 5.0
-        /// Cross-dissolve duration when switching status messages.
+        /// 切换状态文案时的淡入淡出时长。
         var stageTransitionDuration: TimeInterval = 0.35
-        /// Minimum duration of the final animation after the API responds.
+        /// 接口返回后结束阶段动画的最短时长。
         var completionAnimationDuration: TimeInterval = 3.0
-        /// Keeps the complete progress animation from finishing too quickly.
+        /// 限制完整进度动画的最短总时长，避免过快结束。
         var minimumTotalAnimationDuration: TimeInterval = 4.0
 
         func normalized() -> Configuration {
@@ -123,7 +123,7 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     private let progressTrackView: UIView = {
         let view = UIView()
         view.backgroundColor = .COLOR_CARD_BG_WHITE
-        view.layer.cornerRadius = kFitWidth(6)
+        view.layer.cornerRadius = kFitWidth(2)
         view.clipsToBounds = true
         return view
     }()
@@ -131,7 +131,7 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     private let progressFillView: UIView = {
         let view = UIView()
         view.backgroundColor = .THEME
-        view.layer.cornerRadius = kFitWidth(6)
+        view.layer.cornerRadius = kFitWidth(2)
         view.clipsToBounds = true
         return view
     }()
@@ -157,7 +157,7 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
         fatalError("init(coder:) has not been implemented")
     }
 
-    /// Updates timing/progress knobs before presenting (or while idle).
+    /// 在页面展示前（或空闲状态下）更新动画时长和进度配置。
     func updateConfiguration(_ configuration: Configuration) {
         self.configuration = configuration.normalized()
     }
@@ -275,7 +275,7 @@ private extension GuidanceNutritionGoalsProgressVC {
         if let fakeTimer { RunLoop.main.add(fakeTimer, forMode: .common) }
     }
 
-    /// Cycles through the three requested messages during the first five seconds.
+    /// 在最初五秒内依次轮播三条状态文案。
     func startStageCycle() {
         stageTimer?.invalidate()
         activeStageIndex = 0
@@ -335,9 +335,8 @@ private extension GuidanceNutritionGoalsProgressVC {
         guard requestFinished, !hasFinishedAnimation else { return }
         hasFinishedAnimation = true
 
-        // Once the API has returned, stop only the placeholder progress. The
-        // stage timer must keep running so a fast response cannot prevent the
-        // second and third status messages from being shown.
+        // 接口返回后只停止模拟进度。状态文案计时器仍需继续运行，
+        // 避免接口过快返回，导致第二、第三条状态文案没有机会展示。
         fakeTimer?.invalidate()
         fakeTimer = nil
         let elapsed = CACurrentMediaTime() - progressStartedAt
@@ -377,8 +376,7 @@ private extension GuidanceNutritionGoalsProgressVC {
         }
     }
 
-    /// Prints raw business parameters and their Chinese meanings before the
-    /// network layer adds device fields and encrypts the payload.
+    /// 在网络层补充设备字段并加密请求体之前，打印原始业务参数及其中文含义。
     func logNutritionGoalsParameters(_ parameters: [String: AnyObject]) {
         let meanings: [String: String] = [
             "fitnessGoal": "健身目标（1=减脂，2=增肌）",

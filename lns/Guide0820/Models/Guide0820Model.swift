@@ -53,6 +53,35 @@ final class Guide0820Model {
     /// `caloriesNumberFromServer` 属性，保存该类型对外提供或内部使用的状态与配置。
     var caloriesNumberFromServer = ""
 
+    // 目标方案
+    /// 当前健身目标；页面仍可使用 FlowState 组织 UI，但业务值统一回写到本模型。
+    var guidanceGoalTarget: GuidanceGoalPlanTarget?
+    var muscleGainBarrier = ""
+    var muscleGainMode = ""
+    var muscleGainDurationWeeks = 0
+    var muscleGainProfile = ""
+    var muscleGainProteinHabit = ""
+    var fatLossFoodFluctuation = ""
+    var fatLossMode = ""
+    var fatLossDurationWeeks = 0
+    var fatLossProfile = ""
+    var fatLossProteinHabit = ""
+    /// 最终饮食调整依据，多个值以逗号分隔。
+    var foodAdjustment = ""
+
+    // 最终营养目标
+    /// 最终营养目标热量，对应 savePart/v3 的 calories；不要与 TDEE caloriesNumber 混用。
+    var calories: Int?
+    var carbohydrate: Double?
+    var protein: Double?
+    var fat: Double?
+
+    // 溯源
+    /// 页面原始来源 ID，用于回显。
+    var sourceID: String?
+    /// 对应 savePart/v3 的 acquisitionSource 枚举值。
+    var acquisitionSource: Int?
+
     /// 清空 Guide0820 当前流程内存数据。
     func clear() {
         sex = ""
@@ -72,6 +101,24 @@ final class Guide0820Model {
         events = ""
         caloriesNumber = ""
         caloriesNumberFromServer = ""
+        guidanceGoalTarget = nil
+        muscleGainBarrier = ""
+        muscleGainMode = ""
+        muscleGainDurationWeeks = 0
+        muscleGainProfile = ""
+        muscleGainProteinHabit = ""
+        fatLossFoodFluctuation = ""
+        fatLossMode = ""
+        fatLossDurationWeeks = 0
+        fatLossProfile = ""
+        fatLossProteinHabit = ""
+        foodAdjustment = ""
+        calories = nil
+        carbohydrate = nil
+        protein = nil
+        fat = nil
+        sourceID = nil
+        acquisitionSource = nil
     }
 
     /// 执行 `printModelMsg` 操作，完成当前引导页面的状态更新或交互处理。
@@ -91,5 +138,10 @@ final class Guide0820Model {
         DLLog(message: "Guide0820 运动消耗记录：\(guidanceExerciseCaloriesRecordType)")
         DLLog(message: "Guide0820 活动量：\(events)")
         DLLog(message: "Guide0820 维持热量：\(caloriesNumber)")
+        DLLog(message: "Guide0820 最终热量：\(calories.map { String($0) } ?? "")")
+        DLLog(message: "Guide0820 最终碳水：\(carbohydrate.map { String($0) } ?? "")")
+        DLLog(message: "Guide0820 最终蛋白质：\(protein.map { String($0) } ?? "")")
+        DLLog(message: "Guide0820 最终脂肪：\(fat.map { String($0) } ?? "")")
+        DLLog(message: "Guide0820 来源：\(sourceID ?? "") / \(acquisitionSource.map { String($0) } ?? "")")
     }
 }

@@ -103,6 +103,7 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
     /// 执行 `viewDidLoad` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewDidLoad() {
         super.viewDidLoad()
+        preloadProProducts()
         initUI()
         // Every new instance starts a fresh flow from the first step. Do not
         // restore the previous answers or page index here.
@@ -118,6 +119,13 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
 
 // GuidanceGoalPlanVC 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension GuidanceGoalPlanVC {
+    /// 在目标方向流程开始时预加载收费墙商品，为 StoreKit 查询预留更多时间。
+    func preloadProProducts() {
+        ElaProPriceVM.preloadProducts(bizType: "1", isPurchased: "1") { success in
+            DLLog(message: "[GuidanceGoalPlanVC][ProPreload] success=\(success)")
+        }
+    }
+
     // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     func initUI() {
         view.backgroundColor = GuidanceGoalPlanStyle.pageBackgroundColor
@@ -127,11 +135,17 @@ private extension GuidanceGoalPlanVC {
         view.addSubview(scrollView)
         view.addSubview(nextButton)
 
+//        backButton.snp.makeConstraints { make in
+//            make.left.equalTo(kFitWidth(8))
+//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(2))
+//            make.width.height.equalTo(kFitWidth(44))
+//        }
         backButton.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(8))
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(2))
-            make.width.height.equalTo(kFitWidth(44))
+            make.left.equalTo(kFitWidth(6))
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(4.5))
+            make.width.height.equalTo(kFitWidth(35))
         }
+
 
         titleLabel.snp.makeConstraints { make in
             make.centerY.equalTo(backButton)

@@ -553,7 +553,14 @@ private extension GuidanceNutritionGoalsResultVC {
     }
 
     func saveGoals() {
-        NutritionDefaultModel.shared.saveGoals(dict: ["calories": numberText(goals.calories), "carbohydrates": numberText(goals.carbohydrate), "proteins": numberText(goals.protein), "fats": numberText(goals.fat)] as NSDictionary)
+        // 登录前只保存到 Guide0820 的待绑定模型；正式用户目标由登录后的 custom_save 设置。
+        // 接口 calories 为整数，按项目读取默认目标时既有的 rounded 规则统一一次取整。
+        Guide0820ProgressStorage.saveFinalNutritionGoals(
+            carbohydrate: goals.carbohydrate,
+            protein: goals.protein,
+            fat: goals.fat,
+            calories: Int(goals.calories.rounded())
+        )
     }
 
     func showValidationAlert() {
