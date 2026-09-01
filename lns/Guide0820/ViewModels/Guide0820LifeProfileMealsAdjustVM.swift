@@ -130,6 +130,15 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
         }
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+        updateGradientColors()
+    }
+
     /// 执行 `commitCurrentValue` 操作，完成当前引导页面的状态更新或交互处理。
     override func commitCurrentValue() {
         if let selectedAdjustValue {
@@ -212,8 +221,7 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
             itemViews.append(itemView)
         }
 
-        configureGradient(topGradientLayer, from: .COLOR_BG_F2, to: .COLOR_BG_F2.withAlphaComponent(0))
-        configureGradient(bottomGradientLayer, from: .COLOR_BG_F2.withAlphaComponent(0), to: .COLOR_BG_F2)
+        updateGradientColors()
         topGradientView.isUserInteractionEnabled = false
         bottomGradientView.isUserInteractionEnabled = false
         topGradientView.layer.addSublayer(topGradientLayer)
@@ -236,8 +244,16 @@ final class Guide0820LifeProfileMealsAdjustVM: Guide0820LifeProfilePageVM {
     private func configureGradient(_ layer: CAGradientLayer, from: UIColor, to: UIColor) {
         layer.startPoint = CGPoint(x: 0.5, y: 0)
         layer.endPoint = CGPoint(x: 0.5, y: 1)
-        layer.colors = [from.cgColor, to.cgColor]
+        layer.colors = [
+            from.resolvedColor(with: traitCollection).cgColor,
+            to.resolvedColor(with: traitCollection).cgColor
+        ]
         layer.locations = [0, 1]
+    }
+
+    private func updateGradientColors() {
+        configureGradient(topGradientLayer, from: .COLOR_BG_F2, to: .COLOR_BG_F2.withAlphaComponent(0))
+        configureGradient(bottomGradientLayer, from: .COLOR_BG_F2.withAlphaComponent(0), to: .COLOR_BG_F2)
     }
 
     // 执行 `itemTapAction` 操作，完成当前引导页面的状态更新或交互处理。
@@ -332,6 +348,15 @@ private final class Guide0820LifeProfileMealsAdjustItemView: UIView {
     // 初始化当前类型实例。
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+        updateAppearance(animated: false)
     }
 
     // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
@@ -431,7 +456,9 @@ private final class Guide0820LifeProfileMealsAdjustItemView: UIView {
         let applyChanges = {
             self.backgroundColor = self.isSelectedState ? .COLOR_CARD_BG_WHITE : .COLOR_TEXT_TITLE_0f1214_05
             self.layer.borderWidth = self.isSelectedState ? 2 : 0
-            self.layer.borderColor = self.isSelectedState ? UIColor.THEME.cgColor : UIColor.clear.cgColor
+            self.layer.borderColor = self.isSelectedState
+                ? UIColor.THEME.resolvedColor(with: self.traitCollection).cgColor
+                : UIColor.clear.cgColor
             self.transform = self.isPressedState ? CGAffineTransform(scaleX: 0.985, y: 0.985) : .identity
             self.alpha = self.isPressedState ? 0.92 : 1
         }

@@ -22,6 +22,7 @@ final class GuidanceGoalPlanMuscleGainDurationVM: GuidanceGoalPlanDurationPageVM
             defaultWeeks: flowState.muscleGainDurationWeeks,
             recommendationTitle: recommendation.title,
             recommendationDetail: recommendation.detail,
+            recommendationDetailLineHeight: guide0820Design(36),
             controlStyle: .customPicker
         )
         weeksChanged = { [weak self] weeks in

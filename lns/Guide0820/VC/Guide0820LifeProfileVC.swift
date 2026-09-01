@@ -212,6 +212,7 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
+        updateBottomGradientColors()
         restoreSavedProgress()
         updatePage(animated: false)
     }
@@ -232,6 +233,16 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
         bottomGradientLayer.frame = bottomGradientView.bounds
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+        syncNextButtonState()
+        updateBottomGradientColors()
+    }
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         restoreFullscreenInteractivePopGesture()
@@ -245,6 +256,15 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
 
 // Guide0820LifeProfileVC 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820LifeProfileVC {
+    /// 将动态页面背景色重新解析为当前外观下的渐变 CGColor。
+    func updateBottomGradientColors() {
+        let color = UIColor.COLOR_BG_F2.resolvedColor(with: traitCollection)
+        bottomGradientLayer.colors = [
+            color.withAlphaComponent(0).cgColor,
+            color.cgColor
+        ]
+    }
+
     /// 首步交给导航控制器执行交互式 pop，其余步骤由页面内右滑返回上一步。
     func updateBackGestureAvailability() {
         let isFirstStep = currentIndex == 0
@@ -270,7 +290,7 @@ private extension Guide0820LifeProfileVC {
 
         view.addSubview(backButton)
         backButton.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(6))
+            make.left.equalTo(kFitWidth(16))
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(4.5))
             make.width.height.equalTo(kFitWidth(35))
         }

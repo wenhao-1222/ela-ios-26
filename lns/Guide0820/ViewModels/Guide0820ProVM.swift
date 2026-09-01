@@ -444,7 +444,7 @@ private extension Guide0820ProVM {
 
     private func makeReviewCard(_ review: Review) -> UIView {
         let card = UIView()
-        card.backgroundColor = .white
+        card.backgroundColor = .COLOR_CARD_BG_WHITE
         card.layer.cornerRadius = kFitWidth(12)
         card.clipsToBounds = true
 
@@ -517,7 +517,7 @@ private extension Guide0820ProVM {
         name: String
     ) -> UIView {
         let card = UIView()
-        card.backgroundColor = .white
+        card.backgroundColor = .COLOR_CARD_BG_WHITE
         card.layer.cornerRadius = kFitWidth(12)
         card.clipsToBounds = true
 
@@ -614,11 +614,7 @@ private final class Guide0820ProBottomFadeView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         isUserInteractionEnabled = false
-        gradientLayer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
-            UIColor.COLOR_BG_F2.cgColor,
-            UIColor.COLOR_BG_F2.cgColor
-        ]
+        updateGradientColors()
         gradientLayer.locations = [0, 0.45, 1]
         layer.addSublayer(gradientLayer)
     }
@@ -630,5 +626,23 @@ private final class Guide0820ProBottomFadeView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         gradientLayer.frame = bounds
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+        updateGradientColors()
+    }
+
+    private func updateGradientColors() {
+        let color = UIColor.COLOR_BG_F2.resolvedColor(with: traitCollection)
+        gradientLayer.colors = [
+            color.withAlphaComponent(0).cgColor,
+            color.cgColor,
+            color.cgColor
+        ]
     }
 }

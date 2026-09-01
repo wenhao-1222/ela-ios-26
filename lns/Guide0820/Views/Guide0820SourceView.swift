@@ -65,10 +65,6 @@ final class Guide0820SourceView: UIView {
         let layer = CAGradientLayer()
         layer.startPoint = CGPoint(x: 0.5, y: 0.0)
         layer.endPoint = CGPoint(x: 0.5, y: 1.0)
-        layer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
-            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor
-        ]
         layer.locations = [0, 1]
         return layer
     }()
@@ -77,10 +73,6 @@ final class Guide0820SourceView: UIView {
         let layer = CAGradientLayer()
         layer.startPoint = CGPoint(x: 0.5, y: 0.0)
         layer.endPoint = CGPoint(x: 0.5, y: 1.0)
-        layer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(1).cgColor,
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
-        ]
         layer.locations = [0, 1]
         return layer
     }()
@@ -112,6 +104,16 @@ final class Guide0820SourceView: UIView {
         topGradientLayer.frame = topGradientView.bounds
         bottomGradientLayer.frame = bottomGradientView.bounds
     }
+
+    /// 外观切换时刷新渐变图层中已解析的 CGColor。
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+        updateGradientColors()
+    }
 }
 
 // Guide0820SourceView 扩展，提供 Guide0820 流程相关的辅助能力。
@@ -129,6 +131,7 @@ private extension Guide0820SourceView {
         scrollView.addSubview(stackView)
         topGradientView.layer.addSublayer(topGradientLayer)
         bottomGradientView.layer.addSublayer(bottomGradientLayer)
+        updateGradientColors()
 
         vm.items.forEach { item in
             let row = Guide0820SourceRow(item: item, isSelected: vm.selectedItemID == item.id) { [weak self] selectedItem in
@@ -179,6 +182,19 @@ private extension Guide0820SourceView {
             // 给最后一项预留滚动后的底部安全空白，避免被渐变遮罩盖住。
             make.bottom.equalTo(scrollView.contentLayoutGuide).offset(-kFitWidth(80))
         }
+    }
+
+    /// 使用当前外观下的页面背景色更新上下渐变。
+    func updateGradientColors() {
+        let backgroundColor = UIColor.COLOR_BG_F2.resolvedColor(with: traitCollection)
+        bottomGradientLayer.colors = [
+            backgroundColor.withAlphaComponent(0).cgColor,
+            backgroundColor.cgColor
+        ]
+        topGradientLayer.colors = [
+            backgroundColor.cgColor,
+            backgroundColor.withAlphaComponent(0).cgColor
+        ]
     }
 
     /// 处理来源选项选择。

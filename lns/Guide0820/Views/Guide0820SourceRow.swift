@@ -53,7 +53,7 @@ private extension Guide0820SourceRow {
     /// 初始化来源行布局。
     /// - Parameter isSelected: 是否选中。
     func initUI(isSelected: Bool) {
-        backgroundColor = .COLOR_BG_WHITE
+        backgroundColor = .COLOR_CARD_BG_WHITE
         layer.cornerRadius = kFitWidth(12)
         clipsToBounds = true
         addTarget(self, action: #selector(tapAction), for: .touchUpInside)

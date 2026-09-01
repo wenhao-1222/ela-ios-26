@@ -77,8 +77,7 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
 
         layer.cornerRadius = (presentationStyle == .standard) ? kFitWidth(12) : guide0820Design(24)
         layer.borderWidth = presentationStyle == .standard ? 1 : 0
-        layer.borderColor = presentationStyle == .standard ? GuidanceGoalPlanStyle.unselectedBorderColor : UIColor.clear.cgColor
-        backgroundColor = presentationStyle == .standard ? GuidanceGoalPlanStyle.cardBackgroundColor : .white
+        backgroundColor = GuidanceGoalPlanStyle.cardBackgroundColor
         titleLabel.text = option.title
         detailLabel.text = option.detail
         detailExpanded = presentationStyle != .expandable
@@ -97,35 +96,25 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
         if presentationStyle == .goal || presentationStyle == .profile || presentationStyle == .expandable {
             titleLabel.font = .systemFont(ofSize: guide0820Design(32), weight: .medium)
             titleLabel.textColor = GuidanceGoalPlanStyle.titleColor
-            detailLabel.font = .systemFont(ofSize: guide0820Design(24), weight: .regular)
             detailLabel.textColor = GuidanceGoalPlanStyle.detailColor
-            if presentationStyle == .expandable {
-                detailLabel.guide0820SetLineHeight(guide0820Design(36))
-            }
         } else {
             titleLabel.font = .systemFont(ofSize: 17, weight: .medium)
             titleLabel.textColor = GuidanceGoalPlanStyle.titleColor
-            detailLabel.font = .systemFont(ofSize: 13, weight: .regular)
             detailLabel.textColor = GuidanceGoalPlanStyle.detailColor
         }
 
+        detailLabel.font = .systemFont(ofSize: guide0820Design(24), weight: .regular)
+        detailLabel.guide0820SetLineHeight(guide0820Design(36))
+
         remakeLayout()
+        updateBorderAppearance()
     }
 
     /// 执行 `setSelected` 操作，完成当前引导页面的状态更新或交互处理。
     func setSelected(_ selected: Bool, animated: Bool = false) {
         if let selectionState, selectionState == selected { return }
         selectionState = selected
-        if presentationStyle == .goal || presentationStyle == .profile {
-            layer.borderColor = selected ? accentColor.cgColor : UIColor.clear.cgColor
-            layer.borderWidth = selected ? 1 : 0
-        } else if presentationStyle == .expandable {
-            layer.borderColor = selected ? accentColor.cgColor : UIColor.clear.cgColor
-            layer.borderWidth = selected ? guide0820Design(4) : 0
-        } else {
-            layer.borderColor = selected ? accentColor.cgColor : GuidanceGoalPlanStyle.unselectedBorderColor
-            layer.borderWidth = 1
-        }
+        updateBorderAppearance()
         checkImageView.setCheckState(selected,
                                      checkedImageName: checkedImageName,
                                      uncheckedImageName: uncheckedImageName,
@@ -133,6 +122,15 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
         if presentationStyle == .expandable {
             setDetailExpanded(selected, animated: animated)
         }
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+        updateBorderAppearance()
     }
 
     // 执行 `setDetailExpanded` 操作，完成当前引导页面的状态更新或交互处理。
@@ -156,12 +154,13 @@ private extension GuidanceGoalPlanOptionCardView {
         layer.cornerRadius = kFitWidth(12)
         layer.borderWidth = 1
         layer.borderColor = GuidanceGoalPlanStyle.unselectedBorderColor
+            .resolvedColor(with: traitCollection).cgColor
 
         titleLabel.font = .systemFont(ofSize: 17, weight: .medium)
         titleLabel.textColor = GuidanceGoalPlanStyle.titleColor
         titleLabel.numberOfLines = 0
 
-        detailLabel.font = .systemFont(ofSize: 13, weight: .regular)
+        detailLabel.font = .systemFont(ofSize: guide0820Design(24), weight: .regular)
         detailLabel.textColor = GuidanceGoalPlanStyle.detailColor
         detailLabel.numberOfLines = 0
 
@@ -271,7 +270,7 @@ private extension GuidanceGoalPlanOptionCardView {
                 // the trailing 42pt selection control as the MasterGo layer.
                 make.right.equalTo(checkImageView.snp.left).offset(guide0820Design(-58))
                 if detailExpanded {
-                    make.top.equalTo(guide0820Design(40))
+                    make.top.equalTo(kFitWidth(20))
                 } else {
                     make.centerY.equalToSuperview()
                 }
@@ -279,8 +278,12 @@ private extension GuidanceGoalPlanOptionCardView {
 
             detailLabel.snp.remakeConstraints { make in
                 make.left.right.equalTo(titleLabel)
-                make.top.equalTo(titleLabel.snp.bottom).offset(guide0820Design(12))
-                make.bottom.lessThanOrEqualTo(guide0820Design(-40))
+                make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(6))
+                if detailExpanded {
+                    make.bottom.equalToSuperview().offset(kFitWidth(-20))
+                } else {
+                    make.height.equalTo(0)
+                }
             }
         case .standard:
             iconImageView.snp.remakeConstraints { make in
@@ -307,5 +310,22 @@ private extension GuidanceGoalPlanOptionCardView {
                 make.bottom.lessThanOrEqualTo(kFitWidth(-16))
             }
         }
+    }
+
+    func updateBorderAppearance() {
+        let selected = selectionState ?? false
+        let color: UIColor
+        switch presentationStyle {
+        case .goal, .profile:
+            layer.borderWidth = selected ? 1 : 0
+            color = selected ? accentColor : .clear
+        case .expandable:
+            layer.borderWidth = selected ? guide0820Design(4) : 0
+            color = selected ? accentColor : .clear
+        case .standard:
+            layer.borderWidth = 1
+            color = selected ? accentColor : GuidanceGoalPlanStyle.unselectedBorderColor
+        }
+        layer.borderColor = color.resolvedColor(with: traitCollection).cgColor
     }
 }

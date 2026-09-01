@@ -587,8 +587,8 @@ enum Guide0820ProgressStorage {
         clearStoredData(includePresentationState: true)
     }
 
-    /// v3 绑定成功后清除全部问卷业务数据，但保留“引导已展示”标记，避免影响启动路由。
-    static func clearUploadedData() {
+    /// 登录后清除全部问卷业务数据，但保留“引导已展示”标记，避免影响启动路由。
+    static func clearQuestionnaireData() {
         clearStoredData(includePresentationState: false)
     }
 }
@@ -685,6 +685,17 @@ enum Guide0820PendingUploadManager {
     private static var isSavingNutritionGoal = false
     private static var isUploadingSurveyV3 = false
 
+    /// 统一处理 Guide0820 的登录成功状态：完整问卷等待 v3 上传成功后清理，未完成问卷直接丢弃草稿。
+    static func handleLoginSuccess() {
+        guard Guide0820ProgressStorage.hasPendingCompletedData else {
+            Guide0820ProgressStorage.clearQuestionnaireData()
+            DLLog(message: "[Guide0820][LoginSuccess] 问卷未完成，已清理本地草稿数据")
+            return
+        }
+
+        uploadPendingSurveyV3IfNeeded()
+    }
+
     /// 如果当前是完整的 Guide0820 登录流程，则按现有 custom_save 逻辑保存正式目标并阻塞后续登录。
     /// - Returns: true 表示已接管本次登录完成动作，调用方不应继续执行旧问卷分支。
     @discardableResult
@@ -773,7 +784,7 @@ enum Guide0820PendingUploadManager {
 
             // 只清理由本次登录用户创建的 pending，避免异步响应误删另一轮数据。
             guard Guide0820ProgressStorage.pendingOwnerUID == requestOwnerUID else { return }
-            Guide0820ProgressStorage.clearUploadedData()
+            Guide0820ProgressStorage.clearQuestionnaireData()
             DLLog(message: "[Guide0820][savePart/v3] 上传成功，已清理本地待绑定数据")
         } failure: { _ in
             // v3 不影响登录；失败保留 pending，仅由冷启动或回前台再次触发。

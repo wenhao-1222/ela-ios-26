@@ -75,7 +75,7 @@ private extension GuidanceGoalPlanProfileVM {
                 GuidanceGoalPlanOption(title: "规律健身者", detail: "我保持规律训练和饮食，希望降低体脂，达到个人身材目标", value: "regular_fitness", iconName: "guide0820_profile_regular_fitness_icon"),
                 GuidanceGoalPlanOption(title: "健美运动员", detail: "我以比赛为目标，希望提升肌肉清晰度、分离度与整体状态", value: "bodybuilder", iconName: "guide0820_profile_bodybuilder_icon"),
                 GuidanceGoalPlanOption(title: "HYROX 运动员", detail: "我希望优化体重与能量供给，提升跑步效率、力量耐力和恢复能力", value: "hyrox", iconName: "guide0820_profile_hyrox_icon"),
-                GuidanceGoalPlanOption(title: "耐力运动员", detail: "我希望减少不必要的体重负担，提高骑行、越野跑等项目的运动效率", value: "endurance_athlete", iconName: "Image 60")
+                GuidanceGoalPlanOption(title: "耐力运动员", detail: "我希望减少不必要的体重负担，提高骑行、越野跑等项目的运动效率", value: "endurance_athlete", iconName: "guide0820_profile_naili_icon")
             ]
         }
     }

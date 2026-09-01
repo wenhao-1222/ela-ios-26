@@ -38,6 +38,16 @@ final class Guide0820InviteSourceSheetView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection),
+              errorView.isHidden == false else {
+            return
+        }
+        updateErrorBorderColor()
+    }
+
     /// 激活输入框并拉起键盘。
     func focusInput() {
         textField.becomeFirstResponder()
@@ -48,7 +58,7 @@ final class Guide0820InviteSourceSheetView: UIView {
 private extension Guide0820InviteSourceSheetView {
     /// 初始化面板结构。
     func initUI() {
-        backgroundColor = .COLOR_BG_WHITE
+        backgroundColor = .clear
 
         let headerView = Guide0820SheetHeaderView(title: vm.title, onClose: onClose)
         let separator = UIView()
@@ -140,14 +150,14 @@ private extension Guide0820InviteSourceSheetView {
     /// 同步确认按钮可用状态。
     func updateConfirmButton() {
         let hasInput = vm.invitationCode.isEmpty == false
-        confirmButton.backgroundColor = hasInput ? .THEME : UIColor(hex: "#C4C4C4")
+        confirmButton.backgroundColor = hasInput ? .THEME : .COLOR_BUTTON_DISABLE_BG_THEME
     }
 
     /// 展示错误状态。
     func showErrorState() {
         errorView.isHidden = false
         textField.layer.borderWidth = kFitWidth(1)
-        textField.layer.borderColor = UIColor.systemRed.cgColor
+        updateErrorBorderColor()
         textField.backgroundColor = UIColor.systemRed.withAlphaComponent(0.06)
     }
 
@@ -159,6 +169,11 @@ private extension Guide0820InviteSourceSheetView {
         confirmButton.setTitle(nil, for: .normal)
         confirmButton.setImage(UIImage(named: "guide0820_button_check_icon")?.withRenderingMode(.alwaysTemplate), for: .normal)
         confirmButton.tintColor = .COLOR_TEXT_WHITE
+    }
+
+    func updateErrorBorderColor() {
+        textField.layer.borderColor = UIColor.systemRed
+            .resolvedColor(with: traitCollection).cgColor
     }
 
     /// 输入内容变化时更新 VM。

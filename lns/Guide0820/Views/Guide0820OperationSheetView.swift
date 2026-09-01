@@ -42,7 +42,7 @@ final class Guide0820OperationSheetView: UIView {
 private extension Guide0820OperationSheetView {
     /// 初始化操作面板布局。
     func initUI() {
-        backgroundColor = .COLOR_BG_WHITE
+        backgroundColor = .clear
 
         let headerView = Guide0820SheetHeaderView(title: vm.title, onClose: onClose)
         let separator = UIView()

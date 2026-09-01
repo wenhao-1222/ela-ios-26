@@ -23,6 +23,11 @@ final class Guide0820BottomSheetView: UIView {
     /// 是否跟随键盘上移。
     private var keyboardAvoidanceEnabled = false
 
+    /// 蒙层目标透明度：浅色 0.25，深色 0.55。
+    private var targetDimAlpha: CGFloat {
+        return traitCollection.userInterfaceStyle == .dark ? 0.55 : 0.25
+    }
+
     /// 创建底部弹层容器。
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -46,6 +51,12 @@ final class Guide0820BottomSheetView: UIView {
     ///   - keyboardAvoidanceEnabled: 是否跟随键盘上移。
     func present(contentView: UIView, contentHeight: CGFloat, keyboardAvoidanceEnabled: Bool) {
         self.keyboardAvoidanceEnabled = keyboardAvoidanceEnabled
+
+        if isHidden == false {
+            replaceContentView(contentView, contentHeight: contentHeight)
+            return
+        }
+
         setContentView(contentView)
         heightConstraint?.update(offset: contentHeight)
         bottomConstraint?.update(offset: contentHeight)
@@ -54,7 +65,7 @@ final class Guide0820BottomSheetView: UIView {
         isHidden = false
         dimView.alpha = 0
         UIView.animate(withDuration: 0.28, delay: 0, options: [.curveEaseOut]) {
-            self.dimView.alpha = 1
+            self.dimView.alpha = self.targetDimAlpha
             self.bottomConstraint?.update(offset: 0)
             self.layoutIfNeeded()
         }
@@ -90,9 +101,9 @@ private extension Guide0820BottomSheetView {
         isHidden = true
         backgroundColor = .clear
 
-        dimView.backgroundColor = UIColor.black.withAlphaComponent(0.24)
+        dimView.backgroundColor = .black
         dimView.alpha = 0
-        sheetView.backgroundColor = .COLOR_BG_WHITE
+        sheetView.backgroundColor = .COLOR_CARD_BG_WHITE
         sheetView.layer.cornerRadius = kFitWidth(13)
         sheetView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         sheetView.clipsToBounds = true
@@ -135,6 +146,31 @@ private extension Guide0820BottomSheetView {
         contentContainerView.addSubview(contentView)
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
+        }
+    }
+
+    /// 弹层已展示时原位替换内容，保持遮罩透明度和底部位置不变。
+    func replaceContentView(_ contentView: UIView, contentHeight: CGFloat) {
+        let previousContentViews = contentContainerView.subviews
+        previousContentViews.forEach { $0.isUserInteractionEnabled = false }
+
+        contentView.alpha = 0
+        contentContainerView.addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        contentContainerView.layoutIfNeeded()
+
+        heightConstraint?.update(offset: contentHeight)
+        bottomConstraint?.update(offset: 0)
+        UIView.animate(withDuration: 0.22,
+                       delay: 0,
+                       options: [.curveEaseInOut, .beginFromCurrentState]) {
+            previousContentViews.forEach { $0.alpha = 0 }
+            contentView.alpha = 1
+            self.layoutIfNeeded()
+        } completion: { _ in
+            previousContentViews.forEach { $0.removeFromSuperview() }
         }
     }
 

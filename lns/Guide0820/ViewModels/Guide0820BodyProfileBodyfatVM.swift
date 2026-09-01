@@ -51,6 +51,7 @@ final class Guide0820BodyProfileBodyfatVM: DietPlanCreateBodyfatVM {
         backgroundColor = .clear
         titleLabel.font = .systemFont(ofSize: guide0820Design(48), weight: .medium)
         titleLabel.text = "你现在的体脂率是？"
+        titleLabel.setLineHeight(textString: titleLabel.text ?? "", lineHeight: guide0820Design(72))
         tipsButton.isHidden = true
         topGradientView.isHidden = true
         bottomGradientView.isHidden = true

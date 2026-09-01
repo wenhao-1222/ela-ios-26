@@ -28,6 +28,16 @@ final class Guide0820SourceBottomFadeView: UIView {
         super.layoutSubviews()
         gradientLayer.frame = bounds
     }
+
+    /// 外观切换时刷新渐变图层中已解析的 CGColor。
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+        updateGradientColors()
+    }
 }
 
 // Guide0820SourceBottomFadeView 扩展，提供 Guide0820 流程相关的辅助能力。
@@ -36,12 +46,18 @@ private extension Guide0820SourceBottomFadeView {
     func initUI() {
         isUserInteractionEnabled = false
         layer.addSublayer(gradientLayer)
-        gradientLayer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
-            UIColor.COLOR_BG_F2.cgColor
-        ]
         gradientLayer.locations = [0, 1]
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
+        updateGradientColors()
+    }
+
+    /// 使用当前外观下的页面背景色更新底部渐隐。
+    func updateGradientColors() {
+        let backgroundColor = UIColor.COLOR_BG_F2.resolvedColor(with: traitCollection)
+        gradientLayer.colors = [
+            backgroundColor.withAlphaComponent(0).cgColor,
+            backgroundColor.cgColor
+        ]
     }
 }

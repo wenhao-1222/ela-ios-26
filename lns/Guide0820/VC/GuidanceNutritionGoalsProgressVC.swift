@@ -20,7 +20,7 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
         /// 接口返回后结束阶段动画的最短时长。
         var completionAnimationDuration: TimeInterval = 3.0
         /// 限制完整进度动画的最短总时长，避免过快结束。
-        var minimumTotalAnimationDuration: TimeInterval = 4.0
+        var minimumTotalAnimationDuration: TimeInterval = 8.0
 
         func normalized() -> Configuration {
             var value = self

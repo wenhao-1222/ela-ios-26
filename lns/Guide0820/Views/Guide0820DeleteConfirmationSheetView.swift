@@ -46,7 +46,7 @@ final class Guide0820DeleteConfirmationSheetView: UIView {
 private extension Guide0820DeleteConfirmationSheetView {
     /// 初始化面板结构。
     func initUI() {
-        backgroundColor = .COLOR_BG_WHITE
+        backgroundColor = .clear
 
         let headerView = Guide0820SheetHeaderView(title: vm.title, onClose: onClose)
         let separator = UIView()
@@ -114,7 +114,7 @@ private extension Guide0820DeleteConfirmationSheetView {
     /// 同步确认按钮状态。
     func updateConfirmButton() {
         confirmButton.isEnabled = vm.isAcknowledged
-        confirmButton.backgroundColor = vm.isAcknowledged ? .THEME : UIColor(hex: "#C4C4C4")
+        confirmButton.backgroundColor = vm.isAcknowledged ? .THEME : .COLOR_BUTTON_DISABLE_BG_THEME
     }
 
     /// 切换勾选框。

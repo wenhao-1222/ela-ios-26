@@ -48,6 +48,7 @@ final class Guide0820BodyProfileInfoCard: UIControl {
         detailLabel.textColor = .COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.5)
         detailLabel.font = .systemFont(ofSize: guide0820Design(24), weight: .regular)
         detailLabel.numberOfLines = 2
+        detailLabel.guide0820SetLineHeight(guide0820Design(36))
 
         addSubview(iconView)
         addSubview(titleLabel)

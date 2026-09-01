@@ -54,6 +54,15 @@ final class Guide0820BodyProfileOptionCard: UIControl {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+        updateSelectedState(animated: false)
+    }
+
     /// 选中态变化时刷新右侧圆点。
     override var isSelected: Bool {
         didSet {
@@ -72,7 +81,7 @@ final class Guide0820BodyProfileOptionCard: UIControl {
 
     /// 按 MasterGo 设计稿创建卡片内部视图和约束。
     private func initUI() {
-        backgroundColor = .white
+        backgroundColor = .COLOR_CARD_BG_WHITE
         layer.cornerRadius = guide0820Design(24)
         layer.cornerCurve = .continuous
         clipsToBounds = true
@@ -95,6 +104,7 @@ final class Guide0820BodyProfileOptionCard: UIControl {
         subtitleLabel.textColor = .COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.5)
         subtitleLabel.font = .systemFont(ofSize: guide0820Design(24), weight: .regular)
         subtitleLabel.isHidden = item.subtitle == nil
+        subtitleLabel.guide0820SetLineHeight(guide0820Design(36))
 
         selectCircle.backgroundColor = .clear
         selectCircle.layer.borderWidth = guide0820Design(3)
@@ -156,7 +166,10 @@ final class Guide0820BodyProfileOptionCard: UIControl {
         }
 
         let selected = isSelected
-        selectCircle.layer.borderColor = selected ? UIColor.THEME.cgColor : UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.15).cgColor
+        let borderColor = selected
+            ? UIColor.THEME
+            : UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.15)
+        selectCircle.layer.borderColor = borderColor.resolvedColor(with: traitCollection).cgColor
         selectCircle.backgroundColor = selected ? .THEME : .clear
         if selected {
             let checkLayerName = "guide0820_check"

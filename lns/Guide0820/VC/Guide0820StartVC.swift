@@ -108,7 +108,7 @@ private extension Guide0820StartVC {
 
         view.addSubview(backButton)
         backButton.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(6))
+            make.left.equalTo(kFitWidth(16))
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(4.5))
             make.width.height.equalTo(kFitWidth(35))
         }

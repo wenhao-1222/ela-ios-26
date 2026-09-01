@@ -101,6 +101,7 @@ final class Guide0820BodyProfileHeightVM: Guide0820BodyProfilePageVM, rulerDeleg
     override init(frame: CGRect) {
         super.init(frame: frame)
         initUI()
+        updateMaskColors()
     }
 
     /// Storyboard 初始化入口，本页面不支持。
@@ -110,14 +111,24 @@ final class Guide0820BodyProfileHeightVM: Guide0820BodyProfilePageVM, rulerDeleg
 
     /// 执行 `traitCollectionDidChange` 操作，完成当前引导页面的状态更新或交互处理。
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
         updateHeightText(value: currentValue)
+        updateMaskColors()
+    }
+
+    private func updateMaskColors() {
+        let color = UIColor.COLOR_BG_F2.resolvedColor(with: traitCollection)
         topMaskLayer.colors = [
-            UIColor.COLOR_BG_F2.cgColor,
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+            color.cgColor,
+            color.withAlphaComponent(0).cgColor
         ]
         bottomMaskLayer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
-            UIColor.COLOR_BG_F2.cgColor
+            color.withAlphaComponent(0).cgColor,
+            color.cgColor
         ]
     }
 

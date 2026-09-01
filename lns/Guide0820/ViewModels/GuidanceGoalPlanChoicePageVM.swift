@@ -30,8 +30,6 @@ class GuidanceGoalPlanChoicePageVM: UIView, GuidanceGoalPlanPageVM {
         let titleFontSize: CGFloat
         /// `subtitleTopOffset` 属性，保存该类型对外提供或内部使用的状态与配置。
         let subtitleTopOffset: CGFloat
-        /// `subtitleFontSize` 属性，保存该类型对外提供或内部使用的状态与配置。
-        let subtitleFontSize: CGFloat
         /// `stackTopOffset` 属性，保存该类型对外提供或内部使用的状态与配置。
         let stackTopOffset: CGFloat
         /// `stackHorizontalInset` 属性，保存该类型对外提供或内部使用的状态与配置。
@@ -49,7 +47,6 @@ class GuidanceGoalPlanChoicePageVM: UIView, GuidanceGoalPlanPageVM {
             titleHorizontalInset: guide0820Design(42),
             titleFontSize: guide0820Design(48),
             subtitleTopOffset: guide0820Design(12),
-            subtitleFontSize: guide0820Design(28),
             stackTopOffset: guide0820Design(44),
             stackHorizontalInset: guide0820Design(42),
             stackBottomInset: guide0820Design(24),
@@ -63,7 +60,6 @@ class GuidanceGoalPlanChoicePageVM: UIView, GuidanceGoalPlanPageVM {
             titleHorizontalInset: guide0820Design(42),
             titleFontSize: guide0820Design(48),
             subtitleTopOffset: guide0820Design(12),
-            subtitleFontSize: guide0820Design(28),
             stackTopOffset: guide0820Design(44),
             stackHorizontalInset: guide0820Design(42),
             stackBottomInset: guide0820Design(24),
@@ -77,7 +73,6 @@ class GuidanceGoalPlanChoicePageVM: UIView, GuidanceGoalPlanPageVM {
             titleHorizontalInset: guide0820Design(42),
             titleFontSize: guide0820Design(48),
             subtitleTopOffset: guide0820Design(12),
-            subtitleFontSize: guide0820Design(28),
             stackTopOffset: guide0820Design(44),
             stackHorizontalInset: guide0820Design(42),
             stackBottomInset: guide0820Design(24),
@@ -93,7 +88,6 @@ class GuidanceGoalPlanChoicePageVM: UIView, GuidanceGoalPlanPageVM {
             titleHorizontalInset: guide0820Design(42),
             titleFontSize: guide0820Design(48),
             subtitleTopOffset: guide0820Design(12),
-            subtitleFontSize: guide0820Design(28),
             stackTopOffset: guide0820Design(44),
             stackHorizontalInset: guide0820Design(42),
             stackBottomInset: guide0820Design(24),
@@ -187,13 +181,15 @@ private extension GuidanceGoalPlanChoicePageVM {
         titleLabel.textColor = GuidanceGoalPlanStyle.titleColor
         titleLabel.font = .systemFont(ofSize: layout.titleFontSize, weight: .medium)
         titleLabel.numberOfLines = 0
+        titleLabel.guide0820SetLineHeight(guide0820Design(72))
 
         let subtitleLabel = UILabel()
         subtitleLabel.text = subtitle
         subtitleLabel.textColor = GuidanceGoalPlanStyle.detailColor
-        subtitleLabel.font = .systemFont(ofSize: layout.subtitleFontSize, weight: .regular)
+        subtitleLabel.font = .systemFont(ofSize: guide0820Design(28), weight: .regular)
         subtitleLabel.numberOfLines = 0
         subtitleLabel.isHidden = subtitle?.isEmpty ?? true
+        subtitleLabel.guide0820SetLineHeight(guide0820Design(42))
 
         let stackView = UIStackView()
         stackView.axis = .vertical

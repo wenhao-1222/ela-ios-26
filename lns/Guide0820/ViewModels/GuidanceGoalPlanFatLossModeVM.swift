@@ -17,7 +17,7 @@ final class GuidanceGoalPlanFatLossModeVM: GuidanceGoalPlanChoicePageVM {
         self.flowState = flowState
         super.init(
             title: "你更倾向于哪种减脂方式？",
-            subtitle: nil,
+            subtitle: "不同的减脂方式，不仅会影响你每天需要摄入多少热量，也会影响蛋白质、碳水和脂肪如何分配",
             options: [
                 GuidanceGoalPlanOption(title: "最快速度减脂", detail: "适合希望在短时间内达到身材目标，例如拍摄写真、参加活动等。反弹风险较高", value: "fast", iconName: "guide0820_fat_loss_mode_fast_icon"),
                 GuidanceGoalPlanOption(title: "相对快速减脂", detail: "适合希望在较短时间内达到身材目标，或准备健美比赛的运动员、健身爱好者等。有一定反弹风险", value: "moderate", iconName: "guide0820_fat_loss_mode_moderate_icon"),
@@ -25,7 +25,7 @@ final class GuidanceGoalPlanFatLossModeVM: GuidanceGoalPlanChoicePageVM {
             ],
             accentColor: GuidanceGoalPlanStyle.muscleGainColor,
             detailOnlyWhenSelected: true,
-            infoNoticeText: "不同的减脂方式，不仅会影响你每天需要摄入多少热量，也会影响蛋白质、碳水和脂肪如何分配"
+            infoNoticeText: nil
         )
         selectedValue = flowState.fatLossMode
         valueChanged = { [weak self] _ in

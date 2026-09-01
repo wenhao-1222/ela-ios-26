@@ -33,6 +33,8 @@ class GuidanceGoalPlanDurationPageVM: UIView, GuidanceGoalPlanPageVM {
     private var recommendationTitle: String
     // `recommendationDetail` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var recommendationDetail: String
+    // `recommendationDetailLineHeight` 属性，保存推荐说明文案的固定行高。
+    private let recommendationDetailLineHeight: CGFloat?
     // `weekLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let weekLabel = UILabel()
     // `recommendationTitleLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
@@ -76,6 +78,7 @@ class GuidanceGoalPlanDurationPageVM: UIView, GuidanceGoalPlanPageVM {
          defaultWeeks: Int,
          recommendationTitle: String,
          recommendationDetail: String,
+         recommendationDetailLineHeight: CGFloat? = nil,
          controlStyle: ControlStyle = .stepper) {
         self.titleText = title
         self.accentColor = accentColor
@@ -83,6 +86,7 @@ class GuidanceGoalPlanDurationPageVM: UIView, GuidanceGoalPlanPageVM {
         self.recommendedWeeks = defaultWeeks
         self.recommendationTitle = recommendationTitle
         self.recommendationDetail = recommendationDetail
+        self.recommendationDetailLineHeight = recommendationDetailLineHeight
         self.weeks = min(max(defaultWeeks, 1), controlStyle == .customPicker ? 60 : 52)
         super.init(frame: CGRect(x: 0, y: 0, width: SCREEN_WIDHT, height: SCREEN_HEIGHT))
         initUI()
@@ -113,14 +117,14 @@ class GuidanceGoalPlanDurationPageVM: UIView, GuidanceGoalPlanPageVM {
         recommendationDetail = detail
         weeks = defaultWeeks
         recommendationTitleLabel.text = title
-        recommendationDetailLabel.text = detail
+        applyRecommendationDetailText()
     }
 
     /// 执行 `pageWillAppear` 操作，完成当前引导页面的状态更新或交互处理。
     func pageWillAppear() {
         weekLabel.text = "\(weeks)"
         recommendationTitleLabel.text = recommendationTitle
-        recommendationDetailLabel.text = recommendationDetail
+        applyRecommendationDetailText()
         syncPickerSelection()
     }
 }
@@ -146,6 +150,7 @@ private extension GuidanceGoalPlanDurationPageVM {
         label.textColor = GuidanceGoalPlanStyle.titleColor
         label.font = .systemFont(ofSize: guide0820Design(48), weight: .medium)
         label.numberOfLines = 0
+        label.guide0820SetLineHeight(guide0820Design(72))
         return label
     }
 
@@ -160,6 +165,15 @@ private extension GuidanceGoalPlanDurationPageVM {
         recommendationDetailLabel.textColor = GuidanceGoalPlanStyle.detailColor
         recommendationDetailLabel.font = .systemFont(ofSize: detailFontSize, weight: .regular)
         recommendationDetailLabel.numberOfLines = 0
+        applyRecommendationDetailText()
+    }
+
+    // 应用推荐说明文案，并在页面刷新后保留配置的固定行高。
+    func applyRecommendationDetailText() {
+        recommendationDetailLabel.text = recommendationDetail
+        if let lineHeight = recommendationDetailLineHeight {
+            recommendationDetailLabel.guide0820SetLineHeight(lineHeight)
+        }
     }
 
     // 执行 `initStepperUI` 操作，完成当前引导页面的状态更新或交互处理。

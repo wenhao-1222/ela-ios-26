@@ -26,6 +26,8 @@ final class Guide0820VC: WHBaseViewVC {
     private var didFinish = false
     /// 是否已经根据本地来源选择跳过引导页。
     private var didRedirectStoredSource = false
+    /// 是否正在打开协议页，避免一次触摸过程中重复触发导航转场。
+    private var isOpeningAgreement = false
     /// 左上角返回按钮。
     private lazy var backButton: ElaLiquidGlassCloseButton = {
         let button = ElaLiquidGlassCloseButton()
@@ -60,12 +62,18 @@ final class Guide0820VC: WHBaseViewVC {
     /// 执行 `viewWillAppear` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        enforceInteractivePopGestureDisabled()
+        // 从协议页交互式返回时，导航手势仍在驱动当前转场。
+        // 此时禁用手势会令转场卡在交互状态，随后整个页面无法响应触摸。
+        // 返回真正完成后，viewDidAppear 会禁用 Guide 页自身的返回手势。
+        if transitionCoordinator?.isInteractive != true {
+            enforceInteractivePopGestureDisabled()
+        }
     }
 
     /// 页面出现后禁用系统侧滑和全屏侧滑返回。
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        isOpeningAgreement = false
         enforceInteractivePopGestureDisabled()
         redirectToStartIfSourceStored()
     }
@@ -114,7 +122,7 @@ private extension Guide0820VC {
 
         view.addSubview(backButton)
         backButton.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(6))
+            make.left.equalTo(kFitWidth(16))
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(4.5))
             make.width.height.equalTo(kFitWidth(35))
         }
@@ -175,6 +183,9 @@ private extension Guide0820VC {
     /// 打开协议页面。
     /// - Parameter type: 协议类型。
     func openAgreement(_ type: Guide0820AgreementType) {
+        guard isOpeningAgreement == false else { return }
+        isOpeningAgreement = true
+
         let vc = WHCommonH5VC()
         switch type {
         case .userAgreement:
@@ -184,10 +195,29 @@ private extension Guide0820VC {
         }
 
         if let navigationController = navigationController {
-            navigationController.pushViewController(vc, animated: true)
+            // Guide 页会在导航视图上安装手势 blocker。若在当前 touchUp/link
+            // 回调尚未结束时直接 push，blocker 与导航转场可能互相等待，导致
+            // 转场停在交互禁用状态，表现为整个 App 无法点击。
+            restoreFullscreenInteractivePopGesture()
+            DispatchQueue.main.async { [weak self, weak navigationController] in
+                guard let self = self,
+                      let navigationController = navigationController,
+                      navigationController.topViewController === self else {
+                    self?.isOpeningAgreement = false
+                    return
+                }
+                navigationController.pushViewController(vc, animated: true)
+            }
         } else {
             let nav = UINavigationController(rootViewController: vc)
-            present(nav, animated: true)
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self,
+                      self.presentedViewController == nil else {
+                    self?.isOpeningAgreement = false
+                    return
+                }
+                self.present(nav, animated: true)
+            }
         }
     }
 

@@ -150,7 +150,7 @@ final class GuidanceGoalPlanFlowState {
 /// GuidanceGoalPlanStyle 类型，封装 Guide0820 引导流程中的相关功能。
 enum GuidanceGoalPlanStyle {
     /// `muscleGainColor` 属性，保存该类型对外提供或内部使用的状态与配置。
-    static let muscleGainColor = WHColor_16(colorStr: "1677F2")
+    static let muscleGainColor = UIColor.THEME
     // Both branches use the same blue theme.
     /// `fatLossColor` 属性，保存该类型对外提供或内部使用的状态与配置。
     static let fatLossColor = muscleGainColor
@@ -165,5 +165,5 @@ enum GuidanceGoalPlanStyle {
     /// `pageBackgroundColor` 属性，保存该类型对外提供或内部使用的状态与配置。
     static let pageBackgroundColor = UIColor.COLOR_BG_F2
     /// `unselectedBorderColor` 属性，保存该类型对外提供或内部使用的状态与配置。
-    static let unselectedBorderColor = UIColor.COLOR_TEXT_TITLE_0f1214_05.cgColor
+    static let unselectedBorderColor = UIColor.COLOR_TEXT_TITLE_0f1214_05
 }

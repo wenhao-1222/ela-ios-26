@@ -212,6 +212,7 @@ private final class Guide0820WeightRulerView: UIView, UIScrollViewDelegate {
     override init(frame: CGRect) {
         super.init(frame: frame)
         initUI()
+        updateGradientColors()
     }
 
     // 初始化当前类型实例。
@@ -222,13 +223,22 @@ private final class Guide0820WeightRulerView: UIView, UIScrollViewDelegate {
     // 执行 `traitCollectionDidChange` 操作，完成当前引导页面的状态更新或交互处理。
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+        updateGradientColors()
+    }
+
+    private func updateGradientColors() {
+        let color = UIColor.COLOR_BG_F2.resolvedColor(with: traitCollection)
         leftGradientLayer.colors = [
-            UIColor.COLOR_BG_F2.cgColor,
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor
+            color.cgColor,
+            color.withAlphaComponent(0).cgColor
         ]
         rightGradientLayer.colors = [
-            UIColor.COLOR_BG_F2.withAlphaComponent(0).cgColor,
-            UIColor.COLOR_BG_F2.cgColor
+            color.withAlphaComponent(0).cgColor,
+            color.cgColor
         ]
     }
 
@@ -339,7 +349,7 @@ private extension Guide0820WeightRulerView {
         let x = centerInset + CGFloat(index) * spacing
         let isMajor = index % majorInterval == 0
         let tickView = UIView()
-        tickView.backgroundColor = WHColor_16(colorStr: "D8D8D8")
+        tickView.backgroundColor = .COLOR_TEXT_TITLE_0f1214_20
         let tickWidth = isMajor ? guide0820Design(4) : guide0820Design(2)
         tickView.frame = CGRect(x: x - tickWidth * 0.5,
                                 y: isMajor ? guide0820Design(44) : guide0820Design(68),

@@ -298,8 +298,8 @@ class WHBaseViewVC: ViewController {
     }
     func completeLoginSuccessAndEnterApp() {
         UserInfoModel.shared.resetForcedLogoutHandling()
-        // Guide0820 的正式目标已由 custom_save 阻塞保存；完整问卷在此静默绑定，不等待响应。
-        Guide0820PendingUploadManager.uploadPendingSurveyV3IfNeeded()
+        // 完整问卷静默绑定并在 v3 成功后清理；未完成问卷不上传，在登录成功后直接清理草稿。
+        Guide0820PendingUploadManager.handleLoginSuccess()
         BodyDataUploadManager().syncAllBodyDataFromServer()
         QuestinonaireMsgModel.shared.clearMsg()
 //        changeRootVcToTabbar()

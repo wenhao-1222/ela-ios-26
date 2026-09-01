@@ -102,12 +102,13 @@ final class Guide0820BodyProfileIntroOverlayVM: UIView {
     /// 按 MasterGo 弹窗设计稿创建遮罩、卡片、正文和按钮。
     private func initUI() {
         dimView.backgroundColor = UIColor.black.withAlphaComponent(0.2)
+        dimView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dimViewTapAction)))
         addSubview(dimView)
         dimView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
-        cardView.backgroundColor = .white
+        cardView.backgroundColor = .COLOR_CARD_BG_WHITE
         cardView.layer.cornerRadius = guide0820Design(24)
         cardView.layer.cornerCurve = .continuous
         cardView.clipsToBounds = true
@@ -231,6 +232,11 @@ final class Guide0820BodyProfileIntroOverlayVM: UIView {
 
     /// 处理确认按钮点击并关闭弹窗。
     @objc private func confirmButtonAction() {
+        dismiss()
+    }
+
+    /// 点击弹窗外的遮罩区域时关闭弹窗。
+    @objc private func dimViewTapAction() {
         dismiss()
     }
 }

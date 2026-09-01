@@ -33,13 +33,13 @@ class Guide0820LifeProfilePageVM: UIView {
     func commitCurrentValue() {}
 
     /// 执行 `makeTitleLabel` 操作，完成当前引导页面的状态更新或交互处理。
-    func makeTitleLabel(_ text: String, fontSize: CGFloat = 48, lineHeight: CGFloat = 72) -> UILabel {
+    func makeTitleLabel(_ text: String) -> UILabel {
         let label = UILabel()
         label.text = text
         label.numberOfLines = 0
         label.textColor = .COLOR_TEXT_TITLE_0f1214
-        label.font = .systemFont(ofSize: guide0820Design(fontSize), weight: .medium)
-        label.setLineHeight(textString: text, lineHeight: guide0820Design(lineHeight))
+        label.font = .systemFont(ofSize: guide0820Design(48), weight: .medium)
+        label.setLineHeight(textString: text, lineHeight: guide0820Design(72))
         return label
     }
 }
@@ -113,6 +113,10 @@ final class Guide0820LifeProfileInfoOverlayVM: UIView {
     private let body: String
     // `references` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let references: String?
+    /// 半透明遮罩，仅点击弹窗外区域时触发关闭。
+    private let dimView = UIView()
+    /// 底部确认按钮。
+    private let confirmButton = UIButton(type: .custom)
 
     /// 初始化当前类型实例。
     init(title: String, body: String, references: String? = nil) {
@@ -120,7 +124,7 @@ final class Guide0820LifeProfileInfoOverlayVM: UIView {
         self.body = body
         self.references = references
         super.init(frame: .zero)
-        backgroundColor = UIColor.black.withAlphaComponent(0.2)
+        backgroundColor = .clear
         isHidden = true
         alpha = 0
         initUI()
@@ -150,8 +154,15 @@ final class Guide0820LifeProfileInfoOverlayVM: UIView {
 
     // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     private func initUI() {
+        dimView.backgroundColor = UIColor.black.withAlphaComponent(0.2)
+        dimView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(hideAction)))
+        addSubview(dimView)
+        dimView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+
         let panelView = UIView()
-        panelView.backgroundColor = .white
+        panelView.backgroundColor = .COLOR_CARD_BG_WHITE
         panelView.layer.cornerRadius = guide0820Design(24)
         panelView.layer.cornerCurve = .continuous
         panelView.clipsToBounds = true
@@ -211,19 +222,25 @@ final class Guide0820LifeProfileInfoOverlayVM: UIView {
             }
         }
 
-        let button = UIButton(type: .custom)
-        button.setTitle("我知道了", for: .normal)
-        button.setTitleColor(.THEME, for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: guide0820Design(32), weight: .medium)
-        button.backgroundColor = .white
-        button.layer.borderColor = UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.1).cgColor
-        button.layer.borderWidth = 1
-        button.addTarget(self, action: #selector(hideAction), for: .touchUpInside)
-        panelView.addSubview(button)
-        button.snp.makeConstraints { make in
+        confirmButton.setTitle("我知道了", for: .normal)
+        confirmButton.setTitleColor(.THEME, for: .normal)
+        confirmButton.titleLabel?.font = .systemFont(ofSize: guide0820Design(32), weight: .medium)
+        confirmButton.backgroundColor = .COLOR_CARD_BG_WHITE
+        confirmButton.addTarget(self, action: #selector(hideAction), for: .touchUpInside)
+        panelView.addSubview(confirmButton)
+        confirmButton.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
             make.top.equalTo(contentView.snp.bottom)
             make.height.equalTo(guide0820Design(96))
+        }
+
+        let separator = UIView()
+        separator.backgroundColor = .COLOR_LINE_F0
+        panelView.addSubview(separator)
+        separator.snp.makeConstraints { make in
+            make.left.right.equalToSuperview()
+            make.bottom.equalTo(confirmButton.snp.top)
+            make.height.equalTo(guide0820Design(1))
         }
     }
 }
@@ -282,6 +299,15 @@ final class Guide0820LifeProfileChoiceCard: UIControl {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+        updateAppearance(animated: false)
+    }
+
     // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     private func initUI() {
         if hasIcon {
@@ -326,6 +352,7 @@ final class Guide0820LifeProfileChoiceCard: UIControl {
             subtitleLabel.text = subtitleText
             subtitleLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
             subtitleLabel.font = .systemFont(ofSize: guide0820Design(24), weight: .regular)
+            subtitleLabel.guide0820SetLineHeight(guide0820Design(36))
             addSubview(subtitleLabel)
             subtitleLabel.snp.makeConstraints { make in
                 make.left.equalTo(titleLabel)
@@ -346,7 +373,9 @@ final class Guide0820LifeProfileChoiceCard: UIControl {
     // 执行 `updateAppearance` 操作，完成当前引导页面的状态更新或交互处理。
     private func updateAppearance(animated: Bool = true) {
         layer.borderWidth = isSelected ? 1.5 : 0
-        layer.borderColor = isSelected ? UIColor.THEME.cgColor : UIColor.clear.cgColor
+        layer.borderColor = isSelected
+            ? UIColor.THEME.resolvedColor(with: traitCollection).cgColor
+            : UIColor.clear.cgColor
         checkImageView.setCheckState(isSelected,
                                      checkedImageName: "select_icon_selected_circle",
                                      uncheckedImageName: "select_icon_normal_circle",
@@ -489,6 +518,15 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
         updateGradientVisibility()
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+        updateGradientColors()
+    }
+
     /// 执行 `commitCurrentValue` 操作，完成当前引导页面的状态更新或交互处理。
     override func commitCurrentValue() {
         commitValue(selectedValue ?? "")
@@ -579,8 +617,7 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
             }
         }
 
-        configureGradient(topGradientLayer, from: .COLOR_BG_F2, to: .COLOR_BG_F2.withAlphaComponent(0))
-        configureGradient(bottomGradientLayer, from: .COLOR_BG_F2.withAlphaComponent(0), to: .COLOR_BG_F2)
+        updateGradientColors()
         topGradientView.isUserInteractionEnabled = false
         bottomGradientView.isUserInteractionEnabled = false
         topGradientView.layer.addSublayer(topGradientLayer)
@@ -610,8 +647,16 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
     private func configureGradient(_ layer: CAGradientLayer, from: UIColor, to: UIColor) {
         layer.startPoint = CGPoint(x: 0.5, y: 0)
         layer.endPoint = CGPoint(x: 0.5, y: 1)
-        layer.colors = [from.cgColor, to.cgColor]
+        layer.colors = [
+            from.resolvedColor(with: traitCollection).cgColor,
+            to.resolvedColor(with: traitCollection).cgColor
+        ]
         layer.locations = [0, 1]
+    }
+
+    private func updateGradientColors() {
+        configureGradient(topGradientLayer, from: .COLOR_BG_F2, to: .COLOR_BG_F2.withAlphaComponent(0))
+        configureGradient(bottomGradientLayer, from: .COLOR_BG_F2.withAlphaComponent(0), to: .COLOR_BG_F2)
     }
 
     // 执行 `updateGradientVisibility` 操作，完成当前引导页面的状态更新或交互处理。
@@ -833,7 +878,7 @@ final class Guide0820LifeProfileCaloriesResultVM: Guide0820LifeProfilePageVM, UI
 
     // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     private func initUI() {
-        let titleLabel = makeTitleLabel("结合你的代谢和活动量\n你维持现体重所需的大致热量为：", fontSize: 36, lineHeight: 54)
+        let titleLabel = makeTitleLabel("结合你的代谢和活动量\n你维持现体重所需的大致热量为：")
         addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
             make.left.right.equalToSuperview().inset(guide0820Design(42))
@@ -957,7 +1002,7 @@ final class Guide0820LifeProfileReminderVM: Guide0820LifeProfilePageVM {
 
     // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     private func initUI() {
-        let titleLabel = makeTitleLabel("我们发现", fontSize: 48, lineHeight: 58)
+        let titleLabel = makeTitleLabel("我们发现")
         addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
             make.left.right.equalToSuperview().inset(guide0820Design(42))

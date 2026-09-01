@@ -79,6 +79,7 @@ final class GuidanceNutritionGoalsResultVC: WHBaseViewVC {
         super.viewDidLoad()
         navigationController?.setNavigationBarHidden(true, animated: false)
         buildInterface()
+        updateBottomGradientColors()
         updateValues()
     }
 
@@ -98,6 +99,20 @@ final class GuidanceNutritionGoalsResultVC: WHBaseViewVC {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         bottomGradientLayer.frame = bottomGradientView.bounds
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+        updateBottomGradientColors()
+        [carbohydrateField, proteinField, fatField]
+            .filter(\.isFirstResponder)
+            .forEach {
+                $0.layer.borderColor = UIColor.THEME.resolvedColor(with: traitCollection).cgColor
+            }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -143,6 +158,15 @@ final class GuidanceNutritionGoalsResultVC: WHBaseViewVC {
 }
 
 private extension GuidanceNutritionGoalsResultVC {
+    /// 将动态页面背景色重新解析为当前外观下的渐变 CGColor。
+    func updateBottomGradientColors() {
+        let color = UIColor.COLOR_BG_F2.resolvedColor(with: traitCollection)
+        bottomGradientLayer.colors = [
+            color.withAlphaComponent(0).cgColor,
+            color.cgColor
+        ]
+    }
+
     func showOperationSheet() {
         let operationView = Guide0820OperationSheetView(
             vm: Guide0820OperationSheetVM(),
@@ -265,7 +289,7 @@ private extension GuidanceNutritionGoalsResultVC {
         }
 
         contentView.addSubview(editCard)
-        editCard.backgroundColor = .white
+        editCard.backgroundColor = .COLOR_CARD_BG_WHITE
         editCard.layer.cornerRadius = kFitWidth(12)
         editCard.snp.makeConstraints {
             $0.left.equalTo(kFitWidth(16)); $0.right.equalTo(kFitWidth(-16)); $0.top.equalTo(titleStack.snp.bottom).offset(kFitWidth(22.5)); $0.height.equalTo(kFitWidth(149))
@@ -498,7 +522,7 @@ private extension GuidanceNutritionGoalsResultVC {
         return label
     }
 
-    func roundedCard() -> UIView { let view = UIView(); view.backgroundColor = .white; view.layer.cornerRadius = kFitWidth(12); return view }
+    func roundedCard() -> UIView { let view = UIView(); view.backgroundColor = .COLOR_CARD_BG_WHITE; view.layer.cornerRadius = kFitWidth(12); return view }
     func makeLabel(_ text: String, size: CGFloat, weight: UIFont.Weight, color: UIColor) -> UILabel { let label = UILabel(); label.text = text; label.textColor = color; label.font = .systemFont(ofSize: size, weight: weight); label.numberOfLines = 0; return label }
 
     func updateValues() {
@@ -588,7 +612,7 @@ extension GuidanceNutritionGoalsResultVC: UITextFieldDelegate {
             $0.layer.borderColor = nil
         }
         textField.layer.borderWidth = kFitWidth(1)
-        textField.layer.borderColor = UIColor.THEME.cgColor
+        textField.layer.borderColor = UIColor.THEME.resolvedColor(with: traitCollection).cgColor
         if !isEditingGoals {
             setEditingState(true, animated: true)
         }

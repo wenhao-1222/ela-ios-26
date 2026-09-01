@@ -239,6 +239,7 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
     override func viewDidLoad() {
         super.viewDidLoad()
         initUI()
+        updateBottomGradientColors()
         restoreSavedProgress()
         updatePage(animated: false)
     }
@@ -265,6 +266,26 @@ final class Guide0820BodyProfileVC: WHBaseViewVC {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         restoreFullscreenInteractivePopGesture()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        guard previousTraitCollection == nil ||
+                traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+
+        syncNextButtonState()
+        updateBottomGradientColors()
+    }
+
+    private func updateBottomGradientColors() {
+        let color = UIColor.COLOR_BG_F2.resolvedColor(with: traitCollection)
+        bottomGradientLayer.colors = [
+            color.withAlphaComponent(0).cgColor,
+            color.cgColor
+        ]
     }
 
     /// 释放当前类型实例持有的资源。
@@ -300,7 +321,7 @@ private extension Guide0820BodyProfileVC {
 
         view.addSubview(backButton)
         backButton.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(6))
+            make.left.equalTo(kFitWidth(16))
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(4.5))
             make.width.height.equalTo(kFitWidth(35))
         }

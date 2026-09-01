@@ -125,7 +125,7 @@ private extension Guide0820PrivacyView {
     /// - Returns: 协议卡片容器。
     func makeAgreementCardView() -> UIView {
         let cardView = UIView()
-        cardView.backgroundColor = .COLOR_BG_WHITE
+        cardView.backgroundColor = .COLOR_CARD_BG_WHITE
         cardView.layer.cornerRadius = kFitWidth(12)
         cardView.clipsToBounds = true
 
