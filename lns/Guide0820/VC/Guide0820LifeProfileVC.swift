@@ -15,6 +15,14 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
     private var currentIndex = 0
     // `isProgressPersistenceSuppressed` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var isProgressPersistenceSuppressed = false
+
+    /// 非首步时接管右滑手势，用于返回流程内的上一步。
+    private lazy var stepBackSwipeGesture: UISwipeGestureRecognizer = {
+        let gesture = UISwipeGestureRecognizer(target: self, action: #selector(handleStepBackSwipe))
+        gesture.direction = .right
+        gesture.isEnabled = false
+        return gesture
+    }()
     // `hasInstalledPages` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var hasInstalledPages = false
     // 防止热量结果页重复发起相同的基础消耗请求。
@@ -208,10 +216,25 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
         updatePage(animated: false)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateBackGestureAvailability()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateBackGestureAvailability()
+    }
+
     /// 执行 `viewDidLayoutSubviews` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         bottomGradientLayer.frame = bottomGradientView.bounds
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        restoreFullscreenInteractivePopGesture()
     }
 
     /// 释放当前类型实例持有的资源。
@@ -222,10 +245,28 @@ final class Guide0820LifeProfileVC: WHBaseViewVC {
 
 // Guide0820LifeProfileVC 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension Guide0820LifeProfileVC {
+    /// 首步交给导航控制器执行交互式 pop，其余步骤由页面内右滑返回上一步。
+    func updateBackGestureAvailability() {
+        let isFirstStep = currentIndex == 0
+        stepBackSwipeGesture.isEnabled = !isFirstStep
+
+        if isFirstStep {
+            restoreFullscreenInteractivePopGesture()
+        } else {
+            canEdgeBack = false
+            fd_forceDisableInteractivePopGesture = true
+            fd_interactivePopDisabled = true
+            navigationController?.fd_interactivePopDisabled = true
+            navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+            navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        }
+    }
+
     // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     func initUI() {
         navigationController?.setNavigationBarHidden(true, animated: false)
         view.backgroundColor = .COLOR_BG_F2
+        view.addGestureRecognizer(stepBackSwipeGesture)
 
         view.addSubview(backButton)
         backButton.snp.makeConstraints { make in
@@ -294,6 +335,7 @@ private extension Guide0820LifeProfileVC {
     func updatePage(animated: Bool) {
         guard hasInstalledPages, pages.isEmpty == false else { return }
         currentIndex = clampedCurrentIndex()
+        updateBackGestureAvailability()
         view.layoutIfNeeded()
         scrollView.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(currentIndex), y: 0), animated: animated)
         updateProgress()
@@ -335,6 +377,11 @@ private extension Guide0820LifeProfileVC {
             return
         }
         navigationController?.popViewController(animated: true)
+    }
+
+    @objc func handleStepBackSwipe() {
+        guard currentIndex > 0 else { return }
+        backButtonAction()
     }
 
     // 执行 `nextButtonAction` 操作，完成当前引导页面的状态更新或交互处理。

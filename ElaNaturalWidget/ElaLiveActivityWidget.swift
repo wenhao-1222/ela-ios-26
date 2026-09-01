@@ -43,7 +43,7 @@ struct LiveActivityContentView: View {
                     Image(systemName: "drop.fill")
                         .font(.caption2)
                     Text("550 ml")
-                        .font(.caption2)
+                        .font(Font.custom("D-DIN-PRO-Regular", size: 11, relativeTo: .caption2))
                 }
 //            }
         }
@@ -71,8 +71,10 @@ struct ElaLiveActivityWidget: Widget {
                                }
             } compactLeading: {
                 Text("\(context.state.calories)")
+                    .font(Font.custom("D-DIN-PRO-Regular", size: 17))
             } compactTrailing: {
                 Text("550")
+                    .font(Font.custom("D-DIN-PRO-Regular", size: 17))
             } minimal: {
                 Image(systemName: "flame")
             }

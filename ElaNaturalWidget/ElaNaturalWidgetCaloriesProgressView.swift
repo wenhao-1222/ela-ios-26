@@ -40,13 +40,13 @@ struct ElaNaturalWidgetCaloriesProgressView: View {
                     if number > numberTarget{
                         Text("\(Int(number.rounded()))".replacingOccurrences(of: ",", with: ""))
                             .foregroundColor(Color.red)
-                            .font(.system(size: 10,weight: .medium))
+                            .font(Font.custom("D-DIN-PRO-Medium", size: 10))
                             .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: -4))
                     }else{
                         Text("\(Int(number.rounded()))".replacingOccurrences(of: ",", with: ""))
 //                            .foregroundColor(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_85))
                             .foregroundColor(Color(UIColor(named: "text_color_85") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_85))
-                            .font(.system(size: 10,weight: .medium))
+                            .font(Font.custom("D-DIN-PRO-Medium", size: 10))
                             .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: -4))
 //                            .minimumScaleFactor(0.5)
 //                            .lineLimit(1)
@@ -54,7 +54,7 @@ struct ElaNaturalWidgetCaloriesProgressView: View {
                     Text("/\(Int(numberTarget.rounded()))千卡".replacingOccurrences(of: ",", with: ""))
 //                        .foregroundColor(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_85))
                         .foregroundColor(Color(UIColor(named: "text_color_85") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_85))
-                        .font(.system(size: 8,weight: .regular))
+                        .font(Font.custom("D-DIN-PRO-Regular", size: 8))
                 })
                 
                 ZStack(alignment: .leading, content: {

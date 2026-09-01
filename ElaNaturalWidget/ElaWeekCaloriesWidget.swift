@@ -44,6 +44,37 @@ enum WeekRemainingMetric: Equatable {
         }
     }
 
+    /// Opaque equivalent of rgba(15, 18, 20, 0.5) composited over the
+    /// corresponding light-mode progress color.
+    var lightOpaqueOverflowColor: Color {
+        switch self {
+        case .calories:
+            return Color(
+                red: 7.5 / 255.0,
+                green: 70.0 / 255.0,
+                blue: 137.5 / 255.0
+            )
+        case .carbohydrate:
+            return Color(
+                red: 64.0 / 255.0,
+                green: 36.5 / 255.0,
+                blue: 105.5 / 255.0
+            )
+        case .protein:
+            return Color(
+                red: 130.0 / 255.0,
+                green: 102.0 / 255.0,
+                blue: 22.0 / 255.0
+            )
+        case .fat:
+            return Color(
+                red: 121.0 / 255.0,
+                green: 66.5 / 255.0,
+                blue: 22.0 / 255.0
+            )
+        }
+    }
+
     var lightBackgroundTint: Color {
         switch self {
         case .calories:
@@ -78,6 +109,64 @@ enum WeekRemainingMetric: Equatable {
             return [
                 Color(red: 0.341, green: 0.204, blue: 0.149),
                 Color(red: 0.478, green: 0.306, blue: 0.216)
+            ]
+        }
+    }
+
+    /// Equivalent to the dark widget background with the former 8% white
+    /// track composited on top, but expressed as fully opaque colors so the
+    /// overlay ring can actually cover the progress layers below it.
+    var darkOpaqueTrackGradientColors: [Color] {
+        switch self {
+        case .calories:
+            return [
+                Color(red: 0.1812, green: 0.27136, blue: 0.41948),
+                Color(red: 0.25664, green: 0.39004, blue: 0.63568)
+            ]
+        case .carbohydrate:
+            return [
+                Color(red: 0.29252, green: 0.27136, blue: 0.4986),
+                Color(red: 0.41212, green: 0.3652, blue: 0.6504)
+            ]
+        case .protein:
+            return [
+                Color(red: 0.36152, green: 0.27872, blue: 0.13428),
+                Color(red: 0.50228, green: 0.379, blue: 0.20604)
+            ]
+        case .fat:
+            return [
+                Color(red: 0.39372, green: 0.26768, blue: 0.21708),
+                Color(red: 0.51976, green: 0.36152, blue: 0.27872)
+            ]
+        }
+    }
+
+    /// Equivalent to the light widget tint with the former 6% black track
+    /// composited on top. The lower endpoint is shared because the widget's
+    /// gray background gradient is fully opaque at its end.
+    var lightOpaqueTrackGradientColors: [Color] {
+        let bottomColor = Color(red: 0.89208, green: 0.89208, blue: 0.89208)
+
+        switch self {
+        case .calories:
+            return [
+                Color(red: 0.8272, green: 0.8812, blue: 0.94),
+                bottomColor
+            ]
+        case .carbohydrate:
+            return [
+                Color(red: 0.89576, green: 0.86303, blue: 0.94),
+                bottomColor
+            ]
+        case .protein:
+            return [
+                Color(red: 0.94, green: 0.92408, blue: 0.84356),
+                bottomColor
+            ]
+        case .fat:
+            return [
+                Color(red: 0.94, green: 0.88692, blue: 0.84356),
+                bottomColor
             ]
         }
     }
@@ -241,24 +330,29 @@ private struct WeekRemainingProgressRing: View {
         let progressColor = colorScheme == .dark ? Color.white : metric.accent
         let overflowColor = colorScheme == .dark
             ? Color(
-                red: 135.0 / 255.0,
-                green: 136.5 / 255.0,
-                blue: 137.5 / 255.0
+                red: 207.0 / 255.0,
+                green: 207.6 / 255.0,
+                blue: 208.0 / 255.0
             )
-            : Color(red: 8.0 / 255.0, green: 70.0 / 255.0, blue: 137.0 / 255.0)
-        let trackColor = colorScheme == .dark
-            ? Color.white.opacity(0.08)
-            : Color(red: 15.0 / 255.0, green: 18.0 / 255.0, blue: 20.0 / 255.0).opacity(0.06)
+            : metric.lightOpaqueOverflowColor
+        let trackGradient = opaqueTrackGradient
+        let ringFCoverProgress = CGFloat(30.0 / 360.0)
 
         ZStack {
             Circle()
                 .inset(by: lineWidth / 2)
-                .stroke(trackColor, lineWidth: lineWidth)
+                .stroke(
+                    trackGradient,
+                    style: StrokeStyle(lineWidth: lineWidth)
+                )
 
             if normalProgress >= 1 {
                 Circle()
                     .inset(by: lineWidth / 2)
-                    .stroke(progressColor, lineWidth: lineWidth)
+                    .stroke(
+                        progressColor,
+                        style: StrokeStyle(lineWidth: lineWidth)
+                    )
             } else if normalProgress > 0 {
                 Circle()
                     .inset(by: lineWidth / 2)
@@ -279,7 +373,10 @@ private struct WeekRemainingProgressRing: View {
             if overflowProgress >= 1 {
                 Circle()
                     .inset(by: lineWidth / 2)
-                    .stroke(overflowColor, lineWidth: lineWidth)
+                    .stroke(
+                        overflowColor,
+                        style: StrokeStyle(lineWidth: lineWidth)
+                    )
             } else if overflowProgress > 0 {
                 Circle()
                     .inset(by: lineWidth / 2)
@@ -296,7 +393,58 @@ private struct WeekRemainingProgressRing: View {
                     lineWidth: lineWidth
                 )
             }
+
+            // Ring F: a topmost, counter-clockwise cover arc that repairs the
+            // shared start seam for very small and newly-overflowing progress.
+            if progress < 0.3 {
+                Circle()
+                    .inset(by: lineWidth / 2)
+                    .trim(from: 1 - ringFCoverProgress, to: 1)
+                    .stroke(
+                        trackGradient,
+                        style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
+                    )
+                    .rotationEffect(.degrees(-90))
+            } else if progress > 1, progress < 1.3 {
+                Circle()
+                    .inset(by: lineWidth / 2)
+                    .trim(from: 1 - ringFCoverProgress, to: 1)
+                    .stroke(
+                        progressColor,
+                        style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
+                    )
+                    .rotationEffect(.degrees(-90))
+            }
         }
+    }
+
+    private var opaqueTrackGradient: LinearGradient {
+        if colorScheme == .dark {
+            let points = metric.darkGradientPoints
+            return LinearGradient(
+                colors: metric.darkOpaqueTrackGradientColors,
+                startPoint: ringLocalPoint(fromWidgetPoint: points.start),
+                endPoint: ringLocalPoint(fromWidgetPoint: points.end)
+            )
+        }
+
+        return LinearGradient(
+            colors: metric.lightOpaqueTrackGradientColors,
+            startPoint: ringLocalPoint(fromWidgetPoint: UnitPoint(x: 0.5, y: 0)),
+            endPoint: ringLocalPoint(fromWidgetPoint: UnitPoint(x: 0.5, y: 1))
+        )
+    }
+
+    /// The ring occupies a 72×72 area at (15, 15) in the 153×153 widget
+    /// design space. Transform widget gradient points into the ring's local
+    /// coordinate space so the opaque track preserves the old appearance.
+    private func ringLocalPoint(fromWidgetPoint point: UnitPoint) -> UnitPoint {
+        let ringOrigin = 15.0 / 153.0
+        let ringSize = 72.0 / 153.0
+        return UnitPoint(
+            x: (point.x - ringOrigin) / ringSize,
+            y: (point.y - ringOrigin) / ringSize
+        )
     }
 }
 
@@ -313,7 +461,7 @@ private struct WeekRemainingRingEndCap: View {
             let angle = (2 * CGFloat.pi * progress) - (CGFloat.pi / 2)
 
             Circle()
-                .fill(color)
+                .fill(color, style: FillStyle(antialiased: true))
                 .frame(width: lineWidth, height: lineWidth)
                 .position(
                     x: centerX + cos(angle) * radius,

@@ -42,8 +42,8 @@ enum FiveMealsWidgetStyle {
 
     static func ringTrack(for colorScheme: ColorScheme) -> Color {
         colorScheme == .dark
-            ? Color.white.opacity(0.06)
-            : Color(red: 15.0 / 255.0, green: 18.0 / 255.0, blue: 20.0 / 255.0).opacity(0.06)
+            ? Color(red: 0.08538, green: 0.1634, blue: 0.27714)
+            : Color(red: 0.94353, green: 0.94424, blue: 0.94471)
     }
 
     static func divider(for colorScheme: ColorScheme) -> Color {
@@ -388,43 +388,69 @@ private struct FiveMealsCaloriesRing: View {
         let overflowEndAngle = (2 * CGFloat.pi * overflowProgress) - (CGFloat.pi / 2)
 
         ZStack {
-            Circle()
-                .inset(by: lineWidth / 2)
-                .stroke(FiveMealsWidgetStyle.ringTrack(for: colorScheme), lineWidth: lineWidth)
-
-            Circle()
-                .inset(by: lineWidth / 2)
-                .trim(from: 0, to: normalProgress)
-                .stroke(
-                    FiveMealsWidgetStyle.themeBlue,
-                    style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
-                )
-                .rotationEffect(.degrees(-90))
-
-            if normalProgress > 0 {
-                FiveMealsRingCap(
-                    color: FiveMealsWidgetStyle.themeBlue,
-                    angle: normalEndAngle,
-                    lineWidth: lineWidth
-                )
-            }
-
-            if overflowProgress > 0 {
+            ZStack {
                 Circle()
                     .inset(by: lineWidth / 2)
-                    .trim(from: 0, to: overflowProgress)
                     .stroke(
-                        FiveMealsWidgetStyle.calorieOverflow,
+                        FiveMealsWidgetStyle.ringTrack(for: colorScheme),
+                        style: StrokeStyle(lineWidth: lineWidth)
+                    )
+
+                Circle()
+                    .inset(by: lineWidth / 2)
+                    .trim(from: 0, to: normalProgress)
+                    .stroke(
+                        FiveMealsWidgetStyle.themeBlue,
                         style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
                     )
                     .rotationEffect(.degrees(-90))
 
-                if overflowProgress < 1 {
+                if normalProgress > 0 {
                     FiveMealsRingCap(
-                        color: FiveMealsWidgetStyle.calorieOverflow,
-                        angle: overflowEndAngle,
+                        color: FiveMealsWidgetStyle.themeBlue,
+                        angle: normalEndAngle,
                         lineWidth: lineWidth
                     )
+                }
+
+                if overflowProgress > 0 {
+                    Circle()
+                        .inset(by: lineWidth / 2)
+                        .trim(from: 0, to: overflowProgress)
+                        .stroke(
+                            FiveMealsWidgetStyle.calorieOverflow,
+                            style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
+                        )
+                        .rotationEffect(.degrees(-90))
+
+                    if overflowProgress < 1 {
+                        FiveMealsRingCap(
+                            color: FiveMealsWidgetStyle.calorieOverflow,
+                            angle: overflowEndAngle,
+                            lineWidth: lineWidth
+                        )
+                    }
+                }
+
+                let ringFCoverProgress = CGFloat(30.0 / 360.0)
+                if progress < 0.3 {
+                    Circle()
+                        .inset(by: lineWidth / 2)
+                        .trim(from: 1 - ringFCoverProgress, to: 1)
+                        .stroke(
+                            FiveMealsWidgetStyle.ringTrack(for: colorScheme),
+                            style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
+                        )
+                        .rotationEffect(.degrees(-90))
+                } else if progress > 1, progress < 1.3 {
+                    Circle()
+                        .inset(by: lineWidth / 2)
+                        .trim(from: 1 - ringFCoverProgress, to: 1)
+                        .stroke(
+                            FiveMealsWidgetStyle.themeBlue,
+                            style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
+                        )
+                        .rotationEffect(.degrees(-90))
                 }
             }
 
@@ -465,7 +491,7 @@ private struct FiveMealsRingCap: View {
             let radius = (min(geometry.size.width, geometry.size.height) - lineWidth) / 2
 
             Circle()
-                .fill(color)
+                .fill(color, style: FillStyle(antialiased: true))
                 .frame(width: lineWidth, height: lineWidth)
                 .position(
                     x: centerX + cos(angle) * radius,
@@ -507,14 +533,14 @@ private struct FiveMealsMacroProgressRow: View {
                             ? FiveMealsWidgetStyle.overflowRed
                             : FiveMealsWidgetStyle.primaryText(for: colorScheme)
                     )
-                    .font(Font.custom("PingFangSC-Medium", size: 12 * scale))
+                    .font(Font.custom("D-DIN-PRO-Medium", size: 12 * scale))
                     .monospacedDigit()
                     .minimumScaleFactor(0.6)
                     .lineLimit(1)
 
                 Text(verbatim: "/\(Int(target.rounded()))g")
                     .foregroundColor(FiveMealsWidgetStyle.secondaryText(for: colorScheme))
-                    .font(Font.custom("PingFangSC-Regular", size: 12 * scale))
+                    .font(Font.custom("D-DIN-PRO-Regular", size: 12 * scale))
                     .monospacedDigit()
                     .minimumScaleFactor(0.6)
                     .lineLimit(1)

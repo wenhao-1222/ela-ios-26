@@ -42,7 +42,12 @@ final class Guide0820StartVC: WHBaseViewVC {
     /// 执行 `viewWillAppear` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        enforceInteractivePopGestureDisabled()
+        // 作为交互式 pop 的目标页出现时，导航控制器的返回手势仍在驱动
+        // 当前转场。此时禁用它会令转场卡住，后续页面也无法响应触摸。
+        // 返回完成后 viewDidAppear 会再禁用开始页自身的返回手势。
+        if transitionCoordinator?.isInteractive != true {
+            enforceInteractivePopGestureDisabled()
+        }
         rootView?.reloadSteps()
     }
 

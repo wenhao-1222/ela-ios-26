@@ -15,7 +15,7 @@ struct ElaNaturalWidgetBundle: WidgetBundle {
         ElaNaturalWidgetCalories()//六餐  带卡路里icon
         
         ElaNaturalWidgetCaloriesFourMeals()//四餐  带卡路里icon
-        ElaNaturalWidgetCaloriesThreeMeals()//三餐  带卡路里icon
+        //ElaNaturalWidgetCaloriesThreeMeals()//三餐  带卡路里icon
         ElaNaturalWidget()//六餐
         ElaNaturalFiveMealsWidget()//五餐
         ElaNaturalFourMealsWidget()//四餐

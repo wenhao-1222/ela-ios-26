@@ -31,6 +31,25 @@ private enum CaloriesMealsWidgetStyle {
     static func divider(for colorScheme: ColorScheme) -> Color {
         colorScheme == .dark ? Color.white.opacity(0.1) : Color.black.opacity(0.1)
     }
+
+    // Opaque equivalents of rgba(15, 18, 20, 0.5) composited over each macro ring color.
+    static func carbohydrateOverflow(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark
+            ? Color(red: 85.0 / 255.0, green: 49.5 / 255.0, blue: 137.5 / 255.0)
+            : Color(red: 64.0 / 255.0, green: 36.5 / 255.0, blue: 105.5 / 255.0)
+    }
+
+    static func proteinOverflow(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark
+            ? Color(red: 135.0 / 255.0, green: 118.5 / 255.0, blue: 28.5 / 255.0)
+            : Color(red: 130.0 / 255.0, green: 102.0 / 255.0, blue: 22.0 / 255.0)
+    }
+
+    static func fatOverflow(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark
+            ? Color(red: 135.0 / 255.0, green: 76.5 / 255.0, blue: 28.5 / 255.0)
+            : Color(red: 121.0 / 255.0, green: 66.5 / 255.0, blue: 22.0 / 255.0)
+    }
 }
 
 struct CaloriesMealsWidgetBackground: View {
@@ -92,6 +111,9 @@ struct ElaNaturalCaloriesMealsWidgetEntryView: View {
                             value: Int(dict.doubleValueForKeyWidget(key: "carbohydrates").rounded()),
                             target: Int(dict.doubleValueForKeyWidget(key: "carboTar").rounded()),
                             progressColor: FiveMealsWidgetStyle.carbohydrate,
+                            overflowColor: mealCount == 3
+                                ? FiveMealsWidgetStyle.macroOverflow
+                                : CaloriesMealsWidgetStyle.carbohydrateOverflow(for: colorScheme),
                             scale: scale
                         )
 
@@ -100,6 +122,9 @@ struct ElaNaturalCaloriesMealsWidgetEntryView: View {
                             value: Int(dict.doubleValueForKeyWidget(key: "protein").rounded()),
                             target: Int(dict.doubleValueForKeyWidget(key: "proteinTar").rounded()),
                             progressColor: FiveMealsWidgetStyle.protein,
+                            overflowColor: mealCount == 3
+                                ? FiveMealsWidgetStyle.macroOverflow
+                                : CaloriesMealsWidgetStyle.proteinOverflow(for: colorScheme),
                             scale: scale
                         )
 
@@ -108,6 +133,9 @@ struct ElaNaturalCaloriesMealsWidgetEntryView: View {
                             value: Int(dict.doubleValueForKeyWidget(key: "fats").rounded()),
                             target: Int(dict.doubleValueForKeyWidget(key: "fatsTar").rounded()),
                             progressColor: FiveMealsWidgetStyle.fat,
+                            overflowColor: mealCount == 3
+                                ? FiveMealsWidgetStyle.macroOverflow
+                                : CaloriesMealsWidgetStyle.fatOverflow(for: colorScheme),
                             scale: scale
                         )
                     }
@@ -253,7 +281,7 @@ private struct CaloriesMealsHeaderProgress: View {
 
                 Text(verbatim: "/\(target)千卡")
                     .foregroundColor(FiveMealsWidgetStyle.secondaryText(for: colorScheme))
-                    .font(Font.custom("PingFangSC-Regular", size: 9 * scale))
+                    .font(Font.custom("D-DIN-PRO-Regular", size: 9 * scale))
                     .monospacedDigit()
                     .minimumScaleFactor(0.7)
                     .lineLimit(1)
@@ -306,6 +334,7 @@ private struct CaloriesMealsMacroRing: View {
     let value: Int
     let target: Int
     let progressColor: Color
+    let overflowColor: Color
     let scale: CGFloat
 
     @Environment(\.colorScheme) private var colorScheme
@@ -321,31 +350,73 @@ private struct CaloriesMealsMacroRing: View {
                 let normalProgress = min(progress, 1)
                 let overflowProgress = min(max(progress - 1, 0), 1)
                 let lineWidth = 5 * scale
+                let normalEndAngle = (2 * CGFloat.pi * normalProgress) - (CGFloat.pi / 2)
+                let overflowEndAngle = (2 * CGFloat.pi * overflowProgress) - (CGFloat.pi / 2)
 
-                Circle()
-                    .inset(by: lineWidth / 2)
-                    .stroke(FiveMealsWidgetStyle.ringTrack(for: colorScheme), lineWidth: lineWidth)
-
-                if normalProgress > 0 {
+                ZStack {
                     Circle()
                         .inset(by: lineWidth / 2)
-                        .trim(from: 0, to: normalProgress)
                         .stroke(
-                            progressColor,
-                            style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
+                            FiveMealsWidgetStyle.ringTrack(for: colorScheme),
+                            style: StrokeStyle(lineWidth: lineWidth)
                         )
-                        .rotationEffect(.degrees(-90))
-                }
 
-                if overflowProgress > 0 {
-                    Circle()
-                        .inset(by: lineWidth / 2)
-                        .trim(from: 0, to: overflowProgress)
-                        .stroke(
-                            FiveMealsWidgetStyle.macroOverflow,
-                            style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
+                    if normalProgress > 0 {
+                        Circle()
+                            .inset(by: lineWidth / 2)
+                            .trim(from: 0, to: normalProgress)
+                            .stroke(
+                                progressColor,
+                                style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
+                            )
+                            .rotationEffect(.degrees(-90))
+
+                        CaloriesMealsRingEndCap(
+                            color: progressColor,
+                            angle: normalEndAngle,
+                            lineWidth: lineWidth
                         )
-                        .rotationEffect(.degrees(-90))
+                    }
+
+                    if overflowProgress > 0 {
+                        Circle()
+                            .inset(by: lineWidth / 2)
+                            .trim(from: 0, to: overflowProgress)
+                            .stroke(
+                                overflowColor,
+                                style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
+                            )
+                            .rotationEffect(.degrees(-90))
+
+                        if overflowProgress < 1 {
+                            CaloriesMealsRingEndCap(
+                                color: overflowColor,
+                                angle: overflowEndAngle,
+                                lineWidth: lineWidth
+                            )
+                        }
+                    }
+
+                    let ringFCoverProgress = CGFloat(30.0 / 360.0)
+                    if progress < 0.3 {
+                        Circle()
+                            .inset(by: lineWidth / 2)
+                            .trim(from: 1 - ringFCoverProgress, to: 1)
+                            .stroke(
+                                FiveMealsWidgetStyle.ringTrack(for: colorScheme),
+                                style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
+                            )
+                            .rotationEffect(.degrees(-90))
+                    } else if progress > 1, progress < 1.3 {
+                        Circle()
+                            .inset(by: lineWidth / 2)
+                            .trim(from: 1 - ringFCoverProgress, to: 1)
+                            .stroke(
+                                progressColor,
+                                style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
+                            )
+                            .rotationEffect(.degrees(-90))
+                    }
                 }
 
                 VStack(spacing: 1 * scale) {
@@ -362,7 +433,7 @@ private struct CaloriesMealsMacroRing: View {
 
                     Text(verbatim: "/\(target)")
                         .foregroundColor(FiveMealsWidgetStyle.secondaryText(for: colorScheme))
-                        .font(Font.custom("PingFangSC-Regular", size: 11 * scale))
+                        .font(Font.custom("D-DIN-PRO-Regular", size: 11 * scale))
                         .monospacedDigit()
                         .minimumScaleFactor(0.6)
                         .lineLimit(1)
@@ -379,6 +450,29 @@ private struct CaloriesMealsMacroRing: View {
         }
         .padding(.top, 2.5 * scale)
         .frame(width: 55 * scale, height: 70 * scale, alignment: .top)
+    }
+}
+
+private struct CaloriesMealsRingEndCap: View {
+    let color: Color
+    let angle: CGFloat
+    let lineWidth: CGFloat
+
+    var body: some View {
+        GeometryReader { geometry in
+            let centerX = geometry.size.width / 2
+            let centerY = geometry.size.height / 2
+            let radius = (min(geometry.size.width, geometry.size.height) - lineWidth) / 2
+
+            Circle()
+                .fill(color, style: FillStyle(antialiased: true))
+                .frame(width: lineWidth, height: lineWidth)
+                .position(
+                    x: centerX + cos(angle) * radius,
+                    y: centerY + sin(angle) * radius
+                )
+        }
+        .allowsHitTesting(false)
     }
 }
 

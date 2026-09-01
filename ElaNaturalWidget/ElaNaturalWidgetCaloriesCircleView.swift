@@ -18,49 +18,76 @@ struct ElaNaturalWidgetCaloriesCircleView: View {
     var themeColor = Color("color_natural_calories", bundle: .main)
     var fillColor = Color.init(red: 31.0/255.0, green: 64.0/255.0, blue: 134.0/255.0)
     //Color(red: 85.0/255.0, green: 41.0/255.0, blue: 143.0/255.0)
+
+    @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         GeometryReader { geometry in
+            let trackColor = WidgetCircularProgressStyle.opaqueTrack(for: colorScheme)
+            let percent = Double(calories)/Double(caloriesTarget)
+
             ZStack(alignment: .center, content: {
-                Arc(startAngle: .degrees(-90), endAngle: .degrees(270), clockwise: false)
-//                    .stroke(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_06), lineWidth: lineWidth)
-                    .stroke(Color(UIColor(named: "text_color_06") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_06), lineWidth: lineWidth)
-                            .frame(width: geometry.size.width, height: geometry.size.width)
-                                    .frame(width: geometry.size.width, height: geometry.size.width)
-                
-                let percent = Double(calories)/Double(caloriesTarget)
-                
-                if percent > 0{
-                    //进度
-                    ArcProgress(startAngle: .degrees(-90), endAngle: .degrees(360)*(percent)-Angle.degrees(90), clockwise: false, lineWidthProgress: lineWidthProgress)
-                        .stroke(themeColor, style: StrokeStyle(lineWidth: lineWidthProgress,lineCap:.round))
+                ZStack {
+                    Arc(startAngle: .degrees(-90), endAngle: .degrees(270), clockwise: false)
+    //                    .stroke(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_06), lineWidth: lineWidth)
+                        .stroke(
+                            trackColor,
+                            style: StrokeStyle(lineWidth: lineWidth)
+                        )
                         .frame(width: geometry.size.width, height: geometry.size.width)
-                        .animation(.linear(duration: 0.3))
-                    if percent > 1 {//如果  摄入  ＞  目标
-                        let percentShow = percent >= 2 ? 2 : percent
-                        ArcProgress(startAngle: .degrees(-90), endAngle: .degrees(360)*(percentShow-1)-Angle.degrees(90), clockwise: false, lineWidthProgress: lineWidthProgress)
-                            .stroke(fillColor, style: StrokeStyle(lineWidth: lineWidthProgress,lineCap: .round,lineJoin: .round))
+
+                    if percent > 0{
+                        //进度
+                        ArcProgress(startAngle: .degrees(-90), endAngle: .degrees(360)*(percent)-Angle.degrees(90), clockwise: false, lineWidthProgress: lineWidthProgress)
+                            .stroke(themeColor, style: StrokeStyle(lineWidth: lineWidthProgress,lineCap:.round))
                             .frame(width: geometry.size.width, height: geometry.size.width)
                             .animation(.linear(duration: 0.3))
-                        ArcProgress(startAngle: .degrees(-90), endAngle: .degrees(360)*(percentShow-1)-Angle.degrees(90), clockwise: false, lineWidthProgress: lineWidthProgress)
-                            .stroke(Color.white.opacity(0.55), style: StrokeStyle(lineWidth: lineWidthProgress,dash: [1,3],dashPhase: 2))
-                            .frame(width: geometry.size.width, height: geometry.size.width)
-                            .animation(.linear(duration: 0.3))
+                        if percent > 1 {//如果  摄入  ＞  目标
+                            let percentShow = percent >= 2 ? 2 : percent
+                            ArcProgress(startAngle: .degrees(-90), endAngle: .degrees(360)*(percentShow-1)-Angle.degrees(90), clockwise: false, lineWidthProgress: lineWidthProgress)
+                                .stroke(fillColor, style: StrokeStyle(lineWidth: lineWidthProgress,lineCap: .round,lineJoin: .round))
+                                .frame(width: geometry.size.width, height: geometry.size.width)
+                                .animation(.linear(duration: 0.3))
+                            ArcProgress(startAngle: .degrees(-90), endAngle: .degrees(360)*(percentShow-1)-Angle.degrees(90), clockwise: false, lineWidthProgress: lineWidthProgress)
+                                .stroke(Color.white.opacity(0.55), style: StrokeStyle(lineWidth: lineWidthProgress,dash: [1,3],dashPhase: 2))
+                                .frame(width: geometry.size.width, height: geometry.size.width)
+                                .animation(.linear(duration: 0.3))
+                        }
+                    }
+
+                    if percent < 0.3 {
+                        ArcProgress(
+                            startAngle: WidgetCircularProgressStyle.ringFCoverStartAngle,
+                            endAngle: WidgetCircularProgressStyle.ringFCoverEndAngle,
+                            clockwise: false,
+                            lineWidthProgress: lineWidthProgress
+                        )
+                        .stroke(trackColor, style: StrokeStyle(lineWidth: lineWidthProgress, lineCap: .butt))
+                        .frame(width: geometry.size.width, height: geometry.size.width)
+                    } else if percent > 1, percent < 1.3 {
+                        ArcProgress(
+                            startAngle: WidgetCircularProgressStyle.ringFCoverStartAngle,
+                            endAngle: WidgetCircularProgressStyle.ringFCoverEndAngle,
+                            clockwise: false,
+                            lineWidthProgress: lineWidthProgress
+                        )
+                        .stroke(themeColor, style: StrokeStyle(lineWidth: lineWidthProgress, lineCap: .butt))
+                        .frame(width: geometry.size.width, height: geometry.size.width)
                     }
                 }
-                
+
                 VStack{
                         Text("\(calories)".replacingOccurrences(of: ",", with: ""))
 //                        .foregroundColor(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_85))
                         .foregroundColor(Color(UIColor(named: "text_color_85") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_85))
-                            .font(.system(size: 12,weight: .bold))
+                            .font(Font.custom("D-DIN-PRO-Bold", size: 12))
                             .minimumScaleFactor(0.5)
                             .lineLimit(1)
                     Text("/\(caloriesTarget)".replacingOccurrences(of: ",", with: ""))
 //                        .foregroundColor(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_45))
                         .foregroundColor(Color(UIColor(named: "text_color_45") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_45))
                     
-                        .font(Font.system(size: 8,weight: .medium))
+                        .font(Font.custom("D-DIN-PRO-Medium", size: 8))
                         .minimumScaleFactor(0.5)
                         .lineLimit(1)
                 }

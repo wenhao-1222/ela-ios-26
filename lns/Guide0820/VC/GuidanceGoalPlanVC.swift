@@ -20,6 +20,14 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
     private let progressTotalStepCount = 7
     // `currentIndex` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var currentIndex = 0
+
+    /// 非首步时接管右滑手势，用于返回流程内的上一步。
+    private lazy var stepBackSwipeGesture: UISwipeGestureRecognizer = {
+        let gesture = UISwipeGestureRecognizer(target: self, action: #selector(handleStepBackSwipe))
+        gesture.direction = .right
+        gesture.isEnabled = false
+        return gesture
+    }()
     // `currentPageView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var currentPageView: UIView?
     // `pageCache` 属性，保存该类型对外提供或内部使用的状态与配置。
@@ -114,11 +122,39 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: false)
+        updateBackGestureAvailability()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateBackGestureAvailability()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        restoreFullscreenInteractivePopGesture()
     }
 }
 
 // GuidanceGoalPlanVC 扩展，提供 Guide0820 流程相关的辅助能力。
 private extension GuidanceGoalPlanVC {
+    /// 首步交给导航控制器执行交互式 pop，其余步骤由页面内右滑返回上一步。
+    func updateBackGestureAvailability() {
+        let isFirstStep = currentIndex == 0
+        stepBackSwipeGesture.isEnabled = !isFirstStep
+
+        if isFirstStep {
+            restoreFullscreenInteractivePopGesture()
+        } else {
+            canEdgeBack = false
+            fd_forceDisableInteractivePopGesture = true
+            fd_interactivePopDisabled = true
+            navigationController?.fd_interactivePopDisabled = true
+            navigationController?.fd_fullscreenPopGestureRecognizer.isEnabled = false
+            navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+        }
+    }
+
     /// 在目标方向流程开始时预加载收费墙商品，为 StoreKit 查询预留更多时间。
     func preloadProProducts() {
         ElaProPriceVM.preloadProducts(bizType: "1", isPurchased: "1") { success in
@@ -129,6 +165,7 @@ private extension GuidanceGoalPlanVC {
     // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     func initUI() {
         view.backgroundColor = GuidanceGoalPlanStyle.pageBackgroundColor
+        view.addGestureRecognizer(stepBackSwipeGesture)
         view.addSubview(backButton)
         view.addSubview(titleLabel)
         view.addSubview(progressTrackView)
@@ -192,6 +229,7 @@ private extension GuidanceGoalPlanVC {
         let steps = flowState.steps
         guard steps.indices.contains(index) else { return }
         currentIndex = index
+        updateBackGestureAvailability()
         persistCurrentProgress()
 
         installPages(steps)
@@ -348,6 +386,11 @@ private extension GuidanceGoalPlanVC {
         if presentingViewController != nil {
             dismiss(animated: true)
         }
+    }
+
+    @objc func handleStepBackSwipe() {
+        guard currentIndex > 0 else { return }
+        backButtonTapAction()
     }
 
     // 执行 `nextButtonTapAction` 操作，完成当前引导页面的状态更新或交互处理。

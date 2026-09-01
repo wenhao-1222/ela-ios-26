@@ -7,6 +7,17 @@
 
 import SwiftUI
 
+enum WidgetCircularProgressStyle {
+    static let ringFCoverStartAngle = Angle.degrees(-120)
+    static let ringFCoverEndAngle = Angle.degrees(-90)
+
+    static func opaqueTrack(for colorScheme: ColorScheme) -> Color {
+        colorScheme == .dark
+            ? Color(red: 0.06, green: 0.06, blue: 0.06)
+            : Color(red: 0.94, green: 0.94, blue: 0.94)
+    }
+}
+
 struct CircleView: View {
     
     let lineWidth = 6.0
@@ -18,16 +29,21 @@ struct CircleView: View {
 //    var percent:Double
     var themeColor = Color("color_natural_calories", bundle: .main)
     var sportColor = Color.init(red: 1.0, green: 149.0/255.0, blue: 0.0)//FF9500
+
+    @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
         GeometryReader { geometry in
-            Arc(startAngle: .degrees(-90), endAngle: .degrees(270), clockwise: false)
-                .stroke(Color(UIColor(named: "text_color_06") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_06), lineWidth: lineWidth)
-                        .frame(width: geometry.size.width, height: geometry.size.width)
-            
-            
+            let trackColor = WidgetCircularProgressStyle.opaqueTrack(for: colorScheme)
             let percent = Double(calories)/Double(caloriesTarget)
             let percentSport = Double(sportCalories)/Double(caloriesTarget)
+
+            Arc(startAngle: .degrees(-90), endAngle: .degrees(270), clockwise: false)
+                .stroke(
+                    trackColor,
+                    style: StrokeStyle(lineWidth: lineWidth)
+                )
+                        .frame(width: geometry.size.width, height: geometry.size.width)
             
             if percent > 0{
                 //进度
@@ -53,6 +69,26 @@ struct CircleView: View {
                         .frame(width: geometry.size.width, height: geometry.size.width)
                         .animation(.linear(duration: 0.3))
                 }
+            }
+
+            if percent < 0.3 {
+                ArcProgress(
+                    startAngle: WidgetCircularProgressStyle.ringFCoverStartAngle,
+                    endAngle: WidgetCircularProgressStyle.ringFCoverEndAngle,
+                    clockwise: false,
+                    lineWidthProgress: lineWidthProgress
+                )
+                .stroke(trackColor, style: StrokeStyle(lineWidth: lineWidthProgress, lineCap: .butt))
+                .frame(width: geometry.size.width, height: geometry.size.width)
+            } else if percent > 1, percent < 1.3 {
+                ArcProgress(
+                    startAngle: WidgetCircularProgressStyle.ringFCoverStartAngle,
+                    endAngle: WidgetCircularProgressStyle.ringFCoverEndAngle,
+                    clockwise: false,
+                    lineWidthProgress: lineWidthProgress
+                )
+                .stroke(themeColor, style: StrokeStyle(lineWidth: lineWidthProgress, lineCap: .butt))
+                .frame(width: geometry.size.width, height: geometry.size.width)
             }
          }
         
@@ -92,7 +128,7 @@ struct CircleView: View {
 //                .foregroundColor(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_45))
                 .foregroundColor(Color(UIColor(named: "text_color_45") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_45))
 //                .font(Font.system(size: 12))
-                .font(Font.custom("PingFangSC-Regular", size: 12))
+                .font(Font.custom("D-DIN-PRO-Regular", size: 12))
                 .minimumScaleFactor(0.5)
                 .lineLimit(1)
         }

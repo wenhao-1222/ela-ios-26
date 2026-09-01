@@ -29,7 +29,7 @@ struct ElaWeekWidgetBarChartView: View {
                         .frame(width: geometry.size.width,height: geometry.size.height * 0.85 - barHeight - 13)
                     let numberText = number > 0 ? "\(number)" : ""
                     Text("\(numberText)".replacingOccurrences(of: ",", with: ""))
-                        .font(.system(size: 8))
+                        .font(Font.custom("D-DIN-PRO-Regular", size: 8))
 //                        .foregroundColor(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_65))
                         .foregroundColor(Color(UIColor(named: "text_color_65") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_65))
                         .frame(width: geometry.size.width*1.5,height: geometry.size.height * 0.15,alignment: .center)
@@ -59,5 +59,4 @@ struct ElaWeekWidgetBarChartView: View {
 //        .background(Color.green)
     }
 }
-
 

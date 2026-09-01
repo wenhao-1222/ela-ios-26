@@ -71,7 +71,7 @@ struct MealsView: View {
 //                                .foregroundColor(Color(UIColor.WIDGET_COLOR_GRAY_BLACK_65))
                             
                                 .foregroundColor(Color(UIColor(named: "text_color_65") ?? UIColor.WIDGET_COLOR_GRAY_BLACK_65))
-                                .font(Font.system(size: 10,weight: .medium))
+                                .font(Font.custom("D-DIN-PRO-Medium", size: 10))
                                 .padding(EdgeInsets(top: -5, leading: 0, bottom: 0, trailing: 0))
                             Spacer()
                                 .frame(width: 10,height: 4)

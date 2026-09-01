@@ -6636,7 +6636,9 @@
 				EC356CE52C6C9C060023C0BA /* Assets.xcassets in Resources */,
 				EC356CDD2C6C99D10023C0BA /* Assets.xcassets in Resources */,
 				ECBF8C132BC230A30095C4B0 /* D-DIN-PRO-400-Regular.otf in Resources */,
+				ECBF8C142BC230A30095C4B0 /* D-DIN-PRO-500-Medium.otf in Resources */,
 				ECBF8C152BC230A30095C4B0 /* D-DIN-PRO-600-SemiBold.otf in Resources */,
+				ECBF8C162BC230A30095C4B0 /* D-DIN-PRO-700-Bold.otf in Resources */,
 				ECD5492F2C75D18E009E7E6B /* Interface.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
