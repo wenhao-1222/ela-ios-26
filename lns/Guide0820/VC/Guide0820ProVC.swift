@@ -101,7 +101,7 @@ private extension Guide0820ProVC {
         priceVM.snp.makeConstraints { $0.edges.equalToSuperview() }
         pageVM.snp.makeConstraints { $0.edges.equalToSuperview() }
         closeButton.snp.makeConstraints {
-            $0.left.equalTo(kFitWidth(6))
+            $0.left.equalTo(kFitWidth(16))
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(4.5))
             $0.width.height.equalTo(kFitWidth(35))
         }

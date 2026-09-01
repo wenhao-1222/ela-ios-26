@@ -66,6 +66,8 @@ private extension Guide0820SourceRow {
         titleContainer.axis = .horizontal
         titleContainer.alignment = .center
         titleContainer.spacing = kFitWidth(6)
+        // 标题区域只负责展示，避免 UIStackView 截获触摸，确保整行都由 UIControl 响应点击。
+        titleContainer.isUserInteractionEnabled = false
 
         if item.id == "ai_chat_tool" {
             let mainTitleLabel = UILabel()

@@ -48,9 +48,12 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     private var displayedProgress: Double = 0
     private var fakeTimer: Timer?
     private var stageTimer: Timer?
+    /// 逻辑完成计时不能依赖 UIView 动画的 completion；手势或系统转场可能中断动画。
+    private var completionWorkItem: DispatchWorkItem?
     private var progressStartedAt: CFTimeInterval = 0
     private var requestFinished = false
     private var hasFinishedAnimation = false
+    private var hasDeliveredResult = false
     private var nutritionResult: NutritionGoalsResult?
     private var activeStageIndex = 0
 
@@ -165,6 +168,7 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     deinit {
         fakeTimer?.invalidate()
         stageTimer?.invalidate()
+        completionWorkItem?.cancel()
     }
 
     override func viewDidLoad() {
@@ -178,10 +182,27 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
         requestNutritionGoals()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // 生成页没有返回操作。禁止侧滑返回，避免交互式导航转场与完成跳页同时发生。
+        updateInteractivePopGestureBlocked(true)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        updateInteractivePopGestureBlocked(true)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        restoreFullscreenInteractivePopGesture()
+    }
+
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         fakeTimer?.invalidate()
         stageTimer?.invalidate()
+        completionWorkItem?.cancel()
     }
 }
 
@@ -344,18 +365,42 @@ private extension GuidanceNutritionGoalsProgressVC {
         let completionDuration = max(configuration.completionAnimationDuration,
                                      configuration.minimumTotalAnimationDuration - elapsed,
                                      remainingStageCycleDuration)
+        let completionWorkItem = DispatchWorkItem { [weak self] in
+            self?.completeProgressIfNeeded()
+        }
+        self.completionWorkItem?.cancel()
+        self.completionWorkItem = completionWorkItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + completionDuration,
+                                      execute: completionWorkItem)
+
         UIView.animate(withDuration: completionDuration, delay: 0, options: [.curveEaseInOut]) {
             self.displayedProgress = 100
             self.updateProgressUI(animated: false)
             self.view.layoutIfNeeded()
-        } completion: { [weak self] _ in
-            guard let self else { return }
-            self.stageTimer?.invalidate()
-            self.stageTimer = nil
-            self.activeStageIndex = self.stageTexts.count - 1
-            self.updateStageText(animated: false)
-            self.finishBlock?(self.nutritionResult)
+        } completion: { [weak self] finished in
+            guard finished else { return }
+            self?.completeProgressIfNeeded()
         }
+    }
+
+    /// 进度展示和业务跳页在这里一次性汇合。
+    ///
+    /// UIKit 动画可能被手势、布局或导航转场打断，因此同时由独立的主线程计时兜底，
+    /// 确保接口成功后一定会交付结果，而不会停留在视觉上的 100%。
+    func completeProgressIfNeeded() {
+        guard requestFinished, hasFinishedAnimation, !hasDeliveredResult else { return }
+        hasDeliveredResult = true
+        completionWorkItem?.cancel()
+        completionWorkItem = nil
+        fakeTimer?.invalidate()
+        fakeTimer = nil
+        stageTimer?.invalidate()
+        stageTimer = nil
+        displayedProgress = 100
+        activeStageIndex = stageTexts.count - 1
+        updateProgressUI(animated: false)
+        updateStageText(animated: false)
+        finishBlock?(nutritionResult)
     }
 
     func requestNutritionGoals() {

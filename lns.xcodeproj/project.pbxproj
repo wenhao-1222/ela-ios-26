@@ -46,6 +46,7 @@
 		A708231A2F7000000000001A /* Guide0820SourceBottomFadeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221A2F7000000000001A /* Guide0820SourceBottomFadeView.swift */; };
 		A708231B2F7000000000001B /* Guide0820SourceRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221B2F7000000000001B /* Guide0820SourceRow.swift */; };
 		A708231C2F7000000000001C /* Guide0820SourceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221C2F7000000000001C /* Guide0820SourceView.swift */; };
+		F2B0C4012F90000100A1B2C3 /* Guide0820StepPagingScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B0C4022F90000100A1B2C3 /* Guide0820StepPagingScrollView.swift */; };
 	A708231D2F7000000000001D /* Guide0820StartVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A708221D2F7000000000001D /* Guide0820StartVC.swift */; };
 	C82000022FABCDEF00000002 /* Guide0820ProVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C82000032FABCDEF00000003 /* Guide0820ProVC.swift */; };
 	D82000022FABCDEF00000002 /* Guide0820ProVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82000032FABCDEF00000003 /* Guide0820ProVM.swift */; };
@@ -1618,6 +1619,7 @@
 		A708221A2F7000000000001A /* Guide0820SourceBottomFadeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820SourceBottomFadeView.swift; sourceTree = "<group>"; };
 		A708221B2F7000000000001B /* Guide0820SourceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820SourceRow.swift; sourceTree = "<group>"; };
 		A708221C2F7000000000001C /* Guide0820SourceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820SourceView.swift; sourceTree = "<group>"; };
+		F2B0C4022F90000100A1B2C3 /* Guide0820StepPagingScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820StepPagingScrollView.swift; sourceTree = "<group>"; };
 	A708221D2F7000000000001D /* Guide0820StartVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820StartVC.swift; sourceTree = "<group>"; };
 	C82000032FABCDEF00000003 /* Guide0820ProVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820ProVC.swift; sourceTree = "<group>"; };
 	D82000032FABCDEF00000003 /* Guide0820ProVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide0820ProVM.swift; sourceTree = "<group>"; };
@@ -4845,6 +4847,7 @@
 				A708221A2F7000000000001A /* Guide0820SourceBottomFadeView.swift */,
 				A708221B2F7000000000001B /* Guide0820SourceRow.swift */,
 				A708221C2F7000000000001C /* Guide0820SourceView.swift */,
+				F2B0C4022F90000100A1B2C3 /* Guide0820StepPagingScrollView.swift */,
 				A708220C2F7000000000000C /* Guide0820TextExtensions.swift */,
 				A708222F2F7000000000002F /* Guide0820BodyProfileOption.swift */,
 				A70822302F70000000000030 /* Guide0820BodyProfileOptionCard.swift */,
@@ -7531,6 +7534,7 @@
 				A708231A2F7000000000001A /* Guide0820SourceBottomFadeView.swift in Sources */,
 				A708231B2F7000000000001B /* Guide0820SourceRow.swift in Sources */,
 				A708231C2F7000000000001C /* Guide0820SourceView.swift in Sources */,
+				F2B0C4012F90000100A1B2C3 /* Guide0820StepPagingScrollView.swift in Sources */,
 				A708231D2F7000000000001D /* Guide0820StartVC.swift in Sources */,
 				C82000022FABCDEF00000002 /* Guide0820ProVC.swift in Sources */,
 				D82000022FABCDEF00000002 /* Guide0820ProVM.swift in Sources */,

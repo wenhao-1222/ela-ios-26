@@ -154,7 +154,7 @@ class GuidanceRemoveBarrierVM: UIView {
         lab.numberOfLines = 0
         lab.textAlignment = .center
         lab.textColor = .COLOR_TEXT_TITLE_0f1214_60
-        lab.font = .systemFont(ofSize: 13, weight: .regular)
+        lab.font = .systemFont(ofSize: 11, weight: .regular)
         lab.text = "针对健身人习惯设计\n将每餐记录时间拉低到<30秒\n再忙也能记录"
         return lab
     }()

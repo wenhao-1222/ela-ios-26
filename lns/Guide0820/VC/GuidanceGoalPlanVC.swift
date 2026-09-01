@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 /// GuidanceGoalPlanVC 类型，封装 Guide0820 引导流程中的相关功能。
-final class GuidanceGoalPlanVC: WHBaseViewVC {
+final class GuidanceGoalPlanVC: WHBaseViewVC, UIScrollViewDelegate {
     /// `finishBlock` 属性，保存该类型对外提供或内部使用的状态与配置。
     var finishBlock: ((GuidanceGoalPlanFlowState) -> Void)?
 
@@ -20,22 +20,18 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
     private let progressTotalStepCount = 7
     // `currentIndex` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var currentIndex = 0
-
-    /// 非首步时接管右滑手势，用于返回流程内的上一步。
-    private lazy var stepBackSwipeGesture: UISwipeGestureRecognizer = {
-        let gesture = UISwipeGestureRecognizer(target: self, action: #selector(handleStepBackSwipe))
-        gesture.direction = .right
-        gesture.isEnabled = false
-        return gesture
-    }()
+    /// 页面滑动动画进行中时，忽略重复的“下一步”点击。
+    private var isPageTransitioning = false
+    /// 用户开始拖动时已经确认的页面下标。
+    private var dragStartPageIndex = 0
     // `currentPageView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var currentPageView: UIView?
     // `pageCache` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var pageCache: [String: UIView] = [:]
 
     // `scrollView` 属性，保存该类型对外提供或内部使用的状态与配置。
-    private let scrollView: UIScrollView = {
-        let view = UIScrollView()
+    private let scrollView: Guide0820StepPagingScrollView = {
+        let view = Guide0820StepPagingScrollView()
         view.isPagingEnabled = true
         view.isScrollEnabled = false
         view.showsHorizontalScrollIndicator = false
@@ -108,6 +104,14 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
         return button
     }()
 
+    /// 动画期间覆盖在按钮上方，仅吞掉触摸，不改变按钮状态或样式。
+    private let nextButtonInteractionShield: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.isHidden = true
+        return view
+    }()
+
     /// 执行 `viewDidLoad` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -134,6 +138,29 @@ final class GuidanceGoalPlanVC: WHBaseViewVC {
         super.viewDidDisappear(animated)
         restoreFullscreenInteractivePopGesture()
     }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        dragStartPageIndex = currentIndex
+    }
+
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                   withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        self.scrollView.clampBackwardTargetContentOffset(targetContentOffset, from: dragStartPageIndex)
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        guard decelerate == false else { return }
+        finishInteractivePageTransition()
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        finishInteractivePageTransition()
+    }
+
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        setPageTransitioning(false)
+    }
 }
 
 // GuidanceGoalPlanVC 扩展，提供 Guide0820 流程相关的辅助能力。
@@ -141,7 +168,8 @@ private extension GuidanceGoalPlanVC {
     /// 首步交给导航控制器执行交互式 pop，其余步骤由页面内右滑返回上一步。
     func updateBackGestureAvailability() {
         let isFirstStep = currentIndex == 0
-        stepBackSwipeGesture.isEnabled = !isFirstStep
+        scrollView.settledPageIndex = currentIndex
+        scrollView.isScrollEnabled = !isFirstStep
 
         if isFirstStep {
             restoreFullscreenInteractivePopGesture()
@@ -165,7 +193,7 @@ private extension GuidanceGoalPlanVC {
     // 执行 `initUI` 操作，完成当前引导页面的状态更新或交互处理。
     func initUI() {
         view.backgroundColor = GuidanceGoalPlanStyle.pageBackgroundColor
-        view.addGestureRecognizer(stepBackSwipeGesture)
+        scrollView.delegate = self
         view.addSubview(backButton)
         view.addSubview(titleLabel)
         view.addSubview(progressTrackView)
@@ -208,6 +236,11 @@ private extension GuidanceGoalPlanVC {
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
         }
 
+        view.addSubview(nextButtonInteractionShield)
+        nextButtonInteractionShield.snp.makeConstraints { make in
+            make.edges.equalTo(nextButton)
+        }
+
         scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -222,6 +255,7 @@ private extension GuidanceGoalPlanVC {
         view.bringSubviewToFront(titleLabel)
         view.bringSubviewToFront(progressTrackView)
         view.bringSubviewToFront(nextButton)
+        view.bringSubviewToFront(nextButtonInteractionShield)
     }
 
     // 执行 `showPage` 操作，完成当前引导页面的状态更新或交互处理。
@@ -237,7 +271,7 @@ private extension GuidanceGoalPlanVC {
         let nextPage = page(for: steps[index])
         currentPageView = nextPage
         // Keep the same page-width calculation as the other Guide0820 flow VCs.
-        scrollView.setContentOffset(CGPoint(x: SCREEN_WIDHT * CGFloat(index), y: 0), animated: animated)
+        scrollView.setContentOffset(CGPoint(x: scrollView.bounds.width * CGFloat(index), y: 0), animated: animated)
         refreshNavigationState()
         (nextPage as? (UIView & GuidanceGoalPlanPageVM))?.pageWillAppear()
     }
@@ -388,16 +422,37 @@ private extension GuidanceGoalPlanVC {
         }
     }
 
-    @objc func handleStepBackSwipe() {
-        guard currentIndex > 0 else { return }
-        backButtonTapAction()
+    /// 交互返回完成后只刷新落页状态，不重装动态 VM，避免拖动结束时跳帧。
+    func finishInteractivePageTransition() {
+        let steps = flowState.steps
+        let landedIndex = scrollView.landedPageIndex(pageCount: steps.count)
+        let expectedPreviousIndex = max(dragStartPageIndex - 1, 0)
+        guard landedIndex == expectedPreviousIndex,
+              landedIndex != currentIndex,
+              steps.indices.contains(landedIndex) else {
+            return
+        }
+
+        currentIndex = landedIndex
+        currentPageView = page(for: steps[landedIndex])
+        updateBackGestureAvailability()
+        persistCurrentProgress()
+        refreshNavigationState()
+        (currentPageView as? (UIView & GuidanceGoalPlanPageVM))?.pageWillAppear()
+    }
+
+    func setPageTransitioning(_ isTransitioning: Bool) {
+        isPageTransitioning = isTransitioning
+        nextButtonInteractionShield.isHidden = !isTransitioning
     }
 
     // 执行 `nextButtonTapAction` 操作，完成当前引导页面的状态更新或交互处理。
     @objc func nextButtonTapAction() {
+        guard isPageTransitioning == false else { return }
         guard nextButton.isEnabled else { return }
         let nextIndex = currentIndex + 1
         if flowState.steps.indices.contains(nextIndex) {
+            setPageTransitioning(true)
             showPage(at: nextIndex, animated: true)
             return
         }

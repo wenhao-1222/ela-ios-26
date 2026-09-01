@@ -25,7 +25,17 @@ final class Guide0820FeatureIntroVC: WHBaseViewVC, UIScrollViewDelegate {
     private let previousButton = ElaLiquidGlassCloseButton(image: UIImage(systemName: "chevron.left"))
     private let nextButton = ElaLiquidGlassCloseButton(image: UIImage(systemName: "chevron.right"))
     private let continueButton = UIButton(type: .system)
+    private let pageInteractionShield: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.isHidden = true
+        return view
+    }()
     private var currentPage = 0
+    private var carouselPage = 1
+    private var lastLayoutWidth: CGFloat = 0
+    private var isPageTransitioning = false
+    private var shouldContinueAfterTransition = false
 
     init(onFinished: (() -> Void)? = nil) {
         self.onFinished = onFinished
@@ -43,6 +53,14 @@ final class Guide0820FeatureIntroVC: WHBaseViewVC, UIScrollViewDelegate {
         addELAFlowingBackground()
         buildInterface()
         updateNavigationState()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        let width = scrollView.bounds.width
+        guard width > 0, width != lastLayoutWidth else { return }
+        lastLayoutWidth = width
+        scrollView.setContentOffset(CGPoint(x: width * CGFloat(carouselPage), y: 0), animated: false)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -67,8 +85,16 @@ final class Guide0820FeatureIntroVC: WHBaseViewVC, UIScrollViewDelegate {
 
     deinit { restoreFullscreenInteractivePopGesture() }
 
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        setPageInteractionBlocked(true)
+    }
+
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         updatePageFromScrollPosition()
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate { updatePageFromScrollPosition() }
     }
 
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
@@ -91,11 +117,17 @@ private extension Guide0820FeatureIntroVC {
         pagesContentView.snp.makeConstraints {
             $0.edges.equalToSuperview()
             $0.height.equalToSuperview()
-            $0.width.equalTo(view.snp.width).multipliedBy(pageViewModels.count)
+            $0.width.equalTo(view.snp.width).multipliedBy(pageViewModels.count + 2)
         }
 
+        let carouselViewModels: [Guide0820FeaturePageViewModel]
+        if let first = pageViewModels.first, let last = pageViewModels.last {
+            carouselViewModels = [last] + pageViewModels + [first]
+        } else {
+            carouselViewModels = pageViewModels
+        }
         var previousPage: UIView?
-        for vm in pageViewModels {
+        for vm in carouselViewModels {
             let page = makePageView(vm)
             pagesContentView.addSubview(page)
             page.snp.makeConstraints {
@@ -147,6 +179,10 @@ private extension Guide0820FeatureIntroVC {
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(kFitWidth(-8))
             $0.height.equalTo(kFitWidth(52))
         }
+
+        view.addSubview(pageInteractionShield)
+        pageInteractionShield.snp.makeConstraints { $0.edges.equalToSuperview() }
+        view.bringSubviewToFront(continueButton)
     }
 
     func makePageView(_ vm: Guide0820FeaturePageViewModel) -> UIView {
@@ -226,14 +262,38 @@ private extension Guide0820FeatureIntroVC {
 
     func updatePageFromScrollPosition() {
         let width = max(scrollView.bounds.width, 1)
-        let index = min(max(Int(round(scrollView.contentOffset.x / width)), 0), pageViewModels.count - 1)
-        currentPage = index
+        let pageCount = pageViewModels.count
+        guard pageCount > 0 else { return }
+
+        let visibleCarouselPage = min(
+            max(Int(round(scrollView.contentOffset.x / width)), 0),
+            pageCount + 1
+        )
+        if visibleCarouselPage == 0 {
+            currentPage = pageCount - 1
+            carouselPage = pageCount
+            scrollView.setContentOffset(CGPoint(x: width * CGFloat(carouselPage), y: 0), animated: false)
+        } else if visibleCarouselPage == pageCount + 1 {
+            currentPage = 0
+            carouselPage = 1
+            scrollView.setContentOffset(CGPoint(x: width, y: 0), animated: false)
+        } else {
+            carouselPage = visibleCarouselPage
+            currentPage = visibleCarouselPage - 1
+        }
+        isPageTransitioning = false
+        setPageInteractionBlocked(false)
         updateNavigationState()
+
+        if shouldContinueAfterTransition {
+            shouldContinueAfterTransition = false
+            DispatchQueue.main.async { [weak self] in self?.continueAction() }
+        }
     }
 
     func updateNavigationState() {
-        previousButton.isHidden = currentPage == 0
-        nextButton.isHidden = currentPage == pageViewModels.count - 1
+        previousButton.isHidden = false
+        nextButton.isHidden = false
         for (index, view) in pageIndicatorStack.arrangedSubviews.enumerated() {
             view.backgroundColor = index == currentPage ? .THEME : UIColor.COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.12)
         }
@@ -241,15 +301,48 @@ private extension Guide0820FeatureIntroVC {
 
     func showPage(_ index: Int) {
         let target = min(max(index, 0), pageViewModels.count - 1)
-        scrollView.setContentOffset(CGPoint(x: scrollView.bounds.width * CGFloat(target), y: 0), animated: true)
+        isPageTransitioning = true
+        setPageInteractionBlocked(true)
+        carouselPage = target + 1
         currentPage = target
         updateNavigationState()
+        scrollView.setContentOffset(CGPoint(x: scrollView.bounds.width * CGFloat(carouselPage), y: 0), animated: true)
     }
 
-    @objc func previousPageAction() { showPage(currentPage - 1) }
-    @objc func nextPageAction() { showPage(currentPage + 1) }
+    func showAdjacentPage(_ carouselTarget: Int, logicalTarget: Int) {
+        isPageTransitioning = true
+        setPageInteractionBlocked(true)
+        carouselPage = carouselTarget
+        currentPage = logicalTarget
+        updateNavigationState()
+        scrollView.setContentOffset(CGPoint(x: scrollView.bounds.width * CGFloat(carouselTarget), y: 0), animated: true)
+    }
+
+    func setPageInteractionBlocked(_ isBlocked: Bool) {
+        pageInteractionShield.isHidden = !isBlocked
+        if isBlocked {
+            view.bringSubviewToFront(pageInteractionShield)
+            view.bringSubviewToFront(continueButton)
+        }
+    }
+
+    @objc func previousPageAction() {
+        guard !isPageTransitioning, !scrollView.isDragging, !scrollView.isDecelerating else { return }
+        let target = currentPage == 0 ? pageViewModels.count - 1 : currentPage - 1
+        showAdjacentPage(carouselPage - 1, logicalTarget: target)
+    }
+
+    @objc func nextPageAction() {
+        guard !isPageTransitioning, !scrollView.isDragging, !scrollView.isDecelerating else { return }
+        let target = currentPage == pageViewModels.count - 1 ? 0 : currentPage + 1
+        showAdjacentPage(carouselPage + 1, logicalTarget: target)
+    }
 
     @objc func continueAction() {
+        if isPageTransitioning || scrollView.isDragging || scrollView.isDecelerating {
+            shouldContinueAfterTransition = true
+            return
+        }
         if currentPage < pageViewModels.count - 1 {
             showPage(currentPage + 1)
         } else {

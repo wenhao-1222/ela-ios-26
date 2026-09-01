@@ -22,6 +22,7 @@ final class GuidanceGoalPlanFatLossDurationVM: GuidanceGoalPlanDurationPageVM {
             defaultWeeks: flowState.fatLossDurationWeeks,
             recommendationTitle: recommendation.title,
             recommendationDetail: recommendation.detail,
+            recommendationDetailLineHeight: guide0820Design(36),
             controlStyle: .customPicker
         )
         weeksChanged = { [weak self] weeks in

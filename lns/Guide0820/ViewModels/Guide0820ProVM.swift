@@ -49,6 +49,16 @@ final class Guide0820ProVM: UIView {
             title: "改变了我的饮食方式",
             author: "早起困难户",
             detail: "用ela之前只会一味地压热量 后来试着跟着软件给的目标走了一段时间 虽然一开始掉得没那么快（也有可能是我之前断食导致代谢受损了），但是掉得很持续 不会说减完第二周就反弹回来 再就是配餐功能 节省了我很多计算的功夫 更像是传统食谱和自由饮食中间的折中方案 真的很不错！"
+        ),
+        Review(
+            title: "教练对我帮助很大",
+            author: "是小张哇啊",
+            detail: "Ela教练给我反馈的建议帮助很大 能让我看到很多平时饮食里看不到或者是会忽略掉的小问题和细节 墙裂推荐想提高减脂或者增肌效率的人使用"
+        ),
+        Review(
+            title: "比请教练管用",
+            author: "Keywee",
+            detail: "健身4年多也跟过不少教练了，帮我做饮食基本也就是跟我说要吃够多少热量多少蛋白质，作为一个业余健身爱好者真的很难完全照着计划执行，进度也不好跟进，现在有了ela pro每周饮食执行得怎么样，哪里没做好，体重为什么没变，都很容易能找到原因，如果一直达不到目标ai教练也会帮我调整计划，给出的建议也特别清晰，很适合我这种有强迫症的j人"
         )
     ]
 
@@ -132,10 +142,12 @@ final class Guide0820ProVM: UIView {
             make.top.equalTo(priceVM.confirmButton.snp.bottom).offset(kFitWidth(10))
         }
 
+        let fadeHeightAboveButton = kFitWidth(20)
+        bottomFadeView.transitionHeight = fadeHeightAboveButton
         bottomFadeView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.bottom.equalToSuperview()
-            make.height.equalTo(kFitWidth(158) + WHUtils().getBottomSafeAreaHeight())
+            make.top.equalTo(priceVM.confirmButton.snp.top).offset(-fadeHeightAboveButton)
         }
         priceVM.bottomBar.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
@@ -195,15 +207,15 @@ private extension Guide0820ProVM {
         }
         benefitsStack.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(28))
-            make.left.equalTo(kFitWidth(18))
-            make.right.equalTo(kFitWidth(-18))
+            make.left.equalTo(kFitWidth(30))
+            make.right.equalTo(kFitWidth(-30))
         }
 
         contentView.addSubview(planContainer)
         planContainer.snp.makeConstraints { make in
             make.top.equalTo(benefitsStack.snp.bottom).offset(kFitWidth(25))
-            make.left.equalTo(kFitWidth(12))
-            make.right.equalTo(kFitWidth(-12))
+            make.left.equalTo(kFitWidth(20))
+            make.right.equalTo(kFitWidth(-20))
             make.height.equalTo(kFitWidth(160))
         }
 
@@ -214,19 +226,24 @@ private extension Guide0820ProVM {
             make.centerX.equalToSuperview()
         }
 
-        let reviewScrollView = makeReviewsView()
+        let reviewCardWidth = kFitWidth(280)
+        let reviewCardHeight = makeReferenceReviewCardHeight(cardWidth: reviewCardWidth)
+        let reviewScrollView = makeReviewsView(
+            cardWidth: reviewCardWidth,
+            cardHeight: reviewCardHeight
+        )
         contentView.addSubview(reviewScrollView)
         reviewScrollView.snp.makeConstraints { make in
             make.top.equalTo(ratingView.snp.bottom).offset(kFitWidth(15))
             make.left.right.equalToSuperview()
-            make.height.equalTo(kFitWidth(192))
+            make.height.equalTo(reviewCardHeight)
         }
 
         let firstTransformation = makeTransformationCard(
             leftImage: "review_photo_4",
             rightImage: "review_photo_2",
-            leftWeight: "74.6 kg",
-            rightWeight: "74.6 kg",
+            leftWeight: "101.3 kg",
+            rightWeight: "93.8 kg",
             name: "Rich.L"
         )
         contentView.addSubview(firstTransformation)
@@ -240,8 +257,8 @@ private extension Guide0820ProVM {
         let secondTransformation = makeTransformationCard(
             leftImage: "review_photo_3",
             rightImage: "review_photo_1",
-            leftWeight: "58.6 kg",
-            rightWeight: "65.6 kg",
+            leftWeight: "50 kg",
+            rightWeight: "67.5 kg",
             name: "Yi.D"
         )
         contentView.addSubview(secondTransformation)
@@ -255,8 +272,8 @@ private extension Guide0820ProVM {
     private func makeBenefitView(_ benefit: Benefit) -> UIView {
         let container = UIView()
 
-        let checkmark = UIImageView(image: UIImage(systemName: "checkmark"))
-        checkmark.tintColor = .THEME
+        let checkmark = UIImageView(image: UIImage(named: "guide0820_button_check_icon"))
+//        checkmark.tintColor = .THEME
         checkmark.contentMode = .scaleAspectFit
         container.addSubview(checkmark)
 
@@ -278,7 +295,8 @@ private extension Guide0820ProVM {
 
         checkmark.snp.makeConstraints { make in
             make.left.equalToSuperview()
-            make.top.equalTo(kFitWidth(2))
+//            make.top.equalTo(kFitWidth(2))
+            make.centerY.lessThanOrEqualTo(title)
             make.width.equalTo(kFitWidth(13))
             make.height.equalTo(kFitWidth(10))
         }
@@ -411,7 +429,7 @@ private extension Guide0820ProVM {
         return container
     }
 
-    func makeReviewsView() -> UIScrollView {
+    func makeReviewsView(cardWidth: CGFloat, cardHeight: CGFloat) -> UIScrollView {
         let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.alwaysBounceHorizontal = true
@@ -429,8 +447,8 @@ private extension Guide0820ProVM {
             let card = makeReviewCard(review)
             stack.addArrangedSubview(card)
             card.snp.makeConstraints { make in
-                make.width.equalTo(kFitWidth(280))
-                make.height.equalToSuperview()
+                make.width.equalTo(cardWidth)
+                make.height.equalTo(cardHeight)
             }
         }
         let leadingSpacer = UIView()
@@ -440,6 +458,19 @@ private extension Guide0820ProVM {
         trailingSpacer.snp.makeConstraints { $0.width.equalTo(0) }
         stack.addArrangedSubview(trailingSpacer)
         return scrollView
+    }
+
+    /// 使用第四条评价的完整 detail 测量统一卡片高度。
+    private func makeReferenceReviewCardHeight(cardWidth: CGFloat) -> CGFloat {
+        guard reviews.indices.contains(3) else { return kFitWidth(192) }
+
+        let referenceCard = makeReviewCard(reviews[3])
+        let fittingSize = referenceCard.systemLayoutSizeFitting(
+            CGSize(width: cardWidth, height: UIView.layoutFittingCompressedSize.height),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        return ceil(fittingSize.height)
     }
 
     private func makeReviewCard(_ review: Review) -> UIView {
@@ -470,8 +501,8 @@ private extension Guide0820ProVM {
             font: .systemFont(ofSize: kFitWidth(11), weight: .regular),
             color: .COLOR_TEXT_TITLE_0f1214_50
         )
-        detailLabel.numberOfLines = 6
-        detailLabel.lineBreakMode = .byTruncatingTail
+        detailLabel.numberOfLines = 0
+        detailLabel.lineBreakMode = .byWordWrapping
         detailLabel.guide0820SetLineHeight(kFitWidth(17.5))
         card.addSubview(detailLabel)
 
@@ -610,12 +641,14 @@ private extension Guide0820ProVM {
 
 private final class Guide0820ProBottomFadeView: UIView {
     private let gradientLayer = CAGradientLayer()
+    var transitionHeight: CGFloat = 0 {
+        didSet { setNeedsLayout() }
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         isUserInteractionEnabled = false
         updateGradientColors()
-        gradientLayer.locations = [0, 0.45, 1]
         layer.addSublayer(gradientLayer)
     }
 
@@ -626,6 +659,8 @@ private final class Guide0820ProBottomFadeView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         gradientLayer.frame = bounds
+        let solidColorStart = bounds.height > 0 ? min(transitionHeight / bounds.height, 1) : 1
+        gradientLayer.locations = [0, NSNumber(value: Double(solidColorStart)), 1]
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
