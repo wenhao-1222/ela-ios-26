@@ -234,7 +234,7 @@ final class Guide0820LifeProfileVC: WHBaseViewVC, UIScrollViewDelegate {
     /// 执行 `viewDidLayoutSubviews` 操作，完成当前引导页面的状态更新或交互处理。
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        bottomGradientLayer.frame = bottomGradientView.bounds
+//        bottomGradientLayer.frame = bottomGradientView.bounds
     }
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -365,11 +365,11 @@ private extension Guide0820LifeProfileVC {
         view.bringSubviewToFront(navTitleLabel)
         view.bringSubviewToFront(progressTrackView)
 
-        view.addSubview(bottomGradientView)
-        bottomGradientView.snp.makeConstraints { make in
-            make.left.right.bottom.equalToSuperview()
-            make.height.equalTo(kFitWidth(158) + WHUtils().getBottomSafeAreaHeight())
-        }
+//        view.addSubview(bottomGradientView)
+//        bottomGradientView.snp.makeConstraints { make in
+//            make.left.right.bottom.equalToSuperview()
+//            make.height.equalTo(kFitWidth(158) + WHUtils().getBottomSafeAreaHeight())
+//        }
 
         view.addSubview(nextButton)
         nextButton.snp.makeConstraints { make in
@@ -415,7 +415,7 @@ private extension Guide0820LifeProfileVC {
         guard let currentPage = safeCurrentPage() else { return }
         let isReminderPage = currentPage === reminderVm
         nextButton.isHidden = isReminderPage
-        bottomGradientView.isHidden = isReminderPage
+//        bottomGradientView.isHidden = isReminderPage
 
         let valid = (currentPage as? Guide0820LifeProfilePageVM)?.isStepValid ?? true
         nextButton.isEnabled = valid

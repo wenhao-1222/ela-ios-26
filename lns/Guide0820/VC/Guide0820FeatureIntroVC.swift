@@ -1,6 +1,37 @@
 import UIKit
 import SnapKit
 
+private final class Guide0820PageIndicatorView: UIView {
+    private let shapeMaskLayer = CAShapeLayer()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        shapeMaskLayer.contentsScale = UIScreen.main.scale
+        layer.mask = shapeMaskLayer
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        shapeMaskLayer.contentsScale = UIScreen.main.scale
+        layer.mask = shapeMaskLayer
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard bounds.width > 0, bounds.height > 0 else { return }
+
+        let slant = bounds.height * 0.55
+        let cornerRadius = bounds.height * 0.2
+        let path = UIBezierPath(
+            roundedRect: CGRect(x: 0, y: 0, width: bounds.width - slant, height: bounds.height),
+            cornerRadius: cornerRadius
+        )
+        path.apply(CGAffineTransform(a: 1, b: 0, c: -slant / bounds.height, d: 1, tx: slant, ty: 0))
+        shapeMaskLayer.frame = bounds
+        shapeMaskLayer.path = path.cgPath
+    }
+}
+
 /// 功能介绍页 VM 的最小展示契约。每个 MasterGo 图层对应一个独立 VM。
 protocol Guide0820FeaturePageViewModel {
     var title: String { get }
@@ -25,6 +56,12 @@ final class Guide0820FeatureIntroVC: WHBaseViewVC, UIScrollViewDelegate {
     private let previousButton = ElaLiquidGlassCloseButton(image: UIImage(systemName: "chevron.left"))
     private let nextButton = ElaLiquidGlassCloseButton(image: UIImage(systemName: "chevron.right"))
     private let continueButton = UIButton(type: .system)
+    private let bottomSheetView = Guide0820BottomSheetView()
+    private lazy var operationButton: Guide0820MoreButton = {
+        let button = Guide0820MoreButton()
+        button.addTarget(self, action: #selector(operationButtonAction), for: .touchUpInside)
+        return button
+    }()
     private let pageInteractionShield: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -145,15 +182,17 @@ private extension Guide0820FeatureIntroVC {
         pageIndicatorStack.alignment = .center
         view.addSubview(pageIndicatorStack)
         for _ in pageViewModels {
-            let indicator = UIView()
-            indicator.layer.cornerRadius = kFitWidth(2)
-            indicator.snp.makeConstraints { $0.width.equalTo(kFitWidth(19)); $0.height.equalTo(kFitWidth(4)) }
+            let indicator = Guide0820PageIndicatorView()
+            indicator.snp.makeConstraints {
+                $0.width.equalTo(kFitWidth(20))
+                $0.height.equalTo(kFitWidth(5))
+            }
             pageIndicatorStack.addArrangedSubview(indicator)
         }
         pageIndicatorStack.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(480))
-            $0.height.equalTo(kFitWidth(4))
+            $0.height.equalTo(kFitWidth(5))
         }
 
         configureArrow(previousButton, action: #selector(previousPageAction))
@@ -180,9 +219,20 @@ private extension Guide0820FeatureIntroVC {
             $0.height.equalTo(kFitWidth(52))
         }
 
+        view.addSubview(operationButton)
+        operationButton.snp.makeConstraints {
+            $0.right.equalTo(kFitWidth(-18))
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(kFitWidth(2))
+            $0.width.equalTo(kFitWidth(42))
+            $0.height.equalTo(kFitWidth(40))
+        }
+
         view.addSubview(pageInteractionShield)
         pageInteractionShield.snp.makeConstraints { $0.edges.equalToSuperview() }
         view.bringSubviewToFront(continueButton)
+
+        view.addSubview(bottomSheetView)
+        bottomSheetView.snp.makeConstraints { $0.edges.equalToSuperview() }
     }
 
     func makePageView(_ vm: Guide0820FeaturePageViewModel) -> UIView {
@@ -195,7 +245,7 @@ private extension Guide0820FeatureIntroVC {
         title.textAlignment = .center
         page.addSubview(title)
         title.snp.makeConstraints {
-            $0.top.equalTo(page.safeAreaLayoutGuide.snp.top).offset(kFitWidth(38))
+            $0.top.equalTo(page.safeAreaLayoutGuide.snp.top).offset(kFitWidth(37))
             $0.centerX.equalToSuperview(); $0.height.equalTo(kFitWidth(25))
         }
 
@@ -324,6 +374,85 @@ private extension Guide0820FeatureIntroVC {
             view.bringSubviewToFront(pageInteractionShield)
             view.bringSubviewToFront(continueButton)
         }
+    }
+
+    @objc func operationButtonAction() {
+        showOperationSheet()
+    }
+
+    func showOperationSheet() {
+        let operationView = Guide0820OperationSheetView(
+            vm: Guide0820OperationSheetVM(),
+            onClose: { [weak self] in
+                self?.bottomSheetView.dismiss()
+            },
+            onSelectItem: { [weak self] item in
+                self?.handleOperationItem(item)
+            }
+        )
+        let sheetViewHeight = kFitWidth(239) + getBottomSafeAreaHeight() - kFitWidth(65)
+        bottomSheetView.present(contentView: operationView,
+                                contentHeight: sheetViewHeight,
+                                keyboardAvoidanceEnabled: false)
+    }
+
+    func handleOperationItem(_ item: Guide0820OperationItem) {
+        switch item.identifier {
+        case .sourceInput:
+            showInviteSourceSheet()
+        case .clearData:
+            showDeleteConfirmationSheet()
+        }
+    }
+
+    func showInviteSourceSheet() {
+        let sourceView = Guide0820InviteSourceSheetView(
+            vm: Guide0820InviteSourceInputVM(),
+            onClose: { [weak self] in
+                self?.bottomSheetView.dismiss()
+            }
+        )
+        bottomSheetView.present(contentView: sourceView,
+                                contentHeight: kFitWidth(272.5),
+                                keyboardAvoidanceEnabled: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.32) {
+            sourceView.focusInput()
+        }
+    }
+
+    func showDeleteConfirmationSheet() {
+        let deleteView = Guide0820DeleteConfirmationSheetView(
+            vm: Guide0820DeleteConfirmationVM(),
+            onClose: { [weak self] in
+                self?.bottomSheetView.dismiss()
+            },
+            onConfirm: { [weak self] in
+                self?.clearGuideSourceDataAndReturn()
+            }
+        )
+        bottomSheetView.present(contentView: deleteView,
+                                contentHeight: kFitWidth(272.5),
+                                keyboardAvoidanceEnabled: false)
+    }
+
+    func clearGuideSourceDataAndReturn() {
+        Guide0820ProgressStorage.clearAll()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak self] in
+            self?.returnToFirstLaunchPage()
+        }
+    }
+
+    func returnToFirstLaunchPage() {
+        let firstLaunchVC = FirstLaunchVC(skipAnimation: true,
+                                          forceNeedBuildPlanOnConfirm: true)
+        if let navigationController {
+            navigationController.setViewControllers([firstLaunchVC], animated: true)
+            return
+        }
+        let navigationController = UINavigationController(rootViewController: firstLaunchVC)
+        navigationController.setNavigationBarHidden(true, animated: false)
+        navigationController.modalPresentationStyle = .fullScreen
+        present(navigationController, animated: true)
     }
 
     @objc func previousPageAction() {

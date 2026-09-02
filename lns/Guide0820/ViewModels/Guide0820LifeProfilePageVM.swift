@@ -627,12 +627,13 @@ class Guide0820LifeProfileChoicePageVM: Guide0820LifeProfilePageVM {
         topGradientView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.top.equalTo(scrollView)
-            make.height.equalTo(guide0820Design(72))
+            make.height.equalTo(guide0820Design(20))
+//            make.height.equalTo(guide0820Design(72))
         }
         bottomGradientView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
             make.bottom.equalTo(scrollView)
-            make.height.equalTo(guide0820Design(144))
+            make.height.equalTo(guide0820Design(20))
         }
 
         if let overlay {

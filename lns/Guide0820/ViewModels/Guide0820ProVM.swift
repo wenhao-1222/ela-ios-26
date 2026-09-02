@@ -13,6 +13,17 @@ import SnapKit
 /// 页面展示完全由本视图负责；商品加载、套餐选中和购买仍复用
 /// `ElaProPriceVM`，因此视觉改版不会绕开既有 StoreKit 流程。
 final class Guide0820ProVM: UIView {
+    private struct PlanCardViews {
+        let card: ElaProPriceCardView
+        let plan: ElaProPriceVM.PlanType
+        let titleLabel: UILabel
+        let periodLabel: UILabel
+        let weeklyLabel: UILabel
+        let singlePlanIconView: UIImageView
+        let singlePlanSubtitleLabel: UILabel
+        let savingsLabel: UILabel?
+    }
+
     private struct Benefit {
         let title: String
         let detail: String
@@ -67,11 +78,8 @@ final class Guide0820ProVM: UIView {
     private let planContainer = UIView()
     private let bottomFadeView = Guide0820ProBottomFadeView()
     private weak var priceVM: ElaProPriceVM?
-    private weak var annualWeeklyPriceLabel: UILabel?
-    private weak var monthWeeklyPriceLabel: UILabel?
-    private weak var annualSavingsLabel: UILabel?
-    private weak var annualTitleLabel: UILabel?
-    private weak var monthTitleLabel: UILabel?
+    private var annualCardViews: PlanCardViews?
+    private var monthCardViews: PlanCardViews?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -92,35 +100,27 @@ final class Guide0820ProVM: UIView {
         priceVM.scrollView.isHidden = true
         priceVM.lifeCard.isHidden = true
 
-        let annualLabels = installPlanCard(
+        annualCardViews = installPlanCard(
             priceVM.yearCard,
+            plan: .annual,
             title: priceVM.productNameText(for: .annual) ?? "",
             period: "/年",
             weeklyPrice: priceVM.weeklyPriceText(for: .annual),
             savingsText: priceVM.annualSavingsText() ?? ""
         )
-        annualWeeklyPriceLabel = annualLabels.weekly
-        annualSavingsLabel = annualLabels.savings
-        annualTitleLabel = annualLabels.title
-        let monthLabels = installPlanCard(
+        monthCardViews = installPlanCard(
             priceVM.monthCard,
+            plan: .month,
             title: priceVM.productNameText(for: .month) ?? "",
             period: "/月",
             weeklyPrice: priceVM.weeklyPriceText(for: .month),
             savingsText: nil
         )
-        monthWeeklyPriceLabel = monthLabels.weekly
-        monthTitleLabel = monthLabels.title
         priceVM.priceDisplayChangeBlock = { [weak self, weak priceVM] in
             guard let self, let priceVM else { return }
-            self.annualTitleLabel?.text = priceVM.productNameText(for: .annual)
-            self.monthTitleLabel?.text = priceVM.productNameText(for: .month)
-            self.annualWeeklyPriceLabel?.text = priceVM.weeklyPriceText(for: .annual)
-            self.monthWeeklyPriceLabel?.text = priceVM.weeklyPriceText(for: .month)
-            let savingsText = priceVM.annualSavingsText()
-            self.annualSavingsLabel?.text = savingsText
-            self.annualSavingsLabel?.isHidden = savingsText == nil
+            self.refreshPlanCardPresentation(using: priceVM)
         }
+        refreshPlanCardPresentation(using: priceVM)
 
         priceVM.bottomBar.removeFromSuperview()
         addSubview(bottomFadeView)
@@ -178,10 +178,11 @@ private extension Guide0820ProVM {
         logoView.contentMode = .scaleAspectFit
         contentView.addSubview(logoView)
         logoView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(kFitWidth(115))
+//            make.top.equalToSuperview().offset(kFitWidth(115))
+            make.top.equalTo(WHUtils().getNavigationBarHeight()+kFitWidth(36))
             make.centerX.equalToSuperview()
             make.width.equalTo(kFitWidth(103))
-            make.height.equalTo(kFitWidth(28))
+            make.height.equalTo(kFitWidth(18))
         }
 
         let titleLabel = makeLabel(
@@ -192,28 +193,28 @@ private extension Guide0820ProVM {
         )
         contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(logoView.snp.bottom).offset(kFitWidth(15))
+            make.top.equalTo(logoView.snp.bottom).offset(kFitWidth(25))
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
         }
 
         let benefitsStack = UIStackView()
         benefitsStack.axis = .vertical
-        benefitsStack.spacing = kFitWidth(16)
+        benefitsStack.spacing = kFitWidth(25)
         benefitsStack.alignment = .fill
         contentView.addSubview(benefitsStack)
         for benefit in benefits {
             benefitsStack.addArrangedSubview(makeBenefitView(benefit))
         }
         benefitsStack.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(28))
+            make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(50))
             make.left.equalTo(kFitWidth(30))
             make.right.equalTo(kFitWidth(-30))
         }
 
         contentView.addSubview(planContainer)
         planContainer.snp.makeConstraints { make in
-            make.top.equalTo(benefitsStack.snp.bottom).offset(kFitWidth(25))
+            make.top.equalTo(benefitsStack.snp.bottom).offset(kFitWidth(40))
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))
             make.height.equalTo(kFitWidth(160))
@@ -222,7 +223,7 @@ private extension Guide0820ProVM {
         let ratingView = makeRatingView()
         contentView.addSubview(ratingView)
         ratingView.snp.makeConstraints { make in
-            make.top.equalTo(planContainer.snp.bottom).offset(kFitWidth(31))
+            make.top.equalTo(planContainer.snp.bottom).offset(kFitWidth(37))
             make.centerX.equalToSuperview()
         }
 
@@ -234,7 +235,7 @@ private extension Guide0820ProVM {
         )
         contentView.addSubview(reviewScrollView)
         reviewScrollView.snp.makeConstraints { make in
-            make.top.equalTo(ratingView.snp.bottom).offset(kFitWidth(15))
+            make.top.equalTo(ratingView.snp.bottom).offset(kFitWidth(20))
             make.left.right.equalToSuperview()
             make.height.equalTo(reviewCardHeight)
         }
@@ -271,7 +272,6 @@ private extension Guide0820ProVM {
 
     private func makeBenefitView(_ benefit: Benefit) -> UIView {
         let container = UIView()
-
         let checkmark = UIImageView(image: UIImage(named: "guide0820_button_check_icon"))
 //        checkmark.tintColor = .THEME
         checkmark.contentMode = .scaleAspectFit
@@ -307,19 +307,20 @@ private extension Guide0820ProVM {
         }
         detail.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalTo(title.snp.bottom).offset(kFitWidth(7))
+            make.top.equalTo(title.snp.bottom).offset(kFitWidth(8))
             make.bottom.equalToSuperview()
         }
         return container
     }
 
-    func installPlanCard(
+    private func installPlanCard(
         _ card: ElaProPriceCardView,
+        plan: ElaProPriceVM.PlanType,
         title: String,
         period: String,
         weeklyPrice: String,
         savingsText: String?
-    ) -> (title: UILabel, weekly: UILabel, savings: UILabel?) {
+    ) -> PlanCardViews {
         card.removeFromSuperview()
         planContainer.addSubview(card)
         card.layer.cornerRadius = kFitWidth(12)
@@ -353,6 +354,19 @@ private extension Guide0820ProVM {
             alignment: .right
         )
         card.addSubview(weeklyLabel)
+
+        let singlePlanIconView = UIImageView(image: UIImage(named: "guidance_pro_ai_icon"))
+        singlePlanIconView.contentMode = .scaleAspectFit
+        singlePlanIconView.isHidden = true
+        card.addSubview(singlePlanIconView)
+
+        let singlePlanSubtitleLabel = makeLabel(
+            text: singlePlanSubtitle(for: plan),
+            font: .systemFont(ofSize: kFitWidth(12), weight: .regular),
+            color: .COLOR_TEXT_TITLE_0f1214_50
+        )
+        singlePlanSubtitleLabel.isHidden = true
+        card.addSubview(singlePlanSubtitleLabel)
 
         titleLabel.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(12))
@@ -397,15 +411,133 @@ private extension Guide0820ProVM {
         if card === priceVM?.yearCard {
             card.snp.makeConstraints {
                 $0.left.top.right.equalToSuperview()
-                $0.height.equalTo(kFitWidth(80))
+                $0.height.equalTo(kFitWidth(81))
             }
         } else {
             card.snp.makeConstraints {
                 $0.left.right.bottom.equalToSuperview()
+                $0.height.equalTo(kFitWidth(67))
+            }
+        }
+        return PlanCardViews(
+            card: card,
+            plan: plan,
+            titleLabel: titleLabel,
+            periodLabel: periodLabel,
+            weeklyLabel: weeklyLabel,
+            singlePlanIconView: singlePlanIconView,
+            singlePlanSubtitleLabel: singlePlanSubtitleLabel,
+            savingsLabel: savingsLabel
+        )
+    }
+
+    /// 单个订阅套餐使用横向摘要卡；双套餐继续沿用现有上下卡片布局。
+    func refreshPlanCardPresentation(using priceVM: ElaProPriceVM) {
+        guard let annualCardViews, let monthCardViews else { return }
+
+        let visibleCards = [annualCardViews, monthCardViews].filter { !$0.card.isHidden }
+        let singleCard = visibleCards.count == 1 ? visibleCards[0] : nil
+
+        planContainer.snp.updateConstraints { make in
+            make.height.equalTo(kFitWidth(singleCard == nil ? 160 : 80))
+        }
+
+        configurePlanCard(annualCardViews, asSinglePlan: singleCard?.card === annualCardViews.card, using: priceVM)
+        configurePlanCard(monthCardViews, asSinglePlan: singleCard?.card === monthCardViews.card, using: priceVM)
+    }
+
+    private func configurePlanCard(
+        _ views: PlanCardViews,
+        asSinglePlan: Bool,
+        using priceVM: ElaProPriceVM
+    ) {
+        views.singlePlanIconView.isHidden = !asSinglePlan
+        views.singlePlanSubtitleLabel.isHidden = !asSinglePlan
+        views.titleLabel.text = asSinglePlan ? "你的智能饮食教练" : priceVM.productNameText(for: views.plan)
+        views.weeklyLabel.text = weeklyPriceText(
+            priceVM.weeklyPriceText(for: views.plan),
+            showsApproximation: asSinglePlan
+        )
+
+        if views.plan == .annual {
+            let savingsText = priceVM.annualSavingsText()
+            views.savingsLabel?.text = savingsText
+            views.savingsLabel?.isHidden = asSinglePlan || savingsText == nil
+        }
+
+        if asSinglePlan {
+            views.card.snp.remakeConstraints { $0.edges.equalToSuperview() }
+            views.singlePlanIconView.snp.remakeConstraints { make in
+                make.left.equalTo(kFitWidth(14))
+                make.centerY.equalToSuperview()
+                make.width.height.equalTo(kFitWidth(30))
+            }
+            views.titleLabel.snp.remakeConstraints { make in
+                make.left.equalTo(views.singlePlanIconView.snp.right).offset(kFitWidth(12))
+                make.top.equalTo(kFitWidth(19))
+                make.right.lessThanOrEqualTo(views.card.priceLabel.snp.left).offset(kFitWidth(-10))
+            }
+            views.singlePlanSubtitleLabel.snp.remakeConstraints { make in
+                make.left.equalTo(views.titleLabel)
+                make.top.equalTo(views.titleLabel.snp.bottom).offset(kFitWidth(5))
+            }
+            views.periodLabel.snp.remakeConstraints { make in
+                make.right.equalTo(kFitWidth(-14))
+                make.centerY.equalTo(views.titleLabel)
+            }
+            views.card.priceLabel.snp.remakeConstraints { make in
+                make.right.equalTo(views.periodLabel.snp.left)
+                make.centerY.equalTo(views.periodLabel)
+                make.height.equalTo(kFitWidth(18))
+            }
+            views.weeklyLabel.snp.remakeConstraints { make in
+                make.right.equalTo(views.periodLabel)
+                make.top.equalTo(views.card.priceLabel.snp.bottom).offset(kFitWidth(6))
+            }
+            return
+        }
+
+        if views.plan == .annual {
+            views.card.snp.remakeConstraints {
+                $0.left.top.right.equalToSuperview()
+                $0.height.equalTo(kFitWidth(80))
+            }
+        } else {
+            views.card.snp.remakeConstraints {
+                $0.left.right.bottom.equalToSuperview()
                 $0.height.equalTo(kFitWidth(72))
             }
         }
-        return (titleLabel, weeklyLabel, savingsLabel)
+        views.titleLabel.snp.remakeConstraints { make in
+            make.left.equalTo(kFitWidth(12))
+            make.top.equalTo(kFitWidth(16))
+        }
+        views.card.priceLabel.snp.remakeConstraints { make in
+            make.left.equalTo(views.titleLabel)
+            make.top.equalTo(views.titleLabel.snp.bottom).offset(kFitWidth(12))
+            make.height.equalTo(kFitWidth(18))
+        }
+        views.periodLabel.snp.remakeConstraints { make in
+            make.left.equalTo(views.card.priceLabel.snp.right)
+            make.centerY.equalTo(views.card.priceLabel)
+        }
+        views.weeklyLabel.snp.remakeConstraints { make in
+            make.right.equalTo(kFitWidth(-12))
+            make.centerY.equalTo(views.card.priceLabel)
+        }
+    }
+
+    func singlePlanSubtitle(for plan: ElaProPriceVM.PlanType) -> String {
+        switch plan {
+        case .annual: return "全年持续跟进"
+        case .month: return "每月持续跟进"
+        case .lifetime: return "长期持续跟进"
+        }
+    }
+
+    func weeklyPriceText(_ text: String, showsApproximation: Bool) -> String {
+        guard showsApproximation, text != "--/周" else { return text }
+        return "约\(text)"
     }
 
     func makeRatingView() -> UIView {

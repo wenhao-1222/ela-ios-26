@@ -259,7 +259,8 @@ private extension GuidanceNutritionGoalsResultVC {
         }
         bottomGradientView.snp.makeConstraints {
             $0.left.right.bottom.equalTo(scrollView)
-            $0.height.equalTo(kFitWidth(72))
+            $0.height.equalTo(kFitWidth(20))
+//            $0.height.equalTo(kFitWidth(72))
         }
         contentView.snp.makeConstraints {
             $0.edges.equalToSuperview()
