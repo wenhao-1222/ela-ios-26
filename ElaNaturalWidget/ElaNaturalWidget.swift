@@ -221,7 +221,9 @@ struct ElaNaturalWidgetEntryView: View {
     let entry: Provider.Entry
 
     var body: some View {
-        ElaNaturalMealsWidgetEntryView(entry: entry, mealCount: 6)
+        // 系统组件库预览保持六餐；真实时间线读取用户同步到 App Group 的餐数。
+        let mealCount = entry.isSnap ? 6 : WidgetUtils().readVisibleMealCount()
+        ElaNaturalMealsWidgetEntryView(entry: entry, mealCount: mealCount)
     }
 }
 

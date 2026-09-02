@@ -123,8 +123,12 @@ class UserInfoModel {
     }
     
     var isAppStoreMark = "0"
-    //日志--每日显示多少餐   3 ~ 6 餐
-    var mealsNumber = 6
+    // 日志每日显示 3～6 餐；每次变化都同步到 App Group，供两个中号 Widget 动态布局。
+    var mealsNumber = 6 {
+        didSet {
+            WidgetUtils().saveVisibleMealCount(mealsNumber)
+        }
+    }
     //是否隐藏日志--免费获取计划按钮   true 隐藏   false 显示
     var hidden_survery_button_status = true
     //是否显示喝水功能
@@ -432,6 +436,9 @@ extension UserInfoModel{
             self.mealsNumber = showMealsNum
             UserDefaults.set(value: "\(showMealsNum)", forKey: .mealsNumber)
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateLogsMsg"), object: nil)
+        } else {
+            // 同一进程切换账号时数值可能相同，但 App Group 已在退出时重置，仍需补同步一次。
+            WidgetUtils().saveVisibleMealCount(showMealsNum)
         }
     }
 

@@ -292,14 +292,14 @@ struct ElaWeekRemainingWidgetEntryView: View {
 
                     HStack(alignment: .lastTextBaseline, spacing: 1 * scale) {
                         Text(verbatim: remaining.formatted(.number.grouping(.automatic)))
-                            .foregroundColor(valueColor)
+                            .foregroundColor(valueColor(for: remaining))
                             .font(Font.custom("D-DIN-PRO-SemiBold", size: 20 * scale))
                             .monospacedDigit()
                             .minimumScaleFactor(0.6)
                             .lineLimit(1)
 
                         Text(metric.unit)
-                            .foregroundColor(valueColor)
+                            .foregroundColor(valueColor(for: remaining))
                             .font(Font.custom("PingFangSC-Regular", size: 8 * scale))
                             .lineLimit(1)
                     }
@@ -311,8 +311,16 @@ struct ElaWeekRemainingWidgetEntryView: View {
         }
     }
 
-    private var valueColor: Color {
-        colorScheme == .dark ? .white : metric.accent
+    private func valueColor(for remaining: Int) -> Color {
+        // 仅深色模式将超量（剩余值为负）标红；负号由原始数值格式化保留。
+        if colorScheme == .dark {
+            return remaining < 0
+                ? Color(red: 253.0 / 255.0, green: 44.0 / 255.0, blue: 33.0 / 255.0)
+                : .white
+        }
+
+        // 浅色模式沿用各营养指标原本的主题色。
+        return metric.accent
     }
 }
 

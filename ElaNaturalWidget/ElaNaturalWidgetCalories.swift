@@ -92,7 +92,8 @@ struct ElaNaturalCaloriesMealsWidgetEntryView: View {
             let contentWidth = CaloriesMealsWidgetStyle.contentWidth(for: mealCount) * scale
             let actionAreaWidth = CaloriesMealsWidgetStyle.actionAreaWidth(for: mealCount) * scale
             let actionColumnWidth = CaloriesMealsWidgetStyle.actionColumnWidth(for: mealCount) * scale
-            let rowCount = mealCount / 2
+            // 四餐使用 2×2；五餐使用 2+2+1；六餐使用 2×3。
+            let rowCount = (mealCount + 1) / 2
             let rowHeight = isThreeMealLayout ? 0 : geometry.size.height / CGFloat(rowCount)
 
             ZStack(alignment: .topLeading) {
@@ -178,16 +179,21 @@ struct ElaNaturalCaloriesMealsWidgetEntryView: View {
                         .frame(width: actionAreaWidth, height: dividerWidth)
                         .offset(x: geometry.size.width - actionAreaWidth, y: 100.5 * scale)
                 } else {
+                    // 五餐最后一行横跨两列，中间竖线只覆盖前两行。
+                    let verticalDividerHeight = mealCount == 5
+                        ? rowHeight * 2
+                        : geometry.size.height
                     Rectangle()
                         .fill(CaloriesMealsWidgetStyle.divider(for: colorScheme))
-                        .frame(width: dividerWidth, height: geometry.size.height)
+                        .frame(width: dividerWidth, height: verticalDividerHeight)
                         .offset(x: geometry.size.width - actionColumnWidth)
 
                     VStack(spacing: 0) {
                         ForEach(0..<rowCount, id: \.self) { row in
-                            HStack(spacing: 0) {
-                                ForEach(0..<2, id: \.self) { column in
-                                    let index = row * 2 + column
+                            Group {
+                                if mealCount == 5 && row == rowCount - 1 {
+                                    // 2+2+1：第五餐占满整行，点击范围也是两个按钮的合并宽度。
+                                    let index = 4
                                     let actionState: FiveMealsActionState = completionStates[index]
                                         ? .recorded
                                         : (nextMealIndex == index ? .next : .inactive)
@@ -195,10 +201,25 @@ struct ElaNaturalCaloriesMealsWidgetEntryView: View {
                                     Link(destination: URL(string: "elavatinelns://mealsIndex_\(index + 1)")!) {
                                         FiveMealsActionCell(state: actionState, scale: scale)
                                     }
-                                    .frame(width: actionColumnWidth, height: rowHeight)
+                                    .frame(width: actionAreaWidth, height: rowHeight)
+                                } else {
+                                    HStack(spacing: 0) {
+                                        ForEach(0..<2, id: \.self) { column in
+                                            let index = row * 2 + column
+                                            let actionState: FiveMealsActionState = completionStates[index]
+                                                ? .recorded
+                                                : (nextMealIndex == index ? .next : .inactive)
+
+                                            Link(destination: URL(string: "elavatinelns://mealsIndex_\(index + 1)")!) {
+                                                FiveMealsActionCell(state: actionState, scale: scale)
+                                            }
+                                            .frame(width: actionColumnWidth, height: rowHeight)
+                                        }
+                                    }
                                 }
                             }
                             .overlay(alignment: .bottom) {
+                                // 行间横线始终贯穿整个右侧操作区域。
                                 if row < rowCount - 1 {
                                     Rectangle()
                                         .fill(CaloriesMealsWidgetStyle.divider(for: colorScheme))
@@ -480,7 +501,9 @@ struct ElaNaturalWidgetCaloriesEntryView: View {
     let entry: Provider.Entry
 
     var body: some View {
-        ElaNaturalCaloriesMealsWidgetEntryView(entry: entry, mealCount: 6)
+        // 系统组件库预览保持六餐；真实时间线读取用户同步到 App Group 的餐数。
+        let mealCount = entry.isSnap ? 6 : WidgetUtils().readVisibleMealCount()
+        ElaNaturalCaloriesMealsWidgetEntryView(entry: entry, mealCount: mealCount)
     }
 }
 

@@ -11,15 +11,12 @@ import SwiftUI
 @main
 struct ElaNaturalWidgetBundle: WidgetBundle {
     var body: some Widget {
-        
-        ElaNaturalWidgetCalories()//六餐  带卡路里icon
-        
-        ElaNaturalWidgetCaloriesFourMeals()//四餐  带卡路里icon
-        //ElaNaturalWidgetCaloriesThreeMeals()//三餐  带卡路里icon
-        ElaNaturalWidget()//六餐
-        ElaNaturalFiveMealsWidget()//五餐
-        ElaNaturalFourMealsWidget()//四餐
-        ElaNaturalThreeMealsWidget()//三餐
+        // 两个中号组件根据 App Group 中的个性化设置动态展示 3～6 餐。
+        ElaNaturalWidgetCalories()
+        ElaNaturalWidget()
+
+        // 小号三餐组件是独立样式，始终保留固定三餐布局。
+        ElaNaturalThreeMealsWidget()
         
         ElaWeekCaloriesWidget()
         ElaWeekCarboWidget()
@@ -28,4 +25,3 @@ struct ElaNaturalWidgetBundle: WidgetBundle {
 //        ElaLockScreenWidget()
     }
 }
-

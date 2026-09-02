@@ -1,6 +1,6 @@
 //
-//  ElaNaturalFiveMealsWidget.swift
-//  ElaNaturalFiveMealsWidget
+//  ElaNaturalMealsWidgetShared.swift
+//  ElaNaturalWidget shared views
 //
 //  Created by LNS2 on 2024/8/14.
 //
@@ -360,14 +360,6 @@ enum FiveMealsMealStateResolver {
     }
 }
 
-struct ElaNaturalFiveMealsWidgetEntryView: View {
-    let entry: Provider.Entry
-
-    var body: some View {
-        ElaNaturalMealsWidgetEntryView(entry: entry, mealCount: 5)
-    }
-}
-
 private struct FiveMealsCaloriesRing: View {
     let caloriesTarget: Int
     let calories: Int
@@ -599,28 +591,5 @@ struct FiveMealsActionCell: View {
             .frame(width: 25 * scale, height: 25 * scale)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
-    }
-}
-
-struct ElaNaturalFiveMealsWidget: Widget {
-    let kind: String = "ElaNaturalFiveMealsWidget"
-
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            if #available(iOS 17.0, *) {
-                ElaNaturalFiveMealsWidgetEntryView(entry: entry)
-                    .containerBackground(for: .widget) {
-                        FiveMealsWidgetBackground()
-                    }
-                    .edgesIgnoringSafeArea(.all)
-            } else {
-                ElaNaturalFiveMealsWidgetEntryView(entry: entry)
-                    .edgesIgnoringSafeArea(.all)
-            }
-        }
-        .configurationDisplayName("饮食记录")
-        .description("今日营养目标 & 快速记录饮食")
-        .supportedFamilies([.systemMedium])
-        .disableContentMarginsIfNeeded()
     }
 }

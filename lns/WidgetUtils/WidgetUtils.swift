@@ -17,11 +17,55 @@ enum natural_type {
 }
 
 class WidgetUtils {
+    private static let widgetAppGroup = "group.ElaNaturalCircleWidget"
+    private static let visibleMealCountKey = "VisibleMealCountForWidget"
+    private static let defaultVisibleMealCount = 6
+    private static let supportedVisibleMealCounts = 3...6
+
 //    public static var neesPostRequest = true
     //手动刷新
     public static var isManual = false
     //上次小组件刷新的时间戳   初始化的时候，当前时间往前推10分钟
     public static var lastRefreshTimeStamp = (Int(Date().timeStamp)!)-10*60
+
+    /// 将主 App 的个性化餐数同步给 Widget Extension。
+    /// Widget 仅支持 3～6 餐；缺失或异常值统一回退到 6 餐。
+    func saveVisibleMealCount(_ mealCount: Int, reloadWidgets: Bool = true) {
+        let normalizedMealCount = Self.supportedVisibleMealCounts.contains(mealCount)
+            ? mealCount
+            : Self.defaultVisibleMealCount
+        let userDefaults = UserDefaults(suiteName: Self.widgetAppGroup)
+        let previousMealCount = userDefaults?.object(forKey: Self.visibleMealCountKey) as? Int
+
+        guard previousMealCount != normalizedMealCount else { return }
+
+        userDefaults?.set(normalizedMealCount, forKey: Self.visibleMealCountKey)
+        userDefaults?.synchronize()
+
+        guard reloadWidgets else { return }
+        // 固定三餐的小号组件不受个性化餐数影响，因此只刷新两个动态中号组件。
+        WidgetCenter.shared.reloadTimelines(ofKind: "ElaNaturalWidgetCalories")
+        WidgetCenter.shared.reloadTimelines(ofKind: "ElaNaturalWidget")
+    }
+
+    /// Widget 渲染时读取共享餐数；兼容可能由旧版本写入的字符串值。
+    func readVisibleMealCount() -> Int {
+        let userDefaults = UserDefaults(suiteName: Self.widgetAppGroup)
+        let storedValue = userDefaults?.object(forKey: Self.visibleMealCountKey)
+        let mealCount: Int
+
+        if let number = storedValue as? NSNumber {
+            mealCount = number.intValue
+        } else if let string = storedValue as? String, let value = Int(string) {
+            mealCount = value
+        } else {
+            return Self.defaultVisibleMealCount
+        }
+
+        return Self.supportedVisibleMealCounts.contains(mealCount)
+            ? mealCount
+            : Self.defaultVisibleMealCount
+    }
     
     func saveMealsData(mealsIndex:Int) {
         let userDefault = UserDefaults(suiteName: "group.ElaNaturalCircleWidget")
@@ -69,6 +113,11 @@ class WidgetUtils {
         userDefault?.setValue(uId, forKey: "user_id")
         userDefault?.setValue(uToken, forKey: "token_lns")
         userDefault?.synchronize()
+
+        // 退出登录后不沿用上一位用户的个性化餐数，Widget 回到默认六餐。
+        if uId.isEmpty || uToken.isEmpty {
+            saveVisibleMealCount(Self.defaultVisibleMealCount, reloadWidgets: false)
+        }
         
         DispatchQueue.main.asyncAfter(deadline: .now()+1, execute: {
             WidgetUtils.isManual = true
@@ -99,6 +148,8 @@ class WidgetUtils {
         let arr = userDefault?.value(forKey: "CurrentDayMealsData") as? NSArray ?? []
         
 //        print("readCurrentDayMealsMsg:\(arr)")
+        // 保留日志模块原有契约：底层餐次必须始终是六项，否则整天按空日志处理。
+        // 动态 Widget 只截取这六个安全位置中的前 3～6 项，不改变日志数据语义。
         if arr.count == 6 {
             return arr
         }else{
