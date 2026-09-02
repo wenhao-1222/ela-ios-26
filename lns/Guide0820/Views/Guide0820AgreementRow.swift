@@ -57,11 +57,11 @@ private extension Guide0820AgreementRow {
         iconView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(12.5))
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(kFitWidth(20))
+            make.width.height.equalTo(kFitWidth(24))
         }
 
         titleLabel.snp.makeConstraints { make in
-            make.left.equalTo(iconView.snp.right).offset(kFitWidth(16))
+            make.left.equalTo(iconView.snp.right).offset(kFitWidth(12))
             make.centerY.equalToSuperview()
         }
 
