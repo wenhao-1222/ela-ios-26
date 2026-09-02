@@ -23,7 +23,8 @@ final class GuidanceGoalPlanFatLossFoodFluctuationVM: GuidanceGoalPlanChoicePage
                 GuidanceGoalPlanOption(title: "高脂食物", detail: "烤肉、油炸食物等", value: "high_fat", iconName: "guide0820_fat_loss_food_fluctuation_high_fat_icon"),
                 GuidanceGoalPlanOption(title: "不确定", detail: nil, value: "uncertain", iconName: "guide0820_answer_unknown_icon")
             ],
-            accentColor: GuidanceGoalPlanStyle.muscleGainColor
+            accentColor: GuidanceGoalPlanStyle.muscleGainColor,
+            layout: .goal
         )
         selectedValue = flowState.fatLossFoodFluctuation
         valueChanged = { [weak self] _ in

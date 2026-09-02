@@ -312,15 +312,12 @@ struct ElaWeekRemainingWidgetEntryView: View {
     }
 
     private func valueColor(for remaining: Int) -> Color {
-        // 仅深色模式将超量（剩余值为负）标红；负号由原始数值格式化保留。
-        if colorScheme == .dark {
-            return remaining < 0
-                ? Color(red: 253.0 / 255.0, green: 44.0 / 255.0, blue: 33.0 / 255.0)
-                : .white
+        // 深浅色模式下，超量（剩余值为负）都只将数值和单位标红；负号保留。
+        if remaining < 0 {
+            return Color(red: 253.0 / 255.0, green: 44.0 / 255.0, blue: 33.0 / 255.0)
         }
 
-        // 浅色模式沿用各营养指标原本的主题色。
-        return metric.accent
+        return colorScheme == .dark ? .white : metric.accent
     }
 }
 

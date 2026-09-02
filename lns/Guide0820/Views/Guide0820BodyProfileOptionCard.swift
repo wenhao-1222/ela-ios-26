@@ -101,10 +101,10 @@ final class Guide0820BodyProfileOptionCard: UIControl {
         titleLabel.font = .systemFont(ofSize: guide0820Design(32), weight: .medium)
 
         subtitleLabel.text = item.subtitle
-        subtitleLabel.textColor = .COLOR_TEXT_TITLE_0f1214.withAlphaComponent(0.5)
+        subtitleLabel.textColor = .COLOR_TEXT_TITLE_0f1214_50
         subtitleLabel.font = .systemFont(ofSize: guide0820Design(24), weight: .regular)
         subtitleLabel.isHidden = item.subtitle == nil
-        subtitleLabel.guide0820SetLineHeight(guide0820Design(36))
+//        subtitleLabel.guide0820SetLineHeight(guide0820Design(36))
 
         selectCircle.backgroundColor = .clear
         selectCircle.layer.borderWidth = guide0820Design(3)
@@ -140,8 +140,9 @@ final class Guide0820BodyProfileOptionCard: UIControl {
 
         subtitleLabel.snp.makeConstraints { make in
             make.left.equalTo(titleLabel)
-            make.top.equalTo(titleLabel.snp.bottom).offset(guide0820Design(12))
+            make.top.equalTo(titleLabel.snp.bottom).offset(guide0820Design(6))
             make.right.lessThanOrEqualTo(selectCircle.snp.left).offset(guide0820Design(-36))
+            make.height.equalTo(guide0820Design(36))
         }
 
         selectCircle.snp.makeConstraints { make in
@@ -151,7 +152,9 @@ final class Guide0820BodyProfileOptionCard: UIControl {
         }
 
         checkImageView.snp.makeConstraints { make in
-            make.edges.equalTo(selectCircle)
+//            make.edges.equalTo(selectCircle)
+            make.center.lessThanOrEqualTo(selectCircle)
+            make.width.height.equalTo(kFitWidth(30))
         }
     }
 
@@ -159,8 +162,8 @@ final class Guide0820BodyProfileOptionCard: UIControl {
     private func updateSelectedState(animated: Bool) {
         if usesCheckStateImages {
             checkImageView.setCheckState(isSelected,
-                                         checkedImageName: "select_icon_selected_circle",
-                                         uncheckedImageName: "select_icon_normal_circle",
+                                         checkedImageName: "select_icon_selected_circle_gap",
+                                         uncheckedImageName: "select_icon_normal_circle_gap",
                                          animated: animated)
             return
         }

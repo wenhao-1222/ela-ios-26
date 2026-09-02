@@ -42,8 +42,8 @@ final class Guide0820SourceRow: UIControl {
     ///   - animated: 是否执行动画。
     func setSelected(_ isSelected: Bool, animated: Bool) {
         checkImageView.setCheckState(isSelected,
-                                     checkedImageName: "select_icon_selected_circle",
-                                     uncheckedImageName: "select_icon_normal_circle",
+                                     checkedImageName: "select_icon_selected_circle_gap",
+                                     uncheckedImageName: "select_icon_normal_circle_gap",
                                      animated: animated)
     }
 }

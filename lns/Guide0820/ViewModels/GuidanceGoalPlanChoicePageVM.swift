@@ -129,6 +129,10 @@ class GuidanceGoalPlanChoicePageVM: UIView, GuidanceGoalPlanPageVM {
     private let mutuallyExclusiveValue: String?
     // `cards` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var cards: [GuidanceGoalPlanOptionCardView] = []
+    // Card width is deterministic because the stack uses fixed page insets.
+    private var cardWidth: CGFloat {
+        SCREEN_WIDHT - layout.stackHorizontalInset * 2
+    }
 
     /// `hasSelection` 属性，保存该类型对外提供或内部使用的状态与配置。
     var hasSelection: Bool {
@@ -254,15 +258,17 @@ private extension GuidanceGoalPlanChoicePageVM {
             card.configure(option: option,
                            accentColor: accentColor,
                            detailOnlyWhenSelected: detailOnlyWhenSelected,
-                           checkedImageName: allowsMultipleSelection ? "guide0820_checkbox_selected_icon" : "select_icon_selected_circle",
-                           uncheckedImageName: allowsMultipleSelection ? "guide0820_checkbox_normal_icon" : "select_icon_normal_circle")
+                           checkedImageName: allowsMultipleSelection ? "guide0820_checkbox_selected_icon" : "select_icon_selected_circle_gap",
+                           uncheckedImageName: allowsMultipleSelection ? "guide0820_checkbox_normal_icon" : "select_icon_normal_circle_gap")
             card.addTarget(self, action: #selector(cardTapAction(_:)), for: .touchUpInside)
             card.snp.makeConstraints { make in
                 let defaultHeight = kFitWidth(option.detail == nil ? 64 : 92)
                 if detailOnlyWhenSelected {
-                    make.height.equalTo(guide0820Design(160))
+                    make.height.equalTo(card.preferredHeight(expanded: false, constrainedTo: cardWidth))
+                } else if layout.cardMinimumHeight > 0 {
+                    make.height.equalTo(layout.cardMinimumHeight)
                 } else {
-                    make.height.greaterThanOrEqualTo(max(layout.cardMinimumHeight, defaultHeight))
+                    make.height.equalTo(defaultHeight)
                 }
             }
             stackView.addArrangedSubview(card)
@@ -313,7 +319,7 @@ private extension GuidanceGoalPlanChoicePageVM {
             card.setSelected(selected, animated: animated)
             if detailOnlyWhenSelected {
                 card.snp.updateConstraints { make in
-                    make.height.equalTo(guide0820Design(selected ? 232 : 160))
+                    make.height.equalTo(card.preferredHeight(expanded: selected, constrainedTo: cardWidth))
                 }
             }
         }

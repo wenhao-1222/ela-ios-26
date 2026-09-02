@@ -22,6 +22,8 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
     private let titleLabel = UILabel()
     // `detailLabel` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let detailLabel = UILabel()
+    // 用于将标题和详情作为一个整体进行垂直布局。
+    private let textGroupLayoutGuide = UILayoutGuide()
     // `iconImageView` 属性，保存该类型对外提供或内部使用的状态与配置。
     private let iconImageView = UIImageView()
     // `checkImageView` 属性，保存该类型对外提供或内部使用的状态与配置。
@@ -33,8 +35,8 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
     // `detailExpanded` 属性，保存该类型对外提供或内部使用的状态与配置。
     private var detailExpanded = false
     // Selection indicator assets; multi-select pages override these with checkbox icons.
-    private var checkedImageName = "select_icon_selected_circle"
-    private var uncheckedImageName = "select_icon_normal_circle"
+    private var checkedImageName = "select_icon_selected_circle_gap"
+    private var uncheckedImageName = "select_icon_normal_circle_gap"
     private var selectionState: Bool?
 
     /// 初始化当前类型实例。
@@ -124,6 +126,31 @@ final class GuidanceGoalPlanOptionCardView: UIControl {
         }
     }
 
+    /// Returns the compact or expanded height for mode cards. Expanded cards
+    /// follow the 750 px design grid: 40 px vertical padding on each side,
+    /// a 32 px title line, 12 px copy spacing, and 36 px per detail line.
+    func preferredHeight(expanded: Bool, constrainedTo width: CGFloat) -> CGFloat {
+        guard presentationStyle == .expandable, expanded else {
+            return guide0820Design(160)
+        }
+
+        let textWidth = max(
+            0,
+            width - guide0820Design(116 + 58 + 42 + 32)
+        )
+        let detailLineHeight = guide0820Design(36)
+        let measuredDetailHeight = detailLabel.attributedText?.boundingRect(
+            with: CGSize(width: textWidth, height: .greatestFiniteMagnitude),
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            context: nil
+        ).height ?? detailLineHeight
+        // Avoid a fractional-pixel rounding artifact turning an exact three-line
+        // measurement into four lines on scaled screen widths.
+        let detailLineCount = max(1, ceil((measuredDetailHeight - 0.5) / detailLineHeight))
+
+        return guide0820Design(40 + 32 + 12 + 40) + detailLineCount * detailLineHeight
+    }
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         guard previousTraitCollection == nil ||
@@ -174,6 +201,7 @@ private extension GuidanceGoalPlanOptionCardView {
         addSubview(titleLabel)
         addSubview(detailLabel)
         addSubview(checkImageView)
+        addLayoutGuide(textGroupLayoutGuide)
 
         iconImageView.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(18))
@@ -202,6 +230,8 @@ private extension GuidanceGoalPlanOptionCardView {
 
     // 执行 `remakeLayout` 操作，完成当前引导页面的状态更新或交互处理。
     func remakeLayout() {
+        textGroupLayoutGuide.snp.removeConstraints()
+
         switch presentationStyle {
         case .goal:
             iconImageView.snp.remakeConstraints { make in
@@ -243,13 +273,18 @@ private extension GuidanceGoalPlanOptionCardView {
             titleLabel.snp.remakeConstraints { make in
                 make.left.equalTo(guide0820Design(116))
                 make.right.equalTo(checkImageView.snp.left).offset(guide0820Design(-36))
-                make.top.equalTo(guide0820Design(40))
+                make.top.equalTo(textGroupLayoutGuide.snp.top)
             }
 
             detailLabel.snp.remakeConstraints { make in
                 make.left.right.equalTo(titleLabel)
-                make.top.equalTo(titleLabel.snp.bottom).offset(guide0820Design(12))
-                make.bottom.lessThanOrEqualTo(guide0820Design(-40))
+                make.top.equalTo(titleLabel.snp.bottom).offset(guide0820Design(6))
+                make.bottom.equalTo(textGroupLayoutGuide.snp.bottom)
+            }
+
+            textGroupLayoutGuide.snp.makeConstraints { make in
+                make.left.right.equalTo(titleLabel)
+                make.centerY.equalToSuperview()
             }
         case .expandable:
             iconImageView.snp.remakeConstraints { make in
@@ -270,7 +305,7 @@ private extension GuidanceGoalPlanOptionCardView {
                 // the trailing 42pt selection control as the MasterGo layer.
                 make.right.equalTo(checkImageView.snp.left).offset(guide0820Design(-58))
                 if detailExpanded {
-                    make.top.equalTo(kFitWidth(20))
+                    make.top.equalTo(textGroupLayoutGuide.snp.top)
                 } else {
                     make.centerY.equalToSuperview()
                 }
@@ -278,11 +313,18 @@ private extension GuidanceGoalPlanOptionCardView {
 
             detailLabel.snp.remakeConstraints { make in
                 make.left.right.equalTo(titleLabel)
-                make.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(6))
+                make.top.equalTo(titleLabel.snp.bottom).offset(guide0820Design(12))
                 if detailExpanded {
-                    make.bottom.equalToSuperview().offset(kFitWidth(-20))
+                    make.bottom.equalTo(textGroupLayoutGuide.snp.bottom)
                 } else {
                     make.height.equalTo(0)
+                }
+            }
+
+            if detailExpanded {
+                textGroupLayoutGuide.snp.makeConstraints { make in
+                    make.left.right.equalTo(titleLabel)
+                    make.centerY.equalToSuperview()
                 }
             }
         case .standard:

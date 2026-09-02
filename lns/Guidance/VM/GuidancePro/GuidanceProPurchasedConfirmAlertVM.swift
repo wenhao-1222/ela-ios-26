@@ -52,8 +52,6 @@ final class GuidanceProPurchasedCheckButton: ElaExpandedTapButton {
                                      checkedImageName: "select_icon_selected_circle",
                                      uncheckedImageName: "select_icon_normal_circle",
                                      animated: animated)
-        //select_icon_normal_circle  circle_today_normal_icon
-        //select_icon_selected_circle   circle_today_select_icon
     }
 }
 

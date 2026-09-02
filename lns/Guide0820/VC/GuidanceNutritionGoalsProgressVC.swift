@@ -75,8 +75,30 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
         let imageView = UIImageView()
         imageView.setImgLocal(imgName: "guide_first_page_logo_icon")
         imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
         return imageView
     }()
+
+    /// 纯色 logo 副本配合移动渐变蒙层，只让高光显示在 logo 的非透明区域内。
+    private lazy var logoHighlightImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "guide_first_page_logo_icon")?.withRenderingMode(.alwaysTemplate)
+        imageView.tintColor = UIColor(hex: "#003CFF")
+        imageView.alpha = 0.72
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+
+    private let logoHighlightMaskLayer: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.colors = [UIColor.clear.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
+        layer.locations = [-0.85, -0.45, -0.05]
+        layer.startPoint = CGPoint(x: 0, y: 0.5)
+        layer.endPoint = CGPoint(x: 1, y: 0.5)
+        return layer
+    }()
+
+    private let logoShimmerAnimationKey = "guidance.logo.shimmer"
 
     private let logoTitleLabel: UILabel = {
         let label = UILabel()
@@ -191,11 +213,21 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateInteractivePopGestureBlocked(true)
+        startLogoShimmer()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        stopLogoShimmer()
         restoreFullscreenInteractivePopGesture()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        logoHighlightMaskLayer.frame = logoHighlightImageView.bounds
+        CATransaction.commit()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -211,6 +243,7 @@ private extension GuidanceNutritionGoalsProgressVC {
         view.backgroundColor = .COLOR_BG_F2
         view.addSubview(backgroundImageView)
         view.addSubview(logoImageView)
+        logoImageView.addSubview(logoHighlightImageView)
         view.addSubview(logoTitleLabel)
         view.addSubview(titleLabel)
         view.addSubview(subtitleLabel)
@@ -227,6 +260,8 @@ private extension GuidanceNutritionGoalsProgressVC {
             $0.width.equalTo(kFitWidth(170))
             $0.height.equalTo(kFitWidth(42))
         }
+        logoHighlightImageView.snp.makeConstraints { $0.edges.equalToSuperview() }
+        logoHighlightImageView.layer.mask = logoHighlightMaskLayer
         logoTitleLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(logoImageView.snp.bottom).offset(kFitWidth(8))
@@ -254,7 +289,7 @@ private extension GuidanceNutritionGoalsProgressVC {
         progressTrackView.snp.makeConstraints {
             $0.left.equalTo(kFitWidth(62))
             $0.right.equalTo(kFitWidth(-62))
-            $0.top.equalTo(subtitleLabel.snp.bottom).offset(kFitWidth(24))
+            $0.top.equalTo(subtitleLabel.snp.bottom).offset(kFitWidth(40))
             $0.height.equalTo(kFitWidth(4))
         }
         progressFillView.snp.makeConstraints {
@@ -265,17 +300,41 @@ private extension GuidanceNutritionGoalsProgressVC {
             let label = UILabel()
             label.text = text
             label.textColor = .COLOR_TEXT_TITLE_0f1214_50
-            label.font = .systemFont(ofSize: 17, weight: .regular)
+            label.font = .systemFont(ofSize: 13, weight: .regular)
+            label.textAlignment = .center
             stageStackView.addArrangedSubview(label)
             stageLabels.append(label)
         }
         stageStackView.snp.makeConstraints {
             $0.left.equalTo(kFitWidth(50))
             $0.right.equalTo(kFitWidth(-34))
+            $0.height.equalTo(kFitWidth(20))
             $0.top.equalTo(progressTrackView.snp.bottom).offset(kFitWidth(16))
         }
         progressPercentLabel.isHidden = true
         logoTitleLabel.isHidden = true
+    }
+
+    func startLogoShimmer() {
+        guard logoHighlightMaskLayer.animation(forKey: logoShimmerAnimationKey) == nil else { return }
+
+        // 前 60% 完成扫光，后 40% 留白，让循环节奏更接近骨架屏而不过于闪烁。
+        let animation = CAKeyframeAnimation(keyPath: "locations")
+        animation.values = [
+            [-0.85, -0.45, -0.05],
+            [1.05, 1.45, 1.85],
+            [1.05, 1.45, 1.85]
+        ]
+        animation.keyTimes = [0, 0.6, 1]
+        animation.duration = 1.75
+        animation.repeatCount = .infinity
+        animation.calculationMode = .linear
+        logoHighlightMaskLayer.add(animation, forKey: logoShimmerAnimationKey)
+    }
+
+    func stopLogoShimmer() {
+        logoHighlightMaskLayer.removeAnimation(forKey: logoShimmerAnimationKey)
+        logoHighlightMaskLayer.locations = [-0.85, -0.45, -0.05]
     }
 
     func startFakeProgress() {

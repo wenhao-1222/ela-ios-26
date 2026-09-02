@@ -92,7 +92,7 @@ class WelcomeGuide0820BasePageVM: UIView {
         self.content = content
         super.init(frame: .zero)
 
-        backgroundColor = WHColor_16(colorStr: "F5F5F5")
+        backgroundColor = .COLOR_BG_F2//WHColor_16(colorStr: "F5F5F5")
         initUI()
     }
 

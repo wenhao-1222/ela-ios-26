@@ -377,8 +377,8 @@ final class Guide0820LifeProfileChoiceCard: UIControl {
             ? UIColor.THEME.resolvedColor(with: traitCollection).cgColor
             : UIColor.clear.cgColor
         checkImageView.setCheckState(isSelected,
-                                     checkedImageName: "select_icon_selected_circle",
-                                     uncheckedImageName: "select_icon_normal_circle",
+                                     checkedImageName: "select_icon_selected_circle_gap",
+                                     uncheckedImageName: "select_icon_normal_circle_gap",
                                      animated: animated)
         transform = isPressedState ? CGAffineTransform(scaleX: 0.985, y: 0.985) : .identity
         alpha = isPressedState ? 0.92 : 1
@@ -697,9 +697,9 @@ final class Guide0820LifeProfileTakeoutFrequencyVM: Guide0820LifeProfileChoicePa
             title: "你平均每周\n有几餐会外食或点外卖？",
             items: [
                 Item(iconText: "0", iconName: "guide0820_takeout_0_icon", title: "0 餐", subtitle: nil, value: "0"),
-                Item(iconText: "1", iconName: "guide0820_takeout_1_3_icon", title: "1 到 3 餐", subtitle: nil, value: "1-3"),
-                Item(iconText: "4", iconName: "guide0820_takeout_4_7_icon", title: "4 到 7 餐", subtitle: nil, value: "4-7"),
-                Item(iconText: "8", iconName: "guide0820_takeout_8_14_icon", title: "8 到 14 餐", subtitle: nil, value: "8-14"),
+                Item(iconText: "1", iconName: "guide0820_takeout_1_3_icon", title: "1 ~ 3 餐", subtitle: nil, value: "1-3"),
+                Item(iconText: "4", iconName: "guide0820_takeout_4_7_icon", title: "4 ~ 7 餐", subtitle: nil, value: "4-7"),
+                Item(iconText: "8", iconName: "guide0820_takeout_8_14_icon", title: "8 ~ 14 餐", subtitle: nil, value: "8-14"),
                 Item(iconText: "15", iconName: "guide0820_takeout_15_plus_icon", title: "15 餐及以上", subtitle: nil, value: "15+")
             ],
             info: (

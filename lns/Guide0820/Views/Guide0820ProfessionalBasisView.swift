@@ -77,8 +77,10 @@ private extension Guide0820ProfessionalBasisView {
     func updateBarrierContent() {
         contentView.titleLabel.text = "建立在专业依据之上"
         contentView.zhunayeLabel.text = "与传奇运动员和营养师合作\n将专业经验融入 ELA"
+        contentView.zhunayeLabel.font = .systemFont(ofSize: 11, weight: .regular)
         contentView.zhunayeLabel.guide0820SetLineHeight(kFitWidth(18))
         contentView.jijianLabel.text = "结合美国农业部 USDA 等权威\n数据库 让记录与分析更有依据"
+        contentView.jijianLabel.font = .systemFont(ofSize: 11, weight: .regular)
         contentView.jijianLabel.guide0820SetLineHeight(kFitWidth(18))
     }
 }

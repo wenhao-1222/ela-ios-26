@@ -15,7 +15,7 @@
       "scale" : "1x"
     },
     {
-      "filename" : "guide0820_nutrition_start@2x.png",
+      "filename" : "选择@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -26,11 +26,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "容器 1664@2x.png",
+      "filename" : "选择@2x 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
+      "filename" : "选择@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -41,6 +42,7 @@
           "value" : "dark"
         }
       ],
+      "filename" : "选择@3x 1.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
