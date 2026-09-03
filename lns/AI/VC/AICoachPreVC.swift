@@ -15,6 +15,7 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
 
     var reportId = ""
     var dataDict = NSDictionary()
+    var askCoachButtonTapBlock: (() -> Void)?
     private var reportList: [AICoachReportListItem] = []
     private let shouldPlayFirstEntryAnimation = AICoachPreVC.consumeFirstEntryAnimationFlag()
     private var userGoal: Int = 0
@@ -36,9 +37,9 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private let entranceAnimationDurationC: TimeInterval = 0.7
     // reportCount = 1 且 latestReport.reportStatus = 2 时，readyMessageVM 渐现时长，可按视觉节奏调节。
     private let firstReportReadyMessageFadeDuration: TimeInterval = 0.32
-    // reportCount = 1 且 latestReport.reportStatus = 2 时，feedbackGlassVM（不含 feedbackButton）渐现时长，可按视觉节奏调节。
+    // reportCount = 1 且 latestReport.reportStatus = 2 时，feedbackGlassVM（不含底部操作按钮）渐现时长，可按视觉节奏调节。
     private let firstReportFeedbackGlassFadeDuration: TimeInterval = 0.32
-    // reportCount = 1 且 latestReport.reportStatus = 2 时，feedbackButton 最后单独渐现时长，可按视觉节奏调节。
+    // reportCount = 1 且 latestReport.reportStatus = 2 时，底部操作按钮最后单独渐现时长，可按视觉节奏调节。
     private let firstReportFeedbackButtonFadeDuration: TimeInterval = 0.28
     
 //    private lazy var preDaysVM: AICoachPreDaysVM = {
@@ -64,8 +65,11 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
     private lazy var feedbackGlassVM: AICoachPreFeedbackGlassVM = {
         let view = AICoachPreFeedbackGlassVM(frame: .zero,
                                              shouldShowToneItemView: self.shouldEnableToneFeedbackFeature)
-        view.buttonTapBlock = { [weak self] in
+        view.feedbackButtonTapBlock = { [weak self] in
             self?.nextButtonTapAction()
+        }
+        view.askCoachButtonTapBlock = { [weak self] in
+            self?.askCoachButtonTapBlock?()
         }
         view.goalTapBlock = { [weak self] in
             self?.showInfoSelectPopup(for: .goal)
@@ -371,8 +375,8 @@ extension AICoachPreVC{
         }
 
         feedbackGlassVM.snp.makeConstraints { make in
-            make.left.equalTo(kFitWidth(20))
-            make.right.equalTo(kFitWidth(-20))
+            make.left.equalTo(kFitWidth(16))
+            make.right.equalTo(kFitWidth(-16))
             make.height.equalTo(feedbackGlassVM.selfHeight)
             make.bottom.equalTo(-WHUtils().getBottomSafeAreaHeight() - kFitWidth(15))
         }
@@ -542,7 +546,7 @@ private extension AICoachPreVC {
     func applyNextButtonState(animated: Bool = false, updatesMessage: Bool = true) {
         let reportStatus = currentReportStatus
         let shouldEnableReportButton = canOpenReport(for: reportStatus)
-        feedbackGlassVM.setButtonEnabled(shouldEnableReportButton)
+        feedbackGlassVM.setFeedbackButtonEnabled(shouldEnableReportButton)
 
         guard animated, feedbackGlassVM.alpha > 0 else { return }
         UIView.animate(withDuration: 0.35) {
@@ -558,7 +562,7 @@ private extension AICoachPreVC {
                                      isEnabled: Bool,
                                      backgroundColor: UIColor,
                                      animated: Bool) {
-        feedbackGlassVM.setButtonEnabled(isEnabled)
+        feedbackGlassVM.setFeedbackButtonEnabled(isEnabled)
     }
 
     func updatePreDaysUI(dataDict: NSDictionary) {

@@ -32,7 +32,8 @@ final class AICoachPreFeedbackGlassVM: UIView {
     let selfHeight = kFitWidth(198)
     private let shouldShowToneItemView: Bool
 
-    var buttonTapBlock: (() -> Void)?
+    var feedbackButtonTapBlock: (() -> Void)?
+    var askCoachButtonTapBlock: (() -> Void)?
     var goalTapBlock: (() -> Void)?
     var intensityTapBlock: (() -> Void)?
     var toneTapBlock: (() -> Void)?
@@ -115,7 +116,15 @@ final class AICoachPreFeedbackGlassVM: UIView {
     private lazy var feedbackButton: AICoachPreFeedbackThemeGlassButton = {
         let button = AICoachPreFeedbackThemeGlassButton(title: "查看教练反馈")
         button.tapBlock = { [weak self] in
-            self?.buttonTapBlock?()
+            self?.feedbackButtonTapBlock?()
+        }
+        return button
+    }()
+
+    private lazy var askCoachButton: AICoachPreFeedbackThemeGlassButton = {
+        let button = AICoachPreFeedbackThemeGlassButton(title: "问教练")
+        button.tapBlock = { [weak self] in
+            self?.askCoachButtonTapBlock?()
         }
         return button
     }()
@@ -129,7 +138,7 @@ final class AICoachPreFeedbackGlassVM: UIView {
         setupBase()
         initUI()
         configure(userGoal: 1, aiCoachIntensityPreference: 1, aiCoachTone: 1)
-        setButtonEnabled(false)
+        setFeedbackButtonEnabled(false)
         applyCurrentAppearance()
     }
 
@@ -181,7 +190,7 @@ extension AICoachPreFeedbackGlassVM {
         }
     }
 
-    func setButtonEnabled(_ isEnabled: Bool) {
+    func setFeedbackButtonEnabled(_ isEnabled: Bool) {
         feedbackButton.isEnabled = isEnabled
     }
 
@@ -210,22 +219,29 @@ extension AICoachPreFeedbackGlassVM {
 
     func prepareFeedbackButtonHiddenState() {
         feedbackButton.layer.removeAllAnimations()
+        askCoachButton.layer.removeAllAnimations()
         feedbackButton.alpha = 0
+        askCoachButton.alpha = 0
     }
 
     func applyFeedbackButtonVisibleState() {
         feedbackButton.layer.removeAllAnimations()
+        askCoachButton.layer.removeAllAnimations()
         feedbackButton.alpha = 1
+        askCoachButton.alpha = 1
     }
 
     func playFeedbackButtonFadeIn(duration: TimeInterval,
                                   completion: (() -> Void)? = nil) {
         feedbackButton.layer.removeAllAnimations()
+        askCoachButton.layer.removeAllAnimations()
         feedbackButton.alpha = 0
+        askCoachButton.alpha = 0
         UIView.animate(withDuration: duration,
                        delay: 0,
                        options: [.curveEaseInOut, .beginFromCurrentState]) {
             self.feedbackButton.alpha = 1
+            self.askCoachButton.alpha = 1
         } completion: { _ in
             completion?()
         }
@@ -259,6 +275,7 @@ private extension AICoachPreFeedbackGlassVM {
         if shouldShowToneItemView {
             elementsContainerView.contentView.addSubview(toneItemView)
         }
+        elementsContainerView.contentView.addSubview(askCoachButton)
         elementsContainerView.contentView.addSubview(feedbackButton)
 
         panelGlassView.snp.makeConstraints { make in
@@ -298,8 +315,15 @@ private extension AICoachPreFeedbackGlassVM {
             }
         }
 
-        feedbackButton.snp.makeConstraints { make in
+        askCoachButton.snp.makeConstraints { make in
             make.left.equalTo(kFitWidth(16))
+            make.bottom.equalTo(kFitWidth(-16))
+            make.width.equalTo(kFitWidth(114))
+            make.height.equalTo(kFitWidth(52))
+        }
+
+        feedbackButton.snp.makeConstraints { make in
+            make.left.equalTo(askCoachButton.snp.right).offset(kFitWidth(12))
             make.right.equalTo(kFitWidth(-16))
             make.bottom.equalTo(kFitWidth(-16))
             make.height.equalTo(kFitWidth(52))
@@ -744,9 +768,9 @@ private final class AICoachPreFeedbackThemeGlassButton: UIVisualEffectView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = title
-        label.textColor = .white
+        label.textColor = UIColor.white.withAlphaComponent(0.8)
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         label.isUserInteractionEnabled = false
         return label
     }()
