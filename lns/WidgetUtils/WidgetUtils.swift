@@ -504,7 +504,7 @@ class WidgetUtils {
     }
     func sendNaturalLast7Days(forNaturalType:Int) {
         let uId = try? AESEncyptUtil.encrypt_AES_CBC(encryptText: WidgetUtils().getUserInfoUid())
-        print("uId:\(uId ?? "**")**")
+//        print("uId:\(uId ?? "**")**")
         if uId == "" || uId?.count == 0 {
             //退出登录的情况下，数据清零
             print("uId:退出登录的情况下，数据清零")

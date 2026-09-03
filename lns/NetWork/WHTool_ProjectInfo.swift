@@ -28,7 +28,7 @@ public func WHGetInterface_javaWithType() -> String {
     let url_release = dictM["url_release"] as? String ?? ""
     let url_cs     = dictM["url_cs"] as? String ?? ""
     
-#if DEBUG
+//#if DEBUG
     if isProduct == 0 {
         return url_release
     } else if isProduct == 1{
@@ -36,9 +36,9 @@ public func WHGetInterface_javaWithType() -> String {
     }else if isProduct == 2{
         return url_cs
     }
-#else
-    return url_release
-#endif
+//#else
+//    return url_release
+//#endif
     return url_release
 }
 

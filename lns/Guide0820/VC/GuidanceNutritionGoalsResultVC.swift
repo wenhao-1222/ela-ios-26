@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import IQKeyboardManagerSwift
+import MCToast
 
 /// Presents the initial nutrition targets and allows editing carbohydrate,
 /// protein and fat values before the Guide0820 flow is completed.
@@ -22,7 +23,6 @@ final class GuidanceNutritionGoalsResultVC: WHBaseViewVC {
     private let scrollView = UIScrollView()
     private let contentView = UIView()
     private let editCard = UIView()
-    private let tipsStack = UIStackView()
     private lazy var bottomSheetView = Guide0820BottomSheetView()
 
     // `bottomGradientView` 属性，保存该类型对外提供或内部使用的状态与配置。
@@ -136,6 +136,11 @@ final class GuidanceNutritionGoalsResultVC: WHBaseViewVC {
     }
 
     @objc private func primaryAction() {
+        view.endEditing(true)
+        guard let validatedGoals = validatedGoalsFromFields() else {
+            return
+        }
+        goals = validatedGoals
         saveGoals()
         let featureVC = Guide0820FeatureIntroVC(onFinished: completion)
         if let navigationController,
@@ -297,64 +302,12 @@ private extension GuidanceNutritionGoalsResultVC {
         }
         makeNutritionCard()
 
-        let coachTitle = makeLabel("教练对你现阶段的判断", size: 16, weight: .semibold, color: .COLOR_TEXT_TITLE_0f1214)
-        let coachCard = roundedCard()
-        let coachParagraphs = UIStackView(arrangedSubviews: [
-            coachParagraphLabel("对你来说，现阶段更重要的是尽快为肌肉增长提供充足能量，而不是把体重增长控制得过于保守。你的初始目标会设置更明显的热量盈余，同时让碳水和脂肪保持相对均衡。"),
-            coachParagraphLabel("从你目前的训练目标来看，力量训练需要充足的碳水支持训练表现、肌糖原补充和恢复，同时也需要保证必要的脂肪摄入，有助于维持正常激素水平。让碳水和脂肪保持相对均衡，可以为力量提升和肌肉增长提供稳定的营养基础。")
-        ])
-        coachParagraphs.axis = .vertical
-        coachParagraphs.alignment = .fill
-        coachParagraphs.distribution = .fill
-        coachParagraphs.spacing = kFitWidth(16)
-        coachCard.addSubview(coachParagraphs)
-        coachParagraphs.snp.makeConstraints {
-            $0.left.equalTo(kFitWidth(21.25))
-            $0.right.equalTo(kFitWidth(-21.75))
-            $0.top.equalTo(kFitWidth(14.5))
-            $0.bottom.equalTo(kFitWidth(-14.5))
-        }
-        contentView.addSubview(coachTitle); contentView.addSubview(coachCard)
-        coachTitle.snp.makeConstraints { $0.left.equalTo(kFitWidth(16)); $0.top.equalTo(editCard.snp.bottom).offset(kFitWidth(25)) }
-        coachCard.snp.makeConstraints {
+        let reportStack = makeReportStack(for: goals.coachSuggestion)
+        contentView.addSubview(reportStack)
+        reportStack.snp.makeConstraints {
             $0.left.equalTo(kFitWidth(16))
             $0.right.equalTo(kFitWidth(-16))
-            $0.top.equalTo(coachTitle.snp.bottom).offset(kFitWidth(12))
-        }
-
-        let tipsTitle = makeLabel("接下来，先做好这些", size: 16, weight: .semibold, color: .COLOR_TEXT_TITLE_0f1214)
-        tipsStack.axis = .vertical
-        tipsStack.alignment = .fill
-        tipsStack.distribution = .fill
-        tipsStack.spacing = kFitWidth(16)
-        [("1、看清每日空间", "记录每天真实摄入，清楚热量预算和蛋白质目标的完成情况。"), ("2、控制碳水占比", "按照当前相对较低的碳水比例执行，让热量缺口更贴近你更容易控制的饮食结构。"), ("3、建立减脂基线", "持续记录饮食和体重，让 ELA 逐步掌握实际摄入与体重变化之间的关系。")].forEach { title, body in
-            let titleLabel = tipsTitleLabel(title)
-            titleLabel.widthAnchor.constraint(equalToConstant: kFitWidth(206)).isActive = true
-            let detailLabel = tipsDetailLabel(body)
-            let row = UIStackView(arrangedSubviews: [titleLabel, detailLabel])
-            row.axis = .vertical
-            row.alignment = .fill
-            row.spacing = kFitWidth(4)
-            tipsStack.addArrangedSubview(row)
-        }
-        let tipsCard = roundedCard(); tipsCard.addSubview(tipsStack)
-        tipsStack.snp.makeConstraints {
-            $0.left.equalTo(kFitWidth(20))
-            $0.right.equalTo(kFitWidth(-20))
-            $0.top.equalTo(kFitWidth(15))
-            $0.bottom.equalTo(kFitWidth(-15))
-        }
-        contentView.addSubview(tipsTitle); contentView.addSubview(tipsCard)
-        tipsTitle.snp.makeConstraints { $0.left.equalTo(kFitWidth(16)); $0.top.equalTo(coachCard.snp.bottom).offset(kFitWidth(23.5)) }
-        tipsCard.snp.makeConstraints { $0.left.equalTo(kFitWidth(16)); $0.right.equalTo(kFitWidth(-16)); $0.top.equalTo(tipsTitle.snp.bottom).offset(kFitWidth(12)); $0.height.equalTo(kFitWidth(240.5)) }
-
-        let noteTitle = makeLabel("这是结合你目前情况，为现阶段制定的营养目标。", size: 14, weight: .medium, color: .COLOR_TEXT_TITLE_0f1214)
-        let noteBody = tipsDetailLabel("随着饮食和体重数据逐渐积累，ELA 会进一步识别你的实际变化规律，让后续调整更贴近你的身体反应和进度。")
-        let noteStack = UIStackView(arrangedSubviews: [noteTitle, noteBody])
-        noteStack.axis = .vertical; noteStack.spacing = kFitWidth(6)
-        contentView.addSubview(noteStack)
-        noteStack.snp.makeConstraints {
-            $0.left.equalTo(kFitWidth(21)); $0.right.equalTo(kFitWidth(-21)); $0.top.equalTo(tipsCard.snp.bottom).offset(kFitWidth(25.5))
+            $0.top.equalTo(editCard.snp.bottom).offset(kFitWidth(25))
             $0.bottom.equalToSuperview().offset(kFitWidth(-30))
         }
 
@@ -442,6 +395,118 @@ private extension GuidanceNutritionGoalsResultVC {
         stack.addArrangedSubview(row)
     }
 
+    func makeReportStack(for suggestion: Goals.CoachSuggestion?) -> UIStackView {
+        let reportStack = UIStackView()
+        reportStack.axis = .vertical
+        reportStack.alignment = .fill
+        reportStack.distribution = .fill
+
+        if let judgment = suggestion?.judgment {
+            let section = makeJudgmentSection(judgment)
+            reportStack.addArrangedSubview(section)
+            reportStack.setCustomSpacing(kFitWidth(23.5), after: section)
+        }
+
+        if let actionPlan = suggestion?.actionPlan {
+            let section = makeActionPlanSection(actionPlan)
+            reportStack.addArrangedSubview(section)
+            reportStack.setCustomSpacing(kFitWidth(25.5), after: section)
+        }
+
+        if let conclusion = suggestion?.conclusion {
+            reportStack.addArrangedSubview(makeConclusionSection(conclusion))
+        }
+
+        return reportStack
+    }
+
+    func makeJudgmentSection(_ section: Goals.TextSection) -> UIStackView {
+        let title = makeLabel(section.title,
+                              size: 16,
+                              weight: .semibold,
+                              color: .COLOR_TEXT_TITLE_0f1214)
+        let paragraphs = section.content
+            .components(separatedBy: .newlines)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        let paragraphStack = UIStackView(arrangedSubviews: paragraphs.map(coachParagraphLabel))
+        paragraphStack.axis = .vertical
+        paragraphStack.alignment = .fill
+        paragraphStack.distribution = .fill
+        paragraphStack.spacing = kFitWidth(16)
+
+        let card = roundedCard()
+        card.addSubview(paragraphStack)
+        paragraphStack.snp.makeConstraints {
+            $0.left.equalTo(kFitWidth(21.25))
+            $0.right.equalTo(kFitWidth(-21.75))
+            $0.top.equalTo(kFitWidth(14.5))
+            $0.bottom.equalTo(kFitWidth(-14.5))
+        }
+
+        let stack = UIStackView(arrangedSubviews: [title, card])
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = kFitWidth(12)
+        return stack
+    }
+
+    func makeActionPlanSection(_ section: Goals.ActionSection) -> UIStackView {
+        let title = makeLabel(section.title,
+                              size: 16,
+                              weight: .semibold,
+                              color: .COLOR_TEXT_TITLE_0f1214)
+        let itemsStack = UIStackView()
+        itemsStack.axis = .vertical
+        itemsStack.alignment = .fill
+        itemsStack.distribution = .fill
+        itemsStack.spacing = kFitWidth(16)
+
+        section.items.forEach { item in
+            let row = UIStackView(arrangedSubviews: [
+                tipsTitleLabel(item.title),
+                tipsDetailLabel(item.content)
+            ])
+            row.axis = .vertical
+            row.alignment = .fill
+            row.spacing = kFitWidth(4)
+            itemsStack.addArrangedSubview(row)
+        }
+
+        let card = roundedCard()
+        card.addSubview(itemsStack)
+        itemsStack.snp.makeConstraints {
+            $0.left.equalTo(kFitWidth(20))
+            $0.right.equalTo(kFitWidth(-20))
+            $0.top.equalTo(kFitWidth(15))
+            $0.bottom.equalTo(kFitWidth(-15))
+        }
+
+        let stack = UIStackView(arrangedSubviews: [title, card])
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = kFitWidth(12)
+        return stack
+    }
+
+    func makeConclusionSection(_ section: Goals.TextSection) -> UIStackView {
+        let title = makeLabel(section.title,
+                              size: 14,
+                              weight: .medium,
+                              color: .COLOR_TEXT_TITLE_0f1214)
+        let body = tipsDetailLabel(section.content)
+        let stack = UIStackView(arrangedSubviews: [title, body])
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = kFitWidth(6)
+        stack.isLayoutMarginsRelativeArrangement = true
+        stack.layoutMargins = UIEdgeInsets(top: 0,
+                                           left: kFitWidth(5),
+                                           bottom: 0,
+                                           right: kFitWidth(5))
+        return stack
+    }
+
     func metricLabel(title: String, color: UIColor) -> UIStackView {
         let row = UIStackView()
         row.axis = .horizontal
@@ -493,7 +558,7 @@ private extension GuidanceNutritionGoalsResultVC {
 
     func tipsTitleLabel(_ text: String) -> UILabel {
         let label = UILabel()
-        label.numberOfLines = 1
+        label.numberOfLines = 0
         let font = pingFangFont(size: kFitWidth(13), weight: .medium)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.minimumLineHeight = kFitWidth(19.5)
@@ -542,7 +607,8 @@ private extension GuidanceNutritionGoalsResultVC {
                       fat: fat,
                       calories: calories(for: carbohydrate,
                                         protein: protein,
-                                        fat: fat))
+                                        fat: fat),
+                      coachSuggestion: goals.coachSuggestion)
         updateCaloriesLabel()
     }
 
@@ -572,9 +638,40 @@ private extension GuidanceNutritionGoalsResultVC {
         if animated { UIView.animate(withDuration: 0.25) { self.view.layoutIfNeeded() } }
     }
 
-    func validValue(for field: UITextField, allowingZero: Bool) -> Double? {
-        guard let text = field.text, let value = Double(text), value >= 0, allowingZero || value > 0 else { return nil }
-        return value
+    func validatedGoalsFromFields() -> Goals? {
+        if carbohydrateField.text?.count == 0 {
+            MCToast.mc_text("请输入碳水化合物数值", respond: .allow)
+            return nil
+        }
+
+        let carbohydrate = Int(carbohydrateField.text ?? "0") ?? 0
+        guard carbohydrate >= 0, carbohydrate <= 4999 else {
+            MCToast.mc_text("碳水化合物目标数值范围 0 ~ 4999 g", respond: .allow)
+            return nil
+        }
+
+        let protein = Int(proteinField.text ?? "0") ?? 0
+        guard protein >= 1, protein <= 4999 else {
+            MCToast.mc_text("蛋白质目标数值范围 1 ~ 4999 g", respond: .allow)
+            return nil
+        }
+
+        let fat = Int(fatField.text ?? "0") ?? 0
+        guard fat >= 1, fat <= 4999 else {
+            MCToast.mc_text("脂肪目标数值范围 1 ~ 4999 g", respond: .allow)
+            return nil
+        }
+
+        let carbohydrateValue = Double(carbohydrate)
+        let proteinValue = Double(protein)
+        let fatValue = Double(fat)
+        return Goals(protein: proteinValue,
+                     carbohydrate: carbohydrateValue,
+                     fat: fatValue,
+                     calories: calories(for: carbohydrateValue,
+                                        protein: proteinValue,
+                                        fat: fatValue),
+                     coachSuggestion: goals.coachSuggestion)
     }
 
     func saveGoals() {
@@ -588,12 +685,6 @@ private extension GuidanceNutritionGoalsResultVC {
         )
     }
 
-    func showValidationAlert() {
-        let alert = UIAlertController(title: "请输入有效目标", message: "碳水可以为 0，蛋白质和脂肪必须大于 0。", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "知道了", style: .default))
-        present(alert, animated: true)
-    }
-
     /// 切换当前页面对应的三方输入法开关。
     private func setKeyboardExtensionAllowed(_ allowed: Bool) {
         (UIApplication.shared.delegate as? AppDelegate)?.setKeyboardExtensionAllowed(allowed)
@@ -603,7 +694,35 @@ private extension GuidanceNutritionGoalsResultVC {
 extension GuidanceNutritionGoalsResultVC: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let allowed = CharacterSet.decimalDigits
-        return string.rangeOfCharacter(from: allowed.inverted) == nil && (textField.text?.count ?? 0) + string.count - range.length <= 5
+        guard string.rangeOfCharacter(from: allowed.inverted) == nil,
+              let currentText = textField.text,
+              let textRange = Range(range, in: currentText) else {
+            return false
+        }
+
+        // When a field currently contains only zero, typing a non-zero value
+        // replaces that zero instead of producing a leading-zero number.
+        if currentText == "0",
+           range.location == (currentText as NSString).length,
+           range.length == 0,
+           let firstCharacter = string.first,
+           firstCharacter != "0" {
+            guard string.count <= 5 else { return false }
+            textField.text = string
+            textField.sendActions(for: .editingChanged)
+            return false
+        }
+
+        let nextText = currentText.replacingCharacters(in: textRange, with: string)
+        guard nextText.count <= 5 else { return false }
+
+        // Empty and a single zero are valid editing states. Any multi-digit
+        // integer with a leading zero (00, 01, 010, etc.) is not.
+        let isIntegerText = nextText.unicodeScalars.allSatisfy { allowed.contains($0) }
+        if nextText.count > 1, nextText.hasPrefix("0"), isIntegerText {
+            return false
+        }
+        return true
     }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {

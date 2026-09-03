@@ -13,6 +13,8 @@ class LoginVC: WHBaseViewVC {
     var isCodeShow = false
     var edgePanChangeX = CGFloat(0)
     var shouldTrackGuidanceV2LoginRegisteredResult = false
+    /// 由打开 LoginVC 的页面指定；默认保持既有的待上传问卷处理行为。
+    var guide0820DataHandling: Guide0820LoginDataHandling = .uploadPendingQuestionnaireIfNeeded
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,8 +68,10 @@ class LoginVC: WHBaseViewVC {
         let vm = LoginCodeVerifyVM.init(frame: .zero)
         vm.controller = self
         vm.hasPlan = false
-        vm.saveSurveyBlock = {()in
-            self.completeLoginSuccessAndEnterApp()
+        vm.loginSuccessBlock = { [weak self] in
+            guard let self else { return }
+            // FirstLaunchVC 会显式传入丢弃策略；其他复用 LoginVC 的入口保持原上传逻辑。
+            self.completeLoginSuccessAndEnterApp(guide0820DataHandling: self.guide0820DataHandling)
         }
         vm.closeBlock = {()in
             self.isCodeShow = false

@@ -12,6 +12,14 @@ import MCToast
 import CoreTelephony
 import UMCommon
 
+/// 登录成功后，Guide0820 本地问卷数据的处理方式。
+enum Guide0820LoginDataHandling {
+    /// 问卷完成后的登录入口：继续处理待上传数据，并在 savePart/v3 成功后清理。
+    case uploadPendingQuestionnaireIfNeeded
+    /// FirstLaunchVC 直接登录入口：不上传匿名问卷，立即清除本地缓存和内存模型。
+    case discardQuestionnaireWithoutUpload
+}
+
 class WHBaseViewVC: ViewController {
     
     public var fatherViewController: UIViewController?
@@ -296,10 +304,19 @@ class WHBaseViewVC: ViewController {
             }
         }
     }
-    func completeLoginSuccessAndEnterApp() {
+    func completeLoginSuccessAndEnterApp(
+        guide0820DataHandling: Guide0820LoginDataHandling = .uploadPendingQuestionnaireIfNeeded
+    ) {
         UserInfoModel.shared.resetForcedLogoutHandling()
-        // 完整问卷静默绑定并在 v3 成功后清理；未完成问卷不上传，在登录成功后直接清理草稿。
-        Guide0820PendingUploadManager.handleLoginSuccess()
+        switch guide0820DataHandling {
+        case .uploadPendingQuestionnaireIfNeeded:
+            // LNSLoginVC / BindPhoneVC：完整问卷静默绑定并在 v3 成功后清理；
+            // 未完成问卷不上传，在登录成功后直接清理草稿。
+            Guide0820PendingUploadManager.handleLoginSuccess()
+        case .discardQuestionnaireWithoutUpload:
+            // FirstLaunchVC 直接登录不绑定当前匿名问卷，清除 UserDefaults、来源进度和 Guide0820Model。
+            Guide0820ProgressStorage.clearQuestionnaireData()
+        }
         BodyDataUploadManager().syncAllBodyDataFromServer()
         QuestinonaireMsgModel.shared.clearMsg()
 //        changeRootVcToTabbar()

@@ -28,6 +28,8 @@ class LoginCodeVerifyVM: UIView {
     }
     
     var saveSurveyBlock:(()->())?
+    /// 无问卷上传流程的登录页可接管登录成功动作，例如 FirstLaunchVC 的手机号登录。
+    var loginSuccessBlock:(()->())?
     var closeBlock:(()->())?
     var showBlock:(()->())?
     var showInviteCodeBlock:(()->())?
@@ -342,13 +344,7 @@ extension LoginCodeVerifyVM{
             ElaProPriceVM.preloadLoggedInProductSnapshots()
 //                self.codeTimer.cancel()
                 self.disableTimer()
-                if self.hasPlan{
-                    if self.saveSurveyBlock != nil{
-                        self.saveSurveyBlock!()
-                    }
-                }else{
-                    self.controller.completeLoginSuccessAndEnterApp()
-                }
+                self.finishSuccessfulLogin()
 //            }else{
 //                self.controller.presentAlertVcNoAction(title: "账户已申请注销。", viewController: self.controller)
 //            }
@@ -360,15 +356,21 @@ extension LoginCodeVerifyVM{
         let param = ["invcode":"\(self.invideCode)"]
         WHNetworkUtil.shareManager().POST(urlString: URL_bind_inviteCode, parameters: param as [String:AnyObject],isNeedToast: true,vc: controller) { responseObject in
 //            DLLog(message: "\(responseObject)")
-            if self.hasPlan{
-                if self.saveSurveyBlock != nil{
-                    self.saveSurveyBlock!()
-                }
-            }else{
-                self.controller.completeLoginSuccessAndEnterApp()
-            }
+            self.finishSuccessfulLogin()
         }
     }
+
+    /// 根据登录页上下文完成后续流程，避免验证码 VM 自行猜测是否需要处理 Guide0820 问卷。
+    private func finishSuccessfulLogin() {
+        if hasPlan {
+            saveSurveyBlock?()
+        } else if let loginSuccessBlock {
+            loginSuccessBlock()
+        } else {
+            controller.completeLoginSuccessAndEnterApp()
+        }
+    }
+
     func sendJudgePhoneRegist() {
         let param = ["phone":"\(self.phone)",
                      "idc":"\(UserInfoModel.shared.idc)"]

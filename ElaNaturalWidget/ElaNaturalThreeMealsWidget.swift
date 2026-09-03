@@ -296,12 +296,16 @@ private struct ThreeMealsCaloriesProgress: View {
                             ? FiveMealsWidgetStyle.overflowRed
                             : FiveMealsWidgetStyle.primaryText(for: colorScheme)
                     )
-                    .font(Font.custom("D-DIN-PRO-Regular", size: 12 * scale))
+                    .font(Font.custom("D-DIN-PRO-Bold", size: 12 * scale))
+                    .minimumScaleFactor(0.7)
                     .lineLimit(1)
 
                 Text(verbatim: "/\(target)")
                     .foregroundColor(FiveMealsWidgetStyle.secondaryText(for: colorScheme))
                     .font(Font.custom("D-DIN-PRO-Regular", size: 8 * scale))
+                    .minimumScaleFactor(0.5)
+                    .allowsTightening(true)
+                    .layoutPriority(1)
                     .lineLimit(1)
             }
             .frame(height: 12 * scale)
@@ -342,7 +346,7 @@ private struct ThreeMealsMacroProgressRow: View {
 
                 Spacer(minLength: 2 * scale)
 
-                Text(verbatim: String(Int(value.rounded())))
+                Text(verbatim: String("\(Int(value.rounded()))"))
                     .foregroundColor(
                         value > target
                             ? FiveMealsWidgetStyle.overflowRed

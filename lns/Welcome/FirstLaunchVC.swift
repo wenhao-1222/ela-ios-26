@@ -231,6 +231,8 @@ class FirstLaunchVC: WHBaseViewVC {
             guard let self = self else { return }
             self.loginAlertVm.hiddenLoginView()
             let vc = LoginVC()
+            // LoginVC 还会被其他引导页复用，只有从 FirstLaunchVC 进入时才丢弃 0820 问卷。
+            vc.guide0820DataHandling = .discardQuestionnaireWithoutUpload
             if let navigationController = self.navigationController {
                 navigationController.pushViewController(vc, animated: true)
             } else {
@@ -872,7 +874,8 @@ extension FirstLaunchVC{
     @objc private func wechatLogin() {
         if UserInfoModel.shared.isRegist == "yes" {
             if UserInfoModel.shared.state == 1 {
-                completeLoginSuccessAndEnterApp()
+                // 欢迎页直接登录不上传当前设备上的匿名 0820 问卷，登录成功后直接丢弃。
+                completeLoginSuccessAndEnterApp(guide0820DataHandling: .discardQuestionnaireWithoutUpload)
             } else {
                 presentAlertVcNoAction(title: "账户已申请注销！", viewController: self)
             }
@@ -907,7 +910,8 @@ extension FirstLaunchVC{
                     WidgetUtils().saveUserInfo(uId: "\(dataObj["uid"] as? String ?? "")",
                                                uToken: "\(dataObj["token"] as? String ?? "")")
                     ElaProPriceVM.preloadLoggedInProductSnapshots()
-                    self.completeLoginSuccessAndEnterApp()
+                    // Apple 从欢迎页直接登录时不上传匿名 0820 问卷，避免把旧草稿绑定到该账号。
+                    self.completeLoginSuccessAndEnterApp(guide0820DataHandling: .discardQuestionnaireWithoutUpload)
                 } else {
                     self.presentAlertVcNoAction(title: "账户已申请注销。", viewController: self)
                 }

@@ -300,7 +300,8 @@ private struct CaloriesMealsHeaderProgress: View {
                     .minimumScaleFactor(0.7)
                     .lineLimit(1)
 
-                Text(verbatim: "/\(target)千卡")
+                Text(verbatim: "/\(target)")
+//                Text(verbatim: "/\(target)千卡")
                     .foregroundColor(FiveMealsWidgetStyle.secondaryText(for: colorScheme))
                     .font(Font.custom("D-DIN-PRO-Regular", size: 9 * scale))
                     .monospacedDigit()

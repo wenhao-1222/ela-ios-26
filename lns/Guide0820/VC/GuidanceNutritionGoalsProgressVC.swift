@@ -35,10 +35,39 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     }
 
     struct NutritionGoalsResult {
+        struct TextSection {
+            let title: String
+            let content: String
+        }
+
+        struct ActionSection {
+            let title: String
+            let items: [TextSection]
+        }
+
+        struct CoachSuggestion {
+            let judgment: TextSection?
+            let actionPlan: ActionSection?
+            let conclusion: TextSection?
+        }
+
         let protein: Double
         let carbohydrate: Double
         let fat: Double
         let calories: Double
+        let coachSuggestion: CoachSuggestion?
+
+        init(protein: Double,
+             carbohydrate: Double,
+             fat: Double,
+             calories: Double,
+             coachSuggestion: CoachSuggestion? = nil) {
+            self.protein = protein
+            self.carbohydrate = carbohydrate
+            self.fat = fat
+            self.calories = calories
+            self.coachSuggestion = coachSuggestion
+        }
     }
 
     var configuration = Configuration()
@@ -560,7 +589,57 @@ private extension GuidanceNutritionGoalsProgressVC {
             if let number = data[key] as? NSNumber { return number.doubleValue }
             return Double(data[key] as? String ?? "") ?? 0
         }
-        return NutritionGoalsResult(protein: number("protein"), carbohydrate: number("carbohydrate"), fat: number("fat"), calories: number("calories"))
+
+        func dictionary(_ value: Any?) -> NSDictionary? {
+            if let dictionary = value as? NSDictionary { return dictionary }
+            if let dictionary = value as? [String: Any] { return dictionary as NSDictionary }
+            return nil
+        }
+
+        func text(_ key: String, in dictionary: NSDictionary) -> String? {
+            guard let value = dictionary[key] as? String else { return nil }
+            let normalized = value
+                .replacingOccurrences(of: "\r\n", with: "\n")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return normalized.isEmpty ? nil : normalized
+        }
+
+        func textSection(_ value: Any?) -> NutritionGoalsResult.TextSection? {
+            guard let section = dictionary(value),
+                  let title = text("title", in: section),
+                  let content = text("content", in: section) else {
+                return nil
+            }
+            return .init(title: title, content: content)
+        }
+
+        var coachSuggestion: NutritionGoalsResult.CoachSuggestion?
+        if let suggestion = dictionary(data["coachSuggestion"]) {
+            let judgment = textSection(suggestion["section1"])
+            let conclusion = textSection(suggestion["section3"])
+
+            var actionPlan: NutritionGoalsResult.ActionSection?
+            if let section = dictionary(suggestion["section2"]),
+               let title = text("title", in: section) {
+                let values = section["content"] as? [Any] ?? []
+                let items = values.compactMap(textSection)
+                if !items.isEmpty {
+                    actionPlan = .init(title: title, items: items)
+                }
+            }
+
+            if judgment != nil || actionPlan != nil || conclusion != nil {
+                coachSuggestion = .init(judgment: judgment,
+                                        actionPlan: actionPlan,
+                                        conclusion: conclusion)
+            }
+        }
+
+        return NutritionGoalsResult(protein: number("protein"),
+                                    carbohydrate: number("carbohydrate"),
+                                    fat: number("fat"),
+                                    calories: number("calories"),
+                                    coachSuggestion: coachSuggestion)
     }
 
 }
