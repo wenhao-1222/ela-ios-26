@@ -49,7 +49,7 @@ private extension Guide0820AgreementLegalTextView {
     /// 生成带协议链接的富文本。
     /// - Returns: 协议说明富文本。
     func makeAttributedText() -> NSAttributedString {
-        let text = "继续即表示你同意我们的《服务条款》和《隐私政策》。"
+        let text = "继续即表示你同意我们的《用户协议》和《隐私政策》。"
         let attributedText = NSMutableAttributedString(string: text)
         let fullRange = NSRange(location: 0, length: (text as NSString).length)
         let paragraphStyle = NSMutableParagraphStyle()
@@ -63,7 +63,7 @@ private extension Guide0820AgreementLegalTextView {
             .paragraphStyle: paragraphStyle
         ], range: fullRange)
 
-        attributedText.guide0820AddLink("服务条款", urlString: "guide0820://user-agreement")
+        attributedText.guide0820AddLink("用户协议", urlString: "guide0820://user-agreement")
         attributedText.guide0820AddLink("隐私政策", urlString: "guide0820://privacy-policy")
         return attributedText
     }

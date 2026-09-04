@@ -36,7 +36,10 @@ class NetworkMonitor {
     // 不允许自动重试的接口关键词
     private let nonRetryRequestKeywords = ["pay","ai_identify_image","next_meal_advice"]//["login", "pay", "支付", "登录","下餐饮食规划"]
     private let nonRetryRequestUrls: Set<String> = [
-        URL_diet_plan_next
+        URL_diet_plan_next,
+        URL_ai_coach_question_list,
+        URL_ai_coach_ask,
+        URL_ai_coach_nutrition_intake_assessment
     ]
 
     private init() {

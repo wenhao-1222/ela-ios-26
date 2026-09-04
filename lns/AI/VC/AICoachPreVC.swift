@@ -69,7 +69,12 @@ class AICoachPreVC: WHBaseViewVC, UIGestureRecognizerDelegate {
             self?.nextButtonTapAction()
         }
         view.askCoachButtonTapBlock = { [weak self] in
-            self?.askCoachButtonTapBlock?()
+            guard let self = self else { return }
+            if let askCoachButtonTapBlock = self.askCoachButtonTapBlock {
+                askCoachButtonTapBlock()
+            } else {
+                self.navigationController?.pushViewController(AICoachChatVC(), animated: true)
+            }
         }
         view.goalTapBlock = { [weak self] in
             self?.showInfoSelectPopup(for: .goal)

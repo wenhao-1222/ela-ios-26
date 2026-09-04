@@ -261,6 +261,12 @@ public let URL_ai_coach_report_recommend   = URL_Type + "users/pro/ai_coach/repo
 public let URL_ai_coach_report_recommend_update = URL_Type + "plans/pro/ai_coach/report/updateDefaultNutritionGoal"
 ///AI教练  报告列表
 public let URL_ai_coach_report_list       = URL_Type + "users/pro/ai_coach/report/list"
+///AI教练 问题列表
+public let URL_ai_coach_question_list     = URL_Type + "users/pro/ai_coach/question/list"
+///AI教练 问答
+public let URL_ai_coach_ask               = URL_Type + "plans/pro/ai_coach/ask"
+///AI教练 近7天营养摄入评估
+public let URL_ai_coach_nutrition_intake_assessment = URL_Type + "plans/pro/ai_coach/nutrition/intake/assessment"
 
 //MARK: 运动记录
 public let URL_sport_catogary_list          = URL_Type + "users/sport/list"

@@ -130,7 +130,7 @@ final class Guide0820ProVM: UIView {
         priceVM.labelBgImgView.removeFromSuperview()
         priceVM.confirmButton.setTitle("开始第一阶段", for: .normal)
         priceVM.confirmButton.titleLabel?.font = .systemFont(ofSize: kFitWidth(17), weight: .medium)
-        priceVM.confirmButton.layer.cornerRadius = kFitWidth(25)
+        priceVM.confirmButton.layer.cornerRadius = kFitWidth(12)
         priceVM.confirmButton.snp.remakeConstraints { make in
             make.left.equalTo(kFitWidth(20))
             make.right.equalTo(kFitWidth(-20))

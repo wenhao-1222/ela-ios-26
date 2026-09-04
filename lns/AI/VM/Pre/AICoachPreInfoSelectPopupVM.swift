@@ -542,7 +542,7 @@ private final class AICoachPreToneStyleSliderView: UIControl {
     /// 白色圆形滑块。
     private lazy var thumbView: UIView = {
         let view = UIView()
-        view.backgroundColor = .COLOR_BG_WHITE
+        view.backgroundColor = .COLOR_TEXT_WHITE
         view.isUserInteractionEnabled = false
         view.layer.cornerRadius = thumbDiameter * 0.5
         view.layer.cornerCurve = .continuous

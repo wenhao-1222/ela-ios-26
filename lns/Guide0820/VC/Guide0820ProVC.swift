@@ -22,6 +22,7 @@ final class Guide0820ProVC: WHBaseViewVC {
         vm.purchaseQueryBizType = "1"
         vm.isPurchased = "1"
         vm.displayMode = .guidance
+        vm.confirmButton.layer.cornerRadius = kFitWidth(12)
         pageVM.configure(priceVM: vm)
         vm.purchaseSuccessBlock = { [weak self] in
             self?.changeRootVcToLogin(shouldSyncGuidanceProSubscriptionAfterLogin: true)

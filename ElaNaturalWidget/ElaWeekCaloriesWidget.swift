@@ -263,7 +263,7 @@ struct ElaWeekRemainingWidgetEntryView: View {
         let remaining = target - intake
         let progress = target > 0
             ? max(CGFloat(intake) / CGFloat(target), 0)
-            : 0
+            : CGFloat(min(max(intake, 2), 2))
 
         GeometryReader { geometry in
             let scale = min(geometry.size.width / 153, geometry.size.height / 153)
@@ -453,10 +453,19 @@ private struct WeekRemainingProgressRing: View {
     }
 }
 
-private struct WeekRemainingRingEndCap: View {
-    let progress: CGFloat
+private struct WeekRemainingRingEndCap: View, Animatable {
+    var progress: CGFloat
     let color: Color
     let lineWidth: CGFloat
+
+    /// Interpolate progress (the angle), rather than the endpoint's x/y
+    /// coordinates. Interpolating x/y makes SwiftUI move the cap along the
+    /// chord between two values; interpolating the angle keeps every frame on
+    /// the ring's circumference.
+    var animatableData: CGFloat {
+        get { progress }
+        set { progress = newValue }
+    }
 
     var body: some View {
         GeometryReader { geometry in

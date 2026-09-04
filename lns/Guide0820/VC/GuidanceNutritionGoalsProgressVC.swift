@@ -5,28 +5,34 @@
 //  营养目标规划页之后展示的营养目标生成页面。
 //
 
+import SwiftUI
 import UIKit
 import SnapKit
 
 /// 展示营养目标生成进度，并请求第三版目标接口。
 final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     struct Configuration {
-        var fakeProgressTarget: Int = 88
-        var fakeProgressDuration: TimeInterval = 3.0
-        /// 三条状态文案完整轮播一遍所需的总时长。
-        var stageCycleDuration: TimeInterval = 5.0
+        /// 除最后一条外，每条状态文案完成淡入后保持完整显示的时长。
+        var stageTextDisplayDuration: TimeInterval = 1.65
+        /// 第一条文案相对普通文案缩短的展示时长。
+        var firstStageTextDisplayDurationReduction: TimeInterval = 0.4
+        /// 最后一条状态文案完成淡入后保持完整显示的时长。
+        var finalStageTextDisplayDuration: TimeInterval = 3.0
         /// 切换状态文案时的淡入淡出时长。
-        var stageTransitionDuration: TimeInterval = 0.35
+        var stageTransitionDuration: TimeInterval = 0.25
         /// 接口返回后结束阶段动画的最短时长。
         var completionAnimationDuration: TimeInterval = 3.0
-        /// 限制完整进度动画的最短总时长，避免过快结束。
-        var minimumTotalAnimationDuration: TimeInterval = 8.0
+        /// 限制完整加载动画的最短总时长，避免过快结束。
+        var minimumTotalAnimationDuration: TimeInterval = 10.0
 
         func normalized() -> Configuration {
             var value = self
-            value.fakeProgressTarget = min(max(value.fakeProgressTarget, 1), 99)
-            value.fakeProgressDuration = max(value.fakeProgressDuration, 0.1)
-            value.stageCycleDuration = max(value.stageCycleDuration, 0.3)
+            value.stageTextDisplayDuration = max(value.stageTextDisplayDuration, 1.0)
+            value.firstStageTextDisplayDurationReduction = min(
+                max(value.firstStageTextDisplayDurationReduction, 0),
+                value.stageTextDisplayDuration - 0.1
+            )
+            value.finalStageTextDisplayDuration = max(value.finalStageTextDisplayDuration, 3.0)
             value.stageTransitionDuration = max(value.stageTransitionDuration, 0.1)
             value.completionAnimationDuration = max(value.completionAnimationDuration, 0.1)
             value.minimumTotalAnimationDuration = max(value.minimumTotalAnimationDuration, 0.1)
@@ -74,12 +80,13 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     var finishBlock: ((NutritionGoalsResult?) -> Void)?
 
     private let flowState: GuidanceGoalPlanFlowState
-    private var displayedProgress: Double = 0
-    private var fakeTimer: Timer?
     private var stageTimer: Timer?
-    /// 逻辑完成计时不能依赖 UIView 动画的 completion；手势或系统转场可能中断动画。
+    /// 接口完成后继续展示球动画的延时任务。
     private var completionWorkItem: DispatchWorkItem?
-    private var progressStartedAt: CFTimeInterval = 0
+    private var animationStartedAt: CFTimeInterval = 0
+    private var hasStartedStageCycle = false
+    private var hasCompletedStageCycle = false
+    private var hasScheduledCompletion = false
     private var requestFinished = false
     private var hasFinishedAnimation = false
     private var hasDeliveredResult = false
@@ -87,9 +94,63 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     private var activeStageIndex = 0
 
     private let stageTexts = [
-        "正在结合你的身体信息...",
-        "正在纳入日常活动与训练...",
-        "正在确定第一阶段营养方向..."
+//        "正在结合你的身体信息...",
+//        "正在纳入日常活动与训练...",
+//        "正在确定第一阶段营养方向..."
+        
+//        "先从你的身体基础看起…",
+//        "再看看你平时怎么活动和训练…",
+//        "结合你现在最想达到的目标…",
+//        "判断第一阶段该从哪里开始…",
+//        "先把每天该吃多少定下来…",
+//        "再把碳水、蛋白质和脂肪搭配好…",
+//        "再替你过一遍，看看是否适合现在的你…",
+//        "你的第一阶段目标和建议，马上就好…"
+        
+//        "正在了解你的身体基础...",
+//        "正在结合你的日常活动与训练...",
+//        "正在把你的目标一起考虑进来...",
+//        "正在判断你现阶段更需要什么...",
+//        "正在为你找到更合适的热量起点...",
+//        "正在调整三大营养素的分配方向...",
+//        "正在梳理你第一阶段该先做好的事...",
+//        "正在为你定下第一阶段营养目标..."
+        
+//        "正在先了解你的身体基础...",
+//        "正在结合你的日常活动与训练...",
+//        "正在把你的目标一起放进来考虑...",
+//        "正在判断你现阶段最需要优先解决什么...",
+//        "正在为你找到更合适的热量起点...",
+//        "正在把三大营养素调整到更适合你的方向...",
+//        "正在梳理你第一阶段最该先做的几件事...",
+//        "正在为你定下第一阶段营养目标..."
+        
+//        "让我先结合你的身体基础情况...",
+//        "再把日常活动与训练考虑进去...",
+//        "然后结合你现在想达到的目标...",
+//        "我需要判断你现阶段最需要优先解决什么...",
+//        "正在为你找到更合适的热量起点...",
+//        "让我把三大营养素调整到更适合你的方向...",
+//        "正在梳理你第一阶段最该先做的几件事...",
+//        "最后，为你定下第一阶段营养目标..."
+        
+//        "让我先分析你的身体基础情况...",
+//        "再把日常活动与训练考虑进去...",
+//        "正在结合你的目标...",
+//        "我需要先确定你这一阶段的重点...",
+//        "正在为你找到更合适的热量起点...",
+//        "让我把三大营养素调整到更适合你的方向...",
+//        "正在梳理你第一阶段最该先做的几件事...",
+//        "最后，为你定下第一阶段营养目标..."
+        
+        "先从你的身体基础算起...",
+        "再把日常活动与训练考虑进去...",
+        "然后根据你的目标确定调整方向...",
+        "这样，就能判断这一阶段该优先什么...",
+        "接下来，把热量起点定下来...",
+        "有了这个起点，再把三大营养素配好...",
+        "然后梳理第一阶段最该先做的几件事...",
+        "最后，为你定下第一阶段营养目标..."
     ]
 
     private lazy var backgroundImageView: UIImageView = {
@@ -138,14 +199,6 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
         return label
     }()
 
-    private let progressPercentLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .COLOR_TEXT_TITLE_0f1214
-        label.font = .systemFont(ofSize: 60, weight: .semibold)
-        label.textAlignment = .center
-        return label
-    }()
-
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "正在为你确定初始营养目标"
@@ -155,15 +208,8 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
         return label
     }()
 
-    private let subtitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "ELA 正在综合你的身体情况、日常活动和目标，\n为第一阶段建立一个可靠起点"
-        label.textColor = .COLOR_TEXT_TITLE_0f1214_50
-        label.font = .systemFont(ofSize: 16, weight: .regular)
-        label.numberOfLines = 2
-        label.textAlignment = .center
-        return label
-    }()
+    /// 承载压缩包中 SwiftUI 点阵球动画的 UIKit 容器。
+    private var thinkingOrbHostController: UIHostingController<ThinkingOrbsPill>?
 
     private let footerHintLabel: UILabel = {
         let label = UILabel()
@@ -174,32 +220,13 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
         return label
     }()
 
-    private let progressTrackView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .COLOR_CARD_BG_WHITE
-        view.layer.cornerRadius = kFitWidth(2)
-        view.clipsToBounds = true
-        return view
+    private let stageLabel: UILabel = {
+        let label = UILabel()
+        label.textColor = .COLOR_TEXT_TITLE_0f1214_50
+        label.font = .systemFont(ofSize: 13, weight: .regular)
+        label.textAlignment = .center
+        return label
     }()
-
-    private let progressFillView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .THEME
-        view.layer.cornerRadius = kFitWidth(2)
-        view.clipsToBounds = true
-        return view
-    }()
-
-    private let stageStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = kFitWidth(16)
-        stack.alignment = .fill
-        return stack
-    }()
-
-    private var stageLabels: [UILabel] = []
-    private var progressWidthConstraint: Constraint?
 
     init(flowState: GuidanceGoalPlanFlowState, configuration: Configuration = Configuration()) {
         self.flowState = flowState
@@ -217,7 +244,6 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
     }
 
     deinit {
-        fakeTimer?.invalidate()
         stageTimer?.invalidate()
         completionWorkItem?.cancel()
     }
@@ -226,10 +252,6 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
         super.viewDidLoad()
         navigationController?.setNavigationBarHidden(true, animated: false)
         buildInterface()
-        updateProgressUI(animated: false)
-        progressStartedAt = CACurrentMediaTime()
-        startStageCycle()
-        startFakeProgress()
         requestNutritionGoals()
     }
 
@@ -243,6 +265,7 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
         super.viewDidAppear(animated)
         updateInteractivePopGestureBlocked(true)
         startLogoShimmer()
+        startStageCycleAfterRenderingIfNeeded()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -261,7 +284,6 @@ final class GuidanceNutritionGoalsProgressVC: WHBaseViewVC {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        fakeTimer?.invalidate()
         stageTimer?.invalidate()
         completionWorkItem?.cancel()
     }
@@ -275,12 +297,8 @@ private extension GuidanceNutritionGoalsProgressVC {
         logoImageView.addSubview(logoHighlightImageView)
         view.addSubview(logoTitleLabel)
         view.addSubview(titleLabel)
-        view.addSubview(subtitleLabel)
         view.addSubview(footerHintLabel)
-        view.addSubview(progressPercentLabel)
-        view.addSubview(progressTrackView)
-        progressTrackView.addSubview(progressFillView)
-        view.addSubview(stageStackView)
+        view.addSubview(stageLabel)
 
         backgroundImageView.snp.makeConstraints { $0.edges.equalToSuperview() }
         logoImageView.snp.makeConstraints {
@@ -299,49 +317,49 @@ private extension GuidanceNutritionGoalsProgressVC {
             $0.centerX.equalToSuperview()
             $0.top.equalTo(logoImageView.snp.bottom).offset(kFitWidth(28))
         }
-        subtitleLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.left.equalTo(kFitWidth(24))
-            $0.right.equalTo(kFitWidth(-24))
-            $0.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(12))
-        }
         footerHintLabel.snp.makeConstraints {
             $0.centerX.equalToSuperview()
             $0.left.equalTo(kFitWidth(20))
             $0.right.equalTo(kFitWidth(-20))
             $0.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(kFitWidth(-64))
         }
-        progressPercentLabel.snp.makeConstraints {
-            $0.centerX.equalToSuperview()
-            $0.top.equalTo(subtitleLabel.snp.bottom).offset(kFitWidth(42))
-        }
-        progressTrackView.snp.makeConstraints {
-            $0.left.equalTo(kFitWidth(62))
-            $0.right.equalTo(kFitWidth(-62))
-            $0.top.equalTo(subtitleLabel.snp.bottom).offset(kFitWidth(40))
-            $0.height.equalTo(kFitWidth(4))
-        }
-        progressFillView.snp.makeConstraints {
-            $0.left.top.bottom.equalToSuperview()
-            progressWidthConstraint = $0.width.equalTo(0).constraint
-        }
-        stageTexts.forEach { text in
-            let label = UILabel()
-            label.text = text
-            label.textColor = .COLOR_TEXT_TITLE_0f1214_50
-            label.font = .systemFont(ofSize: 13, weight: .regular)
-            label.textAlignment = .center
-            stageStackView.addArrangedSubview(label)
-            stageLabels.append(label)
-        }
-        stageStackView.snp.makeConstraints {
+        let orbHostController = embedThinkingOrb()
+        stageLabel.snp.makeConstraints {
             $0.left.equalTo(kFitWidth(50))
             $0.right.equalTo(kFitWidth(-34))
             $0.height.equalTo(kFitWidth(20))
-            $0.top.equalTo(progressTrackView.snp.bottom).offset(kFitWidth(16))
+            $0.top.equalTo(orbHostController.view.snp.bottom).offset(kFitWidth(12))
         }
-        progressPercentLabel.isHidden = true
+        stageLabel.text = stageTexts.first
         logoTitleLabel.isHidden = true
+    }
+
+    /// 将附件中的球动画嵌入当前 UIKit 页面。
+    @discardableResult
+    func embedThinkingOrb() -> UIHostingController<ThinkingOrbsPill> {
+        let side = kFitWidth(100)
+        let hostController = UIHostingController(
+            rootView: ThinkingOrbsPill(
+                showsPill: false,
+                showsLabel: false,
+                ballSize: side
+            )
+        )
+        hostController.view.backgroundColor = .clear
+        hostController.view.isOpaque = false
+        hostController.view.isUserInteractionEnabled = false
+        hostController.view.accessibilityIdentifier = "guidanceNutritionGoalsThinkingOrb"
+
+        addChild(hostController)
+        view.addSubview(hostController.view)
+        hostController.view.snp.makeConstraints {
+            $0.centerX.equalToSuperview()
+            $0.top.equalTo(titleLabel.snp.bottom).offset(kFitWidth(16))
+            $0.width.height.equalTo(side)
+        }
+        hostController.didMove(toParent: self)
+        thinkingOrbHostController = hostController
+        return hostController
     }
 
     func startLogoShimmer() {
@@ -366,127 +384,137 @@ private extension GuidanceNutritionGoalsProgressVC {
         logoHighlightMaskLayer.locations = [-0.85, -0.45, -0.05]
     }
 
-    func startFakeProgress() {
-        fakeTimer?.invalidate()
-        let interval = 1.0 / 60.0
-        let startedAt = CACurrentMediaTime()
-        fakeTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            let elapsed = CACurrentMediaTime() - startedAt
-            let ratio = min(max(elapsed / self.configuration.fakeProgressDuration, 0), 1)
-            self.displayedProgress = ratio * Double(self.configuration.fakeProgressTarget)
-            self.updateProgressUI(animated: true)
-            if ratio >= 1 {
-                self.fakeTimer?.invalidate()
-                self.fakeTimer = nil
-            }
-        }
-        if let fakeTimer { RunLoop.main.add(fakeTimer, forMode: .common) }
+    /// 页面完成展示后再开始计时，避免导航转场占用首条文案的展示时长。
+    func startStageCycleAfterRenderingIfNeeded() {
+        guard !hasStartedStageCycle else { return }
+        hasStartedStageCycle = true
+        animationStartedAt = CACurrentMediaTime()
+        startStageCycle()
+        // 接口可能在页面完成展示前已经返回，此时从真正的动画起点重新计算结束时间。
+        tryFinishIfReady()
     }
 
-    /// 在最初五秒内依次轮播三条状态文案。
     func startStageCycle() {
         stageTimer?.invalidate()
         activeStageIndex = 0
-        updateProgressUI(animated: false)
         updateStageText(animated: false)
-        let interval = max(configuration.stageCycleDuration / Double(stageTexts.count), 0.1)
-        let startedAt = CACurrentMediaTime()
-        stageTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 30.0, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            let elapsed = CACurrentMediaTime() - startedAt
-            let stage = min(Int(elapsed / interval), self.stageTexts.count - 1)
-            if stage != self.activeStageIndex {
-                self.activeStageIndex = stage
-                self.updateStageText(animated: true)
-            }
-            if elapsed >= self.configuration.stageCycleDuration {
-                self.activeStageIndex = self.stageTexts.count - 1
-                self.stageTimer?.invalidate()
-                self.stageTimer = nil
-            }
+        hasCompletedStageCycle = false
+
+        guard stageTexts.count > 1 else {
+            scheduleStageCycleCompletion(after: configuration.finalStageTextDisplayDuration)
+            return
         }
-        if let stageTimer { RunLoop.main.add(stageTimer, forMode: .common) }
+
+        scheduleNextStage(after: firstStageTextDisplayDuration)
     }
 
-    func updateProgressUI(animated: Bool) {
-        let percent = Int(displayedProgress.rounded(.down))
-        progressPercentLabel.text = "\(percent)%"
-        let trackWidth = SCREEN_WIDHT - kFitWidth(124)
-        progressWidthConstraint?.update(offset: trackWidth * CGFloat(displayedProgress / 100.0))
-        if animated {
-            UIView.animate(withDuration: 0.08, delay: 0, options: [.beginFromCurrentState, .curveEaseOut]) {
-                self.view.layoutIfNeeded()
+    /// 基于上一次实际切换完成的时间继续调度，主线程短暂繁忙时不会追赶并压缩后续文案。
+    func scheduleNextStage(after delay: TimeInterval) {
+        let timer = Timer(timeInterval: delay, repeats: false) { [weak self] _ in
+            guard let self else { return }
+            let nextIndex = self.activeStageIndex + 1
+            guard self.stageTexts.indices.contains(nextIndex) else { return }
+
+            self.activeStageIndex = nextIndex
+            self.updateStageText(animated: true)
+
+            if nextIndex == self.stageTexts.count - 1 {
+                self.scheduleStageCycleCompletion(
+                    after: self.configuration.stageTransitionDuration
+                        + self.configuration.finalStageTextDisplayDuration
+                )
+            } else {
+                self.scheduleNextStage(
+                    after: self.configuration.stageTransitionDuration
+                        + self.configuration.stageTextDisplayDuration
+                )
             }
-        } else {
-            view.layoutIfNeeded()
         }
+        stageTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
+    }
+
+    func scheduleStageCycleCompletion(after delay: TimeInterval) {
+        let timer = Timer(timeInterval: delay, repeats: false) { [weak self] _ in
+            guard let self else { return }
+            self.stageTimer = nil
+            self.hasCompletedStageCycle = true
+            self.completeProgressIfNeeded()
+        }
+        stageTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
     }
 
     func updateStageText(animated: Bool) {
-        let updates = {
-            for (index, label) in self.stageLabels.enumerated() {
-                label.isHidden = index != self.activeStageIndex
-                label.alpha = index == self.activeStageIndex ? 1 : 0
-            }
-        }
+        let text = stageTexts[activeStageIndex]
         guard animated else {
-            updates()
+            stageLabel.layer.removeAllAnimations()
+            stageLabel.text = text
+            stageLabel.alpha = 1
             return
         }
-        UIView.transition(with: stageStackView,
+
+        UIView.transition(with: stageLabel,
                           duration: configuration.stageTransitionDuration,
                           options: [.transitionCrossDissolve, .beginFromCurrentState, .allowAnimatedContent],
-                          animations: updates)
+                          animations: {
+                              self.stageLabel.text = text
+                          })
     }
 
     func tryFinishIfReady() {
-        guard requestFinished, !hasFinishedAnimation else { return }
-        hasFinishedAnimation = true
+        guard requestFinished,
+              hasStartedStageCycle,
+              !hasScheduledCompletion,
+              !hasFinishedAnimation else { return }
+        hasScheduledCompletion = true
 
-        // 接口返回后只停止模拟进度。状态文案计时器仍需继续运行，
-        // 避免接口过快返回，导致第二、第三条状态文案没有机会展示。
-        fakeTimer?.invalidate()
-        fakeTimer = nil
-        let elapsed = CACurrentMediaTime() - progressStartedAt
-        let remainingStageCycleDuration = max(configuration.stageCycleDuration - elapsed, 0)
+        // 状态文案计时器仍需继续运行，避免接口过快返回，
+        // 导致后续状态文案没有机会完整展示。
+        let elapsed = CACurrentMediaTime() - animationStartedAt
+        let remainingStageCycleDuration = max(stageCycleDuration - elapsed, 0)
         let completionDuration = max(configuration.completionAnimationDuration,
                                      configuration.minimumTotalAnimationDuration - elapsed,
                                      remainingStageCycleDuration)
         let completionWorkItem = DispatchWorkItem { [weak self] in
-            self?.completeProgressIfNeeded()
+            guard let self else { return }
+            self.hasFinishedAnimation = true
+            self.completeProgressIfNeeded()
         }
         self.completionWorkItem?.cancel()
         self.completionWorkItem = completionWorkItem
         DispatchQueue.main.asyncAfter(deadline: .now() + completionDuration,
                                       execute: completionWorkItem)
-
-        UIView.animate(withDuration: completionDuration, delay: 0, options: [.curveEaseInOut]) {
-            self.displayedProgress = 100
-            self.updateProgressUI(animated: false)
-            self.view.layoutIfNeeded()
-        } completion: { [weak self] finished in
-            guard finished else { return }
-            self?.completeProgressIfNeeded()
-        }
     }
 
-    /// 进度展示和业务跳页在这里一次性汇合。
-    ///
-    /// UIKit 动画可能被手势、布局或导航转场打断，因此同时由独立的主线程计时兜底，
-    /// 确保接口成功后一定会交付结果，而不会停留在视觉上的 100%。
+    /// 根据当前文案数量动态计算完整轮播时长：
+    /// 普通文案展示时长 + 最后一条展示时长 + 相邻文案之间的淡入淡出时长。
+    var stageCycleDuration: TimeInterval {
+        guard !stageTexts.isEmpty else { return 0 }
+        let regularStageCount = stageTexts.count - 1
+        return Double(regularStageCount) * configuration.stageTextDisplayDuration
+            - (regularStageCount > 0 ? configuration.firstStageTextDisplayDurationReduction : 0)
+            + configuration.finalStageTextDisplayDuration
+            + Double(regularStageCount) * configuration.stageTransitionDuration
+    }
+
+    var firstStageTextDisplayDuration: TimeInterval {
+        configuration.stageTextDisplayDuration
+            - configuration.firstStageTextDisplayDurationReduction
+    }
+
+    /// 球动画的最短展示时长和业务跳页在这里一次性汇合。
     func completeProgressIfNeeded() {
-        guard requestFinished, hasFinishedAnimation, !hasDeliveredResult else { return }
+        guard requestFinished,
+              hasFinishedAnimation,
+              hasCompletedStageCycle,
+              !hasDeliveredResult else { return }
         hasDeliveredResult = true
         completionWorkItem?.cancel()
         completionWorkItem = nil
-        fakeTimer?.invalidate()
-        fakeTimer = nil
         stageTimer?.invalidate()
         stageTimer = nil
-        displayedProgress = 100
         activeStageIndex = stageTexts.count - 1
-        updateProgressUI(animated: false)
         updateStageText(animated: false)
         finishBlock?(nutritionResult)
     }

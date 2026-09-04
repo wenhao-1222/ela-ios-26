@@ -228,6 +228,7 @@ class WHNetworkUtil: SessionManager {
                   timeOut:TimeInterval? = 10.0,
                   taskId:String="",
                   requestConfig: ((DataRequest) -> Void)? = nil,
+                  responseError: (([String : AnyObject]) -> Void)? = nil,
                   success : @escaping (_ responseObject : [String : AnyObject]) -> (),
                   failure: ((Bool) -> Void)? = nil) -> () {
         // 后台队列，避免阻塞主线程
@@ -374,7 +375,7 @@ class WHNetworkUtil: SessionManager {
                             if code == 501{
                                 UserInfoModel.shared.noUidResponseNum += 1
                             }
-                            
+
                             if (code == 200) {
                                 if urlString != URL_goal_week_save || urlString != URL_dietplan_del{
                                     MCToast.mc_remove()
@@ -385,7 +386,11 @@ class WHNetworkUtil: SessionManager {
                                 }
                             }else if code == 422{
                                 DispatchQueue.main.async {
-                                    success(value)
+                                    if let responseError = responseError {
+                                        responseError(value)
+                                    } else {
+                                        success(value)
+                                    }
                                 }
                             }else if code == 403 && urlString == URL_ai_coach_launch {
                                 DispatchQueue.main.async {
@@ -464,7 +469,11 @@ class WHNetworkUtil: SessionManager {
                                 }
                                 
                                 DispatchQueue.main.async {
-                                    failure?(true)
+                                    if let responseError = responseError {
+                                        responseError(value)
+                                    } else {
+                                        failure?(true)
+                                    }
                                 }
                                 if urlString == URL_foods_list{
                                     MCToast.mc_failure("网络异常，请稍后重试（\(code)）",respond: .allow)
@@ -554,7 +563,7 @@ class WHNetworkUtil: SessionManager {
                             var retryMsgDict = msgDictError
                             retryMsgDict["error"] = response.error?.localizedDescription ?? ""
                             NetworkMonitor.shared.retryLater({
-                                self.POST(urlString: urlString, parameters: parameters, isNeedToast: isNeedToast, vc: vc, timeOut: timeOut, taskId: taskId, requestConfig: requestConfig, success: success, failure: failure)
+                                self.POST(urlString: urlString, parameters: parameters, isNeedToast: isNeedToast, vc: vc, timeOut: timeOut, taskId: taskId, requestConfig: requestConfig, responseError: responseError, success: success, failure: failure)
                             }, retryCount: 0, msgDict: retryMsgDict, ownerUid: requestOwnerUid, onDropped: droppedHandler)
                         } else {
                             DLLog(message: "[NetworkMonitor] 请求失败，但禁止重试，直接回调失败 - \(urlString)")

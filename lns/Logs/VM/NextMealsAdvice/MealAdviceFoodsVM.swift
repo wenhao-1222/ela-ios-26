@@ -62,7 +62,7 @@ final class MealAdviceSelectedFoodChipView: UIView {
     init(title: String, identityKey: String) {
         self.identityKey = identityKey
         super.init(frame: .zero)
-        backgroundColor = .COLOR_BG_WHITE
+        backgroundColor = .COLOR_CARD_BG_WHITE
         layer.cornerRadius = kFitWidth(14)
         clipsToBounds = true
 

@@ -89,6 +89,7 @@
 		A7CF110F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF100F2FABCDEF0000000F /* GuidanceGoalPlanFatLossProfileVM.swift */; };
 		A7CF11102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift */; };
 		A7CF11232FABCDEF00000023 /* GuidanceNutritionGoalsProgressVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10232FABCDEF00000023 /* GuidanceNutritionGoalsProgressVC.swift */; };
+		A7CF11252FABCDEF00000025 /* ThinkingOrbsPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10252FABCDEF00000025 /* ThinkingOrbsPill.swift */; };
 		A7CF11242FABCDEF00000024 /* GuidanceNutritionGoalsResultVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CF10242FABCDEF00000024 /* GuidanceNutritionGoalsResultVC.swift */; };
 		B82001012FABCDEF00000001 /* Guide0820FeatureIntroVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82000012FABCDEF00000001 /* Guide0820FeatureIntroVC.swift */; };
 		B82001022FABCDEF00000002 /* Guide0820FeatureNutritionRecommendationVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82000022FABCDEF00000002 /* Guide0820FeatureNutritionRecommendationVM.swift */; };
@@ -1415,6 +1416,7 @@
 		ECE40A673023500000837832 /* MealAdviceNextVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE40A683023500000837832 /* MealAdviceNextVC.swift */; };
 		ECE40A6B302350000837832 /* MealAdviceNextSkeletonVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE40A6C302350000837832 /* MealAdviceNextSkeletonVC.swift */; };
 		ECEC4EAB2F73777200FB1E56 /* AICoachPreVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */; };
+		F2C0A0023100000100C0A001 /* AICoachChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C0A0013100000100C0A001 /* AICoachChatVC.swift */; };
 		ECEC4EAE2F73780300FB1E56 /* AICoachPreDaysVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */; };
 		ECEC4EB22F73A11100FB1E56 /* AICoachPreInfoVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */; };
 		ECEC4EB42F73A11300FB1E56 /* AICoachPreInfoSelectPopupVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECEC4EB32F73A11200FB1E56 /* AICoachPreInfoSelectPopupVM.swift */; };
@@ -1660,6 +1662,7 @@
 		A7CF10102FABCDEF00000010 /* GuidanceGoalPlanFatLossProteinHabitVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFatLossProteinHabitVM.swift; sourceTree = "<group>"; };
 		A7CF10232FABCDEF00000023 /* GuidanceNutritionGoalsProgressVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceNutritionGoalsProgressVC.swift; sourceTree = "<group>"; };
 		A7CF10242FABCDEF00000024 /* GuidanceNutritionGoalsResultVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceNutritionGoalsResultVC.swift; sourceTree = "<group>"; };
+		A7CF10252FABCDEF00000025 /* ThinkingOrbsPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThinkingOrbsPill.swift; sourceTree = "<group>"; };
 		A7CF10112FABCDEF00000011 /* GuidanceGoalPlanProfileVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanProfileVM.swift; sourceTree = "<group>"; };
 		A7CF10202FABCDEF00000020 /* GuidanceGoalPlanFoodAdjustmentVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuidanceGoalPlanFoodAdjustmentVM.swift; sourceTree = "<group>"; };
 		A7092D122E4EE02C005A2087 /* ArticlesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticlesVC.swift; sourceTree = "<group>"; };
@@ -3061,6 +3064,7 @@
 		ECE40A683023500000837832 /* MealAdviceNextVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealAdviceNextVC.swift; sourceTree = "<group>"; };
 		ECE40A6C302350000837832 /* MealAdviceNextSkeletonVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealAdviceNextSkeletonVC.swift; sourceTree = "<group>"; };
 		ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreVC.swift; sourceTree = "<group>"; };
+		F2C0A0013100000100C0A001 /* AICoachChatVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachChatVC.swift; sourceTree = "<group>"; };
 		ECEC4EAD2F7377FC00FB1E56 /* AICoachPreDaysVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreDaysVM.swift; sourceTree = "<group>"; };
 		ECEC4EB12F73A10900FB1E56 /* AICoachPreInfoVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreInfoVM.swift; sourceTree = "<group>"; };
 		ECEC4EB32F73A11200FB1E56 /* AICoachPreInfoSelectPopupVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICoachPreInfoSelectPopupVM.swift; sourceTree = "<group>"; };
@@ -3733,6 +3737,7 @@
 				A7BAE5E82D811F4E000A690A /* PropotionResultVC.swift */,
 				EC3F21FD2F722D13001F4C86 /* AIGuidanceVC.swift */,
 				ECEC4EAA2F73776900FB1E56 /* AICoachPreVC.swift */,
+				F2C0A0013100000100C0A001 /* AICoachChatVC.swift */,
 				C0A100152E8F000100000001 /* AICoachReportPDFDemoVC.swift */,
 			);
 			path = VC;
@@ -4824,6 +4829,7 @@
 		A70824042F70000000000004 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A7CF10252FABCDEF00000025 /* ThinkingOrbsPill.swift */,
 				A708220D2F7000000000000D /* Guide0820AgreementLegalTextView.swift */,
 				A708220E2F7000000000000E /* Guide0820AgreementRow.swift */,
 				A708220F2F7000000000000F /* Guide0820BottomSheetView.swift */,
@@ -7375,6 +7381,7 @@
 				EC78C2AF2F69222300681507 /* GuidanceSexVM.swift in Sources */,
 				A7CF11012FABCDEF00000001 /* GuidanceGoalPlanVC.swift in Sources */,
 				A7CF11232FABCDEF00000023 /* GuidanceNutritionGoalsProgressVC.swift in Sources */,
+				A7CF11252FABCDEF00000025 /* ThinkingOrbsPill.swift in Sources */,
 				A7CF11242FABCDEF00000024 /* GuidanceNutritionGoalsResultVC.swift in Sources */,
 				B82001012FABCDEF00000001 /* Guide0820FeatureIntroVC.swift in Sources */,
 				B82001022FABCDEF00000002 /* Guide0820FeatureNutritionRecommendationVM.swift in Sources */,
@@ -7978,6 +7985,7 @@
 				A7503A032CF060FE00C2B2B3 /* SportCatogaryItemVM.swift in Sources */,
 				EC38DE992BEF56D4008E7FCE /* MineFuncItemVM.swift in Sources */,
 				ECEC4EAB2F73777200FB1E56 /* AICoachPreVC.swift in Sources */,
+				F2C0A0023100000100C0A001 /* AICoachChatVC.swift in Sources */,
 				A77F96352D0C091F0084D4FB /* LXReorderableCollectionViewFlowLayout.m in Sources */,
 				EC87EEFD2BB3EACE00350EB0 /* QuestionnaireSurveyFoodsListVC.swift in Sources */,
 				ECF1AD082F21BBE200AE36D6 /* HabitSettleMentVM.swift in Sources */,

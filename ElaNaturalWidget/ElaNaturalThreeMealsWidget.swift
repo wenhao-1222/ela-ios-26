@@ -332,7 +332,7 @@ private struct ThreeMealsMacroProgressRow: View {
     @Environment(\.colorScheme) private var colorScheme
 
     private var progress: CGFloat {
-        guard target > 0 else { return 0 }
+        guard target > 0 else { return CGFloat(min(max(value, 2), 2)) }
         return max(0, CGFloat(value / target))
     }
 

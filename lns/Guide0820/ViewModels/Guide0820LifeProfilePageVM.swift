@@ -862,12 +862,12 @@ final class Guide0820LifeProfileCaloriesResultVM: Guide0820LifeProfilePageVM, UI
         Guide0820Model.shared.caloriesNumberFromServer = calories
     }
 
-    /// 热量输入必须是至少 10 千卡的有效整数。
+    /// 热量输入必须是至少 100 千卡的有效整数。
     var hasReasonableCaloriesInput: Bool {
         guard let calories = Int(caloriesTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "") else {
             return false
         }
-        return calories >= 10
+        return calories >= 100
     }
 
     /// 使用基础消耗接口返回的热量更新页面输入框及流程模型。
